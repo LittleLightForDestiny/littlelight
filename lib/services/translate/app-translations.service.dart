@@ -8,6 +8,8 @@ class AppTranslations{
   static CommonTranslation common = new CommonTranslation();
   static String _currentLanguage;
 
+  static List<String> supportedLanguages = ['en','fr','es','de','it','ja','pt-br','es-mx','ru','pl','ko','zh-cht'];
+
   static Future<bool> init(){
     Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
     return _prefs.then((value){

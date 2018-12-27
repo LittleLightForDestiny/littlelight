@@ -12,9 +12,10 @@ class LittleLight extends StatelessWidget {
       title: 'Flutter Demo',
       theme: new ThemeData(
         backgroundColor: Colors.blueGrey.shade900,
-        primarySwatch: Colors.lightBlue,
-        primaryColor: Colors.lightBlue,
+        primarySwatch: Colors.indigo,
+        primaryColor: Colors.indigo,
         brightness: Brightness.dark,
+        colorScheme: ColorScheme.dark(),
       ),
       home: new InitialScreen(),
       localizationsDelegates: [

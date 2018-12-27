@@ -1,44 +1,59 @@
 import 'package:flutter/material.dart';
+import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie-api/bungie-api.service.dart';
 import 'package:little_light/services/translate/app-translations.service.dart';
 import 'package:little_light/services/translate/pages/login-translation.dart';
-typedef void LoginCallback();
+
+typedef void LoginCallback(String code);
+typedef void SkipCallback();
+
 class LoginWidget extends StatefulWidget {
   final LoginTranslation translation = new LoginTranslation();
   final BungieApiService api = new BungieApiService();
+  final AuthService auth = new AuthService();
   final LoginCallback onLogin;
+  final SkipCallback onSkip;
 
-  LoginWidget({this.onLogin});
+  LoginWidget({this.onLogin, this.onSkip});
 
   @override
   LoginWidgetState createState() => new LoginWidgetState();
 }
 
-class LoginWidgetState
-  extends State<LoginWidget> {
-    String selectedLanguage;
-  
-
+class LoginWidgetState extends State<LoginWidget> {
   @override
   void initState() {
-    selectedLanguage = AppTranslations.currentLanguage;
     super.initState();
   }
 
-  void okClick(){
-    widget.api.login();
+  void authorizeClick() {
+    widget.auth.authorize().then((code){
+      widget.onLogin(code);
+    });
+  }
+
+  void laterClick() {
+    widget.onSkip();  
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
+    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      Padding(padding: EdgeInsets.all(8),
+      child: Text(widget.translation.authorizeDescription.get()),
+      ),
       RaisedButton(
         onPressed: () {
-          this.okClick();
+          this.authorizeClick();
         },
-        child: Text(AppTranslations.common.ok.get(selectedLanguage)),
+        child: Text(widget.translation.authorizeWithBungie.get()),
+      ),
+      RaisedButton(
+        onPressed: () {
+          this.laterClick();
+        },
+        color: Theme.of(context).colorScheme.error,
+        child: Text(AppTranslations.common.later.get()),
       )
     ]);
   }

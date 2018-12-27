@@ -16,16 +16,16 @@ class TranslatedString{
     String ko,
     String zhCht
   }){
-    languages['en'] = en;
-    languages['fr'] = fr;
-    languages['es'] = es;
     languages['de'] = de;
+    languages['en'] = en;
+    languages['es'] = es;
+    languages['es-mx'] = esMX;
+    languages['fr'] = fr;
     languages['it'] = it;
     languages['ja'] = ja;
-    languages['pt-br'] = ptBR;
-    languages['es-mx'] = esMX;
-    languages['ru'] = ru;
     languages['pl'] = pl;
+    languages['pt-br'] = ptBR;
+    languages['ru'] = ru;
     languages['ko'] = ko;
     languages['zh-cht'] = zhCht;
   }

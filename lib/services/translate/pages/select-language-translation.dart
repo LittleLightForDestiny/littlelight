@@ -2,8 +2,8 @@ import 'package:little_light/services/translate/translated-string.dart';
 
 class SelectLanguageTranslation{
   TranslatedString title = new TranslatedString(
-    en: "Select Language",
     de: "Sprache auswählen",
+    en: "Select Language",
     es: "Seleccione el idioma",
     esMX: "Seleccione el idioma",
     fr: "Choisir la langue",
@@ -16,8 +16,8 @@ class SelectLanguageTranslation{
     zhCht: "選擇語言",
   );
   TranslatedString languageNames = new TranslatedString(
-    en: "English",
     de: "Deutsch",
+    en: "English", 
     es: "Español",
     esMX: "Español mexicano",
     fr: "Français",
