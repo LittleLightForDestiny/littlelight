@@ -1,16 +1,11 @@
-import 'package:bungie_api/models/destiny_character_component.dart';
-import 'package:bungie_api/models/destiny_character_progression_component.dart';
-import 'package:bungie_api/models/destiny_inventory_component.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie-api/enums/inventory-bucket-hash.enum.dart';
 import 'package:little_light/widgets/inventory_tabs/character_tab_header.widget.dart';
 import 'package:little_light/widgets/item_list/item_list.widget.dart';
 
 class CharacterTabWidget extends StatefulWidget {
-  final DestinyCharacterComponent character;
-  final DestinyCharacterProgressionComponent progression;
-  final DestinyInventoryComponent equipment;
-  CharacterTabWidget(this.character, this.progression, this.equipment);
+  final String characterId;
+  CharacterTabWidget(this.characterId);
   @override
   CharacterTabWidgetState createState() => new CharacterTabWidgetState();
 }
@@ -25,8 +20,8 @@ class CharacterTabWidgetState extends State<CharacterTabWidget> {
   Widget build(BuildContext context) {
     return Stack(children: [
       ItemListWidget(
-        widget.equipment.items,
-        padding: EdgeInsets.only(top: getListTopOffset(context)),
+        padding: EdgeInsets.only(top: getListTopOffset(context), left:2, right:2),
+        characterId: widget.characterId,
         bucketHashes: [
           InventoryBucket.subclass,
           InventoryBucket.kineticWeapons,
@@ -34,7 +29,7 @@ class CharacterTabWidgetState extends State<CharacterTabWidget> {
           InventoryBucket.powerWeapons
         ],
       ),
-      TabHeaderWidget(widget.character, widget.progression),
+      TabHeaderWidget(widget.characterId),
     ]);
   }
 

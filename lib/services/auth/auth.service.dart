@@ -89,6 +89,11 @@ class AuthService {
     return saved;
   }
 
+  checkAuthorizationCode() async{
+    Uri initialUri = await getInitialUri();
+    print(initialUri);
+  }
+
   Future<String> authorize() async {
     String currentLanguage = AppTranslations.currentLanguage;
     OAuth.openOAuth(new BungieAuthBrowser(), BungieApiService.clientId,

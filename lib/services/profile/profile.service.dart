@@ -1,3 +1,7 @@
+import 'package:bungie_api/models/destiny_character_component.dart';
+import 'package:bungie_api/models/destiny_character_progression_component.dart';
+import 'package:bungie_api/models/destiny_item_component.dart';
+import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_profile_response.dart';
 import 'package:little_light/services/bungie-api/bungie-api.service.dart';
 import 'package:bungie_api/enums/destiny_component_type_enum.dart';
@@ -99,6 +103,26 @@ class ProfileService {
     }
     
     return profile;
+  }
+
+  DestinyItemInstanceComponent getInstanceInfo(String instanceId){
+    return profile.itemComponents.instances.data[instanceId];
+  }
+
+  DestinyCharacterComponent getCharacter(String characterId){
+    return profile.characters.data[characterId];
+  }
+
+  List<DestinyItemComponent> getCharacterEquipment(String characterId){
+    return profile.characterEquipment.data[characterId].items;
+  }
+
+  List<DestinyItemComponent> getCharacterInventory(String characterId){
+    return profile.characterInventories.data[characterId].items;
+  }
+
+  DestinyCharacterProgressionComponent getCharacterProgression(String characterId){
+    return profile.characterProgressions.data[characterId];
   }
   
 }

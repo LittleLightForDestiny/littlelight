@@ -13,7 +13,7 @@ class MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        statusBarColor: Colors.white, statusBarBrightness: Brightness.dark));
+        statusBarColor: Colors.transparent, statusBarBrightness: Brightness.dark));
     super.initState();
   }
 

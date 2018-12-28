@@ -18,17 +18,9 @@ class EquipmentScreenState extends State<EquipmentScreen> {
   DestinyProfileResponse profile;
   @override
   void initState() {
+    profile = widget.profile.profile;
+    totalTabs = characters?.length ?? 2;
     super.initState();
-    loadProfile();
-  }
-
-  loadProfile() async {
-    DestinyProfileResponse profile = await widget.profile.fetchBasicProfile();
-    setState(() {
-      this.profile = profile;
-      totalTabs = characters?.length ?? 2;
-      print(totalTabs);
-    });
   }
 
   @override
@@ -41,6 +33,20 @@ class EquipmentScreenState extends State<EquipmentScreen> {
       child: Stack(
         children: [
           Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  // Color.fromARGB(255, 73, 83, 93),
+                  // Color.fromARGB(255, 115, 115, 115),
+                  // Color.fromARGB(255, 73, 83, 93),
+                  Color.fromARGB(255, 32, 53, 53),
+                  Color.fromARGB(255, 100, 100, 115),
+                  Color.fromARGB(255, 32, 32, 73),
+                ],
+                begin: FractionalOffset(0, .5),
+                end: FractionalOffset(.5, 0),
+              )
+            ),
             child: TabBarView(children: getTabs()),
           ),
           TabsMenuWidget(characters, 0)
@@ -55,10 +61,7 @@ class EquipmentScreenState extends State<EquipmentScreen> {
       return [Container(), Container()];
     } else {
       List<Widget> characterTabs = characters.map((character) {
-        return CharacterTabWidget(
-            character,
-            this.profile?.characterProgressions?.data[character.characterId] ?? null,
-            this.profile?.characterEquipment?.data[character.characterId] ?? null);
+        return CharacterTabWidget(character.characterId);
       }).toList();
       return characterTabs;
     }

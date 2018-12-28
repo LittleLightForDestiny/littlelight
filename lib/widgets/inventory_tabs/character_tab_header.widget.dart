@@ -6,15 +6,16 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:little_light/services/bungie-api/bungie-api.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:shimmer/shimmer.dart';
 
 class TabHeaderWidget extends StatefulWidget {
-  final DestinyCharacterComponent character;
-  final DestinyCharacterProgressionComponent progression;
+  final String characterId;
   final ManifestService manifest = new ManifestService();
+  final ProfileService profile = new ProfileService();
   @override
-  TabHeaderWidget(this.character, this.progression);
+  TabHeaderWidget(this.characterId);
 
   @override
   TabHeaderWidgetState createState() => new TabHeaderWidgetState();
@@ -22,10 +23,14 @@ class TabHeaderWidget extends StatefulWidget {
 
 class TabHeaderWidgetState extends State<TabHeaderWidget> {
   DestinyInventoryItemDefinition emblemDefinition;
+  DestinyCharacterComponent character;
+  DestinyCharacterProgressionComponent progression;
   @override
   void initState() {
+    character = widget.profile.getCharacter(widget.characterId);
+    progression = widget.profile.getCharacterProgression(widget.characterId);
     emblemDefinition =
-        widget.manifest.getItemDefinition(widget.character.emblemHash);
+        widget.manifest.getItemDefinition(character.emblemHash);
     super.initState();
   }
 
@@ -46,7 +51,7 @@ class TabHeaderWidgetState extends State<TabHeaderWidget> {
         baseColor: Colors.transparent,
         highlightColor: Colors.white,
         child: Icon(
-          DestinyData.getClassIcon(widget.character?.classType),
+          DestinyData.getClassIcon(character.classType),
           size: 56,
         ));
     double top = getTopPadding(context) + 10;
@@ -84,14 +89,14 @@ class TabHeaderWidgetState extends State<TabHeaderWidget> {
   }
 
   Widget powerBar(BuildContext context) {
-    DestinyProgression levelProg = widget.character.levelProgression;
+    DestinyProgression levelProg = character.levelProgression;
     bool isMaxLevel = levelProg.level >= levelProg.levelCap;
     MaterialColor fg = isMaxLevel ? Colors.amber : Colors.green;
     Color bg = Color.lerp(Colors.black, fg, .6);
     Color shine = fg.shade200;
 
     if (isMaxLevel) {
-      levelProg = widget.progression.progressions[ProgressionHash.Overlevel];
+      levelProg = progression.progressions[ProgressionHash.Overlevel];
     }
     double completed = levelProg.progressToNextLevel / levelProg.nextLevelAt;
     return Container(

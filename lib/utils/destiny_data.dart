@@ -32,14 +32,12 @@ class DestinyData{
 
   static Color getAmmoTypeColor(int type){
     switch (type) {
-      case DestinyAmmunitionType.Primary:
-      return Colors.grey.shade300;
       case DestinyAmmunitionType.Special:
       return Color.fromARGB(255, 116, 247, 146);
       case DestinyAmmunitionType.Heavy:
       return Color.fromARGB(255, 179, 127, 251);
     }
-    return Colors.grey.shade300;
+    return Colors.white;
   }
 
   static IconData getDamageTypeIcon(int type){
@@ -65,7 +63,7 @@ class DestinyData{
       case DamageType.Void:
         return Color.fromARGB(255, 64,34,101);
     }
-    return Colors.grey.shade300;
+    return Colors.white;
   }
 
   static Color getDamageTypeTextColor(int damageType){
@@ -77,7 +75,7 @@ class DestinyData{
       case DamageType.Void:
         return Color.fromARGB(255, 177,120,248);
     }
-    return Colors.grey.shade300;
+    return Colors.white;
   }
 
 
@@ -102,7 +100,7 @@ class DestinyData{
       case TierType.Basic:
         return Colors.grey.shade800;
     }
-    return Colors.grey.shade300;
+    return Colors.white;
   }
 }
 

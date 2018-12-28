@@ -6,6 +6,7 @@ import 'package:little_light/screens/main.screen.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie-api/bungie-api.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/translate/app-translations.service.dart';
 import 'package:little_light/services/translate/pages/select-language-translation.dart';
 import 'package:little_light/widgets/initial-page/download-manifest.widget.dart';
@@ -18,6 +19,7 @@ class InitialScreen extends StatefulWidget {
   final BungieApiService apiService = new BungieApiService();
   final AuthService auth = new AuthService();
   final ManifestService manifest = new ManifestService();
+  final ProfileService profile = new ProfileService();
   final bool forceChangeLanguage;
   final bool forceLogin;
   final bool forceSelectMembership;
@@ -34,10 +36,10 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
   @override
   void initState() {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        statusBarColor: Colors.white, statusBarBrightness: Brightness.dark));
+        statusBarColor: Colors.transparent, statusBarBrightness: Brightness.dark));
     super.initState();
     AppTranslations.init().then((isSet) {
-      if (isSet) {
+      if (isSet && !widget.forceChangeLanguage) {
         checkManifest();
       } else {
         showSelectLanguage();
@@ -110,7 +112,7 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
   showLogin() {
     LoginWidget widget = new LoginWidget(
       onSkip: () {
-        goForward();
+        loadProfile();
       },
       onLogin: (code) {
         authCode(code);
@@ -131,7 +133,7 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
     if(membership == null || widget.forceSelectMembership){
       return showSelectMembership();
     }
-    return goForward();
+    return loadProfile();
   }
 
   showSelectMembership() async{
@@ -139,9 +141,15 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
     UserMembershipData membershipData = await this.widget.apiService.getMemberships();
     SelectPlatformWidget widget = SelectPlatformWidget(membershipData: membershipData, onSelect: (int membershipType){
       this.widget.auth.saveMembership(membershipData, membershipType);
-      goForward();
+      loadProfile();
     });
     this.changeContent(widget, widget.translation.title.get());
+  }
+
+  loadProfile() async{
+    this.changeContent(null, null);
+    await widget.profile.fetchBasicProfile();
+    this.goForward();
   }
 
   goForward() {

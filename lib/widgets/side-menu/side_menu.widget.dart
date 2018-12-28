@@ -24,24 +24,43 @@ class SideMenuState extends State<SideMenuWidget> {
     return SizedBox(
         width: 280,
         child: Container(
-          color: Theme.of(context).backgroundColor,
+            color: Theme.of(context).backgroundColor,
             child: Column(
-          children: <Widget>[
-            ProfileInfoWidget(),
-            RaisedButton(child: Text("###CHANGE_MEMBERSHIP"),
-            onPressed: (){
-              changeMembership();
-            },
-            )
-          ],
-        )));
+              children: <Widget>[
+                ProfileInfoWidget(),
+                RaisedButton(
+                  child: Text("###CHANGE_MEMBERSHIP"),
+                  onPressed: () {
+                    changeMembership();
+                  },
+                ),
+                RaisedButton(
+                  child: Text("###CHANGE_LANGUAGE"),
+                  onPressed: () {
+                    changeLanguage();
+                  },
+                )
+              ],
+            )));
   }
 
-  changeMembership(){
+  changeMembership() {
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => InitialScreen(forceSelectMembership: true,),
+          builder: (context) => InitialScreen(
+                forceSelectMembership: true,
+              ),
+        ));
+  }
+
+  changeLanguage() {
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => InitialScreen(
+                forceChangeLanguage: true,
+              ),
         ));
   }
 }

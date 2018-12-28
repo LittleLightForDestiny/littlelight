@@ -8,16 +8,13 @@ import 'package:little_light/services/translate/pages/download-manifest-translat
 typedef void OnFinishCallback();
 
 class DownloadManifestWidget extends StatefulWidget {
-  static double _downloadProgress = 0;
   final DownloadManifestTranslation translation =
       new DownloadManifestTranslation();
   final ManifestService manifestService = new ManifestService();
   final DestinyManifest manifest;
   final String selectedLanguage;
   final OnFinishCallback onFinish;
-  DownloadManifestWidget({this.manifest, this.selectedLanguage, this.onFinish, double downloadProgress = 0}){
-    DownloadManifestWidget._downloadProgress = downloadProgress;
-  }
+  DownloadManifestWidget({this.manifest, this.selectedLanguage, this.onFinish});
 
   @override
   DownloadManifestWidgetState createState(){
@@ -27,11 +24,12 @@ class DownloadManifestWidget extends StatefulWidget {
 }
 
 class DownloadManifestWidgetState extends State<DownloadManifestWidget> {
+  double _downloadProgress = 0;
 
   @override
   void initState() {
     super.initState();
-    if(DownloadManifestWidget._downloadProgress == 0 ){
+    if(_downloadProgress == 0 ){
       this.download();
     }    
   }
@@ -49,7 +47,12 @@ class DownloadManifestWidgetState extends State<DownloadManifestWidget> {
   Future downloadManifest(String url) async {
     await this.widget.manifestService.download(url, onProgress: (loaded, total) {
       setState(() {
-        DownloadManifestWidget._downloadProgress = loaded / total;
+        if(loaded < total){
+          _downloadProgress = loaded / total;
+        }else{
+          _downloadProgress = null;
+        }
+        
       });
     });
   }
@@ -62,7 +65,7 @@ class DownloadManifestWidgetState extends State<DownloadManifestWidget> {
           valueColor:
               AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
           backgroundColor: Theme.of(context).secondaryHeaderColor,
-          value: DownloadManifestWidget._downloadProgress,
+          value: _downloadProgress,
         ),
       ],
     );
