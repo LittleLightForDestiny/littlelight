@@ -63,9 +63,13 @@ class TabMenuButtonState extends State<TabMenuButton> {
 
   @override
   void initState() {
-    emblemDefinition = widget.manifest.getItemDefinition(widget.character.emblemHash);
     super.initState();
-    
+    getDefinitions();
+  }
+
+  getDefinitions() async{
+    emblemDefinition = await widget.manifest.getItemDefinition(widget.character.emblemHash);
+    setState(() {});
   }
 
   @override

@@ -29,13 +29,23 @@ class TabHeaderWidgetState extends State<TabHeaderWidget> {
   void initState() {
     character = widget.profile.getCharacter(widget.characterId);
     progression = widget.profile.getCharacterProgression(widget.characterId);
-    emblemDefinition =
-        widget.manifest.getItemDefinition(character.emblemHash);
     super.initState();
+    getDefinitions();
+  }
+
+  getDefinitions() async {
+    emblemDefinition =
+        await widget.manifest.getItemDefinition(character.emblemHash);
+    if(mounted){
+      setState(() {});
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    if(emblemDefinition == null){
+      return Container();
+    }
     return Stack(
       children: <Widget>[
         Column(

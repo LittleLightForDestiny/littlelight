@@ -1,4 +1,3 @@
-import 'package:bungie_api/models/destiny_manifest.dart';
 import 'package:bungie_api/models/user_membership_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -31,68 +30,52 @@ class InitialScreen extends StatefulWidget {
 }
 
 class InitialScreenState extends FloatingContentState<InitialScreen> {
-  DestinyManifest manifest;
-
   @override
   void initState() {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         statusBarColor: Colors.transparent, statusBarBrightness: Brightness.dark));
     super.initState();
-    AppTranslations.init().then((isSet) {
-      if (isSet && !widget.forceChangeLanguage) {
-        checkManifest();
-      } else {
-        showSelectLanguage();
-      }
-    });
+    checkLanguage();
   }
 
-  Future<DestinyManifest> loadManifest() {
-    if (manifest != null) {
-      return Future.delayed(new Duration(seconds: 1), () => manifest);
+  Future checkLanguage() async {
+    bool hasSelectedLanguage = await AppTranslations.init();
+    if(hasSelectedLanguage && !widget.forceChangeLanguage){
+      checkManifest();
+    }else{
+      showSelectLanguage();
     }
-    return widget.apiService.getManifest().then((response) {
-      manifest = response.response;
-      return manifest;
-    });
   }
 
-  showSelectLanguage() {
-    loadManifest().then((manifest) {
-      SelectLanguageTranslation translation = new SelectLanguageTranslation();
-      List<String> availableLanguages =
-          manifest.jsonWorldContentPaths.keys.toList();
-      SelectLanguageWidget widget = new SelectLanguageWidget(
-        availableLanguages: availableLanguages,
-        onChange: (language) {
-          changeTitle(translation.title.get(language));
-        },
-        onSelect: (language) {
-          this.checkManifest();
-        },
-      );
-      this.changeContent(widget, widget.translation.title.get());
-    });
+
+  showSelectLanguage() async {
+    SelectLanguageTranslation translation = SelectLanguageTranslation();
+    List<String> availableLanguages = await widget.manifest.getAvailableLanguages();
+    SelectLanguageWidget childWidget = SelectLanguageWidget(
+      availableLanguages: availableLanguages,
+      onChange: (language) {
+        changeTitle(translation.title.get(language));
+      },
+      onSelect: (language) {
+        this.checkManifest();
+      },
+    );
+    this.changeContent(childWidget, childWidget.translation.title.get());
   }
 
   checkManifest() async {
-    manifest = await loadManifest();
-    String version = await widget.manifest.getSavedVersion();
-    if (version != manifest.jsonWorldContentPaths[AppTranslations.currentLanguage] || widget.forceChangeLanguage){
+    bool needsUpdate = await widget.manifest.needsUpdate();
+    if (needsUpdate){
       showDownloadManifest();
     } else {
-      await widget.manifest.load();
       checkLogin();
     }
   }
 
   showDownloadManifest() {
     DownloadManifestWidget screen = new DownloadManifestWidget(
-      manifest: manifest,
       selectedLanguage: AppTranslations.currentLanguage,
       onFinish: () {
-        widget.manifest.saveManifestVersion(
-            manifest.jsonWorldContentPaths[AppTranslations.currentLanguage].toString());
         checkLogin();
       },
     );

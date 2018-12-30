@@ -7,7 +7,7 @@ import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/widgets/item_list/bucket_header.widget.dart';
 import 'package:little_light/widgets/item_list/character_info.widget.dart';
-import 'package:little_light/widgets/item_list/items/inventory_item.widget.dart';
+import 'package:little_light/widgets/item_list/items/inventory_item_wrapper.widget.dart';
 
 
 class ItemListWidget extends StatefulWidget {
@@ -23,24 +23,25 @@ class ItemListWidget extends StatefulWidget {
 }
 
 class ItemListWidgetState extends State<ItemListWidget>{
+  List<DestinyInventoryBucketDefinition> buckefDefs;
   List<DestinyItemComponent> equipment;
   List<DestinyItemComponent> inventory;
-  List<ListItem> listIndex;
+  List<ListItem> listIndex = [];
 
   @override
   void initState() {
     equipment = widget.profile.getCharacterEquipment(widget.characterId);
     inventory = widget.profile.getCharacterInventory(widget.characterId);
-    buildIndex();
     super.initState();
+    buildIndex();
   }
 
   buildIndex(){
     listIndex = [];
     listIndex.add(new ListItem(ListItem.infoHeader, null));
 
-    widget.bucketHashes.forEach((hash){
-      DestinyInventoryBucketDefinition bucketDef = widget.manifest.getBucketDefinition(hash);
+    widget.bucketHashes.forEach((hash) async{
+      DestinyInventoryBucketDefinition bucketDef = await widget.manifest.getBucketDefinition(hash);
       Iterable<DestinyItemComponent> equipped = equipment.where((item)=>item.bucketHash == hash);
       Iterable<DestinyItemComponent> unequipped = inventory.where((item)=>item.bucketHash == hash);
       int bucketSize = bucketDef.itemCount;
@@ -55,6 +56,7 @@ class ItemListWidgetState extends State<ItemListWidget>{
         listIndex.add(ListItem(ListItem.unequippedItem, null, bucketHash:hash));
       }
       listIndex.add(new ListItem(ListItem.spacer, hash));
+      setState(() {});
     });
   }
 
@@ -104,10 +106,10 @@ class ItemListWidgetState extends State<ItemListWidget>{
         return BucketHeaderWidget(hash: item?.hash, itemCount: item.itemCount,);
 
       case ListItem.equippedItem:
-      return InventoryItemWidget.builder(item?.itemComponent);
+      return InventoryItemWrapperWidget(item?.itemComponent);
 
       case ListItem.unequippedItem:
-      return InventoryItemWidget.builder(item?.itemComponent, ContentDensity.MEDIUM);
+      return InventoryItemWrapperWidget(item?.itemComponent, density:ContentDensity.MEDIUM);
 
       case ListItem.spacer:
       return Container();

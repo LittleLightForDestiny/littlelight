@@ -2,6 +2,7 @@ import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:bungie_api/models/destiny_character_progression_component.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
+import 'package:bungie_api/models/destiny_item_talent_grid_component.dart';
 import 'package:bungie_api/models/destiny_profile_response.dart';
 import 'package:little_light/services/bungie-api/bungie-api.service.dart';
 import 'package:bungie_api/enums/destiny_component_type_enum.dart';
@@ -109,6 +110,10 @@ class ProfileService {
     return profile.itemComponents.instances.data[instanceId];
   }
 
+  DestinyItemTalentGridComponent getTalentGrid(String instanceId){
+    return profile.itemComponents.talentGrids.data[instanceId];
+  }
+
   DestinyCharacterComponent getCharacter(String characterId){
     return profile.characters.data[characterId];
   }
@@ -123,6 +128,5 @@ class ProfileService {
 
   DestinyCharacterProgressionComponent getCharacterProgression(String characterId){
     return profile.characterProgressions.data[characterId];
-  }
-  
+  }  
 }

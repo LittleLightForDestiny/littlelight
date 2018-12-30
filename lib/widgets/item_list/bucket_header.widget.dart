@@ -14,16 +14,28 @@ class BucketHeaderWidget extends StatefulWidget {
 
 class BucketHeaderWidgetState extends State<BucketHeaderWidget> {
   Map<String, DestinyInventoryBucketDefinition> bucketDefinitions;
+  DestinyInventoryBucketDefinition def;
 
   @override
   void initState() {
     super.initState();
+    if(def == null){
+      fetchDefinition();
+    }
+  }
+
+  fetchDefinition() async{
+    def = await widget.manifest.getBucketDefinition(widget.hash);
+    if(mounted){
+      setState((){});
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    DestinyInventoryBucketDefinition def =
-        widget.manifest.getBucketDefinition(widget.hash);
+    if(def == null){
+      return Container();
+    }
     int bucketSize = def.itemCount;
     if(widget.hash == InventoryBucket.subclass){
       bucketSize = 3;

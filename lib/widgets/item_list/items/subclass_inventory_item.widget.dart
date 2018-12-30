@@ -13,7 +13,35 @@ import 'package:little_light/widgets/item_list/items/inventory_item.widget.dart'
 import 'package:tinycolor/tinycolor.dart';
 
 class SubclassInventoryItemWidget extends InventoryItemWidget {
-  SubclassInventoryItemWidget(DestinyItemComponent item, DestinyInventoryItemDefinition itemDefinition, DestinyItemInstanceComponent instanceInfo) : super(item, itemDefinition, instanceInfo);
+  SubclassInventoryItemWidget(
+      DestinyItemComponent item,
+      DestinyInventoryItemDefinition definition,
+      DestinyItemInstanceComponent instanceInfo)
+      : super(item, definition, instanceInfo);
+
+  @override
+  State<StatefulWidget> createState() {
+    return SubclassInventoryItemWidgetState();
+  }
+}
+
+class SubclassInventoryItemWidgetState extends InventoryItemWidgetState {
+  DestinyItemTalentGridComponent talentGrid;
+  DestinyTalentGridDefinition talentGridDef;
+
+
+  @override
+    void initState() {
+      talentGrid = widget.profile.getTalentGrid(widget.item.itemInstanceId);
+      super.initState();
+    }
+
+  @override
+  loadDefinitions() async{
+    talentGridDef = await widget.manifest.getTalentGridDefinition(talentGrid.talentGridHash);
+    return super.loadDefinitions();
+  }
+
   @override
   Widget itemIcon(BuildContext context) {
     return Positioned(
@@ -26,17 +54,16 @@ class SubclassInventoryItemWidget extends InventoryItemWidget {
 
   @override
   Widget nameBar(BuildContext context) {
+    if(talentGridDef == null || talentGrid == null){
+      return Container();
+    }
     Color damageTypeColor =
-        DestinyData.getDamageTypeColor(itemDefinition.talentGrid.hudDamageType);
-    DestinyItemTalentGridComponent talentGrid = profile.profile
-        .itemComponents.talentGrids.data[item.itemInstanceId];
-    DestinyTalentGridDefinition gridDef =
-        manifest.getTalentGridDefinition(talentGrid.talentGridHash);
+        DestinyData.getDamageTypeColor(definition.talentGrid.hudDamageType);
     Iterable<int> activatedNodes = talentGrid.nodes
         .where((node) => node.isActivated)
         .map((node) => node.nodeIndex);
     Iterable<DestinyTalentNodeCategory> selectedSkills =
-        gridDef.nodeCategories.where((category) {
+        talentGridDef.nodeCategories.where((category) {
       var overlapping = category.nodeHashes
           .where((nodeHash) => activatedNodes.contains(nodeHash));
       return overlapping.length > 0;
@@ -65,7 +92,7 @@ class SubclassInventoryItemWidget extends InventoryItemWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(itemDefinition.displayProperties.name.toUpperCase(),
+                  Text(definition.displayProperties.name.toUpperCase(),
                       style: TextStyle(
                           fontSize: titleFontSize,
                           fontWeight: FontWeight.bold)),
@@ -83,8 +110,8 @@ class SubclassInventoryItemWidget extends InventoryItemWidget {
 
   @override
   background(BuildContext context) {
-    var damageTypeColor =
-        DestinyData.getDamageTypeColor(itemDefinition.talentGrid.hudDamageType);
+    var damageTypeColor = DestinyData.getDamageTypeColor(
+        widget.definition.talentGrid.hudDamageType);
     BoxDecoration decoration = BoxDecoration(
         gradient:
             RadialGradient(radius: 3, center: Alignment(.7, 0), colors: <Color>[
@@ -99,7 +126,7 @@ class SubclassInventoryItemWidget extends InventoryItemWidget {
               CachedNetworkImage(
                 width: 140,
                 imageUrl:
-                    "${BungieApiService.baseUrl}${itemDefinition.secondaryIcon}",
+                    "${BungieApiService.baseUrl}${widget.definition.secondaryIcon}",
                 fit: BoxFit.fitWidth,
                 alignment: AlignmentDirectional.topEnd,
               )
@@ -109,9 +136,11 @@ class SubclassInventoryItemWidget extends InventoryItemWidget {
   Widget categoryName(BuildContext context) {
     return null;
   }
-  
+
   @override
   Widget itemIconPlaceholder(BuildContext context) {
-    return ShimmerHelper.getDefaultShimmer(context, child:Icon(DestinyData.getClassIcon(itemDefinition.classType), size:iconSize*.75));
+    return ShimmerHelper.getDefaultShimmer(context,
+        child: Icon(DestinyData.getClassIcon(widget.definition.classType),
+            size: iconSize * .75));
   }
 }

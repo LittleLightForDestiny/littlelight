@@ -10,9 +10,20 @@ import 'package:little_light/widgets/item_list/items/medium_inventory_item.widge
 import 'package:tinycolor/tinycolor.dart';
 
 class MediumSubclassInventoryItemWidget extends MediumInventoryItemWidget {
-  
-  MediumSubclassInventoryItemWidget(DestinyItemComponent item, DestinyInventoryItemDefinition itemDefinition, DestinyItemInstanceComponent instanceInfo) : super(item, itemDefinition, instanceInfo);
+  MediumSubclassInventoryItemWidget(
+      DestinyItemComponent item,
+      DestinyInventoryItemDefinition itemDefinition,
+      DestinyItemInstanceComponent instanceInfo)
+      : super(item, itemDefinition, instanceInfo);
 
+    @override
+      State<StatefulWidget> createState() {
+        return MediumSubclassInventoryItemWidgetState();
+      }
+}
+
+class MediumSubclassInventoryItemWidgetState
+    extends MediumInventoryItemWidgetState {
   @override
   Widget itemIcon(BuildContext context) {
     return Positioned(
@@ -25,8 +36,8 @@ class MediumSubclassInventoryItemWidget extends MediumInventoryItemWidget {
 
   @override
   Widget nameBar(BuildContext context) {
-    Color damageTypeColor =
-        DestinyData.getDamageTypeColor(itemDefinition.talentGrid.hudDamageType);
+    Color damageTypeColor = DestinyData.getDamageTypeColor(
+        widget.definition.talentGrid.hudDamageType);
     BoxDecoration decoration = BoxDecoration(
         gradient: LinearGradient(colors: <Color>[
       TinyColor(damageTypeColor).saturate(30).darken(30).color,
@@ -50,7 +61,7 @@ class MediumSubclassInventoryItemWidget extends MediumInventoryItemWidget {
                   right: padding),
               decoration: decoration,
               child: Text(
-                itemDefinition.displayProperties.name.toUpperCase(),
+                widget.definition.displayProperties.name.toUpperCase(),
                 style: TextStyle(
                     fontSize: titleFontSize, fontWeight: FontWeight.bold),
               ),
@@ -61,8 +72,8 @@ class MediumSubclassInventoryItemWidget extends MediumInventoryItemWidget {
 
   @override
   background(BuildContext context) {
-    var damageTypeColor =
-        DestinyData.getDamageTypeColor(itemDefinition.talentGrid.hudDamageType);
+    var damageTypeColor = DestinyData.getDamageTypeColor(
+        widget.definition.talentGrid.hudDamageType);
     BoxDecoration decoration = BoxDecoration(
         gradient:
             RadialGradient(radius: 2, center: Alignment(.7, 0), colors: <Color>[
@@ -77,7 +88,7 @@ class MediumSubclassInventoryItemWidget extends MediumInventoryItemWidget {
               CachedNetworkImage(
                 width: 100,
                 imageUrl:
-                    "${BungieApiService.baseUrl}${itemDefinition.secondaryIcon}",
+                    "${BungieApiService.baseUrl}${widget.definition.secondaryIcon}",
                 fit: BoxFit.fitWidth,
                 alignment: AlignmentDirectional.topEnd,
               )
@@ -99,7 +110,7 @@ class MediumSubclassInventoryItemWidget extends MediumInventoryItemWidget {
   @override
   Widget itemIconPlaceholder(BuildContext context) {
     return ShimmerHelper.getDefaultShimmer(context,
-        child: Icon(DestinyData.getClassIcon(itemDefinition.classType),
+        child: Icon(DestinyData.getClassIcon(widget.definition.classType),
             size: iconSize * .75));
   }
 }

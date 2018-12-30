@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:little_light/widgets/item_list/items/inventory_item.widget.dart';
 
-
-class EmptyInventoryItemWidget extends InventoryItemWidget {
-  EmptyInventoryItemWidget() : super(null, null, null);
+class EmptyInventoryItemWidget extends StatelessWidget {
+  EmptyInventoryItemWidget();
   
 
   @override

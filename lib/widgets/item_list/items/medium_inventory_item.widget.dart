@@ -13,6 +13,13 @@ class MediumInventoryItemWidget extends InventoryItemWidget {
       DestinyItemInstanceComponent instanceInfo)
       : super(item, itemDefinition, instanceInfo);
 
+  @override
+    State<StatefulWidget> createState() {
+      return MediumInventoryItemWidgetState();
+    }
+}
+
+class MediumInventoryItemWidgetState extends InventoryItemWidgetState{
   Widget nameBar(BuildContext context) {
     return Positioned(
         left: 0,
@@ -21,7 +28,7 @@ class MediumInventoryItemWidget extends InventoryItemWidget {
           padding: EdgeInsets.symmetric(horizontal: padding),
           height: titleFontSize + padding * 2,
           alignment: Alignment.centerLeft,
-          color: DestinyData.getTierColor(itemDefinition.inventory.tierType),
+          color: DestinyData.getTierColor(widget.definition.inventory.tierType),
           child: nameBarTextField(context),
         ));
   }
@@ -55,11 +62,11 @@ class MediumInventoryItemWidget extends InventoryItemWidget {
   }
 
   @override
-  Widget primaryStat(BuildContext context) {
-    DestinyStat stat = instanceInfo.primaryStat;
+  Widget primaryStatWidget(BuildContext context) {
+    DestinyStat stat = widget.instanceInfo.primaryStat;
     if (stat == null) return null;
     Color damageTypeColor =
-        DestinyData.getDamageTypeTextColor(instanceInfo.damageType);
+        DestinyData.getDamageTypeTextColor(widget.instanceInfo.damageType);
     return Positioned(
         top: padding + titleFontSize,
         right: 0,
@@ -68,22 +75,22 @@ class MediumInventoryItemWidget extends InventoryItemWidget {
             child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  primaryStatValueField(context, stat, damageTypeColor),
+                  primaryStatValueField(context, damageTypeColor),
                   ammoTypeDivider(context, 14),
                   primaryStatIcon(
                       context,
                       DestinyData.getAmmoTypeIcon(
-                          itemDefinition.equippingBlock.ammoType),
+                          widget.definition.equippingBlock.ammoType),
                       DestinyData.getAmmoTypeColor(
-                          itemDefinition.equippingBlock.ammoType)),
+                          widget.definition.equippingBlock.ammoType)),
                 ].where((w) => w != null).toList())));
   }
 
   @override
   Widget primaryStatValueField(
-      BuildContext context, DestinyStat stat, Color color) {
+      BuildContext context, Color color) {
     return Text(
-      "${stat.value}",
+      "${primaryStat.value}",
       style: TextStyle(color: color, fontWeight: FontWeight.w900, fontSize: 18),
     );
   }

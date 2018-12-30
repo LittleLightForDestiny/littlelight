@@ -15,4 +15,34 @@ class DownloadManifestTranslation{
     ru: "Загрузить базу данных",
     zhCht: "下載數據庫",
   );
+
+  TranslatedString downloading = new TranslatedString(
+    de: "wird heruntergeladen",
+    en: "Downloading",
+    es: "Descargando",
+    esMX: "Descargando",
+    fr: "Téléchargement",
+    it: "Download",
+    ja: "ダウンロード中",
+    ko: "다운로드 중",
+    pl: "Ściąganie",
+    ptBR: "Fazendo o download",
+    ru: "загрузка",
+    zhCht: "下載",
+  );
+
+  TranslatedString uncompressing = new TranslatedString(
+    de:"Dekomprimieren",
+    en:"Uncompressing",
+    es:"Descomprimir",
+    esMX:"Descomprimir",
+    fr:"Décompresser",
+    it:"decompressione",
+    ja:"解凍",
+    ko:"압축 풀기",
+    pl:"Bez kompresji",
+    ptBR:"Descompactando",
+    ru:"Uncompressing",
+    zhCht:"解壓縮",
+  );
 }

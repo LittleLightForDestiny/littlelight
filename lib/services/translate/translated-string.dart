@@ -29,7 +29,7 @@ class TranslatedString{
     languages['ko'] = ko;
     languages['zh-cht'] = zhCht;
   }
-  String get([String lang]){
+  String get([String lang, Map<String, String> params]){
     if(lang != null && languages.containsKey(lang)){
       return languages[lang];
     }

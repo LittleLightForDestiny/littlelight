@@ -30,4 +30,43 @@ class CommonTranslation{
     ru:"Потом",
     zhCht:"後來",
   );
+
+  TranslatedString level = new TranslatedString(
+    de:"Niveau",
+    en:"Level",
+    es:"Nivel",
+    esMX:"Nivel",
+    fr:"Niveau",
+    it:"Livello",
+    ja:"レベル",
+    ko:"수평",
+    pl:"Poziom",
+    ptBR:"Nível",
+    ru:"уровень",
+    zhCht:"水平",
+  );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
