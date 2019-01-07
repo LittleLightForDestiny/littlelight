@@ -28,7 +28,7 @@ class ManifestService {
   final BungieApiService _api = new BungieApiService();
   static final ManifestService _singleton = new ManifestService._internal();
 
-  Map<String, dynamic> _cached = Map();
+  final Map<String, dynamic> _cached = Map();
 
   factory ManifestService() {
     return _singleton;
@@ -98,6 +98,7 @@ class ManifestService {
     if (!success) return false;
 
     await saveManifestVersion(path);
+    _cached.clear();
     return success;
   }
 
@@ -189,13 +190,17 @@ class ManifestService {
   }
 
   dynamic getDefinition(String type, int hash,
-      dynamic identity(Map<String, dynamic> json)) async {
+      [dynamic identity(Map<String, dynamic> json)]) async {
     try {
       var cached = _cached["${type}_$hash"];
       if (cached != null) {
         return cached;
       }
     } catch (e) {}
+    
+    if(identity == null){
+      identity = DefinitionTableNames.identities[type];
+    }
 
     sqflite.Database db = await _openDb();
     List<Map<String, dynamic>> results = await db.rawQuery(

@@ -1,31 +1,44 @@
 import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:bungie_api/models/destiny_profile_response.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/services/bungie-api/enums/item-category.enum.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/widgets/inventory_tabs/character_tab.widget.dart';
-import 'package:little_light/widgets/inventory_tabs/tabs_menu.widget.dart';
+import 'package:little_light/widgets/inventory_tabs/tabs_character_menu.widget.dart';
+import 'package:little_light/widgets/inventory_tabs/tabs_item_type_menu.widget.dart';
+import 'package:little_light/widgets/inventory_tabs/vault_tab.widget.dart';
 
 class EquipmentScreen extends StatefulWidget {
   final profile = new ProfileService();
-  // final BungieApiService api = new BungieApiService();
 
   @override
   EquipmentScreenState createState() => new EquipmentScreenState();
 }
 
 class EquipmentScreenState extends State<EquipmentScreen> {
-  int totalTabs = 2;
+  int currentGroup = ItemCategory.weapon;
+  int totalTabs = 4;
   DestinyProfileResponse profile;
   @override
   void initState() {
     profile = widget.profile.profile;
-    totalTabs = characters?.length ?? 2;
+    totalTabs = characters?.length != null ? characters.length + 1 : 4;
     super.initState();
+    widget.profile.startAutomaticUpdater(Duration(seconds: 30));
+    buildVaultDefinitionsCache();
+  }
+
+  buildVaultDefinitionsCache() {}
+
+  @override
+  void dispose() {
+    widget.profile.stopAutomaticUpdater();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    if(characters == null){
+    if (characters == null) {
       return Container();
     }
     return DefaultTabController(
@@ -34,22 +47,29 @@ class EquipmentScreenState extends State<EquipmentScreen> {
         children: [
           Container(
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  // Color.fromARGB(255, 73, 83, 93),
-                  // Color.fromARGB(255, 115, 115, 115),
-                  // Color.fromARGB(255, 73, 83, 93),
-                  Color.fromARGB(255, 32, 53, 53),
-                  Color.fromARGB(255, 100, 100, 115),
-                  Color.fromARGB(255, 32, 32, 73),
-                ],
-                begin: FractionalOffset(0, .5),
-                end: FractionalOffset(.5, 0),
-              )
-            ),
+                gradient: LinearGradient(
+              colors: [
+                // Color.fromARGB(255, 73, 83, 93),
+                // Color.fromARGB(255, 115, 115, 115),
+                // Color.fromARGB(255, 73, 83, 93),
+                Color.fromARGB(255, 32, 53, 53),
+                Color.fromARGB(255, 100, 100, 115),
+                Color.fromARGB(255, 32, 32, 73),
+              ],
+              begin: FractionalOffset(0, .5),
+              end: FractionalOffset(.5, 0),
+            )),
             child: TabBarView(children: getTabs()),
           ),
-          TabsMenuWidget(characters, 0)
+          TabsCharacterMenuWidget(characters, 0),
+          ItemTypeMenuWidget(
+            currentGroup,
+            onSelect: (hash) {
+              setState(() {
+                this.currentGroup = hash;
+              });
+            },
+          ),
         ],
       ),
       length: totalTabs,
@@ -57,14 +77,11 @@ class EquipmentScreenState extends State<EquipmentScreen> {
   }
 
   List<Widget> getTabs() {
-    if (characters == null) {
-      return [Container(), Container()];
-    } else {
-      List<Widget> characterTabs = characters.map((character) {
-        return CharacterTabWidget(character.characterId);
-      }).toList();
-      return characterTabs;
-    }
+    List<Widget> characterTabs = characters.map((character) {
+      return CharacterTabWidget(character.characterId, currentGroup);
+    }).toList();
+    characterTabs.add(VaultTabWidget(currentGroup));
+    return characterTabs;
   }
 
   List<DestinyCharacterComponent> get characters {

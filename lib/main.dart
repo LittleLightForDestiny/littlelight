@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:little_light/screens/initial.screen.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -8,6 +9,9 @@ class LittleLight extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    CacheManager.maxNrOfCacheObjects = 5000;
+    CacheManager.inBetweenCleans = new Duration(days: 15);
+    
     return new MaterialApp(
       title: 'Flutter Demo',
       theme: new ThemeData(

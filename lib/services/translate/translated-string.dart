@@ -38,4 +38,9 @@ class TranslatedString{
     }
     return languages[AppTranslations.defaultLanguage];
   }
+
+  @override
+    String toString() {
+      return this.get();
+    }
 }

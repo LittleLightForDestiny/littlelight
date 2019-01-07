@@ -4,10 +4,13 @@ import 'package:bungie_api/models/destiny_race_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/translate/common-translation.dart';
 import 'package:little_light/utils/destiny_data.dart';
+import 'package:little_light/widgets/icon-fonts/destiny_icons_icons.dart';
 import 'package:shimmer/shimmer.dart';
 
 class CharacterInfoWidget extends StatefulWidget {
+  final CommonTranslation translation = new CommonTranslation();
   final ManifestService manifest = new ManifestService();
   final ProfileService profile = new ProfileService();
   final String characterId;
@@ -34,6 +37,9 @@ class CharacterInfoWidgetState extends State<CharacterInfoWidget> {
   loadDefinitions() async {
     classDef = await widget.manifest.getClassDefinition(character.classHash);
     raceDef = await widget.manifest.getRaceDefinition(character.raceHash);
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
@@ -53,15 +59,28 @@ class CharacterInfoWidgetState extends State<CharacterInfoWidget> {
         top: 8,
         bottom: 8,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: <Widget>[
-            Text(
-              "${character.light}",
-              style: TextStyle(
-                  fontWeight: FontWeight.w900,
-                  fontSize: 32,
-                  color: Colors.amber.shade500),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Padding(
+                  padding:EdgeInsets.only(top:8),
+                  child:Icon(
+                  DestinyIcons.power,
+                  color: Colors.amber.shade500,
+                  size: 16,
+                )),
+                Text(
+                  "${character.light}",
+                  style: TextStyle(
+                      fontWeight: FontWeight.w900,
+                      fontSize: 32,
+                      color: Colors.amber.shade500),
+                )
+              ],
             ),
-            Text("Level ${character.baseCharacterLevel}")
+            Text("${widget.translation.level} ${character.baseCharacterLevel}")
           ],
         ));
   }

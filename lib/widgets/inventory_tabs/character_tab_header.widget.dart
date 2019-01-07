@@ -44,7 +44,9 @@ class TabHeaderWidgetState extends State<TabHeaderWidget> {
   @override
   Widget build(BuildContext context) {
     if(emblemDefinition == null){
-      return Container();
+      return Container(
+        color: Theme.of(context).backgroundColor,
+      );
     }
     return Stack(
       children: <Widget>[

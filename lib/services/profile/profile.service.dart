@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:bungie_api/models/destiny_character_progression_component.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
@@ -7,10 +9,27 @@ import 'package:bungie_api/models/destiny_profile_response.dart';
 import 'package:little_light/services/bungie-api/bungie-api.service.dart';
 import 'package:bungie_api/enums/destiny_component_type_enum.dart';
 
+enum ProfileEvent{
+  REQUESTED_UPDATE, RECEIVED_UPDATE
+}
+
 class ProfileService {
   final api = BungieApiService();
   static final ProfileService _singleton = new ProfileService._internal();
   DestinyProfileResponse profile;
+  Timer _timer;
+
+  Stream<ProfileEvent> _eventsStream;
+  final StreamController<ProfileEvent> _streamController = new StreamController.broadcast();
+  
+  Stream<ProfileEvent> get broadcaster{
+    if(_eventsStream != null){
+      return _eventsStream;
+    }
+    _eventsStream = _streamController.stream;
+    return _eventsStream;
+  }
+
 
   factory ProfileService() {
     return _singleton;
@@ -18,15 +37,34 @@ class ProfileService {
   ProfileService._internal();
 
   Future<DestinyProfileResponse> fetchBasicProfile() async {
-    return await _updateProfileData([
+    _streamController.add(ProfileEvent.REQUESTED_UPDATE);
+    DestinyProfileResponse res =  await _updateProfileData([
       DestinyComponentType.Characters,
       DestinyComponentType.CharacterProgressions,
       DestinyComponentType.CharacterEquipment,
       DestinyComponentType.CharacterInventories,
+      DestinyComponentType.ProfileInventories,
       DestinyComponentType.ItemInstances,
       DestinyComponentType.ItemTalentGrids,
       DestinyComponentType.ItemSockets,
     ]);
+    _streamController.add(ProfileEvent.RECEIVED_UPDATE);
+    return res;
+  }
+
+  startAutomaticUpdater(Duration every){
+    if(_timer != null && _timer.isActive){
+      _timer.cancel();
+    }
+    _timer = new Timer.periodic(every, (timer) async{
+      await fetchBasicProfile();
+    });
+  }
+
+  stopAutomaticUpdater(){
+    if(_timer != null && _timer.isActive){
+      _timer.cancel();
+    }
   }
 
   Future<DestinyProfileResponse> _updateProfileData(
@@ -124,6 +162,10 @@ class ProfileService {
 
   List<DestinyItemComponent> getCharacterInventory(String characterId){
     return profile.characterInventories.data[characterId].items;
+  }
+
+  List<DestinyItemComponent> getProfileInventory(){
+    return profile.profileInventory.data.items;
   }
 
   DestinyCharacterProgressionComponent getCharacterProgression(String characterId){
