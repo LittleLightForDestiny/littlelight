@@ -57,11 +57,4 @@ class VaultTabWidgetState extends CharacterTabWidgetState{
       InventoryBucket.powerWeapons
     ];
   }
-
-  double getListTopOffset(BuildContext context) {
-    return kToolbarHeight + 2;
-  }
-
-  @override
-  bool get wantKeepAlive => true;
 }

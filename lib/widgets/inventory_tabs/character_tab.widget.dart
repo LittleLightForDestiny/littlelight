@@ -7,12 +7,13 @@ import 'package:little_light/widgets/item_list/item_list.widget.dart';
 class CharacterTabWidget extends StatefulWidget {
   final String characterId;
   final int currentGroup;
-  CharacterTabWidget(this.characterId, this.currentGroup);
+  final Map<int, double> scrollPositions;
+  CharacterTabWidget(this.characterId, this.currentGroup, {this.scrollPositions});
   @override
   CharacterTabWidgetState createState() => new CharacterTabWidgetState();
 }
 
-class CharacterTabWidgetState extends State<CharacterTabWidget> with AutomaticKeepAliveClientMixin{
+class CharacterTabWidgetState extends State<CharacterTabWidget>{
   @override
   void initState() {
     super.initState();
@@ -27,6 +28,8 @@ class CharacterTabWidgetState extends State<CharacterTabWidget> with AutomaticKe
             EdgeInsets.only(top: getListTopOffset(context), left: 2, right: 2),
         characterId: widget.characterId,
         bucketHashes: bucketHashes,
+        scrollPositions:widget.scrollPositions,
+        currentGroup:widget.currentGroup
       ),
       TabHeaderWidget(widget.characterId),
     ]);
@@ -65,6 +68,6 @@ class CharacterTabWidgetState extends State<CharacterTabWidget> with AutomaticKe
     return kToolbarHeight + 2;
   }
 
-  @override
-  bool get wantKeepAlive => true;
+  // @override
+  // bool get wantKeepAlive => true;
 }

@@ -34,7 +34,11 @@ class ItemListWidget extends StatefulWidget {
   final ProfileService profile = new ProfileService();
   final EdgeInsets padding;
   final List<int> bucketHashes;
-  ItemListWidget({this.padding, this.bucketHashes, this.characterId, Key key})
+  final Map<int, double> scrollPositions;
+
+  final int currentGroup;
+
+  ItemListWidget({this.padding, this.bucketHashes, this.characterId, Key key, this.scrollPositions, this.currentGroup})
       : super(key: key);
   @override
   ItemListWidgetState createState() => new ItemListWidgetState();
@@ -127,6 +131,12 @@ class ItemListWidgetState extends State<ItemListWidget> {
     if (listIndex.length < 2) {
       return Container();
     }
+    ScrollController controller = new ScrollController(
+        initialScrollOffset: widget.scrollPositions[widget.currentGroup],
+      );
+      controller.addListener((){
+        widget.scrollPositions[widget.currentGroup] = controller.offset;
+      });
     return StaggeredGridView.countBuilder(
       crossAxisCount: 30,
       itemCount: listIndex.length,
@@ -134,6 +144,7 @@ class ItemListWidgetState extends State<ItemListWidget> {
       staggeredTileBuilder: (int index) => getTileBuilder(index),
       mainAxisSpacing: 2,
       crossAxisSpacing: 2,
+      controller: controller,
     );
   }
 

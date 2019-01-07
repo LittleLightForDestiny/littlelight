@@ -18,17 +18,20 @@ class EquipmentScreen extends StatefulWidget {
 class EquipmentScreenState extends State<EquipmentScreen> {
   int currentGroup = ItemCategory.weapon;
   int totalTabs = 4;
+  Map<int,double> scrollPositions = new Map();
+
   DestinyProfileResponse profile;
   @override
   void initState() {
     profile = widget.profile.profile;
     totalTabs = characters?.length != null ? characters.length + 1 : 4;
+    scrollPositions[ItemCategory.weapon] = 0;
+    scrollPositions[ItemCategory.weapon] = 0;
+    scrollPositions[ItemCategory.inventory] = 0;
+    
     super.initState();
     widget.profile.startAutomaticUpdater(Duration(seconds: 30));
-    buildVaultDefinitionsCache();
   }
-
-  buildVaultDefinitionsCache() {}
 
   @override
   void dispose() {
@@ -78,7 +81,7 @@ class EquipmentScreenState extends State<EquipmentScreen> {
 
   List<Widget> getTabs() {
     List<Widget> characterTabs = characters.map((character) {
-      return CharacterTabWidget(character.characterId, currentGroup);
+      return CharacterTabWidget(character.characterId, currentGroup, scrollPositions:scrollPositions);
     }).toList();
     characterTabs.add(VaultTabWidget(currentGroup));
     return characterTabs;
