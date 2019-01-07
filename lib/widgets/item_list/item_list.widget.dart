@@ -161,7 +161,7 @@ class ItemListWidgetState extends State<ItemListWidget> {
 
   Widget getItem(int index) {
     ListItem item = listIndex[index];
-
+    String itemKey = "${index}_${item.itemComponent?.itemInstanceId ?? item.itemComponent?.itemHash ?? 'empty'}";
     switch (item.type) {
       case ListItem.infoHeader:
         return CharacterInfoWidget(
@@ -174,19 +174,20 @@ class ItemListWidgetState extends State<ItemListWidget> {
           itemCount: item.itemCount,
         );
 
+      
       case ListItem.equippedItem:
         return InventoryItemWrapperWidget(item?.itemComponent, item?.bucketHash,
-            key: Key("${index}_${item.itemComponent.itemHash}"));
+            key: Key(itemKey));
 
       case ListItem.unequippedItem:
         if (widget.minimalDensityBucketHashes.contains(item.bucketHash)) {
           return InventoryItemWrapperWidget(
               item?.itemComponent, item?.bucketHash,
-              key: Key("${index}_${item.itemComponent.itemHash}"),
+              key: Key(itemKey),
               density: ContentDensity.MINIMAL);
         }
         return InventoryItemWrapperWidget(item?.itemComponent, item?.bucketHash,
-            key: Key("${index}_${item.itemComponent?.itemHash ?? 'empty'}"),
+            key: Key(itemKey),
             density: ContentDensity.MEDIUM);
 
       case ListItem.spacer:
