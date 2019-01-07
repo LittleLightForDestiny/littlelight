@@ -1,0 +1,19 @@
+import 'package:flutter/material.dart';
+import 'package:little_light/widgets/item_list/items/base/minimal_base_inventory_item.widget.dart';
+import 'package:little_light/widgets/item_list/items/base/minimal_info_label.mixin.dart';
+
+class EmptyEngramInventoryItemWidget extends MinimalBaseInventoryItemWidget
+    with MinimalInfoLabelMixin {
+  EmptyEngramInventoryItemWidget()
+      : super(null, null, null);
+
+  @override
+  Widget borderedIcon(BuildContext context) {
+    return Container(padding:EdgeInsets.all(4), child:Image.asset("assets/imgs/engram-placeholder.png"));
+  }
+
+  @override
+    Widget inkWell(BuildContext context) {
+      return null;
+    }
+}
