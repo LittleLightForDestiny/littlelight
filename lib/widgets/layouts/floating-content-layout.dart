@@ -40,7 +40,7 @@ class FloatingContentState<T extends StatefulWidget> extends State<T>
             ),
             child: new Center(
               child: this.loading
-                  ? new Image.asset("assets/anim/loading-light.webp")
+                  ? new Image.asset("assets/anim/loading.webp")
                   : getContentContainer(),
             )));
   }
