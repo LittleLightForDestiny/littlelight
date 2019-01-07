@@ -1,7 +1,10 @@
 import 'package:bungie_api/models/destiny_character_component.dart';
+import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_profile_response.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/services/bungie-api/enums/inventory-bucket-hash.enum.dart';
 import 'package:little_light/services/bungie-api/enums/item-category.enum.dart';
+import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/widgets/inventory_tabs/character_tab.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/tabs_character_menu.widget.dart';
@@ -10,6 +13,7 @@ import 'package:little_light/widgets/inventory_tabs/vault_tab.widget.dart';
 
 class EquipmentScreen extends StatefulWidget {
   final profile = new ProfileService();
+  final manifest = new ManifestService();
 
   @override
   EquipmentScreenState createState() => new EquipmentScreenState();
@@ -26,11 +30,21 @@ class EquipmentScreenState extends State<EquipmentScreen> {
     profile = widget.profile.profile;
     totalTabs = characters?.length != null ? characters.length + 1 : 4;
     scrollPositions[ItemCategory.weapon] = 0;
-    scrollPositions[ItemCategory.weapon] = 0;
+    scrollPositions[ItemCategory.armor] = 0;
     scrollPositions[ItemCategory.inventory] = 0;
     
     super.initState();
     widget.profile.startAutomaticUpdater(Duration(seconds: 30));
+    cacheVaultDefinitions();
+  }
+
+  cacheVaultDefinitions() async{
+    List<DestinyItemComponent> items = widget.profile.getProfileInventory();
+    items = items.where((item)=>item.bucketHash == InventoryBucket.general).toList();
+    for(int i=0; i < items.length; i++){
+      DestinyItemComponent item = items[i];
+      await widget.manifest.getItemDefinition(item.itemHash);
+    }
   }
 
   @override

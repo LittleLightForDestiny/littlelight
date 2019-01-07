@@ -145,6 +145,7 @@ class ItemListWidgetState extends State<ItemListWidget> {
       mainAxisSpacing: 2,
       crossAxisSpacing: 2,
       controller: controller,
+      physics: const AlwaysScrollableScrollPhysics(),
     );
   }
 
