@@ -12,16 +12,18 @@ class ItemTypeMenuWidget extends StatelessWidget {
   const ItemTypeMenuWidget(this.currentGroup, {Key key, this.onSelect}) : super(key: key); 
   @override
   Widget build(BuildContext context) {
+    double paddingBottom = MediaQuery.of(context).padding.bottom;
     return Positioned(
         right: 0,
         bottom: 0,
         left: 0,
-        height: 50,
+        height: kBottomNavigationBarHeight + paddingBottom,
         child: Container(
+            padding: EdgeInsets.only(bottom: paddingBottom),
             color: TinyColor(Colors.blueGrey.shade900)
                 .darken(10)
                 .color
-                .withOpacity(.8),
+                .withOpacity(.9),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -51,6 +53,7 @@ class ItemTypeMenuButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
+        color: Colors.transparent,
         child: InkWell(
           onTap: (){
             if(onSelect != null){

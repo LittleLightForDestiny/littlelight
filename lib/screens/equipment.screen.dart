@@ -7,6 +7,7 @@ import 'package:little_light/services/bungie-api/enums/item-category.enum.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/widgets/inventory_tabs/character_tab.widget.dart';
+import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/tabs_character_menu.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/tabs_item_type_menu.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/vault_tab.widget.dart';
@@ -66,9 +67,6 @@ class EquipmentScreenState extends State<EquipmentScreen> {
             decoration: BoxDecoration(
                 gradient: LinearGradient(
               colors: [
-                // Color.fromARGB(255, 73, 83, 93),
-                // Color.fromARGB(255, 115, 115, 115),
-                // Color.fromARGB(255, 73, 83, 93),
                 Color.fromARGB(255, 32, 53, 53),
                 Color.fromARGB(255, 100, 100, 115),
                 Color.fromARGB(255, 32, 32, 73),
@@ -87,6 +85,7 @@ class EquipmentScreenState extends State<EquipmentScreen> {
               });
             },
           ),
+          InventoryNotificationWidget()
         ],
       ),
       length: totalTabs,

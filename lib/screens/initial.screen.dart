@@ -23,7 +23,12 @@ class InitialScreen extends StatefulWidget {
   final bool forceLogin;
   final bool forceSelectMembership;
 
-  InitialScreen({Key key, this.forceChangeLanguage = false, this.forceLogin = false, this.forceSelectMembership = false}) : super(key: key);
+  InitialScreen(
+      {Key key,
+      this.forceChangeLanguage = false,
+      this.forceLogin = false,
+      this.forceSelectMembership = false})
+      : super(key: key);
 
   @override
   InitialScreenState createState() => new InitialScreenState();
@@ -33,24 +38,25 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
   @override
   void initState() {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent, statusBarBrightness: Brightness.dark));
+        statusBarColor: Colors.transparent,
+        statusBarBrightness: Brightness.dark));
     super.initState();
     checkLanguage();
   }
 
   Future checkLanguage() async {
     bool hasSelectedLanguage = await AppTranslations.init();
-    if(hasSelectedLanguage && !widget.forceChangeLanguage){
+    if (hasSelectedLanguage && !widget.forceChangeLanguage) {
       checkManifest();
-    }else{
+    } else {
       showSelectLanguage();
     }
   }
 
-
   showSelectLanguage() async {
     SelectLanguageTranslation translation = SelectLanguageTranslation();
-    List<String> availableLanguages = await widget.manifest.getAvailableLanguages();
+    List<String> availableLanguages =
+        await widget.manifest.getAvailableLanguages();
     SelectLanguageWidget childWidget = SelectLanguageWidget(
       availableLanguages: availableLanguages,
       onChange: (language) {
@@ -65,7 +71,7 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
 
   checkManifest() async {
     bool needsUpdate = await widget.manifest.needsUpdate();
-    if (needsUpdate){
+    if (needsUpdate) {
       showDownloadManifest();
     } else {
       checkLogin();
@@ -113,23 +119,26 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
 
   checkMembership() async {
     SavedMembership membership = await widget.auth.getMembership();
-    if(membership == null || widget.forceSelectMembership){
+    if (membership == null || widget.forceSelectMembership) {
       return showSelectMembership();
     }
     return loadProfile();
   }
 
-  showSelectMembership() async{
+  showSelectMembership() async {
     this.changeContent(null, null);
-    UserMembershipData membershipData = await this.widget.apiService.getMemberships();
-    SelectPlatformWidget widget = SelectPlatformWidget(membershipData: membershipData, onSelect: (int membershipType){
-      this.widget.auth.saveMembership(membershipData, membershipType);
-      loadProfile();
-    });
+    UserMembershipData membershipData =
+        await this.widget.apiService.getMemberships();
+    SelectPlatformWidget widget = SelectPlatformWidget(
+        membershipData: membershipData,
+        onSelect: (int membershipType) {
+          this.widget.auth.saveMembership(membershipData, membershipType);
+          loadProfile();
+        });
     this.changeContent(widget, widget.translation.title.get());
   }
 
-  loadProfile() async{
+  loadProfile() async {
     this.changeContent(null, null);
     await widget.profile.fetchBasicProfile();
     this.goForward();
