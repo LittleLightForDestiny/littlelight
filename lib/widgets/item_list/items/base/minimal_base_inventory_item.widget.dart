@@ -15,7 +15,7 @@ class MinimalBaseInventoryItemWidget extends BaseInventoryItemWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
-        itemIcon(context),
+        positionedIcon(context),
         primaryStatWidget(context),
         Positioned.fill(
           child: Material(color: Colors.transparent, child: inkWell(context)),
@@ -25,13 +25,18 @@ class MinimalBaseInventoryItemWidget extends BaseInventoryItemWidget {
   }
 
   @override
-  Widget itemIcon(BuildContext context) {
+  Widget positionedIcon(BuildContext context) {
     return Positioned(
         top: 0,
         left: 0,
         right: 0,
         bottom: 0,
-        child: borderedIcon(context));
+        child: itemIconHero(context));
+  }
+
+  @override
+  double get iconBorderWidth{
+    return 1;
   }
 
   double get padding {

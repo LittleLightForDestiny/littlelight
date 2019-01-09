@@ -4,11 +4,10 @@ import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/item_list/items/base/medium_base_inventory_item.widget.dart';
-import 'package:little_light/widgets/item_list/items/base/masterwork_frame.mixin.dart';
 import 'package:little_light/widgets/item_list/items/armor/armor_properties.mixin.dart';
 
 class MediumArmorInventoryItemWidget extends MediumBaseInventoryItemWidget
-    with ArmorPropertiesMixin, MasterworkFrameMixin {
+    with ArmorPropertiesMixin {
   MediumArmorInventoryItemWidget(
       DestinyItemComponent item,
       DestinyInventoryItemDefinition itemDefinition,

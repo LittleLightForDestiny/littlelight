@@ -4,24 +4,28 @@ import 'package:bungie_api/models/destiny_talent_node_category.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie-api/bungie-api.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
-import 'package:little_light/utils/shimmer-helper.dart';
 import 'package:little_light/widgets/item_list/items/base/inventory_item.mixin.dart';
 import 'package:little_light/services/bungie-api/enums/definition-table-names.enum.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:tinycolor/tinycolor.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:little_light/widgets/common/item-icon/subclass-icon.widget.dart';
 
 mixin SubclassPropertiesMixin on InventoryItemMixin {
   DestinyItemTalentGridComponent get talentGrid;
 
   @override
-  Widget itemIcon(BuildContext context) {
+  Widget positionedIcon(BuildContext context) {
     return Positioned(
         top: 0,
         left: 0,
         width: iconSize + padding * 2,
         height: iconSize + padding * 2,
-        child: itemIconImage(context));
+        child: itemIconHero(context));
+  }
+
+  Widget itemIcon(BuildContext context) {
+    return  SubclassIconWidget(item, definition, instanceInfo);
   }
 
   @override
@@ -111,12 +115,5 @@ mixin SubclassPropertiesMixin on InventoryItemMixin {
                 alignment: AlignmentDirectional.topEnd,
               )
             ])));
-  }
-
-  @override
-  Widget itemIconPlaceholder(BuildContext context) {
-    return ShimmerHelper.getDefaultShimmer(context,
-        child: Icon(DestinyData.getClassIcon(definition.classType),
-            size: iconSize * .75));
   }
 }

@@ -20,16 +20,16 @@ dependencies:
   http: ^0.12.0
   path_provider: ^0.4.1
   flutter_inappbrowser:
-    path: ../flutter_inappbrowser
-    # git: https://github.com/marquesinijatinha/flutter_inappbrowser
+    # path: ../flutter_inappbrowser
+    git: https://github.com/marquesinijatinha/flutter_inappbrowser
   uni_links: ^0.1.4
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
   bungie_api:
-    path: ../bungie-api-dart
-    # git: https://github.com/marquesinijatinha/bungie-api-dart
+    # path: ../bungie-api-dart
+    git: https://github.com/marquesinijatinha/bungie-api-dart
   cached_network_image: ^0.5.1
   shimmer: ^0.0.6
   flutter_staggered_grid_view:
@@ -92,3 +92,4 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.io/custom-fonts/#from-packages
+# 

@@ -70,8 +70,8 @@ class TabHeaderWidgetState extends State<TabHeaderWidget> {
     return Positioned(
         left: 40,
         top: top,
-        width: 56,
-        height: 56,
+        width: kToolbarHeight,
+        height: kToolbarHeight,
         child: CachedNetworkImage(
           imageUrl:
               "${BungieApiService.baseUrl}${emblemDefinition.secondaryOverlay}",

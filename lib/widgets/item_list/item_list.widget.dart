@@ -67,6 +67,7 @@ class ItemListWidgetState extends State<ItemListWidget> {
   }
 
   buildIndex() {
+    if(!mounted) return;
     List<DestinyItemComponent> equipment =
         widget.profile.getCharacterEquipment(widget.characterId);
     List<DestinyItemComponent> characterInventory =
@@ -113,6 +114,7 @@ class ItemListWidgetState extends State<ItemListWidget> {
             .add(ListItem(ListItem.unequippedItem, null, bucketHash: hash));
       }
       listIndex.add(new ListItem(ListItem.spacer, hash));
+      if(!mounted) return;
       setState(() {
         this.listIndex = listIndex;
       });

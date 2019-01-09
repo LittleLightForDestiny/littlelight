@@ -8,7 +8,13 @@ class EmptyEngramInventoryItemWidget extends MinimalBaseInventoryItemWidget
       : super(null, null, null);
 
   @override
-  Widget borderedIcon(BuildContext context) {
+    Widget itemIconHero(BuildContext context) {
+      
+      return itemIcon(context);
+    }
+
+  @override
+  Widget itemIcon(BuildContext context) {
     return Container(padding:EdgeInsets.all(4), child:Image.asset("assets/imgs/engram-placeholder.png"));
   }
 

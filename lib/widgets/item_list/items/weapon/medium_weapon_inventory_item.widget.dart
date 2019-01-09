@@ -5,9 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/item_list/items/base/medium_base_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/weapon/weapon_properties.mixin.dart';
-import 'package:little_light/widgets/item_list/items/base/masterwork_frame.mixin.dart';
 
-class MediumWeaponInventoryItemWidget extends MediumBaseInventoryItemWidget with WeaponPropertiesMixin, MasterworkFrameMixin{
+class MediumWeaponInventoryItemWidget extends MediumBaseInventoryItemWidget with WeaponPropertiesMixin{
   MediumWeaponInventoryItemWidget(
       DestinyItemComponent item,
       DestinyInventoryItemDefinition itemDefinition,

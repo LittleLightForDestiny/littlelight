@@ -5,11 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/item_list/items/base/minimal_base_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/weapon/weapon_properties.mixin.dart';
-import 'package:little_light/widgets/item_list/items/base/masterwork_frame.mixin.dart';
 import 'package:little_light/widgets/item_list/items/base/minimal_info_label.mixin.dart';
 
 class MinimalWeaponInventoryItemWidget extends MinimalBaseInventoryItemWidget
-    with WeaponPropertiesMixin, MasterworkFrameMixin, MinimalInfoLabelMixin {
+    with WeaponPropertiesMixin, MinimalInfoLabelMixin {
   MinimalWeaponInventoryItemWidget(
       DestinyItemComponent item,
       DestinyInventoryItemDefinition itemDefinition,

@@ -28,13 +28,18 @@ class MediumBaseInventoryItemWidget extends BaseInventoryItemWidget {
     return null;
   }
 
-  Widget itemIcon(BuildContext context) {
+  Widget positionedIcon(BuildContext context) {
     return Positioned(
         top: padding * 3 + titleFontSize,
         left: padding,
         width: iconSize,
         height: iconSize,
-        child: borderedIcon(context));
+        child: itemIconHero(context));
+  }
+
+  @override
+  double get iconBorderWidth{
+    return 1;
   }
 
   double get iconSize {
