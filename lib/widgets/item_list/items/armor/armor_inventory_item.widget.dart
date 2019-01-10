@@ -2,11 +2,10 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/widgets/common/primary-stat.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/base_inventory_item.widget.dart';
-import 'package:little_light/widgets/item_list/items/armor/armor_properties.mixin.dart';
 
-class ArmorInventoryItemWidget extends BaseInventoryItemWidget
-    with ArmorPropertiesMixin {
+class ArmorInventoryItemWidget extends BaseInventoryItemWidget {
   ArmorInventoryItemWidget(
       DestinyItemComponent item,
       DestinyInventoryItemDefinition definition,
@@ -23,7 +22,7 @@ class ArmorInventoryItemWidget extends BaseInventoryItemWidget
         right: 0,
         child: Container(
             padding: EdgeInsets.all(padding),
-            child: armorPrimaryStat(context)));
+            child: PrimaryStatWidget(item, definition, instanceInfo)));
   }
 
   @override

@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
@@ -47,44 +48,59 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
+      double expandRatio = max(0 , 1 - shrinkOffset/(this.maxHeight - this.minHeight));
     return Container(
         color: DestinyData.getTierColor(definition.inventory.tierType),
         child: Stack(
           overflow: Overflow.visible,
           fit: StackFit.expand,
           children: <Widget>[
-            background(context, shrinkOffset),
-            nameBar(context, shrinkOffset),
-            icon(context, shrinkOffset),
+            background(context, expandRatio),
+            nameBar(context, expandRatio),
+            icon(context, expandRatio),
             backButton(context),
           ],
         ));
   }
 
-  Widget nameBar(BuildContext context, double shrinkOffset){
-    double leftOffset = 112 + (shrinkOffset/this.maxHeight)*-(112 - kToolbarHeight);
+  Widget nameBar(BuildContext context, double expandRatio) {
+    double leftOffset = lerpDouble(kToolbarHeight*2 -16, 104, expandRatio);
     return Positioned(
-        left:0,
+        left: 0,
         bottom: 0,
-        right:0,
+        right: 0,
         height: kToolbarHeight,
         child: Hero(
             tag: "item_namebar_${item.itemInstanceId}_${item.itemHash}",
-            child: ItemNameBarWidget(item, definition, instanceInfo,
-            padding:EdgeInsets.only(left:leftOffset + 8, top:(kToolbarHeight -16) /2, bottom: (kToolbarHeight -16) /2),
-            fontSize: 16,)));
+            child: ItemNameBarWidget(
+              item,
+              definition,
+              instanceInfo,
+              multiline: true,
+              padding: EdgeInsets.only(
+                  left: leftOffset + 8,
+                  right:8,
+                  top: (kToolbarHeight - 16) / 2,
+                  bottom: (kToolbarHeight - 16) / 2),
+              fontSize: 16,
+            )));
   }
 
-  Widget icon(BuildContext context, double shrinkOffset) {
-    double leftOffset = 8 + (shrinkOffset/this.maxHeight)*-112;
+  Widget icon(BuildContext context, double expandRatio) {
+    double size = lerpDouble(kToolbarHeight -8, 96, expandRatio);
+    double bottom = lerpDouble(4, 8, expandRatio);
+    double left = lerpDouble(kTextTabBarHeight, 8, expandRatio);
     return Positioned(
-        left:8,
-        bottom: leftOffset,
-        width: 96,
-        height: 96,
+        left: left,
+        bottom: bottom,
+        width: size,
+        height: size,
         child: Hero(
             tag: "item_icon_${item.itemInstanceId}_${item.itemHash}",
-            child: ItemIconWidget.builder(item, definition, instanceInfo)));
+            child: 
+            ItemIconWidget.builder(item, definition, instanceInfo,
+            iconBorderWidth: lerpDouble(1, 2, expandRatio),
+            )));
   }
 
   Widget backButton(BuildContext context) {
@@ -99,9 +115,9 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
                 DestinyData.getTierTextColor(definition.inventory.tierType)));
   }
 
-  Widget background(BuildContext context, double shrinkOffset) {
+  Widget background(BuildContext context, double expandRatio) {
     double width = MediaQuery.of(context).size.width;
-    double opacity = max(min(1.5 - (shrinkOffset/this.maxHeight)*2, 1), 0);
+    double opacity = expandRatio;
     return Positioned(
         top: 0,
         bottom: kToolbarHeight,

@@ -29,6 +29,12 @@ class SideMenuState extends State<SideMenuWidget> {
               children: <Widget>[
                 ProfileInfoWidget(),
                 RaisedButton(
+                  child: Text("###CHANGE_ACCOUNT"),
+                  onPressed: () {
+                    changeAccount();
+                  },
+                ),
+                RaisedButton(
                   child: Text("###CHANGE_MEMBERSHIP"),
                   onPressed: () {
                     changeMembership();
@@ -42,6 +48,16 @@ class SideMenuState extends State<SideMenuWidget> {
                 )
               ],
             )));
+  }
+
+  changeAccount() {
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => InitialScreen(
+                forceLogin: true,
+              ),
+        ));
   }
 
   changeMembership() {

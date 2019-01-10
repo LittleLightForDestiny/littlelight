@@ -91,7 +91,7 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
   checkLogin() async {
     SavedToken token = await widget.auth.getToken();
     bool skippedLogin = await widget.auth.getSkippedLogin();
-    if (token == null && !skippedLogin) {
+    if (token == null && !skippedLogin || widget.forceLogin) {
       showLogin();
     } else {
       checkMembership();
@@ -99,7 +99,8 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
   }
 
   showLogin() {
-    LoginWidget widget = new LoginWidget(
+    LoginWidget loginWidget = new LoginWidget(
+      forceReauth: widget.forceLogin,
       onSkip: () {
         loadProfile();
       },
@@ -107,7 +108,7 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
         authCode(code);
       },
     );
-    this.changeContent(widget, widget.translation.title.get());
+    this.changeContent(loginWidget, loginWidget.translation.title.get());
   }
 
   authCode(String code) {

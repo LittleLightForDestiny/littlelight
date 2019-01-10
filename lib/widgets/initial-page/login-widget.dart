@@ -13,8 +13,9 @@ class LoginWidget extends StatefulWidget {
   final AuthService auth = new AuthService();
   final LoginCallback onLogin;
   final SkipCallback onSkip;
+  final bool forceReauth;
 
-  LoginWidget({this.onLogin, this.onSkip});
+  LoginWidget({this.onLogin, this.onSkip, this.forceReauth = false});
 
   @override
   LoginWidgetState createState() => new LoginWidgetState();
@@ -27,7 +28,7 @@ class LoginWidgetState extends State<LoginWidget> {
   }
 
   void authorizeClick() {
-    widget.auth.authorize().then((code){
+    widget.auth.authorize(widget.forceReauth).then((code){
       widget.onLogin(code);
     });
   }

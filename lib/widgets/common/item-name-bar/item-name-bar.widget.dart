@@ -10,6 +10,7 @@ import 'package:little_light/widgets/common/destiny-item.widget.dart';
 class ItemNameBarWidget extends DestinyItemWidget {
   final double fontSize;
   final EdgeInsets padding;
+  final bool multiline;
   ItemNameBarWidget(
     DestinyItemComponent item,
     DestinyInventoryItemDefinition definition,
@@ -17,12 +18,13 @@ class ItemNameBarWidget extends DestinyItemWidget {
     Key key,
     this.fontSize = 14,
     this.padding = const EdgeInsets.all(8),
+    this.multiline = false,
   }) : super(item, definition, instanceInfo, key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: padding,
+      padding: multiline ? EdgeInsets.only(left:padding.left, right:padding.right) : padding,
       height: fontSize + padding.top * 2,
       alignment: Alignment.centerLeft,
       decoration: nameBarBoxDecoration(),
@@ -53,8 +55,8 @@ class ItemNameBarWidget extends DestinyItemWidget {
   nameBarTextField(BuildContext context) {
     return Text(definition.displayProperties.name.toUpperCase(),
         overflow: TextOverflow.fade,
-        maxLines: 1,
-        softWrap: false,
+        maxLines: multiline ? 2 : 1,
+        softWrap: multiline,
         style: TextStyle(
           fontSize: fontSize,
           color: DestinyData.getTierTextColor(definition.inventory.tierType),

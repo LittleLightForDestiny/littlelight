@@ -3,11 +3,13 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:little_light/services/bungie-api/enums/definition-table-names.enum.dart';
 import 'package:little_light/services/bungie-api/enums/inventory-bucket-hash.enum.dart';
 import 'package:little_light/widgets/item_list/bucket_header.widget.dart';
 import 'package:little_light/widgets/item_list/character_info.widget.dart';
 import 'package:little_light/widgets/item_list/item_list.widget.dart';
 import 'package:little_light/widgets/item_list/items/inventory_item_wrapper.widget.dart';
+
 
 class VaultItemListWidget extends ItemListWidget {
   VaultItemListWidget(
@@ -30,11 +32,13 @@ class VaultItemListWidgetState extends ItemListWidgetState {
   buildIndex() async {
     List<DestinyItemComponent> inventory = widget.profile.getProfileInventory();
     inventory = inventory.where((item)=>item.bucketHash == InventoryBucket.general).toList();
+    List<int> hashes = inventory.map((item)=>item.itemHash).toList();
+    Map<int, DestinyInventoryItemDefinition> defs = (await widget.manifest.getDefinitions(DefinitionTableNames.destinyInventoryItemDefinition, hashes)).cast<int, DestinyInventoryItemDefinition>();
     Map<int, List<DestinyItemComponent>> itemsByBucket = new Map();
 
     for(int i = 0; i < inventory.length; i++){
       DestinyItemComponent item = inventory[i];
-      DestinyInventoryItemDefinition definition = await widget.manifest.getItemDefinition(item.itemHash);
+      DestinyInventoryItemDefinition definition = defs[item.itemHash];
       int bucketHash = definition.inventory.bucketTypeHash;
       if(!itemsByBucket.containsKey(bucketHash)){
         itemsByBucket[bucketHash] = new List();

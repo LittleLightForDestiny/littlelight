@@ -26,9 +26,8 @@ class ManifestService {
   sqflite.Database _db;
   DestinyManifest _manifestInfo;
   final BungieApiService _api = new BungieApiService();
-  static final ManifestService _singleton = new ManifestService._internal();
-
   final Map<String, dynamic> _cached = Map();
+  static final ManifestService _singleton = new ManifestService._internal();
 
   factory ManifestService() {
     return _singleton;
@@ -189,7 +188,45 @@ class ManifestService {
     return res;
   }
 
-  dynamic getDefinition(String type, int hash,
+  Future<Map<int, dynamic>> getDefinitions(String type, List<int> hashes,
+      [dynamic identity(Map<String, dynamic> json)]) async {
+      if(identity == null){
+      identity = DefinitionTableNames.identities[type];
+    }
+    bool allLoaded = hashes.every((hash)=>_cached.keys.contains("${type}_$hash"));
+    if(allLoaded){
+      Map<int, dynamic> defs = new Map();
+      hashes.forEach((hash){
+        dynamic def = _cached["${type}_$hash"];
+        defs[hash] = def;
+      });
+      return defs;
+    }
+    List<int> searchHashes = hashes.map((hash)=>hash > 2147483648 ? hash - 4294967296 : hash).toList();
+    String idList = "(" + List.filled(hashes.length, '?').join(',') + ")";
+
+    sqflite.Database db = await _openDb();
+    List<Map<String, dynamic>> results = await db.query(type, 
+      columns:['id', 'json'],
+      where: "id in $idList",
+      whereArgs: searchHashes
+    );
+    try {
+      Map<int, dynamic> defs = Map();
+      results.forEach((res){
+        int id = res['id'];
+        int hash = id < 0 ? id + 4294967296 : id;
+        String resultString = res['json'];
+        var def = identity(jsonDecode(resultString));
+        _cached["${type}_$hash"] = def;
+        defs[hash] = def;
+      });
+      return defs;
+    } catch (e) {}
+    return null;  
+  }
+
+  Future<dynamic> getDefinition(String type, int hash,
       [dynamic identity(Map<String, dynamic> json)]) async {
     try {
       var cached = _cached["${type}_$hash"];
@@ -201,10 +238,13 @@ class ManifestService {
     if(identity == null){
       identity = DefinitionTableNames.identities[type];
     }
-
+    int searchHash = hash > 2147483648 ? hash - 4294967296 : hash;
     sqflite.Database db = await _openDb();
-    List<Map<String, dynamic>> results = await db.rawQuery(
-        "SELECT json FROM $type WHERE id='$hash' OR (id + 4294967296)=$hash");
+    List<Map<String, dynamic>> results = await db.query(type, 
+      columns:['json'],
+      where: "id=?",
+      whereArgs: [searchHash]
+    );
     try {
       String resultString = results.first['json'];
       var def = identity(jsonDecode(resultString));

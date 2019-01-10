@@ -33,7 +33,11 @@ class AuthService {
       return null;
     }
     Map<String, dynamic> json = jsonDecode(jsonString);
-    return SavedToken.fromMap(json);
+    SavedToken savedToken =  SavedToken.fromMap(json);
+    if(savedToken.accessToken == null || savedToken.expiresIn == null){
+      return null;
+    }
+    return savedToken;
   }
 
   Future<SavedToken> _refreshToken(SavedToken token) async {
@@ -94,10 +98,10 @@ class AuthService {
     print(initialUri);
   }
 
-  Future<String> authorize() async {
+  Future<String> authorize([reauth = false]) async {
     String currentLanguage = AppTranslations.currentLanguage;
     OAuth.openOAuth(new BungieAuthBrowser(), BungieApiService.clientId,
-        currentLanguage, false);
+        currentLanguage, reauth);
     Stream<String> _stream = getLinksStream();
     String authCode = "";
     await for (var link in _stream) {
