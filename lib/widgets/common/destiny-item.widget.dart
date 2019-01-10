@@ -9,8 +9,9 @@ abstract class DestinyItemWidget extends StatelessWidget {
   final DestinyItemComponent item;
   final DestinyInventoryItemDefinition definition;
   final DestinyItemInstanceComponent instanceInfo;
+  final String characterId;
   final ProfileService profile = new ProfileService();
   final ManifestService manifest = new ManifestService();
 
-  DestinyItemWidget(this.item, this.definition, this.instanceInfo, {Key key}) : super(key: key);
+  DestinyItemWidget(this.item, this.definition, this.instanceInfo, {Key key, this.characterId}) : super(key: key);
 }

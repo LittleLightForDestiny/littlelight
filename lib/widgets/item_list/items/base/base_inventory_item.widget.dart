@@ -11,6 +11,6 @@ class BaseInventoryItemWidget extends DestinyItemWidget
       DestinyItemComponent item,
       DestinyInventoryItemDefinition definition,
       DestinyItemInstanceComponent instanceInfo,
-      {Key key})
-      : super(item, definition, instanceInfo, key:key);
+      {Key key, String characterId})
+      : super(item, definition, instanceInfo, key:key, characterId:characterId);
 }
