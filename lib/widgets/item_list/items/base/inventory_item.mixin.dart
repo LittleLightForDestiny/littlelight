@@ -4,6 +4,7 @@ import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/destiny-item.widget.dart';
 import 'package:little_light/screens/item-detail.screen.dart';
 import 'package:little_light/widgets/common/item-icon/item-icon.widget.dart';
+import 'package:little_light/widgets/common/item-name-bar/item-name-bar.widget.dart';
 
 mixin InventoryItemMixin implements DestinyItemWidget {
   @override
@@ -11,7 +12,7 @@ mixin InventoryItemMixin implements DestinyItemWidget {
     return Stack(
       children: <Widget>[
         background(context),
-        nameBar(context),
+        positionedNameBar(context),
         categoryName(context),
         primaryStatWidget(context),
         positionedIcon(context),
@@ -28,7 +29,7 @@ mixin InventoryItemMixin implements DestinyItemWidget {
         left: padding,
         width: iconSize,
         height: iconSize,
-        child: ItemIconWidget(item, definition, instanceInfo));
+        child: itemIconHero(context));
   }
 
   Widget itemIconHero(BuildContext context) {
@@ -38,8 +39,13 @@ mixin InventoryItemMixin implements DestinyItemWidget {
     );
   }
 
-  itemIcon(BuildContext context){
-    return ItemIconWidget(item, definition, instanceInfo, iconBorderWidth: iconBorderWidth,);
+  itemIcon(BuildContext context) {
+    return ItemIconWidget(
+      item,
+      definition,
+      instanceInfo,
+      iconBorderWidth: iconBorderWidth,
+    );
   }
 
   Widget primaryStatWidget(BuildContext context) {
@@ -56,34 +62,26 @@ mixin InventoryItemMixin implements DestinyItemWidget {
         ));
   }
 
-  Widget nameBar(BuildContext context) {
+  Widget positionedNameBar(BuildContext context) {
     return Positioned(
         left: 0,
         right: 0,
-        child: Container(
-          padding: EdgeInsets.only(left: iconSize + padding * 2),
-          height: titleFontSize + padding * 2,
-          alignment: Alignment.centerLeft,
-          decoration: nameBarBoxDecoration(),
-          child: nameBarTextField(context),
-        ));
+        child: itemHeroNamebar(context));
   }
 
-  BoxDecoration nameBarBoxDecoration() {
-    return BoxDecoration(
-        color: DestinyData.getTierColor(definition.inventory.tierType));
+  Widget itemHeroNamebar(BuildContext context){
+    return Hero(
+      tag: "item_namebar_${item.itemInstanceId}_${item.itemHash}",
+      child: nameBar(context));
   }
 
-  nameBarTextField(BuildContext context) {
-    return Text(definition.displayProperties.name.toUpperCase(),
-        overflow: TextOverflow.fade,
-        maxLines: 1,
-        softWrap: false,
-        style: TextStyle(
-          fontSize: titleFontSize,
-          color: DestinyData.getTierTextColor(definition.inventory.tierType),
-          fontWeight: FontWeight.bold,
-        ));
+  Widget nameBar(BuildContext context){
+    return ItemNameBarWidget(item, definition, instanceInfo,
+            padding: EdgeInsets.only(
+                left: iconSize + padding * 2,
+                top: padding,
+                bottom: padding,
+                right: padding));
   }
 
   background(BuildContext context) {

@@ -29,7 +29,7 @@ mixin SubclassPropertiesMixin on InventoryItemMixin {
   }
 
   @override
-  Widget nameBar(BuildContext context) {
+  Widget positionedNameBar(BuildContext context) {
     Color damageTypeColor =
         DestinyData.getDamageTypeColor(definition.talentGrid.hudDamageType);
     BoxDecoration decoration = BoxDecoration(

@@ -2,6 +2,7 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/widgets/common/item-name-bar/item-name-bar.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/base_inventory_item.widget.dart';
 
 class MediumBaseInventoryItemWidget extends BaseInventoryItemWidget {
@@ -11,17 +12,17 @@ class MediumBaseInventoryItemWidget extends BaseInventoryItemWidget {
       DestinyItemInstanceComponent instanceInfo)
       : super(item, itemDefinition, instanceInfo);
 
-  Widget nameBar(BuildContext context) {
+  Widget positionedNameBar(BuildContext context) {
     return Positioned(
         left: 0,
         right: 0,
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: padding),
-          height: titleFontSize + padding * 2,
-          alignment: Alignment.centerLeft,
-          decoration: nameBarBoxDecoration(),
-          child: nameBarTextField(context),
-        ));
+        child: itemHeroNamebar(context));
+  }
+
+  Widget nameBar(BuildContext context){
+    return ItemNameBarWidget(item, definition, instanceInfo,
+            padding: EdgeInsets.all(
+                padding),fontSize: titleFontSize,);
   }
 
   Widget categoryName(BuildContext context) {
@@ -38,7 +39,7 @@ class MediumBaseInventoryItemWidget extends BaseInventoryItemWidget {
   }
 
   @override
-  double get iconBorderWidth{
+  double get iconBorderWidth {
     return 1;
   }
 
