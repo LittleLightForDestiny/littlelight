@@ -11,8 +11,10 @@ class MediumArmorInventoryItemWidget extends MediumBaseInventoryItemWidget
   MediumArmorInventoryItemWidget(
       DestinyItemComponent item,
       DestinyInventoryItemDefinition itemDefinition,
-      DestinyItemInstanceComponent instanceInfo)
-      : super(item, itemDefinition, instanceInfo);
+      DestinyItemInstanceComponent instanceInfo,
+      {Key key,
+      String characterId})
+      : super(item, itemDefinition, instanceInfo, key:key, characterId:characterId);
 
   @override
   double get valueFontSize => 16;

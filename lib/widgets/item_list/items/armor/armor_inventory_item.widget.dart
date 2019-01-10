@@ -5,18 +5,25 @@ import 'package:flutter/material.dart';
 import 'package:little_light/widgets/item_list/items/base/base_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/armor/armor_properties.mixin.dart';
 
-class ArmorInventoryItemWidget extends BaseInventoryItemWidget with ArmorPropertiesMixin {
-  ArmorInventoryItemWidget(DestinyItemComponent item, DestinyInventoryItemDefinition definition, DestinyItemInstanceComponent instanceInfo) : super(item, definition, instanceInfo);
+class ArmorInventoryItemWidget extends BaseInventoryItemWidget
+    with ArmorPropertiesMixin {
+  ArmorInventoryItemWidget(
+      DestinyItemComponent item,
+      DestinyInventoryItemDefinition definition,
+      DestinyItemInstanceComponent instanceInfo,
+      {String characterId,
+      Key key})
+      : super(item, definition, instanceInfo,
+            characterId: characterId, key: key);
 
   @override
   Widget primaryStatWidget(BuildContext context) {
     return Positioned(
-      top: titleFontSize + padding,
-      right: 0,
-      child: Container(
-          padding: EdgeInsets.all(padding),
-          child: armorPrimaryStat(context)
-      ));
+        top: titleFontSize + padding,
+        right: 0,
+        child: Container(
+            padding: EdgeInsets.all(padding),
+            child: armorPrimaryStat(context)));
   }
 
   @override

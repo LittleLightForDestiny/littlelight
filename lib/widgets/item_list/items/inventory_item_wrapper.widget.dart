@@ -27,11 +27,12 @@ class InventoryItemWrapperWidget extends StatefulWidget {
   final ManifestService _manifest = ManifestService();
   final ProfileService _profile = ProfileService();
   final DestinyItemComponent item;
+  final String characterId;
   final ContentDensity density;
   final int bucketHash;
   InventoryItemWrapperWidget(this.item,
       this.bucketHash,
-      {Key key, this.density = ContentDensity.FULL})
+      {Key key, this.characterId, this.density = ContentDensity.FULL})
       : super(key: key);
 
   @override
