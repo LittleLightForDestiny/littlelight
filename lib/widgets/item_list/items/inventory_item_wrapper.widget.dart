@@ -83,7 +83,7 @@ class InventoryItemWrapperWidgetState
         return buildFull(context);
     }
 
-    return BaseInventoryItemWidget(widget.item, _definition, _instanceInfo);
+    return BaseInventoryItemWidget(widget.item, _definition, _instanceInfo, characterId:widget.characterId);
   }
 
   Widget buildEmpty(BuildContext context){
