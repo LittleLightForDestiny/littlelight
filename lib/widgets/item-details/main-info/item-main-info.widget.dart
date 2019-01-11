@@ -21,6 +21,15 @@ class ItemMainInfoWidget extends DestinyItemWidget {
   Widget build(BuildContext context) {
     return Container(
         padding: EdgeInsets.all(16),
-        child: PrimaryStatWidget(item, definition, instanceInfo));
+        child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Container(
+                  constraints: BoxConstraints.expand(),
+                  child: Text(definition.displayProperties.description)),
+              PrimaryStatWidget(item, definition, instanceInfo)
+            ]));
   }
 }
