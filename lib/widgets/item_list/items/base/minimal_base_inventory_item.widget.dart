@@ -8,8 +8,9 @@ class MinimalBaseInventoryItemWidget extends BaseInventoryItemWidget {
   MinimalBaseInventoryItemWidget(
       DestinyItemComponent item,
       DestinyInventoryItemDefinition itemDefinition,
-      DestinyItemInstanceComponent instanceInfo)
-      : super(item, itemDefinition, instanceInfo);
+      DestinyItemInstanceComponent instanceInfo,
+      {@required String characterId, Key key})
+      : super(item, itemDefinition, instanceInfo, characterId:characterId, key:key);
 
   @override
   Widget build(BuildContext context) {

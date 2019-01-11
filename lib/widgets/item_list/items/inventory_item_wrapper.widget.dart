@@ -32,7 +32,7 @@ class InventoryItemWrapperWidget extends StatefulWidget {
   final int bucketHash;
   InventoryItemWrapperWidget(this.item,
       this.bucketHash,
-      {Key key, this.characterId, this.density = ContentDensity.FULL})
+      {Key key, @required this.characterId, this.density = ContentDensity.FULL})
       : super(key: key);
 
   @override
@@ -100,19 +100,19 @@ class InventoryItemWrapperWidgetState
   Widget buildMinimal(BuildContext context) {
     switch (_definition.itemType) {
       case ItemType.armor:{
-        return MinimalArmorInventoryItemWidget(widget.item, _definition, _instanceInfo);
+        return MinimalArmorInventoryItemWidget(widget.item, _definition, _instanceInfo, characterId: widget.characterId,);
       }
 
       case ItemType.weapon:{
-        return MinimalWeaponInventoryItemWidget(widget.item, _definition, _instanceInfo);
+        return MinimalWeaponInventoryItemWidget(widget.item, _definition, _instanceInfo, characterId: widget.characterId,);
       }
 
       case ItemType.engrams:{
-        return MinimalEngramInventoryItemWidget(widget.item, _definition, _instanceInfo);
+        return MinimalEngramInventoryItemWidget(widget.item, _definition, _instanceInfo, characterId: widget.characterId,);
       }
       default:
       return MinimalBaseInventoryItemWidget(
-          widget.item, _definition, _instanceInfo);
+          widget.item, _definition, _instanceInfo, characterId: widget.characterId,);
     }
   }
 
@@ -121,12 +121,12 @@ class InventoryItemWrapperWidgetState
       case ItemType.subclasses:
         {
           return MediumSubclassInventoryItemWidget(
-              widget.item, _definition, _instanceInfo);
+              widget.item, _definition, _instanceInfo, characterId: widget.characterId,);
         }
       case ItemType.weapon:
         {
           return MediumWeaponInventoryItemWidget(
-              widget.item, _definition, _instanceInfo);
+              widget.item, _definition, _instanceInfo, characterId: widget.characterId,);
         }
 
       case ItemType.armor:
@@ -136,7 +136,7 @@ class InventoryItemWrapperWidgetState
         }
       default:
         return MediumBaseInventoryItemWidget(
-            widget.item, _definition, _instanceInfo);
+            widget.item, _definition, _instanceInfo, characterId: widget.characterId,);
     }
   }
 
@@ -145,12 +145,12 @@ class InventoryItemWrapperWidgetState
       case ItemType.subclasses:
         {
           return SubclassInventoryItemWidget(
-              widget.item, _definition, _instanceInfo);
+              widget.item, _definition, _instanceInfo, characterId: widget.characterId,);
         }
       case ItemType.weapon:
         {
           return WeaponInventoryItemWidget(
-              widget.item, _definition, _instanceInfo);
+              widget.item, _definition, _instanceInfo, characterId: widget.characterId,);
         }
 
       case ItemType.armor:
@@ -159,7 +159,7 @@ class InventoryItemWrapperWidgetState
               widget.item, _definition, _instanceInfo);
         }
       default:
-        return BaseInventoryItemWidget(widget.item, _definition, _instanceInfo);
+        return BaseInventoryItemWidget(widget.item, _definition, _instanceInfo, characterId:widget.characterId);
     }
   }
 }

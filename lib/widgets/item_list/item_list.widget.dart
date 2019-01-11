@@ -191,18 +191,18 @@ class ItemListWidgetState extends State<ItemListWidget> {
       
       case ListItem.equippedItem:
         return InventoryItemWrapperWidget(item?.itemComponent, item?.bucketHash,
-            key: Key(itemKey));
+            key: Key(itemKey), characterId: widget.characterId,);
 
       case ListItem.unequippedItem:
         if (widget.minimalDensityBucketHashes.contains(item.bucketHash)) {
           return InventoryItemWrapperWidget(
               item?.itemComponent, item?.bucketHash,
               key: Key(itemKey),
-              density: ContentDensity.MINIMAL);
+              density: ContentDensity.MINIMAL, characterId: widget.characterId,);
         }
         return InventoryItemWrapperWidget(item?.itemComponent, item?.bucketHash,
             key: Key(itemKey),
-            density: ContentDensity.MEDIUM);
+            density: ContentDensity.MEDIUM, characterId: widget.characterId,);
 
       case ListItem.spacer:
         return Container();

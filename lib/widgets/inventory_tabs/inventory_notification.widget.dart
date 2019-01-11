@@ -2,11 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/services/translate/common-translation.dart';
+import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:shimmer/shimmer.dart';
 
 class InventoryNotificationWidget extends StatefulWidget {
-  final translation = CommonTranslation();
   final profile = ProfileService();
   final double barHeight;
 
@@ -33,7 +32,7 @@ class InventoryNotificationWidgetState
       String message = "";
       if (event == ProfileEvent.REQUESTED_UPDATE) {
         busy = true;
-        message = widget.translation.updating.get();
+        message = "Updating";
       }
       if (event == ProfileEvent.RECEIVED_UPDATE) {
         busy = false;
@@ -122,7 +121,7 @@ class InventoryNotificationWidgetState
         child: Shimmer.fromColors(
             baseColor: Colors.blueGrey.shade400,
             highlightColor: Colors.grey.shade100,
-            child: (Text(message.toUpperCase(),
+            child: (TranslatedTextWidget(message,uppercase: true,
                 style: TextStyle(fontWeight: FontWeight.w700)))));
   }
 

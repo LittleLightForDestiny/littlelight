@@ -15,8 +15,9 @@ class MediumSubclassInventoryItemWidget extends MediumBaseInventoryItemWidget
   MediumSubclassInventoryItemWidget(
       DestinyItemComponent item,
       DestinyInventoryItemDefinition definition,
-      DestinyItemInstanceComponent instanceInfo)
-      : super(item, definition, instanceInfo);
+      DestinyItemInstanceComponent instanceInfo,
+      {@required String characterId, Key key})
+      : super(item, definition, instanceInfo, characterId:characterId, key:key);
 
   @override
   DestinyItemTalentGridComponent get talentGrid =>

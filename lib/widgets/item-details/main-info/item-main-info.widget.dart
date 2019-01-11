@@ -1,6 +1,3 @@
-import 'dart:math';
-import 'dart:ui';
-
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
@@ -14,22 +11,26 @@ class ItemMainInfoWidget extends DestinyItemWidget {
       DestinyItemComponent item,
       DestinyInventoryItemDefinition definition,
       DestinyItemInstanceComponent instanceInfo,
-      {Key key})
-      : super(item, definition, instanceInfo, key: key);
+      {Key key,
+      String characterId})
+      : super(item, definition, instanceInfo, key: key, characterId:characterId);
 
   @override
   Widget build(BuildContext context) {
     return Container(
         padding: EdgeInsets.all(16),
-        child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Container(
-                  constraints: BoxConstraints.expand(),
-                  child: Text(definition.displayProperties.description)),
-              PrimaryStatWidget(item, definition, instanceInfo)
-            ]));
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+          PrimaryStatWidget(item, 
+          definition, 
+          instanceInfo,
+          suppressLabel: true,
+          fontSize: 36,
+          ),
+          Padding(padding: EdgeInsets.symmetric(vertical: 8),
+          child: Text(definition.displayProperties.description)),
+          
+        ]));
   }
 }

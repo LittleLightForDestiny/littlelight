@@ -16,10 +16,11 @@ class ItemNameBarWidget extends DestinyItemWidget {
     DestinyInventoryItemDefinition definition,
     DestinyItemInstanceComponent instanceInfo, {
     Key key,
+    String characterId,
     this.fontSize = 14,
     this.padding = const EdgeInsets.all(8),
     this.multiline = false,
-  }) : super(item, definition, instanceInfo, key: key);
+  }) : super(item, definition, instanceInfo, key: key, characterId:characterId);
 
   @override
   Widget build(BuildContext context) {

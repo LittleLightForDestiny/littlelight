@@ -6,7 +6,7 @@ import 'package:bungie_api/models/user_info_card.dart';
 import 'package:bungie_api/models/user_membership_data.dart';
 import 'package:flutter_inappbrowser/flutter_inappbrowser.dart';
 import 'package:little_light/services/bungie-api/bungie-api.service.dart';
-import 'package:little_light/services/translate/app-translations.service.dart';
+import 'package:little_light/services/translate/translate.service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
 
@@ -99,7 +99,7 @@ class AuthService {
   }
 
   Future<String> authorize([reauth = false]) async {
-    String currentLanguage = AppTranslations.currentLanguage;
+    String currentLanguage = await TranslateService().getLanguage();
     OAuth.openOAuth(new BungieAuthBrowser(), BungieApiService.clientId,
         currentLanguage, reauth);
     Stream<String> _stream = getLinksStream();

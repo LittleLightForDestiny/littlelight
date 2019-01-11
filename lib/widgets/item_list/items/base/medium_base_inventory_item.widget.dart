@@ -10,7 +10,7 @@ class MediumBaseInventoryItemWidget extends BaseInventoryItemWidget {
       DestinyItemComponent item,
       DestinyInventoryItemDefinition itemDefinition,
       DestinyItemInstanceComponent instanceInfo,
-      {Key key, String characterId})
+      {Key key, @required String characterId})
       : super(item, itemDefinition, instanceInfo, key:key, characterId:characterId);
 
   Widget positionedNameBar(BuildContext context) {

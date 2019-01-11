@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:little_light/services/translate/app-translations.service.dart';
-import 'package:little_light/services/translate/pages/select-language-translation.dart';
+import 'package:little_light/services/translate/translate.service.dart';
+import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/initial-page/language.button.dart';
 
 typedef void LanguageSelectCallback(String languageCode);
 
 class SelectLanguageWidget extends StatefulWidget {
-  final SelectLanguageTranslation translation = new SelectLanguageTranslation();
+  final String title = "Select Language";
   final List<String> availableLanguages;
   final LanguageSelectCallback onChange;
   final LanguageSelectCallback onSelect;
+  final TranslateService translate = new TranslateService();
 
   SelectLanguageWidget({this.availableLanguages, this.onChange, this.onSelect});
 
@@ -22,25 +23,24 @@ class SelectLanguageWidgetState extends State<SelectLanguageWidget> {
 
   @override
   void initState() {
-    selectedLanguage = AppTranslations.currentLanguage;
     super.initState();
+    getLanguage();
+  }
+
+  void getLanguage() async{
+    selectedLanguage = await widget.translate.getLanguage();
+    setState(() {});
   }
 
   void okClick() {
-    AppTranslations.currentLanguage = selectedLanguage;
+    widget.translate.currentLanguage = selectedLanguage;
     if (widget.onSelect != null) {
       widget.onSelect(selectedLanguage);
     }
   }
 
-  bool filterLanguage(String language) {
-    return AppTranslations.supportedLanguages.contains(language);
-  }
-
   List<Widget> getLanguageButtons() {
-    List<String> languages = widget.availableLanguages
-        .where((language) => filterLanguage(language))
-        .toList();
+    List<String> languages = widget.availableLanguages;
     List<Widget> buttons = languages.map<Widget>((language) {
       return FractionallySizedBox(
           widthFactor: .25,
@@ -64,7 +64,7 @@ class SelectLanguageWidgetState extends State<SelectLanguageWidget> {
       Padding(
         padding: EdgeInsets.all(8),
         child: Text(
-          this.widget.translation.languageNames.get(selectedLanguage),
+          widget.translate.languageNames[selectedLanguage],
           textAlign: TextAlign.center,
         ),
       ),
@@ -72,7 +72,7 @@ class SelectLanguageWidgetState extends State<SelectLanguageWidget> {
         onPressed: () {
           this.okClick();
         },
-        child: Text(AppTranslations.common.ok.get(selectedLanguage)),
+        child: TranslatedTextWidget("OK"),
       )
     ]);
   }

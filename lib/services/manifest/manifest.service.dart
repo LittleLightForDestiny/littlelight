@@ -11,7 +11,7 @@ import 'package:bungie_api/responses/destiny_manifest_response.dart';
 import 'package:flutter/foundation.dart';
 import 'package:little_light/services/bungie-api/bungie-api.service.dart';
 import 'package:little_light/services/bungie-api/enums/definition-table-names.enum.dart';
-import 'package:little_light/services/translate/app-translations.service.dart';
+import 'package:little_light/services/translate/translate.service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
 import 'package:archive/archive.dart';
@@ -58,13 +58,15 @@ class ManifestService {
   Future<bool> needsUpdate() async {
     DestinyManifest manifestInfo = await loadManifestInfo();
     String currentVersion = await getSavedVersion();
+    String language = await new TranslateService().getLanguage();
     return currentVersion !=
-        manifestInfo.mobileWorldContentPaths[AppTranslations.currentLanguage];
+        manifestInfo.mobileWorldContentPaths[language];
   }
 
   Future<bool> download({DownloadProgress onProgress}) async {
     DestinyManifest info = await loadManifestInfo();
-    String path = info.mobileWorldContentPaths[AppTranslations.currentLanguage];
+    String language = await new TranslateService().getLanguage();
+    String path = info.mobileWorldContentPaths[language];
     String url = "${BungieApiService.baseUrl}$path";
     String localPath = await _localPath;
     HttpClient httpClient = new HttpClient();

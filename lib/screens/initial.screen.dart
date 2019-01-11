@@ -6,8 +6,7 @@ import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie-api/bungie-api.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/services/translate/app-translations.service.dart';
-import 'package:little_light/services/translate/pages/select-language-translation.dart';
+import 'package:little_light/services/translate/translate.service.dart';
 import 'package:little_light/widgets/initial-page/download-manifest.widget.dart';
 import 'package:little_light/widgets/initial-page/login-widget.dart';
 import 'package:little_light/widgets/initial-page/select-language.widget.dart';
@@ -19,6 +18,7 @@ class InitialScreen extends StatefulWidget {
   final AuthService auth = new AuthService();
   final ManifestService manifest = new ManifestService();
   final ProfileService profile = new ProfileService();
+  final TranslateService translate = new TranslateService();
   final bool forceChangeLanguage;
   final bool forceLogin;
   final bool forceSelectMembership;
@@ -45,7 +45,8 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
   }
 
   Future checkLanguage() async {
-    bool hasSelectedLanguage = await AppTranslations.init();
+    String selectedLanguage = await widget.translate.getLanguage();
+    bool hasSelectedLanguage = selectedLanguage != null;
     if (hasSelectedLanguage && !widget.forceChangeLanguage) {
       checkManifest();
     } else {
@@ -54,19 +55,18 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
   }
 
   showSelectLanguage() async {
-    SelectLanguageTranslation translation = SelectLanguageTranslation();
     List<String> availableLanguages =
         await widget.manifest.getAvailableLanguages();
     SelectLanguageWidget childWidget = SelectLanguageWidget(
       availableLanguages: availableLanguages,
       onChange: (language) {
-        changeTitle(translation.title.get(language));
+        changeTitle(language);
       },
       onSelect: (language) {
         this.checkManifest();
       },
     );
-    this.changeContent(childWidget, childWidget.translation.title.get());
+    this.changeContent(childWidget, childWidget.title);
   }
 
   checkManifest() async {
@@ -78,14 +78,15 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
     }
   }
 
-  showDownloadManifest() {
+  showDownloadManifest() async {
+    String language = await widget.translate.getLanguage();
     DownloadManifestWidget screen = new DownloadManifestWidget(
-      selectedLanguage: AppTranslations.currentLanguage,
+      selectedLanguage: language,
       onFinish: () {
         checkLogin();
       },
     );
-    this.changeContent(screen, screen.translation.title.get());
+    this.changeContent(screen, screen.title);
   }
 
   checkLogin() async {
@@ -108,7 +109,7 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
         authCode(code);
       },
     );
-    this.changeContent(loginWidget, loginWidget.translation.title.get());
+    this.changeContent(loginWidget, loginWidget.title);
   }
 
   authCode(String code) {
@@ -136,7 +137,7 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
           this.widget.auth.saveMembership(membershipData, membershipType);
           loadProfile();
         });
-    this.changeContent(widget, widget.translation.title.get());
+    this.changeContent(widget, widget.title);
   }
 
   loadProfile() async {

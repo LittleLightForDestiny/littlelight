@@ -43,8 +43,9 @@ class ItemIconWidget extends DestinyItemWidget {
       DestinyInventoryItemDefinition definition,
       DestinyItemInstanceComponent instanceInfo,
       {Key key,
+      String characterId,
       this.iconBorderWidth = 2})
-      : super(item, definition, instanceInfo, key: key);
+      : super(item, definition, instanceInfo, key: key, characterId:characterId);
 
   @override
   Widget build(BuildContext context) {

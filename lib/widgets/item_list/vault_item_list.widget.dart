@@ -128,7 +128,7 @@ class VaultItemListWidgetState extends ItemListWidgetState {
 
       case ListItem.unequippedItem:
       return InventoryItemWrapperWidget(item?.itemComponent, item?.bucketHash,
-            density: ContentDensity.MINIMAL);
+            density: ContentDensity.MINIMAL, characterId: widget.characterId,);
 
       case ListItem.spacer:
         return Container();

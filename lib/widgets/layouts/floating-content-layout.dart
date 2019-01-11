@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:shimmer/shimmer.dart';
 
 class FloatingContentState<T extends StatefulWidget> extends State<T>
@@ -125,7 +126,7 @@ class AnimatedContentBox extends AnimatedWidget {
               Container(
                 color: Theme.of(context).primaryColor,
                 child: Padding(
-                    child: Text(currentTitle,
+                    child: TranslatedTextWidget(currentTitle,
                         style: TextStyle(
                             color: Colors.white, fontWeight: FontWeight.bold)),
                     padding: EdgeInsets.all(16)),
@@ -158,7 +159,7 @@ class AnimatedContentBox extends AnimatedWidget {
               Container(
                 color: Theme.of(context).primaryColor,
                 child: Padding(
-                    child: Text(previousTitle,
+                    child: TranslatedTextWidget(previousTitle,
                         style: TextStyle(
                             color: Colors.white, fontWeight: FontWeight.bold)),
                     padding: EdgeInsets.all(16)),
@@ -188,7 +189,7 @@ class AnimatedContentBox extends AnimatedWidget {
           Container(
             color: Theme.of(context).primaryColor,
             child: Padding(
-                child: Text(currentTitle,
+                child: TranslatedTextWidget(currentTitle,
                     style: TextStyle(
                         color: Colors.white, fontWeight: FontWeight.bold)),
                 padding: EdgeInsets.all(16)),
@@ -205,4 +206,7 @@ class AnimatedContentBox extends AnimatedWidget {
       ),
     );
   }
+}
+
+class TranslatedTextWidtet {
 }

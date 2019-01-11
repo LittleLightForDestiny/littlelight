@@ -23,7 +23,8 @@ class PrimaryStatWidget extends DestinyItemWidget {
     this.suppressDamageTypeIcon = false,
     this.fontSize = 26,
     this.padding = 8,
-  }) : super(item, definition, instanceInfo, key: key);
+    String characterId
+  }) : super(item, definition, instanceInfo, key: key, characterId:characterId);
 
   int get statValue {
     return instanceInfo.primaryStat.value;

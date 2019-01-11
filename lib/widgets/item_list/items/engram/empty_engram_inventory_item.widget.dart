@@ -4,8 +4,8 @@ import 'package:little_light/widgets/item_list/items/base/minimal_info_label.mix
 
 class EmptyEngramInventoryItemWidget extends MinimalBaseInventoryItemWidget
     with MinimalInfoLabelMixin {
-  EmptyEngramInventoryItemWidget()
-      : super(null, null, null);
+  EmptyEngramInventoryItemWidget({Key key, String characterId})
+      : super(null, null, null, characterId:characterId, key:key);
 
   @override
     Widget itemIconHero(BuildContext context) {
