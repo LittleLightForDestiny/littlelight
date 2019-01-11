@@ -1,148 +1,190 @@
-import 'dart:math';
-import 'dart:ui';
-
+import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
-import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/utils/destiny_data.dart';
-import 'package:little_light/widgets/common/destiny_item.widget.dart';
-import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
-import 'package:little_light/widgets/common/item_name_bar/item_name_bar.widget.dart';
-import 'package:shimmer/shimmer.dart';
 
-class ItemCoverWidget extends DestinyItemWidget {
-  ItemCoverWidget(
+import 'package:flutter/material.dart';
+import 'package:little_light/services/bungie_api/enums/definition_table_names.enum.dart';
+import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
+import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/widgets/common/destiny_item.widget.dart';
+import 'package:little_light/widgets/common/manifest_image.widget.dart';
+import 'package:little_light/widgets/common/translated_text.widget.dart';
+
+class ManagementBlockWidget extends DestinyItemWidget {
+  ManagementBlockWidget(
       DestinyItemComponent item,
       DestinyInventoryItemDefinition definition,
       DestinyItemInstanceComponent instanceInfo,
-      {Key key
-      ,String characterId})
-      : super(item, definition, instanceInfo, key: key, characterId:characterId);
+      {Key key,
+      String characterId})
+      : super(item, definition, instanceInfo,
+            key: key, characterId: characterId);
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    double paddingTop = MediaQuery.of(context).padding.top;
-    double screenshotHeight = width / (16 / 9);
-    return SliverPersistentHeader(
-        pinned: true,
-        delegate: ItemCoverDelegate(item, definition, instanceInfo,
-            minHeight: paddingTop + kToolbarHeight,
-            maxHeight: kToolbarHeight + screenshotHeight));
-  }
-}
-
-class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
-  final DestinyItemComponent item;
-  final DestinyInventoryItemDefinition definition;
-  final DestinyItemInstanceComponent instanceInfo;
-  double minHeight;
-  double maxHeight;
-
-  ItemCoverDelegate(this.item, this.definition, this.instanceInfo,
-      {this.minHeight = 50, this.maxHeight = 200})
-      : super();
-
-  @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
-      double expandRatio = max(0 , 1 - shrinkOffset/(this.maxHeight - this.minHeight));
     return Container(
-        color: DestinyData.getTierColor(definition.inventory.tierType),
-        child: Stack(
-          overflow: Overflow.visible,
-          fit: StackFit.expand,
+        padding: EdgeInsets.symmetric(horizontal: 8),
+        child: Wrap(
+          direction: Axis.horizontal,
           children: <Widget>[
-            background(context, expandRatio),
-            nameBar(context, expandRatio),
-            icon(context, expandRatio),
-            backButton(context),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                transferDestinations.length > 0
+                    ? buildLabel(context, "Transfer")
+                    : null,
+                pullDestinations.length > 0
+                    ? buildLabel(context, "Pull")
+                    : null,
+              ].where((value) => value != null).toList(),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                transferDestinations.length > 0
+                    ? Expanded(flex:3, child:buttons(
+                        context, transferDestinations, Alignment.centerLeft))
+                    : null,
+                pullDestinations.length > 0
+                    ? buttons(context, pullDestinations)
+                    : null
+              ].where((value) => value != null).toList(),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                unequipDestinations.length > 0
+                    ? buildLabel(context, "Unequip")
+                    : null,
+                equipDestinations.length > 0
+                    ? buildLabel(context, "Equip")
+                    : null,
+              ].where((value) => value != null).toList(),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                unequipDestinations.length > 0
+                    ? buttons(
+                        context, unequipDestinations, Alignment.centerLeft)
+                    : null,
+                equipDestinations.length > 0
+                    ? Expanded(
+                      child:buttons(
+                        context,
+                        equipDestinations,
+                        unequipDestinations.length > 0
+                            ? Alignment.centerRight
+                            : Alignment.centerLeft))
+                    : null
+              ].where((value) => value != null).toList(),
+            ),
           ],
         ));
   }
 
-  Widget nameBar(BuildContext context, double expandRatio) {
-    double leftOffset = lerpDouble(kToolbarHeight*2 -16, 104, expandRatio);
-    return Positioned(
-        left: 0,
-        bottom: 0,
-        right: 0,
-        height: kToolbarHeight,
-        child: Hero(
-            tag: "item_namebar_${item.itemInstanceId}_${item.itemHash}",
-            child: ItemNameBarWidget(
-              item,
-              definition,
-              instanceInfo,
-              multiline: true,
-              padding: EdgeInsets.only(
-                  left: leftOffset + 8,
-                  right:8,
-                  top: (kToolbarHeight - 16) / 2,
-                  bottom: (kToolbarHeight - 16) / 2),
-              fontSize: 16,
-            )));
+  Widget buildLabel(BuildContext context, String title) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+      child: TranslatedTextWidget(
+        title,
+        uppercase: true,
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ),
+    );
   }
 
-  Widget icon(BuildContext context, double expandRatio) {
-    double size = lerpDouble(kToolbarHeight -8, 96, expandRatio);
-    double bottom = lerpDouble(4, 8, expandRatio);
-    double left = lerpDouble(kTextTabBarHeight, 8, expandRatio);
-    return Positioned(
-        left: left,
-        bottom: bottom,
-        width: size,
-        height: size,
-        child: Hero(
-            tag: "item_icon_${item.itemInstanceId}_${item.itemHash}",
-            child: 
-            ItemIconWidget.builder(item, definition, instanceInfo,
-            iconBorderWidth: lerpDouble(1, 2, expandRatio),
-            )));
+  Widget buttons(BuildContext context, List<TransferDestination> destinations,
+      [Alignment align = Alignment.centerRight]) {
+    return Container(
+        alignment: align,
+        margin: EdgeInsets.symmetric(horizontal: 8),
+        padding: EdgeInsets.symmetric(vertical: 8),
+        decoration: BoxDecoration(
+            border:
+                Border(top: BorderSide(width: 2, color: Colors.grey.shade300))),
+        child: Wrap(
+            spacing: 8,
+            children: destinations
+                .map((destination) => button(context, destination))
+                .toList()));
   }
 
-  Widget backButton(BuildContext context) {
-    double paddingTop = MediaQuery.of(context).padding.top;
-    return Positioned(
-        left: 0,
-        top: paddingTop,
-        width: kToolbarHeight,
-        height: kToolbarHeight,
-        child: BackButton(
-            color:
-                DestinyData.getTierTextColor(definition.inventory.tierType)));
+  Widget button(BuildContext context, TransferDestination destination) {
+    DestinyCharacterComponent character =
+        profile.getCharacter(destination.characterId);
+    return Container(
+        child: SizedBox(
+            width: kToolbarHeight,
+            height: kToolbarHeight,
+            child: Container(
+                foregroundDecoration: BoxDecoration(
+                    border: Border.all(width: 1, color: Colors.grey.shade400)),
+                child: Stack(fit: StackFit.expand, children: [
+                  ManifestImageWidget(
+                      DefinitionTableNames.destinyInventoryItemDefinition,
+                      character.emblemHash),
+                  Material(
+                    type: MaterialType.button,
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: () {},
+                    ),
+                  ),
+                ]))));
   }
 
-  Widget background(BuildContext context, double expandRatio) {
-    double width = MediaQuery.of(context).size.width;
-    double opacity = expandRatio;
-    return Positioned(
-        top: 0,
-        bottom: kToolbarHeight,
-        width: width,
-        child: Opacity(
-            opacity: opacity,
-            child: CachedNetworkImage(
-                imageUrl: "${BungieApiService.baseUrl}${definition.screenshot}",
-                fit: BoxFit.cover,
-                placeholder: Shimmer.fromColors(
-                    baseColor: Colors.blueGrey.shade500,
-                    highlightColor: Colors.grey.shade300,
-                    child: Container(color: Colors.white)))));
+  List<TransferDestination> get equipDestinations {
+    return this
+        .profile
+        .getCharacters(CharacterOrder.lastPlayed)
+        .where((char) =>
+            !(instanceInfo.isEquipped && char.characterId == characterId))
+        .map((char) =>
+            TransferDestination(char.characterId, DestinationType.Character))
+        .toList();
   }
 
-  @override
-  double get maxExtent => this.maxHeight;
+  List<TransferDestination> get transferDestinations {
+    return this
+        .profile
+        .getCharacters(CharacterOrder.lastPlayed)
+        .where((char) => char.characterId != characterId)
+        .map((char) =>
+            TransferDestination(char.characterId, DestinationType.Character))
+        .toList();
+  }
 
-  @override
-  double get minExtent => this.minHeight;
+  List<TransferDestination> get pullDestinations {
+    if (item.bucketHash == InventoryBucket.lostItems) {
+      return [
+        TransferDestination(
+            characterId, DestinationType.Character, DestinationAction.Pull)
+      ];
+    }
+    return [];
+  }
 
-  @override
-  bool shouldRebuild(ItemCoverDelegate oldDelegate) {
-    return maxHeight != oldDelegate.maxHeight ||
-        minHeight != oldDelegate.minHeight;
+  List<TransferDestination> get unequipDestinations {
+    if (instanceInfo.isEquipped) {
+      return [
+        TransferDestination(
+            characterId, DestinationType.Character, DestinationAction.Unequip)
+      ];
+    }
+    return [];
   }
 }
+
+class TransferDestination {
+  final String characterId;
+  final DestinationType type;
+  final DestinationAction action;
+
+  TransferDestination(this.characterId, this.type,
+      [this.action = DestinationAction.Transfer]);
+}
+
+enum DestinationType { Character, Vault, Inventory }
+enum DestinationAction { Transfer, Equip, Unequip, Pull }

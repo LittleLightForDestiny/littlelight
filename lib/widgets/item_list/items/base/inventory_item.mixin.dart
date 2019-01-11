@@ -105,7 +105,7 @@ mixin InventoryItemMixin implements DestinyItemWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ItemDetailScreen(item, definition, instanceInfo),
+        builder: (context) => ItemDetailScreen(item, definition, instanceInfo, characterId: characterId,),
       ),
     );
   }
