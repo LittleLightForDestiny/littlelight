@@ -1,9 +1,8 @@
 import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
-import 'package:bungie_api/models/destiny_profile_response.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/services/bungie-api/enums/inventory-bucket-hash.enum.dart';
-import 'package:little_light/services/bungie-api/enums/item-category.enum.dart';
+import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
+import 'package:little_light/services/bungie_api/enums/item_category.enum.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/widgets/inventory_tabs/character_tab.widget.dart';
@@ -25,10 +24,8 @@ class EquipmentScreenState extends State<EquipmentScreen> {
   int totalTabs = 4;
   Map<int,double> scrollPositions = new Map();
 
-  DestinyProfileResponse profile;
   @override
   void initState() {
-    profile = widget.profile.profile;
     totalTabs = characters?.length != null ? characters.length + 1 : 4;
     scrollPositions[ItemCategory.weapon] = 0;
     scrollPositions[ItemCategory.armor] = 0;
@@ -101,9 +98,6 @@ class EquipmentScreenState extends State<EquipmentScreen> {
   }
 
   List<DestinyCharacterComponent> get characters {
-    if (this.profile?.characters?.data == null) {
-      return null;
-    }
-    return this.profile.characters.data.values.toList();
+    return widget.profile.getCharacters(CharacterOrder.lastPlayed);
   }
 }

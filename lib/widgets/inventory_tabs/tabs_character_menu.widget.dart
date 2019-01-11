@@ -3,9 +3,9 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:flutter/material.dart';
-import 'package:little_light/services/bungie-api/bungie-api.service.dart';
+import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
-import 'package:little_light/utils/shimmer-helper.dart';
+import 'package:little_light/utils/shimmer_helper.dart';
 import 'package:shimmer/shimmer.dart';
 
 class TabsCharacterMenuWidget extends StatelessWidget {

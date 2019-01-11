@@ -5,7 +5,7 @@ import 'package:bungie_api/models/general_user.dart';
 import 'package:bungie_api/models/user_info_card.dart';
 import 'package:bungie_api/models/user_membership_data.dart';
 import 'package:flutter_inappbrowser/flutter_inappbrowser.dart';
-import 'package:little_light/services/bungie-api/bungie-api.service.dart';
+import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/translate/translate.service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';

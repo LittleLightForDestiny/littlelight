@@ -30,11 +30,11 @@ class InventoryNotificationWidgetState
     subscription = widget.profile.broadcaster.listen((event) {
       bool busy;
       String message = "";
-      if (event == ProfileEvent.REQUESTED_UPDATE) {
+      if (event == ProfileEvent.requestedUpdate) {
         busy = true;
         message = "Updating";
       }
-      if (event == ProfileEvent.RECEIVED_UPDATE) {
+      if (event == ProfileEvent.receivedUpdate) {
         busy = false;
       }
 

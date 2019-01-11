@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:little_light/services/bungie-api/enums/definition-table-names.enum.dart';
-import 'package:little_light/services/bungie-api/enums/item-category.enum.dart';
+import 'package:little_light/services/bungie_api/enums/definition_table_names.enum.dart';
+import 'package:little_light/services/bungie_api/enums/item_category.enum.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:tinycolor/tinycolor.dart';

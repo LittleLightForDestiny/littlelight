@@ -6,12 +6,12 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_item_talent_grid_component.dart';
 import 'package:bungie_api/models/destiny_profile_response.dart';
-import 'package:little_light/services/bungie-api/bungie-api.service.dart';
+import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:bungie_api/enums/destiny_component_type_enum.dart';
 
-enum ProfileEvent{
-  REQUESTED_UPDATE, RECEIVED_UPDATE
-}
+enum ProfileEvent { requestedUpdate, receivedUpdate }
+
+enum CharacterOrder { none, lastPlayed, firstCreated, lastCreated }
 
 class ProfileService {
   final api = BungieApiService();
@@ -20,16 +20,16 @@ class ProfileService {
   Timer _timer;
 
   Stream<ProfileEvent> _eventsStream;
-  final StreamController<ProfileEvent> _streamController = new StreamController.broadcast();
-  
-  Stream<ProfileEvent> get broadcaster{
-    if(_eventsStream != null){
+  final StreamController<ProfileEvent> _streamController =
+      new StreamController.broadcast();
+
+  Stream<ProfileEvent> get broadcaster {
+    if (_eventsStream != null) {
       return _eventsStream;
     }
     _eventsStream = _streamController.stream;
     return _eventsStream;
   }
-
 
   factory ProfileService() {
     return _singleton;
@@ -37,8 +37,8 @@ class ProfileService {
   ProfileService._internal();
 
   Future<DestinyProfileResponse> fetchBasicProfile() async {
-    _streamController.add(ProfileEvent.REQUESTED_UPDATE);
-    DestinyProfileResponse res =  await _updateProfileData([
+    _streamController.add(ProfileEvent.requestedUpdate);
+    DestinyProfileResponse res = await _updateProfileData([
       DestinyComponentType.Characters,
       DestinyComponentType.CharacterProgressions,
       DestinyComponentType.CharacterEquipment,
@@ -48,21 +48,21 @@ class ProfileService {
       DestinyComponentType.ItemTalentGrids,
       DestinyComponentType.ItemSockets,
     ]);
-    _streamController.add(ProfileEvent.RECEIVED_UPDATE);
+    _streamController.add(ProfileEvent.receivedUpdate);
     return res;
   }
 
-  startAutomaticUpdater(Duration every){
-    if(_timer != null && _timer.isActive){
+  startAutomaticUpdater(Duration every) {
+    if (_timer != null && _timer.isActive) {
       _timer.cancel();
     }
-    _timer = new Timer.periodic(every, (timer) async{
+    _timer = new Timer.periodic(every, (timer) async {
       await fetchBasicProfile();
     });
   }
 
-  stopAutomaticUpdater(){
-    if(_timer != null && _timer.isActive){
+  stopAutomaticUpdater() {
+    if (_timer != null && _timer.isActive) {
       _timer.cancel();
     }
   }
@@ -75,100 +75,145 @@ class ProfileService {
       return profile;
     }
 
-    if(components.contains(DestinyComponentType.VendorReceipts)){
+    if (components.contains(DestinyComponentType.VendorReceipts)) {
       profile.vendorReceipts = response.vendorReceipts;
     }
-    if(components.contains(DestinyComponentType.ProfileInventories)){
+    if (components.contains(DestinyComponentType.ProfileInventories)) {
       profile.profileInventory = response.profileInventory;
     }
-    if(components.contains(DestinyComponentType.ProfileCurrencies)){
+    if (components.contains(DestinyComponentType.ProfileCurrencies)) {
       profile.profileCurrencies = response.profileCurrencies;
     }
-    if(components.contains(DestinyComponentType.Profiles)){
+    if (components.contains(DestinyComponentType.Profiles)) {
       profile.profile = response.profile;
     }
-    if(components.contains(DestinyComponentType.Kiosks)){
+    if (components.contains(DestinyComponentType.Kiosks)) {
       profile.profileKiosks = response.profileKiosks;
       profile.characterKiosks = response.characterKiosks;
     }
-    if(components.contains(DestinyComponentType.ItemPlugStates)){
+    if (components.contains(DestinyComponentType.ItemPlugStates)) {
       profile.profilePlugSets = response.profilePlugSets;
       profile.characterPlugSets = response.characterPlugSets;
     }
-    if(components.contains(DestinyComponentType.ProfileProgression)){
+    if (components.contains(DestinyComponentType.ProfileProgression)) {
       profile.profileProgression = response.profileProgression;
     }
-    if(components.contains(DestinyComponentType.PresentationNodes)){
+    if (components.contains(DestinyComponentType.PresentationNodes)) {
       profile.profilePresentationNodes = response.profilePresentationNodes;
       profile.characterPresentationNodes = response.characterPresentationNodes;
     }
-    if(components.contains(DestinyComponentType.Records)){
+    if (components.contains(DestinyComponentType.Records)) {
       profile.profileRecords = response.profileRecords;
       profile.characterRecords = response.characterRecords;
     }
-    if(components.contains(DestinyComponentType.Collectibles)){
+    if (components.contains(DestinyComponentType.Collectibles)) {
       profile.profileCollectibles = response.profileCollectibles;
       profile.characterCollectibles = response.characterCollectibles;
     }
-    if(components.contains(DestinyComponentType.Characters)){
+    if (components.contains(DestinyComponentType.Characters)) {
       profile.characters = response.characters;
     }
-    if(components.contains(DestinyComponentType.CharacterInventories)){
+    if (components.contains(DestinyComponentType.CharacterInventories)) {
       profile.characterInventories = response.characterInventories;
     }
-    if(components.contains(DestinyComponentType.CharacterProgressions)){
+    if (components.contains(DestinyComponentType.CharacterProgressions)) {
       profile.characterProgressions = response.characterProgressions;
     }
-    if(components.contains(DestinyComponentType.CharacterRenderData)){
+    if (components.contains(DestinyComponentType.CharacterRenderData)) {
       profile.characterRenderData = response.characterRenderData;
     }
-    if(components.contains(DestinyComponentType.CharacterActivities)){
+    if (components.contains(DestinyComponentType.CharacterActivities)) {
       profile.characterActivities = response.characterActivities;
     }
-    if(components.contains(DestinyComponentType.CharacterEquipment)){
+    if (components.contains(DestinyComponentType.CharacterEquipment)) {
       profile.characterEquipment = response.characterEquipment;
     }
-  
-    if(components.contains(DestinyComponentType.ItemObjectives)){
-      profile.characterUninstancedItemComponents = response.characterUninstancedItemComponents;
+
+    if (components.contains(DestinyComponentType.ItemObjectives)) {
+      profile.characterUninstancedItemComponents =
+          response.characterUninstancedItemComponents;
       profile.itemComponents = response.itemComponents;
     }
-    
-    if(components.contains(DestinyComponentType.ItemInstances)){
+
+    if (components.contains(DestinyComponentType.ItemInstances)) {
       profile.itemComponents = response.itemComponents;
     }
-    if(components.contains(DestinyComponentType.CurrencyLookups)){
+    if (components.contains(DestinyComponentType.CurrencyLookups)) {
       profile.characterCurrencyLookups = response.characterCurrencyLookups;
     }
-    
+
     return profile;
   }
 
-  DestinyItemInstanceComponent getInstanceInfo(String instanceId){
+  DestinyItemInstanceComponent getInstanceInfo(String instanceId) {
     return profile.itemComponents.instances.data[instanceId];
   }
 
-  DestinyItemTalentGridComponent getTalentGrid(String instanceId){
+  DestinyItemTalentGridComponent getTalentGrid(String instanceId) {
     return profile.itemComponents.talentGrids.data[instanceId];
   }
 
-  DestinyCharacterComponent getCharacter(String characterId){
+  List<DestinyCharacterComponent> getCharacters(
+      [CharacterOrder order = CharacterOrder.none]) {
+    if (profile == null || profile.characters == null) {
+      return null;
+    }
+    List<DestinyCharacterComponent> list =
+        profile.characters.data.values.toList();
+
+    switch (order) {
+      case CharacterOrder.lastPlayed:
+        {
+          list.sort((charA, charB) {
+            DateTime dateA = DateTime.parse(charA.dateLastPlayed);
+            DateTime dateB = DateTime.parse(charB.dateLastPlayed);
+            return dateB.compareTo(dateA);
+          });
+          break;
+        }
+
+      case CharacterOrder.firstCreated:
+        {
+          list.sort((charA, charB) {
+            return charA.characterId.compareTo(charB.characterId);
+          });
+          break;
+        }
+
+      case CharacterOrder.lastCreated:
+        {
+          list.sort((charA, charB) {
+            return charB.characterId.compareTo(charA.characterId);
+          });
+          break;
+        }
+      default:
+        {
+          break;
+        }
+    }
+
+    return list;
+  }
+
+  DestinyCharacterComponent getCharacter(String characterId) {
     return profile.characters.data[characterId];
   }
 
-  List<DestinyItemComponent> getCharacterEquipment(String characterId){
+  List<DestinyItemComponent> getCharacterEquipment(String characterId) {
     return profile.characterEquipment.data[characterId].items;
   }
 
-  List<DestinyItemComponent> getCharacterInventory(String characterId){
+  List<DestinyItemComponent> getCharacterInventory(String characterId) {
     return profile.characterInventories.data[characterId].items;
   }
 
-  List<DestinyItemComponent> getProfileInventory(){
+  List<DestinyItemComponent> getProfileInventory() {
     return profile.profileInventory.data.items;
   }
 
-  DestinyCharacterProgressionComponent getCharacterProgression(String characterId){
+  DestinyCharacterProgressionComponent getCharacterProgression(
+      String characterId) {
     return profile.characterProgressions.data[characterId];
-  }  
+  }
 }

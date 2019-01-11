@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
-import 'package:little_light/services/bungie-api/enums/inventory-bucket-hash.enum.dart';
+import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 
 class BucketHeaderWidget extends StatefulWidget {

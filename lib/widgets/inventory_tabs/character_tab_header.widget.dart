@@ -4,7 +4,7 @@ import 'package:bungie_api/models/destiny_progression.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
-import 'package:little_light/services/bungie-api/bungie-api.service.dart';
+import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/destiny_data.dart';

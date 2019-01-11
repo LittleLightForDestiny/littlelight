@@ -3,15 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:little_light/screens/main.screen.dart';
 import 'package:little_light/services/auth/auth.service.dart';
-import 'package:little_light/services/bungie-api/bungie-api.service.dart';
+import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/translate/translate.service.dart';
-import 'package:little_light/widgets/initial-page/download-manifest.widget.dart';
-import 'package:little_light/widgets/initial-page/login-widget.dart';
-import 'package:little_light/widgets/initial-page/select-language.widget.dart';
-import 'package:little_light/widgets/initial-page/select-platform.widget.dart';
-import 'package:little_light/widgets/layouts/floating-content-layout.dart';
+import 'package:little_light/widgets/initial_page/download_manifest.widget.dart';
+import 'package:little_light/widgets/initial_page/login_widget.dart';
+import 'package:little_light/widgets/initial_page/select_language.widget.dart';
+import 'package:little_light/widgets/initial_page/select_platform.widget.dart';
+import 'package:little_light/widgets/layouts/floating_content_layout.dart';
 
 class InitialScreen extends StatefulWidget {
   final BungieApiService apiService = new BungieApiService();
@@ -60,7 +60,7 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
     SelectLanguageWidget childWidget = SelectLanguageWidget(
       availableLanguages: availableLanguages,
       onChange: (language) {
-        changeTitle(language);
+        changeTitleLanguage(language);
       },
       onSelect: (language) {
         this.checkManifest();

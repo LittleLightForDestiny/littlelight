@@ -6,6 +6,7 @@ typedef String ExtractTextFromData(dynamic data);
 class TranslatedTextWidget extends StatefulWidget {
   final TranslateService translate = new TranslateService();
   final String text;
+  final String language;
   final Map<String,String> replace;
   final bool uppercase;
   final int maxLines;
@@ -20,6 +21,7 @@ class TranslatedTextWidget extends StatefulWidget {
   TranslatedTextWidget(this.text,
       {Key key,
       this.replace = const {},
+      this.language,
       this.maxLines,
       this.overflow,
       this.semanticsLabel,
@@ -47,7 +49,11 @@ class TranslatedTextWidgetState extends State<TranslatedTextWidget> {
   }
 
   Future<void> loadTranslation() async {
-    translatedText = await widget.translate.getTranslation(widget.text, replace:widget.replace);
+    if(widget.language != null){
+      translatedText = await widget.translate.getTranslation(widget.text, replace:widget.replace, languageCode: widget.language);  
+    }else{
+      translatedText = await widget.translate.getTranslation(widget.text, replace:widget.replace);
+    }
     if (mounted) {
       setState(() {});
     }

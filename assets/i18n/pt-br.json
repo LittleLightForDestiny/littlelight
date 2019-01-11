@@ -2,14 +2,13 @@
     "OK":"OK",
     "Later":"Mais Tarde",
     "Level {Level}":"Nível {Level}",
-    "Updating":"Updating",
-    "Download Database":"Download Database",
-    "Downloading":"Downloading",
-    "Uncompressing":"Uncompressing",
+    "Updating":"Atualizando",
+    "Download Database":"Download de informações do Jogo",
+    "Downloading":"Baixando",
+    "Uncompressing":"Descompactando",
     "Login":"Login",
-    "Authorize with Bungie.net":"Authorize with Bungie.net",
-    "AuthorizeDescription":"Authorize with Bungie.net to use inventory management features",
-    "Select Language":"Select Language",
+    "Authorize with Bungie.net":"Autorizar na Bungie.net",
+    "Authorize Description":"Autorize-se com a Bungie.net para usar os recursos de gerenciamento de inventário",
+    "Select Language":"Selecione o Idioma",
     "Select Platform":"Selecione a platforma"
-
 }

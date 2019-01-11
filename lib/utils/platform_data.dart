@@ -1,6 +1,6 @@
 import 'package:bungie_api/enums/bungie_membership_type_enum.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/widgets/icon-fonts/destiny_icons_icons.dart';
+import 'package:little_light/widgets/icon_fonts/destiny_icons_icons.dart';
 
 class PlatformData{
   Color color;

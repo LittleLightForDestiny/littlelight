@@ -6,7 +6,7 @@ import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-import 'package:little_light/widgets/icon-fonts/destiny_icons_icons.dart';
+import 'package:little_light/widgets/icon_fonts/destiny_icons_icons.dart';
 import 'package:shimmer/shimmer.dart';
 
 class CharacterInfoWidget extends StatefulWidget {

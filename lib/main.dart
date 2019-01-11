@@ -39,6 +39,7 @@ class LittleLight extends StatelessWidget {
         const Locale('pl'), // Polish
         const Locale('ko'), // Korean
         const Locale('zh', 'CHT'), // Chinese
+        const Locale('zh', 'CHS'), // Chinese
       ],
     );
   }

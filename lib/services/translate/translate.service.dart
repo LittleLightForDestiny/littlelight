@@ -30,22 +30,8 @@ class TranslateService {
     'pt-br': "Português Brasileiro",
     'ru': "Русский",
     'zh-cht': "中文",
+    'zh-chs': "简化字"
   };
-
-  List<String> supportedLanguages = [
-    'en',
-    'fr',
-    'es',
-    'de',
-    'it',
-    'ja',
-    'pt-br',
-    'es-mx',
-    'ru',
-    'pl',
-    'ko',
-    'zh-cht'
-  ];
 
   Future<String> getLanguage() async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
@@ -88,7 +74,6 @@ class TranslateService {
 
   String _replace(String text, Map<String, String> replace){
     replace.forEach((String index, String replaceText){
-      print(index);
       text = text.replaceAll("{$index}", replaceText);
     });
     return text;

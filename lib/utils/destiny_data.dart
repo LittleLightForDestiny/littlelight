@@ -3,7 +3,7 @@ import 'package:bungie_api/enums/destiny_class_enum.dart';
 import 'package:bungie_api/enums/damage_type_enum.dart';
 import 'package:bungie_api/enums/tier_type_enum.dart';
 import 'package:bungie_api/enums/destiny_ammunition_type_enum.dart';
-import 'package:little_light/widgets/icon-fonts/destiny_icons_icons.dart';
+import 'package:little_light/widgets/icon_fonts/destiny_icons_icons.dart';
 
 class DestinyData{
   static IconData getClassIcon(int type){

@@ -4,7 +4,7 @@ import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_item_talent_grid_component.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/services/bungie-api/bungie-api.service.dart';
+import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/item_list/items/base/medium_base_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/subclass/subclass_properties.mixin.dart';

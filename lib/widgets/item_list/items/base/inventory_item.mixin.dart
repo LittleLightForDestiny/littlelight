@@ -1,10 +1,10 @@
 import 'package:bungie_api/enums/damage_type_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/utils/destiny_data.dart';
-import 'package:little_light/widgets/common/destiny-item.widget.dart';
-import 'package:little_light/screens/item-detail.screen.dart';
-import 'package:little_light/widgets/common/item-icon/item-icon.widget.dart';
-import 'package:little_light/widgets/common/item-name-bar/item-name-bar.widget.dart';
+import 'package:little_light/widgets/common/destiny_item.widget.dart';
+import 'package:little_light/screens/item_detail.screen.dart';
+import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
+import 'package:little_light/widgets/common/item_name_bar/item_name_bar.widget.dart';
 
 mixin InventoryItemMixin implements DestinyItemWidget {
   @override
