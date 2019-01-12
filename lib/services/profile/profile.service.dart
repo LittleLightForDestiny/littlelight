@@ -8,13 +8,21 @@ import 'package:bungie_api/models/destiny_item_talent_grid_component.dart';
 import 'package:bungie_api/models/destiny_profile_response.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:bungie_api/enums/destiny_component_type_enum.dart';
+import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 
-enum ProfileEvent { requestedUpdate, receivedUpdate }
+enum ProfileEventType { localUpdate, requestedUpdate, receivedUpdate }
 
 enum CharacterOrder { none, lastPlayed, firstCreated, lastCreated }
 
+class ProfileEvent{
+  final ProfileEventType type;
+
+  ProfileEvent(this.type);
+}
+
 class ProfileService {
-  final api = BungieApiService();
+  static const List<int> profileBuckets = const [InventoryBucket.modifications, InventoryBucket.shaders, InventoryBucket.consumables];
+  final _api = BungieApiService();
   static final ProfileService _singleton = new ProfileService._internal();
   DestinyProfileResponse profile;
   Timer _timer;
@@ -31,13 +39,17 @@ class ProfileService {
     return _eventsStream;
   }
 
+  fireLocalUpdate(){
+    _streamController.add(ProfileEvent(ProfileEventType.localUpdate));
+  }
+
   factory ProfileService() {
     return _singleton;
   }
   ProfileService._internal();
 
   Future<DestinyProfileResponse> fetchBasicProfile() async {
-    _streamController.add(ProfileEvent.requestedUpdate);
+    _streamController.add(ProfileEvent(ProfileEventType.requestedUpdate));
     DestinyProfileResponse res = await _updateProfileData([
       DestinyComponentType.Characters,
       DestinyComponentType.CharacterProgressions,
@@ -48,7 +60,7 @@ class ProfileService {
       DestinyComponentType.ItemTalentGrids,
       DestinyComponentType.ItemSockets,
     ]);
-    _streamController.add(ProfileEvent.receivedUpdate);
+    _streamController.add(ProfileEvent(ProfileEventType.receivedUpdate));
     return res;
   }
 
@@ -69,7 +81,7 @@ class ProfileService {
 
   Future<DestinyProfileResponse> _updateProfileData(
       List<int> components) async {
-    DestinyProfileResponse response = await api.getProfile(components);
+    DestinyProfileResponse response = await _api.getProfile(components);
     if (profile == null) {
       profile = response;
       return profile;

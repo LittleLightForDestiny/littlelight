@@ -190,18 +190,21 @@ class ManifestService {
     return res;
   }
 
-  Future<Map<int, dynamic>> getDefinitions(String type, List<int> hashes,
+  Future<Map<int, T>> getDefinitions<T>(String type, List<int> hashes,
       [dynamic identity(Map<String, dynamic> json)]) async {
       if(identity == null){
       identity = DefinitionTableNames.identities[type];
     }
-    bool allLoaded = hashes.every((hash)=>_cached.keys.contains("${type}_$hash"));
-    if(allLoaded){
-      Map<int, dynamic> defs = new Map();
-      hashes.forEach((hash){
-        dynamic def = _cached["${type}_$hash"];
-        defs[hash] = def;
-      });
+    Map<int, T> defs = new Map();
+    hashes.removeWhere((hash){
+      if(_cached.keys.contains("${type}_$hash")){
+        defs[hash] = _cached["${type}_$hash"];
+        return true;
+      }
+      return false;
+    });
+    
+    if(hashes.length == 0){
       return defs;
     }
     List<int> searchHashes = hashes.map((hash)=>hash > 2147483648 ? hash - 4294967296 : hash).toList();
@@ -214,7 +217,6 @@ class ManifestService {
       whereArgs: searchHashes
     );
     try {
-      Map<int, dynamic> defs = Map();
       results.forEach((res){
         int id = res['id'];
         int hash = id < 0 ? id + 4294967296 : id;
@@ -223,13 +225,12 @@ class ManifestService {
         _cached["${type}_$hash"] = def;
         defs[hash] = def;
       });
-      return defs;
     } catch (e) {}
-    return null;  
+    return defs.cast();
   }
 
-  Future<dynamic> getDefinition(String type, int hash,
-      [dynamic identity(Map<String, dynamic> json)]) async {
+  Future<T> getDefinition<T>(String type, int hash,
+      [dynamic identity(Map<String, T> json)]) async {
     try {
       var cached = _cached["${type}_$hash"];
       if (cached != null) {

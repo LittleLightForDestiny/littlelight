@@ -21,34 +21,37 @@ class InventoryNotificationWidget extends StatefulWidget {
 
 class InventoryNotificationWidgetState
     extends State<InventoryNotificationWidget> {
-  bool busy = false;
+  bool _busy = false;
+  String _message = "";
   StreamSubscription<ProfileEvent> subscription;
-  String message = "";
+
   @override
   void initState() {
     super.initState();
     subscription = widget.profile.broadcaster.listen((event) {
       bool busy;
-      String message = "";
-      if (event == ProfileEvent.requestedUpdate) {
+      String message;
+      if (event.type == ProfileEventType.requestedUpdate) {
         busy = true;
         message = "Updating";
       }
-      if (event == ProfileEvent.receivedUpdate) {
+      if (event.type == ProfileEventType.receivedUpdate) {
         busy = false;
       }
 
-      setState(() {
-        this.message = message;
-        this.busy = busy;
-      });
+      if(busy != null){
+        setState(() {  
+          _message = message;
+          _busy = busy;
+        });
+      }      
     });
   }
 
   @override
-  void deactivate() {
+  void dispose() {
     subscription.cancel();
-    super.deactivate();
+    super.dispose();
   }
 
   @override
@@ -70,7 +73,7 @@ class InventoryNotificationWidgetState
           child: busyWidget(context),
           height: bottomPadding + widget.barHeight * 2),
       crossFadeState:
-          busy ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+          _busy ? CrossFadeState.showSecond : CrossFadeState.showFirst
     )));
   }
 
@@ -97,9 +100,8 @@ class InventoryNotificationWidgetState
           bottom: bottomPadding + widget.barHeight,
           child: shimmerBar(context)),
       Positioned(
-          left: 0,
-          right: 0,
-          bottom: bottomPadding + widget.barHeight + 2,
+          right: 8,
+          bottom: bottomPadding + widget.barHeight + 10,
           child: busyText(context)),
     ];
     if (bottomPadding > 1) {
@@ -116,13 +118,18 @@ class InventoryNotificationWidgetState
 
   Widget busyText(BuildContext context) {
     return Container(
+        decoration: BoxDecoration(
+          color: Colors.blueGrey.shade900.withOpacity(.9),
+          borderRadius: BorderRadius.all(Radius.circular(16))
+        ),
         alignment: Alignment.bottomRight,
-        padding: EdgeInsets.all(8),
+        padding: EdgeInsets.symmetric(vertical:8, horizontal:16),
         child: Shimmer.fromColors(
             baseColor: Colors.blueGrey.shade400,
             highlightColor: Colors.grey.shade100,
-            child: (TranslatedTextWidget(message,uppercase: true,
-                style: TextStyle(fontWeight: FontWeight.w700)))));
+            child: TranslatedTextWidget(
+              _message, key: Key("inventory_notification_text_$_message"), uppercase: true,
+                style: TextStyle(fontWeight: FontWeight.w700))));
   }
 
   Widget shimmerBar(BuildContext context) {

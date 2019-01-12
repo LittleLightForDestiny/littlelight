@@ -64,7 +64,8 @@ class AuthService {
     if (token == null) {
       token = await _getStoredToken();
     }
-    if (token == null) {
+    if (token?.accessToken == null
+      || token?.expiresIn == null) {
       return null;
     }
     DateTime now = DateTime.now();
@@ -82,6 +83,10 @@ class AuthService {
 
   Future<SavedToken> requestToken(String code) async {
     BungieNetToken token = await api.requestToken(code);
+    print(token);
+    if(token.accessToken == null){
+      return null;
+    }
     SavedToken saved = SavedToken(
         token.accessToken,
         token.expiresIn,

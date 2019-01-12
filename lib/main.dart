@@ -1,9 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:little_light/exceptions/exception_handler.dart';
 import 'package:little_light/screens/initial.screen.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'dart:async';
 
-void main() => runApp(new LittleLight());
+
+
+void main() {
+  ExceptionHandler handler = ExceptionHandler();
+
+  runZoned<Future<void>>(() async {
+    runApp(new LittleLight());
+  }, onError: (error, stackTrace) {
+    handler.handleException(error, stackTrace);
+  });
+}
+
 
 class LittleLight extends StatelessWidget {
   // This widget is the root of your application.
@@ -11,7 +24,7 @@ class LittleLight extends StatelessWidget {
   Widget build(BuildContext context) {
     CacheManager.maxNrOfCacheObjects = 5000;
     CacheManager.inBetweenCleans = new Duration(days: 15);
-    
+
     return new MaterialApp(
       title: 'Flutter Demo',
       theme: new ThemeData(

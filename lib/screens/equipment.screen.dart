@@ -30,7 +30,7 @@ class EquipmentScreenState extends State<EquipmentScreen> {
     scrollPositions[ItemCategory.weapon] = 0;
     scrollPositions[ItemCategory.armor] = 0;
     scrollPositions[ItemCategory.inventory] = 0;
-    
+        
     super.initState();
     widget.profile.startAutomaticUpdater(Duration(seconds: 30));
     cacheVaultDefinitions();
@@ -82,7 +82,7 @@ class EquipmentScreenState extends State<EquipmentScreen> {
               });
             },
           ),
-          InventoryNotificationWidget()
+          InventoryNotificationWidget(key:Key('inventory_notification_widget'))
         ],
       ),
       length: totalTabs,

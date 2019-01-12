@@ -28,12 +28,14 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   bungie_api:
-    # path: ../bungie-api-dart
-    git: https://github.com/marquesinijatinha/bungie-api-dart
+    path: ../bungie-api-dart
+    # git: https://github.com/marquesinijatinha/bungie-api-dart
   cached_network_image: ^0.5.1
   shimmer: ^0.0.6
   flutter_staggered_grid_view:
     git: https://github.com/letsar/flutter_staggered_grid_view
+
+  sentry: ^2.2.0
 
 
   # The following adds the Cupertino Icons font to your application.

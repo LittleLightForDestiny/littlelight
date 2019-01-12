@@ -58,7 +58,7 @@ class TranslateService {
     if (code == null) {
       code = this.fallbackLanguage;
     }
-
+    
     Map<String, String> translationMap = await _getTranslationMap(code);
     if(translationMap != null && translationMap.containsKey(text)){
       return _replace(translationMap[text], replace);

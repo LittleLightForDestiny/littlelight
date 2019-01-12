@@ -1,12 +1,14 @@
 import 'package:bungie_api/models/user_membership_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:little_light/exceptions/exception_handler.dart';
 import 'package:little_light/screens/main.screen.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/translate/translate.service.dart';
+import 'package:little_light/widgets/exceptions/exception_dialog.dart';
 import 'package:little_light/widgets/initial_page/download_manifest.widget.dart';
 import 'package:little_light/widgets/initial_page/login_widget.dart';
 import 'package:little_light/widgets/initial_page/select_language.widget.dart';
@@ -23,6 +25,7 @@ class InitialScreen extends StatefulWidget {
   final bool forceLogin;
   final bool forceSelectMembership;
 
+
   InitialScreen(
       {Key key,
       this.forceChangeLanguage = false,
@@ -35,6 +38,7 @@ class InitialScreen extends StatefulWidget {
 }
 
 class InitialScreenState extends FloatingContentState<InitialScreen> {
+  bool forceReauth = false;
   @override
   void initState() {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -92,7 +96,7 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
   checkLogin() async {
     SavedToken token = await widget.auth.getToken();
     bool skippedLogin = await widget.auth.getSkippedLogin();
-    if (token == null && !skippedLogin || widget.forceLogin) {
+    if ((token == null && !skippedLogin) || widget.forceLogin || forceReauth) {
       showLogin();
     } else {
       checkMembership();
@@ -101,7 +105,7 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
 
   showLogin() {
     LoginWidget loginWidget = new LoginWidget(
-      forceReauth: widget.forceLogin,
+      forceReauth: widget.forceLogin || forceReauth,
       onSkip: () {
         loadProfile();
       },
@@ -112,11 +116,21 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
     this.changeContent(loginWidget, loginWidget.title);
   }
 
-  authCode(String code) {
+  authCode(String code) async{
     this.changeContent(null, "");
-    widget.auth.requestToken(code).then((obj) {
+    try{
+      await widget.auth.requestToken(code);
       checkMembership();
-    });
+    }catch(e, stackTrace){
+      showDialog(context: context, builder: 
+      (context)=>ExceptionDialog(context, e,onDismiss: (label){
+        if(label == "Login"){
+          this.forceReauth = true;
+          showLogin();
+        }
+      },));
+      ExceptionHandler().handleException(e, stackTrace);
+    }
   }
 
   checkMembership() async {

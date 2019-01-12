@@ -25,10 +25,6 @@ class ItemListWidget extends StatefulWidget {
     InventoryBucket.modifications,
     InventoryBucket.lostItems
   ];
-  final profileBuckets = [
-    InventoryBucket.shaders,
-    InventoryBucket.modifications
-  ];
   final String characterId;
   final ManifestService manifest = new ManifestService();
   final ProfileService profile = new ProfileService();
@@ -54,7 +50,8 @@ class ItemListWidgetState extends State<ItemListWidget> {
     super.initState();
     buildIndex();
     subscription = widget.profile.broadcaster.listen((event) {
-      if (event == ProfileEvent.receivedUpdate) {
+      if (event.type == ProfileEventType.receivedUpdate ||
+      event.type == ProfileEventType.localUpdate){
         buildIndex();
       }
     });
@@ -79,7 +76,7 @@ class ItemListWidgetState extends State<ItemListWidget> {
 
     widget.bucketHashes.forEach((hash) async {
       List<DestinyItemComponent> inventory = characterInventory;
-      if (widget.profileBuckets.contains(hash)) {
+      if (ProfileService.profileBuckets.contains(hash)) {
         inventory = profileInventory;
       }
       DestinyInventoryBucketDefinition bucketDef =

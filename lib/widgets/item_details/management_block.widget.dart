@@ -6,12 +6,14 @@ import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/enums/definition_table_names.enum.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
+import 'package:little_light/services/inventory/inventory.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/widgets/common/destiny_item.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
 class ManagementBlockWidget extends DestinyItemWidget {
+  final InventoryService inventory = new InventoryService();
   ManagementBlockWidget(
       DestinyItemComponent item,
       DestinyInventoryItemDefinition definition,
@@ -43,8 +45,10 @@ class ManagementBlockWidget extends DestinyItemWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 transferDestinations.length > 0
-                    ? Expanded(flex:3, child:buttons(
-                        context, transferDestinations, Alignment.centerLeft))
+                    ? Expanded(
+                        flex: 3,
+                        child: buttons(context, transferDestinations,
+                            Alignment.centerLeft))
                     : null,
                 pullDestinations.length > 0
                     ? buttons(context, pullDestinations)
@@ -71,12 +75,12 @@ class ManagementBlockWidget extends DestinyItemWidget {
                     : null,
                 equipDestinations.length > 0
                     ? Expanded(
-                      child:buttons(
-                        context,
-                        equipDestinations,
-                        unequipDestinations.length > 0
-                            ? Alignment.centerRight
-                            : Alignment.centerLeft))
+                        child: buttons(
+                            context,
+                            equipDestinations,
+                            unequipDestinations.length > 0
+                                ? Alignment.centerRight
+                                : Alignment.centerLeft))
                     : null
               ].where((value) => value != null).toList(),
             ),
@@ -112,8 +116,6 @@ class ManagementBlockWidget extends DestinyItemWidget {
   }
 
   Widget button(BuildContext context, TransferDestination destination) {
-    DestinyCharacterComponent character =
-        profile.getCharacter(destination.characterId);
     return Container(
         child: SizedBox(
             width: kToolbarHeight,
@@ -122,17 +124,62 @@ class ManagementBlockWidget extends DestinyItemWidget {
                 foregroundDecoration: BoxDecoration(
                     border: Border.all(width: 1, color: Colors.grey.shade400)),
                 child: Stack(fit: StackFit.expand, children: [
-                  ManifestImageWidget(
-                      DefinitionTableNames.destinyInventoryItemDefinition,
-                      character.emblemHash),
+                  characterIcon(destination),
                   Material(
                     type: MaterialType.button,
                     color: Colors.transparent,
                     child: InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        transferTap(destination, context);
+                      },
                     ),
                   ),
                 ]))));
+  }
+
+  transferTap(TransferDestination destination, BuildContext context) async{
+    switch(destination.action){
+      case InventoryAction.Equip:{
+        inventory.equip(item, characterId, destination.characterId);
+        Navigator.pop(context);
+        break;
+      }
+      case InventoryAction.Unequip:{
+        inventory.unequip(item, characterId);
+        Navigator.pop(context);
+        break;
+      }
+      case InventoryAction.Transfer:{
+        inventory.transfer(item, characterId, destination.type, destination.characterId);
+        Navigator.pop(context);
+        break;
+      }
+      case InventoryAction.Pull:{
+        inventory.transfer(item, characterId, destination.type, destination.characterId);
+        Navigator.pop(context);
+        break;
+      }
+    }
+    
+  }
+
+  
+
+  Widget characterIcon(TransferDestination destination) {
+    DestinyCharacterComponent character =
+        profile.getCharacter(destination.characterId);
+    switch (destination.type) {
+      case ItemDestination.Vault:
+        return Image.asset('assets/imgs/vault-icon.jpg');
+
+      case ItemDestination.Inventory:
+        return Container();
+
+      default:
+        return ManifestImageWidget(
+            DefinitionTableNames.destinyInventoryItemDefinition,
+            character.emblemHash);
+    }
   }
 
   List<TransferDestination> get equipDestinations {
@@ -142,25 +189,30 @@ class ManagementBlockWidget extends DestinyItemWidget {
         .where((char) =>
             !(instanceInfo.isEquipped && char.characterId == characterId))
         .map((char) =>
-            TransferDestination(char.characterId, DestinationType.Character))
+            TransferDestination(ItemDestination.Character, characterId:char.characterId, action: InventoryAction.Equip))
         .toList();
   }
 
   List<TransferDestination> get transferDestinations {
-    return this
+    List<TransferDestination> list = this
         .profile
         .getCharacters(CharacterOrder.lastPlayed)
         .where((char) => char.characterId != characterId)
         .map((char) =>
-            TransferDestination(char.characterId, DestinationType.Character))
+            TransferDestination(ItemDestination.Character, characterId:char.characterId))
         .toList();
+
+    if(item.bucketHash != InventoryBucket.general){
+      list.add(TransferDestination(ItemDestination.Vault));
+    }
+    return list;
   }
 
   List<TransferDestination> get pullDestinations {
     if (item.bucketHash == InventoryBucket.lostItems) {
       return [
-        TransferDestination(
-            characterId, DestinationType.Character, DestinationAction.Pull)
+        TransferDestination(ItemDestination.Character,
+            characterId:characterId, action:InventoryAction.Pull)
       ];
     }
     return [];
@@ -169,8 +221,8 @@ class ManagementBlockWidget extends DestinyItemWidget {
   List<TransferDestination> get unequipDestinations {
     if (instanceInfo.isEquipped) {
       return [
-        TransferDestination(
-            characterId, DestinationType.Character, DestinationAction.Unequip)
+        TransferDestination(ItemDestination.Character,
+            characterId:characterId, action:InventoryAction.Unequip)
       ];
     }
     return [];
@@ -179,12 +231,10 @@ class ManagementBlockWidget extends DestinyItemWidget {
 
 class TransferDestination {
   final String characterId;
-  final DestinationType type;
-  final DestinationAction action;
+  final ItemDestination type;
+  final InventoryAction action;
 
-  TransferDestination(this.characterId, this.type,
-      [this.action = DestinationAction.Transfer]);
+  TransferDestination(this.type, {this.action = InventoryAction.Transfer,this.characterId});
 }
 
-enum DestinationType { Character, Vault, Inventory }
-enum DestinationAction { Transfer, Equip, Unequip, Pull }
+enum InventoryAction { Transfer, Equip, Unequip, Pull }

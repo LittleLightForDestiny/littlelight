@@ -52,6 +52,8 @@ class CharacterTabWidgetState extends State<CharacterTabWidget>{
           InventoryBucket.ghost,
           InventoryBucket.vehicle,
           InventoryBucket.ships,
+          InventoryBucket.emblems,
+          InventoryBucket.consumables,
           InventoryBucket.modifications,
           InventoryBucket.shaders,
           ];

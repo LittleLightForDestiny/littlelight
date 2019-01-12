@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/services/bungie_api/enums/definition_table_names.enum.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
+import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/widgets/item_list/bucket_header.widget.dart';
 import 'package:little_light/widgets/item_list/character_info.widget.dart';
 import 'package:little_light/widgets/item_list/item_list.widget.dart';
@@ -33,7 +34,7 @@ class VaultItemListWidgetState extends ItemListWidgetState {
     List<DestinyItemComponent> inventory = widget.profile.getProfileInventory();
     inventory = inventory.where((item)=>item.bucketHash == InventoryBucket.general).toList();
     List<int> hashes = inventory.map((item)=>item.itemHash).toList();
-    Map<int, DestinyInventoryItemDefinition> defs = (await widget.manifest.getDefinitions(DefinitionTableNames.destinyInventoryItemDefinition, hashes)).cast<int, DestinyInventoryItemDefinition>();
+    Map<int, DestinyInventoryItemDefinition> defs = (await widget.manifest.getDefinitions<DestinyInventoryItemDefinition>(DefinitionTableNames.destinyInventoryItemDefinition, hashes));
     Map<int, List<DestinyItemComponent>> itemsByBucket = new Map();
 
     for(int i = 0; i < inventory.length; i++){
@@ -49,7 +50,10 @@ class VaultItemListWidgetState extends ItemListWidgetState {
     listIndex = [];
 
     widget.bucketHashes.forEach((hash) async {
-      Iterable<DestinyItemComponent> unequipped = itemsByBucket[hash];
+      List<DestinyItemComponent> unequipped = itemsByBucket[hash];
+      unequipped.sort((itemA, itemB) {
+        return InventoryUtils.sortItemsByPower(itemA, itemB, widget.profile);
+      });
       if(unequipped == null){
         return;
       }
