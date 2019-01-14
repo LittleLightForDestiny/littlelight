@@ -9,6 +9,7 @@ import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enu
 import 'package:little_light/services/inventory/inventory.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/widgets/common/destiny_item.widget.dart';
+import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
@@ -34,24 +35,13 @@ class ManagementBlockWidget extends DestinyItemWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 transferDestinations.length > 0
-                    ? buildLabel(context, "Transfer")
-                    : null,
-                pullDestinations.length > 0
-                    ? buildLabel(context, "Pull")
-                    : null,
-              ].where((value) => value != null).toList(),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                transferDestinations.length > 0
                     ? Expanded(
                         flex: 3,
-                        child: buttons(context, transferDestinations,
+                        child: buildEquippingBlock(context, "Transfer", transferDestinations,
                             Alignment.centerLeft))
                     : null,
                 pullDestinations.length > 0
-                    ? buttons(context, pullDestinations)
+                    ? buildEquippingBlock(context, "Pull", pullDestinations)
                     : null
               ].where((value) => value != null).toList(),
             ),
@@ -59,24 +49,14 @@ class ManagementBlockWidget extends DestinyItemWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 unequipDestinations.length > 0
-                    ? buildLabel(context, "Unequip")
-                    : null,
-                equipDestinations.length > 0
-                    ? buildLabel(context, "Equip")
-                    : null,
-              ].where((value) => value != null).toList(),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                unequipDestinations.length > 0
-                    ? buttons(
-                        context, unequipDestinations, Alignment.centerLeft)
+                    ? buildEquippingBlock(
+                        context, "Unequip", unequipDestinations, Alignment.centerLeft)
                     : null,
                 equipDestinations.length > 0
                     ? Expanded(
-                        child: buttons(
+                        child: buildEquippingBlock(
                             context,
+                            "Equip",
                             equipDestinations,
                             unequipDestinations.length > 0
                                 ? Alignment.centerRight
@@ -88,26 +68,38 @@ class ManagementBlockWidget extends DestinyItemWidget {
         ));
   }
 
-  Widget buildLabel(BuildContext context, String title) {
+  Widget buildEquippingBlock(BuildContext context, String title,
+      List<TransferDestination> destinations,
+      [Alignment align = Alignment.centerRight]) {
+        return Column(
+          crossAxisAlignment: align == Alignment.centerRight ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          children: <Widget>[
+          buildLabel(context, title, align),
+          buttons(context, destinations, align)
+        ]);
+      }
+
+  Widget buildLabel(BuildContext context, String title, [Alignment align = Alignment.centerRight]) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-      child: TranslatedTextWidget(
+      padding:EdgeInsets.symmetric(horizontal: 8),
+      child:HeaderWidget(
+      child: Container(
+        alignment: align,
+        child:TranslatedTextWidget(
         title,
         uppercase: true,
-        style: TextStyle(fontWeight: FontWeight.bold),
-      ),
-    );
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.bold),
+      )),
+    ));
   }
 
   Widget buttons(BuildContext context, List<TransferDestination> destinations,
       [Alignment align = Alignment.centerRight]) {
     return Container(
         alignment: align,
-        margin: EdgeInsets.symmetric(horizontal: 8),
-        padding: EdgeInsets.symmetric(vertical: 8),
-        decoration: BoxDecoration(
-            border:
-                Border(top: BorderSide(width: 2, color: Colors.grey.shade300))),
+        padding: EdgeInsets.all(8),
         child: Wrap(
             spacing: 8,
             children: destinations
@@ -137,33 +129,36 @@ class ManagementBlockWidget extends DestinyItemWidget {
                 ]))));
   }
 
-  transferTap(TransferDestination destination, BuildContext context) async{
-    switch(destination.action){
-      case InventoryAction.Equip:{
-        inventory.equip(item, characterId, destination.characterId);
-        Navigator.pop(context);
-        break;
-      }
-      case InventoryAction.Unequip:{
-        inventory.unequip(item, characterId);
-        Navigator.pop(context);
-        break;
-      }
-      case InventoryAction.Transfer:{
-        inventory.transfer(item, characterId, destination.type, destination.characterId);
-        Navigator.pop(context);
-        break;
-      }
-      case InventoryAction.Pull:{
-        inventory.transfer(item, characterId, destination.type, destination.characterId);
-        Navigator.pop(context);
-        break;
-      }
+  transferTap(TransferDestination destination, BuildContext context) async {
+    switch (destination.action) {
+      case InventoryAction.Equip:
+        {
+          inventory.equip(item, characterId, destination.characterId);
+          Navigator.pop(context);
+          break;
+        }
+      case InventoryAction.Unequip:
+        {
+          inventory.unequip(item, characterId);
+          Navigator.pop(context);
+          break;
+        }
+      case InventoryAction.Transfer:
+        {
+          inventory.transfer(
+              item, characterId, destination.type, destination.characterId);
+          Navigator.pop(context);
+          break;
+        }
+      case InventoryAction.Pull:
+        {
+          inventory.transfer(
+              item, characterId, destination.type, destination.characterId);
+          Navigator.pop(context);
+          break;
+        }
     }
-    
   }
-
-  
 
   Widget characterIcon(TransferDestination destination) {
     DestinyCharacterComponent character =
@@ -173,7 +168,7 @@ class ManagementBlockWidget extends DestinyItemWidget {
         return Image.asset('assets/imgs/vault-icon.jpg');
 
       case ItemDestination.Inventory:
-        return Container();
+        return Image.asset('assets/imgs/inventory-icon.jpg');
 
       default:
         return ManifestImageWidget(
@@ -183,46 +178,67 @@ class ManagementBlockWidget extends DestinyItemWidget {
   }
 
   List<TransferDestination> get equipDestinations {
+    if (!definition.equippable) {
+      return [];
+    }
     return this
         .profile
         .getCharacters(CharacterOrder.lastPlayed)
         .where((char) =>
-            !(instanceInfo.isEquipped && char.characterId == characterId))
-        .map((char) =>
-            TransferDestination(ItemDestination.Character, characterId:char.characterId, action: InventoryAction.Equip))
+            !(instanceInfo.isEquipped && char.characterId == characterId) &&
+            !(definition.nonTransferrable && char.characterId != characterId))
+        .map((char) => TransferDestination(ItemDestination.Character,
+            characterId: char.characterId, action: InventoryAction.Equip))
         .toList();
   }
 
   List<TransferDestination> get transferDestinations {
+    if (definition.nonTransferrable) {
+      return [];
+    }
+
+    if (ProfileService.profileBuckets
+        .contains(definition.inventory.bucketTypeHash)) {
+      if (item.bucketHash == InventoryBucket.general) {
+        return [TransferDestination(ItemDestination.Inventory)];
+      }
+      return [TransferDestination(ItemDestination.Vault)];
+    }
+
     List<TransferDestination> list = this
         .profile
         .getCharacters(CharacterOrder.lastPlayed)
-        .where((char) => char.characterId != characterId)
-        .map((char) =>
-            TransferDestination(ItemDestination.Character, characterId:char.characterId))
+        .where((char) => !(char.characterId == characterId))
+        .map((char) => TransferDestination(ItemDestination.Character,
+            characterId: char.characterId))
         .toList();
 
-    if(item.bucketHash != InventoryBucket.general){
+    if (item.bucketHash != InventoryBucket.general) {
       list.add(TransferDestination(ItemDestination.Vault));
     }
     return list;
   }
 
   List<TransferDestination> get pullDestinations {
-    if (item.bucketHash == InventoryBucket.lostItems) {
+    if (item.bucketHash == InventoryBucket.lostItems &&
+        !definition.doesPostmasterPullHaveSideEffects) {
       return [
-        TransferDestination(ItemDestination.Character,
-            characterId:characterId, action:InventoryAction.Pull)
+        TransferDestination(ItemDestination.Inventory,
+            characterId: characterId, action: InventoryAction.Pull)
       ];
     }
     return [];
   }
 
   List<TransferDestination> get unequipDestinations {
-    if (instanceInfo.isEquipped) {
+    if (!definition.equippable) {
+      return [];
+    }
+    bool isEquipped = instanceInfo?.isEquipped ?? false;
+    if (isEquipped) {
       return [
         TransferDestination(ItemDestination.Character,
-            characterId:characterId, action:InventoryAction.Unequip)
+            characterId: characterId, action: InventoryAction.Unequip)
       ];
     }
     return [];
@@ -234,7 +250,8 @@ class TransferDestination {
   final ItemDestination type;
   final InventoryAction action;
 
-  TransferDestination(this.type, {this.action = InventoryAction.Transfer,this.characterId});
+  TransferDestination(this.type,
+      {this.action = InventoryAction.Transfer, this.characterId});
 }
 
 enum InventoryAction { Transfer, Equip, Unequip, Pull }

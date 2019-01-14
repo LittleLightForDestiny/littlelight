@@ -156,7 +156,8 @@ class InventoryItemWrapperWidgetState
       case ItemType.armor:
         {
           return ArmorInventoryItemWidget(
-              widget.item, _definition, _instanceInfo);
+              widget.item, _definition, _instanceInfo,
+              characterId: widget.characterId,);
         }
       default:
         return BaseInventoryItemWidget(widget.item, _definition, _instanceInfo, characterId:widget.characterId);

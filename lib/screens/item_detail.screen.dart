@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/widgets/common/destiny_item.widget.dart';
 
 import 'package:little_light/widgets/item_details/item_cover/item_cover.widget.dart';
+import 'package:little_light/widgets/item_details/item_stats.widget.dart';
 import 'package:little_light/widgets/item_details/main_info/item_main_info.widget.dart';
 import 'package:little_light/widgets/item_details/management_block.widget.dart';
 
@@ -28,6 +29,7 @@ class ItemDetailScreen extends DestinyItemWidget {
             [
               ItemMainInfoWidget(item, definition, instanceInfo),
               ManagementBlockWidget(item, definition, instanceInfo, characterId: characterId,),
+              ItemStatsWidget(item, definition, instanceInfo)
             ],
           ),
         ),

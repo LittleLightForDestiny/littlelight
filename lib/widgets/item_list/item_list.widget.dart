@@ -17,10 +17,12 @@ class ItemListWidget extends StatefulWidget {
   final List<int> minimalDensityBucketHashes = [
     InventoryBucket.lostItems,
     InventoryBucket.engrams,
+    InventoryBucket.consumables,
     InventoryBucket.shaders,
     InventoryBucket.modifications
   ];
   final suppressEmptySpaces = [
+    InventoryBucket.consumables,
     InventoryBucket.shaders,
     InventoryBucket.modifications,
     InventoryBucket.lostItems

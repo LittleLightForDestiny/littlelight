@@ -47,6 +47,7 @@ class VaultTabWidgetState extends CharacterTabWidgetState{
           InventoryBucket.ghost,
           InventoryBucket.vehicle,
           InventoryBucket.ships,
+          InventoryBucket.consumables,
           InventoryBucket.modifications,
           InventoryBucket.shaders,
           ];

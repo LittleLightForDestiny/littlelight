@@ -59,7 +59,7 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
             background(context, expandRatio),
             nameBar(context, expandRatio),
             icon(context, expandRatio),
-            backButton(context),
+            backButton(context, expandRatio),
           ],
         ));
   }
@@ -104,7 +104,7 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
             )));
   }
 
-  Widget backButton(BuildContext context) {
+  Widget backButton(BuildContext context, double expandRatio) {
     double paddingTop = MediaQuery.of(context).padding.top;
     return Positioned(
         left: 0,
@@ -112,13 +112,16 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
         width: kToolbarHeight,
         height: kToolbarHeight,
         child: BackButton(
-            color:
-                DestinyData.getTierTextColor(definition.inventory.tierType)));
+            color:Color.lerp(DestinyData.getTierTextColor(definition.inventory.tierType), Colors.grey.shade300, expandRatio)
+                ));
   }
 
   Widget background(BuildContext context, double expandRatio) {
     double width = MediaQuery.of(context).size.width;
     double opacity = expandRatio;
+    if(definition.screenshot == null){
+      return Container();
+    }
     return Positioned(
         top: 0,
         bottom: kToolbarHeight,

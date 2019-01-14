@@ -5,98 +5,119 @@ import 'package:bungie_api/enums/tier_type_enum.dart';
 import 'package:bungie_api/enums/destiny_ammunition_type_enum.dart';
 import 'package:little_light/widgets/icon_fonts/destiny_icons_icons.dart';
 
-class DestinyData{
-  static IconData getClassIcon(int type){
+class DestinyData {
+  static const List<int> statWhitelist = [
+    3614673599, // Blast Radius
+    2523465841, // Velocity
+    4043523819, // Impact
+    1240592695, // Range
+    155624089, // Stability
+    943549884, // Handling
+    4188031367, // Reload Speed
+
+    1345609583, // Aim Assistance
+    2715839340, // Recoil Direction
+    3555269338, // Zoom
+
+    4284893193, // Rounds Per Minute
+    2961396640, // Charge Time
+    3871231066, // Magazine
+    1931675084, //Inventory Size
+
+    2996146975, // Mobility
+    392767087, // Resilience
+    1943323491,
+  ];
+  static IconData getClassIcon(int type) {
     switch (type) {
       case DestinyClass.Hunter:
-      return DestinyIcons.class_hunter;
+        return DestinyIcons.class_hunter;
       case DestinyClass.Titan:
-      return DestinyIcons.class_titan;
+        return DestinyIcons.class_titan;
       case DestinyClass.Warlock:
-      return DestinyIcons.class_warlock;
+        return DestinyIcons.class_warlock;
     }
     return DestinyIcons.destiny;
   }
 
-  static IconData getAmmoTypeIcon(int type){
+  static IconData getAmmoTypeIcon(int type) {
     switch (type) {
       case DestinyAmmunitionType.Primary:
-      return DestinyIcons.ammo_primary;
+        return DestinyIcons.ammo_primary;
       case DestinyAmmunitionType.Special:
-      return DestinyIcons.ammo_special;
+        return DestinyIcons.ammo_special;
       case DestinyAmmunitionType.Heavy:
-      return DestinyIcons.ammo_heavy;
+        return DestinyIcons.ammo_heavy;
     }
     return DestinyIcons.destiny;
   }
 
-  static Color getAmmoTypeColor(int type){
+  static Color getAmmoTypeColor(int type) {
     switch (type) {
       case DestinyAmmunitionType.Special:
-      return Color.fromARGB(255, 116, 247, 146);
+        return Color.fromARGB(255, 116, 247, 146);
       case DestinyAmmunitionType.Heavy:
-      return Color.fromARGB(255, 179, 127, 251);
+        return Color.fromARGB(255, 179, 127, 251);
     }
     return Colors.white;
   }
 
-  static IconData getDamageTypeIcon(int type){
+  static IconData getDamageTypeIcon(int type) {
     switch (type) {
       case DamageType.Kinetic:
-      return DestinyIcons.damage_kinetic;
+        return DestinyIcons.damage_kinetic;
       case DamageType.Arc:
-      return DestinyIcons.damage_arc;
+        return DestinyIcons.damage_arc;
       case DamageType.Thermal:
-      return DestinyIcons.damage_solar;
+        return DestinyIcons.damage_solar;
       case DamageType.Void:
-      return DestinyIcons.damage_void;
+        return DestinyIcons.damage_void;
     }
     return DestinyIcons.destiny;
   }
 
-  static Color getDamageTypeColor(int damageType){
-    switch(damageType){
+  static Color getDamageTypeColor(int damageType) {
+    switch (damageType) {
       case DamageType.Arc:
-        return Color.fromARGB(255, 118,186,230);
+        return Color.fromARGB(255, 118, 186, 230);
       case DamageType.Thermal:
-        return Color.fromARGB(255, 243,98,39);
+        return Color.fromARGB(255, 243, 98, 39);
       case DamageType.Void:
-        return Color.fromARGB(255, 64,34,101);
+        return Color.fromARGB(255, 64, 34, 101);
     }
     return Colors.white;
   }
 
-  static Color getDamageTypeTextColor(int damageType){
-    switch(damageType){
+  static Color getDamageTypeTextColor(int damageType) {
+    switch (damageType) {
       case DamageType.Arc:
-        return Color.fromARGB(255, 130,200,253);
+        return Color.fromARGB(255, 130, 200, 253);
       case DamageType.Thermal:
-        return Color.fromARGB(255, 255,156,74);
+        return Color.fromARGB(255, 255, 156, 74);
       case DamageType.Void:
-        return Color.fromARGB(255, 177,120,248);
+        return Color.fromARGB(255, 177, 120, 248);
     }
     return Colors.white;
   }
 
-
-  static Color getTierColor(int tierType){
-    switch(tierType){
+  static Color getTierColor(int tierType) {
+    switch (tierType) {
       case TierType.Basic:
-        return Color.fromARGB(255, 195,188,180);
+        return Color.fromARGB(255, 195, 188, 180);
       case TierType.Common:
-        return Color.fromARGB(255, 48,107,61);
+        return Color.fromARGB(255, 48, 107, 61);
       case TierType.Rare:
-        return Color.fromARGB(255, 80,118,163);
+        return Color.fromARGB(255, 80, 118, 163);
       case TierType.Superior:
-        return Color.fromARGB(255, 82,47,101);
+        return Color.fromARGB(255, 82, 47, 101);
       case TierType.Exotic:
-        return Color.fromARGB(255, 206,174,51);
+        return Color.fromARGB(255, 206, 174, 51);
     }
     return Color.fromARGB(255, 0, 0, 0);
   }
 
-  static Color getTierTextColor(int tierType){
-    switch(tierType){
+  static Color getTierTextColor(int tierType) {
+    switch (tierType) {
       case TierType.Basic:
         return Colors.grey.shade800;
     }
@@ -104,6 +125,6 @@ class DestinyData{
   }
 }
 
-class ProgressionHash{
+class ProgressionHash {
   static const String Overlevel = '2030054750';
 }

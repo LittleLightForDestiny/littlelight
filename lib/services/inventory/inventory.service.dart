@@ -12,9 +12,15 @@ import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:bungie_api/enums/bucket_category_enum.dart';
 
-
-enum ItemDestination{Character, Inventory, Vault}
-enum TransferErrorCode { cantFindSubstitute }
+enum ItemDestination { Character, Inventory, Vault }
+enum TransferErrorCode {
+  cantFindSubstitute,
+  cantPullFromPostmaster,
+  cantMoveToVault,
+  cantMoveToCharacter,
+  cantEquip,
+  cantUnequip
+}
 
 class TransferError {
   final TransferErrorCode code;
@@ -28,11 +34,14 @@ class InventoryService {
   final manifest = ManifestService();
 
   transfer(DestinyItemComponent item, String sourceCharacterId,
-      ItemDestination destination, [String destinationCharacterId]) async {
-    await _transfer(item, sourceCharacterId, destination, destinationCharacterId);
+      ItemDestination destination,
+      [String destinationCharacterId]) async {
+    await _transfer(
+        item, sourceCharacterId, destination, destinationCharacterId);
   }
 
-  equip(DestinyItemComponent item, String sourceCharacterId, String destinationCharacterId) async {
+  equip(DestinyItemComponent item, String sourceCharacterId,
+      String destinationCharacterId) async {
     await _equip(item, destinationCharacterId);
   }
 
@@ -41,76 +50,90 @@ class InventoryService {
   }
 
   _transfer(DestinyItemComponent item, String sourceCharacterId,
-      ItemDestination destination, [String destinatioCharacterId, int stackSize]) async{
+      ItemDestination destination,
+      [String destinatioCharacterId, int stackSize]) async {
     var instanceInfo = profile.getInstanceInfo(item.itemInstanceId);
     var def = await manifest.getItemDefinition(item.itemHash);
     var sourceBucketDef = await manifest.getBucketDefinition(item.bucketHash);
-    if(stackSize == null){
+    if (stackSize == null) {
       stackSize = item.quantity;
     }
     bool needsToUnequip = instanceInfo?.isEquipped ?? false;
     bool onVault = item.bucketHash == InventoryBucket.general;
     bool onPostmaster = item.bucketHash == InventoryBucket.lostItems;
     bool charToChar = !onVault && destination == ItemDestination.Character;
-    bool needsVaulting = (charToChar && sourceCharacterId != destinatioCharacterId) || destination == ItemDestination.Vault;
+    bool needsVaulting =
+        (charToChar && sourceCharacterId != destinatioCharacterId) ||
+            destination == ItemDestination.Vault;
 
     if (needsToUnequip) {
       await _unequip(item, sourceCharacterId);
     }
 
-    if(onPostmaster){
+    if (onPostmaster) {
       await _freeSlotsOnBucket(def.inventory.bucketTypeHash, sourceCharacterId);
-      int result = await api.pullFromPostMaster(item.itemHash, stackSize, item.itemInstanceId, sourceCharacterId);
-      if(result != 0){
-
+      int result = await api.pullFromPostMaster(
+          item.itemHash, stackSize, item.itemInstanceId, sourceCharacterId);
+      if (result != 0) {
+        throw TransferError(TransferErrorCode.cantPullFromPostmaster);
       }
-      var destinationBucketDef = await manifest.getBucketDefinition(def.inventory.bucketTypeHash);
+      var destinationBucketDef =
+          await manifest.getBucketDefinition(def.inventory.bucketTypeHash);
 
-      if(def.inventory.isInstanceItem){
+      if (def.inventory.isInstanceItem) {
         item.bucketHash = def.inventory.bucketTypeHash;
-        if(destinationBucketDef.scope == BucketScope.Account){
-          profile.getCharacterInventory(sourceCharacterId).removeWhere((i)=>i.itemInstanceId == item.itemInstanceId);
+        if (destinationBucketDef.scope == BucketScope.Account) {
+          profile
+              .getCharacterInventory(sourceCharacterId)
+              .removeWhere((i) => i.itemInstanceId == item.itemInstanceId);
           profile.getProfileInventory().add(item);
         }
-      }else if(stackSize >= item.quantity){
+      } else if (stackSize >= item.quantity) {
         item.bucketHash = def.inventory.bucketTypeHash;
-        if(destinationBucketDef.scope == BucketScope.Account){
-          profile.getCharacterInventory(sourceCharacterId).removeWhere((i)=>i.itemInstanceId == item.itemInstanceId);
+        if (destinationBucketDef.scope == BucketScope.Account) {
+          profile
+              .getCharacterInventory(sourceCharacterId)
+              .removeWhere((i) => i.itemHash == item.itemHash);
           profile.getProfileInventory().add(item);
         }
-      }else{
+      } else {
         var newItem = DestinyItemComponent.fromMap(item.toMap());
         item.quantity = item.quantity - stackSize;
         newItem.quantity = stackSize;
         newItem.bucketHash = def.inventory.bucketTypeHash;
         item = newItem;
-        if(destinationBucketDef.scope == BucketScope.Character){
+        if (destinationBucketDef.scope == BucketScope.Character) {
           profile.getCharacterInventory(sourceCharacterId).add(item);
-        }else{
+        } else {
           profile.getProfileInventory().add(item);
         }
       }
       profile.fireLocalUpdate();
     }
 
-    if(needsVaulting){
-      int result = await api.transferItem(item.itemHash, stackSize, true, item.itemInstanceId, sourceCharacterId);
-      if(result != 0){
-
+    if (needsVaulting) {
+      int result = await api.transferItem(item.itemHash, stackSize, true,
+          item.itemInstanceId, sourceCharacterId);
+      if (result != 0) {
+        throw new TransferError(TransferErrorCode.cantMoveToVault);
       }
-      if(def.inventory.isInstanceItem){
+      if (def.inventory.isInstanceItem) {
         item.bucketHash = InventoryBucket.general;
-        if(sourceBucketDef.scope == BucketScope.Character){
-          profile.getCharacterInventory(sourceCharacterId).removeWhere((i)=>i.itemInstanceId == item.itemInstanceId);
+        if (sourceBucketDef.scope == BucketScope.Character) {
+          profile
+              .getCharacterInventory(sourceCharacterId)
+              .removeWhere((i) => i.itemInstanceId == item.itemInstanceId);
           profile.getProfileInventory().add(item);
         }
-      }else if(stackSize >= item.quantity){
+      } else if (stackSize >= item.quantity) {
         item.bucketHash = InventoryBucket.general;
-        if(sourceBucketDef.scope == BucketScope.Character){
-          profile.getCharacterInventory(sourceCharacterId).removeWhere((i)=>i.itemHash == item.itemHash);
+        if (sourceBucketDef.scope == BucketScope.Character) {
+          profile
+              .getCharacterInventory(sourceCharacterId)
+              .removeWhere((i) => i.itemHash == item.itemHash);
           profile.getProfileInventory().add(item);
         }
-      }else{
+      } else {
         var newItem = DestinyItemComponent.fromMap(item.toMap());
         item.quantity = item.quantity - stackSize;
         newItem.quantity = stackSize;
@@ -121,38 +144,45 @@ class InventoryService {
       profile.fireLocalUpdate();
     }
 
-    if(onVault && destination != ItemDestination.Vault){
-      await _freeSlotsOnBucket(def.inventory.bucketTypeHash, destinatioCharacterId);
-      var destinationBucketDef = await manifest.getBucketDefinition(def.inventory.bucketTypeHash);
-      if(destinationBucketDef.scope == BucketScope.Account){
+    if (onVault && destination != ItemDestination.Vault) {
+      await _freeSlotsOnBucket(
+          def.inventory.bucketTypeHash, destinatioCharacterId);
+      var destinationBucketDef =
+          await manifest.getBucketDefinition(def.inventory.bucketTypeHash);
+      if (destinationBucketDef.scope == BucketScope.Account) {
         destinatioCharacterId = profile.getCharacters().first.characterId;
       }
-      int result = await api.transferItem(item.itemHash, stackSize, false, item.itemInstanceId, destinatioCharacterId);
-      if(result != 0){
-
+      int result = await api.transferItem(item.itemHash, stackSize, false,
+          item.itemInstanceId, destinatioCharacterId);
+      if (result != 0) {
+        throw new TransferError(TransferErrorCode.cantMoveToCharacter);
       }
 
-      if(def.inventory.isInstanceItem){
+      if (def.inventory.isInstanceItem) {
         item.bucketHash = def.inventory.bucketTypeHash;
-        if(destinationBucketDef.scope == BucketScope.Character){
-          profile.getProfileInventory().removeWhere((i)=>i.itemInstanceId == item.itemInstanceId);
+        if (destinationBucketDef.scope == BucketScope.Character) {
+          profile
+              .getProfileInventory()
+              .removeWhere((i) => i.itemInstanceId == item.itemInstanceId);
           profile.getCharacterInventory(destinatioCharacterId).add(item);
         }
-      }else if(stackSize >= item.quantity){
+      } else if (stackSize >= item.quantity) {
         item.bucketHash = def.inventory.bucketTypeHash;
-        if(destinationBucketDef.scope == BucketScope.Character){
-          profile.getProfileInventory().removeWhere((i)=>i.itemInstanceId == item.itemInstanceId);
+        if (destinationBucketDef.scope == BucketScope.Character) {
+          profile
+              .getProfileInventory()
+              .removeWhere((i) => i.itemHash == item.itemHash);
           profile.getCharacterInventory(destinatioCharacterId).add(item);
         }
-      }else{
+      } else {
         var newItem = DestinyItemComponent.fromMap(item.toMap());
         item.quantity = item.quantity - stackSize;
         newItem.quantity = stackSize;
         newItem.bucketHash = def.inventory.bucketTypeHash;
         item = newItem;
-        if(destinationBucketDef.scope == BucketScope.Character){
+        if (destinationBucketDef.scope == BucketScope.Character) {
           profile.getCharacterInventory(sourceCharacterId).add(item);
-        }else{
+        } else {
           profile.getProfileInventory().add(item);
         }
       }
@@ -162,40 +192,50 @@ class InventoryService {
 
   _equip(DestinyItemComponent item, String characterId) async {
     var blockingExotic = await _findBlockingExotic(item, characterId);
-    if(blockingExotic != null){
+    if (blockingExotic != null) {
       await _unequip(blockingExotic, characterId);
     }
-    List<DestinyItemComponent> equipment = profile.getCharacterEquipment(characterId);
-    DestinyItemComponent currentlyEquipped = equipment.firstWhere((i)=>i.bucketHash == item.bucketHash);
+    List<DestinyItemComponent> equipment =
+        profile.getCharacterEquipment(characterId);
+    DestinyItemComponent currentlyEquipped =
+        equipment.firstWhere((i) => i.bucketHash == item.bucketHash);
     int result = await api.equipItem(item.itemInstanceId, characterId);
-    if(result != 0){
-      print(result);
+    if (result != 0) {
+      throw new TransferError(TransferErrorCode.cantEquip);
     }
-    List<DestinyItemComponent> inventory = profile.getCharacterInventory(characterId);
-    inventory.removeWhere((i)=>i.itemInstanceId == item.itemInstanceId);
-    equipment.removeWhere((i)=>i.itemInstanceId == currentlyEquipped.itemInstanceId);
-    DestinyItemInstanceComponent iInfo = profile.getInstanceInfo(item.itemInstanceId);
-    DestinyItemInstanceComponent sInfo = profile.getInstanceInfo(currentlyEquipped.itemInstanceId);
+    List<DestinyItemComponent> inventory =
+        profile.getCharacterInventory(characterId);
+    inventory.removeWhere((i) => i.itemInstanceId == item.itemInstanceId);
+    equipment.removeWhere(
+        (i) => i.itemInstanceId == currentlyEquipped.itemInstanceId);
+    DestinyItemInstanceComponent iInfo =
+        profile.getInstanceInfo(item.itemInstanceId);
+    DestinyItemInstanceComponent sInfo =
+        profile.getInstanceInfo(currentlyEquipped.itemInstanceId);
     iInfo.isEquipped = true;
     sInfo.isEquipped = false;
     equipment.add(item);
     inventory.add(currentlyEquipped);
-    
+
     profile.fireLocalUpdate();
   }
 
   _unequip(DestinyItemComponent item, String characterId) async {
     DestinyItemComponent substitute = await _findSubstitute(item, characterId);
     int result = await api.equipItem(substitute.itemInstanceId, characterId);
-    if(result != 0){
-      
+    if (result != 0) {
+      throw new TransferError(TransferErrorCode.cantUnequip);
     }
-    List<DestinyItemComponent> inventory = profile.getCharacterInventory(characterId);
-    List<DestinyItemComponent> equipment = profile.getCharacterEquipment(characterId);
-    inventory.removeWhere((i)=>i.itemInstanceId == substitute.itemInstanceId);
-    equipment.removeWhere((i)=>i.itemInstanceId == item.itemInstanceId);
-    DestinyItemInstanceComponent iInfo = profile.getInstanceInfo(item.itemInstanceId);
-    DestinyItemInstanceComponent sInfo = profile.getInstanceInfo(substitute.itemInstanceId);
+    List<DestinyItemComponent> inventory =
+        profile.getCharacterInventory(characterId);
+    List<DestinyItemComponent> equipment =
+        profile.getCharacterEquipment(characterId);
+    inventory.removeWhere((i) => i.itemInstanceId == substitute.itemInstanceId);
+    equipment.removeWhere((i) => i.itemInstanceId == item.itemInstanceId);
+    DestinyItemInstanceComponent iInfo =
+        profile.getInstanceInfo(item.itemInstanceId);
+    DestinyItemInstanceComponent sInfo =
+        profile.getInstanceInfo(substitute.itemInstanceId);
     iInfo.isEquipped = false;
     sInfo.isEquipped = true;
     inventory.add(item);
@@ -204,21 +244,23 @@ class InventoryService {
     profile.fireLocalUpdate();
   }
 
-  _freeSlotsOnBucket(int bucketHash, String characterId, [int count=1]) async {
-    DestinyInventoryBucketDefinition bucketDefinition = await manifest.getBucketDefinition(bucketHash);
+  _freeSlotsOnBucket(int bucketHash, String characterId,
+      [int count = 1]) async {
+    DestinyInventoryBucketDefinition bucketDefinition =
+        await manifest.getBucketDefinition(bucketHash);
     List<DestinyItemComponent> items;
     bool hasEquipSlot = bucketDefinition.category == BucketCategory.Equippable;
-    if(bucketDefinition.scope == BucketScope.Character){
+    if (bucketDefinition.scope == BucketScope.Character) {
       items = profile.getCharacterInventory(characterId);
-    }else{
+    } else {
       items = profile.getProfileInventory();
     }
-    items.retainWhere((item)=>item.bucketHash == bucketHash);
-    
+    items.retainWhere((item) => item.bucketHash == bucketHash);
+
     int bucketSize = bucketDefinition.itemCount - (hasEquipSlot ? 1 : 0);
     int itemCount = items.length;
     int freeSlots = bucketSize - itemCount;
-    if(freeSlots > count){
+    if (freeSlots > count) {
       return;
     }
     items.sort((itemA, itemB) {
@@ -230,30 +272,33 @@ class InventoryService {
       int powerB = instB?.primaryStat?.value ?? 0;
       return powerA.compareTo(powerB);
     });
-    for(var i =0; i < count - freeSlots; i++){
+    for (var i = 0; i < count - freeSlots; i++) {
       await _transfer(items[i], characterId, ItemDestination.Vault);
     }
   }
 
-  Future<DestinyItemComponent> _findBlockingExotic(DestinyItemComponent item, String characterId) async {
-    DestinyInventoryItemDefinition def = await manifest.getItemDefinition(item.itemHash);
-    if(def.inventory.tierType != TierType.Exotic){
+  Future<DestinyItemComponent> _findBlockingExotic(
+      DestinyItemComponent item, String characterId) async {
+    DestinyInventoryItemDefinition def =
+        await manifest.getItemDefinition(item.itemHash);
+    if (def.inventory.tierType != TierType.Exotic) {
       return null;
     }
-    if(![ItemType.armor, ItemType.weapon].contains(def.itemType)){
+    if (![ItemType.armor, ItemType.weapon].contains(def.itemType)) {
       return null;
     }
-    List<DestinyItemComponent> equipment = profile.getCharacterEquipment(characterId);
+    List<DestinyItemComponent> equipment =
+        profile.getCharacterEquipment(characterId);
     Map<int, DestinyInventoryItemDefinition> definitions =
         await manifest.getDefinitions<DestinyInventoryItemDefinition>(
             DefinitionTableNames.destinyInventoryItemDefinition,
             equipment.map((pItem) => pItem.itemHash).toList());
-    return equipment.firstWhere((i){
+    return equipment.firstWhere((i) {
       var d = definitions[i.itemHash];
-      return d.itemType == def.itemType
-      && d.inventory.tierType == TierType.Exotic
-      && i.bucketHash != item.bucketHash;
-    },orElse: ()=>null);
+      return d.itemType == def.itemType &&
+          d.inventory.tierType == TierType.Exotic &&
+          i.bucketHash != item.bucketHash;
+    }, orElse: () => null);
   }
 
   Future<DestinyItemComponent> _findSubstitute(
@@ -270,8 +315,8 @@ class InventoryService {
             DefinitionTableNames.destinyInventoryItemDefinition,
             possibles.map((pItem) => pItem.itemHash).toList());
     possibles.removeWhere((pItem) =>
-        (definitions[pItem.itemHash].inventory?.tierType ??
-        0) == TierType.Exotic);
+        (definitions[pItem.itemHash].inventory?.tierType ?? 0) ==
+        TierType.Exotic);
     if (possibles.length == 0) {
       throw TransferError(TransferErrorCode.cantFindSubstitute);
     }

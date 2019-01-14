@@ -14,6 +14,6 @@ abstract class DestinyItemWidget extends StatelessWidget {
   final ManifestService manifest = new ManifestService();
 
   DestinyItemWidget(this.item, this.definition, this.instanceInfo,
-      {@required Key key, @required this.characterId})
+      {Key key, this.characterId})
       : super(key: key);
 }

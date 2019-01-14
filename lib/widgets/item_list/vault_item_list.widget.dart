@@ -51,12 +51,14 @@ class VaultItemListWidgetState extends ItemListWidgetState {
 
     widget.bucketHashes.forEach((hash) async {
       List<DestinyItemComponent> unequipped = itemsByBucket[hash];
-      unequipped.sort((itemA, itemB) {
-        return InventoryUtils.sortItemsByPower(itemA, itemB, widget.profile);
-      });
+      
       if(unequipped == null){
         return;
       }
+
+      unequipped.sort((itemA, itemB) {
+        return InventoryUtils.sortItemsByPower(itemA, itemB, widget.profile);
+      });
     
       int itemCount = unequipped.length;
       int bucketSize = max((itemCount/5).ceil()*5, 5);

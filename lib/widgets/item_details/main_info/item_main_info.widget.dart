@@ -13,24 +13,45 @@ class ItemMainInfoWidget extends DestinyItemWidget {
       DestinyItemInstanceComponent instanceInfo,
       {Key key,
       String characterId})
-      : super(item, definition, instanceInfo, key: key, characterId:characterId);
+      : super(item, definition, instanceInfo,
+            key: key, characterId: characterId);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-          PrimaryStatWidget(item, 
-          definition, 
-          instanceInfo,
-          suppressLabel: true,
-          fontSize: 36,
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical:8),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(definition.itemTypeDisplayName),
+              Padding(
+                  padding: EdgeInsets.only(top: 8),
+                  child: primaryStat(context))
+            ],
           ),
-          Padding(padding: EdgeInsets.symmetric(vertical: 8),
-          child: Text(definition.displayProperties.description)),
-          
+          Container(
+            height: 1,
+            color: Colors.grey.shade300,
+            margin: EdgeInsets.symmetric(vertical: 8),
+          ),
+          Padding(
+              padding: EdgeInsets.symmetric(vertical: 8),
+              child: Text(definition.displayProperties.description)),
         ]));
+  }
+
+  Widget primaryStat(context) {
+    if (instanceInfo?.primaryStat != null) {
+      return PrimaryStatWidget(
+        item,
+        definition,
+        instanceInfo,
+        suppressLabel: true,
+        fontSize: 36,
+      );
+    }
+    return Container();
   }
 }
