@@ -27,7 +27,6 @@ class ManagementBlockWidget extends DestinyItemWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.symmetric(horizontal: 8),
         child: Wrap(
           direction: Axis.horizontal,
           children: <Widget>[

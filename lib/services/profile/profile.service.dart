@@ -4,6 +4,7 @@ import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:bungie_api/models/destiny_character_progression_component.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
+import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_item_talent_grid_component.dart';
 import 'package:bungie_api/models/destiny_profile_response.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
@@ -222,6 +223,10 @@ class ProfileService {
 
   List<DestinyItemComponent> getProfileInventory() {
     return profile.profileInventory.data.items;
+  }
+
+  List<DestinyItemSocketState> getItemSockets(String itemInstanceId){
+    return profile.itemComponents.sockets.data[itemInstanceId].sockets;
   }
 
   DestinyCharacterProgressionComponent getCharacterProgression(

@@ -34,7 +34,7 @@ class ItemStatsWidget extends DestinyItemWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(16),
+      padding: EdgeInsets.all(8),
       child: Column(
         children: <Widget>[
           HeaderWidget(
@@ -46,8 +46,13 @@ class ItemStatsWidget extends DestinyItemWidget {
               textAlign: TextAlign.left,
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
+          )),
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 8),
+            child:Column(
+            children: buildStats(context)
           ))
-        ].followedBy(buildStats(context)).toList(),
+        ],
       ),
     );
   }
@@ -84,51 +89,63 @@ class ItemStatWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double totalWidth = MediaQuery.of(context).size.width - 32;
-    return Row(children: [
+    return Container(
+      padding: EdgeInsets.symmetric(vertical:1),
+      child:Row(children: [
       SizedBox(
-        width:totalWidth*.45,
-        child:ManifestText(
-          DefinitionTableNames.destinyStatDefinition,
-          definition.statHash,
-          textAlign: TextAlign.right,
-          uppercase: true,
-          maxLines: 1,
-          softWrap: false,
-          style: TextStyle(
-            color: hiddenStat ? Colors.amber : Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 12
-          ),
-          overflow: TextOverflow.fade,
-        )
-      ),
+          width: totalWidth * .45,
+          child: ManifestText(
+            DefinitionTableNames.destinyStatDefinition,
+            definition.statHash,
+            textAlign: TextAlign.right,
+            uppercase: true,
+            maxLines: 1,
+            softWrap: false,
+            style: TextStyle(
+                color: color,
+                fontWeight: FontWeight.bold,
+                fontSize: 12),
+            overflow: TextOverflow.fade,
+          )),
       SizedBox(
-        width:totalWidth*.1,
-        child:Text(
-          "${definition.value}",
-          textAlign: TextAlign.center,
-          maxLines: 1,
-          softWrap: false,
-          style: TextStyle(
-            color: hiddenStat ? Colors.amber : Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 12
-          ),
-          overflow: TextOverflow.fade,
-        )  
-      ),
-      noBar ? Container() : Expanded(
-      child:LinearProgressIndicator(
-        value: definition.value / 100,
-      ))
-    ]);
+          width: totalWidth * .1,
+          child: Text(
+            "${definition.value}",
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            softWrap: false,
+            style: TextStyle(
+                color: color,
+                fontWeight: FontWeight.bold,
+                fontSize: 12),
+            overflow: TextOverflow.fade,
+          )),
+      noBar
+          ? Container()
+          : Expanded(
+              child: Container(
+              color: Colors.grey.shade600,
+              height: 8,
+              child:FractionallySizedBox(
+                widthFactor: value/100,
+                alignment: Alignment.centerLeft,
+                child: Container(color: color,),
+              )
+            ))
+    ]));
   }
 
-  bool get hiddenStat{
+  int get value=>definition.value;
+
+  Color get color{
+    return hiddenStat ? Colors.amber.shade300 : Colors.grey.shade300;
+  }
+
+  bool get hiddenStat {
     return _hiddenStats.contains(definition.statHash);
   }
 
-  bool get noBar{
+  bool get noBar {
     return _noBarStats.contains(definition.statHash);
   }
 }

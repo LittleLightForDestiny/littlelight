@@ -19,7 +19,7 @@ class ItemMainInfoWidget extends DestinyItemWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical:8),
+        padding: EdgeInsets.symmetric(horizontal: 8, vertical:8),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -37,7 +37,7 @@ class ItemMainInfoWidget extends DestinyItemWidget {
             margin: EdgeInsets.symmetric(vertical: 8),
           ),
           Padding(
-              padding: EdgeInsets.symmetric(vertical: 8),
+              padding: EdgeInsets.all(8),
               child: Text(definition.displayProperties.description)),
         ]));
   }
