@@ -236,7 +236,10 @@ class ManifestService {
     } catch (e) {}
 
     if (identity == null) {
-      identity = DefinitionTableNames.identities[type];
+      identity = DefinitionTableNames.identities[T];
+    }
+    if(identity == null){
+      throw "missing identity for $T";
     }
     int searchHash = hash > 2147483648 ? hash - 4294967296 : hash;
     sqflite.Database db = await _openDb();

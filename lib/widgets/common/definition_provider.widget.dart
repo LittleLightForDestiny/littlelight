@@ -12,7 +12,7 @@ class DefinitionProviderWidget<T> extends StatefulWidget {
 
   @override
   DefinitionProviderWidgetState<T> createState() {
-    return new DefinitionProviderWidgetState<T>();
+    return DefinitionProviderWidgetState<T>();
   }
 }
 

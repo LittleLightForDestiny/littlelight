@@ -33,8 +33,8 @@ class ManifestText<T> extends StatefulWidget {
       : super(key: key);
 
   @override
-  State<ManifestText> createState() {
-    return new ManifestTextState<T>();
+  ManifestTextState<T> createState() {
+    return ManifestTextState<T>();
   }
 }
 

@@ -76,15 +76,17 @@ class ItemPerksWidget extends DestinyItemWidget {
 
   Widget plugItem(BuildContext context, bool enabled, int plugItemHash) {
     return DefinitionProviderWidget<DestinyInventoryItemDefinition>(plugItemHash,
-        (plugDefinition)=>
-        Container(
-        margin: EdgeInsets.all(4),
-        decoration: BoxDecoration(
+        (plugDefinition){
+          return Container(
+            margin: EdgeInsets.all(4),
+            decoration: BoxDecoration(
             color: enabled ? Colors.indigo : Colors.transparent,
             shape: BoxShape.circle),
-        child: CachedNetworkImage(
-          imageUrl: "${BungieApiService.baseUrl}${definition.displayProperties.icon}",
-        )));
+            child: CachedNetworkImage(
+              imageUrl: "${BungieApiService.baseUrl}${definition.displayProperties.icon}"
+            ));
+        });
+    
   }
 
   List<DestinyItemSocketState> get socketStates =>
