@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 
-typedef Widget CreateWidget<T>(T definitionType);
+typedef Widget CreateWidget<T>(T);
 
 class DefinitionProviderWidget<T> extends StatefulWidget {
   final ManifestService manifest = new ManifestService();
@@ -12,7 +12,7 @@ class DefinitionProviderWidget<T> extends StatefulWidget {
 
   @override
   DefinitionProviderWidgetState<T> createState() {
-    return DefinitionProviderWidgetState<T>();
+    return new DefinitionProviderWidgetState<T>();
   }
 }
 

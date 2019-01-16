@@ -83,7 +83,7 @@ class ItemPerksWidget extends DestinyItemWidget {
             color: enabled ? Colors.indigo : Colors.transparent,
             shape: BoxShape.circle),
             child: CachedNetworkImage(
-              imageUrl: "${BungieApiService.baseUrl}${definition.displayProperties.icon}"
+              imageUrl: "${BungieApiService.baseUrl}${plugDefinition.displayProperties.icon}"
             ));
         });
     
