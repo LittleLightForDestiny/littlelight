@@ -1,5 +1,5 @@
+import 'package:bungie_api/models/destiny_item_category_definition.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/services/bungie_api/enums/definition_table_names.enum.dart';
 import 'package:little_light/services/bungie_api/enums/item_category.enum.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
@@ -66,8 +66,8 @@ class ItemTypeMenuButton extends StatelessWidget {
               top:BorderSide(color: Colors.white, width: 4),
             )) : null,
             alignment: AlignmentDirectional.center,
-            child:ManifestText(
-            DefinitionTableNames.destinyItemCategoryDefinition, categoryHash,
+            child:ManifestText<DestinyItemCategoryDefinition>(
+            categoryHash,
             style: TextStyle(fontWeight: FontWeight.w700)),
         )));
           

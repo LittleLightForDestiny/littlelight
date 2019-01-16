@@ -41,145 +41,92 @@ import 'package:bungie_api/models/destiny_checklist_definition.dart';
 import 'package:bungie_api/models/destiny_historical_stats_definition.dart';
 
 class DefinitionTableNames {
-	static String destinyEnemyRaceDefinition = "DestinyEnemyRaceDefinition";
-  static String destinyPlaceDefinition = "DestinyPlaceDefinition";
-  static String destinyActivityDefinition = "DestinyActivityDefinition";
-  static String destinyActivityTypeDefinition = "DestinyActivityTypeDefinition";
-  static String destinyClassDefinition = "DestinyClassDefinition";
-  static String destinyGenderDefinition = "DestinyGenderDefinition";
-  static String destinyInventoryBucketDefinition = "DestinyInventoryBucketDefinition";
-  static String destinyRaceDefinition = "DestinyRaceDefinition";
-  static String destinyTalentGridDefinition = "DestinyTalentGridDefinition";
-  static String destinyUnlockDefinition = "DestinyUnlockDefinition";
-  static String destinyMaterialRequirementSetDefinition = "DestinyMaterialRequirementSetDefinition";
-  static String destinySandboxPerkDefinition = "DestinySandboxPerkDefinition";
-  static String destinyStatGroupDefinition = "DestinyStatGroupDefinition";
-  static String destinyFactionDefinition = "DestinyFactionDefinition";
-  static String destinyVendorGroupDefinition = "DestinyVendorGroupDefinition";
-  static String destinyRewardSourceDefinition = "DestinyRewardSourceDefinition";
-  static String destinyItemCategoryDefinition = "DestinyItemCategoryDefinition";
-  static String destinyDamageTypeDefinition = "DestinyDamageTypeDefinition";
-  static String destinyActivityModeDefinition = "DestinyActivityModeDefinition";
-  static String destinyMedalTierDefinition = "DestinyMedalTierDefinition";
-  static String destinyAchievementDefinition = "DestinyAchievementDefinition";
-  static String destinyActivityGraphDefinition = "DestinyActivityGraphDefinition";
-  static String destinyCollectibleDefinition = "DestinyCollectibleDefinition";
-  static String destinyStatDefinition = "DestinyStatDefinition";
-  static String destinyItemTierTypeDefinition = "DestinyItemTierTypeDefinition";
-  static String destinyPresentationNodeDefinition = "DestinyPresentationNodeDefinition";
-  static String destinyRecordDefinition = "DestinyRecordDefinition";
-  static String destinyBondDefinition = "DestinyBondDefinition";
-  static String destinyDestinationDefinition = "DestinyDestinationDefinition";
-  static String destinyEquipmentSlotDefinition = "DestinyEquipmentSlotDefinition";
-  static String destinyInventoryItemDefinition = "DestinyInventoryItemDefinition";
-  static String destinyLocationDefinition = "DestinyLocationDefinition";
-  static String destinyLoreDefinition = "DestinyLoreDefinition";
-  static String destinyObjectiveDefinition = "DestinyObjectiveDefinition";
-  static String destinyProgressionDefinition = "DestinyProgressionDefinition";
-  static String destinyProgressionLevelRequirementDefinition = "DestinyProgressionLevelRequirementDefinition";
-  static String destinySackRewardItemListDefinition = "DestinySackRewardItemListDefinition";
-  static String destinySandboxPatternDefinition = "DestinySandboxPatternDefinition";
-  static String destinySocketCategoryDefinition = "DestinySocketCategoryDefinition";
-  static String destinySocketTypeDefinition = "DestinySocketTypeDefinition";
-  static String destinyVendorDefinition = "DestinyVendorDefinition";
-  static String destinyMilestoneDefinition = "DestinyMilestoneDefinition";
-  static String destinyActivityModifierDefinition = "DestinyActivityModifierDefinition";
-  static String destinyReportReasonCategoryDefinition = "DestinyReportReasonCategoryDefinition";
-  static String destinyPlugSetDefinition = "DestinyPlugSetDefinition";
-  static String destinyChecklistDefinition = "DestinyChecklistDefinition";
-  static String destinyHistoricalStatsDefinition = "DestinyHistoricalStatsDefinition";
 
-  static Map<String, Function> identities = {
-    "DestinyEnemyRaceDefinition" : (def)=>def,
-    "DestinyPlaceDefinition" : DestinyPlaceDefinition.fromMap,
-    "DestinyActivityDefinition" : DestinyActivityDefinition.fromMap,
-    "DestinyActivityTypeDefinition" : DestinyActivityTypeDefinition.fromMap,
-    "DestinyClassDefinition" : DestinyClassDefinition.fromMap,
-    "DestinyGenderDefinition" : DestinyGenderDefinition.fromMap,
-    "DestinyInventoryBucketDefinition" : DestinyInventoryBucketDefinition.fromMap,
-    "DestinyRaceDefinition" : DestinyRaceDefinition.fromMap,
-    "DestinyTalentGridDefinition" : DestinyTalentGridDefinition.fromMap,
-    "DestinyUnlockDefinition" : DestinyUnlockDefinition.fromMap,
-    "DestinyMaterialRequirementSetDefinition" : DestinyMaterialRequirementSetDefinition.fromMap,
-    "DestinySandboxPerkDefinition" : DestinySandboxPerkDefinition.fromMap,
-    "DestinyStatGroupDefinition" : DestinyStatGroupDefinition.fromMap,
-    "DestinyFactionDefinition" : DestinyFactionDefinition.fromMap,
-    "DestinyVendorGroupDefinition" : DestinyVendorGroupDefinition.fromMap,
-    "DestinyRewardSourceDefinition" : DestinyRewardSourceDefinition.fromMap,
-    "DestinyItemCategoryDefinition" : DestinyItemCategoryDefinition.fromMap,
-    "DestinyDamageTypeDefinition" : DestinyDamageTypeDefinition.fromMap,
-    "DestinyActivityModeDefinition" : DestinyActivityModeDefinition.fromMap,
-    "DestinyMedalTierDefinition" : (def)=>def,
-    "DestinyAchievementDefinition" : (def)=>def,
-    "DestinyActivityGraphDefinition" : DestinyActivityGraphDefinition.fromMap,
-    "DestinyCollectibleDefinition" : DestinyCollectibleDefinition.fromMap,
-    "DestinyStatDefinition" : DestinyStatDefinition.fromMap,
-    "DestinyItemTierTypeDefinition" : DestinyItemTierTypeDefinition.fromMap,
-    "DestinyPresentationNodeDefinition" : DestinyPresentationNodeDefinition.fromMap,
-    "DestinyRecordDefinition" : DestinyRecordDefinition.fromMap,
-    "DestinyBondDefinition" : (def)=>def,
-    "DestinyDestinationDefinition" : DestinyDestinationDefinition.fromMap,
-    "DestinyEquipmentSlotDefinition" : DestinyEquipmentSlotDefinition.fromMap,
-    "DestinyInventoryItemDefinition" : DestinyInventoryItemDefinition.fromMap,
-    "DestinyLocationDefinition" : DestinyLocationDefinition.fromMap,
-    "DestinyLoreDefinition" : DestinyLoreDefinition.fromMap,
-    "DestinyObjectiveDefinition" : DestinyObjectiveDefinition.fromMap,
-    "DestinyProgressionDefinition" : DestinyProgressionDefinition.fromMap,
-    "DestinyProgressionLevelRequirementDefinition" : DestinyProgressionLevelRequirementDefinition.fromMap,
-    "DestinySackRewardItemListDefinition" : (def)=>def,
-    "DestinySandboxPatternDefinition" : (def)=>def,
-    "DestinySocketCategoryDefinition" : DestinySocketCategoryDefinition.fromMap,
-    "DestinySocketTypeDefinition" : DestinySocketTypeDefinition.fromMap,
-    "DestinyVendorDefinition" : DestinyVendorDefinition.fromMap,
-    "DestinyMilestoneDefinition" : DestinyMilestoneDefinition.fromMap,
-    "DestinyActivityModifierDefinition" : DestinyActivityModifierDefinition.fromMap,
-    "DestinyReportReasonCategoryDefinition" : DestinyReportReasonCategoryDefinition.fromMap,
-    "DestinyPlugSetDefinition" : DestinyPlugSetDefinition.fromMap,
-    "DestinyChecklistDefinition" : DestinyChecklistDefinition.fromMap,
-    "DestinyHistoricalStatsDefinition" : DestinyHistoricalStatsDefinition.fromMap,
+  static Map<Type, Function> identities = {
+    DestinyPlaceDefinition : DestinyPlaceDefinition.fromMap,
+    DestinyActivityDefinition : DestinyActivityDefinition.fromMap,
+    DestinyActivityTypeDefinition : DestinyActivityTypeDefinition.fromMap,
+    DestinyClassDefinition : DestinyClassDefinition.fromMap,
+    DestinyGenderDefinition : DestinyGenderDefinition.fromMap,
+    DestinyInventoryBucketDefinition : DestinyInventoryBucketDefinition.fromMap,
+    DestinyRaceDefinition : DestinyRaceDefinition.fromMap,
+    DestinyTalentGridDefinition : DestinyTalentGridDefinition.fromMap,
+    DestinyUnlockDefinition : DestinyUnlockDefinition.fromMap,
+    DestinyMaterialRequirementSetDefinition : DestinyMaterialRequirementSetDefinition.fromMap,
+    DestinySandboxPerkDefinition : DestinySandboxPerkDefinition.fromMap,
+    DestinyStatGroupDefinition : DestinyStatGroupDefinition.fromMap,
+    DestinyFactionDefinition : DestinyFactionDefinition.fromMap,
+    DestinyVendorGroupDefinition : DestinyVendorGroupDefinition.fromMap,
+    DestinyRewardSourceDefinition : DestinyRewardSourceDefinition.fromMap,
+    DestinyItemCategoryDefinition : DestinyItemCategoryDefinition.fromMap,
+    DestinyDamageTypeDefinition : DestinyDamageTypeDefinition.fromMap,
+    DestinyActivityModeDefinition : DestinyActivityModeDefinition.fromMap,
+    DestinyActivityGraphDefinition : DestinyActivityGraphDefinition.fromMap,
+    DestinyCollectibleDefinition : DestinyCollectibleDefinition.fromMap,
+    DestinyStatDefinition : DestinyStatDefinition.fromMap,
+    DestinyItemTierTypeDefinition : DestinyItemTierTypeDefinition.fromMap,
+    DestinyPresentationNodeDefinition : DestinyPresentationNodeDefinition.fromMap,
+    DestinyRecordDefinition : DestinyRecordDefinition.fromMap,
+    DestinyDestinationDefinition : DestinyDestinationDefinition.fromMap,
+    DestinyEquipmentSlotDefinition : DestinyEquipmentSlotDefinition.fromMap,
+    DestinyInventoryItemDefinition : DestinyInventoryItemDefinition.fromMap,
+    DestinyLocationDefinition : DestinyLocationDefinition.fromMap,
+    DestinyLoreDefinition : DestinyLoreDefinition.fromMap,
+    DestinyObjectiveDefinition : DestinyObjectiveDefinition.fromMap,
+    DestinyProgressionDefinition : DestinyProgressionDefinition.fromMap,
+    DestinyProgressionLevelRequirementDefinition : DestinyProgressionLevelRequirementDefinition.fromMap,
+    DestinySocketCategoryDefinition : DestinySocketCategoryDefinition.fromMap,
+    DestinySocketTypeDefinition : DestinySocketTypeDefinition.fromMap,
+    DestinyVendorDefinition : DestinyVendorDefinition.fromMap,
+    DestinyMilestoneDefinition : DestinyMilestoneDefinition.fromMap,
+    DestinyActivityModifierDefinition : DestinyActivityModifierDefinition.fromMap,
+    DestinyReportReasonCategoryDefinition : DestinyReportReasonCategoryDefinition.fromMap,
+    DestinyPlugSetDefinition : DestinyPlugSetDefinition.fromMap,
+    DestinyChecklistDefinition : DestinyChecklistDefinition.fromMap,
+    DestinyHistoricalStatsDefinition : DestinyHistoricalStatsDefinition.fromMap,
   };
 
-  static Map<String, dynamic> classes = {
-    "DestinyPlaceDefinition" : DestinyPlaceDefinition,
-    "DestinyActivityDefinition" : DestinyActivityDefinition,
-    "DestinyActivityTypeDefinition" : DestinyActivityTypeDefinition,
-    "DestinyClassDefinition" : DestinyClassDefinition,
-    "DestinyGenderDefinition" : DestinyGenderDefinition,
-    "DestinyInventoryBucketDefinition" : DestinyInventoryBucketDefinition,
-    "DestinyRaceDefinition" : DestinyRaceDefinition,
-    "DestinyTalentGridDefinition" : DestinyTalentGridDefinition,
-    "DestinyUnlockDefinition" : DestinyUnlockDefinition,
-    "DestinyMaterialRequirementSetDefinition" : DestinyMaterialRequirementSetDefinition,
-    "DestinySandboxPerkDefinition" : DestinySandboxPerkDefinition,
-    "DestinyStatGroupDefinition" : DestinyStatGroupDefinition,
-    "DestinyFactionDefinition" : DestinyFactionDefinition,
-    "DestinyVendorGroupDefinition" : DestinyVendorGroupDefinition,
-    "DestinyRewardSourceDefinition" : DestinyRewardSourceDefinition,
-    "DestinyItemCategoryDefinition" : DestinyItemCategoryDefinition,
-    "DestinyDamageTypeDefinition" : DestinyDamageTypeDefinition,
-    "DestinyActivityModeDefinition" : DestinyActivityModeDefinition,
-    "DestinyActivityGraphDefinition" : DestinyActivityGraphDefinition,
-    "DestinyCollectibleDefinition" : DestinyCollectibleDefinition,
-    "DestinyStatDefinition" : DestinyStatDefinition,
-    "DestinyItemTierTypeDefinition" : DestinyItemTierTypeDefinition,
-    "DestinyPresentationNodeDefinition" : DestinyPresentationNodeDefinition,
-    "DestinyRecordDefinition" : DestinyRecordDefinition,
-    "DestinyDestinationDefinition" : DestinyDestinationDefinition,
-    "DestinyEquipmentSlotDefinition" : DestinyEquipmentSlotDefinition,
-    "DestinyInventoryItemDefinition" : DestinyInventoryItemDefinition,
-    "DestinyLocationDefinition" : DestinyLocationDefinition,
-    "DestinyLoreDefinition" : DestinyLoreDefinition,
-    "DestinyObjectiveDefinition" : DestinyObjectiveDefinition,
-    "DestinyProgressionDefinition" : DestinyProgressionDefinition,
-    "DestinyProgressionLevelRequirementDefinition" : DestinyProgressionLevelRequirementDefinition,
-    "DestinySocketCategoryDefinition" : DestinySocketCategoryDefinition,
-    "DestinySocketTypeDefinition" : DestinySocketTypeDefinition,
-    "DestinyVendorDefinition" : DestinyVendorDefinition,
-    "DestinyMilestoneDefinition" : DestinyMilestoneDefinition,
-    "DestinyActivityModifierDefinition" : DestinyActivityModifierDefinition,
-    "DestinyReportReasonCategoryDefinition" : DestinyReportReasonCategoryDefinition,
-    "DestinyPlugSetDefinition" : DestinyPlugSetDefinition,
-    "DestinyChecklistDefinition" : DestinyChecklistDefinition,
-    "DestinyHistoricalStatsDefinition" : DestinyHistoricalStatsDefinition,
+  static Map<Type, String> fromClass = {
+    DestinyPlaceDefinition:"DestinyPlaceDefinition",
+    DestinyActivityDefinition:"DestinyActivityDefinition",
+    DestinyActivityTypeDefinition:"DestinyActivityTypeDefinition",
+    DestinyClassDefinition:"DestinyClassDefinition",
+    DestinyGenderDefinition:"DestinyGenderDefinition",
+    DestinyInventoryBucketDefinition:"DestinyInventoryBucketDefinition",
+    DestinyRaceDefinition:"DestinyRaceDefinition",
+    DestinyTalentGridDefinition:"DestinyTalentGridDefinition",
+    DestinyUnlockDefinition:"DestinyUnlockDefinition",
+    DestinyMaterialRequirementSetDefinition:"DestinyMaterialRequirementSetDefinition",
+    DestinySandboxPerkDefinition:"DestinySandboxPerkDefinition",
+    DestinyStatGroupDefinition:"DestinyStatGroupDefinition",
+    DestinyFactionDefinition:"DestinyFactionDefinition",
+    DestinyVendorGroupDefinition:"DestinyVendorGroupDefinition",
+    DestinyRewardSourceDefinition:"DestinyRewardSourceDefinition",
+    DestinyItemCategoryDefinition:"DestinyItemCategoryDefinition",
+    DestinyDamageTypeDefinition:"DestinyDamageTypeDefinition",
+    DestinyActivityModeDefinition:"DestinyActivityModeDefinition",
+    DestinyActivityGraphDefinition:"DestinyActivityGraphDefinition",
+    DestinyCollectibleDefinition:"DestinyCollectibleDefinition",
+    DestinyStatDefinition:"DestinyStatDefinition",
+    DestinyItemTierTypeDefinition:"DestinyItemTierTypeDefinition",
+    DestinyPresentationNodeDefinition:"DestinyPresentationNodeDefinition",
+    DestinyRecordDefinition:"DestinyRecordDefinition",
+    DestinyDestinationDefinition:"DestinyDestinationDefinition",
+    DestinyEquipmentSlotDefinition:"DestinyEquipmentSlotDefinition",
+    DestinyInventoryItemDefinition:"DestinyInventoryItemDefinition",
+    DestinyLocationDefinition:"DestinyLocationDefinition",
+    DestinyLoreDefinition:"DestinyLoreDefinition",
+    DestinyObjectiveDefinition:"DestinyObjectiveDefinition",
+    DestinyProgressionDefinition:"DestinyProgressionDefinition",
+    DestinyProgressionLevelRequirementDefinition:"DestinyProgressionLevelRequirementDefinition",
+    DestinySocketCategoryDefinition:"DestinySocketCategoryDefinition",
+    DestinySocketTypeDefinition:"DestinySocketTypeDefinition",
+    DestinyVendorDefinition:"DestinyVendorDefinition",
+    DestinyMilestoneDefinition:"DestinyMilestoneDefinition",
+    DestinyActivityModifierDefinition:"DestinyActivityModifierDefinition",
+    DestinyReportReasonCategoryDefinition:"DestinyReportReasonCategoryDefinition",
+    DestinyPlugSetDefinition:"DestinyPlugSetDefinition",
+    DestinyChecklistDefinition:"DestinyChecklistDefinition",
+    DestinyHistoricalStatsDefinition:"DestinyHistoricalStatsDefinition",
   };
 }

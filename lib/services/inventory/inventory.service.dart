@@ -5,7 +5,6 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/enums/bucket_scope_enum.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/services/bungie_api/enums/definition_table_names.enum.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/bungie_api/enums/item_type.enum.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
@@ -291,7 +290,6 @@ class InventoryService {
         profile.getCharacterEquipment(characterId);
     Map<int, DestinyInventoryItemDefinition> definitions =
         await manifest.getDefinitions<DestinyInventoryItemDefinition>(
-            DefinitionTableNames.destinyInventoryItemDefinition,
             equipment.map((pItem) => pItem.itemHash).toList());
     return equipment.firstWhere((i) {
       var d = definitions[i.itemHash];
@@ -312,7 +310,6 @@ class InventoryService {
     }
     Map<int, DestinyInventoryItemDefinition> definitions =
         await manifest.getDefinitions<DestinyInventoryItemDefinition>(
-            DefinitionTableNames.destinyInventoryItemDefinition,
             possibles.map((pItem) => pItem.itemHash).toList());
     possibles.removeWhere((pItem) =>
         (definitions[pItem.itemHash].inventory?.tierType ?? 0) ==

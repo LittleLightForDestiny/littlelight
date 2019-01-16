@@ -26,8 +26,20 @@ class DestinyData {
 
     2996146975, // Mobility
     392767087, // Resilience
-    1943323491,
+    1943323491, //recovery
   ];
+  
+  static const List<int> socketCategoryPerkHashes = [
+    319279448, // sparrow perks
+    1576735337, //clan banner perks
+    1683579090, // clan perks
+    2278110604, // vehicle perks
+    2518356196, //armor perks
+    3301318876, //ghost shell perks
+    3898156960, // clan perks (again?)
+    4241085061, //weapon perks
+  ];
+
   static IconData getClassIcon(int type) {
     switch (type) {
       case DestinyClass.Hunter:

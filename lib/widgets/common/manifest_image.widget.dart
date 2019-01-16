@@ -7,24 +7,23 @@ import 'package:shimmer/shimmer.dart';
 
 typedef String ExtractUrlFromData(dynamic data);
 
-class ManifestImageWidget extends StatefulWidget {
-  final String tableName;
+class ManifestImageWidget<T> extends StatefulWidget {
   final int hash;
   final ExtractUrlFromData urlExtractor;
   final ManifestService _manifest = new ManifestService();
 
-  ManifestImageWidget(this.tableName, this.hash,
+  ManifestImageWidget(this.hash,
       {Key key,
       this.urlExtractor})
       : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return ManifestImageState();
+    return ManifestImageState<T>();
   }
 }
 
-class ManifestImageState extends State<ManifestImageWidget> {
+class ManifestImageState<T> extends State<ManifestImageWidget> {
   dynamic definition;
 
   @override
@@ -35,7 +34,7 @@ class ManifestImageState extends State<ManifestImageWidget> {
 
   Future<void> loadDefinition() async {
     definition =
-        await widget._manifest.getDefinition(widget.tableName, widget.hash);
+        await widget._manifest.getDefinition<T>(widget.hash);
     if (mounted) {
       setState(() {});
     }

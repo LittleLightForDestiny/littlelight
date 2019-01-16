@@ -3,7 +3,6 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:little_light/services/bungie_api/enums/definition_table_names.enum.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/widgets/item_list/bucket_header.widget.dart';
@@ -34,7 +33,7 @@ class VaultItemListWidgetState extends ItemListWidgetState {
     List<DestinyItemComponent> inventory = widget.profile.getProfileInventory();
     inventory = inventory.where((item)=>item.bucketHash == InventoryBucket.general).toList();
     List<int> hashes = inventory.map((item)=>item.itemHash).toList();
-    Map<int, DestinyInventoryItemDefinition> defs = (await widget.manifest.getDefinitions<DestinyInventoryItemDefinition>(DefinitionTableNames.destinyInventoryItemDefinition, hashes));
+    Map<int, DestinyInventoryItemDefinition> defs = (await widget.manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes));
     Map<int, List<DestinyItemComponent>> itemsByBucket = new Map();
 
     for(int i = 0; i < inventory.length; i++){

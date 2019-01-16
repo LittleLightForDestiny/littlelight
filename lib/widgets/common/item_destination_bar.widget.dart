@@ -3,7 +3,6 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/services/bungie_api/enums/definition_table_names.enum.dart';
 import 'package:little_light/widgets/common/destiny_item.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -67,8 +66,7 @@ class ItemDestinationBarWidget extends DestinyItemWidget {
           width: screenWidth / 6,
           height: screenWidth / 6,
           child: Stack(
-            children:[ManifestImageWidget(
-              DefinitionTableNames.destinyInventoryItemDefinition,
+            children:[ManifestImageWidget<DestinyInventoryItemDefinition>(
               character.emblemHash),
               Positioned.fill(child:Material(
                 color: Colors.transparent,

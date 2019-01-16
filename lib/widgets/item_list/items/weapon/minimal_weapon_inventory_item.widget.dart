@@ -1,8 +1,8 @@
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
+import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/services/bungie_api/enums/definition_table_names.enum.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/minimal_base_inventory_item.widget.dart';
@@ -47,7 +47,7 @@ class MinimalWeaponInventoryItemWidget extends MinimalBaseInventoryItemWidget
   }
 
   Widget primaryStatNameField(BuildContext context, Color color) {
-    return ManifestText(DefinitionTableNames.destinyStatDefinition,
+    return ManifestText<DestinyStatDefinition>(
         primaryStat.statHash,
         uppercase: true,
         style:

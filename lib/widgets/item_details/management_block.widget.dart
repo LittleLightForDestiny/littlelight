@@ -4,7 +4,6 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 
 import 'package:flutter/material.dart';
-import 'package:little_light/services/bungie_api/enums/definition_table_names.enum.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/inventory/inventory.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
@@ -88,7 +87,6 @@ class ManagementBlockWidget extends DestinyItemWidget {
         title,
         uppercase: true,
         style: TextStyle(
-          fontSize: 12,
           fontWeight: FontWeight.bold),
       )),
     ));
@@ -170,8 +168,7 @@ class ManagementBlockWidget extends DestinyItemWidget {
         return Image.asset('assets/imgs/inventory-icon.jpg');
 
       default:
-        return ManifestImageWidget(
-            DefinitionTableNames.destinyInventoryItemDefinition,
+        return ManifestImageWidget<DestinyInventoryItemDefinition>(
             character.emblemHash);
     }
   }

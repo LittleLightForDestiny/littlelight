@@ -59,8 +59,7 @@ class ManifestService {
     DestinyManifest manifestInfo = await loadManifestInfo();
     String currentVersion = await getSavedVersion();
     String language = await new TranslateService().getLanguage();
-    return currentVersion !=
-        manifestInfo.mobileWorldContentPaths[language];
+    return currentVersion != manifestInfo.mobileWorldContentPaths[language];
   }
 
   Future<bool> download({DownloadProgress onProgress}) async {
@@ -149,75 +148,71 @@ class ManifestService {
   }
 
   Future<DestinyInventoryItemDefinition> getItemDefinition(int hash) async {
-    var res = await getDefinition(
-        DefinitionTableNames.destinyInventoryItemDefinition,
-        hash,
-        DestinyInventoryItemDefinition.fromMap);
+    var res = await getDefinition<DestinyInventoryItemDefinition>(
+        hash, DestinyInventoryItemDefinition.fromMap);
     return res;
   }
 
   Future<DestinyStatDefinition> getStatDefinition(int hash) async {
-    var res = await getDefinition(DefinitionTableNames.destinyStatDefinition,
+    var res = await getDefinition<DestinyStatDefinition>(
         hash, DestinyStatDefinition.fromMap);
     return res;
   }
 
   Future<DestinyTalentGridDefinition> getTalentGridDefinition(int hash) async {
-    var res = await getDefinition(
-        DefinitionTableNames.destinyTalentGridDefinition,
-        hash,
-        DestinyTalentGridDefinition.fromMap);
+    var res = await getDefinition<DestinyTalentGridDefinition>(
+        hash, DestinyTalentGridDefinition.fromMap);
     return res;
   }
 
   Future<DestinyInventoryBucketDefinition> getBucketDefinition(int hash) async {
-    var res = await getDefinition(
-        DefinitionTableNames.destinyInventoryBucketDefinition,
-        hash,
-        DestinyInventoryBucketDefinition.fromMap);
+    var res = await getDefinition<DestinyInventoryBucketDefinition>(
+        hash, DestinyInventoryBucketDefinition.fromMap);
     return res;
   }
 
   Future<DestinyClassDefinition> getClassDefinition(int hash) async {
-    var res = await getDefinition(DefinitionTableNames.destinyClassDefinition,
+    var res = await getDefinition<DestinyClassDefinition>(
         hash, DestinyClassDefinition.fromMap);
     return res;
   }
 
   Future<DestinyRaceDefinition> getRaceDefinition(int hash) async {
-    var res = await getDefinition(DefinitionTableNames.destinyRaceDefinition,
+    DestinyRaceDefinition res = await getDefinition<DestinyRaceDefinition>(
         hash, DestinyRaceDefinition.fromMap);
     return res;
   }
 
-  Future<Map<int, T>> getDefinitions<T>(String type, List<int> hashes,
+  Future<Map<int, T>> getDefinitions<T>(List<int> hashes,
       [dynamic identity(Map<String, dynamic> json)]) async {
-      if(identity == null){
+    var type = DefinitionTableNames.fromClass[T];
+    if (identity == null) {
       identity = DefinitionTableNames.identities[type];
     }
     Map<int, T> defs = new Map();
-    hashes.removeWhere((hash){
-      if(_cached.keys.contains("${type}_$hash")){
+    hashes.removeWhere((hash) {
+      if (_cached.keys.contains("${type}_$hash")) {
         defs[hash] = _cached["${type}_$hash"];
         return true;
       }
       return false;
     });
-    
-    if(hashes.length == 0){
+
+    if (hashes.length == 0) {
       return defs;
     }
-    List<int> searchHashes = hashes.map((hash)=>hash > 2147483648 ? hash - 4294967296 : hash).toList();
+    List<int> searchHashes = hashes
+        .map((hash) => hash > 2147483648 ? hash - 4294967296 : hash)
+        .toList();
     String idList = "(" + List.filled(hashes.length, '?').join(',') + ")";
 
     sqflite.Database db = await _openDb();
-    List<Map<String, dynamic>> results = await db.query(type, 
-      columns:['id', 'json'],
-      where: "id in $idList",
-      whereArgs: searchHashes
-    );
+    List<Map<String, dynamic>> results = await db.query(type,
+        columns: ['id', 'json'],
+        where: "id in $idList",
+        whereArgs: searchHashes);
     try {
-      results.forEach((res){
+      results.forEach((res) {
         int id = res['id'];
         int hash = id < 0 ? id + 4294967296 : id;
         String resultString = res['json'];
@@ -229,25 +224,24 @@ class ManifestService {
     return defs.cast();
   }
 
-  Future<T> getDefinition<T>(String type, int hash,
-      [dynamic identity(Map<String, T> json)]) async {
+  Future<T> getDefinition<T>(int hash,
+      [dynamic identity(Map<String, dynamic> json)]) async {
+    String type = DefinitionTableNames.fromClass[T];
+
     try {
       var cached = _cached["${type}_$hash"];
       if (cached != null) {
         return cached;
       }
     } catch (e) {}
-    
-    if(identity == null){
+
+    if (identity == null) {
       identity = DefinitionTableNames.identities[type];
     }
     int searchHash = hash > 2147483648 ? hash - 4294967296 : hash;
     sqflite.Database db = await _openDb();
-    List<Map<String, dynamic>> results = await db.query(type, 
-      columns:['json'],
-      where: "id=?",
-      whereArgs: [searchHash]
-    );
+    List<Map<String, dynamic>> results = await db.query(type,
+        columns: ['json'], where: "id=?", whereArgs: [searchHash]);
     try {
       String resultString = results.first['json'];
       var def = identity(jsonDecode(resultString));

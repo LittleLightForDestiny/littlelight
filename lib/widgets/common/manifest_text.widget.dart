@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 
-typedef String ExtractTextFromData(dynamic data);
+typedef String ExtractTextFromData<T>(T data);
 
-class ManifestText extends StatefulWidget {
+class ManifestText<T> extends StatefulWidget {
   final bool uppercase;
-  final String tableName;
   final int hash;
-  final ExtractTextFromData textExtractor;
+  final ExtractTextFromData<T> textExtractor;
   final int maxLines;
   final TextOverflow overflow;
   final String semanticsLabel;
@@ -19,7 +18,7 @@ class ManifestText extends StatefulWidget {
 
   final ManifestService _manifest = new ManifestService();
 
-  ManifestText(this.tableName, this.hash,
+  ManifestText(this.hash,
       {Key key,
       this.maxLines,
       this.overflow,
@@ -34,12 +33,12 @@ class ManifestText extends StatefulWidget {
       : super(key: key);
 
   @override
-  State<StatefulWidget> createState() {
-    return ManifestTextState();
+  State<ManifestText> createState() {
+    return new ManifestTextState<T>();
   }
 }
 
-class ManifestTextState extends State<ManifestText> {
+class ManifestTextState<T> extends State<ManifestText> {
   dynamic definition;
 
   @override
@@ -49,8 +48,7 @@ class ManifestTextState extends State<ManifestText> {
   }
 
   Future<void> loadDefinition() async {
-    definition =
-        await widget._manifest.getDefinition(widget.tableName, widget.hash);
+    definition = await widget._manifest.getDefinition<T>(widget.hash);
     if (mounted) {
       setState(() {});
     }
@@ -61,7 +59,7 @@ class ManifestTextState extends State<ManifestText> {
     String text = " ";
     try {
       if (widget.textExtractor == null) {
-        text = definition.displayProperties.name;
+        text = (definition as dynamic).displayProperties.name;
       } else {
         text = widget.textExtractor(definition);
       }

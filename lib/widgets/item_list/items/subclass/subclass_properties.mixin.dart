@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/item_list/items/base/inventory_item.mixin.dart';
-import 'package:little_light/services/bungie_api/enums/definition_table_names.enum.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:tinycolor/tinycolor.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -58,7 +57,7 @@ mixin SubclassPropertiesMixin on InventoryItemMixin {
                       style: TextStyle(
                           fontSize: titleFontSize,
                           fontWeight: FontWeight.bold)),
-                  ManifestText(DefinitionTableNames.destinyTalentGridDefinition,
+                  ManifestText<DestinyTalentGridDefinition>(
                       talentGrid.talentGridHash,
                       textExtractor: extractTalentGridName,
                       style: TextStyle(
