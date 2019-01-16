@@ -6,6 +6,9 @@ import 'package:bungie_api/enums/destiny_ammunition_type_enum.dart';
 import 'package:little_light/widgets/icon_fonts/destiny_icons_icons.dart';
 
 class DestinyData {
+  static const Color positiveFeedback = Color.fromRGBO(67, 205, 57, 1);
+  static const Color negativeFeedback = Color.fromRGBO(204, 58, 56, 1);
+
   static const List<int> statWhitelist = [
     3614673599, // Blast Radius
     2523465841, // Velocity

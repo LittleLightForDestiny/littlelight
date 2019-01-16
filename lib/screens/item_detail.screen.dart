@@ -10,6 +10,7 @@ import 'package:little_light/widgets/item_details/item_perks.widget.dart';
 import 'package:little_light/widgets/item_details/item_stats.widget.dart';
 import 'package:little_light/widgets/item_details/main_info/item_main_info.widget.dart';
 import 'package:little_light/widgets/item_details/management_block.widget.dart';
+import 'package:little_light/widgets/item_details/selected_perk.widget.dart';
 
 class ItemDetailScreen extends DestinyItemStatefulWidget {
   ItemDetailScreen(
@@ -27,23 +28,37 @@ class ItemDetailScreen extends DestinyItemStatefulWidget {
   }
 }
 
-class ItemDetailScreenState extends DestinyItemState {
+class ItemDetailScreenState extends DestinyItemState
+    with TickerProviderStateMixin {
+  int selectedPerk;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: CustomScrollView(slivers: [
         ItemCoverWidget(item, definition, instanceInfo),
         SliverList(
-          delegate: SliverChildListDelegate(
-            [
-              ItemMainInfoWidget(item, definition, instanceInfo),
-              ManagementBlockWidget(item, definition, instanceInfo, characterId: characterId,),
-              ItemStatsWidget(item, definition, instanceInfo),
-              ItemPerksWidget(item, definition, instanceInfo),
-              ItemLoreWidget(item, definition, instanceInfo)
-            ],
-            addAutomaticKeepAlives: true
-          ),
+          delegate: SliverChildListDelegate([
+            ItemMainInfoWidget(item, definition, instanceInfo),
+            ManagementBlockWidget(
+              item,
+              definition,
+              instanceInfo,
+              characterId: characterId,
+            ),
+            ItemStatsWidget(item, definition, instanceInfo),
+            ItemPerksWidget(
+              item,
+              definition,
+              instanceInfo,
+              onSelectPerk: (socketHash, plugHash) {
+                setState(() {
+                  selectedPerk = plugHash;
+                });
+              },
+            ),
+            SelectedPerkWidget(selectedPerk, context:context, vsync: this),
+            ItemLoreWidget(item, definition, instanceInfo)
+          ], addAutomaticKeepAlives: true),
         ),
       ]),
     );

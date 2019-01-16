@@ -17,7 +17,7 @@ class ItemType {
   static const int engrams = 8;
   static const int consumables = 9;
   static const int ghost = 24;
-  static const int shaders = 19;
+  static const int intrinsic = 19;
   static const int ships = 21;
   static const int sparrows = 22;
   static const int emotes = 23;

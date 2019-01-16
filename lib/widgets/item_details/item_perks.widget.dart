@@ -15,17 +15,21 @@ import 'package:little_light/widgets/common/destiny_item.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 
+typedef OnSelectPerk(int socketPlugHash, int itemPlugHash);
+
 class ItemPerksWidget extends DestinyItemWidget {
+final OnSelectPerk onSelectPerk;
+
   ItemPerksWidget(
       DestinyItemComponent item,
       DestinyInventoryItemDefinition definition,
       DestinyItemInstanceComponent instanceInfo,
-      {Key key})
+      {this.onSelectPerk, Key key})
       : super(item, definition, instanceInfo, key: key);
 
   @override
   Widget build(BuildContext context) {
-    if(category == null) return Container();
+    if (category == null) return Container();
     return Container(
       padding: EdgeInsets.all(8),
       child: Column(
@@ -65,29 +69,42 @@ class ItemPerksWidget extends DestinyItemWidget {
 
   Widget plugItems(BuildContext context, DestinyItemSocketState socket) {
     if (socket.reusablePlugs == null) {
-      return plugItem(context, true, socket.plugHash);
+      return plugItem(context, socket.plugHash, socket.plugHash);
     }
     return Column(
         children: socket.reusablePlugs
-            .map((item) => plugItem(context,
-                item.plugItemHash == socket.plugHash, item.plugItemHash))
+            .map(
+                (item) => plugItem(context, socket.plugHash, item.plugItemHash))
             .toList());
   }
 
-  Widget plugItem(BuildContext context, bool enabled, int plugItemHash) {
-    return DefinitionProviderWidget<DestinyInventoryItemDefinition>(plugItemHash,
-        builder:(context, snapshot){
-          DestinyInventoryItemDefinition plugDefinition = snapshot.data;
-          return Container(
-            margin: EdgeInsets.all(4),
-            decoration: BoxDecoration(
-            color: enabled ? Colors.indigo : Colors.transparent,
-            shape: BoxShape.circle),
+  Widget plugItem(BuildContext context, int socketPlugHash, int plugItemHash) {
+    return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
+        plugItemHash, (plugDefinition) {
+      bool enabled = socketPlugHash == plugItemHash;
+      bool intrinsic =
+          plugDefinition.plug.plugCategoryIdentifier == "intrinsics";
+      return Container(
+        margin: EdgeInsets.all(4),
+        child:FlatButton(
+        shape: CircleBorder(),
+        padding: EdgeInsets.all(intrinsic ? 0 : 8),
+        color: enabled && !intrinsic ? Colors.indigo : Colors.transparent,
+        child: Container(
+            
             child: CachedNetworkImage(
-              imageUrl: "${BungieApiService.baseUrl}${plugDefinition.displayProperties.icon}"
-            ));
-        });
-    
+                imageUrl:
+                    "${BungieApiService.baseUrl}${plugDefinition.displayProperties.icon}")),
+        onPressed: () {
+          if(this.onSelectPerk != null){
+            this.onSelectPerk(socketPlugHash, plugItemHash);
+          }else{
+            print(plugDefinition.displayProperties.name);
+          }
+          
+        },
+      ));
+    });
   }
 
   List<DestinyItemSocketState> get socketStates =>
@@ -106,5 +123,3 @@ class ItemPerksWidget extends DestinyItemWidget {
         orElse: () => null);
   }
 }
-
-
