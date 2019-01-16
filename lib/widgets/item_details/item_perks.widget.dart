@@ -76,7 +76,8 @@ class ItemPerksWidget extends DestinyItemWidget {
 
   Widget plugItem(BuildContext context, bool enabled, int plugItemHash) {
     return DefinitionProviderWidget<DestinyInventoryItemDefinition>(plugItemHash,
-        (plugDefinition){
+        builder:(context, snapshot){
+          DestinyInventoryItemDefinition plugDefinition = snapshot.data;
           return Container(
             margin: EdgeInsets.all(4),
             decoration: BoxDecoration(
