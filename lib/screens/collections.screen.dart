@@ -1,6 +1,7 @@
 import 'package:bungie_api/models/destiny_presentation_node_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/widgets/collections/collection_list.widget.dart';
 
 class CollectionsScreen extends StatefulWidget {
   final _manifest = new ManifestService();
@@ -30,6 +31,7 @@ class CollectionsScreenState extends State<CollectionsScreen> {
     if(definition == null) return Container();
     return Scaffold(
       appBar: AppBar(title: Text(definition.displayProperties.name),),
+      body: CollectionListWidget(definition: definition,),
     );
   }
 }
