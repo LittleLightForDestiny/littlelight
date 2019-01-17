@@ -18,13 +18,18 @@ import 'package:little_light/widgets/common/manifest_text.widget.dart';
 typedef OnSelectPerk(int socketPlugHash, int itemPlugHash);
 
 class ItemPerksWidget extends DestinyItemWidget {
-final OnSelectPerk onSelectPerk;
+  final OnSelectPerk onSelectPerk;
+  final int selectedPerkHash;
+  final Map<int, int> selectedPerkHashes;
 
   ItemPerksWidget(
       DestinyItemComponent item,
       DestinyInventoryItemDefinition definition,
       DestinyItemInstanceComponent instanceInfo,
-      {this.onSelectPerk, Key key})
+      {this.onSelectPerk,
+      Key key,
+      this.selectedPerkHash,
+      this.selectedPerkHashes})
       : super(item, definition, instanceInfo, key: key);
 
   @override
@@ -62,8 +67,10 @@ final OnSelectPerk onSelectPerk;
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: entries
-            .map((socket) =>
-                SizedBox(width: colWidth, child: plugItems(context, socket)))
+            .map((socket) => Container(
+                key: Key("socket_${socket.plugHash}"),
+                width: colWidth,
+                child: plugItems(context, socket)))
             .toList());
   }
 
@@ -84,27 +91,42 @@ final OnSelectPerk onSelectPerk;
       bool enabled = socketPlugHash == plugItemHash;
       bool intrinsic =
           plugDefinition.plug.plugCategoryIdentifier == "intrinsics";
+      bool selected = plugItemHash == selectedPerkHash;
+      bool hasCustom = selectedPerkHashes[socketPlugHash] != socketPlugHash && selectedPerkHashes[socketPlugHash] != null;
+      bool selectedOnSlot = selectedPerkHashes[socketPlugHash] == plugItemHash;
+      Color color = Colors.transparent;
+      if(intrinsic){
+        color = Colors.transparent;
+      }else if(enabled && hasCustom){
+        color = Colors.indigo.shade900;
+      }else if(enabled){
+        color = Colors.indigo;
+      }else if(selectedOnSlot){
+        color = Colors.indigo.shade300;
+      }
       return Container(
-        margin: EdgeInsets.all(4),
-        child:FlatButton(
-        shape: CircleBorder(),
-        padding: EdgeInsets.all(intrinsic ? 0 : 8),
-        color: enabled && !intrinsic ? Colors.indigo : Colors.transparent,
-        child: Container(
-            
-            child: CachedNetworkImage(
-                imageUrl:
-                    "${BungieApiService.baseUrl}${plugDefinition.displayProperties.icon}")),
-        onPressed: () {
-          if(this.onSelectPerk != null){
-            this.onSelectPerk(socketPlugHash, plugItemHash);
-          }else{
-            print(plugDefinition.displayProperties.name);
-          }
-          
-        },
-      ));
-    });
+          margin: EdgeInsets.all(4),
+          child: FlatButton(
+            shape: CircleBorder(
+                side: BorderSide(
+                    color: selected && !intrinsic ? Colors.white : Colors.transparent,
+                    width: 2)),
+            padding: EdgeInsets.all(intrinsic ? 0 : 8),
+            color: color,
+            child: AspectRatio(
+              aspectRatio: 1,
+                child: CachedNetworkImage(
+                    imageUrl:
+                        "${BungieApiService.baseUrl}${plugDefinition.displayProperties.icon}")),
+            onPressed: () {
+              if (this.onSelectPerk != null) {
+                this.onSelectPerk(socketPlugHash, plugItemHash);
+              } else {
+                print(plugDefinition.displayProperties.name);
+              }
+            },
+          ));
+    }, key:Key("plug $socketPlugHash $plugItemHash"));
   }
 
   List<DestinyItemSocketState> get socketStates =>

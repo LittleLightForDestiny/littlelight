@@ -1,21 +1,35 @@
+import 'package:bungie_api/models/destiny_presentation_node_definition.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:little_light/services/manifest/manifest.service.dart';
 
-class MainScreen extends StatefulWidget {
+class CollectionsScreen extends StatefulWidget {
+  final _manifest = new ManifestService();
+  final int presentationNodeHash;
+  CollectionsScreen({this.presentationNodeHash = 3790247699});
+
   @override
-  MainScreenState createState() => new MainScreenState();
+  CollectionsScreenState createState() => new CollectionsScreenState();
 }
 
-class MainScreenState extends State<MainScreen> {
+class CollectionsScreenState extends State<CollectionsScreen> {
+  DestinyPresentationNodeDefinition definition;
+
   @override
   void initState() {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent, statusBarBrightness: Brightness.dark));
     super.initState();
+    loadDefinition();
+  }
+
+  loadDefinition() async{
+      definition = await widget._manifest.getDefinition<DestinyPresentationNodeDefinition>(widget.presentationNodeHash);
+      setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    if(definition == null) return Container();
+    return Scaffold(
+      appBar: AppBar(title: Text(definition.displayProperties.name),),
+    );
   }
 }

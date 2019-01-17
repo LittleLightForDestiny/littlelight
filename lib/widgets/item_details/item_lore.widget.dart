@@ -18,6 +18,9 @@ class ItemLoreWidget extends DestinyItemWidget {
 
   @override
   Widget build(BuildContext context) {
+    if(definition.loreHash == null) {
+      return Container();
+    }
     return Container(
       padding: EdgeInsets.all(8),
       child: Column(
@@ -37,6 +40,7 @@ class ItemLoreWidget extends DestinyItemWidget {
               child: ManifestText<DestinyLoreDefinition>(
                   definition.loreHash,
                   textExtractor: (lore){
+                    if(lore == null) return "";
                     return lore.displayProperties.description;
                   },))
         ],

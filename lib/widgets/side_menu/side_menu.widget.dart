@@ -1,25 +1,19 @@
-import 'package:bungie_api/models/general_user.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/screens/collections.screen.dart';
+import 'package:little_light/screens/equipment.screen.dart';
 import 'package:little_light/screens/initial.screen.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
 import 'package:little_light/widgets/side_menu/profile_info.widget.dart';
 
-class SideMenuWidget extends StatefulWidget {
-  final AuthService authService = new AuthService();
-  @override
-  State<StatefulWidget> createState() {
-    return new SideMenuState();
-  }
-}
+typedef void OnPageChange(Widget screen);
 
-class SideMenuState extends State<SideMenuWidget> {
-  GeneralUser bungieNetUser;
-  @override
-  initState() {
-    super.initState();
-  }
+class SideMenuWidget extends StatelessWidget {
+  final AuthService authService = new AuthService();
+  final OnPageChange onPageChange;
+
+  SideMenuWidget({Key key, this.onPageChange}) : super(key: key);
 
   Widget build(BuildContext context) {
     return SizedBox(
@@ -29,10 +23,21 @@ class SideMenuState extends State<SideMenuWidget> {
             child: Column(
               children: <Widget>[
                 ProfileInfoWidget(),
-                menuItem(context, "Change Account", onTap: changeAccount),
-                menuItem(context, "Change Membership", onTap: changeMembership),
-                menuItem(context, "Change Language", onTap: changeLanguage),
-                
+                menuItem(context, "Change Account", onTap: () {
+                  changeAccount(context);
+                }),
+                menuItem(context, "Change Membership", onTap: () {
+                  changeMembership(context);
+                }),
+                menuItem(context, "Change Language", onTap: () {
+                  changeLanguage(context);
+                }),
+                menuItem(context, "Equipment", onTap: () {
+                  open(EquipmentScreen());
+                }),
+                menuItem(context, "Collections", onTap: () {
+                  open(CollectionsScreen());
+                }),
               ],
             )));
   }
@@ -42,19 +47,25 @@ class SideMenuState extends State<SideMenuWidget> {
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
-          child:Container(
-            decoration: BoxDecoration(border: Border(
-              bottom: BorderSide(color:Colors.blueGrey.shade500, width:1)
-            )),
-            padding: EdgeInsets.all(16),
-            margin:EdgeInsets.symmetric(horizontal:8),
-            
-      alignment: Alignment.centerRight,
-      child: TranslatedTextWidget(label)),
-    ));
+          child: Container(
+              decoration: BoxDecoration(
+                  border: Border(
+                      bottom: BorderSide(
+                          color: Colors.blueGrey.shade500, width: 1))),
+              padding: EdgeInsets.all(16),
+              margin: EdgeInsets.symmetric(horizontal: 8),
+              alignment: Alignment.centerRight,
+              child: TranslatedTextWidget(label)),
+        ));
   }
 
-  changeAccount() {
+  open(Widget screen) {
+    if (onPageChange != null) {
+      onPageChange(screen);
+    }
+  }
+
+  changeAccount(BuildContext context) {
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -64,7 +75,7 @@ class SideMenuState extends State<SideMenuWidget> {
         ));
   }
 
-  changeMembership() {
+  changeMembership(BuildContext context) {
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -74,7 +85,7 @@ class SideMenuState extends State<SideMenuWidget> {
         ));
   }
 
-  changeLanguage() {
+  changeLanguage(BuildContext context) {
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(

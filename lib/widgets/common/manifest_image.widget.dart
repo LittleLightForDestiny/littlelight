@@ -57,6 +57,7 @@ class ManifestImageState<T> extends State<ManifestImageWidget> {
     return CachedNetworkImage(
       imageUrl: "${BungieApiService.baseUrl}$url",
       placeholder: shimmer,
+      fadeInDuration: Duration(milliseconds: 300),
     );
   }
 }

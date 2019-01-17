@@ -28,9 +28,9 @@ class ItemDetailScreen extends DestinyItemStatefulWidget {
   }
 }
 
-class ItemDetailScreenState extends DestinyItemState
-    with TickerProviderStateMixin {
+class ItemDetailScreenState extends DestinyItemState{
   int selectedPerk;
+  Map<int,int> selectedPerks = new Map();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,15 +50,24 @@ class ItemDetailScreenState extends DestinyItemState
               item,
               definition,
               instanceInfo,
+              key:Key('perks_widget'),
+              selectedPerkHash: selectedPerk,
+              selectedPerkHashes: selectedPerks,
               onSelectPerk: (socketHash, plugHash) {
-                setState(() {
+                if(selectedPerk == plugHash){
+                  selectedPerk = null;
+                }else{
                   selectedPerk = plugHash;
+                }
+                selectedPerks[socketHash] = plugHash;
+                setState(() {
                 });
               },
             ),
-            SelectedPerkWidget(selectedPerk, context:context, vsync: this),
-            ItemLoreWidget(item, definition, instanceInfo)
-          ], addAutomaticKeepAlives: true),
+            SelectedPerkWidget(selectedPerk, key:Key("selected_perk: $selectedPerk") ),
+            ItemLoreWidget(item, definition, instanceInfo),
+            Container(height:500)
+          ]),
         ),
       ]),
     );
