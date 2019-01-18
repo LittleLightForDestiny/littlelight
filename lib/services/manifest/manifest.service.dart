@@ -221,7 +221,7 @@ class ManifestService {
         defs[hash] = def;
       });
     } catch (e) {}
-    return defs.cast();
+    return defs.cast<int, T>();
   }
 
   Future<T> getDefinition<T>(int hash,

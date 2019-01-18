@@ -28,6 +28,10 @@ class BungieApiService {
       "lfx5V-1zoQrE..22d7rDbWXLqdHZfQXFuy544tSOgDA";
   final AuthService auth = new AuthService();
 
+  static String url(String url){
+    return "$baseUrl/$url";
+  }
+
   Future<DestinyManifestResponse> getManifest() {
     return Destiny2.getDestinyManifest(new Client());
   }
