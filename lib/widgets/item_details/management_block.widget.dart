@@ -25,6 +25,9 @@ class ManagementBlockWidget extends DestinyItemWidget {
 
   @override
   Widget build(BuildContext context) {
+    if(item == null){
+      return Container();
+    }
     return Container(
         child: Wrap(
           direction: Axis.horizontal,

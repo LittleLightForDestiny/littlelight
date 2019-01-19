@@ -16,4 +16,14 @@ abstract class DestinyItemWidget extends StatelessWidget {
   DestinyItemWidget(this.item, this.definition, this.instanceInfo,
       {Key key, this.characterId})
       : super(key: key);
+  
+  String get tag{
+    if(item != null){
+      return "${item.itemInstanceId}_${item.itemHash}";
+    }
+    if(definition != null){
+      return "${definition.hash}";
+    }
+    return "";
+  }
 }

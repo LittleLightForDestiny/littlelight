@@ -34,6 +34,10 @@ class ItemPerksWidget extends DestinyItemWidget {
 
   @override
   Widget build(BuildContext context) {
+    //TODO :implement proper definition handling
+    if(item == null || instanceInfo == null){
+      return Container();
+    }
     if (category == null) return Container();
     return Container(
       padding: EdgeInsets.all(8),

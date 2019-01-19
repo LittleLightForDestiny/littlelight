@@ -187,7 +187,7 @@ class ManifestService {
       [dynamic identity(Map<String, dynamic> json)]) async {
     var type = DefinitionTableNames.fromClass[T];
     if (identity == null) {
-      identity = DefinitionTableNames.identities[type];
+      identity = DefinitionTableNames.identities[T];
     }
     Map<int, T> defs = new Map();
     hashes.removeWhere((hash) {

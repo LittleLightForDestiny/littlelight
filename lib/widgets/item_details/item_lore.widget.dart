@@ -1,24 +1,20 @@
-import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
-import 'package:bungie_api/models/destiny_item_component.dart';
-import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_lore_definition.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/widgets/common/destiny_item.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
-class ItemLoreWidget extends DestinyItemWidget {
+class ItemLoreWidget extends StatelessWidget {
+  final int hash;
+
   ItemLoreWidget(
-      DestinyItemComponent item,
-      DestinyInventoryItemDefinition definition,
-      DestinyItemInstanceComponent instanceInfo,
+      this.hash,
       {Key key})
-      : super(item, definition, instanceInfo, key: key);
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    if(definition.loreHash == null) {
+    if(hash == null) {
       return Container();
     }
     return Container(
@@ -38,7 +34,7 @@ class ItemLoreWidget extends DestinyItemWidget {
           Container(
               padding: EdgeInsets.all(8),
               child: ManifestText<DestinyLoreDefinition>(
-                  definition.loreHash,
+                  hash,
                   textExtractor: (lore){
                     if(lore == null) return "";
                     return lore.displayProperties.description;

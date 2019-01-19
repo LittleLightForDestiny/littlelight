@@ -49,7 +49,8 @@ class ItemIconWidget extends DestinyItemWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (item.state & ItemState.Masterwork == ItemState.Masterwork) {
+    int state = item?.state ?? 0;
+    if (state & ItemState.Masterwork == ItemState.Masterwork) {
       return Stack(children: [
         itemIconImage(context),
         Positioned.fill(child: getMasterworkOutline()),
@@ -68,7 +69,7 @@ class ItemIconWidget extends DestinyItemWidget {
   }
 
   BoxDecoration iconBoxDecoration() {
-    if (item.bucketHash == InventoryBucket.engrams) {
+    if (item?.bucketHash == InventoryBucket.engrams) {
       return null;
     }
     return BoxDecoration(

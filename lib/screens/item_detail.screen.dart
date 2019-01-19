@@ -28,48 +28,51 @@ class ItemDetailScreen extends DestinyItemStatefulWidget {
   }
 }
 
-class ItemDetailScreenState extends DestinyItemState{
+class ItemDetailScreenState extends DestinyItemState {
   int selectedPerk;
-  Map<int,int> selectedPerks = new Map();
+  Map<int, int> selectedPerks = new Map();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CustomScrollView(slivers: [
-        ItemCoverWidget(item, definition, instanceInfo),
-        SliverList(
-          delegate: SliverChildListDelegate([
-            ItemMainInfoWidget(item, definition, instanceInfo),
-            ManagementBlockWidget(
-              item,
-              definition,
-              instanceInfo,
-              characterId: characterId,
-            ),
-            ItemStatsWidget(item, definition, instanceInfo),
-            ItemPerksWidget(
-              item,
-              definition,
-              instanceInfo,
-              key:Key('perks_widget'),
-              selectedPerkHash: selectedPerk,
-              selectedPerkHashes: selectedPerks,
-              onSelectPerk: (socketHash, plugHash) {
-                if(selectedPerk == plugHash){
-                  selectedPerk = null;
-                }else{
-                  selectedPerk = plugHash;
-                }
-                selectedPerks[socketHash] = plugHash;
-                setState(() {
-                });
-              },
-            ),
-            SelectedPerkWidget(selectedPerk, key:Key("selected_perk: $selectedPerk") ),
-            ItemLoreWidget(item, definition, instanceInfo),
-            Container(height:500)
-          ]),
-        ),
-      ]),
-    );
+        body: CustomScrollView(slivers: [
+      ItemCoverWidget(item, definition, instanceInfo),
+      SliverList(
+        delegate: SliverChildListDelegate([
+          ItemMainInfoWidget(item, definition, instanceInfo),
+          ManagementBlockWidget(
+            item,
+            definition,
+            instanceInfo,
+            characterId: characterId,
+          ),
+          ItemStatsWidget(item, definition, instanceInfo),
+          ItemPerksWidget(
+            item,
+            definition,
+            instanceInfo,
+            key: Key('perks_widget'),
+            selectedPerkHash: selectedPerk,
+            selectedPerkHashes: selectedPerks,
+            onSelectPerk: (socketHash, plugHash) {
+              if (selectedPerk == plugHash) {
+                selectedPerk = null;
+              } else {
+                selectedPerk = plugHash;
+              }
+              selectedPerks[socketHash] = plugHash;
+              setState(() {});
+            },
+          ),
+          SelectedPerkWidget(selectedPerk,
+              key: Key("selected_perk: $selectedPerk")),
+          
+          Container(height: 500)
+        ]),
+      ),
+    ]));
+  }
+  buildLore(BuildContext context){
+    if(definition?.loreHash == null) return Container(); 
+    return ItemLoreWidget(definition.loreHash);
   }
 }

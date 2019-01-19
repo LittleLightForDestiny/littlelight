@@ -2,24 +2,24 @@ import 'package:bungie_api/models/destiny_presentation_node_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
-import 'package:little_light/widgets/collections/collection_list.widget.dart';
+import 'package:little_light/widgets/presentation_nodes/presentation_node_tabs.widget.dart';
 
-class PresentationNodeScreen extends StatefulWidget {
+class PresentationNodeInnerScreen extends StatefulWidget {
   final _manifest = new ManifestService();
   final int presentationNodeHash;
   final DestinyPresentationNodeDefinition presentationNodeDefinition;
   final int depth;
-  PresentationNodeScreen(
+  PresentationNodeInnerScreen(
       {this.presentationNodeHash = DestinyData.collectionsRootHash,
       this.presentationNodeDefinition,
       this.depth = 0});
 
   @override
-  PresentationNodeScreenState createState() =>
-      new PresentationNodeScreenState();
+  PresentationNodeInnerScreenState createState() =>
+      new PresentationNodeInnerScreenState();
 }
 
-class PresentationNodeScreenState extends State<PresentationNodeScreen> {
+class PresentationNodeInnerScreenState extends State<PresentationNodeInnerScreen> {
   DestinyPresentationNodeDefinition _definition;
   @override
   void initState() {
@@ -40,11 +40,13 @@ class PresentationNodeScreenState extends State<PresentationNodeScreen> {
   Widget build(BuildContext context) {
     if (definition == null) return Container();
     return Scaffold(
-      appBar: AppBar(
-        title: Text(definition.displayProperties.name),
-      ),
-      body: CollectionListWidget(definition: definition, depth: widget.depth),
+      appBar: AppBar(title:Text(definition.displayProperties.name)),
+      body:buildBody(context)
     );
+  }
+
+  Widget buildBody(BuildContext context) {
+    return PresentationNodeTabsWidget(presentationNodeDefinition: definition, depth: widget.depth);
   }
 
   DestinyPresentationNodeDefinition get definition =>

@@ -30,6 +30,7 @@ class ItemCoverWidget extends DestinyItemWidget {
     return SliverPersistentHeader(
         pinned: true,
         delegate: ItemCoverDelegate(item, definition, instanceInfo,
+        tag,
             minHeight: paddingTop + kToolbarHeight,
             maxHeight: kToolbarHeight + screenshotHeight));
   }
@@ -41,8 +42,9 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
   final DestinyItemInstanceComponent instanceInfo;
   double minHeight;
   double maxHeight;
+  String tag;
 
-  ItemCoverDelegate(this.item, this.definition, this.instanceInfo,
+  ItemCoverDelegate(this.item, this.definition, this.instanceInfo, this.tag,
       {this.minHeight = 50, this.maxHeight = 200})
       : super();
 
@@ -56,6 +58,7 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
           overflow: Overflow.visible,
           fit: StackFit.expand,
           children: <Widget>[
+            Container(),
             background(context, expandRatio),
             nameBar(context, expandRatio),
             icon(context, expandRatio),
@@ -72,7 +75,7 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
         right: 0,
         height: kToolbarHeight,
         child: Hero(
-            tag: "item_namebar_${item.itemInstanceId}_${item.itemHash}",
+            tag: "item_namebar_$tag",
             child: ItemNameBarWidget(
               item,
               definition,
@@ -97,7 +100,7 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
         width: size,
         height: size,
         child: Hero(
-            tag: "item_icon_${item.itemInstanceId}_${item.itemHash}",
+            tag: "item_icon_$tag",
             child: 
             ItemIconWidget.builder(item, definition, instanceInfo,
             iconBorderWidth: lerpDouble(1, 2, expandRatio),

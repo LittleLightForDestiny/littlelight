@@ -5,21 +5,23 @@ import 'package:bungie_api/models/destiny_presentation_node_record_child_entry.d
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
-import 'package:little_light/widgets/collections/presentation_node_item.widget.dart';
+import 'package:little_light/widgets/presentation_nodes/collectible_item.widget.dart';
+import 'package:little_light/widgets/presentation_nodes/presentation_node_item.widget.dart';
+import 'package:little_light/widgets/presentation_nodes/record_item.widget.dart';
 
-class CollectionListWidget extends StatefulWidget {
+class PresentationNodeListWidget extends StatefulWidget {
   final ManifestService manifest = new ManifestService();
   final DestinyPresentationNodeDefinition definition;
   final int depth;
-  CollectionListWidget({Key key, this.definition, this.depth = 0})
+  PresentationNodeListWidget({Key key, this.definition, this.depth = 0})
       : super(key: key);
   @override
   State<StatefulWidget> createState() {
-    return CollectionListWidgetState();
+    return PresentationNodeListWidgetState();
   }
 }
 
-class CollectionListWidgetState extends State<CollectionListWidget> {
+class PresentationNodeListWidgetState extends State<PresentationNodeListWidget> {
   Map<int, DestinyPresentationNodeDefinition> _presentationNodeDefinitions;
   List<CollectionListItem> listIndex;
 
@@ -36,6 +38,7 @@ class CollectionListWidgetState extends State<CollectionListWidget> {
       _presentationNodeDefinitions = await widget.manifest
           .getDefinitions<DestinyPresentationNodeDefinition>(hashes);
     }
+    
     listIndex = List<CollectionListItem>();
     presentationNodes.forEach((node) {
       listIndex.add(CollectionListItem(
@@ -45,8 +48,15 @@ class CollectionListWidgetState extends State<CollectionListWidget> {
           .collectibles
           .forEach((collectible) {
         listIndex.add(CollectionListItem(
-            CollectionListItemType.collectible, collectible.collectibleHash));
+            CollectionListItemType.nestedCollectible, collectible.collectibleHash));
       });
+    });
+    collectibles.forEach((collectible){
+      listIndex.add(CollectionListItem(CollectionListItemType.collectible, collectible.collectibleHash));
+    });
+
+    records.forEach((record){
+      listIndex.add(CollectionListItem(CollectionListItemType.record, record.recordHash));
     });
     setState(() {});
   }
@@ -71,6 +81,12 @@ class CollectionListWidgetState extends State<CollectionListWidget> {
       case CollectionListItemType.presentationNode:
         return PresentationNodeItemWidget(hash: item.hash, depth: widget.depth);
 
+      case CollectionListItemType.collectible:
+        return CollectibleItemWidget(hash: item.hash);
+
+      case CollectionListItemType.record:
+        return RecordItemWidget(hash: item.hash);
+
       default:
         return Container(color: Colors.red);
     }
@@ -92,8 +108,11 @@ class CollectionListWidgetState extends State<CollectionListWidget> {
   StaggeredTile getTileBuilder(int index) {
     var item = listIndex[index];
     switch (item.type) {
-      case CollectionListItemType.collectible:
+      case CollectionListItemType.nestedCollectible:
         return StaggeredTile.count(6, 6);
+
+      case CollectionListItemType.record:
+        return StaggeredTile.count(15, 20);
 
       default:
         return StaggeredTile.count(30, 7);
@@ -101,7 +120,7 @@ class CollectionListWidgetState extends State<CollectionListWidget> {
   }
 }
 
-enum CollectionListItemType { presentationNode, collectible, record }
+enum CollectionListItemType { presentationNode, collectible, nestedCollectible, nestedRecord, record }
 
 class CollectionListItem {
   final CollectionListItemType type;

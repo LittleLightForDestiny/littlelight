@@ -34,7 +34,8 @@ class ItemNameBarWidget extends DestinyItemWidget {
   }
 
   BoxDecoration nameBarBoxDecoration() {
-    if (item.state & ItemState.Masterwork != ItemState.Masterwork) {
+    int state  = item?.state ?? 0;
+    if (state & ItemState.Masterwork != ItemState.Masterwork) {
       return BoxDecoration(
           color: DestinyData.getTierColor(definition.inventory.tierType));
     }

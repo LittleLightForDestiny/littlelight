@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/screens/equipment.screen.dart';
 import 'package:little_light/screens/initial.screen.dart';
-import 'package:little_light/screens/presenation_node.screen.dart';
+import 'package:little_light/screens/presentation_node_root.screen.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
@@ -36,7 +36,10 @@ class SideMenuWidget extends StatelessWidget {
                   open(EquipmentScreen());
                 }),
                 menuItem(context, "Collections", onTap: () {
-                  open(PresentationNodeScreen());
+                  open(PresentationNodeRootScreen(key:Key("collections")));
+                }),
+                menuItem(context, "Triumphs", onTap: () {
+                  open(PresentationNodeRootScreen(key:Key("triumphs"), presentationNodeHash: 1024788583,));
                 }),
               ],
             )));
