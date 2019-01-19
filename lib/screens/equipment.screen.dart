@@ -14,32 +14,40 @@ import 'package:little_light/widgets/inventory_tabs/vault_tab.widget.dart';
 class EquipmentScreen extends StatefulWidget {
   final profile = new ProfileService();
   final manifest = new ManifestService();
+  final List<int> itemTypes = [
+    ItemCategory.weapon,
+    ItemCategory.armor,
+    ItemCategory.inventory
+  ];
 
   @override
   EquipmentScreenState createState() => new EquipmentScreenState();
 }
 
-class EquipmentScreenState extends State<EquipmentScreen> {
+class EquipmentScreenState extends State<EquipmentScreen>
+    with TickerProviderStateMixin {
   int currentGroup = ItemCategory.weapon;
-  int totalTabs = 4;
-  Map<int,double> scrollPositions = new Map();
+  Map<int, double> scrollPositions = new Map();
+  get totalCharacterTabs =>
+      characters?.length != null ? characters.length + 1 : 4;
 
   @override
   void initState() {
-    totalTabs = characters?.length != null ? characters.length + 1 : 4;
-    scrollPositions[ItemCategory.weapon] = 0;
-    scrollPositions[ItemCategory.armor] = 0;
-    scrollPositions[ItemCategory.inventory] = 0;
-        
+    widget.itemTypes.forEach((type) {
+      scrollPositions[type] = 0;
+    });
+
     super.initState();
     widget.profile.startAutomaticUpdater(Duration(seconds: 30));
     cacheVaultDefinitions();
   }
 
-  cacheVaultDefinitions() async{
+  cacheVaultDefinitions() async {
     List<DestinyItemComponent> items = widget.profile.getProfileInventory();
-    items = items.where((item)=>item.bucketHash == InventoryBucket.general).toList();
-    for(int i=0; i < items.length; i++){
+    items = items
+        .where((item) => item.bucketHash == InventoryBucket.general)
+        .toList();
+    for (int i = 0; i < items.length; i++) {
       DestinyItemComponent item = items[i];
       await widget.manifest.getItemDefinition(item.itemHash);
     }
@@ -56,44 +64,63 @@ class EquipmentScreenState extends State<EquipmentScreen> {
     if (characters == null) {
       return Container();
     }
-    return DefaultTabController(
+    TabController typeTabController = TabController(
       initialIndex: 0,
+      length: widget.itemTypes.length,
+      vsync: this,
+    );
+    TabController charTabController = TabController(
+      initialIndex: 0,
+      length: totalCharacterTabs,
+      vsync: this,
+    );
+    return Material(
       child: Stack(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-                gradient: LinearGradient(
-              colors: [
-                Color.fromARGB(255, 32, 53, 53),
-                Color.fromARGB(255, 100, 100, 115),
-                Color.fromARGB(255, 32, 32, 73),
-              ],
-              begin: FractionalOffset(0, .5),
-              end: FractionalOffset(.5, 0),
-            )),
-            child: TabBarView(children: getTabs()),
-          ),
-          TabsCharacterMenuWidget(characters, 0),
-          ItemTypeMenuWidget(
-            currentGroup,
-            onSelect: (hash) {
-              setState(() {
-                this.currentGroup = hash;
-              });
-            },
-          ),
-          InventoryNotificationWidget(key:Key('inventory_notification_widget'))
+        children: <Widget>[
+          buildBackground(context),
+          TabBarView(
+              controller: typeTabController,
+              children: buildItemTypeTabs(context, charTabController)),
+          TabsCharacterMenuWidget(characters, controller: charTabController),
+          ItemTypeMenuWidget(widget.itemTypes, controller: typeTabController),
+          InventoryNotificationWidget(key: Key('inventory_notification_widget'))
         ],
       ),
-      length: totalTabs,
     );
   }
 
-  List<Widget> getTabs() {
+  Widget buildBackground(BuildContext context) {
+    return Container(
+        decoration: BoxDecoration(
+            gradient: LinearGradient(
+      colors: [
+        Color.fromARGB(255, 32, 53, 53),
+        Color.fromARGB(255, 100, 100, 115),
+        Color.fromARGB(255, 32, 32, 73),
+      ],
+      begin: FractionalOffset(0, .5),
+      end: FractionalOffset(.5, 0),
+    )));
+  }
+
+  List<Widget> buildItemTypeTabs(
+      BuildContext context, TabController controller) {
+    return widget.itemTypes
+        .map((type) => buildCharacterTabController(context, type, controller))
+        .toList();
+  }
+
+  Widget buildCharacterTabController(
+      BuildContext context, int group, TabController controller) {
+    return TabBarView(controller: controller, children: getTabs(group));
+  }
+
+  List<Widget> getTabs(int group) {
     List<Widget> characterTabs = characters.map((character) {
-      return CharacterTabWidget(character.characterId, currentGroup, scrollPositions:scrollPositions);
+      return CharacterTabWidget(character.characterId, group,
+          scrollPositions: scrollPositions);
     }).toList();
-    characterTabs.add(VaultTabWidget(currentGroup));
+    characterTabs.add(VaultTabWidget(group));
     return characterTabs;
   }
 

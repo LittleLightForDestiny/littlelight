@@ -10,8 +10,9 @@ import 'package:shimmer/shimmer.dart';
 
 class TabsCharacterMenuWidget extends StatelessWidget {
   final List<DestinyCharacterComponent> characters;
-  final int selectedIndex;
-  TabsCharacterMenuWidget(this.characters, this.selectedIndex);
+  final TabController controller;
+
+  TabsCharacterMenuWidget(this.characters, {this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +21,7 @@ class TabsCharacterMenuWidget extends StatelessWidget {
         top: getTopPadding(context) + kToolbarHeight - 52,
         width: (characters.length + 1) * 48.0,
         child: TabBar(
+          controller: controller,
           isScrollable: true,
           indicatorColor: Colors.white,
           labelPadding: EdgeInsets.all(0),
@@ -37,11 +39,11 @@ class TabsCharacterMenuWidget extends StatelessWidget {
         .map((index, character) => MapEntry<int, TabMenuButton>(
             index,
             TabMenuButton(
-                character: character, selected: index == selectedIndex)))
+                character: character)))
         .values
         .toList();
 
-    buttons.add(VaultTabMenuButton(selected:characters.length == selectedIndex));
+    buttons.add(VaultTabMenuButton());
     return buttons;
   }
 
@@ -52,10 +54,9 @@ class TabsCharacterMenuWidget extends StatelessWidget {
 
 class TabMenuButton extends StatefulWidget {
   final DestinyCharacterComponent character;
-  final bool selected;
   final ManifestService manifest = new ManifestService();
 
-  TabMenuButton({this.character, this.selected});
+  TabMenuButton({this.character});
 
   @override
   State<StatefulWidget> createState() => new TabMenuButtonState();
@@ -101,8 +102,6 @@ class TabMenuButtonState extends State<TabMenuButton> {
 }
 
 class VaultTabMenuButton extends TabMenuButton {
-  VaultTabMenuButton({bool selected}) : super(selected: selected);
-
   @override
   State<StatefulWidget> createState() => new VaultTabMenuButtonState();
 }

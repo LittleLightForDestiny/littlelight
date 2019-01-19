@@ -37,7 +37,7 @@ class ItemStatsWidget extends DestinyItemWidget {
 
   @override
   Widget build(BuildContext context) {
-    //TODO :implement proper definition handling
+    //TODO: implement proper definition handling
     if(item == null || instanceInfo == null){
       return Container();
     }
