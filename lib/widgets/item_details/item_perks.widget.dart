@@ -35,7 +35,7 @@ class ItemPerksWidget extends DestinyItemWidget {
   @override
   Widget build(BuildContext context) {
     //TODO: implement proper definition handling
-    if(item == null || instanceInfo == null){
+    if(item == null || instanceInfo == null || definition?.sockets == null){
       return Container();
     }
     if (category == null) return Container();

@@ -7,22 +7,92 @@ import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/utils/platform_data.dart';
 import 'package:shimmer/shimmer.dart';
 
+const Duration _kExpand = Duration(milliseconds: 200);
+
 class ProfileInfoWidget extends StatefulWidget {
   final AuthService auth = new AuthService();
-  final BungieApiService api = new BungieApiService();
+  final List<Widget> children;
+  ProfileInfoWidget({this.children});
+
   @override
-  State<StatefulWidget> createState() {
-    return new ProfileInfoState();
+  createState() {
+    return ProfileInfoState();
   }
 }
 
-class ProfileInfoState extends State<ProfileInfoWidget> {
+class ProfileInfoState extends State<ProfileInfoWidget> with SingleTickerProviderStateMixin {
   GeneralUser bungieNetUser;
   UserInfoCard selectedMembership;
+  
+  static final Animatable<double> _easeOutTween = CurveTween(curve: Curves.easeOut);
+  static final Animatable<double> _easeInTween = CurveTween(curve: Curves.easeIn);
+
+  AnimationController _controller;
+  Animation<double> _heightFactor;
+
+  bool _isExpanded = false;
+
   @override
-  initState() {
+  void initState() {
     super.initState();
+    _controller = AnimationController(duration: _kExpand, vsync: this);
+    _heightFactor = _controller.drive(_easeInTween);
+    _isExpanded = PageStorage.of(context)?.readState(context) ?? false;
+    if (_isExpanded)
+      _controller.value = 1.0;
+
     loadUser();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _handleTap() {
+    setState(() {
+      _isExpanded = !_isExpanded;
+      if (_isExpanded) {
+        _controller.forward();
+      } else {
+        _controller.reverse().then<void>((void value) {
+          if (!mounted)
+            return;
+          setState(() {
+          });
+        });
+      }
+      PageStorage.of(context)?.writeState(context, _isExpanded);
+    });
+  }
+
+  Widget _buildChildren(BuildContext context, Widget child) {
+    return Container(
+      color:Colors.grey.shade900,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          buildProfileInfo(context),
+          ClipRect(
+            child: Align(
+              heightFactor: _heightFactor.value,
+              child: child,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final bool closed = !_isExpanded && _controller.isDismissed;
+    return AnimatedBuilder(
+      animation: _controller.view,
+      builder: _buildChildren,
+      child: closed ? null : Column(children: widget.children),
+    );
   }
 
   loadUser() async {
@@ -33,19 +103,19 @@ class ProfileInfoState extends State<ProfileInfoWidget> {
     });
   }
 
-  Widget build(BuildContext context) {
+  Widget buildProfileInfo(BuildContext context) {
     return Stack(children: [
       Column(
         children: <Widget>[
-          Container(height: 120, child: background(context)),
-          Container(height: 40, child: profileInfo(context)),
+          Container(height: 150, child: background(context)),
+          Container(height: kToolbarHeight, child: profileInfo(context)),
         ],
       ),
       Positioned(child: profilePicture(context),
-          left:20,
-          bottom: 20,
-          width:80,
-          height:80
+          left:8,
+          bottom: 8,
+          width:72,
+          height:72
           )
     ]);
   }
@@ -90,14 +160,17 @@ class ProfileInfoState extends State<ProfileInfoWidget> {
     PlatformData platform = PlatformData.getPlatform(selectedMembership?.membershipType ?? 0);
     return Container(
         color: platform.color,
+        padding: EdgeInsets.only(left:80),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            Text(selectedMembership?.displayName ?? ""),
             Padding(
               padding:EdgeInsets.symmetric(horizontal: 8),
               child:Icon(platform.iconData)
-              )
+              ),
+            Expanded(child:Text(selectedMembership?.displayName ?? "")),
+            IconButton(icon: Icon(Icons.settings),
+            onPressed: _handleTap,)
           ],
         ));
   }

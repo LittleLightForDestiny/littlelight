@@ -28,6 +28,10 @@ class EquipmentScreenState extends State<EquipmentScreen>
     with TickerProviderStateMixin {
   int currentGroup = ItemCategory.weapon;
   Map<int, double> scrollPositions = new Map();
+
+  TabController charTabController;
+  TabController typeTabController;
+
   get totalCharacterTabs =>
       characters?.length != null ? characters.length + 1 : 4;
 
@@ -61,19 +65,20 @@ class EquipmentScreenState extends State<EquipmentScreen>
 
   @override
   Widget build(BuildContext context) {
-    if (characters == null) {
-      return Container();
-    }
-    TabController typeTabController = TabController(
+    typeTabController = typeTabController ?? TabController(
       initialIndex: 0,
       length: widget.itemTypes.length,
       vsync: this,
     );
-    TabController charTabController = TabController(
+    charTabController = charTabController ?? TabController(
       initialIndex: 0,
       length: totalCharacterTabs,
       vsync: this,
     );
+    if (characters == null) {
+      return Container();
+    }
+    double paddingTop = MediaQuery.of(context).padding.top;
     return Material(
       child: Stack(
         children: <Widget>[
@@ -81,6 +86,17 @@ class EquipmentScreenState extends State<EquipmentScreen>
           TabBarView(
               controller: typeTabController,
               children: buildItemTypeTabs(context, charTabController)),
+          Positioned(
+            top: paddingTop,
+            width: kToolbarHeight,
+            height: kToolbarHeight,
+            child: IconButton(
+              icon: Icon(Icons.menu),
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+            ),
+          ),
           TabsCharacterMenuWidget(characters, controller: charTabController),
           ItemTypeMenuWidget(widget.itemTypes, controller: typeTabController),
           InventoryNotificationWidget(key: Key('inventory_notification_widget'))

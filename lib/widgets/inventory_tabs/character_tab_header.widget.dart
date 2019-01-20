@@ -68,10 +68,10 @@ class TabHeaderWidgetState extends State<TabHeaderWidget> {
         ));
     double top = getTopPadding(context) + 10;
     return Positioned(
-        left: 40,
+        left: kToolbarHeight,
         top: top,
-        width: kToolbarHeight,
-        height: kToolbarHeight,
+        width: kToolbarHeight +8,
+        height: kToolbarHeight + 8,
         child: CachedNetworkImage(
           imageUrl:
               "${BungieApiService.baseUrl}${emblemDefinition.secondaryOverlay}",

@@ -40,7 +40,11 @@ class PresentationNodeRootScreenState extends State<PresentationNodeRootScreen> 
   Widget build(BuildContext context) {
     if (definition == null) return Container();
     return Scaffold(
-      appBar: AppBar(title:Text(definition.displayProperties.name)),
+      appBar: AppBar(
+        leading: IconButton(icon:Icon(Icons.menu), onPressed: () {
+          Scaffold.of(context).openDrawer();
+        },),
+        title:Text(definition.displayProperties.name)),
       body:buildBody(context)
     );
   }

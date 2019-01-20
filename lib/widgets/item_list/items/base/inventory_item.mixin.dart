@@ -34,7 +34,7 @@ mixin InventoryItemMixin implements DestinyItemWidget {
 
   Widget itemIconHero(BuildContext context) {
     return Hero(
-      tag: "item_icon_${item.itemInstanceId}_${item.itemHash}",
+      tag: "item_icon_$tag",
       child: itemIcon(context),
     );
   }
@@ -71,7 +71,7 @@ mixin InventoryItemMixin implements DestinyItemWidget {
 
   Widget itemHeroNamebar(BuildContext context){
     return Hero(
-      tag: "item_namebar_${item.itemInstanceId}_${item.itemHash}",
+      tag: "item_namebar_$tag",
       child: nameBar(context));
   }
 

@@ -18,12 +18,8 @@ abstract class DestinyItemWidget extends StatelessWidget {
       : super(key: key);
   
   String get tag{
-    if(item != null){
-      return "${item.itemInstanceId}_${item.itemHash}";
-    }
-    if(definition != null){
-      return "${definition.hash}";
-    }
-    return "";
+    List<dynamic> params = [item?.itemInstanceId, item?.itemHash ?? definition?.hash, characterId];
+    params.removeWhere((p)=>p==null);
+    return params.map((p)=>"$p").join("_");
   }
 }

@@ -24,7 +24,7 @@ class ItemDetailScreen extends DestinyItemStatefulWidget {
 
   @override
   DestinyItemState<DestinyItemStatefulWidget> createState() {
-    return new ItemDetailScreenState();
+    return ItemDetailScreenState();
   }
 }
 
@@ -65,7 +65,7 @@ class ItemDetailScreenState extends DestinyItemState {
           ),
           SelectedPerkWidget(selectedPerk,
               key: Key("selected_perk: $selectedPerk")),
-          
+          buildLore(context),
           Container(height: 500)
         ]),
       ),

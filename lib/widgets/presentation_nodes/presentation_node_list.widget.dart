@@ -21,7 +21,8 @@ class PresentationNodeListWidget extends StatefulWidget {
   }
 }
 
-class PresentationNodeListWidgetState extends State<PresentationNodeListWidget> {
+class PresentationNodeListWidgetState
+    extends State<PresentationNodeListWidget> {
   Map<int, DestinyPresentationNodeDefinition> _presentationNodeDefinitions;
   List<CollectionListItem> listIndex;
 
@@ -38,7 +39,7 @@ class PresentationNodeListWidgetState extends State<PresentationNodeListWidget> 
       _presentationNodeDefinitions = await widget.manifest
           .getDefinitions<DestinyPresentationNodeDefinition>(hashes);
     }
-    
+
     listIndex = List<CollectionListItem>();
     presentationNodes.forEach((node) {
       listIndex.add(CollectionListItem(
@@ -48,15 +49,18 @@ class PresentationNodeListWidgetState extends State<PresentationNodeListWidget> 
           .collectibles
           .forEach((collectible) {
         listIndex.add(CollectionListItem(
-            CollectionListItemType.nestedCollectible, collectible.collectibleHash));
+            CollectionListItemType.nestedCollectible,
+            collectible.collectibleHash));
       });
     });
-    collectibles.forEach((collectible){
-      listIndex.add(CollectionListItem(CollectionListItemType.collectible, collectible.collectibleHash));
+    collectibles.forEach((collectible) {
+      listIndex.add(CollectionListItem(
+          CollectionListItemType.collectible, collectible.collectibleHash));
     });
 
-    records.forEach((record){
-      listIndex.add(CollectionListItem(CollectionListItemType.record, record.recordHash));
+    records.forEach((record) {
+      listIndex.add(
+          CollectionListItem(CollectionListItemType.record, record.recordHash));
     });
     setState(() {});
   }
@@ -108,8 +112,18 @@ class PresentationNodeListWidgetState extends State<PresentationNodeListWidget> 
   StaggeredTile getTileBuilder(int index) {
     var item = listIndex[index];
     switch (item.type) {
+      case CollectionListItemType.presentationNode:{
+        if (widget.depth == 0) {
+          return StaggeredTile.count(15, 20);
+        }
+        return StaggeredTile.count(30, 7);
+      }
+
       case CollectionListItemType.nestedCollectible:
         return StaggeredTile.count(6, 6);
+
+      case CollectionListItemType.collectible:
+        return StaggeredTile.count(30, 7);
 
       case CollectionListItemType.record:
         return StaggeredTile.count(15, 20);
@@ -120,7 +134,13 @@ class PresentationNodeListWidgetState extends State<PresentationNodeListWidget> 
   }
 }
 
-enum CollectionListItemType { presentationNode, collectible, nestedCollectible, nestedRecord, record }
+enum CollectionListItemType {
+  presentationNode,
+  collectible,
+  nestedCollectible,
+  nestedRecord,
+  record
+}
 
 class CollectionListItem {
   final CollectionListItemType type;

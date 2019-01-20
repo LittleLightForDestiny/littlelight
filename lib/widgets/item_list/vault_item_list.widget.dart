@@ -23,12 +23,6 @@ class VaultItemListWidget extends ItemListWidget {
 
 class VaultItemListWidgetState extends ItemListWidgetState {
 
-  @override
-  void initState() {
-    super.initState();
-    buildIndex();
-  }
-
   buildIndex() async {
     List<DestinyItemComponent> inventory = widget.profile.getProfileInventory();
     inventory = inventory.where((item)=>item.bucketHash == InventoryBucket.general).toList();
@@ -119,6 +113,7 @@ class VaultItemListWidgetState extends ItemListWidgetState {
 
   Widget getItem(int index) {
     ListItem item = listIndex[index];
+    String itemKey = "${index}_${item.itemComponent?.itemInstanceId ?? item.itemComponent?.itemHash ?? 'empty'}";
     switch (item.type) {
       case ListItem.infoHeader:
         return CharacterInfoWidget(
@@ -133,6 +128,7 @@ class VaultItemListWidgetState extends ItemListWidgetState {
 
       case ListItem.unequippedItem:
       return InventoryItemWrapperWidget(item?.itemComponent, item?.bucketHash,
+            key:Key(itemKey),
             density: ContentDensity.MINIMAL, characterId: widget.characterId,);
 
       case ListItem.spacer:

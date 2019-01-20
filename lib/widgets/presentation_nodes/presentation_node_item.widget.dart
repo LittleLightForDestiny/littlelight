@@ -14,7 +14,6 @@ class PresentationNodeItemWidget extends StatelessWidget {
     return DefinitionProviderWidget<DestinyPresentationNodeDefinition>(hash,
         (definition) {
       return Container(
-          margin: EdgeInsets.symmetric(vertical: 4),
           decoration: BoxDecoration(
               border: Border.all(color: Colors.grey.shade600, width: 1),
               gradient: LinearGradient(
@@ -27,19 +26,9 @@ class PresentationNodeItemWidget extends StatelessWidget {
                     Colors.white.withOpacity(.1)
                   ])),
           child: Stack(children: [
-            Row(
-              children: <Widget>[
-                AspectRatio(
-                    aspectRatio: 1,
-                    child: Padding(
-                        padding: EdgeInsets.all(8),
-                        child: CachedNetworkImage(
-                          imageUrl: BungieApiService.url(
-                              definition.displayProperties.icon),
-                        ))),
-                buildTitle(context, definition),
-              ],
-            ),
+            depth == 0 ? Column(
+              children: buildContent(context, definition)
+            ) : Row(children: buildContent(context, definition)),
             FlatButton(
               child: Container(),
               onPressed: () {
@@ -56,6 +45,19 @@ class PresentationNodeItemWidget extends StatelessWidget {
             )
           ]));
     });
+  }
+
+  List<Widget> buildContent(BuildContext context, DestinyPresentationNodeDefinition definition){
+    return [
+                AspectRatio(
+                    aspectRatio: 1,
+                    child: Padding(
+                        padding: EdgeInsets.all(8),
+                        child: CachedNetworkImage(
+                          imageUrl: BungieApiService.url(
+                              definition.displayProperties.icon),
+                        ))),
+                buildTitle(context, definition)];
   }
 
   buildTitle(

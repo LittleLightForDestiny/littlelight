@@ -32,7 +32,7 @@ class MinimalBaseInventoryItemWidget extends BaseInventoryItemWidget {
         left: 0,
         right: 0,
         bottom: 0,
-        child: itemIconHero(context));
+        child: itemIcon(context));
   }
 
   @override

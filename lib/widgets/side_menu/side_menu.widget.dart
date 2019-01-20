@@ -20,27 +20,34 @@ class SideMenuWidget extends StatelessWidget {
         width: 280,
         child: Container(
             color: Theme.of(context).backgroundColor,
-            child: Column(
+            child: ListView(
+              padding: EdgeInsets.all(0),
               children: <Widget>[
-                ProfileInfoWidget(),
-                menuItem(context, "Change Account", onTap: () {
-                  changeAccount(context);
-                }),
-                menuItem(context, "Change Membership", onTap: () {
-                  changeMembership(context);
-                }),
-                menuItem(context, "Change Language", onTap: () {
-                  changeLanguage(context);
-                }),
+                ProfileInfoWidget(
+                  children: <Widget>[
+                    menuItem(context, "Change Account", onTap: () {
+                      changeAccount(context);
+                    }),
+                    menuItem(context, "Change Membership", onTap: () {
+                      changeMembership(context);
+                    }),
+                    menuItem(context, "Change Language", onTap: () {
+                      changeLanguage(context);
+                    }),
+                  ],
+                ),
                 menuItem(context, "Equipment", onTap: () {
-                  open(EquipmentScreen());
+                  open(context, EquipmentScreen());
                 }),
                 menuItem(context, "Collections", onTap: () {
-                  open(PresentationNodeRootScreen(key:Key("collections")));
+                  open(context, PresentationNodeRootScreen(key: Key("collections")));
                 }),
                 menuItem(context, "Triumphs", onTap: () {
-                  open(PresentationNodeRootScreen(key:Key("triumphs"), presentationNodeHash: 1024788583,));
-                }),
+                  open(context, PresentationNodeRootScreen(
+                    key: Key("triumphs"),
+                    presentationNodeHash: 1024788583,
+                  ));
+                })
               ],
             )));
   }
@@ -51,10 +58,7 @@ class SideMenuWidget extends StatelessWidget {
         child: InkWell(
           onTap: onTap,
           child: Container(
-              decoration: BoxDecoration(
-                  border: Border(
-                      bottom: BorderSide(
-                          color: Colors.blueGrey.shade500, width: 1))),
+              
               padding: EdgeInsets.all(16),
               margin: EdgeInsets.symmetric(horizontal: 8),
               alignment: Alignment.centerRight,
@@ -62,7 +66,8 @@ class SideMenuWidget extends StatelessWidget {
         ));
   }
 
-  open(Widget screen) {
+  open(BuildContext context, Widget screen) {
+    Navigator.of(context).pop();
     if (onPageChange != null) {
       onPageChange(screen);
     }
