@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
@@ -30,8 +32,7 @@ class InventoryItemWrapperWidget extends StatefulWidget {
   final String characterId;
   final ContentDensity density;
   final int bucketHash;
-  InventoryItemWrapperWidget(this.item,
-      this.bucketHash,
+  InventoryItemWrapperWidget(this.item, this.bucketHash,
       {Key key, @required this.characterId, this.density = ContentDensity.FULL})
       : super(key: key);
 
@@ -45,6 +46,7 @@ class InventoryItemWrapperWidgetState
     extends State<InventoryItemWrapperWidget> {
   DestinyInventoryItemDefinition _definition;
   DestinyItemInstanceComponent _instanceInfo;
+  static int queueSize = 0;
 
   @override
   void initState() {
@@ -55,17 +57,49 @@ class InventoryItemWrapperWidgetState
   }
 
   getDefinitions() async {
+    if (widget._manifest
+        .isLoaded<DestinyInventoryItemDefinition>(widget.item.itemHash)) {
+      _definition =
+          await widget._manifest.getItemDefinition(widget.item.itemHash);
+      _instanceInfo =
+          widget._profile.getInstanceInfo(widget.item.itemInstanceId);
+      if (mounted) {
+        setState(() {});
+      }
+      return;
+    }
+    queueSize++;
+    if (queueSize > 1) {
+      await Future.delayed(Duration(milliseconds: 200 * queueSize));
+      if (!mounted) {
+        queueSize--;
+        return;
+      }
+    }
     _definition =
         await widget._manifest.getItemDefinition(widget.item.itemHash);
     _instanceInfo = widget._profile.getInstanceInfo(widget.item.itemInstanceId);
     if (mounted) {
       setState(() {});
     }
+    queueSize--;
+    queueSize = max(0, min(queueSize, 10));
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.item == null){
+    return AnimatedCrossFade(
+      crossFadeState: _definition == null
+          ? CrossFadeState.showFirst
+          : CrossFadeState.showSecond,
+      firstChild: buildEmpty(context),
+      secondChild: buildItem(context),
+      duration: Duration(milliseconds: 400),
+    );
+  }
+
+  Widget buildItem(BuildContext context) {
+    if (widget.item == null) {
       return buildEmpty(context);
     }
     if (_definition == null) {
@@ -83,36 +117,61 @@ class InventoryItemWrapperWidgetState
         return buildFull(context);
     }
 
-    return BaseInventoryItemWidget(widget.item, _definition, _instanceInfo, characterId:widget.characterId);
+    return BaseInventoryItemWidget(widget.item, _definition, _instanceInfo,
+        characterId: widget.characterId);
   }
 
-  Widget buildEmpty(BuildContext context){
-    switch(widget.bucketHash){
-      case InventoryBucket.engrams:{
-        return EmptyEngramInventoryItemWidget();
-      }
-      default:{
-        return EmptyInventoryItemWidget();
-      }
+  Widget buildEmpty(BuildContext context) {
+    switch (widget.bucketHash) {
+      case InventoryBucket.engrams:
+        {
+          return EmptyEngramInventoryItemWidget();
+        }
+      default:
+        {
+          return EmptyInventoryItemWidget();
+        }
     }
   }
 
   Widget buildMinimal(BuildContext context) {
     switch (_definition.itemType) {
-      case ItemType.armor:{
-        return MinimalArmorInventoryItemWidget(widget.item, _definition, _instanceInfo, characterId: widget.characterId,);
-      }
+      case ItemType.armor:
+        {
+          return MinimalArmorInventoryItemWidget(
+            widget.item,
+            _definition,
+            _instanceInfo,
+            characterId: widget.characterId,
+          );
+        }
 
-      case ItemType.weapon:{
-        return MinimalWeaponInventoryItemWidget(widget.item, _definition, _instanceInfo, characterId: widget.characterId,);
-      }
+      case ItemType.weapon:
+        {
+          return MinimalWeaponInventoryItemWidget(
+            widget.item,
+            _definition,
+            _instanceInfo,
+            characterId: widget.characterId,
+          );
+        }
 
-      case ItemType.engrams:{
-        return MinimalEngramInventoryItemWidget(widget.item, _definition, _instanceInfo, characterId: widget.characterId,);
-      }
+      case ItemType.engrams:
+        {
+          return MinimalEngramInventoryItemWidget(
+            widget.item,
+            _definition,
+            _instanceInfo,
+            characterId: widget.characterId,
+          );
+        }
       default:
-      return MinimalBaseInventoryItemWidget(
-          widget.item, _definition, _instanceInfo, characterId: widget.characterId,);
+        return MinimalBaseInventoryItemWidget(
+          widget.item,
+          _definition,
+          _instanceInfo,
+          characterId: widget.characterId,
+        );
     }
   }
 
@@ -121,22 +180,38 @@ class InventoryItemWrapperWidgetState
       case ItemType.subclasses:
         {
           return MediumSubclassInventoryItemWidget(
-              widget.item, _definition, _instanceInfo, characterId: widget.characterId,);
+            widget.item,
+            _definition,
+            _instanceInfo,
+            characterId: widget.characterId,
+          );
         }
       case ItemType.weapon:
         {
           return MediumWeaponInventoryItemWidget(
-              widget.item, _definition, _instanceInfo, characterId: widget.characterId,);
+            widget.item,
+            _definition,
+            _instanceInfo,
+            characterId: widget.characterId,
+          );
         }
 
       case ItemType.armor:
         {
           return MediumArmorInventoryItemWidget(
-              widget.item, _definition, _instanceInfo, characterId: widget.characterId,);
+            widget.item,
+            _definition,
+            _instanceInfo,
+            characterId: widget.characterId,
+          );
         }
       default:
         return MediumBaseInventoryItemWidget(
-            widget.item, _definition, _instanceInfo, characterId: widget.characterId,);
+          widget.item,
+          _definition,
+          _instanceInfo,
+          characterId: widget.characterId,
+        );
     }
   }
 
@@ -145,22 +220,34 @@ class InventoryItemWrapperWidgetState
       case ItemType.subclasses:
         {
           return SubclassInventoryItemWidget(
-              widget.item, _definition, _instanceInfo, characterId: widget.characterId,);
+            widget.item,
+            _definition,
+            _instanceInfo,
+            characterId: widget.characterId,
+          );
         }
       case ItemType.weapon:
         {
           return WeaponInventoryItemWidget(
-              widget.item, _definition, _instanceInfo, characterId: widget.characterId,);
+            widget.item,
+            _definition,
+            _instanceInfo,
+            characterId: widget.characterId,
+          );
         }
 
       case ItemType.armor:
         {
           return ArmorInventoryItemWidget(
-              widget.item, _definition, _instanceInfo,
-              characterId: widget.characterId,);
+            widget.item,
+            _definition,
+            _instanceInfo,
+            characterId: widget.characterId,
+          );
         }
       default:
-        return BaseInventoryItemWidget(widget.item, _definition, _instanceInfo, characterId:widget.characterId);
+        return BaseInventoryItemWidget(widget.item, _definition, _instanceInfo,
+            characterId: widget.characterId);
     }
   }
 }

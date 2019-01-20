@@ -39,6 +39,11 @@ class ManifestService {
     return directory.path;
   }
 
+  bool isLoaded<T>(int hash){
+    var type = DefinitionTableNames.fromClass[T];
+    return _cached.keys.contains("${type}_$hash");
+  }
+
   Future<DestinyManifest> loadManifestInfo() async {
     if (_manifestInfo != null) {
       return _manifestInfo;

@@ -24,7 +24,6 @@ class ProfileInfoState extends State<ProfileInfoWidget> with SingleTickerProvide
   GeneralUser bungieNetUser;
   UserInfoCard selectedMembership;
   
-  static final Animatable<double> _easeOutTween = CurveTween(curve: Curves.easeOut);
   static final Animatable<double> _easeInTween = CurveTween(curve: Curves.easeIn);
 
   AnimationController _controller;
