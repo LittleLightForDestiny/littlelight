@@ -44,6 +44,11 @@ class ManifestService {
     return _cached.keys.contains("${type}_$hash");
   }
 
+  T getDefinitionFromCache<T>(int hash){
+    var type = DefinitionTableNames.fromClass[T];
+    return _cached["${type}_$hash"];
+  }
+
   Future<DestinyManifest> loadManifestInfo() async {
     if (_manifestInfo != null) {
       return _manifestInfo;

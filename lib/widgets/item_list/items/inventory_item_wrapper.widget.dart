@@ -50,24 +50,24 @@ class InventoryItemWrapperWidgetState
 
   @override
   void initState() {
+    if(isLoaded){
+      this._definition = widget._manifest.getDefinitionFromCache<DestinyInventoryItemDefinition>(widget.item.itemHash);
+    }
     super.initState();
-    if (widget.item != null) {
+    if (widget.item != null && !isLoaded) {
       getDefinitions();
     }
   }
 
-  getDefinitions() async {
-    if (widget._manifest
-        .isLoaded<DestinyInventoryItemDefinition>(widget.item.itemHash)) {
-      _definition =
-          await widget._manifest.getItemDefinition(widget.item.itemHash);
-      _instanceInfo =
-          widget._profile.getInstanceInfo(widget.item.itemInstanceId);
-      if (mounted) {
-        setState(() {});
-      }
-      return;
+  bool get isLoaded{
+    if(widget.item == null) {
+      return false;
     }
+    return widget._manifest
+        .isLoaded<DestinyInventoryItemDefinition>(widget.item.itemHash);
+  }
+
+  getDefinitions() async {
     queueSize++;
     if (queueSize > 1) {
       await Future.delayed(Duration(milliseconds: 200 * queueSize));
@@ -88,14 +88,7 @@ class InventoryItemWrapperWidgetState
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedCrossFade(
-      crossFadeState: _definition == null
-          ? CrossFadeState.showFirst
-          : CrossFadeState.showSecond,
-      firstChild: buildEmpty(context),
-      secondChild: buildItem(context),
-      duration: Duration(milliseconds: 400),
-    );
+    return buildItem(context);
   }
 
   Widget buildItem(BuildContext context) {
