@@ -23,8 +23,8 @@ abstract class DestinyItemStatefulWidget extends StatefulWidget {
 
 abstract class DestinyItemState<T extends DestinyItemStatefulWidget>
     extends State<T> {
-  get item => widget.item;
-  get definition => widget.definition;
-  get instanceInfo => widget.instanceInfo;
-  get characterId => widget.characterId;
+  DestinyItemComponent get item => widget.item;
+  DestinyInventoryItemDefinition get definition => widget.definition;
+  DestinyItemInstanceComponent get instanceInfo => widget.instanceInfo;
+  String get characterId => widget.characterId;
 }

@@ -45,7 +45,10 @@ class InventoryItemWrapperWidget extends StatefulWidget {
 class InventoryItemWrapperWidgetState
     extends State<InventoryItemWrapperWidget> {
   DestinyInventoryItemDefinition _definition;
-  DestinyItemInstanceComponent _instanceInfo;
+
+  DestinyItemInstanceComponent get _instanceInfo{
+    return widget._profile.getInstanceInfo(widget.item.itemInstanceId);
+  }
   static int queueSize = 0;
 
   @override
@@ -78,7 +81,6 @@ class InventoryItemWrapperWidgetState
     }
     _definition =
         await widget._manifest.getItemDefinition(widget.item.itemHash);
-    _instanceInfo = widget._profile.getInstanceInfo(widget.item.itemInstanceId);
     if (mounted) {
       setState(() {});
     }

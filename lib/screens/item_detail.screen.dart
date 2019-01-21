@@ -45,7 +45,7 @@ class ItemDetailScreenState extends DestinyItemState {
             instanceInfo,
             characterId: characterId,
           ),
-          ItemStatsWidget(item, definition, instanceInfo),
+          ItemStatsWidget(item, definition, instanceInfo, selectedPerks:selectedPerks),
           ItemPerksWidget(
             item,
             definition,
