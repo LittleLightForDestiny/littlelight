@@ -16,7 +16,7 @@ dependencies:
   tinycolor: 1.0.2
   shared_preferences: ^0.4.2
   archive: ^2.0.5
-  sqflite: any
+  sqflite: ^1.0.0
   http: ^0.12.0
   path_provider: ^0.4.1
   flutter_inappbrowser:
@@ -30,7 +30,7 @@ dependencies:
   bungie_api:
     # path: ../bungie-api-dart
     git: https://github.com/marquesinijatinha/bungie-api-dart
-  cached_network_image: 0.6.0-alpha.2 
+  cached_network_image: 0.5.1
   shimmer: ^0.0.6
   flutter_staggered_grid_view:
     git: https://github.com/letsar/flutter_staggered_grid_view

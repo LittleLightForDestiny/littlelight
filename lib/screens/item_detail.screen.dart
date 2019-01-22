@@ -1,6 +1,7 @@
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
+import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/widgets/common/destiny_item.stateful_widget.dart';
 
@@ -42,9 +43,6 @@ class ItemDetailScreenState extends DestinyItemState {
     if(definition.sockets?.socketEntries?.length ?? 0 > 0){
       await loadPlugDefinitions();
     }
-    setState(() {
-      plugDefinitions = plugDefinitions;
-    });
   }
 
   Future<void> loadPlugDefinitions() async{
@@ -58,7 +56,14 @@ class ItemDetailScreenState extends DestinyItemState {
       }
       return hashes;
     }).where((i)=>i!=null).toList();
+    if(item?.itemInstanceId != null){
+      List<DestinyItemSocketState> socketStates = widget.profile.getItemSockets(item.itemInstanceId);
+      Iterable<int> hashes = socketStates.map((state)=>state.plugHash).where((i)=>i!=null).toList();
+      plugHashes.addAll(hashes);
+    }
     plugDefinitions = await widget.manifest.getDefinitions<DestinyInventoryItemDefinition>(plugHashes);
+    setState(() {
+    });
   }  
 
   @override
@@ -95,6 +100,7 @@ class ItemDetailScreenState extends DestinyItemState {
             item,
             definition,
             instanceInfo,
+            key:Key('perks_widget'),
             plugDefinitions: plugDefinitions,
             selectedPerkHash: selectedPerk,
             selectedPerkHashes: selectedPerks,

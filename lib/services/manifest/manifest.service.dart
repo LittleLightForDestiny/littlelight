@@ -133,7 +133,7 @@ class ManifestService {
   }
 
   Future<sqflite.Database> _openDb() async {
-    if (_db != null) {
+    if (_db?.isOpen ?? false != false) {
       return _db;
     }
     String localPath = await _localPath;
@@ -217,6 +217,7 @@ class ManifestService {
     String idList = "(" + List.filled(hashes.length, '?').join(',') + ")";
 
     sqflite.Database db = await _openDb();
+    
     List<Map<String, dynamic>> results = await db.query(type,
         columns: ['id', 'json'],
         where: "id in $idList",
@@ -253,14 +254,20 @@ class ManifestService {
     }
     int searchHash = hash > 2147483648 ? hash - 4294967296 : hash;
     sqflite.Database db = await _openDb();
-    List<Map<String, dynamic>> results = await db.query(type,
+    try{
+      List<Map<String, dynamic>> results = await db.query(type,
         columns: ['json'], where: "id=?", whereArgs: [searchHash]);
-    try {
+
       String resultString = results.first['json'];
       var def = identity(jsonDecode(resultString));
       _cached["${type}_$hash"] = def;
       return def;
-    } catch (e) {}
+    }catch(e){
+      if(e is sqflite.DatabaseException && e.isDatabaseClosedError()){
+        _db = null;
+        return getDefinition(hash, identity);
+      }
+    }
     return null;
   }
 }

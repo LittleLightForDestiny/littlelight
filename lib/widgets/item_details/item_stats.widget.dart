@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_stat_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
@@ -37,7 +39,8 @@ class ItemStatsWidget extends DestinyItemWidget {
       DestinyInventoryItemDefinition definition,
       DestinyItemInstanceComponent instanceInfo,
       {Key key,
-      this.selectedPerks, this.plugDefinitions})
+      this.selectedPerks,
+      this.plugDefinitions})
       : super(item, definition, instanceInfo, key: key);
 
   Widget build(BuildContext context) {
@@ -67,20 +70,53 @@ class ItemStatsWidget extends DestinyItemWidget {
   }
 
   buildStats(context) {
+    Map<int, StatValues> statValues = getModValues();
+
     return stats.map((stat) {
-      return ItemStatWidget(stat, getEquippedModValue(stat.statHash), 0);
+      return ItemStatWidget(
+          stat,
+          statValues[stat.statHash]);
     }).toList();
   }
 
-  int getEquippedModValue(int statHash){
-    int value = 0;
-    socketStates.forEach((state){
+  Map<int, StatValues> getModValues() {
+    Map<int, StatValues> map = new Map();
+    if (plugDefinitions == null) {
+      return map;
+    }
+    socketStates.forEach((state) {
       DestinyInventoryItemDefinition def = plugDefinitions[state.plugHash];
-      def.investmentStats.where((stat)=>stat.statTypeHash ==statHash).forEach((stat){
-        value += stat.value;
+      if (def == null) {
+        return;
+      }
+      DestinyInventoryItemDefinition selectedDef = plugDefinitions[selectedPerks[state.plugHash]];
+
+      def.investmentStats.forEach((stat) {
+        StatValues values = map[stat.statTypeHash] ?? new StatValues();
+        if (def.plug?.uiPlugLabel == 'masterwork') {
+          values.masterwork += stat.value;
+        }else{
+          values.equipped += stat.value;
+          if(selectedDef == null){
+            values.selected += stat.value;
+          }
+        }
+        map[stat.statTypeHash] = values;
       });
+
+      if(selectedDef != null){
+        selectedDef.investmentStats.forEach((stat) {
+          StatValues values = map[stat.statTypeHash] ?? new StatValues();
+        if (selectedDef.plug?.uiPlugLabel != 'masterwork') {
+          values.selected += stat.value;
+        }
+        map[stat.statTypeHash] = values;
+        });
+      }
+
     });
-    return value;
+    
+    return map;
   }
 
   Iterable<DestinyInventoryItemStatDefinition> get stats {
@@ -107,10 +143,9 @@ class ItemStatsWidget extends DestinyItemWidget {
 
 class ItemStatWidget extends StatelessWidget {
   final DestinyInventoryItemStatDefinition definition;
-  final int equippedModValue;
-  final int selectedModValue;
+  final StatValues modValues;
 
-  ItemStatWidget(this.definition, this.equippedModValue, this.selectedModValue);
+  ItemStatWidget(this.definition, this.modValues);
   @override
   Widget build(BuildContext context) {
     double totalWidth = MediaQuery.of(context).size.width - 16;
@@ -133,7 +168,7 @@ class ItemStatWidget extends StatelessWidget {
           SizedBox(
               width: totalWidth * .1,
               child: Text(
-                "$value",
+                "$numberValue",
                 textAlign: TextAlign.center,
                 maxLines: 1,
                 softWrap: false,
@@ -154,44 +189,65 @@ class ItemStatWidget extends StatelessWidget {
         child: Container(
             color: Colors.grey.shade600,
             height: 8,
-            child: Row(children: [
-              SizedBox(
-                width: (definition.value / 100)*barWidth,
-                child: Container(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+              Container(
+                height: 8,
+                width: (baseBarSize / maxBarSize) * barWidth,
+                color: color,
+              ),
+              Container(
+                height: 8,
+                width: (modBarSize / maxBarSize) * barWidth,
+                color: modColor,
+              ),
+              Container(
                   height: 8,
-                  color: color,
-                ),
-              )
+                  width: (masterwork / maxBarSize) * barWidth,
+                  color: Colors.amberAccent.shade400),
             ])));
   }
-
-  int get value {
-    // if(selectedModValue != null){
-    //   return definition.value + selectedModValue;
-    // }
-    // if(equippedModValue != null){
-    //   return definition.value + equippedModValue;
-    // }
-    return definition.value;
+  int get maxBarSize{
+    return max(100, numberValue);
+  }
+  int get numberValue {
+    return definition.value +
+        selected +
+        masterwork;
   }
 
-  int get baseBarSize {
-    if (modBarSize < 0) {
-      return definition.value + modBarSize;
+  int get selected => modValues?.selected ?? 0;
+  int get equipped => modValues?.equipped ?? 0;
+  int get masterwork => modValues?.masterwork ?? 0;
+
+  int get baseBarSize{
+    if(selected != equipped && selected < equipped){
+      return definition.value + selected;
     }
-    return definition.value;
+    return definition.value + equipped;
   }
-
-  int get modBarSize {
-    return 0;
-  }
+  
 
   Color get modColor {
+    if(selected > equipped){
+      return DestinyData.positiveFeedback;
+    }
+    if(equipped > selected){
+      return DestinyData.negativeFeedback;
+    }
+    if(masterwork > 0){
+      return Colors.amberAccent.shade400;
+    }
     return color;
   }
 
+  int get modBarSize{
+    return (selected - equipped).abs();
+  }
+
   Color get color {
-    return hiddenStat ? Colors.amber.shade300 : Colors.grey.shade300;
+    return hiddenStat ? Colors.amber.shade200 : Colors.grey.shade300;
   }
 
   bool get hiddenStat {
@@ -201,4 +257,11 @@ class ItemStatWidget extends StatelessWidget {
   bool get noBar {
     return _noBarStats.contains(definition.statHash);
   }
+}
+
+class StatValues {
+  int equipped = 0;
+  int selected = 0;
+  int masterwork = 0;
+  StatValues();
 }
