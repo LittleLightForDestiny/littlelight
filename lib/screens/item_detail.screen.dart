@@ -31,6 +31,36 @@ class ItemDetailScreen extends DestinyItemStatefulWidget {
 class ItemDetailScreenState extends DestinyItemState {
   int selectedPerk;
   Map<int, int> selectedPerks = new Map();
+  Map<int, DestinyInventoryItemDefinition> plugDefinitions;
+
+  initState(){
+    super.initState();
+    this.loadPlugDefinitions();
+  }
+
+  Future<void> loadDefinitions() async{
+    if(definition.sockets?.socketEntries?.length ?? 0 > 0){
+      await loadPlugDefinitions();
+    }
+    setState(() {
+      plugDefinitions = plugDefinitions;
+    });
+  }
+
+  Future<void> loadPlugDefinitions() async{
+    List<int> plugHashes = definition.sockets.socketEntries.expand((socket){
+      List<int> hashes = [];
+      if(socket.reusablePlugItems != null){
+        hashes.addAll(socket.reusablePlugItems.map((plugItem)=>plugItem.plugItemHash));
+      }
+      if(socket.randomizedPlugItems != null){
+        hashes.addAll(socket.randomizedPlugItems.map((plugItem)=>plugItem.plugItemHash));
+      }
+      return hashes;
+    }).where((i)=>i!=null).toList();
+    plugDefinitions = await widget.manifest.getDefinitions<DestinyInventoryItemDefinition>(plugHashes);
+  }  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,24 +75,8 @@ class ItemDetailScreenState extends DestinyItemState {
             instanceInfo,
             characterId: characterId,
           ),
-          ItemStatsWidget(item, definition, instanceInfo, selectedPerks:selectedPerks),
-          ItemPerksWidget(
-            item,
-            definition,
-            instanceInfo,
-            key: Key('perks_widget'),
-            selectedPerkHash: selectedPerk,
-            selectedPerkHashes: selectedPerks,
-            onSelectPerk: (socketHash, plugHash) {
-              if (selectedPerk == plugHash) {
-                selectedPerk = null;
-              } else {
-                selectedPerk = plugHash;
-              }
-              selectedPerks[socketHash] = plugHash;
-              setState(() {});
-            },
-          ),
+          buildStats(context),
+          buildPerks(context),
           SelectedPerkWidget(selectedPerk,
               key: Key("selected_perk: $selectedPerk")),
           buildLore(context),
@@ -71,6 +85,35 @@ class ItemDetailScreenState extends DestinyItemState {
       ),
     ]));
   }
+
+  Widget buildStats(BuildContext context){
+    return ItemStatsWidget(item, definition, instanceInfo, selectedPerks:selectedPerks, plugDefinitions:plugDefinitions, key:Key("stats_widget"));
+  }
+
+  Widget buildPerks(BuildContext context){
+    return ItemPerksWidget(
+            item,
+            definition,
+            instanceInfo,
+            plugDefinitions: plugDefinitions,
+            selectedPerkHash: selectedPerk,
+            selectedPerkHashes: selectedPerks,
+            onSelectPerk: (socketHash, plugHash) {
+              if (selectedPerk == plugHash) {
+                selectedPerk = null;
+              } else {
+                selectedPerk = plugHash;
+              }
+              if(plugHash != socketHash){
+                selectedPerks[socketHash] = plugHash;
+              }else{
+                selectedPerks[socketHash] = null;
+              }  
+              setState(() {});
+            },
+          );
+  }
+
   buildLore(BuildContext context){
     if(definition?.loreHash == null) return Container(); 
     return ItemLoreWidget(definition.loreHash);

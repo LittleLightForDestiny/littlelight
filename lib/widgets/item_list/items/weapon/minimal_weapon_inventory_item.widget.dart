@@ -1,6 +1,7 @@
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
+import 'package:bungie_api/models/destiny_stat.dart';
 import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/utils/destiny_data.dart';
@@ -41,7 +42,7 @@ class MinimalWeaponInventoryItemWidget extends MinimalBaseInventoryItemWidget
 
   Widget primaryStatValueField(BuildContext context, Color color) {
     return Text(
-      "${primaryStat.baseValue}",
+      "${primaryStat.value}",
       style: TextStyle(color: color, fontWeight: FontWeight.w900, fontSize: valueFontSize),
     );
   }
@@ -68,5 +69,5 @@ class MinimalWeaponInventoryItemWidget extends MinimalBaseInventoryItemWidget
   
   int get damageType => instanceInfo.damageType;
 
-  get primaryStat => instanceInfo.primaryStat;
+  DestinyStat get primaryStat => instanceInfo.primaryStat;
 }

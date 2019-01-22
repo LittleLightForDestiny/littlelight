@@ -10,7 +10,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
-import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/destiny_item.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
@@ -21,6 +20,7 @@ class ItemPerksWidget extends DestinyItemWidget {
   final OnSelectPerk onSelectPerk;
   final int selectedPerkHash;
   final Map<int, int> selectedPerkHashes;
+  final Map<int, DestinyInventoryItemDefinition> plugDefinitions;
 
   ItemPerksWidget(
       DestinyItemComponent item,
@@ -29,13 +29,13 @@ class ItemPerksWidget extends DestinyItemWidget {
       {this.onSelectPerk,
       Key key,
       this.selectedPerkHash,
-      this.selectedPerkHashes})
+      this.selectedPerkHashes,
+      this.plugDefinitions})
       : super(item, definition, instanceInfo, key: key);
 
   @override
   Widget build(BuildContext context) {
-    //TODO: implement proper definition handling
-    if(item == null || instanceInfo == null || definition?.sockets == null){
+    if (plugDefinitions == null) {
       return Container();
     }
     if (category == null) return Container();
@@ -90,47 +90,48 @@ class ItemPerksWidget extends DestinyItemWidget {
   }
 
   Widget plugItem(BuildContext context, int socketPlugHash, int plugItemHash) {
-    return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
-        plugItemHash, (plugDefinition) {
-      bool enabled = socketPlugHash == plugItemHash;
-      bool intrinsic =
-          plugDefinition.plug.plugCategoryIdentifier == "intrinsics";
-      bool selected = plugItemHash == selectedPerkHash;
-      bool hasCustom = selectedPerkHashes[socketPlugHash] != socketPlugHash && selectedPerkHashes[socketPlugHash] != null;
-      bool selectedOnSlot = selectedPerkHashes[socketPlugHash] == plugItemHash;
-      Color color = Colors.transparent;
-      if(intrinsic){
-        color = Colors.transparent;
-      }else if(enabled && hasCustom){
-        color = Colors.indigo.shade900;
-      }else if(enabled){
-        color = Colors.indigo;
-      }else if(selectedOnSlot){
-        color = Colors.indigo.shade300;
-      }
-      return Container(
-          margin: EdgeInsets.all(4),
-          child: FlatButton(
-            shape: CircleBorder(
-                side: BorderSide(
-                    color: selected && !intrinsic ? Colors.white : Colors.transparent,
-                    width: 2)),
-            padding: EdgeInsets.all(intrinsic ? 0 : 8),
-            color: color,
-            child: AspectRatio(
+    DestinyInventoryItemDefinition plugDefinition =
+        plugDefinitions[plugItemHash];
+    bool enabled = socketPlugHash == plugItemHash;
+    bool intrinsic = plugDefinition.plug.plugCategoryIdentifier == "intrinsics";
+    bool selected = plugItemHash == selectedPerkHash;
+    bool hasCustom = selectedPerkHashes[socketPlugHash] != socketPlugHash &&
+        selectedPerkHashes[socketPlugHash] != null;
+    bool selectedOnSlot = selectedPerkHashes[socketPlugHash] == plugItemHash;
+    Color color = Colors.transparent;
+    if (intrinsic) {
+      color = Colors.transparent;
+    } else if (enabled && hasCustom) {
+      color = Colors.indigo.shade900;
+    } else if (enabled) {
+      color = Colors.indigo;
+    } else if (selectedOnSlot) {
+      color = Colors.indigo.shade300;
+    }
+    return Container(
+        margin: EdgeInsets.all(4),
+        child: FlatButton(
+          shape: CircleBorder(
+              side: BorderSide(
+                  color: selected && !intrinsic
+                      ? Colors.white
+                      : Colors.transparent,
+                  width: 2)),
+          padding: EdgeInsets.all(intrinsic ? 0 : 8),
+          color: color,
+          child: AspectRatio(
               aspectRatio: 1,
-                child: CachedNetworkImage(
-                    imageUrl:
-                        "${BungieApiService.baseUrl}${plugDefinition.displayProperties.icon}")),
-            onPressed: () {
-              if (this.onSelectPerk != null) {
-                this.onSelectPerk(socketPlugHash, plugItemHash);
-              } else {
-                print(plugDefinition.displayProperties.name);
-              }
-            },
-          ));
-    }, key:Key("plug $socketPlugHash $plugItemHash"));
+              child: CachedNetworkImage(
+                  imageUrl:
+                      "${BungieApiService.baseUrl}${plugDefinition.displayProperties.icon}")),
+          onPressed: () {
+            if (this.onSelectPerk != null) {
+              this.onSelectPerk(socketPlugHash, plugItemHash);
+            } else {
+              print(plugDefinition.displayProperties.name);
+            }
+          },
+        ));
   }
 
   List<DestinyItemSocketState> get socketStates =>

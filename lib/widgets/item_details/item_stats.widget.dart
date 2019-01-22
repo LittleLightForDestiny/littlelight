@@ -6,7 +6,7 @@ import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/utils/destiny_data.dart';
-import 'package:little_light/widgets/common/destiny_item.stateful_widget.dart';
+import 'package:little_light/widgets/common/destiny_item.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -28,36 +28,18 @@ const List<int> _hiddenStats = [
   3555269338, // Zoom
 ];
 
-class ItemStatsWidget extends DestinyItemStatefulWidget {
+class ItemStatsWidget extends DestinyItemWidget {
   final Map<int, int> selectedPerks;
+  final Map<int, DestinyInventoryItemDefinition> plugDefinitions;
 
   ItemStatsWidget(
       DestinyItemComponent item,
       DestinyInventoryItemDefinition definition,
       DestinyItemInstanceComponent instanceInfo,
       {Key key,
-      this.selectedPerks})
+      this.selectedPerks, this.plugDefinitions})
       : super(item, definition, instanceInfo, key: key);
 
-  @override
-  DestinyItemState<DestinyItemStatefulWidget> createState() {
-    return ItemStatsWidgetState();
-  }
-}
-
-class ItemStatsWidgetState extends DestinyItemState<ItemStatsWidget> {
-  Map<int, int> modStats;
-  Map<int, int> selectedModStats;
-
-  @override
-  void initState() {
-    super.initState();
-    if (item != null) {
-      loadModStats();
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
     if (definition?.stats == null) {
       return Container();
@@ -79,9 +61,6 @@ class ItemStatsWidgetState extends DestinyItemState<ItemStatsWidget> {
           Container(
               padding: EdgeInsets.symmetric(vertical: 8),
               child: Column(children: buildStats(context))),
-          RaisedButton(
-            onPressed: loadModStats,
-          )
         ],
       ),
     );
@@ -89,11 +68,19 @@ class ItemStatsWidgetState extends DestinyItemState<ItemStatsWidget> {
 
   buildStats(context) {
     return stats.map((stat) {
-      var modValue = modStats != null ? modStats[stat.statHash] : null;
-      var selectedModValue =
-          selectedModStats != null ? selectedModStats[stat.statHash] : null;
-      return ItemStatWidget(stat, modValue, selectedModValue);
+      return ItemStatWidget(stat, getEquippedModValue(stat.statHash), 0);
     }).toList();
+  }
+
+  int getEquippedModValue(int statHash){
+    int value = 0;
+    socketStates.forEach((state){
+      DestinyInventoryItemDefinition def = plugDefinitions[state.plugHash];
+      def.investmentStats.where((stat)=>stat.statTypeHash ==statHash).forEach((stat){
+        value += stat.value;
+      });
+    });
+    return value;
   }
 
   Iterable<DestinyInventoryItemStatDefinition> get stats {
@@ -114,40 +101,8 @@ class ItemStatsWidgetState extends DestinyItemState<ItemStatsWidget> {
     return stats;
   }
 
-  loadModStats() async {
-    List<int> hashes = socketStates
-        .map((state) => state.plugHash)
-        .where((i) => i != null)
-        .toList();
-    List<int> selectedHashes = widget.selectedPerks.values.toList();
-    Map<int, int> modStats = Map<int, int>();
-    Map<int, int> selectedModStats = Map<int, int>();
-    Map<int, DestinyInventoryItemDefinition> defs = await widget.manifest
-        .getDefinitions<DestinyInventoryItemDefinition>(
-            hashes + selectedHashes);
-    hashes.forEach((hash) {
-      DestinyInventoryItemDefinition def = defs[hash];
-      def.investmentStats.forEach((stat) {
-        modStats[stat.statTypeHash] =
-            (modStats[stat.statTypeHash] ?? 0) + stat.value;
-      });
-    });
-
-    selectedHashes.forEach((hash) {
-      DestinyInventoryItemDefinition def = defs[hash];
-      def.investmentStats.forEach((stat) {
-        selectedModStats[stat.statTypeHash] =
-            (selectedModStats[stat.statTypeHash] ?? 0) + stat.value;
-      });
-    });
-
-    this.selectedModStats = selectedModStats;
-    this.modStats = modStats;
-    setState(() {});
-  }
-
   List<DestinyItemSocketState> get socketStates =>
-      widget.profile.getItemSockets(item.itemInstanceId);
+      profile.getItemSockets(item.itemInstanceId);
 }
 
 class ItemStatWidget extends StatelessWidget {
@@ -158,8 +113,7 @@ class ItemStatWidget extends StatelessWidget {
   ItemStatWidget(this.definition, this.equippedModValue, this.selectedModValue);
   @override
   Widget build(BuildContext context) {
-    double totalWidth = MediaQuery.of(context).size.width - 32;
-    print("$baseBarSize $modBarSize");
+    double totalWidth = MediaQuery.of(context).size.width - 16;
     return Container(
         padding: EdgeInsets.symmetric(vertical: 1),
         child: Row(children: [
@@ -167,6 +121,7 @@ class ItemStatWidget extends StatelessWidget {
               width: totalWidth * .45,
               child: ManifestText<DestinyStatDefinition>(
                 definition.statHash,
+                key: Key("item_stat_${definition.statHash}"),
                 textAlign: TextAlign.right,
                 uppercase: true,
                 maxLines: 1,
@@ -178,7 +133,7 @@ class ItemStatWidget extends StatelessWidget {
           SizedBox(
               width: totalWidth * .1,
               child: Text(
-                "${definition.value + modValue}",
+                "$value",
                 textAlign: TextAlign.center,
                 maxLines: 1,
                 softWrap: false,
@@ -186,71 +141,54 @@ class ItemStatWidget extends StatelessWidget {
                     color: modColor, fontWeight: FontWeight.bold, fontSize: 12),
                 overflow: TextOverflow.fade,
               )),
-          noBar
-              ? Container()
-              : Expanded(
-                  child: Container(
-                      color: Colors.grey.shade600,
-                      height: 8,
-                      child: Wrap(
-                        alignment: WrapAlignment.start,
-                        direction: Axis.horizontal,
-                        children: [
-                        FractionallySizedBox(
-                          widthFactor: definition.value / 100,
-                          alignment: Alignment.centerLeft,
-                          child: Container(
-                            height:8,
-                            color: color,
-                          ),
-                        ),
-                        modBarSize != 0 ? FractionallySizedBox(widthFactor: (modBarSize.abs())/100,
-                        alignment: Alignment.centerLeft,
-                        child: Container(
-                            height:8,
-                            color: modColor,
-                          ),) : Container()
-                      ])))
+          buildBar(context, totalWidth * .45)
         ]));
   }
 
-  int get baseBarSize{
-    if(modBarSize < 0){
+  Widget buildBar(BuildContext context, barWidth) {
+    if (noBar) {
+      return Container();
+    }
+    return SizedBox(
+        width: barWidth,
+        child: Container(
+            color: Colors.grey.shade600,
+            height: 8,
+            child: Row(children: [
+              SizedBox(
+                width: (definition.value / 100)*barWidth,
+                child: Container(
+                  height: 8,
+                  color: color,
+                ),
+              )
+            ])));
+  }
+
+  int get value {
+    // if(selectedModValue != null){
+    //   return definition.value + selectedModValue;
+    // }
+    // if(equippedModValue != null){
+    //   return definition.value + equippedModValue;
+    // }
+    return definition.value;
+  }
+
+  int get baseBarSize {
+    if (modBarSize < 0) {
       return definition.value + modBarSize;
     }
     return definition.value;
   }
 
-  int get modValue{
-    if(selectedModValue != null){
-      return selectedModValue;
-    }
-    return equippedModValue ?? 0;
+  int get modBarSize {
+    return 0;
   }
 
-  int get modBarSize{
-    int equipped = equippedModValue ?? 0;
-    int selected = selectedModValue ?? equipped;
-    if(equipped != selected){
-      return (equipped - selected).abs();
-    }
-    return equipped;
+  Color get modColor {
+    return color;
   }
-
-  Color get modColor{
-    int equipped = equippedModValue ?? 0;
-    int selected = selectedModValue ?? equipped;
-    if(equipped == selected){
-      return color;
-    }
-    if(equipped > selected){
-      return DestinyData.negativeFeedback;
-    }
-    
-    return DestinyData.positiveFeedback;
-  }
-
-
 
   Color get color {
     return hiddenStat ? Colors.amber.shade300 : Colors.grey.shade300;
