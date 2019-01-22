@@ -41,7 +41,7 @@ class MinimalWeaponInventoryItemWidget extends MinimalBaseInventoryItemWidget
 
   Widget primaryStatValueField(BuildContext context, Color color) {
     return Text(
-      "${primaryStat.value}",
+      "${primaryStat.baseValue}",
       style: TextStyle(color: color, fontWeight: FontWeight.w900, fontSize: valueFontSize),
     );
   }
