@@ -85,7 +85,7 @@ class ItemDetailScreenState extends DestinyItemState {
           SelectedPerkWidget(selectedPerk,
               key: Key("selected_perk: $selectedPerk")),
           buildLore(context),
-          Container(height: 500)
+          Container(height: 100)
         ]),
       ),
     ]));

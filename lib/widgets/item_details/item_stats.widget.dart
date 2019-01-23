@@ -81,7 +81,7 @@ class ItemStatsWidget extends DestinyItemWidget {
 
   Map<int, StatValues> getModValues() {
     Map<int, StatValues> map = new Map();
-    if (plugDefinitions == null) {
+    if (plugDefinitions == null || socketStates == null) {
       return map;
     }
     socketStates.forEach((state) {
@@ -140,8 +140,11 @@ class ItemStatsWidget extends DestinyItemWidget {
     return stats;
   }
 
-  List<DestinyItemSocketState> get socketStates =>
-      profile.getItemSockets(item.itemInstanceId);
+  List<DestinyItemSocketState> get socketStates{
+    if(item == null) return null;
+    return profile.getItemSockets(item.itemInstanceId);
+  }
+      
 }
 
 class ItemStatWidget extends StatelessWidget {

@@ -63,7 +63,10 @@ class ItemPerksWidget extends DestinyItemWidget {
 
   Widget perkColumns(BuildContext context) {
     Iterable<DestinyItemSocketState> entries =
-        socketEntries.where((socket) => socket.isVisible);
+        socketEntries?.where((socket) => socket.isVisible);
+    if(entries == null){
+      return Container(); 
+    }
     double availableWidth = MediaQuery.of(context).size.width - 16;
 
     double colWidth = min(availableWidth / 6, availableWidth / entries.length);
@@ -134,10 +137,16 @@ class ItemPerksWidget extends DestinyItemWidget {
         ));
   }
 
-  List<DestinyItemSocketState> get socketStates =>
-      profile.getItemSockets(item.itemInstanceId);
+  List<DestinyItemSocketState> get socketStates{
+    if(item == null) return null;
+    return profile.getItemSockets(item.itemInstanceId);
+  }
+      
 
   List<DestinyItemSocketState> get socketEntries {
+    if(socketStates == null || category?.socketIndexes == null){
+      return null;
+    }
     return category.socketIndexes.map((index) {
       return socketStates[index];
     }).toList();
