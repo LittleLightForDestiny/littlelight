@@ -6,7 +6,6 @@ import 'package:bungie_api/enums/destiny_collectible_state_enum.dart';
 import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:bungie_api/models/destiny_character_progression_component.dart';
 import 'package:bungie_api/models/destiny_collectible_component.dart';
-import 'package:bungie_api/models/destiny_collectibles_component.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';

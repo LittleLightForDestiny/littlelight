@@ -1,10 +1,6 @@
-import 'package:bungie_api/models/destiny_collectible_component.dart';
 import 'package:bungie_api/models/destiny_collectible_definition.dart';
-import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
-import 'package:bungie_api/enums/destiny_collectible_state_enum.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/screens/item_detail.screen.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
