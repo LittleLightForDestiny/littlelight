@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 
 import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:bungie_api/models/destiny_character_progression_component.dart';
@@ -10,6 +12,9 @@ import 'package:bungie_api/models/destiny_profile_response.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:bungie_api/enums/destiny_component_type_enum.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
+import 'package:path_provider/path_provider.dart';
+
+enum LastLoadedFrom {server, cache}
 
 enum ProfileEventType { localUpdate, requestedUpdate, receivedUpdate }
 
@@ -21,12 +26,29 @@ class ProfileEvent{
   ProfileEvent(this.type);
 }
 
+class ProfileComponentGroups{
+  static const List<int> basicProfile = [
+      DestinyComponentType.Characters,
+      DestinyComponentType.CharacterProgressions,
+      DestinyComponentType.CharacterEquipment,
+      DestinyComponentType.CharacterInventories,
+      DestinyComponentType.ProfileInventories,
+      DestinyComponentType.ItemInstances,
+      DestinyComponentType.ItemTalentGrids,
+      DestinyComponentType.ItemSockets,
+  ];
+  static const List<int> collections = [
+      DestinyComponentType.Collectibles,
+  ];
+}
+
 class ProfileService {
   static const List<int> profileBuckets = const [InventoryBucket.modifications, InventoryBucket.shaders, InventoryBucket.consumables];
   final _api = BungieApiService();
   static final ProfileService _singleton = new ProfileService._internal();
   DestinyProfileResponse profile;
   Timer _timer;
+  LastLoadedFrom _lastLoadedFrom;
 
   Stream<ProfileEvent> _eventsStream;
   final StreamController<ProfileEvent> _streamController =
@@ -49,29 +71,27 @@ class ProfileService {
   }
   ProfileService._internal();
 
-  Future<DestinyProfileResponse> fetchBasicProfile() async {
+  Future<DestinyProfileResponse> fetchProfileData({List<int> components = ProfileComponentGroups.basicProfile}) async {
     _streamController.add(ProfileEvent(ProfileEventType.requestedUpdate));
-    DestinyProfileResponse res = await _updateProfileData([
-      DestinyComponentType.Characters,
-      DestinyComponentType.CharacterProgressions,
-      DestinyComponentType.CharacterEquipment,
-      DestinyComponentType.CharacterInventories,
-      DestinyComponentType.ProfileInventories,
-      DestinyComponentType.ItemInstances,
-      DestinyComponentType.ItemTalentGrids,
-      DestinyComponentType.ItemSockets,
-    ]);
+    DestinyProfileResponse res = await _updateProfileData(components);
+    this._lastLoadedFrom = LastLoadedFrom.server;
     _streamController.add(ProfileEvent(ProfileEventType.receivedUpdate));
+    this._cacheProfile(profile);
     return res;
   }
 
-  startAutomaticUpdater(Duration every) {
+  startAutomaticUpdater(Duration every, {List<int> components = ProfileComponentGroups.basicProfile}) {
     if (_timer != null && _timer.isActive) {
       _timer.cancel();
     }
     _timer = new Timer.periodic(every, (timer) async {
-      await fetchBasicProfile();
+      await fetchProfileData(components: components);
     });
+
+    if(this._lastLoadedFrom == LastLoadedFrom.cache){
+      fetchProfileData(components: components);
+    }
+
   }
 
   stopAutomaticUpdater() {
@@ -157,6 +177,35 @@ class ProfileService {
 
     return profile;
   }
+
+  _cacheProfile(DestinyProfileResponse profile) async{
+    Map<String, dynamic> map = profile.toMap();
+    Directory directory = await getApplicationDocumentsDirectory();
+
+    File cached = await File("${directory.path}/cached_profile.json").create();
+    await cached.writeAsString(jsonEncode(map));
+    print('saved to cache');
+  }
+
+  Future<DestinyProfileResponse> loadFromCache() async{
+    Directory directory = await getApplicationDocumentsDirectory();
+    File cached = new File("${directory.path}/cached_profile.json");
+    try{
+      String json = await cached.readAsString();
+      Map<String, dynamic> map = jsonDecode(json);
+      DestinyProfileResponse response = DestinyProfileResponse.fromMap(map);
+      print('loaded profile from cache');
+      this.profile = response;
+      this._lastLoadedFrom = LastLoadedFrom.cache;
+      return response;
+    }catch(e){
+    }
+    DestinyProfileResponse response = await fetchProfileData();
+    print('loaded profile from server');
+    return response;
+  }
+
+
 
   DestinyItemInstanceComponent getInstanceInfo(String instanceId) {
     return profile.itemComponents.instances.data[instanceId];

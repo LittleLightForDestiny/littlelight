@@ -44,7 +44,7 @@ class ItemStatsWidget extends DestinyItemWidget {
       : super(item, definition, instanceInfo, key: key);
 
   Widget build(BuildContext context) {
-    if (definition?.stats == null) {
+    if ((stats?.length ?? 0) == 0) {
       return Container();
     }
     return Container(
@@ -120,6 +120,9 @@ class ItemStatsWidget extends DestinyItemWidget {
   }
 
   Iterable<DestinyInventoryItemStatDefinition> get stats {
+    if(definition?.stats?.stats == null){
+      return null;
+    }
     List<DestinyInventoryItemStatDefinition> stats = definition
         .stats.stats.values
         .where((stat) => DestinyData.statWhitelist.contains(stat.statHash))

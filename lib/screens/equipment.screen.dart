@@ -40,21 +40,9 @@ class EquipmentScreenState extends State<EquipmentScreen>
     widget.itemTypes.forEach((type) {
       scrollPositions[type] = 0;
     });
-
-    super.initState();
     widget.profile.startAutomaticUpdater(Duration(seconds: 30));
-    cacheVaultDefinitions();
-  }
-
-  cacheVaultDefinitions() async {
-    List<DestinyItemComponent> items = widget.profile.getProfileInventory();
-    items = items
-        .where((item) => item.bucketHash == InventoryBucket.general)
-        .toList();
-    for (int i = 0; i < items.length; i++) {
-      DestinyItemComponent item = items[i];
-      await widget.manifest.getItemDefinition(item.itemHash);
-    }
+    super.initState();
+    
   }
 
   @override

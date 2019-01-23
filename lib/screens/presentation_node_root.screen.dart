@@ -4,15 +4,22 @@ import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/presentation_nodes/presentation_node_list.widget.dart';
 
+enum PresentationNodeMode{
+  collection,
+  triumphs
+}
+
 class PresentationNodeRootScreen extends StatefulWidget {
   final _manifest = new ManifestService();
   final int presentationNodeHash;
   final DestinyPresentationNodeDefinition presentationNodeDefinition;
   final int depth;
+  final PresentationNodeMode mode;
   PresentationNodeRootScreen(
       {this.presentationNodeHash = DestinyData.collectionsRootHash,
       this.presentationNodeDefinition,
-      this.depth = 0, Key key}):super(key:key);
+      this.depth = 0, Key key,
+      this.mode = PresentationNodeMode.collection}):super(key:key);
 
   @override
   PresentationNodeRootScreenState createState() =>

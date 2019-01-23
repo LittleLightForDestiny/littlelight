@@ -156,7 +156,7 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
 
   loadProfile() async {
     this.changeContent(null, null);
-    await widget.profile.fetchBasicProfile();
+    await widget.profile.loadFromCache();
     this.goForward();
   }
 

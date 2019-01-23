@@ -23,8 +23,8 @@ class LittleLight extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    // DefaultCacheManager.maxNrOfCacheObjects = 5000;
-    // CacheManager.inBetweenCleans = new Duration(days: 15);
+    CacheManager.maxNrOfCacheObjects = 5000;
+    CacheManager.inBetweenCleans = new Duration(days: 15);
 
     return new MaterialApp(
       title: 'Flutter Demo',

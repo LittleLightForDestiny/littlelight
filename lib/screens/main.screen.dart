@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/screens/equipment.screen.dart';
+import 'package:little_light/screens/presentation_node_root.screen.dart';
 
 
 import 'package:little_light/widgets/side_menu/side_menu.widget.dart';
@@ -10,7 +11,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class MainScreenState extends State<MainScreen> {
-  Widget currentScreen = EquipmentScreen();
+  Widget currentScreen = PresentationNodeRootScreen();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
