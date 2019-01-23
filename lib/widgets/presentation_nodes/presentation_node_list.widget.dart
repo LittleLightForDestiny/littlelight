@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/widgets/presentation_nodes/collectible_item.widget.dart';
+import 'package:little_light/widgets/presentation_nodes/nested_collectible_item.widget.dart';
 import 'package:little_light/widgets/presentation_nodes/presentation_node_item.widget.dart';
 import 'package:little_light/widgets/presentation_nodes/record_item.widget.dart';
 
@@ -85,6 +86,9 @@ class PresentationNodeListWidgetState
       case CollectionListItemType.presentationNode:
         return PresentationNodeItemWidget(hash: item.hash, depth: widget.depth);
 
+      case CollectionListItemType.nestedCollectible:
+        return NestedCollectibleItemWidget(hash: item.hash);
+
       case CollectionListItemType.collectible:
         return CollectibleItemWidget(hash: item.hash);
 
@@ -112,12 +116,13 @@ class PresentationNodeListWidgetState
   StaggeredTile getTileBuilder(int index) {
     var item = listIndex[index];
     switch (item.type) {
-      case CollectionListItemType.presentationNode:{
-        if (widget.depth == 0) {
-          return StaggeredTile.count(15, 20);
+      case CollectionListItemType.presentationNode:
+        {
+          if (widget.depth == 0) {
+            return StaggeredTile.count(15, 20);
+          }
+          return StaggeredTile.count(30, 7);
         }
-        return StaggeredTile.count(30, 7);
-      }
 
       case CollectionListItemType.nestedCollectible:
         return StaggeredTile.count(6, 6);

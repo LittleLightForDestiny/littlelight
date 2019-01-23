@@ -107,7 +107,8 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
     LoginWidget loginWidget = new LoginWidget(
       forceReauth: widget.forceLogin || forceReauth,
       onSkip: () {
-        loadProfile();
+        widget.auth.skipLogin();
+        goForward();
       },
       onLogin: (code) {
         authCode(code);

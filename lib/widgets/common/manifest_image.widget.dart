@@ -51,7 +51,7 @@ class ManifestImageState<T> extends State<ManifestImageWidget> {
         url = widget.urlExtractor(definition);
       }
     } catch (e) {}
-    if(url == null){
+    if(url == null || url.length == 0){
       return shimmer;
     }
     return CachedNetworkImage(

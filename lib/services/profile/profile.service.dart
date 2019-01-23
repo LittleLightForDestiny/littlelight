@@ -2,8 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:bungie_api/enums/destiny_collectible_state_enum.dart';
 import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:bungie_api/models/destiny_character_progression_component.dart';
+import 'package:bungie_api/models/destiny_collectible_component.dart';
+import 'package:bungie_api/models/destiny_collectibles_component.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
@@ -14,36 +17,40 @@ import 'package:bungie_api/enums/destiny_component_type_enum.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:path_provider/path_provider.dart';
 
-enum LastLoadedFrom {server, cache}
+enum LastLoadedFrom { server, cache }
 
 enum ProfileEventType { localUpdate, requestedUpdate, receivedUpdate }
 
 enum CharacterOrder { none, lastPlayed, firstCreated, lastCreated }
 
-class ProfileEvent{
+class ProfileEvent {
   final ProfileEventType type;
 
   ProfileEvent(this.type);
 }
 
-class ProfileComponentGroups{
+class ProfileComponentGroups {
   static const List<int> basicProfile = [
-      DestinyComponentType.Characters,
-      DestinyComponentType.CharacterProgressions,
-      DestinyComponentType.CharacterEquipment,
-      DestinyComponentType.CharacterInventories,
-      DestinyComponentType.ProfileInventories,
-      DestinyComponentType.ItemInstances,
-      DestinyComponentType.ItemTalentGrids,
-      DestinyComponentType.ItemSockets,
+    DestinyComponentType.Characters,
+    DestinyComponentType.CharacterProgressions,
+    DestinyComponentType.CharacterEquipment,
+    DestinyComponentType.CharacterInventories,
+    DestinyComponentType.ProfileInventories,
+    DestinyComponentType.ItemInstances,
+    DestinyComponentType.ItemTalentGrids,
+    DestinyComponentType.ItemSockets,
   ];
   static const List<int> collections = [
-      DestinyComponentType.Collectibles,
+    DestinyComponentType.Collectibles,
   ];
 }
 
 class ProfileService {
-  static const List<int> profileBuckets = const [InventoryBucket.modifications, InventoryBucket.shaders, InventoryBucket.consumables];
+  static const List<int> profileBuckets = const [
+    InventoryBucket.modifications,
+    InventoryBucket.shaders,
+    InventoryBucket.consumables
+  ];
   final _api = BungieApiService();
   static final ProfileService _singleton = new ProfileService._internal();
   DestinyProfileResponse profile;
@@ -62,7 +69,7 @@ class ProfileService {
     return _eventsStream;
   }
 
-  fireLocalUpdate(){
+  fireLocalUpdate() {
     _streamController.add(ProfileEvent(ProfileEventType.localUpdate));
   }
 
@@ -71,7 +78,8 @@ class ProfileService {
   }
   ProfileService._internal();
 
-  Future<DestinyProfileResponse> fetchProfileData({List<int> components = ProfileComponentGroups.basicProfile}) async {
+  Future<DestinyProfileResponse> fetchProfileData(
+      {List<int> components = ProfileComponentGroups.basicProfile}) async {
     _streamController.add(ProfileEvent(ProfileEventType.requestedUpdate));
     DestinyProfileResponse res = await _updateProfileData(components);
     this._lastLoadedFrom = LastLoadedFrom.server;
@@ -80,7 +88,8 @@ class ProfileService {
     return res;
   }
 
-  startAutomaticUpdater(Duration every, {List<int> components = ProfileComponentGroups.basicProfile}) {
+  startAutomaticUpdater(Duration every,
+      {List<int> components = ProfileComponentGroups.basicProfile}) {
     if (_timer != null && _timer.isActive) {
       _timer.cancel();
     }
@@ -88,10 +97,9 @@ class ProfileService {
       await fetchProfileData(components: components);
     });
 
-    if(this._lastLoadedFrom == LastLoadedFrom.cache){
+    if (this._lastLoadedFrom == LastLoadedFrom.cache) {
       fetchProfileData(components: components);
     }
-
   }
 
   stopAutomaticUpdater() {
@@ -178,7 +186,7 @@ class ProfileService {
     return profile;
   }
 
-  _cacheProfile(DestinyProfileResponse profile) async{
+  _cacheProfile(DestinyProfileResponse profile) async {
     Map<String, dynamic> map = profile.toMap();
     Directory directory = await getApplicationDocumentsDirectory();
 
@@ -187,25 +195,36 @@ class ProfileService {
     print('saved to cache');
   }
 
-  Future<DestinyProfileResponse> loadFromCache() async{
+  Future<DestinyProfileResponse> loadFromCache() async {
     Directory directory = await getApplicationDocumentsDirectory();
     File cached = new File("${directory.path}/cached_profile.json");
-    try{
-      String json = await cached.readAsString();
-      Map<String, dynamic> map = jsonDecode(json);
-      DestinyProfileResponse response = DestinyProfileResponse.fromMap(map);
-      print('loaded profile from cache');
-      this.profile = response;
-      this._lastLoadedFrom = LastLoadedFrom.cache;
-      return response;
-    }catch(e){
+    bool exists = await cached.exists();
+    if (exists) {
+      try {
+        String json = await cached.readAsString();
+        Map<String, dynamic> map = jsonDecode(json);
+        DestinyProfileResponse response = DestinyProfileResponse.fromMap(map);
+        print('loaded profile from cache');
+        this.profile = response;
+        this._lastLoadedFrom = LastLoadedFrom.cache;
+        return response;
+      } catch (e) {}
     }
+
     DestinyProfileResponse response = await fetchProfileData();
     print('loaded profile from server');
     return response;
   }
 
-
+  clear() async{
+    this.profile = null;
+    Directory directory = await getApplicationDocumentsDirectory();
+    File cached = new File("${directory.path}/cached_profile.json");
+    bool exists = await cached.exists();
+    if(exists){
+      cached.delete();
+    }
+  }
 
   DestinyItemInstanceComponent getInstanceInfo(String instanceId) {
     return profile.itemComponents.instances.data[instanceId];
@@ -274,12 +293,31 @@ class ProfileService {
     return profile.profileInventory.data.items;
   }
 
-  List<DestinyItemSocketState> getItemSockets(String itemInstanceId){
+  List<DestinyItemSocketState> getItemSockets(String itemInstanceId) {
     return profile.itemComponents.sockets.data[itemInstanceId].sockets;
   }
 
   DestinyCharacterProgressionComponent getCharacterProgression(
       String characterId) {
     return profile.characterProgressions.data[characterId];
+  }
+
+  Map<String, DestinyCollectibleComponent> getProfileCollectibles(){
+    return profile?.profileCollectibles?.data?.collectibles;
+  }
+  Map<String, DestinyCollectibleComponent> getCharacterCollectibles(String characterId){
+    return profile?.characterCollectibles?.data[characterId]?.collectibles;
+  }
+  
+  bool isCollectibleUnlocked(int hash){
+    String hashStr = "$hash";
+    DestinyCollectibleComponent collectible = profile?.profileCollectibles?.data?.collectibles[hashStr];
+    if(collectible != null){
+      return collectible.state & DestinyCollectibleState.NotAcquired != DestinyCollectibleState.NotAcquired;
+    }
+    return profile?.characterCollectibles?.data?.values?.any((data){
+      int state = data?.collectibles[hashStr]?.state;
+      return state & DestinyCollectibleState.NotAcquired != DestinyCollectibleState.NotAcquired;
+    }) ?? false;
   }
 }

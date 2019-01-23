@@ -73,7 +73,7 @@ class InventoryItemWrapperWidgetState
   getDefinitions() async {
     queueSize++;
     if (queueSize > 1) {
-      await Future.delayed(Duration(milliseconds: 200 * queueSize));
+      await Future.delayed(Duration(milliseconds: 100 * queueSize));
       if (!mounted) {
         queueSize--;
         return;
@@ -85,7 +85,7 @@ class InventoryItemWrapperWidgetState
       setState(() {});
     }
     queueSize--;
-    queueSize = max(0, min(queueSize, 10));
+    queueSize = max(0, min(queueSize, 15));
   }
 
   @override

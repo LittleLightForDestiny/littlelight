@@ -1,10 +1,9 @@
 import 'package:bungie_api/models/destiny_character_component.dart';
-import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/bungie_api/enums/item_category.enum.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/utils/selected_page_persistence.dart';
 import 'package:little_light/widgets/inventory_tabs/character_tab.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/tabs_character_menu.widget.dart';
@@ -37,6 +36,8 @@ class EquipmentScreenState extends State<EquipmentScreen>
 
   @override
   void initState() {
+    SelectedPagePersistence.saveLatestScreen(SelectedPagePersistence.equipment);
+
     widget.itemTypes.forEach((type) {
       scrollPositions[type] = 0;
     });

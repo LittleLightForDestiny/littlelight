@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:little_light/screens/collections.screen.dart';
 import 'package:little_light/screens/equipment.screen.dart';
 import 'package:little_light/screens/initial.screen.dart';
-import 'package:little_light/screens/presentation_node_root.screen.dart';
+import 'package:little_light/screens/triumphs.screen.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
@@ -10,7 +11,7 @@ import 'package:little_light/widgets/side_menu/profile_info.widget.dart';
 typedef void OnPageChange(Widget screen);
 
 class SideMenuWidget extends StatelessWidget {
-  final AuthService authService = new AuthService();
+  final AuthService auth = new AuthService();
   final OnPageChange onPageChange;
 
   SideMenuWidget({Key key, this.onPageChange}) : super(key: key);
@@ -25,10 +26,10 @@ class SideMenuWidget extends StatelessWidget {
               children: <Widget>[
                 ProfileInfoWidget(
                   children: <Widget>[
-                    menuItem(context, "Change Account", onTap: () {
+                    menuItem(context, "Change Account", requireLogin:true, onTap: () {
                       changeAccount(context);
                     }),
-                    menuItem(context, "Change Membership", onTap: () {
+                    menuItem(context, "Change Membership", requireLogin:true, onTap: () {
                       changeMembership(context);
                     }),
                     menuItem(context, "Change Language", onTap: () {
@@ -36,14 +37,14 @@ class SideMenuWidget extends StatelessWidget {
                     }),
                   ],
                 ),
-                menuItem(context, "Equipment", onTap: () {
+                menuItem(context, "Equipment", requireLogin:true, onTap: () {
                   open(context, EquipmentScreen());
                 }),
                 menuItem(context, "Collections", onTap: () {
-                  open(context, PresentationNodeRootScreen(key: Key("collections")));
+                  open(context, CollectionsScreen());
                 }),
                 menuItem(context, "Triumphs", onTap: () {
-                  open(context, PresentationNodeRootScreen(
+                  open(context, TriumphsScreen(
                     key: Key("triumphs"),
                     presentationNodeHash: 1024788583,
                   ));
@@ -52,7 +53,10 @@ class SideMenuWidget extends StatelessWidget {
             )));
   }
 
-  Widget menuItem(BuildContext context, String label, {void onTap()}) {
+  Widget menuItem(BuildContext context, String label, {void onTap(), requireLogin:false}) {
+    if(requireLogin && !auth.isLogged){
+      return Container();
+    }
     return Material(
         color: Colors.transparent,
         child: InkWell(

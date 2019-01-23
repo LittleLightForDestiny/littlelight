@@ -1,10 +1,12 @@
 import 'package:bungie_api/models/general_user.dart';
 import 'package:bungie_api/models/user_info_card.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/screens/initial.screen.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/utils/platform_data.dart';
+import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:shimmer/shimmer.dart';
 
 const Duration _kExpand = Duration(milliseconds: 200);
@@ -20,11 +22,13 @@ class ProfileInfoWidget extends StatefulWidget {
   }
 }
 
-class ProfileInfoState extends State<ProfileInfoWidget> with SingleTickerProviderStateMixin {
+class ProfileInfoState extends State<ProfileInfoWidget>
+    with SingleTickerProviderStateMixin {
   GeneralUser bungieNetUser;
   UserInfoCard selectedMembership;
-  
-  static final Animatable<double> _easeInTween = CurveTween(curve: Curves.easeIn);
+
+  static final Animatable<double> _easeInTween =
+      CurveTween(curve: Curves.easeIn);
 
   AnimationController _controller;
   Animation<double> _heightFactor;
@@ -37,10 +41,11 @@ class ProfileInfoState extends State<ProfileInfoWidget> with SingleTickerProvide
     _controller = AnimationController(duration: _kExpand, vsync: this);
     _heightFactor = _controller.drive(_easeInTween);
     _isExpanded = PageStorage.of(context)?.readState(context) ?? false;
-    if (_isExpanded)
-      _controller.value = 1.0;
+    if (_isExpanded) _controller.value = 1.0;
 
-    loadUser();
+    if (widget.auth.isLogged) {
+      loadUser();
+    }
   }
 
   @override
@@ -56,10 +61,8 @@ class ProfileInfoState extends State<ProfileInfoWidget> with SingleTickerProvide
         _controller.forward();
       } else {
         _controller.reverse().then<void>((void value) {
-          if (!mounted)
-            return;
-          setState(() {
-          });
+          if (!mounted) return;
+          setState(() {});
         });
       }
       PageStorage.of(context)?.writeState(context, _isExpanded);
@@ -68,7 +71,7 @@ class ProfileInfoState extends State<ProfileInfoWidget> with SingleTickerProvide
 
   Widget _buildChildren(BuildContext context, Widget child) {
     return Container(
-      color:Colors.grey.shade900,
+      color: Colors.grey.shade900,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
@@ -110,16 +113,21 @@ class ProfileInfoState extends State<ProfileInfoWidget> with SingleTickerProvide
           Container(height: kToolbarHeight, child: profileInfo(context)),
         ],
       ),
-      Positioned(child: profilePicture(context),
-          left:8,
+      Positioned(
+          child: profilePicture(context),
+          left: 8,
           bottom: 8,
-          width:72,
-          height:72
-          )
+          width: 72,
+          height: 72)
     ]);
   }
 
   Widget background(context) {
+    if (!widget.auth.isLogged) {
+      return Container(
+          alignment: Alignment.center,
+          child: TranslatedTextWidget("Not logged in"));
+    }
     Shimmer shimmer = Shimmer.fromColors(
         baseColor: Color.lerp(Theme.of(context).backgroundColor,
             Theme.of(context).primaryColor, .1),
@@ -138,7 +146,10 @@ class ProfileInfoState extends State<ProfileInfoWidget> with SingleTickerProvide
     return shimmer;
   }
 
-  Widget profilePicture(context){
+  Widget profilePicture(context) {
+    if (!widget.auth.isLogged) {
+      return Container();
+    }
     Shimmer shimmer = Shimmer.fromColors(
         baseColor: Colors.grey.shade500,
         highlightColor: Colors.grey.shade400,
@@ -156,20 +167,61 @@ class ProfileInfoState extends State<ProfileInfoWidget> with SingleTickerProvide
   }
 
   Widget profileInfo(context) {
-    PlatformData platform = PlatformData.getPlatform(selectedMembership?.membershipType ?? 0);
+    if (!widget.auth.isLogged) {
+      return Container(
+        color: Theme.of(context).primaryColor,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Expanded(
+              child:FlatButton(
+
+              child: 
+              Container(
+                alignment: Alignment.centerLeft,
+                child:TranslatedTextWidget("Tap to Login",
+              textAlign: TextAlign.left),
+              ),
+              onPressed: () {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => InitialScreen(
+                            forceLogin: true,
+                          ),
+                    ));
+              },
+            )),
+            IconButton(
+              icon: Transform.rotate(
+                angle: -_heightFactor.value*1.5,
+                child:Icon(Icons.settings)
+              ),
+              onPressed: _handleTap,
+            )
+          ],
+        ),
+      );
+    }
+    PlatformData platform =
+        PlatformData.getPlatform(selectedMembership?.membershipType ?? 0);
     return Container(
         color: platform.color,
-        padding: EdgeInsets.only(left:80),
+        padding: EdgeInsets.only(left: 80),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Padding(
-              padding:EdgeInsets.symmetric(horizontal: 8),
-              child:Icon(platform.iconData)
+                padding: EdgeInsets.symmetric(horizontal: 8),
+                child: Icon(platform.iconData)),
+            Expanded(child: Text(selectedMembership?.displayName ?? "")),
+            IconButton(
+              icon: Transform.rotate(
+                angle: -_heightFactor.value*1.5,
+                child:Icon(Icons.settings)
               ),
-            Expanded(child:Text(selectedMembership?.displayName ?? "")),
-            IconButton(icon: Icon(Icons.settings),
-            onPressed: _handleTap,)
+              onPressed: _handleTap,
+            )
           ],
         ));
   }

@@ -6,6 +6,7 @@ import 'package:bungie_api/models/user_info_card.dart';
 import 'package:bungie_api/models/user_membership_data.dart';
 import 'package:flutter_inappbrowser/flutter_inappbrowser.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
+import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/translate/translate.service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
@@ -24,6 +25,18 @@ class AuthService {
       return false;
     }
     return skipped;
+  }
+
+  Future<void> skipLogin() async {
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    _prefs.setBool(_skippedLoginKey, true);
+    _prefs.remove(_latestTokenKey);
+    _prefs.remove(_latestMembershipKey);
+    _currentToken = null;
+    _currentMembership = null;
+
+    ProfileService profile = ProfileService();
+    profile.clear();
   }
 
   Future<SavedToken> _getStoredToken() async {
@@ -56,6 +69,7 @@ class AuthService {
   Future<void> _saveToken(SavedToken token) async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     _currentToken = token;
+    _prefs.remove(_skippedLoginKey);
     _prefs.setString(_latestTokenKey, jsonEncode(token.toMap()));
   }
 
@@ -132,7 +146,7 @@ class AuthService {
   Future<SavedMembership> getMembership() async {
     SavedMembership membership = _currentMembership;
     if (membership == null) {
-      membership = await _getStoredMembership();
+      _currentMembership = membership = await _getStoredMembership();
     }
     return membership;
   }
@@ -144,6 +158,10 @@ class AuthService {
       membershipData.bungieNetUser, 
       membershipType);
     _prefs.setString(_latestMembershipKey, jsonEncode(_currentMembership.toMap()));
+  }
+
+  bool get isLogged{
+    return _currentMembership != null;
   }
 }
 
