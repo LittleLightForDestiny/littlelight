@@ -4,6 +4,7 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_item_socket_category_definition.dart';
+import 'package:bungie_api/models/destiny_item_socket_entry_definition.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_socket_category_definition.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -62,13 +63,15 @@ class ItemPerksWidget extends DestinyItemWidget {
   }
 
   Widget perkColumns(BuildContext context) {
-    Iterable<DestinyItemSocketState> entries =
-        socketEntries?.where((socket) => socket.isVisible);
-    if(entries == null){
-      return Container(); 
+    if(item != null){
+      return instancePerkColumns(context);
     }
+    return definitionPerkColumns(context);
+  }
+  Widget instancePerkColumns(BuildContext context){
+    Iterable<DestinyItemSocketState> entries =
+        socketStates?.where((socket) => socket.isVisible);
     double availableWidth = MediaQuery.of(context).size.width - 16;
-
     double colWidth = min(availableWidth / 6, availableWidth / entries.length);
     return Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,11 +80,25 @@ class ItemPerksWidget extends DestinyItemWidget {
             .map((socket) => Container(
                 key: Key("socket_${socket.plugHash}"),
                 width: colWidth,
-                child: plugItems(context, socket)))
+                child: instancePlugItems(context, socket)))
+            .toList());
+  }
+  Widget definitionPerkColumns(BuildContext context){
+    Iterable<DestinyItemSocketEntryDefinition> entries = socketEntries.where((socket)=>socket.defaultVisible && socket.singleInitialItemHash!=0);
+    double availableWidth = MediaQuery.of(context).size.width - 16;
+    double colWidth = min(availableWidth / 6, availableWidth / entries.length);
+    return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: entries
+            .map((socket) => Container(
+                key: Key("socket_${socket.singleInitialItemHash}"),
+                width: colWidth,
+                child: definitionPlugItems(context, socket)))
             .toList());
   }
 
-  Widget plugItems(BuildContext context, DestinyItemSocketState socket) {
+  Widget instancePlugItems(BuildContext context, DestinyItemSocketState socket) {
     if (socket.reusablePlugs == null) {
       return plugItem(context, socket.plugHash, socket.plugHash);
     }
@@ -89,6 +106,17 @@ class ItemPerksWidget extends DestinyItemWidget {
         children: socket.reusablePlugs
             .map(
                 (item) => plugItem(context, socket.plugHash, item.plugItemHash))
+            .toList());
+  }
+
+  Widget definitionPlugItems(BuildContext context, DestinyItemSocketEntryDefinition socket) {
+    if (socket.reusablePlugItems == null) {
+      return plugItem(context, socket.singleInitialItemHash, socket.singleInitialItemHash);
+    }
+    return Column(
+        children: socket.reusablePlugItems
+            .map(
+                (item) => plugItem(context, socket.singleInitialItemHash, item.plugItemHash))
             .toList());
   }
 
@@ -136,17 +164,15 @@ class ItemPerksWidget extends DestinyItemWidget {
           },
         ));
   }
-
-  List<DestinyItemSocketState> get socketStates{
-    if(item == null) return null;
-    return profile.getItemSockets(item.itemInstanceId);
+  
+  List<DestinyItemSocketEntryDefinition> get socketEntries {
+    return category.socketIndexes.map((index) {
+      return definition.sockets.socketEntries[index];
+    }).toList();
   }
-      
 
-  List<DestinyItemSocketState> get socketEntries {
-    if(socketStates == null || category?.socketIndexes == null){
-      return null;
-    }
+  List<DestinyItemSocketState> get socketStates {
+    List<DestinyItemSocketState> socketStates = profile.getItemSockets(item.itemInstanceId);
     return category.socketIndexes.map((index) {
       return socketStates[index];
     }).toList();
