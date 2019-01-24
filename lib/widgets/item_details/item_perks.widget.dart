@@ -64,29 +64,30 @@ class ItemPerksWidget extends DestinyItemWidget {
   }
 
   Widget perkColumns(BuildContext context) {
-    return instancePerkColumns(context);
-  }
-
-  Widget instancePerkColumns(BuildContext context) {
     double availableWidth = MediaQuery.of(context).size.width - 16;
     double colWidth =
         min(availableWidth / 6, availableWidth / category.socketIndexes.length);
     return Row(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: category.socketIndexes.map((socketIndex) {
+          Widget plugItems = item != null
+                  ? instancePlugItems(context, socketIndex)
+                  : definitionPlugItems(context, socketIndex);
+          if(plugItems == null){
+            return Container();
+          }
           return Container(
               key: Key("perk_socket_$socketIndex"),
               width: colWidth,
-              child: item != null
-                  ? instancePlugItems(context, socketIndex)
-                  : definitionPlugItems(context, socketIndex));
+              child: plugItems);
         }).toList());
   }
 
   Widget instancePlugItems(BuildContext context, int socketIndex) {
     DestinyItemSocketState socket = socketStates[socketIndex];
-    if (socket.reusablePlugs == null) {
+    if(socket.isVisible == false) return null;
+    if ((socket.reusablePlugs?.length ?? 0) == 0) {
       return plugItem(context, socket.plugHash, socket.plugHash, socketIndex);
     }
     return Column(

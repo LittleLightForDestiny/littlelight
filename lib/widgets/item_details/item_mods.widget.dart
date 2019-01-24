@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:bungie_api/enums/tier_type_enum.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
@@ -64,10 +63,6 @@ class ItemModsWidget extends DestinyItemWidget {
   }
 
   Widget perkColumns(BuildContext context) {
-    return instancePerkColumns(context);
-  }
-
-  Widget instancePerkColumns(BuildContext context) {
     double availableWidth = MediaQuery.of(context).size.width - 16;
     double colWidth =
         min(availableWidth / 6, availableWidth / category.socketIndexes.length);
@@ -86,21 +81,37 @@ class ItemModsWidget extends DestinyItemWidget {
 
   Widget instancePlugItems(BuildContext context, int socketIndex) {
     DestinyItemSocketState socket = socketStates[socketIndex];
-    return plugItem(context, socket.plugHash, socket.plugHash, socketIndex);
+    int hash = socket.plugHash;
+    if(hash == null && socket.reusablePlugHashes.length > 0){
+      hash = socket.reusablePlugHashes[0];
+    }
+    return plugItem(context, hash, socketIndex);
   }
 
   Widget definitionPlugItems(BuildContext context, int socketIndex) {
     DestinyItemSocketEntryDefinition socket = socketEntries[socketIndex];
-    
-    return plugItem(context, socket.singleInitialItemHash,
-        socket.singleInitialItemHash, socketIndex);
+    int hash = socket.singleInitialItemHash;
+    if (hash == null && socket.reusablePlugItems.length > 0) {
+      hash = socket.reusablePlugItems[0].plugItemHash;
+    }
+    if (hash == null && socket.randomizedPlugItems.length > 0) {
+      hash = socket.randomizedPlugItems[0].plugItemHash;
+    }
+    return plugItem(context, hash, socketIndex);
   }
 
-  Widget plugItem(BuildContext context, int socketPlugHash, int plugItemHash,
-      int socketIndex) {
+  Widget plugItem(BuildContext context, int plugItemHash, int socketIndex) {
     DestinyInventoryItemDefinition plugDefinition =
         plugDefinitions[plugItemHash];
+
+    if (plugDefinition == null) {
+      print('missing plug definition on mods widget: $plugItemHash');
+      return Container();
+    }
     return Container(
+        foregroundDecoration: BoxDecoration(
+            border: Border.all(width: 1, color: Colors.grey.shade300)),
+        margin: EdgeInsets.only(right: 4, top: 4),
         child: CachedNetworkImage(
             imageUrl:
                 "${BungieApiService.baseUrl}${plugDefinition.displayProperties.icon}"));

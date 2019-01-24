@@ -14,7 +14,7 @@ class SelectedPerkWidget extends StatelessWidget {
         (definition) {
       double width = MediaQuery.of(context).size.width;
       return Container(
-          margin: EdgeInsets.all(8),
+          margin: EdgeInsets.only(left:8, right:8, bottom:8),
           padding: EdgeInsets.all(4),
           decoration: BoxDecoration(
             color: Colors.blueGrey.shade900,

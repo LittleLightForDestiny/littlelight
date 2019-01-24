@@ -12,9 +12,12 @@ class ManifestImageWidget<T> extends StatefulWidget {
   final ExtractUrlFromData urlExtractor;
   final ManifestService _manifest = new ManifestService();
 
+  final Widget placeholder;
+
   ManifestImageWidget(this.hash,
       {Key key,
-      this.urlExtractor})
+      this.urlExtractor,
+      this.placeholder})
       : super(key: key);
 
   @override
@@ -56,7 +59,7 @@ class ManifestImageState<T> extends State<ManifestImageWidget> {
     }
     return CachedNetworkImage(
       imageUrl: "${BungieApiService.baseUrl}$url",
-      placeholder: shimmer,
+      placeholder: widget.placeholder ?? shimmer,
       fadeInDuration: Duration(milliseconds: 300),
     );
   }

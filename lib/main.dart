@@ -5,10 +5,12 @@ import 'package:little_light/exceptions/exception_handler.dart';
 import 'package:little_light/screens/initial.screen.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'dart:async';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 
-
-void main() {
+void main() async{
+  await DotEnv().load('.env');
+  print(DotEnv().env);
   ExceptionHandler handler = ExceptionHandler();
 
   runZoned<Future<void>>(() async {

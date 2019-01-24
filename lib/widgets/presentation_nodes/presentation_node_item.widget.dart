@@ -26,9 +26,7 @@ class PresentationNodeItemWidget extends StatelessWidget {
                     Colors.white.withOpacity(.1)
                   ])),
           child: Stack(children: [
-            depth == 0 ? Column(
-              children: buildContent(context, definition)
-            ) : Row(children: buildContent(context, definition)),
+            Row(children: buildContent(context, definition)),
             FlatButton(
               child: Container(),
               onPressed: () {

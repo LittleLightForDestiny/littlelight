@@ -14,12 +14,15 @@ import 'package:little_light/widgets/common/item_name_bar/item_name_bar.widget.d
 import 'package:shimmer/shimmer.dart';
 
 class ItemCoverWidget extends DestinyItemWidget {
+  final int uniqueId;
+
   ItemCoverWidget(
       DestinyItemComponent item,
       DestinyInventoryItemDefinition definition,
       DestinyItemInstanceComponent instanceInfo,
       {Key key
-      ,String characterId})
+      ,String characterId,
+      this.uniqueId = -1})
       : super(item, definition, instanceInfo, key: key, characterId:characterId);
 
   @override
@@ -30,7 +33,7 @@ class ItemCoverWidget extends DestinyItemWidget {
     return SliverPersistentHeader(
         pinned: true,
         delegate: ItemCoverDelegate(item, definition, instanceInfo,
-        tag,
+        tag, uniqueId,
             minHeight: paddingTop + kToolbarHeight,
             maxHeight: kToolbarHeight + screenshotHeight));
   }
@@ -43,8 +46,9 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
   double minHeight;
   double maxHeight;
   String tag;
+  int uniqueId;
 
-  ItemCoverDelegate(this.item, this.definition, this.instanceInfo, this.tag,
+  ItemCoverDelegate(this.item, this.definition, this.instanceInfo, this.tag, this.uniqueId,
       {this.minHeight = 50, this.maxHeight = 200})
       : super();
 
@@ -75,7 +79,7 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
         right: 0,
         height: kToolbarHeight,
         child: Hero(
-            tag: "item_namebar_$tag",
+            tag: "item_namebar_${tag}_$uniqueId",
             child: ItemNameBarWidget(
               item,
               definition,
@@ -100,7 +104,7 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
         width: size,
         height: size,
         child: Hero(
-            tag: "item_icon_$tag",
+            tag: "item_icon_${tag}_$uniqueId",
             child: 
             ItemIconWidget.builder(item, definition, instanceInfo,
             iconBorderWidth: lerpDouble(1, 2, expandRatio),

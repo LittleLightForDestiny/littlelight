@@ -91,7 +91,7 @@ class PresentationNodeTabsWidgetState
     if (widget.depth < 2) {
       return Container(
         padding: EdgeInsets.all(8),
-        child:ManifestImageWidget<DestinyPresentationNodeDefinition>(hash));
+        child:ManifestImageWidget<DestinyPresentationNodeDefinition>(hash, placeholder: Container(),));
     }
     return Container(
       padding: EdgeInsets.all(8),

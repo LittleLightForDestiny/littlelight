@@ -5,8 +5,10 @@ import 'package:little_light/widgets/common/destiny_item.widget.dart';
 import 'package:little_light/screens/item_detail.screen.dart';
 import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/item_name_bar/item_name_bar.widget.dart';
+import 'dart:math';
 
 mixin InventoryItemMixin implements DestinyItemWidget {
+  final int uniqueId = Random().nextInt(99999);
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -34,7 +36,7 @@ mixin InventoryItemMixin implements DestinyItemWidget {
 
   Widget itemIconHero(BuildContext context) {
     return Hero(
-      tag: "item_icon_$tag",
+      tag: "item_icon_${tag}_$uniqueId",
       child: itemIcon(context),
     );
   }
@@ -71,7 +73,7 @@ mixin InventoryItemMixin implements DestinyItemWidget {
 
   Widget itemHeroNamebar(BuildContext context){
     return Hero(
-      tag: "item_namebar_$tag",
+      tag: "item_namebar_${tag}_$uniqueId",
       child: nameBar(context));
   }
 
@@ -105,7 +107,7 @@ mixin InventoryItemMixin implements DestinyItemWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ItemDetailScreen(item, definition, instanceInfo, characterId: characterId,),
+        builder: (context) => ItemDetailScreen(item, definition, instanceInfo, characterId: characterId, uniqueId: uniqueId,),
       ),
     );
   }

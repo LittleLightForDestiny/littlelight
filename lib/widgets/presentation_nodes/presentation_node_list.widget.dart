@@ -118,9 +118,6 @@ class PresentationNodeListWidgetState
     switch (item.type) {
       case CollectionListItemType.presentationNode:
         {
-          if (widget.depth == 0) {
-            return StaggeredTile.count(15, 20);
-          }
           return StaggeredTile.count(30, 7);
         }
 

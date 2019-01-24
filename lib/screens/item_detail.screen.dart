@@ -16,12 +16,15 @@ import 'package:little_light/widgets/item_details/management_block.widget.dart';
 import 'package:little_light/widgets/item_details/selected_perk.widget.dart';
 
 class ItemDetailScreen extends DestinyItemStatefulWidget {
+  final int uniqueId;
+
   ItemDetailScreen(
       DestinyItemComponent item,
       DestinyInventoryItemDefinition definition,
       DestinyItemInstanceComponent instanceInfo,
       {@required String characterId,
-      Key key})
+      Key key,
+      this.uniqueId})
       : super(item, definition, instanceInfo,
             key: key, characterId: characterId);
 
@@ -31,7 +34,7 @@ class ItemDetailScreen extends DestinyItemStatefulWidget {
   }
 }
 
-class ItemDetailScreenState extends DestinyItemState {
+class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
   int selectedPerk;
   Map<int, int> selectedPerks = new Map();
   Map<int, DestinyInventoryItemDefinition> plugDefinitions;
@@ -50,10 +53,13 @@ class ItemDetailScreenState extends DestinyItemState {
   Future<void> loadPlugDefinitions() async{
     List<int> plugHashes = definition.sockets.socketEntries.expand((socket){
       List<int> hashes = [];
-      if(socket.reusablePlugItems != null){
+      if((socket.singleInitialItemHash ?? 0) != 0){
+        hashes.add(socket.singleInitialItemHash);
+      }
+      if((socket.reusablePlugItems?.length ?? 0) != 0){
         hashes.addAll(socket.reusablePlugItems.map((plugItem)=>plugItem.plugItemHash));
       }
-      if(socket.randomizedPlugItems != null){
+      if((socket.randomizedPlugItems?.length ?? 0) != 0){
         hashes.addAll(socket.randomizedPlugItems.map((plugItem)=>plugItem.plugItemHash));
       }
       return hashes;
@@ -72,7 +78,7 @@ class ItemDetailScreenState extends DestinyItemState {
   Widget build(BuildContext context) {
     return Scaffold(
         body: CustomScrollView(slivers: [
-      ItemCoverWidget(item, definition, instanceInfo),
+      ItemCoverWidget(item, definition, instanceInfo, uniqueId: widget.uniqueId,characterId: widget.characterId,),
       SliverList(
         delegate: SliverChildListDelegate([
           ItemMainInfoWidget(item, definition, instanceInfo),
@@ -84,9 +90,9 @@ class ItemDetailScreenState extends DestinyItemState {
           ),
           buildStats(context),
           buildPerks(context),
-          buildMods(context),
           SelectedPerkWidget(selectedPerk,
               key: Key("selected_perk: $selectedPerk")),
+          buildMods(context),
           buildLore(context),
           Container(height: 100)
         ]),

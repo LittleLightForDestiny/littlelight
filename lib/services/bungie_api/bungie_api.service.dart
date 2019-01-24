@@ -11,6 +11,7 @@ import 'package:bungie_api/models/user_membership_data.dart';
 import 'package:bungie_api/responses/destiny_profile_response_response.dart';
 import 'package:bungie_api/responses/int32_response.dart';
 import 'package:bungie_api/responses/user_membership_data_response.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:bungie_api/helpers/http.dart';
 import 'package:bungie_api/helpers/oauth.dart';
@@ -20,16 +21,26 @@ import 'package:bungie_api/responses/destiny_manifest_response.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 
 class BungieApiService {
-  static const String apiKey = '5d543dcf638a48b9a89f829f8a2373c6';
+  
   static const String baseUrl = 'https://www.bungie.net';
   static const String apiUrl = "$baseUrl/Platform";
-  static const String clientId = "23381";
-  static const String clientSecret =
-      "lfx5V-1zoQrE..22d7rDbWXLqdHZfQXFuy544tSOgDA";
+  
   final AuthService auth = new AuthService();
 
   static String url(String url){
     return "$baseUrl/$url";
+  }
+
+  static String get clientSecret{
+    return DotEnv().env['client_secret'];
+  }
+
+  static String get apiKey{
+    return DotEnv().env['api_key'];
+  }
+
+  static String get clientId{
+    return DotEnv().env['client_id'];
   }
 
   Future<DestinyManifestResponse> getManifest() {
@@ -122,6 +133,8 @@ class Client implements HttpClient {
     if (token != null) {
       headers['Authorization'] = "Bearer ${token.accessToken}";
     }
+    print("accessToken:${token.accessToken}");
+    print("refreshToken:${token.refreshToken}");
     String paramsString = "";
     if (config.params != null) {
       config.params.forEach((name, value) {
