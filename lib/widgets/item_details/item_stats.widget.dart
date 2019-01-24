@@ -81,15 +81,23 @@ class ItemStatsWidget extends DestinyItemWidget {
 
   Map<int, StatValues> getModValues() {
     Map<int, StatValues> map = new Map();
-    if (plugDefinitions == null || socketStates == null) {
+    if (plugDefinitions == null) {
       return map;
     }
-    socketStates.forEach((state) {
-      DestinyInventoryItemDefinition def = plugDefinitions[state.plugHash];
+    List<int> plugHashes;
+    if(socketStates != null){
+      plugHashes = socketStates.map((state)=>state.plugHash).toList();
+    }else{
+      plugHashes = definition.sockets.socketEntries.map((plug)=>plug.singleInitialItemHash).toList();
+    }
+
+    plugHashes.forEach((plugHash) {
+      int index = plugHashes.indexOf(plugHash);
+      DestinyInventoryItemDefinition def = plugDefinitions[plugHash];
       if (def == null) {
         return;
       }
-      DestinyInventoryItemDefinition selectedDef = plugDefinitions[selectedPerks[state.plugHash]];
+      DestinyInventoryItemDefinition selectedDef = plugDefinitions[selectedPerks[index]];
 
       def.investmentStats.forEach((stat) {
         StatValues values = map[stat.statTypeHash] ?? new StatValues();

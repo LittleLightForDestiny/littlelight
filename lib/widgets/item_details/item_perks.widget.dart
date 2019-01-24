@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:bungie_api/enums/tier_type_enum.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
@@ -63,82 +64,71 @@ class ItemPerksWidget extends DestinyItemWidget {
   }
 
   Widget perkColumns(BuildContext context) {
-    if (item != null) {
-      return instancePerkColumns(context);
-    }
-    return definitionPerkColumns(context);
+    return instancePerkColumns(context);
   }
 
   Widget instancePerkColumns(BuildContext context) {
-    Iterable<DestinyItemSocketState> entries =
-        socketStates?.where((socket) => socket.isVisible);
     double availableWidth = MediaQuery.of(context).size.width - 16;
-    double colWidth = min(availableWidth / 6, availableWidth / entries.length);
+    double colWidth =
+        min(availableWidth / 6, availableWidth / category.socketIndexes.length);
     return Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
-        children: entries
-            .map((socket) => Container(
-                key: Key("socket_${socket.plugHash}"),
-                width: colWidth,
-                child: instancePlugItems(context, socket)))
-            .toList());
-  }
-
-  Widget definitionPerkColumns(BuildContext context) {
-    Iterable<DestinyItemSocketEntryDefinition> entries = socketEntries.where(
-        (socket) => socket.defaultVisible);
-    double availableWidth = MediaQuery.of(context).size.width - 16;
-    double colWidth = min(availableWidth / 6, availableWidth / entries.length);
-    int socketIndex = 0;
-    return Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: entries.map((socket) {
-          bool isRandom = (socket?.randomizedPlugItems?.length ?? 0) > 0; 
-          String key = isRandom ? "socket_random_$socketIndex}" : "socket_${socket.singleInitialItemHash}";
-          socketIndex++;
+        children: category.socketIndexes.map((socketIndex) {
           return Container(
-              key: Key(key),
+              key: Key("perk_socket_$socketIndex"),
               width: colWidth,
-              child: definitionPlugItems(context, socket));
+              child: item != null
+                  ? instancePlugItems(context, socketIndex)
+                  : definitionPlugItems(context, socketIndex));
         }).toList());
   }
 
-  Widget instancePlugItems(
-      BuildContext context, DestinyItemSocketState socket) {
+  Widget instancePlugItems(BuildContext context, int socketIndex) {
+    DestinyItemSocketState socket = socketStates[socketIndex];
     if (socket.reusablePlugs == null) {
-      return plugItem(context, socket.plugHash, socket.plugHash);
+      return plugItem(context, socket.plugHash, socket.plugHash, socketIndex);
     }
     return Column(
         children: socket.reusablePlugs
-            .map(
-                (item) => plugItem(context, socket.plugHash, item.plugItemHash))
-            .toList());
-  }
-
-  Widget definitionPlugItems(
-      BuildContext context, DestinyItemSocketEntryDefinition socket) {
-    if (socket.reusablePlugItems == null) {
-      return plugItem(
-          context, socket.singleInitialItemHash, socket.singleInitialItemHash);
-    }
-    return Column(
-        children: socket.reusablePlugItems
             .map((item) => plugItem(
-                context, socket.singleInitialItemHash, item.plugItemHash))
+                context, socket.plugHash, item.plugItemHash, socketIndex))
             .toList());
   }
 
-  Widget plugItem(BuildContext context, int socketPlugHash, int plugItemHash) {
+  Widget definitionPlugItems(BuildContext context, int socketIndex) {
+    DestinyItemSocketEntryDefinition socket = socketEntries[socketIndex];
+    int reusableLength = socket.reusablePlugItems?.length ?? 0;
+    int randomizedLength = socket.randomizedPlugItems?.length ?? 0;
+    if (reusableLength == 0 && randomizedLength == 0) {
+      return plugItem(context, socket.singleInitialItemHash,
+          socket.singleInitialItemHash, socketIndex);
+    }
+    List<Widget> reusableWidgets = socket.reusablePlugItems
+        .map((item) => plugItem(context, socket.singleInitialItemHash,
+            item.plugItemHash, socketIndex))
+        .toList();
+
+    List<Widget> randomizedWidgets = socket.randomizedPlugItems
+        .map((item) => plugItem(context, socket.randomizedPlugItems[0].plugItemHash,
+            item.plugItemHash, socketIndex))
+        .toList();
+    return Column(
+        children:
+            randomizedWidgets.length > 0 ? randomizedWidgets : reusableWidgets);
+  }
+
+  Widget plugItem(BuildContext context, int socketPlugHash, int plugItemHash,
+      int socketIndex) {
     DestinyInventoryItemDefinition plugDefinition =
         plugDefinitions[plugItemHash];
     bool enabled = socketPlugHash == plugItemHash;
     bool intrinsic = plugDefinition.plug.plugCategoryIdentifier == "intrinsics";
     bool selected = plugItemHash == selectedPerkHash;
-    bool hasCustom = selectedPerkHashes[socketPlugHash] != socketPlugHash &&
-        selectedPerkHashes[socketPlugHash] != null;
-    bool selectedOnSlot = selectedPerkHashes[socketPlugHash] == plugItemHash;
+    bool hasCustom = selectedPerkHashes[socketIndex] != socketPlugHash &&
+        selectedPerkHashes[socketIndex] != null;
+    bool selectedOnSlot = selectedPerkHashes[socketIndex] == plugItemHash;
+    bool exotic = definition.inventory.tierType == TierType.Exotic;
     Color color = Colors.transparent;
     if (intrinsic) {
       color = Colors.transparent;
@@ -149,15 +139,21 @@ class ItemPerksWidget extends DestinyItemWidget {
     } else if (selectedOnSlot) {
       color = Colors.indigo.shade300;
     }
+    BorderSide borderSide = BorderSide(
+                  color: selected
+                      ? Colors.white
+                      : Colors.transparent,
+                  width: 2);
+          
     return Container(
         margin: EdgeInsets.all(4),
         child: FlatButton(
-          shape: CircleBorder(
-              side: BorderSide(
-                  color: selected && !intrinsic
-                      ? Colors.white
-                      : Colors.transparent,
-                  width: 2)),
+          shape: intrinsic && !exotic ? 
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4),
+            side:borderSide)
+          : CircleBorder(
+              side: borderSide),
           padding: EdgeInsets.all(intrinsic ? 0 : 8),
           color: color,
           child: AspectRatio(
@@ -167,7 +163,7 @@ class ItemPerksWidget extends DestinyItemWidget {
                       "${BungieApiService.baseUrl}${plugDefinition.displayProperties.icon}")),
           onPressed: () {
             if (this.onSelectPerk != null) {
-              this.onSelectPerk(socketPlugHash, plugItemHash);
+              this.onSelectPerk(socketIndex, plugItemHash);
             } else {
               print(plugDefinition.displayProperties.name);
             }
@@ -176,17 +172,13 @@ class ItemPerksWidget extends DestinyItemWidget {
   }
 
   List<DestinyItemSocketEntryDefinition> get socketEntries {
-    return category.socketIndexes.map((index) {
-      return definition.sockets.socketEntries[index];
-    }).toList();
+    return definition.sockets.socketEntries;
   }
 
   List<DestinyItemSocketState> get socketStates {
     List<DestinyItemSocketState> socketStates =
         profile.getItemSockets(item.itemInstanceId);
-    return category.socketIndexes.map((index) {
-      return socketStates[index];
-    }).toList();
+    return socketStates;
   }
 
   DestinyItemSocketCategoryDefinition get category {

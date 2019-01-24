@@ -1,12 +1,14 @@
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
+import 'package:bungie_api/models/destiny_item_socket_entry_definition.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/widgets/common/destiny_item.stateful_widget.dart';
 
 import 'package:little_light/widgets/item_details/item_cover/item_cover.widget.dart';
 import 'package:little_light/widgets/item_details/item_lore.widget.dart';
+import 'package:little_light/widgets/item_details/item_mods.widget.dart';
 import 'package:little_light/widgets/item_details/item_perks.widget.dart';
 import 'package:little_light/widgets/item_details/item_stats.widget.dart';
 import 'package:little_light/widgets/item_details/main_info/item_main_info.widget.dart';
@@ -82,6 +84,7 @@ class ItemDetailScreenState extends DestinyItemState {
           ),
           buildStats(context),
           buildPerks(context),
+          buildMods(context),
           SelectedPerkWidget(selectedPerk,
               key: Key("selected_perk: $selectedPerk")),
           buildLore(context),
@@ -104,19 +107,39 @@ class ItemDetailScreenState extends DestinyItemState {
             plugDefinitions: plugDefinitions,
             selectedPerkHash: selectedPerk,
             selectedPerkHashes: selectedPerks,
-            onSelectPerk: (socketHash, plugHash) {
+            onSelectPerk: (socketIndex, plugHash) {
               if (selectedPerk == plugHash) {
                 selectedPerk = null;
               } else {
                 selectedPerk = plugHash;
               }
+              DestinyItemSocketEntryDefinition socketEntry = definition?.sockets?.socketEntries[socketIndex];
+              int socketHash = socketEntry?.singleInitialItemHash ?? 0;
+              if((socketEntry?.randomizedPlugItems?.length ?? 0) > 0){
+                socketHash = socketEntry?.randomizedPlugItems[0].plugItemHash;
+              }
+              if(item?.itemInstanceId != null){
+                socketHash = widget.profile.getItemSockets(item.itemInstanceId)[socketIndex].plugHash;
+              }
               if(plugHash != socketHash){
-                selectedPerks[socketHash] = plugHash;
+                selectedPerks[socketIndex] = plugHash;
               }else{
-                selectedPerks[socketHash] = null;
+                selectedPerks[socketIndex] = null;
               }  
               setState(() {});
             },
+          );
+  }
+
+  Widget buildMods(BuildContext context){
+    return ItemModsWidget(
+            item,
+            definition,
+            instanceInfo,
+            key:Key('mods_widget'),
+            plugDefinitions: plugDefinitions,
+            selectedModHash: selectedPerk,
+            selectedModHashes: selectedPerks,
           );
   }
 

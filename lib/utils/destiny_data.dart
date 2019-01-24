@@ -45,6 +45,18 @@ class DestinyData {
     4241085061, //weapon perks
   ];
 
+  static const List<int> socketCategoryModHashes = [
+    279738248, // emblem customization
+    590099826, // armor mods
+    1093090108, // emotes
+    2622243744, // nightfall modifiers
+    2685412949, //weapon mods
+    3379164649, //ghost shell mods
+    3954618873, // clan staves
+    4243480345, //vehicle mods
+    4265082475, //vehicle mods
+  ];
+
   static IconData getClassIcon(int type) {
     switch (type) {
       case DestinyClass.Hunter:

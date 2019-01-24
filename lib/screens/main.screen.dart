@@ -22,7 +22,6 @@ class MainScreenState extends State<MainScreen> {
 
   getInitScreen() async{
     String screen = await SelectedPagePersistence.getLatestScreen();
-    print(screen);
     switch(screen){
       case SelectedPagePersistence.equipment:
       currentScreen = EquipmentScreen();
