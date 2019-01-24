@@ -133,8 +133,6 @@ class Client implements HttpClient {
     if (token != null) {
       headers['Authorization'] = "Bearer ${token.accessToken}";
     }
-    print("accessToken:${token.accessToken}");
-    print("refreshToken:${token.refreshToken}");
     String paramsString = "";
     if (config.params != null) {
       config.params.forEach((name, value) {

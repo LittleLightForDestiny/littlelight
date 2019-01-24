@@ -45,13 +45,19 @@ class ProfileComponentGroups {
 }
 
 class ProfileService {
+  static final ProfileService _singleton = new ProfileService._internal();
+  factory ProfileService() {
+    return _singleton;
+  }
+  ProfileService._internal();
+
   static const List<int> profileBuckets = const [
     InventoryBucket.modifications,
     InventoryBucket.shaders,
     InventoryBucket.consumables
   ];
   final _api = BungieApiService();
-  static final ProfileService _singleton = new ProfileService._internal();
+  
   DestinyProfileResponse profile;
   Timer _timer;
   LastLoadedFrom _lastLoadedFrom;
@@ -71,11 +77,6 @@ class ProfileService {
   fireLocalUpdate() {
     _streamController.add(ProfileEvent(ProfileEventType.localUpdate));
   }
-
-  factory ProfileService() {
-    return _singleton;
-  }
-  ProfileService._internal();
 
   Future<DestinyProfileResponse> fetchProfileData(
       {List<int> components = ProfileComponentGroups.basicProfile}) async {
