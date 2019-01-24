@@ -63,12 +63,13 @@ class ItemPerksWidget extends DestinyItemWidget {
   }
 
   Widget perkColumns(BuildContext context) {
-    if(item != null){
+    if (item != null) {
       return instancePerkColumns(context);
     }
     return definitionPerkColumns(context);
   }
-  Widget instancePerkColumns(BuildContext context){
+
+  Widget instancePerkColumns(BuildContext context) {
     Iterable<DestinyItemSocketState> entries =
         socketStates?.where((socket) => socket.isVisible);
     double availableWidth = MediaQuery.of(context).size.width - 16;
@@ -83,22 +84,29 @@ class ItemPerksWidget extends DestinyItemWidget {
                 child: instancePlugItems(context, socket)))
             .toList());
   }
-  Widget definitionPerkColumns(BuildContext context){
-    Iterable<DestinyItemSocketEntryDefinition> entries = socketEntries.where((socket)=>socket.defaultVisible && socket.singleInitialItemHash!=0);
+
+  Widget definitionPerkColumns(BuildContext context) {
+    Iterable<DestinyItemSocketEntryDefinition> entries = socketEntries.where(
+        (socket) => socket.defaultVisible);
     double availableWidth = MediaQuery.of(context).size.width - 16;
     double colWidth = min(availableWidth / 6, availableWidth / entries.length);
+    int socketIndex = 0;
     return Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
-        children: entries
-            .map((socket) => Container(
-                key: Key("socket_${socket.singleInitialItemHash}"),
-                width: colWidth,
-                child: definitionPlugItems(context, socket)))
-            .toList());
+        children: entries.map((socket) {
+          bool isRandom = (socket?.randomizedPlugItems?.length ?? 0) > 0; 
+          String key = isRandom ? "socket_random_$socketIndex}" : "socket_${socket.singleInitialItemHash}";
+          socketIndex++;
+          return Container(
+              key: Key(key),
+              width: colWidth,
+              child: definitionPlugItems(context, socket));
+        }).toList());
   }
 
-  Widget instancePlugItems(BuildContext context, DestinyItemSocketState socket) {
+  Widget instancePlugItems(
+      BuildContext context, DestinyItemSocketState socket) {
     if (socket.reusablePlugs == null) {
       return plugItem(context, socket.plugHash, socket.plugHash);
     }
@@ -109,14 +117,16 @@ class ItemPerksWidget extends DestinyItemWidget {
             .toList());
   }
 
-  Widget definitionPlugItems(BuildContext context, DestinyItemSocketEntryDefinition socket) {
+  Widget definitionPlugItems(
+      BuildContext context, DestinyItemSocketEntryDefinition socket) {
     if (socket.reusablePlugItems == null) {
-      return plugItem(context, socket.singleInitialItemHash, socket.singleInitialItemHash);
+      return plugItem(
+          context, socket.singleInitialItemHash, socket.singleInitialItemHash);
     }
     return Column(
         children: socket.reusablePlugItems
-            .map(
-                (item) => plugItem(context, socket.singleInitialItemHash, item.plugItemHash))
+            .map((item) => plugItem(
+                context, socket.singleInitialItemHash, item.plugItemHash))
             .toList());
   }
 
@@ -164,7 +174,7 @@ class ItemPerksWidget extends DestinyItemWidget {
           },
         ));
   }
-  
+
   List<DestinyItemSocketEntryDefinition> get socketEntries {
     return category.socketIndexes.map((index) {
       return definition.sockets.socketEntries[index];
@@ -172,7 +182,8 @@ class ItemPerksWidget extends DestinyItemWidget {
   }
 
   List<DestinyItemSocketState> get socketStates {
-    List<DestinyItemSocketState> socketStates = profile.getItemSockets(item.itemInstanceId);
+    List<DestinyItemSocketState> socketStates =
+        profile.getItemSockets(item.itemInstanceId);
     return category.socketIndexes.map((index) {
       return socketStates[index];
     }).toList();
