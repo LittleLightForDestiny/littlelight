@@ -58,7 +58,7 @@ class ProfileService {
   ];
   final _api = BungieApiService();
   
-  DestinyProfileResponse profile;
+  DestinyProfileResponse _profile;
   Timer _timer;
   LastLoadedFrom _lastLoadedFrom;
 
@@ -84,7 +84,7 @@ class ProfileService {
     DestinyProfileResponse res = await _updateProfileData(components);
     this._lastLoadedFrom = LastLoadedFrom.server;
     _streamController.add(ProfileEvent(ProfileEventType.receivedUpdate));
-    this._cacheProfile(profile);
+    this._cacheProfile(_profile);
     return res;
   }
 
@@ -111,79 +111,79 @@ class ProfileService {
   Future<DestinyProfileResponse> _updateProfileData(
       List<int> components) async {
     DestinyProfileResponse response = await _api.getProfile(components);
-    if (profile == null) {
-      profile = response;
-      return profile;
+    if (_profile == null) {
+      _profile = response;
+      return _profile;
     }
 
     if (components.contains(DestinyComponentType.VendorReceipts)) {
-      profile.vendorReceipts = response.vendorReceipts;
+      _profile.vendorReceipts = response.vendorReceipts;
     }
     if (components.contains(DestinyComponentType.ProfileInventories)) {
-      profile.profileInventory = response.profileInventory;
+      _profile.profileInventory = response.profileInventory;
     }
     if (components.contains(DestinyComponentType.ProfileCurrencies)) {
-      profile.profileCurrencies = response.profileCurrencies;
+      _profile.profileCurrencies = response.profileCurrencies;
     }
     if (components.contains(DestinyComponentType.Profiles)) {
-      profile.profile = response.profile;
+      _profile.profile = response.profile;
     }
     if (components.contains(DestinyComponentType.Kiosks)) {
-      profile.profileKiosks = response.profileKiosks;
-      profile.characterKiosks = response.characterKiosks;
+      _profile.profileKiosks = response.profileKiosks;
+      _profile.characterKiosks = response.characterKiosks;
     }
     if (components.contains(DestinyComponentType.ItemPlugStates)) {
-      profile.profilePlugSets = response.profilePlugSets;
-      profile.characterPlugSets = response.characterPlugSets;
+      _profile.profilePlugSets = response.profilePlugSets;
+      _profile.characterPlugSets = response.characterPlugSets;
     }
     if (components.contains(DestinyComponentType.ProfileProgression)) {
-      profile.profileProgression = response.profileProgression;
+      _profile.profileProgression = response.profileProgression;
     }
     if (components.contains(DestinyComponentType.PresentationNodes)) {
-      profile.profilePresentationNodes = response.profilePresentationNodes;
-      profile.characterPresentationNodes = response.characterPresentationNodes;
+      _profile.profilePresentationNodes = response.profilePresentationNodes;
+      _profile.characterPresentationNodes = response.characterPresentationNodes;
     }
     if (components.contains(DestinyComponentType.Records)) {
-      profile.profileRecords = response.profileRecords;
-      profile.characterRecords = response.characterRecords;
+      _profile.profileRecords = response.profileRecords;
+      _profile.characterRecords = response.characterRecords;
     }
     if (components.contains(DestinyComponentType.Collectibles)) {
-      profile.profileCollectibles = response.profileCollectibles;
-      profile.characterCollectibles = response.characterCollectibles;
+      _profile.profileCollectibles = response.profileCollectibles;
+      _profile.characterCollectibles = response.characterCollectibles;
     }
     if (components.contains(DestinyComponentType.Characters)) {
-      profile.characters = response.characters;
+      _profile.characters = response.characters;
     }
     if (components.contains(DestinyComponentType.CharacterInventories)) {
-      profile.characterInventories = response.characterInventories;
+      _profile.characterInventories = response.characterInventories;
     }
     if (components.contains(DestinyComponentType.CharacterProgressions)) {
-      profile.characterProgressions = response.characterProgressions;
+      _profile.characterProgressions = response.characterProgressions;
     }
     if (components.contains(DestinyComponentType.CharacterRenderData)) {
-      profile.characterRenderData = response.characterRenderData;
+      _profile.characterRenderData = response.characterRenderData;
     }
     if (components.contains(DestinyComponentType.CharacterActivities)) {
-      profile.characterActivities = response.characterActivities;
+      _profile.characterActivities = response.characterActivities;
     }
     if (components.contains(DestinyComponentType.CharacterEquipment)) {
-      profile.characterEquipment = response.characterEquipment;
+      _profile.characterEquipment = response.characterEquipment;
     }
 
     if (components.contains(DestinyComponentType.ItemObjectives)) {
-      profile.characterUninstancedItemComponents =
+      _profile.characterUninstancedItemComponents =
           response.characterUninstancedItemComponents;
-      profile.itemComponents = response.itemComponents;
+      _profile.itemComponents = response.itemComponents;
     }
 
     if (components.contains(DestinyComponentType.ItemInstances)) {
-      profile.itemComponents = response.itemComponents;
+      _profile.itemComponents = response.itemComponents;
     }
     if (components.contains(DestinyComponentType.CurrencyLookups)) {
-      profile.characterCurrencyLookups = response.characterCurrencyLookups;
+      _profile.characterCurrencyLookups = response.characterCurrencyLookups;
     }
 
-    return profile;
+    return _profile;
   }
 
   _cacheProfile(DestinyProfileResponse profile) async {
@@ -205,7 +205,7 @@ class ProfileService {
         Map<String, dynamic> map = jsonDecode(json);
         DestinyProfileResponse response = DestinyProfileResponse.fromMap(map);
         print('loaded profile from cache');
-        this.profile = response;
+        this._profile = response;
         this._lastLoadedFrom = LastLoadedFrom.cache;
         return response;
       } catch (e) {}
@@ -217,7 +217,7 @@ class ProfileService {
   }
 
   clear() async{
-    this.profile = null;
+    this._profile = null;
     Directory directory = await getApplicationDocumentsDirectory();
     File cached = new File("${directory.path}/cached_profile.json");
     bool exists = await cached.exists();
@@ -227,20 +227,20 @@ class ProfileService {
   }
 
   DestinyItemInstanceComponent getInstanceInfo(String instanceId) {
-    return profile.itemComponents.instances.data[instanceId];
+    return _profile.itemComponents.instances.data[instanceId];
   }
 
   DestinyItemTalentGridComponent getTalentGrid(String instanceId) {
-    return profile.itemComponents.talentGrids.data[instanceId];
+    return _profile.itemComponents.talentGrids.data[instanceId];
   }
 
   List<DestinyCharacterComponent> getCharacters(
       [CharacterOrder order = CharacterOrder.none]) {
-    if (profile == null || profile.characters == null) {
+    if (_profile == null || _profile.characters == null) {
       return null;
     }
     List<DestinyCharacterComponent> list =
-        profile.characters.data.values.toList();
+        _profile.characters.data.values.toList();
 
     switch (order) {
       case CharacterOrder.lastPlayed:
@@ -278,46 +278,77 @@ class ProfileService {
   }
 
   DestinyCharacterComponent getCharacter(String characterId) {
-    return profile.characters.data[characterId];
+    return _profile.characters.data[characterId];
   }
 
   List<DestinyItemComponent> getCharacterEquipment(String characterId) {
-    return profile.characterEquipment.data[characterId].items;
+    return _profile.characterEquipment.data[characterId].items;
   }
 
   List<DestinyItemComponent> getCharacterInventory(String characterId) {
-    return profile.characterInventories.data[characterId].items;
+    return _profile.characterInventories.data[characterId].items;
   }
 
   List<DestinyItemComponent> getProfileInventory() {
-    return profile.profileInventory.data.items;
+    return _profile.profileInventory.data.items;
   }
 
   List<DestinyItemSocketState> getItemSockets(String itemInstanceId) {
-    return profile.itemComponents.sockets.data[itemInstanceId].sockets;
+    return _profile.itemComponents.sockets.data[itemInstanceId].sockets;
   }
 
   DestinyCharacterProgressionComponent getCharacterProgression(
       String characterId) {
-    return profile.characterProgressions.data[characterId];
+    return _profile.characterProgressions.data[characterId];
   }
 
   Map<String, DestinyCollectibleComponent> getProfileCollectibles(){
-    return profile?.profileCollectibles?.data?.collectibles;
+    return _profile?.profileCollectibles?.data?.collectibles;
   }
   Map<String, DestinyCollectibleComponent> getCharacterCollectibles(String characterId){
-    return profile?.characterCollectibles?.data[characterId]?.collectibles;
+    return _profile?.characterCollectibles?.data[characterId]?.collectibles;
   }
   
   bool isCollectibleUnlocked(int hash){
     String hashStr = "$hash";
-    DestinyCollectibleComponent collectible = profile?.profileCollectibles?.data?.collectibles[hashStr];
+    DestinyCollectibleComponent collectible = _profile?.profileCollectibles?.data?.collectibles[hashStr];
     if(collectible != null){
       return collectible.state & DestinyCollectibleState.NotAcquired != DestinyCollectibleState.NotAcquired;
     }
-    return profile?.characterCollectibles?.data?.values?.any((data){
+    return _profile?.characterCollectibles?.data?.values?.any((data){
       int state = data?.collectibles[hashStr]?.state;
       return state & DestinyCollectibleState.NotAcquired != DestinyCollectibleState.NotAcquired;
     }) ?? false;
+  }
+
+  List<DestinyItemComponent> getItemsByInstanceId(List<String> ids) {
+    List<DestinyItemComponent> items = [];
+    List<DestinyItemComponent> profileInventory = _profile.profileInventory.data.items;
+    items.addAll(profileInventory.where((item)=>ids.contains(item.itemInstanceId)));
+    _profile.characterEquipment.data.forEach((id, equipment){
+      items.addAll(equipment.items.where((item)=>ids.contains(item.itemInstanceId)));
+    });
+    _profile.characterInventories.data.forEach((id, equipment){
+      items.addAll(equipment.items.where((item)=>ids.contains(item.itemInstanceId)));
+    });
+    return items;
+  }
+
+  String getItemOwner(String itemInstanceId){
+    String owner;
+    _profile.characterEquipment.data.forEach((charId, inventory){
+      bool has = inventory.items.any((item)=>item.itemInstanceId == itemInstanceId);
+      if(has){
+        owner = charId;
+      }
+    });
+    if(owner != null) return owner;
+    _profile.characterInventories.data.forEach((charId, inventory){
+      bool has = inventory.items.any((item)=>item.itemInstanceId == itemInstanceId);
+      if(has){
+        owner = charId;
+      }
+    });
+    return owner;
   }
 }

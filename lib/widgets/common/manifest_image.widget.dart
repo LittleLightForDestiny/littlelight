@@ -5,11 +5,11 @@ import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/utils/shimmer_helper.dart';
 import 'package:shimmer/shimmer.dart';
 
-typedef String ExtractUrlFromData(dynamic data);
+typedef ExtractUrlFromData<T> = String Function(T definition);
 
 class ManifestImageWidget<T> extends StatefulWidget {
   final int hash;
-  final ExtractUrlFromData urlExtractor;
+  final ExtractUrlFromData<T> urlExtractor;
   final ManifestService _manifest = new ManifestService();
 
   final Widget placeholder;
@@ -27,7 +27,7 @@ class ManifestImageWidget<T> extends StatefulWidget {
 }
 
 class ManifestImageState<T> extends State<ManifestImageWidget> {
-  dynamic definition;
+  T definition;
 
   @override
   void initState() {
@@ -46,14 +46,17 @@ class ManifestImageState<T> extends State<ManifestImageWidget> {
   @override
   Widget build(BuildContext context) {
     Shimmer shimmer = ShimmerHelper.getDefaultShimmer(context);
+    if(definition == null) return shimmer;
     String url = "";
     try {
       if (widget.urlExtractor == null) {
-        url = definition.displayProperties.icon;
+        url = (definition as dynamic).displayProperties.icon;
       } else {
         url = widget.urlExtractor(definition);
       }
-    } catch (e) {}
+    } catch (e) {
+      print(e);
+    }
     if(url == null || url.length == 0){
       return shimmer;
     }

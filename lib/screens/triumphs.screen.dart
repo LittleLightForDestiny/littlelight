@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/selected_page_persistence.dart';
-import 'package:little_light/widgets/presentation_nodes/presentation_node_list.widget.dart';
 
 enum PresentationNodeMode{
   collection,
@@ -59,7 +58,7 @@ class TriumphsScreenState extends State<TriumphsScreen> {
   }
 
   Widget buildBody(BuildContext context) {
-    return PresentationNodeListWidget(definition: definition, depth: widget.depth);
+    return Container();
   }
 
   DestinyPresentationNodeDefinition get definition =>

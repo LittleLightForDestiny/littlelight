@@ -166,7 +166,6 @@ class ItemPerksWidget extends DestinyItemWidget {
             if (this.onSelectPerk != null) {
               this.onSelectPerk(socketIndex, plugItemHash);
             } else {
-              print(plugDefinition.displayProperties.name);
             }
           },
         ));

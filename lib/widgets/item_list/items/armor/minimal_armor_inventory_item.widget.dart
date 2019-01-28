@@ -39,7 +39,7 @@ class MinimalArmorInventoryItemWidget extends MinimalBaseInventoryItemWidget
 
   Widget primaryStatValueField(BuildContext context) {
     return Text(
-      "${primaryStat.numberValue}",
+      "${primaryStat.value}",
       style: TextStyle(fontWeight: FontWeight.w900, fontSize: valueFontSize),
     );
   }

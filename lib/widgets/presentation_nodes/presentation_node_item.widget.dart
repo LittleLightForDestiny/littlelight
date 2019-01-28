@@ -1,14 +1,18 @@
 import 'package:bungie_api/models/destiny_presentation_node_definition.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/screens/presentation_node_inner.screen.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
+
+typedef void PresentationNodePressedHandler(int hash, int depth);
 
 class PresentationNodeItemWidget extends StatelessWidget {
   final int hash;
   final int depth;
-  PresentationNodeItemWidget({Key key, this.hash, this.depth}) : super(key: key);
+  final PresentationNodePressedHandler onPressed;
+  PresentationNodeItemWidget(
+      {Key key, this.hash, this.depth, @required this.onPressed})
+      : super(key: key);
   @override
   Widget build(BuildContext context) {
     return DefinitionProviderWidget<DestinyPresentationNodeDefinition>(hash,
@@ -28,46 +32,39 @@ class PresentationNodeItemWidget extends StatelessWidget {
           child: Stack(children: [
             Row(children: buildContent(context, definition)),
             FlatButton(
-              child: Container(),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => PresentationNodeInnerScreen(
-                          presentationNodeHash: hash,
-                          depth:depth + 1
-                        ),
-                  ),
-                );
-              },
-            )
+                child: Container(),
+                onPressed: () {
+                  onPressed(this.hash, this.depth);
+                })
           ]));
     });
   }
 
-  List<Widget> buildContent(BuildContext context, DestinyPresentationNodeDefinition definition){
+  List<Widget> buildContent(
+      BuildContext context, DestinyPresentationNodeDefinition definition) {
     return [
-                AspectRatio(
-                    aspectRatio: 1,
-                    child: Padding(
-                        padding: EdgeInsets.all(8),
-                        child: CachedNetworkImage(
-                          imageUrl: BungieApiService.url(
-                              definition.displayProperties.icon),
-                        ))),
-                buildTitle(context, definition)];
+      AspectRatio(
+          aspectRatio: 1,
+          child: Padding(
+              padding: EdgeInsets.all(8),
+              child: CachedNetworkImage(
+                imageUrl:
+                    BungieApiService.url(definition.displayProperties.icon),
+              ))),
+      buildTitle(context, definition)
+    ];
   }
 
   buildTitle(
       BuildContext context, DestinyPresentationNodeDefinition definition) {
     return Expanded(
         child: Container(
-          padding:EdgeInsets.all(8),
-          child:Text(
-          definition.displayProperties.name,
-          softWrap: true,
-          style: TextStyle(
-              color: Colors.grey.shade300, fontWeight: FontWeight.bold),
-        )));
+            padding: EdgeInsets.all(8),
+            child: Text(
+              definition.displayProperties.name,
+              softWrap: true,
+              style: TextStyle(
+                  color: Colors.grey.shade300, fontWeight: FontWeight.bold),
+            )));
   }
 }

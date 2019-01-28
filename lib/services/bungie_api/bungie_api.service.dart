@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:bungie_api/models/destiny_equip_item_results.dart';
+import 'package:bungie_api/models/destiny_equip_item_result.dart';
 import 'package:bungie_api/models/destiny_item_action_request.dart';
 import 'package:bungie_api/models/destiny_item_set_action_request.dart';
 import 'package:bungie_api/models/destiny_item_transfer_request.dart';
@@ -28,6 +28,7 @@ class BungieApiService {
   final AuthService auth = new AuthService();
 
   static String url(String url){
+    if(url == null ?? url.length == 0) return null;
     return "$baseUrl/$url";
   }
 
@@ -106,7 +107,7 @@ class BungieApiService {
     return response.response;
   }
 
-  Future<DestinyEquipItemResults> equipItems(
+  Future<List<DestinyEquipItemResult>> equipItems(
       List<String> itemIds, String characterId) async {
     SavedToken token = await auth.getToken();
     SavedMembership membership = await auth.getMembership();
@@ -114,7 +115,7 @@ class BungieApiService {
         new Client(token),
         DestinyItemSetActionRequest(
             itemIds, characterId, membership.membershipType));
-    return response.response;
+    return response.response.equipResults;
   }
 }
 

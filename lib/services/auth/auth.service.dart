@@ -97,7 +97,6 @@ class AuthService {
 
   Future<SavedToken> requestToken(String code) async {
     BungieNetToken token = await api.requestToken(code);
-    print(token);
     if(token.accessToken == null){
       return null;
     }

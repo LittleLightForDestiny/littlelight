@@ -195,6 +195,7 @@ class ManifestService {
 
   Future<Map<int, T>> getDefinitions<T>(List<int> hashes,
       [dynamic identity(Map<String, dynamic> json)]) async {
+    hashes = List.from(hashes);
     var type = DefinitionTableNames.fromClass[T];
     if (identity == null) {
       identity = DefinitionTableNames.identities[T];

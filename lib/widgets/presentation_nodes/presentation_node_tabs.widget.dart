@@ -4,17 +4,19 @@ import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
-import 'package:little_light/widgets/presentation_nodes/presentation_node_list.widget.dart';
+
+
+typedef Widget PresentationNodeTabBodyBuilder(int presentationNodeHash, int depth);
 
 class PresentationNodeTabsWidget extends StatefulWidget {
   final _manifest = new ManifestService();
   final int presentationNodeHash;
-  final DestinyPresentationNodeDefinition presentationNodeDefinition;
   final int depth;
+  final PresentationNodeTabBodyBuilder bodyBuilder;
   PresentationNodeTabsWidget(
       {this.presentationNodeHash = DestinyData.collectionsRootHash,
-      this.presentationNodeDefinition,
-      this.depth = 0});
+      this.depth = 0, 
+      @required this.bodyBuilder});
 
   @override
   PresentationNodeTabsWidgetState createState() =>
@@ -23,17 +25,15 @@ class PresentationNodeTabsWidget extends StatefulWidget {
 
 class PresentationNodeTabsWidgetState
     extends State<PresentationNodeTabsWidget> {
-  DestinyPresentationNodeDefinition _definition;
+  DestinyPresentationNodeDefinition definition;
   @override
   void initState() {
     super.initState();
-    if (definition == null) {
-      loadDefinition();
-    }
+    loadDefinition();
   }
 
   loadDefinition() async {
-    _definition = await widget._manifest
+    definition = await widget._manifest
         .getDefinition<DestinyPresentationNodeDefinition>(
             widget.presentationNodeHash);
     setState(() {});
@@ -42,18 +42,6 @@ class PresentationNodeTabsWidgetState
   @override
   Widget build(BuildContext context) {
     if (definition == null) return Container();
-    if (widget.depth > 2) {
-      return PresentationNodeListWidget(
-        depth: widget.depth + 1,
-        definition: definition,
-      );
-    }
-    if (definition.children.presentationNodes.length == 1) {
-      return PresentationNodeTabsWidget(
-          depth: widget.depth + 1,
-          presentationNodeHash:
-              definition.children.presentationNodes[0].presentationNodeHash);
-    }
     List<Color> colors = [
       Colors.blueGrey.shade500,
       Colors.blueGrey.shade600,
@@ -102,12 +90,7 @@ class PresentationNodeTabsWidgetState
 
   List<Widget> buildTabs(BuildContext context) {
     return definition.children.presentationNodes.map((node) {
-      return PresentationNodeTabsWidget(
-          depth: widget.depth + 1,
-          presentationNodeHash: node.presentationNodeHash);
+      return widget.bodyBuilder(node.presentationNodeHash, widget.depth+1);
     }).toList();
   }
-
-  DestinyPresentationNodeDefinition get definition =>
-      widget.presentationNodeDefinition ?? _definition;
 }

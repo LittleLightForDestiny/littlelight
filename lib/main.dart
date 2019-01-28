@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:little_light/exceptions/exception_handler.dart';
 import 'package:little_light/screens/initial.screen.dart';
@@ -10,7 +11,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async{
   await DotEnv().load('.env');
-  print(DotEnv().env);
   ExceptionHandler handler = ExceptionHandler();
 
   runZoned<Future<void>>(() async {
@@ -29,13 +29,17 @@ class LittleLight extends StatelessWidget {
     CacheManager.inBetweenCleans = new Duration(days: 15);
 
     return new MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Little Light',
       theme: new ThemeData(
+        platform: TargetPlatform.android,
         backgroundColor: Colors.blueGrey.shade900,
-        primarySwatch: Colors.blueGrey,
+        primarySwatch: Colors.lightBlue,
         primaryColor: Colors.blueGrey,
         brightness: Brightness.dark,
         colorScheme: ColorScheme.dark(),
+        accentColor: Colors.lightBlueAccent.shade100,
+        textSelectionColor: Colors.blueGrey.shade400,
+        textSelectionHandleColor: Colors.lightBlueAccent.shade200,
       ),
       home: new InitialScreen(),
       localizationsDelegates: [

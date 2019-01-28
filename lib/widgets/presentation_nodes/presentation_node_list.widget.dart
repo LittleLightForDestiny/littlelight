@@ -5,17 +5,23 @@ import 'package:bungie_api/models/destiny_presentation_node_record_child_entry.d
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
-import 'package:little_light/widgets/presentation_nodes/collectible_item.widget.dart';
-import 'package:little_light/widgets/presentation_nodes/nested_collectible_item.widget.dart';
-import 'package:little_light/widgets/presentation_nodes/presentation_node_item.widget.dart';
-import 'package:little_light/widgets/presentation_nodes/record_item.widget.dart';
+
+typedef StaggeredTile PresentationNodeTileBuilder(CollectionListItem item);
+typedef Widget PresentationNodeItemBuilder(CollectionListItem item);
 
 class PresentationNodeListWidget extends StatefulWidget {
   final ManifestService manifest = new ManifestService();
-  final DestinyPresentationNodeDefinition definition;
+  final int presentationNodeHash;
+  final PresentationNodeTileBuilder tileBuilder;
+  final PresentationNodeItemBuilder itemBuilder;
   final int depth;
-  PresentationNodeListWidget({Key key, this.definition, this.depth = 0})
-      : super(key: key);
+  PresentationNodeListWidget({
+    Key key,
+    @required this.tileBuilder,
+    @required this.itemBuilder,
+    this.presentationNodeHash,
+    this.depth = 0,
+  }) : super(key: key);
   @override
   State<StatefulWidget> createState() {
     return PresentationNodeListWidgetState();
@@ -24,7 +30,9 @@ class PresentationNodeListWidget extends StatefulWidget {
 
 class PresentationNodeListWidgetState
     extends State<PresentationNodeListWidget> {
+  DestinyPresentationNodeDefinition definition;
   Map<int, DestinyPresentationNodeDefinition> _presentationNodeDefinitions;
+
   List<CollectionListItem> listIndex;
 
   @override
@@ -34,6 +42,7 @@ class PresentationNodeListWidgetState
   }
 
   void buildIndex() async {
+    definition = await widget.manifest.getDefinition<DestinyPresentationNodeDefinition>(widget.presentationNodeHash);
     if (presentationNodes.length > 0) {
       List<int> hashes =
           presentationNodes.map((node) => node.presentationNodeHash).toList();
@@ -63,7 +72,9 @@ class PresentationNodeListWidgetState
       listIndex.add(
           CollectionListItem(CollectionListItemType.record, record.recordHash));
     });
-    setState(() {});
+    if(mounted){
+      setState(() {});
+    }
   }
 
   @override
@@ -82,22 +93,7 @@ class PresentationNodeListWidgetState
 
   Widget getItem(BuildContext context, int index) {
     var item = listIndex[index];
-    switch (item.type) {
-      case CollectionListItemType.presentationNode:
-        return PresentationNodeItemWidget(hash: item.hash, depth: widget.depth);
-
-      case CollectionListItemType.nestedCollectible:
-        return NestedCollectibleItemWidget(hash: item.hash);
-
-      case CollectionListItemType.collectible:
-        return CollectibleItemWidget(hash: item.hash);
-
-      case CollectionListItemType.record:
-        return RecordItemWidget(hash: item.hash);
-
-      default:
-        return Container(color: Colors.red);
-    }
+    return widget.itemBuilder(item);
   }
 
   List<DestinyPresentationNodeChildEntry> get presentationNodes =>
@@ -111,28 +107,11 @@ class PresentationNodeListWidgetState
 
   int get count => listIndex?.length ?? 0;
 
-  DestinyPresentationNodeDefinition get definition => widget.definition;
+  
 
   StaggeredTile getTileBuilder(int index) {
     var item = listIndex[index];
-    switch (item.type) {
-      case CollectionListItemType.presentationNode:
-        {
-          return StaggeredTile.count(30, 7);
-        }
-
-      case CollectionListItemType.nestedCollectible:
-        return StaggeredTile.count(6, 6);
-
-      case CollectionListItemType.collectible:
-        return StaggeredTile.count(30, 7);
-
-      case CollectionListItemType.record:
-        return StaggeredTile.count(15, 20);
-
-      default:
-        return StaggeredTile.count(30, 7);
-    }
+    return widget.tileBuilder(item);
   }
 }
 

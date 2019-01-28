@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:little_light/screens/collections.screen.dart';
 import 'package:little_light/screens/equipment.screen.dart';
 import 'package:little_light/screens/triumphs.screen.dart';
+import 'package:little_light/services/auth/auth.service.dart';
+import 'package:little_light/services/littlelight/littlelight_api.service.dart';
 import 'package:little_light/utils/selected_page_persistence.dart';
 
 import 'package:little_light/widgets/side_menu/side_menu.widget.dart';
@@ -17,7 +19,16 @@ class MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
+    fetchInfo();
     getInitScreen();
+  }
+  fetchInfo(){
+    LittleLightApiService service = LittleLightApiService();
+    AuthService auth = AuthService();
+    if(auth.isLogged){
+      service.getLoadouts(forceFetch: true);
+    }
+    
   }
 
   getInitScreen() async{
