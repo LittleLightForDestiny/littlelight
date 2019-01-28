@@ -1,9 +1,8 @@
-import 'dart:math';
-
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/screens/item_detail.screen.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/bungie_api/enums/item_type.enum.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
@@ -22,12 +21,13 @@ import 'package:little_light/widgets/item_list/items/subclass/subclass_inventory
 import 'package:little_light/widgets/item_list/items/weapon/medium_weapon_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/weapon/minimal_weapon_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/weapon/weapon_inventory_item.widget.dart';
+import 'package:uuid/uuid.dart';
 
 enum ContentDensity { MINIMAL, MEDIUM, FULL }
 
 class InventoryItemWrapperWidget extends StatefulWidget {
-  final ManifestService _manifest = ManifestService();
-  final ProfileService _profile = ProfileService();
+  final ManifestService manifest = ManifestService();
+  final ProfileService profile = ProfileService();
   final DestinyItemComponent item;
   final String characterId;
   final ContentDensity density;
@@ -42,19 +42,24 @@ class InventoryItemWrapperWidget extends StatefulWidget {
   }
 }
 
-class InventoryItemWrapperWidgetState
+class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
     extends State<InventoryItemWrapperWidget> {
   DestinyInventoryItemDefinition _definition;
+  String uniqueId;
 
-  DestinyItemInstanceComponent get _instanceInfo{
-    return widget._profile.getInstanceInfo(widget.item.itemInstanceId);
+  DestinyItemInstanceComponent get _instanceInfo {
+    return widget.profile.getInstanceInfo(widget.item.itemInstanceId);
   }
+
   static int queueSize = 0;
 
   @override
   void initState() {
-    if(isLoaded){
-      this._definition = widget._manifest.getDefinitionFromCache<DestinyInventoryItemDefinition>(widget.item.itemHash);
+    uniqueId = Uuid().v4();
+    if (isLoaded) {
+      this._definition = widget.manifest
+          .getDefinitionFromCache<DestinyInventoryItemDefinition>(
+              widget.item.itemHash);
     }
     super.initState();
     if (widget.item != null && !isLoaded) {
@@ -62,11 +67,11 @@ class InventoryItemWrapperWidgetState
     }
   }
 
-  bool get isLoaded{
-    if(widget.item == null) {
+  bool get isLoaded {
+    if (widget.item == null) {
       return false;
     }
-    return widget._manifest
+    return widget.manifest
         .isLoaded<DestinyInventoryItemDefinition>(widget.item.itemHash);
   }
 
@@ -80,17 +85,53 @@ class InventoryItemWrapperWidgetState
       }
     }
     _definition =
-        await widget._manifest.getItemDefinition(widget.item.itemHash);
+        await widget.manifest.getItemDefinition(widget.item.itemHash);
     if (mounted) {
       setState(() {});
     }
     queueSize--;
-    queueSize = max(0, min(queueSize, 15));
   }
 
   @override
   Widget build(BuildContext context) {
-    return buildItem(context);
+    return Stack(children: [
+      Positioned.fill(child: buildItem(context)),
+      buildTapHandler(context)
+    ]);
+  }
+
+  Widget buildTapHandler(BuildContext context) {
+    if (widget.item == null) {
+      return Container();
+    }
+    return Positioned.fill(child: Material(
+      color:Colors.transparent,
+      child: InkWell(
+      onTap: () {
+        onTap(context);
+      },
+      onLongPress: (){
+        onLongPress(context);
+      },
+    )));
+  }
+
+  void onLongPress(context){
+  }
+
+  void onTap(context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ItemDetailScreen(
+              widget.item,
+              _definition,
+              _instanceInfo,
+              characterId: widget.characterId,
+              uniqueId: uniqueId,
+            ),
+      ),
+    );
   }
 
   Widget buildItem(BuildContext context) {
@@ -112,15 +153,20 @@ class InventoryItemWrapperWidgetState
         return buildFull(context);
     }
 
-    return BaseInventoryItemWidget(widget.item, _definition, _instanceInfo,
-        characterId: widget.characterId);
+    return BaseInventoryItemWidget(
+      widget.item,
+      _definition,
+      _instanceInfo,
+      characterId: widget.characterId,
+      uniqueId: uniqueId,
+    );
   }
 
   Widget buildEmpty(BuildContext context) {
     switch (widget.bucketHash) {
       case InventoryBucket.engrams:
         {
-          return EmptyEngramInventoryItemWidget();
+          return EmptyEngramInventoryItemWidget(uniqueId: uniqueId);
         }
       default:
         {
@@ -138,6 +184,7 @@ class InventoryItemWrapperWidgetState
             _definition,
             _instanceInfo,
             characterId: widget.characterId,
+            uniqueId: uniqueId,
           );
         }
 
@@ -148,6 +195,7 @@ class InventoryItemWrapperWidgetState
             _definition,
             _instanceInfo,
             characterId: widget.characterId,
+            uniqueId: uniqueId,
           );
         }
 
@@ -158,6 +206,7 @@ class InventoryItemWrapperWidgetState
             _definition,
             _instanceInfo,
             characterId: widget.characterId,
+            uniqueId: uniqueId,
           );
         }
       default:
@@ -166,6 +215,7 @@ class InventoryItemWrapperWidgetState
           _definition,
           _instanceInfo,
           characterId: widget.characterId,
+          uniqueId: uniqueId,
         );
     }
   }
@@ -179,6 +229,7 @@ class InventoryItemWrapperWidgetState
             _definition,
             _instanceInfo,
             characterId: widget.characterId,
+            uniqueId: uniqueId,
           );
         }
       case ItemType.weapon:
@@ -188,6 +239,7 @@ class InventoryItemWrapperWidgetState
             _definition,
             _instanceInfo,
             characterId: widget.characterId,
+            uniqueId: uniqueId,
           );
         }
 
@@ -198,6 +250,7 @@ class InventoryItemWrapperWidgetState
             _definition,
             _instanceInfo,
             characterId: widget.characterId,
+            uniqueId: uniqueId,
           );
         }
       default:
@@ -206,6 +259,7 @@ class InventoryItemWrapperWidgetState
           _definition,
           _instanceInfo,
           characterId: widget.characterId,
+          uniqueId: uniqueId,
         );
     }
   }
@@ -219,6 +273,7 @@ class InventoryItemWrapperWidgetState
             _definition,
             _instanceInfo,
             characterId: widget.characterId,
+            uniqueId: uniqueId,
           );
         }
       case ItemType.weapon:
@@ -228,6 +283,7 @@ class InventoryItemWrapperWidgetState
             _definition,
             _instanceInfo,
             characterId: widget.characterId,
+            uniqueId: uniqueId,
           );
         }
 
@@ -238,11 +294,17 @@ class InventoryItemWrapperWidgetState
             _definition,
             _instanceInfo,
             characterId: widget.characterId,
+            uniqueId: uniqueId,
           );
         }
       default:
-        return BaseInventoryItemWidget(widget.item, _definition, _instanceInfo,
-            characterId: widget.characterId);
+        return BaseInventoryItemWidget(
+          widget.item,
+          _definition,
+          _instanceInfo,
+          characterId: widget.characterId,
+          uniqueId: uniqueId,
+        );
     }
   }
 }

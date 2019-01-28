@@ -37,28 +37,37 @@ class EquipLoadoutScreenState extends State<EquipLoadoutScreen> {
         onlyEquipped: false);
 
     ManifestService manifest = new ManifestService();
-    emblemDefinition = await manifest.getDefinition<DestinyInventoryItemDefinition>(widget.loadout.emblemHash);
+    emblemDefinition =
+        await manifest.getDefinition<DestinyInventoryItemDefinition>(
+            widget.loadout.emblemHash);
     if (mounted) {
       setState(() {});
     }
   }
 
-  Color get emblemColor{
-    if(emblemDefinition == null) return Colors.grey.shade900;
-    Color color =  Color.fromRGBO(emblemDefinition.backgroundColor.red, emblemDefinition.backgroundColor.green, emblemDefinition.backgroundColor.blue, 1.0);
+  Color get emblemColor {
+    if (emblemDefinition == null) return Colors.grey.shade900;
+    Color color = Color.fromRGBO(
+        emblemDefinition.backgroundColor.red,
+        emblemDefinition.backgroundColor.green,
+        emblemDefinition.backgroundColor.blue,
+        1.0);
     return Color.lerp(color, Colors.grey.shade900, .5);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: emblemColor,
+        backgroundColor: emblemColor,
         appBar: AppBar(
             actions: <Widget>[
-              IconButton(icon:Icon(Icons.refresh), onPressed: () {
-                var profile = new ProfileService();
-                profile.fetchProfileData();
-              },)
+              IconButton(
+                icon: Icon(Icons.refresh),
+                onPressed: () {
+                  var profile = new ProfileService();
+                  profile.fetchProfileData();
+                },
+              )
             ],
             title: Text(widget.loadout.name),
             flexibleSpace: buildAppBarBackground(context)),
@@ -104,19 +113,21 @@ class EquipLoadoutScreenState extends State<EquipLoadoutScreen> {
         ),
       );
     List<Widget> icons = [];
-    if (_itemIndex.generic != null) {
-      icons.addAll(buildItemRow(
-          context,
-          DestinyData.getClassIcon(DestinyClass.Unknown),
-          LoadoutItemIndex.genericBucketHashes,
-          _itemIndex.generic));
-    }
-    if (_itemIndex.classSpecific != null) {
-      _itemIndex.classSpecific.forEach((classType, items) {
+
+    icons.addAll(buildItemRow(
+        context,
+        DestinyData.getClassIcon(DestinyClass.Unknown),
+        LoadoutItemIndex.genericBucketHashes,
+        _itemIndex.generic));
+
+    [0, 1, 2].forEach((classType) {
+      Map<int, DestinyItemComponent> items = _itemIndex.classSpecific
+          .map((bucketHash, items) => MapEntry(bucketHash, items[classType]));
+      if (items.values.any((i) => i != null)) {
         icons.addAll(buildItemRow(context, DestinyData.getClassIcon(classType),
             LoadoutItemIndex.classBucketHashes, items));
-      });
-    }
+      }
+    });
 
     return Wrap(
       children: icons,

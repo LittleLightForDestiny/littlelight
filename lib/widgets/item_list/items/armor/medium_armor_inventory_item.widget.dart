@@ -12,8 +12,9 @@ class MediumArmorInventoryItemWidget extends MediumBaseInventoryItemWidget
       DestinyInventoryItemDefinition itemDefinition,
       DestinyItemInstanceComponent instanceInfo,
       {Key key,
+      @required String uniqueId,
       String characterId})
-      : super(item, itemDefinition, instanceInfo, key:key, characterId:characterId);
+      : super(item, itemDefinition, instanceInfo, key:key, characterId:characterId, uniqueId:uniqueId);
 
   @override
   Widget primaryStatWidget(BuildContext context) {

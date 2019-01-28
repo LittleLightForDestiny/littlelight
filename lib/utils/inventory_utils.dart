@@ -71,6 +71,12 @@ class LoadoutItemIndex {
   Map<int, Map<int, DestinyItemComponent>> classSpecific;
   Map<int, List<DestinyItemComponent>> unequipped;
   int unequippedCount = 0;
+  
+  LoadoutItemIndex(){
+    generic = genericBucketHashes.asMap().map((index, value)=>MapEntry(value, null));
+    classSpecific = (genericBucketHashes + classBucketHashes).asMap().map((index, value)=>MapEntry(value, {0:null, 1:null, 2:null}));
+    unequipped = (genericBucketHashes + classBucketHashes).asMap().map((index, value)=>MapEntry(value, []));
+  }
 
   addEquippedItem(
       DestinyItemComponent item, DestinyInventoryItemDefinition def) {
@@ -79,6 +85,16 @@ class LoadoutItemIndex {
     }
     if (classBucketHashes.contains(def.inventory.bucketTypeHash)) {
       _addClassSpecific(item, def);
+    }
+  }
+
+  removeEquippedItem(
+      DestinyItemComponent item, DestinyInventoryItemDefinition def) {
+    if (genericBucketHashes.contains(def.inventory.bucketTypeHash)) {
+      _removeGeneric(item, def);
+    }
+    if (classBucketHashes.contains(def.inventory.bucketTypeHash)) {
+      _removeClassSpecific(item, def);
     }
   }
 
@@ -94,6 +110,18 @@ class LoadoutItemIndex {
     unequippedCount++;
   }
 
+  removeUnequippedItem(
+      DestinyItemComponent item, DestinyInventoryItemDefinition def) {
+    if (unequipped == null) {
+      unequipped = new Map();
+    }
+    if(unequipped[def.inventory.bucketTypeHash] == null){
+      unequipped[def.inventory.bucketTypeHash] = new List();
+    }
+    unequipped[def.inventory.bucketTypeHash].removeWhere((i)=>i.itemInstanceId == item.itemInstanceId);
+    unequippedCount--;
+  }
+
   _addGeneric(DestinyItemComponent item, DestinyInventoryItemDefinition def) {
     if (generic == null) {
       generic = new Map();
@@ -107,9 +135,27 @@ class LoadoutItemIndex {
     if (classSpecific == null) {
       classSpecific = new Map();
     }
-    if (classSpecific[def.classType] == null) {
-      classSpecific[def.classType] = new Map();
+    if (classSpecific[def.inventory.bucketTypeHash] == null) {
+      classSpecific[def.inventory.bucketTypeHash] = new Map();
     }
-    classSpecific[def.classType][def.inventory.bucketTypeHash] = item;
+    classSpecific[def.inventory.bucketTypeHash][def.classType] = item;
+  }
+  _removeGeneric(DestinyItemComponent item, DestinyInventoryItemDefinition def) {
+    if (generic == null) {
+      generic = new Map();
+    }
+    generic[def.inventory.bucketTypeHash] = null;
+  }
+
+  _removeClassSpecific(
+      DestinyItemComponent item, DestinyInventoryItemDefinition def) {
+    if (def.classType == DestinyClass.Unknown) return;
+    if (classSpecific == null) {
+      classSpecific = new Map();
+    }
+    if (classSpecific[def.inventory.bucketTypeHash] == null) {
+      classSpecific[def.inventory.bucketTypeHash] = new Map();
+    }
+    classSpecific[def.inventory.bucketTypeHash][def.classType] = null;
   }
 }

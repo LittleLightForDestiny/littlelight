@@ -11,8 +11,10 @@ class ArmorInventoryItemWidget extends BaseInventoryItemWidget {
       DestinyInventoryItemDefinition definition,
       DestinyItemInstanceComponent instanceInfo,
       {String characterId,
+      @required String uniqueId,
       Key key})
       : super(item, definition, instanceInfo,
+        uniqueId:uniqueId,
             characterId: characterId, key: key);
 
   @override

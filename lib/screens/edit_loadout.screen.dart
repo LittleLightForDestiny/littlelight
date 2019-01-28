@@ -1,8 +1,10 @@
 import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
+import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/screens/select_loadout_background.screen.dart';
+import 'package:little_light/screens/select_loadout_item.screen.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/littlelight/models/loadout.model.dart';
@@ -39,6 +41,7 @@ class EditLoadoutScreen extends StatefulWidget {
 class EditLoadoutScreenState extends State<EditLoadoutScreen> {
   LoadoutItemIndex _itemIndex;
   DestinyInventoryItemDefinition emblemDefinition;
+  Map<int, DestinyInventoryBucketDefinition> bucketDefinitions;
   Loadout _loadout;
   String _nameInputLabel = "";
   @override
@@ -70,7 +73,8 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> {
 
   buildItemIndex() async {
     ManifestService manifest = new ManifestService();
-    await manifest.getDefinitions<DestinyInventoryBucketDefinition>(widget.bucketOrder);
+    bucketDefinitions = await manifest
+        .getDefinitions<DestinyInventoryBucketDefinition>(widget.bucketOrder);
     _itemIndex = await InventoryUtils.buildLoadoutItemIndex(_loadout,
         onlyEquipped: false);
     if (mounted) {
@@ -96,9 +100,9 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> {
             title: TranslatedTextWidget("Edit Loadout"),
             flexibleSpace: buildAppBarBackground(context)),
         body: ListView.builder(
-          itemCount: _itemIndex == null ? 2 : widget.bucketOrder.length + 2,
-          padding: EdgeInsets.all(8), itemBuilder: itemBuilder
-        ));
+            itemCount: _itemIndex == null ? 2 : widget.bucketOrder.length + 2,
+            padding: EdgeInsets.all(8),
+            itemBuilder: itemBuilder));
   }
 
   Widget itemBuilder(BuildContext context, int index) {
@@ -108,47 +112,92 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> {
       case 1:
         return buildSelectBackgroundButton(context);
     }
-    if(widget.bucketOrder[index - 2] != null){
-      return LoadoutSlotWidget(bucketHash: widget.bucketOrder[index - 2]);
+    int bucketHash = widget.bucketOrder[index - 2];
+    DestinyInventoryBucketDefinition definition = bucketDefinitions[bucketHash];
+    if (bucketHash != null) {
+      return LoadoutSlotWidget(
+        bucketDefinition: definition,
+        key: Key("loadout_slot_$bucketHash"),
+        equippedClassItems: _itemIndex.classSpecific[bucketHash],
+        equippedGenericItem: _itemIndex.generic[bucketHash],
+        unequippedItems: _itemIndex.unequipped[bucketHash],
+        onAdd: (equipped, classType) async {
+          DestinyItemComponent item = await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SelectLoadoutItemScreen(
+                bucketDefinition:definition,
+                emblemDefinition:emblemDefinition,
+                classType: classType,
+                idsToAvoid: (_loadout.equipped + _loadout.unequipped).map((i)=>i.itemInstanceId),
+              ),
+            ),
+          );
+          if(item == null){
+            return;
+          }
+          var def = await ManifestService().getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
+          if(equipped){
+            _itemIndex.addEquippedItem(item, def);
+            _loadout.equipped.add(LoadoutItem(item.itemInstanceId));
+          }else{
+            _itemIndex.addUnequippedItem(item, def);
+            _loadout.unequipped.add(LoadoutItem(item.itemInstanceId));
+          }
+          setState(() {});
+        },
+        onRemove: (item, equipped) async {
+          var def = await ManifestService().getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
+          if (equipped) {
+            _itemIndex.removeEquippedItem(item, def);
+            _loadout.equipped.removeWhere((i)=>i.itemInstanceId == item.itemInstanceId);
+          } else {
+            _itemIndex.removeUnequippedItem(item, def);
+            _loadout.unequipped.removeWhere((i)=>i.itemInstanceId == item.itemInstanceId);
+          }
+          setState(() {});
+        },
+      );
     }
     return Container();
   }
 
   Widget buildNameTextField(BuildContext context) {
     return Container(
-      padding:EdgeInsets.all(8),
-      child:TextFormField(
-      initialValue: _loadout.name,
-      decoration: InputDecoration(labelText: _nameInputLabel),
-    ));
+        padding: EdgeInsets.all(8),
+        child: TextFormField(
+          initialValue: _loadout.name,
+          decoration: InputDecoration(labelText: _nameInputLabel),
+        ));
   }
 
   Widget buildSelectBackgroundButton(BuildContext context) {
     return Container(
-      padding:EdgeInsets.all(8), child:RaisedButton(
-      child: TranslatedTextWidget("Select Loadout Background"),
-      onPressed: () async {
-        var emblemHash = await Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => SelectLoadoutBackgroundScreen(),
-          ),
-        );
-        if (emblemHash != null) {
-          _loadout.emblemHash = emblemHash;
-          loadEmblemDefinition();
-        }
-      },
-    ));
+        padding: EdgeInsets.all(8),
+        child: RaisedButton(
+          child: TranslatedTextWidget("Select Loadout Background"),
+          onPressed: () async {
+            var emblemHash = await Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SelectLoadoutBackgroundScreen(),
+              ),
+            );
+            if (emblemHash != null) {
+              _loadout.emblemHash = emblemHash;
+              loadEmblemDefinition();
+            }
+          },
+        ));
   }
 
   buildAppBarBackground(BuildContext context) {
-    if(emblemDefinition == null) return Container();
-        return Container(
-            constraints: BoxConstraints.expand(),
-            child: CachedNetworkImage(
-                imageUrl: BungieApiService.url(emblemDefinition.secondarySpecial),
-                fit: BoxFit.cover,
-                alignment: Alignment(-.8, 0)));
+    if (emblemDefinition == null) return Container();
+    return Container(
+        constraints: BoxConstraints.expand(),
+        child: CachedNetworkImage(
+            imageUrl: BungieApiService.url(emblemDefinition.secondarySpecial),
+            fit: BoxFit.cover,
+            alignment: Alignment(-.8, 0)));
   }
 }

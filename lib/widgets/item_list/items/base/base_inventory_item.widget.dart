@@ -7,10 +7,12 @@ import 'package:little_light/widgets/item_list/items/base/inventory_item.mixin.d
 
 class BaseInventoryItemWidget extends DestinyItemWidget
     with InventoryItemMixin {
+  final String uniqueId;
+
   BaseInventoryItemWidget(
       DestinyItemComponent item,
       DestinyInventoryItemDefinition definition,
       DestinyItemInstanceComponent instanceInfo,
-      {Key key, @required String characterId})
+      {Key key, @required String characterId, @required this.uniqueId})
       : super(item, definition, instanceInfo, key:key, characterId:characterId);
 }

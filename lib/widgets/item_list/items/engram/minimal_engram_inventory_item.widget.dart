@@ -12,18 +12,8 @@ class MinimalEngramInventoryItemWidget extends MinimalBaseInventoryItemWidget
       DestinyItemComponent item,
       DestinyInventoryItemDefinition itemDefinition,
       DestinyItemInstanceComponent instanceInfo,
-      {@required String characterId, Key key})
-      : super(item, itemDefinition, instanceInfo, characterId:characterId, key:key);
-
-  @override
-  Widget inkWell(BuildContext context) {
-    return InkResponse(
-      highlightShape: BoxShape.circle,
-      onTap: () {
-        openDetails(context);
-      },
-    );
-  }
+      {@required String characterId, Key key, @required String uniqueId,})
+      : super(item, itemDefinition, instanceInfo, uniqueId:uniqueId, characterId:characterId, key:key);
 
   @override
   Widget itemIconHero(BuildContext context) {

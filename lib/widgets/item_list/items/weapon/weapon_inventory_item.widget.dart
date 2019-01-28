@@ -10,8 +10,8 @@ class WeaponInventoryItemWidget extends BaseInventoryItemWidget {
       DestinyItemComponent item,
       DestinyInventoryItemDefinition definition,
       DestinyItemInstanceComponent instanceInfo,
-      {@required String characterId, Key key})
-      : super(item, definition, instanceInfo, characterId:characterId);
+      {@required String characterId, Key key, @required String uniqueId,})
+      : super(item, definition, instanceInfo, characterId:characterId, uniqueId: uniqueId,);
 
   @override
   Widget primaryStatWidget(BuildContext context) {

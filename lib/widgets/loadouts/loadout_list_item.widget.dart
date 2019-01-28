@@ -25,7 +25,7 @@ class LoadoutListItemWidget extends StatefulWidget {
   }
 }
 
-class LoadoutListItemWidgetState extends State<LoadoutListItemWidget>{
+class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> {
   LoadoutItemIndex _itemIndex;
   @override
   initState() {
@@ -39,15 +39,13 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget>{
     return _itemIndex ?? widget.itemIndexes[widget.loadout.assignedId];
   }
 
-  buildItemIndex() async{
+  buildItemIndex() async {
     _itemIndex = await InventoryUtils.buildLoadoutItemIndex(widget.loadout);
     widget.itemIndexes[widget.loadout.assignedId] = _itemIndex;
-    if(mounted){
-      setState((){});
+    if (mounted) {
+      setState(() {});
     }
   }
-
-  
 
   @override
   Widget build(BuildContext context) {
@@ -100,65 +98,79 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget>{
 
   Widget buildButtonBar(BuildContext context) {
     return Container(
-      color:Colors.blueGrey.shade800,
-      padding: EdgeInsets.symmetric(horizontal:6),
-      child:Row(
-      children: [
-      Expanded(
-          child: Container(
-            padding:EdgeInsets.symmetric(horizontal:2),
-            child:RaisedButton(
-        child: TranslatedTextWidget("Equip", uppercase: true, style:TextStyle(fontWeight: FontWeight.bold)),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => EquipLoadoutScreen(loadout:widget.loadout),
-            ),
-          );
-        },
-      ))),
-      Expanded(
-          child: Container(
-            padding:EdgeInsets.all(2),
-            child:RaisedButton(
-        child: TranslatedTextWidget("Edit", uppercase: true, style:TextStyle(fontWeight: FontWeight.bold)),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => EditLoadoutScreen(loadout:widget.loadout),
-            ),
-          );
-        },
-      ))),
-      Expanded(
-          child: Container(
-            padding:EdgeInsets.all(2),
-            child:RaisedButton(
-              color: Theme.of(context).errorColor,
-        child: TranslatedTextWidget("Delete", uppercase: true, style:TextStyle(fontWeight: FontWeight.bold)),
-        onPressed: () {},
-      )))
-    ]));
+        color: Colors.blueGrey.shade800,
+        padding: EdgeInsets.symmetric(horizontal: 6),
+        child: Row(children: [
+          Expanded(
+              child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 2),
+                  child: RaisedButton(
+                    child: TranslatedTextWidget("Equip",
+                        uppercase: true,
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              EquipLoadoutScreen(loadout: widget.loadout),
+                        ),
+                      );
+                    },
+                  ))),
+          Expanded(
+              child: Container(
+                  padding: EdgeInsets.all(2),
+                  child: RaisedButton(
+                    child: TranslatedTextWidget("Edit",
+                        uppercase: true,
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              EditLoadoutScreen(loadout: widget.loadout),
+                        ),
+                      );
+                    },
+                  ))),
+          Expanded(
+              child: Container(
+                  padding: EdgeInsets.all(2),
+                  child: RaisedButton(
+                    color: Theme.of(context).errorColor,
+                    child: TranslatedTextWidget("Delete",
+                        uppercase: true,
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    onPressed: () {},
+                  )))
+        ]));
   }
 
   Widget buildItemRows(BuildContext context) {
-    if (itemIndex == null) return Container(child: AspectRatio(aspectRatio: 1,),);
+    if (itemIndex == null)
+      return Container(
+        child: AspectRatio(
+          aspectRatio: 1,
+        ),
+      );
     List<Widget> icons = [];
-    if (itemIndex.generic != null) {
-      icons.addAll(buildItemRow(
-          context,
-          DestinyData.getClassIcon(DestinyClass.Unknown),
-          LoadoutItemIndex.genericBucketHashes,
-          itemIndex.generic));
-    }
-    if (itemIndex.classSpecific != null) {
-      itemIndex.classSpecific.forEach((classType, items) {
+
+    icons.addAll(buildItemRow(
+        context,
+        DestinyData.getClassIcon(DestinyClass.Unknown),
+        LoadoutItemIndex.genericBucketHashes,
+        itemIndex.generic));
+
+    [0, 1, 2].forEach((classType) {
+      Map<int, DestinyItemComponent> items = itemIndex.classSpecific
+          .map((bucketHash, items) => MapEntry(bucketHash, items[classType]));
+      if(items.values.any((i)=>i!=null)){
         icons.addAll(buildItemRow(context, DestinyData.getClassIcon(classType),
-            LoadoutItemIndex.classBucketHashes, items));
-      });
-    }
+          LoadoutItemIndex.classBucketHashes, items));
+      }
+    });
 
     return Wrap(
       children: icons,
@@ -173,7 +185,7 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget>{
         .addAll(buckets.map((bucketHash) => itemIcon(items[bucketHash])));
     return itemWidgets
         .map((child) => FractionallySizedBox(
-              widthFactor: 1/(buckets.length + 1),
+              widthFactor: 1 / (buckets.length + 1),
               child: Container(
                   color: Colors.blueGrey.shade800,
                   padding: EdgeInsets.all(4),

@@ -10,8 +10,8 @@ class MediumWeaponInventoryItemWidget extends MediumBaseInventoryItemWidget {
       DestinyItemComponent item,
       DestinyInventoryItemDefinition itemDefinition,
       DestinyItemInstanceComponent instanceInfo,
-      {@required String characterId, Key key})
-      : super(item, itemDefinition, instanceInfo, characterId:characterId, key:key);
+      {@required String characterId, Key key, @required String uniqueId,})
+      : super(item, itemDefinition, instanceInfo, characterId:characterId, key:key, uniqueId: uniqueId,);
   @override
   Widget primaryStatWidget(BuildContext context) {
     return Positioned(

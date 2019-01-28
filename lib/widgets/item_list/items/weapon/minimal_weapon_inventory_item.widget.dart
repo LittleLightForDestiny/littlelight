@@ -15,8 +15,8 @@ class MinimalWeaponInventoryItemWidget extends MinimalBaseInventoryItemWidget
       DestinyItemComponent item,
       DestinyInventoryItemDefinition itemDefinition,
       DestinyItemInstanceComponent instanceInfo,
-      {@required String characterId, Key key})
-      : super(item, itemDefinition, instanceInfo, characterId:characterId, key:key);
+      {@required String characterId, Key key, @required uniqueId})
+      : super(item, itemDefinition, instanceInfo, characterId:characterId, key:key, uniqueId: uniqueId,);
       
   double get valueFontSize => 12;
   

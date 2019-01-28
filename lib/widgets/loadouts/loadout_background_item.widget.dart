@@ -6,7 +6,6 @@ import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-import 'package:shimmer/shimmer.dart';
 
 class LoadoutBackgroundItemWidget extends StatefulWidget {
   final ManifestService manifest = new ManifestService();

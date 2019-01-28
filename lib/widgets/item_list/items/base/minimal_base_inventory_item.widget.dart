@@ -9,8 +9,8 @@ class MinimalBaseInventoryItemWidget extends BaseInventoryItemWidget {
       DestinyItemComponent item,
       DestinyInventoryItemDefinition itemDefinition,
       DestinyItemInstanceComponent instanceInfo,
-      {@required String characterId, Key key})
-      : super(item, itemDefinition, instanceInfo, characterId:characterId, key:key);
+      {@required String characterId, Key key, @required String uniqueId})
+      : super(item, itemDefinition, instanceInfo, uniqueId:uniqueId, characterId:characterId, key:key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,9 +18,6 @@ class MinimalBaseInventoryItemWidget extends BaseInventoryItemWidget {
       children: <Widget>[
         positionedIcon(context),
         primaryStatWidget(context),
-        Positioned.fill(
-          child: Material(color: Colors.transparent, child: inkWell(context)),
-        )
       ].where((w) => w != null).toList(),
     );
   }

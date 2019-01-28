@@ -11,8 +11,8 @@ class SubclassInventoryItemWidget extends BaseInventoryItemWidget with SubclassP
       DestinyItemComponent item,
       DestinyInventoryItemDefinition definition,
       DestinyItemInstanceComponent instanceInfo,
-      {@required String characterId, Key key})
-      : super(item, definition, instanceInfo, characterId:characterId, key:key);
+      {@required String characterId, Key key, @required String uniqueId,})
+      : super(item, definition, instanceInfo, characterId:characterId, key:key, uniqueId: uniqueId,);
 
   @override
   DestinyItemTalentGridComponent get talentGrid => profile.getTalentGrid(item.itemInstanceId);

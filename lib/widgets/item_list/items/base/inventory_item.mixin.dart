@@ -2,13 +2,11 @@ import 'package:bungie_api/enums/damage_type_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/destiny_item.widget.dart';
-import 'package:little_light/screens/item_detail.screen.dart';
 import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/item_name_bar/item_name_bar.widget.dart';
-import 'dart:math';
 
 mixin InventoryItemMixin implements DestinyItemWidget {
-  final int uniqueId = Random().nextInt(99999);
+  final String uniqueId = "";
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -18,9 +16,6 @@ mixin InventoryItemMixin implements DestinyItemWidget {
         categoryName(context),
         primaryStatWidget(context),
         positionedIcon(context),
-        Positioned.fill(
-          child: Material(color: Colors.transparent, child: inkWell(context)),
-        )
       ].where((w) => w != null).toList(),
     );
   }
@@ -93,23 +88,6 @@ mixin InventoryItemMixin implements DestinyItemWidget {
         bottom: 0,
         right: 0,
         child: Container(color: Colors.blueGrey.shade900));
-  }
-
-  Widget inkWell(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        openDetails(context);
-      },
-    );
-  }
-
-  void openDetails(context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ItemDetailScreen(item, definition, instanceInfo, characterId: characterId, uniqueId: uniqueId,),
-      ),
-    );
   }
 
   double get iconSize {

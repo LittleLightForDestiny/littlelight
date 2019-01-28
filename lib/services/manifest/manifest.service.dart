@@ -193,15 +193,15 @@ class ManifestService {
     return res;
   }
 
-  Future<Map<int, T>> getDefinitions<T>(List<int> hashes,
+  Future<Map<int, T>> getDefinitions<T>(Iterable<int> hashes,
       [dynamic identity(Map<String, dynamic> json)]) async {
-    hashes = List.from(hashes);
+    Set<int> hashesSet = hashes.toSet();
     var type = DefinitionTableNames.fromClass[T];
     if (identity == null) {
       identity = DefinitionTableNames.identities[T];
     }
     Map<int, T> defs = new Map();
-    hashes.removeWhere((hash) {
+    hashesSet.removeWhere((hash) {
       if (_cached.keys.contains("${type}_$hash")) {
         defs[hash] = _cached["${type}_$hash"];
         return true;
@@ -209,13 +209,13 @@ class ManifestService {
       return false;
     });
 
-    if (hashes.length == 0) {
+    if (hashesSet.length == 0) {
       return defs;
     }
-    List<int> searchHashes = hashes
+    List<int> searchHashes = hashesSet
         .map((hash) => hash > 2147483648 ? hash - 4294967296 : hash)
         .toList();
-    String idList = "(" + List.filled(hashes.length, '?').join(',') + ")";
+    String idList = "(" + List.filled(hashesSet.length, '?').join(',') + ")";
 
     sqflite.Database db = await _openDb();
     

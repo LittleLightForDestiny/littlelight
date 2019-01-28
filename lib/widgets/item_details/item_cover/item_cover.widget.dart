@@ -14,7 +14,7 @@ import 'package:little_light/widgets/common/item_name_bar/item_name_bar.widget.d
 import 'package:shimmer/shimmer.dart';
 
 class ItemCoverWidget extends DestinyItemWidget {
-  final int uniqueId;
+  final String uniqueId;
 
   ItemCoverWidget(
       DestinyItemComponent item,
@@ -22,7 +22,7 @@ class ItemCoverWidget extends DestinyItemWidget {
       DestinyItemInstanceComponent instanceInfo,
       {Key key
       ,String characterId,
-      this.uniqueId = -1})
+      this.uniqueId})
       : super(item, definition, instanceInfo, key: key, characterId:characterId);
 
   @override
@@ -46,7 +46,7 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
   double minHeight;
   double maxHeight;
   String tag;
-  int uniqueId;
+  String uniqueId;
 
   ItemCoverDelegate(this.item, this.definition, this.instanceInfo, this.tag, this.uniqueId,
       {this.minHeight = 50, this.maxHeight = 200})
