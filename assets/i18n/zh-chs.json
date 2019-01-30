@@ -44,5 +44,6 @@
   "Equip on:": "装备：",
   "Do you really want to delete the loadout {loadoutName} ?": "你真的想删除loadout {loadoutName}吗？",
   "Select {bucketName}": "选择{bucketName}",
-  "Loadout Name": "装载名称"
+  "Loadout Name": "装载名称",
+  "Want to support Little Light ?": "Want to support Little Light ?"
 }

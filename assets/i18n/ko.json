@@ -44,5 +44,6 @@
   "Equip on:": "착용 장비 :",
   "Do you really want to delete the loadout {loadoutName} ?": "로드 아웃 {loadoutName}을 (를) 정말로 삭제 하시겠습니까?",
   "Select {bucketName}": "{bucketName}을 (를) 선택하십시오.",
-  "Loadout Name": "로드 아웃 이름"
+  "Loadout Name": "로드 아웃 이름",
+  "Want to support Little Light ?": "Want to support Little Light ?"
 }

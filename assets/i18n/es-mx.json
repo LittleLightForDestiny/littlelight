@@ -44,5 +44,6 @@
   "Equip on:": "Equipar en:",
   "Do you really want to delete the loadout {loadoutName} ?": "¿Realmente quieres eliminar el loadout {loadoutName}?",
   "Select {bucketName}": "Seleccione {bucketName}",
-  "Loadout Name": "Nombre de Loadout"
+  "Loadout Name": "Nombre de Loadout",
+  "Want to support Little Light ?": "¿Quieres apoyar a Lucecita?"
 }

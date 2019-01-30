@@ -44,5 +44,6 @@
   "Equip on:": "Оборудовать на:",
   "Do you really want to delete the loadout {loadoutName} ?": "Вы действительно хотите удалить loadout {loadoutName}?",
   "Select {bucketName}": "Выберите {bucketName}",
-  "Loadout Name": "Название выгрузки"
+  "Loadout Name": "Название выгрузки",
+  "Want to support Little Light ?": "Want to support Little Light ?"
 }

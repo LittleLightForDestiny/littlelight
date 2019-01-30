@@ -44,5 +44,6 @@
   "Equip on:": "Equip on:",
   "Do you really want to delete the loadout {loadoutName} ?": "Do you really want to delete the loadout {loadoutName} ?",
   "Select {bucketName}": "Select {bucketName}",
-  "Loadout Name": "Loadout Name"
+  "Loadout Name": "Loadout Name",
+  "Want to support Little Light ?": "Want to support Little Light ?"
 }

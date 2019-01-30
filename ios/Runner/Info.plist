@@ -4,12 +4,32 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
+	<key>CFBundleDisplayName</key>
+	<string>Little Light</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>de</string>
+		<string>en</string>
+		<string>es</string>
+		<string>es_MX</string>
+		<string>fr</string>
+		<string>it</string>
+		<string>ja</string>
+		<string>ko</string>
+		<string>pl</string>
+		<string>pt</string>
+		<string>pt_BR</string>
+		<string>ru</string>
+		<string>zh</string>
+		<string>zh_CHT</string>
+		<string>zh_CHS</string>
+	</array>
 	<key>CFBundleName</key>
 	<string>little_light</string>
 	<key>CFBundlePackageType</key>
@@ -18,6 +38,19 @@
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>me.markezine.luzinha</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>luzinha</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
@@ -29,8 +62,6 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
@@ -41,36 +72,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-		<key>CFBundleTypeRole</key>
-		<string>Editor</string>
-		<key>CFBundleURLName</key>
-		<string>me.markezine.luzinha</string>
-		<key>CFBundleURLSchemes</key>
-		<array>
-			<string>luzinha</string>
-		</array>
-		</dict>
-	</array>
-	<key>CFBundleLocalizations</key>
-  <array>
-		<string>de</string>
-    <string>en</string>
-		<string>es</string>
-		<string>es_MX</string>
-		<string>fr</string>
-		<string>it</string>
-		<string>ja</string>
-		<string>ko</string>
-		<string>pl</string>
-    <string>pt</string>
-		<string>pt_BR</string>
-		<string>ru</string>
-    <string>zh</string>
-		<string>zh_CHT</string>
-    <string>zh_CHS</string>
-  </array>
 </dict>
 </plist>

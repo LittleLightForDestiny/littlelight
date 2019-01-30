@@ -31,16 +31,16 @@ class DownloadManifestWidgetState extends State<DownloadManifestWidget> {
   }
 
   void download() async {
-    
-    bool result = await this.widget.manifest.download(onProgress: (loaded, total) {
+    bool result =
+        await this.widget.manifest.download(onProgress: (loaded, total) {
       setState(() {
         _downloadProgress = loaded / total;
-        _loaded = (loaded/1024).floor();
-        _total = (total/1024).floor();
+        _loaded = (loaded / 1024).floor();
+        _total = (total / 1024).floor();
       });
     });
-    
-    if(result){
+
+    if (result) {
       this.widget.onFinish();
     }
   }
@@ -53,14 +53,16 @@ class DownloadManifestWidgetState extends State<DownloadManifestWidget> {
           valueColor:
               AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
           backgroundColor: Theme.of(context).secondaryHeaderColor,
-          value: (_downloadProgress != null && _downloadProgress < 1) ? _downloadProgress : null,
+          value: (_downloadProgress != null && _downloadProgress < 1)
+              ? _downloadProgress
+              : null,
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            TranslatedTextWidget(_downloadProgress < 1
-                ? "Downloading"
-                : "Uncompressing"),
+            _downloadProgress < 0.99
+                ? TranslatedTextWidget("Downloading", key: Key("downloading"),)
+                : TranslatedTextWidget("Uncompressing", key:Key("unzipping")),
             Text("$_loaded/${_total}KB")
           ],
         )

@@ -30,7 +30,7 @@
   "Items to Transfer": "Articoli da trasferire",
   "Save Loadout": "Salva il carico",
   "Collections": "Collezione",
-  "Equipment": "attrezzatura",
+  "Equipment": "Attrezzatura",
   "Search": "Ricerca",
   "Change Account": "Cambia account",
   "Change Membership": "Cambia iscrizione",
@@ -44,5 +44,6 @@
   "Equip on:": "Equipaggiare su:",
   "Do you really want to delete the loadout {loadoutName} ?": "Vuoi davvero eliminare il loadout {loadoutName}?",
   "Select {bucketName}": "Seleziona {bucketName}",
-  "Loadout Name": "Loadout Name"
+  "Loadout Name": "Loadout Name",
+  "Want to support Little Light ?": "Vuoi supportare Lumino?"
 }

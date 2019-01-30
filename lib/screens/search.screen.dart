@@ -23,7 +23,7 @@ class SearchScreenState extends State<SearchScreen> {
 
   @override
   initState() {
-    SelectedPagePersistence.saveLatestScreen(SelectedPagePersistence.loadouts);
+    SelectedPagePersistence.saveLatestScreen(SelectedPagePersistence.search);
     _searchFieldController.text = search;
     _searchFieldController.addListener(() {
       search = _searchFieldController.text;

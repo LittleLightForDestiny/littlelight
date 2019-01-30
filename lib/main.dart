@@ -36,6 +36,7 @@ class LittleLight extends StatelessWidget {
     CacheManager.inBetweenCleans = new Duration(days: 15);
 
     return new MaterialApp(
+      debugShowCheckedModeBanner: false,
       key: key,
       title: 'Little Light',
       theme: new ThemeData(

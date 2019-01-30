@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/screens/collections.screen.dart';
 import 'package:little_light/screens/equipment.screen.dart';
 import 'package:little_light/screens/loadouts.screen.dart';
+import 'package:little_light/screens/search.screen.dart';
 import 'package:little_light/screens/triumphs.screen.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/littlelight/littlelight.service.dart';
@@ -48,6 +49,9 @@ class MainScreenState extends State<MainScreen> {
 
       case SelectedPagePersistence.loadouts:
       currentScreen = LoadoutsScreen();
+      break;
+      case SelectedPagePersistence.search:
+      currentScreen = SearchScreen();
       break;
     }
     setState(() {});

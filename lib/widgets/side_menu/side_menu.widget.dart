@@ -8,6 +8,7 @@ import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
 import 'package:little_light/widgets/side_menu/profile_info.widget.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 typedef void OnPageChange(Widget screen);
 
@@ -18,47 +19,56 @@ class SideMenuWidget extends StatelessWidget {
   SideMenuWidget({Key key, this.onPageChange}) : super(key: key);
 
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
+        color: Theme.of(context).backgroundColor,
         width: 280,
-        child: Container(
-            color: Theme.of(context).backgroundColor,
-            child: ListView(
-              padding: EdgeInsets.all(0),
-              children: <Widget>[
-                ProfileInfoWidget(
-                  children: <Widget>[
-                    menuItem(context, "Change Account", requireLogin:true, onTap: () {
-                      changeAccount(context);
-                    }),
-                    menuItem(context, "Change Membership", requireLogin:true, onTap: () {
-                      changeMembership(context);
-                    }),
-                    menuItem(context, "Change Language", onTap: () {
-                      changeLanguage(context);
-                    }),
-                  ],
-                ),
-                menuItem(context, "Equipment", requireLogin:true, onTap: () {
-                  open(context, EquipmentScreen());
-                }),
-                menuItem(context, "Loadouts", requireLogin:true, onTap: () {
-                  open(context, LoadoutsScreen());
-                }),
-                menuItem(context, "Collections", onTap: () {
-                  open(context, CollectionsScreen());
-                }),
-                menuItem(context, "Search", onTap: () {
-                  open(context, SearchScreen());
-                })
-                // menuItem(context, "Triumphs", onTap: () {
-                //   open(context, TriumphsScreen());
-                // })
-              ],
-            )));
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Expanded(
+                  child: ListView(
+                padding: EdgeInsets.all(0),
+                children: <Widget>[
+                  ProfileInfoWidget(
+                    children: <Widget>[
+                      menuItem(context, "Change Account", requireLogin: true,
+                          onTap: () {
+                        changeAccount(context);
+                      }),
+                      menuItem(context, "Change Membership", requireLogin: true,
+                          onTap: () {
+                        changeMembership(context);
+                      }),
+                      menuItem(context, "Change Language", onTap: () {
+                        changeLanguage(context);
+                      }),
+                    ],
+                  ),
+                  menuItem(context, "Equipment", requireLogin: true, onTap: () {
+                    open(context, EquipmentScreen());
+                  }),
+                  menuItem(context, "Search", requireLogin: true, onTap: () {
+                    open(context, SearchScreen());
+                  }),
+                  menuItem(context, "Loadouts", requireLogin: true, onTap: () {
+                    open(context, LoadoutsScreen());
+                  }),
+                  menuItem(context, "Collections", onTap: () {
+                    open(context, CollectionsScreen());
+                  }),
+
+                  // menuItem(context, "Triumphs", onTap: () {
+                  //   open(context, TriumphsScreen());
+                  // })
+                ],
+              )),buildFooter(context)
+            ]));
   }
 
-  Widget menuItem(BuildContext context, String label, {void onTap(), requireLogin:false}) {
-    if(requireLogin && !auth.isLogged){
+  Widget menuItem(BuildContext context, String label,
+      {void onTap(), requireLogin: false}) {
+    if (requireLogin && !auth.isLogged) {
       return Container();
     }
     return Material(
@@ -66,7 +76,6 @@ class SideMenuWidget extends StatelessWidget {
         child: InkWell(
           onTap: onTap,
           child: Container(
-              
               padding: EdgeInsets.all(16),
               margin: EdgeInsets.symmetric(horizontal: 8),
               alignment: Alignment.centerRight,
@@ -109,5 +118,64 @@ class SideMenuWidget extends StatelessWidget {
                 forceChangeLanguage: true,
               ),
         ));
+  }
+
+  Widget buildFooter(BuildContext context) {
+    bool isIOS = Theme.of(context).platform == TargetPlatform.iOS;
+    if (isIOS) return Container();
+    var paddingBottom = MediaQuery.of(context).padding.bottom;
+    return Container(
+        color: Colors.grey.shade900,
+        padding: EdgeInsets.all(4).copyWith(bottom: 4 + paddingBottom),
+        child: Column(children: [
+          Container(
+              padding: EdgeInsets.all(4),
+              child: TranslatedTextWidget("Want to support Little Light ?",
+                uppercase: true,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+              )),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Expanded(
+                  child: Container(
+                padding: EdgeInsets.all(4),
+                child: Stack(children: [
+                  Image.asset(
+                    'assets/imgs/patreon-btn.png',
+                    fit: BoxFit.contain,
+                  ),
+                  Positioned.fill(
+                      child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () async {
+                              await launch(
+                                  'https://www.patreon.com/littlelightD2');
+                            },
+                          )))
+                ]),
+              )),
+              Expanded(
+                  child: Container(
+                padding: EdgeInsets.all(4),
+                child: Stack(children: [
+                  Image.asset(
+                    'assets/imgs/kofi-btn.png',
+                    fit: BoxFit.contain,
+                  ),
+                  Positioned.fill(
+                      child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () async {
+                              await launch('https://ko-fi.com/littlelight');
+                            },
+                          )))
+                ]),
+              )),
+            ],
+          )
+        ]));
   }
 }
