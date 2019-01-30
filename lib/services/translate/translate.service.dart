@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:core';
 
 import 'package:flutter/services.dart';
+import 'package:little_light/exceptions/exception_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TranslateService {
@@ -51,6 +52,7 @@ class TranslateService {
   }
 
   Future<String> getTranslation(String text, {String languageCode, Map<String, String> replace = const {}}) async {
+    if(text == null || text.length == 0) return "";
     String code = languageCode;
     if (code == null) {
       code = await this.getLanguage();
@@ -63,6 +65,8 @@ class TranslateService {
     if(translationMap != null && translationMap.containsKey(text)){
       return _replace(translationMap[text], replace);
     }
+
+    _reportMissingTranslation(code, text);
 
     translationMap = await _getTranslationMap(fallbackLanguage);
     if(translationMap != null && translationMap.containsKey(text)){
@@ -77,6 +81,16 @@ class TranslateService {
       text = text.replaceAll("{$index}", replaceText);
     });
     return text;
+  }
+
+  _reportMissingTranslation(String language, String text){
+    bool inDebugMode = false;
+    assert(inDebugMode = true);
+    if(inDebugMode){
+      print("Missing translation: $language - $text");
+    }else{
+      ExceptionHandler.reportToSentry("Missing translation: $language - $text");
+    }
   }
 
 

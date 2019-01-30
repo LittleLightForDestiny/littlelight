@@ -8,8 +8,10 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/utils/inventory_utils.dart';
+import 'package:little_light/utils/selected_page_persistence.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-import 'package:little_light/widgets/item_list/items/search_item_wrapper.widget.dart';
+import 'package:little_light/widgets/item_list/items/loadout_search_item_wrapper.widget.dart';
 
 class SelectLoadoutItemScreen extends StatefulWidget {
   final DestinyInventoryItemDefinition emblemDefinition;
@@ -34,13 +36,14 @@ class SelectLoadoutItemScreenState extends State<SelectLoadoutItemScreen> {
   String search = "";
   List<_ItemWithOwner> items;
   Map<int, DestinyInventoryItemDefinition> itemDefinitions;
-  TextEditingController _controller = new TextEditingController();
+  TextEditingController _searchFieldController = new TextEditingController();
 
   @override
   initState() {
-    _controller.text = search;
-    _controller.addListener(() {
-      search = _controller.text;
+    SelectedPagePersistence.saveLatestScreen(SelectedPagePersistence.loadouts);
+    _searchFieldController.text = search;
+    _searchFieldController.addListener(() {
+      search = _searchFieldController.text;
       setState(() {});
     });
     super.initState();
@@ -67,7 +70,7 @@ class SelectLoadoutItemScreenState extends State<SelectLoadoutItemScreen> {
     allItems.removeWhere((i) =>
         i.item.itemInstanceId == null ||
         widget.idsToAvoid.contains(i.item.itemInstanceId));
-
+    allItems.sort((a, b)=>InventoryUtils.sortDestinyItems(a.item, b.item, profile));
     Iterable<int> hashes = allItems.map((i) => i.item.itemHash);
     itemDefinitions =
         await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
@@ -117,7 +120,7 @@ class SelectLoadoutItemScreenState extends State<SelectLoadoutItemScreen> {
     if (searchOpened) {
       return TextField(
         autofocus: true,
-        controller: _controller,
+        controller: _searchFieldController,
       );
     }
     return TranslatedTextWidget(
@@ -177,7 +180,7 @@ class SelectLoadoutItemScreenState extends State<SelectLoadoutItemScreen> {
 
   Widget getItem(BuildContext context, int index) {
     var item = filteredItems[index];
-    return SearchItemWrapperWidget(item.item, widget.bucketDefinition.hash,
+    return LoadoutSearchItemWrapperWidget(item.item, widget.bucketDefinition.hash,
         characterId: item.ownerId, key:Key("item_${item.item.itemInstanceId}"));
   }
 }

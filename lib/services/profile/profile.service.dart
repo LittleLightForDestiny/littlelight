@@ -42,6 +42,10 @@ class ProfileComponentGroups {
   static const List<int> collections = [
     DestinyComponentType.Collectibles,
   ];
+
+  static const List<int> triumphs = [
+    DestinyComponentType.Records,
+  ];
 }
 
 class ProfileService {
@@ -57,7 +61,7 @@ class ProfileService {
     InventoryBucket.consumables
   ];
   final _api = BungieApiService();
-  
+
   DestinyProfileResponse _profile;
   Timer _timer;
   LastLoadedFrom _lastLoadedFrom;
@@ -111,6 +115,9 @@ class ProfileService {
   Future<DestinyProfileResponse> _updateProfileData(
       List<int> components) async {
     DestinyProfileResponse response = await _api.getProfile(components);
+    if(response == null){
+      return null;
+    }
     if (_profile == null) {
       _profile = response;
       return _profile;
@@ -216,13 +223,13 @@ class ProfileService {
     return response;
   }
 
-  clear() async{
+  clear() async {
     this._profile = null;
     Directory directory = await getApplicationDocumentsDirectory();
     File cached = new File("${directory.path}/cached_profile.json");
     bool exists = await cached.exists();
-    if(exists){
-      cached.delete();
+    if (exists) {
+      await cached.delete();
     }
   }
 
@@ -302,53 +309,80 @@ class ProfileService {
     return _profile.characterProgressions.data[characterId];
   }
 
-  Map<String, DestinyCollectibleComponent> getProfileCollectibles(){
+  Map<String, DestinyCollectibleComponent> getProfileCollectibles() {
     return _profile?.profileCollectibles?.data?.collectibles;
   }
-  Map<String, DestinyCollectibleComponent> getCharacterCollectibles(String characterId){
+
+  Map<String, DestinyCollectibleComponent> getCharacterCollectibles(
+      String characterId) {
     return _profile?.characterCollectibles?.data[characterId]?.collectibles;
   }
-  
-  bool isCollectibleUnlocked(int hash){
+
+  bool isCollectibleUnlocked(int hash) {
     String hashStr = "$hash";
-    DestinyCollectibleComponent collectible = _profile?.profileCollectibles?.data?.collectibles[hashStr];
-    if(collectible != null){
-      return collectible.state & DestinyCollectibleState.NotAcquired != DestinyCollectibleState.NotAcquired;
+    Map<String, DestinyCollectibleComponent> collectibles = _profile?.profileCollectibles?.data?.collectibles;
+    if(collectibles == null){
+      return true;
     }
-    return _profile?.characterCollectibles?.data?.values?.any((data){
-      int state = data?.collectibles[hashStr]?.state;
-      return state & DestinyCollectibleState.NotAcquired != DestinyCollectibleState.NotAcquired;
-    }) ?? false;
+    DestinyCollectibleComponent collectible =
+        _profile?.profileCollectibles?.data?.collectibles[hashStr] ?? null;
+    if (collectible != null) {
+      return collectible.state & DestinyCollectibleState.NotAcquired !=
+          DestinyCollectibleState.NotAcquired;
+    }
+    return _profile?.characterCollectibles?.data?.values?.any((data) {
+          int state = data?.collectibles[hashStr]?.state;
+          return state & DestinyCollectibleState.NotAcquired !=
+              DestinyCollectibleState.NotAcquired;
+        }) ??
+        false;
   }
 
   List<DestinyItemComponent> getItemsByInstanceId(List<String> ids) {
     List<DestinyItemComponent> items = [];
-    List<DestinyItemComponent> profileInventory = _profile.profileInventory.data.items;
-    items.addAll(profileInventory.where((item)=>ids.contains(item.itemInstanceId)));
-    _profile.characterEquipment.data.forEach((id, equipment){
-      items.addAll(equipment.items.where((item)=>ids.contains(item.itemInstanceId)));
+    List<DestinyItemComponent> profileInventory =
+        _profile.profileInventory.data.items;
+    items.addAll(
+        profileInventory.where((item) => ids.contains(item.itemInstanceId)));
+    _profile.characterEquipment.data.forEach((id, equipment) {
+      items.addAll(
+          equipment.items.where((item) => ids.contains(item.itemInstanceId)));
     });
-    _profile.characterInventories.data.forEach((id, equipment){
-      items.addAll(equipment.items.where((item)=>ids.contains(item.itemInstanceId)));
+    _profile.characterInventories.data.forEach((id, equipment) {
+      items.addAll(
+          equipment.items.where((item) => ids.contains(item.itemInstanceId)));
     });
     return items;
   }
 
-  String getItemOwner(String itemInstanceId){
+  String getItemOwner(String itemInstanceId) {
     String owner;
-    _profile.characterEquipment.data.forEach((charId, inventory){
-      bool has = inventory.items.any((item)=>item.itemInstanceId == itemInstanceId);
-      if(has){
+    _profile.characterEquipment.data.forEach((charId, inventory) {
+      bool has =
+          inventory.items.any((item) => item.itemInstanceId == itemInstanceId);
+      if (has) {
         owner = charId;
       }
     });
-    if(owner != null) return owner;
-    _profile.characterInventories.data.forEach((charId, inventory){
-      bool has = inventory.items.any((item)=>item.itemInstanceId == itemInstanceId);
-      if(has){
+    if (owner != null) return owner;
+    _profile.characterInventories.data.forEach((charId, inventory) {
+      bool has =
+          inventory.items.any((item) => item.itemInstanceId == itemInstanceId);
+      if (has) {
         owner = charId;
       }
     });
     return owner;
+  }
+
+  List<DestinyItemComponent> getAllItems() {
+    List<DestinyItemComponent> allItems = [];
+    Iterable<String> charIds = getCharacters().map((char) => char.characterId);
+    charIds.forEach((charId) {
+      allItems.addAll(getCharacterEquipment(charId).map((item) => item));
+      allItems.addAll(getCharacterInventory(charId).map((item) => item));
+    });
+    allItems.addAll(getProfileInventory().map((item) => item));
+    return allItems;
   }
 }

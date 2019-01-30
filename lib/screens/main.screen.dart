@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/screens/collections.screen.dart';
 import 'package:little_light/screens/equipment.screen.dart';
+import 'package:little_light/screens/loadouts.screen.dart';
 import 'package:little_light/screens/triumphs.screen.dart';
 import 'package:little_light/services/auth/auth.service.dart';
-import 'package:little_light/services/littlelight/littlelight_api.service.dart';
+import 'package:little_light/services/littlelight/littlelight.service.dart';
 import 'package:little_light/utils/selected_page_persistence.dart';
 
 import 'package:little_light/widgets/side_menu/side_menu.widget.dart';
@@ -23,7 +24,7 @@ class MainScreenState extends State<MainScreen> {
     getInitScreen();
   }
   fetchInfo(){
-    LittleLightApiService service = LittleLightApiService();
+    LittleLightService service = LittleLightService();
     AuthService auth = AuthService();
     if(auth.isLogged){
       service.getLoadouts(forceFetch: true);
@@ -40,8 +41,13 @@ class MainScreenState extends State<MainScreen> {
       case SelectedPagePersistence.collections:
       currentScreen = CollectionsScreen();
       break;
+
       case SelectedPagePersistence.triumphs:
       currentScreen = TriumphsScreen();
+      break;
+
+      case SelectedPagePersistence.loadouts:
+      currentScreen = LoadoutsScreen();
       break;
     }
     setState(() {});
@@ -60,6 +66,7 @@ class MainScreenState extends State<MainScreen> {
         ),
       ),
       body: currentScreen,
+      resizeToAvoidBottomPadding: false,
     );
   }
 }

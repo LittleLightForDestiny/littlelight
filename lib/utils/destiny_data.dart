@@ -10,6 +10,7 @@ class DestinyData {
   static const Color negativeFeedback = Color.fromRGBO(204, 58, 56, 1);
 
   static const int collectionsRootHash = 3790247699;
+  static const int triumphsRootHash = 1024788583;
 
   static const List<int> statWhitelist = [
     3614673599, // Blast Radius

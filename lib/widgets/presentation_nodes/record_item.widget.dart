@@ -15,7 +15,6 @@ class RecordItemWidget extends StatelessWidget {
     return DefinitionProviderWidget<DestinyRecordDefinition>(hash,
         (definition) {
       return Container(
-        
           decoration: BoxDecoration(
               border: Border.all(color: Colors.grey.shade600, width: 1),
               gradient: LinearGradient(
@@ -28,10 +27,11 @@ class RecordItemWidget extends StatelessWidget {
                     Colors.white.withOpacity(.1)
                   ])),
           child: Stack(children: [
-            Column(
+            Row(
               children: <Widget>[
-                AspectRatio(
-                    aspectRatio: 1,
+                Container(
+                    width:72,
+                    height:72,
                     child: Padding(
                         padding: EdgeInsets.all(8),
                         child: CachedNetworkImage(
@@ -57,15 +57,14 @@ class RecordItemWidget extends StatelessWidget {
   }
 
   buildTitle(BuildContext context, DestinyRecordDefinition definition) {
-    return Expanded(
-        child: Container(
+        return Container(
             padding: EdgeInsets.all(8),
             child: Text(
               definition.displayProperties.name,
               softWrap: true,
               style: TextStyle(
                   color: Colors.grey.shade300, fontWeight: FontWeight.bold),
-            )));
+            ));
   }
 
   buildDescription(BuildContext context, DestinyRecordDefinition definition) {

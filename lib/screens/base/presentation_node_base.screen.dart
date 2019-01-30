@@ -112,7 +112,7 @@ class PresentationNodeBaseScreenState<T extends PresentationNodeBaseScreen>
         return StaggeredTile.count(30, 7);
 
       case CollectionListItemType.record:
-        return StaggeredTile.count(15, 20);
+        return StaggeredTile.extent(30, 150);
 
       default:
         return StaggeredTile.count(30, 7);

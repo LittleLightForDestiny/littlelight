@@ -88,7 +88,7 @@ class ItemListWidgetState extends State<ItemListWidget> {
       List<DestinyItemComponent> unequipped =
           inventory.where((item) => item.bucketHash == hash).toList();
       unequipped.sort((itemA, itemB) {
-        return InventoryUtils.sortItemsByPower(itemA, itemB, widget.profile);
+        return InventoryUtils.sortDestinyItems(itemA, itemB, widget.profile);
       });
       int bucketSize = bucketDef.itemCount;
       if (hash == InventoryBucket.subclass) {

@@ -10,6 +10,7 @@
 .history
 .svn/
 .env
+translated-text-finder
 
 # IntelliJ related
 *.iml
@@ -37,6 +38,7 @@ build/
 **/android/gradlew.bat
 **/android/local.properties
 **/android/**/GeneratedPluginRegistrant.java
+**/android/.keys
 
 # iOS/XCode related
 **/ios/**/*.mode1v3

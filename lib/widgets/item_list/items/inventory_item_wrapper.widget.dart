@@ -13,6 +13,8 @@ import 'package:little_light/widgets/item_list/items/armor/minimal_armor_invento
 import 'package:little_light/widgets/item_list/items/base/base_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/medium_base_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/minimal_base_inventory_item.widget.dart';
+import 'package:little_light/widgets/item_list/items/emblem/emblem_inventory_item.widget.dart';
+import 'package:little_light/widgets/item_list/items/emblem/medium_emblem_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/empty_inventory_item_widget.dart';
 import 'package:little_light/widgets/item_list/items/engram/empty_engram_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/engram/minimal_engram_inventory_item.widget.dart';
@@ -44,10 +46,10 @@ class InventoryItemWrapperWidget extends StatefulWidget {
 
 class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
     extends State<InventoryItemWrapperWidget> {
-  DestinyInventoryItemDefinition _definition;
+  DestinyInventoryItemDefinition definition;
   String uniqueId;
 
-  DestinyItemInstanceComponent get _instanceInfo {
+  DestinyItemInstanceComponent get instanceInfo {
     return widget.profile.getInstanceInfo(widget.item.itemInstanceId);
   }
 
@@ -57,7 +59,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
   void initState() {
     uniqueId = Uuid().v4();
     if (isLoaded) {
-      this._definition = widget.manifest
+      this.definition = widget.manifest
           .getDefinitionFromCache<DestinyInventoryItemDefinition>(
               widget.item.itemHash);
     }
@@ -84,7 +86,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
         return;
       }
     }
-    _definition =
+    definition =
         await widget.manifest.getItemDefinition(widget.item.itemHash);
     if (mounted) {
       setState(() {});
@@ -125,8 +127,8 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
       MaterialPageRoute(
         builder: (context) => ItemDetailScreen(
               widget.item,
-              _definition,
-              _instanceInfo,
+              definition,
+              instanceInfo,
               characterId: widget.characterId,
               uniqueId: uniqueId,
             ),
@@ -138,7 +140,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
     if (widget.item == null) {
       return buildEmpty(context);
     }
-    if (_definition == null) {
+    if (definition == null) {
       return Container();
     }
 
@@ -155,8 +157,8 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
 
     return BaseInventoryItemWidget(
       widget.item,
-      _definition,
-      _instanceInfo,
+      definition,
+      instanceInfo,
       characterId: widget.characterId,
       uniqueId: uniqueId,
     );
@@ -176,13 +178,13 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
   }
 
   Widget buildMinimal(BuildContext context) {
-    switch (_definition.itemType) {
+    switch (definition.itemType) {
       case ItemType.armor:
         {
           return MinimalArmorInventoryItemWidget(
             widget.item,
-            _definition,
-            _instanceInfo,
+            definition,
+            instanceInfo,
             characterId: widget.characterId,
             uniqueId: uniqueId,
           );
@@ -192,8 +194,8 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
         {
           return MinimalWeaponInventoryItemWidget(
             widget.item,
-            _definition,
-            _instanceInfo,
+            definition,
+            instanceInfo,
             characterId: widget.characterId,
             uniqueId: uniqueId,
           );
@@ -203,8 +205,8 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
         {
           return MinimalEngramInventoryItemWidget(
             widget.item,
-            _definition,
-            _instanceInfo,
+            definition,
+            instanceInfo,
             characterId: widget.characterId,
             uniqueId: uniqueId,
           );
@@ -212,8 +214,8 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
       default:
         return MinimalBaseInventoryItemWidget(
           widget.item,
-          _definition,
-          _instanceInfo,
+          definition,
+          instanceInfo,
           characterId: widget.characterId,
           uniqueId: uniqueId,
         );
@@ -221,13 +223,13 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
   }
 
   Widget buildMedium(BuildContext context) {
-    switch (_definition.itemType) {
+    switch (definition.itemType) {
       case ItemType.subclasses:
         {
           return MediumSubclassInventoryItemWidget(
             widget.item,
-            _definition,
-            _instanceInfo,
+            definition,
+            instanceInfo,
             characterId: widget.characterId,
             uniqueId: uniqueId,
           );
@@ -236,8 +238,8 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
         {
           return MediumWeaponInventoryItemWidget(
             widget.item,
-            _definition,
-            _instanceInfo,
+            definition,
+            instanceInfo,
             characterId: widget.characterId,
             uniqueId: uniqueId,
           );
@@ -247,17 +249,28 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
         {
           return MediumArmorInventoryItemWidget(
             widget.item,
-            _definition,
-            _instanceInfo,
+            definition,
+            instanceInfo,
             characterId: widget.characterId,
             uniqueId: uniqueId,
           );
         }
+
+      case ItemType.emblems:{
+          return MediumEmblemInventoryItemWidget(
+            widget.item,
+            definition,
+            instanceInfo,
+            characterId: widget.characterId,
+            uniqueId: uniqueId,
+          );
+      }
+      
       default:
         return MediumBaseInventoryItemWidget(
           widget.item,
-          _definition,
-          _instanceInfo,
+          definition,
+          instanceInfo,
           characterId: widget.characterId,
           uniqueId: uniqueId,
         );
@@ -265,13 +278,13 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
   }
 
   Widget buildFull(BuildContext context) {
-    switch (_definition.itemType) {
+    switch (definition.itemType) {
       case ItemType.subclasses:
         {
           return SubclassInventoryItemWidget(
             widget.item,
-            _definition,
-            _instanceInfo,
+            definition,
+            instanceInfo,
             characterId: widget.characterId,
             uniqueId: uniqueId,
           );
@@ -280,8 +293,8 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
         {
           return WeaponInventoryItemWidget(
             widget.item,
-            _definition,
-            _instanceInfo,
+            definition,
+            instanceInfo,
             characterId: widget.characterId,
             uniqueId: uniqueId,
           );
@@ -291,17 +304,28 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
         {
           return ArmorInventoryItemWidget(
             widget.item,
-            _definition,
-            _instanceInfo,
+            definition,
+            instanceInfo,
             characterId: widget.characterId,
             uniqueId: uniqueId,
           );
         }
+
+      case ItemType.emblems:{
+        return EmblemInventoryItemWidget(
+            widget.item,
+            definition,
+            instanceInfo,
+            characterId: widget.characterId,
+            uniqueId: uniqueId,
+          );
+
+      }
       default:
         return BaseInventoryItemWidget(
           widget.item,
-          _definition,
-          _instanceInfo,
+          definition,
+          instanceInfo,
           characterId: widget.characterId,
           uniqueId: uniqueId,
         );

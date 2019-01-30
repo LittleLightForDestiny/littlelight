@@ -16,7 +16,7 @@ class SearchItemWrapperWidget extends InventoryItemWrapperWidget {
   }
 }
 
-class SearchItemWrapperWidgetState
+class SearchItemWrapperWidgetState<T extends SearchItemWrapperWidget>
     extends InventoryItemWrapperWidgetState<SearchItemWrapperWidget> {
   @override
   Widget build(BuildContext context) {
@@ -49,9 +49,4 @@ class SearchItemWrapperWidgetState
       child:icon
     );
   }
-
-  @override
-    void onTap(context) {
-      Navigator.of(context).pop(widget.item);
-    }
 }

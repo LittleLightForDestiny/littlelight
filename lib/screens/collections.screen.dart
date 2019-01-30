@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/screens/base/presentation_node_base.screen.dart';
+import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
+import 'package:little_light/utils/selected_page_persistence.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
 class CollectionsScreen extends PresentationNodeBaseScreen {
@@ -13,12 +15,21 @@ class CollectionsScreen extends PresentationNodeBaseScreen {
 }
 
 class CollectionsScreenState extends PresentationNodeBaseScreenState {
+
+
+  @override
+    void initState() {
+      SelectedPagePersistence.saveLatestScreen(SelectedPagePersistence.collections);
+      ProfileService().fetchProfileData(components:ProfileComponentGroups.collections);
+      super.initState();
+    }
+
   @override
   Widget build(BuildContext context) {
     if (definition == null) return Container();
     return Scaffold(
         appBar: buildAppBar(context),
-        body: buildBody(context, widget.presentationNodeHash, widget.depth));
+        body: buildBody(context, widget.presentationNodeHash, widget.depth < 2 ? widget.depth : widget.depth + 1));
   }
 
   buildAppBar(BuildContext context) {

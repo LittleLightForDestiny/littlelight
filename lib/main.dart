@@ -8,13 +8,17 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'dart:async';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-
+int restartCounter = 0;
 void main() async{
   await DotEnv().load('.env');
-  ExceptionHandler handler = ExceptionHandler();
+  ExceptionHandler handler = ExceptionHandler(onRestart:(){
+    restartCounter++;
+    main();
+  });
 
   runZoned<Future<void>>(() async {
-    runApp(new LittleLight());
+    
+    runApp(new LittleLight(key:Key("little_light_$restartCounter")));
   }, onError: (error, stackTrace) {
     handler.handleException(error, stackTrace);
   });
@@ -23,12 +27,16 @@ void main() async{
 
 class LittleLight extends StatelessWidget {
   // This widget is the root of your application.
+  final Key key;
+  LittleLight({this.key});
+
   @override
   Widget build(BuildContext context) {
     CacheManager.maxNrOfCacheObjects = 5000;
     CacheManager.inBetweenCleans = new Duration(days: 15);
 
     return new MaterialApp(
+      key: key,
       title: 'Little Light',
       theme: new ThemeData(
         platform: TargetPlatform.android,
@@ -40,6 +48,11 @@ class LittleLight extends StatelessWidget {
         accentColor: Colors.lightBlueAccent.shade100,
         textSelectionColor: Colors.blueGrey.shade400,
         textSelectionHandleColor: Colors.lightBlueAccent.shade200,
+        textTheme: TextTheme(
+          button: TextStyle(
+            fontWeight: FontWeight.bold,
+          )
+        )
       ),
       home: new InitialScreen(),
       localizationsDelegates: [

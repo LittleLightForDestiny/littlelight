@@ -21,26 +21,25 @@ import 'package:bungie_api/responses/destiny_manifest_response.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 
 class BungieApiService {
-  
   static const String baseUrl = 'https://www.bungie.net';
   static const String apiUrl = "$baseUrl/Platform";
-  
+
   final AuthService auth = new AuthService();
 
-  static String url(String url){
-    if(url == null ?? url.length == 0) return null;
+  static String url(String url) {
+    if (url == null ?? url.length == 0) return null;
     return "$baseUrl/$url";
   }
 
-  static String get clientSecret{
+  static String get clientSecret {
     return DotEnv().env['client_secret'];
   }
 
-  static String get apiKey{
+  static String get apiKey {
     return DotEnv().env['api_key'];
   }
 
-  static String get clientId{
+  static String get clientId {
     return DotEnv().env['client_id'];
   }
 
@@ -170,7 +169,22 @@ class Client implements HttpClient {
     }
     return request.then((response) {
       dynamic json = jsonDecode(response.body);
+      if (json["ErrorCode"] != null && json["ErrorCode"] > 2) {
+        throw BungieApiException(json);
+      }
       return HttpResponse(json, response.statusCode);
     });
+  }
+}
+
+class BungieApiException implements Exception {
+  final dynamic data;
+  BungieApiException(this.data);
+  int get errorCode=>data["ErrorCode"];
+  String get errorStatus=>data["ErrorStatus"];
+  String get message=>data["Message"];
+  @override
+  String toString() {
+    return "$errorStatus - $message";
   }
 }

@@ -50,7 +50,7 @@ class VaultItemListWidgetState extends ItemListWidgetState {
       }
 
       unequipped.sort((itemA, itemB) {
-        return InventoryUtils.sortItemsByPower(itemA, itemB, widget.profile);
+        return InventoryUtils.sortDestinyItems(itemA, itemB, widget.profile);
       });
     
       int itemCount = unequipped.length;

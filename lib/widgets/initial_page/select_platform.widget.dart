@@ -1,5 +1,6 @@
 import 'package:bungie_api/models/user_membership_data.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/initial_page/plaftorm.button.dart';
 
 typedef void PlatformSelectCallback(int membershipType);
@@ -38,6 +39,25 @@ class SelectPlatformWidgetState extends State<SelectPlatformWidget> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.membershipData.destinyMemberships.length == 0) {
+      return Column(
+        children: <Widget>[
+          Container(
+              padding: EdgeInsets.all(8),
+              child: TranslatedTextWidget(
+                  "Looks like you don't play destiny on this Bungie.net account. Try logging into a different account.")),
+          Container(
+              padding: EdgeInsets.all(8),
+              constraints: BoxConstraints(minWidth: double.infinity),
+              child: RaisedButton(
+                child: TranslatedTextWidget("Login"),
+                onPressed: () {
+                  widget.onSelect(null);
+                },
+              ))
+        ],
+      );
+    }
     return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [Wrap(children: this.getButtons())]);

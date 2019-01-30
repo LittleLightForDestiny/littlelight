@@ -3,7 +3,7 @@ import 'package:little_light/screens/collections.screen.dart';
 import 'package:little_light/screens/equipment.screen.dart';
 import 'package:little_light/screens/initial.screen.dart';
 import 'package:little_light/screens/loadouts.screen.dart';
-import 'package:little_light/screens/triumphs.screen.dart';
+import 'package:little_light/screens/search.screen.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
@@ -47,12 +47,12 @@ class SideMenuWidget extends StatelessWidget {
                 menuItem(context, "Collections", onTap: () {
                   open(context, CollectionsScreen());
                 }),
-                menuItem(context, "Triumphs", onTap: () {
-                  open(context, TriumphsScreen(
-                    key: Key("triumphs"),
-                    presentationNodeHash: 1024788583,
-                  ));
+                menuItem(context, "Search", onTap: () {
+                  open(context, SearchScreen());
                 })
+                // menuItem(context, "Triumphs", onTap: () {
+                //   open(context, TriumphsScreen());
+                // })
               ],
             )));
   }

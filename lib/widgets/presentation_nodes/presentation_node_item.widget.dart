@@ -45,7 +45,8 @@ class PresentationNodeItemWidget extends StatelessWidget {
     return [
       AspectRatio(
           aspectRatio: 1,
-          child: Padding(
+          child: definition?.displayProperties?.icon == null ? Container():
+          Padding(
               padding: EdgeInsets.all(8),
               child: CachedNetworkImage(
                 imageUrl:

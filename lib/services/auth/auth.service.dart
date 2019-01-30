@@ -6,6 +6,7 @@ import 'package:bungie_api/models/user_info_card.dart';
 import 'package:bungie_api/models/user_membership_data.dart';
 import 'package:flutter_inappbrowser/flutter_inappbrowser.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
+import 'package:little_light/services/littlelight/littlelight.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/translate/translate.service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,16 +29,27 @@ class AuthService {
   }
 
   Future<void> skipLogin() async {
+    await clearData();
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     _prefs.setBool(_skippedLoginKey, true);
+  }
+
+  Future<void> clearData() async{
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    _prefs.remove(_skippedLoginKey);
     _prefs.remove(_latestTokenKey);
     _prefs.remove(_latestMembershipKey);
     _currentToken = null;
     _currentMembership = null;
 
     ProfileService profile = ProfileService();
-    profile.clear();
+    await profile.clear();
+
+    LittleLightService littleLight = LittleLightService();
+    littleLight.clearData();
   }
+
+  
 
   Future<SavedToken> _getStoredToken() async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
@@ -119,7 +131,7 @@ class AuthService {
   Future<String> authorize([reauth = false]) async {
     String currentLanguage = await TranslateService().getLanguage();
     OAuth.openOAuth(new BungieAuthBrowser(), BungieApiService.clientId,
-        currentLanguage, reauth);
+        currentLanguage, true);
     Stream<String> _stream = getLinksStream();
     String authCode = "";
     await for (var link in _stream) {
@@ -129,6 +141,7 @@ class AuthService {
       }
     }
     ChromeSafariBrowser.closeAll();
+    clearData();
     return authCode;
   }
 
@@ -157,6 +170,11 @@ class AuthService {
       membershipData.bungieNetUser, 
       membershipType);
     _prefs.setString(_latestMembershipKey, jsonEncode(_currentMembership.toMap()));
+
+    ProfileService profile = new ProfileService();
+    await profile.clear();
+    LittleLightService littleLight = new LittleLightService();
+    await littleLight.clearData();
   }
 
   bool get isLogged{
@@ -214,7 +232,7 @@ class SavedMembership extends UserMembershipData {
   UserInfoCard get selectedMembership {
     return destinyMemberships.firstWhere((membership){
       return membership.membershipType == membershipType;
-    });
+    }, orElse: ()=>null);
   }
 }
 

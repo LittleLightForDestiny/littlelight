@@ -48,6 +48,9 @@ class PresentationNodeTabsWidgetState
       Colors.blueGrey.shade700,
       Colors.blueGrey.shade800
     ];
+    if(definition.children.presentationNodes.length == 1){
+     return widget.bodyBuilder(definition.children.presentationNodes[0].presentationNodeHash, widget.depth+1);
+    }
     return DefaultTabController(
         length: definition.children.presentationNodes.length,
         child: Scaffold(

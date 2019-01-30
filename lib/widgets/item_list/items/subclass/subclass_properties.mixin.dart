@@ -83,8 +83,8 @@ mixin SubclassPropertiesMixin on InventoryItemMixin {
           return overlapping.length > 0;
     }).toList();
     DestinyTalentNodeCategory subclassPath =
-        selectedSkills.firstWhere((nodeDef) => nodeDef.isLoreDriven);
-    return subclassPath.displayProperties.name;
+        selectedSkills.firstWhere((nodeDef) => nodeDef.isLoreDriven, orElse: ()=>null);
+    return subclassPath?.displayProperties?.name ?? "";
   }
 
   @override

@@ -135,8 +135,12 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
   }
 
   checkMembership() async {
+    bool skipped = await widget.auth.getSkippedLogin();
+    if(skipped){
+      return goForward();
+    }
     SavedMembership membership = await widget.auth.getMembership();
-    if (membership == null || widget.forceSelectMembership) {
+    if (membership?.selectedMembership == null || widget.forceSelectMembership) {
       return showSelectMembership();
     }
     return loadProfile();
@@ -148,14 +152,24 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
         await this.widget.apiService.getMemberships();
     SelectPlatformWidget widget = SelectPlatformWidget(
         membershipData: membershipData,
-        onSelect: (int membershipType) {
-          this.widget.auth.saveMembership(membershipData, membershipType);
+        onSelect: (int membershipType) async {
+          if(membershipType == null){
+            this.forceReauth = true;
+            this.showLogin();
+            return;
+          }
+          await this.widget.auth.saveMembership(membershipData, membershipType);
           loadProfile();
         });
     this.changeContent(widget, widget.title);
   }
 
   loadProfile() async {
+    bool skipped = await widget.auth.getSkippedLogin();
+    if(skipped){
+      goForward();
+      return;
+    }
     this.changeContent(null, null);
     await widget.profile.loadFromCache();
     this.goForward();

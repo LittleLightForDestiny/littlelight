@@ -7,6 +7,7 @@ import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
+import 'package:little_light/services/bungie_api/enums/item_type.enum.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/destiny_item.widget.dart';
 import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
@@ -64,6 +65,7 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
           children: <Widget>[
             Container(),
             background(context, expandRatio),
+            overlay(context, expandRatio),
             nameBar(context, expandRatio),
             icon(context, expandRatio),
             backButton(context, expandRatio),
@@ -123,10 +125,32 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
                 ));
   }
 
+  Widget overlay(BuildContext context, double expandRatio) {
+    double width = MediaQuery.of(context).size.width;
+    double opacity = expandRatio;
+    if(definition.itemType != ItemType.subclasses){
+      return Container();
+    }
+    return Positioned(
+        bottom: kToolbarHeight,
+        width: width/2,
+        right:0,
+        child: Opacity(
+            opacity: opacity,
+            child: CachedNetworkImage(
+                imageUrl: BungieApiService.url(definition.secondaryIcon),
+                fit: BoxFit.fitWidth,
+                )));
+  }
+
   Widget background(BuildContext context, double expandRatio) {
     double width = MediaQuery.of(context).size.width;
     double opacity = expandRatio;
-    if(definition.screenshot == null){
+    String imgUrl = definition.screenshot;
+    if(definition.itemType == ItemType.emblems){
+      imgUrl = definition.secondarySpecial;
+    }
+    if(imgUrl == null){
       return Container();
     }
     return Positioned(
@@ -136,7 +160,7 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
         child: Opacity(
             opacity: opacity,
             child: CachedNetworkImage(
-                imageUrl: "${BungieApiService.baseUrl}${definition.screenshot}",
+                imageUrl: BungieApiService.url(imgUrl),
                 fit: BoxFit.cover,
                 placeholder: Shimmer.fromColors(
                     baseColor: Colors.blueGrey.shade500,

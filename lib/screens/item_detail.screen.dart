@@ -41,11 +41,11 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
 
   initState(){
     super.initState();
-    this.loadPlugDefinitions();
+    this.loadDefinitions();
   }
 
   Future<void> loadDefinitions() async{
-    if(definition.sockets?.socketEntries?.length ?? 0 > 0){
+    if((definition.sockets?.socketEntries?.length ?? 0) > 0){
       await loadPlugDefinitions();
     }
   }

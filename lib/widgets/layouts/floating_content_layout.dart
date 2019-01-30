@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:little_light/exceptions/exception_handler.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -33,6 +34,7 @@ class FloatingContentState<T extends StatefulWidget> extends State<T>
 
   @override
   Widget build(BuildContext context) {
+    ExceptionHandler.context = context;
     return new Scaffold(
         body: new Container(
             decoration: new BoxDecoration(

@@ -114,13 +114,13 @@ class LoadoutDestinationsWidget extends StatelessWidget {
       case LoadoutAction.Equip:
         {
           inventory.transferLoadout(this.loadout, destination.characterId, true);
-          // Navigator.pop(context);
+          Navigator.pop(context);
           break;
         }
       case LoadoutAction.Transfer:
         {
           inventory.transferLoadout(this.loadout, destination.characterId);
-          // Navigator.pop(context);
+          Navigator.pop(context);
           break;
         }
     }

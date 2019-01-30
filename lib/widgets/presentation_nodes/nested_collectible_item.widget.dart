@@ -1,6 +1,8 @@
 import 'package:bungie_api/models/destiny_collectible_definition.dart';
+import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/screens/item_detail.screen.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
@@ -25,10 +27,27 @@ class NestedCollectibleItemWidget extends StatelessWidget {
                   decoration: BoxDecoration(
                       border:
                           Border.all(color: Colors.grey.shade300, width: 1)),
-                  child: CachedNetworkImage(
-                    imageUrl:
-                        BungieApiService.url(definition.displayProperties.icon),
-                  )));
+                  child: Stack(children: [
+                    CachedNetworkImage(
+                        imageUrl: BungieApiService.url(
+                            definition.displayProperties.icon)),
+                    FlatButton(
+                      child: Container(),
+                      onPressed: () async {
+                        DestinyInventoryItemDefinition itemDef = await manifest
+                            .getDefinition<DestinyInventoryItemDefinition>(
+                                definition.itemHash);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ItemDetailScreen(
+                                null, itemDef, null,
+                                characterId: null),
+                          ),
+                        );
+                      },
+                    )
+                  ])));
         }));
   }
 

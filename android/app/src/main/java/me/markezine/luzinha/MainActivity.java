@@ -1,4 +1,4 @@
-package com.example.littlelight;
+package me.markezine.luzinha;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;
