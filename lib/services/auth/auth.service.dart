@@ -123,9 +123,14 @@ class AuthService {
     return saved;
   }
 
-  checkAuthorizationCode() async{
-    Uri initialUri = await getInitialUri();
-    print(initialUri);
+  Future<String> checkAuthorizationCode() async{
+    try{
+      Uri initialUri = await getInitialUri();
+      String authCode = initialUri.toString().split("code=")[1];
+      return authCode;
+    }catch(e){
+    }
+    return null;
   }
 
   Future<String> authorize([reauth = false]) async {

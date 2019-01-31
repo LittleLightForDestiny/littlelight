@@ -64,7 +64,11 @@ class SearchScreenState extends State<SearchScreen> {
         itemDefinitions.addAll(await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes.toList().sublist(i, i+20)));        
       }
       await Future.delayed(Duration(milliseconds: 50));
-      setState(() {});
+      if(mounted){
+        setState(() {});
+      }else{
+        break;
+      }      
     }  
   }
 

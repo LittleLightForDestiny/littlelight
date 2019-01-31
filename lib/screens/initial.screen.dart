@@ -14,6 +14,7 @@ import 'package:little_light/widgets/initial_page/login_widget.dart';
 import 'package:little_light/widgets/initial_page/select_language.widget.dart';
 import 'package:little_light/widgets/initial_page/select_platform.widget.dart';
 import 'package:little_light/widgets/layouts/floating_content_layout.dart';
+import 'package:uni_links/uni_links.dart';
 
 class InitialScreen extends StatefulWidget {
   final BungieApiService apiService = new BungieApiService();
@@ -94,6 +95,11 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
   }
 
   checkLogin() async {
+    var authCode = await widget.auth.checkAuthorizationCode();
+    if(authCode != null){
+      this.authCode(authCode);
+      return;
+    }
     SavedToken token = await widget.auth.getToken();
     bool skippedLogin = await widget.auth.getSkippedLogin();
     if ((token == null && !skippedLogin) || widget.forceLogin || forceReauth) {

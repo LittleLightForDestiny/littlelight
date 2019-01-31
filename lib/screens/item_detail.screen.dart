@@ -156,7 +156,7 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
 
   Widget buildQuestInfo(BuildContext context){
     if(definition.itemType == ItemType.questStep){
-      return Container(child:QuestInfoWidget(item, definition, instanceInfo, key:Key("quest_info"), characterId:characterId));
+      // return Container(child:QuestInfoWidget(item, definition, instanceInfo, key:Key("quest_info"), characterId:characterId));
     }
     return Container();
   }
