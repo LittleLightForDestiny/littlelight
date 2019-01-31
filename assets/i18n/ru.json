@@ -45,5 +45,17 @@
   "Do you really want to delete the loadout {loadoutName} ?": "Вы действительно хотите удалить loadout {loadoutName}?",
   "Select {bucketName}": "Выберите {bucketName}",
   "Loadout Name": "Название выгрузки",
-  "Want to support Little Light ?": "Want to support Little Light ?"
+  "Want to support Little Light ?": "Want to support Little Light ?",
+  "Looks like you dont play destiny on this Bungie.net account. Try logging into a different account.": "Похоже, вы не играете судьбу в этой учетной записи Bungie.net. Попробуйте войти в другой аккаунт.",
+  "Pull": "вытаскивать",
+  "AuthorizationCodeInvalid": "Код авторизации недействителен",
+  "invalid_grant": "недействительный грант",
+  "You have no loadouts yet. Create your first one.": "У вас пока нет загрузок. Создайте свой первый.",
+  "You can only equip one exotic weapon at a time. Removing {itemName}.": "Одновременно можно экипировать только одно экзотическое оружие. Удаление {itemName}.",
+  "You can only equip one exotic armor piece at a time. Removing {itemName}.": "Вы можете экипировать только одну экзотическую броню за раз. Удаление {itemName}.",
+  "Try Again": "Попробуйте снова",
+  "Exit": "Выход",
+  "Login with another account": "Войти с другим аккаунтом",
+  "DestinyAccountNotFound": "Аккаунт Destiny не найден",
+  "We were unable to find your Destiny account information. If you have a valid Destiny Account let us know.": "Нам не удалось найти информацию о вашей учетной записи Destiny. Если у вас есть действующий аккаунт Destiny, сообщите нам."
 }

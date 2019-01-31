@@ -31,7 +31,7 @@ class SelectLanguageWidgetState extends State<SelectLanguageWidget> {
     selectedLanguage = await widget.translate.getLanguage();
     Locale locale = Localizations.localeOf(context, nullOk: true);
     if(selectedLanguage == null && locale != null){
-      String localeName = "${locale.languageCode}-${locale.countryCode?.toLowerCase()}";
+      String localeName = "${locale.languageCode}-${locale.countryCode?.toLowerCase() ?? ''}";
       selectedLanguage = widget.availableLanguages.firstWhere((language)=>language==localeName, orElse: ()=>null);
     }
     if(selectedLanguage == null){

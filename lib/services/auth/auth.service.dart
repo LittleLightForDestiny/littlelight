@@ -135,7 +135,8 @@ class AuthService {
 
   Future<String> authorize([reauth = false]) async {
     String currentLanguage = await TranslateService().getLanguage();
-    OAuth.openOAuth(new BungieAuthBrowser(), BungieApiService.clientId,
+    var browser = new BungieAuthBrowser();
+    OAuth.openOAuth(browser, BungieApiService.clientId,
         currentLanguage, true);
     Stream<String> _stream = getLinksStream();
     String authCode = "";
@@ -145,7 +146,8 @@ class AuthService {
         break;
       }
     }
-    ChromeSafariBrowser.closeAll();
+    
+    browser.close();
     clearData();
     return authCode;
   }
@@ -248,11 +250,16 @@ class BungieAuthBrowser implements OAuthBrowser {
 
   @override
   dynamic open(String url) {
+    
     return browser.open(url, options: {
       "addShareButton": false,
       "toolbarBackgroundColor": "#000000",
       "dismissButtonStyle": 1,
       "preferredBarTintColor": "#000000",
     });
+  }
+
+  close(){
+    browser.close();
   }
 }

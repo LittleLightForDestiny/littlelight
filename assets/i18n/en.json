@@ -45,5 +45,17 @@
   "Do you really want to delete the loadout {loadoutName} ?": "Do you really want to delete the loadout {loadoutName} ?",
   "Select {bucketName}": "Select {bucketName}",
   "Loadout Name": "Loadout Name",
-  "Want to support Little Light ?": "Want to support Little Light ?"
+  "Want to support Little Light ?": "Want to support Little Light ?",
+  "Looks like you dont play destiny on this Bungie.net account. Try logging into a different account.": "Looks like you dont play destiny on this Bungie.net account. Try logging into a different account.",
+  "Pull": "Pull",
+  "AuthorizationCodeInvalid": "Authorization Code Invalid",
+  "invalid_grant": "invalid grant",
+  "You have no loadouts yet. Create your first one.": "You have no loadouts yet. Create your first one.",
+  "You can only equip one exotic weapon at a time. Removing {itemName}.": "You can only equip one exotic weapon at a time. Removing {itemName}.",
+  "You can only equip one exotic armor piece at a time. Removing {itemName}.": "You can only equip one exotic armor piece at a time. Removing {itemName}.",
+  "#####Try Again": "Try Again",
+  "#####Exit": "Exit",
+  "#####Login with another account": "Login with another account",
+  "#####DestinyAccountNotFound": "Destiny Account Not Found",
+  "#####We were unable to find your Destiny account information. If you have a valid Destiny Account let us know.": "We were unable to find your Destiny account information. If you have a valid Destiny Account let us know."
 }

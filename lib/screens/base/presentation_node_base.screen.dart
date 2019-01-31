@@ -38,7 +38,6 @@ class PresentationNodeBaseScreenState<T extends PresentationNodeBaseScreen>
     definition = await widget.manifest
         .getDefinition<DestinyPresentationNodeDefinition>(
             widget.presentationNodeHash);
-    print(definition);
     setState(() {});
   }
 
@@ -93,7 +92,7 @@ class PresentationNodeBaseScreenState<T extends PresentationNodeBaseScreen>
         return CollectibleItemWidget(hash: item.hash);
 
       case CollectionListItemType.record:
-        return RecordItemWidget(hash: item.hash);
+        return RecordItemWidget(hash: item.hash, key: Key("record_${item.hash}"),);
 
       default:
         return Container(color: Colors.red);
@@ -112,7 +111,7 @@ class PresentationNodeBaseScreenState<T extends PresentationNodeBaseScreen>
         return StaggeredTile.count(30, 7);
 
       case CollectionListItemType.record:
-        return StaggeredTile.extent(30, 150);
+        return StaggeredTile.fit(30);
 
       default:
         return StaggeredTile.count(30, 7);

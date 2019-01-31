@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
@@ -57,11 +59,12 @@ class SearchScreenState extends State<SearchScreen> {
     }).toList();
     Iterable<int> hashes = allItems.map((i) => i.item.itemHash);
     for(var i = 0; i < hashes.length; i+=10){
+      int end = min(i+10, hashes.length - 1);
       if(itemDefinitions == null){
         itemDefinitions =
-        await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes.toList().sublist(i, i+10));
+        await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes.toList().sublist(i, end));
       }else{
-        itemDefinitions.addAll(await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes.toList().sublist(i, i+20)));        
+        itemDefinitions.addAll(await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes.toList().sublist(i, end)));        
       }
       await Future.delayed(Duration(milliseconds: 50));
       if(mounted){

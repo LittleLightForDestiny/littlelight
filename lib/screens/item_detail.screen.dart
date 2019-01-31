@@ -16,8 +16,6 @@ import 'package:little_light/widgets/item_details/main_info/item_main_info.widge
 import 'package:little_light/widgets/item_details/management_block.widget.dart';
 import 'package:little_light/widgets/item_details/quest_info.widget.dart';
 import 'package:little_light/widgets/item_details/selected_perk.widget.dart';
-import 'package:little_light/widgets/item_list/items/base/base_inventory_item.widget.dart';
-import 'package:little_light/widgets/item_list/items/inventory_item_wrapper.widget.dart';
 
 class ItemDetailScreen extends DestinyItemStatefulWidget {
   final String uniqueId;

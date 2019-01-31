@@ -16,4 +16,15 @@ translationPlaceholders(){
   TranslatedTextWidget("Do you really want to delete the loadout {loadoutName} ?");
   TranslatedTextWidget("Select {bucketName}");
   TranslatedTextWidget("Loadout Name");
+  TranslatedTextWidget("Pull");
+  
+  TranslatedTextWidget("Try Again");
+  TranslatedTextWidget("Exit");
+  TranslatedTextWidget("Login with another account");
+
+  ///Bungie responses
+  TranslatedTextWidget("AuthorizationCodeInvalid");
+  TranslatedTextWidget("DestinyAccountNotFound");
+  TranslatedTextWidget("invalid_grant");
+  TranslatedTextWidget("We were unable to find your Destiny account information. If you have a valid Destiny Account, let us know.");
 }

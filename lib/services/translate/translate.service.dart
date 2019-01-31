@@ -84,13 +84,7 @@ class TranslateService {
   }
 
   _reportMissingTranslation(String language, String text){
-    bool inDebugMode = false;
-    assert(inDebugMode = true);
-    if(inDebugMode){
-      print("Missing translation: $language - $text");
-    }else{
-      ExceptionHandler.reportToSentry("Missing translation: $language - $text");
-    }
+    ExceptionHandler.reportToSentry("Missing translation: $language - $text");
   }
 
 

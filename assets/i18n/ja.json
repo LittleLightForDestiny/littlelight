@@ -45,5 +45,17 @@
   "Do you really want to delete the loadout {loadoutName} ?": "ロードアウト{loadoutName}を本当に削除しますか？",
   "Select {bucketName}": "{bucketName}を選択",
   "Loadout Name": "ロードアウト名",
-  "Want to support Little Light ?": "Want to support Little Light ?"
+  "Want to support Little Light ?": "Want to support Little Light ?",
+  "Looks like you dont play destiny on this Bungie.net account. Try logging into a different account.": "あなたはこのBungie.netアカウントで運命を演じてはいけないようです。 別のアカウントにログインしてみてください。",
+  "Pull": "引きます",
+  "AuthorizationCodeInvalid": "認証コードが無効です",
+  "invalid_grant": "無効な助成金",
+  "You have no loadouts yet. Create your first one.": "まだロードアウトはありません。 あなたの最初のものを作成してください。",
+  "You can only equip one exotic weapon at a time. Removing {itemName}.": "一度に装備できるエキゾチックな武器は1つだけです。 {itemName}を削除しています。",
+  "You can only equip one exotic armor piece at a time. Removing {itemName}.": "一度に装備できるエキゾチックな鎧のピースは1つだけです。 {itemName}を削除しています。",
+  "Try Again": "もう一度試す",
+  "Exit": "出口",
+  "Login with another account": "他のアカウントでログイン",
+  "DestinyAccountNotFound": "「Destiny」アカウントが見つかりません",
+  "We were unable to find your Destiny account information. If you have a valid Destiny Account let us know.": "Destinyのアカウント情報が見つかりません。 有効なDestinyアカウントをお持ちの場合はお知らせください。"
 }

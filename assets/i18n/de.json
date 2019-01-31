@@ -45,5 +45,17 @@
   "Do you really want to delete the loadout {loadoutName} ?": "Möchten Sie den Ladevorgang {loadoutName} wirklich löschen?",
   "Select {bucketName}": "Wählen Sie {bucketName}",
   "Loadout Name": "Ladenname",
-  "Want to support Little Light ?": "Willst du Kleines Licht unterstützen?"
+  "Want to support Little Light ?": "Willst du Kleines Licht unterstützen?",
+  "Looks like you dont play destiny on this Bungie.net account. Try logging into a different account.": "Sieht so aus, als würden Sie in diesem Bungie.net-Konto kein Schicksal spielen.",
+  "Pull": "Ziehen",
+  "AuthorizationCodeInvalid": "Autorisierungscode ungültig",
+  "invalid_grant": "ungültiger Zuschuss",
+  "You have no loadouts yet. Create your first one.": "Sie haben noch keine Auslieferungen. Erstellen Sie Ihre erste.",
+  "You can only equip one exotic weapon at a time. Removing {itemName}.": "Du kannst immer nur eine exotische Waffe ausrüsten: {itemName} entfernen.",
+  "You can only equip one exotic armor piece at a time. Removing {itemName}.": "Du kannst immer nur eine exotische Rüstung ausrüsten. {ItemName} entfernen.",
+  "Try Again": "Versuchen Sie es erneut",
+  "Exit": "Ausfahrt",
+  "Login with another account": "Melden Sie sich mit einem anderen Konto an",
+  "DestinyAccountNotFound": "Destiny Konto nicht gefunden",
+  "We were unable to find your Destiny account information. If you have a valid Destiny Account let us know.": "Wir konnten Ihre Destiny-Kontoinformationen nicht finden. Wenn Sie einen gültigen Destiny-Account haben, lassen Sie es uns wissen."
 }

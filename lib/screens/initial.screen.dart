@@ -14,7 +14,6 @@ import 'package:little_light/widgets/initial_page/login_widget.dart';
 import 'package:little_light/widgets/initial_page/select_language.widget.dart';
 import 'package:little_light/widgets/initial_page/select_platform.widget.dart';
 import 'package:little_light/widgets/layouts/floating_content_layout.dart';
-import 'package:uni_links/uni_links.dart';
 
 class InitialScreen extends StatefulWidget {
   final BungieApiService apiService = new BungieApiService();
@@ -25,7 +24,6 @@ class InitialScreen extends StatefulWidget {
   final bool forceChangeLanguage;
   final bool forceLogin;
   final bool forceSelectMembership;
-
 
   InitialScreen(
       {Key key,
@@ -96,7 +94,7 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
 
   checkLogin() async {
     var authCode = await widget.auth.checkAuthorizationCode();
-    if(authCode != null){
+    if (authCode != null) {
       this.authCode(authCode);
       return;
     }
@@ -123,32 +121,42 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
     this.changeContent(loginWidget, loginWidget.title);
   }
 
-  authCode(String code) async{
+  authCode(String code) async {
     this.changeContent(null, "");
-    try{
+    try {
       await widget.auth.requestToken(code);
       checkMembership();
-    }catch(e, stackTrace){
-      showDialog(context: context, builder: 
-      (context)=>ExceptionDialog(context, e,onDismiss: (label){
-        if(label == "Login"){
-          this.forceReauth = true;
-          showLogin();
-        }
-      },));
+    } catch (e, stackTrace) {
+      showDialog(
+          context: context,
+          builder: (context) => ExceptionDialog(
+                context,
+                e,
+                onDismiss: (label) {
+                  if (label == "Login") {
+                    this.forceReauth = true;
+                    showLogin();
+                  }
+                },
+              ));
       ExceptionHandler().handleException(e, stackTrace);
     }
   }
 
   checkMembership() async {
     bool skipped = await widget.auth.getSkippedLogin();
-    if(skipped){
+    if (skipped) {
       return goForward();
     }
     SavedMembership membership = await widget.auth.getMembership();
-    if (membership?.selectedMembership == null || widget.forceSelectMembership) {
+    if (membership?.selectedMembership == null ||
+        widget.forceSelectMembership) {
       return showSelectMembership();
     }
+    ExceptionHandler.setSentryUserInfo(
+        membership.selectedMembership.membershipId,
+        membership.selectedMembership.displayName,
+        membership.selectedMembership.membershipType);
     return loadProfile();
   }
 
@@ -159,7 +167,7 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
     SelectPlatformWidget widget = SelectPlatformWidget(
         membershipData: membershipData,
         onSelect: (int membershipType) async {
-          if(membershipType == null){
+          if (membershipType == null) {
             this.forceReauth = true;
             this.showLogin();
             return;
@@ -172,7 +180,7 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
 
   loadProfile() async {
     bool skipped = await widget.auth.getSkippedLogin();
-    if(skipped){
+    if (skipped) {
       goForward();
       return;
     }

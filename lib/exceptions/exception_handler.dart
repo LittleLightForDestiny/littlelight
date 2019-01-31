@@ -6,13 +6,14 @@ import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:sentry/sentry.dart';
+import 'package:package_info/package_info.dart';
 
 class ExceptionHandler {
   static BuildContext context;
   Function onRestart;
-  static final SentryClient _sentry = SentryClient(
-      dsn: "https://1270a211df3a46a49cd4b34f79979e90@sentry.io/1370036");
+  static SentryClient _sentry;
   ExceptionHandler({this.onRestart}) {
+    initSentry();
     FlutterError.onError = (FlutterErrorDetails details) {
       if (isInDebugMode) {
         FlutterError.dumpErrorToConsole(details);
@@ -22,7 +23,18 @@ class ExceptionHandler {
     };
   }
 
-  bool get isInDebugMode {
+  initSentry() async{
+    if(_sentry != null) return;
+    var info =  await PackageInfo.fromPlatform();
+    _sentry = SentryClient(
+    environmentAttributes: Event(
+      environment: isInDebugMode ? 'debug' : 'production',
+      release: info.version,
+    ),
+      dsn: "https://1270a211df3a46a49cd4b34f79979e90@sentry.io/1370036");
+  }
+
+  static bool get isInDebugMode {
     bool inDebugMode = false;
     assert(inDebugMode = true);
     return inDebugMode;
@@ -87,10 +99,18 @@ class ExceptionHandler {
   }
 
   static reportToSentry(dynamic exception, [dynamic stacktrace]){
+    if(isInDebugMode){
+      print(exception);
+      return;
+    }
     _sentry.captureException(
         exception: exception,
         stackTrace: stacktrace,
       );
+  }
+
+  static setSentryUserInfo(String membershipId, String displayName, int platformId){
+    // _sentry.userContext = User(id:membershipId, username:displayName, extras: {'platform':platformId});
   }
 }
 

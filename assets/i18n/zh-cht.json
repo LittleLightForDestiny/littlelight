@@ -45,5 +45,17 @@
   "Do you really want to delete the loadout {loadoutName} ?": "你真的想刪除loadout {loadoutName}嗎？",
   "Select {bucketName}": "選擇{bucketName}",
   "Loadout Name": "裝載名稱",
-  "Want to support Little Light ?": "Want to support Little Light ?"
+  "Want to support Little Light ?": "Want to support Little Light ?",
+  "Looks like you dont play destiny on this Bungie.net account. Try logging into a different account.": "看起來你不會在這個Bungie.net賬戶上玩命運。 嘗試登錄其他帳戶。",
+  "Pull": "拉",
+  "AuthorizationCodeInvalid": "授權碼無效",
+  "invalid_grant": "無效的補助",
+  "You have no loadouts yet. Create your first one.": "你還沒有裝載。 創建你的第一個。",
+  "You can only equip one exotic weapon at a time. Removing {itemName}.": "你一次只能裝備一件外來武器。 正在刪除{itemName}。",
+  "You can only equip one exotic armor piece at a time. Removing {itemName}.": "你一次只能裝備一件異國情調的盔甲。 正在刪除{itemName}。",
+  "Try Again": "再試一次",
+  "Exit": "出口",
+  "Login with another account": "使用其他帳戶登錄",
+  "DestinyAccountNotFound": "未找到“命運”帳戶",
+  "We were unable to find your Destiny account information. If you have a valid Destiny Account let us know.": "我們無法找到您的Destiny帳戶信息。 如果您有有效的Destiny帳戶，請告知我們。"
 }
