@@ -52,17 +52,21 @@ class SearchScreenState extends State<SearchScreen> {
         .map((item) => _ItemWithOwner(item, null)));
     allItems.sort(
         (a, b) => InventoryUtils.sortDestinyItems(a.item, b.item, profile));
-    Iterable<int> hashes = allItems.map((i) => i.item.itemHash);
-    itemDefinitions =
-        await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
     items = allItems.where((item) {
-      // var def = itemDefinitions[item.item.itemHash];
       return item.item.itemInstanceId != null;
     }).toList();
-    setState(() {});
+    Iterable<int> hashes = allItems.map((i) => i.item.itemHash);
+    for(var i = 0; i < hashes.length; i+=10){
+      if(itemDefinitions == null){
+        itemDefinitions =
+        await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes.toList().sublist(i, i+10));
+      }else{
+        itemDefinitions.addAll(await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes.toList().sublist(i, i+20)));        
+      }
+      await Future.delayed(Duration(milliseconds: 50));
+      setState(() {});
+    }  
   }
-
-  sortItems() {}
 
   @override
   Widget build(BuildContext context) {
@@ -127,6 +131,7 @@ class SearchScreenState extends State<SearchScreen> {
     if (search.length < 5) {
       return items.where((item) {
         var def = itemDefinitions[item.item.itemHash];
+        if(def == null) return false;
         return def.displayProperties.name
             .toLowerCase()
             .startsWith(search.toLowerCase());
@@ -134,6 +139,7 @@ class SearchScreenState extends State<SearchScreen> {
     }
     return items.where((item) {
       var def = itemDefinitions[item.item.itemHash];
+      if(def == null) return false;
       return def.displayProperties.name
           .toLowerCase()
           .contains(search.toLowerCase());
@@ -146,6 +152,7 @@ class SearchScreenState extends State<SearchScreen> {
 
   Widget getItem(BuildContext context, int index) {
     var item = filteredItems[index];
+    if(itemDefinitions == null || itemDefinitions[item.item.itemHash] == null) return Container();
     return SearchItemWrapperWidget(item.item,
         itemDefinitions[item.item.itemHash]?.inventory?.bucketTypeHash,
         characterId: item.ownerId,

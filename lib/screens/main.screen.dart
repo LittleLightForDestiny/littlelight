@@ -9,6 +9,7 @@ import 'package:little_light/services/littlelight/littlelight.service.dart';
 import 'package:little_light/utils/selected_page_persistence.dart';
 
 import 'package:little_light/widgets/side_menu/side_menu.widget.dart';
+import 'package:screen/screen.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -34,6 +35,7 @@ class MainScreenState extends State<MainScreen> {
   }
 
   getInitScreen() async{
+    Screen.keepOn(true);
     String screen = await SelectedPagePersistence.getLatestScreen();
     switch(screen){
       case SelectedPagePersistence.equipment:

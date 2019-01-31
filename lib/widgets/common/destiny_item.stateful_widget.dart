@@ -27,4 +27,9 @@ abstract class DestinyItemState<T extends DestinyItemStatefulWidget>
   DestinyInventoryItemDefinition get definition => widget.definition;
   DestinyItemInstanceComponent get instanceInfo => widget.instanceInfo;
   String get characterId => widget.characterId;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 }

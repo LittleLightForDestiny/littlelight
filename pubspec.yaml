@@ -38,6 +38,7 @@ dependencies:
   sentry: ^2.2.0
   flutter_dotenv: 2.0.1
   url_launcher: 5.0.0
+  screen: 0.0.4
 
 dev_dependencies:
   intl_translation: ^0.17.1

@@ -4,6 +4,7 @@ import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_item_socket_entry_definition.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/services/bungie_api/enums/item_type.enum.dart';
 import 'package:little_light/widgets/common/destiny_item.stateful_widget.dart';
 
 import 'package:little_light/widgets/item_details/item_cover/item_cover.widget.dart';
@@ -13,7 +14,10 @@ import 'package:little_light/widgets/item_details/item_perks.widget.dart';
 import 'package:little_light/widgets/item_details/item_stats.widget.dart';
 import 'package:little_light/widgets/item_details/main_info/item_main_info.widget.dart';
 import 'package:little_light/widgets/item_details/management_block.widget.dart';
+import 'package:little_light/widgets/item_details/quest_info.widget.dart';
 import 'package:little_light/widgets/item_details/selected_perk.widget.dart';
+import 'package:little_light/widgets/item_list/items/base/base_inventory_item.widget.dart';
+import 'package:little_light/widgets/item_list/items/inventory_item_wrapper.widget.dart';
 
 class ItemDetailScreen extends DestinyItemStatefulWidget {
   final String uniqueId;
@@ -93,6 +97,7 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
           SelectedPerkWidget(selectedPerk,
               key: Key("selected_perk: $selectedPerk")),
           buildMods(context),
+          buildQuestInfo(context),
           buildLore(context),
           Container(height: 100)
         ]),
@@ -147,6 +152,13 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
             selectedModHash: selectedPerk,
             selectedModHashes: selectedPerks,
           );
+  }
+
+  Widget buildQuestInfo(BuildContext context){
+    if(definition.itemType == ItemType.questStep){
+      return Container(child:QuestInfoWidget(item, definition, instanceInfo, key:Key("quest_info"), characterId:characterId));
+    }
+    return Container();
   }
 
   buildLore(BuildContext context){
