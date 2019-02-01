@@ -82,7 +82,7 @@ class ItemModsWidget extends DestinyItemWidget {
   Widget instancePlugItems(BuildContext context, int socketIndex) {
     DestinyItemSocketState socket = socketStates[socketIndex];
     int hash = socket.plugHash;
-    if(hash == null && socket.reusablePlugHashes.length > 0){
+    if(hash == null && (socket?.reusablePlugHashes?.length ?? 0) > 0){
       hash = socket.reusablePlugHashes[0];
     }
     return plugItem(context, hash, socketIndex);

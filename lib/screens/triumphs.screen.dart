@@ -18,7 +18,7 @@ class TriumphsScreenState extends PresentationNodeBaseScreenState {
   @override
     void initState() {
       SelectedPagePersistence.saveLatestScreen(SelectedPagePersistence.triumphs);
-      ProfileService().fetchProfileData(components:ProfileComponentGroups.collections);
+      ProfileService().fetchProfileData(components:ProfileComponentGroups.triumphs);
       super.initState();
     }
 

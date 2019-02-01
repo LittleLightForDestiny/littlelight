@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 
 class ObjectiveWidget extends StatelessWidget {
   final DestinyObjectiveDefinition definition;
+  final Color color;
 
-  const ObjectiveWidget({Key key, this.definition}) : super(key: key);
+  const ObjectiveWidget({Key key, this.definition, this.color}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +22,7 @@ class ObjectiveWidget extends StatelessWidget {
   Widget buildCheck(BuildContext context) {
     return Container(
         decoration: BoxDecoration(
-            border: Border.all(width: 1, color: Colors.grey.shade300)),
+            border: Border.all(width: 1, color: this.color ?? Colors.grey.shade300)),
         width: 18,
         height: 18);
   }

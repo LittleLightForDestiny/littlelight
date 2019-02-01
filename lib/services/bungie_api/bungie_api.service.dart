@@ -126,6 +126,7 @@ class Client implements HttpClient {
     Future<http.Response> request;
     Map<String, String> headers = {
       'X-API-Key': BungieApiService.apiKey,
+      'Accept':'application/json'
     };
     if (config.bodyContentType != null) {
       headers['Content-Type'] = config.bodyContentType;

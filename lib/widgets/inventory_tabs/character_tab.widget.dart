@@ -69,7 +69,4 @@ class CharacterTabWidgetState extends State<CharacterTabWidget>{
   double getListTopOffset(BuildContext context) {
     return kToolbarHeight + 2;
   }
-
-  // @override
-  // bool get wantKeepAlive => true;
 }

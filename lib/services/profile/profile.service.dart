@@ -11,8 +11,10 @@ import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_item_talent_grid_component.dart';
 import 'package:bungie_api/models/destiny_profile_response.dart';
+import 'package:bungie_api/models/destiny_record_component.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:bungie_api/enums/destiny_component_type_enum.dart';
+import 'package:bungie_api/enums/destiny_scope_enum.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -115,7 +117,7 @@ class ProfileService {
   Future<DestinyProfileResponse> _updateProfileData(
       List<int> components) async {
     DestinyProfileResponse response = await _api.getProfile(components);
-    if(response == null){
+    if (response == null) {
       return null;
     }
     if (_profile == null) {
@@ -318,24 +320,42 @@ class ProfileService {
     return _profile?.characterCollectibles?.data[characterId]?.collectibles;
   }
 
-  bool isCollectibleUnlocked(int hash) {
+  bool isCollectibleUnlocked(int hash, int scope) {
     String hashStr = "$hash";
-    Map<String, DestinyCollectibleComponent> collectibles = _profile?.profileCollectibles?.data?.collectibles;
-    if(collectibles == null){
+    Map<String, DestinyCollectibleComponent> collectibles =
+        _profile?.profileCollectibles?.data?.collectibles;
+    if (collectibles == null) {
       return true;
     }
-    DestinyCollectibleComponent collectible =
-        _profile?.profileCollectibles?.data?.collectibles[hashStr] ?? null;
-    if (collectible != null) {
-      return collectible.state & DestinyCollectibleState.NotAcquired !=
-          DestinyCollectibleState.NotAcquired;
+    if (scope == DestinyScope.Profile) {
+      DestinyCollectibleComponent collectible =
+          _profile?.profileCollectibles?.data?.collectibles[hashStr] ?? null;
+      if (collectible != null) {
+        return collectible.state & DestinyCollectibleState.NotAcquired !=
+            DestinyCollectibleState.NotAcquired;
+      }
     }
+
     return _profile?.characterCollectibles?.data?.values?.any((data) {
           int state = data?.collectibles[hashStr]?.state;
           return state & DestinyCollectibleState.NotAcquired !=
               DestinyCollectibleState.NotAcquired;
         }) ??
         false;
+  }
+
+  DestinyRecordComponent getRecord(int hash, int scope) {
+    String hashStr = "$hash";
+    if(scope == DestinyScope.Profile){
+      return _profile.profileRecords.data.records[hashStr];
+    }
+    var charRecords = _profile?.characterRecords?.data;
+    for(var char in charRecords.values){
+      if(char.records.containsKey(hashStr)){
+        return char.records[hashStr];
+      }
+    }
+    return null;
   }
 
   List<DestinyItemComponent> getItemsByInstanceId(List<String> ids) {
