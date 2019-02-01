@@ -58,12 +58,14 @@ class BungieApiService {
 
   Future<DestinyProfileResponse> getProfile(List<int> components) async {
     SavedToken token = await auth.getToken();
-    UserInfoCard membership = (await auth.getMembership()).selectedMembership;
+    SavedMembership membership = await auth.getMembership();
+    UserInfoCard selectedMembership = membership?.selectedMembership;
+    if(selectedMembership == null) return null;
     DestinyProfileResponseResponse response = await Destiny2.getProfile(
         new Client(token),
         components,
-        membership.membershipId,
-        membership.membershipType);
+        selectedMembership.membershipId,
+        selectedMembership.membershipType);
     return response.response;
   }
 

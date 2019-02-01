@@ -116,9 +116,16 @@ class ProfileService {
 
   Future<DestinyProfileResponse> _updateProfileData(
       List<int> components) async {
-    DestinyProfileResponse response = await _api.getProfile(components);
+    DestinyProfileResponse response;
+    try {
+     response = await _api.getProfile(components);
+    } on SocketException catch (e) {
+      print(e);
+      //TODO:implement error handling
+    }
+
     if (response == null) {
-      return null;
+      return _profile;
     }
     if (_profile == null) {
       _profile = response;
@@ -196,6 +203,7 @@ class ProfileService {
   }
 
   _cacheProfile(DestinyProfileResponse profile) async {
+    if(profile == null) return;
     Map<String, dynamic> map = profile.toMap();
     Directory directory = await getApplicationDocumentsDirectory();
 
@@ -346,12 +354,12 @@ class ProfileService {
 
   DestinyRecordComponent getRecord(int hash, int scope) {
     String hashStr = "$hash";
-    if(scope == DestinyScope.Profile){
+    if (scope == DestinyScope.Profile) {
       return _profile.profileRecords.data.records[hashStr];
     }
     var charRecords = _profile?.characterRecords?.data;
-    for(var char in charRecords.values){
-      if(char.records.containsKey(hashStr)){
+    for (var char in charRecords.values) {
+      if (char.records.containsKey(hashStr)) {
         return char.records[hashStr];
       }
     }

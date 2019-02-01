@@ -22,9 +22,18 @@ translationPlaceholders(){
   TranslatedTextWidget("Exit");
   TranslatedTextWidget("Login with another account");
 
+  TranslatedTextWidget("If this keeps happening, please try to login with a mainstream browser (preferably Google Chrome).");
+  TranslatedTextWidget("Please don't open the auth process in another safari window, this could prevent you from getting logged in.");
+
   ///Bungie responses
   TranslatedTextWidget("AuthorizationCodeInvalid");
   TranslatedTextWidget("DestinyAccountNotFound");
   TranslatedTextWidget("invalid_grant");
   TranslatedTextWidget("We were unable to find your Destiny account information. If you have a valid Destiny Account, let us know.");
+  
+  TranslatedTextWidget("invalid_request");
+  TranslatedTextWidget("We&#39;ve encountered an error, please try again later.");
+
+
+  
 }

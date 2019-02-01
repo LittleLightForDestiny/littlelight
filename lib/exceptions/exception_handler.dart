@@ -110,7 +110,7 @@ class ExceptionHandler {
   }
 
   static setSentryUserInfo(String membershipId, String displayName, int platformId){
-    // _sentry.userContext = User(id:membershipId, username:displayName, extras: {'platform':platformId});
+    _sentry.userContext = User(id:membershipId, username:displayName, extras: {'platform':platformId});
   }
 }
 

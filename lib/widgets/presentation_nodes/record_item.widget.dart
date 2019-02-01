@@ -1,4 +1,5 @@
 import 'package:bungie_api/models/destiny_objective_definition.dart';
+import 'package:bungie_api/models/destiny_objective_progress.dart';
 import 'package:bungie_api/models/destiny_record_component.dart';
 import 'package:bungie_api/models/destiny_record_definition.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -24,26 +25,27 @@ class RecordItemWidget extends StatefulWidget {
 
 class RecordItemWidgetState extends State<RecordItemWidget> {
   DestinyRecordDefinition _definition;
+  bool isLogged = false;
   DestinyRecordDefinition get definition {
-    return widget.manifest.getDefinitionFromCache<DestinyRecordDefinition>(
-            widget.hash) ??
+    return widget.manifest
+            .getDefinitionFromCache<DestinyRecordDefinition>(widget.hash) ??
         _definition;
   }
+
   Map<int, DestinyObjectiveDefinition> objectiveDefinitions;
 
   @override
   void initState() {
-    var manifest = ManifestService();
-    
     super.initState();
     loadDefinitions();
   }
 
   loadDefinitions() async {
+    isLogged = AuthService().isLogged;
     var manifest = ManifestService();
-    if(this.definition == null){
+    if (this.definition == null) {
       _definition =
-        await manifest.getDefinition<DestinyRecordDefinition>(widget.hash);
+          await manifest.getDefinition<DestinyRecordDefinition>(widget.hash);
       if (!mounted) return;
       setState(() {});
     }
@@ -56,27 +58,31 @@ class RecordItemWidgetState extends State<RecordItemWidget> {
     setState(() {});
   }
 
-  DestinyRecordComponent get record{
-    if(definition == null) return null;
-    if(!AuthService().isLogged) return null;
+  DestinyRecordComponent get record {
+    if (definition == null) return null;
+    if (!AuthService().isLogged) return null;
     return ProfileService().getRecord(definition.hash, definition.scope);
   }
 
-  int get recordState{
-    return record.state ?? DestinyRecordState.ObjectiveNotCompleted;
+  int get recordState {
+    return record?.state ?? DestinyRecordState.ObjectiveNotCompleted;
   }
 
-  bool get completed{
-    return (recordState & DestinyRecordState.ObjectiveNotCompleted) != DestinyRecordState.ObjectiveNotCompleted;
+  bool get completed {
+    return (recordState & DestinyRecordState.ObjectiveNotCompleted) !=
+        DestinyRecordState.ObjectiveNotCompleted;
   }
 
-  Color get foregroundColor{
-    return completed ? Colors.amber.shade100 : Colors.grey.shade600;
+  Color get foregroundColor {
+    if (!isLogged) {
+      return Colors.grey.shade300;
+    }
+    return completed ? Colors.amber.shade100 : Colors.grey.shade400;
   }
 
   @override
   Widget build(BuildContext context) {
-      return Container(
+    return Container(
         decoration: BoxDecoration(
           border: Border.all(color: foregroundColor, width: 1),
         ),
@@ -135,28 +141,26 @@ class RecordItemWidgetState extends State<RecordItemWidget> {
 
   buildTitle(BuildContext context) {
     if (definition == null) return Container();
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children:[
-        Expanded(
-        child:Container(
-        padding: EdgeInsets.all(4),
-        child: Text(
-          definition.displayProperties.name,
-          softWrap: true,
-          style: TextStyle(
-              color: foregroundColor, fontWeight: FontWeight.bold),
-        ))),
-        Container(
-          padding:EdgeInsets.only(right:4, top:4),
-          child:Text("${definition.completionInfo.scoreValue}",
-          style: TextStyle(
-            fontWeight: FontWeight.w300,
-              color:foregroundColor,
-              fontSize: 13
-          ),)),
-        ]
-    );
+    return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Expanded(
+          child: Container(
+              padding: EdgeInsets.all(4),
+              child: Text(
+                definition.displayProperties.name,
+                softWrap: true,
+                style: TextStyle(
+                    color: foregroundColor, fontWeight: FontWeight.bold),
+              ))),
+      Container(
+          padding: EdgeInsets.only(right: 4, top: 4),
+          child: Text(
+            "${definition?.completionInfo?.scoreValue ?? ""}",
+            style: TextStyle(
+                fontWeight: FontWeight.w300,
+                color: foregroundColor,
+                fontSize: 13),
+          )),
+    ]);
   }
 
   buildDescription(BuildContext context) {
@@ -174,6 +178,12 @@ class RecordItemWidgetState extends State<RecordItemWidget> {
         ));
   }
 
+  DestinyObjectiveProgress getRecordObjective(hash) {
+    if (record == null) return null;
+    return record.objectives
+        .firstWhere((o) => o.objectiveHash == hash, orElse: () => null);
+  }
+
   buildObjectives(BuildContext context) {
     if (definition?.objectiveHashes == null) return Container();
     return Container(
@@ -184,7 +194,8 @@ class RecordItemWidgetState extends State<RecordItemWidget> {
                       definition: objectiveDefinitions != null
                           ? objectiveDefinitions[hash]
                           : null,
-                    color:foregroundColor,
+                      objective: getRecordObjective(hash),
+                      color: foregroundColor,
                     ))
                 .toList()));
   }

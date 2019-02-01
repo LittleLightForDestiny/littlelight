@@ -4,13 +4,14 @@ import 'package:bungie_api/helpers/oauth.dart';
 import 'package:bungie_api/models/general_user.dart';
 import 'package:bungie_api/models/user_info_card.dart';
 import 'package:bungie_api/models/user_membership_data.dart';
-import 'package:flutter_inappbrowser/flutter_inappbrowser.dart';
+import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/littlelight/littlelight.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/translate/translate.service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AuthService {
   static final api = BungieApiService();
@@ -126,7 +127,11 @@ class AuthService {
   Future<String> checkAuthorizationCode() async{
     try{
       Uri initialUri = await getInitialUri();
+      print("initialURI: $initialUri");
       String authCode = initialUri.toString().split("code=")[1];
+      if(authCode != null){
+        closeWebView();
+      }
       return authCode;
     }catch(e){
     }
@@ -139,17 +144,22 @@ class AuthService {
     OAuth.openOAuth(browser, BungieApiService.clientId,
         currentLanguage, true);
     Stream<String> _stream = getLinksStream();
-    String authCode = "";
+    Uri uri;
     await for (var link in _stream) {
-      authCode = link.split("code=")[1];
-      if (authCode.length > 0) {
+      uri = Uri.parse(link);
+      if(uri.queryParameters.containsKey("code") || uri.queryParameters.containsKey("error")){
         break;
       }
     }
-    
-    browser.close();
-    clearData();
-    return authCode;
+    closeWebView();
+    if(uri.queryParameters.containsKey("code")){
+      clearData();
+      return uri.queryParameters["code"];
+    }else{
+      String errorType = uri.queryParameters["error"];
+      String errorDescription = uri.queryParameters["error_description"];
+      throw OAuthException(errorType, errorDescription);
+    } 
   }
 
   Future<SavedMembership> _getStoredMembership() async {
@@ -244,22 +254,10 @@ class SavedMembership extends UserMembershipData {
 }
 
 class BungieAuthBrowser implements OAuthBrowser {
-  static InAppBrowser fallback = new InAppBrowser();
-  static ChromeSafariBrowser browser = new ChromeSafariBrowser(fallback);
   BungieAuthBrowser() : super();
 
   @override
-  dynamic open(String url) {
-    
-    return browser.open(url, options: {
-      "addShareButton": false,
-      "toolbarBackgroundColor": "#000000",
-      "dismissButtonStyle": 1,
-      "preferredBarTintColor": "#000000",
-    });
-  }
-
-  close(){
-    browser.close();
+  dynamic open(String url) async{
+    await launch(url, forceSafariVC: true, statusBarBrightness: Brightness.light);
   }
 }

@@ -9,6 +9,8 @@ class DestinyData {
   static const Color positiveFeedback = Color.fromRGBO(67, 205, 57, 1);
   static const Color negativeFeedback = Color.fromRGBO(204, 58, 56, 1);
 
+  static const Color objectiveProgress = Color.fromRGBO(90, 163, 102, 1);
+
   static const int collectionsRootHash = 3790247699;
   static const int triumphsRootHash = 1024788583;
 

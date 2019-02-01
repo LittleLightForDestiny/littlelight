@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:little_light/screens/collections.screen.dart';
 import 'package:little_light/screens/equipment.screen.dart';
@@ -121,7 +123,7 @@ class SideMenuWidget extends StatelessWidget {
   }
 
   Widget buildFooter(BuildContext context) {
-    bool isIOS = Theme.of(context).platform == TargetPlatform.iOS;
+    bool isIOS = Platform.isIOS;
     if (isIOS) return Container();
     var paddingBottom = MediaQuery.of(context).padding.bottom;
     return Container(
