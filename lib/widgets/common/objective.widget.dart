@@ -11,7 +11,16 @@ class ObjectiveWidget extends StatelessWidget {
 
   final DestinyObjectiveProgress objective;
 
-  const ObjectiveWidget({Key key, this.definition, this.color, this.objective})
+  final String placeholder;
+  final Color completedColor;
+
+  const ObjectiveWidget(
+      {Key key,
+      this.definition,
+      this.color,
+      this.completedColor,
+      this.objective,
+      this.placeholder})
       : super(key: key);
 
   @override
@@ -40,45 +49,61 @@ class ObjectiveWidget extends StatelessWidget {
   buildCheckFill(BuildContext context) {
     var completed = objective?.complete == true;
     if (!completed) return null;
-    return Container(color: DestinyData.objectiveProgress);
+    return Container(color: barColor);
   }
 
   buildBar(BuildContext context) {
     if (definition == null) return Container();
+    if ((definition?.completionValue ?? 0) <= 1) {
+      return Container(
+          padding: EdgeInsets.only(left: 8), child: buildTitle(context));
+    }
     return Container(
         margin: EdgeInsets.only(left: 4),
         height: 22,
-        padding: EdgeInsets.symmetric(horizontal: 2),
         decoration: BoxDecoration(
             border: Border.all(
                 width: 1, color: this.color ?? Colors.grey.shade300)),
         child: Stack(
           children: <Widget>[
             Positioned.fill(
+              child: buildProgressBar(context),
+            ),
+            Positioned.fill(
+                left: 4,
+                right: 4,
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [buildTitle(context), buildFraction(context)]))
+                    children: [
+                      Expanded(child: buildTitle(context)),
+                      buildCount(context)
+                    ]))
           ],
         ));
   }
 
   buildTitle(BuildContext context) {
-    return Flexible(
-        child: Text(definition?.progressDescription ?? "",
-        maxLines: 1,
-        softWrap: false,
-        overflow: TextOverflow.fade,
+    String title = definition?.progressDescription ?? "";
+    if (title.length == 0) {
+      title = placeholder ?? "";
+    }
+
+    return Container(
+        child: Text(title,
+            maxLines: 1,
+            softWrap: false,
+            overflow: TextOverflow.fade,
             style: TextStyle(
                 fontWeight: FontWeight.w300,
                 fontSize: 12,
                 color: this.color ?? Colors.grey.shade300)));
   }
 
-  buildFraction(BuildContext context) {
+  buildCount(BuildContext context) {
     int progress = objective?.progress ?? 0;
     int total = definition.completionValue ?? 0;
-    if (total == 0) return Container();
+    if (total <= 1) return Container();
     if (!definition.allowOvercompletion) {
       progress = max(total, progress);
     }
@@ -88,5 +113,27 @@ class ObjectiveWidget extends StatelessWidget {
             fontWeight: FontWeight.w300,
             fontSize: 13,
             color: this.color ?? Colors.grey.shade300));
+  }
+
+  buildProgressBar(BuildContext context) {
+    int progress = objective?.progress ?? 0;
+    int total = definition.completionValue ?? 0;
+    Color color = Color.lerp(barColor, Colors.black, .4);
+    
+    return Container(
+        margin: EdgeInsets.all(2),
+        color: Colors.blueGrey.shade800,
+        alignment: Alignment.centerLeft,
+        child: FractionallySizedBox(
+          widthFactor: min(progress / total, 1),
+          child: Container(color: color),
+        ));
+  }
+
+  Color get barColor{
+    if(objective?.complete == true){
+      return completedColor ?? DestinyData.objectiveProgress;
+    }
+    return DestinyData.objectiveProgress;
   }
 }

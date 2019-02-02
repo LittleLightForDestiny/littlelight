@@ -37,10 +37,10 @@ class LoginWidgetState extends State<LoginWidget> {
     } on OAuthException catch (e) {
       bool isIOS =  Platform.isIOS;
       String platformMessage =
-          "If this keeps happening, please try to login with a mainstream browser (preferably Google Chrome).";
+          "If this keeps happening, please try to login with a mainstream browser.";
       if (isIOS) {
         platformMessage =
-            "Please don't open the auth process in another safari window, this could prevent you from getting logged in.";
+            "Please dont open the auth process in another safari window, this could prevent you from getting logged in.";
       }
       showDialog(
           context: context,

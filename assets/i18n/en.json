@@ -53,9 +53,15 @@
   "You have no loadouts yet. Create your first one.": "You have no loadouts yet. Create your first one.",
   "You can only equip one exotic weapon at a time. Removing {itemName}.": "You can only equip one exotic weapon at a time. Removing {itemName}.",
   "You can only equip one exotic armor piece at a time. Removing {itemName}.": "You can only equip one exotic armor piece at a time. Removing {itemName}.",
-  "#####Try Again": "Try Again",
-  "#####Exit": "Exit",
-  "#####Login with another account": "Login with another account",
-  "#####DestinyAccountNotFound": "Destiny Account Not Found",
-  "#####We were unable to find your Destiny account information. If you have a valid Destiny Account let us know.": "We were unable to find your Destiny account information. If you have a valid Destiny Account let us know."
+  "Try Again": "Try Again",
+  "Exit": "Exit",
+  "Login with another account": "Login with another account",
+  "DestinyAccountNotFound": "Destiny Account Not Found",
+  "We were unable to find your Destiny account information. If you have a valid Destiny Account let us know.": "We were unable to find your Destiny account information. If you have a valid Destiny Account let us know.",
+  "Objectives": "Objectives",
+  "If this keeps happening, please try to login with a mainstream browser.": "If this keeps happening, please try to login with a mainstream browser.",
+  "Please dont open the auth process in another safari window, this could prevent you from getting logged in.": "Please dont open the auth process in another safari window, this could prevent you from getting logged in.",
+  "We were unable to find your Destiny account information. If you have a valid Destiny Account, let us know.": "We were unable to find your Destiny account information. If you have a valid Destiny Account, let us know.",
+  "invalid_request": "invalid_request",
+  "We&#39;ve encountered an error, please try again later.": "We've encountered an error, please try again later."
 }

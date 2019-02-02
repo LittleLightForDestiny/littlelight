@@ -45,7 +45,7 @@ class SelectPlatformWidgetState extends State<SelectPlatformWidget> {
           Container(
               padding: EdgeInsets.all(8),
               child: TranslatedTextWidget(
-                  "Looks like you don't play destiny on this Bungie.net account. Try logging into a different account.")),
+                  "Looks like you dont play destiny on this Bungie.net account. Try logging into a different account.")),
           Container(
               padding: EdgeInsets.all(8),
               constraints: BoxConstraints(minWidth: double.infinity),

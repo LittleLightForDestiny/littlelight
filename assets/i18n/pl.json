@@ -57,5 +57,11 @@
   "Exit": "Wyjście",
   "Login with another account": "Zaloguj się przy użyciu innego konta",
   "DestinyAccountNotFound": "Nie znaleziono konta Destiny",
-  "We were unable to find your Destiny account information. If you have a valid Destiny Account let us know.": "Nie mogliśmy znaleźć informacji o Twoim koncie Destiny. Jeśli posiadasz prawidłowe konto przeznaczenia, daj nam znać."
+  "We were unable to find your Destiny account information. If you have a valid Destiny Account let us know.": "Nie mogliśmy znaleźć informacji o Twoim koncie Destiny. Jeśli posiadasz prawidłowe konto przeznaczenia, daj nam znać.",
+  "Objectives": "Cele",
+  "If this keeps happening, please try to login with a mainstream browser.": "Jeśli tak się stanie, spróbuj zalogować się w głównej przeglądarce.",
+  "Please dont open the auth process in another safari window, this could prevent you from getting logged in.": "Proszę nie otwierać procesu autoryzacji w innym oknie Safari, może to uniemożliwić zalogowanie się.",
+  "We were unable to find your Destiny account information. If you have a valid Destiny Account, let us know.": "Nie mogliśmy znaleźć informacji o Twoim koncie Destiny. Jeśli posiadasz ważne konto przeznaczenia, daj nam znać.",
+  "invalid_request": "Nieprawidłowe żądanie",
+  "We&#39;ve encountered an error, please try again later.": "Wystąpił błąd, spróbuj ponownie później."
 }

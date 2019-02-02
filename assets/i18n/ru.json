@@ -57,5 +57,11 @@
   "Exit": "Выход",
   "Login with another account": "Войти с другим аккаунтом",
   "DestinyAccountNotFound": "Аккаунт Destiny не найден",
-  "We were unable to find your Destiny account information. If you have a valid Destiny Account let us know.": "Нам не удалось найти информацию о вашей учетной записи Destiny. Если у вас есть действующий аккаунт Destiny, сообщите нам."
+  "We were unable to find your Destiny account information. If you have a valid Destiny Account let us know.": "Нам не удалось найти информацию о вашей учетной записи Destiny. Если у вас есть действующий аккаунт Destiny, сообщите нам.",
+  "Objectives": "Цели",
+  "If this keeps happening, please try to login with a mainstream browser.": "Если это продолжается, попробуйте войти с помощью основного браузера.",
+  "Please dont open the auth process in another safari window, this could prevent you from getting logged in.": "Пожалуйста, не открывайте процесс аутентификации в другом окне сафари, это может помешать вам войти в систему.",
+  "We were unable to find your Destiny account information. If you have a valid Destiny Account, let us know.": "Нам не удалось найти информацию о вашей учетной записи Destiny. Если у вас есть действующий аккаунт Destiny, сообщите нам.",
+  "invalid_request": "неверный запрос",
+  "We&#39;ve encountered an error, please try again later.": "Мы столкнулись с ошибкой, повторите попытку позже."
 }

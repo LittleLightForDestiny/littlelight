@@ -57,5 +57,11 @@
   "Exit": "出口",
   "Login with another account": "使用其他帐户登录",
   "DestinyAccountNotFound": "未找到“命运”帐户",
-  "We were unable to find your Destiny account information. If you have a valid Destiny Account let us know.": "我们无法找到您的Destiny帐户信息。 如果您有有效的Destiny帐户，请告知我们。"
+  "We were unable to find your Destiny account information. If you have a valid Destiny Account let us know.": "我们无法找到您的Destiny帐户信息。 如果您有有效的Destiny帐户，请告知我们。",
+  "Objectives": "目标",
+  "If this keeps happening, please try to login with a mainstream browser.": "如果这种情况持续发生，请尝试使用主流浏览器登录。",
+  "Please dont open the auth process in another safari window, this could prevent you from getting logged in.": "请不要在另一个safari窗口中打开auth进程，这可能会阻止您登录。",
+  "We were unable to find your Destiny account information. If you have a valid Destiny Account, let us know.": "我们无法找到您的Destiny帐户信息。 如果您有有效的Destiny帐户，请告知我们。",
+  "invalid_request": "非法请求",
+  "We&#39;ve encountered an error, please try again later.": "我们遇到了错误，请稍后再试。"
 }

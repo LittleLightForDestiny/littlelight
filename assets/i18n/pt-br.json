@@ -56,5 +56,11 @@
   "Exit": "Sair",
   "Login with another account": "Logar com outra conta",
   "DestinyAccountNotFound": "Conta de Destiny não encontrada",
-  "We were unable to find your Destiny account information. If you have a valid Destiny Account let us know.": "Não foi possível encontrar as informações da sua conta do Destiny. Se você tiver uma conta de destiny válida, informe-nos."
+  "We were unable to find your Destiny account information. If you have a valid Destiny Account let us know.": "Não foi possível encontrar as informações da sua conta do Destiny. Se você tiver uma conta de destiny válida, informe-nos.",
+  "Objectives": "Objetivos",
+  "If this keeps happening, please try to login with a mainstream browser.": "Se isso continuar acontecendo, tente fazer login com um navegador convencional.",
+  "Please dont open the auth process in another safari window, this could prevent you from getting logged in.": "Por favor, não abra o processo de autenticação em outra janela de safári, isso pode impedir que você faça o login.",
+  "We were unable to find your Destiny account information. If you have a valid Destiny Account, let us know.": "Não foi possível encontrar as informações da sua conta do Destiny. Se você tiver uma conta de destino válida, avise-nos.",
+  "invalid_request": "pedido inválido",
+  "We&#39;ve encountered an error, please try again later.": "Encontramos um erro. Tente novamente mais tarde."
 }

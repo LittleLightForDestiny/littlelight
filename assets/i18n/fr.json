@@ -57,5 +57,11 @@
   "Exit": "sortie",
   "Login with another account": "Se connecter avec un autre compte",
   "DestinyAccountNotFound": "Compte Destiny introuvable",
-  "We were unable to find your Destiny account information. If you have a valid Destiny Account let us know.": "Nous n'avons pas pu trouver vos informations de compte Destiny. Si vous avez un compte Destiny valide, faites-le nous savoir."
+  "We were unable to find your Destiny account information. If you have a valid Destiny Account let us know.": "Nous n'avons pas pu trouver vos informations de compte Destiny. Si vous avez un compte Destiny valide, faites-le nous savoir.",
+  "Objectives": "Objectifs",
+  "If this keeps happening, please try to login with a mainstream browser.": "Si cela continue, essayez de vous connecter avec un navigateur traditionnel.",
+  "Please dont open the auth process in another safari window, this could prevent you from getting logged in.": "S'il vous plaît ne pas ouvrir le processus d'authentification dans une autre fenêtre de safari, cela pourrait vous empêcher de vous connecter.",
+  "We were unable to find your Destiny account information. If you have a valid Destiny Account, let us know.": "Nous n'avons pas pu trouver vos informations de compte Destiny. Si vous avez un compte Destiny valide, faites-le nous savoir.",
+  "invalid_request": "requête invalide",
+  "We&#39;ve encountered an error, please try again later.": "Nous avons rencontré une erreur, veuillez réessayer plus tard."
 }

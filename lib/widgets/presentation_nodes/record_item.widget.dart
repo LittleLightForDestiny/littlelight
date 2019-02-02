@@ -1,3 +1,4 @@
+import 'package:bungie_api/models/destiny_lore_definition.dart';
 import 'package:bungie_api/models/destiny_objective_definition.dart';
 import 'package:bungie_api/models/destiny_objective_progress.dart';
 import 'package:bungie_api/models/destiny_record_component.dart';
@@ -26,13 +27,14 @@ class RecordItemWidget extends StatefulWidget {
 class RecordItemWidgetState extends State<RecordItemWidget> {
   DestinyRecordDefinition _definition;
   bool isLogged = false;
+  Map<int, DestinyObjectiveDefinition> objectiveDefinitions;
+  DestinyLoreDefinition loreDefinition;
+
   DestinyRecordDefinition get definition {
     return widget.manifest
             .getDefinitionFromCache<DestinyRecordDefinition>(widget.hash) ??
         _definition;
   }
-
-  Map<int, DestinyObjectiveDefinition> objectiveDefinitions;
 
   @override
   void initState() {
@@ -53,9 +55,14 @@ class RecordItemWidgetState extends State<RecordItemWidget> {
       objectiveDefinitions =
           await manifest.getDefinitions<DestinyObjectiveDefinition>(
               definition.objectiveHashes);
+      if (mounted) setState(() {});
     }
-    if (!mounted) return;
-    setState(() {});
+
+    if (definition?.loreHash != null) {
+      loreDefinition = await manifest
+          .getDefinition<DestinyLoreDefinition>(definition.loreHash);
+      if (mounted) setState(() {});
+    }
   }
 
   DestinyRecordComponent get record {
@@ -104,7 +111,8 @@ class RecordItemWidgetState extends State<RecordItemWidget> {
                               color: foregroundColor,
                               margin: EdgeInsets.all(4),
                             ),
-                            buildDescription(context)
+                            buildDescription(context),
+                            buildLore(context)
                           ],
                         )))
               ],
@@ -165,12 +173,30 @@ class RecordItemWidgetState extends State<RecordItemWidget> {
 
   buildDescription(BuildContext context) {
     if (definition == null) return Container();
+    if ((definition?.displayProperties?.description?.length ?? 0) == 0)
+      return Container();
 
     return Container(
         padding: EdgeInsets.all(4),
         child: Text(
           definition.displayProperties.description,
           softWrap: true,
+          style: TextStyle(
+              color: foregroundColor,
+              fontWeight: FontWeight.w300,
+              fontSize: 13),
+        ));
+  }
+
+  buildLore(BuildContext context) {
+    if (loreDefinition == null) return Container();
+    return Container(
+        padding: EdgeInsets.all(4),
+        child: Text(
+          loreDefinition.displayProperties.description,
+          softWrap: true,
+          maxLines: 5,
+          overflow: TextOverflow.ellipsis,
           style: TextStyle(
               color: foregroundColor,
               fontWeight: FontWeight.w300,
@@ -191,12 +217,13 @@ class RecordItemWidgetState extends State<RecordItemWidget> {
         child: Column(
             children: definition.objectiveHashes
                 .map((hash) => ObjectiveWidget(
-                      definition: objectiveDefinitions != null
-                          ? objectiveDefinitions[hash]
-                          : null,
-                      objective: getRecordObjective(hash),
-                      color: foregroundColor,
-                    ))
+                    definition: objectiveDefinitions != null
+                        ? objectiveDefinitions[hash]
+                        : null,
+                    objective: getRecordObjective(hash),
+                    placeholder: definition?.displayProperties?.name ?? "",
+                    color: foregroundColor,
+                    completedColor: Colors.amber.shade300))
                 .toList()));
   }
 }
