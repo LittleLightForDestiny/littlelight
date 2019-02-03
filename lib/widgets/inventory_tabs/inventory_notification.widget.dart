@@ -1,12 +1,16 @@
 import 'dart:async';
 
+import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/services/inventory/inventory.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:shimmer/shimmer.dart';
 
 class InventoryNotificationWidget extends StatefulWidget {
   final profile = ProfileService();
+  final inventory = InventoryService();
   final double barHeight;
 
   InventoryNotificationWidget(
@@ -23,34 +27,79 @@ class InventoryNotificationWidgetState
     extends State<InventoryNotificationWidget> {
   bool _busy = false;
   String _message = "";
-  StreamSubscription<ProfileEvent> subscription;
+  Widget infoIcons;
+  StreamSubscription<ProfileEvent> profileSubscription;
+  StreamSubscription<InventoryEvent> inventorySubscription;
 
   @override
   void initState() {
     super.initState();
-    subscription = widget.profile.broadcaster.listen((event) {
-      bool busy;
-      String message;
-      if (event.type == ProfileEventType.requestedUpdate) {
-        busy = true;
-        message = "Updating";
-      }
-      if (event.type == ProfileEventType.receivedUpdate) {
-        busy = false;
-      }
+    profileSubscription = widget.profile.broadcaster.listen((event) {
+      handleProfileEvent(event);
+    });
 
-      if(busy != null){
-        setState(() {  
-          _message = message;
-          _busy = busy;
-        });
-      }      
+    inventorySubscription = widget.inventory.broadcaster.listen((event) {
+      handleInventoryEvent(event);
+    });
+  }
+
+  void handleProfileEvent(ProfileEvent event) {
+    bool busy;
+    String message;
+    if (event.type == ProfileEventType.requestedUpdate) {
+      busy = true;
+      message = "Updating";
+    }
+    if (event.type == ProfileEventType.receivedUpdate) {
+      busy = false;
+    }
+
+    if (busy != null) {
+      setState(() {
+        _message = message;
+        _busy = busy;
+        infoIcons = null;
+      });
+    }
+  }
+
+  void handleInventoryEvent(InventoryEvent event) {
+    String message;
+    if (event.type == InventoryEventType.requestedTransfer) {
+      message = "Transferring";
+      var character = widget.profile.getCharacter(event.characterId);
+      infoIcons = Row(children: [
+        SizedBox(
+            width: 24,
+            height: 24,
+            key:Key("item_${event.item.itemHash}"),
+            child: ManifestImageWidget<DestinyInventoryItemDefinition>(
+                event.item.itemHash)),
+        Icon(Icons.chevron_right),
+        SizedBox(
+            width: 24,
+            height: 24,
+            key:Key("character_${event.characterId}"),
+            child: ManifestImageWidget<DestinyInventoryItemDefinition>(
+                character.emblemHash)),
+      ]);
+    }
+
+    if (event.type == InventoryEventType.requestedEquip) {
+      message = "Equipping";
+      infoIcons = null;
+    }
+
+    setState(() {
+      _message = message;
+      _busy = true;
     });
   }
 
   @override
   void dispose() {
-    subscription.cancel();
+    profileSubscription.cancel();
+    inventorySubscription.cancel();
     super.dispose();
   }
 
@@ -58,23 +107,23 @@ class InventoryNotificationWidgetState
   Widget build(BuildContext context) {
     double bottomPadding = MediaQuery.of(context).padding.bottom;
     return Positioned(
-      bottom:0, 
-      left:0,
-      right: 0,
-      height:bottomPadding + widget.barHeight * 2,
-      child:IgnorePointer(
-        child: AnimatedCrossFade(
-      duration: Duration(milliseconds: 300),
-      firstChild: Container(
-        alignment: Alignment.bottomCenter,
-          child: idleWidget(context),
-          height: bottomPadding + widget.barHeight * 2),
-      secondChild: Container(
-          child: busyWidget(context),
-          height: bottomPadding + widget.barHeight * 2),
-      crossFadeState:
-          _busy ? CrossFadeState.showSecond : CrossFadeState.showFirst
-    )));
+        bottom: 0,
+        left: 0,
+        right: 0,
+        height: bottomPadding + widget.barHeight * 2,
+        child: IgnorePointer(
+            child: AnimatedCrossFade(
+                duration: Duration(milliseconds: 300),
+                firstChild: Container(
+                    alignment: Alignment.bottomCenter,
+                    child: idleWidget(context),
+                    height: bottomPadding + widget.barHeight * 2),
+                secondChild: Container(
+                    child: busyWidget(context),
+                    height: bottomPadding + widget.barHeight * 2),
+                crossFadeState: _busy
+                    ? CrossFadeState.showSecond
+                    : CrossFadeState.showFirst)));
   }
 
   Widget idleWidget(context) {
@@ -119,17 +168,28 @@ class InventoryNotificationWidgetState
   Widget busyText(BuildContext context) {
     return Container(
         decoration: BoxDecoration(
-          color: Colors.blueGrey.shade900.withOpacity(.9),
-          borderRadius: BorderRadius.all(Radius.circular(16))
-        ),
+            color: Colors.blueGrey.shade900.withOpacity(.9),
+            borderRadius: BorderRadius.all(Radius.circular(16))),
         alignment: Alignment.bottomRight,
-        padding: EdgeInsets.symmetric(vertical:8, horizontal:16),
-        child: Shimmer.fromColors(
-            baseColor: Colors.blueGrey.shade400,
-            highlightColor: Colors.grey.shade100,
-            child: TranslatedTextWidget(
-              _message, key: Key("inventory_notification_text_$_message"), uppercase: true,
-                style: TextStyle(fontWeight: FontWeight.w700))));
+        padding: EdgeInsets.symmetric(horizontal: 16),
+        child: Row(children: [
+          Shimmer.fromColors(
+              baseColor: Colors.blueGrey.shade400,
+              highlightColor: Colors.grey.shade100,
+              child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 8),
+                  child: TranslatedTextWidget(_message,
+                      key: Key("inventory_notification_text_$_message"),
+                      uppercase: true,
+                      style: TextStyle(fontWeight: FontWeight.w700)))),
+          busyIcons(context)
+        ]));
+  }
+
+  Widget busyIcons(BuildContext context) {
+    if (infoIcons == null) return Container();
+    return Container(
+        padding: EdgeInsets.symmetric(horizontal: 4), child: infoIcons);
   }
 
   Widget shimmerBar(BuildContext context) {

@@ -6,6 +6,7 @@ import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/selected_page_persistence.dart';
 import 'package:little_light/widgets/inventory_tabs/character_tab.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
+import 'package:little_light/widgets/inventory_tabs/selected_items.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/tabs_character_menu.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/tabs_item_type_menu.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/vault_tab.widget.dart';
@@ -88,7 +89,8 @@ class EquipmentScreenState extends State<EquipmentScreen>
           ),
           TabsCharacterMenuWidget(characters, controller: charTabController),
           ItemTypeMenuWidget(widget.itemTypes, controller: typeTabController),
-          InventoryNotificationWidget(key: Key('inventory_notification_widget'))
+          InventoryNotificationWidget(key: Key('inventory_notification_widget')),
+          SelectedItemsWidget(),
         ],
       ),
     );

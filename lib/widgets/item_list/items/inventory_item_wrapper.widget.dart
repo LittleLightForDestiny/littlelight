@@ -7,6 +7,7 @@ import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enu
 import 'package:little_light/services/bungie_api/enums/item_type.enum.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/selection/selection.service.dart';
 import 'package:little_light/widgets/item_list/items/armor/armor_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/armor/medium_armor_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/armor/minimal_armor_inventory_item.widget.dart';
@@ -119,9 +120,14 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
   }
 
   void onLongPress(context){
+    SelectionService().addItem(widget.item, widget.characterId);
   }
 
   void onTap(context) {
+    if(SelectionService().multiselectActivated){
+      onLongPress(context);
+      return;
+    }
     Navigator.push(
       context,
       MaterialPageRoute(

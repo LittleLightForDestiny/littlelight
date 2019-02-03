@@ -47,7 +47,7 @@ class LoadoutDestinationsWidget extends StatelessWidget {
   }
 
   Widget buildEquippingBlock(BuildContext context, String title,
-      List<LoadoutDestination> destinations,
+      List<TransferDestination> destinations,
       [Alignment align = Alignment.centerRight]) {
     return Column(
         crossAxisAlignment: align == Alignment.centerRight
@@ -73,7 +73,7 @@ class LoadoutDestinationsWidget extends StatelessWidget {
         ));
   }
 
-  Widget buttons(BuildContext context, List<LoadoutDestination> destinations,
+  Widget buttons(BuildContext context, List<TransferDestination> destinations,
       [Alignment align = Alignment.centerRight]) {
     return Container(
         alignment: align,
@@ -90,53 +90,45 @@ class LoadoutDestinationsWidget extends StatelessWidget {
                 .toList()));
   }
 
-  transferTap(LoadoutDestination destination, BuildContext context) async {
+  transferTap(TransferDestination destination, BuildContext context) async {
     switch (destination.action) {
-      case LoadoutAction.Equip:
+      case InventoryAction.Equip:
         {
           inventory.transferLoadout(this.loadout, destination.characterId, true);
           Navigator.pop(context);
           break;
         }
-      case LoadoutAction.Transfer:
+      case InventoryAction.Transfer:
         {
           inventory.transferLoadout(this.loadout, destination.characterId);
           Navigator.pop(context);
           break;
         }
+
+      default:
+      break;
     }
   }
 
-  List<LoadoutDestination> get equipDestinations {
+  List<TransferDestination> get equipDestinations {
     return this
         .profile
         .getCharacters(CharacterOrder.lastPlayed)
-        .map((char) => LoadoutDestination(ItemDestination.Character,
-            characterId: char.characterId, action: LoadoutAction.Equip))
+        .map((char) => TransferDestination(ItemDestination.Character,
+            characterId: char.characterId, action: InventoryAction.Equip))
         .toList();
   }
 
-  List<LoadoutDestination> get transferDestinations {
-    List<LoadoutDestination> list = this
+  List<TransferDestination> get transferDestinations {
+    List<TransferDestination> list = this
         .profile
         .getCharacters(CharacterOrder.lastPlayed)
-        .map((char) => LoadoutDestination(ItemDestination.Character,
+        .map((char) => TransferDestination(ItemDestination.Character,
             characterId: char.characterId))
         .toList();
 
     
-      list.add(LoadoutDestination(ItemDestination.Vault));
+      list.add(TransferDestination(ItemDestination.Vault));
     return list;
   }
 }
-
-class LoadoutDestination {
-  final String characterId;
-  final ItemDestination type;
-  final LoadoutAction action;
-
-  LoadoutDestination(this.type,
-      {this.action = LoadoutAction.Transfer, this.characterId});
-}
-
-enum LoadoutAction { Transfer, Equip }

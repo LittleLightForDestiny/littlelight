@@ -12,16 +12,18 @@ class EquipOnCharacterButton extends StatelessWidget {
   final ItemDestination type;
   final String characterId;
   final Function onTap;
+  final double iconSize;
+  final double fontSize;
 
-  const EquipOnCharacterButton({Key key, this.type, this.characterId, this.onTap}) : super(key: key);
+  const EquipOnCharacterButton({Key key, this.type, this.characterId, this.onTap, this.iconSize = kToolbarHeight, this.fontSize = 9}) : super(key: key);
 
 
   @override
   Widget build(BuildContext context) {
     return Container(
         child: SizedBox(
-            width: kToolbarHeight,
-            height: kToolbarHeight,
+            width: iconSize,
+            height: iconSize,
             child: Container(
                 foregroundDecoration: BoxDecoration(
                     border: Border.all(width: 1, color: Colors.grey.shade400)),
@@ -69,8 +71,10 @@ class EquipOnCharacterButton extends StatelessWidget {
             return def.genderedClassNamesByGenderHash["${character.genderHash}"] ?? "";
           },
           overflow: TextOverflow.fade,
+          softWrap: false,
+          maxLines: 1,
           textAlign: TextAlign.center,
-          uppercase: true, style:TextStyle(fontSize: 9, fontWeight: FontWeight.bold))
+          uppercase: true, style:TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold))
         ),);
         break;
 

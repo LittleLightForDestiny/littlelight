@@ -20,13 +20,13 @@ import 'package:path_provider/path_provider.dart';
 
 enum LastLoadedFrom { server, cache }
 
-enum ProfileEventType { localUpdate, requestedUpdate, receivedUpdate }
 
 enum CharacterOrder { none, lastPlayed, firstCreated, lastCreated }
 
+enum ProfileEventType {localUpdate, requestedUpdate, receivedUpdate}
+
 class ProfileEvent {
   final ProfileEventType type;
-
   ProfileEvent(this.type);
 }
 
@@ -80,6 +80,8 @@ class ProfileService {
     return _eventsStream;
   }
 
+  bool pauseAutomaticUpdater = false;
+
   fireLocalUpdate() {
     _streamController.add(ProfileEvent(ProfileEventType.localUpdate));
   }
@@ -100,7 +102,9 @@ class ProfileService {
       _timer.cancel();
     }
     _timer = new Timer.periodic(every, (timer) async {
-      await fetchProfileData(components: components);
+      if(!pauseAutomaticUpdater){
+        await fetchProfileData(components: components);
+      }
     });
 
     if (this._lastLoadedFrom == LastLoadedFrom.cache) {
