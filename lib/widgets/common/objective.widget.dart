@@ -12,13 +12,13 @@ class ObjectiveWidget extends StatelessWidget {
   final DestinyObjectiveProgress objective;
 
   final String placeholder;
-  final Color completedColor;
+  final bool parentCompleted;
 
   const ObjectiveWidget(
       {Key key,
       this.definition,
       this.color,
-      this.completedColor,
+      this.parentCompleted,
       this.objective,
       this.placeholder})
       : super(key: key);
@@ -61,7 +61,7 @@ class ObjectiveWidget extends StatelessWidget {
     return Container(
         margin: EdgeInsets.only(left: 4),
         height: 22,
-        decoration: BoxDecoration(
+        decoration: objective?.complete == true ? null : BoxDecoration(
             border: Border.all(
                 width: 1, color: this.color ?? Colors.grey.shade300)),
         child: Stack(
@@ -95,8 +95,8 @@ class ObjectiveWidget extends StatelessWidget {
             softWrap: false,
             overflow: TextOverflow.fade,
             style: TextStyle(
-                fontWeight: FontWeight.w300,
-                fontSize: 12,
+                fontWeight: FontWeight.w400,
+                fontSize: 13,
                 color: this.color ?? Colors.grey.shade300)));
   }
 
@@ -110,7 +110,7 @@ class ObjectiveWidget extends StatelessWidget {
 
     return Text("$progress/$total",
         style: TextStyle(
-            fontWeight: FontWeight.w300,
+            fontWeight: FontWeight.w500,
             fontSize: 13,
             color: this.color ?? Colors.grey.shade300));
   }
@@ -119,7 +119,7 @@ class ObjectiveWidget extends StatelessWidget {
     int progress = objective?.progress ?? 0;
     int total = definition.completionValue ?? 0;
     Color color = Color.lerp(barColor, Colors.black, .4);
-    
+    if(objective?.complete == true) return Container();
     return Container(
         margin: EdgeInsets.all(2),
         color: Colors.blueGrey.shade800,
@@ -131,8 +131,8 @@ class ObjectiveWidget extends StatelessWidget {
   }
 
   Color get barColor{
-    if(objective?.complete == true){
-      return completedColor ?? DestinyData.objectiveProgress;
+    if(parentCompleted == true){
+      return color;
     }
     return DestinyData.objectiveProgress;
   }

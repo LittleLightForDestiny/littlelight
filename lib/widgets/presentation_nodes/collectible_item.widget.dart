@@ -7,7 +7,6 @@ import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/widgets/common/definition_provider.widget.dart';
 
 class CollectibleItemWidget extends StatefulWidget {
   final ManifestService manifest = new ManifestService();

@@ -355,9 +355,15 @@ class ProfileService {
   DestinyRecordComponent getRecord(int hash, int scope) {
     String hashStr = "$hash";
     if (scope == DestinyScope.Profile) {
+      if(_profile?.profileRecords?.data == null){
+        return null;
+      }
       return _profile.profileRecords.data.records[hashStr];
     }
     var charRecords = _profile?.characterRecords?.data;
+    if(charRecords == null){
+      return null;
+    }
     for (var char in charRecords.values) {
       if (char.records.containsKey(hashStr)) {
         return char.records[hashStr];

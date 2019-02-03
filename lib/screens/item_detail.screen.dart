@@ -14,7 +14,6 @@ import 'package:little_light/widgets/item_details/item_perks.widget.dart';
 import 'package:little_light/widgets/item_details/item_stats.widget.dart';
 import 'package:little_light/widgets/item_details/main_info/item_main_info.widget.dart';
 import 'package:little_light/widgets/item_details/management_block.widget.dart';
-import 'package:little_light/widgets/item_details/quest_info.widget.dart';
 import 'package:little_light/widgets/item_details/selected_perk.widget.dart';
 
 class ItemDetailScreen extends DestinyItemStatefulWidget {

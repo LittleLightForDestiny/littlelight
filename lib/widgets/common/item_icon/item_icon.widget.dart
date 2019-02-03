@@ -8,7 +8,6 @@ import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/bungie_api/enums/item_type.enum.dart';
-import 'package:little_light/utils/shimmer_helper.dart';
 import 'package:little_light/widgets/common/destiny_item.widget.dart';
 import 'package:little_light/widgets/common/item_icon/engram_icon.widget.dart';
 import 'package:little_light/widgets/common/item_icon/subclass_icon.widget.dart';
@@ -87,7 +86,7 @@ class ItemIconWidget extends DestinyItemWidget {
   }
 
   Widget itemIconPlaceholder(BuildContext context) {
-    return ShimmerHelper.getDefaultShimmer(context);
+    return Container();
   }
 
   Image getMasterworkOutline() {

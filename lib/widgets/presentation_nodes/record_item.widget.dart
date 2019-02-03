@@ -84,7 +84,7 @@ class RecordItemWidgetState extends State<RecordItemWidget> {
     if (!isLogged) {
       return Colors.grey.shade300;
     }
-    return completed ? Colors.amber.shade100 : Colors.grey.shade400;
+    return completed ? Colors.amber.shade100 : Colors.grey.shade300;
   }
 
   @override
@@ -223,7 +223,7 @@ class RecordItemWidgetState extends State<RecordItemWidget> {
                     objective: getRecordObjective(hash),
                     placeholder: definition?.displayProperties?.name ?? "",
                     color: foregroundColor,
-                    completedColor: Colors.amber.shade300))
+                    parentCompleted: completed,))
                 .toList()));
   }
 }
