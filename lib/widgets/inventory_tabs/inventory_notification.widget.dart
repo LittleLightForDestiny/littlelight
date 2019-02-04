@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/inventory/inventory.service.dart';
@@ -63,11 +62,10 @@ class InventoryNotificationWidgetState
     }
   }
 
-  void handleInventoryEvent(InventoryEvent event) {
+  void handleInventoryEvent(InventoryEvent event) async{
     String message;
     if (event.type == InventoryEventType.requestedTransfer) {
       message = "Transferring";
-      var character = widget.profile.getCharacter(event.characterId);
       infoIcons = Row(children: [
         SizedBox(
             width: 24,
@@ -75,14 +73,15 @@ class InventoryNotificationWidgetState
             key:Key("item_${event.item.itemHash}"),
             child: ManifestImageWidget<DestinyInventoryItemDefinition>(
                 event.item.itemHash)),
-        Icon(Icons.chevron_right),
-        SizedBox(
-            width: 24,
-            height: 24,
-            key:Key("character_${event.characterId}"),
-            child: ManifestImageWidget<DestinyInventoryItemDefinition>(
-                character.emblemHash)),
       ]);
+      //TODO: reimplement character icons including vault and inventory
+      // Icon(Icons.chevron_right),
+        // SizedBox(
+        //     width: 24,
+        //     height: 24,
+        //     key:Key("character_${event.characterId}"),
+        //     child: ManifestImageWidget<DestinyInventoryItemDefinition>(
+        //         character.emblemHash)),
     }
 
     if (event.type == InventoryEventType.requestedEquip) {

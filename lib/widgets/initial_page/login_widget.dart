@@ -69,6 +69,7 @@ class LoginWidgetState extends State<LoginWidget> {
                     ])),
               ));
     }
+    WidgetsBinding.instance.renderView.automaticSystemUiAdjustment = false;
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarBrightness: Brightness.dark));

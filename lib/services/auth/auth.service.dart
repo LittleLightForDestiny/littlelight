@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:bungie_api/helpers/oauth.dart';
 import 'package:bungie_api/models/general_user.dart';
@@ -35,7 +36,7 @@ class AuthService {
     _prefs.setBool(_skippedLoginKey, true);
   }
 
-  Future<void> clearData() async{
+  Future<void> clearData() async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     _prefs.remove(_skippedLoginKey);
     _prefs.remove(_latestTokenKey);
@@ -50,8 +51,6 @@ class AuthService {
     littleLight.clearData();
   }
 
-  
-
   Future<SavedToken> _getStoredToken() async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     String jsonString = _prefs.getString(_latestTokenKey);
@@ -59,8 +58,8 @@ class AuthService {
       return null;
     }
     Map<String, dynamic> json = jsonDecode(jsonString);
-    SavedToken savedToken =  SavedToken.fromMap(json);
-    if(savedToken.accessToken == null || savedToken.expiresIn == null){
+    SavedToken savedToken = SavedToken.fromMap(json);
+    if (savedToken.accessToken == null || savedToken.expiresIn == null) {
       return null;
     }
     return savedToken;
@@ -91,8 +90,7 @@ class AuthService {
     if (token == null) {
       token = await _getStoredToken();
     }
-    if (token?.accessToken == null
-      || token?.expiresIn == null) {
+    if (token?.accessToken == null || token?.expiresIn == null) {
       return null;
     }
     DateTime now = DateTime.now();
@@ -110,7 +108,7 @@ class AuthService {
 
   Future<SavedToken> requestToken(String code) async {
     BungieNetToken token = await api.requestToken(code);
-    if(token.accessToken == null){
+    if (token.accessToken == null) {
       return null;
     }
     SavedToken saved = SavedToken(
@@ -124,42 +122,47 @@ class AuthService {
     return saved;
   }
 
-  Future<String> checkAuthorizationCode() async{
-    try{
-      Uri initialUri = await getInitialUri();
-      print("initialURI: $initialUri");
-      String authCode = initialUri.toString().split("code=")[1];
-      if(authCode != null){
-        closeWebView();
-      }
-      return authCode;
-    }catch(e){
+  Future<String> checkAuthorizationCode() async {
+    Uri uri = await getInitialUri();
+    print("initialURI: $uri");
+    if(uri?.queryParameters == null) return null;
+    if (uri.queryParameters.containsKey("code") ||
+        uri.queryParameters.containsKey("error")) {
+      closeWebView();
     }
-    return null;
+
+    if (uri.queryParameters.containsKey("code")) {
+      clearData();
+      return uri.queryParameters["code"];
+    } else {
+      String errorType = uri.queryParameters["error"];
+      String errorDescription = uri.queryParameters["error_description"];
+      throw OAuthException(errorType, errorDescription);
+    }
   }
 
   Future<String> authorize([reauth = false]) async {
     String currentLanguage = await TranslateService().getLanguage();
     var browser = new BungieAuthBrowser();
-    OAuth.openOAuth(browser, BungieApiService.clientId,
-        currentLanguage, true);
+    OAuth.openOAuth(browser, BungieApiService.clientId, currentLanguage, true);
     Stream<String> _stream = getLinksStream();
     Uri uri;
     await for (var link in _stream) {
       uri = Uri.parse(link);
-      if(uri.queryParameters.containsKey("code") || uri.queryParameters.containsKey("error")){
+      if (uri.queryParameters.containsKey("code") ||
+          uri.queryParameters.containsKey("error")) {
         break;
       }
     }
     closeWebView();
-    if(uri.queryParameters.containsKey("code")){
+    if (uri.queryParameters.containsKey("code")) {
       clearData();
       return uri.queryParameters["code"];
-    }else{
+    } else {
       String errorType = uri.queryParameters["error"];
       String errorDescription = uri.queryParameters["error_description"];
       throw OAuthException(errorType, errorDescription);
-    } 
+    }
   }
 
   Future<SavedMembership> _getStoredMembership() async {
@@ -180,13 +183,13 @@ class AuthService {
     return membership;
   }
 
-  Future<void> saveMembership(UserMembershipData membershipData, int membershipType) async{
+  Future<void> saveMembership(
+      UserMembershipData membershipData, int membershipType) async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
-    _currentMembership = SavedMembership(
-      membershipData.destinyMemberships, 
-      membershipData.bungieNetUser, 
-      membershipType);
-    _prefs.setString(_latestMembershipKey, jsonEncode(_currentMembership.toMap()));
+    _currentMembership = SavedMembership(membershipData.destinyMemberships,
+        membershipData.bungieNetUser, membershipType);
+    _prefs.setString(
+        _latestMembershipKey, jsonEncode(_currentMembership.toMap()));
 
     ProfileService profile = new ProfileService();
     await profile.clear();
@@ -194,7 +197,7 @@ class AuthService {
     await littleLight.clearData();
   }
 
-  bool get isLogged{
+  bool get isLogged {
     return _currentMembership != null;
   }
 }
@@ -247,9 +250,9 @@ class SavedMembership extends UserMembershipData {
   }
 
   UserInfoCard get selectedMembership {
-    return destinyMemberships.firstWhere((membership){
+    return destinyMemberships.firstWhere((membership) {
       return membership.membershipType == membershipType;
-    }, orElse: ()=>null);
+    }, orElse: () => null);
   }
 }
 
@@ -257,7 +260,12 @@ class BungieAuthBrowser implements OAuthBrowser {
   BungieAuthBrowser() : super();
 
   @override
-  dynamic open(String url) async{
-    await launch(url, forceSafariVC: true, statusBarBrightness: Brightness.light);
+  dynamic open(String url) async {
+    if(Platform.isIOS){
+      await launch(url,
+        forceSafariVC: true, statusBarBrightness: Brightness.light);  
+    }else{
+      await launch(url);
+    }
   }
 }

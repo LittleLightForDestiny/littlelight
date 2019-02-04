@@ -74,8 +74,7 @@ class ItemStatsWidget extends DestinyItemWidget {
 
     return stats.map((stat) {
       return ItemStatWidget(
-          stat,
-          statValues[stat.statHash]);
+          stat.statHash, stat.value, statValues[stat.statHash]);
     }).toList();
   }
 
@@ -85,10 +84,12 @@ class ItemStatsWidget extends DestinyItemWidget {
       return map;
     }
     List<int> plugHashes;
-    if(socketStates != null){
-      plugHashes = socketStates.map((state)=>state.plugHash).toList();
-    }else{
-      plugHashes = definition.sockets.socketEntries.map((plug)=>plug.singleInitialItemHash).toList();
+    if (socketStates != null) {
+      plugHashes = socketStates.map((state) => state.plugHash).toList();
+    } else {
+      plugHashes = definition.sockets.socketEntries
+          .map((plug) => plug.singleInitialItemHash)
+          .toList();
     }
 
     plugHashes.forEach((plugHash) {
@@ -97,38 +98,38 @@ class ItemStatsWidget extends DestinyItemWidget {
       if (def == null) {
         return;
       }
-      DestinyInventoryItemDefinition selectedDef = plugDefinitions[selectedPerks[index]];
+      DestinyInventoryItemDefinition selectedDef =
+          plugDefinitions[selectedPerks[index]];
 
       def.investmentStats.forEach((stat) {
         StatValues values = map[stat.statTypeHash] ?? new StatValues();
         if (def.plug?.uiPlugLabel == 'masterwork') {
           values.masterwork += stat.value;
-        }else{
+        } else {
           values.equipped += stat.value;
-          if(selectedDef == null){
+          if (selectedDef == null) {
             values.selected += stat.value;
           }
         }
         map[stat.statTypeHash] = values;
       });
 
-      if(selectedDef != null){
+      if (selectedDef != null) {
         selectedDef.investmentStats.forEach((stat) {
           StatValues values = map[stat.statTypeHash] ?? new StatValues();
-        if (selectedDef.plug?.uiPlugLabel != 'masterwork') {
-          values.selected += stat.value;
-        }
-        map[stat.statTypeHash] = values;
+          if (selectedDef.plug?.uiPlugLabel != 'masterwork') {
+            values.selected += stat.value;
+          }
+          map[stat.statTypeHash] = values;
         });
       }
-
     });
-    
+
     return map;
   }
 
   Iterable<DestinyInventoryItemStatDefinition> get stats {
-    if(definition?.stats?.stats == null){
+    if (definition?.stats?.stats == null) {
       return null;
     }
     List<DestinyInventoryItemStatDefinition> stats = definition
@@ -148,50 +149,56 @@ class ItemStatsWidget extends DestinyItemWidget {
     return stats;
   }
 
-  List<DestinyItemSocketState> get socketStates{
-    if(item == null) return null;
+  List<DestinyItemSocketState> get socketStates {
+    if (item == null) return null;
     return profile.getItemSockets(item.itemInstanceId);
   }
-      
 }
 
 class ItemStatWidget extends StatelessWidget {
-  final DestinyInventoryItemStatDefinition definition;
+  final int statHash;
+  final int baseValue;
   final StatValues modValues;
 
-  ItemStatWidget(this.definition, this.modValues);
+  ItemStatWidget(this.statHash, this.baseValue, this.modValues);
   @override
   Widget build(BuildContext context) {
-    double totalWidth = MediaQuery.of(context).size.width - 16;
-    return Container(
-        padding: EdgeInsets.symmetric(vertical: 1),
-        child: Row(children: [
-          SizedBox(
-              width: totalWidth * .45,
-              child: ManifestText<DestinyStatDefinition>(
-                definition.statHash,
-                key: Key("item_stat_${definition.statHash}"),
-                textAlign: TextAlign.right,
-                uppercase: true,
-                maxLines: 1,
-                softWrap: false,
-                style: TextStyle(
-                    color: color, fontWeight: FontWeight.bold, fontSize: 12),
-                overflow: TextOverflow.fade,
-              )),
-          SizedBox(
-              width: totalWidth * .1,
-              child: Text(
-                "$numberValue",
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                softWrap: false,
-                style: TextStyle(
-                    color: modColor, fontWeight: FontWeight.bold, fontSize: 12),
-                overflow: TextOverflow.fade,
-              )),
-          buildBar(context, totalWidth * .45)
-        ]));
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          print(constraints.maxWidth);
+      return Container(
+          padding: EdgeInsets.symmetric(vertical: 1),
+          child: Row(
+            children: [
+            SizedBox(
+                width: constraints.maxWidth * .45,
+                child: ManifestText<DestinyStatDefinition>(
+                  statHash,
+                  key: Key("item_stat_$statHash"),
+                  textAlign: TextAlign.right,
+                  uppercase: true,
+                  maxLines: 1,
+                  softWrap: false,
+                  style: TextStyle(
+                      color: color, fontWeight: FontWeight.bold, fontSize: 12),
+                  overflow: TextOverflow.fade,
+                )),
+            SizedBox(
+                width: constraints.maxWidth * .1,
+                child: Text(
+                  "$numberValue",
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  softWrap: false,
+                  style: TextStyle(
+                      color: modColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12),
+                  overflow: TextOverflow.fade,
+                )),
+            buildBar(context, constraints.maxWidth * .45)
+          ]));
+    });
   }
 
   Widget buildBar(BuildContext context, barWidth) {
@@ -204,59 +211,58 @@ class ItemStatWidget extends StatelessWidget {
             color: Colors.grey.shade600,
             height: 8,
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
+              mainAxisAlignment: numberValue < 0 ? MainAxisAlignment.end : MainAxisAlignment.start, 
+            children: [
               Container(
                 height: 8,
-                width: (baseBarSize / maxBarSize) * barWidth,
+                width: max(baseBarSize / maxBarSize, 0) * barWidth,
                 color: color,
               ),
               Container(
                 height: 8,
-                width: (modBarSize / maxBarSize) * barWidth,
+                width: (modBarSize / maxBarSize).abs() * barWidth,
                 color: modColor,
               ),
               Container(
                   height: 8,
-                  width: (masterwork / maxBarSize) * barWidth,
+                  width: (masterwork / maxBarSize).abs() * barWidth,
                   color: Colors.amberAccent.shade400),
             ])));
   }
-  int get maxBarSize{
+
+  int get maxBarSize {
     return max(100, numberValue);
   }
+
   int get numberValue {
-    return definition.value +
-        selected +
-        masterwork;
+    return baseValue + selected + masterwork;
   }
 
   int get selected => modValues?.selected ?? 0;
   int get equipped => modValues?.equipped ?? 0;
   int get masterwork => modValues?.masterwork ?? 0;
 
-  int get baseBarSize{
-    if(selected != equipped && selected < equipped){
-      return definition.value + selected;
+  int get baseBarSize {
+    if (selected != equipped && selected < equipped) {
+      return baseValue + selected;
     }
-    return definition.value + equipped;
+    return baseValue + equipped;
   }
-  
 
   Color get modColor {
-    if(selected > equipped){
+    if (selected > equipped) {
       return DestinyData.positiveFeedback;
     }
-    if(equipped > selected){
+    if (equipped > selected) {
       return DestinyData.negativeFeedback;
     }
-    if(masterwork > 0){
+    if (masterwork > 0) {
       return Colors.amberAccent.shade400;
     }
     return color;
   }
 
-  int get modBarSize{
+  int get modBarSize {
     return (selected - equipped).abs();
   }
 
@@ -265,11 +271,11 @@ class ItemStatWidget extends StatelessWidget {
   }
 
   bool get hiddenStat {
-    return _hiddenStats.contains(definition.statHash);
+    return _hiddenStats.contains(statHash);
   }
 
   bool get noBar {
-    return _noBarStats.contains(definition.statHash);
+    return _noBarStats.contains(statHash);
   }
 }
 
