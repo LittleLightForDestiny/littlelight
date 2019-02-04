@@ -63,5 +63,10 @@
   "Please dont open the auth process in another safari window, this could prevent you from getting logged in.": "Proszę nie otwierać procesu autoryzacji w innym oknie Safari, może to uniemożliwić zalogowanie się.",
   "We were unable to find your Destiny account information. If you have a valid Destiny Account, let us know.": "Nie mogliśmy znaleźć informacji o Twoim koncie Destiny. Jeśli posiadasz ważne konto przeznaczenia, daj nam znać.",
   "invalid_request": "Nieprawidłowe żądanie",
-  "We&#39;ve encountered an error, please try again later.": "Wystąpił błąd, spróbuj ponownie później."
+  "We&#39;ve encountered an error, please try again later.": "Wystąpił błąd, spróbuj ponownie później.",
+  "{itemCount} items selected": "{itemCount} wybrane elementy",
+  "Clear": "Jasny",
+  "Transferring": "Przenoszenie",
+  "Equipping": "Wyposażenie",
+  "access_denied": "brak dostępu"
 }

@@ -63,5 +63,10 @@
   "Please dont open the auth process in another safari window, this could prevent you from getting logged in.": "Please dont open the auth process in another safari window, this could prevent you from getting logged in.",
   "We were unable to find your Destiny account information. If you have a valid Destiny Account, let us know.": "We were unable to find your Destiny account information. If you have a valid Destiny Account, let us know.",
   "invalid_request": "invalid_request",
-  "We&#39;ve encountered an error, please try again later.": "We've encountered an error, please try again later."
+  "We&#39;ve encountered an error, please try again later.": "We've encountered an error, please try again later.",
+  "{itemCount} items selected": "{itemCount} items selected",
+  "Clear": "Clear",
+  "Transferring": "Transferring",
+  "Equipping": "Equipping",
+  "access_denied": "access_denied"
 }

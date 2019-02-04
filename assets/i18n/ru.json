@@ -63,5 +63,10 @@
   "Please dont open the auth process in another safari window, this could prevent you from getting logged in.": "Пожалуйста, не открывайте процесс аутентификации в другом окне сафари, это может помешать вам войти в систему.",
   "We were unable to find your Destiny account information. If you have a valid Destiny Account, let us know.": "Нам не удалось найти информацию о вашей учетной записи Destiny. Если у вас есть действующий аккаунт Destiny, сообщите нам.",
   "invalid_request": "неверный запрос",
-  "We&#39;ve encountered an error, please try again later.": "Мы столкнулись с ошибкой, повторите попытку позже."
+  "We&#39;ve encountered an error, please try again later.": "Мы столкнулись с ошибкой, повторите попытку позже.",
+  "{itemCount} items selected": "{itemCount} выбранные элементы",
+  "Clear": "чистый",
+  "Transferring": "передачи",
+  "Equipping": "оснащение",
+  "access_denied": "доступ запрещен"
 }

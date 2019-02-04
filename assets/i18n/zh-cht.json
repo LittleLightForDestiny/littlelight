@@ -63,5 +63,10 @@
   "Please dont open the auth process in another safari window, this could prevent you from getting logged in.": "請不要在另一個safari窗口中打開auth進程，這可能會阻止您登錄。",
   "We were unable to find your Destiny account information. If you have a valid Destiny Account, let us know.": "我們無法找到您的Destiny帳戶信息。 如果您有有效的Destiny帳戶，請告知我們。",
   "invalid_request": "非法請求",
-  "We&#39;ve encountered an error, please try again later.": "我們遇到了錯誤，請稍後再試。"
+  "We&#39;ve encountered an error, please try again later.": "我們遇到了錯誤，請稍後再試。",
+  "{itemCount} items selected": "已選擇{itemCount}個項目",
+  "Clear": "清潔",
+  "Transferring": "轉移",
+  "Equipping": "裝備",
+  "access_denied": "訪問被拒絕"
 }

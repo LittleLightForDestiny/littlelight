@@ -63,5 +63,10 @@
   "Please dont open the auth process in another safari window, this could prevent you from getting logged in.": "認証プロセスを別のサファリウィンドウで開かないでください。ログインできなくなる可能性があります。",
   "We were unable to find your Destiny account information. If you have a valid Destiny Account, let us know.": "Destinyのアカウント情報が見つかりませんでした。 有効なDestinyアカウントをお持ちの場合は、お知らせください。",
   "invalid_request": "無効なリクエスト",
-  "We&#39;ve encountered an error, please try again later.": "エラーが発生しました。しばらくしてからもう一度お試しください。"
+  "We&#39;ve encountered an error, please try again later.": "エラーが発生しました。しばらくしてからもう一度お試しください。",
+  "{itemCount} items selected": "{itemCount}個のアイテムが選択されました",
+  "Clear": "クリア",
+  "Transferring": "転送中",
+  "Equipping": "装備",
+  "access_denied": "アクセスが拒否されました"
 }
