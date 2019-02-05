@@ -7,7 +7,7 @@ import 'package:bungie_api/models/destiny_item_socket_category_definition.dart';
 import 'package:bungie_api/models/destiny_item_socket_entry_definition.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_socket_category_definition.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
@@ -112,9 +112,9 @@ class ItemModsWidget extends DestinyItemWidget {
         foregroundDecoration: BoxDecoration(
             border: Border.all(width: 1, color: Colors.grey.shade300)),
         margin: EdgeInsets.only(right: 4, top: 4),
-        child: CachedNetworkImage(
+        child: QueuedNetworkImage(
             imageUrl:
-                "${BungieApiService.baseUrl}${plugDefinition.displayProperties.icon}"));
+                BungieApiService.url(plugDefinition.displayProperties.icon)));
   }
 
   List<DestinyItemSocketEntryDefinition> get socketEntries {

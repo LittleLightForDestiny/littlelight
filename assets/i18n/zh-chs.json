@@ -68,5 +68,8 @@
   "Clear": "清洁",
   "Transferring": "转移",
   "Equipping": "装备",
-  "access_denied": "访问被拒绝"
+  "access_denied": "访问被拒绝",
+  "Weapon": "武器",
+  "Armor": "盔甲",
+  "Everything": "一切"
 }

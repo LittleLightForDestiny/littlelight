@@ -3,7 +3,7 @@ import 'package:bungie_api/models/destiny_objective_definition.dart';
 import 'package:bungie_api/models/destiny_objective_progress.dart';
 import 'package:bungie_api/models/destiny_record_component.dart';
 import 'package:bungie_api/models/destiny_record_definition.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/screens/record_detail.screen.dart';
 import 'package:little_light/services/auth/auth.service.dart';
@@ -141,7 +141,7 @@ class RecordItemWidgetState extends State<RecordItemWidget> {
         margin: EdgeInsets.all(8),
         child: definition == null
             ? Container()
-            : CachedNetworkImage(
+            : QueuedNetworkImage(
                 imageUrl:
                     BungieApiService.url(definition.displayProperties.icon),
               ));

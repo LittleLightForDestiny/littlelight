@@ -3,7 +3,7 @@ import 'package:bungie_api/models/user_info_card.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/screens/initial.screen.dart';
 import 'package:little_light/services/auth/auth.service.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/utils/platform_data.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -136,8 +136,8 @@ class ProfileInfoState extends State<ProfileInfoWidget>
         child: Container(color: Colors.white));
     if (bungieNetUser != null && bungieNetUser.profileThemeName != null) {
       String url =
-          "${BungieApiService.baseUrl}/img/UserThemes/${bungieNetUser.profileThemeName}/mobiletheme.jpg";
-      return CachedNetworkImage(
+          BungieApiService.url("/img/UserThemes/${bungieNetUser.profileThemeName}/mobiletheme.jpg");
+      return QueuedNetworkImage(
         imageUrl: url,
         placeholder: shimmer,
         fit: BoxFit.cover,
@@ -156,8 +156,8 @@ class ProfileInfoState extends State<ProfileInfoWidget>
         child: Container(color: Colors.white));
     if (bungieNetUser != null && bungieNetUser.profileThemeName != null) {
       String url =
-          "${BungieApiService.baseUrl}/${bungieNetUser.profilePicturePath}";
-      return CachedNetworkImage(
+          BungieApiService.url(bungieNetUser.profilePicturePath);
+      return QueuedNetworkImage(
         imageUrl: url,
         placeholder: shimmer,
         fit: BoxFit.cover,

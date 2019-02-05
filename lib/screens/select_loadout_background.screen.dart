@@ -32,7 +32,6 @@ class SelectLoadoutBackgroundScreenState
   @override
   Widget build(BuildContext context) {
     if (definition == null) return Container();
-    print(widget.depth);
     return Scaffold(
         appBar:
             AppBar(title: TranslatedTextWidget("Select Loadout Background")),

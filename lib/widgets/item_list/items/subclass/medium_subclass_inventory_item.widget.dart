@@ -2,7 +2,7 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_item_talent_grid_component.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
@@ -43,12 +43,12 @@ class MediumSubclassInventoryItemWidget extends MediumBaseInventoryItemWidget
         child: Container(
             decoration: decoration,
             child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-              CachedNetworkImage(
-                width: 100,
+              QueuedNetworkImage(
+                // width: 100,
                 imageUrl:
-                    "${BungieApiService.baseUrl}${definition.secondaryIcon}",
+                    BungieApiService.url(definition.secondaryIcon),
                 fit: BoxFit.fitWidth,
-                alignment: AlignmentDirectional.topEnd,
+                alignment: Alignment.topRight,
               )
             ])));
   }

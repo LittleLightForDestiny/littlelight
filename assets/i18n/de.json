@@ -68,5 +68,8 @@
   "Clear": "klar",
   "Transferring": "Übertragen",
   "Equipping": "Ausrüstung",
-  "access_denied": "Zugriff verweigert"
+  "access_denied": "Zugriff verweigert",
+  "Weapon": "Waffe",
+  "Armor": "Rüstung",
+  "Everything": "Alles"
 }

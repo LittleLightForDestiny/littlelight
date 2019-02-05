@@ -68,5 +68,8 @@
   "Clear": "Jasny",
   "Transferring": "Przenoszenie",
   "Equipping": "Wyposażenie",
-  "access_denied": "brak dostępu"
+  "access_denied": "brak dostępu",
+  "Weapon": "Broń",
+  "Armor": "Zbroja",
+  "Everything": "Wszystko"
 }

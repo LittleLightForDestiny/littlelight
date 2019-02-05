@@ -68,5 +68,8 @@
   "Clear": "クリア",
   "Transferring": "転送中",
   "Equipping": "装備",
-  "access_denied": "アクセスが拒否されました"
+  "access_denied": "アクセスが拒否されました",
+  "Weapon": "武器",
+  "Armor": "鎧",
+  "Everything": "すべて"
 }

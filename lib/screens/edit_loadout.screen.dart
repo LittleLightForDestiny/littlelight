@@ -2,7 +2,7 @@ import 'package:bungie_api/enums/tier_type_enum.dart';
 import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/screens/select_loadout_background.screen.dart';
 import 'package:little_light/screens/select_loadout_item.screen.dart';
@@ -312,9 +312,10 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> {
 
   buildAppBarBackground(BuildContext context) {
     if (emblemDefinition == null) return Container();
+    if(emblemDefinition.secondarySpecial.length == 0) return Container();
     return Container(
         constraints: BoxConstraints.expand(),
-        child: CachedNetworkImage(
+        child: QueuedNetworkImage(
             imageUrl: BungieApiService.url(emblemDefinition.secondarySpecial),
             fit: BoxFit.cover,
             alignment: Alignment(-.8, 0)));

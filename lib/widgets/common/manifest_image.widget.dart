@@ -1,4 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
@@ -60,8 +60,8 @@ class ManifestImageState<T> extends State<ManifestImageWidget> {
     if(url == null || url.length == 0){
       return shimmer;
     }
-    return CachedNetworkImage(
-      imageUrl: "${BungieApiService.baseUrl}$url",
+    return QueuedNetworkImage(
+      imageUrl: BungieApiService.url(url),
       placeholder: widget.placeholder ?? shimmer,
       fadeInDuration: Duration(milliseconds: 300),
     );

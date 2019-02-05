@@ -27,7 +27,6 @@ dependencies:
   bungie_api:
     # path: ../bungie-api-dart
     git: https://github.com/marquesinijatinha/bungie-api-dart
-  cached_network_image: 0.5.1
   shimmer: ^0.0.6
   flutter_staggered_grid_view:
     git: https://github.com/letsar/flutter_staggered_grid_view
@@ -42,6 +41,8 @@ dependencies:
   screen: 0.0.4
   package_info: 0.4.0
   device_info: 0.4.0
+  uuid: 1.0.3
+  flutter_advanced_networkimage: any
 dev_dependencies:
   intl_translation: ^0.17.1
   flutter_test:

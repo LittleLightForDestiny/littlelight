@@ -68,5 +68,8 @@
   "Clear": "Despejar",
   "Transferring": "Transferiendo",
   "Equipping": "Equipando",
-  "access_denied": "acceso denegado"
+  "access_denied": "acceso denegado",
+  "Weapon": "Arma",
+  "Armor": "Armadura",
+  "Everything": "Todo"
 }

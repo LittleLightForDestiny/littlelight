@@ -1,6 +1,6 @@
 import 'package:bungie_api/models/destiny_collectible_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/screens/item_detail.screen.dart';
 import 'package:little_light/services/auth/auth.service.dart';
@@ -97,7 +97,7 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget> {
 
   Widget buildIcon(BuildContext context) {
     if (definition?.displayProperties?.icon == null) return Container();
-    return CachedNetworkImage(
+    return QueuedNetworkImage(
       imageUrl: BungieApiService.url(definition.displayProperties.icon),
     );
   }

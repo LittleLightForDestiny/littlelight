@@ -68,5 +68,8 @@
   "Clear": "Clear",
   "Transferring": "Transferring",
   "Equipping": "Equipping",
-  "access_denied": "access_denied"
+  "access_denied": "access_denied",
+  "Weapon": "Weapon",
+  "Armor": "Armor",
+  "Everything": "Everything"
 }

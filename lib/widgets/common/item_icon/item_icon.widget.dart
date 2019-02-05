@@ -5,7 +5,7 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/bungie_api/enums/item_type.enum.dart';
 import 'package:little_light/widgets/common/destiny_item.widget.dart';
@@ -77,9 +77,9 @@ class ItemIconWidget extends DestinyItemWidget {
   }
 
   Widget itemIconImage(BuildContext context) {
-    return CachedNetworkImage(
+    return QueuedNetworkImage(
       imageUrl:
-          "${BungieApiService.baseUrl}${definition.displayProperties.icon}",
+          BungieApiService.url(definition.displayProperties.icon),
       fit: BoxFit.fill,
       placeholder: itemIconPlaceholder(context),
     );

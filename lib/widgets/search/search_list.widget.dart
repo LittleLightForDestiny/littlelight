@@ -11,9 +11,10 @@ import 'package:little_light/widgets/item_list/items/search_item_wrapper.widget.
 
 class SearchListWidget extends StatefulWidget {
   final List<int> itemTypes;
+  final List<int> excludeTypes;
   final String search;
 
-  const SearchListWidget({Key key, this.itemTypes, this.search= ""}) : super(key: key);
+  const SearchListWidget({Key key, this.itemTypes, this.excludeTypes, this.search= ""}) : super(key: key);
   @override
   SearchListWidgetState createState() => new SearchListWidgetState();
 }
@@ -63,7 +64,6 @@ class SearchListWidgetState extends State<SearchListWidget> {
             await manifest.getDefinitions<DestinyInventoryItemDefinition>(
                 hashes.toList().sublist(i, end)));
       }
-      await Future.delayed(Duration(milliseconds: 10));
       if (mounted) {
         setState(() {});
       } else {
@@ -91,6 +91,9 @@ class SearchListWidgetState extends State<SearchListWidget> {
       var def = itemDefinitions[item.item.itemHash];
       if(def == null) return false;
       if(widget.itemTypes != null && !widget.itemTypes.contains(def.itemType)){
+        return false;
+      }
+      if(widget.excludeTypes != null && widget.excludeTypes.contains(def.itemType)){
         return false;
       }
       if (search.length == 0) {

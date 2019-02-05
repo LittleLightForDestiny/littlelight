@@ -67,5 +67,8 @@
   "Clear": "Limpar",
   "Transferring": "Transferindo",
   "Equipping": "Equipando",
-  "access_denied": "acesso negado"
+  "access_denied": "acesso negado",
+  "Weapon": "Arma",
+  "Armor": "armaduras",
+  "Everything": "Tudo"
 }

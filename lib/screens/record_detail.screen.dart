@@ -1,7 +1,7 @@
 import 'package:bungie_api/enums/destiny_record_state_enum.dart';
 import 'package:bungie_api/models/destiny_record_component.dart';
 import 'package:bungie_api/models/destiny_record_definition.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
@@ -93,7 +93,7 @@ class RecordDetailScreenState extends State<RecordDetailScreen> {
         margin: EdgeInsets.all(8),
         child: definition == null
             ? Container()
-            : CachedNetworkImage(
+            : QueuedNetworkImage(
                 imageUrl:
                     BungieApiService.url(definition.displayProperties.icon),
               ));

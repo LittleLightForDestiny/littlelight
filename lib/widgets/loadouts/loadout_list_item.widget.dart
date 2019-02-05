@@ -1,6 +1,6 @@
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/screens/edit_loadout.screen.dart';
 import 'package:little_light/screens/equip_loadout.screen.dart';
@@ -77,10 +77,10 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> {
       return Stack(
         children: <Widget>[
           Positioned.fill(
-              child: CachedNetworkImage(
+              child: QueuedNetworkImage(
             key: Key("emblem_${definition.hash}"),
             imageUrl:
-                "${BungieApiService.baseUrl}${definition.secondarySpecial}",
+                BungieApiService.url(definition.secondarySpecial),
             fit: BoxFit.cover,
             alignment: Alignment(-1, 0),
           )),

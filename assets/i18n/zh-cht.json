@@ -68,5 +68,8 @@
   "Clear": "清潔",
   "Transferring": "轉移",
   "Equipping": "裝備",
-  "access_denied": "訪問被拒絕"
+  "access_denied": "訪問被拒絕",
+  "Weapon": "武器",
+  "Armor": "盔甲",
+  "Everything": "一切"
 }

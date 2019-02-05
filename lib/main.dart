@@ -1,12 +1,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:little_light/exceptions/exception_handler.dart';
 import 'package:little_light/screens/initial.screen.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'dart:async';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
 int restartCounter = 0;
 void main() async{
@@ -32,8 +32,8 @@ class LittleLight extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CacheManager.maxNrOfCacheObjects = 5000;
-    CacheManager.inBetweenCleans = new Duration(days: 15);
+    QueuedNetworkImage.maxNrOfCacheObjects = 5000;
+    QueuedNetworkImage.inBetweenCleans = new Duration(days: 15);
 
     return new MaterialApp(
       debugShowCheckedModeBanner: false,

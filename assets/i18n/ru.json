@@ -68,5 +68,8 @@
   "Clear": "чистый",
   "Transferring": "передачи",
   "Equipping": "оснащение",
-  "access_denied": "доступ запрещен"
+  "access_denied": "доступ запрещен",
+  "Weapon": "Оружие",
+  "Armor": "броневой",
+  "Everything": "Все"
 }

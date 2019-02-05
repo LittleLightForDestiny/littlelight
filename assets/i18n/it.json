@@ -68,5 +68,8 @@
   "Clear": "Chiaro",
   "Transferring": "Trasferimento",
   "Equipping": "Dotare",
-  "access_denied": "accesso negato"
+  "access_denied": "accesso negato",
+  "Weapon": "Arma",
+  "Armor": "Armatura",
+  "Everything": "Qualunque cosa"
 }

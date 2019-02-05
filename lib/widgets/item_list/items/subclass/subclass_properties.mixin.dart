@@ -7,7 +7,7 @@ import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/item_list/items/base/inventory_item.mixin.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:tinycolor/tinycolor.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/common/item_icon/subclass_icon.widget.dart';
 
 mixin SubclassPropertiesMixin on InventoryItemMixin {
@@ -106,12 +106,12 @@ mixin SubclassPropertiesMixin on InventoryItemMixin {
         child: Container(
             decoration: decoration,
             child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-              CachedNetworkImage(
-                width: 140,
+              QueuedNetworkImage(
+                // width: 140,
                 imageUrl:
-                    "${BungieApiService.baseUrl}${definition.secondaryIcon}",
+                    BungieApiService.url(definition.secondaryIcon),
                 fit: BoxFit.fitWidth,
-                alignment: AlignmentDirectional.topEnd,
+                alignment: Alignment.topRight,
               )
             ])));
   }

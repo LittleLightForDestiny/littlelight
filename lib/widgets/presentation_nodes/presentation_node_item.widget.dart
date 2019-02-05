@@ -1,5 +1,5 @@
 import 'package:bungie_api/models/destiny_presentation_node_definition.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
@@ -48,7 +48,7 @@ class PresentationNodeItemWidget extends StatelessWidget {
           child: definition?.displayProperties?.icon == null ? Container():
           Padding(
               padding: EdgeInsets.all(8),
-              child: CachedNetworkImage(
+              child: QueuedNetworkImage(
                 imageUrl:
                     BungieApiService.url(definition.displayProperties.icon),
               ))),

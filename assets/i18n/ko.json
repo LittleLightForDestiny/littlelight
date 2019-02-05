@@ -68,5 +68,8 @@
   "Clear": "명확한",
   "Transferring": "이전 중",
   "Equipping": "장비",
-  "access_denied": "접근 불가"
+  "access_denied": "접근 불가",
+  "Weapon": "무기",
+  "Armor": "갑옷",
+  "Everything": "모두"
 }

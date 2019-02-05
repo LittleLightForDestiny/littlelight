@@ -1,6 +1,6 @@
 import 'package:bungie_api/models/destiny_collectible_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
@@ -45,7 +45,7 @@ class LoadoutBackgroundItemWidgetState
     if (url == null) return Container();
     return Stack(children: [
       Positioned.fill(
-          child: CachedNetworkImage(
+          child: QueuedNetworkImage(
         alignment: Alignment.centerLeft,
         fadeInDuration: Duration(milliseconds: 300),
         imageUrl: "$url",

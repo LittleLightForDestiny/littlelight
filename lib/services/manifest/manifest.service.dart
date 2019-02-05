@@ -76,7 +76,7 @@ class ManifestService {
     DestinyManifest info = await loadManifestInfo();
     String language = await new TranslateService().getLanguage();
     String path = info.mobileWorldContentPaths[language];
-    String url = "${BungieApiService.baseUrl}$path";
+    String url = BungieApiService.url(path);
     String localPath = await _localPath;
     HttpClient httpClient = new HttpClient();
     HttpClientRequest req = await httpClient.getUrl(Uri.parse(url));

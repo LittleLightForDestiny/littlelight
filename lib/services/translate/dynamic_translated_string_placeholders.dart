@@ -27,6 +27,9 @@ translationPlaceholders(){
 
   TranslatedTextWidget("Transferring");
   TranslatedTextWidget("Equipping");
+  TranslatedTextWidget("Weapon");
+  TranslatedTextWidget("Armor");
+  TranslatedTextWidget("Everything");
 
   ///Bungie responses
   TranslatedTextWidget("AuthorizationCodeInvalid");
@@ -38,4 +41,5 @@ translationPlaceholders(){
   
   TranslatedTextWidget("invalid_request");
   TranslatedTextWidget("We&#39;ve encountered an error, please try again later.");  
+  
 }

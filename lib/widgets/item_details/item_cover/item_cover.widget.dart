@@ -4,7 +4,7 @@ import 'dart:ui';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/bungie_api/enums/item_type.enum.dart';
@@ -137,7 +137,7 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
         right:0,
         child: Opacity(
             opacity: opacity,
-            child: CachedNetworkImage(
+            child: QueuedNetworkImage(
                 imageUrl: BungieApiService.url(definition.secondaryIcon),
                 fit: BoxFit.fitWidth,
                 )));
@@ -159,7 +159,7 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
         width: width,
         child: Opacity(
             opacity: opacity,
-            child: CachedNetworkImage(
+            child: QueuedNetworkImage(
                 imageUrl: BungieApiService.url(imgUrl),
                 fit: BoxFit.cover,
                 placeholder: Shimmer.fromColors(

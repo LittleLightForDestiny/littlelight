@@ -1,6 +1,6 @@
 import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
@@ -93,9 +93,9 @@ class TabMenuButtonState extends State<TabMenuButton> {
     if (emblemDefinition == null) {
       return shimmer;
     }
-    return CachedNetworkImage(
+    return QueuedNetworkImage(
       imageUrl:
-          "${BungieApiService.baseUrl}${emblemDefinition.displayProperties.icon}",
+          BungieApiService.url(emblemDefinition.displayProperties.icon),
       placeholder: shimmer,
     );
   }

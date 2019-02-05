@@ -2,7 +2,7 @@ import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:bungie_api/models/destiny_character_progression_component.dart';
 import 'package:bungie_api/models/destiny_progression.dart';
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
@@ -72,9 +72,9 @@ class TabHeaderWidgetState extends State<TabHeaderWidget> {
         top: top,
         width: kToolbarHeight +8,
         height: kToolbarHeight + 8,
-        child: CachedNetworkImage(
+        child: QueuedNetworkImage(
           imageUrl:
-              "${BungieApiService.baseUrl}${emblemDefinition.secondaryOverlay}",
+              BungieApiService.url(emblemDefinition.secondaryOverlay),
           fit: BoxFit.fill,
           placeholder: shimmer,
         ));
@@ -91,12 +91,12 @@ class TabHeaderWidgetState extends State<TabHeaderWidget> {
     return Container(
         height: height,
         color: Theme.of(context).backgroundColor,
-        child: CachedNetworkImage(
+        child: QueuedNetworkImage(
           imageUrl:
-              "${BungieApiService.baseUrl}${emblemDefinition.secondarySpecial}",
+              BungieApiService.url(emblemDefinition.secondarySpecial),
           placeholder: shimmer,
           fit: BoxFit.cover,
-          alignment: AlignmentDirectional.center,
+          alignment: Alignment.center,
         ));
   }
 
