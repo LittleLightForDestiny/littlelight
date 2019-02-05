@@ -1,90 +1,76 @@
-import 'dart:math';
-
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
-import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/selected_page_persistence.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-import 'package:little_light/widgets/item_list/items/search_item_wrapper.widget.dart';
+import 'package:little_light/widgets/search/search_list.widget.dart';
+import 'package:bungie_api/enums/destiny_item_type_enum.dart';
 
 class SearchScreen extends StatefulWidget {
   @override
   SearchScreenState createState() => new SearchScreenState();
 }
 
-class SearchScreenState extends State<SearchScreen> {
+class SearchScreenState extends State<SearchScreen>
+    with SingleTickerProviderStateMixin {
   bool searchOpened = false;
-  String search = "";
-  List<_ItemWithOwner> items;
+  List<String> search = ["", "", ""];
   Map<int, DestinyInventoryItemDefinition> itemDefinitions;
   TextEditingController _searchFieldController = new TextEditingController();
+
+  TabController _tabController;
 
   @override
   initState() {
     SelectedPagePersistence.saveLatestScreen(SelectedPagePersistence.search);
-    _searchFieldController.text = search;
+    super.initState();
+    _tabController = new TabController(vsync: this, length: 3);
+    _searchFieldController.text = search[_tabController.index];
     _searchFieldController.addListener(() {
-      search = _searchFieldController.text;
+      search[_tabController.index] = _searchFieldController.text;
       setState(() {});
     });
-    super.initState();
-    loadItems();
+
+    _tabController.addListener(() {
+      print(_tabController.indexIsChanging);
+      _searchFieldController.text = search[_tabController.index];
+      closeSearch();
+    });
   }
 
-  loadItems() async {
-    List<_ItemWithOwner> allItems = [];
-    ProfileService profile = ProfileService();
-    ManifestService manifest = ManifestService();
-    Iterable<String> charIds =
-        profile.getCharacters().map((char) => char.characterId);
-    charIds.forEach((charId) {
-      allItems.addAll(profile
-          .getCharacterEquipment(charId)
-          .map((item) => _ItemWithOwner(item, charId)));
-      allItems.addAll(profile
-          .getCharacterInventory(charId)
-          .map((item) => _ItemWithOwner(item, charId)));
-    });
-    allItems.addAll(profile
-        .getProfileInventory()
-        .map((item) => _ItemWithOwner(item, null)));
-    allItems.sort(
-        (a, b) => InventoryUtils.sortDestinyItems(a.item, b.item, profile));
-    items = allItems.where((item) {
-      return item.item.itemInstanceId != null;
-    }).toList();
-    Iterable<int> hashes = allItems.map((i) => i.item.itemHash);
-    for(var i = 0; i < hashes.length; i+=10){
-      int end = min(i+10, hashes.length - 1);
-      if(itemDefinitions == null){
-        itemDefinitions =
-        await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes.toList().sublist(i, end));
-      }else{
-        itemDefinitions.addAll(await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes.toList().sublist(i, end)));        
-      }
-      await Future.delayed(Duration(milliseconds: 50));
-      if(mounted){
-        setState(() {});
-      }else{
-        break;
-      }      
-    }  
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: buildAppBar(context),
-      body: buildItemList(context),
-    );
+        appBar: buildAppBar(context),
+        body: TabBarView(controller: _tabController, children: [
+          SearchListWidget(
+            itemTypes: [DestinyItemType.Weapon],
+            search: search[0],
+          ),
+          SearchListWidget(
+            itemTypes: [DestinyItemType.Armor],
+            search: search[1],
+          ),
+          SearchListWidget(
+            
+            search: search[2],
+          )
+        ]));
   }
 
   buildAppBar(BuildContext context) {
     return AppBar(
+      bottom: TabBar(
+                indicatorColor: Colors.white,
+                isScrollable: true,
+                controller: _tabController,
+                tabs: buildTabButtons(context),
+              ),
       title: buildAppBarTitle(context),
       leading: IconButton(
         icon: Icon(Icons.menu),
@@ -98,11 +84,32 @@ class SearchScreenState extends State<SearchScreen> {
           icon: Icon(searchOpened ? Icons.clear : Icons.search),
           onPressed: () {
             searchOpened = !searchOpened;
+            search[_tabController.index] = _searchFieldController.text;
             setState(() {});
           },
         )
       ],
     );
+  }
+
+  List<Widget> buildTabButtons(BuildContext context) {
+    return ["Weapons", "Armor", "Everything"].map((name) {
+      return buildTabButton(context, name);
+    }).toList();
+  }
+  
+  Widget buildTabButton(BuildContext context, String name) {
+    return Container(
+      padding: EdgeInsets.all(8),
+      child:TranslatedTextWidget(name, uppercase: true,
+      style: TextStyle(fontWeight: FontWeight.bold,))
+    );
+  }
+
+  closeSearch() {
+    searchOpened = false;
+    search[_tabController.index] = "";
+    setState(() {});
   }
 
   buildAppBarTitle(BuildContext context) {
@@ -117,58 +124,4 @@ class SearchScreenState extends State<SearchScreen> {
       overflow: TextOverflow.fade,
     );
   }
-
-  Widget buildItemList(BuildContext context) {
-    return StaggeredGridView.countBuilder(
-      padding: EdgeInsets.all(4),
-      crossAxisCount: 6,
-      itemCount: filteredItems?.length ?? 0,
-      itemBuilder: (BuildContext context, int index) => getItem(context, index),
-      staggeredTileBuilder: (int index) => getTileBuilder(context, index),
-      mainAxisSpacing: 2,
-      crossAxisSpacing: 2,
-      physics: const AlwaysScrollableScrollPhysics(),
-    );
-  }
-
-  List<_ItemWithOwner> get filteredItems {
-    if (search.length == 0) {
-      return items;
-    }
-    if (search.length < 5) {
-      return items.where((item) {
-        var def = itemDefinitions[item.item.itemHash];
-        if(def == null) return false;
-        return def.displayProperties.name
-            .toLowerCase()
-            .startsWith(search.toLowerCase());
-      }).toList();
-    }
-    return items.where((item) {
-      var def = itemDefinitions[item.item.itemHash];
-      if(def == null) return false;
-      return def.displayProperties.name
-          .toLowerCase()
-          .contains(search.toLowerCase());
-    }).toList();
-  }
-
-  StaggeredTile getTileBuilder(BuildContext context, int index) {
-    return StaggeredTile.extent(6, 96);
-  }
-
-  Widget getItem(BuildContext context, int index) {
-    var item = filteredItems[index];
-    if(itemDefinitions == null || itemDefinitions[item.item.itemHash] == null) return Container();
-    return SearchItemWrapperWidget(item.item,
-        itemDefinitions[item.item.itemHash]?.inventory?.bucketTypeHash,
-        characterId: item.ownerId,
-        key: Key("item_${item.item.itemInstanceId}_${item.item.itemHash}"));
-  }
-}
-
-class _ItemWithOwner {
-  DestinyItemComponent item;
-  String ownerId;
-  _ItemWithOwner(this.item, this.ownerId);
 }

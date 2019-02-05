@@ -1,15 +1,13 @@
 import 'dart:async';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/services/inventory/inventory.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:shimmer/shimmer.dart';
 
 class InventoryNotificationWidget extends StatefulWidget {
-  final profile = ProfileService();
-  final inventory = InventoryService();
+  final service = NotificationService();
   final double barHeight;
 
   InventoryNotificationWidget(
@@ -26,79 +24,63 @@ class InventoryNotificationWidgetState
     extends State<InventoryNotificationWidget> {
   bool _busy = false;
   String _message = "";
-  Widget infoIcons;
-  StreamSubscription<ProfileEvent> profileSubscription;
-  StreamSubscription<InventoryEvent> inventorySubscription;
+  Widget _infoIcons;
+  StreamSubscription<NotificationEvent> subscription;
 
   @override
   void initState() {
     super.initState();
-    profileSubscription = widget.profile.broadcaster.listen((event) {
-      handleProfileEvent(event);
+
+    subscription = widget.service.listen((event) {
+      handleNotification(event);
     });
 
-    inventorySubscription = widget.inventory.broadcaster.listen((event) {
-      handleInventoryEvent(event);
-    });
-  }
-
-  void handleProfileEvent(ProfileEvent event) {
-    bool busy;
-    String message;
-    if (event.type == ProfileEventType.requestedUpdate) {
-      busy = true;
-      message = "Updating";
-    }
-    if (event.type == ProfileEventType.receivedUpdate) {
-      busy = false;
-    }
-
-    if (busy != null) {
-      setState(() {
-        _message = message;
-        _busy = busy;
-        infoIcons = null;
-      });
+    if(widget.service.latestNotification != null){
+      handleNotification(widget.service.latestNotification);
     }
   }
 
-  void handleInventoryEvent(InventoryEvent event) async{
-    String message;
-    if (event.type == InventoryEventType.requestedTransfer) {
-      message = "Transferring";
-      infoIcons = Row(children: [
-        SizedBox(
-            width: 24,
-            height: 24,
-            key:Key("item_${event.item.itemHash}"),
-            child: ManifestImageWidget<DestinyInventoryItemDefinition>(
-                event.item.itemHash)),
-      ]);
-      //TODO: reimplement character icons including vault and inventory
-      // Icon(Icons.chevron_right),
-        // SizedBox(
-        //     width: 24,
-        //     height: 24,
-        //     key:Key("character_${event.characterId}"),
-        //     child: ManifestImageWidget<DestinyInventoryItemDefinition>(
-        //         character.emblemHash)),
+  void handleNotification(NotificationEvent event) async {
+    if(event.type == NotificationType.localUpdate) return;
+    _infoIcons = null;
+    switch (event.type) {
+      case NotificationType.requestedUpdate:
+        _busy = true;
+        _message = "Updating";
+        break;
+
+      case NotificationType.receivedUpdate:
+        _busy = false;
+        break;
+
+      case NotificationType.requestedTransfer:
+      print(event.item?.itemHash);
+        _busy = true;
+        _message = "Transferring";
+        _infoIcons = SizedBox(
+          width: 24,
+          height: 24,
+          key: Key("item_${event.item.itemHash}"),
+          child: ManifestImageWidget<DestinyInventoryItemDefinition>(
+              event.item.itemHash),
+        );
+        break;
+
+        case NotificationType.requestedEquip:
+          _busy = true;
+          _message = "Equipping";
+          break;
+
+        default:
+        break;
     }
 
-    if (event.type == InventoryEventType.requestedEquip) {
-      message = "Equipping";
-      infoIcons = null;
-    }
-
-    setState(() {
-      _message = message;
-      _busy = true;
-    });
+    setState(() {});
   }
 
   @override
   void dispose() {
-    profileSubscription.cancel();
-    inventorySubscription.cancel();
+    subscription.cancel();
     super.dispose();
   }
 
@@ -186,9 +168,9 @@ class InventoryNotificationWidgetState
   }
 
   Widget busyIcons(BuildContext context) {
-    if (infoIcons == null) return Container();
+    if (_infoIcons == null) return Container();
     return Container(
-        padding: EdgeInsets.symmetric(horizontal: 4), child: infoIcons);
+        padding: EdgeInsets.symmetric(horizontal: 4), child: _infoIcons);
   }
 
   Widget shimmerBar(BuildContext context) {

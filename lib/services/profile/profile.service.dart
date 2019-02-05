@@ -16,19 +16,13 @@ import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:bungie_api/enums/destiny_component_type_enum.dart';
 import 'package:bungie_api/enums/destiny_scope_enum.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
+import 'package:little_light/services/notification/notification.service.dart';
 import 'package:path_provider/path_provider.dart';
 
 enum LastLoadedFrom { server, cache }
 
 
 enum CharacterOrder { none, lastPlayed, firstCreated, lastCreated }
-
-enum ProfileEventType {localUpdate, requestedUpdate, receivedUpdate}
-
-class ProfileEvent {
-  final ProfileEventType type;
-  ProfileEvent(this.type);
-}
 
 class ProfileComponentGroups {
   static const List<int> basicProfile = [
@@ -51,6 +45,7 @@ class ProfileComponentGroups {
 }
 
 class ProfileService {
+  final NotificationService _broadcaster = new NotificationService();
   static final ProfileService _singleton = new ProfileService._internal();
   factory ProfileService() {
     return _singleton;
@@ -67,31 +62,17 @@ class ProfileService {
   DestinyProfileResponse _profile;
   Timer _timer;
   LastLoadedFrom _lastLoadedFrom;
-
-  Stream<ProfileEvent> _eventsStream;
-  final StreamController<ProfileEvent> _streamController =
-      new StreamController.broadcast();
-
-  Stream<ProfileEvent> get broadcaster {
-    if (_eventsStream != null) {
-      return _eventsStream;
-    }
-    _eventsStream = _streamController.stream;
-    return _eventsStream;
-  }
+  
 
   bool pauseAutomaticUpdater = false;
 
-  fireLocalUpdate() {
-    _streamController.add(ProfileEvent(ProfileEventType.localUpdate));
-  }
-
+  
   Future<DestinyProfileResponse> fetchProfileData(
       {List<int> components = ProfileComponentGroups.basicProfile}) async {
-    _streamController.add(ProfileEvent(ProfileEventType.requestedUpdate));
+    _broadcaster.push(NotificationEvent(NotificationType.requestedUpdate));
     DestinyProfileResponse res = await _updateProfileData(components);
     this._lastLoadedFrom = LastLoadedFrom.server;
-    _streamController.add(ProfileEvent(ProfileEventType.receivedUpdate));
+    _broadcaster.push(NotificationEvent(NotificationType.receivedUpdate));
     this._cacheProfile(_profile);
     return res;
   }

@@ -165,7 +165,6 @@ class ItemStatWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-          print(constraints.maxWidth);
       return Container(
           padding: EdgeInsets.symmetric(vertical: 1),
           child: Row(

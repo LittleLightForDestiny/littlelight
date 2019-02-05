@@ -14,6 +14,7 @@ import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enu
 import 'package:little_light/services/bungie_api/enums/item_type.enum.dart';
 import 'package:little_light/services/littlelight/models/loadout.model.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:bungie_api/enums/bucket_category_enum.dart';
 
@@ -50,47 +51,16 @@ class TransferDestination {
 
 enum InventoryAction { Transfer, Equip, Unequip, Pull }
 
-enum InventoryEventType {
-  localUpdate,
-  requestedTransfer,
-  requestedEquip,
-  error
-}
-
-class InventoryEvent {
-  final InventoryEventType type;
-  final DestinyItemComponent item;
-  final String characterId;
-  InventoryEvent(this.type, {this.item, this.characterId});
-}
-
 class InventoryService {
-  static final InventoryService _singleton = new InventoryService._internal();
-  factory InventoryService() {
-    return _singleton;
-  }
-  InventoryService._internal();
-
   final api = BungieApiService();
   final profile = ProfileService();
   final manifest = ManifestService();
-
-  Stream<InventoryEvent> _eventsStream;
-  final StreamController<InventoryEvent> _streamController =
-      new StreamController.broadcast();
-
-  Stream<InventoryEvent> get broadcaster {
-    if (_eventsStream != null) {
-      return _eventsStream;
-    }
-    _eventsStream = _streamController.stream;
-    return _eventsStream;
-  }
+  final _broadcaster = NotificationService();
 
   transfer(DestinyItemComponent item, String sourceCharacterId,
       ItemDestination destination,
       [String destinationCharacterId]) async {
-    _streamController.add(InventoryEvent(InventoryEventType.requestedTransfer,
+    _broadcaster.push(NotificationEvent(NotificationType.requestedTransfer,
         item: item, characterId: destinationCharacterId));
     profile.pauseAutomaticUpdater = true;
     await _transfer(item, sourceCharacterId, destination,
@@ -103,11 +73,11 @@ class InventoryService {
   equip(DestinyItemComponent item, String sourceCharacterId,
       String destinationCharacterId) async {
     profile.pauseAutomaticUpdater = true;
-    _streamController.add(InventoryEvent(InventoryEventType.requestedTransfer,
+    _broadcaster.push(NotificationEvent(NotificationType.requestedTransfer,
         item: item, characterId: destinationCharacterId));
     await _transfer(item, sourceCharacterId, ItemDestination.Character,
         destinationCharacterId:destinationCharacterId);
-    _streamController.add(InventoryEvent(InventoryEventType.requestedEquip,
+    _broadcaster.push(NotificationEvent(NotificationType.requestedEquip,
         item: item, characterId: destinationCharacterId));
     await _equip(item, destinationCharacterId);
     profile.pauseAutomaticUpdater = false;
@@ -140,7 +110,7 @@ class InventoryService {
       if (destination == ItemDestination.Character &&
           ownerId == destinationCharacterId) continue;
       if (def.nonTransferrable) continue;
-      _streamController.add(InventoryEvent(InventoryEventType.requestedTransfer,
+      _broadcaster.push(NotificationEvent(NotificationType.requestedTransfer,
         item: item.item, characterId: destinationCharacterId));
       await _transfer(item.item, ownerId, destination,
           destinationCharacterId: destinationCharacterId,
@@ -195,11 +165,15 @@ class InventoryService {
 
       ItemDestination destination =
           character == null ? ItemDestination.Vault : ItemDestination.Character;
+          _broadcaster.push(NotificationEvent(NotificationType.requestedTransfer,
+        item: item, characterId: characterId));
       await _transfer(item, ownerId, destination,
           destinationCharacterId: characterId, idsToAvoid: idsToAvoid);
     }
 
     if (andEquip && itemsToEquip.length > 0) {
+        _broadcaster.push(NotificationEvent(NotificationType.requestedEquip,
+        characterId: characterId));
       _equipMultiple(itemsToEquip, characterId);
     }
 
@@ -211,6 +185,8 @@ class InventoryService {
 
       ItemDestination destination =
           character == null ? ItemDestination.Vault : ItemDestination.Character;
+        _broadcaster.push(NotificationEvent(NotificationType.requestedTransfer,
+        item: item, characterId: characterId));
       await _transfer(item, ownerId, destination,
           destinationCharacterId: characterId, idsToAvoid: idsToAvoid);
     }
@@ -617,6 +593,6 @@ class InventoryService {
   }
 
   fireLocalUpdate() {
-    profile.fireLocalUpdate();
+    _broadcaster.push(new NotificationEvent(NotificationType.localUpdate));
   }
 }

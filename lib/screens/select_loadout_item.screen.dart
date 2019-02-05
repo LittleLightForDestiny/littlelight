@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:bungie_api/enums/destiny_class_enum.dart';
 import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
@@ -70,23 +72,33 @@ class SelectLoadoutItemScreenState extends State<SelectLoadoutItemScreen> {
     allItems.removeWhere((i) =>
         i.item.itemInstanceId == null ||
         widget.idsToAvoid.contains(i.item.itemInstanceId));
-    allItems.sort((a, b)=>InventoryUtils.sortDestinyItems(a.item, b.item, profile));
-    Iterable<int> hashes = allItems.map((i) => i.item.itemHash);
-    itemDefinitions =
-        await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
-    items = allItems.where((item) {
-      var def = itemDefinitions[item.item.itemHash];
-      if (widget.classType != null &&
-          widget.classType != def.classType &&
-          def.classType != DestinyClass.Unknown) {
-        return false;
+    allItems.sort(
+        (a, b) => InventoryUtils.sortDestinyItems(a.item, b.item, profile));
+    List<int> hashes = allItems.map((i) => i.item.itemHash).toList();
+    itemDefinitions = Map();
+    items = [];
+    for (var i = 0; i < hashes.length; i += 10) {
+      int start = i;
+      int end = min(i + 10, hashes.length - 1);
+      var defs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(
+          hashes.sublist(start, end));
+      itemDefinitions.addAll(defs);
+      items.addAll(allItems.sublist(start, end).where((i) {
+        var def = itemDefinitions[i.item.itemHash];
+        if (widget.classType != null &&
+            widget.classType != def.classType &&
+            def.classType != DestinyClass.Unknown) {
+          return false;
+        }
+        if (def.inventory.bucketTypeHash != widget.bucketDefinition.hash) {
+          return false;
+        }
+        return true;
+      }));
+      if (mounted) {
+        setState(() {});
       }
-      if (def.inventory.bucketTypeHash != widget.bucketDefinition.hash) {
-        return false;
-      }
-      return true;
-    }).toList();
-    setState(() {});
+    }
   }
 
   sortItems() {}
@@ -180,8 +192,10 @@ class SelectLoadoutItemScreenState extends State<SelectLoadoutItemScreen> {
 
   Widget getItem(BuildContext context, int index) {
     var item = filteredItems[index];
-    return LoadoutSearchItemWrapperWidget(item.item, widget.bucketDefinition.hash,
-        characterId: item.ownerId, key:Key("item_${item.item.itemInstanceId}"));
+    return LoadoutSearchItemWrapperWidget(
+        item.item, widget.bucketDefinition.hash,
+        characterId: item.ownerId,
+        key: Key("item_${item.item.itemInstanceId}"));
   }
 }
 

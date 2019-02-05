@@ -4,6 +4,7 @@ import 'package:little_light/services/littlelight/littlelight.service.dart';
 import 'package:little_light/services/littlelight/models/loadout.model.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
 import 'package:little_light/widgets/loadouts/loadout_list_item.widget.dart';
 
 class LoadoutsScreen extends StatefulWidget {
@@ -29,7 +30,8 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Stack(
+      children:[Scaffold(
         appBar: AppBar(
             leading: IconButton(
               icon: Icon(Icons.menu),
@@ -46,7 +48,8 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
             ],
             title: TranslatedTextWidget("Loadouts")),
         body: buildBody(context),
-        bottomNavigationBar: buildFooter(context),);
+        bottomNavigationBar: buildFooter(context),), 
+        InventoryNotificationWidget(key:Key("notification_widget"))]);
   }
 
   void createNew() async {
@@ -65,12 +68,14 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
     if ((loadouts?.length ?? 0) == 0) {
       return null;
     }
+    double paddingBottom = MediaQuery.of(context).padding.bottom;
     return Material(
         color: Theme.of(context).primaryColor,
         elevation: 1,
         child: Container(
           constraints: BoxConstraints(minWidth: double.infinity),
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          height:kToolbarHeight,
+          padding: EdgeInsets.symmetric(horizontal: 16).copyWith(top:8, bottom:8 + paddingBottom),
           child: RaisedButton(
             child: TranslatedTextWidget("Create Loadout"),
             onPressed: () {

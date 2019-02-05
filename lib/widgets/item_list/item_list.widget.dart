@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/widgets/item_list/bucket_header.widget.dart';
@@ -30,6 +31,7 @@ class ItemListWidget extends StatefulWidget {
   final String characterId;
   final ManifestService manifest = new ManifestService();
   final ProfileService profile = new ProfileService();
+  final NotificationService broadcaster = new NotificationService();
   final EdgeInsets padding;
   final List<int> bucketHashes;
   final Map<int, double> scrollPositions;
@@ -45,15 +47,15 @@ class ItemListWidget extends StatefulWidget {
 class ItemListWidgetState extends State<ItemListWidget> {
   List<DestinyInventoryBucketDefinition> buckefDefs;
   List<ListItem> listIndex = [];
-  StreamSubscription<ProfileEvent> subscription;
+  StreamSubscription<NotificationEvent> subscription;
 
   @override
   void initState() {
     super.initState();
     buildIndex();
-    subscription = widget.profile.broadcaster.listen((event) {
-      if (event.type == ProfileEventType.receivedUpdate ||
-      event.type == ProfileEventType.localUpdate){
+    subscription = widget.broadcaster.listen((event) {
+      if (event.type == NotificationType.receivedUpdate ||
+      event.type == NotificationType.localUpdate){
         buildIndex();
       }
     });

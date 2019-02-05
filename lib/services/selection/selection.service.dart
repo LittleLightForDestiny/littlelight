@@ -32,6 +32,10 @@ class SelectionService {
     _streamController.add(_selectedItems);
   }
 
+  isSelected(DestinyItemComponent item, String characterId){
+    return _selectedItems.any((i)=>i.item?.itemHash == item?.itemHash && i.characterId == characterId);
+  }
+
   addItem(DestinyItemComponent item, String characterId) {
     ItemInventoryState alreadyAdded = _selectedItems.firstWhere((i){
       if(item.itemInstanceId != null){

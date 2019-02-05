@@ -64,7 +64,7 @@ class LittleLightService {
         int index = _loadouts.indexWhere((l)=>l.assignedId == loadout.assignedId);
         if(index > -1 && _loadouts[index].updatedAt.isAfter(loadout.updatedAt)){
           _loadouts.replaceRange(index, index+1, [loadout]);
-        }else{
+        }else if(index == -1){
           _loadouts.add(loadout);
         }
       });
@@ -109,7 +109,16 @@ class LittleLightService {
   Future<void> _saveLoadoutsToStorage() async{
     Directory directory = await getApplicationDocumentsDirectory();
     File cached = new File("${directory.path}/cached_loadouts.json");
-    List<dynamic> map = _loadouts.map((l)=>l.toMap()).toList();
+
+    //TODO: remove this hack when 1.3.8 is old news
+    Set<String> _ids = Set();
+    List<Loadout> distinctLoadouts = _loadouts.where((l){
+      bool exists = _ids.contains(l.assignedId);
+      _ids.add(l.assignedId);
+      return !exists;
+    }).toList();
+
+    List<dynamic> map = distinctLoadouts.map((l)=>l.toMap()).toList();
     String json = jsonEncode(map);
     await cached.writeAsString(json);
   }

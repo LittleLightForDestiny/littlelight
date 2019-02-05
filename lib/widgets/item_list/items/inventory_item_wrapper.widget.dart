@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
@@ -5,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/screens/item_detail.screen.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/bungie_api/enums/item_type.enum.dart';
+import 'package:little_light/services/inventory/inventory.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/selection/selection.service.dart';
@@ -49,6 +52,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
     extends State<InventoryItemWrapperWidget> {
   DestinyInventoryItemDefinition definition;
   String uniqueId;
+  bool get selected =>SelectionService().isSelected(widget.item, widget.characterId);
 
   DestinyItemInstanceComponent get instanceInfo {
     return widget.profile.getInstanceInfo(widget.item.itemInstanceId);
@@ -99,6 +103,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
   Widget build(BuildContext context) {
     return Stack(children: [
       Positioned.fill(child: buildItem(context)),
+      selected ? Container(foregroundDecoration: BoxDecoration(border:Border.all(color:Colors.lightBlue.shade400, width:2)),) : Container(),
       buildTapHandler(context)
     ]);
   }
@@ -121,6 +126,19 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
 
   void onLongPress(context){
     SelectionService().addItem(widget.item, widget.characterId);
+    setState((){});
+    
+    StreamSubscription<List<ItemInventoryState>> sub;
+    sub = SelectionService().broadcaster.listen((selectedItems){
+      if(!mounted){
+        sub.cancel();
+        return;
+      }
+      setState(() {});
+      if(!selected){
+        sub.cancel();
+      }
+    });
   }
 
   void onTap(context) {
