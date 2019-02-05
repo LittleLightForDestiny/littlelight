@@ -49,4 +49,7 @@ class SearchItemWrapperWidgetState<T extends SearchItemWrapperWidget>
       child:icon
     );
   }
+  @override
+  void onLongPress(context) {
+  }
 }
