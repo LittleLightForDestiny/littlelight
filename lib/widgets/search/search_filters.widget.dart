@@ -1,5 +1,13 @@
 import 'package:flutter/material.dart';
 
+enum FilterTypes{
+  powerLevel,
+  bucketType,
+  tierType,
+  itemSubType,
+  classType,
+}
+
 class SearchFiltersWidget extends StatefulWidget {
   const SearchFiltersWidget({Key key}) : super(key: key);
   @override
