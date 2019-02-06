@@ -4,23 +4,21 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:little_light/screens/search.screen.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/widgets/item_list/items/search_item_wrapper.widget.dart';
 
 class SearchListWidget extends StatefulWidget {
-  final List<int> itemTypes;
-  final List<int> excludeTypes;
-  final String search;
-
-  const SearchListWidget({Key key, this.itemTypes, this.excludeTypes, this.search= ""}) : super(key: key);
+  final SearchTabData tabData;
+  const SearchListWidget({Key key,  this.tabData}) : super(key: key);
   @override
   SearchListWidgetState createState() => new SearchListWidgetState();
 }
 
 class SearchListWidgetState extends State<SearchListWidget> {
-  String get search=>widget.search;
+  String get search=>widget.tabData.searchText;
   List<_ItemWithOwner> items;
   Map<int, DestinyInventoryItemDefinition> itemDefinitions;
 
@@ -90,10 +88,10 @@ class SearchListWidgetState extends State<SearchListWidget> {
     return items.where((item){
       var def = itemDefinitions[item.item.itemHash];
       if(def == null) return false;
-      if(widget.itemTypes != null && !widget.itemTypes.contains(def.itemType)){
+      if(widget.tabData.itemTypes != null && !widget.tabData.itemTypes.contains(def.itemType)){
         return false;
       }
-      if(widget.excludeTypes != null && widget.excludeTypes.contains(def.itemType)){
+      if(widget.tabData.excludeItemTypes != null && widget.tabData.excludeItemTypes.contains(def.itemType)){
         return false;
       }
       if (search.length == 0) {

@@ -60,6 +60,8 @@ class DestinyData {
     4265082475, //vehicle mods
   ];
 
+  static int maxPowerLevel = 650;
+
   static IconData getClassIcon(int type) {
     switch (type) {
       case DestinyClass.Hunter:

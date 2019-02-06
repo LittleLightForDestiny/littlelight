@@ -41,6 +41,7 @@ dependencies:
   screen: 0.0.4
   package_info: 0.4.0
   device_info: 0.4.0
+  flutter_range_slider: ^1.0.1
   uuid: 1.0.3
   flutter_advanced_networkimage: any
 dev_dependencies:

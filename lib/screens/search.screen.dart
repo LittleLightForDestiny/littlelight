@@ -1,29 +1,35 @@
+import 'package:bungie_api/enums/damage_type_enum.dart';
+import 'package:bungie_api/enums/tier_type_enum.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_category_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
+import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/selected_page_persistence.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/search/search_filters.widget.dart';
 import 'package:little_light/widgets/search/search_list.widget.dart';
 import 'package:bungie_api/enums/destiny_item_type_enum.dart';
-
-class SearchScreen extends StatefulWidget {
-  @override
-  SearchScreenState createState() => new SearchScreenState();
-}
+import 'package:bungie_api/enums/destiny_item_sub_type_enum.dart';
 
 class SearchTabData {
   String searchText = "";
   List<int> itemTypes;
   List<int> excludeItemTypes;
   Widget label;
+  Map<FilterType, FilterItem> filterData;
 
   SearchTabData(
-      {this.itemTypes,
-      this.excludeItemTypes,
-      this.label});
+      {this.itemTypes, this.excludeItemTypes, this.label, this.filterData});
 }
+
+class SearchScreen extends StatefulWidget {
+  @override
+  SearchScreenState createState() => new SearchScreenState();
+}
+
+
 
 class SearchScreenState extends State<SearchScreen>
     with SingleTickerProviderStateMixin {
@@ -35,7 +41,48 @@ class SearchScreenState extends State<SearchScreen>
 
   List<SearchTabData> _tabs = [
     SearchTabData(
-        itemTypes: [DestinyItemType.Weapon],
+        itemTypes: [
+          DestinyItemType.Weapon
+        ],
+        filterData: {
+          FilterType.powerLevel: FilterItem([0, DestinyData.maxPowerLevel], [0, DestinyData.maxPowerLevel]),
+          FilterType.bucketType: FilterItem([
+            InventoryBucket.kineticWeapons,
+            InventoryBucket.energyWeapons,
+            InventoryBucket.powerWeapons
+          ]),
+          FilterType.damageType: FilterItem([
+            DamageType.Kinetic,
+            DamageType.Thermal,
+            DamageType.Arc,
+            DamageType.Void,
+          ]),
+          FilterType.tierType: FilterItem([
+            TierType.Basic,
+            TierType.Common,
+            TierType.Rare,
+            TierType.Superior,
+            TierType.Exotic,
+          ]),
+          FilterType.itemSubType: FilterItem([
+            DestinyItemSubType.HandCannon,
+            DestinyItemSubType.AutoRifle,
+            DestinyItemSubType.PulseRifle,
+            DestinyItemSubType.ScoutRifle,
+            DestinyItemSubType.Sidearm,
+            DestinyItemSubType.SubmachineGun,
+            DestinyItemSubType.TraceRifle,
+            DestinyItemSubType.Bow,
+            DestinyItemSubType.Shotgun,
+            DestinyItemSubType.SniperRifle,
+            DestinyItemSubType.FusionRifle,
+            DestinyItemSubType.FusionRifleLine,
+            DestinyItemSubType.GrenadeLauncher,
+            DestinyItemSubType.RocketLauncher,
+            DestinyItemSubType.Sword,
+            DestinyItemSubType.Machinegun,
+          ])
+        },
         label: ManifestText<DestinyItemCategoryDefinition>(1,
             uppercase: true,
             style: TextStyle(
@@ -54,7 +101,11 @@ class SearchScreenState extends State<SearchScreen>
             style: TextStyle(
               fontWeight: FontWeight.bold,
             )),
-        excludeItemTypes: [DestinyItemType.Weapon, DestinyItemType.Armor, DestinyItemType.Subclass]),
+        excludeItemTypes: [
+          DestinyItemType.Weapon,
+          DestinyItemType.Armor,
+          DestinyItemType.Subclass
+        ]),
   ];
 
   @override
@@ -84,25 +135,37 @@ class SearchScreenState extends State<SearchScreen>
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: buildAppBar(context),
-        endDrawer: SearchFiltersWidget(),
-        body: TabBarView(controller: _tabController, children: _tabs.map((tab)=>
-          SearchListWidget(
-            itemTypes: tab.itemTypes,
-            excludeTypes: tab.excludeItemTypes,
-            search: tab.searchText,
-          ),
-        ).toList()));
+        endDrawer: SearchFiltersWidget(
+          filterData: currentTabData.filterData,
+        ),
+        body: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          Material(
+              color: Colors.blueGrey.shade700,
+              elevation: 1,
+              child: Center(
+                  child: TabBar(
+                indicatorColor: Colors.white,
+                isScrollable: true,
+                controller: _tabController,
+                tabs: buildTabButtons(context),
+              ))),
+          Expanded(
+              child: TabBarView(
+                  controller: _tabController,
+                  children: _tabs
+                      .map(
+                        (tab) => SearchListWidget(
+                              tabData: tab,
+                            ),
+                      )
+                      .toList()))
+        ]));
   }
 
   buildAppBar(BuildContext context) {
     return AppBar(
-      bottom: TabBar(
-        indicatorColor: Colors.white,
-        isScrollable: true,
-        controller: _tabController,
-        tabs: buildTabButtons(context),
-      ),
       title: buildAppBarTitle(context),
+      elevation: 2,
       leading: IconButton(
         icon: Icon(Icons.menu),
         onPressed: () {
@@ -120,10 +183,12 @@ class SearchScreenState extends State<SearchScreen>
           },
         ),
         Builder(
-          builder:(context)=>IconButton(icon: Icon(Icons.filter_list),
-        onPressed: (){
-          Scaffold.of(context).openEndDrawer();
-        },))
+            builder: (context) => IconButton(
+                  icon: Icon(Icons.filter_list),
+                  onPressed: () {
+                    Scaffold.of(context).openEndDrawer();
+                  },
+                ))
       ],
     );
   }

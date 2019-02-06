@@ -5,8 +5,8 @@ import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 
-
-typedef Widget PresentationNodeTabBodyBuilder(int presentationNodeHash, int depth);
+typedef Widget PresentationNodeTabBodyBuilder(
+    int presentationNodeHash, int depth);
 
 class PresentationNodeTabsWidget extends StatefulWidget {
   final _manifest = new ManifestService();
@@ -15,7 +15,7 @@ class PresentationNodeTabsWidget extends StatefulWidget {
   final PresentationNodeTabBodyBuilder bodyBuilder;
   PresentationNodeTabsWidget(
       {this.presentationNodeHash = DestinyData.collectionsRootHash,
-      this.depth = 0, 
+      this.depth = 0,
       @required this.bodyBuilder});
 
   @override
@@ -48,28 +48,29 @@ class PresentationNodeTabsWidgetState
       Colors.blueGrey.shade700,
       Colors.blueGrey.shade800
     ];
-    if(definition.children.presentationNodes.length == 1){
-     return widget.bodyBuilder(definition.children.presentationNodes[0].presentationNodeHash, widget.depth+1);
+    if (definition.children.presentationNodes.length == 1) {
+      return widget.bodyBuilder(
+          definition.children.presentationNodes[0].presentationNodeHash,
+          widget.depth + 1);
     }
     return DefaultTabController(
         length: definition.children.presentationNodes.length,
-        child: Scaffold(
-          appBar: PreferredSize(
-            child: Material(
-              elevation: (widget.depth*2)/3,
-              color:colors[widget.depth],
-              child: TabBar(
-                indicatorColor: Colors.white,
-                isScrollable: widget.depth > 1,
-                tabs: buildTabButtons(context),
-              ),
-            ),
-            preferredSize: Size.fromHeight(kToolbarHeight*1.3),
+        child: Column(children: [
+          Material(
+            elevation: (widget.depth * 2) / 3,
+            color: colors[widget.depth],
+            child: Center(
+                child: TabBar(
+              indicatorColor: Colors.white,
+              isScrollable: widget.depth > 1,
+              tabs: buildTabButtons(context),
+            )),
           ),
-          body: TabBarView(
+          Expanded(
+              child: TabBarView(
             children: buildTabs(context),
-          ),
-        ));
+          ))
+        ]));
   }
 
   List<Widget> buildTabButtons(BuildContext context) {
@@ -81,19 +82,28 @@ class PresentationNodeTabsWidgetState
   Widget buildTabButton(BuildContext context, int hash) {
     if (widget.depth < 2) {
       return Container(
-        padding: EdgeInsets.all(8),
-        child:ManifestImageWidget<DestinyPresentationNodeDefinition>(hash, placeholder: Container(),));
+          padding: EdgeInsets.all(8),
+          child: Container(
+            constraints: BoxConstraints(maxWidth: 64),
+            child:AspectRatio(
+            aspectRatio: 1,
+              child: ManifestImageWidget<DestinyPresentationNodeDefinition>(
+            hash,
+            placeholder: Container(),
+          ))));
     }
     return Container(
-      padding: EdgeInsets.all(8),
-      child:ManifestText<DestinyPresentationNodeDefinition>(hash, uppercase: true,
-      style: TextStyle(fontWeight: FontWeight.bold,))
-    );
+        padding: EdgeInsets.all(8),
+        child: ManifestText<DestinyPresentationNodeDefinition>(hash,
+            uppercase: true,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            )));
   }
 
   List<Widget> buildTabs(BuildContext context) {
     return definition.children.presentationNodes.map((node) {
-      return widget.bodyBuilder(node.presentationNodeHash, widget.depth+1);
+      return widget.bodyBuilder(node.presentationNodeHash, widget.depth + 1);
     }).toList();
   }
 }
