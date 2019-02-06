@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
+import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/screens/search.screen.dart';
@@ -9,6 +10,7 @@ import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/widgets/item_list/items/search_item_wrapper.widget.dart';
+import 'package:little_light/widgets/search/search_filters.widget.dart';
 
 class SearchListWidget extends StatefulWidget {
   final SearchTabData tabData;
@@ -70,6 +72,8 @@ class SearchListWidgetState extends State<SearchListWidget> {
     }
   }
 
+  FilterItem get powerLevelFilter=>widget.tabData.filterData[FilterType.powerLevel];
+
   Widget build(BuildContext context) {
     return StaggeredGridView.countBuilder(
       padding: EdgeInsets.all(4),
@@ -94,10 +98,18 @@ class SearchListWidgetState extends State<SearchListWidget> {
       if(widget.tabData.excludeItemTypes != null && widget.tabData.excludeItemTypes.contains(def.itemType)){
         return false;
       }
+      if(powerLevelFilter != null){
+        var values = powerLevelFilter.values;
+        DestinyItemInstanceComponent instance = ProfileService().getInstanceInfo(item.item.itemInstanceId);
+        int power = instance?.primaryStat?.value;
+        if(power!= null && (power > values[1])){
+          return false;
+        }
+      }
       if (search.length == 0) {
         return true;
       }
-      if (search.length < 5) {
+      if (search.length < 4) {
         return def.displayProperties.name
             .toLowerCase()
             .startsWith(search.toLowerCase());

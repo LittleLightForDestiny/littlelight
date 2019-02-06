@@ -90,6 +90,7 @@ class SearchScreenState extends State<SearchScreen>
             ))),
     SearchTabData(
         itemTypes: [DestinyItemType.Armor],
+        filterData: {},
         label: ManifestText<DestinyItemCategoryDefinition>(20,
             uppercase: true,
             style: TextStyle(
@@ -101,6 +102,7 @@ class SearchScreenState extends State<SearchScreen>
             style: TextStyle(
               fontWeight: FontWeight.bold,
             )),
+          filterData: {},
         excludeItemTypes: [
           DestinyItemType.Weapon,
           DestinyItemType.Armor,
@@ -137,6 +139,9 @@ class SearchScreenState extends State<SearchScreen>
         appBar: buildAppBar(context),
         endDrawer: SearchFiltersWidget(
           filterData: currentTabData.filterData,
+          onChange: (){
+            setState(() {});
+          },
         ),
         body: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           Material(
