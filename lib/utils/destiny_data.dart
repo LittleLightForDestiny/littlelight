@@ -6,6 +6,21 @@ import 'package:bungie_api/enums/destiny_ammunition_type_enum.dart';
 import 'package:little_light/widgets/icon_fonts/destiny_icons_icons.dart';
 
 class DestinyData {
+  static const Map<int, int> damageTypeHashes = {
+    DamageType.Kinetic:3373582085,
+    DamageType.Thermal:1847026933,
+    DamageType.Arc:2303181850,
+    DamageType.Void:3454344768,
+  };
+
+  static const Map<int, int> tierTypeHashes = {
+    TierType.Basic:3340296461,
+    TierType.Common:2395677314,
+    TierType.Rare:2127292149,
+    TierType.Superior:4008398120,
+    TierType.Exotic:2759499571,
+  };
+
   static const Color positiveFeedback = Color.fromRGBO(67, 205, 57, 1);
   static const Color negativeFeedback = Color.fromRGBO(204, 58, 56, 1);
 
