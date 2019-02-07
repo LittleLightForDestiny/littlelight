@@ -146,6 +146,7 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> {
     int bucketHash = widget.bucketOrder[index - 2];
     DestinyInventoryBucketDefinition definition = bucketDefinitions[bucketHash];
     if (bucketHash != null) {
+      //TODO: Try to figure out whats happening over here
       return LoadoutSlotWidget(
         bucketDefinition: definition,
         key: Key("loadout_slot_$bucketHash"),
