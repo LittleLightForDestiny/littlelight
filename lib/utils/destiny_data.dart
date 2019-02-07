@@ -4,21 +4,48 @@ import 'package:bungie_api/enums/damage_type_enum.dart';
 import 'package:bungie_api/enums/tier_type_enum.dart';
 import 'package:bungie_api/enums/destiny_ammunition_type_enum.dart';
 import 'package:little_light/widgets/icon_fonts/destiny_icons_icons.dart';
+import 'package:bungie_api/enums/destiny_item_sub_type_enum.dart';
 
 class DestinyData {
   static const Map<int, int> damageTypeHashes = {
-    DamageType.Kinetic:3373582085,
-    DamageType.Thermal:1847026933,
-    DamageType.Arc:2303181850,
-    DamageType.Void:3454344768,
+    DamageType.Kinetic: 3373582085,
+    DamageType.Thermal: 1847026933,
+    DamageType.Arc: 2303181850,
+    DamageType.Void: 3454344768,
   };
 
   static const Map<int, int> tierTypeHashes = {
-    TierType.Basic:3340296461,
-    TierType.Common:2395677314,
-    TierType.Rare:2127292149,
-    TierType.Superior:4008398120,
-    TierType.Exotic:2759499571,
+    TierType.Basic: 3340296461,
+    TierType.Common: 2395677314,
+    TierType.Rare: 2127292149,
+    TierType.Superior: 4008398120,
+    TierType.Exotic: 2759499571,
+  };
+
+  static const Map<int, int> itemSubtypeHashes = {
+    DestinyItemSubType.AutoRifle: 5,
+    DestinyItemSubType.Shotgun: 11,
+    DestinyItemSubType.Machinegun: 12,
+    DestinyItemSubType.HandCannon: 6,
+    DestinyItemSubType.RocketLauncher: 13,
+    DestinyItemSubType.FusionRifle: 9,
+    DestinyItemSubType.SniperRifle: 10,
+    DestinyItemSubType.PulseRifle: 7,
+    DestinyItemSubType.ScoutRifle: 8,
+    DestinyItemSubType.Sidearm: 14,
+    DestinyItemSubType.Sword: 54,
+    DestinyItemSubType.Mask: 55,
+    DestinyItemSubType.Shader: 41,
+    DestinyItemSubType.FusionRifleLine: 22,
+    DestinyItemSubType.GrenadeLauncher: 23,
+    DestinyItemSubType.SubmachineGun: 24,
+    DestinyItemSubType.TraceRifle: 25,
+    DestinyItemSubType.HelmetArmor: 26,
+    DestinyItemSubType.GauntletsArmor: 27,
+    DestinyItemSubType.ChestArmor: 28,
+    DestinyItemSubType.LegArmor: 29,
+    DestinyItemSubType.ClassArmor: 30,
+    DestinyItemSubType.Bow: 31,
   };
 
   static const Color positiveFeedback = Color.fromRGBO(67, 205, 57, 1);
@@ -51,7 +78,7 @@ class DestinyData {
     392767087, // Resilience
     1943323491, //recovery
   ];
-  
+
   static const List<int> socketCategoryPerkHashes = [
     319279448, // sparrow perks
     1576735337, //clan banner perks
