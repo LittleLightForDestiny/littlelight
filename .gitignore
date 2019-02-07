@@ -10,6 +10,7 @@
 .history
 .svn/
 .env
+.sentryclirc
 translated-text-finder
 
 # IntelliJ related
