@@ -146,7 +146,6 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> {
     int bucketHash = widget.bucketOrder[index - 2];
     DestinyInventoryBucketDefinition definition = bucketDefinitions[bucketHash];
     if (bucketHash != null) {
-      //TODO: Try to figure out whats happening over here
       return LoadoutSlotWidget(
         bucketDefinition: definition,
         key: Key("loadout_slot_$bucketHash"),
@@ -233,6 +232,7 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> {
         DestinyInventoryItemDefinition def =
             await widget.manifest.getItemDefinition(item.itemHash);
         if (def.inventory.tierType != TierType.Exotic) continue;
+        _itemIndex.removeEquippedItem(item, def);
         _showSnackBar(
             context,
             TranslatedTextWidget(
@@ -255,7 +255,6 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> {
             TranslatedTextWidget(
                 "You can only equip one exotic armor piece at a time. Removing {itemName}.",
                 replace: {"itemName": def.displayProperties.name}));
-
         return def;
       }
     }

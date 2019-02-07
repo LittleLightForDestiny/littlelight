@@ -13,14 +13,15 @@ import 'package:little_light/widgets/item_list/items/search_item_wrapper.widget.
 import 'package:little_light/widgets/search/search_filters.widget.dart';
 
 class SearchListWidget extends StatefulWidget {
+  final ProfileService profile = ProfileService();
   final SearchTabData tabData;
-  const SearchListWidget({Key key,  this.tabData}) : super(key: key);
+  SearchListWidget({Key key, this.tabData}) : super(key: key);
   @override
   SearchListWidgetState createState() => new SearchListWidgetState();
 }
 
 class SearchListWidgetState extends State<SearchListWidget> {
-  String get search=>widget.tabData.searchText;
+  String get search => widget.tabData.searchText;
   List<_ItemWithOwner> items;
   Map<int, DestinyInventoryItemDefinition> itemDefinitions;
 
@@ -65,6 +66,7 @@ class SearchListWidgetState extends State<SearchListWidget> {
                 hashes.toList().sublist(i, end)));
       }
       if (mounted) {
+        sortItems();
         setState(() {});
       } else {
         break;
@@ -72,12 +74,13 @@ class SearchListWidgetState extends State<SearchListWidget> {
     }
   }
 
-  FilterItem get powerLevelFilter=>widget.tabData.filterData[FilterType.powerLevel];
-
-  FilterItem get damageTypeFilter=>widget.tabData.filterData[FilterType.damageType];
-
-  FilterItem get tierTypeFilter=>widget.tabData.filterData[FilterType.tierType];
-  FilterItem get bucketTypeFilter=>widget.tabData.filterData[FilterType.bucketType];
+  sortItems(){
+    items.sort((itemA, itemB) => InventoryUtils.sortDestinyItems(
+        itemA.item, itemB.item, widget.profile,
+        defA: itemDefinitions[itemA.item.itemHash],
+        defB: itemDefinitions[itemB.item.itemHash],
+        sortingParams: widget.tabData.sortOrder));
+  }
 
   Widget build(BuildContext context) {
     return StaggeredGridView.countBuilder(
@@ -92,52 +95,116 @@ class SearchListWidgetState extends State<SearchListWidget> {
     );
   }
 
+  FilterItem get powerLevelFilter =>
+      widget.tabData.filterData[FilterType.powerLevel];
+  FilterItem get damageTypeFilter =>
+      widget.tabData.filterData[FilterType.damageType];
+  FilterItem get tierTypeFilter =>
+      widget.tabData.filterData[FilterType.tierType];
+  FilterItem get bucketTypeFilter =>
+      widget.tabData.filterData[FilterType.bucketType];
+  FilterItem get subtypeFilter =>
+      widget.tabData.filterData[FilterType.itemSubType];
+  FilterItem get typeFilter =>
+      widget.tabData.filterData[FilterType.itemType];
+  FilterItem get ammoTypeFilter =>
+      widget.tabData.filterData[FilterType.ammoType];
+  FilterItem get classTypeFilter =>
+      widget.tabData.filterData[FilterType.classType];
+
   List<_ItemWithOwner> get filteredItems {
-    if(itemDefinitions == null) return [];
-    return items.where((item){
+    if (itemDefinitions == null) return [];
+
+    return items.where((item) {
       var def = itemDefinitions[item.item.itemHash];
-      if(def == null) return false;
-      if(widget.tabData.itemTypes != null && !widget.tabData.itemTypes.contains(def.itemType)){
+      if (def == null) return false;
+      if (widget.tabData.itemTypes != null &&
+          !widget.tabData.itemTypes.contains(def.itemType)) {
         return false;
       }
-      if(widget.tabData.excludeItemTypes != null && widget.tabData.excludeItemTypes.contains(def.itemType)){
+      if (widget.tabData.excludeItemTypes != null &&
+          widget.tabData.excludeItemTypes.contains(def.itemType)) {
         return false;
       }
-      if(powerLevelFilter != null){
+      if (powerLevelFilter != null) {
         var values = powerLevelFilter.values;
-        DestinyItemInstanceComponent instance = ProfileService().getInstanceInfo(item.item.itemInstanceId);
+        DestinyItemInstanceComponent instance =
+            ProfileService().getInstanceInfo(item.item.itemInstanceId);
         int power = instance?.primaryStat?.value;
-        if(power!= null && (power > values[1])){
+        if (power != null && (power > values[1])) {
           return false;
         }
       }
 
-      if(damageTypeFilter != null){
+      if (damageTypeFilter != null) {
         var values = damageTypeFilter.values;
-        DestinyItemInstanceComponent instance = ProfileService().getInstanceInfo(item.item.itemInstanceId);
+        DestinyItemInstanceComponent instance =
+            ProfileService().getInstanceInfo(item.item.itemInstanceId);
         int damageType = instance?.damageType;
-  
-        if(damageType!= null && values.length != 0 && !values.contains(damageType)){
+
+        if (damageType != null &&
+            values.length != 0 &&
+            !values.contains(damageType)) {
           return false;
         }
       }
 
-      if(tierTypeFilter != null){
+      if (tierTypeFilter != null) {
         var values = tierTypeFilter.values;
-        def = itemDefinitions[item.item.itemHash];
         var tier = def?.inventory?.tierType;
-  
-        if(tier!= null && values.length != 0 && !values.contains(tier)){
+
+        if (tier != null && values.length != 0 && !values.contains(tier)) {
           return false;
         }
       }
 
-       if(bucketTypeFilter != null){
+      if (bucketTypeFilter != null) {
         var values = bucketTypeFilter.values;
-        def = itemDefinitions[item.item.itemHash];
         var bucketHash = def?.inventory?.bucketTypeHash;
-  
-        if(bucketHash!= null && values.length != 0 && !values.contains(bucketHash)){
+
+        if (bucketHash != null &&
+            values.length != 0 &&
+            !values.contains(bucketHash)) {
+          return false;
+        }
+      }
+
+      if (typeFilter != null) {
+        var values = typeFilter.values;
+        var type = def?.itemType;
+        if (type != null &&
+            values.length != 0 &&
+            !values.contains(type)) {
+          return false;
+        }
+      }
+
+      if (subtypeFilter != null) {
+        var values = subtypeFilter.values;
+        var subtype = def?.itemSubType;
+        if (subtype != null &&
+            values.length != 0 &&
+            !values.contains(subtype)) {
+          return false;
+        }
+      }
+
+      if (ammoTypeFilter != null) {
+        var values = ammoTypeFilter.values;
+        var ammoType = def?.equippingBlock?.ammoType;
+        if (ammoType != null &&
+            values.length != 0 &&
+            !values.contains(ammoType)) {
+          return false;
+        }
+      }
+
+      if (classTypeFilter != null) {
+        var values = classTypeFilter.values;
+        var classType = def?.classType;
+        if (classType != null &&
+            values.length != 0 &&
+            !values.contains(classType)) {
           return false;
         }
       }
@@ -154,7 +221,6 @@ class SearchListWidgetState extends State<SearchListWidget> {
           .toLowerCase()
           .contains(search.toLowerCase());
     }).toList();
-    
   }
 
   StaggeredTile getTileBuilder(BuildContext context, int index) {

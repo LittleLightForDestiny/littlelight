@@ -71,5 +71,14 @@
   "access_denied": "accès refusé",
   "Weapon": "Arme",
   "Armor": "Armure",
-  "Everything": "Tout"
+  "Everything": "Tout",
+  "Filters": "Filtrer",
+  "Damage Type": "Type de dommage",
+  "Class": "Classe",
+  "Slot": "Fente",
+  "Tier Type": "Rareté",
+  "Type": "Type",
+  "Ammo Type": "Type de munition",
+  "Power Level": "Niveau de puissance",
+  "All": "Tous"
 }

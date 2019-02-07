@@ -71,5 +71,14 @@
   "access_denied": "アクセスが拒否されました",
   "Weapon": "武器",
   "Armor": "鎧",
-  "Everything": "すべて"
+  "Everything": "すべて",
+  "Filters": "フィルター",
+  "Damage Type": "ダメージの種類",
+  "Class": "クラス",
+  "Slot": "スロット",
+  "Tier Type": "希少性",
+  "Type": "タイプ",
+  "Ammo Type": "弾薬の種類",
+  "Power Level": "力のレベル",
+  "All": "全部"
 }

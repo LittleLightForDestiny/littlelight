@@ -71,5 +71,14 @@
   "access_denied": "brak dostępu",
   "Weapon": "Broń",
   "Armor": "Zbroja",
-  "Everything": "Wszystko"
+  "Everything": "Wszystko",
+  "Filters": "Filtruj",
+  "Damage Type": "Rodzaj uszkodzenia",
+  "Class": "Klasa",
+  "Slot": "Slot",
+  "Tier Type": "Rzadkość",
+  "Type": "Wpisz",
+  "Ammo Type": "Rodzaj amunicji",
+  "Power Level": "Poziom mocy",
+  "All": "Wszystko"
 }

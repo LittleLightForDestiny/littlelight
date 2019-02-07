@@ -71,5 +71,14 @@
   "access_denied": "Zugriff verweigert",
   "Weapon": "Waffe",
   "Armor": "Rüstung",
-  "Everything": "Alles"
+  "Everything": "Alles",
+  "Filters": "Filter",
+  "Damage Type": "Art des Schadens",
+  "Class": "Klasse",
+  "Slot": "Slot",
+  "Tier Type": "Rarität",
+  "Type": "Typ",
+  "Ammo Type": "Art der Munition",
+  "Power Level": "Leistungsstufe",
+  "All": "Alle"
 }

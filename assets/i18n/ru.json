@@ -71,5 +71,14 @@
   "access_denied": "доступ запрещен",
   "Weapon": "Оружие",
   "Armor": "броневой",
-  "Everything": "Все"
+  "Everything": "Все",
+  "Filters": "фильтр",
+  "Damage Type": "Тип повреждения",
+  "Class": "класс",
+  "Slot": "слот",
+  "Tier Type": "редкость",
+  "Type": "вид",
+  "Ammo Type": "Тип боеприпасов",
+  "Power Level": "Уровень мощности",
+  "All": "все"
 }

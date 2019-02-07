@@ -71,5 +71,14 @@
   "access_denied": "acceso denegado",
   "Weapon": "Arma",
   "Armor": "Armadura",
-  "Everything": "Todo"
+  "Everything": "Todo",
+  "Filters": "Filtro",
+  "Damage Type": "Tipo de daño",
+  "Class": "Clase",
+  "Slot": "Muesca",
+  "Tier Type": "Rareza",
+  "Type": "Especie",
+  "Ammo Type": "Tipo de munición",
+  "Power Level": "Nivel de poder",
+  "All": "Todos"
 }

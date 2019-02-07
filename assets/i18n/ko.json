@@ -71,5 +71,14 @@
   "access_denied": "접근 불가",
   "Weapon": "무기",
   "Armor": "갑옷",
-  "Everything": "모두"
+  "Everything": "모두",
+  "Filters": "필터",
+  "Damage Type": "피해 유형",
+  "Class": "클래스",
+  "Slot": "슬롯",
+  "Tier Type": "희귀 성",
+  "Type": "종류",
+  "Ammo Type": "탄약의 종류",
+  "Power Level": "권력 수준",
+  "All": "모두"
 }

@@ -12,6 +12,7 @@ enum FilterType {
   damageType,
   bucketType,
   tierType,
+  itemType,
   itemSubType,
   ammoType,
   classType,
@@ -24,6 +25,8 @@ class FilterItem {
 
   FilterItem(this.options, this.values, {this.open = false});
 }
+
+
 
 class SearchFiltersWidget extends StatefulWidget {
   final Map<FilterType, FilterItem> filterData;
@@ -58,7 +61,7 @@ class SearchFiltersWidgetState extends State<SearchFiltersWidget> {
             },
           ),
         ),
-        Expanded(child:ListView(children: buildControls(context)))
+        Expanded(child: ListView(children: buildControls(context)))
       ],
     ));
   }
@@ -75,9 +78,10 @@ class SearchFiltersWidgetState extends State<SearchFiltersWidget> {
           context, TranslatedTextWidget("Damage Type"), FilterType.damageType));
       controls.add(Container(height: 10));
     }
-    if (widget.filterData.containsKey(FilterType.tierType)) {
+
+    if (widget.filterData.containsKey(FilterType.classType)) {
       controls.add(buildTypeSelector(
-          context, TranslatedTextWidget("Tier Type"), FilterType.tierType));
+          context, TranslatedTextWidget("Class"), FilterType.classType));
       controls.add(Container(height: 10));
     }
 
@@ -87,7 +91,19 @@ class SearchFiltersWidgetState extends State<SearchFiltersWidget> {
       controls.add(Container(height: 10));
     }
 
-    if (widget.filterData.containsKey(FilterType.bucketType)) {
+    if (widget.filterData.containsKey(FilterType.tierType)) {
+      controls.add(buildTypeSelector(
+          context, TranslatedTextWidget("Tier Type"), FilterType.tierType));
+      controls.add(Container(height: 10));
+    }
+
+    if (widget.filterData.containsKey(FilterType.itemType)) {
+      controls.add(buildTypeSelector(
+          context, TranslatedTextWidget("Type"), FilterType.itemType));
+      controls.add(Container(height: 10));
+    }
+
+    if (widget.filterData.containsKey(FilterType.itemSubType)) {
       controls.add(buildTypeSelector(
           context, TranslatedTextWidget("Type"), FilterType.itemSubType));
       controls.add(Container(height: 10));
@@ -98,7 +114,6 @@ class SearchFiltersWidgetState extends State<SearchFiltersWidget> {
           context, TranslatedTextWidget("Ammo Type"), FilterType.ammoType));
       controls.add(Container(height: 10));
     }
-
     return controls;
   }
 
@@ -108,10 +123,10 @@ class SearchFiltersWidgetState extends State<SearchFiltersWidget> {
     double min = data.options[0].toDouble();
     double max = data.options[1].toDouble();
     return Container(
-        color: Colors.lightBlue.shade600,
+        color: Colors.blueGrey.shade500,
         child: ExpansionTile(
           initiallyExpanded: data.open,
-          onExpansionChanged: (value){
+          onExpansionChanged: (value) {
             data.open = value;
           },
           backgroundColor: Colors.blueGrey.shade900,
@@ -164,11 +179,11 @@ class SearchFiltersWidgetState extends State<SearchFiltersWidget> {
     List<Widget> chips =
         data.options.map((i) => optionButton(context, i, type)).toList();
     return Container(
-        color: Colors.lightBlue.shade600,
+        color: Colors.blueGrey.shade500,
         child: ExpansionTile(
-          onExpansionChanged: (value){
-            data.open = value;
-          },
+            onExpansionChanged: (value) {
+              data.open = value;
+            },
             initiallyExpanded: data.open,
             backgroundColor: Colors.blueGrey.shade900,
             title: title,
@@ -256,57 +271,87 @@ class SearchFiltersWidgetState extends State<SearchFiltersWidget> {
                     onTap: onTap,
                     onLongPress: onLongPress)));
 
+      case FilterType.classType:
+        return FractionallySizedBox(
+            widthFactor: 1 / 3,
+            child: AspectRatio(
+                aspectRatio: 2,
+                child: button(
+                    context,
+                    Icon(
+                      DestinyData.getClassIcon(id),
+                      size: 30,
+                    ),
+                    filter.values.contains(id),
+                    onTap: onTap,
+                    onLongPress: onLongPress)));
+
       case FilterType.tierType:
         return FractionallySizedBox(
             widthFactor: 1 / 3,
             child: button(
                 context,
                 ManifestText<DestinyItemTierTypeDefinition>(
-                  DestinyData.tierTypeHashes[id],
-                  uppercase: true,
-                  style:TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color:DestinyData.getTierTextColor(id),
-                  )
-                ),
+                    DestinyData.tierTypeHashes[id],
+                    uppercase: true,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: DestinyData.getTierTextColor(id),
+                    )),
                 filter.values.contains(id),
-                color:DestinyData.getTierColor(id),
+                color: DestinyData.getTierColor(id),
                 onTap: onTap,
                 onLongPress: onLongPress));
 
       case FilterType.bucketType:
         return button(
-                context,
-                ManifestText<DestinyInventoryBucketDefinition>(
-                  id,
-                  uppercase: true,
-                  style:TextStyle(
-                    fontWeight: FontWeight.bold,
-                  )
-                ),
-                filter.values.contains(id),
-                onTap: onTap,
-                onLongPress: onLongPress);
+            context,
+            ManifestText<DestinyInventoryBucketDefinition>(id,
+                uppercase: true,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                )),
+            filter.values.contains(id),
+            onTap: onTap,
+            onLongPress: onLongPress);
+
+      case FilterType.itemType:
+        return FractionallySizedBox(
+            widthFactor: 1 / 2,
+            child: AspectRatio(
+                aspectRatio: 3,
+                child: button(
+                    context,
+                    ManifestText<DestinyItemCategoryDefinition>(
+                        DestinyData.itemTypeHashes[id],
+                        uppercase: true,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        )),
+                    filter.values.contains(id),
+                    onTap: onTap,
+                    onLongPress: onLongPress)));
 
       case FilterType.itemSubType:
         return FractionallySizedBox(
             widthFactor: 1 / 2,
-            child:AspectRatio(
-              aspectRatio: 3,
-              child:button(
-                context,
-                ManifestText<DestinyItemCategoryDefinition>(
-                  DestinyData.itemSubtypeHashes[id],
-                  uppercase: true,
-                  textAlign: TextAlign.center,
-                  style:TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                  )
-                ),
-                filter.values.contains(id),
-                onTap: onTap,
-                onLongPress: onLongPress)));
+            child: AspectRatio(
+                aspectRatio: 3,
+                child: button(
+                    context,
+                    ManifestText<DestinyItemCategoryDefinition>(
+                        DestinyData.itemSubtypeHashes[id],
+                        uppercase: true,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        )),
+                    filter.values.contains(id),
+                    onTap: onTap,
+                    onLongPress: onLongPress)));
 
       default:
         break;
@@ -320,7 +365,9 @@ class SearchFiltersWidgetState extends State<SearchFiltersWidget> {
         margin: EdgeInsets.all(2),
         child: Material(
             borderRadius: BorderRadius.circular(4),
-            color: selected ? Colors.lightBlue.shade700 : color ?? Colors.blueGrey.shade800,
+            color: selected
+                ? Colors.lightBlue.shade700
+                : color ?? Colors.blueGrey.shade800,
             child: InkWell(
                 onTap: onTap,
                 onLongPress: onLongPress,

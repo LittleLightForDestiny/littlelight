@@ -1,4 +1,6 @@
 import 'package:bungie_api/enums/destiny_class_enum.dart';
+import 'package:bungie_api/enums/destiny_item_sub_type_enum.dart';
+import 'package:bungie_api/enums/destiny_item_type_enum.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
@@ -8,27 +10,112 @@ import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:uuid/uuid.dart';
 
-enum SortingParam { power, tierType }
+enum SortParameterType { power, tierType, bucketHash, type, subType, name, classType }
+
+class SortParameter {
+  final SortParameterType param;
+  final int direction;
+  const SortParameter(this.param, [this.direction = 1]);
+}
 
 class InventoryUtils {
+  static List<int> _bucketOrder = [
+    InventoryBucket.subclass,
+    InventoryBucket.kineticWeapons,
+    InventoryBucket.energyWeapons,
+    InventoryBucket.powerWeapons,
+    InventoryBucket.helmet,
+    InventoryBucket.gauntlets,
+    InventoryBucket.chestArmor,
+    InventoryBucket.legArmor,
+    InventoryBucket.classArmor,
+    InventoryBucket.ghost,
+    InventoryBucket.vehicle,
+    InventoryBucket.ships,
+    InventoryBucket.emblems,
+    InventoryBucket.consumables,
+    InventoryBucket.modifications,
+    InventoryBucket.shaders,
+  ];
+
+  static List<int> _typeOrder = [
+    DestinyItemType.Subclass,
+    DestinyItemType.Weapon,
+    DestinyItemType.Armor,
+
+    DestinyItemType.Quest,
+    DestinyItemType.QuestStep,
+    DestinyItemType.QuestStepComplete,
+    DestinyItemType.Bounty,
+
+    DestinyItemType.Ghost,
+    DestinyItemType.Vehicle,
+    DestinyItemType.Ship,
+    DestinyItemType.Emblem,
+    DestinyItemType.Aura,
+    DestinyItemType.ClanBanner,
+    DestinyItemType.Emote,
+
+    DestinyItemType.Mod,
+    DestinyItemType.MissionReward,
+    DestinyItemType.ExchangeMaterial,
+    DestinyItemType.Engram,
+    DestinyItemType.Consumable,
+    DestinyItemType.Currency,
+
+    DestinyItemType.Dummy,
+    DestinyItemType.Package,
+    DestinyItemType.Message,
+    DestinyItemType.None,
+  ];
+
+  static List<int> _subtypeOrder = [
+    DestinyItemSubType.HandCannon,
+    DestinyItemSubType.AutoRifle,
+    DestinyItemSubType.PulseRifle,
+    DestinyItemSubType.ScoutRifle,
+    DestinyItemSubType.Sidearm,
+    DestinyItemSubType.SubmachineGun,
+    DestinyItemSubType.TraceRifle,
+    DestinyItemSubType.Bow,
+    DestinyItemSubType.Shotgun,
+    DestinyItemSubType.SniperRifle,
+    DestinyItemSubType.FusionRifle,
+    DestinyItemSubType.FusionRifleLine,
+    DestinyItemSubType.GrenadeLauncher,
+    DestinyItemSubType.RocketLauncher,
+    DestinyItemSubType.Sword,
+    DestinyItemSubType.Machinegun,
+    DestinyItemSubType.HelmetArmor,
+    DestinyItemSubType.GauntletsArmor,
+    DestinyItemSubType.ChestArmor,
+    DestinyItemSubType.LegArmor,
+    DestinyItemSubType.ClassArmor,
+    DestinyItemSubType.Shader,
+    DestinyItemSubType.Ornament,
+    DestinyItemSubType.Mask,
+    DestinyItemSubType.Crm,
+  ];
   static int sortDestinyItems(
     DestinyItemComponent itemA,
     DestinyItemComponent itemB,
     ProfileService profile, {
-    Map<SortingParam, int> sortingParams = const {SortingParam.power: -1},
+    List<SortParameter> sortingParams = const [
+      SortParameter(SortParameterType.power, -1)
+    ],
     DestinyInventoryItemDefinition defA,
     DestinyInventoryItemDefinition defB,
   }) {
     int result = 0;
-    sortingParams.forEach((param, direction) {
-      result = _sortBy(param, direction, itemA, itemB, defA, defB, profile);
+    for (var p in sortingParams) {
+      result = _sortBy(p.param, p.direction, itemA, itemB, defA, defB, profile);
       if (result != 0) return result;
-    });
+    }
     return result;
   }
 
   static int _sortBy(
-      SortingParam param,
+      SortParameterType param,
       int direction,
       DestinyItemComponent itemA,
       DestinyItemComponent itemB,
@@ -36,7 +123,7 @@ class InventoryUtils {
       DestinyInventoryItemDefinition defB,
       ProfileService profile) {
     switch (param) {
-      case SortingParam.power:
+      case SortParameterType.power:
         DestinyItemInstanceComponent instanceA =
             profile.getInstanceInfo(itemA.itemInstanceId);
         DestinyItemInstanceComponent instanceB =
@@ -45,10 +132,46 @@ class InventoryUtils {
         int powerB = instanceB?.primaryStat?.value ?? 0;
         return direction * powerA.compareTo(powerB);
         break;
-      case SortingParam.tierType:
+      case SortParameterType.tierType:
         int tierA = defA?.inventory?.tierType ?? 0;
         int tierB = defB?.inventory?.tierType ?? 0;
         return direction * tierA.compareTo(tierB);
+        break;
+
+      case SortParameterType.bucketHash:
+        int bucketA = defA?.inventory?.bucketTypeHash ?? 0;
+        int bucketB = defB?.inventory?.bucketTypeHash ?? 0;
+        int orderA = _bucketOrder.indexOf(bucketA);
+        int orderB = _bucketOrder.indexOf(bucketB);
+        return direction * orderA.compareTo(orderB);
+        break;
+
+      case SortParameterType.subType:
+        int subTypeA = defA?.itemSubType ?? 0;
+        int subTypeB = defB?.itemSubType ?? 0;
+        int orderA = _subtypeOrder.indexOf(subTypeA);
+        int orderB = _subtypeOrder.indexOf(subTypeB);
+        return direction * orderA.compareTo(orderB);
+        break;
+
+      case SortParameterType.type:
+        int typeA = defA?.itemType ?? 0;
+        int typeB = defB?.itemType ?? 0;
+        int orderA = _typeOrder.indexOf(typeA);
+        int orderB = _typeOrder.indexOf(typeB);
+        return direction * orderA.compareTo(orderB);
+        break;
+
+      case SortParameterType.name:
+        String nameA = defA?.displayProperties?.name ?? "";
+        String nameB = defB?.displayProperties?.name ?? "";
+        return direction * nameA.compareTo(nameB);
+        break;
+
+      case SortParameterType.classType:
+        int classA = defA?.classType ?? 0;
+        int classB = defB?.classType ?? 0;
+        return direction * classA.compareTo(classB);
         break;
     }
     return 0;
@@ -196,7 +319,7 @@ class LoadoutItemIndex {
     }
     unequipped[def.inventory.bucketTypeHash].add(item);
     if (modifyLoadout) {
-      loadout.equipped.add(LoadoutItem(item.itemInstanceId, item.itemHash));
+      loadout.unequipped.add(LoadoutItem(item.itemInstanceId, item.itemHash));
     }
     unequippedCount++;
   }
@@ -212,6 +335,10 @@ class LoadoutItemIndex {
     }
     unequipped[def.inventory.bucketTypeHash]
         .removeWhere((i) => i.itemInstanceId == item.itemInstanceId);
+    if (modifyLoadout) {
+      loadout.unequipped
+          .removeWhere((i) => i.itemInstanceId == item.itemInstanceId);
+    }
     unequippedCount--;
   }
 

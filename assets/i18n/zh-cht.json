@@ -71,5 +71,14 @@
   "access_denied": "訪問被拒絕",
   "Weapon": "武器",
   "Armor": "盔甲",
-  "Everything": "一切"
+  "Everything": "一切",
+  "Filters": "過濾器",
+  "Damage Type": "傷害類型",
+  "Class": "類",
+  "Slot": "插槽",
+  "Tier Type": "稀有",
+  "Type": "樣",
+  "Ammo Type": "彈藥類型",
+  "Power Level": "權力等級",
+  "All": "所有"
 }

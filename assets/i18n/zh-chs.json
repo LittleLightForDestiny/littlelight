@@ -71,5 +71,14 @@
   "access_denied": "访问被拒绝",
   "Weapon": "武器",
   "Armor": "盔甲",
-  "Everything": "一切"
+  "Everything": "一切",
+  "Filters": "过滤器",
+  "Damage Type": "伤害类型",
+  "Class": "类",
+  "Slot": "插槽",
+  "Tier Type": "稀有",
+  "Type": "样",
+  "Ammo Type": "弹药类型",
+  "Power Level": "权力等级",
+  "All": "所有"
 }

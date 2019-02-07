@@ -1,8 +1,12 @@
+import 'dart:math';
+
+import 'package:bungie_api/enums/destiny_item_type_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:bungie_api/enums/destiny_class_enum.dart';
 import 'package:bungie_api/enums/damage_type_enum.dart';
 import 'package:bungie_api/enums/tier_type_enum.dart';
 import 'package:bungie_api/enums/destiny_ammunition_type_enum.dart';
+import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/widgets/icon_fonts/destiny_icons_icons.dart';
 import 'package:bungie_api/enums/destiny_item_sub_type_enum.dart';
 
@@ -32,6 +36,28 @@ class DestinyData {
     DestinyAmmunitionType.Primary: 1731162900,
     DestinyAmmunitionType.Special: 638914517,
     DestinyAmmunitionType.Heavy: 3686962409,
+  };
+
+  static const Map<int, int> itemTypeHashes = {
+    DestinyItemType.Subclass:0,
+    DestinyItemType.Weapon:1,
+    DestinyItemType.Armor:20,
+    DestinyItemType.Quest:53,
+    DestinyItemType.QuestStep:16,
+    DestinyItemType.Bounty:1784235469,
+    DestinyItemType.Ghost:39,
+    DestinyItemType.Vehicle:43,
+    DestinyItemType.Ship:42,
+    DestinyItemType.Emblem:19,
+    DestinyItemType.Aura:57,
+    DestinyItemType.ClanBanner:874645359,
+    DestinyItemType.Emote:44,
+    DestinyItemType.Mod:59,
+    DestinyItemType.Engram:34,
+    DestinyItemType.Consumable:35,
+    DestinyItemType.Currency:18,
+    DestinyItemType.Dummy:3109687656,
+    DestinyItemType.Package:268598612,
   };
 
   static const Map<int, int> itemSubtypeHashes = {
@@ -114,7 +140,19 @@ class DestinyData {
     4265082475, //vehicle mods
   ];
 
-  static int maxPowerLevel = 650;
+  static final DateTime _jokersWildRelease = DateTime(2019, 3, 1);
+  static final DateTime _penumbraRelease = DateTime(2019, 6, 1);
+
+  static int get maxPowerLevel{
+    var now = DateTime.now();
+    if(now.isBefore(_jokersWildRelease)){
+      return 650;
+    }
+    if(now.isBefore(_penumbraRelease)){
+      return 700;
+    }
+    return 750;
+  }
 
   static IconData getClassIcon(int type) {
     switch (type) {

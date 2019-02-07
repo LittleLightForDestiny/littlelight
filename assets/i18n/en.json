@@ -71,5 +71,14 @@
   "access_denied": "access_denied",
   "Weapon": "Weapon",
   "Armor": "Armor",
-  "Everything": "Everything"
+  "Everything": "Everything",
+  "Filters": "Filters",
+  "Damage Type": "Damage Type",
+  "Class": "Class",
+  "Slot": "Slot",
+  "Tier Type": "Tier Type",
+  "Type": "Type",
+  "Ammo Type": "Ammo Type",
+  "Power Level": "Power Level",
+  "All": "All"
 }

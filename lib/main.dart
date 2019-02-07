@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:little_light/exceptions/exception_handler.dart';
@@ -9,21 +8,19 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
 int restartCounter = 0;
-void main() async{
+void main() async {
   await DotEnv().load('.env');
-  ExceptionHandler handler = ExceptionHandler(onRestart:(){
+  ExceptionHandler handler = ExceptionHandler(onRestart: () {
     restartCounter++;
     main();
   });
 
   runZoned<Future<void>>(() async {
-    
-    runApp(new LittleLight(key:Key("little_light_$restartCounter")));
+    runApp(new LittleLight(key: Key("little_light_$restartCounter")));
   }, onError: (error, stackTrace) {
     handler.handleException(error, stackTrace);
   });
 }
-
 
 class LittleLight extends StatelessWidget {
   // This widget is the root of your application.
@@ -40,21 +37,24 @@ class LittleLight extends StatelessWidget {
       key: key,
       title: 'Little Light',
       theme: new ThemeData(
-        platform: TargetPlatform.android,
-        backgroundColor: Colors.blueGrey.shade900,
-        primarySwatch: Colors.lightBlue,
-        primaryColor: Colors.blueGrey,
-        brightness: Brightness.dark,
-        colorScheme: ColorScheme.dark(),
-        accentColor: Colors.lightBlueAccent.shade100,
-        textSelectionColor: Colors.blueGrey.shade400,
-        textSelectionHandleColor: Colors.lightBlueAccent.shade200,
-        textTheme: TextTheme(
-          button: TextStyle(
+          platform: TargetPlatform.android,
+          backgroundColor: Colors.blueGrey.shade900,
+          primarySwatch: Colors.lightBlue,
+          primaryColor: Colors.blueGrey,
+          brightness: Brightness.dark,
+          colorScheme: ColorScheme.dark(),
+          accentColor: Colors.lightBlueAccent.shade100,
+          textSelectionColor: Colors.blueGrey.shade400,
+          textSelectionHandleColor: Colors.lightBlueAccent.shade200,
+          textTheme: TextTheme(
+              button: TextStyle(
             fontWeight: FontWeight.bold,
-          )
-        )
-      ),
+          )),
+          sliderTheme: SliderThemeData.fromPrimaryColors(
+              primaryColor: Colors.lightBlue,
+              primaryColorDark: Colors.lightBlue,
+              primaryColorLight: Colors.lightBlue,
+              valueIndicatorTextStyle: TextStyle())),
       home: new InitialScreen(),
       localizationsDelegates: [
         GlobalMaterialLocalizations.delegate,
