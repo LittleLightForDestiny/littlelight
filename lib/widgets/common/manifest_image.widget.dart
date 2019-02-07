@@ -26,7 +26,7 @@ class ManifestImageWidget<T> extends StatefulWidget {
   }
 }
 
-class ManifestImageState<T> extends State<ManifestImageWidget> {
+class ManifestImageState<T> extends State<ManifestImageWidget<T>> {
   T definition;
 
   @override

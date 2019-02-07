@@ -22,6 +22,18 @@ class DestinyData {
     TierType.Exotic: 2759499571,
   };
 
+  static const Map<int, int> classTypeHashes = {
+    DestinyClass.Titan: 3655393761,
+    DestinyClass.Hunter: 671679327,
+    DestinyClass.Warlock: 2271682572,
+  };
+
+  static const Map<int, int> ammoTypeHashes = {
+    DestinyAmmunitionType.Primary: 1731162900,
+    DestinyAmmunitionType.Special: 638914517,
+    DestinyAmmunitionType.Heavy: 3686962409,
+  };
+
   static const Map<int, int> itemSubtypeHashes = {
     DestinyItemSubType.AutoRifle: 5,
     DestinyItemSubType.Shotgun: 11,
@@ -36,16 +48,16 @@ class DestinyData {
     DestinyItemSubType.Sword: 54,
     DestinyItemSubType.Mask: 55,
     DestinyItemSubType.Shader: 41,
-    DestinyItemSubType.FusionRifleLine: 22,
-    DestinyItemSubType.GrenadeLauncher: 23,
-    DestinyItemSubType.SubmachineGun: 24,
-    DestinyItemSubType.TraceRifle: 25,
-    DestinyItemSubType.HelmetArmor: 26,
-    DestinyItemSubType.GauntletsArmor: 27,
-    DestinyItemSubType.ChestArmor: 28,
-    DestinyItemSubType.LegArmor: 29,
-    DestinyItemSubType.ClassArmor: 30,
-    DestinyItemSubType.Bow: 31,
+    DestinyItemSubType.FusionRifleLine: 1504945536,
+    DestinyItemSubType.GrenadeLauncher: 153950757,
+    DestinyItemSubType.SubmachineGun: 3954685534,
+    DestinyItemSubType.TraceRifle: 2489664120,
+    DestinyItemSubType.HelmetArmor: 45,
+    DestinyItemSubType.GauntletsArmor: 46,
+    DestinyItemSubType.ChestArmor: 47,
+    DestinyItemSubType.LegArmor: 48,
+    DestinyItemSubType.ClassArmor: 49,
+    DestinyItemSubType.Bow: 3317538576,
   };
 
   static const Color positiveFeedback = Color.fromRGBO(67, 205, 57, 1);

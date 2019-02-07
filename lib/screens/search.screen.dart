@@ -12,6 +12,7 @@ import 'package:little_light/widgets/search/search_filters.widget.dart';
 import 'package:little_light/widgets/search/search_list.widget.dart';
 import 'package:bungie_api/enums/destiny_item_type_enum.dart';
 import 'package:bungie_api/enums/destiny_item_sub_type_enum.dart';
+import 'package:bungie_api/enums/destiny_ammunition_type_enum.dart';
 
 class SearchTabData {
   String searchText = "";
@@ -50,20 +51,20 @@ class SearchScreenState extends State<SearchScreen>
             InventoryBucket.kineticWeapons,
             InventoryBucket.energyWeapons,
             InventoryBucket.powerWeapons
-          ]),
+          ], []),
           FilterType.damageType: FilterItem([
             DamageType.Kinetic,
             DamageType.Thermal,
             DamageType.Arc,
             DamageType.Void,
-          ]),
+          ], []),
           FilterType.tierType: FilterItem([
             TierType.Basic,
             TierType.Common,
             TierType.Rare,
             TierType.Superior,
             TierType.Exotic,
-          ]),
+          ], []),
           FilterType.itemSubType: FilterItem([
             DestinyItemSubType.HandCannon,
             DestinyItemSubType.AutoRifle,
@@ -81,7 +82,12 @@ class SearchScreenState extends State<SearchScreen>
             DestinyItemSubType.RocketLauncher,
             DestinyItemSubType.Sword,
             DestinyItemSubType.Machinegun,
-          ])
+          ], []),
+          FilterType.ammoType: FilterItem([
+          DestinyAmmunitionType.Primary,
+          DestinyAmmunitionType.Special,
+          DestinyAmmunitionType.Heavy
+          ], [])
         },
         label: ManifestText<DestinyItemCategoryDefinition>(1,
             uppercase: true,

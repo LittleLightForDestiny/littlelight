@@ -1,8 +1,11 @@
-import 'package:bungie_api/models/destiny_damage_type_definition.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/widgets/common/manifest_text.widget.dart';
+import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:flutter_range_slider/flutter_range_slider.dart';
+import 'package:bungie_api/models/destiny_item_tier_type_definition.dart';
+import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
+import 'package:little_light/widgets/common/manifest_text.widget.dart';
+import 'package:bungie_api/models/destiny_item_category_definition.dart';
 
 enum FilterType {
   powerLevel,
@@ -10,14 +13,16 @@ enum FilterType {
   bucketType,
   tierType,
   itemSubType,
+  ammoType,
   classType,
 }
 
 class FilterItem {
   List<int> options;
   List<int> values;
+  bool open;
 
-  FilterItem(this.options, [this.values = const []]);
+  FilterItem(this.options, this.values, {this.open = false});
 }
 
 class SearchFiltersWidget extends StatefulWidget {
@@ -30,6 +35,7 @@ class SearchFiltersWidget extends StatefulWidget {
 }
 
 class SearchFiltersWidgetState extends State<SearchFiltersWidget> {
+  FilterType multiselect;
   @override
   initState() {
     super.initState();
@@ -52,25 +58,48 @@ class SearchFiltersWidgetState extends State<SearchFiltersWidget> {
             },
           ),
         ),
-        SingleChildScrollView(child: buildControls(context))
+        Expanded(child:ListView(children: buildControls(context)))
       ],
     ));
   }
 
-  Widget buildControls(BuildContext context) {
+  List<Widget> buildControls(BuildContext context) {
     List<Widget> controls = [];
     if (widget.filterData.containsKey(FilterType.powerLevel)) {
       controls.add(
           buildPowerLevel(context, widget.filterData[FilterType.powerLevel]));
+      controls.add(Container(height: 10));
     }
     if (widget.filterData.containsKey(FilterType.damageType)) {
-      controls.add(buildTypeSelector<DestinyDamageTypeDefinition>(
-          context,
-          TranslatedTextWidget("Damage Type"),
-          widget.filterData[FilterType.damageType]));
+      controls.add(buildTypeSelector(
+          context, TranslatedTextWidget("Damage Type"), FilterType.damageType));
+      controls.add(Container(height: 10));
+    }
+    if (widget.filterData.containsKey(FilterType.tierType)) {
+      controls.add(buildTypeSelector(
+          context, TranslatedTextWidget("Tier Type"), FilterType.tierType));
+      controls.add(Container(height: 10));
     }
 
-    return Column(children: controls);
+    if (widget.filterData.containsKey(FilterType.bucketType)) {
+      controls.add(buildTypeSelector(
+          context, TranslatedTextWidget("Slot"), FilterType.bucketType));
+      controls.add(Container(height: 10));
+    }
+
+    if (widget.filterData.containsKey(FilterType.bucketType)) {
+      controls.add(buildTypeSelector(
+          context, TranslatedTextWidget("Type"), FilterType.itemSubType));
+      controls.add(Container(height: 10));
+    }
+
+    if (widget.filterData.containsKey(FilterType.ammoType)) {
+      controls.add(buildTypeSelector(
+          context, TranslatedTextWidget("Ammo Type"), FilterType.ammoType));
+      controls.add(Container(height: 10));
+    }
+
+    return controls;
   }
 
   Widget buildPowerLevel(BuildContext context, FilterItem data) {
@@ -81,7 +110,10 @@ class SearchFiltersWidgetState extends State<SearchFiltersWidget> {
     return Container(
         color: Colors.lightBlue.shade600,
         child: ExpansionTile(
-          initiallyExpanded: true,
+          initiallyExpanded: data.open,
+          onExpansionChanged: (value){
+            data.open = value;
+          },
           backgroundColor: Colors.blueGrey.shade900,
           title: TranslatedTextWidget("Power Level"),
           children: <Widget>[
@@ -99,6 +131,7 @@ class SearchFiltersWidgetState extends State<SearchFiltersWidget> {
                       left: 20,
                       right: 20,
                       child: RangeSlider(
+                        touchRadiusExpansionRatio: 6,
                         min: min,
                         max: max,
                         lowerValue: lower,
@@ -125,17 +158,176 @@ class SearchFiltersWidgetState extends State<SearchFiltersWidget> {
   }
 
   Widget buildTypeSelector<T>(
-      BuildContext context, Widget title, FilterItem data) {
-    List<Widget> chips = [];
-    chips.add(Container(child: Chip(label: TranslatedTextWidget("All"))));
-    chips.addAll(
-        data.options.map((i) => Chip(label: ManifestText<T>(i))).toList());
+      BuildContext context, Widget title, FilterType type) {
+    var data = widget.filterData[type];
+
+    List<Widget> chips =
+        data.options.map((i) => optionButton(context, i, type)).toList();
     return Container(
         color: Colors.lightBlue.shade600,
         child: ExpansionTile(
-            initiallyExpanded: true,
+          onExpansionChanged: (value){
+            data.open = value;
+          },
+            initiallyExpanded: data.open,
             backgroundColor: Colors.blueGrey.shade900,
             title: title,
-            children: chips));
+            children: [
+              Container(
+                  padding: EdgeInsets.symmetric(horizontal: 6),
+                  constraints: BoxConstraints(minWidth: double.infinity),
+                  child: button(
+                      context,
+                      TranslatedTextWidget(
+                        "All",
+                        uppercase: true,
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      data.values.length == 0, onTap: () {
+                    data.values.clear();
+                    multiselect = null;
+                    widget.onChange();
+                  })),
+              Container(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 6).copyWith(bottom: 8),
+                  constraints: BoxConstraints(minWidth: double.infinity),
+                  child: Wrap(
+                    alignment: WrapAlignment.center,
+                    children: chips,
+                  ))
+            ]));
+  }
+
+  Widget optionButton(BuildContext context, int id, FilterType type) {
+    var filter = widget.filterData[type];
+    var onTap = () {
+      if (multiselect == type) {
+        if (filter.values.contains(id)) {
+          filter.values.remove(id);
+          if (filter.values.length <= 1) {
+            multiselect = null;
+          }
+        } else {
+          filter.values.add(id);
+        }
+      } else {
+        filter.values.clear();
+        filter.values.add(id);
+        multiselect = null;
+      }
+      widget.onChange();
+    };
+
+    var onLongPress = () {
+      multiselect = type;
+      filter.values.add(id);
+      widget.onChange();
+    };
+    switch (type) {
+      case FilterType.damageType:
+        return FractionallySizedBox(
+            widthFactor: 1 / 4,
+            child: AspectRatio(
+                aspectRatio: 1.5,
+                child: button(
+                    context,
+                    Icon(
+                      DestinyData.getDamageTypeIcon(id),
+                      color: DestinyData.getDamageTypeTextColor(id),
+                    ),
+                    filter.values.contains(id),
+                    onTap: onTap,
+                    onLongPress: onLongPress)));
+
+      case FilterType.ammoType:
+        return FractionallySizedBox(
+            widthFactor: 1 / 3,
+            child: AspectRatio(
+                aspectRatio: 2,
+                child: button(
+                    context,
+                    Icon(
+                      DestinyData.getAmmoTypeIcon(id),
+                      size: 30,
+                      color: DestinyData.getAmmoTypeColor(id),
+                    ),
+                    filter.values.contains(id),
+                    onTap: onTap,
+                    onLongPress: onLongPress)));
+
+      case FilterType.tierType:
+        return FractionallySizedBox(
+            widthFactor: 1 / 3,
+            child: button(
+                context,
+                ManifestText<DestinyItemTierTypeDefinition>(
+                  DestinyData.tierTypeHashes[id],
+                  uppercase: true,
+                  style:TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color:DestinyData.getTierTextColor(id),
+                  )
+                ),
+                filter.values.contains(id),
+                color:DestinyData.getTierColor(id),
+                onTap: onTap,
+                onLongPress: onLongPress));
+
+      case FilterType.bucketType:
+        return button(
+                context,
+                ManifestText<DestinyInventoryBucketDefinition>(
+                  id,
+                  uppercase: true,
+                  style:TextStyle(
+                    fontWeight: FontWeight.bold,
+                  )
+                ),
+                filter.values.contains(id),
+                onTap: onTap,
+                onLongPress: onLongPress);
+
+      case FilterType.itemSubType:
+        return FractionallySizedBox(
+            widthFactor: 1 / 2,
+            child:AspectRatio(
+              aspectRatio: 3,
+              child:button(
+                context,
+                ManifestText<DestinyItemCategoryDefinition>(
+                  DestinyData.itemSubtypeHashes[id],
+                  uppercase: true,
+                  textAlign: TextAlign.center,
+                  style:TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  )
+                ),
+                filter.values.contains(id),
+                onTap: onTap,
+                onLongPress: onLongPress)));
+
+      default:
+        break;
+    }
+    return Container();
+  }
+
+  Widget button(BuildContext context, Widget content, bool selected,
+      {Color color, Function onTap, Function onLongPress}) {
+    return Container(
+        margin: EdgeInsets.all(2),
+        child: Material(
+            borderRadius: BorderRadius.circular(4),
+            color: selected ? Colors.lightBlue.shade700 : color ?? Colors.blueGrey.shade800,
+            child: InkWell(
+                onTap: onTap,
+                onLongPress: onLongPress,
+                child: Container(
+                    constraints: BoxConstraints(minWidth: double.infinity),
+                    alignment: Alignment.center,
+                    padding: EdgeInsets.all(4),
+                    child: content))));
   }
 }

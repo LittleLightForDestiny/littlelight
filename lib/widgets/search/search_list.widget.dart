@@ -74,6 +74,11 @@ class SearchListWidgetState extends State<SearchListWidget> {
 
   FilterItem get powerLevelFilter=>widget.tabData.filterData[FilterType.powerLevel];
 
+  FilterItem get damageTypeFilter=>widget.tabData.filterData[FilterType.damageType];
+
+  FilterItem get tierTypeFilter=>widget.tabData.filterData[FilterType.tierType];
+  FilterItem get bucketTypeFilter=>widget.tabData.filterData[FilterType.bucketType];
+
   Widget build(BuildContext context) {
     return StaggeredGridView.countBuilder(
       padding: EdgeInsets.all(4),
@@ -106,6 +111,37 @@ class SearchListWidgetState extends State<SearchListWidget> {
           return false;
         }
       }
+
+      if(damageTypeFilter != null){
+        var values = damageTypeFilter.values;
+        DestinyItemInstanceComponent instance = ProfileService().getInstanceInfo(item.item.itemInstanceId);
+        int damageType = instance?.damageType;
+  
+        if(damageType!= null && values.length != 0 && !values.contains(damageType)){
+          return false;
+        }
+      }
+
+      if(tierTypeFilter != null){
+        var values = tierTypeFilter.values;
+        def = itemDefinitions[item.item.itemHash];
+        var tier = def?.inventory?.tierType;
+  
+        if(tier!= null && values.length != 0 && !values.contains(tier)){
+          return false;
+        }
+      }
+
+       if(bucketTypeFilter != null){
+        var values = bucketTypeFilter.values;
+        def = itemDefinitions[item.item.itemHash];
+        var bucketHash = def?.inventory?.bucketTypeHash;
+  
+        if(bucketHash!= null && values.length != 0 && !values.contains(bucketHash)){
+          return false;
+        }
+      }
+
       if (search.length == 0) {
         return true;
       }
