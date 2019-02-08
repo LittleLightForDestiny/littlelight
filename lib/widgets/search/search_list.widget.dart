@@ -20,7 +20,7 @@ class SearchListWidget extends StatefulWidget {
   SearchListWidgetState createState() => new SearchListWidgetState();
 }
 
-class SearchListWidgetState extends State<SearchListWidget> {
+class SearchListWidgetState extends State<SearchListWidget> with AutomaticKeepAliveClientMixin{
   String get search => widget.tabData.searchText;
   List<_ItemWithOwner> items;
   Map<int, DestinyInventoryItemDefinition> itemDefinitions;
@@ -236,6 +236,9 @@ class SearchListWidgetState extends State<SearchListWidget> {
         characterId: item.ownerId,
         key: Key("item_${item.item.itemInstanceId}_${item.item.itemHash}"));
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class _ItemWithOwner {

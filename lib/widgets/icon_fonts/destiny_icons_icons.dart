@@ -19,7 +19,8 @@ class DestinyIcons {
   DestinyIcons._();
 
   static const _kFontFam = 'DestinyIcons';
-
+  
+  static const IconData ghost = const IconData(0xe80f, fontFamily: _kFontFam);
   static const IconData class_titan = const IconData(0xe900, fontFamily: _kFontFam);
   static const IconData class_hunter = const IconData(0xe901, fontFamily: _kFontFam);
   static const IconData class_warlock = const IconData(0xe902, fontFamily: _kFontFam);

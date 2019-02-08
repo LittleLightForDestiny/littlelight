@@ -6,7 +6,6 @@ import 'package:bungie_api/enums/destiny_class_enum.dart';
 import 'package:bungie_api/enums/damage_type_enum.dart';
 import 'package:bungie_api/enums/tier_type_enum.dart';
 import 'package:bungie_api/enums/destiny_ammunition_type_enum.dart';
-import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/widgets/icon_fonts/destiny_icons_icons.dart';
 import 'package:bungie_api/enums/destiny_item_sub_type_enum.dart';
 
@@ -253,4 +252,5 @@ class DestinyData {
 
 class ProgressionHash {
   static const String Overlevel = '2030054750';
+  static const String Power = '1935470627';
 }
