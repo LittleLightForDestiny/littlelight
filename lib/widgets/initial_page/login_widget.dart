@@ -84,7 +84,7 @@ class LoginWidgetState extends State<LoginWidget> {
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       Padding(
         padding: EdgeInsets.all(8),
-        child: TranslatedTextWidget("Authorize Description"),
+        child: TranslatedTextWidget("Authorize with Bungie.net to use inventory management features"),
       ),
       RaisedButton(
         onPressed: () {

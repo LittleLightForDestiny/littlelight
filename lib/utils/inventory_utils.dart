@@ -177,7 +177,7 @@ class InventoryUtils {
     return 0;
   }
 
-  static buildLoadoutItemIndex(Loadout loadout) async {
+  static Future<LoadoutItemIndex> buildLoadoutItemIndex(Loadout loadout) async {
     LoadoutItemIndex itemIndex = LoadoutItemIndex(loadout);
     await itemIndex.build();
     return itemIndex;
@@ -291,6 +291,16 @@ class LoadoutItemIndex {
     if (modifyLoadout) {
       loadout.equipped.add(LoadoutItem(item.itemInstanceId, item.itemHash));
     }
+  }
+
+  bool haveEquippedItem(DestinyInventoryItemDefinition def){
+    if(def.classType == DestinyClass.Unknown){
+      return generic[def.inventory.bucketTypeHash] != null;
+    }
+    try{
+      return classSpecific[def.inventory.bucketTypeHash][def.classType] != null;
+    }catch(e){}
+    return false;
   }
 
   removeEquippedItem(

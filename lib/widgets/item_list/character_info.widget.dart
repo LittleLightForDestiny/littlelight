@@ -1,12 +1,21 @@
+import 'package:bungie_api/enums/destiny_class_enum.dart';
+import 'package:bungie_api/enums/destiny_item_type_enum.dart';
+import 'package:bungie_api/enums/tier_type_enum.dart';
 import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:bungie_api/models/destiny_class_definition.dart';
+import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
+import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_progression.dart';
 import 'package:bungie_api/models/destiny_race_definition.dart';
 import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
+import 'package:little_light/services/inventory/inventory.service.dart';
+import 'package:little_light/services/littlelight/models/loadout.model.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
+import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/icon_fonts/destiny_icons_icons.dart';
@@ -53,17 +62,16 @@ class CharacterInfoWidgetState extends State<CharacterInfoWidget> {
       expInfo(context, character),
       Positioned.fill(
           child: FlatButton(
-        child: Container(),
-        onPressed: () {
-          Scaffold.of(context).showBottomSheet((context) {
-            return Container(
-                child: RaisedButton(
-              child: TranslatedTextWidget("Max Light"),
-              onPressed: () {},
-            ));
-          });
-        },
-      ))
+              child: Container(),
+              onPressed: () {
+                showModalBottomSheet(
+                    context: context,
+                    builder: (context) {
+                      return CharacterOptionsSheet(
+                        character: character,
+                      );
+                    });
+              }))
     ]);
   }
 
@@ -147,7 +155,6 @@ class CharacterInfoWidgetState extends State<CharacterInfoWidget> {
       BuildContext context, DestinyCharacterComponent character) {
     List<Widget> stats = [];
     character.stats.forEach((hash, stat) {
-      print(hash);
       if (hash == "${ProgressionHash.Power}") return;
       stats.add(Container(
           width: 16,
@@ -184,5 +191,196 @@ class CharacterInfoWidgetState extends State<CharacterInfoWidget> {
               fontSize: 11,
               fontWeight: FontWeight.bold),
         ));
+  }
+}
+
+class CharacterOptionsSheet extends StatefulWidget {
+  final DestinyCharacterComponent character;
+  final ProfileService profile = ProfileService();
+  final ManifestService manifest = ManifestService();
+
+  CharacterOptionsSheet({Key key, this.character}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() {
+    return CharacterOptionsSheetState();
+  }
+}
+
+class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
+  LoadoutItemIndex maxLightLoadout;
+  double maxLight;
+
+  @override
+  void initState() {
+    super.initState();
+    getMaxLightLoadout();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        padding: EdgeInsets.all(8),
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              RaisedButton(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                  TranslatedTextWidget(
+                    "Equip Max Light"),
+                  Text("${maxLight?.toStringAsFixed(1) ?? ""}", style: TextStyle(color: Colors.amber.shade300),)
+                ]),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  InventoryService().transferLoadout(maxLightLoadout.loadout, widget.character.characterId, true);
+                },
+              )
+            ]));
+  }
+
+  getMaxLightLoadout() async {
+    var allItems = widget.profile.getAllItems();
+    var instancedItems =
+        allItems.where((i) => i.itemInstanceId != null).toList();
+    instancedItems.sort((itemA, itemB) =>
+        InventoryUtils.sortDestinyItems(itemA, itemB, widget.profile));
+    LoadoutItemIndex maxLightLoadout = new LoadoutItemIndex();
+    LoadoutItemIndex exoticPieces = new LoadoutItemIndex();
+    for (var item in instancedItems) {
+      var def = await widget.manifest.getItemDefinition(item.itemHash);
+      if (def.classType != widget.character.classType &&
+          def.classType != DestinyClass.Unknown) {
+        continue;
+      }
+      if (![DestinyItemType.Weapon, DestinyItemType.Armor]
+          .contains(def.itemType)) {
+        continue;
+      }
+      if (def.inventory.tierType == TierType.Exotic) {
+        if (exoticPieces.haveEquippedItem(def)) {
+          continue;
+        }
+        exoticPieces.addEquippedItem(item, def);
+      } else {
+        if (maxLightLoadout.haveEquippedItem(def)) {
+          continue;
+        }
+        maxLightLoadout.addEquippedItem(item, def);
+      }
+    }
+    var exoticWeapon =
+        getHighestLightExoticWeapon(maxLightLoadout, exoticPieces);
+    var exoticArmor = getHighestLightExoticArmor(maxLightLoadout, exoticPieces);
+
+    if (exoticWeapon != null) {
+      var def = await widget.manifest.getItemDefinition(exoticWeapon.itemHash);
+      maxLightLoadout.addEquippedItem(exoticWeapon, def);
+    }
+
+    if (exoticArmor != null) {
+      var def = await widget.manifest.getItemDefinition(exoticArmor.itemHash);
+      maxLightLoadout.addEquippedItem(exoticArmor, def);
+    }
+    int totalLight = 0;
+    for (var weapon in maxLightLoadout.generic.values) {
+      if (weapon == null) continue;
+      var instance = widget.profile.getInstanceInfo(weapon.itemInstanceId);
+      totalLight += instance?.primaryStat?.value ?? 0;
+    }
+    for (var armorItems in maxLightLoadout.classSpecific.values) {
+      var armor = armorItems[widget.character.classType];
+      if (armor == null) continue;
+      var instance = widget.profile.getInstanceInfo(armor.itemInstanceId);
+      totalLight += instance?.primaryStat?.value ?? 0;
+    }
+    this.maxLightLoadout = maxLightLoadout;
+    this.maxLight = totalLight / 8;
+
+    setState(() {});
+  }
+
+  DestinyItemComponent getHighestLightExoticWeapon(
+      LoadoutItemIndex nonExotic, LoadoutItemIndex exotic) {
+    int lightDifference = 0;
+    DestinyItemComponent exoticToReplace;
+    for (var bucketHash in exotic.generic.keys) {
+      var exoticWeapon = exotic.generic[bucketHash];
+      var nonExoticWeapon = nonExotic.generic[bucketHash];
+      var exoticInstance =
+          widget.profile.getInstanceInfo(exoticWeapon?.itemInstanceId);
+      var nonExoticInstance =
+          widget.profile.getInstanceInfo(nonExoticWeapon?.itemInstanceId);
+      var exoticPower = exoticInstance?.primaryStat?.value ?? 0;
+      var nonExoticPower = nonExoticInstance?.primaryStat?.value ?? 0;
+      var diff = exoticPower - nonExoticPower;
+      if (diff > lightDifference) {
+        exoticToReplace = exotic.generic[bucketHash];
+        lightDifference = diff;
+      }
+    }
+    return exoticToReplace;
+  }
+
+  DestinyItemComponent getHighestLightExoticArmor(
+      LoadoutItemIndex nonExotic, LoadoutItemIndex exotic) {
+    int lightDifference = 0;
+    DestinyItemComponent exoticToReplace;
+    for (var bucketHash in exotic.classSpecific.keys) {
+      var exoticArmor =
+          exotic.classSpecific[bucketHash][widget.character.classType];
+      var nonExoticArmor =
+          nonExotic.classSpecific[bucketHash][widget.character.classType];
+      var exoticInstance =
+          widget.profile.getInstanceInfo(exoticArmor?.itemInstanceId);
+      var nonExoticInstance =
+          widget.profile.getInstanceInfo(nonExoticArmor?.itemInstanceId);
+      var exoticPower = exoticInstance?.primaryStat?.value ?? 0;
+      var nonExoticPower = nonExoticInstance?.primaryStat?.value ?? 0;
+      var diff = exoticPower - nonExoticPower;
+      if (diff > lightDifference) {
+        exoticToReplace =
+            exotic.classSpecific[bucketHash][widget.character.classType];
+        lightDifference = diff;
+      }
+    }
+    return exoticToReplace;
+  }
+
+  bool isLoadoutComplete(LoadoutItemIndex index) {
+    return false;
+  }
+
+  debugLoadout(LoadoutItemIndex loadout) async {
+    var isInDebug = false;
+    assert(isInDebug = true);
+    if (!isInDebug) return;
+    for (var item in loadout.generic.values) {
+      if (item == null) continue;
+      var def = await widget.manifest.getItemDefinition(item.itemHash);
+      var bucket = await widget.manifest
+          .getBucketDefinition(def.inventory.bucketTypeHash);
+      var instance = widget.profile.getInstanceInfo(item.itemInstanceId);
+      print("---------------------------------------------------------------");
+      print(bucket.displayProperties.name);
+      print("---------------------------------------------------------------");
+      print("${def.displayProperties.name} ${instance?.primaryStat?.value}");
+      print("---------------------------------------------------------------");
+    }
+    for (var items in loadout.classSpecific.values) {
+      var item = items[widget.character.classType];
+      if (item == null) continue;
+      var def = await widget.manifest.getItemDefinition(item.itemHash);
+      var bucket = await widget.manifest
+          .getBucketDefinition(def.inventory.bucketTypeHash);
+      var instance = widget.profile.getInstanceInfo(item.itemInstanceId);
+      print("---------------------------------------------------------------");
+      print(bucket.displayProperties.name);
+      print("---------------------------------------------------------------");
+      print("${def.displayProperties.name} ${instance?.primaryStat?.value}");
+      print("---------------------------------------------------------------");
+    }
   }
 }
