@@ -180,6 +180,7 @@ class ItemListWidgetState extends State<ItemListWidget> {
     switch (item.type) {
       case ListItem.infoHeader:
         return CharacterInfoWidget(
+          key:Key("characterinfo_${widget.profile.lastUpdated}"),
           characterId: widget.characterId,
         );
 

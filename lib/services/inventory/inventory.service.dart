@@ -174,7 +174,7 @@ class InventoryService {
     if (andEquip && itemsToEquip.length > 0) {
         _broadcaster.push(NotificationEvent(NotificationType.requestedEquip,
         characterId: characterId));
-      _equipMultiple(itemsToEquip, characterId);
+      await _equipMultiple(itemsToEquip, characterId);
     }
 
     for (var item in itemsToTransfer) {
@@ -191,7 +191,9 @@ class InventoryService {
           destinationCharacterId: characterId, idsToAvoid: idsToAvoid);
     }
     _debugInventory("loadout transfer completed");
-    profile.fetchProfileData();
+
+    await Future.delayed(Duration(milliseconds: 500));
+    await profile.fetchProfileData();
   }
 
   _debugInventory(String title) {

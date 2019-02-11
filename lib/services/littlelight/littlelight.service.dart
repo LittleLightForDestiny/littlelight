@@ -48,6 +48,7 @@ class LittleLightService {
         List<dynamic> list = jsonDecode(json);
         List<Loadout> loadouts = Loadout.fromList(list);
         this._loadouts = loadouts;
+        this._loadouts.sort((a, b)=>a.name.compareTo(b.name));
         return loadouts;
       } catch (e) {}
     }
@@ -70,6 +71,7 @@ class LittleLightService {
       });
     }
     _saveLoadoutsToStorage();
+    this._loadouts.sort((a, b)=>a.name.compareTo(b.name));
     return _loadouts;
   }
 
@@ -82,6 +84,7 @@ class LittleLightService {
     }else{
       _loadouts.add(loadout);
     }
+    this._loadouts.sort((a, b)=>a.name.compareTo(b.name));
     await _saveLoadoutsToStorage();
     return await _saveLoadoutToServer(loadout);
   }

@@ -47,6 +47,8 @@ class ProfileComponentGroups {
 class ProfileService {
   final NotificationService _broadcaster = new NotificationService();
   static final ProfileService _singleton = new ProfileService._internal();
+
+  DateTime lastUpdated;
   factory ProfileService() {
     return _singleton;
   }
@@ -108,6 +110,7 @@ class ProfileService {
       print(e);
       //TODO:implement error handling
     }
+    lastUpdated = DateTime.now();
 
     if (response == null) {
       return _profile;

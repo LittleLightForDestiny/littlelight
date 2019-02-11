@@ -9,8 +9,9 @@ import 'package:bungie_api/models/destiny_progression.dart';
 import 'package:bungie_api/models/destiny_race_definition.dart';
 import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
+import 'package:little_light/screens/edit_loadout.screen.dart';
 import 'package:little_light/services/inventory/inventory.service.dart';
+import 'package:little_light/services/littlelight/littlelight.service.dart';
 import 'package:little_light/services/littlelight/models/loadout.model.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
@@ -25,7 +26,7 @@ class CharacterInfoWidget extends StatefulWidget {
   final ManifestService manifest = new ManifestService();
   final ProfileService profile = new ProfileService();
   final String characterId;
-  CharacterInfoWidget({this.characterId});
+  CharacterInfoWidget({this.characterId, Key key}):super(key:key);
 
   @override
   State<StatefulWidget> createState() {
@@ -210,11 +211,13 @@ class CharacterOptionsSheet extends StatefulWidget {
 class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
   LoadoutItemIndex maxLightLoadout;
   double maxLight;
+  List<Loadout> loadouts;
 
   @override
   void initState() {
     super.initState();
     getMaxLightLoadout();
+    getLoadouts();
   }
 
   @override
@@ -227,18 +230,136 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
             children: [
               RaisedButton(
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                  TranslatedTextWidget(
-                    "Equip Max Light"),
-                  Text("${maxLight?.toStringAsFixed(1) ?? ""}", style: TextStyle(color: Colors.amber.shade300),)
-                ]),
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TranslatedTextWidget("Equip Max Light"),
+                      Text(
+                        "${maxLight?.toStringAsFixed(1) ?? ""}",
+                        style: TextStyle(color: Colors.amber.shade300),
+                      )
+                    ]),
                 onPressed: () {
                   Navigator.of(context).pop();
-                  InventoryService().transferLoadout(maxLightLoadout.loadout, widget.character.characterId, true);
+                  InventoryService().transferLoadout(maxLightLoadout.loadout,
+                      widget.character.characterId, true);
                 },
-              )
+              ),
+              RaisedButton(
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TranslatedTextWidget("Create Loadout"),
+                      TranslatedTextWidget("Equipped")
+                    ]),
+                onPressed: () async {
+                  var itemIndex = await createLoadout();
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (context) => EditLoadoutScreen(
+                            loadout: itemIndex.loadout,
+                            forceCreate: true,
+                          )));
+                },
+              ),
+              RaisedButton(
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TranslatedTextWidget("Create Loadout"),
+                      TranslatedTextWidget("All")
+                    ]),
+                onPressed: () async {
+                  var itemIndex = await createLoadout(true);
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (context) => EditLoadoutScreen(
+                            loadout: itemIndex.loadout,
+                            forceCreate: true,
+                          )));
+                },
+              ),
+              (loadouts?.length ?? 0) > 0
+                  ? RaisedButton(
+                      child: TranslatedTextWidget("Equip Loadout"),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        showModalBottomSheet(
+                            context: context, builder: buildLoadoutListModal);
+                      },
+                    )
+                  : Container()
             ]));
+  }
+
+  Widget buildLoadoutListModal(BuildContext context) {
+    return SingleChildScrollView(
+      child:
+        Container(
+          padding:EdgeInsets.symmetric(vertical:4),
+          child:Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: loadouts
+              .map(
+                (loadout) => Container(
+                    color: Theme.of(context).buttonColor,
+                    margin: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    child: Stack(children: [
+                      Positioned.fill(
+                          child: loadout.emblemHash != null
+                              ? ManifestImageWidget<
+                                  DestinyInventoryItemDefinition>(
+                                  loadout.emblemHash,
+                                  fit: BoxFit.cover,
+                                  urlExtractor: (def) {
+                                    return def?.secondarySpecial;
+                                  },
+                                )
+                              : Container()),
+                      Container(
+                          padding: EdgeInsets.all(16),
+                          child: Text(
+                            loadout.name.toUpperCase(),
+                            maxLines: 1,
+                            overflow: TextOverflow.fade,
+                            softWrap: false,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          )),
+                      Positioned.fill(
+                          child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.of(context).pop();
+                            InventoryService().transferLoadout(loadout, widget.character.characterId, true);
+                          },
+                        ),
+                      ))
+                    ])),
+              )
+              .toList(),
+        ))
+    );
+  }
+
+  Future<LoadoutItemIndex> createLoadout([includeUnequipped = false]) async {
+    var itemIndex = new LoadoutItemIndex();
+    var slots = LoadoutItemIndex.classBucketHashes +
+        LoadoutItemIndex.genericBucketHashes;
+    var equipment =
+        widget.profile.getCharacterEquipment(widget.character.characterId);
+    var equipped = equipment.where((i) => slots.contains(i.bucketHash));
+    for (var item in equipped) {
+      var def = await widget.manifest.getItemDefinition(item.itemHash);
+      itemIndex.addEquippedItem(item, def);
+    }
+    if (!includeUnequipped) return itemIndex;
+    var inventory =
+        widget.profile.getCharacterInventory(widget.character.characterId);
+    var unequipped = inventory.where((i) => slots.contains(i.bucketHash));
+    for (var item in unequipped) {
+      var def = await widget.manifest.getItemDefinition(item.itemHash);
+      itemIndex.addUnequippedItem(item, def);
+    }
+    return itemIndex;
   }
 
   getMaxLightLoadout() async {
@@ -298,8 +419,9 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
     }
     this.maxLightLoadout = maxLightLoadout;
     this.maxLight = totalLight / 8;
-
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   DestinyItemComponent getHighestLightExoticWeapon(
@@ -381,6 +503,14 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
       print("---------------------------------------------------------------");
       print("${def.displayProperties.name} ${instance?.primaryStat?.value}");
       print("---------------------------------------------------------------");
+    }
+  }
+
+  void getLoadouts() async {
+    var littlelight = LittleLightService();
+    this.loadouts = await littlelight.getLoadouts();
+    if (mounted) {
+      setState(() {});
     }
   }
 }

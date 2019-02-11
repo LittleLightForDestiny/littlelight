@@ -20,7 +20,8 @@ import 'package:uuid/uuid.dart';
 
 class EditLoadoutScreen extends StatefulWidget {
   final Loadout loadout;
-  EditLoadoutScreen({Key key, this.loadout}) : super(key: key);
+  final bool forceCreate;
+  EditLoadoutScreen({Key key, this.loadout, this.forceCreate = false}) : super(key: key);
 
   final List<int> bucketOrder = [
     InventoryBucket.subclass,
@@ -126,7 +127,7 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> {
       backgroundColor: emblemColor,
       appBar: AppBar(
           title: TranslatedTextWidget(
-              widget.loadout == null ? "Create Loadout" : "Edit Loadout"),
+              (widget.loadout == null || widget.forceCreate) ? "Create Loadout" : "Edit Loadout"),
           flexibleSpace: buildAppBarBackground(context)),
       body: ListView.builder(
           itemCount: _itemIndex == null ? 2 : widget.bucketOrder.length + 2,

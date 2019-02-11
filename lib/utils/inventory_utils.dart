@@ -218,7 +218,7 @@ class LoadoutItemIndex {
         .asMap()
         .map((index, value) => MapEntry(value, []));
     if (this.loadout == null) {
-      this.loadout = new Loadout(Uuid().v4(), "", null, [], []);
+      this.loadout = new Loadout(Uuid().v4(), "", null, [], [], DateTime.now());
     }
   }
 
