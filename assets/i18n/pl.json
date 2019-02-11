@@ -80,5 +80,8 @@
   "Type": "Wpisz",
   "Ammo Type": "Rodzaj amunicji",
   "Power Level": "Poziom mocy",
-  "All": "Wszystko"
+  "All": "Wszystko",
+  "#####Equip Max Light": "missing_translation",
+  "#####Equip Loadout": "missing_translation",
+  "#####Authorize with Bungie.net to use inventory management features": "missing_translation"
 }

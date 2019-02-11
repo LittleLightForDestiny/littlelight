@@ -11,7 +11,7 @@
 .svn/
 .env
 .sentryclirc
-translated-text-finder
+translations
 
 # IntelliJ related
 *.iml

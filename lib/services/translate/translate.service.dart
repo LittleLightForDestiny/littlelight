@@ -66,7 +66,10 @@ class TranslateService {
       return _replace(translationMap[text], replace);
     }
 
-    _reportMissingTranslation(code, text);
+    if(!translationMap.containsKey("#####$text")){
+      _reportMissingTranslation(code, text);
+    }
+    
 
     translationMap = await _getTranslationMap(fallbackLanguage);
     if(translationMap != null && translationMap.containsKey(text)){

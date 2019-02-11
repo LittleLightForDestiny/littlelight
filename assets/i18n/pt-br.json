@@ -79,5 +79,8 @@
   "Type": "Tipo",
   "Ammo Type": "Tipo de munição",
   "Power Level": "Nível de poder",
-  "All": "Todos"
+  "All": "Todos",
+  "#####Equip Max Light": "missing_translation",
+  "#####Equip Loadout": "missing_translation",
+  "#####Authorize with Bungie.net to use inventory management features": "missing_translation"
 }

@@ -8,7 +8,7 @@
   "Uncompressing": "解凍",
   "Login": "ログイン",
   "Authorize with Bungie.net": "Bungie.netで認証する",
-  "Authorize Description": "説明を承認",
+  "Authorize with Bungie.net to use inventory management features": "Authorize with Bungie.net to use inventory management features",
   "Select Language": "言語を選択する",
   "Select Platform": "プラットフォームを選択",
   "Not logged in": "ログインしていない",
@@ -80,5 +80,7 @@
   "Type": "タイプ",
   "Ammo Type": "弾薬の種類",
   "Power Level": "力のレベル",
-  "All": "全部"
+  "All": "全部",
+  "#####Equip Max Light": "missing_translation",
+  "#####Equip Loadout": "missing_translation"
 }

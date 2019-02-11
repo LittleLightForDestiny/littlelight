@@ -80,5 +80,8 @@
   "Type": "樣",
   "Ammo Type": "彈藥類型",
   "Power Level": "權力等級",
-  "All": "所有"
+  "All": "所有",
+  "#####Equip Max Light": "missing_translation",
+  "#####Equip Loadout": "missing_translation",
+  "#####Authorize with Bungie.net to use inventory management features": "missing_translation"
 }

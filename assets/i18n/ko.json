@@ -80,5 +80,8 @@
   "Type": "종류",
   "Ammo Type": "탄약의 종류",
   "Power Level": "권력 수준",
-  "All": "모두"
+  "All": "모두",
+  "#####Equip Max Light": "missing_translation",
+  "#####Equip Loadout": "missing_translation",
+  "#####Authorize with Bungie.net to use inventory management features": "missing_translation"
 }
