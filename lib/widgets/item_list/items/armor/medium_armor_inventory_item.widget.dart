@@ -18,6 +18,7 @@ class MediumArmorInventoryItemWidget extends MediumBaseInventoryItemWidget
 
   @override
   Widget primaryStatWidget(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
     return Positioned(
         top: titleFontSize + padding * 2,
         right: 0,
@@ -30,6 +31,7 @@ class MediumArmorInventoryItemWidget extends MediumBaseInventoryItemWidget
               padding: padding,
               suppressDamageTypeIcon: true,
               suppressLabel: true,
+              suppressClassTypeIcon: screenWidth <= 320,
               fontSize: 16,
             )));
   }

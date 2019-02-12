@@ -3,8 +3,9 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/widgets/item_list/items/base/base_inventory_item.widget.dart';
+import 'package:little_light/widgets/item_list/items/base/minimal_info_label.mixin.dart';
 
-class MinimalBaseInventoryItemWidget extends BaseInventoryItemWidget {
+class MinimalBaseInventoryItemWidget extends BaseInventoryItemWidget with MinimalInfoLabelMixin{
   MinimalBaseInventoryItemWidget(
       DestinyItemComponent item,
       DestinyInventoryItemDefinition itemDefinition,
@@ -30,6 +31,14 @@ class MinimalBaseInventoryItemWidget extends BaseInventoryItemWidget {
         right: 0,
         bottom: 0,
         child: itemIcon(context));
+  }
+
+  @override
+  Widget primaryStatWidget(BuildContext context) {
+    if((definition?.inventory?.maxStackSize ?? 0) > 1){
+      return infoContainer(context, Text("x${item.quantity}", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900,), textAlign: TextAlign.right,));
+    }
+    return super.primaryStatWidget(context);
   }
 
   @override

@@ -3,6 +3,7 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_item_socket_entry_definition.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
+import 'package:bungie_api/models/destiny_stat_group_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/enums/item_type.enum.dart';
 import 'package:little_light/widgets/common/destiny_item.stateful_widget.dart';
@@ -14,6 +15,7 @@ import 'package:little_light/widgets/item_details/item_perks.widget.dart';
 import 'package:little_light/widgets/item_details/item_stats.widget.dart';
 import 'package:little_light/widgets/item_details/main_info/item_main_info.widget.dart';
 import 'package:little_light/widgets/item_details/management_block.widget.dart';
+import 'package:little_light/widgets/item_details/quest_info.widget.dart';
 import 'package:little_light/widgets/item_details/selected_perk.widget.dart';
 
 class ItemDetailScreen extends DestinyItemStatefulWidget {
@@ -39,6 +41,7 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
   int selectedPerk;
   Map<int, int> selectedPerks = new Map();
   Map<int, DestinyInventoryItemDefinition> plugDefinitions;
+  DestinyStatGroupDefinition statGroupDefinition;
 
   initState(){
     super.initState();
@@ -49,6 +52,7 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
     if((definition.sockets?.socketEntries?.length ?? 0) > 0){
       await loadPlugDefinitions();
     }
+    loadStatGroupDefinition();
   }
 
   Future<void> loadPlugDefinitions() async{
@@ -71,8 +75,19 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
       plugHashes.addAll(hashes);
     }
     plugDefinitions = await widget.manifest.getDefinitions<DestinyInventoryItemDefinition>(plugHashes);
-    setState(() {
+    if(mounted){
+      setState(() {
     });
+    }
+  }
+  Future loadStatGroupDefinition() async{
+    if(definition?.stats?.statGroupHash != null){
+      statGroupDefinition = await widget.manifest.getDefinition<DestinyStatGroupDefinition>(definition?.stats?.statGroupHash);
+      if(mounted){
+        print(statGroupDefinition);
+        setState(() {});
+      }
+    }
   }  
 
   @override
@@ -103,7 +118,7 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
   }
 
   Widget buildStats(BuildContext context){
-    return ItemStatsWidget(item, definition, instanceInfo, selectedPerks:selectedPerks, plugDefinitions:plugDefinitions, key:Key("stats_widget"));
+    return ItemStatsWidget(item, definition, instanceInfo, selectedPerks:selectedPerks, plugDefinitions:plugDefinitions, statGroupDefinition:statGroupDefinition, key:Key("stats_widget_${statGroupDefinition != null}"));
   }
 
   Widget buildPerks(BuildContext context){
@@ -153,7 +168,7 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
 
   Widget buildQuestInfo(BuildContext context){
     if(definition.itemType == ItemType.questStep){
-      // return Container(child:QuestInfoWidget(item, definition, instanceInfo, key:Key("quest_info"), characterId:characterId));
+      return Container(child:QuestInfoWidget(item, definition, instanceInfo, key:Key("quest_info"), characterId:characterId));
     }
     return Container();
   }

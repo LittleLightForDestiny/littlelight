@@ -43,7 +43,9 @@ class SearchItemWrapperWidgetState<T extends SearchItemWrapperWidget>
         icon = Image.asset("assets/imgs/inventory-icon.jpg");
       }
     }
+    
     return Container(
+      foregroundDecoration: instanceInfo?.isEquipped == true ? BoxDecoration(border: Border.all(width: 2, color:Colors.white)) : null,
       width: 26,
       height: 26,
       child:icon

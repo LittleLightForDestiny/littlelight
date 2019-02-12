@@ -6,6 +6,10 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_stat_definition.dart';
+import 'package:bungie_api/models/destiny_stat_display_definition.dart';
+import 'package:bungie_api/models/destiny_stat_group_definition.dart';
+import 'package:bungie_api/models/destiny_stat_override_definition.dart';
+import 'package:bungie_api/models/interpolation_point.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/destiny_item.widget.dart';
@@ -33,6 +37,7 @@ const List<int> _hiddenStats = [
 class ItemStatsWidget extends DestinyItemWidget {
   final Map<int, int> selectedPerks;
   final Map<int, DestinyInventoryItemDefinition> plugDefinitions;
+  final DestinyStatGroupDefinition statGroupDefinition;
 
   ItemStatsWidget(
       DestinyItemComponent item,
@@ -40,7 +45,8 @@ class ItemStatsWidget extends DestinyItemWidget {
       DestinyItemInstanceComponent instanceInfo,
       {Key key,
       this.selectedPerks,
-      this.plugDefinitions})
+      this.plugDefinitions,
+      this.statGroupDefinition})
       : super(item, definition, instanceInfo, key: key);
 
   Widget build(BuildContext context) {
@@ -74,7 +80,10 @@ class ItemStatsWidget extends DestinyItemWidget {
 
     return stats.map((stat) {
       return ItemStatWidget(
-          stat.statHash, stat.value, statValues[stat.statHash]);
+          stat.statHash, stat.value, statValues[stat.statHash],
+          scaled: statGroupDefinition?.scaledStats?.firstWhere(
+              (i) => i.statHash == stat.statHash,
+              orElse: () => null));
     }).toList();
   }
 
@@ -159,16 +168,17 @@ class ItemStatWidget extends StatelessWidget {
   final int statHash;
   final int baseValue;
   final StatValues modValues;
+  final DestinyStatDisplayDefinition scaled;
 
-  ItemStatWidget(this.statHash, this.baseValue, this.modValues);
+  ItemStatWidget(this.statHash, this.baseValue, this.modValues, {this.scaled});
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
       return Container(
           padding: EdgeInsets.symmetric(vertical: 1),
-          child: Row(
-            children: [
+          child: Row(children: [
             SizedBox(
                 width: constraints.maxWidth * .45,
                 child: ManifestText<DestinyStatDefinition>(
@@ -209,32 +219,41 @@ class ItemStatWidget extends StatelessWidget {
         child: Container(
             color: Colors.grey.shade600,
             height: 8,
-            child: Row(
-              mainAxisAlignment: numberValue < 0 ? MainAxisAlignment.end : MainAxisAlignment.start, 
-            children: [
-              Container(
-                height: 8,
-                width: max(baseBarSize / maxBarSize, 0) * barWidth,
-                color: color,
-              ),
-              Container(
-                height: 8,
-                width: (modBarSize / maxBarSize).abs() * barWidth,
-                color: modColor,
-              ),
-              Container(
-                  height: 8,
-                  width: (masterwork / maxBarSize).abs() * barWidth,
-                  color: Colors.amberAccent.shade400),
-            ])));
+            child: 
+            ClipRect(
+              clipBehavior: Clip.hardEdge,
+              child:Row(
+                mainAxisAlignment: numberValue < 0
+                    ? MainAxisAlignment.end
+                    : MainAxisAlignment.start,
+                children: [
+                  Container(
+                    height: 8,
+                    width: max(baseBarSize / maxBarSize, 0) * barWidth,
+                    color: color,
+                  ),
+                  Container(
+                    height: 8,
+                    width: (modBarSize / maxBarSize).abs() * barWidth,
+                    color: modColor,
+                  ),
+                  Container(
+                      height: 8,
+                      width: (masterwork / maxBarSize).abs() * barWidth,
+                      color: Colors.amberAccent.shade400),
+                ]))));
   }
 
   int get maxBarSize {
-    return max(100, numberValue);
+    return max(100, baseBarSize + modBarSize);
   }
 
   int get numberValue {
-    return baseValue + selected + masterwork;
+    var originalValue = baseValue + selected + masterwork;
+    if (scaled != null) {
+      return interpolate(originalValue, scaled.displayInterpolation);
+    }
+    return originalValue;
   }
 
   int get selected => modValues?.selected ?? 0;
@@ -242,10 +261,14 @@ class ItemStatWidget extends StatelessWidget {
   int get masterwork => modValues?.masterwork ?? 0;
 
   int get baseBarSize {
+    var value = baseValue + equipped;
     if (selected != equipped && selected < equipped) {
-      return baseValue + selected;
+      value =  baseValue + selected;
     }
-    return baseValue + equipped;
+    if(scaled != null){
+      return interpolate(value, scaled.displayInterpolation);
+    }
+    return value;
   }
 
   Color get modColor {
@@ -262,6 +285,9 @@ class ItemStatWidget extends StatelessWidget {
   }
 
   int get modBarSize {
+    if(scaled != null){
+      return (interpolate(baseValue + selected, scaled.displayInterpolation) - interpolate(baseValue + equipped, scaled.displayInterpolation)).abs();
+    }
     return (selected - equipped).abs();
   }
 
@@ -275,6 +301,41 @@ class ItemStatWidget extends StatelessWidget {
 
   bool get noBar {
     return _noBarStats.contains(statHash);
+  }
+
+  int interpolate(
+      int investmentValue, List<InterpolationPoint> displayInterpolation) {
+    var interpolation = displayInterpolation.toList();
+    interpolation.sort((a,b)=>a.value.compareTo(b.value));
+    var upperBound = interpolation.firstWhere(
+        (point) => point.value >= investmentValue,
+        orElse: () => null);
+    var lowerBound = interpolation.lastWhere(
+        (point) => point.value <= investmentValue,
+        orElse: () => null);
+
+    if (upperBound == null && lowerBound == null) {
+      print('Invalid displayInterpolation');
+      return investmentValue;
+    }
+    if (lowerBound == null) {
+      lowerBound = upperBound;
+      upperBound = interpolation.firstWhere((b)=>b.value > lowerBound.value, orElse: ()=>null);
+      if(upperBound == null) return lowerBound.weight;
+    } else if (upperBound == null) {
+      upperBound = lowerBound;
+      lowerBound = interpolation.lastWhere((b)=>b.value < upperBound.value, orElse: ()=>null);
+      if(lowerBound == null) return upperBound.weight;
+    }
+    var factor = (investmentValue - lowerBound.value)/max((upperBound.value - lowerBound.value).abs(), 1);
+    
+    var displayValue =
+        lowerBound.weight + (upperBound.weight - lowerBound.weight) * factor;
+
+    if(statHash == 3614673599){
+      print(investmentValue - lowerBound.value);
+    }
+    return displayValue.round();
   }
 }
 

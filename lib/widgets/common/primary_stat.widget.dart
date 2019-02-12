@@ -13,6 +13,8 @@ class PrimaryStatWidget extends DestinyItemWidget {
   final double padding;
   final bool suppressLabel;
   final bool suppressDamageTypeIcon;
+  final bool suppressAmmoTypeIcon;
+  final bool suppressClassTypeIcon;
 
   PrimaryStatWidget(
     DestinyItemComponent item,
@@ -21,6 +23,8 @@ class PrimaryStatWidget extends DestinyItemWidget {
     Key key,
     this.suppressLabel = false,
     this.suppressDamageTypeIcon = false,
+    this.suppressAmmoTypeIcon = false,
+    this.suppressClassTypeIcon = false,
     this.fontSize = 26,
     this.padding = 8,
     String characterId
@@ -51,12 +55,12 @@ class PrimaryStatWidget extends DestinyItemWidget {
     if (definition.itemType == ItemType.weapon && !suppressDamageTypeIcon) {
       widgets.add(damageTypeIcon(context));
     }
-    if (definition.itemType == ItemType.armor) {
+    if (definition.itemType == ItemType.armor && !suppressClassTypeIcon) {
       widgets.add(classTypeIcon(context));
     }
     widgets.add(valueField(
         context, DestinyData.getDamageTypeTextColor(instanceInfo.damageType)));
-    if (definition.itemType == ItemType.weapon) {
+    if (definition.itemType == ItemType.weapon && !suppressAmmoTypeIcon) {
       widgets.add(ammoTypeIcon(context));
     }
     return widgets;
