@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_advanced_networkimage/flutter_advanced_networkimage.dart';
-import 'package:flutter_advanced_networkimage/transition_to_image.dart';
+import 'package:flutter_advanced_networkimage/provider.dart';
+import 'package:flutter_advanced_networkimage/transition.dart';
 
 class QueuedNetworkImage extends StatelessWidget {
   static int maxNrOfCacheObjects;
@@ -26,7 +26,7 @@ class QueuedNetworkImage extends StatelessWidget {
       return Container();
     }
     return TransitionToImage(
-      AdvancedNetworkImage(
+      image:AdvancedNetworkImage(
         imageUrl,
       ),
       fit: fit,

@@ -11,6 +11,7 @@ import 'package:little_light/widgets/common/destiny_item.stateful_widget.dart';
 import 'package:little_light/widgets/item_details/item_cover/item_cover.widget.dart';
 import 'package:little_light/widgets/item_details/item_lore.widget.dart';
 import 'package:little_light/widgets/item_details/item_mods.widget.dart';
+import 'package:little_light/widgets/item_details/item_objectives.widget.dart';
 import 'package:little_light/widgets/item_details/item_perks.widget.dart';
 import 'package:little_light/widgets/item_details/item_stats.widget.dart';
 import 'package:little_light/widgets/item_details/main_info/item_main_info.widget.dart';
@@ -109,12 +110,20 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
           SelectedPerkWidget(selectedPerk,
               key: Key("selected_perk: $selectedPerk")),
           buildMods(context),
+          buildObjectives(context),
           buildQuestInfo(context),
           buildLore(context),
           Container(height: 100)
         ]),
       ),
     ]));
+  }
+
+  Widget buildObjectives(BuildContext context){
+    if((definition?.objectives?.objectiveHashes?.length ?? 0) == 0){
+      return Container();
+    }
+    return ItemObjectivesWidget(item, definition, instanceInfo, key:Key("item_objectives_widget"));
   }
 
   Widget buildStats(BuildContext context){

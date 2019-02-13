@@ -73,6 +73,7 @@ class ItemModsWidget extends DestinyItemWidget {
           return Container(
               key: Key("perk_socket_$socketIndex"),
               width: colWidth,
+              height: colWidth,
               child: item != null
                   ? instancePlugItems(context, socketIndex)
                   : definitionPlugItems(context, socketIndex));

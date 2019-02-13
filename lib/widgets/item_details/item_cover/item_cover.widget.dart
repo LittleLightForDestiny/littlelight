@@ -150,6 +150,9 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
     if(definition.itemType == ItemType.emblems){
       imgUrl = definition.secondarySpecial;
     }
+    if(definition.itemType == ItemType.questStep){
+      imgUrl = definition.secondaryIcon;
+    }
     if(imgUrl == null){
       return Container();
     }

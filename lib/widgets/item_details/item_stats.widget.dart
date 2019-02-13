@@ -4,11 +4,11 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_stat_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
+import 'package:bungie_api/models/destiny_item_investment_stat_definition.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:bungie_api/models/destiny_stat_display_definition.dart';
 import 'package:bungie_api/models/destiny_stat_group_definition.dart';
-import 'package:bungie_api/models/destiny_stat_override_definition.dart';
 import 'package:bungie_api/models/interpolation_point.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/utils/destiny_data.dart';
@@ -80,9 +80,9 @@ class ItemStatsWidget extends DestinyItemWidget {
 
     return stats.map((stat) {
       return ItemStatWidget(
-          stat.statHash, stat.value, statValues[stat.statHash],
+          stat.statTypeHash, stat.value, statValues[stat.statTypeHash],
           scaled: statGroupDefinition?.scaledStats?.firstWhere(
-              (i) => i.statHash == stat.statHash,
+              (i) => i.statHash == stat.statTypeHash,
               orElse: () => null));
     }).toList();
   }
@@ -137,22 +137,22 @@ class ItemStatsWidget extends DestinyItemWidget {
     return map;
   }
 
-  Iterable<DestinyInventoryItemStatDefinition> get stats {
+  Iterable<DestinyItemInvestmentStatDefinition> get stats {
     if (definition?.stats?.stats == null) {
       return null;
     }
-    List<DestinyInventoryItemStatDefinition> stats = definition
-        .stats.stats.values
-        .where((stat) => DestinyData.statWhitelist.contains(stat.statHash))
+    List<DestinyItemInvestmentStatDefinition> stats = definition
+        .investmentStats
+        .where((stat) => DestinyData.statWhitelist.contains(stat.statTypeHash))
         .toList();
 
     stats.sort((statA, statB) {
-      int valA = _noBarStats.contains(statA.statHash)
+      int valA = _noBarStats.contains(statA.statTypeHash)
           ? 2
-          : _hiddenStats.contains(statA.statHash) ? 1 : 0;
-      int valB = _noBarStats.contains(statB.statHash)
+          : _hiddenStats.contains(statA.statTypeHash) ? 1 : 0;
+      int valB = _noBarStats.contains(statB.statTypeHash)
           ? 2
-          : _hiddenStats.contains(statB.statHash) ? 1 : 0;
+          : _hiddenStats.contains(statB.statTypeHash) ? 1 : 0;
       return valA - valB;
     });
     return stats;
@@ -331,11 +331,7 @@ class ItemStatWidget extends StatelessWidget {
     
     var displayValue =
         lowerBound.weight + (upperBound.weight - lowerBound.weight) * factor;
-
-    if(statHash == 3614673599){
-      print(investmentValue - lowerBound.value);
-    }
-    return displayValue.round();
+    return displayValue.floor();
   }
 }
 

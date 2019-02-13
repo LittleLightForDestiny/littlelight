@@ -8,6 +8,7 @@ import 'package:little_light/utils/destiny_data.dart';
 class ObjectiveWidget extends StatelessWidget {
   final DestinyObjectiveDefinition definition;
   final Color color;
+  final bool forceComplete;
 
   final DestinyObjectiveProgress objective;
 
@@ -20,6 +21,7 @@ class ObjectiveWidget extends StatelessWidget {
       this.color,
       this.parentCompleted,
       this.objective,
+      this.forceComplete = false,
       this.placeholder})
       : super(key: key);
 
@@ -47,9 +49,12 @@ class ObjectiveWidget extends StatelessWidget {
   }
 
   buildCheckFill(BuildContext context) {
-    var completed = objective?.complete == true;
-    if (!completed) return null;
+    if (!isComplete) return null;
     return Container(color: barColor);
+  }
+
+  bool get isComplete{
+    return objective?.complete == true || forceComplete;
   }
 
   buildBar(BuildContext context) {
@@ -61,7 +66,7 @@ class ObjectiveWidget extends StatelessWidget {
     return Container(
         margin: EdgeInsets.only(left: 4),
         height: 22,
-        decoration: objective?.complete == true ? null : BoxDecoration(
+        decoration: isComplete ? null : BoxDecoration(
             border: Border.all(
                 width: 1, color: this.color ?? Colors.grey.shade300)),
         child: Stack(
@@ -105,7 +110,11 @@ class ObjectiveWidget extends StatelessWidget {
     int total = definition.completionValue ?? 0;
     if (total <= 1) return Container();
     if (!definition.allowOvercompletion) {
-      progress = max(total, progress);
+      progress = min(total, progress);
+    }
+
+    if(forceComplete){
+      progress = total;
     }
 
     return Text("$progress/$total",
@@ -118,8 +127,8 @@ class ObjectiveWidget extends StatelessWidget {
   buildProgressBar(BuildContext context) {
     int progress = objective?.progress ?? 0;
     int total = definition.completionValue ?? 0;
-    Color color = Color.lerp(barColor, Colors.black, .4);
-    if(objective?.complete == true) return Container();
+    Color color = Color.lerp(barColor, Colors.black, .1);
+    if(isComplete) return Container();
     return Container(
         margin: EdgeInsets.all(2),
         color: Colors.blueGrey.shade800,

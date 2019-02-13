@@ -10,6 +10,7 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_item_talent_grid_component.dart';
+import 'package:bungie_api/models/destiny_objective_progress.dart';
 import 'package:bungie_api/models/destiny_profile_response.dart';
 import 'package:bungie_api/models/destiny_record_component.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
@@ -32,6 +33,7 @@ class ProfileComponentGroups {
     DestinyComponentType.CharacterInventories,
     DestinyComponentType.ProfileInventories,
     DestinyComponentType.ItemInstances,
+    DestinyComponentType.ItemObjectives,
     DestinyComponentType.ItemTalentGrids,
     DestinyComponentType.ItemSockets,
   ];
@@ -239,6 +241,14 @@ class ProfileService {
     return _profile.itemComponents.talentGrids.data[instanceId];
   }
 
+  List<DestinyItemSocketState> getItemSockets(String itemInstanceId) {
+    return _profile.itemComponents.sockets.data[itemInstanceId].sockets;
+  }
+
+  List<DestinyObjectiveProgress> getItemObjectives(String itemInstanceId) {
+    return _profile.itemComponents.objectives?.data[itemInstanceId]?.objectives;
+  }
+
   List<DestinyCharacterComponent> getCharacters(
       [CharacterOrder order = CharacterOrder.none]) {
     if (_profile == null || _profile.characters == null) {
@@ -296,10 +306,6 @@ class ProfileService {
 
   List<DestinyItemComponent> getProfileInventory() {
     return _profile.profileInventory.data.items;
-  }
-
-  List<DestinyItemSocketState> getItemSockets(String itemInstanceId) {
-    return _profile.itemComponents.sockets.data[itemInstanceId].sockets;
   }
 
   DestinyCharacterProgressionComponent getCharacterProgression(
