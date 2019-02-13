@@ -81,6 +81,9 @@
   "Ammo Type": "Art der Munition",
   "Power Level": "Leistungsstufe",
   "All": "Alle",
-  "#####Equip Max Light": "missing_translation",
-  "#####Equip Loadout": "missing_translation"
+  "Equip Max Light": "Max Light ausrüsten",
+  "Equip Loadout": "Ausrüstung ausrüsten",
+  "Quest steps": "Questschritte",
+  "From the questline": "Aus der Questreihe",
+  "View next steps": "Nächste Schritte anzeigen"
 }

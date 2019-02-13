@@ -81,7 +81,10 @@
   "Ammo Type": "Тип боеприпасов",
   "Power Level": "Уровень мощности",
   "All": "все",
-  "#####Equip Max Light": "missing_translation",
-  "#####Equip Loadout": "missing_translation",
-  "#####Authorize with Bungie.net to use inventory management features": "missing_translation"
+  "Authorize with Bungie.net to use inventory management features": "Авторизуйтесь с Bungie.net для использования функций управления запасами",
+  "Equip Max Light": "Оборудовать Макс Лайт",
+  "Equip Loadout": "Снаряженная выгрузка",
+  "Quest steps": "Шаги квеста",
+  "From the questline": "Из квестовой линии",
+  "View next steps": "Посмотреть следующие шаги"
 }

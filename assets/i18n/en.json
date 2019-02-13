@@ -81,6 +81,9 @@
   "Ammo Type": "Ammo Type",
   "Power Level": "Power Level",
   "All": "All",
-  "#####Equip Max Light": "missing_translation",
-  "#####Equip Loadout": "missing_translation"
+  "Equip Max Light": "Equip Max Light",
+  "Equip Loadout": "Equip Loadout",
+  "Quest steps": "Quest steps",
+  "From the questline": "From the questline",
+  "View next steps": "View next steps"
 }

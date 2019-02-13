@@ -81,6 +81,9 @@
   "Ammo Type": "Tipo de munición",
   "Power Level": "Nivel de poder",
   "All": "Todos",
-  "#####Equip Max Light": "missing_translation",
-  "#####Equip Loadout": "missing_translation"
+  "Equip Max Light": "Equipar armas y piezas de armadura de poder máximo",
+  "Equip Loadout": "Equipar armamento",
+  "Quest steps": "Pasos de aventura",
+  "From the questline": "De la aventura",
+  "#####View next steps": "missing_translation"
 }

@@ -81,7 +81,10 @@
   "Ammo Type": "탄약의 종류",
   "Power Level": "권력 수준",
   "All": "모두",
-  "#####Equip Max Light": "missing_translation",
-  "#####Equip Loadout": "missing_translation",
-  "#####Authorize with Bungie.net to use inventory management features": "missing_translation"
+  "Authorize with Bungie.net to use inventory management features": "Bungie.net에서 인벤토리 관리 기능을 사용하도록 승인",
+  "Equip Max Light": "최대 조명 장착",
+  "Equip Loadout": "로드 아웃 장착",
+  "Quest steps": "퀘스트 단계",
+  "From the questline": "퀘스트 라인에서",
+  "View next steps": "다음 단계보기"
 }

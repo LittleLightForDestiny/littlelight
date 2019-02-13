@@ -81,7 +81,10 @@
   "Ammo Type": "弹药类型",
   "Power Level": "权力等级",
   "All": "所有",
-  "#####Equip Max Light": "missing_translation",
-  "#####Equip Loadout": "missing_translation",
-  "#####Authorize with Bungie.net to use inventory management features": "missing_translation"
+  "Authorize with Bungie.net to use inventory management features": "授权Bungie.net使用库存管理功能",
+  "Equip Max Light": "装备Max Light",
+  "Equip Loadout": "装备装载",
+  "Quest steps": "任务步骤",
+  "From the questline": "从任务线",
+  "View next steps": "查看后续步骤"
 }

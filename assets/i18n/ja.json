@@ -81,6 +81,9 @@
   "Ammo Type": "弾薬の種類",
   "Power Level": "力のレベル",
   "All": "全部",
-  "#####Equip Max Light": "missing_translation",
-  "#####Equip Loadout": "missing_translation"
+  "Equip Max Light": "マックスライト装備",
+  "Equip Loadout": "装備を装備",
+  "Quest steps": "クエスト手順",
+  "From the questline": "クエストラインから",
+  "View next steps": "次のステップを見る"
 }

@@ -81,7 +81,10 @@
   "Ammo Type": "Rodzaj amunicji",
   "Power Level": "Poziom mocy",
   "All": "Wszystko",
-  "#####Equip Max Light": "missing_translation",
-  "#####Equip Loadout": "missing_translation",
-  "#####Authorize with Bungie.net to use inventory management features": "missing_translation"
+  "Authorize with Bungie.net to use inventory management features": "Autoryzuj za pomocą Bungie.net, aby korzystać z funkcji zarządzania zapasami",
+  "Equip Max Light": "Wyposaż Max Light",
+  "Equip Loadout": "Wyposaż Loadout",
+  "Quest steps": "Kroki zadania",
+  "From the questline": "Z linii zadań",
+  "View next steps": "Zobacz kolejne kroki"
 }
