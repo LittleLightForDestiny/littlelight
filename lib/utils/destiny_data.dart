@@ -28,8 +28,8 @@ class RaidPhases {
     static const int lwhRiven = 2392610624;
     static const int sotpCity = 566861111;
     static const int sotpRace = 244769953;
-    static const int sotpMegazord = 1268191778;
-    static const int sotpMegazordChallenge = 4140089399;
+    static const int sotpInsurectionPrime = 1268191778;
+    static const int sotpInsurrectionPrimeChallenge = 4140089399;
 }
 
 class DestinyData {
