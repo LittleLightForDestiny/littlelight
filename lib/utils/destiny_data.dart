@@ -10,6 +10,7 @@ import 'package:bungie_api/enums/destiny_item_sub_type_enum.dart';
 class RaidPhases {
     static const int leviathanGardens = 3847906370;
     static const int leviathanPools = 2188993306;
+    static const int leviathanPoolsChallenge = 3796634159;
     static const int leviathanArena = 1431486395;
     static const int leviathanCallus = 4231923662;
     static const int eowGuards = 415534662;
@@ -28,6 +29,7 @@ class RaidPhases {
     static const int sotpCity = 566861111;
     static const int sotpRace = 244769953;
     static const int sotpMegazord = 1268191778;
+    static const int sotpMegazordChallenge = 4140089399;
 }
 
 class DestinyData {
