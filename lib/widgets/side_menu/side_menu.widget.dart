@@ -52,6 +52,9 @@ class SideMenuWidget extends StatelessWidget {
                   menuItem(context, "Equipment", requireLogin: true, onTap: () {
                     open(context, EquipmentScreen());
                   }),
+                  menuItem(context, "Progress", requireLogin: true, onTap: () {
+                    open(context, ProgressScreen());
+                  }),
                   menuItem(context, "Search", requireLogin: true, onTap: () {
                     open(context, SearchScreen());
                   }),
