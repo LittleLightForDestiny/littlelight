@@ -7,6 +7,29 @@ import 'package:bungie_api/enums/destiny_ammunition_type_enum.dart';
 import 'package:little_light/widgets/icon_fonts/destiny_icons_icons.dart';
 import 'package:bungie_api/enums/destiny_item_sub_type_enum.dart';
 
+class RaidPhases {
+    static const int leviathanGardens = 3847906370;
+    static const int leviathanPools = 2188993306;
+    static const int leviathanArena = 1431486395;
+    static const int leviathanCallus = 4231923662;
+    static const int eowGuards = 415534662;
+    static const int eowHatch = 3813639709;
+    static const int eowShields = 2941618871;
+    static const int eowArgos = 877738674;
+    static const int sosBasketball = 3864507933;
+    static const int sosJumpPuzzle = 3025298087;
+    static const int sosShips = 1245655652;
+    static const int sosValCauor = 1245655655;
+    static const int lwhKalli = 1126840038;
+    static const int lwhShuroChi = 1040714588;
+    static const int lwhMorgeth = 4249034918;
+    static const int lwhVault = 436847112;
+    static const int lwhRiven = 2392610624;
+    static const int sotpCity = 566861111;
+    static const int sotpRace = 244769953;
+    static const int sotpMegazord = 1268191778;
+}
+
 class DestinyData {
   static const Map<int, int> damageTypeHashes = {
     DamageType.Kinetic: 3373582085,
