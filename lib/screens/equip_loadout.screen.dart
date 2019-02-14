@@ -35,11 +35,13 @@ class EquipLoadoutScreenState extends State<EquipLoadoutScreen> {
     _itemIndex = await InventoryUtils.buildLoadoutItemIndex(widget.loadout);
 
     ManifestService manifest = new ManifestService();
-    emblemDefinition =
-        await manifest.getDefinition<DestinyInventoryItemDefinition>(
-            widget.loadout.emblemHash);
-    if (mounted) {
-      setState(() {});
+    if (widget?.loadout?.emblemHash != null) {
+      emblemDefinition =
+          await manifest.getDefinition<DestinyInventoryItemDefinition>(
+              widget.loadout.emblemHash);
+      if (mounted) {
+        setState(() {});
+      }
     }
   }
 

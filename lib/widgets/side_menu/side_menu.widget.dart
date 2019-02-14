@@ -5,6 +5,7 @@ import 'package:little_light/screens/collections.screen.dart';
 import 'package:little_light/screens/equipment.screen.dart';
 import 'package:little_light/screens/initial.screen.dart';
 import 'package:little_light/screens/loadouts.screen.dart';
+import 'package:little_light/screens/progress.screen.dart';
 import 'package:little_light/screens/search.screen.dart';
 import 'package:little_light/screens/triumphs.screen.dart';
 import 'package:little_light/services/auth/auth.service.dart';
@@ -50,6 +51,9 @@ class SideMenuWidget extends StatelessWidget {
                   ),
                   menuItem(context, "Equipment", requireLogin: true, onTap: () {
                     open(context, EquipmentScreen());
+                  }),
+                  menuItem(context, "Progress", requireLogin: true, onTap: () {
+                    open(context, ProgressScreen());
                   }),
                   menuItem(context, "Search", requireLogin: true, onTap: () {
                     open(context, SearchScreen());

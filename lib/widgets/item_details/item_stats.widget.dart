@@ -331,7 +331,7 @@ class ItemStatWidget extends StatelessWidget {
     
     var displayValue =
         lowerBound.weight + (upperBound.weight - lowerBound.weight) * factor;
-    return displayValue.floor();
+    return displayValue.round();
   }
 }
 

@@ -4,6 +4,7 @@ import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_objective_definition.dart';
 import 'package:bungie_api/models/destiny_objective_progress.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/destiny_item.stateful_widget.dart';
@@ -39,7 +40,9 @@ class ItemObjectivesWidgetState extends DestinyItemState<ItemObjectivesWidget> {
   }
 
   loadDefinitions() async {
-    itemObjectives = widget.profile.getItemObjectives(item?.itemInstanceId);
+    if(AuthService().isLogged){
+      itemObjectives = widget.profile.getItemObjectives(item?.itemInstanceId);
+    }
     objectiveDefinitions = await widget.manifest
         .getDefinitions<DestinyObjectiveDefinition>(
             definition?.objectives?.objectiveHashes);
@@ -67,17 +70,17 @@ class ItemObjectivesWidgetState extends DestinyItemState<ItemObjectivesWidget> {
   List<Widget> buildObjectives(BuildContext context) {
     if (itemObjectives != null) {
       return itemObjectives
-          .map((objective) => buildCurrentObjective(context, objective))
+          .map((objective) => buildCurrentObjective(context, objective.objectiveHash, objective))
           .toList();
     }
     return definition.objectives.objectiveHashes
-        .map((hash) => buildCurrentObjective(context))
+        .map((hash) => buildCurrentObjective(context, hash))
         .toList();
   }
 
-  Widget buildCurrentObjective(BuildContext context,
+  Widget buildCurrentObjective(BuildContext context, int hash,
       [DestinyObjectiveProgress objective]) {
-    var def = objectiveDefinitions[objective.objectiveHash];
+    var def = objectiveDefinitions[hash];
     return 
         Container(
           padding: EdgeInsets.all(8),

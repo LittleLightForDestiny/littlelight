@@ -1,3 +1,4 @@
+import 'package:bungie_api/models/destiny_milestone_reward_entry_definition.dart';
 import 'package:bungie_api/models/destiny_place_definition.dart';
 import 'package:bungie_api/models/destiny_activity_definition.dart';
 import 'package:bungie_api/models/destiny_activity_type_definition.dart';
@@ -83,6 +84,7 @@ class DefinitionTableNames {
     DestinyPlugSetDefinition: DestinyPlugSetDefinition.fromMap,
     DestinyChecklistDefinition: DestinyChecklistDefinition.fromMap,
     DestinyHistoricalStatsDefinition: DestinyHistoricalStatsDefinition.fromMap,
+    DestinyMilestoneRewardEntryDefinition: DestinyMilestoneRewardEntryDefinition.fromMap
   };
 
   static Map<Type, String> fromClass = {
@@ -130,5 +132,6 @@ class DefinitionTableNames {
     DestinyPlugSetDefinition: "DestinyPlugSetDefinition",
     DestinyChecklistDefinition: "DestinyChecklistDefinition",
     DestinyHistoricalStatsDefinition: "DestinyHistoricalStatsDefinition",
+    DestinyMilestoneRewardEntryDefinition: "DestinyMilestoneRewardEntryDefinition"
   };
 }
