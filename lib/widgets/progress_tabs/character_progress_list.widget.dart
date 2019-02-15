@@ -7,7 +7,6 @@ import 'package:bungie_api/models/destiny_milestone_challenge_activity.dart';
 import 'package:bungie_api/models/destiny_milestone_definition.dart';
 import 'package:bungie_api/models/destiny_milestone_quest.dart';
 import 'package:bungie_api/models/destiny_milestone_reward_category.dart';
-import 'package:bungie_api/models/destiny_milestone_reward_entry_definition.dart';
 import 'package:bungie_api/models/destiny_objective_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';

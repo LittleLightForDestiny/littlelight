@@ -10,7 +10,7 @@ description: A new Flutter project.
 version: 1.4.2+10402
 
 environment:
-  sdk: ">=2.0.0-dev.68.0 <3.0.0"
+  sdk: ">=2.1.0 <3.0.0"
 
 dependencies:
   tinycolor: 1.0.2
@@ -44,6 +44,8 @@ dependencies:
   flutter_range_slider: ^1.0.1
   uuid: 1.0.3
   flutter_advanced_networkimage: 0.4.0
+  launch_review: 1.0.1
+  
 dev_dependencies:
   intl_translation: ^0.17.1
   flutter_test:

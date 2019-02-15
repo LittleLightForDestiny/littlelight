@@ -370,8 +370,10 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
         InventoryUtils.sortDestinyItems(itemA, itemB, widget.profile));
     LoadoutItemIndex maxLightLoadout = new LoadoutItemIndex();
     LoadoutItemIndex exoticPieces = new LoadoutItemIndex();
+    var hashes = instancedItems.map((i)=>i.itemHash);
+    var defs = await widget.manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
     for (var item in instancedItems) {
-      var def = await widget.manifest.getItemDefinition(item.itemHash);
+      var def = defs[item.itemHash];
       if (def.classType != widget.character.classType &&
           def.classType != DestinyClass.Unknown) {
         continue;

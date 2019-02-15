@@ -5,9 +5,9 @@ import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/selected_page_persistence.dart';
 import 'package:little_light/widgets/inventory_tabs/tabs_character_menu.widget.dart';
-import 'package:little_light/widgets/progress_tabs/character_progress_tab.widget.dart';
+import 'package:little_light/widgets/progress_tabs/character_pursuits_tab.widget.dart';
 
-class ProgressScreen extends StatefulWidget {
+class PursuitsScreen extends StatefulWidget {
   final profile = new ProfileService();
   final manifest = new ManifestService();
   final List<int> itemTypes = [
@@ -17,10 +17,10 @@ class ProgressScreen extends StatefulWidget {
   ];
 
   @override
-  ProgressScreenState createState() => new ProgressScreenState();
+  PursuitsScreenState createState() => new PursuitsScreenState();
 }
 
-class ProgressScreenState extends State<ProgressScreen>
+class PursuitsScreenState extends State<PursuitsScreen>
     with TickerProviderStateMixin {
   Map<int, double> scrollPositions = new Map();
 
@@ -32,7 +32,7 @@ class ProgressScreenState extends State<ProgressScreen>
 
   @override
   void initState() {
-    SelectedPagePersistence.saveLatestScreen(SelectedPagePersistence.equipment);
+    SelectedPagePersistence.saveLatestScreen(SelectedPagePersistence.progress);
 
     widget.itemTypes.forEach((type) {
       scrollPositions[type] = 0;
@@ -77,7 +77,7 @@ class ProgressScreenState extends State<ProgressScreen>
               },
             ),
           ),
-          TabsCharacterMenuWidget(characters, controller: charTabController),
+          TabsCharacterMenuWidget(characters, controller: charTabController, includeVault: false,),
         ],
       ),
     );
@@ -99,7 +99,7 @@ class ProgressScreenState extends State<ProgressScreen>
 
   List<Widget> getTabs() {
     List<Widget> characterTabs = characters.map((character) {
-      return CharacterProgressTabWidget(character.characterId);
+      return CharacterPursuitsTabWidget(character.characterId);
     }).toList();
     
     return characterTabs;

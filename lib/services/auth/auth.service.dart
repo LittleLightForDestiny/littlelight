@@ -65,7 +65,7 @@ class AuthService {
     return savedToken;
   }
 
-  Future<SavedToken> _refreshToken(SavedToken token) async {
+  Future<SavedToken> refreshToken(SavedToken token) async {
     BungieNetToken bNetToken = await api.refreshToken(token.refreshToken);
     token = SavedToken(
         bNetToken.accessToken,
@@ -101,7 +101,7 @@ class AuthService {
       return null;
     }
     if (expire.isBefore(now)) {
-      token = await _refreshToken(token);
+      token = await refreshToken(token);
     }
     return token;
   }
