@@ -71,6 +71,9 @@ class SideMenuWidget extends StatelessWidget {
                   }),
                   menuItem(context, "Credits", onTap: () {
                     open(context, CreditsScreen());
+                  }),
+                  menuItem(context, "Translations", onTap: () async {
+                    await launch('https://github.com/marquesinijatinha/littlelight_translations');
                   })
                 ],
               )),

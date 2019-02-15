@@ -4,6 +4,7 @@ translationPlaceholders(){
   TranslatedTextWidget("Equipment");
   TranslatedTextWidget("Pursuits");
   TranslatedTextWidget("Search");
+  TranslatedTextWidget("Credits");
   TranslatedTextWidget("Change Account");
   TranslatedTextWidget("Change Membership");
   TranslatedTextWidget("Change Language");

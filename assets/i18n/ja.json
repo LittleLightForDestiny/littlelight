@@ -86,5 +86,10 @@
   "Quest steps": "クエスト手順",
   "From the questline": "クエストラインから",
   "View next steps": "次のステップを見る",
-  "Equipped": "装備"
+  "Equipped": "装備",
+  "Rate it": "それを評価",
+  "Pursuits": "追求",
+  "{appName} is brought to you by your fellow guardian": "{appName}はあなたの仲間の後見人によってあなたにもたらされました",
+  "Translations": "翻訳",
+  "#####Credits": "missing_translation"
 }

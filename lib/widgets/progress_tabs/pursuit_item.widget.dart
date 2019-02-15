@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_objective_definition.dart';
@@ -7,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/screens/item_detail.screen.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/objective.widget.dart';
@@ -16,6 +19,7 @@ class PursuitItemWidget extends StatefulWidget {
   final String characterId;
   final ProfileService profile = ProfileService();
   final ManifestService manifest = ManifestService();
+  final NotificationService broadcaster = NotificationService();
 
   final DestinyItemComponent item;
 
@@ -29,12 +33,27 @@ class _PursuitItemWidgetState extends State<PursuitItemWidget>
   DestinyInventoryItemDefinition definition;
   Map<int, DestinyObjectiveDefinition> objectiveDefinitions;
   List<DestinyObjectiveProgress> itemObjectives;
+  StreamSubscription<NotificationEvent> subscription;
   bool fullyLoaded = false;
 
   @override
   void initState() {
     super.initState();
     loadDefinitions();
+    subscription = widget.broadcaster.listen((event) {
+      if (event.type == NotificationType.receivedUpdate ||
+          event.type == NotificationType.localUpdate && mounted) {
+        itemObjectives =
+            widget.profile.getItemObjectives(widget.item.itemInstanceId);
+        setState(() {});
+      }
+    });
+  }
+
+  @override
+  dispose() {
+    subscription.cancel();
+    super.dispose();
   }
 
   Future<void> loadDefinitions() async {
