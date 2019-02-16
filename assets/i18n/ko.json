@@ -87,5 +87,10 @@
   "Quest steps": "퀘스트 단계",
   "From the questline": "퀘스트 라인에서",
   "View next steps": "다음 단계보기",
-  "Equipped": "갖추어 준"
+  "Equipped": "갖추어 준",
+  "Rate it": "평점",
+  "Pursuits": "추구",
+  "{appName} is brought to you by your fellow guardian": "{appName}이 (가) 동료 보호자에게 가져 왔습니다.",
+  "Translations": "번역",
+  "#####Credits": "missing_translation"
 }

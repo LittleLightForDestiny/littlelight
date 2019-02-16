@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
@@ -5,15 +7,14 @@ import 'package:bungie_api/models/destiny_objective_definition.dart';
 import 'package:bungie_api/models/destiny_objective_progress.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/auth/auth.service.dart';
-import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/utils/destiny_data.dart';
+import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/widgets/common/destiny_item.stateful_widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/objective.widget.dart';
-import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
 class ItemObjectivesWidget extends DestinyItemStatefulWidget {
+  final NotificationService broadcaster = NotificationService();
   ItemObjectivesWidget(
       DestinyItemComponent item,
       DestinyInventoryItemDefinition definition,
@@ -32,11 +33,26 @@ class ItemObjectivesWidget extends DestinyItemStatefulWidget {
 class ItemObjectivesWidgetState extends DestinyItemState<ItemObjectivesWidget> {
   Map<int, DestinyObjectiveDefinition> objectiveDefinitions;
   List<DestinyObjectiveProgress> itemObjectives;
+  StreamSubscription<NotificationEvent> subscription;
 
   @override
   void initState() {
     super.initState();
     loadDefinitions();
+    subscription = widget.broadcaster.listen((event) {
+      if (event.type == NotificationType.receivedUpdate ||
+          event.type == NotificationType.localUpdate && mounted) {
+        itemObjectives =
+            widget.profile.getItemObjectives(widget.item.itemInstanceId);
+        setState(() {});
+      }
+    });
+  }
+
+    @override
+  dispose() {
+    subscription.cancel();
+    super.dispose();
   }
 
   loadDefinitions() async {

@@ -125,7 +125,7 @@ class Client implements HttpClient {
   Client([this.token]);
   @override
   Future<HttpResponse> request(HttpClientConfig config) async {
-    Future<http.Response> request;
+    Future<http.Response> req;
     Map<String, String> headers = {
       'X-API-Key': BungieApiService.apiKey,
       'Accept':'application/json'
@@ -159,24 +159,27 @@ class Client implements HttpClient {
     }
 
     if (config.method == 'GET') {
-      request = http.get("${BungieApiService.apiUrl}${config.url}$paramsString",
+      req = http.get("${BungieApiService.apiUrl}${config.url}$paramsString",
           headers: headers);
     } else {
       String body = config.bodyContentType == 'application/json'
           ? jsonEncode(config.body)
           : config.body;
-      request = http.post(
+      req = http.post(
           "${BungieApiService.apiUrl}${config.url}$paramsString",
           headers: headers,
           body: body);
     }
-    return request.then((response) {
-      dynamic json = jsonDecode(response.body);
-      if (json["ErrorCode"] != null && json["ErrorCode"] > 2) {
-        throw BungieApiException(json);
-      }
-      return HttpResponse(json, response.statusCode);
-    });
+    var response = await req;
+    if(response.statusCode == 401){
+      await AuthService().refreshToken(token);
+      return request(config);
+    }
+    dynamic json = jsonDecode(response.body);
+    if (json["ErrorCode"] != null && json["ErrorCode"] > 2) {
+      throw BungieApiException(json);
+    }
+    return HttpResponse(json, response.statusCode);
   }
 }
 

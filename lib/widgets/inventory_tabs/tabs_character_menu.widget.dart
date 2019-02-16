@@ -11,15 +11,16 @@ import 'package:shimmer/shimmer.dart';
 class TabsCharacterMenuWidget extends StatelessWidget {
   final List<DestinyCharacterComponent> characters;
   final TabController controller;
+  final bool includeVault;
 
-  TabsCharacterMenuWidget(this.characters, {this.controller});
+  TabsCharacterMenuWidget(this.characters, {this.controller, this.includeVault = true});
 
   @override
   Widget build(BuildContext context) {
     return Positioned(
         right: 8,
         top: getTopPadding(context) + kToolbarHeight - 52,
-        width: (characters.length + 1) * 48.0,
+        width: (characters.length + (includeVault ? 1 : 0)) * 48.0,
         child: TabBar(
           controller: controller,
           isScrollable: true,
@@ -42,8 +43,9 @@ class TabsCharacterMenuWidget extends StatelessWidget {
                 character: character)))
         .values
         .toList();
-
-    buttons.add(VaultTabMenuButton());
+    if(this.includeVault){
+      buttons.add(VaultTabMenuButton());
+    }
     return buttons;
   }
 

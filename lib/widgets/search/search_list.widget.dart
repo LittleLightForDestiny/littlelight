@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
@@ -11,6 +9,7 @@ import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/widgets/item_list/items/search_item_wrapper.widget.dart';
 import 'package:little_light/widgets/search/search_filters.widget.dart';
+import 'package:shimmer/shimmer.dart';
 
 class SearchListWidget extends StatefulWidget {
   final ProfileService profile = ProfileService();
@@ -20,7 +19,8 @@ class SearchListWidget extends StatefulWidget {
   SearchListWidgetState createState() => new SearchListWidgetState();
 }
 
-class SearchListWidgetState extends State<SearchListWidget> with AutomaticKeepAliveClientMixin{
+class SearchListWidgetState extends State<SearchListWidget>
+    with AutomaticKeepAliveClientMixin {
   String get search => widget.tabData.searchText;
   List<_ItemWithOwner> items;
   Map<int, DestinyInventoryItemDefinition> itemDefinitions;
@@ -54,27 +54,17 @@ class SearchListWidgetState extends State<SearchListWidget> with AutomaticKeepAl
       return item.item.itemInstanceId != null;
     }).toList();
     Iterable<int> hashes = allItems.map((i) => i.item.itemHash);
-    for (var i = 0; i < hashes.length; i += 10) {
-      int end = min(i + 10, hashes.length - 1);
-      if (itemDefinitions == null) {
-        itemDefinitions =
-            await manifest.getDefinitions<DestinyInventoryItemDefinition>(
-                hashes.toList().sublist(i, end));
-      } else {
-        itemDefinitions.addAll(
-            await manifest.getDefinitions<DestinyInventoryItemDefinition>(
-                hashes.toList().sublist(i, end)));
-      }
-      if (mounted) {
-        sortItems();
-        setState(() {});
-      } else {
-        break;
-      }
+
+    itemDefinitions = await manifest
+        .getDefinitions<DestinyInventoryItemDefinition>(hashes.toList());
+
+    if (mounted) {
+      sortItems();
+      setState(() {});
     }
   }
 
-  sortItems(){
+  sortItems() {
     items.sort((itemA, itemB) => InventoryUtils.sortDestinyItems(
         itemA.item, itemB.item, widget.profile,
         defA: itemDefinitions[itemA.item.itemHash],
@@ -83,6 +73,17 @@ class SearchListWidgetState extends State<SearchListWidget> with AutomaticKeepAl
   }
 
   Widget build(BuildContext context) {
+    if(itemDefinitions == null){
+      return Center(
+        child: Container(
+        width: 96,
+        child: Shimmer.fromColors(
+          baseColor: Colors.blueGrey.shade300,
+          highlightColor: Colors.white,
+          child: Image.asset("assets/anim/loading.webp"),
+        ))
+      );
+    }
     return StaggeredGridView.countBuilder(
       padding: EdgeInsets.all(4),
       crossAxisCount: 6,
@@ -105,8 +106,7 @@ class SearchListWidgetState extends State<SearchListWidget> with AutomaticKeepAl
       widget.tabData.filterData[FilterType.bucketType];
   FilterItem get subtypeFilter =>
       widget.tabData.filterData[FilterType.itemSubType];
-  FilterItem get typeFilter =>
-      widget.tabData.filterData[FilterType.itemType];
+  FilterItem get typeFilter => widget.tabData.filterData[FilterType.itemType];
   FilterItem get ammoTypeFilter =>
       widget.tabData.filterData[FilterType.ammoType];
   FilterItem get classTypeFilter =>
@@ -172,9 +172,7 @@ class SearchListWidgetState extends State<SearchListWidget> with AutomaticKeepAl
       if (typeFilter != null) {
         var values = typeFilter.values;
         var type = def?.itemType;
-        if (type != null &&
-            values.length != 0 &&
-            !values.contains(type)) {
+        if (type != null && values.length != 0 && !values.contains(type)) {
           return false;
         }
       }
