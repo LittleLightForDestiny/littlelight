@@ -7,7 +7,6 @@ import 'package:little_light/screens/equipment.screen.dart';
 import 'package:little_light/screens/initial.screen.dart';
 import 'package:little_light/screens/loadouts.screen.dart';
 import 'package:little_light/screens/progress.screen.dart';
-import 'package:little_light/screens/pursuits.screen.dart';
 import 'package:little_light/screens/search.screen.dart';
 import 'package:little_light/screens/triumphs.screen.dart';
 import 'package:little_light/services/auth/auth.service.dart';

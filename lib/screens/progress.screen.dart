@@ -1,6 +1,5 @@
 import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/services/bungie_api/enums/item_category.enum.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/selected_page_persistence.dart';
@@ -10,11 +9,6 @@ import 'package:little_light/widgets/progress_tabs/character_progress_tab.widget
 class ProgressScreen extends StatefulWidget {
   final profile = new ProfileService();
   final manifest = new ManifestService();
-  final List<int> itemTypes = [
-    ItemCategory.weapon,
-    ItemCategory.armor,
-    ItemCategory.inventory
-  ];
 
   @override
   ProgressScreenState createState() => new ProgressScreenState();
@@ -33,10 +27,6 @@ class ProgressScreenState extends State<ProgressScreen>
   @override
   void initState() {
     SelectedPagePersistence.saveLatestScreen(SelectedPagePersistence.equipment);
-
-    widget.itemTypes.forEach((type) {
-      scrollPositions[type] = 0;
-    });
     widget.profile.startAutomaticUpdater(Duration(seconds: 30));
     super.initState();
     

@@ -13,6 +13,7 @@ import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
+import 'package:little_light/widgets/progress_tabs/milestone_item.widget.dart';
 
 class CharacterProgressListWidget extends StatefulWidget {
   final String characterId;
@@ -28,6 +29,7 @@ class CharacterProgressListWidget extends StatefulWidget {
 class _CharacterProgressListWidgetState
     extends State<CharacterProgressListWidget> {
   Map<String, DestinyMilestone> milestones;
+  Map<int, DestinyMilestoneDefinition> milestoneDefinitions;
 
   @override
   void initState() {
@@ -38,6 +40,8 @@ class _CharacterProgressListWidgetState
   Future<void> getMilestones() async {
     milestones =
         widget.profile.getCharacterProgression(widget.characterId).milestones;
+    var hashes = milestones.values.map((m)=>m.milestoneHash);
+    milestoneDefinitions = await widget.manifest.getDefinitions<DestinyMilestoneDefinition>(hashes);
     setState(() {});
   }
 
@@ -58,108 +62,91 @@ class _CharacterProgressListWidgetState
     return widgets;
   }
 
-  Widget buildMilestone(BuildContext context, DestinyMilestone milestone) {
+  Widget buildMilestone(BuildContext context, DestinyMilestone milestone) {    
+    return MilestoneItemWidget(characterId:widget.characterId, item: milestone,);
+  }
+
+  Widget buildMilestoneActivities(BuildContext context,
+      List<DestinyMilestoneChallengeActivity> activities) {
     List<Widget> widgets = [];
-    widgets.add(HeaderWidget(
-        child: Row(children: [
-      Text("Milestone: "),
-      ManifestText<DestinyMilestoneDefinition>(milestone.milestoneHash)
-    ])));
-    if (milestone.activities != null) {
-      widgets.add(buildMilestoneActivities(context, milestone.activities));
-    }
-    if (milestone.availableQuests != null) {
-      widgets.add(buildAvailableQuests(context, milestone.availableQuests));
-    }
-    if(milestone.rewards != null){
-      widgets.add(buildRewards(context, milestone.rewards));
-          }
-      
-          return Column(children: widgets);
-        }
-      
-        Widget buildMilestoneActivities(BuildContext context,
-            List<DestinyMilestoneChallengeActivity> activities) {
-          List<Widget> widgets = [];
-          activities.forEach((activity) {
-            widgets.add(Container(
-                padding: EdgeInsets.all(8),
-                color: Colors.black,
-                child:
-                    ManifestText<DestinyActivityDefinition>(activity.activityHash)));
-            if (activity.phases != null) {
-              widgets
-                  .add(Container(padding: EdgeInsets.all(8), child: Text('Phases')));
-              widgets.add(buildActivityPhases(context, activity.phases));
-            }
-            if ((activity.challenges?.length ?? 0) > 0) {
-              widgets.add(buildActivityChallenges(context, activity.challenges));
-            }
-            widgets.add(Container(height: 8));
-          });
-          return Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch, children: widgets);
-        }
-      
-        Widget buildActivityPhases(
-            BuildContext context, List<DestinyMilestoneActivityPhase> phases) {
-          List<Widget> widgets = [];
-          phases.forEach((phase) {
-            widgets.add(Container(
-                padding: EdgeInsets.all(4),
-                child: Column(children: [
-                  Text("${phase.phaseHash}"),
-                  Text("${phase.complete}")
-                ])));
-          });
-          return SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: widgets));
-        }
-      
-        Widget buildActivityChallenges(
-            BuildContext context, List<DestinyChallengeStatus> challenges) {
-          List<Widget> widgets = [];
-          widgets.add(Text("Challenges"));
-          challenges.forEach((challenge) {
-            widgets.add(Row(children: [
-              ManifestText<DestinyObjectiveDefinition>(
-                  challenge.objective.objectiveHash),
-              Text(":${challenge.objective.progress}")
-            ]));
-          });
-          return Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround, children: widgets);
-        }
-      
-        Widget buildAvailableQuests(
-            BuildContext context, List<DestinyMilestoneQuest> availableQuests) {
-          List<Widget> widgets = [];
-          widgets.add(Text("Quests"));
-          availableQuests.forEach((quest) {
-            widgets.add(Row(children: [
-              ManifestText<DestinyInventoryItemDefinition>(quest.questItemHash),
-              Text(":${quest.status.completed}")
-            ]));
-          });
-          return Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround, children: widgets);
-        }
-      
-        Widget buildRewards(BuildContext context, List<DestinyMilestoneRewardCategory> rewards) {
-          List<Widget> widgets = [];
-          widgets.add(Text("Rewards"));
-          rewards.forEach((reward) {
-            reward.entries.forEach((entry){
-              widgets.add(Row(children: [
-              Text("${entry.rewardEntryHash}:${entry.earned}")
-            ]));
-            });
-            
-          });
-          return Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround, children: widgets);
-        }
+    activities.forEach((activity) {
+      widgets.add(Container(
+          padding: EdgeInsets.all(8),
+          color: Colors.black,
+          child:
+              ManifestText<DestinyActivityDefinition>(activity.activityHash)));
+      if (activity.phases != null) {
+        widgets
+            .add(Container(padding: EdgeInsets.all(8), child: Text('Phases')));
+        widgets.add(buildActivityPhases(context, activity.phases));
+      }
+      if ((activity.challenges?.length ?? 0) > 0) {
+        widgets.add(buildActivityChallenges(context, activity.challenges));
+      }
+      widgets.add(Container(height: 8));
+    });
+    return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch, children: widgets);
+  }
+
+  Widget buildActivityPhases(
+      BuildContext context, List<DestinyMilestoneActivityPhase> phases) {
+    List<Widget> widgets = [];
+    phases.forEach((phase) {
+      widgets.add(Container(
+          padding: EdgeInsets.all(4),
+          child: Column(children: [
+            Text("${phase.phaseHash}"),
+            Text("${phase.complete}")
+          ])));
+    });
+    return SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: widgets));
+  }
+
+  Widget buildActivityChallenges(
+      BuildContext context, List<DestinyChallengeStatus> challenges) {
+    List<Widget> widgets = [];
+    widgets.add(Text("Challenges"));
+    challenges.forEach((challenge) {
+      widgets.add(Row(children: [
+        ManifestText<DestinyObjectiveDefinition>(
+            challenge.objective.objectiveHash),
+        Text(":${challenge.objective.progress}")
+      ]));
+    });
+    return Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround, children: widgets);
+  }
+
+  Widget buildAvailableQuests(
+      BuildContext context, List<DestinyMilestoneQuest> availableQuests) {
+    List<Widget> widgets = [];
+    widgets.add(Text("Quests"));
+    availableQuests.forEach((quest) {
+      widgets.add(Row(children: [
+        ManifestText<DestinyInventoryItemDefinition>(quest.questItemHash),
+        Text(":${quest.status.completed}")
+      ]));
+    });
+    return Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround, children: widgets);
+  }
+
+  Widget buildRewards(
+      BuildContext context, List<DestinyMilestoneRewardCategory> rewards) {
+    List<Widget> widgets = [];
+    widgets.add(Text("Rewards"));
+    rewards.forEach((reward) {
+      reward.entries.forEach((entry) {
+        widgets.add(
+            Row(children: [Text("${entry.rewardEntryHash}:${entry.earned}")]));
+      });
+    });
+    return Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround, children: widgets);
+  }
 }
