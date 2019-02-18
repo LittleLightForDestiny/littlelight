@@ -16,9 +16,9 @@ class MilestoneItemWidget extends StatefulWidget {
   final ManifestService manifest = ManifestService();
   final NotificationService broadcaster = NotificationService();
 
-  final DestinyMilestone item;
+  final DestinyMilestone milestone;
 
-  MilestoneItemWidget({Key key, this.characterId, this.item}) : super(key: key);
+  MilestoneItemWidget({Key key, this.characterId, this.milestone}) : super(key: key);
 
   _MilestoneItemWidgetState createState() => _MilestoneItemWidgetState();
 }
@@ -52,7 +52,7 @@ class _MilestoneItemWidgetState extends State<MilestoneItemWidget>
 
   Future<void> loadDefinitions() async {
     definition = await widget.manifest
-        .getDefinition<DestinyMilestoneDefinition>(widget.item.milestoneHash);
+        .getDefinition<DestinyMilestoneDefinition>(widget.milestone.milestoneHash);
     if (itemObjectives != null) {
       Iterable<int> objectiveHashes =
           itemObjectives.map((o) => o.objectiveHash);
@@ -101,9 +101,6 @@ class _MilestoneItemWidgetState extends State<MilestoneItemWidget>
                   width: 72,
                   height: 72,
                   child: Container(
-                      foregroundDecoration: BoxDecoration(
-                          border: Border.all(
-                              width: 2, color: Colors.grey.shade300)),
                       child: QueuedNetworkImage(
                           imageUrl: BungieApiService.url(
                               definition.displayProperties.icon))))

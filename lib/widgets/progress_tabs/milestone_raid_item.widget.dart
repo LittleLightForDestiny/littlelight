@@ -15,6 +15,8 @@ import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
+import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:little_light/widgets/icon_fonts/destiny_icons_icons.dart';
 
 class MilestoneRaidItemWidget extends StatefulWidget {
   final String characterId;
@@ -70,11 +72,11 @@ class _MilestoneRaidItemWidgetState extends State<MilestoneRaidItemWidget>
   Widget build(BuildContext context) {
     super.build(context);
     if (definition == null) {
-      return Container(height: 200, color: Colors.blueGrey.shade900);
+      return Container(height: 200, color: Colors.blueGrey.shade800);
     }
 
     return Container(
-        color: Colors.blueGrey.shade900,
+        color: Colors.blueGrey.shade800,
         margin: EdgeInsets.all(8).copyWith(top: 0),
         child: Column(children: <Widget>[
           buildHeader(context),
@@ -123,8 +125,11 @@ class _MilestoneRaidItemWidgetState extends State<MilestoneRaidItemWidget>
   buildActivities(BuildContext context) {
     var activities = widget.milestone.activities
         .where((a) => a.phases != null && a.phases.length > 0);
-    return Column(
-        children: activities.map((a) => buildActivity(context, a)).toList());
+    return Container(
+        padding: EdgeInsets.all(8),
+        child: Column(
+            children:
+                activities.map((a) => buildActivity(context, a)).toList()));
   }
 
   Widget buildActivity(
@@ -152,32 +157,101 @@ class _MilestoneRaidItemWidgetState extends State<MilestoneRaidItemWidget>
   }
 
   Widget buildPhase(BuildContext context, DestinyMilestoneActivityPhase phase) {
-    return Flexible(child: buildPhaseLabel(context, phase));
+    return Flexible(
+            child: Container(
+                height: 60,
+                alignment: Alignment.center,
+                padding: EdgeInsets.all(4),
+                child: buildPhaseLabel(context, phase)));
   }
 
   Widget buildPhaseLabel(
       BuildContext context, DestinyMilestoneActivityPhase phase) {
+    String text;
+    IconData icon;
     switch (phase.phaseHash) {
-      case RaidPhases.eowGuards:
-        return Text("Guards",
-            style: TextStyle(
-                color: phase.complete == true
-                    ? Colors.amber.shade100
-                    : Colors.grey.shade300));
-      case RaidPhases.eowRings:
-        return Text("Rings",
-            style: TextStyle(
-                color: phase.complete == true
-                    ? Colors.amber.shade100
-                    : Colors.grey.shade300));
+      case RaidPhases.leviathanGardens:
+        icon = DestinyIcons.leviathan_dogs;
+        break;
+      case RaidPhases.leviathanArena:
+        icon = DestinyIcons.leviathan_axes;
+        break;
+      case RaidPhases.leviathanPools:
+        icon = DestinyIcons.leviathan_sun;
+        break;
+      case RaidPhases.leviathanCallus:
+        icon = DestinyIcons.leviathan_cup;
+        break;
 
-      default:
-        return Text("${phase.phaseHash}",
-            style: TextStyle(
-                color: phase.complete == true
-                    ? Colors.amber.shade100
-                    : Colors.grey.shade300));
+      case RaidPhases.eowLoyalists:
+        text = "Loyalists";
+        break;
+      case RaidPhases.eowRings:
+        text = "Vex Rings";
+        break;
+      case RaidPhases.eowShields:
+        text = "Shields";
+        break;
+      case RaidPhases.eowArgos:
+        text = "Argos";
+        break;
+
+      case RaidPhases.sosStatueGarden:
+        text = "Statue Garden";
+        break;
+      case RaidPhases.sosConduitRoom:
+        text = "Conduit Room";
+        break;
+      case RaidPhases.sosShips:
+        text = "Ships";
+        break;
+      case RaidPhases.sosValCauor:
+        text = "Val Ca'uor";
+        break;
+
+      case RaidPhases.lwKalli:
+        text = "Kalli";
+        break;
+      case RaidPhases.lwShuroChi:
+        text = "Shuro Chi";
+        break;
+      case RaidPhases.lwMorgeth:
+        text = "Morgeth";
+        break;
+      case RaidPhases.lwVault:
+        text = "Vault Room";
+        break;
+      case RaidPhases.lwhRiven:
+        text = "Riven";
+        break;
+
+      case RaidPhases.sotpBotzaDistrict:
+        text = "Botza District";
+        break;
+      case RaidPhases.sotpEscape:
+        text = "Escape";
+        break;
+      case RaidPhases.sotpInsurectionPrime:
+        text = "Insurrection Prime";
+        break;
     }
+    Color color = phase.complete
+        ? Colors.amber.shade100
+        : Colors.grey.shade300.withOpacity(.5);
+    if (icon != null) {
+      return Icon(icon, color: color, size: 30);
+    }
+    if (text != null) {
+      return TranslatedTextWidget(
+        text,
+        uppercase: true,
+        textAlign: TextAlign.center,
+        style:
+            TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: 10),
+      );
+    }
+    return Icon(phase.complete ? Icons.check_circle : Icons.remove_circle,
+        color: color);
   }
 
   @override

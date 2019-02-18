@@ -63,14 +63,24 @@ class _CharacterProgressListWidgetState
 
   List<Widget> buildRaids(BuildContext context) {
     List<Widget> widgets = [];
-    raidHashes.forEach((hash){
-      widgets.add(buildRaidMilestone(context, milestones.values.firstWhere((m)=>m.milestoneHash == hash)));
+    if(milestoneDefinitions == null) return widgets;
+    var raidMilestones = milestones.values.where((m)=>raidHashes.contains(m.milestoneHash));
+    var otherMilestones = milestones.values.where((m)=>!raidHashes.contains(m.milestoneHash));
+    raidMilestones.forEach((milestone){
+      widgets.add(buildRaidMilestone(context, milestone));
+    });
+
+    otherMilestones.forEach((milestone){
+      widgets.add(buildMilestone(context, milestone));
     });
     return widgets;
   }
 
   Widget buildRaidMilestone(BuildContext context, DestinyMilestone milestone) {    
     return MilestoneRaidItemWidget(characterId:widget.characterId, milestone: milestone,);
+  }
+  Widget buildMilestone(BuildContext context, DestinyMilestone milestone) {    
+    return MilestoneItemWidget(characterId:widget.characterId, milestone: milestone,);
   }
 
   Widget buildMilestoneActivities(BuildContext context,
