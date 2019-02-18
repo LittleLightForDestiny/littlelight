@@ -1,21 +1,13 @@
 import 'dart:async';
-
-import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
-import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_milestone.dart';
-import 'package:bungie_api/models/destiny_milestone_challenge_activity.dart';
 import 'package:bungie_api/models/destiny_milestone_definition.dart';
 import 'package:bungie_api/models/destiny_objective_definition.dart';
 import 'package:bungie_api/models/destiny_objective_progress.dart';
-
 import 'package:flutter/material.dart';
-import 'package:little_light/screens/item_detail.screen.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/utils/destiny_data.dart';
-import 'package:little_light/widgets/common/objective.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
 class MilestoneItemWidget extends StatefulWidget {
@@ -44,9 +36,9 @@ class _MilestoneItemWidgetState extends State<MilestoneItemWidget>
     super.initState();
     loadDefinitions();
     subscription = widget.broadcaster.listen((event) {
-      if ((event.type == NotificationType.receivedUpdate 
-      || event.type == NotificationType.localUpdate) 
-      && mounted) {
+      if ((event.type == NotificationType.receivedUpdate ||
+              event.type == NotificationType.localUpdate) &&
+          mounted) {
         setState(() {});
       }
     });

@@ -11,9 +11,9 @@ import 'package:bungie_api/models/destiny_objective_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/progress_tabs/milestone_item.widget.dart';
+import 'package:little_light/widgets/progress_tabs/milestone_raid_item.widget.dart';
 
 class CharacterProgressListWidget extends StatefulWidget {
   final String characterId;
@@ -28,6 +28,13 @@ class CharacterProgressListWidget extends StatefulWidget {
 
 class _CharacterProgressListWidgetState
     extends State<CharacterProgressListWidget> {
+  final List<int> raidHashes = [
+    3660836525,
+    2986584050,
+    2683538554,
+    3181387331,
+    1342567285,
+  ];
   Map<String, DestinyMilestone> milestones;
   Map<int, DestinyMilestoneDefinition> milestoneDefinitions;
 
@@ -49,21 +56,21 @@ class _CharacterProgressListWidgetState
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
-        children: buildMilestones(context),
+        children: buildRaids(context),
       ),
     );
   }
 
-  List<Widget> buildMilestones(BuildContext context) {
+  List<Widget> buildRaids(BuildContext context) {
     List<Widget> widgets = [];
-    milestones.values.forEach((milestone) {
-      widgets.add(buildMilestone(context, milestone));
+    raidHashes.forEach((hash){
+      widgets.add(buildRaidMilestone(context, milestones.values.firstWhere((m)=>m.milestoneHash == hash)));
     });
     return widgets;
   }
 
-  Widget buildMilestone(BuildContext context, DestinyMilestone milestone) {    
-    return MilestoneItemWidget(characterId:widget.characterId, item: milestone,);
+  Widget buildRaidMilestone(BuildContext context, DestinyMilestone milestone) {    
+    return MilestoneRaidItemWidget(characterId:widget.characterId, milestone: milestone,);
   }
 
   Widget buildMilestoneActivities(BuildContext context,

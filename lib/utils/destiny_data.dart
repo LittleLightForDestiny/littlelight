@@ -14,7 +14,7 @@ class RaidPhases {
     static const int leviathanArena = 1431486395;
     static const int leviathanCallus = 4231923662;
     static const int eowGuards = 415534662;
-    static const int eowHatch = 3813639709;
+    static const int eowRings = 3813639709;
     static const int eowShields = 2941618871;
     static const int eowArgos = 877738674;
     static const int sosBasketball = 3864507933;
