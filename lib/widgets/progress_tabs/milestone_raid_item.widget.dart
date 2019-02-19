@@ -125,8 +125,16 @@ class _MilestoneRaidItemWidgetState extends State<MilestoneRaidItemWidget>
   buildActivities(BuildContext context) {
     var activities = widget.milestone.activities
         .where((a) => a.phases != null && a.phases.length > 0);
+
+    if(activities.length == 1){
+      return Container(
+        padding: EdgeInsets.all(2),
+        child: Column(
+            children:
+                activities.map((a) => buildPhases(context, a)).toList()));
+    }
     return Container(
-        padding: EdgeInsets.all(8),
+        padding: EdgeInsets.all(2),
         child: Column(
             children:
                 activities.map((a) => buildActivity(context, a)).toList()));
@@ -136,14 +144,16 @@ class _MilestoneRaidItemWidgetState extends State<MilestoneRaidItemWidget>
       BuildContext context, DestinyMilestoneChallengeActivity activity) {
     return Column(
       children: <Widget>[
-        HeaderWidget(
+        Container(
+          padding: EdgeInsets.all(2),
+          child:HeaderWidget(
             child: ManifestText<DestinyActivityDefinition>(
                 activity.activityHash,
                 uppercase: true,
                 textExtractor: (def) =>
                     def?.selectionScreenDisplayProperties?.name ??
                     def.displayProperties.name,
-                style: TextStyle(fontWeight: FontWeight.bold))),
+                style: TextStyle(fontWeight: FontWeight.bold)))),
         buildPhases(context, activity)
       ],
     );
@@ -162,6 +172,8 @@ class _MilestoneRaidItemWidgetState extends State<MilestoneRaidItemWidget>
                 height: 60,
                 alignment: Alignment.center,
                 padding: EdgeInsets.all(4),
+                margin: EdgeInsets.all(2),
+                color:Colors.blueGrey.shade900,
                 child: buildPhaseLabel(context, phase)));
   }
 

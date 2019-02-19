@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/selected_page_persistence.dart';
+import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/tabs_character_menu.widget.dart';
 import 'package:little_light/widgets/progress_tabs/character_progress_tab.widget.dart';
 
@@ -26,10 +28,9 @@ class ProgressScreenState extends State<ProgressScreen>
 
   @override
   void initState() {
-    SelectedPagePersistence.saveLatestScreen(SelectedPagePersistence.equipment);
+    SelectedPagePersistence.saveLatestScreen(SelectedPagePersistence.progress);
     widget.profile.startAutomaticUpdater(Duration(seconds: 30));
     super.initState();
-    
   }
 
   @override
@@ -40,22 +41,27 @@ class ProgressScreenState extends State<ProgressScreen>
 
   @override
   Widget build(BuildContext context) {
-    charTabController = charTabController ?? TabController(
-      initialIndex: 0,
-      length: totalCharacterTabs,
-      vsync: this,
-    );
+    charTabController = charTabController ??
+        TabController(
+          initialIndex: 0,
+          length: totalCharacterTabs,
+          vsync: this,
+        );
+    typeTabController = typeTabController ??
+        TabController(
+          initialIndex: 0,
+          length: 2,
+          vsync: this,
+        );
     if (characters == null) {
       return Container();
     }
     double paddingTop = MediaQuery.of(context).padding.top;
-    return Material(
-      child: Stack(
+    return Scaffold(
+      body: Stack(
         children: <Widget>[
           buildBackground(context),
-          TabBarView(
-              controller: charTabController,
-              children: getTabs()),
+          TabBarView(controller: charTabController, children: getTabs()),
           Positioned(
             top: paddingTop,
             width: kToolbarHeight,
@@ -67,7 +73,13 @@ class ProgressScreenState extends State<ProgressScreen>
               },
             ),
           ),
-          TabsCharacterMenuWidget(characters, controller: charTabController),
+          TabsCharacterMenuWidget(
+            characters,
+            controller: charTabController,
+            includeVault: false,
+          ),
+          InventoryNotificationWidget(key: Key('inventory_notification_widget')),
+          Positioned(bottom: 0, left:0, right:0, child: buildTypeTabBar(),)
         ],
       ),
     );
@@ -89,10 +101,27 @@ class ProgressScreenState extends State<ProgressScreen>
 
   List<Widget> getTabs() {
     List<Widget> characterTabs = characters.map((character) {
-      return CharacterProgressTabWidget(character.characterId);
+      return CharacterProgressTabWidget(character.characterId, tabController:typeTabController);
     }).toList();
-    
+
     return characterTabs;
+  }
+
+  Widget buildTypeTabBar() {
+    return Container(
+      color:Colors.black,
+      height:kToolbarHeight,
+      child:TabBar(
+        labelPadding: EdgeInsets.all(8),
+        indicator: BoxDecoration(
+            border: Border(top: BorderSide(width: 2, color: Colors.white))),
+        controller: typeTabController,
+        tabs: [
+            TranslatedTextWidget("Milestones",
+              uppercase: true, style: TextStyle(fontWeight: FontWeight.bold)),
+          TranslatedTextWidget("Pursuits",
+              uppercase: true, style: TextStyle(fontWeight: FontWeight.bold))
+        ]));
   }
 
   List<DestinyCharacterComponent> get characters {

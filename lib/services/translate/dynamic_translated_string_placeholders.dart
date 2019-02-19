@@ -2,7 +2,9 @@ import 'package:little_light/widgets/common/translated_text.widget.dart';
 
 translationPlaceholders(){
   TranslatedTextWidget("Equipment");
+  TranslatedTextWidget("Progress");
   TranslatedTextWidget("Pursuits");
+  TranslatedTextWidget("Milestones");
   TranslatedTextWidget("Search");
   TranslatedTextWidget("Credits");
   TranslatedTextWidget("Change Account");
@@ -42,6 +44,26 @@ translationPlaceholders(){
   TranslatedTextWidget("access_denied");
   
   TranslatedTextWidget("invalid_request");
-  TranslatedTextWidget("We&#39;ve encountered an error, please try again later.");  
+  TranslatedTextWidget("We&#39;ve encountered an error, please try again later.");
   
+
+
+  //Raid Phases
+  TranslatedTextWidget("Loyalists");
+  TranslatedTextWidget("Vex Rings");
+  TranslatedTextWidget("Shields");
+  TranslatedTextWidget("Argos");
+  TranslatedTextWidget("Statue Garden");
+  TranslatedTextWidget("Conduit Room");
+  TranslatedTextWidget("Ships");
+  TranslatedTextWidget("Val Ca'uor");
+  TranslatedTextWidget("Kalli");
+  TranslatedTextWidget("Shuro Chi");
+  TranslatedTextWidget("Morgeth");
+  TranslatedTextWidget("Vault Room");
+  TranslatedTextWidget("Riven");
+  TranslatedTextWidget("Botza District");
+  TranslatedTextWidget("Escape");
+  TranslatedTextWidget("Insurrection Prime");
+
 }

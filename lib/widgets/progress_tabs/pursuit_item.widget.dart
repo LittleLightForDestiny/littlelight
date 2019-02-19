@@ -153,6 +153,7 @@ class _PursuitItemWidgetState extends State<PursuitItemWidget>
 
   Widget buildCurrentObjective(
       BuildContext context, DestinyObjectiveProgress objective) {
+        if(objectiveDefinitions == null) return Container();
     var definition = objectiveDefinitions[objective.objectiveHash];
     return Column(
       children: <Widget>[

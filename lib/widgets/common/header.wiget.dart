@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 class HeaderWidget extends StatelessWidget {
   final Widget child;
   final EdgeInsets padding;
-  HeaderWidget({this.child, this.padding = const EdgeInsets.all(8)});
+  final Alignment alignment;
+  HeaderWidget({this.child, this.padding = const EdgeInsets.all(8), this.alignment = Alignment.bottomCenter});
   @override
   Widget build(BuildContext context) {
     return Container(
-        alignment: AlignmentDirectional.bottomCenter,
+        alignment: alignment,
         padding: padding,
         decoration: BoxDecoration(
           border: BorderDirectional(bottom: BorderSide(color: Colors.white)),

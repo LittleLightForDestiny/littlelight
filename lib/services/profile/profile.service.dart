@@ -88,6 +88,7 @@ class ProfileService {
     }
     _timer = new Timer.periodic(every, (timer) async {
       if(!pauseAutomaticUpdater){
+        print('auto refreshing');
         await fetchProfileData(components: components);
       }
     });
