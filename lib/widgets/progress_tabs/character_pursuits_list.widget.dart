@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/widgets/item_list/character_info.widget.dart';
@@ -12,6 +15,8 @@ class CharacterPursuitsListWidget extends StatefulWidget {
   final String characterId;
   final ProfileService profile = ProfileService();
   final ManifestService manifest = ManifestService();
+  final NotificationService broadcaster = NotificationService();
+  
 
   CharacterPursuitsListWidget({Key key, this.characterId}) : super(key: key);
 
@@ -23,12 +28,25 @@ class _CharacterPursuitsListWidgetState
     extends State<CharacterPursuitsListWidget>
     with AutomaticKeepAliveClientMixin {
   List<DestinyItemComponent> pursuits;
+  StreamSubscription<NotificationEvent> subscription;
   bool fullyLoaded = false;
 
   @override
   void initState() {
     super.initState();
     getPursuits();
+    subscription = widget.broadcaster.listen((event) {
+      if (event.type == NotificationType.receivedUpdate ||
+          event.type == NotificationType.localUpdate && mounted) {
+        getPursuits();
+      }
+    });  
+  }
+
+  @override
+  dispose() {
+    subscription.cancel();
+    super.dispose();
   }
 
   Future<void> getPursuits() async {
@@ -60,7 +78,7 @@ class _CharacterPursuitsListWidgetState
         if (pursuits == null) return Container();
         if (index == 0) {
           return Container(
-            height:100, 
+            height:96, 
             child:CharacterInfoWidget(
             key: Key("characterinfo_${widget.profile.lastUpdated}"),
             characterId: widget.characterId,

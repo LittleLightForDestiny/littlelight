@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/screens/collections.screen.dart';
 import 'package:little_light/screens/equipment.screen.dart';
 import 'package:little_light/screens/loadouts.screen.dart';
-import 'package:little_light/screens/pursuits.screen.dart';
+import 'package:little_light/screens/progress.screen.dart';
 import 'package:little_light/screens/search.screen.dart';
 import 'package:little_light/screens/triumphs.screen.dart';
 import 'package:little_light/services/auth/auth.service.dart';
@@ -44,7 +44,7 @@ class MainScreenState extends State<MainScreen> {
       break;
 
       case SelectedPagePersistence.progress:
-      currentScreen = PursuitsScreen();
+      currentScreen = ProgressScreen();
       break;
 
       case SelectedPagePersistence.collections:
