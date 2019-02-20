@@ -9,8 +9,7 @@ import 'package:bungie_api/enums/destiny_item_sub_type_enum.dart';
 
 class RaidPhases {
     static const int leviathanGardens = 3847906370;
-    static const int leviathanPools = 2188993306;
-    static const int leviathanPoolsChallenge = 3796634159;
+    static const int leviathanPools = 2188993306; 
     static const int leviathanArena = 1431486395;
     static const int leviathanCallus = 4231923662;
     static const int eowLoyalists = 415534662;
@@ -25,10 +24,12 @@ class RaidPhases {
     static const int lwShuroChi = 1040714588;
     static const int lwMorgeth = 4249034918;
     static const int lwVault = 436847112;
-    static const int lwhRiven = 2392610624;
+    static const int lwRiven = 2392610624;
     static const int sotpBotzaDistrict = 566861111;
-    static const int sotpEscape = 244769953;
+    static const int sotpVaultAccess = 244769953;
     static const int sotpInsurectionPrime = 1268191778;
+
+    static const int leviathanPoolsChallenge = 3796634159;
     static const int sotpInsurrectionPrimeChallenge = 4140089399;
 }
 
