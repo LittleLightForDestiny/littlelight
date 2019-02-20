@@ -233,15 +233,15 @@ class _MilestoneRaidItemWidgetState extends State<MilestoneRaidItemWidget>
       case RaidPhases.lwVault:
         text = "Vault Room";
         break;
-      case RaidPhases.lwhRiven:
+      case RaidPhases.lwRiven:
         text = "Riven";
         break;
 
       case RaidPhases.sotpBotzaDistrict:
         text = "Botza District";
         break;
-      case RaidPhases.sotpEscape:
-        text = "Escape";
+      case RaidPhases.sotpVaultAccess:
+        text = "Vault Access";
         break;
       case RaidPhases.sotpInsurectionPrime:
         text = "Insurrection Prime";
