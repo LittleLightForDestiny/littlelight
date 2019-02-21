@@ -11,6 +11,8 @@ import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/selected_page_persistence.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
+import 'package:little_light/widgets/inventory_tabs/selected_items.widget.dart';
 import 'package:little_light/widgets/search/search_filters.widget.dart';
 import 'package:little_light/widgets/search/search_list.widget.dart';
 import 'package:bungie_api/enums/destiny_item_type_enum.dart';
@@ -112,6 +114,7 @@ class SearchScreenState extends State<SearchScreen>
             style: TextStyle(
               fontWeight: FontWeight.bold,
             ))),
+
     /// ARMOR ///
     SearchTabData(
         itemTypes: [
@@ -153,6 +156,7 @@ class SearchScreenState extends State<SearchScreen>
             style: TextStyle(
               fontWeight: FontWeight.bold,
             ))),
+
     /// QUEST ////
     SearchTabData(
         label: ManifestText<DestinyItemCategoryDefinition>(53,
@@ -161,7 +165,7 @@ class SearchScreenState extends State<SearchScreen>
               fontWeight: FontWeight.bold,
             )),
         filterData: {
-            FilterType.itemType: FilterItem([
+          FilterType.itemType: FilterItem([
             DestinyItemType.QuestStep,
             DestinyItemType.Bounty,
           ], [], open: true),
@@ -178,11 +182,11 @@ class SearchScreenState extends State<SearchScreen>
           DestinyItemType.QuestStep,
           DestinyItemType.Bounty,
         ],
-        sortOrder:[
+        sortOrder: [
           SortParameter(SortParameterType.type),
           SortParameter(SortParameterType.tierType, -1),
           SortParameter(SortParameterType.name),
-        ] ),
+        ]),
     //// FLAIR ////
     SearchTabData(
         label: ManifestText<DestinyPresentationNodeDefinition>(3066887728,
@@ -191,7 +195,7 @@ class SearchScreenState extends State<SearchScreen>
               fontWeight: FontWeight.bold,
             )),
         filterData: {
-            FilterType.itemType: FilterItem([
+          FilterType.itemType: FilterItem([
             DestinyItemType.Ghost,
             DestinyItemType.Vehicle,
             DestinyItemType.Ship,
@@ -211,11 +215,11 @@ class SearchScreenState extends State<SearchScreen>
           DestinyItemType.Ship,
           DestinyItemType.Emblem,
         ],
-        sortOrder:[
+        sortOrder: [
           SortParameter(SortParameterType.type),
           SortParameter(SortParameterType.tierType, -1),
           SortParameter(SortParameterType.name),
-        ] ),
+        ]),
   ];
 
   @override
@@ -251,27 +255,31 @@ class SearchScreenState extends State<SearchScreen>
             setState(() {});
           },
         ),
-        body: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          Material(
-              color: Colors.blueGrey.shade700,
-              elevation: 1,
-              child: Center(
-                  child: TabBar(
-                indicatorColor: Colors.white,
-                isScrollable: true,
-                controller: _tabController,
-                tabs: buildTabButtons(context),
-              ))),
-          Expanded(
-              child: TabBarView(
+        body: Stack(children: [
+          Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            Material(
+                color: Colors.blueGrey.shade700,
+                elevation: 1,
+                child: Center(
+                    child: TabBar(
+                  indicatorColor: Colors.white,
+                  isScrollable: true,
                   controller: _tabController,
-                  children: _tabs
-                      .map(
-                        (tab) => SearchListWidget(
-                              tabData: tab,
-                            ),
-                      )
-                      .toList()))
+                  tabs: buildTabButtons(context),
+                ))),
+            Expanded(
+                child: TabBarView(
+                    controller: _tabController,
+                    children: _tabs
+                        .map(
+                          (tab) => SearchListWidget(
+                                tabData: tab,
+                              ),
+                        )
+                        .toList()))
+          ]),
+          SelectedItemsWidget(),
+          InventoryNotificationWidget(key: Key('inventory_notification_widget'), barHeight: 1,),
         ]));
   }
 

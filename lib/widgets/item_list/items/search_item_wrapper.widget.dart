@@ -1,4 +1,8 @@
+import 'dart:async';
+
 import 'package:bungie_api/models/destiny_item_component.dart';
+import 'package:little_light/services/inventory/inventory.service.dart';
+import 'package:little_light/services/selection/selection.service.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
@@ -53,5 +57,19 @@ class SearchItemWrapperWidgetState<T extends SearchItemWrapperWidget>
   }
   @override
   void onLongPress(context) {
+    SelectionService().addItem(widget.item, widget.characterId);
+    setState((){});
+    
+    StreamSubscription<List<ItemInventoryState>> sub;
+    sub = SelectionService().broadcaster.listen((selectedItems){
+      if(!mounted){
+        sub.cancel();
+        return;
+      }
+      setState(() {});
+      if(!selected){
+        sub.cancel();
+      }
+    });
   }
 }

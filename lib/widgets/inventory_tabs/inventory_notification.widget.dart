@@ -91,17 +91,17 @@ class InventoryNotificationWidgetState
         bottom: 0,
         left: 0,
         right: 0,
-        height: bottomPadding + widget.barHeight * 2,
+        height: bottomPadding + kToolbarHeight + widget.barHeight,
         child: IgnorePointer(
             child: AnimatedCrossFade(
                 duration: Duration(milliseconds: 300),
                 firstChild: Container(
                     alignment: Alignment.bottomCenter,
                     child: idleWidget(context),
-                    height: bottomPadding + widget.barHeight * 2),
+                    height: bottomPadding + kToolbarHeight + widget.barHeight),
                 secondChild: Container(
                     child: busyWidget(context),
-                    height: bottomPadding + widget.barHeight * 2),
+                    height: bottomPadding + kToolbarHeight + widget.barHeight),
                 crossFadeState: _busy
                     ? CrossFadeState.showSecond
                     : CrossFadeState.showFirst)));
