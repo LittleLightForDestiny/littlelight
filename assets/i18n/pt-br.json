@@ -92,8 +92,8 @@
   "{appName} is brought to you by your fellow guardian": "{appName} foi desenvolvido pelo seu colega guardião",
   "Translations": "Traduções",
   "Credits": "Créditos",
-  "#####Progress": "missing_translation",
-  "#####Milestones": "missing_translation",
+  "Progress": "Progresso",
+  "Milestones": "Marcos",
   "#EATER OF WORLDS TRANSLATION INSTRUCTIONS#": "Below are the names of the phases(checkpoints) of the Eater of Worlds raid lair, some of them are boss names and doesn't need translation",
   "Loyalists": "Lealistas",
   "Vex Rings": "Anéis Vex",
@@ -112,6 +112,6 @@
   "Riven": "Riven",
   "#SCOURGE OF THE PAST TRANSLATION INSTRUCTIONS#": "Below are the names of the phases(checkpoints) of the SCOURGE OF THE PAST raid, some of them are boss names and doesn't need translation",
   "Botza District": "Distrito Botza",
-  "Escape": "Fuga",
+  "Vault Access": "Accesso ao Cofre",
   "Insurrection Prime": "Insurrection Prime"
 }
