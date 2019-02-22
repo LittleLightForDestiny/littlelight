@@ -66,6 +66,7 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget> {
             padding: EdgeInsets.all(8),
             child: TranslatedTextWidget(
               "{itemCount} items selected",
+              key: Key("item_count ${items.length}"),
               uppercase: true,
               style: TextStyle(fontWeight: FontWeight.bold),
               replace: {"itemCount": "${items.length}"},

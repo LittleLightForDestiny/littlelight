@@ -6,6 +6,7 @@ import 'package:bungie_api/models/destiny_item_category_definition.dart';
 import 'package:bungie_api/models/destiny_presentation_node_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
+import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/selected_page_persistence.dart';
@@ -225,6 +226,7 @@ class SearchScreenState extends State<SearchScreen>
   @override
   initState() {
     SelectedPagePersistence.saveLatestScreen(SelectedPagePersistence.search);
+    ProfileService().startAutomaticUpdater(Duration(seconds: 30));
     super.initState();
     _tabController = new TabController(vsync: this, length: _tabs.length);
     _searchFieldController.text = currentTabData.searchText;
@@ -237,10 +239,12 @@ class SearchScreenState extends State<SearchScreen>
       _searchFieldController.text = currentTabData.searchText;
       closeSearch();
     });
+    
   }
 
   @override
   void dispose() {
+    ProfileService().stopAutomaticUpdater();
     _tabController.dispose();
     super.dispose();
   }

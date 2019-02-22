@@ -17,7 +17,6 @@ import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:bungie_api/enums/bucket_category_enum.dart';
-
 enum ItemDestination { Character, Inventory, Vault }
 enum TransferErrorCode {
   cantFindSubstitute,
@@ -30,8 +29,11 @@ enum TransferErrorCode {
 
 class TransferError {
   final TransferErrorCode code;
+  final DestinyItemComponent item;
+  final ItemDestination destination;
+  final String characterId;
 
-  TransferError(this.code);
+  TransferError(this.code, [this.item, this.destination, this.characterId]);
 }
 
 class ItemInventoryState {
@@ -63,8 +65,12 @@ class InventoryService {
     _broadcaster.push(NotificationEvent(NotificationType.requestedTransfer,
         item: item, characterId: destinationCharacterId));
     profile.pauseAutomaticUpdater = true;
+    try{
     await _transfer(item, sourceCharacterId, destination,
         destinationCharacterId: destinationCharacterId);
+    }catch(e){
+      print("Error transferring single item: $e");
+    }
     profile.pauseAutomaticUpdater = false;
     await Future.delayed(Duration(milliseconds:100));
     await profile.fetchProfileData();
@@ -75,11 +81,21 @@ class InventoryService {
     profile.pauseAutomaticUpdater = true;
     _broadcaster.push(NotificationEvent(NotificationType.requestedTransfer,
         item: item, characterId: destinationCharacterId));
-    await _transfer(item, sourceCharacterId, ItemDestination.Character,
+    try{
+      await _transfer(item, sourceCharacterId, ItemDestination.Character,
         destinationCharacterId:destinationCharacterId);
+    }catch(e){
+      print("Error transferring single item in equip method: $e");
+    }
     _broadcaster.push(NotificationEvent(NotificationType.requestedEquip,
         item: item, characterId: destinationCharacterId));
-    await _equip(item, destinationCharacterId);
+
+    try{
+      await _equip(item, destinationCharacterId);
+    }catch(e){
+      print("Error equipping single item: $e");
+    }
+    
     profile.pauseAutomaticUpdater = false;
     await Future.delayed(Duration(milliseconds:100));
     await profile.fetchProfileData();
@@ -112,10 +128,13 @@ class InventoryService {
       if (def.nonTransferrable) continue;
       _broadcaster.push(NotificationEvent(NotificationType.requestedTransfer,
         item: item.item, characterId: destinationCharacterId));
-      await _transfer(item.item, ownerId, destination,
+      try{
+        await _transfer(item.item, ownerId, destination,
           destinationCharacterId: destinationCharacterId,
           idsToAvoid: idsToAvoid,
           hashesToAvoid: hashesToAvoid);
+      }catch(e){
+      }
     }
     await Future.delayed(Duration(milliseconds: 100));
     await profile.fetchProfileData();
@@ -167,14 +186,23 @@ class InventoryService {
           character == null ? ItemDestination.Vault : ItemDestination.Character;
           _broadcaster.push(NotificationEvent(NotificationType.requestedTransfer,
         item: item, characterId: characterId));
+
+      try{
       await _transfer(item, ownerId, destination,
           destinationCharacterId: characterId, idsToAvoid: idsToAvoid);
+      }catch(e){
+        print("Error transferring loadout: $e");
+      }
     }
 
     if (andEquip && itemsToEquip.length > 0) {
         _broadcaster.push(NotificationEvent(NotificationType.requestedEquip,
         characterId: characterId));
-      await _equipMultiple(itemsToEquip, characterId);
+      try{
+        await _equipMultiple(itemsToEquip, characterId);
+      }catch(e){
+        print("Error equipping loadout: $e");
+      }
     }
 
     for (var item in itemsToTransfer) {
@@ -187,8 +215,12 @@ class InventoryService {
           character == null ? ItemDestination.Vault : ItemDestination.Character;
         _broadcaster.push(NotificationEvent(NotificationType.requestedTransfer,
         item: item, characterId: characterId));
+      try{
       await _transfer(item, ownerId, destination,
           destinationCharacterId: characterId, idsToAvoid: idsToAvoid);
+      }catch(e){
+        print("Loadout Transfer Error : $e");
+      }
     }
     _debugInventory("loadout transfer completed");
 
@@ -229,7 +261,9 @@ class InventoryService {
     bool needsVaulting =
         (charToChar && sourceCharacterId != destinationCharacterId) ||
             destination == ItemDestination.Vault;
-
+    if(onVault && destination ==ItemDestination.Vault){
+      return;
+    }
     if (onPostmaster) {
       await _freeSlotsOnBucket(
           def.inventory.bucketTypeHash, sourceCharacterId, idsToAvoid);
@@ -494,8 +528,7 @@ class InventoryService {
     }
     items = items
         .where((item) =>
-            item.bucketHash == bucketHash &&
-            !idsToAvoid.contains(item.itemInstanceId))
+            item.bucketHash == bucketHash)
         .toList();
 
     int bucketSize = bucketDefinition.itemCount - (hasEquipSlot ? 1 : 0);
@@ -504,6 +537,7 @@ class InventoryService {
     if (freeSlots > count) {
       return;
     }
+    items = items.where((i)=>!idsToAvoid.contains(i.itemInstanceId)).toList();
     items.sort((itemA, itemB) {
       DestinyItemInstanceComponent instA =
           profile.getInstanceInfo(itemA.itemInstanceId);

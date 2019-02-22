@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
@@ -5,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/screens/search.screen.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/widgets/item_list/items/search_item_wrapper.widget.dart';
@@ -15,6 +18,8 @@ class SearchListWidget extends StatefulWidget {
   final ProfileService profile = ProfileService();
   final SearchTabData tabData;
   SearchListWidget({Key key, this.tabData}) : super(key: key);
+  final NotificationService broadcaster = new NotificationService();
+
   @override
   SearchListWidgetState createState() => new SearchListWidgetState();
 }
@@ -24,11 +29,24 @@ class SearchListWidgetState extends State<SearchListWidget>
   String get search => widget.tabData.searchText;
   List<_ItemWithOwner> items;
   Map<int, DestinyInventoryItemDefinition> itemDefinitions;
+  StreamSubscription<NotificationEvent> subscription;
+
+  @override
+  dispose() {
+    subscription.cancel();
+    super.dispose();
+  }
 
   @override
   initState() {
     super.initState();
     loadItems();
+    subscription = widget.broadcaster.listen((event) {
+      if (event.type == NotificationType.receivedUpdate ||
+      event.type == NotificationType.localUpdate){
+        loadItems();
+      }
+    });
   }
 
   loadItems() async {
