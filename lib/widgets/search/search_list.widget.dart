@@ -244,6 +244,8 @@ class SearchListWidgetState extends State<SearchListWidget>
   }
 
   Widget getItem(BuildContext context, int index) {
+    if(filteredItems == null) return null;
+    if(index > filteredItems.length - 1) return null;
     var item = filteredItems[index];
     if (itemDefinitions == null || itemDefinitions[item.item.itemHash] == null)
       return Container();

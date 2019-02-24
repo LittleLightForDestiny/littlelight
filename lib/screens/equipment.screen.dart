@@ -68,7 +68,7 @@ class EquipmentScreenState extends State<EquipmentScreen>
     if (characters == null) {
       return Container();
     }
-    double paddingTop = MediaQuery.of(context).padding.top;
+    EdgeInsets screenPadding = MediaQuery.of(context).padding;
     return Material(
       child: Stack(
         children: <Widget>[
@@ -77,7 +77,7 @@ class EquipmentScreenState extends State<EquipmentScreen>
               controller: typeTabController,
               children: buildItemTypeTabs(context, charTabController)),
           Positioned(
-            top: paddingTop,
+            top: screenPadding.top,
             width: kToolbarHeight,
             height: kToolbarHeight,
             child: IconButton(
@@ -90,7 +90,12 @@ class EquipmentScreenState extends State<EquipmentScreen>
           TabsCharacterMenuWidget(characters, controller: charTabController),
           ItemTypeMenuWidget(widget.itemTypes, controller: typeTabController),
           InventoryNotificationWidget(key: Key('inventory_notification_widget')),
-          SelectedItemsWidget(),
+          Positioned(
+          bottom: screenPadding.bottom,
+          left: 0,
+          right: 0,
+          child:
+          SelectedItemsWidget()),
         ],
       ),
     );

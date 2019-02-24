@@ -37,6 +37,7 @@ class LittleLight extends StatelessWidget {
       key: key,
       title: 'Little Light',
       theme: new ThemeData(
+          disabledColor: Colors.lightBlue.shade900,
           platform: TargetPlatform.android,
           backgroundColor: Colors.blueGrey.shade900,
           primarySwatch: Colors.lightBlue,

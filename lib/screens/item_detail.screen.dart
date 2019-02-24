@@ -7,6 +7,7 @@ import 'package:bungie_api/models/destiny_stat_group_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/enums/item_type.enum.dart';
 import 'package:little_light/widgets/common/destiny_item.stateful_widget.dart';
+import 'package:little_light/widgets/item_details/item_collectible_info.widget.dart';
 
 import 'package:little_light/widgets/item_details/item_cover/item_cover.widget.dart';
 import 'package:little_light/widgets/item_details/item_lore.widget.dart';
@@ -113,7 +114,8 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
           buildObjectives(context),
           buildQuestInfo(context),
           buildLore(context),
-          Container(height: 100)
+          buildCollectibleInfo(context),
+          Container(height: 50)
         ]),
       ),
     ]));
@@ -185,5 +187,10 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
   buildLore(BuildContext context){
     if(definition?.loreHash == null) return Container(); 
     return ItemLoreWidget(definition.loreHash);
+  }
+
+  buildCollectibleInfo(BuildContext context){
+    if(definition?.collectibleHash == null) return Container(); 
+    return ItemCollectibleInfoWidget(definition.collectibleHash);
   }
 }

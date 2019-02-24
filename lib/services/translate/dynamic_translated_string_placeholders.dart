@@ -56,14 +56,13 @@ translationPlaceholders(){
   TranslatedTextWidget("Statue Garden");
   TranslatedTextWidget("Conduit Room");
   TranslatedTextWidget("Ships");
-  TranslatedTextWidget("Val Ca'uor");
   TranslatedTextWidget("Kalli");
   TranslatedTextWidget("Shuro Chi");
   TranslatedTextWidget("Morgeth");
   TranslatedTextWidget("Vault Room");
   TranslatedTextWidget("Riven");
   TranslatedTextWidget("Botza District");
-  TranslatedTextWidget("Escape");
+  TranslatedTextWidget("Vault Access");
   TranslatedTextWidget("Insurrection Prime");
 
 }

@@ -125,6 +125,8 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
   }
 
   void onLongPress(context){
+    if(definition.nonTransferrable) return;
+    
     SelectionService().addItem(widget.item, widget.characterId);
     setState((){});
     

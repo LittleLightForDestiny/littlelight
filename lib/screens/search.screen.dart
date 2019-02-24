@@ -280,9 +280,9 @@ class SearchScreenState extends State<SearchScreen>
                                 tabData: tab,
                               ),
                         )
-                        .toList()))
+                        .toList())),
+            SelectedItemsWidget(),
           ]),
-          SelectedItemsWidget(),
           InventoryNotificationWidget(key: Key('inventory_notification_widget'), barHeight: 1,),
         ]));
   }

@@ -44,17 +44,13 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget> {
       return Container();
     }
     double bottomPadding = MediaQuery.of(context).padding.bottom;
-    return Positioned(
-      bottom: bottomPadding,
-      left: 0,
-      right: 0,
-      child: Container(
-          color: Colors.grey.shade900,
-          child: Column(children: [
-            buildHeader(context),
-            buildItemIcons(context),
-            MultiselectManagementBlockWidget(items: items),
-          ])),
+    return Container(
+      color: Colors.grey.shade900,
+      child: Column(children: [
+        buildHeader(context),
+        buildItemIcons(context),
+        MultiselectManagementBlockWidget(items: items),
+      ]),
     );
   }
 
@@ -77,8 +73,13 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget> {
                 child: Container(
                   padding: EdgeInsets.all(8),
                   child: Row(children: [
-                    Icon(Icons.remove_circle, size: 16,),
-                    Container(width: 4,),
+                    Icon(
+                      Icons.remove_circle,
+                      size: 16,
+                    ),
+                    Container(
+                      width: 4,
+                    ),
                     TranslatedTextWidget(
                       "Clear",
                       uppercase: true,
@@ -114,13 +115,14 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget> {
                                     color: Colors.grey.shade300, width: .5)),
                             child: Stack(children: [
                               ManifestImageWidget<
-                                  DestinyInventoryItemDefinition>(i.item.itemHash),
+                                      DestinyInventoryItemDefinition>(
+                                  i.item.itemHash),
                               Material(
                                   color: Colors.transparent,
                                   child: InkWell(
                                     onTap: () {
-                                      widget.service.removeItem(
-                                          i.item, i.characterId);
+                                      widget.service
+                                          .removeItem(i.item, i.characterId);
                                     },
                                   ))
                             ])))))

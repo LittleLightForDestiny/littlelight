@@ -124,7 +124,7 @@ class InventoryService {
       String ownerId = item.characterId;
       DestinyInventoryItemDefinition def = defs[item.item.itemHash];
       if (destination == ItemDestination.Character &&
-          ownerId == destinationCharacterId) continue;
+          ownerId == destinationCharacterId && item.item.bucketHash != InventoryBucket.lostItems) continue;
       if (def.nonTransferrable) continue;
       _broadcaster.push(NotificationEvent(NotificationType.requestedTransfer,
         item: item.item, characterId: destinationCharacterId));
@@ -261,7 +261,7 @@ class InventoryService {
     bool needsVaulting =
         (charToChar && sourceCharacterId != destinationCharacterId) ||
             destination == ItemDestination.Vault;
-    if(onVault && destination ==ItemDestination.Vault){
+    if(onVault && destination == ItemDestination.Vault){
       return;
     }
     if (onPostmaster) {

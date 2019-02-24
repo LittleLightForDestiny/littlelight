@@ -188,8 +188,15 @@ class ManagementBlockWidget extends DestinyItemWidget {
   List<TransferDestination> get pullDestinations {
     if (item.bucketHash == InventoryBucket.lostItems &&
         !definition.doesPostmasterPullHaveSideEffects) {
+      ItemDestination type;
+      if (ProfileService.profileBuckets
+        .contains(definition.inventory.bucketTypeHash)) {
+          type =ItemDestination.Inventory;
+      }else{
+        type =ItemDestination.Character;
+      }
       return [
-        TransferDestination(ItemDestination.Inventory,
+        TransferDestination(type,
             characterId: characterId, action: InventoryAction.Pull)
       ];
     }

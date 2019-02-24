@@ -30,6 +30,7 @@ class SearchItemWrapperWidgetState<T extends SearchItemWrapperWidget>
         child:Stack(children: [
       Positioned.fill(child: buildItem(context)),
       Positioned(right: 2, top: 2, child: buildCharacterIcon(context)),
+      selected ? Container(foregroundDecoration: BoxDecoration(border:Border.all(color:Colors.lightBlue.shade400, width:2)),) : Container(),
       buildTapHandler(context)
     ]));
   }
@@ -57,6 +58,7 @@ class SearchItemWrapperWidgetState<T extends SearchItemWrapperWidget>
   }
   @override
   void onLongPress(context) {
+    if(definition.nonTransferrable) return;
     SelectionService().addItem(widget.item, widget.characterId);
     setState((){});
     

@@ -10,6 +10,7 @@ import 'package:bungie_api/models/destiny_race_definition.dart';
 import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/screens/edit_loadout.screen.dart';
+import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/inventory/inventory.service.dart';
 import 'package:little_light/services/littlelight/littlelight.service.dart';
 import 'package:little_light/services/littlelight/models/loadout.model.dart';
@@ -26,7 +27,7 @@ class CharacterInfoWidget extends StatefulWidget {
   final ManifestService manifest = new ManifestService();
   final ProfileService profile = new ProfileService();
   final String characterId;
-  CharacterInfoWidget({this.characterId, Key key}):super(key:key);
+  CharacterInfoWidget({this.characterId, Key key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -212,10 +213,12 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
   LoadoutItemIndex maxLightLoadout;
   double maxLight;
   List<Loadout> loadouts;
+  List<DestinyItemComponent> itemsInPostmaster;
 
   @override
   void initState() {
     super.initState();
+    getItemsInPostmaster();
     getMaxLightLoadout();
     getLoadouts();
   }
@@ -233,16 +236,25 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       TranslatedTextWidget("Equip Max Light"),
-                      Text(
-                        "${maxLight?.toStringAsFixed(1) ?? ""}",
-                        style: TextStyle(color: Colors.amber.shade300),
-                      )
+                      maxLight == null
+                          ? Container(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator())
+                          : Text(
+                              "${maxLight?.toStringAsFixed(1) ?? ""}",
+                              style: TextStyle(color: Colors.amber.shade300),
+                            )
                     ]),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  InventoryService().transferLoadout(maxLightLoadout.loadout,
-                      widget.character.characterId, true);
-                },
+                onPressed: maxLight == null
+                    ? null
+                    : () {
+                        Navigator.of(context).pop();
+                        InventoryService().transferLoadout(
+                            maxLightLoadout.loadout,
+                            widget.character.characterId,
+                            true);
+                      },
               ),
               RaisedButton(
                 child: Row(
@@ -285,59 +297,82 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
                             context: context, builder: buildLoadoutListModal);
                       },
                     )
+                  : Container(),
+              (loadouts?.length ?? 0) > 0
+                  ? RaisedButton(
+                      child: TranslatedTextWidget(
+                          "Pull everything from postmaster"),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        InventoryService().transferMultiple(
+                            itemsInPostmaster.map((i) => ItemInventoryState(
+                                widget.character.characterId, i)).toList(),
+                            ItemDestination.Character,
+                            widget.character.characterId);
+                      },
+                    )
+                  : Container(),
+              (loadouts?.length ?? 0) > 0
+                  ? RaisedButton(
+                      child: TranslatedTextWidget("Force refresh"),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        widget.profile.fetchProfileData();
+                      },
+                    )
                   : Container()
             ]));
   }
 
   Widget buildLoadoutListModal(BuildContext context) {
     return SingleChildScrollView(
-      child:
-        Container(
-          padding:EdgeInsets.symmetric(vertical:4),
-          child:Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.min,
-          children: loadouts
-              .map(
-                (loadout) => Container(
-                    color: Theme.of(context).buttonColor,
-                    margin: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    child: Stack(children: [
-                      Positioned.fill(
-                          child: loadout.emblemHash != null
-                              ? ManifestImageWidget<
-                                  DestinyInventoryItemDefinition>(
-                                  loadout.emblemHash,
-                                  fit: BoxFit.cover,
-                                  urlExtractor: (def) {
-                                    return def?.secondarySpecial;
-                                  },
-                                )
-                              : Container()),
-                      Container(
-                          padding: EdgeInsets.all(16),
-                          child: Text(
-                            loadout.name.toUpperCase(),
-                            maxLines: 1,
-                            overflow: TextOverflow.fade,
-                            softWrap: false,
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          )),
-                      Positioned.fill(
-                          child: Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.of(context).pop();
-                            InventoryService().transferLoadout(loadout, widget.character.characterId, true);
-                          },
-                        ),
-                      ))
-                    ])),
-              )
-              .toList(),
-        ))
-    );
+        child: Container(
+            padding: EdgeInsets.symmetric(vertical: 4),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
+              children: loadouts
+                  .map(
+                    (loadout) => Container(
+                        color: Theme.of(context).buttonColor,
+                        margin:
+                            EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        child: Stack(children: [
+                          Positioned.fill(
+                              child: loadout.emblemHash != null
+                                  ? ManifestImageWidget<
+                                      DestinyInventoryItemDefinition>(
+                                      loadout.emblemHash,
+                                      fit: BoxFit.cover,
+                                      urlExtractor: (def) {
+                                        return def?.secondarySpecial;
+                                      },
+                                    )
+                                  : Container()),
+                          Container(
+                              padding: EdgeInsets.all(16),
+                              child: Text(
+                                loadout.name.toUpperCase(),
+                                maxLines: 1,
+                                overflow: TextOverflow.fade,
+                                softWrap: false,
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              )),
+                          Positioned.fill(
+                              child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.of(context).pop();
+                                InventoryService().transferLoadout(loadout,
+                                    widget.character.characterId, true);
+                              },
+                            ),
+                          ))
+                        ])),
+                  )
+                  .toList(),
+            )));
   }
 
   Future<LoadoutItemIndex> createLoadout([includeUnequipped = false]) async {
@@ -370,8 +405,9 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
         InventoryUtils.sortDestinyItems(itemA, itemB, widget.profile));
     LoadoutItemIndex maxLightLoadout = new LoadoutItemIndex();
     LoadoutItemIndex exoticPieces = new LoadoutItemIndex();
-    var hashes = instancedItems.map((i)=>i.itemHash);
-    var defs = await widget.manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
+    var hashes = instancedItems.map((i) => i.itemHash);
+    var defs = await widget.manifest
+        .getDefinitions<DestinyInventoryItemDefinition>(hashes);
     for (var item in instancedItems) {
       var def = defs[item.itemHash];
       if (def.classType != widget.character.classType &&
@@ -514,5 +550,13 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
     if (mounted) {
       setState(() {});
     }
+  }
+
+  void getItemsInPostmaster() {
+    var all =
+        widget.profile.getCharacterInventory(widget.character.characterId);
+    var inPostmaster =
+        all.where((i) => i.bucketHash == InventoryBucket.lostItems).toList();
+    itemsInPostmaster = inPostmaster;
   }
 }
