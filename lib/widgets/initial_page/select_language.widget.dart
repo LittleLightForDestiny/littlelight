@@ -48,11 +48,16 @@ class SelectLanguageWidgetState extends State<SelectLanguageWidget> {
     }
   }
 
-  List<Widget> getLanguageButtons() {
+  List<Widget> getLanguageButtons(BuildContext context) {
+    var query = MediaQuery.of(context);
+    var factor = .25;
+    if(query.size.shortestSide >= 600){
+      factor = .1;
+    }
     List<String> languages = widget.availableLanguages;
     List<Widget> buttons = languages.map<Widget>((language) {
       return FractionallySizedBox(
-          widthFactor: .25,
+          widthFactor: factor,
           child: LanguageButton(
               onPressed: () {
                 this.setState(() {
@@ -69,7 +74,7 @@ class SelectLanguageWidgetState extends State<SelectLanguageWidget> {
   @override
   Widget build(BuildContext context) {
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      Wrap(children: this.getLanguageButtons()),
+      Wrap(children: this.getLanguageButtons(context)),
       Padding(
         padding: EdgeInsets.all(8),
         child: Text(
