@@ -298,29 +298,29 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
                       },
                     )
                   : Container(),
-              (loadouts?.length ?? 0) > 0
+              (itemsInPostmaster?.length ?? 0) > 0
                   ? RaisedButton(
                       child: TranslatedTextWidget(
                           "Pull everything from postmaster"),
                       onPressed: () {
                         Navigator.of(context).pop();
                         InventoryService().transferMultiple(
-                            itemsInPostmaster.map((i) => ItemInventoryState(
-                                widget.character.characterId, i)).toList(),
+                            itemsInPostmaster
+                                .map((i) => ItemInventoryState(
+                                    widget.character.characterId, i))
+                                .toList(),
                             ItemDestination.Character,
                             widget.character.characterId);
                       },
                     )
                   : Container(),
-              (loadouts?.length ?? 0) > 0
-                  ? RaisedButton(
-                      child: TranslatedTextWidget("Force refresh"),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        widget.profile.fetchProfileData();
-                      },
-                    )
-                  : Container()
+              RaisedButton(
+                child: TranslatedTextWidget("Force refresh"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  widget.profile.fetchProfileData();
+                },
+              )
             ]));
   }
 
