@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
+import 'package:little_light/screens/share_preview.screen.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
@@ -21,10 +22,11 @@ class ItemCoverWidget extends DestinyItemWidget {
       DestinyItemComponent item,
       DestinyInventoryItemDefinition definition,
       DestinyItemInstanceComponent instanceInfo,
-      {Key key
-      ,String characterId,
+      {Key key,
+      String characterId,
       this.uniqueId})
-      : super(item, definition, instanceInfo, key: key, characterId:characterId);
+      : super(item, definition, instanceInfo,
+            key: key, characterId: characterId);
 
   @override
   Widget build(BuildContext context) {
@@ -33,8 +35,8 @@ class ItemCoverWidget extends DestinyItemWidget {
     double screenshotHeight = width / (16 / 9);
     return SliverPersistentHeader(
         pinned: true,
-        delegate: ItemCoverDelegate(item, definition, instanceInfo,
-        tag, uniqueId,
+        delegate: ItemCoverDelegate(
+            item, definition, instanceInfo, tag, uniqueId,
             minHeight: paddingTop + kToolbarHeight,
             maxHeight: kToolbarHeight + screenshotHeight));
   }
@@ -49,14 +51,16 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
   String tag;
   String uniqueId;
 
-  ItemCoverDelegate(this.item, this.definition, this.instanceInfo, this.tag, this.uniqueId,
+  ItemCoverDelegate(
+      this.item, this.definition, this.instanceInfo, this.tag, this.uniqueId,
       {this.minHeight = 50, this.maxHeight = 200})
       : super();
 
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
-      double expandRatio = max(0 , 1 - shrinkOffset/(this.maxHeight - this.minHeight));
+    double expandRatio =
+        max(0, 1 - shrinkOffset / (this.maxHeight - this.minHeight));
     return Container(
         color: DestinyData.getTierColor(definition.inventory.tierType),
         child: Stack(
@@ -69,12 +73,13 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
             nameBar(context, expandRatio),
             icon(context, expandRatio),
             backButton(context, expandRatio),
+            shareButton(context, expandRatio)
           ],
         ));
   }
 
   Widget nameBar(BuildContext context, double expandRatio) {
-    double leftOffset = lerpDouble(kToolbarHeight*2 -16, 104, expandRatio);
+    double leftOffset = lerpDouble(kToolbarHeight * 2 - 16, 104, expandRatio);
     return Positioned(
         left: 0,
         bottom: 0,
@@ -89,7 +94,7 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
               multiline: true,
               padding: EdgeInsets.only(
                   left: leftOffset + 8,
-                  right:8,
+                  right: 8,
                   top: (kToolbarHeight - 16) / 2,
                   bottom: (kToolbarHeight - 16) / 2),
               fontSize: 16,
@@ -97,7 +102,7 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
   }
 
   Widget icon(BuildContext context, double expandRatio) {
-    double size = lerpDouble(kToolbarHeight -8, 96, expandRatio);
+    double size = lerpDouble(kToolbarHeight - 8, 96, expandRatio);
     double bottom = lerpDouble(4, 8, expandRatio);
     double left = lerpDouble(kTextTabBarHeight, 8, expandRatio);
     return Positioned(
@@ -107,9 +112,11 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
         height: size,
         child: Hero(
             tag: "item_icon_${tag}_$uniqueId",
-            child: 
-            ItemIconWidget.builder(item, definition, instanceInfo,
-            iconBorderWidth: lerpDouble(1, 2, expandRatio),
+            child: ItemIconWidget.builder(
+              item,
+              definition,
+              instanceInfo,
+              iconBorderWidth: lerpDouble(1, 2, expandRatio),
             )));
   }
 
@@ -121,39 +128,72 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
         width: kToolbarHeight,
         height: kToolbarHeight,
         child: BackButton(
-            color:Color.lerp(DestinyData.getTierTextColor(definition.inventory.tierType), Colors.grey.shade300, expandRatio)
-                ));
+            color: Color.lerp(
+                DestinyData.getTierTextColor(definition.inventory.tierType),
+                Colors.grey.shade300,
+                expandRatio)));
+  }
+
+  Widget shareButton(BuildContext context, double expandRatio) {
+    return Positioned(
+        right: 0,
+        bottom: 0 + kToolbarHeight*expandRatio,
+        width: kToolbarHeight,
+        height: kToolbarHeight,
+        child: Material(
+          color: Colors.transparent,
+          child:IconButton(
+          onPressed: () {
+            Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SharePreviewScreen(
+              item,
+              definition,
+              instanceInfo,
+              characterId: null,
+              uniqueId: uniqueId,
+            ),
+      ),
+    );
+          },
+          icon: Icon(Icons.share,
+              color: Color.lerp(
+                  DestinyData.getTierTextColor(definition.inventory.tierType),
+                  Colors.grey.shade300,
+                  expandRatio)),
+        )));
   }
 
   Widget overlay(BuildContext context, double expandRatio) {
     double width = MediaQuery.of(context).size.width;
     double opacity = expandRatio;
-    if(definition.itemType != ItemType.subclasses){
+    if (definition.itemType != ItemType.subclasses) {
       return Container();
     }
     return Positioned(
         bottom: kToolbarHeight,
-        width: width/2,
-        right:0,
+        width: width / 2,
+        right: 0,
         child: Opacity(
             opacity: opacity,
             child: QueuedNetworkImage(
-                imageUrl: BungieApiService.url(definition.secondaryIcon),
-                fit: BoxFit.fitWidth,
-                )));
+              imageUrl: BungieApiService.url(definition.secondaryIcon),
+              fit: BoxFit.fitWidth,
+            )));
   }
 
   Widget background(BuildContext context, double expandRatio) {
     double width = MediaQuery.of(context).size.width;
     double opacity = expandRatio;
     String imgUrl = definition.screenshot;
-    if(definition.itemType == ItemType.emblems){
+    if (definition.itemType == ItemType.emblems) {
       imgUrl = definition.secondarySpecial;
     }
-    if(definition.itemType == ItemType.questStep){
+    if (definition.itemType == ItemType.questStep) {
       imgUrl = definition.secondaryIcon;
     }
-    if(imgUrl == null){
+    if (imgUrl == null) {
       return Container();
     }
     return Positioned(
