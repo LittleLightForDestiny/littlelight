@@ -18,7 +18,7 @@ dependencies:
   archive: ^2.0.5
   sqflite: ^1.0.0
   http: ^0.12.0
-  path_provider: ^0.4.1
+  path_provider: ^0.5.0
   uni_links: ^0.1.4
   flutter:
     sdk: flutter
@@ -43,7 +43,7 @@ dependencies:
   device_info: 0.4.0
   flutter_range_slider: ^1.0.1
   uuid: 1.0.3
-  flutter_advanced_networkimage: 0.4.0
+  flutter_advanced_networkimage: 0.4.9
   launch_review: 1.0.1
   
 dev_dependencies:
