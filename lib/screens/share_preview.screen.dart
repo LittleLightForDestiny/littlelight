@@ -44,7 +44,7 @@ class SharePreviewScreenState extends DestinyItemState<SharePreviewScreen> {
       await loadPlugDefinitions();
     }
     loadStatGroupDefinition();
-    shareImage = await ShareImageWidget.builder(widget.definition);
+    shareImage = await ShareImageWidget.builder(context, item:widget.item, definition:widget.definition);
     setState(() {});
   }
 
