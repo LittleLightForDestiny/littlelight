@@ -1,12 +1,19 @@
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_stat_group_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'dart:ui' as ui;
 
 import 'package:little_light/widgets/common/destiny_item.stateful_widget.dart';
 import 'package:little_light/widgets/item_details/share_image/share_image.painter.dart';
+import 'package:path_provider/path_provider.dart';
 
 class SharePreviewScreen extends DestinyItemStatefulWidget {
   final String uniqueId;
@@ -34,6 +41,8 @@ class SharePreviewScreenState extends DestinyItemState<SharePreviewScreen> {
   DestinyStatGroupDefinition statGroupDefinition;
   ShareImageWidget shareImage;
 
+  GlobalKey imageKey = new GlobalKey();
+
   initState() {
     super.initState();
     this.loadDefinitions();
@@ -44,7 +53,8 @@ class SharePreviewScreenState extends DestinyItemState<SharePreviewScreen> {
       await loadPlugDefinitions();
     }
     loadStatGroupDefinition();
-    shareImage = await ShareImageWidget.builder(context, item:widget.item, definition:widget.definition);
+    shareImage = await ShareImageWidget.builder(context,
+        item: widget.item, definition: widget.definition);
     setState(() {});
   }
 
@@ -102,6 +112,7 @@ class SharePreviewScreenState extends DestinyItemState<SharePreviewScreen> {
       children: <Widget>[
         buildShare(context),
         buildRefreshButton(),
+        buildSaveButton(),
         buildBackButton(),
       ],
     ));
@@ -109,13 +120,11 @@ class SharePreviewScreenState extends DestinyItemState<SharePreviewScreen> {
 
   Widget buildShare(BuildContext context) {
     if (shareImage == null) return Container();
-    return Positioned.fill(child: SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: SingleChildScrollView(
-        child:shareImage
-      )
-      
-        ));
+    return Positioned.fill(
+        child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: SingleChildScrollView(
+                child: RepaintBoundary(key: imageKey, child: shareImage))));
   }
 
   Widget buildRefreshButton() {
@@ -130,6 +139,33 @@ class SharePreviewScreenState extends DestinyItemState<SharePreviewScreen> {
       ),
     );
   }
+
+  Widget buildSaveButton() {
+    return Positioned(
+        right: 40,
+        top: 32,
+        child: IconButton(
+            icon: Icon(Icons.save),
+            onPressed: () async {
+              try {
+                RenderRepaintBoundary boundary =
+                    imageKey.currentContext.findRenderObject();
+                ui.Image image = await boundary.toImage(pixelRatio: 1.0);
+                ByteData byteData =
+                    await image.toByteData(format: ui.ImageByteFormat.png);
+                var pngBytes = byteData.buffer.asUint8List();
+                var bs64 = base64Encode(pngBytes);
+                var dir = await getTemporaryDirectory();
+                var file = new File("${dir.path}/tempshare.png");
+                await file.writeAsString(bs64);
+                // ShareExtend.share(file.path, "image");
+                print('finished');
+              } catch (e) {
+                print(e);
+              }
+            }));
+  }
+
   Widget buildBackButton() {
     return Positioned(
       left: 8,

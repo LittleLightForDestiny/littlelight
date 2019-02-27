@@ -13,21 +13,16 @@ import 'package:little_light/services/profile/profile.service.dart';
 
 class ShareImageWidget extends StatelessWidget {
   final DestinyInventoryItemDefinition definition;
-  // final AdvancedNetworkImage backgroundImage;
-  // final AdvancedNetworkImage iconImage;
   final Map<int, DestinySocketCategoryDefinition> socketCategoryDefinitions;
   final Map<int, DestinyInventoryItemDefinition> plugItemDefinitions;
-  // final Map<int, AdvancedNetworkImage> plugIcons;
+
   final List<DestinyItemSocketState> itemSockets;
 
   ShareImageWidget(
       {Key key,
-      // this.backgroundImage,
-      // this.iconImage,
       this.definition,
       this.socketCategoryDefinitions,
       this.plugItemDefinitions,
-      // this.plugIcons,
       this.itemSockets})
       : super(key: key);
 
@@ -35,16 +30,15 @@ class ShareImageWidget extends StatelessWidget {
       {DestinyItemComponent item,
       DestinyInventoryItemDefinition definition}) async {
     ManifestService manifest = ManifestService();
-    // var backgroundImage =
-    //     await loadImage(context, BungieApiService.url(definition.screenshot));
-    // var iconImage = await loadImage(
-    //     context, BungieApiService.url(definition.displayProperties.icon));
     var socketCategoryHashes =
         definition.sockets.socketCategories.map((s) => s.socketCategoryHash);
     var socketCategoryDefinitions = await manifest
         .getDefinitions<DestinySocketCategoryDefinition>(socketCategoryHashes);
 
-    List<int> modHashes = new List();
+    Set<int> modHashes = new Set();
+    definition.sockets.intrinsicSockets.forEach((s){
+      modHashes.add(s.plugItemHash);
+    });
     definition.sockets.socketEntries.forEach((s) {
       modHashes.addAll(s.reusablePlugItems.map((r) => r.plugItemHash));
       modHashes.add(s.singleInitialItemHash);
@@ -53,10 +47,10 @@ class ShareImageWidget extends StatelessWidget {
     if (item != null) {
       itemSockets = ProfileService().getItemSockets(item.itemInstanceId);
       itemSockets.forEach((s) {
-        if(s.reusablePlugHashes != null){
+        if (s.reusablePlugHashes != null) {
           modHashes.addAll(s.reusablePlugHashes);
         }
-        if(s.plugHash != null){
+        if (s.plugHash != null) {
           modHashes.add(s.plugHash);
         }
       });
@@ -64,37 +58,13 @@ class ShareImageWidget extends StatelessWidget {
     var plugItemDefinitions = await manifest
         .getDefinitions<DestinyInventoryItemDefinition>(modHashes.toSet());
 
-    Map<int, AdvancedNetworkImage> plugIcons = new Map();
-    // for (var def in plugItemDefinitions.values) {
-    //   // plugIcons[def.hash] =
-    //   //     await loadImage(context, BungieApiService.url(def.displayProperties.icon));
-    // }
-
     return ShareImageWidget(
-      // backgroundImage: backgroundImage,
-      // iconImage: iconImage,
       definition: definition,
       socketCategoryDefinitions: socketCategoryDefinitions,
       plugItemDefinitions: plugItemDefinitions,
-      // plugIcons: plugIcons,
       itemSockets: itemSockets,
     );
   }
-
-  // static Future<AdvancedNetworkImage> loadImage(
-  //     BuildContext context, String url) {
-  //   var completer = Completer<AdvancedNetworkImage>();
-  //   AdvancedNetworkImage image;
-  //   image = AdvancedNetworkImage(url, loadedCallback: () {
-  //     completer.complete(image);
-  //   }, loadFailedCallback: () {
-  //     completer.completeError(image);
-  //   });
-  //   precacheImage(image, context);
-  //   image.load(image);
-  //   if (completer.isCompleted) return Future.value(image);
-  //   return completer.future;
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -136,7 +106,9 @@ class ShareImageWidget extends StatelessWidget {
             Container(height: 40),
             buildDescription(context),
             Container(height: 40),
-            buildPerks(context)
+            buildPerks(context),
+            Container(height: 40),
+            buildMods(context)
           ],
         ));
   }
@@ -160,7 +132,8 @@ class ShareImageWidget extends StatelessWidget {
         decoration:
             BoxDecoration(border: Border.all(width: 3, color: Colors.white)),
         child: Image(
-          image: AdvancedNetworkImage(BungieApiService.url(definition.displayProperties.icon)),
+          image: AdvancedNetworkImage(
+              BungieApiService.url(definition.displayProperties.icon)),
           fit: BoxFit.cover,
         ));
   }
@@ -210,7 +183,7 @@ class ShareImageWidget extends StatelessWidget {
       children: <Widget>[
         modifiersLabel(context, perksCatDefinition),
         Container(height: 16),
-        buildPerksGrid(context, perksCatDefinition)
+        buildPerksGrid(context, perksCatDefinition),
       ],
     );
   }
@@ -222,7 +195,7 @@ class ShareImageWidget extends StatelessWidget {
       children: <Widget>[
         Text(
           def.displayProperties.name,
-          style: TextStyle(fontSize: 16, color: Colors.white.withOpacity(.6)),
+          style: TextStyle(fontSize: 18, color: Colors.white.withOpacity(.6)),
         ),
         Container(
           height: 8,
@@ -241,16 +214,17 @@ class ShareImageWidget extends StatelessWidget {
     var socketCategory = definition.sockets.socketCategories.firstWhere(
         (s) => s.socketCategoryHash == def.hash,
         orElse: () => null);
-    List<Widget> columns = socketCategory.socketIndexes
-        .expand((index) => [
-              buildPerkColumn(context, index),
-              Container(
-                width: 2,
-                color: Colors.white.withOpacity(.6),
-                margin: EdgeInsets.symmetric(horizontal: 12),
-              )
-            ])
-        .toList();
+    List<Widget> columns = [];
+    socketCategory.socketIndexes.forEach((index) {
+      if (isSocketVisible(index)) {
+        columns.add(buildPerkColumn(context, index));
+        columns.add(Container(
+          width: 2,
+          color: Colors.white.withOpacity(.6),
+          margin: EdgeInsets.symmetric(horizontal: 12),
+        ));
+      }
+    });
     columns.removeLast();
     return IntrinsicHeight(
         child: Container(
@@ -269,13 +243,21 @@ class ShareImageWidget extends StatelessWidget {
             ])));
   }
 
+  bool isSocketVisible(int index) {
+    if (itemSockets != null) {
+      return itemSockets[index].isVisible;
+    }
+    return true;
+  }
+
   Widget buildPerkColumn(BuildContext context, int socketIndex) {
     if (itemSockets != null) {
       var socket = itemSockets[socketIndex];
       return Column(
           children: socket.reusablePlugs
-              .where((s)=>s.enabled)
-              .map((s) => buildPerkIcon(context, s.plugItemHash, s.plugItemHash == socket.plugHash))
+              .where((s) => s.enabled)
+              .map((s) => buildPerkIcon(
+                  context, s.plugItemHash, s.plugItemHash == socket.plugHash))
               .toList());
     }
     return Container(
@@ -284,14 +266,15 @@ class ShareImageWidget extends StatelessWidget {
 
   Widget buildPerkIcon(BuildContext context, int plugHash, bool selected) {
     var def = plugItemDefinitions[plugHash];
-    var plugIcon = AdvancedNetworkImage(BungieApiService.url(def.displayProperties.icon));
-    if(def.plug.plugCategoryIdentifier.contains('intrinsic')){
+    var plugIcon =
+        AdvancedNetworkImage(BungieApiService.url(def.displayProperties.icon));
+    if (def.plug.plugCategoryIdentifier.contains('intrinsic')) {
       return Container(
-      width: 72,
-      height: 72,
-      margin: EdgeInsets.all(4),
-      child: Image(image: plugIcon),
-    );
+        width: 72,
+        height: 72,
+        margin: EdgeInsets.all(4),
+        child: Image(image: plugIcon),
+      );
     }
     return Container(
       width: 72,
@@ -303,9 +286,61 @@ class ShareImageWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(100),
       ),
       foregroundDecoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(100),
-        border: Border.all(width: 2, color: Colors.white.withOpacity(.6))
-      ),
+          borderRadius: BorderRadius.circular(100),
+          border: Border.all(width: 2, color: Colors.white.withOpacity(.6))),
+      child: Image(image: plugIcon),
+    );
+  }
+
+  Widget buildMods(BuildContext context) {
+    var modsCatDefinition = socketCategoryDefinitions.values.firstWhere((def) {
+      return def.categoryStyle & DestinySocketCategoryStyle.Consumable ==
+          DestinySocketCategoryStyle.Consumable;
+    }, orElse: () => null);
+    if (modsCatDefinition == null) return Container();
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        modifiersLabel(context, modsCatDefinition),
+        Container(height: 16),
+        buildModsRow(context, modsCatDefinition)
+      ],
+    );
+  }
+
+  Widget buildModsRow(
+      BuildContext context, DestinySocketCategoryDefinition def) {
+    var socketCategory = definition.sockets.socketCategories.firstWhere(
+        (s) => s.socketCategoryHash == def.hash,
+        orElse: () => null);
+    List<Widget> intrinsics = definition.sockets.intrinsicSockets.map((s) => buildModIcon(context, s.plugItemHash)).toList();
+    List<Widget> columns = socketCategory.socketIndexes
+        .where((i) => isSocketVisible(i))
+        .map((index) {
+          if (itemSockets != null) {
+            return itemSockets[index].plugHash;
+          }
+          return definition.sockets.socketEntries[index].singleInitialItemHash;
+        })
+        .map((index) => buildModIcon(context, index))
+        .toList()
+        .reversed
+        .toList();
+    return Row(mainAxisAlignment: MainAxisAlignment.start, children: intrinsics + columns);
+  }
+
+  Widget buildModIcon(BuildContext context, int plugHash) {
+    var def = plugItemDefinitions[plugHash];
+    var plugIcon =
+        AdvancedNetworkImage(BungieApiService.url(def.displayProperties.icon));
+    return Container(
+      width: 96,
+      height: 96,
+      margin: EdgeInsets.only(right: 8),
+      decoration: BoxDecoration(
+          border: Border.all(width: 3, color: Colors.grey.shade400)),
       child: Image(image: plugIcon),
     );
   }
