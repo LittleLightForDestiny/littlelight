@@ -14,6 +14,7 @@ import 'dart:ui' as ui;
 import 'package:little_light/widgets/common/destiny_item.stateful_widget.dart';
 import 'package:little_light/widgets/item_details/share_image/share_image.painter.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:esys_flutter_share/esys_flutter_share.dart';
 
 class SharePreviewScreen extends DestinyItemStatefulWidget {
   final String uniqueId;
@@ -158,8 +159,7 @@ class SharePreviewScreenState extends DestinyItemState<SharePreviewScreen> {
                 var dir = await getTemporaryDirectory();
                 var file = new File("${dir.path}/tempshare.png");
                 await file.writeAsString(bs64);
-                // ShareExtend.share(file.path, "image");
-                print('finished');
+                EsysFlutterShare.shareImage("${definition.displayProperties.name}.png", byteData, "Little Light");
               } catch (e) {
                 print(e);
               }
