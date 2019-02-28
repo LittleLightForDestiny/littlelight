@@ -11,27 +11,11 @@ import 'package:bungie_api/models/destiny_stat_group_definition.dart';
 import 'package:bungie_api/models/interpolation_point.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/utils/destiny_data.dart';
+import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/widgets/common/destiny_item.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-
-const List<int> _noBarStats = [
-  4284893193, // Rounds Per Minute
-  3871231066, // Magazine
-  2961396640, // Charge Time
-  1931675084, //Inventory Size
-
-  2996146975, // Mobility
-  392767087, // Resilience
-  1943323491, //recovery
-];
-
-const List<int> _hiddenStats = [
-  1345609583, // Aim Assistance
-  2715839340, // Recoil Direction
-  3555269338, // Zoom
-];
 
 class ItemStatsWidget extends DestinyItemWidget {
   final Map<int, int> selectedPerks;
@@ -146,12 +130,12 @@ class ItemStatsWidget extends DestinyItemWidget {
         .toList();
 
     stats.sort((statA, statB) {
-      int valA = _noBarStats.contains(statA.statTypeHash)
+      int valA = DestinyData.noBarStats.contains(statA.statTypeHash)
           ? 2
-          : _hiddenStats.contains(statA.statTypeHash) ? 1 : 0;
-      int valB = _noBarStats.contains(statB.statTypeHash)
+          : DestinyData.hiddenStats.contains(statA.statTypeHash) ? 1 : 0;
+      int valB = DestinyData.noBarStats.contains(statB.statTypeHash)
           ? 2
-          : _hiddenStats.contains(statB.statTypeHash) ? 1 : 0;
+          : DestinyData.hiddenStats.contains(statB.statTypeHash) ? 1 : 0;
       return valA - valB;
     });
     return stats;
@@ -285,7 +269,7 @@ class ItemStatWidget extends StatelessWidget {
 
   int get modBarSize {
     if(scaled != null){
-      return (interpolate(baseValue + selected, scaled.displayInterpolation) - interpolate(baseValue + equipped, scaled.displayInterpolation)).abs();
+      return (InventoryUtils.interpolateStat(baseValue + selected, scaled.displayInterpolation) - InventoryUtils.interpolateStat(baseValue + equipped, scaled.displayInterpolation)).abs();
     }
     return (selected - equipped).abs();
   }
@@ -295,43 +279,14 @@ class ItemStatWidget extends StatelessWidget {
   }
 
   bool get hiddenStat {
-    return _hiddenStats.contains(statHash);
+    return DestinyData.hiddenStats.contains(statHash);
   }
 
   bool get noBar {
-    return _noBarStats.contains(statHash);
+    return DestinyData.noBarStats.contains(statHash);
   }
 
-  int interpolate(
-      int investmentValue, List<InterpolationPoint> displayInterpolation) {
-    var interpolation = displayInterpolation.toList();
-    interpolation.sort((a,b)=>a.value.compareTo(b.value));
-    var upperBound = interpolation.firstWhere(
-        (point) => point.value >= investmentValue,
-        orElse: () => null);
-    var lowerBound = interpolation.lastWhere(
-        (point) => point.value <= investmentValue,
-        orElse: () => null);
-
-    if (upperBound == null && lowerBound == null) {
-      print('Invalid displayInterpolation');
-      return investmentValue;
-    }
-    if (lowerBound == null) {
-      lowerBound = upperBound;
-      upperBound = interpolation.firstWhere((b)=>b.value > lowerBound.value, orElse: ()=>null);
-      if(upperBound == null) return lowerBound.weight;
-    } else if (upperBound == null) {
-      upperBound = lowerBound;
-      lowerBound = interpolation.lastWhere((b)=>b.value < upperBound.value, orElse: ()=>null);
-      if(lowerBound == null) return upperBound.weight;
-    }
-    var factor = (investmentValue - lowerBound.value)/max((upperBound.value - lowerBound.value).abs(), 1);
-    
-    var displayValue =
-        lowerBound.weight + (upperBound.weight - lowerBound.weight) * factor;
-    return displayValue.round();
-  }
+  interpolate(int i, List<InterpolationPoint> displayInterpolation) {}
 }
 
 class StatValues {

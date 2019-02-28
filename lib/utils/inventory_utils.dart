@@ -4,6 +4,7 @@ import 'package:bungie_api/enums/destiny_item_type_enum.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
+import 'package:bungie_api/models/interpolation_point.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/littlelight/models/loadout.model.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
@@ -96,6 +97,38 @@ class InventoryUtils {
     DestinyItemSubType.Mask,
     DestinyItemSubType.Crm,
   ];
+
+  static int interpolateStat(
+      int investmentValue, List<InterpolationPoint> displayInterpolation) {
+    var interpolation = displayInterpolation.toList();
+    interpolation.sort((a,b)=>a.value.compareTo(b.value));
+    var upperBound = interpolation.firstWhere(
+        (point) => point.value >= investmentValue,
+        orElse: () => null);
+    var lowerBound = interpolation.lastWhere(
+        (point) => point.value <= investmentValue,
+        orElse: () => null);
+
+    if (upperBound == null && lowerBound == null) {
+      print('Invalid displayInterpolation');
+      return investmentValue;
+    }
+    if (lowerBound == null) {
+      lowerBound = upperBound;
+      upperBound = interpolation.firstWhere((b)=>b.value > lowerBound.value, orElse: ()=>null);
+      if(upperBound == null) return lowerBound.weight;
+    } else if (upperBound == null) {
+      upperBound = lowerBound;
+      lowerBound = interpolation.lastWhere((b)=>b.value < upperBound.value, orElse: ()=>null);
+      if(lowerBound == null) return upperBound.weight;
+    }
+    var factor = (investmentValue - lowerBound.value)/max((upperBound.value - lowerBound.value).abs(), 1);
+    
+    var displayValue =
+        lowerBound.weight + (upperBound.weight - lowerBound.weight) * factor;
+    return displayValue.round();
+  }
+
   static int sortDestinyItems(
     DestinyItemComponent itemA,
     DestinyItemComponent itemB,

@@ -2,28 +2,35 @@ import 'dart:async';
 
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
+import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_socket_category_definition.dart';
+import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:bungie_api/enums/destiny_socket_category_style_enum.dart';
 import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/utils/destiny_data.dart';
 
 class ShareImageWidget extends StatelessWidget {
   final DestinyInventoryItemDefinition definition;
   final Map<int, DestinySocketCategoryDefinition> socketCategoryDefinitions;
   final Map<int, DestinyInventoryItemDefinition> plugItemDefinitions;
-
+  final Map<int, DestinyStatDefinition> statDefinitions;
   final List<DestinyItemSocketState> itemSockets;
+  final DestinyItemInstanceComponent instanceInfo;
+  final Map<int, int> statValues;
 
   ShareImageWidget(
       {Key key,
       this.definition,
       this.socketCategoryDefinitions,
       this.plugItemDefinitions,
-      this.itemSockets})
+      this.statDefinitions,
+      this.itemSockets,
+      this.instanceInfo, this.statValues})
       : super(key: key);
 
   static Future<ShareImageWidget> builder(BuildContext context,
@@ -36,15 +43,20 @@ class ShareImageWidget extends StatelessWidget {
         .getDefinitions<DestinySocketCategoryDefinition>(socketCategoryHashes);
 
     Set<int> modHashes = new Set();
-    definition.sockets.intrinsicSockets.forEach((s){
+
+    definition.sockets.intrinsicSockets.forEach((s) {
       modHashes.add(s.plugItemHash);
     });
     definition.sockets.socketEntries.forEach((s) {
       modHashes.addAll(s.reusablePlugItems.map((r) => r.plugItemHash));
       modHashes.add(s.singleInitialItemHash);
     });
-    var itemSockets;
+
+    List<DestinyItemSocketState> itemSockets;
+    DestinyItemInstanceComponent instanceInfo;
+
     if (item != null) {
+      instanceInfo = ProfileService().getInstanceInfo(item.itemInstanceId);
       itemSockets = ProfileService().getItemSockets(item.itemInstanceId);
       itemSockets.forEach((s) {
         if (s.reusablePlugHashes != null) {
@@ -57,13 +69,43 @@ class ShareImageWidget extends StatelessWidget {
     }
     var plugItemDefinitions = await manifest
         .getDefinitions<DestinyInventoryItemDefinition>(modHashes.toSet());
+    Set<int> statHashes = new Set();
+    Map<int, int> statValues = Map();
+    definition.investmentStats.forEach((s){
+      statValues[s.statTypeHash] = s.value;
+    });
+    if(itemSockets != null){
+      itemSockets.forEach((socket){
+        var plugDef = plugItemDefinitions[socket.plugHash];
+        if(plugDef == null) return;
+        plugDef.investmentStats.forEach((stat){
+          statValues[stat.statTypeHash] += stat.value;
+        });
+      });
+    }else{
+      definition.sockets.socketEntries.forEach((socket){
+        var plugDef = plugItemDefinitions[socket.singleInitialItemHash];
+        plugDef.investmentStats.forEach((stat){
+          statValues[stat.statTypeHash] = stat.value;
+        });
+      });
+    }
+    statHashes.addAll(definition.investmentStats.map((s) => s.statTypeHash));
+    for (var plugDef in plugItemDefinitions.values) {
+      statHashes.addAll(plugDef.investmentStats.map((s) => s.statTypeHash));
+    }
+
+    var statDefinitions =
+        await manifest.getDefinitions<DestinyStatDefinition>(statHashes);
 
     return ShareImageWidget(
-      definition: definition,
-      socketCategoryDefinitions: socketCategoryDefinitions,
-      plugItemDefinitions: plugItemDefinitions,
-      itemSockets: itemSockets,
-    );
+        definition: definition,
+        socketCategoryDefinitions: socketCategoryDefinitions,
+        plugItemDefinitions: plugItemDefinitions,
+        statDefinitions: statDefinitions,
+        itemSockets: itemSockets,
+        instanceInfo: instanceInfo,
+        statValues:statValues);
   }
 
   @override
@@ -83,7 +125,8 @@ class ShareImageWidget extends StatelessWidget {
         child: Stack(
           children: <Widget>[
             Positioned.fill(child: buildHeaderBackground(context)),
-            buildItemInfo(context)
+            buildItemInfo(context),
+            buildItemStats(context)
           ],
         ));
   }
@@ -315,7 +358,9 @@ class ShareImageWidget extends StatelessWidget {
     var socketCategory = definition.sockets.socketCategories.firstWhere(
         (s) => s.socketCategoryHash == def.hash,
         orElse: () => null);
-    List<Widget> intrinsics = definition.sockets.intrinsicSockets.map((s) => buildModIcon(context, s.plugItemHash)).toList();
+    List<Widget> intrinsics = definition.sockets.intrinsicSockets
+        .map((s) => buildModIcon(context, s.plugItemHash))
+        .toList();
     List<Widget> columns = socketCategory.socketIndexes
         .where((i) => isSocketVisible(i))
         .map((index) {
@@ -328,7 +373,9 @@ class ShareImageWidget extends StatelessWidget {
         .toList()
         .reversed
         .toList();
-    return Row(mainAxisAlignment: MainAxisAlignment.start, children: intrinsics + columns);
+    return Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: intrinsics + columns);
   }
 
   Widget buildModIcon(BuildContext context, int plugHash) {
@@ -343,5 +390,62 @@ class ShareImageWidget extends StatelessWidget {
           border: Border.all(width: 3, color: Colors.grey.shade400)),
       child: Image(image: plugIcon),
     );
+  }
+
+  Widget buildItemStats(BuildContext context) {
+    return Positioned(
+        right: 152,
+        bottom: 100,
+        child: IntrinsicHeight(
+            child: Row(children: [
+          buildPrimaryStat(context),
+          Container(
+              color: Colors.white.withOpacity(.6),
+              width: 2,
+              margin: EdgeInsets.symmetric(horizontal: 16)),
+          buildStats(context)
+        ])));
+  }
+
+  Widget buildPrimaryStat(BuildContext context) {
+    int statValue = instanceInfo.primaryStat.value;
+    int statHash = definition.stats.primaryBaseStatHash;
+    var def = statDefinitions[statHash];
+    if (statValue == null) {
+      statValue = definition.stats.stats["$statHash"].value;
+    }
+    return Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: <Widget>[
+        Text(
+          "$statValue",
+          style: TextStyle(fontWeight: FontWeight.w700, fontSize: 50),
+        ),
+        Text(
+          def.displayProperties.name.toUpperCase(),
+          style: TextStyle(fontSize: 18, color: Colors.white.withOpacity(.6)),
+        )
+      ]),
+    );
+  }
+
+  Widget buildStats(BuildContext context) {
+    List<int> statHashes = [];
+    for(var hash in DestinyData.statWhitelist){
+      // implement stat filtering
+      
+    }
+    return Column(
+      children: definition.investmentStats.map((s)=>buildStat(context, s.statTypeHash)).toList()
+    );
+  }
+
+  Widget buildStat(BuildContext context, int hash){
+    var statDef =statDefinitions[hash];
+    return Row(children: <Widget>[
+      Text(statDef.displayProperties.name),
+      Text("${statValues[hash]}")
+    ],);
   }
 }

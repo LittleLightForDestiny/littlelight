@@ -140,6 +140,23 @@ class DestinyData {
     1943323491, //recovery
   ];
 
+  static const List<int> noBarStats = [
+  4284893193, // Rounds Per Minute
+  3871231066, // Magazine
+  2961396640, // Charge Time
+  1931675084, //Inventory Size
+
+  2996146975, // Mobility
+  392767087, // Resilience
+  1943323491, //recovery
+];
+
+static const List<int> hiddenStats = [
+  1345609583, // Aim Assistance
+  2715839340, // Recoil Direction
+  3555269338, // Zoom
+];
+
   static const List<int> socketCategoryPerkHashes = [
     319279448, // sparrow perks
     1576735337, //clan banner perks
