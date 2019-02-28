@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
@@ -6,6 +7,7 @@ import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_socket_category_definition.dart';
 import 'package:bungie_api/models/destiny_stat_definition.dart';
+import 'package:bungie_api/models/destiny_stat_group_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
@@ -13,6 +15,7 @@ import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:bungie_api/enums/destiny_socket_category_style_enum.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
+import 'package:little_light/utils/inventory_utils.dart';
 
 class ShareImageWidget extends StatelessWidget {
   final DestinyInventoryItemDefinition definition;
@@ -22,6 +25,7 @@ class ShareImageWidget extends StatelessWidget {
   final List<DestinyItemSocketState> itemSockets;
   final DestinyItemInstanceComponent instanceInfo;
   final Map<int, int> statValues;
+  final DestinyStatGroupDefinition statGroupDefinition;
 
   ShareImageWidget(
       {Key key,
@@ -30,7 +34,9 @@ class ShareImageWidget extends StatelessWidget {
       this.plugItemDefinitions,
       this.statDefinitions,
       this.itemSockets,
-      this.instanceInfo, this.statValues})
+      this.instanceInfo,
+      this.statValues,
+      this.statGroupDefinition})
       : super(key: key);
 
   static Future<ShareImageWidget> builder(BuildContext context,
@@ -71,21 +77,24 @@ class ShareImageWidget extends StatelessWidget {
         .getDefinitions<DestinyInventoryItemDefinition>(modHashes.toSet());
     Set<int> statHashes = new Set();
     Map<int, int> statValues = Map();
-    definition.investmentStats.forEach((s){
+    definition.investmentStats.forEach((s) {
       statValues[s.statTypeHash] = s.value;
     });
-    if(itemSockets != null){
-      itemSockets.forEach((socket){
+    if (itemSockets != null) {
+      itemSockets.forEach((socket) {
         var plugDef = plugItemDefinitions[socket.plugHash];
-        if(plugDef == null) return;
-        plugDef.investmentStats.forEach((stat){
+        if (plugDef == null) return;
+        plugDef.investmentStats.forEach((stat) {
+          if(!statValues.containsKey(stat.statTypeHash)){
+            statValues[stat.statTypeHash] = 0;
+          }
           statValues[stat.statTypeHash] += stat.value;
         });
       });
-    }else{
-      definition.sockets.socketEntries.forEach((socket){
+    } else {
+      definition.sockets.socketEntries.forEach((socket) {
         var plugDef = plugItemDefinitions[socket.singleInitialItemHash];
-        plugDef.investmentStats.forEach((stat){
+        plugDef.investmentStats.forEach((stat) {
           statValues[stat.statTypeHash] = stat.value;
         });
       });
@@ -97,6 +106,9 @@ class ShareImageWidget extends StatelessWidget {
 
     var statDefinitions =
         await manifest.getDefinitions<DestinyStatDefinition>(statHashes);
+    var statGroupDefinition =
+        await manifest.getDefinition<DestinyStatGroupDefinition>(
+            definition.stats.statGroupHash);
 
     return ShareImageWidget(
         definition: definition,
@@ -105,7 +117,8 @@ class ShareImageWidget extends StatelessWidget {
         statDefinitions: statDefinitions,
         itemSockets: itemSockets,
         instanceInfo: instanceInfo,
-        statValues:statValues);
+        statGroupDefinition: statGroupDefinition,
+        statValues: statValues);
   }
 
   @override
@@ -415,9 +428,8 @@ class ShareImageWidget extends StatelessWidget {
       statValue = definition.stats.stats["$statHash"].value;
     }
     return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: <Widget>[
+      child:
+          Column(crossAxisAlignment: CrossAxisAlignment.end, children: <Widget>[
         Text(
           "$statValue",
           style: TextStyle(fontWeight: FontWeight.w700, fontSize: 50),
@@ -432,20 +444,55 @@ class ShareImageWidget extends StatelessWidget {
 
   Widget buildStats(BuildContext context) {
     List<int> statHashes = [];
-    for(var hash in DestinyData.statWhitelist){
-      // implement stat filtering
-      
+    for (var hash in DestinyData.statWhitelist) {
+      if (statValues.containsKey(hash)) {
+        statHashes.add(hash);
+      }
     }
     return Column(
-      children: definition.investmentStats.map((s)=>buildStat(context, s.statTypeHash)).toList()
-    );
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: statHashes.map((h) => buildStat(context, h)).toList());
   }
 
-  Widget buildStat(BuildContext context, int hash){
-    var statDef =statDefinitions[hash];
-    return Row(children: <Widget>[
-      Text(statDef.displayProperties.name),
-      Text("${statValues[hash]}")
-    ],);
+  Widget buildStat(BuildContext context, int hash) {
+    var statDef = statDefinitions[hash];
+    var value = statValues[hash];
+    var scaled = statGroupDefinition.scaledStats
+        .firstWhere((s) => s.statHash == hash, orElse: () => null);
+    var max = statGroupDefinition.maximumValue;
+    if (scaled != null) {
+      value = InventoryUtils.interpolateStat(
+          statValues[hash], scaled.displayInterpolation);
+      max = scaled.maximumValue;
+    }
+    return Container(
+        padding: EdgeInsets.only(bottom: 4),
+        child: Row(
+          children: <Widget>[
+            Text(statDef.displayProperties.name, style:TextStyle(fontSize: 16)),
+            Container(width:8),
+            Container(
+              alignment: Alignment.topCenter,
+              width: 40,
+              child:Text("$value", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),)
+            ),
+            Container(width:8),
+            buildStatBar(context, hash, value, max)
+          ],
+        ));
+  }
+
+  Widget buildStatBar(BuildContext context, int hash, int value, int max) {
+    var hideBar = DestinyData.noBarStats.contains(hash);
+    if(hideBar){
+      return Container(width: 240, height: 18);
+    }
+    return Container(
+        width: 240, height: 18, color: Colors.black.withOpacity(.4),
+        child: Row(
+          children: <Widget>[
+            Container(color: Colors.grey.shade300, width:min(240*(value/max), 240), height:18)
+          ],
+        ));
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:bungie_api/enums/destiny_class_enum.dart';
 import 'package:bungie_api/enums/destiny_item_sub_type_enum.dart';
 import 'package:bungie_api/enums/destiny_item_type_enum.dart';

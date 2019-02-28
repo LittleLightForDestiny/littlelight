@@ -286,7 +286,9 @@ class ItemStatWidget extends StatelessWidget {
     return DestinyData.noBarStats.contains(statHash);
   }
 
-  interpolate(int i, List<InterpolationPoint> displayInterpolation) {}
+  interpolate(int i, List<InterpolationPoint> displayInterpolation) {
+    return InventoryUtils.interpolateStat(i, displayInterpolation);
+  }
 }
 
 class StatValues {
