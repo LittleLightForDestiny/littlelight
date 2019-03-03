@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:bungie_api/helpers/oauth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -31,7 +32,7 @@ class ExceptionHandler {
       environment: isInDebugMode ? 'debug' : 'production',
       release: info.version,
     ),
-      dsn: "https://1270a211df3a46a49cd4b34f79979e90@sentry.io/1370036");
+      dsn: DotEnv().env['sentry_dsn']);
   }
 
   static bool get isInDebugMode {

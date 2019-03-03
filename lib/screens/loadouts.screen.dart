@@ -74,7 +74,7 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
         elevation: 1,
         child: Container(
           constraints: BoxConstraints(minWidth: double.infinity),
-          height:kToolbarHeight,
+          height:kToolbarHeight + paddingBottom,
           padding: EdgeInsets.symmetric(horizontal: 16).copyWith(top:8, bottom:8 + paddingBottom),
           child: RaisedButton(
             child: TranslatedTextWidget("Create Loadout"),

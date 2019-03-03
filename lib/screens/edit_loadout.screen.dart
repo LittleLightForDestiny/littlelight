@@ -166,6 +166,7 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> {
 
   Widget buildFooter(BuildContext context) {
     if (!this.changed) return Container(height: 0);
+    double paddingBottom = MediaQuery.of(context).padding.bottom;
     return Material(
         color: Theme.of(context).primaryColor,
         elevation: 1,
@@ -174,7 +175,7 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> {
             Positioned.fill(child: buildAppBarBackground(context)),
             Container(
               constraints: BoxConstraints(minWidth: double.infinity),
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4).copyWith(bottom: 4 + paddingBottom),
               child: RaisedButton(
                 child: TranslatedTextWidget("Save Loadout"),
                 onPressed: () {

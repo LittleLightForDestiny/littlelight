@@ -16,6 +16,7 @@ import 'package:bungie_api/enums/destiny_socket_category_style_enum.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/inventory_utils.dart';
+import 'package:little_light/widgets/common/header.wiget.dart';
 
 class ShareImageWidget extends StatelessWidget {
   final DestinyInventoryItemDefinition definition;
@@ -25,6 +26,7 @@ class ShareImageWidget extends StatelessWidget {
   final List<DestinyItemSocketState> itemSockets;
   final DestinyItemInstanceComponent instanceInfo;
   final Map<int, int> statValues;
+  final Map<int, int> masterworkValues;
   final DestinyStatGroupDefinition statGroupDefinition;
 
   ShareImageWidget(
@@ -36,6 +38,7 @@ class ShareImageWidget extends StatelessWidget {
       this.itemSockets,
       this.instanceInfo,
       this.statValues,
+      this.masterworkValues,
       this.statGroupDefinition})
       : super(key: key);
 
@@ -77,6 +80,7 @@ class ShareImageWidget extends StatelessWidget {
         .getDefinitions<DestinyInventoryItemDefinition>(modHashes.toSet());
     Set<int> statHashes = new Set();
     Map<int, int> statValues = Map();
+    Map<int, int> masterworkValues = Map();
     definition.investmentStats.forEach((s) {
       statValues[s.statTypeHash] = s.value;
     });
@@ -85,17 +89,23 @@ class ShareImageWidget extends StatelessWidget {
         var plugDef = plugItemDefinitions[socket.plugHash];
         if (plugDef == null) return;
         plugDef.investmentStats.forEach((stat) {
-          if(!statValues.containsKey(stat.statTypeHash)){
+          if (!statValues.containsKey(stat.statTypeHash)) {
             statValues[stat.statTypeHash] = 0;
           }
           statValues[stat.statTypeHash] += stat.value;
+          if (plugDef.plug?.uiPlugLabel == 'masterwork') {
+            if (!masterworkValues.containsKey(stat.statTypeHash)) {
+              masterworkValues[stat.statTypeHash] = 0;
+            }
+            masterworkValues[stat.statTypeHash] += stat.value;
+          }
         });
       });
     } else {
       definition.sockets.socketEntries.forEach((socket) {
         var plugDef = plugItemDefinitions[socket.singleInitialItemHash];
         plugDef.investmentStats.forEach((stat) {
-          statValues[stat.statTypeHash] = stat.value;
+          statValues[stat.statTypeHash] += stat.value;
         });
       });
     }
@@ -111,14 +121,16 @@ class ShareImageWidget extends StatelessWidget {
             definition.stats.statGroupHash);
 
     return ShareImageWidget(
-        definition: definition,
-        socketCategoryDefinitions: socketCategoryDefinitions,
-        plugItemDefinitions: plugItemDefinitions,
-        statDefinitions: statDefinitions,
-        itemSockets: itemSockets,
-        instanceInfo: instanceInfo,
-        statGroupDefinition: statGroupDefinition,
-        statValues: statValues);
+      definition: definition,
+      socketCategoryDefinitions: socketCategoryDefinitions,
+      plugItemDefinitions: plugItemDefinitions,
+      statDefinitions: statDefinitions,
+      itemSockets: itemSockets,
+      instanceInfo: instanceInfo,
+      statGroupDefinition: statGroupDefinition,
+      statValues: statValues,
+      masterworkValues: masterworkValues,
+    );
   }
 
   @override
@@ -127,7 +139,10 @@ class ShareImageWidget extends StatelessWidget {
         width: 1920,
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[buildHeader(context)]));
+            children: <Widget>[
+              buildHeader(context),
+              buildPerkDetails(context)
+            ]));
   }
 
   buildHeader(BuildContext context) {
@@ -457,42 +472,129 @@ class ShareImageWidget extends StatelessWidget {
   Widget buildStat(BuildContext context, int hash) {
     var statDef = statDefinitions[hash];
     var value = statValues[hash];
+    var masterworkValue = masterworkValues[hash] ?? 0;
+    value = value - masterworkValue;
     var scaled = statGroupDefinition.scaledStats
         .firstWhere((s) => s.statHash == hash, orElse: () => null);
     var max = statGroupDefinition.maximumValue;
     if (scaled != null) {
       value = InventoryUtils.interpolateStat(
           statValues[hash], scaled.displayInterpolation);
+
+      if (masterworkValue > 0) {
+        var finalValue = InventoryUtils.interpolateStat(
+            statValues[hash] + masterworkValue, scaled.displayInterpolation);
+        masterworkValue = finalValue - value;
+      }
       max = scaled.maximumValue;
     }
     return Container(
         padding: EdgeInsets.only(bottom: 4),
         child: Row(
           children: <Widget>[
-            Text(statDef.displayProperties.name, style:TextStyle(fontSize: 16)),
-            Container(width:8),
+            Text(statDef.displayProperties.name,
+                style: TextStyle(fontSize: 16)),
+            Container(width: 8),
             Container(
-              alignment: Alignment.topCenter,
-              width: 40,
-              child:Text("$value", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),)
-            ),
-            Container(width:8),
-            buildStatBar(context, hash, value, max)
+                alignment: Alignment.topCenter,
+                width: 40,
+                child: Text(
+                  "$value",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: masterworkValue > 0
+                          ? Colors.amber
+                          : Colors.grey.shade300),
+                )),
+            Container(width: 8),
+            buildStatBar(context, hash, value, max, masterworkValue)
           ],
         ));
   }
 
-  Widget buildStatBar(BuildContext context, int hash, int value, int max) {
+  Widget buildStatBar(BuildContext context, int hash, int value, int maxValue,
+      int masterworkValue) {
     var hideBar = DestinyData.noBarStats.contains(hash);
-    if(hideBar){
+    if (hideBar) {
       return Container(width: 240, height: 18);
     }
+    maxValue = max(maxValue, value);
     return Container(
-        width: 240, height: 18, color: Colors.black.withOpacity(.4),
+        width: 240,
+        height: 18,
+        color: Colors.black.withOpacity(.4),
         child: Row(
           children: <Widget>[
-            Container(color: Colors.grey.shade300, width:min(240*(value/max), 240), height:18)
+            Container(
+                color: Colors.grey.shade300,
+                width: ((value - masterworkValue) / maxValue) * 240,
+                height: 18),
+            masterworkValue != null
+                ? Container(
+                    color: Colors.amber,
+                    width: (masterworkValue / maxValue) * 240,
+                    height: 18)
+                : Container()
           ],
         ));
+  }
+
+  Widget buildPerkDetails(BuildContext context) {
+     var perksCatDefinition = socketCategoryDefinitions.values.firstWhere((def) {
+      return def.categoryStyle & DestinySocketCategoryStyle.Reusable ==
+          DestinySocketCategoryStyle.Reusable;
+    }, orElse: () => null);
+    if (perksCatDefinition == null) return Container();
+    return Container(
+      color: Colors.blueGrey.shade800,
+      padding: EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+        HeaderWidget(
+          alignment: Alignment.centerLeft,
+          child: Text(
+          perksCatDefinition.displayProperties.name,
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),),
+        Container(height:16),
+        buildPerksDetailsGrid(context, perksCatDefinition)
+      ],),
+    );
+  }
+
+  Widget buildPerksDetailsGrid(
+      BuildContext context, DestinySocketCategoryDefinition def) {
+    var socketCategory = definition.sockets.socketCategories.firstWhere(
+        (s) => s.socketCategoryHash == def.hash,
+        orElse: () => null);
+    List<Widget> columns = [];
+    socketCategory.socketIndexes.forEach((index) {
+      if (isSocketVisible(index)) {
+        columns.add(buildPerkColumn(context, index));
+        columns.add(Container(
+          width: 2,
+          color: Colors.white.withOpacity(.6),
+          margin: EdgeInsets.symmetric(horizontal: 12),
+        ));
+      }
+    });
+    columns.removeLast();
+    return IntrinsicHeight(
+        child: Container(
+            width: 730,
+            child: Stack(children: [
+              Positioned.fill(
+                  child: Image.asset(
+                'assets/imgs/perks_grid.png',
+                repeat: ImageRepeat.repeat,
+                alignment: Alignment(-.5, 0),
+              )),
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: columns.toList())
+            ])));
   }
 }

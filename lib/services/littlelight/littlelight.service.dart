@@ -143,7 +143,7 @@ class LittleLightService {
     }
     Uri uri = Uri(
       scheme: 'http',
-        host: "littlelight.club",
+        host: "dev.littlelight.club",
         path: "api/v2/$path",
         queryParameters: params);
     Map<String, String> headers = {'Authorization': token.accessToken, 'Accept':'application/json'};
