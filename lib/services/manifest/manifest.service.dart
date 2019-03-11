@@ -258,7 +258,9 @@ class ManifestService {
     try{
       List<Map<String, dynamic>> results = await db.query(type,
         columns: ['json'], where: "id=?", whereArgs: [searchHash]);
-
+      if(results.length < 1){
+        return null;
+      }
       String resultString = results.first['json'];
       var def = identity(jsonDecode(resultString));
       _cached["${type}_$hash"] = def;

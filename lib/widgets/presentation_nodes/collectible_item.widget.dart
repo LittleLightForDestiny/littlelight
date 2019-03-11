@@ -79,9 +79,15 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget> {
               FlatButton(
                 child: Container(),
                 onPressed: () async {
+                  if(definition.itemHash == null){
+                    return;
+                  }
                   DestinyInventoryItemDefinition itemDef = await widget.manifest
                       .getDefinition<DestinyInventoryItemDefinition>(
                           definition.itemHash);
+                  if(itemDef == null){
+                    return;
+                  }
                   Navigator.push(
                     context,
                     MaterialPageRoute(

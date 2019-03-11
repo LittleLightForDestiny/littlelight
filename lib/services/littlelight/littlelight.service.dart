@@ -28,13 +28,10 @@ class LittleLightService {
 
   Future<List<Loadout>> getLoadouts({forceFetch:false}) async {
     if (_loadouts != null && !forceFetch) return _loadouts;
-    if(!forceFetch){
-      await _loadLoadoutsFromCache();
-      if(_loadouts != null){
-        return _loadouts;
-      }
+    await _loadLoadoutsFromCache();
+    if(forceFetch){
+      await _fetchLoadouts();
     }
-    await _fetchLoadouts();
     return _loadouts;
   }
 
@@ -143,7 +140,7 @@ class LittleLightService {
     }
     Uri uri = Uri(
       scheme: 'http',
-        host: "dev.littlelight.club",
+        host: "www.littlelight.club",
         path: "api/v2/$path",
         queryParameters: params);
     Map<String, String> headers = {'Authorization': token.accessToken, 'Accept':'application/json'};

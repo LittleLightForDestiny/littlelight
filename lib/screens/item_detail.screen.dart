@@ -51,7 +51,7 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
   }
 
   Future<void> loadDefinitions() async{
-    if((definition.sockets?.socketEntries?.length ?? 0) > 0){
+    if((definition?.sockets?.socketEntries?.length ?? 0) > 0){
       await loadPlugDefinitions();
     }
     loadStatGroupDefinition();
@@ -178,7 +178,7 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
   }
 
   Widget buildQuestInfo(BuildContext context){
-    if(definition.itemType == ItemType.questStep){
+    if(definition?.itemType == ItemType.questStep){
       return Container(child:QuestInfoWidget(item, definition, instanceInfo, key:Key("quest_info"), characterId:characterId));
     }
     return Container();

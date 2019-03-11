@@ -541,7 +541,7 @@ class ShareImageWidget extends StatelessWidget {
   }
 
   Widget buildPerkDetails(BuildContext context) {
-     var perksCatDefinition = socketCategoryDefinitions.values.firstWhere((def) {
+    var perksCatDefinition = socketCategoryDefinitions.values.firstWhere((def) {
       return def.categoryStyle & DestinySocketCategoryStyle.Reusable ==
           DestinySocketCategoryStyle.Reusable;
     }, orElse: () => null);
@@ -552,15 +552,17 @@ class ShareImageWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-        HeaderWidget(
-          alignment: Alignment.centerLeft,
-          child: Text(
-          perksCatDefinition.displayProperties.name,
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),),
-        Container(height:16),
-        buildPerksDetailsGrid(context, perksCatDefinition)
-      ],),
+          HeaderWidget(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              perksCatDefinition.displayProperties.name,
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+          ),
+          Container(height: 16),
+          buildPerksDetailsGrid(context, perksCatDefinition)
+        ],
+      ),
     );
   }
 
@@ -572,7 +574,7 @@ class ShareImageWidget extends StatelessWidget {
     List<Widget> columns = [];
     socketCategory.socketIndexes.forEach((index) {
       if (isSocketVisible(index)) {
-        columns.add(buildPerkColumn(context, index));
+        columns.add(buildPerkDetailColumn(context, index));
         columns.add(Container(
           width: 2,
           color: Colors.white.withOpacity(.6),
@@ -583,18 +585,93 @@ class ShareImageWidget extends StatelessWidget {
     columns.removeLast();
     return IntrinsicHeight(
         child: Container(
-            width: 730,
             child: Stack(children: [
-              Positioned.fill(
-                  child: Image.asset(
-                'assets/imgs/perks_grid.png',
-                repeat: ImageRepeat.repeat,
-                alignment: Alignment(-.5, 0),
-              )),
-              Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: columns.toList())
-            ])));
+      Positioned.fill(
+          child: Image.asset(
+        'assets/imgs/perks_grid.png',
+        repeat: ImageRepeat.repeat,
+        alignment: Alignment(-.5, 0),
+      )),
+      Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: columns.toList())
+    ])));
+  }
+
+  Widget buildPerkDetailColumn(BuildContext context, int socketIndex) {
+    if (itemSockets != null) {
+      var socket = itemSockets[socketIndex];
+      return Flexible(
+          flex: 1,
+          child: Column(
+              children: socket.reusablePlugs
+                  .where((s) => s.enabled)
+                  .map((s) => buildPerkDetailInfo(context, s.plugItemHash,
+                      s.plugItemHash == socket.plugHash))
+                  .toList()));
+    }
+    return Container(
+        width: 72, height: 72, margin: EdgeInsets.all(4), color: Colors.blue);
+  }
+
+  Widget buildPerkDetailInfo(
+      BuildContext context, int plugHash, bool selected) {
+    var def = plugItemDefinitions[plugHash];
+
+    var infoWidget = Expanded(
+      child:Container(
+      margin: EdgeInsets.only(left:8, top:4, bottom:4),
+        child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          def.displayProperties.name.toUpperCase(),
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        Text(
+          def.displayProperties.description,
+          softWrap: true,
+          overflow: TextOverflow.clip,
+        )
+      ],
+    )));
+
+    var plugIcon =
+        AdvancedNetworkImage(BungieApiService.url(def.displayProperties.icon));
+    if (def.plug.plugCategoryIdentifier.contains('intrinsic')) {
+      return Container(
+        margin: EdgeInsets.all(4),
+        child:Row(children: [
+        Container(
+          width: 72,
+          height: 72,
+          child: Image(image: plugIcon),
+        ),
+        infoWidget
+      ]));
+    }
+    return Container(
+        margin: EdgeInsets.all(4),
+        child: Row(children: [
+          Container(
+            padding: EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              color: selected
+                  ? Color.fromRGBO(121, 172, 206, 1)
+                  : Colors.transparent,
+              borderRadius: BorderRadius.circular(100),
+            ),
+            foregroundDecoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(100),
+                border:
+                    Border.all(width: 2, color: Colors.white.withOpacity(.6))),
+            width: 72,
+            height: 72,
+            child: Image(image: plugIcon),
+          ),
+          infoWidget
+        ]));
   }
 }
