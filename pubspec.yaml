@@ -34,7 +34,10 @@ dependencies:
     
   sentry: ^2.2.0
   flutter_dotenv: 2.0.1
-  url_launcher: 5.0.1
+  url_launcher: 
+    git: 
+      url: https://github.com/marquesinijatinha/plugins
+      path: packages/url_launcher
       
   screen: 0.0.4
   package_info: 0.4.0+1

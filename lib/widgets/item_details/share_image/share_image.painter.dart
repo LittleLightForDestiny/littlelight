@@ -5,6 +5,7 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
+import 'package:bungie_api/models/destiny_lore_definition.dart';
 import 'package:bungie_api/models/destiny_socket_category_definition.dart';
 import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:bungie_api/models/destiny_stat_group_definition.dart';
@@ -17,6 +18,7 @@ import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
+import 'package:little_light/widgets/common/translated_text.widget.dart';
 
 class ShareImageWidget extends StatelessWidget {
   final DestinyInventoryItemDefinition definition;
@@ -28,6 +30,7 @@ class ShareImageWidget extends StatelessWidget {
   final Map<int, int> statValues;
   final Map<int, int> masterworkValues;
   final DestinyStatGroupDefinition statGroupDefinition;
+  final DestinyLoreDefinition loreDefinition;
 
   ShareImageWidget(
       {Key key,
@@ -39,7 +42,8 @@ class ShareImageWidget extends StatelessWidget {
       this.instanceInfo,
       this.statValues,
       this.masterworkValues,
-      this.statGroupDefinition})
+      this.statGroupDefinition,
+      this.loreDefinition})
       : super(key: key);
 
   static Future<ShareImageWidget> builder(BuildContext context,
@@ -120,6 +124,12 @@ class ShareImageWidget extends StatelessWidget {
         await manifest.getDefinition<DestinyStatGroupDefinition>(
             definition.stats.statGroupHash);
 
+    var loreDefinition;
+    if (definition.loreHash != null) {
+      loreDefinition = await manifest
+          .getDefinition<DestinyLoreDefinition>(definition.loreHash);
+    }
+
     return ShareImageWidget(
       definition: definition,
       socketCategoryDefinitions: socketCategoryDefinitions,
@@ -130,6 +140,7 @@ class ShareImageWidget extends StatelessWidget {
       statGroupDefinition: statGroupDefinition,
       statValues: statValues,
       masterworkValues: masterworkValues,
+      loreDefinition: loreDefinition,
     );
   }
 
@@ -141,7 +152,9 @@ class ShareImageWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               buildHeader(context),
-              buildPerkDetails(context)
+              buildPerkDetails(context),
+              buildModDetails(context),
+              buildItemLore(context)
             ]));
   }
 
@@ -611,8 +624,7 @@ class ShareImageWidget extends StatelessWidget {
                       s.plugItemHash == socket.plugHash))
                   .toList()));
     }
-    return Container(
-        width: 72, height: 72, margin: EdgeInsets.all(4), color: Colors.blue);
+    return Container();
   }
 
   Widget buildPerkDetailInfo(
@@ -620,37 +632,37 @@ class ShareImageWidget extends StatelessWidget {
     var def = plugItemDefinitions[plugHash];
 
     var infoWidget = Expanded(
-      child:Container(
-      margin: EdgeInsets.only(left:8, top:4, bottom:4),
-        child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
-        Text(
-          def.displayProperties.name.toUpperCase(),
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        Text(
-          def.displayProperties.description,
-          softWrap: true,
-          overflow: TextOverflow.clip,
-        )
-      ],
-    )));
+        child: Container(
+            margin: EdgeInsets.only(left: 8, top: 4, bottom: 4),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  def.displayProperties.name.toUpperCase(),
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  def.displayProperties.description,
+                  softWrap: true,
+                  overflow: TextOverflow.clip,
+                )
+              ],
+            )));
 
     var plugIcon =
         AdvancedNetworkImage(BungieApiService.url(def.displayProperties.icon));
     if (def.plug.plugCategoryIdentifier.contains('intrinsic')) {
       return Container(
-        margin: EdgeInsets.all(4),
-        child:Row(children: [
-        Container(
-          width: 72,
-          height: 72,
-          child: Image(image: plugIcon),
-        ),
-        infoWidget
-      ]));
+          margin: EdgeInsets.all(4),
+          child: Row(children: [
+            Container(
+              width: 72,
+              height: 72,
+              child: Image(image: plugIcon),
+            ),
+            infoWidget
+          ]));
     }
     return Container(
         margin: EdgeInsets.all(4),
@@ -673,5 +685,129 @@ class ShareImageWidget extends StatelessWidget {
           ),
           infoWidget
         ]));
+  }
+
+  Widget buildModDetails(BuildContext context) {
+    var modsCatDefinition = socketCategoryDefinitions.values.firstWhere((def) {
+      return def.categoryStyle & DestinySocketCategoryStyle.Consumable ==
+          DestinySocketCategoryStyle.Consumable;
+    }, orElse: () => null);
+    if (modsCatDefinition == null) return Container();
+    return Container(
+      color: Colors.blueGrey.shade800,
+      padding: EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          HeaderWidget(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              modsCatDefinition.displayProperties.name,
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+          ),
+          Container(height: 16),
+          buildModDetailsGrid(context, modsCatDefinition)
+        ],
+      ),
+    );
+  }
+
+  Widget buildModDetailsGrid(
+      BuildContext context, DestinySocketCategoryDefinition def) {
+    var socketCategory = definition.sockets.socketCategories.firstWhere(
+        (s) => s.socketCategoryHash == def.hash,
+        orElse: () => null);
+    List<Widget> columns = [];
+    socketCategory.socketIndexes.forEach((index) {
+      if (isSocketVisible(index)) {
+        columns.add(buildModDetailColumn(context, index));
+        columns.add(Container(
+          width: 2,
+          color: Colors.white.withOpacity(.6),
+          margin: EdgeInsets.symmetric(horizontal: 12),
+        ));
+      }
+    });
+    columns.removeLast();
+    return IntrinsicHeight(
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: columns.toList()));
+  }
+
+  Widget buildModDetailColumn(BuildContext context, int socketIndex) {
+    double maxWidth = 356;
+    if (itemSockets != null) {
+      var socket = itemSockets[socketIndex];
+      return ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: maxWidth),
+          child: buildModDetailInfo(context, socket.plugHash));
+    }
+    return Container();
+  }
+
+  Widget buildModDetailInfo(BuildContext context, int plugHash) {
+    var def = plugItemDefinitions[plugHash];
+
+    var infoWidget = Expanded(
+        child: Container(
+            margin: EdgeInsets.only(left: 8, top: 4, bottom: 4),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  def.displayProperties.name.toUpperCase(),
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  def.displayProperties.description,
+                  softWrap: true,
+                )
+              ],
+            )));
+
+    var plugIcon =
+        AdvancedNetworkImage(BungieApiService.url(def.displayProperties.icon));
+    return Container(
+        margin: EdgeInsets.all(4),
+        child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+          Container(
+            decoration: BoxDecoration(
+                border: Border.all(width: 3, color: Colors.grey.shade300)),
+            width: 96,
+            height: 96,
+            child: Image(image: plugIcon),
+          ),
+          infoWidget
+        ]));
+  }
+
+  Widget buildItemLore(BuildContext context) {
+    if (definition?.loreHash == null) return Container();
+    return Container(
+      color: Colors.blueGrey.shade800,
+      padding: EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          HeaderWidget(
+            alignment: Alignment.centerLeft,
+            child: TranslatedTextWidget(
+              "Lore",
+              uppercase: true,
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+          ),
+          Container(height: 16),
+          Text(
+            loreDefinition.displayProperties.description,
+            softWrap: true,
+          )
+        ],
+      ),
+    );
   }
 }

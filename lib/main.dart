@@ -6,9 +6,11 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'dart:async';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
+import 'package:flutter/foundation.dart';
 
 int restartCounter = 0;
 void main() async {
+  debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
   await DotEnv().load('.env');
   ExceptionHandler handler = ExceptionHandler(onRestart: () {
     restartCounter++;

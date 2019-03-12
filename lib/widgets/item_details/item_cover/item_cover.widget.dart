@@ -1,10 +1,15 @@
+import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
+import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
-import 'package:little_light/screens/share_preview.screen.dart';
+import 'package:esys_flutter_share/esys_flutter_share.dart';
+import 'package:flutter/rendering.dart';
+import 'dart:ui' as ui;
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
@@ -13,6 +18,8 @@ import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/destiny_item.widget.dart';
 import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/item_name_bar/item_name_bar.widget.dart';
+import 'package:little_light/widgets/item_details/share_image/share_image.painter.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shimmer/shimmer.dart';
 
 class ItemCoverWidget extends DestinyItemWidget {
@@ -137,32 +144,39 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
   Widget shareButton(BuildContext context, double expandRatio) {
     return Positioned(
         right: 0,
-        bottom: 0 + kToolbarHeight*expandRatio,
+        bottom: 0 + kToolbarHeight * expandRatio,
         width: kToolbarHeight,
         height: kToolbarHeight,
         child: Material(
-          color: Colors.transparent,
-          child:IconButton(
-          onPressed: () {
-            Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => SharePreviewScreen(
-              item,
-              definition,
-              instanceInfo,
-              characterId: null,
-              uniqueId: uniqueId,
-            ),
-      ),
-    );
-          },
-          icon: Icon(Icons.share,
-              color: Color.lerp(
-                  DestinyData.getTierTextColor(definition.inventory.tierType),
-                  Colors.grey.shade300,
-                  expandRatio)),
-        )));
+            color: Colors.transparent,
+            child: IconButton(
+              onPressed: () async {
+                var shareImage = await ShareImageWidget.builder(context,
+                    item: item, definition: definition);
+
+                RenderRepaintBoundary boundary = RenderRepaintBoundary(
+                    child: RepaintBoundary(child: shareImage)
+                        .createRenderObject(context));
+                ui.Image image = await boundary.toImage(pixelRatio: 1.0);
+                ByteData byteData =
+                    await image.toByteData(format: ui.ImageByteFormat.png);
+                var pngBytes = byteData.buffer.asUint8List();
+                var bs64 = base64Encode(pngBytes);
+                var dir = await getTemporaryDirectory();
+                var file = new File("${dir.path}/tempshare.png");
+                await file.writeAsString(bs64);
+                EsysFlutterShare.shareImage(
+                    "${definition.displayProperties.name}.png",
+                    byteData,
+                    "Little Light");
+              },
+              icon: Icon(Icons.share,
+                  color: Color.lerp(
+                      DestinyData.getTierTextColor(
+                          definition.inventory.tierType),
+                      Colors.grey.shade300,
+                      expandRatio)),
+            )));
   }
 
   Widget overlay(BuildContext context, double expandRatio) {
