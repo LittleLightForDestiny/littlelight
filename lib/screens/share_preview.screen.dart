@@ -165,14 +165,9 @@ class SharePreviewScreenState extends DestinyItemState<SharePreviewScreen> {
     try {
       RenderRepaintBoundary boundary =
           imageKey.currentContext.findRenderObject();
-      ui.Image image = await boundary.toImage(pixelRatio: 3.0);
+      ui.Image image = await boundary.toImage(pixelRatio: 1.0);
       ByteData byteData =
           await image.toByteData(format: ui.ImageByteFormat.png);
-      var pngBytes = byteData.buffer.asUint8List();
-      var bs64 = base64Encode(pngBytes);
-      var dir = await getTemporaryDirectory();
-      var file = new File("${dir.path}/tempshare.png");
-      await file.writeAsString(bs64);
       await EsysFlutterShare.shareImage(
           "${definition.displayProperties.name}.png", byteData, "Little Light");
     } catch (e) {
