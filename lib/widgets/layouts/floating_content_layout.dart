@@ -71,6 +71,7 @@ class FloatingContentState<T extends StatefulWidget> extends State<T>
   }
 
   changeContent(Widget content, String title) {
+    if(!mounted) return;
     setState(() {
       loading = content == null;
       previousContent = currentContent;

@@ -50,13 +50,13 @@ class SharePreviewScreenState extends DestinyItemState<SharePreviewScreen> {
   }
 
   Future<void> loadDefinitions() async {
-    if ((definition.sockets?.socketEntries?.length ?? 0) > 0) {
-      await loadPlugDefinitions();
-    }
-    loadStatGroupDefinition();
     shareImage = await ShareImageWidget.builder(context,
         item: widget.item, definition: widget.definition);
     setState(() {});
+    await Future.delayed(Duration(milliseconds:100));
+    await saveImage();
+    await Future.delayed(Duration(milliseconds:100));
+    Navigator.of(context).pop();
   }
 
   Future<void> loadPlugDefinitions() async {
@@ -112,11 +112,20 @@ class SharePreviewScreenState extends DestinyItemState<SharePreviewScreen> {
         child: Stack(
       children: <Widget>[
         buildShare(context),
+        buildBlackOverlay(),
         buildRefreshButton(),
         buildSaveButton(),
         buildBackButton(),
       ],
     ));
+  }
+
+  Widget buildBlackOverlay() {
+    return Positioned.fill(
+      child: Container(
+        color: Colors.black,
+      ),
+    );
   }
 
   Widget buildShare(BuildContext context) {
@@ -148,22 +157,27 @@ class SharePreviewScreenState extends DestinyItemState<SharePreviewScreen> {
         child: IconButton(
             icon: Icon(Icons.save),
             onPressed: () async {
-              try {
-                RenderRepaintBoundary boundary =
-                    imageKey.currentContext.findRenderObject();
-                ui.Image image = await boundary.toImage(pixelRatio: 1.0);
-                ByteData byteData =
-                    await image.toByteData(format: ui.ImageByteFormat.png);
-                var pngBytes = byteData.buffer.asUint8List();
-                var bs64 = base64Encode(pngBytes);
-                var dir = await getTemporaryDirectory();
-                var file = new File("${dir.path}/tempshare.png");
-                await file.writeAsString(bs64);
-                EsysFlutterShare.shareImage("${definition.displayProperties.name}.png", byteData, "Little Light");
-              } catch (e) {
-                print(e);
-              }
+              saveImage();
             }));
+  }
+
+  Future<void> saveImage() async {
+    try {
+      RenderRepaintBoundary boundary =
+          imageKey.currentContext.findRenderObject();
+      ui.Image image = await boundary.toImage(pixelRatio: 3.0);
+      ByteData byteData =
+          await image.toByteData(format: ui.ImageByteFormat.png);
+      var pngBytes = byteData.buffer.asUint8List();
+      var bs64 = base64Encode(pngBytes);
+      var dir = await getTemporaryDirectory();
+      var file = new File("${dir.path}/tempshare.png");
+      await file.writeAsString(bs64);
+      await EsysFlutterShare.shareImage(
+          "${definition.displayProperties.name}.png", byteData, "Little Light");
+    } catch (e) {
+      print(e);
+    }
   }
 
   Widget buildBackButton() {
