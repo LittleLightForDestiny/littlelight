@@ -9,12 +9,15 @@ import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_stat_group_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_advanced_networkimage/provider.dart';
+import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'dart:ui' as ui;
 
 import 'package:little_light/widgets/common/destiny_item.stateful_widget.dart';
 import 'package:little_light/widgets/item_details/share_image/share_image.painter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
+import 'package:shimmer/shimmer.dart';
 
 class SharePreviewScreen extends DestinyItemStatefulWidget {
   final String uniqueId;
@@ -50,12 +53,17 @@ class SharePreviewScreenState extends DestinyItemState<SharePreviewScreen> {
   }
 
   Future<void> loadDefinitions() async {
-    shareImage = await ShareImageWidget.builder(context,
-        item: widget.item, definition: widget.definition);
-    setState(() {});
-    await Future.delayed(Duration(milliseconds:100));
-    await saveImage();
-    await Future.delayed(Duration(milliseconds:100));
+    // await precacheImage(NetworkImage(BungieApiService.url(widget.definition.screenshot)), context);
+    try{
+      shareImage = await ShareImageWidget.builder(context,
+          item: widget.item, definition: widget.definition, onLoad: () {});
+      setState(() {});
+      await Future.delayed(Duration(milliseconds: 1500));
+      await saveImage();
+      await Future.delayed(Duration(milliseconds: 100));
+    }catch(e){
+      print(e);
+    }
     Navigator.of(context).pop();
   }
 
@@ -113,9 +121,7 @@ class SharePreviewScreenState extends DestinyItemState<SharePreviewScreen> {
       children: <Widget>[
         buildShare(context),
         buildBlackOverlay(),
-        buildRefreshButton(),
-        buildSaveButton(),
-        buildBackButton(),
+        buildLoadingOverlay(),
       ],
     ));
   }
@@ -123,14 +129,27 @@ class SharePreviewScreenState extends DestinyItemState<SharePreviewScreen> {
   Widget buildBlackOverlay() {
     return Positioned.fill(
       child: Container(
-        color: Colors.black,
+        color: Colors.blueGrey.shade900,
       ),
     );
   }
 
+  Widget buildLoadingOverlay() {
+    return Center(
+        child: Container(
+            width: 96,
+            child: Shimmer.fromColors(
+              baseColor: Colors.blueGrey.shade300,
+              highlightColor: Colors.white,
+              child: Image.asset("assets/anim/loading.webp"),
+            )));
+  }
+
   Widget buildShare(BuildContext context) {
     if (shareImage == null) return Container();
-    return Positioned.fill(
+    return Positioned(
+        width: 10,
+        height: 10,
         child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: SingleChildScrollView(
@@ -169,7 +188,9 @@ class SharePreviewScreenState extends DestinyItemState<SharePreviewScreen> {
       ByteData byteData =
           await image.toByteData(format: ui.ImageByteFormat.png);
       await EsysFlutterShare.shareImage(
-          "${definition.displayProperties.name}.png", byteData, "Little Light");
+          "${definition.displayProperties.name}.png",
+          byteData,
+          definition.displayProperties.name);
     } catch (e) {
       print(e);
     }

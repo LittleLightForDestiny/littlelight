@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'dart:ui';
+import 'package:bungie_api/enums/destiny_item_type_enum.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
@@ -135,6 +136,9 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
   }
 
   Widget shareButton(BuildContext context, double expandRatio) {
+    if(instanceInfo == null) return Container();
+    var acceptedItemTypes = [DestinyItemType.Armor,DestinyItemType.Weapon, DestinyItemType.Ghost, DestinyItemType.Ship, DestinyItemType.Vehicle];
+    if(!acceptedItemTypes.contains(definition?.itemType)) return Container();
     return Positioned(
         right: 0,
         bottom: 0 + kToolbarHeight * expandRatio,

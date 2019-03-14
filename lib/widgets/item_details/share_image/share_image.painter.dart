@@ -6,6 +6,8 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_lore_definition.dart';
+import 'package:bungie_api/models/destiny_objective_definition.dart';
+import 'package:bungie_api/models/destiny_objective_progress.dart';
 import 'package:bungie_api/models/destiny_socket_category_definition.dart';
 import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:bungie_api/models/destiny_stat_group_definition.dart';
@@ -19,7 +21,6 @@ import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-
 class ShareImageWidget extends StatelessWidget {
   final DestinyInventoryItemDefinition definition;
   final Map<int, DestinySocketCategoryDefinition> socketCategoryDefinitions;
@@ -31,6 +32,9 @@ class ShareImageWidget extends StatelessWidget {
   final Map<int, int> masterworkValues;
   final DestinyStatGroupDefinition statGroupDefinition;
   final DestinyLoreDefinition loreDefinition;
+  final DestinyObjectiveProgress masterworkObjective;
+  final DestinyObjectiveDefinition masterworkObjectiveDefinition;
+  final Function onLoad;
 
   ShareImageWidget(
       {Key key,
@@ -43,12 +47,15 @@ class ShareImageWidget extends StatelessWidget {
       this.statValues,
       this.masterworkValues,
       this.statGroupDefinition,
-      this.loreDefinition})
+      this.loreDefinition,
+      this.masterworkObjective,
+      this.masterworkObjectiveDefinition,
+      this.onLoad})
       : super(key: key);
 
   static Future<ShareImageWidget> builder(BuildContext context,
       {DestinyItemComponent item,
-      DestinyInventoryItemDefinition definition}) async {
+      DestinyInventoryItemDefinition definition, Function onLoad}) async {
     ManifestService manifest = ManifestService();
     var socketCategoryHashes =
         definition.sockets.socketCategories.map((s) => s.socketCategoryHash);
@@ -80,6 +87,8 @@ class ShareImageWidget extends StatelessWidget {
         }
       });
     }
+    DestinyObjectiveProgress masterworkObjective;
+    DestinyObjectiveDefinition masterworkObjectiveDefinition;
     var plugItemDefinitions = await manifest
         .getDefinitions<DestinyInventoryItemDefinition>(modHashes.toSet());
     Set<int> statHashes = new Set();
@@ -89,9 +98,19 @@ class ShareImageWidget extends StatelessWidget {
       statValues[s.statTypeHash] = s.value;
     });
     if (itemSockets != null) {
-      itemSockets.forEach((socket) {
+      for (var socket in itemSockets) {
+        if (socket.plugObjectives != null) {
+          for (var objective in socket.plugObjectives) {
+            if (objective.visible) {
+              masterworkObjective = objective;
+              masterworkObjectiveDefinition =
+                  await manifest.getDefinition<DestinyObjectiveDefinition>(
+                      objective.objectiveHash);
+            }
+          }
+        }
         var plugDef = plugItemDefinitions[socket.plugHash];
-        if (plugDef == null) return;
+        if (plugDef == null) continue;
         plugDef.investmentStats.forEach((stat) {
           if (!statValues.containsKey(stat.statTypeHash)) {
             statValues[stat.statTypeHash] = 0;
@@ -104,7 +123,7 @@ class ShareImageWidget extends StatelessWidget {
             masterworkValues[stat.statTypeHash] += stat.value;
           }
         });
-      });
+      }
     } else {
       definition.sockets.socketEntries.forEach((socket) {
         var plugDef = plugItemDefinitions[socket.singleInitialItemHash];
@@ -120,9 +139,11 @@ class ShareImageWidget extends StatelessWidget {
 
     var statDefinitions =
         await manifest.getDefinitions<DestinyStatDefinition>(statHashes);
-    var statGroupDefinition =
-        await manifest.getDefinition<DestinyStatGroupDefinition>(
+    var statGroupDefinition;
+    if(definition?.stats?.statGroupHash != null){
+      statGroupDefinition = await manifest.getDefinition<DestinyStatGroupDefinition>(
             definition.stats.statGroupHash);
+    }
 
     var loreDefinition;
     if (definition.loreHash != null) {
@@ -141,58 +162,60 @@ class ShareImageWidget extends StatelessWidget {
       statValues: statValues,
       masterworkValues: masterworkValues,
       loreDefinition: loreDefinition,
+      masterworkObjective: masterworkObjective,
+      masterworkObjectiveDefinition: masterworkObjectiveDefinition,
+      onLoad: onLoad,
     );
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-        width: 1920,
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              buildHeader(context),
-              buildPerkDetails(context),
-              buildModDetails(context),
-              buildItemLore(context)
-            ]));
-  }
-
-  buildHeader(BuildContext context) {
+  build(BuildContext context) {
     return Container(
         width: 1920,
         height: 1080,
-        color: Colors.red,
+        color: Colors.blueGrey.shade300,
         child: Stack(
           children: <Widget>[
             Positioned.fill(child: buildHeaderBackground(context)),
             buildItemInfo(context),
-            buildItemStats(context)
+            buildItemStats(context),
+            buildItemLore(context)
           ],
         ));
   }
 
   Widget buildHeaderBackground(BuildContext context) {
     return Image(
-      image: AdvancedNetworkImage(BungieApiService.url(definition.screenshot)),
+      image: AdvancedNetworkImage(BungieApiService.url(definition.screenshot),
+      loadedCallback: (){
+        print('loaded');
+        onLoad();
+      },
+      loadedFromDiskCacheCallback: (){
+        onLoad();
+      }),
       fit: BoxFit.none,
     );
   }
 
   Widget buildItemInfo(BuildContext context) {
+    double left = 148;
+    if(loreDefinition != null){
+      left+= 250;
+    }
     return Positioned(
-        left: 148,
+        left: left,
         top: 114,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             buildMainItemInfo(context),
-            Container(height: 40),
+            Container(height: 20),
             buildDescription(context),
-            Container(height: 40),
+            Container(height: 20),
             buildPerks(context),
-            Container(height: 40),
-            buildMods(context)
+            Container(height: 20),
+            buildMods(context),
           ],
         ));
   }
@@ -265,22 +288,24 @@ class ShareImageWidget extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        modifiersLabel(context, perksCatDefinition),
+        modifiersLabel(
+          context,
+          Text(
+            perksCatDefinition.displayProperties.name,
+            style: TextStyle(fontSize: 18, color: Colors.white.withOpacity(.6)),
+          ),
+        ),
         Container(height: 16),
         buildPerksGrid(context, perksCatDefinition),
       ],
     );
   }
 
-  Widget modifiersLabel(
-      BuildContext context, DestinySocketCategoryDefinition def) {
+  Widget modifiersLabel(BuildContext context, Widget title) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text(
-          def.displayProperties.name,
-          style: TextStyle(fontSize: 18, color: Colors.white.withOpacity(.6)),
-        ),
+        title,
         Container(
           height: 8,
         ),
@@ -337,6 +362,9 @@ class ShareImageWidget extends StatelessWidget {
   Widget buildPerkColumn(BuildContext context, int socketIndex) {
     if (itemSockets != null) {
       var socket = itemSockets[socketIndex];
+      if(socket.reusablePlugs == null){
+        return Container();
+      }
       return Column(
           children: socket.reusablePlugs
               .where((s) => s.enabled)
@@ -387,7 +415,13 @@ class ShareImageWidget extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        modifiersLabel(context, modsCatDefinition),
+        modifiersLabel(
+          context,
+          Text(
+            modsCatDefinition.displayProperties.name,
+            style: TextStyle(fontSize: 18, color: Colors.white.withOpacity(.6)),
+          ),
+        ),
         Container(height: 16),
         buildModsRow(context, modsCatDefinition)
       ],
@@ -449,6 +483,9 @@ class ShareImageWidget extends StatelessWidget {
   }
 
   Widget buildPrimaryStat(BuildContext context) {
+    if(instanceInfo?.primaryStat == null){
+      return Container();
+    }
     int statValue = instanceInfo.primaryStat.value;
     int statHash = definition.stats.primaryBaseStatHash;
     var def = statDefinitions[statHash];
@@ -464,10 +501,45 @@ class ShareImageWidget extends StatelessWidget {
         ),
         Text(
           def.displayProperties.name.toUpperCase(),
-          style: TextStyle(fontSize: 18, color: Colors.white.withOpacity(.6)),
-        )
+          style: TextStyle(fontSize: 18, color: Colors.white),
+        ),
+        Container(height: 20),
+        buildMasterworkCounter()
       ]),
     );
+  }
+
+  Widget buildMasterworkCounter() {
+    if (this.masterworkObjective == null) {
+      return Container();
+    }
+    return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Container(
+          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 20),
+          child: Row(
+            children: <Widget>[
+              Container(
+                width: 20,
+                height:20,
+                child: Image(
+                    image: AdvancedNetworkImage(BungieApiService.url(
+                        masterworkObjectiveDefinition.displayProperties.icon))),
+              ),
+              Container(width: 4,),
+              Text(masterworkObjectiveDefinition.progressDescription,
+                  style: TextStyle(color: Colors.white, fontSize: 15)),
+              Container(
+                width: 4,
+              ),
+              Text("${masterworkObjective.progress}",
+                  style: TextStyle(color: Colors.amber.shade200, fontSize: 15)),
+            ],
+          )),
+      Container(
+        height: 90,
+        child: Image.asset('assets/imgs/masterwork-icon.png'),
+      )
+    ]);
   }
 
   Widget buildStats(BuildContext context) {
@@ -787,27 +859,38 @@ class ShareImageWidget extends StatelessWidget {
 
   Widget buildItemLore(BuildContext context) {
     if (definition?.loreHash == null) return Container();
-    return Container(
-      color: Colors.blueGrey.shade800,
-      padding: EdgeInsets.all(16),
+    return 
+    Positioned(
+      left:0, top:0,
+      bottom: 0,
+      width: 350,
+    child:Container(
+      color: Colors.black.withOpacity(.6),
+      padding: EdgeInsets.all(8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
+          Container(height:108),
           HeaderWidget(
             alignment: Alignment.centerLeft,
-            child: TranslatedTextWidget(
-              "Lore",
-              uppercase: true,
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
+            child:TranslatedTextWidget("Lore",
+                uppercase: true,
+                style: TextStyle(
+                    fontSize: 18, fontWeight: FontWeight.bold)),
           ),
           Container(height: 16),
-          Text(
-            loreDefinition.displayProperties.description,
-            softWrap: true,
-          )
+          Expanded(
+          child:Container(
+              padding: EdgeInsets.all(4),
+              child: Text(
+                loreDefinition.displayProperties.description.replaceAll('\n\n', '\n'),
+                softWrap: true,
+                overflow: TextOverflow.fade,
+                style: TextStyle(
+                    fontStyle: FontStyle.italic, fontWeight: FontWeight.w300),
+              )))
         ],
       ),
-    );
+    ));
   }
 }
