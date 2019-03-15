@@ -1,7 +1,4 @@
-import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
-
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
@@ -9,13 +6,11 @@ import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_stat_group_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_advanced_networkimage/provider.dart';
-import 'package:little_light/services/bungie_api/bungie_api.service.dart';
+
 import 'dart:ui' as ui;
 
 import 'package:little_light/widgets/common/destiny_item.stateful_widget.dart';
 import 'package:little_light/widgets/item_details/share_image/share_image.painter.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:shimmer/shimmer.dart';
 

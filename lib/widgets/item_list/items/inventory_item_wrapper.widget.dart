@@ -167,7 +167,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
       return buildEmpty(context);
     }
     if (definition == null) {
-      return Container();
+      return buildEmpty(context);
     }
 
     switch (widget.density) {
