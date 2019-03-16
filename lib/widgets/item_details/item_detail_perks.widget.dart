@@ -18,13 +18,13 @@ import 'package:little_light/widgets/common/manifest_text.widget.dart';
 
 typedef OnSelectPerk(int socketPlugHash, int itemPlugHash);
 
-class ItemPerksWidget extends DestinyItemWidget {
+class ItemDetailPerksWidget extends DestinyItemWidget {
   final OnSelectPerk onSelectPerk;
   final int selectedPerkHash;
   final Map<int, int> selectedPerkHashes;
   final Map<int, DestinyInventoryItemDefinition> plugDefinitions;
 
-  ItemPerksWidget(
+  ItemDetailPerksWidget(
       DestinyItemComponent item,
       DestinyInventoryItemDefinition definition,
       DestinyItemInstanceComponent instanceInfo,

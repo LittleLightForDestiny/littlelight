@@ -228,14 +228,19 @@ class SearchListWidgetState extends State<SearchListWidget>
       if (search.length == 0) {
         return true;
       }
+      bool match = false;
       if (search.length < 4) {
-        return def.displayProperties.name
-            .toLowerCase()
-            .startsWith(search.toLowerCase());
-      }
-      return def.displayProperties.name
+        match = def.displayProperties.name
+          .toLowerCase()
+          .startsWith(search.toLowerCase());
+        match = match || def.itemTypeDisplayName.toLowerCase().startsWith(search.toLowerCase());
+      }else{
+        match = def.displayProperties.name
           .toLowerCase()
           .contains(search.toLowerCase());
+        match = match || def.itemTypeDisplayName.toLowerCase().contains(search.toLowerCase());
+      }
+      return match;
     }).toList();
   }
 

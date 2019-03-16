@@ -44,7 +44,6 @@ class MediumSubclassInventoryItemWidget extends MediumBaseInventoryItemWidget
             decoration: decoration,
             child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
               QueuedNetworkImage(
-                // width: 100,
                 imageUrl:
                     BungieApiService.url(definition.secondaryIcon),
                 fit: BoxFit.fitWidth,

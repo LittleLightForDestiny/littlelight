@@ -168,7 +168,7 @@ class SideMenuWidget extends StatelessWidget {
                         color: Colors.transparent,
                         child: InkWell(
                           onTap: () async {
-                            await LaunchReview.launch(
+                            LaunchReview.launch(
                                 androidAppId: 'me.markezine.luzinha',
                                 iOSAppId: '1373037254');
                           },

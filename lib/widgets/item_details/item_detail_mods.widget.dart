@@ -17,13 +17,13 @@ import 'package:little_light/widgets/common/manifest_text.widget.dart';
 
 typedef OnSelectMod(int socketPlugHash, int itemPlugHash);
 
-class ItemModsWidget extends DestinyItemWidget {
+class ItemDetailModsWidget extends DestinyItemWidget {
   final OnSelectMod onSelectPerk;
   final int selectedModHash;
   final Map<int, int> selectedModHashes;
   final Map<int, DestinyInventoryItemDefinition> plugDefinitions;
 
-  ItemModsWidget(
+  ItemDetailModsWidget(
       DestinyItemComponent item,
       DestinyInventoryItemDefinition definition,
       DestinyItemInstanceComponent instanceInfo,

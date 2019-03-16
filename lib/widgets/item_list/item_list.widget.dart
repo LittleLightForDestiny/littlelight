@@ -38,7 +38,13 @@ class ItemListWidget extends StatefulWidget {
 
   final int currentGroup;
 
-  ItemListWidget({this.padding, this.bucketHashes, this.characterId, Key key, this.scrollPositions, this.currentGroup})
+  ItemListWidget(
+      {this.padding,
+      this.bucketHashes,
+      this.characterId,
+      Key key,
+      this.scrollPositions,
+      this.currentGroup})
       : super(key: key);
   @override
   ItemListWidgetState createState() => new ItemListWidgetState();
@@ -55,7 +61,7 @@ class ItemListWidgetState extends State<ItemListWidget> {
     buildIndex();
     subscription = widget.broadcaster.listen((event) {
       if (event.type == NotificationType.receivedUpdate ||
-      event.type == NotificationType.localUpdate){
+          event.type == NotificationType.localUpdate) {
         buildIndex();
       }
     });
@@ -67,8 +73,8 @@ class ItemListWidgetState extends State<ItemListWidget> {
     super.dispose();
   }
 
-  buildIndex() {
-    if(!mounted) return;
+  buildIndex() async {
+    if (!mounted) return;
     List<DestinyItemComponent> equipment =
         widget.profile.getCharacterEquipment(widget.characterId);
     List<DestinyItemComponent> characterInventory =
@@ -78,7 +84,7 @@ class ItemListWidgetState extends State<ItemListWidget> {
     List<ListItem> listIndex = [];
     listIndex.add(new ListItem(ListItem.infoHeader, null));
 
-    widget.bucketHashes.forEach((hash) async {
+    for (int hash in widget.bucketHashes) {
       List<DestinyItemComponent> inventory = characterInventory;
       if (ProfileService.profileBuckets.contains(hash)) {
         inventory = profileInventory;
@@ -115,10 +121,19 @@ class ItemListWidgetState extends State<ItemListWidget> {
             .add(ListItem(ListItem.unequippedItem, null, bucketHash: hash));
       }
       listIndex.add(new ListItem(ListItem.spacer, hash));
-      if(!mounted) return;
+      if (!mounted) return;
       setState(() {
         this.listIndex = listIndex;
       });
+    }
+
+    listIndex.add(new ListItem(ListItem.spacer, 0));
+    listIndex.add(new ListItem(ListItem.spacer, 0));
+    if (!mounted) {
+      return;
+    }
+    setState(() {
+      this.listIndex = listIndex;
     });
   }
 
@@ -135,11 +150,11 @@ class ItemListWidgetState extends State<ItemListWidget> {
       return Container();
     }
     ScrollController controller = new ScrollController(
-        initialScrollOffset: widget.scrollPositions[widget.currentGroup],
-      );
-      controller.addListener((){
-        widget.scrollPositions[widget.currentGroup] = controller.offset;
-      });
+      initialScrollOffset: widget.scrollPositions[widget.currentGroup],
+    );
+    controller.addListener(() {
+      widget.scrollPositions[widget.currentGroup] = controller.offset;
+    });
     return StaggeredGridView.countBuilder(
       crossAxisCount: 30,
       itemCount: listIndex.length,
@@ -176,11 +191,12 @@ class ItemListWidgetState extends State<ItemListWidget> {
 
   Widget getItem(int index) {
     ListItem item = listIndex[index];
-    String itemKey = "${index}_${item.itemComponent?.itemInstanceId ?? item.itemComponent?.itemHash ?? 'empty'}";
+    String itemKey =
+        "${index}_${item.itemComponent?.itemInstanceId ?? item.itemComponent?.itemHash ?? 'empty'}";
     switch (item.type) {
       case ListItem.infoHeader:
         return CharacterInfoWidget(
-          key:Key("characterinfo_${widget.profile.lastUpdated}"),
+          key: Key("characterinfo_${widget.profile.lastUpdated}"),
           characterId: widget.characterId,
         );
 
@@ -190,21 +206,31 @@ class ItemListWidgetState extends State<ItemListWidget> {
           itemCount: item.itemCount,
         );
 
-      
       case ListItem.equippedItem:
-        return InventoryItemWrapperWidget(item?.itemComponent, item?.bucketHash,
-            key: Key(itemKey), characterId: widget.characterId,);
+        return InventoryItemWrapperWidget(
+          item?.itemComponent,
+          item?.bucketHash,
+          key: Key(itemKey),
+          characterId: widget.characterId,
+        );
 
       case ListItem.unequippedItem:
         if (widget.minimalDensityBucketHashes.contains(item.bucketHash)) {
           return InventoryItemWrapperWidget(
-              item?.itemComponent, item?.bucketHash,
-              key: Key(itemKey),
-              density: ContentDensity.MINIMAL, characterId: widget.characterId,);
-        }
-        return InventoryItemWrapperWidget(item?.itemComponent, item?.bucketHash,
+            item?.itemComponent,
+            item?.bucketHash,
             key: Key(itemKey),
-            density: ContentDensity.MEDIUM, characterId: widget.characterId,);
+            density: ContentDensity.MINIMAL,
+            characterId: widget.characterId,
+          );
+        }
+        return InventoryItemWrapperWidget(
+          item?.itemComponent,
+          item?.bucketHash,
+          key: Key(itemKey),
+          density: ContentDensity.MEDIUM,
+          characterId: widget.characterId,
+        );
 
       case ListItem.spacer:
         return Container();

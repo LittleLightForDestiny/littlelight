@@ -7,11 +7,19 @@ import 'package:little_light/widgets/item_list/items/base/base_inventory_item.wi
 
 class WeaponInventoryItemWidget extends BaseInventoryItemWidget {
   WeaponInventoryItemWidget(
-      DestinyItemComponent item,
-      DestinyInventoryItemDefinition definition,
-      DestinyItemInstanceComponent instanceInfo,
-      {@required String characterId, Key key, @required String uniqueId,})
-      : super(item, definition, instanceInfo, characterId:characterId, uniqueId: uniqueId,);
+    DestinyItemComponent item,
+    DestinyInventoryItemDefinition definition,
+    DestinyItemInstanceComponent instanceInfo, {
+    @required String characterId,
+    Key key,
+    @required String uniqueId,
+  }) : super(
+          item,
+          definition,
+          instanceInfo,
+          characterId: characterId,
+          uniqueId: uniqueId,
+        );
 
   @override
   Widget primaryStatWidget(BuildContext context) {

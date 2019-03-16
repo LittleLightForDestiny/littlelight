@@ -11,9 +11,9 @@ import 'package:little_light/widgets/item_details/item_collectible_info.widget.d
 
 import 'package:little_light/widgets/item_details/item_cover/item_cover.widget.dart';
 import 'package:little_light/widgets/item_details/item_lore.widget.dart';
-import 'package:little_light/widgets/item_details/item_mods.widget.dart';
+import 'package:little_light/widgets/item_details/item_detail_mods.widget.dart';
 import 'package:little_light/widgets/item_details/item_objectives.widget.dart';
-import 'package:little_light/widgets/item_details/item_perks.widget.dart';
+import 'package:little_light/widgets/item_details/item_detail_perks.widget.dart';
 import 'package:little_light/widgets/item_details/item_stats.widget.dart';
 import 'package:little_light/widgets/item_details/main_info/item_main_info.widget.dart';
 import 'package:little_light/widgets/item_details/management_block.widget.dart';
@@ -133,7 +133,7 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
   }
 
   Widget buildPerks(BuildContext context){
-    return ItemPerksWidget(
+    return ItemDetailPerksWidget(
             item,
             definition,
             instanceInfo,
@@ -166,7 +166,7 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
   }
 
   Widget buildMods(BuildContext context){
-    return ItemModsWidget(
+    return ItemDetailModsWidget(
             item,
             definition,
             instanceInfo,

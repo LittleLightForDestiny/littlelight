@@ -42,7 +42,7 @@ class VaultItemListWidgetState extends ItemListWidgetState {
 
     listIndex = [];
 
-    widget.bucketHashes.forEach((hash) async {
+    for(var hash in widget.bucketHashes){
       List<DestinyItemComponent> unequipped = itemsByBucket[hash];
       
       if(unequipped == null){
@@ -71,6 +71,14 @@ class VaultItemListWidgetState extends ItemListWidgetState {
       if(mounted){
         setState(() {});
       }
+    }
+    listIndex.add(new ListItem(ListItem.spacer, 0));
+    listIndex.add(new ListItem(ListItem.spacer, 0));
+    if(!mounted){
+      return;
+    }
+    setState(() {
+      this.listIndex = listIndex;
     });
   }
 

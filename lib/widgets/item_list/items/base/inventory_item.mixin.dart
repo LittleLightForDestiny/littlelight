@@ -15,8 +15,9 @@ mixin InventoryItemMixin implements DestinyItemWidget {
         positionedNameBar(context),
         categoryName(context),
         primaryStatWidget(context),
-        perksWidget(context),
         positionedIcon(context),
+        perksWidget(context),
+        modsWidget(context),
       ].where((w) => w != null).toList(),
     );
   }
@@ -51,6 +52,10 @@ mixin InventoryItemMixin implements DestinyItemWidget {
   }
 
   Widget perksWidget(BuildContext context){
+    return Container();
+  }
+
+  Widget modsWidget(BuildContext context){
     return Container();
   }
 

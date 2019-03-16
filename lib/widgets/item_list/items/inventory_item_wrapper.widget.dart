@@ -102,10 +102,20 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
   @override
   Widget build(BuildContext context) {
     return Stack(children: [
-      Positioned.fill(child: buildItem(context)),
+      Positioned.fill(child: buildCrossfade(context)),
       selected ? Container(foregroundDecoration: BoxDecoration(border:Border.all(color:Colors.lightBlue.shade400, width:2)),) : Container(),
       buildTapHandler(context)
     ]);
+  }
+
+   Widget buildCrossfade(BuildContext context){
+    return AnimatedCrossFade(
+      duration:Duration(milliseconds: 500),
+      firstChild:buildEmpty(context),
+      secondChild:buildItem(context),
+      crossFadeState: definition == null ? CrossFadeState.showFirst: CrossFadeState.showSecond,
+    );
+    
   }
 
   Widget buildTapHandler(BuildContext context) {

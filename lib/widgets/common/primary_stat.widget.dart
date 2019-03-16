@@ -17,35 +17,32 @@ class PrimaryStatWidget extends DestinyItemWidget {
   final bool suppressClassTypeIcon;
 
   PrimaryStatWidget(
-    DestinyItemComponent item,
-    DestinyInventoryItemDefinition definition,
-    DestinyItemInstanceComponent instanceInfo, {
-    Key key,
-    this.suppressLabel = false,
-    this.suppressDamageTypeIcon = false,
-    this.suppressAmmoTypeIcon = false,
-    this.suppressClassTypeIcon = false,
-    this.fontSize = 26,
-    this.padding = 8,
-    String characterId
-  }) : super(item, definition, instanceInfo, key: key, characterId:characterId);
+      DestinyItemComponent item,
+      DestinyInventoryItemDefinition definition,
+      DestinyItemInstanceComponent instanceInfo,
+      {Key key,
+      this.suppressLabel = false,
+      this.suppressDamageTypeIcon = false,
+      this.suppressAmmoTypeIcon = false,
+      this.suppressClassTypeIcon = false,
+      this.fontSize = 22,
+      this.padding = 8,
+      String characterId})
+      : super(item, definition, instanceInfo,
+            key: key, characterId: characterId);
 
   int get statValue {
     return instanceInfo.primaryStat.value;
   }
 
   Widget build(BuildContext context) {
-    Color damageTypeColor =
-        DestinyData.getDamageTypeTextColor(instanceInfo.damageType);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: <Widget>[
         Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: mainLineWidgets(context)),
-        suppressLabel
-            ? Container()
-            : primaryStatNameField(context, damageTypeColor)
+        suppressAmmoTypeIcon || definition?.itemType != ItemType.weapon ? Container() : ammoTypeIcon(context)
       ],
     );
   }
@@ -60,9 +57,6 @@ class PrimaryStatWidget extends DestinyItemWidget {
     }
     widgets.add(valueField(
         context, DestinyData.getDamageTypeTextColor(instanceInfo.damageType)));
-    if (definition.itemType == ItemType.weapon && !suppressAmmoTypeIcon) {
-      widgets.add(ammoTypeIcon(context));
-    }
     return widgets;
   }
 
@@ -74,23 +68,15 @@ class PrimaryStatWidget extends DestinyItemWidget {
     );
   }
 
-  Widget primaryStatNameField(BuildContext context, Color color) {
-    return ManifestText<DestinyStatDefinition>(
-        instanceInfo.primaryStat.statHash,
-        uppercase: true,
-        style: TextStyle(
-            color: color,
-            fontWeight: FontWeight.w300,
-            fontSize: fontSize * .7));
-  }
-
   Widget classTypeIcon(BuildContext context) {
     return Row(children: [
       Icon(
-      DestinyData.getClassIcon(instanceInfo.damageType),
-      color: DestinyData.getDamageTypeTextColor(instanceInfo.damageType),
-      size: fontSize,
-    ), ammoTypeDivider(context)]);
+        DestinyData.getClassIcon(instanceInfo.damageType),
+        color: DestinyData.getDamageTypeTextColor(instanceInfo.damageType),
+        size: fontSize,
+      ),
+      ammoTypeDivider(context)
+    ]);
   }
 
   Widget damageTypeIcon(BuildContext context) {
@@ -102,14 +88,11 @@ class PrimaryStatWidget extends DestinyItemWidget {
   }
 
   Widget ammoTypeIcon(BuildContext context) {
-    return Row(children: [
-      ammoTypeDivider(context),
-      Icon(
-        DestinyData.getAmmoTypeIcon(definition.equippingBlock.ammoType),
-        color: DestinyData.getAmmoTypeColor(definition.equippingBlock.ammoType),
-        size: fontSize * 1.3,
-      )
-    ]);
+    return Icon(
+      DestinyData.getAmmoTypeIcon(definition.equippingBlock.ammoType),
+      color: DestinyData.getAmmoTypeColor(definition.equippingBlock.ammoType),
+      size: fontSize * 1.3,
+    );
   }
 
   Widget ammoTypeDivider(BuildContext context) {

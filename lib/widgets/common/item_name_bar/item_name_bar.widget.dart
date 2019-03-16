@@ -25,7 +25,7 @@ class ItemNameBarWidget extends DestinyItemWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: multiline ? EdgeInsets.only(left:padding.left, right:padding.right) : padding,
+      padding: EdgeInsets.only(left:padding.left, right:padding.right),
       height: fontSize + padding.top * 2,
       alignment: Alignment.centerLeft,
       decoration: nameBarBoxDecoration(),

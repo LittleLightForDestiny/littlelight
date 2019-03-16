@@ -4,6 +4,7 @@ import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/widgets/common/item_name_bar/item_name_bar.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/base_inventory_item.widget.dart';
+import 'package:little_light/widgets/item_list/items/base/item_mods.widget.dart';
 
 class MediumBaseInventoryItemWidget extends BaseInventoryItemWidget {
   MediumBaseInventoryItemWidget(
@@ -54,5 +55,23 @@ class MediumBaseInventoryItemWidget extends BaseInventoryItemWidget {
 
   double get titleFontSize {
     return 12;
+  }
+
+  Widget perksWidget(BuildContext context) {
+    return Container();
+  }
+
+  @override
+  Widget modsWidget(BuildContext context) {
+    return Positioned(
+      bottom: 4,
+      right:4,
+      child:ItemModsWidget(
+      item,
+      definition,
+      instanceInfo,
+      characterId: characterId,
+      iconSize: 18
+    ));
   }
 }
