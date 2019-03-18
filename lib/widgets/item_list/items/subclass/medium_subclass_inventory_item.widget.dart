@@ -81,7 +81,7 @@ class MediumSubclassInventoryItemWidget extends MediumBaseInventoryItemWidget
               child: Text(
                 definition.displayProperties.name.toUpperCase(),
                 style: TextStyle(
-                    fontSize: titleFontSize, fontWeight: FontWeight.bold),
+                    fontSize: 9, fontWeight: FontWeight.w700),
               ),
             ),
           ]),
@@ -91,5 +91,15 @@ class MediumSubclassInventoryItemWidget extends MediumBaseInventoryItemWidget
   @override
   double get padding {
     return 4;
+  }
+
+  @override
+  Widget perksWidget(BuildContext context) {
+    return Container();
+  }
+
+  @override
+  Widget modsWidget(BuildContext context) {
+    return Container();
   }
 }

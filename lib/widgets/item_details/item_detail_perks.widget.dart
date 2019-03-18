@@ -87,6 +87,7 @@ class ItemDetailPerksWidget extends DestinyItemWidget {
   Widget instancePlugItems(BuildContext context, int socketIndex) {
     DestinyItemSocketState socket = socketStates[socketIndex];
     if(socket.isVisible == false) return null;
+    if(socket.plugHash == null) return null;
     if ((socket.reusablePlugs?.length ?? 0) == 0) {
       return plugItem(context, socket.plugHash, socket.plugHash, socketIndex);
     }
@@ -124,7 +125,7 @@ class ItemDetailPerksWidget extends DestinyItemWidget {
     DestinyInventoryItemDefinition plugDefinition =
         plugDefinitions[plugItemHash];
     bool enabled = socketPlugHash == plugItemHash;
-    bool intrinsic = plugDefinition.plug.plugCategoryIdentifier == "intrinsics";
+    bool intrinsic = plugDefinition?.plug?.plugCategoryIdentifier == "intrinsics";
     bool selected = plugItemHash == selectedPerkHash;
     bool hasCustom = selectedPerkHashes[socketIndex] != socketPlugHash &&
         selectedPerkHashes[socketIndex] != null;
@@ -161,7 +162,7 @@ class ItemDetailPerksWidget extends DestinyItemWidget {
               aspectRatio: 1,
               child: QueuedNetworkImage(
                   imageUrl:
-                      BungieApiService.url(plugDefinition.displayProperties.icon))),
+                      BungieApiService.url(plugDefinition?.displayProperties?.icon))),
           onPressed: () {
             if (this.onSelectPerk != null) {
               this.onSelectPerk(socketIndex, plugItemHash);

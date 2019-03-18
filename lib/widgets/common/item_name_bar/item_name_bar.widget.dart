@@ -11,6 +11,7 @@ class ItemNameBarWidget extends DestinyItemWidget {
   final double fontSize;
   final EdgeInsets padding;
   final bool multiline;
+  final FontWeight fontWeight;
   ItemNameBarWidget(
     DestinyItemComponent item,
     DestinyInventoryItemDefinition definition,
@@ -20,6 +21,7 @@ class ItemNameBarWidget extends DestinyItemWidget {
     this.fontSize = 14,
     this.padding = const EdgeInsets.all(8),
     this.multiline = false,
+    this.fontWeight = FontWeight.bold,
   }) : super(item, definition, instanceInfo, key: key, characterId:characterId);
 
   @override
@@ -62,7 +64,7 @@ class ItemNameBarWidget extends DestinyItemWidget {
         style: TextStyle(
           fontSize: fontSize,
           color: DestinyData.getTierTextColor(definition.inventory.tierType),
-          fontWeight: FontWeight.bold,
+          fontWeight: fontWeight,
         ));
   }
 }

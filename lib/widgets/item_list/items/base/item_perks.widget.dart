@@ -37,6 +37,9 @@ class ItemPerksWidgetState extends DestinyItemState<ItemPerksWidget> {
   }
 
   loadPerks() async {
+    if(definition?.sockets?.socketCategories == null){
+      return;
+    }
     var socketCategoryHashes =
         definition.sockets.socketCategories.map((s) => s.socketCategoryHash);
     var socketCategoryDefinitions = await widget.manifest
