@@ -24,10 +24,9 @@ class WeaponInventoryItemWidget extends BaseInventoryItemWidget {
   @override
   Widget primaryStatWidget(BuildContext context) {
     return Positioned(
-        top: titleFontSize + padding,
-        right: 0,
+        top: titleFontSize + padding*2 + 4,
+        right: 4,
         child: Container(
-          padding: EdgeInsets.all(padding),
           child: PrimaryStatWidget(item, definition, instanceInfo),
         ));
   }

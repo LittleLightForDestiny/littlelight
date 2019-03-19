@@ -36,15 +36,9 @@ class PrimaryStatWidget extends DestinyItemWidget {
   }
 
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: <Widget>[
-        Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: mainLineWidgets(context)),
-        suppressAmmoTypeIcon || definition?.itemType != ItemType.weapon ? Container() : ammoTypeIcon(context)
-      ],
-    );
+    return Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: mainLineWidgets(context));
   }
 
   List<Widget> mainLineWidgets(BuildContext context) {
@@ -57,6 +51,9 @@ class PrimaryStatWidget extends DestinyItemWidget {
     }
     widgets.add(valueField(
         context, DestinyData.getDamageTypeTextColor(instanceInfo.damageType)));
+    if (definition.itemType == ItemType.weapon && !suppressAmmoTypeIcon) {
+      widgets.add(ammoTypeIcon(context));
+    }
     return widgets;
   }
 
@@ -66,6 +63,16 @@ class PrimaryStatWidget extends DestinyItemWidget {
       style: TextStyle(
           color: color, fontWeight: FontWeight.w900, fontSize: fontSize),
     );
+  }
+
+  Widget primaryStatNameField(BuildContext context, Color color) {
+    return ManifestText<DestinyStatDefinition>(
+        instanceInfo.primaryStat.statHash,
+        uppercase: true,
+        style: TextStyle(
+            color: color,
+            fontWeight: FontWeight.w300,
+            fontSize: fontSize * .7));
   }
 
   Widget classTypeIcon(BuildContext context) {
@@ -88,16 +95,19 @@ class PrimaryStatWidget extends DestinyItemWidget {
   }
 
   Widget ammoTypeIcon(BuildContext context) {
-    return Icon(
-      DestinyData.getAmmoTypeIcon(definition.equippingBlock.ammoType),
-      color: DestinyData.getAmmoTypeColor(definition.equippingBlock.ammoType),
-      size: fontSize * 1.3,
-    );
+    return Row(children: [
+      ammoTypeDivider(context),
+      Icon(
+        DestinyData.getAmmoTypeIcon(definition.equippingBlock.ammoType),
+        color: DestinyData.getAmmoTypeColor(definition.equippingBlock.ammoType),
+        size: fontSize * 1.2,
+      )
+    ]);
   }
 
   Widget ammoTypeDivider(BuildContext context) {
     return Container(
-        margin: EdgeInsets.only(left: padding, right: padding / 2),
+        margin: EdgeInsets.only(left: padding/2, right: padding / 4),
         color: Colors.white,
         width: 1,
         height: fontSize);

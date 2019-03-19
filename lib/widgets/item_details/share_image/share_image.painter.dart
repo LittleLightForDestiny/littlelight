@@ -363,7 +363,13 @@ class ShareImageWidget extends StatelessWidget {
     if (itemSockets != null) {
       var socket = itemSockets[socketIndex];
       if(socket.reusablePlugs == null){
-        return Container();
+        if(socket.plugHash != null){
+          return buildPerkIcon(
+                  context, socket.plugHash, true);
+        }else{
+           return Container(
+        width: 72, height: 72, margin: EdgeInsets.all(4));
+        }
       }
       return Column(
           children: socket.reusablePlugs
@@ -373,7 +379,7 @@ class ShareImageWidget extends StatelessWidget {
               .toList());
     }
     return Container(
-        width: 72, height: 72, margin: EdgeInsets.all(4), color: Colors.blue);
+        width: 72, height: 72, margin: EdgeInsets.all(4));
   }
 
   Widget buildPerkIcon(BuildContext context, int plugHash, bool selected) {

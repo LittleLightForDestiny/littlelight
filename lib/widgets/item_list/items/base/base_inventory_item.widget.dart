@@ -22,28 +22,28 @@ class BaseInventoryItemWidget extends DestinyItemWidget
   @override
   Widget perksWidget(BuildContext context) {
     return Positioned(
-      top:50,
+      bottom:6,
       left:96,
       child:ItemPerksWidget(
       item,
       definition,
       instanceInfo,
       characterId: characterId,
-      iconSize: 14,
+      iconSize: 20,
     ));
   }
 
   @override
   Widget modsWidget(BuildContext context) {
     return Positioned(
-      bottom:8,
-      left:96,
+      bottom:6,
+      right:6,
       child:ItemModsWidget(
       item,
       definition,
       instanceInfo,
       characterId: characterId,
-      iconSize: 20,
+      iconSize: 22,
     ));
   }
 }

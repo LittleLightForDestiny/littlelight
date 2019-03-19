@@ -46,7 +46,7 @@ class SearchScreen extends StatefulWidget {
 class SearchScreenState extends State<SearchScreen>
     with SingleTickerProviderStateMixin {
   bool searchOpened = false;
-  Map<int, DestinyInventoryItemDefinition> itemDefinitions;
+  Map<int, DestinyInventoryItemDefinition> perkDefinitions;
   TextEditingController _searchFieldController = new TextEditingController();
 
   TabController _tabController;

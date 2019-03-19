@@ -243,7 +243,7 @@ class ProfileService {
   }
 
   List<DestinyItemSocketState> getItemSockets(String itemInstanceId) {
-    return _profile.itemComponents.sockets.data[itemInstanceId].sockets;
+    return _profile.itemComponents.sockets.data[itemInstanceId]?.sockets;
   }
 
   List<DestinyObjectiveProgress> getItemObjectives(String itemInstanceId) {

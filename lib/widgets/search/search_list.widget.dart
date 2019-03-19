@@ -29,6 +29,7 @@ class SearchListWidgetState extends State<SearchListWidget>
   String get search => widget.tabData.searchText;
   List<_ItemWithOwner> items;
   Map<int, DestinyInventoryItemDefinition> itemDefinitions;
+  Map<int, DestinyInventoryItemDefinition> perkDefinitions;
   StreamSubscription<NotificationEvent> subscription;
 
   @override
@@ -73,8 +74,21 @@ class SearchListWidgetState extends State<SearchListWidget>
     }).toList();
     Iterable<int> hashes = allItems.map((i) => i.item.itemHash);
 
+    Set<int> perkHashes = Set();
+    items.forEach((i){
+      var sockets = profile.getItemSockets(i.item.itemInstanceId);
+      if(sockets == null) return;
+      sockets.forEach((s){
+        if(s.plugHash!= null) perkHashes.add(s.plugHash);
+        if(s.reusablePlugHashes!= null) perkHashes.addAll(s.reusablePlugHashes);
+      });
+    });
+
     itemDefinitions = await manifest
         .getDefinitions<DestinyInventoryItemDefinition>(hashes.toList());
+
+    perkDefinitions = await manifest
+        .getDefinitions<DestinyInventoryItemDefinition>(perkHashes.toList());
 
     if (mounted) {
       sortItems();
@@ -132,6 +146,13 @@ class SearchListWidgetState extends State<SearchListWidget>
 
   List<_ItemWithOwner> get filteredItems {
     if (itemDefinitions == null) return [];
+    Set<int> perksMatched = new Set();
+    for(var p in perkDefinitions.values){
+     var match = p.displayProperties.name
+          .toLowerCase()
+          .contains(search.toLowerCase());
+      if(match) perksMatched.add(p.hash);
+    }
 
     return items.where((item) {
       var def = itemDefinitions[item.item.itemHash];
@@ -239,6 +260,21 @@ class SearchListWidgetState extends State<SearchListWidget>
           .toLowerCase()
           .contains(search.toLowerCase());
         match = match || def.itemTypeDisplayName.toLowerCase().contains(search.toLowerCase());
+      }
+      var sockets = widget.profile.getItemSockets(item?.item?.itemInstanceId ?? 0);
+      if(sockets != null){
+        for(var s in sockets){
+          if(s.plugHash != null && perksMatched.contains(s.plugHash)){
+            return true;
+          }
+          if(s.reusablePlugHashes != null){
+            for(var p in s.reusablePlugHashes){
+              if(perksMatched.contains(p)){
+                return true;
+              }
+            }
+          }
+        }
       }
       return match;
     }).toList();
