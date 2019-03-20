@@ -24,7 +24,7 @@ class SearchListWidget extends StatefulWidget {
   SearchListWidgetState createState() => new SearchListWidgetState();
 }
 
-class SearchListWidgetState extends State<SearchListWidget>
+class SearchListWidgetState<T extends SearchListWidget> extends State<T>
     with AutomaticKeepAliveClientMixin {
   String get search => widget.tabData.searchText;
   List<_ItemWithOwner> items;
@@ -96,12 +96,14 @@ class SearchListWidgetState extends State<SearchListWidget>
     }
   }
 
+  List<SortParameter> get sortOrder => widget.tabData.sortOrder;
+
   sortItems() {
     items.sort((itemA, itemB) => InventoryUtils.sortDestinyItems(
         itemA.item, itemB.item, widget.profile,
         defA: itemDefinitions[itemA.item.itemHash],
         defB: itemDefinitions[itemB.item.itemHash],
-        sortingParams: widget.tabData.sortOrder));
+        sortingParams: sortOrder));
   }
 
   Widget build(BuildContext context) {
@@ -144,6 +146,9 @@ class SearchListWidgetState extends State<SearchListWidget>
   FilterItem get classTypeFilter =>
       widget.tabData.filterData[FilterType.classType];
 
+  List<int> get itemTypes => widget.tabData.itemTypes;
+  List<int> get excludeItemTypes => widget.tabData.itemTypes;
+
   List<_ItemWithOwner> get filteredItems {
     if (itemDefinitions == null) return [];
     Set<int> perksMatched = new Set();
@@ -157,12 +162,12 @@ class SearchListWidgetState extends State<SearchListWidget>
     return items.where((item) {
       var def = itemDefinitions[item.item.itemHash];
       if (def == null) return false;
-      if (widget.tabData.itemTypes != null &&
-          !widget.tabData.itemTypes.contains(def.itemType)) {
+      if (itemTypes != null &&
+          !itemTypes.contains(def.itemType)) {
         return false;
       }
-      if (widget.tabData.excludeItemTypes != null &&
-          widget.tabData.excludeItemTypes.contains(def.itemType)) {
+      if (excludeItemTypes != null &&
+          excludeItemTypes.contains(def.itemType)) {
         return false;
       }
       if (powerLevelFilter != null) {

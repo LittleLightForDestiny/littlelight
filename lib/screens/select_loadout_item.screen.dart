@@ -1,19 +1,11 @@
-import 'dart:math';
-
-import 'package:bungie_api/enums/destiny_class_enum.dart';
 import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
-import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/selected_page_persistence.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-import 'package:little_light/widgets/item_list/items/loadout_search_item_wrapper.widget.dart';
+import 'package:little_light/widgets/loadouts/loadout_search_list.widget.dart';
 
 class SelectLoadoutItemScreen extends StatefulWidget {
   final DestinyInventoryItemDefinition emblemDefinition;
@@ -36,7 +28,6 @@ class SelectLoadoutItemScreen extends StatefulWidget {
 class SelectLoadoutItemScreenState extends State<SelectLoadoutItemScreen> {
   bool searchOpened = false;
   String search = "";
-  List<_ItemWithOwner> items;
   Map<int, DestinyInventoryItemDefinition> itemDefinitions;
   TextEditingController _searchFieldController = new TextEditingController();
 
@@ -49,59 +40,8 @@ class SelectLoadoutItemScreenState extends State<SelectLoadoutItemScreen> {
       setState(() {});
     });
     super.initState();
-    loadItems();
   }
 
-  loadItems() async {
-    List<_ItemWithOwner> allItems = [];
-    ProfileService profile = ProfileService();
-    ManifestService manifest = ManifestService();
-    Iterable<String> charIds =
-        profile.getCharacters().map((char) => char.characterId);
-    charIds.forEach((charId) {
-      allItems.addAll(profile
-          .getCharacterEquipment(charId)
-          .map((item) => _ItemWithOwner(item, charId)));
-      allItems.addAll(profile
-          .getCharacterInventory(charId)
-          .map((item) => _ItemWithOwner(item, charId)));
-    });
-    allItems.addAll(profile
-        .getProfileInventory()
-        .map((item) => _ItemWithOwner(item, null)));
-    allItems.removeWhere((i) =>
-        i.item.itemInstanceId == null ||
-        widget.idsToAvoid.contains(i.item.itemInstanceId));
-    allItems.sort(
-        (a, b) => InventoryUtils.sortDestinyItems(a.item, b.item, profile));
-    List<int> hashes = allItems.map((i) => i.item.itemHash).toList();
-    itemDefinitions = Map();
-    items = [];
-    for (var i = 0; i < hashes.length; i += 10) {
-      int start = i;
-      int end = min(i + 10, hashes.length - 1);
-      var defs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(
-          hashes.sublist(start, end));
-      itemDefinitions.addAll(defs);
-      items.addAll(allItems.sublist(start, end).where((i) {
-        var def = itemDefinitions[i.item.itemHash];
-        if (widget.classType != null &&
-            widget.classType != def.classType &&
-            def.classType != DestinyClass.Unknown) {
-          return false;
-        }
-        if (def.inventory.bucketTypeHash != widget.bucketDefinition.hash) {
-          return false;
-        }
-        return true;
-      }));
-      if (mounted) {
-        setState(() {});
-      }
-    }
-  }
-
-  sortItems() {}
 
   @override
   Widget build(BuildContext context) {
@@ -121,6 +61,7 @@ class SelectLoadoutItemScreenState extends State<SelectLoadoutItemScreen> {
           icon: Icon(searchOpened ? Icons.clear : Icons.search),
           onPressed: () {
             searchOpened = !searchOpened;
+            search = "";
             setState(() {});
           },
         )
@@ -154,53 +95,6 @@ class SelectLoadoutItemScreenState extends State<SelectLoadoutItemScreen> {
   }
 
   Widget buildItemList(BuildContext context) {
-    return StaggeredGridView.countBuilder(
-      padding: EdgeInsets.all(4),
-      crossAxisCount: 6,
-      itemCount: filteredItems?.length ?? 0,
-      itemBuilder: (BuildContext context, int index) => getItem(context, index),
-      staggeredTileBuilder: (int index) => getTileBuilder(context, index),
-      mainAxisSpacing: 2,
-      crossAxisSpacing: 2,
-      physics: const AlwaysScrollableScrollPhysics(),
-    );
+    return LoadoutSearchListWidget(searchText: this.search, bucketType: widget.bucketDefinition.hash),
   }
-
-  List<_ItemWithOwner> get filteredItems {
-    if (search.length == 0) {
-      return items;
-    }
-    if (search.length < 5) {
-      return items.where((item) {
-        var def = itemDefinitions[item.item.itemHash];
-        return def.displayProperties.name
-            .toLowerCase()
-            .startsWith(search.toLowerCase());
-      }).toList();
-    }
-    return items.where((item) {
-      var def = itemDefinitions[item.item.itemHash];
-      return def.displayProperties.name
-          .toLowerCase()
-          .contains(search.toLowerCase());
-    }).toList();
-  }
-
-  StaggeredTile getTileBuilder(BuildContext context, int index) {
-    return StaggeredTile.extent(6, 96);
-  }
-
-  Widget getItem(BuildContext context, int index) {
-    var item = filteredItems[index];
-    return LoadoutSearchItemWrapperWidget(
-        item.item, widget.bucketDefinition.hash,
-        characterId: item.ownerId,
-        key: Key("item_${item.item.itemInstanceId}"));
-  }
-}
-
-class _ItemWithOwner {
-  DestinyItemComponent item;
-  String ownerId;
-  _ItemWithOwner(this.item, this.ownerId);
 }
