@@ -95,6 +95,6 @@ class SelectLoadoutItemScreenState extends State<SelectLoadoutItemScreen> {
   }
 
   Widget buildItemList(BuildContext context) {
-    return LoadoutSearchListWidget(searchText: this.search, bucketType: widget.bucketDefinition.hash),
+    return LoadoutSearchListWidget(searchText: this.search, bucketType: widget.bucketDefinition.hash);
   }
 }
