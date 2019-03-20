@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/utils/inventory_utils.dart';
+import 'package:little_light/widgets/item_list/items/loadout_search_item_wrapper.widget.dart';
 import 'package:little_light/widgets/search/search_filters.widget.dart';
 import 'package:little_light/widgets/search/search_list.widget.dart';
 
 class LoadoutSearchListWidget extends SearchListWidget {
   final String searchText;
   final int bucketType;
-  LoadoutSearchListWidget({Key key, this.searchText, this.bucketType}) : super(key: key);
+  final int classType;
+  final Iterable<String> idsToAvoid;
+  LoadoutSearchListWidget({Key key, this.searchText, this.bucketType, this.classType, this.idsToAvoid}) : super(key: key);
 
   @override
   LoadoutSearchListWidgetState createState() => LoadoutSearchListWidgetState();
@@ -39,7 +42,7 @@ class LoadoutSearchListWidgetState
   FilterItem get ammoTypeFilter => null;
   
   @override
-  FilterItem get classTypeFilter => null;
+  FilterItem get classTypeFilter => widget.classType != null ? FilterItem([widget.classType], [widget.classType]) : null;
 
   @override
   List<int> get itemTypes => null;
@@ -49,4 +52,26 @@ class LoadoutSearchListWidgetState
 
   @override
   List<SortParameter> get sortOrder => [SortParameter(SortParameterType.power, -1)];
+
+  @override
+  List<ItemWithOwner> get filteredItems {
+    var items = super.filteredItems;
+    if(widget.idsToAvoid != null){
+      items = items.where((item)=>!widget.idsToAvoid.contains(item.item.itemInstanceId)).toList();
+    }
+    return items;
+  }
+
+  @override
+  Widget getItem(BuildContext context, int index) {
+    if(filteredItems == null) return null;
+    if(index > filteredItems.length - 1) return null;
+    var item = filteredItems[index];
+    if (itemDefinitions == null || itemDefinitions[item.item.itemHash] == null)
+      return Container();
+    return LoadoutSearchItemWrapperWidget(item.item,
+        itemDefinitions[item.item.itemHash]?.inventory?.bucketTypeHash,
+        characterId: item.ownerId,
+        key: Key("item_${item.item.itemInstanceId}_${item.item.itemHash}"));
+  }
 }

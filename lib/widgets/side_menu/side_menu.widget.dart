@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:little_light/screens/collections.screen.dart';
-import 'package:little_light/screens/credits.screen.dart';
+import 'package:little_light/screens/about.screen.dart';
 import 'package:little_light/screens/equipment.screen.dart';
 import 'package:little_light/screens/initial.screen.dart';
 import 'package:little_light/screens/loadouts.screen.dart';
@@ -69,8 +69,8 @@ class SideMenuWidget extends StatelessWidget {
                   menuItem(context, "Triumphs", onTap: () {
                     open(context, TriumphsScreen());
                   }),
-                  menuItem(context, "Credits", onTap: () {
-                    open(context, CreditsScreen());
+                  menuItem(context, "About", onTap: () {
+                    open(context, AboutScreen());
                   }),
                   menuItem(context, "Translations", onTap: () async {
                     await launch('https://github.com/marquesinijatinha/littlelight_translations');

@@ -7,7 +7,7 @@ description: A new Flutter project.
 # Both the version and the builder number may be overridden in flutter
 # build by specifying --build-name and --build-number, respectively.
 # Read more about versioning at semver.org.
-version: 1.4.9+10409
+version: 1.5.0+10500
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
@@ -24,7 +24,7 @@ dependencies:
   http: ^0.12.0+1
   path_provider: ^0.5.0+1
   uni_links: ^0.2.0
-  
+  font_awesome_flutter: ^8.4.0
   bungie_api:
     # path: ../bungie-api-dart
     git: https://github.com/marquesinijatinha/bungie-api-dart
@@ -34,10 +34,7 @@ dependencies:
     
   sentry: ^2.2.0
   flutter_dotenv: 2.0.1
-  url_launcher: 
-    git: 
-      url: https://github.com/marquesinijatinha/plugins
-      path: packages/url_launcher
+  url_launcher: ^5.0.2
       
   screen: ^0.0.5
   package_info: 0.4.0+1

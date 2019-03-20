@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:bungie_api/enums/damage_type_enum.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
@@ -21,6 +22,7 @@ import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
+
 class ShareImageWidget extends StatelessWidget {
   final DestinyInventoryItemDefinition definition;
   final Map<int, DestinySocketCategoryDefinition> socketCategoryDefinitions;
@@ -55,7 +57,8 @@ class ShareImageWidget extends StatelessWidget {
 
   static Future<ShareImageWidget> builder(BuildContext context,
       {DestinyItemComponent item,
-      DestinyInventoryItemDefinition definition, Function onLoad}) async {
+      DestinyInventoryItemDefinition definition,
+      Function onLoad}) async {
     ManifestService manifest = ManifestService();
     var socketCategoryHashes =
         definition.sockets.socketCategories.map((s) => s.socketCategoryHash);
@@ -140,9 +143,10 @@ class ShareImageWidget extends StatelessWidget {
     var statDefinitions =
         await manifest.getDefinitions<DestinyStatDefinition>(statHashes);
     var statGroupDefinition;
-    if(definition?.stats?.statGroupHash != null){
-      statGroupDefinition = await manifest.getDefinition<DestinyStatGroupDefinition>(
-            definition.stats.statGroupHash);
+    if (definition?.stats?.statGroupHash != null) {
+      statGroupDefinition =
+          await manifest.getDefinition<DestinyStatGroupDefinition>(
+              definition.stats.statGroupHash);
     }
 
     var loreDefinition;
@@ -187,11 +191,10 @@ class ShareImageWidget extends StatelessWidget {
   Widget buildHeaderBackground(BuildContext context) {
     return Image(
       image: AdvancedNetworkImage(BungieApiService.url(definition.screenshot),
-      loadedCallback: (){
+          loadedCallback: () {
         print('loaded');
         onLoad();
-      },
-      loadedFromDiskCacheCallback: (){
+      }, loadedFromDiskCacheCallback: () {
         onLoad();
       }),
       fit: BoxFit.none,
@@ -200,8 +203,8 @@ class ShareImageWidget extends StatelessWidget {
 
   Widget buildItemInfo(BuildContext context) {
     double left = 148;
-    if(loreDefinition != null){
-      left+= 250;
+    if (loreDefinition != null) {
+      left += 250;
     }
     return Positioned(
         left: left,
@@ -362,13 +365,11 @@ class ShareImageWidget extends StatelessWidget {
   Widget buildPerkColumn(BuildContext context, int socketIndex) {
     if (itemSockets != null) {
       var socket = itemSockets[socketIndex];
-      if(socket.reusablePlugs == null){
-        if(socket.plugHash != null){
-          return buildPerkIcon(
-                  context, socket.plugHash, true);
-        }else{
-           return Container(
-        width: 72, height: 72, margin: EdgeInsets.all(4));
+      if (socket.reusablePlugs == null) {
+        if (socket.plugHash != null) {
+          return buildPerkIcon(context, socket.plugHash, true);
+        } else {
+          return Container(width: 72, height: 72, margin: EdgeInsets.all(4));
         }
       }
       return Column(
@@ -378,8 +379,7 @@ class ShareImageWidget extends StatelessWidget {
                   context, s.plugItemHash, s.plugItemHash == socket.plugHash))
               .toList());
     }
-    return Container(
-        width: 72, height: 72, margin: EdgeInsets.all(4));
+    return Container(width: 72, height: 72, margin: EdgeInsets.all(4));
   }
 
   Widget buildPerkIcon(BuildContext context, int plugHash, bool selected) {
@@ -489,7 +489,7 @@ class ShareImageWidget extends StatelessWidget {
   }
 
   Widget buildPrimaryStat(BuildContext context) {
-    if(instanceInfo?.primaryStat == null){
+    if (instanceInfo?.primaryStat == null) {
       return Container();
     }
     int statValue = instanceInfo.primaryStat.value;
@@ -498,13 +498,21 @@ class ShareImageWidget extends StatelessWidget {
     if (statValue == null) {
       statValue = definition.stats.stats["$statHash"].value;
     }
+    bool showDamageType = [DamageType.Arc,DamageType.Thermal, DamageType.Void].contains(instanceInfo.damageType);
     return Container(
       child:
           Column(crossAxisAlignment: CrossAxisAlignment.end, children: <Widget>[
-        Text(
-          "$statValue",
-          style: TextStyle(fontWeight: FontWeight.w700, fontSize: 50),
-        ),
+        Row(children: [
+          showDamageType ? Icon(
+            DestinyData.getDamageTypeIcon(instanceInfo.damageType),
+            color:DestinyData.getDamageTypeColor(instanceInfo.damageType),
+            size:50
+            ) : Container(),
+          Text(
+            "$statValue",
+            style: TextStyle(fontWeight: FontWeight.w700, fontSize: 50),
+          ),
+        ]),
         Text(
           def.displayProperties.name.toUpperCase(),
           style: TextStyle(fontSize: 18, color: Colors.white),
@@ -526,12 +534,14 @@ class ShareImageWidget extends StatelessWidget {
             children: <Widget>[
               Container(
                 width: 20,
-                height:20,
+                height: 20,
                 child: Image(
                     image: AdvancedNetworkImage(BungieApiService.url(
                         masterworkObjectiveDefinition.displayProperties.icon))),
               ),
-              Container(width: 4,),
+              Container(
+                width: 4,
+              ),
               Text(masterworkObjectiveDefinition.progressDescription,
                   style: TextStyle(color: Colors.white, fontSize: 15)),
               Container(
@@ -865,38 +875,40 @@ class ShareImageWidget extends StatelessWidget {
 
   Widget buildItemLore(BuildContext context) {
     if (definition?.loreHash == null) return Container();
-    return 
-    Positioned(
-      left:0, top:0,
-      bottom: 0,
-      width: 350,
-    child:Container(
-      color: Colors.black.withOpacity(.6),
-      padding: EdgeInsets.all(8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Container(height:108),
-          HeaderWidget(
-            alignment: Alignment.centerLeft,
-            child:TranslatedTextWidget("Lore",
-                uppercase: true,
-                style: TextStyle(
-                    fontSize: 18, fontWeight: FontWeight.bold)),
+    return Positioned(
+        left: 0,
+        top: 0,
+        bottom: 0,
+        width: 350,
+        child: Container(
+          color: Colors.black.withOpacity(.6),
+          padding: EdgeInsets.all(8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Container(height: 108),
+              HeaderWidget(
+                alignment: Alignment.centerLeft,
+                child: TranslatedTextWidget("Lore",
+                    uppercase: true,
+                    style:
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              ),
+              Container(height: 16),
+              Expanded(
+                  child: Container(
+                      padding: EdgeInsets.all(4),
+                      child: Text(
+                        loreDefinition.displayProperties.description
+                            .replaceAll('\n\n', '\n'),
+                        softWrap: true,
+                        overflow: TextOverflow.fade,
+                        style: TextStyle(
+                            fontStyle: FontStyle.italic,
+                            fontWeight: FontWeight.w300),
+                      )))
+            ],
           ),
-          Container(height: 16),
-          Expanded(
-          child:Container(
-              padding: EdgeInsets.all(4),
-              child: Text(
-                loreDefinition.displayProperties.description.replaceAll('\n\n', '\n'),
-                softWrap: true,
-                overflow: TextOverflow.fade,
-                style: TextStyle(
-                    fontStyle: FontStyle.italic, fontWeight: FontWeight.w300),
-              )))
-        ],
-      ),
-    ));
+        ));
   }
 }

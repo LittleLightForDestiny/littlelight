@@ -42,7 +42,6 @@ class SelectLoadoutItemScreenState extends State<SelectLoadoutItemScreen> {
     super.initState();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -95,6 +94,9 @@ class SelectLoadoutItemScreenState extends State<SelectLoadoutItemScreen> {
   }
 
   Widget buildItemList(BuildContext context) {
-    return LoadoutSearchListWidget(searchText: this.search, bucketType: widget.bucketDefinition.hash);
+    return LoadoutSearchListWidget(
+        searchText: this.search, bucketType: widget.bucketDefinition.hash,
+        classType:widget.classType,
+        idsToAvoid:widget.idsToAvoid);
   }
 }

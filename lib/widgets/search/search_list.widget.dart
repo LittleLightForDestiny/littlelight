@@ -27,7 +27,7 @@ class SearchListWidget extends StatefulWidget {
 class SearchListWidgetState<T extends SearchListWidget> extends State<T>
     with AutomaticKeepAliveClientMixin {
   String get search => widget.tabData.searchText;
-  List<_ItemWithOwner> items;
+  List<ItemWithOwner> items;
   Map<int, DestinyInventoryItemDefinition> itemDefinitions;
   Map<int, DestinyInventoryItemDefinition> perkDefinitions;
   StreamSubscription<NotificationEvent> subscription;
@@ -51,7 +51,7 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
   }
 
   loadItems() async {
-    List<_ItemWithOwner> allItems = [];
+    List<ItemWithOwner> allItems = [];
     ProfileService profile = ProfileService();
     ManifestService manifest = ManifestService();
     Iterable<String> charIds =
@@ -59,14 +59,14 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
     charIds.forEach((charId) {
       allItems.addAll(profile
           .getCharacterEquipment(charId)
-          .map((item) => _ItemWithOwner(item, charId)));
+          .map((item) => ItemWithOwner(item, charId)));
       allItems.addAll(profile
           .getCharacterInventory(charId)
-          .map((item) => _ItemWithOwner(item, charId)));
+          .map((item) => ItemWithOwner(item, charId)));
     });
     allItems.addAll(profile
         .getProfileInventory()
-        .map((item) => _ItemWithOwner(item, null)));
+        .map((item) => ItemWithOwner(item, null)));
     allItems.sort(
         (a, b) => InventoryUtils.sortDestinyItems(a.item, b.item, profile));
     items = allItems.where((item) {
@@ -149,7 +149,7 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
   List<int> get itemTypes => widget.tabData.itemTypes;
   List<int> get excludeItemTypes => widget.tabData.itemTypes;
 
-  List<_ItemWithOwner> get filteredItems {
+  List<ItemWithOwner> get filteredItems {
     if (itemDefinitions == null) return [];
     Set<int> perksMatched = new Set();
     for(var p in perkDefinitions.values){
@@ -305,8 +305,8 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
   bool get wantKeepAlive => true;
 }
 
-class _ItemWithOwner {
+class ItemWithOwner {
   DestinyItemComponent item;
   String ownerId;
-  _ItemWithOwner(this.item, this.ownerId);
+  ItemWithOwner(this.item, this.ownerId);
 }
