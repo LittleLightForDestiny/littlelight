@@ -367,7 +367,7 @@ class ShareImageWidget extends StatelessWidget {
       var socket = itemSockets[socketIndex];
       if (socket.reusablePlugs == null) {
         if (socket.plugHash != null) {
-          return buildPerkIcon(context, socket.plugHash, true);
+          return Column(children:[buildPerkIcon(context, socket.plugHash, true)]);
         } else {
           return Container(width: 72, height: 72, margin: EdgeInsets.all(4));
         }

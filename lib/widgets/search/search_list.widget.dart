@@ -147,7 +147,7 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
       widget.tabData.filterData[FilterType.classType];
 
   List<int> get itemTypes => widget.tabData.itemTypes;
-  List<int> get excludeItemTypes => widget.tabData.itemTypes;
+  List<int> get excludeItemTypes => widget.tabData.excludeItemTypes;
 
   List<ItemWithOwner> get filteredItems {
     if (itemDefinitions == null) return [];
