@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/screens/collections.screen.dart';
 import 'package:little_light/screens/about.screen.dart';
+import 'package:little_light/screens/dev_tools.screen.dart';
 import 'package:little_light/screens/equipment.screen.dart';
 import 'package:little_light/screens/initial.screen.dart';
 import 'package:little_light/screens/loadouts.screen.dart';
@@ -21,6 +22,8 @@ class SideMenuWidget extends StatelessWidget {
   SideMenuWidget({Key key, this.onPageChange}) : super(key: key);
 
   Widget build(BuildContext context) {
+    bool isDebug = false;
+    assert(isDebug = true);
     return Container(
         color: Theme.of(context).backgroundColor,
         width: 280,
@@ -68,6 +71,9 @@ class SideMenuWidget extends StatelessWidget {
                   menuItem(context, "About", onTap: () {
                     open(context, AboutScreen());
                   }),
+                  isDebug ? menuItem(context, "Dev tools", onTap: () {
+                    open(context, DevToolsScreen());
+                  }) : Container()
                 ],
               )),
             ]));

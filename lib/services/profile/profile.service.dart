@@ -298,15 +298,17 @@ class ProfileService {
   }
 
   List<DestinyItemComponent> getCharacterEquipment(String characterId) {
-    return _profile.characterEquipment.data[characterId].items;
+    if(_profile.characterEquipment?.data == null) return [];
+    return _profile.characterEquipment?.data[characterId]?.items ?? [];
   }
 
   List<DestinyItemComponent> getCharacterInventory(String characterId) {
-    return _profile.characterInventories.data[characterId].items;
+    if(_profile.characterInventories?.data == null) return [];
+    return _profile.characterInventories?.data[characterId]?.items ?? [];
   }
 
   List<DestinyItemComponent> getProfileInventory() {
-    return _profile.profileInventory.data.items;
+    return _profile?.profileInventory?.data?.items ?? [];
   }
 
   DestinyCharacterProgressionComponent getCharacterProgression(
