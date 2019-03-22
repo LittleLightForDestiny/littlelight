@@ -15,10 +15,12 @@ class ManifestImageWidget<T> extends StatefulWidget {
   final Widget placeholder;
 
   final BoxFit fit;
+  final Alignment alignment;
 
   ManifestImageWidget(this.hash,
       {Key key,
       this.fit = BoxFit.contain,
+      this.alignment = Alignment.center,
       this.urlExtractor,
       this.placeholder})
       : super(key: key);
@@ -66,6 +68,7 @@ class ManifestImageState<T> extends State<ManifestImageWidget<T>> {
     return QueuedNetworkImage(
       imageUrl: BungieApiService.url(url),
       fit: widget.fit,
+      alignment: widget.alignment,
       placeholder: widget.placeholder ?? shimmer,
       fadeInDuration: Duration(milliseconds: 300),
     );

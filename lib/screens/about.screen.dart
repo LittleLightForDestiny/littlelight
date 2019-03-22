@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:launch_review/launch_review.dart';
 import 'package:little_light/services/translate/translate.service.dart';
 import 'package:little_light/utils/platform_data.dart';
+import 'package:little_light/widgets/about/supporter_character.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -32,6 +36,7 @@ class _AboutScreenState extends State<AboutScreen> {
 
   @override
   Widget build(BuildContext context) {
+    bool isIOS = Platform.isIOS;
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -46,76 +51,226 @@ class _AboutScreenState extends State<AboutScreen> {
             child: Container(
                 padding: EdgeInsets.all(8),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                  buildAppInfo(context),
-                  Container(
-                    height: 8,
-                  ),
-                  RaisedButton(
-
-                    child:Row(children:[Icon(FontAwesomeIcons.twitter), Container(width:4), TranslatedTextWidget("Follow @LittleLightD2")]), 
-                  onPressed: (){
-                    launch("http://www.twitter.com/littlelightD2");
-                  },),
-                  Container(height:8),
-                  HeaderWidget(
-                    alignment: Alignment.centerLeft,
-                    child: TranslatedTextWidget("Development",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                        uppercase: true),
-                  ),
-                  Container(
-                    height: 8,
-                  ),
-                  buildTagAndPlatform("jaoryuken", 2),
-                  Container(
-                    height: 8,
-                  ),
-                  HeaderWidget(
-                    alignment: Alignment.centerLeft,
-                    child: TranslatedTextWidget("Translations",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                        uppercase: true),
-                  ),
-                  Container(height: 8),
-                  buildTranslationHeader(context, ['es', 'es-mx']),
-                  Container(
-                      color: Colors.blueGrey.shade800,
-                      padding: EdgeInsets.all(4),
-                      child: Column(children: [
-                        buildTagAndPlatform("RaSSieL", 2),
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      buildAppInfo(context),
+                      Container(
+                        height: 8,
+                      ),
+                      HeaderWidget(
+                          alignment: Alignment.centerLeft,
+                          child: TranslatedTextWidget(
+                            "Contact",
+                            uppercase: true,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          )),
                         Container(
-                          height: 4,
-                        ),
-                        buildTagAndPlatform("alexfa55", 2),
-                      ])),
-                  Container(height: 8),
-                  buildTranslationHeader(context, ['it']),
-                  Container(
-                      color: Colors.blueGrey.shade800,
-                      padding: EdgeInsets.all(4),
-                      child: Column(children: [
-                        buildTagAndPlatform("QUB3X#2230", 4),
-                      ])),
-                  Container(height: 8),
-                  buildTranslationHeader(context, ['pl']),
-                  Container(
-                      color: Colors.blueGrey.shade800,
-                      padding: EdgeInsets.all(4),
-                      child: Column(children: [
-                        buildTagAndPlatform("Nicolas2837", 2),
-                      ])),
-                  Container(height: 8),
-                  buildTranslationHeader(context, ['ru']),
-                  Container(
-                      color: Colors.blueGrey.shade800,
-                      padding: EdgeInsets.all(4),
-                      child: Column(children: [
-                        buildTagAndPlatform("Antonius#21840", 4),
-                      ])),
-                  Container(height: 8),
-                ]))));
+                        height: 4,
+                      ),
+                      RaisedButton(
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(FontAwesomeIcons.twitter, size: 16),
+                              Container(width: 4),
+                              TranslatedTextWidget("Follow @LittleLightD2")
+                            ]),
+                        onPressed: () {
+                          launch("http://www.twitter.com/littlelightD2");
+                        },
+                      ),
+                        Container(
+                        height: 4,
+                      ),
+                      RaisedButton(
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        color: Colors.blueGrey.shade400,
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(FontAwesomeIcons.discord, size: 16),
+                              Container(width: 4),
+                              TranslatedTextWidget("Join the Discord server")
+                            ]),
+                        onPressed: () {
+                          launch("https://discord.gg/ztdFGGz");
+                        },
+                      ),
+                        Container(
+                        height: 4,
+                      ),
+                      RaisedButton(
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        color: Colors.red.shade600,
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(FontAwesomeIcons.github, size: 16),
+                              Container(width: 4),
+                              TranslatedTextWidget("Report issues")
+                            ]),
+                        onPressed: () {
+                          launch(
+                              "https://github.com/marquesinijatinha/littlelight_translations/issues");
+                        },
+                      ),
+                      Container(height: 16),
+                      HeaderWidget(
+                          alignment: Alignment.centerLeft,
+                          child: TranslatedTextWidget(
+                            "Want to support Little Light ?",
+                            uppercase: true,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          )),
+                      Container(
+                        height: 4,
+                      ),
+                      RaisedButton(
+                          materialTapTargetSize:
+                              MaterialTapTargetSize.shrinkWrap,
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                    isIOS
+                                        ? FontAwesomeIcons.appStoreIos
+                                        : FontAwesomeIcons.googlePlay,
+                                    size: 20),
+                                Container(
+                                  width: 4,
+                                ),
+                                TranslatedTextWidget(
+                                  "Rate it",
+                                  uppercase: true,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 12),
+                                )
+                              ]),
+                          onPressed: () {
+                            LaunchReview.launch(
+                                androidAppId: 'me.markezine.luzinha',
+                                iOSAppId: '1373037254');
+                          }),
+                      Container(
+                        height: 4,
+                      ),
+                      RaisedButton(
+                          color: Color.fromRGBO(249, 104, 84, 1),
+                          materialTapTargetSize:
+                              MaterialTapTargetSize.shrinkWrap,
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                    width: 20,
+                                    height: 20,
+                                    child: Image.asset(
+                                        "assets/imgs/patreon-icon.png")),
+                                Container(
+                                  width: 4,
+                                ),
+                                TranslatedTextWidget(
+                                  "Become a Patron",
+                                  uppercase: true,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 12),
+                                )
+                              ]),
+                          onPressed: () {
+                            launch('https://www.patreon.com/littlelightD2');
+                          }),
+                      Container(
+                        height: 4,
+                      ),
+                      RaisedButton(
+                          color: Color.fromRGBO(26, 169, 222, 1),
+                          materialTapTargetSize:
+                              MaterialTapTargetSize.shrinkWrap,
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                    width: 20,
+                                    height: 20,
+                                    child: Image.asset(
+                                        "assets/imgs/ko-fi-icon.png")),
+                                Container(
+                                  width: 4,
+                                ),
+                                TranslatedTextWidget(
+                                  "Buy me a Coffee",
+                                  uppercase: true,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 12),
+                                )
+                              ]),
+                          onPressed: () {
+                            launch('https://ko-fi.com/littlelight');
+                          }),
+                      Container(
+                        height: 16,
+                      ),
+                      HeaderWidget(
+                        alignment: Alignment.centerLeft,
+                        child: TranslatedTextWidget("Development",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                            uppercase: true),
+                      ),
+                      Container(
+                        height: 8,
+                      ),
+                      buildTagAndPlatform(4611686018441021725, 2),
+                      Container(
+                        height: 8,
+                      ),
+                      HeaderWidget(
+                        alignment: Alignment.centerLeft,
+                        child: TranslatedTextWidget("Translations",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                            uppercase: true),
+                      ),
+                      Container(height: 8),
+                      buildTranslationHeader(context, ['es', 'es-mx']),
+                      Container(
+                          color: Colors.blueGrey.shade800,
+                          padding: EdgeInsets.all(4),
+                          child: Column(children: [
+                            buildTagAndPlatform(4611686018429051657, 2),
+                            Container(
+                              height: 4,
+                            ),
+                            buildTagAndPlatform(4611686018450956952, 2),
+                          ])),
+                      Container(height: 8),
+                      buildTranslationHeader(context, ['it']),
+                      Container(
+                          color: Colors.blueGrey.shade800,
+                          padding: EdgeInsets.all(4),
+                          child: Column(children: [
+                            buildTagAndPlatform(4611686018467289582, 4),
+                          ])),
+                      Container(height: 8),
+                      buildTranslationHeader(context, ['pl']),
+                      Container(
+                          color: Colors.blueGrey.shade800,
+                          padding: EdgeInsets.all(4),
+                          child: Column(children: [
+                            buildTagAndPlatform(4611686018451719977, 2),
+                          ])),
+                      Container(height: 8),
+                      buildTranslationHeader(context, ['ru']),
+                      Container(
+                          color: Colors.blueGrey.shade800,
+                          padding: EdgeInsets.all(4),
+                          child: Column(children: [
+                            buildTagAndPlatform(4611686018486012725, 4),
+                          ])),
+                      Container(height: 8),
+                    ]))));
   }
 
   Widget buildAppInfo(BuildContext context) {
@@ -135,7 +290,7 @@ class _AboutScreenState extends State<AboutScreen> {
             Text(
               "$appName v$packageVersion",
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            )
+            ),
           ],
         ))
       ],
@@ -161,20 +316,7 @@ class _AboutScreenState extends State<AboutScreen> {
         child: Image.asset("assets/imgs/flags/$code.png"));
   }
 
-  buildTagAndPlatform(String name, int platformType) {
-    var platform = PlatformData.getPlatform(platformType);
-    return Container(
-        decoration: BoxDecoration(
-            color: platform.color, borderRadius: BorderRadius.circular(4)),
-        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-        child: Row(
-          children: <Widget>[
-            Icon(platform.iconData),
-            Container(
-              width: 4,
-            ),
-            Text(name)
-          ],
-        ));
+  buildTagAndPlatform(int membershipId, int membershipType) {
+    return SupporterCharacterWidget(membershipId, membershipType);
   }
 }

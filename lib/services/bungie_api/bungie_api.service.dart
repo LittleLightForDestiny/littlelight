@@ -56,18 +56,29 @@ class BungieApiService {
         new Client(), clientId, clientSecret, refreshToken);
   }
 
-  Future<DestinyProfileResponse> getProfile(List<int> components) async {
+  Future<DestinyProfileResponse> getCurrentProfile(List<int> components) async {
     SavedToken token = await auth.getToken();
     SavedMembership membership = await auth.getMembership();
     UserInfoCard selectedMembership = membership?.selectedMembership;
     if(selectedMembership == null) return null;
+    return await getProfile(
+        components,
+        selectedMembership.membershipId,
+        selectedMembership.membershipType,
+        token);
+  }
+
+  Future<DestinyProfileResponse> getProfile(List<int> components, String membershipId, int membershipType, [SavedToken token]) async {
     DestinyProfileResponseResponse response = await Destiny2.getProfile(
         new Client(token),
         components,
-        selectedMembership.membershipId,
-        selectedMembership.membershipType);
+        membershipId,
+        membershipType);
     return response.response;
   }
+
+
+  
 
   Future<UserMembershipData> getMemberships() async {
     SavedToken token = await auth.getToken();

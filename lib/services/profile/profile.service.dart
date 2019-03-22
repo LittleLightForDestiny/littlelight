@@ -108,7 +108,7 @@ class ProfileService {
       List<int> components) async {
     DestinyProfileResponse response;
     try {
-     response = await _api.getProfile(components);
+     response = await _api.getCurrentProfile(components);
     } on SocketException catch (e) {
       print(e);
       //TODO:implement error handling

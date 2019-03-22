@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:little_light/screens/collections.screen.dart';
 import 'package:little_light/screens/about.screen.dart';
@@ -13,8 +11,6 @@ import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
 import 'package:little_light/widgets/side_menu/profile_info.widget.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:launch_review/launch_review.dart';
 
 typedef void OnPageChange(Widget screen);
 
@@ -72,12 +68,8 @@ class SideMenuWidget extends StatelessWidget {
                   menuItem(context, "About", onTap: () {
                     open(context, AboutScreen());
                   }),
-                  menuItem(context, "Translations", onTap: () async {
-                    await launch('https://github.com/marquesinijatinha/littlelight_translations');
-                  })
                 ],
               )),
-              buildFooter(context)
             ]));
   }
 
@@ -133,92 +125,5 @@ class SideMenuWidget extends StatelessWidget {
                 forceChangeLanguage: true,
               ),
         ));
-  }
-
-  Widget buildFooter(BuildContext context) {
-    bool isIOS = Platform.isIOS;
-    var paddingBottom = MediaQuery.of(context).padding.bottom;
-    return Container(
-        color: Colors.grey.shade900,
-        padding: EdgeInsets.all(4).copyWith(bottom: 4 + paddingBottom),
-        child:
-            Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          Container(
-              padding: EdgeInsets.all(4),
-              child: TranslatedTextWidget(
-                "Want to support Little Light ?",
-                uppercase: true,
-                textAlign: TextAlign.center,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-              )),
-          Container(
-              margin: EdgeInsets.symmetric(horizontal: 4, vertical: 0),
-              color: Colors.blueGrey,
-              child: Stack(alignment: Alignment.center, children: [
-                Container(
-                  padding: EdgeInsets.all(6),
-                  child: TranslatedTextWidget(
-                    "Rate it",
-                    uppercase: true,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-                  ),
-                ),
-                Positioned.fill(
-                    child: Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          onTap: () async {
-                            LaunchReview.launch(
-                                androidAppId: 'me.markezine.luzinha',
-                                iOSAppId: '1373037254');
-                          },
-                        )))
-              ])),
-          isIOS
-              ? Container()
-              : Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Expanded(
-                        child: Container(
-                      padding: EdgeInsets.all(4),
-                      child: Stack(children: [
-                        Image.asset(
-                          'assets/imgs/patreon-btn.png',
-                          fit: BoxFit.contain,
-                        ),
-                        Positioned.fill(
-                            child: Material(
-                                color: Colors.transparent,
-                                child: InkWell(
-                                  onTap: () async {
-                                    await launch(
-                                        'https://www.patreon.com/littlelightD2');
-                                  },
-                                )))
-                      ]),
-                    )),
-                    Expanded(
-                        child: Container(
-                      padding: EdgeInsets.all(4),
-                      child: Stack(children: [
-                        Image.asset(
-                          'assets/imgs/kofi-btn.png',
-                          fit: BoxFit.contain,
-                        ),
-                        Positioned.fill(
-                            child: Material(
-                                color: Colors.transparent,
-                                child: InkWell(
-                                  onTap: () async {
-                                    await launch(
-                                        'https://ko-fi.com/littlelight');
-                                  },
-                                )))
-                      ]),
-                    )),
-                  ],
-                )
-        ]));
   }
 }

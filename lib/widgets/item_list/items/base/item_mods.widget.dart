@@ -67,9 +67,11 @@ class ItemModsWidgetState extends DestinyItemState<ItemModsWidget> {
     var socketCategory = definition.sockets.socketCategories.firstWhere(
         (s) => s.socketCategoryHash == def.hash,
         orElse: () => null);
+    if(socketCategory == null) return Container();
+    
     List<Widget> columns = [];
     socketCategory.socketIndexes.reversed.forEach((index) {
-      if (isSocketVisible(index)) {
+      if (isSocketVisible(index) && index > -1 && index < itemSockets.length) {
         columns.add(buildModIcon(context, itemSockets[index].plugHash));
         columns.add(Container(width: 1,));
       }

@@ -23,6 +23,7 @@ class ManifestText<T> extends DefinitionProviderWidget<T> {
           } else {
             text = (definition as dynamic).displayProperties.name;
           }
+          if(text == null) text = "";
           if (uppercase) {
             text = text.toUpperCase();
           }
