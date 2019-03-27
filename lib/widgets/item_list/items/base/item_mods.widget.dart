@@ -76,6 +76,9 @@ class ItemModsWidgetState extends DestinyItemState<ItemModsWidget> {
         columns.add(Container(width: 1,));
       }
     });
+    if(columns.length < 1){
+      return Container();
+    }
     columns.removeLast();
     return Row(
         mainAxisAlignment: MainAxisAlignment.start,

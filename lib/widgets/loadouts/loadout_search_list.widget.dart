@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/utils/inventory_utils.dart';
+import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/item_list/items/loadout_search_item_wrapper.widget.dart';
 import 'package:little_light/widgets/search/search_filters.widget.dart';
 import 'package:little_light/widgets/search/search_list.widget.dart';

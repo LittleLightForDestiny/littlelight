@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
-import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -10,6 +9,7 @@ import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/inventory_utils.dart';
+import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/item_list/items/search_item_wrapper.widget.dart';
 import 'package:little_light/widgets/search/search_filters.widget.dart';
 import 'package:shimmer/shimmer.dart';
@@ -303,10 +303,4 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
 
   @override
   bool get wantKeepAlive => true;
-}
-
-class ItemWithOwner {
-  DestinyItemComponent item;
-  String ownerId;
-  ItemWithOwner(this.item, this.ownerId);
 }

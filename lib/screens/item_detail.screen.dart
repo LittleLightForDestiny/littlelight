@@ -6,10 +6,13 @@ import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_stat_group_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/enums/item_type.enum.dart';
+import 'package:little_light/utils/inventory_utils.dart';
+import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/common/destiny_item.stateful_widget.dart';
 import 'package:little_light/widgets/item_details/item_collectible_info.widget.dart';
 
 import 'package:little_light/widgets/item_details/item_cover/item_cover.widget.dart';
+import 'package:little_light/widgets/item_details/item_detail_duplicates.widget.dart';
 import 'package:little_light/widgets/item_details/item_lore.widget.dart';
 import 'package:little_light/widgets/item_details/item_detail_mods.widget.dart';
 import 'package:little_light/widgets/item_details/item_objectives.widget.dart';
@@ -44,6 +47,7 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
   Map<int, int> selectedPerks = new Map();
   Map<int, DestinyInventoryItemDefinition> plugDefinitions;
   DestinyStatGroupDefinition statGroupDefinition;
+  List<ItemWithOwner> duplicates;
 
   initState(){
     super.initState();
@@ -51,10 +55,41 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
   }
 
   Future<void> loadDefinitions() async{
+    findDuplicates();
     if((definition?.sockets?.socketEntries?.length ?? 0) > 0){
       await loadPlugDefinitions();
     }
     loadStatGroupDefinition();
+  }
+
+  findDuplicates(){
+    List<ItemWithOwner> allItems = [];
+    Iterable<String> charIds =
+        widget.profile.getCharacters().map((char) => char.characterId);
+    charIds.forEach((charId) {
+      allItems.addAll(widget.profile
+          .getCharacterEquipment(charId)
+          .where((i)=>i.itemHash == this.definition.hash)
+          .map((item) => ItemWithOwner(item, charId)));
+      allItems.addAll(widget.profile
+          .getCharacterInventory(charId)
+          .where((i)=>i.itemHash == this.definition.hash)
+          .map((item) => ItemWithOwner(item, charId)));
+    });
+    allItems.addAll(widget.profile
+        .getProfileInventory()
+        .where((i)=>i.itemHash == this.definition.hash)
+        .map((item) => ItemWithOwner(item, null)));
+    allItems.sort(
+        (a, b) => InventoryUtils.sortDestinyItems(a.item, b.item, widget.profile));
+    duplicates = allItems.where((item) {
+      return item.item.itemInstanceId != null;
+    }).toList();
+
+
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   Future<void> loadPlugDefinitions() async{
@@ -106,6 +141,7 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
             instanceInfo,
             characterId: characterId,
           ),
+          buildDuplicates(context),
           buildStats(context),
           buildPerks(context),
           SelectedPerkWidget(selectedPerk,
@@ -119,6 +155,10 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
         ]),
       ),
     ]));
+  }
+
+  Widget buildDuplicates(context){
+    return ItemDetailDuplicatesWidget(item, definition, instanceInfo);
   }
 
   Widget buildObjectives(BuildContext context){

@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:launch_review/launch_review.dart';
 import 'package:little_light/services/translate/translate.service.dart';
-import 'package:little_light/utils/platform_data.dart';
 import 'package:little_light/widgets/about/supporter_character.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 
