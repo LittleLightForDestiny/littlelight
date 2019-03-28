@@ -41,7 +41,6 @@ class VaultItemListWidgetState extends ItemListWidgetState {
     }
 
     listIndex = [];
-    print(widget.bucketHashes);
     
     for(var hash in widget.bucketHashes){
       List<DestinyItemComponent> unequipped = itemsByBucket[hash];

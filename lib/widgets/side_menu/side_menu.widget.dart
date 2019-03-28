@@ -68,9 +68,9 @@ class SideMenuWidget extends StatelessWidget {
                   menuItem(context, "Triumphs", onTap: () {
                     open(context, TriumphsScreen());
                   }),
-                  menuItem(context, "Duplicated Items", onTap: () {
-                    open(context, TriumphsScreen());
-                  }),
+                  // menuItem(context, "Duplicated Items", onTap: () {
+                  //   open(context, TriumphsScreen());
+                  // }),
                   menuItem(context, "About", onTap: () {
                     open(context, AboutScreen());
                   }),

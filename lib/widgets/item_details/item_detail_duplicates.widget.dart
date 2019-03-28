@@ -12,9 +12,6 @@ import 'package:little_light/widgets/common/translated_text.widget.dart';
 
 
 class ItemDetailDuplicatesWidget extends DestinyItemWidget {
-  final int selectedPerkHash;
-  final Map<int, int> selectedPerkHashes;
-  final Map<int, DestinyInventoryItemDefinition> plugDefinitions;
   final List<ItemWithOwner> duplicates;
 
   ItemDetailDuplicatesWidget(
@@ -22,7 +19,7 @@ class ItemDetailDuplicatesWidget extends DestinyItemWidget {
       DestinyInventoryItemDefinition definition,
       DestinyItemInstanceComponent instanceInfo,
       {Key key,
-      duplicates
+      this.duplicates
       })
       : super(item, definition, instanceInfo, key: key);
 

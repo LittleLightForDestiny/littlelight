@@ -55,7 +55,7 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
   }
 
   Future<void> loadDefinitions() async{
-    findDuplicates();
+    // findDuplicates();
     if((definition?.sockets?.socketEntries?.length ?? 0) > 0){
       await loadPlugDefinitions();
     }
