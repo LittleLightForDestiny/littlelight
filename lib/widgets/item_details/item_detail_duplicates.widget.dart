@@ -1,6 +1,3 @@
-import 'dart:math';
-
-import 'package:bungie_api/enums/tier_type_enum.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
@@ -32,8 +29,7 @@ class ItemDetailDuplicatesWidget extends DestinyItemWidget {
           HeaderWidget(
               child: Container(
             alignment: Alignment.centerLeft,
-            child: TranslatedTextWidget(
-              "Duplicates",
+            child: TranslatedTextWidget("Duplicates",
               uppercase: true,
               textAlign: TextAlign.left,
               style: TextStyle(fontWeight: FontWeight.bold),

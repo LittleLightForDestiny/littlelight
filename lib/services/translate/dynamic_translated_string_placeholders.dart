@@ -65,5 +65,4 @@ translationPlaceholders(){
   TranslatedTextWidget("Botza District");
   TranslatedTextWidget("Vault Access");
   TranslatedTextWidget("Insurrection Prime");
-
 }
