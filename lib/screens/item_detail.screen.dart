@@ -55,7 +55,7 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
   }
 
   Future<void> loadDefinitions() async{
-    // findDuplicates();
+    findDuplicates();
     if((definition?.sockets?.socketEntries?.length ?? 0) > 0){
       await loadPlugDefinitions();
     }
@@ -158,7 +158,7 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
   }
 
   Widget buildDuplicates(context){
-    return ItemDetailDuplicatesWidget(item, definition, instanceInfo);
+    return ItemDetailDuplicatesWidget(item, definition, instanceInfo, duplicates: duplicates,);
   }
 
   Widget buildObjectives(BuildContext context){
