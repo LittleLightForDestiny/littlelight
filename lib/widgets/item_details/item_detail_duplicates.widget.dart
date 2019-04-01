@@ -2,6 +2,8 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:little_light/screens/item_detail.screen.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/common/destiny_item.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
@@ -38,6 +40,7 @@ class ItemDetailDuplicatesWidget extends DestinyItemWidget {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
           )),
+          Container(height: 8),
           buildDuplicatedItems(context)
         ],
       ),
@@ -45,16 +48,55 @@ class ItemDetailDuplicatesWidget extends DestinyItemWidget {
   }
 
   Widget buildDuplicatedItems(BuildContext context) {
-    return Wrap(
-        spacing: 2,
-        runSpacing: 2,
-        children: duplicates.map((item) => buildItemInstance(item, context)).toList());
+    return StaggeredGridView.count(
+        padding: EdgeInsets.all(0),
+        crossAxisSpacing: 2,
+        mainAxisSpacing: 2,
+        crossAxisCount: 2,
+        staggeredTiles:
+            duplicates.map((item) => StaggeredTile.extent(1, 110)).toList(),
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        children: duplicates
+            .map((item) => buildItemInstance(item, context))
+            .toList());
   }
 
   Widget buildItemInstance(ItemWithOwner item, BuildContext context) {
     var instance = profile.getInstanceInfo(item.item.itemInstanceId);
-    return FractionallySizedBox(widthFactor: .5, child: Container(height: 96,
-    child: BaseItemInstanceWidget(item.item, definition, instance, characterId: item.ownerId, uniqueId: null),
-    ),);
+    return BaseItemInstanceWidget(
+      item.item,
+      definition,
+      instance,
+      characterId: item.ownerId,
+      uniqueId: null,
+      onTap: (item, definition, instance, characterId) {
+        if (this.instanceInfo != null) {
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ItemDetailScreen(
+                      item,
+                      definition,
+                      instance,
+                      characterId: characterId,
+                      uniqueId: null,
+                    ),
+              ));
+        }else{
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ItemDetailScreen(
+                      item,
+                      definition,
+                      instance,
+                      characterId: characterId,
+                      uniqueId: null,
+                    ),
+              ));
+        }
+      },
+    );
   }
 }

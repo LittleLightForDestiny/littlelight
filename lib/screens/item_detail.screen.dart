@@ -82,8 +82,8 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
         .map((item) => ItemWithOwner(item, null)));
     allItems.sort(
         (a, b) => InventoryUtils.sortDestinyItems(a.item, b.item, widget.profile));
-    duplicates = allItems.where((item) {
-      return item.item.itemInstanceId != null;
+    duplicates = allItems.where((i) {
+      return i.item.itemInstanceId != null && i.item.itemInstanceId != item?.itemInstanceId;
     }).toList();
 
 

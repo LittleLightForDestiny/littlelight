@@ -32,11 +32,12 @@ class PrimaryStatWidget extends DestinyItemWidget {
             key: key, characterId: characterId);
 
   int get statValue {
-    return instanceInfo.primaryStat.value;
+    return instanceInfo?.primaryStat?.value;
   }
 
   Widget build(BuildContext context) {
     return Row(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: mainLineWidgets(context));
   }
@@ -58,6 +59,7 @@ class PrimaryStatWidget extends DestinyItemWidget {
   }
 
   Widget valueField(BuildContext context, Color color) {
+    if(statValue == null) return Container();
     return Text(
       "$statValue",
       style: TextStyle(

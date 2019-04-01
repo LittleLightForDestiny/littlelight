@@ -197,15 +197,15 @@ class ItemStatWidget extends StatelessWidget {
     if (noBar) {
       return Container();
     }
-    return SizedBox(
-        width: barWidth,
-        child: Container(
+     return Container(
             color: Colors.grey.shade600,
             height: 8,
+            width: barWidth,
             child: 
             ClipRect(
-              clipBehavior: Clip.hardEdge,
+              clipBehavior: Clip.antiAlias,
               child:Row(
+                mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: numberValue < 0
                     ? MainAxisAlignment.end
                     : MainAxisAlignment.start,
@@ -224,7 +224,7 @@ class ItemStatWidget extends StatelessWidget {
                       height: 8,
                       width: (masterwork / maxBarSize).abs() * barWidth,
                       color: Colors.amberAccent.shade400),
-                ]))));
+                ])));
   }
 
   int get maxBarSize {

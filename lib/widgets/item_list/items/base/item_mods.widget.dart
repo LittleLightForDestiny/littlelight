@@ -45,8 +45,8 @@ class ItemModsWidgetState extends DestinyItemState<ItemModsWidget> {
     var socketCategoryDefinitions = await widget.manifest
         .getDefinitions<DestinySocketCategoryDefinition>(socketCategoryHashes);
     perksCatDefinition = socketCategoryDefinitions.values.firstWhere((def) {
-      return def.categoryStyle & DestinySocketCategoryStyle.Consumable ==
-          DestinySocketCategoryStyle.Consumable;
+      return (def.categoryStyle & DestinySocketCategoryStyle.Consumable ==
+          DestinySocketCategoryStyle.Consumable) && (def.categoryStyle & DestinySocketCategoryStyle.Reusable != DestinySocketCategoryStyle.Reusable);
     }, orElse: ()=>null);
     this.itemSockets = widget.profile.getItemSockets(item.itemInstanceId);
     if(!mounted){
@@ -82,6 +82,7 @@ class ItemModsWidgetState extends DestinyItemState<ItemModsWidget> {
     columns.removeLast();
     return Row(
         mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: columns.toList());
   }
 

@@ -73,6 +73,7 @@ class ItemPerksWidgetState extends DestinyItemState<ItemPerksWidget> {
     });
     return Row(
         mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: columns.toList());
   }
 
