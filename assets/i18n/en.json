@@ -118,11 +118,14 @@
   "Force refresh": "Force refresh",
   "How to get": "How to get",
   "Duplicated Items": "Duplicated Items",
-  "#####About": "About",
+  "About": "About",
   "Follow @LittleLightD2": "Follow @LittleLightD2",
   "Join the Discord server": "Join the Discord server",
   "Development": "Development",
   "Contact": "Contact",
   "Become a Patron": "Become a Patron",
-  "Buy me a Coffee": "Buy me a Coffee"
+  "Buy me a Coffee": "Buy me a Coffee",
+  "Report issues": "Report issues",
+  "Duplicates": "Duplicates",
+  "Dev Tools": "Dev Tools"
 }

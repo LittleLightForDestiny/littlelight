@@ -117,12 +117,15 @@
   "Pull everything from postmaster": "Recoger todo de la administración",
   "Force refresh": "Forzar actualización",
   "How to get": "Dónde se obtiene",
-  "#####Duplicated Items": "missing_translation",
-  "#####About": "missing_translation",
-  "#####Follow @LittleLightD2": "missing_translation",
-  "#####Join the Discord server": "missing_translation",
-  "#####Development": "missing_translation",
-  "#####Contact": "missing_translation",
-  "#####Become a Patron": "missing_translation",
-  "#####Buy me a Coffee": "missing_translation"
+  "Duplicated Items": "Items Duplicados",
+  "About": "Acerca de",
+  "Follow @LittleLightD2": "Sigue a @LittleLightD2",
+  "Join the Discord server": "Únete al servidor de Discord",
+  "Development": "Desarrollador",
+  "Contact": "Contacto",
+  "Become a Patron": "Conviertete en Patreon",
+  "Buy me a Coffee": "Invítame a un Café",
+  "Report issues": "Reportar errores",
+  "#####Duplicates": "missing_translation",
+  "#####Dev Tools": "missing_translation"
 }
