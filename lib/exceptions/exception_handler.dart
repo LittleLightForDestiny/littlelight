@@ -26,6 +26,8 @@ class ExceptionHandler {
 
   initSentry() async{
     if(_sentry != null) return;
+    if(!DotEnv().env.containsKey('sentry_dsn')) return;
+    
     var info =  await PackageInfo.fromPlatform();
     _sentry = SentryClient(
     environmentAttributes: Event(
