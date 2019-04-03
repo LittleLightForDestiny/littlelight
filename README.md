@@ -1,16 +1,20 @@
-# little_light
+## Little Light
+Little Light is an inventory manager/companion app for [Destiny 2](http://destinythegame.com/) for both iOS and Android. It helps guardians move their gear and track their ingame progress.
 
-A new Flutter project.
+Visit [@LittleLightD2](http://twitter.com/LittleLightD2) or join the [Discord Server](https://discord.gg/dTKhBD) for updates and more details.
 
-## Getting Started
+## Bugs and feature requests
+Have a bug or a feature request? Please first search for [existing and closed issues](https://github.com/littlelight-destiny/littlelight/issues). If your problem or idea is not addressed yet, please open a new issue.
 
-This project is a starting point for a Flutter application.
+## Support Little Light
+Support Little Light with a [one-time](https://ko-fi.com/littlelight) or [monthly](https://www.patreon.com/littlelightD2) donation and help us continue our active development.
 
-A few resources to get you started if this is your first Flutter project:
+## Translation
+If you speak a language other than English that Destiny supports, a great way to help with Little Light development is to provide translations. See [the translations repository](https://github.com/littlelight-destiny/littlelight_translations) for more info on how to help.
 
-- [Lab: Write your first Flutter app](https://flutter.io/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.io/docs/cookbook)
+## Contributing
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.io/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+See [CONTRIBUTING.md](https://github.com/littlelight-destiny/littlelight/blob/master/docs/CONTRIBUTING.md) for information on how to Contribute to the development of Little Light.
+
+## License
+Code released under the [MIT license](http://choosealicense.com/licenses/mit/).
