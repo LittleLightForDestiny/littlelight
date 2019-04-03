@@ -112,7 +112,7 @@ class _AboutScreenState extends State<AboutScreen> {
                             ]),
                         onPressed: () {
                           launch(
-                              "https://github.com/marquesinijatinha/littlelight/issues");
+                              "https://github.com/LittleLightForDestiny/LittleLight/issues");
                         },
                       ),
                       Container(height: 16),
