@@ -25,6 +25,7 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget> {
 
   @override
   void initState() {
+    this.items = widget.service.items;
     super.initState();
     subscription = widget.service.broadcaster.listen((selected) {
       this.items = selected;
@@ -43,7 +44,6 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget> {
     if (!widget.service.multiselectActivated) {
       return Container();
     }
-    double bottomPadding = MediaQuery.of(context).padding.bottom;
     return Container(
       color: Colors.grey.shade900,
       child: Column(children: [
@@ -55,6 +55,7 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget> {
   }
 
   Widget buildHeader(BuildContext context) {
+    if(items == null) return Container();
     return HeaderWidget(
       padding: EdgeInsets.all(0),
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -95,6 +96,7 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget> {
   }
 
   Widget buildItemIcons(BuildContext context) {
+    if(items == null) return Container();
     return Container(
         alignment: Alignment.topLeft,
         padding: EdgeInsets.all(4),

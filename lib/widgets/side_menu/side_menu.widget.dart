@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/screens/collections.screen.dart';
 import 'package:little_light/screens/about.screen.dart';
 import 'package:little_light/screens/dev_tools.screen.dart';
+import 'package:little_light/screens/duplicated_items.screen.dart';
 import 'package:little_light/screens/equipment.screen.dart';
 import 'package:little_light/screens/initial.screen.dart';
 import 'package:little_light/screens/loadouts.screen.dart';
@@ -68,9 +69,9 @@ class SideMenuWidget extends StatelessWidget {
                   menuItem(context, "Triumphs", onTap: () {
                     open(context, TriumphsScreen());
                   }),
-                  // menuItem(context, "Duplicated Items", onTap: () {
-                  //   open(context, TriumphsScreen());
-                  // }),
+                  menuItem(context, "Duplicated Items", onTap: () {
+                    open(context, DuplicatedItemsScreen());
+                  }),
                   menuItem(context, "About", onTap: () {
                     open(context, AboutScreen());
                   }),

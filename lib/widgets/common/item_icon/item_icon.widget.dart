@@ -1,3 +1,4 @@
+import 'package:bungie_api/enums/destiny_item_type_enum.dart';
 import 'package:bungie_api/enums/item_state_enum.dart';
 import 'package:bungie_api/enums/tier_type_enum.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
@@ -8,7 +9,6 @@ import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/services/bungie_api/enums/item_type.enum.dart';
 import 'package:little_light/widgets/common/destiny_item.widget.dart';
 import 'package:little_light/widgets/common/item_icon/engram_icon.widget.dart';
 import 'package:little_light/widgets/common/item_icon/subclass_icon.widget.dart';
@@ -24,11 +24,11 @@ class ItemIconWidget extends DestinyItemWidget {
       {Key key,
       double iconBorderWidth = 2}) {
     switch (definition.itemType) {
-      case ItemType.subclasses:
+      case DestinyItemType.Subclass:
         return SubclassIconWidget(item, definition, instanceInfo,
             key: key, iconBorderWidth: iconBorderWidth);
       
-      case ItemType.engrams:
+      case DestinyItemType.Engram:
         return EngramIconWidget(item, definition, instanceInfo,
             key: key, iconBorderWidth: iconBorderWidth);
 
@@ -64,7 +64,7 @@ class ItemIconWidget extends DestinyItemWidget {
       ]);
     }
     bool useBackgroundColor = true;
-    if([ItemType.subclasses, ItemType.engrams].contains(definition?.itemType)){
+    if([DestinyItemType.Subclass, DestinyItemType.Engram].contains(definition?.itemType)){
       useBackgroundColor = false;
     }
     return Container(

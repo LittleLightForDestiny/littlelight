@@ -7,6 +7,7 @@ class SelectedPagePersistence{
   static const String triumphs = "Triumphs";
   static const String loadouts = "Loadouts";
   static const String progress = "Progress";
+  static const String duplicatedItems = "DuplicatedItems";
   static const String search = "Search";
   static const String armory = "Armory";
   static const List<String> logged = [

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bungie_api/enums/destiny_class_enum.dart';
+import 'package:bungie_api/enums/destiny_item_type_enum.dart';
 import 'package:bungie_api/enums/tier_type_enum.dart';
 import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:bungie_api/models/destiny_equip_item_result.dart';
@@ -11,7 +12,6 @@ import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/enums/bucket_scope_enum.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/services/bungie_api/enums/item_type.enum.dart';
 import 'package:little_light/services/littlelight/models/loadout.model.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
@@ -559,7 +559,7 @@ class InventoryService {
     if (def.inventory.tierType != TierType.Exotic) {
       return null;
     }
-    if (![ItemType.armor, ItemType.weapon].contains(def.itemType)) {
+    if (![DestinyItemType.Armor, DestinyItemType.Weapon].contains(def.itemType)) {
       return null;
     }
     List<DestinyItemComponent> equipment =

@@ -23,7 +23,6 @@ typedef void OnItemHandler(
     String characterId);
 
 class BaseItemInstanceWidget extends BaseInventoryItemWidget {
-  final OnItemHandler onTap;
   BaseItemInstanceWidget(
       DestinyItemComponent item,
       DestinyInventoryItemDefinition itemDefinition,
@@ -31,7 +30,6 @@ class BaseItemInstanceWidget extends BaseInventoryItemWidget {
       {Key key,
       @required String uniqueId,
       @required String characterId,
-      this.onTap
       })
       : super(item, itemDefinition, instanceInfo,
             key: key, characterId: characterId, uniqueId: uniqueId);
@@ -63,7 +61,6 @@ class BaseItemInstanceWidget extends BaseInventoryItemWidget {
           ],
         ),
       )),
-      Positioned.fill(child: buildInkWell(context),)
     ]);
   }
 
@@ -132,14 +129,6 @@ class BaseItemInstanceWidget extends BaseInventoryItemWidget {
   @override
   Widget primaryStatWidget(BuildContext context) {
     return PrimaryStatWidget(item, definition, instanceInfo);
-  }
-
-  Widget buildInkWell(BuildContext context){
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-      onTap: ()=> onTap != null ? onTap(item, definition, instanceInfo, characterId) : null,
-    ),);
   }
 
   @override

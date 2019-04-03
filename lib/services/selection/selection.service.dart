@@ -16,7 +16,8 @@ class SelectionService {
   StreamController<List<ItemInventoryState>> _streamController =
       StreamController.broadcast();
 
-  
+  List<ItemInventoryState> get items => _selectedItems;
+
   bool get multiselectActivated=>_selectedItems.length > 0;
   
 
@@ -33,7 +34,7 @@ class SelectionService {
   }
 
   isSelected(DestinyItemComponent item, String characterId){
-    return _selectedItems.any((i)=>i.item?.itemHash == item?.itemHash && i.characterId == characterId);
+    return _selectedItems.any((i)=>i.item?.itemHash == item?.itemHash && i.characterId == characterId && item?.itemInstanceId == i.item?.itemInstanceId);
   }
 
   addItem(DestinyItemComponent item, String characterId) {

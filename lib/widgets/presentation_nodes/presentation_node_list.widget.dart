@@ -79,8 +79,9 @@ class PresentationNodeListWidgetState
 
   @override
   Widget build(BuildContext context) {
+    var screenPadding = MediaQuery.of(context).padding;
     return StaggeredGridView.countBuilder(
-      padding: EdgeInsets.all(4),
+      padding: EdgeInsets.all(4).copyWith(bottom: 4 + screenPadding.bottom),
       crossAxisCount: 30,
       itemCount: count,
       itemBuilder: (BuildContext context, int index) => getItem(context, index),

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bungie_api/enums/damage_type_enum.dart';
 import 'package:bungie_api/enums/destiny_class_enum.dart';
 import 'package:bungie_api/enums/tier_type_enum.dart';
@@ -6,7 +8,9 @@ import 'package:bungie_api/models/destiny_item_category_definition.dart';
 import 'package:bungie_api/models/destiny_presentation_node_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
+import 'package:little_light/services/inventory/inventory.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/selection/selection.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/selected_page_persistence.dart';
@@ -239,7 +243,6 @@ class SearchScreenState extends State<SearchScreen>
       _searchFieldController.text = currentTabData.searchText;
       closeSearch();
     });
-    
   }
 
   @override
@@ -251,6 +254,7 @@ class SearchScreenState extends State<SearchScreen>
 
   @override
   Widget build(BuildContext context) {
+    EdgeInsets screenPadding = MediaQuery.of(context).padding;
     return Scaffold(
         appBar: buildAppBar(context),
         endDrawer: SearchFiltersWidget(
@@ -272,18 +276,23 @@ class SearchScreenState extends State<SearchScreen>
                   tabs: buildTabButtons(context),
                 ))),
             Expanded(
-                child: TabBarView(
-                    controller: _tabController,
-                    children: _tabs
-                        .map(
-                          (tab) => SearchListWidget(
-                                tabData: tab,
-                              ),
-                        )
-                        .toList())),
-            SelectedItemsWidget(),
+                child: Container(
+                    child: TabBarView(
+                        controller: _tabController,
+                        children: _tabs
+                            .map(
+                              (tab) => SearchListWidget(
+                                    tabData: tab,
+                                  ),
+                            )
+                            .toList()))),
+                          SelectedItemsWidget(),
+                          Container(height: screenPadding.bottom,)
           ]),
-          InventoryNotificationWidget(key: Key('inventory_notification_widget'), barHeight: 1,),
+          InventoryNotificationWidget(
+            key: Key('inventory_notification_widget'),
+            barHeight: 1,
+          ),
         ]));
   }
 
@@ -304,6 +313,9 @@ class SearchScreenState extends State<SearchScreen>
           onPressed: () {
             searchOpened = !searchOpened;
             currentTabData.searchText = _searchFieldController.text;
+            if (!searchOpened) {
+              currentTabData.searchText = "";
+            }
             setState(() {});
           },
         ),

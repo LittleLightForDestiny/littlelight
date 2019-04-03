@@ -1,3 +1,4 @@
+import 'package:bungie_api/enums/destiny_item_type_enum.dart';
 import 'package:bungie_api/enums/tier_type_enum.dart';
 import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
@@ -8,7 +9,6 @@ import 'package:little_light/screens/select_loadout_background.screen.dart';
 import 'package:little_light/screens/select_loadout_item.screen.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/services/bungie_api/enums/item_type.enum.dart';
 import 'package:little_light/services/littlelight/littlelight.service.dart';
 import 'package:little_light/services/littlelight/models/loadout.model.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
@@ -227,7 +227,7 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> {
 
   Future<DestinyInventoryItemDefinition> removeBlockingExotics(
       BuildContext context, DestinyInventoryItemDefinition definition) async {
-    if (definition.itemType == ItemType.weapon) {
+    if (definition.itemType == DestinyItemType.Weapon) {
       for (var bucket in widget.weaponBuckets) {
         DestinyItemComponent item = _itemIndex.generic[bucket];
         if (item == null) continue;
@@ -243,7 +243,7 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> {
         return def;
       }
     }
-    if (definition.itemType == ItemType.armor) {
+    if (definition.itemType == DestinyItemType.Armor) {
       for (var bucket in widget.armorBuckets) {
         DestinyItemComponent item =
             _itemIndex.classSpecific[bucket][definition.classType];

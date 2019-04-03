@@ -78,8 +78,8 @@ class ProgressScreenState extends State<ProgressScreen>
             controller: charTabController,
             includeVault: false,
           ),
+          Positioned(bottom: 0, left:0, right:0, child: buildTypeTabBar(context),),
           InventoryNotificationWidget(key: Key('inventory_notification_widget')),
-          Positioned(bottom: 0, left:0, right:0, child: buildTypeTabBar(),)
         ],
       ),
     );
@@ -107,10 +107,12 @@ class ProgressScreenState extends State<ProgressScreen>
     return characterTabs;
   }
 
-  Widget buildTypeTabBar() {
+  Widget buildTypeTabBar(BuildContext context) {
+    var bottomPadding = MediaQuery.of(context).padding.bottom;
     return Container(
       color:Colors.black,
-      height:kToolbarHeight,
+      height:kToolbarHeight + bottomPadding,
+      padding: EdgeInsets.only(bottom: bottomPadding),
       child:TabBar(
         labelPadding: EdgeInsets.all(8),
         indicator: BoxDecoration(

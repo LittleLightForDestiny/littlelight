@@ -68,7 +68,11 @@ class LittleLightService {
       });
     }
     _saveLoadoutsToStorage();
-    this._loadouts.sort((a, b)=>a.name.compareTo(b.name));
+    this._loadouts.sort((a, b){
+      var nameA = a.name ?? "";
+      var nameB = b.name ?? "";
+      return nameA.compareTo(nameB);
+    });
     return _loadouts;
   }
 

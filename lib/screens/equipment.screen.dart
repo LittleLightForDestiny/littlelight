@@ -1,6 +1,7 @@
+import 'package:bungie_api/enums/destiny_item_type_enum.dart';
 import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/services/bungie_api/enums/item_category.enum.dart';
+import 'package:little_light/services/bungie_api/enums/destiny_item_category.enum.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/selected_page_persistence.dart';
@@ -15,9 +16,9 @@ class EquipmentScreen extends StatefulWidget {
   final profile = new ProfileService();
   final manifest = new ManifestService();
   final List<int> itemTypes = [
-    ItemCategory.weapon,
-    ItemCategory.armor,
-    ItemCategory.inventory
+    DestinyItemCategory.Weapon,
+    DestinyItemCategory.Armor,
+    DestinyItemCategory.Inventory
   ];
 
   @override
@@ -26,7 +27,7 @@ class EquipmentScreen extends StatefulWidget {
 
 class EquipmentScreenState extends State<EquipmentScreen>
     with TickerProviderStateMixin {
-  int currentGroup = ItemCategory.weapon;
+  int currentGroup = DestinyItemType.Weapon;
   Map<int, double> scrollPositions = new Map();
 
   TabController charTabController;

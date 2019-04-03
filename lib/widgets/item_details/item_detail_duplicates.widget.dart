@@ -64,39 +64,36 @@ class ItemDetailDuplicatesWidget extends DestinyItemWidget {
 
   Widget buildItemInstance(ItemWithOwner item, BuildContext context) {
     var instance = profile.getInstanceInfo(item.item.itemInstanceId);
-    return BaseItemInstanceWidget(
-      item.item,
-      definition,
-      instance,
-      characterId: item.ownerId,
-      uniqueId: null,
-      onTap: (item, definition, instance, characterId) {
-        if (this.instanceInfo != null) {
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ItemDetailScreen(
-                      item,
-                      definition,
-                      instance,
-                      characterId: characterId,
-                      uniqueId: null,
-                    ),
-              ));
-        }else{
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ItemDetailScreen(
-                      item,
-                      definition,
-                      instance,
-                      characterId: characterId,
-                      uniqueId: null,
-                    ),
-              ));
-        }
-      },
+    return Stack(children: <Widget>[
+      BaseItemInstanceWidget(item.item, definition, instance,
+          characterId: item.ownerId, uniqueId: null),
+      Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => instanceTap(context, item),
+        ),
+      )
+    ]);
+  }
+
+  void instanceTap(
+    BuildContext context,
+    ItemWithOwner item,
+  ) {
+    var instance = profile.getInstanceInfo(item.item.itemInstanceId);
+    var route = MaterialPageRoute(
+      builder: (context) => ItemDetailScreen(
+            item.item,
+            definition,
+            instance,
+            characterId: item.ownerId,
+            uniqueId: null,
+          ),
     );
+    if (this.instanceInfo != null) {
+      Navigator.pushReplacement(context, route);
+    } else {
+      Navigator.push(context, route);
+    }
   }
 }

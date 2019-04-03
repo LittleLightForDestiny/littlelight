@@ -1,12 +1,12 @@
 import 'dart:async';
 
+import 'package:bungie_api/enums/destiny_item_type_enum.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/screens/item_detail.screen.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/services/bungie_api/enums/item_type.enum.dart';
 import 'package:little_light/services/inventory/inventory.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
@@ -52,7 +52,8 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
     extends State<InventoryItemWrapperWidget> {
   DestinyInventoryItemDefinition definition;
   String uniqueId;
-  bool get selected =>SelectionService().isSelected(widget.item, widget.characterId);
+  bool get selected =>
+      SelectionService().isSelected(widget.item, widget.characterId);
 
   DestinyItemInstanceComponent get instanceInfo {
     return widget.profile.getInstanceInfo(widget.item.itemInstanceId);
@@ -91,8 +92,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
         return;
       }
     }
-    definition =
-        await widget.manifest.getItemDefinition(widget.item.itemHash);
+    definition = await widget.manifest.getItemDefinition(widget.item.itemHash);
     if (mounted) {
       setState(() {});
     }
@@ -103,58 +103,66 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
   Widget build(BuildContext context) {
     return Stack(children: [
       Positioned.fill(child: buildCrossfade(context)),
-      selected ? Container(foregroundDecoration: BoxDecoration(border:Border.all(color:Colors.lightBlue.shade400, width:2)),) : Container(),
+      selected
+          ? Container(
+              foregroundDecoration: BoxDecoration(
+                  border:
+                      Border.all(color: Colors.lightBlue.shade400, width: 2)),
+            )
+          : Container(),
       buildTapHandler(context)
     ]);
   }
 
-   Widget buildCrossfade(BuildContext context){
+  Widget buildCrossfade(BuildContext context) {
     return AnimatedCrossFade(
-      duration:Duration(milliseconds: 500),
-      firstChild:buildEmpty(context),
-      secondChild:buildItem(context),
-      crossFadeState: definition == null ? CrossFadeState.showFirst: CrossFadeState.showSecond,
+      duration: Duration(milliseconds: 500),
+      firstChild: buildEmpty(context),
+      secondChild: buildItem(context),
+      crossFadeState: definition == null
+          ? CrossFadeState.showFirst
+          : CrossFadeState.showSecond,
     );
-    
   }
 
   Widget buildTapHandler(BuildContext context) {
     if (widget.item == null) {
       return Container();
     }
-    return Positioned.fill(child: Material(
-      color:Colors.transparent,
-      child: InkWell(
-      onTap: () {
-        onTap(context);
-      },
-      onLongPress: (){
-        onLongPress(context);
-      },
-    )));
+    return Positioned.fill(
+        child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () {
+                onTap(context);
+              },
+              onLongPress: () {
+                onLongPress(context);
+              },
+            )));
   }
 
-  void onLongPress(context){
-    if(definition.nonTransferrable) return;
-    
+  void onLongPress(context) {
+    if (definition.nonTransferrable) return;
+
     SelectionService().addItem(widget.item, widget.characterId);
-    setState((){});
-    
+    setState(() {});
+
     StreamSubscription<List<ItemInventoryState>> sub;
-    sub = SelectionService().broadcaster.listen((selectedItems){
-      if(!mounted){
+    sub = SelectionService().broadcaster.listen((selectedItems) {
+      if (!mounted) {
         sub.cancel();
         return;
       }
       setState(() {});
-      if(!selected){
+      if (!selected) {
         sub.cancel();
       }
     });
   }
 
   void onTap(context) {
-    if(SelectionService().multiselectActivated){
+    if (SelectionService().multiselectActivated) {
       onLongPress(context);
       return;
     }
@@ -215,7 +223,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
 
   Widget buildMinimal(BuildContext context) {
     switch (definition.itemType) {
-      case ItemType.armor:
+      case DestinyItemType.Armor:
         {
           return MinimalArmorInventoryItemWidget(
             widget.item,
@@ -226,7 +234,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
           );
         }
 
-      case ItemType.weapon:
+      case DestinyItemType.Weapon:
         {
           return MinimalWeaponInventoryItemWidget(
             widget.item,
@@ -237,7 +245,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
           );
         }
 
-      case ItemType.engrams:
+      case DestinyItemType.Engram:
         {
           return MinimalEngramInventoryItemWidget(
             widget.item,
@@ -260,7 +268,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
 
   Widget buildMedium(BuildContext context) {
     switch (definition.itemType) {
-      case ItemType.subclasses:
+      case DestinyItemType.Subclass:
         {
           return MediumSubclassInventoryItemWidget(
             widget.item,
@@ -270,7 +278,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
             uniqueId: uniqueId,
           );
         }
-      case ItemType.weapon:
+      case DestinyItemType.Weapon:
         {
           return MediumWeaponInventoryItemWidget(
             widget.item,
@@ -281,7 +289,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
           );
         }
 
-      case ItemType.armor:
+      case DestinyItemType.Armor:
         {
           return MediumArmorInventoryItemWidget(
             widget.item,
@@ -292,7 +300,8 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
           );
         }
 
-      case ItemType.emblems:{
+      case DestinyItemType.Emblem:
+        {
           return MediumEmblemInventoryItemWidget(
             widget.item,
             definition,
@@ -300,8 +309,8 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
             characterId: widget.characterId,
             uniqueId: uniqueId,
           );
-      }
-      
+        }
+
       default:
         return MediumBaseInventoryItemWidget(
           widget.item,
@@ -315,7 +324,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
 
   Widget buildFull(BuildContext context) {
     switch (definition.itemType) {
-      case ItemType.subclasses:
+      case DestinyItemType.Subclass:
         {
           return SubclassInventoryItemWidget(
             widget.item,
@@ -325,7 +334,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
             uniqueId: uniqueId,
           );
         }
-      case ItemType.weapon:
+      case DestinyItemType.Weapon:
         {
           return WeaponInventoryItemWidget(
             widget.item,
@@ -336,7 +345,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
           );
         }
 
-      case ItemType.armor:
+      case DestinyItemType.Armor:
         {
           return ArmorInventoryItemWidget(
             widget.item,
@@ -347,16 +356,16 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
           );
         }
 
-      case ItemType.emblems:{
-        return EmblemInventoryItemWidget(
+      case DestinyItemType.Emblem:
+        {
+          return EmblemInventoryItemWidget(
             widget.item,
             definition,
             instanceInfo,
             characterId: widget.characterId,
             uniqueId: uniqueId,
           );
-
-      }
+        }
       default:
         return BaseInventoryItemWidget(
           widget.item,

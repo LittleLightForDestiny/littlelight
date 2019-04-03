@@ -1,9 +1,9 @@
+import 'package:bungie_api/enums/destiny_item_type_enum.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/services/bungie_api/enums/item_type.enum.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/destiny_item.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
@@ -44,15 +44,15 @@ class PrimaryStatWidget extends DestinyItemWidget {
 
   List<Widget> mainLineWidgets(BuildContext context) {
     List<Widget> widgets = [];
-    if (definition.itemType == ItemType.weapon && !suppressDamageTypeIcon) {
+    if (definition.itemType == DestinyItemType.Weapon && !suppressDamageTypeIcon) {
       widgets.add(damageTypeIcon(context));
     }
-    if (definition.itemType == ItemType.armor && !suppressClassTypeIcon) {
+    if (definition.itemType == DestinyItemType.Armor && !suppressClassTypeIcon) {
       widgets.add(classTypeIcon(context));
     }
     widgets.add(valueField(
         context, DestinyData.getDamageTypeTextColor(instanceInfo.damageType)));
-    if (definition.itemType == ItemType.weapon && !suppressAmmoTypeIcon) {
+    if (definition.itemType == DestinyItemType.Weapon && !suppressAmmoTypeIcon) {
       widgets.add(ammoTypeIcon(context));
     }
     return widgets;
@@ -80,7 +80,7 @@ class PrimaryStatWidget extends DestinyItemWidget {
   Widget classTypeIcon(BuildContext context) {
     return Row(children: [
       Icon(
-        DestinyData.getClassIcon(instanceInfo.damageType),
+        DestinyData.getClassIcon(definition.classType),
         color: DestinyData.getDamageTypeTextColor(instanceInfo.damageType),
         size: fontSize,
       ),

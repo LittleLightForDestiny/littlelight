@@ -9,7 +9,6 @@ import 'package:little_light/screens/share_preview.screen.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/services/bungie_api/enums/item_type.enum.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/destiny_item.widget.dart';
 import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
@@ -173,7 +172,7 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
   Widget overlay(BuildContext context, double expandRatio) {
     double width = MediaQuery.of(context).size.width;
     double opacity = expandRatio;
-    if (definition.itemType != ItemType.subclasses) {
+    if (definition.itemType != DestinyItemType.Subclass) {
       return Container();
     }
     return Positioned(
@@ -192,10 +191,10 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
     double width = MediaQuery.of(context).size.width;
     double opacity = expandRatio;
     String imgUrl = definition.screenshot;
-    if (definition.itemType == ItemType.emblems) {
+    if (definition.itemType == DestinyItemType.Emblem) {
       imgUrl = definition.secondarySpecial;
     }
-    if (definition.itemType == ItemType.questStep) {
+    if (definition.itemType == DestinyItemType.QuestStep) {
       imgUrl = definition.secondaryIcon;
     }
     if (imgUrl == null) {

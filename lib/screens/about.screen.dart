@@ -36,6 +36,7 @@ class _AboutScreenState extends State<AboutScreen> {
   @override
   Widget build(BuildContext context) {
     bool isIOS = Platform.isIOS;
+    EdgeInsets screenPadding = MediaQuery.of(context).padding;
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -111,7 +112,7 @@ class _AboutScreenState extends State<AboutScreen> {
                             ]),
                         onPressed: () {
                           launch(
-                              "https://github.com/marquesinijatinha/littlelight_translations/issues");
+                              "https://github.com/marquesinijatinha/littlelight/issues");
                         },
                       ),
                       Container(height: 16),
@@ -269,6 +270,7 @@ class _AboutScreenState extends State<AboutScreen> {
                             buildTagAndPlatform(4611686018486012725, 4),
                           ])),
                       Container(height: 8),
+                      Container(height: screenPadding.bottom,)
                     ]))));
   }
 

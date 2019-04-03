@@ -86,6 +86,9 @@ class EquipLoadoutScreenState extends State<EquipLoadoutScreen> {
   }
 
   buildAppBarBackground(BuildContext context) {
+    if(widget.loadout.emblemHash == null){
+      return Container();
+    }
     return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
         widget.loadout.emblemHash,
         (def) => Container(

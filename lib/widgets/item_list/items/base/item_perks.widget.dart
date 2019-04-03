@@ -33,7 +33,9 @@ class ItemPerksWidgetState extends DestinyItemState<ItemPerksWidget> {
   @override
   void initState() {
     super.initState();
-    loadPerks();
+    if(widget.item != null){
+      loadPerks();
+    }
   }
 
   loadPerks() async {
