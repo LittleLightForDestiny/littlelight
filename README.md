@@ -1,5 +1,5 @@
 
-[![Download on Google Play](https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png)](https://play.google.com/store/apps/details?id=me.markezine.luzinha)
+[![Get it on Google Play](https://developer.android.com/images/brand/en_generic_rgb_wo_45.png)](https://play.google.com/store/apps/details?id=me.markezine.luzinha)
 
 [![Download on App Store](https://linkmaker.itunes.apple.com/en-us/badge-lrg.svg?releaseDate=2018-04-22&kind=iossoftware&bubble=ios_apps)](https://itunes.apple.com/us/app/little-light-for-destiny-2/id1373037254?mt=8)
 
