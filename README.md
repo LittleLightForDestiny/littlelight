@@ -1,6 +1,6 @@
 
-[![Get it on Google Play](https://play.google.com/intl/en_us/badges/images/badge_new.png)](https://play.google.com/store/apps/details?id=me.markezine.luzinha)
-[![Download on App Store](https://linkmaker.itunes.apple.com/en-us/badge-lrg.svg?releaseDate=2018-04-22&kind=iossoftware&bubble=ios_apps)](https://itunes.apple.com/us/app/little-light-for-destiny-2/id1373037254?mt=8)
+[![Get it on Google Play](https://littlelightfordestiny.github.io/app-badges/playstore.png)](https://play.google.com/store/apps/details?id=me.markezine.luzinha)
+[![Download on App Store](https://littlelightfordestiny.github.io/app-badges/appstore.png)](https://itunes.apple.com/us/app/little-light-for-destiny-2/id1373037254?mt=8)
 
 
 ## Little Light
