@@ -28,7 +28,7 @@ class BungieApiService {
 
   static String url(String url) {
     if (url == null ?? url.length == 0) return null;
-    return "$baseUrl/$url";
+    return "$baseUrl$url";
   }
 
   static String get clientSecret {
