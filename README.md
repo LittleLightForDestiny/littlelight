@@ -19,7 +19,7 @@ If you speak a language other than English that Destiny supports, a great way to
 
 ## Contributing
 
-See [CONTRIBUTING.md](https://github.com/littlelight-destiny/littlelight/blob/master/docs/CONTRIBUTING.md) for information on how to Contribute to the development of Little Light.
+See [CONTRIBUTING.md](https://github.com/LittleLightForDestiny/littlelight/blob/master/docs/CONTRIBUTING.md) for information on how to Contribute to the development of Little Light.
 
 ## License
 Code released under the [MIT license](http://choosealicense.com/licenses/mit/).

@@ -12,8 +12,8 @@ Here are some tips to make sure your pull request can be merged smoothly:
 1. [Clone](#clone-the-repo)
 1. [Get your own API key](#get-your-own-api-key)
 1. [Add API credentials](#add-api-credentials)
-1. [Download third party libs][#download-third-party-libs]
-1. [Run Little Light](#run-little-light)
+1. [Download third party libs](#download-third-party-libs)
+1. [Run Little Light](#run-little-light-on-a-device-or-simulator)
 
 
 ### Pre-requisites
