@@ -10,7 +10,6 @@ import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/selected_items.widget.dart';
 import 'package:little_light/widgets/item_list/duplicated_item_list.widget.dart';
-import 'package:bungie_api/enums/destiny_item_type_enum.dart';
 
 class DuplicatedItemsScreen extends StatefulWidget {
   @override
@@ -45,8 +44,9 @@ class DuplicatedItemsScreenState extends State<DuplicatedItemsScreen>
 
   @override
   initState() {
-    SelectedPagePersistence.saveLatestScreen(
-        SelectedPagePersistence.duplicatedItems);
+    // TODO: decide wether I want it or not to save this as a return point
+    // SelectedPagePersistence.saveLatestScreen(
+    //     SelectedPagePersistence.duplicatedItems);
     ProfileService().startAutomaticUpdater(Duration(seconds: 30));
     super.initState();
     _tabController = new TabController(vsync: this, length: _tabsData.length);
