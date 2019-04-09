@@ -127,5 +127,13 @@
   "Buy me a Coffee": "Invítame a un Café",
   "Report issues": "Reportar errores",
   "Duplicates": "Duplicados",
-  "Dev Tools": "Dev Tools"
+  "Dev Tools": "Dev Tools",
+  "Inventory": "Inventario",
+  "Settings": "Ajustes",
+  "Keep Awake": "Mantener desbloqueado",
+  "Keep device awake while the app is open": "Mantiene el dispositivo encendido mientras la app está abierta",
+  "Order items by": "Ordenar equipo por",
+  "Name": "Nombre",
+  "Sub type": "Subtipo",
+  "and then": "y además"
 }

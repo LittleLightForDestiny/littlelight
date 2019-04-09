@@ -127,5 +127,13 @@
   "Buy me a Coffee": "Me pague um café",
   "Report issues": "Relatar Problemas",
   "Duplicates": "Items Repetidos",
-  "Dev Tools": "Dev Tools"
+  "Dev Tools": "Dev Tools",
+  "#####Inventory": "missing_translation",
+  "#####Settings": "missing_translation",
+  "#####Keep Awake": "missing_translation",
+  "#####Keep device awake while the app is open": "missing_translation",
+  "#####Order items by": "missing_translation",
+  "#####Name": "missing_translation",
+  "#####Sub type": "missing_translation",
+  "#####and then": "missing_translation"
 }
