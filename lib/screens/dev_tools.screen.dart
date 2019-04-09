@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
-
 
 class DevToolsScreen extends StatelessWidget {
   @override
@@ -13,7 +11,7 @@ class DevToolsScreen extends StatelessWidget {
               Scaffold.of(context).openDrawer();
             },
           ),
-          title: TranslatedTextWidget("Dev Tools"),
+          title: Text("Dev Tools"),
         ),
         body: SingleChildScrollView(
             child: Container(

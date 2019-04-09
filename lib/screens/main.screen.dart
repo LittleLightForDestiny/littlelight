@@ -7,6 +7,7 @@ import 'package:little_light/screens/search.screen.dart';
 import 'package:little_light/screens/triumphs.screen.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/littlelight/littlelight.service.dart';
+import 'package:little_light/services/user_settings/user_settings.service.dart';
 import 'package:little_light/utils/selected_page_persistence.dart';
 
 import 'package:little_light/widgets/side_menu/side_menu.widget.dart';
@@ -36,7 +37,6 @@ class MainScreenState extends State<MainScreen> {
   }
 
   getInitScreen() async{
-    Screen.keepOn(true);
     String screen = await SelectedPagePersistence.getLatestScreen();
     switch(screen){
       case SelectedPagePersistence.equipment:
@@ -63,6 +63,9 @@ class MainScreenState extends State<MainScreen> {
       break;
     }
     setState(() {});
+
+    bool keepAwake = await UserSettingsService().keepAwake;
+    Screen.keepOn(keepAwake);
   }
 
   @override

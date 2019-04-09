@@ -182,10 +182,12 @@ class SharePreviewScreenState extends DestinyItemState<SharePreviewScreen> {
       ui.Image image = await boundary.toImage(pixelRatio: 1.0);
       ByteData byteData =
           await image.toByteData(format: ui.ImageByteFormat.png);
-      await EsysFlutterShare.shareImage(
+      
+      await Share.file(
+          definition.displayProperties.name,
           "${definition.displayProperties.name}.png",
-          byteData,
-          definition.displayProperties.name);
+          byteData.buffer.asUint8List(),
+          'image/png');
     } catch (e) {
       print(e);
     }

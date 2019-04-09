@@ -1,12 +1,13 @@
+import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/widgets/inventory_tabs/character_tab_header.widget.dart';
 import 'package:little_light/widgets/progress_tabs/character_progress_list.widget.dart';
 import 'package:little_light/widgets/progress_tabs/character_pursuits_list.widget.dart';
 
 class CharacterProgressTabWidget extends StatelessWidget {
-  final String characterId;
+  final DestinyCharacterComponent character;
   final TabController tabController;
-  CharacterProgressTabWidget(this.characterId, {this.tabController});
+  CharacterProgressTabWidget(this.character, {this.tabController});
   @override
   
   @override
@@ -23,12 +24,12 @@ class CharacterProgressTabWidget extends StatelessWidget {
           controller: tabController,
           physics: NeverScrollableScrollPhysics(),
           children: <Widget>[
-            CharacterProgressListWidget(characterId:characterId),
-            CharacterPursuitsListWidget(characterId: characterId)
+            CharacterProgressListWidget(characterId:character.characterId),
+            CharacterPursuitsListWidget(characterId: character.characterId)
           ],
 
         )),
-      TabHeaderWidget(characterId),
+      TabHeaderWidget(character),
     ]);
   }
 }

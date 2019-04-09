@@ -101,7 +101,7 @@ class ProgressScreenState extends State<ProgressScreen>
 
   List<Widget> getTabs() {
     List<Widget> characterTabs = characters.map((character) {
-      return CharacterProgressTabWidget(character.characterId, tabController:typeTabController);
+      return CharacterProgressTabWidget(character, tabController:typeTabController);
     }).toList();
 
     return characterTabs;

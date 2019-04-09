@@ -40,6 +40,7 @@ class TabsCharacterMenuWidget extends StatelessWidget {
         .map((index, character) => MapEntry<int, TabMenuButton>(
             index,
             TabMenuButton(
+                key:Key("tabmenu_${character.characterId}_${character.emblemHash}"),
                 character: character)))
         .values
         .toList();
@@ -58,7 +59,7 @@ class TabMenuButton extends StatefulWidget {
   final DestinyCharacterComponent character;
   final ManifestService manifest = new ManifestService();
 
-  TabMenuButton({this.character});
+  TabMenuButton({this.character, Key key}):super(key:key);
 
   @override
   State<StatefulWidget> createState() => new TabMenuButtonState();
@@ -96,6 +97,7 @@ class TabMenuButtonState extends State<TabMenuButton> {
       return shimmer;
     }
     return QueuedNetworkImage(
+      key:Key("emblem_${emblemDefinition.hash}"),
       imageUrl:
           BungieApiService.url(emblemDefinition.displayProperties.icon),
       placeholder: shimmer,

@@ -95,6 +95,7 @@ class InventoryService {
     }catch(e){
       print("Error equipping single item: $e");
     }
+    print('update');
     
     profile.pauseAutomaticUpdater = false;
     await Future.delayed(Duration(milliseconds:100));

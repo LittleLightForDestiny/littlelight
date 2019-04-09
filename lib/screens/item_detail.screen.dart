@@ -108,6 +108,7 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
     }).where((i)=>i!=null).toList();
     if(item?.itemInstanceId != null){
       List<DestinyItemSocketState> socketStates = widget.profile.getItemSockets(item.itemInstanceId);
+      if(socketStates == null) return;
       Iterable<int> hashes = socketStates.map((state)=>state.plugHash).where((i)=>i!=null).toList();
       plugHashes.addAll(hashes);
     }

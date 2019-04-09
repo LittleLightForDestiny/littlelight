@@ -8,6 +8,7 @@ import 'package:little_light/screens/initial.screen.dart';
 import 'package:little_light/screens/loadouts.screen.dart';
 import 'package:little_light/screens/progress.screen.dart';
 import 'package:little_light/screens/search.screen.dart';
+import 'package:little_light/screens/settings.screen.dart';
 import 'package:little_light/screens/triumphs.screen.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -49,6 +50,9 @@ class SideMenuWidget extends StatelessWidget {
                       menuItem(context, "Change Language", onTap: () {
                         changeLanguage(context);
                       }),
+                      menuItem(context, "Settings", onTap: () {
+                        open(context, SettingsScreen());
+                      }),
                     ],
                   ),
                   menuItem(context, "Equipment", requireLogin: true, onTap: () {
@@ -75,9 +79,11 @@ class SideMenuWidget extends StatelessWidget {
                   menuItem(context, "About", onTap: () {
                     open(context, AboutScreen());
                   }),
-                  isDebug ? menuItem(context, "Dev tools", onTap: () {
-                    open(context, DevToolsScreen());
-                  }) : Container()
+                  isDebug
+                      ? menuItem(context, "Dev tools", onTap: () {
+                          open(context, DevToolsScreen());
+                        })
+                      : Container()
                 ],
               )),
             ]));

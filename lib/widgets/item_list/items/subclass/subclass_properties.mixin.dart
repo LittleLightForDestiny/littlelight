@@ -57,13 +57,13 @@ mixin SubclassPropertiesMixin on InventoryItemMixin {
                       style: TextStyle(
                           fontSize: titleFontSize,
                           fontWeight: FontWeight.bold)),
-                  ManifestText<DestinyTalentGridDefinition>(
+                  talentGrid != null ? ManifestText<DestinyTalentGridDefinition>(
                       talentGrid.talentGridHash,
                       textExtractor: extractTalentGridName,
                       style: TextStyle(
                           fontStyle: FontStyle.italic,
                           fontWeight: FontWeight.w300,
-                          fontSize: 12))
+                          fontSize: 12)) : Container()
                 ],
               ),
             ),

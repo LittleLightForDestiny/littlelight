@@ -68,6 +68,7 @@ class ItemPerksWidgetState extends DestinyItemState<ItemPerksWidget> {
         (s) => s.socketCategoryHash == def.hash,
         orElse: () => null);
     List<Widget> columns = [];
+    if(socketCategory == null || itemSockets == null) return Container();
     socketCategory.socketIndexes.forEach((index) {
       if (isSocketVisible(index)) {
         columns.add(buildPerkIcon(context, itemSockets[index].plugHash));

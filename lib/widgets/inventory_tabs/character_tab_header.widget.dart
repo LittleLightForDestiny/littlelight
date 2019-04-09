@@ -11,11 +11,11 @@ import 'package:little_light/utils/destiny_data.dart';
 import 'package:shimmer/shimmer.dart';
 
 class TabHeaderWidget extends StatefulWidget {
-  final String characterId;
+  final DestinyCharacterComponent character;
   final ManifestService manifest = new ManifestService();
   final ProfileService profile = new ProfileService();
   @override
-  TabHeaderWidget(this.characterId);
+  TabHeaderWidget(this.character, {Key key}):super(key:key);
 
   @override
   TabHeaderWidgetState createState() => new TabHeaderWidgetState();
@@ -23,19 +23,21 @@ class TabHeaderWidget extends StatefulWidget {
 
 class TabHeaderWidgetState extends State<TabHeaderWidget> {
   DestinyInventoryItemDefinition emblemDefinition;
-  DestinyCharacterComponent character;
+  
   DestinyCharacterProgressionComponent progression;
   @override
   void initState() {
-    character = widget.profile.getCharacter(widget.characterId);
-    progression = widget.profile.getCharacterProgression(widget.characterId);
+    if(widget.character != null){
+      progression = widget.profile.getCharacterProgression(widget.character.characterId);
+    }
+    
     super.initState();
     getDefinitions();
   }
 
   getDefinitions() async {
     emblemDefinition =
-        await widget.manifest.getItemDefinition(character.emblemHash);
+        await widget.manifest.getItemDefinition(widget.character.emblemHash);
     if(mounted){
       setState(() {});
     }
@@ -63,7 +65,7 @@ class TabHeaderWidgetState extends State<TabHeaderWidget> {
         baseColor: Colors.transparent,
         highlightColor: Colors.white,
         child: Icon(
-          DestinyData.getClassIcon(character.classType),
+          DestinyData.getClassIcon(widget.character.classType),
           size: 56,
         ));
     double top = getTopPadding(context) + 10;
@@ -73,6 +75,7 @@ class TabHeaderWidgetState extends State<TabHeaderWidget> {
         width: kToolbarHeight +8,
         height: kToolbarHeight + 8,
         child: QueuedNetworkImage(
+          key: Key("secondary_overlay_${emblemDefinition.hash}"),
           imageUrl:
               BungieApiService.url(emblemDefinition.secondaryOverlay),
           fit: BoxFit.fill,
@@ -92,6 +95,7 @@ class TabHeaderWidgetState extends State<TabHeaderWidget> {
         height: height,
         color: Theme.of(context).backgroundColor,
         child: QueuedNetworkImage(
+          key: Key("secondary_special_${emblemDefinition.hash}"),
           imageUrl:
               BungieApiService.url(emblemDefinition.secondarySpecial),
           placeholder: shimmer,
@@ -101,7 +105,7 @@ class TabHeaderWidgetState extends State<TabHeaderWidget> {
   }
 
   Widget powerBar(BuildContext context) {
-    DestinyProgression levelProg = character.levelProgression;
+    DestinyProgression levelProg = widget.character.levelProgression;
     bool isMaxLevel = levelProg.level >= levelProg.levelCap;
     MaterialColor fg = isMaxLevel ? Colors.amber : Colors.green;
     Color bg = Color.lerp(Colors.black, fg, .6);

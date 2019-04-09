@@ -1,4 +1,4 @@
-import 'package:bungie_api/enums/destiny_item_type_enum.dart';
+import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/enums/destiny_item_category.enum.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
@@ -6,11 +6,11 @@ import 'package:little_light/widgets/inventory_tabs/character_tab_header.widget.
 import 'package:little_light/widgets/item_list/item_list.widget.dart';
 
 class CharacterTabWidget extends StatefulWidget {
-  final String characterId;
+  final DestinyCharacterComponent character;
   final int currentGroup;
   final Map<int, double> scrollPositions;
-  CharacterTabWidget(this.characterId, this.currentGroup,
-      {this.scrollPositions});
+  CharacterTabWidget(this.character, this.currentGroup,
+      {this.scrollPositions, Key key}):super(key:key);
   @override
   CharacterTabWidgetState createState() => new CharacterTabWidgetState();
 }
@@ -25,14 +25,14 @@ class CharacterTabWidgetState extends State<CharacterTabWidget> {
   Widget build(BuildContext context) {
     return Stack(children: [
       ItemListWidget(
-          key: Key("${widget.currentGroup}_${widget.characterId}"),
+          key: Key("${widget.currentGroup}_${widget.character}"),
           padding: EdgeInsets.only(
               top: getListTopOffset(context), left: 2, right: 2),
-          characterId: widget.characterId,
+          characterId: widget.character.characterId,
           bucketHashes: bucketHashes,
           scrollPositions: widget.scrollPositions,
           currentGroup: widget.currentGroup),
-      TabHeaderWidget(widget.characterId),
+      TabHeaderWidget(widget.character, key: Key("${widget.character.emblemHash}"),),
     ]);
   }
 
