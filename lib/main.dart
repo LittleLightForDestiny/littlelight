@@ -49,6 +49,7 @@ class LittleLight extends StatelessWidget {
           accentColor: Colors.lightBlueAccent.shade100,
           textSelectionColor: Colors.blueGrey.shade400,
           textSelectionHandleColor: Colors.lightBlueAccent.shade200,
+          toggleableActiveColor: Colors.lightBlueAccent.shade200,
           textTheme: TextTheme(
               button: TextStyle(
             fontWeight: FontWeight.bold,

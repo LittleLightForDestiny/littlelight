@@ -55,6 +55,8 @@ class ItemListWidgetState extends State<ItemListWidget> {
   List<ListItem> listIndex = [];
   StreamSubscription<NotificationEvent> subscription;
 
+  int get itemsPerLine=>3;
+
   @override
   void initState() {
     super.initState();

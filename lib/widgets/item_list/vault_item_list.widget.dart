@@ -10,44 +10,71 @@ import 'package:little_light/widgets/item_list/character_info.widget.dart';
 import 'package:little_light/widgets/item_list/item_list.widget.dart';
 import 'package:little_light/widgets/item_list/items/inventory_item_wrapper.widget.dart';
 
-
 class VaultItemListWidget extends ItemListWidget {
-  VaultItemListWidget(
-      {EdgeInsets padding,
-      List<int> bucketHashes,
-      Key key})
-      : super(key: key, padding:padding, bucketHashes:bucketHashes);
+  VaultItemListWidget({EdgeInsets padding, List<int> bucketHashes, Key key})
+      : super(key: key, padding: padding, bucketHashes: bucketHashes);
   @override
   VaultItemListWidgetState createState() => new VaultItemListWidgetState();
 }
 
-class VaultItemListWidgetState extends ItemListWidgetState {
+class VaultItemListWidgetState extends ItemListWidgetState
+    with WidgetsBindingObserver {
+  int get itemsPerLine {
+    double screenWidth = MediaQuery.of(context).size.width;
+    if (screenWidth > 768) {
+      return 10;
+    }
+    if (screenWidth > 480) {
+      return 6;
+    }
+    return 5;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+  }
+
+  @override
+  void didChangeMetrics() async{
+    await Future.delayed(Duration(milliseconds: 100));
+    await buildIndex();
+    setState(() {});
+  }
 
   buildIndex() async {
     List<DestinyItemComponent> inventory = widget.profile.getProfileInventory();
-    inventory = inventory.where((item)=>item.bucketHash == InventoryBucket.general).toList();
-    List<int> hashes = inventory.map((item)=>item.itemHash).toList();
-    Map<int, DestinyInventoryItemDefinition> defs = (await widget.manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes));
+    inventory = inventory
+        .where((item) => item.bucketHash == InventoryBucket.general)
+        .toList();
+    List<int> hashes = inventory.map((item) => item.itemHash).toList();
+    Map<int, DestinyInventoryItemDefinition> defs = (await widget.manifest
+        .getDefinitions<DestinyInventoryItemDefinition>(hashes));
     Map<int, List<DestinyItemComponent>> itemsByBucket = new Map();
 
-    for(int i = 0; i < inventory.length; i++){
+    for (int i = 0; i < inventory.length; i++) {
       DestinyItemComponent item = inventory[i];
       DestinyInventoryItemDefinition definition = defs[item.itemHash];
       int bucketHash = definition.inventory.bucketTypeHash;
-      if(!itemsByBucket.containsKey(bucketHash)){
+      if (!itemsByBucket.containsKey(bucketHash)) {
         itemsByBucket[bucketHash] = new List();
       }
       itemsByBucket[bucketHash].add(item);
     }
 
     listIndex = [];
-    
-    for(var hash in widget.bucketHashes){
+
+    for (var hash in widget.bucketHashes) {
       List<DestinyItemComponent> unequipped = itemsByBucket[hash];
-      
-      
-      
-      if(unequipped == null){
+
+      if (unequipped == null) {
         unequipped = [];
         // return;
       }
@@ -55,10 +82,11 @@ class VaultItemListWidgetState extends ItemListWidgetState {
       unequipped.sort((itemA, itemB) {
         return InventoryUtils.sortDestinyItems(itemA, itemB, widget.profile);
       });
-    
+
       int itemCount = unequipped.length;
-      int bucketSize = max((itemCount/5).ceil()*5, 5);
-      
+      int bucketSize =
+          max((itemCount / itemsPerLine).ceil() * itemsPerLine, itemsPerLine);
+
       listIndex
           .add(new ListItem(ListItem.bucketHeader, hash, itemCount: itemCount));
       listIndex.addAll(unequipped.map((item) => new ListItem(
@@ -71,13 +99,13 @@ class VaultItemListWidgetState extends ItemListWidgetState {
             .add(ListItem(ListItem.unequippedItem, null, bucketHash: hash));
       }
       listIndex.add(new ListItem(ListItem.spacer, hash));
-      if(mounted){
+      if (mounted) {
         setState(() {});
       }
     }
     listIndex.add(new ListItem(ListItem.spacer, 0));
     listIndex.add(new ListItem(ListItem.spacer, 0));
-    if(!mounted){
+    if (!mounted) {
       return;
     }
     setState(() {
@@ -94,7 +122,7 @@ class VaultItemListWidgetState extends ItemListWidgetState {
   }
 
   Widget getList() {
-    if(listIndex.length < 2){
+    if (listIndex.length < 2) {
       return Container();
     }
     return StaggeredGridView.countBuilder(
@@ -109,22 +137,30 @@ class VaultItemListWidgetState extends ItemListWidgetState {
 
   StaggeredTile getTileBuilder(int index) {
     ListItem item = listIndex[index];
+    double screenWidth = MediaQuery.of(context).size.width;
+    print(screenWidth);
     switch (item.type) {
       case ListItem.bucketHeader:
         return StaggeredTile.extent(30, 40);
       case ListItem.unequippedItem:
-      return StaggeredTile.count(6, 6);
-        
+        if (screenWidth > 768) {
+          return StaggeredTile.count(3, 3);
+        }
+        if (screenWidth > 480) {
+          return StaggeredTile.count(5, 5);
+        }
+        return StaggeredTile.count(6, 6);
+
       case ListItem.spacer:
         return StaggeredTile.count(30, 6);
-      
     }
     return StaggeredTile.extent(30, 96);
   }
 
   Widget getItem(int index) {
     ListItem item = listIndex[index];
-    String itemKey = "${index}_${item.itemComponent?.itemInstanceId ?? item.itemComponent?.itemHash ?? 'empty'}";
+    String itemKey =
+        "${index}_${item.itemComponent?.itemInstanceId ?? item.itemComponent?.itemHash ?? 'empty'}";
     switch (item.type) {
       case ListItem.infoHeader:
         return CharacterInfoWidget(
@@ -138,9 +174,13 @@ class VaultItemListWidgetState extends ItemListWidgetState {
         );
 
       case ListItem.unequippedItem:
-      return InventoryItemWrapperWidget(item?.itemComponent, item?.bucketHash,
-            key:Key(itemKey),
-            density: ContentDensity.MINIMAL, characterId: widget.characterId,);
+        return InventoryItemWrapperWidget(
+          item?.itemComponent,
+          item?.bucketHash,
+          key: Key(itemKey),
+          density: ContentDensity.MINIMAL,
+          characterId: widget.characterId,
+        );
 
       case ListItem.spacer:
         return Container();

@@ -118,9 +118,10 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
         ))
       );
     }
+    double screenWidth = MediaQuery.of(context).size.width;
     return StaggeredGridView.countBuilder(
       padding: EdgeInsets.all(4),
-      crossAxisCount: 6,
+      crossAxisCount: screenWidth > 480 ? 12 : 6,
       itemCount: filteredItems?.length ?? 0,
       itemBuilder: (BuildContext context, int index) => getItem(context, index),
       staggeredTileBuilder: (int index) => getTileBuilder(context, index),

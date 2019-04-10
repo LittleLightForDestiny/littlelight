@@ -1,5 +1,10 @@
+import 'dart:async';
+
 import 'package:bungie_api/models/destiny_collectible_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
+import 'package:little_light/services/inventory/inventory.service.dart';
+import 'package:little_light/services/selection/selection.service.dart';
+import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/screens/item_detail.screen.dart';
@@ -12,8 +17,10 @@ class CollectibleItemWidget extends StatefulWidget {
   final ManifestService manifest = new ManifestService();
   final ProfileService profile = new ProfileService();
   final AuthService auth = new AuthService();
+  final Map<int, List<ItemWithOwner>> itemsByHash;
   final int hash;
-  CollectibleItemWidget({Key key, this.hash}) : super(key: key);
+  CollectibleItemWidget({Key key, this.hash, this.itemsByHash})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -29,10 +36,33 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget> {
         _definition;
   }
 
+  List<ItemWithOwner> get items {
+    if (definition?.itemHash != null &&
+        widget.itemsByHash != null &&
+        widget.itemsByHash.containsKey(definition.itemHash)) {
+      return widget.itemsByHash[definition.itemHash];
+    }
+    return null;
+  }
+
+  bool get selected => items != null
+      ? items.every((i) {
+          return SelectionService().isSelected(i.item, i.ownerId);
+        })
+      : false;
+
   @override
   void initState() {
     super.initState();
     loadDefinition();
+    StreamSubscription<List<ItemInventoryState>> sub;
+    sub = SelectionService().broadcaster.listen((selectedItems) {
+      if (!mounted) {
+        sub.cancel();
+        return;
+      }
+      setState(() {});
+    });
   }
 
   loadDefinition() async {
@@ -76,28 +106,11 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget> {
                   buildTitle(context, definition),
                 ],
               ),
-              FlatButton(
-                child: Container(),
-                onPressed: () async {
-                  if(definition.itemHash == null){
-                    return;
-                  }
-                  DestinyInventoryItemDefinition itemDef = await widget.manifest
-                      .getDefinition<DestinyInventoryItemDefinition>(
-                          definition.itemHash);
-                  if(itemDef == null){
-                    return;
-                  }
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ItemDetailScreen(
-                          null, itemDef, null,
-                          characterId: null),
-                    ),
-                  );
-                },
-              )
+              Positioned(right: 4, bottom: 4, child: buildItemCount()),
+              Positioned.fill(
+                child: buildSelectedBorder(context),
+              ),
+              buildButton(context),
             ])));
   }
 
@@ -113,12 +126,96 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget> {
         child: Container(padding: EdgeInsets.all(8), child: buildTitleText()));
   }
 
+  Widget buildButton(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        child: Container(),
+        onTap: () => onTap(context),
+        onLongPress: () => onLongPress(context),
+      ),
+    );
+  }
+
+  void onTap(BuildContext context) async {
+    if (definition.itemHash == null) {
+      return;
+    }
+    if (SelectionService().multiselectActivated) {
+      onLongPress(context);
+      return;
+    }
+    DestinyInventoryItemDefinition itemDef = await widget.manifest
+        .getDefinition<DestinyInventoryItemDefinition>(definition.itemHash);
+    if (itemDef == null) {
+      return;
+    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            ItemDetailScreen(null, itemDef, null, characterId: null),
+      ),
+    );
+  }
+
+  void onLongPress(BuildContext context) {
+    if ((items?.length ?? 0) == 0) return;
+    if (!selected) {
+      for (var item in this.items) {
+        if (!SelectionService().isSelected(item.item, item.ownerId)) {
+          SelectionService().addItem(item.item, item.ownerId);
+        }
+      }
+    } else {
+      for (var item in this.items) {
+        SelectionService().removeItem(item.item, item.ownerId);
+      }
+    }
+
+    setState(() {});
+  }
+
+  Widget buildSelectedBorder(BuildContext context) {
+    if (selected) {
+      return Container(
+        decoration:
+            BoxDecoration(border: Border.all(width: 2, color: Colors.lightBlue.shade400)),
+      );
+    }
+    return Container();
+  }
+
   buildTitleText() {
     if (definition == null) return Container();
     return Text(definition.displayProperties.name,
         softWrap: true,
         style: TextStyle(
             color: Colors.grey.shade300, fontWeight: FontWeight.bold));
+  }
+
+  Widget buildItemCount() {
+    if ((items?.length ?? 0) == 0) {
+      return Container();
+    }
+    return Container(
+      width: 18,
+      height: 18,
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Colors.blueGrey.shade300,
+          width: 1,
+        ),
+        borderRadius: BorderRadius.circular(10),
+        color: Colors.blueGrey.shade700.withOpacity(.8),
+      ),
+      alignment: Alignment.center,
+      child: Text(
+        "${items.length}",
+        textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+      ),
+    );
   }
 
   bool get unlocked {

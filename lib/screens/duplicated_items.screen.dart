@@ -90,7 +90,7 @@ class DuplicatedItemsScreenState extends State<DuplicatedItemsScreen>
           ]),
           InventoryNotificationWidget(
             key: Key('inventory_notification_widget'),
-            barHeight: 1,
+            barHeight: 0,
           ),
         ]));
   }

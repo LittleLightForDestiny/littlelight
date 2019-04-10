@@ -102,13 +102,13 @@ class PresentationNodeBaseScreenState<T extends PresentationNodeBaseScreen>
   StaggeredTile tileBuilder(CollectionListItem item) {
     switch (item.type) {
       case CollectionListItemType.presentationNode:
-        return StaggeredTile.count(30, 7);
+        return StaggeredTile.extent(30, 92);
 
       case CollectionListItemType.nestedCollectible:
         return StaggeredTile.count(6, 6);
 
       case CollectionListItemType.collectible:
-        return StaggeredTile.count(30, 7);
+        return StaggeredTile.extent(30, 92);
 
       case CollectionListItemType.record:
         return StaggeredTile.fit(30);

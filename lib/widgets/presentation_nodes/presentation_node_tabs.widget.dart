@@ -84,7 +84,7 @@ class PresentationNodeTabsWidgetState
       return Container(
           padding: EdgeInsets.all(8),
           child: Container(
-            constraints: BoxConstraints(maxWidth: 64),
+            constraints: BoxConstraints(maxHeight: 48),
             child:AspectRatio(
             aspectRatio: 1,
               child: ManifestImageWidget<DestinyPresentationNodeDefinition>(

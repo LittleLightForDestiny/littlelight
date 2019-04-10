@@ -96,7 +96,7 @@ class RecordItemWidgetState extends State<RecordItemWidget> {
         child: Stack(children: [
           Column(children: [
             Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 buildIcon(context),
                 Expanded(
@@ -136,8 +136,9 @@ class RecordItemWidgetState extends State<RecordItemWidget> {
 
   Widget buildIcon(BuildContext context) {
     return Container(
-        width: 84,
-        height: 84,
+        width: 56,
+        height: 56,
+        alignment: Alignment.center,
         margin: EdgeInsets.all(8),
         child: definition == null
             ? Container()

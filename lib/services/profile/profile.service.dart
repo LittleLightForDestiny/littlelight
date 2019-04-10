@@ -22,7 +22,6 @@ import 'package:path_provider/path_provider.dart';
 
 enum LastLoadedFrom { server, cache }
 
-
 enum CharacterOrder { none, lastPlayed, firstCreated, lastCreated }
 
 class ProfileComponentGroups {
@@ -66,11 +65,9 @@ class ProfileService {
   DestinyProfileResponse _profile;
   Timer _timer;
   LastLoadedFrom _lastLoadedFrom;
-  
 
   bool pauseAutomaticUpdater = false;
 
-  
   Future<DestinyProfileResponse> fetchProfileData(
       {List<int> components = ProfileComponentGroups.basicProfile}) async {
     _broadcaster.push(NotificationEvent(NotificationType.requestedUpdate));
@@ -87,7 +84,7 @@ class ProfileService {
       _timer.cancel();
     }
     _timer = new Timer.periodic(every, (timer) async {
-      if(!pauseAutomaticUpdater){
+      if (!pauseAutomaticUpdater) {
         print('auto refreshing');
         await fetchProfileData(components: components);
       }
@@ -108,7 +105,7 @@ class ProfileService {
       List<int> components) async {
     DestinyProfileResponse response;
     try {
-     response = await _api.getCurrentProfile(components);
+      response = await _api.getCurrentProfile(components);
     } on SocketException catch (e) {
       print(e);
       //TODO:implement error handling
@@ -194,7 +191,7 @@ class ProfileService {
   }
 
   _cacheProfile(DestinyProfileResponse profile) async {
-    if(profile == null) return;
+    if (profile == null) return;
     Map<String, dynamic> map = profile.toMap();
     Directory directory = await getApplicationDocumentsDirectory();
 
@@ -212,10 +209,12 @@ class ProfileService {
         String json = await cached.readAsString();
         Map<String, dynamic> map = jsonDecode(json);
         DestinyProfileResponse response = DestinyProfileResponse.fromMap(map);
-        print('loaded profile from cache');
-        this._profile = response;
-        this._lastLoadedFrom = LastLoadedFrom.cache;
-        return response;
+        if ((response?.characters?.data?.length ?? 0) > 0) {
+          this._profile = response;
+          this._lastLoadedFrom = LastLoadedFrom.cache;
+          print('loaded profile from cache');
+          return response;
+        }
       } catch (e) {}
     }
 
@@ -298,12 +297,12 @@ class ProfileService {
   }
 
   List<DestinyItemComponent> getCharacterEquipment(String characterId) {
-    if(_profile.characterEquipment?.data == null) return [];
+    if (_profile.characterEquipment?.data == null) return [];
     return _profile.characterEquipment?.data[characterId]?.items ?? [];
   }
 
   List<DestinyItemComponent> getCharacterInventory(String characterId) {
-    if(_profile.characterInventories?.data == null) return [];
+    if (_profile.characterInventories?.data == null) return [];
     return _profile.characterInventories?.data[characterId]?.items ?? [];
   }
 
@@ -352,13 +351,13 @@ class ProfileService {
   DestinyRecordComponent getRecord(int hash, int scope) {
     String hashStr = "$hash";
     if (scope == DestinyScope.Profile) {
-      if(_profile?.profileRecords?.data == null){
+      if (_profile?.profileRecords?.data == null) {
         return null;
       }
       return _profile.profileRecords.data.records[hashStr];
     }
     var charRecords = _profile?.characterRecords?.data;
-    if(charRecords == null){
+    if (charRecords == null) {
       return null;
     }
     for (var char in charRecords.values) {

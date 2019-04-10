@@ -291,7 +291,7 @@ class SearchScreenState extends State<SearchScreen>
           ]),
           InventoryNotificationWidget(
             key: Key('inventory_notification_widget'),
-            barHeight: 1,
+            barHeight: 0,
           ),
         ]));
   }

@@ -52,7 +52,7 @@ class ItemIconWidget extends DestinyItemWidget {
     int state = item?.state ?? 0;
     if (state & ItemState.Masterwork == ItemState.Masterwork) {
       return Stack(children: [
-        itemIconImage(context),
+        Positioned.fill(child:itemIconImage(context)),
         Positioned.fill(child: getMasterworkOutline()),
         Positioned.fill(
             child: Shimmer.fromColors(
@@ -97,8 +97,8 @@ class ItemIconWidget extends DestinyItemWidget {
 
   Image getMasterworkOutline() {
     if (definition.inventory.tierType == TierType.Exotic) {
-      return Image.asset("assets/imgs/masterwork-outline-exotic.png");
+      return Image.asset("assets/imgs/masterwork-outline-exotic.png", fit: BoxFit.cover,);
     }
-    return Image.asset("assets/imgs/masterwork-outline.png");
+    return Image.asset("assets/imgs/masterwork-outline.png", fit: BoxFit.cover,);
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/screens/edit_loadout.screen.dart';
 import 'package:little_light/services/littlelight/littlelight.service.dart';
 import 'package:little_light/services/littlelight/models/loadout.model.dart';
@@ -89,6 +90,7 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
     if (loadouts == null) {
       return Container();
     }
+
     if (loadouts.length == 0) {
       return Container(
           padding: EdgeInsets.all(16),
@@ -107,11 +109,22 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
                 )
               ]));
     }
-    return ListView.builder(
+
+    return StaggeredGridView.countBuilder(
+      padding: EdgeInsets.all(4),
+      crossAxisCount: 30,
       itemCount: loadouts.length,
-      itemBuilder: getItem,
-      addAutomaticKeepAlives: true,
+      itemBuilder: (BuildContext context, int index) => getItem(context, index),
+      staggeredTileBuilder: (int index) => getTileBuilder(index),
+      mainAxisSpacing: 2,
+      crossAxisSpacing: 2,
+      physics: const AlwaysScrollableScrollPhysics(),
     );
+  }
+
+  StaggeredTile getTileBuilder(int index){
+    double screenWidth = MediaQuery.of(context).size.width;
+    return StaggeredTile.fit(screenWidth > 480 ? 15 : 30);
   }
 
   Widget getItem(BuildContext context, int index) {

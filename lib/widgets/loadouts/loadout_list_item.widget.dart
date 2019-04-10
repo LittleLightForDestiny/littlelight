@@ -57,10 +57,10 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> {
         margin: EdgeInsets.all(8),
         child: Material(
             elevation: 1,
+            color:Colors.blueGrey.shade800,
             child: Column(children: [
               Container(
                 height: kToolbarHeight,
-                color: Theme.of(context).primaryColor,
                 child: buildTitleBar(context),
               ),
               buildItemRows(context),
