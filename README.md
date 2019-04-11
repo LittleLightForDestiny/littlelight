@@ -5,6 +5,16 @@
 
 ## Little Light
 Little Light is an inventory manager/companion app for [Destiny 2](http://destinythegame.com/) for both iOS and Android. It helps guardians move their gear and track their ingame progress.
+Right now it features:
+* Quick transfer any item between characters
+* transfer more than one item at once (hold an item to activate multi-select)
+* Create loadouts for equipping an entire set in one click
+* List all your duplicated items to transfer them to any character
+* see all relevant mods of your items in the equipment list
+* quick switch between plaftorms
+* see all item details, including hidden stats, perks, stats buffs for every perk and lore.
+* track and manage all your collections
+* track your triumphs and quests
 
 Visit [@LittleLightD2](http://twitter.com/LittleLightD2) or join the [Discord Server](https://discord.gg/dTKhBD) for updates and more details.
 
