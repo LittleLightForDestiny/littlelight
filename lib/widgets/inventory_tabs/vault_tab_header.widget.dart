@@ -22,6 +22,7 @@ class VaultTabHeaderWidgetState extends TabHeaderWidgetState {
     return Stack(
       children: <Widget>[
         Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[emblemBackground(context), powerBar(context)],
         ),
         emblemIcon(context)
@@ -36,7 +37,7 @@ class VaultTabHeaderWidgetState extends TabHeaderWidgetState {
         top: top,
         width: 56,
         height: 56,
-        child: Image.asset("assets/imgs/vault-secondary-overlay.png"));
+        child: Image.asset("assets/imgs/vault-secondary-overlay.png",));
   }
 
   Widget emblemBackground(BuildContext context) {
