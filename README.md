@@ -16,7 +16,7 @@ Right now it features:
 * track and manage all your collections
 * track your triumphs and quests
 
-Visit [@LittleLightD2](http://twitter.com/LittleLightD2) or join the [Discord Server](https://discord.gg/dTKhBD) for updates and more details.
+Visit [@LittleLightD2](http://twitter.com/LittleLightD2) or join the [Discord Server](https://discord.gg/ztdFGGz) for updates and more details.
 
 ## Bugs and feature requests
 Have a bug or a feature request? Please first search for [existing and closed issues](https://github.com/LittleLightForDestiny/LittleLight/issues). If your problem or idea is not addressed yet, please open a new issue.
