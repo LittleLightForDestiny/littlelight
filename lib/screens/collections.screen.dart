@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:little_light/screens/base/presentation_node_base.screen.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/selected_page_persistence.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -15,7 +14,7 @@ import 'package:little_light/widgets/presentation_nodes/presentation_node_list.w
 
 class CollectionsScreen extends PresentationNodeBaseScreen {
   CollectionsScreen(
-      {presentationNodeHash = DestinyData.collectionsRootHash, depth = 0})
+      {int presentationNodeHash, depth = 0})
       : super(presentationNodeHash: presentationNodeHash, depth: depth);
 
   @override
@@ -68,21 +67,25 @@ class CollectionsScreenState extends PresentationNodeBaseScreenState {
 
   @override
   Widget build(BuildContext context) {
-    if (definition == null) return Container();
     return Scaffold(
         appBar: buildAppBar(context),
-        body: Stack(children: [
+        body: buildScaffoldBody(context));
+  }
+
+  Widget buildScaffoldBody(BuildContext context){
+    if(definition == null) return Container();
+    return Stack(children: [
           Column(children: [
             Expanded(
-                child: buildBody(context, widget.presentationNodeHash,
-                    widget.depth < 2 ? widget.depth : widget.depth + 1)),
+                child: buildBody(context, hash:widget.presentationNodeHash,
+                    depth:widget.depth < 2 ? widget.depth : widget.depth + 1)),
             SelectedItemsWidget(),
           ]),
           InventoryNotificationWidget(
             key: Key('inventory_notification_widget'),
             barHeight: 0,
           ),
-        ]));
+        ]);
   }
 
   buildAppBar(BuildContext context) {

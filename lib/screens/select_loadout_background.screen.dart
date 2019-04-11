@@ -35,7 +35,7 @@ class SelectLoadoutBackgroundScreenState
     return Scaffold(
         appBar:
             AppBar(title: TranslatedTextWidget("Select Loadout Background")),
-        body: buildBody(context, widget.presentationNodeHash, widget.depth));
+        body: buildBody(context, hash:widget.presentationNodeHash, depth:widget.depth));
   }
 
   loadNestedDefinitions(DestinyPresentationNodeDefinition definition) async {

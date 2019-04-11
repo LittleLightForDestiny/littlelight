@@ -47,14 +47,14 @@ class PresentationNodeBaseScreenState<T extends PresentationNodeBaseScreen>
     print(widget.depth);
     return Scaffold(
         appBar: AppBar(title: Text(definition.displayProperties.name)),
-        body: buildBody(context, widget.presentationNodeHash, widget.depth));
+        body: buildBody(context, hash:widget.presentationNodeHash, depth:widget.depth));
   }
 
-  Widget buildBody(BuildContext context, int presentationNodeHash, int depth) {
+  Widget buildBody(BuildContext context, {int hash, int depth}) {
     if (depth == 0 || depth > 2) {
-      return listBuilder(presentationNodeHash, depth);
+      return listBuilder(hash, depth);
     }
-    return tabBuilder(presentationNodeHash, depth);
+    return tabBuilder(hash, depth);
   }
 
   Widget tabBuilder(int presentationNodeHash, int depth) {
@@ -62,7 +62,7 @@ class PresentationNodeBaseScreenState<T extends PresentationNodeBaseScreen>
       presentationNodeHash: presentationNodeHash,
       depth: depth,
       bodyBuilder: (int presentationNodeHash, depth) {
-        return buildBody(context, presentationNodeHash, depth);
+        return buildBody(context, hash:presentationNodeHash, depth:depth);
       },
     );
   }

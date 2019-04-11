@@ -27,7 +27,7 @@ class TriumphsScreenState extends PresentationNodeBaseScreenState {
     if (definition == null) return Container();
     return Scaffold(
         appBar: buildAppBar(context),
-        body: buildBody(context, widget.presentationNodeHash, widget.depth < 2 ? widget.depth : widget.depth + 1));
+        body: buildBody(context, hash:widget.presentationNodeHash, depth:widget.depth < 2 ? widget.depth : widget.depth + 1));
   }
 
   buildAppBar(BuildContext context) {
