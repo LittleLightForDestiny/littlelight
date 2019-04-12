@@ -11,6 +11,7 @@ import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_item_talent_grid_component.dart';
 import 'package:bungie_api/models/destiny_objective_progress.dart';
+import 'package:bungie_api/models/destiny_presentation_node_component.dart';
 import 'package:bungie_api/models/destiny_profile_response.dart';
 import 'package:bungie_api/models/destiny_record_component.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
@@ -38,10 +39,12 @@ class ProfileComponentGroups {
   ];
   static const List<int> collections = [
     DestinyComponentType.Collectibles,
+    DestinyComponentType.PresentationNodes,
   ];
 
   static const List<int> triumphs = [
     DestinyComponentType.Records,
+    DestinyComponentType.PresentationNodes,
   ];
 }
 
@@ -247,6 +250,14 @@ class ProfileService {
 
   List<DestinyObjectiveProgress> getItemObjectives(String itemInstanceId) {
     return _profile.itemComponents.objectives?.data[itemInstanceId]?.objectives;
+  }
+
+  Map<String, DestinyPresentationNodeComponent> getProfilePresentationNodes(){
+    return _profile?.profilePresentationNodes?.data?.nodes;
+  }
+
+  Map<String, DestinyPresentationNodeComponent> getCharacterPresentationNodes(String characterId){
+    return _profile?.characterPresentationNodes?.data[characterId].nodes;
   }
 
   List<DestinyCharacterComponent> getCharacters(
