@@ -4,10 +4,11 @@ import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/selected_page_persistence.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:little_light/widgets/presentation_nodes/presentation_node_tabs.widget.dart';
 
 class TriumphsScreen extends PresentationNodeBaseScreen {
   TriumphsScreen(
-      {presentationNodeHash = DestinyData.triumphsRootHash, depth = 0})
+      {presentationNodeHash, depth = 0})
       : super(presentationNodeHash: presentationNodeHash, depth: depth);
 
   @override
@@ -24,10 +25,23 @@ class TriumphsScreenState extends PresentationNodeBaseScreenState {
 
   @override
   Widget build(BuildContext context) {
-    if (definition == null) return Container();
     return Scaffold(
         appBar: buildAppBar(context),
-        body: buildBody(context, hash:widget.presentationNodeHash, depth:widget.depth < 2 ? widget.depth : widget.depth + 1));
+        body: buildBody(context, hash:widget.presentationNodeHash, depth:widget.depth));
+  }
+
+  @override
+  Widget tabBuilder(int presentationNodeHash, int depth) {
+    if (presentationNodeHash == null) {
+      return PresentationNodeTabsWidget(
+        presentationNodeHashes: [DestinyData.triumphsRootHash, DestinyData.sealsRootHash],
+        depth: 0,
+        bodyBuilder: (int presentationNodeHash, depth) {
+          return buildBody(context, hash: presentationNodeHash, depth: 1);
+        },
+      );
+    }
+    return super.tabBuilder(presentationNodeHash, depth);
   }
 
   buildAppBar(BuildContext context) {
@@ -42,7 +56,7 @@ class TriumphsScreenState extends PresentationNodeBaseScreenState {
           title: TranslatedTextWidget("Triumphs"));
     }
     return AppBar(
-      title:Text(definition.displayProperties.name)
+      title:Text(definition?.displayProperties?.name ?? "")
     );
   }
 

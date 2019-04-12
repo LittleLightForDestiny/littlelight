@@ -138,7 +138,6 @@ class VaultItemListWidgetState extends ItemListWidgetState
   StaggeredTile getTileBuilder(int index) {
     ListItem item = listIndex[index];
     double screenWidth = MediaQuery.of(context).size.width;
-    print(screenWidth);
     switch (item.type) {
       case ListItem.bucketHeader:
         return StaggeredTile.extent(30, 40);

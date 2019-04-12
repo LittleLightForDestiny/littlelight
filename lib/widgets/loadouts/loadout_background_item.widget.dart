@@ -1,5 +1,6 @@
 import 'package:bungie_api/models/destiny_collectible_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
+import 'package:little_light/utils/shimmer_helper.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/auth/auth.service.dart';
@@ -38,11 +39,24 @@ class LoadoutBackgroundItemWidgetState
     setState(() {});
   }
 
+
+
   @override
   Widget build(BuildContext context) {
-    if (definition == null) return Container();
+    return Container(
+      child:buildEmblemBackground(context),
+      decoration: BoxDecoration(border: Border.all(color: Colors.blueGrey.shade300, width: 1)),
+    );
+  }
+
+  buildPlaceholder(BuildContext context){
+    return ShimmerHelper.getDefaultShimmer(context);
+  }
+
+  buildEmblemBackground(BuildContext context){
+    if (definition == null) return buildPlaceholder(context);
     String url = BungieApiService.url(definition.secondarySpecial);
-    if (url == null) return Container();
+    if (url == null) return buildPlaceholder(context);
     return Stack(children: [
       Positioned.fill(
           child: QueuedNetworkImage(
@@ -50,6 +64,7 @@ class LoadoutBackgroundItemWidgetState
         fadeInDuration: Duration(milliseconds: 300),
         imageUrl: "$url",
         fit: BoxFit.cover,
+        placeholder: buildPlaceholder(context),
       )),
       Positioned.fill(child: Material(
         color: Colors.transparent,

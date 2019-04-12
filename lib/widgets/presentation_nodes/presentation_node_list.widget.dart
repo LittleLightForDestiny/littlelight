@@ -7,7 +7,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 
 typedef StaggeredTile PresentationNodeTileBuilder(CollectionListItem item);
-typedef Widget PresentationNodeItemBuilder(CollectionListItem item);
+typedef Widget PresentationNodeItemBuilder(CollectionListItem item, int depth);
 
 class PresentationNodeListWidget extends StatefulWidget {
   final ManifestService manifest = new ManifestService();
@@ -38,7 +38,9 @@ class PresentationNodeListWidgetState
   @override
   void initState() {
     super.initState();
-    buildIndex();
+    if(widget.presentationNodeHash != null){
+      buildIndex();
+    }
   }
 
   void buildIndex() async {
@@ -94,7 +96,7 @@ class PresentationNodeListWidgetState
 
   Widget getItem(BuildContext context, int index) {
     var item = listIndex[index];
-    return widget.itemBuilder(item);
+    return widget.itemBuilder(item, widget.depth);
   }
 
   List<DestinyPresentationNodeChildEntry> get presentationNodes =>

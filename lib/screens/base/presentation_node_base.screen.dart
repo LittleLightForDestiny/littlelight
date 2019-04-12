@@ -29,7 +29,7 @@ class PresentationNodeBaseScreenState<T extends PresentationNodeBaseScreen>
   @override
   void initState() {
     super.initState();
-    if (definition == null) {
+    if (definition == null && widget.presentationNodeHash != null) {
       loadDefinition();
     }
   }
@@ -43,15 +43,13 @@ class PresentationNodeBaseScreenState<T extends PresentationNodeBaseScreen>
 
   @override
   Widget build(BuildContext context) {
-    if (definition == null) return Container();
-    print(widget.depth);
     return Scaffold(
         appBar: AppBar(title: Text(definition.displayProperties.name)),
         body: buildBody(context, hash:widget.presentationNodeHash, depth:widget.depth));
   }
 
   Widget buildBody(BuildContext context, {int hash, int depth}) {
-    if (depth == 0 || depth > 2) {
+    if (depth == 1 || depth > 3 || definition?.nodeType == 2) {
       return listBuilder(hash, depth);
     }
     return tabBuilder(hash, depth);
@@ -76,12 +74,12 @@ class PresentationNodeBaseScreenState<T extends PresentationNodeBaseScreen>
     );
   }
 
-  Widget itemBuilder(CollectionListItem item) {
+  Widget itemBuilder(CollectionListItem item, int depth) {
     switch (item.type) {
       case CollectionListItemType.presentationNode:
         return PresentationNodeItemWidget(
           hash: item.hash,
-          depth: widget.depth,
+          depth: depth,
           onPressed: onPresentationNodePressed,
         );
 

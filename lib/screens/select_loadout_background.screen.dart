@@ -10,7 +10,7 @@ import 'package:little_light/widgets/presentation_nodes/presentation_node_list.w
 
 class SelectLoadoutBackgroundScreen extends PresentationNodeBaseScreen {
   SelectLoadoutBackgroundScreen()
-      : super(presentationNodeHash: 2381001021, depth: 2);
+      : super(presentationNodeHash: 2381001021, depth: 3);
 
   @override
   PresentationNodeBaseScreenState createState() =>
@@ -59,7 +59,7 @@ class SelectLoadoutBackgroundScreenState
   }
 
   @override
-  Widget itemBuilder(CollectionListItem item) {
+  Widget itemBuilder(CollectionListItem item, int depth) {
     return LoadoutBackgroundItemWidget(
       hash: item.hash,
     );

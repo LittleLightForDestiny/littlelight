@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/screens/base/presentation_node_base.screen.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/selected_page_persistence.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -11,10 +12,10 @@ import 'package:little_light/widgets/presentation_nodes/collectible_item.widget.
 import 'package:little_light/widgets/presentation_nodes/nested_collectible_item.widget.dart';
 import 'package:little_light/widgets/presentation_nodes/presentation_node_item.widget.dart';
 import 'package:little_light/widgets/presentation_nodes/presentation_node_list.widget.dart';
+import 'package:little_light/widgets/presentation_nodes/presentation_node_tabs.widget.dart';
 
 class CollectionsScreen extends PresentationNodeBaseScreen {
-  CollectionsScreen(
-      {int presentationNodeHash, depth = 0})
+  CollectionsScreen({int presentationNodeHash, depth = 0})
       : super(presentationNodeHash: presentationNodeHash, depth: depth);
 
   @override
@@ -68,24 +69,23 @@ class CollectionsScreenState extends PresentationNodeBaseScreenState {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: buildAppBar(context),
-        body: buildScaffoldBody(context));
+        appBar: buildAppBar(context), body: buildScaffoldBody(context, widget.depth));
   }
 
-  Widget buildScaffoldBody(BuildContext context){
-    if(definition == null) return Container();
+  Widget buildScaffoldBody(BuildContext context, int depth) {
     return Stack(children: [
-          Column(children: [
-            Expanded(
-                child: buildBody(context, hash:widget.presentationNodeHash,
-                    depth:widget.depth < 2 ? widget.depth : widget.depth + 1)),
-            SelectedItemsWidget(),
-          ]),
-          InventoryNotificationWidget(
-            key: Key('inventory_notification_widget'),
-            barHeight: 0,
-          ),
-        ]);
+      Column(children: [
+        Expanded(
+            child: buildBody(context,
+                hash: widget.presentationNodeHash,
+                depth: depth)),
+        SelectedItemsWidget(),
+      ]),
+      InventoryNotificationWidget(
+        key: Key('inventory_notification_widget'),
+        barHeight: 0,
+      ),
+    ]);
   }
 
   buildAppBar(BuildContext context) {
@@ -99,7 +99,21 @@ class CollectionsScreenState extends PresentationNodeBaseScreenState {
           ),
           title: TranslatedTextWidget("Collections"));
     }
-    return AppBar(title: Text(definition.displayProperties.name));
+    return AppBar(title: Text(definition?.displayProperties?.name ?? ""));
+  }
+
+  @override
+  Widget tabBuilder(int presentationNodeHash, int depth) {
+    if (presentationNodeHash == null) {
+      return PresentationNodeTabsWidget(
+        presentationNodeHashes: [DestinyData.collectionsRootHash, DestinyData.badgesRootHash],
+        depth: 0,
+        bodyBuilder: (int presentationNodeHash, depth) {
+          return buildBody(context, hash: presentationNodeHash, depth: 1);
+        },
+      );
+    }
+    return super.tabBuilder(presentationNodeHash, depth);
   }
 
   @override
@@ -116,12 +130,12 @@ class CollectionsScreenState extends PresentationNodeBaseScreenState {
   }
 
   @override
-  Widget itemBuilder(CollectionListItem item) {
+  Widget itemBuilder(CollectionListItem item, int depth) {
     switch (item.type) {
       case CollectionListItemType.presentationNode:
         return PresentationNodeItemWidget(
           hash: item.hash,
-          depth: widget.depth,
+          depth: depth,
           onPressed: onPresentationNodePressed,
         );
 

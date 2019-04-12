@@ -115,7 +115,9 @@ class DestinyData {
   static const Color objectiveProgress = Color.fromRGBO(90, 163, 102, 1);
 
   static const int collectionsRootHash = 3790247699;
+  static const int badgesRootHash = 498211331;
   static const int triumphsRootHash = 1024788583;
+  static const int sealsRootHash = 1652422747;
 
   static const List<int> statWhitelist = [
     3614673599, // Blast Radius
