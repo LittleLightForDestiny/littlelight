@@ -43,17 +43,12 @@ class DuplicatedItemsScreenState extends State<DuplicatedItemsScreen>
 
   @override
   initState() {
-    // TODO: decide wether I want it or not to save this as a return point
-    // SelectedPagePersistence.saveLatestScreen(
-    //     SelectedPagePersistence.duplicatedItems);
-    ProfileService().startAutomaticUpdater(Duration(seconds: 30));
     super.initState();
     _tabController = new TabController(vsync: this, length: _tabsData.length);
   }
 
   @override
   void dispose() {
-    ProfileService().stopAutomaticUpdater();
     _tabController.dispose();
     super.dispose();
   }

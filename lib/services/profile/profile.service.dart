@@ -46,6 +46,21 @@ class ProfileComponentGroups {
     DestinyComponentType.Records,
     DestinyComponentType.PresentationNodes,
   ];
+
+  static const List<int> everything = [
+    DestinyComponentType.Characters,
+    DestinyComponentType.CharacterProgressions,
+    DestinyComponentType.CharacterEquipment,
+    DestinyComponentType.CharacterInventories,
+    DestinyComponentType.ProfileInventories,
+    DestinyComponentType.ItemInstances,
+    DestinyComponentType.ItemObjectives,
+    DestinyComponentType.ItemTalentGrids,
+    DestinyComponentType.ItemSockets,
+    DestinyComponentType.Collectibles,
+    DestinyComponentType.Records,
+    DestinyComponentType.PresentationNodes,
+  ];
 }
 
 class ProfileService {
@@ -72,7 +87,7 @@ class ProfileService {
   bool pauseAutomaticUpdater = false;
 
   Future<DestinyProfileResponse> fetchProfileData(
-      {List<int> components = ProfileComponentGroups.basicProfile}) async {
+      {List<int> components = ProfileComponentGroups.everything}) async {
     _broadcaster.push(NotificationEvent(NotificationType.requestedUpdate));
     DestinyProfileResponse res = await _updateProfileData(components);
     this._lastLoadedFrom = LastLoadedFrom.server;
@@ -82,7 +97,7 @@ class ProfileService {
   }
 
   startAutomaticUpdater(Duration every,
-      {List<int> components = ProfileComponentGroups.basicProfile}) {
+      {List<int> components = ProfileComponentGroups.everything}) {
     if (_timer != null && _timer.isActive) {
       _timer.cancel();
     }

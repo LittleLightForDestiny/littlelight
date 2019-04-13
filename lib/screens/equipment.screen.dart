@@ -49,7 +49,6 @@ class EquipmentScreenState extends State<EquipmentScreen>
     widget.itemTypes.forEach((type) {
       scrollPositions[type] = 0;
     });
-    widget.profile.startAutomaticUpdater(Duration(seconds: 30));
     super.initState();
 
     subscription = widget.broadcaster.listen((event) {
@@ -63,7 +62,6 @@ class EquipmentScreenState extends State<EquipmentScreen>
   @override
   void dispose() {
     subscription.cancel();
-    widget.profile.stopAutomaticUpdater();
     super.dispose();
   }
 

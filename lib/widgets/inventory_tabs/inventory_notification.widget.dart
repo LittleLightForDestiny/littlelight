@@ -116,7 +116,7 @@ class InventoryNotificationWidgetState
           height: 2,
           bottom: bottomPadding + widget.barHeight,
           child: Container(
-            color: Colors.blueGrey.shade700,
+            color: Colors.transparent,
           ))
     ]);
   }

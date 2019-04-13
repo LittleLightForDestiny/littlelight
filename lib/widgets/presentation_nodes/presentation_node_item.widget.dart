@@ -25,8 +25,7 @@ class PresentationNodeItemWidget extends StatefulWidget {
 }
 
 class PresentationNodeWidgetState extends State<PresentationNodeItemWidget> {
-  DestinyPresentationNodeComponent profileProgress;
-  Map<String, DestinyPresentationNodeComponent> charactersProgress;
+  DestinyPresentationNodeComponent progress;
   DestinyPresentationNodeDefinition definition;
 
   @override
@@ -44,19 +43,17 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget> {
 
   loadCompletionData() {
     var profileNodes = widget.profile.getProfilePresentationNodes();
-    var characters = widget.profile.getCharacters();
 
     if (profileNodes != null) {
-      this.profileProgress = profileNodes["${widget.hash}"];
+      this.progress = profileNodes["${widget.hash}"];
+      if(this.progress != null) return;
     }
-    if (characters != null) {
-      charactersProgress = Map.fromEntries(characters.map((char) {
-        var nodes =
-            widget.profile.getCharacterPresentationNodes(char.characterId);
-        return MapEntry(char.characterId, nodes["${widget.hash}"]);
-      }));
-      charactersProgress.removeWhere((k, v) => v == null);
-    }
+    var characters = widget.profile.getCharacters(CharacterOrder.lastPlayed);
+    if(characters == null || characters.length == 0) return;
+    var charId = characters.first.characterId;
+    var characterNodes = widget.profile.getCharacterPresentationNodes(charId);
+    if(characterNodes == null) return;
+    this.progress = characterNodes["${widget.hash}"];
   }
 
   @override
@@ -105,36 +102,15 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget> {
     if (definition == null) {
       return Container();
     }
-    if (profileProgress != null) {
+    if (progress != null) {
       return Container(
           padding: EdgeInsets.all(8),
           child: Text(
-            "${profileProgress.progressValue}/${profileProgress.completionValue}",
+            "${progress.progressValue}/${progress.completionValue}",
             style: TextStyle(fontWeight: FontWeight.bold),
           ));
     }
-    if (charactersProgress != null) {
-      return Container(
-          padding: EdgeInsets.all(8),
-          child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: charactersProgress
-                  .map((k, v) {
-                    return MapEntry(
-                        k,
-                        
-                        Container(
-                          padding: EdgeInsets.symmetric(vertical: 2),
-                          child:Row(children: [
-                          Icon(DestinyData.getClassIcon(
-                              widget.profile.getCharacter(k).classType), size:14),
-                          Text("${v.progressValue}/${v.completionValue}",
-                              style: TextStyle(fontWeight: FontWeight.bold))
-                        ])));
-                  })
-                  .values
-                  .toList()));
-    }
+    
     return Container();
   }
 

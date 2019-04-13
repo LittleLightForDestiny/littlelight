@@ -6,11 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
 import 'package:little_light/widgets/item_details/item_lore.widget.dart';
 import 'package:little_light/widgets/presentation_nodes/record_detail_objectives.dart';
 
 class RecordDetailScreen extends StatefulWidget {
   final DestinyRecordDefinition definition;
+  final ProfileService profile = ProfileService();
 
   RecordDetailScreen(this.definition, {Key key}) : super(key: key);
 
@@ -21,15 +23,14 @@ class RecordDetailScreen extends StatefulWidget {
 }
 
 class RecordDetailScreenState extends State<RecordDetailScreen> {
+  bool get isLogged => AuthService().isLogged;
 
-  bool get isLogged=>AuthService().isLogged;
-
-  DestinyRecordDefinition get definition=>widget.definition;
+  DestinyRecordDefinition get definition => widget.definition;
 
   Color get foregroundColor {
     return Colors.grey.shade300;
   }
-  
+
   DestinyRecordComponent get record {
     if (definition == null) return null;
     if (!AuthService().isLogged) return null;
@@ -46,44 +47,60 @@ class RecordDetailScreenState extends State<RecordDetailScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title: Text(widget.definition.displayProperties.name),
         ),
-        body: CustomScrollView(slivers: [
-          SliverList(
-            delegate: SliverChildListDelegate([
-              buildMainInfo(context),
-              RecordObjectivesWidget(definition: definition,),
-              ItemLoreWidget(widget.definition.loreHash),
-              Container(height: 100)
-            ]),
-          ),
+        body: Stack(children: [
+          CustomScrollView(slivers: [
+            SliverList(
+              delegate: SliverChildListDelegate([
+                buildMainInfo(context),
+                RecordObjectivesWidget(
+                  definition: definition,
+                ),
+                ItemLoreWidget(widget.definition.loreHash),
+                Container(height: 100)
+              ]),
+            ),
+          ]),
+        InventoryNotificationWidget(barHeight: 0,)
         ]));
   }
 
-  Widget buildMainInfo(BuildContext context){
+  Widget buildMainInfo(BuildContext context) {
     return Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                buildIcon(context),
-                Expanded(
-                    child: Container(
-                        padding: EdgeInsets.all(8).copyWith(left: 0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            buildTitle(context),
-                            Container(
-                              height: 1,
-                              color: foregroundColor,
-                              margin: EdgeInsets.all(4),
-                            ),
-                            buildDescription(context),
-                          ],
-                        )))
-              ],);
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        buildIcon(context),
+        Expanded(
+            child: Container(
+                padding: EdgeInsets.all(8).copyWith(left: 0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    buildTitle(context),
+                    Container(
+                      height: 1,
+                      color: foregroundColor,
+                      margin: EdgeInsets.all(4),
+                    ),
+                    buildDescription(context),
+                  ],
+                )))
+      ],
+    );
   }
 
   Widget buildIcon(BuildContext context) {

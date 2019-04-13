@@ -230,7 +230,6 @@ class SearchScreenState extends State<SearchScreen>
   @override
   initState() {
     SelectedPagePersistence.saveLatestScreen(SelectedPagePersistence.search);
-    ProfileService().startAutomaticUpdater(Duration(seconds: 30));
     super.initState();
     _tabController = new TabController(vsync: this, length: _tabs.length);
     _searchFieldController.text = currentTabData.searchText;
@@ -247,7 +246,6 @@ class SearchScreenState extends State<SearchScreen>
 
   @override
   void dispose() {
-    ProfileService().stopAutomaticUpdater();
     _tabController.dispose();
     super.dispose();
   }

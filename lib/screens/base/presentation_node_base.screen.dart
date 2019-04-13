@@ -2,6 +2,7 @@ import 'package:bungie_api/models/destiny_presentation_node_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/presentation_nodes/collectible_item.widget.dart';
 import 'package:little_light/widgets/presentation_nodes/nested_collectible_item.widget.dart';
@@ -11,7 +12,8 @@ import 'package:little_light/widgets/presentation_nodes/presentation_node_tabs.w
 import 'package:little_light/widgets/presentation_nodes/record_item.widget.dart';
 
 class PresentationNodeBaseScreen extends StatefulWidget {
-  final manifest = new ManifestService();
+  final ManifestService manifest = new ManifestService();
+  final ProfileService profile = new ProfileService();
   final int presentationNodeHash;
   final int depth;
   PresentationNodeBaseScreen(

@@ -7,6 +7,7 @@ import 'package:little_light/screens/search.screen.dart';
 import 'package:little_light/screens/triumphs.screen.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/littlelight/littlelight.service.dart';
+import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/user_settings/user_settings.service.dart';
 import 'package:little_light/utils/selected_page_persistence.dart';
 
@@ -18,7 +19,7 @@ class MainScreen extends StatefulWidget {
   MainScreenState createState() => MainScreenState();
 }
 
-class MainScreenState extends State<MainScreen> {
+class MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   Widget currentScreen;
 
   @override
@@ -27,40 +28,50 @@ class MainScreenState extends State<MainScreen> {
     fetchInfo();
     getInitScreen();
   }
-  fetchInfo(){
+
+  fetchInfo() {
     LittleLightService service = LittleLightService();
     AuthService auth = AuthService();
-    if(auth.isLogged){
+    ProfileService profile = ProfileService();
+    if (auth.isLogged) {
       service.getLoadouts(forceFetch: true);
+      profile.startAutomaticUpdater(Duration(seconds: 30));
     }
-    
   }
 
-  getInitScreen() async{
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    ProfileService profile = ProfileService();
+    if(state == AppLifecycleState.resumed){
+     profile.fetchProfileData(); 
+    }
+  }
+
+  getInitScreen() async {
     String screen = await SelectedPagePersistence.getLatestScreen();
-    switch(screen){
+    switch (screen) {
       case SelectedPagePersistence.equipment:
-      currentScreen = EquipmentScreen();
-      break;
+        currentScreen = EquipmentScreen();
+        break;
 
       case SelectedPagePersistence.progress:
-      currentScreen = ProgressScreen();
-      break;
+        currentScreen = ProgressScreen();
+        break;
 
       case SelectedPagePersistence.collections:
-      currentScreen = CollectionsScreen();
-      break;
+        currentScreen = CollectionsScreen();
+        break;
 
       case SelectedPagePersistence.triumphs:
-      currentScreen = TriumphsScreen();
-      break;
+        currentScreen = TriumphsScreen();
+        break;
 
       case SelectedPagePersistence.loadouts:
-      currentScreen = LoadoutsScreen();
-      break;
+        currentScreen = LoadoutsScreen();
+        break;
       case SelectedPagePersistence.search:
-      currentScreen = SearchScreen();
-      break;
+        currentScreen = SearchScreen();
+        break;
     }
     setState(() {});
 

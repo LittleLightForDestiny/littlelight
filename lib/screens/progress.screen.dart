@@ -29,13 +29,11 @@ class ProgressScreenState extends State<ProgressScreen>
   @override
   void initState() {
     SelectedPagePersistence.saveLatestScreen(SelectedPagePersistence.progress);
-    widget.profile.startAutomaticUpdater(Duration(seconds: 30));
     super.initState();
   }
 
   @override
   void dispose() {
-    widget.profile.stopAutomaticUpdater();
     super.dispose();
   }
 

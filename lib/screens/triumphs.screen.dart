@@ -4,11 +4,12 @@ import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/selected_page_persistence.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
+import 'package:little_light/widgets/inventory_tabs/selected_items.widget.dart';
 import 'package:little_light/widgets/presentation_nodes/presentation_node_tabs.widget.dart';
 
 class TriumphsScreen extends PresentationNodeBaseScreen {
-  TriumphsScreen(
-      {presentationNodeHash, depth = 0})
+  TriumphsScreen({presentationNodeHash, depth = 0})
       : super(presentationNodeHash: presentationNodeHash, depth: depth);
 
   @override
@@ -17,24 +18,43 @@ class TriumphsScreen extends PresentationNodeBaseScreen {
 
 class TriumphsScreenState extends PresentationNodeBaseScreenState {
   @override
-    void initState() {
-      SelectedPagePersistence.saveLatestScreen(SelectedPagePersistence.triumphs);
-      ProfileService().fetchProfileData(components:ProfileComponentGroups.triumphs);
-      super.initState();
-    }
+  void initState() {
+    SelectedPagePersistence.saveLatestScreen(SelectedPagePersistence.triumphs);
+    ProfileService()
+        .fetchProfileData(components: ProfileComponentGroups.triumphs);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: buildAppBar(context),
-        body: buildBody(context, hash:widget.presentationNodeHash, depth:widget.depth));
+        body: buildScaffoldBody(context, widget.depth));
+  }
+
+  Widget buildScaffoldBody(BuildContext context, int depth) {
+    return Stack(children: [
+      buildBody(context, hash: widget.presentationNodeHash, depth: depth),
+      InventoryNotificationWidget(
+        key: Key('inventory_notification_widget'),
+        barHeight: 0,
+      ),
+    ]);
   }
 
   @override
   Widget tabBuilder(int presentationNodeHash, int depth) {
     if (presentationNodeHash == null) {
       return PresentationNodeTabsWidget(
-        presentationNodeHashes: [DestinyData.triumphsRootHash, DestinyData.sealsRootHash],
+        presentationNodeHashes: [
+          DestinyData.triumphsRootHash,
+          DestinyData.sealsRootHash
+        ],
         depth: 0,
         bodyBuilder: (int presentationNodeHash, depth) {
           return buildBody(context, hash: presentationNodeHash, depth: 1);
@@ -55,9 +75,7 @@ class TriumphsScreenState extends PresentationNodeBaseScreenState {
           ),
           title: TranslatedTextWidget("Triumphs"));
     }
-    return AppBar(
-      title:Text(definition?.displayProperties?.name ?? "")
-    );
+    return AppBar(title: Text(definition?.displayProperties?.name ?? ""));
   }
 
   @override
