@@ -6,6 +6,7 @@ import 'package:bungie_api/models/general_user.dart';
 import 'package:bungie_api/models/user_info_card.dart';
 import 'package:bungie_api/models/user_membership_data.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/exceptions/exception_handler.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/littlelight/littlelight.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
@@ -124,8 +125,8 @@ class AuthService {
 
   Future<String> checkAuthorizationCode() async {
     Uri uri = await getInitialUri();
-    print("initialURI: $uri");
     if(uri?.queryParameters == null) return null;
+    print("initialURI: $uri");
     if (uri.queryParameters.containsKey("code") ||
         uri.queryParameters.containsKey("error")) {
       closeWebView();
@@ -136,7 +137,7 @@ class AuthService {
       return uri.queryParameters["code"];
     } else {
       String errorType = uri.queryParameters["error"];
-      String errorDescription = uri.queryParameters["error_description"];
+      String errorDescription = uri.queryParameters["error_description"] ?? uri.toString();
       throw OAuthException(errorType, errorDescription);
     }
   }
@@ -149,6 +150,8 @@ class AuthService {
     Uri uri;
     await for (var link in _stream) {
       uri = Uri.parse(link);
+      print(uri);
+      ExceptionHandler.reportToSentry(new Exception("postAuth URI: $link"));
       if (uri.queryParameters.containsKey("code") ||
           uri.queryParameters.containsKey("error")) {
         break;
@@ -265,7 +268,7 @@ class BungieAuthBrowser implements OAuthBrowser {
       await launch(url,
         forceSafariVC: true, statusBarBrightness: Brightness.light);  
     }else{
-      await launch(url);
+      await launch(url, forceSafariVC: true);
     }
   }
 }

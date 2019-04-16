@@ -26,7 +26,7 @@ class BucketHeaderWidgetState extends State<BucketHeaderWidget> {
   }
 
   fetchDefinition() async {
-    def = await widget.manifest.getBucketDefinition(widget.hash);
+    def = await widget.manifest.getDefinition<DestinyInventoryBucketDefinition>(widget.hash);
     if (mounted) {
       setState(() {});
     }

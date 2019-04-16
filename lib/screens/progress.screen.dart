@@ -24,7 +24,7 @@ class ProgressScreenState extends State<ProgressScreen>
   TabController typeTabController;
 
   get totalCharacterTabs =>
-      characters?.length != null ? characters.length + 1 : 4;
+      characters?.length != null ? characters.length : 3;
 
   @override
   void initState() {

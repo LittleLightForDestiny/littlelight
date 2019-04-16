@@ -232,7 +232,7 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> {
         DestinyItemComponent item = _itemIndex.generic[bucket];
         if (item == null) continue;
         DestinyInventoryItemDefinition def =
-            await widget.manifest.getItemDefinition(item.itemHash);
+            await widget.manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
         if (def.inventory.tierType != TierType.Exotic) continue;
         _itemIndex.removeEquippedItem(item, def);
         _showSnackBar(
@@ -249,7 +249,7 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> {
             _itemIndex.classSpecific[bucket][definition.classType];
         if (item == null) continue;
         DestinyInventoryItemDefinition def =
-            await widget.manifest.getItemDefinition(item.itemHash);
+            await widget.manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
         if (def.inventory.tierType != TierType.Exotic) continue;
         _itemIndex.removeEquippedItem(item, def);
         _showSnackBar(

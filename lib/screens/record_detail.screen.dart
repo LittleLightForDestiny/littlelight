@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
 import 'package:little_light/widgets/item_details/item_lore.widget.dart';
 import 'package:little_light/widgets/presentation_nodes/record_detail_objectives.dart';
@@ -70,6 +71,7 @@ class RecordDetailScreenState extends State<RecordDetailScreen> {
                 RecordObjectivesWidget(
                   definition: definition,
                 ),
+                buildTrackButton(context),
                 ItemLoreWidget(widget.definition.loreHash),
                 Container(height: 100)
               ]),
@@ -155,5 +157,17 @@ class RecordDetailScreenState extends State<RecordDetailScreen> {
               fontWeight: FontWeight.w300,
               fontSize: 13),
         ));
+  }
+
+  Widget buildTrackButton(BuildContext context){
+    return Container(
+      padding: EdgeInsets.all(8),
+      child: RaisedButton(
+        child: TranslatedTextWidget("Track Objectives"),
+        onPressed: (){
+          
+        },
+      ),
+    );
   }
 }

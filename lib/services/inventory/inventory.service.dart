@@ -249,8 +249,8 @@ class InventoryService {
       List<int> hashesToAvoid = const [],
       int stackSize}) async {
     var instanceInfo = profile.getInstanceInfo(item.itemInstanceId);
-    var def = await manifest.getItemDefinition(item.itemHash);
-    var sourceBucketDef = await manifest.getBucketDefinition(item.bucketHash);
+    var def = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
+    var sourceBucketDef = await manifest.getDefinition<DestinyInventoryBucketDefinition>(item.bucketHash);
     if (stackSize == null) {
       stackSize = item.quantity;
     }
@@ -274,11 +274,11 @@ class InventoryService {
         throw TransferError(TransferErrorCode.cantPullFromPostmaster);
       }
       var destinationBucketDef =
-          await manifest.getBucketDefinition(def.inventory.bucketTypeHash);
+          await manifest.getDefinition<DestinyInventoryBucketDefinition>(def.inventory.bucketTypeHash);
 
       if (def.inventory.isInstanceItem) {
         item.bucketHash = def.inventory.bucketTypeHash;
-        sourceBucketDef = await manifest.getBucketDefinition(item.bucketHash);
+        sourceBucketDef = await manifest.getDefinition<DestinyInventoryBucketDefinition>(item.bucketHash);
         if (destinationBucketDef.scope == BucketScope.Account) {
           profile
               .getCharacterInventory(sourceCharacterId)
@@ -287,7 +287,7 @@ class InventoryService {
         }
       } else if (stackSize >= item.quantity) {
         item.bucketHash = def.inventory.bucketTypeHash;
-        sourceBucketDef = await manifest.getBucketDefinition(item.bucketHash);
+        sourceBucketDef = await manifest.getDefinition<DestinyInventoryBucketDefinition>(item.bucketHash);
         if (destinationBucketDef.scope == BucketScope.Account) {
           profile
               .getCharacterInventory(sourceCharacterId)
@@ -327,7 +327,7 @@ class InventoryService {
               .removeWhere((i) => i.itemInstanceId == item.itemInstanceId);
           profile.getProfileInventory().add(item);
         }
-        sourceBucketDef = await manifest.getBucketDefinition(item.bucketHash);
+        sourceBucketDef = await manifest.getDefinition<DestinyInventoryBucketDefinition>(item.bucketHash);
       } else if (stackSize >= item.quantity) {
         item.bucketHash = InventoryBucket.general;
         if (sourceBucketDef.scope == BucketScope.Character) {
@@ -336,7 +336,7 @@ class InventoryService {
               .removeWhere((i) => i.itemHash == item.itemHash);
           profile.getProfileInventory().add(item);
         }
-        sourceBucketDef = await manifest.getBucketDefinition(item.bucketHash);
+        sourceBucketDef = await manifest.getDefinition<DestinyInventoryBucketDefinition>(item.bucketHash);
       } else {
         var newItem = DestinyItemComponent.fromMap(item.toMap());
         item.quantity = item.quantity - stackSize;
@@ -353,7 +353,7 @@ class InventoryService {
           def.inventory.bucketTypeHash, destinationCharacterId, idsToAvoid);
 
       var destinationBucketDef =
-          await manifest.getBucketDefinition(def.inventory.bucketTypeHash);
+          await manifest.getDefinition<DestinyInventoryBucketDefinition>(def.inventory.bucketTypeHash);
       if (destinationBucketDef.scope == BucketScope.Account) {
         destinationCharacterId = profile.getCharacters().first.characterId;
       }
@@ -519,7 +519,7 @@ class InventoryService {
       int bucketHash, String characterId, List<String> idsToAvoid,
       [int count = 1]) async {
     DestinyInventoryBucketDefinition bucketDefinition =
-        await manifest.getBucketDefinition(bucketHash);
+        await manifest.getDefinition<DestinyInventoryBucketDefinition>(bucketHash);
     List<DestinyItemComponent> items;
     bool hasEquipSlot = bucketDefinition.category == BucketCategory.Equippable;
     if (bucketDefinition.scope == BucketScope.Character) {
@@ -556,7 +556,7 @@ class InventoryService {
   Future<DestinyItemComponent> _findBlockingExotic(
       DestinyItemComponent item, String characterId) async {
     DestinyInventoryItemDefinition def =
-        await manifest.getItemDefinition(item.itemHash);
+        await manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
     if (def.inventory.tierType != TierType.Exotic) {
       return null;
     }

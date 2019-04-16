@@ -92,7 +92,7 @@ class ItemListWidgetState extends State<ItemListWidget> {
         inventory = profileInventory;
       }
       DestinyInventoryBucketDefinition bucketDef =
-          await widget.manifest.getBucketDefinition(hash);
+          await widget.manifest.getDefinition<DestinyInventoryBucketDefinition>(hash);
       List<DestinyItemComponent> equipped =
           equipment.where((item) => item.bucketHash == hash).toList();
       List<DestinyItemComponent> unequipped =

@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:bungie_api/enums/damage_type_enum.dart';
 import 'package:bungie_api/enums/destiny_class_enum.dart';
 import 'package:bungie_api/enums/tier_type_enum.dart';
@@ -8,9 +6,6 @@ import 'package:bungie_api/models/destiny_item_category_definition.dart';
 import 'package:bungie_api/models/destiny_presentation_node_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/services/inventory/inventory.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/services/selection/selection.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/selected_page_persistence.dart';
@@ -313,6 +308,7 @@ class SearchScreenState extends State<SearchScreen>
             currentTabData.searchText = _searchFieldController.text;
             if (!searchOpened) {
               currentTabData.searchText = "";
+              _searchFieldController.clear();
             }
             setState(() {});
           },

@@ -3,6 +3,7 @@ import 'package:bungie_api/enums/destiny_item_type_enum.dart';
 import 'package:bungie_api/enums/tier_type_enum.dart';
 import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:bungie_api/models/destiny_class_definition.dart';
+import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_progression.dart';
@@ -48,8 +49,8 @@ class CharacterInfoWidgetState extends State<CharacterInfoWidget> {
   }
 
   loadDefinitions() async {
-    classDef = await widget.manifest.getClassDefinition(character.classHash);
-    raceDef = await widget.manifest.getRaceDefinition(character.raceHash);
+    classDef = await widget.manifest.getDefinition<DestinyClassDefinition>(character.classHash);
+    raceDef = await widget.manifest.getDefinition<DestinyRaceDefinition>(character.raceHash);
     if (mounted) {
       setState(() {});
     }
@@ -383,7 +384,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
         widget.profile.getCharacterEquipment(widget.character.characterId);
     var equipped = equipment.where((i) => slots.contains(i.bucketHash));
     for (var item in equipped) {
-      var def = await widget.manifest.getItemDefinition(item.itemHash);
+      var def = await widget.manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
       itemIndex.addEquippedItem(item, def);
     }
     if (!includeUnequipped) return itemIndex;
@@ -391,7 +392,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
         widget.profile.getCharacterInventory(widget.character.characterId);
     var unequipped = inventory.where((i) => slots.contains(i.bucketHash));
     for (var item in unequipped) {
-      var def = await widget.manifest.getItemDefinition(item.itemHash);
+      var def = await widget.manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
       itemIndex.addUnequippedItem(item, def);
     }
     return itemIndex;
@@ -435,12 +436,12 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
     var exoticArmor = getHighestLightExoticArmor(maxLightLoadout, exoticPieces);
 
     if (exoticWeapon != null) {
-      var def = await widget.manifest.getItemDefinition(exoticWeapon.itemHash);
+      var def = await widget.manifest.getDefinition<DestinyInventoryItemDefinition>(exoticWeapon.itemHash);
       maxLightLoadout.addEquippedItem(exoticWeapon, def);
     }
 
     if (exoticArmor != null) {
-      var def = await widget.manifest.getItemDefinition(exoticArmor.itemHash);
+      var def = await widget.manifest.getDefinition<DestinyInventoryItemDefinition>(exoticArmor.itemHash);
       maxLightLoadout.addEquippedItem(exoticArmor, def);
     }
     int totalLight = 0;
@@ -519,9 +520,9 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
     if (!isInDebug) return;
     for (var item in loadout.generic.values) {
       if (item == null) continue;
-      var def = await widget.manifest.getItemDefinition(item.itemHash);
+      var def = await widget.manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
       var bucket = await widget.manifest
-          .getBucketDefinition(def.inventory.bucketTypeHash);
+          .getDefinition<DestinyInventoryBucketDefinition>(def.inventory.bucketTypeHash);
       var instance = widget.profile.getInstanceInfo(item.itemInstanceId);
       print("---------------------------------------------------------------");
       print(bucket.displayProperties.name);
@@ -532,9 +533,9 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
     for (var items in loadout.classSpecific.values) {
       var item = items[widget.character.classType];
       if (item == null) continue;
-      var def = await widget.manifest.getItemDefinition(item.itemHash);
+      var def = await widget.manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
       var bucket = await widget.manifest
-          .getBucketDefinition(def.inventory.bucketTypeHash);
+          .getDefinition<DestinyInventoryBucketDefinition>(def.inventory.bucketTypeHash);
       var instance = widget.profile.getInstanceInfo(item.itemInstanceId);
       print("---------------------------------------------------------------");
       print(bucket.displayProperties.name);

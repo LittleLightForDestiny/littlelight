@@ -71,6 +71,7 @@ class QuestInfoWidgetState extends DestinyItemState<QuestInfoWidget> {
       items.add(Container(
           padding: EdgeInsets.all(8),
           child: HeaderWidget(
+              alignment: Alignment.centerLeft,
               child: TranslatedTextWidget("Quest steps",
                   uppercase: true,
                   style: TextStyle(fontWeight: FontWeight.bold)))));
@@ -197,6 +198,7 @@ class QuestInfoWidgetState extends DestinyItemState<QuestInfoWidget> {
         child: Column(
           children: <Widget>[
             HeaderWidget(
+              alignment: Alignment.centerLeft,
                 child: TranslatedTextWidget("From the questline",
                     uppercase: true,
                     style: TextStyle(fontWeight: FontWeight.bold))),

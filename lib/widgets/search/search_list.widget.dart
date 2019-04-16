@@ -13,6 +13,7 @@ import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/item_list/items/search_item_wrapper.widget.dart';
 import 'package:little_light/widgets/search/search_filters.widget.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:little_light/utils/remove_diacritics.dart';
 
 class SearchListWidget extends StatefulWidget {
   final ProfileService profile = ProfileService();
@@ -153,12 +154,15 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
   List<ItemWithOwner> get filteredItems {
     if (itemDefinitions == null) return [];
     Set<int> perksMatched = new Set();
+    if(perkDefinitions == null) return [];
     for(var p in perkDefinitions.values){
      var match = p.displayProperties.name
           .toLowerCase()
           .contains(search.toLowerCase());
       if(match) perksMatched.add(p.hash);
     }
+
+    var _search = removeDiacritics(search).toLowerCase();
 
     return items.where((item) {
       var def = itemDefinitions[item.item.itemHash];
@@ -252,20 +256,20 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
         }
       }
 
-      if (search.length == 0) {
+      if (_search.length == 0) {
         return true;
       }
       bool match = false;
-      if (search.length < 4) {
-        match = def.displayProperties.name
-          .toLowerCase()
-          .startsWith(search.toLowerCase());
-        match = match || def.itemTypeDisplayName.toLowerCase().startsWith(search.toLowerCase());
+      var name = removeDiacritics(def.displayProperties.name).toLowerCase();
+      var itemTypeDisplayName = removeDiacritics(def.itemTypeDisplayName).toLowerCase();
+      if (_search.length < 4) {
+        match = name
+          .startsWith(_search);
+        match = match || itemTypeDisplayName.startsWith(_search);
       }else{
-        match = def.displayProperties.name
-          .toLowerCase()
-          .contains(search.toLowerCase());
-        match = match || def.itemTypeDisplayName.toLowerCase().contains(search.toLowerCase());
+        match = name
+          .contains(_search);
+        match = match || itemTypeDisplayName.contains(_search);
       }
       var sockets = widget.profile.getItemSockets(item?.item?.itemInstanceId ?? 0);
       if(sockets != null){

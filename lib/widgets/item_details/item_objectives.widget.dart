@@ -8,6 +8,7 @@ import 'package:bungie_api/models/destiny_objective_progress.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
+import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/widgets/common/destiny_item.stateful_widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/objective.widget.dart';
@@ -49,23 +50,22 @@ class ItemObjectivesWidgetState extends DestinyItemState<ItemObjectivesWidget> {
     });
   }
 
-    @override
+  @override
   dispose() {
     subscription.cancel();
     super.dispose();
   }
 
   loadDefinitions() async {
-    if(AuthService().isLogged){
+    if (AuthService().isLogged) {
       itemObjectives = widget.profile.getItemObjectives(item?.itemInstanceId);
     }
     objectiveDefinitions = await widget.manifest
         .getDefinitions<DestinyObjectiveDefinition>(
             definition?.objectives?.objectiveHashes);
-    if(mounted){
+    if (mounted) {
       setState(() {});
     }
-    
   }
 
   @override
@@ -76,17 +76,42 @@ class ItemObjectivesWidgetState extends DestinyItemState<ItemObjectivesWidget> {
     items.add(Container(
         padding: EdgeInsets.all(8),
         child: HeaderWidget(
-            child: TranslatedTextWidget("Objectives",
-                uppercase: true,
-                style: TextStyle(fontWeight: FontWeight.bold)))));
+            padding: EdgeInsets.all(0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+              Container(
+                  padding: EdgeInsets.all(8),
+                  child: TranslatedTextWidget("Objectives",
+                      uppercase: true,
+                      style: TextStyle(fontWeight: FontWeight.bold))),
+              buildRefreshButton(context)
+            ]))));
     items.addAll(buildObjectives(context));
     return Column(children: items);
+  }
+
+  buildRefreshButton(BuildContext context) {
+    return Material(
+        color: Colors.transparent,
+        child: Stack(
+          children: <Widget>[
+            InkWell(
+                child: Container(
+                    padding: EdgeInsets.all(8), child: Icon(Icons.refresh)),
+                onTap: () {
+                  widget.profile.fetchProfileData(
+                      components: ProfileComponentGroups.basicProfile);
+                })
+          ],
+        ));
   }
 
   List<Widget> buildObjectives(BuildContext context) {
     if (itemObjectives != null) {
       return itemObjectives
-          .map((objective) => buildCurrentObjective(context, objective.objectiveHash, objective))
+          .map((objective) => buildCurrentObjective(
+              context, objective.objectiveHash, objective))
           .toList();
     }
     return definition.objectives.objectiveHashes
@@ -97,10 +122,11 @@ class ItemObjectivesWidgetState extends DestinyItemState<ItemObjectivesWidget> {
   Widget buildCurrentObjective(BuildContext context, int hash,
       [DestinyObjectiveProgress objective]) {
     var def = objectiveDefinitions[hash];
-    return 
-        Container(
-          padding: EdgeInsets.all(8),
-          child:ObjectiveWidget(
+    return Container(
+        padding: EdgeInsets.all(8),
+        child: ObjectiveWidget(
+          key:
+              Key("objective_${objective.objectiveHash}_${objective.progress}"),
           definition: def,
           objective: objective,
         ));

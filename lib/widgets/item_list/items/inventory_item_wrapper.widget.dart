@@ -92,7 +92,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
         return;
       }
     }
-    definition = await widget.manifest.getItemDefinition(widget.item.itemHash);
+    definition = await widget.manifest.getDefinition<DestinyInventoryItemDefinition>(widget.item.itemHash);
     if (mounted) {
       setState(() {});
     }

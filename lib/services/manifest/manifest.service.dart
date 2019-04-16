@@ -1,12 +1,5 @@
 import 'dart:convert';
-
-import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_manifest.dart';
-import 'package:bungie_api/models/destiny_stat_definition.dart';
-import 'package:bungie_api/models/destiny_class_definition.dart';
-import 'package:bungie_api/models/destiny_race_definition.dart';
-import 'package:bungie_api/models/destiny_talent_grid_definition.dart';
-import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/responses/destiny_manifest_response.dart';
 import 'package:flutter/foundation.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
@@ -156,43 +149,7 @@ class ManifestService {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     _prefs.setString(_manifestVersionKey, version);
   }
-
-  Future<DestinyInventoryItemDefinition> getItemDefinition(int hash) async {
-    var res = await getDefinition<DestinyInventoryItemDefinition>(
-        hash, DestinyInventoryItemDefinition.fromMap);
-    return res;
-  }
-
-  Future<DestinyStatDefinition> getStatDefinition(int hash) async {
-    var res = await getDefinition<DestinyStatDefinition>(
-        hash, DestinyStatDefinition.fromMap);
-    return res;
-  }
-
-  Future<DestinyTalentGridDefinition> getTalentGridDefinition(int hash) async {
-    var res = await getDefinition<DestinyTalentGridDefinition>(
-        hash, DestinyTalentGridDefinition.fromMap);
-    return res;
-  }
-
-  Future<DestinyInventoryBucketDefinition> getBucketDefinition(int hash) async {
-    var res = await getDefinition<DestinyInventoryBucketDefinition>(
-        hash, DestinyInventoryBucketDefinition.fromMap);
-    return res;
-  }
-
-  Future<DestinyClassDefinition> getClassDefinition(int hash) async {
-    var res = await getDefinition<DestinyClassDefinition>(
-        hash, DestinyClassDefinition.fromMap);
-    return res;
-  }
-
-  Future<DestinyRaceDefinition> getRaceDefinition(int hash) async {
-    DestinyRaceDefinition res = await getDefinition<DestinyRaceDefinition>(
-        hash, DestinyRaceDefinition.fromMap);
-    return res;
-  }
-
+  
   Future<Map<int, T>> getDefinitions<T>(Iterable<int> hashes,
       [dynamic identity(Map<String, dynamic> json)]) async {
     Set<int> hashesSet = hashes.toSet();

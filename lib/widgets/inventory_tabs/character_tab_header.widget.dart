@@ -37,7 +37,7 @@ class TabHeaderWidgetState extends State<TabHeaderWidget> {
 
   getDefinitions() async {
     emblemDefinition =
-        await widget.manifest.getItemDefinition(widget.character.emblemHash);
+        await widget.manifest.getDefinition<DestinyInventoryItemDefinition>(widget.character.emblemHash);
     if(mounted){
       setState(() {});
     }
