@@ -1,6 +1,8 @@
 import 'package:bungie_api/enums/destiny_record_state_enum.dart';
 import 'package:bungie_api/models/destiny_record_component.dart';
 import 'package:bungie_api/models/destiny_record_definition.dart';
+import 'package:little_light/services/littlelight/littlelight.service.dart';
+import 'package:little_light/services/littlelight/models/tracked_objective.model.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/auth/auth.service.dart';
@@ -25,6 +27,7 @@ class RecordDetailScreen extends StatefulWidget {
 
 class RecordDetailScreenState extends State<RecordDetailScreen> {
   bool get isLogged => AuthService().isLogged;
+  bool isTracking = false;
 
   DestinyRecordDefinition get definition => widget.definition;
 
@@ -50,11 +53,21 @@ class RecordDetailScreenState extends State<RecordDetailScreen> {
   @override
   void initState() {
     super.initState();
+    if(isLogged){
+      updateTrackStatus();
+    }
   }
 
   @override
   void dispose() {
     super.dispose();
+  }
+
+  updateTrackStatus() async{
+    var objectives  = await LittleLightService().getTrackedObjectives();
+    var tracked = objectives.firstWhere((o)=>o.hash == widget.definition.hash && o.type == TrackedObjectiveType.Triumph, orElse: ()=>null);
+    isTracking = tracked != null;
+    setState((){});
   }
 
   @override
@@ -163,9 +176,16 @@ class RecordDetailScreenState extends State<RecordDetailScreen> {
     return Container(
       padding: EdgeInsets.all(8),
       child: RaisedButton(
-        child: TranslatedTextWidget("Track Objectives"),
+        child: isTracking ? TranslatedTextWidget("Stop Tracking", key:Key("stop_tracking")) : TranslatedTextWidget("Track Objectives", key:Key("track_objectives")),
         onPressed: (){
-          
+          var service = LittleLightService();
+          print(isTracking);
+          if(isTracking){
+            service.removeTrackedObjective(TrackedObjectiveType.Triumph, definition.hash);
+          }else{
+            service.addTrackedObjective(TrackedObjectiveType.Triumph, definition.hash);
+          }
+          updateTrackStatus();
         },
       ),
     );

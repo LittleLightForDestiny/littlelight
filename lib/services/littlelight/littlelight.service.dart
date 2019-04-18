@@ -156,7 +156,7 @@ class LittleLightService {
   }
 
   Future<void> addTrackedObjective(
-      TrackedObjectiveType type, int hash, String instanceId) async {
+      TrackedObjectiveType type, int hash, [String instanceId]) async {
         var found = _trackedObjectives.firstWhere((o) => o.type == type && o.hash == hash && o.instanceId == instanceId, orElse: ()=>null);
     if(found == null){
       _trackedObjectives.add(TrackedObjective(type, hash, instanceId));
@@ -165,7 +165,7 @@ class LittleLightService {
   }
 
   Future<void> removeTrackedObjective(
-      TrackedObjectiveType type, int hash, String instanceId) async {
+      TrackedObjectiveType type, int hash, [String instanceId]) async {
     _trackedObjectives.removeWhere(
         (o) => o.type == type && o.hash == hash && o.instanceId == instanceId);
     await _saveTrackedObjectives();
@@ -174,8 +174,7 @@ class LittleLightService {
   Future<void> _saveTrackedObjectives() async {
     Directory directory = await getApplicationDocumentsDirectory();
     File cached = new File("${directory.path}/tracked_objectives.json");
-
-    List<dynamic> map = _trackedObjectives.map((l) => l.toMap()).toList();
+    List<dynamic> map = _trackedObjectives.where((l)=>l.hash != null).map((l) => l.toMap()).toList();
     String json = jsonEncode(map);
     await cached.writeAsString(json);
   }

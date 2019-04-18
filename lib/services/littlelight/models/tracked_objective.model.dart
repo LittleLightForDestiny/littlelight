@@ -5,7 +5,7 @@ class TrackedObjective {
   int hash;
   String instanceId;
 
-  TrackedObjective(type, hash, [instanceId]);
+  TrackedObjective(this.type, this.hash, [this.instanceId]);
 
   static TrackedObjective fromMap(Map<String, dynamic> map) {
     return TrackedObjective(
