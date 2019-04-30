@@ -98,49 +98,63 @@ class _MilestoneItemWidgetState extends State<MilestoneItemWidget>
           .add(buildAvailableQuests(context, widget.milestone.availableQuests));
     }
     return Container(
-        color: Colors.blueGrey.shade900,
+        decoration: BoxDecoration(
+          color: Colors.blueGrey.shade900,
+          border: Border.all(width:1, color:Colors.blueGrey.shade200)
+        ),
         margin: EdgeInsets.all(8).copyWith(top: 0),
         child: Column(children: items));
   }
 
-  Widget buildHeader(BuildContext context) {
-    if (definition == null) return Container();
-    DestinyDisplayPropertiesDefinition displayProperties =
-        definition?.displayProperties;
-    if (!displayProperties.hasIcon && (definition.quests.length ?? 0) > 0) {
-      displayProperties = definition.quests.values.first.displayProperties;
-    }
-    return Stack(children: [
-      Column(children: <Widget>[
-        Stack(children: <Widget>[
-          Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+  buildHeader(BuildContext context) {
+    return Stack(children: <Widget>[
+      Positioned.fill(
+        child: QueuedNetworkImage(
+            fit: BoxFit.cover,
+            imageUrl: BungieApiService.url(definition.image)),
+      ),
+      Positioned.fill(
+        child: Container(
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                    colors: [
+              Colors.black.withOpacity(1),
+              Colors.black.withOpacity(.3)
+            ]))),
+      ),
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            padding:EdgeInsets.all(8),
+            width:64,
+            height:64,
+          child:QueuedNetworkImage(
+            fit: BoxFit.cover,
+            imageUrl: BungieApiService.url(definition.displayProperties.icon))),
+          Expanded(child:Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch, children: [
             Container(
               alignment: Alignment.centerLeft,
-              padding: EdgeInsets.all(8).copyWith(left: 88),
+              padding: EdgeInsets.all(8),
               child: Text(
-                displayProperties.name.toUpperCase(),
+                definition.displayProperties.name.toUpperCase(),
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
             Container(
-              constraints: BoxConstraints(minHeight: 60),
-              padding: EdgeInsets.all(8).copyWith(left: 88),
+              padding: EdgeInsets.all(8),
               child: Text(
-                displayProperties.description,
+                definition.displayProperties.description,
                 style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
               ),
             )
-          ]),
-          Positioned(
-              top: 8,
-              left: 8,
-              width: 72,
-              height: 72,
-              child: Container(
-                  child: QueuedNetworkImage(
-                      imageUrl: BungieApiService.url(displayProperties.icon))))
-        ]),
-      ])
+          ])),
+        ],
+      )
     ]);
   }
 
@@ -149,26 +163,25 @@ class _MilestoneItemWidgetState extends State<MilestoneItemWidget>
     List<Widget> widgets = [];
     activities.forEach((activity) {
       if ((activity.challenges?.length ?? 0) > 0) {
-        widgets.add(
-          Container(
+        widgets.add(Container(
             padding: EdgeInsets.all(4),
-            child:HeaderWidget(
-            alignment: Alignment.centerLeft,
-            child: ManifestText<DestinyActivityDefinition>(
-              activity.activityHash,
-              uppercase: true,
-              maxLines: 1,
-              softWrap: false,
-              textAlign: TextAlign.left,
-              overflow: TextOverflow.fade,
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ))));
+            child: HeaderWidget(
+                alignment: Alignment.centerLeft,
+                child: ManifestText<DestinyActivityDefinition>(
+                  activity.activityHash,
+                  uppercase: true,
+                  maxLines: 1,
+                  softWrap: false,
+                  textAlign: TextAlign.left,
+                  overflow: TextOverflow.fade,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ))));
         widgets.add(buildActivityChallenges(context, activity.challenges));
       }
     });
     return Container(
-      padding: EdgeInsets.all(4).copyWith(bottom: 8),
-      child:Column(
+        padding: EdgeInsets.all(4).copyWith(bottom: 8),
+        child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch, children: widgets));
   }
 

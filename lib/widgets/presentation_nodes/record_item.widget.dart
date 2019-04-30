@@ -3,6 +3,9 @@ import 'package:bungie_api/models/destiny_objective_definition.dart';
 import 'package:bungie_api/models/destiny_objective_progress.dart';
 import 'package:bungie_api/models/destiny_record_component.dart';
 import 'package:bungie_api/models/destiny_record_definition.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:little_light/services/littlelight/littlelight.service.dart';
+import 'package:little_light/services/littlelight/models/tracked_objective.model.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/screens/record_detail.screen.dart';
@@ -29,6 +32,7 @@ class RecordItemWidgetState extends State<RecordItemWidget> {
   bool isLogged = false;
   Map<int, DestinyObjectiveDefinition> objectiveDefinitions;
   DestinyLoreDefinition loreDefinition;
+  bool isTracking = false;
 
   DestinyRecordDefinition get definition {
     return widget.manifest
@@ -40,6 +44,19 @@ class RecordItemWidgetState extends State<RecordItemWidget> {
   void initState() {
     super.initState();
     loadDefinitions();
+    if (isLogged) {
+      updateTrackStatus();
+    }
+  }
+
+  updateTrackStatus() async {
+    var objectives = await LittleLightService().getTrackedObjectives();
+    var tracked = objectives.firstWhere(
+        (o) => o.hash == widget.hash && o.type == TrackedObjectiveType.Triumph,
+        orElse: () => null);
+    isTracking = tracked != null;
+    if (!mounted) return;
+    setState(() {});
   }
 
   loadDefinitions() async {
@@ -150,7 +167,7 @@ class RecordItemWidgetState extends State<RecordItemWidget> {
 
   buildTitle(BuildContext context) {
     if (definition == null) return Container();
-    return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+    return Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
       Expanded(
           child: Container(
               padding: EdgeInsets.all(4),
@@ -160,16 +177,31 @@ class RecordItemWidgetState extends State<RecordItemWidget> {
                 style: TextStyle(
                     color: foregroundColor, fontWeight: FontWeight.bold),
               ))),
+      buildTrackingIcon(context),
       Container(
-          padding: EdgeInsets.only(right: 4, top: 4),
+          padding: EdgeInsets.only(left: 4, right: 4),
           child: Text(
             "${definition?.completionInfo?.scoreValue ?? ""}",
             style: TextStyle(
                 fontWeight: FontWeight.w300,
                 color: foregroundColor,
-                fontSize: 13),
+                fontSize: 14),
           )),
     ]);
+  }
+
+  Widget buildTrackingIcon(BuildContext context) {
+    if (!isTracking) return Container();
+    return Container(
+        padding: EdgeInsets.all(2),
+        decoration: BoxDecoration(
+            color: Colors.green.shade800,
+            borderRadius: BorderRadius.circular(20)),
+        child: Icon(
+          FontAwesomeIcons.crosshairs,
+          size: 12,
+          color: Colors.lightGreenAccent.shade100,
+        ));
   }
 
   buildDescription(BuildContext context) {
@@ -218,13 +250,14 @@ class RecordItemWidgetState extends State<RecordItemWidget> {
         child: Column(
             children: definition.objectiveHashes
                 .map((hash) => ObjectiveWidget(
-                    definition: objectiveDefinitions != null
-                        ? objectiveDefinitions[hash]
-                        : null,
-                    objective: getRecordObjective(hash),
-                    placeholder: definition?.displayProperties?.name ?? "",
-                    color: foregroundColor,
-                    parentCompleted: completed,))
+                      definition: objectiveDefinitions != null
+                          ? objectiveDefinitions[hash]
+                          : null,
+                      objective: getRecordObjective(hash),
+                      placeholder: definition?.displayProperties?.name ?? "",
+                      color: foregroundColor,
+                      parentCompleted: completed,
+                    ))
                 .toList()));
   }
 }

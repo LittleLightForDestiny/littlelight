@@ -12,7 +12,7 @@ class HeaderWidget extends StatelessWidget {
         padding: padding,
         decoration: BoxDecoration(
           border: BorderDirectional(bottom: BorderSide(color: Colors.white)),
-          color: Colors.white.withOpacity(0.2),
+          gradient: LinearGradient(colors: [Color.fromRGBO(255, 255, 255, 0), Color.fromRGBO(255, 255, 255, .1)], begin: Alignment.topCenter, end: Alignment.bottomCenter)
         ),
         child: child);
   }

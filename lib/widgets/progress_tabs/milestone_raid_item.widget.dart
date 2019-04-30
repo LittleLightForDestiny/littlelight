@@ -76,7 +76,10 @@ class _MilestoneRaidItemWidgetState extends State<MilestoneRaidItemWidget>
     }
 
     return Container(
-        color: Colors.blueGrey.shade800,
+        decoration: BoxDecoration(
+          color: Colors.blueGrey.shade900,
+        ),
+        
         margin: EdgeInsets.all(8).copyWith(top: 0),
         child: Column(children: <Widget>[
           buildHeader(context),
@@ -173,7 +176,7 @@ class _MilestoneRaidItemWidgetState extends State<MilestoneRaidItemWidget>
                 alignment: Alignment.center,
                 padding: EdgeInsets.all(4),
                 margin: EdgeInsets.all(2),
-                color:Colors.blueGrey.shade900,
+                color:Colors.blueGrey.shade700,
                 child: buildPhaseLabel(context, phase)));
   }
 
@@ -249,7 +252,7 @@ class _MilestoneRaidItemWidgetState extends State<MilestoneRaidItemWidget>
     }
     Color color = phase.complete
         ? Colors.amber.shade100
-        : Colors.grey.shade300.withOpacity(.5);
+        : Colors.blueGrey.shade200;
     if (icon != null) {
       return Icon(icon, color: color, size: 30);
     }

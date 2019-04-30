@@ -17,10 +17,10 @@ class LoadoutScreenState extends State<ObjectivesScreen> {
   @override
   void initState() {
     super.initState();
-    loadLoadouts();
+    loadObjectives();
   }
 
-  void loadLoadouts() async {
+  void loadObjectives() async {
     LittleLightService service = LittleLightService();
     objectives = await service.getTrackedObjectives();
     setState(() {});
@@ -61,7 +61,7 @@ class LoadoutScreenState extends State<ObjectivesScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 TranslatedTextWidget(
-                  "You have no loadouts yet. Create your first one.",
+                  "You aren't tracking any objectives yet. Add one from Triumphs or Pursuits.",
                   textAlign: TextAlign.center,
                 ),
                 Container(height: 16),

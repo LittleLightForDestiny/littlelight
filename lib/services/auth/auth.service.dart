@@ -124,6 +124,11 @@ class AuthService {
   }
 
   Future<String> checkAuthorizationCode() async {
+
+    //TODO: remove temp test code
+    // String link = await getInitialLink();
+    // ExceptionHandler.reportToSentry("initialLink:$link");
+
     Uri uri = await getInitialUri();
     if(uri?.queryParameters == null) return null;
     print("initialURI: $uri");
@@ -151,7 +156,8 @@ class AuthService {
     await for (var link in _stream) {
       uri = Uri.parse(link);
       print(uri);
-      ExceptionHandler.reportToSentry(new Exception("postAuth URI: $link"));
+      //TODO: remove temp test code
+      // ExceptionHandler.reportToSentry(new Exception("postAuth URI: $link"));
       if (uri.queryParameters.containsKey("code") ||
           uri.queryParameters.containsKey("error")) {
         break;

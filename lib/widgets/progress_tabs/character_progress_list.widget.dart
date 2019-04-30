@@ -41,6 +41,9 @@ class _CharacterProgressListWidgetState
         widget.profile.getCharacterProgression(widget.characterId).milestones;
     var hashes = milestones.values.map((m)=>m.milestoneHash);
     milestoneDefinitions = await widget.manifest.getDefinitions<DestinyMilestoneDefinition>(hashes);
+    if(!mounted){
+      return;
+    }
     setState(() {});
   }
 

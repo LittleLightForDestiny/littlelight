@@ -88,7 +88,7 @@ class ProgressScreenState extends State<ProgressScreen>
         decoration: BoxDecoration(
             gradient: LinearGradient(
       colors: [
-        Color.fromARGB(255, 32, 53, 53),
+        Color.fromARGB(255, 80, 90, 100),
         Color.fromARGB(255, 100, 100, 115),
         Color.fromARGB(255, 32, 32, 73),
       ],
