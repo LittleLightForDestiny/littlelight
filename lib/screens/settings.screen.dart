@@ -39,9 +39,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
           padding: EdgeInsets.all(8),
           children: <Widget>[
           ListTile(
-              title: TranslatedTextWidget('Keep Awake', style: TextStyle(fontWeight: FontWeight.bold),),
+              title: TranslatedTextWidget("Keep Awake", style: TextStyle(fontWeight: FontWeight.bold),),
               subtitle: TranslatedTextWidget(
-                  'Keep device awake while the app is open'),
+                  "Keep device awake while the app is open"),
               trailing: Switch(
                 value: keepAwake,
                 onChanged: (val) {
@@ -51,15 +51,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   Screen.keepOn(val);
                 },
               )),
-          // ListTile(title: TranslatedTextWidget('Order items by')),
+          // ListTile(title: TranslatedTextWidget("Order items by")),
           // TranslatedTextWidget(
-          //   'Power Level',
+          //   "Power Level",
           // ),
-          // TranslatedTextWidget('Name'),
-          // TranslatedTextWidget('Type'),
-          // TranslatedTextWidget('Sub type'),
+          // TranslatedTextWidget("Name"),
+          // TranslatedTextWidget("Type"),
+          // TranslatedTextWidget("Sub type"),
 
-          // ListTile(title: TranslatedTextWidget('and then')),
+          // ListTile(title: TranslatedTextWidget("and then")),
         ]));
   }
 }

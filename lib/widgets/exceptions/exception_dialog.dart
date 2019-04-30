@@ -27,7 +27,7 @@ class ExceptionDialog extends AlertDialog {
         TranslatedTextWidget(ex.errorDescription),
       ]);
     }
-    return TranslatedTextWidget('UnknownError');
+    return TranslatedTextWidget("UnknownError");
   }
 
   @override
