@@ -5,6 +5,8 @@ import 'package:little_light/services/littlelight/models/tracked_objective.model
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
 import 'package:little_light/widgets/presentation_nodes/record_item.widget.dart';
+import 'package:little_light/widgets/progress_tabs/pursuit_item.widget.dart';
+import 'package:little_light/widgets/progress_tabs/tracked_pursuit_item.widget.dart';
 
 class ObjectivesScreen extends StatefulWidget {
   @override
@@ -44,7 +46,10 @@ class LoadoutScreenState extends State<ObjectivesScreen> {
             title: TranslatedTextWidget("Objectives")),
         body: buildBody(context),
       ),
-      InventoryNotificationWidget(key: Key("notification_widget"), barHeight: 0,)
+      InventoryNotificationWidget(
+        key: Key("notification_widget"),
+        barHeight: 0,
+      )
     ]);
   }
 
@@ -87,9 +92,16 @@ class LoadoutScreenState extends State<ObjectivesScreen> {
 
   Widget getItem(BuildContext context, int index) {
     TrackedObjective objective = objectives[index];
-    return RecordItemWidget(
-      hash: objective.hash,
-      key: Key("loadout_${objective.hash}"),
-    );
+    switch (objective.type) {
+      case TrackedObjectiveType.Triumph:
+        return RecordItemWidget(
+          hash: objective.hash,
+          key: Key("loadout_${objective.hash}"),
+        );
+
+      case TrackedObjectiveType.Item:
+        return TrackedPursuitItemWidget(characterId: objective.characterId, itemInstanceId:objective.instanceId, hash: objective.hash,);
+    }
+    if (objective.type == TrackedObjectiveType.Triumph) {}
   }
 }

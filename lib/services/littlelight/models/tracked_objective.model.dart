@@ -1,15 +1,16 @@
-enum TrackedObjectiveType { Triumph, Pursuit }
+enum TrackedObjectiveType { Triumph, Item }
 
 class TrackedObjective {
   TrackedObjectiveType type;
   int hash;
   String instanceId;
+  String characterId;
 
-  TrackedObjective(this.type, this.hash, [this.instanceId]);
+  TrackedObjective(this.type, this.hash, [this.instanceId, this.characterId]);
 
   static TrackedObjective fromMap(Map<String, dynamic> map) {
     return TrackedObjective(
-        _stringToType(map['type']), map['hash'], map['instanceId']);
+        _stringToType(map['type']), map['hash'], map['instanceId'], map['characterId']);
   }
 
   static TrackedObjectiveType _stringToType(String str) {
@@ -17,23 +18,25 @@ class TrackedObjective {
       case "triumph":
         return TrackedObjectiveType.Triumph;
     }
-    return TrackedObjectiveType.Pursuit;
+    return TrackedObjectiveType.Item;
   }
 
   static String _typeToString(TrackedObjectiveType type) {
     switch (type) {
-      case TrackedObjectiveType.Pursuit:
-      return 'pursuit';
+      case TrackedObjectiveType.Item:
+      return 'item';
       case TrackedObjectiveType.Triumph:
       return 'triumph';
     }
+    return 'item';
   }
 
   Map<String, dynamic> toMap() {
     return {
       'type': _typeToString(type),
       'hash':hash,
-      'instanceId':instanceId
+      'instanceId':instanceId,
+      'characterId':characterId,
     };
   }
 

@@ -207,7 +207,6 @@ class RecordDetailScreenState extends State<RecordDetailScreen> {
                 key: Key("track_objectives")),
         onPressed: () {
           var service = LittleLightService();
-          print(isTracking);
           if (isTracking) {
             service.removeTrackedObjective(
                 TrackedObjectiveType.Triumph, definition.hash);

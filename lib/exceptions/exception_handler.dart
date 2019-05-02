@@ -31,8 +31,6 @@ class ExceptionHandler {
     var info =  await PackageInfo.fromPlatform();
     _sentry = SentryClient(
     environmentAttributes: Event(
-      //TODO: remove temp test code
-      // environment: isInDebugMode ? 'debug' : 'authtest',
       environment: isInDebugMode ? 'debug' : 'production',
       release: info.version,
     ),

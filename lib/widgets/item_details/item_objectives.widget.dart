@@ -7,6 +7,8 @@ import 'package:bungie_api/models/destiny_objective_definition.dart';
 import 'package:bungie_api/models/destiny_objective_progress.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/auth/auth.service.dart';
+import 'package:little_light/services/littlelight/littlelight.service.dart';
+import 'package:little_light/services/littlelight/models/tracked_objective.model.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/widgets/common/destiny_item.stateful_widget.dart';
@@ -35,11 +37,13 @@ class ItemObjectivesWidgetState extends DestinyItemState<ItemObjectivesWidget> {
   Map<int, DestinyObjectiveDefinition> objectiveDefinitions;
   List<DestinyObjectiveProgress> itemObjectives;
   StreamSubscription<NotificationEvent> subscription;
+  bool isTracking = false;
 
   @override
   void initState() {
     super.initState();
     loadDefinitions();
+    this.updateTrackStatus();
     subscription = widget.broadcaster.listen((event) {
       if (event.type == NotificationType.receivedUpdate ||
           event.type == NotificationType.localUpdate && mounted) {
@@ -88,7 +92,48 @@ class ItemObjectivesWidgetState extends DestinyItemState<ItemObjectivesWidget> {
               buildRefreshButton(context)
             ]))));
     items.addAll(buildObjectives(context));
-    return Column(children: items);
+    items.add(buildTrackButton(context));
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: items);
+  }
+
+  updateTrackStatus() async {
+    var objectives = await LittleLightService().getTrackedObjectives();
+    var tracked = objectives.firstWhere(
+        (o) =>
+            o.hash == widget.definition.hash &&
+            o.type == TrackedObjectiveType.Item &&
+            o.instanceId == widget.item.itemInstanceId &&
+            o.characterId == widget.characterId,
+        orElse: () => null);
+    isTracking = tracked != null;
+    if (!mounted) return;
+    setState(() {});
+  }
+
+  Widget buildTrackButton(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(8),
+      child: RaisedButton(
+        color: isTracking ? Colors.green.shade600 : Colors.green.shade800,
+        child: isTracking
+            ? TranslatedTextWidget("Stop Tracking", key: Key("stop_tracking"))
+            : TranslatedTextWidget("Track Objectives",
+                key: Key("track_objectives")),
+        onPressed: () {
+          var service = LittleLightService();
+          if (isTracking) {
+            service.removeTrackedObjective(
+                TrackedObjectiveType.Item, definition.hash, widget.item.itemInstanceId, widget.characterId);
+          } else {
+            service.addTrackedObjective(
+                TrackedObjectiveType.Item, definition.hash, widget.item.itemInstanceId, widget.characterId);
+          }
+          updateTrackStatus();
+        },
+      ),
+    );
   }
 
   buildRefreshButton(BuildContext context) {

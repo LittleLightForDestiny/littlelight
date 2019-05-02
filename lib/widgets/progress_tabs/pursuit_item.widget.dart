@@ -25,16 +25,19 @@ class PursuitItemWidget extends StatefulWidget {
 
   PursuitItemWidget({Key key, this.characterId, this.item}) : super(key: key);
 
-  _PursuitItemWidgetState createState() => _PursuitItemWidgetState();
+  PursuitItemWidgetState createState() => PursuitItemWidgetState();
 }
 
-class _PursuitItemWidgetState extends State<PursuitItemWidget>
+class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
     with AutomaticKeepAliveClientMixin {
   DestinyInventoryItemDefinition definition;
   Map<int, DestinyObjectiveDefinition> objectiveDefinitions;
   List<DestinyObjectiveProgress> itemObjectives;
   StreamSubscription<NotificationEvent> subscription;
   bool fullyLoaded = false;
+
+  String get itemInstanceId=>widget.item.itemInstanceId;
+  int get hash=>widget.item.itemHash;
 
   @override
   void initState() {
@@ -44,7 +47,7 @@ class _PursuitItemWidgetState extends State<PursuitItemWidget>
       if (event.type == NotificationType.receivedUpdate ||
           event.type == NotificationType.localUpdate && mounted) {
         itemObjectives =
-            widget.profile.getItemObjectives(widget.item.itemInstanceId);
+            widget.profile.getItemObjectives(itemInstanceId);
         setState(() {});
       }
     });
@@ -58,9 +61,9 @@ class _PursuitItemWidgetState extends State<PursuitItemWidget>
 
   Future<void> loadDefinitions() async {
     definition = await widget.manifest
-        .getDefinition<DestinyInventoryItemDefinition>(widget.item.itemHash);
+        .getDefinition<DestinyInventoryItemDefinition>(hash);
     itemObjectives =
-        widget.profile.getItemObjectives(widget.item.itemInstanceId);
+        widget.profile.getItemObjectives(itemInstanceId);
     if (itemObjectives != null) {
       Iterable<int> objectiveHashes =
           itemObjectives.map((o) => o.objectiveHash);
@@ -81,8 +84,7 @@ class _PursuitItemWidgetState extends State<PursuitItemWidget>
     }
     return Stack(children: [
       Container(
-          color: Colors.blueGrey.shade900,
-          margin: EdgeInsets.all(8).copyWith(top: 0),
+          decoration: BoxDecoration(border: Border.all(color: DestinyData.getTierColor(definition.inventory.tierType), width: 1), color: Colors.blueGrey.shade900,),
           child: Column(
               children: <Widget>[
             Stack(children: <Widget>[

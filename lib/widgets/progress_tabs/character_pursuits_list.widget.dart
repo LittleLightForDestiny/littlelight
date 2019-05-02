@@ -69,11 +69,12 @@ class _CharacterPursuitsListWidgetState
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return ListView.builder(
       addAutomaticKeepAlives: true,
       addRepaintBoundaries: true,
       itemCount: pursuits?.length ?? 0,
-      padding: EdgeInsets.all(0).copyWith(top:0),
+      padding: EdgeInsets.all(4).copyWith(top:0),
       itemBuilder: (context, index) {
         if (pursuits == null) return Container();
         if (index == 0) {
