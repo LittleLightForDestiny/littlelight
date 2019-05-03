@@ -6,7 +6,6 @@ import 'package:bungie_api/models/general_user.dart';
 import 'package:bungie_api/models/user_info_card.dart';
 import 'package:bungie_api/models/user_membership_data.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/exceptions/exception_handler.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/littlelight/littlelight.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
@@ -124,11 +123,6 @@ class AuthService {
   }
 
   Future<String> checkAuthorizationCode() async {
-
-    //TODO: remove temp test code
-    // String link = await getInitialLink();
-    // ExceptionHandler.reportToSentry("initialLink:$link");
-
     Uri uri = await getInitialUri();
     if(uri?.queryParameters == null) return null;
     print("initialURI: $uri");
@@ -155,9 +149,6 @@ class AuthService {
     Uri uri;
     await for (var link in _stream) {
       uri = Uri.parse(link);
-      print(uri);
-      //TODO: remove temp test code
-      // ExceptionHandler.reportToSentry(new Exception("postAuth URI: $link"));
       if (uri.queryParameters.containsKey("code") ||
           uri.queryParameters.containsKey("error")) {
         break;

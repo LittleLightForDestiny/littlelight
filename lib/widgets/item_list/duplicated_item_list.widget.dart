@@ -145,6 +145,7 @@ class DuplicatedItemListWidgetState extends State<DuplicatedItemListWidget>
   }
 
   Widget build(BuildContext context) {
+    super.build(context);
     if (itemDefinitions == null) {
       return Center(
           child: Container(

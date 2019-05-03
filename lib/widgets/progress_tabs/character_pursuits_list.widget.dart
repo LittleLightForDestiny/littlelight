@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
@@ -70,11 +71,16 @@ class _CharacterPursuitsListWidgetState
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return ListView.builder(
+    return StaggeredGridView.countBuilder(
+      crossAxisCount: 1,
       addAutomaticKeepAlives: true,
       addRepaintBoundaries: true,
-      itemCount: pursuits?.length ?? 0,
+      itemCount: (pursuits?.length ?? 0) + 1,
       padding: EdgeInsets.all(4).copyWith(top:0),
+      mainAxisSpacing: 4,
+      staggeredTileBuilder: (index){
+        return StaggeredTile.fit(1);
+      },
       itemBuilder: (context, index) {
         if (pursuits == null) return Container();
         if (index == 0) {

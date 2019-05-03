@@ -38,6 +38,7 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
 
   String get itemInstanceId=>widget.item.itemInstanceId;
   int get hash=>widget.item.itemHash;
+  DestinyItemComponent get item => widget.item;
 
   @override
   void initState() {
@@ -79,7 +80,7 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    if (definition == null) {
+    if (definition == null || item == null) {
       return Container(height: 200, color: Colors.blueGrey.shade900);
     }
     return Stack(children: [
@@ -133,10 +134,11 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
                     context,
                     MaterialPageRoute(
                       builder: (context) => ItemDetailScreen(
-                            widget.item,
+                            item,
                             definition,
-                            null,
+                            widget.profile.getInstanceInfo(item.itemInstanceId),
                             characterId: widget.characterId,
+                            
                           ),
                     ),
                   );

@@ -5,7 +5,6 @@ import 'package:little_light/services/littlelight/models/tracked_objective.model
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
 import 'package:little_light/widgets/presentation_nodes/record_item.widget.dart';
-import 'package:little_light/widgets/progress_tabs/pursuit_item.widget.dart';
 import 'package:little_light/widgets/progress_tabs/tracked_pursuit_item.widget.dart';
 
 class ObjectivesScreen extends StatefulWidget {
@@ -102,6 +101,6 @@ class LoadoutScreenState extends State<ObjectivesScreen> {
       case TrackedObjectiveType.Item:
         return TrackedPursuitItemWidget(characterId: objective.characterId, itemInstanceId:objective.instanceId, hash: objective.hash,);
     }
-    if (objective.type == TrackedObjectiveType.Triumph) {}
+    return Container();
   }
 }

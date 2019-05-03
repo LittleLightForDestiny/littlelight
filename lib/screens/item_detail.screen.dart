@@ -197,7 +197,7 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
     if ((definition?.objectives?.objectiveHashes?.length ?? 0) == 0) {
       return Container();
     }
-    return ItemObjectivesWidget(item, definition, instanceInfo,
+    return ItemObjectivesWidget(item, definition, instanceInfo, characterId: characterId,
         key: Key("item_objectives_widget"));
   }
 

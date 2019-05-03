@@ -157,7 +157,7 @@ class LittleLightService {
 
   Future<void> addTrackedObjective(
       TrackedObjectiveType type, int hash, [String instanceId, String characterId]) async {
-        var found = _trackedObjectives.firstWhere((o) => o.type == type && o.hash == hash && o.instanceId == instanceId, orElse: ()=>null);
+        var found = _trackedObjectives.firstWhere((o) => o.type == type && o.hash == hash && o.instanceId == instanceId && characterId == o.characterId, orElse: ()=>null);
     if(found == null){
       _trackedObjectives.add(TrackedObjective(type, hash, instanceId, characterId));
     }

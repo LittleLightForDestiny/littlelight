@@ -169,6 +169,9 @@ class _MilestoneItemWidgetState extends State<MilestoneItemWidget>
                 alignment: Alignment.centerLeft,
                 child: ManifestText<DestinyActivityDefinition>(
                   activity.activityHash,
+                  textExtractor: (def){
+                    return def?.selectionScreenDisplayProperties?.name ?? def.displayProperties.name;
+                  },
                   uppercase: true,
                   maxLines: 1,
                   softWrap: false,
