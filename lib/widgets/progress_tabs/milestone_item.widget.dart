@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:bungie_api/models/destiny_activity_definition.dart';
 import 'package:bungie_api/models/destiny_challenge_status.dart';
-import 'package:bungie_api/models/destiny_display_properties_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_milestone.dart';
 import 'package:bungie_api/models/destiny_milestone_activity_phase.dart';
