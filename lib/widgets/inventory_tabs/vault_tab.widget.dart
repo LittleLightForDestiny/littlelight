@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/enums/destiny_item_category.enum.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/widgets/inventory_tabs/character_tab.widget.dart';
-import 'package:little_light/widgets/inventory_tabs/vault_tab_header.widget.dart';
 import 'package:little_light/widgets/item_list/vault_item_list.widget.dart';
 
 class VaultTabWidget extends CharacterTabWidget {
@@ -21,15 +20,12 @@ class VaultTabWidgetState extends CharacterTabWidgetState {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      VaultItemListWidget(
-        key: Key("${widget.currentGroup}_vault"),
-        padding:
-            EdgeInsets.only(top: getListTopOffset(context), left: 2, right: 2),
-        bucketHashes: bucketHashes,
-      ),
-      VaultTabHeaderWidget(),
-    ]);
+    return VaultItemListWidget(
+      key: Key("${widget.currentGroup}_vault"),
+      padding:
+          EdgeInsets.only(top: getListTopOffset(context), left: 2, right: 2),
+      bucketHashes: bucketHashes,
+    );
   }
 
   List<int> get bucketHashes {

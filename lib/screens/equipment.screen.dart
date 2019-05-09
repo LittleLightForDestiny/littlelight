@@ -8,18 +8,21 @@ import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/selected_page_persistence.dart';
+import 'package:little_light/widgets/flutter/passive_tab_bar_view.dart';
 import 'package:little_light/widgets/inventory_tabs/character_tab.widget.dart';
+import 'package:little_light/widgets/inventory_tabs/character_tab_header.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/selected_items.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/tabs_character_menu.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/tabs_item_type_menu.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/vault_tab.widget.dart';
+import 'package:little_light/widgets/inventory_tabs/vault_tab_header.widget.dart';
 
 class EquipmentScreen extends StatefulWidget {
   final profile = new ProfileService();
   final manifest = new ManifestService();
   final NotificationService broadcaster = new NotificationService();
-  
+
   final List<int> itemTypes = [
     DestinyItemCategory.Weapon,
     DestinyItemCategory.Armor,
@@ -46,13 +49,26 @@ class EquipmentScreenState extends State<EquipmentScreen>
   void initState() {
     SelectedPagePersistence.saveLatestScreen(SelectedPagePersistence.equipment);
 
+    typeTabController = typeTabController ??
+        TabController(
+          initialIndex: 0,
+          length: widget.itemTypes.length,
+          vsync: this,
+        );
+    charTabController = charTabController ??
+        TabController(
+          initialIndex: 0,
+          length: totalCharacterTabs,
+          vsync: this,
+        );
+
     widget.itemTypes.forEach((type) {
       scrollPositions[type] = 0;
     });
     super.initState();
 
     subscription = widget.broadcaster.listen((event) {
-      if(!mounted) return;
+      if (!mounted) return;
       if (event.type == NotificationType.receivedUpdate) {
         setState(() {});
       }
@@ -67,27 +83,22 @@ class EquipmentScreenState extends State<EquipmentScreen>
 
   @override
   Widget build(BuildContext context) {
-    typeTabController = typeTabController ?? TabController(
-      initialIndex: 0,
-      length: widget.itemTypes.length,
-      vsync: this,
-    );
-    charTabController = charTabController ?? TabController(
-      initialIndex: 0,
-      length: totalCharacterTabs,
-      vsync: this,
-    );
     if (characters == null) {
       return Container();
     }
     EdgeInsets screenPadding = MediaQuery.of(context).padding;
+    var topOffset = screenPadding.top + kToolbarHeight;
     return Material(
       child: Stack(
         children: <Widget>[
           buildBackground(context),
-          TabBarView(
-              controller: typeTabController,
-              children: buildItemTypeTabs(context, charTabController)),
+          buildItemTypeTabBarView(context),
+          Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              height: topOffset + 16,
+              child: buildCharacterHeaderTabView(context)),
           Positioned(
             top: screenPadding.top,
             width: kToolbarHeight,
@@ -101,16 +112,27 @@ class EquipmentScreenState extends State<EquipmentScreen>
           ),
           TabsCharacterMenuWidget(characters, controller: charTabController),
           ItemTypeMenuWidget(widget.itemTypes, controller: typeTabController),
-          InventoryNotificationWidget(key: Key('inventory_notification_widget')),
+          InventoryNotificationWidget(
+              key: Key('inventory_notification_widget')),
           Positioned(
-          bottom: screenPadding.bottom,
-          left: 0,
-          right: 0,
-          child:
-          SelectedItemsWidget()),
+              bottom: screenPadding.bottom,
+              left: 0,
+              right: 0,
+              child: SelectedItemsWidget()),
         ],
       ),
     );
+  }
+
+  Widget buildCharacterHeaderTabView(BuildContext context) {
+    var headers = characters
+        .map((character) => TabHeaderWidget(
+              character,
+              key: Key("${character.emblemHash}"),
+            ))
+        .toList();
+    headers.add(VaultTabHeaderWidget());
+    return TabBarView(controller: charTabController, children: headers);
   }
 
   Widget buildBackground(BuildContext context) {
@@ -127,22 +149,28 @@ class EquipmentScreenState extends State<EquipmentScreen>
     )));
   }
 
-  List<Widget> buildItemTypeTabs(
-      BuildContext context, TabController controller) {
+  Widget buildItemTypeTabBarView(BuildContext context) {
+    return TabBarView(
+        controller: typeTabController, children: buildItemTypeTabs(context));
+  }
+
+  List<Widget> buildItemTypeTabs(BuildContext context) {
     return widget.itemTypes
-        .map((type) => buildCharacterTabController(context, type, controller))
+        .map((type) => buildCharacterTabBarView(context, type))
         .toList();
   }
 
-  Widget buildCharacterTabController(
-      BuildContext context, int group, TabController controller) {
-    return TabBarView(controller: controller, children: getTabs(group));
+  Widget buildCharacterTabBarView(BuildContext context, int group) {
+    return PassiveTabBarView(
+        physics: NeverScrollableScrollPhysics(),
+        controller: charTabController,
+        children: buildCharacterTabs(group));
   }
 
-  List<Widget> getTabs(int group) {
+  List<Widget> buildCharacterTabs(int group) {
     List<Widget> characterTabs = characters.map((character) {
       return CharacterTabWidget(character, group,
-          key:Key("character_tab_${character.characterId}"),
+          key: Key("character_tab_${character.characterId}"),
           scrollPositions: scrollPositions);
     }).toList();
     characterTabs.add(VaultTabWidget(group));

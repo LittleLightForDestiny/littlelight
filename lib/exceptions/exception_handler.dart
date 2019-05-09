@@ -15,6 +15,7 @@ class ExceptionHandler {
   static SentryClient _sentry;
   ExceptionHandler({this.onRestart}) {
     initSentry();
+    initCustomErrorMessage();
     FlutterError.onError = (FlutterErrorDetails details) {
       if (isInDebugMode) {
         FlutterError.dumpErrorToConsole(details);
@@ -24,17 +25,28 @@ class ExceptionHandler {
     };
   }
 
-  initSentry() async{
-    if(_sentry != null) return;
-    if(!DotEnv().env.containsKey('sentry_dsn')) return;
-    
-    var info =  await PackageInfo.fromPlatform();
+  initSentry() async {
+    if (_sentry != null) return;
+    if (!DotEnv().env.containsKey('sentry_dsn')) return;
+
+    var info = await PackageInfo.fromPlatform();
     _sentry = SentryClient(
-    environmentAttributes: Event(
-      environment: isInDebugMode ? 'debug' : 'production',
-      release: info.version,
-    ),
-      dsn: DotEnv().env['sentry_dsn']);
+        environmentAttributes: Event(
+          environment: isInDebugMode ? 'debug' : 'production',
+          release: info.version,
+        ),
+        dsn: DotEnv().env['sentry_dsn']);
+  }
+
+  initCustomErrorMessage() {
+    if (!isInDebugMode) {
+      ErrorWidget.builder = (FlutterErrorDetails details) {
+        return Container(
+            padding: EdgeInsets.all(8),
+            alignment: Alignment.center,
+            child: Text('OOF! render error :('));
+      };
+    }
   }
 
   static bool get isInDebugMode {
@@ -58,10 +70,12 @@ class ExceptionHandler {
               children: [
                 Container(
                     padding: EdgeInsets.all(16),
-                    child:TranslatedTextWidget(e.message, textAlign: TextAlign.center,)
-                ),
+                    child: TranslatedTextWidget(
+                      e.message,
+                      textAlign: TextAlign.center,
+                    )),
                 Container(
-                    padding: EdgeInsets.symmetric(horizontal:16),
+                    padding: EdgeInsets.symmetric(horizontal: 16),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
@@ -78,7 +92,7 @@ class ExceptionHandler {
                                   await auth.clearData();
                                   onRestart();
                                 })
-                            : Container(height:0),
+                            : Container(height: 0),
                         ErrorDialogButton(
                             text: "Exit",
                             onPressed: () {
@@ -101,19 +115,23 @@ class ExceptionHandler {
     }
   }
 
-  static reportToSentry(dynamic exception, [dynamic stacktrace]){
-    if(isInDebugMode){
+  static reportToSentry(dynamic exception, [dynamic stacktrace]) {
+    if (isInDebugMode) {
       print(exception);
       return;
     }
     _sentry.captureException(
-        exception: exception,
-        stackTrace: stacktrace,
-      );
+      exception: exception,
+      stackTrace: stacktrace,
+    );
   }
 
-  static setSentryUserInfo(String membershipId, String displayName, int platformId){
-    _sentry.userContext = User(id:membershipId, username:displayName, extras: {'platform':platformId});
+  static setSentryUserInfo(
+      String membershipId, String displayName, int platformId) {
+    _sentry.userContext = User(
+        id: membershipId,
+        username: displayName,
+        extras: {'platform': platformId});
   }
 }
 

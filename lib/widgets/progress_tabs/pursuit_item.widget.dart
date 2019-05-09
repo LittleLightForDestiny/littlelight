@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
+import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_objective_definition.dart';
 import 'package:bungie_api/models/destiny_objective_progress.dart';
 
@@ -36,6 +37,8 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
   StreamSubscription<NotificationEvent> subscription;
   bool fullyLoaded = false;
 
+  DestinyItemInstanceComponent instanceInfo;
+
   String get itemInstanceId=>widget.item.itemInstanceId;
   int get hash=>widget.item.itemHash;
   DestinyItemComponent get item => widget.item;
@@ -63,8 +66,10 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
   Future<void> loadDefinitions() async {
     definition = await widget.manifest
         .getDefinition<DestinyInventoryItemDefinition>(hash);
+    instanceInfo = widget.profile.getInstanceInfo(itemInstanceId);
     itemObjectives =
         widget.profile.getItemObjectives(itemInstanceId);
+    
     if (itemObjectives != null) {
       Iterable<int> objectiveHashes =
           itemObjectives.map((o) => o.objectiveHash);
@@ -107,7 +112,8 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
                     definition.displayProperties.description,
                     style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
                   ),
-                )
+                ),
+                Container(child: Text("${widget.item.expirationDate}"),),
               ]),
               Positioned(
                   top: 8,

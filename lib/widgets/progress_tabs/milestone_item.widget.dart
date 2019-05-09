@@ -15,10 +15,12 @@ import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/generic_progress_bar.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
+import 'package:little_light/widgets/common/translated_text.widget.dart';
 
 class MilestoneItemWidget extends StatefulWidget {
   final String characterId;
@@ -89,6 +91,7 @@ class _MilestoneItemWidgetState extends State<MilestoneItemWidget>
     if (widget.milestone.activities != null) {
       items.add(buildMilestoneActivities(context, widget.milestone.activities));
     }
+    
     // if (widget.milestone.rewards != null) {
     //   items.add(buildRewards(context, widget.milestone.rewards));
     // }
@@ -241,15 +244,19 @@ class _MilestoneItemWidgetState extends State<MilestoneItemWidget>
   Widget buildRewards(
       BuildContext context, List<DestinyMilestoneRewardCategory> rewards) {
     List<Widget> widgets = [];
-    widgets.add(Text("Rewards"));
+    widgets.add(TranslatedTextWidget("Rewards", uppercase: true, style:TextStyle(color:Colors.green.shade300, fontWeight: FontWeight.bold, fontSize: 12)));
     rewards.forEach((reward) {
       reward.entries.forEach((entry) {
         widgets.add(
             Row(children: [Text("${entry.rewardEntryHash}:${entry.earned}")]));
       });
     });
-    return Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround, children: widgets);
+    return 
+    Container(
+      padding: EdgeInsets.all(8),
+      child:Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceAround, children: widgets));
   }
 
   @override
