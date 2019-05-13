@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bungie_api/models/user_membership_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,6 +10,7 @@ import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/translate/translate.service.dart';
+import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/exceptions/exception_dialog.dart';
 import 'package:little_light/widgets/initial_page/download_manifest.widget.dart';
 import 'package:little_light/widgets/initial_page/login_widget.dart';
@@ -73,11 +76,40 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
   }
 
   checkManifest() async {
-    bool needsUpdate = await widget.manifest.needsUpdate();
-    if (needsUpdate) {
-      showDownloadManifest();
-    } else {
-      checkLogin();
+    try {
+      bool needsUpdate = await widget.manifest.needsUpdate();
+      if (needsUpdate) {
+        showDownloadManifest();
+      } else {
+        checkLogin();
+      }
+    } catch (e) {
+      this.changeContent(
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.all(8),
+                child: TranslatedTextWidget(
+                    "Can't connect to Bungie servers. Please check your internet connection and try again."),
+              ),
+              RaisedButton(
+                onPressed: () {
+                  changeContent(null, "");
+                  checkManifest();
+                },
+                child: TranslatedTextWidget("Try Again"),
+              ),
+              RaisedButton(
+                onPressed: () {
+                  exit(0);
+                },
+                color: Theme.of(context).colorScheme.error,
+                child: TranslatedTextWidget("Exit"),
+              )
+            ],
+          ),
+          "Error");
     }
   }
 

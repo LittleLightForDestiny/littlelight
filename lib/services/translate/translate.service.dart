@@ -3,7 +3,19 @@ import 'dart:core';
 
 import 'package:flutter/services.dart';
 import 'package:little_light/exceptions/exception_handler.dart';
+import 'package:little_light/services/translate/timeago_messages/cn_messages.dart';
+import 'package:little_light/services/translate/timeago_messages/de_messages.dart';
+import 'package:little_light/services/translate/timeago_messages/en_messages.dart';
+import 'package:little_light/services/translate/timeago_messages/es_messages.dart';
+import 'package:little_light/services/translate/timeago_messages/fr_messages.dart';
+import 'package:little_light/services/translate/timeago_messages/it_messages.dart';
+import 'package:little_light/services/translate/timeago_messages/ja_messages.dart';
+import 'package:little_light/services/translate/timeago_messages/ko_messages.dart';
+import 'package:little_light/services/translate/timeago_messages/pl_messages.dart';
+import 'package:little_light/services/translate/timeago_messages/pt_messages.dart';
+import 'package:little_light/services/translate/timeago_messages/ru_messages.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class TranslateService {
   String fallbackLanguage = "en";
@@ -16,7 +28,21 @@ class TranslateService {
     return _singleton;
   }
 
-  TranslateService._internal();
+  TranslateService._internal(){
+    timeago.setLocaleMessages('de', DeMessages());
+    timeago.setLocaleMessages('en', EnMessages());
+    timeago.setLocaleMessages('es', EsMessages());
+    timeago.setLocaleMessages('es-mx', EsMessages());
+    timeago.setLocaleMessages('fr', FrMessages());
+    timeago.setLocaleMessages('it', ItMessages());
+    timeago.setLocaleMessages('ja', JaMessages());
+    timeago.setLocaleMessages('ko', KoMessages());
+    timeago.setLocaleMessages('pl', PlMessages());
+    timeago.setLocaleMessages('pt-br', PtBrMessages());
+    timeago.setLocaleMessages('ru', RuMessages());
+    timeago.setLocaleMessages('zh-cht', ZhMessages());
+    timeago.setLocaleMessages('zh-chs', ZhMessages());
+  }
 
   Map<String, String> languageNames = {
     'de': "Deutsch",

@@ -13,6 +13,7 @@ import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
+import 'package:little_light/widgets/common/expiry_date.widget.dart';
 import 'package:little_light/widgets/common/objective.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
@@ -39,8 +40,8 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
 
   DestinyItemInstanceComponent instanceInfo;
 
-  String get itemInstanceId=>widget.item.itemInstanceId;
-  int get hash=>widget.item.itemHash;
+  String get itemInstanceId => widget.item.itemInstanceId;
+  int get hash => widget.item.itemHash;
   DestinyItemComponent get item => widget.item;
 
   @override
@@ -50,8 +51,7 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
     subscription = widget.broadcaster.listen((event) {
       if (event.type == NotificationType.receivedUpdate ||
           event.type == NotificationType.localUpdate && mounted) {
-        itemObjectives =
-            widget.profile.getItemObjectives(itemInstanceId);
+        itemObjectives = widget.profile.getItemObjectives(itemInstanceId);
         setState(() {});
       }
     });
@@ -67,9 +67,8 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
     definition = await widget.manifest
         .getDefinition<DestinyInventoryItemDefinition>(hash);
     instanceInfo = widget.profile.getInstanceInfo(itemInstanceId);
-    itemObjectives =
-        widget.profile.getItemObjectives(itemInstanceId);
-    
+    itemObjectives = widget.profile.getItemObjectives(itemInstanceId);
+
     if (itemObjectives != null) {
       Iterable<int> objectiveHashes =
           itemObjectives.map((o) => o.objectiveHash);
@@ -90,9 +89,13 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
     }
     return Stack(children: [
       Container(
-          decoration: BoxDecoration(border: Border.all(color: DestinyData.getTierColor(definition.inventory.tierType), width: 1), color: Colors.blueGrey.shade900,),
-          child: Column(
-              children: <Widget>[
+          decoration: BoxDecoration(
+            border: Border.all(
+                color: DestinyData.getTierColor(definition.inventory.tierType),
+                width: 1),
+            color: Colors.blueGrey.shade900,
+          ),
+          child: Column(children: <Widget>[
             Stack(children: <Widget>[
               Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
                 Container(
@@ -113,7 +116,12 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
                     style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
                   ),
                 ),
-                Container(child: Text("${widget.item.expirationDate}"),),
+                item?.expirationDate != null
+                    ? Container(
+                        padding: EdgeInsets.all(8).copyWith(top: 0),
+                        child: ExpiryDateWidget(item.expirationDate),
+                      )
+                    : Container(),
               ]),
               Positioned(
                   top: 8,
@@ -129,8 +137,9 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
                       child: QueuedNetworkImage(
                           imageUrl: BungieApiService.url(
                               definition.displayProperties.icon))))
-            ])
-          ].followedBy(buildObjectives(context, definition)).toList())),
+            ]),
+            buildObjectives(context, definition)
+          ])),
       Positioned.fill(
           child: Material(
               color: Colors.transparent,
@@ -144,7 +153,6 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
                             definition,
                             widget.profile.getInstanceInfo(item.itemInstanceId),
                             characterId: widget.characterId,
-                            
                           ),
                     ),
                   );
@@ -153,17 +161,22 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
     ]);
   }
 
-  List<Widget> buildObjectives(
+  Widget buildObjectives(
       BuildContext context, DestinyInventoryItemDefinition questStepDef) {
-    if (itemObjectives == null) return [];
-    return itemObjectives
-        .map((objective) => buildCurrentObjective(context, objective))
-        .toList();
+    if (itemObjectives == null) return Container();
+    return Container(
+      padding: EdgeInsets.all(4).copyWith(top: 0),
+      child: Column(
+        children: itemObjectives
+            .map((objective) => buildCurrentObjective(context, objective))
+            .toList(),
+      ),
+    );
   }
 
   Widget buildCurrentObjective(
       BuildContext context, DestinyObjectiveProgress objective) {
-        if(objectiveDefinitions == null) return Container();
+    if (objectiveDefinitions == null) return Container();
     var definition = objectiveDefinitions[objective.objectiveHash];
     return Column(
       children: <Widget>[

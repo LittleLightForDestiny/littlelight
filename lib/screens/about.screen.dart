@@ -239,11 +239,12 @@ class _AboutScreenState extends State<AboutScreen> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
                                         children: [
-                                          Expanded(child:Container(
-                                              width: 36,
-                                              height: 36,
-                                              child: Image.asset(
-                                                  "assets/imgs/ko-fi-icon.png"))),
+                                          Expanded(
+                                              child: Container(
+                                                  width: 36,
+                                                  height: 36,
+                                                  child: Image.asset(
+                                                      "assets/imgs/ko-fi-icon.png"))),
                                           Container(
                                             height: 4,
                                           ),
@@ -308,6 +309,28 @@ class _AboutScreenState extends State<AboutScreen> {
                               height: 4,
                             ),
                             buildTagAndPlatform(4611686018450956952, 2),
+                          ])),
+                      Container(height: 8),
+                      buildTranslationHeader(context, ['fr']),
+                      Container(
+                          color: Colors.blueGrey.shade800,
+                          padding: EdgeInsets.all(4),
+                          child: Column(children: [
+                            buildTagAndPlatform(
+                                4611686018436875822,
+                                2,
+                                "https://play.google.com/store/apps/details?id=com.eldwyn.wotabyss",
+                                Container(
+                                  padding: EdgeInsets.only(top:4),
+                                  child:Row(children: [
+                                  Container(
+                                      width: 14,
+                                      height: 14,
+                                      child: Image.asset(
+                                          'assets/imgs/arcadia_icon.png')),
+                                          Container(width: 4),
+                                  Text("Arcadia Dev", style:TextStyle(fontSize: 12, fontWeight: FontWeight.bold))
+                                ]))),
                           ])),
                       Container(height: 8),
                       buildTranslationHeader(context, ['it']),
@@ -383,7 +406,8 @@ class _AboutScreenState extends State<AboutScreen> {
         child: Image.asset("assets/imgs/flags/$code.png"));
   }
 
-  buildTagAndPlatform(int membershipId, int membershipType) {
-    return SupporterCharacterWidget(membershipId, membershipType);
+  buildTagAndPlatform(int membershipId, int membershipType,
+      [String link, Widget badge]) {
+    return SupporterCharacterWidget(membershipId, membershipType, link, badge);
   }
 }

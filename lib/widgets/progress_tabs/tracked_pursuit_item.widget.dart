@@ -93,11 +93,6 @@ class TrackedPursuitItemWidgetState extends PursuitItemWidgetState<TrackedPursui
     return super.build(context);
   }
 
-  List<Widget> buildObjectives(
-      BuildContext context, DestinyInventoryItemDefinition questStepDef) {
-    return super.buildObjectives(context, questStepDef);
-  }
-
   Widget buildCurrentObjective(
       BuildContext context, DestinyObjectiveProgress objective) {
         if(objectiveDefinitions == null) return Container();

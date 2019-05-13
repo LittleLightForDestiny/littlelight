@@ -28,6 +28,8 @@ class QueuedNetworkImage extends StatelessWidget {
     return TransitionToImage(
       image:AdvancedNetworkImage(
         imageUrl,
+        useDiskCache: true,
+        fallbackAssetImage: "assets/imgs/cant_load.png"
       ),
       fit: fit,
       loadingWidget: placeholder ?? Container(),

@@ -10,13 +10,16 @@ import 'package:little_light/utils/platform_data.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/icon_fonts/destiny_icons_icons.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SupporterCharacterWidget extends StatefulWidget {
   final int membershipId;
   final int membershipType;
   final BungieApiService bungie = new BungieApiService();
-
-  SupporterCharacterWidget(this.membershipId, this.membershipType);
+  final String link;
+  final Widget badge;
+  SupporterCharacterWidget(this.membershipId, this.membershipType,
+      [this.link, this.badge]);
 
   @override
   State<StatefulWidget> createState() {
@@ -62,15 +65,18 @@ class SupporterCharacterWidgetState extends State<SupporterCharacterWidget> {
               left: 8, top: 8, bottom: 8, child: buildEmblemIcon(context)),
           Positioned(
               left: 68,
-              top: 20,
+              top: 4,
+              bottom:4,
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     buildPlayerName(context),
-                    buildPlayerClass(context)
+                    buildPlayerClass(context),
+                    widget.badge != null ? widget.badge : Container()
                   ])),
           Positioned(
-            bottom:8,
+            bottom: 8,
             right: 8,
             child: buildPlatformIcon(context),
           ),
@@ -79,7 +85,16 @@ class SupporterCharacterWidgetState extends State<SupporterCharacterWidget> {
             right: 8,
             child: buildPlayerLevel(context),
           ),
-          
+          widget.link != null
+              ? Positioned.fill(
+                  child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () {
+                          launch(widget.link);
+                        },
+                      )))
+              : Container()
         ]));
   }
 
@@ -134,10 +149,13 @@ class SupporterCharacterWidgetState extends State<SupporterCharacterWidget> {
   Widget buildPlatformIcon(BuildContext context) {
     var plat = PlatformData.getPlatform(widget.membershipType);
     return Container(
-      padding: EdgeInsets.all(2),
-      decoration: BoxDecoration(color: plat.color,borderRadius: BorderRadius.circular(20)),
-      child: Icon(plat.iconData, size: 20,)
-    );
+        padding: EdgeInsets.all(2),
+        decoration: BoxDecoration(
+            color: plat.color, borderRadius: BorderRadius.circular(20)),
+        child: Icon(
+          plat.iconData,
+          size: 20,
+        ));
   }
 
   Widget buildPlayerClass(BuildContext context) {

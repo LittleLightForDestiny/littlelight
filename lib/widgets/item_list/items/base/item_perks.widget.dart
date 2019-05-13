@@ -88,6 +88,9 @@ class ItemPerksWidgetState extends DestinyItemState<ItemPerksWidget> {
   }
 
   Widget buildPerkIcon(BuildContext context, int plugHash) {
+    if(plugHash == null){
+      return Container();
+    }
     return Container(
       width: widget.iconSize,
       height: widget.iconSize,
