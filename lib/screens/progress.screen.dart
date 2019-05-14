@@ -11,6 +11,7 @@ import 'package:little_light/widgets/inventory_tabs/inventory_notification.widge
 import 'package:little_light/widgets/inventory_tabs/tabs_character_menu.widget.dart';
 import 'package:little_light/widgets/progress_tabs/character_progress_list.widget.dart';
 import 'package:little_light/widgets/progress_tabs/character_pursuits_list.widget.dart';
+import 'package:little_light/widgets/progress_tabs/character_ranks_list.widget.dart';
 
 class ProgressScreen extends StatefulWidget {
   final profile = new ProfileService();
@@ -41,7 +42,7 @@ class ProgressScreenState extends State<ProgressScreen>
     typeTabController = typeTabController ??
         TabController(
           initialIndex: 0,
-          length: 2,
+          length: 3,
           vsync: this,
         );
     super.initState();
@@ -66,17 +67,16 @@ class ProgressScreenState extends State<ProgressScreen>
         children: <Widget>[
           buildBackground(context),
           Positioned.fill(
-            top:topOffset,
+            top: topOffset,
             bottom: bottomOffset,
-            child:buildTypeTabView(context),
+            child: buildTypeTabView(context),
           ),
           Positioned(
-            top:0,
-            left:0,
-            right:0,
-            height:topOffset + 16,
-            child:buildCharacterHeaderTabView(context)
-          ),
+              top: 0,
+              left: 0,
+              right: 0,
+              height: topOffset + 16,
+              child: buildCharacterHeaderTabView(context)),
           Positioned(
             top: paddingTop,
             width: kToolbarHeight,
@@ -126,21 +126,28 @@ class ProgressScreenState extends State<ProgressScreen>
   }
 
   List<Widget> buildTypeTabs(BuildContext context) {
-    return [0, 1].map((index) => buildCharacterTabView(context, index)).toList();
+    return [0, 1, 2]
+        .map((index) => buildCharacterTabView(context, index))
+        .toList();
   }
 
-  Widget buildCharacterHeaderTabView(BuildContext context){
+  Widget buildCharacterHeaderTabView(BuildContext context) {
     return TabBarView(
-      dragStartBehavior: DragStartBehavior.down,
-      controller: charTabController,
-      children:characters.map((character)=>TabHeaderWidget(character, key: Key("${character.emblemHash}"),)).toList()
-    );
+        dragStartBehavior: DragStartBehavior.down,
+        controller: charTabController,
+        children: characters
+            .map((character) => TabHeaderWidget(
+                  character,
+                  key: Key("${character.emblemHash}"),
+                ))
+            .toList());
   }
 
   Widget buildCharacterTabView(BuildContext context, int index) {
     return PassiveTabBarView(
         physics: NeverScrollableScrollPhysics(),
-        controller: charTabController, children: buildCharacterTabs(context, index));
+        controller: charTabController,
+        children: buildCharacterTabs(context, index));
   }
 
   List<Widget> buildCharacterTabs(BuildContext context, int index) {
@@ -167,6 +174,9 @@ class ProgressScreenState extends State<ProgressScreen>
                   style: TextStyle(fontWeight: FontWeight.bold)),
               TranslatedTextWidget("Pursuits",
                   uppercase: true,
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+              TranslatedTextWidget("Ranks",
+                  uppercase: true,
                   style: TextStyle(fontWeight: FontWeight.bold))
             ]));
   }
@@ -176,7 +186,10 @@ class ProgressScreenState extends State<ProgressScreen>
     if (tabIndex == 0) {
       return CharacterProgressListWidget(characterId: characterId);
     }
-    return CharacterPursuitsListWidget(characterId: characterId);
+    if(tabIndex == 1){
+      return CharacterPursuitsListWidget(characterId: characterId);  
+    }
+    return CharacterRanksListWidget(characterId: characterId);
   }
 
   List<DestinyCharacterComponent> get characters {

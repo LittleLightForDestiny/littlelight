@@ -186,6 +186,11 @@ class Client implements HttpClient {
       await AuthService().refreshToken(token);
       return request(config);
     }
+    if(response.statusCode != 200){
+      throw BungieApiException({
+        'ErrorCode': response.statusCode
+      });
+    }
     dynamic json = jsonDecode(response.body);
     if (json["ErrorCode"] != null && json["ErrorCode"] > 2) {
       throw BungieApiException(json);

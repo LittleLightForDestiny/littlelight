@@ -321,16 +321,19 @@ class _AboutScreenState extends State<AboutScreen> {
                                 2,
                                 "https://play.google.com/store/apps/details?id=com.eldwyn.wotabyss",
                                 Container(
-                                  padding: EdgeInsets.only(top:4),
-                                  child:Row(children: [
-                                  Container(
-                                      width: 14,
-                                      height: 14,
-                                      child: Image.asset(
-                                          'assets/imgs/arcadia_icon.png')),
-                                          Container(width: 4),
-                                  Text("Arcadia Dev", style:TextStyle(fontSize: 12, fontWeight: FontWeight.bold))
-                                ]))),
+                                    padding: EdgeInsets.only(top: 4),
+                                    child: Row(children: [
+                                      Container(
+                                          width: 14,
+                                          height: 14,
+                                          child: Image.asset(
+                                              'assets/imgs/arcadia_icon.png')),
+                                      Container(width: 4),
+                                      Text("Arcadia Dev",
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.bold))
+                                    ]))),
                           ])),
                       Container(height: 8),
                       buildTranslationHeader(context, ['it']),
