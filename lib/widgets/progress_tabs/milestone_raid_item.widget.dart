@@ -92,7 +92,7 @@ class _MilestoneRaidItemWidgetState extends State<MilestoneRaidItemWidget>
       Positioned.fill(
         child: QueuedNetworkImage(
             fit: BoxFit.cover,
-            imageUrl: BungieApiService.url(definition.displayProperties.icon)),
+            imageUrl: BungieApiService.url(definition.image)),
       ),
       Positioned.fill(
         child: Container(

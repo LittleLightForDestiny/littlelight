@@ -87,7 +87,7 @@ class _CharacterPursuitsListWidgetState
           return Container(
             height:96, 
             child:CharacterInfoWidget(
-            key: Key("characterinfo_${widget.profile.lastUpdated}"),
+            key: Key("characterinfo_${widget.characterId}"),
             characterId: widget.characterId,
           ));
         }

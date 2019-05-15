@@ -15,7 +15,6 @@ import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/generic_progress_bar.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
@@ -110,11 +109,11 @@ class _MilestoneItemWidgetState extends State<MilestoneItemWidget>
 
   buildHeader(BuildContext context) {
     return Stack(children: <Widget>[
-      Positioned.fill(
+      definition.image != null? Positioned.fill(
         child: QueuedNetworkImage(
             fit: BoxFit.cover,
             imageUrl: BungieApiService.url(definition.image)),
-      ),
+      ) : Container(),
       Positioned.fill(
         child: Container(
             decoration: BoxDecoration(

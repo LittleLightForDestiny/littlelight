@@ -60,25 +60,18 @@ class BungieApiService {
     SavedToken token = await auth.getToken();
     SavedMembership membership = await auth.getMembership();
     UserInfoCard selectedMembership = membership?.selectedMembership;
-    if(selectedMembership == null) return null;
-    return await getProfile(
-        components,
-        selectedMembership.membershipId,
-        selectedMembership.membershipType,
-        token);
+    if (selectedMembership == null) return null;
+    return await getProfile(components, selectedMembership.membershipId,
+        selectedMembership.membershipType, token);
   }
 
-  Future<DestinyProfileResponse> getProfile(List<int> components, String membershipId, int membershipType, [SavedToken token]) async {
+  Future<DestinyProfileResponse> getProfile(
+      List<int> components, String membershipId, int membershipType,
+      [SavedToken token]) async {
     DestinyProfileResponseResponse response = await Destiny2.getProfile(
-        new Client(token),
-        components,
-        membershipId,
-        membershipType);
+        new Client(token), components, membershipId, membershipType);
     return response.response;
   }
-
-
-  
 
   Future<UserMembershipData> getMemberships() async {
     SavedToken token = await auth.getToken();
@@ -139,7 +132,7 @@ class Client implements HttpClient {
     Future<http.Response> req;
     Map<String, String> headers = {
       'X-API-Key': BungieApiService.apiKey,
-      'Accept':'application/json'
+      'Accept': 'application/json'
     };
     if (config.bodyContentType != null) {
       headers['Content-Type'] = config.bodyContentType;
@@ -169,27 +162,28 @@ class Client implements HttpClient {
       });
     }
 
-    if (config.method == 'GET') {
-      req = http.get("${BungieApiService.apiUrl}${config.url}$paramsString",
-          headers: headers);
-    } else {
-      String body = config.bodyContentType == 'application/json'
-          ? jsonEncode(config.body)
-          : config.body;
-      req = http.post(
-          "${BungieApiService.apiUrl}${config.url}$paramsString",
-          headers: headers,
-          body: body);
+    try {
+      if (config.method == 'GET') {
+        req = http.get("${BungieApiService.apiUrl}${config.url}$paramsString",
+            headers: headers);
+      } else {
+        String body = config.bodyContentType == 'application/json'
+            ? jsonEncode(config.body)
+            : config.body;
+        req = http.post("${BungieApiService.apiUrl}${config.url}$paramsString",
+            headers: headers, body: body);
+      }
+    } catch (e) {
+      throw BungieApiException(e);
     }
+    
     var response = await req;
-    if(response.statusCode == 401){
+    if (response.statusCode == 401) {
       await AuthService().refreshToken(token);
       return request(config);
     }
-    if(response.statusCode != 200){
-      throw BungieApiException({
-        'ErrorCode': response.statusCode
-      });
+    if (response.statusCode != 200) {
+      throw BungieApiException({'ErrorCode': response.statusCode});
     }
     dynamic json = jsonDecode(response.body);
     if (json["ErrorCode"] != null && json["ErrorCode"] > 2) {
@@ -202,9 +196,9 @@ class Client implements HttpClient {
 class BungieApiException implements Exception {
   final dynamic data;
   BungieApiException(this.data);
-  int get errorCode=>data["ErrorCode"];
-  String get errorStatus=>data["ErrorStatus"];
-  String get message=>data["Message"];
+  int get errorCode => data["ErrorCode"];
+  String get errorStatus => data["ErrorStatus"];
+  String get message => data["Message"];
   @override
   String toString() {
     return "$errorStatus - $message";

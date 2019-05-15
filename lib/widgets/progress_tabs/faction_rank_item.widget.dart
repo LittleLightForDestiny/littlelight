@@ -1,7 +1,8 @@
 import 'dart:async';
+
+import 'package:bungie_api/models/destiny_faction_progression.dart';
 import 'package:bungie_api/models/destiny_objective_definition.dart';
 import 'package:bungie_api/models/destiny_objective_progress.dart';
-import 'package:bungie_api/models/destiny_progression.dart';
 import 'package:bungie_api/models/destiny_progression_definition.dart';
 import 'package:bungie_api/models/destiny_progression_step_definition.dart';
 
@@ -11,26 +12,27 @@ import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-
+import 'package:little_light/widgets/common/manifest_image.widget.dart';
+import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/flutter/filled_circular_progress_indicator.dart';
 
-class RankItemWidget extends StatefulWidget {
+class FactionRankItemWidget extends StatefulWidget {
   final String characterId;
   final ProfileService profile = ProfileService();
   final ManifestService manifest = ManifestService();
   final NotificationService broadcaster = NotificationService();
 
-  final DestinyProgression progression;
+  final DestinyFactionProgression progression;
 
-  RankItemWidget({Key key, this.characterId, this.progression})
+  FactionRankItemWidget({Key key, this.characterId, this.progression})
       : super(key: key);
 
-  RankItemWidgetState createState() => RankItemWidgetState();
+  FactionRankItemWidgetState createState() => FactionRankItemWidgetState();
 }
 
-class RankItemWidgetState<T extends RankItemWidget> extends State<T>
-    with AutomaticKeepAliveClientMixin {
+class FactionRankItemWidgetState<T extends FactionRankItemWidget>
+    extends State<T> with AutomaticKeepAliveClientMixin {
   DestinyProgressionDefinition definition;
   Map<int, DestinyObjectiveDefinition> objectiveDefinitions;
   List<DestinyObjectiveProgress> itemObjectives;
@@ -39,7 +41,7 @@ class RankItemWidgetState<T extends RankItemWidget> extends State<T>
   int progressTotal;
 
   int get hash => widget.progression.progressionHash;
-  DestinyProgression get progression => widget.progression;
+  DestinyFactionProgression get progression => widget.progression;
 
   @override
   void initState() {
@@ -74,34 +76,11 @@ class RankItemWidgetState<T extends RankItemWidget> extends State<T>
     if (definition == null || progression == null) {
       return Container(height: 200, color: Colors.blueGrey.shade900);
     }
-    return Stack(children: [
-      Positioned.fill(
-          child: Container(
-              alignment: Alignment.center, child: buildRankProgress(context))),
-      Positioned.fill(
-          child: Container(
-              alignment: Alignment.center, child: buildStepProgress(context))),
-      Positioned.fill(
-          child: Container(
-              alignment: Alignment.center,
-              child: buildBackgroundCircle(context))),
-      Positioned.fill(
-          child: Container(
-              alignment: Alignment.center,
-              child: Image.asset(
-                'assets/imgs/rank-bg.png',
-                alignment: Alignment.center,
-              ))),
-      Positioned.fill(
-          child: Container(
-        alignment: Alignment.center,
-        child: buildRankIcon(context),
-      )),
-      Positioned.fill(
-          child: Container(
-        alignment: Alignment.center,
-        child: buildLabels(context),
-      ))
+    return Row(children: [
+      ManifestImageWidget<DestinyProgressionDefinition>(
+          progression.progressionHash),
+      ManifestText<DestinyProgressionDefinition>(progression.progressionHash),
+      Text("${progression.progressToNextLevel}/${progression.nextLevelAt}")
     ]);
   }
 

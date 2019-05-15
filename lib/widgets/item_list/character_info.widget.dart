@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bungie_api/enums/destiny_class_enum.dart';
 import 'package:bungie_api/enums/destiny_item_type_enum.dart';
 import 'package:bungie_api/enums/tier_type_enum.dart';
@@ -16,6 +18,7 @@ import 'package:little_light/services/inventory/inventory.service.dart';
 import 'package:little_light/services/littlelight/littlelight.service.dart';
 import 'package:little_light/services/littlelight/models/loadout.model.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/inventory_utils.dart';
@@ -28,7 +31,10 @@ class CharacterInfoWidget extends StatefulWidget {
   final ManifestService manifest = new ManifestService();
   final ProfileService profile = new ProfileService();
   final String characterId;
+  final NotificationService broadcaster = NotificationService();
+  
   CharacterInfoWidget({this.characterId, Key key}) : super(key: key);
+
 
   @override
   State<StatefulWidget> createState() {
@@ -40,12 +46,28 @@ class CharacterInfoWidgetState extends State<CharacterInfoWidget> {
   DestinyClassDefinition classDef;
   DestinyRaceDefinition raceDef;
   DestinyCharacterComponent character;
+  StreamSubscription<NotificationEvent> subscription;
 
   @override
   void initState() {
     character = widget.profile.getCharacter(widget.characterId);
     super.initState();
     loadDefinitions();
+    subscription = widget.broadcaster.listen((event) {
+      if (event.type == NotificationType.receivedUpdate ||
+          event.type == NotificationType.localUpdate && mounted) {
+        if(mounted){
+          character = widget.profile.getCharacter(widget.characterId);
+          setState(() {});
+        }
+      }
+    });
+  }
+
+  @override
+  dispose() {
+    subscription.cancel();
+    super.dispose();
   }
 
   loadDefinitions() async {
@@ -112,6 +134,7 @@ class CharacterInfoWidgetState extends State<CharacterInfoWidget> {
                     )),
                 Text(
                   "${character.light}",
+                  key:Key("${character.light}"),
                   style: TextStyle(
                       fontWeight: FontWeight.w900,
                       fontSize: 34,

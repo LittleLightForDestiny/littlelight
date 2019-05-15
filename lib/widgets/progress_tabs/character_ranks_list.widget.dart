@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:bungie_api/models/destiny_faction_progression.dart';
 import 'package:bungie_api/models/destiny_progression.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -8,7 +9,9 @@ import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 
+
 import 'package:little_light/widgets/item_list/character_info.widget.dart';
+import 'package:little_light/widgets/progress_tabs/faction_rank_item.widget.dart';
 
 import 'package:little_light/widgets/progress_tabs/rank_item.widget.dart';
 
@@ -27,6 +30,7 @@ class CharacterRanksListWidget extends StatefulWidget {
 class _CharacterRanksListWidgetState extends State<CharacterRanksListWidget>
     with AutomaticKeepAliveClientMixin {
   List<DestinyProgression> ranks;
+  List<DestinyFactionProgression> progressions;
   StreamSubscription<NotificationEvent> subscription;
   bool fullyLoaded = false;
 
@@ -49,13 +53,14 @@ class _CharacterRanksListWidgetState extends State<CharacterRanksListWidget>
   }
 
   Future<void> getRanks() async {
-    var progressions =
-        widget.profile.getCharacterProgression(widget.characterId).progressions;
+    var progressionsRoot =
+        widget.profile.getCharacterProgression(widget.characterId);
     ranks = [
-      progressions["${DestinyRanks.glory}"],
-      progressions["${DestinyRanks.valor}"],
-      progressions["${DestinyRanks.infamy}"]
+      progressionsRoot.progressions["${DestinyRanks.glory}"],
+      progressionsRoot.progressions["${DestinyRanks.valor}"],
+      progressionsRoot.progressions["${DestinyRanks.infamy}"]
     ];
+    this.progressions = progressionsRoot.factions.values.where((p)=>true).toList();
     if (mounted) {
       setState(() {});
       fullyLoaded = true;
@@ -69,9 +74,10 @@ class _CharacterRanksListWidgetState extends State<CharacterRanksListWidget>
       crossAxisCount: 6,
       addAutomaticKeepAlives: true,
       addRepaintBoundaries: true,
-      itemCount: (ranks?.length ?? 0) + 1,
+      itemCount: (ranks?.length ?? 0) + (progressions?.length ?? 0) + 1,
       padding: EdgeInsets.all(4).copyWith(top: 0),
       mainAxisSpacing: 4,
+      crossAxisSpacing: 4,
       staggeredTileBuilder: (index) {
         if(index == 0){
           return StaggeredTile.extent(6, 96);
@@ -79,7 +85,7 @@ class _CharacterRanksListWidgetState extends State<CharacterRanksListWidget>
         if(index < 4){
           return StaggeredTile.count(2, 3);
         }
-        return StaggeredTile.extent(6, 96);
+        return StaggeredTile.extent(6, 64);
       },
       itemBuilder: (context, index) {
         if (ranks == null) return Container();
@@ -87,16 +93,25 @@ class _CharacterRanksListWidgetState extends State<CharacterRanksListWidget>
           return Container(
               height: 96,
               child: CharacterInfoWidget(
-                key: Key("characterinfo_${widget.profile.lastUpdated}"),
+                key: Key("characterinfo_${widget.characterId}"),
                 characterId: widget.characterId,
               ));
         }
-        var item = ranks[index - 1];
-        return RankItemWidget(
-          characterId: widget.characterId,
-          progression: item,
-          key: Key("progression_${item.progressionHash}"),
-        );
+        if(index < ranks.length + 1){
+          var rank = ranks[index - 1];
+          return RankItemWidget(
+            characterId: widget.characterId,
+            progression: rank,
+            key: Key("rank_${rank.progressionHash}"),
+          );
+        }
+        var progression = progressions[index - ranks.length - 1];
+        return FactionRankItemWidget(
+            characterId: widget.characterId,
+            progression: progression,
+            key: Key("progression_${progression.progressionHash}"),
+          );
+          
       },
     );
   }
