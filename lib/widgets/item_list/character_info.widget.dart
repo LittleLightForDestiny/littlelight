@@ -32,9 +32,8 @@ class CharacterInfoWidget extends StatefulWidget {
   final ProfileService profile = new ProfileService();
   final String characterId;
   final NotificationService broadcaster = NotificationService();
-  
-  CharacterInfoWidget({this.characterId, Key key}) : super(key: key);
 
+  CharacterInfoWidget({this.characterId, Key key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -54,12 +53,9 @@ class CharacterInfoWidgetState extends State<CharacterInfoWidget> {
     super.initState();
     loadDefinitions();
     subscription = widget.broadcaster.listen((event) {
-      if (event.type == NotificationType.receivedUpdate ||
-          event.type == NotificationType.localUpdate && mounted) {
-        if(mounted){
-          character = widget.profile.getCharacter(widget.characterId);
-          setState(() {});
-        }
+      if (event.type == NotificationType.receivedUpdate && mounted) {
+        character = widget.profile.getCharacter(widget.characterId);
+        setState(() {});
       }
     });
   }
@@ -71,8 +67,10 @@ class CharacterInfoWidgetState extends State<CharacterInfoWidget> {
   }
 
   loadDefinitions() async {
-    classDef = await widget.manifest.getDefinition<DestinyClassDefinition>(character.classHash);
-    raceDef = await widget.manifest.getDefinition<DestinyRaceDefinition>(character.raceHash);
+    classDef = await widget.manifest
+        .getDefinition<DestinyClassDefinition>(character.classHash);
+    raceDef = await widget.manifest
+        .getDefinition<DestinyRaceDefinition>(character.raceHash);
     if (mounted) {
       setState(() {});
     }
@@ -134,7 +132,7 @@ class CharacterInfoWidgetState extends State<CharacterInfoWidget> {
                     )),
                 Text(
                   "${character.light}",
-                  key:Key("${character.light}"),
+                  key: Key("${character.light}"),
                   style: TextStyle(
                       fontWeight: FontWeight.w900,
                       fontSize: 34,
@@ -407,7 +405,8 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
         widget.profile.getCharacterEquipment(widget.character.characterId);
     var equipped = equipment.where((i) => slots.contains(i.bucketHash));
     for (var item in equipped) {
-      var def = await widget.manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
+      var def = await widget.manifest
+          .getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
       itemIndex.addEquippedItem(item, def);
     }
     if (!includeUnequipped) return itemIndex;
@@ -415,7 +414,8 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
         widget.profile.getCharacterInventory(widget.character.characterId);
     var unequipped = inventory.where((i) => slots.contains(i.bucketHash));
     for (var item in unequipped) {
-      var def = await widget.manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
+      var def = await widget.manifest
+          .getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
       itemIndex.addUnequippedItem(item, def);
     }
     return itemIndex;
@@ -459,12 +459,14 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
     var exoticArmor = getHighestLightExoticArmor(maxLightLoadout, exoticPieces);
 
     if (exoticWeapon != null) {
-      var def = await widget.manifest.getDefinition<DestinyInventoryItemDefinition>(exoticWeapon.itemHash);
+      var def = await widget.manifest
+          .getDefinition<DestinyInventoryItemDefinition>(exoticWeapon.itemHash);
       maxLightLoadout.addEquippedItem(exoticWeapon, def);
     }
 
     if (exoticArmor != null) {
-      var def = await widget.manifest.getDefinition<DestinyInventoryItemDefinition>(exoticArmor.itemHash);
+      var def = await widget.manifest
+          .getDefinition<DestinyInventoryItemDefinition>(exoticArmor.itemHash);
       maxLightLoadout.addEquippedItem(exoticArmor, def);
     }
     int totalLight = 0;
@@ -543,9 +545,11 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
     if (!isInDebug) return;
     for (var item in loadout.generic.values) {
       if (item == null) continue;
-      var def = await widget.manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
+      var def = await widget.manifest
+          .getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
       var bucket = await widget.manifest
-          .getDefinition<DestinyInventoryBucketDefinition>(def.inventory.bucketTypeHash);
+          .getDefinition<DestinyInventoryBucketDefinition>(
+              def.inventory.bucketTypeHash);
       var instance = widget.profile.getInstanceInfo(item.itemInstanceId);
       print("---------------------------------------------------------------");
       print(bucket.displayProperties.name);
@@ -556,9 +560,11 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
     for (var items in loadout.classSpecific.values) {
       var item = items[widget.character.classType];
       if (item == null) continue;
-      var def = await widget.manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
+      var def = await widget.manifest
+          .getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
       var bucket = await widget.manifest
-          .getDefinition<DestinyInventoryBucketDefinition>(def.inventory.bucketTypeHash);
+          .getDefinition<DestinyInventoryBucketDefinition>(
+              def.inventory.bucketTypeHash);
       var instance = widget.profile.getInstanceInfo(item.itemInstanceId);
       print("---------------------------------------------------------------");
       print(bucket.displayProperties.name);

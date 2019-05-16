@@ -32,22 +32,21 @@ class RankItemWidget extends StatefulWidget {
 class RankItemWidgetState<T extends RankItemWidget> extends State<T>
     with AutomaticKeepAliveClientMixin {
   DestinyProgressionDefinition definition;
-  Map<int, DestinyObjectiveDefinition> objectiveDefinitions;
-  List<DestinyObjectiveProgress> itemObjectives;
   StreamSubscription<NotificationEvent> subscription;
 
   int progressTotal;
 
   int get hash => widget.progression.progressionHash;
-  DestinyProgression get progression => widget.progression;
+  DestinyProgression progression;
 
   @override
   void initState() {
+    progression = widget.progression;
     super.initState();
     loadDefinitions();
     subscription = widget.broadcaster.listen((event) {
-      if (event.type == NotificationType.receivedUpdate ||
-          event.type == NotificationType.localUpdate && mounted) {
+      if (event.type == NotificationType.receivedUpdate && mounted) {
+        progression = widget.profile.getCharacterProgression(widget.characterId).progressions["$hash"];
         setState(() {});
       }
     });

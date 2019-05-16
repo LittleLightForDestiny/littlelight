@@ -60,7 +60,7 @@ class _CharacterRanksListWidgetState extends State<CharacterRanksListWidget>
       progressionsRoot.progressions["${DestinyRanks.valor}"],
       progressionsRoot.progressions["${DestinyRanks.infamy}"]
     ];
-    this.progressions = progressionsRoot.factions.values.where((p)=>true).toList();
+    this.progressions = progressionsRoot.factions.values.where((p)=>p.factionHash != null).toList();
     if (mounted) {
       setState(() {});
       fullyLoaded = true;
@@ -85,7 +85,7 @@ class _CharacterRanksListWidgetState extends State<CharacterRanksListWidget>
         if(index < 4){
           return StaggeredTile.count(2, 3);
         }
-        return StaggeredTile.extent(6, 64);
+        return StaggeredTile.extent(6, 96);
       },
       itemBuilder: (context, index) {
         if (ranks == null) return Container();

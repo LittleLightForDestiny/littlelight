@@ -171,7 +171,7 @@ class ItemObjectivesWidgetState extends DestinyItemState<ItemObjectivesWidget> {
         padding: EdgeInsets.all(8),
         child: ObjectiveWidget(
           key:
-              Key("objective_${objective.objectiveHash}_${objective.progress}"),
+              Key("objective_${objective?.objectiveHash}_${objective?.progress}"),
           definition: def,
           objective: objective,
         ));

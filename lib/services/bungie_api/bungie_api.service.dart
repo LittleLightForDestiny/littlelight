@@ -28,6 +28,7 @@ class BungieApiService {
 
   static String url(String url) {
     if (url == null ?? url.length == 0) return null;
+    if(url.contains('://')) return url;
     return "$baseUrl$url";
   }
 

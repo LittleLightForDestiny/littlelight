@@ -37,16 +37,18 @@ class _MilestoneRaidItemWidgetState extends State<MilestoneRaidItemWidget>
     with AutomaticKeepAliveClientMixin {
   DestinyMilestoneDefinition definition;
   StreamSubscription<NotificationEvent> subscription;
+  int get hash => widget.milestone.milestoneHash;
+  DestinyMilestone milestone;
   bool fullyLoaded = false;
 
   @override
   void initState() {
+    milestone = widget.milestone;
     super.initState();
     loadDefinitions();
     subscription = widget.broadcaster.listen((event) {
-      if ((event.type == NotificationType.receivedUpdate ||
-              event.type == NotificationType.localUpdate) &&
-          mounted) {
+      if (event.type == NotificationType.receivedUpdate && mounted) {
+        milestone = widget.profile.getCharacterProgression(widget.characterId).milestones["$hash"];
         setState(() {});
       }
     });
@@ -61,7 +63,7 @@ class _MilestoneRaidItemWidgetState extends State<MilestoneRaidItemWidget>
   Future<void> loadDefinitions() async {
     definition = await widget.manifest
         .getDefinition<DestinyMilestoneDefinition>(
-            widget.milestone.milestoneHash);
+            milestone.milestoneHash);
     if (mounted) {
       setState(() {});
       fullyLoaded = true;
@@ -126,7 +128,7 @@ class _MilestoneRaidItemWidgetState extends State<MilestoneRaidItemWidget>
   }
 
   buildActivities(BuildContext context) {
-    var activities = widget.milestone.activities
+    var activities = milestone.activities
         .where((a) => a.phases != null && a.phases.length > 0);
 
     if(activities.length == 1){

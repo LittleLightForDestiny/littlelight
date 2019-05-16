@@ -97,9 +97,9 @@ class _FilledCircularProgressIndicatorState
           painter: _CircularProgressIndicatorPainter(
             backgroundColor: widget.backgroundColor,
             valueColor: widget._getValueColor(context),
-            value: widget.value, // may be null
+            value: widget.value, 
             headValue:
-                headValue, // remaining arguments are ignored if widget.value is not null
+                headValue, 
             tailValue: tailValue,
             stepValue: stepValue,
             rotationValue: rotationValue,
@@ -170,6 +170,12 @@ class _CircularProgressIndicatorPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    var clip = Path();
+    clip.moveTo(0, size.height/2);
+    clip.lineTo(size.width/2, size.height);
+    clip.lineTo(size.width, size.height/2);
+    clip.lineTo(size.width/2, 0);
+    canvas.clipPath(clip, doAntiAlias:true);
     final Paint paint = Paint()
       ..color = valueColor
       ..style = PaintingStyle.fill;

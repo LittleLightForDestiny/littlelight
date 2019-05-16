@@ -49,8 +49,7 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
     super.initState();
     loadDefinitions();
     subscription = widget.broadcaster.listen((event) {
-      if (event.type == NotificationType.receivedUpdate ||
-          event.type == NotificationType.localUpdate && mounted) {
+      if (event.type == NotificationType.receivedUpdate && mounted) {
         itemObjectives = widget.profile.getItemObjectives(itemInstanceId);
         setState(() {});
       }

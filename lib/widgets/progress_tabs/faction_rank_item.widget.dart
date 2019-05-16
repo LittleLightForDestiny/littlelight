@@ -1,10 +1,10 @@
 import 'dart:async';
 
+import 'package:bungie_api/models/destiny_faction_definition.dart';
 import 'package:bungie_api/models/destiny_faction_progression.dart';
-import 'package:bungie_api/models/destiny_objective_definition.dart';
-import 'package:bungie_api/models/destiny_objective_progress.dart';
 import 'package:bungie_api/models/destiny_progression_definition.dart';
 import 'package:bungie_api/models/destiny_progression_step_definition.dart';
+import 'package:bungie_api/models/destiny_vendor_definition.dart';
 
 import 'package:flutter/material.dart';
 
@@ -12,10 +12,10 @@ import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
-import 'package:little_light/widgets/flutter/filled_circular_progress_indicator.dart';
+import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:little_light/widgets/flutter/filled_diamond_progress_indicator.dart';
 
 class FactionRankItemWidget extends StatefulWidget {
   final String characterId;
@@ -34,22 +34,22 @@ class FactionRankItemWidget extends StatefulWidget {
 class FactionRankItemWidgetState<T extends FactionRankItemWidget>
     extends State<T> with AutomaticKeepAliveClientMixin {
   DestinyProgressionDefinition definition;
-  Map<int, DestinyObjectiveDefinition> objectiveDefinitions;
-  List<DestinyObjectiveProgress> itemObjectives;
+  DestinyFactionDefinition factionDefinition;
+  DestinyVendorDefinition vendorDefinition;
   StreamSubscription<NotificationEvent> subscription;
-
-  int progressTotal;
-
-  int get hash => widget.progression.progressionHash;
-  DestinyFactionProgression get progression => widget.progression;
+  int get hash => widget.progression.factionHash;
+  DestinyFactionProgression progression;
 
   @override
   void initState() {
+    progression = widget.progression;
     super.initState();
     loadDefinitions();
     subscription = widget.broadcaster.listen((event) {
-      if (event.type == NotificationType.receivedUpdate ||
-          event.type == NotificationType.localUpdate && mounted) {
+      if (event.type == NotificationType.receivedUpdate && mounted) {
+        progression = widget.profile
+            .getCharacterProgression(widget.characterId)
+            .factions["$hash"];
         setState(() {});
       }
     });
@@ -62,9 +62,17 @@ class FactionRankItemWidgetState<T extends FactionRankItemWidget>
   }
 
   Future<void> loadDefinitions() async {
-    definition =
-        await widget.manifest.getDefinition<DestinyProgressionDefinition>(hash);
-    progressTotal = definition.steps.fold(0, (v, s) => v + s.progressTotal);
+    definition = await widget.manifest
+        .getDefinition<DestinyProgressionDefinition>(
+            widget.progression.progressionHash);
+    factionDefinition = await widget.manifest
+        .getDefinition<DestinyFactionDefinition>(progression.factionHash);
+    if ((factionDefinition?.vendors?.length ?? 0) > 0) {
+      vendorDefinition = await widget.manifest
+          .getDefinition<DestinyVendorDefinition>(factionDefinition
+              .vendors[factionDefinition.vendors.length - 1].vendorHash);
+    }
+
     if (mounted) {
       setState(() {});
     }
@@ -73,104 +81,122 @@ class FactionRankItemWidgetState<T extends FactionRankItemWidget>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    if (definition == null || progression == null) {
+    if (definition == null ||
+        progression == null ||
+        factionDefinition == null) {
       return Container(height: 200, color: Colors.blueGrey.shade900);
     }
-    return Row(children: [
-      ManifestImageWidget<DestinyProgressionDefinition>(
-          progression.progressionHash),
-      ManifestText<DestinyProgressionDefinition>(progression.progressionHash),
-      Text("${progression.progressToNextLevel}/${progression.nextLevelAt}")
-    ]);
-  }
-
-  Widget buildRankIcon(BuildContext context) {
-    return FractionallySizedBox(
-        widthFactor: .56,
-        child: QueuedNetworkImage(
-          imageUrl: BungieApiService.url(currentStep.icon),
-        ));
-  }
-
-  Widget buildBackgroundCircle(BuildContext context) {
-    return FractionallySizedBox(
-        widthFactor: .60,
-        child: AspectRatio(
-            aspectRatio: 1,
-            child: Container(
-              decoration: BoxDecoration(
-                  color: Colors.grey.shade900,
-                  borderRadius: BorderRadius.circular(200)),
-            )));
-  }
-
-  Widget buildLabels(BuildContext context) {
-    return FractionallySizedBox(
-        widthFactor: .60,
-        child:
-            Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-          buildTopLabels(context),
-          AspectRatio(aspectRatio: 1, child: Container()),
-          buildBottomLabels(context),
+    return Container(
+        padding: EdgeInsets.all(2),
+        child: Stack(children: [
+          buildBackground(context),
+          buildContent(context),
+          buildStepProgress(context),
         ]));
   }
 
-  buildTopLabels(BuildContext context) {
-    return Column(children: [
-      Text(
-        definition?.displayProperties?.name?.toUpperCase() ?? "",
-        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
-      ),
-      Text(
-        currentStep?.stepName?.toUpperCase() ?? "",
-        style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14),
-      )
-    ]);
+  Widget buildBackground(BuildContext context) {
+    return Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          AspectRatio(aspectRatio: .5, child: Container()),
+          Expanded(
+            child: Container(
+                margin: EdgeInsets.symmetric(vertical: 4),
+                alignment: Alignment.centerRight,
+                decoration: BoxDecoration(
+                    color: Colors.black,
+                    border:
+                        Border.all(color: Colors.blueGrey.shade300, width: 1)),
+                child: Stack(fit: StackFit.passthrough, children: [
+                  QueuedNetworkImage(
+                    fit: BoxFit.fitHeight,
+                    imageUrl: BungieApiService.url(
+                        vendorDefinition.displayProperties.largeIcon),
+                  ),
+                  Positioned.fill(
+                      child: Container(
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            colors: <Color>[Colors.black, Colors.black38],
+                            begin: Alignment.centerLeft,
+                            end: Alignment.center)),
+                  )),
+                ])),
+          )
+        ]);
   }
 
-  buildBottomLabels(BuildContext context) {
-    return Column(children: [
-      Text(
-        "${progression.progressToNextLevel}/${progression.nextLevelAt}",
-        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-      ),
-      Text(
-        "${progression.currentProgress}/$progressTotal",
-        style: TextStyle(fontSize: 10),
-      )
-    ]);
-  }
-
-  buildRankProgress(BuildContext context) {
-    var mainColor = Color.fromARGB(255, definition.color.red,
-        definition.color.green, definition.color.blue);
-
-    return FractionallySizedBox(
-        widthFactor: .72,
-        child: AspectRatio(
-          aspectRatio: 1,
-          child: FilledCircularProgressIndicator(
-              backgroundColor: Colors.blueGrey.shade500,
-              valueColor: AlwaysStoppedAnimation<Color>(
-                  Color.lerp(mainColor, Colors.white, .5)),
-              value: progression.currentProgress / progressTotal),
-        ));
+  Widget buildContent(BuildContext context) {
+    return Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          AspectRatio(aspectRatio: 1, child: Container()),
+          Expanded(
+            child: Container(
+                margin: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                padding: EdgeInsets.all(4),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Container(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                        Text(
+                          vendorDefinition?.displayProperties?.name ?? "",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 15),
+                        ),
+                        TranslatedTextWidget(
+                          "Level {Level}",
+                          replace: {"Level":"${progression.level}"},
+                          key:Key("${progression.level}"),
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 15),
+                        )
+                      ]),
+                    ),
+                    Container(
+                      height: 2,
+                    ),
+                    Text(
+                      factionDefinition?.displayProperties?.name ?? "",
+                      style:
+                          TextStyle(fontStyle: FontStyle.italic, fontSize: 13),
+                    ),
+                    Expanded(
+                      child: Container(),
+                    ),
+                    Text(
+                        "${progression.progressToNextLevel}/${progression.nextLevelAt}")
+                  ],
+                )),
+          )
+        ]);
   }
 
   buildStepProgress(BuildContext context) {
-    return FractionallySizedBox(
-        widthFactor: .68,
-        child: AspectRatio(
-          aspectRatio: 1,
-          child: FilledCircularProgressIndicator(
-              backgroundColor: Colors.blueGrey.shade700,
-              valueColor: AlwaysStoppedAnimation<Color>(Color.fromARGB(
-                  255,
-                  definition.color.red,
-                  definition.color.green,
-                  definition.color.blue)),
-              value: progression.progressToNextLevel / progression.nextLevelAt),
-        ));
+    return AspectRatio(
+        aspectRatio: 1,
+        child: Stack(children: [
+          Positioned.fill(
+              child: FilledDiamondProgressIndicator(
+                  backgroundColor: Colors.blueGrey.shade500,
+                  valueColor:
+                      AlwaysStoppedAnimation<Color>(Colors.blueGrey.shade100),
+                  value: progression.progressToNextLevel /
+                      progression.nextLevelAt)),
+          Positioned.fill(
+              child: Container(
+                  padding: EdgeInsets.all(4),
+                  child: QueuedNetworkImage(
+                    imageUrl: BungieApiService.url(
+                        factionDefinition.displayProperties.icon),
+                  )))
+        ]));
   }
 
   DestinyProgressionStepDefinition get currentStep =>

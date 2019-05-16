@@ -38,19 +38,19 @@ class MilestoneItemWidget extends StatefulWidget {
 class _MilestoneItemWidgetState extends State<MilestoneItemWidget>
     with AutomaticKeepAliveClientMixin {
   DestinyMilestoneDefinition definition;
-  Map<int, DestinyObjectiveDefinition> objectiveDefinitions;
-  List<DestinyObjectiveProgress> itemObjectives;
   StreamSubscription<NotificationEvent> subscription;
+  DestinyMilestone milestone;
+  int get hash => widget.milestone.milestoneHash;
   bool fullyLoaded = false;
 
   @override
   void initState() {
+    milestone = widget.milestone;
     super.initState();
     loadDefinitions();
     subscription = widget.broadcaster.listen((event) {
-      if ((event.type == NotificationType.receivedUpdate ||
-              event.type == NotificationType.localUpdate) &&
-          mounted) {
+      if (event.type == NotificationType.receivedUpdate && mounted) {
+        milestone = widget.profile.getCharacterProgression(widget.characterId).milestones["$hash"];
         setState(() {});
       }
     });
@@ -65,13 +65,7 @@ class _MilestoneItemWidgetState extends State<MilestoneItemWidget>
   Future<void> loadDefinitions() async {
     definition = await widget.manifest
         .getDefinition<DestinyMilestoneDefinition>(
-            widget.milestone.milestoneHash);
-    if (itemObjectives != null) {
-      Iterable<int> objectiveHashes =
-          itemObjectives.map((o) => o.objectiveHash);
-      objectiveDefinitions = await widget.manifest
-          .getDefinitions<DestinyObjectiveDefinition>(objectiveHashes);
-    }
+            milestone.milestoneHash);
     if (mounted) {
       setState(() {});
       fullyLoaded = true;
@@ -87,33 +81,34 @@ class _MilestoneItemWidgetState extends State<MilestoneItemWidget>
 
     List<Widget> items = [buildHeader(context)];
 
-    if (widget.milestone.activities != null) {
-      items.add(buildMilestoneActivities(context, widget.milestone.activities));
+    if (milestone.activities != null) {
+      items.add(buildMilestoneActivities(context, milestone.activities));
     }
-    
+
     // if (widget.milestone.rewards != null) {
     //   items.add(buildRewards(context, widget.milestone.rewards));
     // }
-    if (widget.milestone.availableQuests != null) {
+    if (milestone.availableQuests != null) {
       items
-          .add(buildAvailableQuests(context, widget.milestone.availableQuests));
+          .add(buildAvailableQuests(context, milestone.availableQuests));
     }
     return Container(
         decoration: BoxDecoration(
-          color: Colors.blueGrey.shade900,
-          border: Border.all(width:1, color:Colors.blueGrey.shade200)
-        ),
+            color: Colors.blueGrey.shade900,
+            border: Border.all(width: 1, color: Colors.blueGrey.shade200)),
         margin: EdgeInsets.all(8).copyWith(top: 0),
         child: Column(children: items));
   }
 
   buildHeader(BuildContext context) {
     return Stack(children: <Widget>[
-      definition.image != null? Positioned.fill(
-        child: QueuedNetworkImage(
-            fit: BoxFit.cover,
-            imageUrl: BungieApiService.url(definition.image)),
-      ) : Container(),
+      definition.image != null
+          ? Positioned.fill(
+              child: QueuedNetworkImage(
+                  fit: BoxFit.cover,
+                  imageUrl: BungieApiService.url(definition.image)),
+            )
+          : Container(),
       Positioned.fill(
         child: Container(
             decoration: BoxDecoration(
@@ -129,31 +124,34 @@ class _MilestoneItemWidgetState extends State<MilestoneItemWidget>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Container(
-            padding:EdgeInsets.all(8),
-            width:64,
-            height:64,
-          child:QueuedNetworkImage(
-            fit: BoxFit.cover,
-            imageUrl: BungieApiService.url(definition.displayProperties.icon))),
-          Expanded(child:Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-            Container(
-              alignment: Alignment.centerLeft,
               padding: EdgeInsets.all(8),
-              child: Text(
-                definition.displayProperties.name.toUpperCase(),
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.all(8),
-              child: Text(
-                definition.displayProperties.description,
-                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
-              ),
-            )
-          ])),
+              width: 64,
+              height: 64,
+              child: QueuedNetworkImage(
+                  fit: BoxFit.cover,
+                  imageUrl:
+                      BungieApiService.url(definition.displayProperties.icon))),
+          Expanded(
+              child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                Container(
+                  alignment: Alignment.centerLeft,
+                  padding: EdgeInsets.all(8),
+                  child: Text(
+                    definition.displayProperties.name.toUpperCase(),
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.all(8),
+                  child: Text(
+                    definition.displayProperties.description,
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
+                  ),
+                )
+              ])),
         ],
       )
     ]);
@@ -170,8 +168,9 @@ class _MilestoneItemWidgetState extends State<MilestoneItemWidget>
                 alignment: Alignment.centerLeft,
                 child: ManifestText<DestinyActivityDefinition>(
                   activity.activityHash,
-                  textExtractor: (def){
-                    return def?.selectionScreenDisplayProperties?.name ?? def.displayProperties.name;
+                  textExtractor: (def) {
+                    return def?.selectionScreenDisplayProperties?.name ??
+                        def.displayProperties.name;
                   },
                   uppercase: true,
                   maxLines: 1,
@@ -243,19 +242,24 @@ class _MilestoneItemWidgetState extends State<MilestoneItemWidget>
   Widget buildRewards(
       BuildContext context, List<DestinyMilestoneRewardCategory> rewards) {
     List<Widget> widgets = [];
-    widgets.add(TranslatedTextWidget("Rewards", uppercase: true, style:TextStyle(color:Colors.green.shade300, fontWeight: FontWeight.bold, fontSize: 12)));
+    widgets.add(TranslatedTextWidget("Rewards",
+        uppercase: true,
+        style: TextStyle(
+            color: Colors.green.shade300,
+            fontWeight: FontWeight.bold,
+            fontSize: 12)));
     rewards.forEach((reward) {
       reward.entries.forEach((entry) {
         widgets.add(
             Row(children: [Text("${entry.rewardEntryHash}:${entry.earned}")]));
       });
     });
-    return 
-    Container(
-      padding: EdgeInsets.all(8),
-      child:Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceAround, children: widgets));
+    return Container(
+        padding: EdgeInsets.all(8),
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: widgets));
   }
 
   @override
