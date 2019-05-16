@@ -141,8 +141,9 @@
   "Stop Tracking": "Quitar de Objetivos",
   "Track Objectives": "Añadir a Objetivos",
   "You aren't tracking any objectives yet. Add one from Triumphs or Pursuits.": "No estas siguiendo ningún objetivo. Añade uno desde Triunfos o Contratos.",
-  "#####Rewards": "missing_translation",
-  "#####Expired": "missing_translation",
-  "#####Expires {timeFromNow}": "missing_translation",
-  "#####Can't connect to Bungie servers. Please check your internet connection and try again.": "missing_translation"
+  "Rewards": "Recompensas",
+  "Expired": "Caducado",
+  "Expires {timeFromNow}": "Caduca en {timeFromNow}",
+  "Can't connect to Bungie servers. Please check your internet connection and try again.": "No se puede conectar a los servidores de Bungie. Por favor comprueba tu conexión de internet y prueba otra vez.",
+  "#####Ranks": "missing_translation"
 }
