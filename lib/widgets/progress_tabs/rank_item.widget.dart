@@ -46,7 +46,9 @@ class RankItemWidgetState<T extends RankItemWidget> extends State<T>
     loadDefinitions();
     subscription = widget.broadcaster.listen((event) {
       if (event.type == NotificationType.receivedUpdate && mounted) {
-        progression = widget.profile.getCharacterProgression(widget.characterId).progressions["$hash"];
+        progression = widget.profile
+            .getCharacterProgression(widget.characterId)
+            .progressions["$hash"];
         setState(() {});
       }
     });
@@ -125,14 +127,13 @@ class RankItemWidgetState<T extends RankItemWidget> extends State<T>
   }
 
   Widget buildLabels(BuildContext context) {
-    return FractionallySizedBox(
-        widthFactor: .60,
-        child:
-            Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-          buildTopLabels(context),
-          AspectRatio(aspectRatio: 1, child: Container()),
-          buildBottomLabels(context),
-        ]));
+    return Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, crossAxisAlignment: CrossAxisAlignment.stretch ,children: [
+      buildTopLabels(context),
+      FractionallySizedBox(
+          widthFactor: .60,
+          child: AspectRatio(aspectRatio: 1, child: Container())),
+      buildBottomLabels(context),
+    ]);
   }
 
   buildTopLabels(BuildContext context) {
