@@ -1,20 +1,27 @@
+import 'package:bungie_api/models/destiny_activity_definition.dart';
+import 'package:bungie_api/models/destiny_activity_mode_definition.dart';
+import 'package:bungie_api/models/destiny_place_definition.dart';
 import 'package:bungie_api/models/general_user.dart';
 import 'package:bungie_api/models/user_info_card.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/screens/initial.screen.dart';
 import 'package:little_light/services/auth/auth.service.dart';
+import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/utils/platform_data.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 const Duration _kExpand = Duration(milliseconds: 200);
 
 class ProfileInfoWidget extends StatefulWidget {
-  final AuthService auth = new AuthService();
-  final List<Widget> children;
-  ProfileInfoWidget({this.children});
+  final AuthService auth = AuthService();
+  final ProfileService profile = ProfileService();
+  final List<Widget> menuItems;
+  ProfileInfoWidget({this.menuItems});
 
   @override
   createState() {
@@ -93,7 +100,7 @@ class ProfileInfoState extends State<ProfileInfoWidget>
     return AnimatedBuilder(
       animation: _controller.view,
       builder: _buildChildren,
-      child: closed ? null : Column(children: widget.children),
+      child: closed ? null : Column(children: widget.menuItems),
     );
   }
 
@@ -134,16 +141,71 @@ class ProfileInfoState extends State<ProfileInfoWidget>
         highlightColor: Color.lerp(Theme.of(context).backgroundColor,
             Theme.of(context).primaryColor, .3),
         child: Container(color: Colors.white));
-    if (bungieNetUser != null && bungieNetUser.profileThemeName != null) {
-      String url =
-          BungieApiService.url("/img/UserThemes/${bungieNetUser.profileThemeName}/mobiletheme.jpg");
-      return QueuedNetworkImage(
-        imageUrl: url,
-        placeholder: shimmer,
-        fit: BoxFit.cover,
+    if (bungieNetUser?.profileThemeName != null) {
+      String url = BungieApiService.url(
+          "/img/UserThemes/${bungieNetUser.profileThemeName}/mobiletheme.jpg");
+      return Stack(
+        children: <Widget>[
+          Positioned.fill(
+              child: QueuedNetworkImage(
+            imageUrl: url,
+            placeholder: shimmer,
+            fit: BoxFit.cover,
+          )),
+          Container(
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                  Colors.black26,
+                  Colors.transparent,
+                  Colors.transparent,
+                  Colors.black54
+                ],
+                    stops: [
+                  0,
+                  .2,
+                  .7,
+                  1
+                ])),
+          ),
+          Positioned(bottom: 4, left: 88, child: buildActivityInfo(context))
+        ],
       );
     }
     return shimmer;
+  }
+
+  Widget buildActivityInfo(BuildContext context) {
+    var lastCharacter =
+        widget.profile.getCharacters(CharacterOrder.lastPlayed).first;
+    var lastPlayed = DateTime.parse(lastCharacter.dateLastPlayed);
+    var currentSession = lastCharacter.minutesPlayedThisSession;
+    var time = timeago.format(lastPlayed, allowFromNow: true);
+    if (lastPlayed
+        .add(Duration(minutes: int.parse(currentSession) + 10))
+        .isBefore(DateTime.now().toUtc())) {
+      return TranslatedTextWidget(
+        "Last played {timeago}",
+        replace: {'timeago': time},
+        style: TextStyle(fontSize: 12, color: Colors.grey.shade100),
+      );
+    }
+    var activities =
+        widget.profile.getCharacterActivities(lastCharacter.characterId);
+    if(activities.currentActivityHash ==  82913930){
+      return ManifestText<DestinyPlaceDefinition>(2961497387,
+        textExtractor: (def)=>def.displayProperties.description,
+          style: TextStyle(fontSize: 12, color: Colors.grey.shade100, fontWeight: FontWeight.bold));
+    }
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      ManifestText<DestinyActivityModeDefinition>(
+          activities.currentActivityModeHash,
+          style: TextStyle(fontSize: 10, color: Colors.grey.shade100)),
+      ManifestText<DestinyActivityDefinition>(activities.currentActivityHash,
+          style: TextStyle(fontSize: 12, color: Colors.grey.shade100, fontWeight: FontWeight.bold))
+    ]);
   }
 
   Widget profilePicture(context) {
@@ -155,8 +217,7 @@ class ProfileInfoState extends State<ProfileInfoWidget>
         highlightColor: Colors.grey.shade400,
         child: Container(color: Colors.white));
     if (bungieNetUser != null && bungieNetUser.profileThemeName != null) {
-      String url =
-          BungieApiService.url(bungieNetUser.profilePicturePath);
+      String url = BungieApiService.url(bungieNetUser.profilePicturePath);
       return QueuedNetworkImage(
         imageUrl: url,
         placeholder: shimmer,
@@ -174,13 +235,11 @@ class ProfileInfoState extends State<ProfileInfoWidget>
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Expanded(
-              child:FlatButton(
-
-              child: 
-              Container(
+                child: FlatButton(
+              child: Container(
                 alignment: Alignment.centerLeft,
-                child:TranslatedTextWidget("Tap to Login",
-              textAlign: TextAlign.left),
+                child: TranslatedTextWidget("Tap to Login",
+                    textAlign: TextAlign.left),
               ),
               onPressed: () {
                 Navigator.pushReplacement(
@@ -194,9 +253,8 @@ class ProfileInfoState extends State<ProfileInfoWidget>
             )),
             IconButton(
               icon: Transform.rotate(
-                angle: -_heightFactor.value*1.5,
-                child:Icon(Icons.settings)
-              ),
+                  angle: -_heightFactor.value * 1.5,
+                  child: Icon(Icons.settings)),
               onPressed: _handleTap,
             )
           ],
@@ -217,9 +275,8 @@ class ProfileInfoState extends State<ProfileInfoWidget>
             Expanded(child: Text(selectedMembership?.displayName ?? "")),
             IconButton(
               icon: Transform.rotate(
-                angle: -_heightFactor.value*1.5,
-                child:Icon(Icons.settings)
-              ),
+                  angle: -_heightFactor.value * 1.5,
+                  child: Icon(Icons.settings)),
               onPressed: _handleTap,
             )
           ],

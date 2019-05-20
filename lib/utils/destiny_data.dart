@@ -300,6 +300,6 @@ static const List<int> hiddenStats = [
 }
 
 class ProgressionHash {
-  static const String Overlevel = '2030054750';
-  static const String Power = '1935470627';
+  static const int Legend = 2030054750;
+  static const int Power = 1935470627;
 }

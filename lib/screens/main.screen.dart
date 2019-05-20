@@ -35,7 +35,7 @@ class MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     ProfileService profile = ProfileService();
     if (auth.isLogged) {
       service.getLoadouts(forceFetch: true);
-      profile.startAutomaticUpdater(Duration(seconds: 30));
+      profile.startAutomaticUpdater();
     }
   }
 

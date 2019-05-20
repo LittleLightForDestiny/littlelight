@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:bungie_api/enums/destiny_collectible_state_enum.dart';
+import 'package:bungie_api/models/destiny_character_activities_component.dart';
 import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:bungie_api/models/destiny_character_progression_component.dart';
 import 'package:bungie_api/models/destiny_collectible_component.dart';
@@ -49,6 +50,7 @@ class ProfileComponentGroups {
 
   static const List<int> everything = [
     DestinyComponentType.Characters,
+    DestinyComponentType.CharacterActivities,
     DestinyComponentType.CharacterProgressions,
     DestinyComponentType.CharacterEquipment,
     DestinyComponentType.CharacterInventories,
@@ -60,6 +62,7 @@ class ProfileComponentGroups {
     DestinyComponentType.Collectibles,
     DestinyComponentType.Records,
     DestinyComponentType.PresentationNodes,
+    DestinyComponentType.Profiles
   ];
 }
 
@@ -96,25 +99,25 @@ class ProfileService {
     return res;
   }
 
-  startAutomaticUpdater(Duration every,
-      {List<int> components = ProfileComponentGroups.everything}) {
-    if (_timer != null && _timer.isActive) {
+  startAutomaticUpdater() async {
+    if (_timer?.isActive ?? false) {
       _timer.cancel();
     }
+    if (this._lastLoadedFrom == LastLoadedFrom.cache) {
+      await fetchProfileData(components: ProfileComponentGroups.everything);
+    }
+
+    var every = isPlaying() ? Duration(seconds:30) : Duration(minutes:5);
     _timer = new Timer.periodic(every, (timer) async {
       if (!pauseAutomaticUpdater) {
         print('auto refreshing');
-        await fetchProfileData(components: components);
+        await fetchProfileData(components: ProfileComponentGroups.everything);
       }
     });
-
-    if (this._lastLoadedFrom == LastLoadedFrom.cache) {
-      fetchProfileData(components: components);
-    }
   }
 
   stopAutomaticUpdater() {
-    if (_timer != null && _timer.isActive) {
+    if (_timer?.isActive ?? false) {
       _timer.cancel();
     }
   }
@@ -129,6 +132,8 @@ class ProfileService {
       //TODO:implement error handling
     }
     lastUpdated = DateTime.now();
+
+    bool wasPlaying = isPlaying();
 
     if (response == null) {
       return _profile;
@@ -176,6 +181,9 @@ class ProfileService {
     if (components.contains(DestinyComponentType.Characters)) {
       _profile.characters = response.characters;
     }
+    if (components.contains(DestinyComponentType.CharacterActivities)) {
+      _profile.characterActivities = response.characterActivities;
+    }
     if (components.contains(DestinyComponentType.CharacterInventories)) {
       _profile.characterInventories = response.characterInventories;
     }
@@ -205,7 +213,24 @@ class ProfileService {
       _profile.characterCurrencyLookups = response.characterCurrencyLookups;
     }
 
+    if(wasPlaying != isPlaying()){
+      startAutomaticUpdater();
+    }
+
     return _profile;
+  }
+
+  bool isPlaying() {
+    try{
+      var lastCharacter = getCharacters(CharacterOrder.lastPlayed).first;
+      var lastPlayed = DateTime.parse(lastCharacter.dateLastPlayed);
+      var currentSession = lastCharacter.minutesPlayedThisSession;
+      return lastPlayed
+          .add(Duration(minutes: int.parse(currentSession) + 10))
+          .isBefore(DateTime.now().toUtc());
+    }catch(e){
+      return false;
+    }
   }
 
   _cacheProfile(DestinyProfileResponse profile) async {
@@ -267,17 +292,18 @@ class ProfileService {
     return _profile.itemComponents.objectives?.data[itemInstanceId]?.objectives;
   }
 
-  Map<String, DestinyPresentationNodeComponent> getProfilePresentationNodes(){
+  Map<String, DestinyPresentationNodeComponent> getProfilePresentationNodes() {
     return _profile?.profilePresentationNodes?.data?.nodes;
   }
 
-  Map<String, DestinyPresentationNodeComponent> getCharacterPresentationNodes(String characterId){
+  Map<String, DestinyPresentationNodeComponent> getCharacterPresentationNodes(
+      String characterId) {
     return _profile?.characterPresentationNodes?.data[characterId].nodes;
   }
 
   List<DestinyCharacterComponent> getCharacters(
       [CharacterOrder order = CharacterOrder.none]) {
-    if (_profile == null || _profile.characters == null) {
+    if (_profile?.characters == null) {
       return null;
     }
     List<DestinyCharacterComponent> list =
@@ -320,6 +346,11 @@ class ProfileService {
 
   DestinyCharacterComponent getCharacter(String characterId) {
     return _profile.characters.data[characterId];
+  }
+
+  DestinyCharacterActivitiesComponent getCharacterActivities(
+      String characterId) {
+    return _profile?.characterActivities?.data[characterId];
   }
 
   List<DestinyItemComponent> getCharacterEquipment(String characterId) {

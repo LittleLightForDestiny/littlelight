@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'package:bungie_api/models/destiny_objective_definition.dart';
-import 'package:bungie_api/models/destiny_objective_progress.dart';
 import 'package:bungie_api/models/destiny_progression.dart';
 import 'package:bungie_api/models/destiny_progression_definition.dart';
 import 'package:bungie_api/models/destiny_progression_step_definition.dart';

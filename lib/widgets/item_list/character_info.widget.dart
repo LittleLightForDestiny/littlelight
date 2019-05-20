@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'dart:math' as math;
+
 import 'package:bungie_api/enums/destiny_class_enum.dart';
 import 'package:bungie_api/enums/destiny_item_type_enum.dart';
 import 'package:bungie_api/enums/tier_type_enum.dart';
@@ -9,7 +11,9 @@ import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_progression.dart';
+import 'package:bungie_api/models/destiny_progression_definition.dart';
 import 'package:bungie_api/models/destiny_race_definition.dart';
+import 'package:bungie_api/models/destiny_sandbox_perk_definition.dart';
 import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/screens/edit_loadout.screen.dart';
@@ -47,6 +51,8 @@ class CharacterInfoWidgetState extends State<CharacterInfoWidget> {
   DestinyCharacterComponent character;
   StreamSubscription<NotificationEvent> subscription;
 
+  DestinyProgressionDefinition legendProgressionDefinition;
+
   @override
   void initState() {
     character = widget.profile.getCharacter(widget.characterId);
@@ -71,6 +77,8 @@ class CharacterInfoWidgetState extends State<CharacterInfoWidget> {
         .getDefinition<DestinyClassDefinition>(character.classHash);
     raceDef = await widget.manifest
         .getDefinition<DestinyRaceDefinition>(character.raceHash);
+    legendProgressionDefinition = await widget.manifest
+        .getDefinition<DestinyProgressionDefinition>(ProgressionHash.Legend);
     if (mounted) {
       setState(() {});
     }
@@ -202,19 +210,50 @@ class CharacterInfoWidgetState extends State<CharacterInfoWidget> {
     if (isMaxLevel) {
       levelProg = widget.profile
           .getCharacterProgression(character.characterId)
-          .progressions[ProgressionHash.Overlevel];
+          .progressions["${ProgressionHash.Legend}"];
     }
 
     return Positioned(
         right: 8,
         top: 4,
-        child: Text(
-          "${levelProg.progressToNextLevel}/${levelProg.nextLevelAt}",
-          style: TextStyle(
-              color: Colors.grey.shade300,
-              fontSize: 11,
-              fontWeight: FontWeight.bold),
-        ));
+        child: Row(children: [
+          isWellRested
+              ? Container(
+                  width: 16,
+                  height: 16,
+                  child: ManifestImageWidget<DestinySandboxPerkDefinition>(
+                      1519921522),
+                )
+              : Container(),
+          Container(
+            width: 4,
+          ),
+          Text(
+            "${levelProg.progressToNextLevel}/${levelProg.nextLevelAt}",
+            style: TextStyle(
+                color: Colors.grey.shade300,
+                fontSize: 11,
+                fontWeight: FontWeight.bold),
+          )
+        ]));
+  }
+
+  DestinyProgression get legendProgression => widget.profile
+      .getCharacterProgression(character.characterId)
+      .progressions["${ProgressionHash.Legend}"];
+
+  bool get isWellRested =>
+      character.levelProgression.level >= character.levelProgression.levelCap &&
+      legendProgression.level > 3 && legendProgression.weeklyProgress < wellRestedTotal;
+  
+  int get wellRestedTotal {
+    if(legendProgressionDefinition == null){
+      return 0;
+    }
+    return [0, 1, 2].fold<int>(0, (total, levelOffset){
+      var step = math.min(math.max(legendProgression.level - levelOffset, 0), legendProgressionDefinition.steps.length - 1);
+      return total + legendProgressionDefinition.steps[step].progressTotal;
+    });
   }
 }
 

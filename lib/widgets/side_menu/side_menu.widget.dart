@@ -39,7 +39,7 @@ class SideMenuWidget extends StatelessWidget {
                 padding: EdgeInsets.all(0),
                 children: <Widget>[
                   ProfileInfoWidget(
-                    children: <Widget>[
+                    menuItems: <Widget>[
                       menuItem(context, "Change Account", requireLogin: true,
                           onTap: () {
                         changeAccount(context);

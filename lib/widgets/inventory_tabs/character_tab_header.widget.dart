@@ -112,7 +112,7 @@ class TabHeaderWidgetState extends State<TabHeaderWidget> {
     Color shine = fg.shade200;
 
     if (isMaxLevel) {
-      levelProg = progression.progressions[ProgressionHash.Overlevel];
+      levelProg = progression.progressions["${ProgressionHash.Legend}"];
     }
     double completed = levelProg.progressToNextLevel / levelProg.nextLevelAt;
     return Container(

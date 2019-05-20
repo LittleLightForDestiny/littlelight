@@ -29,7 +29,7 @@ class ExpiryDateWidgetState extends State<ExpiryDateWidget> {
   
   updateDuration() async{
     var expiry = DateTime.parse(widget.date);
-    expired = DateTime.now().isAfter(expiry); 
+    expired = DateTime.now().toUtc().isAfter(expiry); 
     if(expired){
       setState((){});
       return;  

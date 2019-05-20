@@ -144,5 +144,6 @@
   "#####Expired": "missing_translation",
   "#####Expires {timeFromNow}": "missing_translation",
   "#####Can't connect to Bungie servers. Please check your internet connection and try again.": "missing_translation",
-  "#####Ranks": "missing_translation"
+  "#####Ranks": "missing_translation",
+  "#####Last played {timeago}": "missing_translation"
 }
