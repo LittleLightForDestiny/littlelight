@@ -128,7 +128,7 @@ class _AboutScreenState extends State<AboutScreen> {
                                       child: Icon(FontAwesomeIcons.github,
                                           size: 32)),
                                   Container(height: 4),
-                                  TranslatedTextWidget("issues")
+                                  TranslatedTextWidget("Issues")
                                 ]),
                             onPressed: () {
                               launch(

@@ -145,5 +145,7 @@
   "Expires {timeFromNow}": "Expiration {timeFromNow}",
   "Can't connect to Bungie servers. Please check your internet connection and try again.": "Impossible de se connecté aux servers Bungie. Vérifiez votre connexion internet et essayez à nouveau.",
   "#####Ranks": "missing_translation",
-  "#####Last played {timeago}": "missing_translation"
+  "#####Last played {timeago}": "missing_translation",
+  "#####Discord": "missing_translation",
+  "#####Issues": "missing_translation"
 }
