@@ -32,12 +32,12 @@ class ManifestService {
     return directory.path;
   }
 
-  bool isLoaded<T>(int hash){
+  bool isLoaded<T>(int hash) {
     var type = DefinitionTableNames.fromClass[T];
     return _cached.keys.contains("${type}_$hash");
   }
 
-  T getDefinitionFromCache<T>(int hash){
+  T getDefinitionFromCache<T>(int hash) {
     var type = DefinitionTableNames.fromClass[T];
     return _cached["${type}_$hash"];
   }
@@ -149,7 +149,7 @@ class ManifestService {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     _prefs.setString(_manifestVersionKey, version);
   }
-  
+
   Future<Map<int, T>> getDefinitions<T>(Iterable<int> hashes,
       [dynamic identity(Map<String, dynamic> json)]) async {
     Set<int> hashesSet = hashes.toSet();
@@ -175,7 +175,7 @@ class ManifestService {
     String idList = "(" + List.filled(hashesSet.length, '?').join(',') + ")";
 
     sqflite.Database db = await _openDb();
-    
+
     List<Map<String, dynamic>> results = await db.query(type,
         columns: ['id', 'json'],
         where: "id in $idList",
@@ -195,6 +195,7 @@ class ManifestService {
 
   Future<T> getDefinition<T>(int hash,
       [dynamic identity(Map<String, dynamic> json)]) async {
+    if (hash == null) return null;
     String type = DefinitionTableNames.fromClass[T];
 
     try {
@@ -207,23 +208,23 @@ class ManifestService {
     if (identity == null) {
       identity = DefinitionTableNames.identities[T];
     }
-    if(identity == null){
+    if (identity == null) {
       throw "missing identity for $T";
     }
     int searchHash = hash > 2147483648 ? hash - 4294967296 : hash;
     sqflite.Database db = await _openDb();
-    try{
+    try {
       List<Map<String, dynamic>> results = await db.query(type,
-        columns: ['json'], where: "id=?", whereArgs: [searchHash]);
-      if(results.length < 1){
+          columns: ['json'], where: "id=?", whereArgs: [searchHash]);
+      if (results.length < 1) {
         return null;
       }
       String resultString = results.first['json'];
       var def = identity(jsonDecode(resultString));
       _cached["${type}_$hash"] = def;
       return def;
-    }catch(e){
-      if(e is sqflite.DatabaseException && e.isDatabaseClosedError()){
+    } catch (e) {
+      if (e is sqflite.DatabaseException && e.isDatabaseClosedError()) {
         _db = null;
         return getDefinition(hash, identity);
       }

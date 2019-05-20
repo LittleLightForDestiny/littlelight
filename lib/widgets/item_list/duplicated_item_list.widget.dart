@@ -202,10 +202,12 @@ class DuplicatedItemListWidgetState extends State<DuplicatedItemListWidget>
         );
 
       case DuplicatedListItemType.itemDefinition:
-        return _DefinitionItemWrapper(itemDefinitions[item.hash], item.items);
+        return _DefinitionItemWrapper(
+          itemDefinitions[item.hash], item.items);
 
       case DuplicatedListItemType.itemInstance:
         return _ItemInstanceWrapper(
+          key:Key("item_${item.hash}_${item.item.itemInstanceId}_${item.ownerId}"),
           item: item.item,
           definition: itemDefinitions[item.hash],
           characterId: item.ownerId,

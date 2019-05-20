@@ -6,6 +6,7 @@ import 'package:bungie_api/models/destiny_item_socket_entry_definition.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_stat_group_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/common/destiny_item.stateful_widget.dart';
@@ -64,6 +65,10 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
   }
 
   findDuplicates() {
+    AuthService auth = AuthService();
+    if (!auth.isLogged) {
+      return;
+    }
     List<ItemWithOwner> allItems = [];
     Iterable<String> charIds =
         widget.profile.getCharacters().map((char) => char.characterId);
@@ -135,7 +140,6 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
           .getDefinition<DestinyStatGroupDefinition>(
               definition?.stats?.statGroupHash);
       if (mounted) {
-        print(statGroupDefinition);
         setState(() {});
       }
     }
