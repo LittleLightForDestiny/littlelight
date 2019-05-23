@@ -172,6 +172,8 @@ class ItemListWidgetState extends State<ItemListWidget> {
   StaggeredTile getTileBuilder(int index) {
     ListItem item = listIndex[index];
     switch (item.type) {
+      case ListItem.infoHeader:
+        return StaggeredTile.extent(30, 112);  
       case ListItem.bucketHeader:
         return StaggeredTile.extent(30, 40);
       case ListItem.equippedItem:

@@ -6,9 +6,9 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/widgets/item_list/bucket_header.widget.dart';
-import 'package:little_light/widgets/item_list/character_info.widget.dart';
 import 'package:little_light/widgets/item_list/item_list.widget.dart';
 import 'package:little_light/widgets/item_list/items/inventory_item_wrapper.widget.dart';
+import 'package:little_light/widgets/item_list/vault_info.widget.dart';
 
 class VaultItemListWidget extends ItemListWidget {
   VaultItemListWidget({EdgeInsets padding, List<int> bucketHashes, Key key})
@@ -43,7 +43,7 @@ class VaultItemListWidgetState extends ItemListWidgetState
   }
 
   @override
-  void didChangeMetrics() async{
+  void didChangeMetrics() async {
     await Future.delayed(Duration(milliseconds: 100));
     await buildIndex();
     setState(() {});
@@ -70,6 +70,7 @@ class VaultItemListWidgetState extends ItemListWidgetState
     }
 
     listIndex = [];
+    listIndex.add(new ListItem(ListItem.infoHeader, null));
 
     for (var hash in widget.bucketHashes) {
       List<DestinyItemComponent> unequipped = itemsByBucket[hash];
@@ -139,8 +140,6 @@ class VaultItemListWidgetState extends ItemListWidgetState
     ListItem item = listIndex[index];
     double screenWidth = MediaQuery.of(context).size.width;
     switch (item.type) {
-      case ListItem.bucketHeader:
-        return StaggeredTile.extent(30, 40);
       case ListItem.unequippedItem:
         if (screenWidth > 768) {
           return StaggeredTile.count(3, 3);
@@ -148,12 +147,10 @@ class VaultItemListWidgetState extends ItemListWidgetState
         if (screenWidth > 480) {
           return StaggeredTile.count(5, 5);
         }
-        return StaggeredTile.count(6, 6);
-
-      case ListItem.spacer:
-        return StaggeredTile.count(30, 6);
+        return StaggeredTile.count(6, 6);      
     }
-    return StaggeredTile.extent(30, 96);
+
+    return super.getTileBuilder(index);
   }
 
   Widget getItem(int index) {
@@ -162,14 +159,13 @@ class VaultItemListWidgetState extends ItemListWidgetState
         "${index}_${item.itemComponent?.itemInstanceId ?? item.itemComponent?.itemHash ?? 'empty'}";
     switch (item.type) {
       case ListItem.infoHeader:
-        return CharacterInfoWidget(
-          characterId: widget.characterId,
-        );
+        return VaultInfoWidget();
 
       case ListItem.bucketHeader:
         return BucketHeaderWidget(
           hash: item?.hash,
           itemCount: item.itemCount,
+          isVault: true,
         );
 
       case ListItem.unequippedItem:

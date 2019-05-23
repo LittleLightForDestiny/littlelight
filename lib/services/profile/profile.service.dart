@@ -38,6 +38,7 @@ class ProfileComponentGroups {
     DestinyComponentType.ItemTalentGrids,
     DestinyComponentType.ItemSockets,
   ];
+
   static const List<int> collections = [
     DestinyComponentType.Collectibles,
     DestinyComponentType.PresentationNodes,
@@ -55,6 +56,7 @@ class ProfileComponentGroups {
     DestinyComponentType.CharacterEquipment,
     DestinyComponentType.CharacterInventories,
     DestinyComponentType.ProfileInventories,
+    DestinyComponentType.ProfileCurrencies,
     DestinyComponentType.ItemInstances,
     DestinyComponentType.ItemObjectives,
     DestinyComponentType.ItemTalentGrids,
@@ -365,6 +367,10 @@ class ProfileService {
 
   List<DestinyItemComponent> getProfileInventory() {
     return _profile?.profileInventory?.data?.items ?? [];
+  }
+
+  List<DestinyItemComponent> getProfileCurrencies(){
+    return _profile?.profileCurrencies?.data?.items;
   }
 
   DestinyCharacterProgressionComponent getCharacterProgression(

@@ -3,12 +3,14 @@ import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
+import 'package:little_light/widgets/common/manifest_text.widget.dart';
 
 class BucketHeaderWidget extends StatefulWidget {
   final ManifestService manifest = new ManifestService();
   final int hash;
   final int itemCount;
-  BucketHeaderWidget({this.hash, this.itemCount = 0});
+  final bool isVault;
+  BucketHeaderWidget({this.hash, this.itemCount = 0, this.isVault = false});
   @override
   BucketHeaderWidgetState createState() => new BucketHeaderWidgetState();
 }
@@ -26,7 +28,8 @@ class BucketHeaderWidgetState extends State<BucketHeaderWidget> {
   }
 
   fetchDefinition() async {
-    def = await widget.manifest.getDefinition<DestinyInventoryBucketDefinition>(widget.hash);
+    def = await widget.manifest
+        .getDefinition<DestinyInventoryBucketDefinition>(widget.hash);
     if (mounted) {
       setState(() {});
     }
@@ -37,23 +40,33 @@ class BucketHeaderWidgetState extends State<BucketHeaderWidget> {
     if (def == null) {
       return Container();
     }
-    int bucketSize = def.itemCount;
-    if (widget.hash == InventoryBucket.subclass) {
-      bucketSize = 3;
-    }
-    return HeaderWidget(child:Row(
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
+    return HeaderWidget(
+        child: Row(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
           Text(
             def.displayProperties.name.toUpperCase(),
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900),
           ),
-          Text(
-            "${widget.itemCount}/$bucketSize",
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900),
-          )
+          buildCount(context)
         ]));
+  }
+
+  buildCount(BuildContext context) {
+    int bucketSize = def.itemCount;
+    if (widget.hash == InventoryBucket.subclass) {
+      bucketSize = 3;
+    }
+    if(widget.isVault){
+      return ManifestText<DestinyInventoryBucketDefinition>(InventoryBucket.general, textExtractor: (def){
+        return "${widget.itemCount}/${def.itemCount}";
+      }, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900),);
+    }
+    return Text(
+      "${widget.itemCount}/$bucketSize",
+      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900),
+    );
   }
 }

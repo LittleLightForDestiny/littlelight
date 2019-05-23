@@ -50,7 +50,7 @@ class _CharacterProgressListWidgetState
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: EdgeInsets.only(top:8),
+      // padding: EdgeInsets.only(top:8),
       child: Column(
         children: buildMilestones(context),
       ),
@@ -60,7 +60,8 @@ class _CharacterProgressListWidgetState
   List<Widget> buildMilestones(BuildContext context) {
     List<Widget> widgets = [];
     if(milestoneDefinitions == null) return widgets;
-    widgets.add(Container(height:96, child:CharacterInfoWidget(characterId: widget.characterId)));
+    widgets.add(Container(height:112, child:CharacterInfoWidget(characterId: widget.characterId)));
+    widgets.add(Container(height: 8,));
     var raidMilestones = milestones.values.where((m)=>raidHashes.contains(m.milestoneHash));
     var otherMilestones = milestones.values.where((m){
       return !raidHashes.contains(m.milestoneHash) 

@@ -77,7 +77,7 @@ class _CharacterPursuitsListWidgetState
       addRepaintBoundaries: true,
       itemCount: (pursuits?.length ?? 0) + 1,
       padding: EdgeInsets.all(4).copyWith(top:0),
-      mainAxisSpacing: 4,
+      mainAxisSpacing: 8,
       staggeredTileBuilder: (index){
         return StaggeredTile.fit(1);
       },
@@ -85,7 +85,7 @@ class _CharacterPursuitsListWidgetState
         if (pursuits == null) return Container();
         if (index == 0) {
           return Container(
-            height:96, 
+            height:112, 
             child:CharacterInfoWidget(
             key: Key("characterinfo_${widget.characterId}"),
             characterId: widget.characterId,

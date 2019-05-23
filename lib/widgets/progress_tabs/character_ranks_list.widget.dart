@@ -80,7 +80,7 @@ class _CharacterRanksListWidgetState extends State<CharacterRanksListWidget>
       crossAxisSpacing: 4,
       staggeredTileBuilder: (index) {
         if(index == 0){
-          return StaggeredTile.extent(6, 96);
+          return StaggeredTile.extent(6, 112);
         }
         if(index < 4){
           return StaggeredTile.count(2, 3);

@@ -45,7 +45,7 @@ class CharacterInfoWidget extends StatefulWidget {
   }
 }
 
-class CharacterInfoWidgetState extends State<CharacterInfoWidget> {
+class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
   DestinyClassDefinition classDef;
   DestinyRaceDefinition raceDef;
   DestinyCharacterComponent character;
@@ -89,26 +89,61 @@ class CharacterInfoWidgetState extends State<CharacterInfoWidget> {
     return Stack(children: [
       mainCharacterInfo(context, character),
       characterStatsInfo(context, character),
-      ghostIcon(context),
+      Positioned.fill(child:ghostIcon(context)),
       expInfo(context, character),
+      currencyInfo(context),
       Positioned.fill(
           child: FlatButton(
               child: Container(),
               onPressed: () {
-                showModalBottomSheet(
-                    context: context,
-                    builder: (context) {
-                      return CharacterOptionsSheet(
-                        character: character,
-                      );
-                    });
+                showOptionsSheet(context);
               }))
     ]);
   }
 
+  showOptionsSheet(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return CharacterOptionsSheet(
+            character: character,
+          );
+        });
+  }
+
+  Widget currencyInfo(BuildContext context) {
+    var currencies = widget.profile.getProfileCurrencies();
+    if (currencies == null) {
+      return Container();
+    }
+    return Positioned(
+        left: 8,
+        bottom: 0,
+        right: 8,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: currencies.map((c) => buildCurrency(context, c)).toList(),
+        ));
+  }
+
+  Widget buildCurrency(BuildContext context, DestinyItemComponent currency) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        Container(
+            width: 16,
+            height: 16,
+            child: ManifestImageWidget<DestinyInventoryItemDefinition>(
+                currency.itemHash),),
+        Text("${currency.quantity}", style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),)
+      ],
+    );
+  }
+
   Widget ghostIcon(BuildContext context) {
-    return Positioned.fill(
-        child: Container(
+    return Container(
             width: 50,
             height: 50,
             child: Shimmer.fromColors(
@@ -116,16 +151,17 @@ class CharacterInfoWidgetState extends State<CharacterInfoWidget> {
                 highlightColor: Colors.grey.shade100,
                 period: Duration(seconds: 5),
                 child: Icon(DestinyIcons.ghost,
-                    size: 50, color: Colors.grey.shade300))));
+                    size: 50, color: Colors.grey.shade300)));
   }
 
   Widget characterStatsInfo(
       BuildContext context, DestinyCharacterComponent character) {
     return Positioned(
         right: 8,
-        top: 24,
-        bottom: 8,
+        top: 0,
+        bottom: 0,
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.end,
           children: <Widget>[
             Row(
@@ -162,22 +198,26 @@ class CharacterInfoWidgetState extends State<CharacterInfoWidget> {
     if (classDef == null || raceDef == null) {
       return Container();
     }
-    String genderType = character.genderType == 0 ? "Male" : "Female";
     return Positioned(
-        top: 24,
+        top: 0,
         left: 8,
-        bottom: 16,
+        bottom: 0,
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text(classDef.genderedClassNames[genderType].toUpperCase(),
-                style: TextStyle(fontWeight: FontWeight.w900, fontSize: 20)),
             Text(
-              raceDef.genderedRaceNames[genderType],
+                classDef
+                    .genderedClassNamesByGenderHash["${character.genderHash}"]
+                    .toUpperCase(),
+                style: TextStyle(fontWeight: FontWeight.w900, fontSize: 20)),
+            Container(height: 2),
+            Text(
+              raceDef.genderedRaceNamesByGenderHash["${character.genderHash}"],
               style: TextStyle(fontWeight: FontWeight.w300, fontSize: 12),
             ),
+            Container(height: 2),
             characterStats(context, character)
           ],
         ));
@@ -244,14 +284,16 @@ class CharacterInfoWidgetState extends State<CharacterInfoWidget> {
 
   bool get isWellRested =>
       character.levelProgression.level >= character.levelProgression.levelCap &&
-      legendProgression.level > 3 && legendProgression.weeklyProgress < wellRestedTotal;
-  
+      legendProgression.level > 3 &&
+      legendProgression.weeklyProgress < wellRestedTotal;
+
   int get wellRestedTotal {
-    if(legendProgressionDefinition == null){
+    if (legendProgressionDefinition == null) {
       return 0;
     }
-    return [0, 1, 2].fold<int>(0, (total, levelOffset){
-      var step = math.min(math.max(legendProgression.level - levelOffset, 0), legendProgressionDefinition.steps.length - 1);
+    return [0, 1, 2].fold<int>(0, (total, levelOffset) {
+      var step = math.min(math.max(legendProgression.level - levelOffset, 0),
+          legendProgressionDefinition.steps.length - 1);
       return total + legendProgressionDefinition.steps[step].progressTotal;
     });
   }
