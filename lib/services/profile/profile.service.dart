@@ -98,6 +98,9 @@ class ProfileService {
     this._lastLoadedFrom = LastLoadedFrom.server;
     _broadcaster.push(NotificationEvent(NotificationType.receivedUpdate));
     this._cacheProfile(_profile);
+    if(_timer?.isActive ?? false){
+      startAutomaticUpdater();     
+    }
     return res;
   }
 

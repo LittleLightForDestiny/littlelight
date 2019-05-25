@@ -2,7 +2,7 @@ import 'package:bungie_api/models/destiny_item_category_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
-import 'package:tinycolor/tinycolor.dart';
+import 'package:little_light/widgets/common/refresh_button.widget.dart';
 
 typedef void OnSelect(categoryHash);
 
@@ -25,15 +25,23 @@ class ItemTypeMenuWidget extends StatelessWidget {
         height: kBottomNavigationBarHeight + paddingBottom,
         child: Container(
             padding: EdgeInsets.only(bottom: paddingBottom),
-            color: TinyColor(Colors.blueGrey.shade900)
-                .darken(10)
-                .color
-                .withOpacity(.9),
-            child: TabBar(
-              indicator: BoxDecoration(border: Border(top:BorderSide(width: 2, color:Colors.white))),
-              controller: controller,
-              tabs: getButtons(),
-            )));
+            color: Colors.black,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+              Expanded(child:TabBar(
+                indicator: BoxDecoration(
+                    border:
+                        Border(top: BorderSide(width: 2, color: Colors.white))),
+                controller: controller,
+                labelPadding: EdgeInsets.all(0),
+                tabs: getButtons(),
+              )),
+              Container(
+                width:40,
+                child:RefreshButtonWidget()
+              )
+            ])));
   }
 
   List<Widget> getButtons() {
@@ -52,6 +60,7 @@ class ItemTypeMenuButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ManifestText<DestinyItemCategoryDefinition>(categoryHash,
-        style: TextStyle(fontWeight: FontWeight.w700));
+    uppercase: true,
+        style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13));
   }
 }

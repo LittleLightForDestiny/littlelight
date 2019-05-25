@@ -1,3 +1,4 @@
+import 'package:bungie_api/enums/destiny_class_enum.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
@@ -25,74 +26,76 @@ class ManagementBlockWidget extends DestinyItemWidget {
 
   @override
   Widget build(BuildContext context) {
-    if(item == null){
+    if (item == null) {
       return Container();
     }
     return Container(
         child: Wrap(
-          direction: Axis.horizontal,
+      direction: Axis.horizontal,
+      children: <Widget>[
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                transferDestinations.length > 0
-                    ? Expanded(
-                        flex: 3,
-                        child: buildEquippingBlock(context, "Transfer", transferDestinations,
-                            Alignment.centerLeft))
-                    : null,
-                pullDestinations.length > 0
-                    ? buildEquippingBlock(context, "Pull", pullDestinations)
-                    : null
-              ].where((value) => value != null).toList(),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                unequipDestinations.length > 0
-                    ? buildEquippingBlock(
-                        context, "Unequip", unequipDestinations, Alignment.centerLeft)
-                    : null,
-                equipDestinations.length > 0
-                    ? Expanded(
-                        child: buildEquippingBlock(
-                            context,
-                            "Equip",
-                            equipDestinations,
-                            unequipDestinations.length > 0
-                                ? Alignment.centerRight
-                                : Alignment.centerLeft))
-                    : null
-              ].where((value) => value != null).toList(),
-            ),
-          ],
-        ));
+            transferDestinations.length > 0
+                ? Expanded(
+                    flex: 3,
+                    child: buildEquippingBlock(context, "Transfer",
+                        transferDestinations, Alignment.centerLeft))
+                : null,
+            pullDestinations.length > 0
+                ? buildEquippingBlock(context, "Pull", pullDestinations)
+                : null
+          ].where((value) => value != null).toList(),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            unequipDestinations.length > 0
+                ? buildEquippingBlock(context, "Unequip", unequipDestinations,
+                    Alignment.centerLeft)
+                : null,
+            equipDestinations.length > 0
+                ? Expanded(
+                    child: buildEquippingBlock(
+                        context,
+                        "Equip",
+                        equipDestinations,
+                        unequipDestinations.length > 0
+                            ? Alignment.centerRight
+                            : Alignment.centerLeft))
+                : null
+          ].where((value) => value != null).toList(),
+        ),
+      ],
+    ));
   }
 
   Widget buildEquippingBlock(BuildContext context, String title,
       List<TransferDestination> destinations,
       [Alignment align = Alignment.centerRight]) {
-        return Column(
-          crossAxisAlignment: align == Alignment.centerRight ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-          children: <Widget>[
+    return Column(
+        crossAxisAlignment: align == Alignment.centerRight
+            ? CrossAxisAlignment.end
+            : CrossAxisAlignment.start,
+        children: <Widget>[
           buildLabel(context, title, align),
           buttons(context, destinations, align)
         ]);
-      }
+  }
 
-  Widget buildLabel(BuildContext context, String title, [Alignment align = Alignment.centerRight]) {
+  Widget buildLabel(BuildContext context, String title,
+      [Alignment align = Alignment.centerRight]) {
     return Container(
-      padding:EdgeInsets.symmetric(horizontal: 8),
-      child:HeaderWidget(
-      child: Container(
-        alignment: align,
-        child:TranslatedTextWidget(
-        title,
-        uppercase: true,
-        style: TextStyle(
-          fontWeight: FontWeight.bold),
-      )),
-    ));
+        padding: EdgeInsets.symmetric(horizontal: 8),
+        child: HeaderWidget(
+          child: Container(
+              alignment: align,
+              child: TranslatedTextWidget(
+                title,
+                uppercase: true,
+                style: TextStyle(fontWeight: FontWeight.bold),
+              )),
+        ));
   }
 
   Widget buttons(BuildContext context, List<TransferDestination> destinations,
@@ -104,11 +107,11 @@ class ManagementBlockWidget extends DestinyItemWidget {
             spacing: 8,
             children: destinations
                 .map((destination) => EquipOnCharacterButton(
-                  characterId: destination.characterId,
-                  type: destination.type,
-                  onTap:(){
-                    transferTap(destination, context);
-                  }))
+                    characterId: destination.characterId,
+                    type: destination.type,
+                    onTap: () {
+                      transferTap(destination, context);
+                    }))
                 .toList()));
   }
 
@@ -152,7 +155,9 @@ class ManagementBlockWidget extends DestinyItemWidget {
         .getCharacters(CharacterOrder.lastPlayed)
         .where((char) =>
             !(instanceInfo.isEquipped && char.characterId == characterId) &&
-            !(definition.nonTransferrable && char.characterId != characterId))
+            !(definition.nonTransferrable && char.characterId != characterId) &&
+            [DestinyClass.Unknown, char.classType]
+                .contains(definition.classType))
         .map((char) => TransferDestination(ItemDestination.Character,
             characterId: char.characterId, action: InventoryAction.Equip))
         .toList();
@@ -190,10 +195,10 @@ class ManagementBlockWidget extends DestinyItemWidget {
         !definition.doesPostmasterPullHaveSideEffects) {
       ItemDestination type;
       if (ProfileService.profileBuckets
-        .contains(definition.inventory.bucketTypeHash)) {
-          type =ItemDestination.Inventory;
-      }else{
-        type =ItemDestination.Character;
+          .contains(definition.inventory.bucketTypeHash)) {
+        type = ItemDestination.Inventory;
+      } else {
+        type = ItemDestination.Character;
       }
       return [
         TransferDestination(type,

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/selected_page_persistence.dart';
+import 'package:little_light/widgets/common/refresh_button.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/flutter/passive_tab_bar_view.dart';
 import 'package:little_light/widgets/inventory_tabs/character_tab_header.widget.dart';
@@ -163,22 +164,30 @@ class ProgressScreenState extends State<ProgressScreen>
         color: Colors.black,
         height: kToolbarHeight + bottomPadding,
         padding: EdgeInsets.only(bottom: bottomPadding),
-        child: TabBar(
-            labelPadding: EdgeInsets.all(8),
-            indicator: BoxDecoration(
-                border: Border(top: BorderSide(width: 2, color: Colors.white))),
-            controller: typeTabController,
-            tabs: [
-              TranslatedTextWidget("Milestones",
-                  uppercase: true,
-                  style: TextStyle(fontWeight: FontWeight.bold)),
-              TranslatedTextWidget("Pursuits",
-                  uppercase: true,
-                  style: TextStyle(fontWeight: FontWeight.bold)),
-              TranslatedTextWidget("Ranks",
-                  uppercase: true,
-                  style: TextStyle(fontWeight: FontWeight.bold))
-            ]));
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+          Expanded(
+              child: TabBar(
+                  labelPadding: EdgeInsets.all(4),
+                  indicator: BoxDecoration(
+                      border: Border(
+                          top: BorderSide(width: 2, color: Colors.white))),
+                  controller: typeTabController,
+                  tabs: [
+                TranslatedTextWidget("Milestones",
+                    uppercase: true,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                TranslatedTextWidget("Pursuits",
+                    uppercase: true,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                TranslatedTextWidget("Ranks",
+                    uppercase: true,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13))
+              ])),
+              Container(width:40,
+              child:RefreshButtonWidget())
+        ]));
   }
 
   Widget buildContentTab(
@@ -186,8 +195,8 @@ class ProgressScreenState extends State<ProgressScreen>
     if (tabIndex == 0) {
       return CharacterProgressListWidget(characterId: characterId);
     }
-    if(tabIndex == 1){
-      return CharacterPursuitsListWidget(characterId: characterId);  
+    if (tabIndex == 1) {
+      return CharacterPursuitsListWidget(characterId: characterId);
     }
     return CharacterRanksListWidget(characterId: characterId);
   }

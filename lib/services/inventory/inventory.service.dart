@@ -109,7 +109,7 @@ class InventoryService {
   transferMultiple(List<ItemInventoryState> itemStates,
       ItemDestination destination, String destinationCharacterId,
       [equip = false]) async {
-        
+    profile.pauseAutomaticUpdater = true;
     List<String> idsToAvoid = itemStates
         .where((i) => i.item.itemInstanceId != null)
         .map((i) => i.item.itemInstanceId)
@@ -138,11 +138,13 @@ class InventoryService {
       }
     }
     await Future.delayed(Duration(milliseconds: 100));
+    profile.pauseAutomaticUpdater = false;
     await profile.fetchProfileData();
   }
 
   transferLoadout(Loadout loadout,
       [String characterId, bool andEquip = false]) async {
+    profile.pauseAutomaticUpdater = true;
     List<String> equippedIds =
         loadout.equipped.map((item) => item.itemInstanceId).toList();
     List<String> unequippedIds =
@@ -226,6 +228,7 @@ class InventoryService {
     _debugInventory("loadout transfer completed");
 
     await Future.delayed(Duration(milliseconds: 500));
+    profile.pauseAutomaticUpdater = false;
     await profile.fetchProfileData();
   }
 

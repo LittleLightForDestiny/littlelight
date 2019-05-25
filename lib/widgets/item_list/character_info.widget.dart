@@ -2,12 +2,8 @@ import 'dart:async';
 
 import 'dart:math' as math;
 
-import 'package:bungie_api/enums/destiny_class_enum.dart';
-import 'package:bungie_api/enums/destiny_item_type_enum.dart';
-import 'package:bungie_api/enums/tier_type_enum.dart';
 import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:bungie_api/models/destiny_class_definition.dart';
-import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_progression.dart';
@@ -16,19 +12,14 @@ import 'package:bungie_api/models/destiny_race_definition.dart';
 import 'package:bungie_api/models/destiny_sandbox_perk_definition.dart';
 import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/screens/edit_loadout.screen.dart';
-import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/services/inventory/inventory.service.dart';
-import 'package:little_light/services/littlelight/littlelight.service.dart';
-import 'package:little_light/services/littlelight/models/loadout.model.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
-import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/icon_fonts/destiny_icons_icons.dart';
+import 'package:little_light/widgets/option_sheets/character_options_sheet.widget.dart';
 import 'package:shimmer/shimmer.dart';
 
 class CharacterInfoWidget extends StatefulWidget {
@@ -89,7 +80,7 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
     return Stack(children: [
       mainCharacterInfo(context, character),
       characterStatsInfo(context, character),
-      Positioned.fill(child:ghostIcon(context)),
+      Positioned.fill(child: ghostIcon(context)),
       expInfo(context, character),
       currencyInfo(context),
       Positioned.fill(
@@ -133,25 +124,29 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         Container(
-            width: 16,
-            height: 16,
-            child: ManifestImageWidget<DestinyInventoryItemDefinition>(
-                currency.itemHash),),
-        Text("${currency.quantity}", style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),)
+          width: 16,
+          height: 16,
+          child: ManifestImageWidget<DestinyInventoryItemDefinition>(
+              currency.itemHash),
+        ),
+        Text(
+          "${currency.quantity}",
+          style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+        )
       ],
     );
   }
 
   Widget ghostIcon(BuildContext context) {
     return Container(
-            width: 50,
-            height: 50,
-            child: Shimmer.fromColors(
-                baseColor: Colors.grey.shade400,
-                highlightColor: Colors.grey.shade100,
-                period: Duration(seconds: 5),
-                child: Icon(DestinyIcons.ghost,
-                    size: 50, color: Colors.grey.shade300)));
+        width: 50,
+        height: 50,
+        child: Shimmer.fromColors(
+            baseColor: Colors.grey.shade400,
+            highlightColor: Colors.grey.shade100,
+            period: Duration(seconds: 5),
+            child: Icon(DestinyIcons.ghost,
+                size: 50, color: Colors.grey.shade300)));
   }
 
   Widget characterStatsInfo(
@@ -296,378 +291,5 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
           legendProgressionDefinition.steps.length - 1);
       return total + legendProgressionDefinition.steps[step].progressTotal;
     });
-  }
-}
-
-class CharacterOptionsSheet extends StatefulWidget {
-  final DestinyCharacterComponent character;
-  final ProfileService profile = ProfileService();
-  final ManifestService manifest = ManifestService();
-
-  CharacterOptionsSheet({Key key, this.character}) : super(key: key);
-
-  @override
-  State<StatefulWidget> createState() {
-    return CharacterOptionsSheetState();
-  }
-}
-
-class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
-  LoadoutItemIndex maxLightLoadout;
-  double maxLight;
-  List<Loadout> loadouts;
-  List<DestinyItemComponent> itemsInPostmaster;
-
-  @override
-  void initState() {
-    super.initState();
-    getItemsInPostmaster();
-    getMaxLightLoadout();
-    getLoadouts();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        padding: EdgeInsets.all(8),
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              RaisedButton(
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      TranslatedTextWidget("Equip Max Light"),
-                      maxLight == null
-                          ? Container(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator())
-                          : Text(
-                              "${maxLight?.toStringAsFixed(1) ?? ""}",
-                              style: TextStyle(color: Colors.amber.shade300),
-                            )
-                    ]),
-                onPressed: maxLight == null
-                    ? null
-                    : () {
-                        Navigator.of(context).pop();
-                        InventoryService().transferLoadout(
-                            maxLightLoadout.loadout,
-                            widget.character.characterId,
-                            true);
-                      },
-              ),
-              RaisedButton(
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      TranslatedTextWidget("Create Loadout"),
-                      TranslatedTextWidget("Equipped")
-                    ]),
-                onPressed: () async {
-                  var itemIndex = await createLoadout();
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      builder: (context) => EditLoadoutScreen(
-                            loadout: itemIndex.loadout,
-                            forceCreate: true,
-                          )));
-                },
-              ),
-              RaisedButton(
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      TranslatedTextWidget("Create Loadout"),
-                      TranslatedTextWidget("All")
-                    ]),
-                onPressed: () async {
-                  var itemIndex = await createLoadout(true);
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      builder: (context) => EditLoadoutScreen(
-                            loadout: itemIndex.loadout,
-                            forceCreate: true,
-                          )));
-                },
-              ),
-              (loadouts?.length ?? 0) > 0
-                  ? RaisedButton(
-                      child: TranslatedTextWidget("Equip Loadout"),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        showModalBottomSheet(
-                            context: context, builder: buildLoadoutListModal);
-                      },
-                    )
-                  : Container(),
-              (itemsInPostmaster?.length ?? 0) > 0
-                  ? RaisedButton(
-                      child: TranslatedTextWidget(
-                          "Pull everything from postmaster"),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        InventoryService().transferMultiple(
-                            itemsInPostmaster
-                                .map((i) => ItemInventoryState(
-                                    widget.character.characterId, i))
-                                .toList(),
-                            ItemDestination.Character,
-                            widget.character.characterId);
-                      },
-                    )
-                  : Container(),
-              RaisedButton(
-                child: TranslatedTextWidget("Force refresh"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  widget.profile.fetchProfileData();
-                },
-              )
-            ]));
-  }
-
-  Widget buildLoadoutListModal(BuildContext context) {
-    return SingleChildScrollView(
-        child: Container(
-            padding: EdgeInsets.symmetric(vertical: 4),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisSize: MainAxisSize.min,
-              children: loadouts
-                  .map(
-                    (loadout) => Container(
-                        color: Theme.of(context).buttonColor,
-                        margin:
-                            EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        child: Stack(children: [
-                          Positioned.fill(
-                              child: loadout.emblemHash != null
-                                  ? ManifestImageWidget<
-                                      DestinyInventoryItemDefinition>(
-                                      loadout.emblemHash,
-                                      fit: BoxFit.cover,
-                                      urlExtractor: (def) {
-                                        return def?.secondarySpecial;
-                                      },
-                                    )
-                                  : Container()),
-                          Container(
-                              padding: EdgeInsets.all(16),
-                              child: Text(
-                                loadout.name.toUpperCase(),
-                                maxLines: 1,
-                                overflow: TextOverflow.fade,
-                                softWrap: false,
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              )),
-                          Positioned.fill(
-                              child: Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              onTap: () {
-                                Navigator.of(context).pop();
-                                InventoryService().transferLoadout(loadout,
-                                    widget.character.characterId, true);
-                              },
-                            ),
-                          ))
-                        ])),
-                  )
-                  .toList(),
-            )));
-  }
-
-  Future<LoadoutItemIndex> createLoadout([includeUnequipped = false]) async {
-    var itemIndex = new LoadoutItemIndex();
-    var slots = LoadoutItemIndex.classBucketHashes +
-        LoadoutItemIndex.genericBucketHashes;
-    var equipment =
-        widget.profile.getCharacterEquipment(widget.character.characterId);
-    var equipped = equipment.where((i) => slots.contains(i.bucketHash));
-    for (var item in equipped) {
-      var def = await widget.manifest
-          .getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
-      itemIndex.addEquippedItem(item, def);
-    }
-    if (!includeUnequipped) return itemIndex;
-    var inventory =
-        widget.profile.getCharacterInventory(widget.character.characterId);
-    var unequipped = inventory.where((i) => slots.contains(i.bucketHash));
-    for (var item in unequipped) {
-      var def = await widget.manifest
-          .getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
-      itemIndex.addUnequippedItem(item, def);
-    }
-    return itemIndex;
-  }
-
-  getMaxLightLoadout() async {
-    var allItems = widget.profile.getAllItems();
-    var instancedItems =
-        allItems.where((i) => i.itemInstanceId != null).toList();
-    instancedItems.sort((itemA, itemB) =>
-        InventoryUtils.sortDestinyItems(itemA, itemB, widget.profile));
-    LoadoutItemIndex maxLightLoadout = new LoadoutItemIndex();
-    LoadoutItemIndex exoticPieces = new LoadoutItemIndex();
-    var hashes = instancedItems.map((i) => i.itemHash);
-    var defs = await widget.manifest
-        .getDefinitions<DestinyInventoryItemDefinition>(hashes);
-    for (var item in instancedItems) {
-      var def = defs[item.itemHash];
-      if (def.classType != widget.character.classType &&
-          def.classType != DestinyClass.Unknown) {
-        continue;
-      }
-      if (![DestinyItemType.Weapon, DestinyItemType.Armor]
-          .contains(def.itemType)) {
-        continue;
-      }
-      if (def.inventory.tierType == TierType.Exotic) {
-        if (exoticPieces.haveEquippedItem(def)) {
-          continue;
-        }
-        exoticPieces.addEquippedItem(item, def);
-      } else {
-        if (maxLightLoadout.haveEquippedItem(def)) {
-          continue;
-        }
-        maxLightLoadout.addEquippedItem(item, def);
-      }
-    }
-    var exoticWeapon =
-        getHighestLightExoticWeapon(maxLightLoadout, exoticPieces);
-    var exoticArmor = getHighestLightExoticArmor(maxLightLoadout, exoticPieces);
-
-    if (exoticWeapon != null) {
-      var def = await widget.manifest
-          .getDefinition<DestinyInventoryItemDefinition>(exoticWeapon.itemHash);
-      maxLightLoadout.addEquippedItem(exoticWeapon, def);
-    }
-
-    if (exoticArmor != null) {
-      var def = await widget.manifest
-          .getDefinition<DestinyInventoryItemDefinition>(exoticArmor.itemHash);
-      maxLightLoadout.addEquippedItem(exoticArmor, def);
-    }
-    int totalLight = 0;
-    for (var weapon in maxLightLoadout.generic.values) {
-      if (weapon == null) continue;
-      var instance = widget.profile.getInstanceInfo(weapon.itemInstanceId);
-      totalLight += instance?.primaryStat?.value ?? 0;
-    }
-    for (var armorItems in maxLightLoadout.classSpecific.values) {
-      var armor = armorItems[widget.character.classType];
-      if (armor == null) continue;
-      var instance = widget.profile.getInstanceInfo(armor.itemInstanceId);
-      totalLight += instance?.primaryStat?.value ?? 0;
-    }
-    this.maxLightLoadout = maxLightLoadout;
-    this.maxLight = totalLight / 8;
-    if (mounted) {
-      setState(() {});
-    }
-  }
-
-  DestinyItemComponent getHighestLightExoticWeapon(
-      LoadoutItemIndex nonExotic, LoadoutItemIndex exotic) {
-    int lightDifference = 0;
-    DestinyItemComponent exoticToReplace;
-    for (var bucketHash in exotic.generic.keys) {
-      var exoticWeapon = exotic.generic[bucketHash];
-      var nonExoticWeapon = nonExotic.generic[bucketHash];
-      var exoticInstance =
-          widget.profile.getInstanceInfo(exoticWeapon?.itemInstanceId);
-      var nonExoticInstance =
-          widget.profile.getInstanceInfo(nonExoticWeapon?.itemInstanceId);
-      var exoticPower = exoticInstance?.primaryStat?.value ?? 0;
-      var nonExoticPower = nonExoticInstance?.primaryStat?.value ?? 0;
-      var diff = exoticPower - nonExoticPower;
-      if (diff > lightDifference) {
-        exoticToReplace = exotic.generic[bucketHash];
-        lightDifference = diff;
-      }
-    }
-    return exoticToReplace;
-  }
-
-  DestinyItemComponent getHighestLightExoticArmor(
-      LoadoutItemIndex nonExotic, LoadoutItemIndex exotic) {
-    int lightDifference = 0;
-    DestinyItemComponent exoticToReplace;
-    for (var bucketHash in exotic.classSpecific.keys) {
-      var exoticArmor =
-          exotic.classSpecific[bucketHash][widget.character.classType];
-      var nonExoticArmor =
-          nonExotic.classSpecific[bucketHash][widget.character.classType];
-      var exoticInstance =
-          widget.profile.getInstanceInfo(exoticArmor?.itemInstanceId);
-      var nonExoticInstance =
-          widget.profile.getInstanceInfo(nonExoticArmor?.itemInstanceId);
-      var exoticPower = exoticInstance?.primaryStat?.value ?? 0;
-      var nonExoticPower = nonExoticInstance?.primaryStat?.value ?? 0;
-      var diff = exoticPower - nonExoticPower;
-      if (diff > lightDifference) {
-        exoticToReplace =
-            exotic.classSpecific[bucketHash][widget.character.classType];
-        lightDifference = diff;
-      }
-    }
-    return exoticToReplace;
-  }
-
-  bool isLoadoutComplete(LoadoutItemIndex index) {
-    return false;
-  }
-
-  debugLoadout(LoadoutItemIndex loadout) async {
-    var isInDebug = false;
-    assert(isInDebug = true);
-    if (!isInDebug) return;
-    for (var item in loadout.generic.values) {
-      if (item == null) continue;
-      var def = await widget.manifest
-          .getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
-      var bucket = await widget.manifest
-          .getDefinition<DestinyInventoryBucketDefinition>(
-              def.inventory.bucketTypeHash);
-      var instance = widget.profile.getInstanceInfo(item.itemInstanceId);
-      print("---------------------------------------------------------------");
-      print(bucket.displayProperties.name);
-      print("---------------------------------------------------------------");
-      print("${def.displayProperties.name} ${instance?.primaryStat?.value}");
-      print("---------------------------------------------------------------");
-    }
-    for (var items in loadout.classSpecific.values) {
-      var item = items[widget.character.classType];
-      if (item == null) continue;
-      var def = await widget.manifest
-          .getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
-      var bucket = await widget.manifest
-          .getDefinition<DestinyInventoryBucketDefinition>(
-              def.inventory.bucketTypeHash);
-      var instance = widget.profile.getInstanceInfo(item.itemInstanceId);
-      print("---------------------------------------------------------------");
-      print(bucket.displayProperties.name);
-      print("---------------------------------------------------------------");
-      print("${def.displayProperties.name} ${instance?.primaryStat?.value}");
-      print("---------------------------------------------------------------");
-    }
-  }
-
-  void getLoadouts() async {
-    var littlelight = LittleLightService();
-    this.loadouts = await littlelight.getLoadouts();
-    if (mounted) {
-      setState(() {});
-    }
-  }
-
-  void getItemsInPostmaster() {
-    var all =
-        widget.profile.getCharacterInventory(widget.character.characterId);
-    var inPostmaster =
-        all.where((i) => i.bucketHash == InventoryBucket.lostItems).toList();
-    itemsInPostmaster = inPostmaster;
   }
 }
