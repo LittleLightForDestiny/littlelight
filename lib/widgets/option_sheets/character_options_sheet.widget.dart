@@ -79,7 +79,8 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
+    return Material(
+      child:SingleChildScrollView(
         padding: EdgeInsets.all(8),
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -90,7 +91,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
               buildCreateLoadoutBlock(),
               Container(height: 8,),
               buildPullFromPostmaster(),
-            ]));
+            ])));
   }
 
   Widget buildEquipBlock() {

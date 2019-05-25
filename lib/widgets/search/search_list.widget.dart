@@ -121,11 +121,12 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
       );
     }
     double screenWidth = MediaQuery.of(context).size.width;
+    var _filteredItems = filteredItems;
     return StaggeredGridView.countBuilder(
       padding: EdgeInsets.all(4),
       crossAxisCount: screenWidth > 480 ? 12 : 6,
-      itemCount: filteredItems?.length ?? 0,
-      itemBuilder: (BuildContext context, int index) => getItem(context, index),
+      itemCount: _filteredItems?.length ?? 0,
+      itemBuilder: (BuildContext context, int index) => getItem(context, index, _filteredItems),
       staggeredTileBuilder: (int index) => getTileBuilder(context, index),
       mainAxisSpacing: 2,
       crossAxisSpacing: 2,
@@ -152,7 +153,9 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
   List<int> get itemTypes => widget.tabData.itemTypes;
   List<int> get excludeItemTypes => widget.tabData.excludeItemTypes;
 
-  List<ItemWithOwner> get filteredItems {
+  List<ItemWithOwner> get filteredItems => filterItems();
+
+  List<ItemWithOwner> filterItems([List<ItemWithOwner> itemsToFilter]) {
     if (itemDefinitions == null) return [];
     Set<int> perksMatched = new Set();
     if(perkDefinitions == null) return [];
@@ -295,10 +298,10 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
     return StaggeredTile.extent(6, 96);
   }
 
-  Widget getItem(BuildContext context, int index) {
-    if(filteredItems == null) return null;
-    if(index > filteredItems.length - 1) return null;
-    var item = filteredItems[index];
+  Widget getItem(BuildContext context, int index, _items) {
+    if(_items == null) return null;
+    if(index > _items.length - 1) return null;
+    var item = _items[index];
     if (itemDefinitions == null || itemDefinitions[item.item.itemHash] == null)
       return Container();
     return SearchItemWrapperWidget(item.item,

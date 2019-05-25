@@ -20,6 +20,7 @@ import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
 import 'package:little_light/widgets/item_list/character_info.widget.dart';
+import 'package:little_light/widgets/option_sheets/loadout_select_sheet.widget.dart';
 
 class VaultInfoWidget extends CharacterInfoWidget {
   final ManifestService manifest = new ManifestService();
@@ -48,8 +49,8 @@ class VaultInfoWidgetState extends CharacterInfoWidgetState<VaultInfoWidget> {
     return Stack(children: [
       mainCharacterInfo(context, character),
       Positioned.fill(
-        bottom:16,
-        child:ghostIcon(context),
+        bottom: 16,
+        child: ghostIcon(context),
       ),
       currencyInfo(context),
       characterStatsInfo(context, null),
@@ -88,8 +89,9 @@ class VaultInfoWidgetState extends CharacterInfoWidgetState<VaultInfoWidget> {
       bottom: 16,
       child: Container(
           alignment: Alignment.centerRight,
-          child: ManifestText<DestinyInventoryBucketDefinition>(InventoryBucket.general,
-            textExtractor: (def)=>"$itemCount/${def.itemCount}",
+          child: ManifestText<DestinyInventoryBucketDefinition>(
+              InventoryBucket.general,
+              textExtractor: (def) => "$itemCount/${def.itemCount}",
               key: Key("$itemCount"),
               style: TextStyle(fontWeight: FontWeight.w900, fontSize: 20))),
     );
@@ -117,6 +119,9 @@ class VaultOptionsSheet extends StatefulWidget {
 }
 
 class VaultOptionsSheetState extends State<VaultOptionsSheet> {
+  final TextStyle buttonStyle =
+      TextStyle(fontWeight: FontWeight.bold, fontSize: 12);
+
   List<Loadout> loadouts;
   List<DestinyItemComponent> itemsInPostmaster;
 
@@ -135,34 +140,68 @@ class VaultOptionsSheetState extends State<VaultOptionsSheet> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisSize: MainAxisSize.min,
             children: [
-              (loadouts?.length ?? 0) > 0
-                  ? RaisedButton(
-                      child: TranslatedTextWidget("Transfer Loadout"),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        showModalBottomSheet(
-                            context: context, builder: buildLoadoutListModal);
-                      },
-                    )
-                  : Container(),
-              (itemsInPostmaster?.length ?? 0) > 0
-                  ? RaisedButton(
-                      child: TranslatedTextWidget(
-                          "Pull everything from postmaster"),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        transferEverythingFromPostmaster();
-                      },
-                    )
-                  : Container(),
-              RaisedButton(
-                child: TranslatedTextWidget("Force refresh"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  widget.profile.fetchProfileData();
-                },
-              )
+              buildTransferLoadout(),
+              Container(height:4),
+              buildPullFromPostmaster()
             ]));
+  }
+
+  Widget buildTransferLoadout() {
+    if ((loadouts?.length ?? 0) <= 0) return Container();
+    return buildActionButton(
+      TranslatedTextWidget(
+        "Transfer Loadout",
+        style: buttonStyle,
+        uppercase: true,
+        textAlign: TextAlign.center,
+      ),
+      onTap: () {
+        Navigator.of(context).pop();
+        showModalBottomSheet(
+                    context: context,
+                    builder: (context) => LoadoutSelectSheet(
+                        loadouts: loadouts,
+                        onSelect: (loadout) => InventoryService()
+                            .transferLoadout(
+                                loadout)));
+      },
+    );
+  }
+
+  Widget buildPullFromPostmaster() {
+    if ((itemsInPostmaster?.length ?? 0) <= 0) return Container();
+    return buildActionButton(
+      TranslatedTextWidget(
+        "Pull everything from postmaster",
+        style: buttonStyle,
+        uppercase: true,
+        textAlign: TextAlign.center,
+      ),
+      onTap: () {
+        Navigator.of(context).pop();
+        transferEverythingFromPostmaster();
+      },
+    );
+  }
+
+  Widget buildActionButton(Widget content, {Function onTap}) {
+    return Stack(
+      fit: StackFit.loose,
+      alignment: Alignment.center,
+      children: <Widget>[
+        Positioned.fill(
+            child: Material(
+          color: Colors.blueGrey.shade500,
+        )),
+        Container(padding: EdgeInsets.all(8), child: content),
+        Positioned.fill(
+            child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: onTap,
+                )))
+      ],
+    );
   }
 
   transferEverythingFromPostmaster() async {

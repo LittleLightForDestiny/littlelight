@@ -137,14 +137,14 @@ class SearchFiltersWidgetState extends State<SearchFiltersWidget> {
                 child: Stack(alignment: Alignment.center, children: [
                   Positioned(
                       left: 0,
-                      width: 50,
+                      width: 40,
                       child: Text(
                         "${lower.toInt()}",
-                        textAlign: TextAlign.center,
+                        textAlign: TextAlign.right,
                       )),
                   Positioned.fill(
-                      left: 20,
-                      right: 20,
+                      left: 40,
+                      right: 40,
                       child: RangeSlider(
                         touchRadiusExpansionRatio: 6,
                         min: min,
@@ -162,10 +162,10 @@ class SearchFiltersWidgetState extends State<SearchFiltersWidget> {
                       )),
                   Positioned(
                       right: 0,
-                      width: 50,
+                      width: 40,
                       child: Text(
                         "${upper.toInt()}",
-                        textAlign: TextAlign.center,
+                        textAlign: TextAlign.left,
                       )),
                 ]))
           ],

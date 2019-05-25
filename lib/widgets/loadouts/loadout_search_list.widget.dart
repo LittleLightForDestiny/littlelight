@@ -64,10 +64,10 @@ class LoadoutSearchListWidgetState
   }
 
   @override
-  Widget getItem(BuildContext context, int index) {
-    if(filteredItems == null) return null;
-    if(index > filteredItems.length - 1) return null;
-    var item = filteredItems[index];
+  Widget getItem(BuildContext context, int index, _items) {
+    if(_items == null) return null;
+    if(index > _items.length - 1) return null;
+    var item = _items[index];
     if (itemDefinitions == null || itemDefinitions[item.item.itemHash] == null)
       return Container();
     return LoadoutSearchItemWrapperWidget(item.item,
