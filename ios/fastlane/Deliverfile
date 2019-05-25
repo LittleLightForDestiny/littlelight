@@ -1,0 +1,6 @@
+# The Deliverfile allows you to store various App Store Connect metadata
+# For more information, check out the docs
+# https://docs.fastlane.tools/actions/deliver/
+upload_to_app_store(
+  force: true, # Set to true to skip PDF verification
+)

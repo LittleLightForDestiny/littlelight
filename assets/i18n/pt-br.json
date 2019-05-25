@@ -148,5 +148,10 @@
   "Ranks": "Reputação",
   "Last played {timeago}": "Jogou {timeago}",
   "Discord": "Discord",
-  "Issues": "Bugs"
+  "Issues": "Bugs",
+  "Max Light": "Luz Máxima",
+  "Random Weapons": "Armas aleatórias",
+  "Random Armor": "Armadura aleatória",
+  "Weapons": "Armas",
+  "Transfer Loadout": "Transferir Loadout"
 }

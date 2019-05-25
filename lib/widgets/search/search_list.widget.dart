@@ -162,10 +162,9 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
     var itemsToFilter = items;
     for (var searchTerm in _terms) {
       var _search = removeDiacritics(searchTerm).toLowerCase().trim();
-      print(_search);
       Set<int> perksMatched = new Set();
       for (var p in perkDefinitions.values) {
-        var match = p.displayProperties.name
+        var match = removeDiacritics(p.displayProperties.name)
             .toLowerCase()
             .contains(_search.toLowerCase());
         if (match) perksMatched.add(p.hash);

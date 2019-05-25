@@ -40,6 +40,8 @@ build/
 **/android/local.properties
 **/android/**/GeneratedPluginRegistrant.java
 **/android/.keys
+**/android/fastlane/metadata
+**/android/fastlane/report.xml
 
 # iOS/XCode related
 **/ios/**/*.mode1v3
@@ -66,6 +68,12 @@ build/
 **/ios/Flutter/flutter_assets/
 **/ios/ServiceDefinitions.json
 **/ios/Runner/GeneratedPluginRegistrant.*
+**/ios/fastlane/metadata
+**/ios/fastlane/screenshots
+**/ios/fastlane/*.html
+**/ios/fastlane/report.xml
+**/ios/Runner.ipa
+**/ios/*.zip
 
 # Exceptions to above rules.
 !**/ios/**/default.mode1v3

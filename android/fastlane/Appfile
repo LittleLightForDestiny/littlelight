@@ -1,0 +1,2 @@
+json_key_file "~/keys/littlelight/fastlane-android.json" # Path to the json secret file - Follow https://github.com/fastlane/supply#setup to get one
+package_name "me.markezine.luzinha" # e.g. com.krausefx.app
