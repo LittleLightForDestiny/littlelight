@@ -404,6 +404,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
   }
 
   randomizeLoadout(List<int> requiredSlots) async {
+    LoadoutItemIndex randomLoadout = new LoadoutItemIndex();
     var allItems = widget.profile
         .getAllItems()
         .where((i) => i.itemInstanceId != null)
@@ -437,7 +438,10 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
       var itemDef = await widget.manifest
           .getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
       print(itemDef.displayProperties.name);
+      randomLoadout.addEquippedItem(item, itemDef);
     }
+
+    InventoryService().transferLoadout(randomLoadout.loadout, widget.character.characterId, true);
   }
 
   getMaxLightLoadout() async {

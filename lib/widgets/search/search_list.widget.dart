@@ -45,7 +45,7 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
     loadItems();
     subscription = widget.broadcaster.listen((event) {
       if (event.type == NotificationType.receivedUpdate ||
-      event.type == NotificationType.localUpdate){
+          event.type == NotificationType.localUpdate) {
         loadItems();
       }
     });
@@ -65,9 +65,8 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
           .getCharacterInventory(charId)
           .map((item) => ItemWithOwner(item, charId)));
     });
-    allItems.addAll(profile
-        .getProfileInventory()
-        .map((item) => ItemWithOwner(item, null)));
+    allItems.addAll(
+        profile.getProfileInventory().map((item) => ItemWithOwner(item, null)));
     allItems.sort(
         (a, b) => InventoryUtils.sortDestinyItems(a.item, b.item, profile));
     items = allItems.where((item) {
@@ -76,12 +75,13 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
     Iterable<int> hashes = allItems.map((i) => i.item.itemHash);
 
     Set<int> perkHashes = Set();
-    items.forEach((i){
+    items.forEach((i) {
       var sockets = profile.getItemSockets(i.item.itemInstanceId);
-      if(sockets == null) return;
-      sockets.forEach((s){
-        if(s.plugHash!= null) perkHashes.add(s.plugHash);
-        if(s.reusablePlugHashes!= null) perkHashes.addAll(s.reusablePlugHashes);
+      if (sockets == null) return;
+      sockets.forEach((s) {
+        if (s.plugHash != null) perkHashes.add(s.plugHash);
+        if (s.reusablePlugHashes != null)
+          perkHashes.addAll(s.reusablePlugHashes);
       });
     });
 
@@ -109,16 +109,15 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
 
   Widget build(BuildContext context) {
     super.build(context);
-    if(itemDefinitions == null){
+    if (itemDefinitions == null) {
       return Center(
-        child: Container(
-        width: 96,
-        child: Shimmer.fromColors(
-          baseColor: Colors.blueGrey.shade300,
-          highlightColor: Colors.white,
-          child: Image.asset("assets/anim/loading.webp"),
-        ))
-      );
+          child: Container(
+              width: 96,
+              child: Shimmer.fromColors(
+                baseColor: Colors.blueGrey.shade300,
+                highlightColor: Colors.white,
+                child: Image.asset("assets/anim/loading.webp"),
+              )));
     }
     double screenWidth = MediaQuery.of(context).size.width;
     var _filteredItems = filteredItems;
@@ -126,7 +125,8 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
       padding: EdgeInsets.all(4),
       crossAxisCount: screenWidth > 480 ? 12 : 6,
       itemCount: _filteredItems?.length ?? 0,
-      itemBuilder: (BuildContext context, int index) => getItem(context, index, _filteredItems),
+      itemBuilder: (BuildContext context, int index) =>
+          getItem(context, index, _filteredItems),
       staggeredTileBuilder: (int index) => getTileBuilder(context, index),
       mainAxisSpacing: 2,
       crossAxisSpacing: 2,
@@ -155,143 +155,146 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
 
   List<ItemWithOwner> get filteredItems => filterItems();
 
-  List<ItemWithOwner> filterItems([List<ItemWithOwner> itemsToFilter]) {
+  List<ItemWithOwner> filterItems() {
     if (itemDefinitions == null) return [];
-    Set<int> perksMatched = new Set();
-    if(perkDefinitions == null) return [];
-    for(var p in perkDefinitions.values){
-     var match = p.displayProperties.name
-          .toLowerCase()
-          .contains(search.toLowerCase());
-      if(match) perksMatched.add(p.hash);
-    }
-
-    var _search = removeDiacritics(search).toLowerCase();
-
-    return items.where((item) {
-      var def = itemDefinitions[item.item.itemHash];
-      if (def == null) return false;
-      if (itemTypes != null &&
-          !itemTypes.contains(def.itemType)) {
-        return false;
+    if (perkDefinitions == null) return [];
+    var _terms = search.split(RegExp("[,.|]"));
+    var itemsToFilter = items;
+    for (var searchTerm in _terms) {
+      var _search = removeDiacritics(searchTerm).toLowerCase().trim();
+      print(_search);
+      Set<int> perksMatched = new Set();
+      for (var p in perkDefinitions.values) {
+        var match = p.displayProperties.name
+            .toLowerCase()
+            .contains(_search.toLowerCase());
+        if (match) perksMatched.add(p.hash);
       }
-      if (excludeItemTypes != null &&
-          excludeItemTypes.contains(def.itemType)) {
-        return false;
-      }
-      if (powerLevelFilter != null) {
-        var values = powerLevelFilter.values;
-        DestinyItemInstanceComponent instance =
-            ProfileService().getInstanceInfo(item.item.itemInstanceId);
-        int power = instance?.primaryStat?.value;
-        if (power != null && (power > values[1])) {
+      itemsToFilter = itemsToFilter.where((item) {
+        var def = itemDefinitions[item.item.itemHash];
+        if (def == null) return false;
+        if (itemTypes != null && !itemTypes.contains(def.itemType)) {
           return false;
         }
-      }
-
-      if (damageTypeFilter != null) {
-        var values = damageTypeFilter.values;
-        DestinyItemInstanceComponent instance =
-            ProfileService().getInstanceInfo(item.item.itemInstanceId);
-        int damageType = instance?.damageType;
-
-        if (damageType != null &&
-            values.length != 0 &&
-            !values.contains(damageType)) {
+        if (excludeItemTypes != null &&
+            excludeItemTypes.contains(def.itemType)) {
           return false;
         }
-      }
-
-      if (tierTypeFilter != null) {
-        var values = tierTypeFilter.values;
-        var tier = def?.inventory?.tierType;
-
-        if (tier != null && values.length != 0 && !values.contains(tier)) {
-          return false;
-        }
-      }
-
-      if (bucketTypeFilter != null) {
-        var values = bucketTypeFilter.values;
-        var bucketHash = def?.inventory?.bucketTypeHash;
-
-        if (bucketHash != null &&
-            values.length != 0 &&
-            !values.contains(bucketHash)) {
-          return false;
-        }
-      }
-
-      if (typeFilter != null) {
-        var values = typeFilter.values;
-        var type = def?.itemType;
-        if (type != null && values.length != 0 && !values.contains(type)) {
-          return false;
-        }
-      }
-
-      if (subtypeFilter != null) {
-        var values = subtypeFilter.values;
-        var subtype = def?.itemSubType;
-        if (subtype != null &&
-            values.length != 0 &&
-            !values.contains(subtype)) {
-          return false;
-        }
-      }
-
-      if (ammoTypeFilter != null) {
-        var values = ammoTypeFilter.values;
-        var ammoType = def?.equippingBlock?.ammoType;
-        if (ammoType != null &&
-            values.length != 0 &&
-            !values.contains(ammoType)) {
-          return false;
-        }
-      }
-
-      if (classTypeFilter != null) {
-        var values = classTypeFilter.values;
-        var classType = def?.classType;
-        if (classType != null &&
-            values.length != 0 &&
-            !values.contains(classType)) {
-          return false;
-        }
-      }
-
-      if (_search.length == 0) {
-        return true;
-      }
-      bool match = false;
-      var name = removeDiacritics(def.displayProperties.name).toLowerCase();
-      var itemTypeDisplayName = removeDiacritics(def.itemTypeDisplayName).toLowerCase();
-      if (_search.length < 4) {
-        match = name
-          .startsWith(_search);
-        match = match || itemTypeDisplayName.startsWith(_search);
-      }else{
-        match = name
-          .contains(_search);
-        match = match || itemTypeDisplayName.contains(_search);
-      }
-      var sockets = widget.profile.getItemSockets(item?.item?.itemInstanceId ?? 0);
-      if(sockets != null){
-        for(var s in sockets){
-          if(s.plugHash != null && perksMatched.contains(s.plugHash)){
-            return true;
+        if (powerLevelFilter != null) {
+          var values = powerLevelFilter.values;
+          DestinyItemInstanceComponent instance =
+              ProfileService().getInstanceInfo(item.item.itemInstanceId);
+          int power = instance?.primaryStat?.value;
+          if (power != null && (power > values[1])) {
+            return false;
           }
-          if(s.reusablePlugHashes != null){
-            for(var p in s.reusablePlugHashes){
-              if(perksMatched.contains(p)){
-                return true;
+        }
+
+        if (damageTypeFilter != null) {
+          var values = damageTypeFilter.values;
+          DestinyItemInstanceComponent instance =
+              ProfileService().getInstanceInfo(item.item.itemInstanceId);
+          int damageType = instance?.damageType;
+
+          if (damageType != null &&
+              values.length != 0 &&
+              !values.contains(damageType)) {
+            return false;
+          }
+        }
+
+        if (tierTypeFilter != null) {
+          var values = tierTypeFilter.values;
+          var tier = def?.inventory?.tierType;
+
+          if (tier != null && values.length != 0 && !values.contains(tier)) {
+            return false;
+          }
+        }
+
+        if (bucketTypeFilter != null) {
+          var values = bucketTypeFilter.values;
+          var bucketHash = def?.inventory?.bucketTypeHash;
+
+          if (bucketHash != null &&
+              values.length != 0 &&
+              !values.contains(bucketHash)) {
+            return false;
+          }
+        }
+
+        if (typeFilter != null) {
+          var values = typeFilter.values;
+          var type = def?.itemType;
+          if (type != null && values.length != 0 && !values.contains(type)) {
+            return false;
+          }
+        }
+
+        if (subtypeFilter != null) {
+          var values = subtypeFilter.values;
+          var subtype = def?.itemSubType;
+          if (subtype != null &&
+              values.length != 0 &&
+              !values.contains(subtype)) {
+            return false;
+          }
+        }
+
+        if (ammoTypeFilter != null) {
+          var values = ammoTypeFilter.values;
+          var ammoType = def?.equippingBlock?.ammoType;
+          if (ammoType != null &&
+              values.length != 0 &&
+              !values.contains(ammoType)) {
+            return false;
+          }
+        }
+
+        if (classTypeFilter != null) {
+          var values = classTypeFilter.values;
+          var classType = def?.classType;
+          if (classType != null &&
+              values.length != 0 &&
+              !values.contains(classType)) {
+            return false;
+          }
+        }
+
+        if (_search.length == 0) {
+          return true;
+        }
+        bool match = false;
+        var name = removeDiacritics(def.displayProperties.name).toLowerCase();
+        var itemTypeDisplayName =
+            removeDiacritics(def.itemTypeDisplayName).toLowerCase();
+        if (_search.length < 4) {
+          match = name.startsWith(_search);
+          match = match || itemTypeDisplayName.startsWith(_search);
+        } else {
+          match = name.contains(_search);
+          match = match || itemTypeDisplayName.contains(_search);
+        }
+        var sockets =
+            widget.profile.getItemSockets(item?.item?.itemInstanceId ?? 0);
+        if (sockets != null) {
+          for (var s in sockets) {
+            if (s.plugHash != null && perksMatched.contains(s.plugHash)) {
+              return true;
+            }
+            if (s.reusablePlugHashes != null) {
+              for (var p in s.reusablePlugHashes) {
+                if (perksMatched.contains(p)) {
+                  return true;
+                }
               }
             }
           }
         }
-      }
-      return match;
-    }).toList();
+        return match;
+      }).toList();
+    }
+    return itemsToFilter;
   }
 
   StaggeredTile getTileBuilder(BuildContext context, int index) {
@@ -299,8 +302,8 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
   }
 
   Widget getItem(BuildContext context, int index, _items) {
-    if(_items == null) return null;
-    if(index > _items.length - 1) return null;
+    if (_items == null) return null;
+    if (index > _items.length - 1) return null;
     var item = _items[index];
     if (itemDefinitions == null || itemDefinitions[item.item.itemHash] == null)
       return Container();

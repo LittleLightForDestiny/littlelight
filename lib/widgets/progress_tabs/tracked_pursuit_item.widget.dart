@@ -14,17 +14,24 @@ class TrackedPursuitItemWidget extends PursuitItemWidget {
   final String itemInstanceId;
   final int hash;
 
-  TrackedPursuitItemWidget({Key key, String characterId, this.itemInstanceId, this.hash}) : super(key: key, characterId:characterId, );
+  TrackedPursuitItemWidget(
+      {Key key, String characterId, this.itemInstanceId, this.hash})
+      : super(
+          key: key,
+          characterId: characterId,
+        );
 
-  TrackedPursuitItemWidgetState createState() => TrackedPursuitItemWidgetState();
+  TrackedPursuitItemWidgetState createState() =>
+      TrackedPursuitItemWidgetState();
 }
 
-class TrackedPursuitItemWidgetState extends PursuitItemWidgetState<TrackedPursuitItemWidget>{
+class TrackedPursuitItemWidgetState
+    extends PursuitItemWidgetState<TrackedPursuitItemWidget> {
   DestinyItemComponent _item;
 
   @override
   String get itemInstanceId => _item?.itemInstanceId;
-  
+
   @override
   int get hash => _item?.itemHash;
 
@@ -44,38 +51,57 @@ class TrackedPursuitItemWidgetState extends PursuitItemWidgetState<TrackedPursui
   Future<void> loadDefinitions() async {
     definition = await widget.manifest
         .getDefinition<DestinyInventoryItemDefinition>(widget.hash);
-    
-    if([DestinyItemType.Quest, DestinyItemType.QuestStep, DestinyItemType.Bounty].contains(definition.itemType)){
-      List<DestinyItemComponent> charInventory = widget.profile.getCharacterInventory(widget.characterId);
-      _item = charInventory.firstWhere((i)=>i.itemInstanceId == widget.itemInstanceId, orElse: ()=>null);
-      
-      if(_item == null){
-        _item = charInventory.firstWhere((i)=>i.itemHash == widget.hash, orElse: ()=>null);
+
+    if ([
+      DestinyItemType.Quest,
+      DestinyItemType.QuestStep,
+      DestinyItemType.Bounty
+    ].contains(definition.itemType)) {
+      List<DestinyItemComponent> charInventory =
+          widget.profile.getCharacterInventory(widget.characterId);
+      _item = charInventory.firstWhere(
+          (i) => i.itemInstanceId == widget.itemInstanceId,
+          orElse: () => null);
+
+      if (_item == null) {
+        _item = charInventory.firstWhere((i) => i.itemHash == widget.hash,
+            orElse: () => null);
       }
-      if(_item == null){
+      if (_item == null) {
         var questlineDefinition = await widget.manifest
-        .getDefinition<DestinyInventoryItemDefinition>(definition.objectives.questlineItemHash);
-        List<int> questStepsHashes = questlineDefinition.setData.itemList.map((i)=>i.itemHash).toList();
-        _item = charInventory.firstWhere((i)=>questStepsHashes.contains(i.itemHash), orElse: ()=>null);
+            .getDefinition<DestinyInventoryItemDefinition>(
+                definition.objectives.questlineItemHash);
+        if (questlineDefinition != null) {
+          List<int> questStepsHashes = questlineDefinition.setData.itemList
+              .map((i) => i.itemHash)
+              .toList();
+          _item = charInventory.firstWhere(
+              (i) => questStepsHashes.contains(i.itemHash),
+              orElse: () => null);
+        }
       }
-      if(_item == null){
-        LittleLightService().removeTrackedObjective(TrackedObjectiveType.Item, widget.hash, widget.itemInstanceId, widget.characterId);
+      if (_item == null) {
+        LittleLightService().removeTrackedObjective(TrackedObjectiveType.Item,
+            widget.hash, widget.itemInstanceId, widget.characterId);
         return;
       }
-    }else{
+    } else {
       List<DestinyItemComponent> allInventory = widget.profile.getAllItems();
-      _item = allInventory.firstWhere((i)=>i.itemInstanceId == widget.itemInstanceId, orElse: ()=>null);
-      if(_item == null){
-        _item = allInventory.firstWhere((i)=>i.itemHash == widget.hash, orElse: ()=>null);
+      _item = allInventory.firstWhere(
+          (i) => i.itemInstanceId == widget.itemInstanceId,
+          orElse: () => null);
+      if (_item == null) {
+        _item = allInventory.firstWhere((i) => i.itemHash == widget.hash,
+            orElse: () => null);
       }
-      if(_item == null){
-        LittleLightService().removeTrackedObjective(TrackedObjectiveType.Item, widget.hash, widget.itemInstanceId, widget.characterId);
+      if (_item == null) {
+        LittleLightService().removeTrackedObjective(TrackedObjectiveType.Item,
+            widget.hash, widget.itemInstanceId, widget.characterId);
         return;
       }
     }
 
-    itemObjectives =
-        widget.profile.getItemObjectives(itemInstanceId);
+    itemObjectives = widget.profile.getItemObjectives(itemInstanceId);
     if (itemObjectives != null) {
       Iterable<int> objectiveHashes =
           itemObjectives.map((o) => o.objectiveHash);
@@ -95,7 +121,7 @@ class TrackedPursuitItemWidgetState extends PursuitItemWidgetState<TrackedPursui
 
   Widget buildCurrentObjective(
       BuildContext context, DestinyObjectiveProgress objective) {
-        if(objectiveDefinitions == null) return Container();
+    if (objectiveDefinitions == null) return Container();
     return super.buildCurrentObjective(context, objective);
   }
 }
