@@ -6,7 +6,6 @@ import 'package:bungie_api/enums/destiny_class_enum.dart';
 import 'package:bungie_api/enums/destiny_item_type_enum.dart';
 import 'package:bungie_api/enums/tier_type_enum.dart';
 import 'package:bungie_api/models/destiny_character_component.dart';
-import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';

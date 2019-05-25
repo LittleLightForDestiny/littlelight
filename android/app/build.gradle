@@ -22,10 +22,11 @@ if (flutterVersionName == null) {
 }
 
 def keystoreProperties = new Properties()
-def keystorePropertiesFile = rootProject.file('.keys/release.properties')
+def keystorePropertiesFile = rootProject.file('.keys/debug.properties')
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
+def keyAvailable = keystorePropertiesFile.exists()
 
 apply plugin: 'com.android.application'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
@@ -47,11 +48,13 @@ android {
     }
 
     signingConfigs {
-        release {
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-            storeFile file(keystoreProperties['storeFile'])
-            storePassword keystoreProperties['storePassword']
+        if(keyAvailable) {
+            release {
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+                storeFile file(keystoreProperties['storeFile'])
+                storePassword keystoreProperties['storePassword']
+            }
         }
     }
     buildTypes {
@@ -59,7 +62,9 @@ android {
             applicationIdSuffix ".debug"
         }
         release {
-            signingConfig signingConfigs.release
+            if(keyAvailable) {
+                signingConfig signingConfigs.release
+            }
         }
     }
 }

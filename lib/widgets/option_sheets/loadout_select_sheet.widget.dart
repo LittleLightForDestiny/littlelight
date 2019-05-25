@@ -1,7 +1,6 @@
 import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/services/inventory/inventory.service.dart';
 import 'package:little_light/services/littlelight/models/loadout.model.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
