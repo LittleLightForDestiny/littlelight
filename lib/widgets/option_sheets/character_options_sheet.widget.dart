@@ -78,7 +78,9 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: (){},
       child:SingleChildScrollView(
         padding: EdgeInsets.all(8),
         child: Column(

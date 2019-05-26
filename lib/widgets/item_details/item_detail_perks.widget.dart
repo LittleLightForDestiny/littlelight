@@ -8,32 +8,52 @@ import 'package:bungie_api/models/destiny_item_socket_category_definition.dart';
 import 'package:bungie_api/models/destiny_item_socket_entry_definition.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_socket_category_definition.dart';
+import 'package:bungie_api/models/destiny_socket_type_definition.dart';
+import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/widgets/common/perk_list_item.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
-import 'package:little_light/widgets/common/destiny_item.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
+import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:little_light/widgets/flutter/smaller_switch.dart';
 
 typedef OnSelectPerk(int socketPlugHash, int itemPlugHash);
 
-class ItemDetailPerksWidget extends DestinyItemWidget {
+class ItemDetailPerksWidget extends StatefulWidget {
   final OnSelectPerk onSelectPerk;
   final int selectedPerkHash;
   final Map<int, int> selectedPerkHashes;
   final Map<int, DestinyInventoryItemDefinition> plugDefinitions;
+  final DestinyItemComponent item;
+  final DestinyInventoryItemDefinition definition;
+  final DestinyItemInstanceComponent instanceInfo;
+  final ProfileService profile = ProfileService();
 
-  ItemDetailPerksWidget(
-      DestinyItemComponent item,
-      DestinyInventoryItemDefinition definition,
-      DestinyItemInstanceComponent instanceInfo,
+  ItemDetailPerksWidget(this.item, this.definition, this.instanceInfo,
       {this.onSelectPerk,
       Key key,
       this.selectedPerkHash,
       this.selectedPerkHashes,
       this.plugDefinitions})
-      : super(item, definition, instanceInfo, key: key);
+      : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() {
+    return ItemDetailPerksWidgetState();
+  }
+}
+
+class ItemDetailPerksWidgetState extends State<ItemDetailPerksWidget> {
+  Map<int, DestinyInventoryItemDefinition> get plugDefinitions =>
+      widget.plugDefinitions;
+  DestinyItemComponent get item => widget.item;
+  DestinyInventoryItemDefinition get definition => widget.definition;
+  int get selectedPerkHash => widget.selectedPerkHash;
+  Map<int, int> get selectedPerkHashes => widget.selectedPerkHashes;
+  bool showDetails = false;
 
   @override
   Widget build(BuildContext context) {
@@ -42,28 +62,103 @@ class ItemDetailPerksWidget extends DestinyItemWidget {
     }
     if (category == null) return Container();
     return Container(
+        padding: EdgeInsets.all(8),
+        child: Column(
+          children: <Widget>[
+            HeaderWidget(
+                child: Container(
+                    alignment: Alignment.centerLeft,
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          ManifestText<DestinySocketCategoryDefinition>(
+                            category.socketCategoryHash,
+                            uppercase: true,
+                            textAlign: TextAlign.left,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          Row(
+                            children: <Widget>[
+                              TranslatedTextWidget(
+                                "Details",
+                                uppercase: true,
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              Container(
+                                width: 4,
+                              ),
+                              SmallerSwitch(
+                                materialTapTargetSize:
+                                    MaterialTapTargetSize.shrinkWrap,
+                                value: showDetails,
+                                onChanged: (value) {
+                                  showDetails = value;
+                                  setState(() {});
+                                },
+                              )
+                            ],
+                          )
+                        ]))),
+            Container(
+                padding: EdgeInsets.symmetric(vertical: 8),
+                child: showDetails
+                    ? buildPerkList(context)
+                    : buildPerkGrid(context))
+          ],
+        ));
+  }
+
+  Widget buildPerkList(BuildContext context) {
+    List<Widget> children = [];
+    category.socketIndexes.forEach((s) {
+      children.add(buildCategoryHeader(context, s));
+      var perks = buildCategoryPerksList(context, s);
+      children.addAll(perks);
+    });
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: children,
+    );
+  }
+
+  Widget buildCategoryHeader(BuildContext context, int index) {
+    var def = plugDefinitions[getPlugHashBySocketIndex(index)];
+    if ((def?.itemTypeDisplayName?.length ?? 0) <= 1) {
+      return Container(
+      color: Colors.black,
+      alignment: Alignment.center,
       padding: EdgeInsets.all(8),
-      child: Column(
-        children: <Widget>[
-          HeaderWidget(
-              child: Container(
-            alignment: Alignment.centerLeft,
-            child: ManifestText<DestinySocketCategoryDefinition>(
-              category.socketCategoryHash,
-              uppercase: true,
-              textAlign: TextAlign.left,
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-          )),
-          Container(
-              padding: EdgeInsets.symmetric(vertical: 8),
-              child: perkColumns(context))
-        ],
+      child: TranslatedTextWidget(
+        "Other",
+        uppercase: true,
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ),
+    );
+    }
+    return Container(
+      color: Colors.black,
+      alignment: Alignment.center,
+      padding: EdgeInsets.all(8),
+      child: Text(
+        def?.itemTypeDisplayName?.toUpperCase() ?? "",
+        style: TextStyle(fontWeight: FontWeight.bold),
       ),
     );
   }
 
-  Widget perkColumns(BuildContext context) {
+  List<Widget> buildCategoryPerksList(BuildContext context, int index) {
+    var catPerkHashes = getPlugHashesBySocketIndex(index);
+    return catPerkHashes
+        .map((hash) => buildPerkListItem(context, hash))
+        .toList();
+  }
+
+  Widget buildPerkListItem(BuildContext context, int hash) {
+    var plugDef = plugDefinitions[hash];
+    return PerkListItem(definition:plugDef);
+  }
+
+  Widget buildPerkGrid(BuildContext context) {
     double availableWidth = MediaQuery.of(context).size.width - 16;
     double colWidth =
         min(availableWidth / 6, availableWidth / category.socketIndexes.length);
@@ -72,9 +167,9 @@ class ItemDetailPerksWidget extends DestinyItemWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: category.socketIndexes.map((socketIndex) {
           Widget plugItems = item != null
-                  ? instancePlugItems(context, socketIndex)
-                  : definitionPlugItems(context, socketIndex);
-          if(plugItems == null){
+              ? instancePlugItems(context, socketIndex)
+              : definitionPlugItems(context, socketIndex);
+          if (plugItems == null) {
             return Container();
           }
           return Container(
@@ -86,8 +181,8 @@ class ItemDetailPerksWidget extends DestinyItemWidget {
 
   Widget instancePlugItems(BuildContext context, int socketIndex) {
     DestinyItemSocketState socket = socketStates[socketIndex];
-    if(socket.isVisible == false) return null;
-    if(socket.plugHash == null) return null;
+    if (socket.isVisible == false) return null;
+    if (socket.plugHash == null) return null;
     if ((socket.reusablePlugs?.length ?? 0) == 0) {
       return plugItem(context, socket.plugHash, socket.plugHash, socketIndex);
     }
@@ -112,8 +207,11 @@ class ItemDetailPerksWidget extends DestinyItemWidget {
         .toList();
 
     List<Widget> randomizedWidgets = socket.randomizedPlugItems
-        .map((item) => plugItem(context, socket.randomizedPlugItems[0].plugItemHash,
-            item.plugItemHash, socketIndex))
+        .map((item) => plugItem(
+            context,
+            socket.randomizedPlugItems[0].plugItemHash,
+            item.plugItemHash,
+            socketIndex))
         .toList();
     return Column(
         children:
@@ -125,7 +223,8 @@ class ItemDetailPerksWidget extends DestinyItemWidget {
     DestinyInventoryItemDefinition plugDefinition =
         plugDefinitions[plugItemHash];
     bool enabled = socketPlugHash == plugItemHash;
-    bool intrinsic = plugDefinition?.plug?.plugCategoryIdentifier == "intrinsics";
+    bool intrinsic =
+        plugDefinition?.plug?.plugCategoryIdentifier == "intrinsics";
     bool selected = plugItemHash == selectedPerkHash;
     bool hasCustom = selectedPerkHashes[socketIndex] != socketPlugHash &&
         selectedPerkHashes[socketIndex] != null;
@@ -142,32 +241,26 @@ class ItemDetailPerksWidget extends DestinyItemWidget {
       color = Colors.indigo.shade300;
     }
     BorderSide borderSide = BorderSide(
-                  color: selected
-                      ? Colors.white
-                      : Colors.transparent,
-                  width: 2);
-          
+        color: selected ? Colors.white : Colors.transparent, width: 2);
+
     return Container(
         margin: EdgeInsets.all(4),
         child: FlatButton(
-          shape: intrinsic && !exotic ? 
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4),
-            side:borderSide)
-          : CircleBorder(
-              side: borderSide),
+          shape: intrinsic && !exotic
+              ? RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4), side: borderSide)
+              : CircleBorder(side: borderSide),
           padding: EdgeInsets.all(intrinsic ? 0 : 8),
           color: color,
           child: AspectRatio(
               aspectRatio: 1,
               child: QueuedNetworkImage(
-                  imageUrl:
-                      BungieApiService.url(plugDefinition?.displayProperties?.icon))),
+                  imageUrl: BungieApiService.url(
+                      plugDefinition?.displayProperties?.icon))),
           onPressed: () {
-            if (this.onSelectPerk != null) {
-              this.onSelectPerk(socketIndex, plugItemHash);
-            } else {
-            }
+            if (widget.onSelectPerk != null) {
+              widget.onSelectPerk(socketIndex, plugItemHash);
+            } else {}
           },
         ));
   }
@@ -178,8 +271,25 @@ class ItemDetailPerksWidget extends DestinyItemWidget {
 
   List<DestinyItemSocketState> get socketStates {
     List<DestinyItemSocketState> socketStates =
-        profile.getItemSockets(item.itemInstanceId);
+        widget.profile.getItemSockets(item.itemInstanceId);
     return socketStates;
+  }
+
+  int getPlugHashBySocketIndex(int index) {
+    var entry = socketEntries[index];
+    var state = socketStates[index];
+    return state?.plugHash ??
+        entry.singleInitialItemHash ??
+        entry.reusablePlugItems[0]?.plugItemHash ??
+        entry.randomizedPlugItems[0]?.plugItemHash;
+  }
+
+  List<int> getPlugHashesBySocketIndex(int index) {
+    var entry = socketEntries[index];
+    var state = socketStates[index];
+    return state?.reusablePlugHashes ??
+        entry.reusablePlugItems.map((i) => i.plugItemHash) ??
+        entry.randomizedPlugItems?.map((i) => i.plugItemHash);
   }
 
   DestinyItemSocketCategoryDefinition get category {

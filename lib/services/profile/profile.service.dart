@@ -227,7 +227,8 @@ class ProfileService {
 
   bool isPlaying() {
     try{
-      var lastCharacter = getCharacters(CharacterOrder.lastPlayed).first;
+      var lastCharacter = getCharacters(CharacterOrder.lastPlayed)?.first;
+      if(lastCharacter == null) return false;
       var lastPlayed = DateTime.parse(lastCharacter.dateLastPlayed);
       var currentSession = lastCharacter.minutesPlayedThisSession;
       return lastPlayed
