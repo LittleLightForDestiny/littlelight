@@ -19,6 +19,37 @@ platform :ios do
   desc "Push a new release build to the App Store"
   lane :release do
     build_app(workspace: "Runner.xcworkspace", scheme: "Runner")
-    upload_to_app_store
+    deliver(
+      submit_for_review:false,
+      force: true,
+      automatic_release:false,
+      skip_screenshots:true,
+      skip_metadata:true,
+    )
+    deliver(
+      submit_for_review:true,
+      force: true,
+      automatic_release:true,
+      skip_screenshots:true,
+      skip_binary_upload:true,
+      submission_information:{
+        export_compliance_encryption_updated:false,
+        add_id_info_uses_idfa:false
+      }
+    )
+  end
+
+  lane :update_metadata do
+    deliver(
+      submit_for_review:true,
+      force: true,
+      automatic_release:true,
+      skip_screenshots:true,
+      skip_binary_upload:true,
+      submission_information:{
+        export_compliance_encryption_updated:false,
+        add_id_info_uses_idfa:false
+      }
+    )
   end
 end

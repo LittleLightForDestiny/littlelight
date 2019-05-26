@@ -22,11 +22,11 @@ if (flutterVersionName == null) {
 }
 
 def keystoreProperties = new Properties()
-def keystorePropertiesFile = rootProject.file('.keys/debug.properties')
-if (keystorePropertiesFile.exists()) {
+def keystorePropertiesFile = rootProject.file('.keys/release.properties')
+def keyAvailable = keystorePropertiesFile.exists()
+if (keyAvailable) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
-def keyAvailable = keystorePropertiesFile.exists()
 
 apply plugin: 'com.android.application'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"

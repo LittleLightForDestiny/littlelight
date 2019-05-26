@@ -79,23 +79,23 @@ class ItemDetailPerksWidgetState extends State<ItemDetailPerksWidget> {
                           ),
                           Row(
                             children: <Widget>[
-                              TranslatedTextWidget(
-                                "Details",
-                                uppercase: true,
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              Container(
-                                width: 4,
-                              ),
-                              SmallerSwitch(
-                                materialTapTargetSize:
-                                    MaterialTapTargetSize.shrinkWrap,
-                                value: showDetails,
-                                onChanged: (value) {
-                                  showDetails = value;
-                                  setState(() {});
-                                },
-                              )
+                              // TranslatedTextWidget(
+                              //   "Details",
+                              //   uppercase: true,
+                              //   style: TextStyle(fontWeight: FontWeight.bold),
+                              // ),
+                              // Container(
+                              //   width: 4,
+                              // ),
+                              // SmallerSwitch(
+                              //   materialTapTargetSize:
+                              //       MaterialTapTargetSize.shrinkWrap,
+                              //   value: showDetails,
+                              //   onChanged: (value) {
+                              //     showDetails = value;
+                              //     setState(() {});
+                              //   },
+                              // )
                             ],
                           )
                         ]))),

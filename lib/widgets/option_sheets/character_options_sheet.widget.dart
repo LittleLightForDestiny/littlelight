@@ -197,7 +197,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
                         loadouts: loadouts,
                         onSelect: (loadout) => InventoryService()
                             .transferLoadout(
-                                loadout, widget.character.characterId, true)));
+                                loadout, widget.character.characterId)));
               },
             )),
             Container(width: 4),
@@ -218,7 +218,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
                         loadouts: loadouts,
                         onSelect: (loadout) => InventoryService()
                             .transferLoadout(
-                                loadout, widget.character.characterId)));
+                                loadout, widget.character.characterId, true)));
               },
             )),
           ]))

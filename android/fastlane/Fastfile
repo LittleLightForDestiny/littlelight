@@ -6,61 +6,44 @@
 # Change the syntax highlighting to Ruby
 # All lines starting with a # are ignored when running `fastlane`
 
-# If you want to automatically update fastlane if a new version is available:
-# update_fastlane
-
-# This is the minimum version number required.
-# Update this, if you use features of a newer version
 fastlane_version "2.39.2"
 
 default_platform :android
 
 platform :android do
   before_all do
-    # ENV["SLACK_URL"] = "https://hooks.slack.com/services/..."
-  end
-
-  desc "Runs all the tests"
-  lane :test do
-    gradle(task: "test")
-  end
-
-  desc "Submit a new Beta Build to Crashlytics Beta"
-  lane :beta do
-    gradle(task: "assembleRelease")
-    crashlytics
-
-    # sh "your_script.sh"
-    # You can also use other beta testing services here
+    
   end
 
   desc "Deploy a new version to the Google Play"
   lane :deploy do
-    gradle(task: "assembleRelease")
-    supply
+    supply(
+      metadata_path:'../translations/metadata/android',
+      aab:'../build/app/outputs/bundle/release/app.aab',
+      skip_upload_screenshots:true,
+      skip_upload_metadata:true,
+      skip_upload_images:true
+    )
+    supply(
+      metadata_path:'../translations/metadata/android',
+      skip_upload_screenshots:true,
+      skip_upload_images:true
+    )
   end
 
-  # You can define as many lanes as you want
-
-  after_all do |lane|
-    # This block is called, only if the executed lane was successful
-
-    # slack(
-    #   message: "Successfully deployed new App Update."
-    # )
+  desc "Download metadata from google play"
+  lane :download_metadata do
+    download_from_play_store(
+      metadata_path:'../translations/metadata/android',
+    )
   end
 
-  error do |lane, exception|
-    # slack(
-    #   message: exception.message,
-    #   success: false
-    # )
+  desc "Upload metadata to google play"
+  lane :upload_metadata do
+    supply(
+      metadata_path:'../translations/metadata/android',
+    )
   end
+
+  
 end
-
-
-# More information about multiple platforms in fastlane: https://github.com/fastlane/fastlane/blob/master/fastlane/docs/Platforms.md
-# All available actions: https://docs.fastlane.tools/actions
-
-# fastlane reports which actions are used. No personal data is recorded. 
-# Learn more at https://github.com/fastlane/fastlane#metrics
