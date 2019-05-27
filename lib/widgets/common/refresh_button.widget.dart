@@ -32,6 +32,7 @@ class RefreshButtonWidgetState extends State<RefreshButtonWidget> with TickerPro
 
   void dispose(){
     subscription.cancel();
+    rotationController.dispose();
     super.dispose();
   }
 

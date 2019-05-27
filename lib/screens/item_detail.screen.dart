@@ -10,6 +10,7 @@ import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/common/destiny_item.stateful_widget.dart';
+import 'package:little_light/widgets/common/perk_list_item.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
 import 'package:little_light/widgets/item_details/item_collectible_info.widget.dart';
 
@@ -23,7 +24,6 @@ import 'package:little_light/widgets/item_details/item_stats.widget.dart';
 import 'package:little_light/widgets/item_details/main_info/item_main_info.widget.dart';
 import 'package:little_light/widgets/item_details/management_block.widget.dart';
 import 'package:little_light/widgets/item_details/quest_info.widget.dart';
-import 'package:little_light/widgets/item_details/selected_perk.widget.dart';
 
 class ItemDetailScreen extends DestinyItemStatefulWidget {
   final String uniqueId;
@@ -170,8 +170,7 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
             buildDuplicates(context),
             buildStats(context),
             buildPerks(context),
-            SelectedPerkWidget(selectedPerk,
-                key: Key("selected_perk: $selectedPerk")),
+            buildSelectedPerk(context),
             buildMods(context),
             buildObjectives(context),
             buildQuestInfo(context),
@@ -249,6 +248,15 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
     );
   }
 
+  buildSelectedPerk(BuildContext context){
+    if(selectedPerk == null || !plugDefinitions.containsKey(selectedPerk)) return Container();
+    return Container(
+      padding: EdgeInsets.all(8),
+      child:PerkListItem(definition: plugDefinitions[selectedPerk],
+        alwaysOpen: true,
+                key: Key("selected_perk: $selectedPerk")));
+  }
+
   Widget buildMods(BuildContext context) {
     return ItemDetailModsWidget(
       item,
@@ -256,8 +264,6 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
       instanceInfo,
       key: Key('mods_widget'),
       plugDefinitions: plugDefinitions,
-      selectedModHash: selectedPerk,
-      selectedModHashes: selectedPerks,
     );
   }
 

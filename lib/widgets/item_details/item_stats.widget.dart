@@ -128,7 +128,12 @@ class ItemStatsWidget extends DestinyItemWidget {
         .investmentStats
         .where((stat) => DestinyData.statWhitelist.contains(stat.statTypeHash))
         .toList();
-
+    for(var stat in definition.stats.stats.values){
+      if(DestinyData.statWhitelist.contains(stat.statHash) &&
+      stats.where((s)=>s.statTypeHash == stat.statHash).length == 0){
+        stats.add(DestinyItemInvestmentStatDefinition(stat.statHash, 0, false));
+      }
+    }
     stats.sort((statA, statB) {
       int valA = DestinyData.noBarStats.contains(statA.statTypeHash)
           ? 2

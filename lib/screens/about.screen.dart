@@ -344,6 +344,22 @@ class _AboutScreenState extends State<AboutScreen> {
                             buildTagAndPlatform(4611686018467289582, 4),
                           ])),
                       Container(height: 8),
+                      buildTranslationHeader(context, ['ja']),
+                      Container(
+                          color: Colors.blueGrey.shade800,
+                          padding: EdgeInsets.all(4),
+                          child: Column(children: [
+                            buildTagAndPlatform(4611686018467519241, 4),
+                          ])),
+                      Container(height: 8),
+                      buildTranslationHeader(context, ['pt-br']),
+                      Container(
+                          color: Colors.blueGrey.shade800,
+                          padding: EdgeInsets.all(4),
+                          child: Column(children: [
+                            buildTagAndPlatform(4611686018441021725, 2),
+                          ])),
+                      Container(height: 8),
                       buildTranslationHeader(context, ['pl']),
                       Container(
                           color: Colors.blueGrey.shade800,

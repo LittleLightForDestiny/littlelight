@@ -79,31 +79,32 @@ class ItemDetailPerksWidgetState extends State<ItemDetailPerksWidget> {
                           ),
                           Row(
                             children: <Widget>[
-                              // TranslatedTextWidget(
-                              //   "Details",
-                              //   uppercase: true,
-                              //   style: TextStyle(fontWeight: FontWeight.bold),
-                              // ),
-                              // Container(
-                              //   width: 4,
-                              // ),
-                              // SmallerSwitch(
-                              //   materialTapTargetSize:
-                              //       MaterialTapTargetSize.shrinkWrap,
-                              //   value: showDetails,
-                              //   onChanged: (value) {
-                              //     showDetails = value;
-                              //     setState(() {});
-                              //   },
-                              // )
+                              TranslatedTextWidget("Details",
+                                uppercase: true,
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              Container(
+                                width: 4,
+                              ),
+                              SmallerSwitch(
+                                materialTapTargetSize:
+                                    MaterialTapTargetSize.shrinkWrap,
+                                value: showDetails,
+                                onChanged: (value) {
+                                  showDetails = value;
+                                  setState(() {});
+                                },
+                              )
                             ],
                           )
                         ]))),
             Container(
                 padding: EdgeInsets.symmetric(vertical: 8),
-                child: showDetails
-                    ? buildPerkList(context)
-                    : buildPerkGrid(context))
+                child: AnimatedCrossFade(
+                  duration: Duration(milliseconds: 300),
+                  crossFadeState: showDetails ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                  firstChild: buildPerkList(context),
+                  secondChild: buildPerkGrid(context),))
           ],
         ));
   }
@@ -111,6 +112,8 @@ class ItemDetailPerksWidgetState extends State<ItemDetailPerksWidget> {
   Widget buildPerkList(BuildContext context) {
     List<Widget> children = [];
     category.socketIndexes.forEach((s) {
+      var def = plugDefinitions[getPlugHashBySocketIndex(s)];
+      if(def == null) return;
       children.add(buildCategoryHeader(context, s));
       var perks = buildCategoryPerksList(context, s);
       children.addAll(perks);
@@ -148,14 +151,16 @@ class ItemDetailPerksWidgetState extends State<ItemDetailPerksWidget> {
 
   List<Widget> buildCategoryPerksList(BuildContext context, int index) {
     var catPerkHashes = getPlugHashesBySocketIndex(index);
+    var curatedPerks = getCuratedPerksBySocketIndex(index);
+    var equippedPerk = getEquippedPlugHashBySocketIndex(index);
     return catPerkHashes
-        .map((hash) => buildPerkListItem(context, hash))
+        .map((hash) => buildPerkListItem(context, hash, curatedPerks.contains(hash), equippedPerk == hash))
         .toList();
   }
 
-  Widget buildPerkListItem(BuildContext context, int hash) {
+  Widget buildPerkListItem(BuildContext context, int hash, bool isCuratedPerk, bool equipped) {
     var plugDef = plugDefinitions[hash];
-    return PerkListItem(definition:plugDef);
+    return PerkListItem(definition:plugDef, curated: isCuratedPerk, equipped: equipped,);
   }
 
   Widget buildPerkGrid(BuildContext context) {
@@ -180,7 +185,7 @@ class ItemDetailPerksWidgetState extends State<ItemDetailPerksWidget> {
   }
 
   Widget instancePlugItems(BuildContext context, int socketIndex) {
-    DestinyItemSocketState socket = socketStates[socketIndex];
+    DestinyItemSocketState socket = getSocketState(socketIndex);
     if (socket.isVisible == false) return null;
     if (socket.plugHash == null) return null;
     if ((socket.reusablePlugs?.length ?? 0) == 0) {
@@ -234,11 +239,11 @@ class ItemDetailPerksWidgetState extends State<ItemDetailPerksWidget> {
     if (intrinsic) {
       color = Colors.transparent;
     } else if (enabled && hasCustom) {
-      color = Colors.indigo.shade900;
+      color = Colors.lightBlue.shade900;
     } else if (enabled) {
-      color = Colors.indigo;
+      color = Colors.lightBlue.shade700;
     } else if (selectedOnSlot) {
-      color = Colors.indigo.shade300;
+      color = Colors.lightBlue.shade700;
     }
     BorderSide borderSide = BorderSide(
         color: selected ? Colors.white : Colors.transparent, width: 2);
@@ -269,27 +274,73 @@ class ItemDetailPerksWidgetState extends State<ItemDetailPerksWidget> {
     return definition.sockets.socketEntries;
   }
 
-  List<DestinyItemSocketState> get socketStates {
+  DestinyItemSocketState getSocketState(int index){
+    if(item?.itemInstanceId == null) return null;
     List<DestinyItemSocketState> socketStates =
         widget.profile.getItemSockets(item.itemInstanceId);
-    return socketStates;
+    return socketStates[index];
   }
 
   int getPlugHashBySocketIndex(int index) {
     var entry = socketEntries[index];
-    var state = socketStates[index];
-    return state?.plugHash ??
-        entry.singleInitialItemHash ??
-        entry.reusablePlugItems[0]?.plugItemHash ??
-        entry.randomizedPlugItems[0]?.plugItemHash;
+    var state = getSocketState(index);
+    if((state?.plugHash ?? 0) != 0){
+      return state?.plugHash;
+    }
+    if((entry.singleInitialItemHash ?? 0) != 0){
+      return entry.singleInitialItemHash;
+    }
+
+    if(entry.randomizedPlugItems.length > 0 && (entry.randomizedPlugItems[0]?.plugItemHash ?? 0) != 0){
+      return entry.randomizedPlugItems[0]?.plugItemHash;
+    }
+    if(entry.reusablePlugItems.length > 0 && (entry.reusablePlugItems[0]?.plugItemHash ?? 0) != 0) {
+      return entry.reusablePlugItems[0]?.plugItemHash;
+    }
+    return null;
+  }
+
+  int getEquippedPlugHashBySocketIndex(int index) {
+    var entry = socketEntries[index];
+    var state = getSocketState(index);
+    if((state?.plugHash ?? 0) != 0){
+      return state?.plugHash;
+    }
+    if((entry.singleInitialItemHash ?? 0) != 0){
+      return entry.singleInitialItemHash;
+    }
+
+    if(entry.randomizedPlugItems.length > 0 && (entry.randomizedPlugItems[0]?.plugItemHash ?? 0) != 0){
+      return entry.randomizedPlugItems[0]?.plugItemHash;
+    }
+    if(entry.reusablePlugItems.length > 0 && (entry.reusablePlugItems[0]?.plugItemHash ?? 0) != 0) {
+      return entry.reusablePlugItems[0]?.plugItemHash;
+    }
+    return null;
   }
 
   List<int> getPlugHashesBySocketIndex(int index) {
     var entry = socketEntries[index];
-    var state = socketStates[index];
-    return state?.reusablePlugHashes ??
-        entry.reusablePlugItems.map((i) => i.plugItemHash) ??
-        entry.randomizedPlugItems?.map((i) => i.plugItemHash);
+    var state = getSocketState(index);
+    if((state?.reusablePlugHashes?.length ?? 0) > 0){
+      return state?.reusablePlugHashes;
+    }
+    if((entry?.randomizedPlugItems?.length ?? 0) > 0){
+      return entry.randomizedPlugItems.map((i) => i.plugItemHash).toList();
+    }
+    if((entry?.reusablePlugItems?.length ?? 0) > 0){
+      return entry.reusablePlugItems.map((i) => i.plugItemHash)?.toList();
+    }
+    return [];
+  }
+
+  List<int> getCuratedPerksBySocketIndex(int index) {
+    var entry = socketEntries[index];
+    if((entry?.randomizedPlugItems?.length ?? 0) > 0 &&  
+    (entry?.reusablePlugItems?.length ?? 0) > 0){
+      return entry.reusablePlugItems.map((i) => i.plugItemHash)?.toList();
+    }
+    return [];
   }
 
   DestinyItemSocketCategoryDefinition get category {

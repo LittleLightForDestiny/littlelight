@@ -149,9 +149,11 @@
   "Last played {timeago}": "Última vez en línea {timeago}",
   "Discord": "Únete a Discord",
   "Issues": "Reporta un error",
-  "#####Max Light": "missing_translation",
-  "#####Random Weapons": "missing_translation",
-  "#####Random Armor": "missing_translation",
-  "#####Weapons": "missing_translation",
-  "#####Transfer Loadout": "missing_translation"
+  "Max Light": "Máximo Poder",
+  "Random Weapons": "Armas aleatorias",
+  "Random Armor": "Armadura aleatoria",
+  "Weapons": "Armas",
+  "Transfer Loadout": "Transferir conjunto",
+  "Details": "Detalles",
+  "Other": "Otros"
 }
