@@ -27,19 +27,19 @@ class ItemModsWidget extends DestinyItemStatefulWidget {
 }
 
 class ItemModsWidgetState extends DestinyItemState<ItemModsWidget> {
-  DestinySocketCategoryDefinition perksCatDefinition;
+  DestinySocketCategoryDefinition modsCatDefinition;
   List<DestinyItemSocketState> itemSockets;
 
   @override
   void initState() {
     super.initState();
     if(widget.item != null){
-      loadPerks();
+      loadMods();
     }
     
   }
 
-  loadPerks() async {
+  loadMods() async {
     if(definition?.sockets?.socketCategories == null){
       return;
     }
@@ -47,7 +47,7 @@ class ItemModsWidgetState extends DestinyItemState<ItemModsWidget> {
         definition.sockets.socketCategories.map((s) => s.socketCategoryHash);
     var socketCategoryDefinitions = await widget.manifest
         .getDefinitions<DestinySocketCategoryDefinition>(socketCategoryHashes);
-    perksCatDefinition = socketCategoryDefinitions.values.firstWhere((def) {
+    modsCatDefinition = socketCategoryDefinitions.values.firstWhere((def) {
       return (def.categoryStyle & DestinySocketCategoryStyle.Consumable ==
           DestinySocketCategoryStyle.Consumable) && (def.categoryStyle & DestinySocketCategoryStyle.Reusable != DestinySocketCategoryStyle.Reusable);
     }, orElse: ()=>null);
@@ -60,10 +60,10 @@ class ItemModsWidgetState extends DestinyItemState<ItemModsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (perksCatDefinition == null) {
+    if (modsCatDefinition == null) {
       return Container();
     }
-    return buildMods(context, perksCatDefinition);
+    return buildMods(context, modsCatDefinition);
   }
 
   Widget buildMods(BuildContext context, DestinySocketCategoryDefinition def) {

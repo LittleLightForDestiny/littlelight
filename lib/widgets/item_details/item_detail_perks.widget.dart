@@ -8,7 +8,6 @@ import 'package:bungie_api/models/destiny_item_socket_category_definition.dart';
 import 'package:bungie_api/models/destiny_item_socket_entry_definition.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_socket_category_definition.dart';
-import 'package:bungie_api/models/destiny_socket_type_definition.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/widgets/common/perk_list_item.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
@@ -160,7 +159,7 @@ class ItemDetailPerksWidgetState extends State<ItemDetailPerksWidget> {
 
   Widget buildPerkListItem(BuildContext context, int hash, bool isCuratedPerk, bool equipped) {
     var plugDef = plugDefinitions[hash];
-    return PerkListItem(definition:plugDef, curated: isCuratedPerk, equipped: equipped,);
+    return PerkListItem(definition:plugDef, curated: isCuratedPerk, equipped: equipped, parentHash: widget.definition.hash,);
   }
 
   Widget buildPerkGrid(BuildContext context) {

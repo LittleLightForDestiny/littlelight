@@ -77,7 +77,8 @@ class ItemStatsWidget extends DestinyItemWidget {
     }
     List<int> plugHashes;
     if (socketStates != null) {
-      plugHashes = socketStates.map((state) => state.plugHash).toList();
+      plugHashes = socketStates
+      .map((state) => state.plugHash).toList();
     } else {
       plugHashes = definition.sockets.socketEntries
           .map((plug) => plug.singleInitialItemHash)
@@ -87,15 +88,18 @@ class ItemStatsWidget extends DestinyItemWidget {
     plugHashes.forEach((plugHash) {
       int index = plugHashes.indexOf(plugHash);
       DestinyInventoryItemDefinition def = plugDefinitions[plugHash];
+      var state;
+      if(socketStates != null){
+        state = socketStates[index];
+      }
       if (def == null) {
         return;
       }
       DestinyInventoryItemDefinition selectedDef =
           plugDefinitions[selectedPerks[index]];
-
       def.investmentStats.forEach((stat) {
         StatValues values = map[stat.statTypeHash] ?? new StatValues();
-        if (def.plug?.uiPlugLabel == 'masterwork') {
+        if (def.plug?.uiPlugLabel == 'masterwork' && (state?.reusablePlugHashes?.length ?? 0) == 0) {
           values.masterwork += stat.value;
         } else {
           values.equipped += stat.value;
@@ -233,6 +237,9 @@ class ItemStatWidget extends StatelessWidget {
   }
 
   int get maxBarSize {
+    if(DestinyData.armorStats.contains(statHash)){
+      return max(3, baseBarSize + modBarSize);
+    }
     return max(100, baseBarSize + modBarSize);
   }
 

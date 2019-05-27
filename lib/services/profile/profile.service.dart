@@ -10,6 +10,7 @@ import 'package:bungie_api/models/destiny_collectible_component.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
+import 'package:bungie_api/models/destiny_item_sockets_component.dart';
 import 'package:bungie_api/models/destiny_item_talent_grid_component.dart';
 import 'package:bungie_api/models/destiny_objective_progress.dart';
 import 'package:bungie_api/models/destiny_presentation_node_component.dart';
@@ -288,6 +289,10 @@ class ProfileService {
 
   DestinyItemTalentGridComponent getTalentGrid(String instanceId) {
     return _profile.itemComponents.talentGrids.data[instanceId];
+  }
+
+  Map<String, DestinyItemSocketsComponent> getAllSockets() {
+    return _profile.itemComponents.sockets.data;
   }
 
   List<DestinyItemSocketState> getItemSockets(String itemInstanceId) {

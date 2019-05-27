@@ -156,16 +156,16 @@ class LittleLightService {
   }
 
   Future<void> addTrackedObjective(
-      TrackedObjectiveType type, int hash, [String instanceId, String characterId]) async {
+      TrackedObjectiveType type, int hash, {String instanceId, String characterId, int parentHash}) async {
         var found = _trackedObjectives.firstWhere((o) => o.type == type && o.hash == hash && o.instanceId == instanceId && characterId == o.characterId, orElse: ()=>null);
     if(found == null){
-      _trackedObjectives.add(TrackedObjective(type, hash, instanceId, characterId));
+      _trackedObjectives.add(TrackedObjective(type, hash, instanceId:instanceId, characterId:characterId, parentHash: parentHash));
     }
     await _saveTrackedObjectives();
   }
 
   Future<void> removeTrackedObjective(
-      TrackedObjectiveType type, int hash, [String instanceId, String characterId]) async {
+      TrackedObjectiveType type, int hash, {String instanceId, String characterId}) async {
     _trackedObjectives.removeWhere(
         (o) => o.type == type && o.hash == hash && o.instanceId == instanceId && o.characterId == o.characterId);
     await _saveTrackedObjectives();

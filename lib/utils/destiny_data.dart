@@ -8,32 +8,32 @@ import 'package:little_light/widgets/icon_fonts/destiny_icons_icons.dart';
 import 'package:bungie_api/enums/destiny_item_sub_type_enum.dart';
 
 class RaidPhases {
-    static const int leviathanGardens = 3847906370;
-    static const int leviathanPools = 2188993306; 
-    static const int leviathanArena = 1431486395;
-    static const int leviathanCallus = 4231923662;
-    static const int eowLoyalists = 415534662;
-    static const int eowRings = 3813639709;
-    static const int eowShields = 2941618871;
-    static const int eowArgos = 877738674;
-    static const int sosStatueGarden = 3864507933;
-    static const int sosConduitRoom = 3025298087;
-    static const int sosShips = 1245655652;
-    static const int sosValCauor = 1245655655;
-    static const int lwKalli = 1126840038;
-    static const int lwShuroChi = 1040714588;
-    static const int lwMorgeth = 4249034918;
-    static const int lwVault = 436847112;
-    static const int lwRiven = 2392610624;
-    static const int sotpBotzaDistrict = 566861111;
-    static const int sotpVaultAccess = 244769953;
-    static const int sotpInsurectionPrime = 1268191778;
+  static const int leviathanGardens = 3847906370;
+  static const int leviathanPools = 2188993306;
+  static const int leviathanArena = 1431486395;
+  static const int leviathanCallus = 4231923662;
+  static const int eowLoyalists = 415534662;
+  static const int eowRings = 3813639709;
+  static const int eowShields = 2941618871;
+  static const int eowArgos = 877738674;
+  static const int sosStatueGarden = 3864507933;
+  static const int sosConduitRoom = 3025298087;
+  static const int sosShips = 1245655652;
+  static const int sosValCauor = 1245655655;
+  static const int lwKalli = 1126840038;
+  static const int lwShuroChi = 1040714588;
+  static const int lwMorgeth = 4249034918;
+  static const int lwVault = 436847112;
+  static const int lwRiven = 2392610624;
+  static const int sotpBotzaDistrict = 566861111;
+  static const int sotpVaultAccess = 244769953;
+  static const int sotpInsurectionPrime = 1268191778;
 
-    static const int leviathanPoolsChallenge = 3796634159;
-    static const int sotpInsurrectionPrimeChallenge = 4140089399;
+  static const int leviathanPoolsChallenge = 3796634159;
+  static const int sotpInsurrectionPrimeChallenge = 4140089399;
 }
 
-class DestinyRanks{
+class DestinyRanks {
   static const infamy = 2772425241;
   static const valor = 2626549951;
   static const glory = 2000925172;
@@ -68,25 +68,25 @@ class DestinyData {
   };
 
   static const Map<int, int> itemTypeHashes = {
-    DestinyItemType.Subclass:0,
-    DestinyItemType.Weapon:1,
-    DestinyItemType.Armor:20,
-    DestinyItemType.Quest:53,
-    DestinyItemType.QuestStep:16,
-    DestinyItemType.Bounty:1784235469,
-    DestinyItemType.Ghost:39,
-    DestinyItemType.Vehicle:43,
-    DestinyItemType.Ship:42,
-    DestinyItemType.Emblem:19,
-    DestinyItemType.Aura:57,
-    DestinyItemType.ClanBanner:874645359,
-    DestinyItemType.Emote:44,
-    DestinyItemType.Mod:59,
-    DestinyItemType.Engram:34,
-    DestinyItemType.Consumable:35,
-    DestinyItemType.Currency:18,
-    DestinyItemType.Dummy:3109687656,
-    DestinyItemType.Package:268598612,
+    DestinyItemType.Subclass: 0,
+    DestinyItemType.Weapon: 1,
+    DestinyItemType.Armor: 20,
+    DestinyItemType.Quest: 53,
+    DestinyItemType.QuestStep: 16,
+    DestinyItemType.Bounty: 1784235469,
+    DestinyItemType.Ghost: 39,
+    DestinyItemType.Vehicle: 43,
+    DestinyItemType.Ship: 42,
+    DestinyItemType.Emblem: 19,
+    DestinyItemType.Aura: 57,
+    DestinyItemType.ClanBanner: 874645359,
+    DestinyItemType.Emote: 44,
+    DestinyItemType.Mod: 59,
+    DestinyItemType.Engram: 34,
+    DestinyItemType.Consumable: 35,
+    DestinyItemType.Currency: 18,
+    DestinyItemType.Dummy: 3109687656,
+    DestinyItemType.Package: 268598612,
   };
 
   static const Map<int, int> itemSubtypeHashes = {
@@ -149,21 +149,23 @@ class DestinyData {
   ];
 
   static const List<int> noBarStats = [
-  4284893193, // Rounds Per Minute
-  3871231066, // Magazine
-  2961396640, // Charge Time
-  1931675084, //Inventory Size
+    4284893193, // Rounds Per Minute
+    3871231066, // Magazine
+    2961396640, // Charge Time
+    1931675084, //Inventory Size
+  ];
 
-  2996146975, // Mobility
-  392767087, // Resilience
-  1943323491, //recovery
-];
+  static const List<int> armorStats = [
+    2996146975, // Mobility
+    392767087, // Resilience
+    1943323491, //recovery
+  ];
 
-static const List<int> hiddenStats = [
-  1345609583, // Aim Assistance
-  2715839340, // Recoil Direction
-  3555269338, // Zoom
-];
+  static const List<int> hiddenStats = [
+    1345609583, // Aim Assistance
+    2715839340, // Recoil Direction
+    3555269338, // Zoom
+  ];
 
   static const List<int> socketCategoryPerkHashes = [
     319279448, // sparrow perks
@@ -191,12 +193,12 @@ static const List<int> hiddenStats = [
   static final DateTime _jokersWildRelease = DateTime(2019, 3, 1);
   static final DateTime _penumbraRelease = DateTime(2019, 6, 1);
 
-  static int get maxPowerLevel{
+  static int get maxPowerLevel {
     var now = DateTime.now();
-    if(now.isBefore(_jokersWildRelease)){
+    if (now.isBefore(_jokersWildRelease)) {
       return 650;
     }
-    if(now.isBefore(_penumbraRelease)){
+    if (now.isBefore(_penumbraRelease)) {
       return 700;
     }
     return 750;

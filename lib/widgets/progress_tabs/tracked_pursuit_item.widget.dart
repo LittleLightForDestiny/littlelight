@@ -6,9 +6,8 @@ import 'package:bungie_api/models/destiny_objective_definition.dart';
 import 'package:bungie_api/models/destiny_objective_progress.dart';
 
 import 'package:flutter/material.dart';
-import 'package:little_light/services/littlelight/models/tracked_objective.model.dart';
+
 import 'package:little_light/widgets/progress_tabs/pursuit_item.widget.dart';
-import 'package:little_light/services/littlelight/littlelight.service.dart';
 
 class TrackedPursuitItemWidget extends PursuitItemWidget {
   final String itemInstanceId;
@@ -19,27 +18,33 @@ class TrackedPursuitItemWidget extends PursuitItemWidget {
       : super(
           key: key,
           characterId: characterId,
+          includeCharacterIcon:true
         );
 
   TrackedPursuitItemWidgetState createState() =>
       TrackedPursuitItemWidgetState();
 }
 
-class TrackedPursuitItemWidgetState
-    extends PursuitItemWidgetState<TrackedPursuitItemWidget> {
+class TrackedPursuitItemWidgetState<T extends TrackedPursuitItemWidget>
+    extends PursuitItemWidgetState<T> {
   DestinyItemComponent _item;
 
-  @override
-  String get itemInstanceId => _item?.itemInstanceId;
+  DestinyInventoryItemDefinition questlineDefinition;
 
   @override
-  int get hash => _item?.itemHash;
+  String get itemInstanceId => _item?.itemInstanceId ?? widget.itemInstanceId;
 
   @override
-  DestinyItemComponent get item => _item;
+  int get hash => _item?.itemHash ?? widget.hash;
+
+  @override
+  DestinyItemComponent get item {
+    return _item ?? super.item;
+  }
 
   @override
   void initState() {
+    findItem();
     super.initState();
   }
 
@@ -50,68 +55,16 @@ class TrackedPursuitItemWidgetState
 
   Future<void> loadDefinitions() async {
     definition = await widget.manifest
-        .getDefinition<DestinyInventoryItemDefinition>(widget.hash);
-
-    if ([
-      DestinyItemType.Quest,
-      DestinyItemType.QuestStep,
-      DestinyItemType.Bounty
-    ].contains(definition.itemType)) {
-      List<DestinyItemComponent> charInventory =
-          widget.profile.getCharacterInventory(widget.characterId);
-      _item = charInventory.firstWhere(
-          (i) => i.itemInstanceId == widget.itemInstanceId,
-          orElse: () => null);
-
-      if (_item == null) {
-        _item = charInventory.firstWhere((i) => i.itemHash == widget.hash,
-            orElse: () => null);
-      }
-      if (_item == null) {
-        var questlineDefinition = await widget.manifest
-            .getDefinition<DestinyInventoryItemDefinition>(
-                definition.objectives.questlineItemHash);
-        if (questlineDefinition != null) {
-          List<int> questStepsHashes = questlineDefinition.setData.itemList
-              .map((i) => i.itemHash)
-              .toList();
-          _item = charInventory.firstWhere(
-              (i) => questStepsHashes.contains(i.itemHash),
-              orElse: () => null);
-        }
-      }
-      if (_item == null) {
-        LittleLightService().removeTrackedObjective(TrackedObjectiveType.Item,
-            widget.hash, widget.itemInstanceId, widget.characterId);
-        return;
-      }
-    } else {
-      List<DestinyItemComponent> allInventory = widget.profile.getAllItems();
-      _item = allInventory.firstWhere(
-          (i) => i.itemInstanceId == widget.itemInstanceId,
-          orElse: () => null);
-      if (_item == null) {
-        _item = allInventory.firstWhere((i) => i.itemHash == widget.hash,
-            orElse: () => null);
-      }
-      if (_item == null) {
-        LittleLightService().removeTrackedObjective(TrackedObjectiveType.Item,
-            widget.hash, widget.itemInstanceId, widget.characterId);
-        return;
-      }
+        .getDefinition<DestinyInventoryItemDefinition>(hash);
+    objectiveDefinitions = await widget.manifest
+        .getDefinitions<DestinyObjectiveDefinition>(
+            itemObjectives?.map((o) => o.objectiveHash));
+    if (definition?.objectives?.questlineItemHash != null) {
+      questlineDefinition = await widget.manifest
+          .getDefinition<DestinyInventoryItemDefinition>(
+              definition.objectives.questlineItemHash);
     }
-
-    itemObjectives = widget.profile.getItemObjectives(itemInstanceId);
-    if (itemObjectives != null) {
-      Iterable<int> objectiveHashes =
-          itemObjectives.map((o) => o.objectiveHash);
-      objectiveDefinitions = await widget.manifest
-          .getDefinitions<DestinyObjectiveDefinition>(objectiveHashes);
-    }
-    if (mounted) {
-      setState(() {});
-      fullyLoaded = true;
-    }
+    setState(() {});
   }
 
   @override
@@ -123,5 +76,47 @@ class TrackedPursuitItemWidgetState
       BuildContext context, DestinyObjectiveProgress objective) {
     if (objectiveDefinitions == null) return Container();
     return super.buildCurrentObjective(context, objective);
+  }
+
+  findItem() {
+    var _item;
+    if (this.itemInstanceId != null) {
+      _item = widget.profile.getItemsByInstanceId([this.itemInstanceId]).first;
+    }
+
+    if (_item != null) {
+      this._item = _item;
+      return;
+    }
+    if ([
+      DestinyItemType.Quest,
+      DestinyItemType.QuestStep,
+      DestinyItemType.Bounty
+    ].contains(definition?.itemType)) {
+      List<DestinyItemComponent> charInventory =
+          widget.profile.getCharacterInventory(widget.characterId);
+      _item = charInventory.firstWhere((i) => i.itemHash == widget.hash,
+          orElse: () => null);
+      if (_item != null) {
+        this._item = _item;
+        return;
+      }
+      if (questlineDefinition != null) {
+        List<int> questStepsHashes = questlineDefinition.setData.itemList
+            .map((i) => i.itemHash)
+            .toList();
+        _item = charInventory.firstWhere(
+            (i) => questStepsHashes.contains(i.itemHash),
+            orElse: () => null);
+        this._item = _item;
+        return;
+      }
+    }
+  }
+
+  updateProgress() {
+    var _itemInstanceId = this.itemInstanceId;
+    itemObjectives = widget.profile.getItemObjectives(_itemInstanceId);
+    setState(() {});
   }
 }

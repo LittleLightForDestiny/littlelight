@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
+import 'package:bungie_api/models/destiny_item_plug.dart';
 import 'package:bungie_api/models/destiny_objective_definition.dart';
 import 'package:bungie_api/models/destiny_objective_progress.dart';
 import 'package:flutter/material.dart';
@@ -47,11 +48,39 @@ class ItemObjectivesWidgetState extends DestinyItemState<ItemObjectivesWidget> {
     subscription = widget.broadcaster.listen((event) {
       if (event.type == NotificationType.receivedUpdate ||
           event.type == NotificationType.localUpdate && mounted) {
-        itemObjectives =
-            widget.profile.getItemObjectives(widget.item.itemInstanceId);
-        setState(() {});
+        updateProgress();
       }
     });
+  }
+
+  updateProgress() {
+    if (AuthService().isLogged) {
+      var itemInstanceId = widget.item?.itemInstanceId;
+      if (itemInstanceId == null) {
+        var allItems = widget.profile.getAllItems();
+        var item = allItems.firstWhere(
+            (i) => i.itemHash == widget.definition?.hash,
+            orElse: () => null);
+        itemInstanceId = item?.itemInstanceId;
+      }
+      if (itemInstanceId == null) {
+        var sockets = widget.profile.getAllSockets();
+        DestinyItemPlug plugItem; 
+        sockets.values.firstWhere((s){
+          s.sockets.firstWhere((c){
+            plugItem = c?.reusablePlugs?.firstWhere((c)=>c.plugItemHash == widget.definition?.hash, orElse: ()=>null);
+            return plugItem != null;
+          }, orElse: ()=>null);
+          return plugItem != null;
+        }, orElse: ()=>null);
+        itemObjectives = plugItem.plugObjectives;
+        setState(() {});
+        return;
+      }
+      if (itemInstanceId == null) return;
+      itemObjectives = widget.profile.getItemObjectives(itemInstanceId);
+      setState(() {});
+    }
   }
 
   @override
@@ -61,9 +90,7 @@ class ItemObjectivesWidgetState extends DestinyItemState<ItemObjectivesWidget> {
   }
 
   loadDefinitions() async {
-    if (AuthService().isLogged) {
-      itemObjectives = widget.profile.getItemObjectives(item?.itemInstanceId);
-    }
+    updateProgress();
     objectiveDefinitions = await widget.manifest
         .getDefinitions<DestinyObjectiveDefinition>(
             definition?.objectives?.objectiveHashes);
@@ -76,26 +103,29 @@ class ItemObjectivesWidgetState extends DestinyItemState<ItemObjectivesWidget> {
   Widget build(BuildContext context) {
     List<Widget> items = [];
     if ((objectiveDefinitions?.length ?? 0) == 0) return Container();
-
+    if(itemObjectives != null){
+      if(itemObjectives.where((o)=>o.visible != false).length == 0){
+        return Container();
+      }
+    }
     items.add(Container(
         padding: EdgeInsets.all(8),
         child: HeaderWidget(
             padding: EdgeInsets.all(0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-              Container(
-                  padding: EdgeInsets.all(8),
-                  child: TranslatedTextWidget("Objectives",
-                      uppercase: true,
-                      style: TextStyle(fontWeight: FontWeight.bold))),
-              buildRefreshButton(context)
-            ]))));
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                      padding: EdgeInsets.all(8),
+                      child: TranslatedTextWidget("Objectives",
+                          uppercase: true,
+                          style: TextStyle(fontWeight: FontWeight.bold))),
+                  buildRefreshButton(context)
+                ]))));
     items.addAll(buildObjectives(context));
     items.add(buildTrackButton(context));
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: items);
+        crossAxisAlignment: CrossAxisAlignment.stretch, children: items);
   }
 
   updateTrackStatus() async {
@@ -104,7 +134,7 @@ class ItemObjectivesWidgetState extends DestinyItemState<ItemObjectivesWidget> {
         (o) =>
             o.hash == widget.definition.hash &&
             o.type == TrackedObjectiveType.Item &&
-            o.instanceId == widget.item.itemInstanceId &&
+            (o.instanceId == widget.item?.itemInstanceId ?? o.instanceId == null) &&
             o.characterId == widget.characterId,
         orElse: () => null);
     isTracking = tracked != null;
@@ -125,10 +155,16 @@ class ItemObjectivesWidgetState extends DestinyItemState<ItemObjectivesWidget> {
           var service = LittleLightService();
           if (isTracking) {
             service.removeTrackedObjective(
-                TrackedObjectiveType.Item, definition.hash, widget.item.itemInstanceId, widget.characterId);
+                TrackedObjectiveType.Item,
+                definition.hash,
+                instanceId:widget.item?.itemInstanceId,
+                characterId:widget.characterId);
           } else {
             service.addTrackedObjective(
-                TrackedObjectiveType.Item, definition.hash, widget.item.itemInstanceId, widget.characterId);
+                TrackedObjectiveType.Item,
+                definition.hash,
+                instanceId:widget.item?.itemInstanceId,
+                characterId:widget.characterId);
           }
           updateTrackStatus();
         },
@@ -170,8 +206,8 @@ class ItemObjectivesWidgetState extends DestinyItemState<ItemObjectivesWidget> {
     return Container(
         padding: EdgeInsets.all(8),
         child: ObjectiveWidget(
-          key:
-              Key("objective_${objective?.objectiveHash}_${objective?.progress}"),
+          key: Key(
+              "objective_${objective?.objectiveHash}_${objective?.progress}"),
           definition: def,
           objective: objective,
         ));

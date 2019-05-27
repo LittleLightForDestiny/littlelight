@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
+import 'package:bungie_api/models/destiny_item_plug.dart';
 import 'package:bungie_api/models/destiny_item_socket_category_definition.dart';
 import 'package:bungie_api/models/destiny_item_socket_entry_definition.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
@@ -18,7 +19,6 @@ import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/flutter/smaller_switch.dart';
 
-
 class ItemDetailModsWidget extends StatefulWidget {
   final Map<int, DestinyInventoryItemDefinition> plugDefinitions;
   final DestinyItemComponent item;
@@ -27,9 +27,7 @@ class ItemDetailModsWidget extends StatefulWidget {
   final ProfileService profile = ProfileService();
 
   ItemDetailModsWidget(this.item, this.definition, this.instanceInfo,
-      {
-      Key key,
-      this.plugDefinitions})
+      {Key key, this.plugDefinitions})
       : super(key: key);
 
   @override
@@ -69,7 +67,8 @@ class ItemDetailModsWidgetState extends State<ItemDetailModsWidget> {
                           ),
                           Row(
                             children: <Widget>[
-                              TranslatedTextWidget("Details",
+                              TranslatedTextWidget(
+                                "Details",
                                 uppercase: true,
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
@@ -92,9 +91,12 @@ class ItemDetailModsWidgetState extends State<ItemDetailModsWidget> {
                 padding: EdgeInsets.symmetric(vertical: 8),
                 child: AnimatedCrossFade(
                   duration: Duration(milliseconds: 300),
-                  crossFadeState: showDetails ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                  crossFadeState: showDetails
+                      ? CrossFadeState.showFirst
+                      : CrossFadeState.showSecond,
                   firstChild: buildPerkList(context),
-                  secondChild: perkColumns(context),))
+                  secondChild: buildModIcons(context),
+                ))
           ],
         ));
   }
@@ -103,7 +105,7 @@ class ItemDetailModsWidgetState extends State<ItemDetailModsWidget> {
     List<Widget> children = [];
     category.socketIndexes.forEach((s) {
       var def = plugDefinitions[getPlugHashBySocketIndex(s)];
-      if(def == null) return;
+      if (def == null) return;
       children.add(buildCategoryHeader(context, s));
       var perks = buildCategoryPerksList(context, s);
       children.addAll(perks);
@@ -118,15 +120,15 @@ class ItemDetailModsWidgetState extends State<ItemDetailModsWidget> {
     var def = plugDefinitions[getPlugHashBySocketIndex(index)];
     if ((def?.itemTypeDisplayName?.length ?? 0) <= 1) {
       return Container(
-      color: Colors.black,
-      alignment: Alignment.center,
-      padding: EdgeInsets.all(8),
-      child: TranslatedTextWidget(
-        "Other",
-        uppercase: true,
-        style: TextStyle(fontWeight: FontWeight.bold),
-      ),
-    );
+        color: Colors.black,
+        alignment: Alignment.center,
+        padding: EdgeInsets.all(8),
+        child: TranslatedTextWidget(
+          "Other",
+          uppercase: true,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+      );
     }
     return Container(
       color: Colors.black,
@@ -148,49 +150,25 @@ class ItemDetailModsWidgetState extends State<ItemDetailModsWidget> {
 
   Widget buildPerkListItem(BuildContext context, int hash) {
     var plugDef = plugDefinitions[hash];
-    return PerkListItem(definition:plugDef);
+    var plug = getPlugItemByHash(hash);
+    return PerkListItem(definition: plugDef, plug: plug, parentHash: widget.definition.hash);
   }
 
-  Widget perkColumns(BuildContext context) {
-    double availableWidth = MediaQuery.of(context).size.width - 16;
-    double colWidth =
-        min(availableWidth / 6, availableWidth / category.socketIndexes.length);
+  Widget buildModIcons(BuildContext context) {
     return Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: category.socketIndexes.map((socketIndex) {
-          return Container(
-              key: Key("perk_socket_$socketIndex"),
-              width: colWidth,
-              height: colWidth,
-              child: item != null
-                  ? instancePlugItems(context, socketIndex)
-                  : definitionPlugItems(context, socketIndex));
+          
+          return buildPlugItem(context, socketIndex);
         }).toList());
   }
 
-  Widget instancePlugItems(BuildContext context, int socketIndex) {
-    DestinyItemSocketState socket = socketStates[socketIndex];
-    int hash = socket.plugHash;
-    if(hash == null && (socket?.reusablePlugHashes?.length ?? 0) > 0){
-      hash = socket.reusablePlugHashes[0];
-    }
-    return plugItem(context, hash, socketIndex);
-  }
-
-  Widget definitionPlugItems(BuildContext context, int socketIndex) {
-    DestinyItemSocketEntryDefinition socket = socketEntries[socketIndex];
-    int hash = socket.singleInitialItemHash;
-    if (hash == null && socket.reusablePlugItems.length > 0) {
-      hash = socket.reusablePlugItems[0].plugItemHash;
-    }
-    if (hash == null && socket.randomizedPlugItems.length > 0) {
-      hash = socket.randomizedPlugItems[0].plugItemHash;
-    }
-    return plugItem(context, hash, socketIndex);
-  }
-
-  Widget plugItem(BuildContext context, int plugItemHash, int socketIndex) {
+  Widget buildPlugItem(BuildContext context, int socketIndex) {
+    double availableWidth = MediaQuery.of(context).size.width - 16;
+    double colWidth =
+        min(availableWidth / 6, availableWidth / category.socketIndexes.length);
+    int plugItemHash = getPlugHashBySocketIndex(socketIndex);
     DestinyInventoryItemDefinition plugDefinition =
         plugDefinitions[plugItemHash];
 
@@ -199,28 +177,34 @@ class ItemDetailModsWidgetState extends State<ItemDetailModsWidget> {
       return Container();
     }
     return Container(
+              key: Key("perk_socket_$socketIndex"),
+              width: colWidth,
+              height: colWidth,
+              child:Container(
         foregroundDecoration: BoxDecoration(
             border: Border.all(width: 1, color: Colors.grey.shade300)),
         margin: EdgeInsets.only(right: 4, top: 4),
         child: QueuedNetworkImage(
             imageUrl:
-                BungieApiService.url(plugDefinition.displayProperties.icon)));
+                BungieApiService.url(plugDefinition.displayProperties.icon))));
   }
 
   int getPlugHashBySocketIndex(int index) {
     var entry = socketEntries[index];
     var state = getSocketState(index);
-    if((state?.plugHash ?? 0) != 0){
+    if ((state?.plugHash ?? 0) != 0) {
       return state?.plugHash;
     }
-    if((entry.singleInitialItemHash ?? 0) != 0){
+    if ((entry.singleInitialItemHash ?? 0) != 0) {
       return entry.singleInitialItemHash;
     }
 
-    if(entry.randomizedPlugItems.length > 0 && (entry.randomizedPlugItems[0]?.plugItemHash ?? 0) != 0){
+    if (entry.randomizedPlugItems.length > 0 &&
+        (entry.randomizedPlugItems[0]?.plugItemHash ?? 0) != 0) {
       return entry.randomizedPlugItems[0]?.plugItemHash;
     }
-    if(entry.reusablePlugItems.length > 0 && (entry.reusablePlugItems[0]?.plugItemHash ?? 0) != 0) {
+    if (entry.reusablePlugItems.length > 0 &&
+        (entry.reusablePlugItems[0]?.plugItemHash ?? 0) != 0) {
       return entry.reusablePlugItems[0]?.plugItemHash;
     }
     return null;
@@ -229,24 +213,46 @@ class ItemDetailModsWidgetState extends State<ItemDetailModsWidget> {
   int getEquippedPlugHashBySocketIndex(int index) {
     var entry = socketEntries[index];
     var state = getSocketState(index);
-    if((state?.plugHash ?? 0) != 0){
+    if ((state?.plugHash ?? 0) != 0) {
       return state?.plugHash;
     }
-    if((entry.singleInitialItemHash ?? 0) != 0){
+    if ((entry.singleInitialItemHash ?? 0) != 0) {
       return entry.singleInitialItemHash;
     }
 
-    if(entry.randomizedPlugItems.length > 0 && (entry.randomizedPlugItems[0]?.plugItemHash ?? 0) != 0){
+    if (entry.randomizedPlugItems.length > 0 &&
+        (entry.randomizedPlugItems[0]?.plugItemHash ?? 0) != 0) {
       return entry.randomizedPlugItems[0]?.plugItemHash;
     }
-    if(entry.reusablePlugItems.length > 0 && (entry.reusablePlugItems[0]?.plugItemHash ?? 0) != 0) {
+    if (entry.reusablePlugItems.length > 0 &&
+        (entry.reusablePlugItems[0]?.plugItemHash ?? 0) != 0) {
       return entry.reusablePlugItems[0]?.plugItemHash;
     }
     return null;
   }
 
-  DestinyItemSocketState getSocketState(int index){
-    if(item?.itemInstanceId == null) return null;
+  DestinyItemPlug getPlugItemByHash(int hash) {
+    var itemInstanceId = item?.itemInstanceId;
+    if (itemInstanceId == null) {
+      var allItems = widget.profile.getAllItems();
+      var item = allItems.firstWhere(
+          (i) => i.itemHash == widget.definition?.hash,
+          orElse: () => null);
+      itemInstanceId = item?.itemInstanceId;
+    }
+    if (itemInstanceId == null) return null;
+    List<DestinyItemSocketState> socketStates =
+        widget.profile.getItemSockets(itemInstanceId);
+    var socketState = socketStates.firstWhere(
+        (s) => s?.reusablePlugHashes?.contains(hash) ?? false,
+        orElse: () => null);
+    if (socketState == null) return null;
+    return socketState.reusablePlugs
+        .firstWhere((p) => p.plugItemHash == hash, orElse: () => null);
+  }
+
+  DestinyItemSocketState getSocketState(int index) {
+    if (item?.itemInstanceId == null) return null;
     List<DestinyItemSocketState> socketStates =
         widget.profile.getItemSockets(item.itemInstanceId);
     return socketStates[index];
@@ -255,14 +261,17 @@ class ItemDetailModsWidgetState extends State<ItemDetailModsWidget> {
   List<int> getPlugHashesBySocketIndex(int index) {
     var entry = socketEntries[index];
     var state = getSocketState(index);
-    if((state?.reusablePlugHashes?.length ?? 0) > 0){
-      return state?.reusablePlugHashes;
+    if (state != null) {
+      return state?.reusablePlugHashes ?? [state.plugHash];
     }
-    if((entry?.randomizedPlugItems?.length ?? 0) > 0){
+    if ((entry?.randomizedPlugItems?.length ?? 0) > 0) {
       return entry.randomizedPlugItems.map((i) => i.plugItemHash).toList();
     }
-    if((entry?.reusablePlugItems?.length ?? 0) > 0){
+    if ((entry?.reusablePlugItems?.length ?? 0) > 0) {
       return entry.reusablePlugItems.map((i) => i.plugItemHash)?.toList();
+    }
+    if (entry?.singleInitialItemHash != null) {
+      return [entry?.singleInitialItemHash];
     }
     return [];
   }
