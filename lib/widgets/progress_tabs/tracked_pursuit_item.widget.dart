@@ -6,6 +6,8 @@ import 'package:bungie_api/models/destiny_objective_definition.dart';
 import 'package:bungie_api/models/destiny_objective_progress.dart';
 
 import 'package:flutter/material.dart';
+import 'package:little_light/services/littlelight/littlelight.service.dart';
+import 'package:little_light/services/littlelight/models/tracked_objective.model.dart';
 
 import 'package:little_light/widgets/progress_tabs/pursuit_item.widget.dart';
 
@@ -86,6 +88,7 @@ class TrackedPursuitItemWidgetState<T extends TrackedPursuitItemWidget>
 
     if (_item != null) {
       this._item = _item;
+      setState(() {});
       return;
     }
     if ([
@@ -99,6 +102,7 @@ class TrackedPursuitItemWidgetState<T extends TrackedPursuitItemWidget>
           orElse: () => null);
       if (_item != null) {
         this._item = _item;
+        setState(() {});
         return;
       }
       if (questlineDefinition != null) {
@@ -109,9 +113,11 @@ class TrackedPursuitItemWidgetState<T extends TrackedPursuitItemWidget>
             (i) => questStepsHashes.contains(i.itemHash),
             orElse: () => null);
         this._item = _item;
+        setState(() {});
         return;
       }
     }
+    LittleLightService().removeTrackedObjective(TrackedObjectiveType.Item, widget.hash, instanceId:itemInstanceId, characterId: widget.characterId);
   }
 
   updateProgress() {
