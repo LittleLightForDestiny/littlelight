@@ -64,6 +64,7 @@ class ExceptionHandler {
       bool shouldShowLoginButton = [1601, 99].contains(error.errorCode);
       BungieApiException e = error;
       showDialog(
+        barrierDismissible: false,
         context: context,
         builder: (context) => SimpleDialog(
               title: TranslatedTextWidget(e.errorStatus),
@@ -72,7 +73,6 @@ class ExceptionHandler {
                     padding: EdgeInsets.all(16),
                     child: TranslatedTextWidget(
                       e.message,
-                      textAlign: TextAlign.center,
                     )),
                 Container(
                     padding: EdgeInsets.symmetric(horizontal: 16),

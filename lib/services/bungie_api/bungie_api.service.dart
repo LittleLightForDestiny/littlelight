@@ -183,12 +183,19 @@ class Client implements HttpClient {
       await AuthService().refreshToken(token);
       return request(config);
     }
-    if (response.statusCode != 200) {
-      throw BungieApiException({'ErrorCode': response.statusCode});
+    dynamic json;
+    try{
+      json = jsonDecode(response?.body ?? "{}");
+    }catch(e){
+      json = {};
     }
-    dynamic json = jsonDecode(response.body);
+     
+    if (response.statusCode != 200) {
+      throw BungieApiException(json, response.statusCode);
+    }
+    
     if (json["ErrorCode"] != null && json["ErrorCode"] > 2) {
-      throw BungieApiException(json);
+      throw BungieApiException(json, response.statusCode);
     }
     return HttpResponse(json, response.statusCode);
   }
@@ -196,10 +203,11 @@ class Client implements HttpClient {
 
 class BungieApiException implements Exception {
   final dynamic data;
-  BungieApiException(this.data);
+  final int httpStatus;
+  BungieApiException(this.data, [this.httpStatus]);
   int get errorCode => data["ErrorCode"];
-  String get errorStatus => data["ErrorStatus"];
-  String get message => data["Message"];
+  String get errorStatus => data["ErrorStatus"] ?? data['error'];
+  String get message => data["Message"] ?? data['error_description'];
   @override
   String toString() {
     return "$errorStatus - $message";

@@ -84,6 +84,7 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
         checkLogin();
       }
     } catch (e) {
+      print(e);
       this.changeContent(
           Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
