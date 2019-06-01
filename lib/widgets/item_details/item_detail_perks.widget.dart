@@ -45,7 +45,7 @@ class ItemDetailPerksWidget extends StatefulWidget {
   }
 }
 
-class ItemDetailPerksWidgetState extends State<ItemDetailPerksWidget> {
+class ItemDetailPerksWidgetState extends State<ItemDetailPerksWidget> with AutomaticKeepAliveClientMixin {
   Map<int, DestinyInventoryItemDefinition> get plugDefinitions =>
       widget.plugDefinitions;
   DestinyItemComponent get item => widget.item;
@@ -56,6 +56,7 @@ class ItemDetailPerksWidgetState extends State<ItemDetailPerksWidget> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     if (plugDefinitions == null) {
       return Container();
     }
@@ -348,4 +349,7 @@ class ItemDetailPerksWidgetState extends State<ItemDetailPerksWidget> {
             .contains(cat.socketCategoryHash),
         orElse: () => null);
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

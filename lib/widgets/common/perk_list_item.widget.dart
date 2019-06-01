@@ -56,14 +56,15 @@ class PerkListItemState extends State<PerkListItem>
     updateTrackStatus();
   }
 
-  loadDefinitions() async{
-    if((definition?.objectives?.objectiveHashes?.length ?? 0) > 0){
-      objectiveDefinitions = await widget.manifest.getDefinitions<DestinyObjectiveDefinition>(definition.objectives.objectiveHashes);
-      if(mounted){
-        setState(() { });
+  loadDefinitions() async {
+    if ((definition?.objectives?.objectiveHashes?.length ?? 0) > 0) {
+      objectiveDefinitions = await widget.manifest
+          .getDefinitions<DestinyObjectiveDefinition>(
+              definition.objectives.objectiveHashes);
+      if (mounted) {
+        setState(() {});
       }
     }
-    
   }
 
   @override
@@ -200,20 +201,23 @@ class PerkListItemState extends State<PerkListItem>
     if ((definition?.objectives?.objectiveHashes?.length ?? 0) == 0) {
       return Container();
     }
-    List<Widget> children = definition.objectives.objectiveHashes
-                .map<Widget>((hash) => ObjectiveWidget(
-                      definition: getObjectiveDefinition(hash),
-                      objective: getObjective(hash),
-                      placeholder: definition?.displayProperties?.name ?? "",
-                    ))
-                .toList();
-    if((widget.plug?.plugObjectives?.length ?? 0 ) > 0){
+    List<Widget> children =
+        definition.objectives.objectiveHashes.map<Widget>((hash) {
+      var objective = getObjective(hash);
+      if(!(objective?.visible ?? false)) return Container();
+      return ObjectiveWidget(
+        definition: getObjectiveDefinition(hash),
+        objective: objective,
+        placeholder: definition?.displayProperties?.name ?? "",
+      );
+    }).toList();
+    if ((widget.plug?.plugObjectives?.length ?? 0) > 0) {
       children.add(buildTrackButton(context));
     }
     return Container(
         // padding: EdgeInsets.all(8),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: children));
   }
 
@@ -230,12 +234,11 @@ class PerkListItemState extends State<PerkListItem>
           var service = LittleLightService();
           if (isTracking) {
             service.removeTrackedObjective(
-                TrackedObjectiveType.Plug,
-                definition.hash);
+                TrackedObjectiveType.Plug, definition.hash);
           } else {
             service.addTrackedObjective(
-                TrackedObjectiveType.Plug,
-                definition.hash, parentHash: widget.parentHash);
+                TrackedObjectiveType.Plug, definition.hash,
+                parentHash: widget.parentHash);
           }
           updateTrackStatus();
         },
@@ -257,13 +260,14 @@ class PerkListItemState extends State<PerkListItem>
     setState(() {});
   }
 
-  DestinyObjectiveDefinition getObjectiveDefinition(int hash){
-    if(objectiveDefinitions == null) return null;
+  DestinyObjectiveDefinition getObjectiveDefinition(int hash) {
+    if (objectiveDefinitions == null) return null;
     return objectiveDefinitions[hash];
   }
 
   DestinyObjectiveProgress getObjective(hash) {
-    if(widget.plug?.plugObjectives == null) return null;
-    return widget.plug?.plugObjectives?.firstWhere((o) => o.objectiveHash == hash, orElse: () => null);
+    if (widget.plug?.plugObjectives == null) return null;
+    return widget.plug?.plugObjectives
+        ?.firstWhere((o) => o.objectiveHash == hash, orElse: () => null);
   }
 }

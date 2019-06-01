@@ -54,6 +54,10 @@ class LittleLight extends StatelessWidget {
               button: TextStyle(
             fontWeight: FontWeight.bold,
           )),
+          pageTransitionsTheme: PageTransitionsTheme(builders: {
+            TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+            TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+          }),
           sliderTheme: SliderThemeData.fromPrimaryColors(
               primaryColor: Colors.lightBlue,
               primaryColorDark: Colors.lightBlue,

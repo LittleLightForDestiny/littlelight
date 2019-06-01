@@ -6,6 +6,7 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/rendering.dart';
 import 'package:little_light/screens/share_preview.screen.dart';
+import 'package:little_light/widgets/common/masterwork_counter.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
@@ -70,6 +71,7 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
             Container(),
             background(context, expandRatio),
             overlay(context, expandRatio),
+            masterworkCounter(context, expandRatio),
             nameBar(context, expandRatio),
             icon(context, expandRatio),
             backButton(context, expandRatio),
@@ -134,10 +136,25 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
                 expandRatio)));
   }
 
+  Widget masterworkCounter(BuildContext context, double expandRatio) {
+    double leftOffset = lerpDouble(kToolbarHeight * 2 - 16, 104, expandRatio);
+    return Positioned(
+        left: leftOffset,
+        bottom: kToolbarHeight * expandRatio*.8,
+        right:kToolbarHeight,
+        child: MasterworkCounterWidget(item));
+  }
+
   Widget shareButton(BuildContext context, double expandRatio) {
-    if(instanceInfo == null) return Container();
-    var acceptedItemTypes = [DestinyItemType.Armor,DestinyItemType.Weapon, DestinyItemType.Ghost, DestinyItemType.Ship, DestinyItemType.Vehicle];
-    if(!acceptedItemTypes.contains(definition?.itemType)) return Container();
+    if (instanceInfo == null) return Container();
+    var acceptedItemTypes = [
+      DestinyItemType.Armor,
+      DestinyItemType.Weapon,
+      DestinyItemType.Ghost,
+      DestinyItemType.Ship,
+      DestinyItemType.Vehicle
+    ];
+    if (!acceptedItemTypes.contains(definition?.itemType)) return Container();
     return Positioned(
         right: 0,
         bottom: 0 + kToolbarHeight * expandRatio,
