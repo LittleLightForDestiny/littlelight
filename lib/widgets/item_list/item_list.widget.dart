@@ -85,7 +85,6 @@ class ItemListWidgetState extends State<ItemListWidget> {
         widget.profile.getProfileInventory();
     List<ListItem> listIndex = [];
     listIndex.add(new ListItem(ListItem.infoHeader, null));
-
     for (int hash in widget.bucketHashes) {
       List<DestinyItemComponent> inventory = characterInventory;
       if (ProfileService.profileBuckets.contains(hash)) {
@@ -98,7 +97,7 @@ class ItemListWidgetState extends State<ItemListWidget> {
       List<DestinyItemComponent> unequipped =
           inventory.where((item) => item.bucketHash == hash).toList();
       unequipped.sort((itemA, itemB) {
-        return InventoryUtils.sortDestinyItems(itemA, itemB, widget.profile);
+        return InventoryUtils.sortDestinyItems(itemA, itemB);
       });
       int bucketSize = bucketDef?.itemCount ?? 0;
       if (hash == InventoryBucket.subclass) {

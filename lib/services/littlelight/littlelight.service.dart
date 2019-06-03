@@ -16,6 +16,15 @@ class LittleLightService {
   String _secret;
   static const _uuidPrefKey = "littlelight_device_id";
   static const _secretPrefKey = "littlelight_secret";
+
+  List<int> raidHashes = [
+    3660836525,
+    2986584050,
+    2683538554,
+    3181387331,
+    1342567285,
+  ];
+
   static final LittleLightService _singleton =
       new LittleLightService._internal();
   factory LittleLightService() {
@@ -25,6 +34,29 @@ class LittleLightService {
 
   List<Loadout> _loadouts;
   List<TrackedObjective> _trackedObjectives;
+
+
+  loadData() async{
+    Directory directory = await getApplicationDocumentsDirectory();
+    File cached = new File("${directory.path}/cached_raid_hashes.json");
+    bool exists = await cached?.exists();
+    if (exists) {
+      raidHashes = List<int>.from(jsonDecode(cached.readAsStringSync()));
+    }
+    Uri uri = Uri(
+        scheme: 'http',
+        host: "www.littlelight.club",
+        path: "data/raid_hashes.json");
+    http.Response response = await http.get(uri);
+    try{
+      dynamic json = jsonDecode(response.body);
+      raidHashes = List<int>.from(json);
+      cached.writeAsString(response.body);
+    }catch(e){
+      print(e);
+      print("cant load raid hashes");
+    }
+  }
 
   Future<List<Loadout>> getLoadouts({forceFetch: false}) async {
     if (_loadouts != null && !forceFetch) return _loadouts;

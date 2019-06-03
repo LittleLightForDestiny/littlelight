@@ -55,8 +55,8 @@ class VaultItemListWidgetState extends ItemListWidgetState
         .where((item) => item.bucketHash == InventoryBucket.general)
         .toList();
     List<int> hashes = inventory.map((item) => item.itemHash).toList();
-    Map<int, DestinyInventoryItemDefinition> defs = (await widget.manifest
-        .getDefinitions<DestinyInventoryItemDefinition>(hashes));
+    Map<int, DestinyInventoryItemDefinition> defs = await widget.manifest
+        .getDefinitions<DestinyInventoryItemDefinition>(hashes);
     Map<int, List<DestinyItemComponent>> itemsByBucket = new Map();
 
     for (int i = 0; i < inventory.length; i++) {
@@ -80,8 +80,8 @@ class VaultItemListWidgetState extends ItemListWidgetState
         // return;
       }
 
-      unequipped.sort((itemA, itemB) {
-        return InventoryUtils.sortDestinyItems(itemA, itemB, widget.profile);
+       unequipped.sort((itemA, itemB ) {
+        return InventoryUtils.sortDestinyItems(itemA, itemB, defA:defs[itemA.itemHash], defB:defs[itemB.itemHash]);
       });
 
       int itemCount = unequipped.length;

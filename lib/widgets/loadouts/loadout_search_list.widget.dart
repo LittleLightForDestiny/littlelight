@@ -52,7 +52,7 @@ class LoadoutSearchListWidgetState
   List<int> get excludeItemTypes => null;
 
   @override
-  List<SortParameter> get sortOrder => [SortParameter(SortParameterType.power, -1)];
+  List<SortParameter> get sortOrder => [SortParameter(type:SortParameterType.PowerLevel, direction:-1)];
 
   @override
   List<ItemWithOwner> get filteredItems {

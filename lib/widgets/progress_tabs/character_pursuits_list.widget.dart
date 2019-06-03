@@ -58,8 +58,8 @@ class _CharacterPursuitsListWidgetState
     var defs = await widget.manifest
         .getDefinitions<DestinyInventoryItemDefinition>(pursuitHashes);
     pursuits.sort((itemA, itemB) => InventoryUtils.sortDestinyItems(
-        itemA, itemB, widget.profile,
-        sortingParams: [SortParameter(SortParameterType.tierType, -1)],
+        itemA, itemB,
+        sortingParams: [SortParameter(type:SortParameterType.TierType, direction:-1)],
         defA: defs[itemA.itemHash],
         defB: defs[itemB.itemHash]));
     if (mounted) {

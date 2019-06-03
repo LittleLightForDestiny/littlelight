@@ -31,10 +31,7 @@ class SearchTabData {
       this.excludeItemTypes,
       this.label,
       this.filterData,
-      this.sortOrder = const [
-        SortParameter(SortParameterType.bucketHash),
-        SortParameter(SortParameterType.power, -1),
-      ]});
+      this.sortOrder});
 }
 
 class SearchScreen extends StatefulWidget {
@@ -55,13 +52,6 @@ class SearchScreenState extends State<SearchScreen>
     SearchTabData(
         itemTypes: [
           DestinyItemType.Weapon
-        ],
-        sortOrder: [
-          SortParameter(SortParameterType.bucketHash),
-          SortParameter(SortParameterType.power, -1),
-          SortParameter(SortParameterType.tierType, -1),
-          SortParameter(SortParameterType.subType),
-          SortParameter(SortParameterType.name),
         ],
         filterData: {
           FilterType.powerLevel: FilterItem(
@@ -120,13 +110,6 @@ class SearchScreenState extends State<SearchScreen>
         itemTypes: [
           DestinyItemType.Armor
         ],
-        sortOrder: [
-          SortParameter(SortParameterType.bucketHash),
-          SortParameter(SortParameterType.classType),
-          SortParameter(SortParameterType.power, -1),
-          SortParameter(SortParameterType.tierType, -1),
-          SortParameter(SortParameterType.name),
-        ],
         filterData: {
           FilterType.powerLevel: FilterItem(
               [0, DestinyData.maxPowerLevel], [0, DestinyData.maxPowerLevel],
@@ -183,9 +166,9 @@ class SearchScreenState extends State<SearchScreen>
           DestinyItemType.Bounty,
         ],
         sortOrder: [
-          SortParameter(SortParameterType.type),
-          SortParameter(SortParameterType.tierType, -1),
-          SortParameter(SortParameterType.name),
+          SortParameter(type:SortParameterType.SubType),
+          SortParameter(type:SortParameterType.TierType, direction:-1),
+          SortParameter(type:SortParameterType.Name),
         ]),
     //// FLAIR ////
     SearchTabData(
@@ -216,9 +199,9 @@ class SearchScreenState extends State<SearchScreen>
           DestinyItemType.Emblem,
         ],
         sortOrder: [
-          SortParameter(SortParameterType.type),
-          SortParameter(SortParameterType.tierType, -1),
-          SortParameter(SortParameterType.name),
+          SortParameter(type:SortParameterType.SubType),
+          SortParameter(type:SortParameterType.TierType, direction:-1),
+          SortParameter(type:SortParameterType.Name),
         ]),
   ];
 
@@ -279,8 +262,10 @@ class SearchScreenState extends State<SearchScreen>
                                   ),
                             )
                             .toList()))),
-                          SelectedItemsWidget(),
-                          Container(height: screenPadding.bottom,)
+            SelectedItemsWidget(),
+            Container(
+              height: screenPadding.bottom,
+            )
           ]),
           InventoryNotificationWidget(
             key: Key('inventory_notification_widget'),

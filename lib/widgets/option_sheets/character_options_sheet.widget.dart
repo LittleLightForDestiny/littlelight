@@ -450,7 +450,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
     var instancedItems =
         allItems.where((i) => i.itemInstanceId != null).toList();
     instancedItems.sort((itemA, itemB) =>
-        InventoryUtils.sortDestinyItems(itemA, itemB, widget.profile));
+        InventoryUtils.sortDestinyItems(itemA, itemB));
     LoadoutItemIndex maxLightLoadout = new LoadoutItemIndex();
     LoadoutItemIndex exoticPieces = new LoadoutItemIndex();
     var hashes = instancedItems.map((i) => i.itemHash);

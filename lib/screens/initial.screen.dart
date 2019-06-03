@@ -7,6 +7,7 @@ import 'package:little_light/exceptions/exception_handler.dart';
 import 'package:little_light/screens/main.screen.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
+import 'package:little_light/services/littlelight/littlelight.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/translate/translate.service.dart';
@@ -43,6 +44,7 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
   bool forceReauth = false;
   @override
   void initState() {
+    LittleLightService().loadData();
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarBrightness: Brightness.dark));

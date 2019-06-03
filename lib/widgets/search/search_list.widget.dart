@@ -67,8 +67,7 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
     });
     allItems.addAll(
         profile.getProfileInventory().map((item) => ItemWithOwner(item, null)));
-    allItems.sort(
-        (a, b) => InventoryUtils.sortDestinyItems(a.item, b.item, profile));
+    allItems.sort((a, b) => InventoryUtils.sortDestinyItems(a.item, b.item));
     items = allItems.where((item) {
       return item.item.itemInstanceId != null;
     }).toList();
@@ -101,7 +100,7 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
 
   sortItems() {
     items.sort((itemA, itemB) => InventoryUtils.sortDestinyItems(
-        itemA.item, itemB.item, widget.profile,
+        itemA.item, itemB.item,
         defA: itemDefinitions[itemA.item.itemHash],
         defB: itemDefinitions[itemB.item.itemHash],
         sortingParams: sortOrder));

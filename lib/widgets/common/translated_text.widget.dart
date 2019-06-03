@@ -78,6 +78,7 @@ class TranslatedTextWidgetState extends State<TranslatedTextWidget> {
       textAlign: widget.textAlign,
       textDirection: widget.textDirection,
       textScaleFactor: widget.textScaleFactor,
+      key:Key(text)
     );
   }
 }

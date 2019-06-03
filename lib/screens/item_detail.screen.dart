@@ -87,7 +87,7 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
         .where((i) => i.itemHash == this.definition.hash)
         .map((item) => ItemWithOwner(item, null)));
     allItems.sort((a, b) =>
-        InventoryUtils.sortDestinyItems(a.item, b.item, widget.profile));
+        InventoryUtils.sortDestinyItems(a.item, b.item));
     duplicates = allItems.where((i) {
       return i.item.itemInstanceId != null &&
           i.item.itemInstanceId != item?.itemInstanceId;
