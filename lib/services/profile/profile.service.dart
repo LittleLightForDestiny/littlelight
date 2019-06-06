@@ -21,11 +21,10 @@ import 'package:bungie_api/enums/destiny_component_type_enum.dart';
 import 'package:bungie_api/enums/destiny_scope_enum.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/notification/notification.service.dart';
+import 'package:little_light/utils/inventory_utils.dart';
 import 'package:path_provider/path_provider.dart';
 
 enum LastLoadedFrom { server, cache }
-
-enum CharacterOrder { none, lastPlayed, firstCreated, lastCreated }
 
 class ProfileComponentGroups {
   static const List<int> basicProfile = [
@@ -228,7 +227,7 @@ class ProfileService {
 
   bool isPlaying() {
     try{
-      var lastCharacter = getCharacters(CharacterOrder.lastPlayed)?.first;
+      var lastCharacter = getCharacters(CharacterSortParameter(type:CharacterSortParameterType.LastPlayed))?.first;
       if(lastCharacter == null) return false;
       var lastPlayed = DateTime.parse(lastCharacter.dateLastPlayed);
       var currentSession = lastCharacter.minutesPlayedThisSession;
@@ -242,7 +241,7 @@ class ProfileService {
 
   _cacheProfile(DestinyProfileResponse profile) async {
     if (profile == null) return;
-    Map<String, dynamic> map = profile.toMap();
+    Map<String, dynamic> map = profile.toJson();
     Directory directory = await getApplicationDocumentsDirectory();
 
     File cached = await File("${directory.path}/cached_profile.json").create();
@@ -258,7 +257,7 @@ class ProfileService {
       try {
         String json = await cached.readAsString();
         Map<String, dynamic> map = jsonDecode(json);
-        DestinyProfileResponse response = DestinyProfileResponse.fromMap(map);
+        DestinyProfileResponse response = DestinyProfileResponse.fromJson(map);
         if ((response?.characters?.data?.length ?? 0) > 0) {
           this._profile = response;
           this._lastLoadedFrom = LastLoadedFrom.cache;
@@ -313,15 +312,19 @@ class ProfileService {
   }
 
   List<DestinyCharacterComponent> getCharacters(
-      [CharacterOrder order = CharacterOrder.none]) {
+      [CharacterSortParameter order]) {
     if (_profile?.characters == null) {
       return null;
     }
+    if(order == null){
+      order = CharacterSortParameter();
+    }
+
     List<DestinyCharacterComponent> list =
         _profile.characters.data.values.toList();
 
-    switch (order) {
-      case CharacterOrder.lastPlayed:
+    switch (order.type) {
+      case CharacterSortParameterType.LastPlayed:
         {
           list.sort((charA, charB) {
             DateTime dateA = DateTime.parse(charA.dateLastPlayed);
@@ -331,7 +334,7 @@ class ProfileService {
           break;
         }
 
-      case CharacterOrder.firstCreated:
+      case CharacterSortParameterType.LastPlayed:
         {
           list.sort((charA, charB) {
             return charA.characterId.compareTo(charB.characterId);
@@ -339,7 +342,7 @@ class ProfileService {
           break;
         }
 
-      case CharacterOrder.lastCreated:
+      case CharacterSortParameterType.LastPlayed:
         {
           list.sort((charA, charB) {
             return charB.characterId.compareTo(charA.characterId);
@@ -407,13 +410,13 @@ class ProfileService {
       DestinyCollectibleComponent collectible =
           _profile?.profileCollectibles?.data?.collectibles[hashStr] ?? null;
       if (collectible != null) {
-        return collectible.state & DestinyCollectibleState.NotAcquired !=
+        return (collectible?.state ?? DestinyCollectibleState.NotAcquired) & DestinyCollectibleState.NotAcquired !=
             DestinyCollectibleState.NotAcquired;
       }
     }
 
     return _profile?.characterCollectibles?.data?.values?.any((data) {
-          int state = data?.collectibles[hashStr]?.state;
+          int state = data?.collectibles[hashStr]?.state ?? DestinyCollectibleState.NotAcquired;
           return state & DestinyCollectibleState.NotAcquired !=
               DestinyCollectibleState.NotAcquired;
         }) ??

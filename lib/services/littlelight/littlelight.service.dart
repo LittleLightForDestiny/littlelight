@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:bungie_api/models/user_info_card.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/littlelight/models/loadout.model.dart';
 import 'package:http/http.dart' as http;
@@ -23,6 +24,7 @@ class LittleLightService {
     2683538554,
     3181387331,
     1342567285,
+    2590427074
   ];
 
   static final LittleLightService _singleton =
@@ -126,7 +128,7 @@ class LittleLightService {
   }
 
   Future<int> _saveLoadoutToServer(Loadout loadout) async {
-    Map<String, dynamic> map = loadout.toMap();
+    Map<String, dynamic> map = loadout.toJson();
     String body = jsonEncode(map);
     dynamic json = await _authorizedRequest("loadouts/save",
         method: _HttpMethod.post, body: body);
@@ -140,7 +142,7 @@ class LittleLightService {
   }
 
   Future<int> _deleteLoadoutOnServer(Loadout loadout) async {
-    Map<String, dynamic> map = loadout.toMap();
+    Map<String, dynamic> map = loadout.toJson();
     String body = jsonEncode(map);
     dynamic json = await _authorizedRequest("loadouts/delete",
         method: _HttpMethod.post, body: body);
@@ -159,7 +161,7 @@ class LittleLightService {
       return !exists;
     }).toList();
 
-    List<dynamic> map = distinctLoadouts.map((l) => l.toMap()).toList();
+    List<dynamic> map = distinctLoadouts.map((l) => l.toJson()).toList();
     String json = jsonEncode(map);
     await cached.writeAsString(json);
   }
@@ -206,7 +208,7 @@ class LittleLightService {
   Future<void> _saveTrackedObjectives() async {
     Directory directory = await getApplicationDocumentsDirectory();
     File cached = new File("${directory.path}/tracked_objectives.json");
-    List<dynamic> map = _trackedObjectives.where((l)=>l.hash != null).map((l) => l.toMap()).toList();
+    List<dynamic> map = _trackedObjectives.where((l)=>l.hash != null).map((l) => l.toJson()).toList();
     String json = jsonEncode(map);
     await cached.writeAsString(json);
   }
@@ -216,13 +218,13 @@ class LittleLightService {
       String body = "",
       _HttpMethod method = _HttpMethod.get}) async {
     AuthService auth = AuthService();
-    SavedMembership membership = await auth.getMembership();
+    UserInfoCard membership = await auth.getMembership();
     SavedToken token = await auth.getToken();
     String uuid = await _getUuid();
     String secret = await _getSecret();
     Map<String, dynamic> params = {
-      'membership_id': membership.selectedMembership.membershipId,
-      'membership_type': "${membership.selectedMembership.membershipType}",
+      'membership_id': membership.membershipId,
+      'membership_type': "${membership.membershipType}",
       'uuid': uuid,
     };
     if (secret != null) {

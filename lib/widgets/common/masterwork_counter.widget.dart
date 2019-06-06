@@ -33,6 +33,7 @@ class MasterworkCounterWidgetState extends State<MasterworkCounterWidget>
   loadDefinitions() async {
     if (widget.item == null) return;
     var itemSockets = widget.profile.getItemSockets(widget.item.itemInstanceId);
+    if(itemSockets == null) return;
     for (var socket in itemSockets) {
       if (socket.plugObjectives != null) {
         for (var objective in socket.plugObjectives) {

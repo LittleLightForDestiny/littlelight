@@ -2,6 +2,7 @@ import 'package:bungie_api/models/destiny_presentation_node_component.dart';
 import 'package:bungie_api/models/destiny_presentation_node_definition.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/user_settings/user_settings.service.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
@@ -47,7 +48,7 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget> {
       this.progress = profileNodes["${widget.hash}"];
       if(this.progress != null) return;
     }
-    var characters = widget.profile.getCharacters(CharacterOrder.lastPlayed);
+    var characters = widget.profile.getCharacters(UserSettingsService().characterOrdering);
     if(characters == null || characters.length == 0) return;
     var charId = characters.first.characterId;
     var characterNodes = widget.profile.getCharacterPresentationNodes(charId);

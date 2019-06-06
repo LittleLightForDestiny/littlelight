@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class UserSettingsService {
   static const String _keepAwakeKey = "userpref_keepAwake";
   static const String _itemOrderingKey = "userpref_itemOrdering";
+  static const String _charOrderingKey = "userpref_charOrdering";
   static UserSettingsService _singleton = UserSettingsService._internal();
   SharedPreferences _prefs;
 
@@ -50,5 +51,11 @@ class UserSettingsService {
   set itemOrdering(List<SortParameter> ordering){
     var json = jsonEncode(ordering.map((p)=>p.toJson()).toList());
     _prefs.setString(_itemOrderingKey, json);
+  }
+
+  CharacterSortParameter get characterOrdering{
+    var jsonStr = _prefs.getString(_charOrderingKey);
+    if(jsonStr == null) return CharacterSortParameter();
+    return CharacterSortParameter.fromJson(jsonDecode(jsonStr));
   }
 }

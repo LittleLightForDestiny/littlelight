@@ -9,7 +9,7 @@ class Loadout {
   Loadout(this.assignedId, this.name, this.emblemHash, this.equipped,
       this.unequipped, [this.updatedAt]);
 
-  static Loadout fromMap(Map<String, dynamic> map) {
+  static Loadout fromJson(Map<String, dynamic> map) {
     return Loadout(
         map['assignedId'],
         map['name'],
@@ -19,20 +19,20 @@ class Loadout {
         DateTime.parse(map['updated_at']));
   }
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toJson() {
     return {
       'assignedId': assignedId,
       'name': name,
       'emblemHash': emblemHash,
-      'equipped': equipped.map((item) => item.toMap()).toList(),
-      'unequipped': unequipped.map((item) => item.toMap()).toList(),
+      'equipped': equipped.map((item) => item.toJson()).toList(),
+      'unequipped': unequipped.map((item) => item.toJson()).toList(),
       'updated_at': updatedAt.toIso8601String()
     };
   }
 
   static List<Loadout> fromList(List<dynamic> list) {
     if (list == null) return null;
-    return list.map((map) => fromMap(map)).toList();
+    return list.map((map) => fromJson(map)).toList();
   }
 }
 
@@ -41,16 +41,16 @@ class LoadoutItem {
   int itemHash;
   LoadoutItem(this.itemInstanceId, this.itemHash);
 
-  static LoadoutItem fromMap(Map<String, dynamic> map) {
+  static LoadoutItem fromJson(Map<String, dynamic> map) {
     return LoadoutItem(map['itemInstanceId'], map['itemHash']);
   }
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toJson() {
     return {'itemInstanceId': itemInstanceId, 'itemHash': itemHash};
   }
 
   static List<LoadoutItem> fromList(List<dynamic> list) {
     if (list == null) return [];
-    return list.map((map) => fromMap(map)).toList();
+    return list.map((map) => fromJson(map)).toList();
   }
 }

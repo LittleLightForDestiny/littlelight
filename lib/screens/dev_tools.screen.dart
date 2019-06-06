@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:little_light/services/auth/auth.service.dart';
+import 'package:little_light/services/profile/profile.service.dart';
 
 class DevToolsScreen extends StatelessWidget {
+  final TextEditingController _nameFieldController = new TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,6 +21,40 @@ class DevToolsScreen extends StatelessWidget {
                 padding: EdgeInsets.all(8),
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: []))));
+                    children: [
+                      buildNameTextField(context),
+                      buildReloadButton(context)
+                    ]))));
+  }
+
+  Widget buildNameTextField(BuildContext context) {
+    return Container(
+        padding: EdgeInsets.all(8),
+        child: TextField(
+          autocorrect: false,
+          controller: _nameFieldController,
+          decoration: InputDecoration(labelText: "membershipId"),
+        ));
+  }
+
+  Widget buildReloadButton(BuildContext context){
+    return RaisedButton(
+      child: Text("Reload"),
+      onPressed: ()async {
+        var membership = await AuthService().getMembership();
+        var json = membership.toJson();
+        // var selected = membership.selectedMembership.toJson();
+
+        // selected['membershipId'] = _nameFieldController.text;
+        // json['selectedMembership'] = selected;
+        // json['destinyMemberships'] = [selected];
+        
+        // membership = SavedMembership.fromJson(json);
+        // await AuthService().saveMembership(membership, 2);
+        await ProfileService().fetchProfileData();
+
+        print(ProfileService().getCharacters());
+      },
+    );
   }
 }

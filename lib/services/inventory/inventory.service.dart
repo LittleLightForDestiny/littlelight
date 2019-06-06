@@ -298,7 +298,7 @@ class InventoryService {
           profile.getProfileInventory().add(item);
         }
       } else {
-        var newItem = DestinyItemComponent.fromMap(item.toMap());
+        var newItem = DestinyItemComponent.fromJson(item.toJson());
         item.quantity = item.quantity - stackSize;
         newItem.quantity = stackSize;
         newItem.bucketHash = def.inventory.bucketTypeHash;
@@ -341,7 +341,7 @@ class InventoryService {
         }
         sourceBucketDef = await manifest.getDefinition<DestinyInventoryBucketDefinition>(item.bucketHash);
       } else {
-        var newItem = DestinyItemComponent.fromMap(item.toMap());
+        var newItem = DestinyItemComponent.fromJson(item.toJson());
         item.quantity = item.quantity - stackSize;
         newItem.quantity = stackSize;
         item = newItem;
@@ -384,7 +384,7 @@ class InventoryService {
           profile.getCharacterInventory(destinationCharacterId).add(item);
         }
       } else {
-        var newItem = DestinyItemComponent.fromMap(item.toMap());
+        var newItem = DestinyItemComponent.fromJson(item.toJson());
         item.quantity = item.quantity - stackSize;
         newItem.quantity = stackSize;
         newItem.bucketHash = def.inventory.bucketTypeHash;

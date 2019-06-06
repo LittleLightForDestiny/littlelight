@@ -183,15 +183,15 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
     if (skipped) {
       return goForward();
     }
-    SavedMembership membership = await widget.auth.getMembership();
-    if (membership?.selectedMembership == null ||
-        widget.forceSelectMembership) {
+    // SavedMembership membership = await widget.auth.getMembership();
+    // if (membership?.selectedMembership == null ||
+        // widget.forceSelectMembership) {
       return showSelectMembership();
-    }
-    ExceptionHandler.setSentryUserInfo(
-        membership.selectedMembership.membershipId,
-        membership.selectedMembership.displayName,
-        membership.selectedMembership.membershipType);
+    // }
+    // ExceptionHandler.setSentryUserInfo(
+    //     membership.selectedMembership.membershipId,
+    //     membership.selectedMembership.displayName,
+    //     membership.selectedMembership.membershipType);
     return loadProfile();
   }
 

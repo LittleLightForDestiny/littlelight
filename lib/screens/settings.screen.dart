@@ -26,6 +26,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    TranslatedTextWidget("Order characters by");
+    TranslatedTextWidget("Last played");
+    TranslatedTextWidget("Creation date");
+    TranslatedTextWidget("Custom");
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(

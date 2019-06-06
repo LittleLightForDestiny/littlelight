@@ -77,8 +77,7 @@ class ItemStatsWidget extends DestinyItemWidget {
     }
     List<int> plugHashes;
     if (socketStates != null) {
-      plugHashes = socketStates
-      .map((state) => state.plugHash).toList();
+      plugHashes = socketStates.map((state) => state.plugHash).toList();
     } else {
       plugHashes = definition.sockets.socketEntries
           .map((plug) => plug.singleInitialItemHash)
@@ -89,7 +88,7 @@ class ItemStatsWidget extends DestinyItemWidget {
       int index = plugHashes.indexOf(plugHash);
       DestinyInventoryItemDefinition def = plugDefinitions[plugHash];
       var state;
-      if(socketStates != null){
+      if (socketStates != null) {
         state = socketStates[index];
       }
       if (def == null) {
@@ -99,7 +98,8 @@ class ItemStatsWidget extends DestinyItemWidget {
           plugDefinitions[selectedPerks[index]];
       def.investmentStats.forEach((stat) {
         StatValues values = map[stat.statTypeHash] ?? new StatValues();
-        if (def.plug?.uiPlugLabel == 'masterwork' && (state?.reusablePlugHashes?.length ?? 0) == 0) {
+        if (def.plug?.uiPlugLabel == 'masterwork' &&
+            (state?.reusablePlugHashes?.length ?? 0) == 0) {
           values.masterwork += stat.value;
         } else {
           values.equipped += stat.value;
@@ -128,14 +128,17 @@ class ItemStatsWidget extends DestinyItemWidget {
     if (definition?.stats?.stats == null) {
       return null;
     }
-    List<DestinyItemInvestmentStatDefinition> stats = definition
-        .investmentStats
+    List<DestinyItemInvestmentStatDefinition> stats = definition.investmentStats
         .where((stat) => DestinyData.statWhitelist.contains(stat.statTypeHash))
         .toList();
-    for(var stat in definition.stats.stats.values){
-      if(DestinyData.statWhitelist.contains(stat.statHash) &&
-      stats.where((s)=>s.statTypeHash == stat.statHash).length == 0){
-        stats.add(DestinyItemInvestmentStatDefinition(stat.statHash, 0, false));
+    for (var stat in definition.stats.stats.values) {
+      if (DestinyData.statWhitelist.contains(stat.statHash) &&
+          stats.where((s) => s.statTypeHash == stat.statHash).length == 0) {
+        var newStat = DestinyItemInvestmentStatDefinition()
+          ..statTypeHash = stat.statHash
+          ..value = 0
+          ..isConditionallyActive = false;
+        stats.add(newStat);
       }
     }
     stats.sort((statA, statB) {
@@ -206,14 +209,13 @@ class ItemStatWidget extends StatelessWidget {
     if (noBar) {
       return Container();
     }
-     return Container(
-            color: Colors.grey.shade600,
-            height: 8,
-            width: barWidth,
-            child: 
-            ClipRect(
-              clipBehavior: Clip.antiAlias,
-              child:Row(
+    return Container(
+        color: Colors.grey.shade600,
+        height: 8,
+        width: barWidth,
+        child: ClipRect(
+            clipBehavior: Clip.antiAlias,
+            child: Row(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: numberValue < 0
                     ? MainAxisAlignment.end
@@ -237,7 +239,7 @@ class ItemStatWidget extends StatelessWidget {
   }
 
   int get maxBarSize {
-    if(DestinyData.armorStats.contains(statHash)){
+    if (DestinyData.armorStats.contains(statHash)) {
       return max(3, baseBarSize + modBarSize);
     }
     return max(100, baseBarSize + modBarSize);
@@ -258,9 +260,9 @@ class ItemStatWidget extends StatelessWidget {
   int get baseBarSize {
     var value = baseValue + equipped;
     if (selected != equipped && selected < equipped) {
-      value =  baseValue + selected;
+      value = baseValue + selected;
     }
-    if(scaled != null){
+    if (scaled != null) {
       return interpolate(value, scaled.displayInterpolation);
     }
     return value;
@@ -280,8 +282,12 @@ class ItemStatWidget extends StatelessWidget {
   }
 
   int get modBarSize {
-    if(scaled != null){
-      return (InventoryUtils.interpolateStat(baseValue + selected, scaled.displayInterpolation) - InventoryUtils.interpolateStat(baseValue + equipped, scaled.displayInterpolation)).abs();
+    if (scaled != null) {
+      return (InventoryUtils.interpolateStat(
+                  baseValue + selected, scaled.displayInterpolation) -
+              InventoryUtils.interpolateStat(
+                  baseValue + equipped, scaled.displayInterpolation))
+          .abs();
     }
     return (selected - equipped).abs();
   }

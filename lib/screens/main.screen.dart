@@ -10,6 +10,7 @@ import 'package:little_light/services/littlelight/littlelight.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/user_settings/user_settings.service.dart';
 import 'package:little_light/utils/selected_page_persistence.dart';
+import 'package:little_light/widgets/common/translated_text.widget.dart';
 
 import 'package:little_light/widgets/side_menu/side_menu.widget.dart';
 import 'package:screen/screen.dart';
@@ -42,8 +43,8 @@ class MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     ProfileService profile = ProfileService();
-    if(state == AppLifecycleState.resumed){
-     profile.fetchProfileData(); 
+    if (state == AppLifecycleState.resumed) {
+      profile.fetchProfileData();
     }
   }
 
@@ -82,17 +83,40 @@ class MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     if (currentScreen == null) return Container();
-    return Scaffold(
-      drawer: new Container(
-        child: SideMenuWidget(
-          onPageChange: (page) {
-            this.currentScreen = page;
-            setState(() {});
-          },
-        ),
-      ),
-      body: currentScreen,
-      resizeToAvoidBottomPadding: false,
-    );
+    return WillPopScope(
+        onWillPop: () => _exitApp(context),
+        child: Scaffold(
+          drawer: Container(
+            child: SideMenuWidget(
+              onPageChange: (page) {
+                this.currentScreen = page;
+                setState(() {});
+              },
+            ),
+          ),
+          body: currentScreen,
+          resizeToAvoidBottomPadding: false,
+        ));
+  }
+
+  Future<bool> _exitApp(BuildContext context) {
+    return showDialog(
+          context: context,
+          builder: (context)=>AlertDialog(
+            title: new TranslatedTextWidget('Exit'),
+            content: new TranslatedTextWidget('Do you really want to exit Little Light?'),
+            actions: <Widget>[
+              new FlatButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: new TranslatedTextWidget('No'),
+              ),
+              new FlatButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: new TranslatedTextWidget('Yes'),
+              ),
+            ],
+          ),
+        ) ??
+        false;
   }
 }

@@ -28,7 +28,7 @@ class BungieApiService {
 
   static String url(String url) {
     if (url == null ?? url.length == 0) return null;
-    if(url.contains('://')) return url;
+    if (url.contains('://')) return url;
     return "$baseUrl$url";
   }
 
@@ -59,11 +59,10 @@ class BungieApiService {
 
   Future<DestinyProfileResponse> getCurrentProfile(List<int> components) async {
     SavedToken token = await auth.getToken();
-    SavedMembership membership = await auth.getMembership();
-    UserInfoCard selectedMembership = membership?.selectedMembership;
-    if (selectedMembership == null) return null;
-    return await getProfile(components, selectedMembership.membershipId,
-        selectedMembership.membershipType, token);
+    UserInfoCard membership = await auth.getMembership();
+    if (membership == null) return null;
+    return await getProfile(components, membership.membershipId,
+        membership.membershipType, token);
   }
 
   Future<DestinyProfileResponse> getProfile(
@@ -84,43 +83,56 @@ class BungieApiService {
   Future<int> transferItem(int itemHash, int stackSize, bool transferToVault,
       String itemId, String characterId) async {
     SavedToken token = await auth.getToken();
-    SavedMembership membership = await auth.getMembership();
+    UserInfoCard membership = await auth.getMembership();
     int32Response response = await Destiny2.transferItem(
         new Client(token),
-        DestinyItemTransferRequest(itemHash, stackSize, transferToVault, itemId,
-            characterId, membership.membershipType));
+        DestinyItemTransferRequest()
+          ..itemReferenceHash = itemHash
+          ..stackSize = stackSize
+          ..transferToVault = transferToVault
+          ..itemId = itemId
+          ..characterId = characterId
+          ..membershipType = membership.membershipType);
     return response.response;
   }
 
   Future<int> pullFromPostMaster(
       int itemHash, int stackSize, String itemId, String characterId) async {
     SavedToken token = await auth.getToken();
-    SavedMembership membership = await auth.getMembership();
+    UserInfoCard membership = await auth.getMembership();
     int32Response response = await Destiny2.pullFromPostmaster(
         new Client(token),
-        DestinyPostmasterTransferRequest(itemHash, stackSize, itemId,
-            characterId, membership.membershipType));
+        DestinyPostmasterTransferRequest()
+          ..itemReferenceHash = itemHash
+          ..stackSize = stackSize
+          ..itemId = itemId
+          ..characterId = characterId
+          ..membershipType = membership.membershipType);
     return response.response;
   }
 
   Future<int> equipItem(String itemId, String characterId) async {
     SavedToken token = await auth.getToken();
-    SavedMembership membership = await auth.getMembership();
+    UserInfoCard membership = await auth.getMembership();
     int32Response response = await Destiny2.equipItem(
         new Client(token),
-        DestinyItemActionRequest(
-            itemId, characterId, membership.membershipType));
+        DestinyItemActionRequest()
+          ..itemId = itemId
+          ..characterId = characterId
+          ..membershipType = membership.membershipType);
     return response.response;
   }
 
   Future<List<DestinyEquipItemResult>> equipItems(
       List<String> itemIds, String characterId) async {
     SavedToken token = await auth.getToken();
-    SavedMembership membership = await auth.getMembership();
+    UserInfoCard membership = await auth.getMembership();
     var response = await Destiny2.equipItems(
         new Client(token),
-        DestinyItemSetActionRequest(
-            itemIds, characterId, membership.membershipType));
+        DestinyItemSetActionRequest()
+          ..itemIds = itemIds
+          ..characterId = characterId
+          ..membershipType = membership.membershipType);
     return response.response.equipResults;
   }
 }
@@ -177,23 +189,23 @@ class Client implements HttpClient {
     } catch (e) {
       throw BungieApiException(e);
     }
-    
+
     var response = await req;
     if (response.statusCode == 401) {
       await AuthService().refreshToken(token);
       return request(config);
     }
     dynamic json;
-    try{
+    try {
       json = jsonDecode(response?.body ?? "{}");
-    }catch(e){
+    } catch (e) {
       json = {};
     }
-     
+
     if (response.statusCode != 200) {
       throw BungieApiException(json, response.statusCode);
     }
-    
+
     if (json["ErrorCode"] != null && json["ErrorCode"] > 2) {
       throw BungieApiException(json, response.statusCode);
     }

@@ -7,6 +7,7 @@ import 'package:little_light/services/bungie_api/enums/destiny_item_category.enu
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/user_settings/user_settings.service.dart';
 import 'package:little_light/utils/selected_page_persistence.dart';
 import 'package:little_light/widgets/flutter/passive_tab_bar_view.dart';
 import 'package:little_light/widgets/inventory_tabs/character_tab.widget.dart';
@@ -178,6 +179,6 @@ class EquipmentScreenState extends State<EquipmentScreen>
   }
 
   List<DestinyCharacterComponent> get characters {
-    return widget.profile.getCharacters(CharacterOrder.lastPlayed);
+    return widget.profile.getCharacters(UserSettingsService().characterOrdering);
   }
 }

@@ -70,7 +70,7 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> {
   @override
   initState() {
     if (widget.loadout != null) {
-      _loadout = Loadout.fromMap(widget.loadout.toMap());
+      _loadout = Loadout.fromJson(widget.loadout.toJson());
     } else {
       String uuid = Uuid().v4();
       _loadout = Loadout(uuid, "", null, [], []);

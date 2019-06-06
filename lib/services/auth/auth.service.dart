@@ -20,7 +20,7 @@ class AuthService {
   static const String _latestTokenKey = "latestToken";
   static const String _latestMembershipKey = "latestMembership";
   static SavedToken _currentToken;
-  static SavedMembership _currentMembership;
+  static UserMembershipData _currentMembership;
   Future<bool> getSkippedLogin() async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     bool skipped = _prefs.getBool(_skippedLoginKey);
@@ -58,7 +58,7 @@ class AuthService {
       return null;
     }
     Map<String, dynamic> json = jsonDecode(jsonString);
-    SavedToken savedToken = SavedToken.fromMap(json);
+    SavedToken savedToken = SavedToken.fromJson(json);
     if (savedToken.accessToken == null || savedToken.expiresIn == null) {
       return null;
     }
@@ -82,7 +82,7 @@ class AuthService {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     _currentToken = token;
     _prefs.remove(_skippedLoginKey);
-    _prefs.setString(_latestTokenKey, jsonEncode(token.toMap()));
+    _prefs.setString(_latestTokenKey, jsonEncode(token.toJson()));
   }
 
   Future<SavedToken> getToken() async {
@@ -165,31 +165,30 @@ class AuthService {
     }
   }
 
-  Future<SavedMembership> _getStoredMembership() async {
+  Future<UserMembershipData> _getStoredMembership() async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     String jsonString = _prefs.getString(_latestMembershipKey);
     if (jsonString == null) {
       return null;
     }
     Map<String, dynamic> json = jsonDecode(jsonString);
-    return SavedMembership.fromMap(json);
+    return UserMembershipData.fromJson(json);
   }
 
-  Future<SavedMembership> getMembership() async {
-    SavedMembership membership = _currentMembership;
+  Future<UserInfoCard> getMembership() async {
+    UserMembershipData membership = _currentMembership;
     if (membership == null) {
       _currentMembership = membership = await _getStoredMembership();
     }
-    return membership;
+    return membership.destinyMemberships[0];
   }
 
   Future<void> saveMembership(
       UserMembershipData membershipData, int membershipType) async {
-    SharedPreferences _prefs = await SharedPreferences.getInstance();
-    _currentMembership = SavedMembership(membershipData.destinyMemberships,
-        membershipData.bungieNetUser, membershipType);
-    _prefs.setString(
-        _latestMembershipKey, jsonEncode(_currentMembership.toMap()));
+    // SharedPreferences _prefs = await SharedPreferences.getInstance();
+    _currentMembership = membershipData;
+    // _prefs.setString(
+    //     _latestMembershipKey, jsonEncode(_currentMembership.toJson()));
 
     ProfileService profile = new ProfileService();
     await profile.clear();
@@ -208,7 +207,7 @@ class SavedToken extends BungieNetToken {
       int refreshExpiresIn, String membershipId, this.savedDate)
       : super(accessToken, expiresIn, refreshToken, refreshExpiresIn,
             membershipId);
-  static SavedToken fromMap(Map<String, dynamic> data) {
+  static SavedToken fromJson(Map<String, dynamic> data) {
     return SavedToken(
         data["access_token"],
         data["expires_in"],
@@ -219,40 +218,10 @@ class SavedToken extends BungieNetToken {
   }
 
   @override
-  Map<String, dynamic> toMap() {
-    Map<String, dynamic> data = super.toMap();
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> data = super.toJson();
     data["saved_date"] = this.savedDate.toIso8601String();
     return data;
-  }
-}
-
-class SavedMembership extends UserMembershipData {
-  int membershipType;
-  SavedMembership(List<UserInfoCard> destinyMemberships,
-      GeneralUser bungieNetUser, this.membershipType)
-      : super(destinyMemberships, bungieNetUser);
-
-  static SavedMembership fromMap(Map<String, dynamic> data) {
-    if (data == null) {
-      return null;
-    }
-    return new SavedMembership(
-        UserInfoCard.fromList(data['destinyMemberships']),
-        GeneralUser.fromMap(data['bungieNetUser']),
-        data['membershipType']);
-  }
-
-  @override
-  Map<String, dynamic> toMap() {
-    Map<String, dynamic> map = super.toMap();
-    map['membershipType'] = this.membershipType;
-    return map;
-  }
-
-  UserInfoCard get selectedMembership {
-    return destinyMemberships.firstWhere((membership) {
-      return membership.membershipType == membershipType;
-    }, orElse: () => null);
   }
 }
 

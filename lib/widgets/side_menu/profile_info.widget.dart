@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/screens/initial.screen.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
@@ -105,10 +106,10 @@ class ProfileInfoState extends State<ProfileInfoWidget>
   }
 
   loadUser() async {
-    SavedMembership membership = await widget.auth.getMembership();
+    // SavedMembership membership = await widget.auth.getMembership();
     setState(() {
-      bungieNetUser = membership.bungieNetUser;
-      selectedMembership = membership.selectedMembership;
+      // bungieNetUser = membership.bungieNetUser;
+      // selectedMembership = membership.selectedMembership;
     });
   }
 
@@ -179,7 +180,7 @@ class ProfileInfoState extends State<ProfileInfoWidget>
 
   Widget buildActivityInfo(BuildContext context) {
     var lastCharacter =
-        widget.profile.getCharacters(CharacterOrder.lastPlayed).first;
+        widget.profile.getCharacters(CharacterSortParameter()).first;
     var lastPlayed = DateTime.parse(lastCharacter.dateLastPlayed);
     var currentSession = lastCharacter.minutesPlayedThisSession;
     var time = timeago.format(lastPlayed, allowFromNow: true);

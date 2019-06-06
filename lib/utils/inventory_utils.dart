@@ -65,6 +65,33 @@ class SortParameter {
   
 }
 
+enum CharacterSortParameterType {
+  LastPlayed,
+  FirstCreated,
+  LastCreated,
+  Custom,
+}
+
+class CharacterSortParameter {
+  CharacterSortParameterType type;
+  List<String> customOrder;
+
+  CharacterSortParameter({this.type = CharacterSortParameterType.FirstCreated, this.customOrder});
+
+  static CharacterSortParameter fromJson(Map<String, dynamic> json){
+    return CharacterSortParameter(
+        type: CharacterSortParameterType.values[json['type']], customOrder: List<String>.from(json['customOrder']));
+  }
+
+  Map<String, dynamic> toJson(){
+    return {
+      'type':type.index,
+      'customOrder':customOrder
+    };
+  }
+}
+
+
 class InventoryUtils {
   static List<int> _bucketOrder = [
     InventoryBucket.subclass,

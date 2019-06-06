@@ -15,6 +15,8 @@ class LoadoutsScreen extends StatefulWidget {
 }
 
 class LoadoutScreenState extends State<LoadoutsScreen> {
+  bool reordering = false;
+  bool searchOpen = false;
   List<Loadout> loadouts;
 
   @override
@@ -31,26 +33,42 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children:[Scaffold(
-        appBar: AppBar(
-            leading: IconButton(
-              icon: Icon(Icons.menu),
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-            ),
-            actions: <Widget>[
-              IconButton(
-                  icon: Icon(Icons.add_circle_outline),
-                  onPressed: () async {
-                    createNew();
-                  })
-            ],
-            title: TranslatedTextWidget("Loadouts")),
+    return Stack(children: [
+      Scaffold(
+        appBar: buildAppBar(),
         body: buildBody(context),
-        bottomNavigationBar: buildFooter(context),), 
-        InventoryNotificationWidget(key:Key("notification_widget"))]);
+        bottomNavigationBar: buildFooter(context),
+      ),
+      InventoryNotificationWidget(key: Key("notification_widget"))
+    ]);
+  }
+
+  Widget buildAppBar() {
+    if(reordering){
+      return TranslatedTextWidget("Loadouts");
+    }
+    if(searchOpen){
+      TranslatedTextWidget("Add to Loadout");
+      TranslatedTextWidget("Equip only");
+      TranslatedTextWidget("Add as equipped");
+      TranslatedTextWidget("Random Loadout");
+      TranslatedTextWidget("Free slots");
+    }
+    return AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.menu),
+          onPressed: () {
+            Scaffold.of(context).openDrawer();
+          },
+        ),
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(Icons.add_circle_outline),
+              onPressed: () async {
+                createNew();
+              })
+        ],
+        title: TranslatedTextWidget("Loadouts"));
   }
 
   void createNew() async {
@@ -75,8 +93,9 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
         elevation: 1,
         child: Container(
           constraints: BoxConstraints(minWidth: double.infinity),
-          height:kToolbarHeight + paddingBottom,
-          padding: EdgeInsets.symmetric(horizontal: 16).copyWith(top:8, bottom:8 + paddingBottom),
+          height: kToolbarHeight + paddingBottom,
+          padding: EdgeInsets.symmetric(horizontal: 16)
+              .copyWith(top: 8, bottom: 8 + paddingBottom),
           child: RaisedButton(
             child: TranslatedTextWidget("Create Loadout"),
             onPressed: () {
@@ -122,7 +141,7 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
     );
   }
 
-  StaggeredTile getTileBuilder(int index){
+  StaggeredTile getTileBuilder(int index) {
     double screenWidth = MediaQuery.of(context).size.width;
     return StaggeredTile.fit(screenWidth > 480 ? 15 : 30);
   }

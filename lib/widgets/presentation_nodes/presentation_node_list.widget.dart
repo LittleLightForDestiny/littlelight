@@ -57,9 +57,9 @@ class PresentationNodeListWidgetState
       listIndex.add(CollectionListItem(
           CollectionListItemType.presentationNode, node.presentationNodeHash));
       _presentationNodeDefinitions[node.presentationNodeHash]
-          .children
-          .collectibles
-          .forEach((collectible) {
+          ?.children
+          ?.collectibles
+          ?.forEach((collectible) {
         listIndex.add(CollectionListItem(
             CollectionListItemType.nestedCollectible,
             collectible.collectibleHash));

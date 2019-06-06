@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/services/inventory/inventory.service.dart';
 import 'package:little_light/services/littlelight/models/loadout.model.dart';
 import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/user_settings/user_settings.service.dart';
 import 'package:little_light/widgets/common/equip_on_character.button.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 
@@ -113,7 +114,7 @@ class LoadoutDestinationsWidget extends StatelessWidget {
   List<TransferDestination> get equipDestinations {
     return this
         .profile
-        .getCharacters(CharacterOrder.lastPlayed)
+        .getCharacters(UserSettingsService().characterOrdering)
         .map((char) => TransferDestination(ItemDestination.Character,
             characterId: char.characterId, action: InventoryAction.Equip))
         .toList();
@@ -122,7 +123,7 @@ class LoadoutDestinationsWidget extends StatelessWidget {
   List<TransferDestination> get transferDestinations {
     List<TransferDestination> list = this
         .profile
-        .getCharacters(CharacterOrder.lastPlayed)
+        .getCharacters(UserSettingsService().characterOrdering)
         .map((char) => TransferDestination(ItemDestination.Character,
             characterId: char.characterId))
         .toList();

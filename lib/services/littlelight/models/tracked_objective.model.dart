@@ -9,7 +9,7 @@ class TrackedObjective {
 
   TrackedObjective(this.type, this.hash, {this.instanceId, this.characterId, this.parentHash});
 
-  static TrackedObjective fromMap(Map<String, dynamic> map) {
+  static TrackedObjective fromJson(Map<String, dynamic> map) {
     return TrackedObjective(
         _stringToType(map['type']), map['hash'], instanceId:map['instanceId'], characterId:map['characterId'], parentHash: map['parentHash']);
   }
@@ -36,7 +36,7 @@ class TrackedObjective {
     return 'item';
   }
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toJson() {
     return {
       'type': _typeToString(type),
       'hash':hash,
@@ -48,6 +48,6 @@ class TrackedObjective {
 
   static List<TrackedObjective> fromList(List<dynamic> list) {
     if (list == null) return null;
-    return list.map((map) => fromMap(map)).toList();
+    return list.map((map) => fromJson(map)).toList();
   }
 }

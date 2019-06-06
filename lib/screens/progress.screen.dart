@@ -1,8 +1,10 @@
 import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/user_settings/user_settings.service.dart';
 import 'package:little_light/utils/selected_page_persistence.dart';
 import 'package:little_light/widgets/common/refresh_button.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -202,6 +204,6 @@ class ProgressScreenState extends State<ProgressScreen>
   }
 
   List<DestinyCharacterComponent> get characters {
-    return widget.profile.getCharacters(CharacterOrder.lastPlayed);
+    return widget.profile.getCharacters(UserSettingsService().characterOrdering);
   }
 }
