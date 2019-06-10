@@ -33,7 +33,6 @@ class LittleLight extends StatelessWidget {
   Widget build(BuildContext context) {
     QueuedNetworkImage.maxNrOfCacheObjects = 5000;
     QueuedNetworkImage.inBetweenCleans = new Duration(days: 15);
-
     return new MaterialApp(
       debugShowCheckedModeBanner: false,
       key: key,

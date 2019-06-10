@@ -1,14 +1,14 @@
 import 'dart:convert';
 
+import 'package:little_light/services/storage/storage.service.dart';
 import 'package:little_light/utils/inventory_utils.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class UserSettingsService {
   static const String _keepAwakeKey = "userpref_keepAwake";
   static const String _itemOrderingKey = "userpref_itemOrdering";
   static const String _charOrderingKey = "userpref_charOrdering";
   static UserSettingsService _singleton = UserSettingsService._internal();
-  SharedPreferences _prefs;
+  StorageService _prefs;
 
   factory UserSettingsService() {
     return _singleton;
@@ -18,11 +18,11 @@ class UserSettingsService {
     load();
   }
 
-  Future<SharedPreferences> load() async{
+  Future<StorageService> load() async{
     if(_prefs != null){
       return _prefs;
     }
-    _prefs = await SharedPreferences.getInstance();
+    _prefs = StorageService.global();
     return _prefs;
   }
 

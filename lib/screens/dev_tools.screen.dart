@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 
 class DevToolsScreen extends StatelessWidget {
@@ -41,8 +40,8 @@ class DevToolsScreen extends StatelessWidget {
     return RaisedButton(
       child: Text("Reload"),
       onPressed: ()async {
-        var membership = await AuthService().getMembership();
-        var json = membership.toJson();
+        // var membership = await AuthService().getMembership();
+        // var json = membership.toJson();
         // var selected = membership.selectedMembership.toJson();
 
         // selected['membershipId'] = _nameFieldController.text;

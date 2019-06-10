@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:bungie_api/enums/destiny_class_enum.dart';
 import 'package:bungie_api/enums/destiny_item_sub_type_enum.dart';
-import 'package:bungie_api/enums/destiny_item_type_enum.dart';
 import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
@@ -110,33 +109,6 @@ class InventoryUtils {
     InventoryBucket.consumables,
     InventoryBucket.modifications,
     InventoryBucket.shaders,
-  ];
-
-  static List<int> _typeOrder = [
-    DestinyItemType.Subclass,
-    DestinyItemType.Weapon,
-    DestinyItemType.Armor,
-    DestinyItemType.Quest,
-    DestinyItemType.QuestStep,
-    DestinyItemType.QuestStepComplete,
-    DestinyItemType.Bounty,
-    DestinyItemType.Ghost,
-    DestinyItemType.Vehicle,
-    DestinyItemType.Ship,
-    DestinyItemType.Emblem,
-    DestinyItemType.Aura,
-    DestinyItemType.ClanBanner,
-    DestinyItemType.Emote,
-    DestinyItemType.Mod,
-    DestinyItemType.MissionReward,
-    DestinyItemType.ExchangeMaterial,
-    DestinyItemType.Engram,
-    DestinyItemType.Consumable,
-    DestinyItemType.Currency,
-    DestinyItemType.Dummy,
-    DestinyItemType.Package,
-    DestinyItemType.Message,
-    DestinyItemType.None,
   ];
 
   static List<int> _subtypeOrder = [

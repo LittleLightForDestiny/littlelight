@@ -1,5 +1,5 @@
 import 'package:little_light/services/auth/auth.service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:little_light/services/storage/storage.service.dart';
 
 class SelectedPagePersistence{
   static const String equipment = "Equipment";
@@ -20,7 +20,7 @@ class SelectedPagePersistence{
   static const String _latestScreenKey = "latest_screen";
 
   static Future<String> getLatestScreen() async{
-    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    StorageService _prefs = StorageService.global();
     String latest = _prefs.getString(_latestScreenKey);
     AuthService auth = new AuthService();
     if(auth.isLogged){
@@ -37,7 +37,7 @@ class SelectedPagePersistence{
   }
 
   static saveLatestScreen(String screen) async{
-    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    StorageService _prefs = StorageService.global();
     _prefs.setString(_latestScreenKey, screen);
   }
 }

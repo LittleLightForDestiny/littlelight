@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:little_light/services/translate/translate.service.dart';
+import 'package:little_light/services/storage/storage.service.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -34,7 +34,7 @@ class ExpiryDateWidgetState extends State<ExpiryDateWidget> {
       setState((){});
       return;  
     }
-    var locale = await TranslateService().getLanguage();
+    var locale = StorageService.getLanguage();
     expiresIn = timeago.format(expiry, allowFromNow: true, locale: locale);
     print(expiresIn);
     setState((){});

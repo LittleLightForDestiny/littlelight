@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:bungie_api/helpers/bungie_net_token.dart';
+import 'package:bungie_api/models/user_info_card.dart';
 import 'package:bungie_api/models/user_membership_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,9 +9,9 @@ import 'package:little_light/exceptions/exception_handler.dart';
 import 'package:little_light/screens/main.screen.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/services/littlelight/littlelight.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/storage/storage.service.dart';
 import 'package:little_light/services/translate/translate.service.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/exceptions/exception_dialog.dart';
@@ -44,16 +46,20 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
   bool forceReauth = false;
   @override
   void initState() {
-    LittleLightService().loadData();
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarBrightness: Brightness.dark));
     super.initState();
+    initLoading();
+  }
+
+  initLoading() async{
+    await StorageService.init();
     checkLanguage();
   }
 
   Future checkLanguage() async {
-    String selectedLanguage = await widget.translate.getLanguage();
+    String selectedLanguage = StorageService.getLanguage();
     bool hasSelectedLanguage = selectedLanguage != null;
     if (hasSelectedLanguage && !widget.forceChangeLanguage) {
       checkManifest();
@@ -79,6 +85,7 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
 
   checkManifest() async {
     try {
+      
       bool needsUpdate = await widget.manifest.needsUpdate();
       if (needsUpdate) {
         showDownloadManifest();
@@ -117,7 +124,7 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
   }
 
   showDownloadManifest() async {
-    String language = await widget.translate.getLanguage();
+    String language = StorageService.getLanguage();
     DownloadManifestWidget screen = new DownloadManifestWidget(
       selectedLanguage: language,
       onFinish: () {
@@ -133,9 +140,8 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
       this.authCode(authCode);
       return;
     }
-    SavedToken token = await widget.auth.getToken();
-    bool skippedLogin = await widget.auth.getSkippedLogin();
-    if ((token == null && !skippedLogin) || widget.forceLogin || forceReauth) {
+    BungieNetToken token = await widget.auth.getToken();
+    if (token == null) {
       showLogin();
     } else {
       checkMembership();
@@ -146,7 +152,6 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
     LoginWidget loginWidget = new LoginWidget(
       forceReauth: widget.forceLogin || forceReauth,
       onSkip: () {
-        widget.auth.skipLogin();
         goForward();
       },
       onLogin: (code) {
@@ -179,11 +184,9 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
   }
 
   checkMembership() async {
-    bool skipped = await widget.auth.getSkippedLogin();
-    if (skipped) {
-      return goForward();
-    }
-    // SavedMembership membership = await widget.auth.getMembership();
+    print('checkMembership');
+    UserInfoCard membership = await widget.auth.getMembership();
+    print(membership);
     // if (membership?.selectedMembership == null ||
         // widget.forceSelectMembership) {
       return showSelectMembership();
@@ -192,7 +195,7 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
     //     membership.selectedMembership.membershipId,
     //     membership.selectedMembership.displayName,
     //     membership.selectedMembership.membershipType);
-    return loadProfile();
+    // return loadProfile();
   }
 
   showSelectMembership() async {
@@ -214,11 +217,6 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
   }
 
   loadProfile() async {
-    bool skipped = await widget.auth.getSkippedLogin();
-    if (skipped) {
-      goForward();
-      return;
-    }
     this.changeContent(null, null);
     await widget.profile.loadFromCache();
     this.goForward();

@@ -1,13 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:bungie_api/helpers/bungie_net_token.dart';
 import 'package:bungie_api/models/user_info_card.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/littlelight/models/loadout.model.dart';
 import 'package:http/http.dart' as http;
 import 'package:little_light/services/littlelight/models/tracked_objective.model.dart';
+import 'package:little_light/services/storage/storage.service.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 enum _HttpMethod { get, post }
@@ -36,29 +37,6 @@ class LittleLightService {
 
   List<Loadout> _loadouts;
   List<TrackedObjective> _trackedObjectives;
-
-
-  loadData() async{
-    Directory directory = await getApplicationDocumentsDirectory();
-    File cached = new File("${directory.path}/cached_raid_hashes.json");
-    bool exists = await cached?.exists();
-    if (exists) {
-      raidHashes = List<int>.from(jsonDecode(cached.readAsStringSync()));
-    }
-    Uri uri = Uri(
-        scheme: 'http',
-        host: "www.littlelight.club",
-        path: "data/raid_hashes.json");
-    http.Response response = await http.get(uri);
-    try{
-      dynamic json = jsonDecode(response.body);
-      raidHashes = List<int>.from(json);
-      cached.writeAsString(response.body);
-    }catch(e){
-      print(e);
-      print("cant load raid hashes");
-    }
-  }
 
   Future<List<Loadout>> getLoadouts({forceFetch: false}) async {
     if (_loadouts != null && !forceFetch) return _loadouts;
@@ -219,7 +197,7 @@ class LittleLightService {
       _HttpMethod method = _HttpMethod.get}) async {
     AuthService auth = AuthService();
     UserInfoCard membership = await auth.getMembership();
-    SavedToken token = await auth.getToken();
+    BungieNetToken token = await auth.getToken();
     String uuid = await _getUuid();
     String secret = await _getSecret();
     Map<String, dynamic> params = {
@@ -255,7 +233,7 @@ class LittleLightService {
 
   Future<String> _getUuid() async {
     if (_uuid != null) return _uuid;
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    StorageService prefs = StorageService.membership();
     String uuid = prefs.getString(_uuidPrefKey);
     if (uuid == null) {
       uuid = Uuid().v4();
@@ -267,21 +245,21 @@ class LittleLightService {
 
   Future<String> _getSecret() async {
     if (_secret != null) return _secret;
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    StorageService prefs = StorageService.global();
     String secret = prefs.getString(_secretPrefKey);
     _secret = secret;
     return secret;
   }
 
   _setSecret(String secret) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    StorageService prefs = StorageService.global();
     prefs.setString(_secretPrefKey, secret);
     _secret = secret;
   }
 
   Future<void> clearData() async {
     this._loadouts = null;
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    StorageService prefs = StorageService.global();
     prefs.remove(_secretPrefKey);
     Directory directory = await getApplicationDocumentsDirectory();
     File cached = new File("${directory.path}/cached_loadouts.json");

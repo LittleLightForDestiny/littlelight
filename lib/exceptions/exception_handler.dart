@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:bungie_api/helpers/oauth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:sentry/sentry.dart';
@@ -88,9 +87,7 @@ class ExceptionHandler {
                             ? ErrorDialogButton(
                                 text: "Login with another account",
                                 onPressed: () async {
-                                  AuthService auth = AuthService();
-                                  await auth.clearData();
-                                  onRestart();
+                                  
                                 })
                             : Container(height: 0),
                         ErrorDialogButton(

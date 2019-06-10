@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:little_light/services/storage/storage.service.dart';
 import 'package:little_light/services/translate/translate.service.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/initial_page/language.button.dart';
@@ -28,7 +29,7 @@ class SelectLanguageWidgetState extends State<SelectLanguageWidget> {
   }
 
   void getLanguage() async{
-    selectedLanguage = await widget.translate.getLanguage();
+    selectedLanguage = StorageService.getLanguage();
     Locale locale = Localizations.localeOf(context, nullOk: true);
     if(selectedLanguage == null && locale != null){
       String localeName = "${locale.languageCode}-${locale.countryCode?.toLowerCase() ?? ''}";
@@ -42,7 +43,7 @@ class SelectLanguageWidgetState extends State<SelectLanguageWidget> {
   }
 
   void okClick() {
-    widget.translate.currentLanguage = selectedLanguage;
+    StorageService.setLanguage(selectedLanguage);
     if (widget.onSelect != null) {
       widget.onSelect(selectedLanguage);
     }

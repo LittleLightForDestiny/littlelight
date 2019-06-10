@@ -4,8 +4,7 @@ import 'package:bungie_api/responses/destiny_manifest_response.dart';
 import 'package:flutter/foundation.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/bungie_api/enums/definition_table_names.enum.dart';
-import 'package:little_light/services/translate/translate.service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:little_light/services/storage/storage.service.dart';
 import 'dart:io';
 import 'package:archive/archive.dart';
 import 'package:path_provider/path_provider.dart';
@@ -61,13 +60,13 @@ class ManifestService {
   Future<bool> needsUpdate() async {
     DestinyManifest manifestInfo = await loadManifestInfo();
     String currentVersion = await getSavedVersion();
-    String language = await new TranslateService().getLanguage();
+    String language = StorageService.getLanguage();
     return currentVersion != manifestInfo.mobileWorldContentPaths[language];
   }
 
   Future<bool> download({DownloadProgress onProgress}) async {
     DestinyManifest info = await loadManifestInfo();
-    String language = await new TranslateService().getLanguage();
+    String language = StorageService.getLanguage();
     String path = info.mobileWorldContentPaths[language];
     String url = BungieApiService.url(path);
     String localPath = await _localPath;
@@ -137,7 +136,7 @@ class ManifestService {
   }
 
   Future<String> getSavedVersion() async {
-    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    StorageService _prefs = StorageService.language();
     String version = _prefs.getString(_manifestVersionKey);
     if (version == null) {
       return null;
@@ -146,7 +145,7 @@ class ManifestService {
   }
 
   Future<void> saveManifestVersion(String version) async {
-    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    StorageService _prefs = StorageService.global();
     _prefs.setString(_manifestVersionKey, version);
   }
 
