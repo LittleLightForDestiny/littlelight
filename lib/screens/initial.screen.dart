@@ -185,17 +185,15 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
 
   checkMembership() async {
     print('checkMembership');
-    UserInfoCard membership = await widget.auth.getMembership();
-    print(membership);
-    // if (membership?.selectedMembership == null ||
-        // widget.forceSelectMembership) {
+    UserInfoCard membership = await widget.auth.getMembership();    
+    if (membership == null) {
       return showSelectMembership();
-    // }
-    // ExceptionHandler.setSentryUserInfo(
-    //     membership.selectedMembership.membershipId,
-    //     membership.selectedMembership.displayName,
-    //     membership.selectedMembership.membershipType);
-    // return loadProfile();
+    }
+    ExceptionHandler.setSentryUserInfo(
+        membership.membershipId,
+        membership.displayName,
+        membership.membershipType);
+    return loadProfile();
   }
 
   showSelectMembership() async {
@@ -204,13 +202,13 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
         await this.widget.apiService.getMemberships();
     SelectPlatformWidget widget = SelectPlatformWidget(
         membershipData: membershipData,
-        onSelect: (int membershipType) async {
-          if (membershipType == null) {
+        onSelect: (String membershipId) async {
+          if (membershipId == null) {
             this.forceReauth = true;
             this.showLogin();
             return;
           }
-          await this.widget.auth.saveMembership(membershipData, membershipType);
+          await this.widget.auth.saveMembership(membershipData, membershipId);
           loadProfile();
         });
     this.changeContent(widget, widget.title);

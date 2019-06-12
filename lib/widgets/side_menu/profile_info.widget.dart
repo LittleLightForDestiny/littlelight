@@ -3,6 +3,7 @@ import 'package:bungie_api/models/destiny_activity_mode_definition.dart';
 import 'package:bungie_api/models/destiny_place_definition.dart';
 import 'package:bungie_api/models/general_user.dart';
 import 'package:bungie_api/models/user_info_card.dart';
+import 'package:bungie_api/models/user_membership_data.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/screens/initial.screen.dart';
 import 'package:little_light/services/auth/auth.service.dart';
@@ -106,10 +107,11 @@ class ProfileInfoState extends State<ProfileInfoWidget>
   }
 
   loadUser() async {
-    // SavedMembership membership = await widget.auth.getMembership();
+    UserMembershipData membershipData = await widget.auth.getMembershipData();
+    UserInfoCard currentMembership = await widget.auth.getMembership();
     setState(() {
-      // bungieNetUser = membership.bungieNetUser;
-      // selectedMembership = membership.selectedMembership;
+      bungieNetUser = membershipData?.bungieNetUser;
+      selectedMembership = currentMembership;
     });
   }
 

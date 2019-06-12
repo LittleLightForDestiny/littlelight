@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/initial_page/plaftorm.button.dart';
 
-typedef void PlatformSelectCallback(int membershipType);
+typedef void PlatformSelectCallback(String membershipType);
 
 class SelectPlatformWidget extends StatefulWidget {
   final String title = "Select Platform";
@@ -31,7 +31,7 @@ class SelectPlatformWidgetState extends State<SelectPlatformWidget> {
               child: PlatformButton(
                 membership,
                 onPressed: () {
-                  widget.onSelect(membership.membershipType);
+                  widget.onSelect(membership.membershipId);
                 },
               )));
     }).toList();

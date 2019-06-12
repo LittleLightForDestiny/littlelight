@@ -145,7 +145,7 @@ class ManifestService {
   }
 
   Future<void> saveManifestVersion(String version) async {
-    StorageService _prefs = StorageService.global();
+    StorageService _prefs = StorageService.language();
     _prefs.setString(_manifestVersionKey, version);
   }
 

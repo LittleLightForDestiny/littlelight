@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:bungie_api/helpers/bungie_net_token.dart';
@@ -7,8 +6,6 @@ import 'package:bungie_api/models/user_info_card.dart';
 import 'package:bungie_api/models/user_membership_data.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/services/littlelight/littlelight.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/storage/storage.service.dart';
 import 'package:uni_links/uni_links.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -16,20 +13,22 @@ import 'package:url_launcher/url_launcher.dart';
 class AuthService {
   static final api = BungieApiService();
   static const String _latestTokenKey = "latestToken";
+  static const String _latestTokenDateKey = "latestTokenDate";
+  static const String _membershipDataKey = "memberships";
   static BungieNetToken _currentToken;
-  static UserMembershipData _currentMembership;
+  static UserInfoCard _currentMembership;
+  static UserMembershipData _membershipData;
   Future<BungieNetToken> _getStoredToken() async {
-    StorageService _prefs = StorageService.account();
-    String jsonString = _prefs.getString(_latestTokenKey);
-    if (jsonString == null) {
-      return null;
+    StorageService storage = StorageService.account();
+    var json = await storage.getJson(_latestTokenKey);
+    try{
+      return 
+        BungieNetToken.fromJson(json);
+    }catch(e){
+      print("failed retrieving token for account: ${StorageService.getAccount()}");
+      print(e);
     }
-    Map<String, dynamic> json = jsonDecode(jsonString);
-    BungieNetToken savedToken = BungieNetToken.fromJson(json);
-    if (savedToken.accessToken == null || savedToken.expiresIn == null) {
-      return null;
-    }
-    return savedToken;
+    return null;
   }
 
   Future<BungieNetToken> refreshToken(BungieNetToken token) async {
@@ -39,10 +38,11 @@ class AuthService {
   }
 
   Future<void> _saveToken(BungieNetToken token) async {
-    StorageService _prefs = StorageService.account();
+    StorageService storage = StorageService.account();
     StorageService.setAccount(token.membershipId);
+    storage.setJson(_latestTokenKey, token.toJson());
+    storage.setDate(_latestTokenDateKey, DateTime.now());
     _currentToken = token;
-    _prefs.setString(_latestTokenKey, jsonEncode(token.toJson()));
   }
 
   Future<BungieNetToken> getToken() async {
@@ -53,35 +53,30 @@ class AuthService {
     if (token?.accessToken == null || token?.expiresIn == null) {
       return null;
     }
-    // DateTime now = DateTime.now();
-    // DateTime expire = token.savedDate.add(Duration(seconds: token.expiresIn));
-    // DateTime refreshExpire =
-    //     token.savedDate.add(Duration(seconds: token.refreshExpiresIn));
-    // if (refreshExpire.isBefore(now)) {
-    //   return null;
-    // }
-    // if (expire.isBefore(now)) {
-    //   token = await refreshToken(token);
-    // }
+    DateTime now = DateTime.now();
+    StorageService storage = StorageService.account();
+    DateTime savedDate = storage.getDate(_latestTokenDateKey);
+    DateTime expire = savedDate.add(Duration(seconds: token.expiresIn));
+    DateTime refreshExpire =
+        savedDate.add(Duration(seconds: token.refreshExpiresIn));
+    if (refreshExpire.isBefore(now)) {
+      return null;
+    }
+    if (expire.isBefore(now)) {
+      token = await refreshToken(token);
+    }
     return token;
   }
 
   Future<BungieNetToken> requestToken(String code) async {
     BungieNetToken token = await api.requestToken(code);
-    // BungieNetToken saved = BungieNetToken(
-    //     token.accessToken,
-    //     token.expiresIn,
-    //     token.refreshToken,
-    //     token.refreshExpiresIn,
-    //     token.membershipId,
-    //     DateTime.now());
-    // _saveToken(saved);
+    _saveToken(token);
     return token;
   }
 
   Future<String> checkAuthorizationCode() async {
     Uri uri = await getInitialUri();
-    if(uri?.queryParameters == null) return null;
+    if (uri?.queryParameters == null) return null;
     print("initialURI: $uri");
     if (uri.queryParameters.containsKey("code") ||
         uri.queryParameters.containsKey("error")) {
@@ -92,7 +87,8 @@ class AuthService {
       return uri.queryParameters["code"];
     } else {
       String errorType = uri.queryParameters["error"];
-      String errorDescription = uri.queryParameters["error_description"] ?? uri.toString();
+      String errorDescription =
+          uri.queryParameters["error_description"] ?? uri.toString();
       throw OAuthException(errorType, errorDescription);
     }
   }
@@ -120,33 +116,41 @@ class AuthService {
     }
   }
 
-  Future<UserMembershipData> _getStoredMembership() async {
-    StorageService _prefs = StorageService.global();
-    var membership = StorageService.getMembership();
-    print(membership);
-    Map<String, dynamic> json = jsonDecode(membership);
-    return UserMembershipData.fromJson(json);
+  Future<UserMembershipData> getMembershipData() async{
+    return _membershipData ?? await _getStoredMembershipData();
+  }
+
+  Future<UserMembershipData> _getStoredMembershipData() async {
+    var storage = StorageService.account();
+    var json = await storage.getJson(_membershipDataKey);
+    if(json == null){
+      return null;
+    }
+    UserMembershipData membershipData =
+        UserMembershipData.fromJson(json);
+    return membershipData;
   }
 
   Future<UserInfoCard> getMembership() async {
-    UserMembershipData membership = _currentMembership;
-    if (membership == null) {
-      _currentMembership = membership = await _getStoredMembership();
+    if (_currentMembership == null) {
+      var _membershipData = await _getStoredMembershipData();
+      var _membershipId = StorageService.getMembership();
+      _currentMembership = getMembershipById(_membershipData, _membershipId);
     }
-    return membership.destinyMemberships[0];
+    return _currentMembership;
+  }
+
+  UserInfoCard getMembershipById(UserMembershipData membershipData, String membershipId){
+    return membershipData?.destinyMemberships
+          ?.firstWhere((membership) => membership?.membershipId == membershipId, orElse: ()=>membershipData?.destinyMemberships?.first ?? null);
   }
 
   Future<void> saveMembership(
-      UserMembershipData membershipData, int membershipType) async {
-    // StorageService _prefs = await StorageService.getInstance();
-    _currentMembership = membershipData;
-    // _prefs.setString(
-    //     _latestMembershipKey, jsonEncode(_currentMembership.toJson()));
-
-    ProfileService profile = new ProfileService();
-    await profile.clear();
-    LittleLightService littleLight = new LittleLightService();
-    await littleLight.clearData();
+      UserMembershipData membershipData, String membershipId) async {
+    StorageService storage = StorageService.account();
+    _currentMembership = getMembershipById(membershipData, membershipId);
+    storage.setJson(_membershipDataKey, membershipData.toJson());
+    StorageService.setMembership(membershipId);
   }
 
   bool get isLogged {
@@ -154,39 +158,15 @@ class AuthService {
   }
 }
 
-// class BungieNetToken extends BungieNetToken {
-//   DateTime savedDate;
-//   BungieNetToken(String accessToken, int expiresIn, String refreshToken,
-//       int refreshExpiresIn, String membershipId, this.savedDate)
-//       : super(accessToken, expiresIn, refreshToken, refreshExpiresIn,
-//             membershipId);
-//   static BungieNetToken fromJson(Map<String, dynamic> data) {
-//     return BungieNetToken(
-//         data["access_token"],
-//         data["expires_in"],
-//         data["refresh_token"],
-//         data["refresh_expires_in"],
-//         data["membership_id"],
-//         DateTime.parse(data["saved_date"]));
-//   }
-
-//   @override
-//   Map<String, dynamic> toJson() {
-//     Map<String, dynamic> data = super.toJson();
-//     data["saved_date"] = this.savedDate.toIso8601String();
-//     return data;
-//   }
-// }
-
 class BungieAuthBrowser implements OAuthBrowser {
   BungieAuthBrowser() : super();
 
   @override
   dynamic open(String url) async {
-    if(Platform.isIOS){
+    if (Platform.isIOS) {
       await launch(url,
-        forceSafariVC: true, statusBarBrightness: Brightness.light);  
-    }else{
+          forceSafariVC: true, statusBarBrightness: Brightness.light);
+    } else {
       await launch(url, forceSafariVC: true);
     }
   }
