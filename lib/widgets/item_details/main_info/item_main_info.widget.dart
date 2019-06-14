@@ -19,7 +19,7 @@ class ItemMainInfoWidget extends DestinyItemWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical:8),
+        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -27,8 +27,7 @@ class ItemMainInfoWidget extends DestinyItemWidget {
             children: <Widget>[
               Text(definition.itemTypeDisplayName),
               Padding(
-                  padding: EdgeInsets.only(top: 8),
-                  child: primaryStat(context))
+                  padding: EdgeInsets.only(top: 8), child: primaryStat(context))
             ],
           ),
           Container(
@@ -43,15 +42,12 @@ class ItemMainInfoWidget extends DestinyItemWidget {
   }
 
   Widget primaryStat(context) {
-    if (instanceInfo?.primaryStat != null) {
-      return PrimaryStatWidget(
-        item,
-        definition,
-        instanceInfo,
-        suppressLabel: true,
-        fontSize: 36,
-      );
-    }
-    return Container();
+    return PrimaryStatWidget(
+      item,
+      definition,
+      instanceInfo,
+      suppressLabel: true,
+      fontSize: 36,
+    );
   }
 }

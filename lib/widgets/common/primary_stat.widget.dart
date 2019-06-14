@@ -32,7 +32,23 @@ class PrimaryStatWidget extends DestinyItemWidget {
             key: key, characterId: characterId);
 
   int get statValue {
-    return instanceInfo?.primaryStat?.value;
+    var value = instanceInfo?.primaryStat?.value;
+    if(value != null){
+      return value;
+    }
+    try{
+      return definition.stats.stats["1935470627"].maximum;
+    }catch(e){
+    }
+    return null;
+  }
+
+  int get damageType {
+    var value = instanceInfo?.damageType;
+    if(value!= null){
+      return value;
+    }
+    return definition?.defaultDamageType;
   }
 
   Widget build(BuildContext context) {
@@ -51,7 +67,7 @@ class PrimaryStatWidget extends DestinyItemWidget {
       widgets.add(classTypeIcon(context));
     }
     widgets.add(valueField(
-        context, DestinyData.getDamageTypeTextColor(instanceInfo.damageType)));
+        context, DestinyData.getDamageTypeTextColor(damageType)));
     if (definition.itemType == DestinyItemType.Weapon && !suppressAmmoTypeIcon) {
       widgets.add(ammoTypeIcon(context));
     }
@@ -81,7 +97,7 @@ class PrimaryStatWidget extends DestinyItemWidget {
     return Row(children: [
       Icon(
         DestinyData.getClassIcon(definition.classType),
-        color: DestinyData.getDamageTypeTextColor(instanceInfo.damageType),
+        color: DestinyData.getDamageTypeTextColor(damageType),
         size: fontSize,
       ),
       ammoTypeDivider(context)
@@ -90,8 +106,8 @@ class PrimaryStatWidget extends DestinyItemWidget {
 
   Widget damageTypeIcon(BuildContext context) {
     return Icon(
-      DestinyData.getDamageTypeIcon(instanceInfo.damageType),
-      color: DestinyData.getDamageTypeTextColor(instanceInfo.damageType),
+      DestinyData.getDamageTypeIcon(damageType),
+      color: DestinyData.getDamageTypeTextColor(damageType),
       size: fontSize,
     );
   }

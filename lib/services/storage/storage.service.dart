@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:little_light/services/storage/migrations/migrate_to_v1x6.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -12,7 +13,6 @@ class StorageServiceKeys {
     membershipDataKey,
     languagesKey,
     accountIdsKey,
-    membershipIdsKey,
     selectedLanguageKey,
     selectedAccountIdKey,
     selectedMembershipIdKey,
@@ -53,6 +53,7 @@ class StorageService {
   static SharedPreferences _prefs;
   static init() async {
     _prefs = await SharedPreferences.getInstance();
+    await MigrateToV1x6().run();
   }
 
   final String _path;
@@ -173,7 +174,6 @@ class StorageService {
 
   Future<String> getPath(String key, [bool json = false]) async {
     Directory directory = await getApplicationDocumentsDirectory();
-    print(directory);
     return "${directory.path}/$_path/$key" + (json ? '.json' : '');
   }
 

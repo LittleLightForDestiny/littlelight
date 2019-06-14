@@ -8,6 +8,7 @@ import 'package:bungie_api/models/destiny_item_socket_category_definition.dart';
 import 'package:bungie_api/models/destiny_item_socket_entry_definition.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_socket_category_definition.dart';
+import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/widgets/common/perk_list_item.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
@@ -234,7 +235,7 @@ class ItemDetailModsWidgetState extends State<ItemDetailModsWidget> with Automat
 
   DestinyItemPlug getPlugItemByHash(int hash) {
     var itemInstanceId = item?.itemInstanceId;
-    if (itemInstanceId == null) {
+    if (itemInstanceId == null && AuthService().isLogged) {
       var allItems = widget.profile.getAllItems();
       var item = allItems.firstWhere(
           (i) => i.itemHash == widget.definition?.hash,

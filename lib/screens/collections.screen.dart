@@ -30,8 +30,6 @@ class CollectionsScreenState extends PresentationNodeBaseScreenState {
         SelectedPagePersistence.collections);
     AuthService auth = AuthService();
     if (auth.isLogged) {
-      ProfileService()
-          .fetchProfileData(components: ProfileComponentGroups.collections);
       this.loadItems();
     }
     super.initState();

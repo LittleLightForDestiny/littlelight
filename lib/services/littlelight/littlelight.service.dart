@@ -14,17 +14,8 @@ enum _HttpMethod { get, post }
 class LittleLightService {
   String _uuid;
   String _secret;
-  // static const _uuidPrefKey = "littlelight_device_id";
-  // static const _secretPrefKey = "littlelight_secret";
 
-  List<int> raidHashes = [
-    3660836525,
-    2986584050,
-    2683538554,
-    3181387331,
-    1342567285,
-    2590427074
-  ];
+
 
   static final LittleLightService _singleton =
       new LittleLightService._internal();

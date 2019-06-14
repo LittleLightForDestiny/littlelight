@@ -7,7 +7,7 @@ class UserSettingsService {
   static const String _keepAwakeKey = "userpref_keepAwake";
   static const String _itemOrderingKey = "userpref_itemOrdering";
   static UserSettingsService _singleton = UserSettingsService._internal();
-  StorageService get storage => StorageService.membership();
+  StorageService get globalStorage => StorageService.global();
 
   factory UserSettingsService() {
     return _singleton;
@@ -18,15 +18,15 @@ class UserSettingsService {
 
 
   bool get keepAwake{
-    return storage.getBool(_keepAwakeKey) ?? false;
+    return globalStorage.getBool(_keepAwakeKey) ?? false;
   }
   
   set keepAwake(bool value){
-    storage.setBool(_keepAwakeKey, value);
+    globalStorage.setBool(_keepAwakeKey, value);
   }
 
   List<SortParameter> get itemOrdering{
-    List<dynamic> jsonList = jsonDecode(storage.getString(_itemOrderingKey) ?? "[]");
+    List<dynamic> jsonList = jsonDecode(globalStorage.getString(_itemOrderingKey) ?? "[]");
     var savedParams = SortParameter.fromList(jsonList);
     Iterable<SortParameterType> presentParams = savedParams.map((p)=>p.type);
     var defaults = SortParameter.defaultList;
@@ -40,11 +40,11 @@ class UserSettingsService {
 
   set itemOrdering(List<SortParameter> ordering){
     var json = jsonEncode(ordering.map((p)=>p.toJson()).toList());
-    storage.setString(_itemOrderingKey, json);
+    globalStorage.setString(_itemOrderingKey, json);
   }
 
   CharacterSortParameter get characterOrdering{
-    var jsonStr = storage.getString(StorageServiceKeys.charOrdering);
+    var jsonStr = globalStorage.getString(StorageServiceKeys.charOrdering);
     if(jsonStr == null) return CharacterSortParameter();
     return CharacterSortParameter.fromJson(jsonDecode(jsonStr));
   }
