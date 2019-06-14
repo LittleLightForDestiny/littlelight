@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:little_light/models/loadout.dart';
 import 'package:little_light/screens/edit_loadout.screen.dart';
 import 'package:little_light/services/littlelight/littlelight.service.dart';
-import 'package:little_light/services/littlelight/models/loadout.model.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
 import 'package:little_light/widgets/loadouts/loadout_list_item.widget.dart';
 
 class LoadoutsScreen extends StatefulWidget {
-  final Map<String, LoadoutItemIndex> itemIndexes = new Map();
   @override
   LoadoutScreenState createState() => new LoadoutScreenState();
 }
 
 class LoadoutScreenState extends State<LoadoutsScreen> {
+  final Map<String, LoadoutItemIndex> itemIndexes = new Map();
   bool reordering = false;
   bool searchOpen = false;
   List<Loadout> loadouts;
@@ -28,6 +28,10 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
   void loadLoadouts() async {
     LittleLightService service = LittleLightService();
     loadouts = await service.getLoadouts();
+    loadouts.sort((a, b) {
+      var result = a.name.toLowerCase().compareTo(b.name.toLowerCase());
+      return result;
+    });
     setState(() {});
   }
 
@@ -44,10 +48,10 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
   }
 
   Widget buildAppBar() {
-    if(reordering){
+    if (reordering) {
       return TranslatedTextWidget("Loadouts");
     }
-    if(searchOpen){
+    if (searchOpen) {
       TranslatedTextWidget("Add to Loadout");
       TranslatedTextWidget("Equip only");
       TranslatedTextWidget("Add as equipped");
@@ -151,7 +155,7 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
     return LoadoutListItemWidget(
       loadout,
       key: Key("loadout_${loadout.assignedId}_$index"),
-      itemIndexes: widget.itemIndexes,
+      itemIndexes: itemIndexes,
       onChange: () {
         this.loadLoadouts();
       },

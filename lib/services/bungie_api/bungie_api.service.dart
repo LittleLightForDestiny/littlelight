@@ -196,7 +196,7 @@ class Client implements HttpClient {
 
     var response = await req;
     if (response.statusCode == 401 && autoRefreshToken) {
-      await AuthService().refreshToken(token); 
+      this.token = await AuthService().refreshToken(token); 
       return request(config);
     }
     dynamic json;

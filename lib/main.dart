@@ -25,15 +25,14 @@ void main() async {
 }
 
 class LittleLight extends StatelessWidget {
-  // This widget is the root of your application.
   final Key key;
   LittleLight({this.key});
 
   @override
   Widget build(BuildContext context) {
     QueuedNetworkImage.maxNrOfCacheObjects = 5000;
-    QueuedNetworkImage.inBetweenCleans = new Duration(days: 15);
-    return new MaterialApp(
+    QueuedNetworkImage.inBetweenCleans = new Duration(days: 30);
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       key: key,
       title: 'Little Light',

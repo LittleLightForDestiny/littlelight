@@ -376,6 +376,23 @@ class _AboutScreenState extends State<AboutScreen> {
                             buildTagAndPlatform(4611686018486012725, 4),
                           ])),
                       Container(height: 8),
+                      HeaderWidget(
+                        alignment: Alignment.centerLeft,
+                        child: TranslatedTextWidget("Supporters",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                            uppercase: true),
+                      ),
+                      Container(
+                        height: 8,
+                      ),
+                      buildTagAndPlatform(4611686018429238118, 2),
+                      Container(
+                        height: 8,
+                      ),
+                      buildTagAndPlatform(4611686018452346120, 2),
+                      Container(
+                        height: 8,
+                      ),
                       Container(
                         height: screenPadding.bottom,
                       )

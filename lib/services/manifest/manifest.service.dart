@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_manifest.dart';
 import 'package:bungie_api/responses/destiny_manifest_response.dart';
 import 'package:flutter/foundation.dart';
@@ -13,8 +14,6 @@ import 'package:sqflite/sqflite.dart' as sqflite;
 typedef Type DownloadProgress(int downloaded, int total);
 
 class ManifestService {
-  static const String _manifestVersionKey = "manifestVersion";
-  static const String _manifestFilename = "manifest.db";
   sqflite.Database _db;
   DestinyManifest _manifestInfo;
   final BungieApiService _api = new BungieApiService();
@@ -24,6 +23,15 @@ class ManifestService {
   factory ManifestService() {
     return _singleton;
   }
+
+  Future<void> reset() async{
+    _cached.clear();
+    if(_db?.isOpen ?? false){
+      await _db.close();
+      _db = null;
+    }
+  }
+
   ManifestService._internal();
 
   Future<String> get _localPath async {
@@ -61,7 +69,8 @@ class ManifestService {
     DestinyManifest manifestInfo = await loadManifestInfo();
     String currentVersion = await getSavedVersion();
     String language = StorageService.getLanguage();
-    return currentVersion != manifestInfo.mobileWorldContentPaths[language];
+    var working = await test();
+    return !working || currentVersion != manifestInfo.mobileWorldContentPaths[language];
   }
 
   Future<bool> download({DownloadProgress onProgress}) async {
@@ -88,9 +97,9 @@ class ManifestService {
     await sink.flush();
     await sink.close();
 
-    File manifestFile = await File("$localPath/$_manifestFilename").create();
     List<int> unzippedData = await compute(_extractFromZip, zipFile);
-    manifestFile = await manifestFile.writeAsBytes(unzippedData);
+    StorageService storage = StorageService.language();
+    await storage.writeBytes(StorageServiceKeys.manifestFile, unzippedData);
 
     await zipFile.delete();
 
@@ -118,26 +127,25 @@ class ManifestService {
   }
 
   Future<bool> test() async {
-    sqflite.Database db = await _openDb();
-    List<Map<String, dynamic>> results =
-        await db.rawQuery("SELECT name FROM sqlite_master WHERE type='table'");
-    return results.length > 0;
+    var def = await getDefinition<DestinyInventoryItemDefinition>(3628991658);
+    return def?.displayProperties?.name != null;
   }
 
   Future<sqflite.Database> _openDb() async {
     if (_db?.isOpen ?? false != false) {
       return _db;
     }
-    String localPath = await _localPath;
+    var storage = StorageService.language();
+    var path = await storage.getPath(StorageServiceKeys.manifestFile);
     sqflite.Database database =
-        await sqflite.openDatabase("$localPath/$_manifestFilename");
+        await sqflite.openDatabase("$path");
     _db = database;
     return _db;
   }
 
   Future<String> getSavedVersion() async {
     StorageService _prefs = StorageService.language();
-    String version = _prefs.getString(_manifestVersionKey);
+    String version = _prefs.getString(StorageServiceKeys.manifestVersionKey);
     if (version == null) {
       return null;
     }
@@ -146,7 +154,7 @@ class ManifestService {
 
   Future<void> saveManifestVersion(String version) async {
     StorageService _prefs = StorageService.language();
-    _prefs.setString(_manifestVersionKey, version);
+    _prefs.setString(StorageServiceKeys.manifestVersionKey, version);
   }
 
   Future<Map<int, T>> getDefinitions<T>(Iterable<int> hashes,

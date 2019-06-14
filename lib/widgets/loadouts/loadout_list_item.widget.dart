@@ -1,12 +1,12 @@
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
+import 'package:little_light/models/loadout.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/screens/edit_loadout.screen.dart';
 import 'package:little_light/screens/equip_loadout.screen.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/littlelight/littlelight.service.dart';
-import 'package:little_light/services/littlelight/models/loadout.model.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:little_light/models/tracked_objective.dart';
 import 'package:little_light/services/littlelight/littlelight.service.dart';
-import 'package:little_light/services/littlelight/models/tracked_objective.model.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
 import 'package:little_light/widgets/presentation_nodes/record_item.widget.dart';

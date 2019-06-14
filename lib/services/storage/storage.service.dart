@@ -4,10 +4,52 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+class StorageServiceKeys {
+  static const List<String> allKeys = [
+    charOrdering,
+    latestTokenKey,
+    latestTokenDateKey,
+    membershipDataKey,
+    languagesKey,
+    accountIdsKey,
+    membershipIdsKey,
+    selectedLanguageKey,
+    selectedAccountIdKey,
+    selectedMembershipIdKey,
+    cachedProfileKey,
+    cachedLoadouts,
+    trackedObjectives,
+    membershipUUID,
+    membershipSecret,
+    manifestVersionKey,
+    manifestFile,
+  ];
+
+  static const String charOrdering = "charOrdering";
+
+  static const String latestTokenKey = "latestToken";
+  static const String latestTokenDateKey = "latestTokenDate";
+  static const String membershipDataKey = "memberships";
+
+  static const String languagesKey = 'languages';
+  static const String accountIdsKey = 'account_ids';
+  static const String membershipIdsKey = 'membership_ids';
+  static const String selectedLanguageKey = 'selected_language';
+  static const String selectedAccountIdKey = 'selected_account_id';
+  static const String selectedMembershipIdKey = 'selected_membership_id';
+  static const String cachedProfileKey = "cached_profile";
+
+  static const String cachedLoadouts = "cached_loadouts";
+  static const String trackedObjectives = "tracked_objectives";
+
+  static const String membershipUUID = "membership_uuid";
+  static const String membershipSecret = "membership_secret";
+
+  static const String manifestVersionKey = "manifestVersion";
+  static const String manifestFile = "manifest.db";
+}
+
 class StorageService {
-  static const String _selectedLanguageKey = 'selected_language';
-  static const String _selectedAccountIdKey = 'selected_account_id';
-  static const String _selectedMembershipIdKey = 'selected_membership_id';
   static SharedPreferences _prefs;
   static init() async {
     _prefs = await SharedPreferences.getInstance();
@@ -17,32 +59,54 @@ class StorageService {
   StorageService([this._path = ""]);
 
   factory StorageService.global() => StorageService();
-  factory StorageService.language() =>
-      StorageService("languages/${StorageService.getLanguage()}");
-  factory StorageService.account() =>
-      StorageService("accounts/${StorageService.getAccount()}");
-  factory StorageService.membership() =>
-      StorageService("memberships/${StorageService.getMembership()}");
+  factory StorageService.language([String languageCode]) {
+    var code = languageCode ?? StorageService.getLanguage();
+    return StorageService("languages/$code");
+  }
+
+  factory StorageService.account([String accountId]) {
+    var id = accountId ?? StorageService.getAccount();
+    return StorageService("accounts/$id");
+  }
+
+  factory StorageService.membership([String membershipId]) {
+    var id = membershipId ?? StorageService.getMembership();
+    return StorageService("memberships/$id");
+  }
 
   bool getBool(String key) {
     return _prefs.getBool("$_path/$key");
   }
 
-  void setBool(String key, bool value) {
-    _prefs.setBool("$_path/$key", value);
+  Future<void> setBool(String key, bool value) async {
+    await _prefs.setBool("$_path/$key", value);
   }
 
-  void remove(String key) {
-    _prefs.remove("$_path/$key");
-    _prefs.remove("$key");
+  Future<void> remove(String key) async {
+    await _prefs.remove("$_path/$key");
+  }
+
+  Future<void> purge() async{
+    var keys = StorageServiceKeys.allKeys;
+    for(var key in keys){
+      await remove(key);
+    }
+    if(_path.length > 0){
+      var path = await getPath("");
+      Directory file = Directory(path);
+      var exists = await file.exists();
+      if(exists){
+        await file.delete(recursive:true);
+      }
+    }
   }
 
   String getString(String key) {
-    return _prefs.getString("$_path" + "$key");
+    return _prefs.getString("$_path/$key");
   }
 
-  void setString(String key, String value) {
-    _prefs.setString("$_path" + "$key", value);
+  Future<void> setString(String key, String value) async {
+    await _prefs.setString("$_path/$key", value);
   }
 
   DateTime getDate(String key) {
@@ -55,18 +119,17 @@ class StorageService {
     return null;
   }
 
-  void setDate(String key, DateTime value) {
-    setString(key, value.toIso8601String());
+  Future<void> setDate(String key, DateTime value) async {
+    await setString(key, value.toIso8601String());
   }
 
-  Future<dynamic> getJson(String key) async{
-    Directory directory = await getApplicationDocumentsDirectory();
-    File cached = new File("${directory.path}/$_path/$key.json");
+  Future<dynamic> getJson(String key) async {
+    File cached = new File(await getPath(key, true));
     bool exists = await cached.exists();
     if (exists) {
       try {
         String json = await cached.readAsString();
-        Map<String, dynamic> map = jsonDecode(json);
+        dynamic map = jsonDecode(json);
         return map;
       } catch (e) {
         print("error decoding file:$_path/$key");
@@ -76,38 +139,82 @@ class StorageService {
     return null;
   }
 
-  void setJson(String key, dynamic object) async{
-    Directory docDirectory = await getApplicationDocumentsDirectory();
-    Directory dir = new Directory("${docDirectory.path}/$_path");
-    if(!await dir.exists()){
+  Future<void> setJson(String key, dynamic object) async {
+    Directory dir = new Directory(await getPath(""));
+    if (!await dir.exists()) {
       await dir.create(recursive: true);
     }
-    File cached = new File("${docDirectory.path}/$_path/$key.json");
-    print(cached);
+    File cached = new File(await getPath(key, true));
     await cached.writeAsString(jsonEncode(object));
   }
 
-  static setLanguage(String language) {
-    _prefs.setString(_selectedLanguageKey, language);
+  Future<void> writeBytes(String key, List<int> data) async {
+    Directory dir = new Directory(await getPath(""));
+    if (!await dir.exists()) {
+      await dir.create(recursive: true);
+    }
+    File cached = new File(await getPath(key));
+    await cached.writeAsBytes(data);
+  }
+
+  Future<List<int>> getBytes(String key) async {
+    File cached = new File(await getPath(key));
+    bool exists = await cached.exists();
+    if (exists) {
+      try {
+        return await cached.readAsBytes();
+      } catch (e) {
+        print("error decoding file:$_path/$key");
+        print(e);
+      }
+    }
+    return null;
+  }
+
+  Future<String> getPath(String key, [bool json = false]) async {
+    Directory directory = await getApplicationDocumentsDirectory();
+    print(directory);
+    return "${directory.path}/$_path/$key" + (json ? '.json' : '');
+  }
+
+  static Future<void> setLanguage(String language) async {
+    await _prefs.setString(StorageServiceKeys.selectedLanguageKey, language);
   }
 
   static String getLanguage() {
-    return _prefs.getString(_selectedLanguageKey);
+    return _prefs.getString(StorageServiceKeys.selectedLanguageKey);
   }
 
-  static setAccount(String accountId) {
-    _prefs.setString(_selectedAccountIdKey, accountId);
+  static Future<void> setAccount(String accountId) async {
+    await _prefs.setString(StorageServiceKeys.selectedAccountIdKey, accountId);
+    if (accountId == null) return;
+    var accounts = getAccounts();
+    if (!accounts.contains(accountId)) {
+      accounts.add(accountId);
+      await _prefs.setStringList(StorageServiceKeys.accountIdsKey, accounts);
+    }
   }
 
   static String getAccount() {
-    return _prefs.getString(_selectedAccountIdKey);
+    return _prefs.getString(StorageServiceKeys.selectedAccountIdKey);
   }
 
-  static setMembership(String membershipId) {
-    _prefs.setString(_selectedMembershipIdKey, membershipId);
+  static List<String> getAccounts() {
+    return _prefs.getStringList(StorageServiceKeys.accountIdsKey) ?? [];
+  }
+
+  static Future<void> removeAccount(String accountId) async{
+    var accounts = getAccounts();
+    accounts.remove(accountId);
+    await _prefs.setStringList(StorageServiceKeys.accountIdsKey, accounts);
+  }
+
+  static Future<void> setMembership(String membershipId) async {
+    await _prefs.setString(
+        StorageServiceKeys.selectedMembershipIdKey, membershipId);
   }
 
   static String getMembership() {
-    return _prefs.getString(_selectedMembershipIdKey);
+    return _prefs.getString(StorageServiceKeys.selectedMembershipIdKey);
   }
 }

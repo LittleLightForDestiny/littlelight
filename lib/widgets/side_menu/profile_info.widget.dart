@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/screens/initial.screen.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/storage/storage.service.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
@@ -185,13 +186,13 @@ class ProfileInfoState extends State<ProfileInfoWidget>
         widget.profile.getCharacters(CharacterSortParameter()).first;
     var lastPlayed = DateTime.parse(lastCharacter.dateLastPlayed);
     var currentSession = lastCharacter.minutesPlayedThisSession;
-    var time = timeago.format(lastPlayed, allowFromNow: true);
+    var time = timeago.format(lastPlayed, allowFromNow: true, locale: StorageService.getLanguage());
     if (lastPlayed
         .add(Duration(minutes: int.parse(currentSession) + 10))
         .isBefore(DateTime.now().toUtc())) {
       return TranslatedTextWidget(
         "Last played {timeago}",
-        replace: {'timeago': time},
+        replace: {'timeago': time.toLowerCase()},
         style: TextStyle(fontSize: 12, color: Colors.grey.shade100),
       );
     }
@@ -248,9 +249,7 @@ class ProfileInfoState extends State<ProfileInfoWidget>
                 Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => InitialScreen(
-                            forceLogin: true,
-                          ),
+                      builder: (context) => InitialScreen(),
                     ));
               },
             )),

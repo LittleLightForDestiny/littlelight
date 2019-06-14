@@ -6,8 +6,8 @@ import 'package:bungie_api/models/destiny_objective_definition.dart';
 import 'package:bungie_api/models/destiny_objective_progress.dart';
 
 import 'package:flutter/material.dart';
+import 'package:little_light/models/tracked_objective.dart';
 import 'package:little_light/services/littlelight/littlelight.service.dart';
-import 'package:little_light/services/littlelight/models/tracked_objective.model.dart';
 
 import 'package:little_light/widgets/progress_tabs/pursuit_item.widget.dart';
 

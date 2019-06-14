@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:little_light/models/loadout.dart';
 import 'package:little_light/services/inventory/inventory.service.dart';
-import 'package:little_light/services/littlelight/models/loadout.model.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/user_settings/user_settings.service.dart';
 import 'package:little_light/widgets/common/equip_on_character.button.dart';

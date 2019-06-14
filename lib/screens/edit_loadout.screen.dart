@@ -3,6 +3,7 @@ import 'package:bungie_api/enums/tier_type_enum.dart';
 import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
+import 'package:little_light/models/loadout.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/screens/select_loadout_background.screen.dart';
@@ -10,13 +11,11 @@ import 'package:little_light/screens/select_loadout_item.screen.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/littlelight/littlelight.service.dart';
-import 'package:little_light/services/littlelight/models/loadout.model.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/translate/translate.service.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/loadouts/loadout_slot.widget.dart';
-import 'package:uuid/uuid.dart';
 
 class EditLoadoutScreen extends StatefulWidget {
   final Loadout loadout;
@@ -70,10 +69,9 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> {
   @override
   initState() {
     if (widget.loadout != null) {
-      _loadout = Loadout.fromJson(widget.loadout.toJson());
+      _loadout = Loadout.copy(widget.loadout);
     } else {
-      String uuid = Uuid().v4();
-      _loadout = Loadout(uuid, "", null, [], []);
+      _loadout = Loadout.fromScratch();
     }
     _nameFieldController.text = _loadout.name;
     _nameFieldController.addListener(() {

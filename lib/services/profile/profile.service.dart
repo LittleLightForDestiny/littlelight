@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:bungie_api/enums/destiny_collectible_state_enum.dart';
@@ -21,8 +20,8 @@ import 'package:bungie_api/enums/destiny_component_type_enum.dart';
 import 'package:bungie_api/enums/destiny_scope_enum.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/notification/notification.service.dart';
+import 'package:little_light/services/storage/storage.service.dart';
 import 'package:little_light/utils/inventory_utils.dart';
-import 'package:path_provider/path_provider.dart';
 
 enum LastLoadedFrom { server, cache }
 
@@ -69,6 +68,8 @@ class ProfileComponentGroups {
 }
 
 class ProfileService {
+  
+
   final NotificationService _broadcaster = new NotificationService();
   static final ProfileService _singleton = new ProfileService._internal();
 
@@ -129,12 +130,16 @@ class ProfileService {
 
   Future<DestinyProfileResponse> _updateProfileData(
       List<int> components) async {
+    var membership = StorageService.getMembership();
     DestinyProfileResponse response;
     try {
       response = await _api.getCurrentProfile(components);
     } on SocketException catch (e) {
       print(e);
       //TODO:implement error handling
+    }
+    if(membership != StorageService.getMembership()){
+      return _profile;
     }
     lastUpdated = DateTime.now();
 
@@ -241,23 +246,17 @@ class ProfileService {
 
   _cacheProfile(DestinyProfileResponse profile) async {
     if (profile == null) return;
-    Map<String, dynamic> map = profile.toJson();
-    Directory directory = await getApplicationDocumentsDirectory();
-
-    File cached = await File("${directory.path}/cached_profile.json").create();
-    await cached.writeAsString(jsonEncode(map));
+    StorageService storage = StorageService.membership();
+    storage.setJson(StorageServiceKeys.cachedProfileKey, profile.toJson());
     print('saved to cache');
   }
 
   Future<DestinyProfileResponse> loadFromCache() async {
-    Directory directory = await getApplicationDocumentsDirectory();
-    File cached = new File("${directory.path}/cached_profile.json");
-    bool exists = await cached.exists();
-    if (exists) {
+    StorageService storage = StorageService.membership();
+    var json = await storage.getJson(StorageServiceKeys.cachedProfileKey);
+    if (json!= null) {
       try {
-        String json = await cached.readAsString();
-        Map<String, dynamic> map = jsonDecode(json);
-        DestinyProfileResponse response = DestinyProfileResponse.fromJson(map);
+        DestinyProfileResponse response = DestinyProfileResponse.fromJson(json);
         if ((response?.characters?.data?.length ?? 0) > 0) {
           this._profile = response;
           this._lastLoadedFrom = LastLoadedFrom.cache;
@@ -270,16 +269,6 @@ class ProfileService {
     DestinyProfileResponse response = await fetchProfileData();
     print('loaded profile from server');
     return response;
-  }
-
-  clear() async {
-    this._profile = null;
-    Directory directory = await getApplicationDocumentsDirectory();
-    File cached = new File("${directory.path}/cached_profile.json");
-    bool exists = await cached.exists();
-    if (exists) {
-      await cached.delete();
-    }
   }
 
   DestinyItemInstanceComponent getInstanceInfo(String instanceId) {

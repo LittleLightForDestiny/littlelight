@@ -36,7 +36,6 @@ class ExpiryDateWidgetState extends State<ExpiryDateWidget> {
     }
     var locale = StorageService.getLanguage();
     expiresIn = timeago.format(expiry, allowFromNow: true, locale: locale);
-    print(expiresIn);
     setState((){});
   }
 

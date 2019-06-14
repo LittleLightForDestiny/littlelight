@@ -289,7 +289,7 @@ class ItemDetailModsWidgetState extends State<ItemDetailModsWidget> with Automat
 
   DestinyItemSocketCategoryDefinition get category {
     return definition.sockets.socketCategories.firstWhere(
-        (cat) => DestinyData.socketCategoryModHashes
+        (cat) => !DestinyData.socketCategoryPerkHashes
             .contains(cat.socketCategoryHash),
         orElse: () => null);
   }

@@ -7,12 +7,11 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/interpolation_point.dart';
+import 'package:little_light/models/loadout.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/services/littlelight/models/loadout.model.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/user_settings/user_settings.service.dart';
-import 'package:uuid/uuid.dart';
 
 enum SortParameterType {
   PowerLevel,
@@ -334,7 +333,7 @@ class LoadoutItemIndex {
         .asMap()
         .map((index, value) => MapEntry(value, []));
     if (this.loadout == null) {
-      this.loadout = new Loadout(Uuid().v4(), "", null, [], [], DateTime.now());
+      this.loadout = Loadout.fromScratch();
     }
   }
 
@@ -367,14 +366,14 @@ class LoadoutItemIndex {
         if (equipped != null) {
           loadout.equipped.remove(equipped);
           loadout.equipped
-              .add(LoadoutItem(substitute.itemInstanceId, substitute.itemHash));
+              .add(LoadoutItem(itemInstanceId:substitute.itemInstanceId, itemHash:substitute.itemHash));
           equippedIds.add(substitute.itemInstanceId);
         }
         if (unequipped != null) {
           loadout.unequipped.remove(unequipped);
           loadout.unequipped.remove(unequipped);
           loadout.unequipped
-              .add(LoadoutItem(substitute.itemInstanceId, substitute.itemHash));
+              .add(LoadoutItem(itemInstanceId:substitute.itemInstanceId, itemHash:substitute.itemHash));
         }
         items.add(substitute);
       });
@@ -404,7 +403,7 @@ class LoadoutItemIndex {
       _addClassSpecific(item, def);
     }
     if (modifyLoadout) {
-      loadout.equipped.add(LoadoutItem(item.itemInstanceId, item.itemHash));
+      loadout.equipped.add(LoadoutItem(itemInstanceId:item.itemInstanceId, itemHash:item.itemHash));
     }
   }
 
@@ -444,7 +443,7 @@ class LoadoutItemIndex {
     }
     unequipped[def.inventory.bucketTypeHash].add(item);
     if (modifyLoadout) {
-      loadout.unequipped.add(LoadoutItem(item.itemInstanceId, item.itemHash));
+      loadout.unequipped.add(LoadoutItem(itemInstanceId:item.itemInstanceId, itemHash:item.itemHash));
     }
     unequippedCount++;
   }

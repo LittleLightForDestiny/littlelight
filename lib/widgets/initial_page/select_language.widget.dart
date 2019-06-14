@@ -29,6 +29,7 @@ class SelectLanguageWidgetState extends State<SelectLanguageWidget> {
   }
 
   void getLanguage() async{
+    await Future.delayed(Duration(milliseconds: 1));
     selectedLanguage = StorageService.getLanguage();
     Locale locale = Localizations.localeOf(context, nullOk: true);
     if(selectedLanguage == null && locale != null){

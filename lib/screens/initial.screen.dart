@@ -9,6 +9,7 @@ import 'package:little_light/exceptions/exception_handler.dart';
 import 'package:little_light/screens/main.screen.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
+import 'package:little_light/services/littlelight/littlelight.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/storage/storage.service.dart';
@@ -27,15 +28,12 @@ class InitialScreen extends StatefulWidget {
   final ManifestService manifest = new ManifestService();
   final ProfileService profile = new ProfileService();
   final TranslateService translate = new TranslateService();
-  final bool forceChangeLanguage;
-  final bool forceLogin;
-  final bool forceSelectMembership;
+  final String authCode;
 
   InitialScreen(
       {Key key,
-      this.forceChangeLanguage = false,
-      this.forceLogin = false,
-      this.forceSelectMembership = false})
+      this.authCode
+      })
       : super(key: key);
 
   @override
@@ -43,7 +41,6 @@ class InitialScreen extends StatefulWidget {
 }
 
 class InitialScreenState extends FloatingContentState<InitialScreen> {
-  bool forceReauth = false;
   @override
   void initState() {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -55,13 +52,20 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
 
   initLoading() async{
     await StorageService.init();
+    AuthService().reset();
+    await LittleLightService().reset();
+    await ManifestService().reset();
+    if(widget.authCode != null){
+      authCode(widget.authCode);
+      return;
+    }
     checkLanguage();
   }
 
   Future checkLanguage() async {
     String selectedLanguage = StorageService.getLanguage();
     bool hasSelectedLanguage = selectedLanguage != null;
-    if (hasSelectedLanguage && !widget.forceChangeLanguage) {
+    if (hasSelectedLanguage) {
       checkManifest();
     } else {
       showSelectLanguage();
@@ -85,7 +89,6 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
 
   checkManifest() async {
     try {
-      
       bool needsUpdate = await widget.manifest.needsUpdate();
       if (needsUpdate) {
         showDownloadManifest();
@@ -150,7 +153,6 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
 
   showLogin() {
     LoginWidget loginWidget = new LoginWidget(
-      forceReauth: widget.forceLogin || forceReauth,
       onSkip: () {
         goForward();
       },
@@ -174,7 +176,6 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
                 e,
                 onDismiss: (label) {
                   if (label == "Login") {
-                    this.forceReauth = true;
                     showLogin();
                   }
                 },
@@ -184,7 +185,6 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
   }
 
   checkMembership() async {
-    print('checkMembership');
     UserInfoCard membership = await widget.auth.getMembership();    
     if (membership == null) {
       return showSelectMembership();
@@ -200,16 +200,22 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
     this.changeContent(null, null);
     UserMembershipData membershipData =
         await this.widget.apiService.getMemberships();
+    
+    if(membershipData?.destinyMemberships?.length == 1){
+      await this.widget.auth.saveMembership(membershipData, membershipData?.destinyMemberships[0].membershipId);
+      await loadProfile();
+      return;
+    }
+
     SelectPlatformWidget widget = SelectPlatformWidget(
         membershipData: membershipData,
         onSelect: (String membershipId) async {
           if (membershipId == null) {
-            this.forceReauth = true;
             this.showLogin();
             return;
           }
           await this.widget.auth.saveMembership(membershipData, membershipId);
-          loadProfile();
+          await loadProfile();
         });
     this.changeContent(widget, widget.title);
   }

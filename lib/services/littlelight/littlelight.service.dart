@@ -1,14 +1,12 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:bungie_api/helpers/bungie_net_token.dart';
 import 'package:bungie_api/models/user_info_card.dart';
+import 'package:little_light/models/loadout.dart';
+import 'package:little_light/models/tracked_objective.dart';
 import 'package:little_light/services/auth/auth.service.dart';
-import 'package:little_light/services/littlelight/models/loadout.model.dart';
 import 'package:http/http.dart' as http;
-import 'package:little_light/services/littlelight/models/tracked_objective.model.dart';
 import 'package:little_light/services/storage/storage.service.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 
 enum _HttpMethod { get, post }
@@ -16,8 +14,8 @@ enum _HttpMethod { get, post }
 class LittleLightService {
   String _uuid;
   String _secret;
-  static const _uuidPrefKey = "littlelight_device_id";
-  static const _secretPrefKey = "littlelight_secret";
+  // static const _uuidPrefKey = "littlelight_device_id";
+  // static const _secretPrefKey = "littlelight_secret";
 
   List<int> raidHashes = [
     3660836525,
@@ -38,6 +36,13 @@ class LittleLightService {
   List<Loadout> _loadouts;
   List<TrackedObjective> _trackedObjectives;
 
+  reset() {
+    _loadouts = null;
+    _trackedObjectives = null;
+    _uuid = null;
+    _secret = null;
+  }
+
   Future<List<Loadout>> getLoadouts({forceFetch: false}) async {
     if (_loadouts != null && !forceFetch) return _loadouts;
     await _loadLoadoutsFromCache();
@@ -48,28 +53,25 @@ class LittleLightService {
   }
 
   Future<List<Loadout>> _loadLoadoutsFromCache() async {
-    Directory directory = await getApplicationDocumentsDirectory();
-    File cached = new File("${directory.path}/cached_loadouts.json");
-    bool exists = await cached.exists();
-    if (exists) {
-      try {
-        String json = await cached.readAsString();
-        List<dynamic> list = jsonDecode(json);
-        List<Loadout> loadouts = Loadout.fromList(list);
-        this._loadouts = loadouts;
-        this._loadouts.sort((a, b) => a.name.compareTo(b.name));
-        return loadouts;
-      } catch (e) {}
+    var storage = StorageService.membership();
+    List<dynamic> json =
+        await storage.getJson(StorageServiceKeys.cachedLoadouts);
+    if (json != null) {
+      List<Loadout> loadouts = json.map((j) => Loadout.fromJson(j)).toList();
+      this._loadouts = loadouts;
+      return loadouts;
     }
     return null;
   }
 
   Future<List<Loadout>> _fetchLoadouts() async {
     dynamic json = await _authorizedRequest("loadouts");
-    List<Loadout> _fetchedLoadouts = Loadout.fromList(json['data']);
+    List<dynamic> list = json['data'];
+    List<Loadout> _fetchedLoadouts =
+        list.map((j) => Loadout.fromJson(j)).toList();
     if (_loadouts == null) {
       _loadouts = _fetchedLoadouts;
-    } else {
+    } else if (_fetchedLoadouts != null) {
       _fetchedLoadouts.forEach((loadout) {
         int index =
             _loadouts.indexWhere((l) => l.assignedId == loadout.assignedId);
@@ -128,20 +130,15 @@ class LittleLightService {
   }
 
   Future<void> _saveLoadoutsToStorage() async {
-    Directory directory = await getApplicationDocumentsDirectory();
-    File cached = new File("${directory.path}/cached_loadouts.json");
-
-    //TODO: remove this hack when 1.3.8 is old news
+    var storage = StorageService.membership();
     Set<String> _ids = Set();
     List<Loadout> distinctLoadouts = _loadouts.where((l) {
       bool exists = _ids.contains(l.assignedId);
       _ids.add(l.assignedId);
       return !exists;
     }).toList();
-
-    List<dynamic> map = distinctLoadouts.map((l) => l.toJson()).toList();
-    String json = jsonEncode(map);
-    await cached.writeAsString(json);
+    List<dynamic> json = distinctLoadouts.map((l) => l.toJson()).toList();
+    await storage.setJson(StorageServiceKeys.cachedLoadouts, json);
   }
 
   Future<List<TrackedObjective>> getTrackedObjectives() async {
@@ -151,44 +148,58 @@ class LittleLightService {
   }
 
   Future<List<TrackedObjective>> _loadTrackedObjectivesFromCache() async {
-    Directory directory = await getApplicationDocumentsDirectory();
-    File cached = new File("${directory.path}/tracked_objectives.json");
-    bool exists = await cached.exists();
-    if (exists) {
-      try {
-        String json = await cached.readAsString();
-        List<dynamic> list = jsonDecode(json);
-        List<TrackedObjective> objectives = TrackedObjective.fromList(list);
-        this._trackedObjectives = objectives;
-        return objectives;
-      } catch (e) {}
+    var storage = StorageService.membership();
+    List<dynamic> json =
+        await storage.getJson(StorageServiceKeys.trackedObjectives);
+
+    if (json != null) {
+      List<TrackedObjective> objectives =
+          json.map((j) => TrackedObjective.fromJson(j)).toList();
+      this._trackedObjectives = objectives;
+      return this._trackedObjectives;
     }
+
     this._trackedObjectives = [];
     return this._trackedObjectives;
   }
 
-  Future<void> addTrackedObjective(
-      TrackedObjectiveType type, int hash, {String instanceId, String characterId, int parentHash}) async {
-        var found = _trackedObjectives.firstWhere((o) => o.type == type && o.hash == hash && o.instanceId == instanceId && characterId == o.characterId, orElse: ()=>null);
-    if(found == null){
-      _trackedObjectives.add(TrackedObjective(type, hash, instanceId:instanceId, characterId:characterId, parentHash: parentHash));
+  Future<void> addTrackedObjective(TrackedObjectiveType type, int hash,
+      {String instanceId, String characterId, int parentHash}) async {
+    var found = _trackedObjectives.firstWhere(
+        (o) =>
+            o.type == type &&
+            o.hash == hash &&
+            o.instanceId == instanceId &&
+            characterId == o.characterId,
+        orElse: () => null);
+    if (found == null) {
+      _trackedObjectives.add(TrackedObjective(
+          type: type,
+          hash: hash,
+          instanceId: instanceId,
+          characterId: characterId,
+          parentHash: parentHash));
     }
     await _saveTrackedObjectives();
   }
 
-  Future<void> removeTrackedObjective(
-      TrackedObjectiveType type, int hash, {String instanceId, String characterId}) async {
-    _trackedObjectives.removeWhere(
-        (o) => o.type == type && o.hash == hash && o.instanceId == instanceId && o.characterId == o.characterId);
+  Future<void> removeTrackedObjective(TrackedObjectiveType type, int hash,
+      {String instanceId, String characterId}) async {
+    _trackedObjectives.removeWhere((o) =>
+        o.type == type &&
+        o.hash == hash &&
+        o.instanceId == instanceId &&
+        o.characterId == o.characterId);
     await _saveTrackedObjectives();
   }
 
   Future<void> _saveTrackedObjectives() async {
-    Directory directory = await getApplicationDocumentsDirectory();
-    File cached = new File("${directory.path}/tracked_objectives.json");
-    List<dynamic> map = _trackedObjectives.where((l)=>l.hash != null).map((l) => l.toJson()).toList();
-    String json = jsonEncode(map);
-    await cached.writeAsString(json);
+    StorageService storage = StorageService.membership();
+    dynamic json = _trackedObjectives
+        .where((l) => l.hash != null)
+        .map((l) => l.toJson())
+        .toList();
+    await storage.setJson(StorageServiceKeys.trackedObjectives, json);
   }
 
   Future<dynamic> _authorizedRequest(String path,
@@ -234,10 +245,10 @@ class LittleLightService {
   Future<String> _getUuid() async {
     if (_uuid != null) return _uuid;
     StorageService prefs = StorageService.membership();
-    String uuid = prefs.getString(_uuidPrefKey);
+    String uuid = prefs.getString(StorageServiceKeys.membershipUUID);
     if (uuid == null) {
       uuid = Uuid().v4();
-      prefs.setString(_uuidPrefKey, uuid);
+      prefs.setString(StorageServiceKeys.membershipUUID, uuid);
       _uuid = uuid;
     }
     return uuid;
@@ -245,27 +256,15 @@ class LittleLightService {
 
   Future<String> _getSecret() async {
     if (_secret != null) return _secret;
-    StorageService prefs = StorageService.global();
-    String secret = prefs.getString(_secretPrefKey);
+    StorageService prefs = StorageService.membership();
+    String secret = prefs.getString(StorageServiceKeys.membershipSecret);
     _secret = secret;
     return secret;
   }
 
   _setSecret(String secret) async {
-    StorageService prefs = StorageService.global();
-    prefs.setString(_secretPrefKey, secret);
+    StorageService prefs = StorageService.membership();
+    prefs.setString(StorageServiceKeys.membershipSecret, secret);
     _secret = secret;
-  }
-
-  Future<void> clearData() async {
-    this._loadouts = null;
-    StorageService prefs = StorageService.global();
-    prefs.remove(_secretPrefKey);
-    Directory directory = await getApplicationDocumentsDirectory();
-    File cached = new File("${directory.path}/cached_loadouts.json");
-    bool exists = await cached.exists();
-    if (exists) {
-      await cached.delete();
-    }
   }
 }
