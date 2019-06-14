@@ -158,5 +158,22 @@
   "#####Other": "missing_translation",
   "#####Rarity": "missing_translation",
   "#####Class Type": "missing_translation",
-  "#####Quantity": "missing_translation"
+  "#####Quantity": "missing_translation",
+  "#####Order characters by": "missing_translation",
+  "#####Last played": "missing_translation",
+  "#####Creation date": "missing_translation",
+  "#####Custom": "missing_translation",
+  "#####Do you really want to exit Little Light?": "missing_translation",
+  "#####Add to Loadout": "missing_translation",
+  "#####Equip only": "missing_translation",
+  "#####Add as equipped": "missing_translation",
+  "#####Random Loadout": "missing_translation",
+  "#####Free slots": "missing_translation",
+  "#####Switch Account": "missing_translation",
+  "#####Add Account": "missing_translation",
+  "#####Manage Accounts": "missing_translation",
+  "#####Dev tools": "missing_translation",
+  "#####Accounts": "missing_translation",
+  "#####Supporters": "missing_translation",
+  "#####Remove": "missing_translation"
 }
