@@ -140,10 +140,6 @@ class ManifestService {
     var path =
         await storage.getPath(StorageServiceKeys.manifestFile, dbPath: true);
     try {
-      File file = File(path);
-      if (!await file.exists()) {
-        return null;
-      }
       sqflite.Database database =
           await sqflite.openDatabase("$path", readOnly: true);
 

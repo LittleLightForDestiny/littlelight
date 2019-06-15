@@ -86,6 +86,10 @@ class TrackedPursuitItemWidgetState<T extends TrackedPursuitItemWidget>
       _item = widget.profile.getItemsByInstanceId([this.itemInstanceId]).first;
     }
 
+    if(_item == null){
+      _item = widget.profile.getCharacterInventory(widget.characterId).firstWhere((i)=>i.itemHash == widget.hash);
+    }
+
     if (_item != null) {
       this._item = _item;
       setState(() {});

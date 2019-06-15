@@ -17,7 +17,6 @@ class StorageMigrations {
     rootPath = root.path;
     await removeOldManifest();
     await updateAccountInfo();
-    await moveManifestFilesToDatabasePath();
   }
 
   removeOldManifest() async {
@@ -94,13 +93,6 @@ class StorageMigrations {
       prefs.remove("littlelight_device_id");
     } catch (e) {
       print(e);
-    }
-  }
-  moveManifestFilesToDatabasePath() async {
-    var path = await StorageService.global().getPath("languages");
-    var directory = Directory(path);
-    if(await directory.exists()){
-      await directory.delete(recursive: true);
     }
   }
 }

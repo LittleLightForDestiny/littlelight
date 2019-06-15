@@ -39,10 +39,6 @@ class LoadoutScreenState extends State<ObjectivesScreen> {
                 Scaffold.of(context).openDrawer();
               },
             ),
-            // actions: <Widget>[
-            //   IconButton(
-            //       icon: Icon(Icons.add_circle_outline), onPressed: () async {})
-            // ],
             title: TranslatedTextWidget("Objectives")),
         body: buildBody(context),
       ),
