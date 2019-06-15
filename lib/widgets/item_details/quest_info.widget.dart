@@ -44,7 +44,7 @@ class QuestInfoWidgetState extends DestinyItemState<QuestInfoWidget> {
   }
 
   loadDefinitions() async {
-    itemObjectives = widget.profile.getItemObjectives(item?.itemInstanceId);
+    itemObjectives = widget.profile.getItemObjectives(item?.itemInstanceId, characterId, item?.itemHash);
     questlineDefinition = await widget.manifest
         .getDefinition<DestinyInventoryItemDefinition>(
             definition.objectives.questlineItemHash);
@@ -159,7 +159,7 @@ class QuestInfoWidgetState extends DestinyItemState<QuestInfoWidget> {
 
   List<Widget> buildObjectives(BuildContext context,
       DestinyInventoryItemDefinition questStepDef, int stepIndex) {
-    if (stepIndex == currentIndex) {
+    if (stepIndex == currentIndex && itemObjectives != null) {
       return itemObjectives
           .map((objective) => buildCurrentObjective(context, objective))
           .toList();

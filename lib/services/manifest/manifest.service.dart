@@ -24,9 +24,9 @@ class ManifestService {
     return _singleton;
   }
 
-  Future<void> reset() async{
+  Future<void> reset() async {
     _cached.clear();
-    if(_db?.isOpen ?? false){
+    if (_db?.isOpen ?? false) {
       await _db.close();
       _db = null;
     }
@@ -70,7 +70,8 @@ class ManifestService {
     String currentVersion = await getSavedVersion();
     String language = StorageService.getLanguage();
     var working = await test();
-    return !working || currentVersion != manifestInfo.mobileWorldContentPaths[language];
+    return !working ||
+        currentVersion != manifestInfo.mobileWorldContentPaths[language];
   }
 
   Future<bool> download({DownloadProgress onProgress}) async {
@@ -99,7 +100,7 @@ class ManifestService {
 
     List<int> unzippedData = await compute(_extractFromZip, zipFile);
     StorageService storage = StorageService.language();
-    await storage.writeBytes(StorageServiceKeys.manifestFile, unzippedData);
+    await storage.saveDatabase(StorageServiceKeys.manifestFile, unzippedData);
 
     await zipFile.delete();
 
@@ -132,14 +133,22 @@ class ManifestService {
   }
 
   Future<sqflite.Database> _openDb() async {
-    if (_db?.isOpen ?? false != false) {
+    if (_db?.isOpen == true) {
       return _db;
     }
     var storage = StorageService.language();
-    var path = await storage.getPath(StorageServiceKeys.manifestFile);
-    sqflite.Database database =
-        await sqflite.openDatabase("$path");
-    _db = database;
+    var path =
+        await storage.getPath(StorageServiceKeys.manifestFile, dbPath: true);
+    try {
+      File file = File(path);
+      if (!await file.exists()) {
+        return null;
+      }
+      sqflite.Database database =
+          await sqflite.openDatabase("$path", readOnly: true);
+
+      _db = database;
+    } catch (e) {}
     return _db;
   }
 

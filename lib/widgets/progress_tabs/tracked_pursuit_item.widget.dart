@@ -122,7 +122,7 @@ class TrackedPursuitItemWidgetState<T extends TrackedPursuitItemWidget>
 
   updateProgress() {
     var _itemInstanceId = this.itemInstanceId;
-    itemObjectives = widget.profile.getItemObjectives(_itemInstanceId);
+    itemObjectives = widget.profile.getItemObjectives(_itemInstanceId, widget.characterId, hash);
     setState(() {});
   }
 }

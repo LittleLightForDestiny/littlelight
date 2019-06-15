@@ -35,13 +35,13 @@ class InventoryNotificationWidgetState
       handleNotification(event);
     });
 
-    if(widget.service.latestNotification != null){
+    if (widget.service.latestNotification != null) {
       handleNotification(widget.service.latestNotification);
     }
   }
 
   void handleNotification(NotificationEvent event) async {
-    if(event.type == NotificationType.localUpdate) return;
+    if (event.type == NotificationType.localUpdate) return;
     _infoIcons = null;
     switch (event.type) {
       case NotificationType.requestedUpdate:
@@ -54,7 +54,6 @@ class InventoryNotificationWidgetState
         break;
 
       case NotificationType.requestedTransfer:
-      print(event.item?.itemHash);
         _busy = true;
         _message = "Transferring";
         _infoIcons = SizedBox(
@@ -66,12 +65,12 @@ class InventoryNotificationWidgetState
         );
         break;
 
-        case NotificationType.requestedEquip:
-          _busy = true;
-          _message = "Equipping";
-          break;
+      case NotificationType.requestedEquip:
+        _busy = true;
+        _message = "Equipping";
+        break;
 
-        default:
+      default:
         break;
     }
 

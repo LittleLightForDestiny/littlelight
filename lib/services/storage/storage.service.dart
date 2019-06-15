@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:little_light/services/storage/migrations/migrate_to_v1x6.dart';
+import 'package:little_light/services/storage/storage_migrations.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite/sqflite.dart';
 
 class StorageServiceKeys {
   static const List<String> allKeys = [
@@ -53,7 +54,7 @@ class StorageService {
   static SharedPreferences _prefs;
   static init() async {
     _prefs = await SharedPreferences.getInstance();
-    await MigrateToV1x6().run();
+    await StorageMigrations().run();
   }
 
   final String _path;
@@ -125,7 +126,7 @@ class StorageService {
   }
 
   Future<dynamic> getJson(String key) async {
-    File cached = new File(await getPath(key, true));
+    File cached = new File(await getPath(key, json:true));
     bool exists = await cached.exists();
     if (exists) {
       try {
@@ -145,17 +146,19 @@ class StorageService {
     if (!await dir.exists()) {
       await dir.create(recursive: true);
     }
-    File cached = new File(await getPath(key, true));
+    File cached = new File(await getPath(key, json:true));
     await cached.writeAsString(jsonEncode(object));
   }
 
-  Future<void> writeBytes(String key, List<int> data) async {
-    Directory dir = new Directory(await getPath(""));
+  Future<void> saveDatabase(String key, List<int> data) async {
+    Directory dir = new Directory(await getPath("", dbPath: true));
     if (!await dir.exists()) {
       await dir.create(recursive: true);
     }
-    File cached = new File(await getPath(key));
-    await cached.writeAsBytes(data);
+    File cached = new File(await getPath(key, dbPath: true));
+    cached = await cached.writeAsBytes(data);
+    print(await cached.length());
+    print(cached.path);
   }
 
   Future<List<int>> getBytes(String key) async {
@@ -172,9 +175,16 @@ class StorageService {
     return null;
   }
 
-  Future<String> getPath(String key, [bool json = false]) async {
-    Directory directory = await getApplicationDocumentsDirectory();
-    return "${directory.path}/$_path/$key" + (json ? '.json' : '');
+  Future<String> getPath(String key, {bool json = false, bool dbPath = false}) async {
+    String basePath;
+    if(dbPath){
+      basePath = await getDatabasesPath();
+    }else{
+      Directory directory = await getApplicationDocumentsDirectory();
+      basePath = directory.path;
+    }
+    var trailingSlash = (_path?.length ?? 0) > 0 ? "/" : "";
+    return "$basePath/$_path$trailingSlash$key" + (json ? '.json' : '');
   }
 
   static Future<void> setLanguage(String language) async {

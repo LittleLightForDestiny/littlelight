@@ -73,12 +73,12 @@ class ItemObjectivesWidgetState extends DestinyItemState<ItemObjectivesWidget> {
           }, orElse: ()=>null);
           return plugItem != null;
         }, orElse: ()=>null);
-        itemObjectives = plugItem.plugObjectives;
+        itemObjectives = plugItem?.plugObjectives;
         setState(() {});
         return;
       }
       if (itemInstanceId == null) return;
-      itemObjectives = widget.profile.getItemObjectives(itemInstanceId);
+      itemObjectives = widget.profile.getItemObjectives(itemInstanceId, characterId, widget?.definition?.hash);
       setState(() {});
     }
   }
@@ -189,6 +189,8 @@ class ItemObjectivesWidgetState extends DestinyItemState<ItemObjectivesWidget> {
   }
 
   List<Widget> buildObjectives(BuildContext context) {
+    print(itemObjectives);
+    print(definition.objectives.objectiveHashes);
     if (itemObjectives != null) {
       return itemObjectives
           .map((objective) => buildCurrentObjective(

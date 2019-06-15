@@ -110,6 +110,7 @@ class ProfileInfoState extends State<ProfileInfoWidget>
   loadUser() async {
     UserMembershipData membershipData = await widget.auth.getMembershipData();
     UserInfoCard currentMembership = await widget.auth.getMembership();
+    if(!mounted) return;
     setState(() {
       bungieNetUser = membershipData?.bungieNetUser;
       selectedMembership = currentMembership;

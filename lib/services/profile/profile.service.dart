@@ -287,8 +287,10 @@ class ProfileService {
     return _profile.itemComponents.sockets.data[itemInstanceId]?.sockets;
   }
 
-  List<DestinyObjectiveProgress> getItemObjectives(String itemInstanceId) {
-    return _profile.itemComponents.objectives?.data[itemInstanceId]?.objectives;
+  List<DestinyObjectiveProgress> getItemObjectives(String itemInstanceId, String characterId, int hash) {
+    return 
+    _profile.itemComponents.objectives?.data[itemInstanceId]?.objectives ??
+    _profile?.characterProgressions?.data[characterId]?.uninstancedItemObjectives["$hash"];
   }
 
   Map<String, DestinyPresentationNodeComponent> getProfilePresentationNodes() {

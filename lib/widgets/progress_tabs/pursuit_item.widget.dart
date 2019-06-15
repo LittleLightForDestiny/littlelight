@@ -205,7 +205,7 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
 
   updateProgress() {
     instanceInfo = widget.profile.getInstanceInfo(itemInstanceId);
-    itemObjectives = widget.profile.getItemObjectives(itemInstanceId);
+    itemObjectives = widget.profile.getItemObjectives(itemInstanceId, widget.characterId, hash);
     setState(() {});
   }
 
