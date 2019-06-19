@@ -43,6 +43,8 @@ class InventoryNotificationWidgetState
   void handleNotification(NotificationEvent event) async {
     if (event.type == NotificationType.localUpdate) return;
     _infoIcons = null;
+    
+    
     switch (event.type) {
       case NotificationType.requestedUpdate:
         _busy = true;

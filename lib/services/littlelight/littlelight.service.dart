@@ -46,7 +46,7 @@ class LittleLightService {
   Future<List<Loadout>> _loadLoadoutsFromCache() async {
     var storage = StorageService.membership();
     List<dynamic> json =
-        await storage.getJson(StorageServiceKeys.cachedLoadouts);
+        await storage.getJson(StorageKeys.cachedLoadouts);
     if (json != null) {
       List<Loadout> loadouts = json.map((j) => Loadout.fromJson(j)).toList();
       this._loadouts = loadouts;
@@ -129,7 +129,7 @@ class LittleLightService {
       return !exists;
     }).toList();
     List<dynamic> json = distinctLoadouts.map((l) => l.toJson()).toList();
-    await storage.setJson(StorageServiceKeys.cachedLoadouts, json);
+    await storage.setJson(StorageKeys.cachedLoadouts, json);
   }
 
   Future<List<TrackedObjective>> getTrackedObjectives() async {
@@ -141,7 +141,7 @@ class LittleLightService {
   Future<List<TrackedObjective>> _loadTrackedObjectivesFromCache() async {
     var storage = StorageService.membership();
     List<dynamic> json =
-        await storage.getJson(StorageServiceKeys.trackedObjectives);
+        await storage.getJson(StorageKeys.trackedObjectives);
 
     if (json != null) {
       List<TrackedObjective> objectives =
@@ -190,7 +190,7 @@ class LittleLightService {
         .where((l) => l.hash != null)
         .map((l) => l.toJson())
         .toList();
-    await storage.setJson(StorageServiceKeys.trackedObjectives, json);
+    await storage.setJson(StorageKeys.trackedObjectives, json);
   }
 
   Future<dynamic> _authorizedRequest(String path,
@@ -236,10 +236,10 @@ class LittleLightService {
   Future<String> _getUuid() async {
     if (_uuid != null) return _uuid;
     StorageService prefs = StorageService.membership();
-    String uuid = prefs.getString(StorageServiceKeys.membershipUUID);
+    String uuid = prefs.getString(StorageKeys.membershipUUID);
     if (uuid == null) {
       uuid = Uuid().v4();
-      prefs.setString(StorageServiceKeys.membershipUUID, uuid);
+      prefs.setString(StorageKeys.membershipUUID, uuid);
       _uuid = uuid;
     }
     return uuid;
@@ -248,14 +248,14 @@ class LittleLightService {
   Future<String> _getSecret() async {
     if (_secret != null) return _secret;
     StorageService prefs = StorageService.membership();
-    String secret = prefs.getString(StorageServiceKeys.membershipSecret);
+    String secret = prefs.getString(StorageKeys.membershipSecret);
     _secret = secret;
     return secret;
   }
 
   _setSecret(String secret) async {
     StorageService prefs = StorageService.membership();
-    prefs.setString(StorageServiceKeys.membershipSecret, secret);
+    prefs.setString(StorageKeys.membershipSecret, secret);
     _secret = secret;
   }
 }

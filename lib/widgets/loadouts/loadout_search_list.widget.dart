@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:little_light/utils/inventory_utils.dart';
+import 'package:little_light/services/user_settings/item_sort_parameter.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/item_list/items/loadout_search_item_wrapper.widget.dart';
 import 'package:little_light/widgets/search/search_filters.widget.dart';
@@ -52,7 +52,7 @@ class LoadoutSearchListWidgetState
   List<int> get excludeItemTypes => null;
 
   @override
-  List<SortParameter> get sortOrder => [SortParameter(type:SortParameterType.PowerLevel, direction:-1)];
+  List<ItemSortParameter> get sortOrder => [ItemSortParameter(type:ItemSortParameterType.PowerLevel, direction:-1)];
 
   @override
   List<ItemWithOwner> get filteredItems {

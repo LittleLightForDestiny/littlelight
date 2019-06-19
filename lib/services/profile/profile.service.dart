@@ -21,7 +21,8 @@ import 'package:bungie_api/enums/destiny_scope_enum.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/storage/storage.service.dart';
-import 'package:little_light/utils/inventory_utils.dart';
+import 'package:little_light/services/user_settings/character_sort_parameter.dart';
+import 'package:little_light/services/user_settings/user_settings.service.dart';
 
 enum LastLoadedFrom { server, cache }
 
@@ -247,13 +248,13 @@ class ProfileService {
   _cacheProfile(DestinyProfileResponse profile) async {
     if (profile == null) return;
     StorageService storage = StorageService.membership();
-    storage.setJson(StorageServiceKeys.cachedProfileKey, profile.toJson());
+    storage.setJson(StorageKeys.cachedProfile, profile.toJson());
     print('saved to cache');
   }
 
   Future<DestinyProfileResponse> loadFromCache() async {
     StorageService storage = StorageService.membership();
-    var json = await storage.getJson(StorageServiceKeys.cachedProfileKey);
+    var json = await storage.getJson(StorageKeys.cachedProfile);
     if (json!= null) {
       try {
         DestinyProfileResponse response = DestinyProfileResponse.fromJson(json);
@@ -308,7 +309,7 @@ class ProfileService {
       return null;
     }
     if(order == null){
-      order = CharacterSortParameter();
+      order = UserSettingsService().characterOrdering;
     }
 
     List<DestinyCharacterComponent> list =
@@ -325,7 +326,7 @@ class ProfileService {
           break;
         }
 
-      case CharacterSortParameterType.LastPlayed:
+      case CharacterSortParameterType.FirstCreated:
         {
           list.sort((charA, charB) {
             return charA.characterId.compareTo(charB.characterId);
@@ -333,7 +334,7 @@ class ProfileService {
           break;
         }
 
-      case CharacterSortParameterType.LastPlayed:
+      case CharacterSortParameterType.LastCreated:
         {
           list.sort((charA, charB) {
             return charB.characterId.compareTo(charA.characterId);

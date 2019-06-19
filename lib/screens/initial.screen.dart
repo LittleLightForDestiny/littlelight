@@ -14,6 +14,7 @@ import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/storage/storage.service.dart';
 import 'package:little_light/services/translate/translate.service.dart';
+import 'package:little_light/services/user_settings/user_settings.service.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/exceptions/exception_dialog.dart';
 import 'package:little_light/widgets/initial_page/download_manifest.widget.dart';
@@ -226,7 +227,8 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
     this.goForward();
   }
 
-  goForward() {
+  goForward() async{
+    await UserSettingsService().init();
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(

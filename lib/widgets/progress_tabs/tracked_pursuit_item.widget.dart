@@ -66,6 +66,7 @@ class TrackedPursuitItemWidgetState<T extends TrackedPursuitItemWidget>
           .getDefinition<DestinyInventoryItemDefinition>(
               definition.objectives.questlineItemHash);
     }
+    if(!mounted) return;
     setState(() {});
   }
 
@@ -83,11 +84,11 @@ class TrackedPursuitItemWidgetState<T extends TrackedPursuitItemWidget>
   findItem() {
     var _item;
     if (this.itemInstanceId != null) {
-      _item = widget.profile.getItemsByInstanceId([this.itemInstanceId]).first;
+      _item = widget.profile.getAllItems().firstWhere((i)=>i.itemInstanceId == this.itemInstanceId, orElse:()=>null);
     }
 
     if(_item == null){
-      _item = widget.profile.getCharacterInventory(widget.characterId).firstWhere((i)=>i.itemHash == widget.hash);
+      _item = widget.profile.getCharacterInventory(widget.characterId).firstWhere((i)=>i.itemHash == widget.hash, orElse: ()=>null);
     }
 
     if (_item != null) {

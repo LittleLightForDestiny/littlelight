@@ -369,6 +369,7 @@ class SearchFiltersWidgetState extends State<SearchFiltersWidget> {
                 ? Colors.lightBlue.shade700
                 : color ?? Colors.blueGrey.shade800,
             child: InkWell(
+                enableFeedback: false,
                 onTap: onTap,
                 onLongPress: onLongPress,
                 child: Container(

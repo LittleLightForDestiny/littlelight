@@ -63,23 +63,31 @@ class ItemObjectivesWidgetState extends DestinyItemState<ItemObjectivesWidget> {
             orElse: () => null);
         itemInstanceId = item?.itemInstanceId;
       }
-      if (itemInstanceId == null) {
-        var sockets = widget.profile.getAllSockets();
-        DestinyItemPlug plugItem; 
-        sockets.values.firstWhere((s){
-          s.sockets.firstWhere((c){
-            plugItem = c?.reusablePlugs?.firstWhere((c)=>c.plugItemHash == widget.definition?.hash, orElse: ()=>null);
-            return plugItem != null;
-          }, orElse: ()=>null);
-          return plugItem != null;
-        }, orElse: ()=>null);
-        itemObjectives = plugItem?.plugObjectives;
-        setState(() {});
-        return;
+      
+      if(itemObjectives == null){
+        itemObjectives = widget.profile.getItemObjectives(
+          itemInstanceId, characterId, widget?.definition?.hash);
+        
+        if(itemObjectives != null){
+          setState(() {});
+          return;
+        }
       }
-      if (itemInstanceId == null) return;
-      itemObjectives = widget.profile.getItemObjectives(itemInstanceId, characterId, widget?.definition?.hash);
+
+      var sockets = widget.profile.getAllSockets();
+      DestinyItemPlug plugItem;
+      sockets.values.firstWhere((s) {
+        s.sockets.firstWhere((c) {
+          plugItem = c?.reusablePlugs?.firstWhere(
+              (c) => c.plugItemHash == widget.definition?.hash,
+              orElse: () => null);
+          return plugItem != null;
+        }, orElse: () => null);
+        return plugItem != null;
+      }, orElse: () => null);
+      itemObjectives = plugItem?.plugObjectives;
       setState(() {});
+      return;
     }
   }
 
@@ -103,8 +111,8 @@ class ItemObjectivesWidgetState extends DestinyItemState<ItemObjectivesWidget> {
   Widget build(BuildContext context) {
     List<Widget> items = [];
     if ((objectiveDefinitions?.length ?? 0) == 0) return Container();
-    if(itemObjectives != null){
-      if(itemObjectives.where((o)=>o.visible != false).length == 0){
+    if (itemObjectives != null) {
+      if (itemObjectives.where((o) => o.visible != false).length == 0) {
         return Container();
       }
     }
@@ -134,7 +142,8 @@ class ItemObjectivesWidgetState extends DestinyItemState<ItemObjectivesWidget> {
         (o) =>
             o.hash == widget.definition.hash &&
             o.type == TrackedObjectiveType.Item &&
-            (o.instanceId == widget.item?.itemInstanceId ?? o.instanceId == null) &&
+            (o.instanceId == widget.item?.itemInstanceId ??
+                o.instanceId == null) &&
             o.characterId == widget.characterId,
         orElse: () => null);
     isTracking = tracked != null;
@@ -155,16 +164,14 @@ class ItemObjectivesWidgetState extends DestinyItemState<ItemObjectivesWidget> {
           var service = LittleLightService();
           if (isTracking) {
             service.removeTrackedObjective(
-                TrackedObjectiveType.Item,
-                definition.hash,
-                instanceId:widget.item?.itemInstanceId,
-                characterId:widget.characterId);
+                TrackedObjectiveType.Item, definition.hash,
+                instanceId: widget.item?.itemInstanceId,
+                characterId: widget.characterId);
           } else {
             service.addTrackedObjective(
-                TrackedObjectiveType.Item,
-                definition.hash,
-                instanceId:widget.item?.itemInstanceId,
-                characterId:widget.characterId);
+                TrackedObjectiveType.Item, definition.hash,
+                instanceId: widget.item?.itemInstanceId,
+                characterId: widget.characterId);
           }
           updateTrackStatus();
         },
@@ -189,8 +196,6 @@ class ItemObjectivesWidgetState extends DestinyItemState<ItemObjectivesWidget> {
   }
 
   List<Widget> buildObjectives(BuildContext context) {
-    print(itemObjectives);
-    print(definition.objectives.objectiveHashes);
     if (itemObjectives != null) {
       return itemObjectives
           .map((objective) => buildCurrentObjective(

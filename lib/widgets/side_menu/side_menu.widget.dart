@@ -56,11 +56,11 @@ class SideMenuWidgetState extends State<SideMenuWidget> {
     memberships = [];
     for (var accountId in accounts) {
       var storage = StorageService.account(accountId);
-      var json = await storage.getJson(StorageServiceKeys.membershipDataKey);
+      var json = await storage.getJson(StorageKeys.membershipData);
       var membershipData = UserMembershipData.fromJson(json);
       memberships.add(membershipData);
     }
-
+    if(!mounted) return;
     setState(() {});
   }
 
@@ -174,7 +174,7 @@ class SideMenuWidgetState extends State<SideMenuWidget> {
                     open(context, AboutScreen());
                   }),
                   isDebug
-                      ? menuItem(context, TranslatedTextWidget("Dev tools"),
+                      ? menuItem(context, TranslatedTextWidget("Dev Tools"),
                           onTap: () {
                           open(context, DevToolsScreen());
                         })

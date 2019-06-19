@@ -100,7 +100,7 @@ class ManifestService {
 
     List<int> unzippedData = await compute(_extractFromZip, zipFile);
     StorageService storage = StorageService.language();
-    await storage.saveDatabase(StorageServiceKeys.manifestFile, unzippedData);
+    await storage.saveDatabase(StorageKeys.manifestFile, unzippedData);
 
     await zipFile.delete();
 
@@ -138,7 +138,7 @@ class ManifestService {
     }
     var storage = StorageService.language();
     var path =
-        await storage.getPath(StorageServiceKeys.manifestFile, dbPath: true);
+        await storage.getPath(StorageKeys.manifestFile, dbPath: true);
     try {
       sqflite.Database database =
           await sqflite.openDatabase("$path", readOnly: true);
@@ -150,7 +150,7 @@ class ManifestService {
 
   Future<String> getSavedVersion() async {
     StorageService _prefs = StorageService.language();
-    String version = _prefs.getString(StorageServiceKeys.manifestVersionKey);
+    String version = _prefs.getString(StorageKeys.manifestVersion);
     if (version == null) {
       return null;
     }
@@ -159,7 +159,7 @@ class ManifestService {
 
   Future<void> saveManifestVersion(String version) async {
     StorageService _prefs = StorageService.language();
-    _prefs.setString(StorageServiceKeys.manifestVersionKey, version);
+    _prefs.setString(StorageKeys.manifestVersion, version);
   }
 
   Future<Map<int, T>> getDefinitions<T>(Iterable<int> hashes,

@@ -1,51 +1,68 @@
-import 'dart:convert';
-
 import 'package:little_light/services/storage/storage.service.dart';
-import 'package:little_light/utils/inventory_utils.dart';
+
+import 'character_sort_parameter.dart';
+import 'item_sort_parameter.dart';
 
 class UserSettingsService {
-  static const String _keepAwakeKey = "userpref_keepAwake";
-  static const String _itemOrderingKey = "userpref_itemOrdering";
   static UserSettingsService _singleton = UserSettingsService._internal();
   StorageService get globalStorage => StorageService.global();
+  StorageService get membershipStorage => StorageService.membership();
+  List<ItemSortParameter> _itemOrdering;
+  CharacterSortParameter _characterOrdering;
 
   factory UserSettingsService() {
     return _singleton;
   }
-
   UserSettingsService._internal();
-  
-
-
-  bool get keepAwake{
-    return globalStorage.getBool(_keepAwakeKey) ?? false;
-  }
-  
-  set keepAwake(bool value){
-    globalStorage.setBool(_keepAwakeKey, value);
+  init() async{
+    await initItemOrdering();
+    await initCharacterOrdering();
   }
 
-  List<SortParameter> get itemOrdering{
-    List<dynamic> jsonList = jsonDecode(globalStorage.getString(_itemOrderingKey) ?? "[]");
-    var savedParams = SortParameter.fromList(jsonList);
-    Iterable<SortParameterType> presentParams = savedParams.map((p)=>p.type);
-    var defaults = SortParameter.defaultList;
+  initItemOrdering() async{
+    List<dynamic> jsonList = await globalStorage.getJson(StorageKeys.itemOrdering);
+    List<ItemSortParameter> savedParams = (jsonList ?? []).map((j)=>ItemSortParameter.fromJson(j)).toList();
+    Iterable<ItemSortParameterType> presentParams = savedParams.map((p)=>p.type);
+    var defaults = ItemSortParameter.defaultList;
     defaults.forEach((p){
       if(!presentParams.contains(p.type)){
         savedParams.add(p);
       }
     });
-    return savedParams;
+    _itemOrdering = savedParams;
   }
 
-  set itemOrdering(List<SortParameter> ordering){
-    var json = jsonEncode(ordering.map((p)=>p.toJson()).toList());
-    globalStorage.setString(_itemOrderingKey, json);
+  initCharacterOrdering() async{
+    dynamic json = await membershipStorage.getJson(StorageKeys.characterOrdering);
+    if(json == null){
+      _characterOrdering = CharacterSortParameter();  
+      return;
+    }
+    _characterOrdering = CharacterSortParameter.fromJson(json);
   }
 
-  CharacterSortParameter get characterOrdering{
-    var jsonStr = globalStorage.getString(StorageServiceKeys.charOrdering);
-    if(jsonStr == null) return CharacterSortParameter();
-    return CharacterSortParameter.fromJson(jsonDecode(jsonStr));
+
+  bool get keepAwake{
+    return globalStorage.getBool(StorageKeys.keepAwake) ?? false;
+  }
+  
+  set keepAwake(bool value){
+    globalStorage.setBool(StorageKeys.keepAwake, value);
+  }
+
+  List<ItemSortParameter> get itemOrdering =>_itemOrdering;
+
+  set itemOrdering(List<ItemSortParameter> ordering){
+    _itemOrdering = ordering;
+    var json = ordering.map((p)=>p.toJson()).toList();
+    globalStorage.setJson(StorageKeys.itemOrdering, json);
+  }
+  
+  CharacterSortParameter get characterOrdering=>_characterOrdering;
+
+  set characterOrdering(CharacterSortParameter ordering){
+    _characterOrdering = ordering;
+    var json = ordering.toJson();
+    membershipStorage.setJson(StorageKeys.characterOrdering, json);
   }
 }

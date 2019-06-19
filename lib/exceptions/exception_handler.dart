@@ -79,7 +79,7 @@ class ExceptionHandler {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
                         ErrorDialogButton(
-                            text: "Try again",
+                            text: "Try Again",
                             onPressed: () {
                               onRestart();
                             }),

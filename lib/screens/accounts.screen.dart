@@ -33,7 +33,7 @@ class _AccountsScreenState extends State<AccountsScreen> {
     Map<String, UserMembershipData> memberships = new Map();
     for (var account in accounts) {
       var storage = StorageService.account(account);
-      var json = await storage.getJson(StorageServiceKeys.membershipDataKey);
+      var json = await storage.getJson(StorageKeys.membershipData);
       var membership = UserMembershipData.fromJson(json);
       memberships[account] = membership;
     }

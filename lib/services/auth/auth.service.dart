@@ -18,7 +18,7 @@ class AuthService {
   static bool waitingAuthCode = false;
   Future<BungieNetToken> _getStoredToken() async {
     StorageService storage = StorageService.account();
-    var json = await storage.getJson(StorageServiceKeys.latestTokenKey);
+    var json = await storage.getJson(StorageKeys.latestToken);
     try{
       return BungieNetToken.fromJson(json);
     }catch(e){
@@ -40,8 +40,8 @@ class AuthService {
     }
     await StorageService.setAccount(token.membershipId);
     StorageService storage = StorageService.account();
-    await storage.setJson(StorageServiceKeys.latestTokenKey, token.toJson());
-    await storage.setDate(StorageServiceKeys.latestTokenDateKey, DateTime.now());
+    await storage.setJson(StorageKeys.latestToken, token.toJson());
+    await storage.setDate(StorageKeys.latestTokenDate, DateTime.now());
     await Future.delayed(Duration(milliseconds: 1));
     _currentToken = token;
   }
@@ -56,7 +56,7 @@ class AuthService {
     }
     DateTime now = DateTime.now();
     StorageService storage = StorageService.account();
-    DateTime savedDate = storage.getDate(StorageServiceKeys.latestTokenDateKey);
+    DateTime savedDate = storage.getDate(StorageKeys.latestTokenDate);
     DateTime expire = savedDate.add(Duration(seconds: token.expiresIn));
     DateTime refreshExpire =
         savedDate.add(Duration(seconds: token.refreshExpiresIn));
@@ -126,7 +126,7 @@ class AuthService {
 
   Future<UserMembershipData> _getStoredMembershipData() async {
     var storage = StorageService.account();
-    var json = await storage.getJson(StorageServiceKeys.membershipDataKey);
+    var json = await storage.getJson(StorageKeys.membershipData);
     if(json == null){
       return null;
     }
@@ -159,7 +159,7 @@ class AuthService {
       UserMembershipData membershipData, String membershipId) async {
     StorageService storage = StorageService.account();
     _currentMembership = getMembershipById(membershipData, membershipId);
-    storage.setJson(StorageServiceKeys.membershipDataKey, membershipData.toJson());
+    storage.setJson(StorageKeys.membershipData, membershipData.toJson());
     StorageService.setMembership(membershipId);
   }
 

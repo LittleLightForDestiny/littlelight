@@ -1,8 +1,9 @@
 import 'package:drag_list/drag_list.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:little_light/services/user_settings/character_sort_parameter.dart';
+import 'package:little_light/services/user_settings/item_sort_parameter.dart';
 import 'package:little_light/services/user_settings/user_settings.service.dart';
-import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -16,7 +17,7 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  List<SortParameter> itemOrdering;
+  List<ItemSortParameter> itemOrdering;
 
   @override
   void initState() {
@@ -26,10 +27,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    TranslatedTextWidget("Order characters by");
-    TranslatedTextWidget("Last played");
-    TranslatedTextWidget("Creation date");
-    TranslatedTextWidget("Custom");
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -43,22 +40,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
         body: SingleChildScrollView(
             padding: EdgeInsets.all(8),
             child: Column(children: <Widget>[
-              ListTile(
-                  title: TranslatedTextWidget(
-                    "Keep Awake",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  subtitle: TranslatedTextWidget(
-                      "Keep device awake while the app is open"),
-                  trailing: Switch(
-                    value: widget.settings.keepAwake,
-                    onChanged: (val) {
-                      widget.settings.keepAwake = val;
-                      setState(() {});
-                      Screen.keepOn(val);
-                    },
-                  )),
+              buildKeepAwake(context),
               Container(height: 16),
+              HeaderWidget(
+                  alignment: Alignment.centerLeft,
+                  child: TranslatedTextWidget(
+                    "Order characters by",
+                    uppercase: true,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  )),
+              buildCharacterOrdering(context),
               HeaderWidget(
                   alignment: Alignment.centerLeft,
                   child: TranslatedTextWidget(
@@ -70,10 +61,92 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ])));
   }
 
+  buildKeepAwake(BuildContext context) {
+    return ListTile(
+        title: TranslatedTextWidget(
+          "Keep Awake",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        subtitle:
+            TranslatedTextWidget("Keep device awake while the app is open"),
+        trailing: Switch(
+          value: widget.settings.keepAwake,
+          onChanged: (val) {
+            widget.settings.keepAwake = val;
+            setState(() {});
+            Screen.keepOn(val);
+          },
+        ));
+  }
+
+  buildCharacterOrdering(BuildContext context) {
+    return Container(
+        padding: EdgeInsets.all(4),
+        child: IntrinsicHeight(
+            child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            buildCharacterOrderItem(
+                context,
+                TranslatedTextWidget(
+                  "Last played",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                CharacterSortParameterType.LastPlayed),
+            Container(
+              width: 4,
+            ),
+            buildCharacterOrderItem(
+                context,
+                TranslatedTextWidget(
+                  "First created",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                CharacterSortParameterType.FirstCreated),
+            Container(
+              width: 4,
+            ),
+            buildCharacterOrderItem(
+                context,
+                TranslatedTextWidget(
+                  "Last created",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                CharacterSortParameterType.LastCreated),
+          ],
+        )));
+  }
+
+  buildCharacterOrderItem(
+      BuildContext context, Widget label, CharacterSortParameterType type) {
+    var selected = type == widget.settings.characterOrdering.type;
+    return Expanded(
+      child: Material(
+        color: selected ? Colors.lightBlue : Colors.blueGrey,
+        child: InkWell(
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal:8,vertical:16),
+            child: label,
+            alignment: Alignment.center,
+          ),
+          onTap: () {
+            widget.settings.characterOrdering.type = type;
+            widget.settings.characterOrdering =
+                widget.settings.characterOrdering;
+            setState(() {});
+          },
+        ),
+      ),
+    );
+  }
+
   buildItemOrderList(BuildContext context) {
     return Container(
         height: (itemOrdering.length + 1) * 48.0,
-        child: DragList<SortParameter>(
+        child: DragList<ItemSortParameter>(
           items: itemOrdering,
           itemExtent: 48,
           handleBuilder: (context) => AspectRatio(
@@ -89,7 +162,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Widget buildSortItem(
-      BuildContext context, SortParameter parameter, Widget handle) {
+      BuildContext context, ItemSortParameter parameter, Widget handle) {
     return Container(
         key: Key("param_${parameter.type}"),
         child: Container(
@@ -118,9 +191,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ])));
   }
 
-  Widget buildDirectionButton(SortParameter parameter, int direction) {
+  Widget buildDirectionButton(ItemSortParameter parameter, int direction) {
     var selected = parameter.direction == direction;
-    if(!parameter.active) return Container();
+    if (!parameter.active) return Container();
     return Container(
       width: 20,
       height: 20,
@@ -140,55 +213,55 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  Widget buildSortLabel(SortParameter parameter) {
+  Widget buildSortLabel(ItemSortParameter parameter) {
     var style = TextStyle(
         fontWeight: FontWeight.bold,
         color: parameter.active ? Colors.white : Colors.grey.shade500);
     switch (parameter.type) {
-      case SortParameterType.PowerLevel:
+      case ItemSortParameterType.PowerLevel:
         return TranslatedTextWidget(
           "Power Level",
           uppercase: true,
           style: style,
         );
 
-      case SortParameterType.TierType:
+      case ItemSortParameterType.TierType:
         return TranslatedTextWidget(
           "Rarity",
           uppercase: true,
           style: style,
         );
-      case SortParameterType.Name:
+      case ItemSortParameterType.Name:
         return TranslatedTextWidget(
           "Name",
           uppercase: true,
           style: style,
         );
-      case SortParameterType.SubType:
+      case ItemSortParameterType.SubType:
         return TranslatedTextWidget(
           "Type",
           uppercase: true,
           style: style,
         );
-      case SortParameterType.ClassType:
+      case ItemSortParameterType.ClassType:
         return TranslatedTextWidget(
           "Class Type",
           uppercase: true,
           style: style,
         );
-      case SortParameterType.AmmoType:
+      case ItemSortParameterType.AmmoType:
         return TranslatedTextWidget(
           "Ammo Type",
           uppercase: true,
           style: style,
         );
-      case SortParameterType.BucketHash:
+      case ItemSortParameterType.BucketHash:
         return TranslatedTextWidget(
           "Slot",
           uppercase: true,
           style: style,
         );
-      case SortParameterType.Quantity:
+      case ItemSortParameterType.Quantity:
         return TranslatedTextWidget(
           "Quantity",
           uppercase: true,

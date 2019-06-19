@@ -357,6 +357,7 @@ class _ItemInstanceWrapperState extends State<_ItemInstanceWrapper> {
     return Material(
       color: Colors.transparent,
       child: InkWell(
+        enableFeedback: false,
         onTap: () => onTap(context),
         onLongPress: () => onLongPress(context),
       ),

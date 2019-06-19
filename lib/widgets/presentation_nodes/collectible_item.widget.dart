@@ -130,6 +130,7 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget> {
     return Material(
       color: Colors.transparent,
       child: InkWell(
+        enableFeedback: false,
         child: Container(),
         onTap: () => onTap(context),
         onLongPress: () => onLongPress(context),

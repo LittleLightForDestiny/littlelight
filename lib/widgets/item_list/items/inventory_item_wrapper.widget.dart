@@ -133,6 +133,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
         child: Material(
             color: Colors.transparent,
             child: InkWell(
+              enableFeedback: false,
               onTap: () {
                 onTap(context);
               },

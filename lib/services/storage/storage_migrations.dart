@@ -6,10 +6,12 @@ import 'package:bungie_api/models/user_membership_data.dart';
 import 'package:little_light/services/storage/storage.service.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite/sqflite.dart';
 
 class StorageMigrations {
   String rootPath;
   SharedPreferences prefs;
+  int get currentVersion => prefs.getInt(StorageKeys.currentVersion) ?? 0;
   constructor() {}
   run() async {
     var root = await getApplicationDocumentsDirectory();
@@ -17,9 +19,11 @@ class StorageMigrations {
     rootPath = root.path;
     await removeOldManifest();
     await updateAccountInfo();
+    await v106003();
   }
 
   removeOldManifest() async {
+    if(currentVersion > 106003) return;
     var dbFile = File("$rootPath/manifest.db");
     if (await dbFile.exists()) {
       await dbFile.delete();
@@ -28,6 +32,7 @@ class StorageMigrations {
   }
 
   updateAccountInfo() async {
+    if(currentVersion > 106003) return;
     var latestMembership = prefs.getString("latestMembership");
     var latestToken = prefs.getString("latestToken");
     var cachedLoadoutsFile = File("$rootPath/cached_loadouts.json");
@@ -53,29 +58,29 @@ class StorageMigrations {
       var accountStorage = StorageService.account(selectedAccount);
       var membershipStorage = StorageService.membership(selectedMembership);
 
-      accountStorage.setJson(StorageServiceKeys.latestTokenKey, bungieNetToken);
+      accountStorage.setJson(StorageKeys.latestToken, bungieNetToken);
       accountStorage.setJson(
-          StorageServiceKeys.membershipDataKey, bungieNetToken);
-      accountStorage.setDate(StorageServiceKeys.latestTokenDateKey, tokenDate);
+          StorageKeys.membershipData, bungieNetToken);
+      accountStorage.setDate(StorageKeys.latestTokenDate, tokenDate);
       StorageService.setAccount(selectedAccount);
       StorageService.setMembership(selectedMembership);
 
-      membershipStorage.setString(StorageServiceKeys.membershipSecret,
+      membershipStorage.setString(StorageKeys.membershipSecret,
           prefs.getString("littlelight_secret"));
-      membershipStorage.setString(StorageServiceKeys.membershipUUID,
+      membershipStorage.setString(StorageKeys.membershipUUID,
           prefs.getString("littlelight_device_id"));
 
       if (await cachedLoadoutsFile.exists()) {
         var str = await cachedLoadoutsFile.readAsString();
         var json = jsonDecode(str);
-        membershipStorage.setJson(StorageServiceKeys.cachedLoadouts, json);
+        membershipStorage.setJson(StorageKeys.cachedLoadouts, json);
         await cachedLoadoutsFile.delete();
       }
 
       if (await trackedObjectivesFile.exists()) {
         var str = await trackedObjectivesFile.readAsString();
         var json = jsonDecode(str);
-        membershipStorage.setJson(StorageServiceKeys.trackedObjectives, json);
+        membershipStorage.setJson(StorageKeys.trackedObjectives, json);
         await trackedObjectivesFile.delete();
       }
 
@@ -94,5 +99,19 @@ class StorageMigrations {
     } catch (e) {
       print(e);
     }
+  }
+
+  v106003() async{
+    if(currentVersion > 106003) return;
+    var dbPath = await getDatabasesPath();
+    var docPath = (await getApplicationDocumentsDirectory()).path;
+    if(dbPath != docPath){
+      var dir = Directory("$docPath/languages");
+      if(await dir.exists()){
+        await dir.delete(recursive: true);
+      }
+    }
+    await prefs.remove(StorageKeys.itemOrdering);
+    await prefs.setInt(StorageKeys.currentVersion, 106003);
   }
 }

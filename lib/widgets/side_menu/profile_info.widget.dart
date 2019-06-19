@@ -9,7 +9,7 @@ import 'package:little_light/screens/initial.screen.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/storage/storage.service.dart';
-import 'package:little_light/utils/inventory_utils.dart';
+import 'package:little_light/services/user_settings/character_sort_parameter.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';

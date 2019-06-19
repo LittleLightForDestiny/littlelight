@@ -80,14 +80,14 @@ class _MilestoneItemWidgetState extends State<MilestoneItemWidget>
 
     List<Widget> items = [buildHeader(context)];
 
-    if (milestone.activities != null) {
+    if (milestone?.activities != null) {
       items.add(buildMilestoneActivities(context, milestone.activities));
     }
 
     // if (widget.milestone.rewards != null) {
     //   items.add(buildRewards(context, widget.milestone.rewards));
     // }
-    if (milestone.availableQuests != null) {
+    if (milestone?.availableQuests != null) {
       items
           .add(buildAvailableQuests(context, milestone.availableQuests));
     }

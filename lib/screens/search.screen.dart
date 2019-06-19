@@ -6,8 +6,8 @@ import 'package:bungie_api/models/destiny_item_category_definition.dart';
 import 'package:bungie_api/models/destiny_presentation_node_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
+import 'package:little_light/services/user_settings/item_sort_parameter.dart';
 import 'package:little_light/utils/destiny_data.dart';
-import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/selected_page_persistence.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -25,7 +25,7 @@ class SearchTabData {
   List<int> excludeItemTypes;
   Widget label;
   Map<FilterType, FilterItem> filterData;
-  List<SortParameter> sortOrder;
+  List<ItemSortParameter> sortOrder;
   SearchTabData(
       {this.itemTypes,
       this.excludeItemTypes,
@@ -166,9 +166,9 @@ class SearchScreenState extends State<SearchScreen>
           DestinyItemType.Bounty,
         ],
         sortOrder: [
-          SortParameter(type:SortParameterType.SubType),
-          SortParameter(type:SortParameterType.TierType, direction:-1),
-          SortParameter(type:SortParameterType.Name),
+          ItemSortParameter(type:ItemSortParameterType.SubType),
+          ItemSortParameter(type:ItemSortParameterType.TierType, direction:-1),
+          ItemSortParameter(type:ItemSortParameterType.Name),
         ]),
     //// FLAIR ////
     SearchTabData(
@@ -199,9 +199,9 @@ class SearchScreenState extends State<SearchScreen>
           DestinyItemType.Emblem,
         ],
         sortOrder: [
-          SortParameter(type:SortParameterType.SubType),
-          SortParameter(type:SortParameterType.TierType, direction:-1),
-          SortParameter(type:SortParameterType.Name),
+          ItemSortParameter(type:ItemSortParameterType.SubType),
+          ItemSortParameter(type:ItemSortParameterType.TierType, direction:-1),
+          ItemSortParameter(type:ItemSortParameterType.Name),
         ]),
   ];
 

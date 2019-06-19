@@ -11,84 +11,8 @@ import 'package:little_light/models/loadout.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/user_settings/item_sort_parameter.dart';
 import 'package:little_light/services/user_settings/user_settings.service.dart';
-
-enum SortParameterType {
-  PowerLevel,
-  TierType,
-  Name,
-  SubType,
-  ClassType,
-  AmmoType,
-  BucketHash,
-  Quantity
-}
-
-class SortParameter {
-  SortParameterType type;
-  int direction;
-  bool active;
-
-  SortParameter({this.type, this.active = true, this.direction = 1});
-
-  static SortParameter fromJson(Map<String, dynamic> json){
-    return SortParameter(
-        active: json['active'], type: SortParameterType.values[json['type']], direction:json['direction']);
-  }
-
-  Map<String, dynamic> toJson(){
-    return {
-      'active':active,
-      'type':type.index,
-      'direction':direction
-    };
-  }
-
-  static List<SortParameter> fromList(List<dynamic> list) {
-    return list.map((i) => SortParameter.fromJson(i)).toList();
-  }
-
-  static List<SortParameter> get defaultList {
-    return [
-      SortParameter(type: SortParameterType.PowerLevel, direction: -1),
-      SortParameter(type: SortParameterType.TierType, direction: -1),
-      SortParameter(type: SortParameterType.Name),
-      SortParameter(type: SortParameterType.SubType, active: false),
-      SortParameter(type: SortParameterType.ClassType, active: false),
-      SortParameter(type: SortParameterType.AmmoType, active: false),
-      SortParameter(type: SortParameterType.BucketHash, active: false),
-      SortParameter(type: SortParameterType.Quantity, active: false),
-    ];
-  }
-  
-}
-
-enum CharacterSortParameterType {
-  LastPlayed,
-  FirstCreated,
-  LastCreated,
-  Custom,
-}
-
-class CharacterSortParameter {
-  CharacterSortParameterType type;
-  List<String> customOrder;
-
-  CharacterSortParameter({this.type = CharacterSortParameterType.FirstCreated, this.customOrder});
-
-  static CharacterSortParameter fromJson(Map<String, dynamic> json){
-    return CharacterSortParameter(
-        type: CharacterSortParameterType.values[json['type']], customOrder: List<String>.from(json['customOrder']));
-  }
-
-  Map<String, dynamic> toJson(){
-    return {
-      'type':type.index,
-      'customOrder':customOrder
-    };
-  }
-}
-
 
 class InventoryUtils {
   static List<int> _bucketOrder = [
@@ -175,7 +99,7 @@ class InventoryUtils {
   static int sortDestinyItems(
     DestinyItemComponent itemA,
     DestinyItemComponent itemB, {
-    List<SortParameter> sortingParams,
+    List<ItemSortParameter> sortingParams,
     DestinyInventoryItemDefinition defA,
     DestinyInventoryItemDefinition defB,
   }) {
@@ -193,7 +117,7 @@ class InventoryUtils {
   }
 
   static int _sortBy(
-      SortParameterType param,
+      ItemSortParameterType param,
       int direction,
       DestinyItemComponent itemA,
       DestinyItemComponent itemB,
@@ -203,7 +127,7 @@ class InventoryUtils {
       defA = defA ?? manifest.getDefinitionFromCache(itemA?.itemHash);
       defB = defB ?? manifest.getDefinitionFromCache(itemB?.itemHash);
     switch (param) {
-      case SortParameterType.PowerLevel:
+      case ItemSortParameterType.PowerLevel:
         DestinyItemInstanceComponent instanceA =
             ProfileService().getInstanceInfo(itemA.itemInstanceId);
         DestinyItemInstanceComponent instanceB =
@@ -212,41 +136,41 @@ class InventoryUtils {
         int powerB = instanceB?.primaryStat?.value ?? 0;
         return direction * powerA.compareTo(powerB);
 
-      case SortParameterType.TierType:
+      case ItemSortParameterType.TierType:
         int tierA = defA?.inventory?.tierType ?? 0;
         int tierB = defB?.inventory?.tierType ?? 0;
         return direction * tierA.compareTo(tierB);
 
-      case SortParameterType.BucketHash:
+      case ItemSortParameterType.BucketHash:
         int bucketA = defA?.inventory?.bucketTypeHash ?? 0;
         int bucketB = defB?.inventory?.bucketTypeHash ?? 0;
         int orderA = _bucketOrder.indexOf(bucketA);
         int orderB = _bucketOrder.indexOf(bucketB);
         return direction * orderA.compareTo(orderB);
 
-      case SortParameterType.SubType:
+      case ItemSortParameterType.SubType:
         int subTypeA = defA?.itemSubType ?? 0;
         int subTypeB = defB?.itemSubType ?? 0;
         int orderA = _subtypeOrder.indexOf(subTypeA);
         int orderB = _subtypeOrder.indexOf(subTypeB);
         return direction * orderA.compareTo(orderB);
 
-      case SortParameterType.Name:
+      case ItemSortParameterType.Name:
         String nameA = defA?.displayProperties?.name ?? "";
         String nameB = defB?.displayProperties?.name ?? "";
         return direction * nameA.compareTo(nameB);
 
-      case SortParameterType.ClassType:
+      case ItemSortParameterType.ClassType:
         int classA = defA?.classType ?? 0;
         int classB = defB?.classType ?? 0;
         return direction * classA.compareTo(classB);
 
-      case SortParameterType.AmmoType:
+      case ItemSortParameterType.AmmoType:
         int ammoTypeA = defA?.equippingBlock?.ammoType ?? 0;
         int ammoTypeB = defB?.equippingBlock?.ammoType ?? 0;
         return direction * ammoTypeA.compareTo(ammoTypeB);
 
-      case SortParameterType.Quantity:
+      case ItemSortParameterType.Quantity:
         int quantityA = itemA?.quantity ?? 0;
         int quantityB = itemB?.quantity ?? 0;
         return direction * quantityA.compareTo(quantityB);

@@ -6,39 +6,41 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
-class StorageServiceKeys {
+class StorageKeys {
   static const List<String> allKeys = [
-    charOrdering,
-    latestTokenKey,
-    latestTokenDateKey,
-    membershipDataKey,
-    languagesKey,
-    accountIdsKey,
-    selectedLanguageKey,
-    selectedAccountIdKey,
-    selectedMembershipIdKey,
-    cachedProfileKey,
+    latestToken,
+    latestTokenDate,
+    membershipData,
+    languages,
+    accountIds,
+    membershipIds,
+    selectedLanguage,
+    selectedAccountId,
+    selectedMembershipId,
+    cachedProfile,
     cachedLoadouts,
     trackedObjectives,
     membershipUUID,
     membershipSecret,
-    manifestVersionKey,
+    manifestVersion,
     manifestFile,
+    currentVersion,
+    keepAwake,
+    itemOrdering,
+    characterOrdering
   ];
 
-  static const String charOrdering = "charOrdering";
+  static const String latestToken = "latestToken";
+  static const String latestTokenDate = "latestTokenDate";
+  static const String membershipData = "memberships";
 
-  static const String latestTokenKey = "latestToken";
-  static const String latestTokenDateKey = "latestTokenDate";
-  static const String membershipDataKey = "memberships";
-
-  static const String languagesKey = 'languages';
-  static const String accountIdsKey = 'account_ids';
-  static const String membershipIdsKey = 'membership_ids';
-  static const String selectedLanguageKey = 'selected_language';
-  static const String selectedAccountIdKey = 'selected_account_id';
-  static const String selectedMembershipIdKey = 'selected_membership_id';
-  static const String cachedProfileKey = "cached_profile";
+  static const String languages = 'languages';
+  static const String accountIds = 'account_ids';
+  static const String membershipIds = 'membership_ids';
+  static const String selectedLanguage = 'selected_language';
+  static const String selectedAccountId = 'selected_account_id';
+  static const String selectedMembershipId = 'selected_membership_id';
+  static const String cachedProfile = "cached_profile";
 
   static const String cachedLoadouts = "cached_loadouts";
   static const String trackedObjectives = "tracked_objectives";
@@ -46,8 +48,14 @@ class StorageServiceKeys {
   static const String membershipUUID = "membership_uuid";
   static const String membershipSecret = "membership_secret";
 
-  static const String manifestVersionKey = "manifestVersion";
+  static const String manifestVersion = "manifestVersion";
   static const String manifestFile = "manifest.db";
+
+  static const String currentVersion = "currentVersion";
+
+  static const String keepAwake = "userpref_keepAwake";
+  static const String itemOrdering = "userpref_itemOrdering";
+  static const String characterOrdering = "userpref_characterOrdering";
 }
 
 class StorageService {
@@ -88,17 +96,17 @@ class StorageService {
     await _prefs.remove("$_path/$key");
   }
 
-  Future<void> purge() async{
-    var keys = StorageServiceKeys.allKeys;
-    for(var key in keys){
+  Future<void> purge() async {
+    var keys = StorageKeys.allKeys;
+    for (var key in keys) {
       await remove(key);
     }
-    if(_path.length > 0){
+    if (_path.length > 0) {
       var path = await getPath("");
       Directory file = Directory(path);
       var exists = await file.exists();
-      if(exists){
-        await file.delete(recursive:true);
+      if (exists) {
+        await file.delete(recursive: true);
       }
     }
   }
@@ -126,7 +134,7 @@ class StorageService {
   }
 
   Future<dynamic> getJson(String key) async {
-    File cached = new File(await getPath(key, json:true));
+    File cached = new File(await getPath(key, json: true));
     bool exists = await cached.exists();
     if (exists) {
       try {
@@ -146,7 +154,7 @@ class StorageService {
     if (!await dir.exists()) {
       await dir.create(recursive: true);
     }
-    File cached = new File(await getPath(key, json:true));
+    File cached = new File(await getPath(key, json: true));
     await cached.writeAsString(jsonEncode(object));
   }
 
@@ -175,11 +183,12 @@ class StorageService {
     return null;
   }
 
-  Future<String> getPath(String key, {bool json = false, bool dbPath = false}) async {
+  Future<String> getPath(String key,
+      {bool json = false, bool dbPath = false}) async {
     String basePath;
-    if(dbPath){
+    if (dbPath) {
       basePath = await getDatabasesPath();
-    }else{
+    } else {
       Directory directory = await getApplicationDocumentsDirectory();
       basePath = directory.path;
     }
@@ -188,43 +197,42 @@ class StorageService {
   }
 
   static Future<void> setLanguage(String language) async {
-    await _prefs.setString(StorageServiceKeys.selectedLanguageKey, language);
+    await _prefs.setString(StorageKeys.selectedLanguage, language);
   }
 
   static String getLanguage() {
-    return _prefs.getString(StorageServiceKeys.selectedLanguageKey);
+    return _prefs.getString(StorageKeys.selectedLanguage);
   }
 
   static Future<void> setAccount(String accountId) async {
-    await _prefs.setString(StorageServiceKeys.selectedAccountIdKey, accountId);
+    await _prefs.setString(StorageKeys.selectedAccountId, accountId);
     if (accountId == null) return;
     var accounts = getAccounts();
     if (!accounts.contains(accountId)) {
       accounts.add(accountId);
-      await _prefs.setStringList(StorageServiceKeys.accountIdsKey, accounts);
+      await _prefs.setStringList(StorageKeys.accountIds, accounts);
     }
   }
 
   static String getAccount() {
-    return _prefs.getString(StorageServiceKeys.selectedAccountIdKey);
+    return _prefs.getString(StorageKeys.selectedAccountId);
   }
 
   static List<String> getAccounts() {
-    return _prefs.getStringList(StorageServiceKeys.accountIdsKey) ?? [];
+    return _prefs.getStringList(StorageKeys.accountIds) ?? [];
   }
 
-  static Future<void> removeAccount(String accountId) async{
+  static Future<void> removeAccount(String accountId) async {
     var accounts = getAccounts();
     accounts.remove(accountId);
-    await _prefs.setStringList(StorageServiceKeys.accountIdsKey, accounts);
+    await _prefs.setStringList(StorageKeys.accountIds, accounts);
   }
 
   static Future<void> setMembership(String membershipId) async {
-    await _prefs.setString(
-        StorageServiceKeys.selectedMembershipIdKey, membershipId);
+    await _prefs.setString(StorageKeys.selectedMembershipId, membershipId);
   }
 
   static String getMembership() {
-    return _prefs.getString(StorageServiceKeys.selectedMembershipIdKey);
+    return _prefs.getString(StorageKeys.selectedMembershipId);
   }
 }

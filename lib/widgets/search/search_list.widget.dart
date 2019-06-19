@@ -8,6 +8,7 @@ import 'package:little_light/screens/search.screen.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/user_settings/item_sort_parameter.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/item_list/items/search_item_wrapper.widget.dart';
@@ -96,7 +97,7 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
     }
   }
 
-  List<SortParameter> get sortOrder => widget.tabData.sortOrder;
+  List<ItemSortParameter> get sortOrder => widget.tabData.sortOrder;
 
   sortItems() {
     items.sort((itemA, itemB) => InventoryUtils.sortDestinyItems(
