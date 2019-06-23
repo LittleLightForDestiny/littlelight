@@ -171,8 +171,8 @@ class InventoryUtils {
       
       case ItemSortParameterType.ExpirationDate:
         if(itemA?.expirationDate == null || itemB?.expirationDate == null){
-          if(itemA?.expirationDate != null) return direction*1;
-          if(itemB?.expirationDate != null) return direction*-1;
+          if(itemA?.expirationDate != null) return direction*-1;
+          if(itemB?.expirationDate != null) return direction*1;
           return 0;
         }
         DateTime expirationA = DateTime.parse(itemA?.expirationDate);

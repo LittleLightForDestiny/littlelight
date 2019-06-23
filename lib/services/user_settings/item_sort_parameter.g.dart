@@ -48,5 +48,6 @@ const _$ItemSortParameterTypeEnumMap = <ItemSortParameterType, dynamic>{
   ItemSortParameterType.ClassType: 'ClassType',
   ItemSortParameterType.AmmoType: 'AmmoType',
   ItemSortParameterType.BucketHash: 'BucketHash',
-  ItemSortParameterType.Quantity: 'Quantity'
+  ItemSortParameterType.Quantity: 'Quantity',
+  ItemSortParameterType.ExpirationDate: 'ExpirationDate'
 };

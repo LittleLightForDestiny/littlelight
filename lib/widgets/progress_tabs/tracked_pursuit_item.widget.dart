@@ -46,8 +46,8 @@ class TrackedPursuitItemWidgetState<T extends TrackedPursuitItemWidget>
 
   @override
   void initState() {
-    findItem();
     super.initState();
+    findItem();
   }
 
   @override
@@ -81,7 +81,7 @@ class TrackedPursuitItemWidgetState<T extends TrackedPursuitItemWidget>
     return super.buildCurrentObjective(context, objective);
   }
 
-  findItem() {
+  findItem() async {
     var _item;
     if (this.itemInstanceId != null) {
       _item = widget.profile.getAllItems().firstWhere((i)=>i.itemInstanceId == this.itemInstanceId, orElse:()=>null);
@@ -95,6 +95,9 @@ class TrackedPursuitItemWidgetState<T extends TrackedPursuitItemWidget>
       this._item = _item;
       setState(() {});
       return;
+    }
+    if(definition == null){
+      await loadDefinitions();
     }
     if ([
       DestinyItemType.Quest,

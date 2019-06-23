@@ -63,15 +63,13 @@ class ItemObjectivesWidgetState extends DestinyItemState<ItemObjectivesWidget> {
             orElse: () => null);
         itemInstanceId = item?.itemInstanceId;
       }
-      
-      if(itemObjectives == null){
-        itemObjectives = widget.profile.getItemObjectives(
-          itemInstanceId, characterId, widget?.definition?.hash);
-        
-        if(itemObjectives != null){
-          setState(() {});
-          return;
-        }
+
+      itemObjectives = widget.profile
+          .getItemObjectives(itemInstanceId, characterId, item?.itemHash);
+
+      if (itemObjectives != null) {
+        setState(() {});
+        return;
       }
 
       var sockets = widget.profile.getAllSockets();
