@@ -325,6 +325,9 @@ class ItemDetailPerksWidgetState extends State<ItemDetailPerksWidget> with Autom
     if((state?.reusablePlugHashes?.length ?? 0) > 0){
       return state?.reusablePlugHashes;
     }
+    if(state?.plugHash != null){
+      return [state.plugHash];
+    }
     if((entry?.randomizedPlugItems?.length ?? 0) > 0){
       var hashes = entry.randomizedPlugItems.map((i) => i.plugItemHash).toList();
       if(entry.singleInitialItemHash != null){

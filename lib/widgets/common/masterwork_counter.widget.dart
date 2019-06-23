@@ -51,7 +51,7 @@ class MasterworkCounterWidgetState extends State<MasterworkCounterWidget>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    if (this.masterworkObjective == null || this.masterworkObjectiveDefinition == null){
+    if (this.masterworkObjective == null || this.masterworkObjectiveDefinition?.displayProperties?.icon == null){
       return Container();
     }
     return Container(
