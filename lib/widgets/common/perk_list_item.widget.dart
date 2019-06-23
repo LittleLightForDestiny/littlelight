@@ -250,10 +250,10 @@ class PerkListItemState extends State<PerkListItem>
     var objectives = await LittleLightService().getTrackedObjectives();
     var tracked = objectives.firstWhere(
         (o) =>
-            o.hash == widget.definition.hash &&
-            o.type == TrackedObjectiveType.Plug &&
-            (o.instanceId == null) &&
-            o.characterId == null,
+            o?.hash == widget?.definition?.hash &&
+            o?.type == TrackedObjectiveType.Plug &&
+            (o?.instanceId == null) &&
+            o?.characterId == null,
         orElse: () => null);
     isTracking = tracked != null;
     if (!mounted) return;

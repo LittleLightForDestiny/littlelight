@@ -589,6 +589,7 @@ class ShareImageWidget extends StatelessWidget {
       }
       max = scaled.maximumValue;
     }
+    var hideBar = scaled.displayAsNumeric ?? DestinyData.noBarStats.contains(hash);
     return Container(
         padding: EdgeInsets.only(bottom: 4),
         child: Row(
@@ -609,14 +610,13 @@ class ShareImageWidget extends StatelessWidget {
                           : Colors.grey.shade300),
                 )),
             Container(width: 8),
-            buildStatBar(context, hash, value, max, masterworkValue)
+            buildStatBar(context, hash, value, max, masterworkValue, hideBar)
           ],
         ));
   }
 
   Widget buildStatBar(BuildContext context, int hash, int value, int maxValue,
-      int masterworkValue) {
-    var hideBar = DestinyData.noBarStats.contains(hash);
+      int masterworkValue, bool hideBar) {
     if (hideBar) {
       return Container(width: 240, height: 18);
     }

@@ -18,11 +18,13 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   List<ItemSortParameter> itemOrdering;
+  List<ItemSortParameter> pursuitOrdering;
 
   @override
   void initState() {
     super.initState();
     itemOrdering = widget.settings.itemOrdering;
+    pursuitOrdering = widget.settings.pursuitOrdering;
   }
 
   @override
@@ -57,7 +59,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     uppercase: true,
                     style: TextStyle(fontWeight: FontWeight.bold),
                   )),
-              buildItemOrderList(context)
+              buildItemOrderList(context),
+              HeaderWidget(
+                  alignment: Alignment.centerLeft,
+                  child: TranslatedTextWidget(
+                    "Order pursuits by",
+                    uppercase: true,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  )),
+              buildPursuitOrderList(context)
             ])));
   }
 
@@ -128,7 +138,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         color: selected ? Colors.lightBlue : Colors.blueGrey,
         child: InkWell(
           child: Container(
-            padding: EdgeInsets.symmetric(horizontal:8,vertical:16),
+            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
             child: label,
             alignment: Alignment.center,
           ),
@@ -157,12 +167,35 @@ class _SettingsScreenState extends State<SettingsScreen> {
             widget.settings.itemOrdering = itemOrdering;
           },
           builder: (context, parameter, handle) =>
-              buildSortItem(context, parameter, handle),
+              buildSortItem(context, parameter, handle, onSave: () {
+                widget.settings.itemOrdering = itemOrdering;
+              }),
+        ));
+  }
+
+  buildPursuitOrderList(BuildContext context) {
+    return Container(
+        height: (pursuitOrdering.length + 1) * 48.0,
+        child: DragList<ItemSortParameter>(
+          items: pursuitOrdering,
+          itemExtent: 48,
+          handleBuilder: (context) => AspectRatio(
+              aspectRatio: 1, child: Container(child: Icon(Icons.menu))),
+          onItemReorder: (oldIndex, newIndex) {
+            var removed = pursuitOrdering.removeAt(oldIndex);
+            pursuitOrdering.insert(newIndex, removed);
+            widget.settings.pursuitOrdering = pursuitOrdering;
+          },
+          builder: (context, parameter, handle) =>
+              buildSortItem(context, parameter, handle, onSave: () {
+                widget.settings.pursuitOrdering = pursuitOrdering;
+              }),
         ));
   }
 
   Widget buildSortItem(
-      BuildContext context, ItemSortParameter parameter, Widget handle) {
+      BuildContext context, ItemSortParameter parameter, Widget handle,
+      {@required Function onSave}) {
     return Container(
         key: Key("param_${parameter.type}"),
         child: Container(
@@ -174,16 +207,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
               handle,
               Container(width: 8),
               Expanded(child: buildSortLabel(parameter)),
-              buildDirectionButton(parameter, 1),
+              buildDirectionButton(parameter, 1, onSave:onSave),
               Container(width: 4),
-              buildDirectionButton(parameter, -1),
+              buildDirectionButton(parameter, -1, onSave:onSave),
               Container(width: 8),
               Container(
                   padding: EdgeInsets.all(8),
                   child: SmallerSwitch(
                     onChanged: (value) {
                       parameter.active = value;
-                      widget.settings.itemOrdering = itemOrdering;
+                      onSave();
                       setState(() {});
                     },
                     value: parameter.active,
@@ -191,7 +224,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ])));
   }
 
-  Widget buildDirectionButton(ItemSortParameter parameter, int direction) {
+  Widget buildDirectionButton(ItemSortParameter parameter, int direction,
+      {@required Function onSave}) {
     var selected = parameter.direction == direction;
     if (!parameter.active) return Container();
     return Container(
@@ -208,7 +242,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           onPressed: () {
             parameter.direction = direction;
             setState(() {});
-            widget.settings.itemOrdering = itemOrdering;
+            onSave();
           }),
     );
   }
@@ -228,6 +262,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
       case ItemSortParameterType.TierType:
         return TranslatedTextWidget(
           "Rarity",
+          uppercase: true,
+          style: style,
+        );
+
+      case ItemSortParameterType.ExpirationDate:
+        return TranslatedTextWidget(
+          "Expiration Date",
           uppercase: true,
           style: style,
         );

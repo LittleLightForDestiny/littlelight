@@ -326,10 +326,18 @@ class ItemDetailPerksWidgetState extends State<ItemDetailPerksWidget> with Autom
       return state?.reusablePlugHashes;
     }
     if((entry?.randomizedPlugItems?.length ?? 0) > 0){
-      return entry.randomizedPlugItems.map((i) => i.plugItemHash).toList();
+      var hashes = entry.randomizedPlugItems.map((i) => i.plugItemHash).toList();
+      if(entry.singleInitialItemHash != null){
+        hashes.removeWhere((h)=> h == entry.singleInitialItemHash);
+        hashes.insert(0, entry.singleInitialItemHash);
+      }
+      return hashes;
     }
     if((entry?.reusablePlugItems?.length ?? 0) > 0){
       return entry.reusablePlugItems.map((i) => i.plugItemHash)?.toList();
+    }
+    if(entry.singleInitialItemHash != null){
+      return [entry.singleInitialItemHash];
     }
     return [];
   }

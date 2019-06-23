@@ -8,6 +8,7 @@ class UserSettingsService {
   StorageService get globalStorage => StorageService.global();
   StorageService get membershipStorage => StorageService.membership();
   List<ItemSortParameter> _itemOrdering;
+  List<ItemSortParameter> _pursuitOrdering;
   CharacterSortParameter _characterOrdering;
 
   factory UserSettingsService() {
@@ -16,14 +17,28 @@ class UserSettingsService {
   UserSettingsService._internal();
   init() async{
     await initItemOrdering();
+    await initPursuitOrdering();
     await initCharacterOrdering();
   }
 
   initItemOrdering() async{
-    List<dynamic> jsonList = await globalStorage.getJson(StorageKeys.itemOrdering);
+    List<dynamic> jsonList = await globalStorage.getJson(StorageKeys.pursuitOrdering);
     List<ItemSortParameter> savedParams = (jsonList ?? []).map((j)=>ItemSortParameter.fromJson(j)).toList();
     Iterable<ItemSortParameterType> presentParams = savedParams.map((p)=>p.type);
-    var defaults = ItemSortParameter.defaultList;
+    var defaults = ItemSortParameter.defaultPursuitList;
+    defaults.forEach((p){
+      if(!presentParams.contains(p.type)){
+        savedParams.add(p);
+      }
+    });
+    _pursuitOrdering = savedParams;
+  }
+
+  initPursuitOrdering() async{
+    List<dynamic> jsonList = await globalStorage.getJson(StorageKeys.pursuitOrdering);
+    List<ItemSortParameter> savedParams = (jsonList ?? []).map((j)=>ItemSortParameter.fromJson(j)).toList();
+    Iterable<ItemSortParameterType> presentParams = savedParams.map((p)=>p.type);
+    var defaults = ItemSortParameter.defaultItemList;
     defaults.forEach((p){
       if(!presentParams.contains(p.type)){
         savedParams.add(p);
@@ -56,6 +71,14 @@ class UserSettingsService {
     _itemOrdering = ordering;
     var json = ordering.map((p)=>p.toJson()).toList();
     globalStorage.setJson(StorageKeys.itemOrdering, json);
+  }
+
+  List<ItemSortParameter> get pursuitOrdering =>_pursuitOrdering;
+
+  set pursuitOrdering(List<ItemSortParameter> ordering){
+    _pursuitOrdering = ordering;
+    var json = ordering.map((p)=>p.toJson()).toList();
+    globalStorage.setJson(StorageKeys.pursuitOrdering, json);
   }
   
   CharacterSortParameter get characterOrdering=>_characterOrdering;

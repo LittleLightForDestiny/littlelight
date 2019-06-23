@@ -22,9 +22,15 @@ class InventoryNotificationWidget extends StatefulWidget {
 
 class InventoryNotificationWidgetState
     extends State<InventoryNotificationWidget> {
-  bool _busy = false;
-  String _message = "";
-  Widget _infoIcons;
+  NotificationEvent _latestEvent;
+  bool get _busy =>
+      _latestEvent != null &&
+      _latestEvent?.type != NotificationType.receivedUpdate;
+  bool get _isError => [
+        NotificationType.transferError,
+        NotificationType.equipError,
+        NotificationType.updateError
+      ].contains(_latestEvent?.type);
   StreamSubscription<NotificationEvent> subscription;
 
   @override
@@ -42,40 +48,7 @@ class InventoryNotificationWidgetState
 
   void handleNotification(NotificationEvent event) async {
     if (event.type == NotificationType.localUpdate) return;
-    _infoIcons = null;
-    
-    
-    switch (event.type) {
-      case NotificationType.requestedUpdate:
-        _busy = true;
-        _message = "Updating";
-        break;
-
-      case NotificationType.receivedUpdate:
-        _busy = false;
-        break;
-
-      case NotificationType.requestedTransfer:
-        _busy = true;
-        _message = "Transferring";
-        _infoIcons = SizedBox(
-          width: 24,
-          height: 24,
-          key: Key("item_${event.item.itemHash}"),
-          child: ManifestImageWidget<DestinyInventoryItemDefinition>(
-              event.item.itemHash),
-        );
-        break;
-
-      case NotificationType.requestedEquip:
-        _busy = true;
-        _message = "Equipping";
-        break;
-
-      default:
-        break;
-    }
-
+    _latestEvent = event;
     setState(() {});
   }
 
@@ -93,38 +66,12 @@ class InventoryNotificationWidgetState
         left: 0,
         right: 0,
         height: bottomPadding + kToolbarHeight + widget.barHeight,
-        child: IgnorePointer(
-            child: AnimatedCrossFade(
-                duration: Duration(milliseconds: 300),
-                firstChild: Container(
-                    alignment: Alignment.bottomCenter,
-                    child: idleWidget(context),
-                    height: bottomPadding + kToolbarHeight + widget.barHeight),
-                secondChild: Container(
-                    child: busyWidget(context),
-                    height: bottomPadding + kToolbarHeight + widget.barHeight),
-                crossFadeState: _busy
-                    ? CrossFadeState.showSecond
-                    : CrossFadeState.showFirst)));
-  }
-
-  Widget idleWidget(context) {
-    double bottomPadding = MediaQuery.of(context).padding.bottom;
-    return Stack(fit: StackFit.expand, children: [
-      Positioned(
-          left: 0,
-          right: 0,
-          height: 2,
-          bottom: bottomPadding + widget.barHeight,
-          child: Container(
-            color: Colors.transparent,
-          ))
-    ]);
+        child: _busy ? busyWidget(context) : Container());
   }
 
   Widget busyWidget(BuildContext context) {
     double bottomPadding = MediaQuery.of(context).padding.bottom;
-    List<Widget> stackChildren = [
+    return Stack(fit: StackFit.expand, children: [
       Positioned(
           left: 0,
           right: 0,
@@ -133,45 +80,113 @@ class InventoryNotificationWidgetState
       Positioned(
           right: 8,
           bottom: bottomPadding + widget.barHeight + 10,
-          child: busyText(context)),
-    ];
-    if (bottomPadding > 1) {
-      stackChildren.add(Positioned(
-        bottom: 0,
-        left: 0,
-        right: 0,
-        height: bottomPadding,
-        child: bottomPaddingShimmer(context),
-      ));
-    }
-    return Stack(fit: StackFit.expand, children: stackChildren);
+          child: buildBusyContent(context)),
+      bottomPadding > 1
+          ? Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              height: bottomPadding,
+              child: bottomPaddingShimmer(context))
+          : Container()
+    ]);
   }
 
-  Widget busyText(BuildContext context) {
+  Widget buildMessage(BuildContext context) {
+    switch (_latestEvent.type) {
+      case NotificationType.requestedUpdate:
+        return TranslatedTextWidget("Updating",
+            uppercase: true, style: TextStyle(fontWeight: FontWeight.bold));
+        break;
+
+      case NotificationType.requestedTransfer:
+        return TranslatedTextWidget("Transferring",
+            uppercase: true, style: TextStyle(fontWeight: FontWeight.bold));
+        break;
+
+      case NotificationType.requestedEquip:
+        return TranslatedTextWidget("Equipping",
+            uppercase: true, style: TextStyle(fontWeight: FontWeight.bold));
+        break;
+
+      case NotificationType.updateError:
+        return TranslatedTextWidget("Update failed",
+            uppercase: true, style: TextStyle(fontWeight: FontWeight.bold));
+        break;
+
+      case NotificationType.transferError:
+        return TranslatedTextWidget("Transfer failed",
+            uppercase: true, style: TextStyle(fontWeight: FontWeight.bold));
+        break;
+
+      case NotificationType.equipError:
+        return TranslatedTextWidget("Equip failed",
+            uppercase: true, style: TextStyle(fontWeight: FontWeight.bold));
+        break;
+
+      default:
+        return Container();
+    }
+  }
+
+  Widget buildIcons(BuildContext context) {
+    switch (_latestEvent.type) {
+      case NotificationType.requestedTransfer:
+        return Container(
+          padding: EdgeInsets.only(left: 4),
+          width: 24,
+          height: 24,
+          key: Key("item_${_latestEvent.item.itemHash}"),
+          child: ManifestImageWidget<DestinyInventoryItemDefinition>(
+              _latestEvent.item.itemHash),
+        );
+        break;
+
+      case NotificationType.updateError:
+        return Container(
+            padding: EdgeInsets.only(left: 4),
+            child: Icon(
+              Icons.signal_wifi_off,
+              size: 16,
+            ));
+        break;
+
+      case NotificationType.transferError:
+        return Container(
+          padding: EdgeInsets.only(left: 4),
+          width: 24,
+          height: 24,
+          key: Key("item_${_latestEvent.item.itemHash}"),
+          child: ManifestImageWidget<DestinyInventoryItemDefinition>(
+              _latestEvent.item.itemHash),
+        );
+        break;
+
+      default:
+        return Container();
+    }
+  }
+
+  Widget buildBusyContent(BuildContext context) {
     return Container(
         decoration: BoxDecoration(
-            color: Colors.blueGrey.shade900.withOpacity(.9),
+            color: _isError
+                ? Colors.red.shade900
+                : Colors.blueGrey.shade900.withOpacity(.9),
             borderRadius: BorderRadius.all(Radius.circular(16))),
         alignment: Alignment.bottomRight,
         padding: EdgeInsets.symmetric(horizontal: 16),
         child: Row(children: [
-          Shimmer.fromColors(
-              baseColor: Colors.blueGrey.shade400,
-              highlightColor: Colors.grey.shade100,
-              child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 8),
-                  child: TranslatedTextWidget(_message,
-                      key: Key("inventory_notification_text_$_message"),
-                      uppercase: true,
-                      style: TextStyle(fontWeight: FontWeight.w700)))),
-          busyIcons(context)
+          Container(
+              padding: EdgeInsets.symmetric(vertical: 8),
+              child: _isError
+                  ? buildMessage(context)
+                  : Shimmer.fromColors(
+                      baseColor: Colors.blueGrey.shade400,
+                      highlightColor: Colors.grey.shade100,
+                      child: buildMessage(context))),
+          buildIcons(context)
         ]));
-  }
-
-  Widget busyIcons(BuildContext context) {
-    if (_infoIcons == null) return Container();
-    return Container(
-        padding: EdgeInsets.symmetric(horizontal: 4), child: _infoIcons);
   }
 
   Widget shimmerBar(BuildContext context) {

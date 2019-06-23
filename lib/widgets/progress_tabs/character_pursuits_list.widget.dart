@@ -8,7 +8,7 @@ import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enu
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/services/user_settings/item_sort_parameter.dart';
+import 'package:little_light/services/user_settings/user_settings.service.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/widgets/item_list/character_info.widget.dart';
 import 'package:little_light/widgets/progress_tabs/pursuit_item.widget.dart';
@@ -60,7 +60,7 @@ class _CharacterPursuitsListWidgetState
         .getDefinitions<DestinyInventoryItemDefinition>(pursuitHashes);
     pursuits.sort((itemA, itemB) => InventoryUtils.sortDestinyItems(
         itemA, itemB,
-        sortingParams: [ItemSortParameter(type:ItemSortParameterType.TierType, direction:-1)],
+        sortingParams: UserSettingsService().pursuitOrdering,
         defA: defs[itemA.itemHash],
         defB: defs[itemB.itemHash]));
     if (mounted) {

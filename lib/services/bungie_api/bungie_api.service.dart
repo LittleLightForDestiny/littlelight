@@ -19,6 +19,7 @@ import 'package:bungie_api/helpers/oauth.dart';
 import 'package:bungie_api/api/destiny2.dart';
 import 'package:bungie_api/api/user.dart';
 import 'package:bungie_api/responses/destiny_manifest_response.dart';
+import 'package:http/http.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 
 class BungieApiService {
@@ -179,22 +180,21 @@ class Client implements HttpClient {
       });
     }
 
-    try {
-      if (config.method == 'GET') {
-        req = http.get("${BungieApiService.apiUrl}${config.url}$paramsString",
-            headers: headers);
-      } else {
-        String body = config.bodyContentType == 'application/json'
-            ? jsonEncode(config.body)
-            : config.body;
-        req = http.post("${BungieApiService.apiUrl}${config.url}$paramsString",
-            headers: headers, body: body);
-      }
-    } catch (e) {
-      throw BungieApiException(e);
-    }
+    Response response;
 
-    var response = await req;
+    
+    if (config.method == 'GET') {
+      req = http.get("${BungieApiService.apiUrl}${config.url}$paramsString",
+          headers: headers);
+    } else {
+      String body = config.bodyContentType == 'application/json'
+          ? jsonEncode(config.body)
+          : config.body;
+      req = http.post("${BungieApiService.apiUrl}${config.url}$paramsString",
+          headers: headers, body: body);
+    }
+    response = await req;
+    
     if (response.statusCode == 401 && autoRefreshToken) {
       this.token = await AuthService().refreshToken(token); 
       return request(config);
@@ -226,6 +226,9 @@ class BungieApiException implements Exception {
   String get message => data["Message"] ?? data['error_description'];
   @override
   String toString() {
+    if(data == null){
+      return "httpStatus - $httpStatus";
+    }
     return "$errorStatus - $message";
   }
 }

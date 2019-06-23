@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:bungie_api/enums/destiny_collectible_state_enum.dart';
 import 'package:bungie_api/models/destiny_character_activities_component.dart';
@@ -69,8 +68,6 @@ class ProfileComponentGroups {
 }
 
 class ProfileService {
-  
-
   final NotificationService _broadcaster = new NotificationService();
   static final ProfileService _singleton = new ProfileService._internal();
 
@@ -96,14 +93,21 @@ class ProfileService {
   Future<DestinyProfileResponse> fetchProfileData(
       {List<int> components = ProfileComponentGroups.everything}) async {
     _broadcaster.push(NotificationEvent(NotificationType.requestedUpdate));
-    DestinyProfileResponse res = await _updateProfileData(components);
-    this._lastLoadedFrom = LastLoadedFrom.server;
-    _broadcaster.push(NotificationEvent(NotificationType.receivedUpdate));
-    this._cacheProfile(_profile);
-    if(_timer?.isActive ?? false){
-      startAutomaticUpdater();     
+    try {
+      DestinyProfileResponse res = await _updateProfileData(components);
+      this._lastLoadedFrom = LastLoadedFrom.server;
+      _broadcaster.push(NotificationEvent(NotificationType.receivedUpdate));
+      this._cacheProfile(_profile);
+      if (_timer?.isActive ?? false) {
+        startAutomaticUpdater();
+      }
+      return res;
+    } catch (e) {
+      _broadcaster.push(NotificationEvent(NotificationType.updateError));
+      await Future.delayed(Duration(seconds:2));
+      _broadcaster.push(NotificationEvent(NotificationType.receivedUpdate));
     }
-    return res;
+    return _profile;
   }
 
   startAutomaticUpdater() async {
@@ -114,7 +118,7 @@ class ProfileService {
       await fetchProfileData(components: ProfileComponentGroups.everything);
     }
 
-    var every = isPlaying() ? Duration(seconds:30) : Duration(minutes:5);
+    var every = isPlaying() ? Duration(seconds: 30) : Duration(minutes: 5);
     _timer = new Timer.periodic(every, (timer) async {
       if (!pauseAutomaticUpdater) {
         print('auto refreshing');
@@ -133,13 +137,9 @@ class ProfileService {
       List<int> components) async {
     var membership = StorageService.getMembership();
     DestinyProfileResponse response;
-    try {
-      response = await _api.getCurrentProfile(components);
-    } on SocketException catch (e) {
-      print(e);
-      //TODO:implement error handling
-    }
-    if(membership != StorageService.getMembership()){
+    response = await _api.getCurrentProfile(components);
+
+    if (membership != StorageService.getMembership()) {
       return _profile;
     }
     lastUpdated = DateTime.now();
@@ -224,7 +224,7 @@ class ProfileService {
       _profile.characterCurrencyLookups = response.characterCurrencyLookups;
     }
 
-    if(wasPlaying != isPlaying()){
+    if (wasPlaying != isPlaying()) {
       startAutomaticUpdater();
     }
 
@@ -232,15 +232,17 @@ class ProfileService {
   }
 
   bool isPlaying() {
-    try{
-      var lastCharacter = getCharacters(CharacterSortParameter(type:CharacterSortParameterType.LastPlayed))?.first;
-      if(lastCharacter == null) return false;
+    try {
+      var lastCharacter = getCharacters(CharacterSortParameter(
+              type: CharacterSortParameterType.LastPlayed))
+          ?.first;
+      if (lastCharacter == null) return false;
       var lastPlayed = DateTime.parse(lastCharacter.dateLastPlayed);
       var currentSession = lastCharacter.minutesPlayedThisSession;
       return lastPlayed
           .add(Duration(minutes: int.parse(currentSession) + 10))
           .isBefore(DateTime.now().toUtc());
-    }catch(e){
+    } catch (e) {
       return false;
     }
   }
@@ -255,7 +257,7 @@ class ProfileService {
   Future<DestinyProfileResponse> loadFromCache() async {
     StorageService storage = StorageService.membership();
     var json = await storage.getJson(StorageKeys.cachedProfile);
-    if (json!= null) {
+    if (json != null) {
       try {
         DestinyProfileResponse response = DestinyProfileResponse.fromJson(json);
         if ((response?.characters?.data?.length ?? 0) > 0) {
@@ -288,10 +290,12 @@ class ProfileService {
     return _profile.itemComponents.sockets.data[itemInstanceId]?.sockets;
   }
 
-  List<DestinyObjectiveProgress> getItemObjectives(String itemInstanceId, String characterId, int hash) {
-    return 
-    _profile.itemComponents.objectives?.data[itemInstanceId]?.objectives ??
-    _profile?.characterProgressions?.data[characterId]?.uninstancedItemObjectives["$hash"];
+  List<DestinyObjectiveProgress> getItemObjectives(
+      String itemInstanceId, String characterId, int hash) {
+    return _profile
+            .itemComponents.objectives?.data[itemInstanceId]?.objectives ??
+        _profile?.characterProgressions?.data[characterId]
+            ?.uninstancedItemObjectives["$hash"];
   }
 
   Map<String, DestinyPresentationNodeComponent> getProfilePresentationNodes() {
@@ -308,7 +312,7 @@ class ProfileService {
     if (_profile?.characters == null) {
       return null;
     }
-    if(order == null){
+    if (order == null) {
       order = UserSettingsService().characterOrdering;
     }
 
@@ -373,7 +377,7 @@ class ProfileService {
     return _profile?.profileInventory?.data?.items ?? [];
   }
 
-  List<DestinyItemComponent> getProfileCurrencies(){
+  List<DestinyItemComponent> getProfileCurrencies() {
     return _profile?.profileCurrencies?.data?.items;
   }
 
@@ -402,13 +406,15 @@ class ProfileService {
       DestinyCollectibleComponent collectible =
           _profile?.profileCollectibles?.data?.collectibles[hashStr] ?? null;
       if (collectible != null) {
-        return (collectible?.state ?? DestinyCollectibleState.NotAcquired) & DestinyCollectibleState.NotAcquired !=
+        return (collectible?.state ?? DestinyCollectibleState.NotAcquired) &
+                DestinyCollectibleState.NotAcquired !=
             DestinyCollectibleState.NotAcquired;
       }
     }
 
     return _profile?.characterCollectibles?.data?.values?.any((data) {
-          int state = data?.collectibles[hashStr]?.state ?? DestinyCollectibleState.NotAcquired;
+          int state = data?.collectibles[hashStr]?.state ??
+              DestinyCollectibleState.NotAcquired;
           return state & DestinyCollectibleState.NotAcquired !=
               DestinyCollectibleState.NotAcquired;
         }) ??

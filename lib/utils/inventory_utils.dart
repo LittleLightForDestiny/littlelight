@@ -78,15 +78,9 @@ class InventoryUtils {
       return investmentValue;
     }
     if (lowerBound == null) {
-      lowerBound = upperBound;
-      upperBound = interpolation.firstWhere((b) => b.value > lowerBound.value,
-          orElse: () => null);
-      if (upperBound == null) return lowerBound.weight;
+      return upperBound.weight;
     } else if (upperBound == null) {
-      upperBound = lowerBound;
-      lowerBound = interpolation.lastWhere((b) => b.value < upperBound.value,
-          orElse: () => null);
-      if (lowerBound == null) return upperBound.weight;
+      return lowerBound.weight;
     }
     var factor = (investmentValue - lowerBound.value) /
         max((upperBound.value - lowerBound.value).abs(), 1);
@@ -156,8 +150,8 @@ class InventoryUtils {
         return direction * orderA.compareTo(orderB);
 
       case ItemSortParameterType.Name:
-        String nameA = defA?.displayProperties?.name ?? "";
-        String nameB = defB?.displayProperties?.name ?? "";
+        String nameA = defA?.displayProperties?.name?.toLowerCase() ?? "";
+        String nameB = defB?.displayProperties?.name?.toLowerCase() ?? "";
         return direction * nameA.compareTo(nameB);
 
       case ItemSortParameterType.ClassType:
@@ -174,6 +168,16 @@ class InventoryUtils {
         int quantityA = itemA?.quantity ?? 0;
         int quantityB = itemB?.quantity ?? 0;
         return direction * quantityA.compareTo(quantityB);
+      
+      case ItemSortParameterType.ExpirationDate:
+        if(itemA?.expirationDate == null || itemB?.expirationDate == null){
+          if(itemA?.expirationDate != null) return direction*1;
+          if(itemB?.expirationDate != null) return direction*-1;
+          return 0;
+        }
+        DateTime expirationA = DateTime.parse(itemA?.expirationDate);
+        DateTime expirationB = DateTime.parse(itemB?.expirationDate);
+        return direction * expirationA.compareTo(expirationB);
     }
     return 0;
   }

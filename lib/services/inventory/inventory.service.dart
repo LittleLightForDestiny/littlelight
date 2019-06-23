@@ -69,7 +69,9 @@ class InventoryService {
     await _transfer(item, sourceCharacterId, destination,
         destinationCharacterId: destinationCharacterId);
     }catch(e){
-      print("Error transferring single item: $e");
+      _broadcaster.push(NotificationEvent(NotificationType.transferError,
+        item: item, characterId: destinationCharacterId));
+      await Future.delayed(Duration(seconds: 3));
     }
     profile.pauseAutomaticUpdater = false;
     await Future.delayed(Duration(milliseconds:100));
@@ -84,18 +86,18 @@ class InventoryService {
     try{
       await _transfer(item, sourceCharacterId, ItemDestination.Character,
         destinationCharacterId:destinationCharacterId);
-    }catch(e){
-      print("Error transferring single item in equip method: $e");
-    }
-    _broadcaster.push(NotificationEvent(NotificationType.requestedEquip,
+
+      _broadcaster.push(NotificationEvent(NotificationType.requestedEquip,
         item: item, characterId: destinationCharacterId));
 
-    try{
       await _equip(item, destinationCharacterId);
     }catch(e){
-      print("Error equipping single item: $e");
+
+      _broadcaster.push(NotificationEvent(NotificationType.equipError,
+        item: item, characterId: destinationCharacterId));
+      await Future.delayed(Duration(seconds: 2));
     }
-    print('update');
+
     
     profile.pauseAutomaticUpdater = false;
     await Future.delayed(Duration(milliseconds:100));
@@ -135,6 +137,9 @@ class InventoryService {
           idsToAvoid: idsToAvoid,
           hashesToAvoid: hashesToAvoid);
       }catch(e){
+        _broadcaster.push(NotificationEvent(NotificationType.transferError,
+          item: item.item, characterId: destinationCharacterId));
+        await Future.delayed(Duration(seconds: 3));
       }
     }
     await Future.delayed(Duration(milliseconds: 100));
@@ -271,10 +276,15 @@ class InventoryService {
     if (onPostmaster) {
       await _freeSlotsOnBucket(
           def.inventory.bucketTypeHash, sourceCharacterId, idsToAvoid);
-      int result = await api.pullFromPostMaster(
+      int result;
+      try {
+        result = await api.pullFromPostMaster(
           item.itemHash, stackSize, item.itemInstanceId, sourceCharacterId);
+      }catch(e){
+        print("Coudn't pull from postmaster: $e");
+      }
       if (result != 0) {
-        throw TransferError(TransferErrorCode.cantPullFromPostmaster);
+        throw TransferError(TransferErrorCode.cantPullFromPostmaster, item, destination, sourceCharacterId);
       }
       var destinationBucketDef =
           await manifest.getDefinition<DestinyInventoryBucketDefinition>(def.inventory.bucketTypeHash);
@@ -363,7 +373,6 @@ class InventoryService {
       int result = await api.transferItem(item.itemHash, stackSize, false,
           item.itemInstanceId, destinationCharacterId);
       if (result != 0) {
-        //TODO:implement error logic
         throw new TransferError(TransferErrorCode.cantMoveToCharacter);
       }
 
@@ -411,7 +420,6 @@ class InventoryService {
         equipment.firstWhere((i) => i.bucketHash == item.bucketHash);
     int result = await api.equipItem(item.itemInstanceId, characterId);
     if (result != 0) {
-      //TODO:implement error logic
       throw new TransferError(TransferErrorCode.cantEquip);
     }
     List<DestinyItemComponent> inventory =
@@ -497,7 +505,6 @@ class InventoryService {
         await _findSubstitute(item, characterId, idsToAvoid);
     int result = await api.equipItem(substitute.itemInstanceId, characterId);
     if (result != 0) {
-      //TODO:implement error logic
       throw new TransferError(TransferErrorCode.cantUnequip);
     }
     List<DestinyItemComponent> inventory =
@@ -552,7 +559,12 @@ class InventoryService {
       return powerA.compareTo(powerB);
     });
     for (var i = 0; i < count - freeSlots; i++) {
-      await _transfer(items[i], characterId, ItemDestination.Vault);
+      try{
+        await _transfer(items[i], characterId, ItemDestination.Vault);
+      }catch(e){
+        items.removeAt(i);
+        i--;
+      }
     }
   }
 

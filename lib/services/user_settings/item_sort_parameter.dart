@@ -10,7 +10,8 @@ enum ItemSortParameterType {
   ClassType,
   AmmoType,
   BucketHash,
-  Quantity
+  Quantity,
+  ExpirationDate
 }
 
 @JsonSerializable()
@@ -29,7 +30,7 @@ class ItemSortParameter {
     return _$ItemSortParameterToJson(this);
   }
 
-  static List<ItemSortParameter> get defaultList {
+  static List<ItemSortParameter> get defaultItemList {
     return [
       ItemSortParameter(type: ItemSortParameterType.PowerLevel, direction: -1),
       ItemSortParameter(type: ItemSortParameterType.TierType, direction: -1),
@@ -39,6 +40,14 @@ class ItemSortParameter {
       ItemSortParameter(type: ItemSortParameterType.AmmoType, active: false),
       ItemSortParameter(type: ItemSortParameterType.BucketHash, active: false),
       ItemSortParameter(type: ItemSortParameterType.Quantity, active: false),
+    ];
+  }
+
+  static List<ItemSortParameter> get defaultPursuitList {
+    return [
+      ItemSortParameter(type: ItemSortParameterType.TierType, direction: -1),
+      ItemSortParameter(type: ItemSortParameterType.ExpirationDate, direction: -1),
+      ItemSortParameter(type: ItemSortParameterType.Name),
     ];
   }
   

@@ -32,7 +32,7 @@ class TranslatedTextWidget extends StatefulWidget {
       this.textScaleFactor,
       
       this.uppercase = false})
-      : super(key: key);
+      : super(key: key ?? Key(text));
 
   @override
   State<StatefulWidget> createState() {

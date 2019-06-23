@@ -6,9 +6,11 @@ enum NotificationType {
   localUpdate,
   requestedTransfer,
   requestedEquip,
-  transferError,
   requestedUpdate,
-  receivedUpdate
+  receivedUpdate,
+  transferError,
+  equipError,
+  updateError
 }
 
 class NotificationEvent {

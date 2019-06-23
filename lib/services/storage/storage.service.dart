@@ -55,6 +55,7 @@ class StorageKeys {
 
   static const String keepAwake = "userpref_keepAwake";
   static const String itemOrdering = "userpref_itemOrdering";
+  static const String pursuitOrdering = "userpref_pursuitOrdering";
   static const String characterOrdering = "userpref_characterOrdering";
 }
 

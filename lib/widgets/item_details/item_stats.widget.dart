@@ -12,12 +12,12 @@ import 'package:bungie_api/models/interpolation_point.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/inventory_utils.dart';
-import 'package:little_light/widgets/common/destiny_item.widget.dart';
+import 'package:little_light/widgets/common/destiny_item.stateful_widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
-class ItemStatsWidget extends DestinyItemWidget {
+class ItemStatsWidget extends DestinyItemStatefulWidget {
   final Map<int, int> selectedPerks;
   final Map<int, DestinyInventoryItemDefinition> plugDefinitions;
   final DestinyStatGroupDefinition statGroupDefinition;
@@ -32,7 +32,17 @@ class ItemStatsWidget extends DestinyItemWidget {
       this.statGroupDefinition})
       : super(item, definition, instanceInfo, key: key);
 
+  @override
+  DestinyItemState<DestinyItemStatefulWidget> createState() {
+    return DestinyStatsWidgetState();
+  }
+}
+
+class DestinyStatsWidgetState extends DestinyItemState<ItemStatsWidget> with AutomaticKeepAliveClientMixin{
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     if ((stats?.length ?? 0) == 0) {
       return Container();
     }
@@ -64,15 +74,16 @@ class ItemStatsWidget extends DestinyItemWidget {
     return stats.map((stat) {
       return ItemStatWidget(
           stat.statTypeHash, stat.value, statValues[stat.statTypeHash],
-          scaled: statGroupDefinition?.scaledStats?.firstWhere(
+          scaled: widget.statGroupDefinition?.scaledStats?.firstWhere(
               (i) => i.statHash == stat.statTypeHash,
               orElse: () => null));
+          
     }).toList();
   }
 
   Map<int, StatValues> getModValues() {
     Map<int, StatValues> map = new Map();
-    if (plugDefinitions == null) {
+    if (widget.plugDefinitions == null) {
       return map;
     }
     List<int> plugHashes;
@@ -86,7 +97,7 @@ class ItemStatsWidget extends DestinyItemWidget {
 
     plugHashes.forEach((plugHash) {
       int index = plugHashes.indexOf(plugHash);
-      DestinyInventoryItemDefinition def = plugDefinitions[plugHash];
+      DestinyInventoryItemDefinition def = widget.plugDefinitions[plugHash];
       var state;
       if (socketStates != null) {
         state = socketStates[index];
@@ -95,7 +106,7 @@ class ItemStatsWidget extends DestinyItemWidget {
         return;
       }
       DestinyInventoryItemDefinition selectedDef =
-          plugDefinitions[selectedPerks[index]];
+          widget.plugDefinitions[widget.selectedPerks[index]];
       def.investmentStats.forEach((stat) {
         StatValues values = map[stat.statTypeHash] ?? new StatValues();
         if (def.plug?.uiPlugLabel == 'masterwork' &&
@@ -125,13 +136,17 @@ class ItemStatsWidget extends DestinyItemWidget {
   }
 
   Iterable<DestinyItemInvestmentStatDefinition> get stats {
-    if (definition?.stats?.stats == null) {
+    if (widget.statGroupDefinition?.scaledStats == null) {
       return null;
     }
+    var statWhitelist = widget.statGroupDefinition.scaledStats.map((s)=>s.statHash).toList();
+    var noBarStats = widget.statGroupDefinition.scaledStats.where((s)=>s.displayAsNumeric).map((s)=>s.statHash).toList();
+    statWhitelist.addAll(DestinyData.hiddenStats);
     List<DestinyItemInvestmentStatDefinition> stats = definition.investmentStats
-        .where((stat) => DestinyData.statWhitelist.contains(stat.statTypeHash))
+        .where((stat) => statWhitelist.contains(stat.statTypeHash))
         .toList();
-    for (var stat in definition.stats.stats.values) {
+
+    for (var stat in widget.statGroupDefinition?.scaledStats) {
       if (DestinyData.statWhitelist.contains(stat.statHash) &&
           stats.where((s) => s.statTypeHash == stat.statHash).length == 0) {
         var newStat = DestinyItemInvestmentStatDefinition()
@@ -141,11 +156,12 @@ class ItemStatsWidget extends DestinyItemWidget {
         stats.add(newStat);
       }
     }
+
     stats.sort((statA, statB) {
-      int valA = DestinyData.noBarStats.contains(statA.statTypeHash)
+      int valA = noBarStats.contains(statA.statTypeHash)
           ? 2
           : DestinyData.hiddenStats.contains(statA.statTypeHash) ? 1 : 0;
-      int valB = DestinyData.noBarStats.contains(statB.statTypeHash)
+      int valB = noBarStats.contains(statB.statTypeHash)
           ? 2
           : DestinyData.hiddenStats.contains(statB.statTypeHash) ? 1 : 0;
       return valA - valB;
@@ -155,11 +171,14 @@ class ItemStatsWidget extends DestinyItemWidget {
 
   List<DestinyItemSocketState> get socketStates {
     if (item == null) return null;
-    return profile.getItemSockets(item.itemInstanceId);
+    return widget.profile.getItemSockets(item.itemInstanceId);
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
-class ItemStatWidget extends StatelessWidget {
+class ItemStatWidget extends StatelessWidget{
   final int statHash;
   final int baseValue;
   final StatValues modValues;
@@ -301,7 +320,7 @@ class ItemStatWidget extends StatelessWidget {
   }
 
   bool get noBar {
-    return DestinyData.noBarStats.contains(statHash);
+    return scaled?.displayAsNumeric ?? false;
   }
 
   interpolate(int i, List<InterpolationPoint> displayInterpolation) {
