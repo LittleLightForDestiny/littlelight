@@ -559,12 +559,8 @@ class ShareImageWidget extends StatelessWidget {
   }
 
   Widget buildStats(BuildContext context) {
-    List<int> statHashes = [];
-    for (var hash in DestinyData.statWhitelist) {
-      if (statValues.containsKey(hash)) {
-        statHashes.add(hash);
-      }
-    }
+    List<int> statHashes = statGroupDefinition.scaledStats.map((s)=>s.statHash).toList();
+    statHashes.addAll(DestinyData.hiddenStats);
     return Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: statHashes.map((h) => buildStat(context, h)).toList());

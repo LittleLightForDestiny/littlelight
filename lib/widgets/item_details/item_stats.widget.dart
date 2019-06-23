@@ -147,7 +147,7 @@ class DestinyStatsWidgetState extends DestinyItemState<ItemStatsWidget> with Aut
         .toList();
 
     for (var stat in widget.statGroupDefinition?.scaledStats) {
-      if (DestinyData.statWhitelist.contains(stat.statHash) &&
+      if (statWhitelist.contains(stat.statHash) &&
           stats.where((s) => s.statTypeHash == stat.statHash).length == 0) {
         var newStat = DestinyItemInvestmentStatDefinition()
           ..statTypeHash = stat.statHash

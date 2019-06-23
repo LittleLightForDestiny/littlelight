@@ -125,29 +125,6 @@ class DestinyData {
   static const int triumphsRootHash = 1024788583;
   static const int sealsRootHash = 1652422747;
 
-  static const List<int> statWhitelist = [
-    3614673599, // Blast Radius
-    2523465841, // Velocity
-    4043523819, // Impact
-    1240592695, // Range
-    155624089, // Stability
-    943549884, // Handling
-    4188031367, // Reload Speed
-
-    1345609583, // Aim Assistance
-    2715839340, // Recoil Direction
-    3555269338, // Zoom
-
-    4284893193, // Rounds Per Minute
-    2961396640, // Charge Time
-    3871231066, // Magazine
-    1931675084, //Inventory Size
-
-    2996146975, // Mobility
-    392767087, // Resilience
-    1943323491, //recovery
-  ];
-
   static const List<int> noBarStats = [
     4284893193, // Rounds Per Minute
     3871231066, // Magazine

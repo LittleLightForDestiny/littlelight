@@ -175,5 +175,12 @@
   "Dev tools": "Dev tools",
   "Accounts": "Contas",
   "Supporters": "Apoiadores",
-  "Remove": "Remover"
+  "Remove": "Remover",
+  "Update failed": "Falha ao atualizar",
+  "Transfer failed": "Falha ao transferir",
+  "Equip failed": "Falha ao equipar",
+  "Order pursuits by": "Ordernar empreitadas por",
+  "First created": "Primeiro criado",
+  "Last created": "Último criado",
+  "Expiration Date": "Data de expiração"
 }
