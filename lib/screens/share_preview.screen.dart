@@ -48,7 +48,6 @@ class SharePreviewScreenState extends DestinyItemState<SharePreviewScreen> {
   }
 
   Future<void> loadDefinitions() async {
-    // await precacheImage(NetworkImage(BungieApiService.url(widget.definition.screenshot)), context);
     try{
       shareImage = await ShareImageWidget.builder(context,
           item: widget.item, definition: widget.definition, onLoad: () {});

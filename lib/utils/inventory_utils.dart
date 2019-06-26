@@ -178,6 +178,12 @@ class InventoryUtils {
         DateTime expirationA = DateTime.parse(itemA?.expirationDate);
         DateTime expirationB = DateTime.parse(itemB?.expirationDate);
         return direction * expirationA.compareTo(expirationB);
+
+      case ItemSortParameterType.QuestGroup:
+       var stackOrderA = defA?.index;
+       var stackOrderB = defB?.index;
+
+       return direction * stackOrderA.compareTo(stackOrderB);
     }
     return 0;
   }

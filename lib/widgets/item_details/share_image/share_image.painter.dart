@@ -585,7 +585,7 @@ class ShareImageWidget extends StatelessWidget {
       }
       max = scaled.maximumValue;
     }
-    var hideBar = scaled.displayAsNumeric ?? DestinyData.noBarStats.contains(hash);
+    var hideBar = scaled?.displayAsNumeric ?? DestinyData.noBarStats.contains(hash);
     return Container(
         padding: EdgeInsets.only(bottom: 4),
         child: Row(

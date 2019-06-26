@@ -11,7 +11,8 @@ enum ItemSortParameterType {
   AmmoType,
   BucketHash,
   Quantity,
-  ExpirationDate
+  ExpirationDate,
+  QuestGroup
 }
 
 @JsonSerializable()
@@ -47,7 +48,8 @@ class ItemSortParameter {
     return [
       ItemSortParameter(type: ItemSortParameterType.TierType, direction: -1),
       ItemSortParameter(type: ItemSortParameterType.ExpirationDate, direction: -1),
-      ItemSortParameter(type: ItemSortParameterType.Name),
+      ItemSortParameter(type: ItemSortParameterType.Name, active: false),
+      ItemSortParameter(type: ItemSortParameterType.QuestGroup, active: false),
     ];
   }
   
