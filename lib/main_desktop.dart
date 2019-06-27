@@ -10,7 +10,7 @@ import 'package:flutter/foundation.dart';
 
 int restartCounter = 0;
 void main() async {
-  await DotEnv().load('.env');
+  await DotEnv().load();
   debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
   ExceptionHandler handler = ExceptionHandler(onRestart: () {
     restartCounter++;

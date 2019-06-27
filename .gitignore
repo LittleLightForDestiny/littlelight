@@ -10,6 +10,7 @@
 .history
 .svn/
 .env
+*.env
 .sentryclirc
 translations
 
@@ -31,6 +32,7 @@ translations
 .pub-cache/
 .pub/
 build/
+desktop/build
 
 # Android related
 **/android/**/gradle-wrapper.jar
