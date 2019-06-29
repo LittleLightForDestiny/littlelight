@@ -106,6 +106,12 @@ class RecordItemWidgetState extends State<RecordItemWidget> {
 
   @override
   Widget build(BuildContext context) {
+    if(definition == null){
+      return Container(height: 150,);
+    }
+    if(definition.redacted){
+      return Container();
+    }
     return Container(
         decoration: BoxDecoration(
           border: Border.all(color: foregroundColor, width: 1),
@@ -161,7 +167,7 @@ class RecordItemWidgetState extends State<RecordItemWidget> {
             ? Container()
             : QueuedNetworkImage(
                 imageUrl:
-                    BungieApiService.url(definition.displayProperties.icon),
+                    BungieApiService.url(definition?.displayProperties?.icon),
               ));
   }
 

@@ -1,14 +1,14 @@
-import 'dart:convert';
-import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
+import 'dart:io';
+
 import 'package:bungie_api/models/destiny_manifest.dart';
 import 'package:bungie_api/responses/destiny_manifest_response.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/bungie_api/enums/definition_table_names.enum.dart';
+import 'package:little_light/services/manifest/json_manifest.dart';
 import 'package:little_light/services/manifest/sqlite_manifest.dart';
 import 'package:little_light/services/storage/storage.service.dart';
 
 import 'manifest_source.dart';
-
 
 typedef Type DownloadProgress(int downloaded, int total);
 
@@ -17,22 +17,23 @@ class ManifestService {
   final BungieApiService _api = new BungieApiService();
   final Map<String, dynamic> _cached = Map();
   static final ManifestService _singleton = new ManifestService._internal();
-  
+
   ManifestSource _source;
-  ManifestSource get source{
-    if(_source != null){
+  ManifestSource get source {
+    if (_source != null) {
       return _source;
     }
-    _source = SQLiteManifest();
+    if (Platform.isAndroid || Platform.isIOS) {
+      _source = SQLiteManifest();
+    } else {
+      _source = JSONManifest();
+    }
     return _source;
   }
-
 
   factory ManifestService() {
     return _singleton;
   }
-
-  
 
   Future<void> reset() async {
     _cached.clear();
@@ -70,26 +71,20 @@ class ManifestService {
   Future<bool> needsUpdate() async {
     DestinyManifest manifestInfo = await loadManifestInfo();
     String currentVersion = await getSavedVersion();
-    String language = StorageService.getLanguage();
     var working = await test();
-    return !working ||
-        currentVersion != manifestInfo.mobileWorldContentPaths[language];
+    return !working || currentVersion != manifestInfo.version;
   }
 
   Future<bool> download({DownloadProgress onProgress}) async {
     DestinyManifest info = await loadManifestInfo();
     String language = StorageService.getLanguage();
-    String path = info.mobileWorldContentPaths[language];
-    String url = BungieApiService.url(path);
-    
-    
-    await saveManifestVersion(path);
+    bool success =
+        await source.download(info, language, onProgress: onProgress);
+    if (!success) return success;
+    await saveManifestVersion(info.version);
     _cached.clear();
-    bool success = await source.download(url, onProgress: onProgress);
     return success;
   }
-
-  
 
   Future<bool> test() async {
     return source.test();
@@ -127,7 +122,7 @@ class ManifestService {
     if (identity == null) {
       throw "missing identity for $T";
     }
-    
+
     var json = await source.getDefinition(hash, type);
     var def = identity(json);
     _cached["${type}_$hash"] = def;
@@ -137,10 +132,29 @@ class ManifestService {
   Future<Map<int, T>> getDefinitions<T>(Iterable<int> hashes,
       [dynamic identity(Map<String, dynamic> json)]) async {
     var type = DefinitionTableNames.fromClass[T];
+    Set<int> hashesSet = hashes.toSet();
+    Map<int, T> defs = new Map();
+
+    hashesSet.removeWhere((hash) {
+      if (_cached.keys.contains("${type}_$hash")) {
+        defs[hash] = _cached["${type}_$hash"];
+        return true;
+      }
+      return false;
+    });
+
+    if (hashesSet.length == 0) {
+      return defs;
+    }
+    print('test');
     if (identity == null) {
       identity = DefinitionTableNames.identities[T];
     }
-    Map<int, dynamic> json = await source.getDefinitions(hashes, type);
-    return json.map<int, T>((i,j)=>MapEntry<int,T>(i, identity(j)));
+    Map<int, dynamic> json = await source.getDefinitions(hashes.toSet(), type);
+    json.forEach((hash, jsonDef){
+      _cached["${type}_$hash"] = defs[hash] = identity(jsonDef);
+      
+    });
+    return defs;
   }
 }

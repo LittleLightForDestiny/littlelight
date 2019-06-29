@@ -103,8 +103,15 @@ class StorageMigrations {
 
   v106003() async{
     if(currentVersion > 106003) return;
-    var dbPath = await getDatabasesPath();
     var docPath = (await getApplicationDocumentsDirectory()).path;
+    String dbPath;
+    
+    if(Platform.isAndroid || Platform.isIOS){
+      dbPath = await getDatabasesPath();
+    }else{
+      dbPath = docPath; 
+    }
+
     if(dbPath != docPath){
       var dir = Directory("$docPath/languages");
       if(await dir.exists()){

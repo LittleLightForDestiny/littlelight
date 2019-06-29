@@ -29,11 +29,14 @@ class QueuedNetworkImage extends StatelessWidget {
       image:AdvancedNetworkImage(
         imageUrl,
         useDiskCache: true,
-        fallbackAssetImage: "assets/imgs/cant_load.png"
+        fallbackAssetImage: "assets/imgs/cant_load.png",
+        loadFailedCallback: (){
+          return;
+        }
       ),
       fit: fit,
       loadingWidget: placeholder ?? Container(),
-      alignment: alignment,
+      alignment: alignment,      
     );
   }
 }
