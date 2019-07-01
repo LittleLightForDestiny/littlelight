@@ -161,7 +161,7 @@ class RecordItemWidgetState extends State<RecordItemWidget> {
             ? Container()
             : QueuedNetworkImage(
                 imageUrl:
-                    BungieApiService.url(definition.displayProperties.icon),
+                    BungieApiService.url(definition?.displayProperties?.icon)
               ));
   }
 

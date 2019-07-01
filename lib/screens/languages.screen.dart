@@ -32,7 +32,7 @@ class _LanguagesScreenState extends State<LanguagesScreen> {
     fileSizes = new Map();
     for (var l in languages) {
       var storage = StorageService.language(l);
-      var path = await storage.getPath(StorageKeys.manifestFile);
+      var path = await storage.getPath(StorageKeys.manifestFile, dbPath: true);
       var file = File(path);
       if (await file.exists()) {
         fileSizes[l] = await file.length();

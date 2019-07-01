@@ -9,6 +9,7 @@
 .buildlog/
 .history
 .svn/
+*.env
 .env
 .sentryclirc
 translations

@@ -137,14 +137,15 @@ class ManifestService {
       return _db;
     }
     var storage = StorageService.language();
-    var path =
-        await storage.getPath(StorageKeys.manifestFile, dbPath: true);
-    try {
-      sqflite.Database database =
-          await sqflite.openDatabase("$path", readOnly: true);
+    var path = await storage.getPath(StorageKeys.manifestFile, dbPath: true);
 
-      _db = database;
-    } catch (e) {}
+    sqflite.Database database =
+        await sqflite.openDatabase("$path", readOnly: true).catchError((e) {
+      print(e);
+      return null;
+    });
+    _db = database;
+
     return _db;
   }
 

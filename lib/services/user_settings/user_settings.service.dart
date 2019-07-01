@@ -22,24 +22,9 @@ class UserSettingsService {
   }
 
   initItemOrdering() async{
-    List<dynamic> jsonList = await globalStorage.getJson(StorageKeys.pursuitOrdering);
+    List<dynamic> jsonList = await globalStorage.getJson(StorageKeys.itemOrdering);
     List<ItemSortParameter> savedParams = (jsonList ?? []).map((j)=>ItemSortParameter.fromJson(j)).toList();
     List<ItemSortParameterType> presentParams = savedParams.map((p)=>p.type).toList();
-    var defaults = ItemSortParameter.defaultPursuitList;
-    var defaultParams = defaults.map((p)=>p.type);
-    savedParams.removeWhere((p)=>!defaultParams.contains(p.type));
-    defaults.forEach((p){
-      if(!presentParams.contains(p.type)){
-        savedParams.add(p);
-      }
-    });
-    _pursuitOrdering = savedParams;
-  }
-
-  initPursuitOrdering() async{
-    List<dynamic> jsonList = await globalStorage.getJson(StorageKeys.pursuitOrdering);
-    List<ItemSortParameter> savedParams = (jsonList ?? []).map((j)=>ItemSortParameter.fromJson(j)).toList();
-    Iterable<ItemSortParameterType> presentParams = savedParams.map((p)=>p.type);
     var defaults = ItemSortParameter.defaultItemList;
     var defaultParams = defaults.map((p)=>p.type);
     savedParams.removeWhere((p)=>!defaultParams.contains(p.type));
@@ -49,6 +34,21 @@ class UserSettingsService {
       }
     });
     _itemOrdering = savedParams;
+  }
+
+  initPursuitOrdering() async{
+    List<dynamic> jsonList = await globalStorage.getJson(StorageKeys.pursuitOrdering);
+    List<ItemSortParameter> savedParams = (jsonList ?? []).map((j)=>ItemSortParameter.fromJson(j)).toList();
+    Iterable<ItemSortParameterType> presentParams = savedParams.map((p)=>p.type);
+    var defaults = ItemSortParameter.defaultPursuitList;
+    var defaultParams = defaults.map((p)=>p.type);
+    savedParams.removeWhere((p)=>!defaultParams.contains(p.type));
+    defaults.forEach((p){
+      if(!presentParams.contains(p.type)){
+        savedParams.add(p);
+      }
+    });
+    _pursuitOrdering = savedParams;
   }
 
   initCharacterOrdering() async{

@@ -11,7 +11,6 @@ import 'package:flutter/foundation.dart';
 int restartCounter = 0;
 void main() async {
   await DotEnv().load('.env');
-  debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
   ExceptionHandler handler = ExceptionHandler(onRestart: () {
     restartCounter++;
     main();

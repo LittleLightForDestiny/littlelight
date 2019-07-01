@@ -98,7 +98,7 @@ class InventoryUtils {
     DestinyInventoryItemDefinition defB,
   }) {
     int result = 0;
-    if(sortingParams == null){
+    if (sortingParams == null) {
       sortingParams = UserSettingsService().itemOrdering;
     }
     for (var p in sortingParams) {
@@ -117,9 +117,9 @@ class InventoryUtils {
       DestinyItemComponent itemB,
       DestinyInventoryItemDefinition defA,
       DestinyInventoryItemDefinition defB) {
-      var manifest = ManifestService();
-      defA = defA ?? manifest.getDefinitionFromCache(itemA?.itemHash);
-      defB = defB ?? manifest.getDefinitionFromCache(itemB?.itemHash);
+    var manifest = ManifestService();
+    defA = defA ?? manifest.getDefinitionFromCache(itemA?.itemHash);
+    defB = defB ?? manifest.getDefinitionFromCache(itemB?.itemHash);
     switch (param) {
       case ItemSortParameterType.PowerLevel:
         DestinyItemInstanceComponent instanceA =
@@ -168,16 +168,22 @@ class InventoryUtils {
         int quantityA = itemA?.quantity ?? 0;
         int quantityB = itemB?.quantity ?? 0;
         return direction * quantityA.compareTo(quantityB);
-      
+
       case ItemSortParameterType.ExpirationDate:
-        if(itemA?.expirationDate == null || itemB?.expirationDate == null){
-          if(itemA?.expirationDate != null) return direction*-1;
-          if(itemB?.expirationDate != null) return direction*1;
+        if (itemA?.expirationDate == null || itemB?.expirationDate == null) {
+          if (itemA?.expirationDate != null) return direction * -1;
+          if (itemB?.expirationDate != null) return direction * 1;
           return 0;
         }
         DateTime expirationA = DateTime.parse(itemA?.expirationDate);
         DateTime expirationB = DateTime.parse(itemB?.expirationDate);
         return direction * expirationA.compareTo(expirationB);
+
+      case ItemSortParameterType.QuestGroup:
+        var stackOrderA = defA?.index;
+        var stackOrderB = defB?.index;
+
+        return direction * stackOrderA.compareTo(stackOrderB);
     }
     return 0;
   }
@@ -293,15 +299,17 @@ class LoadoutItemIndex {
 
         if (equipped != null) {
           loadout.equipped.remove(equipped);
-          loadout.equipped
-              .add(LoadoutItem(itemInstanceId:substitute.itemInstanceId, itemHash:substitute.itemHash));
+          loadout.equipped.add(LoadoutItem(
+              itemInstanceId: substitute.itemInstanceId,
+              itemHash: substitute.itemHash));
           equippedIds.add(substitute.itemInstanceId);
         }
         if (unequipped != null) {
           loadout.unequipped.remove(unequipped);
           loadout.unequipped.remove(unequipped);
-          loadout.unequipped
-              .add(LoadoutItem(itemInstanceId:substitute.itemInstanceId, itemHash:substitute.itemHash));
+          loadout.unequipped.add(LoadoutItem(
+              itemInstanceId: substitute.itemInstanceId,
+              itemHash: substitute.itemHash));
         }
         items.add(substitute);
       });
@@ -331,7 +339,8 @@ class LoadoutItemIndex {
       _addClassSpecific(item, def);
     }
     if (modifyLoadout) {
-      loadout.equipped.add(LoadoutItem(itemInstanceId:item.itemInstanceId, itemHash:item.itemHash));
+      loadout.equipped.add(LoadoutItem(
+          itemInstanceId: item.itemInstanceId, itemHash: item.itemHash));
     }
   }
 
@@ -371,7 +380,8 @@ class LoadoutItemIndex {
     }
     unequipped[def.inventory.bucketTypeHash].add(item);
     if (modifyLoadout) {
-      loadout.unequipped.add(LoadoutItem(itemInstanceId:item.itemInstanceId, itemHash:item.itemHash));
+      loadout.unequipped.add(LoadoutItem(
+          itemInstanceId: item.itemInstanceId, itemHash: item.itemHash));
     }
     unequippedCount++;
   }

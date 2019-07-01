@@ -393,6 +393,10 @@ class _AboutScreenState extends State<AboutScreen> {
                       Container(
                         height: 8,
                       ),
+                      buildTagAndPlatform(4611686018430226498, 1),
+                      Container(
+                        height: 8,
+                      ),
                       Container(
                         height: screenPadding.bottom,
                       )

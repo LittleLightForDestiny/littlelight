@@ -141,6 +141,9 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> {
                       if (loadout != null) {
                         _loadout = loadout;
                         await buildItemIndex();
+                        if(widget.onChange!= null){
+                          widget.onChange();
+                        }
                       }
                     },
                   ))),
@@ -172,9 +175,9 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> {
                   FlatButton(
                     textColor: Theme.of(context).accentColor,
                     child: TranslatedTextWidget("Yes", uppercase: true,),
-                    onPressed: () {
+                    onPressed: () async {
                       LittleLightService service = LittleLightService();
-                      service.deleteLoadout(_loadout);
+                      await service.deleteLoadout(_loadout);
                       Navigator.of(context).pop();
                       if(widget.onChange != null){
                         widget.onChange();
