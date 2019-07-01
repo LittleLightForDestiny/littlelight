@@ -9,7 +9,7 @@ import "github.com/go-flutter-desktop/plugins/shared_preferences"
 
 
 var options = []flutter.Option{
-	flutter.WindowInitialDimensions(1000, 800),
+	flutter.WindowInitialDimensions(800, 1280),
 	
 	flutter.AddPlugin(&path_provider.PathProviderPlugin{
 		VendorName:      "littlelight",

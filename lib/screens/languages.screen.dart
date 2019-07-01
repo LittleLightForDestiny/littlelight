@@ -32,7 +32,7 @@ class _LanguagesScreenState extends State<LanguagesScreen> {
     fileSizes = new Map();
     for (var l in languages) {
       var storage = StorageService.language(l);
-      var path = await storage.getPath(StorageKeys.manifestFile, db: true);
+      var path = await storage.getPath(StorageKeys.manifestFile);
       var file = File(path);
       if (await file.exists()) {
         fileSizes[l] = await file.length();
@@ -68,7 +68,7 @@ class _LanguagesScreenState extends State<LanguagesScreen> {
     }
     return Container(
       color: Colors.blueGrey.shade700,
-      padding: EdgeInsets.all(8).copyWith(bottom: MediaQuery.of(context).padding.bottom + 8),
+      padding: EdgeInsets.all(8),
       child: RaisedButton(
           onPressed: () {
             StorageService.setLanguage(selectedLanguage);

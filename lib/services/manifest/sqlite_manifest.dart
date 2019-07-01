@@ -2,12 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:archive/archive.dart';
-import 'package:bungie_api/models/destiny_manifest.dart';
 import 'package:flutter/foundation.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest_source.dart';
 import 'package:little_light/services/storage/storage.service.dart';
-import 'package:little_light/utils/map_lookup.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -16,9 +14,9 @@ class SQLiteManifest extends ManifestSource {
   Database _db;
 
   @override
-  Future<bool> download(DestinyManifest manifestInfo, String language, {DownloadProgress onProgress}) async {
-
-    String url = BungieApiService.url(manifestInfo.mobileWorldContentPaths[language]);
+  Future<bool> download(String sourcePath,
+      {DownloadProgress onProgress}) async {
+    String url = BungieApiService.url(sourcePath);
     String localPath = await _localPath;
     HttpClient httpClient = new HttpClient();
     HttpClientRequest req = await httpClient.getUrl(Uri.parse(url));
@@ -49,11 +47,6 @@ class SQLiteManifest extends ManifestSource {
     bool success = await test();
     if (!success) return false;
     return success;
-  }
-
-  Future<void> saveManifestVersion(String version) async {
-    StorageService _prefs = StorageService.language();
-    _prefs.setString(StorageKeys.manifestVersion, version);
   }
 
   @override
@@ -118,9 +111,12 @@ class SQLiteManifest extends ManifestSource {
   @override
   Future<bool> test() async {
     var def = await getDefinition(3628991658, 'DestinyInventoryItemDefinition');
-    var name = lookup(def, ['displayProperties', 'name']);
-    print(name); //Graviton Lance
-    return name != null;
+    try{
+      return def['displayProperties']['name'] != null;
+    }on Exception catch(e){
+      print(e);
+    }
+    return false;
   }
 
   Future<String> get _localPath async {
@@ -128,7 +124,7 @@ class SQLiteManifest extends ManifestSource {
     return directory.path;
   }
 
-  static List<int> _extractFromZip(dynamic zipFile) {
+  List<int> _extractFromZip(dynamic zipFile) {
     List<int> unzippedData;
     List<int> bytes = zipFile.readAsBytesSync();
     ZipDecoder decoder = new ZipDecoder();
@@ -146,14 +142,11 @@ class SQLiteManifest extends ManifestSource {
       return _db;
     }
     var storage = StorageService.language();
-    var path = await storage.getPath(StorageKeys.manifestFile, db: true);
+    var path = await storage.getPath(StorageKeys.manifestFile, dbPath: true);
     try {
-      Database database = await openDatabase("$path", readOnly: true).catchError((e){
-        print(e);
-        return null;
-      });
+      Database database = await openDatabase("$path", readOnly: true);
       _db = database;
-    } catch (e) {
+    } on DatabaseException catch (e) {
       print(e);
     }
     return _db;

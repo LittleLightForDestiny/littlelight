@@ -159,7 +159,7 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
     if (itemDefinitions == null) return [];
     if (perkDefinitions == null) return [];
     var _terms = search.split(RegExp("[,.|]"));
-    Iterable<ItemWithOwner> itemsToFilter = items;
+    var itemsToFilter = items;
     for (var searchTerm in _terms) {
       var _search = removeDiacritics(searchTerm).toLowerCase().trim();
       Set<int> perksMatched = new Set();
@@ -291,9 +291,9 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
           }
         }
         return match;
-      });
+      }).toList();
     }
-    return itemsToFilter.toList();
+    return itemsToFilter;
   }
 
   StaggeredTile getTileBuilder(BuildContext context, int index) {

@@ -49,7 +49,7 @@ class StorageKeys {
   static const String membershipSecret = "membership_secret";
 
   static const String manifestVersion = "manifestVersion";
-  static const String manifestFile = "manifest";
+  static const String manifestFile = "manifest.db";
 
   static const String currentVersion = "currentVersion";
 
@@ -160,11 +160,11 @@ class StorageService {
   }
 
   Future<void> saveDatabase(String key, List<int> data) async {
-    Directory dir = new Directory(await getPath("", db: true));
+    Directory dir = new Directory(await getPath("", dbPath: true));
     if (!await dir.exists()) {
       await dir.create(recursive: true);
     }
-    File cached = new File(await getPath(key, db: true));
+    File cached = new File(await getPath(key, dbPath: true));
     cached = await cached.writeAsBytes(data);
     print(await cached.length());
     print(cached.path);
@@ -185,24 +185,16 @@ class StorageService {
   }
 
   Future<String> getPath(String key,
-      {bool json = false, bool db = false}) async {
+      {bool json = false, bool dbPath = false}) async {
     String basePath;
-    if (db) {
+    if (dbPath) {
       basePath = await getDatabasesPath();
     } else {
       Directory directory = await getApplicationDocumentsDirectory();
       basePath = directory.path;
     }
     var trailingSlash = (_path?.length ?? 0) > 0 ? "/" : "";
-    var extension = "";
-    if(json){
-      extension = "json";
-    }
-    if(db){
-      extension = "db";
-    }
-
-    return "$basePath/$_path$trailingSlash$key.$extension";
+    return "$basePath/$_path$trailingSlash$key" + (json ? '.json' : '');
   }
 
   static Future<void> setLanguage(String language) async {

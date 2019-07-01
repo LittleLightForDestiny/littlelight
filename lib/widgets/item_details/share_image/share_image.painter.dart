@@ -559,18 +559,8 @@ class ShareImageWidget extends StatelessWidget {
   }
 
   Widget buildStats(BuildContext context) {
-    List<int> noBarStats = statGroupDefinition.scaledStats.where((s)=>s.displayAsNumeric).map((s)=>s.statHash).toList();
     List<int> statHashes = statGroupDefinition.scaledStats.map((s)=>s.statHash).toList();
     statHashes.addAll(DestinyData.hiddenStats);
-    statHashes.sort((statA, statB) {
-      int valA = noBarStats.contains(statA)
-          ? 2
-          : DestinyData.hiddenStats.contains(statA) ? 1 : 0;
-      int valB = noBarStats.contains(statB)
-          ? 2
-          : DestinyData.hiddenStats.contains(statB) ? 1 : 0;
-      return valA - valB;
-    });
     return Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: statHashes.map((h) => buildStat(context, h)).toList());
@@ -910,7 +900,6 @@ class ShareImageWidget extends StatelessWidget {
                         softWrap: true,
                         overflow: TextOverflow.fade,
                         style: TextStyle(
-                            fontSize: 15,
                             fontStyle: FontStyle.italic,
                             fontWeight: FontWeight.w300),
                       )))
