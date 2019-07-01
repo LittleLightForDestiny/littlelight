@@ -31,7 +31,11 @@ class InitialScreen extends StatefulWidget {
   final TranslateService translate = new TranslateService();
   final String authCode;
 
-  InitialScreen({Key key, this.authCode}) : super(key: key);
+  InitialScreen(
+      {Key key,
+      this.authCode
+      })
+      : super(key: key);
 
   @override
   InitialScreenState createState() => new InitialScreenState();
@@ -40,21 +44,19 @@ class InitialScreen extends StatefulWidget {
 class InitialScreenState extends FloatingContentState<InitialScreen> {
   @override
   void initState() {
-    if (Platform.isAndroid || Platform.isIOS) {
-      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-          statusBarColor: Colors.transparent,
-          statusBarBrightness: Brightness.dark));
-    }
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarBrightness: Brightness.dark));
     super.initState();
     initLoading();
   }
 
-  initLoading() async {
+  initLoading() async{
     await StorageService.init();
     AuthService().reset();
     await LittleLightService().reset();
     await ManifestService().reset();
-    if (widget.authCode != null) {
+    if(widget.authCode != null){
       authCode(widget.authCode);
       return;
     }
@@ -184,12 +186,14 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
   }
 
   checkMembership() async {
-    UserInfoCard membership = await widget.auth.getMembership();
+    UserInfoCard membership = await widget.auth.getMembership();    
     if (membership == null) {
       return showSelectMembership();
     }
-    ExceptionHandler.setSentryUserInfo(membership.membershipId,
-        membership.displayName, membership.membershipType);
+    ExceptionHandler.setSentryUserInfo(
+        membership.membershipId,
+        membership.displayName,
+        membership.membershipType);
     return loadProfile();
   }
 
@@ -197,10 +201,9 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
     this.changeContent(null, null);
     UserMembershipData membershipData =
         await this.widget.apiService.getMemberships();
-
-    if (membershipData?.destinyMemberships?.length == 1) {
-      await this.widget.auth.saveMembership(
-          membershipData, membershipData?.destinyMemberships[0].membershipId);
+    
+    if(membershipData?.destinyMemberships?.length == 1){
+      await this.widget.auth.saveMembership(membershipData, membershipData?.destinyMemberships[0].membershipId);
       await loadProfile();
       return;
     }
@@ -224,7 +227,7 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
     this.goForward();
   }
 
-  goForward() async {
+  goForward() async{
     await UserSettingsService().init();
     Navigator.pushReplacement(
         context,
