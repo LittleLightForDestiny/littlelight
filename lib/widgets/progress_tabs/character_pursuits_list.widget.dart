@@ -72,19 +72,14 @@ class _CharacterPursuitsListWidgetState
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    bool isTablet = MediaQuery.of(context).size.width > 480;
     return StaggeredGridView.countBuilder(
-      crossAxisCount: isTablet ? 3 : 1,
-      crossAxisSpacing: 4,
+      crossAxisCount: 1,
       addAutomaticKeepAlives: true,
       addRepaintBoundaries: true,
       itemCount: (pursuits?.length ?? 0) + 1,
       padding: EdgeInsets.all(4).copyWith(top:0),
       mainAxisSpacing: 8,
       staggeredTileBuilder: (index){
-        if(index == 0 && isTablet){
-          return StaggeredTile.fit(3);  
-        }
         return StaggeredTile.fit(1);
       },
       itemBuilder: (context, index) {

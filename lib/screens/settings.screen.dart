@@ -1,5 +1,4 @@
 import 'package:drag_list/drag_list.dart';
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/services/user_settings/character_sort_parameter.dart';
@@ -160,7 +159,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
         child: DragList<ItemSortParameter>(
           items: itemOrdering,
           itemExtent: 48,
-          handleBuilder: buildHandle,
+          handleBuilder: (context) => AspectRatio(
+              aspectRatio: 1, child: Container(child: Icon(Icons.menu))),
           onItemReorder: (oldIndex, newIndex) {
             var removed = itemOrdering.removeAt(oldIndex);
             itemOrdering.insert(newIndex, removed);
@@ -173,23 +173,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ));
   }
 
-  Widget buildHandle(BuildContext context) {
-    return GestureDetector(
-        onVerticalDragStart: (_) {},
-        onVerticalDragDown: (_) {},
-        child: AspectRatio(
-            aspectRatio: 1,
-            child:
-                Container(color: Colors.transparent, child: Icon(Icons.menu))));
-  }
-
   buildPursuitOrderList(BuildContext context) {
     return Container(
         height: (pursuitOrdering.length + 1) * 48.0,
         child: DragList<ItemSortParameter>(
           items: pursuitOrdering,
           itemExtent: 48,
-          handleBuilder: buildHandle,
+          handleBuilder: (context) => AspectRatio(
+              aspectRatio: 1, child: Container(child: Icon(Icons.menu))),
           onItemReorder: (oldIndex, newIndex) {
             var removed = pursuitOrdering.removeAt(oldIndex);
             pursuitOrdering.insert(newIndex, removed);
@@ -216,9 +207,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
               handle,
               Container(width: 8),
               Expanded(child: buildSortLabel(parameter)),
-              buildDirectionButton(parameter, 1, onSave: onSave),
+              buildDirectionButton(parameter, 1, onSave:onSave),
               Container(width: 4),
-              buildDirectionButton(parameter, -1, onSave: onSave),
+              buildDirectionButton(parameter, -1, onSave:onSave),
               Container(width: 8),
               Container(
                   padding: EdgeInsets.all(8),
@@ -317,18 +308,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
           uppercase: true,
           style: style,
         );
-
-      case ItemSortParameterType.QuestGroup:
-        return TranslatedTextWidget(
-          "Group",
-          uppercase: true,
+      default:
+        return Text(
+          "oops",
           style: style,
         );
     }
-
-    return Text(
-      "oops",
-      style: style,
-    );
   }
 }
