@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-import 'package:flutter_range_slider/flutter_range_slider.dart';
+import 'package:flutter_range_slider/flutter_range_slider.dart' as range;
 import 'package:bungie_api/models/destiny_item_tier_type_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
@@ -145,7 +145,7 @@ class SearchFiltersWidgetState extends State<SearchFiltersWidget> {
                   Positioned.fill(
                       left: 40,
                       right: 40,
-                      child: RangeSlider(
+                      child: range.RangeSlider(
                         touchRadiusExpansionRatio: 6,
                         min: min,
                         max: max,

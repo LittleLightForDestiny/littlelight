@@ -1,0 +1,18 @@
+name: package_info_fde
+description: Flutter plugin for querying information about the application
+  package, such as CFBundleVersion on iOS or versionCode on Android.
+author: Flutter Team <flutter-dev@googlegroups.com>
+homepage: https://github.com/flutter/plugins/tree/master/packages/package_info
+version: 0.4.0+2
+
+flutter:
+  plugin:
+    macosPrefix: FLE
+    pluginClass: PackageInfoPlugin
+
+environment:
+  sdk: ">=2.1.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
