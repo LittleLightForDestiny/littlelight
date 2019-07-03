@@ -25,7 +25,7 @@ class ItemMainInfoWidget extends DestinyItemWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text(definition.itemTypeDisplayName),
+              Text(definition?.itemTypeDisplayName ?? ""),
               Padding(
                   padding: EdgeInsets.only(top: 8), child: primaryStat(context))
             ],

@@ -49,17 +49,18 @@ static id _instance;
 
 
 
-//- (BOOL)application:(NSApplication *)application
-//   openURLs:(nonnull NSArray<NSURL *> *)urls
-//    didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-////  self.initialLink = [url absoluteString];
-//  self.latestLink = self.initialLink;
-//  return YES;
-//}
+- (BOOL)application:(NSApplication *)application
+   openURLs:(nonnull NSArray<NSURL *> *)urls
+    didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+//  self.initialLink = [url absoluteString];
+  self.latestLink = self.initialLink;
+  return YES;
+}
 
 - (BOOL)application:(NSApplication *)application
             openURL:(NSURL *)url
             {
+            NSLog(@"%@", url);
   self.latestLink = [url absoluteString];
   return YES;
 }
