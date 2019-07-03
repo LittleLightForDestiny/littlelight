@@ -54,7 +54,7 @@ dependencies:
   flutter_advanced_networkimage: 
     git:
       url: https://github.com/mchome/flutter_advanced_networkimage
-      ref: 768895c2d4fabfaa357b2ae54871519270b877bb
+      ref: 3688a8177d94b8e324b16dfeb01f70c5a6c83d59
 
   launch_review: 2.0.0
   esys_flutter_share: 1.0.2 
