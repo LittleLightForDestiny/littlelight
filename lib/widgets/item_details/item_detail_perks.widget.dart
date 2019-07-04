@@ -166,10 +166,10 @@ class ItemDetailPerksWidgetState extends State<ItemDetailPerksWidget> with Autom
   Widget buildPerkGrid(BuildContext context) {
     double availableWidth = MediaQuery.of(context).size.width - 16;
     double colWidth =
-        min(availableWidth / 6, availableWidth / category.socketIndexes.length);
+        min(64, min(availableWidth / 6, availableWidth / category.socketIndexes.length));
     return Row(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: category.socketIndexes.map((socketIndex) {
           Widget plugItems = item != null
               ? instancePlugItems(context, socketIndex)

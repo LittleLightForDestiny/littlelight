@@ -105,7 +105,7 @@ class ItemListWidgetState extends State<ItemListWidget> {
       }
       int itemCount = equipped.length + unequipped.length;
       if (widget.suppressEmptySpaces.contains(hash)) {
-        bucketSize = max((itemCount / 5).ceil() * 5, 5);
+        bucketSize = max((itemCount / 10).ceil() * 10, 10);
       }
       listIndex
           .add(new ListItem(ListItem.bucketHeader, hash, itemCount: itemCount));
@@ -183,6 +183,13 @@ class ItemListWidgetState extends State<ItemListWidget> {
         }
 
         if (widget.minimalDensityBucketHashes.contains(item.bucketHash)) {
+          var screenWidth = MediaQuery.of(context).size.width;
+          if (screenWidth > 768) {
+            return StaggeredTile.count(3, 3);
+          }
+          if (screenWidth > 480) {
+            return StaggeredTile.count(5, 5);
+          }
           return StaggeredTile.count(6, 6);
         }
         return StaggeredTile.extent(10, 76);

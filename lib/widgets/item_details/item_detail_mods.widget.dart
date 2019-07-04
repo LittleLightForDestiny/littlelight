@@ -169,7 +169,7 @@ class ItemDetailModsWidgetState extends State<ItemDetailModsWidget> with Automat
   Widget buildPlugItem(BuildContext context, int socketIndex) {
     double availableWidth = MediaQuery.of(context).size.width - 16;
     double colWidth =
-        min(availableWidth / 6, availableWidth / category.socketIndexes.length);
+        min(64, min(availableWidth / 6, availableWidth / category.socketIndexes.length));
     int plugItemHash = getPlugHashBySocketIndex(socketIndex);
     DestinyInventoryItemDefinition plugDefinition =
         plugDefinitions[plugItemHash];
