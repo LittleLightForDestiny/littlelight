@@ -15,7 +15,7 @@ class TabHeaderWidget extends StatefulWidget {
   final ManifestService manifest = new ManifestService();
   final ProfileService profile = new ProfileService();
   @override
-  TabHeaderWidget(this.character, {Key key}):super(key:key);
+  TabHeaderWidget(this.character, {Key key}) : super(key: key);
 
   @override
   TabHeaderWidgetState createState() => new TabHeaderWidgetState();
@@ -23,29 +23,31 @@ class TabHeaderWidget extends StatefulWidget {
 
 class TabHeaderWidgetState extends State<TabHeaderWidget> {
   DestinyInventoryItemDefinition emblemDefinition;
-  
+
   DestinyCharacterProgressionComponent progression;
   @override
   void initState() {
-    if(widget.character != null){
-      progression = widget.profile.getCharacterProgression(widget.character.characterId);
+    if (widget.character != null) {
+      progression =
+          widget.profile.getCharacterProgression(widget.character.characterId);
     }
-    
+
     super.initState();
     getDefinitions();
   }
 
   getDefinitions() async {
-    emblemDefinition =
-        await widget.manifest.getDefinition<DestinyInventoryItemDefinition>(widget.character.emblemHash);
-    if(mounted){
+    emblemDefinition = await widget.manifest
+        .getDefinition<DestinyInventoryItemDefinition>(
+            widget.character.emblemHash);
+    if (mounted) {
       setState(() {});
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if(emblemDefinition == null){
+    if (emblemDefinition == null) {
       return Container(
         color: Theme.of(context).backgroundColor,
       );
@@ -53,6 +55,7 @@ class TabHeaderWidgetState extends State<TabHeaderWidget> {
     return Stack(
       children: <Widget>[
         Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[emblemBackground(context), powerBar(context)],
         ),
         emblemIcon(context)
@@ -72,12 +75,11 @@ class TabHeaderWidgetState extends State<TabHeaderWidget> {
     return Positioned(
         left: kToolbarHeight,
         top: top,
-        width: kToolbarHeight +8,
+        width: kToolbarHeight + 8,
         height: kToolbarHeight + 8,
         child: QueuedNetworkImage(
           key: Key("secondary_overlay_${emblemDefinition.hash}"),
-          imageUrl:
-              BungieApiService.url(emblemDefinition.secondaryOverlay),
+          imageUrl: BungieApiService.url(emblemDefinition.secondaryOverlay),
           fit: BoxFit.fill,
           placeholder: shimmer,
         ));
@@ -96,8 +98,7 @@ class TabHeaderWidgetState extends State<TabHeaderWidget> {
         color: Theme.of(context).backgroundColor,
         child: QueuedNetworkImage(
           key: Key("secondary_special_${emblemDefinition.hash}"),
-          imageUrl:
-              BungieApiService.url(emblemDefinition.secondarySpecial),
+          imageUrl: BungieApiService.url(emblemDefinition.secondarySpecial),
           placeholder: shimmer,
           fit: BoxFit.cover,
           alignment: Alignment.center,

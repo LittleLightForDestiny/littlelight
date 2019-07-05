@@ -64,7 +64,7 @@ mixin InventoryItemMixin implements DestinyItemWidget {
         left: padding * 2 + iconSize,
         top: padding * 2.5 + titleFontSize,
         child: Text(
-          definition.itemTypeDisplayName,
+          definition?.itemTypeDisplayName ?? "",
           style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
         ));
   }

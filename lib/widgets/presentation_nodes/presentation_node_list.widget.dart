@@ -88,8 +88,8 @@ class PresentationNodeListWidgetState
       itemCount: count,
       itemBuilder: (BuildContext context, int index) => getItem(context, index),
       staggeredTileBuilder: (int index) => getTileBuilder(index),
-      mainAxisSpacing: 2,
-      crossAxisSpacing: 2,
+      mainAxisSpacing: 4,
+      crossAxisSpacing: 4,
       physics: const AlwaysScrollableScrollPhysics(),
     );
   }

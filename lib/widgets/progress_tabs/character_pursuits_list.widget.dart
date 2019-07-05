@@ -10,6 +10,7 @@ import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/user_settings/user_settings.service.dart';
 import 'package:little_light/utils/inventory_utils.dart';
+import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/item_list/character_info.widget.dart';
 import 'package:little_light/widgets/progress_tabs/pursuit_item.widget.dart';
 
@@ -72,7 +73,7 @@ class _CharacterPursuitsListWidgetState
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    bool isTablet = MediaQuery.of(context).size.width > 480;
+    bool isTablet = MediaQueryHelper(context).tabletOrBigger;
     return StaggeredGridView.countBuilder(
       crossAxisCount: isTablet ? 3 : 1,
       crossAxisSpacing: 4,

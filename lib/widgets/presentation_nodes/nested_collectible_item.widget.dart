@@ -26,7 +26,7 @@ class NestedCollectibleItemWidgetState extends CollectibleItemWidgetState {
                 decoration: BoxDecoration(
                     border: Border.all(color: Colors.grey.shade300, width: 1)),
                 child: Stack(children: [
-                  buildIcon(context),
+                  Positioned.fill(child:buildIcon(context)),
                   Positioned(right: 4, bottom: 4, child: buildItemCount()),
                   Positioned.fill(child: buildSelectedBorder(context),),
                   buildButton(context)

@@ -13,6 +13,7 @@ import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/selection/selection.service.dart';
 import 'package:little_light/utils/item_with_owner.dart';
+import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/base_inventory_item.widget.dart';
@@ -177,6 +178,12 @@ class DuplicatedItemListWidgetState extends State<DuplicatedItemListWidget>
       case DuplicatedListItemType.itemDefinition:
         return StaggeredTile.extent(6, 96);
       case DuplicatedListItemType.itemInstance:
+      if(MediaQueryHelper(context).laptopOrBigger){
+          return StaggeredTile.extent(1, 110);  
+        }
+        if(MediaQueryHelper(context).tabletOrBigger){
+          return StaggeredTile.extent(2, 110);  
+        }
         return StaggeredTile.extent(3, 110);
 
       case DuplicatedListItemType.spacer:

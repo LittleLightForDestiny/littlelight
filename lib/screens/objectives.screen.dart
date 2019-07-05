@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/models/tracked_objective.dart';
 import 'package:little_light/services/littlelight/littlelight.service.dart';
+import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
 import 'package:little_light/widgets/presentation_nodes/record_item.widget.dart';
@@ -82,8 +83,8 @@ class LoadoutScreenState extends State<ObjectivesScreen> {
   }
 
   StaggeredTile getTileBuilder(int index) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    return StaggeredTile.fit(screenWidth > 480 ? 15 : 30);
+    bool isTablet = MediaQueryHelper(context).tabletOrBigger;
+    return StaggeredTile.fit(isTablet ? 15 : 30);
   }
 
   Widget getItem(BuildContext context, int index) {

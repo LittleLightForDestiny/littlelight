@@ -4,6 +4,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
+import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/presentation_nodes/collectible_item.widget.dart';
 import 'package:little_light/widgets/presentation_nodes/nested_collectible_item.widget.dart';
 import 'package:little_light/widgets/presentation_nodes/presentation_node_item.widget.dart';
@@ -47,7 +48,8 @@ class PresentationNodeBaseScreenState<T extends PresentationNodeBaseScreen>
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: Text(definition.displayProperties.name)),
-        body: buildBody(context, hash:widget.presentationNodeHash, depth:widget.depth));
+        body: buildBody(context,
+            hash: widget.presentationNodeHash, depth: widget.depth));
   }
 
   Widget buildBody(BuildContext context, {int hash, int depth}) {
@@ -62,7 +64,7 @@ class PresentationNodeBaseScreenState<T extends PresentationNodeBaseScreen>
       presentationNodeHash: presentationNodeHash,
       depth: depth,
       bodyBuilder: (int presentationNodeHash, depth) {
-        return buildBody(context, hash:presentationNodeHash, depth:depth);
+        return buildBody(context, hash: presentationNodeHash, depth: depth);
       },
     );
   }
@@ -92,7 +94,10 @@ class PresentationNodeBaseScreenState<T extends PresentationNodeBaseScreen>
         return CollectibleItemWidget(hash: item.hash);
 
       case CollectionListItemType.record:
-        return RecordItemWidget(hash: item.hash, key: Key("record_${item.hash}"),);
+        return RecordItemWidget(
+          hash: item.hash,
+          key: Key("record_${item.hash}"),
+        );
 
       default:
         return Container(color: Colors.red);
@@ -105,12 +110,21 @@ class PresentationNodeBaseScreenState<T extends PresentationNodeBaseScreen>
         return StaggeredTile.extent(30, 92);
 
       case CollectionListItemType.nestedCollectible:
+        if (MediaQueryHelper(context).tabletOrBigger) {
+          return StaggeredTile.count(3, 3);
+        }
         return StaggeredTile.count(6, 6);
 
       case CollectionListItemType.collectible:
+        if (MediaQueryHelper(context).tabletOrBigger) {
+          return StaggeredTile.extent(10, 92);
+        }
         return StaggeredTile.extent(30, 92);
 
       case CollectionListItemType.record:
+        if (MediaQueryHelper(context).tabletOrBigger) {
+          return StaggeredTile.fit(10);
+        }
         return StaggeredTile.fit(30);
 
       default:
@@ -120,10 +134,13 @@ class PresentationNodeBaseScreenState<T extends PresentationNodeBaseScreen>
 
   void onPresentationNodePressed(int hash, int depth) {
     Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => PresentationNodeBaseScreen(presentationNodeHash: hash, depth: depth+1,),
+      context,
+      MaterialPageRoute(
+        builder: (context) => PresentationNodeBaseScreen(
+          presentationNodeHash: hash,
+          depth: depth + 1,
         ),
-      );
+      ),
+    );
   }
 }

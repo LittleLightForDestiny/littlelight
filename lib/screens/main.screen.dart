@@ -76,7 +76,10 @@ class MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     }
     setState(() {});
     bool keepAwake = UserSettingsService().keepAwake;
-    Screen.keepOn(keepAwake);
+    try{
+      Screen.keepOn(keepAwake);
+    }catch(e){
+    }
   }
 
   @override

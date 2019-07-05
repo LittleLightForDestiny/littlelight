@@ -11,6 +11,7 @@ import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/user_settings/item_sort_parameter.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_with_owner.dart';
+import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/item_list/items/search_item_wrapper.widget.dart';
 import 'package:little_light/widgets/search/search_filters.widget.dart';
 import 'package:shimmer/shimmer.dart';
@@ -119,11 +120,11 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
                 child: Image.asset("assets/anim/loading.webp"),
               )));
     }
-    double screenWidth = MediaQuery.of(context).size.width;
+    bool isTablet = MediaQueryHelper(context).tabletOrBigger;
     var _filteredItems = filteredItems;
     return StaggeredGridView.countBuilder(
       padding: EdgeInsets.all(4),
-      crossAxisCount: screenWidth > 480 ? 12 : 6,
+      crossAxisCount: isTablet ? 12 : 6,
       itemCount: _filteredItems?.length ?? 0,
       itemBuilder: (BuildContext context, int index) =>
           getItem(context, index, _filteredItems),
