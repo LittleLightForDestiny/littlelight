@@ -10,6 +10,7 @@ import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/inventory_utils.dart';
+import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/item_list/bucket_header.widget.dart';
 import 'package:little_light/widgets/item_list/character_info.widget.dart';
 import 'package:little_light/widgets/item_list/items/inventory_item_wrapper.widget.dart';
@@ -183,18 +184,14 @@ class ItemListWidgetState extends State<ItemListWidget> {
         }
 
         if (widget.minimalDensityBucketHashes.contains(item.bucketHash)) {
-          var screenWidth = MediaQuery.of(context).size.width;
-          if (screenWidth > 768) {
+          if (MediaQueryHelper(context).tabletOrBigger) {
             return StaggeredTile.count(3, 3);
-          }
-          if (screenWidth > 480) {
-            return StaggeredTile.count(5, 5);
           }
           return StaggeredTile.count(6, 6);
         }
         return StaggeredTile.extent(10, 76);
       case ListItem.spacer:
-        return StaggeredTile.count(30, 6);
+        return StaggeredTile.extent(30, 76);
     }
     return StaggeredTile.extent(30, 96);
   }

@@ -11,7 +11,7 @@ import 'package:archive/archive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart' as sqflite;
 
-typedef Type DownloadProgress(int downloaded, int total);
+typedef void DownloadProgress(int downloaded, int total);
 
 class ManifestService {
   sqflite.Database _db;

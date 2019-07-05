@@ -4,6 +4,7 @@ import 'package:little_light/models/loadout.dart';
 import 'package:little_light/screens/edit_loadout.screen.dart';
 import 'package:little_light/services/littlelight/littlelight.service.dart';
 import 'package:little_light/utils/inventory_utils.dart';
+import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
 import 'package:little_light/widgets/loadouts/loadout_list_item.widget.dart';
@@ -146,8 +147,8 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
   }
 
   StaggeredTile getTileBuilder(int index) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    return StaggeredTile.fit(screenWidth > 480 ? 15 : 30);
+    bool isTablet = MediaQueryHelper(context).tabletOrBigger;
+    return StaggeredTile.fit(isTablet ? 15 : 30);
   }
 
   Widget getItem(BuildContext context, int index) {

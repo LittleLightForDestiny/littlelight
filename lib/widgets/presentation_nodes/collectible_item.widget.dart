@@ -80,7 +80,6 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget> {
     return Opacity(
         opacity: unlocked ? 1 : .4,
         child: Container(
-            margin: EdgeInsets.symmetric(vertical: 4),
             decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey.shade600, width: 1),
                 gradient: LinearGradient(

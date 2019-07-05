@@ -5,6 +5,7 @@ import 'package:bungie_api/models/destiny_sandbox_perk_definition.dart';
 import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/utils/chalice_recipes.dart';
+import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
@@ -41,7 +42,7 @@ class ChaliceRecipeWidget extends StatelessWidget {
   }
 
   Widget buildSlots(BuildContext context, ChaliceRecipe recipe) {
-    if (MediaQuery.of(context).size.width > 600) {
+    if (MediaQueryHelper(context).tabletOrBigger) {
       return Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[

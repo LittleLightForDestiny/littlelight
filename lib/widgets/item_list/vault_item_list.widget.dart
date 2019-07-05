@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/utils/inventory_utils.dart';
+import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/item_list/bucket_header.widget.dart';
 import 'package:little_light/widgets/item_list/item_list.widget.dart';
 import 'package:little_light/widgets/item_list/items/inventory_item_wrapper.widget.dart';
@@ -20,12 +21,8 @@ class VaultItemListWidget extends ItemListWidget {
 class VaultItemListWidgetState extends ItemListWidgetState
     with WidgetsBindingObserver {
   int get itemsPerLine {
-    double screenWidth = MediaQuery.of(context).size.width;
-    if (screenWidth > 768) {
+    if (MediaQueryHelper(context).tabletOrBigger) {
       return 10;
-    }
-    if (screenWidth > 480) {
-      return 6;
     }
     return 5;
   }
@@ -138,14 +135,10 @@ class VaultItemListWidgetState extends ItemListWidgetState
 
   StaggeredTile getTileBuilder(int index) {
     ListItem item = listIndex[index];
-    double screenWidth = MediaQuery.of(context).size.width;
     switch (item.type) {
       case ListItem.unequippedItem:
-        if (screenWidth > 768) {
+        if (MediaQueryHelper(context).tabletOrBigger) {
           return StaggeredTile.count(3, 3);
-        }
-        if (screenWidth > 480) {
-          return StaggeredTile.count(5, 5);
         }
         return StaggeredTile.count(6, 6);      
     }
