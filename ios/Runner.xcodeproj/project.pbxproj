@@ -94,15 +94,9 @@
 		88A8A1879368A96AE32E82BC /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-<<<<<<< HEAD
 				E61F1FDEB9119D0B99C07D08 /* Pods-Runner.debug.xcconfig */,
 				21043ACC40B0A2EDA1FA1102 /* Pods-Runner.release.xcconfig */,
 				CDDE1473D2C404A75F38452C /* Pods-Runner.profile.xcconfig */,
-=======
-				8BB4BC0D4A41C1F723B8A23A /* Pods-Runner.debug.xcconfig */,
-				783E85E0986EAB5AFC1D8883 /* Pods-Runner.release.xcconfig */,
-				AA209B0767F575001AED8002 /* Pods-Runner.profile.xcconfig */,
->>>>>>> master
 			);
 			name = Pods;
 			sourceTree = "<group>";
