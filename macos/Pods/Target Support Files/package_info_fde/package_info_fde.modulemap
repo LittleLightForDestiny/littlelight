@@ -1,0 +1,6 @@
+framework module package_info_fde {
+  umbrella header "package_info_fde-umbrella.h"
+
+  export *
+  module * { export * }
+}

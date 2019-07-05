@@ -1,0 +1,6 @@
+framework module url_launcher_fde {
+  umbrella header "url_launcher_fde-umbrella.h"
+
+  export *
+  module * { export * }
+}
