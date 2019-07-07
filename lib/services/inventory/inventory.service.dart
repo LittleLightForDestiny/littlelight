@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:bungie_api/enums/destiny_class_enum.dart';
 import 'package:bungie_api/enums/destiny_item_type_enum.dart';
@@ -17,6 +18,7 @@ import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:bungie_api/enums/bucket_category_enum.dart';
+
 enum ItemDestination { Character, Inventory, Vault }
 enum TransferErrorCode {
   cantFindSubstitute,
@@ -65,16 +67,16 @@ class InventoryService {
     _broadcaster.push(NotificationEvent(NotificationType.requestedTransfer,
         item: item, characterId: destinationCharacterId));
     profile.pauseAutomaticUpdater = true;
-    try{
-    await _transfer(item, sourceCharacterId, destination,
-        destinationCharacterId: destinationCharacterId);
-    }catch(e){
+    try {
+      await _transfer(item, sourceCharacterId, destination,
+          destinationCharacterId: destinationCharacterId);
+    } catch (e) {
       _broadcaster.push(NotificationEvent(NotificationType.transferError,
-        item: item, characterId: destinationCharacterId));
+          item: item, characterId: destinationCharacterId));
       await Future.delayed(Duration(seconds: 3));
     }
     profile.pauseAutomaticUpdater = false;
-    await Future.delayed(Duration(milliseconds:100));
+    await Future.delayed(Duration(milliseconds: 100));
     await profile.fetchProfileData();
   }
 
@@ -83,24 +85,22 @@ class InventoryService {
     profile.pauseAutomaticUpdater = true;
     _broadcaster.push(NotificationEvent(NotificationType.requestedTransfer,
         item: item, characterId: destinationCharacterId));
-    try{
+    try {
       await _transfer(item, sourceCharacterId, ItemDestination.Character,
-        destinationCharacterId:destinationCharacterId);
+          destinationCharacterId: destinationCharacterId);
 
       _broadcaster.push(NotificationEvent(NotificationType.requestedEquip,
-        item: item, characterId: destinationCharacterId));
+          item: item, characterId: destinationCharacterId));
 
       await _equip(item, destinationCharacterId);
-    }catch(e){
-
+    } catch (e) {
       _broadcaster.push(NotificationEvent(NotificationType.equipError,
-        item: item, characterId: destinationCharacterId));
+          item: item, characterId: destinationCharacterId));
       await Future.delayed(Duration(seconds: 2));
     }
 
-    
     profile.pauseAutomaticUpdater = false;
-    await Future.delayed(Duration(milliseconds:100));
+    await Future.delayed(Duration(milliseconds: 100));
     await profile.fetchProfileData();
   }
 
@@ -127,18 +127,19 @@ class InventoryService {
       String ownerId = item.characterId;
       DestinyInventoryItemDefinition def = defs[item.item.itemHash];
       if (destination == ItemDestination.Character &&
-          ownerId == destinationCharacterId && item.item.bucketHash != InventoryBucket.lostItems) continue;
+          ownerId == destinationCharacterId &&
+          item.item.bucketHash != InventoryBucket.lostItems) continue;
       if (def.nonTransferrable) continue;
       _broadcaster.push(NotificationEvent(NotificationType.requestedTransfer,
-        item: item.item, characterId: destinationCharacterId));
-      try{
-        await _transfer(item.item, ownerId, destination,
-          destinationCharacterId: destinationCharacterId,
-          idsToAvoid: idsToAvoid,
-          hashesToAvoid: hashesToAvoid);
-      }catch(e){
-        _broadcaster.push(NotificationEvent(NotificationType.transferError,
           item: item.item, characterId: destinationCharacterId));
+      try {
+        await _transfer(item.item, ownerId, destination,
+            destinationCharacterId: destinationCharacterId,
+            idsToAvoid: idsToAvoid,
+            hashesToAvoid: hashesToAvoid);
+      } catch (e) {
+        _broadcaster.push(NotificationEvent(NotificationType.transferError,
+            item: item.item, characterId: destinationCharacterId));
         await Future.delayed(Duration(seconds: 3));
       }
     }
@@ -148,7 +149,9 @@ class InventoryService {
   }
 
   transferLoadout(Loadout loadout,
-      [String characterId, bool andEquip = false]) async {
+      [String characterId,
+      bool andEquip = false,
+      int moveItemsAway = 0]) async {
     profile.pauseAutomaticUpdater = true;
     List<String> equippedIds =
         loadout.equipped.map((item) => item.itemInstanceId).toList();
@@ -161,6 +164,11 @@ class InventoryService {
         await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
     DestinyCharacterComponent character =
         characterId != null ? profile.getCharacter(characterId) : null;
+
+    Set<int> affectedBucketHashes =
+        defs.values.map((d) => d.inventory.bucketTypeHash)
+        .where((hash)=>hash!=InventoryBucket.subclass)
+        .toSet();
 
     List<DestinyItemComponent> itemsToEquip = items.where((item) {
       DestinyInventoryItemDefinition def = defs[item.itemHash];
@@ -192,23 +200,23 @@ class InventoryService {
 
       ItemDestination destination =
           character == null ? ItemDestination.Vault : ItemDestination.Character;
-          _broadcaster.push(NotificationEvent(NotificationType.requestedTransfer,
-        item: item, characterId: characterId));
+      _broadcaster.push(NotificationEvent(NotificationType.requestedTransfer,
+          item: item, characterId: characterId));
 
-      try{
-      await _transfer(item, ownerId, destination,
-          destinationCharacterId: characterId, idsToAvoid: idsToAvoid);
-      }catch(e){
+      try {
+        await _transfer(item, ownerId, destination,
+            destinationCharacterId: characterId, idsToAvoid: idsToAvoid);
+      } catch (e) {
         print("Error transferring loadout: $e");
       }
     }
 
     if (andEquip && itemsToEquip.length > 0) {
-        _broadcaster.push(NotificationEvent(NotificationType.requestedEquip,
-        characterId: characterId));
-      try{
+      _broadcaster.push(NotificationEvent(NotificationType.requestedEquip,
+          characterId: characterId));
+      try {
         await _equipMultiple(itemsToEquip, characterId);
-      }catch(e){
+      } catch (e) {
         print("Error equipping loadout: $e");
       }
     }
@@ -221,17 +229,22 @@ class InventoryService {
 
       ItemDestination destination =
           character == null ? ItemDestination.Vault : ItemDestination.Character;
-        _broadcaster.push(NotificationEvent(NotificationType.requestedTransfer,
-        item: item, characterId: characterId));
-      try{
-      await _transfer(item, ownerId, destination,
-          destinationCharacterId: characterId, idsToAvoid: idsToAvoid);
-      }catch(e){
+      _broadcaster.push(NotificationEvent(NotificationType.requestedTransfer,
+          item: item, characterId: characterId));
+      try {
+        await _transfer(item, ownerId, destination,
+            destinationCharacterId: characterId, idsToAvoid: idsToAvoid);
+      } catch (e) {
         print("Loadout Transfer Error : $e");
       }
     }
     _debugInventory("loadout transfer completed");
-
+    if (moveItemsAway > 0) {
+      for (var bucketHash in affectedBucketHashes) {
+        await _freeSlotsOnBucket(
+            bucketHash, characterId, idsToAvoid, moveItemsAway);
+      }
+    }
     await Future.delayed(Duration(milliseconds: 500));
     profile.pauseAutomaticUpdater = false;
     await profile.fetchProfileData();
@@ -257,8 +270,10 @@ class InventoryService {
       List<int> hashesToAvoid = const [],
       int stackSize}) async {
     var instanceInfo = profile.getInstanceInfo(item.itemInstanceId);
-    var def = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
-    var sourceBucketDef = await manifest.getDefinition<DestinyInventoryBucketDefinition>(item.bucketHash);
+    var def = await manifest
+        .getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
+    var sourceBucketDef = await manifest
+        .getDefinition<DestinyInventoryBucketDefinition>(item.bucketHash);
     if (stackSize == null) {
       stackSize = item.quantity;
     }
@@ -270,7 +285,7 @@ class InventoryService {
     bool needsVaulting =
         (charToChar && sourceCharacterId != destinationCharacterId) ||
             destination == ItemDestination.Vault;
-    if(onVault && destination == ItemDestination.Vault){
+    if (onVault && destination == ItemDestination.Vault) {
       return;
     }
     if (onPostmaster) {
@@ -279,19 +294,22 @@ class InventoryService {
       int result;
       try {
         result = await api.pullFromPostMaster(
-          item.itemHash, stackSize, item.itemInstanceId, sourceCharacterId);
-      }catch(e){
+            item.itemHash, stackSize, item.itemInstanceId, sourceCharacterId);
+      } catch (e) {
         print("Coudn't pull from postmaster: $e");
       }
       if (result != 0) {
-        throw TransferError(TransferErrorCode.cantPullFromPostmaster, item, destination, sourceCharacterId);
+        throw TransferError(TransferErrorCode.cantPullFromPostmaster, item,
+            destination, sourceCharacterId);
       }
       var destinationBucketDef =
-          await manifest.getDefinition<DestinyInventoryBucketDefinition>(def.inventory.bucketTypeHash);
+          await manifest.getDefinition<DestinyInventoryBucketDefinition>(
+              def.inventory.bucketTypeHash);
 
       if (def.inventory.isInstanceItem) {
         item.bucketHash = def.inventory.bucketTypeHash;
-        sourceBucketDef = await manifest.getDefinition<DestinyInventoryBucketDefinition>(item.bucketHash);
+        sourceBucketDef = await manifest
+            .getDefinition<DestinyInventoryBucketDefinition>(item.bucketHash);
         if (destinationBucketDef.scope == BucketScope.Account) {
           profile
               .getCharacterInventory(sourceCharacterId)
@@ -300,7 +318,8 @@ class InventoryService {
         }
       } else if (stackSize >= item.quantity) {
         item.bucketHash = def.inventory.bucketTypeHash;
-        sourceBucketDef = await manifest.getDefinition<DestinyInventoryBucketDefinition>(item.bucketHash);
+        sourceBucketDef = await manifest
+            .getDefinition<DestinyInventoryBucketDefinition>(item.bucketHash);
         if (destinationBucketDef.scope == BucketScope.Account) {
           profile
               .getCharacterInventory(sourceCharacterId)
@@ -340,7 +359,8 @@ class InventoryService {
               .removeWhere((i) => i.itemInstanceId == item.itemInstanceId);
           profile.getProfileInventory().add(item);
         }
-        sourceBucketDef = await manifest.getDefinition<DestinyInventoryBucketDefinition>(item.bucketHash);
+        sourceBucketDef = await manifest
+            .getDefinition<DestinyInventoryBucketDefinition>(item.bucketHash);
       } else if (stackSize >= item.quantity) {
         item.bucketHash = InventoryBucket.general;
         if (sourceBucketDef.scope == BucketScope.Character) {
@@ -349,7 +369,8 @@ class InventoryService {
               .removeWhere((i) => i.itemHash == item.itemHash);
           profile.getProfileInventory().add(item);
         }
-        sourceBucketDef = await manifest.getDefinition<DestinyInventoryBucketDefinition>(item.bucketHash);
+        sourceBucketDef = await manifest
+            .getDefinition<DestinyInventoryBucketDefinition>(item.bucketHash);
       } else {
         var newItem = DestinyItemComponent.fromJson(item.toJson());
         item.quantity = item.quantity - stackSize;
@@ -366,7 +387,8 @@ class InventoryService {
           def.inventory.bucketTypeHash, destinationCharacterId, idsToAvoid);
 
       var destinationBucketDef =
-          await manifest.getDefinition<DestinyInventoryBucketDefinition>(def.inventory.bucketTypeHash);
+          await manifest.getDefinition<DestinyInventoryBucketDefinition>(
+              def.inventory.bucketTypeHash);
       if (destinationBucketDef.scope == BucketScope.Account) {
         destinationCharacterId = profile.getCharacters().first.characterId;
       }
@@ -528,8 +550,8 @@ class InventoryService {
   _freeSlotsOnBucket(
       int bucketHash, String characterId, List<String> idsToAvoid,
       [int count = 1]) async {
-    DestinyInventoryBucketDefinition bucketDefinition =
-        await manifest.getDefinition<DestinyInventoryBucketDefinition>(bucketHash);
+    DestinyInventoryBucketDefinition bucketDefinition = await manifest
+        .getDefinition<DestinyInventoryBucketDefinition>(bucketHash);
     List<DestinyItemComponent> items;
     bool hasEquipSlot = bucketDefinition.category == BucketCategory.Equippable;
     if (bucketDefinition.scope == BucketScope.Character) {
@@ -537,10 +559,7 @@ class InventoryService {
     } else {
       items = profile.getProfileInventory();
     }
-    items = items
-        .where((item) =>
-            item.bucketHash == bucketHash)
-        .toList();
+    items = items.where((item) => item.bucketHash == bucketHash).toList();
 
     int bucketSize = bucketDefinition.itemCount - (hasEquipSlot ? 1 : 0);
     int itemCount = items.length;
@@ -548,7 +567,7 @@ class InventoryService {
     if (freeSlots > count) {
       return;
     }
-    items = items.where((i)=>!idsToAvoid.contains(i.itemInstanceId)).toList();
+    items = items.where((i) => !idsToAvoid.contains(i.itemInstanceId)).toList();
     items.sort((itemA, itemB) {
       DestinyItemInstanceComponent instA =
           profile.getInstanceInfo(itemA.itemInstanceId);
@@ -558,10 +577,13 @@ class InventoryService {
       int powerB = instB?.primaryStat?.value ?? 0;
       return powerA.compareTo(powerB);
     });
-    for (var i = 0; i < count - freeSlots; i++) {
-      try{
+    var itemsToRemove = min(count - freeSlots, items.length);
+    for (var i = 0; i < itemsToRemove; i++) {
+      try {
+        _broadcaster.push(NotificationEvent(NotificationType.requestedVaulting,
+        item: items[i], characterId: characterId));
         await _transfer(items[i], characterId, ItemDestination.Vault);
-      }catch(e){
+      } catch (e) {
         items.removeAt(i);
         i--;
       }
@@ -570,12 +592,13 @@ class InventoryService {
 
   Future<DestinyItemComponent> _findBlockingExotic(
       DestinyItemComponent item, String characterId) async {
-    DestinyInventoryItemDefinition def =
-        await manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
+    DestinyInventoryItemDefinition def = await manifest
+        .getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
     if (def.inventory.tierType != TierType.Exotic) {
       return null;
     }
-    if (![DestinyItemType.Armor, DestinyItemType.Weapon].contains(def.itemType)) {
+    if (![DestinyItemType.Armor, DestinyItemType.Weapon]
+        .contains(def.itemType)) {
       return null;
     }
     List<DestinyItemComponent> equipment =

@@ -104,6 +104,11 @@ class InventoryNotificationWidgetState
             uppercase: true, style: TextStyle(fontWeight: FontWeight.bold));
         break;
 
+      case NotificationType.requestedVaulting:
+        return TranslatedTextWidget("Moving Away",
+            uppercase: true, style: TextStyle(fontWeight: FontWeight.bold));
+        break;
+
       case NotificationType.requestedEquip:
         return TranslatedTextWidget("Equipping",
             uppercase: true, style: TextStyle(fontWeight: FontWeight.bold));
@@ -132,6 +137,7 @@ class InventoryNotificationWidgetState
   Widget buildIcons(BuildContext context) {
     switch (_latestEvent.type) {
       case NotificationType.requestedTransfer:
+      case NotificationType.requestedVaulting:
         return Container(
           padding: EdgeInsets.only(left: 4),
           width: 24,
