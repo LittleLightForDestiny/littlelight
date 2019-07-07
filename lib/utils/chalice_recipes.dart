@@ -326,10 +326,10 @@ final Map<int, ChaliceRecipe> _recipes = {
   1843044399: ChaliceRecipe(Rune.Pride, Rune.AnyBlue), // Smuggler's Word
 
 // Fusion Rifles
-  3027844940: ChaliceRecipe(Rune.Jubilation, Rune.AnyPurple), // Proelium FR3
-  253196586: ChaliceRecipe(Rune.Jubilation, Rune.AnyRed), // Main Ingredient
-  4124357815: ChaliceRecipe(Rune.Jubilation, Rune.AnyGreen), // The Epicurean
-  3027844941: ChaliceRecipe(Rune.Jubilation, Rune.AnyBlue), // Erentil FR4
+  3027844940: ChaliceRecipe(Rune.Excess, Rune.AnyPurple), // Proelium FR3
+  253196586: ChaliceRecipe(Rune.Excess, Rune.AnyRed), // Main Ingredient
+  4124357815: ChaliceRecipe(Rune.Excess, Rune.AnyGreen), // The Epicurean
+  3027844941: ChaliceRecipe(Rune.Excess, Rune.AnyBlue), // Erentil FR4
 
 // Shotguns
   1327264046: ChaliceRecipe(Rune.Wealth, Rune.AnyPurple), // Badlander
