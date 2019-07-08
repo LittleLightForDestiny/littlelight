@@ -10,6 +10,7 @@ import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ChaliceRecipeWidget extends StatelessWidget {
   final DestinyInventoryItemDefinition definition;
@@ -36,9 +37,36 @@ class ChaliceRecipeWidget extends StatelessWidget {
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
         )),
-        buildSlots(context, recipe)
+        buildSlots(context, recipe),
+        buildBraytechNote(context)
       ]),
     );
+  }
+
+  buildBraytechNote(BuildContext context) {
+    return Container(
+        padding: EdgeInsets.all(4),
+        child: Row(
+          children: <Widget>[
+            TranslatedTextWidget("More recipes on"),
+            FlatButton(
+              padding: EdgeInsets.symmetric(vertical:4, horizontal: 8),
+              child: Row(children: [
+                Container(
+                  margin: EdgeInsets.only(right:8),
+                  width: 16,
+                  height: 16,
+                  child:Image.asset("assets/imgs/braytech_icon.png"),
+                ),
+                
+                Text('braytech.org')
+                ]),
+              onPressed: () {
+                launch("https://braytech.org/chalice-tool");
+              },
+            )
+          ],
+        ));
   }
 
   Widget buildSlots(BuildContext context, ChaliceRecipe recipe) {
@@ -47,9 +75,13 @@ class ChaliceRecipeWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Expanded(child: buildTopSlot(context, recipe)),
-          Container(width: 4,),
+          Container(
+            width: 4,
+          ),
           Expanded(child: buildLeftSlot(context, recipe)),
-          Container(width: 4,),
+          Container(
+            width: 4,
+          ),
           Expanded(child: buildRightSlot(context, recipe)),
         ],
       );

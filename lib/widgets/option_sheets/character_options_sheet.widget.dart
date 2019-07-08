@@ -20,6 +20,7 @@ import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/flutter/smaller_switch.dart';
+import 'package:little_light/widgets/option_sheets/free_slots_slider.widget.dart';
 import 'package:little_light/widgets/option_sheets/loadout_select_sheet.widget.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -79,20 +80,22 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: (){},
-      child:SingleChildScrollView(
-        padding: EdgeInsets.all(8),
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              buildEquipBlock(),
-              buildLoadoutBlock(),
-              buildCreateLoadoutBlock(),
-              Container(height: 8,),
-              buildPullFromPostmaster(),
-            ])));
+        behavior: HitTestBehavior.opaque,
+        onTap: () {},
+        child: SingleChildScrollView(
+            padding: EdgeInsets.all(8),
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  buildEquipBlock(),
+                  buildLoadoutBlock(),
+                  buildCreateLoadoutBlock(),
+                  Container(
+                    height: 8,
+                  ),
+                  buildPullFromPostmaster(),
+                ])));
   }
 
   Widget buildEquipBlock() {
@@ -190,14 +193,23 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
               ),
               onTap: () async {
                 Navigator.of(context).pop();
+                int freeSlots = 0;
                 showModalBottomSheet(
                     context: context,
                     builder: (context) => LoadoutSelectSheet(
+                        header: FreeSlotsSliderWidget(
+                          onChanged: (free) {
+                            freeSlots = free;
+                          },
+                        ),
                         character: widget.character,
                         loadouts: loadouts,
                         onSelect: (loadout) => InventoryService()
                             .transferLoadout(
-                                loadout, widget.character.characterId)));
+                                loadout,
+                                widget.character.characterId,
+                                false,
+                                freeSlots)));
               },
             )),
             Container(width: 4),
@@ -211,14 +223,23 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
               ),
               onTap: () async {
                 Navigator.of(context).pop();
+                int freeSlots = 0;
                 showModalBottomSheet(
                     context: context,
                     builder: (context) => LoadoutSelectSheet(
+                        header: FreeSlotsSliderWidget(
+                          onChanged: (free) {
+                            freeSlots = free;
+                          },
+                        ),
                         character: widget.character,
                         loadouts: loadouts,
                         onSelect: (loadout) => InventoryService()
                             .transferLoadout(
-                                loadout, widget.character.characterId, true)));
+                                loadout,
+                                widget.character.characterId,
+                                true,
+                                freeSlots)));
               },
             )),
           ]))
@@ -304,11 +325,11 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
     if ((itemsInPostmaster?.length ?? 0) <= 0) return Container();
     return buildActionButton(
       TranslatedTextWidget(
-                "Pull everything from postmaster",
-                style: buttonStyle,
-                uppercase: true,
-                textAlign: TextAlign.center,
-              ),
+        "Pull everything from postmaster",
+        style: buttonStyle,
+        uppercase: true,
+        textAlign: TextAlign.center,
+      ),
       onTap: () {
         Navigator.of(context).pop();
         InventoryService().transferMultiple(
@@ -362,7 +383,9 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
     for (var item in equipped) {
       var def = await widget.manifest
           .getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
-      if ((def.itemType == DestinyItemType.Weapon || def.itemType == DestinyItemType.Subclass) && loadoutWeapons) {
+      if ((def.itemType == DestinyItemType.Weapon ||
+              def.itemType == DestinyItemType.Subclass) &&
+          loadoutWeapons) {
         itemIndex.addEquippedItem(item, def);
       }
       if (def.itemType == DestinyItemType.Armor && loadoutArmor) {
@@ -442,15 +465,16 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
       randomLoadout.addEquippedItem(item, itemDef);
     }
 
-    InventoryService().transferLoadout(randomLoadout.loadout, widget.character.characterId, true);
+    InventoryService().transferLoadout(
+        randomLoadout.loadout, widget.character.characterId, true);
   }
 
   getMaxLightLoadout() async {
     var allItems = widget.profile.getAllItems();
     var instancedItems =
         allItems.where((i) => i.itemInstanceId != null).toList();
-    instancedItems.sort((itemA, itemB) =>
-        InventoryUtils.sortDestinyItems(itemA, itemB));
+    instancedItems
+        .sort((itemA, itemB) => InventoryUtils.sortDestinyItems(itemA, itemB));
     LoadoutItemIndex maxLightLoadout = new LoadoutItemIndex();
     LoadoutItemIndex exoticPieces = new LoadoutItemIndex();
     var hashes = instancedItems.map((i) => i.itemHash);
@@ -526,7 +550,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
       var exoticPower = exoticInstance?.primaryStat?.value ?? 0;
       var nonExoticPower = nonExoticInstance?.primaryStat?.value ?? 0;
       var diff = exoticPower - nonExoticPower;
-      if (diff > lightDifference) {
+      if (diff > lightDifference && diff > 0) {
         exoticToReplace = exotic.generic[bucketHash];
         lightDifference = diff;
       }

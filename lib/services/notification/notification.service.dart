@@ -5,6 +5,7 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 enum NotificationType {
   localUpdate,
   requestedTransfer,
+  requestedVaulting,
   requestedEquip,
   requestedUpdate,
   receivedUpdate,
