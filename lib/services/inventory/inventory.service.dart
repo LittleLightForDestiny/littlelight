@@ -165,9 +165,9 @@ class InventoryService {
     DestinyCharacterComponent character =
         characterId != null ? profile.getCharacter(characterId) : null;
 
-    Set<int> affectedBucketHashes =
-        defs.values.map((d) => d.inventory.bucketTypeHash)
-        .where((hash)=>hash!=InventoryBucket.subclass)
+    Set<int> affectedBucketHashes = defs.values
+        .map((d) => d.inventory.bucketTypeHash)
+        .where((hash) => hash != InventoryBucket.subclass)
         .toSet();
 
     List<DestinyItemComponent> itemsToEquip = items.where((item) {
@@ -240,7 +240,17 @@ class InventoryService {
     }
     _debugInventory("loadout transfer completed");
     if (moveItemsAway > 0) {
-      for (var bucketHash in affectedBucketHashes) {
+      var bucketsToClean = [
+        InventoryBucket.kineticWeapons,
+        InventoryBucket.energyWeapons,
+        InventoryBucket.powerWeapons,
+        InventoryBucket.helmet,
+        InventoryBucket.gauntlets,
+        InventoryBucket.chestArmor,
+        InventoryBucket.legArmor,
+        InventoryBucket.classArmor
+      ];
+      for (var bucketHash in bucketsToClean) {
         await _freeSlotsOnBucket(
             bucketHash, characterId, idsToAvoid, moveItemsAway);
       }
@@ -581,7 +591,7 @@ class InventoryService {
     for (var i = 0; i < itemsToRemove; i++) {
       try {
         _broadcaster.push(NotificationEvent(NotificationType.requestedVaulting,
-        item: items[i], characterId: characterId));
+            item: items[i], characterId: characterId));
         await _transfer(items[i], characterId, ItemDestination.Vault);
       } catch (e) {
         items.removeAt(i);
