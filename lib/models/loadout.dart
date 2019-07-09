@@ -1,8 +1,25 @@
+import 'package:bungie_api/enums/tier_type_enum.dart';
+import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
+import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:uuid/uuid.dart';
 
 part 'loadout.g.dart';
+
+const List<int> _weaponBuckets = [
+  InventoryBucket.kineticWeapons,
+  InventoryBucket.energyWeapons,
+  InventoryBucket.powerWeapons,
+];
+
+const List<int> _armorBuckets = [
+  InventoryBucket.helmet,
+  InventoryBucket.gauntlets,
+  InventoryBucket.chestArmor,
+  InventoryBucket.legArmor,
+];
 
 @JsonSerializable()
 class Loadout {
@@ -48,6 +65,49 @@ class Loadout {
 
   dynamic toJson() {
     return _$LoadoutToJson(this);
+  }
+
+  Future<int> addItem(int hash, String itemInstanceId,
+      [bool asEquipped = false]) async {
+    var loadoutItem =
+        LoadoutItem(itemHash: hash, itemInstanceId: itemInstanceId);
+    equipped.removeWhere((i) => i.itemInstanceId == loadoutItem.itemInstanceId);
+    unequipped
+        .removeWhere((i) => i.itemInstanceId == loadoutItem.itemInstanceId);
+    if (asEquipped) {
+      var def = await ManifestService()
+          .getDefinition<DestinyInventoryItemDefinition>(hash);
+      int blockingItemHash;
+      if (def?.inventory?.tierType == TierType.Exotic) {
+        blockingItemHash = await _removeBlockingExotic(def);
+      }
+      equipped.add(loadoutItem);
+      return blockingItemHash;
+    } else {
+      unequipped.add(loadoutItem);
+    }
+    return null;
+  }
+
+  Future<int> _removeBlockingExotic(DestinyInventoryItemDefinition _itemDef) async{
+    var isArmor = _armorBuckets.contains(_itemDef.inventory?.bucketTypeHash);
+    var isWeapon = _weaponBuckets.contains(_itemDef.inventory?.bucketTypeHash);
+    if(!isArmor && !isWeapon) return null;
+    var defs = await ManifestService()
+          .getDefinitions<DestinyInventoryItemDefinition>(equipped.map((i)=>i.itemHash));
+    int hashResult;
+    equipped.removeWhere((i){
+      var def = defs[i.itemHash];
+      var isExotic = def?.inventory?.tierType == TierType.Exotic;
+      var sameType = (isArmor && _armorBuckets.contains(def?.inventory?.bucketTypeHash)) ||
+      (isWeapon && _weaponBuckets.contains(def?.inventory?.bucketTypeHash));
+      var remove = isExotic && sameType;
+      if(remove){
+        hashResult = i.itemHash;
+      }
+      return remove;
+    });
+    return hashResult;
   }
 }
 

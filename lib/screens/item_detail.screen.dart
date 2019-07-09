@@ -6,11 +6,14 @@ import 'package:bungie_api/models/destiny_item_socket_entry_definition.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_stat_group_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/models/loadout.dart';
 import 'package:little_light/services/auth/auth.service.dart';
+import 'package:little_light/services/littlelight/littlelight.service.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/common/destiny_item.stateful_widget.dart';
 import 'package:little_light/widgets/common/perk_list_item.widget.dart';
+import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
 import 'package:little_light/widgets/item_details/chalice_recipe.widget.dart';
 import 'package:little_light/widgets/item_details/item_collectible_info.widget.dart';
@@ -25,6 +28,9 @@ import 'package:little_light/widgets/item_details/item_stats.widget.dart';
 import 'package:little_light/widgets/item_details/main_info/item_main_info.widget.dart';
 import 'package:little_light/widgets/item_details/management_block.widget.dart';
 import 'package:little_light/widgets/item_details/quest_info.widget.dart';
+import 'package:little_light/widgets/option_sheets/as_equipped_switch.widget.dart';
+import 'package:little_light/widgets/option_sheets/free_slots_slider.widget.dart';
+import 'package:little_light/widgets/option_sheets/loadout_select_sheet.widget.dart';
 
 class ItemDetailScreen extends DestinyItemStatefulWidget {
   final String uniqueId;
@@ -87,8 +93,7 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
         .getProfileInventory()
         .where((i) => i.itemHash == this.definition.hash)
         .map((item) => ItemWithOwner(item, null)));
-    allItems.sort((a, b) =>
-        InventoryUtils.sortDestinyItems(a.item, b.item));
+    allItems.sort((a, b) => InventoryUtils.sortDestinyItems(a.item, b.item));
     duplicates = allItems.where((i) {
       return i.item.itemInstanceId != null &&
           i.item.itemInstanceId != item?.itemInstanceId;
@@ -162,12 +167,8 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
           SliverList(
               delegate: SliverChildListDelegate([
             ItemMainInfoWidget(item, definition, instanceInfo),
-            ManagementBlockWidget(
-              item,
-              definition,
-              instanceInfo,
-              characterId: characterId,
-            ),
+            buildManagementBlock(context),
+            buildAddToLoadoutButton(context),
             buildDuplicates(context),
             buildStats(context),
             buildPerks(context),
@@ -189,6 +190,39 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
     ]));
   }
 
+  Widget buildManagementBlock(BuildContext context) {
+    return ManagementBlockWidget(
+      item,
+      definition,
+      instanceInfo,
+      characterId: characterId,
+    );
+  }
+
+  Widget buildAddToLoadoutButton(BuildContext context) {
+    return Container(
+        padding: EdgeInsets.all(8),
+        child: RaisedButton(
+            child: TranslatedTextWidget("Add to Loadout"),
+            onPressed: () async {
+              var loadouts = await LittleLightService().getLoadouts();
+              var equipped = false;
+              showModalBottomSheet(
+                  context: context,
+                  builder: (context) => LoadoutSelectSheet(
+                      header: AsEquippedSwitchWidget(
+                        onChanged: (value) {
+                          equipped = value;
+                        },
+                      ),
+                      loadouts: loadouts,
+                      onSelect: (loadout) async{
+                        
+                        await LittleLightService().saveLoadout(loadout);
+                      }));
+            }));
+  }
+
   Widget buildDuplicates(context) {
     return ItemDetailDuplicatesWidget(
       item,
@@ -202,8 +236,8 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
     if ((definition?.objectives?.objectiveHashes?.length ?? 0) == 0) {
       return Container();
     }
-    return ItemObjectivesWidget(item, definition, instanceInfo, characterId: characterId,
-        key: Key("item_objectives_widget"));
+    return ItemObjectivesWidget(item, definition, instanceInfo,
+        characterId: characterId, key: Key("item_objectives_widget"));
   }
 
   Widget buildStats(BuildContext context) {
@@ -250,13 +284,15 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
     );
   }
 
-  buildSelectedPerk(BuildContext context){
-    if(selectedPerk == null || !plugDefinitions.containsKey(selectedPerk)) return Container();
+  buildSelectedPerk(BuildContext context) {
+    if (selectedPerk == null || !plugDefinitions.containsKey(selectedPerk))
+      return Container();
     return Container(
-      padding: EdgeInsets.all(8),
-      child:PerkListItem(definition: plugDefinitions[selectedPerk],
-        alwaysOpen: true,
-                key: Key("selected_perk: $selectedPerk")));
+        padding: EdgeInsets.all(8),
+        child: PerkListItem(
+            definition: plugDefinitions[selectedPerk],
+            alwaysOpen: true,
+            key: Key("selected_perk: $selectedPerk")));
   }
 
   Widget buildMods(BuildContext context) {
