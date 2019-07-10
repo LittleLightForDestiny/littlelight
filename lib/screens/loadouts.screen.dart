@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:drag_list/drag_list.dart';
 import 'package:flutter/material.dart';
@@ -23,16 +25,33 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
   bool reordering = false;
   bool searchOpen = false;
   List<Loadout> loadouts;
+  List<Loadout> filteredLoadouts;
+  TextEditingController _searchFieldController = new TextEditingController();
 
   @override
   void initState() {
     super.initState();
+    _searchFieldController.addListener(() {
+      filteredLoadouts = filterLoadouts();
+      setState(() {});
+    });
     loadLoadouts();
+  }
+
+  List<Loadout> filterLoadouts(){
+    var text = _searchFieldController.text.toLowerCase();
+    return loadouts.where((l){
+        if(text.length <=3){
+          return l?.name?.toLowerCase()?.startsWith(text);
+        }
+        return l?.name?.toLowerCase()?.contains(text);
+      }).toList();
   }
 
   void loadLoadouts() async {
     LittleLightService service = LittleLightService();
     loadouts = await service.getLoadouts();
+    filteredLoadouts = loadouts;
     setState(() {});
   }
 
@@ -40,7 +59,7 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
   Widget build(BuildContext context) {
     return Stack(children: [
       Scaffold(
-        appBar: buildAppBar(),
+        appBar: buildAppBar(context),
         body: reordering ? buildReorderingBody(context) : buildBody(context),
         bottomNavigationBar: buildFooter(context),
       ),
@@ -48,7 +67,7 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
     ]);
   }
 
-  Widget buildAppBar() {
+  Widget buildAppBar(BuildContext context) {
     return AppBar(
         leading: IconButton(
           icon: Icon(Icons.menu),
@@ -57,14 +76,45 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
           },
         ),
         actions: <Widget>[
-          IconButton(
-              icon: Icon(FontAwesomeIcons.sort),
-              onPressed: () async {
-                reordering = !reordering;
-                setState(() {});
-              })
+          buildReorderButton(context),
+          buildSearchButton(context)
         ],
-        title: TranslatedTextWidget("Loadouts"));
+        title: buildTitle(context));
+  }
+
+  Widget buildTitle(BuildContext context){
+    if (searchOpen) {
+      return TextField(
+        autofocus: true,
+        controller: _searchFieldController,
+      );
+    }
+    return reordering  ? TranslatedTextWidget("Reordering Loadouts") : TranslatedTextWidget("Loadouts");
+  }
+
+  Widget buildSearchButton(BuildContext context) {
+    if(reordering) return Container();
+    return IconButton(
+        icon: searchOpen ? Icon(FontAwesomeIcons.times) : Icon(FontAwesomeIcons.search),
+        onPressed: () async {
+          searchOpen = !searchOpen;
+          if(!searchOpen){
+            _searchFieldController.text = "";
+          }
+          setState(() {});
+        });
+  }
+
+  Widget buildReorderButton(BuildContext context) {
+    if(searchOpen) return Container();
+    return IconButton(
+        icon: reordering ? Icon(FontAwesomeIcons.check) : Transform.rotate(
+          angle: pi/2,
+          child:Icon(FontAwesomeIcons.exchangeAlt)),
+        onPressed: () async {
+          reordering = !reordering;
+          setState(() {});
+        });
   }
 
   void createNew() async {
@@ -128,28 +178,31 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
 
   Widget buildSortItem(BuildContext context, Loadout loadout, Widget handle) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 4),
-      color: Colors.transparent,
-      child:Stack(
-      children: <Widget>[
-        loadout.emblemHash != null
-            ? Positioned.fill(
-                child: ManifestImageWidget<DestinyInventoryItemDefinition>(
-                loadout.emblemHash,
-                urlExtractor: (def) => def.secondarySpecial,
-                fit: BoxFit.cover,
-              ))
-            : Container(),
-        Row(
+        padding: EdgeInsets.symmetric(vertical: 4),
+        color: Colors.transparent,
+        child: Stack(
           children: <Widget>[
-            handle,
-            Expanded(
-              child: Text(loadout?.name ?? "", style: TextStyle(fontWeight: FontWeight.bold),),
+            loadout.emblemHash != null
+                ? Positioned.fill(
+                    child: ManifestImageWidget<DestinyInventoryItemDefinition>(
+                    loadout.emblemHash,
+                    urlExtractor: (def) => def.secondarySpecial,
+                    fit: BoxFit.cover,
+                  ))
+                : Container(),
+            Row(
+              children: <Widget>[
+                handle,
+                Expanded(
+                  child: Text(
+                    loadout?.name ?? "",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                )
+              ],
             )
           ],
-        )
-      ],
-    ));
+        ));
   }
 
   Widget buildBody(BuildContext context) {
@@ -164,7 +217,7 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
     return StaggeredGridView.countBuilder(
       padding: EdgeInsets.all(4),
       crossAxisCount: 30,
-      itemCount: loadouts.length,
+      itemCount: filteredLoadouts.length,
       itemBuilder: (BuildContext context, int index) => getItem(context, index),
       staggeredTileBuilder: (int index) => getTileBuilder(index),
       mainAxisSpacing: 2,
@@ -198,7 +251,7 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
   }
 
   Widget getItem(BuildContext context, int index) {
-    Loadout loadout = loadouts[index];
+    Loadout loadout = filteredLoadouts[index];
     return LoadoutListItemWidget(
       loadout,
       key: Key("loadout_${loadout.assignedId}_$index"),
