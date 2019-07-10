@@ -43,6 +43,7 @@ class StorageKeys {
   static const String cachedProfile = "cached_profile";
 
   static const String cachedLoadouts = "cached_loadouts";
+  static const String loadoutsOrder = "loadouts_order";
   static const String trackedObjectives = "tracked_objectives";
 
   static const String membershipUUID = "membership_uuid";

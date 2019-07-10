@@ -8,19 +8,6 @@ import 'package:uuid/uuid.dart';
 
 part 'loadout.g.dart';
 
-const List<int> _weaponBuckets = [
-  InventoryBucket.kineticWeapons,
-  InventoryBucket.energyWeapons,
-  InventoryBucket.powerWeapons,
-];
-
-const List<int> _armorBuckets = [
-  InventoryBucket.helmet,
-  InventoryBucket.gauntlets,
-  InventoryBucket.chestArmor,
-  InventoryBucket.legArmor,
-];
-
 @JsonSerializable()
 class Loadout {
   String assignedId;
@@ -81,6 +68,7 @@ class Loadout {
       if (def?.inventory?.tierType == TierType.Exotic) {
         blockingItemHash = await _removeBlockingExotic(def);
       }
+      _removeEquipped(def);
       equipped.add(loadoutItem);
       return blockingItemHash;
     } else {
@@ -89,20 +77,41 @@ class Loadout {
     return null;
   }
 
-  Future<int> _removeBlockingExotic(DestinyInventoryItemDefinition _itemDef) async{
-    var isArmor = _armorBuckets.contains(_itemDef.inventory?.bucketTypeHash);
-    var isWeapon = _weaponBuckets.contains(_itemDef.inventory?.bucketTypeHash);
-    if(!isArmor && !isWeapon) return null;
+  Future<void> _removeEquipped(DestinyInventoryItemDefinition _itemDef) async {
     var defs = await ManifestService()
-          .getDefinitions<DestinyInventoryItemDefinition>(equipped.map((i)=>i.itemHash));
+        .getDefinitions<DestinyInventoryItemDefinition>(
+            equipped.map((i) => i.itemHash));
+    equipped.removeWhere((i) {
+      var def = defs[i.itemHash];
+      return def?.inventory?.bucketTypeHash ==
+              _itemDef?.inventory?.bucketTypeHash &&
+          def?.classType == _itemDef?.classType;
+    });
+  }
+
+  Future<int> _removeBlockingExotic(
+      DestinyInventoryItemDefinition _itemDef) async {
+    var isArmor =
+        exoticArmorBlockBuckets.contains(_itemDef.inventory?.bucketTypeHash);
+    var isWeapon =
+        exoticWeaponBlockBuckets.contains(_itemDef.inventory?.bucketTypeHash);
+    if (!isArmor && !isWeapon) return null;
+    var defs = await ManifestService()
+        .getDefinitions<DestinyInventoryItemDefinition>(
+            equipped.map((i) => i.itemHash));
     int hashResult;
-    equipped.removeWhere((i){
+    equipped.removeWhere((i) {
       var def = defs[i.itemHash];
       var isExotic = def?.inventory?.tierType == TierType.Exotic;
-      var sameType = (isArmor && _armorBuckets.contains(def?.inventory?.bucketTypeHash)) ||
-      (isWeapon && _weaponBuckets.contains(def?.inventory?.bucketTypeHash));
+      var sameType = (isArmor &&
+              exoticArmorBlockBuckets
+                  .contains(def?.inventory?.bucketTypeHash) &&
+              def?.classType == _itemDef?.classType) ||
+          (isWeapon &&
+              exoticWeaponBlockBuckets
+                  .contains(def?.inventory?.bucketTypeHash));
       var remove = isExotic && sameType;
-      if(remove){
+      if (remove) {
         hashResult = i.itemHash;
       }
       return remove;

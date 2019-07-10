@@ -1,5 +1,4 @@
 import 'package:bungie_api/enums/destiny_item_type_enum.dart';
-import 'package:bungie_api/enums/tier_type_enum.dart';
 import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
@@ -22,34 +21,6 @@ class EditLoadoutScreen extends StatefulWidget {
   final bool forceCreate;
   EditLoadoutScreen({Key key, this.loadout, this.forceCreate = false})
       : super(key: key);
-
-  final List<int> bucketOrder = [
-    InventoryBucket.subclass,
-    InventoryBucket.kineticWeapons,
-    InventoryBucket.energyWeapons,
-    InventoryBucket.powerWeapons,
-    InventoryBucket.helmet,
-    InventoryBucket.gauntlets,
-    InventoryBucket.chestArmor,
-    InventoryBucket.legArmor,
-    InventoryBucket.classArmor,
-    InventoryBucket.ghost,
-    InventoryBucket.vehicle,
-    InventoryBucket.ships,
-  ];
-
-  final List<int> weaponBuckets = [
-    InventoryBucket.kineticWeapons,
-    InventoryBucket.energyWeapons,
-    InventoryBucket.powerWeapons,
-  ];
-
-  final List<int> armorBuckets = [
-    InventoryBucket.helmet,
-    InventoryBucket.gauntlets,
-    InventoryBucket.chestArmor,
-    InventoryBucket.legArmor,
-  ];
 
   final ManifestService manifest = new ManifestService();
 
@@ -103,7 +74,7 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> {
 
   buildItemIndex() async {
     bucketDefinitions = await widget.manifest
-        .getDefinitions<DestinyInventoryBucketDefinition>(widget.bucketOrder);
+        .getDefinitions<DestinyInventoryBucketDefinition>(loadoutBucketHashes);
     _itemIndex = await InventoryUtils.buildLoadoutItemIndex(_loadout);
     if (mounted) {
       setState(() {});
@@ -131,7 +102,7 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> {
                   : "Edit Loadout"),
           flexibleSpace: buildAppBarBackground(context)),
       body: ListView.builder(
-          itemCount: _itemIndex == null ? 2 : widget.bucketOrder.length + 2,
+          itemCount: _itemIndex == null ? 2 : loadoutBucketHashes.length + 2,
           padding: EdgeInsets.all(8),
           itemBuilder: itemBuilder),
       bottomNavigationBar: buildFooter(context),
@@ -145,7 +116,7 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> {
       case 1:
         return buildSelectBackgroundButton(context);
     }
-    int bucketHash = widget.bucketOrder[index - 2];
+    int bucketHash = loadoutBucketHashes[index - 2];
     DestinyInventoryBucketDefinition definition = bucketDefinitions[bucketHash];
     if (bucketHash != null) {
       return LoadoutSlotWidget(

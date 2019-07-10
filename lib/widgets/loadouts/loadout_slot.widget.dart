@@ -2,6 +2,7 @@ import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/screens/item_detail.screen.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
@@ -172,6 +173,26 @@ class LoadoutSlotWidget extends StatelessWidget {
                             } else {
                               onAdd(equipped, classType);
                             }
+                          },
+                          onLongPress: () async {
+                            if (item == null) {
+                              return;
+                            }
+                            var def = await manifest.getDefinition<
+                                DestinyInventoryItemDefinition>(item.itemHash);
+                            var instanceInfo = profile.getInstanceInfo(item.itemInstanceId);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ItemDetailScreen(
+                                  item,
+                                  def,
+                                  instanceInfo,
+                                  characterId: null,
+                                  isLoadoutItemDetails: true,
+                                ),
+                              ),
+                            );
                           },
                         ),
                       )

@@ -1,10 +1,14 @@
+import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
+import 'package:drag_list/drag_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/screens/edit_loadout.screen.dart';
 import 'package:little_light/services/littlelight/littlelight.service.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/media_query_helper.dart';
+import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
 import 'package:little_light/widgets/loadouts/loadout_list_item.widget.dart';
@@ -29,10 +33,6 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
   void loadLoadouts() async {
     LittleLightService service = LittleLightService();
     loadouts = await service.getLoadouts();
-    loadouts.sort((a, b) {
-      var result = a.name.toLowerCase().compareTo(b.name.toLowerCase());
-      return result;
-    });
     setState(() {});
   }
 
@@ -41,7 +41,7 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
     return Stack(children: [
       Scaffold(
         appBar: buildAppBar(),
-        body: buildBody(context),
+        body: reordering ? buildReorderingBody(context) : buildBody(context),
         bottomNavigationBar: buildFooter(context),
       ),
       InventoryNotificationWidget(key: Key("notification_widget"))
@@ -49,16 +49,6 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
   }
 
   Widget buildAppBar() {
-    if (reordering) {
-      return TranslatedTextWidget("Loadouts");
-    }
-    if (searchOpen) {
-      TranslatedTextWidget("Add to Loadout");
-      TranslatedTextWidget("Equip only");
-      TranslatedTextWidget("Add as equipped");
-      TranslatedTextWidget("Random Loadout");
-      TranslatedTextWidget("Free slots");
-    }
     return AppBar(
         leading: IconButton(
           icon: Icon(Icons.menu),
@@ -68,9 +58,10 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
         ),
         actions: <Widget>[
           IconButton(
-              icon: Icon(Icons.add_circle_outline),
+              icon: Icon(FontAwesomeIcons.sort),
               onPressed: () async {
-                createNew();
+                reordering = !reordering;
+                setState(() {});
               })
         ],
         title: TranslatedTextWidget("Loadouts"));
@@ -110,28 +101,64 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
         ));
   }
 
+  Widget buildReorderingBody(BuildContext context) {
+    return DragList<Loadout>(
+        items: loadouts,
+        itemExtent: 56,
+        padding: EdgeInsets.all(8),
+        handleBuilder: (context) => buildHandle(context),
+        onItemReorder: (oldIndex, newIndex) {
+          var removed = loadouts.removeAt(oldIndex);
+          loadouts.insert(newIndex, removed);
+          LittleLightService().saveLoadoutsOrder(loadouts);
+        },
+        builder: (context, parameter, handle) =>
+            buildSortItem(context, parameter, handle));
+  }
+
+  Widget buildHandle(BuildContext context) {
+    return GestureDetector(
+        onVerticalDragStart: (_) {},
+        onVerticalDragDown: (_) {},
+        child: AspectRatio(
+            aspectRatio: 1,
+            child:
+                Container(color: Colors.transparent, child: Icon(Icons.menu))));
+  }
+
+  Widget buildSortItem(BuildContext context, Loadout loadout, Widget handle) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 4),
+      color: Colors.transparent,
+      child:Stack(
+      children: <Widget>[
+        loadout.emblemHash != null
+            ? Positioned.fill(
+                child: ManifestImageWidget<DestinyInventoryItemDefinition>(
+                loadout.emblemHash,
+                urlExtractor: (def) => def.secondarySpecial,
+                fit: BoxFit.cover,
+              ))
+            : Container(),
+        Row(
+          children: <Widget>[
+            handle,
+            Expanded(
+              child: Text(loadout?.name ?? "", style: TextStyle(fontWeight: FontWeight.bold),),
+            )
+          ],
+        )
+      ],
+    ));
+  }
+
   Widget buildBody(BuildContext context) {
     if (loadouts == null) {
       return Container();
     }
 
     if (loadouts.length == 0) {
-      return Container(
-          padding: EdgeInsets.all(16),
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                TranslatedTextWidget(
-                  "You have no loadouts yet. Create your first one.",
-                  textAlign: TextAlign.center,
-                ),
-                Container(height: 16),
-                RaisedButton(
-                  child: TranslatedTextWidget("Create Loadout"),
-                  onPressed: createNew,
-                )
-              ]));
+      return buildNoLoadoutsBody(context);
     }
 
     return StaggeredGridView.countBuilder(
@@ -144,6 +171,25 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
       crossAxisSpacing: 2,
       physics: const AlwaysScrollableScrollPhysics(),
     );
+  }
+
+  Widget buildNoLoadoutsBody(BuildContext context) {
+    return Container(
+        padding: EdgeInsets.all(16),
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TranslatedTextWidget(
+                "You have no loadouts yet. Create your first one.",
+                textAlign: TextAlign.center,
+              ),
+              Container(height: 16),
+              RaisedButton(
+                child: TranslatedTextWidget("Create Loadout"),
+                onPressed: createNew,
+              )
+            ]));
   }
 
   StaggeredTile getTileBuilder(int index) {
