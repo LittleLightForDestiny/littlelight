@@ -75,10 +75,10 @@ class TrackedPursuitItemWidgetState<T extends TrackedPursuitItemWidget>
     return super.build(context);
   }
 
-  Widget buildCurrentObjective(
+  Widget buildObjective(
       BuildContext context, DestinyObjectiveProgress objective) {
     if (objectiveDefinitions == null) return Container();
-    return super.buildCurrentObjective(context, objective);
+    return super.buildObjective(context, objective);
   }
 
   findItem() async {

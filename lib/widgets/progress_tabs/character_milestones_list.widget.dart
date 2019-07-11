@@ -7,19 +7,19 @@ import 'package:little_light/widgets/item_list/character_info.widget.dart';
 import 'package:little_light/widgets/progress_tabs/milestone_item.widget.dart';
 import 'package:little_light/widgets/progress_tabs/milestone_raid_item.widget.dart';
 
-class CharacterProgressListWidget extends StatefulWidget {
+class CharacterMilestonesListWidget extends StatefulWidget {
   final String characterId;
   final ProfileService profile = ProfileService();
   final ManifestService manifest = ManifestService();
 
-  CharacterProgressListWidget({Key key, this.characterId}) : super(key: key);
+  CharacterMilestonesListWidget({Key key, this.characterId}) : super(key: key);
 
-  _CharacterProgressListWidgetState createState() =>
-      _CharacterProgressListWidgetState();
+  _CharacterMilestonesListWidgetState createState() =>
+      _CharacterMilestonesListWidgetState();
 }
 
-class _CharacterProgressListWidgetState
-    extends State<CharacterProgressListWidget> {
+class _CharacterMilestonesListWidgetState
+    extends State<CharacterMilestonesListWidget> {
   List<int> raidHashes = [
     3660836525,
     2986584050,

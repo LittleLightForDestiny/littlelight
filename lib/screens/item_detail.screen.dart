@@ -28,6 +28,7 @@ import 'package:little_light/widgets/item_details/item_stats.widget.dart';
 import 'package:little_light/widgets/item_details/main_info/item_main_info.widget.dart';
 import 'package:little_light/widgets/item_details/management_block.widget.dart';
 import 'package:little_light/widgets/item_details/quest_info.widget.dart';
+import 'package:little_light/widgets/item_details/rewards_info.widget.dart';
 import 'package:little_light/widgets/option_sheets/as_equipped_switch.widget.dart';
 import 'package:little_light/widgets/option_sheets/loadout_select_sheet.widget.dart';
 
@@ -176,6 +177,7 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
             buildSelectedPerk(context),
             buildMods(context),
             buildObjectives(context),
+            buildRewards(context),
             buildQuestInfo(context),
             buildLore(context),
             buildCollectibleInfo(context),
@@ -244,6 +246,13 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
     }
     return ItemObjectivesWidget(item, definition, instanceInfo,
         characterId: characterId, key: Key("item_objectives_widget"));
+  }
+
+  Widget buildRewards(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(8),
+      child:RewardsInfoWidget(item, definition, instanceInfo,
+        characterId: characterId, key: Key("item_rewards_widget")));
   }
 
   Widget buildStats(BuildContext context) {

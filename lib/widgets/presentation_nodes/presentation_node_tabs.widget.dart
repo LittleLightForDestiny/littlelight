@@ -39,7 +39,9 @@ class PresentationNodeTabsWidgetState
     definition = await widget._manifest
         .getDefinition<DestinyPresentationNodeDefinition>(
             widget.presentationNodeHash);
-    setState(() {});
+    if(mounted){
+      setState(() {});
+    }
   }
 
   List<int> get nodeHashes => widget.presentationNodeHashes ?? definition?.children?.presentationNodes?.map((p)=>p.presentationNodeHash)?.toList();

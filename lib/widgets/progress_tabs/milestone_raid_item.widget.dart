@@ -251,6 +251,19 @@ class _MilestoneRaidItemWidgetState extends State<MilestoneRaidItemWidget>
       case RaidPhases.sotpInsurectionPrime:
         text = "Insurrection Prime";
         break;
+
+      case RaidPhases.cosLamps:
+        text = "Lamps";
+        break;
+      case RaidPhases.cosCrystals:
+        text = "Crystals";
+        break;
+      case RaidPhases.cosDeception:
+        text = "Deception";
+        break;
+      case RaidPhases.cosGahlran:
+        text = "Gahlran";
+        break;
     }
     Color color = phase.complete
         ? Colors.amber.shade100

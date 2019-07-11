@@ -34,12 +34,17 @@ class ItemCoverWidget extends DestinyItemWidget {
     double width = MediaQuery.of(context).size.width;
     double paddingTop = MediaQuery.of(context).padding.top;
     double screenshotHeight = width / (16 / 9);
+    double minHeight = paddingTop + kToolbarHeight;
+    double maxHeight = kToolbarHeight + screenshotHeight;
+    if((definition?.screenshot?.length ?? 0) == 0){
+      maxHeight = minHeight;
+    }
     return SliverPersistentHeader(
         pinned: true,
         delegate: ItemCoverDelegate(
             item, definition, instanceInfo, tag, uniqueId,
-            minHeight: paddingTop + kToolbarHeight,
-            maxHeight: kToolbarHeight + screenshotHeight));
+            minHeight: minHeight,
+            maxHeight: maxHeight));
   }
 }
 
@@ -62,6 +67,9 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     double expandRatio =
         max(0, 1 - shrinkOffset / (this.maxHeight - this.minHeight));
+    if(maxHeight == minHeight){
+      expandRatio = 0;
+    }
     return Container(
         color: DestinyData.getTierColor(definition.inventory.tierType),
         child: Stack(

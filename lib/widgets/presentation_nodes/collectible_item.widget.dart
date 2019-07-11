@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:bungie_api/enums/destiny_item_type_enum.dart';
 import 'package:bungie_api/models/destiny_collectible_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:little_light/services/inventory/inventory.service.dart';
@@ -12,6 +13,10 @@ import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/widgets/item_list/items/armor/armor_inventory_item.widget.dart';
+import 'package:little_light/widgets/item_list/items/base/base_inventory_item.widget.dart';
+import 'package:little_light/widgets/item_list/items/emblem/emblem_inventory_item.widget.dart';
+import 'package:little_light/widgets/item_list/items/weapon/weapon_inventory_item.widget.dart';
 
 class CollectibleItemWidget extends StatefulWidget {
   final ManifestService manifest = new ManifestService();
@@ -30,6 +35,7 @@ class CollectibleItemWidget extends StatefulWidget {
 
 class CollectibleItemWidgetState extends State<CollectibleItemWidget> {
   DestinyCollectibleDefinition _definition;
+  DestinyInventoryItemDefinition _itemDefinition;
   DestinyCollectibleDefinition get definition {
     return widget.manifest.getDefinitionFromCache<DestinyCollectibleDefinition>(
             widget.hash) ??
@@ -73,6 +79,11 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget> {
         setState(() {});
       }
     }
+    _itemDefinition = await widget.manifest
+        .getDefinition<DestinyInventoryItemDefinition>(definition.itemHash);
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
@@ -92,25 +103,52 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget> {
                       Colors.white.withOpacity(.1)
                     ])),
             child: Stack(children: [
-              Row(
-                children: <Widget>[
-                  AspectRatio(
-                      aspectRatio: 1,
-                      child: Container(
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: Colors.grey.shade300, width: 1)),
-                          margin: EdgeInsets.all(4),
-                          child: buildIcon(context))),
-                  buildTitle(context, definition),
-                ],
-              ),
+              buildItem(context),
               Positioned(right: 4, bottom: 4, child: buildItemCount()),
               Positioned.fill(
                 child: buildSelectedBorder(context),
               ),
               buildButton(context),
             ])));
+  }
+
+  Widget buildItem(BuildContext context) {
+    if (_itemDefinition == null) return Container();
+    if (_itemDefinition.itemType == DestinyItemType.Armor) {
+      return ArmorInventoryItemWidget(
+        null,
+        _itemDefinition,
+        null,
+        characterId: null,
+        uniqueId: null,
+      );
+    }
+    if (_itemDefinition.itemType == DestinyItemType.Weapon) {
+      return WeaponInventoryItemWidget(
+        null,
+        _itemDefinition,
+        null,
+        characterId: null,
+        uniqueId: null,
+      );
+    }
+
+    if (_itemDefinition.itemType == DestinyItemType.Emblem) {
+      return EmblemInventoryItemWidget(
+        null,
+        _itemDefinition,
+        null,
+        characterId: null,
+        uniqueId: null,
+      );
+    }
+    return BaseInventoryItemWidget(
+      null,
+      _itemDefinition,
+      null,
+      characterId: null,
+      uniqueId: null,
+    );
   }
 
   Widget buildIcon(BuildContext context) {
@@ -179,8 +217,8 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget> {
   Widget buildSelectedBorder(BuildContext context) {
     if (selected) {
       return Container(
-        decoration:
-            BoxDecoration(border: Border.all(width: 2, color: Colors.lightBlue.shade400)),
+        decoration: BoxDecoration(
+            border: Border.all(width: 2, color: Colors.lightBlue.shade400)),
       );
     }
     return Container();

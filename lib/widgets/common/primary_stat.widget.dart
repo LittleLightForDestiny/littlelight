@@ -37,7 +37,8 @@ class PrimaryStatWidget extends DestinyItemWidget {
       return value;
     }
     try{
-      return definition.stats.stats["1935470627"].maximum;
+      var primaryStat = definition.stats.primaryBaseStatHash ?? 1935470627;
+      return definition.stats.stats["$primaryStat"].maximum;
     }catch(e){
     }
     return null;

@@ -107,7 +107,7 @@ class DestinyStatsWidgetState extends DestinyItemState<ItemStatsWidget> with Aut
       }
       DestinyInventoryItemDefinition selectedDef =
           widget.plugDefinitions[widget.selectedPerks[index]];
-      def.investmentStats.forEach((stat) {
+      def?.investmentStats?.forEach((stat) {
         StatValues values = map[stat.statTypeHash] ?? new StatValues();
         if (def.plug?.uiPlugLabel == 'masterwork' &&
             (state?.reusablePlugHashes?.length ?? 0) == 0) {

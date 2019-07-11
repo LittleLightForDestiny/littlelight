@@ -9,7 +9,8 @@ typedef String ExtractTextFromData(dynamic data);
 class RefreshButtonWidget extends StatefulWidget {
   final NotificationService notifications = NotificationService();
   final ProfileService profile = ProfileService();
-  RefreshButtonWidget({Key key}) : super(key: key);
+  final EdgeInsets padding;
+  RefreshButtonWidget({Key key, this.padding}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -55,7 +56,9 @@ class RefreshButtonWidgetState extends State<RefreshButtonWidget> with TickerPro
     return Stack(
       alignment: Alignment.center,
       children: <Widget>[
-        buildRotatingIcon(),
+        Container(
+          padding: widget.padding,
+          child:buildRotatingIcon()),
         Positioned.fill(child:buildTapHandler()),
       ],
     );

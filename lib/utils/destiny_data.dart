@@ -12,22 +12,31 @@ class RaidPhases {
   static const int leviathanPools = 2188993306;
   static const int leviathanArena = 1431486395;
   static const int leviathanCallus = 4231923662;
+
   static const int eowLoyalists = 415534662;
   static const int eowRings = 3813639709;
   static const int eowShields = 2941618871;
   static const int eowArgos = 877738674;
+
   static const int sosStatueGarden = 3864507933;
   static const int sosConduitRoom = 3025298087;
   static const int sosShips = 1245655652;
   static const int sosValCauor = 1245655655;
+
   static const int lwKalli = 1126840038;
   static const int lwShuroChi = 1040714588;
   static const int lwMorgeth = 4249034918;
   static const int lwVault = 436847112;
   static const int lwRiven = 2392610624;
+
   static const int sotpBotzaDistrict = 566861111;
   static const int sotpVaultAccess = 244769953;
   static const int sotpInsurectionPrime = 1268191778;
+
+  static const int cosLamps = 824306255;
+  static const int cosCrystals = 9235511;
+  static const int cosDeception = 3789028322;
+  static const int cosGahlran = 3307986266;
 
   static const int leviathanPoolsChallenge = 3796634159;
   static const int sotpInsurrectionPrimeChallenge = 4140089399;

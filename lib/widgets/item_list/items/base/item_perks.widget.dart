@@ -2,6 +2,7 @@ import 'package:bungie_api/enums/destiny_socket_category_style_enum.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
+import 'package:bungie_api/models/destiny_item_socket_entry_definition.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_socket_category_definition.dart';
 import 'package:flutter/material.dart';
@@ -28,14 +29,11 @@ class ItemPerksWidget extends DestinyItemStatefulWidget {
 
 class ItemPerksWidgetState extends DestinyItemState<ItemPerksWidget> {
   DestinySocketCategoryDefinition perksCatDefinition;
-  List<DestinyItemSocketState> itemSockets;
 
   @override
   void initState() {
     super.initState();
-    if(widget.item != null){
-      loadPerks();
-    }
+    loadPerks();
   }
 
   loadPerks() async {
@@ -50,7 +48,6 @@ class ItemPerksWidgetState extends DestinyItemState<ItemPerksWidget> {
       return def.categoryStyle & DestinySocketCategoryStyle.Reusable ==
           DestinySocketCategoryStyle.Reusable;
     }, orElse: ()=>null);
-    this.itemSockets = widget.profile.getItemSockets(item.itemInstanceId);
     if(!mounted) return;
     setState(() {});
   }
@@ -68,23 +65,15 @@ class ItemPerksWidgetState extends DestinyItemState<ItemPerksWidget> {
         (s) => s.socketCategoryHash == def.hash,
         orElse: () => null);
     List<Widget> columns = [];
-    if(socketCategory == null || itemSockets == null) return Container();
+    if(socketCategory == null) return Container();
     socketCategory.socketIndexes.forEach((index) {
-      if (isSocketVisible(index)) {
-        columns.add(buildPerkIcon(context, itemSockets[index].plugHash));
-      }
+      var hash = item != null ? getEquippedPlugHashBySocketIndex(index) : getDefaultPerkBySocketIndex(index);
+      columns.add(buildPerkIcon(context, hash));
     });
     return Row(
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: columns.toList());
-  }
-
-  bool isSocketVisible(int index) {
-    if (itemSockets != null) {
-      return itemSockets[index].isVisible;
-    }
-    return true;
   }
 
   Widget buildPerkIcon(BuildContext context, int plugHash) {
@@ -96,5 +85,53 @@ class ItemPerksWidgetState extends DestinyItemState<ItemPerksWidget> {
       height: widget.iconSize,
       child: ManifestImageWidget<DestinyInventoryItemDefinition>(plugHash, placeholder: Container(),),
     );
+  }
+
+  DestinyItemSocketState getSocketState(int index){
+    if(item?.itemInstanceId == null) return null;
+    List<DestinyItemSocketState> socketStates =
+        widget.profile.getItemSockets(item.itemInstanceId);
+    return socketStates[index];
+  }
+
+  int getEquippedPlugHashBySocketIndex(int index) {
+    var entry = socketEntries[index];
+    var state = getSocketState(index);
+    if(!(state.isVisible ?? false)){
+      return null;
+    }
+    if((state?.plugHash ?? 0) != 0){
+      return state?.plugHash;
+    }
+    if((entry.singleInitialItemHash ?? 0) != 0){
+      return entry.singleInitialItemHash;
+    }
+
+    if(entry.randomizedPlugItems.length > 0 && (entry.randomizedPlugItems[0]?.plugItemHash ?? 0) != 0){
+      return entry.randomizedPlugItems[0]?.plugItemHash;
+    }
+    if(entry.reusablePlugItems.length > 0 && (entry.reusablePlugItems[0]?.plugItemHash ?? 0) != 0) {
+      return entry.reusablePlugItems[0]?.plugItemHash;
+    }
+    return null;
+  }
+
+
+  int getDefaultPerkBySocketIndex(int index) {
+    var entry = socketEntries[index];
+    if((entry.singleInitialItemHash ?? 0) != 0){
+      return entry.singleInitialItemHash;
+    }
+    if((entry.reusablePlugItems?.length ?? 0) != 0){
+      return entry.reusablePlugItems[0].plugItemHash;
+    }
+    if((entry.randomizedPlugItems?.length ?? 0) != 0){
+      return entry.randomizedPlugItems[0].plugItemHash;
+    }
+    return null;
+  }
+
+  List<DestinyItemSocketEntryDefinition> get socketEntries {
+    return definition.sockets.socketEntries;
   }
 }
