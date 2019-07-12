@@ -60,7 +60,7 @@ class TrackedPlugItemWidgetState
     return super.build(context);
   }
 
-  Widget buildCurrentObjective(
+  Widget buildObjective(
       BuildContext context, DestinyObjectiveProgress objective) {
     if (objectiveDefinitions == null) return Container();
     return Column(children: [
@@ -86,7 +86,7 @@ class TrackedPlugItemWidgetState
           ),
         ],
       )),
-      super.buildCurrentObjective(context, objective)
+      super.buildObjective(context, objective)
     ]);
   }
 

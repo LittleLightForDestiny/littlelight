@@ -84,6 +84,11 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
     if (definition == null) {
       return Container(height: 200, color: Colors.blueGrey.shade900);
     }
+    return LayoutBuilder(
+        builder: (context, constraints) => buildLayout(context, constraints));
+  }
+
+  Widget buildLayout(BuildContext context, BoxConstraints constraints) {
     return Stack(children: [
       Container(
           decoration: BoxDecoration(
@@ -93,47 +98,7 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
             color: Colors.blueGrey.shade900,
           ),
           child: Column(children: <Widget>[
-            Stack(children: <Widget>[
-              Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-                Container(
-                    alignment: Alignment.centerLeft,
-                    padding: EdgeInsets.only(left: 80, right: 4),
-                    color:
-                        DestinyData.getTierColor(definition.inventory.tierType),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                            child: Container(
-                                padding: EdgeInsets.all(8),
-                                child: Text(
-                                  definition.displayProperties.name
-                                      .toUpperCase(),
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                  softWrap: false,
-                                  overflow: TextOverflow.fade,
-                                ))),
-                        buildCharacterIcon(context),
-                      ],
-                    )),
-                Container(
-                    constraints: BoxConstraints(minHeight: 60),
-                    padding: EdgeInsets.all(8).copyWith(left: 88),
-                    child: buildDescription(context)),
-                item?.expirationDate != null
-                    ? Container(
-                        padding: EdgeInsets.all(8).copyWith(top: 0),
-                        child: ExpiryDateWidget(item.expirationDate),
-                      )
-                    : Container(),
-              ]),
-              Positioned(
-                  top: 8,
-                  left: 8,
-                  width: 72,
-                  height: 72,
-                  child: buildIcon(context)),
-            ]),
+            buildMainInfo(context, constraints),
             buildObjectives(context, definition)
           ])),
       Positioned.fill(
@@ -141,16 +106,15 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
               color: Colors.transparent,
               child: InkWell(
                 onTap: () {
-                  print(item?.itemInstanceId);
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => ItemDetailScreen(
-                            item,
-                            definition,
-                            widget.profile.getInstanceInfo(itemInstanceId),
-                            characterId: widget.characterId,
-                          ),
+                        item,
+                        definition,
+                        widget.profile.getInstanceInfo(itemInstanceId),
+                        characterId: widget.characterId,
+                      ),
                     ),
                   );
                 },
@@ -176,6 +140,52 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
         child: icon);
   }
 
+  Widget buildMainInfo(BuildContext context, BoxConstraints constraints) {
+    return Expanded(
+        flex: constraints.hasBoundedHeight ? 1 : 0,
+        child: Stack(children: <Widget>[
+          Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            Container(
+                alignment: Alignment.centerLeft,
+                padding: EdgeInsets.only(left: 80, right: 4),
+                color: DestinyData.getTierColor(definition.inventory.tierType),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                        child: Container(
+                            padding: EdgeInsets.all(8),
+                            child: Text(
+                              definition.displayProperties.name.toUpperCase(),
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                              softWrap: false,
+                              overflow: TextOverflow.fade,
+                            ))),
+                    buildCharacterIcon(context),
+                  ],
+                )),
+            Expanded(
+                flex: constraints.hasBoundedHeight ? 1 : 0,
+                child: Container(
+                    constraints: BoxConstraints(minHeight: 60),
+                    padding: EdgeInsets.all(8).copyWith(left: 88),
+                    child: buildDescription(context))),
+            item?.expirationDate != null
+                ? Container(
+                    padding: EdgeInsets.all(8).copyWith(top: 0),
+                    child: ExpiryDateWidget(item.expirationDate),
+                  )
+                : Container(),
+          ]),
+          Positioned(
+              top: 8,
+              left: 8,
+              width: 72,
+              height: 72,
+              child: buildIcon(context)),
+        ]));
+  }
+
   Widget buildObjectives(
       BuildContext context, DestinyInventoryItemDefinition questStepDef) {
     if (itemObjectives == null) return Container();
@@ -183,13 +193,13 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
       padding: EdgeInsets.all(4).copyWith(top: 0),
       child: Column(
         children: itemObjectives
-            .map((objective) => buildCurrentObjective(context, objective))
+            .map((objective) => buildObjective(context, objective))
             .toList(),
       ),
     );
   }
 
-  Widget buildCurrentObjective(
+  Widget buildObjective(
       BuildContext context, DestinyObjectiveProgress objective) {
     if (objectiveDefinitions == null) return Container();
     var definition = objectiveDefinitions[objective.objectiveHash];
@@ -205,7 +215,8 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
 
   updateProgress() {
     instanceInfo = widget.profile.getInstanceInfo(itemInstanceId);
-    itemObjectives = widget.profile.getItemObjectives(itemInstanceId, widget.characterId, hash);
+    itemObjectives = widget.profile
+        .getItemObjectives(itemInstanceId, widget.characterId, hash);
     setState(() {});
   }
 
@@ -224,6 +235,7 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
   Widget buildDescription(BuildContext context) {
     return Text(
       definition.displayProperties.description,
+      overflow: TextOverflow.fade,
       style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
     );
   }

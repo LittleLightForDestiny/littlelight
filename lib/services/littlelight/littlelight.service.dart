@@ -35,12 +35,28 @@ class LittleLightService {
   }
 
   Future<List<Loadout>> getLoadouts({forceFetch: false}) async {
-    if (_loadouts != null && !forceFetch) return _loadouts;
+    if (_loadouts != null && !forceFetch){
+      await _sortLoadouts();
+      return _loadouts;
+    }
     await _loadLoadoutsFromCache();
     if (forceFetch) {
       await _fetchLoadouts();
     }
+    await _sortLoadouts();
     return _loadouts;
+  }
+
+  Future<void> _sortLoadouts() async{
+    var _order = await _getLoadoutsOrder();
+    _loadouts.sort((la,lb){
+      var indexA = _order.indexOf(la.assignedId);
+      var indexB = _order.indexOf(lb.assignedId);
+      if(indexA != indexB) return indexB.compareTo(indexA);
+      var nameA = la?.name?.toLowerCase() ?? "";
+      var nameB = lb?.name?.toLowerCase() ?? "";
+      return nameA.compareTo(nameB);
+    });
   }
 
   Future<List<Loadout>> _loadLoadoutsFromCache() async {
@@ -75,11 +91,6 @@ class LittleLightService {
       });
     }
     _saveLoadoutsToStorage();
-    this._loadouts.sort((a, b) {
-      var nameA = a.name ?? "";
-      var nameB = b.name ?? "";
-      return nameA.compareTo(nameB);
-    });
     return _loadouts;
   }
 
@@ -93,7 +104,6 @@ class LittleLightService {
     } else {
       _loadouts.add(loadout);
     }
-    this._loadouts.sort((a, b) => a.name.compareTo(b.name));
     await _saveLoadoutsToStorage();
     return await _saveLoadoutToServer(loadout);
   }
@@ -130,6 +140,18 @@ class LittleLightService {
     }).toList();
     List<dynamic> json = distinctLoadouts.map((l) => l.toJson()).toList();
     await storage.setJson(StorageKeys.cachedLoadouts, json);
+  }
+
+  Future<void> saveLoadoutsOrder(List<Loadout> loadouts) async{
+    List<String> order = loadouts.map((l)=>l.assignedId).toList().reversed.toList();
+    var storage = StorageService.membership();
+    await storage.setJson(StorageKeys.loadoutsOrder, order);
+  }
+
+  Future<List<String>> _getLoadoutsOrder() async{
+    var storage = StorageService.membership();
+    var order = List<String>.from((await storage.getJson(StorageKeys.loadoutsOrder) ?? []));
+    return order ?? <String>[];
   }
 
   Future<List<TrackedObjective>> getTrackedObjectives() async {

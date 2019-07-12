@@ -44,7 +44,8 @@ class QuestInfoWidgetState extends DestinyItemState<QuestInfoWidget> {
   }
 
   loadDefinitions() async {
-    itemObjectives = widget.profile.getItemObjectives(item?.itemInstanceId, characterId, item?.itemHash);
+    itemObjectives = widget.profile
+        .getItemObjectives(item?.itemInstanceId, characterId, item?.itemHash);
     questlineDefinition = await widget.manifest
         .getDefinition<DestinyInventoryItemDefinition>(
             definition.objectives.questlineItemHash);
@@ -198,7 +199,7 @@ class QuestInfoWidgetState extends DestinyItemState<QuestInfoWidget> {
         child: Column(
           children: <Widget>[
             HeaderWidget(
-              alignment: Alignment.centerLeft,
+                alignment: Alignment.centerLeft,
                 child: TranslatedTextWidget("From the questline",
                     uppercase: true,
                     style: TextStyle(fontWeight: FontWeight.bold))),

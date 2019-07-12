@@ -165,11 +165,6 @@ class InventoryService {
     DestinyCharacterComponent character =
         characterId != null ? profile.getCharacter(characterId) : null;
 
-    Set<int> affectedBucketHashes = defs.values
-        .map((d) => d.inventory.bucketTypeHash)
-        .where((hash) => hash != InventoryBucket.subclass)
-        .toSet();
-
     List<DestinyItemComponent> itemsToEquip = items.where((item) {
       DestinyInventoryItemDefinition def = defs[item.itemHash];
       if (!equippedIds.contains(item.itemInstanceId)) return false;

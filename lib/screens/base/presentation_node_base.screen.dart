@@ -117,9 +117,9 @@ class PresentationNodeBaseScreenState<T extends PresentationNodeBaseScreen>
 
       case CollectionListItemType.collectible:
         if (MediaQueryHelper(context).tabletOrBigger) {
-          return StaggeredTile.extent(10, 92);
+          return StaggeredTile.extent(10, 96);
         }
-        return StaggeredTile.extent(30, 92);
+        return StaggeredTile.extent(30, 96);
 
       case CollectionListItemType.record:
         if (MediaQueryHelper(context).tabletOrBigger) {

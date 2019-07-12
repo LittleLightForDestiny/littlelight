@@ -20,6 +20,7 @@ class ItemCollectibleInfoWidget extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(8),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           HeaderWidget(
               child: Container(

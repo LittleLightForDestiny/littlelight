@@ -73,6 +73,7 @@ class SideMenuWidgetState extends State<SideMenuWidget> {
     var altMembershipCount = 0;
     if (memberships != null) {
       for (var account in memberships) {
+        if(account.destinyMemberships == null) continue;
         for (var membership in account.destinyMemberships) {
           if (currentMembership != membership.membershipId) {
             altMembershipCount++;

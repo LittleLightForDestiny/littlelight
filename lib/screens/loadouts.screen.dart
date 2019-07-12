@@ -1,10 +1,16 @@
+import 'dart:math';
+
+import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
+import 'package:drag_list/drag_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/screens/edit_loadout.screen.dart';
 import 'package:little_light/services/littlelight/littlelight.service.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/media_query_helper.dart';
+import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
 import 'package:little_light/widgets/loadouts/loadout_list_item.widget.dart';
@@ -19,20 +25,33 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
   bool reordering = false;
   bool searchOpen = false;
   List<Loadout> loadouts;
+  List<Loadout> filteredLoadouts;
+  TextEditingController _searchFieldController = new TextEditingController();
 
   @override
   void initState() {
     super.initState();
+    _searchFieldController.addListener(() {
+      filteredLoadouts = filterLoadouts();
+      setState(() {});
+    });
     loadLoadouts();
+  }
+
+  List<Loadout> filterLoadouts(){
+    var text = _searchFieldController.text.toLowerCase();
+    return loadouts.where((l){
+        if(text.length <=3){
+          return l?.name?.toLowerCase()?.startsWith(text);
+        }
+        return l?.name?.toLowerCase()?.contains(text);
+      }).toList();
   }
 
   void loadLoadouts() async {
     LittleLightService service = LittleLightService();
     loadouts = await service.getLoadouts();
-    loadouts.sort((a, b) {
-      var result = a.name.toLowerCase().compareTo(b.name.toLowerCase());
-      return result;
-    });
+    filteredLoadouts = loadouts;
     setState(() {});
   }
 
@@ -40,25 +59,15 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
   Widget build(BuildContext context) {
     return Stack(children: [
       Scaffold(
-        appBar: buildAppBar(),
-        body: buildBody(context),
+        appBar: buildAppBar(context),
+        body: reordering ? buildReorderingBody(context) : buildBody(context),
         bottomNavigationBar: buildFooter(context),
       ),
       InventoryNotificationWidget(key: Key("notification_widget"))
     ]);
   }
 
-  Widget buildAppBar() {
-    if (reordering) {
-      return TranslatedTextWidget("Loadouts");
-    }
-    if (searchOpen) {
-      TranslatedTextWidget("Add to Loadout");
-      TranslatedTextWidget("Equip only");
-      TranslatedTextWidget("Add as equipped");
-      TranslatedTextWidget("Random Loadout");
-      TranslatedTextWidget("Free slots");
-    }
+  Widget buildAppBar(BuildContext context) {
     return AppBar(
         leading: IconButton(
           icon: Icon(Icons.menu),
@@ -67,13 +76,45 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
           },
         ),
         actions: <Widget>[
-          IconButton(
-              icon: Icon(Icons.add_circle_outline),
-              onPressed: () async {
-                createNew();
-              })
+          buildReorderButton(context),
+          buildSearchButton(context)
         ],
-        title: TranslatedTextWidget("Loadouts"));
+        title: buildTitle(context));
+  }
+
+  Widget buildTitle(BuildContext context){
+    if (searchOpen) {
+      return TextField(
+        autofocus: true,
+        controller: _searchFieldController,
+      );
+    }
+    return reordering  ? TranslatedTextWidget("Reordering Loadouts") : TranslatedTextWidget("Loadouts");
+  }
+
+  Widget buildSearchButton(BuildContext context) {
+    if(reordering) return Container();
+    return IconButton(
+        icon: searchOpen ? Icon(FontAwesomeIcons.times) : Icon(FontAwesomeIcons.search),
+        onPressed: () async {
+          searchOpen = !searchOpen;
+          if(!searchOpen){
+            _searchFieldController.text = "";
+          }
+          setState(() {});
+        });
+  }
+
+  Widget buildReorderButton(BuildContext context) {
+    if(searchOpen) return Container();
+    return IconButton(
+        icon: reordering ? Icon(FontAwesomeIcons.check) : Transform.rotate(
+          angle: pi/2,
+          child:Icon(FontAwesomeIcons.exchangeAlt)),
+        onPressed: () async {
+          reordering = !reordering;
+          setState(() {});
+        });
   }
 
   void createNew() async {
@@ -110,34 +151,73 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
         ));
   }
 
+  Widget buildReorderingBody(BuildContext context) {
+    return DragList<Loadout>(
+        items: loadouts,
+        itemExtent: 56,
+        padding: EdgeInsets.all(8),
+        handleBuilder: (context) => buildHandle(context),
+        onItemReorder: (oldIndex, newIndex) {
+          var removed = loadouts.removeAt(oldIndex);
+          loadouts.insert(newIndex, removed);
+          LittleLightService().saveLoadoutsOrder(loadouts);
+        },
+        builder: (context, parameter, handle) =>
+            buildSortItem(context, parameter, handle));
+  }
+
+  Widget buildHandle(BuildContext context) {
+    return GestureDetector(
+        onVerticalDragStart: (_) {},
+        onVerticalDragDown: (_) {},
+        child: AspectRatio(
+            aspectRatio: 1,
+            child:
+                Container(color: Colors.transparent, child: Icon(Icons.menu))));
+  }
+
+  Widget buildSortItem(BuildContext context, Loadout loadout, Widget handle) {
+    return Container(
+        padding: EdgeInsets.symmetric(vertical: 4),
+        color: Colors.transparent,
+        child: Stack(
+          children: <Widget>[
+            loadout.emblemHash != null
+                ? Positioned.fill(
+                    child: ManifestImageWidget<DestinyInventoryItemDefinition>(
+                    loadout.emblemHash,
+                    urlExtractor: (def) => def.secondarySpecial,
+                    fit: BoxFit.cover,
+                  ))
+                : Container(),
+            Row(
+              children: <Widget>[
+                handle,
+                Expanded(
+                  child: Text(
+                    loadout?.name ?? "",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                )
+              ],
+            )
+          ],
+        ));
+  }
+
   Widget buildBody(BuildContext context) {
     if (loadouts == null) {
       return Container();
     }
 
     if (loadouts.length == 0) {
-      return Container(
-          padding: EdgeInsets.all(16),
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                TranslatedTextWidget(
-                  "You have no loadouts yet. Create your first one.",
-                  textAlign: TextAlign.center,
-                ),
-                Container(height: 16),
-                RaisedButton(
-                  child: TranslatedTextWidget("Create Loadout"),
-                  onPressed: createNew,
-                )
-              ]));
+      return buildNoLoadoutsBody(context);
     }
 
     return StaggeredGridView.countBuilder(
       padding: EdgeInsets.all(4),
       crossAxisCount: 30,
-      itemCount: loadouts.length,
+      itemCount: filteredLoadouts.length,
       itemBuilder: (BuildContext context, int index) => getItem(context, index),
       staggeredTileBuilder: (int index) => getTileBuilder(index),
       mainAxisSpacing: 2,
@@ -146,13 +226,32 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
     );
   }
 
+  Widget buildNoLoadoutsBody(BuildContext context) {
+    return Container(
+        padding: EdgeInsets.all(16),
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TranslatedTextWidget(
+                "You have no loadouts yet. Create your first one.",
+                textAlign: TextAlign.center,
+              ),
+              Container(height: 16),
+              RaisedButton(
+                child: TranslatedTextWidget("Create Loadout"),
+                onPressed: createNew,
+              )
+            ]));
+  }
+
   StaggeredTile getTileBuilder(int index) {
     bool isTablet = MediaQueryHelper(context).tabletOrBigger;
     return StaggeredTile.fit(isTablet ? 15 : 30);
   }
 
   Widget getItem(BuildContext context, int index) {
-    Loadout loadout = loadouts[index];
+    Loadout loadout = filteredLoadouts[index];
     return LoadoutListItemWidget(
       loadout,
       key: Key("loadout_${loadout.assignedId}_$index"),

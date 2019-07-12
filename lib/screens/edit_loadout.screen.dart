@@ -1,5 +1,4 @@
 import 'package:bungie_api/enums/destiny_item_type_enum.dart';
-import 'package:bungie_api/enums/tier_type_enum.dart';
 import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
@@ -20,35 +19,8 @@ import 'package:little_light/widgets/loadouts/loadout_slot.widget.dart';
 class EditLoadoutScreen extends StatefulWidget {
   final Loadout loadout;
   final bool forceCreate;
-  EditLoadoutScreen({Key key, this.loadout, this.forceCreate = false}) : super(key: key);
-
-  final List<int> bucketOrder = [
-    InventoryBucket.subclass,
-    InventoryBucket.kineticWeapons,
-    InventoryBucket.energyWeapons,
-    InventoryBucket.powerWeapons,
-    InventoryBucket.helmet,
-    InventoryBucket.gauntlets,
-    InventoryBucket.chestArmor,
-    InventoryBucket.legArmor,
-    InventoryBucket.classArmor,
-    InventoryBucket.ghost,
-    InventoryBucket.vehicle,
-    InventoryBucket.ships,
-  ];
-
-  final List<int> weaponBuckets = [
-    InventoryBucket.kineticWeapons,
-    InventoryBucket.energyWeapons,
-    InventoryBucket.powerWeapons,
-  ];
-
-  final List<int> armorBuckets = [
-    InventoryBucket.helmet,
-    InventoryBucket.gauntlets,
-    InventoryBucket.chestArmor,
-    InventoryBucket.legArmor,
-  ];
+  EditLoadoutScreen({Key key, this.loadout, this.forceCreate = false})
+      : super(key: key);
 
   final ManifestService manifest = new ManifestService();
 
@@ -102,7 +74,7 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> {
 
   buildItemIndex() async {
     bucketDefinitions = await widget.manifest
-        .getDefinitions<DestinyInventoryBucketDefinition>(widget.bucketOrder);
+        .getDefinitions<DestinyInventoryBucketDefinition>(loadoutBucketHashes);
     _itemIndex = await InventoryUtils.buildLoadoutItemIndex(_loadout);
     if (mounted) {
       setState(() {});
@@ -125,10 +97,12 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> {
       backgroundColor: emblemColor,
       appBar: AppBar(
           title: TranslatedTextWidget(
-              (widget.loadout == null || widget.forceCreate) ? "Create Loadout" : "Edit Loadout"),
+              (widget.loadout == null || widget.forceCreate)
+                  ? "Create Loadout"
+                  : "Edit Loadout"),
           flexibleSpace: buildAppBarBackground(context)),
       body: ListView.builder(
-          itemCount: _itemIndex == null ? 2 : widget.bucketOrder.length + 2,
+          itemCount: _itemIndex == null ? 2 : loadoutBucketHashes.length + 2,
           padding: EdgeInsets.all(8),
           itemBuilder: itemBuilder),
       bottomNavigationBar: buildFooter(context),
@@ -142,7 +116,7 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> {
       case 1:
         return buildSelectBackgroundButton(context);
     }
-    int bucketHash = widget.bucketOrder[index - 2];
+    int bucketHash = loadoutBucketHashes[index - 2];
     DestinyInventoryBucketDefinition definition = bucketDefinitions[bucketHash];
     if (bucketHash != null) {
       return LoadoutSlotWidget(
@@ -173,7 +147,8 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> {
             Positioned.fill(child: buildAppBarBackground(context)),
             Container(
               constraints: BoxConstraints(minWidth: double.infinity),
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4).copyWith(bottom: 4 + paddingBottom),
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4)
+                  .copyWith(bottom: 4 + paddingBottom),
               child: RaisedButton(
                 child: TranslatedTextWidget("Save Loadout"),
                 onPressed: () {
@@ -196,70 +171,45 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> {
       context,
       MaterialPageRoute(
         builder: (context) => SelectLoadoutItemScreen(
-              bucketDefinition: bucketDef,
-              emblemDefinition: emblemDefinition,
-              classType: classType,
-              idsToAvoid:
-                  (_itemIndex.loadout.equipped + _itemIndex.loadout.unequipped)
-                      .map((i) => i.itemInstanceId),
-            ),
+          bucketDefinition: bucketDef,
+          emblemDefinition: emblemDefinition,
+          classType: classType,
+          idsToAvoid:
+              (_itemIndex.loadout.equipped + _itemIndex.loadout.unequipped)
+                  .map((i) => i.itemInstanceId),
+        ),
       ),
     );
     if (item == null) {
       return;
     }
-    var def = await ManifestService()
-        .getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
-
-    if (equipped) {
-      if (def.inventory.tierType == TierType.Exotic) {
-        await removeBlockingExotics(context, def);
-      }
-      _itemIndex.addEquippedItem(item, def);
-    } else {
-      _itemIndex.addUnequippedItem(item, def);
+    int removedItem =
+        await _loadout.addItem(item.itemHash, item.itemInstanceId, equipped);
+    if(removedItem != null){
+      showRemovingExoticMessage(context, removedItem);
     }
+    _itemIndex = LoadoutItemIndex(_loadout);
+    await _itemIndex.build();
     changed = true;
     setState(() {});
   }
 
-  Future<DestinyInventoryItemDefinition> removeBlockingExotics(
-      BuildContext context, DestinyInventoryItemDefinition definition) async {
+  showRemovingExoticMessage(BuildContext context, int hash) async {
+    DestinyInventoryItemDefinition definition = await widget.manifest.getDefinition<DestinyInventoryItemDefinition>(hash);
     if (definition.itemType == DestinyItemType.Weapon) {
-      for (var bucket in widget.weaponBuckets) {
-        DestinyItemComponent item = _itemIndex.generic[bucket];
-        if (item == null) continue;
-        DestinyInventoryItemDefinition def =
-            await widget.manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
-        if (def.inventory.tierType != TierType.Exotic) continue;
-        _itemIndex.removeEquippedItem(item, def);
-        _showSnackBar(
-            context,
-            TranslatedTextWidget(
-                "You can only equip one exotic weapon at a time. Removing {itemName}.",
-                replace: {"itemName": def.displayProperties.name}));
-        return def;
-      }
+      _showSnackBar(
+          context,
+          TranslatedTextWidget(
+              "You can only equip one exotic weapon at a time. Removing {itemName}.",
+              replace: {"itemName": definition.displayProperties.name}));
     }
     if (definition.itemType == DestinyItemType.Armor) {
-      for (var bucket in widget.armorBuckets) {
-        DestinyItemComponent item =
-            _itemIndex.classSpecific[bucket][definition.classType];
-        if (item == null) continue;
-        DestinyInventoryItemDefinition def =
-            await widget.manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
-        if (def.inventory.tierType != TierType.Exotic) continue;
-        _itemIndex.removeEquippedItem(item, def);
-        _showSnackBar(
-            context,
-            TranslatedTextWidget(
-                "You can only equip one exotic armor piece at a time. Removing {itemName}.",
-                replace: {"itemName": def.displayProperties.name}));
-        return def;
-      }
+      _showSnackBar(
+          context,
+          TranslatedTextWidget(
+              "You can only equip one exotic armor piece at a time. Removing {itemName}.",
+              replace: {"itemName": definition.displayProperties.name}));
     }
-
-    return null;
   }
 
   void _showSnackBar(BuildContext context, Widget content) {
@@ -312,7 +262,7 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> {
 
   buildAppBarBackground(BuildContext context) {
     if (emblemDefinition == null) return Container();
-    if(emblemDefinition.secondarySpecial.length == 0) return Container();
+    if (emblemDefinition.secondarySpecial.length == 0) return Container();
     return Container(
         constraints: BoxConstraints.expand(),
         child: QueuedNetworkImage(
