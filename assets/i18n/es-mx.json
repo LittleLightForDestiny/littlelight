@@ -20,10 +20,10 @@
   "Vault Access": "Acceso al depósito",
   "Insurrection Prime": "Insurrección Primaria",
   "#CROWN OF SORROWS TRANSLATION INSTRUCTIONS#": "Below are the names of the phases of the CROWN OF SORROWS raid, some of them are boss names and doesn't need translation",
-  "#####Lamps": "missing_translation",
-  "#####Crystals": "missing_translation",
-  "#####Deception": "missing_translation",
-  "#####Gahlran": "missing_translation",
+  "Lamps": "Antorchas",
+  "Crystals": "Cristales",
+  "Deception": "Engaño",
+  "Gahlran": "Gahlran",
   "OK": "Vale",
   "Later": "Más tarde",
   "Level": "Nivel",
@@ -199,7 +199,7 @@
   "Free Slots": "Espacios libres",
   "More recipes on": "Más combinaciones en",
   "Moving Away": "Retirando al depósito",
-  "#####As Equipped": "missing_translation",
-  "#####Reordering Loadouts": "missing_translation",
-  "#####Modifiers": "missing_translation"
+  "As Equipped": "Cómo equipado",
+  "Reordering Loadouts": "Reordenando conjuntos",
+  "Modifiers": "Modificadores"
 }

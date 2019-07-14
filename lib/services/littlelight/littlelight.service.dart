@@ -1,11 +1,15 @@
 import 'dart:convert';
 
 import 'package:bungie_api/helpers/bungie_net_token.dart';
+import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
+import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/user_info_card.dart';
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/models/tracked_objective.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:http/http.dart' as http;
+import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/storage/storage.service.dart';
 import 'package:uuid/uuid.dart';
 
@@ -150,14 +154,86 @@ class LittleLightService {
 
   Future<List<String>> _getLoadoutsOrder() async{
     var storage = StorageService.membership();
-    var order = List<String>.from((await storage.getJson(StorageKeys.loadoutsOrder) ?? []));
+    var order = List<String>.from(await storage.getJson(StorageKeys.loadoutsOrder));
     return order ?? <String>[];
   }
 
   Future<List<TrackedObjective>> getTrackedObjectives() async {
-    if (_trackedObjectives != null) return _trackedObjectives;
-    await _loadTrackedObjectivesFromCache();
+    if (_trackedObjectives == null){
+      await _loadTrackedObjectivesFromCache();
+    }
+    var dirty = false;
+    var itemObjectives =
+        _trackedObjectives.where((o) => o.type == TrackedObjectiveType.Item);
+    var plugObjectives =
+        _trackedObjectives.where((o) => o.type == TrackedObjectiveType.Plug);
+    for (var o in itemObjectives) {
+      DestinyItemComponent item = await _findItem(o);
+      if (item == null){
+        _trackedObjectives.remove(o);
+        dirty = true;
+      }else if(item?.itemHash != o.hash || item?.itemInstanceId != o.instanceId){
+        o.hash = item.itemHash;
+        o.instanceId = item.itemInstanceId;
+        dirty = true;
+      }
+    }
+    for (var o in plugObjectives) {
+      DestinyItemComponent item = await _findPlugItem(o);
+      if (item == null){
+        _trackedObjectives.remove(o);
+        dirty = true;
+      }
+    }
+    if(dirty){
+      _saveTrackedObjectives();
+    }
     return _trackedObjectives;
+  }
+
+  Future<DestinyItemComponent> _findItem(TrackedObjective objective) async {
+    var profile = ProfileService();
+    var manifest = ManifestService();
+    var item = profile
+        .getCharacterInventory(objective.characterId)
+        .firstWhere((i) => i.itemInstanceId == objective.instanceId,
+            orElse: () => null);
+    if (item != null) return item;
+    var items = profile.getItemsByInstanceId([objective.instanceId]);
+    if (items.length > 0) return items.first;
+    var def = await manifest
+        .getDefinition<DestinyInventoryItemDefinition>(objective.hash);
+    if (def?.objectives?.questlineItemHash != null) {
+      var questline = await manifest
+          .getDefinition<DestinyInventoryItemDefinition>(
+              def.objectives.questlineItemHash);
+      var questStepHashes =
+          questline?.setData?.itemList?.map((i) => i.itemHash)?.toList() ?? [];
+      var item = profile
+          .getCharacterInventory(objective.characterId)
+          .firstWhere((i) => questStepHashes.contains(i.itemHash),
+              orElse: () => null);
+      if (item != null) return item;
+    }
+    return null;
+  }
+
+  Future<DestinyItemComponent> _findPlugItem(TrackedObjective objective) async {
+    var profile = ProfileService();
+    var items = profile.getAllItems();
+    var item = items.firstWhere((i) => i.itemHash == objective.parentHash,
+        orElse: () => null);
+    if (item == null) return null;
+    var sockets = profile.getItemSockets(item.itemInstanceId);
+    var plug = sockets.firstWhere(
+        (p) =>
+            p.plugHash == objective.hash ||
+            (p?.reusablePlugHashes?.contains(objective.hash) ?? false),
+        orElse: () => null);
+    if (plug?.plugObjectives == null) {
+      return null;
+    }
+    return item;
   }
 
   Future<List<TrackedObjective>> _loadTrackedObjectivesFromCache() async {

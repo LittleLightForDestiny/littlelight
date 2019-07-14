@@ -126,7 +126,7 @@ class _AccountsScreenState extends State<AccountsScreen> {
                 child: QueuedNetworkImage(
                   fit: BoxFit.cover,
                   imageUrl: BungieApiService.url(
-                      membership.bungieNetUser?.profilePicturePath),
+                      membership.bungieNetUser.profilePicturePath),
                 )),
             !isCurrent
                 ? Positioned(
@@ -157,12 +157,10 @@ class _AccountsScreenState extends State<AccountsScreen> {
   Widget buildDestinyMemberships(
       BuildContext context, UserMembershipData membership) {
     List<Widget> children = membership.destinyMemberships
-        ?.map(
-            (m) => buildMembershipButton(context, m, membership.bungieNetUser))
-        ?.expand((w) => [w, Container(width: 4)])
-        ?.toList();
-    children?.removeLast();
-    if (children == null) return Container();
+        .map((m) => buildMembershipButton(context, m, membership.bungieNetUser))
+        .expand((w) => [w, Container(width: 4)])
+        .toList();
+    children.removeLast();
     return Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -212,15 +210,12 @@ class _AccountsScreenState extends State<AccountsScreen> {
             )));
   }
 
-  void deleteAccount(UserMembershipData membership) async {
-    if (membership?.destinyMemberships != null) {
-      for (var m in membership.destinyMemberships) {
-        await StorageService.membership(m.membershipId).purge();
-      }
+  void deleteAccount(UserMembershipData membership) async{
+    for(var m in membership.destinyMemberships){
+      await StorageService.membership(m.membershipId).purge();
     }
-    
-    await StorageService.account(membership?.bungieNetUser?.membershipId).purge();  
-    await StorageService.removeAccount(membership?.bungieNetUser?.membershipId);
+    await StorageService.account(membership.bungieNetUser.membershipId).purge();
+    await StorageService.removeAccount(membership.bungieNetUser.membershipId);
     loadAccounts();
   }
 }
