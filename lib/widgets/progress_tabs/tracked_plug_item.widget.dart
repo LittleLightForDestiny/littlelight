@@ -11,11 +11,11 @@ import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/progress_tabs/tracked_pursuit_item.widget.dart';
 
 class TrackedPlugItemWidget extends TrackedPursuitItemWidget {
-  final int parentHash;
-  TrackedPlugItemWidget({Key key, hash, this.parentHash})
+  final int plugHash;
+  TrackedPlugItemWidget({Key key, DestinyItemComponent item, this.plugHash})
       : super(
           key: key,
-          hash: hash,
+          item: item,
         );
 
   TrackedPlugItemWidgetState createState() => TrackedPlugItemWidgetState();
@@ -26,32 +26,40 @@ class TrackedPlugItemWidgetState
   DestinyInventoryItemDefinition plugDefinition;
 
   @override
-  String get itemInstanceId => null;
-
-  @override
-  int get hash => widget.hash;
-
-  int parentHash;
-
-  @override
-  DestinyItemComponent get item {
-    return null;
-  }
-
-  @override
   dispose() {
     super.dispose();
   }
 
   @override
+  void initState() {
+    super.initState();
+    loadDefinitions();
+    updateProgress();
+  }
+
+  @override
   Future<void> loadDefinitions() async {
-    plugDefinition = await widget.manifest
-        .getDefinition<DestinyInventoryItemDefinition>(widget.hash);
     definition = await widget.manifest
-        .getDefinition<DestinyInventoryItemDefinition>(widget.parentHash);
+        .getDefinition<DestinyInventoryItemDefinition>(widget.item.itemHash);
+    plugDefinition = await widget.manifest.getDefinition<DestinyInventoryItemDefinition>(widget.plugHash);
     objectiveDefinitions = await widget.manifest
         .getDefinitions<DestinyObjectiveDefinition>(
             itemObjectives?.map((o) => o.objectiveHash));
+    setState(() {});
+  }
+
+  updateProgress() {
+    var sockets = widget.profile.getItemSockets(widget.item.itemInstanceId);
+    var plug = sockets.firstWhere((socket)=>socket.plugHash == widget.plugHash || (socket?.reusablePlugHashes?.contains(widget.plugHash) ?? false), orElse: ()=>null);
+    if(plug == null){
+      setState((){});
+      return;
+    }
+    if(plug?.plugHash == widget.plugHash){
+      itemObjectives = plug.plugObjectives;
+    }else if(plug.reusablePlugHashes.contains(widget.plugHash)){
+      itemObjectives = plug.reusablePlugs.firstWhere((p)=>p.plugItemHash == widget.plugHash, orElse:()=>null).plugObjectives;
+    }
     setState(() {});
   }
 
@@ -90,26 +98,9 @@ class TrackedPlugItemWidgetState
     ]);
   }
 
-  findItem() {}
-
-  updateProgress() {
-    var sockets = widget.profile.getAllSockets();
-    DestinyItemPlug plugItem;
-    sockets.values.firstWhere((s) {
-      s.sockets.firstWhere((c) {
-        plugItem = c?.reusablePlugs
-            ?.firstWhere((c) => c.plugItemHash == hash, orElse: () => null);
-        return plugItem != null;
-      }, orElse: () => null);
-      return plugItem != null;
-    }, orElse: () => null);
-    itemObjectives = plugItem?.plugObjectives;
-    setState(() {});
-  }
-
   Widget buildDescription(BuildContext context) {
     return Text(
-      plugDefinition.displayProperties.description,
+      plugDefinition?.displayProperties?.description ?? "",
       style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
     );
   }
