@@ -154,7 +154,7 @@ class LittleLightService {
 
   Future<List<String>> _getLoadoutsOrder() async{
     var storage = StorageService.membership();
-    var order = List<String>.from(await storage.getJson(StorageKeys.loadoutsOrder));
+    var order = List<String>.from(await storage.getJson(StorageKeys.loadoutsOrder) ?? []);
     return order ?? <String>[];
   }
 
