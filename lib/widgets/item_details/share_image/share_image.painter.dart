@@ -114,7 +114,7 @@ class ShareImageWidget extends StatelessWidget {
         }
         var plugDef = plugItemDefinitions[socket.plugHash];
         if (plugDef == null) continue;
-        plugDef.investmentStats.forEach((stat) {
+        plugDef?.investmentStats?.forEach((stat) {
           if (!statValues.containsKey(stat.statTypeHash)) {
             statValues[stat.statTypeHash] = 0;
           }
@@ -137,7 +137,7 @@ class ShareImageWidget extends StatelessWidget {
     }
     statHashes.addAll(definition.investmentStats.map((s) => s.statTypeHash));
     for (var plugDef in plugItemDefinitions.values) {
-      statHashes.addAll(plugDef.investmentStats.map((s) => s.statTypeHash));
+      statHashes.addAll(plugDef?.investmentStats?.map((s) => s.statTypeHash) ?? []);
     }
 
     var statDefinitions =
@@ -386,7 +386,7 @@ class ShareImageWidget extends StatelessWidget {
     var def = plugItemDefinitions[plugHash];
     var plugIcon =
         AdvancedNetworkImage(BungieApiService.url(def.displayProperties.icon));
-    if (def.plug.plugCategoryIdentifier.contains('intrinsic')) {
+    if (def?.plug?.plugCategoryIdentifier?.contains('intrinsic') ?? false) {
       return Container(
         width: 72,
         height: 72,
