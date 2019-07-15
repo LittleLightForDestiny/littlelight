@@ -17,8 +17,9 @@ import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/icon_fonts/destiny_icons_icons.dart';
+import 'package:little_light/widgets/progress_tabs/milestone_item.widget.dart';
 
-class MilestoneRaidItemWidget extends StatefulWidget {
+class MilestoneRaidItemWidget extends MilestoneItemWidget {
   final String characterId;
   final ProfileService profile = ProfileService();
   final ManifestService manifest = ManifestService();
@@ -33,101 +34,9 @@ class MilestoneRaidItemWidget extends StatefulWidget {
       _MilestoneRaidItemWidgetState();
 }
 
-class _MilestoneRaidItemWidgetState extends State<MilestoneRaidItemWidget>
-    with AutomaticKeepAliveClientMixin {
-  DestinyMilestoneDefinition definition;
-  StreamSubscription<NotificationEvent> subscription;
-  int get hash => widget.milestone.milestoneHash;
-  DestinyMilestone milestone;
-  bool fullyLoaded = false;
+class _MilestoneRaidItemWidgetState extends MilestoneItemWidgetState<MilestoneRaidItemWidget>{
 
-  @override
-  void initState() {
-    milestone = widget.milestone;
-    super.initState();
-    loadDefinitions();
-    subscription = widget.broadcaster.listen((event) {
-      if (event.type == NotificationType.receivedUpdate && mounted) {
-        milestone = widget.profile.getCharacterProgression(widget.characterId).milestones["$hash"];
-        setState(() {});
-      }
-    });
-  }
-
-  @override
-  dispose() {
-    subscription.cancel();
-    super.dispose();
-  }
-
-  Future<void> loadDefinitions() async {
-    definition = await widget.manifest
-        .getDefinition<DestinyMilestoneDefinition>(
-            milestone.milestoneHash);
-    if (mounted) {
-      setState(() {});
-      fullyLoaded = true;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    super.build(context);
-    if (definition == null) {
-      return Container(height: 200, color: Colors.blueGrey.shade800);
-    }
-
-    return Container(
-        decoration: BoxDecoration(
-          color: Colors.blueGrey.shade900,
-        ),
-        
-        margin: EdgeInsets.all(8).copyWith(top: 0),
-        child: Column(children: <Widget>[
-          buildHeader(context),
-          buildActivities(context)
-        ]));
-  }
-
-  buildHeader(BuildContext context) {
-    return Stack(children: <Widget>[
-      Positioned.fill(
-        child: QueuedNetworkImage(
-            fit: BoxFit.cover,
-            imageUrl: BungieApiService.url(definition.image)),
-      ),
-      Positioned.fill(
-        child: Container(
-            decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    begin: Alignment.bottomCenter,
-                    end: Alignment.topCenter,
-                    colors: [
-              Colors.black.withOpacity(1),
-              Colors.black.withOpacity(.3)
-            ]))),
-      ),
-      Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        Container(
-          alignment: Alignment.centerLeft,
-          padding: EdgeInsets.all(8),
-          child: Text(
-            definition.displayProperties.name.toUpperCase(),
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ),
-        Container(
-          padding: EdgeInsets.all(8),
-          child: Text(
-            definition.displayProperties.description,
-            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
-          ),
-        )
-      ]),
-    ]);
-  }
-
-  buildActivities(BuildContext context) {
+  buildMilestoneActivities(BuildContext context) {
     var activities = milestone.activities
         .where((a) => a.phases != null && a.phases.length > 0);
 
@@ -167,7 +76,7 @@ class _MilestoneRaidItemWidgetState extends State<MilestoneRaidItemWidget>
   Widget buildPhases(
       BuildContext context, DestinyMilestoneChallengeActivity activity) {
     return Row(
-      children: activity.phases.map((p) => buildPhase(context, p)).toList(),
+      children: activity?.phases?.map((p) => buildPhase(context, p))?.toList() ?? [],
     );
   }
 
@@ -283,7 +192,4 @@ class _MilestoneRaidItemWidgetState extends State<MilestoneRaidItemWidget>
     return Icon(phase.complete ? Icons.check_circle : Icons.remove_circle,
         color: color);
   }
-
-  @override
-  bool get wantKeepAlive => fullyLoaded ?? false;
 }

@@ -95,7 +95,7 @@ class ItemIconWidget extends DestinyItemWidget {
     return Container();
   }
 
-  Image getMasterworkOutline() {
+  Widget getMasterworkOutline() {
     if (definition.inventory.tierType == TierType.Exotic) {
       return Image.asset("assets/imgs/masterwork-outline-exotic.png", fit: BoxFit.cover,);
     }

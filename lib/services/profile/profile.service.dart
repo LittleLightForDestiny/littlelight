@@ -442,6 +442,7 @@ class ProfileService {
   }
 
   List<DestinyItemComponent> getItemsByInstanceId(List<String> ids) {
+    ids = ids.where((id)=>id != null).toList();
     List<DestinyItemComponent> items = [];
     List<DestinyItemComponent> profileInventory =
         _profile.profileInventory.data.items;

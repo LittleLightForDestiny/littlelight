@@ -17,6 +17,8 @@ import 'package:little_light/widgets/common/expiry_date.widget.dart';
 import 'package:little_light/widgets/common/objective.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
+typedef void OnPursuitTap(DestinyItemComponent item, DestinyInventoryItemDefinition definition, DestinyItemInstanceComponent instanceInfo, String characterId);
+
 class PursuitItemWidget extends StatefulWidget {
   final String characterId;
   final ProfileService profile = ProfileService();
@@ -24,9 +26,10 @@ class PursuitItemWidget extends StatefulWidget {
   final NotificationService broadcaster = NotificationService();
   final bool includeCharacterIcon;
   final DestinyItemComponent item;
+  final OnPursuitTap onTap;
 
   PursuitItemWidget(
-      {Key key, this.characterId, this.item, this.includeCharacterIcon = false})
+      {Key key, this.characterId, this.item, this.includeCharacterIcon = false, this.onTap})
       : super(key: key);
 
   PursuitItemWidgetState createState() => PursuitItemWidgetState();
@@ -106,6 +109,15 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
               color: Colors.transparent,
               child: InkWell(
                 onTap: () {
+                  if(widget.onTap != null){
+                    widget.onTap(
+                        item,
+                        definition,
+                        widget.profile.getInstanceInfo(itemInstanceId),
+                        widget.characterId,
+                    );
+                    return;
+                  }
                   Navigator.push(
                     context,
                     MaterialPageRoute(
