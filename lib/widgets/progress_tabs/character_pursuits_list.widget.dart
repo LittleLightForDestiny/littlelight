@@ -94,11 +94,11 @@ class _CharacterPursuitsListWidgetState
 
     pursuits.forEach((p) {
       var def = defs[p.itemHash];
-      if (def.itemCategoryHashes.contains(16)) {
+      if (def?.itemCategoryHashes?.contains(16) ?? false) {
         questSteps.add(p);
         return;
       }
-      if (def.itemCategoryHashes.contains(1784235469) ||
+      if ((def?.itemCategoryHashes?.contains(1784235469) ?? false) ||
           (def?.inventory?.stackUniqueLabel?.contains("bounties") ?? false) ||
           (def?.inventory?.stackUniqueLabel?.contains("story") ?? false)) {
         bounties.add(p);
