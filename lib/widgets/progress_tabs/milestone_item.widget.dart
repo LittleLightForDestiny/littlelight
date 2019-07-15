@@ -32,10 +32,10 @@ class MilestoneItemWidget extends StatefulWidget {
   MilestoneItemWidget({Key key, this.characterId, this.milestone})
       : super(key: key);
 
-  _MilestoneItemWidgetState createState() => _MilestoneItemWidgetState();
+  MilestoneItemWidgetState createState() => MilestoneItemWidgetState();
 }
 
-class _MilestoneItemWidgetState extends State<MilestoneItemWidget>
+class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
     with AutomaticKeepAliveClientMixin {
   DestinyMilestoneDefinition definition;
   StreamSubscription<NotificationEvent> subscription;
@@ -115,15 +115,8 @@ class _MilestoneItemWidgetState extends State<MilestoneItemWidget>
     return Column(children: [
       buildHeader(context),
       buildMilestoneActivities(context),
-      Container(
-        padding: EdgeInsets.symmetric(horizontal: 4),
-        child:Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Expanded(child: buildActivitiesModifiers(context)),
-          Expanded(child: buildRewards(context)),
-        ],
-      )),
+      buildActivitiesModifiers(context),
+      buildRewards(context),
       buildActivitiesObjectives(context),
       buildAvailableQuests(context)
     ]);
@@ -243,14 +236,16 @@ class _MilestoneItemWidgetState extends State<MilestoneItemWidget>
         ));
   }
 
-  Widget buildActivitiesModifiers(BuildContext context) {
+  Widget buildActivitiesModifiers(BuildContext context, [int activityHash]) {
     Set<int> modifierHashes = Set();
     milestone.activities?.forEach((a) {
-      modifierHashes.addAll(a.modifierHashes ?? []);
+      if(activityHash == null || a.activityHash == activityHash){
+        modifierHashes.addAll(a.modifierHashes ?? []);
+      }
     });
     if (modifierHashes.length == 0) return Container();
     return Container(
-        padding: EdgeInsets.all(4).copyWith(bottom: 8),
+        padding: EdgeInsets.all(8).copyWith(top: 0),
         child: Column(
           children: <Widget>[
             HeaderWidget(
@@ -270,7 +265,9 @@ class _MilestoneItemWidgetState extends State<MilestoneItemWidget>
                       m,
                       (def) => Row(
                             children: <Widget>[
-                              Container(width: 4,),
+                              Container(
+                                width: 4,
+                              ),
                               Container(
                                   width: 24,
                                   height: 24,
@@ -330,7 +327,7 @@ class _MilestoneItemWidgetState extends State<MilestoneItemWidget>
     }
 
     return Container(
-        padding: EdgeInsets.all(4).copyWith(bottom: 8),
+        padding: EdgeInsets.all(8).copyWith(top: 0),
         child: Column(
             children: <Widget>[
           HeaderWidget(
@@ -347,7 +344,9 @@ class _MilestoneItemWidgetState extends State<MilestoneItemWidget>
                     DefinitionProviderWidget<DestinyInventoryItemDefinition>(
                         e.key,
                         (def) => Row(children: <Widget>[
-                          Container(width: 4,),
+                              Container(
+                                width: 4,
+                              ),
                               Container(
                                   width: 24,
                                   height: 24,

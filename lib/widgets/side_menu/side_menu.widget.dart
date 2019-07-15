@@ -57,10 +57,10 @@ class SideMenuWidgetState extends State<SideMenuWidget> {
     for (var accountId in accounts) {
       var storage = StorageService.account(accountId);
       var json = await storage.getJson(StorageKeys.membershipData);
-      var membershipData = UserMembershipData.fromJson(json);
+      var membershipData = UserMembershipData.fromJson(json ?? {});
       memberships.add(membershipData);
     }
-    if(!mounted) return;
+    if (!mounted) return;
     setState(() {});
   }
 
@@ -73,11 +73,13 @@ class SideMenuWidgetState extends State<SideMenuWidget> {
     var altMembershipCount = 0;
     if (memberships != null) {
       for (var account in memberships) {
-        for (var membership in account.destinyMemberships) {
-          if (currentMembership != membership.membershipId) {
-            altMembershipCount++;
-            settingsMenuOptions.add(
-                membershipButton(context, account.bungieNetUser, membership));
+        if (account?.destinyMemberships != null) {
+          for (var membership in account.destinyMemberships) {
+            if (currentMembership != membership.membershipId) {
+              altMembershipCount++;
+              settingsMenuOptions.add(
+                  membershipButton(context, account.bungieNetUser, membership));
+            }
           }
         }
       }
@@ -208,7 +210,10 @@ class SideMenuWidgetState extends State<SideMenuWidget> {
                   margin: EdgeInsets.symmetric(horizontal: 8),
                   alignment: Alignment.centerRight,
                   child: Row(mainAxisSize: MainAxisSize.min, children: [
-                    Text(membership.displayName, style: TextStyle(fontWeight: FontWeight.bold),),
+                    Text(
+                      membership.displayName,
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
                     Container(width: 4),
                     Icon(plat.iconData)
                   ]),

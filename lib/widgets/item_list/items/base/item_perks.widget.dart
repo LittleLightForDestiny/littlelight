@@ -106,13 +106,6 @@ class ItemPerksWidgetState extends DestinyItemState<ItemPerksWidget> {
     if((entry.singleInitialItemHash ?? 0) != 0){
       return entry.singleInitialItemHash;
     }
-
-    if(entry.randomizedPlugItems.length > 0 && (entry.randomizedPlugItems[0]?.plugItemHash ?? 0) != 0){
-      return entry.randomizedPlugItems[0]?.plugItemHash;
-    }
-    if(entry.reusablePlugItems.length > 0 && (entry.reusablePlugItems[0]?.plugItemHash ?? 0) != 0) {
-      return entry.reusablePlugItems[0]?.plugItemHash;
-    }
     return null;
   }
 
@@ -124,9 +117,6 @@ class ItemPerksWidgetState extends DestinyItemState<ItemPerksWidget> {
     }
     if((entry.reusablePlugItems?.length ?? 0) != 0){
       return entry.reusablePlugItems[0].plugItemHash;
-    }
-    if((entry.randomizedPlugItems?.length ?? 0) != 0){
-      return entry.randomizedPlugItems[0].plugItemHash;
     }
     return null;
   }

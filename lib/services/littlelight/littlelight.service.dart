@@ -77,7 +77,7 @@ class LittleLightService {
 
   Future<List<Loadout>> _fetchLoadouts() async {
     dynamic json = await _authorizedRequest("loadouts");
-    List<dynamic> list = json['data'];
+    List<dynamic> list = json['data'] ?? [];
     List<Loadout> _fetchedLoadouts =
         list.map((j) => Loadout.fromJson(j)).toList();
     if (_loadouts == null) {
@@ -164,11 +164,11 @@ class LittleLightService {
     }
     var dirty = false;
     var itemObjectives =
-        _trackedObjectives.where((o) => o.type == TrackedObjectiveType.Item);
+        _trackedObjectives.where((o) => o.type == TrackedObjectiveType.Item).toList();
     var plugObjectives =
-        _trackedObjectives.where((o) => o.type == TrackedObjectiveType.Plug);
+        _trackedObjectives.where((o) => o.type == TrackedObjectiveType.Plug).toList();
     for (var o in itemObjectives) {
-      DestinyItemComponent item = await _findItem(o);
+      DestinyItemComponent item = await findObjectiveItem(o);
       if (item == null){
         _trackedObjectives.remove(o);
         dirty = true;
@@ -179,7 +179,7 @@ class LittleLightService {
       }
     }
     for (var o in plugObjectives) {
-      DestinyItemComponent item = await _findPlugItem(o);
+      DestinyItemComponent item = await findObjectivePlugItem(o);
       if (item == null){
         _trackedObjectives.remove(o);
         dirty = true;
@@ -191,13 +191,22 @@ class LittleLightService {
     return _trackedObjectives;
   }
 
-  Future<DestinyItemComponent> _findItem(TrackedObjective objective) async {
+  Future<DestinyItemComponent> findObjectiveItem(TrackedObjective objective) async {
     var profile = ProfileService();
     var manifest = ManifestService();
-    var item = profile
+    DestinyItemComponent item;
+    if(objective.instanceId != null){
+      item = profile
         .getCharacterInventory(objective.characterId)
         .firstWhere((i) => i.itemInstanceId == objective.instanceId,
             orElse: () => null);
+    }else{
+      item = profile
+        .getCharacterInventory(objective.characterId)
+        .firstWhere((i) => i.itemHash == objective.hash,
+            orElse: () => null);
+    }
+    
     if (item != null) return item;
     var items = profile.getItemsByInstanceId([objective.instanceId]);
     if (items.length > 0) return items.first;
@@ -218,7 +227,7 @@ class LittleLightService {
     return null;
   }
 
-  Future<DestinyItemComponent> _findPlugItem(TrackedObjective objective) async {
+  Future<DestinyItemComponent> findObjectivePlugItem(TrackedObjective objective) async {
     var profile = ProfileService();
     var items = profile.getAllItems();
     var item = items.firstWhere((i) => i.itemHash == objective.parentHash,

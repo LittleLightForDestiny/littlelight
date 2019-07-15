@@ -139,9 +139,7 @@ class ItemObjectivesWidgetState extends DestinyItemState<ItemObjectivesWidget> {
     var tracked = objectives.firstWhere(
         (o) =>
             o.hash == widget.definition.hash &&
-            o.type == TrackedObjectiveType.Item &&
-            (o.instanceId == widget.item?.itemInstanceId ??
-                o.instanceId == null) &&
+            (o.instanceId == widget.item?.itemInstanceId) && 
             o.characterId == widget.characterId,
         orElse: () => null);
     isTracking = tracked != null;

@@ -20,6 +20,12 @@ class SubclassIconWidget extends ItemIconWidget {
   }
 
   @override
+  Widget getMasterworkOutline() {
+    return Container();
+  }
+
+
+  @override
   Widget itemIconPlaceholder(BuildContext context) {
     return ShimmerHelper.getDefaultShimmer(context,
         child: Icon(DestinyData.getClassIcon(definition.classType),

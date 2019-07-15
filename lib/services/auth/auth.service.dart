@@ -120,6 +120,14 @@ class AuthService {
     }
   }
 
+  Future<UserMembershipData> updateMembershipData() async{
+    UserMembershipData membershipData =
+        await api.getMemberships();
+    var storage = StorageService.account();
+    await storage.setJson(StorageKeys.membershipData, membershipData);
+    return membershipData;
+  }
+
   Future<UserMembershipData> getMembershipData() async{
     return _membershipData ?? await _getStoredMembershipData();
   }

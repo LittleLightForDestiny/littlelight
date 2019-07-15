@@ -32,16 +32,7 @@ class PrimaryStatWidget extends DestinyItemWidget {
             key: key, characterId: characterId);
 
   int get statValue {
-    var value = instanceInfo?.primaryStat?.value;
-    if(value != null){
-      return value;
-    }
-    try{
-      var primaryStat = definition.stats.primaryBaseStatHash ?? 1935470627;
-      return definition.stats.stats["$primaryStat"].maximum;
-    }catch(e){
-    }
-    return null;
+    return instanceInfo?.primaryStat?.value;
   }
 
   int get damageType {

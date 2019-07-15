@@ -1,16 +1,15 @@
 import 'dart:async';
 
-import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/models/tracked_objective.dart';
+import 'package:little_light/screens/item_detail.screen.dart';
 import 'package:little_light/services/littlelight/littlelight.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/media_query_helper.dart';
-import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/refresh_button.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
@@ -58,60 +57,18 @@ class LoadoutScreenState extends State<ObjectivesScreen> {
     var plugObjectives =
         objectives.where((o) => o.type == TrackedObjectiveType.Plug);
     for (var o in itemObjectives) {
-      DestinyItemComponent item = await findItem(o);
+      DestinyItemComponent item = await service.findObjectiveItem(o);
       if (item != null) {
         items[o] = item;
       }
     }
     for (var o in plugObjectives) {
-      DestinyItemComponent item = await findPlugItem(o);
+      DestinyItemComponent item = await service.findObjectivePlugItem(o);
       if (item != null) {
         items[o] = item;
       }
     }
     setState(() {});
-  }
-
-  Future<DestinyItemComponent> findItem(TrackedObjective objective) async {
-    var item = widget.profile
-        .getCharacterInventory(objective.characterId)
-        .firstWhere((i) => i.itemInstanceId == objective.instanceId,
-            orElse: () => null);
-    if (item != null) return item;
-    var items = widget.profile.getItemsByInstanceId([objective.instanceId]);
-    if (items.length > 0) return items.first;
-    var def = await widget.manifest
-        .getDefinition<DestinyInventoryItemDefinition>(objective.hash);
-    if (def?.objectives?.questlineItemHash != null) {
-      var questline = await widget.manifest
-          .getDefinition<DestinyInventoryItemDefinition>(
-              def.objectives.questlineItemHash);
-      var questStepHashes =
-          questline?.setData?.itemList?.map((i) => i.itemHash)?.toList() ?? [];
-      var item = widget.profile
-          .getCharacterInventory(objective.characterId)
-          .firstWhere((i) => questStepHashes.contains(i.itemHash),
-              orElse: () => null);
-      if (item != null) return item;
-    }
-    return null;
-  }
-
-  Future<DestinyItemComponent> findPlugItem(TrackedObjective objective) async {
-    var items = widget.profile.getAllItems();
-    var item = items.firstWhere((i) => i.itemHash == objective.parentHash,
-        orElse: () => null);
-    if (item == null) return null;
-    var sockets = widget.profile.getItemSockets(item.itemInstanceId);
-    var plug = sockets.firstWhere(
-        (p) =>
-            p.plugHash == objective.hash ||
-            (p?.reusablePlugHashes?.contains(objective.hash) ?? false),
-        orElse: () => null);
-    if (plug?.plugObjectives == null) {
-      return null;
-    }
-    return item;
   }
 
   @override
@@ -182,25 +139,55 @@ class LoadoutScreenState extends State<ObjectivesScreen> {
     switch (objective.type) {
       case TrackedObjectiveType.Triumph:
         return RecordItemWidget(
-          hash: objective.hash,
-          key: Key("loadout_${objective.hash}"),
-        );
+            key: Key(
+                "objective_${objective.hash}_objective_${objective.instanceId}_${objective.characterId}"),
+            hash: objective.hash);
 
       case TrackedObjectiveType.Item:
         if (items[objective] != null) {
           return TrackedPursuitItemWidget(
-            characterId: objective.characterId,
-            item: items[objective],
-          );
+              key: Key(
+                  "objective_${objective.hash}_objective_${objective.instanceId}_${objective.characterId}"),
+              characterId: objective.characterId,
+              item: items[objective],
+              onTap: (item, definition, instanceInfo, characterId) async {
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ItemDetailScreen(
+                          item,
+                          definition,
+                          instanceInfo,
+                          characterId: characterId,
+                        ),
+                  ),
+                );
+                loadObjectives();
+              });
         }
         break;
 
       case TrackedObjectiveType.Plug:
         if (items[objective] != null) {
           return TrackedPlugItemWidget(
-            item: items[objective],
-            plugHash: objective.hash,
-          );
+              key: Key(
+                  "objective_${objective.hash}_objective_${objective.instanceId}_${objective.characterId}"),
+              item: items[objective],
+              plugHash: objective.hash,
+              onTap: (item, definition, instanceInfo, characterId) async {
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ItemDetailScreen(
+                          item,
+                          definition,
+                          instanceInfo,
+                          characterId: characterId,
+                        ),
+                  ),
+                );
+                loadObjectives();
+              });
         }
     }
     return Container();
