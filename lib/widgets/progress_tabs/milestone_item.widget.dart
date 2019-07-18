@@ -76,7 +76,7 @@ class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    if (definition == null) {
+    if (definition == null || milestone == null) {
       return Container(height: 200, color: Colors.blueGrey.shade900);
     }
 
@@ -238,7 +238,7 @@ class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
 
   Widget buildActivitiesModifiers(BuildContext context, [int activityHash]) {
     Set<int> modifierHashes = Set();
-    milestone.activities?.forEach((a) {
+    milestone?.activities?.forEach((a) {
       if(activityHash == null || a.activityHash == activityHash){
         modifierHashes.addAll(a.modifierHashes ?? []);
       }
