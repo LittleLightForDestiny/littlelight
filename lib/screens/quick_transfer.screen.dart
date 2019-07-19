@@ -50,7 +50,7 @@ class QuickTransferScreenState extends State<QuickTransferScreen> {
   buildAppBarTitle(BuildContext context) {
     return TextField(
       controller: _searchFieldController,
-      autofocus: true,
+      // autofocus: true,
     );
   }
 
