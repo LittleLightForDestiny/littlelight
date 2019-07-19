@@ -7,7 +7,7 @@ description: A new Flutter project.
 # Both the version and the builder number may be overridden in flutter
 # build by specifying --build-name and --build-number, respectively.
 # Read more about versioning at semver.org.
-version: 1.6.2+106020
+version: 1.6.20+106020
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
@@ -22,13 +22,13 @@ dependencies:
   archive: 2.0.8
   sqflite: 1.1.3 
   http: ^0.12.0+2 
-  path_provider: ^0.5.0+1
+  path_provider: ^1.1.2
   uni_links: ^0.2.0
   font_awesome_flutter: ^8.4.0
   bungie_api: ^2.3.5
 
   shimmer: 1.0.0
-  flutter_staggered_grid_view: 0.2.7
+  flutter_staggered_grid_view: ^0.3.0
   timeago: ^2.0.14
   sentry: ^2.2.0
   flutter_dotenv: 2.0.1
@@ -38,9 +38,9 @@ dependencies:
   device_info: 0.4.0+1
   flutter_range_slider: ^1.1.0
   uuid: 2.0.0
-  flutter_advanced_networkimage: 0.4.15
+  flutter_advanced_networkimage: 0.5.0
   launch_review: 2.0.0
-  esys_flutter_share: 1.0.1
+  esys_flutter_share: 1.0.2
   drag_list: ^1.0.3
   json_annotation: ^2.0.0
   
