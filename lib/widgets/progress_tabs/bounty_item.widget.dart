@@ -62,7 +62,7 @@ class BountyItemWidgetState<T extends BountyItemWidget>
             Container(
               constraints: BoxConstraints(minHeight: 36),
               padding: EdgeInsets.all(4).copyWith(left: 72),
-              child: item?.expirationDate != null
+              child: item?.expirationDate != null && !isComplete
                   ? ExpiryDateWidget(item.expirationDate)
                   : Container(),
             ),

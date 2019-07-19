@@ -36,7 +36,11 @@ class SmallObjectiveWidget extends ObjectiveWidget {
   buildCount(BuildContext context) {
     int progress = objective?.progress ?? 0;
     int total = definition.completionValue ?? 0;
-    if (total <= 1) return Container();
+    if (total <= 1) return Text("",
+    style: TextStyle(
+            fontWeight: FontWeight.w500,
+            fontSize: 10,
+            color: this.color ?? Colors.grey.shade300),);
     if (!definition.allowOvercompletion) {
       progress = min(total, progress);
     }

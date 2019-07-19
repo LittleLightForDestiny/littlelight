@@ -1,12 +1,9 @@
-import 'dart:async';
 import 'package:bungie_api/models/destiny_activity_definition.dart';
 import 'package:bungie_api/models/destiny_milestone.dart';
 import 'package:bungie_api/models/destiny_milestone_activity_phase.dart';
 import 'package:bungie_api/models/destiny_milestone_challenge_activity.dart';
-import 'package:bungie_api/models/destiny_milestone_definition.dart';
 
 import 'package:flutter/material.dart';
-import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
@@ -14,7 +11,6 @@ import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 
-import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/icon_fonts/destiny_icons_icons.dart';
 import 'package:little_light/widgets/progress_tabs/milestone_item.widget.dart';

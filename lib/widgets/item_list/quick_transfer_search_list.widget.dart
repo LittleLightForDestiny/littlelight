@@ -1,23 +1,24 @@
+import 'package:bungie_api/enums/destiny_class_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/user_settings/item_sort_parameter.dart';
 import 'package:little_light/utils/item_with_owner.dart';
-import 'package:little_light/widgets/item_list/items/loadout_search_item_wrapper.widget.dart';
+import 'package:little_light/widgets/item_list/items/quicktransfer_search_item_wrapper.widget.dart';
+import 'package:little_light/widgets/item_list/search_list.widget.dart';
 import 'package:little_light/widgets/search/search_filters.widget.dart';
-import 'package:little_light/widgets/search/search_list.widget.dart';
 
-class LoadoutSearchListWidget extends SearchListWidget {
+class QuickTransferSearchListWidget extends SearchListWidget {
   final String searchText;
   final int bucketType;
   final int classType;
   final Iterable<String> idsToAvoid;
-  LoadoutSearchListWidget({Key key, this.searchText, this.bucketType, this.classType, this.idsToAvoid}) : super(key: key);
+  QuickTransferSearchListWidget({Key key, this.searchText, this.bucketType, this.classType, this.idsToAvoid}) : super(key: key);
 
   @override
-  LoadoutSearchListWidgetState createState() => LoadoutSearchListWidgetState();
+  QuickTransferSearchListWidgetState createState() => QuickTransferSearchListWidgetState();
 }
 
-class LoadoutSearchListWidgetState
-    extends SearchListWidgetState<LoadoutSearchListWidget> {
+class QuickTransferSearchListWidgetState
+    extends SearchListWidgetState<QuickTransferSearchListWidget> {
   @override
   String get search => widget.searchText;
   
@@ -43,7 +44,7 @@ class LoadoutSearchListWidgetState
   FilterItem get ammoTypeFilter => null;
   
   @override
-  FilterItem get classTypeFilter => widget.classType != null ? FilterItem([widget.classType], [widget.classType]) : null;
+  FilterItem get classTypeFilter => widget.classType != null ? FilterItem([widget.classType, DestinyClass.Unknown], [widget.classType, DestinyClass.Unknown]) : null;
 
   @override
   List<int> get itemTypes => null;
@@ -70,7 +71,7 @@ class LoadoutSearchListWidgetState
     var item = _items[index];
     if (itemDefinitions == null || itemDefinitions[item.item.itemHash] == null)
       return Container();
-    return LoadoutSearchItemWrapperWidget(item.item,
+    return QuickTransferSearchItemWrapper(item.item,
         itemDefinitions[item.item.itemHash]?.inventory?.bucketTypeHash,
         characterId: item.ownerId,
         key: Key("item_${item.item.itemInstanceId}_${item.item.itemHash}"));
