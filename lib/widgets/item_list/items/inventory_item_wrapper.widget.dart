@@ -1,16 +1,19 @@
 import 'dart:async';
 
 import 'package:bungie_api/enums/destiny_item_type_enum.dart';
+import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/screens/item_detail.screen.dart';
+import 'package:little_light/screens/quick_transfer.screen.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/inventory/inventory.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/selection/selection.service.dart';
+import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/item_list/items/armor/armor_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/armor/medium_armor_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/armor/minimal_armor_inventory_item.widget.dart';
@@ -19,9 +22,10 @@ import 'package:little_light/widgets/item_list/items/base/medium_base_inventory_
 import 'package:little_light/widgets/item_list/items/base/minimal_base_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/emblem/emblem_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/emblem/medium_emblem_inventory_item.widget.dart';
-import 'package:little_light/widgets/item_list/items/empty_inventory_item_widget.dart';
 import 'package:little_light/widgets/item_list/items/engram/empty_engram_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/engram/minimal_engram_inventory_item.widget.dart';
+import 'package:little_light/widgets/item_list/items/loading_inventory_item_widget.dart';
+import 'package:little_light/widgets/item_list/items/quick_transfer_destination_inventory_item_widget.dart';
 import 'package:little_light/widgets/item_list/items/subclass/medium_subclass_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/subclass/subclass_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/weapon/medium_weapon_inventory_item.widget.dart';
@@ -49,7 +53,7 @@ class InventoryItemWrapperWidget extends StatefulWidget {
 }
 
 class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
-    extends State<InventoryItemWrapperWidget> {
+    extends State<T> {
   DestinyInventoryItemDefinition definition;
   String uniqueId;
   bool get selected =>
@@ -83,6 +87,19 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
         .isLoaded<DestinyInventoryItemDefinition>(widget.item.itemHash);
   }
 
+  bool get quickTransferAvailable {
+    return widget.characterId != null &&
+        ![
+          InventoryBucket.subclass,
+          InventoryBucket.lostItems,
+          InventoryBucket.engrams,
+          InventoryBucket.emblems,
+          InventoryBucket.consumables,
+          InventoryBucket.modifications,
+          InventoryBucket.shaders,
+        ].contains(widget.bucketHash);
+  }
+
   getDefinitions() async {
     queueSize++;
     if (queueSize > 1) {
@@ -92,7 +109,8 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
         return;
       }
     }
-    definition = await widget.manifest.getDefinition<DestinyInventoryItemDefinition>(widget.item.itemHash);
+    definition = await widget.manifest
+        .getDefinition<DestinyInventoryItemDefinition>(widget.item.itemHash);
     if (mounted) {
       setState(() {});
     }
@@ -126,21 +144,61 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
   }
 
   Widget buildTapHandler(BuildContext context) {
-    if (widget.item == null) {
-      return Container();
+    if (widget.item == null && quickTransferAvailable) {
+      return Positioned.fill(
+          child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                enableFeedback: false,
+                onTap: () {
+                  onEmptyTap(context);
+                },
+              )));
     }
-    return Positioned.fill(
-        child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              enableFeedback: false,
-              onTap: () {
-                onTap(context);
-              },
-              onLongPress: () {
-                onLongPress(context);
-              },
-            )));
+    if (widget.item != null) {
+      return Positioned.fill(
+          child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                enableFeedback: false,
+                onTap: () {
+                  onTap(context);
+                },
+                onLongPress: () {
+                  onLongPress(context);
+                },
+              )));
+    }
+    return Container();
+  }
+
+  void onEmptyTap(BuildContext context) async {
+    var buckedDef = await widget.manifest
+        .getDefinition<DestinyInventoryBucketDefinition>(widget.bucketHash);
+    var character = widget.profile.getCharacter(widget.characterId);
+    var idsToAvoid = widget.profile
+        .getCharacterInventory(widget.characterId)
+        .map((i) => i.itemInstanceId)
+        .where((i) => i != null)
+        .toList();
+    idsToAvoid.addAll(widget.profile
+        .getCharacterEquipment(widget.characterId)
+        .map((i) => i.itemInstanceId)
+        .where((i) => i != null)
+        .toList());
+    ItemWithOwner item = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => QuickTransferScreen(
+          bucketDefinition: buckedDef,
+          classType: character.classType,
+          idsToAvoid: idsToAvoid,
+        ),
+      ),
+    );
+    if(item != null){
+      InventoryService().transfer(item.item, item.ownerId, ItemDestination.Character, widget.characterId);
+    }
   }
 
   void onLongPress(context) {
@@ -171,12 +229,12 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
       context,
       MaterialPageRoute(
         builder: (context) => ItemDetailScreen(
-              widget.item,
-              definition,
-              instanceInfo,
-              characterId: widget.characterId,
-              uniqueId: uniqueId,
-            ),
+          widget.item,
+          definition,
+          instanceInfo,
+          characterId: widget.characterId,
+          uniqueId: uniqueId,
+        ),
       ),
     );
   }
@@ -217,7 +275,10 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
         }
       default:
         {
-          return EmptyInventoryItemWidget();
+          if(widget.item == null && quickTransferAvailable){
+            return QuickTransferDestinationItemWidget();
+          }
+          return LoadingInventoryItemWidget();
         }
     }
   }

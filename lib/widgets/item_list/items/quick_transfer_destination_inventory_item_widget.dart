@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
-class EmptyInventoryItemWidget extends StatelessWidget {
-  EmptyInventoryItemWidget();
-  
+class QuickTransferDestinationItemWidget extends StatelessWidget {
+  QuickTransferDestinationItemWidget();
 
   @override
   Widget build(BuildContext context) {
@@ -15,6 +14,7 @@ class EmptyInventoryItemWidget extends StatelessWidget {
             width: 2,
             )
         ),
+        child:Center(child: Icon(Icons.add_circle_outline, color:Colors.blueGrey.shade100),)
       );
     }
 }

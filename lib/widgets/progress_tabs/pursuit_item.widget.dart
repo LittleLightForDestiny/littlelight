@@ -182,7 +182,7 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
                     constraints: BoxConstraints(minHeight: 60),
                     padding: EdgeInsets.all(8).copyWith(left: 88),
                     child: buildDescription(context))),
-            item?.expirationDate != null
+            item?.expirationDate != null && !isComplete
                 ? Container(
                     padding: EdgeInsets.all(8).copyWith(top: 0),
                     child: ExpiryDateWidget(item.expirationDate),
@@ -230,6 +230,10 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
     itemObjectives = widget.profile
         .getItemObjectives(itemInstanceId, widget.characterId, hash);
     setState(() {});
+  }
+
+  bool get isComplete{
+    return itemObjectives?.every((o)=>o.complete) ?? false;
   }
 
   @override

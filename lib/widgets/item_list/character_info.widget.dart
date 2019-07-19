@@ -113,7 +113,7 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
         right: 8,
         child: Row(
           mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.end,
           crossAxisAlignment: CrossAxisAlignment.end,
           children: currencies.map((c) => buildCurrency(context, c)).toList(),
         ));
@@ -124,6 +124,7 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         Container(
+          margin: EdgeInsets.only(left:16, right:4),
           width: 16,
           height: 16,
           child: ManifestImageWidget<DestinyInventoryItemDefinition>(

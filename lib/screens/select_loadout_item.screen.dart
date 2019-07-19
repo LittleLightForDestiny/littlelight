@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/utils/selected_page_persistence.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-import 'package:little_light/widgets/loadouts/loadout_search_list.widget.dart';
+import 'package:little_light/widgets/item_list/loadout_search_list.widget.dart';
 
 class SelectLoadoutItemScreen extends StatefulWidget {
   final DestinyInventoryItemDefinition emblemDefinition;
