@@ -86,11 +86,13 @@ class LittleLightService {
       _fetchedLoadouts.forEach((loadout) {
         int index =
             _loadouts.indexWhere((l) => l.assignedId == loadout.assignedId);
-        if (index > -1 &&
-            _loadouts[index].updatedAt.isAfter(loadout.updatedAt)) {
-          _loadouts.replaceRange(index, index + 1, [loadout]);
-        } else if (index == -1) {
+        if(index < 0){
           _loadouts.add(loadout);
+        }else{
+          var _storedLoadout = _loadouts[index];
+          if(_storedLoadout.updatedAt.toUtc().isBefore(loadout.updatedAt.toUtc())){
+            _loadouts.replaceRange(index, index + 1, [loadout]);
+          }
         }
       });
     }

@@ -91,19 +91,21 @@ class InventoryUtils {
   }
 
   static int sortDestinyItems(
-    DestinyItemComponent itemA,
-    DestinyItemComponent itemB, {
-    List<ItemSortParameter> sortingParams,
-    DestinyInventoryItemDefinition defA,
-    DestinyInventoryItemDefinition defB,
-  }) {
+      DestinyItemComponent itemA, DestinyItemComponent itemB,
+      {List<ItemSortParameter> sortingParams,
+      DestinyInventoryItemDefinition defA,
+      DestinyInventoryItemDefinition defB,
+      String ownerA,
+      String ownerB,
+      List<String> characterOrder}) {
     int result = 0;
     if (sortingParams == null) {
       sortingParams = UserSettingsService().itemOrdering;
     }
     for (var p in sortingParams) {
       if (p.active) {
-        result = _sortBy(p.type, p.direction, itemA, itemB, defA, defB);
+        result = _sortBy(p.type, p.direction, itemA, itemB, defA, defB, ownerA,
+            ownerB, characterOrder);
         if (result != 0) return result;
       }
     }
@@ -116,7 +118,10 @@ class InventoryUtils {
       DestinyItemComponent itemA,
       DestinyItemComponent itemB,
       DestinyInventoryItemDefinition defA,
-      DestinyInventoryItemDefinition defB) {
+      DestinyInventoryItemDefinition defB,
+      String ownerA,
+      String ownerB,
+      List<String> characterOrder) {
     var manifest = ManifestService();
     defA = defA ?? manifest.getDefinitionFromCache(itemA?.itemHash);
     defB = defB ?? manifest.getDefinitionFromCache(itemB?.itemHash);
@@ -184,6 +189,15 @@ class InventoryUtils {
         var stackOrderB = defB?.index;
 
         return direction * stackOrderA.compareTo(stackOrderB);
+
+      case ItemSortParameterType.ItemOwner:
+        if(characterOrder == null) return 0;
+        var orderA = characterOrder.indexOf(ownerA);
+        var orderB = characterOrder.indexOf(ownerB);
+        if(orderA < 0 || orderB < 0){
+          return orderB.compareTo(orderA);
+        }
+        return direction* orderA.compareTo(orderB);
     }
     return 0;
   }

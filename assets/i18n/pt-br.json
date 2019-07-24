@@ -202,5 +202,10 @@
   "Moving Away": "Liberando espaço",
   "As Equipped": "Equipado",
   "Reordering Loadouts": "Reorganizando Loadouts",
-  "Modifiers": "Modificadores"
+  "Modifiers": "Modificadores",
+  "Hey, tap me!": "Ei! Clica aqui!",
+  "Default free slots": "Liberar espaços padrão (loadouts)",
+  "Auto open Keyboard": "Abrir teclado automaticamente",
+  "Open keyboard automatically in quick search": "Abre o teclado automaticamente na busca rapida",
+  "Item Holder": "Personagem"
 }

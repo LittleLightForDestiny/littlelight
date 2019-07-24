@@ -1,10 +1,12 @@
 import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/services/user_settings/user_settings.service.dart';
 import 'package:little_light/widgets/item_list/quick_transfer_search_list.widget.dart';
 
 
 class QuickTransferScreen extends StatefulWidget {
+  final UserSettingsService settings = UserSettingsService();
   final DestinyInventoryBucketDefinition bucketDefinition;
   final Iterable<String> idsToAvoid;
   final int classType;
@@ -50,7 +52,7 @@ class QuickTransferScreenState extends State<QuickTransferScreen> {
   buildAppBarTitle(BuildContext context) {
     return TextField(
       controller: _searchFieldController,
-      // autofocus: true,
+      autofocus: widget.settings.autoOpenKeyboard,
     );
   }
 

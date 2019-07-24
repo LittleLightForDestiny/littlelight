@@ -201,5 +201,10 @@
   "Moving Away": "Moving Away",
   "As Equipped": "As Equipped",
   "Reordering Loadouts": "Reordering Loadouts",
-  "Modifiers": "Modifiers"
+  "Modifiers": "Modifiers",
+  "#####Hey, tap me!": "missing_translation",
+  "#####Default free slots": "missing_translation",
+  "#####Auto open Keyboard": "missing_translation",
+  "#####Open keyboard automatically in quick search": "missing_translation",
+  "#####Item Holder": "missing_translation"
 }

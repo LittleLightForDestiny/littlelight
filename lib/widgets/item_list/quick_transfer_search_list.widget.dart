@@ -1,6 +1,5 @@
 import 'package:bungie_api/enums/destiny_class_enum.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/services/user_settings/item_sort_parameter.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/item_list/items/quicktransfer_search_item_wrapper.widget.dart';
 import 'package:little_light/widgets/item_list/search_list.widget.dart';
@@ -51,9 +50,6 @@ class QuickTransferSearchListWidgetState
   
   @override
   List<int> get excludeItemTypes => null;
-
-  @override
-  List<ItemSortParameter> get sortOrder => [ItemSortParameter(type:ItemSortParameterType.PowerLevel, direction:-1)];
 
   @override
   List<ItemWithOwner> get filteredItems {

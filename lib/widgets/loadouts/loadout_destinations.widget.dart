@@ -7,44 +7,64 @@ import 'package:little_light/widgets/common/equip_on_character.button.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 
 import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:little_light/widgets/option_sheets/free_slots_slider.widget.dart';
 
-class LoadoutDestinationsWidget extends StatelessWidget {
+class LoadoutDestinationsWidget extends StatefulWidget {
   final InventoryService inventory = new InventoryService();
   final ProfileService profile = new ProfileService();
   final Loadout loadout;
   LoadoutDestinationsWidget(this.loadout, {Key key}) : super(key: key);
 
   @override
+  State<StatefulWidget> createState() {
+    return LoadoutDestinationsWidgetState();
+  }
+}
+
+class LoadoutDestinationsWidgetState extends State<LoadoutDestinationsWidget> {
+  int freeSlots = 0;
+
+  @override
+  void initState() {
+    freeSlots = UserSettingsService().defaultFreeSlots;
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
-      color:Colors.blueGrey.shade800,
-        child: Wrap(
-      direction: Axis.horizontal,
-      children: <Widget>[
-        Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        color: Colors.blueGrey.shade800,
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          FreeSlotsSliderWidget(
+            initialValue: freeSlots,
+            onChanged: (free) {
+              freeSlots = free;
+            },
+          ),
+          Wrap(
+            direction: Axis.horizontal,
             children: <Widget>[
-              transferDestinations.length > 0
-                  ? Expanded(
-                      flex: 3,
-                      child: buildEquippingBlock(context, "Transfer to:",
-                          transferDestinations, Alignment.centerLeft))
-                  : null,
-            ]),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Expanded(
-                child: buildEquippingBlock(
-                    context,
-                    "Equip on:",
-                    equipDestinations,
-                    Alignment.centerRight
-                    ))
-          ].toList(),
-        ),
-      ],
-    ));
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    transferDestinations.length > 0
+                        ? Expanded(
+                            flex: 3,
+                            child: buildEquippingBlock(context, "Transfer to:",
+                                transferDestinations, Alignment.centerLeft))
+                        : null,
+                  ]),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Expanded(
+                      child: buildEquippingBlock(context, "Equip on:",
+                          equipDestinations, Alignment.centerRight))
+                ].toList(),
+              ),
+            ],
+          )
+        ]));
   }
 
   Widget buildEquippingBlock(BuildContext context, String title,
@@ -64,14 +84,14 @@ class LoadoutDestinationsWidget extends StatelessWidget {
       [Alignment align = Alignment.centerRight]) {
     return Container(
         child: HeaderWidget(
-          child: Container(
-              alignment: align,
-              child: TranslatedTextWidget(
-                title,
-                uppercase: true,
-                style: TextStyle(fontWeight: FontWeight.bold),
-              )),
-        ));
+      child: Container(
+          alignment: align,
+          child: TranslatedTextWidget(
+            title,
+            uppercase: true,
+            style: TextStyle(fontWeight: FontWeight.bold),
+          )),
+    ));
   }
 
   Widget buttons(BuildContext context, List<TransferDestination> destinations,
@@ -83,11 +103,11 @@ class LoadoutDestinationsWidget extends StatelessWidget {
             spacing: 8,
             children: destinations
                 .map((destination) => EquipOnCharacterButton(
-                  characterId: destination.characterId,
-                  type: destination.type,
-                  onTap:(){
-                    transferTap(destination, context);
-                  }))
+                    characterId: destination.characterId,
+                    type: destination.type,
+                    onTap: () {
+                      transferTap(destination, context);
+                    }))
                 .toList()));
   }
 
@@ -95,25 +115,32 @@ class LoadoutDestinationsWidget extends StatelessWidget {
     switch (destination.action) {
       case InventoryAction.Equip:
         {
-          inventory.transferLoadout(this.loadout, destination.characterId, true);
+          widget.inventory.transferLoadout(
+              widget.loadout,
+              destination.characterId,
+              true,
+              destination?.characterId != null ? freeSlots : 0);
           Navigator.pop(context);
           break;
         }
       case InventoryAction.Transfer:
         {
-          inventory.transferLoadout(this.loadout, destination.characterId);
+          widget.inventory.transferLoadout(
+              widget.loadout,
+              destination.characterId,
+              false,
+              destination?.characterId != null ? freeSlots : 0);
           Navigator.pop(context);
           break;
         }
 
       default:
-      break;
+        break;
     }
   }
 
   List<TransferDestination> get equipDestinations {
-    return this
-        .profile
+    return widget.profile
         .getCharacters(UserSettingsService().characterOrdering)
         .map((char) => TransferDestination(ItemDestination.Character,
             characterId: char.characterId, action: InventoryAction.Equip))
@@ -121,15 +148,13 @@ class LoadoutDestinationsWidget extends StatelessWidget {
   }
 
   List<TransferDestination> get transferDestinations {
-    List<TransferDestination> list = this
-        .profile
+    List<TransferDestination> list = widget.profile
         .getCharacters(UserSettingsService().characterOrdering)
         .map((char) => TransferDestination(ItemDestination.Character,
             characterId: char.characterId))
         .toList();
 
-    
-      list.add(TransferDestination(ItemDestination.Vault));
+    list.add(TransferDestination(ItemDestination.Vault));
     return list;
   }
 }

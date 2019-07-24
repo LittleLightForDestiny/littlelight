@@ -98,13 +98,18 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
     }
   }
 
-  List<ItemSortParameter> get sortOrder => widget.tabData.sortOrder;
+  List<ItemSortParameter> get sortOrder => widget.tabData?.sortOrder;
 
   sortItems() {
+    var characterOrder = widget.profile.getCharacters().map((c)=>c.characterId).toList();
+
     items.sort((itemA, itemB) => InventoryUtils.sortDestinyItems(
         itemA.item, itemB.item,
         defA: itemDefinitions[itemA.item.itemHash],
         defB: itemDefinitions[itemB.item.itemHash],
+        ownerA: itemA.ownerId,
+        ownerB: itemB.ownerId,
+        characterOrder: characterOrder,
         sortingParams: sortOrder));
   }
 

@@ -27,7 +27,10 @@ class StorageKeys {
     currentVersion,
     keepAwake,
     itemOrdering,
-    characterOrdering
+    characterOrdering,
+    autoOpenKeyboard,
+    defaultFreeSlots,
+    hasTappedGhost
   ];
 
   static const String latestToken = "latestToken";
@@ -55,9 +58,12 @@ class StorageKeys {
   static const String currentVersion = "currentVersion";
 
   static const String keepAwake = "userpref_keepAwake";
+  static const String autoOpenKeyboard = "userpref_autoOpenKeyboard";
+  static const String defaultFreeSlots = "userpref_defaultFreeSlots";
   static const String itemOrdering = "userpref_itemOrdering";
   static const String pursuitOrdering = "userpref_pursuitOrdering";
   static const String characterOrdering = "userpref_characterOrdering";
+  static const String hasTappedGhost = "userpref_hasTappedGhost";
 }
 
 class StorageService {
@@ -119,6 +125,14 @@ class StorageService {
 
   Future<void> setString(String key, String value) async {
     await _prefs.setString("$_path/$key", value);
+  }
+
+  int getInt(String key) {
+    return _prefs.getInt("$_path/$key");
+  }
+
+  Future<void> setInt(String key, int value) async {
+    await _prefs.setInt("$_path/$key", value);
   }
 
   DateTime getDate(String key) {

@@ -164,11 +164,6 @@ class SearchScreenState extends State<SearchScreen>
           DestinyItemType.Quest,
           DestinyItemType.QuestStep,
           DestinyItemType.Bounty,
-        ],
-        sortOrder: [
-          ItemSortParameter(type:ItemSortParameterType.SubType),
-          ItemSortParameter(type:ItemSortParameterType.TierType, direction:-1),
-          ItemSortParameter(type:ItemSortParameterType.Name),
         ]),
     //// FLAIR ////
     SearchTabData(
@@ -197,11 +192,6 @@ class SearchScreenState extends State<SearchScreen>
           DestinyItemType.Vehicle,
           DestinyItemType.Ship,
           DestinyItemType.Emblem,
-        ],
-        sortOrder: [
-          ItemSortParameter(type:ItemSortParameterType.SubType),
-          ItemSortParameter(type:ItemSortParameterType.TierType, direction:-1),
-          ItemSortParameter(type:ItemSortParameterType.Name),
         ]),
   ];
 

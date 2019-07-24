@@ -61,12 +61,36 @@ class UserSettingsService {
   }
 
 
+  bool get hasTappedGhost{
+    return globalStorage.getBool(StorageKeys.hasTappedGhost) ?? false;
+  }
+  
+  set hasTappedGhost(bool value){
+    globalStorage.setBool(StorageKeys.hasTappedGhost, value);
+  }
+
   bool get keepAwake{
     return globalStorage.getBool(StorageKeys.keepAwake) ?? false;
   }
   
   set keepAwake(bool value){
     globalStorage.setBool(StorageKeys.keepAwake, value);
+  }
+
+  int get defaultFreeSlots{
+    return globalStorage.getInt(StorageKeys.defaultFreeSlots) ?? 0;
+  }
+  
+  set defaultFreeSlots(int value){
+    globalStorage.setInt(StorageKeys.defaultFreeSlots, value);
+  }
+
+  bool get autoOpenKeyboard{
+    return globalStorage.getBool(StorageKeys.autoOpenKeyboard) ?? false;
+  }
+  
+  set autoOpenKeyboard(bool value){
+    globalStorage.setBool(StorageKeys.autoOpenKeyboard, value);
   }
 
   List<ItemSortParameter> get itemOrdering =>_itemOrdering;
