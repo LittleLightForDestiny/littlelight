@@ -15,12 +15,14 @@ import 'package:flutter/material.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/user_settings/user_settings.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/icon_fonts/destiny_icons_icons.dart';
 import 'package:little_light/widgets/option_sheets/character_options_sheet.widget.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:speech_bubble/speech_bubble.dart';
 
 class CharacterInfoWidget extends StatefulWidget {
   final ManifestService manifest = new ManifestService();
@@ -80,13 +82,15 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
     return Stack(children: [
       mainCharacterInfo(context, character),
       characterStatsInfo(context, character),
-      Positioned.fill(child: ghostIcon(context)),
       expInfo(context, character),
       currencyInfo(context),
+      Positioned.fill(child: ghostIcon(context)),
       Positioned.fill(
           child: FlatButton(
               child: Container(),
               onPressed: () {
+                UserSettingsService().hasTappedGhost = true;
+                setState(() {});
                 showOptionsSheet(context);
               }))
     ]);
@@ -124,7 +128,7 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         Container(
-          margin: EdgeInsets.only(left:16, right:4),
+          margin: EdgeInsets.only(left: 16, right: 4),
           width: 16,
           height: 16,
           child: ManifestImageWidget<DestinyInventoryItemDefinition>(
@@ -139,15 +143,30 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
   }
 
   Widget ghostIcon(BuildContext context) {
-    return Container(
-        width: 50,
-        height: 50,
-        child: Shimmer.fromColors(
-            baseColor: Colors.grey.shade400,
-            highlightColor: Colors.grey.shade100,
-            period: Duration(seconds: 5),
-            child: Icon(DestinyIcons.ghost,
-                size: 50, color: Colors.grey.shade300)));
+    var ghost = Container(
+              width: 50,
+              height: 50,
+              child: Shimmer.fromColors(
+                  baseColor: Colors.grey.shade400,
+                  highlightColor: Colors.grey.shade100,
+                  period: Duration(seconds: 5),
+                  child: Icon(DestinyIcons.ghost,
+                      size: 50, color: Colors.grey.shade300)));
+    if(UserSettingsService().hasTappedGhost){
+      return ghost;
+    }
+    return Stack(children: [
+      Center(
+          child: ghost,
+      ),
+      Container(
+        margin: EdgeInsets.only(top:60),
+          child: SpeechBubble(
+        nipLocation: NipLocation.TOP,
+        color: Colors.lightBlue,
+        child: TranslatedTextWidget("Hey, tap me!"),
+      ))
+    ]);
   }
 
   Widget characterStatsInfo(

@@ -16,6 +16,8 @@ import 'package:little_light/services/inventory/inventory.service.dart';
 import 'package:little_light/services/littlelight/littlelight.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/user_settings/item_sort_parameter.dart';
+import 'package:little_light/services/user_settings/user_settings.service.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -193,11 +195,12 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
               ),
               onTap: () async {
                 Navigator.of(context).pop();
-                int freeSlots = 0;
+                int freeSlots = UserSettingsService().defaultFreeSlots;
                 showModalBottomSheet(
                     context: context,
                     builder: (context) => LoadoutSelectSheet(
                         header: FreeSlotsSliderWidget(
+                          initialValue: freeSlots,
                           onChanged: (free) {
                             freeSlots = free;
                           },
@@ -474,7 +477,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
     var instancedItems =
         allItems.where((i) => i.itemInstanceId != null).toList();
     instancedItems
-        .sort((itemA, itemB) => InventoryUtils.sortDestinyItems(itemA, itemB));
+        .sort((itemA, itemB) => InventoryUtils.sortDestinyItems(itemA, itemB, sortingParams: [ItemSortParameter(active: true, type:ItemSortParameterType.PowerLevel, direction: -1)]));
     LoadoutItemIndex maxLightLoadout = new LoadoutItemIndex();
     LoadoutItemIndex exoticPieces = new LoadoutItemIndex();
     var hashes = instancedItems.map((i) => i.itemHash);

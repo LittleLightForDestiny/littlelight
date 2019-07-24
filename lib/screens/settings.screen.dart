@@ -8,6 +8,7 @@ import 'package:little_light/widgets/common/header.wiget.dart';
 
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/flutter/smaller_switch.dart';
+import 'package:little_light/widgets/option_sheets/free_slots_slider.widget.dart';
 import 'package:screen/screen.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -44,6 +45,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
             child: Column(children: <Widget>[
               buildKeepAwake(context),
               Container(height: 16),
+              buildAutoOpenSearch(context),
+              Container(height: 16),
+              HeaderWidget(
+                  alignment: Alignment.centerLeft,
+                  child: TranslatedTextWidget(
+                    "Default free slots",
+                    uppercase: true,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  )),
+              buildDefaultFreeSlots(context),
+              Container(height: 16),
               HeaderWidget(
                   alignment: Alignment.centerLeft,
                   child: TranslatedTextWidget(
@@ -52,6 +64,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     style: TextStyle(fontWeight: FontWeight.bold),
                   )),
               buildCharacterOrdering(context),
+              Container(height: 32),
               HeaderWidget(
                   alignment: Alignment.centerLeft,
                   child: TranslatedTextWidget(
@@ -87,6 +100,33 @@ class _SettingsScreenState extends State<SettingsScreen> {
             Screen.keepOn(val);
           },
         ));
+  }
+
+  buildAutoOpenSearch(BuildContext context) {
+    return ListTile(
+        title: TranslatedTextWidget(
+          "Auto open Keyboard",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        subtitle:
+            TranslatedTextWidget("Open keyboard automatically in quick search"),
+        trailing: Switch(
+          value: widget.settings.autoOpenKeyboard,
+          onChanged: (val) {
+            widget.settings.autoOpenKeyboard = val;
+            setState(() {});
+            Screen.keepOn(val);
+          },
+        ));
+  }
+
+  buildDefaultFreeSlots(BuildContext context) {
+    return FreeSlotsSliderWidget(
+      suppressLabel: true,
+      initialValue: widget.settings.defaultFreeSlots,
+      onChanged: (value) {
+        widget.settings.defaultFreeSlots = value;
+    });
   }
 
   buildCharacterOrdering(BuildContext context) {
@@ -167,8 +207,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           },
           builder: (context, parameter, handle) =>
               buildSortItem(context, parameter, handle, onSave: () {
-                widget.settings.itemOrdering = itemOrdering;
-              }),
+            widget.settings.itemOrdering = itemOrdering;
+          }),
         ));
   }
 
@@ -196,8 +236,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           },
           builder: (context, parameter, handle) =>
               buildSortItem(context, parameter, handle, onSave: () {
-                widget.settings.pursuitOrdering = pursuitOrdering;
-              }),
+            widget.settings.pursuitOrdering = pursuitOrdering;
+          }),
         ));
   }
 
@@ -319,6 +359,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
       case ItemSortParameterType.QuestGroup:
         return TranslatedTextWidget("Group", uppercase: true, style: style);
+
+      case ItemSortParameterType.ItemOwner:
+        return TranslatedTextWidget("Item Holder",
+            uppercase: true, style: style);
 
       default:
         return Text(

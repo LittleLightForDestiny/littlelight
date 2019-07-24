@@ -530,10 +530,14 @@ class InventoryService {
       [List<String> idsToAvoid = const []]) async {
     DestinyItemComponent substitute =
         await _findSubstitute(item, characterId, idsToAvoid);
-    int result = await api.equipItem(substitute.itemInstanceId, characterId);
-    if (result != 0) {
-      throw new TransferError(TransferErrorCode.cantUnequip);
+    if (substitute.bucketHash == InventoryBucket.general) {
+      await _transfer(
+          substitute, null, ItemDestination.Character,
+          destinationCharacterId: characterId);
     }
+
+    await _equip(substitute, characterId);
+    
     List<DestinyItemComponent> inventory =
         profile.getCharacterInventory(characterId);
     List<DestinyItemComponent> equipment =
@@ -630,32 +634,37 @@ class InventoryService {
             item.bucketHash == pItem.bucketHash &&
             !idsToAvoid.contains(pItem.itemInstanceId))
         .toList();
-    if (possibles.length == 0) {
-      possibles = profile
-          .getProfileInventory()
-          .where((pItem) =>
-              item.bucketHash == pItem.bucketHash &&
-              !idsToAvoid.contains(pItem.itemInstanceId))
-          .toList();
+
+    if (possibles.length > 0) {
+      Map<int, DestinyInventoryItemDefinition> definitions =
+          await manifest.getDefinitions<DestinyInventoryItemDefinition>(
+              possibles.map((pItem) => pItem.itemHash).toList());
+      possibles.removeWhere((pItem) {
+        var def = definitions[pItem.itemHash];
+        if (def.inventory.tierType == TierType.Exotic &&
+            itemDef.inventory.tierType != TierType.Exotic) {
+          return true;
+        }
+        if (def.classType != DestinyClass.Unknown &&
+            def.classType != character.classType) {
+          return true;
+        }
+        return false;
+      });
     }
+
     if (possibles.length == 0) {
-      throw TransferError(TransferErrorCode.cantFindSubstitute);
+      var itemsOnVault = profile.getProfileInventory().where((i) =>
+          i.bucketHash == InventoryBucket.general && i.itemInstanceId != null);
+      for (var i in itemsOnVault) {
+        var def = await manifest
+            .getDefinition<DestinyInventoryItemDefinition>(i.itemHash);
+        if (def?.inventory?.bucketTypeHash == item.bucketHash) {
+          return i;
+        }
+      }
     }
-    Map<int, DestinyInventoryItemDefinition> definitions =
-        await manifest.getDefinitions<DestinyInventoryItemDefinition>(
-            possibles.map((pItem) => pItem.itemHash).toList());
-    possibles.removeWhere((pItem) {
-      var def = definitions[pItem.itemHash];
-      if (def.inventory.tierType == TierType.Exotic &&
-          itemDef.inventory.tierType != TierType.Exotic) {
-        return true;
-      }
-      if (def.classType != DestinyClass.Unknown &&
-          def.classType != character.classType) {
-        return true;
-      }
-      return false;
-    });
+
     if (possibles.length == 0) {
       throw TransferError(TransferErrorCode.cantFindSubstitute);
     }

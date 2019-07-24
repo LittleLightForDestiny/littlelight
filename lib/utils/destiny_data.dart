@@ -285,6 +285,51 @@ class DestinyData {
     }
     return Colors.white;
   }
+
+  static String getSubclassImagePath(int classType, int damageType, String subclassPath){
+    String path = "assets/subclasses/";
+    switch(classType){
+      case DestinyClass.Titan:
+        path+= "titan";
+        break;
+      case DestinyClass.Hunter:
+        path+= "hunter";
+        break;
+      case DestinyClass.Warlock:
+        path+= "warlock";
+        break;
+
+      default:
+        return null;
+    }
+
+    switch(damageType){
+      case DamageType.Arc:
+        path+="_arc";
+        break;
+      case DamageType.Thermal:
+        path+="_solar";
+        break;
+      case DamageType.Void:
+        path+="_void";
+        break;
+      default:
+        return null;
+    }
+
+    switch(subclassPath.toLowerCase()){
+      case "firstpath":
+      case "secondpath":
+        break;
+      case "thirdpath":
+        path+="_alt";
+        break;
+      default:
+        return null;
+    }
+
+    return path+".webp";
+  }
 }
 
 class ProgressionHash {

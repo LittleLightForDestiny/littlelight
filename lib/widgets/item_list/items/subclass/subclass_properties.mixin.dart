@@ -4,6 +4,7 @@ import 'package:bungie_api/models/destiny_talent_node_category.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
+import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/inventory_item.mixin.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:tinycolor/tinycolor.dart';
@@ -24,7 +25,7 @@ mixin SubclassPropertiesMixin on InventoryItemMixin {
   }
 
   Widget itemIcon(BuildContext context) {
-    return  SubclassIconWidget(item, definition, instanceInfo);
+    return SubclassIconWidget(item, definition, instanceInfo);
   }
 
   @override
@@ -57,13 +58,15 @@ mixin SubclassPropertiesMixin on InventoryItemMixin {
                       style: TextStyle(
                           fontSize: titleFontSize,
                           fontWeight: FontWeight.bold)),
-                  talentGrid != null ? ManifestText<DestinyTalentGridDefinition>(
-                      talentGrid.talentGridHash,
-                      textExtractor: extractTalentGridName,
-                      style: TextStyle(
-                          fontStyle: FontStyle.italic,
-                          fontWeight: FontWeight.w300,
-                          fontSize: 12)) : Container()
+                  talentGrid != null
+                      ? ManifestText<DestinyTalentGridDefinition>(
+                          talentGrid.talentGridHash,
+                          textExtractor: extractTalentGridName,
+                          style: TextStyle(
+                              fontStyle: FontStyle.italic,
+                              fontWeight: FontWeight.w300,
+                              fontSize: 12))
+                      : Container()
                 ],
               ),
             ),
@@ -71,30 +74,57 @@ mixin SubclassPropertiesMixin on InventoryItemMixin {
     );
   }
 
-  String extractTalentGridName(dynamic data) {
-    DestinyTalentGridDefinition talentGridDef = data;
+  DestinyTalentNodeCategory extractTalentGridNodeCategory(
+      DestinyTalentGridDefinition talentGridDef) {
     Iterable<int> activatedNodes = talentGrid.nodes
         .where((node) => node.isActivated)
         .map((node) => node.nodeIndex);
     Iterable<DestinyTalentNodeCategory> selectedSkills =
         talentGridDef.nodeCategories.where((category) {
-          var overlapping = category.nodeHashes
-            .where((nodeHash) => activatedNodes.contains(nodeHash));
-          return overlapping.length > 0;
+      var overlapping = category.nodeHashes
+          .where((nodeHash) => activatedNodes.contains(nodeHash));
+      return overlapping.length > 0;
     }).toList();
-    DestinyTalentNodeCategory subclassPath =
-        selectedSkills.firstWhere((nodeDef) => nodeDef.isLoreDriven, orElse: ()=>null);
-    return subclassPath?.displayProperties?.name ?? "";
+    DestinyTalentNodeCategory subclassPath = selectedSkills
+        .firstWhere((nodeDef) => nodeDef.isLoreDriven, orElse: () => null);
+    return subclassPath;
+  }
+
+  Widget buildTalentGridImage(DestinyTalentGridDefinition talentGridDef) {
+    DestinyTalentNodeCategory cat =
+        extractTalentGridNodeCategory(talentGridDef);
+    var path = DestinyData.getSubclassImagePath(definition.classType,
+        definition.talentGrid.hudDamageType, cat.identifier);
+    if (path == null) {
+      return QueuedNetworkImage(
+        imageUrl: BungieApiService.url(definition.secondaryIcon),
+        fit: BoxFit.fitWidth,
+        alignment: Alignment.topRight,
+      );
+    }
+    return Image.asset(
+      path,
+      fit: BoxFit.fitWidth,
+      alignment: Alignment.topRight,
+    );
+  }
+
+  String extractTalentGridName(
+      DestinyTalentGridDefinition talentGridDefinition) {
+    DestinyTalentNodeCategory cat =
+        extractTalentGridNodeCategory(talentGridDefinition);
+    return cat?.displayProperties?.name ?? "";
   }
 
   @override
   Widget categoryName(BuildContext context) {
     return null;
   }
+
   @override
   background(BuildContext context) {
-    var damageTypeColor = DestinyData.getDamageTypeColor(
-        definition.talentGrid.hudDamageType);
+    var damageTypeColor =
+        DestinyData.getDamageTypeColor(definition.talentGrid.hudDamageType);
     BoxDecoration decoration = BoxDecoration(
         gradient:
             RadialGradient(radius: 3, center: Alignment(.7, 0), colors: <Color>[
@@ -104,15 +134,13 @@ mixin SubclassPropertiesMixin on InventoryItemMixin {
     ]));
     return Positioned.fill(
         child: Container(
+          alignment: Alignment.centerRight,
             decoration: decoration,
-            child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-              QueuedNetworkImage(
-                // width: 140,
-                imageUrl:
-                    BungieApiService.url(definition.secondaryIcon),
-                fit: BoxFit.fitWidth,
-                alignment: Alignment.topRight,
-              )
-            ])));
+            child:
+              DefinitionProviderWidget<DestinyTalentGridDefinition>(
+                  definition.talentGrid.talentGridHash, (def) {
+                return buildTalentGridImage(def);
+              }),
+            ));
   }
 }

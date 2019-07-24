@@ -201,5 +201,10 @@
   "Moving Away": "Retirando al depósito",
   "As Equipped": "Cómo equipado",
   "Reordering Loadouts": "Reordenando conjuntos",
-  "Modifiers": "Modificadores"
+  "Modifiers": "Modificadores",
+  "#####Hey, tap me!": "missing_translation",
+  "#####Default free slots": "missing_translation",
+  "#####Auto open Keyboard": "missing_translation",
+  "#####Open keyboard automatically in quick search": "missing_translation",
+  "#####Item Holder": "missing_translation"
 }

@@ -9,6 +9,7 @@ import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/user_settings/user_settings.service.dart';
 import 'package:little_light/utils/selected_page_persistence.dart';
+import 'package:little_light/widgets/common/animated_character_background.widget.dart';
 import 'package:little_light/widgets/flutter/passive_tab_bar_view.dart';
 import 'package:little_light/widgets/inventory_tabs/character_tab.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/character_tab_header.widget.dart';
@@ -137,17 +138,7 @@ class EquipmentScreenState extends State<EquipmentScreen>
   }
 
   Widget buildBackground(BuildContext context) {
-    return Container(
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
-      colors: [
-        Color.fromARGB(255, 80, 90, 100),
-        Color.fromARGB(255, 100, 100, 115),
-        Color.fromARGB(255, 32, 32, 73),
-      ],
-      begin: FractionalOffset(0, .5),
-      end: FractionalOffset(.5, 0),
-    )));
+    return AnimatedCharacterBackgroundWidget(tabController: charTabController,);
   }
 
   Widget buildItemTypeTabBarView(BuildContext context) {

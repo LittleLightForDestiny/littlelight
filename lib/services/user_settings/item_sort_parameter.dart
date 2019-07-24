@@ -11,6 +11,7 @@ enum ItemSortParameterType {
   AmmoType,
   BucketHash,
   Quantity,
+  ItemOwner,
   ExpirationDate,
   QuestGroup
 }
@@ -36,6 +37,7 @@ class ItemSortParameter {
       ItemSortParameter(type: ItemSortParameterType.PowerLevel, direction: -1),
       ItemSortParameter(type: ItemSortParameterType.TierType, direction: -1),
       ItemSortParameter(type: ItemSortParameterType.Name),
+      ItemSortParameter(type: ItemSortParameterType.ItemOwner, active: false),
       ItemSortParameter(type: ItemSortParameterType.SubType, active: false),
       ItemSortParameter(type: ItemSortParameterType.ClassType, active: false),
       ItemSortParameter(type: ItemSortParameterType.AmmoType, active: false),
