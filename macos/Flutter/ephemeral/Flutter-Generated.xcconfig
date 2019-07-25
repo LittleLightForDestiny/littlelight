@@ -1,9 +1,9 @@
 // This is a generated file; do not edit or check into version control.
-FLUTTER_ROOT=/Users/marquesini/sdks/flutter
-FLUTTER_APPLICATION_PATH=/Users/marquesini/workspace/flutter/little_light
-FLUTTER_TARGET=/Users/marquesini/workspace/flutter/little_light/lib/main.dart
+FLUTTER_ROOT=/Users/marquesini/sdks/flutter-master
+FLUTTER_APPLICATION_PATH=/Users/marquesini/workspace/flutter/little_light_desktop
+FLUTTER_TARGET=/Users/marquesini/workspace/flutter/little_light_desktop/lib/main.dart
 FLUTTER_BUILD_DIR=build
-FLUTTER_FRAMEWORK_DIR=/Users/marquesini/sdks/flutter/bin/cache/artifacts/engine/darwin-x64
-FLUTTER_BUILD_NAME=1.6.21
-FLUTTER_BUILD_NUMBER=106021
+FLUTTER_FRAMEWORK_DIR=/Users/marquesini/sdks/flutter-master/bin/cache/artifacts/engine/darwin-x64
+FLUTTER_BUILD_NAME=1.6.22
+FLUTTER_BUILD_NUMBER=106022
 TRACK_WIDGET_CREATION=true

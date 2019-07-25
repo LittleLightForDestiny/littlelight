@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/models/tracked_objective.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/services/littlelight/littlelight.service.dart';
+import 'package:little_light/services/littlelight/objectives.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/widgets/common/objective.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
@@ -231,7 +231,7 @@ class PerkListItemState extends State<PerkListItem>
             : TranslatedTextWidget("Track Objectives",
                 key: Key("track_objectives")),
         onPressed: () {
-          var service = LittleLightService();
+          var service = ObjectivesService();
           if (isTracking) {
             service.removeTrackedObjective(
                 TrackedObjectiveType.Plug, definition.hash);
@@ -247,7 +247,7 @@ class PerkListItemState extends State<PerkListItem>
   }
 
   updateTrackStatus() async {
-    var objectives = await LittleLightService().getTrackedObjectives();
+    var objectives = await ObjectivesService().getTrackedObjectives();
     var tracked = objectives.firstWhere(
         (o) =>
             o?.hash == widget?.definition?.hash &&

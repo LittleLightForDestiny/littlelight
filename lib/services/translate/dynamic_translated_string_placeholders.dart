@@ -72,4 +72,7 @@ translationPlaceholders() {
   TranslatedTextWidget("Crystals");
   TranslatedTextWidget("Deception");
   TranslatedTextWidget("Gahlran");
+
+  TranslatedTextWidget("server_error");
+  TranslatedTextWidget("SystemDisabled");
 }

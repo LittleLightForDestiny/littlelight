@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:bungie_api/enums/destiny_item_type_enum.dart';
 import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:little_light/screens/search.screen.dart';
 import 'package:little_light/services/bungie_api/enums/destiny_item_category.enum.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
@@ -112,7 +114,10 @@ class EquipmentScreenState extends State<EquipmentScreen>
               },
             ),
           ),
-          TabsCharacterMenuWidget(characters, controller: charTabController),
+          Positioned(
+              top: MediaQuery.of(context).padding.top + kToolbarHeight - 52,
+              right: 8,
+              child: buildCharacterMenu(context)),
           ItemTypeMenuWidget(widget.itemTypes, controller: typeTabController),
           InventoryNotificationWidget(
               key: Key('inventory_notification_widget')),
@@ -138,7 +143,9 @@ class EquipmentScreenState extends State<EquipmentScreen>
   }
 
   Widget buildBackground(BuildContext context) {
-    return AnimatedCharacterBackgroundWidget(tabController: charTabController,);
+    return AnimatedCharacterBackgroundWidget(
+      tabController: charTabController,
+    );
   }
 
   Widget buildItemTypeTabBarView(BuildContext context) {
@@ -170,6 +177,42 @@ class EquipmentScreenState extends State<EquipmentScreen>
   }
 
   List<DestinyCharacterComponent> get characters {
-    return widget.profile.getCharacters(UserSettingsService().characterOrdering);
+    return widget.profile
+        .getCharacters(UserSettingsService().characterOrdering);
+  }
+
+  buildCharacterMenu(BuildContext context) {
+    return Row(children: [
+      IconButton(
+          icon: Icon(FontAwesomeIcons.search, color: Colors.white),
+          onPressed: () {
+            SearchTabData searchData;
+            switch (typeTabController.index) {
+              case 0:
+                searchData = SearchTabData.weapons();
+                break;
+              case 1:
+                int classType;
+                if(charTabController.index < characters.length){
+                  DestinyCharacterComponent char = characters[charTabController.index];
+                  classType = char?.classType;
+                }
+                searchData = SearchTabData.armor(classType);
+                break;
+              case 2:
+                searchData = SearchTabData.flair();
+                break;
+            }
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SearchScreen(
+                  tabData: searchData,
+                ),
+              ),
+            );
+          }),
+      TabsCharacterMenuWidget(characters, controller: charTabController)
+    ]);
   }
 }

@@ -9,7 +9,7 @@ import 'package:bungie_api/models/destiny_objective_progress.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/models/tracked_objective.dart';
 import 'package:little_light/services/auth/auth.service.dart';
-import 'package:little_light/services/littlelight/littlelight.service.dart';
+import 'package:little_light/services/littlelight/objectives.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/widgets/common/destiny_item.stateful_widget.dart';
@@ -135,7 +135,7 @@ class ItemObjectivesWidgetState extends DestinyItemState<ItemObjectivesWidget> {
   }
 
   updateTrackStatus() async {
-    var objectives = await LittleLightService().getTrackedObjectives();
+    var objectives = await ObjectivesService().getTrackedObjectives();
     var tracked = objectives.firstWhere(
         (o) =>
             o.hash == widget.definition.hash &&
@@ -157,7 +157,7 @@ class ItemObjectivesWidgetState extends DestinyItemState<ItemObjectivesWidget> {
             : TranslatedTextWidget("Track Objectives",
                 key: Key("track_objectives")),
         onPressed: () {
-          var service = LittleLightService();
+          var service = ObjectivesService();
           if (isTracking) {
             service.removeTrackedObjective(
                 TrackedObjectiveType.Item, definition.hash,
