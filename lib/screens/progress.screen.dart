@@ -1,10 +1,13 @@
 import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:little_light/screens/search.screen.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/user_settings/user_settings.service.dart';
 import 'package:little_light/utils/selected_page_persistence.dart';
+import 'package:little_light/widgets/common/animated_character_background.widget.dart';
 import 'package:little_light/widgets/common/refresh_button.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/flutter/passive_tab_bar_view.dart';
@@ -90,11 +93,10 @@ class ProgressScreenState extends State<ProgressScreen>
               },
             ),
           ),
-          TabsCharacterMenuWidget(
-            characters,
-            controller: charTabController,
-            includeVault: false,
-          ),
+          Positioned(
+              top: MediaQuery.of(context).padding.top + kToolbarHeight - 52,
+              right: 8,
+              child: buildCharacterMenu(context)),
           Positioned(
             bottom: 0,
             left: 0,
@@ -109,17 +111,7 @@ class ProgressScreenState extends State<ProgressScreen>
   }
 
   Widget buildBackground(BuildContext context) {
-    return Container(
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
-      colors: [
-        Color.fromARGB(255, 80, 90, 100),
-        Color.fromARGB(255, 100, 100, 115),
-        Color.fromARGB(255, 32, 32, 73),
-      ],
-      begin: FractionalOffset(0, .5),
-      end: FractionalOffset(.5, 0),
-    )));
+    return AnimatedCharacterBackgroundWidget(tabController: charTabController);
   }
 
   Widget buildTypeTabView(BuildContext context) {
@@ -165,9 +157,7 @@ class ProgressScreenState extends State<ProgressScreen>
         color: Colors.black,
         height: kToolbarHeight + bottomPadding,
         padding: EdgeInsets.only(bottom: bottomPadding),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
+        child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           Expanded(
               child: TabBar(
                   labelPadding: EdgeInsets.all(4),
@@ -178,16 +168,17 @@ class ProgressScreenState extends State<ProgressScreen>
                   tabs: [
                 TranslatedTextWidget("Milestones",
                     uppercase: true,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
                 TranslatedTextWidget("Pursuits",
                     uppercase: true,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
                 TranslatedTextWidget("Ranks",
                     uppercase: true,
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13))
               ])),
-              Container(width:40,
-              child:RefreshButtonWidget())
+          Container(width: 40, child: RefreshButtonWidget())
         ]));
   }
 
@@ -202,7 +193,28 @@ class ProgressScreenState extends State<ProgressScreen>
     return CharacterRanksListWidget(characterId: characterId);
   }
 
+  buildCharacterMenu(BuildContext context) {
+    return Row(children: [
+      IconButton(
+          icon: Icon(FontAwesomeIcons.search, color: Colors.white),
+          onPressed: () {
+            var char = characters[charTabController.index];
+            SearchTabData searchData = SearchTabData.pursuits(char?.characterId);
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SearchScreen(
+                  tabData: searchData,
+                ),
+              ),
+            );
+          }),
+      TabsCharacterMenuWidget(characters, controller: charTabController, includeVault: false,)
+    ]);
+  }
+
   List<DestinyCharacterComponent> get characters {
-    return widget.profile.getCharacters(UserSettingsService().characterOrdering);
+    return widget.profile
+        .getCharacters(UserSettingsService().characterOrdering);
   }
 }

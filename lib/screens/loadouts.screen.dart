@@ -7,7 +7,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/screens/edit_loadout.screen.dart';
-import 'package:little_light/services/littlelight/littlelight.service.dart';
+import 'package:little_light/services/littlelight/loadouts.service.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
@@ -49,7 +49,7 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
   }
 
   void loadLoadouts() async {
-    LittleLightService service = LittleLightService();
+    LoadoutsService service = LoadoutsService();
     loadouts = await service.getLoadouts();
     filteredLoadouts = loadouts;
     setState(() {});
@@ -160,7 +160,7 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
         onItemReorder: (oldIndex, newIndex) {
           var removed = loadouts.removeAt(oldIndex);
           loadouts.insert(newIndex, removed);
-          LittleLightService().saveLoadoutsOrder(loadouts);
+          LoadoutsService().saveLoadoutsOrder(loadouts);
         },
         builder: (context, parameter, handle) =>
             buildSortItem(context, parameter, handle));

@@ -152,10 +152,6 @@ class SideMenuWidgetState extends State<SideMenuWidget> {
                       requireLogin: true, onTap: () {
                     open(context, ObjectivesScreen());
                   }),
-                  menuItem(context, TranslatedTextWidget("Search"),
-                      requireLogin: true, onTap: () {
-                    open(context, SearchScreen());
-                  }),
                   menuItem(context, TranslatedTextWidget("Loadouts"),
                       requireLogin: true, onTap: () {
                     open(context, LoadoutsScreen());

@@ -3,13 +3,13 @@ import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:little_light/models/loadout.dart';
+import 'package:little_light/services/littlelight/loadouts.service.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/screens/select_loadout_background.screen.dart';
 import 'package:little_light/screens/select_loadout_item.screen.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/services/littlelight/littlelight.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/translate/translate.service.dart';
 import 'package:little_light/utils/inventory_utils.dart';
@@ -152,7 +152,7 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> {
               child: RaisedButton(
                 child: TranslatedTextWidget("Save Loadout"),
                 onPressed: () {
-                  LittleLightService service = LittleLightService();
+                  LoadoutsService service = LoadoutsService();
                   service.saveLoadout(_itemIndex.loadout);
                   Navigator.pop(context, _loadout);
                 },

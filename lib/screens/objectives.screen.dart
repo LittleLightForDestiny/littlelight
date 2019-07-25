@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/models/tracked_objective.dart';
 import 'package:little_light/screens/item_detail.screen.dart';
-import 'package:little_light/services/littlelight/littlelight.service.dart';
+import 'package:little_light/services/littlelight/objectives.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
@@ -49,7 +49,7 @@ class LoadoutScreenState extends State<ObjectivesScreen> {
   }
 
   void loadObjectives() async {
-    LittleLightService service = LittleLightService();
+    ObjectivesService service = ObjectivesService();
     objectives = (await service.getTrackedObjectives()).reversed.toList();
     items = new Map();
     var itemObjectives =

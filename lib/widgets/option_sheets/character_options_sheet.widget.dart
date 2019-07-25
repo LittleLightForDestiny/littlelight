@@ -13,7 +13,7 @@ import 'package:little_light/models/loadout.dart';
 import 'package:little_light/screens/edit_loadout.screen.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/inventory/inventory.service.dart';
-import 'package:little_light/services/littlelight/littlelight.service.dart';
+import 'package:little_light/services/littlelight/loadouts.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/user_settings/item_sort_parameter.dart';
@@ -64,7 +64,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
   }
 
   void getLoadouts() async {
-    var littlelight = LittleLightService();
+    var littlelight = LoadoutsService();
     this.loadouts = await littlelight.getLoadouts();
     if (mounted) {
       setState(() {});

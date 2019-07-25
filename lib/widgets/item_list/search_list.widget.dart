@@ -158,6 +158,7 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
 
   List<int> get itemTypes => widget.tabData.itemTypes;
   List<int> get excludeItemTypes => widget.tabData.excludeItemTypes;
+  String get ownerId => widget.tabData.ownerId;
 
   List<ItemWithOwner> get filteredItems => filterItems();
 
@@ -179,6 +180,9 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
         var def = itemDefinitions[item.item.itemHash];
         if (def == null) return false;
         if (itemTypes != null && !itemTypes.contains(def.itemType)) {
+          return false;
+        }
+        if(ownerId != null && ownerId != item.ownerId){
           return false;
         }
         if (excludeItemTypes != null &&

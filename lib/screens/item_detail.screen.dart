@@ -8,7 +8,7 @@ import 'package:bungie_api/models/destiny_stat_group_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/services/littlelight/littlelight.service.dart';
+import 'package:little_light/services/littlelight/loadouts.service.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/common/destiny_item.stateful_widget.dart';
@@ -213,7 +213,7 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
         child: RaisedButton(
             child: TranslatedTextWidget("Add to Loadout"),
             onPressed: () async {
-              var loadouts = await LittleLightService().getLoadouts();
+              var loadouts = await LoadoutsService().getLoadouts();
               var equipped = false;
               showModalBottomSheet(
                   context: context,
@@ -226,7 +226,7 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
                       loadouts: loadouts,
                       onSelect: (loadout) async{
                         loadout.addItem(widget.item.itemHash, widget.item.itemInstanceId, equipped);  
-                        await LittleLightService().saveLoadout(loadout);
+                        await LoadoutsService().saveLoadout(loadout);
                       }));
             }));
   }
