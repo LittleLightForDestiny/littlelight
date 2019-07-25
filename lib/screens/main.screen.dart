@@ -71,9 +71,6 @@ class MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
       case SelectedPagePersistence.loadouts:
         currentScreen = LoadoutsScreen();
         break;
-      case SelectedPagePersistence.search:
-        currentScreen = SearchScreen();
-        break;
     }
     setState(() {});
     bool keepAwake = UserSettingsService().keepAwake;
