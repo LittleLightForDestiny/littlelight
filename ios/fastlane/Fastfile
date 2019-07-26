@@ -32,6 +32,7 @@ platform :ios do
       automatic_release:true,
       skip_screenshots:true,
       skip_binary_upload:true,
+      reject_if_possible:true,
       submission_information:{
         export_compliance_encryption_updated:false,
         add_id_info_uses_idfa:false
