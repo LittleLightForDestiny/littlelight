@@ -93,15 +93,15 @@ mixin SubclassPropertiesMixin on InventoryItemMixin {
   Widget buildTalentGridImage(DestinyTalentGridDefinition talentGridDef) {
     DestinyTalentNodeCategory cat =
         extractTalentGridNodeCategory(talentGridDef);
-    var path = DestinyData.getSubclassImagePath(definition.classType,
-        definition.talentGrid.hudDamageType, cat.identifier);
-    if (path == null) {
+    if (cat == null) {
       return QueuedNetworkImage(
         imageUrl: BungieApiService.url(definition.secondaryIcon),
         fit: BoxFit.fitWidth,
         alignment: Alignment.topRight,
       );
     }
+    var path = DestinyData.getSubclassImagePath(definition.classType,
+        definition.talentGrid.hudDamageType, cat.identifier);
     return Image.asset(
       path,
       fit: BoxFit.fitWidth,

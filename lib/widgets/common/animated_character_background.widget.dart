@@ -80,8 +80,8 @@ class _AnimatedCharacterBackgroundWidgetState
       characters.add(_CharacterInfo(
           emblemColor: c.emblemColor,
           characterClass: c.classType,
-          damageType: subclassDef.talentGrid.hudDamageType,
-          path: talentGridCat.identifier));
+          damageType: subclassDef.talentGrid?.hudDamageType,
+          path: talentGridCat?.identifier));
     }
     characterChangedListener();
   }
