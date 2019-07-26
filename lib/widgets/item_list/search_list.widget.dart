@@ -129,7 +129,7 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
     bool isTablet = MediaQueryHelper(context).tabletOrBigger;
     var _filteredItems = filteredItems;
     return StaggeredGridView.countBuilder(
-      padding: EdgeInsets.all(4),
+      padding: EdgeInsets.all(4).copyWith(bottom: MediaQuery.of(context).padding.bottom),
       crossAxisCount: isTablet ? 12 : 6,
       itemCount: _filteredItems?.length ?? 0,
       itemBuilder: (BuildContext context, int index) =>

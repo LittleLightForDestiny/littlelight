@@ -22,7 +22,9 @@ class LoadoutSelectSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
+    return Container(
+      padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+      child:Column(children: [
       header ?? Container(),
       Expanded(
           child: SingleChildScrollView(
@@ -73,6 +75,6 @@ class LoadoutSelectSheet extends StatelessWidget {
                         )
                         .toList(),
                   ))))
-    ]);
+    ]));
   }
 }

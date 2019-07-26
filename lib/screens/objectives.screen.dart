@@ -118,7 +118,7 @@ class LoadoutScreenState extends State<ObjectivesScreen> {
     }
 
     return StaggeredGridView.countBuilder(
-      padding: EdgeInsets.all(4),
+      padding: EdgeInsets.all(4).copyWith(bottom: MediaQuery.of(context).padding.bottom),
       crossAxisCount: 30,
       itemCount: objectives.length,
       itemBuilder: (BuildContext context, int index) => getItem(context, index),
