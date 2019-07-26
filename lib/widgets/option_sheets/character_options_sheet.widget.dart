@@ -84,7 +84,9 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
     return GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () {},
-        child: SingleChildScrollView(
+        child: Container(
+          padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+          child:SingleChildScrollView(
             padding: EdgeInsets.all(8),
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -97,7 +99,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
                     height: 8,
                   ),
                   buildPullFromPostmaster(),
-                ])));
+                ]))));
   }
 
   Widget buildEquipBlock() {

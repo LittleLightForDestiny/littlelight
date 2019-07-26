@@ -137,8 +137,8 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> {
   }
 
   Widget buildFooter(BuildContext context) {
-    if (!this.changed) return Container(height: 0);
     double paddingBottom = MediaQuery.of(context).padding.bottom;
+    if (!this.changed) return Container(height: paddingBottom);
     return Material(
         color: Theme.of(context).primaryColor,
         elevation: 1,
