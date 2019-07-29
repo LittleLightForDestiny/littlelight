@@ -1,0 +1,17 @@
+name: screen_fde
+description: A Flutter plugin to manage the device's screen on Android and iOS.
+author: Clovis Nicolas <clovisnicolas0@gmail.com>
+homepage: https://github.com/clovisnicolas/flutter_screen
+version: 0.0.5
+
+flutter:
+  plugin:
+    macosPrefix: FLE
+    pluginClass: ScreenPlugin
+
+environment:
+  sdk: ">=2.1.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
