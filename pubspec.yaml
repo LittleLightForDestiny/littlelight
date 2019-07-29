@@ -44,6 +44,8 @@ dependencies:
   url_launcher_fde:
     path: desktop_plugins/url_launcher_fde
   screen: ^0.0.5
+  screen_fde:
+    path: desktop_plugins/screen_fde
   package_info: 0.4.0+2
   package_info_fde:
     path: desktop_plugins/package_info_fde

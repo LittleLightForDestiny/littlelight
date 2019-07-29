@@ -46,6 +46,9 @@ class MasterworkCounterWidgetState extends State<MasterworkCounterWidget>
         }
       }
     }
+    if(mounted){
+      setState(() {});
+    }
   }
 
   @override
