@@ -63,7 +63,7 @@ class ProfileComponentGroups {
     DestinyComponentType.Collectibles,
     DestinyComponentType.Records,
     DestinyComponentType.PresentationNodes,
-    DestinyComponentType.Profiles
+    DestinyComponentType.Profiles,
   ];
 }
 

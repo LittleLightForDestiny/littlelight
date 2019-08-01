@@ -17,9 +17,9 @@ import 'package:little_light/screens/languages.screen.dart';
 import 'package:little_light/screens/loadouts.screen.dart';
 import 'package:little_light/screens/objectives.screen.dart';
 import 'package:little_light/screens/progress.screen.dart';
-import 'package:little_light/screens/search.screen.dart';
 import 'package:little_light/screens/settings.screen.dart';
 import 'package:little_light/screens/triumphs.screen.dart';
+import 'package:little_light/screens/vendors.screen.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/storage/storage.service.dart';
 import 'package:little_light/utils/platform_data.dart';
@@ -155,6 +155,10 @@ class SideMenuWidgetState extends State<SideMenuWidget> {
                   menuItem(context, TranslatedTextWidget("Loadouts"),
                       requireLogin: true, onTap: () {
                     open(context, LoadoutsScreen());
+                  }),
+                  menuItem(context, TranslatedTextWidget("Vendors"),
+                      onTap: () {
+                    open(context, VendorsScreen());
                   }),
                   menuItem(context, TranslatedTextWidget("Collections"),
                       onTap: () {

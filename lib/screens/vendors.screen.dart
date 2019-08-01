@@ -17,14 +17,14 @@ import 'package:little_light/widgets/presentation_nodes/record_item.widget.dart'
 import 'package:little_light/widgets/progress_tabs/tracked_plug_item.widget.dart';
 import 'package:little_light/widgets/progress_tabs/tracked_pursuit_item.widget.dart';
 
-class ObjectivesScreen extends StatefulWidget {
+class VendorsScreen extends StatefulWidget {
   final ProfileService profile = ProfileService();
   final ManifestService manifest = ManifestService();
   @override
-  ObjectivesScreenState createState() => new ObjectivesScreenState();
+  VendorsScreenState createState() => new VendorsScreenState();
 }
 
-class ObjectivesScreenState extends State<ObjectivesScreen> {
+class VendorsScreenState extends State<VendorsScreen> {
   List<TrackedObjective> objectives;
   Map<TrackedObjective, DestinyItemComponent> items;
 
@@ -40,6 +40,7 @@ class ObjectivesScreenState extends State<ObjectivesScreen> {
   void initState() {
     super.initState();
     loadObjectives();
+
     subscription = NotificationService().listen((event) {
       if (event.type == NotificationType.receivedUpdate ||
           event.type == NotificationType.localUpdate) {
@@ -87,7 +88,7 @@ class ObjectivesScreenState extends State<ObjectivesScreen> {
                 padding: EdgeInsets.all(8),
               )
             ],
-            title: TranslatedTextWidget("Objectives")),
+            title: TranslatedTextWidget("Vendors")),
         body: buildBody(context),
       ),
       InventoryNotificationWidget(

@@ -323,10 +323,15 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
     }
 
     var result = itemsToFilter.toList();
+    var originalOrder = itemsToFilter.toList();
     result.sort((itemA, itemB){
       var priorityA = priorityResults.contains(itemA) ? 0 : 1;
       var priorityB = priorityResults.contains(itemB) ? 0 : 1; 
-      return priorityA.compareTo(priorityB);
+      var priority = priorityA.compareTo(priorityB);
+      if(priority != 0){
+        return priority;
+      }
+      return originalOrder.indexOf(itemA).compareTo(originalOrder.indexOf(itemB));
     });
     return result;
   }

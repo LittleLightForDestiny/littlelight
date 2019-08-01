@@ -7,9 +7,11 @@ import 'package:bungie_api/models/destiny_item_set_action_request.dart';
 import 'package:bungie_api/models/destiny_item_transfer_request.dart';
 import 'package:bungie_api/models/destiny_postmaster_transfer_request.dart';
 import 'package:bungie_api/models/destiny_profile_response.dart';
+import 'package:bungie_api/models/destiny_vendors_response.dart';
 import 'package:bungie_api/models/user_info_card.dart';
 import 'package:bungie_api/models/user_membership_data.dart';
 import 'package:bungie_api/responses/destiny_profile_response_response.dart';
+import 'package:bungie_api/responses/destiny_vendors_response_response.dart';
 import 'package:bungie_api/responses/int32_response.dart';
 import 'package:bungie_api/responses/user_membership_data_response.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -55,30 +57,44 @@ class BungieApiService {
   }
 
   Future<BungieNetToken> refreshToken(String refreshToken) {
-    return OAuth.refreshToken(
-        new Client(autoRefreshToken:false), clientId, clientSecret, refreshToken);
+    return OAuth.refreshToken(new Client(autoRefreshToken: false), clientId,
+        clientSecret, refreshToken);
   }
 
   Future<DestinyProfileResponse> getCurrentProfile(List<int> components) async {
     BungieNetToken token = await auth.getToken();
     UserInfoCard membership = await auth.getMembership();
     if (membership == null) return null;
-    return await getProfile(components, membership.membershipId,
-        membership.membershipType, token);
+    return await getProfile(
+        components, membership.membershipId, membership.membershipType, token);
   }
 
   Future<DestinyProfileResponse> getProfile(
       List<int> components, String membershipId, int membershipType,
       [BungieNetToken token]) async {
     DestinyProfileResponseResponse response = await Destiny2.getProfile(
-        new Client(token:token), components, membershipId, membershipType);
+        new Client(token: token), components, membershipId, membershipType);
+    return response.response;
+  }
+
+  Future<DestinyVendorsResponse> getVendors(
+      List<int> components, String characterId) async {
+    BungieNetToken token = await auth.getToken();
+    UserInfoCard membership = await auth.getMembership();
+    if (membership == null) return null;
+    DestinyVendorsResponseResponse response = await Destiny2.getVendors(
+        new Client(token: token),
+        characterId,
+        components,
+        membership.membershipId,
+        membership.membershipType);
     return response.response;
   }
 
   Future<UserMembershipData> getMemberships() async {
     BungieNetToken token = await auth.getToken();
     UserMembershipDataResponse response =
-        await User.getMembershipDataForCurrentUser(new Client(token:token));
+        await User.getMembershipDataForCurrentUser(new Client(token: token));
     print(response);
     return response.response;
   }
@@ -88,7 +104,7 @@ class BungieApiService {
     BungieNetToken token = await auth.getToken();
     UserInfoCard membership = await auth.getMembership();
     int32Response response = await Destiny2.transferItem(
-        new Client(token:token),
+        new Client(token: token),
         DestinyItemTransferRequest()
           ..itemReferenceHash = itemHash
           ..stackSize = stackSize
@@ -104,7 +120,7 @@ class BungieApiService {
     BungieNetToken token = await auth.getToken();
     UserInfoCard membership = await auth.getMembership();
     int32Response response = await Destiny2.pullFromPostmaster(
-        new Client(token:token),
+        new Client(token: token),
         DestinyPostmasterTransferRequest()
           ..itemReferenceHash = itemHash
           ..stackSize = stackSize
@@ -118,7 +134,7 @@ class BungieApiService {
     BungieNetToken token = await auth.getToken();
     UserInfoCard membership = await auth.getMembership();
     int32Response response = await Destiny2.equipItem(
-        new Client(token:token),
+        new Client(token: token),
         DestinyItemActionRequest()
           ..itemId = itemId
           ..characterId = characterId
@@ -131,7 +147,7 @@ class BungieApiService {
     BungieNetToken token = await auth.getToken();
     UserInfoCard membership = await auth.getMembership();
     var response = await Destiny2.equipItems(
-        new Client(token:token),
+        new Client(token: token),
         DestinyItemSetActionRequest()
           ..itemIds = itemIds
           ..characterId = characterId
@@ -143,7 +159,7 @@ class BungieApiService {
 class Client implements HttpClient {
   BungieNetToken token;
   bool autoRefreshToken;
-  Client({this.token, this.autoRefreshToken=true});
+  Client({this.token, this.autoRefreshToken = true});
 
   @override
   Future<HttpResponse> request(HttpClientConfig config) async {
@@ -182,7 +198,6 @@ class Client implements HttpClient {
 
     Response response;
 
-    
     if (config.method == 'GET') {
       req = http.get("${BungieApiService.apiUrl}${config.url}$paramsString",
           headers: headers);
@@ -194,9 +209,9 @@ class Client implements HttpClient {
           headers: headers, body: body);
     }
     response = await req;
-    
+
     if (response.statusCode == 401 && autoRefreshToken) {
-      this.token = await AuthService().refreshToken(token); 
+      this.token = await AuthService().refreshToken(token);
       return request(config);
     }
     dynamic json;
@@ -226,7 +241,7 @@ class BungieApiException implements Exception {
   String get message => data["Message"] ?? data['error_description'];
   @override
   String toString() {
-    if(data == null){
+    if (data == null) {
       return "httpStatus - $httpStatus";
     }
     return "$errorStatus - $message";
