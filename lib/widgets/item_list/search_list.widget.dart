@@ -129,7 +129,8 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
     bool isTablet = MediaQueryHelper(context).tabletOrBigger;
     var _filteredItems = filteredItems;
     return StaggeredGridView.countBuilder(
-      padding: EdgeInsets.all(4).copyWith(bottom: MediaQuery.of(context).padding.bottom),
+      padding: EdgeInsets.all(4)
+          .copyWith(bottom: MediaQuery.of(context).padding.bottom),
       crossAxisCount: isTablet ? 12 : 6,
       itemCount: _filteredItems?.length ?? 0,
       itemBuilder: (BuildContext context, int index) =>
@@ -171,12 +172,14 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
     Set<ItemWithOwner> priorityResults = Set();
     for (var searchTerm in _terms) {
       var _search = removeDiacritics(searchTerm).toLowerCase().trim();
+      var _words = _search.split(" ");
       Set<int> perksMatched = new Set();
       Set<int> priorityPerksMatched = new Set();
       for (var p in perkDefinitions.values) {
-        var match = removeDiacritics(p.displayProperties.name)
-            .toLowerCase()
-            .contains(_search.toLowerCase());
+        var _perkName =
+            removeDiacritics(p.displayProperties.name).toLowerCase();
+        var match = _words.every((w)=>_perkName.contains(w));
+        
         var hardMatch = removeDiacritics(p.displayProperties.name)
             .toLowerCase()
             .startsWith(_search.toLowerCase());
@@ -282,16 +285,16 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
         }
         bool match = false;
         bool hardMatch = false;
-        var name = removeDiacritics(def.displayProperties.name).toLowerCase();
-        var itemTypeDisplayName =
+        var _name = removeDiacritics(def.displayProperties.name).toLowerCase();
+        var _itemTypeDisplayName =
             removeDiacritics(def.itemTypeDisplayName).toLowerCase();
 
-        match = name.contains(_search);
-        match = match || itemTypeDisplayName.contains(_search);
 
-        hardMatch = name.startsWith(_search);
-        hardMatch = hardMatch || itemTypeDisplayName.startsWith(_search);
+        match = _words.every((w)=>_name.contains(w));
+        match = match || _itemTypeDisplayName.contains(_search);
 
+        hardMatch = _name.startsWith(_search);
+        hardMatch = hardMatch || _itemTypeDisplayName.startsWith(_search);
 
         var sockets =
             widget.profile.getItemSockets(item?.item?.itemInstanceId ?? 0);
@@ -315,7 +318,7 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
             }
           }
         }
-        if(hardMatch){
+        if (hardMatch) {
           priorityResults.add(item);
         }
         return match;
@@ -324,14 +327,16 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
 
     var result = itemsToFilter.toList();
     var originalOrder = itemsToFilter.toList();
-    result.sort((itemA, itemB){
+    result.sort((itemA, itemB) {
       var priorityA = priorityResults.contains(itemA) ? 0 : 1;
-      var priorityB = priorityResults.contains(itemB) ? 0 : 1; 
+      var priorityB = priorityResults.contains(itemB) ? 0 : 1;
       var priority = priorityA.compareTo(priorityB);
-      if(priority != 0){
+      if (priority != 0) {
         return priority;
       }
-      return originalOrder.indexOf(itemA).compareTo(originalOrder.indexOf(itemB));
+      return originalOrder
+          .indexOf(itemA)
+          .compareTo(originalOrder.indexOf(itemB));
     });
     return result;
   }
