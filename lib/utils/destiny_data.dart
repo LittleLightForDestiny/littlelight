@@ -34,7 +34,7 @@ class RaidPhases {
   static const int sotpInsurectionPrime = 1268191778;
 
   static const int cosRitual = 824306255;
-  static const int cosCrystals = 9235511;
+  static const int cosInfiltration = 9235511;
   static const int cosDeception = 3789028322;
   static const int cosGahlran = 3307986266;
 
