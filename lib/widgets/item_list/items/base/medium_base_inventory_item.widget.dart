@@ -63,14 +63,13 @@ class MediumBaseInventoryItemWidget extends BaseInventoryItemWidget {
 
   @override
   Widget modsWidget(BuildContext context) {
+    if(item?.itemInstanceId == null) return Container();
     return Positioned(
       bottom: 4,
       right:4,
       child:ItemModsWidget(
-      item,
-      definition,
-      instanceInfo,
-      characterId: characterId,
+      definition: definition,
+      itemSockets: profile.getItemSockets(item?.itemInstanceId),
       iconSize: 18
     ));
   }

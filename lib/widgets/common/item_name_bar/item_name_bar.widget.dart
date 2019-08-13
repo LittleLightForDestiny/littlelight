@@ -12,6 +12,7 @@ class ItemNameBarWidget extends DestinyItemWidget {
   final EdgeInsets padding;
   final bool multiline;
   final FontWeight fontWeight;
+  final Widget trailing;
   ItemNameBarWidget(
     DestinyItemComponent item,
     DestinyInventoryItemDefinition definition,
@@ -22,21 +23,24 @@ class ItemNameBarWidget extends DestinyItemWidget {
     this.padding = const EdgeInsets.all(8),
     this.multiline = false,
     this.fontWeight = FontWeight.bold,
-  }) : super(item, definition, instanceInfo, key: key, characterId:characterId);
+    this.trailing,
+  }) : super(item, definition, instanceInfo,
+            key: key, characterId: characterId);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(left:padding.left, right:padding.right),
+      padding: EdgeInsets.only(left: padding.left, right: padding.right),
       height: fontSize + padding.top * 2,
       alignment: Alignment.centerLeft,
       decoration: nameBarBoxDecoration(),
-      child: Material(color:Colors.transparent, child:nameBarTextField(context)),
+      child:
+          Material(color: Colors.transparent, child: nameBarContent(context)),
     );
   }
 
   BoxDecoration nameBarBoxDecoration() {
-    int state  = item?.state ?? 0;
+    int state = item?.state ?? 0;
     if (state & ItemState.Masterwork != ItemState.Masterwork) {
       return BoxDecoration(
           color: DestinyData.getTierColor(definition.inventory.tierType));
@@ -56,7 +60,20 @@ class ItemNameBarWidget extends DestinyItemWidget {
     return ExactAssetImage("assets/imgs/masterwork-top.png");
   }
 
-  nameBarTextField(BuildContext context) {
+  Widget nameBarContent(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Expanded(
+          child: nameBarTextField(context),
+        ),
+        trailing ?? Container()
+      ],
+    );
+  }
+
+  Widget nameBarTextField(BuildContext context) {
     return Text(definition.displayProperties.name.toUpperCase(),
         overflow: TextOverflow.fade,
         maxLines: multiline ? 2 : 1,

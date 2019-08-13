@@ -1,196 +1,150 @@
-import 'dart:async';
-
-import 'package:bungie_api/models/destiny_item_component.dart';
+import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:little_light/models/tracked_objective.dart';
-import 'package:little_light/screens/item_detail.screen.dart';
-import 'package:little_light/services/littlelight/objectives.service.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:little_light/screens/search.screen.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
-import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/utils/media_query_helper.dart';
-import 'package:little_light/widgets/common/refresh_button.widget.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
+
+import 'package:little_light/services/user_settings/user_settings.service.dart';
+import 'package:little_light/widgets/common/animated_character_background.widget.dart';
+import 'package:little_light/widgets/flutter/passive_tab_bar_view.dart';
+import 'package:little_light/widgets/inventory_tabs/character_tab_header.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
-import 'package:little_light/widgets/presentation_nodes/record_item.widget.dart';
-import 'package:little_light/widgets/progress_tabs/tracked_plug_item.widget.dart';
-import 'package:little_light/widgets/progress_tabs/tracked_pursuit_item.widget.dart';
+import 'package:little_light/widgets/inventory_tabs/tabs_character_menu.widget.dart';
+import 'package:little_light/widgets/vendors/vendors_list.widget.dart';
 
 class VendorsScreen extends StatefulWidget {
-  final ProfileService profile = ProfileService();
-  final ManifestService manifest = ManifestService();
+  final profile = ProfileService();
+  final manifest = ManifestService();
+
   @override
-  VendorsScreenState createState() => new VendorsScreenState();
+  VendorsScreenState createState() => VendorsScreenState();
 }
 
-class VendorsScreenState extends State<VendorsScreen> {
-  List<TrackedObjective> objectives;
-  Map<TrackedObjective, DestinyItemComponent> items;
+class VendorsScreenState extends State<VendorsScreen>
+    with TickerProviderStateMixin {
+  TabController charTabController;
 
-  StreamSubscription<NotificationEvent> subscription;
+  get totalCharacterTabs => characters?.length != null ? characters.length : 3;
 
   @override
-  dispose() {
-    subscription.cancel();
+  void initState() {
+    charTabController = charTabController ??
+        TabController(
+          initialIndex: 0,
+          length: totalCharacterTabs,
+          vsync: this,
+        );
+    super.initState();
+  }
+
+  @override
+  void dispose() {
     super.dispose();
   }
 
   @override
-  void initState() {
-    super.initState();
-    loadObjectives();
-
-    subscription = NotificationService().listen((event) {
-      if (event.type == NotificationType.receivedUpdate ||
-          event.type == NotificationType.localUpdate) {
-        loadObjectives();
-      }
-    });
-  }
-
-  void loadObjectives() async {
-    ObjectivesService service = ObjectivesService();
-    objectives = (await service.getTrackedObjectives()).reversed.toList();
-    items = new Map();
-    var itemObjectives =
-        objectives.where((o) => o.type == TrackedObjectiveType.Item);
-    var plugObjectives =
-        objectives.where((o) => o.type == TrackedObjectiveType.Plug);
-    for (var o in itemObjectives) {
-      DestinyItemComponent item = await service.findObjectiveItem(o);
-      if (item != null) {
-        items[o] = item;
-      }
-    }
-    for (var o in plugObjectives) {
-      DestinyItemComponent item = await service.findObjectivePlugItem(o);
-      if (item != null) {
-        items[o] = item;
-      }
-    }
-    setState(() {});
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      Scaffold(
-        appBar: AppBar(
-            leading: IconButton(
+    if (characters == null) {
+      return Container();
+    }
+    double paddingTop = MediaQuery.of(context).padding.top;
+    var screenPadding = MediaQuery.of(context).padding;
+    var topOffset = screenPadding.top + kToolbarHeight;
+    var bottomOffset = screenPadding.bottom;
+    return Scaffold(
+      body: Stack(
+        children: <Widget>[
+          buildBackground(context),
+          Positioned.fill(
+            top: topOffset + 8,
+            bottom: bottomOffset,
+            child: buildCharacterTabView(context),
+          ),
+          Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              height: topOffset + 16,
+              child: buildCharacterHeaderTabView(context)),
+          Positioned(
+            top: paddingTop,
+            width: kToolbarHeight,
+            height: kToolbarHeight,
+            child: IconButton(
               icon: Icon(Icons.menu),
               onPressed: () {
                 Scaffold.of(context).openDrawer();
               },
             ),
-            actions: <Widget>[
-              RefreshButtonWidget(
-                padding: EdgeInsets.all(8),
-              )
-            ],
-            title: TranslatedTextWidget("Vendors")),
-        body: buildBody(context),
+          ),
+          Positioned(
+              top: MediaQuery.of(context).padding.top + kToolbarHeight - 52,
+              right: 8,
+              child: buildCharacterMenu(context)),
+          InventoryNotificationWidget(
+              barHeight: 0, key: Key('inventory_notification_widget')),
+        ],
       ),
-      InventoryNotificationWidget(
-        key: Key("notification_widget"),
-        barHeight: 0,
+    );
+  }
+
+  Widget buildBackground(BuildContext context) {
+    return AnimatedCharacterBackgroundWidget(tabController: charTabController);
+  }
+
+  Widget buildCharacterHeaderTabView(BuildContext context) {
+    return PassiveTabBarView(
+        physics: NeverScrollableScrollPhysics(),
+        controller: charTabController,
+        children: characters
+            .map((character) => TabHeaderWidget(
+                  character,
+                  key: Key("${character.emblemHash}"),
+                ))
+            .toList());
+  }
+
+  Widget buildCharacterTabView(BuildContext context) {
+    return TabBarView(
+        controller: charTabController, children: buildCharacterTabs(context));
+  }
+
+  List<Widget> buildCharacterTabs(BuildContext context) {
+    List<Widget> characterTabs = characters
+        .map((character) =>
+            VendorsListWidget(characterId: character.characterId))
+        .toList();
+    return characterTabs;
+  }
+
+  buildCharacterMenu(BuildContext context) {
+    return Row(children: [
+      IconButton(
+          icon: Icon(FontAwesomeIcons.search, color: Colors.white),
+          onPressed: () {
+            var char = characters[charTabController.index];
+            SearchTabData searchData =
+                SearchTabData.pursuits(char?.characterId);
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SearchScreen(
+                  tabData: searchData,
+                ),
+              ),
+            );
+          }),
+      TabsCharacterMenuWidget(
+        characters,
+        controller: charTabController,
+        includeVault: false,
       )
     ]);
   }
 
-  Widget buildBody(BuildContext context) {
-    if (objectives == null) {
-      return Container();
-    }
-
-    if (objectives.length == 0) {
-      return Container(
-          padding: EdgeInsets.all(16),
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                TranslatedTextWidget(
-                  "You aren't tracking any objectives yet. Add one from Triumphs or Pursuits.",
-                  textAlign: TextAlign.center,
-                ),
-                Container(height: 16),
-              ]));
-    }
-
-    return StaggeredGridView.countBuilder(
-      padding: EdgeInsets.all(4).copyWith(bottom: MediaQuery.of(context).padding.bottom),
-      crossAxisCount: 30,
-      itemCount: objectives.length,
-      itemBuilder: (BuildContext context, int index) => getItem(context, index),
-      staggeredTileBuilder: (int index) => getTileBuilder(index),
-      mainAxisSpacing: 2,
-      crossAxisSpacing: 2,
-      physics: const AlwaysScrollableScrollPhysics(),
-    );
-  }
-
-  StaggeredTile getTileBuilder(int index) {
-    bool isTablet = MediaQueryHelper(context).tabletOrBigger;
-    return StaggeredTile.fit(isTablet ? 15 : 30);
-  }
-
-  Widget getItem(BuildContext context, int index) {
-    TrackedObjective objective = objectives[index];
-    switch (objective.type) {
-      case TrackedObjectiveType.Triumph:
-        return RecordItemWidget(
-            key: Key(
-                "objective_${objective.hash}_objective_${objective.instanceId}_${objective.characterId}"),
-            hash: objective.hash);
-
-      case TrackedObjectiveType.Item:
-        if (items[objective] != null) {
-          return TrackedPursuitItemWidget(
-              key: Key(
-                  "objective_${objective.hash}_objective_${objective.instanceId}_${objective.characterId}"),
-              characterId: objective.characterId,
-              item: items[objective],
-              onTap: (item, definition, instanceInfo, characterId) async {
-                await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ItemDetailScreen(
-                          item,
-                          definition,
-                          instanceInfo,
-                          characterId: characterId,
-                        ),
-                  ),
-                );
-                loadObjectives();
-              });
-        }
-        break;
-
-      case TrackedObjectiveType.Plug:
-        if (items[objective] != null) {
-          return TrackedPlugItemWidget(
-              key: Key(
-                  "objective_${objective.hash}_objective_${objective.instanceId}_${objective.characterId}"),
-              item: items[objective],
-              plugHash: objective.hash,
-              onTap: (item, definition, instanceInfo, characterId) async {
-                await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ItemDetailScreen(
-                          item,
-                          definition,
-                          instanceInfo,
-                          characterId: characterId,
-                        ),
-                  ),
-                );
-                loadObjectives();
-              });
-        }
-    }
-    return Container();
+  List<DestinyCharacterComponent> get characters {
+    return widget.profile
+        .getCharacters(UserSettingsService().characterOrdering);
   }
 }

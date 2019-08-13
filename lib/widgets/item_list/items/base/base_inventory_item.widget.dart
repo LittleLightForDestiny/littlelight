@@ -21,28 +21,26 @@ class BaseInventoryItemWidget extends DestinyItemWidget
 
   @override
   Widget perksWidget(BuildContext context) {
+    var sockets = item?.itemInstanceId == null ? null : profile.getItemSockets(item?.itemInstanceId);
     return Positioned(
       bottom:6,
       left:96,
       child:ItemPerksWidget(
-      item,
-      definition,
-      instanceInfo,
-      characterId: characterId,
+      definition: definition,
+      itemSockets: sockets,
       iconSize: 20,
     ));
   }
 
   @override
   Widget modsWidget(BuildContext context) {
+    if(item?.itemInstanceId == null) return Container();
     return Positioned(
       bottom:6,
       right:6,
       child:ItemModsWidget(
-      item,
-      definition,
-      instanceInfo,
-      characterId: characterId,
+      definition: definition,
+      itemSockets: profile.getItemSockets(item?.itemInstanceId),
       iconSize: 22,
     ));
   }

@@ -110,7 +110,7 @@ class ItemObjectivesWidgetState extends DestinyItemState<ItemObjectivesWidget> {
     List<Widget> items = [];
     if ((objectiveDefinitions?.length ?? 0) == 0) return Container();
     if (itemObjectives != null) {
-      if (itemObjectives.where((o) => o.visible != false).length == 0) {
+      if (itemObjectives.where((o) => o.visible != false).length == 0 && !isTracking) {
         return Container();
       }
     }
@@ -129,7 +129,9 @@ class ItemObjectivesWidgetState extends DestinyItemState<ItemObjectivesWidget> {
                   buildRefreshButton(context)
                 ]))));
     items.addAll(buildObjectives(context));
-    items.add(buildTrackButton(context));
+    if(item != null){
+      items.add(buildTrackButton(context));
+    }
     return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch, children: items);
   }

@@ -34,7 +34,7 @@ class LoadoutSearchItemWrapperWidgetWidgetState
               instanceInfo,
               characterId: widget.characterId,
               uniqueId: uniqueId,
-              isLoadoutItemDetails: true,
+              hideItemManagement: true,
             ),
       ),
     );

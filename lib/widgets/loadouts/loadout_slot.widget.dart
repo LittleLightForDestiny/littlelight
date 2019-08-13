@@ -189,7 +189,7 @@ class LoadoutSlotWidget extends StatelessWidget {
                                   def,
                                   instanceInfo,
                                   characterId: null,
-                                  isLoadoutItemDetails: true,
+                                  hideItemManagement: true,
                                 ),
                               ),
                             );
