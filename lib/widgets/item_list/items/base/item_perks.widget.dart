@@ -1,25 +1,23 @@
 import 'package:bungie_api/enums/destiny_socket_category_style_enum.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
-import 'package:bungie_api/models/destiny_item_component.dart';
-import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_item_socket_entry_definition.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_socket_category_definition.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/widgets/common/destiny_item.stateful_widget.dart';
+import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 
-class ItemPerksWidget extends DestinyItemStatefulWidget {
+class ItemPerksWidget extends StatefulWidget {
+  final ManifestService manifest = ManifestService();
+  final DestinyInventoryItemDefinition definition;
   final double iconSize;
+  final List<DestinyItemSocketState> itemSockets;
+  final bool showUnusedPerks;
   ItemPerksWidget(
-      DestinyItemComponent item,
-      DestinyInventoryItemDefinition definition,
-      DestinyItemInstanceComponent instanceInfo,
-      {Key key,
-      String characterId,
-      this.iconSize = 16})
-      : super(item, definition, instanceInfo,
-            key: key, characterId: characterId);
+      {Key key, this.iconSize = 16, 
+      this.showUnusedPerks = false,
+      this.definition, this.itemSockets})
+      : super(key: key);
 
   @override
   ItemPerksWidgetState createState() {
@@ -27,7 +25,9 @@ class ItemPerksWidget extends DestinyItemStatefulWidget {
   }
 }
 
-class ItemPerksWidgetState extends DestinyItemState<ItemPerksWidget> {
+class ItemPerksWidgetState extends State<ItemPerksWidget> {
+  List<DestinyItemSocketState> get itemSockets => widget.itemSockets;
+  DestinyInventoryItemDefinition get definition => widget.definition;
   DestinySocketCategoryDefinition perksCatDefinition;
 
   @override
@@ -37,7 +37,7 @@ class ItemPerksWidgetState extends DestinyItemState<ItemPerksWidget> {
   }
 
   loadPerks() async {
-    if(definition?.sockets?.socketCategories == null){
+    if (definition?.sockets?.socketCategories == null) {
       return;
     }
     var socketCategoryHashes =
@@ -47,8 +47,8 @@ class ItemPerksWidgetState extends DestinyItemState<ItemPerksWidget> {
     perksCatDefinition = socketCategoryDefinitions.values.firstWhere((def) {
       return def.categoryStyle & DestinySocketCategoryStyle.Reusable ==
           DestinySocketCategoryStyle.Reusable;
-    }, orElse: ()=>null);
-    if(!mounted) return;
+    }, orElse: () => null);
+    if (!mounted) return;
     setState(() {});
   }
 
@@ -65,57 +65,90 @@ class ItemPerksWidgetState extends DestinyItemState<ItemPerksWidget> {
         (s) => s.socketCategoryHash == def.hash,
         orElse: () => null);
     List<Widget> columns = [];
-    if(socketCategory == null) return Container();
+    if (socketCategory == null) return Container();
     socketCategory.socketIndexes.forEach((index) {
-      var hash = item != null ? getEquippedPlugHashBySocketIndex(index) : getDefaultPerkBySocketIndex(index);
-      columns.add(buildPerkIcon(context, hash));
+      columns.add(buildPerkColumn(context, index));
     });
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: columns.toList());
   }
 
+  Widget buildPerkColumn(BuildContext context,int index){
+    if(!widget.showUnusedPerks || itemSockets == null){
+      var hash = itemSockets != null
+          ? getEquippedPlugHashBySocketIndex(index)
+          : getDefaultPerkBySocketIndex(index);
+      return buildPerkIcon(context, hash);
+    }
+
+    List<int> hashes = getInstancePlugHashesBySocketIndex(index);
+    return Container(
+      child:Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: hashes.map((h)=>buildPerkIcon(context, h)).toList(),));
+  }
+
   Widget buildPerkIcon(BuildContext context, int plugHash) {
-    if(plugHash == null){
+    if (plugHash == null) {
       return Container();
     }
     return Container(
       width: widget.iconSize,
       height: widget.iconSize,
-      child: ManifestImageWidget<DestinyInventoryItemDefinition>(plugHash, placeholder: Container(),),
+      child: ManifestImageWidget<DestinyInventoryItemDefinition>(
+        plugHash,
+        placeholder: Container(),
+      ),
     );
   }
 
-  DestinyItemSocketState getSocketState(int index){
-    if(item?.itemInstanceId == null) return null;
-    List<DestinyItemSocketState> socketStates =
-        widget.profile.getItemSockets(item.itemInstanceId);
-    return socketStates[index];
+  DestinyItemSocketState getSocketState(int index) {
+    if (itemSockets == null) return null;
+    return itemSockets[index];
   }
 
   int getEquippedPlugHashBySocketIndex(int index) {
     var entry = socketEntries[index];
     var state = getSocketState(index);
-    if(!(state.isVisible ?? false)){
+    if (!(state.isVisible ?? false)) {
       return null;
     }
-    if((state?.plugHash ?? 0) != 0){
+    if ((state?.plugHash ?? 0) != 0) {
       return state?.plugHash;
     }
-    if((entry.singleInitialItemHash ?? 0) != 0){
+    if ((entry.singleInitialItemHash ?? 0) != 0) {
       return entry.singleInitialItemHash;
     }
     return null;
   }
 
+  List<int> getInstancePlugHashesBySocketIndex(int index) {
+    var entry = socketEntries[index];
+    var state = getSocketState(index);
+    if (!(state.isVisible ?? false)) {
+      return [];
+    }
+    if ((state?.reusablePlugHashes?.length ?? 0) > 0) {
+      return state?.reusablePlugHashes;
+    }
+    if ((state?.plugHash ?? 0) != 0) {
+      return [state?.plugHash];
+    }
+    if ((entry.singleInitialItemHash ?? 0) != 0) {
+      return [entry.singleInitialItemHash];
+    }
+    return null;
+  }
 
   int getDefaultPerkBySocketIndex(int index) {
     var entry = socketEntries[index];
-    if((entry.singleInitialItemHash ?? 0) != 0){
+    if ((entry.singleInitialItemHash ?? 0) != 0) {
       return entry.singleInitialItemHash;
     }
-    if((entry.reusablePlugItems?.length ?? 0) != 0){
+    if ((entry.reusablePlugItems?.length ?? 0) != 0) {
       return entry.reusablePlugItems[0].plugItemHash;
     }
     return null;

@@ -18,7 +18,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:little_light/utils/remove_diacritics.dart';
 
 class SearchListWidget extends StatefulWidget {
-  final ProfileService profile = ProfileService(); 
+  final ProfileService profile = ProfileService();
   final SearchTabData tabData;
   SearchListWidget({Key key, this.tabData}) : super(key: key);
   final NotificationService broadcaster = new NotificationService();

@@ -24,6 +24,8 @@ class ArmorInventoryItemWidget extends BaseInventoryItemWidget {
         right: 0,
         child: Container(
             padding: EdgeInsets.all(padding),
-            child: PrimaryStatWidget(item, definition, instanceInfo)));
+            child: PrimaryStatWidget(
+              definition:definition, 
+              instanceInfo:instanceInfo)));
   }
 }

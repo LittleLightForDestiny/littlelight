@@ -5,6 +5,7 @@ import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_item_socket_entry_definition.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_stat_group_definition.dart';
+import 'package:bungie_api/models/destiny_vendor_sale_item_component.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
@@ -25,6 +26,7 @@ import 'package:little_light/widgets/item_details/item_detail_mods.widget.dart';
 import 'package:little_light/widgets/item_details/item_objectives.widget.dart';
 import 'package:little_light/widgets/item_details/item_detail_perks.widget.dart';
 import 'package:little_light/widgets/item_details/item_stats.widget.dart';
+import 'package:little_light/widgets/item_details/item_vendor_info.widget.dart';
 import 'package:little_light/widgets/item_details/main_info/item_main_info.widget.dart';
 import 'package:little_light/widgets/item_details/management_block.widget.dart';
 import 'package:little_light/widgets/item_details/quest_info.widget.dart';
@@ -34,16 +36,22 @@ import 'package:little_light/widgets/option_sheets/loadout_select_sheet.widget.d
 
 class ItemDetailScreen extends DestinyItemStatefulWidget {
   final String uniqueId;
-  final bool isLoadoutItemDetails;
+  final bool hideItemManagement;
+  final List<DestinyItemSocketState> socketStates;
+  final DestinyVendorSaleItemComponent sale;
+  final int vendorHash;
 
   ItemDetailScreen(
       DestinyItemComponent item,
       DestinyInventoryItemDefinition definition,
       DestinyItemInstanceComponent instanceInfo,
       {@required String characterId,
-      this.isLoadoutItemDetails = false,
+      this.vendorHash,
+      this.hideItemManagement = false,
+      this.socketStates,
       Key key,
-      this.uniqueId})
+      this.uniqueId,
+      this.sale})
       : super(item, definition, instanceInfo,
             key: key, characterId: characterId);
 
@@ -59,6 +67,10 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
   Map<int, DestinyInventoryItemDefinition> plugDefinitions;
   DestinyStatGroupDefinition statGroupDefinition;
   List<ItemWithOwner> duplicates;
+
+  List<DestinyItemSocketState> get socketStates =>
+      widget.socketStates ??
+      widget.profile.getItemSockets(item?.itemInstanceId);
 
   initState() {
     super.initState();
@@ -125,10 +137,7 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
         })
         .where((i) => i != null)
         .toList();
-    if (item?.itemInstanceId != null) {
-      List<DestinyItemSocketState> socketStates =
-          widget.profile.getItemSockets(item.itemInstanceId);
-      if (socketStates == null) return;
+    if (socketStates != null) {
       Iterable<int> hashes = socketStates
           .map((state) => state.plugHash)
           .where((i) => i != null)
@@ -168,6 +177,7 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
           ),
           SliverList(
               delegate: SliverChildListDelegate([
+            buildSaleDetails(context),
             ItemMainInfoWidget(item, definition, instanceInfo),
             buildManagementBlock(context),
             buildAddToLoadoutButton(context),
@@ -193,8 +203,15 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
     ]));
   }
 
+  Widget buildSaleDetails(BuildContext context) {
+    if(widget.sale == null){
+      return Container();
+    }
+    return ItemVendorInfoWidget(sale:widget.sale, vendorHash: widget.vendorHash,definition: definition,);
+  }
+
   Widget buildManagementBlock(BuildContext context) {
-    if(widget.isLoadoutItemDetails) return Container();
+    if (widget.hideItemManagement) return Container();
     return ManagementBlockWidget(
       item,
       definition,
@@ -204,8 +221,9 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
   }
 
   Widget buildAddToLoadoutButton(BuildContext context) {
-    if(widget.isLoadoutItemDetails) return Container();
-    if(widget.item == null || !loadoutBucketHashes.contains(definition?.inventory?.bucketTypeHash)){
+    if (widget.hideItemManagement) return Container();
+    if (widget.item == null ||
+        !loadoutBucketHashes.contains(definition?.inventory?.bucketTypeHash)) {
       return Container();
     }
     return Container(
@@ -224,8 +242,9 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
                         },
                       ),
                       loadouts: loadouts,
-                      onSelect: (loadout) async{
-                        loadout.addItem(widget.item.itemHash, widget.item.itemInstanceId, equipped);  
+                      onSelect: (loadout) async {
+                        loadout.addItem(widget.item.itemHash,
+                            widget.item.itemInstanceId, equipped);
                         await LoadoutsService().saveLoadout(loadout);
                       }));
             }));
@@ -250,9 +269,9 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
 
   Widget buildRewards(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(8),
-      child:RewardsInfoWidget(item, definition, instanceInfo,
-        characterId: characterId, key: Key("item_rewards_widget")));
+        padding: EdgeInsets.all(8),
+        child: RewardsInfoWidget(item, definition, instanceInfo,
+            characterId: characterId, key: Key("item_rewards_widget")));
   }
 
   Widget buildStats(BuildContext context) {
@@ -272,6 +291,7 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
       plugDefinitions: plugDefinitions,
       selectedPerkHash: selectedPerk,
       selectedPerkHashes: selectedPerks,
+      socketStates: socketStates,
       onSelectPerk: (socketIndex, plugHash) {
         if (selectedPerk == plugHash) {
           selectedPerk = null;

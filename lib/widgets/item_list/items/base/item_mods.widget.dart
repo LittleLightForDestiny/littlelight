@@ -1,24 +1,22 @@
 import 'package:bungie_api/enums/destiny_socket_category_style_enum.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
-import 'package:bungie_api/models/destiny_item_component.dart';
-import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_socket_category_definition.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/widgets/common/destiny_item.stateful_widget.dart';
+import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 
-class ItemModsWidget extends DestinyItemStatefulWidget {
+class ItemModsWidget extends StatefulWidget {
   final double iconSize;
+  final ManifestService manifest = ManifestService();
+  final List<DestinyItemSocketState> itemSockets;
+  final DestinyInventoryItemDefinition definition;
   ItemModsWidget(
-      DestinyItemComponent item,
-      DestinyInventoryItemDefinition definition,
-      DestinyItemInstanceComponent instanceInfo,
       {Key key,
-      String characterId,
+      this.definition,
+      this.itemSockets,
       this.iconSize = 16})
-      : super(item, definition, instanceInfo,
-            key: key, characterId: characterId);
+      : super(key: key);
 
   @override
   ItemModsWidgetState createState() {
@@ -26,21 +24,19 @@ class ItemModsWidget extends DestinyItemStatefulWidget {
   }
 }
 
-class ItemModsWidgetState extends DestinyItemState<ItemModsWidget> {
+class ItemModsWidgetState extends State<ItemModsWidget> {
   DestinySocketCategoryDefinition modsCatDefinition;
-  List<DestinyItemSocketState> itemSockets;
+  List<DestinyItemSocketState> get itemSockets => widget.itemSockets;
+  DestinyInventoryItemDefinition get definition => widget.definition;
 
   @override
   void initState() {
     super.initState();
-    if(widget.item != null){
-      loadMods();
-    }
-    
+    loadMods();
   }
 
   loadMods() async {
-    if(definition?.sockets?.socketCategories == null){
+    if(widget.definition?.sockets?.socketCategories == null){
       return;
     }
     var socketCategoryHashes =
@@ -51,7 +47,6 @@ class ItemModsWidgetState extends DestinyItemState<ItemModsWidget> {
       return (def.categoryStyle & DestinySocketCategoryStyle.Consumable ==
           DestinySocketCategoryStyle.Consumable) && (def.categoryStyle & DestinySocketCategoryStyle.Reusable != DestinySocketCategoryStyle.Reusable);
     }, orElse: ()=>null);
-    this.itemSockets = widget.profile.getItemSockets(item.itemInstanceId);
     if(!mounted){
       return;
     }

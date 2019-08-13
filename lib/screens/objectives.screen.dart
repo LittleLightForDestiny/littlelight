@@ -21,10 +21,10 @@ class ObjectivesScreen extends StatefulWidget {
   final ProfileService profile = ProfileService();
   final ManifestService manifest = ManifestService();
   @override
-  LoadoutScreenState createState() => new LoadoutScreenState();
+  ObjectivesScreenState createState() => new ObjectivesScreenState();
 }
 
-class LoadoutScreenState extends State<ObjectivesScreen> {
+class ObjectivesScreenState extends State<ObjectivesScreen> {
   List<TrackedObjective> objectives;
   Map<TrackedObjective, DestinyItemComponent> items;
 

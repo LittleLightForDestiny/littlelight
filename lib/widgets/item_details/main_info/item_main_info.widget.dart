@@ -43,9 +43,8 @@ class ItemMainInfoWidget extends DestinyItemWidget {
 
   Widget primaryStat(context) {
     return PrimaryStatWidget(
-      item,
-      definition,
-      instanceInfo,
+      definition:definition,
+      instanceInfo:instanceInfo,
       suppressLabel: true,
       fontSize: 36,
     );

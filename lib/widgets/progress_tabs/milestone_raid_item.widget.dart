@@ -157,11 +157,11 @@ class _MilestoneRaidItemWidgetState extends MilestoneItemWidgetState<MilestoneRa
         text = "Insurrection Prime";
         break;
 
-      case RaidPhases.cosLamps:
-        text = "Lamps";
+      case RaidPhases.cosRitual:
+        text = "Witches Ritual";
         break;
-      case RaidPhases.cosCrystals:
-        text = "Crystals";
+      case RaidPhases.cosInfiltration:
+        text = "Infiltration";
         break;
       case RaidPhases.cosDeception:
         text = "Deception";

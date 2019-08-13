@@ -63,7 +63,7 @@ class ProfileComponentGroups {
     DestinyComponentType.Collectibles,
     DestinyComponentType.Records,
     DestinyComponentType.PresentationNodes,
-    DestinyComponentType.Profiles
+    DestinyComponentType.Profiles,
   ];
 }
 
@@ -287,7 +287,10 @@ class ProfileService {
   }
 
   List<DestinyItemSocketState> getItemSockets(String itemInstanceId) {
-    return _profile.itemComponents.sockets.data[itemInstanceId]?.sockets;
+    try{
+      return _profile.itemComponents.sockets.data[itemInstanceId]?.sockets;
+    }catch(e){}
+    return null;
   }
 
   List<DestinyObjectiveProgress> getItemObjectives(

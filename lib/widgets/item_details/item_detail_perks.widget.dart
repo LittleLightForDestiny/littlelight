@@ -31,11 +31,14 @@ class ItemDetailPerksWidget extends StatefulWidget {
   final DestinyItemInstanceComponent instanceInfo;
   final ProfileService profile = ProfileService();
 
+  final List<DestinyItemSocketState> socketStates;
+
   ItemDetailPerksWidget(this.item, this.definition, this.instanceInfo,
       {this.onSelectPerk,
       Key key,
       this.selectedPerkHash,
       this.selectedPerkHashes,
+      this.socketStates,
       this.plugDefinitions})
       : super(key: key);
 
@@ -46,6 +49,8 @@ class ItemDetailPerksWidget extends StatefulWidget {
 }
 
 class ItemDetailPerksWidgetState extends State<ItemDetailPerksWidget> with AutomaticKeepAliveClientMixin {
+  List<DestinyItemSocketState> get socketStates => widget.socketStates ?? widget.profile.getItemSockets(item?.itemInstanceId);
+
   Map<int, DestinyInventoryItemDefinition> get plugDefinitions =>
       widget.plugDefinitions;
   DestinyItemComponent get item => widget.item;
@@ -171,7 +176,7 @@ class ItemDetailPerksWidgetState extends State<ItemDetailPerksWidget> with Autom
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: category.socketIndexes.map((socketIndex) {
-          Widget plugItems = item != null
+          Widget plugItems = socketStates != null
               ? instancePlugItems(context, socketIndex)
               : definitionPlugItems(context, socketIndex);
           if (plugItems == null) {
@@ -275,9 +280,7 @@ class ItemDetailPerksWidgetState extends State<ItemDetailPerksWidget> with Autom
   }
 
   DestinyItemSocketState getSocketState(int index){
-    if(item?.itemInstanceId == null) return null;
-    List<DestinyItemSocketState> socketStates =
-        widget.profile.getItemSockets(item.itemInstanceId);
+    if(socketStates == null) return null;
     return socketStates[index];
   }
 

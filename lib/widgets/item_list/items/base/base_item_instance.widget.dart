@@ -128,27 +128,25 @@ class BaseItemInstanceWidget extends BaseInventoryItemWidget {
 
   @override
   Widget primaryStatWidget(BuildContext context) {
-    return PrimaryStatWidget(item, definition, instanceInfo);
+    return PrimaryStatWidget(definition:definition, instanceInfo:instanceInfo);
   }
 
   @override
   Widget modsWidget(BuildContext context) {
+    if(item?.itemInstanceId == null) return Container();
     return ItemModsWidget(
-      item,
-      definition,
-      instanceInfo,
-      characterId: characterId,
+      definition: definition,
+      itemSockets: profile.getItemSockets(item?.itemInstanceId),
       iconSize: 22,
     );
   }
 
   @override
   Widget perksWidget(BuildContext context) {
+    var sockets = item?.itemInstanceId == null ? null : profile.getItemSockets(item?.itemInstanceId);
     return ItemPerksWidget(
-      item,
-      definition,
-      instanceInfo,
-      characterId: characterId,
+      itemSockets: sockets,
+      definition: definition,
       iconSize: 20,
     );
   }

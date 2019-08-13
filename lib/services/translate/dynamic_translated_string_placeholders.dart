@@ -1,6 +1,8 @@
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
 translationPlaceholders() {
+  TranslatedTextWidget("Select Language");
+  TranslatedTextWidget("Download Database");
   TranslatedTextWidget("Equipment");
   TranslatedTextWidget("Progress");
   TranslatedTextWidget("Pursuits");
@@ -8,8 +10,6 @@ translationPlaceholders() {
   TranslatedTextWidget("Search");
   TranslatedTextWidget("Duplicated Items");
   TranslatedTextWidget("About");
-  TranslatedTextWidget("Change Account");
-  TranslatedTextWidget("Change Membership");
   TranslatedTextWidget("Change Language");
   TranslatedTextWidget("Transfer");
   TranslatedTextWidget("Stats");
@@ -43,8 +43,7 @@ translationPlaceholders() {
   TranslatedTextWidget("AuthorizationCodeInvalid");
   TranslatedTextWidget("DestinyAccountNotFound");
   TranslatedTextWidget("invalid_grant");
-  TranslatedTextWidget(
-      "We were unable to find your Destiny account information. If you have a valid Destiny Account, let us know.");
+  TranslatedTextWidget("We were unable to find your Destiny account information. If you have a valid Destiny Account, let us know.");
 
   TranslatedTextWidget("access_denied");
 
@@ -68,11 +67,14 @@ translationPlaceholders() {
   TranslatedTextWidget("Botza District");
   TranslatedTextWidget("Vault Access");
   TranslatedTextWidget("Insurrection Prime");
-  TranslatedTextWidget("Lamps");
-  TranslatedTextWidget("Crystals");
+  TranslatedTextWidget("Witches Ritual");
+  TranslatedTextWidget("Infiltration");
   TranslatedTextWidget("Deception");
   TranslatedTextWidget("Gahlran");
+  TranslatedTextWidget("Val Ca'uor");
 
+
+  //Errors 
   TranslatedTextWidget("server_error");
   TranslatedTextWidget("SystemDisabled");
 }

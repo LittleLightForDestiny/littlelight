@@ -1,14 +1,12 @@
 import 'package:bungie_api/enums/destiny_item_type_enum.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
-import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/utils/destiny_data.dart';
-import 'package:little_light/widgets/common/destiny_item.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 
-class PrimaryStatWidget extends DestinyItemWidget {
+class PrimaryStatWidget extends StatelessWidget {
   final double fontSize;
   final double padding;
   final bool suppressLabel;
@@ -16,11 +14,13 @@ class PrimaryStatWidget extends DestinyItemWidget {
   final bool suppressAmmoTypeIcon;
   final bool suppressClassTypeIcon;
 
+  final DestinyItemInstanceComponent instanceInfo;
+  final DestinyInventoryItemDefinition definition;
+
   PrimaryStatWidget(
-      DestinyItemComponent item,
-      DestinyInventoryItemDefinition definition,
-      DestinyItemInstanceComponent instanceInfo,
       {Key key,
+      this.definition,
+      this.instanceInfo,
       this.suppressLabel = false,
       this.suppressDamageTypeIcon = false,
       this.suppressAmmoTypeIcon = false,
@@ -28,8 +28,7 @@ class PrimaryStatWidget extends DestinyItemWidget {
       this.fontSize = 22,
       this.padding = 8,
       String characterId})
-      : super(item, definition, instanceInfo,
-            key: key, characterId: characterId);
+      : super(key: key);
 
   int get statValue {
     return instanceInfo?.primaryStat?.value;
@@ -37,7 +36,7 @@ class PrimaryStatWidget extends DestinyItemWidget {
 
   int get damageType {
     var value = instanceInfo?.damageType;
-    if(value!= null){
+    if (value != null) {
       return value;
     }
     return definition?.defaultDamageType;
@@ -52,22 +51,25 @@ class PrimaryStatWidget extends DestinyItemWidget {
 
   List<Widget> mainLineWidgets(BuildContext context) {
     List<Widget> widgets = [];
-    if (definition.itemType == DestinyItemType.Weapon && !suppressDamageTypeIcon) {
+    if (definition.itemType == DestinyItemType.Weapon &&
+        !suppressDamageTypeIcon) {
       widgets.add(damageTypeIcon(context));
     }
-    if (definition.itemType == DestinyItemType.Armor && !suppressClassTypeIcon) {
+    if (definition.itemType == DestinyItemType.Armor &&
+        !suppressClassTypeIcon) {
       widgets.add(classTypeIcon(context));
     }
-    widgets.add(valueField(
-        context, DestinyData.getDamageTypeTextColor(damageType)));
-    if (definition.itemType == DestinyItemType.Weapon && !suppressAmmoTypeIcon) {
+    widgets.add(
+        valueField(context, DestinyData.getDamageTypeTextColor(damageType)));
+    if (definition.itemType == DestinyItemType.Weapon &&
+        !suppressAmmoTypeIcon) {
       widgets.add(ammoTypeIcon(context));
     }
     return widgets;
   }
 
   Widget valueField(BuildContext context, Color color) {
-    if(statValue == null) return Container();
+    if (statValue == null) return Container();
     return Text(
       "$statValue",
       style: TextStyle(
@@ -117,7 +119,7 @@ class PrimaryStatWidget extends DestinyItemWidget {
 
   Widget ammoTypeDivider(BuildContext context) {
     return Container(
-        margin: EdgeInsets.only(left: padding/2, right: padding / 4),
+        margin: EdgeInsets.only(left: padding / 2, right: padding / 4),
         color: Colors.white,
         width: 1,
         height: fontSize);
