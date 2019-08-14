@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bungie_api/models/destiny_destination_definition.dart';
+import 'package:bungie_api/models/destiny_faction_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_vendor_category.dart';
 import 'package:bungie_api/models/destiny_vendor_definition.dart';
@@ -179,8 +180,12 @@ class VendorsListItemWidgetState<T extends VendorsListItemWidget>
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          QueuedNetworkImage(
-            imageUrl: BungieApiService.url(definition.displayProperties.icon),
+          AspectRatio(
+            aspectRatio: 1,
+            child: QueuedNetworkImage(
+              imageUrl: BungieApiService.url(
+                  definition.displayProperties.mapIcon),
+            ),
           ),
           Container(
             width: 8,
@@ -194,8 +199,8 @@ class VendorsListItemWidgetState<T extends VendorsListItemWidget>
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               Container(height: 2),
-              ManifestText<DestinyDestinationDefinition>(
-                  location.destinationHash,
+              ManifestText<DestinyFactionDefinition>(
+                  definition?.factionHash,
                   style: TextStyle(fontWeight: FontWeight.w300)),
             ],
           )
@@ -222,8 +227,11 @@ class VendorsListItemWidgetState<T extends VendorsListItemWidget>
 
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Container(
-        padding: EdgeInsets.only(bottom:4),
-        child: Text(catDefinition.displayProperties.name.toUpperCase(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),)),
+          padding: EdgeInsets.only(bottom: 4),
+          child: Text(
+            catDefinition.displayProperties.name.toUpperCase(),
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+          )),
       Container(height: 8, width: 1),
       buildCategoryItems(context, category)
     ]);
@@ -245,15 +253,18 @@ class VendorsListItemWidgetState<T extends VendorsListItemWidget>
       BuildContext context, DestinyVendorItemDefinition item, int index) {
     var sale = _sales["$index"];
     return Container(
-        decoration: BoxDecoration(border: Border.all(color: Colors.grey.shade300, width: 1)),
+        decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey.shade300, width: 1)),
         width: 36,
         height: 36,
         child: Stack(
           children: <Widget>[
             ManifestImageWidget<DestinyInventoryItemDefinition>(item.itemHash,
                 key: Key("item_${item.itemHash}")),
-            sale.saleStatus != 0 ? Positioned.fill(
-                child: Container(color:Colors.black.withOpacity(.6))) : Container()
+            sale.saleStatus != 0
+                ? Positioned.fill(
+                    child: Container(color: Colors.black.withOpacity(.6)))
+                : Container()
           ],
         ));
   }

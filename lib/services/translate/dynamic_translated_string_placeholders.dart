@@ -67,7 +67,7 @@ translationPlaceholders() {
   TranslatedTextWidget("Botza District");
   TranslatedTextWidget("Vault Access");
   TranslatedTextWidget("Insurrection Prime");
-  TranslatedTextWidget("Witches Ritual");
+  TranslatedTextWidget("Hive Ritual");
   TranslatedTextWidget("Infiltration");
   TranslatedTextWidget("Deception");
   TranslatedTextWidget("Gahlran");

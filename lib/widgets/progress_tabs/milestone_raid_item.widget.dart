@@ -158,7 +158,7 @@ class _MilestoneRaidItemWidgetState extends MilestoneItemWidgetState<MilestoneRa
         break;
 
       case RaidPhases.cosRitual:
-        text = "Witches Ritual";
+        text = "Hive Ritual";
         break;
       case RaidPhases.cosInfiltration:
         text = "Infiltration";
