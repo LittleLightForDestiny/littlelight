@@ -1,4 +1,5 @@
 import 'package:bungie_api/models/destiny_destination_definition.dart';
+import 'package:bungie_api/models/destiny_faction_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_vendor_component.dart';
 import 'package:bungie_api/models/destiny_vendor_definition.dart';
@@ -88,30 +89,37 @@ class VendorDetailsScreenState extends State<VendorDetailsScreen> {
 
   buildAppBarTitle(BuildContext context) {
     if (definition == null) return Container();
-    var location = definition.locations[widget.vendor.vendorLocationIndex];
     return Container(
         child: Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        QueuedNetworkImage(
-          imageUrl: BungieApiService.url(definition.displayProperties.icon),
-        ),
         Container(
-          width: 8,
-        ),
-        Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              definition?.displayProperties?.name?.toUpperCase(),
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          padding: EdgeInsets.all(8),
+          child:
+        AspectRatio(
+            aspectRatio: 1,
+            child: QueuedNetworkImage(
+              imageUrl: BungieApiService.url(
+                  definition.displayProperties.mapIcon),
             ),
-            Container(height: 2),
-            ManifestText<DestinyDestinationDefinition>(location.destinationHash,
-                style: TextStyle(fontWeight: FontWeight.w300, fontSize: 14)),
-          ],
-        )
+          )),
+          Container(
+            width: 8,
+          ),
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                definition?.displayProperties?.name?.toUpperCase(),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
+              Container(height: 2),
+              ManifestText<DestinyFactionDefinition>(
+                  definition?.factionHash,
+                  style: TextStyle(fontWeight: FontWeight.w300, fontSize: 14)),
+            ],
+          ),
       ],
     ));
   }
