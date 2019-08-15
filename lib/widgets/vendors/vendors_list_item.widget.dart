@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:bungie_api/models/destiny_destination_definition.dart';
 import 'package:bungie_api/models/destiny_faction_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_vendor_category.dart';
@@ -174,7 +173,6 @@ class VendorsListItemWidgetState<T extends VendorsListItemWidget>
   }
 
   Widget buildHeaderInfo(BuildContext context) {
-    var location = definition.locations[widget.vendor.vendorLocationIndex];
     return Container(
       padding: EdgeInsets.all(8),
       child: Row(

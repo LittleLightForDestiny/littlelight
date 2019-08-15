@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:bungie_api/models/destiny_vendor_category.dart';
 import 'package:bungie_api/models/destiny_vendor_component.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -43,9 +44,15 @@ class _VendorsListWidgetState extends State<VendorsListWidget>
 
   Future<void> getVendors() async {
     var vendors = await widget.service.getVendors(widget.characterId);
+    Map<int, List<DestinyVendorCategory>> _categories = {};
+    for(var vendor in vendors.values){
+      _categories[vendor.vendorHash] = await widget.service.getVendorCategories(widget.characterId, vendor.vendorHash);
+    }
     _vendors = vendors.values.where((v) {
       if (!v.enabled) return false;
       if (widget.ignoreVendorHashes.contains(v.vendorHash)) return false;
+      var categories = _categories[v.vendorHash];
+    if ((categories?.length ?? 0) < 1) return false;
       return true;
     }).toList();
     var originalOrder = _vendors.map((v) => v.vendorHash).toList();
