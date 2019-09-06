@@ -76,6 +76,37 @@ class SearchTabData {
         },
       );
 
+  factory SearchTabData.equipment([int classType]) => SearchTabData(
+        itemTypes: [DestinyItemType.Weapon, DestinyItemType.Armor, DestinyItemType.Ghost,
+              DestinyItemType.Vehicle,
+              DestinyItemType.Ship,
+              DestinyItemType.Emblem,],
+        filterData: {
+          FilterType.powerLevel: FilterItem(
+              [0, DestinyData.maxPowerLevel], [0, DestinyData.maxPowerLevel],
+              open: true),
+          FilterType.classType: FilterItem([
+            DestinyClass.Titan,
+            DestinyClass.Hunter,
+            DestinyClass.Warlock
+          ], classType != null ? [classType] : [], open: true),
+          FilterType.bucketType: FilterItem([
+            InventoryBucket.helmet,
+            InventoryBucket.gauntlets,
+            InventoryBucket.chestArmor,
+            InventoryBucket.legArmor,
+            InventoryBucket.classArmor,
+          ], [], open: true),
+          FilterType.tierType: FilterItem([
+            TierType.Exotic,
+            TierType.Superior,
+            TierType.Rare,
+            TierType.Common,
+            TierType.Basic,
+          ], []),
+        },
+      );
+
   factory SearchTabData.armor([int classType]) => SearchTabData(
         itemTypes: [DestinyItemType.Armor],
         filterData: {

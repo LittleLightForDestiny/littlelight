@@ -39,13 +39,21 @@ class ItemListWidget extends StatefulWidget {
 
   final int currentGroup;
 
+  final bool shrinkWrap;
+
+  final bool includeInfoHeader;
+
+  final bool fixedSizedEquipmentBuckets;
+
   ItemListWidget(
       {this.padding,
       this.bucketHashes,
       this.characterId,
+      this.includeInfoHeader = true,
+      this.shrinkWrap = false,
       Key key,
       this.scrollPositions,
-      this.currentGroup})
+      this.currentGroup, this.fixedSizedEquipmentBuckets = false})
       : super(key: key);
   @override
   ItemListWidgetState createState() => new ItemListWidgetState();
@@ -85,7 +93,9 @@ class ItemListWidgetState extends State<ItemListWidget> {
     List<DestinyItemComponent> profileInventory =
         widget.profile.getProfileInventory();
     List<ListItem> listIndex = [];
-    listIndex.add(new ListItem(ListItem.infoHeader, null));
+    if(widget.includeInfoHeader){
+      listIndex.add(new ListItem(ListItem.infoHeader, null));
+    }
     for (int hash in widget.bucketHashes) {
       List<DestinyItemComponent> inventory = characterInventory;
       if (ProfileService.profileBuckets.contains(hash)) {
@@ -128,9 +138,12 @@ class ItemListWidgetState extends State<ItemListWidget> {
         this.listIndex = listIndex;
       });
     }
-
-    listIndex.add(new ListItem(ListItem.spacer, 0));
-    listIndex.add(new ListItem(ListItem.spacer, 0));
+    
+    if(!widget.shrinkWrap){
+      listIndex.add(new ListItem(ListItem.spacer, 0));
+      listIndex.add(new ListItem(ListItem.spacer, 0));
+    }
+    
     if (!mounted) {
       return;
     }
@@ -149,15 +162,20 @@ class ItemListWidgetState extends State<ItemListWidget> {
 
   Widget getList() {
     if (listIndex.length < 2) {
-      return Container();
+      return Container(height:300);
+    }
+    double initialOffset = 0;
+    if(widget?.scrollPositions?.containsKey(widget?.currentGroup) ?? false){
+      initialOffset = widget.scrollPositions[widget.currentGroup];
     }
     ScrollController controller = new ScrollController(
-      initialScrollOffset: widget.scrollPositions[widget.currentGroup],
+      initialScrollOffset: initialOffset,
     );
     controller.addListener(() {
       widget.scrollPositions[widget.currentGroup] = controller.offset;
     });
     return StaggeredGridView.countBuilder(
+      shrinkWrap: widget.shrinkWrap,
       crossAxisCount: 30,
       itemCount: listIndex.length,
       itemBuilder: (BuildContext context, int index) => getItem(index),
@@ -165,7 +183,7 @@ class ItemListWidgetState extends State<ItemListWidget> {
       mainAxisSpacing: 2,
       crossAxisSpacing: 2,
       controller: controller,
-      physics: const AlwaysScrollableScrollPhysics(),
+      physics: widget.shrinkWrap ? NeverScrollableScrollPhysics() : AlwaysScrollableScrollPhysics(),
     );
   }
 
@@ -184,13 +202,19 @@ class ItemListWidgetState extends State<ItemListWidget> {
         }
 
         if (widget.minimalDensityBucketHashes.contains(item.bucketHash)) {
-          if (MediaQueryHelper(context).tabletOrBigger) {
+          if (MediaQueryHelper(context).isDesktop) {
+            return StaggeredTile.count(2, 2);
+          }
+          if (MediaQueryHelper(context).tabletOrBigger || MediaQueryHelper(context).isLandscape) { 
             return StaggeredTile.count(3, 3);
           }
           return StaggeredTile.count(6, 6);
         }
         return StaggeredTile.extent(10, 76);
       case ListItem.spacer:
+        if(item.hash == InventoryBucket.subclass && widget.shrinkWrap){
+          return StaggeredTile.extent(30, 228);  
+        }
         return StaggeredTile.extent(30, 76);
     }
     return StaggeredTile.extent(30, 96);

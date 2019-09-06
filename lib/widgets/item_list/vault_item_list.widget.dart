@@ -137,7 +137,7 @@ class VaultItemListWidgetState extends ItemListWidgetState
     ListItem item = listIndex[index];
     switch (item.type) {
       case ListItem.unequippedItem:
-        if (MediaQueryHelper(context).tabletOrBigger) {
+        if (MediaQueryHelper(context).tabletOrBigger || MediaQueryHelper(context).isLandscape) {
           return StaggeredTile.count(3, 3);
         }
         return StaggeredTile.count(6, 6);      

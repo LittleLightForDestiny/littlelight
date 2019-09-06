@@ -1,4 +1,3 @@
-
 import 'package:bungie_api/models/destiny_faction_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_vendor_component.dart';
