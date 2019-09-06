@@ -33,10 +33,7 @@ class LargeScreenVaultListWidgetState
   @override
   void initState() {
     super.initState();
-    loadBucketDefinitions();
   }
-
-  void loadBucketDefinitions() {}
 
   @override
   dispose() {
