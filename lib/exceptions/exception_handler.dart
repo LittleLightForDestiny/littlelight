@@ -125,6 +125,7 @@ class ExceptionHandler {
 
   static setSentryUserInfo(
       String membershipId, String displayName, int platformId) {
+    if(_sentry == null) return;
     _sentry.userContext = User(
         id: membershipId,
         username: displayName,

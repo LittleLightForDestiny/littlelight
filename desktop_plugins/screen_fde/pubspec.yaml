@@ -6,8 +6,9 @@ version: 0.0.5
 
 flutter:
   plugin:
-    macosPrefix: FLE
-    pluginClass: ScreenPlugin
+    platforms:
+      macos:
+        pluginClass: ScreenPlugin
 
 environment:
   sdk: ">=2.1.0 <3.0.0"

@@ -16,6 +16,6 @@ A Flutter plugin for getting commonly used locations on the filesystem.
   s.dependency 'FlutterMacOS'
   
   s.platform = :osx
-  s.osx.deployment_target = '10.12'
+  s.osx.deployment_target = '10.11'
 end
 

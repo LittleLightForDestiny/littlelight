@@ -6,8 +6,9 @@ homepage: https://github.com/avioli/uni_links
 
 flutter:
   plugin:
-    macosPrefix: FLE
-    pluginClass: UniLinksPlugin
+    platforms:
+      macos:
+        pluginClass: UniLinksPlugin
 
 environment:
   sdk: ">=2.1.0 <3.0.0"

@@ -162,7 +162,7 @@ class ItemListWidgetState extends State<ItemListWidget> {
 
   Widget getList() {
     if (listIndex.length < 2) {
-      return Container();
+      return Container(height:300);
     }
     double initialOffset = 0;
     if(widget?.scrollPositions?.containsKey(widget?.currentGroup) ?? false){
@@ -182,9 +182,8 @@ class ItemListWidgetState extends State<ItemListWidget> {
       staggeredTileBuilder: (int index) => getTileBuilder(index),
       mainAxisSpacing: 2,
       crossAxisSpacing: 2,
-      // controller: controller,
-      // physics: const AlwaysScrollableScrollPhysics(),
-      physics: const NeverScrollableScrollPhysics(),
+      controller: controller,
+      physics: widget.shrinkWrap ? NeverScrollableScrollPhysics() : AlwaysScrollableScrollPhysics(),
     );
   }
 
@@ -206,7 +205,7 @@ class ItemListWidgetState extends State<ItemListWidget> {
           if (MediaQueryHelper(context).isDesktop) {
             return StaggeredTile.count(2, 2);
           }
-          if (MediaQueryHelper(context).tabletOrBigger) {
+          if (MediaQueryHelper(context).tabletOrBigger || MediaQueryHelper(context).isLandscape) { 
             return StaggeredTile.count(3, 3);
           }
           return StaggeredTile.count(6, 6);

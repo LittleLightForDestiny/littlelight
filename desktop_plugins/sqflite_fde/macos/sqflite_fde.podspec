@@ -18,6 +18,6 @@ A new flutter plugin project.
   s.dependency 'FMDB', '~> 2.7.2'
 
   s.platform = :osx
-  s.osx.deployment_target = '10.12'
+  s.osx.deployment_target = '10.11'
 end
 

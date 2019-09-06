@@ -11,8 +11,9 @@ environment:
 
 flutter:
   plugin:
-    macosPrefix: FLE
-    pluginClass: SqflitePlugin
+    platforms:
+      macos:
+        pluginClass: SqflitePlugin
 
 dependencies:
   flutter:

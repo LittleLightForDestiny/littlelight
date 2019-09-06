@@ -17,6 +17,7 @@ import 'package:little_light/widgets/inventory_tabs/character_tab.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/character_tab_header.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/large_screen_equipment_list.widget.dart';
+import 'package:little_light/widgets/inventory_tabs/large_screen_vault_list.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/selected_items.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/tabs_character_menu.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/tabs_item_type_menu.widget.dart';
@@ -94,7 +95,7 @@ class EquipmentScreenState extends State<EquipmentScreen>
     }
 
     var query = MediaQueryHelper(context);
-    if (query.tabletOrBigger) {
+    if (query.isLandscape) {
       return buildTablet(context);
     }
 
@@ -129,15 +130,18 @@ class EquipmentScreenState extends State<EquipmentScreen>
               right: 8,
               child: buildCharacterMenu(context)),
           InventoryNotificationWidget(
-              notificationMargin: EdgeInsets.only(right:44),
-              barHeight: 0, key: Key('inventory_notification_widget')),
+              notificationMargin: EdgeInsets.only(right: 44),
+              barHeight: 0,
+              key: Key('inventory_notification_widget')),
           Positioned(
             right: 8,
             bottom: 8,
             child: Container(
-              decoration: BoxDecoration(color: Colors.blueGrey.shade900, borderRadius: BorderRadius.circular(18)),
-              width:36,
-              height:36,
+              decoration: BoxDecoration(
+                  color: Colors.blueGrey.shade900,
+                  borderRadius: BorderRadius.circular(18)),
+              width: 36,
+              height: 36,
               child: RefreshButtonWidget(),
             ),
           ),
@@ -225,7 +229,18 @@ class EquipmentScreenState extends State<EquipmentScreen>
                   ))
             ]))
         .toList();
-    pages.add(Stack(children: [VaultTabHeaderWidget()]));
+    pages.add(Stack(children: [
+      Positioned.fill(
+          child: LargeScreenVaultListWidget(
+        key: Key("vault_tab"),
+      )),
+      Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          height: topOffset + 16,
+          child: VaultTabHeaderWidget())
+    ]));
     return TabBarView(controller: charTabController, children: pages);
   }
 

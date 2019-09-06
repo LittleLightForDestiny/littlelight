@@ -1,6 +1,0 @@
-# The Deliverfile allows you to store various App Store Connect metadata
-# For more information, check out the docs
-# https://docs.fastlane.tools/actions/deliver/
-metadata_path('../translations/metadata/ios')
-screenshots_path('../translations/metadata/ios_screenshots')
-languages(['de-DE', 'en-US', 'es-ES', 'fr-FR', 'it', 'ja', 'pt-BR'])

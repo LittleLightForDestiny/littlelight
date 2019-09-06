@@ -182,6 +182,17 @@ if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/uni_links_fde/uni_links_fde.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/url_launcher_fde/url_launcher_fde.framework"
 fi
+if [[ "$CONFIGURATION" == "Profile" ]]; then
+  install_framework "${BUILT_PRODUCTS_DIR}/FMDB/FMDB.framework"
+  install_framework "${PODS_ROOT}/../Flutter/ephemeral/.symlinks/flutter/darwin-x64/FlutterMacOS.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/package_info_fde/package_info_fde.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/path_provider_fde/path_provider_fde.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/screen_fde/screen_fde.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/shared_preferences_fde/shared_preferences_fde.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/sqflite_fde/sqflite_fde.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/uni_links_fde/uni_links_fde.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/url_launcher_fde/url_launcher_fde.framework"
+fi
 if [ "${COCOAPODS_PARALLEL_CODE_SIGN}" == "true" ]; then
   wait
 fi
