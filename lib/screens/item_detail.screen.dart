@@ -12,6 +12,7 @@ import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enu
 import 'package:little_light/services/littlelight/loadouts.service.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_with_owner.dart';
+import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/destiny_item.stateful_widget.dart';
 import 'package:little_light/widgets/common/perk_list_item.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -20,6 +21,7 @@ import 'package:little_light/widgets/item_details/chalice_recipe.widget.dart';
 import 'package:little_light/widgets/item_details/item_collectible_info.widget.dart';
 
 import 'package:little_light/widgets/item_details/item_cover/item_cover.widget.dart';
+import 'package:little_light/widgets/item_details/item_cover/landscape_item_cover.widget.dart';
 import 'package:little_light/widgets/item_details/item_detail_duplicates.widget.dart';
 import 'package:little_light/widgets/item_details/item_lore.widget.dart';
 import 'package:little_light/widgets/item_details/item_detail_mods.widget.dart';
@@ -163,12 +165,59 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context){
+    if(MediaQueryHelper(context).isPortrait){
+      return buildPortrait(context);
+    }
+    return buildLandscape(context);
+  }
+
+  Widget buildPortrait(BuildContext context) {
     return Scaffold(
         body: Stack(children: [
       CustomScrollView(
         slivers: [
           ItemCoverWidget(
+            item,
+            definition,
+            instanceInfo,
+            uniqueId: widget.uniqueId,
+            characterId: widget.characterId,
+          ),
+          SliverList(
+              delegate: SliverChildListDelegate([
+            buildSaleDetails(context),
+            ItemMainInfoWidget(item, definition, instanceInfo),
+            buildManagementBlock(context),
+            buildAddToLoadoutButton(context),
+            buildDuplicates(context),
+            buildStats(context),
+            buildPerks(context),
+            buildSelectedPerk(context),
+            buildMods(context),
+            buildObjectives(context),
+            buildRewards(context),
+            buildQuestInfo(context),
+            buildLore(context),
+            buildCollectibleInfo(context),
+            buildRecipesInfo(context),
+            Container(height: 50)
+          ]))
+        ],
+      ),
+      InventoryNotificationWidget(
+        key: Key('inventory_notification_widget'),
+        barHeight: 0,
+      ),
+    ]));
+  }
+
+  Widget buildLandscape(BuildContext context){
+    return Scaffold(
+        body: Stack(children: [
+      CustomScrollView(
+        slivers: [
+          LandscapeItemCoverWidget(
             item,
             definition,
             instanceInfo,
