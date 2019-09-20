@@ -9,17 +9,19 @@ import 'package:flutter/material.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
+import 'package:little_light/widgets/item_sockets/item_socket.controller.dart';
 import 'package:little_light/widgets/item_stats/base_item_stat.widget.dart';
 
 class BaseItemStatsWidget extends BaseDestinyStatefulItemWidget {
-  final Map<int, int> selectedPerks;
+  final ItemSocketController socketController;
 
   BaseItemStatsWidget(
       {DestinyItemComponent item,
       DestinyInventoryItemDefinition definition,
       DestinyItemInstanceComponent instanceInfo,
       Key key,
-      this.selectedPerks})
+      this.socketController,
+      })
       : super(
             item: item,
             definition: definition,
@@ -39,6 +41,12 @@ class BaseItemStatsState<T extends BaseItemStatsWidget>
   List<DestinyItemSocketState> socketStates;
 
   DestinyStatGroupDefinition statGroupDefinition;
+  ItemSocketController _socketController;
+  ItemSocketController get socketController {
+    if(widget.socketController != null) return widget.socketController;
+    if(_socketController == null) _socketController = ItemSocketController(item:item, definition: definition);
+    return _socketController;
+  }
 
   @override
   void initState() {
@@ -177,9 +185,7 @@ class BaseItemStatsState<T extends BaseItemStatsWidget>
       if (def == null) {
         return;
       }
-      var selectedPlugHash = widget?.selectedPerks != null
-          ? widget.selectedPerks[index]
-          : plugHash;
+      var selectedPlugHash = socketController.socketSelectedPlugHash(index);
       DestinyInventoryItemDefinition selectedDef =
           plugDefinitions[selectedPlugHash];
       def?.investmentStats?.forEach((stat) {
