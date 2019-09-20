@@ -106,9 +106,8 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget> {
             context,
             MaterialPageRoute(
               builder: (context) => ItemDetailScreen(
-                null,
-                definition,
-                instanceInfo,
+                definition: definition,
+                instanceInfo: instanceInfo,
                 characterId: widget.characterId,
                 socketStates: sockets,
                 sale: widget.sale,

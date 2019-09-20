@@ -13,7 +13,7 @@ import 'package:little_light/services/littlelight/loadouts.service.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/media_query_helper.dart';
-import 'package:little_light/widgets/common/destiny_item.stateful_widget.dart';
+import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
 import 'package:little_light/widgets/common/perk_list_item.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
@@ -36,7 +36,7 @@ import 'package:little_light/widgets/item_details/rewards_info.widget.dart';
 import 'package:little_light/widgets/option_sheets/as_equipped_switch.widget.dart';
 import 'package:little_light/widgets/option_sheets/loadout_select_sheet.widget.dart';
 
-class ItemDetailScreen extends DestinyItemStatefulWidget {
+class ItemDetailScreen extends BaseDestinyStatefulItemWidget {
   final String uniqueId;
   final bool hideItemManagement;
   final List<DestinyItemSocketState> socketStates;
@@ -44,26 +44,30 @@ class ItemDetailScreen extends DestinyItemStatefulWidget {
   final int vendorHash;
 
   ItemDetailScreen(
+      {String characterId,
       DestinyItemComponent item,
       DestinyInventoryItemDefinition definition,
       DestinyItemInstanceComponent instanceInfo,
-      {@required String characterId,
       this.vendorHash,
       this.hideItemManagement = false,
       this.socketStates,
       Key key,
       this.uniqueId,
       this.sale})
-      : super(item, definition, instanceInfo,
-            key: key, characterId: characterId);
+      : super(
+            item: item,
+            definition: definition,
+            instanceInfo: instanceInfo,
+            key: key,
+            characterId: characterId);
 
   @override
-  DestinyItemState<DestinyItemStatefulWidget> createState() {
+  BaseDestinyItemState<BaseDestinyStatefulItemWidget> createState() {
     return ItemDetailScreenState();
   }
 }
 
-class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
+class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
   int selectedPerk;
   Map<int, int> selectedPerks = new Map();
   Map<int, DestinyInventoryItemDefinition> plugDefinitions;
@@ -165,8 +169,8 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
   }
 
   @override
-  Widget build(BuildContext context){
-    if(MediaQueryHelper(context).isPortrait){
+  Widget build(BuildContext context) {
+    if (MediaQueryHelper(context).isPortrait) {
       return buildPortrait(context);
     }
     return buildLandscape(context);
@@ -212,7 +216,7 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
     ]));
   }
 
-  Widget buildLandscape(BuildContext context){
+  Widget buildLandscape(BuildContext context) {
     return Scaffold(
         body: Stack(children: [
       CustomScrollView(
@@ -223,6 +227,8 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
             instanceInfo,
             uniqueId: widget.uniqueId,
             characterId: widget.characterId,
+            plugDefinitions: plugDefinitions,
+            selectedPerkHashes: selectedPerks,
           ),
           SliverList(
               delegate: SliverChildListDelegate([
@@ -253,10 +259,14 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
   }
 
   Widget buildSaleDetails(BuildContext context) {
-    if(widget.sale == null){
+    if (widget.sale == null) {
       return Container();
     }
-    return ItemVendorInfoWidget(sale:widget.sale, vendorHash: widget.vendorHash,definition: definition,);
+    return ItemVendorInfoWidget(
+      sale: widget.sale,
+      vendorHash: widget.vendorHash,
+      definition: definition,
+    );
   }
 
   Widget buildManagementBlock(BuildContext context) {
@@ -312,8 +322,12 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
     if ((definition?.objectives?.objectiveHashes?.length ?? 0) == 0) {
       return Container();
     }
-    return ItemObjectivesWidget(item, definition, instanceInfo,
-        characterId: characterId, key: Key("item_objectives_widget"));
+    return ItemObjectivesWidget(
+        item: item,
+        definition: definition,
+        instanceInfo: instanceInfo,
+        characterId: characterId,
+        key: Key("item_objectives_widget"));
   }
 
   Widget buildRewards(BuildContext context) {
@@ -392,8 +406,12 @@ class ItemDetailScreenState extends DestinyItemState<ItemDetailScreen> {
   Widget buildQuestInfo(BuildContext context) {
     if (definition?.itemType == DestinyItemType.QuestStep) {
       return Container(
-          child: QuestInfoWidget(item, definition, instanceInfo,
-              key: Key("quest_info"), characterId: characterId));
+          child: QuestInfoWidget(
+              item: item,
+              definition: definition,
+              instanceInfo: instanceInfo,
+              key: Key("quest_info"),
+              characterId: characterId));
     }
     return Container();
   }

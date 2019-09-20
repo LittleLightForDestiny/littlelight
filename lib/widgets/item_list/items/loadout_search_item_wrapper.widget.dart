@@ -29,9 +29,9 @@ class LoadoutSearchItemWrapperWidgetWidgetState
       context,
       MaterialPageRoute(
         builder: (context) => ItemDetailScreen(
-              widget.item,
-              definition,
-              instanceInfo,
+              item:widget.item,
+              definition:definition,
+              instanceInfo:instanceInfo,
               characterId: widget.characterId,
               uniqueId: uniqueId,
               hideItemManagement: true,

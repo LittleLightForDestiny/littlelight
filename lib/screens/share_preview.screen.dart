@@ -9,12 +9,12 @@ import 'package:flutter/rendering.dart';
 
 import 'dart:ui' as ui;
 
-import 'package:little_light/widgets/common/destiny_item.stateful_widget.dart';
+import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
 import 'package:little_light/widgets/item_details/share_image/share_image.painter.dart';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:shimmer/shimmer.dart';
 
-class SharePreviewScreen extends DestinyItemStatefulWidget {
+class SharePreviewScreen extends BaseDestinyStatefulItemWidget {
   final String uniqueId;
 
   SharePreviewScreen(
@@ -24,8 +24,12 @@ class SharePreviewScreen extends DestinyItemStatefulWidget {
       {@required String characterId,
       Key key,
       this.uniqueId})
-      : super(item, definition, instanceInfo,
-            key: key, characterId: characterId);
+      : super(
+            item: item,
+            definition: definition,
+            instanceInfo: instanceInfo,
+            key: key,
+            characterId: characterId);
 
   @override
   SharePreviewScreenState createState() {
@@ -33,7 +37,7 @@ class SharePreviewScreen extends DestinyItemStatefulWidget {
   }
 }
 
-class SharePreviewScreenState extends DestinyItemState<SharePreviewScreen> {
+class SharePreviewScreenState extends BaseDestinyItemState<SharePreviewScreen> {
   int selectedPerk;
   Map<int, int> selectedPerks = new Map();
   Map<int, DestinyInventoryItemDefinition> plugDefinitions;
@@ -48,14 +52,14 @@ class SharePreviewScreenState extends DestinyItemState<SharePreviewScreen> {
   }
 
   Future<void> loadDefinitions() async {
-    try{
+    try {
       shareImage = await ShareImageWidget.builder(context,
           item: widget.item, definition: widget.definition, onLoad: () {});
       setState(() {});
       await Future.delayed(Duration(milliseconds: 1500));
       await saveImage();
       await Future.delayed(Duration(milliseconds: 100));
-    }catch(e){
+    } catch (e) {
       print(e);
     }
     Navigator.of(context).pop();
@@ -181,7 +185,7 @@ class SharePreviewScreenState extends DestinyItemState<SharePreviewScreen> {
       ui.Image image = await boundary.toImage(pixelRatio: 1.0);
       ByteData byteData =
           await image.toByteData(format: ui.ImageByteFormat.png);
-      
+
       await Share.file(
           definition.displayProperties.name,
           "${definition.displayProperties.name}.png",

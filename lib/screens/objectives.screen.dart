@@ -155,9 +155,9 @@ class ObjectivesScreenState extends State<ObjectivesScreen> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => ItemDetailScreen(
-                          item,
-                          definition,
-                          instanceInfo,
+                          item:item,
+                          definition:definition,
+                          instanceInfo:instanceInfo,
                           characterId: characterId,
                         ),
                   ),
@@ -179,9 +179,9 @@ class ObjectivesScreenState extends State<ObjectivesScreen> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => ItemDetailScreen(
-                          item,
-                          definition,
-                          instanceInfo,
+                          item:item,
+                          definition:definition,
+                          instanceInfo:instanceInfo,
                           characterId: characterId,
                         ),
                   ),

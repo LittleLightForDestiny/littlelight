@@ -180,14 +180,15 @@ class LoadoutSlotWidget extends StatelessWidget {
                             }
                             var def = await manifest.getDefinition<
                                 DestinyInventoryItemDefinition>(item.itemHash);
-                            var instanceInfo = profile.getInstanceInfo(item.itemInstanceId);
+                            var instanceInfo =
+                                profile.getInstanceInfo(item.itemInstanceId);
                             Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => ItemDetailScreen(
-                                  item,
-                                  def,
-                                  instanceInfo,
+                                  item: item,
+                                  definition: def,
+                                  instanceInfo: instanceInfo,
                                   characterId: null,
                                   hideItemManagement: true,
                                 ),

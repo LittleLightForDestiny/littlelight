@@ -5,19 +5,21 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/rendering.dart';
-import 'package:little_light/screens/share_preview.screen.dart';
-import 'package:little_light/widgets/common/masterwork_counter.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
-import 'package:little_light/widgets/common/destiny_item.widget.dart';
+import 'package:little_light/widgets/common/base/base_destiny_stateless_item.widget.dart';
 import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
-import 'package:little_light/widgets/common/item_name_bar/item_name_bar.widget.dart';
+import 'package:little_light/widgets/item_sockets/screenshot_item_mods.widget.dart';
+import 'package:little_light/widgets/item_sockets/screenshot_item_perks.widget.dart';
+import 'package:little_light/widgets/item_stats/screenshot_item_stats.widget.dart';
 import 'package:shimmer/shimmer.dart';
 
 class LandscapeItemCoverWidget extends DestinyItemWidget {
   final String uniqueId;
+  final Map<int, DestinyInventoryItemDefinition> plugDefinitions;
+  final Map<int, int> selectedPerkHashes;
 
   LandscapeItemCoverWidget(
       DestinyItemComponent item,
@@ -25,7 +27,9 @@ class LandscapeItemCoverWidget extends DestinyItemWidget {
       DestinyItemInstanceComponent instanceInfo,
       {Key key,
       String characterId,
-      this.uniqueId})
+      this.uniqueId,
+      this.selectedPerkHashes,
+      this.plugDefinitions})
       : super(item, definition, instanceInfo,
             key: key, characterId: characterId);
 
@@ -36,13 +40,15 @@ class LandscapeItemCoverWidget extends DestinyItemWidget {
     double screenshotHeight = width / (16 / 9);
     double minHeight = paddingTop + kToolbarHeight;
     double maxHeight = screenshotHeight;
-    if((definition?.screenshot?.length ?? 0) == 0){
+    if ((definition?.screenshot?.length ?? 0) == 0) {
       maxHeight = minHeight;
     }
     return SliverPersistentHeader(
         pinned: true,
         delegate: LandscapeItemCoverDelegate(
             item, definition, instanceInfo, tag, uniqueId,
+            plugDefinitions: plugDefinitions,
+            selectedPerkHashes: selectedPerkHashes,
             minHeight: minHeight,
             maxHeight: maxHeight));
   }
@@ -52,14 +58,19 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
   final DestinyItemComponent item;
   final DestinyInventoryItemDefinition definition;
   final DestinyItemInstanceComponent instanceInfo;
-  double minHeight;
-  double maxHeight;
-  String tag;
-  String uniqueId;
+  final double minHeight;
+  final double maxHeight;
+  final String tag;
+  final String uniqueId;
+  final Map<int, DestinyInventoryItemDefinition> plugDefinitions;
+  final Map<int, int> selectedPerkHashes;
 
   LandscapeItemCoverDelegate(
       this.item, this.definition, this.instanceInfo, this.tag, this.uniqueId,
-      {this.minHeight = 50, this.maxHeight = 200})
+      {this.minHeight = 50,
+      this.maxHeight = 200,
+      this.plugDefinitions,
+      this.selectedPerkHashes})
       : super();
 
   @override
@@ -67,7 +78,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     double expandRatio =
         max(0, 1 - shrinkOffset / (this.maxHeight - this.minHeight));
-    if(maxHeight == minHeight){
+    if (maxHeight == minHeight) {
       expandRatio = 0;
     }
     return Container(
@@ -78,8 +89,10 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
           children: <Widget>[
             Container(),
             background(context, expandRatio),
-            overlay(context, expandRatio),
             icon(context, expandRatio),
+            buildNameAndType(context, expandRatio),
+            basicInfo(context, expandRatio),
+            itemStats(context, expandRatio),
             backButton(context, expandRatio),
           ],
         ));
@@ -99,42 +112,16 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
                 expandRatio)));
   }
 
-  Widget masterworkCounter(BuildContext context, double expandRatio) {
-    double leftOffset = lerpDouble(kToolbarHeight * 2 - 16, 104, expandRatio);
-    return Positioned(
-        left: leftOffset,
-        bottom: kToolbarHeight * expandRatio*.8,
-        right:kToolbarHeight,
-        child: MasterworkCounterWidget(item));
-  }
-
-  Widget overlay(BuildContext context, double expandRatio) {
-    double width = MediaQuery.of(context).size.width;
-    double opacity = expandRatio;
-    if (definition.itemType != DestinyItemType.Subclass) {
-      return Container();
-    }
-    return Positioned(
-        bottom: kToolbarHeight,
-        width: width / 2,
-        right: 0,
-        child: Opacity(
-            opacity: opacity,
-            child: QueuedNetworkImage(
-              imageUrl: BungieApiService.url(definition.secondaryIcon),
-              fit: BoxFit.fitWidth,
-            )));
-  }
-
   Widget icon(BuildContext context, double expandRatio) {
-    double openSize = proportional(90, context);
+    double openSize = convertSize(96, context);
     double closedSize = kToolbarHeight - 8;
     double size = lerpDouble(closedSize, openSize, expandRatio);
-    double bottom = lerpDouble(4, 8, expandRatio);
-    double left = lerpDouble(kTextTabBarHeight, 8, expandRatio);
+    double top = lerpDouble(4, convertSize(96, context), expandRatio);
+    double left =
+        lerpDouble(kTextTabBarHeight, convertSize(96, context), expandRatio);
     return Positioned(
         left: left,
-        bottom: bottom,
+        top: top,
         width: size,
         height: size,
         child: Hero(
@@ -143,8 +130,95 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
               item,
               definition,
               instanceInfo,
-              iconBorderWidth: lerpDouble(1, 2, expandRatio),
+              iconBorderWidth:
+                  lerpDouble(1, convertSize(3, context), expandRatio),
             )));
+  }
+
+  Widget buildNameAndType(BuildContext context, double expandRatio) {
+    return Positioned(
+        top: convertSize(96, context),
+        left: convertSize(96.0 * 2 + 24, context),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              definition.displayProperties.name.toUpperCase(),
+              style: TextStyle(
+                  fontSize: convertSize(74, context),
+                  fontWeight: FontWeight.bold,
+                  height: .94),
+            ),
+            Text(
+              definition.itemTypeDisplayName.toUpperCase(),
+              style: TextStyle(
+                  height: .94,
+                  color: Colors.white.withOpacity(.6),
+                  fontSize: convertSize(34, context),
+                  fontWeight: FontWeight.w400),
+            ),
+          ],
+        ));
+  }
+
+  Widget basicInfo(BuildContext context, double expandRatio) {
+    var perksCategory = definition.sockets.socketCategories.firstWhere((s) =>
+        DestinyData.socketCategoryPerkHashes.contains(s.socketCategoryHash));
+    var modsCategory = definition.sockets.socketCategories.firstWhere((s) =>
+        !DestinyData.socketCategoryPerkHashes.contains(s.socketCategoryHash));
+    return Positioned(
+        top: convertSize(96.0 * 2.4, context),
+        left: convertSize(96.0, context),
+        width: convertSize(730, context),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              definition.displayProperties?.description ?? "",
+              style: TextStyle(
+                fontStyle: FontStyle.italic,
+                fontSize: convertSize(24, context),
+                fontWeight: FontWeight.w400,
+                color: Colors.white.withOpacity(.7),
+              ),
+            ),
+            Container(
+              height: convertSize(32, context),
+            ),
+            ScreenShotItemPerksWidget(
+              category: perksCategory,
+              definition: definition,
+              item: item,
+              pixelSize: pixelSize(context),
+            ),
+            Container(
+              height: convertSize(16, context),
+            ),
+            ScreenShotItemModsWidget(
+              category: modsCategory,
+              definition: definition,
+              item: item,
+              pixelSize: pixelSize(context),
+            ),
+          ],
+        ));
+  }
+
+  Widget itemStats(BuildContext context, double expandRatio) {
+    return Positioned(
+        bottom: convertSize(96.0, context),
+        right: convertSize(96.0, context),
+        width: convertSize(730, context),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            ScreenShotItemStatsWidget(
+                item: item, definition: definition, instanceInfo: instanceInfo),
+          ],
+        ));
   }
 
   Widget background(BuildContext context, double expandRatio) {
@@ -159,6 +233,16 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
     }
     if (imgUrl == null) {
       return Container();
+    }
+    if (1 == 2) {
+      return Positioned(
+          top: 0,
+          bottom: 0,
+          width: width,
+          child: Image.asset(
+            'assets/imgs/example_screenshot.png',
+            fit: BoxFit.cover,
+          ));
     }
     return Positioned(
         top: 0,
@@ -187,8 +271,12 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
         minHeight != oldDelegate.minHeight;
   }
 
-  double proportional(int value, BuildContext context){
+  double convertSize(double value, BuildContext context) {
     var screenWidth = MediaQuery.of(context).size.width;
-    return (value/1920)*screenWidth;
+    return (value / 1920) * screenWidth;
+  }
+
+  double pixelSize(context) {
+    return convertSize(1, context);
   }
 }

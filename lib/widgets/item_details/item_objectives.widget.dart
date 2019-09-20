@@ -12,21 +12,25 @@ import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/littlelight/objectives.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/widgets/common/destiny_item.stateful_widget.dart';
+import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/objective.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
-class ItemObjectivesWidget extends DestinyItemStatefulWidget {
+class ItemObjectivesWidget extends BaseDestinyStatefulItemWidget {
   final NotificationService broadcaster = NotificationService();
   ItemObjectivesWidget(
-      DestinyItemComponent item,
+      {DestinyItemComponent item,
       DestinyInventoryItemDefinition definition,
       DestinyItemInstanceComponent instanceInfo,
-      {Key key,
+      Key key,
       String characterId})
-      : super(item, definition, instanceInfo,
-            key: key, characterId: characterId);
+      : super(
+            item: item,
+            definition: definition,
+            instanceInfo: instanceInfo,
+            key: key,
+            characterId: characterId);
 
   @override
   ItemObjectivesWidgetState createState() {
@@ -34,7 +38,8 @@ class ItemObjectivesWidget extends DestinyItemStatefulWidget {
   }
 }
 
-class ItemObjectivesWidgetState extends DestinyItemState<ItemObjectivesWidget> {
+class ItemObjectivesWidgetState
+    extends BaseDestinyItemState<ItemObjectivesWidget> {
   Map<int, DestinyObjectiveDefinition> objectiveDefinitions;
   List<DestinyObjectiveProgress> itemObjectives;
   StreamSubscription<NotificationEvent> subscription;
@@ -110,7 +115,8 @@ class ItemObjectivesWidgetState extends DestinyItemState<ItemObjectivesWidget> {
     List<Widget> items = [];
     if ((objectiveDefinitions?.length ?? 0) == 0) return Container();
     if (itemObjectives != null) {
-      if (itemObjectives.where((o) => o.visible != false).length == 0 && !isTracking) {
+      if (itemObjectives.where((o) => o.visible != false).length == 0 &&
+          !isTracking) {
         return Container();
       }
     }
@@ -129,7 +135,7 @@ class ItemObjectivesWidgetState extends DestinyItemState<ItemObjectivesWidget> {
                   buildRefreshButton(context)
                 ]))));
     items.addAll(buildObjectives(context));
-    if(item != null){
+    if (item != null) {
       items.add(buildTrackButton(context));
     }
     return Column(
@@ -141,7 +147,7 @@ class ItemObjectivesWidgetState extends DestinyItemState<ItemObjectivesWidget> {
     var tracked = objectives.firstWhere(
         (o) =>
             o.hash == widget.definition.hash &&
-            (o.instanceId == widget.item?.itemInstanceId) && 
+            (o.instanceId == widget.item?.itemInstanceId) &&
             o.characterId == widget.characterId,
         orElse: () => null);
     isTracking = tracked != null;
