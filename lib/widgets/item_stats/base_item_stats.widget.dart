@@ -15,14 +15,13 @@ import 'package:little_light/widgets/item_stats/base_item_stat.widget.dart';
 class BaseItemStatsWidget extends BaseDestinyStatefulItemWidget {
   final ItemSocketController socketController;
 
-  BaseItemStatsWidget(
-      {DestinyItemComponent item,
-      DestinyInventoryItemDefinition definition,
-      DestinyItemInstanceComponent instanceInfo,
-      Key key,
-      this.socketController,
-      })
-      : super(
+  BaseItemStatsWidget({
+    DestinyItemComponent item,
+    DestinyInventoryItemDefinition definition,
+    DestinyItemInstanceComponent instanceInfo,
+    Key key,
+    this.socketController,
+  }) : super(
             item: item,
             definition: definition,
             instanceInfo: instanceInfo,
@@ -43,19 +42,38 @@ class BaseItemStatsState<T extends BaseItemStatsWidget>
   DestinyStatGroupDefinition statGroupDefinition;
   ItemSocketController _socketController;
   ItemSocketController get socketController {
-    if(widget.socketController != null) return widget.socketController;
-    if(_socketController == null) _socketController = ItemSocketController(item:item, definition: definition);
+    if (widget.socketController != null) return widget.socketController;
+    if (_socketController == null)
+      _socketController =
+          ItemSocketController(item: item, definition: definition);
     return _socketController;
   }
 
   @override
   void initState() {
-    this.precalculatedStats =
-        widget.profile.getPrecalculatedStats(item.itemInstanceId);
-    this.socketStates = widget.profile.getItemSockets(item.itemInstanceId);
+    precalculatedStats =
+        widget.profile.getPrecalculatedStats(item?.itemInstanceId);
+    socketStates = widget.profile.getItemSockets(item?.itemInstanceId);
     super.initState();
-    this.loadPlugDefinitions();
-    this.loadStatGroupDefinition();
+    loadPlugDefinitions();
+    loadStatGroupDefinition();
+    initializeSocketController();
+  }
+
+  initializeSocketController() {
+    socketController.addListener(update);
+  }
+
+
+
+  @override
+  dispose() {
+    super.dispose();
+    socketController.removeListener(update);
+  }
+
+  update(){
+    setState((){});
   }
 
   Future<void> loadPlugDefinitions() async {
@@ -100,11 +118,10 @@ class BaseItemStatsState<T extends BaseItemStatsWidget>
         setState(() {});
       }
     }
-    print(statGroupDefinition);
   }
 
   @override
-  Widget build(BuildContext context) {    
+  Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(8),
       child: Column(
@@ -123,19 +140,23 @@ class BaseItemStatsState<T extends BaseItemStatsWidget>
         child: Container(
       alignment: Alignment.centerLeft,
       child: Row(children: [
-        Expanded(child:Text(
+        Expanded(
+            child: Text(
           "Name",
           style: TextStyle(fontWeight: FontWeight.bold),
         )),
-        Expanded(child:Text(
+        Expanded(
+            child: Text(
           "Pre",
           style: TextStyle(fontWeight: FontWeight.bold),
         )),
-        Expanded(child:Text(
+        Expanded(
+            child: Text(
           "calculated",
           style: TextStyle(fontWeight: FontWeight.bold),
         )),
-        Expanded(child:Text(
+        Expanded(
+            child: Text(
           "masterwork",
           style: TextStyle(fontWeight: FontWeight.bold),
         ))
@@ -146,9 +167,14 @@ class BaseItemStatsState<T extends BaseItemStatsWidget>
   buildStats(context) {
     Map<int, StatValues> statValues = getStatValues();
 
-    return statValues.entries.map((entry) {
-      var stat = entry.value;
-      return BaseItemStatWidget(entry.key, stat, scaled: statGroupDefinition.scaledStats.firstWhere((s)=>s.statHash == entry.key, orElse:()=>null),);
+    return stats.map((stat) {
+      var entry = statValues[stat.statTypeHash];
+      return BaseItemStatWidget(
+        statHash: stat.statTypeHash,
+        modValues: entry,
+        scaled: statGroupDefinition.scaledStats
+            .firstWhere((s) => s.statHash == stat.statTypeHash, orElse: () => null),
+      );
     }).toList();
   }
 
@@ -158,11 +184,10 @@ class BaseItemStatsState<T extends BaseItemStatsWidget>
       return map;
     }
     stats.forEach((s) {
-      var pre = precalculatedStats.containsKey("${s.statTypeHash}")
+      var pre = precalculatedStats?.containsKey("${s.statTypeHash}") ?? false
           ? precalculatedStats["${s.statTypeHash}"].value
           : 0;
       map[s.statTypeHash] = new StatValues(
-
           equipped: s.value, selected: s.value, precalculated: pre);
     });
 

@@ -5,7 +5,7 @@ import 'package:little_light/widgets/common/base/base_destiny_stateless_item.wid
 import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/item_name_bar/item_name_bar.widget.dart';
 
-mixin InventoryItemMixin implements DestinyItemWidget {
+mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget {
   final String uniqueId = "";
   @override
   Widget build(BuildContext context) {

@@ -8,19 +8,20 @@ import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enu
 import 'package:little_light/services/inventory/inventory.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/user_settings/user_settings.service.dart';
-import 'package:little_light/widgets/common/base/base_destiny_stateless_item.widget.dart';
+import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
+
 import 'package:little_light/widgets/common/equip_on_character.button.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
-class ManagementBlockWidget extends BaseDestinyStatelessItemWidget {
+class BaseTransferDestinationsWidget extends BaseDestinyStatefulItemWidget {
   final InventoryService inventory = new InventoryService();
-  ManagementBlockWidget(
-      DestinyItemComponent item,
+  BaseTransferDestinationsWidget(
+      {DestinyItemComponent item,
       DestinyInventoryItemDefinition definition,
       DestinyItemInstanceComponent instanceInfo,
-      {Key key,
+      Key key,
       String characterId})
       : super(
             item: item,
@@ -29,6 +30,14 @@ class ManagementBlockWidget extends BaseDestinyStatelessItemWidget {
             key: key,
             characterId: characterId);
 
+  @override
+  State<StatefulWidget> createState() {
+    return BaseTransferDestinationState();
+  }
+}
+
+class BaseTransferDestinationState<T extends BaseTransferDestinationsWidget>
+    extends BaseDestinyItemState<T> {
   @override
   Widget build(BuildContext context) {
     if (item == null) {
@@ -84,7 +93,7 @@ class ManagementBlockWidget extends BaseDestinyStatelessItemWidget {
             : CrossAxisAlignment.start,
         children: <Widget>[
           buildLabel(context, title, align),
-          buttons(context, destinations, align)
+          buildButtons(context, destinations, align)
         ]);
   }
 
@@ -103,7 +112,7 @@ class ManagementBlockWidget extends BaseDestinyStatelessItemWidget {
         ));
   }
 
-  Widget buttons(BuildContext context, List<TransferDestination> destinations,
+  Widget buildButtons(BuildContext context, List<TransferDestination> destinations,
       [Alignment align = Alignment.centerRight]) {
     return Container(
         alignment: align,
@@ -124,26 +133,26 @@ class ManagementBlockWidget extends BaseDestinyStatelessItemWidget {
     switch (destination.action) {
       case InventoryAction.Equip:
         {
-          inventory.equip(item, characterId, destination.characterId);
+          widget.inventory.equip(item, characterId, destination.characterId);
           Navigator.pop(context);
           break;
         }
       case InventoryAction.Unequip:
         {
-          inventory.unequip(item, characterId);
+          widget.inventory.unequip(item, characterId);
           Navigator.pop(context);
           break;
         }
       case InventoryAction.Transfer:
         {
-          inventory.transfer(
+          widget.inventory.transfer(
               item, characterId, destination.type, destination.characterId);
           Navigator.pop(context);
           break;
         }
       case InventoryAction.Pull:
         {
-          inventory.transfer(
+          widget.inventory.transfer(
               item, characterId, destination.type, destination.characterId);
           Navigator.pop(context);
           break;
@@ -155,8 +164,7 @@ class ManagementBlockWidget extends BaseDestinyStatelessItemWidget {
     if (!definition.equippable) {
       return [];
     }
-    return this
-        .profile
+    return widget.profile
         .getCharacters(UserSettingsService().characterOrdering)
         .where((char) =>
             !(instanceInfo.isEquipped && char.characterId == characterId) &&
@@ -181,8 +189,7 @@ class ManagementBlockWidget extends BaseDestinyStatelessItemWidget {
       return [TransferDestination(ItemDestination.Vault)];
     }
 
-    List<TransferDestination> list = this
-        .profile
+    List<TransferDestination> list = widget.profile
         .getCharacters(UserSettingsService().characterOrdering)
         .where((char) => !(char.characterId == characterId))
         .map((char) => TransferDestination(ItemDestination.Character,

@@ -2,7 +2,6 @@ import 'package:bungie_api/enums/destiny_item_type_enum.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
-import 'package:bungie_api/models/destiny_item_socket_entry_definition.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_stat_group_definition.dart';
 import 'package:bungie_api/models/destiny_vendor_sale_item_component.dart';
@@ -10,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/littlelight/loadouts.service.dart';
+import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/media_query_helper.dart';
@@ -26,13 +26,14 @@ import 'package:little_light/widgets/item_details/item_detail_duplicates.widget.
 import 'package:little_light/widgets/item_details/item_lore.widget.dart';
 import 'package:little_light/widgets/item_details/item_detail_mods.widget.dart';
 import 'package:little_light/widgets/item_details/item_objectives.widget.dart';
-import 'package:little_light/widgets/item_details/item_detail_perks.widget.dart';
 import 'package:little_light/widgets/item_details/item_stats.widget.dart';
 import 'package:little_light/widgets/item_details/item_vendor_info.widget.dart';
 import 'package:little_light/widgets/item_details/main_info/item_main_info.widget.dart';
 import 'package:little_light/widgets/item_details/management_block.widget.dart';
 import 'package:little_light/widgets/item_details/quest_info.widget.dart';
 import 'package:little_light/widgets/item_details/rewards_info.widget.dart';
+import 'package:little_light/widgets/item_sockets/details_item_perks.widget.dart';
+import 'package:little_light/widgets/item_sockets/item_socket.controller.dart';
 import 'package:little_light/widgets/option_sheets/as_equipped_switch.widget.dart';
 import 'package:little_light/widgets/option_sheets/loadout_select_sheet.widget.dart';
 
@@ -70,6 +71,7 @@ class ItemDetailScreen extends BaseDestinyStatefulItemWidget {
 class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
   int selectedPerk;
   Map<int, int> selectedPerks = new Map();
+  ItemSocketController socketController;
   Map<int, DestinyInventoryItemDefinition> plugDefinitions;
   DestinyStatGroupDefinition statGroupDefinition;
   List<ItemWithOwner> duplicates;
@@ -79,6 +81,8 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
       widget.profile.getItemSockets(item?.itemInstanceId);
 
   initState() {
+    socketController =
+        ItemSocketController(definition: widget.definition, item: widget.item);
     super.initState();
     this.loadDefinitions();
   }
@@ -228,16 +232,14 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
             uniqueId: widget.uniqueId,
             characterId: widget.characterId,
             plugDefinitions: plugDefinitions,
-            selectedPerkHashes: selectedPerks,
+            socketController: socketController,
           ),
           SliverList(
               delegate: SliverChildListDelegate([
             buildSaleDetails(context),
-            ItemMainInfoWidget(item, definition, instanceInfo),
             buildManagementBlock(context),
             buildAddToLoadoutButton(context),
             buildDuplicates(context),
-            buildStats(context),
             buildPerks(context),
             buildSelectedPerk(context),
             buildMods(context),
@@ -346,40 +348,20 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
   }
 
   Widget buildPerks(BuildContext context) {
-    return ItemDetailPerksWidget(
-      item,
-      definition,
-      instanceInfo,
+    var perksCategory = definition.sockets?.socketCategories?.firstWhere(
+        (s) =>
+            DestinyData.socketCategoryPerkHashes.contains(s.socketCategoryHash),
+        orElse: () => null);
+    if(perksCategory == null) return Container();
+    return Container(
+      padding: EdgeInsets.all(8),
+        child: DetailsItemPerksWidget(
+      controller: socketController,
+      definition: definition,
+      item: item,
+      category: perksCategory,
       key: Key('perks_widget'),
-      plugDefinitions: plugDefinitions,
-      selectedPerkHash: selectedPerk,
-      selectedPerkHashes: selectedPerks,
-      socketStates: socketStates,
-      onSelectPerk: (socketIndex, plugHash) {
-        if (selectedPerk == plugHash) {
-          selectedPerk = null;
-        } else {
-          selectedPerk = plugHash;
-        }
-        DestinyItemSocketEntryDefinition socketEntry =
-            definition?.sockets?.socketEntries[socketIndex];
-        int socketHash = socketEntry?.singleInitialItemHash ?? 0;
-        if ((socketEntry?.randomizedPlugItems?.length ?? 0) > 0) {
-          socketHash = socketEntry?.randomizedPlugItems[0].plugItemHash;
-        }
-        if (item?.itemInstanceId != null) {
-          socketHash = widget.profile
-              .getItemSockets(item.itemInstanceId)[socketIndex]
-              .plugHash;
-        }
-        if (plugHash != socketHash) {
-          selectedPerks[socketIndex] = plugHash;
-        } else {
-          selectedPerks[socketIndex] = null;
-        }
-        setState(() {});
-      },
-    );
+    ));
   }
 
   buildSelectedPerk(BuildContext context) {
@@ -389,7 +371,6 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
         padding: EdgeInsets.all(8),
         child: PerkListItem(
             definition: plugDefinitions[selectedPerk],
-            alwaysOpen: true,
             key: Key("selected_perk: $selectedPerk")));
   }
 

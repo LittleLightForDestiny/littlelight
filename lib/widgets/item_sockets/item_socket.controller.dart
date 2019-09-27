@@ -9,6 +9,7 @@ class ItemSocketController extends ChangeNotifier{
   final DestinyInventoryItemDefinition definition;
   List<DestinyItemSocketState> _socketStates;
   List<int> _selectedSockets;
+  int _selectedSocket;
   
   List<int> get selectedSockets=>_selectedSockets;
 
@@ -17,6 +18,14 @@ class ItemSocketController extends ChangeNotifier{
     this._socketStates = ProfileService().getItemSockets(item?.itemInstanceId);
     this._selectedSockets = entries?.map((e)=>socketEquippedPlugHash(entries.indexOf(e)))?.toList() ?? [];
     
+  }
+
+  int get selectedPlugHash => _selectedSocket;
+
+  selectSocket(int socketIndex, int plugHash){
+    this._selectedSocket = plugHash;
+    this._selectedSockets[socketIndex] = plugHash;
+    this.notifyListeners();
   }
 
   List<int> socketPlugHashes(int socketIndex) {
@@ -30,11 +39,34 @@ class ItemSocketController extends ChangeNotifier{
       return [state?.plugHash].where((s) => s != null).toList();
     }
     var entry = definition?.sockets?.socketEntries?.elementAt(socketIndex);
+    
+    if ((entry?.randomizedPlugItems?.length ?? 0) > 0) {
+      return entry?.randomizedPlugItems?.map((p) => p.plugItemHash)?.toList();
+    }
     if (entry?.reusablePlugItems != null) {
       return entry?.reusablePlugItems?.map((p) => p.plugItemHash)?.toList();
     }
-    if (entry?.randomizedPlugItems != null) {
+    return [];
+  }
+
+  List<int> randomizedPlugHashes(int socketIndex){
+    var entry = definition?.sockets?.socketEntries?.elementAt(socketIndex);
+    if ((entry?.randomizedPlugItems?.length ?? 0) > 0) {
       return entry?.randomizedPlugItems?.map((p) => p.plugItemHash)?.toList();
+    }
+    return [];
+  }
+
+  List<int> bungieRollPlugHashes(int socketIndex){
+    var entry = definition?.sockets?.socketEntries?.elementAt(socketIndex);
+    if ((entry?.randomizedPlugItems?.length ?? 0) == 0) {
+      return [];
+    }
+    if ((entry?.reusablePlugItems?.length ?? 0) > 0) {
+      return entry?.reusablePlugItems?.map((p) => p.plugItemHash)?.toList();
+    }
+    if((entry?.singleInitialItemHash != null)){
+      return [entry.singleInitialItemHash];
     }
     return [];
   }

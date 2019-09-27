@@ -6,6 +6,7 @@ import 'package:little_light/services/inventory/inventory.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
+import 'package:little_light/widgets/common/translated_text.widget.dart';
 
 
 class EquipOnCharacterButton extends StatelessWidget {
@@ -14,8 +15,9 @@ class EquipOnCharacterButton extends StatelessWidget {
   final Function onTap;
   final double iconSize;
   final double fontSize;
+  final double borderSize;
 
-  const EquipOnCharacterButton({Key key, this.type, this.characterId, this.onTap, this.iconSize = kToolbarHeight, this.fontSize = 9}) : super(key: key);
+  const EquipOnCharacterButton({Key key, this.type, this.characterId, this.onTap, this.iconSize = kToolbarHeight, this.fontSize = 9, this.borderSize=1}) : super(key: key);
 
 
   @override
@@ -26,10 +28,10 @@ class EquipOnCharacterButton extends StatelessWidget {
             height: iconSize,
             child: Container(
                 foregroundDecoration: BoxDecoration(
-                    border: Border.all(width: 1, color: Colors.grey.shade400)),
+                    border: Border.all(width: borderSize, color: Colors.grey.shade400)),
                 child: Stack(fit: StackFit.expand, children: [
                   characterIcon(context),
-                  characterClassIcon(context),
+                  characterClassName(context),
                   Material(
                     type: MaterialType.button,
                     color: Colors.transparent,
@@ -58,7 +60,7 @@ class EquipOnCharacterButton extends StatelessWidget {
     }
   }
 
-  Widget characterClassIcon(BuildContext context) {
+  Widget characterClassName(BuildContext context) {
     switch (type) {
       case ItemDestination.Character:
         DestinyCharacterComponent character =
@@ -78,6 +80,29 @@ class EquipOnCharacterButton extends StatelessWidget {
         ),);
         break;
 
+      case ItemDestination.Inventory:
+        return Positioned(bottom: 1, left:1, right:1, child: Container(
+          padding:EdgeInsets.all(2),
+          color:Colors.black.withOpacity(.7),
+          child:TranslatedTextWidget("Inventory",
+          overflow: TextOverflow.fade,
+          softWrap: false,
+          maxLines: 1,
+          textAlign: TextAlign.center,
+          uppercase: true, style:TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold))
+        ),);
+
+      case ItemDestination.Vault:
+        return Positioned(bottom: 1, left:1, right:1, child: Container(
+          padding:EdgeInsets.all(2),
+          color:Colors.black.withOpacity(.7),
+          child:TranslatedTextWidget("Vault",
+          overflow: TextOverflow.fade,
+          softWrap: false,
+          maxLines: 1,
+          textAlign: TextAlign.center,
+          uppercase: true, style:TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold))
+        ),);
       default:
         return Container();
     }

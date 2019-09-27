@@ -57,6 +57,21 @@ class BaseItemSocketsWidgetState<T extends BaseItemSocketsWidget>
     super.initState();
     _socketStates = widget.profile.getItemSockets(item?.itemInstanceId);
     loadPlugDefinitions();
+    initController();
+  }
+
+  void initController() {
+    controller.addListener(update);
+  }
+
+  @override
+  dispose(){
+    super.dispose();
+    controller.removeListener(update);
+  }
+
+  update(){
+    setState((){});
   }
 
   Future<void> loadPlugDefinitions() async {
@@ -139,7 +154,8 @@ class BaseItemSocketsWidgetState<T extends BaseItemSocketsWidget>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
-          children: plugs.map((p) => buildPlug(context, socketIndex, p)).toList(),
+          children:
+              plugs.map((p) => buildPlug(context, socketIndex, p)).toList(),
         ));
   }
 

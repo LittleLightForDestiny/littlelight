@@ -10,7 +10,7 @@ import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/base_item_instance.widget.dart';
 
-class ItemDetailDuplicatesWidget extends DestinyItemWidget {
+class ItemDetailDuplicatesWidget extends BaseDestinyStatelessItemWidget {
   final List<ItemWithOwner> duplicates;
 
   ItemDetailDuplicatesWidget(
@@ -19,7 +19,9 @@ class ItemDetailDuplicatesWidget extends DestinyItemWidget {
       DestinyItemInstanceComponent instanceInfo,
       {Key key,
       this.duplicates})
-      : super(item, definition, instanceInfo, key: key);
+      : super(item: item,
+              definition: definition,
+              instanceInfo: instanceInfo, key: key);
 
   @override
   Widget build(BuildContext context) {

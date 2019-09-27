@@ -7,47 +7,57 @@ import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 
-
 class BaseItemStatWidget extends StatelessWidget {
   final int statHash;
   final StatValues modValues;
   final DestinyStatDisplayDefinition scaled;
 
-  BaseItemStatWidget(this.statHash, this.modValues, {this.scaled});
+  BaseItemStatWidget({this.statHash, this.modValues, this.scaled});
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-      return Container(
-          padding: EdgeInsets.symmetric(vertical: 1),
-          child: Row(children: [
-            Expanded(child:ManifestText<DestinyStatDefinition>(
-                  statHash,
-                  key: Key("item_stat_$statHash"),
-                  uppercase: true,
-                  maxLines: 1,
-                  softWrap: false,
-                  style: TextStyle(
-                      color: color, fontWeight: FontWeight.bold, fontSize: 12),
-                  overflow: TextOverflow.fade,
-                )),
-            Expanded(child: Text("$precalculated"),),
-            Expanded(child: Text("$currentValue"),),
-            Expanded(child: Text("$masterwork"),)
-          ]));
-    });
+    return Container(
+        width: 400,
+        padding: EdgeInsets.symmetric(vertical: 1),
+        child: Row(children: [
+          Expanded(
+              child: ManifestText<DestinyStatDefinition>(
+            statHash,
+            key: Key("item_stat_$statHash"),
+            uppercase: true,
+            maxLines: 1,
+            softWrap: false,
+            style: TextStyle(
+                color: nameColor, fontWeight: FontWeight.bold, fontSize: 12),
+            overflow: TextOverflow.fade,
+          )),
+          Expanded(
+            child: Text("$precalculated"),
+          ),
+          Expanded(
+            child: Text("$currentValue"),
+          ),
+          Expanded(
+            child: Text("$masterwork"),
+          )
+        ]));
   }
 
+  Color get positiveColor => DestinyData.positiveFeedback;
+  Color get negativeColor => DestinyData.negativeFeedback;
+  Color get masterworkColor => DestinyData.masterworkColor;
+  Color get hiddenStatColor => Colors.amber.shade200;
+  Color get neutralColor => Colors.grey.shade300;
+
   int get maxBarSize {
-    if (DestinyData.armorStats.contains(statHash)) {
-      return max(3, baseBarSize + modBarSize);
+    if(scaled?.maximumValue != null){
+      return max(scaled?.maximumValue, baseBarSize + modBarSize + masterworkBarSize);
     }
-    return max(100, baseBarSize + modBarSize);
+    return max(100, baseBarSize + modBarSize + masterworkBarSize);
   }
 
   int get currentValue {
-    var originalValue =  selected + masterwork;
+    var originalValue = selected + masterwork;
     if (scaled != null) {
       return interpolate(originalValue, scaled.displayInterpolation);
     }
@@ -67,19 +77,6 @@ class BaseItemStatWidget extends StatelessWidget {
     return value;
   }
 
-  Color get modColor {
-    if (selected > equipped) {
-      return DestinyData.positiveFeedback;
-    }
-    if (equipped > selected) {
-      return DestinyData.negativeFeedback;
-    }
-    if (masterwork > 0) {
-      return Colors.amberAccent.shade400;
-    }
-    return color;
-  }
-
   int get modBarSize {
     if (scaled != null) {
       return (InventoryUtils.interpolateStat(
@@ -91,11 +88,52 @@ class BaseItemStatWidget extends StatelessWidget {
     return (selected - equipped).abs();
   }
 
-  Color get color {
-    return hiddenStat ? Colors.amber.shade200 : Colors.grey.shade300;
+  int get masterworkBarSize {
+    if (scaled != null) {
+      return (InventoryUtils.interpolateStat(
+                  selected + masterwork, scaled.displayInterpolation) -
+              InventoryUtils.interpolateStat(
+                  selected, scaled.displayInterpolation))
+          .abs();
+    }
+    return (masterwork).abs();
   }
 
-  bool get hiddenStat {
+  Color get nameColor{
+    if(isHiddenStat){
+      return hiddenStatColor;
+    }
+    return neutralColor;
+  }
+
+  Color get valueColor{
+    if(masterwork > 0){
+      return masterworkColor;
+    }
+    if (selected > equipped) {
+      return positiveColor;
+    }
+    if (equipped > selected) {
+      return negativeColor;
+    }
+    if(isHiddenStat){
+      return hiddenStatColor;
+    }
+    return neutralColor;
+  }
+
+  Color get modBarColor {
+    if (selected > equipped) {
+      return positiveColor;
+    }
+    if (equipped > selected) {
+      return negativeColor;
+    }
+    return neutralColor;
+  }
+
+
+  bool get isHiddenStat {
     return DestinyData.hiddenStats.contains(statHash);
   }
 
@@ -113,5 +151,9 @@ class StatValues {
   int equipped;
   int selected;
   int masterwork;
-  StatValues({this.equipped = 0, this.selected=0, this.masterwork=0, this.precalculated=0});
+  StatValues(
+      {this.equipped = 0,
+      this.selected = 0,
+      this.masterwork = 0,
+      this.precalculated = 0});
 }

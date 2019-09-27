@@ -16,7 +16,7 @@ import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/item_name_bar/item_name_bar.widget.dart';
 import 'package:shimmer/shimmer.dart';
 
-class ItemCoverWidget extends DestinyItemWidget {
+class ItemCoverWidget extends BaseDestinyStatelessItemWidget {
   final String uniqueId;
 
   ItemCoverWidget(
@@ -26,8 +26,12 @@ class ItemCoverWidget extends DestinyItemWidget {
       {Key key,
       String characterId,
       this.uniqueId})
-      : super(item, definition, instanceInfo,
-            key: key, characterId: characterId);
+      : super(
+            item: item,
+            definition: definition,
+            instanceInfo: instanceInfo,
+            key: key,
+            characterId: characterId);
 
   @override
   Widget build(BuildContext context) {
@@ -36,15 +40,14 @@ class ItemCoverWidget extends DestinyItemWidget {
     double screenshotHeight = width / (16 / 9);
     double minHeight = paddingTop + kToolbarHeight;
     double maxHeight = kToolbarHeight + screenshotHeight;
-    if((definition?.screenshot?.length ?? 0) == 0){
+    if ((definition?.screenshot?.length ?? 0) == 0) {
       maxHeight = minHeight;
     }
     return SliverPersistentHeader(
         pinned: true,
         delegate: ItemCoverDelegate(
             item, definition, instanceInfo, tag, uniqueId,
-            minHeight: minHeight,
-            maxHeight: maxHeight));
+            minHeight: minHeight, maxHeight: maxHeight));
   }
 }
 
@@ -67,7 +70,7 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     double expandRatio =
         max(0, 1 - shrinkOffset / (this.maxHeight - this.minHeight));
-    if(maxHeight == minHeight){
+    if (maxHeight == minHeight) {
       expandRatio = 0;
     }
     return Container(
@@ -123,9 +126,9 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
         child: Hero(
             tag: "item_icon_${tag}_$uniqueId",
             child: ItemIconWidget.builder(
-              item,
-              definition,
-              instanceInfo,
+              item: item,
+              definition: definition,
+              instanceInfo: instanceInfo,
               iconBorderWidth: lerpDouble(1, 2, expandRatio),
             )));
   }
@@ -148,8 +151,8 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
     double leftOffset = lerpDouble(kToolbarHeight * 2 - 16, 104, expandRatio);
     return Positioned(
         left: leftOffset,
-        bottom: kToolbarHeight * expandRatio*.8,
-        right:kToolbarHeight,
+        bottom: kToolbarHeight * expandRatio * .8,
+        right: kToolbarHeight,
         child: MasterworkCounterWidget(item));
   }
 
@@ -176,12 +179,12 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
                   context,
                   MaterialPageRoute(
                     builder: (context) => SharePreviewScreen(
-                          item,
-                          definition,
-                          instanceInfo,
-                          characterId: null,
-                          uniqueId: uniqueId,
-                        ),
+                      item,
+                      definition,
+                      instanceInfo,
+                      characterId: null,
+                      uniqueId: uniqueId,
+                    ),
                   ),
                 );
               },

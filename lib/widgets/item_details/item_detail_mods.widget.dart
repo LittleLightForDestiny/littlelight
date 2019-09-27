@@ -153,7 +153,7 @@ class ItemDetailModsWidgetState extends State<ItemDetailModsWidget> with Automat
   Widget buildPerkListItem(BuildContext context, int hash) {
     var plugDef = plugDefinitions[hash];
     var plug = getPlugItemByHash(hash);
-    return PerkListItem(definition: plugDef, plug: plug, parentHash: widget.definition.hash);
+    return PerkListItem(definition: plugDef, plug: plug);
   }
 
   Widget buildModIcons(BuildContext context) {

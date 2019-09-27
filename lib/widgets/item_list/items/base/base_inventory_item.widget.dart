@@ -7,7 +7,7 @@ import 'package:little_light/widgets/item_list/items/base/inventory_item.mixin.d
 import 'package:little_light/widgets/item_list/items/base/item_mods.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/item_perks.widget.dart';
 
-class BaseInventoryItemWidget extends DestinyItemWidget
+class BaseInventoryItemWidget extends BaseDestinyStatelessItemWidget
     with InventoryItemMixin {
   final String uniqueId;
 
@@ -15,33 +15,41 @@ class BaseInventoryItemWidget extends DestinyItemWidget
       DestinyItemComponent item,
       DestinyInventoryItemDefinition definition,
       DestinyItemInstanceComponent instanceInfo,
-      {Key key, @required String characterId, @required this.uniqueId})
-      : super(item, definition, instanceInfo, key:key, characterId:characterId);
-
+      {Key key,
+      @required String characterId,
+      @required this.uniqueId})
+      : super(
+            item: item,
+            definition: definition,
+            instanceInfo: instanceInfo,
+            key: key,
+            characterId: characterId);
 
   @override
   Widget perksWidget(BuildContext context) {
-    var sockets = item?.itemInstanceId == null ? null : profile.getItemSockets(item?.itemInstanceId);
+    var sockets = item?.itemInstanceId == null
+        ? null
+        : profile.getItemSockets(item?.itemInstanceId);
     return Positioned(
-      bottom:6,
-      left:96,
-      child:ItemPerksWidget(
-      definition: definition,
-      itemSockets: sockets,
-      iconSize: 20,
-    ));
+        bottom: 6,
+        left: 96,
+        child: ItemPerksWidget(
+          definition: definition,
+          itemSockets: sockets,
+          iconSize: 20,
+        ));
   }
 
   @override
   Widget modsWidget(BuildContext context) {
-    if(item?.itemInstanceId == null) return Container();
+    if (item?.itemInstanceId == null) return Container();
     return Positioned(
-      bottom:6,
-      right:6,
-      child:ItemModsWidget(
-      definition: definition,
-      itemSockets: profile.getItemSockets(item?.itemInstanceId),
-      iconSize: 22,
-    ));
+        bottom: 6,
+        right: 6,
+        child: ItemModsWidget(
+          definition: definition,
+          itemSockets: profile.getItemSockets(item?.itemInstanceId),
+          iconSize: 22,
+        ));
   }
 }

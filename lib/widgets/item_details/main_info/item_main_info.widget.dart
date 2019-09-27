@@ -6,15 +6,19 @@ import 'package:flutter/material.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateless_item.widget.dart';
 import 'package:little_light/widgets/common/primary_stat.widget.dart';
 
-class ItemMainInfoWidget extends DestinyItemWidget {
+class ItemMainInfoWidget extends BaseDestinyStatelessItemWidget {
   ItemMainInfoWidget(
       DestinyItemComponent item,
       DestinyInventoryItemDefinition definition,
       DestinyItemInstanceComponent instanceInfo,
       {Key key,
       String characterId})
-      : super(item, definition, instanceInfo,
-            key: key, characterId: characterId);
+      : super(
+            item: item,
+            definition: definition,
+            instanceInfo: instanceInfo,
+            key: key,
+            characterId: characterId);
 
   @override
   Widget build(BuildContext context) {
@@ -43,8 +47,8 @@ class ItemMainInfoWidget extends DestinyItemWidget {
 
   Widget primaryStat(context) {
     return PrimaryStatWidget(
-      definition:definition,
-      instanceInfo:instanceInfo,
+      definition: definition,
+      instanceInfo: instanceInfo,
       suppressLabel: true,
       fontSize: 36,
     );

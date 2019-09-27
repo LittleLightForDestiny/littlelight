@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 
-abstract class DestinyItemWidget extends StatelessWidget {
+abstract class BaseDestinyStatelessItemWidget extends StatelessWidget {
   final DestinyItemComponent item;
   final DestinyInventoryItemDefinition definition;
   final DestinyItemInstanceComponent instanceInfo;
@@ -13,8 +13,8 @@ abstract class DestinyItemWidget extends StatelessWidget {
   final ProfileService profile = new ProfileService();
   final ManifestService manifest = new ManifestService();
 
-  DestinyItemWidget(this.item, this.definition, this.instanceInfo,
-      {Key key, this.characterId})
+  BaseDestinyStatelessItemWidget({this.item, this.definition, this.instanceInfo,
+      Key key, this.characterId})
       : super(key: key);
   
   String get tag{
