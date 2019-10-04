@@ -1,6 +1,5 @@
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
-import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_item_investment_stat_definition.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_stat.dart';
@@ -18,14 +17,9 @@ class BaseItemStatsWidget extends BaseDestinyStatefulItemWidget {
   BaseItemStatsWidget({
     DestinyItemComponent item,
     DestinyInventoryItemDefinition definition,
-    DestinyItemInstanceComponent instanceInfo,
     Key key,
     this.socketController,
-  }) : super(
-            item: item,
-            definition: definition,
-            instanceInfo: instanceInfo,
-            key: key);
+  }) : super(item: item, definition: definition, key: key);
 
   @override
   BaseDestinyItemState<BaseDestinyStatefulItemWidget> createState() {
@@ -34,7 +28,7 @@ class BaseItemStatsWidget extends BaseDestinyStatefulItemWidget {
 }
 
 class BaseItemStatsState<T extends BaseItemStatsWidget>
-    extends BaseDestinyItemState<T> {
+    extends BaseDestinyItemState<T> with AutomaticKeepAliveClientMixin {
   Map<int, DestinyInventoryItemDefinition> plugDefinitions;
   Map<String, DestinyStat> precalculatedStats;
   List<DestinyItemSocketState> socketStates;
@@ -61,46 +55,33 @@ class BaseItemStatsState<T extends BaseItemStatsWidget>
   }
 
   initializeSocketController() {
-    socketController.addListener(update);
+    socketController?.addListener(update);
   }
-
-
 
   @override
   dispose() {
     super.dispose();
-    socketController.removeListener(update);
+    socketController?.removeListener(update);
   }
 
-  update(){
-    setState((){});
+  update() {
+    setState(() {});
   }
 
   Future<void> loadPlugDefinitions() async {
-    List<int> plugHashes = definition.sockets.socketEntries
-        .expand((socket) {
-          List<int> hashes = [];
-          if ((socket.singleInitialItemHash ?? 0) != 0) {
-            hashes.add(socket.singleInitialItemHash);
-          }
-          if ((socket.reusablePlugItems?.length ?? 0) != 0) {
-            hashes.addAll(socket.reusablePlugItems
-                .map((plugItem) => plugItem.plugItemHash));
-          }
-          if ((socket.randomizedPlugItems?.length ?? 0) != 0) {
-            hashes.addAll(socket.randomizedPlugItems
-                .map((plugItem) => plugItem.plugItemHash));
-          }
-          return hashes;
-        })
-        .where((i) => i != null)
-        .toList();
+    List<int> plugHashes;
     if (socketStates != null) {
-      Iterable<int> hashes = socketStates
-          .map((state) => state.plugHash)
-          .where((i) => i != null)
+      plugHashes = socketStates
+          .expand(
+              (state) => [state.plugHash].followedBy(state.reusablePlugHashes))
+          .where((i) => i != null && i != 0)
           .toList();
-      plugHashes.addAll(hashes);
+    } else {
+      plugHashes = definition.sockets.socketEntries
+          .expand((socket) => [socket.singleInitialItemHash]
+              .followedBy(socket.reusablePlugItems.map((p) => p.plugItemHash)))
+          .where((i) => i != null && i!=0)
+          .toList();
     }
     plugDefinitions = await widget.manifest
         .getDefinitions<DestinyInventoryItemDefinition>(plugHashes);
@@ -122,6 +103,7 @@ class BaseItemStatsState<T extends BaseItemStatsWidget>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Container(
       padding: EdgeInsets.all(8),
       child: Column(
@@ -172,8 +154,9 @@ class BaseItemStatsState<T extends BaseItemStatsWidget>
       return BaseItemStatWidget(
         statHash: stat.statTypeHash,
         modValues: entry,
-        scaled: statGroupDefinition.scaledStats
-            .firstWhere((s) => s.statHash == stat.statTypeHash, orElse: () => null),
+        scaled: statGroupDefinition.scaledStats.firstWhere(
+            (s) => s.statHash == stat.statTypeHash,
+            orElse: () => null),
       );
     }).toList();
   }
@@ -203,10 +186,6 @@ class BaseItemStatsState<T extends BaseItemStatsWidget>
     plugHashes.forEach((plugHash) {
       int index = plugHashes.indexOf(plugHash);
       DestinyInventoryItemDefinition def = plugDefinitions[plugHash];
-      var state;
-      if (socketStates != null) {
-        state = socketStates[index];
-      }
       if (def == null) {
         return;
       }
@@ -215,8 +194,7 @@ class BaseItemStatsState<T extends BaseItemStatsWidget>
           plugDefinitions[selectedPlugHash];
       def?.investmentStats?.forEach((stat) {
         StatValues values = map[stat.statTypeHash] ?? new StatValues();
-        if (def.plug?.uiPlugLabel == 'masterwork' &&
-            (state?.reusablePlugHashes?.length ?? 0) == 0) {
+        if (def.plug?.uiPlugLabel == 'masterwork') {
           values.masterwork += stat.value;
         } else {
           values.equipped += stat.value;
@@ -278,4 +256,7 @@ class BaseItemStatsState<T extends BaseItemStatsWidget>
     });
     return stats;
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

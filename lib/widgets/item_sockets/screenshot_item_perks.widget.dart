@@ -155,7 +155,6 @@ class ScreenShotItemPerksWidgetState<T extends ScreenShotItemPerksWidget>
               child: ManifestImageWidget<DestinyInventoryItemDefinition>(
                   plugItemHash),
               onPressed: () {
-                print(plugItemHash);
                 controller.selectSocket(socketIndex, plugItemHash);
               },
             )));

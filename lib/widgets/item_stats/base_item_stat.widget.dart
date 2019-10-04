@@ -12,7 +12,7 @@ class BaseItemStatWidget extends StatelessWidget {
   final StatValues modValues;
   final DestinyStatDisplayDefinition scaled;
 
-  BaseItemStatWidget({this.statHash, this.modValues, this.scaled});
+  BaseItemStatWidget({this.statHash, this.modValues, this.scaled, Key key}):super(key:key);
 
   @override
   Widget build(BuildContext context) {

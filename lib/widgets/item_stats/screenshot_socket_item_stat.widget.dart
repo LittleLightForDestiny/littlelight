@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/item_stats/base_item_stat.widget.dart';
 
-class ScreenshotItemStatWidget extends BaseItemStatWidget {
+class ScreenshotSocketItemStatWidget extends BaseItemStatWidget {
   final double pixelSize;
 
-  ScreenshotItemStatWidget(
+  ScreenshotSocketItemStatWidget(
       {Key key,
         this.pixelSize = 1,
       StatValues modValues,
@@ -65,15 +65,10 @@ class ScreenshotItemStatWidget extends BaseItemStatWidget {
     return Container(
       width: pixelSize * 240,
       height: pixelSize * 20,
-      color: Colors.grey.shade900.withOpacity(.5),
+      color: Colors.grey.shade700.withOpacity(.7),
       child: Row(
+        mainAxisAlignment: currentValue > 0 ? MainAxisAlignment.start : MainAxisAlignment.end,
         children: <Widget>[
-          Container(
-              width: (baseBarSize / maxBarSize) * (pixelSize * 240),
-              color: nameColor),
-          Container(
-              width: (masterworkBarSize / maxBarSize) * (pixelSize * 240),
-              color: masterworkColor),
           Container(
               width: (modBarSize / maxBarSize) * (pixelSize * 240),
               color: modBarColor),
@@ -81,4 +76,14 @@ class ScreenshotItemStatWidget extends BaseItemStatWidget {
       ),
     );
   }
+
+  int get currentValue {
+    if (scaled != null) {
+      return interpolate(selected, scaled.displayInterpolation) - interpolate(equipped, scaled.displayInterpolation);
+    }
+    return selected - equipped;
+  }
+
+  @override
+  Color get nameColor => neutralColor;
 }

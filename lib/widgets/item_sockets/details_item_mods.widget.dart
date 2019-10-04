@@ -13,12 +13,11 @@ import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-import 'package:little_light/widgets/flutter/smaller_switch.dart';
 import 'package:little_light/widgets/item_sockets/base_item_sockets.widget.dart';
 import 'package:little_light/widgets/item_sockets/item_socket.controller.dart';
 
-class DetailsItemPerksWidget extends BaseItemSocketsWidget {
-  DetailsItemPerksWidget({
+class DetailsItemModsWidget extends BaseItemSocketsWidget {
+  DetailsItemModsWidget({
     Key key,
     DestinyItemComponent item,
     DestinyInventoryItemDefinition definition,
@@ -37,7 +36,7 @@ class DetailsItemPerksWidget extends BaseItemSocketsWidget {
   }
 }
 
-class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
+class DetailsItemPerksWidgetState<T extends DetailsItemModsWidget>
     extends BaseItemSocketsWidgetState<T> {
   bool showDetails = false;
 
@@ -96,7 +95,7 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
         .map((socketIndex) => buildSocketPlugs(context, socketIndex))
         .where((w) => w != null);
     var screenWidth = MediaQuery.of(context).size.width - 16;
-    var dividerMargin = min(screenWidth/50, 8.0);
+    var dividerMargin = min(screenWidth / 50, 8.0);
     children = children.expand((w) => [
           w,
           Container(
@@ -108,39 +107,22 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
     var mq = MediaQueryHelper(context);
     var largeScreen = mq.isDesktop || (mq.tabletOrBigger && mq.isLandscape);
     if (!largeScreen && showDetails) {
-      return Stack(children: [
-        Positioned.fill(
-            child: Image.asset(
-          "assets/imgs/perks_grid.png",
-          repeat: ImageRepeat.repeat,
-          alignment: Alignment.center,
-          scale: 1,
-        )),
-        Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: children.toList())
-      ]);
+      return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: children.toList());
     }
-    return Stack(children: [
-      Positioned.fill(
-          child: Image.asset(
-        "assets/imgs/perks_grid.png",
-        repeat: ImageRepeat.repeat,
-        alignment: Alignment.center,
-        scale: 1,
-      )),
-      IntrinsicHeight(
-          child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: children.toList()))
-    ]);
+    return IntrinsicHeight(
+        child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: children.toList()));
   }
 
   @override
   Widget buildSocketPlugs(BuildContext context, int socketIndex) {
     var plugs = socketPlugHashes(socketIndex);
+    var selectedPlugHash = controller.socketSelectedPlugHash(socketIndex);
     if (plugs.length == 0) return null;
     var mq = MediaQueryHelper(context);
     if (mq.isDesktop || (mq.tabletOrBigger && mq.isLandscape)) {
@@ -149,7 +131,7 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [buildPlugCategoryTitle(context, socketIndex)]
-            .followedBy(plugs.map((p) => buildPlug(context, socketIndex, p)))
+            .followedBy([buildPlug(context, socketIndex, selectedPlugHash)])
             .toList(),
       ));
     }
@@ -163,14 +145,11 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
       );
     }
     var screenWidth = MediaQuery.of(context).size.width - 16;
+    
     return Container(
         width: min(64, screenWidth / 8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children:
-              plugs.map((p) => buildPlug(context, socketIndex, p)).toList(),
-        ));
+        child: buildPlug(context, socketIndex, selectedPlugHash),
+        );
   }
 
   Widget buildPlugCategoryTitle(BuildContext context, int socketIndex) {
@@ -261,46 +240,14 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
   Widget buildPlugIcon(
       BuildContext context, int socketIndex, int plugItemHash) {
     if (plugDefinitions == null) return Container();
-    var plugDef = plugDefinitions[plugItemHash];
-    bool intrinsic = plugDef?.plug?.plugCategoryIdentifier == "intrinsics";
-    int equippedHash = socketEquippedPlugHash(socketIndex);
-    bool isEquipped = equippedHash == plugItemHash;
-    bool isExotic = definition.inventory.tierType == TierType.Exotic;
-    bool isSelectedOnSocket =
-        plugItemHash == controller.socketSelectedPlugHash(socketIndex);
-    bool isSelected = plugItemHash == controller.selectedPlugHash;
-    Color bgColor = Colors.transparent;
-    Color borderColor = Colors.grey.shade300.withOpacity(.5);
-    if (isEquipped && !intrinsic) {
-      bgColor = DestinyData.perkColor.withOpacity(.5);
-    }
-    if (isSelectedOnSocket && !intrinsic) {
-      bgColor = DestinyData.perkColor;
-      borderColor = Colors.grey.shade300;
-    }
-
-    if (intrinsic && !isSelected) {
-      borderColor = Colors.transparent;
-    }
-
-    BorderSide borderSide = BorderSide(color: borderColor, width: 2);
-
     return Container(
-        padding: EdgeInsets.all(0),
-        margin: EdgeInsets.only(bottom: 8),
         child: AspectRatio(
             aspectRatio: 1,
             child: FlatButton(
-              shape: intrinsic && !isExotic
-                  ? RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4), side: borderSide)
-                  : CircleBorder(side: borderSide),
-              padding: EdgeInsets.all(intrinsic ? 0 : 8),
-              color: bgColor,
+              padding: EdgeInsets.all(0),
               child: ManifestImageWidget<DestinyInventoryItemDefinition>(
                   plugItemHash),
               onPressed: () {
-                print(plugItemHash);
                 controller.selectSocket(socketIndex, plugItemHash);
               },
             )));

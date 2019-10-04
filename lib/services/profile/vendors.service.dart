@@ -39,7 +39,7 @@ class VendorsService {
 
   Future<List<DestinyVendorCategory>> getVendorCategories(String characterId, int vendorHash) async{
     var vendors = await _getVendorsData(characterId);
-    return vendors?.categories?.data["$vendorHash"].categories;
+    return vendors?.categories?.data["$vendorHash"]?.categories;
   }
 
   Future<List<DestinyVendorGroup>> getVendorGroups(String characterId) async{

@@ -5,6 +5,7 @@ import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_socket_category_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 
 class ItemPerksWidget extends StatefulWidget {
@@ -42,12 +43,10 @@ class ItemPerksWidgetState extends State<ItemPerksWidget> {
     }
     var socketCategoryHashes =
         definition.sockets.socketCategories.map((s) => s.socketCategoryHash);
-    var socketCategoryDefinitions = await widget.manifest
-        .getDefinitions<DestinySocketCategoryDefinition>(socketCategoryHashes);
-    perksCatDefinition = socketCategoryDefinitions.values.firstWhere((def) {
-      return def.categoryStyle & DestinySocketCategoryStyle.Reusable ==
-          DestinySocketCategoryStyle.Reusable;
-    }, orElse: () => null);
+    var socketCategoryHash = socketCategoryHashes.firstWhere((s)=>DestinyData.socketCategoryPerkHashes.contains(s), orElse:()=>null);
+    
+    perksCatDefinition = await widget.manifest
+        .getDefinition<DestinySocketCategoryDefinition>(socketCategoryHash);
     if (!mounted) return;
     setState(() {});
   }

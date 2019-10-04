@@ -2,32 +2,36 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_socket_category_definition.dart';
 import 'package:bungie_api/models/destiny_socket_category_definition.dart';
-
 import 'package:flutter/material.dart';
-import 'package:little_light/services/bungie_api/bungie_api.service.dart';
+import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
-import 'package:little_light/widgets/common/queued_network_image.widget.dart';
+import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/item_sockets/base_item_sockets.widget.dart';
 import 'package:little_light/widgets/item_sockets/item_socket.controller.dart';
 
-class ScreenShotItemModsWidget extends BaseItemSocketsWidget {
+class ScreenShotArmorTierWidget extends BaseItemSocketsWidget {
   final double pixelSize;
-  ScreenShotItemModsWidget({
+  ScreenShotArmorTierWidget({
     Key key,
     DestinyItemComponent item,
     DestinyInventoryItemDefinition definition,
     DestinyItemSocketCategoryDefinition category,
-    ItemSocketController controller, 
+    ItemSocketController controller,
     this.pixelSize = 1,
-  }) : super(key: key, item: item, definition: definition, category: category, controller:controller);
+  }) : super(
+            key: key,
+            item: item,
+            definition: definition,
+            category: category,
+            controller: controller);
 
   @override
   State<StatefulWidget> createState() {
-    return ScreenShotItemModsWidgetState();
+    return ScreenShotItemPerksWidgetState();
   }
 }
 
-class ScreenShotItemModsWidgetState<T extends ScreenShotItemModsWidget>
+class ScreenShotItemPerksWidgetState<T extends ScreenShotArmorTierWidget>
     extends BaseItemSocketsWidgetState<T> {
   Widget buildHeader(BuildContext context) {
     return Column(
@@ -52,46 +56,41 @@ class ScreenShotItemModsWidgetState<T extends ScreenShotItemModsWidget>
 
   @override
   Widget buildSockets(BuildContext context) {
-    return IntrinsicHeight(
-        child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: category.socketIndexes
-                .map(
-                    (socketIndex) => buildSocketPlugs(context, socketIndex))
-                .expand((w) => [
-                      w,
-                      Container(
-                          width: 10 * widget.pixelSize,
-                          )
-                    ])
-                .toList()));
+    Iterable<Widget> children = category.socketIndexes
+        .map((socketIndex) => buildSocketPlugs(context, socketIndex))
+        .where((w) => w != null);
+    return Column(children: children.toList());
   }
 
   @override
   Widget buildSocketPlugs(BuildContext context, int socketIndex) {
-    var plugHash = socketEquippedPlugHash(socketIndex);
+    int equippedHash = socketEquippedPlugHash(socketIndex);
     return Container(
-        width: 96 * widget.pixelSize,
-        child: buildPlug(context, socketIndex, plugHash),
-        );
+        width: widget.pixelSize * 520,
+        child: buildPlug(context, socketIndex, equippedHash));
   }
 
   @override
   Widget buildPlug(BuildContext context, int socketIndex, int plugItemHash) {
     if (plugDefinitions == null) return Container();
     var plugDef = plugDefinitions[plugItemHash];
-    return FlatButton(
-      padding: EdgeInsets.all(0),
-      onPressed: (){
-        controller.selectSocket(socketIndex, plugItemHash);
-      },
-      child:Container(
-        decoration: BoxDecoration(border: Border.all(color: Colors.grey.shade400, width:3*widget.pixelSize)),
-        child: AspectRatio(
-            aspectRatio: 1,
-            child: QueuedNetworkImage(
-                imageUrl:
-                    BungieApiService.url(plugDef?.displayProperties?.icon)))));
+    var color = DestinyData.getEnergyTypeColor(
+        plugDef?.plug?.energyCapacity?.energyType);
+    var total = plugDef?.plug?.energyCapacity?.capacityValue;
+    return Container(
+      height: widget.pixelSize * 50,
+      padding: EdgeInsets.symmetric(horizontal:widget.pixelSize * 10),
+      color: color.withOpacity(.6),
+      child:Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+        Icon(DestinyData.getEnergyTypeIcon(
+        plugDef?.plug?.energyCapacity?.energyType), color:color,),
+        Container(width: widget.pixelSize * 8,),
+        Text("$total", style: TextStyle(fontWeight: FontWeight.bold, fontSize: widget.pixelSize*38),),
+        Container(width: widget.pixelSize * 16,),
+        TranslatedTextWidget("Energy", uppercase:true, style: TextStyle(fontWeight: FontWeight.w400, fontSize: widget.pixelSize*22),)
+      ],)
+    );
   }
 }

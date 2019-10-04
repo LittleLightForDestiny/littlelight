@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/screens/item_detail.screen.dart';
 import 'package:little_light/utils/item_with_owner.dart';
+import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateless_item.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -50,13 +51,14 @@ class ItemDetailDuplicatesWidget extends BaseDestinyStatelessItemWidget {
   }
 
   Widget buildDuplicatedItems(BuildContext context) {
+    var isTablet = MediaQueryHelper(context).tabletOrBigger;
     return StaggeredGridView.count(
         padding: EdgeInsets.all(0),
         crossAxisSpacing: 2,
         mainAxisSpacing: 2,
-        crossAxisCount: 2,
+        crossAxisCount: 10,
         staggeredTiles:
-            duplicates.map((item) => StaggeredTile.extent(1, 110)).toList(),
+            duplicates.map((item) => StaggeredTile.extent(isTablet ? 2 : 5, 110)).toList(),
         shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),
         children: duplicates

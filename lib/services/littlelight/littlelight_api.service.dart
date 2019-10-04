@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:bungie_api/helpers/bungie_net_token.dart';
-import 'package:bungie_api/models/user_info_card.dart';
+import 'package:bungie_api/models/group_user_info_card.dart';
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:http/http.dart' as http;
@@ -54,7 +54,7 @@ class LittleLightApiService {
       String body = "",
       _HttpMethod method = _HttpMethod.get}) async {
     AuthService auth = AuthService();
-    UserInfoCard membership = await auth.getMembership();
+    GroupUserInfoCard membership = await auth.getMembership();
     BungieNetToken token = await auth.getToken();
     String uuid = await _getUuid();
     String secret = await _getSecret();

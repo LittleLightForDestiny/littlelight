@@ -26,6 +26,7 @@ class LargeScreenEquipmentListWidgetState
     InventoryBucket.legArmor,
     InventoryBucket.ghost,
     InventoryBucket.classArmor,
+    InventoryBucket.lostItems,
     InventoryBucket.vehicle,
     InventoryBucket.ships,
     InventoryBucket.emblems,

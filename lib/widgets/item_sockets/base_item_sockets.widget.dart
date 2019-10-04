@@ -85,10 +85,7 @@ class BaseItemSocketsWidgetState<T extends BaseItemSocketsWidget>
             hashes.addAll(socket.reusablePlugItems
                 .map((plugItem) => plugItem.plugItemHash));
           }
-          if ((socket.randomizedPlugItems?.length ?? 0) != 0) {
-            hashes.addAll(socket.randomizedPlugItems
-                .map((plugItem) => plugItem.plugItemHash));
-          }
+
           return hashes;
         })
         .where((i) => i != null)

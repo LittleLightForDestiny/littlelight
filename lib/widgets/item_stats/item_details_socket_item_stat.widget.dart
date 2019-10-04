@@ -4,12 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/item_stats/base_item_stat.widget.dart';
 
-class ScreenshotItemStatWidget extends BaseItemStatWidget {
-  final double pixelSize;
+class ItemDetailSocketItemStatWidget extends BaseItemStatWidget {
+  
 
-  ScreenshotItemStatWidget(
+  ItemDetailSocketItemStatWidget(
       {Key key,
-        this.pixelSize = 1,
       StatValues modValues,
       int statHash,
       DestinyStatDisplayDefinition scaled})
@@ -18,7 +17,7 @@ class ScreenshotItemStatWidget extends BaseItemStatWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        height: pixelSize * 28,
+        height: 22,
         child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.end,
@@ -35,7 +34,7 @@ class ScreenshotItemStatWidget extends BaseItemStatWidget {
         statHash,
         style: TextStyle(
           color: nameColor,
-          fontSize: pixelSize * 20,
+          fontSize: 16,
           fontWeight: FontWeight.w300,
         ),
         textAlign: TextAlign.center,
@@ -45,12 +44,12 @@ class ScreenshotItemStatWidget extends BaseItemStatWidget {
 
   Widget buildValue(BuildContext context) {
     return Container(
-      width: pixelSize * 50,
+      width: 50,
       child: Text(
         "$currentValue",
         style: TextStyle(
           color: valueColor,
-          fontSize: pixelSize * 20,
+          fontSize: 16,
           fontWeight: FontWeight.bold,
         ),
         textAlign: TextAlign.center,
@@ -59,26 +58,32 @@ class ScreenshotItemStatWidget extends BaseItemStatWidget {
   }
 
   Widget buildBar(BuildContext context) {
+    var width = MediaQuery.of(context).size.width*.4;
     if (noBar) {
-      return Container(width: pixelSize * 240);
+      return Container(width: width);
     }
     return Container(
-      width: pixelSize * 240,
-      height: pixelSize * 20,
-      color: Colors.grey.shade900.withOpacity(.5),
+      width: width,
+      height: 16,
+      color: Colors.grey.shade700.withOpacity(.7),
       child: Row(
+        mainAxisAlignment: currentValue > 0 ? MainAxisAlignment.start : MainAxisAlignment.end,
         children: <Widget>[
           Container(
-              width: (baseBarSize / maxBarSize) * (pixelSize * 240),
-              color: nameColor),
-          Container(
-              width: (masterworkBarSize / maxBarSize) * (pixelSize * 240),
-              color: masterworkColor),
-          Container(
-              width: (modBarSize / maxBarSize) * (pixelSize * 240),
+              width: (modBarSize / maxBarSize) * width,
               color: modBarColor),
         ],
       ),
     );
   }
+
+  int get currentValue {
+    if (scaled != null) {
+      return interpolate(selected, scaled.displayInterpolation) - interpolate(equipped, scaled.displayInterpolation);
+    }
+    return selected - equipped;
+  }
+
+  @override
+  Color get nameColor => neutralColor;
 }

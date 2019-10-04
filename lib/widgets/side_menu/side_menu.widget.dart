@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:bungie_api/helpers/oauth.dart';
 import 'package:bungie_api/models/general_user.dart';
-import 'package:bungie_api/models/user_info_card.dart';
+import 'package:bungie_api/models/group_user_info_card.dart';
 import 'package:bungie_api/models/user_membership_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -187,7 +187,7 @@ class SideMenuWidgetState extends State<SideMenuWidget> {
   }
 
   Widget membershipButton(BuildContext context, GeneralUser bungieNetUser,
-      UserInfoCard membership) {
+      GroupUserInfoCard membership) {
     var plat = PlatformData.getPlatform(membership.membershipType);
     return Container(
         color: Colors.blueGrey.shade600,

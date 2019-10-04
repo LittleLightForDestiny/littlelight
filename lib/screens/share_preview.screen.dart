@@ -66,6 +66,7 @@ class SharePreviewScreenState extends BaseDestinyItemState<SharePreviewScreen> {
   }
 
   Future<void> loadPlugDefinitions() async {
+    
     List<int> plugHashes = definition.sockets.socketEntries
         .expand((socket) {
           List<int> hashes = [];
@@ -74,10 +75,6 @@ class SharePreviewScreenState extends BaseDestinyItemState<SharePreviewScreen> {
           }
           if ((socket.reusablePlugItems?.length ?? 0) != 0) {
             hashes.addAll(socket.reusablePlugItems
-                .map((plugItem) => plugItem.plugItemHash));
-          }
-          if ((socket.randomizedPlugItems?.length ?? 0) != 0) {
-            hashes.addAll(socket.randomizedPlugItems
                 .map((plugItem) => plugItem.plugItemHash));
           }
           return hashes;

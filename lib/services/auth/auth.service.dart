@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:bungie_api/helpers/bungie_net_token.dart';
 import 'package:bungie_api/helpers/oauth.dart';
-import 'package:bungie_api/models/user_info_card.dart';
+import 'package:bungie_api/models/group_user_info_card.dart';
 import 'package:bungie_api/models/user_membership_data.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
@@ -13,7 +13,7 @@ import 'package:url_launcher/url_launcher.dart';
 class AuthService {
   static final api = BungieApiService();
   static BungieNetToken _currentToken;
-  static UserInfoCard _currentMembership;
+  static GroupUserInfoCard _currentMembership;
   static UserMembershipData _membershipData;
   static bool waitingAuthCode = false;
   Future<BungieNetToken> _getStoredToken() async {
@@ -149,7 +149,7 @@ class AuthService {
     _membershipData = null;
   }
 
-  Future<UserInfoCard> getMembership() async {
+  Future<GroupUserInfoCard> getMembership() async {
     if (_currentMembership == null) {
       var _membershipData = await _getStoredMembershipData();
       var _membershipId = StorageService.getMembership();
@@ -158,7 +158,7 @@ class AuthService {
     return _currentMembership;
   }
 
-  UserInfoCard getMembershipById(UserMembershipData membershipData, String membershipId){
+  GroupUserInfoCard getMembershipById(UserMembershipData membershipData, String membershipId){
     return membershipData?.destinyMemberships
           ?.firstWhere((membership) => membership?.membershipId == membershipId, orElse: ()=>membershipData?.destinyMemberships?.first ?? null);
   }

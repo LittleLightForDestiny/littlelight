@@ -4621,7 +4621,7 @@
 /Users/marquesini/workspace/flutter/little_light_desktop/lib/widgets/common/item_name_bar/item_name_bar.widget.dart
 /Users/marquesini/workspace/flutter/little_light_desktop/lib/widgets/common/manifest_image.widget.dart
 /Users/marquesini/workspace/flutter/little_light_desktop/lib/widgets/common/manifest_text.widget.dart
-/Users/marquesini/workspace/flutter/little_light_desktop/lib/widgets/common/masterwork_counter.widget.dart
+/Users/marquesini/workspace/flutter/little_light_desktop/lib/widgets/common/masterwork_counter/base_masterwork_counter.widget.dart
 /Users/marquesini/workspace/flutter/little_light_desktop/lib/widgets/common/objective.widget.dart
 /Users/marquesini/workspace/flutter/little_light_desktop/lib/widgets/common/perk_list_item.widget.dart
 /Users/marquesini/workspace/flutter/little_light_desktop/lib/widgets/common/primary_stat.widget.dart

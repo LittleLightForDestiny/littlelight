@@ -14,7 +14,6 @@ import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
-import 'package:little_light/widgets/common/perk_list_item.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
 import 'package:little_light/widgets/item_details/chalice_recipe.widget.dart';
@@ -24,16 +23,17 @@ import 'package:little_light/widgets/item_details/item_cover/item_cover.widget.d
 import 'package:little_light/widgets/item_details/item_cover/landscape_item_cover.widget.dart';
 import 'package:little_light/widgets/item_details/item_detail_duplicates.widget.dart';
 import 'package:little_light/widgets/item_details/item_lore.widget.dart';
-import 'package:little_light/widgets/item_details/item_detail_mods.widget.dart';
 import 'package:little_light/widgets/item_details/item_objectives.widget.dart';
-import 'package:little_light/widgets/item_details/item_stats.widget.dart';
 import 'package:little_light/widgets/item_details/item_vendor_info.widget.dart';
 import 'package:little_light/widgets/item_details/main_info/item_main_info.widget.dart';
 import 'package:little_light/widgets/item_details/management_block.widget.dart';
 import 'package:little_light/widgets/item_details/quest_info.widget.dart';
 import 'package:little_light/widgets/item_details/rewards_info.widget.dart';
+import 'package:little_light/widgets/item_sockets/details_item_mods.widget.dart';
 import 'package:little_light/widgets/item_sockets/details_item_perks.widget.dart';
+import 'package:little_light/widgets/item_sockets/item_details_socket_details.widget.dart';
 import 'package:little_light/widgets/item_sockets/item_socket.controller.dart';
+import 'package:little_light/widgets/item_stats/details_item_stats.widget.dart';
 import 'package:little_light/widgets/option_sheets/as_equipped_switch.widget.dart';
 import 'package:little_light/widgets/option_sheets/loadout_select_sheet.widget.dart';
 
@@ -72,7 +72,6 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
   int selectedPerk;
   Map<int, int> selectedPerks = new Map();
   ItemSocketController socketController;
-  Map<int, DestinyInventoryItemDefinition> plugDefinitions;
   DestinyStatGroupDefinition statGroupDefinition;
   List<ItemWithOwner> duplicates;
 
@@ -89,9 +88,6 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
 
   Future<void> loadDefinitions() async {
     findDuplicates();
-    if ((definition?.sockets?.socketEntries?.length ?? 0) > 0) {
-      await loadPlugDefinitions();
-    }
     loadStatGroupDefinition();
   }
 
@@ -123,39 +119,6 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
           i.item.itemInstanceId != item?.itemInstanceId;
     }).toList();
 
-    if (mounted) {
-      setState(() {});
-    }
-  }
-
-  Future<void> loadPlugDefinitions() async {
-    List<int> plugHashes = definition.sockets.socketEntries
-        .expand((socket) {
-          List<int> hashes = [];
-          if ((socket.singleInitialItemHash ?? 0) != 0) {
-            hashes.add(socket.singleInitialItemHash);
-          }
-          if ((socket.reusablePlugItems?.length ?? 0) != 0) {
-            hashes.addAll(socket.reusablePlugItems
-                .map((plugItem) => plugItem.plugItemHash));
-          }
-          if ((socket.randomizedPlugItems?.length ?? 0) != 0) {
-            hashes.addAll(socket.randomizedPlugItems
-                .map((plugItem) => plugItem.plugItemHash));
-          }
-          return hashes;
-        })
-        .where((i) => i != null)
-        .toList();
-    if (socketStates != null) {
-      Iterable<int> hashes = socketStates
-          .map((state) => state.plugHash)
-          .where((i) => i != null)
-          .toList();
-      plugHashes.addAll(hashes);
-    }
-    plugDefinitions = await widget.manifest
-        .getDefinitions<DestinyInventoryItemDefinition>(plugHashes);
     if (mounted) {
       setState(() {});
     }
@@ -201,8 +164,9 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
             buildDuplicates(context),
             buildStats(context),
             buildPerks(context),
-            buildSelectedPerk(context),
+            buildPerkDetails(context),
             buildMods(context),
+            buildModDetails(context),
             buildObjectives(context),
             buildRewards(context),
             buildQuestInfo(context),
@@ -231,8 +195,8 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
             instanceInfo,
             uniqueId: widget.uniqueId,
             characterId: widget.characterId,
-            plugDefinitions: plugDefinitions,
             socketController: socketController,
+            hideTransferBlock: widget.hideItemManagement,
           ),
           SliverList(
               delegate: SliverChildListDelegate([
@@ -241,8 +205,9 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
             buildAddToLoadoutButton(context),
             buildDuplicates(context),
             buildPerks(context),
-            buildSelectedPerk(context),
+            buildPerkDetails(context),
             buildMods(context),
+            buildModDetails(context),
             buildObjectives(context),
             buildRewards(context),
             buildQuestInfo(context),
@@ -340,11 +305,9 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
   }
 
   Widget buildStats(BuildContext context) {
-    return ItemStatsWidget(item, definition, instanceInfo,
-        selectedPerks: selectedPerks,
-        plugDefinitions: plugDefinitions,
-        statGroupDefinition: statGroupDefinition,
-        key: Key("stats_widget_${statGroupDefinition != null}"));
+    return DetailsItemStatsWidget(item:item, definition:definition, 
+        socketController: socketController,
+        key: Key("stats_widget"));
   }
 
   Widget buildPerks(BuildContext context) {
@@ -364,24 +327,54 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
     ));
   }
 
-  buildSelectedPerk(BuildContext context) {
-    if (selectedPerk == null || !plugDefinitions.containsKey(selectedPerk))
-      return Container();
+  Widget buildPerkDetails(BuildContext context) {
+    var perksCategory = definition.sockets?.socketCategories?.firstWhere(
+        (s) =>
+            DestinyData.socketCategoryPerkHashes.contains(s.socketCategoryHash),
+        orElse: () => null);
+    if(perksCategory == null) return Container();
     return Container(
-        padding: EdgeInsets.all(8),
-        child: PerkListItem(
-            definition: plugDefinitions[selectedPerk],
-            key: Key("selected_perk: $selectedPerk")));
+      padding: EdgeInsets.all(8),
+        child: ItemDetailsSocketDetailsWidget(
+      controller: socketController,
+      parentDefinition: definition,
+      item: item,
+      category: perksCategory,
+    ));
   }
 
+
   Widget buildMods(BuildContext context) {
-    return ItemDetailModsWidget(
-      item,
-      definition,
-      instanceInfo,
-      key: Key('mods_widget'),
-      plugDefinitions: plugDefinitions,
-    );
+    var modsCategory = definition.sockets?.socketCategories?.firstWhere(
+        (s) =>
+            DestinyData.socketCategoryModHashes.contains(s.socketCategoryHash),
+        orElse: () => null);
+    if(modsCategory == null) return Container();
+    return Container(
+      padding: EdgeInsets.all(8),
+        child: DetailsItemModsWidget(
+      controller: socketController,
+      definition: definition,
+      item: item,
+      category: modsCategory,
+      key: Key('perks_widget'),
+    ));
+  }
+
+  Widget buildModDetails(BuildContext context) {
+    var modsCategory = definition.sockets?.socketCategories?.firstWhere(
+        (s) =>
+            DestinyData.socketCategoryModHashes.contains(s.socketCategoryHash),
+        orElse: () => null);
+    if(modsCategory == null) return Container();
+    return Container(
+      padding: EdgeInsets.all(8),
+        child: ItemDetailsSocketDetailsWidget(
+      controller: socketController,
+      parentDefinition: definition,
+      item: item,
+      category: modsCategory,
+    ));
   }
 
   Widget buildQuestInfo(BuildContext context) {

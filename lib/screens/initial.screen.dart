@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:bungie_api/helpers/bungie_net_token.dart';
-import 'package:bungie_api/models/user_info_card.dart';
+import 'package:bungie_api/models/group_user_info_card.dart';
 import 'package:bungie_api/models/user_membership_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -192,7 +192,7 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
   }
 
   checkMembership() async {
-    UserInfoCard membership = await widget.auth.getMembership();    
+    GroupUserInfoCard membership = await widget.auth.getMembership();    
     if (membership == null) {
       return showSelectMembership();
     }

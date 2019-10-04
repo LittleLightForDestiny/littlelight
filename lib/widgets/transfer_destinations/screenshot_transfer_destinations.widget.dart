@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 
 import 'package:little_light/services/inventory/inventory.service.dart';
 import 'package:little_light/widgets/common/equip_on_character.button.dart';
-import 'package:little_light/widgets/common/header.wiget.dart';
 
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 

@@ -4,23 +4,20 @@ import 'package:bungie_api/models/destiny_objective_progress.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
 
-class MasterworkCounterWidget extends StatefulWidget {
-  final ManifestService manifest = ManifestService();
-  final ProfileService profile = ProfileService();
-  final DestinyItemComponent item;
-
-  MasterworkCounterWidget(this.item, {Key key}) : super(key: key);
+class BaseMasterworkCounterWidget extends BaseDestinyStatefulItemWidget {
+  BaseMasterworkCounterWidget({DestinyItemComponent item, Key key})
+      : super(item: item, key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return MasterworkCounterWidgetState();
+    return BaseMasterworkCounterWidgetState();
   }
 }
 
-class MasterworkCounterWidgetState extends State<MasterworkCounterWidget>
+class BaseMasterworkCounterWidgetState<T extends BaseMasterworkCounterWidget>
+    extends BaseDestinyItemState<T>
     with AutomaticKeepAliveClientMixin {
   DestinyObjectiveProgress masterworkObjective;
   DestinyObjectiveDefinition masterworkObjectiveDefinition;
@@ -33,7 +30,7 @@ class MasterworkCounterWidgetState extends State<MasterworkCounterWidget>
   loadDefinitions() async {
     if (widget.item == null) return;
     var itemSockets = widget.profile.getItemSockets(widget.item.itemInstanceId);
-    if(itemSockets == null) return;
+    if (itemSockets == null) return;
     for (var socket in itemSockets) {
       if (socket.plugObjectives != null) {
         for (var objective in socket.plugObjectives) {
@@ -46,7 +43,7 @@ class MasterworkCounterWidgetState extends State<MasterworkCounterWidget>
         }
       }
     }
-    if(mounted){
+    if (mounted) {
       setState(() {});
     }
   }
@@ -54,7 +51,8 @@ class MasterworkCounterWidgetState extends State<MasterworkCounterWidget>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    if (this.masterworkObjective == null || this.masterworkObjectiveDefinition?.displayProperties?.icon == null){
+    if (this.masterworkObjective == null ||
+        this.masterworkObjectiveDefinition?.displayProperties?.icon == null) {
       return Container();
     }
     return Container(
@@ -62,29 +60,19 @@ class MasterworkCounterWidgetState extends State<MasterworkCounterWidget>
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Container(
-              width: 26,
-              height: 26,
-              child: Image(
-                  image: AdvancedNetworkImage(BungieApiService.url(
-                      masterworkObjectiveDefinition.displayProperties.icon))),
-            ),
+            buildIcon(context),
             Container(
               width: 4,
             ),
-            Expanded(child:Column(
+            Expanded(
+                child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text(masterworkObjectiveDefinition.progressDescription,
-                    softWrap: false,
-                    overflow: TextOverflow.fade,
-                    style: TextStyle(color: Colors.white, fontSize: 11)),
+                buildProgressDescription(context),
                 Container(
                   width: 4,
                 ),
-                Text("${masterworkObjective.progress}",
-                    style:
-                        TextStyle(color: Colors.amber.shade200, fontSize: 15)),
+                buildProgressValue(context)
               ],
             ))
           ],
@@ -93,4 +81,26 @@ class MasterworkCounterWidgetState extends State<MasterworkCounterWidget>
 
   @override
   bool get wantKeepAlive => true;
+
+  Widget buildIcon(BuildContext context) {
+    return Container(
+      width: 26,
+      height: 26,
+      child: Image(
+          image: AdvancedNetworkImage(BungieApiService.url(
+              masterworkObjectiveDefinition.displayProperties.icon))),
+    );
+  }
+
+  Widget buildProgressDescription(BuildContext context) {
+    return Text(masterworkObjectiveDefinition.progressDescription,
+        softWrap: false,
+        overflow: TextOverflow.fade,
+        style: TextStyle(color: Colors.white, fontSize: 11));
+  }
+
+  Widget buildProgressValue(BuildContext context) {
+    return Text("${masterworkObjective.progress}",
+        style: TextStyle(color: Colors.amber.shade200, fontSize: 15));
+  }
 }

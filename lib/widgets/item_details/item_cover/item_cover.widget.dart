@@ -6,7 +6,7 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/rendering.dart';
 import 'package:little_light/screens/share_preview.screen.dart';
-import 'package:little_light/widgets/common/masterwork_counter.widget.dart';
+import 'package:little_light/widgets/common/masterwork_counter/base_masterwork_counter.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
@@ -86,7 +86,6 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
             nameBar(context, expandRatio),
             icon(context, expandRatio),
             backButton(context, expandRatio),
-            shareButton(context, expandRatio)
           ],
         ));
   }
@@ -153,7 +152,7 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
         left: leftOffset,
         bottom: kToolbarHeight * expandRatio * .8,
         right: kToolbarHeight,
-        child: MasterworkCounterWidget(item));
+        child: BaseMasterworkCounterWidget(item:item));
   }
 
   Widget shareButton(BuildContext context, double expandRatio) {
