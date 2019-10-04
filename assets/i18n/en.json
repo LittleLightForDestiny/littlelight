@@ -195,5 +195,8 @@
     "Unsellable": "Unsellable",
     "Selling Inhibited": "Selling Inhibited",
     "Already Owned": "Already Owned",
-    "Display Only": "Display Only"
+    "Display Only": "Display Only",
+    "Energy": "Energy",
+    "Transfer Loadout": "Transfer Loadout",
+    "Vault": "Vault"
 }

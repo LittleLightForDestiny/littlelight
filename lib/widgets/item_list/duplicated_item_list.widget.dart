@@ -380,9 +380,9 @@ class _ItemInstanceWrapperState extends State<_ItemInstanceWrapper> {
       context,
       MaterialPageRoute(
         builder: (context) => ItemDetailScreen(
-              widget.item,
-              widget.definition,
-              instance,
+              item:widget.item,
+              definition:widget.definition,
+              instanceInfo:instance,
               characterId: widget.characterId,
               uniqueId: null,
             ),

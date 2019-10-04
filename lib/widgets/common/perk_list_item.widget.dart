@@ -17,22 +17,9 @@ import 'package:little_light/widgets/item_details/item_stats.widget.dart';
 class PerkListItem extends StatefulWidget {
   final ManifestService manifest = ManifestService();
   final DestinyInventoryItemDefinition definition;
-  final bool alwaysOpen;
-  final bool curated;
-  final bool equipped;
-  final bool selected;
-  final int parentHash;
   final DestinyItemPlug plug;
 
-  PerkListItem(
-      {Key key,
-      this.definition,
-      this.alwaysOpen = false,
-      this.curated = false,
-      this.equipped = false,
-      this.selected = false,
-      this.parentHash,
-      this.plug})
+  PerkListItem({Key key, this.definition, this.plug})
       : super(key: key);
 
   @override
@@ -73,15 +60,13 @@ class PerkListItemState extends State<PerkListItem>
         margin: EdgeInsets.symmetric(vertical: 4),
         padding: EdgeInsets.all(4),
         decoration: BoxDecoration(
-            color: widget.equipped
-                ? Colors.lightBlue.shade600
-                : Colors.blueGrey.shade700,
+            color: Colors.blueGrey.shade700,
             borderRadius: BorderRadius.circular(8)),
         child: Column(children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Row(
+              Expanded(child:Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Container(
@@ -95,30 +80,19 @@ class PerkListItemState extends State<PerkListItem>
                   Container(
                     width: 8,
                   ),
-                  Text(
+                  Expanded(child:Text(
                     definition?.displayProperties?.name ?? "",
+                    softWrap: true,
+                    overflow: TextOverflow.fade,
                     style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
+                  )),
                 ],
-              ),
-              Row(
-                children: <Widget>[
-                  widget.curated
-                      ? Icon(
-                          FontAwesomeIcons.crown,
-                          size: 14,
-                        )
-                      : Container(),
-                  Container(
-                    width: 8,
-                  ),
-                  buildExpandButton(context),
-                ],
-              )
+              )),
+             
             ],
           ),
           AnimatedCrossFade(
-              crossFadeState: open || widget.alwaysOpen
+              crossFadeState: open 
                   ? CrossFadeState.showSecond
                   : CrossFadeState.showFirst,
               alignment: Alignment.topCenter,
@@ -142,7 +116,7 @@ class PerkListItemState extends State<PerkListItem>
   }
 
   buildExpandButton(BuildContext context) {
-    if (widget.alwaysOpen) return Container();
+    // if (widget.alwaysOpen) return Container();
     return Stack(children: [
       Container(
           width: 25,
@@ -204,46 +178,18 @@ class PerkListItemState extends State<PerkListItem>
     List<Widget> children =
         definition.objectives.objectiveHashes.map<Widget>((hash) {
       var objective = getObjective(hash);
-      if(!(objective?.visible ?? false)) return Container();
+      if (!(objective?.visible ?? false)) return Container();
       return ObjectiveWidget(
         definition: getObjectiveDefinition(hash),
         objective: objective,
         placeholder: definition?.displayProperties?.name ?? "",
       );
     }).toList();
-    if ((widget.plug?.plugObjectives?.length ?? 0) > 0) {
-      children.add(buildTrackButton(context));
-    }
     return Container(
         // padding: EdgeInsets.all(8),
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: children));
-  }
-
-  Widget buildTrackButton(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(8),
-      child: RaisedButton(
-        color: isTracking ? Colors.green.shade600 : Colors.green.shade800,
-        child: isTracking
-            ? TranslatedTextWidget("Stop Tracking", key: Key("stop_tracking"))
-            : TranslatedTextWidget("Track Objectives",
-                key: Key("track_objectives")),
-        onPressed: () {
-          var service = ObjectivesService();
-          if (isTracking) {
-            service.removeTrackedObjective(
-                TrackedObjectiveType.Plug, definition.hash);
-          } else {
-            service.addTrackedObjective(
-                TrackedObjectiveType.Plug, definition.hash,
-                parentHash: widget.parentHash);
-          }
-          updateTrackStatus();
-        },
-      ),
-    );
   }
 
   updateTrackStatus() async {

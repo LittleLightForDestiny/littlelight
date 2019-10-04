@@ -9,7 +9,6 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_progression.dart';
 import 'package:bungie_api/models/destiny_progression_definition.dart';
 import 'package:bungie_api/models/destiny_race_definition.dart';
-import 'package:bungie_api/models/destiny_sandbox_perk_definition.dart';
 import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
@@ -274,10 +273,10 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
         child: Row(children: [
           isWellRested
               ? Container(
-                  width: 16,
-                  height: 16,
-                  child: ManifestImageWidget<DestinySandboxPerkDefinition>(
-                      1519921522),
+                  // width: 16,
+                  // height: 16,
+                  // child: ManifestImageWidget<DestinySandboxPerkDefinition>(
+                  //     1519921522),
                 )
               : Container(),
           Container(

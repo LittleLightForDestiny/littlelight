@@ -229,9 +229,9 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
       context,
       MaterialPageRoute(
         builder: (context) => ItemDetailScreen(
-          widget.item,
-          definition,
-          instanceInfo,
+          item:widget.item,
+          definition:definition,
+          instanceInfo:instanceInfo,
           characterId: widget.characterId,
           uniqueId: uniqueId,
         ),

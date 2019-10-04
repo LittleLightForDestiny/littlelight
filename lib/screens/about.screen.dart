@@ -349,9 +349,8 @@ class _AboutScreenState extends State<AboutScreen> {
                           color: Colors.blueGrey.shade800,
                           padding: EdgeInsets.all(4),
                           child: Column(children: [
-                            //TODO: add Eysenor tag
-                            // buildTagAndPlatform(4611686018467289582, 4),
-                            // Container(height: 4,),
+                            buildTagAndPlatform(4611686018468567020, 4),
+                            Container(height: 4,),
                             buildTagAndPlatform(4611686018467289582, 4),
                           ])),
                       Container(height: 8),
@@ -362,15 +361,14 @@ class _AboutScreenState extends State<AboutScreen> {
                           child: Column(children: [
                             buildTagAndPlatform(4611686018467519241, 4),
                           ])),
-                      //TODO : add korean translators block
-                      // Container(height: 8),
-                      // buildTranslationHeader(context, ['ja']),
-                      // Container(
-                      //     color: Colors.blueGrey.shade800,
-                      //     padding: EdgeInsets.all(4),
-                      //     child: Column(children: [
-                      //       buildTagAndPlatform(4611686018467519241, 4),
-                      //     ])),
+                      Container(height: 8),
+                      buildTranslationHeader(context, ['ko']),
+                      Container(
+                          color: Colors.blueGrey.shade800,
+                          padding: EdgeInsets.all(4),
+                          child: Column(children: [
+                            buildTagAndPlatform(4611686018488602145, 4),
+                          ])),
                       Container(height: 8),
                       buildTranslationHeader(context, ['pt-br']),
                       Container(

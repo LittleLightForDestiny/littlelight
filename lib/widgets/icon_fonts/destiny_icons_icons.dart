@@ -25,6 +25,7 @@ class DestinyIcons {
   static const IconData leviathan_cup = const IconData(0xe811, fontFamily: _kFontFam);
   static const IconData leviathan_dogs = const IconData(0xe812, fontFamily: _kFontFam);
   static const IconData leviathan_sun = const IconData(0xe813, fontFamily: _kFontFam);
+  static const IconData steam = const IconData(0xe814, fontFamily: _kFontFam);
   static const IconData class_titan = const IconData(0xe900, fontFamily: _kFontFam);
   static const IconData class_hunter = const IconData(0xe901, fontFamily: _kFontFam);
   static const IconData class_warlock = const IconData(0xe902, fontFamily: _kFontFam);

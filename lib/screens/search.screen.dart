@@ -30,7 +30,7 @@ class SearchTabData {
         itemTypes: [DestinyItemType.Weapon],
         filterData: {
           FilterType.powerLevel: FilterItem(
-              [0, DestinyData.maxPowerLevel], [0, DestinyData.maxPowerLevel],
+              [DestinyData.minPowerLevel, DestinyData.maxPowerLevel], [DestinyData.minPowerLevel, DestinyData.maxPowerLevel],
               open: true),
           FilterType.bucketType: FilterItem([
             InventoryBucket.kineticWeapons,
@@ -83,7 +83,7 @@ class SearchTabData {
               DestinyItemType.Emblem,],
         filterData: {
           FilterType.powerLevel: FilterItem(
-              [0, DestinyData.maxPowerLevel], [0, DestinyData.maxPowerLevel],
+              [DestinyData.minPowerLevel, DestinyData.maxPowerLevel], [DestinyData.minPowerLevel, DestinyData.maxPowerLevel],
               open: true),
           FilterType.classType: FilterItem([
             DestinyClass.Titan,
@@ -111,7 +111,7 @@ class SearchTabData {
         itemTypes: [DestinyItemType.Armor],
         filterData: {
           FilterType.powerLevel: FilterItem(
-              [0, DestinyData.maxPowerLevel], [0, DestinyData.maxPowerLevel],
+              [DestinyData.minPowerLevel, DestinyData.maxPowerLevel], [DestinyData.minPowerLevel, DestinyData.maxPowerLevel],
               open: true),
           FilterType.classType: FilterItem([
             DestinyClass.Titan,

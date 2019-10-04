@@ -14,6 +14,7 @@ import 'package:bungie_api/models/destiny_objective_progress.dart';
 import 'package:bungie_api/models/destiny_presentation_node_component.dart';
 import 'package:bungie_api/models/destiny_profile_response.dart';
 import 'package:bungie_api/models/destiny_record_component.dart';
+import 'package:bungie_api/models/destiny_stat.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:bungie_api/enums/destiny_component_type_enum.dart';
 import 'package:bungie_api/enums/destiny_scope_enum.dart';
@@ -57,6 +58,7 @@ class ProfileComponentGroups {
     DestinyComponentType.ProfileInventories,
     DestinyComponentType.ProfileCurrencies,
     DestinyComponentType.ItemInstances,
+    DestinyComponentType.ItemStats,
     DestinyComponentType.ItemObjectives,
     DestinyComponentType.ItemTalentGrids,
     DestinyComponentType.ItemSockets,
@@ -290,6 +292,13 @@ class ProfileService {
     try{
       return _profile.itemComponents.sockets.data[itemInstanceId]?.sockets;
     }catch(e){}
+    return null;
+  }
+
+  Map<String, DestinyStat> getPrecalculatedStats(String itemInstanceId) {
+    if(_profile.itemComponents?.stats?.data?.containsKey(itemInstanceId) ?? false){
+      return _profile.itemComponents?.stats?.data[itemInstanceId]?.stats;
+    }
     return null;
   }
 

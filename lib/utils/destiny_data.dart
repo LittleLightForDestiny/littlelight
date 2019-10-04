@@ -1,3 +1,4 @@
+import 'package:bungie_api/enums/destiny_energy_type_enum.dart';
 import 'package:bungie_api/enums/destiny_item_type_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:bungie_api/enums/destiny_class_enum.dart';
@@ -126,6 +127,9 @@ class DestinyData {
 
   static const Color positiveFeedback = Color.fromRGBO(67, 205, 57, 1);
   static const Color negativeFeedback = Color.fromRGBO(204, 58, 56, 1);
+  static const Color masterworkColor = Color.fromRGBO(235, 196, 98, 1);
+
+  static const Color perkColor = Color.fromRGBO(94, 153, 192, 1);
 
   static const Color objectiveProgress = Color.fromRGBO(90, 163, 102, 1);
 
@@ -164,6 +168,10 @@ class DestinyData {
     4241085061, //weapon perks
   ];
 
+  static const List<int> socketCategoryTierHashes = [
+    760375309, // armor tier
+  ];
+
   static const List<int> socketCategoryModHashes = [
     279738248, // emblem customization
     590099826, // armor mods
@@ -176,18 +184,12 @@ class DestinyData {
     4265082475, //vehicle mods
   ];
 
-  static final DateTime _jokersWildRelease = DateTime(2019, 3, 1);
-  static final DateTime _penumbraRelease = DateTime(2019, 6, 1);
+  static int get minPowerLevel {
+    return 750;
+  }
 
   static int get maxPowerLevel {
-    var now = DateTime.now();
-    if (now.isBefore(_jokersWildRelease)) {
-      return 650;
-    }
-    if (now.isBefore(_penumbraRelease)) {
-      return 700;
-    }
-    return 750;
+    return 1000;
   }
 
   static IconData getClassIcon(int type) {
@@ -238,6 +240,18 @@ class DestinyData {
     return DestinyIcons.destiny;
   }
 
+  static IconData getEnergyTypeIcon(int type) {
+    switch (type) {
+      case DestinyEnergyType.Arc:
+        return DestinyIcons.damage_arc;
+      case DestinyEnergyType.Thermal:
+        return DestinyIcons.damage_solar;
+      case DestinyEnergyType.Void:
+        return DestinyIcons.damage_void;
+    }
+    return DestinyIcons.destiny;
+  }
+
   static Color getDamageTypeColor(int damageType) {
     switch (damageType) {
       case DamageType.Arc:
@@ -245,6 +259,19 @@ class DestinyData {
       case DamageType.Thermal:
         return Color.fromARGB(255, 243, 98, 39);
       case DamageType.Void:
+        return Color.fromARGB(255, 64, 34, 101);
+    }
+    return Colors.white;
+  }
+
+
+  static Color getEnergyTypeColor(int damageType) {
+    switch (damageType) {
+      case DestinyEnergyType.Arc:
+        return Color.fromARGB(255, 118, 186, 230);
+      case DestinyEnergyType.Thermal:
+        return Color.fromARGB(255, 243, 98, 39);
+      case DestinyEnergyType.Void:
         return Color.fromARGB(255, 64, 34, 101);
     }
     return Colors.white;

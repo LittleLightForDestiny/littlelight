@@ -8,7 +8,7 @@ import 'package:bungie_api/models/destiny_item_transfer_request.dart';
 import 'package:bungie_api/models/destiny_postmaster_transfer_request.dart';
 import 'package:bungie_api/models/destiny_profile_response.dart';
 import 'package:bungie_api/models/destiny_vendors_response.dart';
-import 'package:bungie_api/models/user_info_card.dart';
+import 'package:bungie_api/models/group_user_info_card.dart';
 import 'package:bungie_api/models/user_membership_data.dart';
 import 'package:bungie_api/responses/destiny_profile_response_response.dart';
 import 'package:bungie_api/responses/destiny_vendors_response_response.dart';
@@ -63,7 +63,7 @@ class BungieApiService {
 
   Future<DestinyProfileResponse> getCurrentProfile(List<int> components) async {
     BungieNetToken token = await auth.getToken();
-    UserInfoCard membership = await auth.getMembership();
+    GroupUserInfoCard membership = await auth.getMembership();
     if (membership == null) return null;
     return await getProfile(
         components, membership.membershipId, membership.membershipType, token);
@@ -80,7 +80,7 @@ class BungieApiService {
   Future<DestinyVendorsResponse> getVendors(
       List<int> components, String characterId) async {
     BungieNetToken token = await auth.getToken();
-    UserInfoCard membership = await auth.getMembership();
+    GroupUserInfoCard membership = await auth.getMembership();
     if (membership == null) return null;
     DestinyVendorsResponseResponse response = await Destiny2.getVendors(
         new Client(token: token),
@@ -102,7 +102,7 @@ class BungieApiService {
   Future<int> transferItem(int itemHash, int stackSize, bool transferToVault,
       String itemId, String characterId) async {
     BungieNetToken token = await auth.getToken();
-    UserInfoCard membership = await auth.getMembership();
+    GroupUserInfoCard membership = await auth.getMembership();
     int32Response response = await Destiny2.transferItem(
         new Client(token: token),
         DestinyItemTransferRequest()
@@ -118,7 +118,7 @@ class BungieApiService {
   Future<int> pullFromPostMaster(
       int itemHash, int stackSize, String itemId, String characterId) async {
     BungieNetToken token = await auth.getToken();
-    UserInfoCard membership = await auth.getMembership();
+    GroupUserInfoCard membership = await auth.getMembership();
     int32Response response = await Destiny2.pullFromPostmaster(
         new Client(token: token),
         DestinyPostmasterTransferRequest()
@@ -132,7 +132,7 @@ class BungieApiService {
 
   Future<int> equipItem(String itemId, String characterId) async {
     BungieNetToken token = await auth.getToken();
-    UserInfoCard membership = await auth.getMembership();
+    GroupUserInfoCard membership = await auth.getMembership();
     int32Response response = await Destiny2.equipItem(
         new Client(token: token),
         DestinyItemActionRequest()
@@ -145,7 +145,7 @@ class BungieApiService {
   Future<List<DestinyEquipItemResult>> equipItems(
       List<String> itemIds, String characterId) async {
     BungieNetToken token = await auth.getToken();
-    UserInfoCard membership = await auth.getMembership();
+    GroupUserInfoCard membership = await auth.getMembership();
     var response = await Destiny2.equipItems(
         new Client(token: token),
         DestinyItemSetActionRequest()
