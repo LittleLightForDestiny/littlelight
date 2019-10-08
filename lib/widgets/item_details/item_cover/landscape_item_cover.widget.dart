@@ -132,10 +132,11 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
   }
 
   Widget icon(BuildContext context, double expandRatio) {
+    double paddingTop = MediaQuery.of(context).padding.top;
     double openSize = convertSize(96, context);
     double closedSize = kToolbarHeight - 8;
     double size = lerpDouble(closedSize, openSize, expandRatio);
-    double top = lerpDouble(4, convertSize(96, context), expandRatio);
+    double top = lerpDouble(paddingTop + 4, convertSize(96, context), expandRatio);
     double left =
         lerpDouble(kTextTabBarHeight, convertSize(96, context), expandRatio);
     return Positioned(
@@ -155,8 +156,9 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
   }
 
   Widget buildNameAndType(BuildContext context, double expandRatio) {
+    double paddingTop = MediaQuery.of(context).padding.top;
     return Positioned(
-        top: lerpDouble(8, convertSize(96, context), expandRatio),
+        top: lerpDouble(paddingTop + 8, convertSize(96, context), expandRatio),
         left: lerpDouble(kToolbarHeight * 2,
             convertSize(96.0 * 2 + 24, context), expandRatio),
         child: Column(
