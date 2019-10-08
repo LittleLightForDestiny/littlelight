@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:bungie_api/enums/bungie_membership_type_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:launch_review/launch_review.dart';
 import 'package:little_light/services/translate/translate.service.dart';
@@ -71,7 +72,7 @@ class _AboutScreenState extends State<AboutScreen> {
                       Container(
                         height: 8,
                       ),
-                      buildTagAndPlatform(4611686018441021725, 2),
+                      buildTagAndPlatform(4611686018441021725, BungieMembershipType.TigerPsn),
                       Container(
                         height: 8,
                       ),
@@ -84,7 +85,7 @@ class _AboutScreenState extends State<AboutScreen> {
                       Container(
                         height: 8,
                       ),
-                      buildTagAndPlatform(4611686018429190727, 2),
+                      buildTagAndPlatform(4611686018429190727, BungieMembershipType.TigerPsn),
                       Container(
                         height: 8,
                       ),
@@ -100,7 +101,7 @@ class _AboutScreenState extends State<AboutScreen> {
                           color: Colors.blueGrey.shade800,
                           padding: EdgeInsets.all(4),
                           child: Column(children: [
-                            buildTagAndPlatform(4611686018463551188, 2),
+                            buildTagAndPlatform(4611686018463551188, BungieMembershipType.TigerPsn),
                           ])),
                       Container(height: 8),
                       buildTranslationHeader(context, ['es', 'es-mx']),
@@ -108,11 +109,11 @@ class _AboutScreenState extends State<AboutScreen> {
                           color: Colors.blueGrey.shade800,
                           padding: EdgeInsets.all(4),
                           child: Column(children: [
-                            buildTagAndPlatform(4611686018429051657, 2),
+                            buildTagAndPlatform(4611686018429051657, BungieMembershipType.TigerPsn),
                             Container(
                               height: 4,
                             ),
-                            buildTagAndPlatform(4611686018450956952, 2),
+                            buildTagAndPlatform(4611686018450956952, BungieMembershipType.TigerPsn),
                           ])),
                       Container(height: 8),
                       buildTranslationHeader(context, ['fr']),
@@ -145,11 +146,11 @@ class _AboutScreenState extends State<AboutScreen> {
                           color: Colors.blueGrey.shade800,
                           padding: EdgeInsets.all(4),
                           child: Column(children: [
-                            buildTagAndPlatform(4611686018468567020, 4),
+                            buildTagAndPlatform(4611686018468567020, BungieMembershipType.TigerSteam),
                             Container(
                               height: 4,
                             ),
-                            buildTagAndPlatform(4611686018467289582, 4),
+                            buildTagAndPlatform(4611686018467289582, BungieMembershipType.TigerSteam),
                           ])),
                       Container(height: 8),
                       buildTranslationHeader(context, ['ja']),
@@ -157,7 +158,7 @@ class _AboutScreenState extends State<AboutScreen> {
                           color: Colors.blueGrey.shade800,
                           padding: EdgeInsets.all(4),
                           child: Column(children: [
-                            buildTagAndPlatform(4611686018467519241, 4),
+                            buildTagAndPlatform(4611686018467519241, BungieMembershipType.TigerSteam),
                           ])),
                       Container(height: 8),
                       buildTranslationHeader(context, ['ko']),
@@ -165,7 +166,7 @@ class _AboutScreenState extends State<AboutScreen> {
                           color: Colors.blueGrey.shade800,
                           padding: EdgeInsets.all(4),
                           child: Column(children: [
-                            buildTagAndPlatform(4611686018488602145, 4),
+                            buildTagAndPlatform(4611686018488602145, BungieMembershipType.TigerSteam),
                           ])),
                       Container(height: 8),
                       buildTranslationHeader(context, ['pt-br']),
@@ -173,7 +174,7 @@ class _AboutScreenState extends State<AboutScreen> {
                           color: Colors.blueGrey.shade800,
                           padding: EdgeInsets.all(4),
                           child: Column(children: [
-                            buildTagAndPlatform(4611686018441021725, 2),
+                            buildTagAndPlatform(4611686018441021725, BungieMembershipType.TigerPsn),
                           ])),
                       Container(height: 8),
                       buildTranslationHeader(context, ['pl']),
@@ -181,7 +182,7 @@ class _AboutScreenState extends State<AboutScreen> {
                           color: Colors.blueGrey.shade800,
                           padding: EdgeInsets.all(4),
                           child: Column(children: [
-                            buildTagAndPlatform(4611686018451719977, 2),
+                            buildTagAndPlatform(4611686018451719977, BungieMembershipType.TigerPsn),
                           ])),
                       Container(height: 8),
                       buildTranslationHeader(context, ['ru']),
@@ -189,7 +190,7 @@ class _AboutScreenState extends State<AboutScreen> {
                           color: Colors.blueGrey.shade800,
                           padding: EdgeInsets.all(4),
                           child: Column(children: [
-                            buildTagAndPlatform(4611686018486012725, 4),
+                            buildTagAndPlatform(4611686018486012725, BungieMembershipType.TigerSteam),
                           ])),
                       Container(height: 8),
                       HeaderWidget(
@@ -201,15 +202,23 @@ class _AboutScreenState extends State<AboutScreen> {
                       Container(
                         height: 8,
                       ),
-                      buildTagAndPlatform(4611686018429238118, 2),
+                      buildTagAndPlatform(4611686018429238118, BungieMembershipType.TigerPsn),
                       Container(
                         height: 8,
                       ),
-                      buildTagAndPlatform(4611686018452346120, 2),
+                      buildTagAndPlatform(4611686018452346120, BungieMembershipType.TigerPsn),
                       Container(
                         height: 8,
                       ),
-                      buildTagAndPlatform(4611686018430226498, 1),
+                      buildTagAndPlatform(4611686018430226498, BungieMembershipType.TigerXbox),
+                      Container(
+                        height: 8,
+                      ),
+                      buildTagAndPlatform(4611686018434959588, BungieMembershipType.TigerXbox),
+                      Container(
+                        height: 8,
+                      ),
+                      buildTagAndPlatform(4611686018482820655, BungieMembershipType.TigerSteam),
                       Container(
                         height: 8,
                       ),

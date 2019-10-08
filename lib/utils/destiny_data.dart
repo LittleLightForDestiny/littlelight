@@ -39,6 +39,11 @@ class RaidPhases {
   static const int cosDeception = 3789028322;
   static const int cosGahlran = 3307986266;
 
+  static const int gosEvasion = 2158557525;
+  static const int gosSummon = 3736477924;
+  static const int gosConsecratedMind = 1024471091;
+  static const int gosSanctifieddMind = 523815399;
+
   static const int leviathanPoolsChallenge = 3796634159;
   static const int sotpInsurrectionPrimeChallenge = 4140089399;
 }

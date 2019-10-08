@@ -43,7 +43,8 @@ translationPlaceholders() {
   TranslatedTextWidget("AuthorizationCodeInvalid");
   TranslatedTextWidget("DestinyAccountNotFound");
   TranslatedTextWidget("invalid_grant");
-  TranslatedTextWidget("We were unable to find your Destiny account information. If you have a valid Destiny Account, let us know.");
+  TranslatedTextWidget(
+      "We were unable to find your Destiny account information. If you have a valid Destiny Account, let us know.");
 
   TranslatedTextWidget("access_denied");
 
@@ -73,8 +74,13 @@ translationPlaceholders() {
   TranslatedTextWidget("Gahlran");
   TranslatedTextWidget("Val Ca'uor");
 
+  //garden of salvation
+  TranslatedTextWidget("Evasion");
+  TranslatedTextWidget("Summon");
+  TranslatedTextWidget("Consecrated Mind");
+  TranslatedTextWidget("Sanctified Mind");
 
-  //Errors 
+  //Errors
   TranslatedTextWidget("server_error");
   TranslatedTextWidget("SystemDisabled");
 }

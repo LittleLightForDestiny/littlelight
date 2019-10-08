@@ -17,7 +17,7 @@ class DetailsItemStatWidget extends BaseItemStatWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        height: 22,
+        height: 18,
         child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.end,
@@ -34,7 +34,7 @@ class DetailsItemStatWidget extends BaseItemStatWidget {
         statHash,
         style: TextStyle(
           color: nameColor,
-          fontSize: 16,
+          fontSize: 14,
           fontWeight: FontWeight.w300,
         ),
         textAlign: TextAlign.end,
@@ -51,7 +51,7 @@ class DetailsItemStatWidget extends BaseItemStatWidget {
         "$currentValue",
         style: TextStyle(
           color: valueColor,
-          fontSize: 16,
+          fontSize: 14,
           fontWeight: FontWeight.bold,
         ),
         textAlign: TextAlign.center,
@@ -67,7 +67,7 @@ class DetailsItemStatWidget extends BaseItemStatWidget {
     
     return Container(
       width: width,
-      height: 16,
+      height: 14,
       color: Colors.grey.shade700.withOpacity(.7),
       child: Row(
         children: <Widget>[

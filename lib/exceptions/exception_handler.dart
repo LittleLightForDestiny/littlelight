@@ -43,8 +43,7 @@ class ExceptionHandler {
         return Container(
             padding: EdgeInsets.all(8),
             alignment: Alignment.center,
-            child: TranslatedTextWidget(
-                "Couldn't render this widget properly. Please report this to @LittleLightD2 on Twitter or via GitHub issues"));
+            child: TranslatedTextWidget("Couldn&#39;t render this widget properly. Please report this to @LittleLightD2 on Twitter or via GitHub issues"));
       };
     }
   }
