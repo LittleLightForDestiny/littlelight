@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bungie_api/enums/destiny_collectible_state_enum.dart';
+import 'package:bungie_api/models/destiny_artifact_profile_scoped.dart';
 import 'package:bungie_api/models/destiny_character_activities_component.dart';
 import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:bungie_api/models/destiny_character_progression_component.dart';
@@ -57,6 +58,7 @@ class ProfileComponentGroups {
     DestinyComponentType.CharacterInventories,
     DestinyComponentType.ProfileInventories,
     DestinyComponentType.ProfileCurrencies,
+    DestinyComponentType.ProfileProgression,
     DestinyComponentType.ItemInstances,
     DestinyComponentType.ItemStats,
     DestinyComponentType.ItemObjectives,
@@ -489,6 +491,10 @@ class ProfileService {
       }
     });
     return owner;
+  }
+
+  DestinyArtifactProfileScoped getArtifactProgression(){
+    return _profile.profileProgression?.data?.seasonalArtifact;
   }
 
   List<DestinyItemComponent> getAllItems() {

@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:bungie_api/enums/tier_type_enum.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_socket_category_definition.dart';
@@ -39,11 +38,6 @@ class DetailsItemModsWidget extends BaseItemSocketsWidget {
 class DetailsItemPerksWidgetState<T extends DetailsItemModsWidget>
     extends BaseItemSocketsWidgetState<T> {
   bool showDetails = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return super.build(context);
-  }
 
   Widget buildHeader(BuildContext context) {
     bool isLandscape = MediaQueryHelper(context).isLandscape;
@@ -94,18 +88,20 @@ class DetailsItemPerksWidgetState<T extends DetailsItemModsWidget>
     Iterable<Widget> children = category.socketIndexes
         .map((socketIndex) => buildSocketPlugs(context, socketIndex))
         .where((w) => w != null);
-    var screenWidth = MediaQuery.of(context).size.width - 16;
-    var dividerMargin = min(screenWidth / 50, 8.0);
-    children = children.expand((w) => [
-          w,
-          Container(
-              margin: EdgeInsets.symmetric(horizontal: dividerMargin),
-              width: 2,
-              color: Colors.white.withOpacity(.4))
-        ]);
-    children = children.take(children.length - 1);
     var mq = MediaQueryHelper(context);
     var largeScreen = mq.isDesktop || (mq.tabletOrBigger && mq.isLandscape);
+    var screenWidth = MediaQuery.of(context).size.width - 16;
+    var dividerMargin = min(screenWidth/50, 8.0);
+    if(children.length > 0){
+      children = children.expand((w) => [
+          w,
+          largeScreen ? Container(
+              margin: EdgeInsets.symmetric(horizontal: dividerMargin),
+              width: 2,
+              color: Colors.white.withOpacity(.4)) : Container(width:dividerMargin)
+        ]);
+    children = children.take(children.length - 1);
+    }
     if (!largeScreen && showDetails) {
       return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -245,6 +241,7 @@ class DetailsItemPerksWidgetState<T extends DetailsItemModsWidget>
             aspectRatio: 1,
             child: FlatButton(
               padding: EdgeInsets.all(0),
+              shape: ContinuousRectangleBorder(side: BorderSide(color: Colors.grey.shade400, width: 1.5)),
               child: ManifestImageWidget<DestinyInventoryItemDefinition>(
                   plugItemHash),
               onPressed: () {

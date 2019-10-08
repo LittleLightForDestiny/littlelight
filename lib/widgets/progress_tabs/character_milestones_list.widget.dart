@@ -26,7 +26,8 @@ class _CharacterMilestonesListWidgetState
     2683538554,
     3181387331,
     1342567285,
-    2590427074
+    2590427074,
+    2712317338
   ];
   Map<String, DestinyMilestone> milestones;
   Map<int, DestinyMilestoneDefinition> milestoneDefinitions;

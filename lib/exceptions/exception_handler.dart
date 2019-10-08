@@ -43,7 +43,8 @@ class ExceptionHandler {
         return Container(
             padding: EdgeInsets.all(8),
             alignment: Alignment.center,
-            child: Text('OOF! render error :('));
+            child: TranslatedTextWidget(
+                "Couldn't render this widget properly. Please report this to @LittleLightD2 on Twitter or via GitHub issues"));
       };
     }
   }
@@ -66,39 +67,37 @@ class ExceptionHandler {
         barrierDismissible: false,
         context: context,
         builder: (context) => SimpleDialog(
-              title: TranslatedTextWidget(e.errorStatus),
-              children: [
-                Container(
-                    padding: EdgeInsets.all(16),
-                    child: TranslatedTextWidget(
-                      e.message,
-                    )),
-                Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        ErrorDialogButton(
-                            text: "Try Again",
-                            onPressed: () {
-                              onRestart();
-                            }),
-                        shouldShowLoginButton
-                            ? ErrorDialogButton(
-                                text: "Login with another account",
-                                onPressed: () async {
-                                  
-                                })
-                            : Container(height: 0),
-                        ErrorDialogButton(
-                            text: "Exit",
-                            onPressed: () {
-                              exit(0);
-                            })
-                      ],
-                    ))
-              ],
-            ),
+          title: TranslatedTextWidget(e.errorStatus),
+          children: [
+            Container(
+                padding: EdgeInsets.all(16),
+                child: TranslatedTextWidget(
+                  e.message,
+                )),
+            Container(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    ErrorDialogButton(
+                        text: "Try Again",
+                        onPressed: () {
+                          onRestart();
+                        }),
+                    shouldShowLoginButton
+                        ? ErrorDialogButton(
+                            text: "Login with another account",
+                            onPressed: () async {})
+                        : Container(height: 0),
+                    ErrorDialogButton(
+                        text: "Exit",
+                        onPressed: () {
+                          exit(0);
+                        })
+                  ],
+                ))
+          ],
+        ),
       );
     }
     if (isInDebugMode) {
@@ -125,7 +124,7 @@ class ExceptionHandler {
 
   static setSentryUserInfo(
       String membershipId, String displayName, int platformId) {
-    if(_sentry == null) return;
+    if (_sentry == null) return;
     _sentry.userContext = User(
         id: membershipId,
         username: displayName,

@@ -1,4 +1,4 @@
-import 'package:bungie_api/enums/destiny_socket_category_style_enum.dart';
+
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_socket_category_definition.dart';

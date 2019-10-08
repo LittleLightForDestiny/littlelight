@@ -398,7 +398,6 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
   }
 
   Widget background(BuildContext context, double expandRatio) {
-    double width = MediaQuery.of(context).size.width;
     double opacity = expandRatio;
     String imgUrl = definition.screenshot;
     if (definition.itemType == DestinyItemType.Emblem) {
@@ -413,7 +412,8 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
     return Positioned(
         top: 0,
         bottom: 0,
-        width: width,
+        left:0,
+        right:0,
         child: Opacity(
             opacity: opacity,
             child: QueuedNetworkImage(

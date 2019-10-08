@@ -129,7 +129,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
                       child:
                           Container(width: 50, height: 14, color: Colors.white))
                   : Text(
-                      "${maxLight?.toStringAsFixed(1) ?? ""}",
+                      "${calculatedMaxLight?.toStringAsFixed(1) ?? ""}",
                       style: buttonStyle.copyWith(color: Colors.amber.shade300),
                     )
             ],
@@ -587,6 +587,12 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
     maxLight = _getAvgLight(maxLightLoadout.values);
     this.maxLightLoadout = maxLightLoadout;
     setState(() {});
+  }
+
+  double get calculatedMaxLight{
+    if(maxLight == null) return null;
+    var artifactLevel = widget.profile.getArtifactProgression()?.powerBonus ?? 0;
+    return maxLight + artifactLevel;
   }
 
   double _getAvgLight(Iterable<DestinyItemComponent> items) {

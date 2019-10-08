@@ -35,7 +35,6 @@ class _AboutScreenState extends State<AboutScreen> {
 
   @override
   Widget build(BuildContext context) {
-    bool isIOS = Platform.isIOS;
     EdgeInsets screenPadding = MediaQuery.of(context).padding;
     return Scaffold(
         appBar: AppBar(
@@ -57,212 +56,9 @@ class _AboutScreenState extends State<AboutScreen> {
                       Container(
                         height: 8,
                       ),
-                      HeaderWidget(
-                          alignment: Alignment.centerLeft,
-                          child: TranslatedTextWidget(
-                            "Contact",
-                            uppercase: true,
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          )),
-                      Container(
-                        height: 4,
-                      ),
-                      IntrinsicHeight(
-                          child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: <Widget>[
-                          Flexible(
-                              child: RaisedButton(
-                            padding: EdgeInsets.all(4),
-                            materialTapTargetSize:
-                                MaterialTapTargetSize.shrinkWrap,
-                            child: Column(children: [
-                              Expanded(
-                                  child:
-                                      Icon(FontAwesomeIcons.twitter, size: 32)),
-                              Container(height: 4),
-                              Text(
-                                "@LittleLightD2",
-                                textAlign: TextAlign.center,
-                              )
-                            ]),
-                            onPressed: () {
-                              launch("http://www.twitter.com/littlelightD2");
-                            },
-                          )),
-                          Container(
-                            width: 4,
-                          ),
-                          Flexible(
-                              child: RaisedButton(
-                            padding: EdgeInsets.all(4),
-                            materialTapTargetSize:
-                                MaterialTapTargetSize.shrinkWrap,
-                            color: Colors.blueGrey.shade400,
-                            child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Expanded(
-                                      child: Icon(FontAwesomeIcons.discord,
-                                          size: 32)),
-                                  Container(height: 4),
-                                  TranslatedTextWidget("Discord")
-                                ]),
-                            onPressed: () {
-                              launch("https://discord.gg/ztdFGGz");
-                            },
-                          )),
-                          Container(
-                            width: 4,
-                          ),
-                          Flexible(
-                              child: RaisedButton(
-                            padding: EdgeInsets.all(4),
-                            materialTapTargetSize:
-                                MaterialTapTargetSize.shrinkWrap,
-                            color: Colors.red.shade600,
-                            child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Expanded(
-                                      child: Icon(FontAwesomeIcons.github,
-                                          size: 32)),
-                                  Container(height: 4),
-                                  TranslatedTextWidget("Issues")
-                                ]),
-                            onPressed: () {
-                              launch(
-                                  "https://github.com/LittleLightForDestiny/LittleLight/issues");
-                            },
-                          )),
-                        ],
-                      )),
+                      buildContact(context),
                       Container(height: 16),
-                      HeaderWidget(
-                          alignment: Alignment.centerLeft,
-                          child: TranslatedTextWidget(
-                            "Support Little Light",
-                            uppercase: true,
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          )),
-                      Container(
-                        height: 4,
-                      ),
-                      IntrinsicHeight(
-                        child: Row(
-                          children: <Widget>[
-                            Expanded(
-                              child: RaisedButton(
-                                  color: isIOS
-                                      ? Color.fromARGB(255, 22, 147, 245)
-                                      : Color.fromARGB(255, 49, 159, 185),
-                                  padding: EdgeInsets.all(4),
-                                  materialTapTargetSize:
-                                      MaterialTapTargetSize.shrinkWrap,
-                                  child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Expanded(
-                                            child: Icon(
-                                                isIOS
-                                                    ? FontAwesomeIcons
-                                                        .appStoreIos
-                                                    : FontAwesomeIcons
-                                                        .googlePlay,
-                                                size: 36)),
-                                        Container(
-                                          height: 4,
-                                        ),
-                                        TranslatedTextWidget(
-                                          "Rate it",
-                                          uppercase: true,
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 12),
-                                        )
-                                      ]),
-                                  onPressed: () {
-                                    LaunchReview.launch(
-                                        androidAppId: 'me.markezine.luzinha',
-                                        iOSAppId: '1373037254');
-                                  }),
-                            ),
-                            Container(
-                              width: 4,
-                            ),
-                            Expanded(
-                              child: RaisedButton(
-                                  padding: EdgeInsets.all(4),
-                                  color: Color.fromRGBO(249, 104, 84, 1),
-                                  materialTapTargetSize:
-                                      MaterialTapTargetSize.shrinkWrap,
-                                  child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Expanded(
-                                          child: Container(
-                                              width: 36,
-                                              height: 36,
-                                              child: Image.asset(
-                                                  "assets/imgs/patreon-icon.png")),
-                                        ),
-                                        Container(
-                                          height: 4,
-                                        ),
-                                        TranslatedTextWidget(
-                                          "Become a Patron",
-                                          uppercase: true,
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 12),
-                                        )
-                                      ]),
-                                  onPressed: () {
-                                    launch(
-                                        'https://www.patreon.com/littlelightD2');
-                                  }),
-                            ),
-                            Container(
-                              width: 4,
-                            ),
-                            Expanded(
-                                child: RaisedButton(
-                                    padding: EdgeInsets.all(4),
-                                    color: Color.fromRGBO(26, 169, 222, 1),
-                                    materialTapTargetSize:
-                                        MaterialTapTargetSize.shrinkWrap,
-                                    child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Expanded(
-                                              child: Container(
-                                                  width: 36,
-                                                  height: 36,
-                                                  child: Image.asset(
-                                                      "assets/imgs/ko-fi-icon.png"))),
-                                          Container(
-                                            height: 4,
-                                          ),
-                                          TranslatedTextWidget(
-                                            "Buy me a Coffee",
-                                            uppercase: true,
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 12),
-                                          )
-                                        ]),
-                                    onPressed: () {
-                                      launch('https://ko-fi.com/littlelight');
-                                    })),
-                          ],
-                        ),
-                      ),
+                      buildSupport(context),
                       Container(
                         height: 16,
                       ),
@@ -350,7 +146,9 @@ class _AboutScreenState extends State<AboutScreen> {
                           padding: EdgeInsets.all(4),
                           child: Column(children: [
                             buildTagAndPlatform(4611686018468567020, 4),
-                            Container(height: 4,),
+                            Container(
+                              height: 4,
+                            ),
                             buildTagAndPlatform(4611686018467289582, 4),
                           ])),
                       Container(height: 8),
@@ -467,5 +265,205 @@ class _AboutScreenState extends State<AboutScreen> {
   buildTagAndPlatform(int membershipId, int membershipType,
       [String link, Widget badge]) {
     return SupporterCharacterWidget(membershipId, membershipType, link, badge);
+  }
+
+  buildContact(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        HeaderWidget(
+            alignment: Alignment.centerLeft,
+            child: TranslatedTextWidget(
+              "Contact",
+              uppercase: true,
+              style: TextStyle(fontWeight: FontWeight.bold),
+            )),
+        Container(
+          height: 4,
+        ),
+        IntrinsicHeight(
+            child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Flexible(
+                child: RaisedButton(
+              padding: EdgeInsets.all(4),
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              child: Column(children: [
+                Expanded(child: Icon(FontAwesomeIcons.twitter, size: 32)),
+                Container(height: 4),
+                Text(
+                  "@LittleLightD2",
+                  textAlign: TextAlign.center,
+                )
+              ]),
+              onPressed: () {
+                launch("http://www.twitter.com/littlelightD2");
+              },
+            )),
+            Container(
+              width: 4,
+            ),
+            Flexible(
+                child: RaisedButton(
+              padding: EdgeInsets.all(4),
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              color: Colors.blueGrey.shade400,
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(child: Icon(FontAwesomeIcons.discord, size: 32)),
+                    Container(height: 4),
+                    TranslatedTextWidget("Discord")
+                  ]),
+              onPressed: () {
+                launch("https://discord.gg/ztdFGGz");
+              },
+            )),
+            Container(
+              width: 4,
+            ),
+            Flexible(
+                child: RaisedButton(
+              padding: EdgeInsets.all(4),
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              color: Colors.red.shade600,
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(child: Icon(FontAwesomeIcons.github, size: 32)),
+                    Container(height: 4),
+                    TranslatedTextWidget("Issues")
+                  ]),
+              onPressed: () {
+                launch(
+                    "https://github.com/LittleLightForDestiny/LittleLight/issues");
+              },
+            )),
+          ],
+        )),
+      ],
+    );
+  }
+
+  buildSupport(BuildContext context) {
+    bool isIOS = Platform.isIOS;
+    return Column(
+      children: <Widget>[
+        HeaderWidget(
+            alignment: Alignment.centerLeft,
+            child: TranslatedTextWidget(
+              "Support Little Light",
+              uppercase: true,
+              style: TextStyle(fontWeight: FontWeight.bold),
+            )),
+        Container(
+          height: 4,
+        ),
+        IntrinsicHeight(
+          child: isIOS ? buildRateButton(context) : Row(
+            children: <Widget>[
+              Expanded(
+                child: buildRateButton(context)
+              ),
+              Container(
+                width: 4,
+              ),
+              Expanded(
+                child: RaisedButton(
+                    padding: EdgeInsets.all(4),
+                    color: Color.fromRGBO(249, 104, 84, 1),
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: Container(
+                                width: 36,
+                                height: 36,
+                                child: Image.asset(
+                                    "assets/imgs/patreon-icon.png")),
+                          ),
+                          Container(
+                            height: 4,
+                          ),
+                          TranslatedTextWidget(
+                            "Become a Patron",
+                            uppercase: true,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 12),
+                          )
+                        ]),
+                    onPressed: () {
+                      launch('https://www.patreon.com/littlelightD2');
+                    }),
+              ),
+              Container(
+                width: 4,
+              ),
+              Expanded(
+                  child: RaisedButton(
+                      padding: EdgeInsets.all(4),
+                      color: Color.fromRGBO(26, 169, 222, 1),
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Expanded(
+                                child: Container(
+                                    width: 36,
+                                    height: 36,
+                                    child: Image.asset(
+                                        "assets/imgs/ko-fi-icon.png"))),
+                            Container(
+                              height: 4,
+                            ),
+                            TranslatedTextWidget(
+                              "Buy me a Coffee",
+                              uppercase: true,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 12),
+                            )
+                          ]),
+                      onPressed: () {
+                        launch('https://ko-fi.com/littlelight');
+                      })),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  buildRateButton(BuildContext context) {
+    bool isIOS = Platform.isIOS;
+    return RaisedButton(
+        color: isIOS
+            ? Color.fromARGB(255, 22, 147, 245)
+            : Color.fromARGB(255, 49, 159, 185),
+        padding: EdgeInsets.all(4),
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Expanded(
+              child: Icon(
+                  isIOS
+                      ? FontAwesomeIcons.appStoreIos
+                      : FontAwesomeIcons.googlePlay,
+                  size: 36)),
+          Container(
+            height: 4,
+          ),
+          TranslatedTextWidget(
+            "Rate it",
+            uppercase: true,
+            textAlign: TextAlign.center,
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+          )
+        ]),
+        onPressed: () {
+          LaunchReview.launch(
+              androidAppId: 'me.markezine.luzinha', iOSAppId: '1373037254');
+        });
   }
 }

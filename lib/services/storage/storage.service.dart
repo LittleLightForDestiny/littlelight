@@ -152,6 +152,7 @@ class StorageService {
 
   Future<dynamic> getJson(String key) async {
     File cached = new File(await getPath(key, json: true));
+    print(await getPath(key, json:true));
     bool exists = await cached.exists();
     if (exists) {
       try {
