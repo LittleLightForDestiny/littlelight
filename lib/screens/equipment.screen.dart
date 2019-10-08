@@ -90,9 +90,6 @@ class EquipmentScreenState extends State<EquipmentScreen>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    if (characters == null) {
-      return Container();
-    }
 
     var query = MediaQueryHelper(context);
     if (query.isLandscape) {
@@ -199,20 +196,20 @@ class EquipmentScreenState extends State<EquipmentScreen>
 
   Widget buildCharacterHeaderTabView(BuildContext context) {
     var headers = characters
-        .map((character) => TabHeaderWidget(
+        ?.map((character) => TabHeaderWidget(
               character,
               key: Key("${character.emblemHash}"),
             ))
-        .toList();
-    headers.add(VaultTabHeaderWidget());
-    return TabBarView(controller: charTabController, children: headers);
+        ?.toList();
+    headers?.add(VaultTabHeaderWidget());
+    return TabBarView(controller: charTabController, children: headers ?? []);
   }
 
   Widget buildTabletCharacterTabView(BuildContext context) {
     EdgeInsets screenPadding = MediaQuery.of(context).padding;
     var topOffset = screenPadding.top + kToolbarHeight;
     var pages = characters
-        .map((character) => Stack(children: [
+        ?.map((character) => Stack(children: [
               Positioned.fill(
                   child: LargeScreenEquipmentListWidget(
                 key: Key("character_tab${character.characterId}"),
@@ -228,8 +225,8 @@ class EquipmentScreenState extends State<EquipmentScreen>
                     key: Key("${character.emblemHash}"),
                   ))
             ]))
-        .toList();
-    pages.add(Stack(children: [
+        ?.toList();
+    pages?.add(Stack(children: [
       Positioned.fill(
           child: LargeScreenVaultListWidget(
         key: Key("vault_tab"),
@@ -241,7 +238,7 @@ class EquipmentScreenState extends State<EquipmentScreen>
           height: topOffset + 16,
           child: VaultTabHeaderWidget())
     ]));
-    return TabBarView(controller: charTabController, children: pages);
+    return TabBarView(controller: charTabController, children: pages ?? []);
   }
 
   Widget buildBackground(BuildContext context) {
@@ -269,13 +266,13 @@ class EquipmentScreenState extends State<EquipmentScreen>
   }
 
   List<Widget> buildCharacterTabs(int group) {
-    List<Widget> characterTabs = characters.map((character) {
+    List<Widget> characterTabs = characters?.map((character) {
       return CharacterTabWidget(character, group,
           key: Key("character_tab_${character.characterId}"),
           scrollPositions: scrollPositions);
-    }).toList();
-    characterTabs.add(VaultTabWidget(group));
-    return characterTabs;
+    })?.toList();
+    characterTabs?.add(VaultTabWidget(group));
+    return characterTabs ?? [];
   }
 
   List<DestinyCharacterComponent> get characters {

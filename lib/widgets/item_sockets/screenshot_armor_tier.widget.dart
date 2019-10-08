@@ -33,6 +33,19 @@ class ScreenShotArmorTierWidget extends BaseItemSocketsWidget {
 
 class ScreenShotItemPerksWidgetState<T extends ScreenShotArmorTierWidget>
     extends BaseItemSocketsWidgetState<T> {
+  @override
+  Widget build(BuildContext context) {
+    if (category == null) return Container();
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        buildHeader(context),
+        buildSockets(context),
+      ],
+    );
+  }
+
   Widget buildHeader(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,19 +91,35 @@ class ScreenShotItemPerksWidgetState<T extends ScreenShotArmorTierWidget>
         plugDef?.plug?.energyCapacity?.energyType);
     var total = plugDef?.plug?.energyCapacity?.capacityValue;
     return Container(
-      height: widget.pixelSize * 50,
-      padding: EdgeInsets.symmetric(horizontal:widget.pixelSize * 10),
-      color: color.withOpacity(.6),
-      child:Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-        Icon(DestinyData.getEnergyTypeIcon(
-        plugDef?.plug?.energyCapacity?.energyType), color:color,),
-        Container(width: widget.pixelSize * 8,),
-        Text("$total", style: TextStyle(fontWeight: FontWeight.bold, fontSize: widget.pixelSize*38),),
-        Container(width: widget.pixelSize * 16,),
-        TranslatedTextWidget("Energy", uppercase:true, style: TextStyle(fontWeight: FontWeight.w400, fontSize: widget.pixelSize*22),)
-      ],)
-    );
+        height: widget.pixelSize * 50,
+        padding: EdgeInsets.symmetric(horizontal: widget.pixelSize * 10),
+        color: color.withOpacity(.6),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Icon(
+                DestinyData.getEnergyTypeIcon(
+                    plugDef?.plug?.energyCapacity?.energyType),
+                color: color,
+                size: widget.pixelSize * 44),
+            Container(
+              width: widget.pixelSize * 8,
+            ),
+            Text(
+              "$total",
+              style: TextStyle(
+                  fontWeight: FontWeight.bold, fontSize: widget.pixelSize * 38),
+            ),
+            Container(
+              width: widget.pixelSize * 16,
+            ),
+            TranslatedTextWidget(
+              "Energy",
+              uppercase: true,
+              style: TextStyle(
+                  fontWeight: FontWeight.w400, fontSize: widget.pixelSize * 22),
+            )
+          ],
+        ));
   }
 }

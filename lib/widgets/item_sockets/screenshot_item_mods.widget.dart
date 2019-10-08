@@ -29,6 +29,20 @@ class ScreenShotItemModsWidget extends BaseItemSocketsWidget {
 
 class ScreenShotItemModsWidgetState<T extends ScreenShotItemModsWidget>
     extends BaseItemSocketsWidgetState<T> {
+
+  @override
+  Widget build(BuildContext context) {
+    if (category == null) return Container();
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        buildHeader(context),
+        buildSockets(context),
+      ],
+    );
+  }    
+
   Widget buildHeader(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

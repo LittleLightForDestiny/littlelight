@@ -76,17 +76,17 @@ mixin SubclassPropertiesMixin on InventoryItemMixin {
 
   DestinyTalentNodeCategory extractTalentGridNodeCategory(
       DestinyTalentGridDefinition talentGridDef) {
-    Iterable<int> activatedNodes = talentGrid.nodes
-        .where((node) => node.isActivated)
-        .map((node) => node.nodeIndex);
+    Iterable<int> activatedNodes = talentGrid?.nodes
+        ?.where((node) => node.isActivated)
+        ?.map((node) => node.nodeIndex);
     Iterable<DestinyTalentNodeCategory> selectedSkills =
-        talentGridDef.nodeCategories.where((category) {
+        talentGridDef?.nodeCategories?.where((category) {
       var overlapping = category.nodeHashes
-          .where((nodeHash) => activatedNodes.contains(nodeHash));
+          .where((nodeHash) => activatedNodes?.contains(nodeHash) ?? false);
       return overlapping.length > 0;
-    }).toList();
+    })?.toList();
     DestinyTalentNodeCategory subclassPath = selectedSkills
-        .firstWhere((nodeDef) => nodeDef.isLoreDriven, orElse: () => null);
+        ?.firstWhere((nodeDef) => nodeDef.isLoreDriven, orElse: () => null);
     return subclassPath;
   }
 

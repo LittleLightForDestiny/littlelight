@@ -34,6 +34,19 @@ class ScreenShotItemPerksWidget extends BaseItemSocketsWidget {
 
 class ScreenShotItemPerksWidgetState<T extends ScreenShotItemPerksWidget>
     extends BaseItemSocketsWidgetState<T> {
+  @override
+  Widget build(BuildContext context) {
+    if (category == null) return Container();
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        buildHeader(context),
+        buildSockets(context),
+      ],
+    );
+  }
+
   Widget buildHeader(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -67,7 +80,7 @@ class ScreenShotItemPerksWidgetState<T extends ScreenShotItemPerksWidget>
               width: 2 * widget.pixelSize,
               color: Colors.white.withOpacity(.4))
         ]);
-    children = children.take(children.length -1);
+    children = children.take(children.length - 1);
     return Stack(children: [
       Positioned.fill(
           child: Image.asset(
@@ -87,7 +100,7 @@ class ScreenShotItemPerksWidgetState<T extends ScreenShotItemPerksWidget>
   @override
   Widget buildSocketPlugs(BuildContext context, int socketIndex) {
     var plugs = socketPlugHashes(socketIndex);
-    if(plugs.length == 0) return null;
+    if (plugs.length == 0) return null;
     return Container(
         width: 80 * widget.pixelSize,
         child: Column(

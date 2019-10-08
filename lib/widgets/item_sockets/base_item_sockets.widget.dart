@@ -8,6 +8,7 @@ import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widg
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 
 import 'package:flutter/material.dart';
+import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/item_sockets/item_socket.controller.dart';
 
 class BaseItemSocketsWidget extends BaseDestinyStatefulItemWidget {
@@ -65,13 +66,13 @@ class BaseItemSocketsWidgetState<T extends BaseItemSocketsWidget>
   }
 
   @override
-  dispose(){
+  dispose() {
     super.dispose();
     controller.removeListener(update);
   }
 
-  update(){
-    setState((){});
+  update() {
+    setState(() {});
   }
 
   Future<void> loadPlugDefinitions() async {
@@ -124,14 +125,22 @@ class BaseItemSocketsWidgetState<T extends BaseItemSocketsWidget>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         buildHeader(context),
-        Container(
-          child: buildSockets(context),
-        )
+        buildErrorMessage(context),
+        buildSockets(context),
       ],
     );
   }
 
   Widget buildHeader(BuildContext context) {
+    return Container();
+  }
+
+  Widget buildErrorMessage(BuildContext context){
+    if(item?.itemInstanceId != null && socketStates == null){
+      return Container(
+        margin: EdgeInsets.only(bottom:16),
+        child:TranslatedTextWidget("Bungie.net API isn't returning sockets correctly on items right now, so you are seeing the default definition instead of the perks and mods you have on your items.", style: TextStyle(color: Colors.red.shade300),));
+    }
     return Container();
   }
 

@@ -48,8 +48,15 @@ class ItemSocketController extends ChangeNotifier {
     }
     var entry = definition?.sockets?.socketEntries?.elementAt(socketIndex);
 
-    if (entry?.reusablePlugItems != null) {
-      return entry?.reusablePlugItems?.map((p) => p.plugItemHash)?.toList();
+    if ((entry?.reusablePlugItems?.length ?? 0) > 0) {
+      return entry?.reusablePlugItems
+      ?.map((p) => p.plugItemHash)
+      ?.where((h)=>h!= 0 && h!= null)
+      ?.toList();
+    }
+
+    if((entry?.singleInitialItemHash ?? 0) != 0){
+      return [entry?.singleInitialItemHash];
     }
     return [];
   }
