@@ -169,6 +169,19 @@ class _MilestoneRaidItemWidgetState extends MilestoneItemWidgetState<MilestoneRa
       case RaidPhases.cosGahlran:
         text = "Gahlran";
         break;
+
+      case RaidPhases.gosEvasion:
+        text = "Evasion";
+        break;
+      case RaidPhases.gosSummon:
+        text = "Summon";
+        break;
+      case RaidPhases.gosConsecratedMind:
+        text = "Consecrated Mind";
+        break;
+      case RaidPhases.gosSanctifieddMind:
+        text = "Sanctified Mind";
+        break;
     }
     Color color = phase.complete
         ? Colors.amber.shade100

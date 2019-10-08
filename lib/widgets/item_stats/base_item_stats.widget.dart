@@ -47,6 +47,7 @@ class BaseItemStatsState<T extends BaseItemStatsWidget>
   void initState() {
     precalculatedStats =
         widget.profile.getPrecalculatedStats(item?.itemInstanceId);
+    
     socketStates = widget.profile.getItemSockets(item?.itemInstanceId);
     super.initState();
     loadPlugDefinitions();
