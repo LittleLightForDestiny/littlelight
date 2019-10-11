@@ -112,13 +112,13 @@ class ScreenShotItemPerksWidgetState<T extends ScreenShotItemPerksWidget>
   }
 
   @override
-  List<int> socketPlugHashes(int socketIndex) {
+  Set<int> socketPlugHashes(int socketIndex) {
     if (item == null) {
       var isRandom = controller.randomizedPlugHashes(socketIndex).length > 0;
       if (isRandom) {
         return controller
             .bungieRollPlugHashes(socketIndex)
-            .followedBy([2328497849]).toList();
+            .followedBy([2328497849]).toSet();
       }
     }
     return super.socketPlugHashes(socketIndex);
@@ -168,6 +168,7 @@ class ScreenShotItemPerksWidgetState<T extends ScreenShotItemPerksWidget>
               child: ManifestImageWidget<DestinyInventoryItemDefinition>(
                   plugItemHash),
               onPressed: () {
+                print(socketPlugHashes(socketIndex));
                 controller.selectSocket(socketIndex, plugItemHash);
               },
             )));

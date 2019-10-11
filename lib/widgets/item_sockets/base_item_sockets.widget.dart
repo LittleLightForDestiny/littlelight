@@ -2,6 +2,7 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_socket_category_definition.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
+import 'package:bungie_api/models/destiny_plug_set_definition.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
@@ -36,11 +37,11 @@ class BaseItemSocketsWidget extends BaseDestinyStatefulItemWidget {
 
 class BaseItemSocketsWidgetState<T extends BaseItemSocketsWidget>
     extends BaseDestinyItemState<T> {
-  Map<int, DestinyInventoryItemDefinition> _plugDefinitions;
+  
   List<DestinyItemSocketState> _socketStates;
   List<DestinyItemSocketState> get socketStates => _socketStates;
   Map<int, DestinyInventoryItemDefinition> get plugDefinitions =>
-      _plugDefinitions;
+      controller?.plugDefinitions;
   DestinyItemSocketCategoryDefinition get category => widget.category;
   ItemSocketController _controller;
   ItemSocketController get controller {
@@ -57,7 +58,6 @@ class BaseItemSocketsWidgetState<T extends BaseItemSocketsWidget>
   initState() {
     super.initState();
     _socketStates = widget.profile.getItemSockets(item?.itemInstanceId);
-    loadPlugDefinitions();
     initController();
   }
 
@@ -75,38 +75,8 @@ class BaseItemSocketsWidgetState<T extends BaseItemSocketsWidget>
     setState(() {});
   }
 
-  Future<void> loadPlugDefinitions() async {
-    List<int> plugHashes = definition.sockets.socketEntries
-        .expand((socket) {
-          List<int> hashes = [];
-          if ((socket.singleInitialItemHash ?? 0) != 0) {
-            hashes.add(socket.singleInitialItemHash);
-          }
-          if ((socket.reusablePlugItems?.length ?? 0) != 0) {
-            hashes.addAll(socket.reusablePlugItems
-                .map((plugItem) => plugItem.plugItemHash));
-          }
-
-          return hashes;
-        })
-        .where((i) => i != null)
-        .toList();
-    if (socketStates != null) {
-      Iterable<int> hashes = socketStates
-          .map((state) => state.plugHash)
-          .where((i) => i != null)
-          .toList();
-      plugHashes.addAll(hashes);
-    }
-    _plugDefinitions = await widget.manifest
-        .getDefinitions<DestinyInventoryItemDefinition>(plugHashes);
-    if (mounted) {
-      setState(() {});
-    }
-  }
-
-  List<int> socketPlugHashes(int socketIndex) {
-    return controller.socketPlugHashes(socketIndex) ?? [];
+  Set<int> socketPlugHashes(int socketIndex) {
+    return controller.socketPlugHashes(socketIndex) ?? Set();
   }
 
   int socketEquippedPlugHash(int socketIndex) {
@@ -135,11 +105,14 @@ class BaseItemSocketsWidgetState<T extends BaseItemSocketsWidget>
     return Container();
   }
 
-  Widget buildErrorMessage(BuildContext context){
-    if(item?.itemInstanceId != null && socketStates == null){
+  Widget buildErrorMessage(BuildContext context) {
+    if (item?.itemInstanceId != null && socketStates == null) {
       return Container(
-        margin: EdgeInsets.only(bottom:16),
-        child:TranslatedTextWidget("Bungie.net API isn't returning sockets correctly on items right now, so you are seeing the default definition instead of the perks and mods you have on your items.", style: TextStyle(color: Colors.red.shade300),));
+          margin: EdgeInsets.only(bottom: 16),
+          child: TranslatedTextWidget(
+            "Bungie.net API isn't returning sockets correctly on items right now, so you are seeing the default definition instead of the perks and mods you have on your items.",
+            style: TextStyle(color: Colors.red.shade300),
+          ));
     }
     return Container();
   }

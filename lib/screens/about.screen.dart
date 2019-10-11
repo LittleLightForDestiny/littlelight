@@ -222,6 +222,10 @@ class _AboutScreenState extends State<AboutScreen> {
                       Container(
                         height: 8,
                       ),
+                      buildTagAndPlatform(4611686018436933892, BungieMembershipType.TigerXbox),
+                      Container(
+                        height: 8,
+                      ),
                       Container(
                         height: screenPadding.bottom,
                       )

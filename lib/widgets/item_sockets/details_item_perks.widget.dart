@@ -172,6 +172,12 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
         ));
   }
 
+
+  @override
+  Set<int> socketPlugHashes(int socketIndex){
+    return controller.socketPlugHashes(socketIndex)?.followedBy(controller.randomizedPlugHashes(socketIndex))?.toSet() ?? Set();
+  }
+
   Widget buildPlugCategoryTitle(BuildContext context, int socketIndex) {
     var hashes = socketPlugHashes(socketIndex);
     var hash = hashes.first;
@@ -299,7 +305,6 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
               child: ManifestImageWidget<DestinyInventoryItemDefinition>(
                   plugItemHash),
               onPressed: () {
-                print(plugItemHash);
                 controller.selectSocket(socketIndex, plugItemHash);
               },
             )));
