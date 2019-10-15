@@ -1,6 +1,9 @@
+import 'package:bungie_api/enums/tier_type_enum.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/utils/destiny_data.dart';
+import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/item_sockets/base_socket_details.widget.dart';
 import 'package:little_light/widgets/item_sockets/item_socket.controller.dart';
 import 'package:little_light/widgets/item_stats/screenshot_socket_item_stats.widget.dart';
@@ -63,6 +66,7 @@ class _ScreenshotPerkDetailsWidgetState
     return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
+          buildOptions(context),
           Container(
             height: widget.pixelSize * 5,
             color: Colors.grey.shade400,
@@ -80,7 +84,7 @@ class _ScreenshotPerkDetailsWidgetState
                         fontWeight: FontWeight.w500),
                   ),
                   Text(definition?.itemTypeDisplayName,
-                      style: TextStyle(
+                      style: TextStyle(   
                           fontSize: 24 * widget.pixelSize,
                           color: Colors.grey.shade500,
                           fontWeight: FontWeight.w300))
@@ -91,6 +95,69 @@ class _ScreenshotPerkDetailsWidgetState
               color: Colors.black.withOpacity(.7),
               child: buildContent(context))
         ]);
+  }
+
+  Widget buildOptions(BuildContext context){
+    var randomHashes = controller.randomizedPlugHashes(controller.selectedSocketIndex);
+    if((randomHashes?.length ?? 0) == 0){
+      return Container();
+    }
+    var plugs = controller.socketPlugHashes(controller.selectedSocketIndex);
+    plugs.addAll(randomHashes);
+    return Wrap(
+      runSpacing: 6*widget.pixelSize,
+      spacing: 6*widget.pixelSize,
+      children: plugs.map((h)=>buildPlug(context, controller.selectedSocketIndex, h)).toList(),);
+  }
+
+  Widget buildPlug(BuildContext context, int socketIndex, int plugItemHash) {
+    var plugDef = controller.plugDefinitions[plugItemHash];
+    bool intrinsic = plugDef?.plug?.plugCategoryIdentifier == "intrinsics";
+    int equippedHash = controller.socketEquippedPlugHash(socketIndex);
+    bool isEquipped = equippedHash == plugItemHash;
+    bool isExotic = definition.inventory.tierType == TierType.Exotic;
+    bool isSelectedOnSocket =
+        plugItemHash == controller.socketSelectedPlugHash(socketIndex);
+    bool isSelected = plugItemHash == controller.selectedPlugHash;
+    Color bgColor = Colors.transparent;
+    Color borderColor = Colors.grey.shade300.withOpacity(.5);
+    if (isEquipped && !intrinsic) {
+      bgColor = DestinyData.perkColor.withOpacity(.5);
+    }
+    if (isSelectedOnSocket && !intrinsic) {
+      bgColor = DestinyData.perkColor;
+      borderColor = Colors.grey.shade300;
+    }
+
+    if (intrinsic && !isSelected) {
+      borderColor = Colors.transparent;
+    }
+
+    BorderSide borderSide =
+        BorderSide(color: borderColor, width: 2 * widget.pixelSize);
+
+    return Container(
+        width: 80 * widget.pixelSize,
+        key: Key("plug_${socketIndex}_$plugItemHash"),
+        padding: EdgeInsets.all(0),
+        margin: EdgeInsets.only(bottom: 16 * widget.pixelSize),
+        child: AspectRatio(
+            aspectRatio: 1,
+            child: FlatButton(
+              shape: intrinsic && !isExotic
+                  ? RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4 * widget.pixelSize),
+                      side: borderSide)
+                  : CircleBorder(side: borderSide),
+              padding: EdgeInsets.all(intrinsic ? 0 : 8 * widget.pixelSize),
+              color: bgColor,
+              child: ManifestImageWidget<DestinyInventoryItemDefinition>(
+                  plugItemHash),
+              onPressed: () {
+                print("$socketIndex $plugItemHash");
+                controller.selectSocket(socketIndex, plugItemHash); 
+              },
+            )));
   }
 
   buildContent(BuildContext context) {

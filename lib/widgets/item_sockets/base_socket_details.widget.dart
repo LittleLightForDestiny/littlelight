@@ -28,7 +28,7 @@ class BaseSocketDetailsWidget extends BaseDestinyStatefulItemWidget {
       DestinyItemComponent item,
       this.category,
       this.plug})
-      : super(key: key, item: item, definition: definition);
+      : super(key: key, item: item, definition: definition); 
 
   @override
   State<StatefulWidget> createState() {

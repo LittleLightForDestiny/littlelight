@@ -8,8 +8,8 @@ import 'package:little_light/services/inventory/inventory.service.dart';
 import 'package:little_light/widgets/common/equip_on_character.button.dart';
 
 import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:little_light/widgets/transfer_destinations/base_transfer_destinations.widget.dart';
 
-import 'base_transfer_destinations.widget.dart';
 
 class ScreenshotTransferDestinationsWidget
     extends BaseTransferDestinationsWidget {

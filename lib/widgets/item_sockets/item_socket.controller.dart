@@ -11,6 +11,7 @@ class ItemSocketController extends ChangeNotifier {
   final DestinyInventoryItemDefinition definition;
   List<DestinyItemSocketState> _socketStates;
   List<int> _selectedSockets;
+  List<int> _randomizedSelectedSockets;
   Map<int, DestinyInventoryItemDefinition> _plugDefinitions;
   Map<int, DestinyPlugSetDefinition> _plugSetDefinitions;
   Map<int, DestinyInventoryItemDefinition> get plugDefinitions =>
@@ -19,6 +20,7 @@ class ItemSocketController extends ChangeNotifier {
   int _selectedSocketIndex;
 
   List<int> get selectedSockets => _selectedSockets;
+  List<int> get randomizedSelectedSockets => _randomizedSelectedSockets;
 
   ItemSocketController({this.item, this.definition}) {
     _initDefaults();
@@ -29,6 +31,7 @@ class ItemSocketController extends ChangeNotifier {
     var entries = definition?.sockets?.socketEntries;
     _socketStates = ProfileService().getItemSockets(item?.itemInstanceId);
     _selectedSockets = List<int>(entries?.length ?? 0);
+    _randomizedSelectedSockets = List<int>(entries?.length ?? 0);
   }
 
   Future<void> _loadPlugDefinitions() async {
@@ -82,7 +85,7 @@ class ItemSocketController extends ChangeNotifier {
   int get selectedPlugHash => _selectedSocket;
 
   selectSocket(int socketIndex, int plugHash) {
-    if (plugHash == this._selectedSocket) {
+    if (plugHash == this._selectedSocket && socketIndex == _selectedSocketIndex) {
       this._selectedSocketIndex = null;
       this._selectedSocket = null;
       this._selectedSockets[socketIndex] = null;
@@ -90,6 +93,10 @@ class ItemSocketController extends ChangeNotifier {
       this._selectedSocketIndex = socketIndex;
       this._selectedSocket = plugHash;
       this._selectedSockets[socketIndex] = plugHash;
+      var plugHashes = socketPlugHashes(socketIndex);
+      if(!plugHashes.contains(plugHash)){
+        this._randomizedSelectedSockets[socketIndex] = plugHash;
+      }
     }
     this.notifyListeners();
   }
@@ -122,6 +129,7 @@ class ItemSocketController extends ChangeNotifier {
   List<int> randomizedPlugHashes(int socketIndex) {
     var entry = definition?.sockets?.socketEntries?.elementAt(socketIndex);
     if ((entry?.randomizedPlugSetHash ?? 0) == 0) return [];
+    if (_plugSetDefinitions == null) return [];
     return _plugSetDefinitions[entry?.randomizedPlugSetHash]
         .reusablePlugItems
         .map((p) => p.plugItemHash)
@@ -157,6 +165,7 @@ class ItemSocketController extends ChangeNotifier {
     if ((random?.length ?? 0) > 0) {
       return random.first;
     }
+    return null;
   }
 
   int socketSelectedPlugHash(int socketIndex) {
@@ -169,5 +178,11 @@ class ItemSocketController extends ChangeNotifier {
     var entry = definition?.sockets?.socketEntries?.elementAt(socketIndex);
     return entry?.singleInitialItemHash ??
         entry.reusablePlugItems?.elementAt(0)?.plugItemHash;
+  }
+
+  int socketRandomizedSelectedPlugHash(int socketIndex) {
+    var selected = randomizedSelectedSockets?.elementAt(socketIndex);
+    if (selected != null) return selected;
+    return 2328497849;
   }
 }

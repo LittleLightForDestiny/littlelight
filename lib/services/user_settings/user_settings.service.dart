@@ -1,7 +1,7 @@
 import 'package:little_light/services/storage/storage.service.dart';
+import 'package:little_light/services/user_settings/character_sort_parameter.dart';
+import 'package:little_light/services/user_settings/item_sort_parameter.dart';
 
-import 'character_sort_parameter.dart';
-import 'item_sort_parameter.dart';
 
 class UserSettingsService {
   static UserSettingsService _singleton = UserSettingsService._internal();

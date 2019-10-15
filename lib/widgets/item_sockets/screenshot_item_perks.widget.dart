@@ -118,7 +118,7 @@ class ScreenShotItemPerksWidgetState<T extends ScreenShotItemPerksWidget>
       if (isRandom) {
         return controller
             .bungieRollPlugHashes(socketIndex)
-            .followedBy([2328497849]).toSet();
+            .followedBy([controller.socketRandomizedSelectedPlugHash(socketIndex)]).toSet();
       }
     }
     return super.socketPlugHashes(socketIndex);
@@ -137,8 +137,8 @@ class ScreenShotItemPerksWidgetState<T extends ScreenShotItemPerksWidget>
     bool isSelected = plugItemHash == controller.selectedPlugHash;
     Color bgColor = Colors.transparent;
     Color borderColor = Colors.grey.shade300.withOpacity(.5);
-    if (isEquipped && !intrinsic) {
-      bgColor = DestinyData.perkColor.withOpacity(.5);
+    if (isEquipped && !intrinsic) { 
+      bgColor = DestinyData.perkColor.withOpacity(.5); 
     }
     if (isSelectedOnSocket && !intrinsic) {
       bgColor = DestinyData.perkColor;
@@ -153,6 +153,7 @@ class ScreenShotItemPerksWidgetState<T extends ScreenShotItemPerksWidget>
         BorderSide(color: borderColor, width: 2 * widget.pixelSize);
 
     return Container(
+        key: Key("plug_${socketIndex}_$plugItemHash"),
         padding: EdgeInsets.all(0),
         margin: EdgeInsets.only(bottom: 16 * widget.pixelSize),
         child: AspectRatio(
@@ -168,7 +169,6 @@ class ScreenShotItemPerksWidgetState<T extends ScreenShotItemPerksWidget>
               child: ManifestImageWidget<DestinyInventoryItemDefinition>(
                   plugItemHash),
               onPressed: () {
-                print(socketPlugHashes(socketIndex));
                 controller.selectSocket(socketIndex, plugItemHash);
               },
             )));
