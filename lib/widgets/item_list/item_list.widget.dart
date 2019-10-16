@@ -59,7 +59,7 @@ class ItemListWidget extends StatefulWidget {
   ItemListWidgetState createState() => new ItemListWidgetState();
 }
 
-class ItemListWidgetState extends State<ItemListWidget> {
+class ItemListWidgetState extends State<ItemListWidget> with AutomaticKeepAliveClientMixin{
   List<DestinyInventoryBucketDefinition> buckefDefs;
   List<ListItem> listIndex = [];
   StreamSubscription<NotificationEvent> subscription;
@@ -154,6 +154,7 @@ class ItemListWidgetState extends State<ItemListWidget> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Padding(
       padding: widget.padding,
       child: getList(),
@@ -270,6 +271,9 @@ class ItemListWidgetState extends State<ItemListWidget> {
         color: Colors.indigo,
         child: Text("You shouldn't be seeing this, please report"));
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class ListItem {

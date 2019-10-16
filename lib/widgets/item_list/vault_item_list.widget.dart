@@ -113,6 +113,7 @@ class VaultItemListWidgetState extends ItemListWidgetState
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Padding(
       padding: widget.padding,
       child: getList(),

@@ -191,7 +191,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
 
   Widget socketDetails(BuildContext context, double expandRatio) {
     return Positioned(
-        top: convertSize(96.0 * 3 + 1080 * (expandRatio - 1), context),
+        top: convertSize(96.0 * 2.4 + 1080 * (expandRatio - 1), context),
         left: convertSize(862, context),
         child: 
         Opacity(opacity: expandRatio, child:Container(

@@ -152,14 +152,7 @@ class BaseItemStatsState<T extends BaseItemStatsWidget>
           equipped: s.value, selected: s.value, precalculated: pre);
     });
 
-    List<int> plugHashes;
-    if (socketStates != null) {
-      plugHashes = socketStates.map((state) => state.plugHash).toList();
-    } else {
-      plugHashes = definition.sockets.socketEntries
-          .map((plug) => plug.singleInitialItemHash)
-          .toList();
-    }
+    List<int> plugHashes = List.generate(socketController.socketCount, (i)=>socketController.socketEquippedPlugHash(i));
 
     plugHashes.forEach((plugHash) {
       int index = plugHashes.indexOf(plugHash);
@@ -173,7 +166,9 @@ class BaseItemStatsState<T extends BaseItemStatsWidget>
       def?.investmentStats?.forEach((stat) {
         StatValues values = map[stat.statTypeHash] ?? new StatValues();
         if (def.plug?.uiPlugLabel == 'masterwork') {
-          values.masterwork += stat.value;
+          if (selectedDef == null) {
+            values.masterwork += stat.value;
+          }
         } else {
           values.equipped += stat.value;
           if (selectedDef == null) {
@@ -186,7 +181,9 @@ class BaseItemStatsState<T extends BaseItemStatsWidget>
       if (selectedDef != null) {
         selectedDef.investmentStats.forEach((stat) {
           StatValues values = map[stat.statTypeHash] ?? new StatValues();
-          if (selectedDef.plug?.uiPlugLabel != 'masterwork') {
+          if (selectedDef.plug?.uiPlugLabel == 'masterwork') {
+            values.masterwork += stat.value;
+          }else{
             values.selected += stat.value;
           }
           map[stat.statTypeHash] = values;

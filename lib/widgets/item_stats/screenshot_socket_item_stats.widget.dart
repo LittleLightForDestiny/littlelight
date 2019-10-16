@@ -45,9 +45,12 @@ class ScreenShotSocketItemStatsState
   }
 
   List<Widget> buildStats(context) {
-    if (stats == null) return [Container()];
+    if ((stats?.length ?? 0) == 0) return [Container()];
     Map<int, StatValues> statValues = getStatValues();
-    return stats.map((stat) {
+    return <Widget>[Container(
+              margin: EdgeInsets.symmetric(vertical: widget.pixelSize * 16),
+              color: Colors.white,
+              height: widget.pixelSize)].followedBy(stats.map((stat) {
       var entry = statValues[stat.statTypeHash];
 
       return ScreenshotSocketItemStatWidget(
@@ -59,7 +62,7 @@ class ScreenShotSocketItemStatsState
             (s) => s.statHash == stat.statTypeHash,
             orElse: () => null),
       );
-    }).toList();
+    })).toList();
   }
 
   Iterable<DestinyItemInvestmentStatDefinition> get stats {

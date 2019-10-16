@@ -50,7 +50,7 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget> extends Ba
     updateTrackStatus();
   }
 
-  loadDefinitions() async {
+  Future<void> loadDefinitions() async {
     if ((definition?.objectives?.objectiveHashes?.length ?? 0) > 0) {
       objectiveDefinitions = await widget.manifest
           .getDefinitions<DestinyObjectiveDefinition>(

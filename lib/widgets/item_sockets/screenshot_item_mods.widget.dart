@@ -84,7 +84,7 @@ class ScreenShotItemModsWidgetState<T extends ScreenShotItemModsWidget>
 
   @override
   Widget buildSocketPlugs(BuildContext context, int socketIndex) {
-    var plugHash = socketEquippedPlugHash(socketIndex);
+    var plugHash = socketSelectedPlugHash(socketIndex);
     return Container(
         width: 96 * widget.pixelSize,
         child: buildPlug(context, socketIndex, plugHash),
