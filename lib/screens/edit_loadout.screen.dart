@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:bungie_api/enums/destiny_item_type_enum.dart';
 import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
@@ -93,6 +95,7 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var screenPadding = MediaQuery.of(context).padding;
     return Scaffold(
       backgroundColor: emblemColor,
       appBar: AppBar(
@@ -102,8 +105,8 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> {
                   : "Edit Loadout"),
           flexibleSpace: buildAppBarBackground(context)),
       body: ListView.builder(
+        padding: EdgeInsets.all(8).copyWith(top: 0, left: max(screenPadding.left, 8), right: max(screenPadding.right, 8)),
           itemCount: _itemIndex == null ? 2 : loadoutBucketHashes.length + 2,
-          padding: EdgeInsets.all(8),
           itemBuilder: itemBuilder),
       bottomNavigationBar: buildFooter(context),
     );

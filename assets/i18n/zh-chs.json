@@ -124,7 +124,7 @@
     "Deception": "Deception",
     "Gahlran": "Gahlran",
     "Pursuits": "任务",
-    "From the questline": "来自任务线",
+    "From the questline": "From the questline",
     "Quest steps": "任务步骤",
     "View next steps": "查看下一步",
     "Ranks": "Ranks",
@@ -203,5 +203,7 @@
     "Evasion": "Evasion",
     "Summon": "Summon",
     "Consecrated Mind": "Consecrated Mind",
-    "Sanctified Mind": "Sanctified Mind"
+    "Sanctified Mind": "Sanctified Mind",
+    "Energy Cost": "Energy Cost",
+    "View in Collections": "View in Collections"
 }

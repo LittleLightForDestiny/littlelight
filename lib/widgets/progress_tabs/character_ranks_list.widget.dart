@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:bungie_api/models/destiny_faction_progression.dart';
 import 'package:bungie_api/models/destiny_progression.dart';
 import 'package:flutter/material.dart';
@@ -70,12 +71,14 @@ class _CharacterRanksListWidgetState extends State<CharacterRanksListWidget>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    var screenPadding = MediaQuery.of(context).padding;
+    
     return StaggeredGridView.countBuilder(
+      padding: EdgeInsets.all(4).copyWith(top: 0, left: max(screenPadding.left, 4), right: max(screenPadding.right, 4)),
       crossAxisCount: 6,
       addAutomaticKeepAlives: true,
       addRepaintBoundaries: true,
       itemCount: (ranks?.length ?? 0) + (progressions?.length ?? 0) + 1,
-      padding: EdgeInsets.all(4).copyWith(top: 0),
       mainAxisSpacing: 4,
       crossAxisSpacing: 4,
       staggeredTileBuilder: (index) {

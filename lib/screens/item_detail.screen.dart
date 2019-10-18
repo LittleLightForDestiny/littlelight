@@ -173,7 +173,6 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
             buildArmorTier(context),
             buildMods(context),
             buildModDetails(context),
-
             buildCosmetics(context),
             buildCosmeticDetails(context),
             buildObjectives(context),
@@ -245,21 +244,29 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
     if (widget.sale == null) {
       return Container();
     }
-    return ItemVendorInfoWidget(
-      sale: widget.sale,
-      vendorHash: widget.vendorHash,
-      definition: definition,
-    );
+    var screenPadding = MediaQuery.of(context).padding;
+    return Container(
+        padding: EdgeInsets.only(
+            left: screenPadding.left, right: screenPadding.right),
+        child: ItemVendorInfoWidget(
+          sale: widget.sale,
+          vendorHash: widget.vendorHash,
+          definition: definition,
+        ));
   }
 
   Widget buildManagementBlock(BuildContext context) {
     if (widget.hideItemManagement) return Container();
-    return ManagementBlockWidget(
-      item,
-      definition,
-      instanceInfo,
-      characterId: characterId,
-    );
+    var screenPadding = MediaQuery.of(context).padding;
+    return Container(
+        padding: EdgeInsets.only(
+            left: screenPadding.left, right: screenPadding.right),
+        child: ManagementBlockWidget(
+          item,
+          definition,
+          instanceInfo,
+          characterId: characterId,
+        ));
   }
 
   Widget buildAddToLoadoutButton(BuildContext context) {
@@ -268,84 +275,110 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
         !loadoutBucketHashes.contains(definition?.inventory?.bucketTypeHash)) {
       return Container();
     }
+    var screenPadding = MediaQuery.of(context).padding;
     return Container(
-        padding: EdgeInsets.all(8),
-        child: RaisedButton(
-            child: TranslatedTextWidget("Add to Loadout"),
-            onPressed: () async {
-              var loadouts = await LoadoutsService().getLoadouts();
-              var equipped = false;
-              showModalBottomSheet(
-                  context: context,
-                  builder: (context) => LoadoutSelectSheet(
-                      header: AsEquippedSwitchWidget(
-                        onChanged: (value) {
-                          equipped = value;
-                        },
-                      ),
-                      loadouts: loadouts,
-                      onSelect: (loadout) async {
-                        loadout.addItem(widget.item.itemHash,
-                            widget.item.itemInstanceId, equipped);
-                        await LoadoutsService().saveLoadout(loadout);
-                      }));
-            }));
+        padding: EdgeInsets.only(
+            left: screenPadding.left, right: screenPadding.right),
+        child: Container(
+            padding: EdgeInsets.all(8),
+            child: RaisedButton(
+                child: TranslatedTextWidget("Add to Loadout"),
+                onPressed: () async {
+                  var loadouts = await LoadoutsService().getLoadouts();
+                  var equipped = false;
+                  showModalBottomSheet(
+                      context: context,
+                      builder: (context) => LoadoutSelectSheet(
+                          header: AsEquippedSwitchWidget(
+                            onChanged: (value) {
+                              equipped = value;
+                            },
+                          ),
+                          loadouts: loadouts,
+                          onSelect: (loadout) async {
+                            loadout.addItem(widget.item.itemHash,
+                                widget.item.itemInstanceId, equipped);
+                            await LoadoutsService().saveLoadout(loadout);
+                          }));
+                })));
   }
 
   Widget buildDuplicates(context) {
-    return ItemDetailDuplicatesWidget(
-      item,
-      definition,
-      instanceInfo,
-      duplicates: duplicates,
-    );
+    var screenPadding = MediaQuery.of(context).padding;
+    return Container(
+        padding: EdgeInsets.only(
+            left: screenPadding.left, right: screenPadding.right),
+        child: ItemDetailDuplicatesWidget(
+          item,
+          definition,
+          instanceInfo,
+          duplicates: duplicates,
+        ));
   }
 
   Widget buildCollectionsButton(BuildContext context) {
-    if(widget.hideItemManagement) return Container();
+    if (widget.hideItemManagement) return Container();
     if (widget.item == null) {
       return Container();
     }
+    var screenPadding = MediaQuery.of(context).padding;
     return Container(
-        padding: EdgeInsets.all(8),
-        child: RaisedButton(
-            child: TranslatedTextWidget("View in Collections"),
-            onPressed: () async {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ItemDetailScreen(
-                        definition:widget.definition,
+        padding: EdgeInsets.only(
+            left: screenPadding.left, right: screenPadding.right),
+        child: Container(
+            padding: EdgeInsets.all(8),
+            child: RaisedButton(
+                child: TranslatedTextWidget("View in Collections"),
+                onPressed: () async {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ItemDetailScreen(
+                        definition: widget.definition,
                         uniqueId: null,
                       ),
-                ),
-              );
-            }));
+                    ),
+                  );
+                })));
   }
 
   Widget buildObjectives(BuildContext context) {
     if ((definition?.objectives?.objectiveHashes?.length ?? 0) == 0) {
       return Container();
     }
-    return ItemObjectivesWidget(
-        item: item,
-        definition: definition,
-        instanceInfo: instanceInfo,
-        characterId: characterId,
-        key: Key("item_objectives_widget"));
+    var screenPadding = MediaQuery.of(context).padding;
+    return Container(
+        padding: EdgeInsets.only(
+            left: screenPadding.left, right: screenPadding.right),
+        child: ItemObjectivesWidget(
+            item: item,
+            definition: definition,
+            instanceInfo: instanceInfo,
+            characterId: characterId,
+            key: Key("item_objectives_widget")));
   }
 
   Widget buildRewards(BuildContext context) {
+    var screenPadding = MediaQuery.of(context).padding;
     return Container(
-        padding: EdgeInsets.all(8),
-        child: RewardsInfoWidget(item, definition, instanceInfo,
-            characterId: characterId, key: Key("item_rewards_widget")));
+        padding: EdgeInsets.only(
+            left: screenPadding.left, right: screenPadding.right),
+        child: Container(
+            padding: EdgeInsets.all(8),
+            child: RewardsInfoWidget(item, definition, instanceInfo,
+                characterId: characterId, key: Key("item_rewards_widget"))));
   }
 
   Widget buildStats(BuildContext context) {
-    return DetailsItemStatsWidget(item:item, definition:definition, 
-        socketController: socketController,
-        key: Key("stats_widget"));
+    var screenPadding = MediaQuery.of(context).padding;
+    return Container(
+        padding: EdgeInsets.only(
+            left: screenPadding.left, right: screenPadding.right),
+        child: DetailsItemStatsWidget(
+            item: item,
+            definition: definition,
+            socketController: socketController,
+            key: Key("stats_widget")));
   }
 
   Widget buildPerks(BuildContext context) {
@@ -353,34 +386,41 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
         (s) =>
             DestinyData.socketCategoryPerkHashes.contains(s.socketCategoryHash),
         orElse: () => null);
-    if(perksCategory == null) return Container();
+    if (perksCategory == null) return Container();
+    var screenPadding = MediaQuery.of(context).padding;
     return Container(
-      padding: EdgeInsets.all(8),
-        child: DetailsItemPerksWidget(
-      controller: socketController,
-      definition: definition,
-      item: item,
-      category: perksCategory,
-      key: Key('perks_widget'),
-    ));
+        padding: EdgeInsets.only(
+            left: screenPadding.left, right: screenPadding.right),
+        child: Container(
+            padding: EdgeInsets.all(8),
+            child: DetailsItemPerksWidget(
+              controller: socketController,
+              definition: definition,
+              item: item,
+              category: perksCategory,
+              key: Key('perks_widget'),
+            )));
   }
 
-
-Widget buildExoticPerk(BuildContext context) {
+  Widget buildExoticPerk(BuildContext context) {
     var exoticperkCategory = definition.sockets?.socketCategories?.firstWhere(
-        (s) =>
-            DestinyData.socketCategoryexoticIntrinsicPerkHashes.contains(s.socketCategoryHash),
+        (s) => DestinyData.socketCategoryexoticIntrinsicPerkHashes
+            .contains(s.socketCategoryHash),
         orElse: () => null);
-    if(exoticperkCategory == null) return Container();
+    if (exoticperkCategory == null) return Container();
+    var screenPadding = MediaQuery.of(context).padding;
     return Container(
-      padding: EdgeInsets.all(8),
-        child: DetailsItemArmorExoticPerkWidget(
-      controller: socketController,
-      definition: definition,
-      item: item,
-      category: exoticperkCategory,
-      key: Key('perks_widget'),
-    ));
+        padding: EdgeInsets.only(
+            left: screenPadding.left, right: screenPadding.right),
+        child: Container(
+            padding: EdgeInsets.all(8),
+            child: DetailsItemArmorExoticPerkWidget(
+              controller: socketController,
+              definition: definition,
+              item: item,
+              category: exoticperkCategory,
+              key: Key('perks_widget'),
+            )));
   }
 
   Widget buildArmorTier(BuildContext context) {
@@ -388,16 +428,20 @@ Widget buildExoticPerk(BuildContext context) {
         (s) =>
             DestinyData.socketCategoryTierHashes.contains(s.socketCategoryHash),
         orElse: () => null);
-    if(tierCategory == null) return Container();
+    if (tierCategory == null) return Container();
+    var screenPadding = MediaQuery.of(context).padding;
     return Container(
-      padding: EdgeInsets.all(8),
-        child: DetailsArmorTierWidget(
-      controller: socketController,
-      definition: definition,
-      item: item,
-      category: tierCategory,
-      key: Key('armor_tier_widget'),
-    ));
+        padding: EdgeInsets.only(
+            left: screenPadding.left, right: screenPadding.right),
+        child: Container(
+            padding: EdgeInsets.all(8),
+            child: DetailsArmorTierWidget(
+              controller: socketController,
+              definition: definition,
+              item: item,
+              category: tierCategory,
+              key: Key('armor_tier_widget'),
+            )));
   }
 
   Widget buildPerkDetails(BuildContext context) {
@@ -405,49 +449,60 @@ Widget buildExoticPerk(BuildContext context) {
         (s) =>
             DestinyData.socketCategoryPerkHashes.contains(s.socketCategoryHash),
         orElse: () => null);
-    if(perksCategory == null) return Container();
+    if (perksCategory == null) return Container();
+    var screenPadding = MediaQuery.of(context).padding;
     return Container(
-      padding: EdgeInsets.all(8),
-        child: ItemDetailsSocketDetailsWidget(
-      controller: socketController,
-      parentDefinition: definition,
-      item: item,
-      category: perksCategory,
-    ));
+        padding: EdgeInsets.only(
+            left: screenPadding.left, right: screenPadding.right),
+        child: Container(
+            padding: EdgeInsets.all(8),
+            child: ItemDetailsSocketDetailsWidget(
+              controller: socketController,
+              parentDefinition: definition,
+              item: item,
+              category: perksCategory,
+            )));
   }
 
   Widget buildExoticPerkDetails(BuildContext context) {
     var perksCategory = definition.sockets?.socketCategories?.firstWhere(
-        (s) =>
-            DestinyData.socketCategoryexoticIntrinsicPerkHashes.contains(s.socketCategoryHash),
+        (s) => DestinyData.socketCategoryexoticIntrinsicPerkHashes
+            .contains(s.socketCategoryHash),
         orElse: () => null);
-    if(perksCategory == null) return Container();
+    if (perksCategory == null) return Container();
+    var screenPadding = MediaQuery.of(context).padding;
     return Container(
-      padding: EdgeInsets.all(8),
-        child: ItemDetailsSocketDetailsWidget(
-      controller: socketController,
-      parentDefinition: definition,
-      item: item,
-      category: perksCategory,
-    ));
+        padding: EdgeInsets.only(
+            left: screenPadding.left, right: screenPadding.right),
+        child: Container(
+            padding: EdgeInsets.all(8),
+            child: ItemDetailsSocketDetailsWidget(
+              controller: socketController,
+              parentDefinition: definition,
+              item: item,
+              category: perksCategory,
+            )));
   }
-
 
   Widget buildMods(BuildContext context) {
     var modsCategory = definition.sockets?.socketCategories?.firstWhere(
         (s) =>
             DestinyData.socketCategoryModHashes.contains(s.socketCategoryHash),
         orElse: () => null);
-    if(modsCategory == null) return Container();
+    if (modsCategory == null) return Container();
+    var screenPadding = MediaQuery.of(context).padding;
     return Container(
-      padding: EdgeInsets.all(8),
-        child: DetailsItemModsWidget(
-      controller: socketController,
-      definition: definition,
-      item: item,
-      category: modsCategory,
-      key: Key('perks_widget'),
-    ));
+        padding: EdgeInsets.only(
+            left: screenPadding.left, right: screenPadding.right),
+        child: Container(
+            padding: EdgeInsets.all(8),
+            child: DetailsItemModsWidget(
+              controller: socketController,
+              definition: definition,
+              item: item,
+              category: modsCategory,
+              key: Key('perks_widget'),
+            )));
   }
 
   Widget buildModDetails(BuildContext context) {
@@ -455,74 +510,102 @@ Widget buildExoticPerk(BuildContext context) {
         (s) =>
             DestinyData.socketCategoryModHashes.contains(s.socketCategoryHash),
         orElse: () => null);
-    if(modsCategory == null) return Container();
+    if (modsCategory == null) return Container();
+    var screenPadding = MediaQuery.of(context).padding;
     return Container(
-      padding: EdgeInsets.all(8),
-        child: ItemDetailsSocketDetailsWidget(
-      controller: socketController,
-      parentDefinition: definition,
-      item: item,
-      category: modsCategory,
-    ));
+        padding: EdgeInsets.only(
+            left: screenPadding.left, right: screenPadding.right),
+        child: Container(
+            padding: EdgeInsets.all(8),
+            child: ItemDetailsSocketDetailsWidget(
+              controller: socketController,
+              parentDefinition: definition,
+              item: item,
+              category: modsCategory,
+            )));
   }
 
   Widget buildCosmetics(BuildContext context) {
     var modsCategory = definition.sockets?.socketCategories?.firstWhere(
-        (s) =>
-            DestinyData.socketCategoryCosmeticModHashes.contains(s.socketCategoryHash),
+        (s) => DestinyData.socketCategoryCosmeticModHashes
+            .contains(s.socketCategoryHash),
         orElse: () => null);
-    if(modsCategory == null) return Container();
+    if (modsCategory == null) return Container();
+    var screenPadding = MediaQuery.of(context).padding;
     return Container(
-      padding: EdgeInsets.all(8),
-        child: DetailsItemModsWidget(
-      controller: socketController,
-      definition: definition,
-      item: item,
-      category: modsCategory,
-      key: Key('perks_widget'),
-    ));
+        padding: EdgeInsets.only(
+            left: screenPadding.left, right: screenPadding.right),
+        child: Container(
+            padding: EdgeInsets.all(8),
+            child: DetailsItemModsWidget(
+              controller: socketController,
+              definition: definition,
+              item: item,
+              category: modsCategory,
+              key: Key('perks_widget'),
+            )));
   }
 
   Widget buildCosmeticDetails(BuildContext context) {
     var modsCategory = definition.sockets?.socketCategories?.firstWhere(
-        (s) =>
-            DestinyData.socketCategoryCosmeticModHashes.contains(s.socketCategoryHash),
+        (s) => DestinyData.socketCategoryCosmeticModHashes
+            .contains(s.socketCategoryHash),
         orElse: () => null);
-    if(modsCategory == null) return Container();
+    if (modsCategory == null) return Container();
+    var screenPadding = MediaQuery.of(context).padding;
     return Container(
-      padding: EdgeInsets.all(8),
-        child: ItemDetailsSocketDetailsWidget(
-      controller: socketController,
-      parentDefinition: definition,
-      item: item,
-      category: modsCategory,
-    ));
+        padding: EdgeInsets.only(
+            left: screenPadding.left, right: screenPadding.right),
+        child: Container(
+            padding: EdgeInsets.all(8),
+            child: ItemDetailsSocketDetailsWidget(
+              controller: socketController,
+              parentDefinition: definition,
+              item: item,
+              category: modsCategory,
+            )));
   }
 
   Widget buildQuestInfo(BuildContext context) {
     if (definition?.itemType == DestinyItemType.QuestStep) {
+      var screenPadding = MediaQuery.of(context).padding;
       return Container(
-          child: QuestInfoWidget(
-              item: item,
-              definition: definition,
-              instanceInfo: instanceInfo,
-              key: Key("quest_info"),
-              characterId: characterId));
+          padding: EdgeInsets.only(
+              left: screenPadding.left, right: screenPadding.right),
+          child: Container(
+              child: QuestInfoWidget(
+                  item: item,
+                  definition: definition,
+                  instanceInfo: instanceInfo,
+                  key: Key("quest_info"),
+                  characterId: characterId)));
     }
     return Container();
   }
 
   buildLore(BuildContext context) {
     if (definition?.loreHash == null) return Container();
-    return ItemLoreWidget(definition.loreHash);
+    var screenPadding = MediaQuery.of(context).padding;
+    return Container(
+        padding: EdgeInsets.only(
+            left: screenPadding.left, right: screenPadding.right),
+        child: ItemLoreWidget(definition.loreHash));
   }
 
   buildCollectibleInfo(BuildContext context) {
     if (definition?.collectibleHash == null) return Container();
-    return ItemCollectibleInfoWidget(definition.collectibleHash);
+    var screenPadding = MediaQuery.of(context).padding;
+    return Container(
+        padding: EdgeInsets.only(
+            left: screenPadding.left, right: screenPadding.right),
+        child: ItemCollectibleInfoWidget(definition.collectibleHash));
   }
 
   buildRecipesInfo(BuildContext context) {
-    return ChaliceRecipeWidget(definition);
+    var screenPadding = MediaQuery.of(context).padding;
+    return Container(
+        padding: EdgeInsets.only(
+            left: screenPadding.left, right: screenPadding.right),
+        child: ChaliceRecipeWidget(definition));
   }
 }

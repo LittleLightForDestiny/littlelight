@@ -134,7 +134,7 @@
     "You aren't tracking any objectives yet. Add one from Triumphs or Pursuits.": "아직 추적 중인 목표가 없습니다. 업적이나 목표에서 하나를 추가하십시오.",
     "Rewards": "보상",
     "Expired": "기한 종료",
-    "Expires {timeFromNow}": "종료되기까지 {timeFromNow}",
+    "Expires {timeFromNow}": "Expires {timeFromNow}",
     "Loadouts": "로드아웃",
     "You have no loadouts yet. Create your first one.": "아직 아무런 로드아웃이 없습니다. 첫번째 로드아웃을 만드십시오.",
     "Create Loadout": "로드아웃 생성",
@@ -203,5 +203,7 @@
     "Evasion": "Evasion",
     "Summon": "Summon",
     "Consecrated Mind": "Consecrated Mind",
-    "Sanctified Mind": "Sanctified Mind"
+    "Sanctified Mind": "Sanctified Mind",
+    "Energy Cost": "Energy Cost",
+    "View in Collections": "View in Collections"
 }

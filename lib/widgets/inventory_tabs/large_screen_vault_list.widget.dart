@@ -42,10 +42,11 @@ class LargeScreenVaultListWidgetState
 
   @override
   Widget build(BuildContext context) {
+    var screenPadding = MediaQuery.of(context).padding;
     return VaultItemListWidget(
       key: Key("vault_inventory"),
       padding:
-          EdgeInsets.only(top: getListTopOffset(context), left: 2, right: 2),
+          EdgeInsets.only(top: getListTopOffset(context), left: 2 + screenPadding.left, right: 2 + screenPadding.right),
       bucketHashes: bucketHashes,
     );
   }
