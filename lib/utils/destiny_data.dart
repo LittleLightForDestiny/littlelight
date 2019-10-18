@@ -173,6 +173,10 @@ class DestinyData {
     4241085061, //weapon perks
   ];
 
+  static const socketCategoryexoticIntrinsicPerkHashes = [
+    3154740035 //armor perks
+  ];
+
   static const List<int> socketCategoryTierHashes = [
     760375309, // armor tier
   ];
@@ -187,6 +191,11 @@ class DestinyData {
     3954618873, // clan staves
     4243480345, //vehicle mods
     4265082475, //vehicle mods
+  ];
+
+  static const List<int> socketCategoryCosmeticModHashes = [
+    1926152773, // armor cosmetics
+    2048875504, // weapon mods
   ];
 
   static int get minPowerLevel {
@@ -280,6 +289,30 @@ class DestinyData {
         return Color.fromARGB(255, 64, 34, 101);
     }
     return Colors.white;
+  }
+
+  static Color getEnergyTypeLightColor(int damageType) {
+    switch (damageType) {
+      case DestinyEnergyType.Arc:
+        return Color.fromARGB(255, 130, 200, 253);
+      case DestinyEnergyType.Thermal:
+        return Color.fromARGB(255, 255, 156, 74);
+      case DestinyEnergyType.Void:
+        return Color.fromARGB(255, 177, 120, 248);
+    }
+    return Colors.white;
+  }
+
+  static int getEnergyTypeCostHash(int damageType) {
+    switch (damageType) {
+      case DestinyEnergyType.Arc:
+        return 3779394102;
+      case DestinyEnergyType.Thermal:
+        return 3344745325;
+      case DestinyEnergyType.Void:
+        return 2399985800;
+    }
+    return 0;
   }
 
   static Color getDamageTypeTextColor(int damageType) {

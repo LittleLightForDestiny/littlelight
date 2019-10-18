@@ -34,6 +34,7 @@ class ScreenshotItemStatWidget extends BaseItemStatWidget {
       child: ManifestText<DestinyStatDefinition>(
         statHash,
         style: TextStyle(
+          shadows: [Shadow(color: Colors.black, offset: Offset.fromDirection(.5), blurRadius: 5*pixelSize)],
           color: nameColor,
           fontSize: pixelSize * 20,
           fontWeight: FontWeight.w300,
@@ -49,6 +50,7 @@ class ScreenshotItemStatWidget extends BaseItemStatWidget {
       child: Text(
         "$currentValue",
         style: TextStyle(
+          shadows: [Shadow(color: Colors.black, offset: Offset.fromDirection(.5), blurRadius: 5*pixelSize)],
           color: valueColor,
           fontSize: pixelSize * 20,
           fontWeight: FontWeight.bold,

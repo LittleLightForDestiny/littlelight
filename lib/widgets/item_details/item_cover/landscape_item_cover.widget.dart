@@ -19,6 +19,7 @@ import 'package:little_light/widgets/common/base/base_destiny_stateless_item.wid
 import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/item_sockets/item_socket.controller.dart';
 import 'package:little_light/widgets/item_sockets/screenshot_armor_tier.widget.dart';
+import 'package:little_light/widgets/item_sockets/screenshot_item_exotic_intrinsic_perks.widget.dart';
 import 'package:little_light/widgets/item_sockets/screenshot_item_mods.widget.dart';
 import 'package:little_light/widgets/item_sockets/screenshot_item_perks.widget.dart';
 import 'package:little_light/widgets/item_sockets/screenshot_socket_details.widget.dart';
@@ -193,14 +194,15 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
     return Positioned(
         top: convertSize(96.0 * 2.4 + 1080 * (expandRatio - 1), context),
         left: convertSize(862, context),
-        child: 
-        Opacity(opacity: expandRatio, child:Container(
-            width: convertSize(600, context),
-            child: ScreenshotSocketDetailsWidget(
-                item: item,
-                parentDefinition: definition,
-                pixelSize: pixelSize(context),
-                controller: socketController))));
+        child: Opacity(
+            opacity: expandRatio,
+            child: Container(
+                width: convertSize(600, context),
+                child: ScreenshotSocketDetailsWidget(
+                    item: item,
+                    parentDefinition: definition,
+                    pixelSize: pixelSize(context),
+                    controller: socketController))));
   }
 
   Widget leftColumn(BuildContext context, double expandRatio) {
@@ -215,6 +217,10 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
     var modsCategory = definition.sockets?.socketCategories?.firstWhere(
         (s) =>
             DestinyData.socketCategoryModHashes.contains(s.socketCategoryHash),
+        orElse: () => null);
+    var exoticIntrinsicPerkCategory = definition.sockets?.socketCategories?.firstWhere(
+        (s) =>
+            DestinyData.socketCategoryexoticIntrinsicPerkHashes.contains(s.socketCategoryHash),
         orElse: () => null);
     return Positioned(
         top: convertSize(96.0 * 2.4 + 1080 * (expandRatio - 1), context),
@@ -264,13 +270,22 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
                   height: convertSize(16, context),
                 ),
                 Container(
-                  height: convertSize(16, context),
-                ),
-                Container(
                     width: convertSize(730, context),
                     child: ScreenShotItemModsWidget(
                       controller: socketController,
                       category: modsCategory,
+                      definition: definition,
+                      item: item,
+                      pixelSize: pixelSize(context),
+                    )),
+                Container(
+                  height: convertSize(16, context),
+                ),
+                Container(
+                    width: convertSize(730, context),
+                    child: ScreenShotItemExoticIntrinsicPerksWidget(
+                      controller: socketController,
+                      category: exoticIntrinsicPerkCategory,
                       definition: definition,
                       item: item,
                       pixelSize: pixelSize(context),

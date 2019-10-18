@@ -1,9 +1,11 @@
 import 'dart:math';
 
+import 'package:bungie_api/enums/destiny_energy_type_enum.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_socket_category_definition.dart';
 import 'package:bungie_api/models/destiny_socket_category_definition.dart';
+import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/media_query_helper.dart';
@@ -61,26 +63,6 @@ class DetailsItemPerksWidgetState<T extends DetailsItemModsWidget>
 
   Widget buildDetailsSwitch(BuildContext context) {
     return Container();
-    // return Row(
-    //   children: <Widget>[
-    //     TranslatedTextWidget(
-    //       "Details",
-    //       uppercase: true,
-    //       style: TextStyle(fontWeight: FontWeight.bold),
-    //     ),
-    //     Container(
-    //       width: 4,
-    //     ),
-    //     SmallerSwitch(
-    //       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-    //       value: showDetails,
-    //       onChanged: (value) {
-    //         showDetails = value;
-    //         setState(() {});
-    //       },
-    //     )
-    //   ],
-    // );
   }
 
   @override
@@ -209,6 +191,7 @@ class DetailsItemPerksWidgetState<T extends DetailsItemModsWidget>
     BorderSide borderSide = BorderSide(color: borderColor, width: 2);
 
     return Container(
+        key:Key("item_mod_$plugItemHash"),
         padding: EdgeInsets.all(0),
         margin: EdgeInsets.only(bottom: 8),
         child: FlatButton(
@@ -236,14 +219,44 @@ class DetailsItemPerksWidgetState<T extends DetailsItemModsWidget>
   Widget buildPlugIcon(
       BuildContext context, int socketIndex, int plugItemHash) {
     if (plugDefinitions == null) return Container();
+    var def = controller.plugDefinitions[plugItemHash];
+    var energyType = def?.plug?.energyCost?.energyType ?? DestinyEnergyType.Any;
+    var energyCost = def?.plug?.energyCost?.energyCost ?? 0;
+    var canEquip = controller?.canEquip(socketIndex, plugItemHash);
+    var selectedSocketIndex = controller.selectedSocketIndex;
+    bool selected = selectedSocketIndex == socketIndex;
     return Container(
+        key:Key("item_mod_$plugItemHash"),
         child: AspectRatio(
             aspectRatio: 1,
             child: FlatButton(
               padding: EdgeInsets.all(0),
-              shape: ContinuousRectangleBorder(side: BorderSide(color: Colors.grey.shade400, width: 1.5)),
-              child: ManifestImageWidget<DestinyInventoryItemDefinition>(
-                  plugItemHash),
+              shape: ContinuousRectangleBorder(side: BorderSide(color: selected ? Colors.white : Colors.grey.shade300.withOpacity(.5), width: 1.5)),
+              child: Stack(children: [
+                ManifestImageWidget<DestinyInventoryItemDefinition>(
+                    plugItemHash),
+                energyType == DestinyEnergyType.Any
+                    ? Container()
+                    : Positioned.fill(
+                        child: ManifestImageWidget<DestinyStatDefinition>(
+                            DestinyData.getEnergyTypeCostHash(energyType))),
+                energyCost == 0
+                    ? Container()
+                    : Positioned(
+                        top: 4,
+                        right: 4,
+                        child: Text(
+                          "$energyCost",
+                          style: TextStyle(fontSize: 12),
+                        )),
+                canEquip
+                    ? Container()
+                    : Positioned.fill(
+                        child: Container(
+                          color: Colors.black.withOpacity(.5),
+                        ),
+                      )
+              ]),
               onPressed: () {
                 controller.selectSocket(socketIndex, plugItemHash);
               },

@@ -17,13 +17,13 @@ class VendorsListWidget extends StatefulWidget {
   final ManifestService manifest = ManifestService();
   final VendorsService service = VendorsService();
   final List<int> ignoreVendorHashes = const [
-    1976548992, //ikora
     997622907, //prismatic matrix
     2255782930, //master Rahool
   ];
 
   final List<int> vendorPriority = const [
     2190858386, //Xur
+    672118013, //Banshee
     863940356, //Spider
   ];
 

@@ -479,7 +479,6 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
       var item = allItems.firstWhere((i) => i.itemInstanceId == j);
       var itemDef = await widget.manifest
           .getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
-      print(itemDef.displayProperties.name);
       randomLoadout.addEquippedItem(item, itemDef);
     }
 

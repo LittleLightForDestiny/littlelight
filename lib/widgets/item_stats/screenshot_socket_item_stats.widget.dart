@@ -37,22 +37,22 @@ class ScreenShotSocketItemStatsState
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Column(
+    var statWidgets = buildStats(context);
+    if(statWidgets.length == 0) return Container();
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 8*widget.pixelSize),
+      child:Column(
       mainAxisAlignment: MainAxisAlignment.end,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: buildStats(context),
-    );
+    ));
   }
 
   List<Widget> buildStats(context) {
-    if ((stats?.length ?? 0) == 0) return [Container()];
+    if ((stats?.length ?? 0) == 0) return [];
     Map<int, StatValues> statValues = getStatValues();
-    return <Widget>[Container(
-              margin: EdgeInsets.symmetric(vertical: widget.pixelSize * 16),
-              color: Colors.white,
-              height: widget.pixelSize)].followedBy(stats.map((stat) {
+    return stats.map((stat) {
       var entry = statValues[stat.statTypeHash];
-
       return ScreenshotSocketItemStatWidget(
         key: Key("stat_${stat.statTypeHash}"),
         statHash: stat.statTypeHash,
@@ -62,7 +62,7 @@ class ScreenShotSocketItemStatsState
             (s) => s.statHash == stat.statTypeHash,
             orElse: () => null),
       );
-    })).toList();
+    }).toList();
   }
 
   Iterable<DestinyItemInvestmentStatDefinition> get stats {

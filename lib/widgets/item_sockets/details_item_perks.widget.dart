@@ -140,7 +140,7 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
   @override
   Widget buildSocketPlugs(BuildContext context, int socketIndex) {
     var plugs = socketPlugHashes(socketIndex);
-    if (plugs.length == 0) return null;
+    if ((plugs?.length ?? 0) == 0) return null;
     var mq = MediaQueryHelper(context);
     if (mq.isDesktop || (mq.tabletOrBigger && mq.isLandscape)) {
       return Expanded(
@@ -174,8 +174,16 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
 
 
   @override
-  Set<int> socketPlugHashes(int socketIndex){
-    return controller.socketPlugHashes(socketIndex)?.followedBy(controller.randomizedPlugHashes(socketIndex))?.toSet() ?? Set();
+  Set<int> socketPlugHashes(int socketIndex) {
+    if (item == null) {
+      var isRandom = controller.randomizedPlugHashes(socketIndex).length > 0;
+      if (isRandom) {
+        return controller
+            .bungieRollPlugHashes(socketIndex)
+            .followedBy([controller.socketRandomizedSelectedPlugHash(socketIndex)]).toSet();
+      }
+    }
+    return super.socketPlugHashes(socketIndex);
   }
 
   Widget buildPlugCategoryTitle(BuildContext context, int socketIndex) {
@@ -239,6 +247,7 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
     BorderSide borderSide = BorderSide(color: borderColor, width: 2);
 
     return Container(
+        key:Key("item_perk_$plugItemHash"),
         padding: EdgeInsets.all(0),
         margin: EdgeInsets.only(bottom: 8),
         child: FlatButton(
@@ -291,6 +300,7 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
     BorderSide borderSide = BorderSide(color: borderColor, width: 2);
 
     return Container(
+        key:Key("item_perk_$plugItemHash"),
         padding: EdgeInsets.all(0),
         margin: EdgeInsets.only(bottom: 8),
         child: AspectRatio(

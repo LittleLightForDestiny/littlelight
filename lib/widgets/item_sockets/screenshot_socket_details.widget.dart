@@ -1,28 +1,31 @@
 import 'package:bungie_api/enums/destiny_energy_type_enum.dart';
 import 'package:bungie_api/enums/item_perk_visibility_enum.dart';
 import 'package:bungie_api/enums/tier_type_enum.dart';
-import 'package:bungie_api/models/destiny_energy_type_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
+import 'package:bungie_api/models/destiny_material_requirement_set_definition.dart';
 import 'package:bungie_api/models/destiny_sandbox_perk_definition.dart';
+import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/utils/destiny_data.dart';
+import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
+import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/item_sockets/base_socket_details.widget.dart';
-import 'package:little_light/widgets/item_sockets/item_socket.controller.dart';
 import 'package:little_light/widgets/item_stats/screenshot_socket_item_stats.widget.dart';
 
+import 'item_socket.controller.dart';
+
 class ScreenshotSocketDetailsWidget extends BaseSocketDetailsWidget {
-  final ItemSocketController controller;
   final double pixelSize;
   ScreenshotSocketDetailsWidget(
       {DestinyItemComponent item,
       DestinyInventoryItemDefinition parentDefinition,
-      this.controller,
+      ItemSocketController controller,
       this.pixelSize})
-      : super(item: item, definition: parentDefinition);
+      : super(item: item, definition: parentDefinition, controller: controller);
 
   @override
   _ScreenshotPerkDetailsWidgetState createState() =>
@@ -32,51 +35,10 @@ class ScreenshotSocketDetailsWidget extends BaseSocketDetailsWidget {
 class _ScreenshotPerkDetailsWidgetState
     extends BaseSocketDetailsWidgetState<ScreenshotSocketDetailsWidget> {
   int _currentPage = 0;
-  ItemSocketController get controller => widget.controller;
-  DestinyInventoryItemDefinition _definition;
-  DestinyInventoryItemDefinition get definition => _definition;
-  DestinyInventoryItemDefinition get itemDefinition => widget.definition;
-  Map<int, DestinySandboxPerkDefinition> _sandboxPerkDefinitions;
-  int armorEnergyType;
-
-  @override
-  void initState() {
-    controller.addListener(socketChanged);
-    super.initState();
-  }
-
-  void dispose() {
-    controller.removeListener(socketChanged);
-    super.dispose();
-  }
-
-  socketChanged() async {
-    await this.loadDefinitions();
-  }
-
-  @override
-  loadDefinitions() async {
-    super.loadDefinitions();
-    if ((controller.selectedPlugHash ?? 0) == 0) {
-      _definition = null;
-      if (mounted) {
-        setState(() {});
-      }
-      return;
-    }
-    _definition = await widget.manifest
-        .getDefinition<DestinyInventoryItemDefinition>(
-            controller.selectedPlugHash);
-    _sandboxPerkDefinitions = await widget.manifest
-        .getDefinitions<DestinySandboxPerkDefinition>(
-            _definition?.perks?.map((p) => p.perkHash)?.toList() ?? []);
-
-    super.loadDefinitions();
-  }
 
   @override
   Widget build(BuildContext context) {
-    if (_definition == null) return Container();
+    if (definition == null) return Container();
     return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
@@ -108,10 +70,51 @@ class _ScreenshotPerkDetailsWidgetState
                 ],
               )),
           Container(
-              padding: EdgeInsets.all(16 * widget.pixelSize),
+              padding: EdgeInsets.symmetric(
+                  horizontal: 16 * widget.pixelSize,
+                  vertical: 8 * widget.pixelSize),
               color: Colors.black.withOpacity(.7),
-              child: buildContent(context))
+              child: buildContent(context)),
+          buildResourceCost(context)
         ]);
+  }
+
+  Widget buildResourceCost(BuildContext context) {
+    var requirementHash = definition?.plug?.insertionMaterialRequirementHash;
+    if (requirementHash != null) {
+      return DefinitionProviderWidget<DestinyMaterialRequirementSetDefinition>(
+          requirementHash,
+          (def) => Container(
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(.7),
+                border: Border(top: BorderSide(color: Colors.grey.shade500, width: 1)),
+              ),
+              padding: EdgeInsets.all(16 * widget.pixelSize),
+              child: Column(
+                children: def.materials
+                .where((m)=>(m.count ?? 0) > 0)
+                .map((m) {
+                  return Row(
+                    children: <Widget>[
+                      Container(
+                          width: 20,
+                          height: 20,
+                          child: ManifestImageWidget<
+                              DestinyInventoryItemDefinition>(m.itemHash)),
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.only(left:8*widget.pixelSize),
+                          child:ManifestText<
+                              DestinyInventoryItemDefinition>(m.itemHash, style: TextStyle(fontWeight: FontWeight.w300),),
+                        ),
+                      ),
+                      Text("${m.count}", style:TextStyle(fontWeight: FontWeight.w300))
+                    ],
+                  );
+                }).toList(),
+              )), key:Key("material_requirements_$requirementHash"));
+    }
+    return Container();
   }
 
   Widget buildOptions(BuildContext context) {
@@ -119,8 +122,19 @@ class _ScreenshotPerkDetailsWidgetState
     var cat = itemDefinition?.sockets?.socketCategories?.firstWhere(
         (s) => s?.socketIndexes?.contains(index),
         orElse: () => null);
+    
+    var isExoticPerk =
+        DestinyData.socketCategoryexoticIntrinsicPerkHashes.contains(cat?.socketCategoryHash);
+    if(isExoticPerk){
+      return Container();
+    }
+
     var isPerk =
         DestinyData.socketCategoryPerkHashes.contains(cat?.socketCategoryHash);
+        
+    if(isPerk && controller.item != null){
+      return Container();
+    }
     if (isPerk) {
       return buildRandomPerks(context);
     }
@@ -129,6 +143,7 @@ class _ScreenshotPerkDetailsWidgetState
 
   Widget buildReusableMods(BuildContext context) {
     var plugs = controller.socketPlugHashes(controller.selectedSocketIndex);
+    if((plugs?.length ?? 0) <= 1) return Container();
     int maxPage = ((plugs.length - 1) / 10).floor();
     var page = _currentPage.clamp(0, maxPage);
     _currentPage = page;
@@ -137,8 +152,9 @@ class _ScreenshotPerkDetailsWidgetState
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
       pagingButton(context, -1, page > 0),
       Container(
-          width: 520 * widget.pixelSize,
+          width: 521 * widget.pixelSize,
           child: Wrap(
+            alignment: WrapAlignment.start,
             runSpacing: 10 * widget.pixelSize,
             spacing: 10 * widget.pixelSize,
             children: plugs
@@ -206,6 +222,8 @@ class _ScreenshotPerkDetailsWidgetState
         BorderSide(color: borderColor, width: 3 * widget.pixelSize);
     var def = controller.plugDefinitions[plugItemHash];
     var energyType = def?.plug?.energyCost?.energyType ?? DestinyEnergyType.Any;
+    var energyCost = def?.plug?.energyCost?.energyCost ?? 0;
+    var canEquip = controller?.canEquip(socketIndex, plugItemHash);
     return Container(
         width: 96 * widget.pixelSize,
         key: Key("plug_${socketIndex}_$plugItemHash"),
@@ -220,16 +238,23 @@ class _ScreenshotPerkDetailsWidgetState
                     plugItemHash),
                 energyType == DestinyEnergyType.Any
                     ? Container()
+                    : Positioned.fill(
+                        child: ManifestImageWidget<DestinyStatDefinition>(
+                          DestinyData.getEnergyTypeCostHash(energyType)
+                        )),
+                energyCost == 0
+                    ? Container()
                     : Positioned(
                         top: 8 * widget.pixelSize,
                         right: 8 * widget.pixelSize,
-                        child: Icon(
-                          DestinyData.getEnergyTypeIcon(energyType),
-                          size: 24 * widget.pixelSize,
-                          color: DestinyData.getEnergyTypeColor(energyType),
-                        ))
+                        child: Text(
+                          "$energyCost",
+                          style: TextStyle(fontSize: 20*widget.pixelSize),
+                        )),
+              canEquip ? Container(): Positioned.fill(child: Container(color: Colors.black.withOpacity(.5),),)
               ]),
               onPressed: () {
+                
                 controller.selectSocket(socketIndex, plugItemHash);
               },
             )));
@@ -278,7 +303,6 @@ class _ScreenshotPerkDetailsWidgetState
               child: ManifestImageWidget<DestinyInventoryItemDefinition>(
                   plugItemHash),
               onPressed: () {
-                print("$socketIndex $plugItemHash");
                 controller.selectSocket(socketIndex, plugItemHash);
               },
             )));
@@ -287,33 +311,78 @@ class _ScreenshotPerkDetailsWidgetState
   buildContent(BuildContext context) {
     Iterable<Widget> items = [
       buildDescription(context),
+      buildEnergyCost(context),
       buildSandBoxPerks(context),
-      ScreenShotSocketItemStatsWidget(
-        plugDefinition: definition,
-        definition: itemDefinition,
-        item: item,
-        pixelSize: widget.pixelSize,
-        socketController: widget.controller,
-      ),
+      buildStats(context),
     ];
     return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: items.toList());
   }
 
-  buildDescription(BuildContext context) {
+  Widget buildDescription(BuildContext context) {
     if ((definition?.displayProperties?.description?.length ?? 0) == 0)
       return Container();
-    return Text(definition?.displayProperties?.description,
-        style: TextStyle(
-            fontSize: 24 * widget.pixelSize, fontWeight: FontWeight.w300));
+    return Container(
+        padding: EdgeInsets.symmetric(vertical: 8 * widget.pixelSize),
+        child: Text(definition?.displayProperties?.description,
+            style: TextStyle(
+                fontSize: 24 * widget.pixelSize, fontWeight: FontWeight.w300)));
   }
 
-  buildSandBoxPerks(BuildContext context) {
-    if (_sandboxPerkDefinitions == null) return Container();
+  @override
+  Widget buildEnergyCost(BuildContext context) {
+    var cost = definition?.plug?.energyCost;
+    if (cost != null) {
+      var color = DestinyData.getEnergyTypeLightColor(cost.energyType);
+      var icon = cost.energyType == DestinyEnergyType.Any
+          ? Container()
+          : Icon(
+              DestinyData.getEnergyTypeIcon(cost.energyType),
+              color: color,
+              size: 32 * widget.pixelSize,
+            );
+      var value = Container(
+          padding: EdgeInsets.all(8 * widget.pixelSize),
+          child: Text("${cost.energyCost}",
+              style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 50 * widget.pixelSize,
+                  color: color)));
+      var description = TranslatedTextWidget(
+        "Energy Cost",
+        uppercase: true,
+        style: TextStyle(
+            fontWeight: FontWeight.w300, fontSize: widget.pixelSize * 26),
+      );
+      return Row(children: <Widget>[icon, value, description]);
+    }
+    return Container();
+  }
+
+  @override
+  Widget buildStats(BuildContext context) {
+    if (!shouldShowStats) return Container();
+    return Column(children: [
+      Divider(
+        thickness: 1 * widget.pixelSize,
+        color: Colors.white,
+      ),
+      ScreenShotSocketItemStatsWidget(
+        plugDefinition: definition,
+        definition: itemDefinition,
+        item: item,
+        pixelSize: widget.pixelSize,
+        socketController: widget.controller,
+      )
+    ]);
+  }
+
+  Widget buildSandBoxPerks(BuildContext context) {
+    if (sandboxPerkDefinitions == null) return Container();
     var perks = definition?.perks?.where((p) {
       if (p.perkVisibility != ItemPerkVisibility.Visible) return false;
-      var def = _sandboxPerkDefinitions[p.perkHash];
+      var def = sandboxPerkDefinitions[p.perkHash];
       if ((def?.isDisplayable ?? false) == false) return false;
       return true;
     });
@@ -321,8 +390,8 @@ class _ScreenshotPerkDetailsWidgetState
     return Column(
       children: perks
           ?.map((p) => Container(
-              padding: EdgeInsets.only(
-                top: 16 * widget.pixelSize,
+              padding: EdgeInsets.symmetric(
+                vertical: 8 * widget.pixelSize,
               ),
               child: Row(
                 key: Key("mod_perk_${p.perkHash}"),
