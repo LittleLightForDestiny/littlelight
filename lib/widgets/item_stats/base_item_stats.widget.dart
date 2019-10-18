@@ -29,7 +29,7 @@ class BaseItemStatsWidget extends BaseDestinyStatefulItemWidget {
 
 class BaseItemStatsState<T extends BaseItemStatsWidget>
     extends BaseDestinyItemState<T> with AutomaticKeepAliveClientMixin {
-  Map<int, DestinyInventoryItemDefinition> plugDefinitions;
+  Map<int, DestinyInventoryItemDefinition> get plugDefinitions => socketController.plugDefinitions;
   Map<String, DestinyStat> precalculatedStats;
   List<DestinyItemSocketState> socketStates;
 
@@ -50,7 +50,6 @@ class BaseItemStatsState<T extends BaseItemStatsWidget>
     
     socketStates = widget.profile.getItemSockets(item?.itemInstanceId);
     super.initState();
-    loadPlugDefinitions();
     loadStatGroupDefinition();
     initializeSocketController();
   }
@@ -67,28 +66,6 @@ class BaseItemStatsState<T extends BaseItemStatsWidget>
 
   update() {
     setState(() {});
-  }
-
-  Future<void> loadPlugDefinitions() async {
-    List<int> plugHashes;
-    if (socketStates != null) {
-      plugHashes = socketStates
-          .expand(
-              (state) => [state.plugHash].followedBy(state.reusablePlugHashes))
-          .where((i) => i != null && i != 0)
-          .toList();
-    } else {
-      plugHashes = definition.sockets.socketEntries
-          .expand((socket) => [socket.singleInitialItemHash]
-              .followedBy(socket.reusablePlugItems.map((p) => p.plugItemHash)))
-          .where((i) => i != null && i!=0)
-          .toList();
-    }
-    plugDefinitions = await widget.manifest
-        .getDefinitions<DestinyInventoryItemDefinition>(plugHashes);
-    if (mounted) {
-      setState(() {});
-    }
   }
 
   Future loadStatGroupDefinition() async {
@@ -175,14 +152,7 @@ class BaseItemStatsState<T extends BaseItemStatsWidget>
           equipped: s.value, selected: s.value, precalculated: pre);
     });
 
-    List<int> plugHashes;
-    if (socketStates != null) {
-      plugHashes = socketStates.map((state) => state.plugHash).toList();
-    } else {
-      plugHashes = definition.sockets.socketEntries
-          .map((plug) => plug.singleInitialItemHash)
-          .toList();
-    }
+    List<int> plugHashes = List.generate(socketController.socketCount, (i)=>socketController.socketEquippedPlugHash(i));
 
     plugHashes.forEach((plugHash) {
       int index = plugHashes.indexOf(plugHash);
@@ -196,7 +166,9 @@ class BaseItemStatsState<T extends BaseItemStatsWidget>
       def?.investmentStats?.forEach((stat) {
         StatValues values = map[stat.statTypeHash] ?? new StatValues();
         if (def.plug?.uiPlugLabel == 'masterwork') {
-          values.masterwork += stat.value;
+          if (selectedDef == null) {
+            values.masterwork += stat.value;
+          }
         } else {
           values.equipped += stat.value;
           if (selectedDef == null) {
@@ -209,7 +181,9 @@ class BaseItemStatsState<T extends BaseItemStatsWidget>
       if (selectedDef != null) {
         selectedDef.investmentStats.forEach((stat) {
           StatValues values = map[stat.statTypeHash] ?? new StatValues();
-          if (selectedDef.plug?.uiPlugLabel != 'masterwork') {
+          if (selectedDef.plug?.uiPlugLabel == 'masterwork') {
+            values.masterwork += stat.value;
+          }else{
             values.selected += stat.value;
           }
           map[stat.statTypeHash] = values;

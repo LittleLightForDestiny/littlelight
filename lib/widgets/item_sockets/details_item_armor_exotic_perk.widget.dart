@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:bungie_api/enums/tier_type_enum.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
@@ -5,20 +7,22 @@ import 'package:bungie_api/models/destiny_item_socket_category_definition.dart';
 import 'package:bungie_api/models/destiny_socket_category_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/utils/destiny_data.dart';
+import 'package:little_light/utils/media_query_helper.dart';
+import 'package:little_light/widgets/common/definition_provider.widget.dart';
+import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
+import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/item_sockets/base_item_sockets.widget.dart';
 import 'package:little_light/widgets/item_sockets/item_socket.controller.dart';
 
-class ScreenShotItemPerksWidget extends BaseItemSocketsWidget {
-  final double pixelSize;
-  ScreenShotItemPerksWidget({
+class DetailsItemArmorExoticPerkWidget extends BaseItemSocketsWidget {
+  DetailsItemArmorExoticPerkWidget({
     Key key,
     DestinyItemComponent item,
     DestinyInventoryItemDefinition definition,
     DestinyItemSocketCategoryDefinition category,
     ItemSocketController controller,
-    this.pixelSize = 1,
   }) : super(
             key: key,
             item: item,
@@ -28,102 +32,88 @@ class ScreenShotItemPerksWidget extends BaseItemSocketsWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return ScreenShotItemPerksWidgetState();
+    return DetailsItemArmorExoticPerkWidgetState();
   }
 }
 
-class ScreenShotItemPerksWidgetState<T extends ScreenShotItemPerksWidget>
+class DetailsItemArmorExoticPerkWidgetState<T extends DetailsItemArmorExoticPerkWidget>
     extends BaseItemSocketsWidgetState<T> {
+  bool showDetails = false;
+
   @override
   Widget build(BuildContext context) {
-    if (category == null) return Container();
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        buildHeader(context),
-        buildSockets(context),
-      ],
-    );
+     if (category == null) return Container();
+     Iterable<int> plugs = category.socketIndexes
+        .map((socketIndex) => socketPlugHashes(socketIndex).length)
+        .where((l) => l > 0);
+    if(plugs.length == 0) return Container();
+    return super.build(context);
   }
 
   Widget buildHeader(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        ManifestText<DestinySocketCategoryDefinition>(
-          category.socketCategoryHash,
-          style: TextStyle(
-            fontSize: 24 * widget.pixelSize,
-            fontWeight: FontWeight.w400,
-            color: Colors.white.withOpacity(.7),
-          ),
-        ),
-        Container(
-            margin: EdgeInsets.only(
-                top: 2 * widget.pixelSize, bottom: 16 * widget.pixelSize),
-            color: Colors.white.withOpacity(.7),
-            height: 3 * widget.pixelSize)
-      ],
-    );
+    return Container(
+        padding: EdgeInsets.only(bottom: 8),
+        child: HeaderWidget(
+            child: Container(
+                alignment: Alignment.centerLeft,
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ManifestText<DestinySocketCategoryDefinition>(
+                        category.socketCategoryHash,
+                        uppercase: true,
+                        textAlign: TextAlign.left,
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ]))));
   }
+
 
   @override
   Widget buildSockets(BuildContext context) {
     Iterable<Widget> children = category.socketIndexes
         .map((socketIndex) => buildSocketPlugs(context, socketIndex))
         .where((w) => w != null);
-    children = children.expand((w) => [
-          w,
-          Container(
-              margin: EdgeInsets.symmetric(horizontal: widget.pixelSize * 12),
-              width: 2 * widget.pixelSize,
-              color: Colors.white.withOpacity(.4))
-        ]);
-    children = children.take(children.length - 1);
-    return Stack(children: [
-      Positioned.fill(
-          child: Image.asset(
-        "assets/imgs/perks_grid.png",
-        repeat: ImageRepeat.repeat,
-        alignment: Alignment.center,
-        scale: 1 / widget.pixelSize,
-      )),
-      IntrinsicHeight(
-          child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: children.toList()))
-    ]);
+    return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: children.toList());
   }
 
   @override
   Widget buildSocketPlugs(BuildContext context, int socketIndex) {
     var plugs = socketPlugHashes(socketIndex);
-    if (plugs.length == 0) return null;
-    return Container(
-        width: 80 * widget.pixelSize,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children:
-              plugs.map((p) => buildPlug(context, socketIndex, p)).toList(),
-        ));
+    var plugHash = socketSelectedPlugHash(socketIndex);
+    if ((plugs?.length ?? 0) == 0) return null;
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+      Container(
+          width: 64,
+          child: buildPlug(context, socketIndex, plugHash)),
+      Container(width: 16),
+      Expanded(
+          child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          ManifestText<DestinyInventoryItemDefinition>(
+            plugHash,
+            uppercase: true,
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          Container(height:8),
+          ManifestText<DestinyInventoryItemDefinition>(
+            plugHash,
+            textExtractor: (def) => def.displayProperties.description,
+            softWrap: true,
+            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300),
+          ),
+        ],
+      ))
+    ]);
   }
 
-  @override
-  Set<int> socketPlugHashes(int socketIndex) {
-    if (item == null) {
-      var isRandom = controller.randomizedPlugHashes(socketIndex).length > 0;
-      if (isRandom) {
-        return controller
-            .bungieRollPlugHashes(socketIndex)
-            .followedBy([controller.socketRandomizedSelectedPlugHash(socketIndex)]).toSet();
-      }
-    }
-    return super.socketPlugHashes(socketIndex);
-  }
-
+  
   @override
   Widget buildPlug(BuildContext context, int socketIndex, int plugItemHash) {
     if (plugDefinitions == null) return Container();
@@ -137,8 +127,8 @@ class ScreenShotItemPerksWidgetState<T extends ScreenShotItemPerksWidget>
     bool isSelected = plugItemHash == controller.selectedPlugHash;
     Color bgColor = Colors.transparent;
     Color borderColor = Colors.grey.shade300.withOpacity(.5);
-    if (isEquipped && !intrinsic) { 
-      bgColor = DestinyData.perkColor.withOpacity(.5); 
+    if (isEquipped && !intrinsic) {
+      bgColor = DestinyData.perkColor.withOpacity(.5);
     }
     if (isSelectedOnSocket && !intrinsic) {
       bgColor = DestinyData.perkColor;
@@ -150,21 +140,21 @@ class ScreenShotItemPerksWidgetState<T extends ScreenShotItemPerksWidget>
     }
 
     BorderSide borderSide =
-        BorderSide(color: borderColor, width: 2 * widget.pixelSize);
+        BorderSide(color: borderColor, width: 2);
 
     return Container(
         key: Key("plug_${socketIndex}_$plugItemHash"),
         padding: EdgeInsets.all(0),
-        margin: EdgeInsets.only(bottom: 16 * widget.pixelSize),
+        margin: EdgeInsets.only(bottom: 16),
         child: AspectRatio(
             aspectRatio: 1,
             child: FlatButton(
               shape: intrinsic && !isExotic
                   ? RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4 * widget.pixelSize),
+                      borderRadius: BorderRadius.circular(4),
                       side: borderSide)
                   : CircleBorder(side: borderSide),
-              padding: EdgeInsets.all(intrinsic ? 0 : 8 * widget.pixelSize),
+              padding: EdgeInsets.all(intrinsic ? 0 : 8),
               color: bgColor,
               child: ManifestImageWidget<DestinyInventoryItemDefinition>(
                   plugItemHash),

@@ -8,6 +8,7 @@ import 'package:bungie_api/models/destiny_character_progression_component.dart';
 import 'package:bungie_api/models/destiny_collectible_component.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
+import 'package:bungie_api/models/destiny_item_plug.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_item_sockets_component.dart';
 import 'package:bungie_api/models/destiny_item_talent_grid_component.dart';
@@ -64,6 +65,7 @@ class ProfileComponentGroups {
     DestinyComponentType.ItemObjectives,
     DestinyComponentType.ItemTalentGrids,
     DestinyComponentType.ItemSockets,
+    DestinyComponentType.ItemPlugStates,
     DestinyComponentType.Collectibles,
     DestinyComponentType.Records,
     DestinyComponentType.PresentationNodes,
@@ -314,6 +316,27 @@ class ProfileService {
 
   Map<String, DestinyPresentationNodeComponent> getProfilePresentationNodes() {
     return _profile?.profilePresentationNodes?.data?.nodes;
+  }
+
+
+  List<DestinyItemPlug> getCharacterPlugSets(String characterId, int plugSetHash){
+    var plugs = _profile?.characterPlugSets?.data[characterId]?.plugs;
+    if(plugs?.containsKey("$plugSetHash") ?? false) return plugs["$plugSetHash"];
+    return null;
+  }
+
+  List<DestinyItemPlug> getProfilePlugSets(int plugSetHash){
+    var plugs = _profile?.profilePlugSets?.data?.plugs;
+    if(plugs?.containsKey("$plugSetHash") ?? false) return plugs["$plugSetHash"];
+    return null;
+  }
+
+  List<DestinyItemPlug> getPlugSets(int plugSetHash){
+    List<DestinyItemPlug> plugs = [];
+    plugs.addAll(getProfilePlugSets(plugSetHash) ?? []);
+    var characters = getCharacters();
+    characters.forEach((c)=>plugs.addAll(getCharacterPlugSets(c.characterId, plugSetHash) ?? []));
+    return plugs;
   }
 
   Map<String, DestinyPresentationNodeComponent> getCharacterPresentationNodes(

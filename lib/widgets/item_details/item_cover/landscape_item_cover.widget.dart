@@ -19,6 +19,7 @@ import 'package:little_light/widgets/common/base/base_destiny_stateless_item.wid
 import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/item_sockets/item_socket.controller.dart';
 import 'package:little_light/widgets/item_sockets/screenshot_armor_tier.widget.dart';
+import 'package:little_light/widgets/item_sockets/screenshot_item_exotic_intrinsic_perks.widget.dart';
 import 'package:little_light/widgets/item_sockets/screenshot_item_mods.widget.dart';
 import 'package:little_light/widgets/item_sockets/screenshot_item_perks.widget.dart';
 import 'package:little_light/widgets/item_sockets/screenshot_socket_details.widget.dart';
@@ -51,7 +52,8 @@ class LandscapeItemCoverWidget extends BaseDestinyStatelessItemWidget {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double paddingTop = MediaQuery.of(context).padding.top;
-    double screenshotHeight = min(width / (16 / 9), MediaQuery.of(context).size.height);
+    double screenshotHeight =
+        min(width / (16 / 9), MediaQuery.of(context).size.height);
     double minHeight = paddingTop + kToolbarHeight;
     double maxHeight = screenshotHeight;
     if ((definition?.screenshot?.length ?? 0) == 0) {
@@ -110,6 +112,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
             tierBar(context, expandRatio),
             rightColumn(context, expandRatio),
             leftColumn(context, expandRatio),
+            socketDetails(context, expandRatio),
             icon(context, expandRatio),
             buildNameAndType(context, expandRatio),
             backButton(context, expandRatio),
@@ -136,7 +139,8 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
     double openSize = convertSize(96, context);
     double closedSize = kToolbarHeight - 8;
     double size = lerpDouble(closedSize, openSize, expandRatio);
-    double top = lerpDouble(paddingTop + 4, convertSize(96, context), expandRatio);
+    double top =
+        lerpDouble(paddingTop + 4, convertSize(96, context), expandRatio);
     double left =
         lerpDouble(kTextTabBarHeight, convertSize(96, context), expandRatio);
     return Positioned(
@@ -186,18 +190,37 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
         ));
   }
 
+  Widget socketDetails(BuildContext context, double expandRatio) {
+    return Positioned(
+        top: convertSize(96.0 * 2.4 + 1080 * (expandRatio - 1), context),
+        left: convertSize(862, context),
+        child: Opacity(
+            opacity: expandRatio,
+            child: Container(
+                width: convertSize(600, context),
+                child: ScreenshotSocketDetailsWidget(
+                    item: item,
+                    parentDefinition: definition,
+                    pixelSize: pixelSize(context),
+                    controller: socketController))));
+  }
+
   Widget leftColumn(BuildContext context, double expandRatio) {
     var perksCategory = definition.sockets?.socketCategories?.firstWhere(
         (s) =>
             DestinyData.socketCategoryPerkHashes.contains(s.socketCategoryHash),
         orElse: () => null);
     var armorTierCategory = definition.sockets?.socketCategories?.firstWhere(
-      (s) => DestinyData.socketCategoryTierHashes
-          .contains(s.socketCategoryHash),
-      orElse: () => null);   
+        (s) =>
+            DestinyData.socketCategoryTierHashes.contains(s.socketCategoryHash),
+        orElse: () => null);
     var modsCategory = definition.sockets?.socketCategories?.firstWhere(
-        (s) => DestinyData.socketCategoryModHashes
-            .contains(s.socketCategoryHash),
+        (s) =>
+            DestinyData.socketCategoryModHashes.contains(s.socketCategoryHash),
+        orElse: () => null);
+    var exoticIntrinsicPerkCategory = definition.sockets?.socketCategories?.firstWhere(
+        (s) =>
+            DestinyData.socketCategoryexoticIntrinsicPerkHashes.contains(s.socketCategoryHash),
         orElse: () => null);
     return Positioned(
         top: convertSize(96.0 * 2.4 + 1080 * (expandRatio - 1), context),
@@ -222,36 +245,22 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
                 Container(
                   height: convertSize(32, context),
                 ),
-                Stack(
-                  overflow: Overflow.visible,
-                  children: <Widget>[
-                    Container(
-                        width: convertSize(730, context),
-                        child: ScreenShotItemPerksWidget(
-                          controller: socketController,
-                          category: perksCategory,
-                          definition: definition,
-                          item: item,
-                          pixelSize: pixelSize(context),
-                        )),
-                    Positioned(
-                      left: convertSize(750, context),
-                      child:Container(
-                        width: convertSize(600, context),
-                        child: ScreenshotSocketDetailsWidget(
-                            item: item,
-                            parentDefinition: definition,
-                            pixelSize: pixelSize(context),
-                            controller: socketController)))
-                  ],
-                ),
+                Container(
+                    width: convertSize(730, context),
+                    child: ScreenShotItemPerksWidget(
+                      controller: socketController,
+                      category: perksCategory,
+                      definition: definition,
+                      item: item,
+                      pixelSize: pixelSize(context),
+                    )),
                 Container(
                   height: convertSize(16, context),
                 ),
                 Container(
                     width: convertSize(730, context),
                     child: ScreenShotArmorTierWidget(
-                      controller:socketController,
+                      controller: socketController,
                       category: armorTierCategory,
                       definition: definition,
                       item: item,
@@ -261,13 +270,22 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
                   height: convertSize(16, context),
                 ),
                 Container(
+                    width: convertSize(730, context),
+                    child: ScreenShotItemModsWidget(
+                      controller: socketController,
+                      category: modsCategory,
+                      definition: definition,
+                      item: item,
+                      pixelSize: pixelSize(context),
+                    )),
+                Container(
                   height: convertSize(16, context),
                 ),
                 Container(
                     width: convertSize(730, context),
-                    child: ScreenShotItemModsWidget(
-                      controller:socketController,
-                      category: modsCategory,
+                    child: ScreenShotItemExoticIntrinsicPerksWidget(
+                      controller: socketController,
+                      category: exoticIntrinsicPerkCategory,
                       definition: definition,
                       item: item,
                       pixelSize: pixelSize(context),
@@ -374,17 +392,17 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
     if (imgUrl == null) {
       return Container();
     }
-    if(definition?.itemType == DestinyItemType.Subclass){
+    if (definition?.itemType == DestinyItemType.Subclass) {
       return Positioned(
-        bottom: 0,
-        right: 0,
-        width: convertSize(800, context),
-        child: Opacity(
-            opacity: opacity * .5,
-            child: QueuedNetworkImage(
-              imageUrl: BungieApiService.url(imgUrl),
-              fit: BoxFit.cover,
-            )));
+          bottom: 0,
+          right: 0,
+          width: convertSize(800, context),
+          child: Opacity(
+              opacity: opacity * .5,
+              child: QueuedNetworkImage(
+                imageUrl: BungieApiService.url(imgUrl),
+                fit: BoxFit.cover,
+              )));
     }
     return Positioned(
         top: -convertSize(1080 / 2, context) +
@@ -414,8 +432,8 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
     return Positioned(
         top: 0,
         bottom: 0,
-        left:0,
-        right:0,
+        left: 0,
+        right: 0,
         child: Opacity(
             opacity: opacity,
             child: QueuedNetworkImage(

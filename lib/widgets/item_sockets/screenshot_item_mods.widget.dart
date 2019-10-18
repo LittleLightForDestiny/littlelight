@@ -1,12 +1,13 @@
+import 'package:bungie_api/enums/destiny_energy_type_enum.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_socket_category_definition.dart';
 import 'package:bungie_api/models/destiny_socket_category_definition.dart';
-
+import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/services/bungie_api/bungie_api.service.dart';
+import 'package:little_light/utils/destiny_data.dart';
+import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
-import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/item_sockets/base_item_sockets.widget.dart';
 import 'package:little_light/widgets/item_sockets/item_socket.controller.dart';
 
@@ -17,9 +18,14 @@ class ScreenShotItemModsWidget extends BaseItemSocketsWidget {
     DestinyItemComponent item,
     DestinyInventoryItemDefinition definition,
     DestinyItemSocketCategoryDefinition category,
-    ItemSocketController controller, 
+    ItemSocketController controller,
     this.pixelSize = 1,
-  }) : super(key: key, item: item, definition: definition, category: category, controller:controller);
+  }) : super(
+            key: key,
+            item: item,
+            definition: definition,
+            category: category,
+            controller: controller);
 
   @override
   State<StatefulWidget> createState() {
@@ -29,7 +35,6 @@ class ScreenShotItemModsWidget extends BaseItemSocketsWidget {
 
 class ScreenShotItemModsWidgetState<T extends ScreenShotItemModsWidget>
     extends BaseItemSocketsWidgetState<T> {
-
   @override
   Widget build(BuildContext context) {
     if (category == null) return Container();
@@ -41,7 +46,7 @@ class ScreenShotItemModsWidgetState<T extends ScreenShotItemModsWidget>
         buildSockets(context),
       ],
     );
-  }    
+  }
 
   Widget buildHeader(BuildContext context) {
     return Column(
@@ -66,46 +71,67 @@ class ScreenShotItemModsWidgetState<T extends ScreenShotItemModsWidget>
 
   @override
   Widget buildSockets(BuildContext context) {
-    return IntrinsicHeight(
-        child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: category.socketIndexes
-                .map(
-                    (socketIndex) => buildSocketPlugs(context, socketIndex))
-                .expand((w) => [
-                      w,
-                      Container(
-                          width: 10 * widget.pixelSize,
-                          )
-                    ])
-                .toList()));
+    return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: category.socketIndexes
+            .map((socketIndex) => buildSocketPlugs(context, socketIndex))
+            .where((w) => w != null)
+            .expand((w) => [
+                  w,
+                  Container(
+                    width: 10 * widget.pixelSize,
+                  )
+                ])
+            .toList());
   }
 
   @override
   Widget buildSocketPlugs(BuildContext context, int socketIndex) {
-    var plugHash = socketEquippedPlugHash(socketIndex);
+    var plugHash = socketSelectedPlugHash(socketIndex);
+    if (plugHash == null) return null;
+
     return Container(
-        width: 96 * widget.pixelSize,
-        child: buildPlug(context, socketIndex, plugHash),
-        );
+      width: 96 * widget.pixelSize,
+      child: buildPlug(context, socketIndex, plugHash),
+    );
   }
 
   @override
   Widget buildPlug(BuildContext context, int socketIndex, int plugItemHash) {
     if (plugDefinitions == null) return Container();
-    var plugDef = plugDefinitions[plugItemHash];
+    var def = controller.plugDefinitions[plugItemHash];
+    var energyType = def?.plug?.energyCost?.energyType ?? DestinyEnergyType.Any;
+    var energyCost = def?.plug?.energyCost?.energyCost ?? 0;
+    var canEquip = controller?.canEquip(socketIndex, plugItemHash);
     return FlatButton(
-      padding: EdgeInsets.all(0),
-      onPressed: (){
-        controller.selectSocket(socketIndex, plugItemHash);
-      },
-      child:Container(
-        decoration: BoxDecoration(border: Border.all(color: Colors.grey.shade400, width:3*widget.pixelSize)),
-        child: AspectRatio(
-            aspectRatio: 1,
-            child: QueuedNetworkImage(
-                imageUrl:
-                    BungieApiService.url(plugDef?.displayProperties?.icon)))));
+        padding: EdgeInsets.all(0),
+        onPressed: () {
+          controller.selectSocket(socketIndex, plugItemHash);
+        },
+        child: Container(
+            decoration: BoxDecoration(
+                border: Border.all(
+                    color: Colors.grey.shade400, width: 3 * widget.pixelSize)),
+            child: Stack(children: [
+                ManifestImageWidget<DestinyInventoryItemDefinition>(
+                    plugItemHash, key:Key("plug_$plugItemHash")),
+                energyType == DestinyEnergyType.Any
+                    ? Container()
+                    : Positioned.fill(
+                        child: ManifestImageWidget<DestinyStatDefinition>(
+                          DestinyData.getEnergyTypeCostHash(energyType)
+                        )),
+                energyCost == 0
+                    ? Container()
+                    : Positioned(
+                        top: 8 * widget.pixelSize,
+                        right: 8 * widget.pixelSize,
+                        child: Text(
+                          "$energyCost",
+                          style: TextStyle(fontSize: 20*widget.pixelSize),
+                        )),
+              canEquip ? Container(): Positioned.fill(child: Container(color: Colors.black.withOpacity(.5),),)
+              ])));
   }
 }

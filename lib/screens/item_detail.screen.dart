@@ -29,6 +29,8 @@ import 'package:little_light/widgets/item_details/main_info/item_main_info.widge
 import 'package:little_light/widgets/item_details/management_block.widget.dart';
 import 'package:little_light/widgets/item_details/quest_info.widget.dart';
 import 'package:little_light/widgets/item_details/rewards_info.widget.dart';
+import 'package:little_light/widgets/item_sockets/details_armor_tier.widget.dart';
+import 'package:little_light/widgets/item_sockets/details_item_armor_exotic_perk.widget.dart';
 import 'package:little_light/widgets/item_sockets/details_item_mods.widget.dart';
 import 'package:little_light/widgets/item_sockets/details_item_perks.widget.dart';
 import 'package:little_light/widgets/item_sockets/item_details_socket_details.widget.dart';
@@ -162,11 +164,18 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
             buildManagementBlock(context),
             buildAddToLoadoutButton(context),
             buildDuplicates(context),
+            buildCollectionsButton(context),
+            buildExoticPerk(context),
+            buildExoticPerkDetails(context),
             buildStats(context),
             buildPerks(context),
             buildPerkDetails(context),
+            buildArmorTier(context),
             buildMods(context),
             buildModDetails(context),
+
+            buildCosmetics(context),
+            buildCosmeticDetails(context),
             buildObjectives(context),
             buildRewards(context),
             buildQuestInfo(context),
@@ -204,10 +213,17 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
             buildManagementBlock(context),
             buildAddToLoadoutButton(context),
             buildDuplicates(context),
+            buildCollectionsButton(context),
+            buildExoticPerk(context),
+            buildExoticPerkDetails(context),
+            buildStats(context),
             buildPerks(context),
             buildPerkDetails(context),
+            buildArmorTier(context),
             buildMods(context),
             buildModDetails(context),
+            buildCosmetics(context),
+            buildCosmeticDetails(context),
             buildObjectives(context),
             buildRewards(context),
             buildQuestInfo(context),
@@ -285,6 +301,28 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
     );
   }
 
+  Widget buildCollectionsButton(BuildContext context) {
+    if(widget.hideItemManagement) return Container();
+    if (widget.item == null) {
+      return Container();
+    }
+    return Container(
+        padding: EdgeInsets.all(8),
+        child: RaisedButton(
+            child: TranslatedTextWidget("View in Collections"),
+            onPressed: () async {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ItemDetailScreen(
+                        definition:widget.definition,
+                        uniqueId: null,
+                      ),
+                ),
+              );
+            }));
+  }
+
   Widget buildObjectives(BuildContext context) {
     if ((definition?.objectives?.objectiveHashes?.length ?? 0) == 0) {
       return Container();
@@ -327,10 +365,61 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
     ));
   }
 
+
+Widget buildExoticPerk(BuildContext context) {
+    var exoticperkCategory = definition.sockets?.socketCategories?.firstWhere(
+        (s) =>
+            DestinyData.socketCategoryexoticIntrinsicPerkHashes.contains(s.socketCategoryHash),
+        orElse: () => null);
+    if(exoticperkCategory == null) return Container();
+    return Container(
+      padding: EdgeInsets.all(8),
+        child: DetailsItemArmorExoticPerkWidget(
+      controller: socketController,
+      definition: definition,
+      item: item,
+      category: exoticperkCategory,
+      key: Key('perks_widget'),
+    ));
+  }
+
+  Widget buildArmorTier(BuildContext context) {
+    var tierCategory = definition.sockets?.socketCategories?.firstWhere(
+        (s) =>
+            DestinyData.socketCategoryTierHashes.contains(s.socketCategoryHash),
+        orElse: () => null);
+    if(tierCategory == null) return Container();
+    return Container(
+      padding: EdgeInsets.all(8),
+        child: DetailsArmorTierWidget(
+      controller: socketController,
+      definition: definition,
+      item: item,
+      category: tierCategory,
+      key: Key('armor_tier_widget'),
+    ));
+  }
+
   Widget buildPerkDetails(BuildContext context) {
     var perksCategory = definition.sockets?.socketCategories?.firstWhere(
         (s) =>
             DestinyData.socketCategoryPerkHashes.contains(s.socketCategoryHash),
+        orElse: () => null);
+    if(perksCategory == null) return Container();
+    return Container(
+      padding: EdgeInsets.all(8),
+        child: ItemDetailsSocketDetailsWidget(
+      controller: socketController,
+      parentDefinition: definition,
+      item: item,
+      category: perksCategory,
+    ));
+  }
+
+  Widget buildExoticPerkDetails(BuildContext context) {
+    var perksCategory = definition.sockets?.socketCategories?.firstWhere(
+        (s) =>
+            DestinyData.socketCategoryexoticIntrinsicPerkHashes.contains(s.socketCategoryHash),
         orElse: () => null);
     if(perksCategory == null) return Container();
     return Container(
@@ -365,6 +454,39 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
     var modsCategory = definition.sockets?.socketCategories?.firstWhere(
         (s) =>
             DestinyData.socketCategoryModHashes.contains(s.socketCategoryHash),
+        orElse: () => null);
+    if(modsCategory == null) return Container();
+    return Container(
+      padding: EdgeInsets.all(8),
+        child: ItemDetailsSocketDetailsWidget(
+      controller: socketController,
+      parentDefinition: definition,
+      item: item,
+      category: modsCategory,
+    ));
+  }
+
+  Widget buildCosmetics(BuildContext context) {
+    var modsCategory = definition.sockets?.socketCategories?.firstWhere(
+        (s) =>
+            DestinyData.socketCategoryCosmeticModHashes.contains(s.socketCategoryHash),
+        orElse: () => null);
+    if(modsCategory == null) return Container();
+    return Container(
+      padding: EdgeInsets.all(8),
+        child: DetailsItemModsWidget(
+      controller: socketController,
+      definition: definition,
+      item: item,
+      category: modsCategory,
+      key: Key('perks_widget'),
+    ));
+  }
+
+  Widget buildCosmeticDetails(BuildContext context) {
+    var modsCategory = definition.sockets?.socketCategories?.firstWhere(
+        (s) =>
+            DestinyData.socketCategoryCosmeticModHashes.contains(s.socketCategoryHash),
         orElse: () => null);
     if(modsCategory == null) return Container();
     return Container(

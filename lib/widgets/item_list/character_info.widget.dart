@@ -143,33 +143,36 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
 
   Widget ghostIcon(BuildContext context) {
     var ghost = Container(
-              width: 50,
-              height: 50,
-              child: Shimmer.fromColors(
-                  baseColor: Colors.grey.shade400,
-                  highlightColor: Colors.grey.shade100,
-                  period: Duration(seconds: 5),
-                  child: Icon(DestinyIcons.ghost,
-                      size: 50, color: Colors.grey.shade300)));
-    if(UserSettingsService().hasTappedGhost){
+        width: 50,
+        height: 50,
+        child: Shimmer.fromColors(
+            baseColor: Colors.grey.shade400,
+            highlightColor: Colors.grey.shade100,
+            period: Duration(seconds: 5),
+            child: Icon(DestinyIcons.ghost,
+                size: 50, color: Colors.grey.shade300)));
+    if (UserSettingsService().hasTappedGhost) {
       return ghost;
     }
     return Stack(children: [
       Center(
-          child: ghost,
+        child: ghost,
       ),
       Container(
-        margin: EdgeInsets.only(top:60),
+          margin: EdgeInsets.only(top: 60),
           child: SpeechBubble(
-        nipLocation: NipLocation.TOP,
-        color: Colors.lightBlue,
-        child: TranslatedTextWidget("Hey, tap me!"),
-      ))
+            nipLocation: NipLocation.TOP,
+            color: Colors.lightBlue,
+            child: TranslatedTextWidget("Hey, tap me!"),
+          ))
     ]);
   }
 
   Widget characterStatsInfo(
       BuildContext context, DestinyCharacterComponent character) {
+    var artifactLevel =
+        widget.profile.getArtifactProgression()?.powerBonus ?? 0;
+    var armorLevel = character.light - artifactLevel;
     return Positioned(
         right: 8,
         top: 0,
@@ -198,11 +201,18 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
                 )
               ],
             ),
-            TranslatedTextWidget("Level {Level}",
-                replace: {
-                  'Level': "${character.levelProgression.level}",
-                },
-                style: TextStyle(fontSize: 12))
+            Row(
+              children: <Widget>[
+                Text(
+                  "$armorLevel",
+                  style: TextStyle(fontWeight: FontWeight.w500),
+                ),
+                artifactLevel == 0
+                    ? Container()
+                    : Text(" +$artifactLevel",
+                        style: TextStyle(fontWeight: FontWeight.bold, color:Colors.cyanAccent))
+              ],
+            )
           ],
         ));
   }
@@ -277,7 +287,7 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
                   // height: 16,
                   // child: ManifestImageWidget<DestinySandboxPerkDefinition>(
                   //     1519921522),
-                )
+                  )
               : Container(),
           Container(
             width: 4,
