@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:bungie_api/models/destiny_vendor_category.dart';
 import 'package:bungie_api/models/destiny_vendor_component.dart';
 import 'package:flutter/material.dart';
@@ -83,12 +84,13 @@ class _VendorsListWidgetState extends State<VendorsListWidget>
                 child: Image.asset("assets/anim/loading.webp"),
               )));
     }
+    var screenPadding = MediaQuery.of(context).padding;
     return StaggeredGridView.countBuilder(
       crossAxisCount: 6,
       addAutomaticKeepAlives: true,
       addRepaintBoundaries: true,
       itemCount: _vendors?.length ?? 0,
-      padding: EdgeInsets.all(4).copyWith(top: 0),
+      padding: EdgeInsets.all(4).copyWith(top: 0, left: max(screenPadding.left, 4), right: max(screenPadding.right, 4)),
       mainAxisSpacing: 4,
       crossAxisSpacing: 4,
       staggeredTileBuilder: (index) {

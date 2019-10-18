@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:bungie_api/models/destiny_faction_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_vendor_component.dart';
@@ -126,8 +128,9 @@ class VendorDetailsScreenState extends State<VendorDetailsScreen> {
   Widget buildBody(BuildContext context) {
     if (definition == null || _categories == null) return Container();
     var categories = _categories.where((c) => shouldCategoryBeVisible(c));
+    var screenPadding = MediaQuery.of(context).padding;
     return ListView(
-        padding: EdgeInsets.all(8),
+        padding: EdgeInsets.all(8).copyWith( left: max(screenPadding.left, 8), right: max(screenPadding.right, 8)),
         children: categories.map((c) => buildCategory(context, c)).toList());
   }
 

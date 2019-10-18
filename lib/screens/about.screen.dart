@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:bungie_api/enums/bungie_membership_type_enum.dart';
 import 'package:flutter/material.dart';
@@ -49,7 +50,7 @@ class _AboutScreenState extends State<AboutScreen> {
         ),
         body: SingleChildScrollView(
             child: Container(
-                padding: EdgeInsets.all(8),
+                padding: EdgeInsets.all(8).copyWith(left: max(screenPadding.left, 8), right: max(screenPadding.right, 8), bottom: max(screenPadding.right, 8)),
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -223,6 +224,10 @@ class _AboutScreenState extends State<AboutScreen> {
                         height: 8,
                       ),
                       buildTagAndPlatform(4611686018436933892, BungieMembershipType.TigerXbox),
+                      Container(
+                        height: 8,
+                      ),
+                      buildTagAndPlatform(4611686018433235027, BungieMembershipType.TigerXbox),
                       Container(
                         height: 8,
                       ),

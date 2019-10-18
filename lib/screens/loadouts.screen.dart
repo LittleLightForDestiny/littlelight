@@ -152,10 +152,11 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
   }
 
   Widget buildReorderingBody(BuildContext context) {
+    var screenPadding = MediaQuery.of(context).padding;
     return DragList<Loadout>(
         items: loadouts,
         itemExtent: 56,
-        padding: EdgeInsets.all(8),
+        padding: EdgeInsets.all(8).copyWith(left:max(screenPadding.left, 8), right:max(screenPadding.right, 8)),
         handleBuilder: (context) => buildHandle(context),
         onItemReorder: (oldIndex, newIndex) {
           var removed = loadouts.removeAt(oldIndex);
@@ -213,9 +214,9 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
     if (loadouts.length == 0) {
       return buildNoLoadoutsBody(context);
     }
-
+    var screenPadding = MediaQuery.of(context).padding;
     return StaggeredGridView.countBuilder(
-      padding: EdgeInsets.all(4),
+      padding: EdgeInsets.all(4).copyWith(left:max(screenPadding.left, 4), right:max(screenPadding.right, 4)),
       crossAxisCount: 30,
       itemCount: filteredLoadouts.length,
       itemBuilder: (BuildContext context, int index) => getItem(context, index),

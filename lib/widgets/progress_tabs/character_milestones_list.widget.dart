@@ -52,8 +52,9 @@ class _CharacterMilestonesListWidgetState
 
   @override
   Widget build(BuildContext context) {
+    var screenPadding = MediaQuery.of(context).padding;
     return SingleChildScrollView(
-      // padding: EdgeInsets.only(top:8),
+      padding: EdgeInsets.only(left:screenPadding.left, right:screenPadding.right),
       child: Column(
         children: buildMilestones(context),
       ),

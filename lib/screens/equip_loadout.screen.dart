@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:bungie_api/enums/destiny_class_enum.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
@@ -57,36 +59,44 @@ class EquipLoadoutScreenState extends State<EquipLoadoutScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var screenPadding = MediaQuery.of(context).padding;
     return Scaffold(
         backgroundColor: emblemColor,
         appBar: AppBar(
             title: Text(widget.loadout.name),
             flexibleSpace: buildAppBarBackground(context)),
         bottomNavigationBar: LoadoutDestinationsWidget(widget.loadout),
-        body: ListView(padding: EdgeInsets.all(8), children: <Widget>[
-          HeaderWidget(
-            child: TranslatedTextWidget("Items to Equip",
-                uppercase: true, style: TextStyle(fontWeight: FontWeight.bold)),
-          ),
-          Container(
-              padding: EdgeInsets.all(8), child: buildEquippedItems(context)),
-          (_itemIndex?.unequippedCount ?? 0) == 0
-              ? Container()
-              : HeaderWidget(
-                  child: TranslatedTextWidget("Items to Transfer",
-                      uppercase: true,
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                ),
-          (_itemIndex?.unequippedCount ?? 0) == 0
-              ? Container()
-              : Container(
+        body: ListView(
+            padding: EdgeInsets.all(8).copyWith(
+                top: 0,
+                left: max(screenPadding.left, 8),
+                right: max(screenPadding.right, 8)),
+            children: <Widget>[
+              HeaderWidget(
+                child: TranslatedTextWidget("Items to Equip",
+                    uppercase: true,
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+              ),
+              Container(
                   padding: EdgeInsets.all(8),
-                  child: buildUnequippedItems(context)),
-        ]));
+                  child: buildEquippedItems(context)),
+              (_itemIndex?.unequippedCount ?? 0) == 0
+                  ? Container()
+                  : HeaderWidget(
+                      child: TranslatedTextWidget("Items to Transfer",
+                          uppercase: true,
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                    ),
+              (_itemIndex?.unequippedCount ?? 0) == 0
+                  ? Container()
+                  : Container(
+                      padding: EdgeInsets.all(8),
+                      child: buildUnequippedItems(context)),
+            ]));
   }
 
   buildAppBarBackground(BuildContext context) {
-    if(widget.loadout.emblemHash == null){
+    if (widget.loadout.emblemHash == null) {
       return Container();
     }
     return DefinitionProviderWidget<DestinyInventoryItemDefinition>(

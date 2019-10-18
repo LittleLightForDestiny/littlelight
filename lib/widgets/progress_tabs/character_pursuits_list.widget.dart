@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_category_definition.dart';
@@ -140,13 +141,14 @@ class _CharacterPursuitsListWidgetState
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    var screenPadding = MediaQuery.of(context).padding;
     return StaggeredGridView.countBuilder(
         crossAxisCount: 30,
         crossAxisSpacing: 4,
         addAutomaticKeepAlives: true,
         addRepaintBoundaries: true,
         itemCount: (items?.length ?? 0),
-        padding: EdgeInsets.all(4).copyWith(top: 0),
+        padding: EdgeInsets.all(4).copyWith(top: 0, left: max(screenPadding.left, 4), right: max(screenPadding.right, 4)),
         mainAxisSpacing: 4,
         staggeredTileBuilder: (index) => tileBuilder(context, index),
         itemBuilder: itemBuilder);

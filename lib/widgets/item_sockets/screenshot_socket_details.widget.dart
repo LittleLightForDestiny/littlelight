@@ -97,18 +97,18 @@ class _ScreenshotPerkDetailsWidgetState
                   return Row(
                     children: <Widget>[
                       Container(
-                          width: 20,
-                          height: 20,
+                          width: 24*widget.pixelSize,
+                          height: 24*widget.pixelSize,
                           child: ManifestImageWidget<
                               DestinyInventoryItemDefinition>(m.itemHash)),
                       Expanded(
                         child: Container(
                           padding: EdgeInsets.only(left:8*widget.pixelSize),
                           child:ManifestText<
-                              DestinyInventoryItemDefinition>(m.itemHash, style: TextStyle(fontWeight: FontWeight.w300),),
+                              DestinyInventoryItemDefinition>(m.itemHash, style: TextStyle(fontWeight: FontWeight.w300, fontSize: 22*widget.pixelSize),),
                         ),
                       ),
-                      Text("${m.count}", style:TextStyle(fontWeight: FontWeight.w300))
+                      Text("${m.count}", style:TextStyle(fontWeight: FontWeight.w300, fontSize: widget.pixelSize*22))
                     ],
                   );
                 }).toList(),
