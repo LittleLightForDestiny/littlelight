@@ -195,5 +195,13 @@
     "Unsellable": "판매할 수 없습니다",
     "Selling Inhibited": "판매 금지됨",
     "Already Owned": "이미 소지하고 있습니다",
-    "Display Only": "표시만 가능"
+    "Display Only": "표시만 가능",
+    "Energy": "에너지",
+    "Transfer Loadout": "로드아웃 전송",
+    "Vault": "금고",
+    "Couldn&#39;t render this widget properly. Please report this to @LittleLightD2 on Twitter or via GitHub issues": "Couldn&#39;t render this widget properly. Please report this to @LittleLightD2 on Twitter or via GitHub issues",
+    "Evasion": "Evasion",
+    "Summon": "Summon",
+    "Consecrated Mind": "Consecrated Mind",
+    "Sanctified Mind": "Sanctified Mind"
 }
