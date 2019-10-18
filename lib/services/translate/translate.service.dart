@@ -57,8 +57,8 @@ class TranslateService {
     'pl': "Polski",
     'pt-br': "Português Brasileiro",
     'ru': "Русский",
-    'zh-cht': "中文",
-    'zh-chs': "简化字"
+    'zh-cht': "繁體中文",
+    'zh-chs': "简体中文"
   };
 
 
