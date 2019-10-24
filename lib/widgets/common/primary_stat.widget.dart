@@ -112,7 +112,7 @@ class PrimaryStatWidget extends StatelessWidget {
       Icon(
         DestinyData.getAmmoTypeIcon(definition.equippingBlock.ammoType),
         color: DestinyData.getAmmoTypeColor(definition.equippingBlock.ammoType),
-        size: fontSize * 1.2,
+        size: fontSize,
       )
     ]);
   }

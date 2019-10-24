@@ -102,16 +102,17 @@ class ItemSocketController extends ChangeNotifier {
           .where((i) => (i ?? 0) != 0)
           .toSet();
     }
-    Set<int> plugSetHashes = definition.sockets.socketEntries
-        .expand((s) => [s.reusablePlugSetHash, s.randomizedPlugSetHash])
-        .where((h) => ((h ?? 0) != 0))
-        .toSet();
+    Set<int> plugSetHashes = definition?.sockets?.socketEntries
+        ?.expand((s) => [s.reusablePlugSetHash, s.randomizedPlugSetHash])
+        ?.where((h) => ((h ?? 0) != 0))
+        ?.toSet();
+    if(plugSetHashes == null) return;
     _plugSetDefinitions =
         await manifest.getDefinitions<DestinyPlugSetDefinition>(plugSetHashes);
 
     List<int> socketTypeHashes = [];
-    var definitionPlugHashes = definition.sockets.socketEntries
-        .expand((socket) {
+    var definitionPlugHashes = definition?.sockets?.socketEntries
+        ?.expand((socket) {
           socketTypeHashes.add(socket.socketTypeHash);
           List<int> hashes = [];
           hashes.add(socket.singleInitialItemHash);
@@ -129,8 +130,8 @@ class ItemSocketController extends ChangeNotifier {
               []);
           return hashes;
         })
-        .where((i) => (i ?? 0) != 0)
-        .toSet();
+        ?.where((i) => (i ?? 0) != 0)
+        ?.toSet();
 
     plugHashes.addAll(definitionPlugHashes);
     _plugDefinitions = await manifest

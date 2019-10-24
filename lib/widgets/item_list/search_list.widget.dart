@@ -34,6 +34,7 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
   Map<int, DestinyInventoryItemDefinition> itemDefinitions;
   Map<int, DestinyInventoryItemDefinition> perkDefinitions;
   StreamSubscription<NotificationEvent> subscription;
+  bool get includeUninstanced => false;
 
   @override
   dispose() {
@@ -71,7 +72,7 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
         profile.getProfileInventory().map((item) => ItemWithOwner(item, null)));
     allItems.sort((a, b) => InventoryUtils.sortDestinyItems(a.item, b.item));
     items = allItems.where((item) {
-      return item.item.itemInstanceId != null;
+      return item.item.itemInstanceId != null || includeUninstanced;
     }).toList();
     Iterable<int> hashes = allItems.map((i) => i.item.itemHash);
 

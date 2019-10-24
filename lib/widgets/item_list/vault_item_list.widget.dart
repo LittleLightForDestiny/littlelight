@@ -1,4 +1,4 @@
-import 'dart:math';
+import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
@@ -8,150 +8,91 @@ import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/item_list/bucket_header.widget.dart';
 import 'package:little_light/widgets/item_list/item_list.widget.dart';
-import 'package:little_light/widgets/item_list/items/inventory_item_wrapper.widget.dart';
 import 'package:little_light/widgets/item_list/vault_info.widget.dart';
 
+import 'items/inventory_item_wrapper.widget.dart';
+
 class VaultItemListWidget extends ItemListWidget {
-  VaultItemListWidget({EdgeInsets padding, List<int> bucketHashes, Key key})
-      : super(key: key, padding: padding, bucketHashes: bucketHashes);
+  VaultItemListWidget(
+      {EdgeInsets padding,
+      List<int> bucketHashes,
+      Key key,
+      Map<int, double> scrollPositions})
+      : super(
+            key: key,
+            padding: padding,
+            bucketHashes: bucketHashes,
+            scrollPositions: scrollPositions);
   @override
   VaultItemListWidgetState createState() => new VaultItemListWidgetState();
 }
 
-class VaultItemListWidgetState extends ItemListWidgetState
-    with WidgetsBindingObserver {
-  int get itemsPerLine {
-    if (MediaQueryHelper(context).tabletOrBigger) {
-      return 10;
-    }
-    return 5;
-  }
-
+class VaultItemListWidgetState extends ItemListWidgetState {
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addObserver(this);
-  }
-
+  bool suppressEmptySpaces(bucketHash) => true;
+  
   @override
-  void dispose() {
-    super.dispose();
-    WidgetsBinding.instance.removeObserver(this);
-  }
-
-  @override
-  void didChangeMetrics() async {
-    await Future.delayed(Duration(milliseconds: 100));
-    await buildIndex();
-    setState(() {});
-  }
-
   buildIndex() async {
-    List<DestinyItemComponent> inventory = widget.profile.getProfileInventory();
-    inventory = inventory
-        .where((item) => item.bucketHash == InventoryBucket.general)
+    if (!mounted) return;
+    List<DestinyItemComponent> itemsOnVault = widget.profile
+        .getProfileInventory()
+        .where((i) => i.bucketHash == InventoryBucket.general)
         .toList();
-    List<int> hashes = inventory.map((item) => item.itemHash).toList();
-    Map<int, DestinyInventoryItemDefinition> defs = await widget.manifest
-        .getDefinitions<DestinyInventoryItemDefinition>(hashes);
-    Map<int, List<DestinyItemComponent>> itemsByBucket = new Map();
-
-    for (int i = 0; i < inventory.length; i++) {
-      DestinyItemComponent item = inventory[i];
-      DestinyInventoryItemDefinition definition = defs[item.itemHash];
-      int bucketHash = definition.inventory.bucketTypeHash;
-      if (!itemsByBucket.containsKey(bucketHash)) {
-        itemsByBucket[bucketHash] = new List();
-      }
-      itemsByBucket[bucketHash].add(item);
-    }
-
-    listIndex = [];
-    listIndex.add(new ListItem(ListItem.infoHeader, null));
-
-    for (var hash in widget.bucketHashes) {
-      List<DestinyItemComponent> unequipped = itemsByBucket[hash];
-
-      if (unequipped == null) {
-        unequipped = [];
-        // return;
-      }
-
-       unequipped.sort((itemA, itemB ) {
-        return InventoryUtils.sortDestinyItems(itemA, itemB, defA:defs[itemA.itemHash], defB:defs[itemB.itemHash]);
+    this.bucketDefs = await widget.manifest
+        .getDefinitions<DestinyInventoryBucketDefinition>(widget.bucketHashes);
+    Map<int, DestinyInventoryItemDefinition> itemDefs = await widget.manifest
+        .getDefinitions<DestinyInventoryItemDefinition>(
+            itemsOnVault.map((i) => i.itemHash));
+    this.buckets = [];
+    for (int bucketHash in widget.bucketHashes) {
+      List<DestinyItemComponent> unequipped = itemsOnVault.where((item) {
+        var def = itemDefs[item.itemHash];
+        return def?.inventory?.bucketTypeHash == bucketHash;
+      }).toList();
+      unequipped.sort((itemA, itemB) {
+        return InventoryUtils.sortDestinyItems(itemA, itemB);
       });
 
-      int itemCount = unequipped.length;
-      int bucketSize =
-          max((itemCount / itemsPerLine).ceil() * itemsPerLine, itemsPerLine);
-
-      listIndex
-          .add(new ListItem(ListItem.bucketHeader, hash, itemCount: itemCount));
-      listIndex.addAll(unequipped.map((item) => new ListItem(
-          ListItem.unequippedItem, item.itemHash,
-          itemComponent: item, bucketHash: hash)));
-
-      int fillEmpty = bucketSize - itemCount;
-      for (int i = 0; i < fillEmpty; i++) {
-        listIndex
-            .add(ListItem(ListItem.unequippedItem, null, bucketHash: hash));
-      }
-      listIndex.add(new ListItem(ListItem.spacer, hash));
-      if (mounted) {
-        setState(() {});
-      }
+      this
+          .buckets
+          .add(ListBucket(bucketHash: bucketHash, unequipped: unequipped));
     }
-    listIndex.add(new ListItem(ListItem.spacer, 0));
-    listIndex.add(new ListItem(ListItem.spacer, 0));
+
     if (!mounted) {
       return;
     }
-    setState(() {
-      this.listIndex = listIndex;
-    });
+    setState(() {});
   }
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   super.build(context);
+  //   return Padding(
+  //     padding: widget.padding,
+  //     child: buildList(),
+  //   );
+  // }
+
+  // Widget getList() {
+  //   if (listIndex.length < 2) {
+  //     return Container();
+  //   }
+  //   return StaggeredGridView.countBuilder(
+  //     crossAxisCount: 30,
+  //     itemCount: listIndex.length,
+  //     itemBuilder: (BuildContext context, int index) => getItem(index),
+  //     staggeredTileBuilder: (int index) => getTileBuilder(index),
+  //     mainAxisSpacing: 2,
+  //     crossAxisSpacing: 2,
+  //   );
+  // }
 
   @override
-  Widget build(BuildContext context) {
-    super.build(context);
-    return Padding(
-      padding: widget.padding,
-      child: getList(),
-    );
-  }
-
-  Widget getList() {
-    if (listIndex.length < 2) {
-      return Container();
-    }
-    return StaggeredGridView.countBuilder(
-      crossAxisCount: 30,
-      itemCount: listIndex.length,
-      itemBuilder: (BuildContext context, int index) => getItem(index),
-      staggeredTileBuilder: (int index) => getTileBuilder(index),
-      mainAxisSpacing: 2,
-      crossAxisSpacing: 2,
-    );
-  }
-
-  StaggeredTile getTileBuilder(int index) {
-    ListItem item = listIndex[index];
-    switch (item.type) {
-      case ListItem.unequippedItem:
-        if (MediaQueryHelper(context).tabletOrBigger || MediaQueryHelper(context).isLandscape) {
-          return StaggeredTile.count(3, 3);
-        }
-        return StaggeredTile.count(6, 6);      
-    }
-
-    return super.getTileBuilder(index);
-  }
-
-  Widget getItem(int index) {
+  Widget getItem(int index, List<ListItem> listIndex) {
     ListItem item = listIndex[index];
     String itemKey =
         "${index}_${item.itemComponent?.itemInstanceId ?? item.itemComponent?.itemHash ?? 'empty'}";
-    switch (item.type) {
+    switch (item?.type) {
       case ListItem.infoHeader:
         return VaultInfoWidget();
 
@@ -170,12 +111,22 @@ class VaultItemListWidgetState extends ItemListWidgetState
           density: ContentDensity.MINIMAL,
           characterId: widget.characterId,
         );
-
-      case ListItem.spacer:
-        return Container();
     }
-    return Container(
-        color: Colors.indigo,
-        child: Text("You shouldn't be seeing this, please report"));
+    return super.getItem(index, listIndex);
+  }
+
+  StaggeredTile getTileBuilder(int index, List<ListItem> listIndex) {
+    ListItem item = listIndex[index];
+    switch (item?.type) {
+      case ListItem.unequippedItem:
+        if (MediaQueryHelper(context).isDesktop) {
+          return StaggeredTile.count(2, 2);
+        }
+        if (MediaQueryHelper(context).tabletOrBigger || MediaQueryHelper(context).isLandscape) {
+          return StaggeredTile.count(3, 3);
+        }
+        return StaggeredTile.count(6, 6);
+    }
+    return super.getTileBuilder(index, listIndex);
   }
 }

@@ -8,10 +8,10 @@ import 'package:little_light/widgets/item_list/quick_transfer_search_list.widget
 class QuickTransferScreen extends StatefulWidget {
   final UserSettingsService settings = UserSettingsService();
   final DestinyInventoryBucketDefinition bucketDefinition;
-  final Iterable<String> idsToAvoid;
+  final String characterId;
   final int classType;
 
-  QuickTransferScreen({this.bucketDefinition, this.classType, this.idsToAvoid})
+  QuickTransferScreen({this.bucketDefinition, this.classType, this.characterId})
       : super();
 
   @override
@@ -61,6 +61,8 @@ class QuickTransferScreenState extends State<QuickTransferScreen> {
         searchText: this.search,
         bucketType: widget.bucketDefinition.hash,
         classType: widget.classType,
-        idsToAvoid: widget.idsToAvoid);
+        characterId:widget.characterId,
+        scope:widget.bucketDefinition.scope
+        );
   }
 }

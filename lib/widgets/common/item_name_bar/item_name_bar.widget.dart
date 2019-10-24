@@ -22,7 +22,7 @@ class ItemNameBarWidget extends BaseDestinyStatelessItemWidget {
     this.fontSize = 14,
     this.padding = const EdgeInsets.all(8),
     this.multiline = false,
-    this.fontWeight = FontWeight.bold,
+    this.fontWeight = FontWeight.w500,
     this.trailing,
   }) : super(item:item, definition:definition, instanceInfo:instanceInfo,
             key: key, characterId: characterId);

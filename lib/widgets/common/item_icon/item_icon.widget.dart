@@ -68,6 +68,7 @@ class ItemIconWidget extends BaseDestinyStatelessItemWidget {
       useBackgroundColor = false;
     }
     return Container(
+        constraints: BoxConstraints.expand(),
         color: useBackgroundColor ? DestinyData.getTierColor(definition.inventory.tierType) : null,
         foregroundDecoration: iconBoxDecoration(),
         child: itemIconImage(context));

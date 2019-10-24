@@ -24,6 +24,15 @@ class MinimalArmorInventoryItemWidget extends MinimalBaseInventoryItemWidget
     return infoContainer(context, armorPrimaryStat(context));
   }
 
+  @override
+  itemIcon(BuildContext context) {
+    
+    return Stack(children:[
+      super.itemIcon(context),
+      buildStatTotal(context)
+    ]);
+  }
+
 
   Widget armorPrimaryStat(BuildContext context) {
     return Row(

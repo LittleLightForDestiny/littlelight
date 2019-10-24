@@ -46,7 +46,7 @@ class BaseItemStatWidget extends StatelessWidget {
   Color get positiveColor => DestinyData.positiveFeedback;
   Color get negativeColor => DestinyData.negativeFeedback;
   Color get masterworkColor => DestinyData.masterworkColor;
-  Color get hiddenStatColor => Colors.amber.shade200;
+  Color get hiddenStatColor => Colors.cyan.shade100;
   Color get neutralColor => Colors.grey.shade300;
 
   int get maxBarSize {
@@ -139,6 +139,10 @@ class BaseItemStatWidget extends StatelessWidget {
 
   bool get noBar {
     return scaled?.displayAsNumeric ?? false;
+  }
+
+  bool get isDirection{
+    return statHash == 2715839340;
   }
 
   interpolate(int i, List<InterpolationPoint> displayInterpolation) {

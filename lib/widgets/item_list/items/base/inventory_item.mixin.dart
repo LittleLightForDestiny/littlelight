@@ -76,6 +76,34 @@ mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget {
         child: itemHeroNamebar(context));
   }
 
+  Widget buildStatTotal(BuildContext context){
+    var stats = profile.getPrecalculatedStats(item?.itemInstanceId);
+    if(stats == null){
+      return Container();
+    }
+    int total = stats.values.fold(0, (t,s)=>t+s.value);
+    Color textColor = Colors.grey.shade500;
+    if(total >= 55){
+      textColor = Colors.grey.shade300;
+    }
+    if(total >= 60){
+      textColor = Colors.amber.shade100;
+    }
+    return Positioned(
+      right:iconBorderWidth,
+      top:iconBorderWidth,
+      left:iconBorderWidth,
+      child:Container(
+        padding: EdgeInsets.all(2),
+        decoration: BoxDecoration(gradient: LinearGradient(colors: [Colors.transparent, Colors.black])),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+        Text("T$total", style: TextStyle(fontSize: titleFontSize, fontWeight: FontWeight.w500, color:textColor),)
+      ],),
+    ));
+  }
+
   Widget itemHeroNamebar(BuildContext context){
     return Hero(
       tag: "item_namebar_${tag}_$uniqueId",

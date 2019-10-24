@@ -203,7 +203,7 @@ class DestinyData {
   }
 
   static int get maxPowerLevel {
-    return 1000;
+    return 1300;
   }
 
   static IconData getClassIcon(int type) {
