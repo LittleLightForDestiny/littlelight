@@ -195,5 +195,15 @@
     "Unsellable": "Impossível de vender",
     "Selling Inhibited": "Venda proibida",
     "Already Owned": "Já possuído",
-    "Display Only": "Apenas para exibição"
+    "Display Only": "Apenas para exibição",
+    "Energy": "Energia",
+    "Transfer Loadout": "Transferir Loadout",
+    "Vault": "Cofre",
+    "Couldn&#39;t render this widget properly. Please report this to @LittleLightD2 on Twitter or via GitHub issues": "Não foi possível renderizar esse componente corretamente. Por favor reporte isso no Twitter para @LittleLightD2 ou através do Issues do Github.",
+    "Evasion": "Evasão",
+    "Summon": "Invocação",
+    "Consecrated Mind": "Mente Consagrada",
+    "Sanctified Mind": "Mente Santificada",
+    "Energy Cost": "Custo de energia",
+    "View in Collections": "Ver nas coleções"
 }
