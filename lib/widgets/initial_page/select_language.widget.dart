@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/services/storage/storage.service.dart';
 import 'package:little_light/services/translate/translate.service.dart';
+import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/initial_page/language.button.dart';
 
@@ -51,9 +52,9 @@ class SelectLanguageWidgetState extends State<SelectLanguageWidget> {
   }
 
   List<Widget> getLanguageButtons(BuildContext context) {
-    var query = MediaQuery.of(context);
+    var query = MediaQueryHelper(context);
     var factor = .25;
-    if(query.size.shortestSide >= 600){
+    if(query.tabletOrBigger || query.isLandscape){
       factor = .1;
     }
     List<String> languages = widget.availableLanguages;

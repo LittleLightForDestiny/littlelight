@@ -41,6 +41,12 @@ class ProfileComponentGroups {
     DestinyComponentType.ItemSockets,
   ];
 
+  static const List<int> inventories = [
+    DestinyComponentType.CharacterEquipment,
+    DestinyComponentType.CharacterInventories,
+    DestinyComponentType.ProfileInventories,
+  ];
+
   static const List<int> collections = [
     DestinyComponentType.Collectibles,
     DestinyComponentType.PresentationNodes,
@@ -97,21 +103,21 @@ class ProfileService {
   bool pauseAutomaticUpdater = false;
 
   Future<DestinyProfileResponse> fetchProfileData(
-      {List<int> components = ProfileComponentGroups.everything}) async {
-    _broadcaster.push(NotificationEvent(NotificationType.requestedUpdate));
+      {List<int> components = ProfileComponentGroups.everything, bool skipUpdate = false}) async {
+    if(!skipUpdate) _broadcaster.push(NotificationEvent(NotificationType.requestedUpdate));
     try {
       DestinyProfileResponse res = await _updateProfileData(components);
       this._lastLoadedFrom = LastLoadedFrom.server;
-      _broadcaster.push(NotificationEvent(NotificationType.receivedUpdate));
+      if(!skipUpdate) _broadcaster.push(NotificationEvent(NotificationType.receivedUpdate));
       this._cacheProfile(_profile);
       if (_timer?.isActive ?? false) {
         startAutomaticUpdater();
       }
       return res;
     } catch (e) {
-      _broadcaster.push(NotificationEvent(NotificationType.updateError));
-      await Future.delayed(Duration(seconds:2));
-      _broadcaster.push(NotificationEvent(NotificationType.receivedUpdate));
+      if(!skipUpdate) _broadcaster.push(NotificationEvent(NotificationType.updateError));
+      if(!skipUpdate) await Future.delayed(Duration(seconds:2));
+      if(!skipUpdate) _broadcaster.push(NotificationEvent(NotificationType.receivedUpdate));
     }
     return _profile;
   }

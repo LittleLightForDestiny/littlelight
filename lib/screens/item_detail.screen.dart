@@ -162,9 +162,8 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
             buildSaleDetails(context),
             ItemMainInfoWidget(item, definition, instanceInfo),
             buildManagementBlock(context),
-            buildAddToLoadoutButton(context),
+            buildActionButtons(context),
             buildDuplicates(context),
-            buildCollectionsButton(context),
             buildExoticPerk(context),
             buildExoticPerkDetails(context),
             buildStats(context),
@@ -210,9 +209,8 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
               delegate: SliverChildListDelegate([
             buildSaleDetails(context),
             buildManagementBlock(context),
-            buildAddToLoadoutButton(context),
+            buildActionButtons(context),
             buildDuplicates(context),
-            buildCollectionsButton(context),
             buildExoticPerk(context),
             buildExoticPerkDetails(context),
             buildStats(context),
@@ -269,19 +267,11 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
         ));
   }
 
-  Widget buildAddToLoadoutButton(BuildContext context) {
-    if (widget.hideItemManagement) return Container();
-    if (widget.item == null ||
-        !loadoutBucketHashes.contains(definition?.inventory?.bucketTypeHash)) {
-      return Container();
-    }
-    var screenPadding = MediaQuery.of(context).padding;
-    return Container(
-        padding: EdgeInsets.only(
-            left: screenPadding.left, right: screenPadding.right),
-        child: Container(
-            padding: EdgeInsets.all(8),
-            child: RaisedButton(
+  Widget buildActionButtons(BuildContext context) {
+    if (widget.hideItemManagement || widget.item == null) return Container();
+    List<Widget> buttons = [];
+    if (loadoutBucketHashes.contains(definition?.inventory?.bucketTypeHash)) {
+      buttons.add(Expanded(child:RaisedButton(
                 child: TranslatedTextWidget("Add to Loadout"),
                 onPressed: () async {
                   var loadouts = await LoadoutsService().getLoadouts();
@@ -301,6 +291,35 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
                             await LoadoutsService().saveLoadout(loadout);
                           }));
                 })));
+    }
+    if (widget?.definition?.collectibleHash != null || widget?.definition?.equippable == true) {
+      buttons.add(Expanded(child:RaisedButton(
+                child: TranslatedTextWidget("View in Collections"),
+                onPressed: () async {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ItemDetailScreen(
+                        definition: widget.definition,
+                        uniqueId: null,
+                      ),
+                    ),
+                  );
+                })));
+    }
+    if(buttons.length == 0){
+      return Container();
+    }
+    buttons = buttons.expand((b){
+      return [b, Container(width:8)];
+    }).take(buttons.length*2 -1).toList();
+    var screenPadding = MediaQuery.of(context).padding;
+    return Container(
+        padding: EdgeInsets.only(
+            left: screenPadding.left, right: screenPadding.right),
+        child: Container(
+            padding: EdgeInsets.all(8),
+            child: Row(children:buttons.toList())));
   }
 
   Widget buildDuplicates(context) {
@@ -314,32 +333,6 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
           instanceInfo,
           duplicates: duplicates,
         ));
-  }
-
-  Widget buildCollectionsButton(BuildContext context) {
-    if (widget.hideItemManagement) return Container();
-    if (widget.item == null) {
-      return Container();
-    }
-    var screenPadding = MediaQuery.of(context).padding;
-    return Container(
-        padding: EdgeInsets.only(
-            left: screenPadding.left, right: screenPadding.right),
-        child: Container(
-            padding: EdgeInsets.all(8),
-            child: RaisedButton(
-                child: TranslatedTextWidget("View in Collections"),
-                onPressed: () async {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ItemDetailScreen(
-                        definition: widget.definition,
-                        uniqueId: null,
-                      ),
-                    ),
-                  );
-                })));
   }
 
   Widget buildObjectives(BuildContext context) {

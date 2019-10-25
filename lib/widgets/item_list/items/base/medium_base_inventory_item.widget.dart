@@ -24,7 +24,7 @@ class MediumBaseInventoryItemWidget extends BaseInventoryItemWidget {
   Widget nameBar(BuildContext context){
     return ItemNameBarWidget(item, definition, instanceInfo,
             padding: EdgeInsets.all(
-                padding),fontSize: titleFontSize, fontWeight: FontWeight.w600,);
+                padding),fontSize: titleFontSize, fontWeight: FontWeight.w500,);
   }
 
   Widget categoryName(BuildContext context) {
@@ -70,7 +70,7 @@ class MediumBaseInventoryItemWidget extends BaseInventoryItemWidget {
       child:ItemModsWidget(
       definition: definition,
       itemSockets: profile.getItemSockets(item?.itemInstanceId),
-      iconSize: 18
+      iconSize: 22
     ));
   }
 }

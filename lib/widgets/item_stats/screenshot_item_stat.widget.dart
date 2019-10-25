@@ -3,17 +3,19 @@ import 'package:bungie_api/models/destiny_stat_display_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/item_stats/base_item_stat.widget.dart';
+import 'package:little_light/widgets/item_stats/direction_stat_bar.widget.dart';
 
 class ScreenshotItemStatWidget extends BaseItemStatWidget {
   final double pixelSize;
 
   ScreenshotItemStatWidget(
       {Key key,
-        this.pixelSize = 1,
+      this.pixelSize = 1,
       StatValues modValues,
       int statHash,
       DestinyStatDisplayDefinition scaled})
-      : super(key:key, statHash: statHash, modValues: modValues, scaled: scaled);
+      : super(
+            key: key, statHash: statHash, modValues: modValues, scaled: scaled);
 
   @override
   Widget build(BuildContext context) {
@@ -34,10 +36,15 @@ class ScreenshotItemStatWidget extends BaseItemStatWidget {
       child: ManifestText<DestinyStatDefinition>(
         statHash,
         style: TextStyle(
-          shadows: [Shadow(color: Colors.black, offset: Offset.fromDirection(.5), blurRadius: 5*pixelSize)],
+          shadows: [
+            Shadow(
+                color: Colors.black,
+                offset: Offset.fromDirection(.5),
+                blurRadius: 2 * pixelSize)
+          ],
           color: nameColor,
           fontSize: pixelSize * 20,
-          fontWeight: FontWeight.w300,
+          fontWeight: FontWeight.w400,
         ),
         textAlign: TextAlign.center,
       ),
@@ -50,7 +57,12 @@ class ScreenshotItemStatWidget extends BaseItemStatWidget {
       child: Text(
         "$currentValue",
         style: TextStyle(
-          shadows: [Shadow(color: Colors.black, offset: Offset.fromDirection(.5), blurRadius: 5*pixelSize)],
+          shadows: [
+            Shadow(
+                color: Colors.black,
+                offset: Offset.fromDirection(.5),
+                blurRadius: 2 * pixelSize)
+          ],
           color: valueColor,
           fontSize: pixelSize * 20,
           fontWeight: FontWeight.bold,
@@ -64,10 +76,26 @@ class ScreenshotItemStatWidget extends BaseItemStatWidget {
     if (noBar) {
       return Container(width: pixelSize * 240);
     }
+
+    if (isDirection) {
+      return Container(
+          width: pixelSize * 240,
+          alignment: Alignment.centerLeft,
+          padding: EdgeInsets.only(bottom: 4 * pixelSize),
+          child: Container(
+              child: DirectionStatBarWidget(
+                  currentValue: currentValue,
+                  equippedValue: equipped,
+                  currentColor: valueColor,
+                  equippedColor: Colors.grey.shade500,
+                  backgroundColor: Colors.grey.shade800.withOpacity(.5)),
+              width: pixelSize * 60));
+    }
+
     return Container(
       width: pixelSize * 240,
       height: pixelSize * 20,
-      color: Colors.grey.shade900.withOpacity(.5),
+      color: Colors.grey.shade800.withOpacity(.5),
       child: Row(
         children: <Widget>[
           Container(

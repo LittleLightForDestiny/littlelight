@@ -31,16 +31,6 @@ class LargeScreenVaultListWidgetState
   ];
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  dispose() {
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     var screenPadding = MediaQuery.of(context).padding;
     return VaultItemListWidget(

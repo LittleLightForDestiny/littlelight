@@ -134,7 +134,7 @@
     "You aren't tracking any objectives yet. Add one from Triumphs or Pursuits.": "아직 추적 중인 목표가 없습니다. 업적이나 목표에서 하나를 추가하십시오.",
     "Rewards": "보상",
     "Expired": "기한 종료",
-    "Expires {timeFromNow}": "Expires {timeFromNow}",
+    "Expires {timeFromNow}": "종료되기까지 {timeFromNow}",
     "Loadouts": "로드아웃",
     "You have no loadouts yet. Create your first one.": "아직 아무런 로드아웃이 없습니다. 첫번째 로드아웃을 만드십시오.",
     "Create Loadout": "로드아웃 생성",
@@ -195,15 +195,5 @@
     "Unsellable": "판매할 수 없습니다",
     "Selling Inhibited": "판매 금지됨",
     "Already Owned": "이미 소지하고 있습니다",
-    "Display Only": "표시만 가능",
-    "Energy": "에너지",
-    "Transfer Loadout": "로드아웃 전송",
-    "Vault": "금고",
-    "Couldn&#39;t render this widget properly. Please report this to @LittleLightD2 on Twitter or via GitHub issues": "Couldn&#39;t render this widget properly. Please report this to @LittleLightD2 on Twitter or via GitHub issues",
-    "Evasion": "Evasion",
-    "Summon": "Summon",
-    "Consecrated Mind": "Consecrated Mind",
-    "Sanctified Mind": "Sanctified Mind",
-    "Energy Cost": "Energy Cost",
-    "View in Collections": "View in Collections"
+    "Display Only": "표시만 가능"
 }

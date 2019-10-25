@@ -1,3 +1,4 @@
+
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_investment_stat_definition.dart';
@@ -179,7 +180,7 @@ class BaseItemStatsState<T extends BaseItemStatsWidget>
       });
 
       if (selectedDef != null) {
-        selectedDef.investmentStats.forEach((stat) {
+        selectedDef?.investmentStats?.forEach((stat) {
           StatValues values = map[stat.statTypeHash] ?? new StatValues();
           if (selectedDef.plug?.uiPlugLabel == 'masterwork') {
             values.masterwork += stat.value;

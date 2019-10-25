@@ -1,64 +1,43 @@
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_socket_entry_definition.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
-import 'package:bungie_api/models/destiny_socket_category_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
-import 'package:little_light/widgets/common/manifest_image.widget.dart';
+import 'package:little_light/utils/destiny_data.dart';
+import 'package:little_light/widgets/common/definition_provider.widget.dart';
 
-class ItemPerksWidget extends StatefulWidget {
+class ItemArmorTierWidget extends StatefulWidget {
   final ManifestService manifest = ManifestService();
   final DestinyInventoryItemDefinition definition;
   final double iconSize;
   final List<DestinyItemSocketState> itemSockets;
-  final bool showUnusedPerks;
   final socketCategoryHash;
-  ItemPerksWidget(
-      {Key key, this.iconSize = 16,
+  ItemArmorTierWidget(
+      {Key key,
+      this.iconSize = 16,
       this.socketCategoryHash,
-      this.showUnusedPerks = false,
-      this.definition, this.itemSockets})
+      this.definition,
+      this.itemSockets})
       : super(key: key);
 
   @override
-  ItemPerksWidgetState createState() {
-    return ItemPerksWidgetState();
+  ItemArmorTierWidgetState createState() {
+    return ItemArmorTierWidgetState();
   }
 }
 
-class ItemPerksWidgetState extends State<ItemPerksWidget> {
+class ItemArmorTierWidgetState extends State<ItemArmorTierWidget> {
   List<DestinyItemSocketState> get itemSockets => widget.itemSockets;
   DestinyInventoryItemDefinition get definition => widget.definition;
-  DestinySocketCategoryDefinition perksCatDefinition;
 
   @override
   void initState() {
     super.initState();
-    loadPerks();
   }
 
-  loadPerks() async {
-    if (definition?.sockets?.socketCategories == null) {
-      return;
-    }
-    
-    perksCatDefinition = await widget.manifest
-        .getDefinition<DestinySocketCategoryDefinition>(widget.socketCategoryHash);
-    if (!mounted) return;
-    setState(() {});
-  }
-
-  @override
   Widget build(BuildContext context) {
-    if (perksCatDefinition == null) {
-      return Container();
-    }
-    return buildPerks(context, perksCatDefinition);
-  }
-
-  Widget buildPerks(BuildContext context, DestinySocketCategoryDefinition def) {
     var socketCategory = definition.sockets.socketCategories.firstWhere(
-        (s) => s.socketCategoryHash == def.hash,
+        (s) => s.socketCategoryHash == widget.socketCategoryHash,
         orElse: () => null);
     List<Widget> columns = [];
     if (socketCategory == null) return Container();
@@ -66,25 +45,17 @@ class ItemPerksWidgetState extends State<ItemPerksWidget> {
       columns.add(buildPerkColumn(context, index));
     });
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: columns.toList());
   }
 
-  Widget buildPerkColumn(BuildContext context,int index){
-    if(!widget.showUnusedPerks || itemSockets == null){
-      var hash = itemSockets != null
-          ? getEquippedPlugHashBySocketIndex(index)
-          : getDefaultPerkBySocketIndex(index);
-      return buildPerkIcon(context, hash);
-    }
-
-    List<int> hashes = getInstancePlugHashesBySocketIndex(index);
-    return Container(
-      child:Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: hashes.map((h)=>buildPerkIcon(context, h)).toList(),));
+  Widget buildPerkColumn(BuildContext context, int index) {
+    var hash = itemSockets != null
+        ? getEquippedPlugHashBySocketIndex(index)
+        : getDefaultPerkBySocketIndex(index);
+    return buildPerkIcon(context, hash);
   }
 
   Widget buildPerkIcon(BuildContext context, int plugHash) {
@@ -92,13 +63,29 @@ class ItemPerksWidgetState extends State<ItemPerksWidget> {
       return Container();
     }
     return Container(
-      width: widget.iconSize,
-      height: widget.iconSize,
-      child: ManifestImageWidget<DestinyInventoryItemDefinition>(
-        plugHash,
-        placeholder: Container(),
-      ),
-    );
+        height: widget.iconSize,
+        child: DefinitionProviderWidget<DestinyInventoryItemDefinition>(
+          plugHash,
+          (def) {
+            var capacity = def?.plug?.energyCapacity;
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Icon(DestinyData.getEnergyTypeIcon(capacity?.energyType),
+                    color: DestinyData.getEnergyTypeLightColor(
+                        capacity?.energyType),
+                    size: widget.iconSize*.7),
+                Text("${def?.plug?.energyCapacity?.capacityValue ?? 0}",
+                    style: TextStyle(
+                      height: 1,
+                      fontWeight: FontWeight.bold,
+                      fontSize: widget.iconSize,
+                        color: DestinyData.getEnergyTypeLightColor(
+                            capacity?.energyType))),
+              ],
+            );
+          },
+        ));
   }
 
   DestinyItemSocketState getSocketState(int index) {
