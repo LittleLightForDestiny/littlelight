@@ -82,9 +82,6 @@ class ShareImageWidget extends StatelessWidget {
       instanceInfo = ProfileService().getInstanceInfo(item.itemInstanceId);
       itemSockets = ProfileService().getItemSockets(item.itemInstanceId);
       itemSockets.forEach((s) {
-        if (s.reusablePlugHashes != null) {
-          modHashes.addAll(s.reusablePlugHashes);
-        }
         if (s.plugHash != null) {
           modHashes.add(s.plugHash);
         }
@@ -102,16 +99,6 @@ class ShareImageWidget extends StatelessWidget {
     });
     if (itemSockets != null) {
       for (var socket in itemSockets) {
-        if (socket.plugObjectives != null) {
-          for (var objective in socket.plugObjectives) {
-            if (objective.visible) {
-              masterworkObjective = objective;
-              masterworkObjectiveDefinition =
-                  await manifest.getDefinition<DestinyObjectiveDefinition>(
-                      objective.objectiveHash);
-            }
-          }
-        }
         var plugDef = plugItemDefinitions[socket.plugHash];
         if (plugDef == null) continue;
         plugDef?.investmentStats?.forEach((stat) {
@@ -364,20 +351,6 @@ class ShareImageWidget extends StatelessWidget {
 
   Widget buildPerkColumn(BuildContext context, int socketIndex) {
     if (itemSockets != null) {
-      var socket = itemSockets[socketIndex];
-      if (socket.reusablePlugs == null) {
-        if (socket.plugHash != null) {
-          return Column(children:[buildPerkIcon(context, socket.plugHash, true)]);
-        } else {
-          return Container(width: 72, height: 72, margin: EdgeInsets.all(4));
-        }
-      }
-      return Column(
-          children: socket.reusablePlugs
-              .where((s) => s.enabled)
-              .map((s) => buildPerkIcon(
-                  context, s.plugItemHash, s.plugItemHash == socket.plugHash))
-              .toList());
     }
     return Container(width: 72, height: 72, margin: EdgeInsets.all(4));
   }
@@ -707,17 +680,6 @@ class ShareImageWidget extends StatelessWidget {
   }
 
   Widget buildPerkDetailColumn(BuildContext context, int socketIndex) {
-    if (itemSockets != null) {
-      var socket = itemSockets[socketIndex];
-      return Flexible(
-          flex: 1,
-          child: Column(
-              children: socket.reusablePlugs
-                  .where((s) => s.enabled)
-                  .map((s) => buildPerkDetailInfo(context, s.plugItemHash,
-                      s.plugItemHash == socket.plugHash))
-                  .toList()));
-    }
     return Container();
   }
 

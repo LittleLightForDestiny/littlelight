@@ -210,7 +210,9 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
                 artifactLevel == 0
                     ? Container()
                     : Text(" +$artifactLevel",
-                        style: TextStyle(fontWeight: FontWeight.bold, color:Colors.cyanAccent))
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.cyanAccent))
               ],
             )
           ],
@@ -252,20 +254,32 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
     List<Widget> stats = [];
     character.stats.forEach((hash, stat) {
       if (hash == "${ProgressionHash.Power}") return;
-      stats.add(Container(
-          width: 16,
-          height: 16,
-          child: ManifestImageWidget<DestinyStatDefinition>(
-            int.parse(hash),
-            placeholder: Container(),
-          )));
-      stats.add(Text(
-        "$stat",
-        style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-      ));
-      stats.add(Container(width: 4));
+      stats.add(
+        Container(
+          margin: EdgeInsets.only(right:4, bottom:2),
+          child: Row(children: [
+        Container(
+          margin: EdgeInsets.only(right:2),
+            width: 16,
+            height: 16,
+            child: ManifestImageWidget<DestinyStatDefinition>(
+              int.parse(hash),
+              placeholder: Container(),
+            )),
+        Text(
+          "$stat",
+          style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+        )
+      ])));
     });
-    return Row(crossAxisAlignment: CrossAxisAlignment.center, children: stats);
+    return Column(children: [
+      Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: stats.take(3).toList()),
+      Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: stats.skip(3).toList())
+    ]);
   }
 
   Widget expInfo(BuildContext context, DestinyCharacterComponent character) {

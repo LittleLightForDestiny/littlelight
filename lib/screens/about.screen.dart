@@ -194,7 +194,7 @@ class _AboutScreenState extends State<AboutScreen> {
                             buildTagAndPlatform(4611686018486012725, BungieMembershipType.TigerSteam),
                           ])),
                       Container(height: 8),
-                      buildTranslationHeader(context, ['zh-cht']),
+                      buildTranslationHeader(context, ['zh-chs']),
                       Container(
                           color: Colors.blueGrey.shade800,
                           padding: EdgeInsets.all(4),

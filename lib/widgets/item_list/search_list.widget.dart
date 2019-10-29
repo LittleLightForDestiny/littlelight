@@ -79,11 +79,12 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
     Set<int> perkHashes = Set();
     items.forEach((i) {
       var sockets = profile.getItemSockets(i.item.itemInstanceId);
-      if (sockets == null) return;
-      sockets.forEach((s) {
+      var reusablePlugs = profile.getItemReusablePlugs(i.item.itemInstanceId);
+      sockets?.forEach((s) {
         if (s.plugHash != null) perkHashes.add(s.plugHash);
-        if (s.reusablePlugHashes != null)
-          perkHashes.addAll(s.reusablePlugHashes);
+      });
+      reusablePlugs?.forEach((hash, r) {
+        perkHashes.addAll(r.map((p) => p.plugItemHash));
       });
     });
 
@@ -179,8 +180,8 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
       for (var p in perkDefinitions.values) {
         var _perkName =
             removeDiacritics(p.displayProperties.name).toLowerCase();
-        var match = _words.every((w)=>_perkName.contains(w));
-        
+        var match = _words.every((w) => _perkName.contains(w));
+
         var hardMatch = removeDiacritics(p.displayProperties.name)
             .toLowerCase()
             .startsWith(_search.toLowerCase());
@@ -290,8 +291,7 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
         var _itemTypeDisplayName =
             removeDiacritics(def.itemTypeDisplayName).toLowerCase();
 
-
-        match = _words.every((w)=>_name.contains(w));
+        match = _words.every((w) => _name.contains(w));
         match = match || _itemTypeDisplayName.contains(_search);
 
         hardMatch = _name.startsWith(_search);
@@ -299,6 +299,8 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
 
         var sockets =
             widget.profile.getItemSockets(item?.item?.itemInstanceId ?? 0);
+        var reusablePlugs =
+            widget.profile.getItemReusablePlugs(item?.item?.itemInstanceId);
         if (sockets != null) {
           for (var s in sockets) {
             if (priorityPerksMatched.contains(s.plugHash)) {
@@ -307,18 +309,23 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
             if (s.plugHash != null && perksMatched.contains(s.plugHash)) {
               return true;
             }
-            if (s.reusablePlugHashes != null) {
-              for (var p in s.reusablePlugHashes) {
-                if (perksMatched.contains(p)) {
-                  if (priorityPerksMatched.contains(p)) {
-                    priorityResults.add(item);
-                  }
-                  return true;
-                }
+          }
+        }
+
+        if (reusablePlugs != null) {
+          for (var r in reusablePlugs?.values) {
+            for (var p in r) {
+              if (priorityPerksMatched.contains(p.plugItemHash)) {
+                priorityResults.add(item);
+              }
+              if (p.plugItemHash != null &&
+                  perksMatched.contains(p.plugItemHash)) {
+                return true;
               }
             }
           }
         }
+
         if (hardMatch) {
           priorityResults.add(item);
         }
