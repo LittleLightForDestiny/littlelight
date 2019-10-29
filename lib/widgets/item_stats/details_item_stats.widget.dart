@@ -33,6 +33,7 @@ class ScreenShotItemStatsState
     extends BaseItemStatsState<DetailsItemStatsWidget> {
   @override
   Widget build(BuildContext context) {
+    if (stats == null) return Container();
     super.build(context);
     return Container(
       padding: EdgeInsets.all(8),
@@ -64,15 +65,14 @@ class ScreenShotItemStatsState
 
   @override
   List<Widget> buildStats(context) {
-    if (stats == null) return [Container()];
     Map<int, StatValues> statValues = getStatValues();
     StatValues totalStat;
     if (definition.itemType == DestinyItemType.Armor) {
       totalStat = StatValues();
       stats.forEach((stat) {
         var entry = statValues[stat.statTypeHash];
-        totalStat.equipped += entry.equipped;
-        totalStat.selected += entry.selected;
+        totalStat.equipped += entry?.equipped;
+        totalStat.selected += entry?.selected;
       });
     }
     return stats
