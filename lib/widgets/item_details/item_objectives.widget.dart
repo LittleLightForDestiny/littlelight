@@ -3,12 +3,10 @@ import 'dart:async';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
-import 'package:bungie_api/models/destiny_item_plug.dart';
 import 'package:bungie_api/models/destiny_objective_definition.dart';
 import 'package:bungie_api/models/destiny_objective_progress.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/models/tracked_objective.dart';
-import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/littlelight/objectives.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
@@ -59,39 +57,30 @@ class ItemObjectivesWidgetState
   }
 
   updateProgress() {
-    if (AuthService().isLogged) {
-      var itemInstanceId = widget.item?.itemInstanceId;
-      if (itemInstanceId == null) {
-        var allItems = widget.profile.getAllItems();
-        var item = allItems.firstWhere(
-            (i) => i.itemHash == widget.definition?.hash,
-            orElse: () => null);
-        itemInstanceId = item?.itemInstanceId;
-      }
+    var itemInstanceId = widget.item?.itemInstanceId;
+    if (itemInstanceId == null) {
+      var allItems = widget.profile.getAllItems();
+      var item = allItems.firstWhere(
+          (i) => i.itemHash == widget.definition?.hash,
+          orElse: () => null);
+      itemInstanceId = item?.itemInstanceId;
+    }
 
-      itemObjectives = widget.profile
-          .getItemObjectives(itemInstanceId, characterId, item?.itemHash);
+    itemObjectives = widget.profile
+        .getItemObjectives(itemInstanceId, characterId, item?.itemHash);
 
-      if (itemObjectives != null) {
-        setState(() {});
-        return;
-      }
-
-      var sockets = widget.profile.getAllSockets();
-      DestinyItemPlug plugItem;
-      sockets.values.firstWhere((s) {
-        s.sockets.firstWhere((c) {
-          plugItem = c?.reusablePlugs?.firstWhere(
-              (c) => c.plugItemHash == widget.definition?.hash,
-              orElse: () => null);
-          return plugItem != null;
-        }, orElse: () => null);
-        return plugItem != null;
-      }, orElse: () => null);
-      itemObjectives = plugItem?.plugObjectives;
+    if (itemObjectives != null) {
       setState(() {});
       return;
     }
+
+    var plugObjectives = widget.profile.getPlugObjectives(itemInstanceId);
+    var plugHash = "${widget.definition.hash}";
+    if(plugObjectives?.containsKey(plugHash) ?? false){
+      itemObjectives = plugObjectives["${widget.definition.hash}"];
+    } 
+    setState(() {});
+    return;
   }
 
   @override

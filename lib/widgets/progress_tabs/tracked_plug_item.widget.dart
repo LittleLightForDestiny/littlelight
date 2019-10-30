@@ -50,18 +50,12 @@ class TrackedPlugItemWidgetState
   }
 
   updateProgress() {
-    var sockets = widget.profile.getItemSockets(widget.item.itemInstanceId);
-    var plug = sockets.firstWhere((socket)=>socket.plugHash == widget.plugHash || (socket?.reusablePlugHashes?.contains(widget.plugHash) ?? false), orElse: ()=>null);
-    if(plug == null){
-      setState((){});
-      return;
+    var plugObjectives = widget.profile.getPlugObjectives(widget.item.itemInstanceId);
+    if(plugObjectives?.containsKey("${widget.plugHash}") ?? false){
+      itemObjectives = plugObjectives["${widget.plugHash}"];
     }
-    if(plug?.plugHash == widget.plugHash){
-      itemObjectives = plug.plugObjectives;
-    }else if(plug.reusablePlugHashes.contains(widget.plugHash)){
-      itemObjectives = plug.reusablePlugs.firstWhere((p)=>p.plugItemHash == widget.plugHash, orElse:()=>null).plugObjectives;
-    }
-    setState(() {});
+    
+    setState((){});
   }
 
   @override

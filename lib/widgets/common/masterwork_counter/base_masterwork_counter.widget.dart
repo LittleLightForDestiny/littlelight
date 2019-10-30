@@ -29,17 +29,16 @@ class BaseMasterworkCounterWidgetState<T extends BaseMasterworkCounterWidget>
 
   loadDefinitions() async {
     if (widget.item == null) return;
-    var itemSockets = widget.profile.getItemSockets(widget.item.itemInstanceId);
-    if (itemSockets == null) return;
-    for (var socket in itemSockets) {
-      if (socket.plugObjectives != null) {
-        for (var objective in socket.plugObjectives) {
-          if (objective.visible) {
-            masterworkObjective = objective;
-            masterworkObjectiveDefinition = await widget.manifest
-                .getDefinition<DestinyObjectiveDefinition>(
-                    objective.objectiveHash);
-          }
+    var plugObjectives =
+        widget.profile.getPlugObjectives(widget?.item?.itemInstanceId);
+    if(plugObjectives == null) return;
+    for (var objectives in plugObjectives?.values) {
+      for (var objective in objectives) {
+        if (objective.visible) {
+          masterworkObjective = objective;
+          masterworkObjectiveDefinition = await widget.manifest
+              .getDefinition<DestinyObjectiveDefinition>(
+                  objective.objectiveHash);
         }
       }
     }

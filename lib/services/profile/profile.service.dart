@@ -9,6 +9,7 @@ import 'package:bungie_api/models/destiny_collectible_component.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_item_plug.dart';
+import 'package:bungie_api/models/destiny_item_plug_base.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_item_sockets_component.dart';
 import 'package:bungie_api/models/destiny_item_talent_grid_component.dart';
@@ -72,6 +73,8 @@ class ProfileComponentGroups {
     DestinyComponentType.ItemTalentGrids,
     DestinyComponentType.ItemSockets,
     DestinyComponentType.ItemPlugStates,
+    DestinyComponentType.ItemPlugObjectives,
+    DestinyComponentType.ItemReusablePlugs,
     DestinyComponentType.Collectibles,
     DestinyComponentType.Records,
     DestinyComponentType.PresentationNodes,
@@ -301,6 +304,20 @@ class ProfileService {
   List<DestinyItemSocketState> getItemSockets(String itemInstanceId) {
     try{
       return _profile.itemComponents.sockets.data[itemInstanceId]?.sockets;
+    }catch(e){}
+    return null;
+  }
+
+  Map<String, List<DestinyItemPlugBase>> getItemReusablePlugs(String itemInstanceId) {
+    try{
+      return _profile.itemComponents.reusablePlugs.data[itemInstanceId]?.plugs;
+    }catch(e){}
+    return null;
+  }
+
+  Map<String, List<DestinyObjectiveProgress>> getPlugObjectives(String itemInstanceId) {
+    try{
+      return _profile.itemComponents.plugObjectives.data[itemInstanceId].objectivesPerPlug;
     }catch(e){}
     return null;
   }

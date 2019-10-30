@@ -97,16 +97,11 @@ class ObjectivesService {
     var item = items.firstWhere((i) => i.itemHash == objective.parentHash,
         orElse: () => null);
     if (item == null) return null;
-    var sockets = profile.getItemSockets(item.itemInstanceId);
-    var plug = sockets.firstWhere(
-        (p) =>
-            p.plugHash == objective.hash ||
-            (p?.reusablePlugHashes?.contains(objective.hash) ?? false),
-        orElse: () => null);
-    if (plug?.plugObjectives == null) {
-      return null;
+    var plugObjective = profile.getPlugObjectives(item?.itemInstanceId);
+    if(plugObjective?.containsKey("${objective.hash}") ?? false){
+      return item;
     }
-    return item;
+    return null;
   }
 
   Future<List<TrackedObjective>> _loadTrackedObjectivesFromCache() async {

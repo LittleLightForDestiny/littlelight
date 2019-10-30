@@ -8,6 +8,7 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:flutter/rendering.dart';
+import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 
 import 'package:little_light/widgets/common/masterwork_counter/screenshot_masterwork_counter.widget.dart';
@@ -419,6 +420,18 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
 
   Widget background(BuildContext context, double expandRatio) {
     double opacity = expandRatio;
+    
+    return Positioned(
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
+        child: Opacity(
+            opacity: opacity,
+            child: buildBackgroundImage(context)));
+  }
+
+  Widget buildBackgroundImage(BuildContext context){
     String imgUrl = definition.screenshot;
     if (definition.itemType == DestinyItemType.Emblem) {
       imgUrl = definition.secondarySpecial;
@@ -429,20 +442,34 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
     if (imgUrl == null) {
       return Container();
     }
-    return Positioned(
-        top: 0,
-        bottom: 0,
-        left: 0,
-        right: 0,
-        child: Opacity(
-            opacity: opacity,
-            child: QueuedNetworkImage(
+    if(item?.overrideStyleItemHash != null){
+      return DefinitionProviderWidget<DestinyInventoryItemDefinition>(item.overrideStyleItemHash, (def){
+        if(def?.plug?.isDummyPlug ?? false){
+          return  QueuedNetworkImage(
                 imageUrl: BungieApiService.url(imgUrl),
                 fit: BoxFit.cover,
                 placeholder: Shimmer.fromColors(
                     baseColor: Colors.blueGrey.shade500,
                     highlightColor: Colors.grey.shade300,
-                    child: Container(color: Colors.white)))));
+                    child: Container(color: Colors.white))); 
+        }
+
+        return  QueuedNetworkImage(
+                imageUrl: BungieApiService.url(def?.screenshot ?? imgUrl),
+                fit: BoxFit.cover,
+                placeholder: Shimmer.fromColors(
+                    baseColor: Colors.blueGrey.shade500,
+                    highlightColor: Colors.grey.shade300,
+                    child: Container(color: Colors.white))); 
+      });
+    }
+    return QueuedNetworkImage(
+                imageUrl: BungieApiService.url(imgUrl),
+                fit: BoxFit.cover,
+                placeholder: Shimmer.fromColors(
+                    baseColor: Colors.blueGrey.shade500,
+                    highlightColor: Colors.grey.shade300,
+                    child: Container(color: Colors.white)));
   }
 
   Widget tierBar(BuildContext context, double expandRatio) {

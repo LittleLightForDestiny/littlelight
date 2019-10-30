@@ -114,9 +114,6 @@ class ItemArmorTierWidgetState extends State<ItemArmorTierWidget> {
     if (!(state.isVisible ?? false)) {
       return [];
     }
-    if ((state?.reusablePlugHashes?.length ?? 0) > 0) {
-      return state?.reusablePlugHashes;
-    }
     if ((state?.plugHash ?? 0) != 0) {
       return [state?.plugHash];
     }

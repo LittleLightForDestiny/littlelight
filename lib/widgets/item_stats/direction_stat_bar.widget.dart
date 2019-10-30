@@ -44,7 +44,7 @@ class DirectionStatBarWidget extends StatelessWidget {
         math.sin((value + 5) * ((2 * math.pi) / 20)) * (100 - value) / 100;
     double centralDirection = (direction + 1) * math.pi / 2;
     double spread = math.max(.1, (math.pi / 3) * (100 - value) / 100);
-
+    centralDirection = centralDirection.clamp(spread, math.pi - spread);
     return _DirectionRange(
         centralDirection - spread, centralDirection + spread);
   }
