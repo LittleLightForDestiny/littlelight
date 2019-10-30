@@ -6,6 +6,7 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/rendering.dart';
 import 'package:little_light/screens/share_preview.screen.dart';
+import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/masterwork_counter/base_masterwork_counter.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:flutter/material.dart';
@@ -217,6 +218,17 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
   Widget background(BuildContext context, double expandRatio) {
     double width = MediaQuery.of(context).size.width;
     double opacity = expandRatio;
+    
+    return Positioned(
+        top: 0,
+        bottom: kToolbarHeight,
+        width: width,
+        child: Opacity(
+            opacity: opacity,
+            child: buildBackgroundImage(context)));
+  }
+
+  Widget buildBackgroundImage(BuildContext context){
     String imgUrl = definition.screenshot;
     if (definition.itemType == DestinyItemType.Emblem) {
       imgUrl = definition.secondarySpecial;
@@ -227,19 +239,34 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
     if (imgUrl == null) {
       return Container();
     }
-    return Positioned(
-        top: 0,
-        bottom: kToolbarHeight,
-        width: width,
-        child: Opacity(
-            opacity: opacity,
-            child: QueuedNetworkImage(
+    if(item?.overrideStyleItemHash != null){
+      return DefinitionProviderWidget<DestinyInventoryItemDefinition>(item.overrideStyleItemHash, (def){
+        if(def?.plug?.isDummyPlug ?? false){
+          return  QueuedNetworkImage(
                 imageUrl: BungieApiService.url(imgUrl),
                 fit: BoxFit.cover,
                 placeholder: Shimmer.fromColors(
                     baseColor: Colors.blueGrey.shade500,
                     highlightColor: Colors.grey.shade300,
-                    child: Container(color: Colors.white)))));
+                    child: Container(color: Colors.white))); 
+        }
+
+        return  QueuedNetworkImage(
+                imageUrl: BungieApiService.url(def?.screenshot ?? imgUrl),
+                fit: BoxFit.cover,
+                placeholder: Shimmer.fromColors(
+                    baseColor: Colors.blueGrey.shade500,
+                    highlightColor: Colors.grey.shade300,
+                    child: Container(color: Colors.white))); 
+      });
+    }
+    return QueuedNetworkImage(
+                imageUrl: BungieApiService.url(imgUrl),
+                fit: BoxFit.cover,
+                placeholder: Shimmer.fromColors(
+                    baseColor: Colors.blueGrey.shade500,
+                    highlightColor: Colors.grey.shade300,
+                    child: Container(color: Colors.white)));
   }
 
   @override

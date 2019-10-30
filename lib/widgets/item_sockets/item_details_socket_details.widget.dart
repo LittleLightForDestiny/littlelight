@@ -191,7 +191,7 @@ class ItemDetailsSocketDetailsWidgetState
     var randomHashes =
         controller.randomizedPlugHashes(controller.selectedSocketIndex);
     if ((randomHashes?.length ?? 0) == 0) {
-      return Container(height: 80);
+      return Container();
     }
     var plugs = controller.socketPlugHashes(controller.selectedSocketIndex);
     plugs.addAll(randomHashes);

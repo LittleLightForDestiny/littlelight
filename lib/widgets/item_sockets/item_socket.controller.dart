@@ -6,6 +6,7 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_socket_category_definition.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_plug_set_definition.dart';
+import 'package:bungie_api/models/destiny_item_plug_base.dart';
 import 'package:flutter/widgets.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
@@ -15,10 +16,12 @@ class ItemSocketController extends ChangeNotifier {
   final DestinyItemComponent item;
   final DestinyInventoryItemDefinition definition;
   List<DestinyItemSocketState> _socketStates;
+  Map<String, List<DestinyItemPlugBase>> _reusablePlugs;
   List<int> _selectedSockets;
   List<int> _randomizedSelectedSockets;
   Map<int, DestinyInventoryItemDefinition> _plugDefinitions;
   Map<int, DestinyPlugSetDefinition> _plugSetDefinitions;
+
   Map<int, DestinyInventoryItemDefinition> get plugDefinitions =>
       _plugDefinitions;
   int _selectedSocket;
@@ -84,6 +87,7 @@ class ItemSocketController extends ChangeNotifier {
   _initDefaults() {
     var entries = definition?.sockets?.socketEntries;
     _socketStates = ProfileService().getItemSockets(item?.itemInstanceId);
+    _reusablePlugs = ProfileService().getItemReusablePlugs(item?.itemInstanceId);
     _selectedSockets = List<int>(entries?.length ?? 0);
     _randomizedSelectedSockets = List<int>(entries?.length ?? 0);
   }
@@ -96,11 +100,13 @@ class ItemSocketController extends ChangeNotifier {
           .expand((socket) {
             Set<int> hashes = new Set();
             hashes.add(socket.plugHash);
-            hashes.addAll(socket.reusablePlugHashes ?? []);
             return hashes;
           })
           .where((i) => (i ?? 0) != 0)
           .toSet();
+      _reusablePlugs?.forEach((hash, reusable){
+        plugHashes.addAll(reusable.map((r)=>r.plugItemHash));
+      });
     }
     Set<int> plugSetHashes = definition?.sockets?.socketEntries
         ?.expand((s) => [s.reusablePlugSetHash, s.randomizedPlugSetHash])
@@ -194,6 +200,9 @@ class ItemSocketController extends ChangeNotifier {
         }).toSet());
       }
       hashes.add(state.plugHash);
+      if(_reusablePlugs?.containsKey("${state.plugHash}") ?? false){
+        hashes.addAll(_reusablePlugs["${state.plugHash}"]?.map((r)=>r.plugItemHash));
+      }
       return hashes.where((h)=>h!=null).toSet();
     }
 
@@ -266,7 +275,7 @@ class ItemSocketController extends ChangeNotifier {
   int socketEquippedPlugHash(int socketIndex) {
     if (_socketStates != null) {
       var state = _socketStates?.elementAt(socketIndex);
-      return state.plugHash ?? state?.reusablePlugHashes?.elementAt(0);
+      return state.plugHash;
     }
     var entry = definition?.sockets?.socketEntries?.elementAt(socketIndex);
     if ((entry?.singleInitialItemHash ?? 0) != 0) {
