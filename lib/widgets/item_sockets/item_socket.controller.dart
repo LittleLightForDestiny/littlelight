@@ -200,8 +200,9 @@ class ItemSocketController extends ChangeNotifier {
         }).toSet());
       }
       hashes.add(state.plugHash);
-      if(_reusablePlugs?.containsKey("${state.plugHash}") ?? false){
-        hashes.addAll(_reusablePlugs["${state.plugHash}"]?.map((r)=>r.plugItemHash));
+
+      if(_reusablePlugs?.containsKey("$socketIndex") ?? false){
+        hashes.addAll(_reusablePlugs["$socketIndex"]?.map((r)=>r.plugItemHash));
       }
       return hashes.where((h)=>h!=null).toSet();
     }
