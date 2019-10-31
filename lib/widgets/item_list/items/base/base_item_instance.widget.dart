@@ -7,6 +7,7 @@ import 'package:bungie_api/models/destiny_vendor_definition.dart';
 import 'package:flutter/material.dart';
 
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
+import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/primary_stat.widget.dart';
@@ -144,7 +145,9 @@ class BaseItemInstanceWidget extends BaseInventoryItemWidget {
   @override
   Widget perksWidget(BuildContext context) {
     var sockets = item?.itemInstanceId == null ? null : profile.getItemSockets(item?.itemInstanceId);
+    var socketCategoryHash = definition.sockets.socketCategories.map((sc)=>sc.socketCategoryHash).firstWhere((h)=>DestinyData.socketCategoryPerkHashes.contains(h), orElse: ()=>null);
     return ItemPerksWidget(
+      socketCategoryHash: socketCategoryHash,
       itemSockets: sockets,
       definition: definition,
       iconSize: 20,

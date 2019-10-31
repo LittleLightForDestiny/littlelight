@@ -14,10 +14,12 @@ class ItemPerksWidget extends StatefulWidget {
   final bool showUnusedPerks;
   final socketCategoryHash;
   ItemPerksWidget(
-      {Key key, this.iconSize = 16,
+      {Key key,
+      this.iconSize = 16,
       this.socketCategoryHash,
       this.showUnusedPerks = false,
-      this.definition, this.itemSockets})
+      this.definition,
+      this.itemSockets})
       : super(key: key);
 
   @override
@@ -41,9 +43,10 @@ class ItemPerksWidgetState extends State<ItemPerksWidget> {
     if (definition?.sockets?.socketCategories == null) {
       return;
     }
-    
+
     perksCatDefinition = await widget.manifest
-        .getDefinition<DestinySocketCategoryDefinition>(widget.socketCategoryHash);
+        .getDefinition<DestinySocketCategoryDefinition>(
+            widget.socketCategoryHash);
     if (!mounted) return;
     setState(() {});
   }
@@ -66,14 +69,14 @@ class ItemPerksWidgetState extends State<ItemPerksWidget> {
       columns.add(buildPerkColumn(context, index));
     });
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: columns.toList());
   }
 
-  Widget buildPerkColumn(BuildContext context,int index){
-    if(!widget.showUnusedPerks || itemSockets == null){
+  Widget buildPerkColumn(BuildContext context, int index) {
+    if (!widget.showUnusedPerks || itemSockets == null) {
       var hash = itemSockets != null
           ? getEquippedPlugHashBySocketIndex(index)
           : getDefaultPerkBySocketIndex(index);
@@ -82,9 +85,10 @@ class ItemPerksWidgetState extends State<ItemPerksWidget> {
 
     List<int> hashes = getInstancePlugHashesBySocketIndex(index);
     return Container(
-      child:Column(
+        child: Column(
       mainAxisAlignment: MainAxisAlignment.start,
-      children: hashes.map((h)=>buildPerkIcon(context, h)).toList(),));
+      children: hashes.map((h) => buildPerkIcon(context, h)).toList(),
+    ));
   }
 
   Widget buildPerkIcon(BuildContext context, int plugHash) {
