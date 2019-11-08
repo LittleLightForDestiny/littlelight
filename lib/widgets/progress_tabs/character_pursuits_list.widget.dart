@@ -93,7 +93,7 @@ class _CharacterPursuitsListWidgetState
     List<DestinyItemComponent> bounties = [];
     Map<String, List<DestinyItemComponent>> other = {};
 
-    pursuits.forEach((p) {
+    pursuits?.forEach((p) {
       var def = defs[p.itemHash];
       if (def?.itemCategoryHashes?.contains(16) ?? false) {
         questSteps.add(p);
@@ -213,7 +213,7 @@ class _CharacterPursuitsListWidgetState
         return PursuitItemWidget(
             characterId: widget.characterId,
             item: item.item,
-            key: Key("pursuit_${item.item.itemHash}_${item.item.itemInstanceId}_${widget.characterId}"));
+            key: Key("pursuit_${item.item?.itemHash}_${item.item?.itemInstanceId}_${widget.characterId}"));
         break;
       case _PursuitListItemType.Other:
       case _PursuitListItemType.Container:
@@ -221,7 +221,7 @@ class _CharacterPursuitsListWidgetState
         return BountyItemWidget(
             characterId: widget.characterId,
             item: item.item,
-            key: Key("pursuit_${item.item.itemHash}_${item.item.itemInstanceId}_${widget.characterId}"));
+            key: Key("pursuit_${item.item?.itemHash}_${item.item?.itemInstanceId}_${widget.characterId}"));
     }
 
     return Container();
