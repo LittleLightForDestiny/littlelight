@@ -145,7 +145,7 @@ class BaseItemInstanceWidget extends BaseInventoryItemWidget {
   @override
   Widget perksWidget(BuildContext context) {
     var sockets = item?.itemInstanceId == null ? null : profile.getItemSockets(item?.itemInstanceId);
-    var socketCategoryHash = definition.sockets.socketCategories.map((sc)=>sc.socketCategoryHash).firstWhere((h)=>DestinyData.socketCategoryPerkHashes.contains(h), orElse: ()=>null);
+    var socketCategoryHash = definition.sockets?.socketCategories?.map((sc)=>sc.socketCategoryHash)?.firstWhere((h)=>DestinyData.socketCategoryPerkHashes.contains(h), orElse: ()=>null);
     return ItemPerksWidget(
       socketCategoryHash: socketCategoryHash,
       itemSockets: sockets,

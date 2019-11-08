@@ -70,7 +70,7 @@ class _AnimatedCharacterBackgroundWidgetState
       characters.add(_CharacterInfo(
           emblemColor: c.emblemColor,
           characterClass: c.classType,
-          damageType: subclassDef.talentGrid?.hudDamageType));
+          damageType: subclassDef?.talentGrid?.hudDamageType));
     }
     characterChangedListener();
   }
