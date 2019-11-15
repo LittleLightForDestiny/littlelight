@@ -22,9 +22,4 @@ class MinimalEngramInventoryItemWidget extends MinimalBaseInventoryItemWidget
       child: EngramIconWidget(item, definition, instanceInfo),
     );
   }
-
-  @override
-  Widget primaryStatWidget(BuildContext context) {
-    return Container();
-  }
 }

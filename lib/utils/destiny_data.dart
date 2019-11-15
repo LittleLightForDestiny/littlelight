@@ -1,4 +1,3 @@
-import 'package:bungie_api/enums/destiny_energy_type_enum.dart';
 import 'package:bungie_api/enums/destiny_item_type_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:bungie_api/enums/destiny_class_enum.dart';
@@ -34,15 +33,10 @@ class RaidPhases {
   static const int sotpVaultAccess = 244769953;
   static const int sotpInsurectionPrime = 1268191778;
 
-  static const int cosRitual = 824306255;
-  static const int cosInfiltration = 9235511;
+  static const int cosLamps = 824306255;
+  static const int cosCrystals = 9235511;
   static const int cosDeception = 3789028322;
   static const int cosGahlran = 3307986266;
-
-  static const int gosEvasion = 2158557525;
-  static const int gosSummon = 3736477924;
-  static const int gosConsecratedMind = 1024471091;
-  static const int gosSanctifieddMind = 523815399;
 
   static const int leviathanPoolsChallenge = 3796634159;
   static const int sotpInsurrectionPrimeChallenge = 4140089399;
@@ -132,9 +126,6 @@ class DestinyData {
 
   static const Color positiveFeedback = Color.fromRGBO(67, 205, 57, 1);
   static const Color negativeFeedback = Color.fromRGBO(204, 58, 56, 1);
-  static const Color masterworkColor = Color.fromRGBO(235, 196, 98, 1);
-
-  static const Color perkColor = Color.fromRGBO(94, 153, 192, 1);
 
   static const Color objectiveProgress = Color.fromRGBO(90, 163, 102, 1);
 
@@ -173,14 +164,6 @@ class DestinyData {
     4241085061, //weapon perks
   ];
 
-  static const socketCategoryexoticIntrinsicPerkHashes = [
-    3154740035 //armor perks
-  ];
-
-  static const List<int> socketCategoryTierHashes = [
-    760375309, // armor tier
-  ];
-
   static const List<int> socketCategoryModHashes = [
     279738248, // emblem customization
     590099826, // armor mods
@@ -193,17 +176,18 @@ class DestinyData {
     4265082475, //vehicle mods
   ];
 
-  static const List<int> socketCategoryCosmeticModHashes = [
-    1926152773, // armor cosmetics
-    2048875504, // weapon mods
-  ];
-
-  static int get minPowerLevel {
-    return 750;
-  }
+  static final DateTime _jokersWildRelease = DateTime(2019, 3, 1);
+  static final DateTime _penumbraRelease = DateTime(2019, 6, 1);
 
   static int get maxPowerLevel {
-    return 1300;
+    var now = DateTime.now();
+    if (now.isBefore(_jokersWildRelease)) {
+      return 650;
+    }
+    if (now.isBefore(_penumbraRelease)) {
+      return 700;
+    }
+    return 750;
   }
 
   static IconData getClassIcon(int type) {
@@ -254,18 +238,6 @@ class DestinyData {
     return DestinyIcons.destiny;
   }
 
-  static IconData getEnergyTypeIcon(int type) {
-    switch (type) {
-      case DestinyEnergyType.Arc:
-        return DestinyIcons.damage_arc;
-      case DestinyEnergyType.Thermal:
-        return DestinyIcons.damage_solar;
-      case DestinyEnergyType.Void:
-        return DestinyIcons.damage_void;
-    }
-    return DestinyIcons.destiny;
-  }
-
   static Color getDamageTypeColor(int damageType) {
     switch (damageType) {
       case DamageType.Arc:
@@ -276,43 +248,6 @@ class DestinyData {
         return Color.fromARGB(255, 64, 34, 101);
     }
     return Colors.white;
-  }
-
-
-  static Color getEnergyTypeColor(int damageType) {
-    switch (damageType) {
-      case DestinyEnergyType.Arc:
-        return Color.fromARGB(255, 118, 186, 230);
-      case DestinyEnergyType.Thermal:
-        return Color.fromARGB(255, 243, 98, 39);
-      case DestinyEnergyType.Void:
-        return Color.fromARGB(255, 64, 34, 101);
-    }
-    return Colors.white;
-  }
-
-  static Color getEnergyTypeLightColor(int damageType) {
-    switch (damageType) {
-      case DestinyEnergyType.Arc:
-        return Color.fromARGB(255, 130, 200, 253);
-      case DestinyEnergyType.Thermal:
-        return Color.fromARGB(255, 255, 156, 74);
-      case DestinyEnergyType.Void:
-        return Color.fromARGB(255, 177, 120, 248);
-    }
-    return Colors.white;
-  }
-
-  static int getEnergyTypeCostHash(int damageType) {
-    switch (damageType) {
-      case DestinyEnergyType.Arc:
-        return 3779394102;
-      case DestinyEnergyType.Thermal:
-        return 3344745325;
-      case DestinyEnergyType.Void:
-        return 2399985800;
-    }
-    return 0;
   }
 
   static Color getDamageTypeTextColor(int damageType) {
@@ -400,27 +335,4 @@ class DestinyData {
 class ProgressionHash {
   static const int Legend = 2030054750;
   static const int Power = 1935470627;
-}
-
-enum CurrencyConversionType{
-  InventoryItem, Currency
-}
-
-class CurrencyConversion{
-  static const Map<int, CurrencyConversion> purchaseables = {
-    924468777: CurrencyConversion(CurrencyConversionType.InventoryItem, 1305274547), //Phaseglass
-    3721881826: CurrencyConversion(CurrencyConversionType.InventoryItem, 950899352), //Dusklight
-    1420498062: CurrencyConversion(CurrencyConversionType.InventoryItem, 49145143), //Simulation Seeds
-    1812969468: CurrencyConversion(CurrencyConversionType.InventoryItem, 3853748946), //Enhancement Cores
-    1845310989: CurrencyConversion(CurrencyConversionType.InventoryItem, 3487922223), //Datalattice
-    2536947844: CurrencyConversion(CurrencyConversionType.InventoryItem, 31293053), //Seraphite
-    4153440841: CurrencyConversion(CurrencyConversionType.InventoryItem, 2014411539), //Alkane Dust
-    2654422615: CurrencyConversion(CurrencyConversionType.Currency, 1022552290), //Legendary Shards
-    3664001560: CurrencyConversion(CurrencyConversionType.Currency, 3159615086), //Glimmer
-  };
-
-  final CurrencyConversionType type;
-  final int hash;
-
- const CurrencyConversion(this.type, this.hash);
 }

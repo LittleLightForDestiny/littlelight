@@ -20,7 +20,6 @@ class ItemLoreWidget extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(8),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           HeaderWidget(
               child: Container(
@@ -36,7 +35,6 @@ class ItemLoreWidget extends StatelessWidget {
               padding: EdgeInsets.all(8),
               child: ManifestText<DestinyLoreDefinition>(
                   hash,
-                  style: TextStyle(fontWeight: FontWeight.w300),
                   textExtractor: (lore){
                     if(lore == null) return "";
                     return lore.displayProperties.description;

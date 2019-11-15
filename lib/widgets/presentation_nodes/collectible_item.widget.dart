@@ -192,7 +192,7 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget> {
       context,
       MaterialPageRoute(
         builder: (context) =>
-            ItemDetailScreen(definition:itemDef),
+            ItemDetailScreen(null, itemDef, null, characterId: null),
       ),
     );
   }

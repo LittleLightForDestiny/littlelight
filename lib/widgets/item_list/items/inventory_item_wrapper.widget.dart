@@ -94,6 +94,9 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
           InventoryBucket.lostItems,
           InventoryBucket.engrams,
           InventoryBucket.emblems,
+          InventoryBucket.consumables,
+          InventoryBucket.modifications,
+          InventoryBucket.shaders,
         ].contains(widget.bucketHash);
   }
 
@@ -170,16 +173,26 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
   }
 
   void onEmptyTap(BuildContext context) async {
-    var bucketDef = await widget.manifest
+    var buckedDef = await widget.manifest
         .getDefinition<DestinyInventoryBucketDefinition>(widget.bucketHash);
     var character = widget.profile.getCharacter(widget.characterId);
+    var idsToAvoid = widget.profile
+        .getCharacterInventory(widget.characterId)
+        .map((i) => i.itemInstanceId)
+        .where((i) => i != null)
+        .toList();
+    idsToAvoid.addAll(widget.profile
+        .getCharacterEquipment(widget.characterId)
+        .map((i) => i.itemInstanceId)
+        .where((i) => i != null)
+        .toList());
     ItemWithOwner item = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => QuickTransferScreen(
-          bucketDefinition: bucketDef,
+          bucketDefinition: buckedDef,
           classType: character.classType,
-          characterId:widget.characterId,
+          idsToAvoid: idsToAvoid,
         ),
       ),
     );
@@ -216,9 +229,9 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
       context,
       MaterialPageRoute(
         builder: (context) => ItemDetailScreen(
-          item:widget.item,
-          definition:definition,
-          instanceInfo:instanceInfo,
+          widget.item,
+          definition,
+          instanceInfo,
           characterId: widget.characterId,
           uniqueId: uniqueId,
         ),

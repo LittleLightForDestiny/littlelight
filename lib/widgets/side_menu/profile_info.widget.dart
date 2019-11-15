@@ -2,7 +2,7 @@ import 'package:bungie_api/models/destiny_activity_definition.dart';
 import 'package:bungie_api/models/destiny_activity_mode_definition.dart';
 import 'package:bungie_api/models/destiny_place_definition.dart';
 import 'package:bungie_api/models/general_user.dart';
-import 'package:bungie_api/models/group_user_info_card.dart';
+import 'package:bungie_api/models/user_info_card.dart';
 import 'package:bungie_api/models/user_membership_data.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/screens/initial.screen.dart';
@@ -35,7 +35,7 @@ class ProfileInfoWidget extends StatefulWidget {
 class ProfileInfoState extends State<ProfileInfoWidget>
     with SingleTickerProviderStateMixin {
   GeneralUser bungieNetUser;
-  GroupUserInfoCard selectedMembership;
+  UserInfoCard selectedMembership;
 
   static final Animatable<double> _easeInTween =
       CurveTween(curve: Curves.easeIn);
@@ -109,7 +109,7 @@ class ProfileInfoState extends State<ProfileInfoWidget>
 
   loadUser() async {
     UserMembershipData membershipData = await widget.auth.getMembershipData();
-    GroupUserInfoCard currentMembership = await widget.auth.getMembership();
+    UserInfoCard currentMembership = await widget.auth.getMembership();
     if(!mounted) return;
     setState(() {
       bungieNetUser = membershipData?.bungieNetUser;

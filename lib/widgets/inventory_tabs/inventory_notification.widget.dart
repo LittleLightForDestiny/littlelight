@@ -9,10 +9,9 @@ import 'package:shimmer/shimmer.dart';
 class InventoryNotificationWidget extends StatefulWidget {
   final service = NotificationService();
   final double barHeight;
-  final EdgeInsets notificationMargin;
 
   InventoryNotificationWidget(
-      {Key key, this.barHeight = kBottomNavigationBarHeight, this.notificationMargin})
+      {Key key, this.barHeight = kBottomNavigationBarHeight})
       : super(key: key);
 
   @override
@@ -176,7 +175,6 @@ class InventoryNotificationWidgetState
 
   Widget buildBusyContent(BuildContext context) {
     return Container(
-      margin:widget.notificationMargin,
         decoration: BoxDecoration(
             color: _isError
                 ? Colors.red.shade900

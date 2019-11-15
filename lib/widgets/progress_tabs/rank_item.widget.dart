@@ -193,7 +193,7 @@ class RankItemWidgetState<T extends RankItemWidget> extends State<T>
   }
 
   DestinyProgressionStepDefinition get currentStep =>
-      definition.steps[widget.progression.level.clamp(0, definition.steps.length -1)];
+      definition.steps[widget.progression.level];
 
   @override
   bool get wantKeepAlive => true;

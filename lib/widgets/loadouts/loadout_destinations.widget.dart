@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/services/inventory/inventory.service.dart';
@@ -34,10 +32,8 @@ class LoadoutDestinationsWidgetState extends State<LoadoutDestinationsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    var screenPadding = MediaQuery.of(context).padding;
     return Container(
         color: Colors.blueGrey.shade800,
-        padding: EdgeInsets.only(left: max(screenPadding.left, 4), right: max(screenPadding.right, 4)),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           FreeSlotsSliderWidget(
             initialValue: freeSlots,

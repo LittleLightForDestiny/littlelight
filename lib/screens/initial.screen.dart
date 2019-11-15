@@ -1,18 +1,15 @@
 import 'dart:io';
 
 import 'package:bungie_api/helpers/bungie_net_token.dart';
-import 'package:bungie_api/models/group_user_info_card.dart';
+import 'package:bungie_api/models/user_info_card.dart';
 import 'package:bungie_api/models/user_membership_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:little_light/exceptions/exception_handler.dart';
 import 'package:little_light/screens/main.screen.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/services/littlelight/littlelight_api.service.dart';
-import 'package:little_light/services/littlelight/loadouts.service.dart';
-import 'package:little_light/services/littlelight/objectives.service.dart';
+import 'package:little_light/services/littlelight/littlelight.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/storage/storage.service.dart';
@@ -55,12 +52,9 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
   }
 
   initLoading() async{
-    await DotEnv().load('./assets/_env');
     await StorageService.init();
     AuthService().reset();
-    await LittleLightApiService().reset();
-    await LoadoutsService().reset();
-    await ObjectivesService().reset();
+    await LittleLightService().reset();
     await ManifestService().reset();
     if(widget.authCode != null){
       authCode(widget.authCode);
@@ -192,7 +186,7 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
   }
 
   checkMembership() async {
-    GroupUserInfoCard membership = await widget.auth.getMembership();    
+    UserInfoCard membership = await widget.auth.getMembership();    
     if (membership == null) {
       return showSelectMembership();
     }

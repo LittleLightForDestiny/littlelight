@@ -2,12 +2,15 @@ import 'package:bungie_api/enums/damage_type_enum.dart';
 import 'package:bungie_api/enums/destiny_class_enum.dart';
 import 'package:bungie_api/enums/tier_type_enum.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
-
+import 'package:bungie_api/models/destiny_item_category_definition.dart';
+import 'package:bungie_api/models/destiny_presentation_node_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/user_settings/item_sort_parameter.dart';
-import 'package:little_light/services/user_settings/user_settings.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
+import 'package:little_light/utils/selected_page_persistence.dart';
+import 'package:little_light/widgets/common/manifest_text.widget.dart';
+import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/selected_items.widget.dart';
 import 'package:little_light/widgets/item_list/search_list.widget.dart';
@@ -19,18 +22,40 @@ import 'package:bungie_api/enums/destiny_ammunition_type_enum.dart';
 class SearchTabData {
   String searchText = "";
   List<int> itemTypes;
-  String ownerId;
   List<int> excludeItemTypes;
+  Widget label;
   Map<FilterType, FilterItem> filterData;
   List<ItemSortParameter> sortOrder;
   SearchTabData(
-      {this.itemTypes, this.excludeItemTypes, this.filterData, this.sortOrder, this.ownerId});
+      {this.itemTypes,
+      this.excludeItemTypes,
+      this.label,
+      this.filterData,
+      this.sortOrder});
+}
 
-  factory SearchTabData.weapons() => SearchTabData(
-        itemTypes: [DestinyItemType.Weapon],
+class SearchScreen extends StatefulWidget {
+  @override
+  SearchScreenState createState() => new SearchScreenState();
+}
+
+class SearchScreenState extends State<SearchScreen>
+    with SingleTickerProviderStateMixin {
+  bool searchOpened = false;
+  Map<int, DestinyInventoryItemDefinition> perkDefinitions;
+  TextEditingController _searchFieldController = new TextEditingController();
+
+  TabController _tabController;
+
+  List<SearchTabData> _tabs = [
+    //// WEAPONS ////
+    SearchTabData(
+        itemTypes: [
+          DestinyItemType.Weapon
+        ],
         filterData: {
           FilterType.powerLevel: FilterItem(
-              [DestinyData.minPowerLevel, DestinyData.maxPowerLevel], [DestinyData.minPowerLevel, DestinyData.maxPowerLevel],
+              [0, DestinyData.maxPowerLevel], [0, DestinyData.maxPowerLevel],
               open: true),
           FilterType.bucketType: FilterItem([
             InventoryBucket.kineticWeapons,
@@ -74,22 +99,26 @@ class SearchTabData {
             DestinyAmmunitionType.Heavy
           ], [])
         },
-      );
+        label: ManifestText<DestinyItemCategoryDefinition>(1,
+            uppercase: true,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ))),
 
-  factory SearchTabData.equipment([int classType]) => SearchTabData(
-        itemTypes: [DestinyItemType.Weapon, DestinyItemType.Armor, DestinyItemType.Ghost,
-              DestinyItemType.Vehicle,
-              DestinyItemType.Ship,
-              DestinyItemType.Emblem,],
+    /// ARMOR ///
+    SearchTabData(
+        itemTypes: [
+          DestinyItemType.Armor
+        ],
         filterData: {
           FilterType.powerLevel: FilterItem(
-              [DestinyData.minPowerLevel, DestinyData.maxPowerLevel], [DestinyData.minPowerLevel, DestinyData.maxPowerLevel],
+              [0, DestinyData.maxPowerLevel], [0, DestinyData.maxPowerLevel],
               open: true),
           FilterType.classType: FilterItem([
             DestinyClass.Titan,
             DestinyClass.Hunter,
             DestinyClass.Warlock
-          ], classType != null ? [classType] : [], open: true),
+          ], [], open: true),
           FilterType.bucketType: FilterItem([
             InventoryBucket.helmet,
             InventoryBucket.gauntlets,
@@ -105,102 +134,88 @@ class SearchTabData {
             TierType.Basic,
           ], []),
         },
-      );
+        label: ManifestText<DestinyItemCategoryDefinition>(20,
+            uppercase: true,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ))),
 
-  factory SearchTabData.armor([int classType]) => SearchTabData(
-        itemTypes: [DestinyItemType.Armor],
+    /// QUEST ////
+    SearchTabData(
+        label: ManifestText<DestinyItemCategoryDefinition>(53,
+            uppercase: true,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            )),
         filterData: {
-          FilterType.powerLevel: FilterItem(
-              [DestinyData.minPowerLevel, DestinyData.maxPowerLevel], [DestinyData.minPowerLevel, DestinyData.maxPowerLevel],
-              open: true),
-          FilterType.classType: FilterItem([
-            DestinyClass.Titan,
-            DestinyClass.Hunter,
-            DestinyClass.Warlock
-          ], classType != null ? [classType] : [], open: true),
-          FilterType.bucketType: FilterItem([
-            InventoryBucket.helmet,
-            InventoryBucket.gauntlets,
-            InventoryBucket.chestArmor,
-            InventoryBucket.legArmor,
-            InventoryBucket.classArmor,
-          ], [], open: true),
-          FilterType.tierType: FilterItem([
-            TierType.Exotic,
-            TierType.Superior,
-            TierType.Rare,
-            TierType.Common,
-            TierType.Basic,
-          ], []),
-        },
-      );
-
-  factory SearchTabData.pursuits([String ownerId]) => SearchTabData(
-          ownerId: ownerId,
-          filterData: {
-            FilterType.itemType: FilterItem([
-              DestinyItemType.QuestStep,
-              DestinyItemType.Bounty,
-            ], [], open: true),
-            FilterType.tierType: FilterItem([
-              TierType.Exotic,
-              TierType.Superior,
-              TierType.Rare,
-              TierType.Common,
-              TierType.Basic,
-            ], [], open: true),
-          },
-          itemTypes: [
-            DestinyItemType.Quest,
+          FilterType.itemType: FilterItem([
             DestinyItemType.QuestStep,
             DestinyItemType.Bounty,
-          ]);
-
-  factory SearchTabData.flair() => SearchTabData(
-          filterData: {
-            FilterType.itemType: FilterItem([
-              DestinyItemType.Ghost,
-              DestinyItemType.Vehicle,
-              DestinyItemType.Ship,
-              DestinyItemType.Emblem,
-            ], [], open: true),
-            FilterType.tierType: FilterItem([
-              TierType.Exotic,
-              TierType.Superior,
-              TierType.Rare,
-              TierType.Common,
-              TierType.Basic,
-            ], [], open: true),
-          },
-          itemTypes: [
+          ], [], open: true),
+          FilterType.tierType: FilterItem([
+            TierType.Exotic,
+            TierType.Superior,
+            TierType.Rare,
+            TierType.Common,
+            TierType.Basic,
+          ], [], open: true),
+        },
+        itemTypes: [
+          DestinyItemType.Quest,
+          DestinyItemType.QuestStep,
+          DestinyItemType.Bounty,
+        ]),
+    //// FLAIR ////
+    SearchTabData(
+        label: ManifestText<DestinyPresentationNodeDefinition>(3066887728,
+            uppercase: true,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            )),
+        filterData: {
+          FilterType.itemType: FilterItem([
             DestinyItemType.Ghost,
             DestinyItemType.Vehicle,
             DestinyItemType.Ship,
             DestinyItemType.Emblem,
-          ]);
-}
-
-class SearchScreen extends StatefulWidget {
-  final SearchTabData tabData;
-  SearchScreen({Key key, this.tabData}) : super(key: key);
-
-  @override
-  SearchScreenState createState() => new SearchScreenState();
-}
-
-class SearchScreenState extends State<SearchScreen>
-    with SingleTickerProviderStateMixin {
-  Map<int, DestinyInventoryItemDefinition> perkDefinitions;
-  TextEditingController _searchFieldController = new TextEditingController();
+          ], [], open: true),
+          FilterType.tierType: FilterItem([
+            TierType.Exotic,
+            TierType.Superior,
+            TierType.Rare,
+            TierType.Common,
+            TierType.Basic,
+          ], [], open: true),
+        },
+        itemTypes: [
+          DestinyItemType.Ghost,
+          DestinyItemType.Vehicle,
+          DestinyItemType.Ship,
+          DestinyItemType.Emblem,
+        ]),
+  ];
 
   @override
   initState() {
+    SelectedPagePersistence.saveLatestScreen(SelectedPagePersistence.search);
     super.initState();
-    _searchFieldController.text = widget.tabData.searchText;
+    _tabController = new TabController(vsync: this, length: _tabs.length);
+    _searchFieldController.text = currentTabData.searchText;
     _searchFieldController.addListener(() {
-      widget.tabData.searchText = _searchFieldController.text;
+      currentTabData.searchText = _searchFieldController.text;
       setState(() {});
     });
+
+    _tabController.addListener(() {
+      _searchFieldController.text = currentTabData.searchText;
+      closeSearch();
+    });
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   @override
@@ -209,17 +224,34 @@ class SearchScreenState extends State<SearchScreen>
     return Scaffold(
         appBar: buildAppBar(context),
         endDrawer: SearchFiltersWidget(
-          filterData: widget.tabData.filterData,
+          filterData: currentTabData.filterData,
           onChange: () {
             setState(() {});
           },
         ),
         body: Stack(children: [
           Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            Material(
+                color: Colors.blueGrey.shade700,
+                elevation: 1,
+                child: Center(
+                    child: TabBar(
+                  indicatorColor: Colors.white,
+                  isScrollable: true,
+                  controller: _tabController,
+                  tabs: buildTabButtons(context),
+                ))),
             Expanded(
-                child: SearchListWidget(
-              tabData: widget.tabData,
-            )),
+                child: Container(
+                    child: TabBarView(
+                        controller: _tabController,
+                        children: _tabs
+                            .map(
+                              (tab) => SearchListWidget(
+                                    tabData: tab,
+                                  ),
+                            )
+                            .toList()))),
             SelectedItemsWidget(),
             Container(
               height: screenPadding.bottom,
@@ -236,7 +268,26 @@ class SearchScreenState extends State<SearchScreen>
     return AppBar(
       title: buildAppBarTitle(context),
       elevation: 2,
+      leading: IconButton(
+        icon: Icon(Icons.menu),
+        onPressed: () {
+          Scaffold.of(context).openDrawer();
+        },
+      ),
+      titleSpacing: 0,
       actions: <Widget>[
+        IconButton(
+          icon: Icon(searchOpened ? Icons.clear : Icons.search),
+          onPressed: () {
+            searchOpened = !searchOpened;
+            currentTabData.searchText = _searchFieldController.text;
+            if (!searchOpened) {
+              currentTabData.searchText = "";
+              _searchFieldController.clear();
+            }
+            setState(() {});
+          },
+        ),
         Builder(
             builder: (context) => IconButton(
                   icon: Icon(Icons.filter_list),
@@ -248,10 +299,34 @@ class SearchScreenState extends State<SearchScreen>
     );
   }
 
+  List<Widget> buildTabButtons(BuildContext context) {
+    return _tabs.map((tab) {
+      return buildTabButton(context, tab.label);
+    }).toList();
+  }
+
+  Widget buildTabButton(BuildContext context, Widget label) {
+    return Container(padding: EdgeInsets.all(8), child: label);
+  }
+
+  closeSearch() {
+    searchOpened = false;
+    currentTabData.searchText = "";
+    setState(() {});
+  }
+
+  SearchTabData get currentTabData => _tabs[_tabController.index];
+
   buildAppBarTitle(BuildContext context) {
-    return TextField(
-      autofocus: UserSettingsService().autoOpenKeyboard,
-      controller: _searchFieldController,
+    if (searchOpened) {
+      return TextField(
+        autofocus: true,
+        controller: _searchFieldController,
+      );
+    }
+    return TranslatedTextWidget(
+      "Search",
+      overflow: TextOverflow.fade,
     );
   }
 }

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:core';
 
 import 'package:flutter/services.dart';
+import 'package:little_light/exceptions/exception_handler.dart';
 import 'package:little_light/services/storage/storage.service.dart';
 import 'package:little_light/services/translate/timeago_messages/cn_messages.dart';
 import 'package:little_light/services/translate/timeago_messages/de_messages.dart';
@@ -57,8 +58,8 @@ class TranslateService {
     'pl': "Polski",
     'pt-br': "Português Brasileiro",
     'ru': "Русский",
-    'zh-cht': "繁體中文",
-    'zh-chs': "简体中文"
+    'zh-cht': "中文",
+    'zh-chs': "简化字"
   };
 
 
@@ -69,6 +70,10 @@ class TranslateService {
     Map<String, String> translationMap = await _getTranslationMap(code);
     if(translationMap != null && translationMap.containsKey(text)){
       return _replace(translationMap[text], replace);
+    }
+
+    if(!translationMap.containsKey("#####$text")){
+      _reportMissingTranslation(code, text);
     }
 
     translationMap = await _getTranslationMap(fallbackLanguage);
@@ -86,9 +91,9 @@ class TranslateService {
     return text;
   }
 
-  // _reportMissingTranslation(String language, String text){
-  //   ExceptionHandler.reportToSentry("Missing translation: $language - $text");
-  // }
+  _reportMissingTranslation(String language, String text){
+    ExceptionHandler.reportToSentry("Missing translation: $language - $text");
+  }
 
 
 

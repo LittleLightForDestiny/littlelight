@@ -6,25 +6,21 @@ import 'package:bungie_api/models/destiny_objective_progress.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
-import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
+import 'package:little_light/widgets/common/destiny_item.stateful_widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/objective.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
-class QuestInfoWidget extends BaseDestinyStatefulItemWidget {
+class QuestInfoWidget extends DestinyItemStatefulWidget {
   QuestInfoWidget(
-      {DestinyItemComponent item,
+      DestinyItemComponent item,
       DestinyInventoryItemDefinition definition,
       DestinyItemInstanceComponent instanceInfo,
-      Key key,
+      {Key key,
       String characterId})
-      : super(
-            item: item,
-            definition: definition,
-            instanceInfo: instanceInfo,
-            key: key,
-            characterId: characterId);
+      : super(item, definition, instanceInfo,
+            key: key, characterId: characterId);
 
   @override
   QuestInfoWidgetState createState() {
@@ -32,7 +28,7 @@ class QuestInfoWidget extends BaseDestinyStatefulItemWidget {
   }
 }
 
-class QuestInfoWidgetState extends BaseDestinyItemState<QuestInfoWidget> {
+class QuestInfoWidgetState extends DestinyItemState<QuestInfoWidget> {
   DestinyInventoryItemDefinition questlineDefinition;
   Map<int, DestinyInventoryItemDefinition> questSteps;
   Map<int, DestinyObjectiveDefinition> objectiveDefinitions;

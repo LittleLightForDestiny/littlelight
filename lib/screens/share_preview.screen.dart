@@ -9,12 +9,12 @@ import 'package:flutter/rendering.dart';
 
 import 'dart:ui' as ui;
 
-import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
+import 'package:little_light/widgets/common/destiny_item.stateful_widget.dart';
 import 'package:little_light/widgets/item_details/share_image/share_image.painter.dart';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:shimmer/shimmer.dart';
 
-class SharePreviewScreen extends BaseDestinyStatefulItemWidget {
+class SharePreviewScreen extends DestinyItemStatefulWidget {
   final String uniqueId;
 
   SharePreviewScreen(
@@ -24,12 +24,8 @@ class SharePreviewScreen extends BaseDestinyStatefulItemWidget {
       {@required String characterId,
       Key key,
       this.uniqueId})
-      : super(
-            item: item,
-            definition: definition,
-            instanceInfo: instanceInfo,
-            key: key,
-            characterId: characterId);
+      : super(item, definition, instanceInfo,
+            key: key, characterId: characterId);
 
   @override
   SharePreviewScreenState createState() {
@@ -37,7 +33,7 @@ class SharePreviewScreen extends BaseDestinyStatefulItemWidget {
   }
 }
 
-class SharePreviewScreenState extends BaseDestinyItemState<SharePreviewScreen> {
+class SharePreviewScreenState extends DestinyItemState<SharePreviewScreen> {
   int selectedPerk;
   Map<int, int> selectedPerks = new Map();
   Map<int, DestinyInventoryItemDefinition> plugDefinitions;
@@ -52,21 +48,20 @@ class SharePreviewScreenState extends BaseDestinyItemState<SharePreviewScreen> {
   }
 
   Future<void> loadDefinitions() async {
-    try {
+    try{
       shareImage = await ShareImageWidget.builder(context,
           item: widget.item, definition: widget.definition, onLoad: () {});
       setState(() {});
       await Future.delayed(Duration(milliseconds: 1500));
       await saveImage();
       await Future.delayed(Duration(milliseconds: 100));
-    } catch (e) {
+    }catch(e){
       print(e);
     }
     Navigator.of(context).pop();
   }
 
   Future<void> loadPlugDefinitions() async {
-    
     List<int> plugHashes = definition.sockets.socketEntries
         .expand((socket) {
           List<int> hashes = [];
@@ -75,6 +70,10 @@ class SharePreviewScreenState extends BaseDestinyItemState<SharePreviewScreen> {
           }
           if ((socket.reusablePlugItems?.length ?? 0) != 0) {
             hashes.addAll(socket.reusablePlugItems
+                .map((plugItem) => plugItem.plugItemHash));
+          }
+          if ((socket.randomizedPlugItems?.length ?? 0) != 0) {
+            hashes.addAll(socket.randomizedPlugItems
                 .map((plugItem) => plugItem.plugItemHash));
           }
           return hashes;
@@ -182,7 +181,7 @@ class SharePreviewScreenState extends BaseDestinyItemState<SharePreviewScreen> {
       ui.Image image = await boundary.toImage(pixelRatio: 1.0);
       ByteData byteData =
           await image.toByteData(format: ui.ImageByteFormat.png);
-
+      
       await Share.file(
           definition.displayProperties.name,
           "${definition.displayProperties.name}.png",

@@ -16,9 +16,4 @@ class SubclassInventoryItemWidget extends BaseInventoryItemWidget with SubclassP
 
   @override
   DestinyItemTalentGridComponent get talentGrid => profile.getTalentGrid(item.itemInstanceId);
-
-  @override
-  Widget primaryStatWidget(BuildContext context) {
-    return Container();
-  }
 }

@@ -1,8 +1,6 @@
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
 translationPlaceholders() {
-  TranslatedTextWidget("Select Language");
-  TranslatedTextWidget("Download Database");
   TranslatedTextWidget("Equipment");
   TranslatedTextWidget("Progress");
   TranslatedTextWidget("Pursuits");
@@ -10,6 +8,8 @@ translationPlaceholders() {
   TranslatedTextWidget("Search");
   TranslatedTextWidget("Duplicated Items");
   TranslatedTextWidget("About");
+  TranslatedTextWidget("Change Account");
+  TranslatedTextWidget("Change Membership");
   TranslatedTextWidget("Change Language");
   TranslatedTextWidget("Transfer");
   TranslatedTextWidget("Stats");
@@ -68,19 +68,8 @@ translationPlaceholders() {
   TranslatedTextWidget("Botza District");
   TranslatedTextWidget("Vault Access");
   TranslatedTextWidget("Insurrection Prime");
-  TranslatedTextWidget("Hive Ritual");
-  TranslatedTextWidget("Infiltration");
+  TranslatedTextWidget("Lamps");
+  TranslatedTextWidget("Crystals");
   TranslatedTextWidget("Deception");
   TranslatedTextWidget("Gahlran");
-  TranslatedTextWidget("Val Ca'uor");
-
-  //garden of salvation
-  TranslatedTextWidget("Evasion");
-  TranslatedTextWidget("Summon");
-  TranslatedTextWidget("Consecrated Mind");
-  TranslatedTextWidget("Sanctified Mind");
-
-  //Errors
-  TranslatedTextWidget("server_error");
-  TranslatedTextWidget("SystemDisabled");
 }

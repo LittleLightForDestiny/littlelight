@@ -53,7 +53,7 @@ class ObjectiveWidget extends StatelessWidget {
     return Container(color: barColor);
   }
 
-  bool get isComplete {
+  bool get isComplete{
     return objective?.complete == true || forceComplete;
   }
 
@@ -61,18 +61,14 @@ class ObjectiveWidget extends StatelessWidget {
     if (definition == null) return Container();
     if ((definition?.completionValue ?? 0) <= 1) {
       return Container(
-          padding: EdgeInsets.only(left: 8, right:4),
-          child: Row(
-              children: [Expanded(child:buildTitle(context)), buildCount(context)]));
+          padding: EdgeInsets.only(left: 8), child: buildTitle(context));
     }
     return Container(
         margin: EdgeInsets.only(left: 4),
         height: 22,
-        decoration: isComplete
-            ? null
-            : BoxDecoration(
-                border: Border.all(
-                    width: 1, color: this.color ?? Colors.grey.shade300)),
+        decoration: isComplete ? null : BoxDecoration(
+            border: Border.all(
+                width: 1, color: this.color ?? Colors.grey.shade300)),
         child: Stack(
           children: <Widget>[
             Positioned.fill(
@@ -112,15 +108,16 @@ class ObjectiveWidget extends StatelessWidget {
   buildCount(BuildContext context) {
     int progress = objective?.progress ?? 0;
     int total = definition.completionValue ?? 0;
+    if (total <= 1) return Container();
     if (!definition.allowOvercompletion) {
       progress = min(total, progress);
     }
 
-    if (forceComplete) {
+    if(forceComplete){
       progress = total;
     }
 
-    return Text(total <= 1 ? "$progress" : "$progress/$total",
+    return Text("$progress/$total",
         style: TextStyle(
             fontWeight: FontWeight.w500,
             fontSize: 13,
@@ -131,7 +128,7 @@ class ObjectiveWidget extends StatelessWidget {
     int progress = objective?.progress ?? 0;
     int total = definition.completionValue ?? 0;
     Color color = Color.lerp(barColor, Colors.black, .1);
-    if (isComplete) return Container();
+    if(isComplete) return Container();
     return Container(
         margin: EdgeInsets.all(2),
         color: Colors.blueGrey.shade800,
@@ -142,8 +139,8 @@ class ObjectiveWidget extends StatelessWidget {
         ));
   }
 
-  Color get barColor {
-    if (parentCompleted == true) {
+  Color get barColor{
+    if(parentCompleted == true){
       return color;
     }
     return DestinyData.objectiveProgress;

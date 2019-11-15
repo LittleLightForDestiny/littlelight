@@ -17,11 +17,7 @@ import 'package:little_light/widgets/common/expiry_date.widget.dart';
 import 'package:little_light/widgets/common/objective.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
-typedef void OnPursuitTap(
-    DestinyItemComponent item,
-    DestinyInventoryItemDefinition definition,
-    DestinyItemInstanceComponent instanceInfo,
-    String characterId);
+typedef void OnPursuitTap(DestinyItemComponent item, DestinyInventoryItemDefinition definition, DestinyItemInstanceComponent instanceInfo, String characterId);
 
 class PursuitItemWidget extends StatefulWidget {
   final String characterId;
@@ -33,11 +29,7 @@ class PursuitItemWidget extends StatefulWidget {
   final OnPursuitTap onTap;
 
   PursuitItemWidget(
-      {Key key,
-      this.characterId,
-      this.item,
-      this.includeCharacterIcon = false,
-      this.onTap})
+      {Key key, this.characterId, this.item, this.includeCharacterIcon = false, this.onTap})
       : super(key: key);
 
   PursuitItemWidgetState createState() => PursuitItemWidgetState();
@@ -117,12 +109,12 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
               color: Colors.transparent,
               child: InkWell(
                 onTap: () {
-                  if (widget.onTap != null) {
+                  if(widget.onTap != null){
                     widget.onTap(
-                      item,
-                      definition,
-                      widget.profile.getInstanceInfo(itemInstanceId),
-                      widget.characterId,
+                        item,
+                        definition,
+                        widget.profile.getInstanceInfo(itemInstanceId),
+                        widget.characterId,
                     );
                     return;
                   }
@@ -130,9 +122,9 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
                     context,
                     MaterialPageRoute(
                       builder: (context) => ItemDetailScreen(
-                        item: item,
-                        definition: definition,
-                        instanceInfo: instanceInfo,
+                        item,
+                        definition,
+                        widget.profile.getInstanceInfo(itemInstanceId),
                         characterId: widget.characterId,
                       ),
                     ),
@@ -240,8 +232,8 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
     setState(() {});
   }
 
-  bool get isComplete {
-    return itemObjectives?.every((o) => o.complete) ?? false;
+  bool get isComplete{
+    return itemObjectives?.every((o)=>o.complete) ?? false;
   }
 
   @override

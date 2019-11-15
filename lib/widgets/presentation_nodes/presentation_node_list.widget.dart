@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:bungie_api/models/destiny_presentation_node_child_entry.dart';
 import 'package:bungie_api/models/destiny_presentation_node_collectible_child_entry.dart';
 import 'package:bungie_api/models/destiny_presentation_node_definition.dart';
@@ -84,9 +82,8 @@ class PresentationNodeListWidgetState
   @override
   Widget build(BuildContext context) {
     var screenPadding = MediaQuery.of(context).padding;
-    
     return StaggeredGridView.countBuilder(
-      padding: EdgeInsets.all(4).copyWith(top: 0, left: max(screenPadding.left, 4), right: max(screenPadding.right, 4), bottom: 4 + screenPadding.bottom),
+      padding: EdgeInsets.all(4).copyWith(bottom: 4 + screenPadding.bottom),
       crossAxisCount: 30,
       itemCount: count,
       itemBuilder: (BuildContext context, int index) => getItem(context, index),

@@ -1,15 +1,12 @@
 import 'dart:async';
 
 import 'package:bungie_api/enums/destiny_collectible_state_enum.dart';
-import 'package:bungie_api/models/destiny_artifact_profile_scoped.dart';
 import 'package:bungie_api/models/destiny_character_activities_component.dart';
 import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:bungie_api/models/destiny_character_progression_component.dart';
 import 'package:bungie_api/models/destiny_collectible_component.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
-import 'package:bungie_api/models/destiny_item_plug.dart';
-import 'package:bungie_api/models/destiny_item_plug_base.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_item_sockets_component.dart';
 import 'package:bungie_api/models/destiny_item_talent_grid_component.dart';
@@ -17,7 +14,6 @@ import 'package:bungie_api/models/destiny_objective_progress.dart';
 import 'package:bungie_api/models/destiny_presentation_node_component.dart';
 import 'package:bungie_api/models/destiny_profile_response.dart';
 import 'package:bungie_api/models/destiny_record_component.dart';
-import 'package:bungie_api/models/destiny_stat.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:bungie_api/enums/destiny_component_type_enum.dart';
 import 'package:bungie_api/enums/destiny_scope_enum.dart';
@@ -42,12 +38,6 @@ class ProfileComponentGroups {
     DestinyComponentType.ItemSockets,
   ];
 
-  static const List<int> inventories = [
-    DestinyComponentType.CharacterEquipment,
-    DestinyComponentType.CharacterInventories,
-    DestinyComponentType.ProfileInventories,
-  ];
-
   static const List<int> collections = [
     DestinyComponentType.Collectibles,
     DestinyComponentType.PresentationNodes,
@@ -66,19 +56,14 @@ class ProfileComponentGroups {
     DestinyComponentType.CharacterInventories,
     DestinyComponentType.ProfileInventories,
     DestinyComponentType.ProfileCurrencies,
-    DestinyComponentType.ProfileProgression,
     DestinyComponentType.ItemInstances,
-    DestinyComponentType.ItemStats,
     DestinyComponentType.ItemObjectives,
     DestinyComponentType.ItemTalentGrids,
     DestinyComponentType.ItemSockets,
-    DestinyComponentType.ItemPlugStates,
-    DestinyComponentType.ItemPlugObjectives,
-    DestinyComponentType.ItemReusablePlugs,
     DestinyComponentType.Collectibles,
     DestinyComponentType.Records,
     DestinyComponentType.PresentationNodes,
-    DestinyComponentType.Profiles,
+    DestinyComponentType.Profiles
   ];
 }
 
@@ -106,21 +91,21 @@ class ProfileService {
   bool pauseAutomaticUpdater = false;
 
   Future<DestinyProfileResponse> fetchProfileData(
-      {List<int> components = ProfileComponentGroups.everything, bool skipUpdate = false}) async {
-    if(!skipUpdate) _broadcaster.push(NotificationEvent(NotificationType.requestedUpdate));
+      {List<int> components = ProfileComponentGroups.everything}) async {
+    _broadcaster.push(NotificationEvent(NotificationType.requestedUpdate));
     try {
       DestinyProfileResponse res = await _updateProfileData(components);
       this._lastLoadedFrom = LastLoadedFrom.server;
-      if(!skipUpdate) _broadcaster.push(NotificationEvent(NotificationType.receivedUpdate));
+      _broadcaster.push(NotificationEvent(NotificationType.receivedUpdate));
       this._cacheProfile(_profile);
       if (_timer?.isActive ?? false) {
         startAutomaticUpdater();
       }
       return res;
     } catch (e) {
-      if(!skipUpdate) _broadcaster.push(NotificationEvent(NotificationType.updateError));
-      if(!skipUpdate) await Future.delayed(Duration(seconds:2));
-      if(!skipUpdate) _broadcaster.push(NotificationEvent(NotificationType.receivedUpdate));
+      _broadcaster.push(NotificationEvent(NotificationType.updateError));
+      await Future.delayed(Duration(seconds:2));
+      _broadcaster.push(NotificationEvent(NotificationType.receivedUpdate));
     }
     return _profile;
   }
@@ -302,31 +287,7 @@ class ProfileService {
   }
 
   List<DestinyItemSocketState> getItemSockets(String itemInstanceId) {
-    try{
-      return _profile.itemComponents.sockets.data[itemInstanceId]?.sockets;
-    }catch(e){}
-    return null;
-  }
-
-  Map<String, List<DestinyItemPlugBase>> getItemReusablePlugs(String itemInstanceId) {
-    try{
-      return _profile.itemComponents.reusablePlugs.data[itemInstanceId]?.plugs;
-    }catch(e){}
-    return null;
-  }
-
-  Map<String, List<DestinyObjectiveProgress>> getPlugObjectives(String itemInstanceId) {
-    try{
-      return _profile.itemComponents.plugObjectives.data[itemInstanceId].objectivesPerPlug;
-    }catch(e){}
-    return null;
-  }
-
-  Map<String, DestinyStat> getPrecalculatedStats(String itemInstanceId) {
-    if(_profile.itemComponents?.stats?.data?.containsKey(itemInstanceId) ?? false){
-      return _profile.itemComponents?.stats?.data[itemInstanceId]?.stats;
-    }
-    return null;
+    return _profile.itemComponents.sockets.data[itemInstanceId]?.sockets;
   }
 
   List<DestinyObjectiveProgress> getItemObjectives(
@@ -339,27 +300,6 @@ class ProfileService {
 
   Map<String, DestinyPresentationNodeComponent> getProfilePresentationNodes() {
     return _profile?.profilePresentationNodes?.data?.nodes;
-  }
-
-
-  List<DestinyItemPlug> getCharacterPlugSets(String characterId, int plugSetHash){
-    var plugs = _profile?.characterPlugSets?.data[characterId]?.plugs;
-    if(plugs?.containsKey("$plugSetHash") ?? false) return plugs["$plugSetHash"];
-    return null;
-  }
-
-  List<DestinyItemPlug> getProfilePlugSets(int plugSetHash){
-    var plugs = _profile?.profilePlugSets?.data?.plugs;
-    if(plugs?.containsKey("$plugSetHash") ?? false) return plugs["$plugSetHash"];
-    return null;
-  }
-
-  List<DestinyItemPlug> getPlugSets(int plugSetHash){
-    List<DestinyItemPlug> plugs = [];
-    plugs.addAll(getProfilePlugSets(plugSetHash) ?? []);
-    var characters = getCharacters();
-    characters.forEach((c)=>plugs.addAll(getCharacterPlugSets(c.characterId, plugSetHash) ?? []));
-    return plugs;
   }
 
   Map<String, DestinyPresentationNodeComponent> getCharacterPresentationNodes(
@@ -537,10 +477,6 @@ class ProfileService {
       }
     });
     return owner;
-  }
-
-  DestinyArtifactProfileScoped getArtifactProgression(){
-    return _profile.profileProgression?.data?.seasonalArtifact;
   }
 
   List<DestinyItemComponent> getAllItems() {

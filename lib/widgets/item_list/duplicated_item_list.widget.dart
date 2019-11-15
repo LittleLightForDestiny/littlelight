@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
@@ -158,9 +157,8 @@ class DuplicatedItemListWidgetState extends State<DuplicatedItemListWidget>
                 child: Image.asset("assets/anim/loading.webp"),
               )));
     }
-    var screenPadding = MediaQuery.of(context).padding;
     return StaggeredGridView.countBuilder(
-      padding: EdgeInsets.all(4).copyWith(left: max(screenPadding.left, 4), right: max(screenPadding.right, 4)),
+      padding: EdgeInsets.all(4),
       crossAxisCount: 6,
       itemCount: items?.length ?? 0,
       itemBuilder: (BuildContext context, int index) => getItem(context, index),
@@ -382,9 +380,9 @@ class _ItemInstanceWrapperState extends State<_ItemInstanceWrapper> {
       context,
       MaterialPageRoute(
         builder: (context) => ItemDetailScreen(
-              item:widget.item,
-              definition:widget.definition,
-              instanceInfo:instance,
+              widget.item,
+              widget.definition,
+              instance,
               characterId: widget.characterId,
               uniqueId: null,
             ),

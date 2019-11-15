@@ -21,8 +21,9 @@ class MediumWeaponInventoryItemWidget extends MediumBaseInventoryItemWidget {
         child: Container(
             padding: EdgeInsets.all(padding),
             child: PrimaryStatWidget(
-              definition:definition,
-              instanceInfo:instanceInfo,
+              item,
+              definition,
+              instanceInfo,
               padding: padding,
               suppressDamageTypeIcon: true,
               suppressLabel: true,

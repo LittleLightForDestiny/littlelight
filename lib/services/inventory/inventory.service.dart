@@ -64,7 +64,6 @@ class InventoryService {
   transfer(DestinyItemComponent item, String sourceCharacterId,
       ItemDestination destination,
       [String destinationCharacterId]) async {
-    
     _broadcaster.push(NotificationEvent(NotificationType.requestedTransfer,
         item: item, characterId: destinationCharacterId));
     profile.pauseAutomaticUpdater = true;
@@ -557,34 +556,23 @@ class InventoryService {
     fireLocalUpdate();
   }
 
-  List<DestinyItemComponent> _getItemsOnBucket(DestinyInventoryBucketDefinition bucketDefinition, String characterId){
-    List<DestinyItemComponent> items;
-    if (bucketDefinition.scope == BucketScope.Character) {
-      items = profile.getCharacterInventory(characterId);
-    } else {
-      items = profile.getProfileInventory();
-    }
-    items = items.where((item) => item.bucketHash == bucketDefinition.hash).toList();
-    return items;
-  }
-
   _freeSlotsOnBucket(
       int bucketHash, String characterId, List<String> idsToAvoid,
       [int count = 1]) async {
     DestinyInventoryBucketDefinition bucketDefinition = await manifest
         .getDefinition<DestinyInventoryBucketDefinition>(bucketHash);
+    List<DestinyItemComponent> items;
     bool hasEquipSlot = bucketDefinition.category == BucketCategory.Equippable;
+    if (bucketDefinition.scope == BucketScope.Character) {
+      items = profile.getCharacterInventory(characterId);
+    } else {
+      items = profile.getProfileInventory();
+    }
+    items = items.where((item) => item.bucketHash == bucketHash).toList();
+
     int bucketSize = bucketDefinition.itemCount - (hasEquipSlot ? 1 : 0);
-    List<DestinyItemComponent> items = _getItemsOnBucket(bucketDefinition, characterId);
     int itemCount = items.length;
     int freeSlots = bucketSize - itemCount;
-    if (freeSlots > count) {
-      return;
-    }
-    await profile.fetchProfileData(components: ProfileComponentGroups.inventories, skipUpdate: true);
-    items = _getItemsOnBucket(bucketDefinition, characterId);
-    itemCount = items.length;
-    freeSlots = bucketSize - itemCount;
     if (freeSlots > count) {
       return;
     }

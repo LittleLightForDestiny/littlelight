@@ -13,7 +13,7 @@ import 'package:little_light/models/loadout.dart';
 import 'package:little_light/screens/edit_loadout.screen.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/inventory/inventory.service.dart';
-import 'package:little_light/services/littlelight/loadouts.service.dart';
+import 'package:little_light/services/littlelight/littlelight.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/user_settings/item_sort_parameter.dart';
@@ -40,7 +40,7 @@ class CharacterOptionsSheet extends StatefulWidget {
 }
 
 class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
-  Map<int, DestinyItemComponent> maxLightLoadout;
+  LoadoutItemIndex maxLightLoadout;
   double maxLight;
   List<Loadout> loadouts;
   List<DestinyItemComponent> itemsInPostmaster;
@@ -64,7 +64,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
   }
 
   void getLoadouts() async {
-    var littlelight = LoadoutsService();
+    var littlelight = LittleLightService();
     this.loadouts = await littlelight.getLoadouts();
     if (mounted) {
       setState(() {});
@@ -84,23 +84,20 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
     return GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () {},
-        child: Container(
-            padding:
-                EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
-            child: SingleChildScrollView(
-                padding: EdgeInsets.all(8),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      buildEquipBlock(),
-                      buildLoadoutBlock(),
-                      buildCreateLoadoutBlock(),
-                      Container(
-                        height: 8,
-                      ),
-                      buildPullFromPostmaster(),
-                    ]))));
+        child: SingleChildScrollView(
+            padding: EdgeInsets.all(8),
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  buildEquipBlock(),
+                  buildLoadoutBlock(),
+                  buildCreateLoadoutBlock(),
+                  Container(
+                    height: 8,
+                  ),
+                  buildPullFromPostmaster(),
+                ])));
   }
 
   Widget buildEquipBlock() {
@@ -129,27 +126,15 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
                       child:
                           Container(width: 50, height: 14, color: Colors.white))
                   : Text(
-                      "${calculatedMaxLight?.toStringAsFixed(1) ?? ""}",
+                      "${maxLight?.toStringAsFixed(1) ?? ""}",
                       style: buttonStyle.copyWith(color: Colors.amber.shade300),
                     )
             ],
           ),
           onTap: () async {
             Navigator.of(context).pop();
-            LoadoutItemIndex loadout = LoadoutItemIndex();
-            var equipment = widget.profile.getCharacterEquipment(widget.character.characterId);
-            for(var bucket in maxLightLoadout.keys){
-              var item = maxLightLoadout[bucket];
-              var power = widget.profile.getInstanceInfo(item.itemInstanceId)?.primaryStat?.value ?? 0;
-              var equipped = equipment.firstWhere((i)=>i.bucketHash == bucket, orElse:null);
-              var equippedPower = widget.profile.getInstanceInfo(equipped?.itemInstanceId)?.primaryStat?.value ?? 0;
-              var def = await widget.manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
-              if(power > equippedPower){
-                loadout.addEquippedItem(item, def);
-              }
-            }
             InventoryService().transferLoadout(
-                loadout.loadout, widget.character.characterId, true);
+                maxLightLoadout.loadout, widget.character.characterId, true);
           },
         )),
         Container(width: 4),
@@ -479,6 +464,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
       var item = allItems.firstWhere((i) => i.itemInstanceId == j);
       var itemDef = await widget.manifest
           .getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
+      print(itemDef.displayProperties.name);
       randomLoadout.addEquippedItem(item, itemDef);
     }
 
@@ -490,120 +476,113 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
     var allItems = widget.profile.getAllItems();
     var instancedItems =
         allItems.where((i) => i.itemInstanceId != null).toList();
-    instancedItems.sort((itemA, itemB) =>
-        InventoryUtils.sortDestinyItems(itemA, itemB, sortingParams: [
-          ItemSortParameter(
-              active: true,
-              type: ItemSortParameterType.PowerLevel,
-              direction: -1)
-        ]));
-    var weaponSlots = [
-      InventoryBucket.kineticWeapons,
-      InventoryBucket.energyWeapons,
-      InventoryBucket.powerWeapons
-    ];
-    var armorSlots = [
-      InventoryBucket.helmet,
-      InventoryBucket.gauntlets,
-      InventoryBucket.chestArmor,
-      InventoryBucket.legArmor,
-      InventoryBucket.classArmor
-    ];
-    var validSlots = weaponSlots + armorSlots;
-    var equipment =
-        widget.profile.getCharacterEquipment(widget.character.characterId);
-    var availableSlots = equipment
-        .where((i) => validSlots.contains(i.bucketHash))
-        .map((i) => i.bucketHash);
-    Map<int, DestinyItemComponent> maxLightLoadout = Map();
-    Map<int, DestinyItemComponent> maxLightExotics = Map();
+    instancedItems
+        .sort((itemA, itemB) => InventoryUtils.sortDestinyItems(itemA, itemB, sortingParams: [ItemSortParameter(active: true, type:ItemSortParameterType.PowerLevel, direction: -1)]));
+    LoadoutItemIndex maxLightLoadout = new LoadoutItemIndex();
+    LoadoutItemIndex exoticPieces = new LoadoutItemIndex();
+    var hashes = instancedItems.map((i) => i.itemHash);
+    var defs = await widget.manifest
+        .getDefinitions<DestinyInventoryItemDefinition>(hashes);
     for (var item in instancedItems) {
-      var def = await widget.manifest
-          .getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
-      if (maxLightLoadout.containsKey(def?.inventory?.bucketTypeHash) ||
-          !availableSlots.contains(def?.inventory?.bucketTypeHash) ||
-          ![widget.character.classType, DestinyClass.Unknown]
-              .contains(def?.classType)) {
+      var def = defs[item.itemHash];
+      if (def.classType != widget.character.classType &&
+          def.classType != DestinyClass.Unknown) {
         continue;
       }
-      if (def?.inventory?.tierType == TierType.Exotic &&
-          !maxLightExotics.containsKey(def?.inventory?.bucketTypeHash)) {
-        maxLightExotics[def?.inventory?.bucketTypeHash] = item;
+      if (![DestinyItemType.Weapon, DestinyItemType.Armor]
+          .contains(def.itemType)) {
         continue;
       }
-
-      maxLightLoadout[def?.inventory?.bucketTypeHash] = item;
-
-      if (maxLightLoadout.values.length >= availableSlots.length) {
-        break;
+      if (def.inventory.tierType == TierType.Exotic) {
+        if (exoticPieces.haveEquippedItem(def)) {
+          continue;
+        }
+        exoticPieces.addEquippedItem(item, def);
+      } else {
+        if (maxLightLoadout.haveEquippedItem(def)) {
+          continue;
+        }
+        maxLightLoadout.addEquippedItem(item, def);
       }
     }
-    Map<int, DestinyItemComponent> weapons = Map();
-    Map<int, DestinyItemComponent> armor = Map();
+    var exoticWeapon =
+        getHighestLightExoticWeapon(maxLightLoadout, exoticPieces);
+    var exoticArmor = getHighestLightExoticArmor(maxLightLoadout, exoticPieces);
 
-    weaponSlots.forEach((s) {
-      if (maxLightLoadout.containsKey(s)) weapons[s] = maxLightLoadout[s];
-    });
-    armorSlots.forEach((s) {
-      if (maxLightLoadout.containsKey(s)) armor[s] = maxLightLoadout[s];
-    });
+    if (exoticWeapon != null) {
+      var def = await widget.manifest
+          .getDefinition<DestinyInventoryItemDefinition>(exoticWeapon.itemHash);
+      maxLightLoadout.addEquippedItem(exoticWeapon, def);
+    }
 
-    List<Map<int, DestinyItemComponent>> weaponAlternatives = [weapons];
-    List<Map<int, DestinyItemComponent>> armorAlternatives = [armor];
-
-    maxLightExotics.forEach((bucket, item) {
-      if (weaponSlots.contains(bucket)) {
-        var exoticLoadout = Map<int, DestinyItemComponent>.from(weapons);
-        exoticLoadout[bucket] = item;
-        weaponAlternatives.add(exoticLoadout);
-      }
-      if (armorSlots.contains(bucket)) {
-        var exoticLoadout = Map<int, DestinyItemComponent>.from(armor);
-        exoticLoadout[bucket] = item;
-        armorAlternatives.add(exoticLoadout);
-      }
-    });
-
-    weaponAlternatives.sort((a, b) {
-      var lightA = _getAvgLight(a.values);
-      var lightB = _getAvgLight(b.values);
-      return lightB.compareTo(lightA);
-    });
-
-    armorAlternatives.sort((a, b) {
-      var lightA = _getAvgLight(a.values);
-      var lightB = _getAvgLight(b.values);
-      return lightB.compareTo(lightA);
-    });
-
-    weaponAlternatives.first.forEach((bucket, item){
-      maxLightLoadout[bucket] = item;
-    });
-    armorAlternatives.first.forEach((bucket, item){
-      maxLightLoadout[bucket] = item;
-    });
-
-    maxLight = _getAvgLight(maxLightLoadout.values);
+    if (exoticArmor != null) {
+      var def = await widget.manifest
+          .getDefinition<DestinyInventoryItemDefinition>(exoticArmor.itemHash);
+      maxLightLoadout.addEquippedItem(exoticArmor, def);
+    }
+    int totalLight = 0;
+    for (var weapon in maxLightLoadout.generic.values) {
+      if (weapon == null) continue;
+      var instance = widget.profile.getInstanceInfo(weapon.itemInstanceId);
+      totalLight += instance?.primaryStat?.value ?? 0;
+    }
+    for (var armorItems in maxLightLoadout.classSpecific.values) {
+      var armor = armorItems[widget.character.classType];
+      if (armor == null) continue;
+      var instance = widget.profile.getInstanceInfo(armor.itemInstanceId);
+      totalLight += instance?.primaryStat?.value ?? 0;
+    }
     this.maxLightLoadout = maxLightLoadout;
-    setState(() {});
+    this.maxLight = totalLight / 8;
+    if (mounted) {
+      setState(() {});
+    }
   }
 
-  double get calculatedMaxLight{
-    if(maxLight == null) return null;
-    var artifactLevel = widget.profile.getArtifactProgression()?.powerBonus ?? 0;
-    return maxLight + artifactLevel;
+  DestinyItemComponent getHighestLightExoticWeapon(
+      LoadoutItemIndex nonExotic, LoadoutItemIndex exotic) {
+    int lightDifference = 0;
+    DestinyItemComponent exoticToReplace;
+    for (var bucketHash in exotic.generic.keys) {
+      var exoticWeapon = exotic.generic[bucketHash];
+      var nonExoticWeapon = nonExotic.generic[bucketHash];
+      var exoticInstance =
+          widget.profile.getInstanceInfo(exoticWeapon?.itemInstanceId);
+      var nonExoticInstance =
+          widget.profile.getInstanceInfo(nonExoticWeapon?.itemInstanceId);
+      var exoticPower = exoticInstance?.primaryStat?.value ?? 0;
+      var nonExoticPower = nonExoticInstance?.primaryStat?.value ?? 0;
+      var diff = exoticPower - nonExoticPower;
+      if (diff > lightDifference && diff > 0) {
+        exoticToReplace = exotic.generic[bucketHash];
+        lightDifference = diff;
+      }
+    }
+    return exoticToReplace;
   }
 
-  double _getAvgLight(Iterable<DestinyItemComponent> items) {
-    var total = items.fold(
-        0,
-        (light, item) =>
-            light +
-                widget.profile
-                    .getInstanceInfo(item.itemInstanceId)
-                    ?.primaryStat
-                    ?.value ??
-            0);
-    return total / items.length;
+  DestinyItemComponent getHighestLightExoticArmor(
+      LoadoutItemIndex nonExotic, LoadoutItemIndex exotic) {
+    int lightDifference = 0;
+    DestinyItemComponent exoticToReplace;
+    for (var bucketHash in exotic.classSpecific.keys) {
+      var exoticArmor =
+          exotic.classSpecific[bucketHash][widget.character.classType];
+      var nonExoticArmor =
+          nonExotic.classSpecific[bucketHash][widget.character.classType];
+      var exoticInstance =
+          widget.profile.getInstanceInfo(exoticArmor?.itemInstanceId);
+      var nonExoticInstance =
+          widget.profile.getInstanceInfo(nonExoticArmor?.itemInstanceId);
+      var exoticPower = exoticInstance?.primaryStat?.value ?? 0;
+      var nonExoticPower = nonExoticInstance?.primaryStat?.value ?? 0;
+      var diff = exoticPower - nonExoticPower;
+      if (diff > lightDifference) {
+        exoticToReplace =
+            exotic.classSpecific[bucketHash][widget.character.classType];
+        lightDifference = diff;
+      }
+    }
+    return exoticToReplace;
   }
 }

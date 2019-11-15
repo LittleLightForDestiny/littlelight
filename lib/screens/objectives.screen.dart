@@ -1,12 +1,11 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/models/tracked_objective.dart';
 import 'package:little_light/screens/item_detail.screen.dart';
-import 'package:little_light/services/littlelight/objectives.service.dart';
+import 'package:little_light/services/littlelight/littlelight.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
@@ -22,10 +21,10 @@ class ObjectivesScreen extends StatefulWidget {
   final ProfileService profile = ProfileService();
   final ManifestService manifest = ManifestService();
   @override
-  ObjectivesScreenState createState() => new ObjectivesScreenState();
+  LoadoutScreenState createState() => new LoadoutScreenState();
 }
 
-class ObjectivesScreenState extends State<ObjectivesScreen> {
+class LoadoutScreenState extends State<ObjectivesScreen> {
   List<TrackedObjective> objectives;
   Map<TrackedObjective, DestinyItemComponent> items;
 
@@ -50,7 +49,7 @@ class ObjectivesScreenState extends State<ObjectivesScreen> {
   }
 
   void loadObjectives() async {
-    ObjectivesService service = ObjectivesService();
+    LittleLightService service = LittleLightService();
     objectives = (await service.getTrackedObjectives()).reversed.toList();
     items = new Map();
     var itemObjectives =
@@ -102,10 +101,10 @@ class ObjectivesScreenState extends State<ObjectivesScreen> {
     if (objectives == null) {
       return Container();
     }
-    var screenPadding = MediaQuery.of(context).padding;
+
     if (objectives.length == 0) {
       return Container(
-          padding: EdgeInsets.all(16).copyWith(left:max(screenPadding.left, 16), right:max(screenPadding.right, 16)),
+          padding: EdgeInsets.all(16),
           child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -119,7 +118,7 @@ class ObjectivesScreenState extends State<ObjectivesScreen> {
     }
 
     return StaggeredGridView.countBuilder(
-      padding: EdgeInsets.only(left:max(screenPadding.left, 4), right:max(screenPadding.right, 4), bottom: max(screenPadding.bottom, 4), top:4),
+      padding: EdgeInsets.all(4),
       crossAxisCount: 30,
       itemCount: objectives.length,
       itemBuilder: (BuildContext context, int index) => getItem(context, index),
@@ -156,9 +155,9 @@ class ObjectivesScreenState extends State<ObjectivesScreen> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => ItemDetailScreen(
-                          item:item,
-                          definition:definition,
-                          instanceInfo:instanceInfo,
+                          item,
+                          definition,
+                          instanceInfo,
                           characterId: characterId,
                         ),
                   ),
@@ -180,9 +179,9 @@ class ObjectivesScreenState extends State<ObjectivesScreen> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => ItemDetailScreen(
-                          item:item,
-                          definition:definition,
-                          instanceInfo:instanceInfo,
+                          item,
+                          definition,
+                          instanceInfo,
                           characterId: characterId,
                         ),
                   ),

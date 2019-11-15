@@ -157,30 +157,17 @@ class _MilestoneRaidItemWidgetState extends MilestoneItemWidgetState<MilestoneRa
         text = "Insurrection Prime";
         break;
 
-      case RaidPhases.cosRitual:
-        text = "Hive Ritual";
+      case RaidPhases.cosLamps:
+        text = "Lamps";
         break;
-      case RaidPhases.cosInfiltration:
-        text = "Infiltration";
+      case RaidPhases.cosCrystals:
+        text = "Crystals";
         break;
       case RaidPhases.cosDeception:
         text = "Deception";
         break;
       case RaidPhases.cosGahlran:
         text = "Gahlran";
-        break;
-
-      case RaidPhases.gosEvasion:
-        text = "Evasion";
-        break;
-      case RaidPhases.gosSummon:
-        text = "Summon";
-        break;
-      case RaidPhases.gosConsecratedMind:
-        text = "Consecrated Mind";
-        break;
-      case RaidPhases.gosSanctifieddMind:
-        text = "Sanctified Mind";
         break;
     }
     Color color = phase.complete

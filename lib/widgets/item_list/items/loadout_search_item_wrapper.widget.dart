@@ -29,12 +29,12 @@ class LoadoutSearchItemWrapperWidgetWidgetState
       context,
       MaterialPageRoute(
         builder: (context) => ItemDetailScreen(
-              item:widget.item,
-              definition:definition,
-              instanceInfo:instanceInfo,
+              widget.item,
+              definition,
+              instanceInfo,
               characterId: widget.characterId,
               uniqueId: uniqueId,
-              hideItemManagement: true,
+              isLoadoutItemDetails: true,
             ),
       ),
     );

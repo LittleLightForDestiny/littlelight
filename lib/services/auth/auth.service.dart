@@ -1,9 +1,8 @@
 import 'dart:io';
 
-import 'package:bungie_api/enums/bungie_membership_type_enum.dart';
 import 'package:bungie_api/helpers/bungie_net_token.dart';
 import 'package:bungie_api/helpers/oauth.dart';
-import 'package:bungie_api/models/group_user_info_card.dart';
+import 'package:bungie_api/models/user_info_card.dart';
 import 'package:bungie_api/models/user_membership_data.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
@@ -14,7 +13,7 @@ import 'package:url_launcher/url_launcher.dart';
 class AuthService {
   static final api = BungieApiService();
   static BungieNetToken _currentToken;
-  static GroupUserInfoCard _currentMembership;
+  static UserInfoCard _currentMembership;
   static UserMembershipData _membershipData;
   static bool waitingAuthCode = false;
   Future<BungieNetToken> _getStoredToken() async {
@@ -150,21 +149,16 @@ class AuthService {
     _membershipData = null;
   }
 
-  Future<GroupUserInfoCard> getMembership() async {
+  Future<UserInfoCard> getMembership() async {
     if (_currentMembership == null) {
       var _membershipData = await _getStoredMembershipData();
       var _membershipId = StorageService.getMembership();
       _currentMembership = getMembershipById(_membershipData, _membershipId);
     }
-    if(_currentMembership?.membershipType == BungieMembershipType.TigerBlizzard){
-      var account = StorageService.getAccount();
-      StorageService.removeAccount(account);
-      return null;
-    }
     return _currentMembership;
   }
 
-  GroupUserInfoCard getMembershipById(UserMembershipData membershipData, String membershipId){
+  UserInfoCard getMembershipById(UserMembershipData membershipData, String membershipId){
     return membershipData?.destinyMemberships
           ?.firstWhere((membership) => membership?.membershipId == membershipId, orElse: ()=>membershipData?.destinyMemberships?.first ?? null);
   }

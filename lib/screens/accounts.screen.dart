@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:bungie_api/models/general_user.dart';
 import 'package:bungie_api/helpers/oauth.dart';
-import 'package:bungie_api/models/group_user_info_card.dart';
+import 'package:bungie_api/models/user_info_card.dart';
 import 'package:bungie_api/models/user_membership_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -177,7 +177,7 @@ class _AccountsScreenState extends State<AccountsScreen> {
         children: children);
   }
 
-  Widget buildMembershipButton(BuildContext context, GroupUserInfoCard membership,
+  Widget buildMembershipButton(BuildContext context, UserInfoCard membership,
       GeneralUser bungieNetUser) {
     var plat = PlatformData.getPlatform(membership.membershipType);
     return Expanded(

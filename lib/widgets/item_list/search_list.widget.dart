@@ -34,7 +34,6 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
   Map<int, DestinyInventoryItemDefinition> itemDefinitions;
   Map<int, DestinyInventoryItemDefinition> perkDefinitions;
   StreamSubscription<NotificationEvent> subscription;
-  bool get includeUninstanced => false;
 
   @override
   dispose() {
@@ -72,19 +71,18 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
         profile.getProfileInventory().map((item) => ItemWithOwner(item, null)));
     allItems.sort((a, b) => InventoryUtils.sortDestinyItems(a.item, b.item));
     items = allItems.where((item) {
-      return item.item.itemInstanceId != null || includeUninstanced;
+      return item.item.itemInstanceId != null;
     }).toList();
     Iterable<int> hashes = allItems.map((i) => i.item.itemHash);
 
     Set<int> perkHashes = Set();
     items.forEach((i) {
       var sockets = profile.getItemSockets(i.item.itemInstanceId);
-      var reusablePlugs = profile.getItemReusablePlugs(i.item.itemInstanceId);
-      sockets?.forEach((s) {
+      if (sockets == null) return;
+      sockets.forEach((s) {
         if (s.plugHash != null) perkHashes.add(s.plugHash);
-      });
-      reusablePlugs?.forEach((hash, r) {
-        perkHashes.addAll(r.map((p) => p.plugItemHash));
+        if (s.reusablePlugHashes != null)
+          perkHashes.addAll(s.reusablePlugHashes);
       });
     });
 
@@ -103,8 +101,7 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
   List<ItemSortParameter> get sortOrder => widget.tabData?.sortOrder;
 
   sortItems() {
-    var characterOrder =
-        widget.profile.getCharacters().map((c) => c.characterId).toList();
+    var characterOrder = widget.profile.getCharacters().map((c)=>c.characterId).toList();
 
     items.sort((itemA, itemB) => InventoryUtils.sortDestinyItems(
         itemA.item, itemB.item,
@@ -131,8 +128,7 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
     bool isTablet = MediaQueryHelper(context).tabletOrBigger;
     var _filteredItems = filteredItems;
     return StaggeredGridView.countBuilder(
-      padding: EdgeInsets.all(4)
-          .copyWith(bottom: MediaQuery.of(context).padding.bottom),
+      padding: EdgeInsets.all(4),
       crossAxisCount: isTablet ? 12 : 6,
       itemCount: _filteredItems?.length ?? 0,
       itemBuilder: (BuildContext context, int index) =>
@@ -145,24 +141,23 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
   }
 
   FilterItem get powerLevelFilter =>
-      widget?.tabData?.filterData[FilterType.powerLevel];
+      widget.tabData.filterData[FilterType.powerLevel];
   FilterItem get damageTypeFilter =>
-      widget?.tabData?.filterData[FilterType.damageType];
+      widget.tabData.filterData[FilterType.damageType];
   FilterItem get tierTypeFilter =>
-      widget?.tabData?.filterData[FilterType.tierType];
+      widget.tabData.filterData[FilterType.tierType];
   FilterItem get bucketTypeFilter =>
-      widget?.tabData?.filterData[FilterType.bucketType];
+      widget.tabData.filterData[FilterType.bucketType];
   FilterItem get subtypeFilter =>
-      widget?.tabData?.filterData[FilterType.itemSubType];
-  FilterItem get typeFilter => widget?.tabData?.filterData[FilterType.itemType];
+      widget.tabData.filterData[FilterType.itemSubType];
+  FilterItem get typeFilter => widget.tabData.filterData[FilterType.itemType];
   FilterItem get ammoTypeFilter =>
-      widget?.tabData?.filterData[FilterType.ammoType];
+      widget.tabData.filterData[FilterType.ammoType];
   FilterItem get classTypeFilter =>
-      widget?.tabData?.filterData[FilterType.classType];
+      widget.tabData.filterData[FilterType.classType];
 
-  List<int> get itemTypes => widget?.tabData?.itemTypes;
-  List<int> get excludeItemTypes => widget?.tabData?.excludeItemTypes;
-  String get ownerId => widget?.tabData?.ownerId;
+  List<int> get itemTypes => widget.tabData.itemTypes;
+  List<int> get excludeItemTypes => widget.tabData.excludeItemTypes;
 
   List<ItemWithOwner> get filteredItems => filterItems();
 
@@ -171,30 +166,19 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
     if (perkDefinitions == null) return [];
     var _terms = search.split(RegExp("[,.|]"));
     Iterable<ItemWithOwner> itemsToFilter = items;
-    Set<ItemWithOwner> priorityResults = Set();
     for (var searchTerm in _terms) {
       var _search = removeDiacritics(searchTerm).toLowerCase().trim();
-      var _words = _search.split(" ");
       Set<int> perksMatched = new Set();
-      Set<int> priorityPerksMatched = new Set();
       for (var p in perkDefinitions.values) {
-        var _perkName =
-            removeDiacritics(p.displayProperties.name).toLowerCase();
-        var match = _words.every((w) => _perkName.contains(w));
-
-        var hardMatch = removeDiacritics(p.displayProperties.name)
+        var match = removeDiacritics(p.displayProperties.name)
             .toLowerCase()
-            .startsWith(_search.toLowerCase());
+            .contains(_search.toLowerCase());
         if (match) perksMatched.add(p.hash);
-        if (hardMatch) priorityPerksMatched.add(p.hash);
       }
       itemsToFilter = itemsToFilter.where((item) {
         var def = itemDefinitions[item.item.itemHash];
         if (def == null) return false;
         if (itemTypes != null && !itemTypes.contains(def.itemType)) {
-          return false;
-        }
-        if (ownerId != null && ownerId != item.ownerId) {
           return false;
         }
         if (excludeItemTypes != null &&
@@ -286,67 +270,36 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
           return true;
         }
         bool match = false;
-        bool hardMatch = false;
-        var _name = removeDiacritics(def.displayProperties.name).toLowerCase();
-        var _itemTypeDisplayName =
+        var name = removeDiacritics(def.displayProperties.name).toLowerCase();
+        var itemTypeDisplayName =
             removeDiacritics(def.itemTypeDisplayName).toLowerCase();
-
-        match = _words.every((w) => _name.contains(w));
-        match = match || _itemTypeDisplayName.contains(_search);
-
-        hardMatch = _name.startsWith(_search);
-        hardMatch = hardMatch || _itemTypeDisplayName.startsWith(_search);
-
+        if (_search.length < 4) {
+          match = name.startsWith(_search);
+          match = match || itemTypeDisplayName.startsWith(_search);
+        } else {
+          match = name.contains(_search);
+          match = match || itemTypeDisplayName.contains(_search);
+        }
         var sockets =
             widget.profile.getItemSockets(item?.item?.itemInstanceId ?? 0);
-        var reusablePlugs =
-            widget.profile.getItemReusablePlugs(item?.item?.itemInstanceId);
         if (sockets != null) {
           for (var s in sockets) {
-            if (priorityPerksMatched.contains(s.plugHash)) {
-              priorityResults.add(item);
-            }
             if (s.plugHash != null && perksMatched.contains(s.plugHash)) {
               return true;
             }
-          }
-        }
-
-        if (reusablePlugs != null) {
-          for (var r in reusablePlugs?.values) {
-            for (var p in r) {
-              if (priorityPerksMatched.contains(p.plugItemHash)) {
-                priorityResults.add(item);
-              }
-              if (p.plugItemHash != null &&
-                  perksMatched.contains(p.plugItemHash)) {
-                return true;
+            if (s.reusablePlugHashes != null) {
+              for (var p in s.reusablePlugHashes) {
+                if (perksMatched.contains(p)) {
+                  return true;
+                }
               }
             }
           }
-        }
-
-        if (hardMatch) {
-          priorityResults.add(item);
         }
         return match;
       });
     }
-
-    var result = itemsToFilter.toList();
-    var originalOrder = itemsToFilter.toList();
-    result.sort((itemA, itemB) {
-      var priorityA = priorityResults.contains(itemA) ? 0 : 1;
-      var priorityB = priorityResults.contains(itemB) ? 0 : 1;
-      var priority = priorityA.compareTo(priorityB);
-      if (priority != 0) {
-        return priority;
-      }
-      return originalOrder
-          .indexOf(itemA)
-          .compareTo(originalOrder.indexOf(itemB));
-    });
-    return result;
+    return itemsToFilter.toList();
   }
 
   StaggeredTile getTileBuilder(BuildContext context, int index) {

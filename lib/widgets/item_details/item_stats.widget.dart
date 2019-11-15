@@ -12,12 +12,12 @@ import 'package:bungie_api/models/interpolation_point.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/inventory_utils.dart';
-import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
+import 'package:little_light/widgets/common/destiny_item.stateful_widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
-class ItemStatsWidget extends BaseDestinyStatefulItemWidget {
+class ItemStatsWidget extends DestinyItemStatefulWidget {
   final Map<int, int> selectedPerks;
   final Map<int, DestinyInventoryItemDefinition> plugDefinitions;
   final DestinyStatGroupDefinition statGroupDefinition;
@@ -30,20 +30,16 @@ class ItemStatsWidget extends BaseDestinyStatefulItemWidget {
       this.selectedPerks,
       this.plugDefinitions,
       this.statGroupDefinition})
-      : super(
-            item: item,
-            definition: definition,
-            instanceInfo: instanceInfo,
-            key: key);
+      : super(item, definition, instanceInfo, key: key);
 
   @override
-  BaseDestinyItemState<BaseDestinyStatefulItemWidget> createState() {
+  DestinyItemState<DestinyItemStatefulWidget> createState() {
     return DestinyStatsWidgetState();
   }
 }
 
-class DestinyStatsWidgetState extends BaseDestinyItemState<ItemStatsWidget>
-    with AutomaticKeepAliveClientMixin {
+class DestinyStatsWidgetState extends DestinyItemState<ItemStatsWidget> with AutomaticKeepAliveClientMixin{
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -81,6 +77,7 @@ class DestinyStatsWidgetState extends BaseDestinyItemState<ItemStatsWidget>
           scaled: widget.statGroupDefinition?.scaledStats?.firstWhere(
               (i) => i.statHash == stat.statTypeHash,
               orElse: () => null));
+          
     }).toList();
   }
 
@@ -142,12 +139,8 @@ class DestinyStatsWidgetState extends BaseDestinyItemState<ItemStatsWidget>
     if (widget.statGroupDefinition?.scaledStats == null) {
       return null;
     }
-    var statWhitelist =
-        widget.statGroupDefinition.scaledStats.map((s) => s.statHash).toList();
-    var noBarStats = widget.statGroupDefinition.scaledStats
-        .where((s) => s.displayAsNumeric)
-        .map((s) => s.statHash)
-        .toList();
+    var statWhitelist = widget.statGroupDefinition.scaledStats.map((s)=>s.statHash).toList();
+    var noBarStats = widget.statGroupDefinition.scaledStats.where((s)=>s.displayAsNumeric).map((s)=>s.statHash).toList();
     statWhitelist.addAll(DestinyData.hiddenStats);
     List<DestinyItemInvestmentStatDefinition> stats = definition.investmentStats
         .where((stat) => statWhitelist.contains(stat.statTypeHash))
@@ -185,7 +178,7 @@ class DestinyStatsWidgetState extends BaseDestinyItemState<ItemStatsWidget>
   bool get wantKeepAlive => true;
 }
 
-class ItemStatWidget extends StatelessWidget {
+class ItemStatWidget extends StatelessWidget{
   final int statHash;
   final int baseValue;
   final StatValues modValues;

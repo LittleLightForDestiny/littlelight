@@ -53,7 +53,7 @@ class PresentationNodeBaseScreenState<T extends PresentationNodeBaseScreen>
   }
 
   Widget buildBody(BuildContext context, {int hash, int depth}) {
-    if (depth == 1 || depth > 2 || definition?.nodeType == 2) {
+    if (depth == 1 || depth > 3 || definition?.nodeType == 2) {
       return listBuilder(hash, depth);
     }
     return tabBuilder(hash, depth);

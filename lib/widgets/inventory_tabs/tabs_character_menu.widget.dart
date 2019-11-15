@@ -13,12 +13,14 @@ class TabsCharacterMenuWidget extends StatelessWidget {
   final TabController controller;
   final bool includeVault;
 
-  TabsCharacterMenuWidget(this.characters,
-      {this.controller, this.includeVault = true});
+  TabsCharacterMenuWidget(this.characters, {this.controller, this.includeVault = true});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Positioned(
+        right: 8,
+        top: getTopPadding(context) + kToolbarHeight - 52,
+        width: (characters.length + (includeVault ? 1 : 0)) * 48.0,
         child: TabBar(
           controller: controller,
           isScrollable: true,
@@ -38,12 +40,11 @@ class TabsCharacterMenuWidget extends StatelessWidget {
         .map((index, character) => MapEntry<int, TabMenuButton>(
             index,
             TabMenuButton(
-                key: Key(
-                    "tabmenu_${character.characterId}_${character.emblemHash}"),
+                key:Key("tabmenu_${character.characterId}_${character.emblemHash}"),
                 character: character)))
         .values
         .toList();
-    if (this.includeVault) {
+    if(this.includeVault){
       buttons.add(VaultTabMenuButton());
     }
     return buttons;
@@ -58,7 +59,7 @@ class TabMenuButton extends StatefulWidget {
   final DestinyCharacterComponent character;
   final ManifestService manifest = new ManifestService();
 
-  TabMenuButton({this.character, Key key}) : super(key: key);
+  TabMenuButton({this.character, Key key}):super(key:key);
 
   @override
   State<StatefulWidget> createState() => new TabMenuButtonState();
@@ -74,9 +75,8 @@ class TabMenuButtonState extends State<TabMenuButton> {
   }
 
   getDefinitions() async {
-    emblemDefinition = await widget.manifest
-        .getDefinition<DestinyInventoryItemDefinition>(
-            widget.character.emblemHash);
+    emblemDefinition =
+        await widget.manifest.getDefinition<DestinyInventoryItemDefinition>(widget.character.emblemHash);
     setState(() {});
   }
 
@@ -97,8 +97,9 @@ class TabMenuButtonState extends State<TabMenuButton> {
       return shimmer;
     }
     return QueuedNetworkImage(
-      key: Key("emblem_${emblemDefinition.hash}"),
-      imageUrl: BungieApiService.url(emblemDefinition.displayProperties.icon),
+      key:Key("emblem_${emblemDefinition.hash}"),
+      imageUrl:
+          BungieApiService.url(emblemDefinition.displayProperties.icon),
       placeholder: shimmer,
     );
   }

@@ -3,7 +3,6 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/inventory/inventory.service.dart';
 import 'package:little_light/services/selection/selection.service.dart';
-import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -98,7 +97,6 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget> {
 
   Widget buildItemIcons(BuildContext context) {
     if(items == null) return Container();
-    var itemsPerRow = MediaQueryHelper(context).tabletOrBigger ? 20 : 10;
     return Container(
         alignment: Alignment.topLeft,
         padding: EdgeInsets.all(4),
@@ -110,7 +108,7 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget> {
             children: items
                 .map((i) => FractionallySizedBox(
                     key: ObjectKey(i),
-                    widthFactor: 1 / itemsPerRow,
+                    widthFactor: 1 / 10,
                     child: AspectRatio(
                         aspectRatio: 1,
                         child: Container(
@@ -118,9 +116,9 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget> {
                                 border: Border.all(
                                     color: Colors.grey.shade300, width: .5)),
                             child: Stack(children: [
-                              Positioned.fill(child:ManifestImageWidget<
+                              ManifestImageWidget<
                                       DestinyInventoryItemDefinition>(
-                                  i.item.itemHash,)),
+                                  i.item.itemHash),
                               Material(
                                   color: Colors.transparent,
                                   child: InkWell(

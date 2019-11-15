@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/inventory/inventory.service.dart';
-import 'package:little_light/services/littlelight/loadouts.service.dart';
+import 'package:little_light/services/littlelight/littlelight.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
@@ -275,7 +275,7 @@ class VaultOptionsSheetState extends State<VaultOptionsSheet> {
   }
 
   void getLoadouts() async {
-    var littlelight = LoadoutsService();
+    var littlelight = LittleLightService();
     this.loadouts = await littlelight.getLoadouts();
     if (mounted) {
       setState(() {});

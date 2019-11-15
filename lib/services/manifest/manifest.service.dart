@@ -165,8 +165,7 @@ class ManifestService {
 
   Future<Map<int, T>> getDefinitions<T>(Iterable<int> hashes,
       [dynamic identity(Map<String, dynamic> json)]) async {
-    Set<int> hashesSet = hashes?.toSet();
-    if(hashesSet == null) return null;
+    Set<int> hashesSet = hashes.toSet();
     var type = DefinitionTableNames.fromClass[T];
     if (identity == null) {
       identity = DefinitionTableNames.identities[T];

@@ -1,7 +1,5 @@
 import 'dart:io';
-import 'dart:math';
 
-import 'package:bungie_api/enums/bungie_membership_type_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:launch_review/launch_review.dart';
 import 'package:little_light/services/translate/translate.service.dart';
@@ -37,6 +35,7 @@ class _AboutScreenState extends State<AboutScreen> {
 
   @override
   Widget build(BuildContext context) {
+    bool isIOS = Platform.isIOS;
     EdgeInsets screenPadding = MediaQuery.of(context).padding;
     return Scaffold(
         appBar: AppBar(
@@ -50,7 +49,7 @@ class _AboutScreenState extends State<AboutScreen> {
         ),
         body: SingleChildScrollView(
             child: Container(
-                padding: EdgeInsets.all(8).copyWith(left: max(screenPadding.left, 8), right: max(screenPadding.right, 8), bottom: max(screenPadding.right, 8)),
+                padding: EdgeInsets.all(8),
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -58,9 +57,212 @@ class _AboutScreenState extends State<AboutScreen> {
                       Container(
                         height: 8,
                       ),
-                      buildContact(context),
+                      HeaderWidget(
+                          alignment: Alignment.centerLeft,
+                          child: TranslatedTextWidget(
+                            "Contact",
+                            uppercase: true,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          )),
+                      Container(
+                        height: 4,
+                      ),
+                      IntrinsicHeight(
+                          child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          Flexible(
+                              child: RaisedButton(
+                            padding: EdgeInsets.all(4),
+                            materialTapTargetSize:
+                                MaterialTapTargetSize.shrinkWrap,
+                            child: Column(children: [
+                              Expanded(
+                                  child:
+                                      Icon(FontAwesomeIcons.twitter, size: 32)),
+                              Container(height: 4),
+                              Text(
+                                "@LittleLightD2",
+                                textAlign: TextAlign.center,
+                              )
+                            ]),
+                            onPressed: () {
+                              launch("http://www.twitter.com/littlelightD2");
+                            },
+                          )),
+                          Container(
+                            width: 4,
+                          ),
+                          Flexible(
+                              child: RaisedButton(
+                            padding: EdgeInsets.all(4),
+                            materialTapTargetSize:
+                                MaterialTapTargetSize.shrinkWrap,
+                            color: Colors.blueGrey.shade400,
+                            child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                      child: Icon(FontAwesomeIcons.discord,
+                                          size: 32)),
+                                  Container(height: 4),
+                                  TranslatedTextWidget("Discord")
+                                ]),
+                            onPressed: () {
+                              launch("https://discord.gg/ztdFGGz");
+                            },
+                          )),
+                          Container(
+                            width: 4,
+                          ),
+                          Flexible(
+                              child: RaisedButton(
+                            padding: EdgeInsets.all(4),
+                            materialTapTargetSize:
+                                MaterialTapTargetSize.shrinkWrap,
+                            color: Colors.red.shade600,
+                            child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                      child: Icon(FontAwesomeIcons.github,
+                                          size: 32)),
+                                  Container(height: 4),
+                                  TranslatedTextWidget("Issues")
+                                ]),
+                            onPressed: () {
+                              launch(
+                                  "https://github.com/LittleLightForDestiny/LittleLight/issues");
+                            },
+                          )),
+                        ],
+                      )),
                       Container(height: 16),
-                      buildSupport(context),
+                      HeaderWidget(
+                          alignment: Alignment.centerLeft,
+                          child: TranslatedTextWidget(
+                            "Support Little Light",
+                            uppercase: true,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          )),
+                      Container(
+                        height: 4,
+                      ),
+                      IntrinsicHeight(
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: RaisedButton(
+                                  color: isIOS
+                                      ? Color.fromARGB(255, 22, 147, 245)
+                                      : Color.fromARGB(255, 49, 159, 185),
+                                  padding: EdgeInsets.all(4),
+                                  materialTapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
+                                  child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Expanded(
+                                            child: Icon(
+                                                isIOS
+                                                    ? FontAwesomeIcons
+                                                        .appStoreIos
+                                                    : FontAwesomeIcons
+                                                        .googlePlay,
+                                                size: 36)),
+                                        Container(
+                                          height: 4,
+                                        ),
+                                        TranslatedTextWidget(
+                                          "Rate it",
+                                          uppercase: true,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 12),
+                                        )
+                                      ]),
+                                  onPressed: () {
+                                    LaunchReview.launch(
+                                        androidAppId: 'me.markezine.luzinha',
+                                        iOSAppId: '1373037254');
+                                  }),
+                            ),
+                            Container(
+                              width: 4,
+                            ),
+                            Expanded(
+                              child: RaisedButton(
+                                  padding: EdgeInsets.all(4),
+                                  color: Color.fromRGBO(249, 104, 84, 1),
+                                  materialTapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
+                                  child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Expanded(
+                                          child: Container(
+                                              width: 36,
+                                              height: 36,
+                                              child: Image.asset(
+                                                  "assets/imgs/patreon-icon.png")),
+                                        ),
+                                        Container(
+                                          height: 4,
+                                        ),
+                                        TranslatedTextWidget(
+                                          "Become a Patron",
+                                          uppercase: true,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 12),
+                                        )
+                                      ]),
+                                  onPressed: () {
+                                    launch(
+                                        'https://www.patreon.com/littlelightD2');
+                                  }),
+                            ),
+                            Container(
+                              width: 4,
+                            ),
+                            Expanded(
+                                child: RaisedButton(
+                                    padding: EdgeInsets.all(4),
+                                    color: Color.fromRGBO(26, 169, 222, 1),
+                                    materialTapTargetSize:
+                                        MaterialTapTargetSize.shrinkWrap,
+                                    child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Expanded(
+                                              child: Container(
+                                                  width: 36,
+                                                  height: 36,
+                                                  child: Image.asset(
+                                                      "assets/imgs/ko-fi-icon.png"))),
+                                          Container(
+                                            height: 4,
+                                          ),
+                                          TranslatedTextWidget(
+                                            "Buy me a Coffee",
+                                            uppercase: true,
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 12),
+                                          )
+                                        ]),
+                                    onPressed: () {
+                                      launch('https://ko-fi.com/littlelight');
+                                    })),
+                          ],
+                        ),
+                      ),
                       Container(
                         height: 16,
                       ),
@@ -73,7 +275,7 @@ class _AboutScreenState extends State<AboutScreen> {
                       Container(
                         height: 8,
                       ),
-                      buildTagAndPlatform(4611686018441021725, BungieMembershipType.TigerPsn),
+                      buildTagAndPlatform(4611686018441021725, 2),
                       Container(
                         height: 8,
                       ),
@@ -86,7 +288,7 @@ class _AboutScreenState extends State<AboutScreen> {
                       Container(
                         height: 8,
                       ),
-                      buildTagAndPlatform(4611686018429190727, BungieMembershipType.TigerPsn),
+                      buildTagAndPlatform(4611686018429190727, 2),
                       Container(
                         height: 8,
                       ),
@@ -97,24 +299,16 @@ class _AboutScreenState extends State<AboutScreen> {
                             uppercase: true),
                       ),
                       Container(height: 8),
-                      buildTranslationHeader(context, ['de']),
-                      Container(
-                          color: Colors.blueGrey.shade800,
-                          padding: EdgeInsets.all(4),
-                          child: Column(children: [
-                            buildTagAndPlatform(4611686018463551188, BungieMembershipType.TigerPsn),
-                          ])),
-                      Container(height: 8),
                       buildTranslationHeader(context, ['es', 'es-mx']),
                       Container(
                           color: Colors.blueGrey.shade800,
                           padding: EdgeInsets.all(4),
                           child: Column(children: [
-                            buildTagAndPlatform(4611686018429051657, BungieMembershipType.TigerPsn),
+                            buildTagAndPlatform(4611686018429051657, 2),
                             Container(
                               height: 4,
                             ),
-                            buildTagAndPlatform(4611686018450956952, BungieMembershipType.TigerPsn),
+                            buildTagAndPlatform(4611686018450956952, 2),
                           ])),
                       Container(height: 8),
                       buildTranslationHeader(context, ['fr']),
@@ -147,11 +341,7 @@ class _AboutScreenState extends State<AboutScreen> {
                           color: Colors.blueGrey.shade800,
                           padding: EdgeInsets.all(4),
                           child: Column(children: [
-                            buildTagAndPlatform(4611686018468567020, BungieMembershipType.TigerSteam),
-                            Container(
-                              height: 4,
-                            ),
-                            buildTagAndPlatform(4611686018467289582, BungieMembershipType.TigerSteam),
+                            buildTagAndPlatform(4611686018467289582, 4),
                           ])),
                       Container(height: 8),
                       buildTranslationHeader(context, ['ja']),
@@ -159,15 +349,7 @@ class _AboutScreenState extends State<AboutScreen> {
                           color: Colors.blueGrey.shade800,
                           padding: EdgeInsets.all(4),
                           child: Column(children: [
-                            buildTagAndPlatform(4611686018467519241, BungieMembershipType.TigerSteam),
-                          ])),
-                      Container(height: 8),
-                      buildTranslationHeader(context, ['ko']),
-                      Container(
-                          color: Colors.blueGrey.shade800,
-                          padding: EdgeInsets.all(4),
-                          child: Column(children: [
-                            buildTagAndPlatform(4611686018488602145, BungieMembershipType.TigerSteam),
+                            buildTagAndPlatform(4611686018467519241, 4),
                           ])),
                       Container(height: 8),
                       buildTranslationHeader(context, ['pt-br']),
@@ -175,7 +357,7 @@ class _AboutScreenState extends State<AboutScreen> {
                           color: Colors.blueGrey.shade800,
                           padding: EdgeInsets.all(4),
                           child: Column(children: [
-                            buildTagAndPlatform(4611686018441021725, BungieMembershipType.TigerPsn),
+                            buildTagAndPlatform(4611686018441021725, 2),
                           ])),
                       Container(height: 8),
                       buildTranslationHeader(context, ['pl']),
@@ -183,7 +365,7 @@ class _AboutScreenState extends State<AboutScreen> {
                           color: Colors.blueGrey.shade800,
                           padding: EdgeInsets.all(4),
                           child: Column(children: [
-                            buildTagAndPlatform(4611686018451719977, BungieMembershipType.TigerPsn),
+                            buildTagAndPlatform(4611686018451719977, 2),
                           ])),
                       Container(height: 8),
                       buildTranslationHeader(context, ['ru']),
@@ -191,15 +373,7 @@ class _AboutScreenState extends State<AboutScreen> {
                           color: Colors.blueGrey.shade800,
                           padding: EdgeInsets.all(4),
                           child: Column(children: [
-                            buildTagAndPlatform(4611686018486012725, BungieMembershipType.TigerSteam),
-                          ])),
-                      Container(height: 8),
-                      buildTranslationHeader(context, ['zh-chs']),
-                      Container(
-                          color: Colors.blueGrey.shade800,
-                          padding: EdgeInsets.all(4),
-                          child: Column(children: [
-                            buildTagAndPlatform(4611686018489331546, BungieMembershipType.TigerSteam),
+                            buildTagAndPlatform(4611686018486012725, 4),
                           ])),
                       Container(height: 8),
                       HeaderWidget(
@@ -211,31 +385,15 @@ class _AboutScreenState extends State<AboutScreen> {
                       Container(
                         height: 8,
                       ),
-                      buildTagAndPlatform(4611686018429238118, BungieMembershipType.TigerPsn),
+                      buildTagAndPlatform(4611686018429238118, 2),
                       Container(
                         height: 8,
                       ),
-                      buildTagAndPlatform(4611686018452346120, BungieMembershipType.TigerPsn),
+                      buildTagAndPlatform(4611686018452346120, 2),
                       Container(
                         height: 8,
                       ),
-                      buildTagAndPlatform(4611686018430226498, BungieMembershipType.TigerXbox),
-                      Container(
-                        height: 8,
-                      ),
-                      buildTagAndPlatform(4611686018434959588, BungieMembershipType.TigerXbox),
-                      Container(
-                        height: 8,
-                      ),
-                      buildTagAndPlatform(4611686018482820655, BungieMembershipType.TigerSteam),
-                      Container(
-                        height: 8,
-                      ),
-                      buildTagAndPlatform(4611686018436933892, BungieMembershipType.TigerXbox),
-                      Container(
-                        height: 8,
-                      ),
-                      buildTagAndPlatform(4611686018433235027, BungieMembershipType.TigerXbox),
+                      buildTagAndPlatform(4611686018430226498, 1),
                       Container(
                         height: 8,
                       ),
@@ -291,205 +449,5 @@ class _AboutScreenState extends State<AboutScreen> {
   buildTagAndPlatform(int membershipId, int membershipType,
       [String link, Widget badge]) {
     return SupporterCharacterWidget(membershipId, membershipType, link, badge);
-  }
-
-  buildContact(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        HeaderWidget(
-            alignment: Alignment.centerLeft,
-            child: TranslatedTextWidget(
-              "Contact",
-              uppercase: true,
-              style: TextStyle(fontWeight: FontWeight.bold),
-            )),
-        Container(
-          height: 4,
-        ),
-        IntrinsicHeight(
-            child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Flexible(
-                child: RaisedButton(
-              padding: EdgeInsets.all(4),
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              child: Column(children: [
-                Expanded(child: Icon(FontAwesomeIcons.twitter, size: 32)),
-                Container(height: 4),
-                Text(
-                  "@LittleLightD2",
-                  textAlign: TextAlign.center,
-                )
-              ]),
-              onPressed: () {
-                launch("http://www.twitter.com/littlelightD2");
-              },
-            )),
-            Container(
-              width: 4,
-            ),
-            Flexible(
-                child: RaisedButton(
-              padding: EdgeInsets.all(4),
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              color: Colors.blueGrey.shade400,
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(child: Icon(FontAwesomeIcons.discord, size: 32)),
-                    Container(height: 4),
-                    TranslatedTextWidget("Discord")
-                  ]),
-              onPressed: () {
-                launch("https://discord.gg/ztdFGGz");
-              },
-            )),
-            Container(
-              width: 4,
-            ),
-            Flexible(
-                child: RaisedButton(
-              padding: EdgeInsets.all(4),
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              color: Colors.red.shade600,
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(child: Icon(FontAwesomeIcons.github, size: 32)),
-                    Container(height: 4),
-                    TranslatedTextWidget("Issues")
-                  ]),
-              onPressed: () {
-                launch(
-                    "https://github.com/LittleLightForDestiny/LittleLight/issues");
-              },
-            )),
-          ],
-        )),
-      ],
-    );
-  }
-
-  buildSupport(BuildContext context) {
-    bool isIOS = Platform.isIOS;
-    return Column(
-      children: <Widget>[
-        HeaderWidget(
-            alignment: Alignment.centerLeft,
-            child: TranslatedTextWidget(
-              "Support Little Light",
-              uppercase: true,
-              style: TextStyle(fontWeight: FontWeight.bold),
-            )),
-        Container(
-          height: 4,
-        ),
-        IntrinsicHeight(
-          child: isIOS ? buildRateButton(context) : Row(
-            children: <Widget>[
-              Expanded(
-                child: buildRateButton(context)
-              ),
-              Container(
-                width: 4,
-              ),
-              Expanded(
-                child: RaisedButton(
-                    padding: EdgeInsets.all(4),
-                    color: Color.fromRGBO(249, 104, 84, 1),
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            child: Container(
-                                width: 36,
-                                height: 36,
-                                child: Image.asset(
-                                    "assets/imgs/patreon-icon.png")),
-                          ),
-                          Container(
-                            height: 4,
-                          ),
-                          TranslatedTextWidget(
-                            "Become a Patron",
-                            uppercase: true,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 12),
-                          )
-                        ]),
-                    onPressed: () {
-                      launch('https://www.patreon.com/littlelightD2');
-                    }),
-              ),
-              Container(
-                width: 4,
-              ),
-              Expanded(
-                  child: RaisedButton(
-                      padding: EdgeInsets.all(4),
-                      color: Color.fromRGBO(26, 169, 222, 1),
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Expanded(
-                                child: Container(
-                                    width: 36,
-                                    height: 36,
-                                    child: Image.asset(
-                                        "assets/imgs/ko-fi-icon.png"))),
-                            Container(
-                              height: 4,
-                            ),
-                            TranslatedTextWidget(
-                              "Buy me a Coffee",
-                              uppercase: true,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 12),
-                            )
-                          ]),
-                      onPressed: () {
-                        launch('https://ko-fi.com/littlelight');
-                      })),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  buildRateButton(BuildContext context) {
-    bool isIOS = Platform.isIOS;
-    return RaisedButton(
-        color: isIOS
-            ? Color.fromARGB(255, 22, 147, 245)
-            : Color.fromARGB(255, 49, 159, 185),
-        padding: EdgeInsets.all(4),
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Expanded(
-              child: Icon(
-                  isIOS
-                      ? FontAwesomeIcons.appStoreIos
-                      : FontAwesomeIcons.googlePlay,
-                  size: 36)),
-          Container(
-            height: 4,
-          ),
-          TranslatedTextWidget(
-            "Rate it",
-            uppercase: true,
-            textAlign: TextAlign.center,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-          )
-        ]),
-        onPressed: () {
-          LaunchReview.launch(
-              androidAppId: 'me.markezine.luzinha', iOSAppId: '1373037254');
-        });
   }
 }

@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:bungie_api/models/destiny_presentation_node_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
@@ -68,24 +66,19 @@ class PresentationNodeTabsWidgetState
           nodeHashes[0],
           widget.depth + 1);
     }
-    var screenPadding = MediaQuery.of(context).padding;
     return DefaultTabController(
         length: nodeHashes.length,
         child: Column(children: [
           Material(
             elevation: (depth * 2) / 3,
             color: colors[depth],
-            
-            child:Container(
-            color: colors[depth],
-            padding: EdgeInsets.only(left: max(screenPadding.left, 4), right: max(screenPadding.right, 4)),
             child: Center(
                 child: TabBar(
               indicatorColor: Colors.white,
               isScrollable: depth > 1,
               tabs: buildTabButtons(context),
             )),
-          )),
+          ),
           Expanded(
               child: TabBarView(
             children: buildTabs(context),

@@ -44,7 +44,6 @@ class StorageKeys {
   static const String selectedAccountId = 'selected_account_id';
   static const String selectedMembershipId = 'selected_membership_id';
   static const String cachedProfile = "cached_profile";
-  static const String cachedVendors = "cached_vendors";
 
   static const String cachedLoadouts = "cached_loadouts";
   static const String loadoutsOrder = "loadouts_order";

@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:bungie_api/helpers/oauth.dart';
 import 'package:bungie_api/models/general_user.dart';
-import 'package:bungie_api/models/group_user_info_card.dart';
+import 'package:bungie_api/models/user_info_card.dart';
 import 'package:bungie_api/models/user_membership_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,9 +17,9 @@ import 'package:little_light/screens/languages.screen.dart';
 import 'package:little_light/screens/loadouts.screen.dart';
 import 'package:little_light/screens/objectives.screen.dart';
 import 'package:little_light/screens/progress.screen.dart';
+import 'package:little_light/screens/search.screen.dart';
 import 'package:little_light/screens/settings.screen.dart';
 import 'package:little_light/screens/triumphs.screen.dart';
-import 'package:little_light/screens/vendors.screen.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/storage/storage.service.dart';
 import 'package:little_light/utils/platform_data.dart';
@@ -152,13 +152,13 @@ class SideMenuWidgetState extends State<SideMenuWidget> {
                       requireLogin: true, onTap: () {
                     open(context, ObjectivesScreen());
                   }),
+                  menuItem(context, TranslatedTextWidget("Search"),
+                      requireLogin: true, onTap: () {
+                    open(context, SearchScreen());
+                  }),
                   menuItem(context, TranslatedTextWidget("Loadouts"),
                       requireLogin: true, onTap: () {
                     open(context, LoadoutsScreen());
-                  }),
-                  menuItem(context, TranslatedTextWidget("Vendors"),
-                      onTap: () {
-                    open(context, VendorsScreen());
                   }),
                   menuItem(context, TranslatedTextWidget("Collections"),
                       onTap: () {
@@ -187,7 +187,7 @@ class SideMenuWidgetState extends State<SideMenuWidget> {
   }
 
   Widget membershipButton(BuildContext context, GeneralUser bungieNetUser,
-      GroupUserInfoCard membership) {
+      UserInfoCard membership) {
     var plat = PlatformData.getPlatform(membership.membershipType);
     return Container(
         color: Colors.blueGrey.shade600,

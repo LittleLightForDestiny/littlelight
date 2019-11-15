@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/services/storage/storage.service.dart';
 
 class DevToolsScreen extends StatelessWidget {
   final TextEditingController _nameFieldController = new TextEditingController();
@@ -23,8 +22,7 @@ class DevToolsScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       buildNameTextField(context),
-                      buildReloadButton(context),
-                      buildClearDataButton(context)
+                      buildReloadButton(context)
                     ]))));
   }
 
@@ -55,18 +53,6 @@ class DevToolsScreen extends StatelessWidget {
         await ProfileService().fetchProfileData();
 
         print(ProfileService().getCharacters());
-      },
-    );
-  }
-
-  Widget buildClearDataButton(BuildContext context){
-    return RaisedButton(
-      child: Text("Clear all"),
-      onPressed: ()async {
-        StorageService.language().purge();
-        StorageService.membership().purge();
-        StorageService.global().purge();
-        StorageService.account().purge();
       },
     );
   }

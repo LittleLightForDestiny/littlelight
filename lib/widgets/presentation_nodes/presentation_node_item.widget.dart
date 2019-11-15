@@ -46,14 +46,13 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget> {
 
     if (profileNodes != null) {
       this.progress = profileNodes["${widget.hash}"];
-      if (this.progress != null) return;
+      if(this.progress != null) return;
     }
-    var characters =
-        widget.profile.getCharacters(UserSettingsService().characterOrdering);
-    if (characters == null || characters.length == 0) return;
+    var characters = widget.profile.getCharacters(UserSettingsService().characterOrdering);
+    if(characters == null || characters.length == 0) return;
     var charId = characters.first.characterId;
     var characterNodes = widget.profile.getCharacterPresentationNodes(charId);
-    if (characterNodes == null) return;
+    if(characterNodes == null) return;
     this.progress = characterNodes["${widget.hash}"];
   }
 
@@ -84,18 +83,16 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget> {
   List<Widget> buildContent(
       BuildContext context, DestinyPresentationNodeDefinition definition) {
     return [
-      definition?.displayProperties?.hasIcon == true
-          ? AspectRatio(
-              aspectRatio: 1,
-              child: definition?.displayProperties?.icon == null
-                  ? Container()
-                  : Padding(
-                      padding: EdgeInsets.all(8),
-                      child: QueuedNetworkImage(
-                        imageUrl: BungieApiService.url(
-                            definition.displayProperties.icon),
-                      )))
-          : Container(width:20),
+      AspectRatio(
+          aspectRatio: 1,
+          child: definition?.displayProperties?.icon == null
+              ? Container()
+              : Padding(
+                  padding: EdgeInsets.all(8),
+                  child: QueuedNetworkImage(
+                    imageUrl:
+                        BungieApiService.url(definition.displayProperties.icon),
+                  ))),
       buildTitle(context, definition),
       buildCount(context)
     ];
@@ -113,7 +110,7 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget> {
             style: TextStyle(fontWeight: FontWeight.bold),
           ));
     }
-
+    
     return Container();
   }
 
