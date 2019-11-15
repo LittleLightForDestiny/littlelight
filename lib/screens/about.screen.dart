@@ -152,6 +152,11 @@ class _AboutScreenState extends State<AboutScreen> {
                               height: 4,
                             ),
                             buildTagAndPlatform(4611686018467289582, BungieMembershipType.TigerSteam),
+                            Container(
+                              height: 4,
+                            ),
+                            buildTagAndPlatform(4611686018468562417, BungieMembershipType.TigerSteam),
+                            
                           ])),
                       Container(height: 8),
                       buildTranslationHeader(context, ['ja']),
@@ -200,6 +205,14 @@ class _AboutScreenState extends State<AboutScreen> {
                           padding: EdgeInsets.all(4),
                           child: Column(children: [
                             buildTagAndPlatform(4611686018489331546, BungieMembershipType.TigerSteam),
+                          ])),
+                      Container(height: 8),
+                      buildTranslationHeader(context, ['zh-cht']),
+                      Container(
+                          color: Colors.blueGrey.shade800,
+                          padding: EdgeInsets.all(4),
+                          child: Column(children: [
+                            buildTagAndPlatform(4611686018484604303, BungieMembershipType.TigerSteam),
                           ])),
                       Container(height: 8),
                       HeaderWidget(

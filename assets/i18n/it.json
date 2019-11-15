@@ -1,6 +1,6 @@
 {
     "Select Language": "Seleziona la lingua",
-    "Download Database": "Scarica il database",
+    "Download Database": "Scarico il Database",
     "Downloading": "Scaricando",
     "Uncompressing": "Decomprimendo",
     "OK": "OK",
@@ -69,7 +69,7 @@
     "Equip failed": "Falliment nell'equipaggiare",
     "Moving Away": "Spostando",
     "Hey, tap me!": "Hei, premimi!",
-    "Max Light": "Max Light",
+    "Max Light": "Potere Max",
     "Random Weapons": "Armi casuali",
     "Random Armor": "Armatura casuale",
     "Weapons": "Armi",
@@ -163,7 +163,7 @@
     "Contact": "Contatti",
     "Discord": "Discord",
     "Issues": "Problemi",
-    "Support Little Light": "Supporto per Little Light",
+    "Support Little Light": "Supporta Little Light",
     "Rate it": "Vota l'app",
     "Become a Patron": "Diventa un sostenitore",
     "Buy me a Coffee": "Offrimi un caffè",
@@ -206,5 +206,5 @@
     "Sanctified Mind": "Mente Santificata",
     "Energy Cost": "Costo energetico",
     "View in Collections": "Visualizza nella collezione",
-    "Total": "Total"
+    "Total": "Totale"
 }
