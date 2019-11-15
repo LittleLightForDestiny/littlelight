@@ -101,4 +101,9 @@ class MediumSubclassInventoryItemWidget extends MediumBaseInventoryItemWidget
   Widget modsWidget(BuildContext context) {
     return Container();
   }
+
+  @override
+  Widget primaryStatWidget(BuildContext context) {
+    return Container();
+  }
 }

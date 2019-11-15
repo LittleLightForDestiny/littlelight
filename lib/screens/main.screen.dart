@@ -3,10 +3,9 @@ import 'package:little_light/screens/collections.screen.dart';
 import 'package:little_light/screens/equipment.screen.dart';
 import 'package:little_light/screens/loadouts.screen.dart';
 import 'package:little_light/screens/progress.screen.dart';
-import 'package:little_light/screens/search.screen.dart';
 import 'package:little_light/screens/triumphs.screen.dart';
 import 'package:little_light/services/auth/auth.service.dart';
-import 'package:little_light/services/littlelight/littlelight.service.dart';
+import 'package:little_light/services/littlelight/loadouts.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/user_settings/user_settings.service.dart';
 import 'package:little_light/utils/selected_page_persistence.dart';
@@ -31,7 +30,7 @@ class MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   }
 
   fetchInfo() {
-    LittleLightService service = LittleLightService();
+    LoadoutsService service = LoadoutsService();
     AuthService auth = AuthService();
     ProfileService profile = ProfileService();
     if (auth.isLogged) {
@@ -71,10 +70,8 @@ class MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
       case SelectedPagePersistence.loadouts:
         currentScreen = LoadoutsScreen();
         break;
-      case SelectedPagePersistence.search:
-        currentScreen = SearchScreen();
-        break;
     }
+
     setState(() {});
     bool keepAwake = UserSettingsService().keepAwake;
     

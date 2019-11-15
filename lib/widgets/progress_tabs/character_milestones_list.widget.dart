@@ -26,7 +26,8 @@ class _CharacterMilestonesListWidgetState
     2683538554,
     3181387331,
     1342567285,
-    2590427074
+    2590427074,
+    2712317338
   ];
   Map<String, DestinyMilestone> milestones;
   Map<int, DestinyMilestoneDefinition> milestoneDefinitions;
@@ -51,8 +52,9 @@ class _CharacterMilestonesListWidgetState
 
   @override
   Widget build(BuildContext context) {
+    var screenPadding = MediaQuery.of(context).padding;
     return SingleChildScrollView(
-      // padding: EdgeInsets.only(top:8),
+      padding: EdgeInsets.only(left:screenPadding.left, right:screenPadding.right),
       child: Column(
         children: buildMilestones(context),
       ),

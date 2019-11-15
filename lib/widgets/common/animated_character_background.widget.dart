@@ -2,9 +2,6 @@ import 'dart:async';
 
 import 'package:bungie_api/models/destiny_color.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
-import 'package:bungie_api/models/destiny_item_talent_grid_component.dart';
-import 'package:bungie_api/models/destiny_talent_grid_definition.dart';
-import 'package:bungie_api/models/destiny_talent_node_category.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
@@ -29,9 +26,8 @@ class _CharacterInfo {
   final DestinyColor emblemColor;
   final int characterClass;
   final int damageType;
-  final String path;
   _CharacterInfo(
-      {this.emblemColor, this.characterClass, this.damageType, this.path});
+      {this.emblemColor, this.characterClass, this.damageType});
 }
 
 class _AnimatedCharacterBackgroundWidgetState
@@ -70,38 +66,15 @@ class _AnimatedCharacterBackgroundWidgetState
           equipment.firstWhere((i) => i.bucketHash == InventoryBucket.subclass);
       var subclassDef = await ManifestService()
           .getDefinition<DestinyInventoryItemDefinition>(subclass.itemHash);
-      var talentGridDef = await ManifestService()
-          .getDefinition<DestinyTalentGridDefinition>(
-              subclassDef.talentGrid.talentGridHash);
-      var talentGrid = ProfileService().getTalentGrid(subclass.itemInstanceId);
-      var talentGridCat =
-          extractTalentGridNodeCategory(talentGrid, talentGridDef);
 
       characters.add(_CharacterInfo(
           emblemColor: c.emblemColor,
           characterClass: c.classType,
-          damageType: subclassDef.talentGrid.hudDamageType,
-          path: talentGridCat.identifier));
+          damageType: subclassDef?.talentGrid?.hudDamageType));
     }
     characterChangedListener();
   }
 
-  DestinyTalentNodeCategory extractTalentGridNodeCategory(
-      DestinyItemTalentGridComponent talentGrid,
-      DestinyTalentGridDefinition talentGridDef) {
-    Iterable<int> activatedNodes = talentGrid.nodes
-        .where((node) => node.isActivated)
-        .map((node) => node.nodeIndex);
-    Iterable<DestinyTalentNodeCategory> selectedSkills =
-        talentGridDef.nodeCategories.where((category) {
-      var overlapping = category.nodeHashes
-          .where((nodeHash) => activatedNodes.contains(nodeHash));
-      return overlapping.length > 0;
-    }).toList();
-    DestinyTalentNodeCategory subclassPath = selectedSkills
-        .firstWhere((nodeDef) => nodeDef.isLoreDriven, orElse: () => null);
-    return subclassPath;
-  }
 
   @override
   dispose() {

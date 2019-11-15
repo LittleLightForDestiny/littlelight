@@ -3,7 +3,7 @@ import 'package:bungie_api/models/destiny_record_component.dart';
 import 'package:bungie_api/models/destiny_record_definition.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/models/tracked_objective.dart';
-import 'package:little_light/services/littlelight/littlelight.service.dart';
+import 'package:little_light/services/littlelight/objectives.service.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/auth/auth.service.dart';
@@ -65,7 +65,7 @@ class RecordDetailScreenState extends State<RecordDetailScreen> {
   }
 
   updateTrackStatus() async {
-    var objectives = await LittleLightService().getTrackedObjectives();
+    var objectives = await ObjectivesService().getTrackedObjectives();
     var tracked = objectives.firstWhere(
         (o) =>
             o.hash == widget.definition.hash &&
@@ -206,7 +206,7 @@ class RecordDetailScreenState extends State<RecordDetailScreen> {
             : TranslatedTextWidget("Track Objectives",
                 key: Key("track_objectives")),
         onPressed: () {
-          var service = LittleLightService();
+          var service = ObjectivesService();
           if (isTracking) {
             service.removeTrackedObjective(
                 TrackedObjectiveType.Triumph, definition.hash);

@@ -76,32 +76,32 @@ mixin SubclassPropertiesMixin on InventoryItemMixin {
 
   DestinyTalentNodeCategory extractTalentGridNodeCategory(
       DestinyTalentGridDefinition talentGridDef) {
-    Iterable<int> activatedNodes = talentGrid.nodes
-        .where((node) => node.isActivated)
-        .map((node) => node.nodeIndex);
+    Iterable<int> activatedNodes = talentGrid?.nodes
+        ?.where((node) => node.isActivated)
+        ?.map((node) => node.nodeIndex);
     Iterable<DestinyTalentNodeCategory> selectedSkills =
-        talentGridDef.nodeCategories.where((category) {
+        talentGridDef?.nodeCategories?.where((category) {
       var overlapping = category.nodeHashes
-          .where((nodeHash) => activatedNodes.contains(nodeHash));
+          .where((nodeHash) => activatedNodes?.contains(nodeHash) ?? false);
       return overlapping.length > 0;
-    }).toList();
+    })?.toList();
     DestinyTalentNodeCategory subclassPath = selectedSkills
-        .firstWhere((nodeDef) => nodeDef.isLoreDriven, orElse: () => null);
+        ?.firstWhere((nodeDef) => nodeDef.isLoreDriven, orElse: () => null);
     return subclassPath;
   }
 
   Widget buildTalentGridImage(DestinyTalentGridDefinition talentGridDef) {
     DestinyTalentNodeCategory cat =
         extractTalentGridNodeCategory(talentGridDef);
-    var path = DestinyData.getSubclassImagePath(definition.classType,
-        definition.talentGrid.hudDamageType, cat.identifier);
-    if (path == null) {
+    if (cat == null) {
       return QueuedNetworkImage(
         imageUrl: BungieApiService.url(definition.secondaryIcon),
         fit: BoxFit.fitWidth,
         alignment: Alignment.topRight,
       );
     }
+    var path = DestinyData.getSubclassImagePath(definition.classType,
+        definition.talentGrid.hudDamageType, cat.identifier);
     return Image.asset(
       path,
       fit: BoxFit.fitWidth,

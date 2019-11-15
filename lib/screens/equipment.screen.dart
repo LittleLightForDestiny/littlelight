@@ -1,19 +1,23 @@
 import 'dart:async';
-
-import 'package:bungie_api/enums/destiny_item_type_enum.dart';
 import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:little_light/screens/search.screen.dart';
 import 'package:little_light/services/bungie_api/enums/destiny_item_category.enum.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/user_settings/user_settings.service.dart';
+import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/utils/selected_page_persistence.dart';
 import 'package:little_light/widgets/common/animated_character_background.widget.dart';
+import 'package:little_light/widgets/common/refresh_button.widget.dart';
 import 'package:little_light/widgets/flutter/passive_tab_bar_view.dart';
 import 'package:little_light/widgets/inventory_tabs/character_tab.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/character_tab_header.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
+import 'package:little_light/widgets/inventory_tabs/large_screen_equipment_list.widget.dart';
+import 'package:little_light/widgets/inventory_tabs/large_screen_vault_list.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/selected_items.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/tabs_character_menu.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/tabs_item_type_menu.widget.dart';
@@ -36,8 +40,8 @@ class EquipmentScreen extends StatefulWidget {
 }
 
 class EquipmentScreenState extends State<EquipmentScreen>
-    with TickerProviderStateMixin {
-  int currentGroup = DestinyItemType.Weapon;
+    with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+  int currentGroup = DestinyItemCategory.Weapon;
   Map<int, double> scrollPositions = new Map();
 
   TabController charTabController;
@@ -85,9 +89,70 @@ class EquipmentScreenState extends State<EquipmentScreen>
 
   @override
   Widget build(BuildContext context) {
-    if (characters == null) {
-      return Container();
+    super.build(context);
+
+    var query = MediaQueryHelper(context);
+    if (query.isLandscape) {
+      return buildTablet(context);
     }
+
+    return buildPhone(context);
+  }
+
+  Widget buildTablet(BuildContext context) {
+    EdgeInsets screenPadding = MediaQuery.of(context).padding;
+    return Material(
+      child: Stack(
+        children: <Widget>[
+          buildBackground(context),
+          Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: buildTabletCharacterTabView(context)),
+          Positioned(
+            top: screenPadding.top,
+            width: kToolbarHeight,
+            height: kToolbarHeight,
+            child: IconButton(
+              icon: Icon(Icons.menu),
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+            ),
+          ),
+          Positioned(
+              top: MediaQuery.of(context).padding.top + kToolbarHeight - 52,
+              right: 8,
+              child: buildCharacterMenu(context)),
+          InventoryNotificationWidget(
+              notificationMargin: EdgeInsets.only(right: 44),
+              barHeight: 0,
+              key: Key('inventory_notification_widget')),
+          Positioned(
+            right: 8,
+            bottom: 8,
+            child: Container(
+              decoration: BoxDecoration(
+                  color: Colors.blueGrey.shade900,
+                  borderRadius: BorderRadius.circular(18)),
+              width: 36,
+              height: 36,
+              child: RefreshButtonWidget(),
+            ),
+          ),
+          Positioned(
+              bottom: screenPadding.bottom,
+              left: 0,
+              right: 0,
+              child: SelectedItemsWidget()),
+        ],
+      ),
+    );
+  }
+
+  Widget buildPhone(BuildContext context) {
     EdgeInsets screenPadding = MediaQuery.of(context).padding;
     var topOffset = screenPadding.top + kToolbarHeight;
     return Material(
@@ -112,7 +177,10 @@ class EquipmentScreenState extends State<EquipmentScreen>
               },
             ),
           ),
-          TabsCharacterMenuWidget(characters, controller: charTabController),
+          Positioned(
+              top: MediaQuery.of(context).padding.top + kToolbarHeight - 52,
+              right: 8,
+              child: buildCharacterMenu(context)),
           ItemTypeMenuWidget(widget.itemTypes, controller: typeTabController),
           InventoryNotificationWidget(
               key: Key('inventory_notification_widget')),
@@ -128,17 +196,55 @@ class EquipmentScreenState extends State<EquipmentScreen>
 
   Widget buildCharacterHeaderTabView(BuildContext context) {
     var headers = characters
-        .map((character) => TabHeaderWidget(
+        ?.map((character) => TabHeaderWidget(
               character,
               key: Key("${character.emblemHash}"),
             ))
-        .toList();
-    headers.add(VaultTabHeaderWidget());
-    return TabBarView(controller: charTabController, children: headers);
+        ?.toList();
+    headers?.add(VaultTabHeaderWidget());
+    return TabBarView(controller: charTabController, children: headers ?? []);
+  }
+
+  Widget buildTabletCharacterTabView(BuildContext context) {
+    EdgeInsets screenPadding = MediaQuery.of(context).padding;
+    var topOffset = screenPadding.top + kToolbarHeight;
+    var pages = characters
+        ?.map((character) => Stack(children: [
+              Positioned.fill(
+                  child: LargeScreenEquipmentListWidget(
+                key: Key("character_tab${character.characterId}"),
+                character: character,
+              )),
+              Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: topOffset + 16,
+                  child: TabHeaderWidget(
+                    character,
+                    key: Key("${character.emblemHash}"),
+                  ))
+            ]))
+        ?.toList();
+    pages?.add(Stack(children: [
+      Positioned.fill(
+          child: LargeScreenVaultListWidget(
+        key: Key("vault_tab"),
+      )),
+      Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          height: topOffset + 16,
+          child: VaultTabHeaderWidget())
+    ]));
+    return TabBarView(controller: charTabController, children: pages ?? []);
   }
 
   Widget buildBackground(BuildContext context) {
-    return AnimatedCharacterBackgroundWidget(tabController: charTabController,);
+    return AnimatedCharacterBackgroundWidget(
+      tabController: charTabController,
+    );
   }
 
   Widget buildItemTypeTabBarView(BuildContext context) {
@@ -160,16 +266,56 @@ class EquipmentScreenState extends State<EquipmentScreen>
   }
 
   List<Widget> buildCharacterTabs(int group) {
-    List<Widget> characterTabs = characters.map((character) {
+    List<Widget> characterTabs = characters?.map((character) {
       return CharacterTabWidget(character, group,
           key: Key("character_tab_${character.characterId}"),
           scrollPositions: scrollPositions);
-    }).toList();
-    characterTabs.add(VaultTabWidget(group));
-    return characterTabs;
+    })?.toList();
+    characterTabs?.add(VaultTabWidget(group));
+    return characterTabs ?? [];
   }
 
   List<DestinyCharacterComponent> get characters {
-    return widget.profile.getCharacters(UserSettingsService().characterOrdering);
+    return widget.profile
+        .getCharacters(UserSettingsService().characterOrdering);
   }
+
+  buildCharacterMenu(BuildContext context) {
+    return Row(children: [
+      IconButton(
+          icon: Icon(FontAwesomeIcons.search, color: Colors.white),
+          onPressed: () {
+            SearchTabData searchData;
+            switch (typeTabController.index) {
+              case 0:
+                searchData = SearchTabData.weapons();
+                break;
+              case 1:
+                int classType;
+                if (charTabController.index < characters.length) {
+                  DestinyCharacterComponent char =
+                      characters[charTabController.index];
+                  classType = char?.classType;
+                }
+                searchData = SearchTabData.armor(classType);
+                break;
+              case 2:
+                searchData = SearchTabData.flair();
+                break;
+            }
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SearchScreen(
+                  tabData: searchData,
+                ),
+              ),
+            );
+          }),
+      TabsCharacterMenuWidget(characters, controller: charTabController)
+    ]);
+  }
+
+  @override
+  bool get wantKeepAlive => true;
 }

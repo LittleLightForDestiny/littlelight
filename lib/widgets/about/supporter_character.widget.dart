@@ -66,7 +66,7 @@ class SupporterCharacterWidgetState extends State<SupporterCharacterWidget> {
           Positioned(
               left: 68,
               top: 4,
-              bottom:4,
+              bottom: 4,
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -85,16 +85,14 @@ class SupporterCharacterWidgetState extends State<SupporterCharacterWidget> {
             right: 8,
             child: buildPlayerLevel(context),
           ),
-          widget.link != null
-              ? Positioned.fill(
-                  child: Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        onTap: () {
-                          launch(widget.link);
-                        },
-                      )))
-              : Container()
+          Positioned.fill(
+              child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () {
+                      launch(widget.link ?? "https://www.bungie.net/en/Profile/${widget.membershipType}/${widget.membershipId}");
+                    },
+                  )))
         ]));
   }
 

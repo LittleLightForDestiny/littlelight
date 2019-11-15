@@ -20,10 +20,24 @@ class ArmorInventoryItemWidget extends BaseInventoryItemWidget {
   @override
   Widget primaryStatWidget(BuildContext context) {
     return Positioned(
-        top: titleFontSize + padding,
+        top: titleFontSize + padding*1.5,
         right: 0,
         child: Container(
             padding: EdgeInsets.all(padding),
-            child: PrimaryStatWidget(item, definition, instanceInfo)));
+            child: PrimaryStatWidget(
+              
+              definition:definition, 
+              instanceInfo:instanceInfo)));
   }
+
+  @override
+  itemIcon(BuildContext context) {
+    
+    return Stack(children:[
+      super.itemIcon(context),
+      buildStatTotal(context)
+    ]);
+  }
+
+  
 }

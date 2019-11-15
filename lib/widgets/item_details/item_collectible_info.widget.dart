@@ -36,6 +36,7 @@ class ItemCollectibleInfoWidget extends StatelessWidget {
               padding: EdgeInsets.all(8),
               child: ManifestText<DestinyCollectibleDefinition>(
                   hash,
+                  style: TextStyle(fontWeight: FontWeight.w300),
                   textExtractor: (collectible){
                     if(collectible == null) return "";
                     return collectible.sourceString;

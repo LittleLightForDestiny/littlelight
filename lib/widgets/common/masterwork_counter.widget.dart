@@ -32,26 +32,28 @@ class MasterworkCounterWidgetState extends State<MasterworkCounterWidget>
 
   loadDefinitions() async {
     if (widget.item == null) return;
-    var itemSockets = widget.profile.getItemSockets(widget.item.itemInstanceId);
-    if(itemSockets == null) return;
-    for (var socket in itemSockets) {
-      if (socket.plugObjectives != null) {
-        for (var objective in socket.plugObjectives) {
-          if (objective.visible) {
-            masterworkObjective = objective;
-            masterworkObjectiveDefinition = await widget.manifest
-                .getDefinition<DestinyObjectiveDefinition>(
-                    objective.objectiveHash);
-          }
+    var plugObjectives =
+        widget.profile.getPlugObjectives(widget.item.itemInstanceId);
+    for (var objectives in plugObjectives.values) {
+      for (var objective in objectives) {
+        if (objective.visible) {
+          masterworkObjective = objective;
+          masterworkObjectiveDefinition = await widget.manifest
+              .getDefinition<DestinyObjectiveDefinition>(
+                  objective.objectiveHash);
         }
       }
+    }
+    if (mounted) {
+      setState(() {});
     }
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    if (this.masterworkObjective == null || this.masterworkObjectiveDefinition?.displayProperties?.icon == null){
+    if (this.masterworkObjective == null ||
+        this.masterworkObjectiveDefinition?.displayProperties?.icon == null) {
       return Container();
     }
     return Container(
@@ -69,7 +71,8 @@ class MasterworkCounterWidgetState extends State<MasterworkCounterWidget>
             Container(
               width: 4,
             ),
-            Expanded(child:Column(
+            Expanded(
+                child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(masterworkObjectiveDefinition.progressDescription,

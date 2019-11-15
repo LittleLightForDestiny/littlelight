@@ -7,7 +7,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/screens/edit_loadout.screen.dart';
-import 'package:little_light/services/littlelight/littlelight.service.dart';
+import 'package:little_light/services/littlelight/loadouts.service.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
@@ -49,7 +49,7 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
   }
 
   void loadLoadouts() async {
-    LittleLightService service = LittleLightService();
+    LoadoutsService service = LoadoutsService();
     loadouts = await service.getLoadouts();
     filteredLoadouts = loadouts;
     setState(() {});
@@ -152,15 +152,16 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
   }
 
   Widget buildReorderingBody(BuildContext context) {
+    var screenPadding = MediaQuery.of(context).padding;
     return DragList<Loadout>(
         items: loadouts,
         itemExtent: 56,
-        padding: EdgeInsets.all(8),
+        padding: EdgeInsets.all(8).copyWith(left:max(screenPadding.left, 8), right:max(screenPadding.right, 8)),
         handleBuilder: (context) => buildHandle(context),
         onItemReorder: (oldIndex, newIndex) {
           var removed = loadouts.removeAt(oldIndex);
           loadouts.insert(newIndex, removed);
-          LittleLightService().saveLoadoutsOrder(loadouts);
+          LoadoutsService().saveLoadoutsOrder(loadouts);
         },
         builder: (context, parameter, handle) =>
             buildSortItem(context, parameter, handle));
@@ -213,9 +214,9 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
     if (loadouts.length == 0) {
       return buildNoLoadoutsBody(context);
     }
-
+    var screenPadding = MediaQuery.of(context).padding;
     return StaggeredGridView.countBuilder(
-      padding: EdgeInsets.all(4),
+      padding: EdgeInsets.all(4).copyWith(left:max(screenPadding.left, 4), right:max(screenPadding.right, 4)),
       crossAxisCount: 30,
       itemCount: filteredLoadouts.length,
       itemBuilder: (BuildContext context, int index) => getItem(context, index),

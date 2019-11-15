@@ -3,30 +3,32 @@ import 'dart:async';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
-import 'package:bungie_api/models/destiny_item_plug.dart';
 import 'package:bungie_api/models/destiny_objective_definition.dart';
 import 'package:bungie_api/models/destiny_objective_progress.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/models/tracked_objective.dart';
-import 'package:little_light/services/auth/auth.service.dart';
-import 'package:little_light/services/littlelight/littlelight.service.dart';
+import 'package:little_light/services/littlelight/objectives.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/widgets/common/destiny_item.stateful_widget.dart';
+import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/objective.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
-class ItemObjectivesWidget extends DestinyItemStatefulWidget {
+class ItemObjectivesWidget extends BaseDestinyStatefulItemWidget {
   final NotificationService broadcaster = NotificationService();
   ItemObjectivesWidget(
-      DestinyItemComponent item,
+      {DestinyItemComponent item,
       DestinyInventoryItemDefinition definition,
       DestinyItemInstanceComponent instanceInfo,
-      {Key key,
+      Key key,
       String characterId})
-      : super(item, definition, instanceInfo,
-            key: key, characterId: characterId);
+      : super(
+            item: item,
+            definition: definition,
+            instanceInfo: instanceInfo,
+            key: key,
+            characterId: characterId);
 
   @override
   ItemObjectivesWidgetState createState() {
@@ -34,7 +36,8 @@ class ItemObjectivesWidget extends DestinyItemStatefulWidget {
   }
 }
 
-class ItemObjectivesWidgetState extends DestinyItemState<ItemObjectivesWidget> {
+class ItemObjectivesWidgetState
+    extends BaseDestinyItemState<ItemObjectivesWidget> {
   Map<int, DestinyObjectiveDefinition> objectiveDefinitions;
   List<DestinyObjectiveProgress> itemObjectives;
   StreamSubscription<NotificationEvent> subscription;
@@ -54,39 +57,30 @@ class ItemObjectivesWidgetState extends DestinyItemState<ItemObjectivesWidget> {
   }
 
   updateProgress() {
-    if (AuthService().isLogged) {
-      var itemInstanceId = widget.item?.itemInstanceId;
-      if (itemInstanceId == null) {
-        var allItems = widget.profile.getAllItems();
-        var item = allItems.firstWhere(
-            (i) => i.itemHash == widget.definition?.hash,
-            orElse: () => null);
-        itemInstanceId = item?.itemInstanceId;
-      }
+    var itemInstanceId = widget.item?.itemInstanceId;
+    if (itemInstanceId == null) {
+      var allItems = widget.profile.getAllItems();
+      var item = allItems.firstWhere(
+          (i) => i.itemHash == widget.definition?.hash,
+          orElse: () => null);
+      itemInstanceId = item?.itemInstanceId;
+    }
 
-      itemObjectives = widget.profile
-          .getItemObjectives(itemInstanceId, characterId, item?.itemHash);
+    itemObjectives = widget.profile
+        .getItemObjectives(itemInstanceId, characterId, item?.itemHash);
 
-      if (itemObjectives != null) {
-        setState(() {});
-        return;
-      }
-
-      var sockets = widget.profile.getAllSockets();
-      DestinyItemPlug plugItem;
-      sockets.values.firstWhere((s) {
-        s.sockets.firstWhere((c) {
-          plugItem = c?.reusablePlugs?.firstWhere(
-              (c) => c.plugItemHash == widget.definition?.hash,
-              orElse: () => null);
-          return plugItem != null;
-        }, orElse: () => null);
-        return plugItem != null;
-      }, orElse: () => null);
-      itemObjectives = plugItem?.plugObjectives;
+    if (itemObjectives != null) {
       setState(() {});
       return;
     }
+
+    var plugObjectives = widget.profile.getPlugObjectives(itemInstanceId);
+    var plugHash = "${widget.definition.hash}";
+    if(plugObjectives?.containsKey(plugHash) ?? false){
+      itemObjectives = plugObjectives["${widget.definition.hash}"];
+    } 
+    setState(() {});
+    return;
   }
 
   @override
@@ -110,7 +104,8 @@ class ItemObjectivesWidgetState extends DestinyItemState<ItemObjectivesWidget> {
     List<Widget> items = [];
     if ((objectiveDefinitions?.length ?? 0) == 0) return Container();
     if (itemObjectives != null) {
-      if (itemObjectives.where((o) => o.visible != false).length == 0) {
+      if (itemObjectives.where((o) => o.visible != false).length == 0 &&
+          !isTracking) {
         return Container();
       }
     }
@@ -129,17 +124,19 @@ class ItemObjectivesWidgetState extends DestinyItemState<ItemObjectivesWidget> {
                   buildRefreshButton(context)
                 ]))));
     items.addAll(buildObjectives(context));
-    items.add(buildTrackButton(context));
+    if (item != null) {
+      items.add(buildTrackButton(context));
+    }
     return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch, children: items);
   }
 
   updateTrackStatus() async {
-    var objectives = await LittleLightService().getTrackedObjectives();
+    var objectives = await ObjectivesService().getTrackedObjectives();
     var tracked = objectives.firstWhere(
         (o) =>
             o.hash == widget.definition.hash &&
-            (o.instanceId == widget.item?.itemInstanceId) && 
+            (o.instanceId == widget.item?.itemInstanceId) &&
             o.characterId == widget.characterId,
         orElse: () => null);
     isTracking = tracked != null;
@@ -157,7 +154,7 @@ class ItemObjectivesWidgetState extends DestinyItemState<ItemObjectivesWidget> {
             : TranslatedTextWidget("Track Objectives",
                 key: Key("track_objectives")),
         onPressed: () {
-          var service = LittleLightService();
+          var service = ObjectivesService();
           if (isTracking) {
             service.removeTrackedObjective(
                 TrackedObjectiveType.Item, definition.hash,

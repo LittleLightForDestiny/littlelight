@@ -9,7 +9,6 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_progression.dart';
 import 'package:bungie_api/models/destiny_progression_definition.dart';
 import 'package:bungie_api/models/destiny_race_definition.dart';
-import 'package:bungie_api/models/destiny_sandbox_perk_definition.dart';
 import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
@@ -144,33 +143,36 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
 
   Widget ghostIcon(BuildContext context) {
     var ghost = Container(
-              width: 50,
-              height: 50,
-              child: Shimmer.fromColors(
-                  baseColor: Colors.grey.shade400,
-                  highlightColor: Colors.grey.shade100,
-                  period: Duration(seconds: 5),
-                  child: Icon(DestinyIcons.ghost,
-                      size: 50, color: Colors.grey.shade300)));
-    if(UserSettingsService().hasTappedGhost){
+        width: 50,
+        height: 50,
+        child: Shimmer.fromColors(
+            baseColor: Colors.grey.shade400,
+            highlightColor: Colors.grey.shade100,
+            period: Duration(seconds: 5),
+            child: Icon(DestinyIcons.ghost,
+                size: 50, color: Colors.grey.shade300)));
+    if (UserSettingsService().hasTappedGhost) {
       return ghost;
     }
     return Stack(children: [
       Center(
-          child: ghost,
+        child: ghost,
       ),
       Container(
-        margin: EdgeInsets.only(top:60),
+          margin: EdgeInsets.only(top: 60),
           child: SpeechBubble(
-        nipLocation: NipLocation.TOP,
-        color: Colors.lightBlue,
-        child: TranslatedTextWidget("Hey, tap me!"),
-      ))
+            nipLocation: NipLocation.TOP,
+            color: Colors.lightBlue,
+            child: TranslatedTextWidget("Hey, tap me!"),
+          ))
     ]);
   }
 
   Widget characterStatsInfo(
       BuildContext context, DestinyCharacterComponent character) {
+    var artifactLevel =
+        widget.profile.getArtifactProgression()?.powerBonus ?? 0;
+    var armorLevel = character.light - artifactLevel;
     return Positioned(
         right: 8,
         top: 0,
@@ -199,11 +201,20 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
                 )
               ],
             ),
-            TranslatedTextWidget("Level {Level}",
-                replace: {
-                  'Level': "${character.levelProgression.level}",
-                },
-                style: TextStyle(fontSize: 12))
+            Row(
+              children: <Widget>[
+                Text(
+                  "$armorLevel",
+                  style: TextStyle(fontWeight: FontWeight.w500),
+                ),
+                artifactLevel == 0
+                    ? Container()
+                    : Text(" +$artifactLevel",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.cyanAccent))
+              ],
+            )
           ],
         ));
   }
@@ -243,20 +254,32 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
     List<Widget> stats = [];
     character.stats.forEach((hash, stat) {
       if (hash == "${ProgressionHash.Power}") return;
-      stats.add(Container(
-          width: 16,
-          height: 16,
-          child: ManifestImageWidget<DestinyStatDefinition>(
-            int.parse(hash),
-            placeholder: Container(),
-          )));
-      stats.add(Text(
-        "$stat",
-        style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-      ));
-      stats.add(Container(width: 4));
+      stats.add(
+        Container(
+          margin: EdgeInsets.only(right:4, bottom:2),
+          child: Row(children: [
+        Container(
+          margin: EdgeInsets.only(right:2),
+            width: 16,
+            height: 16,
+            child: ManifestImageWidget<DestinyStatDefinition>(
+              int.parse(hash),
+              placeholder: Container(),
+            )),
+        Text(
+          "$stat",
+          style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+        )
+      ])));
     });
-    return Row(crossAxisAlignment: CrossAxisAlignment.center, children: stats);
+    return Column(children: [
+      Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: stats.take(3).toList()),
+      Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: stats.skip(3).toList())
+    ]);
   }
 
   Widget expInfo(BuildContext context, DestinyCharacterComponent character) {
@@ -274,11 +297,11 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
         child: Row(children: [
           isWellRested
               ? Container(
-                  width: 16,
-                  height: 16,
-                  child: ManifestImageWidget<DestinySandboxPerkDefinition>(
-                      1519921522),
-                )
+                  // width: 16,
+                  // height: 16,
+                  // child: ManifestImageWidget<DestinySandboxPerkDefinition>(
+                  //     1519921522),
+                  )
               : Container(),
           Container(
             width: 4,

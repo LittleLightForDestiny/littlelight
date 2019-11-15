@@ -24,7 +24,7 @@ class MediumBaseInventoryItemWidget extends BaseInventoryItemWidget {
   Widget nameBar(BuildContext context){
     return ItemNameBarWidget(item, definition, instanceInfo,
             padding: EdgeInsets.all(
-                padding),fontSize: titleFontSize, fontWeight: FontWeight.w600,);
+                padding),fontSize: titleFontSize, fontWeight: FontWeight.w500,);
   }
 
   Widget categoryName(BuildContext context) {
@@ -63,15 +63,14 @@ class MediumBaseInventoryItemWidget extends BaseInventoryItemWidget {
 
   @override
   Widget modsWidget(BuildContext context) {
+    if(item?.itemInstanceId == null) return Container();
     return Positioned(
       bottom: 4,
       right:4,
       child:ItemModsWidget(
-      item,
-      definition,
-      instanceInfo,
-      characterId: characterId,
-      iconSize: 18
+      definition: definition,
+      itemSockets: profile.getItemSockets(item?.itemInstanceId),
+      iconSize: 22
     ));
   }
 }

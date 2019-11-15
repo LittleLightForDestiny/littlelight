@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:little_light/exceptions/exception_handler.dart';
@@ -11,7 +13,9 @@ import 'package:flutter/foundation.dart';
 int restartCounter = 0;
 void main() async {
   debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
-  await DotEnv().load('.env');
+  WidgetsFlutterBinding.ensureInitialized();
+  await DotEnv().load('assets/_env');
+  print(DotEnv().env);
   ExceptionHandler handler = ExceptionHandler(onRestart: () {
     restartCounter++;
     main();
@@ -61,6 +65,12 @@ class LittleLight extends StatelessWidget {
               primaryColorDark: Colors.lightBlue,
               primaryColorLight: Colors.lightBlue,
               valueIndicatorTextStyle: TextStyle())),
+      builder: (context, child) {
+        return ScrollConfiguration(
+          behavior: LittleLightScrollBehaviour(),
+          child: child,
+        );
+      },
       home: new InitialScreen(),
       localizationsDelegates: [
         GlobalMaterialLocalizations.delegate,
@@ -82,5 +92,27 @@ class LittleLight extends StatelessWidget {
         const Locale('zh', 'CHS'), // Chinese
       ],
     );
+  }
+}
+
+class LittleLightScrollBehaviour extends ScrollBehavior {
+  @override
+  Widget buildViewportChrome(
+      BuildContext context, Widget child, AxisDirection axisDirection) {
+    if (Platform.isIOS) {
+      return child;
+    }
+    return GlowingOverscrollIndicator(
+      child: child,
+      axisDirection: axisDirection,
+      color: Theme.of(context).accentColor,
+    );
+  }
+  @override
+  ScrollPhysics getScrollPhysics(BuildContext context) {
+    if (Platform.isIOS) {
+      return const BouncingScrollPhysics();
+    }
+    return super.getScrollPhysics(context);
   }
 }

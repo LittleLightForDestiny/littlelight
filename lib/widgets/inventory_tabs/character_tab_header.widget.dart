@@ -106,15 +106,11 @@ class TabHeaderWidgetState extends State<TabHeaderWidget> {
   }
 
   Widget powerBar(BuildContext context) {
-    DestinyProgression levelProg = widget.character.levelProgression;
-    bool isMaxLevel = levelProg.level >= levelProg.levelCap;
-    MaterialColor fg = isMaxLevel ? Colors.amber : Colors.green;
+    DestinyProgression levelProg = progression.progressions["${ProgressionHash.Legend}"];
+    Color fg = Colors.cyan.shade300;
     Color bg = Color.lerp(Colors.black, fg, .6);
-    Color shine = fg.shade200;
-
-    if (isMaxLevel) {
-      levelProg = progression.progressions["${ProgressionHash.Legend}"];
-    }
+    Color shine = Colors.cyan.shade100;
+    
     double completed = levelProg.progressToNextLevel / levelProg.nextLevelAt;
     return Container(
       height: 2,
