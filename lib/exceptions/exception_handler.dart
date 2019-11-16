@@ -1,12 +1,15 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:bungie_api/enums/platform_error_codes_enum.dart';
 import 'package:bungie_api/helpers/oauth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
+import 'package:little_light/services/storage/storage.service.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:sentry/sentry.dart';
 import 'package:package_info/package_info.dart';
+
 
 class ExceptionHandler {
   static BuildContext context;
@@ -60,8 +63,10 @@ class ExceptionHandler {
     }
 
     if (error is BungieApiException) {
-      bool shouldShowLoginButton = [1601, 99].contains(error.errorCode);
+      bool shouldShowLoginButton = [PlatformErrorCodes.DestinyAccountNotFound, PlatformErrorCodes.WebAuthRequired].contains(error.errorCode) ||
+      ["invalid_grant"].contains(error.errorStatus);
       BungieApiException e = error;
+      print(e.errorStatus);
       showDialog(
         barrierDismissible: false,
         context: context,
@@ -86,7 +91,10 @@ class ExceptionHandler {
                     shouldShowLoginButton
                         ? ErrorDialogButton(
                             text: "Login with another account",
-                            onPressed: () async {})
+                            onPressed: () async {
+                              await StorageService.account().remove(StorageKeys.latestToken, true);
+                              onRestart();
+                            })
                         : Container(height: 0),
                     ErrorDialogButton(
                         text: "Exit",

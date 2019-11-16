@@ -338,16 +338,17 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
   }
 
   Widget buildNotes(BuildContext context) {
-    var screenPadding = MediaQuery.of(context).padding;
-    return Container(
-        padding: EdgeInsets.only(
-            left: screenPadding.left, right: screenPadding.right),
-        child: ItemDetailsNotesWidget(
-            item: item,
-            definition: definition,
-            instanceInfo: instanceInfo,
-            characterId: characterId,
-            key: Key("item_notes_widget")));
+    return Container();
+    // var screenPadding = MediaQuery.of(context).padding;
+    // return Container(
+    //     padding: EdgeInsets.only(
+    //         left: screenPadding.left, right: screenPadding.right),
+    //     child: ItemDetailsNotesWidget(
+    //         item: item,
+    //         definition: definition,
+    //         instanceInfo: instanceInfo,
+    //         characterId: characterId,
+    //         key: Key("item_notes_widget")));
   }
 
   Widget buildObjectives(BuildContext context) {
