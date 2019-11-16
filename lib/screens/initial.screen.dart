@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:bungie_api/enums/platform_error_codes_enum.dart';
 import 'package:bungie_api/helpers/bungie_net_token.dart';
 import 'package:bungie_api/models/group_user_info_card.dart';
 import 'package:bungie_api/models/user_membership_data.dart';
@@ -150,7 +151,19 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
       this.authCode(authCode);
       return;
     }
-    BungieNetToken token = await widget.auth.getToken();
+    BungieNetToken token;
+    try{
+      token = await widget.auth.getToken();
+    }on BungieApiException catch(e){
+      bool needsLogin = [PlatformErrorCodes.DestinyAccountNotFound, PlatformErrorCodes.WebAuthRequired].contains(e.errorCode) ||
+      ["invalid_grant"].contains(e.errorStatus);
+      if(needsLogin){
+        showLogin();
+        return;
+      }
+      throw e;
+    }
+    
     if (token == null) {
       showLogin();
     } else {

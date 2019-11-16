@@ -101,7 +101,15 @@ class StorageService {
     await _prefs.setBool("$_path/$key", value);
   }
 
-  Future<void> remove(String key) async {
+  Future<void> remove(String key, [bool json=false]) async {
+    if(json){
+      File cached = new File(await getPath(key, json: true));
+      bool exists = await cached.exists();
+      if(exists){
+        cached.delete();
+      }
+      return;
+    }
     await _prefs.remove("$_path/$key");
   }
 
