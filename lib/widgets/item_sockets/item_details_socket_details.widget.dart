@@ -13,12 +13,13 @@ import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
+import 'package:little_light/widgets/common/objective.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:little_light/widgets/item_details/item_objectives.widget.dart';
 import 'package:little_light/widgets/item_sockets/base_socket_details.widget.dart';
 import 'package:little_light/widgets/item_sockets/item_socket.controller.dart';
 import 'package:little_light/widgets/item_stats/item_details_socket_item_stats.widget.dart';
-
 
 class ItemDetailsSocketDetailsWidget extends BaseSocketDetailsWidget {
   ItemDetailsSocketDetailsWidget(
@@ -26,7 +27,11 @@ class ItemDetailsSocketDetailsWidget extends BaseSocketDetailsWidget {
       DestinyItemSocketCategoryDefinition category,
       DestinyInventoryItemDefinition parentDefinition,
       ItemSocketController controller})
-      : super(item: item, definition: parentDefinition, category:category, controller:controller);
+      : super(
+            item: item,
+            definition: parentDefinition,
+            category: category,
+            controller: controller);
 
   @override
   ItemDetailsSocketDetailsWidgetState createState() =>
@@ -38,22 +43,23 @@ class ItemDetailsSocketDetailsWidgetState
   @override
   Widget build(BuildContext context) {
     if (definition == null) return Container();
-    if(!(category?.socketIndexes?.contains(controller.selectedSocketIndex) ?? false)){
+    if (!(category?.socketIndexes?.contains(controller.selectedSocketIndex) ??
+        false)) {
       return Container();
     }
     return Container(
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
-      child:Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          buildOptions(context),
-          buildHeader(context),
-          Container(
-              padding: EdgeInsets.all(8),
-              color: Colors.black,
-              child: buildContent(context)),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              buildOptions(context),
+              buildHeader(context),
+              Container(
+                  padding: EdgeInsets.all(8),
+                  color: Colors.black,
+                  child: buildContent(context)),
               buildResourceCost(context)
-        ]));
+            ]));
   }
 
   buildHeader(BuildContext context) {
@@ -91,12 +97,14 @@ class ItemDetailsSocketDetailsWidgetState
       buildEnergyCost(context),
       buildSandBoxPerks(context),
       buildStats(context),
+      buildObjectives(context)
     ];
     return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: items.toList());
   }
-  buildStats(BuildContext context){
+
+  buildStats(BuildContext context) {
     if (!shouldShowStats) return Container();
     return Column(children: [
       Divider(
@@ -112,27 +120,46 @@ class ItemDetailsSocketDetailsWidgetState
     ]);
   }
 
-  buildDescription(BuildContext context){
+  buildObjectives(BuildContext context) {
+    var itemObjectives = widget.profile.getPlugObjectives(item?.itemInstanceId);
+    if(!(itemObjectives?.containsKey("${definition.hash}") ?? false)) return Container();
+    var objectives = itemObjectives["${definition.hash}"];
+    return Column(
+        children: <Widget>[
+      Divider(
+        thickness: 1,
+        color: Colors.white,
+      )
+    ]
+            .followedBy(objectives.map((o) => ObjectiveWidget(
+                  objective: o,
+
+                )))
+            .toList());
+  }
+
+  buildDescription(BuildContext context) {
     if ((definition?.displayProperties?.description?.length ?? 0) == 0)
       return Container();
     return Text(definition?.displayProperties?.description,
-          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300));
+        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300));
   }
 
   Widget buildReusableMods(BuildContext context) {
     var plugs = controller.socketPlugHashes(controller.selectedSocketIndex);
     if ((plugs?.length ?? 0) <= 1) return Container();
     var screenWidth = MediaQuery.of(context).size.width - 16;
-    var dividerMargin = min(screenWidth/50, 8.0);
+    var dividerMargin = min(screenWidth / 50, 8.0);
     return Container(
-      padding: EdgeInsets.only(bottom:16),
-      child:Wrap(
-        alignment: WrapAlignment.start,
-        runSpacing: dividerMargin,
-        spacing: dividerMargin,
-        children: plugs
-            .map((h) => buildMod(context, controller.selectedSocketIndex, h))
-            .toList()));
+        padding: EdgeInsets.only(bottom: 16),
+        child: Wrap(
+            alignment: WrapAlignment.start,
+            runSpacing: dividerMargin,
+            spacing: dividerMargin,
+            children: plugs
+                .map(
+                    (h) => buildMod(context, controller.selectedSocketIndex, h))
+                .toList()));
   }
 
   Widget buildMod(BuildContext context, int socketIndex, int plugItemHash) {
@@ -196,16 +223,16 @@ class ItemDetailsSocketDetailsWidgetState
     var plugs = controller.socketPlugHashes(controller.selectedSocketIndex);
     plugs.addAll(randomHashes);
     var screenWidth = MediaQuery.of(context).size.width - 16;
-    var dividerMargin = min(screenWidth/50, 8.0);
+    var dividerMargin = min(screenWidth / 50, 8.0);
     return Container(
-      padding: EdgeInsets.only(bottom:8),
-      child:Wrap(
-      runSpacing: dividerMargin,
-      spacing: dividerMargin,
-      children: plugs
-          .map((h) => buildPerk(context, controller.selectedSocketIndex, h))
-          .toList(),
-    ));
+        padding: EdgeInsets.only(bottom: 8),
+        child: Wrap(
+          runSpacing: dividerMargin,
+          spacing: dividerMargin,
+          children: plugs
+              .map((h) => buildPerk(context, controller.selectedSocketIndex, h))
+              .toList(),
+        ));
   }
 
   @override
@@ -224,14 +251,11 @@ class ItemDetailsSocketDetailsWidgetState
           padding: EdgeInsets.all(4),
           child: Text("${cost.energyCost}",
               style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 24,
-                  color: color)));
+                  fontWeight: FontWeight.w700, fontSize: 24, color: color)));
       var description = TranslatedTextWidget(
         "Energy Cost",
         uppercase: true,
-        style: TextStyle(
-            fontWeight: FontWeight.w300, fontSize:16),
+        style: TextStyle(fontWeight: FontWeight.w300, fontSize: 16),
       );
       return Row(children: <Widget>[icon, value, description]);
     }
@@ -246,13 +270,13 @@ class ItemDetailsSocketDetailsWidgetState
           (def) => Container(
               decoration: BoxDecoration(
                 color: Colors.black,
-                border: Border(top: BorderSide(color: Colors.grey.shade500, width: 1)),
+                border: Border(
+                    top: BorderSide(color: Colors.grey.shade500, width: 1)),
               ),
               padding: EdgeInsets.all(8),
               child: Column(
-                children: def.materials
-                .where((m)=>(m.count ?? 0) > 0)
-                .map((m) {
+                children:
+                    def.materials.where((m) => (m.count ?? 0) > 0).map((m) {
                   return Row(
                     children: <Widget>[
                       Container(
@@ -262,16 +286,20 @@ class ItemDetailsSocketDetailsWidgetState
                               DestinyInventoryItemDefinition>(m.itemHash)),
                       Expanded(
                         child: Container(
-                          padding: EdgeInsets.only(left:8),
-                          child:ManifestText<
-                              DestinyInventoryItemDefinition>(m.itemHash, style: TextStyle(fontWeight: FontWeight.w300),),
+                          padding: EdgeInsets.only(left: 8),
+                          child: ManifestText<DestinyInventoryItemDefinition>(
+                            m.itemHash,
+                            style: TextStyle(fontWeight: FontWeight.w300),
+                          ),
                         ),
                       ),
-                      Text("${m.count}", style:TextStyle(fontWeight: FontWeight.w300))
+                      Text("${m.count}",
+                          style: TextStyle(fontWeight: FontWeight.w300))
                     ],
                   );
                 }).toList(),
-              )), key:Key("material_requirements_$requirementHash"));
+              )),
+          key: Key("material_requirements_$requirementHash"));
     }
     return Container();
   }
