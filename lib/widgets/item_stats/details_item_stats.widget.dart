@@ -71,8 +71,8 @@ class ScreenShotItemStatsState
       totalStat = StatValues();
       stats.forEach((stat) {
         var entry = statValues[stat.statTypeHash];
-        totalStat.equipped += entry?.equipped;
-        totalStat.selected += entry?.selected;
+        totalStat.equipped += entry?.equipped ?? 0;
+        totalStat.selected += entry?.selected ?? 0;
       });
     }
     return stats
