@@ -106,12 +106,13 @@ class TabHeaderWidgetState extends State<TabHeaderWidget> {
   }
 
   Widget powerBar(BuildContext context) {
-    DestinyProgression levelProg = progression.progressions["${ProgressionHash.Legend}"];
+    DestinyProgression levelProg = progression.progressions["${ProgressionHash.SeasonLevel}"];
+    DestinyProgression overLevelProg = progression.progressions["${ProgressionHash.SeasonOverlevel}"];
     Color fg = Colors.cyan.shade300;
     Color bg = Color.lerp(Colors.black, fg, .6);
     Color shine = Colors.cyan.shade100;
-    
-    double completed = levelProg.progressToNextLevel / levelProg.nextLevelAt;
+    DestinyProgression currentProg = levelProg.level < levelProg.levelCap ? levelProg : overLevelProg;
+    double completed = currentProg.progressToNextLevel / currentProg.nextLevelAt;
     return Container(
       height: 2,
       color: bg,

@@ -9,6 +9,7 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_progression.dart';
 import 'package:bungie_api/models/destiny_progression_definition.dart';
 import 'package:bungie_api/models/destiny_race_definition.dart';
+import 'package:bungie_api/models/destiny_sandbox_perk_definition.dart';
 import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
@@ -70,7 +71,8 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
     raceDef = await widget.manifest
         .getDefinition<DestinyRaceDefinition>(character.raceHash);
     legendProgressionDefinition = await widget.manifest
-        .getDefinition<DestinyProgressionDefinition>(ProgressionHash.Legend);
+        .getDefinition<DestinyProgressionDefinition>(
+            ProgressionHash.SeasonOverlevel);
     if (mounted) {
       setState(() {});
     }
@@ -254,23 +256,22 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
     List<Widget> stats = [];
     character.stats.forEach((hash, stat) {
       if (hash == "${ProgressionHash.Power}") return;
-      stats.add(
-        Container(
-          margin: EdgeInsets.only(right:4, bottom:2),
+      stats.add(Container(
+          margin: EdgeInsets.only(right: 4, bottom: 2),
           child: Row(children: [
-        Container(
-          margin: EdgeInsets.only(right:2),
-            width: 16,
-            height: 16,
-            child: ManifestImageWidget<DestinyStatDefinition>(
-              int.parse(hash),
-              placeholder: Container(),
-            )),
-        Text(
-          "$stat",
-          style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-        )
-      ])));
+            Container(
+                margin: EdgeInsets.only(right: 2),
+                width: 16,
+                height: 16,
+                child: ManifestImageWidget<DestinyStatDefinition>(
+                  int.parse(hash),
+                  placeholder: Container(),
+                )),
+            Text(
+              "$stat",
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+            )
+          ])));
     });
     return Column(children: [
       Row(
@@ -283,31 +284,42 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
   }
 
   Widget expInfo(BuildContext context, DestinyCharacterComponent character) {
-    DestinyProgression levelProg = character.levelProgression;
-    bool isMaxLevel = levelProg.level >= levelProg.levelCap;
-    if (isMaxLevel) {
-      levelProg = widget.profile
-          .getCharacterProgression(character.characterId)
-          .progressions["${ProgressionHash.Legend}"];
-    }
-
+    DestinyProgression levelProg = widget.profile
+        .getCharacterProgression(character.characterId)
+        .progressions["${ProgressionHash.SeasonLevel}"];
+    DestinyProgression overlevelProg = widget.profile
+        .getCharacterProgression(character.characterId)
+        .progressions["${ProgressionHash.SeasonOverlevel}"];
+    int seasonRank = (levelProg?.level ?? 0) + (overlevelProg?.level ?? 0);
+    DestinyProgression expProg =
+        levelProg.level < levelProg.levelCap ? levelProg : overlevelProg;
     return Positioned(
         right: 8,
         top: 4,
         child: Row(children: [
-          isWellRested
-              ? Container(
-                  // width: 16,
-                  // height: 16,
-                  // child: ManifestImageWidget<DestinySandboxPerkDefinition>(
-                  //     1519921522),
-                  )
-              : Container(),
+          Container(
+              child: TranslatedTextWidget(
+            "Seasonal Rank {rank}",
+            replace: {"rank": "$seasonRank"},
+            style: TextStyle(
+                color: Colors.grey.shade300,
+                fontSize: 11,),
+          )),
+          Container(
+            width: 4,
+          ),
+          Container(
+            width: 16,
+            height: 16,
+            child: isWellRested
+                ? ManifestImageWidget<DestinySandboxPerkDefinition>(2352765282)
+                : Container(),
+          ),
           Container(
             width: 4,
           ),
           Text(
-            "${levelProg.progressToNextLevel}/${levelProg.nextLevelAt}",
+            "${expProg.progressToNextLevel}/${expProg.nextLevelAt}",
             style: TextStyle(
                 color: Colors.grey.shade300,
                 fontSize: 11,
@@ -318,7 +330,7 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
 
   DestinyProgression get legendProgression => widget.profile
       .getCharacterProgression(character.characterId)
-      .progressions["${ProgressionHash.Legend}"];
+      .progressions["${ProgressionHash.SeasonOverlevel}"];
 
   bool get isWellRested =>
       character.levelProgression.level >= character.levelProgression.levelCap &&

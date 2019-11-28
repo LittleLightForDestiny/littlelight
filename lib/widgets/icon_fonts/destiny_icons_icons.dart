@@ -20,7 +20,8 @@ class DestinyIcons {
 
   static const _kFontFam = 'DestinyIcons';
 
-   static const IconData ghost = const IconData(0xe80f, fontFamily: _kFontFam);
+  static const IconData ghost = const IconData(0xe80f, fontFamily: _kFontFam);
+  static const IconData platform_stadia = const IconData(0xe815, fontFamily: _kFontFam);
   static const IconData platform_steam = const IconData(0xe900, fontFamily: _kFontFam);
   static const IconData class_titan = const IconData(0xe901, fontFamily: _kFontFam);
   static const IconData class_hunter = const IconData(0xe902, fontFamily: _kFontFam);
