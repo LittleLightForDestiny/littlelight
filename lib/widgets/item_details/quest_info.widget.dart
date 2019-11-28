@@ -54,7 +54,7 @@ class QuestInfoWidgetState extends BaseDestinyItemState<QuestInfoWidget> {
         .getDefinition<DestinyInventoryItemDefinition>(
             definition.objectives.questlineItemHash);
     List<int> stepHashes =
-        questlineDefinition.setData.itemList.map((i) => i.itemHash).toList();
+        questlineDefinition.setData?.itemList?.map((i) => i.itemHash)?.toList() ?? [];
     currentIndex = stepHashes.indexOf(item.itemHash);
     questSteps = await widget.manifest
         .getDefinitions<DestinyInventoryItemDefinition>(stepHashes);
@@ -175,6 +175,7 @@ class QuestInfoWidgetState extends BaseDestinyItemState<QuestInfoWidget> {
   }
 
   Widget buildObjective(BuildContext context, int hash, int stepIndex) {
+    if(objectiveDefinitions == null) return Container();
     var def = objectiveDefinitions[hash];
     return Column(
       children: <Widget>[

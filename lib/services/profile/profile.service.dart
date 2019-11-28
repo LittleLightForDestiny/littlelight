@@ -106,21 +106,26 @@ class ProfileService {
   bool pauseAutomaticUpdater = false;
 
   Future<DestinyProfileResponse> fetchProfileData(
-      {List<int> components = ProfileComponentGroups.everything, bool skipUpdate = false}) async {
-    if(!skipUpdate) _broadcaster.push(NotificationEvent(NotificationType.requestedUpdate));
+      {List<int> components = ProfileComponentGroups.everything,
+      bool skipUpdate = false}) async {
+    if (!skipUpdate)
+      _broadcaster.push(NotificationEvent(NotificationType.requestedUpdate));
     try {
       DestinyProfileResponse res = await _updateProfileData(components);
       this._lastLoadedFrom = LastLoadedFrom.server;
-      if(!skipUpdate) _broadcaster.push(NotificationEvent(NotificationType.receivedUpdate));
+      if (!skipUpdate)
+        _broadcaster.push(NotificationEvent(NotificationType.receivedUpdate));
       this._cacheProfile(_profile);
       if (_timer?.isActive ?? false) {
         startAutomaticUpdater();
       }
       return res;
     } catch (e) {
-      if(!skipUpdate) _broadcaster.push(NotificationEvent(NotificationType.updateError));
-      if(!skipUpdate) await Future.delayed(Duration(seconds:2));
-      if(!skipUpdate) _broadcaster.push(NotificationEvent(NotificationType.receivedUpdate));
+      if (!skipUpdate)
+        _broadcaster.push(NotificationEvent(NotificationType.updateError));
+      if (!skipUpdate) await Future.delayed(Duration(seconds: 2));
+      if (!skipUpdate)
+        _broadcaster.push(NotificationEvent(NotificationType.receivedUpdate));
     }
     return _profile;
   }
@@ -302,63 +307,77 @@ class ProfileService {
   }
 
   List<DestinyItemSocketState> getItemSockets(String itemInstanceId) {
-    try{
+    try {
       return _profile.itemComponents.sockets.data[itemInstanceId]?.sockets;
-    }catch(e){}
+    } catch (e) {}
     return null;
   }
 
-  Map<String, List<DestinyItemPlugBase>> getItemReusablePlugs(String itemInstanceId) {
-    try{
+  Map<String, List<DestinyItemPlugBase>> getItemReusablePlugs(
+      String itemInstanceId) {
+    try {
       return _profile.itemComponents.reusablePlugs.data[itemInstanceId]?.plugs;
-    }catch(e){}
+    } catch (e) {}
     return null;
   }
 
-  Map<String, List<DestinyObjectiveProgress>> getPlugObjectives(String itemInstanceId) {
-    try{
-      return _profile.itemComponents.plugObjectives.data[itemInstanceId].objectivesPerPlug;
-    }catch(e){}
+  Map<String, List<DestinyObjectiveProgress>> getPlugObjectives(
+      String itemInstanceId) {
+    try {
+      return _profile
+          .itemComponents.plugObjectives.data[itemInstanceId].objectivesPerPlug;
+    } catch (e) {}
     return null;
   }
 
   Map<String, DestinyStat> getPrecalculatedStats(String itemInstanceId) {
-    if(_profile.itemComponents?.stats?.data?.containsKey(itemInstanceId) ?? false){
-      return _profile.itemComponents?.stats?.data[itemInstanceId]?.stats;
+    if (_profile?.itemComponents?.stats?.data?.containsKey(itemInstanceId) ??
+        false) {
+      return _profile?.itemComponents?.stats?.data[itemInstanceId]?.stats;
     }
     return null;
   }
 
   List<DestinyObjectiveProgress> getItemObjectives(
       String itemInstanceId, String characterId, int hash) {
-    return _profile
-            .itemComponents.objectives?.data[itemInstanceId]?.objectives ??
-        _profile?.characterProgressions?.data[characterId]
-            ?.uninstancedItemObjectives["$hash"];
+    try {
+      var objectives =
+          _profile.itemComponents.objectives?.data[itemInstanceId]?.objectives;
+      return objectives;
+    } catch (e) {}
+    try {
+      var objectives = _profile?.characterProgressions?.data[characterId]
+          ?.uninstancedItemObjectives["$hash"];
+      return objectives;
+    } catch (e) {}
+    return null;
   }
 
   Map<String, DestinyPresentationNodeComponent> getProfilePresentationNodes() {
     return _profile?.profilePresentationNodes?.data?.nodes;
   }
 
-
-  List<DestinyItemPlug> getCharacterPlugSets(String characterId, int plugSetHash){
+  List<DestinyItemPlug> getCharacterPlugSets(
+      String characterId, int plugSetHash) {
     var plugs = _profile?.characterPlugSets?.data[characterId]?.plugs;
-    if(plugs?.containsKey("$plugSetHash") ?? false) return plugs["$plugSetHash"];
+    if (plugs?.containsKey("$plugSetHash") ?? false)
+      return plugs["$plugSetHash"];
     return null;
   }
 
-  List<DestinyItemPlug> getProfilePlugSets(int plugSetHash){
+  List<DestinyItemPlug> getProfilePlugSets(int plugSetHash) {
     var plugs = _profile?.profilePlugSets?.data?.plugs;
-    if(plugs?.containsKey("$plugSetHash") ?? false) return plugs["$plugSetHash"];
+    if (plugs?.containsKey("$plugSetHash") ?? false)
+      return plugs["$plugSetHash"];
     return null;
   }
 
-  List<DestinyItemPlug> getPlugSets(int plugSetHash){
+  List<DestinyItemPlug> getPlugSets(int plugSetHash) {
     List<DestinyItemPlug> plugs = [];
     plugs.addAll(getProfilePlugSets(plugSetHash) ?? []);
     var characters = getCharacters();
-    characters.forEach((c)=>plugs.addAll(getCharacterPlugSets(c.characterId, plugSetHash) ?? []));
+    characters.forEach((c) =>
+        plugs.addAll(getCharacterPlugSets(c.characterId, plugSetHash) ?? []));
     return plugs;
   }
 
@@ -502,7 +521,7 @@ class ProfileService {
   }
 
   List<DestinyItemComponent> getItemsByInstanceId(List<String> ids) {
-    ids = ids.where((id)=>id != null).toList();
+    ids = ids.where((id) => id != null).toList();
     List<DestinyItemComponent> items = [];
     List<DestinyItemComponent> profileInventory =
         _profile.profileInventory.data.items;
@@ -539,14 +558,14 @@ class ProfileService {
     return owner;
   }
 
-  DestinyArtifactProfileScoped getArtifactProgression(){
+  DestinyArtifactProfileScoped getArtifactProgression() {
     return _profile.profileProgression?.data?.seasonalArtifact;
   }
 
   List<DestinyItemComponent> getAllItems() {
     List<DestinyItemComponent> allItems = [];
-    Iterable<String> charIds = getCharacters().map((char) => char.characterId);
-    charIds.forEach((charId) {
+    Iterable<String> charIds = getCharacters()?.map((char) => char.characterId);
+    charIds?.forEach((charId) {
       allItems.addAll(getCharacterEquipment(charId).map((item) => item));
       allItems.addAll(getCharacterInventory(charId).map((item) => item));
     });

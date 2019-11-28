@@ -21,6 +21,9 @@ class PlatformData{
 
       case BungieMembershipType.TigerSteam:
       return PlatformData("Steam", DestinyIcons.platform_steam, Color.fromARGB(255, 0, 172, 236));
+
+      case BungieMembershipType.TigerStadia:
+      return PlatformData("Stadia", DestinyIcons.platform_stadia, Color.fromARGB(255, 205, 38, 64));
     }
     return PlatformData("Unknown", Icons.not_interested, Colors.black);
   }

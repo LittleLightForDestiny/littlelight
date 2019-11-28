@@ -74,7 +74,8 @@ class SideMenuWidgetState extends State<SideMenuWidget> {
     if (memberships != null) {
       for (var account in memberships) {
         if (account?.destinyMemberships != null) {
-          for (var membership in account.destinyMemberships) {
+          var memberships = account.destinyMemberships.where((p)=>p.applicableMembershipTypes.length > 0);
+          for (var membership in memberships) {
             if (currentMembership != membership.membershipId) {
               altMembershipCount++;
               settingsMenuOptions.add(

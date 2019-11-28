@@ -3,9 +3,10 @@ import 'dart:math';
 import 'package:bungie_api/models/destiny_objective_definition.dart';
 import 'package:bungie_api/models/destiny_objective_progress.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 
-class ObjectiveWidget extends StatelessWidget {
+class ObjectiveWidget extends StatefulWidget {
   final DestinyObjectiveDefinition definition;
   final Color color;
   final bool forceComplete;
@@ -26,6 +27,35 @@ class ObjectiveWidget extends StatelessWidget {
       : super(key: key);
 
   @override
+  State<StatefulWidget> createState() {
+    return ObjectiveWidgetState();
+  }
+}
+class ObjectiveWidgetState extends State<ObjectiveWidget>{
+  DestinyObjectiveDefinition _definition;
+  DestinyObjectiveDefinition get definition => widget.definition ?? _definition;
+  
+  Color get color =>widget.color;
+  bool get forceComplete => widget.forceComplete;
+  DestinyObjectiveProgress get objective=> widget.objective;
+  String get placeholder=> widget.placeholder;
+  bool get parentCompleted=> widget.parentCompleted;
+
+  @override
+  void initState() {
+    super.initState();
+    loadDefinitions();
+  }
+
+  void loadDefinitions() async{
+    if(widget.definition == null){
+      _definition = await ManifestService().getDefinition<DestinyObjectiveDefinition>(widget.objective.objectiveHash);
+      setState(() { });
+    }
+  }
+
+
+  @override
   Widget build(BuildContext context) {
     return Container(
         padding: EdgeInsets.all(4),
@@ -41,7 +71,7 @@ class ObjectiveWidget extends StatelessWidget {
     return Container(
         decoration: BoxDecoration(
             border: Border.all(
-                width: 1, color: this.color ?? Colors.grey.shade300)),
+                width: 1, color: widget.color ?? Colors.grey.shade300)),
         width: 22,
         height: 22,
         padding: EdgeInsets.all(2),
@@ -54,7 +84,7 @@ class ObjectiveWidget extends StatelessWidget {
   }
 
   bool get isComplete {
-    return objective?.complete == true || forceComplete;
+    return widget.objective?.complete == true || widget.forceComplete;
   }
 
   buildBar(BuildContext context) {

@@ -23,7 +23,7 @@ class FilledCircularProgressIndicator extends ProgressIndicator {
     @required Widget child,
   }) {
     String expandedSemanticsValue = semanticsValue;
-    if (value != null) {
+    if (value?.isFinite ?? false) {
       expandedSemanticsValue ??= '${(value * 100).round()}%';
     }
     return Semantics(

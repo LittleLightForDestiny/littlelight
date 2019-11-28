@@ -54,7 +54,7 @@ class LoadoutSelectSheet extends StatelessWidget {
                                 Container(
                                     padding: EdgeInsets.all(16),
                                     child: Text(
-                                      loadout.name.toUpperCase(),
+                                      loadout?.name?.toUpperCase() ?? "",
                                       maxLines: 1,
                                       overflow: TextOverflow.fade,
                                       softWrap: false,

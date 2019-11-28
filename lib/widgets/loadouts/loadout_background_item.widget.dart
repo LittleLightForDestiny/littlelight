@@ -35,7 +35,7 @@ class LoadoutBackgroundItemWidgetState
     var collectible = await widget.manifest
         .getDefinition<DestinyCollectibleDefinition>(widget.hash);
     definition = await widget.manifest
-        .getDefinition<DestinyInventoryItemDefinition>(collectible.itemHash);
+        .getDefinition<DestinyInventoryItemDefinition>(collectible?.itemHash);
     setState(() {});
   }
 
