@@ -29,7 +29,6 @@ import 'package:little_light/widgets/item_details/main_info/item_main_info.widge
 import 'package:little_light/widgets/item_details/management_block.widget.dart';
 import 'package:little_light/widgets/item_details/quest_info.widget.dart';
 import 'package:little_light/widgets/item_details/rewards_info.widget.dart';
-import 'package:little_light/widgets/item_notes/item_details_notes.widget.dart';
 import 'package:little_light/widgets/item_sockets/details_armor_tier.widget.dart';
 import 'package:little_light/widgets/item_sockets/details_item_armor_exotic_perk.widget.dart';
 import 'package:little_light/widgets/item_sockets/details_item_mods.widget.dart';
