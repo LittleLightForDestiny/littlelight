@@ -125,6 +125,12 @@ class StorageService {
       if (exists) {
         await file.delete(recursive: true);
       }
+      var dbPath = await getPath("", dbPath: true);
+      Directory dbFile = Directory(dbPath);
+      var dbExists = await dbFile.exists();
+      if (dbExists) {
+        await dbFile.delete(recursive: true);
+      }
     }
   }
 
