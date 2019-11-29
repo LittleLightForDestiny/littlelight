@@ -24,6 +24,14 @@ class SmallObjectiveWidget extends ObjectiveWidget {
             placeholder: placeholder,
             parentCompleted: parentCompleted);
 
+    @override
+  State<StatefulWidget> createState() {
+    
+    return SmallObjectiveWidgetState();
+  }
+}
+
+class SmallObjectiveWidgetState extends ObjectiveWidgetState {
   @override
   Widget build(BuildContext context) {
     return Column(children: [buildCount(context), buildProgressBar(context), Container(height:2), buildTitle(context)]);
