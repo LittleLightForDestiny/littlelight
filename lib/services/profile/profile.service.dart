@@ -343,7 +343,7 @@ class ProfileService {
     try {
       var objectives =
           _profile.itemComponents.objectives?.data[itemInstanceId]?.objectives;
-      return objectives;
+          if(objectives!= null) return objectives;
     } catch (e) {}
     try {
       var objectives = _profile?.characterProgressions?.data[characterId]
