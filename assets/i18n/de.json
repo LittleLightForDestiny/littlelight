@@ -199,12 +199,15 @@
     "Energy": "Energie",
     "Transfer Loadout": "Loadout übertragen",
     "Vault": "Tresor",
-    "Couldn&#39;t render this widget properly. Please report this to @LittleLightD2 on Twitter or via GitHub issues": "Couldn&#39;t render this widget properly. Please report this to @LittleLightD2 on Twitter or via GitHub issues",
-    "Evasion": "Evasion",
+    "Couldn&#39;t render this widget properly. Please report this to @LittleLightD2 on Twitter or via GitHub issues": "Das rendern dieses Widget war nicht möglich. Bitte melden sie diesen Fehler an @LittleLightD2 auf Twitter oder GitHub issues",
+    "Evasion": "Ausweichen",
     "Summon": "Summon",
-    "Consecrated Mind": "Consecrated Mind",
-    "Sanctified Mind": "Sanctified Mind",
+    "Consecrated Mind": "Konsekrierten Geist",
+    "Sanctified Mind": "Geweihter Geist",
     "Energy Cost": "Energy Cost",
-    "View in Collections": "View in Collections",
-    "Total": "Total"
+    "View in Collections": "In Sammlungen anzeigen",
+    "Total": "Insgesamt",
+    "Item notes": "Item notes",
+    "Add custom name": "Add custom name",
+    "Seasonal Rank {rank}": "Seasonal Rank {rank}"
 }

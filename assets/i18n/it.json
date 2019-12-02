@@ -102,7 +102,7 @@
     "Any Blue rune": "Qualsiasi runa blu",
     "More recipes on": "Più ricette su",
     "Progress": "Proseguimento",
-    "Milestones": "Traguardi",
+    "Milestones": "Pietre Miliari",
     "Loyalists": "Loyalists",
     "Vex Rings": "Anelli dei Vex",
     "Shields": "Scudi",
@@ -206,5 +206,8 @@
     "Sanctified Mind": "Mente Santificata",
     "Energy Cost": "Costo energetico",
     "View in Collections": "Visualizza nella collezione",
-    "Total": "Totale"
+    "Total": "Totale",
+    "Item notes": "Item notes",
+    "Add custom name": "Add custom name",
+    "Seasonal Rank {rank}": "Seasonal Rank {rank}"
 }
