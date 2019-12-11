@@ -257,11 +257,11 @@ class _SmallerSwitchState extends State<SmallerSwitch> with TickerProviderStateM
         final ThemeData theme = Theme.of(context);
         assert(theme.platform != null);
         switch (theme.platform) {
-          case TargetPlatform.android:
-          case TargetPlatform.fuchsia:
-            return buildMaterialSwitch(context);
           case TargetPlatform.iOS:
             return buildCupertinoSwitch(context);
+
+          default:
+            return buildMaterialSwitch(context);
         }
       }
     }

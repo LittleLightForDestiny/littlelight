@@ -29,6 +29,7 @@ import 'package:little_light/widgets/item_details/main_info/item_main_info.widge
 import 'package:little_light/widgets/item_details/management_block.widget.dart';
 import 'package:little_light/widgets/item_details/quest_info.widget.dart';
 import 'package:little_light/widgets/item_details/rewards_info.widget.dart';
+import 'package:little_light/widgets/item_notes/item_details_notes.widget.dart';
 import 'package:little_light/widgets/item_sockets/details_armor_tier.widget.dart';
 import 'package:little_light/widgets/item_sockets/details_item_armor_exotic_perk.widget.dart';
 import 'package:little_light/widgets/item_sockets/details_item_mods.widget.dart';
@@ -221,7 +222,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
             buildModDetails(context),
             buildCosmetics(context),
             buildCosmeticDetails(context),
-            buildNotes(context),
+            // buildNotes(context),
             buildObjectives(context),
             buildRewards(context),
             buildQuestInfo(context),
@@ -337,17 +338,16 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
   }
 
   Widget buildNotes(BuildContext context) {
-    return Container();
-    // var screenPadding = MediaQuery.of(context).padding;
-    // return Container(
-    //     padding: EdgeInsets.only(
-    //         left: screenPadding.left, right: screenPadding.right),
-    //     child: ItemDetailsNotesWidget(
-    //         item: item,
-    //         definition: definition,
-    //         instanceInfo: instanceInfo,
-    //         characterId: characterId,
-    //         key: Key("item_notes_widget")));
+    var screenPadding = MediaQuery.of(context).padding;
+    return Container(
+        padding: EdgeInsets.only(
+            left: screenPadding.left, right: screenPadding.right),
+        child: ItemDetailsNotesWidget(
+            item: item,
+            definition: definition,
+            instanceInfo: instanceInfo,
+            characterId: characterId,
+            key: Key("item_notes_widget")));
   }
 
   Widget buildObjectives(BuildContext context) {

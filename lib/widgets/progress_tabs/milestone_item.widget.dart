@@ -14,12 +14,14 @@ import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/generic_progress_bar.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:little_light/widgets/icon_fonts/destiny_icons_icons.dart';
 
 class MilestoneItemWidget extends StatefulWidget {
   final String characterId;
@@ -42,6 +44,7 @@ class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
   DestinyMilestone milestone;
   int get hash => widget.milestone.milestoneHash;
   bool fullyLoaded = false;
+  Map<int, bool> activitiesOpened = Map();
 
   @override
   void initState() {
@@ -115,7 +118,6 @@ class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
     return Column(children: [
       buildHeader(context),
       buildMilestoneActivities(context),
-      buildActivitiesModifiers(context),
       buildRewards(context),
       buildActivitiesObjectives(context),
       buildAvailableQuests(context)
@@ -188,27 +190,76 @@ class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
 
   Widget buildActivity(
       BuildContext context, DestinyMilestoneChallengeActivity activity) {
+    print(activity.activityHash);
     return DefinitionProviderWidget<DestinyActivityDefinition>(
         activity.activityHash,
-        (def) => Container(
-            margin: EdgeInsets.all(4),
-            padding: EdgeInsets.all(8),
-            color: Colors.blueGrey.shade700,
-            child: Row(children: [
-              Container(
-                  width: 32,
-                  height: 32,
-                  child: QueuedNetworkImage(
-                      imageUrl: (def?.displayProperties?.hasIcon ?? false)
-                          ? BungieApiService.url(def?.displayProperties?.icon)
-                          : BungieApiService.url(
-                              definition?.displayProperties?.icon))),
-              Container(width: 4),
-              Text(
-                  def?.selectionScreenDisplayProperties?.name ??
-                      def.displayProperties.name,
-                  style: TextStyle(fontWeight: FontWeight.bold))
-            ])));
+        (def) => Column(children: [
+              Stack(children: [
+                Container(
+                    margin: EdgeInsets.all(4),
+                    padding: EdgeInsets.all(8),
+                    color: Colors.blueGrey.shade700,
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Row(children: [
+                            Container(
+                                width: 32,
+                                height: 32,
+                                child: QueuedNetworkImage(
+                                    imageUrl:
+                                        (def?.displayProperties?.hasIcon ??
+                                                false)
+                                            ? BungieApiService.url(
+                                                def?.displayProperties?.icon)
+                                            : BungieApiService.url(definition
+                                                ?.displayProperties?.icon))),
+                            Container(width: 4),
+                            Text(
+                                def?.originalDisplayProperties?.name ??
+                                    def?.selectionScreenDisplayProperties
+                                        ?.name ??
+                                    def.displayProperties.name,
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                            Expanded(child: Container()),
+                            (def?.activityLightLevel ?? 0) > 0
+                                ? Row(children: [
+                                    Icon(
+                                      DestinyIcons.power,
+                                      size: 12,
+                                      color: Colors.amber.shade500,
+                                    ),
+                                    Text("${def?.activityLightLevel}",
+                                        style: TextStyle(
+                                            color: Colors.amber.shade500,
+                                            fontWeight: FontWeight.bold))
+                                  ])
+                                : Container(),
+                          ]),
+                          Text(
+                              def?.originalDisplayProperties?.description ??
+                                  def?.selectionScreenDisplayProperties
+                                      ?.description ??
+                                  def.displayProperties.description,
+                              style: TextStyle(fontWeight: FontWeight.w400)),
+                        ])),
+                Positioned.fill(
+                    child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    child: Container(),
+                    onTap: () {
+                      activitiesOpened[activity.activityHash] =
+                          !(activitiesOpened[activity.activityHash] ?? false);
+                      setState(() {});
+                    },
+                  ),
+                ))
+              ]),
+              (activitiesOpened[activity.activityHash] ?? false)
+                  ? buildActivitiesModifiers(context, activity.activityHash)
+                  : Container()
+            ]));
   }
 
   Widget buildActivitiesObjectives(BuildContext context) {
@@ -239,7 +290,7 @@ class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
   Widget buildActivitiesModifiers(BuildContext context, [int activityHash]) {
     Set<int> modifierHashes = Set();
     milestone?.activities?.forEach((a) {
-      if(activityHash == null || a.activityHash == activityHash){
+      if (activityHash == null || a.activityHash == activityHash) {
         modifierHashes.addAll(a.modifierHashes ?? []);
       }
     });

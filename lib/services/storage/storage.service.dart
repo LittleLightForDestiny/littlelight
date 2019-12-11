@@ -19,6 +19,7 @@ class StorageKeys {
     selectedMembershipId,
     cachedProfile,
     cachedLoadouts,
+    cachedNotes,
     trackedObjectives,
     membershipUUID,
     membershipSecret,
@@ -47,6 +48,8 @@ class StorageKeys {
   static const String cachedVendors = "cached_vendors";
 
   static const String cachedLoadouts = "cached_loadouts";
+  static const String cachedNotes = "cached_notes";
+  
   static const String loadoutsOrder = "loadouts_order";
   static const String trackedObjectives = "tracked_objectives";
 
