@@ -28,6 +28,8 @@ class ItemDetailsNotesWidget extends BaseDestinyStatefulItemWidget {
 
 class ItemDetailsNotesWidgetState
     extends BaseDestinyItemState<ItemDetailsNotesWidget> {
+  String customName;
+
   @override
   void initState() {
     super.initState();
@@ -36,26 +38,54 @@ class ItemDetailsNotesWidgetState
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(8),
-      child:Column(children: <Widget>[
-      HeaderWidget(
-          padding: EdgeInsets.all(0),
-           alignment: Alignment.centerLeft,
-          child: Container(
-              padding: EdgeInsets.all(8),
-              child: TranslatedTextWidget("Item notes",
-                  uppercase: true,
-                  style: TextStyle(fontWeight: FontWeight.bold)))),
-      Container(height: 8),
-      buildCustomName(context),
-      buildNotesField(context)
-    ]));
+        padding: EdgeInsets.all(8),
+        child: Column(children: <Widget>[
+          HeaderWidget(
+              padding: EdgeInsets.all(0),
+              alignment: Alignment.centerLeft,
+              child: Container(
+                  padding: EdgeInsets.all(8),
+                  child: TranslatedTextWidget("Item notes",
+                      uppercase: true,
+                      style: TextStyle(fontWeight: FontWeight.bold)))),
+          Container(height: 8),
+          buildCustomName(context),
+          buildNotesField(context)
+        ]));
   }
 
   Widget buildCustomName(BuildContext context) {
     return RaisedButton(
       child: TranslatedTextWidget("Add custom name"),
-      onPressed: () {},
+      onPressed: () {
+        TextEditingController _textFieldController = TextEditingController(text: customName);
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: TranslatedTextWidget('Add custom name'),
+                content: TextField(
+                  controller: _textFieldController,
+                ),
+                actions: <Widget>[
+                   FlatButton(
+                    child:  TranslatedTextWidget('Cancel'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                   FlatButton(
+                    child:  TranslatedTextWidget('Save'),
+                    onPressed: () {
+                      customName = _textFieldController.text;
+                      Navigator.of(context).pop();
+                      setState(() {});
+                    },
+                  )
+                ],
+              );
+            });
+      },
     );
   }
 

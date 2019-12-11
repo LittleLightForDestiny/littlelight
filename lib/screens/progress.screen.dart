@@ -132,7 +132,7 @@ class ProgressScreenState extends State<ProgressScreen>
         children: characters
             .map((character) => TabHeaderWidget(
                   character,
-                  key: Key("${character.emblemHash}"),
+                  key: Key("${character.emblemHash}_${character.characterId}"),
                 ))
             .toList());
   }
