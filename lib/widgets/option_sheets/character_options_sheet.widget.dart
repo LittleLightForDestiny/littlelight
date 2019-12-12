@@ -590,8 +590,14 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
 
   double get calculatedMaxLight{
     if(maxLight == null) return null;
-    var artifactLevel = widget.profile.getArtifactProgression()?.powerBonus ?? 0;
     return maxLight + artifactLevel;
+  }
+
+  int get artifactLevel{
+    var item = widget.profile.getCharacterEquipment(widget.character.characterId).firstWhere((item)=>item.bucketHash == InventoryBucket.artifact, orElse: ()=>null);
+    if(item == null) return 0;
+    var instanceInfo = widget.profile.getInstanceInfo(item?.itemInstanceId);
+    return instanceInfo?.primaryStat?.value ?? 0;
   }
 
   double _getAvgLight(Iterable<DestinyItemComponent> items) {

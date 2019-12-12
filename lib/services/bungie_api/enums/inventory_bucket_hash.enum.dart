@@ -30,6 +30,8 @@ class InventoryBucket {
   static const int clanBanners = 4292445962;
   static const int engrams = 375726501;
   static const int pursuits = 1345459588;
+
+  static const int artifact = 1506418338;
 }
 
 const List<int> exoticWeaponBlockBuckets = [

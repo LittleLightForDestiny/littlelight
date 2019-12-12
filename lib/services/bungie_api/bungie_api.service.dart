@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:bungie_api/api/settings.dart';
 import 'package:bungie_api/helpers/bungie_net_token.dart';
+import 'package:bungie_api/models/core_settings_configuration.dart';
 import 'package:bungie_api/models/destiny_equip_item_result.dart';
 import 'package:bungie_api/models/destiny_item_action_request.dart';
 import 'package:bungie_api/models/destiny_item_set_action_request.dart';
@@ -103,7 +105,7 @@ class BungieApiService {
       String itemId, String characterId) async {
     BungieNetToken token = await auth.getToken();
     GroupUserInfoCard membership = await auth.getMembership();
-    int32Response response = await Destiny2.transferItem(
+    Int32Response response = await Destiny2.transferItem(
         new Client(token: token),
         DestinyItemTransferRequest()
           ..itemReferenceHash = itemHash
@@ -119,7 +121,7 @@ class BungieApiService {
       int itemHash, int stackSize, String itemId, String characterId) async {
     BungieNetToken token = await auth.getToken();
     GroupUserInfoCard membership = await auth.getMembership();
-    int32Response response = await Destiny2.pullFromPostmaster(
+    Int32Response response = await Destiny2.pullFromPostmaster(
         new Client(token: token),
         DestinyPostmasterTransferRequest()
           ..itemReferenceHash = itemHash
@@ -133,7 +135,7 @@ class BungieApiService {
   Future<int> equipItem(String itemId, String characterId) async {
     BungieNetToken token = await auth.getToken();
     GroupUserInfoCard membership = await auth.getMembership();
-    int32Response response = await Destiny2.equipItem(
+    Int32Response response = await Destiny2.equipItem(
         new Client(token: token),
         DestinyItemActionRequest()
           ..itemId = itemId
@@ -153,6 +155,11 @@ class BungieApiService {
           ..characterId = characterId
           ..membershipType = membership.membershipType);
     return response.response.equipResults;
+  }
+
+  Future<CoreSettingsConfiguration> getCommonSettings() async {    
+    var response = await Settings.getCommonSettings(new Client());
+    return response.response;
   }
 }
 

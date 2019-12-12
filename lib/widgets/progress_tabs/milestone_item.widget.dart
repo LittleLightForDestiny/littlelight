@@ -14,7 +14,6 @@ import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/generic_progress_bar.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';

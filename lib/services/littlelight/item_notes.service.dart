@@ -1,6 +1,4 @@
 import 'package:little_light/models/item_notes.dart';
-import 'package:little_light/models/loadout.dart';
-import 'package:little_light/services/littlelight/littlelight_api.service.dart';
 import 'package:little_light/services/storage/storage.service.dart';
 
 class ItemNotesService {
@@ -39,7 +37,7 @@ class ItemNotesService {
   }
 
   Future<List<ItemNotes>> _fetchnotes() async {
-    
+    return [];
   }
 
   Future<int> saveNotes(ItemNotes loadout) async {
@@ -52,6 +50,7 @@ class ItemNotesService {
   Future<int> deleteNotes(ItemNotes loadout) async {
     // var api = LittleLightApiService();
     // return await api.deleteLoadout(loadout);
+    return 0;
   }
 
   Future<void> _saveNotesToStorage() async {

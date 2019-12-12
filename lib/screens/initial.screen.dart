@@ -15,6 +15,7 @@ import 'package:little_light/services/littlelight/littlelight_api.service.dart';
 import 'package:little_light/services/littlelight/loadouts.service.dart';
 import 'package:little_light/services/littlelight/objectives.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/profile/destiny_settings.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/storage/storage.service.dart';
 import 'package:little_light/services/translate/translate.service.dart';
@@ -248,6 +249,9 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
 
   goForward() async{
     await UserSettingsService().init();
+    try{
+      await DestinySettingsService().init();
+    }catch(e){}
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(

@@ -7,6 +7,8 @@ import 'package:bungie_api/models/destiny_class_definition.dart';
 import 'package:bungie_api/models/destiny_gender_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_race_definition.dart';
+import 'package:bungie_api/models/destiny_season_definition.dart';
+import 'package:bungie_api/models/destiny_season_pass_definition.dart';
 import 'package:bungie_api/models/destiny_talent_grid_definition.dart';
 import 'package:bungie_api/models/destiny_unlock_definition.dart';
 import 'package:bungie_api/models/destiny_material_requirement_set_definition.dart';
@@ -119,6 +121,8 @@ class DefinitionTableNames {
         DestinyMilestoneRewardEntryDefinition.fromJson(json),
     DestinyEnergyTypeDefinition: (json) =>
         DestinyEnergyTypeDefinition.fromJson(json),
+    DestinySeasonDefinition: (json) => DestinySeasonDefinition.fromJson(json),
+    DestinySeasonPassDefinition: (json) => DestinySeasonPassDefinition.fromJson(json)
   };
 
   static Map<Type, String> fromClass = {
@@ -168,6 +172,8 @@ class DefinitionTableNames {
     DestinyHistoricalStatsDefinition: "DestinyHistoricalStatsDefinition",
     DestinyMilestoneRewardEntryDefinition:
         "DestinyMilestoneRewardEntryDefinition",
-    DestinyEnergyTypeDefinition: "DestinyEnergyTypeDefinition"
+    DestinyEnergyTypeDefinition: "DestinyEnergyTypeDefinition",
+    DestinySeasonDefinition: "DestinySeasonDefinition",
+    DestinySeasonPassDefinition: "DestinySeasonPassDefinition",
   };
 }

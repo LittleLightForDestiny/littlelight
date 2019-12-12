@@ -398,8 +398,6 @@ class DestinyData {
 }
 
 class ProgressionHash {
-  static const int SeasonLevel = 3256821400;
-  static const int SeasonOverlevel = 2140885848;
   static const int Power = 1935470627;
 }
 
