@@ -32,16 +32,17 @@ class DestinySettingsService {
       settings = await _api.getCommonSettings();
       seasonHash = settings?.destiny2CoreSettings?.currentSeasonHash;
       seasonDef = await ManifestService().getDefinition<DestinySeasonDefinition>(seasonHash);
+      await StorageService.global().setJson(StorageKeys.bungieCommonSettings, settings.toJson());
     }
     _currentSeasonPassDef = await ManifestService().getDefinition<DestinySeasonPassDefinition>(seasonDef.seasonPassHash);
   }
 
   int get seasonalRankProgressionHash{
-    return _currentSeasonPassDef?.rewardProgressionHash;
+    return _currentSeasonPassDef?.rewardProgressionHash ?? 3256821400;
   }
 
   int get seasonalPrestigeRankProgressionHash{
-    return _currentSeasonPassDef?.prestigeProgressionHash;
+    return _currentSeasonPassDef?.prestigeProgressionHash ?? 2140885848;
   }
 
 }

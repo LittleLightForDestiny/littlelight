@@ -249,7 +249,9 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
 
   goForward() async{
     await UserSettingsService().init();
-    await DestinySettingsService().init();
+    try{
+      await DestinySettingsService().init();
+    }catch(e){}
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(
