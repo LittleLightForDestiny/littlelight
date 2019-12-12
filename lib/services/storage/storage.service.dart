@@ -31,7 +31,8 @@ class StorageKeys {
     characterOrdering,
     autoOpenKeyboard,
     defaultFreeSlots,
-    hasTappedGhost
+    hasTappedGhost,
+    bungieCommonSettings
   ];
 
   static const String latestToken = "latestToken";
@@ -60,6 +61,8 @@ class StorageKeys {
   static const String manifestFile = "manifest.db";
 
   static const String currentVersion = "currentVersion";
+
+  static const String bungieCommonSettings = "bungie_common_settings";
 
   static const String keepAwake = "userpref_keepAwake";
   static const String autoOpenKeyboard = "userpref_autoOpenKeyboard";

@@ -12,8 +12,10 @@ import 'package:bungie_api/models/destiny_race_definition.dart';
 import 'package:bungie_api/models/destiny_sandbox_perk_definition.dart';
 import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
+import 'package:little_light/services/profile/destiny_settings.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/user_settings/user_settings.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
@@ -72,7 +74,7 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
         .getDefinition<DestinyRaceDefinition>(character.raceHash);
     legendProgressionDefinition = await widget.manifest
         .getDefinition<DestinyProgressionDefinition>(
-            ProgressionHash.SeasonOverlevel);
+            DestinySettingsService().seasonalRankProgressionHash);
     if (mounted) {
       setState(() {});
     }
@@ -170,10 +172,15 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
     ]);
   }
 
+  int get artifactLevel{
+    var item = widget.profile.getCharacterEquipment(widget.characterId).firstWhere((item)=>item.bucketHash == InventoryBucket.artifact, orElse: ()=>null);
+    if(item == null) return 0;
+    var instanceInfo = widget.profile.getInstanceInfo(item?.itemInstanceId);
+    return instanceInfo?.primaryStat?.value ?? 0;
+  }
+
   Widget characterStatsInfo(
       BuildContext context, DestinyCharacterComponent character) {
-    var artifactLevel =
-        widget.profile.getArtifactProgression()?.powerBonus ?? 0;
     var armorLevel = character.light - artifactLevel;
     return Positioned(
         right: 8,
@@ -284,15 +291,15 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
   }
 
   Widget expInfo(BuildContext context, DestinyCharacterComponent character) {
-    DestinyProgression levelProg = widget.profile
-        .getCharacterProgression(character.characterId)
-        .progressions["${ProgressionHash.SeasonLevel}"];
-    DestinyProgression overlevelProg = widget.profile
-        .getCharacterProgression(character.characterId)
-        .progressions["${ProgressionHash.SeasonOverlevel}"];
-    int seasonRank = (levelProg?.level ?? 0) + (overlevelProg?.level ?? 0);
+    var settings = DestinySettingsService();
+    var progression = widget.profile
+        .getCharacterProgression(character.characterId);
+    DestinyProgression levelProg = progression.progressions["${settings.seasonalRankProgressionHash}"];
+    DestinyProgression overLevelProg = progression.progressions["${settings.seasonalPrestigeRankProgressionHash}"];
+        
+    int seasonRank = (levelProg?.level ?? 0) + (overLevelProg?.level ?? 0);
     DestinyProgression expProg =
-        levelProg.level < levelProg.levelCap ? levelProg : overlevelProg;
+        levelProg.level < levelProg.levelCap ? levelProg : overLevelProg;
     return Positioned(
         right: 8,
         top: 4,
@@ -328,9 +335,12 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
         ]));
   }
 
-  DestinyProgression get legendProgression => widget.profile
+  DestinyProgression get legendProgression {
+    var overlevelHash = DestinySettingsService().seasonalPrestigeRankProgressionHash;
+    return widget.profile
       .getCharacterProgression(character.characterId)
-      .progressions["${ProgressionHash.SeasonOverlevel}"];
+      .progressions["$overlevelHash"];
+  } 
 
   bool get isWellRested =>
       character.levelProgression.level >= character.levelProgression.levelCap &&

@@ -2,6 +2,7 @@ import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:bungie_api/models/destiny_character_progression_component.dart';
 import 'package:bungie_api/models/destiny_progression.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/services/profile/destiny_settings.service.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
@@ -106,8 +107,9 @@ class TabHeaderWidgetState extends State<TabHeaderWidget> {
   }
 
   Widget powerBar(BuildContext context) {
-    DestinyProgression levelProg = progression.progressions["${ProgressionHash.SeasonLevel}"];
-    DestinyProgression overLevelProg = progression.progressions["${ProgressionHash.SeasonOverlevel}"];
+    var settings = DestinySettingsService();
+    DestinyProgression levelProg = progression.progressions["${settings.seasonalRankProgressionHash}"];
+    DestinyProgression overLevelProg = progression.progressions["${settings.seasonalPrestigeRankProgressionHash}"];
     Color fg = Colors.cyan.shade300;
     Color bg = Color.lerp(Colors.black, fg, .6);
     Color shine = Colors.cyan.shade100;
