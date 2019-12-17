@@ -52,6 +52,7 @@ class ScreenShotItemStatsState
         var entry = statValues[stat.statTypeHash];
         totalStat.equipped += entry?.equipped ?? 0;
         totalStat.selected += entry?.selected ?? 0;
+        totalStat.masterwork += entry?.masterwork ?? 0;
       });
     }
     return stats

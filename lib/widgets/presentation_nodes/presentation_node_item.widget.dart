@@ -1,8 +1,10 @@
+import 'package:bungie_api/enums/destiny_class_enum.dart';
 import 'package:bungie_api/models/destiny_presentation_node_component.dart';
 import 'package:bungie_api/models/destiny_presentation_node_definition.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/user_settings/user_settings.service.dart';
+import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
@@ -25,7 +27,7 @@ class PresentationNodeItemWidget extends StatefulWidget {
 }
 
 class PresentationNodeWidgetState extends State<PresentationNodeItemWidget> {
-  DestinyPresentationNodeComponent progress;
+  Map<int, DestinyPresentationNodeComponent> progress;
   DestinyPresentationNodeDefinition definition;
 
   @override
@@ -44,17 +46,28 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget> {
   loadCompletionData() {
     var profileNodes = widget.profile.getProfilePresentationNodes();
 
-    if (profileNodes != null) {
-      this.progress = profileNodes["${widget.hash}"];
+    if (profileNodes?.containsKey("${widget.hash}") ?? false) {
+      this.progress = {DestinyClass.Unknown: profileNodes["${widget.hash}"]};
       if (this.progress != null) return;
     }
     var characters =
         widget.profile.getCharacters(UserSettingsService().characterOrdering);
     if (characters == null || characters.length == 0) return;
-    var charId = characters.first.characterId;
-    var characterNodes = widget.profile.getCharacterPresentationNodes(charId);
-    if (characterNodes == null) return;
-    this.progress = characterNodes["${widget.hash}"];
+    var progress = Map.fromEntries(
+        characters.map<MapEntry<int, DestinyPresentationNodeComponent>>((c) {
+      var characterNodes =
+          widget.profile.getCharacterPresentationNodes(c.characterId);
+      var node = characterNodes["${widget.hash}"];
+      return MapEntry<int, DestinyPresentationNodeComponent>(
+        c.classType,
+        node
+      );
+    }));
+    var valuesSet = progress.values.map((v) => v.progressValue).toSet();
+    if (valuesSet.length == 1) {
+      progress = {DestinyClass.Unknown: progress.values.first};
+    }
+    this.progress = progress;
   }
 
   @override
@@ -95,7 +108,7 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget> {
                         imageUrl: BungieApiService.url(
                             definition.displayProperties.icon),
                       )))
-          : Container(width:20),
+          : Container(width: 20),
       buildTitle(context, definition),
       buildCount(context)
     ];
@@ -106,12 +119,24 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget> {
       return Container();
     }
     if (progress != null) {
-      return Container(
-          padding: EdgeInsets.all(8),
-          child: Text(
-            "${progress.progressValue}/${progress.completionValue}",
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ));
+      return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: progress?.entries
+                  ?.map((e) => Container(
+                      padding: EdgeInsets.only(top: 2, bottom: 2, right: 8),
+                      child: Row(children: [
+                        e.key != DestinyClass.Unknown ? Icon(
+                          DestinyData.getClassIcon(e.key),
+                          size: 16,
+                        ) : Container(),
+                        Container(width: 4),
+                        Text(
+                          "${e?.value?.progressValue}/${e?.value?.completionValue}",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        )
+                      ])))
+                  ?.toList() ??
+              []);
     }
 
     return Container();

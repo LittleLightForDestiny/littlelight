@@ -198,7 +198,7 @@ class EquipmentScreenState extends State<EquipmentScreen>
     var headers = characters
         ?.map((character) => TabHeaderWidget(
               character,
-              key: Key("${character.emblemHash}"),
+              key: Key("${character?.emblemHash}_${character?.characterId}"),
             ))
         ?.toList();
     headers?.add(VaultTabHeaderWidget());

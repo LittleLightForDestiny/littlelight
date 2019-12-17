@@ -27,7 +27,7 @@ class RecordItemWidget extends StatefulWidget {
   }
 }
 
-class RecordItemWidgetState extends State<RecordItemWidget> {
+class RecordItemWidgetState extends State<RecordItemWidget> with AutomaticKeepAliveClientMixin {
   DestinyRecordDefinition _definition;
   bool isLogged = false;
   Map<int, DestinyObjectiveDefinition> objectiveDefinitions;
@@ -106,6 +106,7 @@ class RecordItemWidgetState extends State<RecordItemWidget> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Container(
         decoration: BoxDecoration(
           border: Border.all(color: foregroundColor, width: 1),
@@ -260,4 +261,7 @@ class RecordItemWidgetState extends State<RecordItemWidget> {
                     ))
                 .toList()));
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

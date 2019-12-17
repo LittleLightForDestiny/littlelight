@@ -15,6 +15,7 @@ class DestinySettingsService {
   DestinySettingsService._internal();
   final _api = BungieApiService();
 
+  CoreSettingsConfiguration _currentSettings;
   DestinySeasonPassDefinition _currentSeasonPassDef;
 
   static const int SeasonLevel = 3256821400;
@@ -34,6 +35,7 @@ class DestinySettingsService {
       seasonDef = await ManifestService().getDefinition<DestinySeasonDefinition>(seasonHash);
       await StorageService.global().setJson(StorageKeys.bungieCommonSettings, settings.toJson());
     }
+    _currentSettings = settings;
     _currentSeasonPassDef = await ManifestService().getDefinition<DestinySeasonPassDefinition>(seasonDef.seasonPassHash);
   }
 
@@ -45,4 +47,19 @@ class DestinySettingsService {
     return _currentSeasonPassDef?.prestigeProgressionHash ?? 2140885848;
   }
 
+  int get collectionsRootNode{
+    return _currentSettings?.destiny2CoreSettings?.collectionRootNode ?? 3790247699;
+  }
+
+  int get badgesRootNode{
+    return _currentSettings?.destiny2CoreSettings?.badgesRootNode ?? 498211331;
+  }
+
+  int get triumphsRootNode{
+    return _currentSettings?.destiny2CoreSettings?.recordsRootNode ?? 1024788583;
+  }
+
+  int get sealsRootNode{
+    return _currentSettings?.destiny2CoreSettings?.medalsRootNode ?? 1652422747;
+  }
 }

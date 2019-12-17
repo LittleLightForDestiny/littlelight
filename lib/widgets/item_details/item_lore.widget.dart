@@ -1,20 +1,17 @@
 import 'package:bungie_api/models/destiny_lore_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
-import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
 class ItemLoreWidget extends StatelessWidget {
   final int hash;
 
-  ItemLoreWidget(
-      this.hash,
-      {Key key})
-      : super(key: key);
+  ItemLoreWidget(this.hash, {Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    if(hash == null) {
+    if (hash == null) {
       return Container();
     }
     return Container(
@@ -34,13 +31,12 @@ class ItemLoreWidget extends StatelessWidget {
           )),
           Container(
               padding: EdgeInsets.all(8),
-              child: ManifestText<DestinyLoreDefinition>(
+              child: DefinitionProviderWidget<DestinyLoreDefinition>(
                   hash,
-                  style: TextStyle(fontWeight: FontWeight.w300),
-                  textExtractor: (lore){
-                    if(lore == null) return "";
-                    return lore.displayProperties.description;
-                  },))
+                  (def) => SelectableText(
+                        def?.displayProperties?.description,
+                        style: TextStyle(fontWeight: FontWeight.w300),
+                      )))
         ],
       ),
     );

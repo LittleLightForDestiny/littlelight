@@ -50,7 +50,7 @@ class ObjectiveWidgetState extends State<ObjectiveWidget>{
   void loadDefinitions() async{
     if(widget.definition == null){
       _definition = await ManifestService().getDefinition<DestinyObjectiveDefinition>(widget.objective.objectiveHash);
-      setState(() { });
+      if(mounted) setState(() { });
     }
   }
 
