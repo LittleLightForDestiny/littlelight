@@ -40,13 +40,15 @@ class PresentationNodeListWidgetState
   @override
   void initState() {
     super.initState();
-    if(widget.presentationNodeHash != null){
+    if (widget.presentationNodeHash != null) {
       buildIndex();
     }
   }
 
   void buildIndex() async {
-    definition = await widget.manifest.getDefinition<DestinyPresentationNodeDefinition>(widget.presentationNodeHash);
+    definition = await widget.manifest
+        .getDefinition<DestinyPresentationNodeDefinition>(
+            widget.presentationNodeHash);
     if (presentationNodes.length > 0) {
       List<int> hashes =
           presentationNodes.map((node) => node.presentationNodeHash).toList();
@@ -58,14 +60,14 @@ class PresentationNodeListWidgetState
     presentationNodes.forEach((node) {
       listIndex.add(CollectionListItem(
           CollectionListItemType.presentationNode, node.presentationNodeHash));
-      _presentationNodeDefinitions[node.presentationNodeHash]
-          ?.children
-          ?.collectibles
-          ?.forEach((collectible) {
-        listIndex.add(CollectionListItem(
-            CollectionListItemType.nestedCollectible,
-            collectible.collectibleHash));
-      });
+      var def = _presentationNodeDefinitions[node.presentationNodeHash];
+      if ((def?.children?.collectibles?.length ?? 0) <= 5) {
+        def?.children?.collectibles?.forEach((collectible) {
+          listIndex.add(CollectionListItem(
+              CollectionListItemType.nestedCollectible,
+              collectible.collectibleHash));
+        });
+      }
     });
     collectibles.forEach((collectible) {
       listIndex.add(CollectionListItem(
@@ -76,7 +78,7 @@ class PresentationNodeListWidgetState
       listIndex.add(
           CollectionListItem(CollectionListItemType.record, record.recordHash));
     });
-    if(mounted){
+    if (mounted) {
       setState(() {});
     }
   }
@@ -84,9 +86,12 @@ class PresentationNodeListWidgetState
   @override
   Widget build(BuildContext context) {
     var screenPadding = MediaQuery.of(context).padding;
-    
+
     return StaggeredGridView.countBuilder(
-      padding: EdgeInsets.all(4).copyWith(top: 0, left: max(screenPadding.left, 4), right: max(screenPadding.right, 4), bottom: 4 + screenPadding.bottom),
+      padding: EdgeInsets.all(4).copyWith(
+          left: max(screenPadding.left, 4),
+          right: max(screenPadding.right, 4),
+          bottom: 4 + screenPadding.bottom),
       crossAxisCount: 30,
       itemCount: count,
       itemBuilder: (BuildContext context, int index) => getItem(context, index),
@@ -112,8 +117,6 @@ class PresentationNodeListWidgetState
       definition?.children?.records;
 
   int get count => listIndex?.length ?? 0;
-
-  
 
   StaggeredTile getTileBuilder(int index) {
     var item = listIndex[index];

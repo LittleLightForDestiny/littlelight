@@ -41,7 +41,6 @@ class DetailsItemStatWidget extends BaseItemStatWidget {
           fontWeight: FontWeight.w300,
         ),
         textAlign: TextAlign.end,
-        overflow: TextOverflow.fade,
         softWrap: false,
       ),
     );

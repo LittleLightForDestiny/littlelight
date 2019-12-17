@@ -1,32 +1,40 @@
 import 'package:bungie_api/models/destiny_presentation_node_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/media_query_helper.dart';
+import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
+import 'package:little_light/widgets/inventory_tabs/selected_items.widget.dart';
 import 'package:little_light/widgets/presentation_nodes/collectible_item.widget.dart';
 import 'package:little_light/widgets/presentation_nodes/nested_collectible_item.widget.dart';
+
+import 'package:little_light/widgets/presentation_nodes/presentation_node_body.widget.dart';
 import 'package:little_light/widgets/presentation_nodes/presentation_node_item.widget.dart';
 import 'package:little_light/widgets/presentation_nodes/presentation_node_list.widget.dart';
-import 'package:little_light/widgets/presentation_nodes/presentation_node_tabs.widget.dart';
 import 'package:little_light/widgets/presentation_nodes/record_item.widget.dart';
 
-class PresentationNodeBaseScreen extends StatefulWidget {
+class PresentationNodeScreen extends StatefulWidget {
   final ManifestService manifest = new ManifestService();
   final ProfileService profile = new ProfileService();
   final int presentationNodeHash;
   final int depth;
-  PresentationNodeBaseScreen(
+  final PresentationNodeItemBuilder itemBuilder;
+  final PresentationNodeTileBuilder tileBuilder;
+  PresentationNodeScreen(
       {this.presentationNodeHash,
+      this.itemBuilder,
+      this.tileBuilder,
       this.depth = 0});
 
   @override
-  PresentationNodeBaseScreenState createState() =>
-      new PresentationNodeBaseScreenState();
+  PresentationNodeScreenState createState() =>
+      new PresentationNodeScreenState();
 }
 
-class PresentationNodeBaseScreenState<T extends PresentationNodeBaseScreen>
-    extends State<PresentationNodeBaseScreen> {
+class PresentationNodeScreenState<T extends PresentationNodeScreen>
+    extends State<T> {
   DestinyPresentationNodeDefinition definition;
   @override
   void initState() {
@@ -46,37 +54,29 @@ class PresentationNodeBaseScreenState<T extends PresentationNodeBaseScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text(definition.displayProperties.name)),
-        body: buildBody(context,
-            hash: widget.presentationNodeHash, depth: widget.depth));
+        appBar: AppBar(title: Text(definition?.displayProperties?.name ?? "")),
+        body: buildScaffoldBody(context));
   }
 
-  Widget buildBody(BuildContext context, {int hash, int depth}) {
-    print(definition);
-    if(definition?.children == null) return Container();
-    if((definition?.children?.presentationNodes?.length ?? 0) == 0){
-      return listBuilder(hash, depth);
-    }
-    if((definition?.children?.presentationNodes?.length ?? 0) > 4){
-      return listBuilder(hash, depth);
-    }
-    return tabBuilder(hash, depth);
+  Widget buildScaffoldBody(BuildContext context) {
+    return Stack(children: [
+      Column(children: [
+        Expanded(
+            child: buildBody(context)),
+        SelectedItemsWidget(),
+      ]),
+      InventoryNotificationWidget(
+        key: Key('inventory_notification_widget'),
+        barHeight: 0,
+      ),
+    ]);
   }
 
-  Widget tabBuilder(int presentationNodeHash, int depth) {
-    return PresentationNodeTabsWidget(
-      presentationNodeHash: presentationNodeHash,
-      depth: depth,
-    );
-  }
-
-  Widget listBuilder(int presentationNodeHash, int depth) {
-    return PresentationNodeListWidget(
-      presentationNodeHash: presentationNodeHash,
-      depth: depth,
-      itemBuilder: itemBuilder,
-      tileBuilder: tileBuilder,
-    );
+  Widget buildBody(BuildContext context){
+    return PresentationNodeBodyWidget(
+            presentationNodeHash: widget.presentationNodeHash, depth: widget.depth,
+            itemBuilder: widget.itemBuilder,
+            tileBuilder: widget.tileBuilder);
   }
 
   Widget itemBuilder(CollectionListItem item, int depth) {
@@ -137,9 +137,11 @@ class PresentationNodeBaseScreenState<T extends PresentationNodeBaseScreen>
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => PresentationNodeBaseScreen(
+        builder: (context) => PresentationNodeScreen(
           presentationNodeHash: hash,
           depth: depth + 1,
+          itemBuilder: widget.itemBuilder ?? itemBuilder,
+          tileBuilder: widget.tileBuilder ?? tileBuilder,
         ),
       ),
     );

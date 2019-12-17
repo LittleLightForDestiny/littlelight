@@ -3,23 +3,27 @@ import 'dart:math';
 import 'package:bungie_api/models/destiny_presentation_node_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
-
-typedef Widget PresentationNodeTabBodyBuilder(
-    int presentationNodeHash, int depth);
+import 'package:little_light/widgets/presentation_nodes/presentation_node_body.widget.dart';
+import 'package:little_light/widgets/presentation_nodes/presentation_node_list.widget.dart';
 
 class PresentationNodeTabsWidget extends StatefulWidget {
   final _manifest = new ManifestService();
   final int presentationNodeHash;
   final List<int> presentationNodeHashes;
   final int depth;
-  final PresentationNodeTabBodyBuilder bodyBuilder;
+
+  final PresentationNodeItemBuilder itemBuilder;
+  final PresentationNodeTileBuilder tileBuilder;
+
   PresentationNodeTabsWidget(
       {this.presentationNodeHash,
       this.presentationNodeHashes,
       this.depth = 0,
-      @required this.bodyBuilder});
+      this.itemBuilder,
+      this.tileBuilder});
 
   @override
   PresentationNodeTabsWidgetState createState() =>
@@ -32,7 +36,7 @@ class PresentationNodeTabsWidgetState
   @override
   void initState() {
     super.initState();
-    if(widget.presentationNodeHash != null){
+    if (widget.presentationNodeHash != null) {
       loadDefinition();
     }
   }
@@ -41,12 +45,16 @@ class PresentationNodeTabsWidgetState
     definition = await widget._manifest
         .getDefinition<DestinyPresentationNodeDefinition>(
             widget.presentationNodeHash);
-    if(mounted){
+    if (mounted) {
       setState(() {});
     }
   }
 
-  List<int> get nodeHashes => widget.presentationNodeHashes ?? definition?.children?.presentationNodes?.map((p)=>p.presentationNodeHash)?.toList();
+  List<int> get nodeHashes =>
+      widget.presentationNodeHashes ??
+      definition?.children?.presentationNodes
+          ?.map((p) => p.presentationNodeHash)
+          ?.toList();
 
   @override
   Widget build(BuildContext context) {
@@ -58,34 +66,33 @@ class PresentationNodeTabsWidgetState
       Colors.blueGrey.shade800
     ];
     int depth = widget.depth > -1 ? widget.depth : 0;
-    if(nodeHashes.length == 0){
-      return widget.bodyBuilder(
-          widget.presentationNodeHash,
-          widget.depth + 1);
-    }
-    if (nodeHashes.length == 1) {
-      return widget.bodyBuilder(
-          nodeHashes[0],
-          widget.depth + 1);
-    }
     var screenPadding = MediaQuery.of(context).padding;
+    if (nodeHashes.length == 1) {
+      return PresentationNodeBodyWidget(
+        depth: widget.depth + 1,
+        presentationNodeHash: nodeHashes[0],
+        itemBuilder: widget.itemBuilder,
+        tileBuilder: widget.tileBuilder,
+      );
+    }
     return DefaultTabController(
         length: nodeHashes.length,
         child: Column(children: [
           Material(
-            elevation: (depth * 2) / 3,
-            color: colors[depth],
-            
-            child:Container(
-            color: colors[depth],
-            padding: EdgeInsets.only(left: max(screenPadding.left, 4), right: max(screenPadding.right, 4)),
-            child: Center(
-                child: TabBar(
-              indicatorColor: Colors.white,
-              isScrollable: depth > 1,
-              tabs: buildTabButtons(context),
-            )),
-          )),
+              elevation: (depth * 2) / 3,
+              color: colors[depth],
+              child: Container(
+                color: colors[depth],
+                padding: EdgeInsets.only(
+                    left: max(screenPadding.left, 4),
+                    right: max(screenPadding.right, 4)),
+                child: Center(
+                    child: TabBar(
+                  indicatorColor: Colors.white,
+                  // isScrollable: depth > 1,
+                  tabs: buildTabButtons(context),
+                )),
+              )),
           Expanded(
               child: TabBarView(
             children: buildTabs(context),
@@ -100,30 +107,39 @@ class PresentationNodeTabsWidgetState
   }
 
   Widget buildTabButton(BuildContext context, int hash) {
-    if (widget.depth < 3 && widget.depth != 0) {
-      return Container(
-          padding: EdgeInsets.all(8),
-          child: Container(
-            constraints: BoxConstraints(maxHeight: 48),
-            child:AspectRatio(
-            aspectRatio: 1,
-              child: ManifestImageWidget<DestinyPresentationNodeDefinition>(
-            hash,
-            placeholder: Container(),
-          ))));
-    }
     return Container(
         padding: EdgeInsets.all(8),
-        child: ManifestText<DestinyPresentationNodeDefinition>(hash,
-            uppercase: true,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-            )));
+        child: DefinitionProviderWidget<DestinyPresentationNodeDefinition>(hash,
+            (def) {
+          if (def?.displayProperties?.hasIcon ?? false) {
+            return Container(
+                constraints: BoxConstraints(maxHeight: 48),
+                child: AspectRatio(
+                    aspectRatio: 1,
+                    child:
+                        ManifestImageWidget<DestinyPresentationNodeDefinition>(
+                      hash,
+                      placeholder: Container(),
+                    )));
+          }
+          return ManifestText<DestinyPresentationNodeDefinition>(hash,
+              uppercase: true,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 12,
+                // fontWeight: FontWeight.bold,
+              ));
+        }));
   }
 
   List<Widget> buildTabs(BuildContext context) {
     return nodeHashes.map((hash) {
-      return widget.bodyBuilder(hash, widget.depth + 1);
+      return PresentationNodeBodyWidget(
+        depth: widget.depth + 1,
+        presentationNodeHash: hash,
+        itemBuilder: widget.itemBuilder,
+        tileBuilder: widget.tileBuilder,
+      );
     }).toList();
   }
 }

@@ -27,7 +27,7 @@ class RecordItemWidget extends StatefulWidget {
   }
 }
 
-class RecordItemWidgetState extends State<RecordItemWidget> {
+class RecordItemWidgetState extends State<RecordItemWidget> with AutomaticKeepAliveClientMixin {
   DestinyRecordDefinition _definition;
   bool isLogged = false;
   Map<int, DestinyObjectiveDefinition> objectiveDefinitions;
@@ -260,4 +260,7 @@ class RecordItemWidgetState extends State<RecordItemWidget> {
                     ))
                 .toList()));
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
