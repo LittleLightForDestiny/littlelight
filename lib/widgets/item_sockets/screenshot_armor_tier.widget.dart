@@ -54,7 +54,7 @@ class ScreenShotItemPerksWidgetState<T extends ScreenShotArmorTierWidget>
           category.socketCategoryHash,
           style: TextStyle(
             fontSize: 24 * widget.pixelSize,
-            fontWeight: FontWeight.w400,
+            fontWeight: FontWeight.w500,
             color: Colors.white.withOpacity(.7),
           ),
         ),
@@ -119,7 +119,7 @@ class ScreenShotItemPerksWidgetState<T extends ScreenShotArmorTierWidget>
               "Energy",
               uppercase: true,
               style: TextStyle(
-                  fontWeight: FontWeight.w400, fontSize: widget.pixelSize * 22),
+                  fontWeight: FontWeight.w500, fontSize: widget.pixelSize * 22),
             )
           ],
         )),

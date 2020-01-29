@@ -249,7 +249,7 @@ class ShareImageWidget extends StatelessWidget {
           style: TextStyle(
               color: Colors.white.withOpacity(.6),
               fontSize: 36,
-              fontWeight: FontWeight.w600),
+              fontWeight: FontWeight.w700),
         ),
       ],
     );

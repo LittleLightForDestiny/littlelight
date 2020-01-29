@@ -50,7 +50,7 @@ class MinimalArmorInventoryItemWidget extends MinimalBaseInventoryItemWidget
     if(primaryStat == null) return Container();
     return Text(
       "${primaryStat?.value}",
-      style: TextStyle(fontWeight: FontWeight.w900, fontSize: valueFontSize),
+      style: TextStyle(fontWeight: FontWeight.w700, fontSize: valueFontSize),
     );
   }
 

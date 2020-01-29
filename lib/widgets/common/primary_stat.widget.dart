@@ -73,7 +73,7 @@ class PrimaryStatWidget extends StatelessWidget {
     return Text(
       "$statValue",
       style: TextStyle(
-          color: color, fontWeight: FontWeight.w900, fontSize: fontSize),
+          color: color, fontWeight: FontWeight.w700, fontSize: fontSize),
     );
   }
 

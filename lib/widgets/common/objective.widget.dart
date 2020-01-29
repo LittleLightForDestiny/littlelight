@@ -134,7 +134,7 @@ class ObjectiveWidgetState extends State<ObjectiveWidget>{
             softWrap: false,
             overflow: TextOverflow.fade,
             style: TextStyle(
-                fontWeight: FontWeight.w400,
+                fontWeight: FontWeight.w500,
                 fontSize: 13,
                 color: this.color ?? Colors.grey.shade300)));
   }

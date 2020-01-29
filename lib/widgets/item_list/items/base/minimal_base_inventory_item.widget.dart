@@ -36,10 +36,10 @@ class MinimalBaseInventoryItemWidget extends BaseInventoryItemWidget with Minima
   @override
   Widget primaryStatWidget(BuildContext context) {
     if((definition?.inventory?.maxStackSize ?? 0) > 1){
-      return infoContainer(context, Text("x${item.quantity}", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900,), textAlign: TextAlign.right,));
+      return infoContainer(context, Text("x${item.quantity}", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700,), textAlign: TextAlign.right,));
     }
     if(instanceInfo?.primaryStat?.value != null){
-      return infoContainer(context, Text("${instanceInfo?.primaryStat?.value}", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900,), textAlign: TextAlign.right,));
+      return infoContainer(context, Text("${instanceInfo?.primaryStat?.value}", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700,), textAlign: TextAlign.right,));
     }
     return super.primaryStatWidget(context);
   }

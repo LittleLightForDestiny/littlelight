@@ -84,12 +84,11 @@ class PresentationNodeTabsWidgetState
               child: Container(
                 color: colors[depth],
                 padding: EdgeInsets.only(
-                    left: max(screenPadding.left, 4),
-                    right: max(screenPadding.right, 4)),
+                    left: max(screenPadding.left, 2),
+                    right: max(screenPadding.right, 2)),
                 child: Center(
                     child: TabBar(
                   indicatorColor: Colors.white,
-                  // isScrollable: depth > 1,
                   tabs: buildTabButtons(context),
                 )),
               )),
@@ -125,9 +124,10 @@ class PresentationNodeTabsWidgetState
           return ManifestText<DestinyPresentationNodeDefinition>(hash,
               uppercase: true,
               textAlign: TextAlign.center,
+              maxLines: 1,
               style: TextStyle(
                 fontSize: 12,
-                // fontWeight: FontWeight.bold,
+                
               ));
         }));
   }

@@ -185,7 +185,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
                       convertSize(34, context), expandRatio),
                   height: .94,
                   color: Colors.white.withOpacity(.6),
-                  fontWeight: FontWeight.w400),
+                  fontWeight: FontWeight.w500),
             ),
           ],
         ));
@@ -239,7 +239,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
                       style: TextStyle(
                         fontStyle: FontStyle.italic,
                         fontSize: convertSize(24, context),
-                        fontWeight: FontWeight.w400,
+                        fontWeight: FontWeight.w500,
                         color: Colors.white.withOpacity(.7),
                       ),
                     )),

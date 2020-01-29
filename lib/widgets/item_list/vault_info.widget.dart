@@ -73,7 +73,7 @@ class VaultInfoWidgetState extends CharacterInfoWidgetState<VaultInfoWidget> {
           alignment: Alignment.centerLeft,
           child: ManifestText<DestinyVendorDefinition>(1037843411,
               uppercase: true,
-              style: TextStyle(fontWeight: FontWeight.w900, fontSize: 20)),
+              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 20)),
         ));
   }
 
@@ -93,7 +93,7 @@ class VaultInfoWidgetState extends CharacterInfoWidgetState<VaultInfoWidget> {
               InventoryBucket.general,
               textExtractor: (def) => "$itemCount/${def.itemCount}",
               key: Key("$itemCount"),
-              style: TextStyle(fontWeight: FontWeight.w900, fontSize: 20))),
+              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 20))),
     );
   }
 

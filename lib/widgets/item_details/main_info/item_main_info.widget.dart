@@ -41,7 +41,8 @@ class ItemMainInfoWidget extends BaseDestinyStatelessItemWidget {
           ),
           Padding(
               padding: EdgeInsets.all(8),
-              child: Text(definition.displayProperties.description)),
+              child: Text(definition.displayProperties.description,
+              style: TextStyle(fontFamily: "Garamond"),)),
         ]));
   }
 

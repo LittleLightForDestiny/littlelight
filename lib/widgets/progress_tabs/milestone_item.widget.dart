@@ -240,7 +240,7 @@ class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
                                   def?.selectionScreenDisplayProperties
                                       ?.description ??
                                   def.displayProperties.description,
-                              style: TextStyle(fontWeight: FontWeight.w400)),
+                              style: TextStyle(fontWeight: FontWeight.w500)),
                         ])),
                 Positioned.fill(
                     child: Material(
@@ -409,7 +409,7 @@ class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
                               ),
                               Text(
                                 def?.displayProperties?.name ?? "",
-                                style: TextStyle(fontWeight: FontWeight.w400),
+                                style: TextStyle(fontWeight: FontWeight.w500),
                               )
                             ]))))
                 .toList()));

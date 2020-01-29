@@ -48,7 +48,7 @@ class BucketHeaderWidgetState extends State<BucketHeaderWidget> {
             children: [
           Text(
             def.displayProperties.name.toUpperCase(),
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
           ),
           buildCount(context)
         ]));
@@ -62,11 +62,11 @@ class BucketHeaderWidgetState extends State<BucketHeaderWidget> {
     if(widget.isVault){
       return ManifestText<DestinyInventoryBucketDefinition>(InventoryBucket.general, textExtractor: (def){
         return "${widget.itemCount}/${def.itemCount}";
-      }, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900),);
+      }, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),);
     }
     return Text(
       "${widget.itemCount}/$bucketSize",
-      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900),
+      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
     );
   }
 }

@@ -11,6 +11,7 @@
 .svn/
 *.env
 .env
+_env
 .sentryclirc
 translations
 

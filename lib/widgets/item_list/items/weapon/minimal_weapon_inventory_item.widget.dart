@@ -44,7 +44,7 @@ class MinimalWeaponInventoryItemWidget extends MinimalBaseInventoryItemWidget
     int value = primaryStat?.value ?? 0;
     return Text(
       "$value",
-      style: TextStyle(color: color, fontWeight: FontWeight.w900, fontSize: valueFontSize),
+      style: TextStyle(color: color, fontWeight: FontWeight.w700, fontSize: valueFontSize),
     );
   }
 

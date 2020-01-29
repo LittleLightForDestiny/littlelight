@@ -108,7 +108,7 @@ class DetailsArmorTierWidgetState<T extends DetailsArmorTierWidget>
               TranslatedTextWidget(
                 "Energy",
                 uppercase: true,
-                style: TextStyle(fontWeight: FontWeight.w400, fontSize: 16),
+                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
               )
             ],
           )),

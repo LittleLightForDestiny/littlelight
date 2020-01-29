@@ -14,7 +14,7 @@ int restartCounter = 0;
 void main() async {
   debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
   WidgetsFlutterBinding.ensureInitialized();
-  await DotEnv().load('.env');
+  await DotEnv().load('assets/_env');
   print(DotEnv().env);
   ExceptionHandler handler = ExceptionHandler(onRestart: () {
     restartCounter++;
@@ -41,6 +41,7 @@ class LittleLight extends StatelessWidget {
       key: key,
       title: 'Little Light',
       theme: new ThemeData(
+          fontFamily: "NeueHaasDisplay",
           disabledColor: Colors.lightBlue.shade900,
           platform: TargetPlatform.android,
           backgroundColor: Colors.blueGrey.shade900,

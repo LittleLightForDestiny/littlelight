@@ -76,7 +76,7 @@ class ScreenshotTransferDestinationsState<
           uppercase: true,
           style: TextStyle(
             fontSize: 24 * widget.pixelSize,
-            fontWeight: FontWeight.w400,
+            fontWeight: FontWeight.w500,
             color: Colors.white.withOpacity(.7),
           ),
         ),

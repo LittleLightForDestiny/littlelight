@@ -35,7 +35,9 @@ class ItemLoreWidget extends StatelessWidget {
                   hash,
                   (def) => SelectableText(
                         def?.displayProperties?.description,
-                        style: TextStyle(fontWeight: FontWeight.w300),
+                        style: TextStyle(
+                          fontWeight: FontWeight.w300,
+                        ),
                       )))
         ],
       ),

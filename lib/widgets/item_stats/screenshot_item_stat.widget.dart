@@ -44,7 +44,7 @@ class ScreenshotItemStatWidget extends BaseItemStatWidget {
           ],
           color: nameColor,
           fontSize: pixelSize * 20,
-          fontWeight: FontWeight.w400,
+          fontWeight: FontWeight.w500,
         ),
         textAlign: TextAlign.center,
       ),

@@ -158,17 +158,20 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
     if (UserSettingsService().hasTappedGhost) {
       return ghost;
     }
-    return Stack(children: [
+    return Stack(      
+      children: [
       Center(
         child: ghost,
       ),
+      Center(
+        child:
       Container(
           margin: EdgeInsets.only(top: 60),
           child: SpeechBubble(
             nipLocation: NipLocation.TOP,
             color: Colors.lightBlue,
             child: TranslatedTextWidget("Hey, tap me!"),
-          ))
+          )))
     ]);
   }
 
@@ -204,7 +207,7 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
                   "${character.light}",
                   key: Key("${character.light}"),
                   style: TextStyle(
-                      fontWeight: FontWeight.w900,
+                      fontWeight: FontWeight.w700,
                       fontSize: 34,
                       color: Colors.amber.shade500),
                 )
@@ -246,7 +249,7 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
                 classDef
                     .genderedClassNamesByGenderHash["${character.genderHash}"]
                     .toUpperCase(),
-                style: TextStyle(fontWeight: FontWeight.w900, fontSize: 20)),
+                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 20)),
             Container(height: 2),
             Text(
               raceDef.genderedRaceNamesByGenderHash["${character.genderHash}"],
