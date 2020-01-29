@@ -37,7 +37,7 @@ Here are some tips to make sure your pull request can be merged smoothly:
 1. Leave `Origin Header` empty
 
 ### Add API credentials
-1. copy ```.env.example``` to ```.env``` and edit it to match your credentials
+1. Rename ```.env.example``` to ```_env```, move it to the `assets` directory, and edit it to match your credentials
 
 ### Download Third Party Libs
 1. run ```flutter packages get``` to download all the librarys used in project
