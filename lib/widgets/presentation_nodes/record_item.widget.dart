@@ -106,6 +106,7 @@ class RecordItemWidgetState extends State<RecordItemWidget> with AutomaticKeepAl
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Container(
         decoration: BoxDecoration(
           border: Border.all(color: foregroundColor, width: 1),

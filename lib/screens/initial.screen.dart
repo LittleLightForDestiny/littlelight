@@ -6,7 +6,6 @@ import 'package:bungie_api/models/group_user_info_card.dart';
 import 'package:bungie_api/models/user_membership_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:little_light/exceptions/exception_handler.dart';
 import 'package:little_light/screens/main.screen.dart';
 import 'package:little_light/services/auth/auth.service.dart';
@@ -57,7 +56,6 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
   }
 
   initLoading() async{
-    await DotEnv().load('./assets/_env');
     await StorageService.init();
     AuthService().reset();
     await LittleLightApiService().reset();

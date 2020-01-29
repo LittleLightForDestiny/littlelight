@@ -14,7 +14,7 @@ int restartCounter = 0;
 void main() async {
   debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
   WidgetsFlutterBinding.ensureInitialized();
-  await DotEnv().load('assets/_env');
+  await DotEnv().load('.env');
   print(DotEnv().env);
   ExceptionHandler handler = ExceptionHandler(onRestart: () {
     restartCounter++;
