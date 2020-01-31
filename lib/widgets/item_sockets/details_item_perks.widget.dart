@@ -67,26 +67,6 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
 
   Widget buildDetailsSwitch(BuildContext context) {
     return Container();
-    // return Row(
-    //   children: <Widget>[
-    //     TranslatedTextWidget(
-    //       "Details",
-    //       uppercase: true,
-    //       style: TextStyle(fontWeight: FontWeight.bold),
-    //     ),
-    //     Container(
-    //       width: 4,
-    //     ),
-    //     SmallerSwitch(
-    //       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-    //       value: showDetails,
-    //       onChanged: (value) {
-    //         showDetails = value;
-    //         setState(() {});
-    //       },
-    //     )
-    //   ],
-    // );
   }
 
   @override
@@ -95,7 +75,7 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
         .map((socketIndex) => buildSocketPlugs(context, socketIndex))
         .where((w) => w != null);
     var screenWidth = MediaQuery.of(context).size.width - 16;
-    var dividerMargin = min(screenWidth/50, 8.0);
+    var dividerMargin = min(screenWidth / 50, 8.0);
     children = children.expand((w) => [
           w,
           Container(
@@ -172,15 +152,13 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
         ));
   }
 
-
   @override
   Set<int> socketPlugHashes(int socketIndex) {
     if (item == null) {
       var isRandom = controller.randomizedPlugHashes(socketIndex).length > 0;
       if (isRandom) {
-        return controller
-            .bungieRollPlugHashes(socketIndex)
-            .followedBy([controller.socketRandomizedSelectedPlugHash(socketIndex)]).toSet();
+        return controller.bungieRollPlugHashes(socketIndex).followedBy(
+            [controller.socketRandomizedSelectedPlugHash(socketIndex)]).toSet();
       }
     }
     return super.socketPlugHashes(socketIndex);
@@ -247,7 +225,7 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
     BorderSide borderSide = BorderSide(color: borderColor, width: 2);
 
     return Container(
-        key:Key("item_perk_$plugItemHash"),
+        key: Key("item_perk_$plugItemHash"),
         padding: EdgeInsets.all(0),
         margin: EdgeInsets.only(bottom: 8),
         child: FlatButton(
@@ -285,6 +263,7 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
     bool isSelected = plugItemHash == controller.selectedPlugHash;
     Color bgColor = Colors.transparent;
     Color borderColor = Colors.grey.shade300.withOpacity(.5);
+
     if (isEquipped && !intrinsic) {
       bgColor = DestinyData.perkColor.withOpacity(.5);
     }
@@ -300,23 +279,32 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
     BorderSide borderSide = BorderSide(color: borderColor, width: 2);
 
     return Container(
-        key:Key("item_perk_$plugItemHash"),
+        key: Key("item_perk_$plugItemHash"),
         padding: EdgeInsets.all(0),
         margin: EdgeInsets.only(bottom: 8),
-        child: AspectRatio(
-            aspectRatio: 1,
-            child: FlatButton(
-              shape: intrinsic && !isExotic
-                  ? RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4), side: borderSide)
-                  : CircleBorder(side: borderSide),
-              padding: EdgeInsets.all(intrinsic ? 0 : 8),
-              color: bgColor,
-              child: ManifestImageWidget<DestinyInventoryItemDefinition>(
-                  plugItemHash),
-              onPressed: () {
-                controller.selectSocket(socketIndex, plugItemHash);
-              },
-            )));
+        child: Stack(children: [
+          AspectRatio(
+              aspectRatio: 1,
+              child: FlatButton(
+                shape: intrinsic && !isExotic
+                    ? RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4),
+                        side: borderSide)
+                    : CircleBorder(side: borderSide),
+                padding: EdgeInsets.all(intrinsic ? 0 : 8),
+                color: bgColor,
+                child: ManifestImageWidget<DestinyInventoryItemDefinition>(
+                    plugItemHash),
+                onPressed: () {
+                  controller.selectSocket(socketIndex, plugItemHash);
+                },
+              )),
+          Positioned(
+              top: 0,
+              right: 0,
+              left:0,
+              child: Center(
+                  child: buildSpecialtiesIcons(plugItemHash)))
+        ]));
   }
 }

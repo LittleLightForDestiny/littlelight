@@ -9,7 +9,7 @@ import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 
-typedef void PresentationNodePressedHandler(int hash, int depth);
+typedef void PresentationNodePressedHandler(int hash, int depth, bool isCategorySet);
 
 class PresentationNodeItemWidget extends StatefulWidget {
   final int hash;
@@ -17,8 +17,9 @@ class PresentationNodeItemWidget extends StatefulWidget {
   final PresentationNodePressedHandler onPressed;
   final ManifestService manifest = ManifestService();
   final ProfileService profile = ProfileService();
+  final bool isCategorySet;
   PresentationNodeItemWidget(
-      {Key key, this.hash, this.depth, @required this.onPressed})
+      {Key key, this.hash, this.depth, @required this.onPressed, @required this.isCategorySet})
       : super(key: key);
   @override
   State<StatefulWidget> createState() {
@@ -40,7 +41,9 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget> {
   loadDefinition() async {
     definition = await widget.manifest
         .getDefinition<DestinyPresentationNodeDefinition>(widget.hash);
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   loadCompletionData() {
@@ -58,10 +61,7 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget> {
       var characterNodes =
           widget.profile.getCharacterPresentationNodes(c.characterId);
       var node = characterNodes["${widget.hash}"];
-      return MapEntry<int, DestinyPresentationNodeComponent>(
-        c.classType,
-        node
-      );
+      return MapEntry<int, DestinyPresentationNodeComponent>(c.classType, node);
     }));
     var valuesSet = progress.values.map((v) => v.progressValue).toSet();
     if (valuesSet.length == 1) {
@@ -89,7 +89,7 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget> {
           FlatButton(
               child: Container(),
               onPressed: () {
-                widget.onPressed(widget.hash, widget.depth);
+                widget.onPressed(widget.hash, widget.depth, widget.isCategorySet);
               })
         ]));
   }
@@ -125,10 +125,12 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget> {
                   ?.map((e) => Container(
                       padding: EdgeInsets.only(top: 2, bottom: 2, right: 8),
                       child: Row(children: [
-                        e.key != DestinyClass.Unknown ? Icon(
-                          DestinyData.getClassIcon(e.key),
-                          size: 16,
-                        ) : Container(),
+                        e.key != DestinyClass.Unknown
+                            ? Icon(
+                                DestinyData.getClassIcon(e.key),
+                                size: 16,
+                              )
+                            : Container(),
                         Container(width: 4),
                         Text(
                           "${e?.value?.progressValue}/${e?.value?.completionValue}",

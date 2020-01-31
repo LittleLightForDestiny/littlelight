@@ -23,6 +23,7 @@ class MediumBaseInventoryItemWidget extends BaseInventoryItemWidget {
 
   Widget nameBar(BuildContext context){
     return ItemNameBarWidget(item, definition, instanceInfo,
+            trailing: namebarTrailingWidget(context),
             padding: EdgeInsets.all(
                 padding),fontSize: titleFontSize, fontWeight: FontWeight.w500,);
   }

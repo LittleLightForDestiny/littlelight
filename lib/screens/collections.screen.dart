@@ -69,7 +69,7 @@ class CollectionsScreenState
         appBar: buildAppBar(context), body: buildScaffoldBody(context));
   }
 
-  Widget itemBuilder(CollectionListItem item, int depth) { 
+  Widget itemBuilder(CollectionListItem item, int depth, bool isCategorySet) { 
     switch (item.type) {
       case CollectionListItemType.nestedCollectible:
         return NestedCollectibleItemWidget(
@@ -82,7 +82,7 @@ class CollectionsScreenState
         );
 
       default:
-        return super.itemBuilder(item, depth);
+        return super.itemBuilder(item, depth, isCategorySet);
     }
   }
 

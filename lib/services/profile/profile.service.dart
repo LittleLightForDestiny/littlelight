@@ -485,12 +485,11 @@ class ProfileService {
       DestinyCollectibleComponent collectible =
           _profile?.profileCollectibles?.data?.collectibles[hashStr] ?? null;
       if (collectible != null) {
-        return (collectible?.state ?? DestinyCollectibleState.NotAcquired) &
-                DestinyCollectibleState.NotAcquired !=
+        return ((collectible?.state ?? DestinyCollectibleState.NotAcquired) &
+                DestinyCollectibleState.NotAcquired) !=
             DestinyCollectibleState.NotAcquired;
       }
     }
-
     return _profile?.characterCollectibles?.data?.values?.any((data) {
           int state = data?.collectibles[hashStr]?.state ??
               DestinyCollectibleState.NotAcquired;

@@ -12,6 +12,7 @@ import 'package:little_light/widgets/item_list/items/base/item_perks.widget.dart
 class BaseInventoryItemWidget extends BaseDestinyStatelessItemWidget
     with InventoryItemMixin {
   final String uniqueId;
+  final Widget trailing;
 
   BaseInventoryItemWidget(
       DestinyItemComponent item,
@@ -19,13 +20,15 @@ class BaseInventoryItemWidget extends BaseDestinyStatelessItemWidget
       DestinyItemInstanceComponent instanceInfo,
       {Key key,
       @required String characterId,
+      this.trailing,
       @required this.uniqueId})
       : super(
             item: item,
             definition: definition,
             instanceInfo: instanceInfo,
             key: key,
-            characterId: characterId);
+            characterId: characterId,
+            );
 
   @override
   Widget perksWidget(BuildContext context) {
@@ -90,4 +93,5 @@ class BaseInventoryItemWidget extends BaseDestinyStatelessItemWidget
     }
     return super.primaryStatWidget(context);
   }
+
 }

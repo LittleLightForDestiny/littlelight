@@ -198,7 +198,7 @@ class DestinyData {
   }
 
   static int get maxPowerLevel {
-    return 1300;
+    return 1000;
   }
 
   static IconData getClassIcon(int type) {
@@ -258,7 +258,7 @@ class DestinyData {
       case DestinyEnergyType.Void:
         return DestinyIcons.damage_void;
     }
-    return DestinyIcons.destiny;
+    return null;
   }
 
   static Color getDamageTypeColor(int damageType) {
@@ -283,7 +283,7 @@ class DestinyData {
       case DestinyEnergyType.Void:
         return Color.fromARGB(255, 64, 34, 101);
     }
-    return Colors.white;
+    return Colors.blueGrey.shade700;
   }
 
   static Color getEnergyTypeLightColor(int damageType) {
@@ -295,7 +295,7 @@ class DestinyData {
       case DestinyEnergyType.Void:
         return Color.fromARGB(255, 177, 120, 248);
     }
-    return Colors.white;
+    return Colors.grey.shade300;
   }
 
   static int getEnergyTypeCostHash(int damageType) {

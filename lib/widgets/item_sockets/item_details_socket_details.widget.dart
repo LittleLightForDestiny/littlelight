@@ -121,7 +121,8 @@ class ItemDetailsSocketDetailsWidgetState
 
   buildObjectives(BuildContext context) {
     var itemObjectives = widget.profile.getPlugObjectives(item?.itemInstanceId);
-    if(!(itemObjectives?.containsKey("${definition.hash}") ?? false)) return Container();
+    if (!(itemObjectives?.containsKey("${definition.hash}") ?? false))
+      return Container();
     var objectives = itemObjectives["${definition.hash}"];
     return Column(
         children: <Widget>[
@@ -132,7 +133,6 @@ class ItemDetailsSocketDetailsWidgetState
     ]
             .followedBy(objectives.map((o) => ObjectiveWidget(
                   objective: o,
-
                 )))
             .toList());
   }
@@ -332,20 +332,29 @@ class ItemDetailsSocketDetailsWidgetState
         width: min(64, screenWidth / 8),
         key: Key("plug_${socketIndex}_$plugItemHash"),
         padding: EdgeInsets.all(0),
-        child: AspectRatio(
-            aspectRatio: 1,
-            child: FlatButton(
-              shape: intrinsic && !isExotic
-                  ? RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4), side: borderSide)
-                  : CircleBorder(side: borderSide),
-              padding: EdgeInsets.all(intrinsic ? 0 : 8),
-              color: bgColor,
-              child: ManifestImageWidget<DestinyInventoryItemDefinition>(
-                  plugItemHash),
-              onPressed: () {
-                controller.selectSocket(socketIndex, plugItemHash);
-              },
-            )));
+        child: Stack(children: [
+          AspectRatio(
+              aspectRatio: 1,
+              child: FlatButton(
+                shape: intrinsic && !isExotic
+                    ? RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4),
+                        side: borderSide)
+                    : CircleBorder(side: borderSide),
+                padding: EdgeInsets.all(intrinsic ? 0 : 8),
+                color: bgColor,
+                child: ManifestImageWidget<DestinyInventoryItemDefinition>(
+                    plugItemHash),
+                onPressed: () {
+                  controller.selectSocket(socketIndex, plugItemHash);
+                },
+              )),
+              Positioned(
+              top: 0,
+              right: 0,
+              left:0,
+              child: Center(
+                  child: buildSpecialtiesIcons(plugItemHash)))
+        ]));
   }
 }

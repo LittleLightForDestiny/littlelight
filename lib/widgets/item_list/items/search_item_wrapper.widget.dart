@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:bungie_api/enums/destiny_item_type_enum.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:little_light/services/inventory/inventory.service.dart';
 import 'package:little_light/services/selection/selection.service.dart';
@@ -7,7 +8,13 @@ import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
+import 'package:little_light/widgets/item_list/items/armor/armor_inventory_item.widget.dart';
+import 'package:little_light/widgets/item_list/items/base/base_inventory_item.widget.dart';
+import 'package:little_light/widgets/item_list/items/emblem/emblem_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/inventory_item_wrapper.widget.dart';
+import 'package:little_light/widgets/item_list/items/subclass/subclass_inventory_item.widget.dart';
+import 'package:little_light/widgets/item_list/items/weapon/weapon_inventory_item.widget.dart';
+
 
 class SearchItemWrapperWidget extends InventoryItemWrapperWidget {
   SearchItemWrapperWidget(DestinyItemComponent item, int bucketHash,
@@ -29,10 +36,70 @@ class SearchItemWrapperWidgetState<T extends SearchItemWrapperWidget>
           border: Border.all(width: 1, color: Colors.blueGrey.shade600)),
         child:Stack(children: [
       Positioned.fill(child: buildItem(context)),
-      Positioned(right: 2, top: 2, child: buildCharacterIcon(context)),
       selected ? Container(foregroundDecoration: BoxDecoration(border:Border.all(color:Colors.lightBlue.shade400, width:2)),) : Container(),
       buildTapHandler(context)
     ]));
+  }
+
+  @override
+  Widget buildFull(BuildContext context) {
+    switch (definition.itemType) {
+      case DestinyItemType.Subclass:
+        {
+          return SubclassInventoryItemWidget(
+            widget.item,
+            definition,
+            instanceInfo,
+            characterId: widget.characterId,
+            uniqueId: uniqueId,
+          );
+        }
+      case DestinyItemType.Weapon:
+        {
+          return WeaponInventoryItemWidget(
+            widget.item,
+            definition,
+            instanceInfo,
+            characterId: widget.characterId,
+            uniqueId: uniqueId,
+            trailing: buildCharacterIcon(context),
+          );
+        }
+
+      case DestinyItemType.Armor:
+        {
+          return ArmorInventoryItemWidget(
+            widget.item,
+            definition,
+            instanceInfo,
+            characterId: widget.characterId,
+            uniqueId: uniqueId,
+            trailing: buildCharacterIcon(context),
+          );
+        }
+
+      case DestinyItemType.Emblem:
+        {
+          return EmblemInventoryItemWidget(
+            widget.item,
+            definition,
+            instanceInfo,
+            characterId: widget.characterId,
+            uniqueId: uniqueId,
+            trailing: buildCharacterIcon(context),
+          );
+        }
+
+      default:
+        return BaseInventoryItemWidget(
+          widget.item,
+          definition,
+          instanceInfo,
+          characterId: widget.characterId,
+          uniqueId: uniqueId,
+          trailing: buildCharacterIcon(context),
+        );
+    }
   }
 
   Widget buildCharacterIcon(BuildContext context) {

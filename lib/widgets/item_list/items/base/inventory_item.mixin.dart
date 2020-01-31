@@ -1,13 +1,17 @@
 import 'package:bungie_api/enums/damage_type_enum.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/models/wish_list.dart';
+import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateless_item.widget.dart';
 import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/item_name_bar/item_name_bar.widget.dart';
 import 'package:little_light/widgets/common/primary_stat.widget.dart';
+import 'package:little_light/widgets/icon_fonts/destiny_icons_icons.dart';
 
 mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget {
   final String uniqueId = "";
+  final Widget trailing = null;
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -123,11 +127,12 @@ mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget {
 
   Widget nameBar(BuildContext context) {
     return ItemNameBarWidget(item, definition, instanceInfo,
+        trailing: namebarTrailingWidget(context),
         padding: EdgeInsets.only(
             left: iconSize + padding * 2,
             top: padding,
             bottom: padding,
-            right: padding));
+            right: 2));
   }
 
   background(BuildContext context) {
@@ -136,7 +141,84 @@ mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget {
         left: 0,
         bottom: 0,
         right: 0,
-        child: Container(color: Colors.blueGrey.shade900));
+        child: Container(
+            color: Colors.blueGrey.shade900,
+            padding: EdgeInsets.only(
+              top: titleFontSize + padding * 2 + 4,
+            ),
+            child: wishlistBackground(context)));
+  }
+
+  Widget wishlistBackground(BuildContext context) {
+    var wishBuild = WishlistsService().getWishlistBuild(item);
+    if (wishBuild == null) return Container();
+    if (wishBuild.tags.contains(WishlistTag.PVE) && wishBuild.tags.contains(WishlistTag.PVP)) {
+      return Image.asset(
+        "assets/imgs/allaround-bg.png", 
+        fit: BoxFit.fitHeight, 
+        alignment: Alignment.bottomRight,
+      );
+    }
+    if (wishBuild.tags.contains(WishlistTag.PVE)) {
+      return Image.asset(
+        "assets/imgs/pve-bg.png", 
+        fit: BoxFit.fitHeight, 
+        alignment: Alignment.bottomRight,
+      );
+    }
+    if (wishBuild.tags.contains(WishlistTag.PVP)) {
+      return Image.asset(
+        "assets/imgs/pvp-bg.png",
+        fit: BoxFit.fitHeight,
+        alignment: Alignment.topRight,
+      );
+    }
+    return Container();
+  }
+
+  List<Widget> trailingWishlistIcons(BuildContext context) {
+    var wishBuild = WishlistsService().getWishlistBuild(item);
+    if (wishBuild == null) return [];
+    List<Widget> items = [];
+    if (wishBuild.tags.contains(WishlistTag.PVE)) {
+      items.add(Container(
+        decoration: BoxDecoration(
+            color: Colors.blue.shade800,
+            borderRadius: BorderRadius.circular(4)),
+        padding: EdgeInsets.all(2),
+        child: Icon(DestinyIcons.vanguard, size: titleFontSize * 1.6),
+      ));
+    }
+    if (wishBuild.tags.contains(WishlistTag.PVP)) {
+      items.add(Container(
+        decoration: BoxDecoration(
+            color: Colors.red.shade800, borderRadius: BorderRadius.circular(4)),
+        padding: EdgeInsets.all(2),
+        child: Icon(DestinyIcons.crucible, size: titleFontSize * 1.6),
+      ));
+    }
+    return items;
+  }
+
+  Widget namebarTrailingWidget(BuildContext context) {
+    List<Widget> items = [];
+    items.addAll(trailingWishlistIcons(context));
+    if (trailing != null) {
+      items.add(trailing);
+    }
+    if ((items?.length ?? 0) == 0) return Container();
+    items = items
+        .expand((i) => [
+              i,
+              Container(
+                width: padding / 2,
+              )
+            ])
+        .toList();
+    items.removeLast();
+    return Row(
+      children: items,
+    );
   }
 
   double get iconSize {

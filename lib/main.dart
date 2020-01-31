@@ -54,8 +54,12 @@ class LittleLight extends StatelessWidget {
           textSelectionHandleColor: Colors.lightBlueAccent.shade200,
           toggleableActiveColor: Colors.lightBlueAccent.shade200,
           textTheme: TextTheme(
+              bodyText2: TextStyle(
+                color:Colors.grey.shade300,
+                fontWeight: FontWeight.w500
+              ),
               button: TextStyle(
-            fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.bold,
           )),
           pageTransitionsTheme: PageTransitionsTheme(builders: {
             TargetPlatform.android: CupertinoPageTransitionsBuilder(),

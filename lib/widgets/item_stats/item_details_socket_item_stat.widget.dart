@@ -5,8 +5,6 @@ import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/item_stats/base_item_stat.widget.dart';
 
 class ItemDetailSocketItemStatWidget extends BaseItemStatWidget {
-  
-
   ItemDetailSocketItemStatWidget(
       {Key key,
       StatValues modValues,

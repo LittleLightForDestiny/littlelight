@@ -212,6 +212,9 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
       onLongPress(context);
       return;
     }
+    if(definition == null){
+      return;
+    }
     Navigator.push(
       context,
       MaterialPageRoute(

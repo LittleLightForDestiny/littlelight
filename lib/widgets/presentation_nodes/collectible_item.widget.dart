@@ -16,6 +16,7 @@ import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/widgets/item_list/items/armor/armor_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/base_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/emblem/emblem_inventory_item.widget.dart';
+import 'package:little_light/widgets/item_list/items/mod/mod_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/weapon/weapon_inventory_item.widget.dart';
 
 class CollectibleItemWidget extends StatefulWidget {
@@ -142,6 +143,17 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget> {
         uniqueId: null,
       );
     }
+
+    if (_itemDefinition.itemType == DestinyItemType.Mod) {
+      return ModInventoryItemWidget(
+        null,
+        _itemDefinition,
+        null,
+        characterId: null,
+        uniqueId: null,
+      );
+    }
+
     return BaseInventoryItemWidget(
       null,
       _itemDefinition,

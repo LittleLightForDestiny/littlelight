@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/storage/storage.service.dart';
 
 class DevToolsScreen extends StatelessWidget {
-  final TextEditingController _nameFieldController = new TextEditingController();
+  final Map<String, TextEditingController> fieldControllers = Map();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,52 +23,58 @@ class DevToolsScreen extends StatelessWidget {
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      buildNameTextField(context),
-                      buildReloadButton(context),
-                      buildClearDataButton(context)
+                      buildTextField(context, "membershipId"),
+                      buildButton(context, "Reload", () async {
+                        await ProfileService().fetchProfileData();
+                        print(ProfileService().getCharacters());
+                      }),
+                      buildButton(
+                        context,
+                        "Clear Data",
+                        () async {
+                          StorageService.language().purge();
+                          StorageService.membership().purge();
+                          StorageService.global().purge();
+                          StorageService.account().purge();
+                        },
+                      ),
+                      buildDivider(context),
+                      buildTextField(context, "Wishlist URL", "https://raw.githubusercontent.com/48klocs/dim-wish-list-sources/master/voltron.txt"),
+                      buildButton(
+                        context,
+                        "Load Wishlist",
+                        () async {
+                          WishlistsService().load(fieldControllers["Wishlist URL"].text);
+                        },
+                      ),
                     ]))));
   }
 
-  Widget buildNameTextField(BuildContext context) {
+  Widget buildTextField(BuildContext context, String label, [String initialValue= ""]) {
+    var controller = fieldControllers[label];
+    if (controller == null) {
+      controller = fieldControllers[label] = TextEditingController(text: initialValue);
+    }
     return Container(
         padding: EdgeInsets.all(8),
         child: TextField(
           autocorrect: false,
-          controller: _nameFieldController,
-          decoration: InputDecoration(labelText: "membershipId"),
+          controller: controller,
+          decoration: InputDecoration(labelText: label),
         ));
   }
 
-  Widget buildReloadButton(BuildContext context){
+  Widget buildButton(BuildContext context, String label, Function onPressed) {
     return RaisedButton(
-      child: Text("Reload"),
-      onPressed: ()async {
-        // var membership = await AuthService().getMembership();
-        // var json = membership.toJson();
-        // var selected = membership.selectedMembership.toJson();
-
-        // selected['membershipId'] = _nameFieldController.text;
-        // json['selectedMembership'] = selected;
-        // json['destinyMemberships'] = [selected];
-        
-        // membership = SavedMembership.fromJson(json);
-        // await AuthService().saveMembership(membership, 2);
-        await ProfileService().fetchProfileData();
-
-        print(ProfileService().getCharacters());
-      },
+      child: Text(label),
+      onPressed: onPressed,
     );
   }
 
-  Widget buildClearDataButton(BuildContext context){
-    return RaisedButton(
-      child: Text("Clear all"),
-      onPressed: ()async {
-        StorageService.language().purge();
-        StorageService.membership().purge();
-        StorageService.global().purge();
-        StorageService.account().purge();
-      },
-    );
+  Widget buildDivider(BuildContext context) {
+    return Container(
+        color: Colors.white,
+        height: 1,
+        margin: EdgeInsets.symmetric(vertical: 16));
   }
 }

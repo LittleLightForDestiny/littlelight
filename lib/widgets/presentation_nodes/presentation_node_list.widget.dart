@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:bungie_api/enums/destiny_presentation_screen_style_enum.dart';
 import 'package:bungie_api/models/destiny_presentation_node_child_entry.dart';
 import 'package:bungie_api/models/destiny_presentation_node_collectible_child_entry.dart';
 import 'package:bungie_api/models/destiny_presentation_node_definition.dart';
@@ -9,7 +10,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 
 typedef StaggeredTile PresentationNodeTileBuilder(CollectionListItem item);
-typedef Widget PresentationNodeItemBuilder(CollectionListItem item, int depth);
+typedef Widget PresentationNodeItemBuilder(CollectionListItem item, int depth, bool isCategorySet);
 
 class PresentationNodeListWidget extends StatefulWidget {
   final ManifestService manifest = new ManifestService();
@@ -17,10 +18,12 @@ class PresentationNodeListWidget extends StatefulWidget {
   final PresentationNodeTileBuilder tileBuilder;
   final PresentationNodeItemBuilder itemBuilder;
   final int depth;
+  final bool isCategorySets;
   PresentationNodeListWidget({
     Key key,
     @required this.tileBuilder,
     @required this.itemBuilder,
+    this.isCategorySets = false,
     this.presentationNodeHash,
     this.depth = 0,
   }) : super(key: key);
@@ -55,13 +58,12 @@ class PresentationNodeListWidgetState
       _presentationNodeDefinitions = await widget.manifest
           .getDefinitions<DestinyPresentationNodeDefinition>(hashes);
     }
-
     listIndex = List<CollectionListItem>();
     presentationNodes.forEach((node) {
       listIndex.add(CollectionListItem(
           CollectionListItemType.presentationNode, node.presentationNodeHash));
       var def = _presentationNodeDefinitions[node.presentationNodeHash];
-      if ((def?.children?.collectibles?.length ?? 0) <= 5) {
+      if (widget.isCategorySets) {
         def?.children?.collectibles?.forEach((collectible) {
           listIndex.add(CollectionListItem(
               CollectionListItemType.nestedCollectible,
@@ -104,8 +106,10 @@ class PresentationNodeListWidgetState
 
   Widget getItem(BuildContext context, int index) {
     var item = listIndex[index];
-    return widget.itemBuilder(item, widget.depth);
+    return widget.itemBuilder(item, widget.depth, this.isCategorySets);
   }
+
+  bool get isCategorySets => widget.isCategorySets || definition?.screenStyle == DestinyPresentationScreenStyle.CategorySets;
 
   List<DestinyPresentationNodeChildEntry> get presentationNodes =>
       definition?.children?.presentationNodes;

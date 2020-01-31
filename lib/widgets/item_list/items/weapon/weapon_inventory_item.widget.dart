@@ -13,21 +13,24 @@ class WeaponInventoryItemWidget extends BaseInventoryItemWidget {
     @required String characterId,
     Key key,
     @required String uniqueId,
+    Widget trailing,
   }) : super(
           item,
           definition,
           instanceInfo,
           characterId: characterId,
           uniqueId: uniqueId,
+          trailing:trailing
         );
 
   @override
   Widget primaryStatWidget(BuildContext context) {
     return Positioned(
-        top: titleFontSize + padding*2 + 4,
+        top: titleFontSize + padding * 2 + 4,
         right: 4,
         child: Container(
-          child: PrimaryStatWidget(definition:definition, instanceInfo:instanceInfo),
+          child: PrimaryStatWidget(
+              definition: definition, instanceInfo: instanceInfo),
         ));
   }
 }

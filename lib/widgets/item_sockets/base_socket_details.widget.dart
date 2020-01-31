@@ -12,9 +12,11 @@ import 'package:bungie_api/models/destiny_sandbox_perk_definition.dart';
 import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:bungie_api/models/destiny_stat_group_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/models/wish_list.dart';
 
 
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
+import 'package:little_light/services/littlelight/wishlists.service.dart';
 
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
@@ -24,6 +26,7 @@ import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
+import 'package:little_light/widgets/icon_fonts/destiny_icons_icons.dart';
 
 import 'package:little_light/widgets/item_stats/item_details_socket_item_stats.widget.dart';
 
@@ -64,13 +67,13 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget>
 
    @override
   void initState() {
-    controller.addListener(socketChanged);
+    if(controller != null) controller.addListener(socketChanged);
     super.initState();
     loadDefinitions();
   }
 
   void dispose() {
-    controller.removeListener(socketChanged);
+    if(controller != null) controller.removeListener(socketChanged);
     super.dispose();
   }
 
@@ -408,5 +411,41 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget>
               )))
           ?.toList(),
     );
+  }
+
+  List<Widget> wishlistIcons(BuildContext context, int plugItemHash) {
+    var tags = WishlistsService().getPerkSpecialties(itemDefinition?.hash, plugItemHash);
+    if (tags == null) return [];
+    List<Widget> items = [];
+    if (tags.contains(WishlistTag.PVE)) {
+      items.add(Container(
+        decoration: BoxDecoration(
+            color: Colors.blue.shade800,
+            borderRadius: BorderRadius.circular(4)),
+        padding: EdgeInsets.all(2),
+        child: Icon(DestinyIcons.vanguard, size: 14),
+      ));
+    }else{
+      items.add(Container());
+    }
+    if (tags.contains(WishlistTag.PVP)) {
+      items.add(Container(
+        decoration: BoxDecoration(
+            color: Colors.red.shade800, borderRadius: BorderRadius.circular(4)),
+        padding: EdgeInsets.all(2),
+        child: Icon(DestinyIcons.crucible, size: 14),
+      ));
+    }
+    return items;
+  }
+
+  Widget buildSpecialtiesIcons(int plugItemHash) {
+    var icons = wishlistIcons(context, plugItemHash);
+    if ((icons?.length ?? 0) > 0) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: icons);
+    }
+    return Container();
   }
 }

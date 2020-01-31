@@ -2,6 +2,8 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_socket_category_definition.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
+import 'package:little_light/models/wish_list.dart';
+import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
@@ -9,6 +11,7 @@ import 'package:little_light/widgets/common/manifest_image.widget.dart';
 
 import 'package:flutter/material.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:little_light/widgets/icon_fonts/destiny_icons_icons.dart';
 import 'package:little_light/widgets/item_sockets/item_socket.controller.dart';
 
 class BaseItemSocketsWidget extends BaseDestinyStatefulItemWidget {
@@ -144,5 +147,42 @@ class BaseItemSocketsWidgetState<T extends BaseItemSocketsWidget>
             child: ManifestImageWidget<DestinyInventoryItemDefinition>(
               plugItemHash,
             )));
+  }
+
+
+  List<Widget> wishlistIcons(BuildContext context, int plugItemHash) {
+    var tags = WishlistsService().getPerkSpecialties(definition.hash, plugItemHash);
+    if (tags == null) return [];
+    List<Widget> items = [];
+    if (tags.contains(WishlistTag.PVE)) {
+      items.add(Container(
+        decoration: BoxDecoration(
+            color: Colors.blue.shade800,
+            borderRadius: BorderRadius.circular(4)),
+        padding: EdgeInsets.all(2),
+        child: Icon(DestinyIcons.vanguard, size: 14),
+      ));
+    }else{
+      items.add(Container());
+    }
+    if (tags.contains(WishlistTag.PVP)) {
+      items.add(Container(
+        decoration: BoxDecoration(
+            color: Colors.red.shade800, borderRadius: BorderRadius.circular(4)),
+        padding: EdgeInsets.all(2),
+        child: Icon(DestinyIcons.crucible, size: 14),
+      ));
+    }
+    return items;
+  }
+
+  Widget buildSpecialtiesIcons(int plugItemHash) {
+    var icons = wishlistIcons(context, plugItemHash);
+    if ((icons?.length ?? 0) > 0) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: icons);
+    }
+    return Container();
   }
 }

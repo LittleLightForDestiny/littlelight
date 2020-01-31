@@ -97,7 +97,6 @@ class BungieApiService {
     BungieNetToken token = await auth.getToken();
     UserMembershipDataResponse response =
         await User.getMembershipDataForCurrentUser(new Client(token: token));
-    print(response);
     return response.response;
   }
 
@@ -216,7 +215,7 @@ class Client implements HttpClient {
           headers: headers, body: body);
     }
     response = await req;
-
+    
     if (response.statusCode == 401 && autoRefreshToken) {
       this.token = await AuthService().refreshToken(token);
       return request(config);

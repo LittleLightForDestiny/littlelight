@@ -173,6 +173,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
             Text(
               definition.displayProperties.name.toUpperCase(),
               style: TextStyle(
+                color:DestinyData.getTierTextColor(definition?.inventory?.tierType).withOpacity(.9),
                   fontSize: lerpDouble(kToolbarHeight * .5,
                       convertSize(74, context), expandRatio),
                   fontWeight: FontWeight.bold,
@@ -184,7 +185,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
                   fontSize: lerpDouble(kToolbarHeight * .3,
                       convertSize(34, context), expandRatio),
                   height: .94,
-                  color: Colors.white.withOpacity(.6),
+                  color: DestinyData.getTierTextColor(definition?.inventory?.tierType).withOpacity(.8),
                   fontWeight: FontWeight.w500),
             ),
           ],

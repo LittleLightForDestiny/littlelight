@@ -1,3 +1,4 @@
+import 'package:bungie_api/enums/destiny_presentation_screen_style_enum.dart';
 import 'package:bungie_api/models/destiny_presentation_node_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -22,10 +23,12 @@ class PresentationNodeScreen extends StatefulWidget {
   final int depth;
   final PresentationNodeItemBuilder itemBuilder;
   final PresentationNodeTileBuilder tileBuilder;
+  final bool isCategorySet;
   PresentationNodeScreen(
       {this.presentationNodeHash,
       this.itemBuilder,
       this.tileBuilder,
+      this.isCategorySet = false,
       this.depth = 0});
 
   @override
@@ -38,6 +41,7 @@ class PresentationNodeScreenState<T extends PresentationNodeScreen>
   DestinyPresentationNodeDefinition definition;
   @override
   void initState() {
+    print(widget.isCategorySet);
     super.initState();
     if (definition == null && widget.presentationNodeHash != null) {
       loadDefinition();
@@ -74,18 +78,20 @@ class PresentationNodeScreenState<T extends PresentationNodeScreen>
 
   Widget buildBody(BuildContext context){
     return PresentationNodeBodyWidget(
+            isCategorySet:widget.isCategorySet || definition?.screenStyle == DestinyPresentationScreenStyle.CategorySets,
             presentationNodeHash: widget.presentationNodeHash, depth: widget.depth,
             itemBuilder: widget.itemBuilder,
             tileBuilder: widget.tileBuilder);
   }
 
-  Widget itemBuilder(CollectionListItem item, int depth) {
+  Widget itemBuilder(CollectionListItem item, int depth, bool isCategorySet) {
     switch (item.type) {
       case CollectionListItemType.presentationNode:
         return PresentationNodeItemWidget(
           hash: item.hash,
           depth: depth,
           onPressed: onPresentationNodePressed,
+          isCategorySet: isCategorySet,
         );
 
       case CollectionListItemType.nestedCollectible:
@@ -133,7 +139,7 @@ class PresentationNodeScreenState<T extends PresentationNodeScreen>
     }
   }
 
-  void onPresentationNodePressed(int hash, int depth) {
+  void onPresentationNodePressed(int hash, int depth, bool isCategorySet) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -142,6 +148,7 @@ class PresentationNodeScreenState<T extends PresentationNodeScreen>
           depth: depth + 1,
           itemBuilder: widget.itemBuilder ?? itemBuilder,
           tileBuilder: widget.tileBuilder ?? tileBuilder,
+          isCategorySet: isCategorySet
         ),
       ),
     );
