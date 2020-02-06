@@ -32,7 +32,14 @@ class BungieApiService {
   static const String baseUrl = 'https://www.bungie.net';
   static const String apiUrl = "$baseUrl/Platform";
 
-  final AuthService auth = new AuthService();
+  static final BungieApiService _singleton = new BungieApiService._internal();
+
+  factory BungieApiService() {
+    return _singleton;
+  }
+  BungieApiService._internal();
+
+  AuthService get auth => AuthService();
 
   static String url(String url) {
     if (url == null ?? url.length == 0) return null;

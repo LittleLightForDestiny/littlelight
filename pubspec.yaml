@@ -41,6 +41,8 @@ dependencies:
   sentry: ^2.2.0
   flutter_dotenv: 2.0.1
   url_launcher: ^5.0.2
+  url_launcher_fde:
+    path: desktop_plugins/url_launcher_fde
   screen: ^0.0.5
   screen_fde:
     path: desktop_plugins/screen_fde

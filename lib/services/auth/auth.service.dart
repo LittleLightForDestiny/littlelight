@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:bungie_api/enums/bungie_membership_type.dart';
@@ -12,11 +13,21 @@ import 'package:uni_links/uni_links.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AuthService {
-  static final api = BungieApiService();
-  static BungieNetToken _currentToken;
-  static GroupUserInfoCard _currentMembership;
-  static UserMembershipData _membershipData;
-  static bool waitingAuthCode = false;
+  BungieNetToken _currentToken;
+  GroupUserInfoCard _currentMembership;
+  UserMembershipData _membershipData;
+  bool waitingAuthCode = false;
+  
+  StreamSubscription<String> linkStreamSub;
+
+  static final AuthService _singleton = new AuthService._internal();
+
+  factory AuthService() {
+    return _singleton;
+  }
+  AuthService._internal();
+
+
   Future<BungieNetToken> _getStoredToken() async {
     StorageService storage = StorageService.account();
     var json = await storage.getJson(StorageKeys.latestToken);
@@ -30,7 +41,7 @@ class AuthService {
   }
 
   Future<BungieNetToken> refreshToken(BungieNetToken token) async {
-    BungieNetToken bNetToken = await api.refreshToken(token.refreshToken);
+    BungieNetToken bNetToken = await BungieApiService().refreshToken(token.refreshToken);
     _saveToken(bNetToken);
     return token;
   }
@@ -71,7 +82,7 @@ class AuthService {
   }
 
   Future<BungieNetToken> requestToken(String code) async {
-    BungieNetToken token = await api.requestToken(code);
+    BungieNetToken token = await BungieApiService().requestToken(code);
     await _saveToken(token);
     return token;
   }
@@ -95,35 +106,63 @@ class AuthService {
     }
   }
 
-  Future<String> authorize([reauth = false]) async {
+  Future<String> authorize([bool reauth = false]) async {
     String currentLanguage = StorageService.getLanguage();
     var browser = new BungieAuthBrowser();
     OAuth.openOAuth(browser, BungieApiService.clientId, currentLanguage, true);
     Stream<String> _stream = getLinksStream();
-    Uri uri;
-    if(waitingAuthCode) return null;
-    waitingAuthCode = true;
-    await for (var link in _stream) {
-      uri = Uri.parse(link);
+    Completer<String> completer = Completer();
+    
+    linkStreamSub?.cancel();
+
+    linkStreamSub = _stream.listen((link) { 
+      Uri uri = Uri.parse(link);
       if (uri.queryParameters.containsKey("code") ||
           uri.queryParameters.containsKey("error")) {
-        break;
+        closeWebView();
+        linkStreamSub.cancel();
       }
-    }
-    closeWebView();
-    waitingAuthCode = false;
-    if (uri.queryParameters.containsKey("code")) {
-      return uri.queryParameters["code"];
-    } else {
-      String errorType = uri.queryParameters["error"];
-      String errorDescription = uri.queryParameters["error_description"];
-      throw OAuthException(errorType, errorDescription);
-    }
+      if (uri.queryParameters.containsKey("code")){
+        String code = uri.queryParameters["code"];
+        completer.complete(code);
+      } else {
+        String errorType = uri.queryParameters["error"];
+        String errorDescription = uri.queryParameters["error_description"];
+        try{
+          throw OAuthException(errorType, errorDescription);
+        }on OAuthException catch(e, stack){
+          completer.completeError(e, stack);
+        }
+      }
+    });
+
+    return completer.future;
+    
+    // Uri uri;
+    // if(waitingAuthCode) return null;
+    // waitingAuthCode = true;
+    // await for (var link in _stream) {
+    //   uri = Uri.parse(link);
+    //   if (uri.queryParameters.containsKey("code") ||
+    //       uri.queryParameters.containsKey("error")) {
+    //     break;
+    //   }
+    // }
+    
+    // closeWebView();
+    // waitingAuthCode = false;
+    // if (uri.queryParameters.containsKey("code")) {
+    //   return uri.queryParameters["code"];
+    // } else {
+    //   String errorType = uri.queryParameters["error"];
+    //   String errorDescription = uri.queryParameters["error_description"];
+    //   throw OAuthException(errorType, errorDescription);
+    // }
   }
 
   Future<UserMembershipData> updateMembershipData() async{
     UserMembershipData membershipData =
-        await api.getMemberships();
+        await BungieApiService().getMemberships();
     var storage = StorageService.account();
     await storage.setJson(StorageKeys.membershipData, membershipData);
     return membershipData;

@@ -4,6 +4,7 @@ import 'package:bungie_api/enums/tier_type.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 
 import 'package:flutter/material.dart';
+import 'package:little_light/models/wish_list.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/user_settings/item_sort_parameter.dart';
 import 'package:little_light/services/user_settings/user_settings.service.dart';
@@ -67,6 +68,12 @@ class SearchTabData {
             DestinyItemSubType.RocketLauncher,
             DestinyItemSubType.Sword,
             DestinyItemSubType.Machinegun,
+          ], []),
+          FilterType.wishlistTag: FilterItem([
+            WishlistTag.PVE,
+            WishlistTag.PVP,
+            WishlistTag.Bungie,
+            WishlistTag.Trash,
           ], []),
           FilterType.ammoType: FilterItem([
             DestinyAmmunitionType.Primary,

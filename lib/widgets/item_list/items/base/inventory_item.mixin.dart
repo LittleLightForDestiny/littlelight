@@ -1,6 +1,5 @@
 import 'package:bungie_api/enums/damage_type.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/models/wish_list.dart';
 import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
@@ -145,7 +144,7 @@ mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget {
         child: Container(
             color: Colors.blueGrey.shade900,
             padding: EdgeInsets.only(
-              top: titleFontSize + padding * 2 + 4,
+              top: titleFontSize + padding * 2,
             ),
             child: wishlistBackground(context)));
   }
@@ -171,6 +170,14 @@ mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget {
     if (wishBuild.tags.contains(WishlistTag.PVP)) {
       return Image.asset(
         "assets/imgs/pvp-bg.png",
+        fit: BoxFit.fitHeight, 
+        alignment: Alignment.topRight,
+      );
+    }
+
+    if (wishBuild.tags.contains(WishlistTag.Bungie)) {
+      return Image.asset(
+        "assets/imgs/curated-bg.png",
         fit: BoxFit.fitHeight,
         alignment: Alignment.topRight,
       );
@@ -209,8 +216,8 @@ mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget {
     if(wishBuild.tags.length == 0){
       items.add(buildTagIcon(
           context,
-          Colors.amber,
-          Icon(FontAwesomeIcons.star, size: tagIconSize)));
+          Colors.amber.shade600,
+          Icon(Icons.star, size: tagIconSize)));
     }
     return items;
   }

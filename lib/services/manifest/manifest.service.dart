@@ -23,6 +23,7 @@ class ManifestService {
   factory ManifestService() {
     return _singleton;
   }
+  ManifestService._internal();
 
   Future<void> reset() async {
     _cached.clear();
@@ -32,7 +33,6 @@ class ManifestService {
     }
   }
 
-  ManifestService._internal();
 
   Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
