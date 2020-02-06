@@ -49,7 +49,12 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>url_launcher_fde.xcscheme</key>
+		<key>url_launcher.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>url_launcher_macos.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>

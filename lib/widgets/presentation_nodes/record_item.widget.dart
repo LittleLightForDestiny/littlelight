@@ -27,7 +27,8 @@ class RecordItemWidget extends StatefulWidget {
   }
 }
 
-class RecordItemWidgetState extends State<RecordItemWidget> with AutomaticKeepAliveClientMixin {
+class RecordItemWidgetState extends State<RecordItemWidget>
+    with AutomaticKeepAliveClientMixin {
   DestinyRecordDefinition _definition;
   bool isLogged = false;
   Map<int, DestinyObjectiveDefinition> objectiveDefinitions;
@@ -93,7 +94,7 @@ class RecordItemWidgetState extends State<RecordItemWidget> with AutomaticKeepAl
   }
 
   bool get completed {
-    return !recordState.contains(DestinyRecordState.ObjectiveNotCompleted);
+    return !recordState.contains(DestinyRecordState.ObjectiveNotCompleted) || (record?.intervalObjectives?.every((element) => element.complete) ?? false);
   }
 
   Color get foregroundColor {
@@ -134,7 +135,8 @@ class RecordItemWidgetState extends State<RecordItemWidget> with AutomaticKeepAl
                         )))
               ],
             ),
-            buildObjectives(context)
+            buildObjectives(context),
+            buildCompletionBars(context)
           ]),
           Positioned.fill(
               child: FlatButton(
@@ -151,6 +153,49 @@ class RecordItemWidgetState extends State<RecordItemWidget> with AutomaticKeepAl
         ]));
   }
 
+  Widget buildCompletionBars(BuildContext context) {
+    var objectives = definition?.intervalInfo?.intervalObjectives;
+    if ((objectives?.length ?? 0) <= 1) {
+      return Container();
+    }
+
+    List<Widget> bars = objectives
+        ?.map((e) => buildCompletionBar(context, objectives.indexOf(e)))
+        ?.toList();
+
+    bars = bars.fold<List<Widget>>(
+        [],
+        (a, e) => a
+            .followedBy([
+              e,
+              Container(
+                width: 2,
+              )
+            ].toList())
+            .toList());
+    bars.removeLast();
+
+    return Container(
+        margin: EdgeInsets.all(4),
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          children: bars.toList(),
+        ),
+        height: 10);
+  }
+
+  Widget buildCompletionBar(BuildContext context, int index) {
+    bool complete = record?.intervalObjectives[index]?.complete ?? false;
+    return Expanded(
+        child: Container(
+      height: 10,
+      decoration:
+          BoxDecoration(
+            color: complete ? foregroundColor : Colors.grey.shade300.withOpacity(.3), 
+            border: Border.all(color: foregroundColor)),
+    ));
+  }
+
   Widget buildIcon(BuildContext context) {
     return Container(
         width: 56,
@@ -161,8 +206,7 @@ class RecordItemWidgetState extends State<RecordItemWidget> with AutomaticKeepAl
             ? Container()
             : QueuedNetworkImage(
                 imageUrl:
-                    BungieApiService.url(definition?.displayProperties?.icon)
-              ));
+                    BungieApiService.url(definition?.displayProperties?.icon)));
   }
 
   buildTitle(BuildContext context) {

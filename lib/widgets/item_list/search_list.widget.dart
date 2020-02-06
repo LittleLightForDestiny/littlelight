@@ -2,11 +2,14 @@ import 'dart:async';
 
 import 'package:bungie_api/enums/destiny_item_type.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
+import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/enums/damage_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:little_light/models/wish_list.dart';
 import 'package:little_light/screens/search.screen.dart';
+import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
@@ -33,6 +36,8 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
     with AutomaticKeepAliveClientMixin {
   String get search => widget.tabData.searchText;
   List<ItemWithOwner> items;
+  Map<String, Set<WishlistTag>> wishlistTags = Map();
+  Map<String, Set<String>> wishlistNotes = Map();
   Map<int, DestinyInventoryItemDefinition> itemDefinitions;
   Map<int, DestinyInventoryItemDefinition> perkDefinitions;
   StreamSubscription<NotificationEvent> subscription;
@@ -54,6 +59,22 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
         loadItems();
       }
     });
+  }
+
+  Set<WishlistTag> getWishListTags(DestinyItemComponent item){
+    if(item?.itemInstanceId == null) return null;
+    if(!this.wishlistTags.containsKey(item.itemInstanceId)){
+      this.wishlistTags[item.itemInstanceId] = WishlistsService().getWishlistBuildTags(item);
+    }
+    return this.wishlistTags[item.itemInstanceId];
+  }
+
+  Set<String> getWishListNotes(DestinyItemComponent item){
+    if(item?.itemInstanceId == null) return null;
+    if(!this.wishlistNotes.containsKey(item.itemInstanceId)){
+      this.wishlistNotes[item.itemInstanceId] = WishlistsService().getWishlistBuildNotes(item);
+    }
+    return this.wishlistNotes[item.itemInstanceId];
   }
 
   loadItems() async {
@@ -162,12 +183,16 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
       widget?.tabData?.filterData[FilterType.ammoType];
   FilterItem get classTypeFilter =>
       widget?.tabData?.filterData[FilterType.classType];
+  FilterItem get wishlistTagFilter =>
+      widget?.tabData?.filterData[FilterType.wishlistTag];
 
   List<DestinyItemType> get itemTypes => widget?.tabData?.itemTypes;
   List<int> get excludeItemTypes => widget?.tabData?.excludeItemTypes;
   String get ownerId => widget?.tabData?.ownerId;
 
   List<ItemWithOwner> get filteredItems => filterItems();
+
+
 
   List<ItemWithOwner> filterItems() {
     if (itemDefinitions == null) return [];
@@ -233,6 +258,16 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
 
           if (tier != null && values.length != 0 && !values.contains(tier)) {
             return false;
+          }
+        }
+
+        if (wishlistTagFilter != null) {
+          var values = wishlistTagFilter.values;
+          if(values.length != 0){
+            var tags = getWishListTags(item.item);
+            if(!values.any((v)=>tags?.contains(v) ?? false)){
+              return false;
+            }
           }
         }
 
@@ -326,6 +361,13 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
                 return true;
               }
             }
+          }
+        }
+
+        var notes = getWishListNotes(item?.item);
+        if(notes != null){
+          for(var n in notes){
+            match = match || _words.every((w)=>n.toLowerCase().contains(w));
           }
         }
 

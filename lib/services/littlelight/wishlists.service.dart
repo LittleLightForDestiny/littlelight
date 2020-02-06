@@ -92,22 +92,48 @@ class WishlistsService {
     return _items[itemHash]?.perks[plugItemHash] ?? Set();
   }
 
-  WishListBuild getWishlistBuild(DestinyItemComponent item) {
+  Set<WishlistTag> getWishlistBuildTags(DestinyItemComponent item) {
     if (item == null) return null;
     var reusable = ProfileService().getItemReusablePlugs(item.itemInstanceId);
     var sockets = ProfileService().getItemSockets(item.itemInstanceId);
     Set<int> availablePlugs = Set();
-    reusable?.values
-        ?.forEach((plugs) => plugs.forEach((plug) => availablePlugs.add(plug.plugItemHash)));
-    sockets
-        ?.map((plug) => availablePlugs.add(plug.plugHash))
-        ?.toSet();
+    reusable?.values?.forEach((plugs) =>
+        plugs.forEach((plug) => availablePlugs.add(plug.plugItemHash)));
+    sockets?.map((plug) => availablePlugs.add(plug.plugHash))?.toSet();
     if (availablePlugs?.length == 0) return null;
     var wish = _items[item?.itemHash];
 
-    return wish?.builds?.values?.firstWhere((build) {
+    var builds = wish?.builds?.values?.where((build) {
       return availablePlugs.containsAll(build.perks);
-    }, orElse: () => null);
+    });
+    if ((builds?.length ?? 0) == 0) return null;
+    Set<WishlistTag> tags = Set();
+    builds.forEach((b) {
+      tags.addAll(b.tags);
+    });
+    return tags;
+  }
+
+  Set<String> getWishlistBuildNotes(DestinyItemComponent item) {
+    if (item == null) return null;
+    var reusable = ProfileService().getItemReusablePlugs(item.itemInstanceId);
+    var sockets = ProfileService().getItemSockets(item.itemInstanceId);
+    Set<int> availablePlugs = Set();
+    reusable?.values?.forEach((plugs) =>
+        plugs.forEach((plug) => availablePlugs.add(plug.plugItemHash)));
+    sockets?.map((plug) => availablePlugs.add(plug.plugHash))?.toSet();
+    if (availablePlugs?.length == 0) return null;
+    var wish = _items[item?.itemHash];
+
+    var builds = wish?.builds?.values?.where((build) {
+      return availablePlugs.containsAll(build.perks);
+    });
+    if ((builds?.length ?? 0) == 0) return null;
+    Set<String> notes = Set();
+    builds.forEach((b) {
+      notes.addAll(b.notes);
+    });
+    return notes;
   }
 
   addToWishList(

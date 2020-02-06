@@ -221,7 +221,6 @@ class SearchFiltersWidgetState extends State<SearchFiltersWidget> {
             ]));
   }
 
-  //TODO: redo this shit
   Widget optionButton<T>(BuildContext context, dynamic id, FilterType type) {
     var filter = widget.filterData[type];
     var onTap = () {
@@ -283,13 +282,13 @@ class SearchFiltersWidgetState extends State<SearchFiltersWidget> {
           case WishlistTag.Trash:
             color = Colors.lightGreen.shade500;
             icon = Container(
-              height:20,
-              width: 30,
-              child:Text(
-              "🤢",
-              style: TextStyle(fontSize: 20, height: 1.2),
-              textAlign: TextAlign.center,
-            ));
+                height: 20,
+                width: 30,
+                child: Text(
+                  "🤢",
+                  style: TextStyle(fontSize: 20, height: 1.2),
+                  textAlign: TextAlign.center,
+                ));
             text = "Trash";
             break;
 
@@ -303,19 +302,19 @@ class SearchFiltersWidgetState extends State<SearchFiltersWidget> {
             child: button(
                 context,
                 Container(
-                  height: 50,
+                    height: 50,
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                  icon,
-                  Container(height:4),
-                  TranslatedTextWidget(text,
-                      uppercase: true,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      )),
-                ])),
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          icon,
+                          Container(height: 4),
+                          TranslatedTextWidget(text,
+                              uppercase: true,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              )),
+                        ])),
                 filter.values.contains(id),
                 color: color,
                 onTap: onTap,
@@ -427,13 +426,16 @@ class SearchFiltersWidgetState extends State<SearchFiltersWidget> {
 
   Widget button(BuildContext context, Widget content, bool selected,
       {Color color, Function onTap, Function onLongPress}) {
+    Color bgColor = color ?? Colors.blueGrey.shade800;
     return Container(
         margin: EdgeInsets.all(2),
+        decoration: BoxDecoration(
+            color: selected ? Color.lerp(bgColor, Colors.lightBlue.shade300, .2) : bgColor,
+            borderRadius: BorderRadius.circular(4),
+            border: Border.all(color: Colors.lightBlue.shade300, width: 3, style:selected ? BorderStyle.solid: BorderStyle.none)),
         child: Material(
             borderRadius: BorderRadius.circular(4),
-            color: selected
-                ? Colors.lightBlue.shade700
-                : color ?? Colors.blueGrey.shade800,
+            color: Colors.transparent,
             child: InkWell(
                 enableFeedback: false,
                 onTap: onTap,

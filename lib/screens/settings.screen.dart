@@ -172,8 +172,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 Navigator.of(context).pop();
                 setState(() {});
               }
-
-              TranslatedTextWidget("Processing wishlists");
             },
           )
         ])

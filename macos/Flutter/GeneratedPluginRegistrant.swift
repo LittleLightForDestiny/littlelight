@@ -11,7 +11,7 @@ import screen_fde
 import shared_preferences_fde
 import sqflite_fde
 import uni_links_fde
-import url_launcher_fde
+import url_launcher_macos
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   PackageInfoPlugin.register(with: registry.registrar(forPlugin: "PackageInfoPlugin"))

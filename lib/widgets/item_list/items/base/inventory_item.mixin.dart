@@ -145,59 +145,60 @@ mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget {
             color: Colors.blueGrey.shade900,
             padding: EdgeInsets.only(
               top: titleFontSize + padding * 2,
+              left:iconSize
             ),
             child: wishlistBackground(context)));
   }
 
   Widget wishlistBackground(BuildContext context) {
-    var wishBuild = WishlistsService().getWishlistBuild(item);
-    if (wishBuild == null) return Container();
-    if (wishBuild.tags.contains(WishlistTag.PVE) &&
-        wishBuild.tags.contains(WishlistTag.PVP)) {
+    var tags = WishlistsService().getWishlistBuildTags(item);
+    if (tags == null) return Container();
+    if (tags.contains(WishlistTag.PVE) &&
+        tags.contains(WishlistTag.PVP)) { 
       return Image.asset(
         "assets/imgs/allaround-bg.png",
         fit: BoxFit.fitHeight,
-        alignment: Alignment.bottomRight,
+        alignment: Alignment.bottomCenter,
       );
     }
-    if (wishBuild.tags.contains(WishlistTag.PVE)) {
+    if (tags.contains(WishlistTag.PVE)) {
       return Image.asset(
         "assets/imgs/pve-bg.png",
         fit: BoxFit.fitHeight,
-        alignment: Alignment.bottomRight,
+        alignment: Alignment.bottomLeft,
       );
     }
-    if (wishBuild.tags.contains(WishlistTag.PVP)) {
+    if (tags.contains(WishlistTag.PVP)) {
       return Image.asset(
         "assets/imgs/pvp-bg.png",
         fit: BoxFit.fitHeight, 
-        alignment: Alignment.topRight,
+        alignment: Alignment.bottomRight,
       );
     }
 
-    if (wishBuild.tags.contains(WishlistTag.Bungie)) {
+    if (tags.contains(WishlistTag.Bungie)) {
       return Image.asset(
         "assets/imgs/curated-bg.png",
         fit: BoxFit.fitHeight,
-        alignment: Alignment.topRight,
+        alignment: Alignment.bottomCenter,
       );
     }
     return Container();
   }
 
   List<Widget> trailingWishlistIcons(BuildContext context) {
-    var wishBuild = WishlistsService().getWishlistBuild(item);
-    if (wishBuild == null) return [];
+    var tags = WishlistsService().getWishlistBuildTags(item);
+    if (tags == null) return [];
     List<Widget> items = [];
-    if (wishBuild.tags.contains(WishlistTag.PVE)) {
+    if (tags.contains(WishlistTag.PVE)) {
       items.add(buildTagIcon(context, Colors.blue.shade800,
           Icon(DestinyIcons.vanguard, size: tagIconSize)));
     }
-    if (wishBuild.tags.contains(WishlistTag.PVP)) {
+    if (tags.contains(WishlistTag.PVP)) {
       items.add(buildTagIcon(context, Colors.red.shade800,
           Icon(DestinyIcons.crucible, size: tagIconSize)));
     }
-    if (wishBuild.tags.contains(WishlistTag.Trash)) {
+    if (tags.contains(WishlistTag.Trash)) {
       items.add(buildTagIcon(
           context,
           Colors.lightGreen.shade500,
@@ -207,13 +208,13 @@ mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget {
             textAlign: TextAlign.center,
           )));
     }
-    if (wishBuild.tags.contains(WishlistTag.Bungie)) {
+    if (tags.contains(WishlistTag.Bungie)) {
       items.add(buildTagIcon(
           context,
           Colors.black,
           Icon(DestinyIcons.bungie, size: tagIconSize)));
     }
-    if(wishBuild.tags.length == 0){
+    if(tags.length == 0){
       items.add(buildTagIcon(
           context,
           Colors.amber.shade600,

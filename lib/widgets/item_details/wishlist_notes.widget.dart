@@ -1,6 +1,5 @@
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/models/wish_list.dart';
 import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -12,8 +11,8 @@ class WishlistNotesWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var wishlistBuild = WishlistsService().getWishlistBuild(item);
-    if (wishlistBuild == null) {
+    var notes = WishlistsService().getWishlistBuildNotes(item);
+    if (notes == null) {
       return Container();
     }
 
@@ -30,16 +29,16 @@ class WishlistNotesWidget extends StatelessWidget {
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
         )),
-        buildNotes(context, wishlistBuild)
+        buildNotes(context, notes)
       ]),
     );
   }
 
-  buildNotes(BuildContext context, WishListBuild wishlistBuild) {
+  buildNotes(BuildContext context, Set<String> notes) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children:
-          wishlistBuild.notes.map((n) => Container(
+          notes.map((n) => Container(
             padding: EdgeInsets.all(4),
             child: Text(n))).toList(),
     );

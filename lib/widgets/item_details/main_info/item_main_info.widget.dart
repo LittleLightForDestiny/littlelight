@@ -53,11 +53,11 @@ class ItemMainInfoWidget extends BaseDestinyStatelessItemWidget {
   }
 
   Widget buildWishListInfo(BuildContext context) {
-    var wishBuild = WishlistsService().getWishlistBuild(item);
-    if (wishBuild == null) return Container();
-    if (wishBuild.tags.contains(WishlistTag.PVE) && wishBuild.tags.contains(WishlistTag.PVP)) {
+    var tags = WishlistsService().getWishlistBuildTags(item);
+    if (tags == null) return Container();
+    if (tags.contains(WishlistTag.PVE) && tags.contains(WishlistTag.PVP)) {
       return Container(
-          padding: EdgeInsets.only(bottom: 8, left:8, right:8),
+          padding: EdgeInsets.only(bottom: 8, left: 8, right: 8),
           child: Row(children: [
             Container(
               decoration: BoxDecoration(
@@ -66,7 +66,9 @@ class ItemMainInfoWidget extends BaseDestinyStatelessItemWidget {
               padding: EdgeInsets.all(2),
               child: Icon(DestinyIcons.vanguard, size: 14),
             ),
-            Container(width: 4,),
+            Container(
+              width: 4,
+            ),
             Container(
               decoration: BoxDecoration(
                   color: Colors.red.shade800,
@@ -74,14 +76,16 @@ class ItemMainInfoWidget extends BaseDestinyStatelessItemWidget {
               padding: EdgeInsets.all(2),
               child: Icon(DestinyIcons.crucible, size: 14),
             ),
-            Container(width: 8,),
+            Container(
+              width: 8,
+            ),
             TranslatedTextWidget(
                 "This item is considered a godroll for both PvE and PvP.")
           ]));
     }
-    if (wishBuild.tags.contains(WishlistTag.PVE)) {
+    if (tags.contains(WishlistTag.PVE)) {
       return Container(
-          padding: EdgeInsets.only(bottom: 8, left:8, right:8),
+          padding: EdgeInsets.only(bottom: 8, left: 8, right: 8),
           child: Row(children: [
             Container(
               decoration: BoxDecoration(
@@ -90,14 +94,15 @@ class ItemMainInfoWidget extends BaseDestinyStatelessItemWidget {
               padding: EdgeInsets.all(2),
               child: Icon(DestinyIcons.vanguard, size: 14),
             ),
-            Container(width: 8,),
-            TranslatedTextWidget(
-                "This item is considered a PvE godroll.")
+            Container(
+              width: 8,
+            ),
+            TranslatedTextWidget("This item is considered a PvE godroll.")
           ]));
     }
-    if (wishBuild.tags.contains(WishlistTag.PVP)) {
+    if (tags.contains(WishlistTag.PVP)) {
       return Container(
-          padding: EdgeInsets.only(bottom: 8, left:8, right:8),
+          padding: EdgeInsets.only(bottom: 8, left: 8, right: 8),
           child: Row(children: [
             Container(
               decoration: BoxDecoration(
@@ -106,9 +111,48 @@ class ItemMainInfoWidget extends BaseDestinyStatelessItemWidget {
               padding: EdgeInsets.all(2),
               child: Icon(DestinyIcons.crucible, size: 14),
             ),
-            Container(width: 8,),
-            TranslatedTextWidget(
-                "This item is considered a PvP godroll.")
+            Container(
+              width: 8,
+            ),
+            TranslatedTextWidget("This item is considered a PvP godroll.")
+          ]));
+    }
+    if (tags.contains(WishlistTag.Bungie)) {
+      return Container(
+          padding: EdgeInsets.only(bottom: 8, left: 8, right: 8),
+          child: Row(children: [
+            Container(
+              decoration: BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(4)),
+              padding: EdgeInsets.all(2),
+              child: Icon(DestinyIcons.bungie, size: 14),
+            ),
+            Container(
+              width: 8,
+            ),
+            TranslatedTextWidget("This item is a Bungie curated roll.")
+          ]));
+    }
+    if (tags.contains(WishlistTag.Trash)) {
+      return Container(
+          padding: EdgeInsets.only(bottom: 8, left: 8, right: 8),
+          child: Row(children: [
+            Container(
+              decoration: BoxDecoration(
+                  color: Colors.lightGreen.shade500,
+                  borderRadius: BorderRadius.circular(4)),
+              padding: EdgeInsets.all(2),
+              child: Text(
+                "🤢",
+                style: TextStyle(fontSize: 14, height: 1.3),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            Container(
+              width: 8,
+            ),
+            TranslatedTextWidget("This item is considered a trash roll.")
           ]));
     }
     return Container();

@@ -74,7 +74,7 @@ class SearchTabData {
             WishlistTag.PVP,
             WishlistTag.Bungie,
             WishlistTag.Trash,
-          ], []),
+          ], [], open:true),
           FilterType.ammoType: FilterItem([
             DestinyAmmunitionType.Primary,
             DestinyAmmunitionType.Special,
