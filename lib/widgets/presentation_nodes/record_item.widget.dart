@@ -14,7 +14,7 @@ import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/widgets/common/objective.widget.dart';
-import 'package:bungie_api/enums/destiny_record_state_enum.dart';
+import 'package:bungie_api/enums/destiny_record_state.dart';
 
 class RecordItemWidget extends StatefulWidget {
   final ManifestService manifest = new ManifestService();
@@ -88,13 +88,12 @@ class RecordItemWidgetState extends State<RecordItemWidget> with AutomaticKeepAl
     return ProfileService().getRecord(definition.hash, definition.scope);
   }
 
-  int get recordState {
+  DestinyRecordState get recordState {
     return record?.state ?? DestinyRecordState.ObjectiveNotCompleted;
   }
 
   bool get completed {
-    return (recordState & DestinyRecordState.ObjectiveNotCompleted) !=
-        DestinyRecordState.ObjectiveNotCompleted;
+    return !recordState.contains(DestinyRecordState.ObjectiveNotCompleted);
   }
 
   Color get foregroundColor {

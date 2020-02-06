@@ -1,4 +1,4 @@
-import 'package:bungie_api/enums/destiny_class_enum.dart';
+import 'package:bungie_api/enums/destiny_class.dart';
 import 'package:bungie_api/models/destiny_presentation_node_component.dart';
 import 'package:bungie_api/models/destiny_presentation_node_definition.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
@@ -28,7 +28,7 @@ class PresentationNodeItemWidget extends StatefulWidget {
 }
 
 class PresentationNodeWidgetState extends State<PresentationNodeItemWidget> {
-  Map<int, DestinyPresentationNodeComponent> progress;
+  Map<DestinyClass, DestinyPresentationNodeComponent> progress;
   DestinyPresentationNodeDefinition definition;
 
   @override
@@ -57,11 +57,11 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget> {
         widget.profile.getCharacters(UserSettingsService().characterOrdering);
     if (characters == null || characters.length == 0) return;
     var progress = Map.fromEntries(
-        characters.map<MapEntry<int, DestinyPresentationNodeComponent>>((c) {
+        characters.map<MapEntry<DestinyClass, DestinyPresentationNodeComponent>>((c) {
       var characterNodes =
           widget.profile.getCharacterPresentationNodes(c.characterId);
       var node = characterNodes["${widget.hash}"];
-      return MapEntry<int, DestinyPresentationNodeComponent>(c.classType, node);
+      return MapEntry<DestinyClass, DestinyPresentationNodeComponent>(c.classType, node);
     }));
     var valuesSet = progress.values.map((v) => v.progressValue).toSet();
     if (valuesSet.length == 1) {

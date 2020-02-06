@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:bungie_api/enums/destiny_class_enum.dart';
+import 'package:bungie_api/enums/destiny_class.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:little_light/models/loadout.dart';
@@ -124,7 +124,7 @@ class EquipLoadoutScreenState extends State<EquipLoadoutScreen> {
         LoadoutItemIndex.genericBucketHashes,
         _itemIndex.generic));
 
-    [0, 1, 2].forEach((classType) {
+    DestinyClass.values.forEach((classType) {
       Map<int, DestinyItemComponent> items = _itemIndex.classSpecific
           .map((bucketHash, items) => MapEntry(bucketHash, items[classType]));
       if (items.values.any((i) => i != null)) {

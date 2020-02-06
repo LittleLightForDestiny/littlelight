@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:bungie_api/enums/platform_error_codes_enum.dart';
+import 'package:bungie_api/enums/platform_error_codes.dart';
 import 'package:bungie_api/helpers/bungie_net_token.dart';
 import 'package:bungie_api/models/group_user_info_card.dart';
 import 'package:bungie_api/models/user_membership_data.dart';
@@ -13,6 +13,7 @@ import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/littlelight/littlelight_api.service.dart';
 import 'package:little_light/services/littlelight/loadouts.service.dart';
 import 'package:little_light/services/littlelight/objectives.service.dart';
+import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/destiny_settings.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
@@ -250,6 +251,7 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
     try{
       await DestinySettingsService().init();
     }catch(e){}
+    await WishlistsService().init();
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(

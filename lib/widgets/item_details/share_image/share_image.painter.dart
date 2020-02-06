@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:bungie_api/enums/damage_type_enum.dart';
+import 'package:bungie_api/enums/damage_type.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
@@ -16,7 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
-import 'package:bungie_api/enums/destiny_socket_category_style_enum.dart';
+import 'package:bungie_api/enums/destiny_socket_category_style.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/inventory_utils.dart';
@@ -124,7 +124,8 @@ class ShareImageWidget extends StatelessWidget {
     }
     statHashes.addAll(definition.investmentStats.map((s) => s.statTypeHash));
     for (var plugDef in plugItemDefinitions.values) {
-      statHashes.addAll(plugDef?.investmentStats?.map((s) => s.statTypeHash) ?? []);
+      statHashes
+          .addAll(plugDef?.investmentStats?.map((s) => s.statTypeHash) ?? []);
     }
 
     var statDefinitions =
@@ -269,8 +270,7 @@ class ShareImageWidget extends StatelessWidget {
 
   Widget buildPerks(BuildContext context) {
     var perksCatDefinition = socketCategoryDefinitions.values.firstWhere((def) {
-      return def.categoryStyle & DestinySocketCategoryStyle.Reusable ==
-          DestinySocketCategoryStyle.Reusable;
+      return def.categoryStyle == DestinySocketCategoryStyle.Reusable;
     }, orElse: () => null);
     if (perksCatDefinition == null) return Container();
     return Column(
@@ -350,8 +350,7 @@ class ShareImageWidget extends StatelessWidget {
   }
 
   Widget buildPerkColumn(BuildContext context, int socketIndex) {
-    if (itemSockets != null) {
-    }
+    if (itemSockets != null) {}
     return Container(width: 72, height: 72, margin: EdgeInsets.all(4));
   }
 
@@ -385,8 +384,7 @@ class ShareImageWidget extends StatelessWidget {
 
   Widget buildMods(BuildContext context) {
     var modsCatDefinition = socketCategoryDefinitions.values.firstWhere((def) {
-      return def.categoryStyle & DestinySocketCategoryStyle.Consumable ==
-          DestinySocketCategoryStyle.Consumable;
+      return def.categoryStyle == DestinySocketCategoryStyle.Consumable;
     }, orElse: () => null);
     if (modsCatDefinition == null) return Container();
     return Column(
@@ -471,16 +469,18 @@ class ShareImageWidget extends StatelessWidget {
     if (statValue == null) {
       statValue = definition.stats.stats["$statHash"].value;
     }
-    bool showDamageType = [DamageType.Arc,DamageType.Thermal, DamageType.Void].contains(instanceInfo.damageType);
+    bool showDamageType = [DamageType.Arc, DamageType.Thermal, DamageType.Void]
+        .contains(instanceInfo.damageType);
     return Container(
       child:
           Column(crossAxisAlignment: CrossAxisAlignment.end, children: <Widget>[
         Row(children: [
-          showDamageType ? Icon(
-            DestinyData.getDamageTypeIcon(instanceInfo.damageType),
-            color:DestinyData.getDamageTypeColor(instanceInfo.damageType),
-            size:50
-            ) : Container(),
+          showDamageType
+              ? Icon(DestinyData.getDamageTypeIcon(instanceInfo.damageType),
+                  color:
+                      DestinyData.getDamageTypeColor(instanceInfo.damageType),
+                  size: 50)
+              : Container(),
           Text(
             "$statValue",
             style: TextStyle(fontWeight: FontWeight.w700, fontSize: 50),
@@ -532,8 +532,12 @@ class ShareImageWidget extends StatelessWidget {
   }
 
   Widget buildStats(BuildContext context) {
-    List<int> statHashes = statGroupDefinition.scaledStats.map((s)=>s.statHash).toList();
-    List<int> noBarStats = statGroupDefinition.scaledStats.where((s)=>s.displayAsNumeric).map((s)=>s.statHash).toList();
+    List<int> statHashes =
+        statGroupDefinition.scaledStats.map((s) => s.statHash).toList();
+    List<int> noBarStats = statGroupDefinition.scaledStats
+        .where((s) => s.displayAsNumeric)
+        .map((s) => s.statHash)
+        .toList();
     statHashes.addAll(DestinyData.hiddenStats);
     statHashes.sort((statA, statB) {
       int valA = noBarStats.contains(statA)
@@ -568,7 +572,8 @@ class ShareImageWidget extends StatelessWidget {
       }
       max = scaled.maximumValue;
     }
-    var hideBar = scaled?.displayAsNumeric ?? DestinyData.noBarStats.contains(hash);
+    var hideBar =
+        scaled?.displayAsNumeric ?? DestinyData.noBarStats.contains(hash);
     return Container(
         padding: EdgeInsets.only(bottom: 4),
         child: Row(
@@ -622,8 +627,7 @@ class ShareImageWidget extends StatelessWidget {
 
   Widget buildPerkDetails(BuildContext context) {
     var perksCatDefinition = socketCategoryDefinitions.values.firstWhere((def) {
-      return def.categoryStyle & DestinySocketCategoryStyle.Reusable ==
-          DestinySocketCategoryStyle.Reusable;
+      return def.categoryStyle == DestinySocketCategoryStyle.Reusable;
     }, orElse: () => null);
     if (perksCatDefinition == null) return Container();
     return Container(
@@ -745,8 +749,7 @@ class ShareImageWidget extends StatelessWidget {
 
   Widget buildModDetails(BuildContext context) {
     var modsCatDefinition = socketCategoryDefinitions.values.firstWhere((def) {
-      return def.categoryStyle & DestinySocketCategoryStyle.Consumable ==
-          DestinySocketCategoryStyle.Consumable;
+      return def.categoryStyle == DestinySocketCategoryStyle.Consumable;
     }, orElse: () => null);
     if (modsCatDefinition == null) return Container();
     return Container(

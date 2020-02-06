@@ -1,8 +1,8 @@
 import 'dart:math';
 import 'dart:ui';
-import 'package:bungie_api/enums/destiny_item_type_enum.dart';
-import 'package:bungie_api/enums/item_state_enum.dart';
-import 'package:bungie_api/enums/tier_type_enum.dart';
+import 'package:bungie_api/enums/destiny_item_type.dart';
+import 'package:bungie_api/enums/item_state.dart';
+import 'package:bungie_api/enums/tier_type.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
@@ -475,8 +475,8 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
 
   Widget tierBar(BuildContext context, double expandRatio) {
     Color tierColor = DestinyData.getTierColor(definition.inventory?.tierType);
-    int state = item?.state ?? 0;
-    bool isMasterwork = state & ItemState.Masterwork == ItemState.Masterwork;
+    ItemState state = item?.state ?? ItemState.None;
+    bool isMasterwork = state.contains(ItemState.Masterwork);
     if (isMasterwork && definition?.inventory?.tierType == TierType.Exotic) {}
     if (isMasterwork) {}
     return Positioned(

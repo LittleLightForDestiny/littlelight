@@ -1,6 +1,10 @@
 import 'package:drag_list/drag_list.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:little_light/models/wish_list.dart';
+import 'package:little_light/screens/add_wishlist.screen.dart';
+import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/services/user_settings/character_sort_parameter.dart';
 import 'package:little_light/services/user_settings/item_sort_parameter.dart';
 import 'package:little_light/services/user_settings/user_settings.service.dart';
@@ -10,6 +14,8 @@ import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/flutter/smaller_switch.dart';
 import 'package:little_light/widgets/option_sheets/free_slots_slider.widget.dart';
 import 'package:screen/screen.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingsScreen extends StatefulWidget {
   final UserSettingsService settings = new UserSettingsService();
@@ -20,12 +26,14 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   List<ItemSortParameter> itemOrdering;
   List<ItemSortParameter> pursuitOrdering;
+  List<Wishlist> wishlists;
 
   @override
   void initState() {
     super.initState();
     itemOrdering = widget.settings.itemOrdering;
     pursuitOrdering = widget.settings.pursuitOrdering;
+    wishlists = WishlistsService().getWishlists();
   }
 
   @override
@@ -55,6 +63,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     style: TextStyle(fontWeight: FontWeight.bold),
                   )),
               buildDefaultFreeSlots(context),
+              HeaderWidget(
+                  alignment: Alignment.centerLeft,
+                  child: TranslatedTextWidget(
+                    "Wishlists",
+                    uppercase: true,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  )),
+              buildWishlists(context),
               Container(height: 16),
               HeaderWidget(
                   alignment: Alignment.centerLeft,
@@ -120,13 +136,141 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ));
   }
 
+  buildWishlists(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        buildWishlistsList(context),
+        Container(
+            padding: EdgeInsets.all(8),
+            child: TranslatedTextWidget(
+                "You can add community curated wishlists (aka DIM™️ wishlists) on Little Light to check your god rolls.")),
+        Container(
+          color: Colors.grey.shade400,
+          height: 1,
+          margin: EdgeInsets.all(8),
+        ),
+        Row(children: [
+          Expanded(
+            child: Container(),
+          ),
+          RaisedButton(
+            child: TranslatedTextWidget("Add Wishlist"),
+            onPressed: () async {
+              Wishlist wishlist = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AddWishlistScreen(),
+                  ));
+              if (wishlist is Wishlist) {
+                showDialog(
+                    barrierDismissible: false,
+                    useRootNavigator: true,
+                    context: context,
+                    builder: (context) => buildProcessingDialog(context));
+                wishlists = await WishlistsService().addWishlist(wishlist);
+                Navigator.of(context).pop();
+                setState(() {});
+              }
+
+              TranslatedTextWidget("Processing wishlists");
+            },
+          )
+        ])
+      ],
+    );
+  }
+
+  SimpleDialog buildProcessingDialog(BuildContext context) {
+    return SimpleDialog(
+      children: <Widget>[
+        Container(
+            width: 96,
+            height: 96,
+            child: Shimmer.fromColors(
+              baseColor: Colors.blueGrey.shade300,
+              highlightColor: Colors.white,
+              child: Image.asset("assets/anim/loading.webp"),
+            )),
+        Center(child: TranslatedTextWidget("Processing wishlists"))
+      ],
+    );
+  }
+
+  buildWishlistsList(BuildContext context) {
+    return Column(
+        children: wishlists
+            .map((w) => Container(
+                padding: EdgeInsets.all(8),
+                child: Material(
+                    color: Colors.blueGrey.shade600,
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Material(
+                              color: Colors.lightBlue.shade600,
+                              child: Container(
+                                  padding: EdgeInsets.all(8),
+                                  child: Text(
+                                    w.name,
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.w700),
+                                  ))),
+                          Container(
+                              padding: EdgeInsets.all(8).copyWith(bottom: 0),
+                              child: Linkify(
+                                  text: w.description,
+                                  linkStyle: TextStyle(color: Colors.white),
+                                  onOpen: (link) =>
+                                      launch(link.url, forceSafariVC: true))),
+                          Container(
+                              padding: EdgeInsets.all(8),
+                              child: Row(children: [
+                                Expanded(child: Container()),
+                                RaisedButton(
+                                    child: TranslatedTextWidget("Update"),
+                                    onPressed: () async {
+                                      showDialog(
+                                          barrierDismissible: false,
+                                          useRootNavigator: true,
+                                          context: context,
+                                          builder: (context) =>
+                                              buildProcessingDialog(context));
+                                      wishlists = await WishlistsService()
+                                          .removeWishlist(w);
+                                      wishlists = await WishlistsService()
+                                          .addWishlist(w);
+                                      Navigator.of(context).pop();
+                                      setState(() {});
+                                    }),
+                                Container(width: 8,),
+                                RaisedButton(
+                                    color: Theme.of(context).errorColor,
+                                    child: TranslatedTextWidget("Remove"),
+                                    onPressed: () async {
+                                      showDialog(
+                                          barrierDismissible: false,
+                                          useRootNavigator: true,
+                                          context: context,
+                                          builder: (context) =>
+                                              buildProcessingDialog(context));
+                                      wishlists = await WishlistsService()
+                                          .removeWishlist(w);
+                                      Navigator.of(context).pop();
+                                      setState(() {});
+                                    })
+                              ]))
+                        ]))))
+            .toList());
+  }
+
   buildDefaultFreeSlots(BuildContext context) {
     return FreeSlotsSliderWidget(
-      suppressLabel: true,
-      initialValue: widget.settings.defaultFreeSlots,
-      onChanged: (value) {
-        widget.settings.defaultFreeSlots = value;
-    });
+        suppressLabel: true,
+        initialValue: widget.settings.defaultFreeSlots,
+        onChanged: (value) {
+          widget.settings.defaultFreeSlots = value;
+        });
   }
 
   buildCharacterOrdering(BuildContext context) {

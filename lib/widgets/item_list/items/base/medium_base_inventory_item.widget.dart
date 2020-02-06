@@ -57,6 +57,10 @@ class MediumBaseInventoryItemWidget extends BaseInventoryItemWidget {
   double get titleFontSize {
     return 10;
   }
+  @override
+  double get tagIconSize{
+    return 10;
+  }
 
   Widget perksWidget(BuildContext context) {
     return Container();

@@ -11,7 +11,7 @@ import 'package:sqflite/sqflite.dart';
 class StorageMigrations {
   String rootPath;
   SharedPreferences prefs;
-  int get currentVersion => prefs.getInt(StorageKeys.currentVersion) ?? 0;
+  int get currentVersion => prefs.getInt(StorageKeys.currentVersion.path) ?? 0;
   constructor() {}
   run() async {
     var root = await getApplicationDocumentsDirectory();
@@ -111,7 +111,7 @@ class StorageMigrations {
         await dir.delete(recursive: true);
       }
     }
-    await prefs.remove(StorageKeys.itemOrdering);
-    await prefs.setInt(StorageKeys.currentVersion, 106003);
+    await prefs.remove(StorageKeys.itemOrdering.path);
+    await prefs.setInt(StorageKeys.currentVersion.path, 106003);
   }
 }

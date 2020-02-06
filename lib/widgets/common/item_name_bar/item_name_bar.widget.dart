@@ -1,5 +1,5 @@
-import 'package:bungie_api/enums/item_state_enum.dart';
-import 'package:bungie_api/enums/tier_type_enum.dart';
+import 'package:bungie_api/enums/item_state.dart';
+import 'package:bungie_api/enums/tier_type.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
@@ -40,8 +40,8 @@ class ItemNameBarWidget extends BaseDestinyStatelessItemWidget {
   }
 
   BoxDecoration nameBarBoxDecoration() {
-    int state = item?.state ?? 0;
-    if (state & ItemState.Masterwork != ItemState.Masterwork) {
+    ItemState state = item?.state ?? ItemState.None;
+    if (!state.contains(ItemState.Masterwork)) {
       return BoxDecoration(
           color: DestinyData.getTierColor(definition.inventory.tierType));
     }

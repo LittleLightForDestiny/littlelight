@@ -1,4 +1,4 @@
-import 'package:bungie_api/enums/tier_type_enum.dart';
+import 'package:bungie_api/enums/tier_type.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';

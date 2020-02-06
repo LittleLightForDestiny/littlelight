@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import 'package:bungie_api/enums/destiny_energy_type_enum.dart';
-import 'package:bungie_api/enums/tier_type_enum.dart';
+import 'package:bungie_api/enums/destiny_energy_type.dart';
+import 'package:bungie_api/enums/tier_type.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_socket_category_definition.dart';
@@ -57,7 +57,7 @@ class ItemDetailsSocketDetailsWidgetState
                   padding: EdgeInsets.all(8),
                   color: Colors.black,
                   child: buildContent(context)),
-              buildResourceCost(context)
+              buildResourceCost(context),
             ]));
   }
 
@@ -96,7 +96,8 @@ class ItemDetailsSocketDetailsWidgetState
       buildEnergyCost(context),
       buildSandBoxPerks(context),
       buildStats(context),
-      buildObjectives(context)
+      buildObjectives(context),
+      buildWishlistInfo(context),
     ];
     return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

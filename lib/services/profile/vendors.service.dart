@@ -1,7 +1,7 @@
 import 'dart:async';
 
 
-import 'package:bungie_api/enums/destiny_component_type_enum.dart';
+import 'package:bungie_api/enums/destiny_component_type.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_vendor_category.dart';

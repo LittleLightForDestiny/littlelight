@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:bungie_api/enums/destiny_collectible_state_enum.dart';
+import 'package:bungie_api/enums/destiny_collectible_state.dart';
 import 'package:bungie_api/models/destiny_artifact_profile_scoped.dart';
 import 'package:bungie_api/models/destiny_character_activities_component.dart';
 import 'package:bungie_api/models/destiny_character_component.dart';
@@ -19,8 +19,8 @@ import 'package:bungie_api/models/destiny_profile_response.dart';
 import 'package:bungie_api/models/destiny_record_component.dart';
 import 'package:bungie_api/models/destiny_stat.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:bungie_api/enums/destiny_component_type_enum.dart';
-import 'package:bungie_api/enums/destiny_scope_enum.dart';
+import 'package:bungie_api/enums/destiny_component_type.dart';
+import 'package:bungie_api/enums/destiny_scope.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/storage/storage.service.dart';
@@ -30,7 +30,7 @@ import 'package:little_light/services/user_settings/user_settings.service.dart';
 enum LastLoadedFrom { server, cache }
 
 class ProfileComponentGroups {
-  static const List<int> basicProfile = [
+  static const List<DestinyComponentType> basicProfile = [
     DestinyComponentType.Characters,
     DestinyComponentType.CharacterProgressions,
     DestinyComponentType.CharacterEquipment,
@@ -42,23 +42,23 @@ class ProfileComponentGroups {
     DestinyComponentType.ItemSockets,
   ];
 
-  static const List<int> inventories = [
+  static const List<DestinyComponentType> inventories = [
     DestinyComponentType.CharacterEquipment,
     DestinyComponentType.CharacterInventories,
     DestinyComponentType.ProfileInventories,
   ];
 
-  static const List<int> collections = [
+  static const List<DestinyComponentType> collections = [
     DestinyComponentType.Collectibles,
     DestinyComponentType.PresentationNodes,
   ];
 
-  static const List<int> triumphs = [
+  static const List<DestinyComponentType> triumphs = [
     DestinyComponentType.Records,
     DestinyComponentType.PresentationNodes,
   ];
 
-  static const List<int> everything = [
+  static const List<DestinyComponentType> everything = [
     DestinyComponentType.Characters,
     DestinyComponentType.CharacterActivities,
     DestinyComponentType.CharacterProgressions,
@@ -106,7 +106,7 @@ class ProfileService {
   bool pauseAutomaticUpdater = false;
 
   Future<DestinyProfileResponse> fetchProfileData(
-      {List<int> components = ProfileComponentGroups.everything,
+      {List<DestinyComponentType> components = ProfileComponentGroups.everything,
       bool skipUpdate = false}) async {
     if (!skipUpdate)
       _broadcaster.push(NotificationEvent(NotificationType.requestedUpdate));
@@ -154,7 +154,7 @@ class ProfileService {
   }
 
   Future<DestinyProfileResponse> _updateProfileData(
-      List<int> components) async {
+      List<DestinyComponentType> components) async {
     var membership = StorageService.getMembership();
     DestinyProfileResponse response;
     response = await _api.getCurrentProfile(components);
@@ -474,7 +474,7 @@ class ProfileService {
     return _profile?.characterCollectibles?.data[characterId]?.collectibles;
   }
 
-  bool isCollectibleUnlocked(int hash, int scope) {
+  bool isCollectibleUnlocked(int hash, DestinyScope scope) {
     String hashStr = "$hash";
     Map<String, DestinyCollectibleComponent> collectibles =
         _profile?.profileCollectibles?.data?.collectibles;
@@ -485,21 +485,19 @@ class ProfileService {
       DestinyCollectibleComponent collectible =
           _profile?.profileCollectibles?.data?.collectibles[hashStr] ?? null;
       if (collectible != null) {
-        return ((collectible?.state ?? DestinyCollectibleState.NotAcquired) &
-                DestinyCollectibleState.NotAcquired) !=
-            DestinyCollectibleState.NotAcquired;
+        return !(collectible?.state ?? DestinyCollectibleState.NotAcquired).contains(DestinyCollectibleState.NotAcquired);
       }
-    }
+    } 
+    
     return _profile?.characterCollectibles?.data?.values?.any((data) {
-          int state = data?.collectibles[hashStr]?.state ??
+          DestinyCollectibleState state = data?.collectibles[hashStr]?.state ??
               DestinyCollectibleState.NotAcquired;
-          return state & DestinyCollectibleState.NotAcquired !=
-              DestinyCollectibleState.NotAcquired;
+          return !state.contains(DestinyCollectibleState.NotAcquired);
         }) ??
         false;
   }
 
-  DestinyRecordComponent getRecord(int hash, int scope) {
+  DestinyRecordComponent getRecord(int hash, DestinyScope scope) {
     String hashStr = "$hash";
     if (scope == DestinyScope.Profile) {
       if (_profile?.profileRecords?.data == null) {

@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:bungie_api/enums/damage_type.dart';
+import 'package:bungie_api/enums/destiny_class.dart';
 import 'package:bungie_api/models/destiny_color.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
@@ -24,8 +26,8 @@ class AnimatedCharacterBackgroundWidget extends StatefulWidget {
 
 class _CharacterInfo {
   final DestinyColor emblemColor;
-  final int characterClass;
-  final int damageType;
+  final DestinyClass characterClass;
+  final DamageType damageType;
   _CharacterInfo(
       {this.emblemColor, this.characterClass, this.damageType});
 }
@@ -112,6 +114,7 @@ class _AnimatedCharacterBackgroundWidgetState
         )));
     _controller.reset();
     _controller.forward();
+    if(!mounted) return;
     setState(() {});
   }
 

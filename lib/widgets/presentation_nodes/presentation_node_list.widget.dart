@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:bungie_api/enums/destiny_presentation_screen_style_enum.dart';
+import 'package:bungie_api/enums/destiny_presentation_screen_style.dart';
 import 'package:bungie_api/models/destiny_presentation_node_child_entry.dart';
 import 'package:bungie_api/models/destiny_presentation_node_collectible_child_entry.dart';
 import 'package:bungie_api/models/destiny_presentation_node_definition.dart';

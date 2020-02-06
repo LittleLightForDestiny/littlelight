@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:bungie_api/enums/destiny_class.dart';
 import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -291,7 +292,7 @@ class EquipmentScreenState extends State<EquipmentScreen>
                 searchData = SearchTabData.weapons();
                 break;
               case 1:
-                int classType;
+                DestinyClass classType;
                 if (charTabController.index < characters.length) {
                   DestinyCharacterComponent char =
                       characters[charTabController.index];

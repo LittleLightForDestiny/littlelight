@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:bungie_api/enums/bungie_membership_type_enum.dart';
+import 'package:bungie_api/enums/bungie_membership_type.dart';
 import 'package:bungie_api/helpers/bungie_net_token.dart';
 import 'package:bungie_api/helpers/oauth.dart';
 import 'package:bungie_api/models/group_user_info_card.dart';

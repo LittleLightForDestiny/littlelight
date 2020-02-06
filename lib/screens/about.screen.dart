@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
-import 'package:bungie_api/enums/bungie_membership_type_enum.dart';
+import 'package:bungie_api/enums/bungie_membership_type.dart';
 import 'package:flutter/material.dart';
 import 'package:launch_review/launch_review.dart';
 import 'package:little_light/services/translate/translate.service.dart';
@@ -124,7 +124,7 @@ class _AboutScreenState extends State<AboutScreen> {
                           child: Column(children: [
                             buildTagAndPlatform(
                                 4611686018436875822,
-                                2,
+                                BungieMembershipType.TigerPsn,
                                 "https://play.google.com/store/apps/details?id=com.eldwyn.wotabyss",
                                 Container(
                                     padding: EdgeInsets.only(top: 4),
@@ -301,7 +301,7 @@ class _AboutScreenState extends State<AboutScreen> {
         child: Image.asset("assets/imgs/flags/$code.png"));
   }
 
-  buildTagAndPlatform(int membershipId, int membershipType,
+  buildTagAndPlatform(int membershipId, BungieMembershipType membershipType,
       [String link, Widget badge]) {
     return SupporterCharacterWidget(membershipId, membershipType, link, badge);
   }

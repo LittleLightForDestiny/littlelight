@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:bungie_api/enums/vendor_item_status.dart';
 import 'package:bungie_api/models/destiny_faction_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_vendor_category.dart';
@@ -259,9 +260,9 @@ class VendorsListItemWidgetState<T extends VendorsListItemWidget>
           children: <Widget>[
             ManifestImageWidget<DestinyInventoryItemDefinition>(item.itemHash,
                 key: Key("item_${item.itemHash}")),
-            sale.saleStatus != 0
+            sale.saleStatus != VendorItemStatus.Success 
                 ? Positioned.fill(
-                    child: Container(color: Colors.black.withOpacity(.6)))
+                    child: Container(color: Colors.black.withOpacity(.6))) 
                 : Container()
           ],
         ));

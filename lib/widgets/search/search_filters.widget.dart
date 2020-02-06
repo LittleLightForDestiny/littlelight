@@ -18,9 +18,9 @@ enum FilterType {
   classType,
 }
 
-class FilterItem {
-  List<int> options;
-  List<int> values;
+class FilterItem<T> {
+  List<T> options;
+  List<T> values;
   bool open;
 
   FilterItem(this.options, this.values, {this.open = false});
@@ -214,7 +214,8 @@ class SearchFiltersWidgetState extends State<SearchFiltersWidget> {
             ]));
   }
 
-  Widget optionButton(BuildContext context, int id, FilterType type) {
+  //TODO: redo this shit
+  Widget optionButton<T>(BuildContext context, dynamic id, FilterType type) {
     var filter = widget.filterData[type];
     var onTap = () {
       if (multiselect == type) {

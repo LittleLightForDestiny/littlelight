@@ -44,4 +44,5 @@ class DestinyIcons {
   static const IconData leviathan_sun = const IconData(0xe913, fontFamily: _kFontFam);
   static const IconData vanguard = const IconData(0xe914, fontFamily: _kFontFam);
   static const IconData crucible = const IconData(0xe915, fontFamily: _kFontFam);
+  static const IconData bungie = const IconData(0xe916, fontFamily: _kFontFam);
 }

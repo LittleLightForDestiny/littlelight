@@ -1,4 +1,5 @@
-import 'package:bungie_api/enums/destiny_class_enum.dart';
+import 'package:bungie_api/enums/destiny_class.dart';
+import 'package:bungie_api/enums/destiny_item_type.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/user_settings/item_sort_parameter.dart';
 import 'package:little_light/utils/item_with_owner.dart';
@@ -9,7 +10,7 @@ import 'package:little_light/widgets/search/search_filters.widget.dart';
 class LoadoutSearchListWidget extends SearchListWidget {
   final String searchText;
   final int bucketType;
-  final int classType;
+  final DestinyClass classType;
   final Iterable<String> idsToAvoid;
   LoadoutSearchListWidget({Key key, this.searchText, this.bucketType, this.classType, this.idsToAvoid}) : super(key: key);
 
@@ -47,7 +48,7 @@ class LoadoutSearchListWidgetState
   FilterItem get classTypeFilter => widget.classType != null ? FilterItem([widget.classType, DestinyClass.Unknown], [widget.classType, DestinyClass.Unknown]) : null;
 
   @override
-  List<int> get itemTypes => null;
+  List<DestinyItemType> get itemTypes => null;
   
   @override
   List<int> get excludeItemTypes => null;

@@ -1,7 +1,9 @@
 import 'dart:math';
 
-import 'package:bungie_api/enums/destiny_class_enum.dart';
-import 'package:bungie_api/enums/destiny_item_sub_type_enum.dart';
+import 'package:bungie_api/enums/destiny_ammunition_type.dart';
+import 'package:bungie_api/enums/destiny_class.dart';
+import 'package:bungie_api/enums/destiny_item_sub_type.dart';
+import 'package:bungie_api/enums/tier_type.dart';
 import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
@@ -34,7 +36,7 @@ class InventoryUtils {
     InventoryBucket.shaders,
   ];
 
-  static List<int> _subtypeOrder = [
+  static List<DestinyItemSubType> _subtypeOrder = [
     DestinyItemSubType.HandCannon,
     DestinyItemSubType.AutoRifle,
     DestinyItemSubType.PulseRifle,
@@ -136,8 +138,8 @@ class InventoryUtils {
         return direction * powerA.compareTo(powerB);
 
       case ItemSortParameterType.TierType:
-        int tierA = defA?.inventory?.tierType ?? 0;
-        int tierB = defB?.inventory?.tierType ?? 0;
+        int tierA = defA?.inventory?.tierType?.value ?? 0;
+        int tierB = defB?.inventory?.tierType?.value ?? 0;
         return direction * tierA.compareTo(tierB);
 
       case ItemSortParameterType.BucketHash:
@@ -148,8 +150,8 @@ class InventoryUtils {
         return direction * orderA.compareTo(orderB);
 
       case ItemSortParameterType.SubType:
-        int subTypeA = defA?.itemSubType ?? 0;
-        int subTypeB = defB?.itemSubType ?? 0;
+        DestinyItemSubType subTypeA = defA?.itemSubType;
+        DestinyItemSubType subTypeB = defB?.itemSubType;
         int orderA = _subtypeOrder.indexOf(subTypeA);
         int orderB = _subtypeOrder.indexOf(subTypeB);
         return direction * orderA.compareTo(orderB);
@@ -160,13 +162,13 @@ class InventoryUtils {
         return direction * nameA.compareTo(nameB);
 
       case ItemSortParameterType.ClassType:
-        int classA = defA?.classType ?? 0;
-        int classB = defB?.classType ?? 0;
+        int classA = defA?.classType?.value ?? 0;
+        int classB = defB?.classType?.value ?? 0;
         return direction * classA.compareTo(classB);
 
       case ItemSortParameterType.AmmoType:
-        int ammoTypeA = defA?.equippingBlock?.ammoType ?? 0;
-        int ammoTypeB = defB?.equippingBlock?.ammoType ?? 0;
+        int ammoTypeA = defA?.equippingBlock?.ammoType?.value ?? 0;
+        int ammoTypeB = defB?.equippingBlock?.ammoType?.value ?? 0;
         return direction * ammoTypeA.compareTo(ammoTypeB);
 
       case ItemSortParameterType.Quantity:
@@ -191,13 +193,13 @@ class InventoryUtils {
         return direction * stackOrderA.compareTo(stackOrderB);
 
       case ItemSortParameterType.ItemOwner:
-        if(characterOrder == null) return 0;
+        if (characterOrder == null) return 0;
         var orderA = characterOrder.indexOf(ownerA);
         var orderB = characterOrder.indexOf(ownerB);
-        if(orderA < 0 || orderB < 0){
+        if (orderA < 0 || orderB < 0) {
           return orderB.compareTo(orderA);
         }
-        return direction* orderA.compareTo(orderB);
+        return direction * orderA.compareTo(orderB);
     }
     return 0;
   }
@@ -265,7 +267,7 @@ class LoadoutItemIndex {
     InventoryBucket.classArmor
   ];
   Map<int, DestinyItemComponent> generic;
-  Map<int, Map<int, DestinyItemComponent>> classSpecific;
+  Map<int, Map<DestinyClass, DestinyItemComponent>> classSpecific;
   Map<int, List<DestinyItemComponent>> unequipped;
   int unequippedCount = 0;
   Loadout loadout;
@@ -274,9 +276,12 @@ class LoadoutItemIndex {
     generic = genericBucketHashes
         .asMap()
         .map((index, value) => MapEntry(value, null));
-    classSpecific = (genericBucketHashes + classBucketHashes)
-        .asMap()
-        .map((index, value) => MapEntry(value, {0: null, 1: null, 2: null}));
+    classSpecific = (genericBucketHashes + classBucketHashes).asMap().map(
+        (index, value) => MapEntry(value, {
+              DestinyClass.Titan: null,
+              DestinyClass.Hunter: null,
+              DestinyClass.Warlock: null
+            }));
     unequipped = (genericBucketHashes + classBucketHashes)
         .asMap()
         .map((index, value) => MapEntry(value, []));

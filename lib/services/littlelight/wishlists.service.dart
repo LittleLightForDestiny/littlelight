@@ -1,102 +1,129 @@
 import 'package:bungie_api/models/destiny_item_component.dart';
-import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
 import 'package:little_light/models/wish_list.dart';
+import 'package:little_light/services/littlelight/parsers/dim_wishlist.parser.dart';
 import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/storage/storage.service.dart';
 
 class WishlistsService {
   static final WishlistsService _singleton = new WishlistsService._internal();
+  StorageService storage = StorageService.global();
   factory WishlistsService() {
     return _singleton;
   }
   WishlistsService._internal();
 
-  Map<int, WishList> _wishlists = Map();
+  Map<int, WishListItem> _items = Map();
 
-  String _text;
+  List<Wishlist> _wishlists;
 
-  reset() {
-    _wishlists = null;
+  Set<String> _buildIds = Set();
+
+  init() async {
+    List<dynamic> json = await storage.getJson(StorageKeys.wishlists);
+    var wishlists = json != null
+        ? json.map((item) => Wishlist.fromJson(item)).toList()
+        : [Wishlist.defaults()];
+    wishlists = await _parseWishlists(wishlists);
+    this._wishlists = wishlists;
+    this._save();
   }
 
-  load(String url) async {
-    url =
-        "https://raw.githubusercontent.com/48klocs/dim-wish-list-sources/master/voltron.txt";
-    var text = _text ?? (await get(url)).body;
-    _text = text;
-    var lines = text.split('\n');
-    String notes;
-    WishlistTag specialty;
-    for (var line in lines) {
-      specialty = _getSpecialtyByLine(line) ?? specialty;
-      notes = _getNotesByLine(line) ?? notes;
-      if (line.contains("dimwishlist:") || line.contains("llwishlist:")) {
-        _addLineToWishList(line, specialty, notes);
-      }
+  List<Wishlist> getWishlists() {
+    return _wishlists;
+  }
+
+  Future<List<Wishlist>> addWishlist(Wishlist wishlist) async {
+    var existing =
+        _wishlists.firstWhere((w) => w.url == wishlist.url, orElse: () => null);
+    if (existing == null) {
+      _wishlists.add(wishlist);
+    } else {
+      wishlist = existing;
     }
+    var contents = await _downloadWishlist(wishlist);
+    await _parseWishlist(wishlist, contents);
+    this._save();
+    return _wishlists;
   }
 
-  Set<WishlistTag> getPerkSpecialties(
-      int itemHash, int plugItemHash) {
-    var wishlist = _wishlists[itemHash];
-    if(wishlist?.perks == null) return Set();
-    return _wishlists[itemHash]?.perks[plugItemHash] ?? Set();
+  Future<List<Wishlist>> removeWishlist(Wishlist wishlist) async {
+    _wishlists.remove(wishlist);
+    await storage.deleteFile(StorageKeys.rawWishlists, wishlist.filename);
+    _items = Map();
+    _wishlists = await _parseWishlists(_wishlists);
+    this._save();
+    return _wishlists;
+  }
+
+  Future<List<Wishlist>> _parseWishlists(List<Wishlist> wishlists) async {
+    for (var wishlist in wishlists) {
+      var filename = wishlist.filename;
+      var contents =
+          await storage.getRawFile(StorageKeys.rawWishlists, filename);
+      if (contents == null) {
+        contents = await _downloadWishlist(wishlist);
+      }
+      await _parseWishlist(wishlist, contents);
+    }
+    return wishlists;
+  }
+
+  Future<void> _parseWishlist(Wishlist wishlist, String contents) async {
+    var parser = DimWishlistParser();
+    parser.parse(contents);
+  }
+
+  Future<void> _save() async {
+    var json = this._wishlists.map((w) => w.toJson()).toList();
+    await storage.setJson(StorageKeys.wishlists, json);
+  }
+
+  Future<String> _downloadWishlist(Wishlist wishlist) async {
+    var res = await http.get(wishlist.url);
+    storage.saveRawFile(StorageKeys.rawWishlists, wishlist.filename, res.body);
+    wishlist.updatedAt = DateTime.now();
+    return res.body;
+  }
+
+  Set<WishlistTag> getPerkSpecialties(int itemHash, int plugItemHash) {
+    var wishlist = _items[itemHash];
+    if (wishlist?.perks == null) return Set();
+    return _items[itemHash]?.perks[plugItemHash] ?? Set();
   }
 
   WishListBuild getWishlistBuild(DestinyItemComponent item) {
     if (item == null) return null;
-    var sockets = ProfileService().getItemReusablePlugs(item.itemInstanceId);
-    var availablePlugs = sockets?.values
-        ?.map((plugs) => plugs.map((plug) => plug.plugItemHash))
-        ?.fold<Set<int>>(Set(), (t, i) => t.followedBy(i).toSet());
-    if(availablePlugs == null) return null;
-    var wish = _wishlists[item?.itemHash];
-    return wish?.builds?.values?.firstWhere((build){
+    var reusable = ProfileService().getItemReusablePlugs(item.itemInstanceId);
+    var sockets = ProfileService().getItemSockets(item.itemInstanceId);
+    Set<int> availablePlugs = Set();
+    reusable?.values
+        ?.forEach((plugs) => plugs.forEach((plug) => availablePlugs.add(plug.plugItemHash)));
+    sockets
+        ?.map((plug) => availablePlugs.add(plug.plugHash))
+        ?.toSet();
+    if (availablePlugs?.length == 0) return null;
+    var wish = _items[item?.itemHash];
+
+    return wish?.builds?.values?.firstWhere((build) {
       return availablePlugs.containsAll(build.perks);
-    }, orElse:()=>null);
+    }, orElse: () => null);
   }
 
-  WishlistTag _getSpecialtyByLine(String line) {
-    if (line.contains("//") || line.contains("#notes:")) {
-      if (line.toLowerCase().contains("pve"))
-        return WishlistTag.PVE;
-      if (line.toLowerCase().contains("pvp"))
-        return WishlistTag.PVP;
-    }
-    return null;
-  }
-
-  String _getNotesByLine(String line) {
-    if (line.contains("//notes:")) {
-      return line.replaceAll("//notes:", "");
-    }
-    if (line.contains("#notes:")) {
-      var index = line.indexOf("#notes:");
-      return line.substring(index + 6);
-    }
-    return null;
-  }
-
-  _addLineToWishList(
-      String line, WishlistTag specialty, String notes) {
-    var itemHashRegexp = RegExp(r"item=(\d*?)\D", caseSensitive: false);
-    var itemHashStr = itemHashRegexp.firstMatch(line)?.group(1);
-    var perksRegexp = RegExp(r"perks=([0-9,]*)", caseSensitive: false);
-    var perksStr = perksRegexp.firstMatch(line)?.group(1);
-    if (perksStr == null || itemHashStr == null) return;
-
-    var perks = perksStr?.split(",")?.map((p) => int.parse(p))?.toList();
-    var hash = int.parse(itemHashStr);
+  addToWishList(
+      int hash, List<int> perks, Set<WishlistTag> specialties, String notes) {
     perks?.sort();
     var buildId = perks.join('_');
     var wishlist =
-        _wishlists[hash] = _wishlists[hash] ?? WishList.builder(itemHash: hash);
+        _items[hash] = _items[hash] ?? WishListItem.builder(itemHash: hash);
     var build = wishlist.builds[buildId] = wishlist.builds[buildId] ??
         WishListBuild.builder(identifier: buildId, perks: perks.toSet());
     build.notes.add(notes);
-    build.tags.add(specialty);
+    build.tags.addAll(specialties);
     for (var i in perks) {
       var perk = wishlist.perks[i] = wishlist.perks[i] ?? Set();
-      perk.add(specialty);
+      perk.addAll(specialties);
     }
+    _buildIds.add("$hash#$buildId");
   }
 }

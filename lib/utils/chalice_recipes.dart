@@ -1,4 +1,4 @@
-import 'package:bungie_api/enums/damage_type_enum.dart';
+import 'package:bungie_api/enums/damage_type.dart';
 
 enum RunePosition { Top, Left, Right }
 
@@ -37,7 +37,7 @@ class RuneInfo {
     this.armorPerk,
   });
 
-  int get armorMasterworkDamageType{
+  DamageType get armorMasterworkDamageType{
     switch(color){
       case RuneColor.Purple:
         return DamageType.Arc;

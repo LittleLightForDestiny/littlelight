@@ -1,28 +1,31 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'tracked_objective.dart';
+part of 'wish_list.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-TrackedObjective _$TrackedObjectiveFromJson(Map<String, dynamic> json) {
-  return TrackedObjective(
-    type: _$enumDecodeNullable(_$TrackedObjectiveTypeEnumMap, json['type']),
-    hash: json['hash'] as int,
-    instanceId: json['instanceId'] as String,
-    characterId: json['characterId'] as String,
-    parentHash: json['parentHash'] as int,
+Wishlist _$WishlistFromJson(Map<String, dynamic> json) {
+  return Wishlist(
+    url: json['url'] as String,
+    localFilename: json['localFilename'] as String,
+    name: json['name'] as String,
+    description: json['description'] as String,
+    updatedAt: json['updatedAt'] == null
+        ? null
+        : DateTime.parse(json['updatedAt'] as String),
+    type: _$enumDecodeNullable(_$WishlistTypeEnumMap, json['type']),
   );
 }
 
-Map<String, dynamic> _$TrackedObjectiveToJson(TrackedObjective instance) =>
-    <String, dynamic>{
-      'type': _$TrackedObjectiveTypeEnumMap[instance.type],
-      'hash': instance.hash,
-      'instanceId': instance.instanceId,
-      'characterId': instance.characterId,
-      'parentHash': instance.parentHash,
+Map<String, dynamic> _$WishlistToJson(Wishlist instance) => <String, dynamic>{
+      'url': instance.url,
+      'localFilename': instance.localFilename,
+      'name': instance.name,
+      'description': instance.description,
+      'updatedAt': instance.updatedAt?.toIso8601String(),
+      'type': _$WishlistTypeEnumMap[instance.type],
     };
 
 T _$enumDecode<T>(
@@ -57,8 +60,6 @@ T _$enumDecodeNullable<T>(
   return _$enumDecode<T>(enumValues, source, unknownValue: unknownValue);
 }
 
-const _$TrackedObjectiveTypeEnumMap = {
-  TrackedObjectiveType.Triumph: 'triumph',
-  TrackedObjectiveType.Item: 'item',
-  TrackedObjectiveType.Plug: 'plug',
+const _$WishlistTypeEnumMap = {
+  WishlistType.DimWishlist: 'DimWishlist',
 };

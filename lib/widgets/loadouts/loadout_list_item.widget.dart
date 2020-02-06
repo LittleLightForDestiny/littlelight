@@ -10,7 +10,7 @@ import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
-import 'package:bungie_api/enums/destiny_class_enum.dart';
+import 'package:bungie_api/enums/destiny_class.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
@@ -204,7 +204,7 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> {
         LoadoutItemIndex.genericBucketHashes,
         itemIndex.generic));
 
-    [0, 1, 2].forEach((classType) {
+    DestinyClass.values.forEach((classType) {
       Map<int, DestinyItemComponent> items = itemIndex.classSpecific
           .map((bucketHash, items) => MapEntry(bucketHash, items[classType]));
       if (items.values.any((i) => i != null)) {

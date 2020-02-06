@@ -17,11 +17,9 @@ class SelectedPagePersistence{
     collections, triumphs, armory
   ];
 
-  static const String _latestScreenKey = "latest_screen";
-
   static Future<String> getLatestScreen() async{
     StorageService _prefs = StorageService.global();
-    String latest = _prefs.getString(_latestScreenKey);
+    String latest = _prefs.getString(StorageKeys.latestScreen);
     AuthService auth = new AuthService();
     if(auth.isLogged){
       List<String> all = logged + public;
@@ -38,6 +36,6 @@ class SelectedPagePersistence{
 
   static saveLatestScreen(String screen) async{
     StorageService _prefs = StorageService.global();
-    _prefs.setString(_latestScreenKey, screen);
+    _prefs.setString(StorageKeys.latestScreen, screen);
   }
 }

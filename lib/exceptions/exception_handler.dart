@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:bungie_api/enums/platform_error_codes_enum.dart';
+import 'package:bungie_api/enums/bungie_membership_type.dart';
+import 'package:bungie_api/enums/platform_error_codes.dart';
 import 'package:bungie_api/helpers/oauth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -130,7 +131,7 @@ class ExceptionHandler {
   }
 
   static setSentryUserInfo(
-      String membershipId, String displayName, int platformId) {
+      String membershipId, String displayName, BungieMembershipType platformId) {
     if (_sentry == null) return;
     _sentry.userContext = User(
         id: membershipId,

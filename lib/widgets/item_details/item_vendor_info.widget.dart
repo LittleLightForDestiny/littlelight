@@ -2,7 +2,7 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_unlock_definition.dart';
 import 'package:bungie_api/models/destiny_vendor_definition.dart';
 import 'package:bungie_api/models/destiny_vendor_sale_item_component.dart';
-import 'package:bungie_api/enums/vendor_item_status_enum.dart';
+import 'package:bungie_api/enums/vendor_item_status.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
@@ -100,7 +100,7 @@ class ItemVendorInfoState extends State<ItemVendorInfoWidget> {
   }
 
   Widget buildFailures(BuildContext context) {
-    if (widget.sale.saleStatus == 0) return Container();
+    if (widget.sale.saleStatus == VendorItemStatus.Success) return Container();
     List<Widget> messages = [];
     widget.sale?.failureIndexes?.forEach((i) {
       String string = vendorDefinition.failureStrings[i];
@@ -129,58 +129,45 @@ class ItemVendorInfoState extends State<ItemVendorInfoWidget> {
 
   List<Widget> buildCustomFailureMessage(BuildContext context) {
     List<Widget> messages = [];
-    if (widget.sale.saleStatus & VendorItemStatus.NoInventorySpace ==
-        VendorItemStatus.NoInventorySpace) {
+    if (widget.sale.saleStatus.contains(VendorItemStatus.NoInventorySpace)) {
       messages.add(TranslatedTextWidget("Not enough space"));
     }
-    if (widget.sale.saleStatus & VendorItemStatus.NoFunds ==
-        VendorItemStatus.NoFunds) {
+    if (widget.sale.saleStatus.contains(VendorItemStatus.NoFunds)) {
       // messages.add(TranslatedTextWidget("Not enough resources"));
     }
-    if (widget.sale.saleStatus & VendorItemStatus.NoProgression ==
-        VendorItemStatus.NoProgression) {}
-    if (widget.sale.saleStatus & VendorItemStatus.NoUnlock ==
-        VendorItemStatus.NoUnlock) {
+    if (widget.sale.saleStatus.contains(VendorItemStatus.NoProgression)) {}
+    if (widget.sale.saleStatus.contains(VendorItemStatus.NoUnlock)) {
       // messages.add(TranslatedTextWidget("No Unlock"));
     }
-    if (widget.sale.saleStatus & VendorItemStatus.NoQuantity ==
-        VendorItemStatus.NoQuantity) {
+    if (widget.sale.saleStatus.contains(VendorItemStatus.NoQuantity)) {
       //no message for now
     }
-    if (widget.sale.saleStatus & VendorItemStatus.OutsidePurchaseWindow ==
-        VendorItemStatus.OutsidePurchaseWindow) {
+    if (widget.sale.saleStatus
+        .contains(VendorItemStatus.OutsidePurchaseWindow)) {
       messages.add(TranslatedTextWidget("Outside Purchase Window"));
     }
-    if (widget.sale.saleStatus & VendorItemStatus.NotAvailable ==
-        VendorItemStatus.NotAvailable) {
+    if (widget.sale.saleStatus.contains(VendorItemStatus.NotAvailable)) {
       messages.add(TranslatedTextWidget("Not Available"));
     }
-    if (widget.sale.saleStatus & VendorItemStatus.UniquenessViolation ==
-        VendorItemStatus.UniquenessViolation) {
+    if (widget.sale.saleStatus.contains(VendorItemStatus.UniquenessViolation)) {
       messages.add(TranslatedTextWidget("Can only hold one at a time"));
     }
-    if (widget.sale.saleStatus & VendorItemStatus.UnknownError ==
-        VendorItemStatus.UnknownError) {
+    if (widget.sale.saleStatus.contains(VendorItemStatus.UnknownError)) {
       messages.add(TranslatedTextWidget("UnknownError"));
     }
-    if (widget.sale.saleStatus & VendorItemStatus.AlreadySelling ==
-        VendorItemStatus.AlreadySelling) {
+    if (widget.sale.saleStatus.contains(VendorItemStatus.AlreadySelling)) {
       messages.add(TranslatedTextWidget("Already Selling"));
     }
-    if (widget.sale.saleStatus & VendorItemStatus.Unsellable ==
-        VendorItemStatus.Unsellable) {
+    if (widget.sale.saleStatus.contains(VendorItemStatus.Unsellable)) {
       messages.add(TranslatedTextWidget("Unsellable"));
     }
-    if (widget.sale.saleStatus & VendorItemStatus.SellingInhibited ==
-        VendorItemStatus.SellingInhibited) {
+    if (widget.sale.saleStatus.contains(VendorItemStatus.SellingInhibited)) {
       messages.add(TranslatedTextWidget("Selling Inhibited"));
     }
-    if (widget.sale.saleStatus & VendorItemStatus.AlreadyOwned ==
-        VendorItemStatus.AlreadyOwned) {
+    if (widget.sale.saleStatus.contains(VendorItemStatus.AlreadyOwned)) {
       messages.add(TranslatedTextWidget("Already Owned"));
     }
-    if (widget.sale.saleStatus & VendorItemStatus.DisplayOnly ==
-        VendorItemStatus.DisplayOnly) {
+    if (widget.sale.saleStatus.contains(VendorItemStatus.DisplayOnly)) {
       messages.add(TranslatedTextWidget("Display Only"));
     }
     return messages;

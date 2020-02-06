@@ -1,23 +1,24 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:bungie_api/enums/destiny_class_enum.dart';
-import 'package:bungie_api/enums/destiny_item_type_enum.dart';
-import 'package:bungie_api/enums/tier_type_enum.dart';
+import 'package:bungie_api/enums/destiny_class.dart';
+import 'package:bungie_api/enums/destiny_item_type.dart';
+import 'package:bungie_api/enums/platform_error_codes.dart';
+import 'package:bungie_api/enums/tier_type.dart';
 import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:bungie_api/models/destiny_equip_item_result.dart';
 import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
-import 'package:bungie_api/enums/bucket_scope_enum.dart';
+import 'package:bungie_api/enums/bucket_scope.dart';
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-import 'package:bungie_api/enums/bucket_category_enum.dart';
+import 'package:bungie_api/enums/bucket_category.dart';
 
 enum ItemDestination { Character, Inventory, Vault }
 enum TransferErrorCode {
@@ -512,7 +513,7 @@ class InventoryService {
           previouslyEquipped[bucketHash];
       DestinyItemInstanceComponent previouslyEquippedInstance =
           profile.getInstanceInfo(previouslyEquippedItem.itemInstanceId);
-      if (result.equipStatus != 1 && result.equipStatus != 0) {
+      if (![PlatformErrorCodes.Success, PlatformErrorCodes.None].contains(result.equipStatus)) {
         throw new TransferError(TransferErrorCode.cantEquip);
       }
       previouslyEquippedInstance.isEquipped = false;

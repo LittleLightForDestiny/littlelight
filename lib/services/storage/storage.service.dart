@@ -6,71 +6,84 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
-class StorageKeys {
-  static const List<String> allKeys = [
-    latestToken,
-    latestTokenDate,
-    membershipData,
-    languages,
-    accountIds,
-    membershipIds,
-    selectedLanguage,
-    selectedAccountId,
-    selectedMembershipId,
-    cachedProfile,
-    cachedLoadouts,
-    cachedNotes,
-    trackedObjectives,
-    membershipUUID,
-    membershipSecret,
-    manifestVersion,
-    manifestFile,
-    currentVersion,
-    keepAwake,
-    itemOrdering,
-    characterOrdering,
-    autoOpenKeyboard,
-    defaultFreeSlots,
-    hasTappedGhost,
-    bungieCommonSettings
-  ];
+enum StorageKeys {
+  latestToken,
+  latestTokenDate,
+  membershipData,
+  languages,
+  accountIds,
+  membershipIds,
+  selectedLanguage,
+  selectedAccountId,
+  selectedMembershipId,
+  cachedProfile,
+  cachedLoadouts,
+  cachedNotes,
+  trackedObjectives,
+  membershipUUID,
+  membershipSecret,
+  manifestVersion,
+  manifestFile,
+  currentVersion,
+  keepAwake,
+  itemOrdering,
+  pursuitOrdering,
+  characterOrdering,
+  autoOpenKeyboard,
+  defaultFreeSlots,
+  hasTappedGhost,
+  bungieCommonSettings,
+  cachedVendors,
+  loadoutsOrder,
+  wishlists,
+  latestScreen,
+  rawWishlists,
+}
 
-  static const String latestToken = "latestToken";
-  static const String latestTokenDate = "latestTokenDate";
-  static const String membershipData = "memberships";
+extension StorageKeysExtension on StorageKeys {
+  String get path {
+    String name = this.toString().split(".")[1];
+    switch (this) {
+      //specific
+      case StorageKeys.membershipData:
+        return "memberships";
+      case StorageKeys.manifestFile:
+        return "manifest.db";
 
-  static const String languages = 'languages';
-  static const String accountIds = 'account_ids';
-  static const String membershipIds = 'membership_ids';
-  static const String selectedLanguage = 'selected_language';
-  static const String selectedAccountId = 'selected_account_id';
-  static const String selectedMembershipId = 'selected_membership_id';
-  static const String cachedProfile = "cached_profile";
-  static const String cachedVendors = "cached_vendors";
+      //camelCase to snakecase
+      case StorageKeys.accountIds:
+      case StorageKeys.membershipIds:
+      case StorageKeys.selectedLanguage:
+      case StorageKeys.selectedAccountId:
+      case StorageKeys.selectedMembershipId:
+      case StorageKeys.cachedProfile:
+      case StorageKeys.cachedVendors:
+      case StorageKeys.cachedLoadouts:
+      case StorageKeys.cachedNotes:
+      case StorageKeys.loadoutsOrder:
+      case StorageKeys.trackedObjectives:
+      case StorageKeys.bungieCommonSettings:
+      case StorageKeys.membershipUUID:
+      case StorageKeys.membershipSecret:
+      case StorageKeys.latestScreen:
+        
+        return name.replaceAllMapped(
+            RegExp(r'[A-Z]'), (letter) => "_${letter[0].toLowerCase()}");
 
-  static const String cachedLoadouts = "cached_loadouts";
-  static const String cachedNotes = "cached_notes";
-  
-  static const String loadoutsOrder = "loadouts_order";
-  static const String trackedObjectives = "tracked_objectives";
+      //user prefs
+      case StorageKeys.keepAwake:
+      case StorageKeys.autoOpenKeyboard:
+      case StorageKeys.defaultFreeSlots:
+      case StorageKeys.itemOrdering:
+      case StorageKeys.pursuitOrdering:
+      case StorageKeys.characterOrdering:
+      case StorageKeys.hasTappedGhost:
+        return "userpref_$name";
 
-  static const String membershipUUID = "membership_uuid";
-  static const String membershipSecret = "membership_secret";
-
-  static const String manifestVersion = "manifestVersion";
-  static const String manifestFile = "manifest.db";
-
-  static const String currentVersion = "currentVersion";
-
-  static const String bungieCommonSettings = "bungie_common_settings";
-
-  static const String keepAwake = "userpref_keepAwake";
-  static const String autoOpenKeyboard = "userpref_autoOpenKeyboard";
-  static const String defaultFreeSlots = "userpref_defaultFreeSlots";
-  static const String itemOrdering = "userpref_itemOrdering";
-  static const String pursuitOrdering = "userpref_pursuitOrdering";
-  static const String characterOrdering = "userpref_characterOrdering";
-  static const String hasTappedGhost = "userpref_hasTappedGhost";
+      default:
+        return name;
+    }
+  }
 }
 
 class StorageService {
@@ -99,19 +112,19 @@ class StorageService {
     return StorageService("memberships/$id");
   }
 
-  bool getBool(String key) {
-    return _prefs.getBool("$_path/$key");
+  bool getBool(StorageKeys key) {
+    return _prefs.getBool("$_path/${key.path}");
   }
 
-  Future<void> setBool(String key, bool value) async {
-    await _prefs.setBool("$_path/$key", value);
+  Future<void> setBool(StorageKeys key, bool value) async {
+    await _prefs.setBool("$_path/${key.path}", value);
   }
 
-  Future<void> remove(String key, [bool json=false]) async {
-    if(json){
+  Future<void> remove(StorageKeys key, [bool json = false]) async {
+    if (json) {
       File cached = new File(await getPath(key, json: true));
       bool exists = await cached.exists();
-      if(exists){
+      if (exists) {
         cached.delete();
       }
       return;
@@ -120,18 +133,18 @@ class StorageService {
   }
 
   Future<void> purge() async {
-    var keys = StorageKeys.allKeys;
+    var keys = StorageKeys.values;
     for (var key in keys) {
       await remove(key);
     }
     if (_path.length > 0) {
-      var path = await getPath("");
+      var path = await getPath(null);
       Directory file = Directory(path);
       var exists = await file.exists();
       if (exists) {
         await file.delete(recursive: true);
       }
-      var dbPath = await getPath("", dbPath: true);
+      var dbPath = await getPath(null, dbPath: true);
       Directory dbFile = Directory(dbPath);
       var dbExists = await dbFile.exists();
       if (dbExists) {
@@ -140,23 +153,23 @@ class StorageService {
     }
   }
 
-  String getString(String key) {
-    return _prefs.getString("$_path/$key");
+  String getString(StorageKeys key) {
+    return _prefs.getString("$_path/${key.path}");
   }
 
-  Future<void> setString(String key, String value) async {
-    await _prefs.setString("$_path/$key", value);
+  Future<void> setString(StorageKeys key, String value) async {
+    await _prefs.setString("$_path/${key.path}", value);
   }
 
-  int getInt(String key) {
-    return _prefs.getInt("$_path/$key");
+  int getInt(StorageKeys key) {
+    return _prefs.getInt("$_path/${key.path}");
   }
 
-  Future<void> setInt(String key, int value) async {
-    await _prefs.setInt("$_path/$key", value);
+  Future<void> setInt(StorageKeys key, int value) async {
+    await _prefs.setInt("$_path/${key.path}", value);
   }
 
-  DateTime getDate(String key) {
+  DateTime getDate(StorageKeys key) {
     var dateString = getString(key);
     try {
       return DateTime.parse(dateString);
@@ -166,11 +179,11 @@ class StorageService {
     return null;
   }
 
-  Future<void> setDate(String key, DateTime value) async {
+  Future<void> setDate(StorageKeys key, DateTime value) async {
     await setString(key, value.toIso8601String());
   }
 
-  Future<dynamic> getJson(String key) async {
+  Future<dynamic> getJson(StorageKeys key) async {
     File cached = new File(await getPath(key, json: true));
     bool exists = await cached.exists();
     if (exists) {
@@ -186,8 +199,8 @@ class StorageService {
     return null;
   }
 
-  Future<void> setJson(String key, dynamic object) async {
-    Directory dir = new Directory(await getPath(""));
+  Future<void> setJson(StorageKeys key, dynamic object) async {
+    Directory dir = new Directory(await getPath(null));
     if (!await dir.exists()) {
       await dir.create(recursive: true);
     }
@@ -195,18 +208,16 @@ class StorageService {
     await cached.writeAsString(jsonEncode(object));
   }
 
-  Future<void> saveDatabase(String key, List<int> data) async {
-    Directory dir = new Directory(await getPath("", dbPath: true));
+  Future<void> saveDatabase(StorageKeys key, List<int> data) async {
+    Directory dir = new Directory(await getPath(null, dbPath: true));
     if (!await dir.exists()) {
       await dir.create(recursive: true);
     }
     File cached = new File(await getPath(key, dbPath: true));
     cached = await cached.writeAsBytes(data);
-    print(await cached.length());
-    print(cached.path);
   }
 
-  Future<List<int>> getBytes(String key) async {
+  Future<List<int>> getBytes(StorageKeys key) async {
     File cached = new File(await getPath(key));
     bool exists = await cached.exists();
     if (exists) {
@@ -220,7 +231,38 @@ class StorageService {
     return null;
   }
 
-  Future<String> getPath(String key,
+  Future<String> getRawFile(StorageKeys key, String filename) async {
+    var path = await getPath(key);
+    File file = File("$path/$filename");
+    bool exists = await file.exists();
+    if (exists) {
+      String contents = await file.readAsString();
+      return contents;
+    }
+    return null;
+  }
+
+  Future<void> saveRawFile(StorageKeys key, String filename, String contents) async {
+    var path = await getPath(key);
+    File file = File("$path/$filename");
+    bool exists = await file.exists();
+    if (!exists) {
+      await file.create(recursive: true);
+    }
+    await file.writeAsString(contents);
+  }
+
+  Future<void> deleteFile(StorageKeys key, String filename) async {
+    var path = await getPath(key);
+    File file = File("$path/$filename");
+    bool exists = await file.exists();
+    if (exists) {
+      await file.delete(recursive: true);
+    }
+  }
+
+
+  Future<String> getPath(StorageKeys key,
       {bool json = false, bool dbPath = false}) async {
     String basePath;
     if (dbPath) {
@@ -230,46 +272,47 @@ class StorageService {
       basePath = directory.path;
     }
     var trailingSlash = (_path?.length ?? 0) > 0 ? "/" : "";
-    return "$basePath/$_path$trailingSlash$key" + (json ? '.json' : '');
+    String keyPath = key?.path ?? "";
+    return "$basePath/$_path$trailingSlash$keyPath" + (json ? '.json' : '');
   }
 
   static Future<void> setLanguage(String language) async {
-    await _prefs.setString(StorageKeys.selectedLanguage, language);
+    await _prefs.setString(StorageKeys.selectedLanguage.path, language);
   }
 
   static String getLanguage() {
-    return _prefs.getString(StorageKeys.selectedLanguage);
+    return _prefs.getString(StorageKeys.selectedLanguage.path);
   }
 
   static Future<void> setAccount(String accountId) async {
-    await _prefs.setString(StorageKeys.selectedAccountId, accountId);
+    await _prefs.setString(StorageKeys.selectedAccountId.path, accountId);
     if (accountId == null) return;
     var accounts = getAccounts();
     if (!accounts.contains(accountId)) {
       accounts.add(accountId);
-      await _prefs.setStringList(StorageKeys.accountIds, accounts);
+      await _prefs.setStringList(StorageKeys.accountIds.path, accounts);
     }
   }
 
   static String getAccount() {
-    return _prefs.getString(StorageKeys.selectedAccountId);
+    return _prefs.getString(StorageKeys.selectedAccountId.path);
   }
 
   static List<String> getAccounts() {
-    return _prefs.getStringList(StorageKeys.accountIds) ?? [];
+    return _prefs.getStringList(StorageKeys.accountIds.path) ?? [];
   }
 
   static Future<void> removeAccount(String accountId) async {
     var accounts = getAccounts();
     accounts.remove(accountId);
-    await _prefs.setStringList(StorageKeys.accountIds, accounts);
+    await _prefs.setStringList(StorageKeys.accountIds.path, accounts);
   }
 
   static Future<void> setMembership(String membershipId) async {
-    await _prefs.setString(StorageKeys.selectedMembershipId, membershipId);
+    await _prefs.setString(StorageKeys.selectedMembershipId.path, membershipId);
   }
 
   static String getMembership() {
-    return _prefs.getString(StorageKeys.selectedMembershipId);
+    return _prefs.getString(StorageKeys.selectedMembershipId.path);
   }
 }

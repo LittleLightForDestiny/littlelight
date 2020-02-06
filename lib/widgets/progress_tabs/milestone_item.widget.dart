@@ -189,7 +189,6 @@ class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
 
   Widget buildActivity(
       BuildContext context, DestinyMilestoneChallengeActivity activity) {
-    print(activity.activityHash);
     return DefinitionProviderWidget<DestinyActivityDefinition>(
         activity.activityHash,
         (def) => Column(children: [

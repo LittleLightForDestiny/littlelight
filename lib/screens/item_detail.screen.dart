@@ -1,4 +1,4 @@
-import 'package:bungie_api/enums/destiny_item_type_enum.dart';
+import 'package:bungie_api/enums/destiny_item_type.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
@@ -29,6 +29,7 @@ import 'package:little_light/widgets/item_details/main_info/item_main_info.widge
 import 'package:little_light/widgets/item_details/management_block.widget.dart';
 import 'package:little_light/widgets/item_details/quest_info.widget.dart';
 import 'package:little_light/widgets/item_details/rewards_info.widget.dart';
+import 'package:little_light/widgets/item_details/wishlist_notes.widget.dart';
 import 'package:little_light/widgets/item_notes/item_details_notes.widget.dart';
 import 'package:little_light/widgets/item_sockets/details_armor_tier.widget.dart';
 import 'package:little_light/widgets/item_sockets/details_item_armor_exotic_perk.widget.dart';
@@ -163,6 +164,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
               delegate: SliverChildListDelegate([
             buildSaleDetails(context),
             ItemMainInfoWidget(item, definition, instanceInfo),
+            buildWishlistNotes(context),
             buildManagementBlock(context),
             buildActionButtons(context),
             buildDuplicates(context),
@@ -255,6 +257,17 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
           sale: widget.sale,
           vendorHash: widget.vendorHash,
           definition: definition,
+        ));
+  }
+
+  Widget buildWishlistNotes(BuildContext context) {
+    if (item == null) return Container();
+    var screenPadding = MediaQuery.of(context).padding;
+    return Container(
+        padding: EdgeInsets.only(
+            left: screenPadding.left, right: screenPadding.right),
+        child: WishlistNotesWidget(
+          item,
         ));
   }
 

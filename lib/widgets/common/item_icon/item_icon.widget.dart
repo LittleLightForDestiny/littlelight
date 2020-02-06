@@ -1,6 +1,6 @@
-import 'package:bungie_api/enums/destiny_item_type_enum.dart';
-import 'package:bungie_api/enums/item_state_enum.dart';
-import 'package:bungie_api/enums/tier_type_enum.dart';
+import 'package:bungie_api/enums/destiny_item_type.dart';
+import 'package:bungie_api/enums/item_state.dart';
+import 'package:bungie_api/enums/tier_type.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
@@ -55,8 +55,8 @@ class ItemIconWidget extends BaseDestinyStatelessItemWidget {
 
   @override
   Widget build(BuildContext context) {
-    int state = item?.state ?? 0;
-    if (state & ItemState.Masterwork == ItemState.Masterwork) {
+    ItemState state = item?.state ?? ItemState.None;
+    if (state.contains(ItemState.Masterwork)) {
       return Stack(children: [
         Positioned.fill(child: itemIconImage(context)),
         Positioned.fill(child: getMasterworkOutline()),

@@ -1,5 +1,6 @@
-import 'package:bungie_api/enums/damage_type_enum.dart';
-import 'package:bungie_api/enums/destiny_scope_enum.dart';
+import 'package:bungie_api/enums/damage_type.dart';
+import 'package:bungie_api/enums/destiny_scope.dart';
+import 'package:bungie_api/enums/vendor_item_status.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_sandbox_perk_definition.dart';
 import 'package:bungie_api/models/destiny_vendor_item_definition.dart';
@@ -98,7 +99,7 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget> {
   }
 
   Widget tapOverlay(context) {
-    bool canBuy = widget.sale.saleStatus == 0;
+    bool canBuy = widget.sale.saleStatus == VendorItemStatus.Success;
     return Material(
       color: canBuy ? Colors.transparent : Colors.black.withOpacity(.5),
       child: InkWell(

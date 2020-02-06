@@ -1,5 +1,5 @@
-import 'package:bungie_api/enums/destiny_energy_type_enum.dart';
-import 'package:bungie_api/enums/destiny_stat_category_enum.dart';
+import 'package:bungie_api/enums/destiny_energy_type.dart';
+import 'package:bungie_api/enums/destiny_stat_category.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';

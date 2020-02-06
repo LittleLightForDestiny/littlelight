@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:bungie_api/enums/destiny_item_type.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
+import 'package:bungie_api/enums/damage_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/screens/search.screen.dart';
@@ -129,11 +131,12 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
               )));
     }
     bool isTablet = MediaQueryHelper(context).tabletOrBigger;
+    bool isDesktop = MediaQueryHelper(context).isDesktop;
     var _filteredItems = filteredItems;
     return StaggeredGridView.countBuilder(
       padding: EdgeInsets.all(4)
           .copyWith(bottom: MediaQuery.of(context).padding.bottom),
-      crossAxisCount: isTablet ? 12 : 6,
+      crossAxisCount: isDesktop ? 24 : isTablet ? 12 : 6,
       itemCount: _filteredItems?.length ?? 0,
       itemBuilder: (BuildContext context, int index) =>
           getItem(context, index, _filteredItems),
@@ -160,7 +163,7 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
   FilterItem get classTypeFilter =>
       widget?.tabData?.filterData[FilterType.classType];
 
-  List<int> get itemTypes => widget?.tabData?.itemTypes;
+  List<DestinyItemType> get itemTypes => widget?.tabData?.itemTypes;
   List<int> get excludeItemTypes => widget?.tabData?.excludeItemTypes;
   String get ownerId => widget?.tabData?.ownerId;
 
@@ -215,7 +218,7 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
           var values = damageTypeFilter.values;
           DestinyItemInstanceComponent instance =
               ProfileService().getInstanceInfo(item.item.itemInstanceId);
-          int damageType = instance?.damageType;
+          DamageType damageType = instance?.damageType;
 
           if (damageType != null &&
               values.length != 0 &&

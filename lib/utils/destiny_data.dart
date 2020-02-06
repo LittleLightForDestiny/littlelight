@@ -1,12 +1,12 @@
-import 'package:bungie_api/enums/destiny_energy_type_enum.dart';
-import 'package:bungie_api/enums/destiny_item_type_enum.dart';
+import 'package:bungie_api/enums/destiny_energy_type.dart';
+import 'package:bungie_api/enums/destiny_item_type.dart';
 import 'package:flutter/material.dart';
-import 'package:bungie_api/enums/destiny_class_enum.dart';
-import 'package:bungie_api/enums/damage_type_enum.dart';
-import 'package:bungie_api/enums/tier_type_enum.dart';
-import 'package:bungie_api/enums/destiny_ammunition_type_enum.dart';
+import 'package:bungie_api/enums/destiny_class.dart';
+import 'package:bungie_api/enums/damage_type.dart';
+import 'package:bungie_api/enums/tier_type.dart';
+import 'package:bungie_api/enums/destiny_ammunition_type.dart';
 import 'package:little_light/widgets/icon_fonts/destiny_icons_icons.dart';
-import 'package:bungie_api/enums/destiny_item_sub_type_enum.dart';
+import 'package:bungie_api/enums/destiny_item_sub_type.dart';
 
 class RaidPhases {
   static const int leviathanGardens = 3847906370;
@@ -55,14 +55,14 @@ class DestinyRanks {
 }
 
 class DestinyData {
-  static const Map<int, int> damageTypeHashes = {
+  static const Map<DamageType, int> damageTypeHashes = {
     DamageType.Kinetic: 3373582085,
     DamageType.Thermal: 1847026933,
     DamageType.Arc: 2303181850,
     DamageType.Void: 3454344768,
   };
 
-  static const Map<int, int> tierTypeHashes = {
+  static const Map<TierType, int> tierTypeHashes = {
     TierType.Basic: 3340296461,
     TierType.Common: 2395677314,
     TierType.Rare: 2127292149,
@@ -70,19 +70,19 @@ class DestinyData {
     TierType.Exotic: 2759499571,
   };
 
-  static const Map<int, int> classTypeHashes = {
+  static const Map<DestinyClass, int> classTypeHashes = {
     DestinyClass.Titan: 3655393761,
     DestinyClass.Hunter: 671679327,
     DestinyClass.Warlock: 2271682572,
   };
 
-  static const Map<int, int> ammoTypeHashes = {
+  static const Map<DestinyAmmunitionType, int> ammoTypeHashes = {
     DestinyAmmunitionType.Primary: 1731162900,
     DestinyAmmunitionType.Special: 638914517,
     DestinyAmmunitionType.Heavy: 3686962409,
   };
 
-  static const Map<int, int> itemTypeHashes = {
+  static const Map<DestinyItemType, int> itemTypeHashes = {
     DestinyItemType.Subclass: 0,
     DestinyItemType.Weapon: 1,
     DestinyItemType.Armor: 20,
@@ -104,7 +104,7 @@ class DestinyData {
     DestinyItemType.Package: 268598612,
   };
 
-  static const Map<int, int> itemSubtypeHashes = {
+  static const Map<DestinyItemSubType, int> itemSubtypeHashes = {
     DestinyItemSubType.AutoRifle: 5,
     DestinyItemSubType.Shotgun: 11,
     DestinyItemSubType.Machinegun: 12,
@@ -201,7 +201,7 @@ class DestinyData {
     return 1000;
   }
 
-  static IconData getClassIcon(int type) {
+  static IconData getClassIcon(DestinyClass type) {
     switch (type) {
       case DestinyClass.Hunter:
         return DestinyIcons.class_hunter;
@@ -209,11 +209,12 @@ class DestinyData {
         return DestinyIcons.class_titan;
       case DestinyClass.Warlock:
         return DestinyIcons.class_warlock;
+      default:
+        return DestinyIcons.destiny;
     }
-    return DestinyIcons.destiny;
   }
 
-  static IconData getAmmoTypeIcon(int type) {
+  static IconData getAmmoTypeIcon(DestinyAmmunitionType type) {
     switch (type) {
       case DestinyAmmunitionType.Primary:
         return DestinyIcons.ammo_primary;
@@ -221,21 +222,25 @@ class DestinyData {
         return DestinyIcons.ammo_special;
       case DestinyAmmunitionType.Heavy:
         return DestinyIcons.ammo_heavy;
+
+      default:
+        return DestinyIcons.destiny;
     }
-    return DestinyIcons.destiny;
   }
 
-  static Color getAmmoTypeColor(int type) {
+  static Color getAmmoTypeColor(DestinyAmmunitionType type) {
     switch (type) {
       case DestinyAmmunitionType.Special:
         return Color.fromARGB(255, 116, 247, 146);
       case DestinyAmmunitionType.Heavy:
         return Color.fromARGB(255, 179, 127, 251);
+
+      default:
+        return Colors.white;
     }
-    return Colors.white;
   }
 
-  static IconData getDamageTypeIcon(int type) {
+  static IconData getDamageTypeIcon(DamageType type) {
     switch (type) {
       case DamageType.Kinetic:
         return DestinyIcons.damage_kinetic;
@@ -245,11 +250,13 @@ class DestinyData {
         return DestinyIcons.damage_solar;
       case DamageType.Void:
         return DestinyIcons.damage_void;
+
+      default:
+        return DestinyIcons.destiny;
     }
-    return DestinyIcons.destiny;
   }
 
-  static IconData getEnergyTypeIcon(int type) {
+  static IconData getEnergyTypeIcon(DestinyEnergyType type) {
     switch (type) {
       case DestinyEnergyType.Arc:
         return DestinyIcons.damage_arc;
@@ -257,11 +264,13 @@ class DestinyData {
         return DestinyIcons.damage_solar;
       case DestinyEnergyType.Void:
         return DestinyIcons.damage_void;
+
+      default:
+        return null;
     }
-    return null;
   }
 
-  static Color getDamageTypeColor(int damageType) {
+  static Color getDamageTypeColor(DamageType damageType) {
     switch (damageType) {
       case DamageType.Arc:
         return Color.fromARGB(255, 118, 186, 230);
@@ -269,12 +278,13 @@ class DestinyData {
         return Color.fromARGB(255, 243, 98, 39);
       case DamageType.Void:
         return Color.fromARGB(255, 64, 34, 101);
+
+      default:
+        return Colors.white;
     }
-    return Colors.white;
   }
 
-
-  static Color getEnergyTypeColor(int damageType) {
+  static Color getEnergyTypeColor(DestinyEnergyType damageType) {
     switch (damageType) {
       case DestinyEnergyType.Arc:
         return Color.fromARGB(255, 118, 186, 230);
@@ -282,11 +292,12 @@ class DestinyData {
         return Color.fromARGB(255, 243, 98, 39);
       case DestinyEnergyType.Void:
         return Color.fromARGB(255, 64, 34, 101);
+      default:
+        return Colors.blueGrey.shade700;
     }
-    return Colors.blueGrey.shade700;
   }
 
-  static Color getEnergyTypeLightColor(int damageType) {
+  static Color getEnergyTypeLightColor(DestinyEnergyType damageType) {
     switch (damageType) {
       case DestinyEnergyType.Arc:
         return Color.fromARGB(255, 130, 200, 253);
@@ -294,11 +305,12 @@ class DestinyData {
         return Color.fromARGB(255, 255, 156, 74);
       case DestinyEnergyType.Void:
         return Color.fromARGB(255, 177, 120, 248);
+      default:
+        return Colors.grey.shade300;
     }
-    return Colors.grey.shade300;
   }
 
-  static int getEnergyTypeCostHash(int damageType) {
+  static int getEnergyTypeCostHash(DestinyEnergyType damageType) {
     switch (damageType) {
       case DestinyEnergyType.Arc:
         return 3779394102;
@@ -306,11 +318,13 @@ class DestinyData {
         return 3344745325;
       case DestinyEnergyType.Void:
         return 2399985800;
+
+      default:
+        return null;
     }
-    return 0;
   }
 
-  static Color getDamageTypeTextColor(int damageType) {
+  static Color getDamageTypeTextColor(DamageType damageType) {
     switch (damageType) {
       case DamageType.Arc:
         return Color.fromARGB(255, 130, 200, 253);
@@ -318,11 +332,12 @@ class DestinyData {
         return Color.fromARGB(255, 255, 156, 74);
       case DamageType.Void:
         return Color.fromARGB(255, 177, 120, 248);
+      default:
+        return Colors.white;
     }
-    return Colors.white;
   }
 
-  static Color getTierColor(int tierType) {
+  static Color getTierColor(TierType tierType) {
     switch (tierType) {
       case TierType.Basic:
         return Color.fromARGB(255, 195, 188, 180);
@@ -334,61 +349,66 @@ class DestinyData {
         return Color.fromARGB(255, 82, 47, 101);
       case TierType.Exotic:
         return Color.fromARGB(255, 206, 174, 51);
+
+      default:
+        return Color.fromARGB(255, 0, 0, 0);
     }
-    return Color.fromARGB(255, 0, 0, 0);
   }
 
-  static Color getTierTextColor(int tierType) {
+  static Color getTierTextColor(TierType tierType) {
     switch (tierType) {
       case TierType.Basic:
         return Colors.grey.shade800;
+
+      default:
+        return Colors.white;
     }
-    return Colors.white;
   }
 
-  static String getSubclassImagePath(int classType, int damageType, String subclassPath){
+  static String getSubclassImagePath(
+      DestinyClass classType, DamageType damageType, String subclassPath) {
     String path = "assets/subclasses/";
-    switch(classType){
+    switch (classType) {
       case DestinyClass.Titan:
-        path+= "titan";
+        path += "titan";
         break;
       case DestinyClass.Hunter:
-        path+= "hunter";
+        path += "hunter";
         break;
       case DestinyClass.Warlock:
-        path+= "warlock";
+        path += "warlock";
         break;
 
       default:
         return null;
     }
 
-    switch(damageType){
+    switch (damageType) {
       case DamageType.Arc:
-        path+="_arc";
+        path += "_arc";
         break;
       case DamageType.Thermal:
-        path+="_solar";
+        path += "_solar";
         break;
       case DamageType.Void:
-        path+="_void";
+        path += "_void";
         break;
       default:
         return null;
     }
 
-    switch(subclassPath.toLowerCase()){
+    switch (subclassPath.toLowerCase()) {
       case "firstpath":
       case "secondpath":
         break;
       case "thirdpath":
-        path+="_alt";
+        path += "_alt";
         break;
       default:
         return null;
     }
 
-    return path+".webp";
+    return path + ".webp";
   }
 }
 
@@ -396,25 +416,32 @@ class ProgressionHash {
   static const int Power = 1935470627;
 }
 
-enum CurrencyConversionType{
-  InventoryItem, Currency
-}
+enum CurrencyConversionType { InventoryItem, Currency }
 
-class CurrencyConversion{
+class CurrencyConversion {
   static const Map<int, CurrencyConversion> purchaseables = {
-    924468777: CurrencyConversion(CurrencyConversionType.InventoryItem, 1305274547), //Phaseglass
-    3721881826: CurrencyConversion(CurrencyConversionType.InventoryItem, 950899352), //Dusklight
-    1420498062: CurrencyConversion(CurrencyConversionType.InventoryItem, 49145143), //Simulation Seeds
-    1812969468: CurrencyConversion(CurrencyConversionType.InventoryItem, 3853748946), //Enhancement Cores
-    1845310989: CurrencyConversion(CurrencyConversionType.InventoryItem, 3487922223), //Datalattice
-    2536947844: CurrencyConversion(CurrencyConversionType.InventoryItem, 31293053), //Seraphite
-    4153440841: CurrencyConversion(CurrencyConversionType.InventoryItem, 2014411539), //Alkane Dust
-    2654422615: CurrencyConversion(CurrencyConversionType.Currency, 1022552290), //Legendary Shards
-    3664001560: CurrencyConversion(CurrencyConversionType.Currency, 3159615086), //Glimmer
+    924468777: CurrencyConversion(
+        CurrencyConversionType.InventoryItem, 1305274547), //Phaseglass
+    3721881826: CurrencyConversion(
+        CurrencyConversionType.InventoryItem, 950899352), //Dusklight
+    1420498062: CurrencyConversion(
+        CurrencyConversionType.InventoryItem, 49145143), //Simulation Seeds
+    1812969468: CurrencyConversion(
+        CurrencyConversionType.InventoryItem, 3853748946), //Enhancement Cores
+    1845310989: CurrencyConversion(
+        CurrencyConversionType.InventoryItem, 3487922223), //Datalattice
+    2536947844: CurrencyConversion(
+        CurrencyConversionType.InventoryItem, 31293053), //Seraphite
+    4153440841: CurrencyConversion(
+        CurrencyConversionType.InventoryItem, 2014411539), //Alkane Dust
+    2654422615: CurrencyConversion(
+        CurrencyConversionType.Currency, 1022552290), //Legendary Shards
+    3664001560: CurrencyConversion(
+        CurrencyConversionType.Currency, 3159615086), //Glimmer
   };
 
   final CurrencyConversionType type;
   final int hash;
 
- const CurrencyConversion(this.type, this.hash);
+  const CurrencyConversion(this.type, this.hash);
 }

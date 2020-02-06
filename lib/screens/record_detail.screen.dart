@@ -1,4 +1,4 @@
-import 'package:bungie_api/enums/destiny_record_state_enum.dart';
+import 'package:bungie_api/enums/destiny_record_state.dart';
 import 'package:bungie_api/models/destiny_record_component.dart';
 import 'package:bungie_api/models/destiny_record_definition.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -42,13 +42,12 @@ class RecordDetailScreenState extends State<RecordDetailScreen> {
     return ProfileService().getRecord(definition.hash, definition.scope);
   }
 
-  int get recordState {
+  DestinyRecordState get recordState {
     return record?.state ?? DestinyRecordState.ObjectiveNotCompleted;
   }
 
   bool get completed {
-    return (recordState & DestinyRecordState.ObjectiveNotCompleted) !=
-        DestinyRecordState.ObjectiveNotCompleted;
+    return !recordState.contains(DestinyRecordState.ObjectiveNotCompleted);
   }
 
   @override

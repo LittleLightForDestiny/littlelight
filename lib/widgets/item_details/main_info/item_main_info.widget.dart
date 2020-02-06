@@ -55,9 +55,32 @@ class ItemMainInfoWidget extends BaseDestinyStatelessItemWidget {
   Widget buildWishListInfo(BuildContext context) {
     var wishBuild = WishlistsService().getWishlistBuild(item);
     if (wishBuild == null) return Container();
-    List<Widget> items = [];
+    if (wishBuild.tags.contains(WishlistTag.PVE) && wishBuild.tags.contains(WishlistTag.PVP)) {
+      return Container(
+          padding: EdgeInsets.only(bottom: 8, left:8, right:8),
+          child: Row(children: [
+            Container(
+              decoration: BoxDecoration(
+                  color: Colors.blue.shade800,
+                  borderRadius: BorderRadius.circular(4)),
+              padding: EdgeInsets.all(2),
+              child: Icon(DestinyIcons.vanguard, size: 14),
+            ),
+            Container(width: 4,),
+            Container(
+              decoration: BoxDecoration(
+                  color: Colors.red.shade800,
+                  borderRadius: BorderRadius.circular(4)),
+              padding: EdgeInsets.all(2),
+              child: Icon(DestinyIcons.crucible, size: 14),
+            ),
+            Container(width: 8,),
+            TranslatedTextWidget(
+                "This item is considered a godroll for both PvE and PvP.")
+          ]));
+    }
     if (wishBuild.tags.contains(WishlistTag.PVE)) {
-      items.add(Container(
+      return Container(
           padding: EdgeInsets.only(bottom: 8, left:8, right:8),
           child: Row(children: [
             Container(
@@ -70,10 +93,10 @@ class ItemMainInfoWidget extends BaseDestinyStatelessItemWidget {
             Container(width: 8,),
             TranslatedTextWidget(
                 "This item is considered a PvE godroll.")
-          ])));
+          ]));
     }
     if (wishBuild.tags.contains(WishlistTag.PVP)) {
-      items.add(Container(
+      return Container(
           padding: EdgeInsets.only(bottom: 8, left:8, right:8),
           child: Row(children: [
             Container(
@@ -86,12 +109,7 @@ class ItemMainInfoWidget extends BaseDestinyStatelessItemWidget {
             Container(width: 8,),
             TranslatedTextWidget(
                 "This item is considered a PvP godroll.")
-          ])));
-    }
-    if ((items?.length ?? 0) > 0) {
-      return Column(
-        children: items,
-      );
+          ]));
     }
     return Container();
   }

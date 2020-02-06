@@ -1,5 +1,5 @@
-import 'package:bungie_api/enums/destiny_energy_type_enum.dart';
-import 'package:bungie_api/enums/socket_plug_sources_enum.dart';
+import 'package:bungie_api/enums/destiny_energy_type.dart';
+import 'package:bungie_api/enums/socket_plug_sources.dart';
 import 'package:bungie_api/models/destiny_energy_capacity_entry.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
@@ -36,7 +36,7 @@ class ItemSocketController extends ChangeNotifier {
     return def?.plug?.energyCapacity;
   }
 
-  int get armorEnergyType {
+  DestinyEnergyType get armorEnergyType {
     return armorEnergyCapacity?.energyType;
   }
 
@@ -183,10 +183,8 @@ class ItemSocketController extends ChangeNotifier {
       if (state?.isVisible == false) return null;
       if (state?.plugHash == null) return null;
       Set<int> hashes = Set();
-      var isPlugSet = (entry.plugSources & SocketPlugSources.CharacterPlugSet ==
-              SocketPlugSources.CharacterPlugSet) ||
-          (entry.plugSources & SocketPlugSources.ProfilePlugSet ==
-              SocketPlugSources.ProfilePlugSet);
+      var isPlugSet = (entry.plugSources.contains(SocketPlugSources.CharacterPlugSet)) ||
+          (entry.plugSources.contains(SocketPlugSources.ProfilePlugSet));
       if (isPlugSet) {
         var profile = ProfileService();
         var plugSet = profile.getPlugSets(entry.reusablePlugSetHash);

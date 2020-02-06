@@ -1,4 +1,5 @@
-import 'package:bungie_api/enums/destiny_component_type_enum.dart';
+import 'package:bungie_api/enums/bungie_membership_type.dart';
+import 'package:bungie_api/enums/destiny_component_type.dart';
 import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:bungie_api/models/destiny_class_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
@@ -14,7 +15,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 class SupporterCharacterWidget extends StatefulWidget {
   final int membershipId;
-  final int membershipType;
+  final BungieMembershipType membershipType;
   final BungieApiService bungie = new BungieApiService();
   final String link;
   final Widget badge;

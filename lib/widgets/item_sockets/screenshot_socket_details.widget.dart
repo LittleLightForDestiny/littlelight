@@ -1,6 +1,6 @@
-import 'package:bungie_api/enums/destiny_energy_type_enum.dart';
-import 'package:bungie_api/enums/item_perk_visibility_enum.dart';
-import 'package:bungie_api/enums/tier_type_enum.dart';
+import 'package:bungie_api/enums/destiny_energy_type.dart';
+import 'package:bungie_api/enums/item_perk_visibility.dart';
+import 'package:bungie_api/enums/tier_type.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_material_requirement_set_definition.dart';

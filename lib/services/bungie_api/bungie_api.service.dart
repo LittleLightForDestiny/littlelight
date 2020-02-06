@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:bungie_api/api/settings.dart';
+import 'package:bungie_api/enums/bungie_membership_type.dart';
+import 'package:bungie_api/enums/destiny_component_type.dart';
 import 'package:bungie_api/helpers/bungie_net_token.dart';
 import 'package:bungie_api/models/core_settings_configuration.dart';
 import 'package:bungie_api/models/destiny_equip_item_result.dart';
@@ -63,7 +65,7 @@ class BungieApiService {
         clientSecret, refreshToken);
   }
 
-  Future<DestinyProfileResponse> getCurrentProfile(List<int> components) async {
+  Future<DestinyProfileResponse> getCurrentProfile(List<DestinyComponentType> components) async {
     BungieNetToken token = await auth.getToken();
     GroupUserInfoCard membership = await auth.getMembership();
     if (membership == null) return null;
@@ -72,7 +74,7 @@ class BungieApiService {
   }
 
   Future<DestinyProfileResponse> getProfile(
-      List<int> components, String membershipId, int membershipType,
+      List<DestinyComponentType> components, String membershipId, BungieMembershipType membershipType,
       [BungieNetToken token]) async {
     DestinyProfileResponseResponse response = await Destiny2.getProfile(
         new Client(token: token), components, membershipId, membershipType);
@@ -80,7 +82,7 @@ class BungieApiService {
   }
 
   Future<DestinyVendorsResponse> getVendors(
-      List<int> components, String characterId) async {
+      List<DestinyComponentType> components, String characterId) async {
     BungieNetToken token = await auth.getToken();
     GroupUserInfoCard membership = await auth.getMembership();
     if (membership == null) return null;

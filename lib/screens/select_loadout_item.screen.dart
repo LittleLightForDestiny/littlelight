@@ -1,3 +1,4 @@
+import 'package:bungie_api/enums/destiny_class.dart';
 import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
@@ -11,7 +12,7 @@ class SelectLoadoutItemScreen extends StatefulWidget {
   final DestinyInventoryItemDefinition emblemDefinition;
   final DestinyInventoryBucketDefinition bucketDefinition;
   final Iterable<String> idsToAvoid;
-  final int classType;
+  final DestinyClass classType;
 
   SelectLoadoutItemScreen(
       {this.bucketDefinition,

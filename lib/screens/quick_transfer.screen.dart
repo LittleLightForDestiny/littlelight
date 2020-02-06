@@ -1,3 +1,4 @@
+import 'package:bungie_api/enums/destiny_class.dart';
 import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +10,7 @@ class QuickTransferScreen extends StatefulWidget {
   final UserSettingsService settings = UserSettingsService();
   final DestinyInventoryBucketDefinition bucketDefinition;
   final String characterId;
-  final int classType;
+  final DestinyClass classType;
 
   QuickTransferScreen({this.bucketDefinition, this.classType, this.characterId})
       : super();

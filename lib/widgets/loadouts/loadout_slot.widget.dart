@@ -1,3 +1,4 @@
+import 'package:bungie_api/enums/destiny_class.dart';
 import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
@@ -14,14 +15,14 @@ import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
 typedef void OnRemoveItemFromLoadout(DestinyItemComponent item, bool equipped);
-typedef void OnAddItemToLoadout(bool equipped, int classType);
+typedef void OnAddItemToLoadout(bool equipped, DestinyClass classType);
 
 class LoadoutSlotWidget extends StatelessWidget {
   final ManifestService manifest = new ManifestService();
   final ProfileService profile = new ProfileService();
   final AuthService auth = new AuthService();
   final DestinyInventoryBucketDefinition bucketDefinition;
-  final Map<int, DestinyItemComponent> equippedClassItems;
+  final Map<DestinyClass, DestinyItemComponent> equippedClassItems;
   final DestinyItemComponent equippedGenericItem;
   final List<DestinyItemComponent> unequippedItems;
   final OnRemoveItemFromLoadout onRemove;
@@ -87,7 +88,7 @@ class LoadoutSlotWidget extends StatelessWidget {
     List<Widget> items = [];
     if (isEquipment) {
       if (LoadoutItemIndex.classBucketHashes.contains(bucketDefinition.hash)) {
-        items.addAll([0, 1, 2].map((classType) => buildItemIcon(context,
+        items.addAll(DestinyClass.values.map((classType) => buildItemIcon(context,
             item: equippedClassItems[classType], classType: classType)));
       } else {
         items.addAll(equippedClassItems
@@ -117,7 +118,7 @@ class LoadoutSlotWidget extends StatelessWidget {
   }
 
   Widget buildItemIcon(BuildContext context,
-      {DestinyItemComponent item, int classType, bool equipped: true}) {
+      {DestinyItemComponent item, DestinyClass classType, bool equipped: true}) {
     BoxDecoration decoration =
         item != null && bucketDefinition.hash == InventoryBucket.subclass
             ? null

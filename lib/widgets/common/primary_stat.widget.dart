@@ -1,4 +1,5 @@
-import 'package:bungie_api/enums/destiny_item_type_enum.dart';
+import 'package:bungie_api/enums/damage_type.dart';
+import 'package:bungie_api/enums/destiny_item_type.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_stat_definition.dart';
@@ -34,7 +35,7 @@ class PrimaryStatWidget extends StatelessWidget {
     return instanceInfo?.primaryStat?.value;
   }
 
-  int get damageType {
+  DamageType get damageType {
     var value = instanceInfo?.damageType;
     if (value != null) {
       return value;

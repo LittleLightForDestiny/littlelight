@@ -265,7 +265,7 @@ class ProfileInfoState extends State<ProfileInfoWidget>
       );
     }
     PlatformData platform =
-        PlatformData.getPlatform(selectedMembership?.membershipType ?? 0);
+        PlatformData.getPlatform(selectedMembership?.membershipType);
     return Container(
         color: platform.color,
         padding: EdgeInsets.only(left: 80),

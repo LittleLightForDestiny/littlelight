@@ -8,14 +8,15 @@ part of 'item_notes.dart';
 
 ItemNotes _$ItemNotesFromJson(Map<String, dynamic> json) {
   return ItemNotes(
-      itemInstanceId: json['itemInstanceId'] as String,
-      itemHash: json['itemHash'] as int,
-      customName: json['customName'] as String,
-      notes: json['notes'] as String,
-      tags: (json['tags'] as List)?.map((e) => e as String)?.toSet(),
-      updatedAt: json['updated_at'] == null
-          ? null
-          : DateTime.parse(json['updated_at'] as String));
+    itemInstanceId: json['itemInstanceId'] as String,
+    itemHash: json['itemHash'] as int,
+    customName: json['customName'] as String,
+    notes: json['notes'] as String,
+    tags: (json['tags'] as List)?.map((e) => e as String)?.toSet(),
+    updatedAt: json['updated_at'] == null
+        ? null
+        : DateTime.parse(json['updated_at'] as String),
+  );
 }
 
 Map<String, dynamic> _$ItemNotesToJson(ItemNotes instance) => <String, dynamic>{
@@ -24,5 +25,5 @@ Map<String, dynamic> _$ItemNotesToJson(ItemNotes instance) => <String, dynamic>{
       'customName': instance.customName,
       'notes': instance.notes,
       'tags': instance.tags?.toList(),
-      'updated_at': instance.updatedAt?.toIso8601String()
+      'updated_at': instance.updatedAt?.toIso8601String(),
     };

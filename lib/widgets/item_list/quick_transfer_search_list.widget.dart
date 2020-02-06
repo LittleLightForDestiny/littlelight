@@ -1,5 +1,6 @@
-import 'package:bungie_api/enums/bucket_scope_enum.dart';
-import 'package:bungie_api/enums/destiny_class_enum.dart';
+import 'package:bungie_api/enums/bucket_scope.dart';
+import 'package:bungie_api/enums/destiny_class.dart';
+import 'package:bungie_api/enums/destiny_item_type.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/item_list/items/quicktransfer_search_item_wrapper.widget.dart';
@@ -9,9 +10,9 @@ import 'package:little_light/widgets/search/search_filters.widget.dart';
 class QuickTransferSearchListWidget extends SearchListWidget {
   final String searchText;
   final int bucketType;
-  final int classType;
+  final DestinyClass classType;
   final String characterId;
-  final int scope;
+  final BucketScope scope;
 
   QuickTransferSearchListWidget(
       {Key key,
@@ -61,7 +62,7 @@ class QuickTransferSearchListWidgetState
       : null;
 
   @override
-  List<int> get itemTypes => null;
+  List<DestinyItemType> get itemTypes => null;
 
   @override
   List<int> get excludeItemTypes => null;

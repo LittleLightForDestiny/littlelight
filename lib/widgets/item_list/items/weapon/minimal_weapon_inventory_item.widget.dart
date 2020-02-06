@@ -1,3 +1,5 @@
+import 'package:bungie_api/enums/damage_type.dart';
+import 'package:bungie_api/enums/destiny_ammunition_type.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
@@ -66,9 +68,9 @@ class MinimalWeaponInventoryItemWidget extends MinimalBaseInventoryItemWidget
   }
 
 
-  int get ammoType => definition.equippingBlock.ammoType;
+  DestinyAmmunitionType get ammoType => definition.equippingBlock.ammoType;
   
-  int get damageType => instanceInfo.damageType;
+  DamageType get damageType => instanceInfo.damageType;
 
   DestinyStat get primaryStat => instanceInfo.primaryStat;
 }

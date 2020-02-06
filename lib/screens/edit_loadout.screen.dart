@@ -1,6 +1,7 @@
 import 'dart:math';
 
-import 'package:bungie_api/enums/destiny_item_type_enum.dart';
+import 'package:bungie_api/enums/destiny_class.dart';
+import 'package:bungie_api/enums/destiny_item_type.dart';
 import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
@@ -169,7 +170,7 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> {
       BuildContext context,
       DestinyInventoryBucketDefinition bucketDef,
       bool equipped,
-      int classType) async {
+      DestinyClass classType) async {
     DestinyItemComponent item = await Navigator.push(
       context,
       MaterialPageRoute(

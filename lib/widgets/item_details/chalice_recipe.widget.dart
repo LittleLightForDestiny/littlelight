@@ -1,5 +1,6 @@
-import 'package:bungie_api/enums/damage_type_enum.dart';
-import 'package:bungie_api/enums/destiny_item_type_enum.dart';
+import 'package:bungie_api/enums/damage_type.dart';
+import 'package:bungie_api/enums/destiny_class.dart';
+import 'package:bungie_api/enums/destiny_item_type.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_sandbox_perk_definition.dart';
 import 'package:bungie_api/models/destiny_stat_definition.dart';
@@ -11,6 +12,10 @@ import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+enum TestEnum {
+  A,B,C,D
+}
 
 class ChaliceRecipeWidget extends StatelessWidget {
   final DestinyInventoryItemDefinition definition;
@@ -50,17 +55,16 @@ class ChaliceRecipeWidget extends StatelessWidget {
           children: <Widget>[
             TranslatedTextWidget("More recipes on"),
             FlatButton(
-              padding: EdgeInsets.symmetric(vertical:4, horizontal: 8),
+              padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
               child: Row(children: [
                 Container(
-                  margin: EdgeInsets.only(right:8),
+                  margin: EdgeInsets.only(right: 8),
                   width: 16,
                   height: 16,
-                  child:Image.asset("assets/imgs/braytech_icon.png"),
+                  child: Image.asset("assets/imgs/braytech_icon.png"),
                 ),
-                
                 Text('braytech.org')
-                ]),
+              ]),
               onPressed: () {
                 launch("https://braytech.org/chalice-tool");
               },
@@ -211,7 +215,7 @@ class ChaliceRecipeWidget extends StatelessWidget {
     return 1772646107;
   }
 
-  int getArmorMasterworkIconHash(int damageType) {
+  int getArmorMasterworkIconHash(DamageType damageType) {
     switch (damageType) {
       case DamageType.Arc:
         return 3130025796;
@@ -219,8 +223,9 @@ class ChaliceRecipeWidget extends StatelessWidget {
         return 3789923095;
       case DamageType.Void:
         return 1576279482;
+      default:
+        return 1456563170;
     }
-    return 1456563170;
   }
 
   int getWeaponMasterworkIconHash(WeaponMasterwork type) {
@@ -243,16 +248,16 @@ class ChaliceRecipeWidget extends StatelessWidget {
   int getArmorModifierTextHash(ArmorIntrinsics armorPerk) {
     switch (armorPerk) {
       case ArmorIntrinsics.Mobility:
-        return [1248391073, 2114652868, 3800753361][definition.classType];
+        return [1248391073, 2114652868, 3800753361][definition.classType.value];
       case ArmorIntrinsics.Recovery:
-        return [1466306887, 1779420771, 1899914236][definition.classType];
+        return [1466306887, 1779420771, 1899914236][definition.classType.value];
       case ArmorIntrinsics.Resilience:
-        return [3404948861, 3551200371, 1097521167][definition.classType];
+        return [3404948861, 3551200371, 1097521167][definition.classType.value];
     }
     return 0;
   }
 
-  int getArmorMasterworkTextHash(int type) {
+  int getArmorMasterworkTextHash(DamageType type) {
     switch (type) {
       case DamageType.Arc:
         return 1980826824;
@@ -260,8 +265,9 @@ class ChaliceRecipeWidget extends StatelessWidget {
         return 3552519857;
       case DamageType.Void:
         return 3853494024;
-    }
-    return 0;
+      default:
+        return null;
+    }    
   }
 
   int getWeaponMasterworkTextHash(WeaponMasterwork type) {
