@@ -169,7 +169,6 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/shared_preferences_fde/shared_preferences_fde.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/sqflite_fde/sqflite_fde.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/uni_links_fde/uni_links_fde.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/url_launcher_macos/url_launcher_macos.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/FMDB/FMDB.framework"
@@ -180,7 +179,6 @@ if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/shared_preferences_fde/shared_preferences_fde.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/sqflite_fde/sqflite_fde.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/uni_links_fde/uni_links_fde.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/url_launcher_macos/url_launcher_macos.framework"
 fi
 if [[ "$CONFIGURATION" == "Profile" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/FMDB/FMDB.framework"
@@ -191,7 +189,6 @@ if [[ "$CONFIGURATION" == "Profile" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/shared_preferences_fde/shared_preferences_fde.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/sqflite_fde/sqflite_fde.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/uni_links_fde/uni_links_fde.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/url_launcher_macos/url_launcher_macos.framework"
 fi
 if [ "${COCOAPODS_PARALLEL_CODE_SIGN}" == "true" ]; then
   wait
