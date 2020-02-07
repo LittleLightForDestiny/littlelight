@@ -1,9 +1,11 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:bungie_api/enums/bungie_membership_type.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:launch_review/launch_review.dart';
+import 'package:little_light/models/collaborators.dart';
+import 'package:little_light/services/littlelight/littlelight_data.service.dart';
 import 'package:little_light/services/translate/translate.service.dart';
 import 'package:little_light/widgets/about/supporter_character.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
@@ -21,6 +23,8 @@ class AboutScreen extends StatefulWidget {
 class _AboutScreenState extends State<AboutScreen> {
   String packageVersion = "";
   String appName = "";
+  CollaboratorsResponse collaborators;
+
   @override
   void initState() {
     super.initState();
@@ -31,8 +35,9 @@ class _AboutScreenState extends State<AboutScreen> {
     var info = await PackageInfo.fromPlatform();
     packageVersion = info.version;
     appName = info.appName;
-
     setState(() {});
+    collaborators = await LittleLightDataService().getCollaborators();
+    this.setState(() {});
   }
 
   @override
@@ -48,214 +53,109 @@ class _AboutScreenState extends State<AboutScreen> {
           ),
           title: TranslatedTextWidget("About"),
         ),
-        body: SingleChildScrollView(
-            child: Container(
-                padding: EdgeInsets.all(8).copyWith(left: max(screenPadding.left, 8), right: max(screenPadding.right, 8), bottom: max(screenPadding.right, 8)),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      buildAppInfo(context),
-                      Container(
-                        height: 8,
-                      ),
-                      buildContact(context),
-                      Container(height: 16),
-                      buildSupport(context),
-                      Container(
-                        height: 16,
-                      ),
-                      HeaderWidget(
-                        alignment: Alignment.centerLeft,
-                        child: TranslatedTextWidget("Development",
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                            uppercase: true),
-                      ),
-                      Container(
-                        height: 8,
-                      ),
-                      buildTagAndPlatform(4611686018441021725, BungieMembershipType.TigerPsn),
-                      Container(
-                        height: 8,
-                      ),
-                      HeaderWidget(
-                        alignment: Alignment.centerLeft,
-                        child: TranslatedTextWidget("Art",
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                            uppercase: true),
-                      ),
-                      Container(
-                        height: 8,
-                      ),
-                      buildTagAndPlatform(4611686018429190727, BungieMembershipType.TigerPsn),
-                      Container(
-                        height: 8,
-                      ),
-                      HeaderWidget(
-                        alignment: Alignment.centerLeft,
-                        child: TranslatedTextWidget("Translations",
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                            uppercase: true),
-                      ),
-                      Container(height: 8),
-                      buildTranslationHeader(context, ['de']),
-                      Container(
-                          color: Colors.blueGrey.shade800,
-                          padding: EdgeInsets.all(4),
-                          child: Column(children: [
-                            buildTagAndPlatform(4611686018463551188, BungieMembershipType.TigerPsn),
-                          ])),
-                      Container(height: 8),
-                      buildTranslationHeader(context, ['es', 'es-mx']),
-                      Container(
-                          color: Colors.blueGrey.shade800,
-                          padding: EdgeInsets.all(4),
-                          child: Column(children: [
-                            buildTagAndPlatform(4611686018429051657, BungieMembershipType.TigerPsn),
-                            Container(
-                              height: 4,
-                            ),
-                            buildTagAndPlatform(4611686018450956952, BungieMembershipType.TigerPsn),
-                          ])),
-                      Container(height: 8),
-                      buildTranslationHeader(context, ['fr']),
-                      Container(
-                          color: Colors.blueGrey.shade800,
-                          padding: EdgeInsets.all(4),
-                          child: Column(children: [
-                            buildTagAndPlatform(
-                                4611686018436875822,
-                                BungieMembershipType.TigerPsn,
-                                "https://play.google.com/store/apps/details?id=com.eldwyn.wotabyss",
-                                Container(
-                                    padding: EdgeInsets.only(top: 4),
-                                    child: Row(children: [
-                                      Container(
-                                          width: 14,
-                                          height: 14,
-                                          child: Image.asset(
-                                              'assets/imgs/arcadia_icon.png')),
-                                      Container(width: 4),
-                                      Text("Arcadia Dev",
-                                          style: TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.bold))
-                                    ]))),
-                          ])),
-                      Container(height: 8),
-                      buildTranslationHeader(context, ['it']),
-                      Container(
-                          color: Colors.blueGrey.shade800,
-                          padding: EdgeInsets.all(4),
-                          child: Column(children: [
-                            buildTagAndPlatform(4611686018468567020, BungieMembershipType.TigerSteam),
-                            Container(
-                              height: 4,
-                            ),
-                            buildTagAndPlatform(4611686018467289582, BungieMembershipType.TigerSteam),
-                            Container(
-                              height: 4,
-                            ),
-                            buildTagAndPlatform(4611686018468562417, BungieMembershipType.TigerSteam),
-                            
-                          ])),
-                      Container(height: 8),
-                      buildTranslationHeader(context, ['ja']),
-                      Container(
-                          color: Colors.blueGrey.shade800,
-                          padding: EdgeInsets.all(4),
-                          child: Column(children: [
-                            buildTagAndPlatform(4611686018467519241, BungieMembershipType.TigerSteam),
-                          ])),
-                      Container(height: 8),
-                      buildTranslationHeader(context, ['ko']),
-                      Container(
-                          color: Colors.blueGrey.shade800,
-                          padding: EdgeInsets.all(4),
-                          child: Column(children: [
-                            buildTagAndPlatform(4611686018488602145, BungieMembershipType.TigerSteam),
-                          ])),
-                      Container(height: 8),
-                      buildTranslationHeader(context, ['pt-br']),
-                      Container(
-                          color: Colors.blueGrey.shade800,
-                          padding: EdgeInsets.all(4),
-                          child: Column(children: [
-                            buildTagAndPlatform(4611686018441021725, BungieMembershipType.TigerPsn),
-                          ])),
-                      Container(height: 8),
-                      buildTranslationHeader(context, ['pl']),
-                      Container(
-                          color: Colors.blueGrey.shade800,
-                          padding: EdgeInsets.all(4),
-                          child: Column(children: [
-                            buildTagAndPlatform(4611686018451719977, BungieMembershipType.TigerPsn),
-                          ])),
-                      Container(height: 8),
-                      buildTranslationHeader(context, ['ru']),
-                      Container(
-                          color: Colors.blueGrey.shade800,
-                          padding: EdgeInsets.all(4),
-                          child: Column(children: [
-                            buildTagAndPlatform(4611686018486012725, BungieMembershipType.TigerSteam),
-                          ])),
-                      Container(height: 8),
-                      buildTranslationHeader(context, ['zh-chs']),
-                      Container(
-                          color: Colors.blueGrey.shade800,
-                          padding: EdgeInsets.all(4),
-                          child: Column(children: [
-                            buildTagAndPlatform(4611686018489331546, BungieMembershipType.TigerSteam),
-                          ])),
-                      Container(height: 8),
-                      buildTranslationHeader(context, ['zh-cht']),
-                      Container(
-                          color: Colors.blueGrey.shade800,
-                          padding: EdgeInsets.all(4),
-                          child: Column(children: [
-                            buildTagAndPlatform(4611686018484604303, BungieMembershipType.TigerSteam),
-                          ])),
-                      Container(height: 8),
-                      HeaderWidget(
-                        alignment: Alignment.centerLeft,
-                        child: TranslatedTextWidget("Supporters",
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                            uppercase: true),
-                      ),
-                      Container(
-                        height: 8,
-                      ),
-                      buildTagAndPlatform(4611686018429238118, BungieMembershipType.TigerPsn),
-                      Container(
-                        height: 8,
-                      ),
-                      buildTagAndPlatform(4611686018452346120, BungieMembershipType.TigerPsn),
-                      Container(
-                        height: 8,
-                      ),
-                      buildTagAndPlatform(4611686018430226498, BungieMembershipType.TigerXbox),
-                      Container(
-                        height: 8,
-                      ),
-                      buildTagAndPlatform(4611686018434959588, BungieMembershipType.TigerXbox),
-                      Container(
-                        height: 8,
-                      ),
-                      buildTagAndPlatform(4611686018482820655, BungieMembershipType.TigerSteam),
-                      Container(
-                        height: 8,
-                      ),
-                      buildTagAndPlatform(4611686018436933892, BungieMembershipType.TigerXbox),
-                      Container(
-                        height: 8,
-                      ),
-                      buildTagAndPlatform(4611686018433235027, BungieMembershipType.TigerXbox),
-                      Container(
-                        height: 8,
-                      ),
-                      Container(
-                        height: screenPadding.bottom,
-                      )
-                    ]))));
+        body: StaggeredGridView.countBuilder(
+          padding: EdgeInsets.all(8).add(EdgeInsets.only(left:screenPadding.left, right:screenPadding.right)),
+          addAutomaticKeepAlives: true,
+          itemBuilder: itemBuilder,
+          staggeredTileBuilder: tileBuilder,
+          mainAxisSpacing: 8,
+          crossAxisCount: 1,
+        ));
+  }
+
+  Widget itemBuilder(BuildContext context, int index) {
+    switch (index) {
+      case 0:
+        return buildAppInfo(context);
+      case 1:
+        return buildContact(context);
+      case 2:
+        return buildSupport(context);
+    }
+    if (collaborators == null) return null;
+    int currentIndex = 3;
+    if (currentIndex == index)
+      return HeaderWidget(
+      child: TranslatedTextWidget("Supporters", uppercase: true,
+              style: TextStyle(fontWeight: FontWeight.bold),
+              ),alignment: Alignment.centerLeft,);
+    currentIndex++;
+    if (index - currentIndex < collaborators.supporters.length) {
+      var player = collaborators.supporters[index - currentIndex];
+      return buildTagAndPlatform(player.membershipId, player.membershipType);
+    }
+    currentIndex += collaborators.supporters.length;
+    if (currentIndex == index)
+      return HeaderWidget(child: TranslatedTextWidget("Development", uppercase: true,
+              style: TextStyle(fontWeight: FontWeight.bold),
+              ),alignment: Alignment.centerLeft,);
+    currentIndex++;
+    if (index - currentIndex < collaborators.developers.length) {
+      var player = collaborators.developers[index - currentIndex];
+      return buildTagAndPlatform(player.membershipId, player.membershipType);
+    }
+    currentIndex += collaborators.developers.length;
+    if (currentIndex == index)
+      return HeaderWidget(child: TranslatedTextWidget("Translators", uppercase: true,
+              style: TextStyle(fontWeight: FontWeight.bold),
+              ),alignment: Alignment.centerLeft,);
+    currentIndex++;
+    for (var language in collaborators.translators) {
+      if (currentIndex == index) {
+        return buildTranslationHeader(context, language.languages);
+      }
+      currentIndex++;
+      if (index - currentIndex < language.translators.length) {
+        var player = language.translators[index - currentIndex];
+        return buildTagAndPlatform(player.membershipId, player.membershipType);
+      }
+      currentIndex += language.translators.length;
+    }
+    return null;
+  }
+
+  StaggeredTile tileBuilder(int index) {
+    switch (index) {
+      case 0:
+        return StaggeredTile.extent(1, 96);
+      case 1:
+      case 2:
+        return StaggeredTile.extent(1, 120);
+    }
+    if (collaborators == null) return null;
+    var titleTile = StaggeredTile.extent(1, 40);
+    var usertag = StaggeredTile.extent(1, 72);
+    var languageTile = StaggeredTile.extent(1, 40);
+
+    int currentIndex = 3;
+    if (currentIndex == index)
+      return titleTile;
+    currentIndex++;
+    if (index - currentIndex < collaborators.supporters.length) {
+      return usertag;
+    }
+    currentIndex += collaborators.supporters.length;
+    if (currentIndex == index)
+      return titleTile;
+    currentIndex++;
+    if (index - currentIndex < collaborators.developers.length) {
+      return usertag;
+    }
+    currentIndex += collaborators.developers.length;
+    if (currentIndex == index)
+      return titleTile;
+    currentIndex++;
+    for (var language in collaborators.translators) {
+      if (currentIndex == index) {
+        return languageTile;
+      }
+      currentIndex++;
+      if (index - currentIndex < language.translators.length) {
+        return usertag;
+      }
+      currentIndex += language.translators.length;
+    }
+    return null;
   }
 
   Widget buildAppInfo(BuildContext context) {
@@ -271,6 +171,7 @@ class _AboutScreenState extends State<AboutScreen> {
         Expanded(
             child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
               "$appName v$packageVersion",
@@ -301,12 +202,12 @@ class _AboutScreenState extends State<AboutScreen> {
         child: Image.asset("assets/imgs/flags/$code.png"));
   }
 
-  buildTagAndPlatform(int membershipId, BungieMembershipType membershipType,
+  Widget buildTagAndPlatform(String membershipId, BungieMembershipType membershipType,
       [String link, Widget badge]) {
     return SupporterCharacterWidget(membershipId, membershipType, link, badge);
   }
 
-  buildContact(BuildContext context) {
+  Widget buildContact(BuildContext context) {
     return Column(
       children: <Widget>[
         HeaderWidget(
@@ -314,7 +215,7 @@ class _AboutScreenState extends State<AboutScreen> {
             child: TranslatedTextWidget(
               "Contact",
               uppercase: true,
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: TextStyle(fontWeight: FontWeight.bold,),
             )),
         Container(
           height: 4,
@@ -384,7 +285,7 @@ class _AboutScreenState extends State<AboutScreen> {
     );
   }
 
-  buildSupport(BuildContext context) {
+  Widget buildSupport(BuildContext context) {
     bool isIOS = Platform.isIOS;
     return Column(
       children: <Widget>[
@@ -399,83 +300,87 @@ class _AboutScreenState extends State<AboutScreen> {
           height: 4,
         ),
         IntrinsicHeight(
-          child: isIOS ? buildRateButton(context) : Row(
-            children: <Widget>[
-              Expanded(
-                child: buildRateButton(context)
-              ),
-              Container(
-                width: 4,
-              ),
-              Expanded(
-                child: RaisedButton(
-                    padding: EdgeInsets.all(4),
-                    color: Color.fromRGBO(249, 104, 84, 1),
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            child: Container(
-                                width: 36,
-                                height: 36,
-                                child: Image.asset(
-                                    "assets/imgs/patreon-icon.png")),
-                          ),
-                          Container(
-                            height: 4,
-                          ),
-                          TranslatedTextWidget(
-                            "Become a Patron",
-                            uppercase: true,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 12),
-                          )
-                        ]),
-                    onPressed: () {
-                      launch('https://www.patreon.com/littlelightD2');
-                    }),
-              ),
-              Container(
-                width: 4,
-              ),
-              Expanded(
-                  child: RaisedButton(
-                      padding: EdgeInsets.all(4),
-                      color: Color.fromRGBO(26, 169, 222, 1),
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Expanded(
-                                child: Container(
-                                    width: 36,
-                                    height: 36,
-                                    child: Image.asset(
-                                        "assets/imgs/ko-fi-icon.png"))),
-                            Container(
-                              height: 4,
-                            ),
-                            TranslatedTextWidget(
-                              "Buy me a Coffee",
-                              uppercase: true,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 12),
-                            )
-                          ]),
-                      onPressed: () {
-                        launch('https://ko-fi.com/littlelight');
-                      })),
-            ],
-          ),
+          child: isIOS
+              ? buildRateButton(context)
+              : Row(
+                  children: <Widget>[
+                    Expanded(child: buildRateButton(context)),
+                    Container(
+                      width: 4,
+                    ),
+                    Expanded(
+                      child: RaisedButton(
+                          padding: EdgeInsets.all(4),
+                          color: Color.fromRGBO(249, 104, 84, 1),
+                          materialTapTargetSize:
+                              MaterialTapTargetSize.shrinkWrap,
+                          child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                      width: 36,
+                                      height: 36,
+                                      child: Image.asset(
+                                          "assets/imgs/patreon-icon.png")),
+                                ),
+                                Container(
+                                  height: 4,
+                                ),
+                                TranslatedTextWidget(
+                                  "Become a Patron",
+                                  uppercase: true,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 12),
+                                )
+                              ]),
+                          onPressed: () {
+                            launch('https://www.patreon.com/littlelightD2');
+                          }),
+                    ),
+                    Container(
+                      width: 4,
+                    ),
+                    Expanded(
+                        child: RaisedButton(
+                            padding: EdgeInsets.all(4),
+                            color: Color.fromRGBO(26, 169, 222, 1),
+                            materialTapTargetSize:
+                                MaterialTapTargetSize.shrinkWrap,
+                            child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                      child: Container(
+                                          width: 36,
+                                          height: 36,
+                                          child: Image.asset(
+                                              "assets/imgs/ko-fi-icon.png"))),
+                                  Container(
+                                    height: 4,
+                                  ),
+                                  TranslatedTextWidget(
+                                    "Buy me a Coffee",
+                                    uppercase: true,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 12),
+                                  )
+                                ]),
+                            onPressed: () {
+                              launch('https://ko-fi.com/littlelight');
+                            })),
+                  ],
+                ),
         ),
       ],
     );
   }
 
-  buildRateButton(BuildContext context) {
+  Widget buildRateButton(BuildContext context) {
     bool isIOS = Platform.isIOS;
     return RaisedButton(
         color: isIOS

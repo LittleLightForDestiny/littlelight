@@ -38,6 +38,9 @@ enum StorageKeys {
   wishlists,
   latestScreen,
   rawWishlists,
+  rawData,
+  featuredWishlists,
+  collaboratorsData
 }
 
 extension StorageKeysExtension on StorageKeys {
@@ -229,6 +232,14 @@ class StorageService {
       }
     }
     return null;
+  }
+
+  Future<DateTime> getRawFileDate(StorageKeys key, String filename) async{
+    var path = await getPath(key);
+    File file = File("$path/$filename");
+    bool exists = await file.exists();
+    if(!exists) return null;
+    return await file.lastModified();
   }
 
   Future<String> getRawFile(StorageKeys key, String filename) async {

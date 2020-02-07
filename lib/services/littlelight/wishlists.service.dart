@@ -27,6 +27,16 @@ class WishlistsService {
     wishlists = await _parseWishlists(wishlists);
     this._wishlists = wishlists;
     this._save();
+    this.updateWishlists();
+  }
+
+  Future<void> updateWishlists() async{
+    DateTime minimumDate = DateTime.now().subtract(Duration(days: 7));
+    for(var wishlist in _wishlists){
+      if(wishlist.updatedAt.isBefore(minimumDate)){
+        await _downloadWishlist(wishlist);
+      }
+    }
   }
 
   List<Wishlist> getWishlists() {

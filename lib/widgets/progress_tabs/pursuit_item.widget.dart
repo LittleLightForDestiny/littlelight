@@ -245,7 +245,7 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
   }
 
   @override
-  bool get wantKeepAlive => fullyLoaded ?? false;
+  bool get wantKeepAlive => true;
 
   buildIcon(BuildContext context) {
     return Container(

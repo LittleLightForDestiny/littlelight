@@ -30,7 +30,7 @@ class DimWishlistParser {
       if (line.toLowerCase().contains("pvp"))
         tags.add(WishlistTag.PVP);
       
-      if(line.toLowerCase().contains("curated") || line.toLowerCase().contains("masterwork"))
+      if(line.toLowerCase().contains("curated"))
         tags.add(WishlistTag.Bungie);
 
       if(tags.length > 0) return tags;

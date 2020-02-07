@@ -18,7 +18,6 @@ import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/item_list/character_info.widget.dart';
 import 'package:little_light/widgets/progress_tabs/bounty_item.widget.dart';
-import 'package:little_light/widgets/progress_tabs/pursuit_item.widget.dart';
 
 class CharacterPursuitsListWidget extends StatefulWidget {
   final String characterId;
@@ -145,7 +144,6 @@ class _CharacterPursuitsListWidgetState
     return StaggeredGridView.countBuilder(
         crossAxisCount: 30,
         crossAxisSpacing: 4,
-        addAutomaticKeepAlives: true,
         addRepaintBoundaries: true,
         itemCount: (items?.length ?? 0),
         padding: EdgeInsets.all(4).copyWith(top: 0, left: max(screenPadding.left, 4), right: max(screenPadding.right, 4)),
@@ -166,9 +164,9 @@ class _CharacterPursuitsListWidgetState
         break;
       case _PursuitListItemType.Quest:
         if (isTablet) {
-          return StaggeredTile.extent(10, 250);
+          return StaggeredTile.extent(10, 150);
         }
-        return StaggeredTile.fit(30);
+        return StaggeredTile.extent(30, 150);
       
       case _PursuitListItemType.Container:
       case _PursuitListItemType.Bounty:
@@ -210,11 +208,11 @@ class _CharacterPursuitsListWidgetState
         return HeaderWidget(child: field, alignment: Alignment.centerLeft,);
         break;
       case _PursuitListItemType.Quest:
-        return PursuitItemWidget(
-            characterId: widget.characterId,
-            item: item.item,
-            key: Key("pursuit_${item.item?.itemHash}_${item.item?.itemInstanceId}_${widget.characterId}"));
-        break;
+        // return PursuitItemWidget(
+        //     characterId: widget.characterId,
+        //     item: item.item,
+        //     key: Key("pursuit_${item.item?.itemHash}_${item.item?.itemInstanceId}_${widget.characterId}"));
+        // break;
       case _PursuitListItemType.Other:
       case _PursuitListItemType.Container:
       case _PursuitListItemType.Bounty:

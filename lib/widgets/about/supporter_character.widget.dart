@@ -14,7 +14,7 @@ import 'package:little_light/widgets/icon_fonts/destiny_icons_icons.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SupporterCharacterWidget extends StatefulWidget {
-  final int membershipId;
+  final String membershipId;
   final BungieMembershipType membershipType;
   final BungieApiService bungie = new BungieApiService();
   final String link;
@@ -28,7 +28,7 @@ class SupporterCharacterWidget extends StatefulWidget {
   }
 }
 
-class SupporterCharacterWidgetState extends State<SupporterCharacterWidget> {
+class SupporterCharacterWidgetState extends State<SupporterCharacterWidget> with AutomaticKeepAliveClientMixin {
   DestinyCharacterComponent lastPlayed;
   UserInfoCard userInfo;
 
@@ -58,6 +58,7 @@ class SupporterCharacterWidgetState extends State<SupporterCharacterWidget> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Container(
         height: 72,
         child: Stack(children: [
@@ -171,4 +172,7 @@ class SupporterCharacterWidgetState extends State<SupporterCharacterWidget> {
       }, style: TextStyle(fontSize: 12)),
     ]);
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

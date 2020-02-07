@@ -168,23 +168,30 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
     );
   }
 
+  FilterItem getFilter(FilterType type){
+    if(widget?.tabData?.filterData?.containsKey(type) ?? false){
+      return widget?.tabData?.filterData[type];
+    }
+    return null;
+  }
+
   FilterItem get powerLevelFilter =>
-      widget?.tabData?.filterData[FilterType.powerLevel];
+      getFilter(FilterType.powerLevel);
   FilterItem get damageTypeFilter =>
-      widget?.tabData?.filterData[FilterType.damageType];
+      getFilter(FilterType.damageType);
   FilterItem get tierTypeFilter =>
-      widget?.tabData?.filterData[FilterType.tierType];
+      getFilter(FilterType.tierType);
   FilterItem get bucketTypeFilter =>
-      widget?.tabData?.filterData[FilterType.bucketType];
+      getFilter(FilterType.bucketType);
   FilterItem get subtypeFilter =>
-      widget?.tabData?.filterData[FilterType.itemSubType];
-  FilterItem get typeFilter => widget?.tabData?.filterData[FilterType.itemType];
+      getFilter(FilterType.itemSubType);
+  FilterItem get typeFilter => getFilter(FilterType.itemType);
   FilterItem get ammoTypeFilter =>
-      widget?.tabData?.filterData[FilterType.ammoType];
+      getFilter(FilterType.ammoType);
   FilterItem get classTypeFilter =>
-      widget?.tabData?.filterData[FilterType.classType];
+      getFilter(FilterType.classType);
   FilterItem get wishlistTagFilter =>
-      widget?.tabData?.filterData[FilterType.wishlistTag];
+      getFilter(FilterType.wishlistTag);
 
   List<DestinyItemType> get itemTypes => widget?.tabData?.itemTypes;
   List<int> get excludeItemTypes => widget?.tabData?.excludeItemTypes;

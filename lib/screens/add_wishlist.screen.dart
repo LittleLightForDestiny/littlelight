@@ -1,9 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
-import 'package:http/http.dart' as http;
 import 'package:little_light/models/wish_list.dart';
+import 'package:little_light/services/littlelight/littlelight_data.service.dart';
 import 'package:little_light/services/translate/translate.service.dart';
 import 'package:little_light/services/user_settings/user_settings.service.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
@@ -39,10 +37,7 @@ class _AddWishlistScreenState extends State<AddWishlistScreen> {
   }
 
   loadPopular() async {
-    var res = await http.get(
-        "https://gist.githubusercontent.com/marquesinijatinha/7e91f59b666c0d9b65f50900cdd49831/raw/ed73e69929e89d03f624f872c7b8f71d1d38b257/popular_wishlists.json");
-    List<dynamic> json = jsonDecode(res.body);
-    popular = json.map((j) => Wishlist.fromJson(j)).toList();
+    popular = await LittleLightDataService().getFeaturedWishlists();
     setState(() {});
   }
 
