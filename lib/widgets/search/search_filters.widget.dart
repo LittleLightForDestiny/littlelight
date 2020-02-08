@@ -265,18 +265,28 @@ class SearchFiltersWidgetState extends State<SearchFiltersWidget> {
       case FilterType.wishlistTag:
         Color color;
         Widget icon;
-        String text;
+        TranslatedTextWidget text;
         switch (id as WishlistTag) {
           case WishlistTag.PVE:
             color = Colors.blue.shade800;
             icon = Icon(DestinyIcons.vanguard, size: 20);
-            text = "PvE";
+            text = TranslatedTextWidget("PvE",
+                              uppercase: true,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ));
             break;
 
           case WishlistTag.PVP:
             color = Colors.red.shade800;
             icon = Icon(DestinyIcons.crucible, size: 20);
-            text = "PvP";
+            text = TranslatedTextWidget("PvP",
+                              uppercase: true,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ));
             break;
 
           case WishlistTag.Trash:
@@ -284,18 +294,26 @@ class SearchFiltersWidgetState extends State<SearchFiltersWidget> {
             icon = Container(
                 height: 20,
                 width: 30,
-                child: Text(
-                  "🤢",
-                  style: TextStyle(fontSize: 20, height: 1.2),
-                  textAlign: TextAlign.center,
-                ));
-            text = "Trash";
+                child: Image.asset(
+                "assets/imgs/trash-roll-icon.png",
+              ));
+            text = TranslatedTextWidget("Trash",
+                              uppercase: true,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ));
             break;
 
           case WishlistTag.Bungie:
             color = Colors.black;
             icon = Icon(DestinyIcons.bungie, size: 20);
-            text = "Curated";
+            text = TranslatedTextWidget("Curated",
+                              uppercase: true,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ));
         }
         return FractionallySizedBox(
             widthFactor: 1 / 2,
@@ -308,12 +326,7 @@ class SearchFiltersWidgetState extends State<SearchFiltersWidget> {
                         children: [
                           icon,
                           Container(height: 4),
-                          TranslatedTextWidget(text,
-                              uppercase: true,
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              )),
+                          text
                         ])),
                 filter.values.contains(id),
                 color: color,

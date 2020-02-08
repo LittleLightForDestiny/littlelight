@@ -59,7 +59,7 @@ class MediumBaseInventoryItemWidget extends BaseInventoryItemWidget {
   }
   @override
   double get tagIconSize{
-    return 10;
+    return 12;
   }
 
   Widget perksWidget(BuildContext context) {

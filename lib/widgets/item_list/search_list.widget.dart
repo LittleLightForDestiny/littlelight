@@ -374,7 +374,7 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
         var notes = getWishListNotes(item?.item);
         if(notes != null){
           for(var n in notes){
-            match = match || _words.every((w)=>n.toLowerCase().contains(w));
+            match = match || _words.every((w)=>n?.toLowerCase()?.contains(w) ?? false);
           }
         }
 

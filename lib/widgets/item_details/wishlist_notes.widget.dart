@@ -38,9 +38,9 @@ class WishlistNotesWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children:
-          notes.map((n) => Container(
+          notes?.where((n)=>(n?.length ?? 0) > 0)?.map((n) => Container(
             padding: EdgeInsets.all(4),
-            child: Text(n))).toList(),
+            child: Text("$n")))?.toList() ?? [],
     );
   }
 }

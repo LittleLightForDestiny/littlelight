@@ -147,15 +147,15 @@ class WishlistsService {
   }
 
   addToWishList(
-      int hash, List<int> perks, Set<WishlistTag> specialties, String notes) {
+      int hash, List<int> perks, Set<WishlistTag> specialties, Set<String> notes) {
     perks?.sort();
     var buildId = perks.join('_');
     var wishlist =
         _items[hash] = _items[hash] ?? WishListItem.builder(itemHash: hash);
     var build = wishlist.builds[buildId] = wishlist.builds[buildId] ??
         WishListBuild.builder(identifier: buildId, perks: perks.toSet());
-    build.notes.add(notes);
-    build.tags.addAll(specialties);
+    build.notes.addAll(notes.where((n)=>(n?.length ?? 0) > 0));
+    build.tags.addAll(specialties.where((s)=>s != null));
     for (var i in perks) {
       var perk = wishlist.perks[i] = wishlist.perks[i] ?? Set();
       perk.addAll(specialties);

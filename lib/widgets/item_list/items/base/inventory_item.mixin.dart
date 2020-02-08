@@ -7,7 +7,7 @@ import 'package:little_light/widgets/common/base/base_destiny_stateless_item.wid
 import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/item_name_bar/item_name_bar.widget.dart';
 import 'package:little_light/widgets/common/primary_stat.widget.dart';
-import 'package:little_light/widgets/icon_fonts/destiny_icons_icons.dart';
+import 'package:little_light/widgets/common/wishlist_badge.widget.dart';
 
 mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget {
   final String uniqueId = "";
@@ -186,59 +186,12 @@ mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget {
     return Container();
   }
 
-  List<Widget> trailingWishlistIcons(BuildContext context) {
-    var tags = WishlistsService().getWishlistBuildTags(item);
-    if (tags == null) return [];
-    List<Widget> items = [];
-    if (tags.contains(WishlistTag.PVE)) {
-      items.add(buildTagIcon(context, Colors.blue.shade800,
-          Icon(DestinyIcons.vanguard, size: tagIconSize)));
-    }
-    if (tags.contains(WishlistTag.PVP)) {
-      items.add(buildTagIcon(context, Colors.red.shade800,
-          Icon(DestinyIcons.crucible, size: tagIconSize)));
-    }
-    if (tags.contains(WishlistTag.Trash)) {
-      items.add(buildTagIcon(
-          context,
-          Colors.lightGreen.shade500,
-          Text(
-            "🤢",
-            style: TextStyle(fontSize: tagIconSize, height: 1.3),
-            textAlign: TextAlign.center,
-          )));
-    }
-    if (tags.contains(WishlistTag.Bungie)) {
-      items.add(buildTagIcon(
-          context,
-          Colors.black,
-          Icon(DestinyIcons.bungie, size: tagIconSize)));
-    }
-    if(tags.length == 0){
-      items.add(buildTagIcon(
-          context,
-          Colors.amber.shade600,
-          Icon(Icons.star, size: tagIconSize)));
-    }
-    return items;
-  }
-
-  Widget buildTagIcon(BuildContext context, Color bgColor, Widget icon) {
-    return Container(
-        margin: EdgeInsets.symmetric(vertical: 2),
-        child: AspectRatio(
-            aspectRatio: 1,
-            child: Container(
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                  color: bgColor, borderRadius: BorderRadius.circular(4)),
-              child: icon,
-            )));
-  }
-
   Widget namebarTrailingWidget(BuildContext context) {
     List<Widget> items = [];
-    items.addAll(trailingWishlistIcons(context));
+    var tags = WishlistsService().getWishlistBuildTags(item);
+    if(tags != null){
+      items.add(WishlistBadgeWidget(tags:tags, size:tagIconSize));
+    }
     if (trailing != null) {
       items.add(trailing);
     }
