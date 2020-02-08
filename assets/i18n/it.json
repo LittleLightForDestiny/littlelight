@@ -230,8 +230,12 @@
     "Updated at": "Aggiornato il",
     "For more information on how wishlists works, or on how to create your own wishlist, please look at:": "Per ulteriori informazioni riguardo al funzionamento delle wishlist, o come creare le proprie wishlist, si prega di guardare qui:",
     "You can add community curated wishlists (aka DIM™️ wishlists) on Little Light to check your god rolls.": "Puoi aggiungere delle wishlist create dalla comunità (le DIM™️ wishlist) su Little Light per confrontare i tuoi god roll.",
-    "Wishlist Tags": "Wishlist Tags",
+    "Wishlist Tags": "Etichette della Wishlist",
     "This item is a Bungie curated roll.": "Questo oggetto è un roll curato dalla Bungie.",
     "This item is considered a trash roll.": "Questo oggetto è considerato un roll spazzatura.",
-    "Update": "Aggiorna"
+    "Update": "Aggiorna",
+    "PvE": "PvE",
+    "PvP": "PvP",
+    "Trash": "Trash",
+    "Curated": "Curated"
 }

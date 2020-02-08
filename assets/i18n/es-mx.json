@@ -233,5 +233,9 @@
     "Wishlist Tags": "Etiquetas de lista de deseos",
     "This item is a Bungie curated roll.": "Este equipo es un Bungie roll.",
     "This item is considered a trash roll.": "Este equipo se considera un roll basura.",
-    "Update": "Actualizar"
+    "Update": "Actualizar",
+    "PvE": "PvE",
+    "PvP": "PvP",
+    "Trash": "Trash",
+    "Curated": "Curated"
 }

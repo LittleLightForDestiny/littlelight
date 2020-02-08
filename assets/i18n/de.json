@@ -201,7 +201,7 @@
     "Vault": "Tresor",
     "Couldn&#39;t render this widget properly. Please report this to @LittleLightD2 on Twitter or via GitHub issues": "Das rendern dieses Widget war nicht möglich. Bitte melden sie diesen Fehler an @LittleLightD2 auf Twitter oder GitHub issues",
     "Evasion": "Ausweichen",
-    "Summon": "Summon",
+    "Summon": "Rufe",
     "Consecrated Mind": "Konsekrierten Geist",
     "Sanctified Mind": "Geweihter Geist",
     "Energy Cost": "Energiekosten",
@@ -233,5 +233,9 @@
     "Wishlist Tags": "Wishlist Tags",
     "This item is a Bungie curated roll.": "This item is a Bungie curated roll.",
     "This item is considered a trash roll.": "This item is considered a trash roll.",
-    "Update": "Update"
+    "Update": "Update",
+    "PvE": "PvE",
+    "PvP": "PvP",
+    "Trash": "Trash",
+    "Curated": "Curated"
 }

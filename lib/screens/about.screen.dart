@@ -96,7 +96,7 @@ class _AboutScreenState extends State<AboutScreen> {
     }
     currentIndex += collaborators.developers.length;
     if (currentIndex == index)
-      return HeaderWidget(child: TranslatedTextWidget("Translators", uppercase: true,
+      return HeaderWidget(child: TranslatedTextWidget("Translations", uppercase: true,
               style: TextStyle(fontWeight: FontWeight.bold),
               ),alignment: Alignment.centerLeft,);
     currentIndex++;
