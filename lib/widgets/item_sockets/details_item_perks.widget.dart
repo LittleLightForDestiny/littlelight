@@ -6,6 +6,8 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_socket_category_definition.dart';
 import 'package:bungie_api/models/destiny_socket_category_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/models/wish_list.dart';
+import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
@@ -13,6 +15,7 @@ import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:little_light/widgets/common/wishlist_corner_badge.decoration.dart';
 import 'package:little_light/widgets/item_sockets/base_item_sockets.widget.dart';
 import 'package:little_light/widgets/item_sockets/item_socket.controller.dart';
 
@@ -223,11 +226,13 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
     }
 
     BorderSide borderSide = BorderSide(color: borderColor, width: 2);
+    var tags = WishlistsService().getPerkTags(item?.itemHash, plugItemHash).where((element) => [WishlistTag.PVE, WishlistTag.PVP].contains(element)).toSet();
 
     return Container(
         key: Key("item_perk_$plugItemHash"),
         padding: EdgeInsets.all(0),
         margin: EdgeInsets.only(bottom: 8),
+        foregroundDecoration: (tags?.length ?? 0) > 0 ? WishlistCornerBadgeDecoration(tags:tags, badgeSize: 14) : null,
         child: FlatButton(
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(4), side: borderSide),
@@ -241,7 +246,7 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
                     plugItemHash)),
             Container(width: 8),
             Expanded(
-              child: ManifestText<DestinyInventoryItemDefinition>(plugItemHash),
+              child: ManifestText<DestinyInventoryItemDefinition>(plugItemHash, maxLines: 2,),
             )
           ]),
           onPressed: () {
@@ -304,7 +309,7 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
               right: 0,
               left:0,
               child: Center(
-                  child: buildSpecialtiesIcons(plugItemHash)))
+                  child: buildWishlistTagIcons(plugItemHash)))
         ]));
   }
 }

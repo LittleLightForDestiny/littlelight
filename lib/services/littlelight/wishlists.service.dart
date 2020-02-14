@@ -13,29 +13,60 @@ class WishlistsService {
   }
   WishlistsService._internal();
 
-  Map<int, WishListItem> _items = Map();
+  Map<int, WishlistItem> _items = Map();
 
   List<Wishlist> _wishlists;
 
   Set<String> _buildIds = Set();
 
   init() async {
-    List<dynamic> json = await storage.getJson(StorageKeys.wishlists);
-    var wishlists = json != null
-        ? json.map((item) => Wishlist.fromJson(item)).toList()
-        : [Wishlist.defaults()];
-    wishlists = await _parseWishlists(wishlists);
-    this._wishlists = wishlists;
+    var items = await _loadPreParsed();
+    this._wishlists = await _loadFromStorage(items == null);
+    if(items != null){
+      _items = items;
+    }
     this._save();
     this.updateWishlists();
   }
 
+  Future<Map<int, WishlistItem>> _loadPreParsed() async{
+    Map<String, dynamic> json = await storage.getJson(StorageKeys.parsedWishlists);
+    if(json == null) return null;
+    var items = json.map<int, WishlistItem>((key, value) => MapEntry(int.parse(key), WishlistItem.fromJson(value)));
+    return items;
+  }
+
+  Future<List<Wishlist>> _loadFromStorage(bool forceParse) async{
+    List<dynamic> json = await storage.getJson(StorageKeys.wishlists);
+    var wishlists = json != null
+        ? json.map((item) => Wishlist.fromJson(item)).toList()
+        : [Wishlist.defaults()];
+    if(forceParse){
+      wishlists = await _parseWishlists(wishlists);
+    }
+    return wishlists;
+  }
+
   Future<void> updateWishlists() async{
     DateTime minimumDate = DateTime.now().subtract(Duration(days: 7));
+    bool needsParsing = false;
     for(var wishlist in _wishlists){
-      if(wishlist.updatedAt.isBefore(minimumDate)){
+      bool needUpdate = wishlist.updatedAt.isBefore(minimumDate);
+
+      //TODO: remove this temporary fix to replace default wishlist to the tagged one
+      if(wishlist.url == "https://raw.githubusercontent.com/48klocs/dim-wish-list-sources/master/voltron.txt"){
+        wishlist.url = "https://raw.githubusercontent.com/LittleLightForDestiny/dim-wish-list-sources/master/voltron.txt";
+        wishlist.isDefault = true;
+        needUpdate = true;
+      }
+
+      if(needUpdate){
         await _downloadWishlist(wishlist);
       }
+      needsParsing = needsParsing || needUpdate;
+    }
+    if(needsParsing){
+      await _parseWishlists(_wishlists);
     }
   }
 
@@ -87,6 +118,8 @@ class WishlistsService {
   Future<void> _save() async {
     var json = this._wishlists.map((w) => w.toJson()).toList();
     await storage.setJson(StorageKeys.wishlists, json);
+    var parsed = this._items.map<String, dynamic>((k, v)=>MapEntry(k.toString(), v.toJson()));
+    await storage.setJson(StorageKeys.parsedWishlists, parsed);
   }
 
   Future<String> _downloadWishlist(Wishlist wishlist) async {
@@ -96,7 +129,7 @@ class WishlistsService {
     return res.body;
   }
 
-  Set<WishlistTag> getPerkSpecialties(int itemHash, int plugItemHash) {
+  Set<WishlistTag> getPerkTags(int itemHash, int plugItemHash) {
     var wishlist = _items[itemHash];
     if (wishlist?.perks == null) return Set();
     return _items[itemHash]?.perks[plugItemHash] ?? Set();
@@ -151,9 +184,9 @@ class WishlistsService {
     perks?.sort();
     var buildId = perks.join('_');
     var wishlist =
-        _items[hash] = _items[hash] ?? WishListItem.builder(itemHash: hash);
+        _items[hash] = _items[hash] ?? WishlistItem.builder(itemHash: hash);
     var build = wishlist.builds[buildId] = wishlist.builds[buildId] ??
-        WishListBuild.builder(identifier: buildId, perks: perks.toSet());
+        WishlistBuild.builder(identifier: buildId, perks: perks.toSet());
     build.notes.addAll(notes.where((n)=>(n?.length ?? 0) > 0));
     build.tags.addAll(specialties.where((s)=>s != null));
     for (var i in perks) {

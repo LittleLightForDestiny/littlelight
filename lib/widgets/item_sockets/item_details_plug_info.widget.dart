@@ -69,7 +69,7 @@ class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget {
 
   Widget buildEnergyCost(BuildContext context) {
     var cost = definition?.plug?.energyCost;
-    if ((cost?.energyCost ?? 0) < 0) {
+    if ((cost?.energyCost ?? 0) < 1) {
       return Container();
     }
     return Column(children: [

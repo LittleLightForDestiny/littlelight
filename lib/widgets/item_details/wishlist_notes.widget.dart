@@ -12,7 +12,7 @@ class WishlistNotesWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var notes = WishlistsService().getWishlistBuildNotes(item);
-    if (notes == null) {
+    if ((notes?.length ?? 0) == 0) {
       return Container();
     }
 

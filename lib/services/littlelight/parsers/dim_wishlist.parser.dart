@@ -7,7 +7,7 @@ class DimWishlistParser {
 
   parse(String text) async {
     var lines = text.split('\n');
-    
+
     Set<String> genericNotes = Set();
     Set<WishlistTag> genericTags = Set();
     for (var line in lines) {
@@ -15,60 +15,69 @@ class DimWishlistParser {
         genericNotes = Set();
         genericTags = Set();
       }
-      genericNotes.add(_getGenericNotes(line));
-      genericTags.addAll(_getGenericTags(line) ?? Set());
 
       if (line.contains("dimwishlist:")) {
-        Set<WishlistTag> tags = _getBuildTags(line) ?? Set();
+        Set<WishlistTag> tags = _getBuildTags(line, genericTags) ?? Set();
         Set<String> notes = Set();
-        notes.add(_getBuildNotes(line));
+        var note = _getBuildNotes(line); 
+        if(note != null){
+          notes.add(_getBuildNotes(line));
+        }
         notes.addAll(genericNotes ?? Set());
-        _addLineToWishList(line, tags.followedBy(genericTags).toSet(), notes.followedBy(genericNotes).toSet());
+        _addLineToWishList(line, tags, notes.followedBy(genericNotes).toSet());
+      }else{
+        var note = _getGenericNotes(line);
+        if(note != null){
+          genericNotes.add(_getGenericNotes(line));
+        }
+        var tags = _getGenericTags(line);
+        if(tags != null){
+          genericTags.addAll(tags);
+        }
       }
     }
   }
 
   Set<WishlistTag> _getGenericTags(String line) {
-    if (line.contains("//") || line.contains("//notes:")) {
-      Set<WishlistTag> tags = Set();
-      if (line.toLowerCase().contains("🤢🤢🤢")) {
-        tags.add(WishlistTag.Trash);
-      }
-      if (line.toLowerCase().contains("pve")) {
-        tags.add(WishlistTag.PVE);
-      }
-      if (line.toLowerCase().contains("pvp")) {
-        tags.add(WishlistTag.PVP);
-      }
-
-      if (line.toLowerCase().contains("curated")) {
-        tags.add(WishlistTag.Bungie);
-      }
-
-      if (tags.length > 0) return tags;
+    if (line.contains("//notes:")) {
+      return _parseTags(line.substring(line.indexOf("//notes:") + 8));
+    }
+    if (line.contains("//")) {
+      return _parseTags(line.substring(line.indexOf("//") + 2));
     }
     return null;
   }
 
-  Set<WishlistTag> _getBuildTags(String line) {
-    if (line.contains("#notes:")) {
-      Set<WishlistTag> tags = Set();
-      if (line.toLowerCase().contains("🤢🤢🤢")) {
-        tags.add(WishlistTag.Trash);
-      }
-      if (line.toLowerCase().contains("pve")) {
-        tags.add(WishlistTag.PVE);
-      }
-      if (line.toLowerCase().contains("pvp")) {
-        tags.add(WishlistTag.PVP);
-      }
-
-      if (line.toLowerCase().contains("curated")) {
-        tags.add(WishlistTag.Bungie);
-      }
-
-      if (tags.length > 0) return tags;
+  Set<WishlistTag> _getBuildTags(String line, Set<WishlistTag> genericTags) {
+    if (line.contains("#notes:") && line.contains("|tags:")) {
+      return _parseTags(line.substring(line.indexOf("|tags:") + 6));
     }
+    if (line.contains("#notes:")) {
+      return _parseTags(line.substring(line.indexOf("#notes:") + 7))?.followedBy(genericTags)?.toSet();
+    }
+    if((genericTags?.length ?? 0) > 0){
+      return genericTags;
+    }
+    return null;
+  }
+
+  Set<WishlistTag> _parseTags(String tagsStr) {
+    Set<WishlistTag> tags = Set();
+    if (tagsStr.toLowerCase().contains("🤢🤢🤢") ||
+        tagsStr.toLowerCase().contains("trash")) {
+      tags.add(WishlistTag.Trash);
+    }
+    if (tagsStr.toLowerCase().contains("pve")) {
+      tags.add(WishlistTag.PVE);
+    }
+    if (tagsStr.toLowerCase().contains("pvp")) {
+      tags.add(WishlistTag.PVP);
+    }
+
+    if (tagsStr.toLowerCase().contains("curated")) {
+      tags.add(WishlistTag.Bungie);
+    }
+    if (tags.length > 0) return tags;
     return null;
   }
 
@@ -82,7 +91,7 @@ class DimWishlistParser {
   String _getBuildNotes(String line) {
     if (line.contains("#notes:")) {
       var index = line.indexOf("#notes:");
-      return line.substring(index + 6);
+      return line.substring(index + 7);
     }
     return null;
   }

@@ -37,6 +37,7 @@ class _AboutScreenState extends State<AboutScreen> {
     appName = info.appName;
     setState(() {});
     collaborators = await LittleLightDataService().getCollaborators();
+    collaborators.supporters.shuffle();
     this.setState(() {});
   }
 

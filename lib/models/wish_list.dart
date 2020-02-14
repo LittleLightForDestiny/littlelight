@@ -7,40 +7,58 @@ part 'wish_list.g.dart';
 
 enum WishlistTag { PVP, PVE, Bungie, Trash }
 
-class WishListBuild {
+@JsonSerializable()
+class WishlistBuild {
   String identifier;
   Set<int> perks = Set();
   Set<WishlistTag> tags = Set();
   Set<String> notes = Set();
-  WishListBuild({this.identifier, this.perks, this.tags, this.notes});
+  WishlistBuild({this.identifier, this.perks, this.tags, this.notes});
 
-  factory WishListBuild.builder({
+  factory WishlistBuild.builder({
     String identifier,
     Set<int> perks,
     Set<WishlistTag> specialties,
     Set<String> notes,
   }) {
-    return WishListBuild(
+    return WishlistBuild(
         identifier: identifier,
         perks: perks ?? Set(),
         tags: specialties ?? Set(),
         notes: notes ?? Set());
   }
+
+  factory WishlistBuild.fromJson(dynamic json) {
+    return _$WishlistBuildFromJson(json);
+  }
+
+  dynamic toJson() {
+    return _$WishlistBuildToJson(this);
+  }
 }
 
-class WishListItem {
+@JsonSerializable()
+class WishlistItem {
   int itemHash;
   Map<int, Set<WishlistTag>> perks = Map();
-  Map<String, WishListBuild> builds = Map();
-  WishListItem({this.itemHash, this.builds, this.perks});
+  Map<String, WishlistBuild> builds = Map();
+  WishlistItem({this.itemHash, this.builds, this.perks});
 
-  factory WishListItem.builder({
+  factory WishlistItem.builder({
     int itemHash,
     Map<int, Set<WishlistTag>> perks,
-    Map<String, WishListBuild> builds,
+    Map<String, WishlistBuild> builds,
   }) {
-    return WishListItem(
+    return WishlistItem(
         itemHash: itemHash, perks: perks ?? Map(), builds: builds ?? Map());
+  }
+
+  factory WishlistItem.fromJson(dynamic json) {
+    return _$WishlistItemFromJson(json);
+  }
+
+  dynamic toJson() {
+    return _$WishlistItemToJson(this);
   }
 }
 
@@ -57,6 +75,8 @@ class Wishlist {
   String description;
   DateTime updatedAt;
   WishlistType type;
+  @JsonKey(defaultValue:true)
+  bool isDefault;
 
   Wishlist({
     this.url,
@@ -65,6 +85,7 @@ class Wishlist {
     this.description,
     this.updatedAt,
     this.type,
+    this.isDefault=false
   });
 
   String get filename{
@@ -79,10 +100,11 @@ class Wishlist {
 
   factory Wishlist.defaults(){
     return Wishlist(
-      url: "https://raw.githubusercontent.com/48klocs/dim-wish-list-sources/master/voltron.txt",
+      url: "https://raw.githubusercontent.com/LittleLightForDestiny/dim-wish-list-sources/master/voltron.txt",
       name: "DIM's/48klocs voltron.txt",
       type: WishlistType.DimWishlist,
-      description: "This is a compiled collection of god/recommended rolls from top community minds.\nContributions from: u/Mercules904, u/pandapaxxy, u/HavocsCall, and @chrisfried. \nCompiled into one list by u/48klocs / @48klocs"
+      description: "This is a compiled collection of god/recommended rolls from top community minds.\nContributions from: u/Mercules904, u/pandapaxxy, u/HavocsCall, and @chrisfried. \nCompiled into one list by u/48klocs / @48klocs",
+      isDefault: true
     );
   }
 

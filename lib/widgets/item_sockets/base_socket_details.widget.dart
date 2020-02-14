@@ -416,7 +416,7 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget>
   }
 
   List<Widget> wishlistIcons(BuildContext context, int plugItemHash) {
-    var tags = WishlistsService().getPerkSpecialties(itemDefinition?.hash, plugItemHash);
+    var tags = WishlistsService().getPerkTags(itemDefinition?.hash, plugItemHash);
     if (tags == null) return [];
     List<Widget> items = [];
     if (tags.contains(WishlistTag.PVE)) {
@@ -451,38 +451,38 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget>
     return Container();
   }
 
-  Widget buildWishlistInfo(BuildContext context) {
-    var tags = WishlistsService().getPerkSpecialties(itemDefinition?.hash, definition.hash);
+  Widget buildWishlistInfo(BuildContext context, [double iconSize = 16, double fontSize=13]) {
+    var tags = WishlistsService().getPerkTags(itemDefinition?.hash, definition.hash);
     if (tags == null) return Container();
     if (tags.contains(WishlistTag.PVE) && tags.contains(WishlistTag.PVP)) {
       return Container(
-          padding: EdgeInsets.symmetric(vertical: 8),
+          padding: EdgeInsets.symmetric(vertical: iconSize/2),
           child: Row(children: [
-            WishlistBadgeWidget(tags:[WishlistTag.PVE, WishlistTag.PVP].toSet(), size:16),
+            WishlistBadgeWidget(tags:[WishlistTag.PVE, WishlistTag.PVP].toSet(), size:iconSize),
             Container(width: 4,),
             Expanded(child:
             TranslatedTextWidget(
-                "This perk is considered good for both PvE and PvP on this item.", style:TextStyle(fontSize: 13, fontWeight: FontWeight.w300)))
+                "This perk is considered good for both PvE and PvP on this item.", style:TextStyle(fontSize: fontSize, fontWeight: FontWeight.w300)))
           ]));
     }
     if (tags.contains(WishlistTag.PVE)) {
       return Container(
-          padding: EdgeInsets.symmetric(vertical: 8),
+          padding: EdgeInsets.symmetric(vertical: iconSize/2),
           child: Row(children: [
-            WishlistBadgeWidget(tags:[WishlistTag.PVE].toSet(), size:16),
+            WishlistBadgeWidget(tags:[WishlistTag.PVE].toSet(), size:iconSize),
             Container(width: 4,),
             Expanded(child:TranslatedTextWidget(
-                "This perk is considered good for PvE on this item.", style:TextStyle(fontSize: 13, fontWeight: FontWeight.w300)))
+                "This perk is considered good for PvE on this item.", style:TextStyle(fontSize: fontSize, fontWeight: FontWeight.w300)))
           ]));
     }
     if (tags.contains(WishlistTag.PVP)) {
       return Container(
-          padding: EdgeInsets.symmetric(vertical: 8),
+          padding: EdgeInsets.symmetric(vertical: iconSize/2),
           child: Row(children: [
-            WishlistBadgeWidget(tags:[WishlistTag.PVP].toSet(), size:16),
+            WishlistBadgeWidget(tags:[WishlistTag.PVP].toSet(), size:iconSize),
             Container(width: 4,),
             Expanded(child:TranslatedTextWidget(
-                "This perk is considered good for PvP on this item.", style:TextStyle(fontSize: 13, fontWeight: FontWeight.w300)))
+                "This perk is considered good for PvP on this item.", style:TextStyle(fontSize: fontSize, fontWeight: FontWeight.w300)))
           ]));
     }
     return Container();

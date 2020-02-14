@@ -66,6 +66,7 @@ class ScreenShotItemStatsState
   @override
   List<Widget> buildStats(context) {
     Map<int, StatValues> statValues = getStatValues();
+    
     StatValues totalStat;
     if (definition.itemType == DestinyItemType.Armor) {
       totalStat = StatValues();

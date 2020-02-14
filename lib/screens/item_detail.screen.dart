@@ -161,7 +161,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
             characterId: widget.characterId,
           ),
           SliverList(
-              delegate: SliverChildListDelegate([
+              delegate: SliverChildListDelegate([    
             buildSaleDetails(context),
             ItemMainInfoWidget(item, definition, instanceInfo),
             buildWishlistNotes(context),
@@ -213,6 +213,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
           SliverList(
               delegate: SliverChildListDelegate([
             buildSaleDetails(context),
+            ItemMainInfoWidget(item, definition, instanceInfo),
             buildManagementBlock(context),
             buildActionButtons(context),
             buildDuplicates(context),

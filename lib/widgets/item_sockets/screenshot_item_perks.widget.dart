@@ -4,9 +4,11 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_socket_category_definition.dart';
 import 'package:bungie_api/models/destiny_socket_category_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/models/wish_list.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
+import 'package:little_light/widgets/common/wishlist_badge.widget.dart';
 import 'package:little_light/widgets/item_sockets/base_item_sockets.widget.dart';
 import 'package:little_light/widgets/item_sockets/item_socket.controller.dart';
 
@@ -116,9 +118,8 @@ class ScreenShotItemPerksWidgetState<T extends ScreenShotItemPerksWidget>
     if (item == null) {
       var isRandom = controller.randomizedPlugHashes(socketIndex).length > 0;
       if (isRandom) {
-        return controller
-            .bungieRollPlugHashes(socketIndex)
-            .followedBy([controller.socketRandomizedSelectedPlugHash(socketIndex)]).toSet();
+        return controller.bungieRollPlugHashes(socketIndex).followedBy(
+            [controller.socketRandomizedSelectedPlugHash(socketIndex)]).toSet();
       }
     }
     return super.socketPlugHashes(socketIndex);
@@ -137,8 +138,8 @@ class ScreenShotItemPerksWidgetState<T extends ScreenShotItemPerksWidget>
     bool isSelected = plugItemHash == controller.selectedPlugHash;
     Color bgColor = Colors.transparent;
     Color borderColor = Colors.grey.shade300.withOpacity(.5);
-    if (isEquipped && !intrinsic) { 
-      bgColor = DestinyData.perkColor.withOpacity(.5); 
+    if (isEquipped && !intrinsic) {
+      bgColor = DestinyData.perkColor.withOpacity(.5);
     }
     if (isSelectedOnSocket && !intrinsic) {
       bgColor = DestinyData.perkColor;
@@ -152,11 +153,12 @@ class ScreenShotItemPerksWidgetState<T extends ScreenShotItemPerksWidget>
     BorderSide borderSide =
         BorderSide(color: borderColor, width: 2 * widget.pixelSize);
 
-    return Container(
-        key: Key("plug_${socketIndex}_$plugItemHash"),
-        padding: EdgeInsets.all(0),
-        margin: EdgeInsets.only(bottom: 16 * widget.pixelSize),
-        child: AspectRatio(
+    return Stack(children: [
+      Container(
+          key: Key("plug_${socketIndex}_$plugItemHash"),
+          padding: EdgeInsets.all(0),
+          margin: EdgeInsets.only(bottom: 16 * widget.pixelSize),
+          child: AspectRatio(
             aspectRatio: 1,
             child: FlatButton(
               shape: intrinsic && !isExotic
@@ -171,6 +173,18 @@ class ScreenShotItemPerksWidgetState<T extends ScreenShotItemPerksWidget>
               onPressed: () {
                 controller.selectSocket(socketIndex, plugItemHash);
               },
-            )));
+            ),
+          )),
+          Positioned(
+                  top: 0,
+                  right: 0,
+                  left: 0,
+                  child: Center(child: buildWishlistTagIcons(plugItemHash)))
+    ]);
+  }
+
+  @override
+  Widget buildWishlistIcon(BuildContext context, WishlistTag tag) {
+    return WishlistBadgeWidget(tags: [tag].toSet(), size: 24*widget.pixelSize);
   }
 }

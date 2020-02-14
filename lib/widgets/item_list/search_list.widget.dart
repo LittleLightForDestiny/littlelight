@@ -61,18 +61,20 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
     });
   }
 
-  Set<WishlistTag> getWishListTags(DestinyItemComponent item){
-    if(item?.itemInstanceId == null) return null;
-    if(!this.wishlistTags.containsKey(item.itemInstanceId)){
-      this.wishlistTags[item.itemInstanceId] = WishlistsService().getWishlistBuildTags(item);
+  Set<WishlistTag> getWishListTags(DestinyItemComponent item) {
+    if (item?.itemInstanceId == null) return null;
+    if (!this.wishlistTags.containsKey(item.itemInstanceId)) {
+      this.wishlistTags[item.itemInstanceId] =
+          WishlistsService().getWishlistBuildTags(item);
     }
     return this.wishlistTags[item.itemInstanceId];
   }
 
-  Set<String> getWishListNotes(DestinyItemComponent item){
-    if(item?.itemInstanceId == null) return null;
-    if(!this.wishlistNotes.containsKey(item.itemInstanceId)){
-      this.wishlistNotes[item.itemInstanceId] = WishlistsService().getWishlistBuildNotes(item);
+  Set<String> getWishListNotes(DestinyItemComponent item) {
+    if (item?.itemInstanceId == null) return null;
+    if (!this.wishlistNotes.containsKey(item.itemInstanceId)) {
+      this.wishlistNotes[item.itemInstanceId] =
+          WishlistsService().getWishlistBuildNotes(item);
     }
     return this.wishlistNotes[item.itemInstanceId];
   }
@@ -93,11 +95,21 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
     });
     allItems.addAll(
         profile.getProfileInventory().map((item) => ItemWithOwner(item, null)));
-    allItems.sort((a, b) => InventoryUtils.sortDestinyItems(a.item, b.item));
-    items = allItems.where((item) {
-      return item.item.itemInstanceId != null || includeUninstanced;
-    }).toList();
+
+
     Iterable<int> hashes = allItems.map((i) => i.item.itemHash);
+    itemDefinitions = await manifest
+        .getDefinitions<DestinyInventoryItemDefinition>(hashes.toList());
+    items = allItems.where((item) {
+      bool instanced = item?.item?.itemInstanceId != null || includeUninstanced;
+      bool validType = (widget.tabData?.itemTypes?.length ?? 0) == 0 ||
+          (widget.tabData?.itemTypes
+                  ?.contains(itemDefinitions[item.item.itemHash]?.itemType) ??
+              false);
+      return instanced && validType;
+    }).toList();
+
+    allItems.sort((a, b) => InventoryUtils.sortDestinyItems(a.item, b.item));
 
     Set<int> perkHashes = Set();
     items.forEach((i) {
@@ -110,9 +122,6 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
         perkHashes.addAll(r.map((p) => p.plugItemHash));
       });
     });
-
-    itemDefinitions = await manifest
-        .getDefinitions<DestinyInventoryItemDefinition>(hashes.toList());
 
     perkDefinitions = await manifest
         .getDefinitions<DestinyInventoryItemDefinition>(perkHashes.toList());
@@ -168,38 +177,28 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
     );
   }
 
-  FilterItem getFilter(FilterType type){
-    if(widget?.tabData?.filterData?.containsKey(type) ?? false){
+  FilterItem getFilter(FilterType type) {
+    if (widget?.tabData?.filterData?.containsKey(type) ?? false) {
       return widget?.tabData?.filterData[type];
     }
     return null;
   }
 
-  FilterItem get powerLevelFilter =>
-      getFilter(FilterType.powerLevel);
-  FilterItem get damageTypeFilter =>
-      getFilter(FilterType.damageType);
-  FilterItem get tierTypeFilter =>
-      getFilter(FilterType.tierType);
-  FilterItem get bucketTypeFilter =>
-      getFilter(FilterType.bucketType);
-  FilterItem get subtypeFilter =>
-      getFilter(FilterType.itemSubType);
+  FilterItem get powerLevelFilter => getFilter(FilterType.powerLevel);
+  FilterItem get damageTypeFilter => getFilter(FilterType.damageType);
+  FilterItem get tierTypeFilter => getFilter(FilterType.tierType);
+  FilterItem get bucketTypeFilter => getFilter(FilterType.bucketType);
+  FilterItem get subtypeFilter => getFilter(FilterType.itemSubType);
   FilterItem get typeFilter => getFilter(FilterType.itemType);
-  FilterItem get ammoTypeFilter =>
-      getFilter(FilterType.ammoType);
-  FilterItem get classTypeFilter =>
-      getFilter(FilterType.classType);
-  FilterItem get wishlistTagFilter =>
-      getFilter(FilterType.wishlistTag);
+  FilterItem get ammoTypeFilter => getFilter(FilterType.ammoType);
+  FilterItem get classTypeFilter => getFilter(FilterType.classType);
+  FilterItem get wishlistTagFilter => getFilter(FilterType.wishlistTag);
 
   List<DestinyItemType> get itemTypes => widget?.tabData?.itemTypes;
   List<int> get excludeItemTypes => widget?.tabData?.excludeItemTypes;
   String get ownerId => widget?.tabData?.ownerId;
 
   List<ItemWithOwner> get filteredItems => filterItems();
-
-
 
   List<ItemWithOwner> filterItems() {
     if (itemDefinitions == null) return [];
@@ -223,6 +222,7 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
         if (match) perksMatched.add(p.hash);
         if (hardMatch) priorityPerksMatched.add(p.hash);
       }
+
       itemsToFilter = itemsToFilter.where((item) {
         var def = itemDefinitions[item.item.itemHash];
         if (def == null) return false;
@@ -270,9 +270,9 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
 
         if (wishlistTagFilter != null) {
           var values = wishlistTagFilter.values;
-          if(values.length != 0){
+          if (values.length != 0) {
             var tags = getWishListTags(item.item);
-            if(!values.any((v)=>tags?.contains(v) ?? false)){
+            if (!values.any((v) => tags?.contains(v) ?? false)) {
               return false;
             }
           }
@@ -288,6 +288,7 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
             return false;
           }
         }
+
 
         if (typeFilter != null) {
           var values = typeFilter.values;
@@ -307,6 +308,7 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
           }
         }
 
+
         if (ammoTypeFilter != null) {
           var values = ammoTypeFilter.values;
           var ammoType = def?.equippingBlock?.ammoType;
@@ -316,6 +318,7 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
             return false;
           }
         }
+
 
         if (classTypeFilter != null) {
           var values = classTypeFilter.values;
@@ -330,6 +333,8 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
         if (_search.length == 0) {
           return true;
         }
+
+
         bool match = false;
         bool hardMatch = false;
         var _name = removeDiacritics(def.displayProperties.name).toLowerCase();
@@ -343,7 +348,7 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
         hardMatch = hardMatch || _itemTypeDisplayName.startsWith(_search);
 
         var sockets =
-            widget.profile.getItemSockets(item?.item?.itemInstanceId ?? 0);
+            widget.profile.getItemSockets(item?.item?.itemInstanceId);
         var reusablePlugs =
             widget.profile.getItemReusablePlugs(item?.item?.itemInstanceId);
         if (sockets != null) {
@@ -372,9 +377,10 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T>
         }
 
         var notes = getWishListNotes(item?.item);
-        if(notes != null){
-          for(var n in notes){
-            match = match || _words.every((w)=>n?.toLowerCase()?.contains(w) ?? false);
+        if (notes != null) {
+          for (var n in notes) {
+            match = match ||
+                _words.every((w) => n?.toLowerCase()?.contains(w) ?? false);
           }
         }
 

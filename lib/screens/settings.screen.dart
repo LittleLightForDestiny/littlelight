@@ -506,9 +506,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
         return TranslatedTextWidget("Item Holder",
             uppercase: true, style: style);
 
+      case ItemSortParameterType.StatTotal:
+        return TranslatedTextWidget("Stats Total",
+            uppercase: true, style: style);
+
       default:
         return Text(
-          "oops",
+          parameter.type.toString(),
           style: style,
         );
     }

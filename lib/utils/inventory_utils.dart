@@ -8,6 +8,7 @@ import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
+import 'package:bungie_api/models/destiny_stat.dart';
 import 'package:bungie_api/models/interpolation_point.dart';
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
@@ -99,7 +100,8 @@ class InventoryUtils {
       DestinyInventoryItemDefinition defB,
       String ownerA,
       String ownerB,
-      List<String> characterOrder}) {
+      List<String> characterOrder,
+      int paramHash}) {
     int result = 0;
     if (sortingParams == null) {
       sortingParams = UserSettingsService().itemOrdering;
@@ -200,6 +202,18 @@ class InventoryUtils {
           return orderB.compareTo(orderA);
         }
         return direction * orderA.compareTo(orderB);
+
+      case ItemSortParameterType.StatTotal:
+        Map<String, DestinyStat> statsA =
+            ProfileService().getPrecalculatedStats(itemA.itemInstanceId);
+        Map<String, DestinyStat> statsB =
+            ProfileService().getPrecalculatedStats(itemB.itemInstanceId);
+        int totalA = statsA?.values?.fold(0, (v, s) => v + s.value) ?? 0;
+        int totalB = statsB?.values?.fold(0, (v, s) => v + s.value) ?? 0;
+        return direction * totalA.compareTo(totalB);
+
+      case ItemSortParameterType.Stat:
+        return 0;
     }
     return 0;
   }

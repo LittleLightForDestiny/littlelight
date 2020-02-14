@@ -35,6 +35,7 @@ enum StorageKeys {
   bungieCommonSettings,
   cachedVendors,
   loadoutsOrder,
+  parsedWishlists,
   wishlists,
   latestScreen,
   rawWishlists,

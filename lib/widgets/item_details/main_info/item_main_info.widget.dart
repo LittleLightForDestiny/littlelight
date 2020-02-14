@@ -113,6 +113,19 @@ class ItemMainInfoWidget extends BaseDestinyStatelessItemWidget {
                     "This item is considered a trash roll."))
           ]));
     }
+    if(tags.length == 0){
+      return Container(
+          padding: EdgeInsets.only(bottom: 8, left: 8, right: 8),
+          child: Row(children: [
+            WishlistBadgeWidget(tags: Set()),
+            Container(
+              width: 8,
+            ),
+            Expanded(
+                child: TranslatedTextWidget(
+                    "This item is considered an uncategorized godroll."))
+          ]));
+    }
     return Container();
   }
 

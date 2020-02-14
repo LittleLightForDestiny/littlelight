@@ -72,7 +72,6 @@ class QuickTransferSearchListWidgetState
 
   @override
   List<ItemWithOwner> get filteredItems {
-    print(widget.scope);
     var items = super.filteredItems;
     if (widget.characterId != null) {
       items = items.where((i) => i.ownerId != widget.characterId).toList();

@@ -311,6 +311,7 @@ class _ScreenshotPerkDetailsWidgetState
   buildContent(BuildContext context) {
     Iterable<Widget> items = [
       buildDescription(context),
+      buildWishlistInfo(context, 24*widget.pixelSize, 20*widget.pixelSize),
       buildEnergyCost(context),
       buildSandBoxPerks(context),
       buildStats(context),
@@ -329,6 +330,8 @@ class _ScreenshotPerkDetailsWidgetState
             style: TextStyle(
                 fontSize: 24 * widget.pixelSize, fontWeight: FontWeight.w300)));
   }
+
+  
 
   @override
   Widget buildEnergyCost(BuildContext context) {

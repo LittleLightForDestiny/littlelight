@@ -150,21 +150,25 @@ class BaseItemSocketsWidgetState<T extends BaseItemSocketsWidget>
 
 
   List<Widget> wishlistIcons(BuildContext context, int plugItemHash) {
-    var tags = WishlistsService().getPerkSpecialties(definition.hash, plugItemHash);
+    var tags = WishlistsService().getPerkTags(definition.hash, plugItemHash);
     if (tags == null) return [];
     List<Widget> items = [];
     if (tags.contains(WishlistTag.PVE)) {
-      items.add(WishlistBadgeWidget(tags:[WishlistTag.PVE].toSet(), size:16));
+      items.add(buildWishlistIcon(context, WishlistTag.PVE));
     }else{
       items.add(Container());
     }
     if (tags.contains(WishlistTag.PVP)) {
-      items.add(WishlistBadgeWidget(tags:[WishlistTag.PVP].toSet(), size:16));
+      items.add(buildWishlistIcon(context, WishlistTag.PVP));
     }
     return items;
   }
 
-  Widget buildSpecialtiesIcons(int plugItemHash) {
+  buildWishlistIcon(BuildContext context, WishlistTag tag){
+    return WishlistBadgeWidget(tags:[tag].toSet(), size:16);
+  }
+
+  Widget buildWishlistTagIcons(int plugItemHash) {
     var icons = wishlistIcons(context, plugItemHash);
     if ((icons?.length ?? 0) > 0) {
       return Row(

@@ -1,5 +1,6 @@
 import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
+import 'package:little_light/widgets/common/corner_badge.decoration.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
 import 'package:flutter/material.dart';
@@ -30,9 +31,18 @@ class TabsCharacterMenuWidget extends StatelessWidget {
   }
 
   List<Widget> getButtons() {
-    if (characters == null) {
+    if ((characters?.length ?? 0) == 0) {
       return [Container()];
     }
+    String lastPlayedCharId = characters.first.characterId;
+    DateTime lastPlayedDate = DateTime.tryParse(characters.first.dateLastPlayed) ?? DateTime.fromMicrosecondsSinceEpoch(0);
+    characters.forEach((char) {
+      var date = DateTime.tryParse(char.dateLastPlayed) ?? DateTime.fromMicrosecondsSinceEpoch(0);
+      if(date.isAfter(lastPlayedDate)){
+        lastPlayedDate = date;
+        lastPlayedCharId = char.characterId;
+      }
+    });
     List<TabMenuButton> buttons = characters
         .asMap()
         .map((index, character) => MapEntry<int, TabMenuButton>(
@@ -40,6 +50,7 @@ class TabsCharacterMenuWidget extends StatelessWidget {
             TabMenuButton(
                 key: Key(
                     "tabmenu_${character.characterId}_${character.emblemHash}"),
+                lastPlayed: character.characterId == lastPlayedCharId,
                 character: character)))
         .values
         .toList();
@@ -57,8 +68,9 @@ class TabsCharacterMenuWidget extends StatelessWidget {
 class TabMenuButton extends StatefulWidget {
   final DestinyCharacterComponent character;
   final ManifestService manifest = new ManifestService();
+  final bool lastPlayed;
 
-  TabMenuButton({this.character, Key key}) : super(key: key);
+  TabMenuButton({this.character, Key key, this.lastPlayed=true}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => new TabMenuButtonState();
@@ -85,6 +97,7 @@ class TabMenuButtonState extends State<TabMenuButton> {
     return Container(
         decoration:
             BoxDecoration(border: Border.all(color: Colors.white, width: 1)),
+        foregroundDecoration: widget.lastPlayed ? CornerBadgeDecoration(badgeSize: 15, colors: [Colors.amber.shade100, Colors.amber.shade300]) : null,
         width: 40,
         height: 40,
         margin: EdgeInsets.only(left: 4, right: 4, bottom: 10),

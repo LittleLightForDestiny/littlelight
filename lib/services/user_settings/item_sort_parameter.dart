@@ -13,7 +13,9 @@ enum ItemSortParameterType {
   Quantity,
   ItemOwner,
   ExpirationDate,
-  QuestGroup
+  QuestGroup,
+  StatTotal,
+  Stat
 }
 
 @JsonSerializable()
@@ -37,6 +39,7 @@ class ItemSortParameter {
       ItemSortParameter(type: ItemSortParameterType.PowerLevel, direction: -1),
       ItemSortParameter(type: ItemSortParameterType.TierType, direction: -1),
       ItemSortParameter(type: ItemSortParameterType.Name),
+      ItemSortParameter(type: ItemSortParameterType.StatTotal, direction: -1, active:false),
       ItemSortParameter(type: ItemSortParameterType.ItemOwner, active: false),
       ItemSortParameter(type: ItemSortParameterType.SubType, active: false),
       ItemSortParameter(type: ItemSortParameterType.ClassType, active: false),
