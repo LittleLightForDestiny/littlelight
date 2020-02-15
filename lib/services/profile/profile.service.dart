@@ -111,16 +111,17 @@ class ProfileService {
     if (!skipUpdate)
       _broadcaster.push(NotificationEvent(NotificationType.requestedUpdate));
     try {
-      DestinyProfileResponse res = await _updateProfileData(components);
+      DestinyProfileResponse res = await _updateProfileData(components); 
       this._lastLoadedFrom = LastLoadedFrom.server;
       if (!skipUpdate)
         _broadcaster.push(NotificationEvent(NotificationType.receivedUpdate));
       this._cacheProfile(_profile);
-      if (_timer?.isActive ?? false) {
+      if (_timer?.isActive ?? false) { 
         startAutomaticUpdater();
       }
       return res;
     } catch (e) {
+      print(e);
       if (!skipUpdate)
         _broadcaster.push(NotificationEvent(NotificationType.updateError));
       if (!skipUpdate) await Future.delayed(Duration(seconds: 2));
