@@ -69,6 +69,7 @@ class SelectLoadoutBackgroundScreenState extends PresentationNodeScreenState {
 
    @override
   Widget buildBody(BuildContext context) {
+    if(definition == null) return Container();
     return PresentationNodeTabsWidget(
       presentationNodeHashes: definition.children.presentationNodes.map((p)=>p.presentationNodeHash).toList(),
       depth: 0,
