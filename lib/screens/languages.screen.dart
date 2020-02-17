@@ -5,9 +5,8 @@ import 'package:little_light/screens/initial.screen.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/storage/storage.service.dart';
 import 'package:little_light/services/translate/translate.service.dart';
-
+import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-import 'package:shimmer/shimmer.dart';
 
 class LanguagesScreen extends StatefulWidget {
   @override
@@ -57,7 +56,7 @@ class _LanguagesScreenState extends State<LanguagesScreen> {
           key: Key("title_$selectedLanguage"),
         ),
       ),
-      body: languages == null ? buildLoadingAnim(context) : buildBody(context),
+      body: languages == null ? LoadingAnimWidget() : buildBody(context),
       bottomNavigationBar: buildBottomBar(context),
     );
   }
@@ -176,16 +175,5 @@ class _LanguagesScreenState extends State<LanguagesScreen> {
         width: !canDelete ? 0 : 4,
       )
     ]);
-  }
-
-  Widget buildLoadingAnim(BuildContext context) {
-    return Center(
-        child: Container(
-            width: 96,
-            child: Shimmer.fromColors(
-              baseColor: Colors.blueGrey.shade300,
-              highlightColor: Colors.white,
-              child: Image.asset("assets/anim/loading.webp"),
-            )));
   }
 }

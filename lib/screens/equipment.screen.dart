@@ -1,10 +1,9 @@
 import 'dart:async';
-import 'package:bungie_api/enums/destiny_class.dart';
+
 import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/screens/new_search.screen.dart';
-import 'package:little_light/screens/search.screen.dart';
 import 'package:little_light/services/bungie_api/enums/destiny_item_category.enum.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
