@@ -52,17 +52,17 @@ class PrimaryStatWidget extends StatelessWidget {
 
   List<Widget> mainLineWidgets(BuildContext context) {
     List<Widget> widgets = [];
-    if (definition.itemType == DestinyItemType.Weapon &&
+    if (definition?.itemType == DestinyItemType.Weapon &&
         !suppressDamageTypeIcon) {
       widgets.add(damageTypeIcon(context));
     }
-    if (definition.itemType == DestinyItemType.Armor &&
+    if (definition?.itemType == DestinyItemType.Armor &&
         !suppressClassTypeIcon) {
       widgets.add(classTypeIcon(context));
     }
     widgets.add(
         valueField(context, DestinyData.getDamageTypeTextColor(damageType)));
-    if (definition.itemType == DestinyItemType.Weapon &&
+    if (definition?.itemType == DestinyItemType.Weapon &&
         !suppressAmmoTypeIcon) {
       widgets.add(ammoTypeIcon(context));
     }
