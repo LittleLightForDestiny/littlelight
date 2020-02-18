@@ -1,14 +1,14 @@
+import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:little_light/exceptions/exception_handler.dart';
 import 'package:little_light/screens/initial.screen.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'dart:async';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
-import 'package:flutter/foundation.dart';
 
 int restartCounter = 0;
 void main() async {

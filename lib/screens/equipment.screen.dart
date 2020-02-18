@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'package:bungie_api/enums/destiny_class.dart';
+
 import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:little_light/screens/search.screen.dart';
+import 'package:little_light/screens/new_search.screen.dart';
 import 'package:little_light/services/bungie_api/enums/destiny_item_category.enum.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
@@ -286,29 +286,10 @@ class EquipmentScreenState extends State<EquipmentScreen>
       IconButton(
           icon: Icon(FontAwesomeIcons.search, color: Colors.white),
           onPressed: () {
-            SearchTabData searchData;
-            switch (typeTabController.index) {
-              case 0:
-                searchData = SearchTabData.weapons();
-                break;
-              case 1:
-                DestinyClass classType;
-                if (charTabController.index < characters.length) {
-                  DestinyCharacterComponent char =
-                      characters[charTabController.index];
-                  classType = char?.classType;
-                }
-                searchData = SearchTabData.armor(classType);
-                break;
-              case 2:
-                searchData = SearchTabData.flair();
-                break;
-            }
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => SearchScreen(
-                  tabData: searchData,
+                builder: (context) => NewSearchScreen(
                 ),
               ),
             );

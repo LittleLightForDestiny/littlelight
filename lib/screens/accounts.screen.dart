@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:bungie_api/models/general_user.dart';
 import 'package:bungie_api/helpers/oauth.dart';
+import 'package:bungie_api/models/general_user.dart';
 import 'package:bungie_api/models/group_user_info_card.dart';
 import 'package:bungie_api/models/user_membership_data.dart';
 import 'package:flutter/material.dart';
@@ -11,10 +11,9 @@ import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/storage/storage.service.dart';
 import 'package:little_light/utils/platform_data.dart';
+import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
-
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-import 'package:shimmer/shimmer.dart';
 
 class AccountsScreen extends StatefulWidget {
   final AuthService auth = AuthService();
@@ -62,7 +61,7 @@ class _AccountsScreenState extends State<AccountsScreen> {
         ),
       ),
       body:
-          memberships == null ? buildLoadingAnim(context) : buildBody(context),
+          memberships == null ? LoadingAnimWidget() : buildBody(context),
       bottomNavigationBar: buildBottomBar(context),
     );
   }
@@ -206,17 +205,6 @@ class _AccountsScreenState extends State<AccountsScreen> {
         ),
       ),
     ));
-  }
-
-  Widget buildLoadingAnim(BuildContext context) {
-    return Center(
-        child: Container(
-            width: 96,
-            child: Shimmer.fromColors(
-              baseColor: Colors.blueGrey.shade300,
-              highlightColor: Colors.white,
-              child: Image.asset("assets/anim/loading.webp"),
-            )));
   }
 
   addAccount(BuildContext context) async {

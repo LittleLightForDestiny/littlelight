@@ -5,6 +5,7 @@ import 'package:little_light/services/littlelight/littlelight_data.service.dart'
 import 'package:little_light/services/translate/translate.service.dart';
 import 'package:little_light/services/user_settings/user_settings.service.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
+import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -126,7 +127,7 @@ class _AddWishlistScreenState extends State<AddWishlistScreen> {
 
   Widget buildPopularWishlists(BuildContext context) {
     if (popular == null) {
-      return buildLoadingAnim(context);
+      return LoadingAnimWidget();
     }
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       HeaderWidget(
