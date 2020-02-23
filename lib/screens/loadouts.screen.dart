@@ -163,7 +163,7 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
           loadouts.insert(newIndex, removed);
           LoadoutsService().saveLoadoutsOrder(loadouts);
         },
-        builder: (context, parameter, handle) =>
+        itemBuilder: (context, parameter, handle) =>
             buildSortItem(context, parameter, handle));
   }
 
