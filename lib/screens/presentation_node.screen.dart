@@ -41,8 +41,8 @@ class PresentationNodeScreenState<T extends PresentationNodeScreen>
   DestinyPresentationNodeDefinition definition;
   @override
   void initState() {
-    print(widget.isCategorySet);
     super.initState();
+    
     if (definition == null && widget.presentationNodeHash != null) {
       loadDefinition();
     }

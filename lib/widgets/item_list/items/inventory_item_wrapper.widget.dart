@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:bungie_api/enums/destiny_item_type.dart';
 import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
@@ -68,13 +69,12 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
   @override
   void initState() {
     uniqueId = Uuid().v4();
-    if (isLoaded) {
-      this.definition = widget.manifest
-          .getDefinitionFromCache<DestinyInventoryItemDefinition>(
-              widget.item.itemHash);
-    }
+    this.definition = widget.manifest
+        .getDefinitionFromCache<DestinyInventoryItemDefinition>(
+            widget?.item?.itemHash);
+    
     super.initState();
-    if (widget.item != null && !isLoaded) {
+    if (widget.item != null && this.definition == null){
       getDefinitions();
     }
   }
@@ -100,7 +100,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
   getDefinitions() async {
     queueSize++;
     if (queueSize > 1) {
-      await Future.delayed(Duration(milliseconds: 100 * queueSize));
+      await Future.delayed(Duration(milliseconds: 100 * min(queueSize, 20)));
       if (!mounted) {
         queueSize--;
         return;

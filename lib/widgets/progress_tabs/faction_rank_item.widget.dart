@@ -41,8 +41,9 @@ class FactionRankItemWidgetState<T extends FactionRankItemWidget>
 
   @override
   void initState() {
-    progression = widget.progression;
     super.initState();
+    
+    progression = widget.progression;
     loadDefinitions();
     subscription = widget.broadcaster.listen((event) {
       if (event.type == NotificationType.receivedUpdate && mounted) {

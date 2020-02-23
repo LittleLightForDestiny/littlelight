@@ -17,8 +17,8 @@ class TriumphsScreen extends PresentationNodeScreen {
 class TriumphsScreenState extends PresentationNodeScreenState<TriumphsScreen> {
   @override
   void initState() {
-    SelectedPagePersistence.saveLatestScreen(SelectedPagePersistence.triumphs);
     super.initState();
+    SelectedPagePersistence.saveLatestScreen(SelectedPagePersistence.triumphs);
   }
 
   @override

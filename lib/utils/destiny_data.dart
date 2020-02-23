@@ -351,7 +351,7 @@ class DestinyData {
         return Color.fromARGB(255, 206, 174, 51);
 
       default:
-        return Color.fromARGB(255, 0, 0, 0);
+        return null;
     }
   }
 

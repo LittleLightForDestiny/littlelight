@@ -9,7 +9,8 @@ class CharacterTabWidget extends StatefulWidget {
   final int currentGroup;
   final Map<int, double> scrollPositions;
   CharacterTabWidget(this.character, this.currentGroup,
-      {this.scrollPositions, Key key}):super(key:key);
+      {this.scrollPositions, Key key})
+      : super(key: key);
   @override
   CharacterTabWidgetState createState() => new CharacterTabWidgetState();
 }
@@ -22,46 +23,26 @@ class CharacterTabWidgetState extends State<CharacterTabWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return 
-      ItemListWidget(
-          key: Key("${widget.currentGroup}_${widget.character}"),
-          padding: EdgeInsets.only(
-              top: getListTopOffset(context), left: 2, right: 2),
-          characterId: widget.character.characterId,
-          bucketHashes: bucketHashes,
-          scrollPositions: widget.scrollPositions,
-          currentGroup: widget.currentGroup);
+    return ItemListWidget(
+        key: Key("${widget.currentGroup}_${widget.character}"),
+        padding:
+            EdgeInsets.only(top: getListTopOffset(context), left: 2, right: 2),
+        characterId: widget.character.characterId,
+        bucketHashes: bucketHashes,
+        scrollPositions: widget.scrollPositions,
+        currentGroup: widget.currentGroup);
   }
 
   List<int> get bucketHashes {
     switch (widget.currentGroup) {
       case DestinyItemCategory.Armor:
-        return [
-          InventoryBucket.helmet,
-          InventoryBucket.gauntlets,
-          InventoryBucket.chestArmor,
-          InventoryBucket.legArmor,
-          InventoryBucket.classArmor,
-        ];
+        return InventoryBucket.armorBucketHashes;
       case DestinyItemCategory.Weapon:
-        return [
-          InventoryBucket.subclass,
-          InventoryBucket.kineticWeapons,
-          InventoryBucket.energyWeapons,
-          InventoryBucket.powerWeapons
-        ];
+        return [InventoryBucket.subclass] + InventoryBucket.weaponBucketHashes;
     }
-    return [
-      InventoryBucket.lostItems,
-      InventoryBucket.engrams,
-      InventoryBucket.ghost,
-      InventoryBucket.vehicle,
-      InventoryBucket.ships,
-      InventoryBucket.emblems,
-      InventoryBucket.consumables,
-      InventoryBucket.modifications,
-      InventoryBucket.shaders,
-    ];
+    return [InventoryBucket.lostItems, InventoryBucket.engrams] +
+        InventoryBucket.flairBucketHashes +
+        InventoryBucket.inventoryBucketHashes;
   }
 
   double getListTopOffset(BuildContext context) {

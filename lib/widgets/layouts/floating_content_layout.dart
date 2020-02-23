@@ -16,10 +16,11 @@ class FloatingContentState<T extends StatefulWidget> extends State<T>
 
   @override
   void initState() {
+    super.initState();
+    
     controller = AnimationController(
         duration: const Duration(milliseconds: 300), vsync: this);
     animation = CurvedAnimation(parent: controller, curve: Curves.easeIn);
-    super.initState();
 
     animation.addStatusListener((status) {
       if (status == AnimationStatus.completed) {

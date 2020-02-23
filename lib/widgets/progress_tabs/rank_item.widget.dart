@@ -39,8 +39,9 @@ class RankItemWidgetState<T extends RankItemWidget> extends State<T>
 
   @override
   void initState() {
-    progression = widget.progression;
     super.initState();
+    
+    progression = widget.progression;
     loadDefinitions();
     subscription = widget.broadcaster.listen((event) {
       if (event.type == NotificationType.receivedUpdate && mounted) {

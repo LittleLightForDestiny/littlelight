@@ -6,7 +6,8 @@ import 'package:little_light/widgets/search/search_filters/base_search_filter.wi
 
 class TextSearchFilterWidget
     extends BaseSearchFilterWidget<TextFilter> {
-  TextSearchFilterWidget(SearchController controller) : super(controller);
+  final bool forceAutoFocus;
+  TextSearchFilterWidget(SearchController controller, {this.forceAutoFocus:false}) : super(controller);
 
   @override
   _TextSearchFilterWidgetState createState() =>
@@ -14,7 +15,7 @@ class TextSearchFilterWidget
 }
 
 class _TextSearchFilterWidgetState
-    extends BaseSearchFilterWidgetState<TextSearchFilterWidget> {
+    extends BaseSearchFilterWidgetState<TextSearchFilterWidget, TextFilter, String> {
   TextEditingController _searchFieldController = new TextEditingController();
 
   @override
@@ -26,8 +27,8 @@ class _TextSearchFilterWidgetState
 
   @override
   dispose(){
-    super.dispose();
     _searchFieldController.removeListener(updateText);
+    super.dispose();
   }
 
   updateText() {
@@ -40,7 +41,7 @@ class _TextSearchFilterWidgetState
   @override
   Widget build(BuildContext context) {
     return TextField(
-      autofocus: UserSettingsService().autoOpenKeyboard,
+      autofocus: UserSettingsService().autoOpenKeyboard || widget.forceAutoFocus,
       controller: _searchFieldController,
     );
   }

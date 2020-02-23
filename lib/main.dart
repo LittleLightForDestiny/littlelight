@@ -103,7 +103,7 @@ class LittleLightScrollBehaviour extends ScrollBehavior {
   @override
   Widget buildViewportChrome(
       BuildContext context, Widget child, AxisDirection axisDirection) {
-    if (Platform.isIOS) {
+    if (Platform.isIOS || Platform.isMacOS) {
       return child;
     }
     return GlowingOverscrollIndicator(

@@ -27,8 +27,9 @@ class FreeSlotsSliderWidgetState extends State<FreeSlotsSliderWidget> {
 
   @override
   void initState() {
-    freeSlots = widget.initialValue;
     super.initState();
+    
+    freeSlots = widget.initialValue;
   }
 
   @override

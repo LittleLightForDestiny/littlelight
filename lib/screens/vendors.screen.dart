@@ -1,10 +1,7 @@
 import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:little_light/screens/search.screen.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-
 import 'package:little_light/services/user_settings/user_settings.service.dart';
 import 'package:little_light/widgets/common/animated_character_background.widget.dart';
 import 'package:little_light/widgets/flutter/passive_tab_bar_view.dart';
@@ -29,13 +26,13 @@ class VendorsScreenState extends State<VendorsScreen>
 
   @override
   void initState() {
+    super.initState();
     charTabController = charTabController ??
         TabController(
           initialIndex: 0,
           length: totalCharacterTabs,
           vsync: this,
         );
-    super.initState();
   }
 
   @override
@@ -119,28 +116,11 @@ class VendorsScreenState extends State<VendorsScreen>
   }
 
   buildCharacterMenu(BuildContext context) {
-    return Row(children: [
-      IconButton(
-          icon: Icon(FontAwesomeIcons.search, color: Colors.white),
-          onPressed: () {
-            var char = characters[charTabController.index];
-            SearchTabData searchData =
-                SearchTabData.pursuits(char?.characterId);
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => SearchScreen(
-                  tabData: searchData,
-                ),
-              ),
-            );
-          }),
-      TabsCharacterMenuWidget(
-        characters,
-        controller: charTabController,
-        includeVault: false,
-      )
-    ]);
+    return TabsCharacterMenuWidget(
+      characters,
+      controller: charTabController,
+      includeVault: false,
+    );
   }
 
   List<DestinyCharacterComponent> get characters {

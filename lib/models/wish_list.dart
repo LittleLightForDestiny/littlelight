@@ -5,7 +5,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'wish_list.g.dart';
 
-enum WishlistTag { PVP, PVE, Bungie, Trash }
+enum WishlistTag { GodPVE, GodPVP, PVE, PVP, Bungie, Trash }
 
 @JsonSerializable()
 class WishlistBuild {

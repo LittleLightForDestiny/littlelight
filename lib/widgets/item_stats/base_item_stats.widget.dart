@@ -46,11 +46,12 @@ class BaseItemStatsState<T extends BaseItemStatsWidget>
 
   @override
   void initState() {
+    super.initState();
+
     precalculatedStats =
         widget.profile.getPrecalculatedStats(item?.itemInstanceId);
     
     socketStates = widget.profile.getItemSockets(item?.itemInstanceId);
-    super.initState();
     loadStatGroupDefinition();
     initializeSocketController();
   }
@@ -61,8 +62,8 @@ class BaseItemStatsState<T extends BaseItemStatsWidget>
 
   @override
   dispose() {
-    super.dispose();
     socketController?.removeListener(update);
+    super.dispose();
   }
 
   update() {

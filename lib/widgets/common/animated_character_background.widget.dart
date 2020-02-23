@@ -9,7 +9,6 @@ import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enu
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/utils/destiny_data.dart';
 
 class AnimatedCharacterBackgroundWidget extends StatefulWidget {
   final TabController tabController;
@@ -28,8 +27,7 @@ class _CharacterInfo {
   final DestinyColor emblemColor;
   final DestinyClass characterClass;
   final DamageType damageType;
-  _CharacterInfo(
-      {this.emblemColor, this.characterClass, this.damageType});
+  _CharacterInfo({this.emblemColor, this.characterClass, this.damageType});
 }
 
 class _AnimatedCharacterBackgroundWidgetState
@@ -37,13 +35,13 @@ class _AnimatedCharacterBackgroundWidgetState
     with SingleTickerProviderStateMixin {
   List<_CharacterInfo> characters;
   AnimationController _controller;
-  DecorationTween tween;
+  ColorTween tween;
   StreamSubscription<NotificationEvent> subscription;
 
   @override
   void initState() {
     super.initState();
-    tween = DecorationTween(begin: BoxDecoration(), end: BoxDecoration());
+    tween = ColorTween(begin: Colors.black, end: Colors.black);
     updateCharacters();
     widget.tabController.addListener(characterChangedListener);
     _controller = AnimationController(
@@ -53,7 +51,8 @@ class _AnimatedCharacterBackgroundWidgetState
     _controller.forward();
     subscription = widget.broadcaster.listen((event) {
       if (!mounted) return;
-      if (event.type == NotificationType.receivedUpdate || event.type == NotificationType.localUpdate) {
+      if (event.type == NotificationType.receivedUpdate ||
+          event.type == NotificationType.localUpdate) {
         updateCharacters();
       }
     });
@@ -77,54 +76,42 @@ class _AnimatedCharacterBackgroundWidgetState
     characterChangedListener();
   }
 
-
   @override
   dispose() {
-    super.dispose();
     widget.tabController.removeListener(characterChangedListener);
     subscription.cancel();
+    super.dispose();
   }
 
   characterChangedListener() {
     Color emblemColor;
-    Color subclassColor;
     var character = widget.tabController.index < characters.length
         ? characters[widget.tabController.index]
         : null;
     if (character != null) {
       emblemColor = Color.fromARGB(255, character.emblemColor.red,
           character.emblemColor.green, character.emblemColor.blue);
-      subclassColor = DestinyData.getDamageTypeColor(character.damageType);
+          print(emblemColor);
     } else {
       emblemColor = Colors.black;
-      subclassColor = Colors.grey.shade800;
     }
 
-    tween = DecorationTween(
+    tween = ColorTween(
         begin: tween.lerp(_controller.value),
-        end: BoxDecoration(
-            gradient: LinearGradient(
-          colors: [
-            Color.lerp(emblemColor, Colors.grey.shade900, .5),
-            Color.fromARGB(255, 100, 100, 115),
-            Color.lerp(subclassColor, Colors.grey.shade900, .5),
-          ],
-          begin: FractionalOffset(.3, .1),
-          end: FractionalOffset(.7, .9),
-        )));
+        end: Color.lerp(emblemColor, Colors.grey.shade700, .4));
     _controller.reset();
     _controller.forward();
-    if(!mounted) return;
+    if (!mounted) return;
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBoxTransition(
-      decoration: tween.animate(_controller),
-      child: Container(),
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child){
+        return Container(color: tween.evaluate(_controller),);  
+      }
     );
   }
-
-  
 }

@@ -3,12 +3,14 @@ import 'dart:async';
 import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:little_light/screens/new_search.screen.dart';
+import 'package:little_light/screens/search.screen.dart';
+
 import 'package:little_light/services/bungie_api/enums/destiny_item_category.enum.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/user_settings/user_settings.service.dart';
+import 'package:little_light/utils/item_filters/pseudo_item_type_filter.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/utils/selected_page_persistence.dart';
 import 'package:little_light/widgets/common/animated_character_background.widget.dart';
@@ -24,6 +26,7 @@ import 'package:little_light/widgets/inventory_tabs/tabs_character_menu.widget.d
 import 'package:little_light/widgets/inventory_tabs/tabs_item_type_menu.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/vault_tab.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/vault_tab_header.widget.dart';
+import 'package:little_light/widgets/search/search.controller.dart';
 
 class EquipmentScreen extends StatefulWidget {
   final profile = new ProfileService();
@@ -54,6 +57,8 @@ class EquipmentScreenState extends State<EquipmentScreen>
 
   @override
   void initState() {
+    super.initState();
+    
     SelectedPagePersistence.saveLatestScreen(SelectedPagePersistence.equipment);
 
     typeTabController = typeTabController ??
@@ -72,7 +77,6 @@ class EquipmentScreenState extends State<EquipmentScreen>
     widget.itemTypes.forEach((type) {
       scrollPositions[type] = 0;
     });
-    super.initState();
 
     subscription = widget.broadcaster.listen((event) {
       if (!mounted) return;
@@ -286,10 +290,30 @@ class EquipmentScreenState extends State<EquipmentScreen>
       IconButton(
           icon: Icon(FontAwesomeIcons.search, color: Colors.white),
           onPressed: () {
+            Iterable<PseudoItemType> available = [PseudoItemType.Weapons, PseudoItemType.Armor, PseudoItemType.Cosmetics, PseudoItemType.Consumables];
+            Iterable<PseudoItemType> selected = [PseudoItemType.Weapons, PseudoItemType.Armor, PseudoItemType.Cosmetics, PseudoItemType.Consumables];
+            print(typeTabController?.index);
+            if(typeTabController?.index == 0){
+              selected = [PseudoItemType.Weapons];
+            }
+            if(typeTabController?.index == 1){
+              selected = [PseudoItemType.Armor];
+            }
+            if(typeTabController?.index == 2){
+              selected = [PseudoItemType.Cosmetics, PseudoItemType.Consumables];
+            }
+            var query = MediaQueryHelper(context);
+            if (query.isLandscape) {
+              selected = [PseudoItemType.Weapons, PseudoItemType.Armor, PseudoItemType.Cosmetics];
+            }
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => NewSearchScreen(
+                builder: (context) => SearchScreen(
+                  controller: SearchController.withDefaultFilters(
+                    firstRunFilters: [PseudoItemTypeFilter(available, available)],
+                    preFilters: [PseudoItemTypeFilter(available, selected),],
+                  ),
                 ),
               ),
             );

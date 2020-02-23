@@ -1,14 +1,20 @@
 import 'package:bungie_api/enums/destiny_class.dart';
 import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
-import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/screens/search.screen.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/utils/selected_page_persistence.dart';
+import 'package:little_light/utils/item_filters/avoid_instance_ids_filter.dart';
+import 'package:little_light/utils/item_filters/class_type_filter.dart';
+import 'package:little_light/utils/item_filters/item_bucket_filter.dart';
+import 'package:little_light/utils/item_filters/text_filter.dart';
+import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-import 'package:little_light/widgets/item_list/loadout_search_list.widget.dart';
+import 'package:little_light/widgets/search/quick_transfer_list.widget.dart';
+import 'package:little_light/widgets/search/search.controller.dart';
+import 'package:little_light/widgets/search/search_filters/text_search_filter.widget.dart';
 
-class SelectLoadoutItemScreen extends StatefulWidget {
+class SelectLoadoutItemScreen extends SearchScreen {
   final DestinyInventoryItemDefinition emblemDefinition;
   final DestinyInventoryBucketDefinition bucketDefinition;
   final Iterable<String> idsToAvoid;
@@ -19,62 +25,58 @@ class SelectLoadoutItemScreen extends StatefulWidget {
       this.emblemDefinition,
       this.classType,
       this.idsToAvoid})
-      : super();
+      : super(
+            controller: SearchController.withDefaultFilters(firstRunFilters: [
+          ItemBucketFilter(
+              selected: [bucketDefinition.hash].toSet(), enabled: true),
+          ClassTypeFilter(selected: [classType].toSet(), enabled: true),
+          AvoidInstanceIdsFilter(selected: idsToAvoid.toSet(), enabled: true)
+        ], filters: [
+          TextFilter(enabled: false),
+        ]));
 
   @override
   SelectLoadoutItemScreenState createState() =>
       new SelectLoadoutItemScreenState();
 }
 
-class SelectLoadoutItemScreenState extends State<SelectLoadoutItemScreen> {
-  bool searchOpened = false;
-  String search = "";
-  Map<int, DestinyInventoryItemDefinition> itemDefinitions;
-  TextEditingController _searchFieldController = new TextEditingController();
-
-  @override
-  initState() {
-    SelectedPagePersistence.saveLatestScreen(SelectedPagePersistence.loadouts);
-    _searchFieldController.text = search;
-    _searchFieldController.addListener(() {
-      search = _searchFieldController.text;
-      setState(() {});
-    });
-    super.initState();
+class SelectLoadoutItemScreenState
+    extends SearchScreenState<SelectLoadoutItemScreen> {
+  TextFilter get textFilter {
+    return [controller.preFilters, controller.filters, controller.postFilters]
+        .expand((element) => element)
+        .firstWhere((element) => element is TextFilter, orElse: () => null);
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: buildAppBar(context),
-      body: buildItemList(context),
-    );
-  }
-
   buildAppBar(BuildContext context) {
     return AppBar(
       flexibleSpace: buildAppBarBackground(context),
       title: buildAppBarTitle(context),
-      titleSpacing: 0,
+      elevation: 2,
       actions: <Widget>[
         IconButton(
-          icon: Icon(searchOpened ? Icons.clear : Icons.search),
+          icon: textFilter.enabled ? Icon(Icons.close) : Icon(Icons.search),
           onPressed: () {
-            searchOpened = !searchOpened;
-            search = "";
+            textFilter.enabled = !textFilter.enabled;
+            controller.update();
             setState(() {});
           },
-        )
+        ),
+        Builder(
+            builder: (context) => IconButton(
+                  icon: Icon(Icons.filter_list),
+                  onPressed: () {
+                    Scaffold.of(context).openEndDrawer();
+                  },
+                ))
       ],
     );
   }
 
   buildAppBarTitle(BuildContext context) {
-    if (searchOpened) {
-      return TextField(
-        autofocus: true,
-        controller: _searchFieldController,
-      );
+    if (textFilter.enabled) {
+      return TextSearchFilterWidget(controller, forceAutoFocus: true);
     }
     return TranslatedTextWidget(
       "Select {bucketName}",
@@ -94,10 +96,8 @@ class SelectLoadoutItemScreenState extends State<SelectLoadoutItemScreen> {
             alignment: Alignment(-.8, 0)));
   }
 
-  Widget buildItemList(BuildContext context) {
-    return LoadoutSearchListWidget(
-        searchText: this.search, bucketType: widget.bucketDefinition.hash,
-        classType:widget.classType,
-        idsToAvoid:widget.idsToAvoid);
+  @override
+  buildList(BuildContext context) {
+    return QuickTransferListWidget(controller: controller);
   }
 }

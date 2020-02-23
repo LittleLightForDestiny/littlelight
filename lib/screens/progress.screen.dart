@@ -6,6 +6,8 @@ import 'package:little_light/screens/search.screen.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/user_settings/user_settings.service.dart';
+import 'package:little_light/utils/item_filters/item_owner_filter.dart';
+import 'package:little_light/utils/item_filters/pseudo_item_type_filter.dart';
 import 'package:little_light/utils/selected_page_persistence.dart';
 import 'package:little_light/widgets/common/animated_character_background.widget.dart';
 import 'package:little_light/widgets/common/refresh_button.widget.dart';
@@ -17,6 +19,7 @@ import 'package:little_light/widgets/inventory_tabs/tabs_character_menu.widget.d
 import 'package:little_light/widgets/progress_tabs/character_milestones_list.widget.dart';
 import 'package:little_light/widgets/progress_tabs/character_pursuits_list.widget.dart';
 import 'package:little_light/widgets/progress_tabs/character_ranks_list.widget.dart';
+import 'package:little_light/widgets/search/search.controller.dart';
 
 class ProgressScreen extends StatefulWidget {
   final profile = new ProfileService();
@@ -37,7 +40,10 @@ class ProgressScreenState extends State<ProgressScreen>
 
   @override
   void initState() {
+    super.initState();
+
     SelectedPagePersistence.saveLatestScreen(SelectedPagePersistence.progress);
+
     charTabController = charTabController ??
         TabController(
           initialIndex: 0,
@@ -50,7 +56,6 @@ class ProgressScreenState extends State<ProgressScreen>
           length: 3,
           vsync: this,
         );
-    super.initState();
   }
 
   @override
@@ -199,17 +204,26 @@ class ProgressScreenState extends State<ProgressScreen>
           icon: Icon(FontAwesomeIcons.search, color: Colors.white),
           onPressed: () {
             var char = characters[charTabController.index];
-            SearchTabData searchData = SearchTabData.pursuits(char?.characterId);
+            var types = [PseudoItemType.Pursuits];
             Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => SearchScreen(
-                  tabData: searchData,
-                ),
-              ),
-            );
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SearchScreen(
+                    controller: SearchController.withDefaultFilters(
+                      firstRunFilters: [PseudoItemTypeFilter(types, types)],
+                      preFilters: [
+                        ItemOwnerFilter([char.characterId].toSet()),
+                        PseudoItemTypeFilter(types, types),
+                      ],
+                    ),
+                  ),
+                ));
           }),
-      TabsCharacterMenuWidget(characters, controller: charTabController, includeVault: false,)
+      TabsCharacterMenuWidget(
+        characters,
+        controller: charTabController,
+        includeVault: false,
+      )
     ]);
   }
 

@@ -32,8 +32,9 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> {
   Loadout _loadout;
   @override
   initState() {
-    _loadout = widget.loadout;
     super.initState();
+    
+    _loadout = widget.loadout;
     if (itemIndex == null) {
       buildItemIndex();
     }

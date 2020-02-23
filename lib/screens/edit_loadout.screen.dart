@@ -7,6 +7,7 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/services/littlelight/loadouts.service.dart';
+import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/screens/select_loadout_background.screen.dart';
@@ -43,6 +44,7 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> {
 
   @override
   initState() {
+    super.initState();
     if (widget.loadout != null) {
       _loadout = Loadout.copy(widget.loadout);
     } else {
@@ -56,7 +58,6 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> {
         setState(() {});
       }
     });
-    super.initState();
     fetchTranslations();
     loadEmblemDefinition();
     buildItemIndex();
@@ -77,7 +78,7 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> {
 
   buildItemIndex() async {
     bucketDefinitions = await widget.manifest
-        .getDefinitions<DestinyInventoryBucketDefinition>(loadoutBucketHashes);
+        .getDefinitions<DestinyInventoryBucketDefinition>(InventoryBucket.loadoutBucketHashes);
     _itemIndex = await InventoryUtils.buildLoadoutItemIndex(_loadout);
     if (mounted) {
       setState(() {});
@@ -107,7 +108,7 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> {
           flexibleSpace: buildAppBarBackground(context)),
       body: ListView.builder(
         padding: EdgeInsets.all(8).copyWith(top: 0, left: max(screenPadding.left, 8), right: max(screenPadding.right, 8)),
-          itemCount: _itemIndex == null ? 2 : loadoutBucketHashes.length + 2,
+          itemCount: _itemIndex == null ? 2 : InventoryBucket.loadoutBucketHashes.length + 2,
           itemBuilder: itemBuilder),
       bottomNavigationBar: buildFooter(context),
     );
@@ -120,7 +121,7 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> {
       case 1:
         return buildSelectBackgroundButton(context);
     }
-    int bucketHash = loadoutBucketHashes[index - 2];
+    int bucketHash = InventoryBucket.loadoutBucketHashes[index - 2];
     DestinyInventoryBucketDefinition definition = bucketDefinitions[bucketHash];
     if (bucketHash != null) {
       return LoadoutSlotWidget(
@@ -171,7 +172,7 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> {
       DestinyInventoryBucketDefinition bucketDef,
       bool equipped,
       DestinyClass classType) async {
-    DestinyItemComponent item = await Navigator.push(
+    ItemWithOwner item = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => SelectLoadoutItemScreen(
@@ -188,7 +189,7 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> {
       return;
     }
     int removedItem =
-        await _loadout.addItem(item.itemHash, item.itemInstanceId, equipped);
+        await _loadout.addItem(item.item.itemHash, item.item.itemInstanceId, equipped);
     if(removedItem != null){
       showRemovingExoticMessage(context, removedItem);
     }

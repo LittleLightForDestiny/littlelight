@@ -33,7 +33,6 @@ class ManifestService {
     }
   }
 
-
   Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
     return directory.path;
@@ -138,11 +137,11 @@ class ManifestService {
     }
     var storage = StorageService.language();
     var path = await storage.getPath(StorageKeys.manifestFile, dbPath: true);
-    try{
+    try {
       sqflite.Database database =
-        await sqflite.openDatabase("$path", readOnly: true);
-        _db = database;
-    }catch(e){
+          await sqflite.openDatabase("$path", readOnly: true);
+      _db = database;
+    } catch (e) {
       print(e);
       return null;
     }
@@ -165,22 +164,21 @@ class ManifestService {
   }
 
   Future<Map<int, T>> searchDefinitions<T>(List<String> parameters,
-      {int limit=50, dynamic identity(Map<String, dynamic> json)}) async {
+      {int limit = 50, dynamic identity(Map<String, dynamic> json)}) async {
     var type = DefinitionTableNames.fromClass[T];
     if (identity == null) {
       identity = DefinitionTableNames.identities[T];
     }
     Map<int, T> defs = new Map();
     sqflite.Database db = await _openDb();
-    String query = parameters.map((p){
-      return "UPPER(json) LIKE \"%${p.toUpperCase()}%\"";
-    }).join(" AND ");
-    if((limit ?? 0) > 0){
-      query = query + " LIMIT $limit";
+    String where;
+    if ((parameters?.length ?? 0) > 0) {
+      where = parameters.map((p) {
+        return "UPPER(json) LIKE \"%${p.toUpperCase()}%\"";
+      }).join(" AND ");
     }
     List<Map<String, dynamic>> results = await db.query(type,
-        columns: ['id', 'json'],
-        where: query);
+        columns: ['id', 'json'], where: where, limit: limit);
     try {
       results.forEach((res) {
         int id = res['id'];
@@ -197,7 +195,8 @@ class ManifestService {
   Future<Map<int, T>> getDefinitions<T>(Iterable<int> hashes,
       [dynamic identity(Map<String, dynamic> json)]) async {
     Set<int> hashesSet = hashes?.toSet();
-    if(hashesSet == null) return null;
+    hashesSet?.retainWhere((h) => h != null);
+    if (hashesSet == null) return null;
     var type = DefinitionTableNames.fromClass[T];
     if (identity == null) {
       identity = DefinitionTableNames.identities[T];
@@ -226,14 +225,14 @@ class ManifestService {
         where: "id in $idList",
         whereArgs: searchHashes);
     try {
-      results.forEach((res) {
+      for (var res in results) {
         int id = res['id'];
         int hash = id < 0 ? id + 4294967296 : id;
         String resultString = res['json'];
         var def = identity(jsonDecode(resultString));
         _cached["${type}_$hash"] = def;
         defs[hash] = def;
-      });
+      }
     } catch (e) {}
     return defs.cast<int, T>();
   }

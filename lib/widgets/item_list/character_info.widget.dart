@@ -50,8 +50,9 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
 
   @override
   void initState() {
-    character = widget.profile.getCharacter(widget.characterId);
     super.initState();
+    
+    character = widget.profile.getCharacter(widget.characterId);
     loadDefinitions();
     subscription = widget.broadcaster.listen((event) {
       if (event.type == NotificationType.receivedUpdate && mounted) {

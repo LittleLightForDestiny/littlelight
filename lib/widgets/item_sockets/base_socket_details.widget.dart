@@ -69,8 +69,10 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget>
 
    @override
   void initState() {
-    if(controller != null) controller.addListener(socketChanged);
     super.initState();
+
+    if(controller != null) controller.addListener(socketChanged);
+    
     loadDefinitions();
   }
 

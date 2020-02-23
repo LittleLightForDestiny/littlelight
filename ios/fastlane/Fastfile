@@ -1,0 +1,56 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:ios)
+
+platform :ios do
+  desc "Push a new release build to the App Store"
+  lane :release do
+    build_app(workspace: "Runner.xcworkspace", scheme: "Runner")
+    deliver(
+      submit_for_review:false,
+      force: true,
+      automatic_release:false,
+      skip_screenshots:true,
+      skip_metadata:true,
+    )
+    deliver(
+      submit_for_review:true,
+      force: true,
+      automatic_release:true,
+      skip_screenshots:true,
+      skip_binary_upload:true,
+      reject_if_possible:true,
+      submission_information:{
+        export_compliance_encryption_updated:false,
+        add_id_info_uses_idfa:false
+      }
+    )
+  end
+
+  lane :update_metadata do
+    deliver(
+      submit_for_review:true,
+      force: true,
+      automatic_release:true,
+      skip_screenshots:true,
+      skip_binary_upload:true,
+      submission_information:{
+        export_compliance_encryption_updated:false,
+        add_id_info_uses_idfa:false
+      }
+    )
+  end
+end

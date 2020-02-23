@@ -68,8 +68,8 @@ class BaseItemSocketsWidgetState<T extends BaseItemSocketsWidget>
 
   @override
   dispose() {
-    super.dispose();
     controller.removeListener(update);
+    super.dispose();
   }
 
   update() {

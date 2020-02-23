@@ -7,18 +7,18 @@ import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/item_list/items/search_item_wrapper.widget.dart';
 import 'package:little_light/widgets/search/search.controller.dart';
 
-class NewSearchListWidget extends StatefulWidget {
+class SearchListWidget extends StatefulWidget {
   final ProfileService profile = ProfileService();
   final SearchController controller;
 
-  NewSearchListWidget({Key key, this.controller}) : super(key: key);
+  SearchListWidget({Key key, this.controller}) : super(key: key);
   final NotificationService broadcaster = new NotificationService();
 
   @override
-  NewSearchListWidgetState createState() => new NewSearchListWidgetState();
+  SearchListWidgetState createState() => new SearchListWidgetState();
 }
 
-class NewSearchListWidgetState<T extends NewSearchListWidget> extends State<T> {
+class SearchListWidgetState<T extends SearchListWidget> extends State<T> {
   @override
   void initState() {
     super.initState();
@@ -27,8 +27,8 @@ class NewSearchListWidgetState<T extends NewSearchListWidget> extends State<T> {
 
   @override
   void dispose() {
-    super.dispose();
     widget.controller.removeListener(update);
+    super.dispose();
   }
 
   void update() {

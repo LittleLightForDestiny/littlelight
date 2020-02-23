@@ -49,10 +49,12 @@ class InitialScreen extends StatefulWidget {
 class InitialScreenState extends FloatingContentState<InitialScreen> {
   @override
   void initState() {
+    super.initState();
+    
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarBrightness: Brightness.dark));
-    super.initState();
+        
     initLoading();
   }
 

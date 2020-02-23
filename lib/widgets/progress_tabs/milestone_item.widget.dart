@@ -47,8 +47,9 @@ class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
 
   @override
   void initState() {
-    milestone = widget.milestone;
     super.initState();
+    
+    milestone = widget.milestone;
     loadDefinitions();
     subscription = widget.broadcaster.listen((event) {
       if (event.type == NotificationType.receivedUpdate && mounted) {

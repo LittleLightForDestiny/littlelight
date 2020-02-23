@@ -329,8 +329,9 @@ class _ItemInstanceWrapperState extends State<_ItemInstanceWrapper> {
 
   @override
   void initState() {
-    instance = ProfileService().getInstanceInfo(widget.item.itemInstanceId);
     super.initState();
+    
+    instance = ProfileService().getInstanceInfo(widget.item.itemInstanceId);
 
     StreamSubscription<List<ItemInventoryState>> sub;
     sub = SelectionService().broadcaster.listen((selectedItems) {

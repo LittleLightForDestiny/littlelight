@@ -365,11 +365,10 @@ class LoadoutItemIndex {
 
   addEquippedItem(DestinyItemComponent item, DestinyInventoryItemDefinition def,
       {bool modifyLoadout = true}) {
-    if (genericBucketHashes.contains(def.inventory.bucketTypeHash)) {
-      _addGeneric(item, def);
-    }
-    if (classBucketHashes.contains(def.inventory.bucketTypeHash)) {
+    if (classBucketHashes.contains(def.inventory.bucketTypeHash) || [DestinyClass.Titan, DestinyClass.Hunter, DestinyClass.Warlock].contains(def.classType)) {
       _addClassSpecific(item, def);
+    }else if (genericBucketHashes.contains(def.inventory.bucketTypeHash)) {
+      _addGeneric(item, def);
     }
     if (modifyLoadout) {
       loadout.equipped.add(LoadoutItem(
@@ -390,11 +389,11 @@ class LoadoutItemIndex {
   removeEquippedItem(
       DestinyItemComponent item, DestinyInventoryItemDefinition def,
       {bool modifyLoadout = true}) {
-    if (genericBucketHashes.contains(def.inventory.bucketTypeHash)) {
-      _removeGeneric(item, def);
-    }
-    if (classBucketHashes.contains(def.inventory.bucketTypeHash)) {
+    
+    if (classBucketHashes.contains(def.inventory.bucketTypeHash) || [DestinyClass.Titan, DestinyClass.Hunter, DestinyClass.Warlock].contains(def?.classType)) {
       _removeClassSpecific(item, def);
+    }else if (genericBucketHashes.contains(def.inventory.bucketTypeHash)) {
+      _removeGeneric(item, def);
     }
     if (modifyLoadout) {
       loadout.equipped

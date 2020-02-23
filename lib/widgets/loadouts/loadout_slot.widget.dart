@@ -10,7 +10,9 @@ import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/inventory_utils.dart';
+import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
+import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
@@ -88,7 +90,11 @@ class LoadoutSlotWidget extends StatelessWidget {
     List<Widget> items = [];
     if (isEquipment) {
       if (LoadoutItemIndex.classBucketHashes.contains(bucketDefinition.hash)) {
-        items.addAll(DestinyClass.values.map((classType) => buildItemIcon(context,
+        items.addAll([
+          DestinyClass.Titan,
+          DestinyClass.Hunter,
+          DestinyClass.Warlock
+        ].map((classType) => buildItemIcon(context,
             item: equippedClassItems[classType], classType: classType)));
       } else {
         items.addAll(equippedClassItems
@@ -118,7 +124,9 @@ class LoadoutSlotWidget extends StatelessWidget {
   }
 
   Widget buildItemIcon(BuildContext context,
-      {DestinyItemComponent item, DestinyClass classType, bool equipped: true}) {
+      {DestinyItemComponent item,
+      DestinyClass classType,
+      bool equipped: true}) {
     BoxDecoration decoration =
         item != null && bucketDefinition.hash == InventoryBucket.subclass
             ? null
@@ -159,11 +167,16 @@ class LoadoutSlotWidget extends StatelessWidget {
                     foregroundDecoration: decoration,
                     child: Stack(children: [
                       Positioned.fill(
-                          child: ManifestImageWidget<
-                              DestinyInventoryItemDefinition>(
-                        item?.itemHash ?? 1835369552,
-                        key: Key('slot_item_${item?.itemInstanceId}'),
-                      )),
+                          child: item?.itemHash != null
+                              ? DefinitionProviderWidget<
+                                  DestinyInventoryItemDefinition>(
+                                  item?.itemHash,
+                                  (def) => ItemIconWidget(item, def, null),
+                                  key: Key('slot_item_${item?.itemInstanceId}'),
+                                )
+                              : ManifestImageWidget<
+                                      DestinyInventoryItemDefinition>(
+                                  item?.itemHash ?? 1835369552)),
                       icon != null ? icon : Container(),
                       Material(
                         color: Colors.transparent,

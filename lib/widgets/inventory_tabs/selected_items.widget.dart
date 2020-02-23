@@ -26,8 +26,10 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget> {
 
   @override
   void initState() {
-    this.items = widget.service.items;
     super.initState();
+
+    this.items = widget.service.items;
+    
     subscription = widget.service.broadcaster.listen((selected) {
       this.items = selected;
       setState(() {});

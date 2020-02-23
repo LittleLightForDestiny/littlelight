@@ -28,8 +28,9 @@ class LoadoutDestinationsWidgetState extends State<LoadoutDestinationsWidget> {
 
   @override
   void initState() {
-    freeSlots = UserSettingsService().defaultFreeSlots;
     super.initState();
+    
+    freeSlots = UserSettingsService().defaultFreeSlots;
   }
 
   @override

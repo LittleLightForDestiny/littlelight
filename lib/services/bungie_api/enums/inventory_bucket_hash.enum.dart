@@ -32,32 +32,59 @@ class InventoryBucket {
   static const int pursuits = 1345459588;
 
   static const int artifact = 1506418338;
+
+  static const List<int> loadoutBucketHashes = [
+    subclass,
+    kineticWeapons,
+    energyWeapons,
+    powerWeapons,
+    helmet,
+    gauntlets,
+    chestArmor,
+    legArmor,
+    classArmor,
+    ghost,
+    vehicle,
+    ships,
+  ];
+
+  static const armorBucketHashes = [
+    chestArmor,
+    gauntlets,
+    chestArmor,
+    legArmor,
+    classArmor
+  ];
+
+  static const weaponBucketHashes = [
+    kineticWeapons,
+    energyWeapons,
+    powerWeapons,
+  ];
+
+  static const flairBucketHashes = [
+    ghost,
+    vehicle,
+    ships,
+    emblems,
+  ];
+
+  static const inventoryBucketHashes = [
+    consumables,
+    modifications,
+    shaders,
+  ];
+
+  static const pursuitBucketHashes = [
+    pursuits
+  ];
+
+  static const List<int> exoticWeaponBlockBuckets = weaponBucketHashes;
+
+  static const List<int> exoticArmorBlockBuckets = [
+    helmet,
+    gauntlets,
+    chestArmor,
+    legArmor,
+  ];
 }
-
-const List<int> exoticWeaponBlockBuckets = [
-  InventoryBucket.kineticWeapons,
-  InventoryBucket.energyWeapons,
-  InventoryBucket.powerWeapons,
-];
-
-const List<int> exoticArmorBlockBuckets = [
-  InventoryBucket.helmet,
-  InventoryBucket.gauntlets,
-  InventoryBucket.chestArmor,
-  InventoryBucket.legArmor,
-];
-
-const List<int> loadoutBucketHashes = [
-  InventoryBucket.subclass,
-  InventoryBucket.kineticWeapons,
-  InventoryBucket.energyWeapons,
-  InventoryBucket.powerWeapons,
-  InventoryBucket.helmet,
-  InventoryBucket.gauntlets,
-  InventoryBucket.chestArmor,
-  InventoryBucket.legArmor,
-  InventoryBucket.classArmor,
-  InventoryBucket.ghost,
-  InventoryBucket.vehicle,
-  InventoryBucket.ships,
-];

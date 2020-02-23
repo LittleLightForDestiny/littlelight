@@ -24,11 +24,11 @@ class RefreshButtonWidgetState extends State<RefreshButtonWidget> with TickerPro
 
   @override
   void initState() {
+    super.initState();
     rotationController = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
     subscription = widget.notifications.listen((event) {
       handleNotification(event);
     });
-    super.initState();
   }
 
   void dispose(){
