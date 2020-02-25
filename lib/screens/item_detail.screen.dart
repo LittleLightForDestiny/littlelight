@@ -85,6 +85,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
       widget.profile.getItemSockets(item?.itemInstanceId);
 
   initState() {
+    print(widget?.definition?.hash);
     super.initState();
     socketController =
         ItemSocketController(definition: widget.definition, item: widget.item);

@@ -18,6 +18,7 @@ import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/common/wishlist_corner_badge.decoration.dart';
 import 'package:little_light/widgets/item_sockets/base_item_sockets.widget.dart';
 import 'package:little_light/widgets/item_sockets/item_socket.controller.dart';
+import 'package:little_light/widgets/item_sockets/plug_wishlist_tag_icons.mixin.dart';
 
 class DetailsItemPerksWidget extends BaseItemSocketsWidget {
   DetailsItemPerksWidget({
@@ -40,7 +41,7 @@ class DetailsItemPerksWidget extends BaseItemSocketsWidget {
 }
 
 class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
-    extends BaseItemSocketsWidgetState<T> {
+    extends BaseItemSocketsWidgetState<T> with PlugWishlistTagIconsMixin{
   bool showDetails = false;
 
   @override
@@ -226,7 +227,8 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
     }
 
     BorderSide borderSide = BorderSide(color: borderColor, width: 2);
-    var tags = WishlistsService().getPerkTags(item?.itemHash, plugItemHash).where((element) => [WishlistTag.PVE, WishlistTag.PVP].contains(element)).toSet();
+    var tags = WishlistsService().getPerkTags(definition?.hash, plugItemHash).where((element) => [WishlistTag.GodPVE, WishlistTag.PVE, WishlistTag.GodPVP, WishlistTag.PVP].contains(element)).toSet();
+    print(tags);
 
     return Container(
         key: Key("item_perk_$plugItemHash"),
@@ -309,7 +311,7 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
               right: 0,
               left:0,
               child: Center(
-                  child: buildWishlistTagIcons(plugItemHash)))
+                  child: buildWishlistTagIcons(context, definition.hash, plugItemHash)))
         ]));
   }
 }

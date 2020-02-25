@@ -65,4 +65,6 @@ const _$ItemSortParameterTypeEnumMap = {
   ItemSortParameterType.ItemOwner: 'ItemOwner',
   ItemSortParameterType.ExpirationDate: 'ExpirationDate',
   ItemSortParameterType.QuestGroup: 'QuestGroup',
+  ItemSortParameterType.StatTotal: 'StatTotal',
+  ItemSortParameterType.Stat: 'Stat',
 };

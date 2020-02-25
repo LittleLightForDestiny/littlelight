@@ -4,6 +4,15 @@ import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/icon_fonts/destiny_icons_icons.dart';
 
 class WishlistsData {
+  static BoxDecoration getBoxDecoration(WishlistTag tag){
+    switch(tag){
+      case WishlistTag.GodPVE:
+      case WishlistTag.GodPVP:
+        return BoxDecoration(border:Border.all(color: Colors.amber, width: 1), gradient: RadialGradient(radius:1, colors: [getBgColor(tag), Colors.amber]));
+      default:
+        return BoxDecoration(color: getBgColor(tag));
+    }
+  }
   static Color getBgColor(WishlistTag tag) {
     switch (tag) {
       case WishlistTag.GodPVE:
@@ -21,16 +30,18 @@ class WishlistsData {
         return Colors.lightGreen.shade500;
         break;
     }
-    return Colors.amber.shade600;
+    return Colors.white;
   }
 
   static Widget getLabel(WishlistTag tag) {
     switch (tag) {
       case WishlistTag.GodPVE:
+      return TranslatedTextWidget("PvE godroll");
       case WishlistTag.PVE:
         return TranslatedTextWidget("PvE");
         break;
       case WishlistTag.GodPVP:
+      return TranslatedTextWidget("PvP godroll");
       case WishlistTag.PVP:
         return TranslatedTextWidget("PvP");
         break;
@@ -47,12 +58,18 @@ class WishlistsData {
   static Widget getIcon(WishlistTag tag, double size) {
     switch (tag) {
       case WishlistTag.GodPVE:
+      return Container(
+            alignment: Alignment.center,
+            child: Icon(DestinyIcons.vanguard, size: size * .8, color:Colors.white));
       case WishlistTag.PVE:
         return Container(
             alignment: Alignment.center,
-            child: Icon(DestinyIcons.vanguard, size: size * .9));
+            child: Icon(DestinyIcons.vanguard, size: size * .8));
         break;
       case WishlistTag.GodPVP:
+      return Container(
+            alignment: Alignment.center,
+            child: Icon(DestinyIcons.crucible, size: size * .9, color:Colors.white));
       case WishlistTag.PVP:
         return Container(
             alignment: Alignment.center,

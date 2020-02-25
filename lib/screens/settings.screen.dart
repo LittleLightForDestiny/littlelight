@@ -240,6 +240,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                           .addWishlist(w);
                                       Navigator.of(context).pop();
                                       setState(() {});
+                                      WishlistsService().countBuilds();   
+                                      
                                     }),
                                 Container(width: 8,),
                                 RaisedButton(

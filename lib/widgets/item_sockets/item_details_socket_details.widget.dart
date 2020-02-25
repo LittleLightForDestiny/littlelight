@@ -18,6 +18,7 @@ import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/item_sockets/base_socket_details.widget.dart';
 import 'package:little_light/widgets/item_sockets/item_socket.controller.dart';
+import 'package:little_light/widgets/item_sockets/plug_wishlist_tag_icons.mixin.dart';
 import 'package:little_light/widgets/item_stats/item_details_socket_item_stats.widget.dart';
 
 class ItemDetailsSocketDetailsWidget extends BaseSocketDetailsWidget {
@@ -38,7 +39,8 @@ class ItemDetailsSocketDetailsWidget extends BaseSocketDetailsWidget {
 }
 
 class ItemDetailsSocketDetailsWidgetState
-    extends BaseSocketDetailsWidgetState<ItemDetailsSocketDetailsWidget> {
+    extends BaseSocketDetailsWidgetState<ItemDetailsSocketDetailsWidget>
+    with PlugWishlistTagIconsMixin {
   @override
   Widget build(BuildContext context) {
     if (definition == null) return Container();
@@ -350,12 +352,13 @@ class ItemDetailsSocketDetailsWidgetState
                   controller.selectSocket(socketIndex, plugItemHash);
                 },
               )),
-              Positioned(
+          Positioned(
               top: 0,
               right: 0,
-              left:0,
+              left: 0,
               child: Center(
-                  child: buildSpecialtiesIcons(plugItemHash)))
+                  child: buildWishlistTagIcons(
+                      context, itemDefinition.hash, plugItemHash)))
         ]));
   }
 }

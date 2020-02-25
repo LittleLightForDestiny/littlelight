@@ -9,13 +9,14 @@ class WishlistCornerBadgeDecoration extends CornerBadgeDecoration {
 
   List<Color> get badgeColors{
     List<Color> colors = List();
-    if(tags.contains(WishlistTag.PVE)){
+    print(tags);
+    if(tags.contains(WishlistTag.PVE) || tags.contains(WishlistTag.GodPVE)){
       colors.add(Colors.blue.shade800);
     }
     if(tags.contains(WishlistTag.Bungie)){
       colors.add(Colors.black);
     }
-    if(tags.contains(WishlistTag.PVP)){
+    if(tags.contains(WishlistTag.PVP) || tags.contains(WishlistTag.GodPVP)){
       colors.add(Colors.red.shade800);
     }
     if(colors.length > 0){

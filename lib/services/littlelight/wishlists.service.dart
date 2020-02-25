@@ -2,6 +2,7 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:http/http.dart' as http;
 import 'package:little_light/models/wish_list.dart';
 import 'package:little_light/services/littlelight/parsers/dim_wishlist.parser.dart';
+import 'package:little_light/services/littlelight/parsers/littlelight_wishlist.parser.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/storage/storage.service.dart';
 
@@ -17,55 +18,65 @@ class WishlistsService {
 
   List<Wishlist> _wishlists;
 
-  Set<String> _buildIds = Set();
-
   init() async {
-    var items = await _loadPreParsed();
+    Map<int, WishlistItem> items;
+    try{
+      items = await _loadPreParsed();
+    }catch(_){}
     this._wishlists = await _loadFromStorage(items == null);
-    if(items != null){
+    if (items != null) {
       _items = items;
     }
     this._save();
     this.updateWishlists();
   }
 
-  Future<Map<int, WishlistItem>> _loadPreParsed() async{
-    Map<String, dynamic> json = await storage.getJson(StorageKeys.parsedWishlists);
-    if(json == null) return null;
-    var items = json.map<int, WishlistItem>((key, value) => MapEntry(int.parse(key), WishlistItem.fromJson(value)));
+  countBuilds(){
+    var count = 0;
+    _items.forEach((key, value) {
+      count+=value?.builds?.length ?? 0;
+    });
+    print(count);
+  }
+
+  Future<Map<int, WishlistItem>> _loadPreParsed() async {
+    Map<String, dynamic> json =
+        await storage.getJson(StorageKeys.parsedWishlists);
+    if (json == null) return null;
+    var items = json.map<int, WishlistItem>(
+        (key, value) => MapEntry(int.parse(key), WishlistItem.fromJson(value)));
     return items;
   }
 
-  Future<List<Wishlist>> _loadFromStorage(bool forceParse) async{
+  Future<List<Wishlist>> _loadFromStorage(bool forceParse) async {
     List<dynamic> json = await storage.getJson(StorageKeys.wishlists);
     var wishlists = json != null
         ? json.map((item) => Wishlist.fromJson(item)).toList()
         : [Wishlist.defaults()];
-    if(forceParse){
+    if (forceParse) {
       wishlists = await _parseWishlists(wishlists);
     }
     return wishlists;
   }
 
-  Future<void> updateWishlists() async{
+  Future<void> updateWishlists() async {
     DateTime minimumDate = DateTime.now().subtract(Duration(days: 7));
     bool needsParsing = false;
-    for(var wishlist in _wishlists){
+    for (var wishlist in _wishlists) {
       bool needUpdate = wishlist.updatedAt.isBefore(minimumDate);
-
-      //TODO: remove this temporary fix to replace default wishlist to the tagged one
-      if(wishlist.url == "https://raw.githubusercontent.com/48klocs/dim-wish-list-sources/master/voltron.txt"){
-        wishlist.url = "https://raw.githubusercontent.com/LittleLightForDestiny/dim-wish-list-sources/master/voltron.txt";
+      var wishlistDefaultPath = "https://raw.githubusercontent.com/LittleLightForDestiny/littlelight_wishlists/master/littlelight_default.json";
+      if (wishlist.url != wishlistDefaultPath && wishlist.isDefault){
+        wishlist.url = wishlistDefaultPath;
         wishlist.isDefault = true;
         needUpdate = true;
       }
 
-      if(needUpdate){
+      if (needUpdate) {
         await _downloadWishlist(wishlist);
       }
       needsParsing = needsParsing || needUpdate;
     }
-    if(needsParsing){
+    if (needsParsing) {
       await _parseWishlists(_wishlists);
     }
   }
@@ -111,6 +122,10 @@ class WishlistsService {
   }
 
   Future<void> _parseWishlist(Wishlist wishlist, String contents) async {
+    try{
+      var parser = LittleLightWishlistParser();
+      parser.parse(contents);
+    }catch(_){}
     var parser = DimWishlistParser();
     parser.parse(contents);
   }
@@ -118,7 +133,9 @@ class WishlistsService {
   Future<void> _save() async {
     var json = this._wishlists.map((w) => w.toJson()).toList();
     await storage.setJson(StorageKeys.wishlists, json);
-    var parsed = this._items.map<String, dynamic>((k, v)=>MapEntry(k.toString(), v.toJson()));
+    var parsed = this
+        ._items
+        .map<String, dynamic>((k, v) => MapEntry(k.toString(), v.toJson()));
     await storage.setJson(StorageKeys.parsedWishlists, parsed);
   }
 
@@ -145,9 +162,9 @@ class WishlistsService {
     sockets?.map((plug) => availablePlugs.add(plug.plugHash))?.toSet();
     if (availablePlugs?.length == 0) return null;
     var wish = _items[item?.itemHash];
-
-    var builds = wish?.builds?.values?.where((build) {
-      return availablePlugs.containsAll(build.perks);
+    var builds = wish?.builds?.where((build) {
+      // return availablePlugs.containsAll(build.perks);
+      return build.perks.every((element) => element.any((e)=>availablePlugs.contains(e)));
     });
     if ((builds?.length ?? 0) == 0) return null;
     Set<WishlistTag> tags = Set();
@@ -168,7 +185,7 @@ class WishlistsService {
     if (availablePlugs?.length == 0) return null;
     var wish = _items[item?.itemHash];
 
-    var builds = wish?.builds?.values?.where((build) {
+    var builds = wish?.builds?.where((build) {
       return availablePlugs.containsAll(build.perks);
     });
     if ((builds?.length ?? 0) == 0) return null;
@@ -179,20 +196,20 @@ class WishlistsService {
     return notes;
   }
 
-  addToWishList(
-      int hash, List<int> perks, Set<WishlistTag> specialties, Set<String> notes) {
-    perks?.sort();
-    var buildId = perks.join('_');
+  addToWishList(String name, int hash, List<List<int>> perks, Set<WishlistTag> specialties,
+      Set<String> notes) {
     var wishlist =
         _items[hash] = _items[hash] ?? WishlistItem.builder(itemHash: hash);
-    var build = wishlist.builds[buildId] = wishlist.builds[buildId] ??
-        WishlistBuild.builder(identifier: buildId, perks: perks.toSet());
-    build.notes.addAll(notes.where((n)=>(n?.length ?? 0) > 0));
-    build.tags.addAll(specialties.where((s)=>s != null));
-    for (var i in perks) {
-      var perk = wishlist.perks[i] = wishlist.perks[i] ?? Set();
-      perk.addAll(specialties);
+    var build =
+        WishlistBuild.builder(name:name, perks: perks.map((p) => p.toSet()).toList());
+    build.notes.addAll(notes.where((n) => (n?.length ?? 0) > 0));
+    build.tags.addAll(specialties.where((s) => s != null));
+    for (var p in perks) {
+      for (var p2 in p) {
+        var perk = wishlist.perks[p2] = wishlist.perks[p2] ?? Set();
+        perk.addAll(specialties);
+      }
     }
-    _buildIds.add("$hash#$buildId");
+    wishlist.builds.add(build);
   }
 }

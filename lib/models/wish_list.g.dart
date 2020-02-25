@@ -6,10 +6,49 @@ part of 'wish_list.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+LittleLightWishlist _$LittleLightWishlistFromJson(Map<String, dynamic> json) {
+  return LittleLightWishlist(
+    (json['data'] as List)
+        ?.map((e) => e == null ? null : LittleLightWishlistItem.fromJson(e))
+        ?.toList(),
+  );
+}
+
+Map<String, dynamic> _$LittleLightWishlistToJson(
+        LittleLightWishlist instance) =>
+    <String, dynamic>{
+      'data': instance.data,
+    };
+
+LittleLightWishlistItem _$LittleLightWishlistItemFromJson(
+    Map<String, dynamic> json) {
+  return LittleLightWishlistItem(
+    json['name'] as String,
+    json['description'] as String,
+    (json['plugs'] as List)
+        ?.map((e) => (e as List)?.map((e) => e as int)?.toList())
+        ?.toList(),
+    json['hash'] as int,
+    (json['tags'] as List)?.map((e) => e as String)?.toList(),
+    (json['authors'] as List)?.map((e) => e as String)?.toList(),
+  );
+}
+
+Map<String, dynamic> _$LittleLightWishlistItemToJson(
+        LittleLightWishlistItem instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'description': instance.description,
+      'plugs': instance.plugs,
+      'hash': instance.hash,
+      'tags': instance.tags,
+      'authors': instance.authors,
+    };
+
 WishlistBuild _$WishlistBuildFromJson(Map<String, dynamic> json) {
   return WishlistBuild(
-    identifier: json['identifier'] as String,
-    perks: (json['perks'] as List)?.map((e) => e as int)?.toSet(),
+    name: json['name'] as String,
+    perks: _jsonPlugsFromJson(json['perks'] as Iterable<Iterable<int>>),
     tags: (json['tags'] as List)
         ?.map((e) => _$enumDecodeNullable(_$WishlistTagEnumMap, e))
         ?.toSet(),
@@ -19,8 +58,8 @@ WishlistBuild _$WishlistBuildFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$WishlistBuildToJson(WishlistBuild instance) =>
     <String, dynamic>{
-      'identifier': instance.identifier,
-      'perks': instance.perks?.toList(),
+      'name': instance.name,
+      'perks': instance.perks?.map((e) => e?.toList())?.toList(),
       'tags': instance.tags?.map((e) => _$WishlistTagEnumMap[e])?.toList(),
       'notes': instance.notes?.toList(),
     };
@@ -58,8 +97,10 @@ T _$enumDecodeNullable<T>(
 }
 
 const _$WishlistTagEnumMap = {
-  WishlistTag.PVP: 'PVP',
+  WishlistTag.GodPVE: 'GodPVE',
+  WishlistTag.GodPVP: 'GodPVP',
   WishlistTag.PVE: 'PVE',
+  WishlistTag.PVP: 'PVP',
   WishlistTag.Bungie: 'Bungie',
   WishlistTag.Trash: 'Trash',
 };
@@ -67,9 +108,9 @@ const _$WishlistTagEnumMap = {
 WishlistItem _$WishlistItemFromJson(Map<String, dynamic> json) {
   return WishlistItem(
     itemHash: json['itemHash'] as int,
-    builds: (json['builds'] as Map<String, dynamic>)?.map(
-      (k, e) => MapEntry(k, e == null ? null : WishlistBuild.fromJson(e)),
-    ),
+    builds: (json['builds'] as List)
+        ?.map((e) => e == null ? null : WishlistBuild.fromJson(e))
+        ?.toList(),
     perks: (json['perks'] as Map<String, dynamic>)?.map(
       (k, e) => MapEntry(
           int.parse(k),

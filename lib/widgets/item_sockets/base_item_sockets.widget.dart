@@ -149,32 +149,5 @@ class BaseItemSocketsWidgetState<T extends BaseItemSocketsWidget>
   }
 
 
-  List<Widget> wishlistIcons(BuildContext context, int plugItemHash) {
-    var tags = WishlistsService().getPerkTags(definition.hash, plugItemHash);
-    if (tags == null) return [];
-    List<Widget> items = [];
-    if (tags.contains(WishlistTag.PVE)) {
-      items.add(buildWishlistIcon(context, WishlistTag.PVE));
-    }else{
-      items.add(Container());
-    }
-    if (tags.contains(WishlistTag.PVP)) {
-      items.add(buildWishlistIcon(context, WishlistTag.PVP));
-    }
-    return items;
-  }
-
-  buildWishlistIcon(BuildContext context, WishlistTag tag){
-    return WishlistBadgeWidget(tags:[tag].toSet(), size:16);
-  }
-
-  Widget buildWishlistTagIcons(int plugItemHash) {
-    var icons = wishlistIcons(context, plugItemHash);
-    if ((icons?.length ?? 0) > 0) {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: icons);
-    }
-    return Container();
-  }
+  
 }

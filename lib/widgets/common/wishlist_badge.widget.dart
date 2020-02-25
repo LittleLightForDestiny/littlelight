@@ -11,22 +11,28 @@ class WishlistBadgeWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Widget> badges = List();
-    if(tags.contains(WishlistTag.PVE)){
+    if (tags.contains(WishlistTag.GodPVE)) {
+      badges.add(buildBadge(context, WishlistTag.GodPVE));
+    } else if (tags.contains(WishlistTag.PVE)) {
       badges.add(buildBadge(context, WishlistTag.PVE));
     }
-    if(tags.contains(WishlistTag.PVP)){
+    if (tags.contains(WishlistTag.GodPVP)) {
+      badges.add(buildBadge(context, WishlistTag.GodPVP));
+    } else if (tags.contains(WishlistTag.PVP)) {
       badges.add(buildBadge(context, WishlistTag.PVP));
     }
-    if(tags.contains(WishlistTag.Bungie)){
+    if (tags.contains(WishlistTag.Bungie)) {
       badges.add(buildBadge(context, WishlistTag.Bungie));
     }
-    if(badges.length > 0){
-      return Row(children: badges,);
+    if (badges.length > 0) {
+      return Row(
+        children: badges,
+      );
     }
-    if(tags.length == 0){
+    if (tags.length == 0) {
       return buildBadge(context, null);
     }
-    if(tags.contains(WishlistTag.Trash)){
+    if (tags.contains(WishlistTag.Trash)) {
       return buildBadge(context, WishlistTag.Trash);
     }
     return Container();
@@ -35,14 +41,13 @@ class WishlistBadgeWidget extends StatelessWidget {
   Widget buildBadge(BuildContext context, WishlistTag tag) {
     return Container(
         margin: EdgeInsets.symmetric(vertical: 2),
-        height:size,
+        height: size,
         child: AspectRatio(
             aspectRatio: 1,
             child: Container(
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                  color: WishlistsData.getBgColor(tag), borderRadius: BorderRadius.circular(4)),
-              child: WishlistsData.getIcon(tag, size),
-            )));
+                alignment: Alignment.center,
+                decoration: WishlistsData.getBoxDecoration(tag)
+                    .copyWith(borderRadius: BorderRadius.circular(4)),
+                child: WishlistsData.getIcon(tag, size))));
   }
 }

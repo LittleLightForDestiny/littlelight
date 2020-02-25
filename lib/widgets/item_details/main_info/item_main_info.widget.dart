@@ -54,6 +54,41 @@ class ItemMainInfoWidget extends BaseDestinyStatelessItemWidget {
   Widget buildWishListInfo(BuildContext context) {
     var tags = WishlistsService().getWishlistBuildTags(item);
     if (tags == null) return Container();
+    if (tags.contains(WishlistTag.GodPVE) && tags.contains(WishlistTag.GodPVP)) {
+      return Container(
+          padding: EdgeInsets.only(bottom: 8, left: 8, right: 8),
+          child: Row(children: [
+            WishlistBadgeWidget(
+                tags: [WishlistTag.GodPVE, WishlistTag.GodPVP].toSet()),
+            Container(
+              width: 8,
+            ),
+            Expanded(child:TranslatedTextWidget(
+                "This item is considered a godroll for both PvE and PvP."))
+          ]));
+    }
+    if (tags.contains(WishlistTag.GodPVE)) {
+      return Container(
+          padding: EdgeInsets.only(bottom: 8, left: 8, right: 8),
+          child: Row(children: [
+            WishlistBadgeWidget(tags: [WishlistTag.GodPVE].toSet()),
+            Container(
+              width: 8,
+            ),
+            Expanded(child:TranslatedTextWidget("This item is considered a PvE godroll."))
+          ]));
+    }
+    if (tags.contains(WishlistTag.GodPVP)) {
+      return Container(
+          padding: EdgeInsets.only(bottom: 8, left: 8, right: 8),
+          child: Row(children: [
+            WishlistBadgeWidget(tags: [WishlistTag.GodPVP].toSet()),
+            Container(
+              width: 8,
+            ),
+            Expanded(child:TranslatedTextWidget("This item is considered a PvP godroll."))
+          ]));
+    }
     if (tags.contains(WishlistTag.PVE) && tags.contains(WishlistTag.PVP)) {
       return Container(
           padding: EdgeInsets.only(bottom: 8, left: 8, right: 8),
@@ -64,7 +99,7 @@ class ItemMainInfoWidget extends BaseDestinyStatelessItemWidget {
               width: 8,
             ),
             Expanded(child:TranslatedTextWidget(
-                "This item is considered a godroll for both PvE and PvP."))
+                "This item is considered a good roll for both PvE and PvP."))
           ]));
     }
     if (tags.contains(WishlistTag.PVE)) {
@@ -75,7 +110,7 @@ class ItemMainInfoWidget extends BaseDestinyStatelessItemWidget {
             Container(
               width: 8,
             ),
-            Expanded(child:TranslatedTextWidget("This item is considered a PvE godroll."))
+            Expanded(child:TranslatedTextWidget("This item is considered a good roll for PVE."))
           ]));
     }
     if (tags.contains(WishlistTag.PVP)) {
@@ -86,7 +121,7 @@ class ItemMainInfoWidget extends BaseDestinyStatelessItemWidget {
             Container(
               width: 8,
             ),
-            Expanded(child:TranslatedTextWidget("This item is considered a PvP godroll."))
+            Expanded(child:TranslatedTextWidget("This item is considered a good roll for PVP."))
           ]));
     }
     if (tags.contains(WishlistTag.Bungie)) {

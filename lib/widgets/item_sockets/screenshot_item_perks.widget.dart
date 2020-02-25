@@ -11,6 +11,7 @@ import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/wishlist_badge.widget.dart';
 import 'package:little_light/widgets/item_sockets/base_item_sockets.widget.dart';
 import 'package:little_light/widgets/item_sockets/item_socket.controller.dart';
+import 'package:little_light/widgets/item_sockets/plug_wishlist_tag_icons.mixin.dart';
 
 class ScreenShotItemPerksWidget extends BaseItemSocketsWidget {
   final double pixelSize;
@@ -35,7 +36,7 @@ class ScreenShotItemPerksWidget extends BaseItemSocketsWidget {
 }
 
 class ScreenShotItemPerksWidgetState<T extends ScreenShotItemPerksWidget>
-    extends BaseItemSocketsWidgetState<T> {
+    extends BaseItemSocketsWidgetState<T> with PlugWishlistTagIconsMixin{
   @override
   Widget build(BuildContext context) {
     if (category == null) return Container();
@@ -179,7 +180,7 @@ class ScreenShotItemPerksWidgetState<T extends ScreenShotItemPerksWidget>
                   top: 0,
                   right: 0,
                   left: 0,
-                  child: Center(child: buildWishlistTagIcons(plugItemHash)))
+                  child: Center(child: buildWishlistTagIcons(context, definition.hash, plugItemHash)))
     ]);
   }
 

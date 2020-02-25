@@ -7,22 +7,68 @@ part 'wish_list.g.dart';
 
 enum WishlistTag { GodPVE, GodPVP, PVE, PVP, Bungie, Trash }
 
+List<Set<int>> _jsonPlugsFromJson(Iterable<Iterable<int>> json) {
+  return json.map((e) => e.toSet()).toList();
+}
+
+@JsonSerializable()
+class LittleLightWishlist{
+  List<LittleLightWishlistItem> data;
+
+  LittleLightWishlist(this.data);
+
+  factory LittleLightWishlist.fromJson(dynamic json){
+    return _$LittleLightWishlistFromJson(json);
+  }
+
+  dynamic toJson(){
+    return _$LittleLightWishlistToJson(this);
+  }
+}
+
+@JsonSerializable()
+class LittleLightWishlistItem {
+  String name;
+  String description;
+  List<List<int>> plugs;
+  int hash;
+  List<String> tags;
+  List<String> authors;
+  LittleLightWishlistItem(
+    this.name,
+    this.description,
+    this.plugs,
+    this.hash,
+    this.tags,
+    this.authors,
+  );
+
+  factory LittleLightWishlistItem.fromJson(dynamic json) {
+    return _$LittleLightWishlistItemFromJson(json);
+  }
+
+  dynamic toJson() {
+    return _$LittleLightWishlistItemToJson(this);
+  }
+}
+
 @JsonSerializable()
 class WishlistBuild {
-  String identifier;
-  Set<int> perks = Set();
+  String name;
+  @JsonKey(fromJson: _jsonPlugsFromJson)
+  List<Set<int>> perks = List<Set<int>>();
   Set<WishlistTag> tags = Set();
   Set<String> notes = Set();
-  WishlistBuild({this.identifier, this.perks, this.tags, this.notes});
+  WishlistBuild({this.name, this.perks, this.tags, this.notes});
 
   factory WishlistBuild.builder({
-    String identifier,
-    Set<int> perks,
+    String name,
+    List<Set<int>> perks,
     Set<WishlistTag> specialties,
     Set<String> notes,
   }) {
     return WishlistBuild(
-        identifier: identifier,
+        name: name,
         perks: perks ?? Set(),
         tags: specialties ?? Set(),
         notes: notes ?? Set());
@@ -41,7 +87,7 @@ class WishlistBuild {
 class WishlistItem {
   int itemHash;
   Map<int, Set<WishlistTag>> perks = Map();
-  Map<String, WishlistBuild> builds = Map();
+  List<WishlistBuild> builds = List();
   WishlistItem({this.itemHash, this.builds, this.perks});
 
   factory WishlistItem.builder({
@@ -50,7 +96,7 @@ class WishlistItem {
     Map<String, WishlistBuild> builds,
   }) {
     return WishlistItem(
-        itemHash: itemHash, perks: perks ?? Map(), builds: builds ?? Map());
+        itemHash: itemHash, perks: perks ?? Map(), builds: builds ?? List());
   }
 
   factory WishlistItem.fromJson(dynamic json) {
@@ -68,29 +114,29 @@ enum WishlistType {
 }
 
 @JsonSerializable()
-class Wishlist { 
+class Wishlist {
   String url;
   String localFilename;
   String name;
   String description;
   DateTime updatedAt;
   WishlistType type;
-  @JsonKey(defaultValue:true)
+  @JsonKey(defaultValue: true)
   bool isDefault;
 
-  Wishlist({
-    this.url,
-    this.localFilename,
-    this.name,
-    this.description,
-    this.updatedAt,
-    this.type,
-    this.isDefault=false
-  });
+  Wishlist(
+      {this.url,
+      this.localFilename,
+      this.name,
+      this.description,
+      this.updatedAt,
+      this.type,
+      this.isDefault = false});
 
-  String get filename{
-    if(localFilename!=null) return localFilename;
-    localFilename = (md5.convert(Utf8Encoder().convert(url)).toString() + ".txt");
+  String get filename {
+    if (localFilename != null) return localFilename;
+    localFilename =
+        (md5.convert(Utf8Encoder().convert(url)).toString() + ".txt");
     return localFilename;
   }
 
@@ -98,14 +144,15 @@ class Wishlist {
     return _$WishlistFromJson(json);
   }
 
-  factory Wishlist.defaults(){
+  factory Wishlist.defaults() {
     return Wishlist(
-      url: "https://raw.githubusercontent.com/LittleLightForDestiny/dim-wish-list-sources/master/voltron.txt",
-      name: "DIM's/48klocs voltron.txt",
-      type: WishlistType.DimWishlist,
-      description: "This is a compiled collection of god/recommended rolls from top community minds.\nContributions from: u/Mercules904, u/pandapaxxy, u/HavocsCall, and @chrisfried. \nCompiled into one list by u/48klocs / @48klocs",
-      isDefault: true
-    );
+        url:
+            "https://raw.githubusercontent.com/LittleLightForDestiny/littlelight_wishlists/master/littlelight_default.json",
+        name: "Little Light default wishlist",
+        type: WishlistType.DimWishlist,
+        description:
+            "basically a compilation of pandapaxxy's Weapons Breakdown",
+        isDefault: true);
   }
 
   dynamic toJson() {

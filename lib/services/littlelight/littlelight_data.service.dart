@@ -17,7 +17,7 @@ class LittleLightDataService {
   Map<StorageKeys, dynamic> _data = Map(); 
 
   Future<List<Wishlist>> getFeaturedWishlists() async{
-    List<Wishlist> data = await _getData(StorageKeys.featuredWishlists);
+    List<Wishlist> data = await _getData(StorageKeys.featuredWishlists, Duration(seconds: 1));
     return data;
   }
 
@@ -26,16 +26,18 @@ class LittleLightDataService {
     return data;
   }
 
-  Future<dynamic> _getData(StorageKeys key) async{
+  Future<dynamic> _getData(StorageKeys key, [Duration time]) async{
     if(_data[key] != null) return _data[key];
-    var fromStorage = await _loadFromStorage(key);
-    if(fromStorage != null) return fromStorage;
+    try{
+      var fromStorage = await _loadFromStorage(key, time);
+      if(fromStorage != null) return fromStorage;
+    }catch(_){}
     return await _download(key);
   }
 
-  Future<dynamic> _loadFromStorage(StorageKeys key) async{
+  Future<dynamic> _loadFromStorage(StorageKeys key, [Duration time]) async{
     DateTime lastModified = await storage.getRawFileDate(StorageKeys.rawData, key.path);
-    DateTime minimumDate = DateTime.now().subtract(Duration(days: 7));
+    DateTime minimumDate = DateTime.now().subtract(time ?? Duration(days: 7));
     if(lastModified == null || lastModified.isBefore(minimumDate)){
       return null;
     }
