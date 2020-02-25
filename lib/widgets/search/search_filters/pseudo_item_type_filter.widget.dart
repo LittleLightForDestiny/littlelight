@@ -21,7 +21,7 @@ class _PseudoItemTypeFilterWidgetState extends BaseSearchFilterWidgetState<
   Widget build(BuildContext context) {
     double paddingBottom = MediaQuery.of(context).padding.bottom;
     return Container(
-        height: 40,
+        height: 40 + paddingBottom,
         padding: EdgeInsets.only(bottom: paddingBottom),
         color: Colors.black,
         child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [

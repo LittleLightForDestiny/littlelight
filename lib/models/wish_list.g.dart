@@ -48,7 +48,7 @@ Map<String, dynamic> _$LittleLightWishlistItemToJson(
 WishlistBuild _$WishlistBuildFromJson(Map<String, dynamic> json) {
   return WishlistBuild(
     name: json['name'] as String,
-    perks: _jsonPlugsFromJson(json['perks'] as Iterable<Iterable<int>>),
+    perks: _jsonPlugsFromJson(json['perks'] as List),
     tags: (json['tags'] as List)
         ?.map((e) => _$enumDecodeNullable(_$WishlistTagEnumMap, e))
         ?.toSet(),

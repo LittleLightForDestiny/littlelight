@@ -12,12 +12,14 @@ class WishlistTagFilter extends BaseItemFilter<Set<WishlistTag>> {
   Future<List<ItemWithOwner>> filter(List<ItemWithOwner> items, {Map<int, DestinyInventoryItemDefinition> definitions}) async {
     availableValues.clear();
     List<WishlistTag> tags = items.expand((i){
-      return WishlistsService().getWishlistBuildTags(i?.item)?.toList() ?? <WishlistTag>[]; 
+      var tags = WishlistsService().getWishlistBuildTags(i?.item)?.toList();
+      if(tags == null) return <WishlistTag>[];
+      if(tags.length == 0) return <WishlistTag>[null];
+      return tags;
     }).toSet().toList();
     tags.sort((a,b)=>a?.index?.compareTo(b.index ?? -1) ?? 0);
     this.availableValues = tags.toSet();
     this.available = availableValues.length > 1;
-    availableValues.add(null);
     value.retainAll(availableValues);
     if(value.length == 0) return items;
     return super.filter(items, definitions:definitions);

@@ -36,12 +36,16 @@ class _WishlistTagsFilterWidgetState extends BaseSearchFilterWidgetState<
     if (value == null) {
       return super.buildButton(context, value);
     }
-    if ((options.length - 1) % 2 == 0) {
+    var length = options.length;
+    if(options.contains(null)) length = length - 1;
+    if (length % 2 == 0) {
       return FractionallySizedBox(
-          widthFactor: .5, child: super.buildButton(context, value));
+          widthFactor: .5, child: 
+          Container(height:70, child:super.buildButton(context, value)));
     } else {
       return FractionallySizedBox(
-          widthFactor: 1 / 3, child: super.buildButton(context, value));
+          widthFactor: 1 / 3, child: 
+          Container(height:70, child:super.buildButton(context, value)));
     }
   }
 
@@ -66,6 +70,8 @@ class _WishlistTagsFilterWidgetState extends BaseSearchFilterWidgetState<
                 children: children,
               )
             : Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: children,
               ));
   }

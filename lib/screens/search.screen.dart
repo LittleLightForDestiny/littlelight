@@ -37,7 +37,6 @@ class SearchScreenState<T extends SearchScreen> extends State<T> {
 
   @override
   Widget build(BuildContext context) {
-    EdgeInsets screenPadding = MediaQuery.of(context).padding;
     return Scaffold(
         appBar: buildAppBar(context),
         endDrawer: SearchFilterMenu(controller: controller),
@@ -46,9 +45,6 @@ class SearchScreenState<T extends SearchScreen> extends State<T> {
           Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
             Expanded(child: buildList(context)),
             SelectedItemsWidget(),
-            Container(
-              height: screenPadding.bottom,
-            )
           ]),
           InventoryNotificationWidget(
             key: Key('inventory_notification_widget'),

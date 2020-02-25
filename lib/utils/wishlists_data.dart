@@ -30,7 +30,7 @@ class WishlistsData {
         return Colors.lightGreen.shade500;
         break;
     }
-    return Colors.white;
+    return Colors.amber;
   }
 
   static Widget getLabel(WishlistTag tag) {

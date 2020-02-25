@@ -66,8 +66,14 @@ class DimWishlistParser {
         tagsStr.toLowerCase().contains("trash")) {
       tags.add(WishlistTag.Trash);
     }
+    if (tagsStr.toLowerCase().contains("godpve")) {
+      tags.add(WishlistTag.GodPVE);
+    }
     if (tagsStr.toLowerCase().contains("pve")) {
       tags.add(WishlistTag.PVE);
+    }
+    if (tagsStr.toLowerCase().contains("godpvp")) {
+      tags.add(WishlistTag.GodPVP);
     }
     if (tagsStr.toLowerCase().contains("pvp")) {
       tags.add(WishlistTag.PVP);

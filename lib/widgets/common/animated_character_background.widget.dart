@@ -60,6 +60,7 @@ class _AnimatedCharacterBackgroundWidgetState
 
   updateCharacters() async {
     var _characters = ProfileService().getCharacters();
+    if(_characters == null) return;
     characters = [];
     for (var c in _characters) {
       var equipment = ProfileService().getCharacterEquipment(c.characterId);

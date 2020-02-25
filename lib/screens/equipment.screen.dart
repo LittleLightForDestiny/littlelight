@@ -53,7 +53,7 @@ class EquipmentScreenState extends State<EquipmentScreen>
   StreamSubscription<NotificationEvent> subscription;
 
   get totalCharacterTabs =>
-      characters?.length != null ? characters.length + 1 : 4;
+      (characters?.length ?? 0)  + 1;
 
   @override
   void initState() {
@@ -247,12 +247,14 @@ class EquipmentScreenState extends State<EquipmentScreen>
   }
 
   Widget buildBackground(BuildContext context) {
+    if(characters == null) return Container();
     return AnimatedCharacterBackgroundWidget(
       tabController: charTabController,
     );
   }
 
   Widget buildItemTypeTabBarView(BuildContext context) {
+    if(characters == null) return Container();
     return TabBarView(
         controller: typeTabController, children: buildItemTypeTabs(context));
   }
@@ -264,6 +266,7 @@ class EquipmentScreenState extends State<EquipmentScreen>
   }
 
   Widget buildCharacterTabBarView(BuildContext context, int group) {
+    if(characters == null) return Container();
     return PassiveTabBarView(
         physics: NeverScrollableScrollPhysics(),
         controller: charTabController,
@@ -286,6 +289,7 @@ class EquipmentScreenState extends State<EquipmentScreen>
   }
 
   buildCharacterMenu(BuildContext context) {
+    if(characters == null) return Container();
     return Row(children: [
       IconButton(
           icon: Icon(FontAwesomeIcons.search, color: Colors.white),

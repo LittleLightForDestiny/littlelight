@@ -7,8 +7,8 @@ part 'wish_list.g.dart';
 
 enum WishlistTag { GodPVE, GodPVP, PVE, PVP, Bungie, Trash }
 
-List<Set<int>> _jsonPlugsFromJson(Iterable<Iterable<int>> json) {
-  return json.map((e) => e.toSet()).toList();
+List<Set<int>> _jsonPlugsFromJson(List<dynamic> json) {
+  return json.map((e) => (e as List<dynamic>).map((e)=>int.parse(e)).toSet()).toList();
 }
 
 @JsonSerializable()

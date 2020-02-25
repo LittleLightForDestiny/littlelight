@@ -184,7 +184,10 @@ class ProfileInfoState extends State<ProfileInfoWidget>
 
   Widget buildActivityInfo(BuildContext context) {
     var lastCharacter =
-        widget.profile.getCharacters(CharacterSortParameter()).first;
+        widget.profile.getCharacters(CharacterSortParameter())?.first;
+    if(lastCharacter == null){
+      return Container();
+    }
     var lastPlayed = DateTime.parse(lastCharacter.dateLastPlayed);
     var currentSession = lastCharacter.minutesPlayedThisSession;
     var time = timeago.format(lastPlayed, allowFromNow: true, locale: StorageService.getLanguage());
