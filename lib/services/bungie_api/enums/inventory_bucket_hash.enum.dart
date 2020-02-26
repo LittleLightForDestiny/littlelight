@@ -49,7 +49,7 @@ class InventoryBucket {
   ];
 
   static const armorBucketHashes = [
-    chestArmor,
+    helmet,
     gauntlets,
     chestArmor,
     legArmor,

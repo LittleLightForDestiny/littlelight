@@ -51,6 +51,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
         body: SingleChildScrollView(
             padding: EdgeInsets.all(8),
             child: Column(children: <Widget>[
+              // buildTapToOpenDetails(context),
+              // Container(height: 16),
               buildKeepAwake(context),
               Container(height: 16),
               buildAutoOpenSearch(context),
@@ -112,6 +114,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
           value: widget.settings.keepAwake,
           onChanged: (val) {
             widget.settings.keepAwake = val;
+            setState(() {});
+            Screen.keepOn(val);
+          },
+        ));
+  }
+
+  buildTapToOpenDetails(BuildContext context) {
+    return ListTile(
+        title: TranslatedTextWidget(
+          "Tap to open details",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        subtitle:
+            TranslatedTextWidget("Tapping on items directly opens their details screen instead of a quick transfer menu."),
+        trailing: Switch(
+          value: widget.settings.tapToDetails,
+          onChanged: (val) {
+            widget.settings.tapToDetails = val;
             setState(() {});
             Screen.keepOn(val);
           },

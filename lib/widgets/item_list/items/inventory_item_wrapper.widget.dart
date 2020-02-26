@@ -14,6 +14,7 @@ import 'package:little_light/services/inventory/inventory.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/selection/selection.service.dart';
+import 'package:little_light/services/user_settings/user_settings.service.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/item_list/items/armor/armor_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/armor/medium_armor_inventory_item.widget.dart';
@@ -60,9 +61,12 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
   bool get selected =>
       SelectionService().isSelected(widget.item, widget.characterId);
 
+  StreamSubscription<List<ItemInventoryState>> subscription;
+
   DestinyItemInstanceComponent get instanceInfo {
     return widget.profile.getInstanceInfo(widget.item.itemInstanceId);
   }
+  
 
   static int queueSize = 0;
 
@@ -77,6 +81,17 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
     if (widget.item != null && this.definition == null){
       getDefinitions();
     }
+    
+    subscription = SelectionService().broadcaster.listen((event) {
+      if(!mounted) return;
+      setState((){});
+    });
+  }
+
+  @override
+  dispose(){
+    subscription.cancel();
+    super.dispose();
   }
 
   bool get isLoaded {
@@ -190,7 +205,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
 
   void onLongPress(context) {
     if (definition.nonTransferrable) return;
-
+    SelectionService().activateMultiSelect();
     SelectionService().addItem(widget.item, widget.characterId);
     setState(() {});
 
@@ -207,11 +222,29 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
     });
   }
 
-  void onTap(context) {
+  void onTap(context){
     if (SelectionService().multiselectActivated) {
       onLongPress(context);
       return;
     }
+    // if(UserSettingsService().tapToDetails){
+    //   onTapDetails(context);
+    // }else{
+    //   onTapSelect(context);  
+    // }
+    SelectionService().clear();
+    onTapDetails(context);
+  }
+
+  void onTapSelect(context){
+    if(selected){
+      onTapDetails(context);
+    }else{
+      SelectionService().setItem(widget.item, widget.characterId);
+    }
+  }
+
+  void onTapDetails(context) {
     if(definition == null){
       return;
     }

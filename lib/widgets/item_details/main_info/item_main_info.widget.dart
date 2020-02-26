@@ -67,29 +67,28 @@ class ItemMainInfoWidget extends BaseDestinyStatelessItemWidget {
                 "This item is considered a godroll for both PvE and PvP."))
           ]));
     }
+    var rows = <Widget>[];
     if (tags.contains(WishlistTag.GodPVE)) {
-      return Container(
-          padding: EdgeInsets.only(bottom: 8, left: 8, right: 8),
+      rows.add(Container(
           child: Row(children: [
             WishlistBadgeWidget(tags: [WishlistTag.GodPVE].toSet()),
             Container(
               width: 8,
             ),
             Expanded(child:TranslatedTextWidget("This item is considered a PvE godroll."))
-          ]));
+          ])));
     }
     if (tags.contains(WishlistTag.GodPVP)) {
-      return Container(
-          padding: EdgeInsets.only(bottom: 8, left: 8, right: 8),
+      rows.add(Container(
           child: Row(children: [
             WishlistBadgeWidget(tags: [WishlistTag.GodPVP].toSet()),
             Container(
               width: 8,
             ),
             Expanded(child:TranslatedTextWidget("This item is considered a PvP godroll."))
-          ]));
+          ])));
     }
-    if (tags.contains(WishlistTag.PVE) && tags.contains(WishlistTag.PVP)) {
+    if (tags.contains(WishlistTag.PVE) && tags.contains(WishlistTag.PVP) && rows.length == 0) {
       return Container(
           padding: EdgeInsets.only(bottom: 8, left: 8, right: 8),
           child: Row(children: [
@@ -102,38 +101,41 @@ class ItemMainInfoWidget extends BaseDestinyStatelessItemWidget {
                 "This item is considered a good roll for both PvE and PvP."))
           ]));
     }
-    if (tags.contains(WishlistTag.PVE)) {
-      return Container(
-          padding: EdgeInsets.only(bottom: 8, left: 8, right: 8),
+    if (tags.contains(WishlistTag.PVE) && !tags.contains(WishlistTag.GodPVE)) {
+      rows.add(Container(
           child: Row(children: [
             WishlistBadgeWidget(tags: [WishlistTag.PVE].toSet()),
             Container(
               width: 8,
             ),
             Expanded(child:TranslatedTextWidget("This item is considered a good roll for PVE."))
-          ]));
+          ])));
     }
-    if (tags.contains(WishlistTag.PVP)) {
-      return Container(
-          padding: EdgeInsets.only(bottom: 8, left: 8, right: 8),
+    if (tags.contains(WishlistTag.PVP) && !tags.contains(WishlistTag.GodPVP)) {
+      rows.add(Container(
           child: Row(children: [
             WishlistBadgeWidget(tags: [WishlistTag.PVP].toSet()),
             Container(
               width: 8,
             ),
             Expanded(child:TranslatedTextWidget("This item is considered a good roll for PVP."))
-          ]));
+          ])));
     }
     if (tags.contains(WishlistTag.Bungie)) {
-      return Container(
-          padding: EdgeInsets.only(bottom: 8, left: 8, right: 8),
+      rows.add(Container(
           child: Row(children: [
             WishlistBadgeWidget(tags: [WishlistTag.Bungie].toSet()),
             Container(
               width: 8,
             ),
             Expanded(child:TranslatedTextWidget("This item is a Bungie curated roll."))
-          ]));
+          ])));
+    }
+    if(rows.length > 0){
+      return Container(
+        padding: EdgeInsets.only(bottom: 8, left: 8, right: 8),
+        child:Column(children: rows, crossAxisAlignment: CrossAxisAlignment.stretch,)
+      );
     }
     if (tags.contains(WishlistTag.Trash)) {
       return Container(

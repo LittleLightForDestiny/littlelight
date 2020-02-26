@@ -236,6 +236,20 @@
     "Update": "업데이트",
     "PvE": "PvE",
     "PvP": "PvP",
-    "Trash": "Trash",
-    "Curated": "Curated"
+    "Trash": "쓰레기",
+    "Curated": "큐레이트됨",
+    "This item is considered an uncategorized godroll.": "이 아이템은 딱히 분류되지 않았지만 좋은 템으로 여겨집니다.",
+    "Stats Total": "총 스탯",
+    "None": "None",
+    "Cosmetics": "Cosmetics",
+    "Include powerless items": "Include powerless items",
+    "This perk is considered the best for both PvE and PvP on this item.": "This perk is considered the best for both PvE and PvP on this item.",
+    "This perk is considered the best for PvE on this item.": "This perk is considered the best for PvE on this item.",
+    "This perk is considered the best for PvP on this item.": "This perk is considered the best for PvP on this item.",
+    "This item is considered a good roll for both PvE and PvP.": "This item is considered a good roll for both PvE and PvP.",
+    "This item is considered a good roll for PVE.": "This item is considered a good roll for PVE.",
+    "This item is considered a good roll for PVP.": "This item is considered a good roll for PVP.",
+    "PvE godroll": "PvE godroll",
+    "PvP godroll": "PvP godroll",
+    "Uncategorized": "Uncategorized"
 }

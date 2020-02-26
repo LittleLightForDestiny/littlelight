@@ -2,12 +2,18 @@ import 'dart:async';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/inventory/inventory.service.dart';
+import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/selection/selection.service.dart';
 import 'package:little_light/utils/media_query_helper.dart';
+import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/multiselect_management_block.widget.dart';
+import 'package:little_light/widgets/item_list/items/base/base_inventory_item.widget.dart';
+import 'package:little_light/widgets/item_list/items/quick_select_item_wrapper.widget.dart';
+import 'package:little_light/widgets/item_list/items/search_item_wrapper.widget.dart';
+import 'package:uuid/uuid.dart';
 
 class SelectedItemsWidget extends StatefulWidget {
   final service = SelectionService();
@@ -29,7 +35,7 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget> {
     super.initState();
 
     this.items = widget.service.items;
-    
+
     subscription = widget.service.broadcaster.listen((selected) {
       this.items = selected;
       setState(() {});
@@ -44,7 +50,7 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (!widget.service.multiselectActivated) {
+    if (widget.service.items.length == 0) {
       return Container();
     }
     return Container(
@@ -58,7 +64,7 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget> {
   }
 
   Widget buildHeader(BuildContext context) {
-    if(items == null) return Container();
+    if (items == null) return Container();
     return HeaderWidget(
       padding: EdgeInsets.all(0),
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -99,7 +105,15 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget> {
   }
 
   Widget buildItemIcons(BuildContext context) {
-    if(items == null) return Container();
+    if (items == null) return Container();
+    if (items?.length == 1) {
+      var item = items[0];
+      return Container(
+          height: 96,
+          key:ObjectKey(item),
+          child: 
+          QuickSelectItemWrapperWidget(item?.item, null, characterId: item?.characterId,));
+    }
     var itemsPerRow = MediaQueryHelper(context).tabletOrBigger ? 20 : 10;
     return Container(
         alignment: Alignment.topLeft,
@@ -120,9 +134,11 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget> {
                                 border: Border.all(
                                     color: Colors.grey.shade300, width: .5)),
                             child: Stack(children: [
-                              Positioned.fill(child:ManifestImageWidget<
+                              Positioned.fill(
+                                  child: ManifestImageWidget<
                                       DestinyInventoryItemDefinition>(
-                                  i.item.itemHash,)),
+                                i.item.itemHash,
+                              )),
                               Material(
                                   color: Colors.transparent,
                                   child: InkWell(

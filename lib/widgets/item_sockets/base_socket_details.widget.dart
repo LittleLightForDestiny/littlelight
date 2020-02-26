@@ -426,7 +426,6 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget>
     }
     if (tags.contains(WishlistTag.GodPVE)) {
       rows.add(Container(
-          padding: EdgeInsets.symmetric(vertical: iconSize/2),
           child: Row(children: [
             WishlistBadgeWidget(tags:[WishlistTag.GodPVE].toSet(), size:iconSize),
             Container(width: 4,),
@@ -436,7 +435,6 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget>
     }
     if (tags.contains(WishlistTag.GodPVP)) {
       rows.add(Container(
-          padding: EdgeInsets.symmetric(vertical: iconSize/2),
           child: Row(children: [
             WishlistBadgeWidget(tags:[WishlistTag.GodPVP].toSet(), size:iconSize),
             Container(width: 4,),
@@ -457,7 +455,6 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget>
     }
     if (tags.contains(WishlistTag.PVE) && !tags.contains(WishlistTag.GodPVE)) {
       rows.add(Container(
-          padding: EdgeInsets.symmetric(vertical: iconSize/2),
           child: Row(children: [
             WishlistBadgeWidget(tags:[WishlistTag.PVE].toSet(), size:iconSize),
             Container(width: 4,),
@@ -467,7 +464,6 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget>
     }
     if (tags.contains(WishlistTag.PVP) && !tags.contains(WishlistTag.GodPVP)) {
       rows.add(Container(
-          padding: EdgeInsets.symmetric(vertical: iconSize/2),
           child: Row(children: [
             WishlistBadgeWidget(tags:[WishlistTag.PVP].toSet(), size:iconSize),
             Container(width: 4,),
@@ -476,9 +472,11 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget>
           ])));
     }
     if(rows.length > 0){
-      return Column(
+      return Container(
+        padding: EdgeInsets.symmetric(vertical: iconSize/2),
+        child:Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: rows,);
+        children: rows,));
     }
     return Container();
   }
