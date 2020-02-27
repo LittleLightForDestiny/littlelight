@@ -1,19 +1,15 @@
 import 'dart:async';
+
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/inventory/inventory.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/selection/selection.service.dart';
 import 'package:little_light/utils/media_query_helper.dart';
-import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/multiselect_management_block.widget.dart';
-import 'package:little_light/widgets/item_list/items/base/base_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/quick_select_item_wrapper.widget.dart';
-import 'package:little_light/widgets/item_list/items/search_item_wrapper.widget.dart';
-import 'package:uuid/uuid.dart';
 
 class SelectedItemsWidget extends StatefulWidget {
   final service = SelectionService();

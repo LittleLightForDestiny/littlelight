@@ -17,7 +17,7 @@ class WishlistTagFilter extends BaseItemFilter<Set<WishlistTag>> {
       if(tags.length == 0) return <WishlistTag>[null];
       return tags;
     }).toSet().toList();
-    tags.sort((a,b)=>a?.index?.compareTo(b.index ?? -1) ?? 0);
+    tags.sort((a,b)=>a?.index?.compareTo(b?.index ?? -1) ?? 0);
     this.availableValues = tags.toSet();
     this.available = availableValues.length > 1;
     value.retainAll(availableValues);

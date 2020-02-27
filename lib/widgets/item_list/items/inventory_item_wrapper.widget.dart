@@ -14,7 +14,6 @@ import 'package:little_light/services/inventory/inventory.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/selection/selection.service.dart';
-import 'package:little_light/services/user_settings/user_settings.service.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/item_list/items/armor/armor_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/armor/medium_armor_inventory_item.widget.dart';
