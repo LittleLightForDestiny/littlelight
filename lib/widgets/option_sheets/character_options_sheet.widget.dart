@@ -19,6 +19,7 @@ import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/user_settings/item_sort_parameter.dart';
 import 'package:little_light/services/user_settings/user_settings.service.dart';
 import 'package:little_light/utils/inventory_utils.dart';
+import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/flutter/smaller_switch.dart';
@@ -352,7 +353,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
         Navigator.of(context).pop();
         InventoryService().transferMultiple(
             itemsInPostmaster
-                .map((i) => ItemInventoryState(widget.character.characterId, i))
+                .map((i) => ItemWithOwner(i, widget.character.characterId))
                 .toList(),
             ItemDestination.Character,
             widget.character.characterId);

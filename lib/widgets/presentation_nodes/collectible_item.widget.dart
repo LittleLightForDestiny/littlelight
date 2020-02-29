@@ -3,16 +3,15 @@ import 'dart:async';
 import 'package:bungie_api/enums/destiny_item_type.dart';
 import 'package:bungie_api/models/destiny_collectible_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
-import 'package:little_light/services/inventory/inventory.service.dart';
-import 'package:little_light/services/selection/selection.service.dart';
-import 'package:little_light/utils/item_with_owner.dart';
-import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/screens/item_detail.screen.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/selection/selection.service.dart';
+import 'package:little_light/utils/item_with_owner.dart';
+import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/item_list/items/armor/armor_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/base_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/emblem/emblem_inventory_item.widget.dart';
@@ -62,7 +61,7 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget> {
   void initState() {
     super.initState();
     loadDefinition();
-    StreamSubscription<List<ItemInventoryState>> sub;
+    StreamSubscription<List<ItemWithOwner>> sub;
     sub = SelectionService().broadcaster.listen((selectedItems) {
       if (!mounted) {
         sub.cancel();

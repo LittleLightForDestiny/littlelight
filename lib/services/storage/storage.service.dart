@@ -26,7 +26,7 @@ enum StorageKeys {
   manifestFile,
   currentVersion,
   keepAwake,
-  tapToDetails,
+  tapToSelect,
   itemOrdering,
   pursuitOrdering,
   characterOrdering,

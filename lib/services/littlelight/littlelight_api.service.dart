@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:bungie_api/enums/bungie_membership_type.dart';
 import 'package:bungie_api/helpers/bungie_net_token.dart';
 import 'package:bungie_api/models/group_user_info_card.dart';
 import 'package:little_light/models/loadout.dart';
@@ -6,6 +7,7 @@ import 'package:little_light/services/auth/auth.service.dart';
 import 'package:http/http.dart' as http;
 import 'package:little_light/services/storage/storage.service.dart';
 import 'package:uuid/uuid.dart';
+
 
 enum _HttpMethod { get, post }
 
@@ -44,6 +46,7 @@ class LittleLightApiService {
   Future<int> deleteLoadout(Loadout loadout) async {
     Map<String, dynamic> map = loadout.toJson();
     String body = jsonEncode(map);
+    print(body);
     dynamic json = await _authorizedRequest("loadouts/delete",
         method: _HttpMethod.post, body: body);
     return json["result"] ?? 0;
@@ -60,7 +63,7 @@ class LittleLightApiService {
     String secret = await _getSecret();
     Map<String, dynamic> params = {
       'membership_id': membership.membershipId,
-      'membership_type': "${membership.membershipType}",
+      'membership_type': "${membership.membershipType.value}",
       'uuid': uuid,
     };
     if (secret != null) {

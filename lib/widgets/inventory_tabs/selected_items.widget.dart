@@ -1,9 +1,14 @@
 import 'dart:async';
 
+import 'package:bungie_api/enums/item_state.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/screens/item_detail.screen.dart';
 import 'package:little_light/services/inventory/inventory.service.dart';
+import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/selection/selection.service.dart';
+import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
@@ -23,8 +28,8 @@ class SelectedItemsWidget extends StatefulWidget {
 }
 
 class SelectedItemsWidgetState extends State<SelectedItemsWidget> {
-  StreamSubscription<List<ItemInventoryState>> subscription;
-  List<ItemInventoryState> items;
+  StreamSubscription<List<ItemWithOwner>> subscription;
+  List<ItemWithOwner> items;
 
   @override
   void initState() {
@@ -54,9 +59,75 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget> {
       child: Column(children: [
         buildHeader(context),
         buildItemIcons(context),
+        buildOptions(context),
         MultiselectManagementBlockWidget(items: items),
       ]),
     );
+  }
+
+  Widget buildOptions(BuildContext context) {
+    var buttons = <RaisedButton>[];
+    var lockableItems = items.where((i)=>i?.item?.lockable == true && i?.item?.state?.contains(ItemState.Locked) != true);
+    var unlockableItems = items.where((i)=>i?.item?.lockable == true && i?.item?.state?.contains(ItemState.Locked) != false);
+    if(lockableItems.length > 0){
+      buttons.add(RaisedButton(
+        key:Key("lock_button"),
+        child: TranslatedTextWidget(
+          "Lock",
+          uppercase: true,
+        ),
+        onPressed: () async {
+          InventoryService().changeMultipleLockState(lockableItems.toList(), true);
+          setState(() {});
+        },
+      ));
+    }
+    if(unlockableItems.length > 0){
+      buttons.add(RaisedButton(
+        key:Key("unlock_button"),
+        child: TranslatedTextWidget(
+          "Unlock",
+          uppercase: true,
+        ),
+        onPressed: () async {
+          InventoryService().changeMultipleLockState(unlockableItems.toList(), false);
+          setState(() {});
+        },
+      ));
+    }
+    if (items.length == 1) {
+      buttons.add(RaisedButton(
+        child: TranslatedTextWidget(
+          "Details",
+          uppercase: true,
+        ),
+        onPressed: () async {
+          var item = items.single;
+          var instanceInfo = ProfileService().getInstanceInfo(item?.item?.itemInstanceId);
+          var def = await ManifestService().getDefinition<DestinyInventoryItemDefinition>(item?.item?.itemHash);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ItemDetailScreen(
+                item: item.item,
+                definition: def,
+                instanceInfo: instanceInfo,
+                characterId: item.ownerId,
+              ),
+            ),
+          );
+        },
+      ));
+    }
+    return Row(
+        children: buttons
+            .map((b) => Expanded(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    child: b,
+                  ),
+                ))
+            .toList());
   }
 
   Widget buildHeader(BuildContext context) {
@@ -106,9 +177,12 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget> {
       var item = items[0];
       return Container(
           height: 96,
-          key:ObjectKey(item),
-          child: 
-          QuickSelectItemWrapperWidget(item?.item, null, characterId: item?.characterId,));
+          key: ObjectKey(item),
+          child: QuickSelectItemWrapperWidget(
+            item?.item,
+            null,
+            characterId: item?.ownerId,
+          ));
     }
     var itemsPerRow = MediaQueryHelper(context).tabletOrBigger ? 20 : 10;
     return Container(
@@ -140,7 +214,7 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget> {
                                   child: InkWell(
                                     onTap: () {
                                       widget.service
-                                          .removeItem(i.item, i.characterId);
+                                          .removeItem(i.item, i.ownerId);
                                     },
                                   ))
                             ])))))

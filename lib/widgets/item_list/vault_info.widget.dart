@@ -15,6 +15,7 @@ import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 
 import 'package:little_light/utils/inventory_utils.dart';
+import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -213,7 +214,7 @@ class VaultOptionsSheetState extends State<VaultOptionsSheet> {
           all.where((i) => i.bucketHash == InventoryBucket.lostItems).toList();
       await inventory.transferMultiple(
           inPostmaster
-              .map((i) => ItemInventoryState(char.characterId, i))
+              .map((i) => ItemWithOwner(i, char.characterId))
               .toList(),
           ItemDestination.Vault,
           char.characterId);

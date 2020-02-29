@@ -77,10 +77,10 @@ class UserSettingsService {
     globalStorage.setBool(StorageKeys.keepAwake, value);
   }
 
-  bool get tapToDetails => globalStorage.getBool(StorageKeys.tapToDetails) ?? false;
+  bool get tapToSelect => globalStorage.getBool(StorageKeys.tapToSelect) ?? false;
 
-  set tapToDetails(bool value){
-    globalStorage.setBool(StorageKeys.tapToDetails, value);
+  set tapToSelect(bool value){
+    globalStorage.setBool(StorageKeys.tapToSelect, value);
   }
 
   int get defaultFreeSlots{

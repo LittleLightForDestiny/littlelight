@@ -97,7 +97,8 @@ class LoadoutsService {
     _loadouts.removeWhere((l) => l.assignedId == loadout.assignedId);
     await _saveLoadoutsToStorage();
     var api = LittleLightApiService();
-    return await api.deleteLoadout(loadout);
+    var response = await api.deleteLoadout(loadout);
+    return response;
   }
 
   Future<void> _saveLoadoutsToStorage() async {

@@ -1,5 +1,7 @@
 import 'package:bungie_api/enums/damage_type.dart';
+import 'package:bungie_api/enums/item_state.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/models/wish_list.dart';
 import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
@@ -189,6 +191,10 @@ mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget {
   Widget namebarTrailingWidget(BuildContext context) {
     List<Widget> items = [];
     var tags = WishlistsService().getWishlistBuildTags(item);
+    var locked = item?.state?.contains(ItemState.Locked) ?? false;
+    if(locked){
+      items.add(Container(child: Icon(FontAwesomeIcons.lock, size:titleFontSize*.9)));
+    }
     if(tags != null){
       items.add(WishlistBadgeWidget(tags:tags, size:tagIconSize));
     }

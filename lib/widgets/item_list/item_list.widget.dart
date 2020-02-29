@@ -279,6 +279,9 @@ class ItemListWidgetState extends State<ItemListWidget>
     ListItem item = listIndex[index];
     String itemKey =
         "${index}_${item.itemComponent?.itemInstanceId ?? item.itemComponent?.itemHash ?? 'empty'}";
+    var bucketDef = bucketDefs[item?.bucketHash];
+    var characterId = bucketDef?.scope == BucketScope.Character ? widget.characterId : null;
+    
     switch (item?.type) {
       case ListItem.infoHeader:
         return CharacterInfoWidget(
@@ -297,7 +300,7 @@ class ItemListWidgetState extends State<ItemListWidget>
           item?.itemComponent,
           item?.bucketHash,
           key: Key(itemKey),
-          characterId: widget.characterId,
+          characterId: characterId,
         );
 
       case ListItem.unequippedItem:
@@ -307,7 +310,7 @@ class ItemListWidgetState extends State<ItemListWidget>
             item?.bucketHash,
             key: Key(itemKey),
             density: ContentDensity.MINIMAL,
-            characterId: widget.characterId,
+            characterId: characterId,
           );
         }
         return InventoryItemWrapperWidget(
@@ -315,7 +318,7 @@ class ItemListWidgetState extends State<ItemListWidget>
           item?.bucketHash,
           key: Key(itemKey),
           density: ContentDensity.MEDIUM,
-          characterId: widget.characterId,
+          characterId: characterId,
         );
 
       case ListItem.spacer:

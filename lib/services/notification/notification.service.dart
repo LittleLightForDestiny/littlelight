@@ -9,6 +9,7 @@ enum NotificationType {
   requestedEquip,
   requestedUpdate,
   receivedUpdate,
+  itemStateUpdate,
   transferError,
   equipError,
   updateError

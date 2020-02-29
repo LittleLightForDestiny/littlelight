@@ -8,7 +8,6 @@ import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/screens/item_detail.screen.dart';
-import 'package:little_light/services/inventory/inventory.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
@@ -251,7 +250,7 @@ class _DefinitionItemWrapperState extends State<_DefinitionItemWrapper> {
   void initState() {
     super.initState();
 
-    StreamSubscription<List<ItemInventoryState>> sub;
+    StreamSubscription<List<ItemWithOwner>> sub;
     sub = SelectionService().broadcaster.listen((selectedItems) {
       if (!mounted) {
         sub.cancel();
@@ -333,7 +332,7 @@ class _ItemInstanceWrapperState extends State<_ItemInstanceWrapper> {
     
     instance = ProfileService().getInstanceInfo(widget.item.itemInstanceId);
 
-    StreamSubscription<List<ItemInventoryState>> sub;
+    StreamSubscription<List<ItemWithOwner>> sub;
     sub = SelectionService().broadcaster.listen((selectedItems) {
       if (!mounted) {
         sub.cancel();

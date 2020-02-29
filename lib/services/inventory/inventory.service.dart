@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:bungie_api/enums/destiny_class.dart';
 import 'package:bungie_api/enums/destiny_item_type.dart';
+import 'package:bungie_api/enums/item_state.dart';
 import 'package:bungie_api/enums/platform_error_codes.dart';
 import 'package:bungie_api/enums/tier_type.dart';
 import 'package:bungie_api/models/destiny_character_component.dart';
@@ -19,6 +20,7 @@ import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:bungie_api/enums/bucket_category.dart';
+import 'package:little_light/utils/item_with_owner.dart';
 
 enum ItemDestination { Character, Inventory, Vault }
 enum TransferErrorCode {
@@ -37,12 +39,6 @@ class TransferError {
   final String characterId;
 
   TransferError(this.code, [this.item, this.destination, this.characterId]);
-}
-
-class ItemInventoryState {
-  final String characterId;
-  final DestinyItemComponent item;
-  ItemInventoryState(this.characterId, this.item);
 }
 
 class TransferDestination {
@@ -65,7 +61,6 @@ class InventoryService {
   transfer(DestinyItemComponent item, String sourceCharacterId,
       ItemDestination destination,
       [String destinationCharacterId]) async {
-    
     _broadcaster.push(NotificationEvent(NotificationType.requestedTransfer,
         item: item, characterId: destinationCharacterId));
     profile.pauseAutomaticUpdater = true;
@@ -110,9 +105,9 @@ class InventoryService {
     await _unequip(item, characterId);
   }
 
-  transferMultiple(List<ItemInventoryState> itemStates,
-      ItemDestination destination, String destinationCharacterId,
-      [equip = false]) async {
+  transferMultiple(List<ItemWithOwner> itemStates, ItemDestination destination,
+      String destinationCharacterId,
+      [bool skipUpdate = false]) async {
     profile.pauseAutomaticUpdater = true;
     List<String> idsToAvoid = itemStates
         .where((i) => i.item.itemInstanceId != null)
@@ -126,7 +121,7 @@ class InventoryService {
     Map<int, DestinyInventoryItemDefinition> defs =
         await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
     for (var item in itemStates) {
-      String ownerId = item.characterId;
+      String ownerId = item.ownerId;
       DestinyInventoryItemDefinition def = defs[item.item.itemHash];
       if (destination == ItemDestination.Character &&
           ownerId == destinationCharacterId &&
@@ -145,9 +140,56 @@ class InventoryService {
         await Future.delayed(Duration(seconds: 3));
       }
     }
-    await Future.delayed(Duration(milliseconds: 100));
-    profile.pauseAutomaticUpdater = false;
+    if (!skipUpdate) {
+      await Future.delayed(Duration(seconds: 1));
+      await profile.fetchProfileData();
+      profile.pauseAutomaticUpdater = false;
+    }
+  }
+
+  equipMultiple(
+      List<ItemWithOwner> itemStates, String destinationCharacterId) async {
+    profile.pauseAutomaticUpdater = true;
+    DestinyCharacterComponent character =
+        profile.getCharacter(destinationCharacterId);
+    List<ItemWithOwner> itemsToTransfer = itemStates.where((i) {
+      var def = ManifestService()
+          .getDefinitionFromCache<DestinyInventoryItemDefinition>(
+              i?.item?.itemHash);
+      if (def?.equippable == false) return false;
+      if (def?.nonTransferrable == true && i?.ownerId != character.characterId)
+        return false;
+      if (![character?.classType, DestinyClass.Unknown]
+          .contains(def?.classType)) return false;
+      return true;
+    }).toList();
+    Set<int> ocuppiedBuckets = Set();
+    Set<DestinyItemType> ocuppiedExoticTypes = Set();
+    List<ItemWithOwner> itemsToEquip = itemsToTransfer.where((i) {
+      var def = ManifestService()
+          .getDefinitionFromCache<DestinyInventoryItemDefinition>(
+              i?.item?.itemHash);
+      if (ocuppiedBuckets.contains(def?.inventory?.bucketTypeHash))
+        return false;
+      if (def?.inventory?.tierType == TierType.Exotic) {
+        if (ocuppiedExoticTypes.contains(def?.itemType)) return false;
+        ocuppiedExoticTypes.add(def?.itemType);
+      }
+      ocuppiedBuckets.add(def?.inventory?.bucketTypeHash);
+      return true;
+    }).toList();
+    await transferMultiple(itemsToTransfer, ItemDestination.Character,
+        destinationCharacterId, true);
+
+    _broadcaster.push(NotificationEvent(NotificationType.requestedEquip,
+        characterId: destinationCharacterId));
+
+    await _equipMultiple(
+        itemsToEquip.map((i) => i.item).toList(), destinationCharacterId);
+
+    await Future.delayed(Duration(seconds: 1));
     await profile.fetchProfileData();
+    profile.pauseAutomaticUpdater = false;
   }
 
   transferLoadout(Loadout loadout,
@@ -513,7 +555,8 @@ class InventoryService {
           previouslyEquipped[bucketHash];
       DestinyItemInstanceComponent previouslyEquippedInstance =
           profile.getInstanceInfo(previouslyEquippedItem.itemInstanceId);
-      if (![PlatformErrorCodes.Success, PlatformErrorCodes.None].contains(result.equipStatus)) {
+      if (![PlatformErrorCodes.Success, PlatformErrorCodes.None]
+          .contains(result.equipStatus)) {
         throw new TransferError(TransferErrorCode.cantEquip);
       }
       previouslyEquippedInstance.isEquipped = false;
@@ -533,13 +576,12 @@ class InventoryService {
     DestinyItemComponent substitute =
         await _findSubstitute(item, characterId, idsToAvoid);
     if (substitute.bucketHash == InventoryBucket.general) {
-      await _transfer(
-          substitute, null, ItemDestination.Character,
+      await _transfer(substitute, null, ItemDestination.Character,
           destinationCharacterId: characterId);
     }
 
     await _equip(substitute, characterId);
-    
+
     List<DestinyItemComponent> inventory =
         profile.getCharacterInventory(characterId);
     List<DestinyItemComponent> equipment =
@@ -558,14 +600,17 @@ class InventoryService {
     fireLocalUpdate();
   }
 
-  List<DestinyItemComponent> _getItemsOnBucket(DestinyInventoryBucketDefinition bucketDefinition, String characterId){
+  List<DestinyItemComponent> _getItemsOnBucket(
+      DestinyInventoryBucketDefinition bucketDefinition, String characterId) {
     List<DestinyItemComponent> items;
     if (bucketDefinition.scope == BucketScope.Character) {
       items = profile.getCharacterInventory(characterId);
     } else {
       items = profile.getProfileInventory();
     }
-    items = items.where((item) => item.bucketHash == bucketDefinition.hash).toList();
+    items = items
+        .where((item) => item.bucketHash == bucketDefinition.hash)
+        .toList();
     return items;
   }
 
@@ -576,13 +621,15 @@ class InventoryService {
         .getDefinition<DestinyInventoryBucketDefinition>(bucketHash);
     bool hasEquipSlot = bucketDefinition.category == BucketCategory.Equippable;
     int bucketSize = bucketDefinition.itemCount - (hasEquipSlot ? 1 : 0);
-    List<DestinyItemComponent> items = _getItemsOnBucket(bucketDefinition, characterId);
+    List<DestinyItemComponent> items =
+        _getItemsOnBucket(bucketDefinition, characterId);
     int itemCount = items.length;
     int freeSlots = bucketSize - itemCount;
     if (freeSlots > count) {
       return;
     }
-    await profile.fetchProfileData(components: ProfileComponentGroups.inventories, skipUpdate: true);
+    await profile.fetchProfileData(
+        components: ProfileComponentGroups.inventories, skipUpdate: true);
     items = _getItemsOnBucket(bucketDefinition, characterId);
     itemCount = items.length;
     freeSlots = bucketSize - itemCount;
@@ -692,6 +739,34 @@ class InventoryService {
     });
 
     return possibles.first;
+  }
+
+  changeMultipleLockState(List<ItemWithOwner> items, bool locked) {
+    items.forEach((item) {
+      changeLockState(item, locked);
+    });
+  }
+
+  changeLockState(ItemWithOwner item, bool locked) async {
+    if (!item.item.lockable) return;
+    var charIds = profile.getCharacters().map((c) => c.characterId);
+    var ownerId = charIds.contains(item?.ownerId) ? item?.ownerId : null;
+    if (item.item.state.contains(ItemState.Locked) && !locked) {
+      item?.item?.state =
+          ItemState(item.item.state.value - ItemState.Locked.value);
+    } else if (!item.item.state.contains(ItemState.Locked) && locked) {
+      item?.item?.state =
+          ItemState(item.item.state.value + ItemState.Locked.value);
+    }
+    var profileItem = ProfileService().getAllItems().firstWhere(
+        (i) =>
+            i.itemHash == item.item.itemHash &&
+            i.itemInstanceId == item.item.itemInstanceId,
+        orElse: () => null);
+    profileItem.state = item?.item?.state;
+    _broadcaster.push(new NotificationEvent(NotificationType.itemStateUpdate,
+        item: item.item));
+    await api.changeLockState(item?.item?.itemInstanceId, ownerId, locked);
   }
 
   fireLocalUpdate() {

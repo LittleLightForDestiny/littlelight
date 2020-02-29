@@ -8,6 +8,7 @@ import 'package:bungie_api/models/core_settings_configuration.dart';
 import 'package:bungie_api/models/destiny_equip_item_result.dart';
 import 'package:bungie_api/models/destiny_item_action_request.dart';
 import 'package:bungie_api/models/destiny_item_set_action_request.dart';
+import 'package:bungie_api/models/destiny_item_state_request.dart';
 import 'package:bungie_api/models/destiny_item_transfer_request.dart';
 import 'package:bungie_api/models/destiny_postmaster_transfer_request.dart';
 import 'package:bungie_api/models/destiny_profile_response.dart';
@@ -149,6 +150,19 @@ class BungieApiService {
           ..itemId = itemId
           ..characterId = characterId
           ..membershipType = membership.membershipType);
+    return response.response;
+  }
+  
+
+  Future<int> changeLockState(String itemId, String characterId, bool locked) async {
+    BungieNetToken token = await auth.getToken();
+    GroupUserInfoCard membership = await auth.getMembership();
+    var response = await Destiny2.setItemLockState(Client(token: token),
+    DestinyItemStateRequest()
+    ..itemId = itemId
+    ..membershipType = membership.membershipType
+    ..characterId = characterId
+    ..state = locked);
     return response.response;
   }
 

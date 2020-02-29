@@ -56,31 +56,35 @@ class ItemIconWidget extends BaseDestinyStatelessItemWidget {
   @override
   Widget build(BuildContext context) {
     ItemState state = item?.state ?? ItemState.None;
-    if (state.contains(ItemState.Masterwork)) {
-      return Stack(children: [
-        Positioned.fill(child: itemIconImage(context)),
-        Positioned.fill(child: getMasterworkOutline()),
-        Positioned.fill(
-            child: Shimmer.fromColors(
-          baseColor: Colors.amber.withOpacity(.2),
-          highlightColor: Colors.amber.shade100,
-          child: getMasterworkOutline(),
-          period: Duration(seconds: 5),
-        ))
-      ]);
-    }
+    if (state.contains(ItemState.Masterwork)) {}
     bool useBackgroundColor = true;
     if ([DestinyItemType.Subclass, DestinyItemType.Engram]
         .contains(definition?.itemType)) {
       useBackgroundColor = false;
     }
-    return Container(
-        constraints: BoxConstraints.expand(),
-        color: useBackgroundColor
-            ? DestinyData.getTierColor(definition.inventory.tierType)
-            : null,
-        foregroundDecoration: iconBoxDecoration(),
-        child: itemIconImage(context));
+    return Stack(children: [
+      Positioned.fill(
+          child: Container(
+              color: useBackgroundColor
+                  ? DestinyData.getTierColor(definition.inventory.tierType)
+                  : null,
+              child: itemIconImage(context))),
+      Positioned.fill(
+          child: state.contains(ItemState.Masterwork)
+              ? getMasterworkOutline()
+              : Container(
+                  decoration: iconBoxDecoration(),
+                )),
+      state.contains(ItemState.Masterwork)
+          ? Positioned.fill(
+              child: Shimmer.fromColors(
+              baseColor: Colors.amber.withOpacity(.2),
+              highlightColor: Colors.amber.shade100,
+              child: getMasterworkOutline(),
+              period: Duration(seconds: 5),
+            ))
+          : Container()
+    ]);
   }
 
   BoxDecoration iconBoxDecoration() {

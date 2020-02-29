@@ -12,8 +12,10 @@ import 'package:little_light/screens/quick_transfer.screen.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/inventory/inventory.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/selection/selection.service.dart';
+import 'package:little_light/services/user_settings/user_settings.service.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/item_list/items/armor/armor_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/armor/medium_armor_inventory_item.widget.dart';
@@ -57,15 +59,14 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
     extends State<T> {
   DestinyInventoryItemDefinition definition;
   String uniqueId;
-  bool get selected =>
-      SelectionService().isSelected(widget.item, widget.characterId);
+  bool selected = false;
 
-  StreamSubscription<List<ItemInventoryState>> subscription;
+  StreamSubscription<List<ItemWithOwner>> selectionSubscription;
+  StreamSubscription<NotificationEvent> stateSubscription;
 
   DestinyItemInstanceComponent get instanceInfo {
     return widget.profile.getInstanceInfo(widget.item.itemInstanceId);
   }
-  
 
   static int queueSize = 0;
 
@@ -75,21 +76,35 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
     this.definition = widget.manifest
         .getDefinitionFromCache<DestinyInventoryItemDefinition>(
             widget?.item?.itemHash);
-    
+
     super.initState();
-    if (widget.item != null && this.definition == null){
+    if (widget.item != null && this.definition == null) {
       getDefinitions();
     }
-    
-    subscription = SelectionService().broadcaster.listen((event) {
+
+    selectionSubscription = SelectionService().broadcaster.listen((event) {
+      if (!mounted) return;
+      var isSelected =
+          SelectionService().isSelected(widget.item, widget.characterId);
+      if (isSelected != selected) {
+        selected = isSelected;
+        setState(() {});
+      }
+    });
+    stateSubscription = NotificationService().listen((event) {
       if(!mounted) return;
-      setState((){});
+      if (event.type == NotificationType.itemStateUpdate &&
+          event.item.itemHash == widget.item?.itemHash &&
+          event.item.itemInstanceId == widget.item?.itemInstanceId) {
+            setState(() {});
+          }
     });
   }
 
   @override
-  dispose(){
-    subscription.cancel();
+  dispose() {
+    selectionSubscription.cancel();
+    stateSubscription.cancel();
     super.dispose();
   }
 
@@ -178,6 +193,9 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
                 onLongPress: () {
                   onLongPress(context);
                 },
+                onDoubleTap: () {
+                  onDoubleTap(context);
+                },
               )));
     }
     return Container();
@@ -193,12 +211,13 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
         builder: (context) => QuickTransferScreen(
           bucketDefinition: bucketDef,
           classType: character.classType,
-          characterId:widget.characterId,
+          characterId: widget.characterId,
         ),
       ),
     );
-    if(item != null){
-      InventoryService().transfer(item.item, item.ownerId, ItemDestination.Character, widget.characterId);
+    if (item != null) {
+      InventoryService().transfer(item.item, item.ownerId,
+          ItemDestination.Character, widget.characterId);
     }
   }
 
@@ -207,53 +226,46 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
     SelectionService().activateMultiSelect();
     SelectionService().addItem(widget.item, widget.characterId);
     setState(() {});
-
-    StreamSubscription<List<ItemInventoryState>> sub;
-    sub = SelectionService().broadcaster.listen((selectedItems) {
-      if (!mounted) {
-        sub.cancel();
-        return;
-      }
-      setState(() {});
-      if (!selected) {
-        sub.cancel();
-      }
-    });
   }
 
-  void onTap(context){
+  void onTap(BuildContext context) {
     if (SelectionService().multiselectActivated) {
       onLongPress(context);
       return;
     }
-    // if(UserSettingsService().tapToDetails){
-    //   onTapDetails(context);
-    // }else{
-    //   onTapSelect(context);  
-    // }
-    SelectionService().clear();
-    onTapDetails(context);
+    if (UserSettingsService().tapToSelect) {
+      onTapSelect(context);
+    } else {
+      onTapDetails(context);
+    }
   }
 
-  void onTapSelect(context){
-    if(selected){
+  void onDoubleTap(BuildContext context) {
+    if (UserSettingsService().tapToSelect) {
       onTapDetails(context);
-    }else{
+    }
+  }
+
+  void onTapSelect(context) {
+    if (selected) {
+      SelectionService().clear();
+    } else {
       SelectionService().setItem(widget.item, widget.characterId);
     }
   }
 
   void onTapDetails(context) {
-    if(definition == null){
+    if (definition == null) {
       return;
     }
+    // SelectionService().clear();
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => ItemDetailScreen(
-          item:widget.item,
-          definition:definition,
-          instanceInfo:instanceInfo,
+          item: widget.item,
+          definition: definition,
+          instanceInfo: instanceInfo,
           characterId: widget.characterId,
           uniqueId: uniqueId,
         ),
@@ -297,7 +309,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
         }
       default:
         {
-          if(widget.item == null && quickTransferAvailable){
+          if (widget.item == null && quickTransferAvailable) {
             return QuickTransferDestinationItemWidget();
           }
           return LoadingInventoryItemWidget();
