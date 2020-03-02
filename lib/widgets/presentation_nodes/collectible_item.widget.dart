@@ -10,6 +10,7 @@ import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/selection/selection.service.dart';
+import 'package:little_light/services/user_settings/user_settings.service.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/item_list/items/armor/armor_inventory_item.widget.dart';
@@ -194,6 +195,7 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget> {
       onLongPress(context);
       return;
     }
+    
     DestinyInventoryItemDefinition itemDef = await widget.manifest
         .getDefinition<DestinyInventoryItemDefinition>(definition.itemHash);
     if (itemDef == null) {
@@ -202,8 +204,7 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) =>
-            ItemDetailScreen(definition:itemDef),
+        builder: (context) => ItemDetailScreen(definition: itemDef),
       ),
     );
   }
