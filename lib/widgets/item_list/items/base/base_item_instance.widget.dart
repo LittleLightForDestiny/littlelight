@@ -7,12 +7,14 @@ import 'package:bungie_api/models/destiny_vendor_definition.dart';
 import 'package:flutter/material.dart';
 
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
+import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/primary_stat.widget.dart';
 
 import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:little_light/widgets/common/wishlist_badge.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/base_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/item_mods.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/item_perks.widget.dart';
@@ -25,14 +27,13 @@ typedef void OnItemHandler(
 
 class BaseItemInstanceWidget extends BaseInventoryItemWidget {
   BaseItemInstanceWidget(
-      DestinyItemComponent item,
-      DestinyInventoryItemDefinition itemDefinition,
-      DestinyItemInstanceComponent instanceInfo,
-      {Key key,
-      @required String uniqueId,
-      @required String characterId,
-      })
-      : super(item, itemDefinition, instanceInfo,
+    DestinyItemComponent item,
+    DestinyInventoryItemDefinition itemDefinition,
+    DestinyItemInstanceComponent instanceInfo, {
+    Key key,
+    @required String uniqueId,
+    @required String characterId,
+  }) : super(item, itemDefinition, instanceInfo,
             key: key, characterId: characterId, uniqueId: uniqueId);
 
   @override
@@ -47,6 +48,12 @@ class BaseItemInstanceWidget extends BaseInventoryItemWidget {
         width: 48,
         height: 48,
         child: buildEmblemIcon(context),
+      ),
+      Positioned(
+        left: 4,
+        top: 56,
+        width: 48,
+        child: buildWishlistTags(context),
       ),
       Positioned.fill(
           child: Container(
@@ -63,6 +70,12 @@ class BaseItemInstanceWidget extends BaseInventoryItemWidget {
         ),
       )),
     ]);
+  }
+
+  Widget buildWishlistTags(BuildContext context) {
+    var tags = WishlistsService().getWishlistBuildTags(item);
+    if(tags == null) return Container();
+    return WishlistBadgeWidget(tags: tags, size: tagIconSize);
   }
 
   Widget buildCharacterName(BuildContext context) {
@@ -129,12 +142,13 @@ class BaseItemInstanceWidget extends BaseInventoryItemWidget {
 
   @override
   Widget primaryStatWidget(BuildContext context) {
-    return PrimaryStatWidget(definition:definition, instanceInfo:instanceInfo);
+    return PrimaryStatWidget(
+        definition: definition, instanceInfo: instanceInfo);
   }
 
   @override
   Widget modsWidget(BuildContext context) {
-    if(item?.itemInstanceId == null) return Container();
+    if (item?.itemInstanceId == null) return Container();
     return ItemModsWidget(
       definition: definition,
       itemSockets: profile.getItemSockets(item?.itemInstanceId),
@@ -144,8 +158,13 @@ class BaseItemInstanceWidget extends BaseInventoryItemWidget {
 
   @override
   Widget perksWidget(BuildContext context) {
-    var sockets = item?.itemInstanceId == null ? null : profile.getItemSockets(item?.itemInstanceId);
-    var socketCategoryHash = definition.sockets?.socketCategories?.map((sc)=>sc.socketCategoryHash)?.firstWhere((h)=>DestinyData.socketCategoryPerkHashes.contains(h), orElse: ()=>null);
+    var sockets = item?.itemInstanceId == null
+        ? null
+        : profile.getItemSockets(item?.itemInstanceId);
+    var socketCategoryHash = definition.sockets?.socketCategories
+        ?.map((sc) => sc.socketCategoryHash)
+        ?.firstWhere((h) => DestinyData.socketCategoryPerkHashes.contains(h),
+            orElse: () => null);
     return ItemPerksWidget(
       socketCategoryHash: socketCategoryHash,
       itemSockets: sockets,

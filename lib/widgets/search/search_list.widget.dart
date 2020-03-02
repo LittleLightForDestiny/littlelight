@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/media_query_helper.dart';
@@ -63,6 +64,10 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T> {
   }
 
   StaggeredTile getTileBuilder(int index) {
+    var item = widget.controller.filtered[index];
+    if(InventoryBucket.pursuitBucketHashes.contains(item.item.bucketHash)){
+      return StaggeredTile.extent(6, 150);  
+    }
     return StaggeredTile.extent(6, 96);
   }
 }

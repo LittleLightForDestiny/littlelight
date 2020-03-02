@@ -1,14 +1,9 @@
 import 'dart:math';
 
-import 'package:bungie_api/enums/destiny_ammunition_type.dart';
 import 'package:bungie_api/enums/destiny_class.dart';
-import 'package:bungie_api/enums/destiny_item_sub_type.dart';
-import 'package:bungie_api/enums/tier_type.dart';
 import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
-import 'package:bungie_api/models/destiny_item_instance_component.dart';
-import 'package:bungie_api/models/destiny_stat.dart';
 import 'package:bungie_api/models/interpolation_point.dart';
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
@@ -16,55 +11,10 @@ import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/user_settings/item_sort_parameter.dart';
 import 'package:little_light/services/user_settings/user_settings.service.dart';
+import 'package:little_light/utils/item_sorters/power_level_sorter.dart';
+import 'package:little_light/utils/item_with_owner.dart';
 
 class InventoryUtils {
-  static List<int> _bucketOrder = [
-    InventoryBucket.subclass,
-    InventoryBucket.kineticWeapons,
-    InventoryBucket.energyWeapons,
-    InventoryBucket.powerWeapons,
-    InventoryBucket.helmet,
-    InventoryBucket.gauntlets,
-    InventoryBucket.chestArmor,
-    InventoryBucket.legArmor,
-    InventoryBucket.classArmor,
-    InventoryBucket.ghost,
-    InventoryBucket.vehicle,
-    InventoryBucket.ships,
-    InventoryBucket.emblems,
-    InventoryBucket.consumables,
-    InventoryBucket.modifications,
-    InventoryBucket.shaders,
-  ];
-
-  static List<DestinyItemSubType> _subtypeOrder = [
-    DestinyItemSubType.HandCannon,
-    DestinyItemSubType.AutoRifle,
-    DestinyItemSubType.PulseRifle,
-    DestinyItemSubType.ScoutRifle,
-    DestinyItemSubType.Sidearm,
-    DestinyItemSubType.SubmachineGun,
-    DestinyItemSubType.TraceRifle,
-    DestinyItemSubType.Bow,
-    DestinyItemSubType.Shotgun,
-    DestinyItemSubType.SniperRifle,
-    DestinyItemSubType.FusionRifle,
-    DestinyItemSubType.FusionRifleLine,
-    DestinyItemSubType.GrenadeLauncher,
-    DestinyItemSubType.RocketLauncher,
-    DestinyItemSubType.Sword,
-    DestinyItemSubType.Machinegun,
-    DestinyItemSubType.HelmetArmor,
-    DestinyItemSubType.GauntletsArmor,
-    DestinyItemSubType.ChestArmor,
-    DestinyItemSubType.LegArmor,
-    DestinyItemSubType.ClassArmor,
-    DestinyItemSubType.Shader,
-    DestinyItemSubType.Ornament,
-    DestinyItemSubType.Mask,
-    DestinyItemSubType.Crm,
-  ];
-
   static int interpolateStat(
       int investmentValue, List<InterpolationPoint> displayInterpolation) {
     var interpolation = displayInterpolation.toList();
@@ -93,129 +43,24 @@ class InventoryUtils {
     return displayValue.round();
   }
 
-  static int sortDestinyItems(
-      DestinyItemComponent itemA, DestinyItemComponent itemB,
-      {List<ItemSortParameter> sortingParams,
-      DestinyInventoryItemDefinition defA,
-      DestinyInventoryItemDefinition defB,
-      String ownerA,
-      String ownerB,
-      List<String> characterOrder,
-      int paramHash}) {
-    int result = 0;
+  static Future<List<ItemWithOwner>> sortDestinyItems(
+      Iterable<ItemWithOwner> items,
+      {List<ItemSortParameter> sortingParams}) async{
     if (sortingParams == null) {
       sortingParams = UserSettingsService().itemOrdering;
     }
-    for (var p in sortingParams) {
-      if (p.active) {
-        result = _sortBy(p.type, p.direction, itemA, itemB, defA, defB, ownerA,
-            ownerB, characterOrder);
-        if (result != 0) return result;
+    await ManifestService().getDefinitions<DestinyInventoryItemDefinition>(items.map((i)=>i?.item?.itemHash));
+    var sorters = sortingParams.map((p)=>p.sorter).where((s)=>s!=null);
+    var originalOrder = items.toList();
+    var list = items.toList();
+    list.sort((a,b){
+      for(var sorter in sorters){
+        var res = sorter.sort(a,b);
+        if(res != 0) return res;
       }
-    }
-    return result;
-  }
-
-  static int _sortBy(
-      ItemSortParameterType param,
-      int direction,
-      DestinyItemComponent itemA,
-      DestinyItemComponent itemB,
-      DestinyInventoryItemDefinition defA,
-      DestinyInventoryItemDefinition defB,
-      String ownerA,
-      String ownerB,
-      List<String> characterOrder) {
-    var manifest = ManifestService();
-    defA = defA ?? manifest.getDefinitionFromCache(itemA?.itemHash);
-    defB = defB ?? manifest.getDefinitionFromCache(itemB?.itemHash);
-    switch (param) {
-      case ItemSortParameterType.PowerLevel:
-        DestinyItemInstanceComponent instanceA =
-            ProfileService().getInstanceInfo(itemA.itemInstanceId);
-        DestinyItemInstanceComponent instanceB =
-            ProfileService().getInstanceInfo(itemB.itemInstanceId);
-        int powerA = instanceA?.primaryStat?.value ?? 0;
-        int powerB = instanceB?.primaryStat?.value ?? 0;
-        return direction * powerA.compareTo(powerB);
-
-      case ItemSortParameterType.TierType:
-        int tierA = defA?.inventory?.tierType?.value ?? 0;
-        int tierB = defB?.inventory?.tierType?.value ?? 0;
-        return direction * tierA.compareTo(tierB);
-
-      case ItemSortParameterType.BucketHash:
-        int bucketA = defA?.inventory?.bucketTypeHash ?? 0;
-        int bucketB = defB?.inventory?.bucketTypeHash ?? 0;
-        int orderA = _bucketOrder.indexOf(bucketA);
-        int orderB = _bucketOrder.indexOf(bucketB);
-        return direction * orderA.compareTo(orderB);
-
-      case ItemSortParameterType.SubType:
-        DestinyItemSubType subTypeA = defA?.itemSubType;
-        DestinyItemSubType subTypeB = defB?.itemSubType;
-        int orderA = _subtypeOrder.indexOf(subTypeA);
-        int orderB = _subtypeOrder.indexOf(subTypeB);
-        return direction * orderA.compareTo(orderB);
-
-      case ItemSortParameterType.Name:
-        String nameA = defA?.displayProperties?.name?.toLowerCase() ?? "";
-        String nameB = defB?.displayProperties?.name?.toLowerCase() ?? "";
-        return direction * nameA.compareTo(nameB);
-
-      case ItemSortParameterType.ClassType:
-        int classA = defA?.classType?.value ?? 0;
-        int classB = defB?.classType?.value ?? 0;
-        return direction * classA.compareTo(classB);
-
-      case ItemSortParameterType.AmmoType:
-        int ammoTypeA = defA?.equippingBlock?.ammoType?.value ?? 0;
-        int ammoTypeB = defB?.equippingBlock?.ammoType?.value ?? 0;
-        return direction * ammoTypeA.compareTo(ammoTypeB);
-
-      case ItemSortParameterType.Quantity:
-        int quantityA = itemA?.quantity ?? 0;
-        int quantityB = itemB?.quantity ?? 0;
-        return direction * quantityA.compareTo(quantityB);
-
-      case ItemSortParameterType.ExpirationDate:
-        if (itemA?.expirationDate == null || itemB?.expirationDate == null) {
-          if (itemA?.expirationDate != null) return direction * -1;
-          if (itemB?.expirationDate != null) return direction * 1;
-          return 0;
-        }
-        DateTime expirationA = DateTime.parse(itemA?.expirationDate);
-        DateTime expirationB = DateTime.parse(itemB?.expirationDate);
-        return direction * expirationA.compareTo(expirationB);
-
-      case ItemSortParameterType.QuestGroup:
-        var stackOrderA = defA?.index;
-        var stackOrderB = defB?.index;
-
-        return direction * stackOrderA.compareTo(stackOrderB);
-
-      case ItemSortParameterType.ItemOwner:
-        if (characterOrder == null) return 0;
-        var orderA = characterOrder.indexOf(ownerA);
-        var orderB = characterOrder.indexOf(ownerB);
-        if (orderA < 0 || orderB < 0) {
-          return orderB.compareTo(orderA);
-        }
-        return direction * orderA.compareTo(orderB);
-
-      case ItemSortParameterType.StatTotal:
-        Map<String, DestinyStat> statsA =
-            ProfileService().getPrecalculatedStats(itemA.itemInstanceId);
-        Map<String, DestinyStat> statsB =
-            ProfileService().getPrecalculatedStats(itemB.itemInstanceId);
-        int totalA = statsA?.values?.fold(0, (v, s) => v + s.value) ?? 0;
-        int totalB = statsB?.values?.fold(0, (v, s) => v + s.value) ?? 0;
-        return direction * totalA.compareTo(totalB);
-
-      case ItemSortParameterType.Stat:
-        return 0;
-    }
-    return 0;
+      return originalOrder.indexOf(a).compareTo(originalOrder.indexOf(b));
+    });
+    return list;
   }
 
   static Future<LoadoutItemIndex> buildLoadoutItemIndex(Loadout loadout) async {
@@ -327,7 +172,8 @@ class LoadoutItemIndex {
         List<DestinyItemComponent> substitutes =
             allItems.where((i) => i.itemHash == itemHash).toList();
         if (substitutes.length == 0) return;
-        substitutes.sort((a, b) => InventoryUtils.sortDestinyItems(a, b));
+        var powerSorter = PowerLevelSorter(-1);
+        substitutes.sort((a, b)=>powerSorter.sort(ItemWithOwner(a, null), ItemWithOwner(b, null)));
         DestinyItemComponent substitute = substitutes.first;
 
         if (equipped != null) {

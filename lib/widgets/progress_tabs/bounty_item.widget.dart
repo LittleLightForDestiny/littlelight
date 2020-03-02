@@ -8,12 +8,12 @@ import 'package:little_light/widgets/common/small_objective.widget.dart';
 import 'package:little_light/widgets/progress_tabs/pursuit_item.widget.dart';
 
 class BountyItemWidget extends PursuitItemWidget {
-  BountyItemWidget({Key key, String characterId, DestinyItemComponent item})
+  BountyItemWidget({Key key, String characterId, DestinyItemComponent item, bool includeCharacterIcon:false})
       : super(
             key: key,
             characterId: characterId,
             item: item,
-            includeCharacterIcon: false);
+            includeCharacterIcon: includeCharacterIcon);
 
   BountyItemWidgetState createState() => BountyItemWidgetState();
 }

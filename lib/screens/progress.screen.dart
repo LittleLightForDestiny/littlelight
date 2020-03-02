@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/screens/search.screen.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/user_settings/item_sort_parameter.dart';
 import 'package:little_light/services/user_settings/user_settings.service.dart';
 import 'package:little_light/utils/item_filters/item_owner_filter.dart';
 import 'package:little_light/utils/item_filters/pseudo_item_type_filter.dart';
@@ -215,6 +216,8 @@ class ProgressScreenState extends State<ProgressScreen>
                         ItemOwnerFilter([char.characterId].toSet()),
                         PseudoItemTypeFilter(types, types),
                       ],
+                      defaultSorting: UserSettingsService().pursuitOrdering,
+                      availableSorters: ItemSortParameter.availablePursuitSorters
                     ),
                   ),
                 ));

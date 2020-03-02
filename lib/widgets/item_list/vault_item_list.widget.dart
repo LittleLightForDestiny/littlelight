@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/utils/inventory_utils.dart';
+import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/item_list/bucket_header.widget.dart';
 import 'package:little_light/widgets/item_list/item_list.widget.dart';
@@ -49,9 +50,7 @@ class VaultItemListWidgetState extends ItemListWidgetState {
         var def = itemDefs[item.itemHash];
         return def?.inventory?.bucketTypeHash == bucketHash;
       }).toList();
-      unequipped.sort((itemA, itemB) {
-        return InventoryUtils.sortDestinyItems(itemA, itemB);
-      });
+      unequipped = (await InventoryUtils.sortDestinyItems(unequipped.map((i)=>ItemWithOwner(i, null)))).map((i)=>i.item).toList();
 
       this
           .buckets

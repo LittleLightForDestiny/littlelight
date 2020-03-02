@@ -97,7 +97,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
     loadStatGroupDefinition();
   }
 
-  findDuplicates() {
+  findDuplicates() async{
     AuthService auth = AuthService();
     if (!auth.isLogged) {
       return;
@@ -119,11 +119,12 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
         .getProfileInventory()
         .where((i) => i.itemHash == this.definition.hash)
         .map((item) => ItemWithOwner(item, null)));
-    allItems.sort((a, b) => InventoryUtils.sortDestinyItems(a.item, b.item));
     duplicates = allItems.where((i) {
       return i.item.itemInstanceId != null &&
           i.item.itemInstanceId != item?.itemInstanceId;
     }).toList();
+
+    duplicates = await InventoryUtils.sortDestinyItems(duplicates);
 
     if (mounted) {
       setState(() {});

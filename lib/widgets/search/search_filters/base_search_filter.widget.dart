@@ -34,7 +34,7 @@ class BaseSearchFilterWidgetState<T extends BaseSearchFilterWidget,
 
   @override
   dispose() {
-    controller?.removeListener(() {});
+    controller?.removeListener(onUpdate);
     super.dispose();
   }
 

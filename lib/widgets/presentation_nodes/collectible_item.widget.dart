@@ -53,7 +53,7 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget> {
 
   bool get selected => items != null
       ? items.every((i) {
-          return SelectionService().isSelected(i.item, i.ownerId);
+          return SelectionService().isSelected(i);
         })
       : false;
 
@@ -211,14 +211,15 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget> {
   void onLongPress(BuildContext context) {
     if ((items?.length ?? 0) == 0) return;
     if (!selected) {
+      SelectionService().activateMultiSelect();
       for (var item in this.items) {
-        if (!SelectionService().isSelected(item.item, item.ownerId)) {
-          SelectionService().addItem(item.item, item.ownerId);
+        if (!SelectionService().isSelected(item)) {
+          SelectionService().addItem(ItemWithOwner(item.item, item.ownerId));
         }
       }
     } else {
       for (var item in this.items) {
-        SelectionService().removeItem(item.item, item.ownerId);
+        SelectionService().removeItem(ItemWithOwner(item.item, item.ownerId));
       }
     }
 

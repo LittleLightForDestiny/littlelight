@@ -149,10 +149,8 @@ class VendorDetailsScreenState extends State<VendorDetailsScreen> {
     var def = definition.displayCategories[category.displayCategoryIndex];
     return Column(children: [
       HeaderWidget(
-          alignment: Alignment.centerLeft,
           child: Text(
             def?.displayProperties?.name?.toUpperCase(),
-            style: TextStyle(fontWeight: FontWeight.bold),
           )),
       Container(height:8),
       buildCategoryItems(context, category)

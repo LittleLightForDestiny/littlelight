@@ -58,45 +58,35 @@ class _SettingsScreenState extends State<SettingsScreen> {
               buildAutoOpenSearch(context),
               Container(height: 16),
               HeaderWidget(
-                  alignment: Alignment.centerLeft,
                   child: TranslatedTextWidget(
                     "Default free slots",
                     uppercase: true,
-                    style: TextStyle(fontWeight: FontWeight.bold),
                   )),
               buildDefaultFreeSlots(context),
               HeaderWidget(
-                  alignment: Alignment.centerLeft,
                   child: TranslatedTextWidget(
                     "Wishlists",
                     uppercase: true,
-                    style: TextStyle(fontWeight: FontWeight.bold),
                   )),
               buildWishlists(context),
               Container(height: 16),
               HeaderWidget(
-                  alignment: Alignment.centerLeft,
                   child: TranslatedTextWidget(
                     "Order characters by",
                     uppercase: true,
-                    style: TextStyle(fontWeight: FontWeight.bold),
                   )),
               buildCharacterOrdering(context),
               Container(height: 32),
               HeaderWidget(
-                  alignment: Alignment.centerLeft,
                   child: TranslatedTextWidget(
                     "Order items by",
                     uppercase: true,
-                    style: TextStyle(fontWeight: FontWeight.bold),
                   )),
               buildItemOrderList(context),
               HeaderWidget(
-                  alignment: Alignment.centerLeft,
                   child: TranslatedTextWidget(
                     "Order pursuits by",
                     uppercase: true,
-                    style: TextStyle(fontWeight: FontWeight.bold),
                   )),
               buildPursuitOrderList(context)
             ])));
@@ -106,7 +96,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return ListTile(
         title: TranslatedTextWidget(
           "Keep Awake",
-          style: TextStyle(fontWeight: FontWeight.bold),
         ),
         subtitle:
             TranslatedTextWidget("Keep device awake while the app is open"),
@@ -124,15 +113,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return ListTile(
         title: TranslatedTextWidget(
           "Tap to select",
-          style: TextStyle(fontWeight: FontWeight.bold),
         ),
         subtitle:
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children:[
-              TranslatedTextWidget("Tapping on items will select them for quick transfer and equip instead of opening details"),
-              TranslatedTextWidget("Double tap for details"),
-            ]),
+            Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          TranslatedTextWidget(
+              "Tapping on items will select them for quick transfer and equip instead of opening details"),
+          TranslatedTextWidget("Double tap for details"),
+        ]),
         trailing: Switch(
           value: widget.settings.tapToSelect,
           onChanged: (val) {
@@ -147,7 +134,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return ListTile(
         title: TranslatedTextWidget(
           "Auto open Keyboard",
-          style: TextStyle(fontWeight: FontWeight.bold),
         ),
         subtitle:
             TranslatedTextWidget("Open keyboard automatically in quick search"),
@@ -265,10 +251,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                           .addWishlist(w);
                                       Navigator.of(context).pop();
                                       setState(() {});
-                                      WishlistsService().countBuilds();   
-                                      
+                                      WishlistsService().countBuilds();
                                     }),
-                                Container(width: 8,),
+                                Container(
+                                  width: 8,
+                                ),
                                 RaisedButton(
                                     color: Theme.of(context).errorColor,
                                     child: TranslatedTextWidget("Remove"),
@@ -310,7 +297,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 TranslatedTextWidget(
                   "Last played",
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 CharacterSortParameterType.LastPlayed),
             Container(
@@ -321,7 +307,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 TranslatedTextWidget(
                   "First created",
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 CharacterSortParameterType.FirstCreated),
             Container(
@@ -332,7 +317,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 TranslatedTextWidget(
                   "Last created",
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 CharacterSortParameterType.LastCreated),
           ],
@@ -465,83 +449,81 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Widget buildSortLabel(ItemSortParameter parameter) {
-    var style = TextStyle(
-        fontWeight: FontWeight.bold,
-        color: parameter.active ? Colors.white : Colors.grey.shade500);
     switch (parameter.type) {
       case ItemSortParameterType.PowerLevel:
         return TranslatedTextWidget(
           "Power Level",
           uppercase: true,
-          style: style,
         );
 
       case ItemSortParameterType.TierType:
         return TranslatedTextWidget(
           "Rarity",
           uppercase: true,
-          style: style,
         );
 
       case ItemSortParameterType.ExpirationDate:
         return TranslatedTextWidget(
           "Expiration Date",
           uppercase: true,
-          style: style,
         );
       case ItemSortParameterType.Name:
         return TranslatedTextWidget(
           "Name",
           uppercase: true,
-          style: style,
         );
       case ItemSortParameterType.SubType:
         return TranslatedTextWidget(
           "Type",
           uppercase: true,
-          style: style,
         );
       case ItemSortParameterType.ClassType:
         return TranslatedTextWidget(
           "Class Type",
           uppercase: true,
-          style: style,
         );
       case ItemSortParameterType.AmmoType:
         return TranslatedTextWidget(
           "Ammo Type",
           uppercase: true,
-          style: style,
         );
       case ItemSortParameterType.BucketHash:
         return TranslatedTextWidget(
           "Slot",
           uppercase: true,
-          style: style,
         );
       case ItemSortParameterType.Quantity:
         return TranslatedTextWidget(
           "Quantity",
           uppercase: true,
-          style: style,
         );
 
       case ItemSortParameterType.QuestGroup:
-        return TranslatedTextWidget("Group", uppercase: true, style: style);
+        return TranslatedTextWidget("Group", uppercase: true);
 
       case ItemSortParameterType.ItemOwner:
         return TranslatedTextWidget("Item Holder",
-            uppercase: true, style: style);
+            uppercase: true);
 
       case ItemSortParameterType.StatTotal:
         return TranslatedTextWidget("Stats Total",
-            uppercase: true, style: style);
+            uppercase: true);
+      
+      case ItemSortParameterType.MasterworkStatus:
+        return TranslatedTextWidget("Masterwork Status",
+            uppercase: true);
+        break;
 
-      default:
-        return Text(
-          parameter.type.toString(),
-          style: style,
-        );
+      case ItemSortParameterType.Stat:
+        print("this shouldn't be here");
+        break;
+
+      case ItemSortParameterType.DamageType:
+        return TranslatedTextWidget("Damage Type",
+            uppercase: true);
     }
+    return Text(
+      parameter.type.toString(),
+    );
   }
 }

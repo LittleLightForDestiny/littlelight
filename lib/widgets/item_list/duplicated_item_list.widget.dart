@@ -243,7 +243,7 @@ class _DefinitionItemWrapper extends StatefulWidget {
 
 class _DefinitionItemWrapperState extends State<_DefinitionItemWrapper> {
   bool get selected => widget.items.every((i) {
-        return SelectionService().isSelected(i.item, i.ownerId);
+        return SelectionService().isSelected(i);
       });
 
   @override
@@ -295,12 +295,12 @@ class _DefinitionItemWrapperState extends State<_DefinitionItemWrapper> {
   void onTap(context) {
     if(selected){
       for(var item in widget.items){
-        SelectionService().removeItem(item.item, item.ownerId);
+        SelectionService().removeItem(item);
       }
     }else{
       for(var item in widget.items){
-        if(!SelectionService().isSelected(item.item, item.ownerId)){
-          SelectionService().addItem(item.item, item.ownerId);
+        if(!SelectionService().isSelected(item)){
+          SelectionService().addItem(item);
         }
       }
     }
@@ -324,7 +324,7 @@ class _ItemInstanceWrapper extends StatefulWidget {
 class _ItemInstanceWrapperState extends State<_ItemInstanceWrapper> {
   DestinyItemInstanceComponent instance;
   bool get selected =>
-      SelectionService().isSelected(widget.item, widget.characterId);
+      SelectionService().isSelected(ItemWithOwner(widget.item, widget.characterId));
 
   @override
   void initState() {
@@ -395,7 +395,7 @@ class _ItemInstanceWrapperState extends State<_ItemInstanceWrapper> {
   void onLongPress(context) {
     if (widget.definition.nonTransferrable) return;
 
-    SelectionService().addItem(widget.item, widget.characterId);
+    SelectionService().addItem(ItemWithOwner(widget.item, widget.characterId));
     setState(() {});
   }
 }

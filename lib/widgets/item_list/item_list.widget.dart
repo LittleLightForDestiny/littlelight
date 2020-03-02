@@ -11,6 +11,7 @@ import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/inventory_utils.dart';
+import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/item_list/character_info.widget.dart';
 import 'package:shimmer/shimmer.dart';
@@ -111,9 +112,7 @@ class ItemListWidgetState extends State<ItemListWidget>
           orElse: () => null);
       List<DestinyItemComponent> unequipped =
           inventory.where((item) => item.bucketHash == bucketHash).toList();
-      unequipped.sort((itemA, itemB) {
-        return InventoryUtils.sortDestinyItems(itemA, itemB);
-      });
+      unequipped = (await InventoryUtils.sortDestinyItems(unequipped.map((i)=>ItemWithOwner(i, null)))).map((i)=>i.item).toList();
 
       this.buckets.add(ListBucket(
           bucketHash: bucketHash, equipped: equipped, unequipped: unequipped));

@@ -4,7 +4,6 @@ import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/screens/search.screen.dart';
-
 import 'package:little_light/services/bungie_api/enums/destiny_item_category.enum.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
@@ -296,7 +295,6 @@ class EquipmentScreenState extends State<EquipmentScreen>
           onPressed: () {
             Iterable<PseudoItemType> available = [PseudoItemType.Weapons, PseudoItemType.Armor, PseudoItemType.Cosmetics, PseudoItemType.Consumables];
             Iterable<PseudoItemType> selected = [PseudoItemType.Weapons, PseudoItemType.Armor, PseudoItemType.Cosmetics, PseudoItemType.Consumables];
-            print(typeTabController?.index);
             if(typeTabController?.index == 0){
               selected = [PseudoItemType.Weapons];
             }

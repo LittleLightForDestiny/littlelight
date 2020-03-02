@@ -85,7 +85,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
     selectionSubscription = SelectionService().broadcaster.listen((event) {
       if (!mounted) return;
       var isSelected =
-          SelectionService().isSelected(widget.item, widget.characterId);
+          SelectionService().isSelected(ItemWithOwner(widget.item, widget.characterId));
       if (isSelected != selected) {
         selected = isSelected;
         setState(() {});
@@ -224,7 +224,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
   void onLongPress(context) {
     if (definition.nonTransferrable) return;
     SelectionService().activateMultiSelect();
-    SelectionService().addItem(widget.item, widget.characterId);
+    SelectionService().addItem(ItemWithOwner(widget.item, widget.characterId));
     setState(() {});
   }
 
@@ -250,7 +250,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
     if (selected) {
       SelectionService().clear();
     } else {
-      SelectionService().setItem(widget.item, widget.characterId);
+      SelectionService().setItem(ItemWithOwner(widget.item, widget.characterId));
     }
   }
 

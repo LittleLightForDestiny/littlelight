@@ -214,7 +214,7 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget> {
                                   child: InkWell(
                                     onTap: () {
                                       widget.service
-                                          .removeItem(i.item, i.ownerId);
+                                          .removeItem(i);
                                     },
                                   ))
                             ])))))

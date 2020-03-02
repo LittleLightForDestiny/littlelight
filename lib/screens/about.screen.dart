@@ -55,7 +55,8 @@ class _AboutScreenState extends State<AboutScreen> {
           title: TranslatedTextWidget("About"),
         ),
         body: StaggeredGridView.countBuilder(
-          padding: EdgeInsets.all(8).add(EdgeInsets.only(left:screenPadding.left, right:screenPadding.right)),
+          padding: EdgeInsets.all(8).add(EdgeInsets.only(
+              left: screenPadding.left, right: screenPadding.right)),
           addAutomaticKeepAlives: true,
           itemBuilder: itemBuilder,
           staggeredTileBuilder: tileBuilder,
@@ -77,9 +78,12 @@ class _AboutScreenState extends State<AboutScreen> {
     int currentIndex = 3;
     if (currentIndex == index)
       return HeaderWidget(
-      child: TranslatedTextWidget("Supporters", uppercase: true,
-              style: TextStyle(fontWeight: FontWeight.bold),
-              ),alignment: Alignment.centerLeft,);
+        child: TranslatedTextWidget(
+          "Supporters",
+          uppercase: true,
+        ),
+        alignment: Alignment.centerLeft,
+      );
     currentIndex++;
     if (index - currentIndex < collaborators.supporters.length) {
       var player = collaborators.supporters[index - currentIndex];
@@ -87,9 +91,8 @@ class _AboutScreenState extends State<AboutScreen> {
     }
     currentIndex += collaborators.supporters.length;
     if (currentIndex == index)
-      return HeaderWidget(child: TranslatedTextWidget("Development", uppercase: true,
-              style: TextStyle(fontWeight: FontWeight.bold),
-              ),alignment: Alignment.centerLeft,);
+      return HeaderWidget(
+          child: TranslatedTextWidget("Development", uppercase: true));
     currentIndex++;
     if (index - currentIndex < collaborators.developers.length) {
       var player = collaborators.developers[index - currentIndex];
@@ -97,9 +100,11 @@ class _AboutScreenState extends State<AboutScreen> {
     }
     currentIndex += collaborators.developers.length;
     if (currentIndex == index)
-      return HeaderWidget(child: TranslatedTextWidget("Translations", uppercase: true,
-              style: TextStyle(fontWeight: FontWeight.bold),
-              ),alignment: Alignment.centerLeft,);
+      return HeaderWidget(
+          child: TranslatedTextWidget(
+        "Translations",
+        uppercase: true,
+      ));
     currentIndex++;
     for (var language in collaborators.translators) {
       if (currentIndex == index) {
@@ -129,22 +134,19 @@ class _AboutScreenState extends State<AboutScreen> {
     var languageTile = StaggeredTile.extent(1, 40);
 
     int currentIndex = 3;
-    if (currentIndex == index)
-      return titleTile;
+    if (currentIndex == index) return titleTile;
     currentIndex++;
     if (index - currentIndex < collaborators.supporters.length) {
       return usertag;
     }
     currentIndex += collaborators.supporters.length;
-    if (currentIndex == index)
-      return titleTile;
+    if (currentIndex == index) return titleTile;
     currentIndex++;
     if (index - currentIndex < collaborators.developers.length) {
       return usertag;
     }
     currentIndex += collaborators.developers.length;
-    if (currentIndex == index)
-      return titleTile;
+    if (currentIndex == index) return titleTile;
     currentIndex++;
     for (var language in collaborators.translators) {
       if (currentIndex == index) {
@@ -203,7 +205,8 @@ class _AboutScreenState extends State<AboutScreen> {
         child: Image.asset("assets/imgs/flags/$code.png"));
   }
 
-  Widget buildTagAndPlatform(String membershipId, BungieMembershipType membershipType,
+  Widget buildTagAndPlatform(
+      String membershipId, BungieMembershipType membershipType,
       [String link, Widget badge]) {
     return SupporterCharacterWidget(membershipId, membershipType, link, badge);
   }
@@ -212,11 +215,9 @@ class _AboutScreenState extends State<AboutScreen> {
     return Column(
       children: <Widget>[
         HeaderWidget(
-            alignment: Alignment.centerLeft,
             child: TranslatedTextWidget(
               "Contact",
               uppercase: true,
-              style: TextStyle(fontWeight: FontWeight.bold,),
             )),
         Container(
           height: 4,
@@ -291,11 +292,9 @@ class _AboutScreenState extends State<AboutScreen> {
     return Column(
       children: <Widget>[
         HeaderWidget(
-            alignment: Alignment.centerLeft,
             child: TranslatedTextWidget(
               "Support Little Light",
               uppercase: true,
-              style: TextStyle(fontWeight: FontWeight.bold),
             )),
         Container(
           height: 4,

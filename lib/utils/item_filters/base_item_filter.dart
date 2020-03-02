@@ -17,7 +17,5 @@ abstract class BaseItemFilter<T> {
     return items.where((item)=>filterItem(item, definitions: definitions)).toList(growable: false);
   }
 
-  bool filterItem(ItemWithOwner item, {Map<int, DestinyInventoryItemDefinition> definitions}) {
-    return true;
-  }
+  bool filterItem(ItemWithOwner item, {Map<int, DestinyInventoryItemDefinition> definitions});
 }

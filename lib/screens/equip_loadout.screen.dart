@@ -73,10 +73,8 @@ class EquipLoadoutScreenState extends State<EquipLoadoutScreen> {
                 right: max(screenPadding.right, 8)),
             children: <Widget>[
               HeaderWidget(
-                child: TranslatedTextWidget("Items to Equip",
-                    uppercase: true,
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-              ),
+                  child:
+                      TranslatedTextWidget("Items to Equip", uppercase: true)),
               Container(
                   padding: EdgeInsets.all(8),
                   child: buildEquippedItems(context)),
@@ -84,8 +82,7 @@ class EquipLoadoutScreenState extends State<EquipLoadoutScreen> {
                   ? Container()
                   : HeaderWidget(
                       child: TranslatedTextWidget("Items to Transfer",
-                          uppercase: true,
-                          style: TextStyle(fontWeight: FontWeight.bold)),
+                          uppercase: true),
                     ),
               (_itemIndex?.unequippedCount ?? 0) == 0
                   ? Container()

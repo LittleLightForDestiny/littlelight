@@ -131,11 +131,9 @@ class _AddWishlistScreenState extends State<AddWishlistScreen> {
     }
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       HeaderWidget(
-          alignment: Alignment.centerLeft,
           child: TranslatedTextWidget(
             "Popular wishlists",
             uppercase: true,
-            style: TextStyle(fontWeight: FontWeight.bold),
           )),
       Container(
         height: 8,

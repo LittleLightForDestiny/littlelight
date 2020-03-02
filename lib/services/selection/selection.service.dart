@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 
 class SelectionService {
@@ -37,42 +36,39 @@ class SelectionService {
     _streamController.add(_selectedItems);
   }
 
-  isSelected(DestinyItemComponent item, String characterId){
-    return _selectedItems.any((i)=>i.item?.itemHash == item?.itemHash && i.ownerId == characterId && item?.itemInstanceId == i.item?.itemInstanceId);
+  isSelected(ItemWithOwner item){
+    return _selectedItems.any((i)=>i.item?.itemHash == item?.item?.itemHash && i.ownerId == item?.ownerId && item?.item?.itemInstanceId == i.item?.itemInstanceId);
   }
 
-  setItem(DestinyItemComponent item, String characterId) {
+  setItem(ItemWithOwner item) {
     _selectedItems.clear();
-    _selectedItems.add(ItemWithOwner(
-        item, characterId));
-    print(_selectedItems.length);
+    _selectedItems.add(item);
     _onUpdate();
   }
 
-  addItem(DestinyItemComponent item, String characterId) {
+  addItem(ItemWithOwner item) {
     ItemWithOwner alreadyAdded = _selectedItems.firstWhere((i){
-      if(item.itemInstanceId != null){
-        return i.item.itemInstanceId == item.itemInstanceId;
+      if(item.item.itemInstanceId != null){
+        return i.item.itemInstanceId == item.item.itemInstanceId;
       }
-      return i.item.itemHash == item.itemHash && i.ownerId == characterId;
+      return i.item.itemHash == item.item.itemHash && i.ownerId == item.ownerId;
     }, orElse: ()=>null);
     if(alreadyAdded != null){
-      return removeItem(item, characterId);
+      return removeItem(item);
     }
 
-    _selectedItems.add(ItemWithOwner(
-        item, characterId));
+    _selectedItems.add(item);
 
     _onUpdate();
   }
 
-  removeItem(DestinyItemComponent item, String characterId) {
-    if(item.itemInstanceId != null){
-      _selectedItems.removeWhere((i) =>i.item.itemInstanceId == item.itemInstanceId);
+  removeItem(ItemWithOwner item) {
+    if(item.item.itemInstanceId != null){
+      _selectedItems.removeWhere((i) =>i.item.itemInstanceId == item.item.itemInstanceId);
     }else{
       _selectedItems.removeWhere((i) =>
-        i.item.itemHash == item.itemHash && 
-        i.ownerId == characterId);
+        i.item.itemHash == item.item.itemHash && 
+        i.ownerId == item.ownerId);
     }
     if(_selectedItems.length == 0){
       _multiSelectActivated = false;

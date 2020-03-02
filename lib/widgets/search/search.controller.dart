@@ -5,6 +5,8 @@ import 'package:flutter/widgets.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/user_settings/item_sort_parameter.dart';
+import 'package:little_light/services/user_settings/user_settings.service.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_filters/ammo_type_filter.dart';
 import 'package:little_light/utils/item_filters/base_item_filter.dart';
@@ -48,11 +50,18 @@ class SearchController extends ChangeNotifier {
   List<BaseItemFilter> filters;
   List<BaseItemFilter> postFilters;
 
+  List<ItemSortParameter> defaultSorting;
+  List<ItemSortParameter> customSorting;
+  List<ItemSortParameterType> availableSorters;
+
   SearchController({
     this.firstRunFilters = const [],
     this.preFilters = const [],
     this.filters = const [],
     this.postFilters = const [],
+    this.defaultSorting,
+    this.customSorting,
+    this.availableSorters
   }) {
     _init();
   }
@@ -62,6 +71,9 @@ class SearchController extends ChangeNotifier {
     List<BaseItemFilter> preFilters,
     List<BaseItemFilter> filters,
     List<BaseItemFilter> postFilters,
+    List<ItemSortParameter> defaultSorting,
+    List<ItemSortParameter> customSorting,
+    List<ItemSortParameterType> availableSorters
   }) {
     final _defaultFirstRunFilters = <BaseItemFilter>[];
     final _defaultPreFilters = <BaseItemFilter>[];
@@ -84,7 +96,10 @@ class SearchController extends ChangeNotifier {
             _replaceDefaultFilters(_defaultFirstRunFilters, firstRunFilters),
         preFilters: _replaceDefaultFilters(_defaultPreFilters, preFilters),
         filters: _replaceDefaultFilters(_defaultFilters, filters),
-        postFilters: _replaceDefaultFilters(_defaultPostFilters, postFilters));
+        postFilters: _replaceDefaultFilters(_defaultPostFilters, postFilters),
+        defaultSorting: defaultSorting ?? UserSettingsService().itemOrdering,
+        customSorting: customSorting ?? [],
+        availableSorters: availableSorters ?? ItemSortParameter.availableEquipmentSorters);
   }
 
   _init() {
@@ -103,20 +118,17 @@ class SearchController extends ChangeNotifier {
     super.dispose();
   }
 
+  sort() async{
+    this._prefilteredList = await InventoryUtils.sortDestinyItems(this._prefilteredList, sortingParams:this.customSorting + this.defaultSorting);
+    await update();
+  }
+
   _reload() async {
     this._unfilteredList = _getItems();
     this._itemDefinitions = await _loadItemDefinitions();
     this._prefilteredList =
         await filterItems(this._unfilteredList, this.firstRunFilters);
-    update();
-    this._prefilteredList.sort((a, b) => InventoryUtils.sortDestinyItems(
-          a.item,
-          b.item,
-          defA:_itemDefinitions[a?.item?.itemHash],
-          defB:_itemDefinitions[b?.item?.itemHash],
-          ownerA: a.ownerId,
-          ownerB: b.ownerId,
-        ));
+    await sort();
     var _plugDefinitions = await this._loadPlugDefinitions();
     this._itemDefinitions.addAll(_plugDefinitions);
     update();

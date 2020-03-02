@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'dart:math' as math;
 
 import 'package:bungie_api/enums/destiny_class.dart';
@@ -16,9 +15,9 @@ import 'package:little_light/services/inventory/inventory.service.dart';
 import 'package:little_light/services/littlelight/loadouts.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/services/user_settings/item_sort_parameter.dart';
 import 'package:little_light/services/user_settings/user_settings.service.dart';
 import 'package:little_light/utils/inventory_utils.dart';
+import 'package:little_light/utils/item_sorters/power_level_sorter.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -491,13 +490,8 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
     var allItems = widget.profile.getAllItems();
     var instancedItems =
         allItems.where((i) => i.itemInstanceId != null).toList();
-    instancedItems.sort((itemA, itemB) =>
-        InventoryUtils.sortDestinyItems(itemA, itemB, sortingParams: [
-          ItemSortParameter(
-              active: true,
-              type: ItemSortParameterType.PowerLevel,
-              direction: -1)
-        ]));
+    var sorter = PowerLevelSorter(-1);
+    instancedItems.sort((itemA, itemB) => sorter.sort(ItemWithOwner(itemA,null), ItemWithOwner(itemB, null)));
     var weaponSlots = [
       InventoryBucket.kineticWeapons,
       InventoryBucket.energyWeapons,

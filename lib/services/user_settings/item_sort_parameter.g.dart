@@ -11,6 +11,7 @@ ItemSortParameter _$ItemSortParameterFromJson(Map<String, dynamic> json) {
     type: _$enumDecodeNullable(_$ItemSortParameterTypeEnumMap, json['type']),
     active: json['active'] as bool,
     direction: json['direction'] as int,
+    customData: json['customData'] as Map<String, dynamic>,
   );
 }
 
@@ -19,6 +20,7 @@ Map<String, dynamic> _$ItemSortParameterToJson(ItemSortParameter instance) =>
       'type': _$ItemSortParameterTypeEnumMap[instance.type],
       'direction': instance.direction,
       'active': instance.active,
+      'customData': instance.customData,
     };
 
 T _$enumDecode<T>(
@@ -67,4 +69,6 @@ const _$ItemSortParameterTypeEnumMap = {
   ItemSortParameterType.QuestGroup: 'QuestGroup',
   ItemSortParameterType.StatTotal: 'StatTotal',
   ItemSortParameterType.Stat: 'Stat',
+  ItemSortParameterType.MasterworkStatus: 'MasterworkStatus',
+  ItemSortParameterType.DamageType: 'DamageType',
 };

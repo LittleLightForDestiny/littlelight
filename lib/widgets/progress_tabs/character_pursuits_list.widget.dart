@@ -10,8 +10,8 @@ import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enu
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/services/user_settings/user_settings.service.dart';
 import 'package:little_light/utils/inventory_utils.dart';
+import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
@@ -82,11 +82,10 @@ class _CharacterPursuitsListWidgetState
     var pursuitHashes = pursuits.map((i) => i.itemHash);
     var defs = await widget.manifest
         .getDefinitions<DestinyInventoryItemDefinition>(pursuitHashes);
-    pursuits.sort((itemA, itemB) => InventoryUtils.sortDestinyItems(
-        itemA, itemB,
-        sortingParams: UserSettingsService().pursuitOrdering,
-        defA: defs[itemA.itemHash],
-        defB: defs[itemB.itemHash]));
+    pursuits = (await InventoryUtils.sortDestinyItems(
+            pursuits.map((p) => ItemWithOwner(p, null))))
+        .map((i) => i.item)
+        .toList();
 
     List<DestinyItemComponent> questSteps = [];
     List<DestinyItemComponent> bounties = [];
@@ -126,8 +125,8 @@ class _CharacterPursuitsListWidgetState
 
     other.forEach((k, v) {
       items.add(_PursuitListItem(_PursuitListItemType.Header, label: k));
-      v.forEach((p){
-        items.add(_PursuitListItem(_PursuitListItemType.Other, item:p));
+      v.forEach((p) {
+        items.add(_PursuitListItem(_PursuitListItemType.Other, item: p));
       });
     });
 
@@ -146,7 +145,10 @@ class _CharacterPursuitsListWidgetState
         crossAxisSpacing: 4,
         addRepaintBoundaries: true,
         itemCount: (items?.length ?? 0),
-        padding: EdgeInsets.all(4).copyWith(top: 0, left: max(screenPadding.left, 4), right: max(screenPadding.right, 4)),
+        padding: EdgeInsets.all(4).copyWith(
+            top: 0,
+            left: max(screenPadding.left, 4),
+            right: max(screenPadding.right, 4)),
         mainAxisSpacing: 4,
         staggeredTileBuilder: (index) => tileBuilder(context, index),
         itemBuilder: itemBuilder);
@@ -167,7 +169,7 @@ class _CharacterPursuitsListWidgetState
           return StaggeredTile.extent(10, 150);
         }
         return StaggeredTile.extent(30, 150);
-      
+
       case _PursuitListItemType.Container:
       case _PursuitListItemType.Bounty:
       case _PursuitListItemType.Other:
@@ -197,29 +199,32 @@ class _CharacterPursuitsListWidgetState
             uppercase: true,
             style: style,
           );
-        }else if((item.label?.length ?? 0) > 0){
+        } else if ((item.label?.length ?? 0) > 0) {
           field = Text(
             item.label.toUpperCase(),
             style: style,
           );
-        }else{
-          field = TranslatedTextWidget("Other", uppercase: true, style: style,);
+        } else {
+          field = TranslatedTextWidget(
+            "Other",
+            uppercase: true,
+            style: style,
+          );
         }
-        return HeaderWidget(child: field, alignment: Alignment.centerLeft,);
+        return HeaderWidget(
+          child: field,
+          alignment: Alignment.centerLeft,
+        );
         break;
       case _PursuitListItemType.Quest:
-        // return PursuitItemWidget(
-        //     characterId: widget.characterId,
-        //     item: item.item,
-        //     key: Key("pursuit_${item.item?.itemHash}_${item.item?.itemInstanceId}_${widget.characterId}"));
-        // break;
       case _PursuitListItemType.Other:
       case _PursuitListItemType.Container:
       case _PursuitListItemType.Bounty:
         return BountyItemWidget(
             characterId: widget.characterId,
             item: item.item,
-            key: Key("pursuit_${item.item?.itemHash}_${item.item?.itemInstanceId}_${widget.characterId}"));
+            key: Key(
+                "pursuit_${item.item?.itemHash}_${item.item?.itemInstanceId}_${widget.characterId}"));
     }
 
     return Container();

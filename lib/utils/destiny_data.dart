@@ -350,14 +350,20 @@ class DestinyData {
       case TierType.Exotic:
         return Color.fromARGB(255, 206, 174, 51);
 
-      default:
-        return null;
+      case TierType.Unknown:
+      case TierType.Currency:
+      case TierType.ProtectedInvalidEnumValue:
+        return Color.fromARGB(255, 195, 188, 180);
     }
+    return null;
   }
 
   static Color getTierTextColor(TierType tierType) {
     switch (tierType) {
       case TierType.Basic:
+      case TierType.Unknown:
+      case TierType.Currency:
+      case TierType.ProtectedInvalidEnumValue:
         return Colors.grey.shade800;
 
       default:
