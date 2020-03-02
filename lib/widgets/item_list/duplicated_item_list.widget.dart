@@ -12,6 +12,7 @@ import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/selection/selection.service.dart';
+import 'package:little_light/services/user_settings/user_settings.service.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
@@ -380,6 +381,11 @@ class _ItemInstanceWrapperState extends State<_ItemInstanceWrapper> {
       onLongPress(context);
       return;
     }
+    if(UserSettingsService().tapToSelect){
+      SelectionService().setItem(ItemWithOwner(widget.item, widget.characterId));
+      return;
+    }
+    SelectionService().clear();
     Navigator.push(
       context,
       MaterialPageRoute(
