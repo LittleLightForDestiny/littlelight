@@ -153,7 +153,8 @@ class MultiselectManagementBlockWidget extends StatelessWidget {
       return [];
     }
     bool onlyProfileItems = transferrableItems.every((i){
-      var bucketDef = ManifestService().getDefinitionFromCache<DestinyInventoryBucketDefinition>(i?.item?.bucketHash);
+      var def = ManifestService().getDefinitionFromCache<DestinyInventoryItemDefinition>(i?.item?.itemHash);
+      var bucketDef = ManifestService().getDefinitionFromCache<DestinyInventoryBucketDefinition>(def?.inventory?.bucketTypeHash);
       return bucketDef?.scope == BucketScope.Account;
     });
     Set<String> locations = transferrableItems.map((i){

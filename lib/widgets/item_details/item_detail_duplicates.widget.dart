@@ -58,7 +58,7 @@ class ItemDetailDuplicatesWidget extends BaseDestinyStatelessItemWidget {
         mainAxisSpacing: 2,
         crossAxisCount: 10,
         staggeredTiles:
-            duplicates.map((item) => StaggeredTile.extent(isTablet ? 2 : 5, 110)).toList(),
+            duplicates.map((item) => StaggeredTile.extent(isTablet ? 2 : 5, 118)).toList(),
         shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),
         children: duplicates

@@ -139,7 +139,6 @@ class SearchItemWrapperWidgetState<T extends SearchItemWrapperWidget>
 
   @override
   void onLongPress(context) {
-    if (definition.nonTransferrable) return;
     SelectionService().addItem(ItemWithOwner(widget.item, widget.characterId));
     setState(() {});
 

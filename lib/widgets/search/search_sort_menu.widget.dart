@@ -83,6 +83,8 @@ class _SearchSortMenuState extends State<SearchSortMenu> {
     return DragList<ItemSortParameter>(
       items: widget.controller.customSorting,
       itemExtent: 48,
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
       handleBuilder: (context) => buildHandle(context),
       onItemReorder: (oldIndex, newIndex) {
         var itemOrdering = widget.controller.customSorting;

@@ -1,25 +1,30 @@
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
+import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_socket_entry_definition.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_socket_category_definition.dart';
+import 'package:bungie_api/models/destiny_item_plug_base.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 
 class ItemPerksWidget extends StatefulWidget {
   final ManifestService manifest = ManifestService();
   final DestinyInventoryItemDefinition definition;
   final double iconSize;
-  final List<DestinyItemSocketState> itemSockets;
+  final DestinyItemComponent item;
   final bool showUnusedPerks;
   final socketCategoryHash;
+  final List<DestinyItemSocketState> itemSockets;
   ItemPerksWidget(
       {Key key,
       this.iconSize = 16,
       this.socketCategoryHash,
       this.showUnusedPerks = false,
       this.definition,
-      this.itemSockets})
+      this.itemSockets,
+      this.item})
       : super(key: key);
 
   @override
@@ -29,13 +34,19 @@ class ItemPerksWidget extends StatefulWidget {
 }
 
 class ItemPerksWidgetState extends State<ItemPerksWidget> {
-  List<DestinyItemSocketState> get itemSockets => widget.itemSockets;
+  List<DestinyItemSocketState> _itemSockets;
+  Map<String, List<DestinyItemPlugBase>> _reusablePlugs;
+  List<DestinyItemSocketState> get itemSockets=>_itemSockets ?? widget.itemSockets;
   DestinyInventoryItemDefinition get definition => widget.definition;
   DestinySocketCategoryDefinition perksCatDefinition;
 
   @override
   void initState() {
     super.initState();
+    _itemSockets = ProfileService().getItemSockets(widget?.item?.itemInstanceId);
+    if(widget.showUnusedPerks){
+      _reusablePlugs = ProfileService().getItemReusablePlugs(widget?.item?.itemInstanceId);
+    }
     loadPerks();
   }
 
@@ -43,7 +54,6 @@ class ItemPerksWidgetState extends State<ItemPerksWidget> {
     if (definition?.sockets?.socketCategories == null) {
       return;
     }
-
     perksCatDefinition = await widget.manifest
         .getDefinition<DestinySocketCategoryDefinition>(
             widget.socketCategoryHash);
@@ -128,8 +138,12 @@ class ItemPerksWidgetState extends State<ItemPerksWidget> {
   List<int> getInstancePlugHashesBySocketIndex(int index) {
     var entry = socketEntries[index];
     var state = getSocketState(index);
+    var reusable = (_reusablePlugs ?? const {})["$index"];
     if (!(state.isVisible ?? false)) {
       return [];
+    }
+    if((reusable?.length ?? 0) > 0){
+      return reusable.map((r)=>r.plugItemHash).toList();
     }
     if ((state?.plugHash ?? 0) != 0) {
       return [state?.plugHash];

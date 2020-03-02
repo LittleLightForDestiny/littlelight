@@ -51,21 +51,28 @@ class BaseItemInstanceWidget extends BaseInventoryItemWidget {
       ),
       Positioned(
         left: 4,
-        top: 56,
+        bottom: 4,
         width: 48,
-        child: buildWishlistTags(context),
+        child: Column(children: [
+          buildWishlistTags(context),
+          Container(height:4),
+          modsWidget(context)
+        ]),
       ),
       Positioned.fill(
           child: Container(
         padding: EdgeInsets.all(8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             buildCharacterName(context),
             primaryStatWidget(context),
+            Expanded(
+              child: Container(),
+            ),
             perksWidget(context),
-            modsWidget(context)
+            
           ],
         ),
       )),
@@ -74,7 +81,7 @@ class BaseItemInstanceWidget extends BaseInventoryItemWidget {
 
   Widget buildWishlistTags(BuildContext context) {
     var tags = WishlistsService().getWishlistBuildTags(item);
-    if(tags == null) return Container();
+    if (tags == null) return Container();
     return WishlistBadgeWidget(tags: tags, size: tagIconSize);
   }
 
@@ -158,18 +165,16 @@ class BaseItemInstanceWidget extends BaseInventoryItemWidget {
 
   @override
   Widget perksWidget(BuildContext context) {
-    var sockets = item?.itemInstanceId == null
-        ? null
-        : profile.getItemSockets(item?.itemInstanceId);
     var socketCategoryHash = definition.sockets?.socketCategories
         ?.map((sc) => sc.socketCategoryHash)
         ?.firstWhere((h) => DestinyData.socketCategoryPerkHashes.contains(h),
             orElse: () => null);
     return ItemPerksWidget(
       socketCategoryHash: socketCategoryHash,
-      itemSockets: sockets,
+      item: item,
       definition: definition,
       iconSize: 20,
+      showUnusedPerks: true,
     );
   }
 }

@@ -222,7 +222,6 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
   }
 
   void onLongPress(context) {
-    if (definition.nonTransferrable) return;
     SelectionService().activateMultiSelect();
     SelectionService().addItem(ItemWithOwner(widget.item, widget.characterId));
     setState(() {});
@@ -258,7 +257,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
     if (definition == null) {
       return;
     }
-    // SelectionService().clear();
+    SelectionService().clear();
     Navigator.push(
       context,
       MaterialPageRoute(

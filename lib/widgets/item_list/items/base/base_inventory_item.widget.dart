@@ -50,7 +50,7 @@ class BaseInventoryItemWidget extends BaseDestinyStatelessItemWidget
           child: ItemPerksWidget(
             socketCategoryHash: perksCategoryHash,
             definition: definition,
-            itemSockets: sockets,
+            item:item,
             iconSize: 20,
           ));
     }
