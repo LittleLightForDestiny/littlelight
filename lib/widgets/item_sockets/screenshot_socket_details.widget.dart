@@ -132,7 +132,7 @@ class _ScreenshotPerkDetailsWidgetState
         (s) => s?.socketIndexes?.contains(index),
         orElse: () => null);
 
-    var isExoticPerk = DestinyData.socketCategoryexoticIntrinsicPerkHashes
+    var isExoticPerk = DestinyData.socketCategoryIntrinsicPerkHashes
         .contains(cat?.socketCategoryHash);
     if (isExoticPerk) {
       return Container();

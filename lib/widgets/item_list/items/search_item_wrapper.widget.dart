@@ -139,6 +139,7 @@ class SearchItemWrapperWidgetState<T extends SearchItemWrapperWidget>
 
   @override
   void onLongPress(context) {
+    SelectionService().activateMultiSelect();
     SelectionService().addItem(ItemWithOwner(widget.item, widget.characterId));
     setState(() {});
 

@@ -168,8 +168,9 @@ class DestinyData {
     4241085061, //weapon perks
   ];
 
-  static const socketCategoryexoticIntrinsicPerkHashes = [
-    3154740035 //armor perks
+  static const socketCategoryIntrinsicPerkHashes = [
+    3154740035, //armor perks
+    3956125808, //weapon perks
   ];
 
   static const List<int> socketCategoryTierHashes = [

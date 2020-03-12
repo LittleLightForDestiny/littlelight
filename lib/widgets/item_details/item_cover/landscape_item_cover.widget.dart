@@ -20,7 +20,7 @@ import 'package:little_light/widgets/common/base/base_destiny_stateless_item.wid
 import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/item_sockets/item_socket.controller.dart';
 import 'package:little_light/widgets/item_sockets/screenshot_armor_tier.widget.dart';
-import 'package:little_light/widgets/item_sockets/screenshot_item_exotic_intrinsic_perks.widget.dart';
+import 'package:little_light/widgets/item_sockets/screenshot_item_intrinsic_perk.widget.dart';
 import 'package:little_light/widgets/item_sockets/screenshot_item_mods.widget.dart';
 import 'package:little_light/widgets/item_sockets/screenshot_item_perks.widget.dart';
 import 'package:little_light/widgets/item_sockets/screenshot_socket_details.widget.dart';
@@ -222,7 +222,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
         orElse: () => null);
     var exoticIntrinsicPerkCategory = definition.sockets?.socketCategories?.firstWhere(
         (s) =>
-            DestinyData.socketCategoryexoticIntrinsicPerkHashes.contains(s.socketCategoryHash),
+            DestinyData.socketCategoryIntrinsicPerkHashes.contains(s.socketCategoryHash),
         orElse: () => null);
     return Positioned(
         top: convertSize(96.0 * 2.4 + 1080 * (expandRatio - 1), context),
@@ -285,7 +285,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
                 ),
                 Container(
                     width: convertSize(730, context),
-                    child: ScreenShotItemExoticIntrinsicPerksWidget(
+                    child: ScreenShotItemIntrinsicPerkWidget(
                       controller: socketController,
                       category: exoticIntrinsicPerkCategory,
                       definition: definition,

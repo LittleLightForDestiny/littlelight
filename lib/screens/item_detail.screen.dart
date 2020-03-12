@@ -32,7 +32,7 @@ import 'package:little_light/widgets/item_details/rewards_info.widget.dart';
 import 'package:little_light/widgets/item_details/wishlist_notes.widget.dart';
 import 'package:little_light/widgets/item_notes/item_details_notes.widget.dart';
 import 'package:little_light/widgets/item_sockets/details_armor_tier.widget.dart';
-import 'package:little_light/widgets/item_sockets/details_item_armor_exotic_perk.widget.dart';
+import 'package:little_light/widgets/item_sockets/details_item_intrinsic_perk.widget.dart';
 import 'package:little_light/widgets/item_sockets/details_item_mods.widget.dart';
 import 'package:little_light/widgets/item_sockets/details_item_perks.widget.dart';
 import 'package:little_light/widgets/item_sockets/item_details_plug_info.widget.dart';
@@ -170,7 +170,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
             buildManagementBlock(context),
             buildActionButtons(context),
             buildDuplicates(context),
-            buildExoticPerk(context),
+            buildIntrinsicPerk(context),
             buildExoticPerkDetails(context),
             buildModInfo(context),
             buildStats(context),
@@ -219,7 +219,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
             buildManagementBlock(context),
             buildActionButtons(context),
             buildDuplicates(context),
-            buildExoticPerk(context),
+            buildIntrinsicPerk(context),
             buildExoticPerkDetails(context),
             buildModInfo(context),
             buildStats(context),
@@ -447,23 +447,23 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
             )));
   }
 
-  Widget buildExoticPerk(BuildContext context) {
-    var exoticperkCategory = definition.sockets?.socketCategories?.firstWhere(
-        (s) => DestinyData.socketCategoryexoticIntrinsicPerkHashes
+  Widget buildIntrinsicPerk(BuildContext context) {
+    var intrinsicperkCategory = definition.sockets?.socketCategories?.firstWhere(
+        (s) => DestinyData.socketCategoryIntrinsicPerkHashes
             .contains(s.socketCategoryHash),
         orElse: () => null);
-    if (exoticperkCategory == null) return Container();
+    if (intrinsicperkCategory == null) return Container();
     var screenPadding = MediaQuery.of(context).padding;
     return Container(
         padding: EdgeInsets.only(
             left: screenPadding.left, right: screenPadding.right),
         child: Container(
             padding: EdgeInsets.all(8),
-            child: DetailsItemArmorExoticPerkWidget(
+            child: DetailsItemIntrinsicPerkWidget(
               controller: socketController,
               definition: definition,
               item: item,
-              category: exoticperkCategory,
+              category: intrinsicperkCategory,
               key: Key('perks_widget'),
             )));
   }
@@ -511,7 +511,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
 
   Widget buildExoticPerkDetails(BuildContext context) {
     var perksCategory = definition.sockets?.socketCategories?.firstWhere(
-        (s) => DestinyData.socketCategoryexoticIntrinsicPerkHashes
+        (s) => DestinyData.socketCategoryIntrinsicPerkHashes
             .contains(s.socketCategoryHash),
         orElse: () => null);
     if (perksCategory == null) return Container();
