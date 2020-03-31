@@ -1,8 +1,6 @@
-import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/utils/item_with_owner.dart';
-
 import 'package:little_light/utils/item_sorters/base_item_sorter.dart';
+import 'package:little_light/utils/item_with_owner.dart';
 
 class ItemOwnerSorter extends BaseItemSorter {
   List<String> _characterOrder;
