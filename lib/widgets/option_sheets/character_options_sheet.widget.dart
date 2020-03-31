@@ -5,13 +5,16 @@ import 'package:bungie_api/enums/destiny_class.dart';
 import 'package:bungie_api/enums/destiny_item_type.dart';
 import 'package:bungie_api/enums/tier_type.dart';
 import 'package:bungie_api/models/destiny_character_component.dart';
+import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/models/game_data.dart';
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/screens/edit_loadout.screen.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/inventory/inventory.service.dart';
+import 'package:little_light/services/littlelight/littlelight_data.service.dart';
 import 'package:little_light/services/littlelight/loadouts.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
@@ -20,6 +23,7 @@ import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_sorters/power_level_sorter.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
+import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/flutter/smaller_switch.dart';
 import 'package:little_light/widgets/option_sheets/free_slots_slider.widget.dart';
@@ -41,7 +45,12 @@ class CharacterOptionsSheet extends StatefulWidget {
 
 class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
   Map<int, DestinyItemComponent> maxLightLoadout;
+  Map<int, DestinyItemComponent> underAverageSlots;
   double maxLight;
+  bool beyondSoftCap = false;
+  bool beyondPowerfulCap = false;
+  double currentLight;
+  double achievableLight;
   List<Loadout> loadouts;
   List<DestinyItemComponent> itemsInPostmaster;
 
@@ -54,6 +63,8 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
   bool loadoutWeapons = true;
 
   bool loadoutArmor = true;
+
+  GameData gameData;
 
   @override
   void initState() {
@@ -88,7 +99,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
             padding:
                 EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
             child: SingleChildScrollView(
-                padding: EdgeInsets.all(8),
+                padding: EdgeInsets.all(4).copyWith(top:0),
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     mainAxisSize: MainAxisSize.min,
@@ -100,7 +111,112 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
                         height: 8,
                       ),
                       buildPullFromPostmaster(),
+                      buildPowerfulInfoBlock(),
                     ]))));
+  }
+
+  Widget buildPowerfulInfoBlock() {
+    if(gameData == null) return Container();
+    var current = maxLight?.floor() ?? 0;
+    
+    if(current >= gameData.pinnacleCap) return Container();
+    
+    var achievable = achievableLight?.floor() ?? 0;
+    var goForPinnacle = current >= achievable && beyondSoftCap;
+
+    var title = TranslatedTextWidget("Go for powerful reward?",
+                uppercase: true, style: headerStyle);
+    if(beyondPowerfulCap){
+      title = TranslatedTextWidget("Go for pinnacle reward?",
+                uppercase: true, style: headerStyle);
+    }
+    
+    return Column(children: [
+      buildBlockHeader(
+          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        Expanded(
+            child: title),
+        goForPinnacle
+            ? TranslatedTextWidget(
+                "Yes",
+                uppercase: true,
+              )
+            : TranslatedTextWidget(
+                "No",
+                uppercase: true,
+              )
+      ])),
+      DefaultTextStyle(
+          style: buttonStyle,
+          textAlign: TextAlign.center,
+          child: Row(
+            children: <Widget>[
+              Expanded(
+                  child: Container(
+                      padding: EdgeInsets.all(4),
+                      color: Colors.blueGrey.shade700,
+                      child: Column(
+                        children: <Widget>[
+                          TranslatedTextWidget(
+                            "Current average",
+                            maxLines: 1,
+                            uppercase: true,
+                          ),
+                          Text("${maxLight?.toStringAsFixed(1)}")
+                        ],
+                      ))),
+              Container(
+                width: 4,
+              ),
+              Expanded(
+                  child: Container(
+                      padding: EdgeInsets.all(4),
+                      color: Colors.blueGrey.shade700,
+                      child: Column(
+                        children: <Widget>[
+                          TranslatedTextWidget(
+                            "Achievable average",
+                            maxLines: 1,
+                            uppercase: true,
+                          ),
+                          Text("${achievableLight?.toStringAsFixed(1)}")
+                        ],
+                      )))
+            ],
+          )),
+      (underAverageSlots?.length ?? 0) <= 0 ? Container() : buildBlockHeader(TranslatedTextWidget("Under average slots",
+          uppercase: true, style: headerStyle)),
+      (underAverageSlots?.length ?? 0) <= 0 ? Container() : DefaultTextStyle(
+        style: buttonStyle,
+        textAlign: TextAlign.center,
+        child: Row(
+            children: underAverageSlots
+                .map((k, v) {
+                  var instance =
+                      ProfileService().getInstanceInfo(v.itemInstanceId);
+                  return MapEntry(
+                      k,
+                      Expanded(
+                          child: Container(
+                              padding: EdgeInsets.all(4),
+                              color: Colors.blueGrey.shade700,
+                              child: Column(
+                                children: <Widget>[
+                                  ManifestText<
+                                      DestinyInventoryBucketDefinition>(
+                                    k,
+                                    uppercase: true,
+                                  ),
+                                  Text("${instance?.primaryStat?.value}")
+                                ],
+                              ))));
+                })
+                .values
+                .expand((element) => [element, Container(width: 4,)])
+                .take(underAverageSlots.length*2 -1)
+                .toList()),
+      )
+    ]);
   }
 
   Widget buildEquipBlock() {
@@ -137,14 +253,25 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
           onTap: () async {
             Navigator.of(context).pop();
             LoadoutItemIndex loadout = LoadoutItemIndex();
-            var equipment = widget.profile.getCharacterEquipment(widget.character.characterId);
-            for(var bucket in maxLightLoadout.keys){
+            var equipment = widget.profile
+                .getCharacterEquipment(widget.character.characterId);
+            for (var bucket in maxLightLoadout.keys) {
               var item = maxLightLoadout[bucket];
-              var power = widget.profile.getInstanceInfo(item.itemInstanceId)?.primaryStat?.value ?? 0;
-              var equipped = equipment.firstWhere((i)=>i.bucketHash == bucket, orElse:null);
-              var equippedPower = widget.profile.getInstanceInfo(equipped?.itemInstanceId)?.primaryStat?.value ?? 0;
-              var def = await widget.manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
-              if(power > equippedPower){
+              var power = widget.profile
+                      .getInstanceInfo(item.itemInstanceId)
+                      ?.primaryStat
+                      ?.value ??
+                  0;
+              var equipped = equipment.firstWhere((i) => i.bucketHash == bucket,
+                  orElse: null);
+              var equippedPower = widget.profile
+                      .getInstanceInfo(equipped?.itemInstanceId)
+                      ?.primaryStat
+                      ?.value ??
+                  0;
+              var def = await widget.manifest
+                  .getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
+              if (power > equippedPower) {
                 loadout.addEquippedItem(item, def);
               }
             }
@@ -487,11 +614,13 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
   }
 
   getMaxLightLoadout() async {
+    gameData = await LittleLightDataService().getGameData();
     var allItems = widget.profile.getAllItems();
     var instancedItems =
         allItems.where((i) => i.itemInstanceId != null).toList();
     var sorter = PowerLevelSorter(-1);
-    instancedItems.sort((itemA, itemB) => sorter.sort(ItemWithOwner(itemA,null), ItemWithOwner(itemB, null)));
+    instancedItems.sort((itemA, itemB) =>
+        sorter.sort(ItemWithOwner(itemA, null), ItemWithOwner(itemB, null)));
     var weaponSlots = [
       InventoryBucket.kineticWeapons,
       InventoryBucket.energyWeapons,
@@ -571,26 +700,51 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
       return lightB.compareTo(lightA);
     });
 
-    weaponAlternatives.first.forEach((bucket, item){
+    weaponAlternatives.first.forEach((bucket, item) {
       maxLightLoadout[bucket] = item;
     });
-    armorAlternatives.first.forEach((bucket, item){
+    armorAlternatives.first.forEach((bucket, item) {
       maxLightLoadout[bucket] = item;
     });
 
     maxLight = _getAvgLight(maxLightLoadout.values);
     this.maxLightLoadout = maxLightLoadout;
+    var idealLightTotal = 0;
+    underAverageSlots = Map();
+    beyondSoftCap = true;
+    beyondPowerfulCap = true;
+    for (var item in maxLightLoadout.values) {
+      var instanceInfo = ProfileService().getInstanceInfo(item.itemInstanceId);
+      var power = instanceInfo?.primaryStat?.value ?? 0;
+      var def = await widget.manifest
+          .getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
+      if (power < maxLight?.floor()) {
+        underAverageSlots[def.inventory.bucketTypeHash] = item;
+      }
+      if(power < gameData.softCap){
+        beyondSoftCap = false;
+      }
+      if(power < gameData.powerfulCap){
+        beyondPowerfulCap = false;
+      }
+      idealLightTotal +=
+          math.max(instanceInfo?.primaryStat?.value ?? 0, maxLight?.floor());
+    }
+    achievableLight = (idealLightTotal / maxLightLoadout.length);
     setState(() {});
   }
 
-  double get calculatedMaxLight{
-    if(maxLight == null) return null;
+  double get calculatedMaxLight {
+    if (maxLight == null) return null;
     return maxLight + artifactLevel;
   }
 
-  int get artifactLevel{
-    var item = widget.profile.getCharacterEquipment(widget.character.characterId).firstWhere((item)=>item.bucketHash == InventoryBucket.artifact, orElse: ()=>null);
-    if(item == null) return 0;
+  int get artifactLevel {
+    var item = widget.profile
+        .getCharacterEquipment(widget.character.characterId)
+        .firstWhere((item) => item.bucketHash == InventoryBucket.artifact,
+            orElse: () => null);
+    if (item == null) return 0;
     var instanceInfo = widget.profile.getInstanceInfo(item?.itemInstanceId);
     return instanceInfo?.primaryStat?.value ?? 0;
   }

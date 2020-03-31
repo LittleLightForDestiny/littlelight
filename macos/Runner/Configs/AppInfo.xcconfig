@@ -5,10 +5,10 @@
 // 'flutter create' template.
 
 // The application's name. By default this is also the title of the Flutter window.
-PRODUCT_NAME = littlelight_desktop
+PRODUCT_NAME = littlelight
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = me.markezine.littlelightDesktop
+PRODUCT_BUNDLE_IDENTIFIER = me.markezine.luzinha
 
 // The copyright displayed in application information
 PRODUCT_COPYRIGHT = Copyright © 2020 me.markezine. All rights reserved.

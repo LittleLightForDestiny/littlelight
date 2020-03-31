@@ -12,21 +12,10 @@ class LanguageButton extends RaisedButton {
   @override
   Widget get child {
     if (translate.languageNames[language] != null) {
-      return Image.asset("assets/imgs/flags/$language.png");
+      return Text(translate.languageNames[language].toUpperCase());
     }
     String languageName = language.split('-').join('\n');
-    return AspectRatio(
-      child: Container(
-        decoration: BoxDecoration(
-          color:Colors.blueGrey.shade300,
-          shape: BoxShape.circle
-        ),
-        alignment: Alignment.center,
-        child: Text(languageName.toUpperCase(),
-        textAlign: TextAlign.center,),
-      ),
-      aspectRatio: 1,
-    );
+    return Text(languageName);
   }
 
   @override

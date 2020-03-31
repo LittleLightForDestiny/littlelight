@@ -82,6 +82,9 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
       getDefinitions();
     }
 
+    selected = SelectionService().isSelected(ItemWithOwner(widget.item, widget.characterId));
+    
+
     selectionSubscription = SelectionService().broadcaster.listen((event) {
       if (!mounted) return;
       var isSelected =

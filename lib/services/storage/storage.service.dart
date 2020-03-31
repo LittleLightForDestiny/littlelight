@@ -42,7 +42,8 @@ enum StorageKeys {
   rawWishlists,
   rawData,
   featuredWishlists,
-  collaboratorsData
+  collaboratorsData,
+  gameData
 }
 
 extension StorageKeysExtension on StorageKeys {

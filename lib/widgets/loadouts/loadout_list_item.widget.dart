@@ -2,6 +2,8 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/services/littlelight/loadouts.service.dart';
+import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/screens/edit_loadout.screen.dart';
@@ -18,7 +20,8 @@ class LoadoutListItemWidget extends StatefulWidget {
   final Map<String, LoadoutItemIndex> itemIndexes;
   final Loadout loadout;
   final Function onChange;
-  const LoadoutListItemWidget(this.loadout, {Key key, this.itemIndexes, this.onChange})
+  const LoadoutListItemWidget(this.loadout,
+      {Key key, this.itemIndexes, this.onChange})
       : super(key: key);
 
   @override
@@ -33,7 +36,7 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> {
   @override
   initState() {
     super.initState();
-    
+
     _loadout = widget.loadout;
     if (itemIndex == null) {
       buildItemIndex();
@@ -58,7 +61,7 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> {
         margin: EdgeInsets.all(8),
         child: Material(
             elevation: 1,
-            color:Colors.blueGrey.shade800,
+            color: Colors.blueGrey.shade800,
             child: Column(children: [
               Container(
                 height: kToolbarHeight,
@@ -74,20 +77,23 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> {
       return buildTitle(context);
     }
     return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
-        _loadout.emblemHash, (definition) {
-      return Stack(
-        children: <Widget>[
-          Positioned.fill(
-              child: QueuedNetworkImage(
-            imageUrl:
-                BungieApiService.url(definition.secondarySpecial),
-            fit: BoxFit.cover,
-            alignment: Alignment(-1, 0),
-          )),
-          buildTitle(context)
-        ],
-      );
-    }, placeholder: buildTitle(context), key: Key("emblem_${_loadout.emblemHash}"),);
+      _loadout.emblemHash,
+      (definition) {
+        return Stack(
+          children: <Widget>[
+            Positioned.fill(
+                child: QueuedNetworkImage(
+              imageUrl: BungieApiService.url(definition.secondarySpecial),
+              fit: BoxFit.cover,
+              alignment: Alignment(-1, 0),
+            )),
+            buildTitle(context)
+          ],
+        );
+      },
+      placeholder: buildTitle(context),
+      key: Key("emblem_${_loadout.emblemHash}"),
+    );
   }
 
   Widget buildTitle(BuildContext context) {
@@ -141,7 +147,7 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> {
                       if (loadout != null) {
                         _loadout = loadout;
                         await buildItemIndex();
-                        if(widget.onChange!= null){
+                        if (widget.onChange != null) {
                           widget.onChange();
                         }
                       }
@@ -168,18 +174,25 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> {
         builder: (context) => AlertDialog(
                 actions: <Widget>[
                   FlatButton(
-                    textColor: Colors.redAccent.shade200,
-                      child: TranslatedTextWidget("No", uppercase: true,), onPressed: () {
+                      textColor: Colors.redAccent.shade200,
+                      child: TranslatedTextWidget(
+                        "No",
+                        uppercase: true,
+                      ),
+                      onPressed: () {
                         Navigator.of(context).pop();
                       }),
                   FlatButton(
                     textColor: Theme.of(context).accentColor,
-                    child: TranslatedTextWidget("Yes", uppercase: true,),
+                    child: TranslatedTextWidget(
+                      "Yes",
+                      uppercase: true,
+                    ),
                     onPressed: () async {
                       LoadoutsService service = LoadoutsService();
                       await service.deleteLoadout(_loadout);
                       Navigator.of(context).pop();
-                      if(widget.onChange != null){
+                      if (widget.onChange != null) {
                         widget.onChange();
                       }
                     },
@@ -241,8 +254,13 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> {
 
   Widget itemIcon(DestinyItemComponent item) {
     if (item == null) {
-      return ManifestImageWidget<DestinyInventoryItemDefinition>(1835369552, key:Key("item_icon_empty"));
+      return ManifestImageWidget<DestinyInventoryItemDefinition>(1835369552,
+          key: Key("item_icon_empty"));
     }
-    return ManifestImageWidget<DestinyInventoryItemDefinition>(item.itemHash, key:Key("item_icon_${item.itemInstanceId}"));
+    var instance = ProfileService().getInstanceInfo(item?.itemInstanceId);
+    return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
+        item.itemHash,
+        (def) => ItemIconWidget.builder(item:item, definition:def, instanceInfo:instance,
+            key: Key("item_icon_${item.itemInstanceId}")));
   }
 }

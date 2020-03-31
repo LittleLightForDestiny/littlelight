@@ -53,9 +53,9 @@ class SelectLanguageWidgetState extends State<SelectLanguageWidget> {
 
   List<Widget> getLanguageButtons(BuildContext context) {
     var query = MediaQueryHelper(context);
-    var factor = .25;
+    var factor = 1.0;
     if(query.tabletOrBigger || query.isLandscape){
-      factor = .1;
+      factor = .25;
     }
     List<String> languages = widget.availableLanguages;
     List<Widget> buttons = languages.map<Widget>((language) {
@@ -77,14 +77,10 @@ class SelectLanguageWidgetState extends State<SelectLanguageWidget> {
   @override
   Widget build(BuildContext context) {
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      Wrap(children: this.getLanguageButtons(context)),
-      Padding(
-        padding: EdgeInsets.all(8),
-        child: Text(
-          widget.translate.languageNames[selectedLanguage] ?? selectedLanguage ?? "",
-          textAlign: TextAlign.center,
-        ),
-      ),
+      Container(
+        constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height - 210),
+        child:
+        SingleChildScrollView(child:Wrap(children: this.getLanguageButtons(context)))),
       RaisedButton(
         onPressed: () {
           this.okClick();

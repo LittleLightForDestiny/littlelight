@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:little_light/models/collaborators.dart';
+import 'package:little_light/models/game_data.dart';
 import 'package:little_light/models/wish_list.dart';
 import 'package:little_light/services/storage/storage.service.dart';
 import 'package:http/http.dart' as http;
@@ -23,6 +24,11 @@ class LittleLightDataService {
 
   Future<CollaboratorsResponse> getCollaborators() async{
     CollaboratorsResponse data = await _getData(StorageKeys.collaboratorsData);
+    return data;
+  }
+
+  Future<GameData> getGameData() async{
+    GameData data = await _getData(StorageKeys.gameData, Duration(days: 1));
     return data;
   }
 
@@ -69,6 +75,8 @@ class LittleLightDataService {
         return "https://raw.githubusercontent.com/LittleLightForDestiny/littleLightData/master/collaborators.json";
       case StorageKeys.featuredWishlists:
         return "https://raw.githubusercontent.com/LittleLightForDestiny/littleLightData/master/popular_wishlists.json";
+      case StorageKeys.gameData:
+        return "https://raw.githubusercontent.com/LittleLightForDestiny/littleLightData/master/game_data.json";
       default:
         return null;
     }
@@ -82,6 +90,9 @@ class LittleLightDataService {
       case StorageKeys.collaboratorsData:
         dynamic json = jsonDecode(data);
         return CollaboratorsResponse.fromJson(json);
+      case StorageKeys.gameData:
+        dynamic json = jsonDecode(data);
+        return GameData.fromJson(json);
       default:
       return null;
     }

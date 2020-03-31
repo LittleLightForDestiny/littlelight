@@ -1,4 +1,4 @@
-package me.markezine.littlelight_desktop
+package me.markezine.luzinha
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity

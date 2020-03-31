@@ -194,14 +194,6 @@ class DestinyData {
     2048875504, // weapon mods
   ];
 
-  static int get minPowerLevel {
-    return 750;
-  }
-
-  static int get maxPowerLevel {
-    return 1000;
-  }
-
   static IconData getClassIcon(DestinyClass type) {
     switch (type) {
       case DestinyClass.Hunter:
@@ -435,12 +427,18 @@ class CurrencyConversion {
         CurrencyConversionType.InventoryItem, 49145143), //Simulation Seeds
     1812969468: CurrencyConversion(
         CurrencyConversionType.InventoryItem, 3853748946), //Enhancement Cores
+    4153440841: CurrencyConversion(
+        CurrencyConversionType.InventoryItem, 2014411539), //Alkane Dust
     1845310989: CurrencyConversion(
         CurrencyConversionType.InventoryItem, 3487922223), //Datalattice
     2536947844: CurrencyConversion(
         CurrencyConversionType.InventoryItem, 31293053), //Seraphite
-    4153440841: CurrencyConversion(
-        CurrencyConversionType.InventoryItem, 2014411539), //Alkane Dust
+    3245502278: CurrencyConversion(
+        CurrencyConversionType.InventoryItem, 1177810185), //Etheric Spiral
+    778553120: CurrencyConversion(
+        CurrencyConversionType.InventoryItem, 592227263), //Baryon Bough
+    1923884703: CurrencyConversion(
+        CurrencyConversionType.InventoryItem, 3592324052), //Helium Filaments
     2654422615: CurrencyConversion(
         CurrencyConversionType.Currency, 1022552290), //Legendary Shards
     3664001560: CurrencyConversion(

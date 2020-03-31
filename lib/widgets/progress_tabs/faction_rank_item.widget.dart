@@ -113,7 +113,7 @@ class FactionRankItemWidgetState<T extends FactionRankItemWidget>
                   QueuedNetworkImage(
                     fit: BoxFit.fitHeight,
                     imageUrl: BungieApiService.url(
-                        vendorDefinition.displayProperties.largeIcon),
+                        vendorDefinition?.displayProperties?.largeIcon),
                   ),
                   Positioned.fill(
                       child: Container(
@@ -163,7 +163,7 @@ class FactionRankItemWidgetState<T extends FactionRankItemWidget>
                       height: 2,
                     ),
                     Text(
-                      factionDefinition?.displayProperties?.name ?? "",
+                      factionDefinition?.displayProperties?.name ?? vendorDefinition?.displayProperties?.name ?? "",
                       style:
                           TextStyle(fontStyle: FontStyle.italic, fontSize: 13),
                     ),
@@ -194,7 +194,7 @@ class FactionRankItemWidgetState<T extends FactionRankItemWidget>
                   padding: EdgeInsets.all(4),
                   child: QueuedNetworkImage(
                     imageUrl: BungieApiService.url(
-                        factionDefinition.displayProperties.icon),
+                        factionDefinition?.displayProperties?.icon),
                   )))
         ]));
   }

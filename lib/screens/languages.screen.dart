@@ -128,9 +128,9 @@ class _LanguagesScreenState extends State<LanguagesScreen> {
     var languageName = service.languageNames[languageCode];
     return Row(children: [
       Container(
-          width: 40,
-          height: 40,
-          child: Image.asset("assets/imgs/flags/$languageCode.png")),
+          width: 8,
+          height: 40),
+          // child: Image.asset("assets/imgs/flags/$languageCode.png")),
       Container(width: 4),
       Text(
         languageName,

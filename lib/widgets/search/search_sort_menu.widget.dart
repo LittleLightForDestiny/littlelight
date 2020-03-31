@@ -82,6 +82,7 @@ class _SearchSortMenuState extends State<SearchSortMenu> {
   Widget buildDragList(BuildContext context) {
     return DragList<ItemSortParameter>(
       items: widget.controller.customSorting,
+      padding: EdgeInsets.all(0),
       itemExtent: 48,
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
