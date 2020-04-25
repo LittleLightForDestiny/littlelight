@@ -113,7 +113,7 @@ class _AddWishlistScreenState extends State<AddWishlistScreen> {
 
   Widget buildButton(BuildContext context, String label, Function onPressed) {
     return RaisedButton(
-      child: Text(label),
+      child: TranslatedTextWidget(label),
       onPressed: onPressed,
     );
   }
