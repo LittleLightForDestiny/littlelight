@@ -5,8 +5,11 @@ import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_socket_category_definition.dart';
 import 'package:bungie_api/models/destiny_item_plug_base.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/models/wish_list.dart';
+import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/utils/wishlists_data.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 
 class ItemPerksWidget extends StatefulWidget {
@@ -36,16 +39,19 @@ class ItemPerksWidget extends StatefulWidget {
 class ItemPerksWidgetState extends State<ItemPerksWidget> {
   List<DestinyItemSocketState> _itemSockets;
   Map<String, List<DestinyItemPlugBase>> _reusablePlugs;
-  List<DestinyItemSocketState> get itemSockets=>_itemSockets ?? widget.itemSockets;
+  List<DestinyItemSocketState> get itemSockets =>
+      _itemSockets ?? widget.itemSockets;
   DestinyInventoryItemDefinition get definition => widget.definition;
   DestinySocketCategoryDefinition perksCatDefinition;
 
   @override
   void initState() {
     super.initState();
-    _itemSockets = ProfileService().getItemSockets(widget?.item?.itemInstanceId);
-    if(widget.showUnusedPerks){
-      _reusablePlugs = ProfileService().getItemReusablePlugs(widget?.item?.itemInstanceId);
+    _itemSockets =
+        ProfileService().getItemSockets(widget?.item?.itemInstanceId);
+    if (widget.showUnusedPerks) {
+      _reusablePlugs =
+          ProfileService().getItemReusablePlugs(widget?.item?.itemInstanceId);
     }
     loadPerks();
   }
@@ -105,14 +111,69 @@ class ItemPerksWidgetState extends State<ItemPerksWidget> {
     if (plugHash == null) {
       return Container();
     }
+    var tags = WishlistsService().getPerkTags(widget.definition.hash, plugHash);
     return Container(
+      margin: EdgeInsets.only(top:1, left:1),
       width: widget.iconSize,
       height: widget.iconSize,
-      child: ManifestImageWidget<DestinyInventoryItemDefinition>(
-        plugHash,
-        placeholder: Container(),
-      ),
+      child: Stack(children: [
+        buildTagBorder(tags),
+        buildTagBackground(tags),
+        ManifestImageWidget<DestinyInventoryItemDefinition>(
+          plugHash,
+          placeholder: Container(),
+        )
+      ]),
     );
+  }
+
+  buildTagBorder(Set<WishlistTag> tags) {
+    List<Color> colors = [];
+    if (tags.contains(WishlistTag.GodPVE)) {
+      colors.add(Colors.amber);
+    }else if(tags.contains(WishlistTag.PVE)){
+      colors.add(Color.lerp(WishlistsData.getBgColor(WishlistTag.PVE), Colors.white, .2));
+    }
+    if (tags.contains(WishlistTag.GodPVP)) {
+      colors.add(Colors.amber);
+    }else if(tags.contains(WishlistTag.PVP)){
+      colors.add(Color.lerp(WishlistsData.getBgColor(WishlistTag.PVP), Colors.white, .2));
+    }
+    if (colors.length > 0) {
+      return Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(4),
+              gradient: LinearGradient(
+        colors: colors,
+        stops: colors.map((c) => 0.5).toList(),
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      )));
+    }
+    return Container();
+  }
+
+  buildTagBackground(Set<WishlistTag> tags) {
+    List<Color> colors = [];
+    if (tags.contains(WishlistTag.PVE) || tags.contains(WishlistTag.GodPVE)) {
+      colors.add(WishlistsData.getBgColor(WishlistTag.PVE));
+    }
+    if (tags.contains(WishlistTag.PVP) || tags.contains(WishlistTag.GodPVP)) {
+      colors.add(WishlistsData.getBgColor(WishlistTag.PVP));
+    }
+    if (colors.length > 0) {
+      return Container(
+        margin: EdgeInsets.all(1),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(4),
+              gradient: LinearGradient(
+        colors: colors,
+        stops: colors.map((c) => 0.5).toList(),
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      )));
+    }
+    return Container();
   }
 
   DestinyItemSocketState getSocketState(int index) {
@@ -142,8 +203,8 @@ class ItemPerksWidgetState extends State<ItemPerksWidget> {
     if (!(state.isVisible ?? false)) {
       return [];
     }
-    if((reusable?.length ?? 0) > 0){
-      return reusable.map((r)=>r.plugItemHash).toList();
+    if ((reusable?.length ?? 0) > 0) {
+      return reusable.map((r) => r.plugItemHash).toList();
     }
     if ((state?.plugHash ?? 0) != 0) {
       return [state?.plugHash];

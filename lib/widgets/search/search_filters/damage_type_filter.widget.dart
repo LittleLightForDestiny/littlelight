@@ -86,7 +86,6 @@ class _DamageTypeFilterWidgetState extends BaseSearchFilterWidgetState<
   Widget buildDisabledLabel(BuildContext context) {
     try{
       var value = options.single;
-      print(value.enumValue);
       if(value.enumValue == DamageType.None){
         return Container();
       }

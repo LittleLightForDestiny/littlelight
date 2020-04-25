@@ -8,12 +8,14 @@ part 'collaborators.g.dart';
 class CollaboratorsResponse {
   List<Collaborator> developers;
   List<Collaborator> designers;
+  List<Collaborator> curators;
   List<TranslationLanguage> translators;
   List<Collaborator> supporters;
 
   CollaboratorsResponse({
     this.developers,
     this.designers,
+    this.curators,
     this.translators,
     this.supporters,
   });

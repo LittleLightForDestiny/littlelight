@@ -58,7 +58,7 @@ class ItemDetailDuplicatesWidget extends BaseDestinyStatelessItemWidget {
         mainAxisSpacing: 2,
         crossAxisCount: 10,
         staggeredTiles:
-            duplicates.map((item) => StaggeredTile.extent(isTablet ? 2 : 5, 118)).toList(),
+            duplicates.map((item) => StaggeredTile.extent(isTablet ? 2 : 5, 122)).toList(),
         shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),
         children: duplicates
@@ -68,7 +68,9 @@ class ItemDetailDuplicatesWidget extends BaseDestinyStatelessItemWidget {
 
   Widget buildItemInstance(ItemWithOwner item, BuildContext context) {
     var instance = profile.getInstanceInfo(item.item.itemInstanceId);
-    return Stack(children: <Widget>[
+    return Stack(
+      key:Key("duplicate_${item.item.itemInstanceId}_${item.ownerId}"),
+      children: <Widget>[
       BaseItemInstanceWidget(item.item, definition, instance,
           characterId: item.ownerId, uniqueId: null),
       Material(

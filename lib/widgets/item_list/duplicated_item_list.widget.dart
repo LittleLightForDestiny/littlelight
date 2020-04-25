@@ -181,12 +181,12 @@ class DuplicatedItemListWidgetState extends State<DuplicatedItemListWidget>
         return StaggeredTile.extent(6, 96);
       case DuplicatedListItemType.itemInstance:
       if(MediaQueryHelper(context).laptopOrBigger){
-          return StaggeredTile.extent(1, 118);  
+          return StaggeredTile.extent(1, 122);  
         }
         if(MediaQueryHelper(context).tabletOrBigger){
-          return StaggeredTile.extent(2, 118);  
+          return StaggeredTile.extent(2, 122);  
         }
-        return StaggeredTile.extent(3, 110);
+        return StaggeredTile.extent(3, 122);
 
       case DuplicatedListItemType.spacer:
         return StaggeredTile.extent(6, 20);

@@ -260,7 +260,6 @@ class SideMenuWidgetState extends State<SideMenuWidget> {
             ));
       }
     } on OAuthException catch (e) {
-      print(e);
       bool isIOS = Platform.isIOS;
       String platformMessage =
           "If this keeps happening, please try to login with a mainstream browser.";

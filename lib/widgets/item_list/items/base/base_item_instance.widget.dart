@@ -52,8 +52,9 @@ class BaseItemInstanceWidget extends BaseInventoryItemWidget {
       Positioned(
         left: 4,
         bottom: 4,
-        width: 48,
-        child: Column(children: [
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
           buildWishlistTags(context),
           Container(height:4),
           modsWidget(context)

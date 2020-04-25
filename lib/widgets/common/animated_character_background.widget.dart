@@ -92,7 +92,6 @@ class _AnimatedCharacterBackgroundWidgetState
     if (character != null) {
       emblemColor = Color.fromARGB(255, character.emblemColor.red,
           character.emblemColor.green, character.emblemColor.blue);
-          print(emblemColor);
     } else {
       emblemColor = Colors.black;
     }

@@ -12,11 +12,15 @@ import 'package:little_light/utils/item_filters/ammo_type_filter.dart';
 import 'package:little_light/utils/item_filters/base_item_filter.dart';
 import 'package:little_light/utils/item_filters/class_type_filter.dart';
 import 'package:little_light/utils/item_filters/damage_type_filter.dart';
+import 'package:little_light/utils/item_filters/energy_level_constraints_filter.dart';
+import 'package:little_light/utils/item_filters/energy_type_filter.dart';
 import 'package:little_light/utils/item_filters/item_bucket_filter.dart';
 import 'package:little_light/utils/item_filters/item_subtype_filter.dart';
 import 'package:little_light/utils/item_filters/power_level_constraints_filter.dart';
+import 'package:little_light/utils/item_filters/season_slot_filter.dart';
 import 'package:little_light/utils/item_filters/text_filter.dart';
 import 'package:little_light/utils/item_filters/tier_type_filter.dart';
+import 'package:little_light/utils/item_filters/total_stats_constraints_filter.dart';
 import 'package:little_light/utils/item_filters/wishlist_tag_filter.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 
@@ -79,6 +83,8 @@ class SearchController extends ChangeNotifier {
     final _defaultPreFilters = <BaseItemFilter>[];
     final _defaultFilters = <BaseItemFilter>[
       DamageTypeFilter(),
+      EnergyTypeFilter(),
+      SeasonSlotFilter(),
       ClassTypeFilter(),
       AmmoTypeFilter(),
       TierTypeFilter(),
@@ -86,6 +92,10 @@ class SearchController extends ChangeNotifier {
       ItemSubtypeFilter(),
       PowerLevelConstraintsFilter(
           PowerLevelConstraints(), PowerLevelConstraints()),
+      EnergyLevelConstraintsFilter(
+          EnergyLevelConstraints(), EnergyLevelConstraints()),
+      TotalStatsConstraintsFilter(
+          TotalStatsConstraints(), TotalStatsConstraints()),
       WishlistTagFilter(),
     ];
     final _defaultPostFilters = <BaseItemFilter>[

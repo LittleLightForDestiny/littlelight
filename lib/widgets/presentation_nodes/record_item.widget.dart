@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:bungie_api/models/destiny_lore_definition.dart';
 import 'package:bungie_api/models/destiny_objective_definition.dart';
 import 'package:bungie_api/models/destiny_objective_progress.dart';
@@ -94,7 +96,9 @@ class RecordItemWidgetState extends State<RecordItemWidget>
   }
 
   bool get completed {
-    return !recordState.contains(DestinyRecordState.ObjectiveNotCompleted) || (record?.intervalObjectives?.every((element) => element.complete) ?? false);
+    return !recordState.contains(DestinyRecordState.ObjectiveNotCompleted) ||
+        (record?.intervalObjectives?.every((element) => element.complete) ??
+            false);
   }
 
   Color get foregroundColor {
@@ -180,20 +184,46 @@ class RecordItemWidgetState extends State<RecordItemWidget>
         child: Row(
           mainAxisSize: MainAxisSize.max,
           children: bars.toList(),
-        ),
-        height: 10);
+        ));
   }
 
   Widget buildCompletionBar(BuildContext context, int index) {
+    DestinyObjectiveProgress objective = record?.intervalObjectives[index];
     bool complete = record?.intervalObjectives[index]?.complete ?? false;
+    int progressStart = index == 0
+        ? 0
+        : record?.intervalObjectives?.elementAt(index - 1)?.completionValue ??
+            0;
+    double progress = (objective.progress - progressStart) /
+        (objective.completionValue - progressStart);
+    progress = progress ?? 1;
+    Color fillColor = complete ? foregroundColor : Colors.grey.shade400;
+    var completionText = "${objective.progress}/${objective.completionValue}";
+    if(objective.progress >= objective.completionValue && index < record.intervalObjectives.length - 1){
+      completionText = "${objective.completionValue}";
+    }
+    if(objective.progress < progressStart){
+      completionText = "${objective.completionValue}";
+    }
     return Expanded(
-        child: Container(
-      height: 10,
-      decoration:
-          BoxDecoration(
-            color: complete ? foregroundColor : Colors.grey.shade300.withOpacity(.3), 
-            border: Border.all(color: foregroundColor)),
-    ));
+        child: Column(children: [
+      Container(
+          padding: EdgeInsets.only(bottom: 2),
+          alignment: Alignment.centerRight,
+          child: Text(completionText, style:TextStyle(fontSize: 12, color:fillColor))),
+      Container(
+          constraints: BoxConstraints.expand(height: 10),
+          alignment: Alignment.centerLeft,
+          decoration: BoxDecoration(
+              color: Colors.grey.shade300.withOpacity(.3),
+              border: Border.all(color: foregroundColor)),
+          child: progress <= 0 ? Container() : FractionallySizedBox(
+              heightFactor: 1,
+              widthFactor: min(progress, 1),
+              child: Container(
+                color: fillColor,
+              )))
+    ]));
   }
 
   Widget buildIcon(BuildContext context) {

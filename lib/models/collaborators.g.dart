@@ -15,6 +15,9 @@ CollaboratorsResponse _$CollaboratorsResponseFromJson(
     designers: (json['designers'] as List)
         ?.map((e) => e == null ? null : Collaborator.fromJson(e))
         ?.toList(),
+    curators: (json['curators'] as List)
+        ?.map((e) => e == null ? null : Collaborator.fromJson(e))
+        ?.toList(),
     translators: (json['translators'] as List)
         ?.map((e) => e == null ? null : TranslationLanguage.fromJson(e))
         ?.toList(),
@@ -29,6 +32,7 @@ Map<String, dynamic> _$CollaboratorsResponseToJson(
     <String, dynamic>{
       'developers': instance.developers,
       'designers': instance.designers,
+      'curators': instance.curators,
       'translators': instance.translators,
       'supporters': instance.supporters,
     };

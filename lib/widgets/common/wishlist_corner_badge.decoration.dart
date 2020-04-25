@@ -9,7 +9,6 @@ class WishlistCornerBadgeDecoration extends CornerBadgeDecoration {
 
   List<Color> get badgeColors{
     List<Color> colors = List();
-    print(tags);
     if(tags.contains(WishlistTag.PVE) || tags.contains(WishlistTag.GodPVE)){
       colors.add(Colors.blue.shade800);
     }

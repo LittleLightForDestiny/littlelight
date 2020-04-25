@@ -515,7 +515,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
         break;
 
       case ItemSortParameterType.Stat:
-        print("this shouldn't be here");
         break;
 
       case ItemSortParameterType.DamageType:

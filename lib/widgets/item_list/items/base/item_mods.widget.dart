@@ -66,7 +66,7 @@ class ItemModsWidgetState extends State<ItemModsWidget> {
     if (socketCategory == null || itemSockets == null) return Container();
 
     List<Widget> columns = [];
-    socketCategory.socketIndexes.reversed.forEach((index) {
+    socketCategory.socketIndexes.forEach((index) {
       if (isSocketVisible(index) &&
           index > -1 &&
           index < (itemSockets?.length ?? 0)) {

@@ -87,7 +87,7 @@ class _AboutScreenState extends State<AboutScreen> {
     currentIndex++;
     if (index - currentIndex < collaborators.supporters.length) {
       var player = collaborators.supporters[index - currentIndex];
-      return buildTagAndPlatform(player.membershipId, player.membershipType);
+      return buildTagAndPlatform(player.membershipId, player.membershipType, player.link);
     }
     currentIndex += collaborators.supporters.length;
     if (currentIndex == index)
@@ -96,9 +96,18 @@ class _AboutScreenState extends State<AboutScreen> {
     currentIndex++;
     if (index - currentIndex < collaborators.developers.length) {
       var player = collaborators.developers[index - currentIndex];
-      return buildTagAndPlatform(player.membershipId, player.membershipType);
+      return buildTagAndPlatform(player.membershipId, player.membershipType, player.link);
     }
     currentIndex += collaborators.developers.length;
+    if (currentIndex == index)
+      return HeaderWidget(
+          child: TranslatedTextWidget("Godroll Curators", uppercase: true));
+    currentIndex++;
+    if (index - currentIndex < (collaborators.curators?.length ?? 0)) {
+      var player = collaborators.curators[index - currentIndex];
+      return buildTagAndPlatform(player.membershipId, player.membershipType, player.link);
+    }
+    currentIndex += collaborators.curators?.length ?? 0;
     if (currentIndex == index)
       return HeaderWidget(
           child: TranslatedTextWidget(
@@ -113,7 +122,7 @@ class _AboutScreenState extends State<AboutScreen> {
       currentIndex++;
       if (index - currentIndex < language.translators.length) {
         var player = language.translators[index - currentIndex];
-        return buildTagAndPlatform(player.membershipId, player.membershipType);
+        return buildTagAndPlatform(player.membershipId, player.membershipType, player.link);
       }
       currentIndex += language.translators.length;
     }
@@ -146,6 +155,12 @@ class _AboutScreenState extends State<AboutScreen> {
       return usertag;
     }
     currentIndex += collaborators.developers.length;
+    if (currentIndex == index) return titleTile;
+    currentIndex++;
+    if (index - currentIndex < (collaborators.curators?.length ?? 0)) {
+      return usertag;
+    }
+    currentIndex += (collaborators.curators?.length ?? 0);
     if (currentIndex == index) return titleTile;
     currentIndex++;
     for (var language in collaborators.translators) {

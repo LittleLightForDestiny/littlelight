@@ -228,7 +228,6 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
 
     BorderSide borderSide = BorderSide(color: borderColor, width: 2);
     var tags = WishlistsService().getPerkTags(definition?.hash, plugItemHash).where((element) => [WishlistTag.GodPVE, WishlistTag.PVE, WishlistTag.GodPVP, WishlistTag.PVP].contains(element)).toSet();
-    print(tags);
 
     return Container(
         key: Key("item_perk_$plugItemHash"),

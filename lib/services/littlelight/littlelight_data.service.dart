@@ -23,12 +23,12 @@ class LittleLightDataService {
   }
 
   Future<CollaboratorsResponse> getCollaborators() async{
-    CollaboratorsResponse data = await _getData(StorageKeys.collaboratorsData);
+    CollaboratorsResponse data = await _getData(StorageKeys.collaboratorsData, Duration(seconds:1));
     return data;
   }
 
   Future<GameData> getGameData() async{
-    GameData data = await _getData(StorageKeys.gameData, Duration(days: 1));
+    GameData data = await _getData(StorageKeys.gameData, Duration(seconds: 1));
     return data;
   }
 

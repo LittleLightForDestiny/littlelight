@@ -21,9 +21,9 @@ void main() async {
     main();
   });
 
-  runZoned<Future<void>>(() async {
+  runZonedGuarded<Future<void>>(() async {
     runApp(new LittleLight(key: Key("little_light_$restartCounter")));
-  }, onError: (error, stackTrace) {
+  }, (error, stackTrace) {
     handler.handleException(error, stackTrace);
   });
 }
