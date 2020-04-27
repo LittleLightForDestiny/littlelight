@@ -22,7 +22,9 @@ class SeasonSlotFilter extends BaseItemFilter<Set<int>> {
     Set<int> hashes = Set();
     for(var item in items){
       var def = definitions[item.item.itemHash];
-      for(var socket in def.sockets.socketEntries){
+      var entries = def.sockets?.socketEntries;
+      if(entries == null) continue;
+      for(var socket in entries){
         if(gameData?.seasonalModSlots?.contains(socket.singleInitialItemHash) ?? false){
           hashes.add(socket.singleInitialItemHash);
         }
