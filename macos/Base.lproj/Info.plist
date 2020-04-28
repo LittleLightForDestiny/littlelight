@@ -26,7 +26,7 @@
 			<key>CFBundleURLIconFile</key>
 			<string></string>
 			<key>CFBundleURLName</key>
-			<string>me.markezine.luzinha.mac</string>
+			<string>me.markezine.luzinha</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>luzinha</string>
