@@ -73,7 +73,8 @@ class BungieApiService {
         clientSecret, refreshToken);
   }
 
-  Future<DestinyProfileResponse> getCurrentProfile(List<DestinyComponentType> components) async {
+  Future<DestinyProfileResponse> getCurrentProfile(
+      List<DestinyComponentType> components) async {
     BungieNetToken token = await auth.getToken();
     GroupUserInfoCard membership = await auth.getMembership();
     if (membership == null) return null;
@@ -82,7 +83,9 @@ class BungieApiService {
   }
 
   Future<DestinyProfileResponse> getProfile(
-      List<DestinyComponentType> components, String membershipId, BungieMembershipType membershipType,
+      List<DestinyComponentType> components,
+      String membershipId,
+      BungieMembershipType membershipType,
       [BungieNetToken token]) async {
     DestinyProfileResponseResponse response = await Destiny2.getProfile(
         new Client(token: token), components, membershipId, membershipType);
@@ -152,17 +155,18 @@ class BungieApiService {
           ..membershipType = membership.membershipType);
     return response.response;
   }
-  
 
-  Future<int> changeLockState(String itemId, String characterId, bool locked) async {
+  Future<int> changeLockState(
+      String itemId, String characterId, bool locked) async {
     BungieNetToken token = await auth.getToken();
     GroupUserInfoCard membership = await auth.getMembership();
-    var response = await Destiny2.setItemLockState(Client(token: token),
-    DestinyItemStateRequest()
-    ..itemId = itemId
-    ..membershipType = membership.membershipType
-    ..characterId = characterId
-    ..state = locked);
+    var response = await Destiny2.setItemLockState(
+        Client(token: token),
+        DestinyItemStateRequest()
+          ..itemId = itemId
+          ..membershipType = membership.membershipType
+          ..characterId = characterId
+          ..state = locked);
     return response.response;
   }
 
@@ -179,7 +183,7 @@ class BungieApiService {
     return response.response.equipResults;
   }
 
-  Future<CoreSettingsConfiguration> getCommonSettings() async {    
+  Future<CoreSettingsConfiguration> getCommonSettings() async {
     var response = await Settings.getCommonSettings(new Client());
     return response.response;
   }
@@ -192,6 +196,10 @@ class Client implements HttpClient {
 
   @override
   Future<HttpResponse> request(HttpClientConfig config) async {
+    return Future.sync(() => _request(config));
+  }
+
+  Future<HttpResponse> _request(HttpClientConfig config) async {
     Future<http.Response> req;
     Map<String, String> headers = {
       'X-API-Key': BungieApiService.apiKey,
@@ -200,7 +208,7 @@ class Client implements HttpClient {
     if (config.bodyContentType != null) {
       headers['Content-Type'] = config.bodyContentType;
     }
-    if (token != null) {
+    if (this.token != null) {
       headers['Authorization'] = "Bearer ${token.accessToken}";
     }
     String paramsString = "";
@@ -238,7 +246,7 @@ class Client implements HttpClient {
           headers: headers, body: body);
     }
     response = await req;
-    
+
     if (response.statusCode == 401 && autoRefreshToken) {
       this.token = await AuthService().refreshToken(token);
       return request(config);
