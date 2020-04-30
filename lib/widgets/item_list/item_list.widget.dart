@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:bungie_api/enums/bucket_scope.dart';
@@ -70,7 +71,8 @@ class ItemListWidgetState extends State<ItemListWidget>
   List<ListBucket> buckets;
   StreamSubscription<NotificationEvent> subscription;
 
-  bool suppressEmptySpaces(bucketHash) => widget.suppressEmptySpaces?.contains(bucketHash) ?? false;
+  bool suppressEmptySpaces(bucketHash) =>
+      widget.suppressEmptySpaces?.contains(bucketHash) ?? false;
 
   @override
   void initState() {
@@ -112,7 +114,10 @@ class ItemListWidgetState extends State<ItemListWidget>
           orElse: () => null);
       List<DestinyItemComponent> unequipped =
           inventory.where((item) => item.bucketHash == bucketHash).toList();
-      unequipped = (await InventoryUtils.sortDestinyItems(unequipped.map((i)=>ItemWithOwner(i, null)))).map((i)=>i.item).toList();
+      unequipped = (await InventoryUtils.sortDestinyItems(
+              unequipped.map((i) => ItemWithOwner(i, null))))
+          .map((i) => i.item)
+          .toList();
 
       this.buckets.add(ListBucket(
           bucketHash: bucketHash, equipped: equipped, unequipped: unequipped));
@@ -160,6 +165,8 @@ class ItemListWidgetState extends State<ItemListWidget>
     }
 
     var listIndex = getListIndex(context);
+
+
     return StaggeredGridView.countBuilder(
       shrinkWrap: widget.shrinkWrap,
       crossAxisCount: 30,
@@ -266,8 +273,8 @@ class ItemListWidgetState extends State<ItemListWidget>
         }
         return StaggeredTile.extent(10, 76);
       case ListItem.spacer:
-        if (item.hash == InventoryBucket.subclass && widget.shrinkWrap) {
-          return StaggeredTile.extent(30, 228);
+        if (widget.shrinkWrap) {
+          return StaggeredTile.extent(30, 40);
         }
         return StaggeredTile.extent(30, 76);
     }
@@ -279,8 +286,9 @@ class ItemListWidgetState extends State<ItemListWidget>
     String itemKey =
         "${index}_${item.itemComponent?.itemInstanceId ?? item.itemComponent?.itemHash ?? 'empty'}";
     var bucketDef = bucketDefs[item?.bucketHash];
-    var characterId = bucketDef?.scope == BucketScope.Character ? widget.characterId : null;
-    
+    var characterId =
+        bucketDef?.scope == BucketScope.Character ? widget.characterId : null;
+
     switch (item?.type) {
       case ListItem.infoHeader:
         return CharacterInfoWidget(

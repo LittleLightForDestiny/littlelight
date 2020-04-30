@@ -52,6 +52,7 @@ class LittleLight extends StatelessWidget {
           textSelectionColor: Colors.blueGrey.shade400,
           textSelectionHandleColor: Colors.lightBlueAccent.shade200,
           toggleableActiveColor: Colors.lightBlueAccent.shade200,
+          fontFamily: Platform.isMacOS ? "NeueHaasDisplay" : null,
           textTheme: TextTheme(
               body2: TextStyle(
                 color:Colors.grey.shade300,

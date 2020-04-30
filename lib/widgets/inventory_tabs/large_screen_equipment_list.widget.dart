@@ -98,11 +98,11 @@ class LargeScreenEquipmentListWidgetState
       case InventoryBucket.legArmor:
       case InventoryBucket.ghost:
       case InventoryBucket.classArmor:
-        return StaggeredTile.extent(3, 400);
+        return StaggeredTile.extent(3, 450);
       case InventoryBucket.vehicle:
       case InventoryBucket.ships:
       case InventoryBucket.emblems:
-        return StaggeredTile.extent(2, 400);
+        return StaggeredTile.extent(2, 450);
       case InventoryBucket.consumables:
       case InventoryBucket.modifications:
       case InventoryBucket.shaders:
