@@ -1,4 +1,5 @@
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
+import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/remove_diacritics.dart';
@@ -29,6 +30,8 @@ class TextFilter extends BaseItemFilter<String> {
         ?.fold<List<int>>(
             List<int>(), (l, r) => l.followedBy(r.map((e) => e.plugItemHash)).toList())
         ?.toSet() ?? Set<int>());
+    var wishlistBuildNotes = WishlistsService().getWishlistBuildNotes(item.item);
+    var wishlistTags = WishlistsService().getWishlistBuildTags(item.item);
     return _terms.every((t) {
       var words = t.split(" ");
       if (words.every((w)=>name.contains(w))) return true;
@@ -39,6 +42,8 @@ class TextFilter extends BaseItemFilter<String> {
         if(words.every((w)=>name.contains(w))) return true;
         return false;
       })) return true;
+      if(wishlistTags?.any((t)=>words.every((w) => t.toString().toLowerCase().contains(w))) ?? false) return true;
+      if(wishlistBuildNotes?.any((n)=>words.every((w) => n.toLowerCase().contains(w))) ?? false) return true;
       return false;
     });
   }

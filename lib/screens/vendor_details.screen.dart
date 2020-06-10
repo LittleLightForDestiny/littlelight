@@ -20,7 +20,6 @@ import 'package:little_light/widgets/vendors/purchasable_item.widget.dart';
 class VendorDetailsScreen extends StatefulWidget {
   final ProfileService profile = ProfileService();
   final ManifestService manifest = ManifestService();
-
   final String characterId;
   final DestinyVendorComponent vendor;
 
@@ -36,6 +35,9 @@ class VendorDetailsScreenState extends State<VendorDetailsScreen> {
   DestinyVendorDefinition definition;
   List<DestinyVendorCategory> _categories;
   Map<String, DestinyVendorSaleItemComponent> _sales;
+  final categoryIdsPriority = [
+    "bright_dust"
+  ];
 
   @override
   initState() {
@@ -49,6 +51,18 @@ class VendorDetailsScreenState extends State<VendorDetailsScreen> {
     var _service = VendorsService();
     _categories = await _service.getVendorCategories(
         widget.characterId, widget.vendor.vendorHash);
+    _categories = _categories.where((c) => shouldCategoryBeVisible(c)).toList();
+    _categories.sort((a,b){
+      var defA = definition.displayCategories[a.displayCategoryIndex];
+      var defB = definition.displayCategories[b.displayCategoryIndex];
+      var priorityA = categoryIdsPriority.indexWhere((element) => defA.identifier.contains(element));
+      var priorityB = categoryIdsPriority.indexWhere((element) => defB.identifier.contains(element));
+      if(priorityA == -1) priorityA = 9999;
+      if(priorityB == -1) priorityB = 9999;
+      var compare = priorityA.compareTo(priorityB);
+      if(compare != 0) return compare;
+      return defA.sortOrder.index.compareTo(defB.sortOrder.index);
+    });
     _sales = await _service.getVendorSales(
         widget.characterId, widget.vendor.vendorHash);
     if (mounted) {
@@ -127,11 +141,10 @@ class VendorDetailsScreenState extends State<VendorDetailsScreen> {
 
   Widget buildBody(BuildContext context) {
     if (definition == null || _categories == null) return Container();
-    var categories = _categories.where((c) => shouldCategoryBeVisible(c));
     var screenPadding = MediaQuery.of(context).padding;
     return ListView(
         padding: EdgeInsets.all(8).copyWith( left: max(screenPadding.left, 8), right: max(screenPadding.right, 8)),
-        children: categories.map((c) => buildCategory(context, c)).toList());
+        children: _categories.map((c) => buildCategory(context, c)).toList());
   }
 
   bool shouldCategoryBeVisible(DestinyVendorCategory category) {
@@ -139,7 +152,7 @@ class VendorDetailsScreenState extends State<VendorDetailsScreen> {
     if (def.identifier == 'category_preview') {
       return false;
     }
-    if (def.identifier.contains('categories.featured')) {
+    if (def.identifier.contains('categories.featured') && !def.identifier.contains('bright_dust')) {
       return false; //eververse weird menus
     }
     return true;

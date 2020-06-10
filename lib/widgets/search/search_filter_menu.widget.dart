@@ -8,6 +8,7 @@ import 'package:little_light/widgets/search/search_filters/energy_level_constrai
 import 'package:little_light/widgets/search/search_filters/energy_type_filter.widget.dart';
 import 'package:little_light/widgets/search/search_filters/item_bucket_filter.widget.dart';
 import 'package:little_light/widgets/search/search_filters/item_subtype_filter.widget.dart';
+import 'package:little_light/widgets/search/search_filters/power_cap_filter.widget.dart';
 import 'package:little_light/widgets/search/search_filters/power_level_constraints_filter.widget.dart';
 import 'package:little_light/widgets/search/search_filters/seasonal_slot_filter.widget.dart';
 import 'package:little_light/widgets/search/search_filters/tier_type_filter.widget.dart';
@@ -54,6 +55,7 @@ class _SearchFilterMenuState extends State<SearchFilterMenu> {
       DamageTypeFilterWidget(widget.controller),
       EnergyTypeFilterWidget(widget.controller),
       SeasonalSlotFilterWidget(widget.controller),
+      PowerCapFilterWidget(widget.controller),
       AmmoTypeFilterWidget(widget.controller),
       ClassTypeFilterWidget(widget.controller),
       TierTypeFilterWidget(widget.controller),

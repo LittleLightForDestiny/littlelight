@@ -173,7 +173,9 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
             Text(
               definition.displayProperties.name.toUpperCase(),
               style: TextStyle(
-                color:DestinyData.getTierTextColor(definition?.inventory?.tierType).withOpacity(.9),
+                  color: DestinyData.getTierTextColor(
+                          definition?.inventory?.tierType)
+                      .withOpacity(.9),
                   fontSize: lerpDouble(kToolbarHeight * .5,
                       convertSize(74, context), expandRatio),
                   fontWeight: FontWeight.bold,
@@ -185,7 +187,9 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
                   fontSize: lerpDouble(kToolbarHeight * .3,
                       convertSize(34, context), expandRatio),
                   height: .94,
-                  color: DestinyData.getTierTextColor(definition?.inventory?.tierType).withOpacity(.8),
+                  color: DestinyData.getTierTextColor(
+                          definition?.inventory?.tierType)
+                      .withOpacity(.8),
                   fontWeight: FontWeight.w500),
             ),
           ],
@@ -220,10 +224,11 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
         (s) =>
             DestinyData.socketCategoryModHashes.contains(s.socketCategoryHash),
         orElse: () => null);
-    var exoticIntrinsicPerkCategory = definition.sockets?.socketCategories?.firstWhere(
-        (s) =>
-            DestinyData.socketCategoryIntrinsicPerkHashes.contains(s.socketCategoryHash),
-        orElse: () => null);
+    var exoticIntrinsicPerkCategory = definition.sockets?.socketCategories
+        ?.firstWhere(
+            (s) => DestinyData.socketCategoryIntrinsicPerkHashes
+                .contains(s.socketCategoryHash),
+            orElse: () => null);
     return Positioned(
         top: convertSize(96.0 * 2.4 + 1080 * (expandRatio - 1), context),
         left: convertSize(96.0, context),
@@ -292,22 +297,20 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
                       item: item,
                       pixelSize: pixelSize(context),
                     )),
-                Container(
-                  height: convertSize(16, context),
-                ),
-                hideTransferBlock || item == null
-                    ? Container()
-                    : Container(
-                        width: convertSize(750, context),
-                        child: ScreenshotTransferDestinationsWidget(
-                          pixelSize: pixelSize(context),
-                          item: item,
-                          instanceInfo: instanceInfo,
-                          definition: definition,
-                          characterId: characterId,
-                        ))
               ],
             )));
+  }
+
+  Widget transferBlock(BuildContext context, double expandRatio) {
+    if (hideTransferBlock || item == null) return Container();
+    return Container(
+        child: ScreenshotTransferDestinationsWidget(
+          pixelSize: pixelSize(context),
+          item: item,
+          instanceInfo: instanceInfo,
+          definition: definition,
+          characterId: characterId,
+        ));
   }
 
   Widget rightColumn(BuildContext context, double expandRatio) {
@@ -316,29 +319,35 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
         right: convertSize(96.0, context),
         child: Opacity(
             opacity: expandRatio,
-            child: IntrinsicHeight(
-                child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                primaryStatHash == null
-                    ? Container()
-                    : buildPrimaryStat(context),
-                primaryStatHash == null ||
-                        (definition.stats.stats?.length ?? 0) == 0
-                    ? Container()
-                    : Container(
-                        margin: EdgeInsets.symmetric(
-                            horizontal: convertSize(16, context)),
-                        width: convertSize(2, context),
-                        color: Colors.white.withOpacity(.4)),
-                ScreenShotItemStatsWidget(
-                    socketController: socketController,
-                    pixelSize: pixelSize(context),
-                    item: item,
-                    definition: definition),
-              ],
-            ))));
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+              transferBlock(context, expandRatio),
+              Container(height:convertSize(32.0, context)),
+              IntrinsicHeight(
+                  child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  primaryStatHash == null
+                      ? Container()
+                      : buildPrimaryStat(context),
+                  primaryStatHash == null ||
+                          (definition.stats.stats?.length ?? 0) == 0
+                      ? Container()
+                      : Container(
+                          margin: EdgeInsets.symmetric(
+                              horizontal: convertSize(16, context)),
+                          width: convertSize(2, context),
+                          color: Colors.white.withOpacity(.4)),
+                  ScreenShotItemStatsWidget(
+                      socketController: socketController,
+                      pixelSize: pixelSize(context),
+                      item: item,
+                      definition: definition),
+                ],
+              ))
+            ])));
   }
 
   int get primaryStatHash => instanceInfo?.primaryStat?.statHash;
@@ -421,18 +430,16 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
 
   Widget background(BuildContext context, double expandRatio) {
     double opacity = expandRatio;
-    
+
     return Positioned(
         top: 0,
         bottom: 0,
         left: 0,
         right: 0,
-        child: Opacity(
-            opacity: opacity,
-            child: buildBackgroundImage(context)));
+        child: Opacity(opacity: opacity, child: buildBackgroundImage(context)));
   }
 
-  Widget buildBackgroundImage(BuildContext context){
+  Widget buildBackgroundImage(BuildContext context) {
     String imgUrl = definition.screenshot;
     if (definition.itemType == DestinyItemType.Emblem) {
       imgUrl = definition.secondarySpecial;
@@ -443,34 +450,35 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
     if (imgUrl == null) {
       return Container();
     }
-    if(item?.overrideStyleItemHash != null){
-      return DefinitionProviderWidget<DestinyInventoryItemDefinition>(item.overrideStyleItemHash, (def){
-        if(def?.plug?.isDummyPlug ?? false){
-          return  QueuedNetworkImage(
-                imageUrl: BungieApiService.url(imgUrl),
-                fit: BoxFit.cover,
-                placeholder: Shimmer.fromColors(
-                    baseColor: Colors.blueGrey.shade500,
-                    highlightColor: Colors.grey.shade300,
-                    child: Container(color: Colors.white))); 
+    if (item?.overrideStyleItemHash != null) {
+      return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
+          item.overrideStyleItemHash, (def) {
+        if (def?.plug?.isDummyPlug ?? false) {
+          return QueuedNetworkImage(
+              imageUrl: BungieApiService.url(imgUrl),
+              fit: BoxFit.cover,
+              placeholder: Shimmer.fromColors(
+                  baseColor: Colors.blueGrey.shade500,
+                  highlightColor: Colors.grey.shade300,
+                  child: Container(color: Colors.white)));
         }
 
-        return  QueuedNetworkImage(
-                imageUrl: BungieApiService.url(def?.screenshot ?? imgUrl),
-                fit: BoxFit.cover,
-                placeholder: Shimmer.fromColors(
-                    baseColor: Colors.blueGrey.shade500,
-                    highlightColor: Colors.grey.shade300,
-                    child: Container(color: Colors.white))); 
+        return QueuedNetworkImage(
+            imageUrl: BungieApiService.url(def?.screenshot ?? imgUrl),
+            fit: BoxFit.cover,
+            placeholder: Shimmer.fromColors(
+                baseColor: Colors.blueGrey.shade500,
+                highlightColor: Colors.grey.shade300,
+                child: Container(color: Colors.white)));
       });
     }
     return QueuedNetworkImage(
-                imageUrl: BungieApiService.url(imgUrl),
-                fit: BoxFit.cover,
-                placeholder: Shimmer.fromColors(
-                    baseColor: Colors.blueGrey.shade500,
-                    highlightColor: Colors.grey.shade300,
-                    child: Container(color: Colors.white)));
+        imageUrl: BungieApiService.url(imgUrl),
+        fit: BoxFit.cover,
+        placeholder: Shimmer.fromColors(
+            baseColor: Colors.blueGrey.shade500,
+            highlightColor: Colors.grey.shade300,
+            child: Container(color: Colors.white)));
   }
 
   Widget tierBar(BuildContext context, double expandRatio) {

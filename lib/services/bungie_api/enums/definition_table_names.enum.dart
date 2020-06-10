@@ -6,6 +6,7 @@ import 'package:bungie_api/models/destiny_activity_type_definition.dart';
 import 'package:bungie_api/models/destiny_class_definition.dart';
 import 'package:bungie_api/models/destiny_gender_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
+import 'package:bungie_api/models/destiny_power_cap_definition.dart';
 import 'package:bungie_api/models/destiny_race_definition.dart';
 import 'package:bungie_api/models/destiny_season_definition.dart';
 import 'package:bungie_api/models/destiny_season_pass_definition.dart';
@@ -122,7 +123,8 @@ class DefinitionTableNames {
     DestinyEnergyTypeDefinition: (json) =>
         DestinyEnergyTypeDefinition.fromJson(json),
     DestinySeasonDefinition: (json) => DestinySeasonDefinition.fromJson(json),
-    DestinySeasonPassDefinition: (json) => DestinySeasonPassDefinition.fromJson(json)
+    DestinySeasonPassDefinition: (json) => DestinySeasonPassDefinition.fromJson(json),
+    DestinyPowerCapDefinition: (json) => DestinyPowerCapDefinition.fromJson(json)
   };
 
   static Map<Type, String> fromClass = {
@@ -175,5 +177,6 @@ class DefinitionTableNames {
     DestinyEnergyTypeDefinition: "DestinyEnergyTypeDefinition",
     DestinySeasonDefinition: "DestinySeasonDefinition",
     DestinySeasonPassDefinition: "DestinySeasonPassDefinition",
+    DestinyPowerCapDefinition:"DestinyPowerCapDefinition"
   };
 }

@@ -303,7 +303,7 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
         
     int seasonRank = (levelProg?.level ?? 0) + (overLevelProg?.level ?? 0);
     DestinyProgression expProg =
-        levelProg.level < levelProg.levelCap ? levelProg : overLevelProg;
+        (levelProg?.level ?? 0) < (levelProg?.levelCap ?? 0) ? levelProg : overLevelProg;
     return Positioned(
         right: 8,
         top: 4,
@@ -347,17 +347,17 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
   } 
 
   bool get isWellRested =>
-      character.levelProgression.level >= character.levelProgression.levelCap &&
-      legendProgression.level > 3 &&
-      legendProgression.weeklyProgress < wellRestedTotal;
+      (character?.levelProgression?.level ?? 0) >= (character?.levelProgression?.levelCap ?? 0) &&
+      (legendProgression?.level ?? 0) > 3 &&
+      (legendProgression?.weeklyProgress ?? 0) < wellRestedTotal;
 
   int get wellRestedTotal {
     if (legendProgressionDefinition == null) {
       return 0;
     }
     return [0, 1, 2].fold<int>(0, (total, levelOffset) {
-      var step = math.min(math.max(legendProgression.level - levelOffset, 0),
-          legendProgressionDefinition.steps.length - 1);
+      var step = math.min(math.max((legendProgression?.level ?? 0) - levelOffset, 0),
+          (legendProgressionDefinition?.steps?.length ?? 1) - 1);
       return total + legendProgressionDefinition.steps[step].progressTotal;
     });
   }

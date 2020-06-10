@@ -92,6 +92,7 @@ class ScreenShotItemModsWidgetState<T extends ScreenShotItemModsWidget>
     if (plugHash == null) return null;
 
     return Container(
+      height:96 * widget.pixelSize,
       width: 96 * widget.pixelSize,
       child: buildPlug(context, socketIndex, plugHash),
     );

@@ -16,6 +16,7 @@ import 'package:little_light/utils/item_filters/energy_level_constraints_filter.
 import 'package:little_light/utils/item_filters/energy_type_filter.dart';
 import 'package:little_light/utils/item_filters/item_bucket_filter.dart';
 import 'package:little_light/utils/item_filters/item_subtype_filter.dart';
+import 'package:little_light/utils/item_filters/power_cap_filter.dart';
 import 'package:little_light/utils/item_filters/power_level_constraints_filter.dart';
 import 'package:little_light/utils/item_filters/season_slot_filter.dart';
 import 'package:little_light/utils/item_filters/text_filter.dart';
@@ -85,6 +86,7 @@ class SearchController extends ChangeNotifier {
       DamageTypeFilter(),
       EnergyTypeFilter(),
       SeasonSlotFilter(),
+      PowerCapFilter(),
       ClassTypeFilter(),
       AmmoTypeFilter(),
       TierTypeFilter(),

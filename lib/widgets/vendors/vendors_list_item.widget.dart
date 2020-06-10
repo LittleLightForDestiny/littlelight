@@ -82,7 +82,10 @@ class VendorsListItemWidgetState<T extends VendorsListItemWidget>
     if (def.identifier.contains('multipurchase')) {
       return false; //eververse weird bright engrams
     }
-    if (def.identifier.contains('categories.featured')) {
+    if (def.identifier.contains('categories.featured') && !def.identifier.contains('bright_dust')) {
+      return false; //eververse weird menus
+    }
+    if (def.identifier.contains('categories.campaigns')) {
       return false; //eververse weird menus
     }
     if (def.identifier.contains('categories.seasonal')) {

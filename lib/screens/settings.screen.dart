@@ -221,14 +221,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               child: Container(
                                   padding: EdgeInsets.all(8),
                                   child: Text(
-                                    w.name,
+                                    w.name ?? "",
                                     style:
                                         TextStyle(fontWeight: FontWeight.w700),
                                   ))),
                           Container(
                               padding: EdgeInsets.all(8).copyWith(bottom: 0),
                               child: Linkify(
-                                  text: w.description,
+                                  text: w.description ?? "",
                                   linkStyle: TextStyle(color: Colors.white),
                                   onOpen: (link) =>
                                       launch(link.url, forceSafariVC: true))),

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:bungie_api/api/settings.dart';
 import 'package:bungie_api/enums/bungie_membership_type.dart';
 import 'package:bungie_api/enums/destiny_component_type.dart';
+import 'package:bungie_api/enums/destiny_vendor_filter.dart';
 import 'package:bungie_api/helpers/bungie_net_token.dart';
 import 'package:bungie_api/models/core_settings_configuration.dart';
 import 'package:bungie_api/models/destiny_equip_item_result.dart';
@@ -102,6 +103,7 @@ class BungieApiService {
         characterId,
         components,
         membership.membershipId,
+        DestinyVendorFilter.None,
         membership.membershipType);
     return response.response;
   }

@@ -1,17 +1,24 @@
+import 'package:bungie_api/enums/destiny_item_type.dart';
 import 'package:bungie_api/enums/item_state.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
+import 'package:bungie_api/models/destiny_power_cap_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/models/wish_list.dart';
+import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/inventory/inventory.service.dart';
 import 'package:little_light/services/littlelight/wishlists.service.dart';
+import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
+import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/primary_stat.widget.dart';
+import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/common/wishlist_badge.widget.dart';
+import 'package:little_light/widgets/icon_fonts/destiny_icons_icons.dart';
 
 class ItemMainInfoWidget extends BaseDestinyStatefulItemWidget {
   ItemMainInfoWidget(
@@ -33,7 +40,7 @@ class ItemMainInfoWidget extends BaseDestinyStatefulItemWidget {
   }
 }
 
-class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget>{
+class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -53,14 +60,55 @@ class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget>{
             color: Colors.grey.shade300,
             margin: EdgeInsets.symmetric(vertical: 8),
           ),
-          Padding(
-              padding: EdgeInsets.all(8),
-              child: Text(
-                definition.displayProperties.description,
-              )),
+          (definition?.displayProperties?.description?.length ?? 0) > 0
+              ? Padding(
+                  padding: EdgeInsets.all(8),
+                  child: Text(
+                    definition.displayProperties.description,
+                  ))
+              : Container(),
+          buildMaxPowerInfo(context),
+          buildEmblemInfo(context),
           buildWishListInfo(context),
           buildLockInfo(context),
         ]));
+  }
+
+  Widget buildMaxPowerInfo(BuildContext context) {
+    if (definition?.quality?.currentVersion == null ||
+        definition?.quality?.versions == null) return Container();
+    var version =
+        definition.quality.versions[definition.quality.currentVersion];
+    return DefaultTextStyle(
+        style: TextStyle(
+            fontWeight: FontWeight.w500, color: Colors.amber.shade200),
+        child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 8),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+              TranslatedTextWidget("Power Cap", uppercase: true,),
+              Container(
+                  padding: EdgeInsets.only(left: 4),
+                  child: Icon(
+                    DestinyIcons.power,
+                    color: Colors.amber.shade200,
+                    size: 8,
+                  )),
+              ManifestText<DestinyPowerCapDefinition>(
+                version.powerCapHash,
+                textExtractor: (def) => "${def.powerCap}",
+              )
+            ])));
+  }
+
+  Widget buildEmblemInfo(BuildContext context) {
+    if (definition?.itemType != DestinyItemType.Emblem) return Container();
+    return Container(
+        alignment: Alignment.center,
+        child: QueuedNetworkImage(
+          imageUrl: BungieApiService.url(definition.secondaryIcon),
+        ));
   }
 
   Widget buildLockInfo(BuildContext context) {
@@ -77,16 +125,28 @@ class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget>{
             ),
             Expanded(
                 child: locked
-                    ? TranslatedTextWidget("Item Locked", uppercase: true,)
-                    : TranslatedTextWidget("Item Unlocked", uppercase: true,)),
+                    ? TranslatedTextWidget(
+                        "Item Locked",
+                        uppercase: true,
+                      )
+                    : TranslatedTextWidget(
+                        "Item Unlocked",
+                        uppercase: true,
+                      )),
             RaisedButton(
               child: locked
-                  ? TranslatedTextWidget("Unlock", uppercase: true,)
-                  : TranslatedTextWidget("Lock", uppercase:  true,),
+                  ? TranslatedTextWidget(
+                      "Unlock",
+                      uppercase: true,
+                    )
+                  : TranslatedTextWidget(
+                      "Lock",
+                      uppercase: true,
+                    ),
               onPressed: () async {
                 var itemWithOwner = ItemWithOwner(item, characterId);
                 InventoryService().changeLockState(itemWithOwner, !locked);
-                setState((){});
+                setState(() {});
               },
             )
           ],
