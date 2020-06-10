@@ -315,11 +315,13 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
 
   Widget rightColumn(BuildContext context, double expandRatio) {
     return Positioned(
+        top: convertSize(96.0, context),
         bottom: convertSize(96.0, context),
         right: convertSize(96.0, context),
         child: Opacity(
             opacity: expandRatio,
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
               transferBlock(context, expandRatio),

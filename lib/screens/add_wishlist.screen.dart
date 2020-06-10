@@ -82,7 +82,7 @@ class _AddWishlistScreenState extends State<AddWishlistScreen> {
             child: Column(children: <Widget>[
               buildInfo(context),
               buildDivider(context),
-              buildSourceSelect(context),
+              // buildSourceSelect(context),
               buildTextField(context, "URL", maxLength: null),
               
               buildTextField(context, "Name"),
