@@ -93,21 +93,21 @@ mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget {
     }
     int total = stats.values.fold(0, (t, s) => t + s.value);
     Color textColor = Colors.grey.shade500;
-    if (total >= 55) {
+    if (total >= 60) {
       textColor = Colors.grey.shade300;
     }
-    if (total >= 60) {
+    if (total >= 65) {
       textColor = Colors.amber.shade100;
     }
     return Positioned(
         right: iconBorderWidth,
         top: iconBorderWidth,
-        left: iconBorderWidth,
         child: Container(
-          padding: EdgeInsets.all(2),
+          padding: EdgeInsets.symmetric(horizontal:padding/2, vertical: padding/4).copyWith(right:padding/4),
           decoration: BoxDecoration(
-              gradient:
-                  LinearGradient(colors: [Colors.transparent, Colors.black])),
+            color: Colors.black54,
+            borderRadius: BorderRadius.only(bottomLeft: Radius.circular(8))
+          ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[

@@ -32,14 +32,21 @@ enum LastLoadedFrom { server, cache }
 class ProfileComponentGroups {
   static const List<DestinyComponentType> basicProfile = [
     DestinyComponentType.Characters,
+    DestinyComponentType.CharacterActivities,
     DestinyComponentType.CharacterProgressions,
     DestinyComponentType.CharacterEquipment,
     DestinyComponentType.CharacterInventories,
     DestinyComponentType.ProfileInventories,
+    DestinyComponentType.ProfileCurrencies,
+    DestinyComponentType.ProfileProgression,
     DestinyComponentType.ItemInstances,
+    DestinyComponentType.ItemStats,
     DestinyComponentType.ItemObjectives,
     DestinyComponentType.ItemTalentGrids,
     DestinyComponentType.ItemSockets,
+    DestinyComponentType.ItemPlugStates,
+    DestinyComponentType.ItemPlugObjectives,
+    DestinyComponentType.ItemReusablePlugs,
   ];
 
   static const List<DestinyComponentType> inventories = [
@@ -92,6 +99,8 @@ class ProfileService {
   }
   ProfileService._internal();
 
+
+
   static const List<int> profileBuckets = const [
     InventoryBucket.modifications,
     InventoryBucket.shaders,
@@ -105,13 +114,15 @@ class ProfileService {
 
   bool pauseAutomaticUpdater = false;
 
+  List<DestinyComponentType> updateComponents = ProfileComponentGroups.everything;
+
   Future<DestinyProfileResponse> fetchProfileData(
-      {List<DestinyComponentType> components = ProfileComponentGroups.everything,
+      {List<DestinyComponentType> components,
       bool skipUpdate = false}) async {
     if (!skipUpdate)
       _broadcaster.push(NotificationEvent(NotificationType.requestedUpdate));
     try {
-      DestinyProfileResponse res = await _updateProfileData(components); 
+      DestinyProfileResponse res = await _updateProfileData(components ?? updateComponents); 
       this._lastLoadedFrom = LastLoadedFrom.server;
       if (!skipUpdate)
         _broadcaster.push(NotificationEvent(NotificationType.receivedUpdate));
@@ -143,7 +154,7 @@ class ProfileService {
     _timer = new Timer.periodic(every, (timer) async {
       if (!pauseAutomaticUpdater) {
         print('auto refreshing');
-        await fetchProfileData(components: ProfileComponentGroups.everything);
+        await fetchProfileData(components: updateComponents);
       }
     });
   }
@@ -158,8 +169,8 @@ class ProfileService {
       List<DestinyComponentType> components) async {
     var membership = StorageService.getMembership();
     DestinyProfileResponse response;
-    response = await _api.getCurrentProfile(components);
-
+    response = await _api.getCurrentProfile(components).timeout(Duration(seconds: 12));
+    
     if (membership != StorageService.getMembership()) {
       return _profile;
     }

@@ -57,7 +57,7 @@ class EquipmentScreenState extends State<EquipmentScreen>
   @override
   void initState() {
     super.initState();
-    
+    ProfileService().updateComponents = ProfileComponentGroups.basicProfile;
     SelectedPagePersistence.saveLatestScreen(SelectedPagePersistence.equipment);
 
     typeTabController = typeTabController ??

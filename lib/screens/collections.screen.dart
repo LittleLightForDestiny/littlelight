@@ -25,6 +25,8 @@ class CollectionsScreenState
   Map<int, List<ItemWithOwner>> itemsByHash;
   @override
   void initState() {
+    ProfileService().updateComponents = ProfileComponentGroups.collections;
+    ProfileService().fetchProfileData();
     SelectedPagePersistence.saveLatestScreen(
         SelectedPagePersistence.collections);
     AuthService auth = AuthService();

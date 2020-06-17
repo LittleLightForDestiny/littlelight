@@ -44,7 +44,7 @@ class ProgressScreenState extends State<ProgressScreen>
     super.initState();
 
     SelectedPagePersistence.saveLatestScreen(SelectedPagePersistence.progress);
-
+    ProfileService().updateComponents = ProfileComponentGroups.basicProfile;
     charTabController = charTabController ??
         TabController(
           initialIndex: 0,

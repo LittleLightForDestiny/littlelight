@@ -4,17 +4,15 @@ import 'package:bungie_api/enums/tier_type.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
-import 'package:bungie_api/models/destiny_season_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/utils/destiny_data.dart';
-import 'package:little_light/widgets/common/definition_provider.widget.dart';
-import 'package:little_light/widgets/common/manifest_image.widget.dart';
-import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
+import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateless_item.widget.dart';
+import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/item_icon/engram_icon.widget.dart';
 import 'package:little_light/widgets/common/item_icon/subclass_icon.widget.dart';
+import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:shimmer/shimmer.dart';
 
 class ItemIconWidget extends BaseDestinyStatelessItemWidget {
@@ -71,6 +69,7 @@ class ItemIconWidget extends BaseDestinyStatelessItemWidget {
                   ? DestinyData.getTierColor(definition.inventory.tierType)
                   : null,
               child: itemIconImage(context))),
+      itemSeasonIcon(context),
       Positioned.fill(
           child: state.contains(ItemState.Masterwork)
               ? getMasterworkOutline()
@@ -89,6 +88,25 @@ class ItemIconWidget extends BaseDestinyStatelessItemWidget {
     ]);
   }
 
+  String seasonBadgeUrl(){
+    try{
+      return definition?.quality?.displayVersionWatermarkIcons?.first ?? "";
+    }catch(_){}
+    return "";
+  }
+
+  Widget itemSeasonIcon(BuildContext context) {
+    if (seasonBadgeUrl() != "") {
+      return QueuedNetworkImage(
+        imageUrl: BungieApiService.url(
+            definition.quality.displayVersionWatermarkIcons.first),
+        fit: BoxFit.fill,
+        placeholder: itemIconPlaceholder(context),
+      );
+    }
+    return Container();
+  }
+
   BoxDecoration iconBoxDecoration() {
     if (item?.bucketHash == InventoryBucket.engrams) {
       return null;
@@ -102,19 +120,38 @@ class ItemIconWidget extends BaseDestinyStatelessItemWidget {
     if (item?.overrideStyleItemHash != null) {
       return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
           item?.overrideStyleItemHash, (def) {
-        if (def?.plug?.isDummyPlug ?? false) {
-          return QueuedNetworkImage(
+        return Stack(children: [
+          seasonBadgeUrl() != "" ? Container() : QueuedNetworkImage(
             imageUrl: BungieApiService.url(definition.displayProperties.icon),
             fit: BoxFit.fill,
             placeholder: itemIconPlaceholder(context),
-          );
-        }
-
-        return QueuedNetworkImage(
-          imageUrl: BungieApiService.url(def.displayProperties.icon),
-          fit: BoxFit.fill,
-          placeholder: itemIconPlaceholder(context),
-        );
+          ),
+          ShaderMask(
+            blendMode: BlendMode.dstIn,
+            child: QueuedNetworkImage(
+              imageUrl: BungieApiService.url(def.displayProperties.icon),
+              fit: BoxFit.fill,
+              placeholder: itemIconPlaceholder(context),
+            ),
+            shaderCallback: (Rect rect) {
+              return LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  stops: [
+                    0,
+                    .27,
+                    .28,
+                    1
+                  ],
+                  colors: [
+                    Colors.transparent,
+                    Colors.transparent,
+                    Colors.white,
+                    Colors.white
+                  ]).createShader(rect);
+            },
+          )
+        ]);
       });
     }
     return QueuedNetworkImage(

@@ -3,7 +3,9 @@ import 'dart:math';
 import 'package:bungie_api/models/destiny_objective_definition.dart';
 import 'package:bungie_api/models/destiny_objective_progress.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/storage/storage.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 
 class ObjectiveWidget extends StatefulWidget {
@@ -149,8 +151,11 @@ class ObjectiveWidgetState extends State<ObjectiveWidget>{
     if (forceComplete) {
       progress = total;
     }
+    var formatter = NumberFormat.decimalPattern(StorageService.getLanguage());
+    String formattedProgress = formatter.format(progress);
+    String formattedTotal = formatter.format(total);
 
-    return Text(total <= 1 ? "$progress" : "$progress/$total",
+    return Text(total <= 1 ? "$formattedProgress" : "$formattedProgress/$formattedTotal",
         style: TextStyle(
             fontWeight: FontWeight.w500,
             fontSize: 13,

@@ -6,7 +6,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/media_query_helper.dart';
-import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
+import 'package:little_light/widgets/common/refresh_button.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/selected_items.widget.dart';
 import 'package:little_light/widgets/presentation_nodes/collectible_item.widget.dart';
 import 'package:little_light/widgets/presentation_nodes/nested_collectible_item.widget.dart';
@@ -69,10 +69,18 @@ class PresentationNodeScreenState<T extends PresentationNodeScreen>
             child: buildBody(context)),
         SelectedItemsWidget(),
       ]),
-      InventoryNotificationWidget(
-        key: Key('inventory_notification_widget'),
-        barHeight: 0,
-      ),
+      Positioned(
+            right: 8,
+            bottom: 8,
+            child: Container(
+              decoration: BoxDecoration(
+                  color: Colors.blueGrey.shade900,
+                  borderRadius: BorderRadius.circular(18)),
+              width: 36,
+              height: 36,
+              child: RefreshButtonWidget(),
+            ),
+          ),
     ]);
   }
 

@@ -8,6 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/screens/edit_loadout.screen.dart';
 import 'package:little_light/services/littlelight/loadouts.service.dart';
+import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
@@ -32,6 +33,7 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
   @override
   void initState() {
     super.initState();
+    ProfileService().updateComponents = ProfileComponentGroups.basicProfile;
     _searchFieldController.addListener(() {
       filteredLoadouts = filterLoadouts();
       setState(() {});
