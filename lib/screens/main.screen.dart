@@ -101,16 +101,16 @@ class MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     return showDialog(
           context: context,
           builder: (context)=>AlertDialog(
-            title: new TranslatedTextWidget('Exit'),
-            content: new TranslatedTextWidget('Do you really want to exit Little Light?'),
+            title: TranslatedTextWidget('Exit'),
+            content: TranslatedTextWidget('Do you really want to exit Little Light?'),
             actions: <Widget>[
-              new FlatButton(
+              MaterialButton(
                 onPressed: () => Navigator.of(context).pop(false),
-                child: new TranslatedTextWidget('No'),
+                child: TranslatedTextWidget('No'),
               ),
-              new FlatButton(
+              MaterialButton(
                 onPressed: () => Navigator.of(context).pop(true),
-                child: new TranslatedTextWidget('Yes'),
+                child: TranslatedTextWidget('Yes'),
               ),
             ],
           ),

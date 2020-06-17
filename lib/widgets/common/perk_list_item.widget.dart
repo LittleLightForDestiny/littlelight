@@ -12,6 +12,7 @@ import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/widgets/common/objective.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
+
 import 'package:little_light/widgets/item_details/item_stats.widget.dart';
 
 class PerkListItem extends StatefulWidget {

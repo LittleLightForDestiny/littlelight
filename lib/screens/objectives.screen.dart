@@ -77,7 +77,7 @@ class ObjectivesScreenState extends State<ObjectivesScreen> {
     return Stack(children: [
       Scaffold(
         appBar: AppBar(
-            leading: IconButton(
+            leading: IconButton(enableFeedback: false,
               icon: Icon(Icons.menu),
               onPressed: () {
                 Scaffold.of(context).openDrawer();

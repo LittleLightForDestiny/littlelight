@@ -11,6 +11,8 @@ import 'package:little_light/services/user_settings/user_settings.service.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 
 import 'package:little_light/widgets/common/translated_text.widget.dart';
+
+
 import 'package:little_light/widgets/flutter/smaller_switch.dart';
 import 'package:little_light/widgets/option_sheets/free_slots_slider.widget.dart';
 import 'package:screen/screen.dart';
@@ -40,7 +42,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          leading: IconButton(
+          leading: IconButton(enableFeedback: false,
             icon: Icon(Icons.menu),
             onPressed: () {
               Scaffold.of(context).openDrawer();

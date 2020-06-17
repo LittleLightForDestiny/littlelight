@@ -21,6 +21,7 @@ import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
+
 class VendorsListItemWidget extends StatefulWidget {
   final String characterId;
   final ProfileService profile = ProfileService();

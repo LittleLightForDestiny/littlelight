@@ -6,6 +6,7 @@ import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widg
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
+
 class ItemDetailsNotesWidget extends BaseDestinyStatefulItemWidget {
   ItemDetailsNotesWidget(
       {DestinyItemComponent item,
@@ -68,13 +69,13 @@ class ItemDetailsNotesWidgetState
                   controller: _textFieldController,
                 ),
                 actions: <Widget>[
-                   FlatButton(
+                   MaterialButton(
                     child:  TranslatedTextWidget('Cancel'),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
                   ),
-                   FlatButton(
+                   MaterialButton(
                     child:  TranslatedTextWidget('Save'),
                     onPressed: () {
                       customName = _textFieldController.text;

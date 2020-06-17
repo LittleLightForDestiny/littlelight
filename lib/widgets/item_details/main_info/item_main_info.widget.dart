@@ -17,6 +17,7 @@ import 'package:little_light/widgets/common/primary_stat.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/common/wishlist_badge.widget.dart';
+
 import 'package:little_light/widgets/icon_fonts/destiny_icons_icons.dart';
 
 class ItemMainInfoWidget extends BaseDestinyStatefulItemWidget {

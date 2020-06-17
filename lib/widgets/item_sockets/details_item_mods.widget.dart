@@ -194,7 +194,7 @@ class DetailsItemPerksWidgetState<T extends DetailsItemModsWidget>
         key:Key("item_mod_$plugItemHash"),
         padding: EdgeInsets.all(0),
         margin: EdgeInsets.only(bottom: 8),
-        child: FlatButton(
+        child: MaterialButton(
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(4), side: borderSide),
           padding: EdgeInsets.all(8),
@@ -229,7 +229,7 @@ class DetailsItemPerksWidgetState<T extends DetailsItemModsWidget>
         key:Key("item_mod_$plugItemHash"),
         child: AspectRatio(
             aspectRatio: 1,
-            child: FlatButton(
+            child: MaterialButton(
               padding: EdgeInsets.all(0),
               shape: ContinuousRectangleBorder(side: BorderSide(color: selected ? Colors.white : Colors.grey.shade300.withOpacity(.5), width: 1.5)),
               child: Stack(children: [

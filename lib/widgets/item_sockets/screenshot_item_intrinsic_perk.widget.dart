@@ -152,7 +152,7 @@ class ScreenShotItemIntrinsicPerkWidgetState<
         margin: EdgeInsets.only(bottom: 16 * widget.pixelSize),
         child: AspectRatio(
             aspectRatio: 1,
-            child: FlatButton(
+            child: MaterialButton(
               shape: intrinsic && !isExotic
                   ? RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(4 * widget.pixelSize),

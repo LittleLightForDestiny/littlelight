@@ -14,6 +14,7 @@ import 'package:little_light/widgets/common/objective.widget.dart';
 import 'package:bungie_api/enums/destiny_record_state.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
+
 class RecordObjectivesWidget extends StatefulWidget {
   final ManifestService manifest = new ManifestService();
   final ProfileService profile = new ProfileService();

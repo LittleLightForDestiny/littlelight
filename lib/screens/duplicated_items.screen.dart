@@ -93,7 +93,7 @@ class DuplicatedItemsScreenState extends State<DuplicatedItemsScreen>
     return AppBar(
       title: buildAppBarTitle(context),
       elevation: 2,
-      leading: IconButton(
+      leading: IconButton(enableFeedback: false,
         icon: Icon(Icons.menu),
         onPressed: () {
           Scaffold.of(context).openDrawer();

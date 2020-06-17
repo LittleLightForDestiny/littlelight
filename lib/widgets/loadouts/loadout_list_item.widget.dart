@@ -16,6 +16,7 @@ import 'package:bungie_api/enums/destiny_class.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
+
 class LoadoutListItemWidget extends StatefulWidget {
   final Map<String, LoadoutItemIndex> itemIndexes;
   final Loadout loadout;
@@ -173,7 +174,7 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> {
         context: context,
         builder: (context) => AlertDialog(
                 actions: <Widget>[
-                  FlatButton(
+                  MaterialButton(
                       textColor: Colors.redAccent.shade200,
                       child: TranslatedTextWidget(
                         "No",
@@ -182,7 +183,7 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> {
                       onPressed: () {
                         Navigator.of(context).pop();
                       }),
-                  FlatButton(
+                  MaterialButton(
                     textColor: Theme.of(context).accentColor,
                     child: TranslatedTextWidget(
                       "Yes",

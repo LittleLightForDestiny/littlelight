@@ -92,7 +92,7 @@ class ProgressScreenState extends State<ProgressScreen>
             top: paddingTop,
             width: kToolbarHeight,
             height: kToolbarHeight,
-            child: IconButton(
+            child: IconButton(enableFeedback: false,
               icon: Icon(Icons.menu),
               onPressed: () {
                 Scaffold.of(context).openDrawer();
@@ -201,7 +201,7 @@ class ProgressScreenState extends State<ProgressScreen>
 
   buildCharacterMenu(BuildContext context) {
     return Row(children: [
-      IconButton(
+      IconButton(enableFeedback: false,
           icon: Icon(FontAwesomeIcons.search, color: Colors.white),
           onPressed: () {
             var char = characters[charTabController.index];

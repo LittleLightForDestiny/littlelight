@@ -234,7 +234,7 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
         padding: EdgeInsets.all(0),
         margin: EdgeInsets.only(bottom: 8),
         foregroundDecoration: (tags?.length ?? 0) > 0 ? WishlistCornerBadgeDecoration(tags:tags, badgeSize: 14) : null,
-        child: FlatButton(
+        child: MaterialButton(
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(4), side: borderSide),
           padding: EdgeInsets.all(8),
@@ -291,7 +291,7 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
         child: Stack(children: [
           AspectRatio(
               aspectRatio: 1,
-              child: FlatButton(
+              child: MaterialButton(
                 shape: intrinsic && !isExotic
                     ? RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(4),

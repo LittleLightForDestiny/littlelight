@@ -90,7 +90,7 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
       currencyInfo(context),
       Positioned.fill(child: ghostIcon(context)),
       Positioned.fill(
-          child: FlatButton(
+          child: MaterialButton(
               child: Container(),
               onPressed: () {
                 UserSettingsService().hasTappedGhost = true;

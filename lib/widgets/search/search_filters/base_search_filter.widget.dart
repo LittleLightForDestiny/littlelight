@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/utils/item_filters/base_item_filter.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
+
 import 'package:little_light/widgets/flutter/smaller_switch.dart';
 import 'package:little_light/widgets/search/search.controller.dart';
 

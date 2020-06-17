@@ -11,6 +11,7 @@ import 'package:little_light/widgets/about/supporter_character.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 
 import 'package:little_light/widgets/common/translated_text.widget.dart';
+
 import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -46,7 +47,7 @@ class _AboutScreenState extends State<AboutScreen> {
     EdgeInsets screenPadding = MediaQuery.of(context).padding;
     return Scaffold(
         appBar: AppBar(
-          leading: IconButton(
+          leading: IconButton(enableFeedback: false,
             icon: Icon(Icons.menu),
             onPressed: () {
               Scaffold.of(context).openDrawer();

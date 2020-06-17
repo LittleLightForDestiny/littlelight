@@ -45,7 +45,7 @@ class TriumphsScreenState extends PresentationNodeScreenState<TriumphsScreen> {
   buildAppBar(BuildContext context) {
     if (widget.depth == 0) {
       return AppBar(
-          leading: IconButton(
+          leading: IconButton(enableFeedback: false,
             icon: Icon(Icons.menu),
             onPressed: () {
               Scaffold.of(context).openDrawer();
@@ -53,7 +53,7 @@ class TriumphsScreenState extends PresentationNodeScreenState<TriumphsScreen> {
           ),
           title: TranslatedTextWidget("Triumphs"),
           actions: <Widget>[
-            IconButton(
+            IconButton(enableFeedback: false,
               icon: Icon(Icons.search),
               onPressed: () {
                 Navigator.push(

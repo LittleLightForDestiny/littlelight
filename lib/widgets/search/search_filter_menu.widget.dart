@@ -34,7 +34,7 @@ class _SearchFilterMenuState extends State<SearchFilterMenu> {
           title: TranslatedTextWidget("Filters"),
           automaticallyImplyLeading: false,
           actions: <Widget>[Container()],
-          leading: IconButton(
+          leading: IconButton(enableFeedback: false,
             icon: Icon(Icons.close),
             onPressed: () {
               Navigator.of(context).pop();

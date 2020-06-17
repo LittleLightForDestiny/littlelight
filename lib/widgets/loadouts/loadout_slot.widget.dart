@@ -16,6 +16,7 @@ import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
+
 typedef void OnRemoveItemFromLoadout(DestinyItemComponent item, bool equipped);
 typedef void OnAddItemToLoadout(bool equipped, DestinyClass classType);
 

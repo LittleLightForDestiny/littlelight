@@ -235,7 +235,7 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget>
         padding: EdgeInsets.all(0),
         child: AspectRatio(
             aspectRatio: 1,
-            child: FlatButton(
+            child: MaterialButton(
               shape: ContinuousRectangleBorder(side: borderSide),
               padding: EdgeInsets.all(0),
               child: Stack(children: [
@@ -300,7 +300,7 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget>
         padding: EdgeInsets.all(0),
         child: AspectRatio(
             aspectRatio: 1,
-            child: FlatButton(
+            child: MaterialButton(
               shape: intrinsic && !isExotic
                   ? RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(4), side: borderSide)

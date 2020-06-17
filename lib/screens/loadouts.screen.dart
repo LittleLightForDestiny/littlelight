@@ -12,6 +12,7 @@ import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
+
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
 import 'package:little_light/widgets/loadouts/loadout_list_item.widget.dart';
 
@@ -69,7 +70,7 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
 
   Widget buildAppBar(BuildContext context) {
     return AppBar(
-        leading: IconButton(
+        leading: IconButton(enableFeedback: false,
           icon: Icon(Icons.menu),
           onPressed: () {
             Scaffold.of(context).openDrawer();
@@ -94,7 +95,7 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
 
   Widget buildSearchButton(BuildContext context) {
     if(reordering) return Container();
-    return IconButton(
+    return IconButton(enableFeedback: false,
         icon: searchOpen ? Icon(FontAwesomeIcons.times) : Icon(FontAwesomeIcons.search),
         onPressed: () async {
           searchOpen = !searchOpen;
@@ -107,7 +108,7 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
 
   Widget buildReorderButton(BuildContext context) {
     if(searchOpen) return Container();
-    return IconButton(
+    return IconButton(enableFeedback: false,
         icon: reordering ? Icon(FontAwesomeIcons.check) : Transform.rotate(
           angle: pi/2,
           child:Icon(FontAwesomeIcons.exchangeAlt)),

@@ -26,6 +26,7 @@ import 'package:little_light/utils/platform_data.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
+
 import 'package:little_light/widgets/side_menu/profile_info.widget.dart';
 
 typedef void OnPageChange(Widget screen);
@@ -271,7 +272,7 @@ class SideMenuWidgetState extends State<SideMenuWidget> {
           context: context,
           builder: (context) => AlertDialog(
                 actions: <Widget>[
-                  FlatButton(
+                  MaterialButton(
                     textColor: Colors.blueGrey.shade300,
                     child: TranslatedTextWidget("OK"),
                     onPressed: () {

@@ -7,6 +7,7 @@ import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
+
 typedef void LoginCallback(String code);
 typedef void SkipCallback();
 
@@ -46,7 +47,7 @@ class LoginWidgetState extends State<LoginWidget> {
           context: context,
           builder: (context) => AlertDialog(
                 actions: <Widget>[
-                  FlatButton(
+                  MaterialButton(
                     textColor: Colors.blueGrey.shade300,
                     child: TranslatedTextWidget("OK"),
                     onPressed: () {

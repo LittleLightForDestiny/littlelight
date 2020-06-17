@@ -12,7 +12,7 @@ import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
 int restartCounter = 0;
 void main() async {
-  debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
+  // debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
   WidgetsFlutterBinding.ensureInitialized();
   await DotEnv().load('assets/_env');
   print(DotEnv().env);
@@ -42,7 +42,7 @@ class LittleLight extends StatelessWidget {
       title: 'Little Light',
       theme: new ThemeData(
           disabledColor: Colors.lightBlue.shade900,
-          platform: TargetPlatform.android,
+          // platform: TargetPlatform.android,
           backgroundColor: Colors.blueGrey.shade900,
           primarySwatch: Colors.lightBlue,
           primaryColor: Colors.blueGrey,

@@ -6,6 +6,7 @@ import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 
+
 typedef void OnLoadoutSelect(Loadout loadout);
 
 class LoadoutSelectSheet extends StatelessWidget {

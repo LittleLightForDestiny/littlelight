@@ -9,6 +9,7 @@ import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateless_item.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
+
 import 'package:little_light/widgets/item_list/items/base/base_item_instance.widget.dart';
 
 class ItemDetailDuplicatesWidget extends BaseDestinyStatelessItemWidget {
