@@ -212,7 +212,7 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
     if (membership == null) {
       return showSelectMembership();
     }
-    ExceptionHandler.setSentryUserInfo(
+    ExceptionHandler.setReportingUserInfo(
         membership.membershipId,
         membership.displayName,
         membership.membershipType);

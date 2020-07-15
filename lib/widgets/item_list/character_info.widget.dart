@@ -330,7 +330,7 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
             width: 4,
           ),
           Text(
-            "${expProg.progressToNextLevel}/${expProg.nextLevelAt}",
+            "${expProg?.progressToNextLevel}/${expProg?.nextLevelAt}",
             style: TextStyle(
                 color: Colors.grey.shade300,
                 fontSize: 11,

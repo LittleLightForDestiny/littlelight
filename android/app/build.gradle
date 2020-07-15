@@ -75,4 +75,9 @@ flutter {
 
 dependencies {
     testImplementation 'junit:junit:4.12'
+    classpath 'com.google.gms:google-services:4.3.0'
+    classpath 'io.fabric.tools:gradle:1.26.1'
 }
+
+apply plugin: 'io.fabric'
+apply plugin: 'com.google.gms.google-services'

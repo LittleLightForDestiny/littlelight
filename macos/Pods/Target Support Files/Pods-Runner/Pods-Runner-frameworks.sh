@@ -162,7 +162,10 @@ strip_invalid_archs() {
 
 if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/FMDB/FMDB.framework"
-  install_framework "${PODS_ROOT}/../Flutter/ephemeral/.symlinks/flutter/darwin-x64-release/FlutterMacOS.framework"
+  install_framework "${PODS_ROOT}/../Flutter/ephemeral/.symlinks/flutter/darwin-x64/FlutterMacOS.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/PromisesObjC/FBLPromises.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/package_info_fde/package_info_fde.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/path_provider_fde/path_provider_fde.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/screen_fde/screen_fde.framework"
@@ -173,7 +176,10 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/FMDB/FMDB.framework"
-  install_framework "${PODS_ROOT}/../Flutter/ephemeral/.symlinks/flutter/darwin-x64-release/FlutterMacOS.framework"
+  install_framework "${PODS_ROOT}/../Flutter/ephemeral/.symlinks/flutter/darwin-x64/FlutterMacOS.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/PromisesObjC/FBLPromises.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/package_info_fde/package_info_fde.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/path_provider_fde/path_provider_fde.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/screen_fde/screen_fde.framework"
@@ -184,7 +190,10 @@ if [[ "$CONFIGURATION" == "Release" ]]; then
 fi
 if [[ "$CONFIGURATION" == "Profile" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/FMDB/FMDB.framework"
-  install_framework "${PODS_ROOT}/../Flutter/ephemeral/.symlinks/flutter/darwin-x64-release/FlutterMacOS.framework"
+  install_framework "${PODS_ROOT}/../Flutter/ephemeral/.symlinks/flutter/darwin-x64/FlutterMacOS.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/PromisesObjC/FBLPromises.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/package_info_fde/package_info_fde.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/path_provider_fde/path_provider_fde.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/screen_fde/screen_fde.framework"

@@ -7,6 +7,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/screens/edit_loadout.screen.dart';
+import 'package:little_light/services/littlelight/littlelight_api.service.dart';
 import 'package:little_light/services/littlelight/loadouts.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/inventory_utils.dart';
@@ -72,7 +73,7 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
 
   Widget buildAppBar(BuildContext context) {
     return AppBar(
-        leading: IconButton(enableFeedback: false,
+        leading: IconButton(
           icon: Icon(Icons.menu),
           onPressed: () {
             Scaffold.of(context).openDrawer();
@@ -80,7 +81,11 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
         ),
         actions: <Widget>[
           buildReorderButton(context),
-          buildSearchButton(context)
+          buildSearchButton(context),
+          IconButton(icon: Icon(Icons.refresh),
+          onPressed: (){
+            LittleLightApiService().fetchLoadouts();
+          },)
         ],
         title: buildTitle(context));
   }

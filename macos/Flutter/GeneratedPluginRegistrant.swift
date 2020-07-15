@@ -5,6 +5,7 @@
 import FlutterMacOS
 import Foundation
 
+import firebase_crashlytics
 import url_launcher_macos
 import package_info_fde
 import path_provider_fde
@@ -14,6 +15,7 @@ import sqflite_fde
 import uni_links_fde
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
+  FirebaseCrashlyticsPlugin.register(with: registry.registrar(forPlugin: "FirebaseCrashlyticsPlugin"))
   UrlLauncherPlugin.register(with: registry.registrar(forPlugin: "UrlLauncherPlugin"))
   PackageInfoPlugin.register(with: registry.registrar(forPlugin: "PackageInfoPlugin"))
   PathProviderPlugin.register(with: registry.registrar(forPlugin: "PathProviderPlugin"))

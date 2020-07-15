@@ -171,7 +171,7 @@ class FactionRankItemWidgetState<T extends FactionRankItemWidget>
                       child: Container(),
                     ),
                     Text(
-                        "${progression.progressToNextLevel}/${progression.nextLevelAt}")
+                        "${progression?.progressToNextLevel}/${progression?.nextLevelAt}")
                   ],
                 )),
           )

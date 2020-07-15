@@ -1,24 +1,20 @@
 import 'dart:async';
 import 'dart:io';
+
 import 'package:bungie_api/enums/bungie_membership_type.dart';
 import 'package:bungie_api/enums/platform_error_codes.dart';
 import 'package:bungie_api/helpers/oauth.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/storage/storage.service.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-
-import 'package:sentry/sentry.dart';
-import 'package:package_info/package_info.dart';
 
 
 class ExceptionHandler {
   static BuildContext context;
   Function onRestart;
-  static SentryClient _sentry;
   ExceptionHandler({this.onRestart}) {
-    initSentry();
     initCustomErrorMessage();
     FlutterError.onError = (FlutterErrorDetails details) {
       if (isInDebugMode) {
@@ -27,19 +23,6 @@ class ExceptionHandler {
         Zone.current.handleUncaughtError(details.exception, details.stack);
       }
     };
-  }
-
-  initSentry() async {
-    if (_sentry != null) return;
-    if (!DotEnv().env.containsKey('sentry_dsn')) return;
-
-    var info = await PackageInfo.fromPlatform();
-    _sentry = SentryClient(
-        environmentAttributes: Event(
-          environment: isInDebugMode ? 'debug' : 'production',
-          release: info.version,
-        ),
-        dsn: DotEnv().env['sentry_dsn']);
   }
 
   initCustomErrorMessage() {
@@ -118,31 +101,15 @@ class ExceptionHandler {
       print(stackTrace);
       return;
     } else {
-      _sentry.captureException(
-        exception: error,
-        stackTrace: stackTrace,
-      );
+      Crashlytics.instance.recordFlutterError(error);
     }
   }
 
-  static reportToSentry(dynamic exception, [dynamic stacktrace]) {
-    if (isInDebugMode) {
-      print(exception);
-      return;
-    }
-    _sentry.captureException(
-      exception: exception,
-      stackTrace: stacktrace,
-    );
-  }
-
-  static setSentryUserInfo(
+  static setReportingUserInfo(
       String membershipId, String displayName, BungieMembershipType platformId) {
-    if (_sentry == null) return;
-    _sentry.userContext = User(
-        id: membershipId,
-        username: displayName,
-        extras: {'platform': platformId});
+    Crashlytics.instance.setUserIdentifier(membershipId);
+    Crashlytics.instance.setUserName(displayName);
+    Crashlytics.instance.setInt("platform", platformId.value);
   }
 }
 

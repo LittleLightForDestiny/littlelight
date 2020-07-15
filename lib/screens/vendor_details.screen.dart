@@ -177,6 +177,7 @@ class VendorDetailsScreenState extends State<VendorDetailsScreen> {
         spacing: 8,
         alignment: WrapAlignment.start,
         children: category.itemIndexes
+            .reversed
             .map((index) =>
                 buildItem(context, definition.itemList[index], index))
             .toList());

@@ -30,6 +30,7 @@
 		33D1A10522148B93006C7A3E /* FlutterMacOS.framework in Bundle Framework */ = {isa = PBXBuildFile; fileRef = 33D1A10322148B71006C7A3E /* FlutterMacOS.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		3D12321266E667DAF98A19EA /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9994C37795CF6BBBCE50EAEF /* Pods_Runner.framework */; };
 		C1328EF4231F0C7200E30324 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C1328EF2231F0C7200E30324 /* InfoPlist.strings */; };
+		C1EF9C3B24BE1D5F00523821 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C1EF9C3A24BE1D5F00523821 /* GoogleService-Info.plist */; };
 		D73912F022F37F9E000D13A0 /* App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D73912EF22F37F9E000D13A0 /* App.framework */; };
 		D73912F222F3801D000D13A0 /* App.framework in Bundle Framework */ = {isa = PBXBuildFile; fileRef = D73912EF22F37F9E000D13A0 /* App.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
@@ -91,6 +92,7 @@
 		C1328F00231F0FE000E30324 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = Resources/it.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		C1328F02231F0FE900E30324 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/MainMenu.strings"; sourceTree = "<group>"; };
 		C1E183EB2458876500A2CDF5 /* Little LightRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = "Little LightRelease.entitlements"; path = "Runner/Little LightRelease.entitlements"; sourceTree = "<group>"; };
+		C1EF9C3A24BE1D5F00523821 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D73912EF22F37F9E000D13A0 /* App.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = App.framework; path = Flutter/ephemeral/App.framework; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -121,6 +123,7 @@
 		33CC10E42044A3C60003C045 = {
 			isa = PBXGroup;
 			children = (
+				C1EF9C3A24BE1D5F00523821 /* GoogleService-Info.plist */,
 				C1E183EB2458876500A2CDF5 /* Little LightRelease.entitlements */,
 				C110E99F23E21D61004B2D10 /* Little Light.entitlements */,
 				33CC10F02044A3C60003C045 /* AppDelegate.swift */,
@@ -260,6 +263,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				33CC10F32044A3C60003C045 /* Assets.xcassets in Resources */,
+				C1EF9C3B24BE1D5F00523821 /* GoogleService-Info.plist in Resources */,
 				C1328EF4231F0C7200E30324 /* InfoPlist.strings in Resources */,
 				33CC10F62044A3C60003C045 /* MainMenu.xib in Resources */,
 			);

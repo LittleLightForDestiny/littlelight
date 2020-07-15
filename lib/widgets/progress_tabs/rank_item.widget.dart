@@ -151,7 +151,7 @@ class RankItemWidgetState<T extends RankItemWidget> extends State<T>
   buildBottomLabels(BuildContext context) {
     return Column(children: [
       Text(
-        "${progression.progressToNextLevel}/${progression.nextLevelAt}",
+        "${progression?.progressToNextLevel}/${progression?.nextLevelAt}",
         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
       ),
       Text(
@@ -189,7 +189,7 @@ class RankItemWidgetState<T extends RankItemWidget> extends State<T>
                   definition.color.red,
                   definition.color.green,
                   definition.color.blue)),
-              value: progression.progressToNextLevel / progression.nextLevelAt),
+              value: (progression?.progressToNextLevel ?? 0) / (progression?.nextLevelAt ?? 1)),
         ));
   }
 
