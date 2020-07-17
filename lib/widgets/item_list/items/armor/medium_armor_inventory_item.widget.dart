@@ -27,7 +27,7 @@ class MediumArmorInventoryItemWidget extends MediumBaseInventoryItemWidget {
         definition?.sockets?.socketCategories?.map((s) => s.socketCategoryHash);
     var tierCategoryHash = socketCategoryHashes?.firstWhere((s)=>DestinyData.socketCategoryTierHashes.contains(s), orElse:()=>null);
     return Positioned(
-        top: titleFontSize + padding * 2,
+        top: titleFontSize + padding*1.5,
         right: 0,
         child: Container(
             padding: EdgeInsets.all(padding),
@@ -39,6 +39,7 @@ class MediumArmorInventoryItemWidget extends MediumBaseInventoryItemWidget {
                 definition: definition,
                 itemSockets: sockets,
                 iconSize: 16,
+                suppressIcon:true,
               ) : Container(),
               tierCategoryHash != null ? Container(
                 margin:EdgeInsets.symmetric(horizontal:2),

@@ -6,6 +6,7 @@ import 'package:bungie_api/enums/tier_type.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
+import 'package:bungie_api/models/destiny_power_cap_definition.dart';
 import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:flutter/rendering.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
@@ -113,6 +114,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
             secondaryIcon(context, expandRatio),
             tierBar(context, expandRatio),
             rightColumn(context, expandRatio),
+            topRightBlock(context, expandRatio),
             leftColumn(context, expandRatio),
             socketDetails(context, expandRatio),
             icon(context, expandRatio),
@@ -120,6 +122,14 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
             backButton(context, expandRatio),
           ],
         ));
+  }
+
+  Widget topRightBlock(BuildContext context, double expandRatio) {
+    return Positioned(
+        top: convertSize(96.0, context),
+        right: convertSize(96.0, context),
+        child: Opacity(
+            opacity: expandRatio, child: transferBlock(context, expandRatio)));
   }
 
   Widget backButton(BuildContext context, double expandRatio) {
@@ -306,51 +316,43 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
     if (hideTransferBlock || item == null) return Container();
     return Container(
         child: ScreenshotTransferDestinationsWidget(
-          pixelSize: pixelSize(context),
-          item: item,
-          instanceInfo: instanceInfo,
-          definition: definition,
-          characterId: characterId,
-        ));
+      pixelSize: pixelSize(context),
+      item: item,
+      instanceInfo: instanceInfo,
+      definition: definition,
+      characterId: characterId,
+    ));
   }
 
   Widget rightColumn(BuildContext context, double expandRatio) {
     return Positioned(
-        top: convertSize(96.0, context),
         bottom: convertSize(96.0, context),
         right: convertSize(96.0, context),
         child: Opacity(
             opacity: expandRatio,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-              transferBlock(context, expandRatio),
-              Container(height:convertSize(32.0, context)),
-              IntrinsicHeight(
-                  child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  primaryStatHash == null
-                      ? Container()
-                      : buildPrimaryStat(context),
-                  primaryStatHash == null ||
-                          (definition.stats.stats?.length ?? 0) == 0
-                      ? Container()
-                      : Container(
-                          margin: EdgeInsets.symmetric(
-                              horizontal: convertSize(16, context)),
-                          width: convertSize(2, context),
-                          color: Colors.white.withOpacity(.4)),
-                  ScreenShotItemStatsWidget(
-                      socketController: socketController,
-                      pixelSize: pixelSize(context),
-                      item: item,
-                      definition: definition),
-                ],
-              ))
-            ])));
+            child: IntrinsicHeight(
+                child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                primaryStatHash == null
+                    ? Container()
+                    : buildPrimaryStat(context),
+                primaryStatHash == null ||
+                        (definition.stats.stats?.length ?? 0) == 0
+                    ? Container()
+                    : Container(
+                        margin: EdgeInsets.symmetric(
+                            horizontal: convertSize(16, context)),
+                        width: convertSize(2, context),
+                        color: Colors.white.withOpacity(.4)),
+                ScreenShotItemStatsWidget(
+                    socketController: socketController,
+                    pixelSize: pixelSize(context),
+                    item: item,
+                    definition: definition),
+              ],
+            ))));
   }
 
   int get primaryStatHash => instanceInfo?.primaryStat?.statHash;
@@ -358,25 +360,66 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
 
   Widget buildPrimaryStat(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: <Widget>[
-        Text(
-          "$primaryStatValue",
-          style: TextStyle(
-              fontSize: convertSize(70, context), fontWeight: FontWeight.bold),
-        ),
-        ManifestText<DestinyStatDefinition>(
-          primaryStatHash,
-          uppercase: true,
-          style: TextStyle(
-            height: .6,
-            fontWeight: FontWeight.w300,
-            fontSize: convertSize(30, context),
-          ),
-        ),
+        Flexible(
+            flex: 2,
+            child: Container(
+                height: convertSize(60, context),
+                child: Row(children: [
+                  Text(
+                    "$primaryStatValue",
+                    style: TextStyle(
+                        height: 1,
+                        fontSize: convertSize(70, context),
+                        fontWeight: FontWeight.bold),
+                  ),
+                  Container(
+                    width: convertSize(8, context),
+                  ),
+                  Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        buildPowerCap(context),
+                        ManifestText<DestinyStatDefinition>(
+                          primaryStatHash,
+                          uppercase: true,
+                          style: TextStyle(
+                            height: .6,
+                            fontWeight: FontWeight.w300,
+                            fontSize: convertSize(30, context),
+                          ),
+                        )
+                      ]),
+                ]))),
+        Container(height:convertSize(8, context)),
         buildMasterworkCounter(context)
       ],
     );
+  }
+
+  Widget buildPowerCap(BuildContext context) {
+    if (definition?.quality?.currentVersion == null ||
+        definition?.quality?.versions == null) {
+      return Container();
+    }
+    var version =
+        definition.quality.versions[definition.quality.currentVersion];
+    return DefinitionProviderWidget<DestinyPowerCapDefinition>(
+        version.powerCapHash, (def) {
+      if (def.powerCap > 9000) {
+        return Container(height: convertSize(40, context));
+      }
+      return Row(children: [
+        Container(
+          height:convertSize(26, context),
+          width: convertSize(2, context), color: Colors.white),
+        Container(width: convertSize(4, context),),
+        Text("${def.powerCap}", style:TextStyle(fontSize: convertSize(24, context), color:DestinyData.masterworkColor))
+      ]);
+    });
   }
 
   Widget buildMasterworkCounter(BuildContext context) {
@@ -494,34 +537,36 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
         top: 0,
         left: 0,
         right: 0,
-        child: Column(
-          children: <Widget>[
-            Container(
-                height: 60 * pixelSize(context),
-                decoration: BoxDecoration(
-                    gradient: LinearGradient(colors: [
-                  tierColor.withOpacity(.6),
-                  tierColor.withOpacity(.3),
-                  Colors.transparent,
-                ], stops: [
-                  0,
-                  .7,
-                  1
-                ]))),
-            Container(
-                height: 10 * pixelSize(context),
-                decoration: BoxDecoration(
-                    gradient: LinearGradient(colors: [
-                  tierColor,
-                  tierColor.withOpacity(.3),
-                  Colors.transparent,
-                ], stops: [
-                  0,
-                  .7,
-                  1
-                ]))),
-          ],
-        ));
+        child: Opacity(
+            opacity: expandRatio,
+            child: Column(
+              children: <Widget>[
+                Container(
+                    height: 60 * pixelSize(context),
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(colors: [
+                      tierColor.withOpacity(.6),
+                      tierColor.withOpacity(.3),
+                      Colors.transparent,
+                    ], stops: [
+                      0,
+                      .7,
+                      1
+                    ]))),
+                Container(
+                    height: 10 * pixelSize(context),
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(colors: [
+                      tierColor,
+                      tierColor.withOpacity(.3),
+                      Colors.transparent,
+                    ], stops: [
+                      0,
+                      .7,
+                      1
+                    ]))),
+              ],
+            )));
   }
 
   @override

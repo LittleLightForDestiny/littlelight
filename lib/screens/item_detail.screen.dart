@@ -1,4 +1,5 @@
 import 'package:bungie_api/enums/destiny_item_type.dart';
+import 'package:bungie_api/enums/item_state.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
@@ -6,8 +7,10 @@ import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_stat_group_definition.dart';
 import 'package:bungie_api/models/destiny_vendor_sale_item_component.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
+import 'package:little_light/services/inventory/inventory.service.dart';
 import 'package:little_light/services/littlelight/loadouts.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/inventory_utils.dart';
@@ -166,9 +169,10 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
               delegate: SliverChildListDelegate([    
             buildSaleDetails(context),
             ItemMainInfoWidget(item, definition, instanceInfo, characterId: characterId,),
-            buildWishlistNotes(context),
             buildManagementBlock(context),
+            buildLockInfo(context),
             buildActionButtons(context),
+            buildWishlistNotes(context),
             buildDuplicates(context),
             buildIntrinsicPerk(context),
             buildExoticPerkDetails(context),
@@ -218,6 +222,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
             ItemMainInfoWidget(item, definition, instanceInfo, characterId: characterId,),
             buildWishlistNotes(context),
             buildManagementBlock(context),
+            buildLockInfo(context),
             buildActionButtons(context),
             buildDuplicates(context),
             buildIntrinsicPerk(context),
@@ -250,8 +255,8 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
   }
 
   Widget buildSaleDetails(BuildContext context) {
-    if (widget.sale == null) {
-      return Container();
+    if (widget?.sale == null) {
+      return Container(height:1);
     }
     var screenPadding = MediaQuery.of(context).padding;
     return Container(
@@ -286,6 +291,48 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
           definition,
           instanceInfo,
           characterId: characterId,
+        ));
+  }
+
+  Widget buildLockInfo(BuildContext context) {
+    if (item?.lockable != true) return Container();
+    var locked = item?.state?.contains(ItemState.Locked);
+    return Container(
+        padding: EdgeInsets.all(8),
+        child: Row(
+          children: <Widget>[
+            Icon(locked ? FontAwesomeIcons.lock : FontAwesomeIcons.unlock,
+                size: 14),
+            Container(
+              width: 4,
+            ),
+            Expanded(
+                child: locked
+                    ? TranslatedTextWidget(
+                        "Item Locked",
+                        uppercase: true,
+                      )
+                    : TranslatedTextWidget(
+                        "Item Unlocked",
+                        uppercase: true,
+                      )),
+            RaisedButton(
+              child: locked
+                  ? TranslatedTextWidget(
+                      "Unlock",
+                      uppercase: true,
+                    )
+                  : TranslatedTextWidget(
+                      "Lock",
+                      uppercase: true,
+                    ),
+              onPressed: () async {
+                var itemWithOwner = ItemWithOwner(item, characterId);
+                InventoryService().changeLockState(itemWithOwner, !locked);
+                setState(() {});
+              },
+            )
+          ],
         ));
   }
 

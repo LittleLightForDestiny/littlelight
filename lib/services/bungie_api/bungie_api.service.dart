@@ -79,8 +79,9 @@ class BungieApiService {
     BungieNetToken token = await auth.getToken();
     GroupUserInfoCard membership = await auth.getMembership();
     if (membership == null) return null;
-    return await getProfile(
+    var profile = await getProfile(
         components, membership.membershipId, membership.membershipType, token);
+    return profile;
   }
 
   Future<DestinyProfileResponse> getProfile(
@@ -198,11 +199,11 @@ class Client implements HttpClient {
 
   @override
   Future<HttpResponse> request(HttpClientConfig config) async {
-    return Future.sync(() => _request(config));
+    var req = await _request(config);
+    return req;
   }
 
   Future<HttpResponse> _request(HttpClientConfig config) async {
-    Future<http.Response> req;
     Map<String, String> headers = {
       'X-API-Key': BungieApiService.apiKey,
       'Accept': 'application/json'
@@ -238,16 +239,15 @@ class Client implements HttpClient {
     Response response;
 
     if (config.method == 'GET') {
-      req = http.get("${BungieApiService.apiUrl}${config.url}$paramsString",
+      response = await http.get("${BungieApiService.apiUrl}${config.url}$paramsString",
           headers: headers);
     } else {
       String body = config.bodyContentType == 'application/json'
           ? jsonEncode(config.body)
           : config.body;
-      req = http.post("${BungieApiService.apiUrl}${config.url}$paramsString",
+      response = await http.post("${BungieApiService.apiUrl}${config.url}$paramsString",
           headers: headers, body: body);
     }
-    response = await req;
 
     if (response.statusCode == 401 && autoRefreshToken) {
       this.token = await AuthService().refreshToken(token);

@@ -16,7 +16,7 @@ class MediumWeaponInventoryItemWidget extends MediumBaseInventoryItemWidget {
   Widget primaryStatWidget(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     return Positioned(
-        top: titleFontSize + padding * 2,
+        top: titleFontSize + padding * 1.5,
         right: 0,
         child: Container(
             padding: EdgeInsets.all(padding),

@@ -13,6 +13,7 @@ class WeaponInventoryItemWidget extends BaseInventoryItemWidget {
     @required String characterId,
     Key key,
     @required String uniqueId,
+    bool showUnusedPerks = false,
     Widget trailing,
   }) : super(
           item,
@@ -20,7 +21,8 @@ class WeaponInventoryItemWidget extends BaseInventoryItemWidget {
           instanceInfo,
           characterId: characterId,
           uniqueId: uniqueId,
-          trailing:trailing
+          trailing:trailing,
+          showUnusedPerks:showUnusedPerks
         );
 
   @override
@@ -30,7 +32,7 @@ class WeaponInventoryItemWidget extends BaseInventoryItemWidget {
         right: 4,
         child: Container(
           child: PrimaryStatWidget(
-              definition: definition, instanceInfo: instanceInfo),
+              definition: definition, instanceInfo: instanceInfo, inlinePowerCap: true,),
         ));
   }
 }

@@ -99,7 +99,7 @@ class ItemIconWidget extends BaseDestinyStatelessItemWidget {
     if (seasonBadgeUrl() != "") {
       return QueuedNetworkImage(
         imageUrl: BungieApiService.url(
-            definition.quality.displayVersionWatermarkIcons.first),
+            seasonBadgeUrl()),
         fit: BoxFit.fill,
         placeholder: itemIconPlaceholder(context),
       );
@@ -120,38 +120,11 @@ class ItemIconWidget extends BaseDestinyStatelessItemWidget {
     if (item?.overrideStyleItemHash != null) {
       return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
           item?.overrideStyleItemHash, (def) {
-        return Stack(children: [
-          seasonBadgeUrl() != "" ? Container() : QueuedNetworkImage(
-            imageUrl: BungieApiService.url(definition.displayProperties.icon),
+        return QueuedNetworkImage(
+            imageUrl: BungieApiService.url(def.displayProperties.icon),
             fit: BoxFit.fill,
             placeholder: itemIconPlaceholder(context),
-          ),
-          ShaderMask(
-            blendMode: BlendMode.dstIn,
-            child: QueuedNetworkImage(
-              imageUrl: BungieApiService.url(def.displayProperties.icon),
-              fit: BoxFit.fill,
-              placeholder: itemIconPlaceholder(context),
-            ),
-            shaderCallback: (Rect rect) {
-              return LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  stops: [
-                    0,
-                    .27,
-                    .28,
-                    1
-                  ],
-                  colors: [
-                    Colors.transparent,
-                    Colors.transparent,
-                    Colors.white,
-                    Colors.white
-                  ]).createShader(rect);
-            },
-          )
-        ]);
+          );
       });
     }
     return QueuedNetworkImage(

@@ -178,7 +178,7 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget> {
     if (items?.length == 1) {
       var item = items[0];
       return Container(
-          height: 96,
+          
           key: ObjectKey(item),
           child: QuickSelectItemWrapperWidget(
             item?.item,

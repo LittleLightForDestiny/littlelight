@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 int restartCounter = 0;
 void main() async {
   // debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
+  Crashlytics.instance.enableInDevMode = true;
   WidgetsFlutterBinding.ensureInitialized();
   await DotEnv().load('assets/_env');
   print(DotEnv().env);

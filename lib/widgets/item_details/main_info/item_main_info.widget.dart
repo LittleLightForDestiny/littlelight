@@ -67,10 +67,10 @@ class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget> {
                     definition.displayProperties.description,
                   ))
               : Container(),
-          buildMaxPowerInfo(context),
+          // buildMaxPowerInfo(context),
           buildEmblemInfo(context),
           buildWishListInfo(context),
-          buildLockInfo(context),
+          // buildLockInfo(context),
         ]));
   }
 
@@ -108,48 +108,6 @@ class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget> {
         alignment: Alignment.center,
         child: QueuedNetworkImage(
           imageUrl: BungieApiService.url(definition.secondaryIcon),
-        ));
-  }
-
-  Widget buildLockInfo(BuildContext context) {
-    if (item?.lockable != true) return Container();
-    var locked = item?.state?.contains(ItemState.Locked);
-    return Container(
-        padding: EdgeInsets.all(8),
-        child: Row(
-          children: <Widget>[
-            Icon(locked ? FontAwesomeIcons.lock : FontAwesomeIcons.unlock,
-                size: 14),
-            Container(
-              width: 4,
-            ),
-            Expanded(
-                child: locked
-                    ? TranslatedTextWidget(
-                        "Item Locked",
-                        uppercase: true,
-                      )
-                    : TranslatedTextWidget(
-                        "Item Unlocked",
-                        uppercase: true,
-                      )),
-            RaisedButton(
-              child: locked
-                  ? TranslatedTextWidget(
-                      "Unlock",
-                      uppercase: true,
-                    )
-                  : TranslatedTextWidget(
-                      "Lock",
-                      uppercase: true,
-                    ),
-              onPressed: () async {
-                var itemWithOwner = ItemWithOwner(item, characterId);
-                InventoryService().changeLockState(itemWithOwner, !locked);
-                setState(() {});
-              },
-            )
-          ],
         ));
   }
 

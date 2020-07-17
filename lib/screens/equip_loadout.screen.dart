@@ -4,6 +4,8 @@ import 'package:bungie_api/enums/destiny_class.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:little_light/models/loadout.dart';
+import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
@@ -183,8 +185,13 @@ class EquipLoadoutScreenState extends State<EquipLoadoutScreen> {
 
   Widget itemIcon(DestinyItemComponent item) {
     if (item == null) {
-      return ManifestImageWidget<DestinyInventoryItemDefinition>(1835369552);
+      return ManifestImageWidget<DestinyInventoryItemDefinition>(1835369552,
+          key: Key("item_icon_empty"));
     }
-    return ManifestImageWidget<DestinyInventoryItemDefinition>(item.itemHash);
+    var instance = ProfileService().getInstanceInfo(item?.itemInstanceId);
+    return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
+        item.itemHash,
+        (def) => ItemIconWidget.builder(item:item, definition:def, instanceInfo:instance,
+            key: Key("item_icon_${item.itemInstanceId}")));
   }
 }

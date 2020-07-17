@@ -85,7 +85,7 @@ class ScreenshotItemStatWidget extends BaseItemStatWidget {
           child: Container(
               child: DirectionStatBarWidget(
                   currentValue: currentValue,
-                  equippedValue: equipped,
+                  equippedValue: equipped + masterwork,
                   currentColor: valueColor,
                   equippedColor: Colors.grey.shade500,
                   backgroundColor: Colors.grey.shade800.withOpacity(.5)),
