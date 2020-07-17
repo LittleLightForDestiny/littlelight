@@ -203,30 +203,35 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget> {
   }
 
   Widget contentEquipment(BuildContext context) {
-    var perksCategory = definition.sockets?.socketCategories?.firstWhere((c)=>DestinyData.socketCategoryPerkHashes.contains(c.socketCategoryHash), orElse: ()=>null);
-    var tierCategory = definition.sockets?.socketCategories?.firstWhere((c)=>DestinyData.socketCategoryTierHashes.contains(c.socketCategoryHash), orElse: ()=>null);
+    var perksCategory = definition.sockets?.socketCategories?.firstWhere(
+        (c) =>
+            DestinyData.socketCategoryPerkHashes.contains(c.socketCategoryHash),
+        orElse: () => null);
+    var tierCategory = definition.sockets?.socketCategories?.firstWhere(
+        (c) =>
+            DestinyData.socketCategoryTierHashes.contains(c.socketCategoryHash),
+        orElse: () => null);
     Widget middleContent = Container();
-    if(tierCategory != null){
+    if (tierCategory != null) {
       middleContent = ItemArmorTierWidget(
-            definition: definition,
-            itemSockets: sockets,
-            iconSize: 24,
-            socketCategoryHash: tierCategory?.socketCategoryHash,
-          ); 
-    }else if(perksCategory != null){
+        definition: definition,
+        itemSockets: sockets,
+        iconSize: 24,
+        socketCategoryHash: tierCategory?.socketCategoryHash,
+      );
+    } else if (perksCategory != null) {
       middleContent = ItemPerksWidget(
-            definition: definition,
-            itemSockets: sockets,
-            iconSize: 24,
-            socketCategoryHash: perksCategory?.socketCategoryHash,
-          ); 
+        definition: definition,
+        itemSockets: sockets,
+        iconSize: 24,
+        socketCategoryHash: perksCategory?.socketCategoryHash,
+      );
     }
     return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-              child: middleContent),
+          Expanded(child: middleContent),
           Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.end,

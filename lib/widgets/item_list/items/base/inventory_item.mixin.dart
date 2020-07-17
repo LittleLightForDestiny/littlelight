@@ -60,7 +60,7 @@ mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget {
         right: 4,
         child: Container(
           child: PrimaryStatWidget(
-              definition: definition, instanceInfo: instanceInfo),
+              item: item, definition: definition, instanceInfo: instanceInfo),
         ));
   }
 
@@ -103,11 +103,12 @@ mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget {
         right: iconBorderWidth,
         top: iconBorderWidth,
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal:padding/2, vertical: padding/4).copyWith(right:padding/4),
+          padding: EdgeInsets.symmetric(
+                  horizontal: padding / 2, vertical: padding / 4)
+              .copyWith(right: padding / 4),
           decoration: BoxDecoration(
-            color: Colors.black54,
-            borderRadius: BorderRadius.only(bottomLeft: Radius.circular(8))
-          ),
+              color: Colors.black54,
+              borderRadius: BorderRadius.only(bottomLeft: Radius.circular(8))),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
@@ -146,17 +147,14 @@ mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget {
         child: Container(
             color: Colors.blueGrey.shade900,
             padding: EdgeInsets.only(
-              top: titleFontSize + padding * 2,
-              left:iconSize
-            ),
+                top: titleFontSize + padding * 2, left: iconSize),
             child: wishlistBackground(context)));
   }
 
   Widget wishlistBackground(BuildContext context) {
     var tags = WishlistsService().getWishlistBuildTags(item);
     if (tags == null) return Container();
-    if (tags.contains(WishlistTag.PVE) &&
-        tags.contains(WishlistTag.PVP)) { 
+    if (tags.contains(WishlistTag.PVE) && tags.contains(WishlistTag.PVP)) {
       return Image.asset(
         "assets/imgs/allaround-bg.png",
         fit: BoxFit.fitHeight,
@@ -173,7 +171,7 @@ mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget {
     if (tags.contains(WishlistTag.PVP)) {
       return Image.asset(
         "assets/imgs/pvp-bg.png",
-        fit: BoxFit.fitHeight, 
+        fit: BoxFit.fitHeight,
         alignment: Alignment.bottomRight,
       );
     }
@@ -192,11 +190,12 @@ mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget {
     List<Widget> items = [];
     var tags = WishlistsService().getWishlistBuildTags(item);
     var locked = item?.state?.contains(ItemState.Locked) ?? false;
-    if(locked){
-      items.add(Container(child: Icon(FontAwesomeIcons.lock, size:titleFontSize*.9)));
+    if (locked) {
+      items.add(Container(
+          child: Icon(FontAwesomeIcons.lock, size: titleFontSize * .9)));
     }
-    if(tags != null){
-      items.add(WishlistBadgeWidget(tags:tags, size:tagIconSize));
+    if (tags != null) {
+      items.add(WishlistBadgeWidget(tags: tags, size: tagIconSize));
     }
     if (trailing != null) {
       items.add(trailing);

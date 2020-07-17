@@ -17,11 +17,10 @@ class ArmorInventoryItemWidget extends BaseInventoryItemWidget {
       Widget trailing,
       Key key})
       : super(item, definition, instanceInfo,
-        uniqueId:uniqueId,
-        trailing:trailing,
-            characterId: characterId, key: key);
-
-
+            uniqueId: uniqueId,
+            trailing: trailing,
+            characterId: characterId,
+            key: key);
 
   @override
   Widget primaryStatWidget(BuildContext context) {
@@ -30,25 +29,33 @@ class ArmorInventoryItemWidget extends BaseInventoryItemWidget {
         : profile.getItemSockets(item?.itemInstanceId);
     var socketCategoryHashes =
         definition?.sockets?.socketCategories?.map((s) => s.socketCategoryHash);
-    var tierCategoryHash = socketCategoryHashes?.firstWhere((s)=>DestinyData.socketCategoryTierHashes.contains(s), orElse:()=>null);
+    var tierCategoryHash = socketCategoryHashes?.firstWhere(
+        (s) => DestinyData.socketCategoryTierHashes.contains(s),
+        orElse: () => null);
     return Positioned(
-        top: titleFontSize + padding*1.2,
+        top: titleFontSize + padding * 1.2,
         right: 0,
         child: Container(
             padding: EdgeInsets.all(padding),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-              tierCategoryHash != null ? ItemArmorTierWidget(
-                socketCategoryHash: tierCategoryHash,
-                definition: definition,
-                itemSockets: sockets,
-                iconSize: 24,
-              ) : Container(),
-              tierCategoryHash != null ? Container(
-                margin:EdgeInsets.symmetric(horizontal:2),
-                height: 24, width:1, color:Colors.white) : Container(),
+            child:
+                Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+              tierCategoryHash != null
+                  ? ItemArmorTierWidget(
+                      socketCategoryHash: tierCategoryHash,
+                      definition: definition,
+                      itemSockets: sockets,
+                      iconSize: 24,
+                    )
+                  : Container(),
+              tierCategoryHash != null
+                  ? Container(
+                      margin: EdgeInsets.symmetric(horizontal: 2),
+                      height: 24,
+                      width: 1,
+                      color: Colors.white)
+                  : Container(),
               PrimaryStatWidget(
+                item: item,
                 inlinePowerCap: true,
                 definition: definition,
                 instanceInfo: instanceInfo,
@@ -63,10 +70,6 @@ class ArmorInventoryItemWidget extends BaseInventoryItemWidget {
 
   @override
   itemIcon(BuildContext context) {
-    
-    return Stack(children:[
-      super.itemIcon(context),
-      buildStatTotal(context)
-    ]);
+    return Stack(children: [super.itemIcon(context), buildStatTotal(context)]);
   }
 }

@@ -394,19 +394,19 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
                         )
                       ]),
                 ]))),
-        Container(height:convertSize(8, context)),
+        Container(height: convertSize(8, context)),
         buildMasterworkCounter(context)
       ],
     );
   }
 
   Widget buildPowerCap(BuildContext context) {
-    if (definition?.quality?.currentVersion == null ||
-        definition?.quality?.versions == null) {
+    var versionNumber =
+        item?.versionNumber ?? definition?.quality?.currentVersion;
+    if (versionNumber == null || definition?.quality?.versions == null) {
       return Container();
     }
-    var version =
-        definition.quality.versions[definition.quality.currentVersion];
+    var version = definition.quality.versions[versionNumber];
     return DefinitionProviderWidget<DestinyPowerCapDefinition>(
         version.powerCapHash, (def) {
       if (def.powerCap > 9000) {
@@ -414,10 +414,16 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
       }
       return Row(children: [
         Container(
-          height:convertSize(26, context),
-          width: convertSize(2, context), color: Colors.white),
-        Container(width: convertSize(4, context),),
-        Text("${def.powerCap}", style:TextStyle(fontSize: convertSize(24, context), color:DestinyData.masterworkColor))
+            height: convertSize(26, context),
+            width: convertSize(2, context),
+            color: Colors.white),
+        Container(
+          width: convertSize(4, context),
+        ),
+        Text("${def.powerCap}",
+            style: TextStyle(
+                fontSize: convertSize(24, context),
+                color: DestinyData.masterworkColor))
       ]);
     });
   }

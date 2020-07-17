@@ -73,15 +73,17 @@ class ItemArmorTierWidgetState extends State<ItemArmorTierWidget> {
             return Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                !widget.suppressIcon ? Icon(DestinyData.getEnergyTypeIcon(capacity?.energyType),
-                    color: DestinyData.getEnergyTypeLightColor(
-                        capacity?.energyType),
-                    size: widget.iconSize*.7) : Container(),
+                !widget.suppressIcon
+                    ? Icon(DestinyData.getEnergyTypeIcon(capacity?.energyType),
+                        color: DestinyData.getEnergyTypeLightColor(
+                            capacity?.energyType),
+                        size: widget.iconSize * .7)
+                    : Container(),
                 Text("${def?.plug?.energyCapacity?.capacityValue ?? 0}",
                     style: TextStyle(
-                      height: 1,
-                      fontWeight: FontWeight.bold,
-                      fontSize: widget.iconSize,
+                        height: 1,
+                        fontWeight: FontWeight.bold,
+                        fontSize: widget.iconSize,
                         color: DestinyData.getEnergyTypeLightColor(
                             capacity?.energyType))),
               ],

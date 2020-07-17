@@ -2,18 +2,15 @@ import 'package:bungie_api/enums/destiny_item_type.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
-import 'package:bungie_api/models/destiny_power_cap_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/models/wish_list.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
-import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/primary_stat.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/common/wishlist_badge.widget.dart';
-import 'package:little_light/widgets/icon_fonts/destiny_icons_icons.dart';
 
 class ItemMainInfoWidget extends BaseDestinyStatefulItemWidget {
   ItemMainInfoWidget(
@@ -67,35 +64,6 @@ class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget> {
           buildWishListInfo(context),
           // buildLockInfo(context),
         ]));
-  }
-
-  Widget buildMaxPowerInfo(BuildContext context) {
-    if (definition?.quality?.currentVersion == null ||
-        definition?.quality?.versions == null) return Container();
-    var version =
-        definition.quality.versions[definition.quality.currentVersion];
-    return DefaultTextStyle(
-        style: TextStyle(
-            fontWeight: FontWeight.w500, color: Colors.amber.shade200),
-        child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 8),
-            child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              TranslatedTextWidget(
-                "Power Cap",
-                uppercase: true,
-              ),
-              Container(
-                  padding: EdgeInsets.only(left: 4),
-                  child: Icon(
-                    DestinyIcons.power,
-                    color: Colors.amber.shade200,
-                    size: 8,
-                  )),
-              ManifestText<DestinyPowerCapDefinition>(
-                version.powerCapHash,
-                textExtractor: (def) => "${def.powerCap}",
-              )
-            ])));
   }
 
   Widget buildEmblemInfo(BuildContext context) {
@@ -240,6 +208,7 @@ class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget> {
 
   Widget primaryStat(context) {
     return PrimaryStatWidget(
+      item: item,
       definition: definition,
       instanceInfo: instanceInfo,
       suppressLabel: true,

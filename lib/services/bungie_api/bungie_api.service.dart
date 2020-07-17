@@ -239,14 +239,17 @@ class Client implements HttpClient {
     Response response;
 
     if (config.method == 'GET') {
-      response = await http.get("${BungieApiService.apiUrl}${config.url}$paramsString",
+      response = await http.get(
+          "${BungieApiService.apiUrl}${config.url}$paramsString",
           headers: headers);
     } else {
       String body = config.bodyContentType == 'application/json'
           ? jsonEncode(config.body)
           : config.body;
-      response = await http.post("${BungieApiService.apiUrl}${config.url}$paramsString",
-          headers: headers, body: body);
+      response = await http.post(
+          "${BungieApiService.apiUrl}${config.url}$paramsString",
+          headers: headers,
+          body: body);
     }
 
     if (response.statusCode == 401 && autoRefreshToken) {

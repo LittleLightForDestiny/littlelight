@@ -1,4 +1,3 @@
-
 import 'dart:math' as math;
 
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
@@ -10,23 +9,27 @@ import 'base_item_filter.dart';
 
 class PowerCapFilter extends BaseItemFilter<Set<int>> {
   PowerCapFilter() : super(Set(), Set());
-  
-  clear(){
+
+  clear() {
     availableValues.clear();
   }
 
   Map<int, int> powercapValues = Map();
 
   @override
-  Future<List<ItemWithOwner>> filter(List<ItemWithOwner> items, {Map<int, DestinyInventoryItemDefinition> definitions}) async {
+  Future<List<ItemWithOwner>> filter(List<ItemWithOwner> items,
+      {Map<int, DestinyInventoryItemDefinition> definitions}) async {
     clear();
     Set<int> powerCaps = Set();
-    for(var item in items){
+    for (var item in items) {
       var def = definitions[item.item.itemHash];
-      if(def?.quality?.versions != null && def?.quality?.currentVersion != null){
-        var powercapHash = def.quality.versions[def.quality.currentVersion].powerCapHash;
-        var powerCapDef = await ManifestService().getDefinition<DestinyPowerCapDefinition>(powercapHash);
-        var powerCap = math.min(powerCapDef.powerCap, 9000); 
+      if (def?.quality?.versions != null &&
+          def?.quality?.currentVersion != null) {
+        var powercapHash =
+            def.quality.versions[def.quality.currentVersion].powerCapHash;
+        var powerCapDef = await ManifestService()
+            .getDefinition<DestinyPowerCapDefinition>(powercapHash);
+        var powerCap = math.min(powerCapDef.powerCap, 9000);
         powercapValues[powercapHash] = powerCap;
         powerCaps.add(powerCap);
       }
@@ -36,22 +39,23 @@ class PowerCapFilter extends BaseItemFilter<Set<int>> {
     this.available = availableValues.length > 1;
     // if(available) availableValues.add(-1);
     value.retainAll(availableValues);
-    return super.filter(items, definitions:definitions);
+    return super.filter(items, definitions: definitions);
   }
 
   bool filterItem(ItemWithOwner item,
       {Map<int, DestinyInventoryItemDefinition> definitions}) {
-    if(value?.length == 0){
+    if (value?.length == 0) {
       return true;
     }
     var def = definitions[item.item.itemHash];
-    if(def?.quality?.versions == null || def?.quality?.currentVersion == null){
-      if(value.contains(-1)) return true;
+    if (def?.quality?.versions == null ||
+        def?.quality?.currentVersion == null) {
+      if (value.contains(-1)) return true;
       return false;
     }
-    var version = def.quality.versions[def.quality.currentVersion];
+    var version = def.quality.versions[item.item.versionNumber];
     var powercapValue = powercapValues[version.powerCapHash];
-    if(value.contains(powercapValue)) return true;
+    if (value.contains(powercapValue)) return true;
     return false;
   }
 }

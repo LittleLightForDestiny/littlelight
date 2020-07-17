@@ -7,11 +7,20 @@ import 'package:little_light/widgets/item_list/items/base/medium_base_inventory_
 
 class MediumWeaponInventoryItemWidget extends MediumBaseInventoryItemWidget {
   MediumWeaponInventoryItemWidget(
-      DestinyItemComponent item,
-      DestinyInventoryItemDefinition itemDefinition,
-      DestinyItemInstanceComponent instanceInfo,
-      {@required String characterId, Key key, @required String uniqueId,})
-      : super(item, itemDefinition, instanceInfo, characterId:characterId, key:key, uniqueId: uniqueId,);
+    DestinyItemComponent item,
+    DestinyInventoryItemDefinition itemDefinition,
+    DestinyItemInstanceComponent instanceInfo, {
+    @required String characterId,
+    Key key,
+    @required String uniqueId,
+  }) : super(
+          item,
+          itemDefinition,
+          instanceInfo,
+          characterId: characterId,
+          key: key,
+          uniqueId: uniqueId,
+        );
   @override
   Widget primaryStatWidget(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -21,8 +30,9 @@ class MediumWeaponInventoryItemWidget extends MediumBaseInventoryItemWidget {
         child: Container(
             padding: EdgeInsets.all(padding),
             child: PrimaryStatWidget(
-              definition:definition,
-              instanceInfo:instanceInfo,
+              item: item,
+              definition: definition,
+              instanceInfo: instanceInfo,
               padding: padding,
               suppressDamageTypeIcon: true,
               suppressLabel: true,

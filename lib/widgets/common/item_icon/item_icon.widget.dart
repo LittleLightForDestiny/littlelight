@@ -69,6 +69,26 @@ class ItemIconWidget extends BaseDestinyStatelessItemWidget {
                   ? DestinyData.getTierColor(definition.inventory.tierType)
                   : null,
               child: itemIconImage(context))),
+      seasonBadgeUrl() == null
+          ? Container()
+          : Container(
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      stops: [
+                    0,
+                    0.20,
+                    0.29,
+                    1
+                  ],
+                      colors: [
+                    DestinyData.getTierColor(definition.inventory.tierType),
+                    DestinyData.getTierColor(definition.inventory.tierType),
+                    Colors.transparent,
+                    Colors.transparent
+                  ])),
+            ),
       itemSeasonIcon(context),
       Positioned.fill(
           child: state.contains(ItemState.Masterwork)
@@ -88,18 +108,19 @@ class ItemIconWidget extends BaseDestinyStatelessItemWidget {
     ]);
   }
 
-  String seasonBadgeUrl(){
-    try{
-      return definition?.quality?.displayVersionWatermarkIcons?.first ?? "";
-    }catch(_){}
-    return "";
+  String seasonBadgeUrl() {
+    try {
+      var version =
+          definition.quality.displayVersionWatermarkIcons[item.versionNumber];
+      if (version.length > 0) return version;
+    } catch (_) {}
+    return null;
   }
 
   Widget itemSeasonIcon(BuildContext context) {
-    if (seasonBadgeUrl() != "") {
+    if (seasonBadgeUrl() != null) {
       return QueuedNetworkImage(
-        imageUrl: BungieApiService.url(
-            seasonBadgeUrl()),
+        imageUrl: BungieApiService.url(seasonBadgeUrl()),
         fit: BoxFit.fill,
         placeholder: itemIconPlaceholder(context),
       );
@@ -121,10 +142,10 @@ class ItemIconWidget extends BaseDestinyStatelessItemWidget {
       return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
           item?.overrideStyleItemHash, (def) {
         return QueuedNetworkImage(
-            imageUrl: BungieApiService.url(def.displayProperties.icon),
-            fit: BoxFit.fill,
-            placeholder: itemIconPlaceholder(context),
-          );
+          imageUrl: BungieApiService.url(def.displayProperties.icon),
+          fit: BoxFit.fill,
+          placeholder: itemIconPlaceholder(context),
+        );
       });
     }
     return QueuedNetworkImage(
