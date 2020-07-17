@@ -1,23 +1,18 @@
 import 'package:bungie_api/enums/destiny_item_type.dart';
-import 'package:bungie_api/enums/item_state.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_power_cap_definition.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/models/wish_list.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/services/inventory/inventory.service.dart';
 import 'package:little_light/services/littlelight/wishlists.service.dart';
-import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/primary_stat.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/common/wishlist_badge.widget.dart';
-
 import 'package:little_light/widgets/icon_fonts/destiny_icons_icons.dart';
 
 class ItemMainInfoWidget extends BaseDestinyStatefulItemWidget {
@@ -84,10 +79,11 @@ class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget> {
             fontWeight: FontWeight.w500, color: Colors.amber.shade200),
         child: Container(
             padding: EdgeInsets.symmetric(horizontal: 8),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-              TranslatedTextWidget("Power Cap", uppercase: true,),
+            child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              TranslatedTextWidget(
+                "Power Cap",
+                uppercase: true,
+              ),
               Container(
                   padding: EdgeInsets.only(left: 4),
                   child: Icon(
