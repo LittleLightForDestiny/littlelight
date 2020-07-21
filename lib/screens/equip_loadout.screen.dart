@@ -68,30 +68,34 @@ class EquipLoadoutScreenState extends State<EquipLoadoutScreen> {
             title: Text(widget.loadout.name),
             flexibleSpace: buildAppBarBackground(context)),
         bottomNavigationBar: LoadoutDestinationsWidget(widget.loadout),
-        body: ListView(
-            padding: EdgeInsets.all(8).copyWith(
-                top: 0,
-                left: max(screenPadding.left, 8),
-                right: max(screenPadding.right, 8)),
-            children: <Widget>[
-              HeaderWidget(
-                  child:
-                      TranslatedTextWidget("Items to Equip", uppercase: true)),
-              Container(
-                  padding: EdgeInsets.all(8),
-                  child: buildEquippedItems(context)),
-              (_itemIndex?.unequippedCount ?? 0) == 0
-                  ? Container()
-                  : HeaderWidget(
-                      child: TranslatedTextWidget("Items to Transfer",
-                          uppercase: true),
-                    ),
-              (_itemIndex?.unequippedCount ?? 0) == 0
-                  ? Container()
-                  : Container(
-                      padding: EdgeInsets.all(8),
-                      child: buildUnequippedItems(context)),
-            ]));
+        body: Container(
+            alignment: Alignment.center,
+            child: Container(
+                constraints: BoxConstraints(maxWidth: 500),
+                child: ListView(
+                    padding: EdgeInsets.all(8).copyWith(
+                        top: 0,
+                        left: max(screenPadding.left, 8),
+                        right: max(screenPadding.right, 8)),
+                    children: <Widget>[
+                      HeaderWidget(
+                          child: TranslatedTextWidget("Items to Equip",
+                              uppercase: true)),
+                      Container(
+                          padding: EdgeInsets.all(8),
+                          child: buildEquippedItems(context)),
+                      (_itemIndex?.unequippedCount ?? 0) == 0
+                          ? Container()
+                          : HeaderWidget(
+                              child: TranslatedTextWidget("Items to Transfer",
+                                  uppercase: true),
+                            ),
+                      (_itemIndex?.unequippedCount ?? 0) == 0
+                          ? Container()
+                          : Container(
+                              padding: EdgeInsets.all(8),
+                              child: buildUnequippedItems(context)),
+                    ]))));
   }
 
   buildAppBarBackground(BuildContext context) {
@@ -191,7 +195,10 @@ class EquipLoadoutScreenState extends State<EquipLoadoutScreen> {
     var instance = ProfileService().getInstanceInfo(item?.itemInstanceId);
     return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
         item.itemHash,
-        (def) => ItemIconWidget.builder(item:item, definition:def, instanceInfo:instance,
+        (def) => ItemIconWidget.builder(
+            item: item,
+            definition: def,
+            instanceInfo: instance,
             key: Key("item_icon_${item.itemInstanceId}")));
   }
 }

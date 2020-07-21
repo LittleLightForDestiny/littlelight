@@ -38,81 +38,82 @@ class QuickSelectItemWrapperWidgetState<T extends QuickSelectItemWrapperWidget>
       case DestinyItemType.Subclass:
         {
           return Container(
-            height:96,
-            child:SubclassInventoryItemWidget(
-            widget.item,
-            definition,
-            instanceInfo,
-            characterId: widget.characterId,
-            uniqueId: uniqueId,
-          ));
+              height: 96,
+              child: SubclassInventoryItemWidget(
+                widget.item,
+                definition,
+                instanceInfo,
+                characterId: widget.characterId,
+                uniqueId: uniqueId,
+              ));
         }
       case DestinyItemType.Weapon:
         {
-          var reusablePlugs = ProfileService().getItemReusablePlugs(widget?.item?.itemInstanceId);
+          var reusablePlugs = ProfileService()
+              .getItemReusablePlugs(widget?.item?.itemInstanceId);
           int maxPlugs = 1;
           reusablePlugs?.forEach((key, value) {
             maxPlugs = max(maxPlugs, value.length);
           });
           double height = 96;
-          if(maxPlugs > 1){
+          if (maxPlugs > 1) {
             height = 100;
           }
-          if(maxPlugs > 2){
-            height = 100 + (maxPlugs-2)*20.0;
+          if (maxPlugs > 2) {
+            height = 100 + (maxPlugs - 2) * 20.0;
           }
           return Container(
-            height:height,
-            child:WeaponInventoryItemWidget(
-            widget.item,
-            definition,
-            instanceInfo,
-            characterId: widget.characterId,
-            showUnusedPerks: true,
-            uniqueId: uniqueId,
-            trailing: buildCharacterIcon(context),
-          ));
+              height: height,
+              child: WeaponInventoryItemWidget(
+                widget.item,
+                definition,
+                instanceInfo,
+                characterId: widget.characterId,
+                showUnusedPerks: true,
+                uniqueId: uniqueId,
+                trailing: buildCharacterIcon(context),
+              ));
         }
 
       case DestinyItemType.Armor:
         {
           return Container(
-            height:96,
-            child:ArmorInventoryItemWidget(
-            widget.item,
-            definition,
-            instanceInfo,
-            characterId: widget.characterId,
-            uniqueId: uniqueId,
-            trailing: buildCharacterIcon(context),
-          ));
+              height: 96,
+              child: ArmorInventoryItemWidget(
+                widget.item,
+                definition,
+                instanceInfo,
+                characterId: widget.characterId,
+                uniqueId: uniqueId,
+                trailing: buildCharacterIcon(context),
+              ));
         }
 
       case DestinyItemType.Emblem:
         {
           return Container(
-            height:96,
-            child:EmblemInventoryItemWidget(
-            widget.item,
-            definition,
-            instanceInfo,
-            characterId: widget.characterId,
-            uniqueId: uniqueId,
-            trailing: buildCharacterIcon(context),
-          ));
+              height: 96,
+              child: EmblemInventoryItemWidget(
+                widget.item,
+                definition,
+                instanceInfo,
+                characterId: widget.characterId,
+                uniqueId: uniqueId,
+                trailing: buildCharacterIcon(context),
+              ));
         }
 
       default:
         return Container(
-          height:96,
-          child:BaseInventoryItemWidget(
-          widget.item,
-          definition,
-          instanceInfo,
-          characterId: widget.characterId,
-          uniqueId: uniqueId,
-          trailing: buildCharacterIcon(context),
-        ));
+            height: 96,
+            child: BaseInventoryItemWidget(
+              widget.item,
+              definition,
+              instanceInfo,
+              characterId: widget.characterId,
+              uniqueId: uniqueId,
+              trailing: buildCharacterIcon(context),
+            ));
     }
   }
 
@@ -125,7 +126,7 @@ class QuickSelectItemWrapperWidgetState<T extends QuickSelectItemWrapperWidget>
     } else {
       var character = widget.profile.getCharacter(widget.characterId);
       icon = QueuedNetworkImage(
-          imageUrl: BungieApiService.url(character.emblemPath));
+          imageUrl: BungieApiService.url(character?.emblemPath));
     }
 
     return Container(

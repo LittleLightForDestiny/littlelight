@@ -8,6 +8,7 @@ import 'package:bungie_api/models/destiny_stat_group_definition.dart';
 import 'package:bungie_api/models/destiny_vendor_sale_item_component.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:little_light/models/loadout.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/inventory/inventory.service.dart';
@@ -26,6 +27,7 @@ import 'package:little_light/widgets/item_details/item_collectible_info.widget.d
 import 'package:little_light/widgets/item_details/item_cover/item_cover.widget.dart';
 import 'package:little_light/widgets/item_details/item_cover/landscape_item_cover.widget.dart';
 import 'package:little_light/widgets/item_details/item_detail_duplicates.widget.dart';
+import 'package:little_light/widgets/item_details/item_detail_loadouts.widget.dart';
 import 'package:little_light/widgets/item_details/item_lore.widget.dart';
 import 'package:little_light/widgets/item_details/item_objectives.widget.dart';
 import 'package:little_light/widgets/item_details/item_vendor_info.widget.dart';
@@ -83,6 +85,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
   ItemSocketController socketController;
   DestinyStatGroupDefinition statGroupDefinition;
   List<ItemWithOwner> duplicates;
+  List<Loadout> loadouts;
 
   List<DestinyItemSocketState> get socketStates =>
       widget.socketStates ??
@@ -96,11 +99,23 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
   }
 
   Future<void> loadDefinitions() async {
+    findLoadouts();
     findDuplicates();
     loadStatGroupDefinition();
   }
 
-  findDuplicates() async{
+  findLoadouts() async {
+    var allLoadouts = await LoadoutsService().getLoadouts();
+    loadouts = allLoadouts.where((loadout) {
+      var equip = loadout.equipped
+          .where((element) => element.itemInstanceId == item?.itemInstanceId);
+      var unequip = loadout.unequipped
+          .where((element) => element.itemInstanceId == item?.itemInstanceId);
+      return equip.length > 0 || unequip.length > 0;
+    }).toList();
+  }
+
+  findDuplicates() async {
     AuthService auth = AuthService();
     if (!auth.isLogged) {
       return;
@@ -166,12 +181,18 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
             characterId: widget.characterId,
           ),
           SliverList(
-              delegate: SliverChildListDelegate([    
+              delegate: SliverChildListDelegate([
             buildSaleDetails(context),
-            ItemMainInfoWidget(item, definition, instanceInfo, characterId: characterId,),
+            ItemMainInfoWidget(
+              item,
+              definition,
+              instanceInfo,
+              characterId: characterId,
+            ),
             buildManagementBlock(context),
             buildLockInfo(context),
             buildActionButtons(context),
+            buildLoadouts(context),
             buildWishlistNotes(context),
             buildDuplicates(context),
             buildIntrinsicPerk(context),
@@ -219,7 +240,12 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
           SliverList(
               delegate: SliverChildListDelegate([
             buildSaleDetails(context),
-            ItemMainInfoWidget(item, definition, instanceInfo, characterId: characterId,),
+            ItemMainInfoWidget(
+              item,
+              definition,
+              instanceInfo,
+              characterId: characterId,
+            ),
             buildWishlistNotes(context),
             buildManagementBlock(context),
             buildLockInfo(context),
@@ -256,7 +282,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
 
   Widget buildSaleDetails(BuildContext context) {
     if (widget?.sale == null) {
-      return Container(height:1);
+      return Container(height: 1);
     }
     var screenPadding = MediaQuery.of(context).padding;
     return Container(
@@ -339,7 +365,8 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
   Widget buildActionButtons(BuildContext context) {
     if (widget.hideItemManagement || widget.item == null) return Container();
     List<Widget> buttons = [];
-    if (InventoryBucket.loadoutBucketHashes.contains(definition?.inventory?.bucketTypeHash)) {
+    if (InventoryBucket.loadoutBucketHashes
+        .contains(definition?.inventory?.bucketTypeHash)) {
       buttons.add(Expanded(
           child: RaisedButton(
               child: TranslatedTextWidget("Add to Loadout"),
@@ -395,6 +422,11 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
         child: Container(
             padding: EdgeInsets.all(8),
             child: Row(children: buttons.toList())));
+  }
+
+  Widget buildLoadouts(BuildContext context) {
+    return ItemDetailLoadoutsWidget(item, definition, instanceInfo,
+        loadouts: loadouts);
   }
 
   Widget buildDuplicates(context) {
@@ -496,10 +528,11 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
   }
 
   Widget buildIntrinsicPerk(BuildContext context) {
-    var intrinsicperkCategory = definition.sockets?.socketCategories?.firstWhere(
-        (s) => DestinyData.socketCategoryIntrinsicPerkHashes
-            .contains(s.socketCategoryHash),
-        orElse: () => null);
+    var intrinsicperkCategory = definition.sockets?.socketCategories
+        ?.firstWhere(
+            (s) => DestinyData.socketCategoryIntrinsicPerkHashes
+                .contains(s.socketCategoryHash),
+            orElse: () => null);
     if (intrinsicperkCategory == null) return Container();
     var screenPadding = MediaQuery.of(context).padding;
     return Container(

@@ -42,14 +42,14 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
     loadLoadouts();
   }
 
-  List<Loadout> filterLoadouts(){
+  List<Loadout> filterLoadouts() {
     var text = _searchFieldController.text.toLowerCase();
-    return loadouts.where((l){
-        if(text.length <=3){
-          return l?.name?.toLowerCase()?.startsWith(text);
-        }
-        return l?.name?.toLowerCase()?.contains(text);
-      }).toList();
+    return loadouts.where((l) {
+      if (text.length <= 3) {
+        return l?.name?.toLowerCase()?.startsWith(text);
+      }
+      return l?.name?.toLowerCase()?.contains(text);
+    }).toList();
   }
 
   void loadLoadouts() async {
@@ -82,31 +82,39 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
         actions: <Widget>[
           buildReorderButton(context),
           buildSearchButton(context),
-          IconButton(icon: Icon(Icons.refresh),
-          onPressed: (){
-            LittleLightApiService().fetchLoadouts();
-          },)
+          IconButton(
+            icon: Icon(Icons.refresh),
+            onPressed: () async {
+              loadouts = await LoadoutsService().getLoadouts(forceFetch: true);
+              setState(() {});
+            },
+          )
         ],
         title: buildTitle(context));
   }
 
-  Widget buildTitle(BuildContext context){
+  Widget buildTitle(BuildContext context) {
     if (searchOpen) {
       return TextField(
         autofocus: true,
         controller: _searchFieldController,
       );
     }
-    return reordering  ? TranslatedTextWidget("Reordering Loadouts") : TranslatedTextWidget("Loadouts");
+    return reordering
+        ? TranslatedTextWidget("Reordering Loadouts")
+        : TranslatedTextWidget("Loadouts");
   }
 
   Widget buildSearchButton(BuildContext context) {
-    if(reordering) return Container();
-    return IconButton(enableFeedback: false,
-        icon: searchOpen ? Icon(FontAwesomeIcons.times) : Icon(FontAwesomeIcons.search),
+    if (reordering) return Container();
+    return IconButton(
+        enableFeedback: false,
+        icon: searchOpen
+            ? Icon(FontAwesomeIcons.times)
+            : Icon(FontAwesomeIcons.search),
         onPressed: () async {
           searchOpen = !searchOpen;
-          if(!searchOpen){
+          if (!searchOpen) {
             _searchFieldController.text = "";
           }
           setState(() {});
@@ -114,11 +122,13 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
   }
 
   Widget buildReorderButton(BuildContext context) {
-    if(searchOpen) return Container();
-    return IconButton(enableFeedback: false,
-        icon: reordering ? Icon(FontAwesomeIcons.check) : Transform.rotate(
-          angle: pi/2,
-          child:Icon(FontAwesomeIcons.exchangeAlt)),
+    if (searchOpen) return Container();
+    return IconButton(
+        enableFeedback: false,
+        icon: reordering
+            ? Icon(FontAwesomeIcons.check)
+            : Transform.rotate(
+                angle: pi / 2, child: Icon(FontAwesomeIcons.exchangeAlt)),
         onPressed: () async {
           reordering = !reordering;
           setState(() {});
@@ -164,7 +174,9 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
     return DragList<Loadout>(
         items: loadouts,
         itemExtent: 56,
-        padding: EdgeInsets.all(8).copyWith(left:max(screenPadding.left, 8), right:max(screenPadding.right, 8)),
+        padding: EdgeInsets.all(8).copyWith(
+            left: max(screenPadding.left, 8),
+            right: max(screenPadding.right, 8)),
         handleBuilder: (context) => buildHandle(context),
         onItemReorder: (oldIndex, newIndex) {
           var removed = loadouts.removeAt(oldIndex);
@@ -224,7 +236,8 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
     }
     var screenPadding = MediaQuery.of(context).padding;
     return StaggeredGridView.countBuilder(
-      padding: EdgeInsets.all(4).copyWith(left:max(screenPadding.left, 4), right:max(screenPadding.right, 4)),
+      padding: EdgeInsets.all(4).copyWith(
+          left: max(screenPadding.left, 4), right: max(screenPadding.right, 4)),
       crossAxisCount: 30,
       itemCount: filteredLoadouts.length,
       itemBuilder: (BuildContext context, int index) => getItem(context, index),

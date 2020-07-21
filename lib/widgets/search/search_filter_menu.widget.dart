@@ -8,6 +8,7 @@ import 'package:little_light/widgets/search/search_filters/energy_level_constrai
 import 'package:little_light/widgets/search/search_filters/energy_type_filter.widget.dart';
 import 'package:little_light/widgets/search/search_filters/item_bucket_filter.widget.dart';
 import 'package:little_light/widgets/search/search_filters/item_subtype_filter.widget.dart';
+import 'package:little_light/widgets/search/search_filters/loadout_filter.widget.dart';
 import 'package:little_light/widgets/search/search_filters/power_cap_filter.widget.dart';
 import 'package:little_light/widgets/search/search_filters/power_level_constraints_filter.widget.dart';
 import 'package:little_light/widgets/search/search_filters/seasonal_slot_filter.widget.dart';
@@ -18,7 +19,7 @@ import 'package:little_light/widgets/search/search_filters/wishlist_tag_filter.w
 class SearchFilterMenu extends StatefulWidget {
   final SearchController controller;
 
-  SearchFilterMenu({this.controller, Key key}):super(key:key);
+  SearchFilterMenu({this.controller, Key key}) : super(key: key);
 
   @override
   _SearchFilterMenuState createState() => _SearchFilterMenuState();
@@ -34,21 +35,24 @@ class _SearchFilterMenuState extends State<SearchFilterMenu> {
           title: TranslatedTextWidget("Filters"),
           automaticallyImplyLeading: false,
           actions: <Widget>[Container()],
-          leading: IconButton(enableFeedback: false,
+          leading: IconButton(
+            enableFeedback: false,
             icon: Icon(Icons.close),
             onPressed: () {
               Navigator.of(context).pop();
             },
           ),
         ),
-        Expanded(child: ListView(
-          padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
-          children: buildFilters(context)))
+        Expanded(
+            child: ListView(
+                padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).padding.bottom),
+                children: buildFilters(context)))
       ],
     ));
   }
 
-  List<Widget> buildFilters(BuildContext context){
+  List<Widget> buildFilters(BuildContext context) {
     return [
       PowerLevelConstraintsWidget(widget.controller),
       EnergyLevelConstraintsWidget(widget.controller),
@@ -62,7 +66,8 @@ class _SearchFilterMenuState extends State<SearchFilterMenu> {
       ItemBucketFilterWidget(widget.controller),
       TotalStatsConstraintsWidget(widget.controller),
       ItemSubTypeFilterWidget(widget.controller),
+      LoadoutFilterWidget(widget.controller),
       WishlistTagsFilterWidget(widget.controller),
-      ];
+    ];
   }
 }

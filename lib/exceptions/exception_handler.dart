@@ -10,7 +10,6 @@ import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/storage/storage.service.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
-
 class ExceptionHandler {
   static BuildContext context;
   Function onRestart;
@@ -22,6 +21,8 @@ class ExceptionHandler {
       } else {
         Zone.current.handleUncaughtError(details.exception, details.stack);
       }
+
+      Crashlytics.instance.recordFlutterError(details);
     };
   }
 
@@ -31,10 +32,9 @@ class ExceptionHandler {
         return Container(
             padding: EdgeInsets.all(8),
             alignment: Alignment.center,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children:[
-              TranslatedTextWidget("Couldn&#39;t render this widget properly. Please report this to @LittleLightD2 on Twitter or via GitHub issues"),
+            child: Column(mainAxisSize: MainAxisSize.min, children: [
+              TranslatedTextWidget(
+                  "Couldn&#39;t render this widget properly. Please report this to @LittleLightD2 on Twitter or via GitHub issues"),
               Text(details?.exceptionAsString() ?? ""),
             ]));
       };
@@ -53,8 +53,11 @@ class ExceptionHandler {
     }
 
     if (error is BungieApiException) {
-      bool shouldShowLoginButton = [PlatformErrorCodes.DestinyAccountNotFound, PlatformErrorCodes.WebAuthRequired].contains(error.errorCode) ||
-      ["invalid_grant"].contains(error.errorStatus);
+      bool shouldShowLoginButton = [
+            PlatformErrorCodes.DestinyAccountNotFound,
+            PlatformErrorCodes.WebAuthRequired
+          ].contains(error.errorCode) ||
+          ["invalid_grant"].contains(error.errorStatus);
       BungieApiException e = error;
       print(e.errorStatus);
       showDialog(
@@ -82,7 +85,8 @@ class ExceptionHandler {
                         ? ErrorDialogButton(
                             text: "Login with another account",
                             onPressed: () async {
-                              await StorageService.account().remove(StorageKeys.latestToken, true);
+                              await StorageService.account()
+                                  .remove(StorageKeys.latestToken, true);
                               onRestart();
                             })
                         : Container(height: 0),
@@ -97,16 +101,12 @@ class ExceptionHandler {
         ),
       );
     }
-    if (isInDebugMode) {
-      print(stackTrace);
-      return;
-    } else {
-      Crashlytics.instance.recordFlutterError(error);
-    }
+
+    Crashlytics.instance.recordFlutterError(error);
   }
 
-  static setReportingUserInfo(
-      String membershipId, String displayName, BungieMembershipType platformId) {
+  static setReportingUserInfo(String membershipId, String displayName,
+      BungieMembershipType platformId) {
     Crashlytics.instance.setUserIdentifier(membershipId);
     Crashlytics.instance.setUserName(displayName);
     Crashlytics.instance.setInt("platform", platformId.value);

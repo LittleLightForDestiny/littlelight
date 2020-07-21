@@ -8,36 +8,30 @@ class PowerCapFilterWidget extends BaseSearchFilterWidget<PowerCapFilter> {
   PowerCapFilterWidget(SearchController controller) : super(controller);
 
   @override
-  _SeasonalSlotFilterWidgetState createState() => _SeasonalSlotFilterWidgetState();
+  _PowerCapFilterWidgetState createState() => _PowerCapFilterWidgetState();
 }
 
-class _SeasonalSlotFilterWidgetState extends BaseSearchFilterWidgetState<
+class _PowerCapFilterWidgetState extends BaseSearchFilterWidgetState<
     PowerCapFilterWidget, PowerCapFilter, int> {
-  List<int> seasonalSlots;
-
   @override
   Iterable<int> get options {
     var values = filter.availableValues.toList();
-    values.sort((a,b){
-      if(a < 0) return 1;
-      if(b < 0) return -1;
+    values.sort((a, b) {
+      if (a < 0) return 1;
+      if (b < 0) return -1;
       return a.compareTo(b);
-      });
+    });
     return values;
   }
 
   @override
   Widget buildButtons(BuildContext context) {
-    var buttons = options
-        .map((e) => buildButton(context, e))
-        .toList();
-    return Column(
-        children: [Column(children: buttons)]);
+    var buttons = options.map((e) => buildButton(context, e)).toList();
+    return Column(children: [Column(children: buttons)]);
   }
 
   @override
-  Widget buildButtonLabel(
-      BuildContext context, int value) {
+  Widget buildButtonLabel(BuildContext context, int value) {
     if (value >= 9000) {
       return Text("> $value");
     }
@@ -47,15 +41,17 @@ class _SeasonalSlotFilterWidgetState extends BaseSearchFilterWidgetState<
     return TranslatedTextWidget("None", uppercase: true);
   }
 
-
   @override
   Widget buildFilterLabel(BuildContext context) {
-    return TranslatedTextWidget("Power Cap", uppercase: true,);
+    return TranslatedTextWidget(
+      "Power Cap",
+      uppercase: true,
+    );
   }
 
   @override
   Widget buildDisabledLabel(BuildContext context) {
-    if(options.length <= 1){
+    if (options.length <= 1) {
       return Container();
     }
     return super.buildDisabledLabel(context);

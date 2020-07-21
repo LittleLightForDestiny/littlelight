@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -38,10 +40,14 @@ class LittleLight extends StatelessWidget {
   Widget build(BuildContext context) {
     QueuedNetworkImage.maxNrOfCacheObjects = 5000;
     QueuedNetworkImage.inBetweenCleans = new Duration(days: 30);
+    FirebaseAnalytics analytics = FirebaseAnalytics();
+    FirebaseAnalyticsObserver observer =
+        FirebaseAnalyticsObserver(analytics: analytics);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       key: key,
       title: 'Little Light',
+      navigatorObservers: [observer],
       theme: new ThemeData(
           disabledColor: Colors.lightBlue.shade900,
           // platform: TargetPlatform.android,
@@ -57,12 +63,10 @@ class LittleLight extends StatelessWidget {
           fontFamily: Platform.isMacOS ? "NeueHaasDisplay" : null,
           textTheme: TextTheme(
               bodyText1: TextStyle(
-                color:Colors.grey.shade300,
-                fontWeight: FontWeight.w500
-              ),
+                  color: Colors.grey.shade300, fontWeight: FontWeight.w500),
               button: TextStyle(
-              fontWeight: FontWeight.bold,
-          )),
+                fontWeight: FontWeight.bold,
+              )),
           pageTransitionsTheme: PageTransitionsTheme(builders: {
             TargetPlatform.android: CupertinoPageTransitionsBuilder(),
             TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
@@ -115,6 +119,7 @@ class LittleLightScrollBehaviour extends ScrollBehavior {
       color: Theme.of(context).accentColor,
     );
   }
+
   @override
   ScrollPhysics getScrollPhysics(BuildContext context) {
     if (Platform.isIOS) {

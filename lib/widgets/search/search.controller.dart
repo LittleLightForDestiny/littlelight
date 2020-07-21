@@ -16,6 +16,7 @@ import 'package:little_light/utils/item_filters/energy_level_constraints_filter.
 import 'package:little_light/utils/item_filters/energy_type_filter.dart';
 import 'package:little_light/utils/item_filters/item_bucket_filter.dart';
 import 'package:little_light/utils/item_filters/item_subtype_filter.dart';
+import 'package:little_light/utils/item_filters/loadout_filter.dart';
 import 'package:little_light/utils/item_filters/power_cap_filter.dart';
 import 'package:little_light/utils/item_filters/power_level_constraints_filter.dart';
 import 'package:little_light/utils/item_filters/season_slot_filter.dart';
@@ -59,27 +60,25 @@ class SearchController extends ChangeNotifier {
   List<ItemSortParameter> customSorting;
   List<ItemSortParameterType> availableSorters;
 
-  SearchController({
-    this.firstRunFilters = const [],
-    this.preFilters = const [],
-    this.filters = const [],
-    this.postFilters = const [],
-    this.defaultSorting,
-    this.customSorting,
-    this.availableSorters
-  }) {
+  SearchController(
+      {this.firstRunFilters = const [],
+      this.preFilters = const [],
+      this.filters = const [],
+      this.postFilters = const [],
+      this.defaultSorting,
+      this.customSorting,
+      this.availableSorters}) {
     _init();
   }
 
-  factory SearchController.withDefaultFilters({
-    List<BaseItemFilter> firstRunFilters,
-    List<BaseItemFilter> preFilters,
-    List<BaseItemFilter> filters,
-    List<BaseItemFilter> postFilters,
-    List<ItemSortParameter> defaultSorting,
-    List<ItemSortParameter> customSorting,
-    List<ItemSortParameterType> availableSorters
-  }) {
+  factory SearchController.withDefaultFilters(
+      {List<BaseItemFilter> firstRunFilters,
+      List<BaseItemFilter> preFilters,
+      List<BaseItemFilter> filters,
+      List<BaseItemFilter> postFilters,
+      List<ItemSortParameter> defaultSorting,
+      List<ItemSortParameter> customSorting,
+      List<ItemSortParameterType> availableSorters}) {
     final _defaultFirstRunFilters = <BaseItemFilter>[];
     final _defaultPreFilters = <BaseItemFilter>[];
     final _defaultFilters = <BaseItemFilter>[
@@ -98,6 +97,7 @@ class SearchController extends ChangeNotifier {
           EnergyLevelConstraints(), EnergyLevelConstraints()),
       TotalStatsConstraintsFilter(
           TotalStatsConstraints(), TotalStatsConstraints()),
+      LoadoutFilter(),
       WishlistTagFilter(),
     ];
     final _defaultPostFilters = <BaseItemFilter>[
@@ -111,7 +111,8 @@ class SearchController extends ChangeNotifier {
         postFilters: _replaceDefaultFilters(_defaultPostFilters, postFilters),
         defaultSorting: defaultSorting ?? UserSettingsService().itemOrdering,
         customSorting: customSorting ?? [],
-        availableSorters: availableSorters ?? ItemSortParameter.availableEquipmentSorters);
+        availableSorters:
+            availableSorters ?? ItemSortParameter.availableEquipmentSorters);
   }
 
   _init() {
@@ -130,8 +131,10 @@ class SearchController extends ChangeNotifier {
     super.dispose();
   }
 
-  sort() async{
-    this._prefilteredList = await InventoryUtils.sortDestinyItems(this._prefilteredList, sortingParams:this.customSorting + this.defaultSorting);
+  sort() async {
+    this._prefilteredList = await InventoryUtils.sortDestinyItems(
+        this._prefilteredList,
+        sortingParams: this.customSorting + this.defaultSorting);
     await update();
   }
 

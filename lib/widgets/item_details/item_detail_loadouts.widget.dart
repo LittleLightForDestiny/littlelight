@@ -4,9 +4,11 @@ import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/models/loadout.dart';
+import 'package:little_light/screens/equip_loadout.screen.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateless_item.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
+import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
 class ItemDetailLoadoutsWidget extends BaseDestinyStatelessItemWidget {
@@ -30,7 +32,7 @@ class ItemDetailLoadoutsWidget extends BaseDestinyStatelessItemWidget {
       return Container();
     }
     return Container(
-      padding: EdgeInsets.all(8),
+      padding: EdgeInsets.all(8).copyWith(bottom: 4),
       child: Column(
         children: <Widget>[
           HeaderWidget(
@@ -58,7 +60,7 @@ class ItemDetailLoadoutsWidget extends BaseDestinyStatelessItemWidget {
         mainAxisSpacing: 2,
         crossAxisCount: 3,
         staggeredTiles: loadouts
-            .map((item) => StaggeredTile.extent(isTablet ? 1 : 3, 122))
+            .map((item) => StaggeredTile.fit(isTablet ? 1 : 3))
             .toList(),
         shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),
@@ -66,7 +68,42 @@ class ItemDetailLoadoutsWidget extends BaseDestinyStatelessItemWidget {
             loadouts.map((item) => buildLoadoutItem(item, context)).toList());
   }
 
-  Widget buildLoadoutItem(item, context) {
-    return Container();
+  Widget buildLoadoutItem(Loadout loadout, BuildContext context) {
+    return Container(
+        color: Theme.of(context).buttonColor,
+        margin: EdgeInsets.only(bottom: 4),
+        child: Stack(children: [
+          Positioned.fill(
+              child: loadout.emblemHash != null
+                  ? ManifestImageWidget<DestinyInventoryItemDefinition>(
+                      loadout.emblemHash,
+                      fit: BoxFit.cover,
+                      urlExtractor: (def) {
+                        return def?.secondarySpecial;
+                      },
+                    )
+                  : Container()),
+          Container(
+              padding: EdgeInsets.all(16),
+              child: Text(
+                loadout?.name?.toUpperCase() ?? "",
+                maxLines: 1,
+                overflow: TextOverflow.fade,
+                softWrap: false,
+                style: TextStyle(fontWeight: FontWeight.bold),
+              )),
+          Positioned.fill(
+              child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => EquipLoadoutScreen(
+                          loadout: loadout,
+                        )));
+              },
+            ),
+          ))
+        ]));
   }
 }
