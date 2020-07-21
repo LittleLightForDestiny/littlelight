@@ -224,12 +224,19 @@ class LoadoutSlotWidget extends StatelessWidget {
 
   openModal(BuildContext context, DestinyItemComponent item, bool equipped) {
     var ownerId = ProfileService().getItemOwner(item.itemInstanceId);
+    var padding = EdgeInsets.all(8).copyWith(bottom: 4);
+    var screenWidth = MediaQuery.of(context).size.width;
+    if (screenWidth < 500) {
+      padding = padding.copyWith(left: 0, right: 0);
+    }
     showDialog(
         context: context,
         builder: (context) {
           return Dialog(
+              insetPadding: EdgeInsets.all(0),
               child: Container(
-                  padding: EdgeInsets.all(8).copyWith(bottom: 4),
+                  width: screenWidth + 16,
+                  padding: padding,
                   constraints: BoxConstraints(maxWidth: 500),
                   child: Column(mainAxisSize: MainAxisSize.min, children: [
                     QuickSelectItemWrapperWidget(item, null,
