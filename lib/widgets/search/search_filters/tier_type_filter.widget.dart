@@ -32,6 +32,8 @@ class _TierTypeFilterWidgetState extends BaseSearchFilterWidgetState<
     return Text(
       value?.tierName?.toUpperCase() ?? "",
       style: TextStyle(color: buttonTextColor(value)),
+      softWrap: false,
+      overflow: TextOverflow.fade,
     );
   }
 
@@ -53,9 +55,14 @@ class _TierTypeFilterWidgetState extends BaseSearchFilterWidgetState<
     try {
       var value = options.single;
       return Container(
-        decoration: BoxDecoration(color: buttonBgColor(value), borderRadius: BorderRadius.circular(8)),
+        decoration: BoxDecoration(
+            color: buttonBgColor(value),
+            borderRadius: BorderRadius.circular(8)),
         padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-        child: Text(value.tierName.toUpperCase(), style: TextStyle(color: buttonTextColor(value)),),
+        child: Text(
+          value.tierName.toUpperCase(),
+          style: TextStyle(color: buttonTextColor(value)),
+        ),
       );
     } catch (_) {}
     return TranslatedTextWidget(
