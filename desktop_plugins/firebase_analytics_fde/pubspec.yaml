@@ -1,0 +1,17 @@
+name: firebase_analytics_fde
+description: A Flutter plugin to bypass Firebase Analytics on mac
+author: João Paulo Marquesini <jao@markezine.me>
+version: 0.0.5
+
+flutter:
+  plugin:
+    platforms:
+      macos:
+        pluginClass: FirebaseAnalyticsFakePlugin
+
+environment:
+  sdk: ">=2.1.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
