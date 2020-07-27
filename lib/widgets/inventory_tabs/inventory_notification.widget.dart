@@ -147,13 +147,18 @@ class InventoryNotificationWidgetState
         var instanceInfo =
             ProfileService().getInstanceInfo(_latestEvent.item.itemInstanceId);
         return Container(
-          padding: EdgeInsets.only(left: 4),
+          margin: EdgeInsets.only(left: 8),
           width: 24,
           height: 24,
           key: Key("item_${_latestEvent.item.itemHash}"),
           child: DefinitionProviderWidget<DestinyInventoryItemDefinition>(
               _latestEvent.item.itemHash,
-              (def) => ItemIconWidget(_latestEvent.item, def, instanceInfo)),
+              (def) => ItemIconWidget(
+                    _latestEvent.item,
+                    def,
+                    instanceInfo,
+                    iconBorderWidth: 0,
+                  )),
         );
         break;
 

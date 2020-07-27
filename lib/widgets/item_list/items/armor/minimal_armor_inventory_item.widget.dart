@@ -9,13 +9,16 @@ import 'package:little_light/widgets/item_list/items/base/minimal_base_inventory
 import 'package:little_light/widgets/item_list/items/base/minimal_info_label.mixin.dart';
 
 class MinimalArmorInventoryItemWidget extends MinimalBaseInventoryItemWidget
-    with  MinimalInfoLabelMixin {
+    with MinimalInfoLabelMixin {
   MinimalArmorInventoryItemWidget(
       DestinyItemComponent item,
       DestinyInventoryItemDefinition itemDefinition,
       DestinyItemInstanceComponent instanceInfo,
-      {@required String characterId, Key key, @required String uniqueId})
-      : super(item, itemDefinition, instanceInfo, uniqueId:uniqueId, characterId:characterId, key:key);
+      {@required String characterId,
+      Key key,
+      @required String uniqueId})
+      : super(item, itemDefinition, instanceInfo,
+            uniqueId: uniqueId, characterId: characterId, key: key);
 
   double get valueFontSize => 12;
 
@@ -26,13 +29,8 @@ class MinimalArmorInventoryItemWidget extends MinimalBaseInventoryItemWidget
 
   @override
   itemIcon(BuildContext context) {
-    
-    return Stack(children:[
-      super.itemIcon(context),
-      buildStatTotal(context)
-    ]);
+    return Stack(children: [super.itemIcon(context), buildStatTotal(context)]);
   }
-
 
   Widget armorPrimaryStat(BuildContext context) {
     return Row(
@@ -47,7 +45,7 @@ class MinimalArmorInventoryItemWidget extends MinimalBaseInventoryItemWidget
   }
 
   Widget primaryStatValueField(BuildContext context) {
-    if(primaryStat == null) return Container();
+    if (primaryStat == null) return Container();
     return Text(
       "${primaryStat?.value}",
       style: TextStyle(fontWeight: FontWeight.w700, fontSize: valueFontSize),
@@ -55,11 +53,9 @@ class MinimalArmorInventoryItemWidget extends MinimalBaseInventoryItemWidget
   }
 
   Widget primaryStatNameField(BuildContext context) {
-    return ManifestText<DestinyStatDefinition>(
-        primaryStat.statHash,
+    return ManifestText<DestinyStatDefinition>(primaryStat.statHash,
         uppercase: true,
-        style:
-            TextStyle(fontWeight: FontWeight.w300, fontSize: 16));
+        style: TextStyle(fontWeight: FontWeight.w300, fontSize: 16));
   }
 
   Widget primaryStatIcon(BuildContext context, IconData icon,
@@ -70,5 +66,5 @@ class MinimalArmorInventoryItemWidget extends MinimalBaseInventoryItemWidget
     );
   }
 
-  get primaryStat => instanceInfo.primaryStat;
+  get primaryStat => instanceInfo?.primaryStat;
 }

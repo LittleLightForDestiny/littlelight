@@ -44,9 +44,9 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
     var text = _searchFieldController.text.toLowerCase();
     return loadouts.where((l) {
       if (text.length <= 3) {
-        return l?.name?.toLowerCase()?.startsWith(text);
+        return l?.name?.toLowerCase()?.startsWith(text) ?? false;
       }
-      return l?.name?.toLowerCase()?.contains(text);
+      return l?.name?.toLowerCase()?.contains(text) ?? false;
     }).toList();
   }
 

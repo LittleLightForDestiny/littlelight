@@ -51,7 +51,7 @@ class TextFilter extends BaseItemFilter<String> {
       var unequipped = l.unequipped
           .where((e) => e.itemInstanceId == item.item.itemInstanceId);
       return equipped.length > 0 || unequipped.length > 0;
-    }).map((l) => l.name);
+    }).map((l) => l.name ?? "");
 
     return _terms.every((t) {
       var words = t.split(" ");
