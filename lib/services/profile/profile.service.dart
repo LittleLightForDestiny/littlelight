@@ -99,8 +99,6 @@ class ProfileService {
   }
   ProfileService._internal();
 
-
-
   static const List<int> profileBuckets = const [
     InventoryBucket.modifications,
     InventoryBucket.shaders,
@@ -109,27 +107,24 @@ class ProfileService {
   final _api = BungieApiService();
 
   DestinyProfileResponse _profile;
-  Timer _timer;
   LastLoadedFrom _lastLoadedFrom;
 
   bool pauseAutomaticUpdater = false;
 
-  List<DestinyComponentType> updateComponents = ProfileComponentGroups.everything;
+  List<DestinyComponentType> updateComponents =
+      ProfileComponentGroups.everything;
 
   Future<DestinyProfileResponse> fetchProfileData(
-      {List<DestinyComponentType> components,
-      bool skipUpdate = false}) async {
+      {List<DestinyComponentType> components, bool skipUpdate = false}) async {
     if (!skipUpdate)
       _broadcaster.push(NotificationEvent(NotificationType.requestedUpdate));
     try {
-      DestinyProfileResponse res = await _updateProfileData(components ?? updateComponents); 
+      DestinyProfileResponse res =
+          await _updateProfileData(components ?? updateComponents);
       this._lastLoadedFrom = LastLoadedFrom.server;
       if (!skipUpdate)
         _broadcaster.push(NotificationEvent(NotificationType.receivedUpdate));
       this._cacheProfile(_profile);
-      if (_timer?.isActive ?? false) { 
-        startAutomaticUpdater();
-      }
       return res;
     } catch (e) {
       print(e);
@@ -143,25 +138,20 @@ class ProfileService {
   }
 
   startAutomaticUpdater() async {
-    if (_timer?.isActive ?? false) {
-      _timer.cancel();
-    }
     if (this._lastLoadedFrom == LastLoadedFrom.cache) {
       await fetchProfileData(components: ProfileComponentGroups.everything);
     }
-
-    var every = isPlaying() ? Duration(seconds: 30) : Duration(minutes: 5);
-    _timer = new Timer.periodic(every, (timer) async {
-      if (!pauseAutomaticUpdater) {
-        print('auto refreshing');
-        await fetchProfileData(components: updateComponents);
+    while (true) {
+      var duration = Duration(seconds: 30);
+      await Future.delayed(duration);
+      print('auto refreshing');
+      if (pauseAutomaticUpdater != true) {
+        try {
+          await fetchProfileData(components: updateComponents);
+        } catch (e) {
+          print(e);
+        }
       }
-    });
-  }
-
-  stopAutomaticUpdater() {
-    if (_timer?.isActive ?? false) {
-      _timer.cancel();
     }
   }
 
@@ -169,14 +159,13 @@ class ProfileService {
       List<DestinyComponentType> components) async {
     var membership = StorageService.getMembership();
     DestinyProfileResponse response;
-    response = await _api.getCurrentProfile(components).timeout(Duration(seconds: 8));
-    
+    response =
+        await _api.getCurrentProfile(components).timeout(Duration(seconds: 8));
+
     if (membership != StorageService.getMembership()) {
       return _profile;
     }
     lastUpdated = DateTime.now();
-
-    bool wasPlaying = isPlaying();
 
     if (response == null) {
       return _profile;
@@ -254,10 +243,6 @@ class ProfileService {
     }
     if (components.contains(DestinyComponentType.CurrencyLookups)) {
       _profile.characterCurrencyLookups = response.characterCurrencyLookups;
-    }
-
-    if (wasPlaying != isPlaying()) {
-      startAutomaticUpdater();
     }
 
     return _profile;
@@ -355,7 +340,7 @@ class ProfileService {
     try {
       var objectives =
           _profile.itemComponents.objectives?.data[itemInstanceId]?.objectives;
-          if(objectives!= null) return objectives;
+      if (objectives != null) return objectives;
     } catch (e) {}
     try {
       var objectives = _profile?.characterProgressions?.data[characterId]
@@ -497,10 +482,11 @@ class ProfileService {
       DestinyCollectibleComponent collectible =
           _profile?.profileCollectibles?.data?.collectibles[hashStr] ?? null;
       if (collectible != null) {
-        return !(collectible?.state ?? DestinyCollectibleState.NotAcquired).contains(DestinyCollectibleState.NotAcquired);
+        return !(collectible?.state ?? DestinyCollectibleState.NotAcquired)
+            .contains(DestinyCollectibleState.NotAcquired);
       }
-    } 
-    
+    }
+
     return _profile?.characterCollectibles?.data?.values?.any((data) {
           DestinyCollectibleState state = data?.collectibles[hashStr]?.state ??
               DestinyCollectibleState.NotAcquired;

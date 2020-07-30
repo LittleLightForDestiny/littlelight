@@ -9,6 +9,7 @@ import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_power_cap_definition.dart';
 import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:flutter/rendering.dart';
+import 'package:little_light/services/littlelight/item_notes.service.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 
@@ -173,6 +174,11 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
 
   Widget buildNameAndType(BuildContext context, double expandRatio) {
     double paddingTop = MediaQuery.of(context).padding.top;
+    var customName = ItemNotesService()
+        .getNotesForItem(item?.itemHash, item?.itemInstanceId)
+        ?.customName
+        ?.toUpperCase();
+
     return Positioned(
         top: lerpDouble(paddingTop + 8, convertSize(96, context), expandRatio),
         left: lerpDouble(kToolbarHeight * 2,
@@ -182,7 +188,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
-              definition.displayProperties.name.toUpperCase(),
+              customName ?? definition.displayProperties.name.toUpperCase(),
               style: TextStyle(
                   color: DestinyData.getTierTextColor(
                           definition?.inventory?.tierType)

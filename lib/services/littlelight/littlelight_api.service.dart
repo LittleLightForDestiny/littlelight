@@ -4,13 +4,13 @@ import 'package:bungie_api/enums/bungie_membership_type.dart';
 import 'package:bungie_api/helpers/bungie_net_token.dart';
 import 'package:bungie_api/models/group_user_info_card.dart';
 import 'package:http/http.dart' as http;
+import 'package:little_light/models/item_notes.dart';
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/storage/storage.service.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-
 
 class LittleLightApiService {
   String _uuid;
@@ -26,6 +26,21 @@ class LittleLightApiService {
   reset() {
     _uuid = null;
     _secret = null;
+  }
+
+  Future<List<ItemNotes>> fetchItemNotes() async {
+    dynamic json = await _authorizedRequest("item-notes");
+    print(json);
+    List<dynamic> list = json['notes'];
+    List<ItemNotes> _fetchedNotes =
+        list.map((j) => ItemNotes.fromJson(j)).toList();
+    return _fetchedNotes;
+  }
+
+  Future<int> saveItemNotes(ItemNotes notes) async {
+    Map<String, dynamic> body = notes.toJson();
+    dynamic json = await _authorizedRequest("item-notes/save", body: body);
+    return json["result"] ?? 0;
   }
 
   Future<List<Loadout>> fetchLoadouts() async {
@@ -50,7 +65,7 @@ class LittleLightApiService {
   }
 
   Future<dynamic> _authorizedRequest(String path,
-      {Map<String, dynamic> body= const {}}) async {
+      {Map<String, dynamic> body = const {}}) async {
     AuthService auth = AuthService();
     GroupUserInfoCard membership = await auth.getMembership();
     BungieNetToken token = await auth.getToken();
@@ -65,7 +80,7 @@ class LittleLightApiService {
     if (secret != null) {
       body['secret'] = secret;
     }
-    
+
     String apiRoot = DotEnv().env["littlelight_api_root"];
 
     Uri uri = Uri.parse("$apiRoot/$path");
@@ -76,7 +91,7 @@ class LittleLightApiService {
     http.Response response;
     headers["Content-Type"] = "application/json";
     response = await http.post(uri, headers: headers, body: jsonEncode(body));
-    
+
     dynamic json = jsonDecode(response.body);
     if (json['secret'] != null) {
       _setSecret(json['secret']);

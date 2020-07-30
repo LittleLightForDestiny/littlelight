@@ -1,4 +1,5 @@
 import 'package:little_light/models/item_notes.dart';
+import 'package:little_light/services/littlelight/littlelight_api.service.dart';
 import 'package:little_light/services/storage/storage.service.dart';
 
 class ItemNotesService {
@@ -19,10 +20,11 @@ class ItemNotesService {
       return _notes;
     }
     await _loadNotesFromCache();
-    if (forceFetch) {
-      await _fetchnotes();
+    print(_notes);
+    if (forceFetch || _notes == null) {
+      _notes = await _fetchNotes();
     }
-    return _notes;
+    return _notes ?? [];
   }
 
   Future<List<ItemNotes>> _loadNotesFromCache() async {
@@ -36,18 +38,41 @@ class ItemNotesService {
     return null;
   }
 
-  Future<List<ItemNotes>> _fetchnotes() async {
-    return [];
+  Future<List<ItemNotes>> _fetchNotes() async {
+    var api = LittleLightApiService();
+    List<ItemNotes> notes;
+    try {
+      notes = await api.fetchItemNotes();
+    } catch (e) {
+      print(e);
+    }
+    return notes ?? this._notes;
   }
 
-  Future<int> saveNotes(ItemNotes loadout) async {
+  ItemNotes getNotesForItem(int itemHash, String itemInstanceId) {
+    return _notes?.firstWhere(
+            (n) => n.itemHash == itemHash && n.itemInstanceId == itemInstanceId,
+            orElse: () => null) ??
+        ItemNotes.fromScratch(
+            itemHash: itemHash, itemInstanceId: itemInstanceId);
+  }
+
+  Future<int> saveNotes(ItemNotes notes) async {
+    var allNotes = await this.getNotes();
+    var index = allNotes.indexWhere((n) =>
+        n.itemHash == notes.itemHash &&
+        n.itemInstanceId == notes.itemInstanceId);
+    if (index > -1) {
+      allNotes[index] = notes;
+    } else {
+      allNotes.add(notes);
+    }
     await _saveNotesToStorage();
-    // var api = LittleLightApiService();
-    // return await api.saveLoadout(loadout);
-    return 1;
+    var api = LittleLightApiService();
+    return await api.saveItemNotes(notes);
   }
 
-  Future<int> deleteNotes(ItemNotes loadout) async {
+  Future<int> deleteNotes(ItemNotes notes) async {
     // var api = LittleLightApiService();
     // return await api.deleteLoadout(loadout);
     return 0;

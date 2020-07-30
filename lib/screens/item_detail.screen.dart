@@ -12,6 +12,7 @@ import 'package:little_light/models/loadout.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/inventory/inventory.service.dart';
+import 'package:little_light/services/littlelight/item_notes.service.dart';
 import 'package:little_light/services/littlelight/loadouts.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/inventory_utils.dart';
@@ -169,17 +170,17 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
   }
 
   Widget buildPortrait(BuildContext context) {
+    var customName = ItemNotesService()
+        .getNotesForItem(item?.itemHash, item?.itemInstanceId)
+        ?.customName;
     return Scaffold(
         body: Stack(children: [
       CustomScrollView(
         slivers: [
-          ItemCoverWidget(
-            item,
-            definition,
-            instanceInfo,
-            uniqueId: widget.uniqueId,
-            characterId: widget.characterId,
-          ),
+          ItemCoverWidget(item, definition, instanceInfo,
+              uniqueId: widget.uniqueId,
+              characterId: widget.characterId,
+              key: Key("cover_$customName")),
           SliverList(
               delegate: SliverChildListDelegate([
             buildSaleDetails(context),
@@ -206,6 +207,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
             buildModDetails(context),
             buildCosmetics(context),
             buildCosmeticDetails(context),
+            buildNotes(context),
             buildObjectives(context),
             buildRewards(context),
             buildQuestInfo(context),
@@ -224,19 +226,19 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
   }
 
   Widget buildLandscape(BuildContext context) {
+    var customName = ItemNotesService()
+        .getNotesForItem(item?.itemHash, item?.itemInstanceId)
+        ?.customName;
     return Scaffold(
         body: Stack(children: [
       CustomScrollView(
         slivers: [
-          LandscapeItemCoverWidget(
-            item,
-            definition,
-            instanceInfo,
-            uniqueId: widget.uniqueId,
-            characterId: widget.characterId,
-            socketController: socketController,
-            hideTransferBlock: widget.hideItemManagement,
-          ),
+          LandscapeItemCoverWidget(item, definition, instanceInfo,
+              uniqueId: widget.uniqueId,
+              characterId: widget.characterId,
+              socketController: socketController,
+              hideTransferBlock: widget.hideItemManagement,
+              key: Key("cover_${item?.itemHash}_$customName")),
           SliverList(
               delegate: SliverChildListDelegate([
             buildSaleDetails(context),
@@ -262,7 +264,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
             buildModDetails(context),
             buildCosmetics(context),
             buildCosmeticDetails(context),
-            // buildNotes(context),
+            buildNotes(context),
             buildObjectives(context),
             buildRewards(context),
             buildQuestInfo(context),
@@ -444,6 +446,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
 
   Widget buildNotes(BuildContext context) {
     var screenPadding = MediaQuery.of(context).padding;
+    if (item == null) return Container();
     return Container(
         padding: EdgeInsets.only(
             left: screenPadding.left, right: screenPadding.right),
@@ -452,6 +455,9 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
             definition: definition,
             instanceInfo: instanceInfo,
             characterId: characterId,
+            onUpdate: () {
+              setState(() => {});
+            },
             key: Key("item_notes_widget")));
   }
 
