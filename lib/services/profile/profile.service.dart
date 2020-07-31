@@ -144,9 +144,9 @@ class ProfileService {
     while (true) {
       var duration = Duration(seconds: 30);
       await Future.delayed(duration);
-      print('auto refreshing');
       if (pauseAutomaticUpdater != true) {
         try {
+          print('auto refreshing');
           await fetchProfileData(components: updateComponents);
         } catch (e) {
           print(e);
