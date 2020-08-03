@@ -21,9 +21,11 @@ class ItemDetailDuplicatesWidget extends BaseDestinyStatelessItemWidget {
       DestinyItemInstanceComponent instanceInfo,
       {Key key,
       this.duplicates})
-      : super(item: item,
-              definition: definition,
-              instanceInfo: instanceInfo, key: key);
+      : super(
+            item: item,
+            definition: definition,
+            instanceInfo: instanceInfo,
+            key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -58,8 +60,9 @@ class ItemDetailDuplicatesWidget extends BaseDestinyStatelessItemWidget {
         crossAxisSpacing: 2,
         mainAxisSpacing: 2,
         crossAxisCount: 10,
-        staggeredTiles:
-            duplicates.map((item) => StaggeredTile.extent(isTablet ? 2 : 5, 122)).toList(),
+        staggeredTiles: duplicates
+            .map((item) => StaggeredTile.extent(isTablet ? 2 : 5, 132))
+            .toList(),
         shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),
         children: duplicates
@@ -70,17 +73,17 @@ class ItemDetailDuplicatesWidget extends BaseDestinyStatelessItemWidget {
   Widget buildItemInstance(ItemWithOwner item, BuildContext context) {
     var instance = profile.getInstanceInfo(item.item.itemInstanceId);
     return Stack(
-      key:Key("duplicate_${item.item.itemInstanceId}_${item.ownerId}"),
-      children: <Widget>[
-      BaseItemInstanceWidget(item.item, definition, instance,
-          characterId: item.ownerId, uniqueId: null),
-      Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () => instanceTap(context, item),
-        ),
-      )
-    ]);
+        key: Key("duplicate_${item.item.itemInstanceId}_${item.ownerId}"),
+        children: <Widget>[
+          BaseItemInstanceWidget(item.item, definition, instance,
+              characterId: item.ownerId, uniqueId: null),
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () => instanceTap(context, item),
+            ),
+          )
+        ]);
   }
 
   void instanceTap(
@@ -90,12 +93,12 @@ class ItemDetailDuplicatesWidget extends BaseDestinyStatelessItemWidget {
     var instance = profile.getInstanceInfo(item.item.itemInstanceId);
     var route = MaterialPageRoute(
       builder: (context) => ItemDetailScreen(
-            item:item.item,
-            definition:definition,
-            instanceInfo:instance,
-            characterId: item.ownerId,
-            uniqueId: null,
-          ),
+        item: item.item,
+        definition: definition,
+        instanceInfo: instance,
+        characterId: item.ownerId,
+        uniqueId: null,
+      ),
     );
     if (this.instanceInfo != null) {
       Navigator.pushReplacement(context, route);

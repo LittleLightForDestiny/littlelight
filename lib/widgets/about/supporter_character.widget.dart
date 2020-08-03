@@ -10,8 +10,8 @@ import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/utils/platform_data.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
+import 'package:little_light/widgets/icon_fonts/littlelight_icons.dart';
 
-import 'package:little_light/widgets/icon_fonts/destiny_icons_icons.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SupporterCharacterWidget extends StatefulWidget {
@@ -29,7 +29,8 @@ class SupporterCharacterWidget extends StatefulWidget {
   }
 }
 
-class SupporterCharacterWidgetState extends State<SupporterCharacterWidget> with AutomaticKeepAliveClientMixin {
+class SupporterCharacterWidgetState extends State<SupporterCharacterWidget>
+    with AutomaticKeepAliveClientMixin {
   DestinyCharacterComponent lastPlayed;
   UserInfoCard userInfo;
 
@@ -93,7 +94,8 @@ class SupporterCharacterWidgetState extends State<SupporterCharacterWidget> with
                   color: Colors.transparent,
                   child: InkWell(
                     onTap: () {
-                      launch(widget.link ?? "https://www.bungie.net/en/Profile/${widget.membershipType}/${widget.membershipId}");
+                      launch(widget.link ??
+                          "https://www.bungie.net/en/Profile/${widget.membershipType}/${widget.membershipId}");
                     },
                   )))
         ]));
@@ -134,7 +136,7 @@ class SupporterCharacterWidgetState extends State<SupporterCharacterWidget> with
     return Row(
       children: <Widget>[
         Icon(
-          DestinyIcons.power,
+          LittleLightIcons.power,
           size: 12,
           color: Colors.amber.shade200,
         ),

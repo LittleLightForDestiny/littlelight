@@ -12,7 +12,7 @@ import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-import 'package:little_light/widgets/icon_fonts/destiny_icons_icons.dart';
+import 'package:little_light/widgets/icon_fonts/littlelight_icons.dart';
 import 'package:little_light/widgets/progress_tabs/milestone_item.widget.dart';
 
 class MilestoneRaidItemWidget extends MilestoneItemWidget {
@@ -30,18 +30,18 @@ class MilestoneRaidItemWidget extends MilestoneItemWidget {
       _MilestoneRaidItemWidgetState();
 }
 
-class _MilestoneRaidItemWidgetState extends MilestoneItemWidgetState<MilestoneRaidItemWidget>{
-
+class _MilestoneRaidItemWidgetState
+    extends MilestoneItemWidgetState<MilestoneRaidItemWidget> {
   buildMilestoneActivities(BuildContext context) {
     var activities = milestone.activities
         .where((a) => a.phases != null && a.phases.length > 0);
 
-    if(activities.length == 1){
+    if (activities.length == 1) {
       return Container(
-        padding: EdgeInsets.all(2),
-        child: Column(
-            children:
-                activities.map((a) => buildPhases(context, a)).toList()));
+          padding: EdgeInsets.all(2),
+          child: Column(
+              children:
+                  activities.map((a) => buildPhases(context, a)).toList()));
     }
     return Container(
         padding: EdgeInsets.all(2),
@@ -55,15 +55,15 @@ class _MilestoneRaidItemWidgetState extends MilestoneItemWidgetState<MilestoneRa
     return Column(
       children: <Widget>[
         Container(
-          padding: EdgeInsets.all(2),
-          child:HeaderWidget(
-            child: ManifestText<DestinyActivityDefinition>(
-                activity.activityHash,
-                uppercase: true,
-                textExtractor: (def) =>
-                    def?.selectionScreenDisplayProperties?.name ??
-                    def.displayProperties.name,
-                style: TextStyle(fontWeight: FontWeight.bold)))),
+            padding: EdgeInsets.all(2),
+            child: HeaderWidget(
+                child: ManifestText<DestinyActivityDefinition>(
+                    activity.activityHash,
+                    uppercase: true,
+                    textExtractor: (def) =>
+                        def?.selectionScreenDisplayProperties?.name ??
+                        def.displayProperties.name,
+                    style: TextStyle(fontWeight: FontWeight.bold)))),
         buildPhases(context, activity)
       ],
     );
@@ -72,19 +72,20 @@ class _MilestoneRaidItemWidgetState extends MilestoneItemWidgetState<MilestoneRa
   Widget buildPhases(
       BuildContext context, DestinyMilestoneChallengeActivity activity) {
     return Row(
-      children: activity?.phases?.map((p) => buildPhase(context, p))?.toList() ?? [],
+      children:
+          activity?.phases?.map((p) => buildPhase(context, p))?.toList() ?? [],
     );
   }
 
   Widget buildPhase(BuildContext context, DestinyMilestoneActivityPhase phase) {
     return Flexible(
-            child: Container(
-                height: 60,
-                alignment: Alignment.center,
-                padding: EdgeInsets.all(4),
-                margin: EdgeInsets.all(2),
-                color:Colors.blueGrey.shade700,
-                child: buildPhaseLabel(context, phase)));
+        child: Container(
+            height: 60,
+            alignment: Alignment.center,
+            padding: EdgeInsets.all(4),
+            margin: EdgeInsets.all(2),
+            color: Colors.blueGrey.shade700,
+            child: buildPhaseLabel(context, phase)));
   }
 
   Widget buildPhaseLabel(
@@ -93,16 +94,16 @@ class _MilestoneRaidItemWidgetState extends MilestoneItemWidgetState<MilestoneRa
     IconData icon;
     switch (phase.phaseHash) {
       case RaidPhases.leviathanGardens:
-        icon = DestinyIcons.leviathan_dogs;
+        icon = LittleLightIcons.leviathan_dogs;
         break;
       case RaidPhases.leviathanArena:
-        icon = DestinyIcons.leviathan_axes;
+        icon = LittleLightIcons.leviathan_axes;
         break;
       case RaidPhases.leviathanPools:
-        icon = DestinyIcons.leviathan_sun;
+        icon = LittleLightIcons.leviathan_sun;
         break;
       case RaidPhases.leviathanCallus:
-        icon = DestinyIcons.leviathan_cup;
+        icon = LittleLightIcons.leviathan_cup;
         break;
 
       case RaidPhases.eowLoyalists:
@@ -183,9 +184,8 @@ class _MilestoneRaidItemWidgetState extends MilestoneItemWidgetState<MilestoneRa
         text = "Sanctified Mind";
         break;
     }
-    Color color = phase.complete
-        ? Colors.amber.shade100
-        : Colors.blueGrey.shade200;
+    Color color =
+        phase.complete ? Colors.amber.shade100 : Colors.blueGrey.shade200;
     if (icon != null) {
       return Icon(icon, color: color, size: 30);
     }

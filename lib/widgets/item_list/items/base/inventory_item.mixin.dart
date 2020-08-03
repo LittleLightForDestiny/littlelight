@@ -3,6 +3,7 @@ import 'package:bungie_api/enums/item_state.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/models/wish_list.dart';
+import 'package:little_light/services/littlelight/item_notes.service.dart';
 import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateless_item.widget.dart';
@@ -10,6 +11,7 @@ import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/item_name_bar/item_name_bar.widget.dart';
 import 'package:little_light/widgets/common/primary_stat.widget.dart';
 import 'package:little_light/widgets/common/wishlist_badge.widget.dart';
+import 'package:little_light/widgets/item_tags/item_tag.widget.dart';
 
 mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget {
   final String uniqueId = "";
@@ -188,14 +190,24 @@ mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget {
 
   Widget namebarTrailingWidget(BuildContext context) {
     List<Widget> items = [];
-    var tags = WishlistsService().getWishlistBuildTags(item);
+    var wishlistTags = WishlistsService().getWishlistBuildTags(item);
+    var notes = ItemNotesService()
+        .getNotesForItem(item?.itemHash, item?.itemInstanceId);
+    var tags = ItemNotesService().tagsByIds(notes?.tags);
     var locked = item?.state?.contains(ItemState.Locked) ?? false;
     if (locked) {
       items.add(Container(
           child: Icon(FontAwesomeIcons.lock, size: titleFontSize * .9)));
     }
     if (tags != null) {
-      items.add(WishlistBadgeWidget(tags: tags, size: tagIconSize));
+      items.addAll(tags.map((t) => ItemTagWidget(
+            t,
+            fontSize: tagIconSize - padding / 2,
+            padding: padding / 8,
+          )));
+    }
+    if (wishlistTags != null) {
+      items.add(WishlistBadgeWidget(tags: wishlistTags, size: tagIconSize));
     }
     if (trailing != null) {
       items.add(trailing);

@@ -21,7 +21,7 @@ import 'package:little_light/services/user_settings/user_settings.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-import 'package:little_light/widgets/icon_fonts/destiny_icons_icons.dart';
+import 'package:little_light/widgets/icon_fonts/littlelight_icons.dart';
 import 'package:little_light/widgets/option_sheets/character_options_sheet.widget.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:speech_bubble/speech_bubble.dart';
@@ -154,7 +154,7 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
             baseColor: Colors.grey.shade400,
             highlightColor: Colors.grey.shade100,
             period: Duration(seconds: 5),
-            child: Icon(DestinyIcons.ghost,
+            child: Icon(LittleLightIcons.ghost,
                 size: 50, color: Colors.grey.shade300)));
     if (UserSettingsService().hasTappedGhost) {
       return ghost;
@@ -201,7 +201,7 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
                 Padding(
                     padding: EdgeInsets.only(top: 8),
                     child: Icon(
-                      DestinyIcons.power,
+                      LittleLightIcons.power,
                       color: Colors.amber.shade500,
                       size: 16,
                     )),

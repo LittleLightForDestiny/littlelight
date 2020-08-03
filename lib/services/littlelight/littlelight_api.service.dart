@@ -5,12 +5,20 @@ import 'package:bungie_api/helpers/bungie_net_token.dart';
 import 'package:bungie_api/models/group_user_info_card.dart';
 import 'package:http/http.dart' as http;
 import 'package:little_light/models/item_notes.dart';
+import 'package:little_light/models/item_notes_tag.dart';
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/storage/storage.service.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+class NotesResponse {
+  List<ItemNotes> notes;
+  List<ItemNotesTag> tags;
+
+  NotesResponse({this.notes, this.tags});
+}
 
 class LittleLightApiService {
   String _uuid;
@@ -28,13 +36,28 @@ class LittleLightApiService {
     _secret = null;
   }
 
-  Future<List<ItemNotes>> fetchItemNotes() async {
+  Future<NotesResponse> fetchItemNotes() async {
     dynamic json = await _authorizedRequest("item-notes");
     print(json);
-    List<dynamic> list = json['notes'];
     List<ItemNotes> _fetchedNotes =
-        list.map((j) => ItemNotes.fromJson(j)).toList();
-    return _fetchedNotes;
+        json['notes'].map<ItemNotes>((j) => ItemNotes.fromJson(j)).toList();
+
+    List<ItemNotesTag> _fetchedTags = json['tags']
+        .map<ItemNotesTag>((j) => ItemNotesTag.fromJson(j))
+        .toList();
+    return NotesResponse(notes: _fetchedNotes, tags: _fetchedTags);
+  }
+
+  Future<int> saveTag(ItemNotesTag tag) async {
+    Map<String, dynamic> body = tag.toJson();
+    dynamic json = await _authorizedRequest("tag/save", body: body);
+    return json["result"] ?? 0;
+  }
+
+  Future<int> deleteTag(ItemNotesTag tag) async {
+    Map<String, dynamic> body = tag.toJson();
+    dynamic json = await _authorizedRequest("tag/delete", body: body);
+    return json["result"] ?? 0;
   }
 
   Future<int> saveItemNotes(ItemNotes notes) async {

@@ -46,6 +46,7 @@ import 'package:little_light/widgets/item_sockets/item_details_plug_info.widget.
 import 'package:little_light/widgets/item_sockets/item_details_socket_details.widget.dart';
 import 'package:little_light/widgets/item_sockets/item_socket.controller.dart';
 import 'package:little_light/widgets/item_stats/details_item_stats.widget.dart';
+import 'package:little_light/widgets/item_tags/item_details_tags.widget.dart';
 import 'package:little_light/widgets/option_sheets/as_equipped_switch.widget.dart';
 import 'package:little_light/widgets/option_sheets/loadout_select_sheet.widget.dart';
 
@@ -208,6 +209,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
             buildCosmetics(context),
             buildCosmeticDetails(context),
             buildNotes(context),
+            buildTags(context),
             buildObjectives(context),
             buildRewards(context),
             buildQuestInfo(context),
@@ -265,6 +267,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
             buildCosmetics(context),
             buildCosmeticDetails(context),
             buildNotes(context),
+            buildTags(context),
             buildObjectives(context),
             buildRewards(context),
             buildQuestInfo(context),
@@ -371,7 +374,11 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
         .contains(definition?.inventory?.bucketTypeHash)) {
       buttons.add(Expanded(
           child: RaisedButton(
-              child: TranslatedTextWidget("Add to Loadout"),
+              child: TranslatedTextWidget(
+                "Add to Loadout",
+                overflow: TextOverflow.fade,
+                softWrap: false,
+              ),
               onPressed: () async {
                 var loadouts = await LoadoutsService().getLoadouts();
                 var equipped = false;
@@ -395,7 +402,11 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
         widget?.definition?.equippable == true) {
       buttons.add(Expanded(
           child: RaisedButton(
-              child: TranslatedTextWidget("View in Collections"),
+              child: TranslatedTextWidget(
+                "View in Collections",
+                overflow: TextOverflow.fade,
+                softWrap: false,
+              ),
               onPressed: () async {
                 Navigator.push(
                   context,
@@ -458,7 +469,24 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
             onUpdate: () {
               setState(() => {});
             },
-            key: Key("item_notes_widget")));
+            key: Key("item_notes")));
+  }
+
+  Widget buildTags(BuildContext context) {
+    var screenPadding = MediaQuery.of(context).padding;
+    if (item == null) return Container();
+    return Container(
+        padding: EdgeInsets.only(
+            left: screenPadding.left, right: screenPadding.right),
+        child: ItemDetailsTagsWidget(
+            item: item,
+            definition: definition,
+            instanceInfo: instanceInfo,
+            characterId: characterId,
+            onUpdate: () {
+              setState(() => {});
+            },
+            key: Key("item_tags_widget")));
   }
 
   Widget buildObjectives(BuildContext context) {

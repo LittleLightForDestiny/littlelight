@@ -16,6 +16,7 @@ import 'package:little_light/utils/item_filters/energy_level_constraints_filter.
 import 'package:little_light/utils/item_filters/energy_type_filter.dart';
 import 'package:little_light/utils/item_filters/item_bucket_filter.dart';
 import 'package:little_light/utils/item_filters/item_subtype_filter.dart';
+import 'package:little_light/utils/item_filters/item_tag_filter.dart';
 import 'package:little_light/utils/item_filters/loadout_filter.dart';
 import 'package:little_light/utils/item_filters/power_cap_filter.dart';
 import 'package:little_light/utils/item_filters/power_level_constraints_filter.dart';
@@ -98,6 +99,7 @@ class SearchController extends ChangeNotifier {
       TotalStatsConstraintsFilter(
           TotalStatsConstraints(), TotalStatsConstraints()),
       LoadoutFilter(),
+      ItemTagFilter(),
       WishlistTagFilter(),
     ];
     final _defaultPostFilters = <BaseItemFilter>[
