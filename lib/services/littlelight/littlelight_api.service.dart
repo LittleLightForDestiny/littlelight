@@ -38,7 +38,6 @@ class LittleLightApiService {
 
   Future<NotesResponse> fetchItemNotes() async {
     dynamic json = await _authorizedRequest("item-notes");
-    print(json);
     List<ItemNotes> _fetchedNotes =
         json['notes'].map<ItemNotes>((j) => ItemNotes.fromJson(j)).toList();
 

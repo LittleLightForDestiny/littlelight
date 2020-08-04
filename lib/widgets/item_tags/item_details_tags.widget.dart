@@ -10,6 +10,7 @@ import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widg
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/littlelight_custom.dialog.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:little_light/widgets/flutter/center_icon_workaround.dart';
 import 'package:little_light/widgets/item_tags/create_tag_form.widget.dart';
 import 'package:little_light/widgets/item_tags/item_tag.widget.dart';
 
@@ -42,8 +43,8 @@ class ItemDetailsTagsWidgetState
   @override
   void initState() {
     super.initState();
-    notes =
-        ItemNotesService().getNotesForItem(item.itemHash, item.itemInstanceId);
+    notes = ItemNotesService()
+        .getNotesForItem(item?.itemHash, item?.itemInstanceId, true);
     setState(() {});
   }
 
@@ -91,8 +92,10 @@ class ItemDetailsTagsWidgetState
                     width: 20,
                     height: 20,
                     alignment: Alignment.center,
-                    child: Icon(FontAwesomeIcons.solidTimesCircle,
-                        size: 16, color: Colors.red)),
+                    child: CenterIconWorkaround(
+                        FontAwesomeIcons.solidTimesCircle,
+                        size: 16,
+                        color: Colors.red)),
                 onClick: () {
                   notes.tags.remove(t.tagId);
                   save();
@@ -104,7 +107,8 @@ class ItemDetailsTagsWidgetState
                 icon: null, name: "Add Tag", backgroundColorHex: "#03A9f4"),
             includeLabel: true,
             padding: 4,
-            trailing: Icon(FontAwesomeIcons.plusCircle, size: 18),
+            trailing:
+                CenterIconWorkaround(FontAwesomeIcons.plusCircle, size: 18),
             onClick: () => openAddTagDialog(context)),
       ]).toList(),
     );
@@ -116,7 +120,8 @@ class ItemDetailsTagsWidgetState
         context: context,
         builder: (BuildContext context) {
           return LittleLightCustomDialog.withHorizontalButtons(
-              Column(
+              SingleChildScrollView(
+                  child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: tags
                     .map((t) => Container(
@@ -143,6 +148,9 @@ class ItemDetailsTagsWidgetState
                                     openEditTagDialog(context, t);
                                   },
                                 ),
+                                Container(
+                                  width: 4,
+                                ),
                                 iconButton(
                                   Icons.delete,
                                   Colors.red,
@@ -161,7 +169,7 @@ class ItemDetailsTagsWidgetState
                                 },
                               )))
                     .toList(),
-              ),
+              )),
               maxWidth: 400,
               buttons: [
                 RaisedButton(
@@ -245,11 +253,12 @@ class ItemDetailsTagsWidgetState
   Widget iconButton(IconData icon, Color color, Function onClick) {
     return Material(
         color: color,
+        borderRadius: BorderRadius.circular(16),
         child: InkWell(
             onTap: onClick,
             child: Container(
               padding: EdgeInsets.all(4),
-              child: Icon(icon, size: 16),
+              child: CenterIconWorkaround(icon, size: 16),
             )));
   }
 
@@ -257,9 +266,12 @@ class ItemDetailsTagsWidgetState
     await showDialog<bool>(
         context: context,
         builder: (context) => LittleLightCustomDialog.withYesNoButtons(
-              TranslatedTextWidget(
-                  "Do you really want to delete the tag {tagName} ?",
-                  replace: {"loadoutName": tag.name}),
+              Container(
+                  padding: EdgeInsets.all(8).copyWith(top: 16),
+                  child: TranslatedTextWidget(
+                      "Do you really want to delete the tag {tagName} ?",
+                      style: TextStyle(fontSize: 16),
+                      replace: {"tagName": tag.name})),
               maxWidth: 300,
               title: TranslatedTextWidget(
                 "Delete tag",

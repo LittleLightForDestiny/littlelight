@@ -32,7 +32,7 @@ enum LastLoadedFrom { server, cache }
 class ProfileComponentGroups {
   static const List<DestinyComponentType> basicProfile = [
     DestinyComponentType.Characters,
-    DestinyComponentType.CharacterActivities,
+    // DestinyComponentType.CharacterActivities,
     DestinyComponentType.CharacterProgressions,
     DestinyComponentType.CharacterEquipment,
     DestinyComponentType.CharacterInventories,
@@ -42,7 +42,7 @@ class ProfileComponentGroups {
     DestinyComponentType.ItemInstances,
     DestinyComponentType.ItemStats,
     DestinyComponentType.ItemObjectives,
-    DestinyComponentType.ItemTalentGrids,
+    // DestinyComponentType.ItemTalentGrids,
     DestinyComponentType.ItemSockets,
     DestinyComponentType.ItemPlugStates,
     DestinyComponentType.ItemPlugObjectives,
@@ -116,6 +116,7 @@ class ProfileService {
 
   Future<DestinyProfileResponse> fetchProfileData(
       {List<DestinyComponentType> components, bool skipUpdate = false}) async {
+    print(components);
     if (!skipUpdate)
       _broadcaster.push(NotificationEvent(NotificationType.requestedUpdate));
     try {

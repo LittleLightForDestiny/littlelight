@@ -16,6 +16,7 @@ import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:little_light/widgets/flutter/center_icon_workaround.dart';
 import 'package:little_light/widgets/loadouts/loadout_destinations.widget.dart';
 
 class EquipLoadoutScreen extends StatefulWidget {
@@ -171,7 +172,7 @@ class EquipLoadoutScreenState extends State<EquipLoadoutScreen> {
   List<Widget> buildItemRow(BuildContext context, IconData icon,
       List<int> buckets, Map<int, DestinyItemComponent> items) {
     List<Widget> itemWidgets = [];
-    itemWidgets.add(Icon(icon));
+    itemWidgets.add(CenterIconWorkaround(icon));
     itemWidgets
         .addAll(buckets.map((bucketHash) => itemIcon(items[bucketHash])));
     return itemWidgets

@@ -1,5 +1,6 @@
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:little_light/models/loadout.dart';
+import 'package:little_light/services/littlelight/item_notes.service.dart';
 import 'package:little_light/services/littlelight/loadouts.service.dart';
 import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
@@ -53,9 +54,16 @@ class TextFilter extends BaseItemFilter<String> {
       return equipped.length > 0 || unequipped.length > 0;
     }).map((l) => l.name ?? "");
 
+    var customName = ItemNotesService()
+            .getNotesForItem(item?.item?.itemHash, item?.item?.itemInstanceId)
+            ?.customName
+            ?.toLowerCase() ??
+        "";
+
     return _terms.every((t) {
       var words = t.split(" ");
       if (words.every((w) => name.contains(w))) return true;
+      if (words.every((w) => customName.contains(w))) return true;
       if (words.every((w) => itemType.contains(w))) return true;
       if (words.every((w) => loadoutNames.any(
           (l) => removeDiacritics(l.toLowerCase()).contains(w)))) return true;

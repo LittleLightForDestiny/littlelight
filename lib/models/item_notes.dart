@@ -24,6 +24,10 @@ class ItemNotes {
       this.tags,
       @required this.updatedAt});
 
+  String get uniqueId {
+    return "${itemHash}_$itemInstanceId";
+  }
+
   factory ItemNotes.fromScratch({int itemHash, String itemInstanceId}) {
     return ItemNotes(
         updatedAt: DateTime.now(),

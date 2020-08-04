@@ -8,6 +8,7 @@ import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widg
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/littlelight_custom.dialog.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:little_light/widgets/flutter/center_icon_workaround.dart';
 
 class ItemDetailsNotesWidget extends BaseDestinyStatefulItemWidget {
   final Function onUpdate;
@@ -38,8 +39,8 @@ class ItemDetailsNotesWidgetState
   @override
   void initState() {
     super.initState();
-    notes =
-        ItemNotesService().getNotesForItem(item.itemHash, item.itemInstanceId);
+    notes = ItemNotesService()
+        .getNotesForItem(item.itemHash, item.itemInstanceId, true);
     setState(() {});
   }
 
@@ -160,7 +161,8 @@ class ItemDetailsNotesWidgetState
         color: color,
         child: InkWell(
           child: Container(
-              padding: EdgeInsets.all(4), child: Icon(icon, size: 22)),
+              padding: EdgeInsets.all(4),
+              child: CenterIconWorkaround(icon, size: 22)),
           onTap: onPressed,
         ));
   }

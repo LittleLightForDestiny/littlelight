@@ -4,15 +4,19 @@ import 'package:little_light/widgets/common/translated_text.widget.dart';
 
 class LittleLightCustomDialog extends Dialog {
   LittleLightCustomDialog(Widget content,
-      {Widget title, Widget footer, double maxWidth = 600})
+      {Widget title,
+      Widget footer,
+      double maxWidth = 600,
+      double maxHeight = 500})
       : super(
             insetPadding: EdgeInsets.all(8),
             child: Container(
-              constraints: BoxConstraints(maxWidth: maxWidth),
+              constraints:
+                  BoxConstraints(maxWidth: maxWidth, maxHeight: maxHeight),
               padding: EdgeInsets.all(8).copyWith(bottom: 4),
               child: Column(mainAxisSize: MainAxisSize.min, children: [
                 title != null ? HeaderWidget(child: title) : Container(),
-                content,
+                Flexible(child: content),
                 Container(
                   height: 8,
                 ),

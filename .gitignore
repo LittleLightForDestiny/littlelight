@@ -90,3 +90,4 @@ build/
 
 # Firebase configs
 /**/GoogleService-Info.plist
+/**/google-services.json
