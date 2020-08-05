@@ -68,7 +68,7 @@ class VendorsScreenState extends State<VendorsScreen>
             top: paddingTop,
             width: kToolbarHeight,
             height: kToolbarHeight,
-            child: IconButton(
+            child: IconButton(enableFeedback: false,
               icon: Icon(Icons.menu),
               onPressed: () {
                 Scaffold.of(context).openDrawer();

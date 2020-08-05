@@ -19,6 +19,7 @@ enum StorageKeys {
   cachedProfile,
   cachedLoadouts,
   cachedNotes,
+  cachedTags,
   trackedObjectives,
   membershipUUID,
   membershipSecret,
@@ -66,13 +67,13 @@ extension StorageKeysExtension on StorageKeys {
       case StorageKeys.cachedVendors:
       case StorageKeys.cachedLoadouts:
       case StorageKeys.cachedNotes:
+      case StorageKeys.cachedTags:
       case StorageKeys.loadoutsOrder:
       case StorageKeys.trackedObjectives:
       case StorageKeys.bungieCommonSettings:
       case StorageKeys.membershipUUID:
       case StorageKeys.membershipSecret:
       case StorageKeys.latestScreen:
-        
         return name.replaceAllMapped(
             RegExp(r'[A-Z]'), (letter) => "_${letter[0].toLowerCase()}");
 
@@ -237,11 +238,11 @@ class StorageService {
     return null;
   }
 
-  Future<DateTime> getRawFileDate(StorageKeys key, String filename) async{
+  Future<DateTime> getRawFileDate(StorageKeys key, String filename) async {
     var path = await getPath(key);
     File file = File("$path/$filename");
     bool exists = await file.exists();
-    if(!exists) return null;
+    if (!exists) return null;
     return await file.lastModified();
   }
 
@@ -256,7 +257,8 @@ class StorageService {
     return null;
   }
 
-  Future<void> saveRawFile(StorageKeys key, String filename, String contents) async {
+  Future<void> saveRawFile(
+      StorageKeys key, String filename, String contents) async {
     var path = await getPath(key);
     File file = File("$path/$filename");
     bool exists = await file.exists();
@@ -274,7 +276,6 @@ class StorageService {
       await file.delete(recursive: true);
     }
   }
-
 
   Future<String> getPath(StorageKeys key,
       {bool json = false, bool dbPath = false}) async {

@@ -2,6 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:little_light/utils/item_sorters/ammo_type_sorter.dart';
 import 'package:little_light/utils/item_sorters/base_item_sorter.dart';
 import 'package:little_light/utils/item_sorters/bucket_hash_sorter.dart';
+import 'package:little_light/utils/item_sorters/class_type_sorter.dart';
 import 'package:little_light/utils/item_sorters/damage_type_sorter.dart';
 import 'package:little_light/utils/item_sorters/expiration_date_sorter.dart';
 import 'package:little_light/utils/item_sorters/item_owner_sorter.dart';
@@ -123,7 +124,7 @@ class ItemSortParameter {
         return SubTypeSorter(direction);
 
       case ItemSortParameterType.ClassType:
-        return NameSorter(direction);
+        return ClassTypeSorter(direction);
 
       case ItemSortParameterType.AmmoType:
         return AmmoTypeSorter(direction);

@@ -8,6 +8,8 @@ import 'package:little_light/services/translate/translate.service.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
+
+
 class LanguagesScreen extends StatefulWidget {
   @override
   _LanguagesScreenState createState() => _LanguagesScreenState();
@@ -44,7 +46,7 @@ class _LanguagesScreenState extends State<LanguagesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
+        leading: IconButton(enableFeedback: false,
           icon: Icon(Icons.menu),
           onPressed: () {
             Scaffold.of(context).openDrawer();

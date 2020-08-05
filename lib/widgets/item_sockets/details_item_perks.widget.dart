@@ -41,7 +41,7 @@ class DetailsItemPerksWidget extends BaseItemSocketsWidget {
 }
 
 class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
-    extends BaseItemSocketsWidgetState<T> with PlugWishlistTagIconsMixin{
+    extends BaseItemSocketsWidgetState<T> with PlugWishlistTagIconsMixin {
   bool showDetails = false;
 
   @override
@@ -87,7 +87,9 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
               width: 2,
               color: Colors.white.withOpacity(.4))
         ]);
-    children = children.take(children.length - 1);
+    if (children.length > 0) {
+      children = children.take(children.length - 1);
+    }
     var mq = MediaQueryHelper(context);
     var largeScreen = mq.isDesktop || (mq.tabletOrBigger && mq.isLandscape);
     if (!largeScreen && showDetails) {
@@ -227,14 +229,24 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
     }
 
     BorderSide borderSide = BorderSide(color: borderColor, width: 2);
-    var tags = WishlistsService().getPerkTags(definition?.hash, plugItemHash).where((element) => [WishlistTag.GodPVE, WishlistTag.PVE, WishlistTag.GodPVP, WishlistTag.PVP].contains(element)).toSet();
+    var tags = WishlistsService()
+        .getPerkTags(definition?.hash, plugItemHash)
+        .where((element) => [
+              WishlistTag.GodPVE,
+              WishlistTag.PVE,
+              WishlistTag.GodPVP,
+              WishlistTag.PVP
+            ].contains(element))
+        .toSet();
 
     return Container(
         key: Key("item_perk_$plugItemHash"),
         padding: EdgeInsets.all(0),
         margin: EdgeInsets.only(bottom: 8),
-        foregroundDecoration: (tags?.length ?? 0) > 0 ? WishlistCornerBadgeDecoration(tags:tags, badgeSize: 14) : null,
-        child: FlatButton(
+        foregroundDecoration: (tags?.length ?? 0) > 0
+            ? WishlistCornerBadgeDecoration(tags: tags, badgeSize: 14)
+            : null,
+        child: MaterialButton(
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(4), side: borderSide),
           padding: EdgeInsets.all(8),
@@ -247,7 +259,10 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
                     plugItemHash)),
             Container(width: 8),
             Expanded(
-              child: ManifestText<DestinyInventoryItemDefinition>(plugItemHash, maxLines: 2,),
+              child: ManifestText<DestinyInventoryItemDefinition>(
+                plugItemHash,
+                maxLines: 2,
+              ),
             )
           ]),
           onPressed: () {
@@ -291,7 +306,7 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
         child: Stack(children: [
           AspectRatio(
               aspectRatio: 1,
-              child: FlatButton(
+              child: MaterialButton(
                 shape: intrinsic && !isExotic
                     ? RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(4),
@@ -308,9 +323,10 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
           Positioned(
               top: 0,
               right: 0,
-              left:0,
+              left: 0,
               child: Center(
-                  child: buildWishlistTagIcons(context, definition.hash, plugItemHash)))
+                  child: buildWishlistTagIcons(
+                      context, definition.hash, plugItemHash)))
         ]));
   }
 }

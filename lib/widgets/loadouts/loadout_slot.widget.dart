@@ -10,11 +10,14 @@ import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/inventory_utils.dart';
+import 'package:little_light/utils/item_with_owner.dart';
+import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:little_light/widgets/item_list/items/quick_select_item_wrapper.widget.dart';
 
 typedef void OnRemoveItemFromLoadout(DestinyItemComponent item, bool equipped);
 typedef void OnAddItemToLoadout(bool equipped, DestinyClass classType);
@@ -157,60 +160,142 @@ class LoadoutSlotWidget extends StatelessWidget {
               child: Icon(iconData ?? Icons.remove_circle_outline,
                   size: 12, color: Colors.white)));
     }
+    var isTablet = MediaQueryHelper(context).tabletOrBigger;
+    var itemIcon = Container(
+        foregroundDecoration: decoration,
+        child: Stack(children: [
+          Positioned.fill(
+              child: item?.itemHash != null
+                  ? DefinitionProviderWidget<DestinyInventoryItemDefinition>(
+                      item?.itemHash,
+                      (def) => ItemIconWidget(item, def, null),
+                      key: Key('slot_item_${item?.itemInstanceId}'),
+                    )
+                  : ManifestImageWidget<DestinyInventoryItemDefinition>(
+                      item?.itemHash ?? 1835369552)),
+          icon != null ? icon : Container(),
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () {
+                if (item != null) {
+                  // onRemove(item, equipped);
+                  openModal(context, item, equipped);
+                } else {
+                  onAdd(equipped, classType);
+                }
+              },
+              onLongPress: () async {
+                if (item == null) {
+                  return;
+                }
+                var def = await manifest.getDefinition<
+                    DestinyInventoryItemDefinition>(item.itemHash);
+                var instanceInfo = profile.getInstanceInfo(item.itemInstanceId);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ItemDetailScreen(
+                      item: item,
+                      definition: def,
+                      instanceInfo: instanceInfo,
+                      characterId: null,
+                      hideItemManagement: true,
+                    ),
+                  ),
+                );
+              },
+            ),
+          )
+        ]));
+    if (isTablet) {
+      return Container(
+          margin: EdgeInsets.only(right: 4),
+          width: 64,
+          height: 64,
+          child: itemIcon);
+    }
     return FractionallySizedBox(
         widthFactor: 1 / 6,
         child: Container(
             margin: EdgeInsets.only(right: 4),
-            child: AspectRatio(
-                aspectRatio: 1,
-                child: Container(
-                    foregroundDecoration: decoration,
-                    child: Stack(children: [
-                      Positioned.fill(
-                          child: item?.itemHash != null
-                              ? DefinitionProviderWidget<
-                                  DestinyInventoryItemDefinition>(
-                                  item?.itemHash,
-                                  (def) => ItemIconWidget(item, def, null),
-                                  key: Key('slot_item_${item?.itemInstanceId}'),
-                                )
-                              : ManifestImageWidget<
-                                      DestinyInventoryItemDefinition>(
-                                  item?.itemHash ?? 1835369552)),
-                      icon != null ? icon : Container(),
-                      Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          onTap: () {
-                            if (item != null) {
-                              onRemove(item, equipped);
-                            } else {
-                              onAdd(equipped, classType);
-                            }
-                          },
-                          onLongPress: () async {
-                            if (item == null) {
-                              return;
-                            }
-                            var def = await manifest.getDefinition<
-                                DestinyInventoryItemDefinition>(item.itemHash);
-                            var instanceInfo =
-                                profile.getInstanceInfo(item.itemInstanceId);
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ItemDetailScreen(
-                                  item: item,
-                                  definition: def,
-                                  instanceInfo: instanceInfo,
-                                  characterId: null,
-                                  hideItemManagement: true,
-                                ),
-                              ),
-                            );
-                          },
+            child: AspectRatio(aspectRatio: 1, child: itemIcon)));
+  }
+
+  openModal(BuildContext context, DestinyItemComponent item, bool equipped) {
+    var ownerId = ProfileService().getItemOwner(item.itemInstanceId);
+    var padding = EdgeInsets.all(8).copyWith(bottom: 4);
+    var screenWidth = MediaQuery.of(context).size.width;
+    if (screenWidth < 500) {
+      padding = padding.copyWith(left: 0, right: 0);
+    }
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+              insetPadding: EdgeInsets.all(0),
+              child: Container(
+                  width: screenWidth + 16,
+                  padding: padding,
+                  constraints: BoxConstraints(maxWidth: 500),
+                  child: Column(mainAxisSize: MainAxisSize.min, children: [
+                    QuickSelectItemWrapperWidget(item, null,
+                        characterId: ownerId ?? ItemWithOwner.OWNER_VAULT),
+                    Row(
+                      children: [
+                        Expanded(
+                            child: RaisedButton(
+                                child: TranslatedTextWidget("Cancel",
+                                    uppercase: true,
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold)),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                })),
+                        Container(
+                          width: 4,
                         ),
-                      )
-                    ])))));
+                        Expanded(
+                            child: RaisedButton(
+                                child: TranslatedTextWidget("Details",
+                                    uppercase: true,
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold)),
+                                onPressed: () async {
+                                  Navigator.of(context).pop();
+                                  var def = await manifest.getDefinition<
+                                          DestinyInventoryItemDefinition>(
+                                      item.itemHash);
+                                  var instanceInfo = profile
+                                      .getInstanceInfo(item.itemInstanceId);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ItemDetailScreen(
+                                        item: item,
+                                        definition: def,
+                                        instanceInfo: instanceInfo,
+                                        characterId: null,
+                                        hideItemManagement: true,
+                                      ),
+                                    ),
+                                  );
+                                })),
+                        Container(width: 4),
+                        Expanded(
+                            child: RaisedButton(
+                                color: Colors.red,
+                                child: TranslatedTextWidget("Remove",
+                                    uppercase: true,
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold)),
+                                onPressed: () {
+                                  onRemove(item, equipped);
+                                  Navigator.of(context).pop();
+                                })),
+                      ],
+                    )
+                  ])));
+        });
   }
 }

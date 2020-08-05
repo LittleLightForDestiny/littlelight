@@ -57,7 +57,7 @@ class EquipmentScreenState extends State<EquipmentScreen>
   @override
   void initState() {
     super.initState();
-    
+    ProfileService().updateComponents = ProfileComponentGroups.basicProfile;
     SelectedPagePersistence.saveLatestScreen(SelectedPagePersistence.equipment);
 
     typeTabController = typeTabController ??
@@ -119,7 +119,7 @@ class EquipmentScreenState extends State<EquipmentScreen>
             top: screenPadding.top,
             width: kToolbarHeight,
             height: kToolbarHeight,
-            child: IconButton(
+            child: IconButton(enableFeedback: false,
               icon: Icon(Icons.menu),
               onPressed: () {
                 Scaffold.of(context).openDrawer();
@@ -174,7 +174,7 @@ class EquipmentScreenState extends State<EquipmentScreen>
             top: screenPadding.top,
             width: kToolbarHeight,
             height: kToolbarHeight,
-            child: IconButton(
+            child: IconButton(enableFeedback: false,
               icon: Icon(Icons.menu),
               onPressed: () {
                 Scaffold.of(context).openDrawer();
@@ -290,7 +290,7 @@ class EquipmentScreenState extends State<EquipmentScreen>
   buildCharacterMenu(BuildContext context) {
     if(characters == null) return Container();
     return Row(children: [
-      IconButton(
+      IconButton(enableFeedback: false,
           icon: Icon(FontAwesomeIcons.search, color: Colors.white),
           onPressed: () {
             Iterable<PseudoItemType> available = [PseudoItemType.Weapons, PseudoItemType.Armor, PseudoItemType.Cosmetics, PseudoItemType.Consumables];

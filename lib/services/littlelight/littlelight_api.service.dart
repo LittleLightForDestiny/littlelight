@@ -1,15 +1,24 @@
 import 'dart:convert';
+
 import 'package:bungie_api/enums/bungie_membership_type.dart';
 import 'package:bungie_api/helpers/bungie_net_token.dart';
 import 'package:bungie_api/models/group_user_info_card.dart';
+import 'package:http/http.dart' as http;
+import 'package:little_light/models/item_notes.dart';
+import 'package:little_light/models/item_notes_tag.dart';
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/services/auth/auth.service.dart';
-import 'package:http/http.dart' as http;
 import 'package:little_light/services/storage/storage.service.dart';
 import 'package:uuid/uuid.dart';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-enum _HttpMethod { get, post }
+class NotesResponse {
+  List<ItemNotes> notes;
+  List<ItemNotesTag> tags;
+
+  NotesResponse({this.notes, this.tags});
+}
 
 class LittleLightApiService {
   String _uuid;
@@ -27,8 +36,38 @@ class LittleLightApiService {
     _secret = null;
   }
 
+  Future<NotesResponse> fetchItemNotes() async {
+    dynamic json = await _authorizedRequest("item-notes");
+    print(json);
+    List<ItemNotes> _fetchedNotes =
+        json['notes'].map<ItemNotes>((j) => ItemNotes.fromJson(j)).toList();
+
+    List<ItemNotesTag> _fetchedTags = json['tags']
+        .map<ItemNotesTag>((j) => ItemNotesTag.fromJson(j))
+        .toList();
+    return NotesResponse(notes: _fetchedNotes, tags: _fetchedTags);
+  }
+
+  Future<int> saveTag(ItemNotesTag tag) async {
+    Map<String, dynamic> body = tag.toJson();
+    dynamic json = await _authorizedRequest("tag/save", body: body);
+    return json["result"] ?? 0;
+  }
+
+  Future<int> deleteTag(ItemNotesTag tag) async {
+    Map<String, dynamic> body = tag.toJson();
+    dynamic json = await _authorizedRequest("tag/delete", body: body);
+    return json["result"] ?? 0;
+  }
+
+  Future<int> saveItemNotes(ItemNotes notes) async {
+    Map<String, dynamic> body = notes.toJson();
+    dynamic json = await _authorizedRequest("item-notes/save", body: body);
+    return json["result"] ?? 0;
+  }
+
   Future<List<Loadout>> fetchLoadouts() async {
-    dynamic json = await _authorizedRequest("loadouts");
+    dynamic json = await _authorizedRequest("loadout");
     List<dynamic> list = json['data'] ?? [];
     List<Loadout> _fetchedLoadouts =
         list.map((j) => Loadout.fromJson(j)).toList();
@@ -36,55 +75,46 @@ class LittleLightApiService {
   }
 
   Future<int> saveLoadout(Loadout loadout) async {
-    Map<String, dynamic> map = loadout.toJson();
-    String body = jsonEncode(map);
-    dynamic json = await _authorizedRequest("loadouts/save",
-        method: _HttpMethod.post, body: body);
+    Map<String, dynamic> body = loadout.toJson();
+    dynamic json = await _authorizedRequest("loadout/save", body: body);
     return json["result"] ?? 0;
   }
 
   Future<int> deleteLoadout(Loadout loadout) async {
-    Map<String, dynamic> map = loadout.toJson();
-    String body = jsonEncode(map);
-    print(body);
-    dynamic json = await _authorizedRequest("loadouts/delete",
-        method: _HttpMethod.post, body: body);
+    Map<String, dynamic> body = loadout.toJson();
+    dynamic json = await _authorizedRequest("loadout/delete", body: body);
+    print(json);
     return json["result"] ?? 0;
   }
 
   Future<dynamic> _authorizedRequest(String path,
-      {Map<String, dynamic> customParams,
-      String body = "",
-      _HttpMethod method = _HttpMethod.get}) async {
+      {Map<String, dynamic> body = const {}}) async {
     AuthService auth = AuthService();
     GroupUserInfoCard membership = await auth.getMembership();
     BungieNetToken token = await auth.getToken();
     String uuid = await _getUuid();
     String secret = await _getSecret();
-    Map<String, dynamic> params = {
+    body = {
+      ...body,
       'membership_id': membership.membershipId,
       'membership_type': "${membership.membershipType.value}",
       'uuid': uuid,
     };
     if (secret != null) {
-      params['secret'] = secret;
+      body['secret'] = secret;
     }
-    Uri uri = Uri(
-        scheme: 'http',
-        host: "www.littlelight.club",
-        path: "api/v2/$path",
-        queryParameters: params);
+
+    String apiRoot = DotEnv().env["littlelight_api_root"];
+
+    Uri uri = Uri.parse("$apiRoot/$path");
     Map<String, String> headers = {
       'Authorization': token.accessToken,
       'Accept': 'application/json'
     };
     http.Response response;
-    if (method == _HttpMethod.get) {
-      response = await http.get(uri, headers: headers);
-    } else {
-      headers["Content-Type"] = "application/json";
-      response = await http.post(uri, headers: headers, body: body);
-    }
+    headers["Content-Type"] = "application/json";
+    response = await http.post(uri, headers: headers, body: jsonEncode(body));
+
     dynamic json = jsonDecode(response.body);
     if (json['secret'] != null) {
       _setSecret(json['secret']);

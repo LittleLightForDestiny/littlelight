@@ -17,6 +17,7 @@ import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
+
 import 'package:little_light/widgets/item_list/items/base/base_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/base_item_instance.widget.dart';
 import 'package:shimmer/shimmer.dart';
@@ -160,7 +161,8 @@ class DuplicatedItemListWidgetState extends State<DuplicatedItemListWidget>
     }
     var screenPadding = MediaQuery.of(context).padding;
     return StaggeredGridView.countBuilder(
-      padding: EdgeInsets.all(4).copyWith(left: max(screenPadding.left, 4), right: max(screenPadding.right, 4)),
+      padding: EdgeInsets.all(4).copyWith(
+          left: max(screenPadding.left, 4), right: max(screenPadding.right, 4)),
       crossAxisCount: 6,
       itemCount: items?.length ?? 0,
       itemBuilder: (BuildContext context, int index) => getItem(context, index),
@@ -180,13 +182,13 @@ class DuplicatedItemListWidgetState extends State<DuplicatedItemListWidget>
       case DuplicatedListItemType.itemDefinition:
         return StaggeredTile.extent(6, 96);
       case DuplicatedListItemType.itemInstance:
-      if(MediaQueryHelper(context).laptopOrBigger){
-          return StaggeredTile.extent(1, 122);  
+        if (MediaQueryHelper(context).laptopOrBigger) {
+          return StaggeredTile.extent(1, 132);
         }
-        if(MediaQueryHelper(context).tabletOrBigger){
-          return StaggeredTile.extent(2, 122);  
+        if (MediaQueryHelper(context).tabletOrBigger) {
+          return StaggeredTile.extent(2, 132);
         }
-        return StaggeredTile.extent(3, 122);
+        return StaggeredTile.extent(3, 132);
 
       case DuplicatedListItemType.spacer:
         return StaggeredTile.extent(6, 20);
@@ -211,12 +213,12 @@ class DuplicatedItemListWidgetState extends State<DuplicatedItemListWidget>
         );
 
       case DuplicatedListItemType.itemDefinition:
-        return _DefinitionItemWrapper(
-          itemDefinitions[item.hash], item.items);
+        return _DefinitionItemWrapper(itemDefinitions[item.hash], item.items);
 
       case DuplicatedListItemType.itemInstance:
         return _ItemInstanceWrapper(
-          key:Key("item_${item.hash}_${item.item.itemInstanceId}_${item.ownerId}"),
+          key: Key(
+              "item_${item.hash}_${item.item.itemInstanceId}_${item.ownerId}"),
           item: item.item,
           definition: itemDefinitions[item.hash],
           characterId: item.ownerId,
@@ -280,29 +282,29 @@ class _DefinitionItemWrapperState extends State<_DefinitionItemWrapper> {
               ),
             )
           : Container(),
-          buildInkWell(context)
+      buildInkWell(context)
     ]);
   }
-  
+
   Widget buildInkWell(BuildContext context) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: () => onTap(context),
-        onLongPress: ()=>onTap(context),
+        onLongPress: () => onTap(context),
       ),
     );
   }
 
   void onTap(context) {
-    if(selected){
-      for(var item in widget.items){
+    if (selected) {
+      for (var item in widget.items) {
         SelectionService().removeItem(item);
       }
-    }else{
+    } else {
       SelectionService().activateMultiSelect();
-      for(var item in widget.items){
-        if(!SelectionService().isSelected(item)){
+      for (var item in widget.items) {
+        if (!SelectionService().isSelected(item)) {
           SelectionService().addItem(item);
         }
       }
@@ -326,13 +328,13 @@ class _ItemInstanceWrapper extends StatefulWidget {
 
 class _ItemInstanceWrapperState extends State<_ItemInstanceWrapper> {
   DestinyItemInstanceComponent instance;
-  bool get selected =>
-      SelectionService().isSelected(ItemWithOwner(widget.item, widget.characterId));
+  bool get selected => SelectionService()
+      .isSelected(ItemWithOwner(widget.item, widget.characterId));
 
   @override
   void initState() {
     super.initState();
-    
+
     instance = ProfileService().getInstanceInfo(widget.item.itemInstanceId);
 
     StreamSubscription<List<ItemWithOwner>> sub;
@@ -381,8 +383,9 @@ class _ItemInstanceWrapperState extends State<_ItemInstanceWrapper> {
       onLongPress(context);
       return;
     }
-    if(UserSettingsService().tapToSelect){
-      SelectionService().setItem(ItemWithOwner(widget.item, widget.characterId));
+    if (UserSettingsService().tapToSelect) {
+      SelectionService()
+          .setItem(ItemWithOwner(widget.item, widget.characterId));
       return;
     }
     SelectionService().clear();
@@ -390,12 +393,12 @@ class _ItemInstanceWrapperState extends State<_ItemInstanceWrapper> {
       context,
       MaterialPageRoute(
         builder: (context) => ItemDetailScreen(
-              item:widget.item,
-              definition:widget.definition,
-              instanceInfo:instance,
-              characterId: widget.characterId,
-              uniqueId: null,
-            ),
+          item: widget.item,
+          definition: widget.definition,
+          instanceInfo: instance,
+          characterId: widget.characterId,
+          uniqueId: null,
+        ),
       ),
     );
   }

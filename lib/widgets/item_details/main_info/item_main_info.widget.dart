@@ -1,15 +1,14 @@
-import 'package:bungie_api/enums/item_state.dart';
+import 'package:bungie_api/enums/destiny_item_type.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/models/wish_list.dart';
-import 'package:little_light/services/inventory/inventory.service.dart';
+import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/littlelight/wishlists.service.dart';
-import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
 import 'package:little_light/widgets/common/primary_stat.widget.dart';
+import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/common/wishlist_badge.widget.dart';
 
@@ -33,7 +32,7 @@ class ItemMainInfoWidget extends BaseDestinyStatefulItemWidget {
   }
 }
 
-class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget>{
+class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -53,43 +52,26 @@ class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget>{
             color: Colors.grey.shade300,
             margin: EdgeInsets.symmetric(vertical: 8),
           ),
-          Padding(
-              padding: EdgeInsets.all(8),
-              child: Text(
-                definition.displayProperties.description,
-              )),
+          (definition?.displayProperties?.description?.length ?? 0) > 0
+              ? Padding(
+                  padding: EdgeInsets.all(8),
+                  child: Text(
+                    definition.displayProperties.description,
+                  ))
+              : Container(),
+          // buildMaxPowerInfo(context),
+          buildEmblemInfo(context),
           buildWishListInfo(context),
-          buildLockInfo(context),
+          // buildLockInfo(context),
         ]));
   }
 
-  Widget buildLockInfo(BuildContext context) {
-    if (item?.lockable != true) return Container();
-    var locked = item?.state?.contains(ItemState.Locked);
+  Widget buildEmblemInfo(BuildContext context) {
+    if (definition?.itemType != DestinyItemType.Emblem) return Container();
     return Container(
-        padding: EdgeInsets.all(8),
-        child: Row(
-          children: <Widget>[
-            Icon(locked ? FontAwesomeIcons.lock : FontAwesomeIcons.unlock,
-                size: 14),
-            Container(
-              width: 4,
-            ),
-            Expanded(
-                child: locked
-                    ? TranslatedTextWidget("Item Locked", uppercase: true,)
-                    : TranslatedTextWidget("Item Unlocked", uppercase: true,)),
-            RaisedButton(
-              child: locked
-                  ? TranslatedTextWidget("Unlock", uppercase: true,)
-                  : TranslatedTextWidget("Lock", uppercase:  true,),
-              onPressed: () async {
-                var itemWithOwner = ItemWithOwner(item, characterId);
-                InventoryService().changeLockState(itemWithOwner, !locked);
-                setState((){});
-              },
-            )
-          ],
+        alignment: Alignment.center,
+        child: QueuedNetworkImage(
+          imageUrl: BungieApiService.url(definition.secondaryIcon),
         ));
   }
 
@@ -226,6 +208,7 @@ class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget>{
 
   Widget primaryStat(context) {
     return PrimaryStatWidget(
+      item: item,
       definition: definition,
       instanceInfo: instanceInfo,
       suppressLabel: true,

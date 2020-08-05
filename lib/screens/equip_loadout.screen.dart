@@ -4,6 +4,8 @@ import 'package:bungie_api/enums/destiny_class.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:little_light/models/loadout.dart';
+import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
@@ -66,30 +68,34 @@ class EquipLoadoutScreenState extends State<EquipLoadoutScreen> {
             title: Text(widget.loadout.name),
             flexibleSpace: buildAppBarBackground(context)),
         bottomNavigationBar: LoadoutDestinationsWidget(widget.loadout),
-        body: ListView(
-            padding: EdgeInsets.all(8).copyWith(
-                top: 0,
-                left: max(screenPadding.left, 8),
-                right: max(screenPadding.right, 8)),
-            children: <Widget>[
-              HeaderWidget(
-                  child:
-                      TranslatedTextWidget("Items to Equip", uppercase: true)),
-              Container(
-                  padding: EdgeInsets.all(8),
-                  child: buildEquippedItems(context)),
-              (_itemIndex?.unequippedCount ?? 0) == 0
-                  ? Container()
-                  : HeaderWidget(
-                      child: TranslatedTextWidget("Items to Transfer",
-                          uppercase: true),
-                    ),
-              (_itemIndex?.unequippedCount ?? 0) == 0
-                  ? Container()
-                  : Container(
-                      padding: EdgeInsets.all(8),
-                      child: buildUnequippedItems(context)),
-            ]));
+        body: Container(
+            alignment: Alignment.center,
+            child: Container(
+                constraints: BoxConstraints(maxWidth: 500),
+                child: ListView(
+                    padding: EdgeInsets.all(8).copyWith(
+                        top: 0,
+                        left: max(screenPadding.left, 8),
+                        right: max(screenPadding.right, 8)),
+                    children: <Widget>[
+                      HeaderWidget(
+                          child: TranslatedTextWidget("Items to Equip",
+                              uppercase: true)),
+                      Container(
+                          padding: EdgeInsets.all(8),
+                          child: buildEquippedItems(context)),
+                      (_itemIndex?.unequippedCount ?? 0) == 0
+                          ? Container()
+                          : HeaderWidget(
+                              child: TranslatedTextWidget("Items to Transfer",
+                                  uppercase: true),
+                            ),
+                      (_itemIndex?.unequippedCount ?? 0) == 0
+                          ? Container()
+                          : Container(
+                              padding: EdgeInsets.all(8),
+                              child: buildUnequippedItems(context)),
+                    ]))));
   }
 
   buildAppBarBackground(BuildContext context) {
@@ -183,8 +189,16 @@ class EquipLoadoutScreenState extends State<EquipLoadoutScreen> {
 
   Widget itemIcon(DestinyItemComponent item) {
     if (item == null) {
-      return ManifestImageWidget<DestinyInventoryItemDefinition>(1835369552);
+      return ManifestImageWidget<DestinyInventoryItemDefinition>(1835369552,
+          key: Key("item_icon_empty"));
     }
-    return ManifestImageWidget<DestinyInventoryItemDefinition>(item.itemHash);
+    var instance = ProfileService().getInstanceInfo(item?.itemInstanceId);
+    return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
+        item.itemHash,
+        (def) => ItemIconWidget.builder(
+            item: item,
+            definition: def,
+            instanceInfo: instance,
+            key: Key("item_icon_${item.itemInstanceId}")));
   }
 }

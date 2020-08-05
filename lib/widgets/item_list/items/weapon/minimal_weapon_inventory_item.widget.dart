@@ -17,11 +17,20 @@ class MinimalWeaponInventoryItemWidget extends MinimalBaseInventoryItemWidget
       DestinyItemComponent item,
       DestinyInventoryItemDefinition itemDefinition,
       DestinyItemInstanceComponent instanceInfo,
-      {@required String characterId, Key key, @required uniqueId})
-      : super(item, itemDefinition, instanceInfo, characterId:characterId, key:key, uniqueId: uniqueId,);
-      
+      {@required String characterId,
+      Key key,
+      @required uniqueId})
+      : super(
+          item,
+          itemDefinition,
+          instanceInfo,
+          characterId: characterId,
+          key: key,
+          uniqueId: uniqueId,
+        );
+
   double get valueFontSize => 12;
-  
+
   @override
   Widget primaryStatWidget(BuildContext context) {
     return infoContainer(context, weaponPrimaryStat(context));
@@ -29,30 +38,28 @@ class MinimalWeaponInventoryItemWidget extends MinimalBaseInventoryItemWidget
 
   Widget weaponPrimaryStat(BuildContext context) {
     Color damageTypeColor = DestinyData.getDamageTypeTextColor(damageType);
-    return 
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              primaryStatIcon(context, DestinyData.getAmmoTypeIcon(ammoType),
-                  DestinyData.getAmmoTypeColor(ammoType),
-                  size: 15),
-              primaryStatValueField(context, damageTypeColor),
-            ].where((w) => w != null).toList()
-    );
+    return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          primaryStatIcon(context, DestinyData.getAmmoTypeIcon(ammoType),
+              DestinyData.getAmmoTypeColor(ammoType),
+              size: 15),
+          primaryStatValueField(context, damageTypeColor),
+        ].where((w) => w != null).toList());
   }
 
   Widget primaryStatValueField(BuildContext context, Color color) {
     int value = primaryStat?.value ?? 0;
     return Text(
       "$value",
-      style: TextStyle(color: color, fontWeight: FontWeight.w700, fontSize: valueFontSize),
+      style: TextStyle(
+          color: color, fontWeight: FontWeight.w700, fontSize: valueFontSize),
     );
   }
 
   Widget primaryStatNameField(BuildContext context, Color color) {
-    return ManifestText<DestinyStatDefinition>(
-        primaryStat.statHash,
+    return ManifestText<DestinyStatDefinition>(primaryStat.statHash,
         uppercase: true,
         style:
             TextStyle(color: color, fontWeight: FontWeight.w300, fontSize: 16));
@@ -67,10 +74,9 @@ class MinimalWeaponInventoryItemWidget extends MinimalBaseInventoryItemWidget
     );
   }
 
+  DestinyAmmunitionType get ammoType => definition?.equippingBlock?.ammoType;
 
-  DestinyAmmunitionType get ammoType => definition.equippingBlock.ammoType;
-  
-  DamageType get damageType => instanceInfo.damageType;
+  DamageType get damageType => instanceInfo?.damageType;
 
-  DestinyStat get primaryStat => instanceInfo.primaryStat;
+  DestinyStat get primaryStat => instanceInfo?.primaryStat;
 }

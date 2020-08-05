@@ -55,7 +55,7 @@ class SelectLoadoutItemScreenState
       title: buildAppBarTitle(context),
       elevation: 2,
       actions: <Widget>[
-        IconButton(
+        IconButton(enableFeedback: false,
           icon: textFilter.enabled ? Icon(Icons.close) : Icon(Icons.search),
           onPressed: () {
             textFilter.enabled = !textFilter.enabled;
@@ -64,7 +64,7 @@ class SelectLoadoutItemScreenState
           },
         ),
         Builder(
-            builder: (context) => IconButton(
+            builder: (context) => IconButton(enableFeedback: false,
                   icon: Icon(Icons.filter_list),
                   onPressed: () {
                     Scaffold.of(context).openEndDrawer();

@@ -124,7 +124,10 @@ class WishlistsService {
   Future<void> _parseWishlist(Wishlist wishlist, String contents) async {
     try{
       var parser = LittleLightWishlistParser();
-      parser.parse(contents);
+      var w = await parser.parse(contents);
+      wishlist.name = w.name ?? wishlist.name ?? "";
+      wishlist.description = w.description ?? wishlist.description ?? "";
+      return;
     }catch(_){}
     var parser = DimWishlistParser();
     parser.parse(contents);
@@ -163,8 +166,7 @@ class WishlistsService {
     if (availablePlugs?.length == 0) return null;
     var wish = _items[item?.itemHash];
     var builds = wish?.builds?.where((build) {
-      // return availablePlugs.containsAll(build.perks);
-      return build.perks.every((element) => element.any((e)=>availablePlugs.contains(e)));
+      return build.perks.every((element) => element.any((e)=>availablePlugs.contains(e)) || element.length == 0);
     });
     if ((builds?.length ?? 0) == 0) return null;
     Set<WishlistTag> tags = Set();
@@ -186,7 +188,7 @@ class WishlistsService {
     var wish = _items[item?.itemHash];
 
     var builds = wish?.builds?.where((build) {
-      return availablePlugs.containsAll(build.perks);
+      return build.perks.every((element) => element.any((e)=>availablePlugs.contains(e)) || element.length == 0);
     });
     if ((builds?.length ?? 0) == 0) return null;
     Set<String> notes = Set();

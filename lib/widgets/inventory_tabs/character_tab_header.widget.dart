@@ -113,8 +113,8 @@ class TabHeaderWidgetState extends State<TabHeaderWidget> {
     Color fg = Colors.cyan.shade300;
     Color bg = Color.lerp(Colors.black, fg, .6);
     Color shine = Colors.cyan.shade100;
-    DestinyProgression currentProg = levelProg.level < levelProg.levelCap ? levelProg : overLevelProg;
-    double completed = currentProg.progressToNextLevel / currentProg.nextLevelAt;
+    DestinyProgression currentProg = (levelProg?.level ?? 0) < (levelProg?.levelCap ?? 0) ? levelProg : overLevelProg;
+    double completed = (currentProg?.progressToNextLevel ?? 0) / (currentProg?.nextLevelAt ?? 1);
     return Container(
       height: 2,
       color: bg,

@@ -8,20 +8,24 @@ part 'wish_list.g.dart';
 enum WishlistTag { GodPVE, GodPVP, PVE, PVP, Bungie, Trash }
 
 List<Set<int>> _jsonPlugsFromJson(List<dynamic> json) {
-  return json.map((e) => (e as List<dynamic>).map((e)=>int.parse(e)).toSet()).toList();
+  return json
+      .map((e) => (e as List<dynamic>).map((e) => int.parse(e)).toSet())
+      .toList();
 }
 
 @JsonSerializable()
-class LittleLightWishlist{
+class LittleLightWishlist {
+  String name;
+  String description;
   List<LittleLightWishlistItem> data;
 
-  LittleLightWishlist(this.data);
+  LittleLightWishlist({this.name, this.description, this.data});
 
-  factory LittleLightWishlist.fromJson(dynamic json){
+  factory LittleLightWishlist.fromJson(dynamic json) {
     return _$LittleLightWishlistFromJson(json);
   }
 
-  dynamic toJson(){
+  dynamic toJson() {
     return _$LittleLightWishlistToJson(this);
   }
 }

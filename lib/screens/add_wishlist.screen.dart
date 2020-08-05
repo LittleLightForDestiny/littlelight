@@ -7,6 +7,7 @@ import 'package:little_light/services/user_settings/user_settings.service.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
+
 import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -16,10 +17,18 @@ class AddWishlistScreen extends StatefulWidget {
   _AddWishlistScreenState createState() => _AddWishlistScreenState();
 }
 
+enum ImportType { Link,File, Popular }
+
 class _AddWishlistScreenState extends State<AddWishlistScreen> {
   final Map<String, TextEditingController> fieldControllers = Map();
+  ImportType _importType = ImportType.Link;
   List<Wishlist> popular;
   Map<String, String> labelTranslations = Map();
+  Map<ImportType, TranslatedTextWidget> comboLabels = {
+    ImportType.File: TranslatedTextWidget("Local File"),
+    ImportType.Link: TranslatedTextWidget("Link"),
+    ImportType.Popular: TranslatedTextWidget("Popular Wishlists"),
+  };
 
   @override
   void initState() {
@@ -42,6 +51,27 @@ class _AddWishlistScreenState extends State<AddWishlistScreen> {
     setState(() {});
   }
 
+  Widget buildSourceSelect(BuildContext context) {
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      TranslatedTextWidget("Wishlist Source"),
+      DropdownButton<ImportType>(
+        value: _importType,
+        onChanged: (ImportType newValue) {
+          setState(() {
+            _importType = newValue;
+          });
+        },
+        items: ImportType.values
+            .map<DropdownMenuItem<ImportType>>((ImportType value) {
+          return DropdownMenuItem<ImportType>(
+            value: value,
+            child: comboLabels[value],
+          );
+        }).toList(),
+      )
+    ]);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,38 +81,28 @@ class _AddWishlistScreenState extends State<AddWishlistScreen> {
         body: SingleChildScrollView(
             padding: EdgeInsets.all(8),
             child: Column(children: <Widget>[
+              buildInfo(context),
+              buildDivider(context),
+              // buildSourceSelect(context),
               buildTextField(context, "URL", maxLength: null),
+              
               buildTextField(context, "Name"),
               buildTextField(context, "Description",
                   multiline: true, maxLength: 300),
               Container(
                   alignment: Alignment.centerRight,
                   child: buildButton(context, "Add Wishlist", () {
-                    bool isValidUrl = Uri.parse(this.fieldControllers["URL"].text).isAbsolute;
-                    if(!isValidUrl){
+                    bool isValidUrl =
+                        Uri.parse(this.fieldControllers["URL"].text).isAbsolute;
+                    if (!isValidUrl) {
                       return;
                     }
-                     Navigator.of(context).pop(
-                       Wishlist(
-                         url:this.fieldControllers["URL"].text,
-                         name:this.fieldControllers["Name"].text,
-                         description:this.fieldControllers["Description"].text,
-                       )
-                     );
+                    Navigator.of(context).pop(Wishlist(
+                      url: this.fieldControllers["URL"].text,
+                      name: this.fieldControllers["Name"].text,
+                      description: this.fieldControllers["Description"].text,
+                    ));
                   })),
-              buildDivider(context),
-              Container(
-                  padding: EdgeInsets.all(8),
-                  child: TranslatedTextWidget(
-                      "For more information on how wishlists works, or on how to create your own wishlist, please look at:")),
-              Container(
-                  padding: EdgeInsets.all(8),
-                  child: Linkify(
-                    text:
-                        "https://github.com/DestinyItemManager/DIM/blob/master/docs/COMMUNITY_CURATIONS.md",
-                    linkStyle: TextStyle(color: Colors.white),
-                    onOpen: onLinkClick,
-                  )),
               buildDivider(context),
               buildPopularWishlists(context),
             ])));
@@ -92,12 +112,31 @@ class _AddWishlistScreenState extends State<AddWishlistScreen> {
     launch(link.url, forceSafariVC: true);
   }
 
+  Widget buildInfo(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+            padding: EdgeInsets.all(8),
+            child: TranslatedTextWidget(
+                "To create your own wishlists, please check:")),
+        Container(
+            padding: EdgeInsets.all(8),
+            child: Linkify(
+              text: "https://wishlists.littlelight.club",
+              linkStyle: TextStyle(color: Colors.white),
+              onOpen: onLinkClick,
+            )),
+      ],
+    );
+  }
+
   Widget buildTextField(BuildContext context, String label,
       {String initialValue = "", int maxLength = 50, bool multiline = false}) {
     var controller = fieldControllers[label];
     if (controller == null) {
-      controller =
-          fieldControllers[label] = TextEditingController(text: initialValue,);
+      controller = fieldControllers[label] = TextEditingController(
+        text: initialValue,
+      );
     }
     return Container(
         padding: EdgeInsets.all(8),
@@ -132,9 +171,9 @@ class _AddWishlistScreenState extends State<AddWishlistScreen> {
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       HeaderWidget(
           child: TranslatedTextWidget(
-            "Popular wishlists",
-            uppercase: true,
-          )),
+        "Popular wishlists",
+        uppercase: true,
+      )),
       Container(
         height: 8,
       ),

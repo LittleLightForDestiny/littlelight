@@ -10,6 +10,7 @@ import 'package:flutter/rendering.dart';
 import 'dart:ui' as ui;
 
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
+
 import 'package:little_light/widgets/item_details/share_image/share_image.painter.dart';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:shimmer/shimmer.dart';
@@ -155,7 +156,7 @@ class SharePreviewScreenState extends BaseDestinyItemState<SharePreviewScreen> {
     return Positioned(
       right: 8,
       top: 32,
-      child: IconButton(
+      child: IconButton(enableFeedback: false,
         icon: Icon(Icons.refresh),
         onPressed: () {
           this.loadDefinitions();
@@ -168,7 +169,7 @@ class SharePreviewScreenState extends BaseDestinyItemState<SharePreviewScreen> {
     return Positioned(
         right: 40,
         top: 32,
-        child: IconButton(
+        child: IconButton(enableFeedback: false,
             icon: Icon(Icons.save),
             onPressed: () async {
               saveImage();

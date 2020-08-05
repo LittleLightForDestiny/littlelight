@@ -15,6 +15,7 @@ import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateless_item.widget.dart';
 import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/item_name_bar/item_name_bar.widget.dart';
+
 import 'package:shimmer/shimmer.dart';
 
 class ItemCoverWidget extends BaseDestinyStatelessItemWidget {
@@ -173,7 +174,7 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
         height: kToolbarHeight,
         child: Material(
             color: Colors.transparent,
-            child: IconButton(
+            child: IconButton(enableFeedback: false,
               onPressed: () async {
                 Navigator.push(
                   context,

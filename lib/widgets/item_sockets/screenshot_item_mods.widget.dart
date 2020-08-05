@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
+
 import 'package:little_light/widgets/item_sockets/base_item_sockets.widget.dart';
 import 'package:little_light/widgets/item_sockets/item_socket.controller.dart';
 
@@ -92,6 +93,7 @@ class ScreenShotItemModsWidgetState<T extends ScreenShotItemModsWidget>
     if (plugHash == null) return null;
 
     return Container(
+      height:96 * widget.pixelSize,
       width: 96 * widget.pixelSize,
       child: buildPlug(context, socketIndex, plugHash),
     );
@@ -104,12 +106,12 @@ class ScreenShotItemModsWidgetState<T extends ScreenShotItemModsWidget>
     var energyType = def?.plug?.energyCost?.energyType ?? DestinyEnergyType.Any;
     var energyCost = def?.plug?.energyCost?.energyCost ?? 0;
     var canEquip = controller?.canEquip(socketIndex, plugItemHash);
-    return FlatButton(
-        padding: EdgeInsets.all(0),
-        onPressed: () {
+    return Material(
+        child: InkWell(
+          onTap: () {
           controller.selectSocket(socketIndex, plugItemHash);
         },
-        child: Container(
+          child:Container(
             decoration: BoxDecoration(
                 border: Border.all(
                     color: Colors.grey.shade400, width: 3 * widget.pixelSize)),
@@ -132,6 +134,6 @@ class ScreenShotItemModsWidgetState<T extends ScreenShotItemModsWidget>
                           style: TextStyle(fontSize: 20*widget.pixelSize),
                         )),
               canEquip ? Container(): Positioned.fill(child: Container(color: Colors.black.withOpacity(.5),),)
-              ])));
+              ]))));
   }
 }

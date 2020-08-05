@@ -9,6 +9,7 @@ import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
 
+
 class EquipOnCharacterButton extends StatelessWidget {
   final ItemDestination type;
   final String characterId;

@@ -6,13 +6,13 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/utils/destiny_data.dart';
-import 'package:little_light/widgets/common/definition_provider.widget.dart';
-import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
+import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateless_item.widget.dart';
+import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/item_icon/engram_icon.widget.dart';
 import 'package:little_light/widgets/common/item_icon/subclass_icon.widget.dart';
+import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:shimmer/shimmer.dart';
 
 class ItemIconWidget extends BaseDestinyStatelessItemWidget {
@@ -69,6 +69,27 @@ class ItemIconWidget extends BaseDestinyStatelessItemWidget {
                   ? DestinyData.getTierColor(definition.inventory.tierType)
                   : null,
               child: itemIconImage(context))),
+      seasonBadgeUrl() == null
+          ? Container()
+          : Container(
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      stops: [
+                    0,
+                    0.20,
+                    0.29,
+                    1
+                  ],
+                      colors: [
+                    DestinyData.getTierColor(definition.inventory.tierType),
+                    DestinyData.getTierColor(definition.inventory.tierType),
+                    Colors.transparent,
+                    Colors.transparent
+                  ])),
+            ),
+      itemSeasonIcon(context),
       Positioned.fill(
           child: state.contains(ItemState.Masterwork)
               ? getMasterworkOutline()
@@ -87,6 +108,26 @@ class ItemIconWidget extends BaseDestinyStatelessItemWidget {
     ]);
   }
 
+  String seasonBadgeUrl() {
+    try {
+      var version =
+          definition.quality.displayVersionWatermarkIcons[item.versionNumber];
+      if (version.length > 0) return version;
+    } catch (_) {}
+    return null;
+  }
+
+  Widget itemSeasonIcon(BuildContext context) {
+    if (seasonBadgeUrl() != null) {
+      return QueuedNetworkImage(
+        imageUrl: BungieApiService.url(seasonBadgeUrl()),
+        fit: BoxFit.fill,
+        placeholder: itemIconPlaceholder(context),
+      );
+    }
+    return Container();
+  }
+
   BoxDecoration iconBoxDecoration() {
     if (item?.bucketHash == InventoryBucket.engrams) {
       return null;
@@ -100,14 +141,6 @@ class ItemIconWidget extends BaseDestinyStatelessItemWidget {
     if (item?.overrideStyleItemHash != null) {
       return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
           item?.overrideStyleItemHash, (def) {
-        if (def?.plug?.isDummyPlug ?? false) {
-          return QueuedNetworkImage(
-            imageUrl: BungieApiService.url(definition.displayProperties.icon),
-            fit: BoxFit.fill,
-            placeholder: itemIconPlaceholder(context),
-          );
-        }
-
         return QueuedNetworkImage(
           imageUrl: BungieApiService.url(def.displayProperties.icon),
           fit: BoxFit.fill,

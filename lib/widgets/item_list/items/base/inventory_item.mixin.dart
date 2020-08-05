@@ -3,6 +3,7 @@ import 'package:bungie_api/enums/item_state.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/models/wish_list.dart';
+import 'package:little_light/services/littlelight/item_notes.service.dart';
 import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateless_item.widget.dart';
@@ -10,6 +11,7 @@ import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/item_name_bar/item_name_bar.widget.dart';
 import 'package:little_light/widgets/common/primary_stat.widget.dart';
 import 'package:little_light/widgets/common/wishlist_badge.widget.dart';
+import 'package:little_light/widgets/item_tags/item_tag.widget.dart';
 
 mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget {
   final String uniqueId = "";
@@ -60,7 +62,7 @@ mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget {
         right: 4,
         child: Container(
           child: PrimaryStatWidget(
-              definition: definition, instanceInfo: instanceInfo),
+              item: item, definition: definition, instanceInfo: instanceInfo),
         ));
   }
 
@@ -93,21 +95,22 @@ mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget {
     }
     int total = stats.values.fold(0, (t, s) => t + s.value);
     Color textColor = Colors.grey.shade500;
-    if (total >= 55) {
+    if (total >= 60) {
       textColor = Colors.grey.shade300;
     }
-    if (total >= 60) {
+    if (total >= 65) {
       textColor = Colors.amber.shade100;
     }
     return Positioned(
         right: iconBorderWidth,
         top: iconBorderWidth,
-        left: iconBorderWidth,
         child: Container(
-          padding: EdgeInsets.all(2),
+          padding: EdgeInsets.symmetric(
+                  horizontal: padding / 2, vertical: padding / 4)
+              .copyWith(right: padding / 4),
           decoration: BoxDecoration(
-              gradient:
-                  LinearGradient(colors: [Colors.transparent, Colors.black])),
+              color: Colors.black54,
+              borderRadius: BorderRadius.only(bottomLeft: Radius.circular(8))),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
@@ -146,17 +149,14 @@ mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget {
         child: Container(
             color: Colors.blueGrey.shade900,
             padding: EdgeInsets.only(
-              top: titleFontSize + padding * 2,
-              left:iconSize
-            ),
+                top: titleFontSize + padding * 2, left: iconSize),
             child: wishlistBackground(context)));
   }
 
   Widget wishlistBackground(BuildContext context) {
     var tags = WishlistsService().getWishlistBuildTags(item);
     if (tags == null) return Container();
-    if (tags.contains(WishlistTag.PVE) &&
-        tags.contains(WishlistTag.PVP)) { 
+    if (tags.contains(WishlistTag.PVE) && tags.contains(WishlistTag.PVP)) {
       return Image.asset(
         "assets/imgs/allaround-bg.png",
         fit: BoxFit.fitHeight,
@@ -173,7 +173,7 @@ mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget {
     if (tags.contains(WishlistTag.PVP)) {
       return Image.asset(
         "assets/imgs/pvp-bg.png",
-        fit: BoxFit.fitHeight, 
+        fit: BoxFit.fitHeight,
         alignment: Alignment.bottomRight,
       );
     }
@@ -190,13 +190,24 @@ mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget {
 
   Widget namebarTrailingWidget(BuildContext context) {
     List<Widget> items = [];
-    var tags = WishlistsService().getWishlistBuildTags(item);
+    var wishlistTags = WishlistsService().getWishlistBuildTags(item);
+    var notes = ItemNotesService()
+        .getNotesForItem(item?.itemHash, item?.itemInstanceId);
+    var tags = ItemNotesService().tagsByIds(notes?.tags);
     var locked = item?.state?.contains(ItemState.Locked) ?? false;
-    if(locked){
-      items.add(Container(child: Icon(FontAwesomeIcons.lock, size:titleFontSize*.9)));
+    if (locked) {
+      items.add(Container(
+          child: Icon(FontAwesomeIcons.lock, size: titleFontSize * .9)));
     }
-    if(tags != null){
-      items.add(WishlistBadgeWidget(tags:tags, size:tagIconSize));
+    if (tags != null) {
+      items.addAll(tags.map((t) => ItemTagWidget(
+            t,
+            fontSize: tagIconSize - padding / 2,
+            padding: padding / 8,
+          )));
+    }
+    if (wishlistTags != null) {
+      items.add(WishlistBadgeWidget(tags: wishlistTags, size: tagIconSize));
     }
     if (trailing != null) {
       items.add(trailing);

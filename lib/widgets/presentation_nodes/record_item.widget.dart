@@ -143,7 +143,7 @@ class RecordItemWidgetState extends State<RecordItemWidget>
             buildCompletionBars(context)
           ]),
           Positioned.fill(
-              child: FlatButton(
+              child: MaterialButton(
             child: Container(),
             onPressed: () async {
               Navigator.push(

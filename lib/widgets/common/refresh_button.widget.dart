@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 
+
 typedef String ExtractTextFromData(dynamic data);
 
 class RefreshButtonWidget extends StatefulWidget {

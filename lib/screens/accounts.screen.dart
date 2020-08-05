@@ -15,6 +15,8 @@ import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
+
+
 class AccountsScreen extends StatefulWidget {
   final AuthService auth = AuthService();
   @override
@@ -51,6 +53,7 @@ class _AccountsScreenState extends State<AccountsScreen> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
+          enableFeedback: false,
           icon: Icon(Icons.menu),
           onPressed: () {
             Scaffold.of(context).openDrawer();
@@ -60,8 +63,7 @@ class _AccountsScreenState extends State<AccountsScreen> {
           "Accounts",
         ),
       ),
-      body:
-          memberships == null ? LoadingAnimWidget() : buildBody(context),
+      body: memberships == null ? LoadingAnimWidget() : buildBody(context),
       bottomNavigationBar: buildBottomBar(context),
     );
   }
@@ -164,7 +166,8 @@ class _AccountsScreenState extends State<AccountsScreen> {
   Widget buildDestinyMemberships(
       BuildContext context, UserMembershipData membership) {
     List<Widget> children = membership.destinyMemberships
-        ?.map((m) => buildMembershipButton(context, m, membership.bungieNetUser))
+        ?.map(
+            (m) => buildMembershipButton(context, m, membership.bungieNetUser))
         ?.expand((w) => [w, Container(width: 4)])
         ?.toList();
     if (children == null) return Container();
@@ -176,8 +179,8 @@ class _AccountsScreenState extends State<AccountsScreen> {
         children: children);
   }
 
-  Widget buildMembershipButton(BuildContext context, GroupUserInfoCard membership,
-      GeneralUser bungieNetUser) {
+  Widget buildMembershipButton(BuildContext context,
+      GroupUserInfoCard membership, GeneralUser bungieNetUser) {
     var plat = PlatformData.getPlatform(membership.membershipType);
     return Expanded(
         child: Material(
@@ -217,8 +220,8 @@ class _AccountsScreenState extends State<AccountsScreen> {
             context,
             MaterialPageRoute(
               builder: (context) => InitialScreen(
-                    authCode: code,
-                  ),
+                authCode: code,
+              ),
             ));
       }
     } on OAuthException catch (e) {
@@ -234,7 +237,8 @@ class _AccountsScreenState extends State<AccountsScreen> {
           context: context,
           builder: (context) => AlertDialog(
                 actions: <Widget>[
-                  FlatButton(
+                  MaterialButton(
+                    enableFeedback: false,
                     textColor: Colors.blueGrey.shade300,
                     child: TranslatedTextWidget("OK"),
                     onPressed: () {
@@ -263,13 +267,14 @@ class _AccountsScreenState extends State<AccountsScreen> {
         statusBarBrightness: Brightness.dark));
   }
 
-  void deleteAccount(UserMembershipData membership) async{
+  void deleteAccount(UserMembershipData membership) async {
     if (membership?.destinyMemberships != null) {
-      for(var m in membership.destinyMemberships){
+      for (var m in membership.destinyMemberships) {
         await StorageService.membership(m.membershipId).purge();
       }
     }
-    await StorageService.account(membership?.bungieNetUser?.membershipId).purge();
+    await StorageService.account(membership?.bungieNetUser?.membershipId)
+        .purge();
     await StorageService.removeAccount(membership?.bungieNetUser?.membershipId);
     loadAccounts();
   }

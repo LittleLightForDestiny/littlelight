@@ -3,7 +3,9 @@ import 'package:bungie_api/models/destiny_objective_definition.dart';
 import 'package:bungie_api/models/destiny_objective_progress.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_networkimage/provider.dart';
+import 'package:intl/intl.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
+import 'package:little_light/services/storage/storage.service.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
 
 class BaseMasterworkCounterWidget extends BaseDestinyStatefulItemWidget {
@@ -31,6 +33,7 @@ class BaseMasterworkCounterWidgetState<T extends BaseMasterworkCounterWidget>
     if (widget.item == null) return;
     var plugObjectives =
         widget.profile.getPlugObjectives(widget?.item?.itemInstanceId);
+    
     if(plugObjectives == null) return;
     for (var objectives in plugObjectives?.values) {
       for (var objective in objectives) {
@@ -99,7 +102,9 @@ class BaseMasterworkCounterWidgetState<T extends BaseMasterworkCounterWidget>
   }
 
   Widget buildProgressValue(BuildContext context) {
-    return Text("${masterworkObjective.progress}",
+    var formatter = NumberFormat.decimalPattern(StorageService.getLanguage());
+    var formattedValue = formatter.format(masterworkObjective.progress);
+    return Text("$formattedValue",
         style: TextStyle(color: Colors.amber.shade200, fontSize: 15));
   }
 }

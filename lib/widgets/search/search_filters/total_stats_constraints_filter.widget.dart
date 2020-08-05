@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:little_light/utils/item_filters/total_stats_constraints_filter.dart';
 import 'package:little_light/widgets/common/small_rect_range_slider_indicator_shape.widget.dart';
@@ -19,13 +21,14 @@ class TotalStatsConstraintsWidgetState extends BaseSearchFilterWidgetState<
     TotalStatsConstraintsWidget,
     TotalStatsConstraintsFilter,
     TotalStatsConstraints> {
-  
   @override
   Widget buildButtons(BuildContext context) {
     var aMin = filter?.availableValues?.min ?? -999;
-    var aMax = filter?.availableValues?.max ?? 999;
+    var aMax = math.max(aMin, filter?.availableValues?.max ?? 999);
     var min = filter?.value?.min ?? -999;
     var max = filter?.value?.max ?? 999;
+    min = min.clamp(aMin, aMax);
+    max = max.clamp(min, aMax);
     var nonArmorAvailable =
         filter?.availableValues?.includeNonArmorItems ?? false;
     return Column(children: [
@@ -55,9 +58,9 @@ class TotalStatsConstraintsWidgetState extends BaseSearchFilterWidgetState<
           )),
       SliderTheme(
           data: SliderTheme.of(context).copyWith(
-            rangeValueIndicatorShape: SmallRectRangeSliderValueIndicatorShape(),
-            // rangeTrackShape: RoundedRectRangeSliderTrackShape(useV2Slider: true)
-          ),
+              rangeValueIndicatorShape:
+                  SmallRectRangeSliderValueIndicatorShape(),
+              rangeTrackShape: RoundedRectRangeSliderTrackShape()),
           child: RangeSlider(
             values: RangeValues(min?.toDouble(), max?.toDouble()),
             min: aMin?.toDouble(),
@@ -87,7 +90,7 @@ class TotalStatsConstraintsWidgetState extends BaseSearchFilterWidgetState<
 
   @override
   Widget buildDisabledLabel(BuildContext context) {
-    if(filter.availableValues.min > 9000){
+    if (filter.availableValues.min > 9000) {
       return Container();
     }
     return super.buildDisabledLabel(context);
@@ -95,8 +98,8 @@ class TotalStatsConstraintsWidgetState extends BaseSearchFilterWidgetState<
 
   @override
   Widget buildDisabledValue(BuildContext context) {
-    if(filter.availableValues.min > 9000){
-      return TranslatedTextWidget("None", uppercase:true);
+    if (filter.availableValues.min > 9000) {
+      return TranslatedTextWidget("None", uppercase: true);
     }
     return Text("${filter.availableValues.min}");
   }

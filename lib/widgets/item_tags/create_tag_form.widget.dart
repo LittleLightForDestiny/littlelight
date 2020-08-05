@@ -72,37 +72,41 @@ class _CreateTagFormWidgetState extends State<CreateTagFormWidget> {
 
   @override
   Widget build(BuildContext context) {
+    var mq = MediaQuery.of(context);
     return Container(
+        constraints: BoxConstraints(
+            maxHeight:
+                mq.size.height - mq.padding.top - mq.padding.bottom - 280),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      buildPreview(context),
-      Expanded(
-          child: SingleChildScrollView(
-              child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Container(height: 16),
-          buildNameField(context),
-          Container(height: 16),
-          TranslatedTextWidget("Background color"),
-          buildColors(context, widget?.tag?.backgroundColorHex, (color) {
-            widget?.tag?.backgroundColorHex = color;
-            setState(() {});
-          }, ["#00000000", "#FF000000", "#FFFFFFFF"]),
-          Container(height: 16),
-          TranslatedTextWidget("Text/icon color"),
-          buildColors(context, widget?.tag?.foregroundColorHex, (color) {
-            widget?.tag?.foregroundColorHex = color;
-            setState(() {});
-          }),
-          Container(height: 16),
-          TranslatedTextWidget("Tag icon"),
-          buildIcons(context, widget?.tag?.icon, (icon) {
-            widget?.tag?.icon = icon;
-            setState(() {});
-          })
-        ],
-      )))
-    ]));
+          buildPreview(context),
+          Expanded(
+              child: SingleChildScrollView(
+                  child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Container(height: 16),
+              buildNameField(context),
+              Container(height: 16),
+              TranslatedTextWidget("Background color"),
+              buildColors(context, widget?.tag?.backgroundColorHex, (color) {
+                widget?.tag?.backgroundColorHex = color;
+                setState(() {});
+              }, ["#00000000", "#FF000000", "#FFFFFFFF"]),
+              Container(height: 16),
+              TranslatedTextWidget("Text/icon color"),
+              buildColors(context, widget?.tag?.foregroundColorHex, (color) {
+                widget?.tag?.foregroundColorHex = color;
+                setState(() {});
+              }),
+              Container(height: 16),
+              TranslatedTextWidget("Tag icon"),
+              buildIcons(context, widget?.tag?.icon, (icon) {
+                widget?.tag?.icon = icon;
+                setState(() {});
+              })
+            ],
+          )))
+        ]));
   }
 
   Widget buildPreview(BuildContext context) {
