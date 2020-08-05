@@ -145,7 +145,7 @@ class DetailsItemArmorExoticPerkWidgetState<T extends DetailsItemIntrinsicPerkWi
         padding: EdgeInsets.all(0),
         child: AspectRatio(
             aspectRatio: 1,
-            child: MaterialButton(
+            child: FlatButton(
               shape: intrinsic && !isExotic
                   ? RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(4),

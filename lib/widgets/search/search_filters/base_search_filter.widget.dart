@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/utils/item_filters/base_item_filter.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-
 import 'package:little_light/widgets/flutter/smaller_switch.dart';
 import 'package:little_light/widgets/search/search.controller.dart';
 
@@ -54,23 +53,25 @@ class BaseSearchFilterWidgetState<T extends BaseSearchFilterWidget,
     return DefaultTextStyle(
         style: TextStyle(color: Colors.grey.shade500, fontSize: 14.5),
         child: Container(
-            height: 58,
+            height:58,
             margin: EdgeInsets.only(top: 8),
             color: Colors.blueGrey.shade800,
-            padding: EdgeInsets.symmetric(horizontal: 16),
+            padding: EdgeInsets.symmetric(horizontal:16),
             child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  buildFilterLabel(context),
-                  Opacity(opacity: .5, child: buildDisabledValue(context))
-                ])));
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+              buildFilterLabel(context),
+              Opacity(
+                opacity: .5,
+                child:buildDisabledValue(context))
+              ])));
   }
 
-  Widget buildDisabledValue(BuildContext context) {
-    try {
+  Widget buildDisabledValue(BuildContext context){
+    try{
       return buildButtonLabel(context, options.single);
-    } catch (_) {}
+    }catch(_){}
     return TranslatedTextWidget("None", uppercase: true);
   }
 

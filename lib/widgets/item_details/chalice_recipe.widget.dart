@@ -54,7 +54,7 @@ class ChaliceRecipeWidget extends StatelessWidget {
         child: Row(
           children: <Widget>[
             TranslatedTextWidget("More recipes on"),
-            MaterialButton(
+            FlatButton(
               padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
               child: Row(children: [
                 Container(

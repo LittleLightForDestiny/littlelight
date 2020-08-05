@@ -26,7 +26,6 @@ class VendorsListWidget extends StatefulWidget {
     2190858386, //Xur
     672118013, //Banshee
     863940356, //Spider
-    3361454721, //tess
   ];
 
   VendorsListWidget({Key key, this.characterId}) : super(key: key);

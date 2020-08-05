@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/storage/storage.service.dart';
 
-
 class DevToolsScreen extends StatelessWidget {
   final Map<String, TextEditingController> fieldControllers = Map();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          leading: IconButton(enableFeedback: false,
+          leading: IconButton(
             icon: Icon(Icons.menu),
             onPressed: () {
               Scaffold.of(context).openDrawer();

@@ -18,7 +18,6 @@ import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/translate/translate.service.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-
 import 'package:little_light/widgets/loadouts/loadout_slot.widget.dart';
 
 class EditLoadoutScreen extends StatefulWidget {

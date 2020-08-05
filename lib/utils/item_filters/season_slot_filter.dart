@@ -46,14 +46,12 @@ class SeasonSlotFilter extends BaseItemFilter<Set<int>> {
     var def = definitions[item.item.itemHash];
     if(value.contains(-1)){
       var contains = false;
-      if(def?.sockets?.socketEntries == null) return true;
       for(var socket in def.sockets.socketEntries){
         contains = contains || (seasonalSlots.contains(socket.singleInitialItemHash) ?? false);
       }
       if(!contains) return true;
     }
-    if(def?.sockets?.socketCategories == null) return false;
-    for(var socket in def?.sockets?.socketEntries){
+    for(var socket in def.sockets.socketEntries){
       if(value.contains(socket.singleInitialItemHash) ?? false){
         return true;
       }

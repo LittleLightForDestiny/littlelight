@@ -44,7 +44,7 @@ class ProgressScreenState extends State<ProgressScreen>
     super.initState();
 
     SelectedPagePersistence.saveLatestScreen(SelectedPagePersistence.progress);
-    ProfileService().updateComponents = ProfileComponentGroups.basicProfile;
+
     charTabController = charTabController ??
         TabController(
           initialIndex: 0,
@@ -92,7 +92,7 @@ class ProgressScreenState extends State<ProgressScreen>
             top: paddingTop,
             width: kToolbarHeight,
             height: kToolbarHeight,
-            child: IconButton(enableFeedback: false,
+            child: IconButton(
               icon: Icon(Icons.menu),
               onPressed: () {
                 Scaffold.of(context).openDrawer();
@@ -201,7 +201,7 @@ class ProgressScreenState extends State<ProgressScreen>
 
   buildCharacterMenu(BuildContext context) {
     return Row(children: [
-      IconButton(enableFeedback: false,
+      IconButton(
           icon: Icon(FontAwesomeIcons.search, color: Colors.white),
           onPressed: () {
             var char = characters[charTabController.index];

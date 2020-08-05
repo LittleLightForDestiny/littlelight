@@ -22,7 +22,6 @@ import 'package:little_light/services/translate/translate.service.dart';
 import 'package:little_light/services/user_settings/user_settings.service.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/exceptions/exception_dialog.dart';
-
 import 'package:little_light/widgets/initial_page/download_manifest.widget.dart';
 import 'package:little_light/widgets/initial_page/login_widget.dart';
 import 'package:little_light/widgets/initial_page/select_language.widget.dart';
@@ -212,7 +211,7 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
     if (membership == null) {
       return showSelectMembership();
     }
-    ExceptionHandler.setReportingUserInfo(
+    ExceptionHandler.setSentryUserInfo(
         membership.membershipId,
         membership.displayName,
         membership.membershipType);

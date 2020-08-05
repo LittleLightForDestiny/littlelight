@@ -13,6 +13,7 @@ import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/refresh_button.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
 import 'package:little_light/widgets/presentation_nodes/record_item.widget.dart';
 import 'package:little_light/widgets/progress_tabs/tracked_plug_item.widget.dart';
 import 'package:little_light/widgets/progress_tabs/tracked_pursuit_item.widget.dart';
@@ -40,7 +41,6 @@ class ObjectivesScreenState extends State<ObjectivesScreen> {
   void initState() {
     super.initState();
     loadObjectives();
-    ProfileService().updateComponents = ProfileComponentGroups.everything;
     subscription = NotificationService().listen((event) {
       if (event.type == NotificationType.receivedUpdate ||
           event.type == NotificationType.localUpdate) {
@@ -77,27 +77,24 @@ class ObjectivesScreenState extends State<ObjectivesScreen> {
     return Stack(children: [
       Scaffold(
         appBar: AppBar(
-            leading: IconButton(enableFeedback: false,
+            leading: IconButton(
               icon: Icon(Icons.menu),
               onPressed: () {
                 Scaffold.of(context).openDrawer();
               },
             ),
+            actions: <Widget>[
+              RefreshButtonWidget(
+                padding: EdgeInsets.all(8),
+              )
+            ],
             title: TranslatedTextWidget("Objectives")),
         body: buildBody(context),
       ),
-      Positioned(
-            right: 8,
-            bottom: 8,
-            child: Container(
-              decoration: BoxDecoration(
-                  color: Colors.blueGrey.shade900,
-                  borderRadius: BorderRadius.circular(18)),
-              width: 36,
-              height: 36,
-              child: RefreshButtonWidget(),
-            ),
-          ),
+      InventoryNotificationWidget(
+        key: Key("notification_widget"),
+        barHeight: 0,
+      )
     ]);
   }
 

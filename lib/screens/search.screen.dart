@@ -76,13 +76,11 @@ class SearchScreenState<T extends SearchScreen> extends State<T> {
 
   buildAppBar(BuildContext context) {
     return AppBar(
-      leading: BackButton(),
       title: buildAppBarTitle(context),
       elevation: 2,
       actions: <Widget>[
         Builder(
             builder: (context) => IconButton(
-                  enableFeedback: false,
                   icon: Icon(Icons.filter_list),
                   onPressed: () {
                     drawerMode = SearchDrawerMode.Filter;
@@ -92,10 +90,9 @@ class SearchScreenState<T extends SearchScreen> extends State<T> {
                 )),
         Builder(
             builder: (context) => IconButton(
-                  enableFeedback: false,
                   icon: Transform.rotate(
-                      angle: Math.pi / 2,
-                      child: Icon(FontAwesomeIcons.exchangeAlt)),
+                    angle: Math.pi/2,
+                    child:Icon(FontAwesomeIcons.exchangeAlt)),
                   onPressed: () {
                     drawerMode = SearchDrawerMode.Sort;
                     setState(() {});

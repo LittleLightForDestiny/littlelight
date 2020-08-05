@@ -10,7 +10,6 @@ import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enu
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/services/user_settings/user_settings.service.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/media_query_helper.dart';
@@ -84,8 +83,7 @@ class _CharacterPursuitsListWidgetState
     var defs = await widget.manifest
         .getDefinitions<DestinyInventoryItemDefinition>(pursuitHashes);
     pursuits = (await InventoryUtils.sortDestinyItems(
-            pursuits.map((p) => ItemWithOwner(p, null)),
-            sortingParams: UserSettingsService().pursuitOrdering))
+            pursuits.map((p) => ItemWithOwner(p, null))))
         .map((i) => i.item)
         .toList();
 

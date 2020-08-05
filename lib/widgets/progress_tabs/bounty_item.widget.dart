@@ -2,18 +2,13 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_objective_progress.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/services/littlelight/item_notes.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/expiry_date.widget.dart';
 import 'package:little_light/widgets/common/small_objective.widget.dart';
 import 'package:little_light/widgets/progress_tabs/pursuit_item.widget.dart';
 
 class BountyItemWidget extends PursuitItemWidget {
-  BountyItemWidget(
-      {Key key,
-      String characterId,
-      DestinyItemComponent item,
-      bool includeCharacterIcon: false})
+  BountyItemWidget({Key key, String characterId, DestinyItemComponent item, bool includeCharacterIcon:false})
       : super(
             key: key,
             characterId: characterId,
@@ -32,10 +27,8 @@ class BountyItemWidgetState<T extends BountyItemWidget>
       padding: EdgeInsets.all(4).copyWith(top: 0),
       child: Row(
         children: itemObjectives
-            .map((objective) => Expanded(
-                child: Container(
-                    margin: EdgeInsets.all(2),
-                    child: buildObjective(context, objective))))
+            .map((objective) =>
+                Expanded(child: Container(margin:EdgeInsets.all(2), child:buildObjective(context, objective))))
             .toList(),
       ),
     );
@@ -43,10 +36,6 @@ class BountyItemWidgetState<T extends BountyItemWidget>
 
   @override
   Widget buildMainInfo(BuildContext context, BoxConstraints constraints) {
-    var customName = ItemNotesService()
-        .getNotesForItem(item?.itemHash, item?.itemInstanceId)
-        ?.customName
-        ?.toUpperCase();
     return Expanded(
         flex: constraints.hasBoundedHeight ? 1 : 0,
         child: Stack(children: <Widget>[
@@ -62,9 +51,7 @@ class BountyItemWidgetState<T extends BountyItemWidget>
                         child: Container(
                             padding: EdgeInsets.all(4),
                             child: Text(
-                              customName ??
-                                  definition.displayProperties.name
-                                      .toUpperCase(),
+                              definition.displayProperties.name.toUpperCase(),
                               style: TextStyle(fontWeight: FontWeight.bold),
                               softWrap: false,
                               overflow: TextOverflow.fade,

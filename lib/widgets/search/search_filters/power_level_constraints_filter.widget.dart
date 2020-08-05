@@ -19,6 +19,7 @@ class _PowerLevelConstraintsWidgetState extends BaseSearchFilterWidgetState<
     PowerLevelConstraintsWidget,
     PowerLevelConstraintsFilter,
     PowerLevelConstraints> {
+  
   @override
   Widget buildButtons(BuildContext context) {
     var aMin = filter?.availableValues?.min ?? -999;
@@ -27,9 +28,6 @@ class _PowerLevelConstraintsWidgetState extends BaseSearchFilterWidgetState<
     var max = filter?.value?.max ?? 999;
     var powerlessAvaialable =
         filter?.availableValues?.includePowerlessItems ?? false;
-    if (aMax <= aMin) {
-      return Container();
-    }
     return Column(children: [
       !powerlessAvaialable
           ? Container()
@@ -57,9 +55,9 @@ class _PowerLevelConstraintsWidgetState extends BaseSearchFilterWidgetState<
           )),
       SliderTheme(
           data: SliderTheme.of(context).copyWith(
-              rangeValueIndicatorShape:
-                  SmallRectRangeSliderValueIndicatorShape(),
-              rangeTrackShape: RoundedRectRangeSliderTrackShape()),
+            rangeValueIndicatorShape: SmallRectRangeSliderValueIndicatorShape(),
+            // rangeTrackShape: RoundedRectRangeSliderTrackShape(useV2Slider: true)
+          ),
           child: RangeSlider(
             values: RangeValues(min?.toDouble(), max?.toDouble()),
             min: aMin?.toDouble(),
@@ -89,7 +87,7 @@ class _PowerLevelConstraintsWidgetState extends BaseSearchFilterWidgetState<
 
   @override
   Widget buildDisabledLabel(BuildContext context) {
-    if (filter.availableValues.min > 9000) {
+    if(filter.availableValues.min > 9000){
       return Container();
     }
     return super.buildDisabledLabel(context);
@@ -97,8 +95,8 @@ class _PowerLevelConstraintsWidgetState extends BaseSearchFilterWidgetState<
 
   @override
   Widget buildDisabledValue(BuildContext context) {
-    if (filter.availableValues.min > 9000) {
-      return TranslatedTextWidget("None", uppercase: true);
+    if(filter.availableValues.min > 9000){
+      return TranslatedTextWidget("None", uppercase:true);
     }
     return Text("${filter.availableValues.min}");
   }

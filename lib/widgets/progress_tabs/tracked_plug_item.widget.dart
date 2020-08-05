@@ -12,9 +12,12 @@ import 'package:little_light/widgets/progress_tabs/tracked_pursuit_item.widget.d
 
 class TrackedPlugItemWidget extends TrackedPursuitItemWidget {
   final int plugHash;
-  TrackedPlugItemWidget(
-      {Key key, DestinyItemComponent item, this.plugHash, OnPursuitTap onTap})
-      : super(key: key, item: item, onTap: onTap);
+  TrackedPlugItemWidget({Key key, DestinyItemComponent item, this.plugHash, OnPursuitTap onTap})
+      : super(
+          key: key,
+          item: item,
+          onTap:onTap
+        );
 
   TrackedPlugItemWidgetState createState() => TrackedPlugItemWidgetState();
 }
@@ -39,8 +42,7 @@ class TrackedPlugItemWidgetState
   Future<void> loadDefinitions() async {
     definition = await widget.manifest
         .getDefinition<DestinyInventoryItemDefinition>(widget.item.itemHash);
-    plugDefinition = await widget.manifest
-        .getDefinition<DestinyInventoryItemDefinition>(widget.plugHash);
+    plugDefinition = await widget.manifest.getDefinition<DestinyInventoryItemDefinition>(widget.plugHash);
     objectiveDefinitions = await widget.manifest
         .getDefinitions<DestinyObjectiveDefinition>(
             itemObjectives?.map((o) => o.objectiveHash));
@@ -48,13 +50,12 @@ class TrackedPlugItemWidgetState
   }
 
   updateProgress() {
-    var plugObjectives =
-        widget.profile.getPlugObjectives(widget.item.itemInstanceId);
-    if (plugObjectives?.containsKey("${widget.plugHash}") ?? false) {
+    var plugObjectives = widget.profile.getPlugObjectives(widget.item.itemInstanceId);
+    if(plugObjectives?.containsKey("${widget.plugHash}") ?? false){
       itemObjectives = plugObjectives["${widget.plugHash}"];
     }
-
-    setState(() {});
+    
+    setState((){});
   }
 
   @override
@@ -67,27 +68,27 @@ class TrackedPlugItemWidgetState
     if (objectiveDefinitions == null) return Container();
     return Column(children: [
       Container(
-          padding: EdgeInsets.all(4),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                width: 24,
-                height: 24,
-                child: QueuedNetworkImage(
-                  imageUrl: BungieApiService.url(
-                      plugDefinition?.displayProperties?.icon),
-                ),
-              ),
-              Container(
-                width: 8,
-              ),
-              Text(
-                plugDefinition?.displayProperties?.name ?? "",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
-              ),
-            ],
-          )),
+        padding: EdgeInsets.all(4),
+        child:Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Container(
+            width: 24,
+            height: 24,
+            child: QueuedNetworkImage(
+              imageUrl:
+                  BungieApiService.url(plugDefinition?.displayProperties?.icon),
+            ),
+          ),
+          Container(
+            width: 8,
+          ),
+          Text(
+            plugDefinition?.displayProperties?.name ?? "",
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+          ),
+        ],
+      )),
       super.buildObjective(context, objective)
     ]);
   }

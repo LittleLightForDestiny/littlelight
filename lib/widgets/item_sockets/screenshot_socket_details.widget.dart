@@ -13,7 +13,6 @@ import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-
 import 'package:little_light/widgets/item_sockets/base_socket_details.widget.dart';
 import 'package:little_light/widgets/item_sockets/plug_wishlist_tag_icons.mixin.dart';
 import 'package:little_light/widgets/item_stats/screenshot_socket_item_stats.widget.dart';
@@ -240,7 +239,7 @@ class _ScreenshotPerkDetailsWidgetState
         padding: EdgeInsets.all(0),
         child: AspectRatio(
             aspectRatio: 1,
-            child: MaterialButton(
+            child: FlatButton(
               shape: ContinuousRectangleBorder(side: borderSide),
               padding: EdgeInsets.all(0),
               child: Stack(children: [
@@ -307,7 +306,7 @@ class _ScreenshotPerkDetailsWidgetState
         child: Stack(children: [
           AspectRatio(
               aspectRatio: 1,
-              child: MaterialButton(
+              child: FlatButton(
                 shape: intrinsic && !isExotic
                     ? RoundedRectangleBorder(
                         borderRadius:

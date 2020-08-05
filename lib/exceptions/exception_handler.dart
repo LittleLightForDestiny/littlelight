@@ -1,19 +1,23 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'package:bungie_api/enums/bungie_membership_type.dart';
 import 'package:bungie_api/enums/platform_error_codes.dart';
 import 'package:bungie_api/helpers/oauth.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/storage/storage.service.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:sentry/sentry.dart';
+import 'package:package_info/package_info.dart';
+
 
 class ExceptionHandler {
   static BuildContext context;
   Function onRestart;
+  static SentryClient _sentry;
   ExceptionHandler({this.onRestart}) {
+    initSentry();
     initCustomErrorMessage();
     FlutterError.onError = (FlutterErrorDetails details) {
       if (isInDebugMode) {
@@ -21,9 +25,20 @@ class ExceptionHandler {
       } else {
         Zone.current.handleUncaughtError(details.exception, details.stack);
       }
-
-      Crashlytics.instance.recordFlutterError(details);
     };
+  }
+
+  initSentry() async {
+    if (_sentry != null) return;
+    if (!DotEnv().env.containsKey('sentry_dsn')) return;
+
+    var info = await PackageInfo.fromPlatform();
+    _sentry = SentryClient(
+        environmentAttributes: Event(
+          environment: isInDebugMode ? 'debug' : 'production',
+          release: info.version,
+        ),
+        dsn: DotEnv().env['sentry_dsn']);
   }
 
   initCustomErrorMessage() {
@@ -32,9 +47,10 @@ class ExceptionHandler {
         return Container(
             padding: EdgeInsets.all(8),
             alignment: Alignment.center,
-            child: Column(mainAxisSize: MainAxisSize.min, children: [
-              TranslatedTextWidget(
-                  "Couldn&#39;t render this widget properly. Please report this to @LittleLightD2 on Twitter or via GitHub issues"),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children:[
+              TranslatedTextWidget("Couldn&#39;t render this widget properly. Please report this to @LittleLightD2 on Twitter or via GitHub issues"),
               Text(details?.exceptionAsString() ?? ""),
             ]));
       };
@@ -53,11 +69,8 @@ class ExceptionHandler {
     }
 
     if (error is BungieApiException) {
-      bool shouldShowLoginButton = [
-            PlatformErrorCodes.DestinyAccountNotFound,
-            PlatformErrorCodes.WebAuthRequired
-          ].contains(error.errorCode) ||
-          ["invalid_grant"].contains(error.errorStatus);
+      bool shouldShowLoginButton = [PlatformErrorCodes.DestinyAccountNotFound, PlatformErrorCodes.WebAuthRequired].contains(error.errorCode) ||
+      ["invalid_grant"].contains(error.errorStatus);
       BungieApiException e = error;
       print(e.errorStatus);
       showDialog(
@@ -85,8 +98,7 @@ class ExceptionHandler {
                         ? ErrorDialogButton(
                             text: "Login with another account",
                             onPressed: () async {
-                              await StorageService.account()
-                                  .remove(StorageKeys.latestToken, true);
+                              await StorageService.account().remove(StorageKeys.latestToken, true);
                               onRestart();
                             })
                         : Container(height: 0),
@@ -101,15 +113,35 @@ class ExceptionHandler {
         ),
       );
     }
-
-    Crashlytics.instance.recordFlutterError(error);
+    if (isInDebugMode) {
+      print(stackTrace);
+      return;
+    } else {
+      _sentry.captureException(
+        exception: error,
+        stackTrace: stackTrace,
+      );
+    }
   }
 
-  static setReportingUserInfo(String membershipId, String displayName,
-      BungieMembershipType platformId) {
-    Crashlytics.instance.setUserIdentifier(membershipId);
-    Crashlytics.instance.setUserName(displayName);
-    Crashlytics.instance.setInt("platform", platformId.value);
+  static reportToSentry(dynamic exception, [dynamic stacktrace]) {
+    if (isInDebugMode) {
+      print(exception);
+      return;
+    }
+    _sentry.captureException(
+      exception: exception,
+      stackTrace: stacktrace,
+    );
+  }
+
+  static setSentryUserInfo(
+      String membershipId, String displayName, BungieMembershipType platformId) {
+    if (_sentry == null) return;
+    _sentry.userContext = User(
+        id: membershipId,
+        username: displayName,
+        extras: {'platform': platformId});
   }
 }
 

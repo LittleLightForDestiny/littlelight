@@ -11,7 +11,6 @@ import 'package:little_light/widgets/common/base/base_destiny_stateless_item.wid
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-
 import 'package:little_light/widgets/item_list/items/weapon/weapon_inventory_item.widget.dart';
 
 class RewardsInfoWidget extends BaseDestinyStatelessItemWidget {

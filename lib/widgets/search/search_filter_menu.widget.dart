@@ -8,9 +8,6 @@ import 'package:little_light/widgets/search/search_filters/energy_level_constrai
 import 'package:little_light/widgets/search/search_filters/energy_type_filter.widget.dart';
 import 'package:little_light/widgets/search/search_filters/item_bucket_filter.widget.dart';
 import 'package:little_light/widgets/search/search_filters/item_subtype_filter.widget.dart';
-import 'package:little_light/widgets/search/search_filters/item_tag_filter.widget.dart';
-import 'package:little_light/widgets/search/search_filters/loadout_filter.widget.dart';
-import 'package:little_light/widgets/search/search_filters/power_cap_filter.widget.dart';
 import 'package:little_light/widgets/search/search_filters/power_level_constraints_filter.widget.dart';
 import 'package:little_light/widgets/search/search_filters/seasonal_slot_filter.widget.dart';
 import 'package:little_light/widgets/search/search_filters/tier_type_filter.widget.dart';
@@ -20,7 +17,7 @@ import 'package:little_light/widgets/search/search_filters/wishlist_tag_filter.w
 class SearchFilterMenu extends StatefulWidget {
   final SearchController controller;
 
-  SearchFilterMenu({this.controller, Key key}) : super(key: key);
+  SearchFilterMenu({this.controller, Key key}):super(key:key);
 
   @override
   _SearchFilterMenuState createState() => _SearchFilterMenuState();
@@ -37,39 +34,33 @@ class _SearchFilterMenuState extends State<SearchFilterMenu> {
           automaticallyImplyLeading: false,
           actions: <Widget>[Container()],
           leading: IconButton(
-            enableFeedback: false,
             icon: Icon(Icons.close),
             onPressed: () {
               Navigator.of(context).pop();
             },
           ),
         ),
-        Expanded(
-            child: ListView(
-                padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).padding.bottom),
-                children: buildFilters(context)))
+        Expanded(child: ListView(
+          padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+          children: buildFilters(context)))
       ],
     ));
   }
 
-  List<Widget> buildFilters(BuildContext context) {
+  List<Widget> buildFilters(BuildContext context){
     return [
       PowerLevelConstraintsWidget(widget.controller),
       EnergyLevelConstraintsWidget(widget.controller),
       DamageTypeFilterWidget(widget.controller),
       EnergyTypeFilterWidget(widget.controller),
       SeasonalSlotFilterWidget(widget.controller),
-      PowerCapFilterWidget(widget.controller),
       AmmoTypeFilterWidget(widget.controller),
       ClassTypeFilterWidget(widget.controller),
       TierTypeFilterWidget(widget.controller),
       ItemBucketFilterWidget(widget.controller),
       TotalStatsConstraintsWidget(widget.controller),
       ItemSubTypeFilterWidget(widget.controller),
-      LoadoutFilterWidget(widget.controller),
-      ItemTagFilterWidget(widget.controller),
       WishlistTagsFilterWidget(widget.controller),
-    ];
+      ];
   }
 }

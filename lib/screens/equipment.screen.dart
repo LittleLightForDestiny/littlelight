@@ -51,12 +51,13 @@ class EquipmentScreenState extends State<EquipmentScreen>
   TabController typeTabController;
   StreamSubscription<NotificationEvent> subscription;
 
-  get totalCharacterTabs => (characters?.length ?? 0) + 1;
+  get totalCharacterTabs =>
+      (characters?.length ?? 0)  + 1;
 
   @override
   void initState() {
     super.initState();
-    ProfileService().updateComponents = ProfileComponentGroups.basicProfile;
+    
     SelectedPagePersistence.saveLatestScreen(SelectedPagePersistence.equipment);
 
     typeTabController = typeTabController ??
@@ -119,7 +120,6 @@ class EquipmentScreenState extends State<EquipmentScreen>
             width: kToolbarHeight,
             height: kToolbarHeight,
             child: IconButton(
-              enableFeedback: false,
               icon: Icon(Icons.menu),
               onPressed: () {
                 Scaffold.of(context).openDrawer();
@@ -175,7 +175,6 @@ class EquipmentScreenState extends State<EquipmentScreen>
             width: kToolbarHeight,
             height: kToolbarHeight,
             child: IconButton(
-              enableFeedback: false,
               icon: Icon(Icons.menu),
               onPressed: () {
                 Scaffold.of(context).openDrawer();
@@ -247,14 +246,14 @@ class EquipmentScreenState extends State<EquipmentScreen>
   }
 
   Widget buildBackground(BuildContext context) {
-    if (characters == null) return Container();
+    if(characters == null) return Container();
     return AnimatedCharacterBackgroundWidget(
       tabController: charTabController,
     );
   }
 
   Widget buildItemTypeTabBarView(BuildContext context) {
-    if (characters == null) return Container();
+    if(characters == null) return Container();
     return TabBarView(
         controller: typeTabController, children: buildItemTypeTabs(context));
   }
@@ -266,7 +265,7 @@ class EquipmentScreenState extends State<EquipmentScreen>
   }
 
   Widget buildCharacterTabBarView(BuildContext context, int group) {
-    if (characters == null) return Container();
+    if(characters == null) return Container();
     return PassiveTabBarView(
         physics: NeverScrollableScrollPhysics(),
         controller: charTabController,
@@ -289,52 +288,33 @@ class EquipmentScreenState extends State<EquipmentScreen>
   }
 
   buildCharacterMenu(BuildContext context) {
-    if (characters == null) return Container();
+    if(characters == null) return Container();
     return Row(children: [
       IconButton(
-          enableFeedback: false,
           icon: Icon(FontAwesomeIcons.search, color: Colors.white),
           onPressed: () {
-            Iterable<PseudoItemType> available = [
-              PseudoItemType.Weapons,
-              PseudoItemType.Armor,
-              PseudoItemType.Cosmetics,
-              PseudoItemType.Consumables
-            ];
-            Iterable<PseudoItemType> selected = [
-              PseudoItemType.Weapons,
-              PseudoItemType.Armor,
-              PseudoItemType.Cosmetics,
-              PseudoItemType.Consumables
-            ];
-            if (typeTabController?.index == 0) {
+            Iterable<PseudoItemType> available = [PseudoItemType.Weapons, PseudoItemType.Armor, PseudoItemType.Cosmetics, PseudoItemType.Consumables];
+            Iterable<PseudoItemType> selected = [PseudoItemType.Weapons, PseudoItemType.Armor, PseudoItemType.Cosmetics, PseudoItemType.Consumables];
+            if(typeTabController?.index == 0){
               selected = [PseudoItemType.Weapons];
             }
-            if (typeTabController?.index == 1) {
+            if(typeTabController?.index == 1){
               selected = [PseudoItemType.Armor];
             }
-            if (typeTabController?.index == 2) {
+            if(typeTabController?.index == 2){
               selected = [PseudoItemType.Cosmetics, PseudoItemType.Consumables];
             }
             var query = MediaQueryHelper(context);
             if (query.isLandscape) {
-              selected = [
-                PseudoItemType.Weapons,
-                PseudoItemType.Armor,
-                PseudoItemType.Cosmetics
-              ];
+              selected = [PseudoItemType.Weapons, PseudoItemType.Armor, PseudoItemType.Cosmetics];
             }
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => SearchScreen(
                   controller: SearchController.withDefaultFilters(
-                    firstRunFilters: [
-                      PseudoItemTypeFilter(available, available)
-                    ],
-                    preFilters: [
-                      PseudoItemTypeFilter(available, selected),
-                    ],
+                    firstRunFilters: [PseudoItemTypeFilter(available, available)],
+                    preFilters: [PseudoItemTypeFilter(available, selected),],
                   ),
                 ),
               ),

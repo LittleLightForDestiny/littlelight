@@ -17,7 +17,6 @@ import 'package:little_light/widgets/common/expiry_date.widget.dart';
 import 'package:little_light/widgets/common/objective.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
-
 typedef void OnPursuitTap(
     DestinyItemComponent item,
     DestinyInventoryItemDefinition definition,

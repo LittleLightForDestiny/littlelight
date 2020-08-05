@@ -59,7 +59,7 @@ class InspectScreenState extends State<InspectScreen>
             top: screenPadding.top,
             width: kToolbarHeight,
             height: kToolbarHeight,
-            child: IconButton(enableFeedback: false,
+            child: IconButton(
               icon: Icon(Icons.menu),
               onPressed: () {
                 Scaffold.of(context).openDrawer();

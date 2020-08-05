@@ -4,7 +4,6 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/services/littlelight/item_notes.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateless_item.widget.dart';
 
@@ -25,12 +24,8 @@ class ItemNameBarWidget extends BaseDestinyStatelessItemWidget {
     this.multiline = false,
     this.fontWeight = FontWeight.w500,
     this.trailing,
-  }) : super(
-            item: item,
-            definition: definition,
-            instanceInfo: instanceInfo,
-            key: key,
-            characterId: characterId);
+  }) : super(item:item, definition:definition, instanceInfo:instanceInfo,
+            key: key, characterId: characterId);
 
   @override
   Widget build(BuildContext context) {
@@ -79,14 +74,7 @@ class ItemNameBarWidget extends BaseDestinyStatelessItemWidget {
   }
 
   Widget nameBarTextField(BuildContext context) {
-    var customName = ItemNotesService()
-        .getNotesForItem(item?.itemHash, item?.itemInstanceId)
-        ?.customName
-        ?.toUpperCase();
-    if ((customName?.length ?? 0) == 0) {
-      customName = null;
-    }
-    return Text(customName ?? definition.displayProperties.name.toUpperCase(),
+    return Text(definition.displayProperties.name.toUpperCase(),
         overflow: TextOverflow.fade,
         maxLines: multiline ? 2 : 1,
         softWrap: multiline,

@@ -86,7 +86,7 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget> {
                 ])),
         child: Stack(children: [
           Row(children: buildContent(context, definition)),
-          MaterialButton(
+          FlatButton(
               child: Container(),
               onPressed: () {
                 widget.onPressed(widget.hash, widget.depth, widget.isCategorySet);

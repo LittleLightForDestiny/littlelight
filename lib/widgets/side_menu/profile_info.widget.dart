@@ -243,7 +243,7 @@ class ProfileInfoState extends State<ProfileInfoWidget>
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Expanded(
-                child: MaterialButton(
+                child: FlatButton(
               child: Container(
                 alignment: Alignment.centerLeft,
                 child: TranslatedTextWidget("Tap to Login",
@@ -257,7 +257,7 @@ class ProfileInfoState extends State<ProfileInfoWidget>
                     ));
               },
             )),
-            IconButton(enableFeedback: false,
+            IconButton(
               icon: Transform.rotate(
                   angle: -_heightFactor.value * 1.5,
                   child: Icon(Icons.settings)),
@@ -279,7 +279,7 @@ class ProfileInfoState extends State<ProfileInfoWidget>
                 padding: EdgeInsets.symmetric(horizontal: 8),
                 child: Icon(platform.iconData)),
             Expanded(child: Text(selectedMembership?.displayName ?? "")),
-            IconButton(enableFeedback: false,
+            IconButton(
               icon: Transform.rotate(
                   angle: -_heightFactor.value * 1.5,
                   child: Icon(Icons.settings)),

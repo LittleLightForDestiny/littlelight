@@ -4,7 +4,6 @@ import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/user_settings/item_sort_parameter.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-
 import 'package:little_light/widgets/search/search.controller.dart';
 import 'package:little_light/widgets/search/search_sorters/base_search_sorter.widget.dart';
 

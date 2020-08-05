@@ -20,7 +20,6 @@ import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
-
 import 'package:little_light/widgets/item_list/character_info.widget.dart';
 import 'package:little_light/widgets/option_sheets/loadout_select_sheet.widget.dart';
 
@@ -57,7 +56,7 @@ class VaultInfoWidgetState extends CharacterInfoWidgetState<VaultInfoWidget> {
       currencyInfo(context),
       characterStatsInfo(context, null),
       Positioned.fill(
-          child: MaterialButton(
+          child: FlatButton(
               child: Container(),
               onPressed: () {
                 showOptionsSheet(context);

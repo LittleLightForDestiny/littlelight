@@ -3,7 +3,6 @@ import 'package:little_light/services/storage/storage.service.dart';
 import 'package:little_light/services/translate/translate.service.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-
 import 'package:little_light/widgets/initial_page/language.button.dart';
 
 typedef void LanguageSelectCallback(String languageCode);

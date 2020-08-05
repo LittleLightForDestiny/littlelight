@@ -1,3 +1,4 @@
+
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_investment_stat_definition.dart';
@@ -29,8 +30,7 @@ class BaseItemStatsWidget extends BaseDestinyStatefulItemWidget {
 
 class BaseItemStatsState<T extends BaseItemStatsWidget>
     extends BaseDestinyItemState<T> with AutomaticKeepAliveClientMixin {
-  Map<int, DestinyInventoryItemDefinition> get plugDefinitions =>
-      socketController.plugDefinitions;
+  Map<int, DestinyInventoryItemDefinition> get plugDefinitions => socketController.plugDefinitions;
   Map<String, DestinyStat> precalculatedStats;
   List<DestinyItemSocketState> socketStates;
 
@@ -50,7 +50,7 @@ class BaseItemStatsState<T extends BaseItemStatsWidget>
 
     precalculatedStats =
         widget.profile.getPrecalculatedStats(item?.itemInstanceId);
-
+    
     socketStates = widget.profile.getItemSockets(item?.itemInstanceId);
     loadStatGroupDefinition();
     initializeSocketController();
@@ -154,8 +154,7 @@ class BaseItemStatsState<T extends BaseItemStatsWidget>
           equipped: s.value, selected: s.value, precalculated: pre);
     });
 
-    List<int> plugHashes = List.generate(socketController.socketCount,
-        (i) => socketController.socketEquippedPlugHash(i));
+    List<int> plugHashes = List.generate(socketController.socketCount, (i)=>socketController.socketEquippedPlugHash(i));
 
     plugHashes.forEach((plugHash) {
       int index = plugHashes.indexOf(plugHash);
@@ -186,7 +185,7 @@ class BaseItemStatsState<T extends BaseItemStatsWidget>
           StatValues values = map[stat.statTypeHash] ?? new StatValues();
           if (selectedDef.plug?.uiPlugLabel == 'masterwork') {
             values.masterwork += stat.value;
-          } else {
+          }else{
             values.selected += stat.value;
           }
           map[stat.statTypeHash] = values;
@@ -230,17 +229,7 @@ class BaseItemStatsState<T extends BaseItemStatsWidget>
       int valB = noBarStats.contains(statB.statTypeHash)
           ? 2
           : DestinyData.hiddenStats.contains(statB.statTypeHash) ? 1 : 0;
-      var result = valA - valB;
-      if (result != 0) return result;
-      int posA = statGroupDefinition.scaledStats
-          .map((i) => i.statHash)
-          .toList()
-          .indexOf(statA.statTypeHash);
-      int posB = statGroupDefinition.scaledStats
-          .map((i) => i.statHash)
-          .toList()
-          .indexOf(statB.statTypeHash);
-      return posA - posB;
+      return valA - valB;
     });
     return stats;
   }

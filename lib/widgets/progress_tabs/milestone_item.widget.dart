@@ -20,7 +20,7 @@ import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-import 'package:little_light/widgets/icon_fonts/littlelight_icons.dart';
+import 'package:little_light/widgets/icon_fonts/destiny_icons_icons.dart';
 
 class MilestoneItemWidget extends StatefulWidget {
   final String characterId;
@@ -48,7 +48,7 @@ class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
   @override
   void initState() {
     super.initState();
-
+    
     milestone = widget.milestone;
     loadDefinitions();
     subscription = widget.broadcaster.listen((event) {
@@ -224,7 +224,7 @@ class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
                             (def?.activityLightLevel ?? 0) > 0
                                 ? Row(children: [
                                     Icon(
-                                      LittleLightIcons.power,
+                                      DestinyIcons.power,
                                       size: 12,
                                       color: Colors.amber.shade500,
                                     ),

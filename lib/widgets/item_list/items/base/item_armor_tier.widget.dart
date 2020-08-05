@@ -12,13 +12,11 @@ class ItemArmorTierWidget extends StatefulWidget {
   final double iconSize;
   final List<DestinyItemSocketState> itemSockets;
   final socketCategoryHash;
-  final bool suppressIcon;
   ItemArmorTierWidget(
       {Key key,
       this.iconSize = 16,
       this.socketCategoryHash,
       this.definition,
-      this.suppressIcon = false,
       this.itemSockets})
       : super(key: key);
 
@@ -73,17 +71,15 @@ class ItemArmorTierWidgetState extends State<ItemArmorTierWidget> {
             return Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                !widget.suppressIcon
-                    ? Icon(DestinyData.getEnergyTypeIcon(capacity?.energyType),
-                        color: DestinyData.getEnergyTypeLightColor(
-                            capacity?.energyType),
-                        size: widget.iconSize * .7)
-                    : Container(),
+                Icon(DestinyData.getEnergyTypeIcon(capacity?.energyType),
+                    color: DestinyData.getEnergyTypeLightColor(
+                        capacity?.energyType),
+                    size: widget.iconSize*.7),
                 Text("${def?.plug?.energyCapacity?.capacityValue ?? 0}",
                     style: TextStyle(
-                        height: 1,
-                        fontWeight: FontWeight.bold,
-                        fontSize: widget.iconSize,
+                      height: 1,
+                      fontWeight: FontWeight.bold,
+                      fontSize: widget.iconSize,
                         color: DestinyData.getEnergyTypeLightColor(
                             capacity?.energyType))),
               ],

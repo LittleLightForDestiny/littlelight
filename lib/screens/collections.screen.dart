@@ -25,8 +25,6 @@ class CollectionsScreenState
   Map<int, List<ItemWithOwner>> itemsByHash;
   @override
   void initState() {
-    ProfileService().updateComponents = ProfileComponentGroups.collections;
-    ProfileService().fetchProfileData();
     SelectedPagePersistence.saveLatestScreen(
         SelectedPagePersistence.collections);
     AuthService auth = AuthService();
@@ -105,14 +103,14 @@ class CollectionsScreenState
   buildAppBar(BuildContext context) {
     if (widget.depth == 0) {
       return AppBar(
-          leading: IconButton(enableFeedback: false,
+          leading: IconButton(
             icon: Icon(Icons.menu),
             onPressed: () {
               Scaffold.of(context).openDrawer();
             },
           ),
           actions: <Widget>[
-            IconButton(enableFeedback: false,
+            IconButton(
               icon: Icon(Icons.search),
               onPressed: () {
                 Navigator.push(

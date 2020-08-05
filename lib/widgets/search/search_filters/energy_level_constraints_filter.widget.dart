@@ -56,7 +56,7 @@ class EnergyLevelConstraintsWidgetState extends BaseSearchFilterWidgetState<
       SliderTheme(
           data: SliderTheme.of(context).copyWith(
             rangeValueIndicatorShape: SmallRectRangeSliderValueIndicatorShape(),
-            rangeTrackShape: RoundedRectRangeSliderTrackShape()
+            // rangeTrackShape: RoundedRectRangeSliderTrackShape(useV2Slider: true)
           ),
           child: RangeSlider(
             values: RangeValues(min?.toDouble(), max?.toDouble()),

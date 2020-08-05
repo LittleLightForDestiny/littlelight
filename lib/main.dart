@@ -1,9 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_analytics/observer.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -15,8 +12,7 @@ import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
 int restartCounter = 0;
 void main() async {
-  // debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
-  Crashlytics.instance.enableInDevMode = true;
+  debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
   WidgetsFlutterBinding.ensureInitialized();
   await DotEnv().load('assets/_env');
   print(DotEnv().env);
@@ -25,9 +21,10 @@ void main() async {
     main();
   });
 
-  runZonedGuarded<Future<void>>(() async {
+  // runZonedGuarded<Future<void>>(() async {
+  runZoned(() {
     runApp(new LittleLight(key: Key("little_light_$restartCounter")));
-  }, (error, stackTrace) {
+  }, onError: (error, stackTrace) {
     handler.handleException(error, stackTrace);
   });
 }
@@ -40,17 +37,13 @@ class LittleLight extends StatelessWidget {
   Widget build(BuildContext context) {
     QueuedNetworkImage.maxNrOfCacheObjects = 5000;
     QueuedNetworkImage.inBetweenCleans = new Duration(days: 30);
-    FirebaseAnalytics analytics = FirebaseAnalytics();
-    FirebaseAnalyticsObserver observer =
-        FirebaseAnalyticsObserver(analytics: analytics);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       key: key,
       title: 'Little Light',
-      navigatorObservers: [observer],
       theme: new ThemeData(
           disabledColor: Colors.lightBlue.shade900,
-          // platform: TargetPlatform.android,
+          platform: TargetPlatform.android,
           backgroundColor: Colors.blueGrey.shade900,
           primarySwatch: Colors.lightBlue,
           primaryColor: Colors.blueGrey,
@@ -60,9 +53,8 @@ class LittleLight extends StatelessWidget {
           textSelectionColor: Colors.blueGrey.shade400,
           textSelectionHandleColor: Colors.lightBlueAccent.shade200,
           toggleableActiveColor: Colors.lightBlueAccent.shade200,
-          fontFamily: Platform.isMacOS ? "NeueHaasDisplay" : null,
           textTheme: TextTheme(
-              bodyText1: TextStyle(
+              body2: TextStyle(
                   color: Colors.grey.shade300, fontWeight: FontWeight.w500),
               button: TextStyle(
                 fontWeight: FontWeight.bold,

@@ -21,12 +21,7 @@ class ManifestText<T> extends DefinitionProviderWidget<T> {
           if (textExtractor != null) {
             text = textExtractor(definition);
           } else {
-            try{
-              text = (definition as dynamic).displayProperties.name;
-            }catch(e){
-              print(e);
-            }
-            
+            text = (definition as dynamic).displayProperties.name;
           }
           if(text == null) text = "";
           if (uppercase) {

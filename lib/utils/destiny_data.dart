@@ -5,8 +5,8 @@ import 'package:bungie_api/enums/destiny_class.dart';
 import 'package:bungie_api/enums/damage_type.dart';
 import 'package:bungie_api/enums/tier_type.dart';
 import 'package:bungie_api/enums/destiny_ammunition_type.dart';
+import 'package:little_light/widgets/icon_fonts/destiny_icons_icons.dart';
 import 'package:bungie_api/enums/destiny_item_sub_type.dart';
-import 'package:little_light/widgets/icon_fonts/littlelight_icons.dart';
 
 class RaidPhases {
   static const int leviathanGardens = 3847906370;
@@ -197,27 +197,27 @@ class DestinyData {
   static IconData getClassIcon(DestinyClass type) {
     switch (type) {
       case DestinyClass.Hunter:
-        return LittleLightIcons.class_hunter;
+        return DestinyIcons.class_hunter;
       case DestinyClass.Titan:
-        return LittleLightIcons.class_titan;
+        return DestinyIcons.class_titan;
       case DestinyClass.Warlock:
-        return LittleLightIcons.class_warlock;
+        return DestinyIcons.class_warlock;
       default:
-        return LittleLightIcons.destiny;
+        return DestinyIcons.destiny;
     }
   }
 
   static IconData getAmmoTypeIcon(DestinyAmmunitionType type) {
     switch (type) {
       case DestinyAmmunitionType.Primary:
-        return LittleLightIcons.ammo_primary;
+        return DestinyIcons.ammo_primary;
       case DestinyAmmunitionType.Special:
-        return LittleLightIcons.ammo_special;
+        return DestinyIcons.ammo_special;
       case DestinyAmmunitionType.Heavy:
-        return LittleLightIcons.ammo_heavy;
+        return DestinyIcons.ammo_heavy;
 
       default:
-        return LittleLightIcons.destiny;
+        return DestinyIcons.destiny;
     }
   }
 
@@ -236,27 +236,27 @@ class DestinyData {
   static IconData getDamageTypeIcon(DamageType type) {
     switch (type) {
       case DamageType.Kinetic:
-        return LittleLightIcons.damage_kinetic;
+        return DestinyIcons.damage_kinetic;
       case DamageType.Arc:
-        return LittleLightIcons.damage_arc;
+        return DestinyIcons.damage_arc;
       case DamageType.Thermal:
-        return LittleLightIcons.damage_solar;
+        return DestinyIcons.damage_solar;
       case DamageType.Void:
-        return LittleLightIcons.damage_void;
+        return DestinyIcons.damage_void;
 
       default:
-        return LittleLightIcons.destiny;
+        return DestinyIcons.destiny;
     }
   }
 
   static IconData getEnergyTypeIcon(DestinyEnergyType type) {
     switch (type) {
       case DestinyEnergyType.Arc:
-        return LittleLightIcons.damage_arc;
+        return DestinyIcons.damage_arc;
       case DestinyEnergyType.Thermal:
-        return LittleLightIcons.damage_solar;
+        return DestinyIcons.damage_solar;
       case DestinyEnergyType.Void:
-        return LittleLightIcons.damage_void;
+        return DestinyIcons.damage_void;
 
       default:
         return null;

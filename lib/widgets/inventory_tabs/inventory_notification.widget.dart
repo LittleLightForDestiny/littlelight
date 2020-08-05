@@ -2,9 +2,6 @@ import 'dart:async';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/notification/notification.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/widgets/common/definition_provider.widget.dart';
-import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:shimmer/shimmer.dart';
@@ -15,9 +12,7 @@ class InventoryNotificationWidget extends StatefulWidget {
   final EdgeInsets notificationMargin;
 
   InventoryNotificationWidget(
-      {Key key,
-      this.barHeight = kBottomNavigationBarHeight,
-      this.notificationMargin})
+      {Key key, this.barHeight = kBottomNavigationBarHeight, this.notificationMargin})
       : super(key: key);
 
   @override
@@ -144,21 +139,13 @@ class InventoryNotificationWidgetState
     switch (_latestEvent.type) {
       case NotificationType.requestedTransfer:
       case NotificationType.requestedVaulting:
-        var instanceInfo =
-            ProfileService().getInstanceInfo(_latestEvent.item.itemInstanceId);
         return Container(
-          margin: EdgeInsets.only(left: 8),
+          padding: EdgeInsets.only(left: 4),
           width: 24,
           height: 24,
           key: Key("item_${_latestEvent.item.itemHash}"),
-          child: DefinitionProviderWidget<DestinyInventoryItemDefinition>(
-              _latestEvent.item.itemHash,
-              (def) => ItemIconWidget(
-                    _latestEvent.item,
-                    def,
-                    instanceInfo,
-                    iconBorderWidth: 0,
-                  )),
+          child: ManifestImageWidget<DestinyInventoryItemDefinition>(
+              _latestEvent.item.itemHash),
         );
         break;
 
@@ -189,7 +176,7 @@ class InventoryNotificationWidgetState
 
   Widget buildBusyContent(BuildContext context) {
     return Container(
-        margin: widget.notificationMargin,
+      margin:widget.notificationMargin,
         decoration: BoxDecoration(
             color: _isError
                 ? Colors.red.shade900

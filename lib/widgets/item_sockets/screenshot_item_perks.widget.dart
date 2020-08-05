@@ -161,7 +161,7 @@ class ScreenShotItemPerksWidgetState<T extends ScreenShotItemPerksWidget>
           margin: EdgeInsets.only(bottom: 16 * widget.pixelSize),
           child: AspectRatio(
             aspectRatio: 1,
-            child: MaterialButton(
+            child: FlatButton(
               shape: intrinsic && !isExotic
                   ? RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(4 * widget.pixelSize),

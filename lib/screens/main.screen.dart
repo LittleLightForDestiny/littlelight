@@ -5,7 +5,6 @@ import 'package:little_light/screens/loadouts.screen.dart';
 import 'package:little_light/screens/progress.screen.dart';
 import 'package:little_light/screens/triumphs.screen.dart';
 import 'package:little_light/services/auth/auth.service.dart';
-import 'package:little_light/services/littlelight/item_notes.service.dart';
 import 'package:little_light/services/littlelight/loadouts.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/user_settings/user_settings.service.dart';
@@ -26,38 +25,27 @@ class MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    initUpdaters();
+    fetchInfo();
     getInitScreen();
   }
 
-  initUpdaters() {
+  fetchInfo() {
+    LoadoutsService service = LoadoutsService();
     AuthService auth = AuthService();
     ProfileService profile = ProfileService();
     if (auth.isLogged) {
       auth.getMembershipData();
-      LoadoutsService().getLoadouts(forceFetch: true);
-      ItemNotesService().getNotes(forceFetch: true);
+      service.getLoadouts(forceFetch: true);
       profile.startAutomaticUpdater();
-      WidgetsBinding.instance.addObserver(this);
     }
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) async {
+  void didChangeAppLifecycleState(AppLifecycleState state) {
     ProfileService profile = ProfileService();
-    switch (state) {
-      case AppLifecycleState.resumed:
-        await profile.fetchProfileData();
-        profile.pauseAutomaticUpdater = false;
-        break;
-
-      case AppLifecycleState.detached:
-      case AppLifecycleState.inactive:
-      case AppLifecycleState.paused:
-        profile.pauseAutomaticUpdater = true;
-        break;
+    if (state == AppLifecycleState.resumed) {
+      profile.fetchProfileData();
     }
-    print("state changed: $state");
   }
 
   getInitScreen() async {
@@ -86,7 +74,7 @@ class MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
 
     setState(() {});
     bool keepAwake = UserSettingsService().keepAwake;
-
+    
     Screen.keepOn(keepAwake);
   }
 
@@ -112,18 +100,17 @@ class MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   Future<bool> _exitApp(BuildContext context) {
     return showDialog(
           context: context,
-          builder: (context) => AlertDialog(
-            title: TranslatedTextWidget('Exit'),
-            content: TranslatedTextWidget(
-                'Do you really want to exit Little Light?'),
+          builder: (context)=>AlertDialog(
+            title: new TranslatedTextWidget('Exit'),
+            content: new TranslatedTextWidget('Do you really want to exit Little Light?'),
             actions: <Widget>[
-              MaterialButton(
+              new FlatButton(
                 onPressed: () => Navigator.of(context).pop(false),
-                child: TranslatedTextWidget('No'),
+                child: new TranslatedTextWidget('No'),
               ),
-              MaterialButton(
+              new FlatButton(
                 onPressed: () => Navigator.of(context).pop(true),
-                child: TranslatedTextWidget('Yes'),
+                child: new TranslatedTextWidget('Yes'),
               ),
             ],
           ),

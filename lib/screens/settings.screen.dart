@@ -11,8 +11,6 @@ import 'package:little_light/services/user_settings/user_settings.service.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-
-
 import 'package:little_light/widgets/flutter/smaller_switch.dart';
 import 'package:little_light/widgets/option_sheets/free_slots_slider.widget.dart';
 import 'package:screen/screen.dart';
@@ -42,7 +40,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          leading: IconButton(enableFeedback: false,
+          leading: IconButton(
             icon: Icon(Icons.menu),
             onPressed: () {
               Scaffold.of(context).openDrawer();
@@ -223,14 +221,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               child: Container(
                                   padding: EdgeInsets.all(8),
                                   child: Text(
-                                    w.name ?? "",
+                                    w.name,
                                     style:
                                         TextStyle(fontWeight: FontWeight.w700),
                                   ))),
                           Container(
                               padding: EdgeInsets.all(8).copyWith(bottom: 0),
                               child: Linkify(
-                                  text: w.description ?? "",
+                                  text: w.description,
                                   linkStyle: TextStyle(color: Colors.white),
                                   onOpen: (link) =>
                                       launch(link.url, forceSafariVC: true))),

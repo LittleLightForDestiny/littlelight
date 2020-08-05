@@ -37,7 +37,7 @@ class ExceptionDialog extends AlertDialog {
       labels.add("Login");
     }
     return labels
-        .map((label) => MaterialButton(
+        .map((label) => FlatButton(
               onPressed: () {
                 Navigator.pop(context);
                 if (onDismiss != null) {

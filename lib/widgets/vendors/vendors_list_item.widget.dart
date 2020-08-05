@@ -21,7 +21,6 @@ import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
-
 class VendorsListItemWidget extends StatefulWidget {
   final String characterId;
   final ProfileService profile = ProfileService();
@@ -83,10 +82,7 @@ class VendorsListItemWidgetState<T extends VendorsListItemWidget>
     if (def.identifier.contains('multipurchase')) {
       return false; //eververse weird bright engrams
     }
-    if (def.identifier.contains('categories.featured') && !def.identifier.contains('bright_dust')) {
-      return false; //eververse weird menus
-    }
-    if (def.identifier.contains('categories.campaigns')) {
+    if (def.identifier.contains('categories.featured')) {
       return false; //eververse weird menus
     }
     if (def.identifier.contains('categories.seasonal')) {
@@ -247,7 +243,6 @@ class VendorsListItemWidgetState<T extends VendorsListItemWidget>
         spacing: 4,
         alignment: WrapAlignment.start,
         children: category.itemIndexes
-            .reversed
             .map((index) =>
                 buildItem(context, definition.itemList[index], index))
             .toList());

@@ -48,7 +48,7 @@ class ScreenShotItemStatsState
     StatValues totalStat;
     if (definition.itemType == DestinyItemType.Armor) {
       totalStat = StatValues();
-      stats.forEach((stat) {
+      stats.forEach((stat){
         var entry = statValues[stat.statTypeHash];
         totalStat.equipped += entry?.equipped ?? 0;
         totalStat.selected += entry?.selected ?? 0;
@@ -56,24 +56,22 @@ class ScreenShotItemStatsState
       });
     }
     return stats
-        .map<Widget>((stat) {
+        .map((stat) {
           var entry = statValues[stat.statTypeHash];
-          return Flexible(
-              child: ScreenshotItemStatWidget(
+          return ScreenshotItemStatWidget(
             statHash: stat.statTypeHash,
             modValues: entry,
             pixelSize: widget.pixelSize,
             scaled: statGroupDefinition.scaledStats.firstWhere(
                 (s) => s.statHash == stat.statTypeHash,
                 orElse: () => null),
-          ));
+          );
         })
         .followedBy(totalStat == null
             ? []
             : [
-                Flexible(
-                    child: ScreenshotTotalStatWidget(
-                        modValues: totalStat, pixelSize: widget.pixelSize))
+                ScreenshotTotalStatWidget(
+                    modValues: totalStat, pixelSize: widget.pixelSize)
               ])
         .toList();
   }

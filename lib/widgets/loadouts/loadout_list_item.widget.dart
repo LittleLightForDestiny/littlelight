@@ -1,20 +1,19 @@
-import 'package:bungie_api/enums/destiny_class.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
-import 'package:flutter/material.dart';
 import 'package:little_light/models/loadout.dart';
+import 'package:little_light/services/littlelight/loadouts.service.dart';
+import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
+import 'package:little_light/widgets/common/queued_network_image.widget.dart';
+import 'package:flutter/material.dart';
 import 'package:little_light/screens/edit_loadout.screen.dart';
 import 'package:little_light/screens/equip_loadout.screen.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/services/littlelight/loadouts.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
-import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
-import 'package:little_light/widgets/common/littlelight_custom.dialog.dart';
+import 'package:bungie_api/enums/destiny_class.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
-import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
 class LoadoutListItemWidget extends StatefulWidget {
@@ -117,11 +116,7 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> {
               child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 2),
                   child: RaisedButton(
-                    visualDensity: VisualDensity.comfortable,
                     child: TranslatedTextWidget("Equip",
-                        maxLines: 1,
-                        softWrap: false,
-                        overflow: TextOverflow.fade,
                         uppercase: true,
                         style: TextStyle(fontWeight: FontWeight.bold)),
                     onPressed: () {
@@ -138,12 +133,8 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> {
               child: Container(
                   padding: EdgeInsets.all(2),
                   child: RaisedButton(
-                    visualDensity: VisualDensity.comfortable,
                     child: TranslatedTextWidget("Edit",
                         uppercase: true,
-                        maxLines: 1,
-                        softWrap: false,
-                        overflow: TextOverflow.fade,
                         style: TextStyle(fontWeight: FontWeight.bold)),
                     onPressed: () async {
                       var loadout = await Navigator.push(
@@ -166,12 +157,8 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> {
               child: Container(
                   padding: EdgeInsets.all(2),
                   child: RaisedButton(
-                    visualDensity: VisualDensity.comfortable,
                     color: Theme.of(context).errorColor,
                     child: TranslatedTextWidget("Delete",
-                        maxLines: 1,
-                        softWrap: false,
-                        overflow: TextOverflow.fade,
                         uppercase: true,
                         style: TextStyle(fontWeight: FontWeight.bold)),
                     onPressed: () {
@@ -184,25 +171,36 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> {
   Future<void> deletePressed(BuildContext context) async {
     showDialog(
         context: context,
-        builder: (context) => LittleLightCustomDialog.withYesNoButtons(
-                Container(
-                    padding: EdgeInsets.all(8),
+        builder: (context) => AlertDialog(
+                actions: <Widget>[
+                  FlatButton(
+                      textColor: Colors.redAccent.shade200,
+                      child: TranslatedTextWidget(
+                        "No",
+                        uppercase: true,
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      }),
+                  FlatButton(
+                    textColor: Theme.of(context).accentColor,
                     child: TranslatedTextWidget(
-                      "Do you really want to delete the loadout {loadoutName} ?",
-                      replace: {"loadoutName": _loadout.name},
-                      style: TextStyle(fontSize: 16),
-                    )),
-                title: Text(_loadout?.name?.toUpperCase() ?? ""),
-                maxWidth: 400, yesPressed: () async {
-              LoadoutsService service = LoadoutsService();
-              await service.deleteLoadout(_loadout);
-              Navigator.of(context).pop();
-              if (widget.onChange != null) {
-                widget.onChange();
-              }
-            }, noPressed: () {
-              Navigator.of(context).pop();
-            }));
+                      "Yes",
+                      uppercase: true,
+                    ),
+                    onPressed: () async {
+                      LoadoutsService service = LoadoutsService();
+                      await service.deleteLoadout(_loadout);
+                      Navigator.of(context).pop();
+                      if (widget.onChange != null) {
+                        widget.onChange();
+                      }
+                    },
+                  )
+                ],
+                content: TranslatedTextWidget(
+                    "Do you really want to delete the loadout {loadoutName} ?",
+                    replace: {"loadoutName": _loadout.name})));
   }
 
   Widget buildItemRows(BuildContext context) {
@@ -262,10 +260,7 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> {
     var instance = ProfileService().getInstanceInfo(item?.itemInstanceId);
     return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
         item.itemHash,
-        (def) => ItemIconWidget.builder(
-            item: item,
-            definition: def,
-            instanceInfo: instance,
+        (def) => ItemIconWidget.builder(item:item, definition:def, instanceInfo:instance,
             key: Key("item_icon_${item.itemInstanceId}")));
   }
 }

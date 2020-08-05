@@ -2,7 +2,6 @@ import 'package:bungie_api/models/group_user_info_card.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/utils/platform_data.dart';
 
-
 class PlatformButton extends RaisedButton {
   final GroupUserInfoCard platform;
   PlatformButton(this.platform, {@required Function onPressed})

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:little_light/screens/presentation_node.screen.dart';
 import 'package:little_light/screens/triumph_search.screen.dart';
 import 'package:little_light/services/profile/destiny_settings.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/selected_page_persistence.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/presentation_nodes/presentation_node_tabs.widget.dart';
@@ -19,7 +18,6 @@ class TriumphsScreenState extends PresentationNodeScreenState<TriumphsScreen> {
   @override
   void initState() {
     super.initState();
-    ProfileService().updateComponents = ProfileComponentGroups.triumphs;
     SelectedPagePersistence.saveLatestScreen(SelectedPagePersistence.triumphs);
   }
 
@@ -47,7 +45,7 @@ class TriumphsScreenState extends PresentationNodeScreenState<TriumphsScreen> {
   buildAppBar(BuildContext context) {
     if (widget.depth == 0) {
       return AppBar(
-          leading: IconButton(enableFeedback: false,
+          leading: IconButton(
             icon: Icon(Icons.menu),
             onPressed: () {
               Scaffold.of(context).openDrawer();
@@ -55,7 +53,7 @@ class TriumphsScreenState extends PresentationNodeScreenState<TriumphsScreen> {
           ),
           title: TranslatedTextWidget("Triumphs"),
           actions: <Widget>[
-            IconButton(enableFeedback: false,
+            IconButton(
               icon: Icon(Icons.search),
               onPressed: () {
                 Navigator.push(

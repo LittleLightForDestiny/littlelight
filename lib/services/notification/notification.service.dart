@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:bungie_api/models/destiny_item_component.dart';
-import 'package:little_light/services/inventory/inventory.service.dart';
 
 enum NotificationType {
   localUpdate,
@@ -21,13 +20,11 @@ class NotificationEvent {
   final DestinyItemComponent item;
   final String characterId;
   NotificationEvent(this.type, {this.item, this.characterId});
-  
 }
 
 class TransferErrorEvent extends NotificationEvent {
-  final TransferErrorCode code;
   TransferErrorEvent(NotificationType type,
-      {DestinyItemComponent item, String characterId, this.code})
+      {DestinyItemComponent item, String characterId})
       : super(type, item: item, characterId: characterId);
 }
 

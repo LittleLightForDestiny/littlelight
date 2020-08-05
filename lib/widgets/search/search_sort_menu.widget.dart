@@ -43,7 +43,7 @@ class _SearchSortMenuState extends State<SearchSortMenu> {
           title: TranslatedTextWidget("Sort"),
           automaticallyImplyLeading: false,
           actions: <Widget>[Container()],
-          leading: IconButton(enableFeedback: false,
+          leading: IconButton(
             icon: Icon(Icons.close),
             onPressed: () {
               Navigator.of(context).pop();

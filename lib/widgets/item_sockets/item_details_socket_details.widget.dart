@@ -182,7 +182,7 @@ class ItemDetailsSocketDetailsWidgetState
         padding: EdgeInsets.all(0),
         child: AspectRatio(
             aspectRatio: 1,
-            child: MaterialButton(
+            child: FlatButton(
               shape: ContinuousRectangleBorder(side: borderSide),
               padding: EdgeInsets.all(0),
               child: Stack(children: [
@@ -338,7 +338,7 @@ class ItemDetailsSocketDetailsWidgetState
         child: Stack(children: [
           AspectRatio(
               aspectRatio: 1,
-              child: MaterialButton(
+              child: FlatButton(
                 shape: intrinsic && !isExotic
                     ? RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(4),

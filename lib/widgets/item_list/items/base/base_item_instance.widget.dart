@@ -52,9 +52,11 @@ class BaseItemInstanceWidget extends BaseInventoryItemWidget {
       Positioned(
         left: 4,
         bottom: 4,
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
           buildWishlistTags(context),
-          Container(height: 4),
+          Container(height:4),
           modsWidget(context)
         ]),
       ),
@@ -71,6 +73,7 @@ class BaseItemInstanceWidget extends BaseInventoryItemWidget {
               child: Container(),
             ),
             perksWidget(context),
+            
           ],
         ),
       )),
@@ -148,7 +151,7 @@ class BaseItemInstanceWidget extends BaseInventoryItemWidget {
   @override
   Widget primaryStatWidget(BuildContext context) {
     return PrimaryStatWidget(
-        item: item, definition: definition, instanceInfo: instanceInfo);
+        definition: definition, instanceInfo: instanceInfo);
   }
 
   @override

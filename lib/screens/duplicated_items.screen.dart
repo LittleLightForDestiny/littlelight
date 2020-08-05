@@ -3,10 +3,9 @@ import 'package:bungie_api/models/destiny_item_category_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/enums/destiny_item_category.enum.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
-import 'package:little_light/widgets/common/refresh_button.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/selected_items.widget.dart';
 import 'package:little_light/widgets/item_list/duplicated_item_list.widget.dart';
 
@@ -44,7 +43,6 @@ class DuplicatedItemsScreenState extends State<DuplicatedItemsScreen>
   @override
   initState() {
     super.initState();
-    ProfileService().updateComponents = ProfileComponentGroups.basicProfile;
     _tabController = new TabController(vsync: this, length: _tabsData.length);
   }
 
@@ -84,17 +82,9 @@ class DuplicatedItemsScreenState extends State<DuplicatedItemsScreen>
             SelectedItemsWidget(),
             Container(height: screenPadding.bottom)
           ]),
-          Positioned(
-            right: 8,
-            bottom: 8,
-            child: Container(
-              decoration: BoxDecoration(
-                  color: Colors.blueGrey.shade900,
-                  borderRadius: BorderRadius.circular(18)),
-              width: 36,
-              height: 36,
-              child: RefreshButtonWidget(),
-            ),
+          InventoryNotificationWidget(
+            key: Key('inventory_notification_widget'),
+            barHeight: 0,
           ),
         ]));
   }
@@ -103,7 +93,7 @@ class DuplicatedItemsScreenState extends State<DuplicatedItemsScreen>
     return AppBar(
       title: buildAppBarTitle(context),
       elevation: 2,
-      leading: IconButton(enableFeedback: false,
+      leading: IconButton(
         icon: Icon(Icons.menu),
         onPressed: () {
           Scaffold.of(context).openDrawer();

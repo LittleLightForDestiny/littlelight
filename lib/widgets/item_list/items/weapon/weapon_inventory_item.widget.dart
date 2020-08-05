@@ -13,13 +13,15 @@ class WeaponInventoryItemWidget extends BaseInventoryItemWidget {
     @required String characterId,
     Key key,
     @required String uniqueId,
-    bool showUnusedPerks = false,
     Widget trailing,
-  }) : super(item, definition, instanceInfo,
-            characterId: characterId,
-            uniqueId: uniqueId,
-            trailing: trailing,
-            showUnusedPerks: showUnusedPerks);
+  }) : super(
+          item,
+          definition,
+          instanceInfo,
+          characterId: characterId,
+          uniqueId: uniqueId,
+          trailing:trailing
+        );
 
   @override
   Widget primaryStatWidget(BuildContext context) {
@@ -28,11 +30,7 @@ class WeaponInventoryItemWidget extends BaseInventoryItemWidget {
         right: 4,
         child: Container(
           child: PrimaryStatWidget(
-            item: item,
-            definition: definition,
-            instanceInfo: instanceInfo,
-            inlinePowerCap: true,
-          ),
+              definition: definition, instanceInfo: instanceInfo),
         ));
   }
 }

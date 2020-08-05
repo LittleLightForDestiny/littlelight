@@ -1,3 +1,4 @@
+
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -24,16 +25,19 @@ class ItemNotes {
       this.tags,
       @required this.updatedAt});
 
-  String get uniqueId {
-    return "${itemHash}_$itemInstanceId";
+  factory ItemNotes.fromScratch() {
+    return ItemNotes(updatedAt: DateTime.now());
   }
 
-  factory ItemNotes.fromScratch({int itemHash, String itemInstanceId}) {
+  factory ItemNotes.copy(ItemNotes original) {
     return ItemNotes(
-        updatedAt: DateTime.now(),
-        itemHash: itemHash,
-        tags: Set(),
-        itemInstanceId: itemInstanceId);
+      itemInstanceId: original.itemInstanceId,
+      itemHash: original.itemHash,
+      customName: original.customName,
+      notes: original.notes,
+      tags: original.tags,
+      updatedAt: original.updatedAt,
+    );
   }
 
   factory ItemNotes.fromJson(dynamic json) {

@@ -86,6 +86,12 @@ class TranslateService {
     return text;
   }
 
+  // _reportMissingTranslation(String language, String text){
+  //   ExceptionHandler.reportToSentry("Missing translation: $language - $text");
+  // }
+
+
+
   Future<Map<String, String>> _getTranslationMap(String languageCode) async {
     if (_translationMaps.containsKey(languageCode)) {
       return _translationMaps[languageCode];

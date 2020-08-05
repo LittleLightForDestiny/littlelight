@@ -83,6 +83,4 @@ translationPlaceholders() {
   //Errors
   TranslatedTextWidget("server_error");
   TranslatedTextWidget("SystemDisabled");
-  TranslatedTextWidget("Tag name");
-  TranslatedTextWidget("Untitled");
 }

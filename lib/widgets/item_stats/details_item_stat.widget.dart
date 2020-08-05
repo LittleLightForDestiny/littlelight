@@ -74,7 +74,7 @@ class DetailsItemStatWidget extends BaseItemStatWidget {
           child: Container(
               child: DirectionStatBarWidget(
                   currentValue: currentValue,
-                  equippedValue: equipped + masterwork,
+                  equippedValue: equipped,
                   currentColor: valueColor,
                   equippedColor: Colors.grey.shade500,
                   backgroundColor: Colors.grey.shade700.withOpacity(.7)),

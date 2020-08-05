@@ -15,8 +15,6 @@ import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/objective.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
-
-
 class ItemObjectivesWidget extends BaseDestinyStatefulItemWidget {
   final NotificationService broadcaster = NotificationService();
   ItemObjectivesWidget(
