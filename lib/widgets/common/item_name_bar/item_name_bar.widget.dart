@@ -80,7 +80,7 @@ class ItemNameBarWidget extends BaseDestinyStatelessItemWidget {
 
   Widget nameBarTextField(BuildContext context) {
     var customName = ItemNotesService()
-        .getNotesForItem(item?.itemHash, item.itemInstanceId)
+        .getNotesForItem(item?.itemHash, item?.itemInstanceId)
         ?.customName
         ?.toUpperCase();
     if ((customName?.length ?? 0) == 0) {

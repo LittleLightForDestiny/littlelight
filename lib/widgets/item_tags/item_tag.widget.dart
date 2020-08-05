@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/models/item_notes_tag.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:little_light/widgets/flutter/center_icon_workaround.dart';
 
 class ItemTagWidget extends StatelessWidget {
   final ItemNotesTag tag;
@@ -76,7 +77,8 @@ class ItemTagWidget extends StatelessWidget {
         alignment: Alignment.center,
         width: fontSize * 1.2,
         height: fontSize * 1.2,
-        child: Icon(icon, size: fontSize, color: tag.foregroundColor));
+        child: CenterIconWorkaround(icon,
+            color: tag.foregroundColor, size: fontSize));
   }
 
   Widget buildBg(BuildContext context, Widget contents) {

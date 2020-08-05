@@ -188,6 +188,7 @@ class RecordItemWidgetState extends State<RecordItemWidget>
   }
 
   Widget buildCompletionBar(BuildContext context, int index) {
+    if (record?.intervalObjectives == null) return Container();
     DestinyObjectiveProgress objective = record?.intervalObjectives[index];
     bool complete = record?.intervalObjectives[index]?.complete ?? false;
     int progressStart = index == 0
@@ -199,10 +200,11 @@ class RecordItemWidgetState extends State<RecordItemWidget>
     progress = progress ?? 1;
     Color fillColor = complete ? foregroundColor : Colors.grey.shade400;
     var completionText = "${objective.progress}/${objective.completionValue}";
-    if(objective.progress >= objective.completionValue && index < record.intervalObjectives.length - 1){
+    if (objective.progress >= objective.completionValue &&
+        index < record.intervalObjectives.length - 1) {
       completionText = "${objective.completionValue}";
     }
-    if(objective.progress < progressStart){
+    if (objective.progress < progressStart) {
       completionText = "${objective.completionValue}";
     }
     return Expanded(
@@ -210,19 +212,22 @@ class RecordItemWidgetState extends State<RecordItemWidget>
       Container(
           padding: EdgeInsets.only(bottom: 2),
           alignment: Alignment.centerRight,
-          child: Text(completionText, style:TextStyle(fontSize: 12, color:fillColor))),
+          child: Text(completionText,
+              style: TextStyle(fontSize: 12, color: fillColor))),
       Container(
           constraints: BoxConstraints.expand(height: 10),
           alignment: Alignment.centerLeft,
           decoration: BoxDecoration(
               color: Colors.grey.shade300.withOpacity(.3),
               border: Border.all(color: foregroundColor)),
-          child: progress <= 0 ? Container() : FractionallySizedBox(
-              heightFactor: 1,
-              widthFactor: min(progress, 1),
-              child: Container(
-                color: fillColor,
-              )))
+          child: progress <= 0
+              ? Container()
+              : FractionallySizedBox(
+                  heightFactor: 1,
+                  widthFactor: min(progress, 1),
+                  child: Container(
+                    color: fillColor,
+                  )))
     ]));
   }
 

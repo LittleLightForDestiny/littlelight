@@ -145,7 +145,7 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
             color: Color.lerp(
                 DestinyData.getTierTextColor(definition.inventory.tierType),
                 Colors.grey.shade300,
-                expandRatio)));
+                expandRatio?.clamp(0, 1) ?? 0)));
   }
 
   Widget masterworkCounter(BuildContext context, double expandRatio) {
@@ -154,7 +154,7 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
         left: leftOffset,
         bottom: kToolbarHeight * expandRatio * .8,
         right: kToolbarHeight,
-        child: BaseMasterworkCounterWidget(item:item));
+        child: BaseMasterworkCounterWidget(item: item));
   }
 
   Widget shareButton(BuildContext context, double expandRatio) {
@@ -174,7 +174,8 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
         height: kToolbarHeight,
         child: Material(
             color: Colors.transparent,
-            child: IconButton(enableFeedback: false,
+            child: IconButton(
+              enableFeedback: false,
               onPressed: () async {
                 Navigator.push(
                   context,
@@ -219,17 +220,15 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
   Widget background(BuildContext context, double expandRatio) {
     double width = MediaQuery.of(context).size.width;
     double opacity = expandRatio;
-    
+
     return Positioned(
         top: 0,
         bottom: kToolbarHeight,
         width: width,
-        child: Opacity(
-            opacity: opacity,
-            child: buildBackgroundImage(context)));
+        child: Opacity(opacity: opacity, child: buildBackgroundImage(context)));
   }
 
-  Widget buildBackgroundImage(BuildContext context){
+  Widget buildBackgroundImage(BuildContext context) {
     String imgUrl = definition.screenshot;
     if (definition.itemType == DestinyItemType.Emblem) {
       imgUrl = definition.secondarySpecial;
@@ -240,34 +239,35 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
     if (imgUrl == null) {
       return Container();
     }
-    if(item?.overrideStyleItemHash != null){
-      return DefinitionProviderWidget<DestinyInventoryItemDefinition>(item.overrideStyleItemHash, (def){
-        if(def?.plug?.isDummyPlug ?? false){
-          return  QueuedNetworkImage(
-                imageUrl: BungieApiService.url(imgUrl),
-                fit: BoxFit.cover,
-                placeholder: Shimmer.fromColors(
-                    baseColor: Colors.blueGrey.shade500,
-                    highlightColor: Colors.grey.shade300,
-                    child: Container(color: Colors.white))); 
+    if (item?.overrideStyleItemHash != null) {
+      return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
+          item.overrideStyleItemHash, (def) {
+        if (def?.plug?.isDummyPlug ?? false) {
+          return QueuedNetworkImage(
+              imageUrl: BungieApiService.url(imgUrl),
+              fit: BoxFit.cover,
+              placeholder: Shimmer.fromColors(
+                  baseColor: Colors.blueGrey.shade500,
+                  highlightColor: Colors.grey.shade300,
+                  child: Container(color: Colors.white)));
         }
 
-        return  QueuedNetworkImage(
-                imageUrl: BungieApiService.url(def?.screenshot ?? imgUrl),
-                fit: BoxFit.cover,
-                placeholder: Shimmer.fromColors(
-                    baseColor: Colors.blueGrey.shade500,
-                    highlightColor: Colors.grey.shade300,
-                    child: Container(color: Colors.white))); 
+        return QueuedNetworkImage(
+            imageUrl: BungieApiService.url(def?.screenshot ?? imgUrl),
+            fit: BoxFit.cover,
+            placeholder: Shimmer.fromColors(
+                baseColor: Colors.blueGrey.shade500,
+                highlightColor: Colors.grey.shade300,
+                child: Container(color: Colors.white)));
       });
     }
     return QueuedNetworkImage(
-                imageUrl: BungieApiService.url(imgUrl),
-                fit: BoxFit.cover,
-                placeholder: Shimmer.fromColors(
-                    baseColor: Colors.blueGrey.shade500,
-                    highlightColor: Colors.grey.shade300,
-                    child: Container(color: Colors.white)));
+        imageUrl: BungieApiService.url(imgUrl),
+        fit: BoxFit.cover,
+        placeholder: Shimmer.fromColors(
+            baseColor: Colors.blueGrey.shade500,
+            highlightColor: Colors.grey.shade300,
+            child: Container(color: Colors.white)));
   }
 
   @override

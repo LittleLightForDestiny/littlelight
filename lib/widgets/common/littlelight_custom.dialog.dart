@@ -16,7 +16,7 @@ class LittleLightCustomDialog extends Dialog {
               padding: EdgeInsets.all(8).copyWith(bottom: 4),
               child: Column(mainAxisSize: MainAxisSize.min, children: [
                 title != null ? HeaderWidget(child: title) : Container(),
-                content,
+                Flexible(child: content),
                 Container(
                   height: 8,
                 ),

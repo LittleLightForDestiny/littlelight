@@ -32,7 +32,7 @@ enum LastLoadedFrom { server, cache }
 class ProfileComponentGroups {
   static const List<DestinyComponentType> basicProfile = [
     DestinyComponentType.Characters,
-    DestinyComponentType.CharacterActivities,
+    // DestinyComponentType.CharacterActivities,
     DestinyComponentType.CharacterProgressions,
     DestinyComponentType.CharacterEquipment,
     DestinyComponentType.CharacterInventories,
@@ -116,6 +116,7 @@ class ProfileService {
 
   Future<DestinyProfileResponse> fetchProfileData(
       {List<DestinyComponentType> components, bool skipUpdate = false}) async {
+    print(components);
     if (!skipUpdate)
       _broadcaster.push(NotificationEvent(NotificationType.requestedUpdate));
     try {
@@ -225,9 +226,6 @@ class ProfileService {
     if (components.contains(DestinyComponentType.CharacterRenderData)) {
       _profile.characterRenderData = response.characterRenderData;
     }
-    if (components.contains(DestinyComponentType.CharacterActivities)) {
-      _profile.characterActivities = response.characterActivities;
-    }
     if (components.contains(DestinyComponentType.CharacterEquipment)) {
       _profile.characterEquipment = response.characterEquipment;
     }
@@ -296,7 +294,11 @@ class ProfileService {
   }
 
   DestinyItemTalentGridComponent getTalentGrid(String instanceId) {
-    return _profile.itemComponents.talentGrids.data[instanceId];
+    if (_profile?.itemComponents?.talentGrids?.data?.containsKey(instanceId) ??
+        false) {
+      return _profile.itemComponents.talentGrids.data[instanceId];
+    }
+    return null;
   }
 
   Map<String, DestinyItemSocketsComponent> getAllSockets() {
@@ -380,7 +382,8 @@ class ProfileService {
 
   Map<String, DestinyPresentationNodeComponent> getCharacterPresentationNodes(
       String characterId) {
-    return _profile?.characterPresentationNodes?.data[characterId].nodes;
+    if (_profile?.characterPresentationNodes?.data == null) return null;
+    return _profile?.characterPresentationNodes?.data[characterId]?.nodes;
   }
 
   List<DestinyCharacterComponent> getCharacters(

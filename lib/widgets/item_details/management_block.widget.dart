@@ -159,7 +159,8 @@ class ManagementBlockWidget extends BaseDestinyStatelessItemWidget {
         .profile
         .getCharacters(UserSettingsService().characterOrdering)
         .where((char) =>
-            !(instanceInfo.isEquipped && char.characterId == characterId) &&
+            !((instanceInfo?.isEquipped ?? false) &&
+                char.characterId == characterId) &&
             !(definition.nonTransferrable && char.characterId != characterId) &&
             [DestinyClass.Unknown, char.classType]
                 .contains(definition.classType))

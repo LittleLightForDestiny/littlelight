@@ -134,13 +134,12 @@ mixin SubclassPropertiesMixin on InventoryItemMixin {
     ]));
     return Positioned.fill(
         child: Container(
-          alignment: Alignment.centerRight,
-            decoration: decoration,
-            child:
-              DefinitionProviderWidget<DestinyTalentGridDefinition>(
-                  definition.talentGrid.talentGridHash, (def) {
-                return buildTalentGridImage(def);
-              }),
-            ));
+      alignment: Alignment.centerRight,
+      decoration: decoration,
+      child: DefinitionProviderWidget<DestinyTalentGridDefinition>(
+          definition.talentGrid.talentGridHash, (def) {
+        return buildTalentGridImage(def);
+      }),
+    ));
   }
 }

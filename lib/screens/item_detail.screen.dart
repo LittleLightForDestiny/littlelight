@@ -457,7 +457,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
 
   Widget buildNotes(BuildContext context) {
     var screenPadding = MediaQuery.of(context).padding;
-    if (item == null) return Container();
+    if (item == null) return Container(height: 1);
     return Container(
         padding: EdgeInsets.only(
             left: screenPadding.left, right: screenPadding.right),

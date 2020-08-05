@@ -13,15 +13,18 @@ import 'package:tinycolor/tinycolor.dart';
 class MediumSubclassInventoryItemWidget extends MediumBaseInventoryItemWidget
     with SubclassPropertiesMixin {
   MediumSubclassInventoryItemWidget(
-      DestinyItemComponent item,
-      DestinyInventoryItemDefinition definition,
-      DestinyItemInstanceComponent instanceInfo,
-      {@required String characterId, Key key, @required String uniqueId,})
-      : super(item, definition, instanceInfo, characterId:characterId, key:key, uniqueId:uniqueId);
+    DestinyItemComponent item,
+    DestinyInventoryItemDefinition definition,
+    DestinyItemInstanceComponent instanceInfo, {
+    @required String characterId,
+    Key key,
+    @required String uniqueId,
+  }) : super(item, definition, instanceInfo,
+            characterId: characterId, key: key, uniqueId: uniqueId);
 
   @override
   DestinyItemTalentGridComponent get talentGrid =>
-      profile.getTalentGrid(item.itemInstanceId);
+      profile.getTalentGrid(item?.itemInstanceId);
 
   @override
   double get iconSize {
@@ -31,7 +34,7 @@ class MediumSubclassInventoryItemWidget extends MediumBaseInventoryItemWidget
   @override
   background(BuildContext context) {
     var damageTypeColor =
-        DestinyData.getDamageTypeColor(definition.talentGrid.hudDamageType);
+        DestinyData.getDamageTypeColor(definition?.talentGrid?.hudDamageType);
     BoxDecoration decoration = BoxDecoration(
         gradient:
             RadialGradient(radius: 2, center: Alignment(.7, 0), colors: <Color>[
@@ -41,14 +44,13 @@ class MediumSubclassInventoryItemWidget extends MediumBaseInventoryItemWidget
     ]));
     return Positioned.fill(
         child: Container(
-          alignment: Alignment.centerRight,
-            decoration: decoration,
-            child:
-              DefinitionProviderWidget<DestinyTalentGridDefinition>(
-                  definition.talentGrid.talentGridHash, (def) {
-                return buildTalentGridImage(def);
-              }),
-            ));
+      alignment: Alignment.centerRight,
+      decoration: decoration,
+      child: DefinitionProviderWidget<DestinyTalentGridDefinition>(
+          definition.talentGrid.talentGridHash, (def) {
+        return buildTalentGridImage(def);
+      }),
+    ));
   }
 
   @override
@@ -79,8 +81,7 @@ class MediumSubclassInventoryItemWidget extends MediumBaseInventoryItemWidget
               decoration: decoration,
               child: Text(
                 definition.displayProperties.name.toUpperCase(),
-                style: TextStyle(
-                    fontSize: 9, fontWeight: FontWeight.w700),
+                style: TextStyle(fontSize: 9, fontWeight: FontWeight.w700),
               ),
             ),
           ]),

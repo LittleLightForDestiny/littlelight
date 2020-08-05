@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/models/wish_list.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:little_light/widgets/flutter/center_icon_workaround.dart';
 import 'package:little_light/widgets/icon_fonts/littlelight_icons.dart';
 
 class WishlistsData {
@@ -64,27 +65,30 @@ class WishlistsData {
       case WishlistTag.GodPVE:
         return Container(
             alignment: Alignment.center,
-            child: Icon(LittleLightIcons.vanguard,
+            child: CenterIconWorkaround(LittleLightIcons.vanguard,
                 size: size * .8, color: Colors.white));
       case WishlistTag.PVE:
         return Container(
             alignment: Alignment.center,
-            child: Icon(LittleLightIcons.vanguard, size: size * .8));
+            child: CenterIconWorkaround(LittleLightIcons.vanguard,
+                size: size * .8));
         break;
       case WishlistTag.GodPVP:
         return Container(
             alignment: Alignment.center,
-            child: Icon(LittleLightIcons.crucible,
+            child: CenterIconWorkaround(LittleLightIcons.crucible,
                 size: size * .9, color: Colors.white));
       case WishlistTag.PVP:
         return Container(
             alignment: Alignment.center,
-            child: Icon(LittleLightIcons.crucible, size: size * .9));
+            child: CenterIconWorkaround(LittleLightIcons.crucible,
+                size: size * .9));
         break;
       case WishlistTag.Bungie:
         return Container(
             alignment: Alignment.center,
-            child: Icon(LittleLightIcons.bungie, size: size * .9));
+            child:
+                CenterIconWorkaround(LittleLightIcons.bungie, size: size * .9));
 
       case WishlistTag.Trash:
         return Container(
@@ -96,7 +100,7 @@ class WishlistsData {
     }
     return Container(
         alignment: Alignment.center,
-        child: Icon(
+        child: CenterIconWorkaround(
           Icons.star,
           size: size * .8,
         ));
