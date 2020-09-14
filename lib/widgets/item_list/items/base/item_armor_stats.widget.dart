@@ -43,9 +43,11 @@ class ItemArmorStatsWidgetState extends State<ItemArmorStatsWidget> {
     ];
     return Column(children: [
       Row(
+        mainAxisSize: MainAxisSize.min,
         children: firstRow.map(buildStat).toList(),
       ),
       Row(
+        mainAxisSize: MainAxisSize.min,
         children: secondRow.map(buildStat).toList(),
       )
     ]);
@@ -63,10 +65,12 @@ class ItemArmorStatsWidgetState extends State<ItemArmorStatsWidget> {
         Container(
             width: widget.iconSize * 1.3,
             child: Text(
-              "${stat.value}",
+              "${stat.value}".padLeft(2, "0"),
+              textAlign: TextAlign.center,
               style: TextStyle(
-                color: Colors.grey.shade300,
-                  fontSize: widget.iconSize * .8, fontWeight: FontWeight.w600),
+                  color: Colors.grey.shade300,
+                  fontSize: widget.iconSize * .8,
+                  fontWeight: FontWeight.w600),
             )),
       ],
     );

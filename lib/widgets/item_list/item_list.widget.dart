@@ -165,7 +165,6 @@ class ItemListWidgetState extends State<ItemListWidget>
 
     var listIndex = getListIndex(context);
 
-
     return StaggeredGridView.countBuilder(
       shrinkWrap: widget.shrinkWrap,
       crossAxisCount: 30,
@@ -257,7 +256,7 @@ class ItemListWidgetState extends State<ItemListWidget>
         return StaggeredTile.extent(30, 96);
       case ListItem.unequippedItem:
         if (item.bucketHash == InventoryBucket.subclass) {
-          return StaggeredTile.extent(15, 76);
+          return StaggeredTile.extent(10, 76);
         }
 
         if (widget.minimalDensityBucketHashes.contains(item.bucketHash)) {

@@ -1,15 +1,16 @@
-import 'package:bungie_api/enums/destiny_class.dart';
+import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:bungie_api/models/destiny_presentation_node_component.dart';
 import 'package:bungie_api/models/destiny_presentation_node_definition.dart';
+import 'package:flutter/material.dart';
+import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/user_settings/user_settings.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
-import 'package:flutter/material.dart';
-import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 
-typedef void PresentationNodePressedHandler(int hash, int depth, bool isCategorySet);
+typedef void PresentationNodePressedHandler(
+    int hash, int depth, bool isCategorySet);
 
 class PresentationNodeItemWidget extends StatefulWidget {
   final int hash;
@@ -19,7 +20,11 @@ class PresentationNodeItemWidget extends StatefulWidget {
   final ProfileService profile = ProfileService();
   final bool isCategorySet;
   PresentationNodeItemWidget(
-      {Key key, this.hash, this.depth, @required this.onPressed, @required this.isCategorySet})
+      {Key key,
+      this.hash,
+      this.depth,
+      @required this.onPressed,
+      @required this.isCategorySet})
       : super(key: key);
   @override
   State<StatefulWidget> createState() {
@@ -28,7 +33,8 @@ class PresentationNodeItemWidget extends StatefulWidget {
 }
 
 class PresentationNodeWidgetState extends State<PresentationNodeItemWidget> {
-  Map<DestinyClass, DestinyPresentationNodeComponent> progress;
+  DestinyPresentationNodeComponent progress;
+  Map<String, DestinyPresentationNodeComponent> multiProgress;
   DestinyPresentationNodeDefinition definition;
 
   @override
@@ -50,48 +56,84 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget> {
     var profileNodes = widget.profile.getProfilePresentationNodes();
 
     if (profileNodes?.containsKey("${widget.hash}") ?? false) {
-      this.progress = {DestinyClass.Unknown: profileNodes["${widget.hash}"]};
-      if (this.progress != null) return;
+      this.progress = profileNodes["${widget.hash}"];
     }
+    if (this.progress != null) return;
+
     var characters =
         widget.profile.getCharacters(UserSettingsService().characterOrdering);
     if (characters == null || characters.length == 0) return;
-    var progress = Map.fromEntries(
-        characters.map<MapEntry<DestinyClass, DestinyPresentationNodeComponent>>((c) {
+
+    DestinyPresentationNodeComponent highest;
+    multiProgress = Map();
+    bool allEqual = true;
+
+    for (var c in characters) {
       var characterNodes =
           widget.profile.getCharacterPresentationNodes(c.characterId);
       var node = characterNodes["${widget.hash}"];
-      return MapEntry<DestinyClass, DestinyPresentationNodeComponent>(c.classType, node);
-    }));
-    var valuesSet = progress.values.map((v) => v.progressValue).toSet();
-    if (valuesSet.length == 1) {
-      progress = {DestinyClass.Unknown: progress.values.first};
+      if (highest == null ||
+          (node?.progressValue ?? 0) > highest?.progressValue) {
+        highest = node;
+      }
+      if (highest != null && node.progressValue != highest.progressValue) {
+        allEqual = false;
+      }
+      multiProgress[c.characterId] = node;
     }
-    this.progress = progress;
+
+    if (allEqual) {
+      multiProgress = null;
+    }
+
+    this.progress = highest;
   }
 
   @override
   Widget build(BuildContext context) {
+    var completed = progress.progressValue >= progress.completionValue;
+    var color = completed ? Colors.amber.shade100 : Colors.grey.shade300;
     return Container(
         decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey.shade600, width: 1),
+            border: Border.all(color: color.withOpacity(.6), width: 1),
             gradient: LinearGradient(
                 begin: Alignment(0, 0),
                 end: Alignment(1, 2),
                 colors: [
-                  Colors.white.withOpacity(.05),
-                  Colors.white.withOpacity(.1),
-                  Colors.white.withOpacity(.03),
-                  Colors.white.withOpacity(.1)
+                  color.withOpacity(.05),
+                  color.withOpacity(.1),
+                  color.withOpacity(.03),
+                  color.withOpacity(.1)
                 ])),
         child: Stack(children: [
-          Row(children: buildContent(context, definition)),
+          Opacity(
+              opacity: completed ? 1 : .7,
+              child: Row(children: buildContent(context, definition))),
+          Positioned(
+              child: buildProgressBar(context), bottom: 0, left: 0, right: 0),
           MaterialButton(
               child: Container(),
               onPressed: () {
-                widget.onPressed(widget.hash, widget.depth, widget.isCategorySet);
+                widget.onPressed(
+                    widget.hash, widget.depth, widget.isCategorySet);
               })
         ]));
+  }
+
+  Widget buildProgressBar(BuildContext context) {
+    var progress = this.progress.progressValue;
+    var total = this.progress.completionValue;
+    if (total <= 1) return Container();
+    var completed = progress >= total;
+    var color = completed ? Colors.amber.shade100 : Colors.grey.shade300;
+    return Container(
+      height: 4,
+      color: color.withOpacity(.4),
+      alignment: Alignment.centerLeft,
+      child: FractionallySizedBox(
+          widthFactor: progress / total,
+          child: Container(color: color.withOpacity(.7))),
+    );
   }
 
   List<Widget> buildContent(
@@ -118,42 +160,62 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget> {
     if (definition == null) {
       return Container();
     }
-    if (progress != null) {
+
+    if (multiProgress != null) {
       return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: progress?.entries
-                  ?.map((e) => Container(
-                      padding: EdgeInsets.only(top: 2, bottom: 2, right: 8),
-                      child: Row(children: [
-                        e.key != DestinyClass.Unknown
-                            ? Icon(
-                                DestinyData.getClassIcon(e.key),
-                                size: 16,
-                              )
-                            : Container(),
-                        Container(width: 4),
-                        Text(
-                          "${e?.value?.progressValue}/${e?.value?.completionValue}",
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        )
-                      ])))
-                  ?.toList() ??
-              []);
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: multiProgress.entries.map((e) {
+          var c = widget.profile.getCharacter(e.key);
+          return buildSingleCount(context, e.value, c);
+        }).toList(),
+      );
+    }
+
+    if (progress != null) {
+      return buildSingleCount(context, progress);
     }
 
     return Container();
   }
 
+  Widget buildSingleCount(
+      BuildContext context, DestinyPresentationNodeComponent progress,
+      [DestinyCharacterComponent character]) {
+    var completed = progress.progressValue >= progress.completionValue;
+    var color = completed ? Colors.amber.shade100 : Colors.grey.shade300;
+    return Container(
+        padding: EdgeInsets.only(top: 2, bottom: 2, right: 8),
+        child: Row(children: [
+          character != null
+              ? Icon(
+                  DestinyData.getClassIcon(
+                    character.classType,
+                  ),
+                  size: 16,
+                  color: color)
+              : Container(),
+          Container(width: 4),
+          (progress?.completionValue ?? 0) > 0
+              ? Text(
+                  "${progress?.progressValue}/${progress.completionValue}",
+                  style: TextStyle(fontWeight: FontWeight.bold, color: color),
+                )
+              : Container()
+        ]));
+  }
+
   buildTitle(
       BuildContext context, DestinyPresentationNodeDefinition definition) {
+    var completed = progress.progressValue >= progress.completionValue;
+    var color = completed ? Colors.amber.shade100 : Colors.grey.shade300;
     return Expanded(
         child: Container(
             padding: EdgeInsets.all(8),
             child: Text(
               definition?.displayProperties?.name ?? "",
               softWrap: true,
-              style: TextStyle(
-                  color: Colors.grey.shade300, fontWeight: FontWeight.bold),
+              style: TextStyle(color: color, fontWeight: FontWeight.bold),
             )));
   }
 }

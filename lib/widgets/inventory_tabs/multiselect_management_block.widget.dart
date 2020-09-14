@@ -44,22 +44,18 @@ class MultiselectManagementBlockWidget extends StatelessWidget {
   Widget buildEquippingBlock(BuildContext context, String title,
       List<TransferDestination> destinations,
       [Alignment align = Alignment.centerRight]) {
-    return Stack(
-        children: <Widget>[
-          Positioned(
-              right: 0, left: 0, child: buildLabel(context, title, align)),
-          Column(
-            crossAxisAlignment: align == Alignment.centerRight
+    return Stack(children: <Widget>[
+      Positioned(right: 0, left: 0, child: buildLabel(context, title, align)),
+      Column(
+        crossAxisAlignment: align == Alignment.centerRight
             ? CrossAxisAlignment.end
             : CrossAxisAlignment.start,
-            children: <Widget>[
-              Opacity(
-                opacity: 0,
-                child: buildLabel(context, title)),
-              buttons(context, destinations, align)
-            ],
-          )
-        ]);
+        children: <Widget>[
+          Opacity(opacity: 0, child: buildLabel(context, title)),
+          buttons(context, destinations, align)
+        ],
+      )
+    ]);
   }
 
   Widget buildLabel(BuildContext context, String title,
@@ -88,7 +84,7 @@ class MultiselectManagementBlockWidget extends StatelessWidget {
             spacing: 4,
             children: destinations
                 .map((destination) => EquipOnCharacterButton(
-                    key:ObjectKey(destination),
+                    key: ObjectKey(destination),
                     iconSize: kToolbarHeight * .75,
                     fontSize: 7,
                     characterId: destination.characterId,
@@ -109,19 +105,17 @@ class MultiselectManagementBlockWidget extends StatelessWidget {
         }
       case InventoryAction.Unequip:
         {
-          // inventory.unequip(item, characterId);
           break;
         }
       case InventoryAction.Transfer:
         {
-          inventory.transferMultiple(List.from(items), destination.type, destination.characterId);
+          inventory.transferMultiple(
+              List.from(items), destination.type, destination.characterId);
           SelectionService().clear();
           break;
         }
       case InventoryAction.Pull:
         {
-          // inventory.transfer(
-          //     item, characterId, destination.type, destination.characterId);
           break;
         }
     }
@@ -130,12 +124,22 @@ class MultiselectManagementBlockWidget extends StatelessWidget {
   List<TransferDestination> get equipDestinations {
     var characters = ProfileService().getCharacters();
     return characters
-        .where((c){
-          return items.any((i){
-            var def = ManifestService().getDefinitionFromCache<DestinyInventoryItemDefinition>(i?.item?.itemHash);
-            if(def?.equippable == false) return false;
-            if(def?.nonTransferrable == true && i?.ownerId != c.characterId) return false;
-            if(![c?.classType, DestinyClass.Unknown].contains(def?.classType)) return false;
+        .where((c) {
+          return items.any((i) {
+            var def = ManifestService()
+                .getDefinitionFromCache<DestinyInventoryItemDefinition>(
+                    i?.item?.itemHash);
+            if (def?.equippable == false) return false;
+            if (def?.nonTransferrable == true && i?.ownerId != c.characterId)
+              return false;
+            if (![c?.classType, DestinyClass.Unknown].contains(def?.classType))
+              return false;
+
+            var instanceInfo =
+                ProfileService().getInstanceInfo(i?.item?.itemInstanceId);
+            if (instanceInfo?.isEquipped == true && i.ownerId == c.characterId)
+              return false;
+
             return true;
           });
         })
@@ -145,48 +149,53 @@ class MultiselectManagementBlockWidget extends StatelessWidget {
   }
 
   List<TransferDestination> get transferDestinations {
-    var transferrableItems = items.where((i){
-      var def = ManifestService().getDefinitionFromCache<DestinyInventoryItemDefinition>(i?.item?.itemHash);
-      return !(def?.nonTransferrable ?? false);
-    });
-    if(transferrableItems.length == 0){
-      return [];
-    }
-    bool onlyProfileItems = transferrableItems.every((i){
-      var def = ManifestService().getDefinitionFromCache<DestinyInventoryItemDefinition>(i?.item?.itemHash);
-      var bucketDef = ManifestService().getDefinitionFromCache<DestinyInventoryBucketDefinition>(def?.inventory?.bucketTypeHash);
-      return bucketDef?.scope == BucketScope.Account;
-    });
-    Set<String> locations = transferrableItems.map((i){
-      if(i?.item?.bucketHash == InventoryBucket.lostItems){
-        return "postmaster ${i.ownerId}";
-      }
-      return i.ownerId;
-    }).toSet();
-    List<TransferDestination> destinations = [];
-    if(onlyProfileItems){
-      destinations.add(TransferDestination(ItemDestination.Inventory,
-            action: InventoryAction.Transfer, characterId: null));
-    }else{
-      var characters = ProfileService().getCharacters();
-      locations.remove(ItemWithOwner.OWNER_PROFILE);
-      destinations = characters
-        .map((c) => TransferDestination(ItemDestination.Character,
-            action: InventoryAction.Transfer, characterId: c.characterId))
-        .toList();  
-    }
-    destinations.add(TransferDestination(ItemDestination.Vault,
-        action: InventoryAction.Transfer));
+    var hasTransferrables = false;
+    var hasVaultables = false;
+    var hasPullables = false;
+    var allCharacterIds =
+        ProfileService().getCharacters().map((c) => c.characterId);
+    Set<String> destinationCharacterIds = Set();
 
-    if(locations.length == 1){
-      var l = locations.first;
-      destinations.removeWhere((d){
-          if(l == ItemWithOwner.OWNER_PROFILE && d.type == ItemDestination.Inventory) return true;
-          if(l == ItemWithOwner.OWNER_VAULT && d.type == ItemDestination.Vault) return true;
-          return d.characterId == l;
-      });
+    for (var i in items) {
+      var def = ManifestService()
+          .getDefinitionFromCache<DestinyInventoryItemDefinition>(
+              i.item.itemHash);
+      var bucketDef = ManifestService()
+          .getDefinitionFromCache<DestinyInventoryBucketDefinition>(
+              def?.inventory?.bucketTypeHash);
+      var isOnPostmaster = i.item.bucketHash == InventoryBucket.lostItems;
+      var isOnVault = i.item.bucketHash == InventoryBucket.general;
+      var canBePulled = !(def?.doesPostmasterPullHaveSideEffects ?? false);
+      var lockedOnPostmaster = (isOnPostmaster && !canBePulled);
+      var canBeTransferred =
+          !lockedOnPostmaster && !(def?.nonTransferrable ?? false);
+      var isAccountItem = bucketDef?.scope == BucketScope.Account;
+      hasTransferrables = hasTransferrables || canBeTransferred;
+      hasPullables = hasPullables || (canBePulled && isOnPostmaster);
+      hasVaultables = hasVaultables || (canBeTransferred && !isOnVault);
+      if (isAccountItem) continue;
+      if (isOnPostmaster && canBePulled) {
+        destinationCharacterIds.add(i.ownerId);
+      }
+      if (canBeTransferred) {
+        destinationCharacterIds
+            .addAll(allCharacterIds.where((id) => id != i.ownerId));
+      }
     }
-    
+
+    List<TransferDestination> destinations = destinationCharacterIds
+        .map((id) => TransferDestination(ItemDestination.Character,
+            characterId: id, action: InventoryAction.Transfer))
+        .toList();
+
+    if ((hasTransferrables || hasPullables) && destinations.length == 0) {
+      destinations.add(TransferDestination(ItemDestination.Inventory,
+          action: InventoryAction.Transfer));
+    }
+    if (hasVaultables) {
+      destinations.add(TransferDestination(ItemDestination.Vault,
+          action: InventoryAction.Transfer));
+    }
     return destinations;
   }
 

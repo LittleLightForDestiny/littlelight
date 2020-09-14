@@ -1,3 +1,4 @@
+import 'package:bungie_api/enums/destiny_item_type.dart';
 import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:bungie_api/models/destiny_class_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
@@ -5,17 +6,16 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_vendor_definition.dart';
 import 'package:flutter/material.dart';
-
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/primary_stat.widget.dart';
-
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/common/wishlist_badge.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/base_inventory_item.widget.dart';
+import 'package:little_light/widgets/item_list/items/base/item_armor_stats.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/item_mods.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/item_perks.widget.dart';
 
@@ -67,10 +67,16 @@ class BaseItemInstanceWidget extends BaseInventoryItemWidget {
           children: <Widget>[
             buildCharacterName(context),
             primaryStatWidget(context),
-            Expanded(
-              child: Container(),
-            ),
-            perksWidget(context),
+            definition?.itemType != DestinyItemType.Armor
+                ? Expanded(
+                    child: Container(),
+                  )
+                : statsWidget(context),
+            definition?.itemType == DestinyItemType.Armor
+                ? Expanded(
+                    child: Container(),
+                  )
+                : perksWidget(context),
           ],
         ),
       )),
@@ -174,5 +180,10 @@ class BaseItemInstanceWidget extends BaseInventoryItemWidget {
       iconSize: 20,
       showUnusedPerks: true,
     );
+  }
+
+  Widget statsWidget(BuildContext context) {
+    return Container(
+        alignment: Alignment.topRight, child: ItemArmorStatsWidget(item: item));
   }
 }

@@ -13,6 +13,9 @@ GameData _$GameDataFromJson(Map<String, dynamic> json) {
     pinnacleCap: json['pinnacleCap'] as int,
     seasonalModSlots:
         (json['seasonalModSlots'] as List)?.map((e) => e as int)?.toList(),
+    tabbedPresentationNodes: (json['tabbedPresentationNodes'] as List)
+        ?.map((e) => e as int)
+        ?.toList(),
   );
 }
 
@@ -21,4 +24,5 @@ Map<String, dynamic> _$GameDataToJson(GameData instance) => <String, dynamic>{
       'powerfulCap': instance.powerfulCap,
       'pinnacleCap': instance.pinnacleCap,
       'seasonalModSlots': instance.seasonalModSlots,
+      'tabbedPresentationNodes': instance.tabbedPresentationNodes,
     };

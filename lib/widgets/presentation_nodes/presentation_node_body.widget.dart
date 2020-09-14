@@ -1,14 +1,12 @@
 import 'package:bungie_api/enums/destiny_presentation_screen_style.dart';
 import 'package:bungie_api/models/destiny_presentation_node_definition.dart';
 import 'package:flutter/material.dart';
-
+import 'package:little_light/models/game_data.dart';
+import 'package:little_light/services/littlelight/littlelight_data.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-
 import 'package:little_light/widgets/presentation_nodes/presentation_node_list.widget.dart';
 import 'package:little_light/widgets/presentation_nodes/presentation_node_tabs.widget.dart';
-
-import 'package:little_light/utils/media_query_helper.dart';
 
 class PresentationNodeBodyWidget extends StatefulWidget {
   final ManifestService manifest = new ManifestService();
@@ -33,6 +31,8 @@ class PresentationNodeBodyWidget extends StatefulWidget {
 class PresentationNodeBodyWidgetState<T extends PresentationNodeBodyWidget>
     extends State<PresentationNodeBodyWidget> {
   DestinyPresentationNodeDefinition definition;
+  GameData gameData;
+
   @override
   void initState() {
     super.initState();
@@ -45,6 +45,7 @@ class PresentationNodeBodyWidgetState<T extends PresentationNodeBodyWidget>
     definition = await widget.manifest
         .getDefinition<DestinyPresentationNodeDefinition>(
             widget.presentationNodeHash);
+    gameData = await LittleLightDataService().getGameData();
     if (mounted) {
       setState(() {});
     }
@@ -53,32 +54,25 @@ class PresentationNodeBodyWidgetState<T extends PresentationNodeBodyWidget>
   @override
   Widget build(BuildContext context) {
     if (definition?.children == null) return Container();
-    if ((definition?.children?.presentationNodes?.length ?? 0) == 0) {
-      return listBuilder();
+    print(widget.presentationNodeHash);
+    if (gameData?.tabbedPresentationNodes
+            ?.contains(widget.presentationNodeHash) ??
+        false) return tabBuilder();
+    if (definition?.children?.presentationNodes?.length == 1) {
+      return tabBuilder();
     }
-    if ((definition?.children?.presentationNodes?.length ?? 0) > 3 &&
-        MediaQueryHelper(context).smallerThan(ScreenSize.ExtraSmall)) {
-      return listBuilder();
-    }
-    
-    if(widget.isCategorySet && widget.depth > 3){
-      return listBuilder();
-    }
-
-    if (widget.depth < 2) {
-      return listBuilder();
-    }
-    return tabBuilder();
+    return listBuilder();
   }
 
   Widget tabBuilder() {
     return PresentationNodeTabsWidget(
-      presentationNodeHash: widget.presentationNodeHash,
-      depth: widget.depth,
-      itemBuilder: widget.itemBuilder,
-      tileBuilder: widget.tileBuilder,
-      isCategorySet:widget.isCategorySet ?? definition?.screenStyle == DestinyPresentationScreenStyle.CategorySets
-    );
+        presentationNodeHash: widget.presentationNodeHash,
+        depth: widget.depth,
+        itemBuilder: widget.itemBuilder,
+        tileBuilder: widget.tileBuilder,
+        isCategorySet: widget.isCategorySet ??
+            definition?.screenStyle ==
+                DestinyPresentationScreenStyle.CategorySets);
   }
 
   Widget listBuilder() {

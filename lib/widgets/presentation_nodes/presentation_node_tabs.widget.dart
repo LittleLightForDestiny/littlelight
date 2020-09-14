@@ -7,7 +7,6 @@ import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/presentation_nodes/presentation_node_body.widget.dart';
 import 'package:little_light/widgets/presentation_nodes/presentation_node_list.widget.dart';
-import 'package:little_light/utils/media_query_helper.dart';
 
 class PresentationNodeTabsWidget extends StatefulWidget {
   final _manifest = new ManifestService();
@@ -118,40 +117,29 @@ class PresentationNodeTabsWidgetState
         child: DefinitionProviderWidget<DestinyPresentationNodeDefinition>(hash,
             (def) {
           if (def?.displayProperties?.hasIcon ?? false) {
-            if (MediaQueryHelper(context).biggerThan(ScreenSize.Small)) {
-              return Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                        constraints: BoxConstraints(maxHeight: 48),
-                        child: AspectRatio(
-                            aspectRatio: 1,
-                            child: ManifestImageWidget<
-                                DestinyPresentationNodeDefinition>(
-                              hash,
-                              placeholder: Container(),
-                            ))),
-                    Container(
-                      height: 8,
-                    ),
-                    ManifestText<DestinyPresentationNodeDefinition>(hash,
-                        uppercase: true,
-                        textAlign: TextAlign.center,
-                        maxLines: 1,
-                        style: TextStyle(
-                          fontSize: 12,
-                        ))
-                  ]);
-            }
-            return Container(
-                constraints: BoxConstraints(maxHeight: 48),
-                child: AspectRatio(
-                    aspectRatio: 1,
-                    child:
-                        ManifestImageWidget<DestinyPresentationNodeDefinition>(
-                      hash,
-                      placeholder: Container(),
-                    )));
+            return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                      constraints: BoxConstraints(maxHeight: 48),
+                      child: AspectRatio(
+                          aspectRatio: 1,
+                          child: ManifestImageWidget<
+                              DestinyPresentationNodeDefinition>(
+                            hash,
+                            placeholder: Container(),
+                          ))),
+                  Container(
+                    height: 8,
+                  ),
+                  ManifestText<DestinyPresentationNodeDefinition>(hash,
+                      uppercase: true,
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      style: TextStyle(
+                        fontSize: 12,
+                      ))
+                ]);
           }
           return ManifestText<DestinyPresentationNodeDefinition>(hash,
               uppercase: true,

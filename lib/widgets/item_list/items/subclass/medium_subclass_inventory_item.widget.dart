@@ -37,7 +37,7 @@ class MediumSubclassInventoryItemWidget extends MediumBaseInventoryItemWidget
         DestinyData.getDamageTypeColor(definition?.talentGrid?.hudDamageType);
     BoxDecoration decoration = BoxDecoration(
         gradient:
-            RadialGradient(radius: 2, center: Alignment(.7, 0), colors: <Color>[
+            RadialGradient(radius: 2, center: Alignment(2, 0), colors: <Color>[
       TinyColor(damageTypeColor).lighten(15).saturate(50).color,
       damageTypeColor,
       TinyColor(damageTypeColor).darken(40).saturate(50).color,
@@ -55,37 +55,7 @@ class MediumSubclassInventoryItemWidget extends MediumBaseInventoryItemWidget
 
   @override
   Widget positionedNameBar(BuildContext context) {
-    Color damageTypeColor =
-        DestinyData.getDamageTypeColor(definition.talentGrid.hudDamageType);
-    BoxDecoration decoration = BoxDecoration(
-        gradient: LinearGradient(colors: <Color>[
-      TinyColor(damageTypeColor).saturate(30).darken(30).color,
-      Colors.transparent
-    ]));
-    return Positioned(
-      left: iconSize / 2 + padding,
-      right: 0,
-      top: 0,
-      bottom: 0,
-      child: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              alignment: AlignmentDirectional.centerStart,
-              padding: EdgeInsets.only(
-                  left: iconSize / 2 + padding * 2,
-                  top: padding * 2,
-                  bottom: padding * 2,
-                  right: padding),
-              decoration: decoration,
-              child: Text(
-                definition.displayProperties.name.toUpperCase(),
-                style: TextStyle(fontSize: 9, fontWeight: FontWeight.w700),
-              ),
-            ),
-          ]),
-    );
+    return Container();
   }
 
   @override

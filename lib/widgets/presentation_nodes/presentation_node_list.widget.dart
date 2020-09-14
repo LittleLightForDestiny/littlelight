@@ -4,13 +4,15 @@ import 'package:bungie_api/enums/destiny_presentation_screen_style.dart';
 import 'package:bungie_api/models/destiny_presentation_node_child_entry.dart';
 import 'package:bungie_api/models/destiny_presentation_node_collectible_child_entry.dart';
 import 'package:bungie_api/models/destiny_presentation_node_definition.dart';
+import 'package:bungie_api/models/destiny_presentation_node_metric_child_entry.dart';
 import 'package:bungie_api/models/destiny_presentation_node_record_child_entry.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 
 typedef StaggeredTile PresentationNodeTileBuilder(CollectionListItem item);
-typedef Widget PresentationNodeItemBuilder(CollectionListItem item, int depth, bool isCategorySet);
+typedef Widget PresentationNodeItemBuilder(
+    CollectionListItem item, int depth, bool isCategorySet);
 
 class PresentationNodeListWidget extends StatefulWidget {
   final ManifestService manifest = new ManifestService();
@@ -80,6 +82,11 @@ class PresentationNodeListWidgetState
       listIndex.add(
           CollectionListItem(CollectionListItemType.record, record.recordHash));
     });
+
+    metrics.forEach((metric) {
+      listIndex.add(
+          CollectionListItem(CollectionListItemType.metric, metric.metricHash));
+    });
     if (mounted) {
       setState(() {});
     }
@@ -109,7 +116,9 @@ class PresentationNodeListWidgetState
     return widget.itemBuilder(item, widget.depth, this.isCategorySets);
   }
 
-  bool get isCategorySets => widget.isCategorySets || definition?.screenStyle == DestinyPresentationScreenStyle.CategorySets;
+  bool get isCategorySets =>
+      widget.isCategorySets ||
+      definition?.screenStyle == DestinyPresentationScreenStyle.CategorySets;
 
   List<DestinyPresentationNodeChildEntry> get presentationNodes =>
       definition?.children?.presentationNodes;
@@ -119,6 +128,9 @@ class PresentationNodeListWidgetState
 
   List<DestinyPresentationNodeRecordChildEntry> get records =>
       definition?.children?.records;
+
+  List<DestinyPresentationNodeMetricChildEntry> get metrics =>
+      definition?.children?.metrics;
 
   int get count => listIndex?.length ?? 0;
 
@@ -133,7 +145,8 @@ enum CollectionListItemType {
   collectible,
   nestedCollectible,
   nestedRecord,
-  record
+  record,
+  metric
 }
 
 class CollectionListItem {

@@ -8,13 +8,14 @@ class GameData {
   int powerfulCap;
   int pinnacleCap;
   List<int> seasonalModSlots;
+  List<int> tabbedPresentationNodes;
 
-  GameData({
-    this.softCap,
-    this.powerfulCap,
-    this.pinnacleCap,
-    this.seasonalModSlots
-  });
+  GameData(
+      {this.softCap,
+      this.powerfulCap,
+      this.pinnacleCap,
+      this.seasonalModSlots,
+      this.tabbedPresentationNodes});
 
   factory GameData.fromJson(dynamic json) {
     return _$GameDataFromJson(json);

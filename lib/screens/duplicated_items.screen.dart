@@ -1,6 +1,7 @@
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_category_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/services/bungie_api/enums/destiny_item_category.enum.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/profile/profile.service.dart';
@@ -17,7 +18,8 @@ class DuplicatedItemsScreen extends StatefulWidget {
 
 class DuplicatedItemsScreenState extends State<DuplicatedItemsScreen>
     with SingleTickerProviderStateMixin {
-  bool searchOpened = false;
+  bool searchOpen = false;
+  TextEditingController _searchFieldController = new TextEditingController();
   Map<int, DestinyInventoryItemDefinition> perkDefinitions;
   TabController _tabController;
 
@@ -77,8 +79,8 @@ class DuplicatedItemsScreenState extends State<DuplicatedItemsScreen>
                     children: _tabsData
                         .map(
                           (tab) => DuplicatedItemListWidget(
-                                data: tab,
-                              ),
+                            data: tab,
+                          ),
                         )
                         .toList())),
             SelectedItemsWidget(),
@@ -103,14 +105,31 @@ class DuplicatedItemsScreenState extends State<DuplicatedItemsScreen>
     return AppBar(
       title: buildAppBarTitle(context),
       elevation: 2,
-      leading: IconButton(enableFeedback: false,
+      leading: IconButton(
+        enableFeedback: false,
         icon: Icon(Icons.menu),
         onPressed: () {
           Scaffold.of(context).openDrawer();
         },
       ),
+      actions: [buildSearchButton(context)],
       titleSpacing: 0,
     );
+  }
+
+  Widget buildSearchButton(BuildContext context) {
+    return IconButton(
+        enableFeedback: false,
+        icon: searchOpen
+            ? Icon(FontAwesomeIcons.times)
+            : Icon(FontAwesomeIcons.search),
+        onPressed: () async {
+          searchOpen = !searchOpen;
+          if (!searchOpen) {
+            _searchFieldController.text = "";
+          }
+          setState(() {});
+        });
   }
 
   List<Widget> buildTabButtons(BuildContext context) {
@@ -127,6 +146,12 @@ class DuplicatedItemsScreenState extends State<DuplicatedItemsScreen>
   }
 
   buildAppBarTitle(BuildContext context) {
+    if (searchOpen) {
+      return TextField(
+        autofocus: true,
+        controller: _searchFieldController,
+      );
+    }
     return TranslatedTextWidget(
       "Duplicated Items",
       overflow: TextOverflow.fade,

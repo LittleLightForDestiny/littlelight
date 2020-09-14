@@ -75,7 +75,7 @@ class ItemDetailsTagsWidgetState
   }
 
   Widget buildTags(BuildContext context) {
-    var tags = ItemNotesService().tagsByIds(notes.tags);
+    var tags = ItemNotesService().tagsByIds(notes?.tags);
     return Wrap(
       crossAxisAlignment: WrapCrossAlignment.start,
       runSpacing: 4,

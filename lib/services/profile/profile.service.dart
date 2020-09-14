@@ -32,7 +32,7 @@ enum LastLoadedFrom { server, cache }
 class ProfileComponentGroups {
   static const List<DestinyComponentType> basicProfile = [
     DestinyComponentType.Characters,
-    // DestinyComponentType.CharacterActivities,
+    DestinyComponentType.CharacterActivities,
     DestinyComponentType.CharacterProgressions,
     DestinyComponentType.CharacterEquipment,
     DestinyComponentType.CharacterInventories,
@@ -116,7 +116,6 @@ class ProfileService {
 
   Future<DestinyProfileResponse> fetchProfileData(
       {List<DestinyComponentType> components, bool skipUpdate = false}) async {
-    print(components);
     if (!skipUpdate)
       _broadcaster.push(NotificationEvent(NotificationType.requestedUpdate));
     try {
@@ -161,7 +160,7 @@ class ProfileService {
     var membership = StorageService.getMembership();
     DestinyProfileResponse response;
     response =
-        await _api.getCurrentProfile(components).timeout(Duration(seconds: 8));
+        await _api.getCurrentProfile(components).timeout(Duration(seconds: 12));
 
     if (membership != StorageService.getMembership()) {
       return _profile;

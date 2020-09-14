@@ -579,25 +579,7 @@ class InventoryService {
       await _transfer(substitute, null, ItemDestination.Character,
           destinationCharacterId: characterId);
     }
-
     await _equip(substitute, characterId);
-
-    List<DestinyItemComponent> inventory =
-        profile.getCharacterInventory(characterId);
-    List<DestinyItemComponent> equipment =
-        profile.getCharacterEquipment(characterId);
-    inventory.removeWhere((i) => i.itemInstanceId == substitute.itemInstanceId);
-    equipment.removeWhere((i) => i.itemInstanceId == item.itemInstanceId);
-    DestinyItemInstanceComponent iInfo =
-        profile.getInstanceInfo(item.itemInstanceId);
-    DestinyItemInstanceComponent sInfo =
-        profile.getInstanceInfo(substitute.itemInstanceId);
-    iInfo.isEquipped = false;
-    sInfo.isEquipped = true;
-    inventory.add(item);
-    equipment.add(substitute);
-
-    fireLocalUpdate();
   }
 
   List<DestinyItemComponent> _getItemsOnBucket(

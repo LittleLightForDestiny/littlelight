@@ -12,7 +12,7 @@ class TriumphsScreen extends PresentationNodeScreen {
       : super(presentationNodeHash: presentationNodeHash, depth: depth);
 
   @override
-  PresentationNodeScreenState createState() =>  TriumphsScreenState();
+  PresentationNodeScreenState createState() => TriumphsScreenState();
 }
 
 class TriumphsScreenState extends PresentationNodeScreenState<TriumphsScreen> {
@@ -29,7 +29,8 @@ class TriumphsScreenState extends PresentationNodeScreenState<TriumphsScreen> {
     return PresentationNodeTabsWidget(
       presentationNodeHashes: [
         settings.triumphsRootNode,
-        settings.sealsRootNode
+        settings.sealsRootNode,
+        settings.statsRootNode
       ],
       depth: 0,
       itemBuilder: this.itemBuilder,
@@ -43,30 +44,32 @@ class TriumphsScreenState extends PresentationNodeScreenState<TriumphsScreen> {
         appBar: buildAppBar(context), body: buildScaffoldBody(context));
   }
 
-
   buildAppBar(BuildContext context) {
     if (widget.depth == 0) {
       return AppBar(
-          leading: IconButton(enableFeedback: false,
-            icon: Icon(Icons.menu),
+        leading: IconButton(
+          enableFeedback: false,
+          icon: Icon(Icons.menu),
+          onPressed: () {
+            Scaffold.of(context).openDrawer();
+          },
+        ),
+        title: TranslatedTextWidget("Triumphs"),
+        actions: <Widget>[
+          IconButton(
+            enableFeedback: false,
+            icon: Icon(Icons.search),
             onPressed: () {
-              Scaffold.of(context).openDrawer();
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => TriumphSearchScreen(),
+                ),
+              );
             },
-          ),
-          title: TranslatedTextWidget("Triumphs"),
-          actions: <Widget>[
-            IconButton(enableFeedback: false,
-              icon: Icon(Icons.search),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => TriumphSearchScreen(),
-                  ),
-                );
-              },
-            )
-          ],);
+          )
+        ],
+      );
     }
     return AppBar(title: Text(definition?.displayProperties?.name ?? ""));
   }
