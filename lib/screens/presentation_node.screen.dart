@@ -9,6 +9,7 @@ import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/refresh_button.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/selected_items.widget.dart';
 import 'package:little_light/widgets/presentation_nodes/collectible_item.widget.dart';
+import 'package:little_light/widgets/presentation_nodes/metric_item.widget.dart';
 import 'package:little_light/widgets/presentation_nodes/nested_collectible_item.widget.dart';
 
 import 'package:little_light/widgets/presentation_nodes/presentation_node_body.widget.dart';
@@ -42,7 +43,7 @@ class PresentationNodeScreenState<T extends PresentationNodeScreen>
   @override
   void initState() {
     super.initState();
-    
+
     if (definition == null && widget.presentationNodeHash != null) {
       loadDefinition();
     }
@@ -65,31 +66,33 @@ class PresentationNodeScreenState<T extends PresentationNodeScreen>
   Widget buildScaffoldBody(BuildContext context) {
     return Stack(children: [
       Column(children: [
-        Expanded(
-            child: buildBody(context)),
+        Expanded(child: buildBody(context)),
         SelectedItemsWidget(),
       ]),
       Positioned(
-            right: 8,
-            bottom: 8,
-            child: Container(
-              decoration: BoxDecoration(
-                  color: Colors.blueGrey.shade900,
-                  borderRadius: BorderRadius.circular(18)),
-              width: 36,
-              height: 36,
-              child: RefreshButtonWidget(),
-            ),
-          ),
+        right: 8,
+        bottom: 8,
+        child: Container(
+          decoration: BoxDecoration(
+              color: Colors.blueGrey.shade900,
+              borderRadius: BorderRadius.circular(18)),
+          width: 36,
+          height: 36,
+          child: RefreshButtonWidget(),
+        ),
+      ),
     ]);
   }
 
-  Widget buildBody(BuildContext context){
+  Widget buildBody(BuildContext context) {
     return PresentationNodeBodyWidget(
-            isCategorySet:widget.isCategorySet || definition?.screenStyle == DestinyPresentationScreenStyle.CategorySets,
-            presentationNodeHash: widget.presentationNodeHash, depth: widget.depth,
-            itemBuilder: widget.itemBuilder,
-            tileBuilder: widget.tileBuilder);
+        isCategorySet: widget.isCategorySet ||
+            definition?.screenStyle ==
+                DestinyPresentationScreenStyle.CategorySets,
+        presentationNodeHash: widget.presentationNodeHash,
+        depth: widget.depth,
+        itemBuilder: widget.itemBuilder,
+        tileBuilder: widget.tileBuilder);
   }
 
   Widget itemBuilder(CollectionListItem item, int depth, bool isCategorySet) {
@@ -112,6 +115,12 @@ class PresentationNodeScreenState<T extends PresentationNodeScreen>
         return RecordItemWidget(
           hash: item.hash,
           key: Key("record_${item.hash}"),
+        );
+
+      case CollectionListItemType.metric:
+        return MetricItemWidget(
+          hash: item.hash,
+          key: Key("metric_${item.hash}"),
         );
 
       default:
@@ -142,6 +151,12 @@ class PresentationNodeScreenState<T extends PresentationNodeScreen>
         }
         return StaggeredTile.fit(30);
 
+      case CollectionListItemType.metric:
+        if (MediaQueryHelper(context).tabletOrBigger) {
+          return StaggeredTile.extent(10, 96);
+        }
+        return StaggeredTile.extent(30, 96);
+
       default:
         return StaggeredTile.count(30, 7);
     }
@@ -152,12 +167,11 @@ class PresentationNodeScreenState<T extends PresentationNodeScreen>
       context,
       MaterialPageRoute(
         builder: (context) => PresentationNodeScreen(
-          presentationNodeHash: hash,
-          depth: depth + 1,
-          itemBuilder: widget.itemBuilder ?? itemBuilder,
-          tileBuilder: widget.tileBuilder ?? tileBuilder,
-          isCategorySet: isCategorySet
-        ),
+            presentationNodeHash: hash,
+            depth: depth + 1,
+            itemBuilder: widget.itemBuilder ?? itemBuilder,
+            tileBuilder: widget.tileBuilder ?? tileBuilder,
+            isCategorySet: isCategorySet),
       ),
     );
   }

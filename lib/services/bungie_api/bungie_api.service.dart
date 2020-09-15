@@ -1,10 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io' as io;
+
+import 'package:bungie_api/api/destiny2.dart';
 import 'package:bungie_api/api/settings.dart';
+import 'package:bungie_api/api/user.dart';
 import 'package:bungie_api/enums/bungie_membership_type.dart';
 import 'package:bungie_api/enums/destiny_component_type.dart';
 import 'package:bungie_api/enums/destiny_vendor_filter.dart';
 import 'package:bungie_api/helpers/bungie_net_token.dart';
+import 'package:bungie_api/helpers/http.dart';
+import 'package:bungie_api/helpers/oauth.dart';
 import 'package:bungie_api/models/core_settings_configuration.dart';
 import 'package:bungie_api/models/destiny_equip_item_result.dart';
 import 'package:bungie_api/models/destiny_item_action_request.dart';
@@ -16,18 +22,12 @@ import 'package:bungie_api/models/destiny_profile_response.dart';
 import 'package:bungie_api/models/destiny_vendors_response.dart';
 import 'package:bungie_api/models/group_user_info_card.dart';
 import 'package:bungie_api/models/user_membership_data.dart';
+import 'package:bungie_api/responses/destiny_manifest_response.dart';
 import 'package:bungie_api/responses/destiny_profile_response_response.dart';
 import 'package:bungie_api/responses/destiny_vendors_response_response.dart';
 import 'package:bungie_api/responses/int32_response.dart';
 import 'package:bungie_api/responses/user_membership_data_response.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:http/http.dart' as http;
-import 'package:bungie_api/helpers/http.dart';
-import 'package:bungie_api/helpers/oauth.dart';
-import 'package:bungie_api/api/destiny2.dart';
-import 'package:bungie_api/api/user.dart';
-import 'package:bungie_api/responses/destiny_manifest_response.dart';
-import 'package:http/http.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 
 class BungieApiService {
@@ -236,20 +236,26 @@ class Client implements HttpClient {
       });
     }
 
-    Response response;
-
+    io.HttpClientResponse response;
+    io.HttpClient client = io.HttpClient();
     if (config.method == 'GET') {
-      response = await http.get(
-          "${BungieApiService.apiUrl}${config.url}$paramsString",
-          headers: headers);
+      var req = await client.getUrl(
+          Uri.parse("${BungieApiService.apiUrl}${config.url}$paramsString"));
+      headers.forEach((name, value) {
+        req.headers.add(name, value);
+      });
+      response = await req.close();
     } else {
       String body = config.bodyContentType == 'application/json'
           ? jsonEncode(config.body)
           : config.body;
-      response = await http.post(
-          "${BungieApiService.apiUrl}${config.url}$paramsString",
-          headers: headers,
-          body: body);
+      var req = await client.postUrl(
+          Uri.parse("${BungieApiService.apiUrl}${config.url}$paramsString"));
+      headers.forEach((name, value) {
+        req.headers.add(name, value);
+      });
+      req.write(body);
+      response = await req.close();
     }
 
     if (response.statusCode == 401 && autoRefreshToken) {
@@ -258,7 +264,12 @@ class Client implements HttpClient {
     }
     dynamic json;
     try {
-      json = jsonDecode(response?.body ?? "{}");
+      var stream = response.transform(Utf8Decoder());
+      var text = "";
+      await for (var t in stream) {
+        text += t;
+      }
+      json = jsonDecode(text ?? "{}");
     } catch (e) {
       json = {};
     }

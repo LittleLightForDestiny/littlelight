@@ -1,4 +1,5 @@
 import 'package:bungie_api/models/destiny_energy_type_definition.dart';
+import 'package:bungie_api/models/destiny_metric_definition.dart';
 import 'package:bungie_api/models/destiny_milestone_reward_entry_definition.dart';
 import 'package:bungie_api/models/destiny_place_definition.dart';
 import 'package:bungie_api/models/destiny_activity_definition.dart';
@@ -11,6 +12,7 @@ import 'package:bungie_api/models/destiny_race_definition.dart';
 import 'package:bungie_api/models/destiny_season_definition.dart';
 import 'package:bungie_api/models/destiny_season_pass_definition.dart';
 import 'package:bungie_api/models/destiny_talent_grid_definition.dart';
+import 'package:bungie_api/models/destiny_trait_definition.dart';
 import 'package:bungie_api/models/destiny_unlock_definition.dart';
 import 'package:bungie_api/models/destiny_material_requirement_set_definition.dart';
 import 'package:bungie_api/models/destiny_sandbox_perk_definition.dart';
@@ -123,8 +125,12 @@ class DefinitionTableNames {
     DestinyEnergyTypeDefinition: (json) =>
         DestinyEnergyTypeDefinition.fromJson(json),
     DestinySeasonDefinition: (json) => DestinySeasonDefinition.fromJson(json),
-    DestinySeasonPassDefinition: (json) => DestinySeasonPassDefinition.fromJson(json),
-    DestinyPowerCapDefinition: (json) => DestinyPowerCapDefinition.fromJson(json)
+    DestinySeasonPassDefinition: (json) =>
+        DestinySeasonPassDefinition.fromJson(json),
+    DestinyPowerCapDefinition: (json) =>
+        DestinyPowerCapDefinition.fromJson(json),
+    DestinyMetricDefinition: (json) => DestinyMetricDefinition.fromJson(json),
+    DestinyTraitDefinition: (json) => DestinyTraitDefinition.fromJson(json)
   };
 
   static Map<Type, String> fromClass = {
@@ -177,6 +183,8 @@ class DefinitionTableNames {
     DestinyEnergyTypeDefinition: "DestinyEnergyTypeDefinition",
     DestinySeasonDefinition: "DestinySeasonDefinition",
     DestinySeasonPassDefinition: "DestinySeasonPassDefinition",
-    DestinyPowerCapDefinition:"DestinyPowerCapDefinition"
+    DestinyPowerCapDefinition: "DestinyPowerCapDefinition",
+    DestinyMetricDefinition: "DestinyMetricDefinition",
+    DestinyTraitDefinition: "DestinyTraitDefinition"
   };
 }

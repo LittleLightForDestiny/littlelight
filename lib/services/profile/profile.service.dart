@@ -13,6 +13,7 @@ import 'package:bungie_api/models/destiny_item_plug_base.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_item_sockets_component.dart';
 import 'package:bungie_api/models/destiny_item_talent_grid_component.dart';
+import 'package:bungie_api/models/destiny_metric_component.dart';
 import 'package:bungie_api/models/destiny_objective_progress.dart';
 import 'package:bungie_api/models/destiny_presentation_node_component.dart';
 import 'package:bungie_api/models/destiny_profile_response.dart';
@@ -62,6 +63,7 @@ class ProfileComponentGroups {
 
   static const List<DestinyComponentType> triumphs = [
     DestinyComponentType.Records,
+    DestinyComponentType.Metrics,
     DestinyComponentType.PresentationNodes,
   ];
 
@@ -84,6 +86,7 @@ class ProfileComponentGroups {
     DestinyComponentType.ItemReusablePlugs,
     DestinyComponentType.Collectibles,
     DestinyComponentType.Records,
+    DestinyComponentType.Metrics,
     DestinyComponentType.PresentationNodes,
     DestinyComponentType.Profiles,
   ];
@@ -206,6 +209,11 @@ class ProfileService {
       _profile.profileRecords = response.profileRecords;
       _profile.characterRecords = response.characterRecords;
     }
+
+    if (components.contains(DestinyComponentType.Metrics)) {
+      _profile.metrics = response.metrics;
+    }
+
     if (components.contains(DestinyComponentType.Collectibles)) {
       _profile.profileCollectibles = response.profileCollectibles;
       _profile.characterCollectibles = response.characterCollectibles;
@@ -515,6 +523,14 @@ class ProfileService {
       }
     }
     return null;
+  }
+
+  DestinyMetricComponent getMetric(int hash) {
+    String hashStr = "$hash";
+    if (_profile?.metrics?.data?.metrics?.containsKey(hashStr) != true) {
+      return null;
+    }
+    return _profile.metrics.data.metrics[hashStr];
   }
 
   List<DestinyItemComponent> getItemsByInstanceId(List<String> ids) {
