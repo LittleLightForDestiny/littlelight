@@ -1,4 +1,5 @@
 import 'package:bungie_api/enums/destiny_item_type.dart';
+import 'package:bungie_api/enums/item_state.dart';
 import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:bungie_api/models/destiny_class_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
@@ -6,7 +7,9 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_vendor_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
+import 'package:little_light/services/littlelight/item_notes.service.dart';
 import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
@@ -18,6 +21,7 @@ import 'package:little_light/widgets/item_list/items/base/base_inventory_item.wi
 import 'package:little_light/widgets/item_list/items/base/item_armor_stats.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/item_mods.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/item_perks.widget.dart';
+import 'package:little_light/widgets/item_tags/item_tag.widget.dart';
 
 typedef void OnItemHandler(
     DestinyItemComponent item,
@@ -53,7 +57,7 @@ class BaseItemInstanceWidget extends BaseInventoryItemWidget {
         left: 4,
         bottom: 4,
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          buildWishlistTags(context),
+          buildTags(context),
           Container(height: 4),
           modsWidget(context)
         ]),
@@ -83,10 +87,46 @@ class BaseItemInstanceWidget extends BaseInventoryItemWidget {
     ]);
   }
 
-  Widget buildWishlistTags(BuildContext context) {
-    var tags = WishlistsService().getWishlistBuildTags(item);
-    if (tags == null) return Container();
-    return WishlistBadgeWidget(tags: tags, size: tagIconSize);
+  Widget buildTags(BuildContext context) {
+    var wishlistTags = WishlistsService().getWishlistBuildTags(item);
+    List<Widget> upper = [];
+    var notes = ItemNotesService()
+        .getNotesForItem(item?.itemHash, item?.itemInstanceId);
+    var tags = ItemNotesService().tagsByIds(notes?.tags);
+    var locked = item?.state?.contains(ItemState.Locked) ?? false;
+    if (tags != null) {
+      upper.addAll(tags.map((t) => ItemTagWidget(
+            t,
+            fontSize: tagIconSize - padding / 2,
+            padding: padding / 8,
+          )));
+    }
+    if (locked) {
+      upper.add(Container(
+          height: tagIconSize,
+          width: tagIconSize,
+          child: Icon(FontAwesomeIcons.lock, size: titleFontSize * .9)));
+    }
+    List<Widget> rows = [];
+    if (upper.length > 0) {
+      upper = upper
+          .expand((i) => [
+                i,
+                Container(
+                  width: padding / 2,
+                )
+              ])
+          .toList();
+      upper.removeLast();
+      rows.add(Row(children: upper));
+    }
+    if (wishlistTags != null) {
+      rows.add(WishlistBadgeWidget(tags: wishlistTags, size: tagIconSize));
+    }
+
+    if (rows.length == 0) return Container();
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: rows);
+    // return WishlistBadgeWidget(tags: wishlistTags, size: tagIconSize);
   }
 
   Widget buildCharacterName(BuildContext context) {

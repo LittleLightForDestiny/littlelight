@@ -78,7 +78,7 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
     return Container(
         color: DestinyData.getTierColor(definition.inventory.tierType),
         child: Stack(
-          overflow: Overflow.visible,
+          // overflow: Overflow.visible,
           fit: StackFit.expand,
           children: <Widget>[
             Container(),

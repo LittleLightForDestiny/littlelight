@@ -199,6 +199,7 @@ class Client implements HttpClient {
 
   @override
   Future<HttpResponse> request(HttpClientConfig config) async {
+    print(config.body);
     var req = await _request(config);
     return req;
   }
@@ -238,13 +239,14 @@ class Client implements HttpClient {
 
     io.HttpClientResponse response;
     io.HttpClient client = io.HttpClient();
+
     if (config.method == 'GET') {
       var req = await client.getUrl(
           Uri.parse("${BungieApiService.apiUrl}${config.url}$paramsString"));
       headers.forEach((name, value) {
         req.headers.add(name, value);
       });
-      response = await req.close();
+      response = await req.close().timeout(Duration(seconds: 12));
     } else {
       String body = config.bodyContentType == 'application/json'
           ? jsonEncode(config.body)
@@ -255,7 +257,7 @@ class Client implements HttpClient {
         req.headers.add(name, value);
       });
       req.write(body);
-      response = await req.close();
+      response = await req.close().timeout(Duration(seconds: 12));
     }
 
     if (response.statusCode == 401 && autoRefreshToken) {

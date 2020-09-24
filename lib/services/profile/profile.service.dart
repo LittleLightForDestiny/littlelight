@@ -162,8 +162,7 @@ class ProfileService {
       List<DestinyComponentType> components) async {
     var membership = StorageService.getMembership();
     DestinyProfileResponse response;
-    response =
-        await _api.getCurrentProfile(components).timeout(Duration(seconds: 12));
+    response = await _api.getCurrentProfile(components);
 
     if (membership != StorageService.getMembership()) {
       return _profile;

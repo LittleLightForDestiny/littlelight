@@ -326,6 +326,9 @@ class InventoryService {
     if (stackSize == null) {
       stackSize = item.quantity;
     }
+    if (sourceCharacterId == ItemWithOwner.OWNER_PROFILE) {
+      sourceCharacterId = ProfileService().getCharacters()?.first?.characterId;
+    }
 
     bool needsToUnequip = instanceInfo?.isEquipped ?? false;
     bool onVault = item.bucketHash == InventoryBucket.general;

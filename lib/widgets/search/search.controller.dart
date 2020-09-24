@@ -20,6 +20,7 @@ import 'package:little_light/utils/item_filters/item_tag_filter.dart';
 import 'package:little_light/utils/item_filters/loadout_filter.dart';
 import 'package:little_light/utils/item_filters/power_cap_filter.dart';
 import 'package:little_light/utils/item_filters/power_level_constraints_filter.dart';
+import 'package:little_light/utils/item_filters/pseudo_item_type_filter.dart';
 import 'package:little_light/utils/item_filters/season_slot_filter.dart';
 import 'package:little_light/utils/item_filters/text_filter.dart';
 import 'package:little_light/utils/item_filters/tier_type_filter.dart';
@@ -70,6 +71,40 @@ class SearchController extends ChangeNotifier {
       this.customSorting,
       this.availableSorters}) {
     _init();
+  }
+
+  factory SearchController.withDuplicatedItemsFilters() {
+    return SearchController(
+        firstRunFilters: [
+          PseudoItemTypeFilter([
+            PseudoItemType.Weapons,
+            PseudoItemType.Armor,
+            PseudoItemType.Cosmetics
+          ], [
+            PseudoItemType.Weapons,
+            PseudoItemType.Armor,
+            PseudoItemType.Cosmetics
+          ])
+        ],
+        preFilters: [],
+        filters: [
+          PseudoItemTypeFilter([
+            PseudoItemType.Weapons,
+            PseudoItemType.Armor,
+            PseudoItemType.Cosmetics
+          ], [
+            PseudoItemType.Weapons
+          ])
+        ],
+        postFilters: [TextFilter()],
+        defaultSorting: [
+              ItemSortParameter(
+                  active: true,
+                  type: ItemSortParameterType.BucketHash,
+                  direction: 1)
+            ] +
+            UserSettingsService().itemOrdering,
+        customSorting: []);
   }
 
   factory SearchController.withDefaultFilters(

@@ -8,18 +8,18 @@ import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/screens/item_detail.screen.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/selection/selection.service.dart';
 import 'package:little_light/services/user_settings/user_settings.service.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/media_query_helper.dart';
+import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
-
 import 'package:little_light/widgets/item_list/items/base/base_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/base_item_instance.widget.dart';
+import 'package:little_light/widgets/search/search.controller.dart';
 import 'package:shimmer/shimmer.dart';
 
 enum DuplicatedListItemType {
@@ -27,12 +27,6 @@ enum DuplicatedListItemType {
   itemDefinition,
   itemInstance,
   spacer
-}
-
-class DuplicatedItemsListData {
-  final List<int> bucketHashes;
-  final int category;
-  DuplicatedItemsListData(this.category, this.bucketHashes);
 }
 
 class DuplicatedListItem {
@@ -47,8 +41,8 @@ class DuplicatedListItem {
 
 class DuplicatedItemListWidget extends StatefulWidget {
   final ProfileService profile = ProfileService();
-  final DuplicatedItemsListData data;
-  DuplicatedItemListWidget({Key key, this.data}) : super(key: key);
+  final SearchController searchController;
+  DuplicatedItemListWidget({Key key, this.searchController}) : super(key: key);
   final NotificationService broadcaster = new NotificationService();
 
   @override
@@ -58,90 +52,45 @@ class DuplicatedItemListWidget extends StatefulWidget {
 
 class DuplicatedItemListWidgetState extends State<DuplicatedItemListWidget>
     with AutomaticKeepAliveClientMixin {
-  List<DuplicatedListItem> items;
-  Map<int, DestinyInventoryItemDefinition> itemDefinitions;
-  StreamSubscription<NotificationEvent> subscription;
-
-  @override
-  dispose() {
-    subscription.cancel();
-    super.dispose();
-  }
+  List<DuplicatedListItem> listItems;
 
   @override
   initState() {
     super.initState();
-    loadItems();
-    subscription = widget.broadcaster.listen((event) {
-      if (event.type == NotificationType.receivedUpdate ||
-          event.type == NotificationType.localUpdate) {
-        loadItems();
-      }
-    });
+    widget.searchController?.addListener(update);
   }
 
-  loadItems() async {
-    List<ItemWithOwner> allItems = [];
-    ProfileService profile = ProfileService();
-    ManifestService manifest = ManifestService();
-    Iterable<String> charIds =
-        profile.getCharacters().map((char) => char.characterId);
-    charIds.forEach((charId) {
-      allItems.addAll(profile
-          .getCharacterEquipment(charId)
-          .map((item) => ItemWithOwner(item, charId)));
-      allItems.addAll(profile
-          .getCharacterInventory(charId)
-          .map((item) => ItemWithOwner(item, charId)));
-    });
-    allItems.addAll(
-        profile.getProfileInventory().map((item) => ItemWithOwner(item, null)));
+  @override
+  dispose() {
+    super.dispose();
+    widget.searchController?.removeListener(update);
+  }
+
+  void update() {
+    if (widget.searchController.filtered == null) return;
+    listItems = [];
+    var items = widget.searchController.filtered;
     Map<int, List<ItemWithOwner>> itemsByHash = {};
-    allItems.forEach((i) {
-      int hash = i.item.itemHash;
+    for (var item in items) {
+      var hash = item.item.itemHash;
       if (!itemsByHash.containsKey(hash)) {
         itemsByHash[hash] = [];
       }
-      itemsByHash[hash].add(i);
-    });
-    itemsByHash.removeWhere((k, v) => v.length < 2);
-    Iterable<int> hashes = itemsByHash.keys;
-
-    itemDefinitions = await manifest
-        .getDefinitions<DestinyInventoryItemDefinition>(hashes.toSet());
-
-    itemsByHash.removeWhere((k, v) => !widget.data.bucketHashes
-        .contains(itemDefinitions[k].inventory.bucketTypeHash));
-
-    List<int> hashesByName = itemsByHash.keys.toList();
-    hashesByName.sort((a, b) {
-      var nameA = itemDefinitions[a].displayProperties.name;
-      var nameB = itemDefinitions[b].displayProperties.name;
-      return nameA.compareTo(nameB);
-    });
-
-    items = [];
-    for (var bucketHash in widget.data.bucketHashes) {
-      var hashesInBucket = hashesByName.where((hash) {
-        var def = itemDefinitions[hash];
-        return def.inventory.bucketTypeHash == bucketHash;
-      }).toList();
-      if (hashesInBucket.length < 1) {
-        continue;
-      }
-      items.add(DuplicatedListItem(DuplicatedListItemType.bucketTitle,
-          hash: bucketHash));
-      hashesInBucket.forEach((hash) {
-        items.add(DuplicatedListItem(DuplicatedListItemType.itemDefinition,
-            hash: hash, items: itemsByHash[hash]));
-        itemsByHash[hash].forEach((item) {
-          items.add(DuplicatedListItem(DuplicatedListItemType.itemInstance,
-              hash: hash, item: item.item, ownerId: item.ownerId));
-        });
-        items.add(DuplicatedListItem(DuplicatedListItemType.spacer));
-      });
+      itemsByHash[hash].add(item);
     }
-
+    itemsByHash.removeWhere((k, v) => v.length < 2);
+    for (var hash in itemsByHash.keys) {
+      // items.add(DuplicatedListItem(DuplicatedListItemType.bucketTitle,
+      //     hash: bucketHash));
+      var instances = itemsByHash[hash];
+      listItems.add(DuplicatedListItem(DuplicatedListItemType.itemDefinition,
+          hash: hash, items: instances));
+      for (var instance in instances) {
+        listItems.add(DuplicatedListItem(DuplicatedListItemType.itemInstance,
+            hash: hash, item: instance.item, ownerId: instance.ownerId));
+      }
+      listItems.add(DuplicatedListItem(DuplicatedListItemType.spacer));
+    }
     if (mounted) {
       setState(() {});
     }
@@ -149,7 +98,7 @@ class DuplicatedItemListWidgetState extends State<DuplicatedItemListWidget>
 
   Widget build(BuildContext context) {
     super.build(context);
-    if (itemDefinitions == null) {
+    if (listItems == null) {
       return Center(
           child: Container(
               width: 96,
@@ -164,7 +113,7 @@ class DuplicatedItemListWidgetState extends State<DuplicatedItemListWidget>
       padding: EdgeInsets.all(4).copyWith(
           left: max(screenPadding.left, 4), right: max(screenPadding.right, 4)),
       crossAxisCount: 6,
-      itemCount: items?.length ?? 0,
+      itemCount: listItems?.length ?? 0,
       itemBuilder: (BuildContext context, int index) => getItem(context, index),
       staggeredTileBuilder: (int index) => getTileBuilder(context, index),
       mainAxisSpacing: 2,
@@ -174,7 +123,7 @@ class DuplicatedItemListWidgetState extends State<DuplicatedItemListWidget>
   }
 
   StaggeredTile getTileBuilder(BuildContext context, int index) {
-    var item = items[index];
+    var item = listItems[index];
     switch (item.type) {
       case DuplicatedListItemType.bucketTitle:
         return StaggeredTile.extent(6, 40);
@@ -197,10 +146,9 @@ class DuplicatedItemListWidgetState extends State<DuplicatedItemListWidget>
   }
 
   Widget getItem(BuildContext context, int index) {
-    if (items == null) return null;
-    if (index > items.length - 1) return null;
-    var item = items[index];
-    if (itemDefinitions == null) return Container();
+    if (listItems == null) return null;
+    if (index > listItems.length - 1) return null;
+    var item = listItems[index];
     switch (item.type) {
       case DuplicatedListItemType.bucketTitle:
         return HeaderWidget(
@@ -213,16 +161,18 @@ class DuplicatedItemListWidgetState extends State<DuplicatedItemListWidget>
         );
 
       case DuplicatedListItemType.itemDefinition:
-        return _DefinitionItemWrapper(itemDefinitions[item.hash], item.items);
+        return _DefinitionItemWrapper(item.hash, item.items);
 
       case DuplicatedListItemType.itemInstance:
-        return _ItemInstanceWrapper(
-          key: Key(
-              "item_${item.hash}_${item.item.itemInstanceId}_${item.ownerId}"),
-          item: item.item,
-          definition: itemDefinitions[item.hash],
-          characterId: item.ownerId,
-        );
+        return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
+            item.hash,
+            (def) => _ItemInstanceWrapper(
+                  item: item.item,
+                  definition: def,
+                  characterId: item.ownerId,
+                ),
+            key: Key(
+                "item_${item.hash}_${item.item.itemInstanceId}_${item.ownerId}"));
 
       case DuplicatedListItemType.spacer:
         return Container();
@@ -235,9 +185,9 @@ class DuplicatedItemListWidgetState extends State<DuplicatedItemListWidget>
 }
 
 class _DefinitionItemWrapper extends StatefulWidget {
-  final DestinyInventoryItemDefinition definition;
+  final int hash;
   final List<ItemWithOwner> items;
-  _DefinitionItemWrapper(this.definition, this.items);
+  _DefinitionItemWrapper(this.hash, this.items);
   @override
   State<StatefulWidget> createState() {
     return _DefinitionItemWrapperState();
@@ -265,14 +215,16 @@ class _DefinitionItemWrapperState extends State<_DefinitionItemWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      BaseInventoryItemWidget(
-        null,
-        widget.definition,
-        null,
-        characterId: null,
-        uniqueId: null,
-      ),
+    return Stack(key: Key("itemdef_${widget.hash}"), children: [
+      DefinitionProviderWidget<DestinyInventoryItemDefinition>(
+          widget.hash,
+          (def) => BaseInventoryItemWidget(
+                null,
+                def,
+                null,
+                characterId: null,
+                uniqueId: null,
+              )),
       selected
           ? Positioned.fill(
               child: Container(

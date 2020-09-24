@@ -152,6 +152,8 @@ class MultiselectManagementBlockWidget extends StatelessWidget {
     var hasTransferrables = false;
     var hasVaultables = false;
     var hasPullables = false;
+    var hasItemsOnVault = false;
+    var hasItemsOnPostmaster = false;
     var allCharacterIds =
         ProfileService().getCharacters().map((c) => c.characterId);
     Set<String> destinationCharacterIds = Set();
@@ -173,6 +175,8 @@ class MultiselectManagementBlockWidget extends StatelessWidget {
       hasTransferrables = hasTransferrables || canBeTransferred;
       hasPullables = hasPullables || (canBePulled && isOnPostmaster);
       hasVaultables = hasVaultables || (canBeTransferred && !isOnVault);
+      hasItemsOnVault = hasItemsOnVault || isOnVault;
+      hasItemsOnPostmaster = hasItemsOnPostmaster || isOnPostmaster;
       if (isAccountItem) continue;
       if (isOnPostmaster && canBePulled) {
         destinationCharacterIds.add(i.ownerId);
@@ -188,7 +192,9 @@ class MultiselectManagementBlockWidget extends StatelessWidget {
             characterId: id, action: InventoryAction.Transfer))
         .toList();
 
-    if ((hasTransferrables || hasPullables) && destinations.length == 0) {
+    if ((hasTransferrables || hasPullables) &&
+        destinations.length == 0 &&
+        (hasItemsOnVault || hasItemsOnPostmaster)) {
       destinations.add(TransferDestination(ItemDestination.Inventory,
           action: InventoryAction.Transfer));
     }
