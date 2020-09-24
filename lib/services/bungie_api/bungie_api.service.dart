@@ -195,11 +195,11 @@ class BungieApiService {
 class Client implements HttpClient {
   BungieNetToken token;
   bool autoRefreshToken;
+  int retries = 0;
   Client({this.token, this.autoRefreshToken = true});
 
   @override
   Future<HttpResponse> request(HttpClientConfig config) async {
-    print(config.body);
     var req = await _request(config);
     return req;
   }
@@ -213,7 +213,7 @@ class Client implements HttpClient {
       headers['Content-Type'] = config.bodyContentType;
     }
     if (this.token != null) {
-      headers['Authorization'] = "Bearer ${token.accessToken}";
+      headers['Authorization'] = "Bearer ${this.token.accessToken}";
     }
     String paramsString = "";
     if (config.params != null) {
@@ -262,7 +262,7 @@ class Client implements HttpClient {
 
     if (response.statusCode == 401 && autoRefreshToken) {
       this.token = await AuthService().refreshToken(token);
-      return request(config);
+      return _request(config);
     }
     dynamic json;
     try {

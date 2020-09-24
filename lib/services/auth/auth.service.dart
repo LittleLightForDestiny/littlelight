@@ -17,7 +17,7 @@ class AuthService {
   GroupUserInfoCard _currentMembership;
   UserMembershipData _membershipData;
   bool waitingAuthCode = false;
-  
+
   StreamSubscription<String> linkStreamSub;
 
   static final AuthService _singleton = new AuthService._internal();
@@ -27,27 +27,28 @@ class AuthService {
   }
   AuthService._internal();
 
-
   Future<BungieNetToken> _getStoredToken() async {
     StorageService storage = StorageService.account();
     var json = await storage.getJson(StorageKeys.latestToken);
-    try{
+    try {
       return BungieNetToken.fromJson(json);
-    }catch(e){
-      print("failed retrieving token for account: ${StorageService.getAccount()}");
+    } catch (e) {
+      print(
+          "failed retrieving token for account: ${StorageService.getAccount()}");
       print(e);
     }
     return null;
   }
 
   Future<BungieNetToken> refreshToken(BungieNetToken token) async {
-    BungieNetToken bNetToken = await BungieApiService().refreshToken(token.refreshToken);
+    BungieNetToken bNetToken =
+        await BungieApiService().refreshToken(token.refreshToken);
     _saveToken(bNetToken);
-    return token;
+    return bNetToken;
   }
 
   Future<void> _saveToken(BungieNetToken token) async {
-    if(token?.accessToken == null){
+    if (token?.accessToken == null) {
       return;
     }
     await StorageService.setAccount(token.membershipId);
@@ -112,32 +113,32 @@ class AuthService {
     OAuth.openOAuth(browser, BungieApiService.clientId, currentLanguage, true);
     Stream<String> _stream = getLinksStream();
     Completer<String> completer = Completer();
-    
+
     linkStreamSub?.cancel();
 
-    linkStreamSub = _stream.listen((link) { 
+    linkStreamSub = _stream.listen((link) {
       Uri uri = Uri.parse(link);
       if (uri.queryParameters.containsKey("code") ||
           uri.queryParameters.containsKey("error")) {
         closeWebView();
         linkStreamSub.cancel();
       }
-      if (uri.queryParameters.containsKey("code")){
+      if (uri.queryParameters.containsKey("code")) {
         String code = uri.queryParameters["code"];
         completer.complete(code);
       } else {
         String errorType = uri.queryParameters["error"];
         String errorDescription = uri.queryParameters["error_description"];
-        try{
+        try {
           throw OAuthException(errorType, errorDescription);
-        }on OAuthException catch(e, stack){
+        } on OAuthException catch (e, stack) {
           completer.completeError(e, stack);
         }
       }
     });
 
     return completer.future;
-    
+
     // Uri uri;
     // if(waitingAuthCode) return null;
     // waitingAuthCode = true;
@@ -148,7 +149,7 @@ class AuthService {
     //     break;
     //   }
     // }
-    
+
     // closeWebView();
     // waitingAuthCode = false;
     // if (uri.queryParameters.containsKey("code")) {
@@ -160,7 +161,7 @@ class AuthService {
     // }
   }
 
-  Future<UserMembershipData> updateMembershipData() async{
+  Future<UserMembershipData> updateMembershipData() async {
     UserMembershipData membershipData =
         await BungieApiService().getMemberships();
     var storage = StorageService.account();
@@ -168,22 +169,21 @@ class AuthService {
     return membershipData;
   }
 
-  Future<UserMembershipData> getMembershipData() async{
+  Future<UserMembershipData> getMembershipData() async {
     return _membershipData ?? await _getStoredMembershipData();
   }
 
   Future<UserMembershipData> _getStoredMembershipData() async {
     var storage = StorageService.account();
     var json = await storage.getJson(StorageKeys.membershipData);
-    if(json == null){
+    if (json == null) {
       return null;
     }
-    UserMembershipData membershipData =
-        UserMembershipData.fromJson(json);
+    UserMembershipData membershipData = UserMembershipData.fromJson(json);
     return membershipData;
   }
 
-  void reset(){
+  void reset() {
     _currentMembership = null;
     _currentToken = null;
     _membershipData = null;
@@ -195,7 +195,8 @@ class AuthService {
       var _membershipId = StorageService.getMembership();
       _currentMembership = getMembershipById(_membershipData, _membershipId);
     }
-    if(_currentMembership?.membershipType == BungieMembershipType.TigerBlizzard){
+    if (_currentMembership?.membershipType ==
+        BungieMembershipType.TigerBlizzard) {
       var account = StorageService.getAccount();
       StorageService.removeAccount(account);
       return null;
@@ -203,9 +204,11 @@ class AuthService {
     return _currentMembership;
   }
 
-  GroupUserInfoCard getMembershipById(UserMembershipData membershipData, String membershipId){
-    return membershipData?.destinyMemberships
-          ?.firstWhere((membership) => membership?.membershipId == membershipId, orElse: ()=>membershipData?.destinyMemberships?.first ?? null);
+  GroupUserInfoCard getMembershipById(
+      UserMembershipData membershipData, String membershipId) {
+    return membershipData?.destinyMemberships?.firstWhere(
+        (membership) => membership?.membershipId == membershipId,
+        orElse: () => membershipData?.destinyMemberships?.first ?? null);
   }
 
   Future<void> saveMembership(

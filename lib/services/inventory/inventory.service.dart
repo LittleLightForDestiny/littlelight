@@ -735,7 +735,8 @@ class InventoryService {
   changeLockState(ItemWithOwner item, bool locked) async {
     if (!item.item.lockable) return;
     var charIds = profile.getCharacters().map((c) => c.characterId);
-    var ownerId = charIds.contains(item?.ownerId) ? item?.ownerId : null;
+    var ownerId =
+        charIds.contains(item?.ownerId) ? item?.ownerId : charIds.first;
     if (item.item.state.contains(ItemState.Locked) && !locked) {
       item?.item?.state =
           ItemState(item.item.state.value - ItemState.Locked.value);

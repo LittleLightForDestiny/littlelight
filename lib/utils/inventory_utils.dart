@@ -11,7 +11,9 @@ import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/user_settings/item_sort_parameter.dart';
 import 'package:little_light/services/user_settings/user_settings.service.dart';
+import 'package:little_light/utils/item_sorters/base_item_sorter.dart';
 import 'package:little_light/utils/item_sorters/power_level_sorter.dart';
+import 'package:little_light/utils/item_sorters/priority_tags_sorter.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 
 class InventoryUtils {
@@ -45,18 +47,24 @@ class InventoryUtils {
 
   static Future<List<ItemWithOwner>> sortDestinyItems(
       Iterable<ItemWithOwner> items,
-      {List<ItemSortParameter> sortingParams}) async{
+      {List<ItemSortParameter> sortingParams,
+      bool sortTags: true}) async {
     if (sortingParams == null) {
       sortingParams = UserSettingsService().itemOrdering;
     }
-    await ManifestService().getDefinitions<DestinyInventoryItemDefinition>(items.map((i)=>i?.item?.itemHash));
-    var sorters = sortingParams.map((p)=>p.sorter).where((s)=>s!=null);
+    await ManifestService().getDefinitions<DestinyInventoryItemDefinition>(
+        items.map((i) => i?.item?.itemHash));
+    List<BaseItemSorter> sorters =
+        sortingParams.map((p) => p.sorter).where((s) => s != null).toList();
+    if (sortTags) {
+      sorters = <BaseItemSorter>[PriorityTagsSorter()] + sorters;
+    }
     var originalOrder = items.toList();
     var list = items.toList();
-    list.sort((a,b){
-      for(var sorter in sorters){
-        var res = sorter.sort(a,b);
-        if(res != 0) return res;
+    list.sort((a, b) {
+      for (var sorter in sorters) {
+        var res = sorter.sort(a, b);
+        if (res != 0) return res;
       }
       return originalOrder.indexOf(a).compareTo(originalOrder.indexOf(b));
     });
@@ -173,7 +181,8 @@ class LoadoutItemIndex {
             allItems.where((i) => i.itemHash == itemHash).toList();
         if (substitutes.length == 0) return;
         var powerSorter = PowerLevelSorter(-1);
-        substitutes.sort((a, b)=>powerSorter.sort(ItemWithOwner(a, null), ItemWithOwner(b, null)));
+        substitutes.sort((a, b) =>
+            powerSorter.sort(ItemWithOwner(a, null), ItemWithOwner(b, null)));
         DestinyItemComponent substitute = substitutes.first;
 
         if (equipped != null) {
@@ -211,9 +220,11 @@ class LoadoutItemIndex {
 
   addEquippedItem(DestinyItemComponent item, DestinyInventoryItemDefinition def,
       {bool modifyLoadout = true}) {
-    if (classBucketHashes.contains(def.inventory.bucketTypeHash) || [DestinyClass.Titan, DestinyClass.Hunter, DestinyClass.Warlock].contains(def.classType)) {
+    if (classBucketHashes.contains(def.inventory.bucketTypeHash) ||
+        [DestinyClass.Titan, DestinyClass.Hunter, DestinyClass.Warlock]
+            .contains(def.classType)) {
       _addClassSpecific(item, def);
-    }else if (genericBucketHashes.contains(def.inventory.bucketTypeHash)) {
+    } else if (genericBucketHashes.contains(def.inventory.bucketTypeHash)) {
       _addGeneric(item, def);
     }
     if (modifyLoadout) {
@@ -235,10 +246,11 @@ class LoadoutItemIndex {
   removeEquippedItem(
       DestinyItemComponent item, DestinyInventoryItemDefinition def,
       {bool modifyLoadout = true}) {
-    
-    if (classBucketHashes.contains(def.inventory.bucketTypeHash) || [DestinyClass.Titan, DestinyClass.Hunter, DestinyClass.Warlock].contains(def?.classType)) {
+    if (classBucketHashes.contains(def.inventory.bucketTypeHash) ||
+        [DestinyClass.Titan, DestinyClass.Hunter, DestinyClass.Warlock]
+            .contains(def?.classType)) {
       _removeClassSpecific(item, def);
-    }else if (genericBucketHashes.contains(def.inventory.bucketTypeHash)) {
+    } else if (genericBucketHashes.contains(def.inventory.bucketTypeHash)) {
       _removeGeneric(item, def);
     }
     if (modifyLoadout) {

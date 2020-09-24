@@ -1,12 +1,18 @@
+import 'package:bungie_api/enums/item_state.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:little_light/services/littlelight/item_notes.service.dart';
 import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/widgets/common/wishlist_corner_badge.decoration.dart';
 import 'package:little_light/widgets/item_list/items/base/base_inventory_item.widget.dart';
+import 'package:little_light/widgets/item_list/items/base/minimal_info_label.mixin.dart';
+import 'package:little_light/widgets/item_tags/item_tag.widget.dart';
 
-class MinimalBaseInventoryItemWidget extends BaseInventoryItemWidget {
+class MinimalBaseInventoryItemWidget extends BaseInventoryItemWidget
+    with MinimalInfoLabelMixin {
   MinimalBaseInventoryItemWidget(
       DestinyItemComponent item,
       DestinyInventoryItemDefinition itemDefinition,
@@ -23,7 +29,8 @@ class MinimalBaseInventoryItemWidget extends BaseInventoryItemWidget {
       children: <Widget>[
         positionedIcon(context),
         primaryStatWidget(context),
-        buildTagsBadges(context)
+        buildItemTags(context),
+        buildTagsBadges(context),
       ].where((w) => w != null).toList(),
     );
   }
@@ -33,7 +40,7 @@ class MinimalBaseInventoryItemWidget extends BaseInventoryItemWidget {
     if (tags == null) return Container();
     return Positioned.fill(
         child: FractionallySizedBox(
-          alignment: Alignment.topRight,
+            alignment: Alignment.topRight,
             widthFactor: .3,
             child: Container(
                 margin: EdgeInsets.all(2),
@@ -76,15 +83,40 @@ class MinimalBaseInventoryItemWidget extends BaseInventoryItemWidget {
     return super.primaryStatWidget(context);
   }
 
-  Widget infoContainer(BuildContext context, Widget child) {
+  Widget buildItemTags(BuildContext context) {
+    List<Widget> items = [];
+    var notes = ItemNotesService()
+        .getNotesForItem(item?.itemHash, item?.itemInstanceId);
+    var tags = ItemNotesService().tagsByIds(notes?.tags);
+    var locked = item?.state?.contains(ItemState.Locked) ?? false;
+    if (tags != null) {
+      items.addAll(tags.map((t) => ItemTagWidget(
+            t,
+            fontSize: titleFontSize,
+            padding: 0,
+          )));
+    }
+    if (locked) {
+      items.add(
+          Container(child: Icon(FontAwesomeIcons.lock, size: titleFontSize)));
+    }
+    if ((items?.length ?? 0) == 0) return Container();
+    items = items
+        .expand((i) => [
+              i,
+              Container(
+                width: padding / 4,
+              )
+            ])
+        .toList();
+    items.removeLast();
     return Positioned(
-        bottom: iconBorderWidth,
-        right: iconBorderWidth,
-        left: iconBorderWidth,
-        child: Container(
-            color: Colors.black.withOpacity(.5),
-            padding: EdgeInsets.all(padding),
-            child: child));
+        right: padding,
+        bottom: titleFontSize + padding * 4,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: items,
+        ));
   }
 
   @override

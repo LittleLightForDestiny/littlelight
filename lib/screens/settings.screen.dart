@@ -2,18 +2,22 @@ import 'package:drag_list/drag_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:little_light/models/item_notes_tag.dart';
 import 'package:little_light/models/wish_list.dart';
 import 'package:little_light/screens/add_wishlist.screen.dart';
+import 'package:little_light/services/littlelight/item_notes.service.dart';
 import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/services/user_settings/character_sort_parameter.dart';
 import 'package:little_light/services/user_settings/item_sort_parameter.dart';
 import 'package:little_light/services/user_settings/user_settings.service.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
+import 'package:little_light/widgets/common/littlelight_custom.dialog.dart';
 
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-
+import 'package:little_light/widgets/flutter/center_icon_workaround.dart';
 
 import 'package:little_light/widgets/flutter/smaller_switch.dart';
+import 'package:little_light/widgets/item_tags/item_tag.widget.dart';
 import 'package:little_light/widgets/option_sheets/free_slots_slider.widget.dart';
 import 'package:screen/screen.dart';
 import 'package:shimmer/shimmer.dart';
@@ -28,6 +32,7 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   List<ItemSortParameter> itemOrdering;
   List<ItemSortParameter> pursuitOrdering;
+  Set<String> priorityTags;
   List<Wishlist> wishlists;
 
   @override
@@ -35,6 +40,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     super.initState();
     itemOrdering = widget.settings.itemOrdering;
     pursuitOrdering = widget.settings.pursuitOrdering;
+    priorityTags = widget.settings.priorityTags;
     wishlists = WishlistsService().getWishlists();
   }
 
@@ -42,7 +48,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          leading: IconButton(enableFeedback: false,
+          leading: IconButton(
+            enableFeedback: false,
             icon: Icon(Icons.menu),
             onPressed: () {
               Scaffold.of(context).openDrawer();
@@ -52,46 +59,55 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
         body: SingleChildScrollView(
             padding: EdgeInsets.all(8),
-            child: Column(children: <Widget>[
-              buildTapToSelect(context),
-              Container(height: 16),
-              buildKeepAwake(context),
-              Container(height: 16),
-              buildAutoOpenSearch(context),
-              Container(height: 16),
-              HeaderWidget(
-                  child: TranslatedTextWidget(
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  buildTapToSelect(context),
+                  Container(height: 16),
+                  buildKeepAwake(context),
+                  Container(height: 16),
+                  buildAutoOpenSearch(context),
+                  Container(height: 16),
+                  HeaderWidget(
+                      child: TranslatedTextWidget(
                     "Default free slots",
                     uppercase: true,
                   )),
-              buildDefaultFreeSlots(context),
-              HeaderWidget(
-                  child: TranslatedTextWidget(
+                  buildDefaultFreeSlots(context),
+                  HeaderWidget(
+                      child: TranslatedTextWidget(
                     "Wishlists",
                     uppercase: true,
                   )),
-              buildWishlists(context),
-              Container(height: 16),
-              HeaderWidget(
-                  child: TranslatedTextWidget(
+                  buildWishlists(context),
+                  Container(height: 16),
+                  HeaderWidget(
+                      child: TranslatedTextWidget(
                     "Order characters by",
                     uppercase: true,
                   )),
-              buildCharacterOrdering(context),
-              Container(height: 32),
-              HeaderWidget(
-                  child: TranslatedTextWidget(
+                  buildCharacterOrdering(context),
+                  Container(height: 32),
+                  HeaderWidget(
+                      child: TranslatedTextWidget(
                     "Order items by",
                     uppercase: true,
                   )),
-              buildItemOrderList(context),
-              HeaderWidget(
-                  child: TranslatedTextWidget(
+                  buildItemOrderList(context),
+                  HeaderWidget(
+                      child: TranslatedTextWidget(
                     "Order pursuits by",
                     uppercase: true,
                   )),
-              buildPursuitOrderList(context)
-            ])));
+                  buildPursuitOrderList(context),
+                  HeaderWidget(
+                      child: TranslatedTextWidget(
+                    "Priority Tags",
+                    uppercase: true,
+                  )),
+                  buildPriorityTags(context),
+                  Container(height: 32),
+                ])));
   }
 
   buildKeepAwake(BuildContext context) {
@@ -396,6 +412,110 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ));
   }
 
+  Widget buildPriorityTags(BuildContext context) {
+    var tags = ItemNotesService().tagsByIds(priorityTags);
+    return Container(
+        padding: EdgeInsets.all(8),
+        child: Wrap(
+          crossAxisAlignment: WrapCrossAlignment.start,
+          runSpacing: 4,
+          spacing: 4,
+          children: tags
+              .map((t) => ItemTagWidget(
+                    t,
+                    includeLabel: true,
+                    padding: 4,
+                    trailing: Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.white),
+                        width: 20,
+                        height: 20,
+                        alignment: Alignment.center,
+                        child: CenterIconWorkaround(
+                            FontAwesomeIcons.solidTimesCircle,
+                            size: 16,
+                            color: Colors.red)),
+                    onClick: () {
+                      priorityTags.remove(t.tagId);
+                      UserSettingsService().priorityTags = priorityTags;
+                      setState(() {});
+                    },
+                  ))
+              .followedBy([
+            ItemTagWidget(
+                ItemNotesTag(
+                    icon: null, name: "Add Tag", backgroundColorHex: "#03A9f4"),
+                includeLabel: true,
+                padding: 4,
+                trailing:
+                    CenterIconWorkaround(FontAwesomeIcons.plusCircle, size: 18),
+                onClick: () => openAddTagDialog(context)),
+          ]).toList(),
+        ));
+  }
+
+  openAddTagDialog(BuildContext context) async {
+    var tags = ItemNotesService().getAvailableTags();
+    var result = await showDialog<String>(
+        context: context,
+        builder: (BuildContext context) {
+          return LittleLightCustomDialog.withHorizontalButtons(
+              SingleChildScrollView(
+                  child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: tags
+                    .map((t) => Container(
+                        margin: EdgeInsets.only(top: 8),
+                        child: (t?.custom ?? false)
+                            ? Row(children: [
+                                Expanded(
+                                    child: ItemTagWidget(
+                                  t,
+                                  includeLabel: true,
+                                  padding: 4,
+                                  onClick: () {
+                                    Navigator.of(context).pop(t.tagId);
+                                  },
+                                )),
+                                Container(
+                                  width: 8,
+                                ),
+                              ])
+                            : ItemTagWidget(
+                                t,
+                                includeLabel: true,
+                                padding: 4,
+                                onClick: () {
+                                  Navigator.of(context).pop(t.tagId);
+                                },
+                              )))
+                    .toList(),
+              )),
+              maxWidth: 400,
+              buttons: [
+                RaisedButton(
+                    visualDensity: VisualDensity.comfortable,
+                    child: TranslatedTextWidget("Cancel",
+                        uppercase: true,
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    }),
+              ],
+              title: TranslatedTextWidget(
+                'Select tag',
+                uppercase: true,
+              ));
+        });
+
+    if (result != null) {
+      priorityTags.add(result);
+      widget.settings.priorityTags = priorityTags;
+      setState(() {});
+    }
+  }
+
   Widget buildSortItem(
       BuildContext context, ItemSortParameter parameter, Widget handle,
       {@required Function onSave}) {
@@ -504,24 +624,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
         return TranslatedTextWidget("Group", uppercase: true);
 
       case ItemSortParameterType.ItemOwner:
-        return TranslatedTextWidget("Item Holder",
-            uppercase: true);
+        return TranslatedTextWidget("Item Holder", uppercase: true);
 
       case ItemSortParameterType.StatTotal:
-        return TranslatedTextWidget("Stats Total",
-            uppercase: true);
-      
+        return TranslatedTextWidget("Stats Total", uppercase: true);
+
       case ItemSortParameterType.MasterworkStatus:
-        return TranslatedTextWidget("Masterwork Status",
-            uppercase: true);
+        return TranslatedTextWidget("Masterwork Status", uppercase: true);
         break;
 
       case ItemSortParameterType.Stat:
         break;
 
       case ItemSortParameterType.DamageType:
-        return TranslatedTextWidget("Damage Type",
-            uppercase: true);
+        return TranslatedTextWidget("Damage Type", uppercase: true);
     }
     return Text(
       parameter.type.toString(),

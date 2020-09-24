@@ -26,12 +26,12 @@ class BaseInventoryItemWidget extends BaseDestinyStatelessItemWidget
       this.trailing,
       @required this.uniqueId})
       : super(
-            item: item,
-            definition: definition,
-            instanceInfo: instanceInfo,
-            key: key,
-            characterId: characterId,
-            );
+          item: item,
+          definition: definition,
+          instanceInfo: instanceInfo,
+          key: key,
+          characterId: characterId,
+        );
 
   @override
   Widget perksWidget(BuildContext context) {
@@ -48,16 +48,17 @@ class BaseInventoryItemWidget extends BaseDestinyStatelessItemWidget
             socketCategoryHash: perksCategoryHash,
             definition: definition,
             showUnusedPerks: showUnusedPerks,
-            item:item,
+            item: item,
             iconSize: 20,
-            
           ));
     }
-    if(definition?.itemType == DestinyItemType.Armor){
+    if (definition?.itemType == DestinyItemType.Armor) {
       return Positioned(
           bottom: 6,
           left: 96,
-          child:ItemArmorStatsWidget(item: item,));
+          child: ItemArmorStatsWidget(
+            item: item,
+          ));
     }
     // if (tierCategoryHash != null) {
     //   return Positioned(
@@ -92,11 +93,12 @@ class BaseInventoryItemWidget extends BaseDestinyStatelessItemWidget
       return Positioned(
           bottom: 4,
           right: 4,
-          child: Container(child: Text("x${item.quantity}",
-          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+          child: Container(
+              child: Text(
+            "x${item.quantity}",
+            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
           )));
     }
     return super.primaryStatWidget(context);
   }
-
 }

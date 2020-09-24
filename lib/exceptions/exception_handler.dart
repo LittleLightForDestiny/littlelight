@@ -101,7 +101,6 @@ class ExceptionHandler {
         ),
       );
     }
-
     Crashlytics.instance.recordFlutterError(error);
   }
 

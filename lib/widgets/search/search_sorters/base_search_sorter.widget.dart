@@ -15,7 +15,8 @@ class BaseSearchSorterWidget extends StatefulWidget {
   BaseSearchSorterWidgetState createState() => BaseSearchSorterWidgetState();
 }
 
-class BaseSearchSorterWidgetState<T extends BaseSearchSorterWidget> extends State<T> {
+class BaseSearchSorterWidgetState<T extends BaseSearchSorterWidget>
+    extends State<T> {
   ItemSortParameter get sortParameter => widget.sortParameter;
 
   SearchController get controller => widget.controller;
@@ -209,8 +210,7 @@ class BaseSearchSorterWidgetState<T extends BaseSearchSorterWidget> extends Stat
         break;
 
       case ItemSortParameterType.Stat:
-        return TranslatedTextWidget("Stat",
-            uppercase: true, style: style);
+        return TranslatedTextWidget("Stat", uppercase: true, style: style);
         break;
 
       case ItemSortParameterType.DamageType:

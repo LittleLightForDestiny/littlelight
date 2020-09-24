@@ -62,11 +62,14 @@ class SearchController extends ChangeNotifier {
   List<ItemSortParameter> customSorting;
   List<ItemSortParameterType> availableSorters;
 
+  bool sortTags;
+
   SearchController(
       {this.firstRunFilters = const [],
       this.preFilters = const [],
       this.filters = const [],
       this.postFilters = const [],
+      this.sortTags = true,
       this.defaultSorting,
       this.customSorting,
       this.availableSorters}) {
@@ -86,6 +89,7 @@ class SearchController extends ChangeNotifier {
             PseudoItemType.Cosmetics
           ])
         ],
+        sortTags: false,
         preFilters: [],
         filters: [
           PseudoItemTypeFilter([
@@ -171,7 +175,8 @@ class SearchController extends ChangeNotifier {
   sort() async {
     this._prefilteredList = await InventoryUtils.sortDestinyItems(
         this._prefilteredList,
-        sortingParams: this.customSorting + this.defaultSorting);
+        sortingParams: this.customSorting + this.defaultSorting,
+        sortTags: sortTags);
     await update();
   }
 
