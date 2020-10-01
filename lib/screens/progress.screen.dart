@@ -16,6 +16,7 @@ import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/flutter/passive_tab_bar_view.dart';
 import 'package:little_light/widgets/inventory_tabs/character_tab_header.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
+import 'package:little_light/widgets/inventory_tabs/selected_items.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/tabs_character_menu.widget.dart';
 import 'package:little_light/widgets/progress_tabs/character_milestones_list.widget.dart';
 import 'package:little_light/widgets/progress_tabs/character_pursuits_list.widget.dart';
@@ -92,7 +93,8 @@ class ProgressScreenState extends State<ProgressScreen>
             top: paddingTop,
             width: kToolbarHeight,
             height: kToolbarHeight,
-            child: IconButton(enableFeedback: false,
+            child: IconButton(
+              enableFeedback: false,
               icon: Icon(Icons.menu),
               onPressed: () {
                 Scaffold.of(context).openDrawer();
@@ -111,6 +113,11 @@ class ProgressScreenState extends State<ProgressScreen>
           ),
           InventoryNotificationWidget(
               key: Key('inventory_notification_widget')),
+          Positioned(
+              bottom: screenPadding.bottom,
+              left: 0,
+              right: 0,
+              child: SelectedItemsWidget()),
         ],
       ),
     );
@@ -201,7 +208,8 @@ class ProgressScreenState extends State<ProgressScreen>
 
   buildCharacterMenu(BuildContext context) {
     return Row(children: [
-      IconButton(enableFeedback: false,
+      IconButton(
+          enableFeedback: false,
           icon: Icon(FontAwesomeIcons.search, color: Colors.white),
           onPressed: () {
             var char = characters[charTabController.index];
@@ -211,14 +219,16 @@ class ProgressScreenState extends State<ProgressScreen>
                 MaterialPageRoute(
                   builder: (context) => SearchScreen(
                     controller: SearchController.withDefaultFilters(
-                      firstRunFilters: [PseudoItemTypeFilter(types, types)],
-                      preFilters: [
-                        ItemOwnerFilter([char.characterId].toSet()),
-                        PseudoItemTypeFilter(types, types),
-                      ],
-                      defaultSorting: UserSettingsService().pursuitOrdering,
-                      availableSorters: ItemSortParameter.availablePursuitSorters
-                    ),
+                        firstRunFilters: [
+                          PseudoItemTypeFilter(types, types)
+                        ],
+                        preFilters: [
+                          ItemOwnerFilter([char.characterId].toSet()),
+                          PseudoItemTypeFilter(types, types),
+                        ],
+                        defaultSorting: UserSettingsService().pursuitOrdering,
+                        availableSorters:
+                            ItemSortParameter.availablePursuitSorters),
                   ),
                 ));
           }),

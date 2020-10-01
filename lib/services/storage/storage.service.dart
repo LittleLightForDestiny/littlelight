@@ -46,6 +46,7 @@ enum StorageKeys {
   collaboratorsData,
   gameData,
   priorityTags,
+  bucketDisplayOptions,
 }
 
 extension StorageKeysExtension on StorageKeys {

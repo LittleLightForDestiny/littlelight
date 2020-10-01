@@ -22,7 +22,7 @@ class ExceptionHandler {
         Zone.current.handleUncaughtError(details.exception, details.stack);
       }
 
-      Crashlytics.instance.recordFlutterError(details);
+      FirebaseCrashlytics.instance.recordFlutterError(details);
     };
   }
 
@@ -101,14 +101,14 @@ class ExceptionHandler {
         ),
       );
     }
-    Crashlytics.instance.recordFlutterError(error);
+    FirebaseCrashlytics.instance.recordFlutterError(error);
   }
 
   static setReportingUserInfo(String membershipId, String displayName,
       BungieMembershipType platformId) {
-    Crashlytics.instance.setUserIdentifier(membershipId);
-    Crashlytics.instance.setUserName(displayName);
-    Crashlytics.instance.setInt("platform", platformId.value);
+    FirebaseCrashlytics.instance.setUserIdentifier(membershipId);
+    FirebaseCrashlytics.instance.setCustomKey('User Name', displayName);
+    FirebaseCrashlytics.instance.setCustomKey("platform", platformId.value);
   }
 }
 

@@ -1,3 +1,4 @@
+import 'package:bungie_api/enums/destiny_item_type.dart';
 import 'package:bungie_api/enums/item_state.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
@@ -56,6 +57,10 @@ class MinimalBaseInventoryItemWidget extends BaseInventoryItemWidget
 
   @override
   Widget primaryStatWidget(BuildContext context) {
+    if ([DestinyItemType.Subclass, DestinyItemType.Engram]
+        .contains(definition?.itemType)) {
+      return Container();
+    }
     if ((definition?.inventory?.maxStackSize ?? 0) > 1) {
       return infoContainer(
           context,

@@ -33,15 +33,16 @@ class ObjectiveWidget extends StatefulWidget {
     return ObjectiveWidgetState();
   }
 }
-class ObjectiveWidgetState extends State<ObjectiveWidget>{
+
+class ObjectiveWidgetState extends State<ObjectiveWidget> {
   DestinyObjectiveDefinition _definition;
   DestinyObjectiveDefinition get definition => widget.definition ?? _definition;
-  
-  Color get color =>widget.color;
+
+  Color get color => widget.color;
   bool get forceComplete => widget.forceComplete;
-  DestinyObjectiveProgress get objective=> widget.objective;
-  String get placeholder=> widget.placeholder;
-  bool get parentCompleted=> widget.parentCompleted;
+  DestinyObjectiveProgress get objective => widget.objective;
+  String get placeholder => widget.placeholder;
+  bool get parentCompleted => widget.parentCompleted;
 
   @override
   void initState() {
@@ -49,13 +50,14 @@ class ObjectiveWidgetState extends State<ObjectiveWidget>{
     loadDefinitions();
   }
 
-  void loadDefinitions() async{
-    if(widget.definition == null){
-      _definition = await ManifestService().getDefinition<DestinyObjectiveDefinition>(widget.objective.objectiveHash);
-      if(mounted) setState(() { });
+  void loadDefinitions() async {
+    if (widget.definition == null) {
+      _definition = await ManifestService()
+          .getDefinition<DestinyObjectiveDefinition>(
+              widget.objective.objectiveHash);
+      if (mounted) setState(() {});
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -93,9 +95,11 @@ class ObjectiveWidgetState extends State<ObjectiveWidget>{
     if (definition == null) return Container();
     if ((definition?.completionValue ?? 0) <= 1) {
       return Container(
-          padding: EdgeInsets.only(left: 8, right:4),
-          child: Row(
-              children: [Expanded(child:buildTitle(context)), buildCount(context)]));
+          padding: EdgeInsets.only(left: 8, right: 4),
+          child: Row(children: [
+            Expanded(child: buildTitle(context)),
+            buildCount(context)
+          ]));
     }
     return Container(
         margin: EdgeInsets.only(left: 4),
@@ -155,7 +159,10 @@ class ObjectiveWidgetState extends State<ObjectiveWidget>{
     String formattedProgress = formatter.format(progress);
     String formattedTotal = formatter.format(total);
 
-    return Text(total <= 1 ? "$formattedProgress" : "$formattedProgress/$formattedTotal",
+    return Text(
+        total <= 1
+            ? "$formattedProgress"
+            : "$formattedProgress/$formattedTotal",
         style: TextStyle(
             fontWeight: FontWeight.w500,
             fontSize: 13,
@@ -172,7 +179,7 @@ class ObjectiveWidgetState extends State<ObjectiveWidget>{
         color: Colors.blueGrey.shade800,
         alignment: Alignment.centerLeft,
         child: FractionallySizedBox(
-          widthFactor: min(progress / total, 1),
+          widthFactor: max(0.01, min(progress / total, 1)),
           child: Container(color: color),
         ));
   }

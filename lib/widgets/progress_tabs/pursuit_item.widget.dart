@@ -5,24 +5,22 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_objective_definition.dart';
 import 'package:bungie_api/models/destiny_objective_progress.dart';
-
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/screens/item_detail.screen.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/selection/selection.service.dart';
+import 'package:little_light/services/user_settings/user_settings.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
+import 'package:little_light/utils/item_with_owner.dart';
+import 'package:little_light/widgets/common/corner_badge.decoration.dart';
 import 'package:little_light/widgets/common/expiry_date.widget.dart';
+import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/objective.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
-
-
-typedef void OnPursuitTap(
-    DestinyItemComponent item,
-    DestinyInventoryItemDefinition definition,
-    DestinyItemInstanceComponent instanceInfo,
-    String characterId);
 
 class PursuitItemWidget extends StatefulWidget {
   final String characterId;
@@ -31,25 +29,29 @@ class PursuitItemWidget extends StatefulWidget {
   final NotificationService broadcaster = NotificationService();
   final bool includeCharacterIcon;
   final DestinyItemComponent item;
-  final OnPursuitTap onTap;
+  final Function onTap;
+  final Function onLongPress;
+  final bool selectable;
 
   PursuitItemWidget(
       {Key key,
       this.characterId,
       this.item,
       this.includeCharacterIcon = false,
-      this.onTap})
+      this.selectable = false,
+      @required this.onTap,
+      this.onLongPress})
       : super(key: key);
 
   PursuitItemWidgetState createState() => PursuitItemWidgetState();
 }
 
-class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
-    with AutomaticKeepAliveClientMixin {
+class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T> {
   DestinyInventoryItemDefinition definition;
   Map<int, DestinyObjectiveDefinition> objectiveDefinitions;
   List<DestinyObjectiveProgress> itemObjectives;
   StreamSubscription<NotificationEvent> subscription;
+  StreamSubscription<List<ItemWithOwner>> selectionSub;
   bool fullyLoaded = false;
 
   DestinyItemInstanceComponent instanceInfo;
@@ -57,6 +59,11 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
   String get itemInstanceId => widget.item.itemInstanceId;
   int get hash => widget.item.itemHash;
   DestinyItemComponent get item => widget.item;
+
+  bool get selected =>
+      widget.selectable &&
+      SelectionService()
+          .isSelected(ItemWithOwner(widget.item, widget.characterId));
 
   @override
   void initState() {
@@ -68,11 +75,15 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
         updateProgress();
       }
     });
+    selectionSub = SelectionService().broadcaster.listen((event) {
+      if (mounted) setState(() {});
+    });
   }
 
   @override
   dispose() {
     subscription.cancel();
+    selectionSub.cancel();
     super.dispose();
   }
 
@@ -92,7 +103,6 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     if (definition == null) {
       return Container(height: 200, color: Colors.blueGrey.shade900);
     }
@@ -113,34 +123,85 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
             buildMainInfo(context, constraints),
             buildObjectives(context, definition)
           ])),
-      Positioned.fill(
-          child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: () {
-                  if (widget.onTap != null) {
-                    widget.onTap(
-                      item,
-                      definition,
-                      widget.profile.getInstanceInfo(itemInstanceId),
-                      widget.characterId,
-                    );
-                    return;
-                  }
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ItemDetailScreen(
-                        item: item,
-                        definition: definition,
-                        instanceInfo: instanceInfo,
-                        characterId: widget.characterId,
-                      ),
-                    ),
-                  );
-                },
-              )))
+      selected
+          ? Positioned.fill(
+              child: Container(
+              foregroundDecoration: BoxDecoration(
+                  border:
+                      Border.all(color: Colors.lightBlue.shade400, width: 2)),
+            ))
+          : Container(),
+      Positioned.fill(child: buildTapTarget(context))
     ]);
+  }
+
+  Widget buildTapTarget(BuildContext context) {
+    return Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            if (widget.onTap != null) {
+              widget.onTap();
+              return;
+            }
+            onTap(context);
+          },
+          onLongPress: () {
+            if (widget.onLongPress != null) {
+              widget.onLongPress();
+              return;
+            }
+            onLongPress(context);
+          },
+        ));
+  }
+
+  onTap(BuildContext context) {
+    if (widget.selectable && UserSettingsService().tapToSelect) {
+      if (selected) {
+        SelectionService().clear();
+      } else {
+        SelectionService()
+            .setItem(ItemWithOwner(widget.item, widget.characterId));
+      }
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ItemDetailScreen(
+            item: item,
+            definition: definition,
+            instanceInfo: instanceInfo,
+            characterId: widget.characterId,
+          ),
+        ),
+      );
+    }
+  }
+
+  onLongPress(BuildContext context) {
+    if (UserSettingsService().tapToSelect) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ItemDetailScreen(
+            item: item,
+            definition: definition,
+            instanceInfo: instanceInfo,
+            characterId: widget.characterId,
+          ),
+        ),
+      );
+    }
+    if (widget.selectable) {
+      if (selected) {
+        SelectionService().clear();
+      } else {
+        SelectionService()
+            .setItem(ItemWithOwner(widget.item, widget.characterId));
+      }
+      return;
+    }
   }
 
   Widget buildCharacterIcon(BuildContext context) {
@@ -245,16 +306,23 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
     return itemObjectives?.every((o) => o.complete) ?? false;
   }
 
-  @override
-  bool get wantKeepAlive => itemObjectives != null;
-
   buildIcon(BuildContext context) {
-    return Container(
-        foregroundDecoration: BoxDecoration(
-            border: Border.all(width: 2, color: Colors.grey.shade300)),
-        color: DestinyData.getTierColor(definition.inventory.tierType),
-        child: QueuedNetworkImage(
-            imageUrl: BungieApiService.url(definition.displayProperties.icon)));
+    if (isComplete) {
+      return Stack(children: [
+        Positioned.fill(child: ItemIconWidget(item, definition, instanceInfo)),
+        Positioned.fill(
+            child: Container(
+          decoration: CornerBadgeDecoration(colors: [
+            Color.lerp(Colors.amber.shade400, Colors.grey.shade500, .4)
+          ], badgeSize: 28, position: CornerPosition.BottomRight),
+        )),
+        Positioned(
+            right: 2,
+            bottom: 4,
+            child: Icon(FontAwesomeIcons.exclamation, size: 12))
+      ]);
+    }
+    return ItemIconWidget(item, definition, instanceInfo);
   }
 
   Widget buildDescription(BuildContext context) {

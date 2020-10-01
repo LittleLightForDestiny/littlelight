@@ -129,7 +129,8 @@ class ItemIconWidget extends BaseDestinyStatelessItemWidget {
   }
 
   BoxDecoration iconBoxDecoration() {
-    if (item?.bucketHash == InventoryBucket.engrams) {
+    if ([InventoryBucket.engrams, InventoryBucket.subclass]
+        .contains(item.bucketHash)) {
       return null;
     }
     return BoxDecoration(

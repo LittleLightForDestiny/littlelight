@@ -13,11 +13,17 @@ class BountyItemWidget extends PursuitItemWidget {
       {Key key,
       String characterId,
       DestinyItemComponent item,
+      Function onTap,
+      Function onLongPress,
+      bool selectable = false,
       bool includeCharacterIcon: false})
       : super(
             key: key,
             characterId: characterId,
             item: item,
+            onTap: onTap,
+            onLongPress: onLongPress,
+            selectable: selectable,
             includeCharacterIcon: includeCharacterIcon);
 
   BountyItemWidgetState createState() => BountyItemWidgetState();
@@ -97,6 +103,7 @@ class BountyItemWidgetState<T extends BountyItemWidget>
   Widget buildObjective(
       BuildContext context, DestinyObjectiveProgress objective) {
     if (objectiveDefinitions == null) return Container();
+    if (isComplete) return Container();
     var definition = objectiveDefinitions[objective.objectiveHash];
     return SmallObjectiveWidget(
       definition: definition,

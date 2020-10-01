@@ -1,7 +1,24 @@
 import 'package:little_light/models/item_notes_tag.dart';
+import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/storage/storage.service.dart';
+import 'package:little_light/services/user_settings/bucket_display_options.dart';
 import 'package:little_light/services/user_settings/character_sort_parameter.dart';
 import 'package:little_light/services/user_settings/item_sort_parameter.dart';
+import 'package:little_light/utils/remove_diacritics.dart';
+
+const _defaultBucketDisplayOptions = {
+  "${InventoryBucket.engrams}":
+      BucketDisplayOptions(type: BucketDisplayType.Small),
+  "${InventoryBucket.lostItems}":
+      BucketDisplayOptions(type: BucketDisplayType.Small),
+  "${InventoryBucket.consumables}":
+      BucketDisplayOptions(type: BucketDisplayType.Small),
+  "${InventoryBucket.shaders}":
+      BucketDisplayOptions(type: BucketDisplayType.Small),
+  "${InventoryBucket.modifications}":
+      BucketDisplayOptions(type: BucketDisplayType.Small),
+  "pursuits_53_null": BucketDisplayOptions(type: BucketDisplayType.Large),
+};
 
 class UserSettingsService {
   static UserSettingsService _singleton = UserSettingsService._internal();
@@ -11,6 +28,7 @@ class UserSettingsService {
   List<ItemSortParameter> _pursuitOrdering;
   CharacterSortParameter _characterOrdering;
   Set<String> _priorityTags;
+  Map<String, BucketDisplayOptions> _bucketDisplayOptions;
 
   factory UserSettingsService() {
     return _singleton;
@@ -21,6 +39,7 @@ class UserSettingsService {
     await initPursuitOrdering();
     await initCharacterOrdering();
     await initPriorityTags();
+    await initBucketDisplayOptions();
   }
 
   initItemOrdering() async {
@@ -76,6 +95,43 @@ class UserSettingsService {
       return;
     }
     _priorityTags = Set.from(json);
+  }
+
+  initBucketDisplayOptions() async {
+    try {
+      Map<String, dynamic> json =
+          await membershipStorage.getJson(StorageKeys.bucketDisplayOptions);
+      _bucketDisplayOptions = Map();
+      json.forEach((key, value) {
+        _bucketDisplayOptions[key] = BucketDisplayOptions.fromJson(value);
+      });
+    } catch (e) {
+      _bucketDisplayOptions = Map();
+    }
+  }
+
+  BucketDisplayOptions getDisplayOptionsForBucket(String id) {
+    id = removeDiacritics(id ?? "").toLowerCase();
+    if (_bucketDisplayOptions?.containsKey(id) ?? false) {
+      return _bucketDisplayOptions[id];
+    }
+    if (_defaultBucketDisplayOptions?.containsKey(id) ?? false) {
+      return _defaultBucketDisplayOptions[id];
+    }
+    if (id?.startsWith("vault") ?? false) {
+      return BucketDisplayOptions(type: BucketDisplayType.Small);
+    }
+    return BucketDisplayOptions(type: BucketDisplayType.Medium);
+  }
+
+  setDisplayOptionsForBucket(String key, BucketDisplayOptions options) {
+    key = removeDiacritics(key).toLowerCase();
+    _bucketDisplayOptions[key] = options;
+    var json = Map<String, dynamic>();
+    _bucketDisplayOptions.forEach((k, v) {
+      json[k] = v.toJson();
+    });
+    membershipStorage.setJson(StorageKeys.bucketDisplayOptions, json);
   }
 
   bool get hasTappedGhost {

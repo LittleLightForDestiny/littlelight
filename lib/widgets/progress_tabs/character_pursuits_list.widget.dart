@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
-import 'package:bungie_api/models/destiny_item_category_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -10,15 +9,15 @@ import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enu
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/user_settings/bucket_display_options.dart';
 import 'package:little_light/services/user_settings/user_settings.service.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/media_query_helper.dart';
-import 'package:little_light/widgets/common/header.wiget.dart';
-import 'package:little_light/widgets/common/manifest_text.widget.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/item_list/character_info.widget.dart';
 import 'package:little_light/widgets/progress_tabs/bounty_item.widget.dart';
+import 'package:little_light/widgets/progress_tabs/pursuit_category_header.widget.dart';
+import 'package:little_light/widgets/progress_tabs/small_pursuit_item.widget.dart';
 
 class CharacterPursuitsListWidget extends StatefulWidget {
   final String characterId;
@@ -35,19 +34,19 @@ class CharacterPursuitsListWidget extends StatefulWidget {
 enum _PursuitListItemType {
   CharacterInfo,
   Header,
-  Quest,
-  Container,
-  Bounty,
-  Other
+  Pursuit,
 }
 
 class _PursuitListItem {
   final _PursuitListItemType type;
+  final String categoryId;
   final int hash;
   final String label;
   final DestinyItemComponent item;
+  final int count;
 
-  _PursuitListItem(this.type, {this.hash, this.item, this.label});
+  _PursuitListItem(this.type,
+      {this.hash, this.item, this.label, this.count = 0, this.categoryId});
 }
 
 class _CharacterPursuitsListWidgetState
@@ -100,8 +99,7 @@ class _CharacterPursuitsListWidgetState
         return;
       }
       if ((def?.itemCategoryHashes?.contains(1784235469) ?? false) ||
-          (def?.inventory?.stackUniqueLabel?.contains("bounties") ?? false) ||
-          (def?.inventory?.stackUniqueLabel?.contains("story") ?? false)) {
+          (def?.inventory?.stackUniqueLabel?.contains("bounties") ?? false)) {
         bounties.add(p);
         return;
       }
@@ -113,22 +111,30 @@ class _CharacterPursuitsListWidgetState
 
     items = [_PursuitListItem(_PursuitListItemType.CharacterInfo)];
 
-    if (questSteps.length > 0) {
-      items.add(_PursuitListItem(_PursuitListItemType.Header, hash: 53));
-      items.addAll(questSteps
-          .map((q) => _PursuitListItem(_PursuitListItemType.Quest, item: q)));
-    }
     if (bounties.length > 0) {
-      items
-          .add(_PursuitListItem(_PursuitListItemType.Header, hash: 1784235469));
-      items.addAll(bounties
-          .map((q) => _PursuitListItem(_PursuitListItemType.Bounty, item: q)));
+      items.add(_PursuitListItem(_PursuitListItemType.Header,
+          hash: 1784235469, count: bounties.length));
+      items.addAll(bounties.map((q) => _PursuitListItem(
+          _PursuitListItemType.Pursuit,
+          item: q,
+          categoryId: "pursuits_1784235469_null")));
+    }
+
+    if (questSteps.length > 0) {
+      items.add(_PursuitListItem(_PursuitListItemType.Header,
+          hash: 53, count: questSteps.length));
+      items.addAll(questSteps.map((q) => _PursuitListItem(
+          _PursuitListItemType.Pursuit,
+          item: q,
+          categoryId: "pursuits_53_null")));
     }
 
     other.forEach((k, v) {
-      items.add(_PursuitListItem(_PursuitListItemType.Header, label: k));
+      items.add(_PursuitListItem(_PursuitListItemType.Header,
+          label: k, count: v.length));
       v.forEach((p) {
-        items.add(_PursuitListItem(_PursuitListItemType.Other, item: p));
+        items.add(_PursuitListItem(_PursuitListItemType.Pursuit,
+            item: p, categoryId: "pursuits_null_$k"));
       });
     });
 
@@ -158,6 +164,7 @@ class _CharacterPursuitsListWidgetState
 
   StaggeredTile tileBuilder(BuildContext context, int index) {
     var item = items[index];
+    var isDesktop = MediaQueryHelper(context).isDesktop;
     var isTablet = MediaQueryHelper(context).tabletOrBigger;
     switch (item.type) {
       case _PursuitListItemType.CharacterInfo:
@@ -166,19 +173,40 @@ class _CharacterPursuitsListWidgetState
       case _PursuitListItemType.Header:
         return StaggeredTile.extent(30, 40);
         break;
-      case _PursuitListItemType.Quest:
-        if (isTablet) {
-          return StaggeredTile.extent(10, 150);
+      case _PursuitListItemType.Pursuit:
+        var options = UserSettingsService()
+            .getDisplayOptionsForBucket(item.categoryId ?? "pursuits");
+        switch (options.type) {
+          case BucketDisplayType.Hidden:
+          case BucketDisplayType.OnlyEquipped:
+            return StaggeredTile.extent(1, 1);
+            break;
+          case BucketDisplayType.Large:
+            if (isDesktop) {
+              return StaggeredTile.extent(10, 150);
+            }
+            if (isTablet) {
+              return StaggeredTile.extent(15, 150);
+            }
+            return StaggeredTile.extent(30, 150);
+          case BucketDisplayType.Medium:
+            if (isDesktop) {
+              return StaggeredTile.extent(5, 132);
+            }
+            if (isTablet) {
+              return StaggeredTile.extent(6, 132);
+            }
+            return StaggeredTile.extent(15, 132);
+          case BucketDisplayType.Small:
+            if (isDesktop) {
+              return StaggeredTile.count(2, 2);
+            }
+            if (isTablet) {
+              return StaggeredTile.count(3, 3);
+            }
+            return StaggeredTile.count(6, 6);
+            break;
         }
-        return StaggeredTile.extent(30, 150);
-
-      case _PursuitListItemType.Container:
-      case _PursuitListItemType.Bounty:
-      case _PursuitListItemType.Other:
-        if (isTablet) {
-          return StaggeredTile.extent(6, 132);
-        }
-        return StaggeredTile.extent(15, 132);
     }
     return StaggeredTile.count(3, 2);
   }
@@ -193,40 +221,35 @@ class _CharacterPursuitsListWidgetState
         );
         break;
       case _PursuitListItemType.Header:
-        Widget field;
-        TextStyle style = TextStyle(fontWeight: FontWeight.bold);
-        if (item.hash != null) {
-          field = ManifestText<DestinyItemCategoryDefinition>(
-            item.hash,
-            uppercase: true,
-            style: style,
-          );
-        } else if ((item.label?.length ?? 0) > 0) {
-          field = Text(
-            item.label.toUpperCase(),
-            style: style,
-          );
-        } else {
-          field = TranslatedTextWidget(
-            "Other",
-            uppercase: true,
-            style: style,
-          );
-        }
-        return HeaderWidget(
-          child: field,
-          alignment: Alignment.centerLeft,
+        return PursuitCategoryHeaderWidget(
+          hash: item.hash,
+          label: item.label,
+          itemCount: item.count,
+          onChanged: () {
+            setState(() {});
+          },
         );
         break;
-      case _PursuitListItemType.Quest:
-      case _PursuitListItemType.Other:
-      case _PursuitListItemType.Container:
-      case _PursuitListItemType.Bounty:
+      case _PursuitListItemType.Pursuit:
+        var options = UserSettingsService()
+            .getDisplayOptionsForBucket(item.categoryId ?? "pursuits");
+        if (options.type == BucketDisplayType.Hidden) {
+          return Container();
+        }
+        if (options.type == BucketDisplayType.Small) {
+          return SmallPursuitItemWidget(
+              characterId: widget.characterId,
+              item: item.item,
+              selectable: true,
+              key: Key(
+                  "pursuits_${item.item?.itemHash}_${item.item?.itemInstanceId}_${widget.characterId}"));
+        }
         return BountyItemWidget(
             characterId: widget.characterId,
             item: item.item,
+            selectable: true,
             key: Key(
-                "pursuit_${item.item?.itemHash}_${item.item?.itemInstanceId}_${widget.characterId}"));
+                "pursuits_${item.item?.itemHash}_${item.item?.itemInstanceId}_${widget.characterId}"));
     }
 
     return Container();

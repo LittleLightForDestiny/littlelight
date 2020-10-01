@@ -24,9 +24,8 @@ class SmallObjectiveWidget extends ObjectiveWidget {
             placeholder: placeholder,
             parentCompleted: parentCompleted);
 
-    @override
+  @override
   State<StatefulWidget> createState() {
-    
     return SmallObjectiveWidgetState();
   }
 }
@@ -34,7 +33,12 @@ class SmallObjectiveWidget extends ObjectiveWidget {
 class SmallObjectiveWidgetState extends ObjectiveWidgetState {
   @override
   Widget build(BuildContext context) {
-    return Column(children: [buildCount(context), buildProgressBar(context), Container(height:2), buildTitle(context)]);
+    return Column(children: [
+      buildCount(context),
+      buildProgressBar(context),
+      Container(height: 2),
+      buildTitle(context)
+    ]);
   }
 
   bool get isComplete {
@@ -44,11 +48,14 @@ class SmallObjectiveWidgetState extends ObjectiveWidgetState {
   buildCount(BuildContext context) {
     int progress = objective?.progress ?? 0;
     int total = definition.completionValue ?? 0;
-    if (total <= 1) return Text("",
-    style: TextStyle(
+    if (total <= 1)
+      return Text(
+        "",
+        style: TextStyle(
             fontWeight: FontWeight.w500,
             fontSize: 10,
-            color: this.color ?? Colors.grey.shade300),);
+            color: this.color ?? Colors.grey.shade300),
+      );
     if (!definition.allowOvercompletion) {
       progress = min(total, progress);
     }
@@ -56,7 +63,7 @@ class SmallObjectiveWidgetState extends ObjectiveWidgetState {
     if (forceComplete) {
       progress = total;
     }
-    var percent = (progress/total*100).round();
+    var percent = (progress / total * 100).round();
     return Text("$percent%",
         softWrap: false,
         overflow: TextOverflow.clip,
@@ -73,10 +80,12 @@ class SmallObjectiveWidgetState extends ObjectiveWidgetState {
         height: 4,
         color: Colors.blueGrey.shade700,
         alignment: Alignment.centerLeft,
-        child: FractionallySizedBox(
-          widthFactor: min(progress / total, 1),
-          child: Container(color: barColor),
-        ));
+        child: progress <= 0
+            ? Container()
+            : FractionallySizedBox(
+                widthFactor: max(0.01, min(progress / total, 1)),
+                child: Container(color: barColor),
+              ));
   }
 
   buildTitle(BuildContext context) {

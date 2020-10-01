@@ -7,11 +7,11 @@ mixin MinimalInfoLabelMixin on InventoryItemMixin {
         bottom: iconBorderWidth,
         right: iconBorderWidth,
         left: iconBorderWidth,
-        child: Column(children: [
-          Container(
-              color: Colors.black.withOpacity(.5),
-              padding: EdgeInsets.all(padding),
-              child: child)
-        ]));
+        child: Container(
+            alignment: Alignment.bottomRight,
+            child: Container(
+                color: Colors.black.withOpacity(.5),
+                padding: EdgeInsets.all(padding),
+                child: child)));
   }
 }

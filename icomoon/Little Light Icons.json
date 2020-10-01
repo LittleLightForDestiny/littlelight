@@ -1,47 +1,297 @@
 {
   "metadata": {
     "name": "Little Light Icons",
-    "lastOpened": 1596230085215,
+    "lastOpened": 1596231270153,
     "created": 1596228885379
   },
   "iconSets": [
     {
       "selection": [
         {
-          "order": 0,
+          "order": 53,
+          "id": 5,
+          "name": "icon_display_options_equipped_only"
+        },
+        {
+          "order": 54,
+          "id": 4,
+          "name": "icon_display_options_equipped_with_medium"
+        },
+        {
+          "order": 55,
+          "id": 3,
+          "name": "icon_display_options_equipped_with_small"
+        },
+        {
+          "order": 56,
+          "id": 2,
+          "name": "icon_display_options_list"
+        },
+        {
+          "order": 57,
+          "id": 1,
+          "name": "icon_display_options_only_medium"
+        },
+        {
+          "order": 58,
+          "id": 0,
+          "name": "icon_display_options_small_only"
+        }
+      ],
+      "id": 11,
+      "metadata": {
+        "name": "display options",
+        "importSize": {
+          "width": 24,
+          "height": 24
+        }
+      },
+      "height": 1024,
+      "prevSize": 32,
+      "icons": [
+        {
+          "id": 5,
+          "paths": [
+            "M42.667 85.333h938.667v256h-938.667zM85.333 298.667h170.667v-170.667h-170.667z"
+          ],
+          "attrs": [
+            {}
+          ],
+          "isMulticolor": false,
+          "isMulticolor2": false,
+          "grid": 0,
+          "tags": [
+            "icon_display_options_equipped_only"
+          ]
+        },
+        {
+          "id": 4,
+          "paths": [
+            "M42.667 128h938.667v256h-938.667zM85.333 341.333h170.667v-170.667h-170.667z",
+            "M42.667 426.667h281.6v213.333h-281.6zM85.333 597.333h128v-128h-128z",
+            "M371.2 426.667h281.6v213.333h-281.6zM413.867 597.333h128v-128h-128z",
+            "M699.733 426.667h281.6v213.333h-281.6zM742.4 597.333h128v-128h-128z",
+            "M42.667 682.667h281.6v213.333h-281.6zM85.333 853.333h128v-128h-128z",
+            "M371.2 682.667h281.6v213.333h-281.6zM413.867 853.333h128v-128h-128z",
+            "M699.733 682.667h281.6v213.333h-281.6zM742.4 853.333h128v-128h-128z"
+          ],
+          "attrs": [
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {}
+          ],
+          "isMulticolor": false,
+          "isMulticolor2": false,
+          "grid": 0,
+          "tags": [
+            "icon_display_options_equipped_with_medium"
+          ]
+        },
+        {
+          "id": 3,
+          "paths": [
+            "M42.667 85.333h938.667v256h-938.667zM85.333 298.667h170.667v-170.667h-170.667z",
+            "M42.667 384h153.6v153.6h-153.6v-153.6z",
+            "M238.933 384h153.6v153.6h-153.6v-153.6z",
+            "M435.2 384h153.6v153.6h-153.6v-153.6z",
+            "M631.467 384h153.6v153.6h-153.6v-153.6z",
+            "M827.733 384h153.6v153.6h-153.6v-153.6z",
+            "M42.667 584.533h153.6v153.6h-153.6v-153.6z",
+            "M238.933 584.533h153.6v153.6h-153.6v-153.6z",
+            "M435.2 584.533h153.6v153.6h-153.6v-153.6z",
+            "M631.467 584.533h153.6v153.6h-153.6v-153.6z",
+            "M827.733 584.533h153.6v153.6h-153.6v-153.6z",
+            "M42.667 785.067h153.6v153.6h-153.6v-153.6z",
+            "M238.933 785.067h153.6v153.6h-153.6v-153.6z",
+            "M435.2 785.067h153.6v153.6h-153.6v-153.6z",
+            "M631.467 785.067h153.6v153.6h-153.6v-153.6z",
+            "M827.733 785.067h153.6v153.6h-153.6v-153.6z"
+          ],
+          "attrs": [
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {}
+          ],
+          "isMulticolor": false,
+          "isMulticolor2": false,
+          "grid": 0,
+          "tags": [
+            "icon_display_options_equipped_with_small"
+          ]
+        },
+        {
+          "id": 2,
+          "paths": [
+            "M42.667 85.333h938.667v256h-938.667zM85.333 298.667h170.667v-170.667h-170.667z",
+            "M42.667 384h938.667v256h-938.667zM85.333 597.333h170.667v-170.667h-170.667z",
+            "M42.667 682.667h938.667v256h-938.667zM85.333 896h170.667v-170.667h-170.667z"
+          ],
+          "attrs": [
+            {},
+            {},
+            {}
+          ],
+          "isMulticolor": false,
+          "isMulticolor2": false,
+          "grid": 0,
+          "tags": [
+            "icon_display_options_list"
+          ]
+        },
+        {
+          "id": 1,
+          "paths": [
+            "M42.667 426.667h281.6v213.333h-281.6zM85.333 597.333h128v-128h-128z",
+            "M371.2 426.667h281.6v213.333h-281.6zM413.867 597.333h128v-128h-128z",
+            "M699.733 426.667h281.6v213.333h-281.6zM742.4 597.333h128v-128h-128z",
+            "M42.667 682.667h281.6v213.333h-281.6zM85.333 853.333h128v-128h-128z",
+            "M371.2 682.667h281.6v213.333h-281.6zM413.867 853.333h128v-128h-128z",
+            "M699.733 682.667h281.6v213.333h-281.6zM742.4 853.333h128v-128h-128z",
+            "M42.667 170.667h281.6v213.333h-281.6zM85.333 341.333h128v-128h-128z",
+            "M371.2 170.667h281.6v213.333h-281.6zM413.867 341.333h128v-128h-128z",
+            "M699.733 170.667h281.6v213.333h-281.6zM742.4 341.333h128v-128h-128z"
+          ],
+          "attrs": [
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {}
+          ],
+          "isMulticolor": false,
+          "isMulticolor2": false,
+          "grid": 0,
+          "tags": [
+            "icon_display_options_only_medium"
+          ]
+        },
+        {
+          "id": 0,
+          "paths": [
+            "M42.667 324.267h153.6v153.6h-153.6v-153.6z",
+            "M238.933 324.267h153.6v153.6h-153.6v-153.6z",
+            "M435.2 324.267h153.6v153.6h-153.6v-153.6z",
+            "M631.467 324.267h153.6v153.6h-153.6v-153.6z",
+            "M827.733 324.267h153.6v153.6h-153.6v-153.6z",
+            "M42.667 524.8h153.6v153.6h-153.6v-153.6z",
+            "M238.933 524.8h153.6v153.6h-153.6v-153.6z",
+            "M435.2 524.8h153.6v153.6h-153.6v-153.6z",
+            "M631.467 524.8h153.6v153.6h-153.6v-153.6z",
+            "M827.733 524.8h153.6v153.6h-153.6v-153.6z",
+            "M42.667 725.333h153.6v153.6h-153.6v-153.6z",
+            "M238.933 725.333h153.6v153.6h-153.6v-153.6z",
+            "M435.2 725.333h153.6v153.6h-153.6v-153.6z",
+            "M631.467 725.333h153.6v153.6h-153.6v-153.6z",
+            "M827.733 725.333h153.6v153.6h-153.6v-153.6z",
+            "M42.667 128h153.6v153.6h-153.6v-153.6z",
+            "M238.933 128h153.6v153.6h-153.6v-153.6z",
+            "M435.2 128h153.6v153.6h-153.6v-153.6z",
+            "M631.467 128h153.6v153.6h-153.6v-153.6z",
+            "M827.733 128h153.6v153.6h-153.6v-153.6z"
+          ],
+          "attrs": [
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {}
+          ],
+          "isMulticolor": false,
+          "isMulticolor2": false,
+          "grid": 0,
+          "tags": [
+            "icon_display_options_small_only"
+          ]
+        }
+      ],
+      "invisible": false,
+      "colorThemes": []
+    },
+    {
+      "selection": [
+        {
+          "order": 2,
           "id": 1,
           "name": "mobility",
-          "prevSize": 32
+          "prevSize": 32,
+          "code": 59672,
+          "tempChar": ""
         },
         {
-          "order": 0,
+          "order": 3,
           "id": 4,
           "name": "resilience",
-          "prevSize": 32
+          "prevSize": 32,
+          "code": 59673,
+          "tempChar": ""
         },
         {
-          "order": 0,
+          "order": 4,
           "id": 5,
           "name": "recovery",
-          "prevSize": 32
+          "prevSize": 32,
+          "code": 59674,
+          "tempChar": ""
         },
         {
-          "order": 0,
+          "order": 5,
           "id": 3,
           "name": "intellect",
-          "prevSize": 32
+          "prevSize": 32,
+          "code": 59675,
+          "tempChar": ""
         },
         {
-          "order": 0,
+          "order": 6,
           "id": 0,
           "name": "discipline",
-          "prevSize": 32
+          "prevSize": 32,
+          "code": 59676,
+          "tempChar": ""
         },
         {
-          "order": 0,
+          "order": 7,
           "id": 2,
           "name": "strength",
-          "prevSize": 32
+          "prevSize": 32,
+          "code": 59677,
+          "tempChar": ""
         }
       ],
       "id": 10,
@@ -177,19 +427,28 @@
     {
       "selection": [
         {
-          "order": 0,
+          "order": 8,
           "id": 1,
-          "name": "pierce"
+          "name": "pierce",
+          "prevSize": 32,
+          "code": 59678,
+          "tempChar": ""
         },
         {
-          "order": 0,
+          "order": 9,
           "id": 2,
-          "name": "overload"
+          "name": "overload",
+          "prevSize": 32,
+          "code": 59679,
+          "tempChar": ""
         },
         {
-          "order": 0,
+          "order": 10,
           "id": 0,
-          "name": "stagger"
+          "name": "stagger",
+          "prevSize": 32,
+          "code": 59680,
+          "tempChar": ""
         }
       ],
       "id": 9,
@@ -256,114 +515,159 @@
     {
       "selection": [
         {
-          "order": 0,
+          "order": 11,
           "id": 7,
           "name": "infuse",
           "prevSize": 32,
           "code": 59648,
-          "tempChar": ""
+          "tempChar": ""
         },
         {
           "id": 4,
-          "order": 0,
+          "order": 12,
           "ligatures": "",
           "prevSize": 32,
           "code": 59669,
           "name": "vanguard",
-          "tempChar": ""
+          "tempChar": ""
         },
         {
-          "order": 0,
+          "order": 13,
           "id": 13,
-          "name": "vanguard2"
+          "name": "vanguard2",
+          "prevSize": 32,
+          "code": 59681,
+          "tempChar": ""
         },
         {
           "id": 5,
-          "order": 0,
+          "order": 14,
           "ligatures": "",
           "prevSize": 32,
           "code": 59670,
           "name": "crucible",
-          "tempChar": ""
+          "tempChar": ""
         },
         {
-          "order": 0,
+          "order": 15,
           "id": 9,
-          "name": "crucible2"
+          "name": "crucible2",
+          "prevSize": 32,
+          "code": 59682,
+          "tempChar": ""
         },
         {
           "id": 6,
-          "order": 0,
+          "order": 16,
           "ligatures": "",
           "prevSize": 32,
           "code": 59671,
           "name": "bungie",
+          "tempChar": ""
+        },
+        {
+          "order": 17,
+          "id": 18,
+          "name": "gambit",
+          "prevSize": 32,
+          "code": 59683,
+          "tempChar": ""
+        },
+        {
+          "order": 18,
+          "id": 8,
+          "name": "raid",
+          "prevSize": 32,
+          "code": 59684,
+          "tempChar": ""
+        },
+        {
+          "order": 19,
+          "id": 10,
+          "name": "ironbanner",
+          "prevSize": 32,
+          "code": 59685,
+          "tempChar": ""
+        },
+        {
+          "order": 20,
+          "id": 11,
+          "name": "osiris",
+          "prevSize": 32,
+          "code": 59686,
+          "tempChar": ""
+        },
+        {
+          "order": 21,
+          "id": 22,
+          "name": "gambit_sentry",
+          "prevSize": 32,
+          "code": 59687,
+          "tempChar": ""
+        },
+        {
+          "order": 22,
+          "id": 21,
+          "name": "gambit_reaper",
+          "prevSize": 32,
+          "code": 59688,
+          "tempChar": ""
+        },
+        {
+          "order": 23,
+          "id": 20,
+          "name": "gambit_invader",
+          "prevSize": 32,
+          "code": 59689,
+          "tempChar": ""
+        },
+        {
+          "order": 24,
+          "id": 19,
+          "name": "gambit_collector",
+          "prevSize": 32,
+          "code": 59690,
+          "tempChar": ""
+        },
+        {
+          "order": 25,
+          "id": 14,
+          "name": "blocker_small",
+          "prevSize": 32,
+          "code": 59691,
+          "tempChar": ""
+        },
+        {
+          "order": 26,
+          "id": 15,
+          "name": "blocker_medium",
+          "prevSize": 32,
+          "code": 59692,
           "tempChar": ""
         },
         {
-          "order": 0,
-          "id": 18,
-          "name": "gambit"
-        },
-        {
-          "order": 0,
-          "id": 8,
-          "name": "raid"
-        },
-        {
-          "order": 0,
-          "id": 10,
-          "name": "ironbanner"
-        },
-        {
-          "order": 0,
-          "id": 11,
-          "name": "osiris"
-        },
-        {
-          "order": 0,
-          "id": 22,
-          "name": "gambit_sentry"
-        },
-        {
-          "order": 0,
-          "id": 21,
-          "name": "gambit_reaper"
-        },
-        {
-          "order": 0,
-          "id": 20,
-          "name": "gambit_invader"
-        },
-        {
-          "order": 0,
-          "id": 19,
-          "name": "gambit_collector"
-        },
-        {
-          "order": 0,
-          "id": 14,
-          "name": "blocker_small"
-        },
-        {
-          "order": 0,
-          "id": 15,
-          "name": "blocker_medium"
-        },
-        {
-          "order": 0,
+          "order": 27,
           "id": 16,
-          "name": "blocker_large"
+          "name": "blocker_large",
+          "prevSize": 32,
+          "code": 59693,
+          "tempChar": ""
         },
         {
-          "order": 0,
+          "order": 28,
           "id": 17,
-          "name": "blocker_giant"
+          "name": "blocker_giant",
+          "prevSize": 32,
+          "code": 59694,
+          "tempChar": ""
         },
         {
-          "order": 0,
+          "order": 29,
           "id": 23,
-          "name": "resources"
+          "name": "resources",
+          "prevSize": 32,
+          "code": 59695,
+          "tempChar": ""
         }
       ],
       "id": 8,
@@ -1268,39 +1572,39 @@
       "selection": [
         {
           "id": 0,
-          "order": 0,
+          "order": 30,
           "ligatures": "",
           "prevSize": 32,
           "code": 59665,
           "name": "leviathan_axes",
-          "tempChar": ""
+          "tempChar": ""
         },
         {
           "id": 1,
-          "order": 0,
+          "order": 31,
           "ligatures": "",
           "prevSize": 32,
           "code": 59666,
           "name": "leviathan_cup",
-          "tempChar": ""
+          "tempChar": ""
         },
         {
           "id": 2,
-          "order": 0,
+          "order": 32,
           "ligatures": "",
           "prevSize": 32,
           "code": 59667,
           "name": "leviathan_dogs",
-          "tempChar": ""
+          "tempChar": ""
         },
         {
           "id": 3,
-          "order": 0,
+          "order": 33,
           "ligatures": "",
           "prevSize": 32,
           "code": 59668,
           "name": "leviathan_sun",
-          "tempChar": ""
+          "tempChar": ""
         }
       ],
       "id": 7,
@@ -1373,30 +1677,30 @@
       "selection": [
         {
           "id": 4,
-          "order": 0,
+          "order": 34,
           "ligatures": "",
           "prevSize": 32,
           "code": 59662,
           "name": "ammo_primary",
-          "tempChar": ""
+          "tempChar": ""
         },
         {
           "id": 5,
-          "order": 0,
+          "order": 35,
           "ligatures": "",
           "prevSize": 32,
           "code": 59663,
           "name": "ammo_special",
-          "tempChar": ""
+          "tempChar": ""
         },
         {
           "id": 6,
-          "order": 0,
+          "order": 36,
           "ligatures": "",
           "prevSize": 32,
           "code": 59664,
           "name": "ammo_heavy",
-          "tempChar": ""
+          "tempChar": ""
         }
       ],
       "id": 6,
@@ -1455,39 +1759,39 @@
       "selection": [
         {
           "id": 0,
-          "order": 0,
+          "order": 37,
           "ligatures": "",
           "prevSize": 32,
           "code": 59658,
           "name": "damage_kinetic",
-          "tempChar": ""
+          "tempChar": ""
         },
         {
           "id": 1,
-          "order": 0,
+          "order": 38,
           "ligatures": "",
           "prevSize": 32,
           "code": 59659,
           "name": "damage_arc",
-          "tempChar": ""
+          "tempChar": ""
         },
         {
           "id": 2,
-          "order": 0,
+          "order": 39,
           "ligatures": "",
           "prevSize": 32,
           "code": 59660,
           "name": "damage_solar",
-          "tempChar": ""
+          "tempChar": ""
         },
         {
           "id": 3,
-          "order": 0,
+          "order": 40,
           "ligatures": "",
           "prevSize": 32,
           "code": 59661,
           "name": "damage_void",
-          "tempChar": ""
+          "tempChar": ""
         }
       ],
       "id": 5,
@@ -1560,48 +1864,48 @@
       "selection": [
         {
           "id": 2,
-          "order": 0,
+          "order": 41,
           "ligatures": "",
           "prevSize": 32,
           "code": 59654,
           "name": "platform_xbox",
-          "tempChar": ""
+          "tempChar": ""
         },
         {
           "id": 3,
-          "order": 0,
+          "order": 42,
           "ligatures": "",
           "prevSize": 32,
           "code": 59655,
           "name": "platform_playstation",
-          "tempChar": ""
+          "tempChar": ""
         },
         {
           "id": 1,
-          "order": 0,
+          "order": 43,
           "ligatures": "",
           "prevSize": 32,
           "code": 59649,
           "name": "platform_steam",
-          "tempChar": ""
+          "tempChar": ""
         },
         {
           "id": 4,
-          "order": 0,
+          "order": 44,
           "ligatures": "",
           "prevSize": 32,
           "code": 59656,
           "name": "platform_blizzard",
-          "tempChar": ""
+          "tempChar": ""
         },
         {
           "id": 0,
-          "order": 0,
+          "order": 45,
           "ligatures": "",
           "prevSize": 32,
           "code": 59413,
           "name": "platform_stadia",
-          "tempChar": ""
+          "tempChar": ""
         }
       ],
       "id": 4,
@@ -1688,30 +1992,30 @@
       "selection": [
         {
           "id": 0,
-          "order": 0,
+          "order": 46,
           "ligatures": "",
           "prevSize": 32,
           "code": 59650,
           "name": "class_titan",
-          "tempChar": ""
+          "tempChar": ""
         },
         {
           "id": 1,
-          "order": 0,
+          "order": 47,
           "ligatures": "",
           "prevSize": 32,
           "code": 59651,
           "name": "class_hunter",
-          "tempChar": ""
+          "tempChar": ""
         },
         {
           "id": 2,
-          "order": 0,
+          "order": 48,
           "ligatures": "",
           "prevSize": 32,
           "code": 59657,
           "name": "class_warlock",
-          "tempChar": ""
+          "tempChar": ""
         }
       ],
       "id": 3,
@@ -1771,35 +2075,35 @@
       "selection": [
         {
           "id": 1,
-          "order": 0,
+          "order": 49,
           "ligatures": "",
           "prevSize": 32,
           "code": 59407,
           "name": "ghost",
-          "tempChar": ""
+          "tempChar": ""
         },
         {
           "id": 6,
-          "order": 0,
+          "order": 50,
           "ligatures": "",
           "prevSize": 32,
           "code": 59652,
           "name": "destiny",
-          "tempChar": ""
+          "tempChar": ""
         },
         {
           "id": 7,
-          "order": 0,
+          "order": 51,
           "ligatures": "",
           "prevSize": 32,
           "code": 59653,
           "name": "power",
-          "tempChar": ""
+          "tempChar": ""
         }
       ],
       "id": 2,
       "metadata": {
-        "name": "DestinyIcons"
+        "name": "general"
       },
       "height": 1024,
       "prevSize": 32,
@@ -1846,7 +2150,8 @@
           "grid": 0,
           "attrs": []
         }
-      ]
+      ],
+      "colorThemes": []
     }
   ],
   "preferences": {
@@ -1857,13 +2162,23 @@
     "fontPref": {
       "prefix": "icon-",
       "metadata": {
-        "fontFamily": "icomoon"
+        "fontFamily": "LittleLightIcons",
+        "majorVersion": 1,
+        "minorVersion": 0
       },
       "metrics": {
         "emSize": 1024,
-        "baseline": 15
+        "baseline": 15,
+        "whitespace": 0
       },
-      "embed": false
+      "embed": false,
+      "noie8": true,
+      "ie7": false,
+      "showSelector": false,
+      "flutter": true,
+      "showMetrics": false,
+      "showMetadata": false,
+      "showVersion": false
     },
     "imagePref": {
       "prefix": "icon-",

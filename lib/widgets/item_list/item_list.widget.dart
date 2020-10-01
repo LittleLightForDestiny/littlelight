@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:bungie_api/enums/bucket_scope.dart';
 import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
@@ -10,6 +9,8 @@ import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enu
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/user_settings/bucket_display_options.dart';
+import 'package:little_light/services/user_settings/user_settings.service.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/media_query_helper.dart';
@@ -19,20 +20,22 @@ import 'package:shimmer/shimmer.dart';
 import 'bucket_header.widget.dart';
 import 'items/inventory_item_wrapper.widget.dart';
 
+const _fullWidthBuckets = [
+  InventoryBucket.consumables,
+  InventoryBucket.shaders,
+  InventoryBucket.modifications,
+  InventoryBucket.lostItems,
+  InventoryBucket.engrams
+];
+
+const _suppressEmptySpaces = [
+  InventoryBucket.consumables,
+  InventoryBucket.shaders,
+  InventoryBucket.modifications,
+  InventoryBucket.lostItems
+];
+
 class ItemListWidget extends StatefulWidget {
-  final List<int> minimalDensityBucketHashes = [
-    InventoryBucket.lostItems,
-    InventoryBucket.engrams,
-    InventoryBucket.consumables,
-    InventoryBucket.shaders,
-    InventoryBucket.modifications
-  ];
-  final suppressEmptySpaces = [
-    InventoryBucket.consumables,
-    InventoryBucket.shaders,
-    InventoryBucket.modifications,
-    InventoryBucket.lostItems
-  ];
   final String characterId;
   final ManifestService manifest = new ManifestService();
   final ProfileService profile = new ProfileService();
@@ -71,7 +74,10 @@ class ItemListWidgetState extends State<ItemListWidget>
   StreamSubscription<NotificationEvent> subscription;
 
   bool suppressEmptySpaces(bucketHash) =>
-      widget.suppressEmptySpaces?.contains(bucketHash) ?? false;
+      _suppressEmptySpaces?.contains(bucketHash) ?? false;
+
+  bool isFullWidthBucket(bucketHash) =>
+      _fullWidthBuckets?.contains(bucketHash) ?? false;
 
   @override
   void initState() {
@@ -174,22 +180,12 @@ class ItemListWidgetState extends State<ItemListWidget>
       staggeredTileBuilder: (int index) => getTileBuilder(index, listIndex),
       mainAxisSpacing: 2,
       crossAxisSpacing: 2,
+      padding: widget.shrinkWrap ? null : EdgeInsets.only(bottom: 100),
       controller: controller,
       physics: widget.shrinkWrap
           ? NeverScrollableScrollPhysics()
           : AlwaysScrollableScrollPhysics(),
     );
-  }
-
-  int getMinimalItemsPerRow(BuildContext context) {
-    var helper = MediaQueryHelper(context);
-    if (helper.isDesktop) {
-      return 15;
-    }
-    if (helper.tabletOrBigger) {
-      return 10;
-    }
-    return 5;
   }
 
   List<ListItem> getListIndex(BuildContext context) {
@@ -223,19 +219,13 @@ class ItemListWidgetState extends State<ItemListWidget>
             bucketHash: b.bucketHash, itemComponent: i));
       });
 
-      if (suppressEmptySpaces(b.bucketHash)) {
-        var itemsPerRow = getMinimalItemsPerRow(context);
-        bucketSize =
-            max((itemCount / itemsPerRow).ceil() * itemsPerRow, itemsPerRow);
-      }
-
       var emptyItems = bucketSize - itemCount;
       for (var i = 0; i < emptyItems; i++) {
         list.add(new ListItem(ListItem.unequippedItem, null,
             bucketHash: b.bucketHash));
       }
 
-      list.add(new ListItem(ListItem.spacer, null));
+      list.add(new ListItem(ListItem.spacer, null, bucketHash: b.bucketHash));
     });
     if (!widget.shrinkWrap) {
       list.add(new ListItem(ListItem.spacer, null));
@@ -247,32 +237,76 @@ class ItemListWidgetState extends State<ItemListWidget>
 
   StaggeredTile getTileBuilder(int index, List<ListItem> listIndex) {
     ListItem item = listIndex[index];
+    var options = getBucketOptions(item);
     switch (item?.type) {
       case ListItem.infoHeader:
         return StaggeredTile.extent(30, 112);
       case ListItem.bucketHeader:
         return StaggeredTile.extent(30, 40);
       case ListItem.equippedItem:
+        if (options.type == BucketDisplayType.Hidden) {
+          return StaggeredTile.extent(30, 0);
+        }
         return StaggeredTile.extent(30, 96);
       case ListItem.unequippedItem:
-        if (item.bucketHash == InventoryBucket.subclass) {
-          return StaggeredTile.extent(10, 76);
+        if (item?.hash == null && suppressEmptySpaces(item?.bucketHash)) {
+          return StaggeredTile.extent(1, 0);
         }
+        switch (options.type) {
+          case BucketDisplayType.Hidden:
+          case BucketDisplayType.OnlyEquipped:
+            return StaggeredTile.extent(1, 0);
+          case BucketDisplayType.Large:
+            if (item.hash == null) {
+              var previous = listIndex[index - 1];
+              if (previous?.hash == null) {
+                return StaggeredTile.extent(1, 0);
+              }
+            }
+            if (MediaQueryHelper(context).isDesktop &&
+                isFullWidthBucket(item.bucketHash)) {
+              return StaggeredTile.extent(10, 96);
+            }
+            if ((MediaQueryHelper(context).tabletOrBigger ||
+                    MediaQueryHelper(context).isLandscape) &&
+                isFullWidthBucket(item.bucketHash)) {
+              return StaggeredTile.extent(15, 96);
+            }
+            return StaggeredTile.extent(30, 96);
+          case BucketDisplayType.Medium:
+            if (MediaQueryHelper(context).isDesktop &&
+                isFullWidthBucket(item.bucketHash)) {
+              return StaggeredTile.extent(5, 76);
+            }
+            if ((MediaQueryHelper(context).tabletOrBigger ||
+                    MediaQueryHelper(context).isLandscape) &&
+                isFullWidthBucket(item.bucketHash)) {
+              return StaggeredTile.extent(6, 76);
+            }
+            return StaggeredTile.extent(10, 76);
+          case BucketDisplayType.Small:
+            if (MediaQueryHelper(context).isDesktop) {
+              if (isFullWidthBucket(item.bucketHash)) {
+                return StaggeredTile.count(2, 2);
+              }
+              return StaggeredTile.count(3, 3);
+            }
+            if ((MediaQueryHelper(context).tabletOrBigger ||
+                    MediaQueryHelper(context).isLandscape) &&
+                isFullWidthBucket(item.bucketHash)) {
+              return StaggeredTile.count(3, 3);
+            }
+            return StaggeredTile.count(6, 6);
+        }
+        break;
 
-        if (widget.minimalDensityBucketHashes.contains(item.bucketHash)) {
-          if (MediaQueryHelper(context).isDesktop) {
-            return StaggeredTile.count(2, 2);
-          }
-          if (MediaQueryHelper(context).tabletOrBigger ||
-              MediaQueryHelper(context).isLandscape) {
-            return StaggeredTile.count(3, 3);
-          }
-          return StaggeredTile.count(6, 6);
-        }
-        return StaggeredTile.extent(10, 76);
       case ListItem.spacer:
+        if ([BucketDisplayType.Hidden, BucketDisplayType.OnlyEquipped]
+            .contains(options.type)) {
+          return StaggeredTile.extent(30, 00);
+        }
         if (widget.shrinkWrap) {
-          return StaggeredTile.extent(30, 40);
+          return StaggeredTile.extent(30, 00);
         }
         return StaggeredTile.extent(30, 76);
     }
@@ -281,8 +315,6 @@ class ItemListWidgetState extends State<ItemListWidget>
 
   Widget getItem(int index, List<ListItem> listIndex) {
     ListItem item = listIndex[index];
-    String itemKey =
-        "${index}_${item.itemComponent?.itemInstanceId ?? item.itemComponent?.itemHash ?? 'empty'}";
     var bucketDef = bucketDefs[item?.bucketHash];
     var characterId =
         bucketDef?.scope == BucketScope.Character ? widget.characterId : null;
@@ -296,35 +328,22 @@ class ItemListWidgetState extends State<ItemListWidget>
 
       case ListItem.bucketHeader:
         return BucketHeaderWidget(
+          key: Key("bucketheader_${widget.characterId}_${item?.hash}"),
           hash: item?.hash,
           itemCount: item.itemCount,
+          isEquippable:
+              buckets.firstWhere((b) => b.bucketHash == item?.hash)?.equipped !=
+                  null,
+          onChanged: () {
+            setState(() {});
+          },
         );
 
       case ListItem.equippedItem:
-        return InventoryItemWrapperWidget(
-          item?.itemComponent,
-          item?.bucketHash,
-          key: Key(itemKey),
-          characterId: characterId,
-        );
+        return buildEquippedItem(index, item, characterId);
 
       case ListItem.unequippedItem:
-        if (widget.minimalDensityBucketHashes.contains(item.bucketHash)) {
-          return InventoryItemWrapperWidget(
-            item?.itemComponent,
-            item?.bucketHash,
-            key: Key(itemKey),
-            density: ContentDensity.MINIMAL,
-            characterId: characterId,
-          );
-        }
-        return InventoryItemWrapperWidget(
-          item?.itemComponent,
-          item?.bucketHash,
-          key: Key(itemKey),
-          density: ContentDensity.MEDIUM,
-          characterId: characterId,
-        );
+        return buildUnequippedItem(index, item, characterId);
 
       case ListItem.spacer:
         return Container();
@@ -332,6 +351,62 @@ class ItemListWidgetState extends State<ItemListWidget>
     return Container(
         color: Colors.indigo,
         child: Text("You shouldn't be seeing this, please report"));
+  }
+
+  Widget buildEquippedItem(int index, ListItem item, String characterId) {
+    String itemKey =
+        "equipped_${index}_${item.itemComponent?.itemInstanceId ?? item.itemComponent?.itemHash ?? 'empty'}";
+    var options = getBucketOptions(item);
+    if (options.type == BucketDisplayType.Hidden) {
+      return Container();
+    }
+    return InventoryItemWrapperWidget(
+      item?.itemComponent,
+      item?.bucketHash,
+      key: Key(itemKey),
+      characterId: characterId,
+    );
+  }
+
+  BucketDisplayOptions getBucketOptions(ListItem item) {
+    var options =
+        UserSettingsService().getDisplayOptionsForBucket("${item?.bucketHash}");
+    return options;
+  }
+
+  Widget buildUnequippedItem(int index, ListItem item, String characterId) {
+    var options = getBucketOptions(item);
+    var density = ContentDensity.MEDIUM;
+    String itemKey =
+        "unequipped_${index}_${item.itemComponent?.itemInstanceId ?? item.itemComponent?.itemHash ?? 'empty'}";
+
+    if (item?.hash == null && suppressEmptySpaces(item?.bucketHash)) {
+      return Container();
+    }
+
+    switch (options.type) {
+      case BucketDisplayType.Hidden:
+        return Container();
+      case BucketDisplayType.OnlyEquipped:
+        return Container();
+      case BucketDisplayType.Large:
+        density = ContentDensity.FULL;
+        break;
+      case BucketDisplayType.Medium:
+        density = ContentDensity.MEDIUM;
+        break;
+      case BucketDisplayType.Small:
+        density = ContentDensity.MINIMAL;
+        break;
+    }
+
+    return InventoryItemWrapperWidget(
+      item?.itemComponent,
+      item?.bucketHash,
+      key: Key(itemKey),
+      density: density,
+      characterId: characterId,
+    );
   }
 
   @override

@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -16,8 +17,10 @@ import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 int restartCounter = 0;
 void main() async {
   // debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
-  Crashlytics.instance.enableInDevMode = true;
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+
   await DotEnv().load('assets/_env');
   print(DotEnv().env);
   ExceptionHandler handler = ExceptionHandler(onRestart: () {
@@ -57,10 +60,12 @@ class LittleLight extends StatelessWidget {
           brightness: Brightness.dark,
           colorScheme: ColorScheme.dark(),
           accentColor: Colors.lightBlueAccent.shade100,
-          textSelectionColor: Colors.blueGrey.shade400,
-          textSelectionHandleColor: Colors.lightBlueAccent.shade200,
           toggleableActiveColor: Colors.lightBlueAccent.shade200,
           fontFamily: Platform.isMacOS ? "NeueHaasDisplay" : null,
+          textSelectionTheme: TextSelectionThemeData(
+            selectionColor: Colors.blueGrey.shade400,
+            selectionHandleColor: Colors.lightBlueAccent.shade200,
+          ),
           textTheme: TextTheme(
               bodyText1: TextStyle(
                   color: Colors.grey.shade300, fontWeight: FontWeight.w500),

@@ -21,13 +21,13 @@ class TabsCharacterMenuWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         child: TabBar(
-          controller: controller,
-          isScrollable: true,
-          indicatorColor: Colors.white,
-          labelPadding: EdgeInsets.all(0),
-          indicatorSize: TabBarIndicatorSize.label,
-          tabs: getButtons(),
-        ));
+      controller: controller,
+      isScrollable: true,
+      indicatorColor: Colors.white,
+      labelPadding: EdgeInsets.all(0),
+      indicatorSize: TabBarIndicatorSize.label,
+      tabs: getButtons(),
+    ));
   }
 
   List<Widget> getButtons() {
@@ -35,10 +35,13 @@ class TabsCharacterMenuWidget extends StatelessWidget {
       return [Container()];
     }
     String lastPlayedCharId = characters.first.characterId;
-    DateTime lastPlayedDate = DateTime.tryParse(characters.first.dateLastPlayed) ?? DateTime.fromMicrosecondsSinceEpoch(0);
+    DateTime lastPlayedDate =
+        DateTime.tryParse(characters.first.dateLastPlayed) ??
+            DateTime.fromMicrosecondsSinceEpoch(0);
     characters.forEach((char) {
-      var date = DateTime.tryParse(char.dateLastPlayed) ?? DateTime.fromMicrosecondsSinceEpoch(0);
-      if(date.isAfter(lastPlayedDate)){
+      var date = DateTime.tryParse(char.dateLastPlayed) ??
+          DateTime.fromMicrosecondsSinceEpoch(0);
+      if (date.isAfter(lastPlayedDate)) {
         lastPlayedDate = date;
         lastPlayedCharId = char.characterId;
       }
@@ -70,7 +73,8 @@ class TabMenuButton extends StatefulWidget {
   final ManifestService manifest = new ManifestService();
   final bool lastPlayed;
 
-  TabMenuButton({this.character, Key key, this.lastPlayed=true}) : super(key: key);
+  TabMenuButton({this.character, Key key, this.lastPlayed = true})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() => new TabMenuButtonState();
@@ -97,7 +101,12 @@ class TabMenuButtonState extends State<TabMenuButton> {
     return Container(
         decoration:
             BoxDecoration(border: Border.all(color: Colors.white, width: 1)),
-        foregroundDecoration: widget.lastPlayed ? CornerBadgeDecoration(badgeSize: 15, colors: [Colors.amber.shade100, Colors.amber.shade300]) : null,
+        foregroundDecoration: widget.lastPlayed
+            ? CornerBadgeDecoration(
+                badgeSize: 15,
+                position: CornerPosition.TopLeft,
+                colors: [Colors.yellow])
+            : null,
         width: 40,
         height: 40,
         margin: EdgeInsets.only(left: 4, right: 4, bottom: 10),

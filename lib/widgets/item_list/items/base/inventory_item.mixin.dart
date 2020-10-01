@@ -1,8 +1,10 @@
 import 'package:bungie_api/enums/damage_type.dart';
+import 'package:bungie_api/enums/destiny_item_type.dart';
 import 'package:bungie_api/enums/item_state.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/models/wish_list.dart';
+import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/littlelight/item_notes.service.dart';
 import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
@@ -57,6 +59,13 @@ mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget {
   }
 
   Widget primaryStatWidget(BuildContext context) {
+    if ([DestinyItemType.Engram, DestinyItemType.Subclass]
+        .contains(definition.itemType)) {
+      return Container();
+    }
+    if (item.bucketHash == InventoryBucket.engrams) {
+      return Container();
+    }
     return Positioned(
         top: titleFontSize + padding * 2 + 4,
         right: 4,

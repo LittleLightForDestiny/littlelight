@@ -16,20 +16,28 @@ class LargeScreenEquipmentListWidget extends StatefulWidget {
 class LargeScreenEquipmentListWidgetState
     extends State<LargeScreenEquipmentListWidget> {
   List<int> bucketHashes = [
+    InventoryBucket.lostItems,
+    InventoryBucket.engrams,
+    null,
     InventoryBucket.subclass,
     InventoryBucket.helmet,
+    null,
     InventoryBucket.kineticWeapons,
     InventoryBucket.gauntlets,
+    null,
     InventoryBucket.energyWeapons,
     InventoryBucket.chestArmor,
+    null,
     InventoryBucket.powerWeapons,
     InventoryBucket.legArmor,
+    null,
     InventoryBucket.ghost,
     InventoryBucket.classArmor,
-    InventoryBucket.lostItems,
+    null,
     InventoryBucket.vehicle,
     InventoryBucket.ships,
     InventoryBucket.emblems,
+    null,
     InventoryBucket.consumables,
     InventoryBucket.modifications,
     InventoryBucket.shaders,
@@ -52,8 +60,11 @@ class LargeScreenEquipmentListWidgetState
   Widget build(BuildContext context) {
     var screenPading = MediaQuery.of(context).padding;
     return StaggeredGridView.countBuilder(
-      padding:
-          EdgeInsets.only(top: getListTopOffset(context), left: 2 + screenPading.left, right: 2 + screenPading.right),
+      padding: EdgeInsets.only(
+          top: getListTopOffset(context),
+          bottom: 250,
+          left: 2 + screenPading.left,
+          right: 2 + screenPading.right),
       crossAxisCount: 6,
       itemCount: bucketHashes.length + 1,
       itemBuilder: (BuildContext context, int index) => itemBuilder(index),
@@ -98,16 +109,18 @@ class LargeScreenEquipmentListWidgetState
       case InventoryBucket.legArmor:
       case InventoryBucket.ghost:
       case InventoryBucket.classArmor:
-        return StaggeredTile.extent(3, 450);
+        return StaggeredTile.fit(3);
       case InventoryBucket.vehicle:
       case InventoryBucket.ships:
       case InventoryBucket.emblems:
-        return StaggeredTile.extent(2, 450);
+        return StaggeredTile.fit(2);
       case InventoryBucket.consumables:
       case InventoryBucket.modifications:
       case InventoryBucket.shaders:
+      case InventoryBucket.lostItems:
+      case InventoryBucket.engrams:
         return StaggeredTile.fit(6);
     }
-    return StaggeredTile.fit(6);
+    return StaggeredTile.extent(6, 0);
   }
 }

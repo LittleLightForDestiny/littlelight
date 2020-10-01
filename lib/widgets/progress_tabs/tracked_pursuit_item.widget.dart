@@ -10,7 +10,8 @@ class TrackedPursuitItemWidget extends PursuitItemWidget {
       {Key key,
       String characterId,
       DestinyItemComponent item,
-      OnPursuitTap onTap})
+      Function onTap,
+      Function onLongPress})
       : super(
             key: key,
             characterId: characterId,
@@ -51,7 +52,4 @@ class TrackedPursuitItemWidgetState<T extends TrackedPursuitItemWidget>
     if (objectiveDefinitions == null) return Container();
     return super.buildObjective(context, objective);
   }
-
-  @override
-  bool get wantKeepAlive => itemObjectives != null;
 }

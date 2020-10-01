@@ -89,6 +89,10 @@ class BaseInventoryItemWidget extends BaseDestinyStatelessItemWidget
 
   @override
   Widget primaryStatWidget(BuildContext context) {
+    if ([DestinyItemType.Engram, DestinyItemType.Subclass]
+        .contains(definition.itemType)) {
+      return Container();
+    }
     if ((item?.quantity ?? 0) > 1) {
       return Positioned(
           bottom: 4,
