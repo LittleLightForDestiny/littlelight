@@ -59,6 +59,7 @@ class BucketHeaderWidgetState<T extends BucketHeaderWidget> extends State<T> {
   buildLabel(BuildContext context) {
     return Text(
       bucketDef?.displayProperties?.name?.toUpperCase() ?? "",
+      softWrap: false,
       style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
     );
   }

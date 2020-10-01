@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:little_light/services/storage/storage_migrations.dart';
+import 'package:package_info/package_info.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
@@ -47,6 +48,8 @@ enum StorageKeys {
   gameData,
   priorityTags,
   bucketDisplayOptions,
+  latestVersion,
+  versionUpdatedDate
 }
 
 extension StorageKeysExtension on StorageKeys {
@@ -100,6 +103,21 @@ class StorageService {
   static init() async {
     _prefs = await SharedPreferences.getInstance();
     await StorageMigrations().run();
+
+    _versionCheck();
+  }
+
+  static _versionCheck() async {
+    var storedVersion =
+        StorageService.global().getString(StorageKeys.currentVersion);
+    var info = await PackageInfo.fromPlatform();
+    var packageVersion = info.version;
+    if (storedVersion != packageVersion) {
+      StorageService.global()
+          .setString(StorageKeys.currentVersion, packageVersion);
+      StorageService.global()
+          .setDate(StorageKeys.versionUpdatedDate, DateTime.now());
+    }
   }
 
   final String _path;

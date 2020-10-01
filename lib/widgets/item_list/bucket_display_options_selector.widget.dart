@@ -55,30 +55,41 @@ class BucketDisplayOptionsSelectorWidgetState<
 
   @override
   Widget build(BuildContext context) {
-    return DropdownButton<BucketDisplayType>(
-        items: types.map((t) => buildItem(t)).toList(),
-        value: currentType,
-        underline: Container(),
-        iconEnabledColor: Colors.white,
-        icon: Icon(getIcon(currentType)),
-        selectedItemBuilder: (context) => types
-            .map((t) => Opacity(
-                opacity: 0,
-                child: Row(children: [
-                  getLabel(t),
-                  Container(width: 16),
-                  Icon(getIcon(t))
-                ])))
-            .toList(),
-        onChanged: (selected) {
-          this.currentType = selected;
-          UserSettingsService().setDisplayOptionsForBucket(
-              bucketKey, BucketDisplayOptions(type: this.currentType));
-          setState(() {});
-          if (widget.onChanged != null) {
-            widget.onChanged();
-          }
-        });
+    return Container(
+        width: 20,
+        child: Stack(
+            overflow: Overflow.visible,
+            alignment: Alignment.centerRight,
+            children: [
+              Positioned(
+                  top: -10,
+                  right: 0,
+                  child: DropdownButton<BucketDisplayType>(
+                      items: types.map((t) => buildItem(t)).toList(),
+                      value: currentType,
+                      underline: Container(),
+                      iconEnabledColor: Colors.white,
+                      icon: Icon(getIcon(currentType)),
+                      selectedItemBuilder: (context) => types
+                          .map((t) => Opacity(
+                              opacity: 0,
+                              child: Row(children: [
+                                getLabel(t),
+                                Container(width: 16),
+                                Icon(getIcon(t))
+                              ])))
+                          .toList(),
+                      onChanged: (selected) {
+                        this.currentType = selected;
+                        UserSettingsService().setDisplayOptionsForBucket(
+                            bucketKey,
+                            BucketDisplayOptions(type: this.currentType));
+                        setState(() {});
+                        if (widget.onChanged != null) {
+                          widget.onChanged();
+                        }
+                      }))
+            ]));
   }
 
   DropdownMenuItem<BucketDisplayType> buildItem(BucketDisplayType type) {

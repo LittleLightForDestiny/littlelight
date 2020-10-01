@@ -6,6 +6,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:launch_review/launch_review.dart';
 import 'package:little_light/models/collaborators.dart';
 import 'package:little_light/services/littlelight/littlelight_data.service.dart';
+import 'package:little_light/services/storage/storage.service.dart';
 import 'package:little_light/services/translate/translate.service.dart';
 import 'package:little_light/widgets/about/supporter_character.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
@@ -25,6 +26,7 @@ class _AboutScreenState extends State<AboutScreen> {
   String packageVersion = "";
   String appName = "";
   CollaboratorsResponse collaborators;
+  bool showDonationLinks = true;
 
   @override
   void initState() {
@@ -36,6 +38,14 @@ class _AboutScreenState extends State<AboutScreen> {
     var info = await PackageInfo.fromPlatform();
     packageVersion = info.version;
     appName = info.appName;
+    if (Platform.isIOS) {
+      var lastUpdated =
+          StorageService.global().getDate(StorageKeys.versionUpdatedDate);
+      var now = DateTime.now();
+      if (lastUpdated == null || now.difference(lastUpdated).inDays < 3) {
+        showDonationLinks = false;
+      }
+    }
     setState(() {});
     collaborators = await LittleLightDataService().getCollaborators();
     collaborators.supporters.shuffle();
@@ -47,7 +57,8 @@ class _AboutScreenState extends State<AboutScreen> {
     EdgeInsets screenPadding = MediaQuery.of(context).padding;
     return Scaffold(
         appBar: AppBar(
-          leading: IconButton(enableFeedback: false,
+          leading: IconButton(
+            enableFeedback: false,
             icon: Icon(Icons.menu),
             onPressed: () {
               Scaffold.of(context).openDrawer();
@@ -88,7 +99,8 @@ class _AboutScreenState extends State<AboutScreen> {
     currentIndex++;
     if (index - currentIndex < collaborators.supporters.length) {
       var player = collaborators.supporters[index - currentIndex];
-      return buildTagAndPlatform(player.membershipId, player.membershipType, player.link);
+      return buildTagAndPlatform(
+          player.membershipId, player.membershipType, player.link);
     }
     currentIndex += collaborators.supporters.length;
     if (currentIndex == index)
@@ -97,7 +109,8 @@ class _AboutScreenState extends State<AboutScreen> {
     currentIndex++;
     if (index - currentIndex < collaborators.developers.length) {
       var player = collaborators.developers[index - currentIndex];
-      return buildTagAndPlatform(player.membershipId, player.membershipType, player.link);
+      return buildTagAndPlatform(
+          player.membershipId, player.membershipType, player.link);
     }
     currentIndex += collaborators.developers.length;
     if (currentIndex == index)
@@ -106,7 +119,8 @@ class _AboutScreenState extends State<AboutScreen> {
     currentIndex++;
     if (index - currentIndex < (collaborators.curators?.length ?? 0)) {
       var player = collaborators.curators[index - currentIndex];
-      return buildTagAndPlatform(player.membershipId, player.membershipType, player.link);
+      return buildTagAndPlatform(
+          player.membershipId, player.membershipType, player.link);
     }
     currentIndex += collaborators.curators?.length ?? 0;
     if (currentIndex == index)
@@ -123,7 +137,8 @@ class _AboutScreenState extends State<AboutScreen> {
       currentIndex++;
       if (index - currentIndex < language.translators.length) {
         var player = language.translators[index - currentIndex];
-        return buildTagAndPlatform(player.membershipId, player.membershipType, player.link);
+        return buildTagAndPlatform(
+            player.membershipId, player.membershipType, player.link);
       }
       currentIndex += language.translators.length;
     }
@@ -232,9 +247,9 @@ class _AboutScreenState extends State<AboutScreen> {
       children: <Widget>[
         HeaderWidget(
             child: TranslatedTextWidget(
-              "Contact",
-              uppercase: true,
-            )),
+          "Contact",
+          uppercase: true,
+        )),
         Container(
           height: 4,
         ),
@@ -304,19 +319,18 @@ class _AboutScreenState extends State<AboutScreen> {
   }
 
   Widget buildSupport(BuildContext context) {
-    bool isIOS = Platform.isIOS;
     return Column(
       children: <Widget>[
         HeaderWidget(
             child: TranslatedTextWidget(
-              "Support Little Light",
-              uppercase: true,
-            )),
+          "Support Little Light",
+          uppercase: true,
+        )),
         Container(
           height: 4,
         ),
         IntrinsicHeight(
-          child: isIOS
+          child: !showDonationLinks
               ? buildRateButton(context)
               : Row(
                   children: <Widget>[

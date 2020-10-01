@@ -53,7 +53,6 @@ class LittleLight extends StatelessWidget {
       navigatorObservers: [observer],
       theme: new ThemeData(
           disabledColor: Colors.lightBlue.shade900,
-          // platform: TargetPlatform.android,
           backgroundColor: Colors.blueGrey.shade900,
           primarySwatch: Colors.lightBlue,
           primaryColor: Colors.blueGrey,
@@ -62,10 +61,13 @@ class LittleLight extends StatelessWidget {
           accentColor: Colors.lightBlueAccent.shade100,
           toggleableActiveColor: Colors.lightBlueAccent.shade200,
           fontFamily: Platform.isMacOS ? "NeueHaasDisplay" : null,
-          textSelectionTheme: TextSelectionThemeData(
-            selectionColor: Colors.blueGrey.shade400,
-            selectionHandleColor: Colors.lightBlueAccent.shade200,
-          ),
+          textSelectionColor: Colors.blueGrey.shade400,
+          textSelectionHandleColor: Colors.lightBlueAccent.shade200,
+          // textSelectionTheme: TextSelectionThemeData(
+          //   selectionColor: Colors.blueGrey.shade400,
+          //   selectionHandleColor: Colors.lightBlueAccent.shade200,
+          // ),
+
           textTheme: TextTheme(
               bodyText1: TextStyle(
                   color: Colors.grey.shade300, fontWeight: FontWeight.w500),
