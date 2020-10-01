@@ -155,6 +155,7 @@ class _CharacterPursuitsListWidgetState
         itemCount: (items?.length ?? 0),
         padding: EdgeInsets.all(4).copyWith(
             top: 0,
+            bottom: 150,
             left: max(screenPadding.left, 4),
             right: max(screenPadding.right, 4)),
         mainAxisSpacing: 4,
