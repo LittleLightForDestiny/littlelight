@@ -7,9 +7,8 @@ typedef String ExtractTextFromData(dynamic data);
 
 class ExpiryDateWidget extends StatefulWidget {
   final String date;
-  ExpiryDateWidget(this.date,
-      {Key key})
-      : super(key: key);
+  final double fontSize;
+  ExpiryDateWidget(this.date, {Key key, this.fontSize = 12}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -26,25 +25,36 @@ class ExpiryDateWidgetState extends State<ExpiryDateWidget> {
     super.initState();
     updateDuration();
   }
-  
-  updateDuration() async{
+
+  updateDuration() async {
     var expiry = DateTime.parse(widget.date);
-    expired = DateTime.now().toUtc().isAfter(expiry); 
-    if(expired){
-      setState((){});
-      return;  
+    expired = DateTime.now().toUtc().isAfter(expiry);
+    if (expired) {
+      setState(() {});
+      return;
     }
     var locale = StorageService.getLanguage();
     expiresIn = timeago.format(expiry, allowFromNow: true, locale: locale);
-    setState((){});
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    var style = TextStyle(color:Colors.red.shade300, fontSize: 12, fontStyle: FontStyle.italic);
-    if(expired){
-      return TranslatedTextWidget("Expired", style: style,);
+    var style = TextStyle(
+        color: Colors.red.shade300,
+        fontSize: widget.fontSize,
+        fontStyle: FontStyle.italic);
+    if (expired) {
+      return TranslatedTextWidget(
+        "Expired",
+        style: style,
+      );
     }
-    return TranslatedTextWidget("Expires {timeFromNow}", replace: {'timeFromNow':expiresIn}, key:Key(expiresIn), style: style,);
+    return TranslatedTextWidget(
+      "Expires {timeFromNow}",
+      replace: {'timeFromNow': expiresIn},
+      key: Key(expiresIn),
+      style: style,
+    );
   }
 }

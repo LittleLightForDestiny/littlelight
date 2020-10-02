@@ -14,7 +14,7 @@ import 'package:little_light/widgets/item_list/items/emblem/emblem_inventory_ite
 import 'package:little_light/widgets/item_list/items/inventory_item_wrapper.widget.dart';
 import 'package:little_light/widgets/item_list/items/subclass/subclass_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/weapon/weapon_inventory_item.widget.dart';
-import 'package:little_light/widgets/progress_tabs/bounty_item.widget.dart';
+import 'package:little_light/widgets/progress_tabs/pursuit_item/large_pursuit_item.widget.dart';
 
 class SearchItemWrapperWidget extends InventoryItemWrapperWidget {
   SearchItemWrapperWidget(DestinyItemComponent item, int bucketHash,
@@ -98,10 +98,10 @@ class SearchItemWrapperWidgetState<T extends SearchItemWrapperWidget>
 
       default:
         if (InventoryBucket.pursuitBucketHashes
-            .contains(widget.item.bucketHash)) {
-          return BountyItemWidget(
+            .contains(widget?.item?.bucketHash)) {
+          return LargePursuitItemWidget(
             characterId: widget.characterId,
-            includeCharacterIcon: true,
+            trailing: buildCharacterIcon(context),
             item: widget.item,
           );
         }

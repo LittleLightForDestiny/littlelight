@@ -58,13 +58,13 @@ class LargeScreenEquipmentListWidgetState
 
   @override
   Widget build(BuildContext context) {
-    var screenPading = MediaQuery.of(context).padding;
+    var screenPadding = MediaQuery.of(context).padding;
     return StaggeredGridView.countBuilder(
       padding: EdgeInsets.only(
-          top: getListTopOffset(context),
-          bottom: 250,
-          left: 2 + screenPading.left,
-          right: 2 + screenPading.right),
+          top: getListTopOffset(context) + screenPadding.top,
+          bottom: 250 + screenPadding.bottom,
+          left: 2 + screenPadding.left,
+          right: 2 + screenPadding.right),
       crossAxisCount: 6,
       itemCount: bucketHashes.length + 1,
       itemBuilder: (BuildContext context, int index) => itemBuilder(index),

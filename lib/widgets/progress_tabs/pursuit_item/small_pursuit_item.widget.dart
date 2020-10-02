@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:little_light/widgets/progress_tabs/pursuit_item.widget.dart';
+import 'package:little_light/widgets/progress_tabs/pursuit_item/pursuit_item.widget.dart';
 
 class SmallPursuitItemWidget extends PursuitItemWidget {
   SmallPursuitItemWidget(

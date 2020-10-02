@@ -63,7 +63,7 @@ mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget {
         .contains(definition.itemType)) {
       return Container();
     }
-    if (item.bucketHash == InventoryBucket.engrams) {
+    if (item?.bucketHash == InventoryBucket.engrams) {
       return Container();
     }
     return Positioned(

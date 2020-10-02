@@ -15,9 +15,10 @@ import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/item_list/character_info.widget.dart';
-import 'package:little_light/widgets/progress_tabs/bounty_item.widget.dart';
 import 'package:little_light/widgets/progress_tabs/pursuit_category_header.widget.dart';
-import 'package:little_light/widgets/progress_tabs/small_pursuit_item.widget.dart';
+import 'package:little_light/widgets/progress_tabs/pursuit_item/large_pursuit_item.widget.dart';
+import 'package:little_light/widgets/progress_tabs/pursuit_item/pursuit_item.widget.dart';
+import 'package:little_light/widgets/progress_tabs/pursuit_item/small_pursuit_item.widget.dart';
 
 class CharacterPursuitsListWidget extends StatefulWidget {
   final String characterId;
@@ -154,7 +155,7 @@ class _CharacterPursuitsListWidgetState
         addRepaintBoundaries: true,
         itemCount: (items?.length ?? 0),
         padding: EdgeInsets.all(4).copyWith(
-            top: 0,
+            top: screenPadding.top,
             bottom: 150,
             left: max(screenPadding.left, 4),
             right: max(screenPadding.right, 4)),
@@ -245,7 +246,15 @@ class _CharacterPursuitsListWidgetState
               key: Key(
                   "pursuits_${item.item?.itemHash}_${item.item?.itemInstanceId}_${widget.characterId}"));
         }
-        return BountyItemWidget(
+        if (options.type == BucketDisplayType.Large) {
+          return LargePursuitItemWidget(
+              characterId: widget.characterId,
+              item: item.item,
+              selectable: true,
+              key: Key(
+                  "pursuits_${item.item?.itemHash}_${item.item?.itemInstanceId}_${widget.characterId}"));
+        }
+        return PursuitItemWidget(
             characterId: widget.characterId,
             item: item.item,
             selectable: true,

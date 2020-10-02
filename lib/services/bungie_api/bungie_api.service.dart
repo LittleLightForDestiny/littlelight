@@ -173,6 +173,20 @@ class BungieApiService {
     return response.response;
   }
 
+  Future<int> changeTrackState(
+      String itemId, String characterId, bool tracked) async {
+    BungieNetToken token = await auth.getToken();
+    GroupUserInfoCard membership = await auth.getMembership();
+    var response = await Destiny2.setQuestTrackedState(
+        Client(token: token),
+        DestinyItemStateRequest()
+          ..itemId = itemId
+          ..membershipType = membership.membershipType
+          ..characterId = characterId
+          ..state = tracked);
+    return response.response;
+  }
+
   Future<List<DestinyEquipItemResult>> equipItems(
       List<String> itemIds, String characterId) async {
     BungieNetToken token = await auth.getToken();

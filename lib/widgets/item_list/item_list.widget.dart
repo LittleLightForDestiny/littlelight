@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:bungie_api/enums/bucket_scope.dart';
 import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
@@ -171,6 +172,8 @@ class ItemListWidgetState extends State<ItemListWidget>
 
     var listIndex = getListIndex(context);
 
+    var screenPadding = MediaQuery.of(context).padding;
+
     return StaggeredGridView.countBuilder(
       shrinkWrap: widget.shrinkWrap,
       crossAxisCount: 30,
@@ -180,7 +183,11 @@ class ItemListWidgetState extends State<ItemListWidget>
       staggeredTileBuilder: (int index) => getTileBuilder(index, listIndex),
       mainAxisSpacing: 2,
       crossAxisSpacing: 2,
-      padding: widget.shrinkWrap ? null : EdgeInsets.only(bottom: 100),
+      padding: widget.shrinkWrap
+          ? null
+          : EdgeInsets.only(
+              top: max(screenPadding.top, 8),
+              bottom: screenPadding.bottom + 100),
       controller: controller,
       physics: widget.shrinkWrap
           ? NeverScrollableScrollPhysics()

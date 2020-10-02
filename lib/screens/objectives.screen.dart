@@ -14,8 +14,7 @@ import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/refresh_button.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/presentation_nodes/record_item.widget.dart';
-import 'package:little_light/widgets/progress_tabs/tracked_plug_item.widget.dart';
-import 'package:little_light/widgets/progress_tabs/tracked_pursuit_item.widget.dart';
+import 'package:little_light/widgets/progress_tabs/pursuit_item/tracked_pursuit_item.widget.dart';
 
 class ObjectivesScreen extends StatefulWidget {
   final ProfileService profile = ProfileService();
@@ -77,7 +76,8 @@ class ObjectivesScreenState extends State<ObjectivesScreen> {
     return Stack(children: [
       Scaffold(
         appBar: AppBar(
-            leading: IconButton(enableFeedback: false,
+            leading: IconButton(
+              enableFeedback: false,
               icon: Icon(Icons.menu),
               onPressed: () {
                 Scaffold.of(context).openDrawer();
@@ -87,17 +87,17 @@ class ObjectivesScreenState extends State<ObjectivesScreen> {
         body: buildBody(context),
       ),
       Positioned(
-            right: 8,
-            bottom: 8,
-            child: Container(
-              decoration: BoxDecoration(
-                  color: Colors.blueGrey.shade900,
-                  borderRadius: BorderRadius.circular(18)),
-              width: 36,
-              height: 36,
-              child: RefreshButtonWidget(),
-            ),
-          ),
+        right: 8,
+        bottom: 8,
+        child: Container(
+          decoration: BoxDecoration(
+              color: Colors.blueGrey.shade900,
+              borderRadius: BorderRadius.circular(18)),
+          width: 36,
+          height: 36,
+          child: RefreshButtonWidget(),
+        ),
+      ),
     ]);
   }
 
@@ -108,7 +108,9 @@ class ObjectivesScreenState extends State<ObjectivesScreen> {
     var screenPadding = MediaQuery.of(context).padding;
     if (objectives.length == 0) {
       return Container(
-          padding: EdgeInsets.all(16).copyWith(left:max(screenPadding.left, 16), right:max(screenPadding.right, 16)),
+          padding: EdgeInsets.all(16).copyWith(
+              left: max(screenPadding.left, 16),
+              right: max(screenPadding.right, 16)),
           child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -122,7 +124,11 @@ class ObjectivesScreenState extends State<ObjectivesScreen> {
     }
 
     return StaggeredGridView.countBuilder(
-      padding: EdgeInsets.only(left:max(screenPadding.left, 4), right:max(screenPadding.right, 4), bottom: max(screenPadding.bottom, 4), top:4),
+      padding: EdgeInsets.only(
+          left: max(screenPadding.left, 4),
+          right: max(screenPadding.right, 4),
+          bottom: max(screenPadding.bottom, 4),
+          top: 4),
       crossAxisCount: 30,
       itemCount: objectives.length,
       itemBuilder: (BuildContext context, int index) => getItem(context, index),
@@ -159,11 +165,11 @@ class ObjectivesScreenState extends State<ObjectivesScreen> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => ItemDetailScreen(
-                          item:item,
-                          definition:definition,
-                          instanceInfo:instanceInfo,
-                          characterId: characterId,
-                        ),
+                      item: item,
+                      definition: definition,
+                      instanceInfo: instanceInfo,
+                      characterId: characterId,
+                    ),
                   ),
                 );
                 loadObjectives();
@@ -172,27 +178,7 @@ class ObjectivesScreenState extends State<ObjectivesScreen> {
         break;
 
       case TrackedObjectiveType.Plug:
-        if (items[objective] != null) {
-          return TrackedPlugItemWidget(
-              key: Key(
-                  "objective_${objective.hash}_objective_${objective.instanceId}_${objective.characterId}"),
-              item: items[objective],
-              plugHash: objective.hash,
-              onTap: (item, definition, instanceInfo, characterId) async {
-                await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ItemDetailScreen(
-                          item:item,
-                          definition:definition,
-                          instanceInfo:instanceInfo,
-                          characterId: characterId,
-                        ),
-                  ),
-                );
-                loadObjectives();
-              });
-        }
+        return Container();
     }
     return Container();
   }

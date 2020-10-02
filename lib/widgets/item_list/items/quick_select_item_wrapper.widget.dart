@@ -14,7 +14,7 @@ import 'package:little_light/widgets/item_list/items/emblem/emblem_inventory_ite
 import 'package:little_light/widgets/item_list/items/inventory_item_wrapper.widget.dart';
 import 'package:little_light/widgets/item_list/items/subclass/subclass_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/weapon/weapon_inventory_item.widget.dart';
-import 'package:little_light/widgets/progress_tabs/bounty_item.widget.dart';
+import 'package:little_light/widgets/progress_tabs/pursuit_item/large_pursuit_item.widget.dart';
 
 class QuickSelectItemWrapperWidget extends InventoryItemWrapperWidget {
   QuickSelectItemWrapperWidget(DestinyItemComponent item, int bucketHash,
@@ -107,10 +107,11 @@ class QuickSelectItemWrapperWidgetState<T extends QuickSelectItemWrapperWidget>
 
       default:
         if (definition?.inventory?.bucketTypeHash == InventoryBucket.pursuits) {
-          return BountyItemWidget(
+          return LargePursuitItemWidget(
             item: widget.item,
             characterId: widget.characterId,
-            includeCharacterIcon: true,
+            selectable: false,
+            trailing: buildCharacterIcon(context),
           );
         }
         return Container(

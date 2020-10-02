@@ -2,6 +2,7 @@ import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:bungie_api/models/destiny_presentation_node_component.dart';
 import 'package:bungie_api/models/destiny_presentation_node_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
@@ -41,7 +42,9 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget> {
   void initState() {
     super.initState();
     this.loadDefinition();
-    this.loadCompletionData();
+    if (AuthService().isLogged) {
+      this.loadCompletionData();
+    }
   }
 
   loadDefinition() async {
@@ -89,9 +92,13 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget> {
     this.progress = highest;
   }
 
+  int get progressValue => progress?.progressValue ?? 0;
+  int get completionValue => progress?.completionValue;
+  bool get completed =>
+      completionValue != null && progressValue >= completionValue;
+
   @override
   Widget build(BuildContext context) {
-    var completed = progress.progressValue >= progress.completionValue;
     var color = completed ? Colors.amber.shade100 : Colors.grey.shade300;
     return Container(
         decoration: BoxDecoration(
@@ -121,17 +128,15 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget> {
   }
 
   Widget buildProgressBar(BuildContext context) {
-    var progress = this.progress.progressValue;
-    var total = this.progress.completionValue;
-    if (total <= 1) return Container();
-    var completed = progress >= total;
+    if ((completionValue ?? 0) <= 1) return Container();
+
     var color = completed ? Colors.amber.shade100 : Colors.grey.shade300;
     return Container(
       height: 4,
       color: color.withOpacity(.4),
       alignment: Alignment.centerLeft,
       child: FractionallySizedBox(
-          widthFactor: progress / total,
+          widthFactor: progressValue / completionValue,
           child: Container(color: color.withOpacity(.7))),
     );
   }
@@ -182,7 +187,6 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget> {
   Widget buildSingleCount(
       BuildContext context, DestinyPresentationNodeComponent progress,
       [DestinyCharacterComponent character]) {
-    var completed = progress.progressValue >= progress.completionValue;
     var color = completed ? Colors.amber.shade100 : Colors.grey.shade300;
     return Container(
         padding: EdgeInsets.only(top: 2, bottom: 2, right: 8),
@@ -196,7 +200,7 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget> {
                   color: color)
               : Container(),
           Container(width: 4),
-          (progress?.completionValue ?? 0) > 0
+          (completionValue ?? 0) > 0
               ? Text(
                   "${progress?.progressValue}/${progress.completionValue}",
                   style: TextStyle(fontWeight: FontWeight.bold, color: color),
@@ -207,7 +211,6 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget> {
 
   buildTitle(
       BuildContext context, DestinyPresentationNodeDefinition definition) {
-    var completed = progress.progressValue >= progress.completionValue;
     var color = completed ? Colors.amber.shade100 : Colors.grey.shade300;
     return Expanded(
         child: Container(

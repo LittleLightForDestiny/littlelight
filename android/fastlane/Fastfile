@@ -16,10 +16,19 @@ platform :android do
   end
 
   desc "Deploy a new version to the Google Play"
+  lane :beta do
+    upload_to_play_store(
+      metadata_path:'../translations/metadata/android',
+      aab:'../build/app/outputs/bundle/release/app-release.aab',
+      skip_upload_screenshots:true,
+      skip_upload_images:true,
+      track: 'beta'
+      )
+  end
   lane :deploy do
     supply(
       metadata_path:'../translations/metadata/android',
-      aab:'../build/app/outputs/bundle/release/app.aab',
+      aab:'../build/app/outputs/bundle/release/app-release.aab',
       skip_upload_screenshots:true,
       skip_upload_images:true,
     )

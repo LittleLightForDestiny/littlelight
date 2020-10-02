@@ -111,7 +111,9 @@ class DuplicatedItemListWidgetState extends State<DuplicatedItemListWidget>
     var screenPadding = MediaQuery.of(context).padding;
     return StaggeredGridView.countBuilder(
       padding: EdgeInsets.all(4).copyWith(
-          left: max(screenPadding.left, 4), right: max(screenPadding.right, 4)),
+          left: max(screenPadding.left, 4),
+          right: max(screenPadding.right, 4),
+          bottom: screenPadding.bottom + 150),
       crossAxisCount: 6,
       itemCount: listItems?.length ?? 0,
       itemBuilder: (BuildContext context, int index) => getItem(context, index),

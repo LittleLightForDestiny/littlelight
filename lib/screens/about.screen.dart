@@ -67,8 +67,7 @@ class _AboutScreenState extends State<AboutScreen> {
           title: TranslatedTextWidget("About"),
         ),
         body: StaggeredGridView.countBuilder(
-          padding: EdgeInsets.all(8).add(EdgeInsets.only(
-              left: screenPadding.left, right: screenPadding.right)),
+          padding: EdgeInsets.all(8).add(screenPadding),
           addAutomaticKeepAlives: true,
           itemBuilder: itemBuilder,
           staggeredTileBuilder: tileBuilder,

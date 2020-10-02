@@ -1,11 +1,10 @@
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_objective_progress.dart';
-
 import 'package:flutter/material.dart';
 
-import 'package:little_light/widgets/progress_tabs/pursuit_item.widget.dart';
+import 'large_pursuit_item.widget.dart';
 
-class TrackedPursuitItemWidget extends PursuitItemWidget {
+class TrackedPursuitItemWidget extends LargePursuitItemWidget {
   TrackedPursuitItemWidget(
       {Key key,
       String characterId,
@@ -16,7 +15,7 @@ class TrackedPursuitItemWidget extends PursuitItemWidget {
             key: key,
             characterId: characterId,
             item: item,
-            includeCharacterIcon: true,
+            // includeCharacterIcon: true,
             onTap: onTap);
 
   TrackedPursuitItemWidgetState createState() =>
@@ -24,7 +23,7 @@ class TrackedPursuitItemWidget extends PursuitItemWidget {
 }
 
 class TrackedPursuitItemWidgetState<T extends TrackedPursuitItemWidget>
-    extends PursuitItemWidgetState<T> {
+    extends LargePursuitItemWidgetState<T> {
   DestinyItemComponent _item;
 
   @override

@@ -6,6 +6,7 @@ import 'package:bungie_api/models/group_user_info_card.dart';
 import 'package:bungie_api/models/user_membership_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/screens/accounts.screen.dart';
 import 'package:little_light/screens/collections.screen.dart';
 import 'package:little_light/screens/about.screen.dart';
@@ -25,8 +26,6 @@ import 'package:little_light/services/storage/storage.service.dart';
 import 'package:little_light/utils/platform_data.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-
-
 import 'package:little_light/widgets/side_menu/profile_info.widget.dart';
 
 typedef void OnPageChange(Widget screen);
@@ -75,7 +74,8 @@ class SideMenuWidgetState extends State<SideMenuWidget> {
     if (memberships != null) {
       for (var account in memberships) {
         if (account?.destinyMemberships != null) {
-          var memberships = account.destinyMemberships.where((p)=>(p?.applicableMembershipTypes?.length ?? 0) > 0);
+          var memberships = account.destinyMemberships
+              .where((p) => (p?.applicableMembershipTypes?.length ?? 0) > 0);
           for (var membership in memberships) {
             if (currentMembership != membership.membershipId) {
               altMembershipCount++;
@@ -159,7 +159,7 @@ class SideMenuWidgetState extends State<SideMenuWidget> {
                     open(context, LoadoutsScreen());
                   }),
                   menuItem(context, TranslatedTextWidget("Vendors"),
-                      onTap: () {
+                      requireLogin: true, onTap: () {
                     open(context, VendorsScreen());
                   }),
                   menuItem(context, TranslatedTextWidget("Collections"),
@@ -224,19 +224,32 @@ class SideMenuWidgetState extends State<SideMenuWidget> {
 
   Widget menuItem(BuildContext context, Widget label,
       {void onTap(), requireLogin: false}) {
-    if (requireLogin && !widget.auth.isLogged) {
-      return Container();
-    }
+    var needToLogin = requireLogin && !widget.auth.isLogged;
     return Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: onTap,
-          child: Container(
-              padding: EdgeInsets.all(16),
-              margin: EdgeInsets.symmetric(horizontal: 8),
-              alignment: Alignment.centerRight,
-              child: label),
-        ));
+            onTap: needToLogin
+                ? () {
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => InitialScreen(),
+                        ));
+                  }
+                : onTap,
+            child: Container(
+              padding: EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+              child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                needToLogin
+                    ? Container(
+                        padding: EdgeInsets.only(right: 8),
+                        child: Icon(FontAwesomeIcons.exclamationCircle,
+                            color: Theme.of(context).errorColor, size: 12),
+                      )
+                    : Container(),
+                Opacity(opacity: needToLogin ? .5 : 1, child: label)
+              ]),
+            )));
   }
 
   open(BuildContext context, Widget screen) {
@@ -256,8 +269,8 @@ class SideMenuWidgetState extends State<SideMenuWidget> {
             context,
             MaterialPageRoute(
               builder: (context) => InitialScreen(
-                    authCode: code,
-                  ),
+                authCode: code,
+              ),
             ));
       }
     } on OAuthException catch (e) {
