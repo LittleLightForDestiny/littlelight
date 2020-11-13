@@ -116,7 +116,7 @@ class PresentationNodeTabsWidgetState
         padding: EdgeInsets.all(8),
         child: DefinitionProviderWidget<DestinyPresentationNodeDefinition>(hash,
             (def) {
-          if (def?.displayProperties?.hasIcon ?? false) {
+          if (widget.depth > 0 && (def?.displayProperties?.hasIcon ?? false)) {
             return Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

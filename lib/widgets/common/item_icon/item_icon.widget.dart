@@ -59,7 +59,8 @@ class ItemIconWidget extends BaseDestinyStatelessItemWidget {
     if (state.contains(ItemState.Masterwork)) {}
     bool useBackgroundColor = true;
     if ([DestinyItemType.Subclass, DestinyItemType.Engram]
-        .contains(definition?.itemType)) {
+            .contains(definition?.itemType) ||
+        definition?.inventory?.bucketTypeHash == InventoryBucket.subclass) {
       useBackgroundColor = false;
     }
     return Stack(children: [
@@ -69,26 +70,6 @@ class ItemIconWidget extends BaseDestinyStatelessItemWidget {
                   ? DestinyData.getTierColor(definition.inventory.tierType)
                   : null,
               child: itemIconImage(context))),
-      seasonBadgeUrl() == null
-          ? Container()
-          : Container(
-              decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      stops: [
-                    0,
-                    0.20,
-                    0.29,
-                    1
-                  ],
-                      colors: [
-                    DestinyData.getTierColor(definition.inventory.tierType),
-                    DestinyData.getTierColor(definition.inventory.tierType),
-                    Colors.transparent,
-                    Colors.transparent
-                  ])),
-            ),
       itemSeasonIcon(context),
       Positioned.fill(
           child: state.contains(ItemState.Masterwork)
@@ -111,7 +92,7 @@ class ItemIconWidget extends BaseDestinyStatelessItemWidget {
   String seasonBadgeUrl() {
     try {
       var version =
-          definition.quality.displayVersionWatermarkIcons[item.versionNumber];
+          definition?.quality?.displayVersionWatermarkIcons[item.versionNumber];
       if (version.length > 0) return version;
     } catch (_) {}
     return null;

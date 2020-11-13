@@ -1,11 +1,11 @@
-import 'package:bungie_api/enums/destiny_energy_type.dart';
-import 'package:bungie_api/enums/destiny_item_type.dart';
-import 'package:flutter/material.dart';
-import 'package:bungie_api/enums/destiny_class.dart';
 import 'package:bungie_api/enums/damage_type.dart';
-import 'package:bungie_api/enums/tier_type.dart';
 import 'package:bungie_api/enums/destiny_ammunition_type.dart';
+import 'package:bungie_api/enums/destiny_class.dart';
+import 'package:bungie_api/enums/destiny_energy_type.dart';
 import 'package:bungie_api/enums/destiny_item_sub_type.dart';
+import 'package:bungie_api/enums/destiny_item_type.dart';
+import 'package:bungie_api/enums/tier_type.dart';
+import 'package:flutter/material.dart';
 import 'package:little_light/widgets/icon_fonts/littlelight_icons.dart';
 
 class RaidPhases {
@@ -243,6 +243,8 @@ class DestinyData {
         return LittleLightIcons.damage_solar;
       case DamageType.Void:
         return LittleLightIcons.damage_void;
+      case DamageType.Stasis:
+        return LittleLightIcons.damage_stasis;
 
       default:
         return LittleLightIcons.destiny;
@@ -271,20 +273,23 @@ class DestinyData {
         return Color.fromARGB(255, 243, 98, 39);
       case DamageType.Void:
         return Color.fromARGB(255, 64, 34, 101);
+      case DamageType.Stasis:
+        return Color.fromARGB(255, 77, 136, 255);
 
       default:
         return Colors.white;
     }
   }
 
-  static Color getEnergyTypeColor(DestinyEnergyType damageType) {
-    switch (damageType) {
+  static Color getEnergyTypeColor(DestinyEnergyType energyType) {
+    switch (energyType) {
       case DestinyEnergyType.Arc:
         return Color.fromARGB(255, 118, 186, 230);
       case DestinyEnergyType.Thermal:
         return Color.fromARGB(255, 243, 98, 39);
       case DestinyEnergyType.Void:
         return Color.fromARGB(255, 64, 34, 101);
+
       default:
         return Colors.blueGrey.shade700;
     }
@@ -298,6 +303,7 @@ class DestinyData {
         return Color.fromARGB(255, 255, 156, 74);
       case DestinyEnergyType.Void:
         return Color.fromARGB(255, 177, 120, 248);
+
       default:
         return Colors.grey.shade300;
     }
@@ -325,6 +331,8 @@ class DestinyData {
         return Color.fromARGB(255, 255, 156, 74);
       case DamageType.Void:
         return Color.fromARGB(255, 177, 120, 248);
+      case DamageType.Stasis:
+        return Color.fromARGB(255, 77, 136, 255);
       default:
         return Colors.white;
     }
@@ -392,11 +400,14 @@ class DestinyData {
       case DamageType.Void:
         path += "_void";
         break;
+      case DamageType.Stasis:
+        path += "_stasis";
+        break;
       default:
         return null;
     }
 
-    switch (subclassPath.toLowerCase()) {
+    switch (subclassPath?.toLowerCase()) {
       case "firstpath":
       case "secondpath":
         break;
@@ -404,7 +415,7 @@ class DestinyData {
         path += "_alt";
         break;
       default:
-        return null;
+        break;
     }
 
     return path + ".webp";

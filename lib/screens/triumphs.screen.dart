@@ -30,7 +30,11 @@ class TriumphsScreenState extends PresentationNodeScreenState<TriumphsScreen> {
       presentationNodeHashes: [
         settings.triumphsRootNode,
         settings.sealsRootNode,
-        // settings.statsRootNode
+        511607103,
+        settings.medalsRootNode,
+        settings.loreRootNode,
+        3215903653,
+        1881970629
       ],
       depth: 0,
       itemBuilder: this.itemBuilder,

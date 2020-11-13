@@ -43,6 +43,8 @@ class LittleLightIcons {
   static const IconData damage_solar =
       IconData(0xe90c, fontFamily: _fontFamily);
   static const IconData damage_void = IconData(0xe90d, fontFamily: _fontFamily);
+  static const IconData damage_stasis =
+      IconData(0xe936, fontFamily: _fontFamily);
   static const IconData platform_xbox =
       IconData(0xe906, fontFamily: _fontFamily);
   static const IconData platform_playstation =

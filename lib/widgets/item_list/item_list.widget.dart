@@ -112,7 +112,7 @@ class ItemListWidgetState extends State<ItemListWidget>
     for (int bucketHash in widget.bucketHashes) {
       DestinyInventoryBucketDefinition bucketDef = bucketDefs[bucketHash];
       List<DestinyItemComponent> inventory =
-          bucketDef.scope == BucketScope.Character
+          bucketDef?.scope == BucketScope.Character
               ? characterInventory
               : profileInventory;
       DestinyItemComponent equipped = equipment.firstWhere(

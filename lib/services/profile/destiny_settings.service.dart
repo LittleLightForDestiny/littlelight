@@ -68,6 +68,16 @@ class DestinySettingsService {
         1024788583;
   }
 
+  int get loreRootNode {
+    return _currentSettings?.destiny2CoreSettings?.loreRootNodeHash ??
+        1993337477;
+  }
+
+  int get medalsRootNode {
+    return _currentSettings?.destiny2CoreSettings?.medalsRootNodeHash ??
+        3901403713;
+  }
+
   int get statsRootNode {
     return _currentSettings?.destiny2CoreSettings?.metricsRootNode ??
         1024788583;

@@ -114,7 +114,13 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget> {
   }
 
   Widget buildItem(BuildContext context) {
-    if (_itemDefinition == null) return Container();
+    if (_itemDefinition == null) {
+      if (definition?.redacted ?? false)
+        return Container(
+            alignment: Alignment.center,
+            child: Text(definition.displayProperties.name));
+      return Container();
+    }
     if (_itemDefinition.itemType == DestinyItemType.Armor) {
       return ArmorInventoryItemWidget(
         null,
@@ -195,7 +201,7 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget> {
       onLongPress(context);
       return;
     }
-    
+
     DestinyInventoryItemDefinition itemDef = await widget.manifest
         .getDefinition<DestinyInventoryItemDefinition>(definition.itemHash);
     if (itemDef == null) {

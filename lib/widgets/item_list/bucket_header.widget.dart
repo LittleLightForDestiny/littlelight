@@ -79,7 +79,7 @@ class BucketHeaderWidgetState<T extends BucketHeaderWidget> extends State<T> {
   buildCount(BuildContext context) {
     int bucketSize = bucketDef?.itemCount ?? 9;
     if (widget.hash == InventoryBucket.subclass) {
-      bucketSize = 3;
+      bucketSize = 4;
     }
     if (widget.isVault) {
       return ManifestText<DestinyInventoryBucketDefinition>(

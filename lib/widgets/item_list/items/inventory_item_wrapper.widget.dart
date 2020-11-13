@@ -83,25 +83,25 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
       getDefinitions();
     }
 
-    selected = SelectionService().isSelected(ItemWithOwner(widget.item, widget.characterId));
-    
+    selected = SelectionService()
+        .isSelected(ItemWithOwner(widget.item, widget.characterId));
 
     selectionSubscription = SelectionService().broadcaster.listen((event) {
       if (!mounted) return;
-      var isSelected =
-          SelectionService().isSelected(ItemWithOwner(widget.item, widget.characterId));
+      var isSelected = SelectionService()
+          .isSelected(ItemWithOwner(widget.item, widget.characterId));
       if (isSelected != selected) {
         selected = isSelected;
         setState(() {});
       }
     });
     stateSubscription = NotificationService().listen((event) {
-      if(!mounted) return;
+      if (!mounted) return;
       if (event.type == NotificationType.itemStateUpdate &&
           event.item.itemHash == widget.item?.itemHash &&
           event.item.itemInstanceId == widget.item?.itemInstanceId) {
-            setState(() {});
-          }
+        setState(() {});
+      }
     });
   }
 
@@ -253,7 +253,8 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
     if (selected) {
       SelectionService().clear();
     } else {
-      SelectionService().setItem(ItemWithOwner(widget.item, widget.characterId));
+      SelectionService()
+          .setItem(ItemWithOwner(widget.item, widget.characterId));
     }
   }
 
@@ -321,7 +322,12 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
   }
 
   Widget buildMinimal(BuildContext context) {
-    switch (definition.itemType) {
+    var type = definition?.itemType;
+    if (type == DestinyItemType.None &&
+        definition?.inventory?.bucketTypeHash == InventoryBucket.subclass) {
+      type = DestinyItemType.Subclass;
+    }
+    switch (type) {
       case DestinyItemType.Armor:
         {
           return MinimalArmorInventoryItemWidget(
@@ -366,49 +372,45 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
   }
 
   Widget buildMedium(BuildContext context) {
-    switch (definition.itemType) {
+    var type = definition?.itemType;
+    if (type == DestinyItemType.None &&
+        definition?.inventory?.bucketTypeHash == InventoryBucket.subclass) {
+      type = DestinyItemType.Subclass;
+    }
+    switch (type) {
       case DestinyItemType.Subclass:
-        {
-          return MediumSubclassInventoryItemWidget(
-            widget.item,
-            definition,
-            instanceInfo,
-            characterId: widget.characterId,
-            uniqueId: uniqueId,
-          );
-        }
+        return MediumSubclassInventoryItemWidget(
+          widget.item,
+          definition,
+          instanceInfo,
+          characterId: widget.characterId,
+          uniqueId: uniqueId,
+        );
       case DestinyItemType.Weapon:
-        {
-          return MediumWeaponInventoryItemWidget(
-            widget.item,
-            definition,
-            instanceInfo,
-            characterId: widget.characterId,
-            uniqueId: uniqueId,
-          );
-        }
+        return MediumWeaponInventoryItemWidget(
+          widget.item,
+          definition,
+          instanceInfo,
+          characterId: widget.characterId,
+          uniqueId: uniqueId,
+        );
 
       case DestinyItemType.Armor:
-        {
-          return MediumArmorInventoryItemWidget(
-            widget.item,
-            definition,
-            instanceInfo,
-            characterId: widget.characterId,
-            uniqueId: uniqueId,
-          );
-        }
-
+        return MediumArmorInventoryItemWidget(
+          widget.item,
+          definition,
+          instanceInfo,
+          characterId: widget.characterId,
+          uniqueId: uniqueId,
+        );
       case DestinyItemType.Emblem:
-        {
-          return MediumEmblemInventoryItemWidget(
-            widget.item,
-            definition,
-            instanceInfo,
-            characterId: widget.characterId,
-            uniqueId: uniqueId,
-          );
-        }
+        return MediumEmblemInventoryItemWidget(
+          widget.item,
+          definition,
+          instanceInfo,
+          characterId: widget.characterId,
+          uniqueId: uniqueId,
+        );
 
       default:
         return MediumBaseInventoryItemWidget(
@@ -422,7 +424,12 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
   }
 
   Widget buildFull(BuildContext context) {
-    switch (definition.itemType) {
+    var type = definition?.itemType;
+    if (type == DestinyItemType.None &&
+        definition?.inventory?.bucketTypeHash == InventoryBucket.subclass) {
+      type = DestinyItemType.Subclass;
+    }
+    switch (type) {
       case DestinyItemType.Subclass:
         {
           return SubclassInventoryItemWidget(

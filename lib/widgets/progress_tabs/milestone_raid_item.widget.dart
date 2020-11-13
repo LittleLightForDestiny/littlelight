@@ -33,9 +33,11 @@ class MilestoneRaidItemWidget extends MilestoneItemWidget {
 class _MilestoneRaidItemWidgetState
     extends MilestoneItemWidgetState<MilestoneRaidItemWidget> {
   buildMilestoneActivities(BuildContext context) {
-    var activities = milestone.activities
-        .where((a) => a.phases != null && a.phases.length > 0);
-
+    var activities = milestone?.activities
+        ?.where((a) => a.phases != null && a.phases.length > 0);
+    if ((activities?.length ?? 0) == 0) {
+      return Container();
+    }
     if (activities.length == 1) {
       return Container(
           padding: EdgeInsets.all(2),

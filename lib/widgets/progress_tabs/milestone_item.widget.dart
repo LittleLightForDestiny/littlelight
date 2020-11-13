@@ -171,12 +171,12 @@ class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
     }
     List<DestinyMilestoneChallengeActivity> activities = milestone.activities;
     List<DestinyMilestoneChallengeActivity> activitiesWithModifiers =
-        activities.where((a) => a.modifierHashes != null).toList();
-    if (activitiesWithModifiers.length > 0) {
+        activities?.where((a) => a.modifierHashes != null)?.toList();
+    if ((activitiesWithModifiers?.length ?? 0) > 0) {
       activities = activitiesWithModifiers;
     }
     List<DestinyMilestoneChallengeActivity> activitiesWithChallenges =
-        activities.where((a) => (a.challenges?.length ?? 0) > 0).toList();
+        activities?.where((a) => (a.challenges?.length ?? 0) > 0)?.toList();
     if (activitiesWithChallenges.length > 0) {
       activities = activitiesWithChallenges;
     }
