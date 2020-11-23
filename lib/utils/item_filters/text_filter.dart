@@ -28,10 +28,10 @@ class TextFilter extends BaseItemFilter<String> {
         .map((s) => removeDiacritics(s.toLowerCase().trim()))
         .toList(growable: false);
     var _def = definitions[item?.item?.itemHash];
-    var name =
-        removeDiacritics(_def?.displayProperties?.name?.toLowerCase()?.trim());
-    var itemType =
-        removeDiacritics(_def?.itemTypeDisplayName?.toLowerCase()?.trim());
+    var name = removeDiacritics(
+        _def?.displayProperties?.name?.toLowerCase()?.trim() ?? "");
+    var itemType = removeDiacritics(
+        _def?.itemTypeDisplayName?.toLowerCase()?.trim() ?? "");
     var sockets = ProfileService().getItemSockets(item?.item?.itemInstanceId);
     var reusablePlugs =
         ProfileService().getItemReusablePlugs(item?.item?.itemInstanceId);
