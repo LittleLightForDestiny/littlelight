@@ -1,6 +1,0 @@
-framework module sqflite_fde {
-  umbrella header "sqflite_fde-umbrella.h"
-
-  export *
-  module * { export * }
-}

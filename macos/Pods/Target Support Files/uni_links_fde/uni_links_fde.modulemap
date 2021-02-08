@@ -1,6 +1,0 @@
-framework module uni_links_fde {
-  umbrella header "uni_links_fde-umbrella.h"
-
-  export *
-  module * { export * }
-}

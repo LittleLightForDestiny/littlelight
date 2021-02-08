@@ -30,15 +30,17 @@ class SelectLanguageWidgetState extends State<SelectLanguageWidget> {
     getLanguage();
   }
 
-  void getLanguage() async{
+  void getLanguage() async {
     await Future.delayed(Duration(milliseconds: 1));
     selectedLanguage = StorageService.getLanguage();
-    Locale locale = Localizations.localeOf(context, nullOk: true);
-    if(selectedLanguage == null && locale != null){
-      String localeName = "${locale.languageCode}-${locale.countryCode?.toLowerCase() ?? ''}";
-      selectedLanguage = widget.availableLanguages.firstWhere((language)=>language==localeName, orElse: ()=>null);
+    Locale locale = Localizations.localeOf(context);
+    if (selectedLanguage == null && locale != null) {
+      String localeName =
+          "${locale.languageCode}-${locale.countryCode?.toLowerCase() ?? ''}";
+      selectedLanguage = widget.availableLanguages
+          .firstWhere((language) => language == localeName, orElse: () => null);
     }
-    if(selectedLanguage == null){
+    if (selectedLanguage == null) {
       selectedLanguage = widget.translate.fallbackLanguage;
     }
     widget.onChange(selectedLanguage);
@@ -55,7 +57,7 @@ class SelectLanguageWidgetState extends State<SelectLanguageWidget> {
   List<Widget> getLanguageButtons(BuildContext context) {
     var query = MediaQueryHelper(context);
     var factor = 1.0;
-    if(query.tabletOrBigger || query.isLandscape){
+    if (query.tabletOrBigger || query.isLandscape) {
       factor = .25;
     }
     List<String> languages = widget.availableLanguages;
@@ -69,7 +71,9 @@ class SelectLanguageWidgetState extends State<SelectLanguageWidget> {
                   widget.onChange(selectedLanguage);
                 });
               },
-              color:selectedLanguage == language ? Theme.of(context).buttonColor : Colors.transparent,
+              color: selectedLanguage == language
+                  ? Theme.of(context).buttonColor
+                  : Colors.transparent,
               language: language));
     }).toList();
     return buttons;
@@ -79,9 +83,10 @@ class SelectLanguageWidgetState extends State<SelectLanguageWidget> {
   Widget build(BuildContext context) {
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       Container(
-        constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height - 210),
-        child:
-        SingleChildScrollView(child:Wrap(children: this.getLanguageButtons(context)))),
+          constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height - 210),
+          child: SingleChildScrollView(
+              child: Wrap(children: this.getLanguageButtons(context)))),
       RaisedButton(
         onPressed: () {
           this.okClick();

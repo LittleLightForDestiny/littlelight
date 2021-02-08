@@ -2,10 +2,10 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_objective_definition.dart';
 import 'package:bungie_api/models/destiny_objective_progress.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
 class MasterworkCounterWidget extends StatefulWidget {
   final ManifestService manifest = ManifestService();
@@ -64,9 +64,9 @@ class MasterworkCounterWidgetState extends State<MasterworkCounterWidget>
             Container(
               width: 26,
               height: 26,
-              child: Image(
-                  image: AdvancedNetworkImage(BungieApiService.url(
-                      masterworkObjectiveDefinition.displayProperties.icon))),
+              child: QueuedNetworkImage(
+                  imageUrl: BungieApiService.url(
+                      masterworkObjectiveDefinition.displayProperties.icon)),
             ),
             Container(
               width: 4,

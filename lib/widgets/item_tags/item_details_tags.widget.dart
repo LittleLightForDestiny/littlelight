@@ -39,12 +39,14 @@ class ItemDetailsTagsWidget extends BaseDestinyStatefulItemWidget {
 class ItemDetailsTagsWidgetState
     extends BaseDestinyItemState<ItemDetailsTagsWidget> {
   ItemNotes notes;
+  List<ItemNotesTag> tags;
 
   @override
   void initState() {
     super.initState();
     notes = ItemNotesService()
         .getNotesForItem(item?.itemHash, item?.itemInstanceId, true);
+    tags = ItemNotesService().tagsByIds(notes?.tags);
     setState(() {});
   }
 
@@ -56,6 +58,7 @@ class ItemDetailsTagsWidgetState
 
   @override
   Widget build(BuildContext context) {
+    if (tags == null) return Container();
     return Container(
         padding: EdgeInsets.all(8),
         child: Column(
@@ -75,7 +78,6 @@ class ItemDetailsTagsWidgetState
   }
 
   Widget buildTags(BuildContext context) {
-    var tags = ItemNotesService().tagsByIds(notes?.tags);
     return Wrap(
       crossAxisAlignment: WrapCrossAlignment.start,
       runSpacing: 4,
@@ -101,7 +103,7 @@ class ItemDetailsTagsWidgetState
                   save();
                 },
               ))
-          .followedBy([
+          ?.followedBy([
         ItemTagWidget(
             ItemNotesTag(
                 icon: null, name: "Add Tag", backgroundColorHex: "#03A9f4"),

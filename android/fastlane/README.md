@@ -16,11 +16,16 @@ or alternatively using `brew install fastlane`
 
 # Available Actions
 ## Android
+### android beta
+```
+fastlane android beta
+```
+Deploy a new version to the Google Play
 ### android deploy
 ```
 fastlane android deploy
 ```
-Deploy a new version to the Google Play
+
 ### android download_metadata
 ```
 fastlane android download_metadata

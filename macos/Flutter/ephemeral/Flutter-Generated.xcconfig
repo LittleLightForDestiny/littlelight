@@ -1,13 +1,13 @@
 // This is a generated file; do not edit or check into version control.
-FLUTTER_ROOT=/Users/marquesini/sdks/flutter-master
-FLUTTER_APPLICATION_PATH=/Users/marquesini/workspace/littlelight_desktop
-FLUTTER_TARGET=/Users/marquesini/workspace/littlelight_desktop/lib/main.dart
+FLUTTER_ROOT=/Users/littlelight/sdks/flutter-dev
+FLUTTER_APPLICATION_PATH=/Users/littlelight/workspace/littlelight_desktop
+FLUTTER_TARGET=/Users/littlelight/workspace/littlelight_desktop/lib/main.dart
 FLUTTER_BUILD_DIR=build
-FLUTTER_FRAMEWORK_DIR=/Users/marquesini/sdks/flutter-master/bin/cache/artifacts/engine/darwin-x64
 FLUTTER_BUILD_NAME=1.7.50
 FLUTTER_BUILD_NUMBER=107050
-DART_DEFINES=flutter.inspector.structuredErrors%3Dtrue
+EXCLUDED_ARCHS=arm64
+DART_DEFINES=flutter.inspector.structuredErrors%3Dtrue,FLUTTER_WEB_AUTO_DETECT%3Dtrue
 DART_OBFUSCATION=false
 TRACK_WIDGET_CREATION=true
 TREE_SHAKE_ICONS=false
-PACKAGE_CONFIG=/Users/marquesini/workspace/littlelight_desktop/.dart_tool/package_config.json
+PACKAGE_CONFIG=/Users/littlelight/workspace/littlelight_desktop/.dart_tool/package_config.json

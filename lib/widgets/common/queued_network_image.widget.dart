@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_advanced_networkimage/provider.dart';
-import 'package:flutter_advanced_networkimage/transition.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class QueuedNetworkImage extends StatelessWidget {
   static int maxNrOfCacheObjects;
@@ -22,18 +21,24 @@ class QueuedNetworkImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if(imageUrl == null){
+    if (imageUrl == null) {
       return Container();
     }
-    return TransitionToImage(
-      image:AdvancedNetworkImage(
-        imageUrl,
-        useDiskCache: true,
-        fallbackAssetImage: "assets/imgs/cant_load.png"
-      ),
+
+    return CachedNetworkImage(
+      imageUrl: imageUrl,
       fit: fit,
-      loadingWidget: placeholder ?? Container(),
       alignment: alignment,
+      progressIndicatorBuilder: (context, url, downloadProgress) =>
+          placeholder ?? Container(),
+      errorWidget: (context, url, error) => Icon(Icons.error),
     );
+    // return TransitionToImage(
+    //   image: AdvancedNetworkImage(imageUrl,
+    //       useDiskCache: true, fallbackAssetImage: "assets/imgs/cant_load.png"),
+    //   fit: fit,
+    //   loadingWidget: placeholder ?? Container(),
+    //   alignment: alignment,
+    // );
   }
 }

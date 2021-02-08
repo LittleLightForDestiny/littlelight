@@ -5,7 +5,6 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/rendering.dart';
-import 'package:little_light/screens/share_preview.screen.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/masterwork_counter/base_masterwork_counter.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
@@ -176,20 +175,7 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
             color: Colors.transparent,
             child: IconButton(
               enableFeedback: false,
-              onPressed: () async {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => SharePreviewScreen(
-                      item,
-                      definition,
-                      instanceInfo,
-                      characterId: null,
-                      uniqueId: uniqueId,
-                    ),
-                  ),
-                );
-              },
+              onPressed: () async {},
               icon: Icon(Icons.share,
                   color: Color.lerp(
                       DestinyData.getTierTextColor(

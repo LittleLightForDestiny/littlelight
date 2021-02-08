@@ -105,7 +105,8 @@ class MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
             ),
           ),
           body: currentScreen,
-          resizeToAvoidBottomPadding: false,
+          resizeToAvoidBottomInset: false,
+          // resizeToAvoidBottomPadding: false,
         ));
   }
 

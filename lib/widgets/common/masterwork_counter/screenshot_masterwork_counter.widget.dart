@@ -1,10 +1,10 @@
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/storage/storage.service.dart';
 import 'package:little_light/widgets/common/masterwork_counter/base_masterwork_counter.widget.dart';
+import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
 class ScreenshotMasterworkCounterWidget extends BaseMasterworkCounterWidget {
   final double pixelSize;
@@ -29,32 +29,32 @@ class ScreenshotMasterworkCounterState extends BaseMasterworkCounterWidgetState<
     }
     return Container(
         child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            buildIcon(context),
-            Container(
-              width: widget.pixelSize*4,
-            ),
-            buildProgressDescription(context),
-            Container(
-              width: widget.pixelSize*4,
-            ),
-            buildProgressValue(context),
-            Container(
-              width: widget.pixelSize*4,
-            ),
-            buildBigIcon(context)
-          ],
-        ));
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        buildIcon(context),
+        Container(
+          width: widget.pixelSize * 4,
+        ),
+        buildProgressDescription(context),
+        Container(
+          width: widget.pixelSize * 4,
+        ),
+        buildProgressValue(context),
+        Container(
+          width: widget.pixelSize * 4,
+        ),
+        buildBigIcon(context)
+      ],
+    ));
   }
 
   Widget buildIcon(BuildContext context) {
     return Container(
-      width: widget.pixelSize*24,
-      height: widget.pixelSize*24,
-      child: Image(
-          image: AdvancedNetworkImage(BungieApiService.url(
-              masterworkObjectiveDefinition.displayProperties.icon))),
+      width: widget.pixelSize * 24,
+      height: widget.pixelSize * 24,
+      child: QueuedNetworkImage(
+          imageUrl: BungieApiService.url(
+              masterworkObjectiveDefinition.displayProperties.icon)),
     );
   }
 
@@ -63,8 +63,9 @@ class ScreenshotMasterworkCounterState extends BaseMasterworkCounterWidgetState<
         softWrap: false,
         overflow: TextOverflow.fade,
         style: TextStyle(
-          fontWeight: FontWeight.w300,
-          color: Colors.white, fontSize: widget.pixelSize * 20));
+            fontWeight: FontWeight.w300,
+            color: Colors.white,
+            fontSize: widget.pixelSize * 20));
   }
 
   Widget buildProgressValue(BuildContext context) {

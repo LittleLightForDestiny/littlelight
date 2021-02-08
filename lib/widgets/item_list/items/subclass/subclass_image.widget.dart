@@ -48,9 +48,6 @@ class _SubClassImageWidgetState extends DestinyItemState<SubClassImageWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (!loaded) {
-      return Container(color: Colors.red, width: 50, height: 50);
-    }
     if (imagePath != null) {
       return Image.asset(
         imagePath,
@@ -58,6 +55,6 @@ class _SubClassImageWidgetState extends DestinyItemState<SubClassImageWidget> {
         alignment: Alignment.topRight,
       );
     }
-    return Container(color: Colors.blue, width: 50, height: 50);
+    return Container();
   }
 }

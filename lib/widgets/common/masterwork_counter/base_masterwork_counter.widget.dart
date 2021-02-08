@@ -2,11 +2,11 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_objective_definition.dart';
 import 'package:bungie_api/models/destiny_objective_progress.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/storage/storage.service.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
+import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
 class BaseMasterworkCounterWidget extends BaseDestinyStatefulItemWidget {
   BaseMasterworkCounterWidget({DestinyItemComponent item, Key key})
@@ -19,8 +19,7 @@ class BaseMasterworkCounterWidget extends BaseDestinyStatefulItemWidget {
 }
 
 class BaseMasterworkCounterWidgetState<T extends BaseMasterworkCounterWidget>
-    extends BaseDestinyItemState<T>
-    with AutomaticKeepAliveClientMixin {
+    extends BaseDestinyItemState<T> with AutomaticKeepAliveClientMixin {
   DestinyObjectiveProgress masterworkObjective;
   DestinyObjectiveDefinition masterworkObjectiveDefinition;
 
@@ -33,8 +32,8 @@ class BaseMasterworkCounterWidgetState<T extends BaseMasterworkCounterWidget>
     if (widget.item == null) return;
     var plugObjectives =
         widget.profile.getPlugObjectives(widget?.item?.itemInstanceId);
-    
-    if(plugObjectives == null) return;
+
+    if (plugObjectives == null) return;
     for (var objectives in plugObjectives?.values) {
       for (var objective in objectives) {
         if (objective.visible) {
@@ -88,9 +87,9 @@ class BaseMasterworkCounterWidgetState<T extends BaseMasterworkCounterWidget>
     return Container(
       width: 26,
       height: 26,
-      child: Image(
-          image: AdvancedNetworkImage(BungieApiService.url(
-              masterworkObjectiveDefinition.displayProperties.icon))),
+      child: QueuedNetworkImage(
+          imageUrl: BungieApiService.url(
+              masterworkObjectiveDefinition.displayProperties.icon)),
     );
   }
 
