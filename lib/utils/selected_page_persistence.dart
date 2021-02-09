@@ -1,6 +1,7 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/storage/storage.service.dart';
+import 'package:little_light/utils/platform_capabilities.dart';
 
 FirebaseAnalytics _analytics = FirebaseAnalytics();
 
@@ -34,8 +35,11 @@ class SelectedPagePersistence {
   }
 
   static saveLatestScreen(String screen) async {
-    _analytics.setCurrentScreen(
-        screenName: screen, screenClassOverride: screen);
+    if (PlatformCapabilities.firebaseAnalyticsAvailable) {
+      _analytics.setCurrentScreen(
+          screenName: screen, screenClassOverride: screen);
+    }
+
     StorageService _prefs = StorageService.global();
     _prefs.setString(StorageKeys.latestScreen, screen);
   }

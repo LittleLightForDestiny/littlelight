@@ -103,7 +103,7 @@ class ItemDetailsTagsWidgetState
                   save();
                 },
               ))
-          ?.followedBy([
+          .followedBy([
         ItemTagWidget(
             ItemNotesTag(
                 icon: null, name: "Add Tag", backgroundColorHex: "#03A9f4"),

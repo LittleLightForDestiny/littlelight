@@ -15,8 +15,6 @@ import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/objective.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
-
-
 class ItemObjectivesWidget extends BaseDestinyStatefulItemWidget {
   final NotificationService broadcaster = NotificationService();
   ItemObjectivesWidget(
@@ -78,9 +76,9 @@ class ItemObjectivesWidgetState
 
     var plugObjectives = widget.profile.getPlugObjectives(itemInstanceId);
     var plugHash = "${widget.definition.hash}";
-    if(plugObjectives?.containsKey(plugHash) ?? false){
+    if (plugObjectives?.containsKey(plugHash) ?? false) {
       itemObjectives = plugObjectives["${widget.definition.hash}"];
-    } 
+    }
     setState(() {});
     return;
   }

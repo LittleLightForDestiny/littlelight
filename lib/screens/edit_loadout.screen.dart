@@ -79,7 +79,8 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> {
 
   buildItemIndex() async {
     bucketDefinitions = await widget.manifest
-        .getDefinitions<DestinyInventoryBucketDefinition>(InventoryBucket.loadoutBucketHashes);
+        .getDefinitions<DestinyInventoryBucketDefinition>(
+            InventoryBucket.loadoutBucketHashes);
     _itemIndex = await InventoryUtils.buildLoadoutItemIndex(_loadout);
     if (mounted) {
       setState(() {});
@@ -108,8 +109,13 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> {
                   : "Edit Loadout"),
           flexibleSpace: buildAppBarBackground(context)),
       body: ListView.builder(
-        padding: EdgeInsets.all(8).copyWith(top: 0, left: max(screenPadding.left, 8), right: max(screenPadding.right, 8)),
-          itemCount: _itemIndex == null ? 2 : InventoryBucket.loadoutBucketHashes.length + 2,
+          padding: EdgeInsets.all(8).copyWith(
+              top: 0,
+              left: max(screenPadding.left, 8),
+              right: max(screenPadding.right, 8)),
+          itemCount: _itemIndex == null
+              ? 2
+              : InventoryBucket.loadoutBucketHashes.length + 2,
           itemBuilder: itemBuilder),
       bottomNavigationBar: buildFooter(context),
     );
@@ -189,9 +195,9 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> {
     if (item == null) {
       return;
     }
-    int removedItem =
-        await _loadout.addItem(item.item.itemHash, item.item.itemInstanceId, equipped);
-    if(removedItem != null){
+    int removedItem = await _loadout.addItem(
+        item.item.itemHash, item.item.itemInstanceId, equipped);
+    if (removedItem != null) {
       showRemovingExoticMessage(context, removedItem);
     }
     _itemIndex = LoadoutItemIndex(_loadout);
@@ -201,7 +207,8 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> {
   }
 
   showRemovingExoticMessage(BuildContext context, int hash) async {
-    DestinyInventoryItemDefinition definition = await widget.manifest.getDefinition<DestinyInventoryItemDefinition>(hash);
+    DestinyInventoryItemDefinition definition = await widget.manifest
+        .getDefinition<DestinyInventoryItemDefinition>(hash);
     if (definition.itemType == DestinyItemType.Weapon) {
       _showSnackBar(
           context,

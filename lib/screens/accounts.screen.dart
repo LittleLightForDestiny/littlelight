@@ -15,8 +15,6 @@ import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
-
-
 class AccountsScreen extends StatefulWidget {
   final AuthService auth = AuthService();
   @override

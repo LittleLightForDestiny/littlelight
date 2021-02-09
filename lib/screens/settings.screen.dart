@@ -10,6 +10,7 @@ import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/services/user_settings/character_sort_parameter.dart';
 import 'package:little_light/services/user_settings/item_sort_parameter.dart';
 import 'package:little_light/services/user_settings/user_settings.service.dart';
+import 'package:little_light/utils/platform_capabilities.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/littlelight_custom.dialog.dart';
 
@@ -111,6 +112,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   buildKeepAwake(BuildContext context) {
+    if (!PlatformCapabilities.keepScreenOnAvailable) {
+      return Container();
+    }
     return ListTile(
         title: TranslatedTextWidget(
           "Keep Awake",
@@ -143,7 +147,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
           onChanged: (val) {
             widget.settings.tapToSelect = val;
             setState(() {});
-            Screen.keepOn(val);
           },
         ));
   }
@@ -160,7 +163,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
           onChanged: (val) {
             widget.settings.autoOpenKeyboard = val;
             setState(() {});
-            Screen.keepOn(val);
           },
         ));
   }

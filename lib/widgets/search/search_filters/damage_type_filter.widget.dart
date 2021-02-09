@@ -22,7 +22,7 @@ class _DamageTypeFilterWidgetState extends BaseSearchFilterWidgetState<
 
   @override
   Iterable<DestinyDamageTypeDefinition> get options {
-    if (_definitions == null) return List();
+    if (_definitions == null) return [];
     var _options = filter.availableValues.map((h) => _definitions[h]).toList();
     _options.sort((a, b) => a?.index?.compareTo(b?.index ?? -1) ?? 0);
     return _options;
@@ -79,17 +79,20 @@ class _DamageTypeFilterWidgetState extends BaseSearchFilterWidgetState<
 
   @override
   Widget buildFilterLabel(BuildContext context) {
-    return TranslatedTextWidget("Damage Type", uppercase: true,);
+    return TranslatedTextWidget(
+      "Damage Type",
+      uppercase: true,
+    );
   }
 
   @override
   Widget buildDisabledLabel(BuildContext context) {
-    try{
+    try {
       var value = options.single;
-      if(value.enumValue == DamageType.None){
+      if (value.enumValue == DamageType.None) {
         return Container();
       }
-    }catch(_){
+    } catch (_) {
       return Container();
     }
     return super.buildDisabledLabel(context);

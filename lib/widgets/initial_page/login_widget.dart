@@ -7,7 +7,6 @@ import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
-
 typedef void LoginCallback(String code);
 typedef void SkipCallback();
 
@@ -36,7 +35,7 @@ class LoginWidgetState extends State<LoginWidget> {
       String code = await widget.auth.authorize(widget.forceReauth);
       widget.onLogin(code);
     } on OAuthException catch (e) {
-      bool isIOS =  Platform.isIOS;
+      bool isIOS = Platform.isIOS;
       String platformMessage =
           "If this keeps happening, please try to login with a mainstream browser.";
       if (isIOS) {
@@ -85,7 +84,8 @@ class LoginWidgetState extends State<LoginWidget> {
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       Padding(
         padding: EdgeInsets.all(8),
-        child: TranslatedTextWidget("Authorize with Bungie.net to use inventory management features"),
+        child: TranslatedTextWidget(
+            "Authorize with Bungie.net to use inventory management features"),
       ),
       RaisedButton(
         onPressed: () {

@@ -60,7 +60,7 @@ class PresentationNodeListWidgetState
       _presentationNodeDefinitions = await widget.manifest
           .getDefinitions<DestinyPresentationNodeDefinition>(hashes);
     }
-    listIndex = List<CollectionListItem>();
+    listIndex = [];
     presentationNodes.forEach((node) {
       listIndex.add(CollectionListItem(
           CollectionListItemType.presentationNode, node.presentationNodeHash));

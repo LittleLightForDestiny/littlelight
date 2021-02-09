@@ -22,7 +22,7 @@ class _EnergyTypeFilterWidgetState extends BaseSearchFilterWidgetState<
 
   @override
   Iterable<DestinyEnergyTypeDefinition> get options {
-    if (_definitions == null) return List();
+    if (_definitions == null) return [];
     var _options = filter.availableValues.map((h) => _definitions[h]).toList();
     _options.sort((a, b) => a?.index?.compareTo(b?.index ?? -1) ?? 0);
     return _options;
@@ -79,17 +79,20 @@ class _EnergyTypeFilterWidgetState extends BaseSearchFilterWidgetState<
 
   @override
   Widget buildFilterLabel(BuildContext context) {
-    return TranslatedTextWidget("Energy Type", uppercase: true,);
+    return TranslatedTextWidget(
+      "Energy Type",
+      uppercase: true,
+    );
   }
 
   @override
   Widget buildDisabledLabel(BuildContext context) {
-    try{
+    try {
       var value = options.single;
-      if(value.enumValue == DestinyEnergyType.Any){
+      if (value.enumValue == DestinyEnergyType.Any) {
         return Container();
       }
-    }catch(_){
+    } catch (_) {
       return Container();
     }
     return super.buildDisabledLabel(context);

@@ -37,11 +37,7 @@ class InitialScreen extends StatefulWidget {
   final TranslateService translate = new TranslateService();
   final String authCode;
 
-  InitialScreen(
-      {Key key,
-      this.authCode
-      })
-      : super(key: key);
+  InitialScreen({Key key, this.authCode}) : super(key: key);
 
   @override
   InitialScreenState createState() => new InitialScreenState();
@@ -51,22 +47,22 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
   @override
   void initState() {
     super.initState();
-    
+
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarBrightness: Brightness.dark));
-        
+
     initLoading();
   }
 
-  initLoading() async{
+  initLoading() async {
     await StorageService.init();
     AuthService().reset();
     await LittleLightApiService().reset();
     await LoadoutsService().reset();
     await ObjectivesService().reset();
     await ManifestService().reset();
-    if(widget.authCode != null){
+    if (widget.authCode != null) {
       authCode(widget.authCode);
       return;
     }
@@ -155,18 +151,21 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
       return;
     }
     BungieNetToken token;
-    try{
+    try {
       token = await widget.auth.getToken();
-    }on BungieApiException catch(e){
-      bool needsLogin = [PlatformErrorCodes.DestinyAccountNotFound, PlatformErrorCodes.WebAuthRequired].contains(e.errorCode) ||
-      ["invalid_grant"].contains(e.errorStatus);
-      if(needsLogin){
+    } on BungieApiException catch (e) {
+      bool needsLogin = [
+            PlatformErrorCodes.DestinyAccountNotFound,
+            PlatformErrorCodes.WebAuthRequired
+          ].contains(e.errorCode) ||
+          ["invalid_grant"].contains(e.errorStatus);
+      if (needsLogin) {
         showLogin();
         return;
       }
       throw e;
     }
-    
+
     if (token == null) {
       showLogin();
     } else {
@@ -208,14 +207,12 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
   }
 
   checkMembership() async {
-    GroupUserInfoCard membership = await widget.auth.getMembership();    
+    GroupUserInfoCard membership = await widget.auth.getMembership();
     if (membership == null) {
       return showSelectMembership();
     }
-    ExceptionHandler.setReportingUserInfo(
-        membership.membershipId,
-        membership.displayName,
-        membership.membershipType);
+    ExceptionHandler.setReportingUserInfo(membership.membershipId,
+        membership.displayName, membership.membershipType);
     return loadProfile();
   }
 
@@ -223,9 +220,10 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
     this.changeContent(null, null);
     UserMembershipData membershipData =
         await this.widget.apiService.getMemberships();
-    
-    if(membershipData?.destinyMemberships?.length == 1){
-      await this.widget.auth.saveMembership(membershipData, membershipData?.destinyMemberships[0].membershipId);
+
+    if (membershipData?.destinyMemberships?.length == 1) {
+      await this.widget.auth.saveMembership(
+          membershipData, membershipData?.destinyMemberships[0].membershipId);
       await loadProfile();
       return;
     }
@@ -249,11 +247,11 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
     this.goForward();
   }
 
-  goForward() async{
+  goForward() async {
     await UserSettingsService().init();
-    try{
+    try {
       await DestinySettingsService().init();
-    }catch(e){}
+    } catch (e) {}
     await WishlistsService().init();
     Navigator.pushReplacement(
         context,

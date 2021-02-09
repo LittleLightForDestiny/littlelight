@@ -167,7 +167,7 @@ class RecordDetailScreenState extends State<RecordDetailScreen> {
   Widget buildTrackingIcon(BuildContext context) {
     if (!isTracking) return Container();
     return Container(
-        margin: EdgeInsets.only(top:4),
+        margin: EdgeInsets.only(top: 4),
         padding: EdgeInsets.all(2),
         decoration: BoxDecoration(
             color: Colors.green.shade800,

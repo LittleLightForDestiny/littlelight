@@ -8,8 +8,6 @@ import 'package:little_light/services/translate/translate.service.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
-
-
 class LanguagesScreen extends StatefulWidget {
   @override
   _LanguagesScreenState createState() => _LanguagesScreenState();
@@ -46,7 +44,8 @@ class _LanguagesScreenState extends State<LanguagesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(enableFeedback: false,
+        leading: IconButton(
+          enableFeedback: false,
           icon: Icon(Icons.menu),
           onPressed: () {
             Scaffold.of(context).openDrawer();
@@ -65,7 +64,7 @@ class _LanguagesScreenState extends State<LanguagesScreen> {
 
   Widget buildBottomBar(BuildContext context) {
     if (currentLanguage == selectedLanguage) {
-      return Container(height:0);
+      return Container(height: 0);
     }
     return Container(
       color: Colors.blueGrey.shade700,
@@ -129,10 +128,8 @@ class _LanguagesScreenState extends State<LanguagesScreen> {
     var service = TranslateService();
     var languageName = service.languageNames[languageCode];
     return Row(children: [
-      Container(
-          width: 8,
-          height: 40),
-          // child: Image.asset("assets/imgs/flags/$languageCode.png")),
+      Container(width: 8, height: 40),
+      // child: Image.asset("assets/imgs/flags/$languageCode.png")),
       Container(width: 4),
       Text(
         languageName,
@@ -162,7 +159,7 @@ class _LanguagesScreenState extends State<LanguagesScreen> {
               borderRadius: BorderRadius.circular(30),
               child: InkWell(
                   borderRadius: BorderRadius.circular(30),
-                  onTap: () async{
+                  onTap: () async {
                     await StorageService.language(languageCode).purge();
                     print('purge');
                     loadLanguages();

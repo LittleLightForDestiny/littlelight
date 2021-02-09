@@ -17,7 +17,7 @@ class AddWishlistScreen extends StatefulWidget {
   _AddWishlistScreenState createState() => _AddWishlistScreenState();
 }
 
-enum ImportType { Link,File, Popular }
+enum ImportType { Link, File, Popular }
 
 class _AddWishlistScreenState extends State<AddWishlistScreen> {
   final Map<String, TextEditingController> fieldControllers = Map();
@@ -85,7 +85,7 @@ class _AddWishlistScreenState extends State<AddWishlistScreen> {
               buildDivider(context),
               // buildSourceSelect(context),
               buildTextField(context, "URL", maxLength: null),
-              
+
               buildTextField(context, "Name"),
               buildTextField(context, "Description",
                   multiline: true, maxLength: 300),

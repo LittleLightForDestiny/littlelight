@@ -37,7 +37,6 @@ class _SubClassImageWidgetState extends DestinyItemState<SubClassImageWidget> {
     var cat = extractTalentGridNodeCategory(talentGridDef, talentGrid);
     var path = DestinyData.getSubclassImagePath(definition.classType,
         definition.talentGrid.hudDamageType, cat?.identifier);
-    print("path: $path");
     try {
       await rootBundle.load(path);
       imagePath = path;

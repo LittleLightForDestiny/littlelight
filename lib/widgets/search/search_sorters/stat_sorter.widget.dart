@@ -21,7 +21,7 @@ class StatSorterWidgetState
     extends BaseSearchSorterWidgetState<StatSorterWidget> {
   @override
   addSorter(BuildContext context) async {
-    List<int> statHashes = List();
+    List<int> statHashes = [];
     controller.filtered.forEach((element) {
       var stats = ProfileService()
               .getPrecalculatedStats(element?.item?.itemInstanceId) ??
@@ -47,9 +47,9 @@ class StatSorterWidgetState
                             child: Material(
                                 color: Colors.blueGrey,
                                 child: InkWell(
-                                  onTap: (){
-                                    Navigator.of(context).pop(statHash);
-                                  },
+                                    onTap: () {
+                                      Navigator.of(context).pop(statHash);
+                                    },
                                     child: Container(
                                         padding: EdgeInsets.all(8),
                                         alignment: Alignment.centerLeft,
@@ -62,20 +62,25 @@ class StatSorterWidgetState
           );
           return dialog;
         });
-        if(selectedStat == null) return;
+    if (selectedStat == null) return;
     controller.customSorting.insert(
-        0, ItemSortParameter(active: true, type: this.sortParameter.type, customData: {"statHash":selectedStat}));
+        0,
+        ItemSortParameter(
+            active: true,
+            type: this.sortParameter.type,
+            customData: {"statHash": selectedStat}));
     controller.sort();
   }
 
-  int get statHash=>(this.sortParameter.customData ?? const {})['statHash'];
+  int get statHash => (this.sortParameter.customData ?? const {})['statHash'];
 
   Widget buildSortLabel(BuildContext context) {
     var style = TextStyle(
         fontWeight: FontWeight.bold,
         color: sortParameter.active ? Colors.white : Colors.grey.shade300);
-    if(statHash != null){
-      return ManifestText<DestinyStatDefinition>(statHash, uppercase: true, style:style);
+    if (statHash != null) {
+      return ManifestText<DestinyStatDefinition>(statHash,
+          uppercase: true, style: style);
     }
     return super.buildSortLabel(context);
   }

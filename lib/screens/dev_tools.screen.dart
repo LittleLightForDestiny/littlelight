@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/storage/storage.service.dart';
 
-
 class DevToolsScreen extends StatelessWidget {
   final Map<String, TextEditingController> fieldControllers = Map();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          leading: IconButton(enableFeedback: false,
+          leading: IconButton(
+            enableFeedback: false,
             icon: Icon(Icons.menu),
             onPressed: () {
               Scaffold.of(context).openDrawer();
@@ -39,21 +39,22 @@ class DevToolsScreen extends StatelessWidget {
                         },
                       ),
                       buildDivider(context),
-                      buildTextField(context, "Wishlist URL", "https://raw.githubusercontent.com/48klocs/dim-wish-list-sources/master/voltron.txt"),
+                      buildTextField(context, "Wishlist URL",
+                          "https://raw.githubusercontent.com/48klocs/dim-wish-list-sources/master/voltron.txt"),
                       buildButton(
                         context,
                         "Load Wishlist",
-                        () async {
-                          
-                        },
+                        () async {},
                       ),
                     ]))));
   }
 
-  Widget buildTextField(BuildContext context, String label, [String initialValue= ""]) {
+  Widget buildTextField(BuildContext context, String label,
+      [String initialValue = ""]) {
     var controller = fieldControllers[label];
     if (controller == null) {
-      controller = fieldControllers[label] = TextEditingController(text: initialValue);
+      controller =
+          fieldControllers[label] = TextEditingController(text: initialValue);
     }
     return Container(
         padding: EdgeInsets.all(8),

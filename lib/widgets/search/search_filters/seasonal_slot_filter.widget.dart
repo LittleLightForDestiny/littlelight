@@ -7,26 +7,34 @@ import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/search/search.controller.dart';
 import 'package:little_light/widgets/search/search_filters/base_search_filter.widget.dart';
 
-class SeasonalSlotFilterWidget extends BaseSearchFilterWidget<SeasonSlotFilter> {
+class SeasonalSlotFilterWidget
+    extends BaseSearchFilterWidget<SeasonSlotFilter> {
   SeasonalSlotFilterWidget(SearchController controller) : super(controller);
 
   @override
-  _SeasonalSlotFilterWidgetState createState() => _SeasonalSlotFilterWidgetState();
+  _SeasonalSlotFilterWidgetState createState() =>
+      _SeasonalSlotFilterWidgetState();
 }
 
 class _SeasonalSlotFilterWidgetState extends BaseSearchFilterWidgetState<
-    SeasonalSlotFilterWidget, SeasonSlotFilter, DestinyInventoryItemDefinition> {
+    SeasonalSlotFilterWidget,
+    SeasonSlotFilter,
+    DestinyInventoryItemDefinition> {
   Map<int, DestinyInventoryItemDefinition> _definitions;
   List<int> seasonalSlots;
 
   @override
   Iterable<DestinyInventoryItemDefinition> get options {
-    if (_definitions == null) return List();
+    if (_definitions == null) return [];
     var _options = filter.availableValues.map((h) => _definitions[h]).toList();
-    if(seasonalSlots != null){
-      _options.sort((a, b) => seasonalSlots.indexOf(a?.hash)?.compareTo(seasonalSlots.indexOf(b?.hash) ?? -1) ?? 0);
+    if (seasonalSlots != null) {
+      _options.sort((a, b) =>
+          seasonalSlots
+              .indexOf(a?.hash)
+              ?.compareTo(seasonalSlots.indexOf(b?.hash) ?? -1) ??
+          0);
     }
-    
+
     return _options;
   }
 
@@ -41,11 +49,8 @@ class _SeasonalSlotFilterWidgetState extends BaseSearchFilterWidgetState<
 
   @override
   Widget buildButtons(BuildContext context) {
-    var buttons = options
-        .map((e) => buildButton(context, e))
-        .toList();
-    return Column(
-        children: [Column(children: buttons)]);
+    var buttons = options.map((e) => buildButton(context, e)).toList();
+    return Column(children: [Column(children: buttons)]);
   }
 
   @override
@@ -70,12 +75,15 @@ class _SeasonalSlotFilterWidgetState extends BaseSearchFilterWidgetState<
 
   @override
   Widget buildFilterLabel(BuildContext context) {
-    return TranslatedTextWidget("Season Slot", uppercase: true,);
+    return TranslatedTextWidget(
+      "Season Slot",
+      uppercase: true,
+    );
   }
 
   @override
   Widget buildDisabledLabel(BuildContext context) {
-    if(options.length <= 1){
+    if (options.length <= 1) {
       return Container();
     }
     return super.buildDisabledLabel(context);

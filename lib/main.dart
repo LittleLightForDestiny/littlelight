@@ -12,17 +12,19 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:little_light/exceptions/exception_handler.dart';
 import 'package:little_light/screens/initial.screen.dart';
+import 'package:little_light/utils/platform_capabilities.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
 int restartCounter = 0;
 void main() async {
   // debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
   WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp();
   FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
 
   await DotEnv().load('assets/_env');
-  print(DotEnv().env);
+
   ExceptionHandler handler = ExceptionHandler(onRestart: () {
     restartCounter++;
     main();
@@ -43,14 +45,20 @@ class LittleLight extends StatelessWidget {
   Widget build(BuildContext context) {
     QueuedNetworkImage.maxNrOfCacheObjects = 5000;
     QueuedNetworkImage.inBetweenCleans = new Duration(days: 30);
-    FirebaseAnalytics analytics = FirebaseAnalytics();
-    FirebaseAnalyticsObserver observer =
-        FirebaseAnalyticsObserver(analytics: analytics);
+
+    List<NavigatorObserver> observers = [];
+    if (PlatformCapabilities.firebaseAnalyticsAvailable) {
+      FirebaseAnalytics analytics = FirebaseAnalytics();
+      FirebaseAnalyticsObserver observer =
+          FirebaseAnalyticsObserver(analytics: analytics);
+      observers.add(observer);
+    }
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       key: key,
       title: 'Little Light',
-      navigatorObservers: [observer],
+      navigatorObservers: observers,
       theme: new ThemeData(
           disabledColor: Colors.lightBlue.shade900,
           backgroundColor: Colors.blueGrey.shade900,

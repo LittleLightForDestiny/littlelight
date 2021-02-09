@@ -24,9 +24,9 @@ class SelectPlatformWidgetState extends State<SelectPlatformWidget> {
   }
 
   List<Widget> getButtons() {
-    var plats = widget.membershipData.destinyMemberships.where((p)=>p.applicableMembershipTypes.length > 0);
-    return plats
-    .map((membership) {
+    var plats = widget.membershipData.destinyMemberships
+        .where((p) => p.applicableMembershipTypes.length > 0);
+    return plats.map((membership) {
       return FractionallySizedBox(
           widthFactor: 1 / plats.length,
           child: Padding(

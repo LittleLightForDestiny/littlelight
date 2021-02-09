@@ -9,6 +9,7 @@ import 'package:little_light/services/littlelight/item_notes.service.dart';
 import 'package:little_light/services/littlelight/loadouts.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/user_settings/user_settings.service.dart';
+import 'package:little_light/utils/platform_capabilities.dart';
 import 'package:little_light/utils/selected_page_persistence.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
@@ -87,7 +88,9 @@ class MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
     setState(() {});
     bool keepAwake = UserSettingsService().keepAwake;
 
-    Screen.keepOn(keepAwake);
+    if (PlatformCapabilities.keepScreenOnAvailable) {
+      Screen.keepOn(keepAwake);
+    }
   }
 
   @override
