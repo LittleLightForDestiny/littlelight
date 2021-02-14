@@ -10,7 +10,6 @@ import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 
-
 import 'package:little_light/widgets/item_list/character_info.widget.dart';
 import 'package:little_light/widgets/progress_tabs/faction_rank_item.widget.dart';
 
@@ -61,7 +60,9 @@ class _CharacterRanksListWidgetState extends State<CharacterRanksListWidget>
       progressionsRoot.progressions["${DestinyRanks.valor}"],
       progressionsRoot.progressions["${DestinyRanks.infamy}"]
     ];
-    this.progressions = progressionsRoot.factions.values.where((p)=>p.factionHash != null).toList();
+    this.progressions = progressionsRoot.factions.values
+        .where((p) => p.factionHash != null)
+        .toList();
     if (mounted) {
       setState(() {});
       fullyLoaded = true;
@@ -72,9 +73,12 @@ class _CharacterRanksListWidgetState extends State<CharacterRanksListWidget>
   Widget build(BuildContext context) {
     super.build(context);
     var screenPadding = MediaQuery.of(context).padding;
-    
+
     return StaggeredGridView.countBuilder(
-      padding: EdgeInsets.all(4).copyWith(top: 0, left: max(screenPadding.left, 4), right: max(screenPadding.right, 4)),
+      padding: EdgeInsets.all(4).copyWith(
+          top: 0,
+          left: max(screenPadding.left, 4),
+          right: max(screenPadding.right, 4)),
       crossAxisCount: 6,
       addAutomaticKeepAlives: true,
       addRepaintBoundaries: true,
@@ -82,10 +86,10 @@ class _CharacterRanksListWidgetState extends State<CharacterRanksListWidget>
       mainAxisSpacing: 4,
       crossAxisSpacing: 4,
       staggeredTileBuilder: (index) {
-        if(index == 0){
+        if (index == 0) {
           return StaggeredTile.extent(6, 112);
         }
-        if(index < 4){
+        if (index < 4) {
           return StaggeredTile.count(2, 3);
         }
         return StaggeredTile.extent(6, 96);
@@ -100,7 +104,7 @@ class _CharacterRanksListWidgetState extends State<CharacterRanksListWidget>
                 characterId: widget.characterId,
               ));
         }
-        if(index < ranks.length + 1){
+        if (index < ranks.length + 1) {
           var rank = ranks[index - 1];
           return RankItemWidget(
             characterId: widget.characterId,
@@ -110,11 +114,10 @@ class _CharacterRanksListWidgetState extends State<CharacterRanksListWidget>
         }
         var progression = progressions[index - ranks.length - 1];
         return FactionRankItemWidget(
-            characterId: widget.characterId,
-            progression: progression,
-            key: Key("progression_${progression.progressionHash}"),
-          );
-          
+          characterId: widget.characterId,
+          progression: progression,
+          key: Key("progression_${progression.progressionHash}"),
+        );
       },
     );
   }
