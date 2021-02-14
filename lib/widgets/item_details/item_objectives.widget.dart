@@ -10,6 +10,7 @@ import 'package:little_light/models/tracked_objective.dart';
 import 'package:little_light/services/littlelight/objectives.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/objective.widget.dart';
@@ -147,8 +148,12 @@ class ItemObjectivesWidgetState
   Widget buildTrackButton(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(8),
-      child: RaisedButton(
-        color: isTracking ? Colors.green.shade600 : Colors.green.shade800,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          primary: isTracking
+              ? DestinyData.trackingOnColor
+              : DestinyData.trackingOffColor,
+        ),
         child: isTracking
             ? TranslatedTextWidget("Stop Tracking", key: Key("stop_tracking"))
             : TranslatedTextWidget("Track Objectives",

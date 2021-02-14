@@ -66,7 +66,7 @@ class DevToolsScreen extends StatelessWidget {
   }
 
   Widget buildButton(BuildContext context, String label, Function onPressed) {
-    return RaisedButton(
+    return ElevatedButton(
       child: Text(label),
       onPressed: onPressed,
     );

@@ -134,6 +134,9 @@ class DestinyData {
   static const Color negativeFeedback = Color.fromRGBO(204, 58, 56, 1);
   static const Color masterworkColor = Color.fromRGBO(235, 196, 98, 1);
 
+  static const Color trackingOnColor = Color(0xFF43A047);
+  static const Color trackingOffColor = Color(0xFF2E7D32);
+
   static const Color perkColor = Color.fromRGBO(94, 153, 192, 1);
 
   static const Color objectiveProgress = Color.fromRGBO(90, 163, 102, 1);

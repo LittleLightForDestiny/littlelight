@@ -347,7 +347,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
                         "Item Unlocked",
                         uppercase: true,
                       )),
-            RaisedButton(
+            ElevatedButton(
               child: locked
                   ? TranslatedTextWidget(
                       "Unlock",
@@ -373,7 +373,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
     if (InventoryBucket.loadoutBucketHashes
         .contains(definition?.inventory?.bucketTypeHash)) {
       buttons.add(Expanded(
-          child: RaisedButton(
+          child: ElevatedButton(
               child: TranslatedTextWidget(
                 "Add to Loadout",
                 overflow: TextOverflow.fade,
@@ -401,7 +401,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
     if (widget?.definition?.collectibleHash != null ||
         widget?.definition?.equippable == true) {
       buttons.add(Expanded(
-          child: RaisedButton(
+          child: ElevatedButton(
               child: TranslatedTextWidget(
                 "View in Collections",
                 overflow: TextOverflow.fade,

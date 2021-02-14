@@ -52,7 +52,7 @@ class SelectPlatformWidgetState extends State<SelectPlatformWidget> {
           Container(
               padding: EdgeInsets.all(8),
               constraints: BoxConstraints(minWidth: double.infinity),
-              child: RaisedButton(
+              child: ElevatedButton(
                 child: TranslatedTextWidget("Login"),
                 onPressed: () {
                   widget.onSelect(null);

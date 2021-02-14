@@ -266,7 +266,7 @@ class LoadoutItemIndex {
       unequipped = new Map();
     }
     if (unequipped[def.inventory.bucketTypeHash] == null) {
-      unequipped[def.inventory.bucketTypeHash] = new List();
+      unequipped[def.inventory.bucketTypeHash] = [];
     }
     unequipped[def.inventory.bucketTypeHash].add(item);
     if (modifyLoadout) {
@@ -283,7 +283,7 @@ class LoadoutItemIndex {
       unequipped = new Map();
     }
     if (unequipped[def.inventory.bucketTypeHash] == null) {
-      unequipped[def.inventory.bucketTypeHash] = new List();
+      unequipped[def.inventory.bucketTypeHash] = [];
     }
     unequipped[def.inventory.bucketTypeHash]
         .removeWhere((i) => i.itemInstanceId == item.itemInstanceId);

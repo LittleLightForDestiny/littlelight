@@ -87,17 +87,19 @@ class LoginWidgetState extends State<LoginWidget> {
         child: TranslatedTextWidget(
             "Authorize with Bungie.net to use inventory management features"),
       ),
-      RaisedButton(
+      ElevatedButton(
         onPressed: () {
           this.authorizeClick(context);
         },
         child: TranslatedTextWidget("Authorize with Bungie.net"),
       ),
-      RaisedButton(
+      ElevatedButton(
         onPressed: () {
           this.laterClick();
         },
-        color: Theme.of(context).colorScheme.error,
+        style: ElevatedButton.styleFrom(
+          primary: Theme.of(context).errorColor,
+        ),
         child: TranslatedTextWidget("Later"),
       )
     ]);

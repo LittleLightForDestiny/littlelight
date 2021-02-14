@@ -174,16 +174,20 @@ class ItemDetailsTagsWidgetState
               )),
               maxWidth: 400,
               buttons: [
-                RaisedButton(
-                    visualDensity: VisualDensity.comfortable,
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      visualDensity: VisualDensity.comfortable,
+                    ),
                     child: TranslatedTextWidget("Cancel",
                         uppercase: true,
                         style: TextStyle(fontWeight: FontWeight.bold)),
                     onPressed: () {
                       Navigator.of(context).pop();
                     }),
-                RaisedButton(
-                    visualDensity: VisualDensity.comfortable,
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      visualDensity: VisualDensity.comfortable,
+                    ),
                     child: TranslatedTextWidget("Create tag",
                         uppercase: true,
                         style: TextStyle(fontWeight: FontWeight.bold)),

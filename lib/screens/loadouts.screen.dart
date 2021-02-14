@@ -158,7 +158,7 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
           height: kToolbarHeight + paddingBottom,
           padding: EdgeInsets.symmetric(horizontal: 16)
               .copyWith(top: 8, bottom: 8 + paddingBottom),
-          child: RaisedButton(
+          child: ElevatedButton(
             child: TranslatedTextWidget("Create Loadout"),
             onPressed: () {
               createNew();
@@ -258,7 +258,7 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
                 textAlign: TextAlign.center,
               ),
               Container(height: 16),
-              RaisedButton(
+              ElevatedButton(
                 child: TranslatedTextWidget("Create Loadout"),
                 onPressed: createNew,
               )

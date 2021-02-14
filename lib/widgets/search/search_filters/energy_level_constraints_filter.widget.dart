@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:little_light/utils/item_filters/energy_level_constraints_filter.dart';
 import 'package:little_light/widgets/common/small_rect_range_slider_indicator_shape.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-import 'package:little_light/widgets/flutter/smaller_switch.dart';
 import 'package:little_light/widgets/search/search.controller.dart';
 import 'package:little_light/widgets/search/search_filters/base_search_filter.widget.dart';
 
@@ -19,7 +18,6 @@ class EnergyLevelConstraintsWidgetState extends BaseSearchFilterWidgetState<
     EnergyLevelConstraintsWidget,
     EnergyLevelConstraintsFilter,
     EnergyLevelConstraints> {
-  
   @override
   Widget buildButtons(BuildContext context) {
     var aMin = filter?.availableValues?.min ?? -999;
@@ -37,7 +35,7 @@ class EnergyLevelConstraintsWidgetState extends BaseSearchFilterWidgetState<
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   TranslatedTextWidget("Include energyless items"),
-                  SmallerSwitch(
+                  Switch(
                     value: filter.value.includeEnergylessItems,
                     onChanged: (value) {
                       filter.value.includeEnergylessItems = value;
@@ -55,9 +53,9 @@ class EnergyLevelConstraintsWidgetState extends BaseSearchFilterWidgetState<
           )),
       SliderTheme(
           data: SliderTheme.of(context).copyWith(
-            rangeValueIndicatorShape: SmallRectRangeSliderValueIndicatorShape(),
-            rangeTrackShape: RoundedRectRangeSliderTrackShape()
-          ),
+              rangeValueIndicatorShape:
+                  SmallRectRangeSliderValueIndicatorShape(),
+              rangeTrackShape: RoundedRectRangeSliderTrackShape()),
           child: RangeSlider(
             values: RangeValues(min?.toDouble(), max?.toDouble()),
             min: aMin?.toDouble(),
@@ -87,7 +85,7 @@ class EnergyLevelConstraintsWidgetState extends BaseSearchFilterWidgetState<
 
   @override
   Widget buildDisabledLabel(BuildContext context) {
-    if(filter.availableValues.min > 9000){
+    if (filter.availableValues.min > 9000) {
       return Container();
     }
     return super.buildDisabledLabel(context);
@@ -95,8 +93,8 @@ class EnergyLevelConstraintsWidgetState extends BaseSearchFilterWidgetState<
 
   @override
   Widget buildDisabledValue(BuildContext context) {
-    if(filter.availableValues.min > 9000){
-      return TranslatedTextWidget("None", uppercase:true);
+    if (filter.availableValues.min > 9000) {
+      return TranslatedTextWidget("None", uppercase: true);
     }
     return Text("${filter.availableValues.min}");
   }

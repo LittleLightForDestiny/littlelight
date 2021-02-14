@@ -60,7 +60,7 @@ class LittleLightWishlistItem {
 class WishlistBuild {
   String name;
   @JsonKey(fromJson: _jsonPlugsFromJson)
-  List<Set<int>> perks = List<Set<int>>();
+  List<Set<int>> perks = [];
   Set<WishlistTag> tags = Set();
   Set<String> notes = Set();
   WishlistBuild({this.name, this.perks, this.tags, this.notes});
@@ -91,7 +91,7 @@ class WishlistBuild {
 class WishlistItem {
   int itemHash;
   Map<int, Set<WishlistTag>> perks = Map();
-  List<WishlistBuild> builds = List();
+  List<WishlistBuild> builds = [];
   WishlistItem({this.itemHash, this.builds, this.perks});
 
   factory WishlistItem.builder({
@@ -100,7 +100,7 @@ class WishlistItem {
     Map<String, WishlistBuild> builds,
   }) {
     return WishlistItem(
-        itemHash: itemHash, perks: perks ?? Map(), builds: builds ?? List());
+        itemHash: itemHash, perks: perks ?? Map(), builds: builds ?? []);
   }
 
   factory WishlistItem.fromJson(dynamic json) {

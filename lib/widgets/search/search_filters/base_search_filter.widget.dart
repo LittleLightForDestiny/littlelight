@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:little_light/utils/item_filters/base_item_filter.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
-import 'package:little_light/widgets/flutter/smaller_switch.dart';
 import 'package:little_light/widgets/search/search.controller.dart';
 
 class BaseSearchFilterWidget<T extends BaseItemFilter> extends StatefulWidget {
@@ -84,7 +83,7 @@ class BaseSearchFilterWidgetState<T extends BaseSearchFilterWidget,
                 dividerColor: Colors.blueGrey.shade800),
             child: ExpansionTile(
                 trailing: IgnorePointer(
-                    child: SmallerSwitch(
+                    child: Switch(
                   value: this.filter.enabled,
                   onChanged: (value) {},
                 )),

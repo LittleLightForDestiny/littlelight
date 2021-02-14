@@ -161,7 +161,7 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> {
               constraints: BoxConstraints(minWidth: double.infinity),
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4)
                   .copyWith(bottom: 4 + paddingBottom),
-              child: RaisedButton(
+              child: ElevatedButton(
                 child: TranslatedTextWidget("Save Loadout"),
                 onPressed: () {
                   LoadoutsService service = LoadoutsService();
@@ -227,7 +227,7 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> {
 
   void _showSnackBar(BuildContext context, Widget content) {
     SnackBar snack = SnackBar(duration: Duration(seconds: 3), content: content);
-    Scaffold.of(context).showSnackBar(snack);
+    ScaffoldMessenger.of(context).showSnackBar(snack);
   }
 
   void removeItem(bool equipped, DestinyItemComponent item) async {
@@ -255,7 +255,7 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> {
   Widget buildSelectBackgroundButton(BuildContext context) {
     return Container(
         padding: EdgeInsets.all(8),
-        child: RaisedButton(
+        child: ElevatedButton(
           child: TranslatedTextWidget("Select Loadout Background"),
           onPressed: () async {
             var emblemHash = await Navigator.push(

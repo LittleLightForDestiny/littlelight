@@ -37,10 +37,10 @@ class TextFilter extends BaseItemFilter<String> {
         ProfileService().getItemReusablePlugs(item?.item?.itemInstanceId);
     var plugHashes = Set<int>();
     plugHashes.addAll(sockets?.map((s) => s.plugHash)?.toSet() ?? Set());
-    plugHashes.addAll(reusablePlugs?.values
-            ?.fold<List<int>>(List<int>(),
-                (l, r) => l.followedBy(r.map((e) => e.plugItemHash)).toList())
-            ?.toSet() ??
+    plugHashes.addAll(reusablePlugs?.values?.fold<List<int>>(
+            [],
+            (l, r) =>
+                l.followedBy(r.map((e) => e.plugItemHash)).toList())?.toSet() ??
         Set<int>());
     var wishlistBuildNotes =
         WishlistsService().getWishlistBuildNotes(item.item);

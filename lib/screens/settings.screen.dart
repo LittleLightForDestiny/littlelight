@@ -17,7 +17,6 @@ import 'package:little_light/widgets/common/littlelight_custom.dialog.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/flutter/center_icon_workaround.dart';
 
-import 'package:little_light/widgets/flutter/smaller_switch.dart';
 import 'package:little_light/widgets/item_tags/item_tag.widget.dart';
 import 'package:little_light/widgets/option_sheets/free_slots_slider.widget.dart';
 import 'package:screen/screen.dart';
@@ -185,7 +184,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           Expanded(
             child: Container(),
           ),
-          RaisedButton(
+          ElevatedButton(
             child: TranslatedTextWidget("Add Wishlist"),
             onPressed: () async {
               Wishlist wishlist = await Navigator.push(
@@ -256,7 +255,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               padding: EdgeInsets.all(8),
                               child: Row(children: [
                                 Expanded(child: Container()),
-                                RaisedButton(
+                                ElevatedButton(
                                     child: TranslatedTextWidget("Update"),
                                     onPressed: () async {
                                       showDialog(
@@ -276,8 +275,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 Container(
                                   width: 8,
                                 ),
-                                RaisedButton(
-                                    color: Theme.of(context).errorColor,
+                                ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      primary: Theme.of(context).errorColor,
+                                    ),
                                     child: TranslatedTextWidget("Remove"),
                                     onPressed: () async {
                                       showDialog(
@@ -496,8 +497,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
               )),
               maxWidth: 400,
               buttons: [
-                RaisedButton(
-                    visualDensity: VisualDensity.comfortable,
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      visualDensity: VisualDensity.comfortable,
+                    ),
                     child: TranslatedTextWidget("Cancel",
                         uppercase: true,
                         style: TextStyle(fontWeight: FontWeight.bold)),
@@ -538,7 +541,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Container(width: 8),
               Container(
                   padding: EdgeInsets.all(8),
-                  child: SmallerSwitch(
+                  child: Switch(
                     onChanged: (value) {
                       parameter.active = value;
                       onSave();
@@ -556,9 +559,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Container(
       width: 20,
       height: 20,
-      child: RaisedButton(
-          color: selected ? Colors.lightBlue : Colors.blueGrey,
-          padding: EdgeInsets.all(0),
+      child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            primary: selected
+                ? Theme.of(context).toggleButtonsTheme.selectedColor
+                : Theme.of(context).toggleButtonsTheme.color,
+            padding: EdgeInsets.all(0),
+          ),
           child: Icon(
               direction > 0
                   ? FontAwesomeIcons.chevronUp

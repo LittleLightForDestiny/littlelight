@@ -67,7 +67,7 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget> {
   }
 
   Widget buildOptions(BuildContext context) {
-    var buttons = <RaisedButton>[];
+    var buttons = <ElevatedButton>[];
     var lockableItems = items.where((i) =>
         i?.item?.lockable == true &&
         i?.item?.state?.contains(ItemState.Locked) != true);
@@ -75,7 +75,7 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget> {
         i?.item?.lockable == true &&
         i?.item?.state?.contains(ItemState.Locked) != false);
     if (lockableItems.length > 0) {
-      buttons.add(RaisedButton(
+      buttons.add(ElevatedButton(
         key: Key("lock_button"),
         child: TranslatedTextWidget(
           "Lock",
@@ -89,7 +89,7 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget> {
       ));
     }
     if (unlockableItems.length > 0) {
-      buttons.add(RaisedButton(
+      buttons.add(ElevatedButton(
         key: Key("unlock_button"),
         child: TranslatedTextWidget(
           "Unlock",
@@ -103,7 +103,7 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget> {
       ));
     }
     if (items.length == 1) {
-      buttons.add(RaisedButton(
+      buttons.add(ElevatedButton(
         child: TranslatedTextWidget(
           "Details",
           uppercase: true,

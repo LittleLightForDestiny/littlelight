@@ -53,16 +53,20 @@ class LittleLightCustomDialog extends Dialog {
         maxWidth: maxWidth,
         title: title,
         buttons: [
-          RaisedButton(
-              visualDensity: VisualDensity.comfortable,
+          ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                visualDensity: VisualDensity.comfortable,
+              ),
               child: TranslatedTextWidget("Cancel",
                   uppercase: true,
                   style: TextStyle(fontWeight: FontWeight.bold)),
               onPressed: () {
                 onCancel();
               }),
-          RaisedButton(
-              visualDensity: VisualDensity.comfortable,
+          ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                visualDensity: VisualDensity.comfortable,
+              ),
               child: TranslatedTextWidget("Save",
                   uppercase: true,
                   style: TextStyle(fontWeight: FontWeight.bold)),
@@ -81,16 +85,20 @@ class LittleLightCustomDialog extends Dialog {
         title: title,
         maxWidth: maxWidth,
         buttons: [
-          RaisedButton(
-              visualDensity: VisualDensity.comfortable,
+          ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                visualDensity: VisualDensity.comfortable,
+              ),
               child: TranslatedTextWidget("No",
                   uppercase: true,
                   style: TextStyle(fontWeight: FontWeight.bold)),
               onPressed: () {
                 noPressed();
               }),
-          RaisedButton(
-              visualDensity: VisualDensity.comfortable,
+          ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                visualDensity: VisualDensity.comfortable,
+              ),
               child: TranslatedTextWidget("Yes",
                   uppercase: true,
                   style: TextStyle(fontWeight: FontWeight.bold)),

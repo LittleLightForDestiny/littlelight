@@ -244,7 +244,7 @@ class LoadoutSlotWidget extends StatelessWidget {
                     Row(
                       children: [
                         Expanded(
-                            child: RaisedButton(
+                            child: ElevatedButton(
                                 child: TranslatedTextWidget("Cancel",
                                     uppercase: true,
                                     style:
@@ -256,7 +256,7 @@ class LoadoutSlotWidget extends StatelessWidget {
                           width: 4,
                         ),
                         Expanded(
-                            child: RaisedButton(
+                            child: ElevatedButton(
                                 child: TranslatedTextWidget("Details",
                                     uppercase: true,
                                     style:
@@ -283,8 +283,9 @@ class LoadoutSlotWidget extends StatelessWidget {
                                 })),
                         Container(width: 4),
                         Expanded(
-                            child: RaisedButton(
-                                color: Colors.red,
+                            child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    primary: Theme.of(context).errorColor),
                                 child: TranslatedTextWidget("Remove",
                                     uppercase: true,
                                     style:

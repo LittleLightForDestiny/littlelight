@@ -116,8 +116,9 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> {
           Expanded(
               child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 2),
-                  child: RaisedButton(
-                    visualDensity: VisualDensity.comfortable,
+                  child: ElevatedButton(
+                    style:
+                        ButtonStyle(visualDensity: VisualDensity.comfortable),
                     child: TranslatedTextWidget("Equip",
                         maxLines: 1,
                         softWrap: false,
@@ -137,8 +138,9 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> {
           Expanded(
               child: Container(
                   padding: EdgeInsets.all(2),
-                  child: RaisedButton(
-                    visualDensity: VisualDensity.comfortable,
+                  child: ElevatedButton(
+                    style:
+                        ButtonStyle(visualDensity: VisualDensity.comfortable),
                     child: TranslatedTextWidget("Edit",
                         uppercase: true,
                         maxLines: 1,
@@ -165,9 +167,10 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> {
           Expanded(
               child: Container(
                   padding: EdgeInsets.all(2),
-                  child: RaisedButton(
-                    visualDensity: VisualDensity.comfortable,
-                    color: Theme.of(context).errorColor,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        visualDensity: VisualDensity.comfortable,
+                        primary: Theme.of(context).errorColor),
                     child: TranslatedTextWidget("Delete",
                         maxLines: 1,
                         softWrap: false,

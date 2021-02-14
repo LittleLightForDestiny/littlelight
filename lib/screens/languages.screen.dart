@@ -69,7 +69,7 @@ class _LanguagesScreenState extends State<LanguagesScreen> {
     return Container(
       color: Colors.blueGrey.shade700,
       padding: EdgeInsets.all(8),
-      child: RaisedButton(
+      child: ElevatedButton(
           onPressed: () {
             StorageService.setLanguage(selectedLanguage);
             Navigator.pushReplacement(

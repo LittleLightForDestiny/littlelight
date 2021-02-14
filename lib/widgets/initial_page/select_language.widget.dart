@@ -71,9 +71,6 @@ class SelectLanguageWidgetState extends State<SelectLanguageWidget> {
                   widget.onChange(selectedLanguage);
                 });
               },
-              color: selectedLanguage == language
-                  ? Theme.of(context).buttonColor
-                  : Colors.transparent,
               language: language));
     }).toList();
     return buttons;
@@ -87,7 +84,7 @@ class SelectLanguageWidgetState extends State<SelectLanguageWidget> {
               maxHeight: MediaQuery.of(context).size.height - 210),
           child: SingleChildScrollView(
               child: Wrap(children: this.getLanguageButtons(context)))),
-      RaisedButton(
+      ElevatedButton(
         onPressed: () {
           this.okClick();
         },

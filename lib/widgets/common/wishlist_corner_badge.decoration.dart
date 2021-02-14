@@ -12,7 +12,7 @@ class WishlistCornerBadgeDecoration extends CornerBadgeDecoration {
       : super(badgeSize: badgeSize, colors: null, position: position);
 
   List<Color> get badgeColors {
-    List<Color> colors = List();
+    List<Color> colors = [];
     if (tags.contains(WishlistTag.PVE) || tags.contains(WishlistTag.GodPVE)) {
       colors.add(Colors.blue.shade800);
     }
@@ -35,7 +35,7 @@ class WishlistCornerBadgeDecoration extends CornerBadgeDecoration {
   }
 
   List<Color> get borderColors {
-    List<Color> colors = List();
+    List<Color> colors = [];
     if (tags.contains(WishlistTag.GodPVE)) {
       colors.add(Colors.amber.shade500);
     } else if (tags.contains(WishlistTag.PVE)) {

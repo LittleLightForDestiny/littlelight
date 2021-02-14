@@ -70,7 +70,7 @@ class _AccountsScreenState extends State<AccountsScreen> {
     return Container(
       color: Colors.blueGrey.shade700,
       padding: EdgeInsets.all(8),
-      child: RaisedButton(
+      child: ElevatedButton(
           onPressed: () {
             addAccount(context);
           },

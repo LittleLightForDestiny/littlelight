@@ -58,7 +58,7 @@ class BucketDisplayOptionsSelectorWidgetState<
     return Container(
         width: 20,
         child: Stack(
-            overflow: Overflow.visible,
+            clipBehavior: Clip.none,
             alignment: Alignment.centerRight,
             children: [
               Positioned(

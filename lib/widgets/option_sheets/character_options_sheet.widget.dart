@@ -26,7 +26,6 @@ import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
-import 'package:little_light/widgets/flutter/smaller_switch.dart';
 import 'package:little_light/widgets/option_sheets/free_slots_slider.widget.dart';
 import 'package:little_light/widgets/option_sheets/loadout_select_sheet.widget.dart';
 import 'package:shimmer/shimmer.dart';
@@ -100,7 +99,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
             padding:
                 EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
             child: SingleChildScrollView(
-                padding: EdgeInsets.all(4).copyWith(top:0),
+                padding: EdgeInsets.all(4).copyWith(top: 0),
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     mainAxisSize: MainAxisSize.min,
@@ -117,26 +116,25 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
   }
 
   Widget buildPowerfulInfoBlock() {
-    if(gameData == null) return Container();
+    if (gameData == null) return Container();
     var current = maxLight?.floor() ?? 0;
-    
-    if(current >= gameData.pinnacleCap) return Container();
-    
+
+    if (current >= gameData.pinnacleCap) return Container();
+
     var achievable = achievableLight?.floor() ?? 0;
     var goForPinnacle = current >= achievable && beyondSoftCap;
 
     var title = TranslatedTextWidget("Go for powerful reward?",
-                uppercase: true, style: headerStyle);
-    if(beyondPowerfulCap){
+        uppercase: true, style: headerStyle);
+    if (beyondPowerfulCap) {
       title = TranslatedTextWidget("Go for pinnacle reward?",
-                uppercase: true, style: headerStyle);
+          uppercase: true, style: headerStyle);
     }
-    
+
     return Column(children: [
       buildBlockHeader(
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        Expanded(
-            child: title),
+        Expanded(child: title),
         goForPinnacle
             ? TranslatedTextWidget(
                 "Yes",
@@ -185,38 +183,47 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
                       )))
             ],
           )),
-      (underAverageSlots?.length ?? 0) <= 0 ? Container() : buildBlockHeader(TranslatedTextWidget("Under average slots",
-          uppercase: true, style: headerStyle)),
-      (underAverageSlots?.length ?? 0) <= 0 ? Container() : DefaultTextStyle(
-        style: buttonStyle,
-        textAlign: TextAlign.center,
-        child: Row(
-            children: underAverageSlots
-                .map((k, v) {
-                  var instance =
-                      ProfileService().getInstanceInfo(v.itemInstanceId);
-                  return MapEntry(
-                      k,
-                      Expanded(
-                          child: Container(
-                              padding: EdgeInsets.all(4),
-                              color: Colors.blueGrey.shade700,
-                              child: Column(
-                                children: <Widget>[
-                                  ManifestText<
-                                      DestinyInventoryBucketDefinition>(
-                                    k,
-                                    uppercase: true,
-                                  ),
-                                  Text("${instance?.primaryStat?.value}")
-                                ],
-                              ))));
-                })
-                .values
-                .expand((element) => [element, Container(width: 4,)])
-                .take(underAverageSlots.length*2 -1)
-                .toList()),
-      )
+      (underAverageSlots?.length ?? 0) <= 0
+          ? Container()
+          : buildBlockHeader(TranslatedTextWidget("Under average slots",
+              uppercase: true, style: headerStyle)),
+      (underAverageSlots?.length ?? 0) <= 0
+          ? Container()
+          : DefaultTextStyle(
+              style: buttonStyle,
+              textAlign: TextAlign.center,
+              child: Row(
+                  children: underAverageSlots
+                      .map((k, v) {
+                        var instance =
+                            ProfileService().getInstanceInfo(v.itemInstanceId);
+                        return MapEntry(
+                            k,
+                            Expanded(
+                                child: Container(
+                                    padding: EdgeInsets.all(4),
+                                    color: Colors.blueGrey.shade700,
+                                    child: Column(
+                                      children: <Widget>[
+                                        ManifestText<
+                                            DestinyInventoryBucketDefinition>(
+                                          k,
+                                          uppercase: true,
+                                        ),
+                                        Text("${instance?.primaryStat?.value}")
+                                      ],
+                                    ))));
+                      })
+                      .values
+                      .expand((element) => [
+                            element,
+                            Container(
+                              width: 4,
+                            )
+                          ])
+                      .take(underAverageSlots.length * 2 - 1)
+                      .toList()),
+            )
     ]);
   }
 
@@ -402,7 +409,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
             TranslatedTextWidget("Weapons",
                 uppercase: true, style: headerStyle),
             Container(width: 2),
-            SmallerSwitch(
+            Switch(
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 value: loadoutWeapons,
                 onChanged: (value) {
@@ -413,7 +420,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
             Container(width: 6),
             TranslatedTextWidget("Armor", uppercase: true, style: headerStyle),
             Container(width: 2),
-            SmallerSwitch(
+            Switch(
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 value: loadoutArmor,
                 onChanged: (value) {
@@ -722,10 +729,10 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
       if (power < maxLight?.floor()) {
         underAverageSlots[def.inventory.bucketTypeHash] = item;
       }
-      if(power < gameData.softCap){
+      if (power < gameData.softCap) {
         beyondSoftCap = false;
       }
-      if(power < gameData.powerfulCap){
+      if (power < gameData.powerfulCap) {
         beyondPowerfulCap = false;
       }
       idealLightTotal +=

@@ -2,13 +2,21 @@ import 'package:bungie_api/models/group_user_info_card.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/utils/platform_data.dart';
 
-class PlatformButton extends RaisedButton {
+class PlatformButton extends StatelessWidget {
   final GroupUserInfoCard platform;
-  PlatformButton(this.platform, {@required Function onPressed})
-      : super(onPressed: onPressed);
+  final Function onPressed;
+
+  PlatformButton(this.platform, {@required this.onPressed}) : super();
 
   @override
-  Widget get child {
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+        style: ElevatedButton.styleFrom(primary: color),
+        onPressed: onPressed,
+        child: _child);
+  }
+
+  Widget get _child {
     PlatformData data = PlatformData.getPlatform(platform.membershipType);
     return Padding(
         padding: EdgeInsets.symmetric(vertical: 16),
@@ -22,7 +30,6 @@ class PlatformButton extends RaisedButton {
         ));
   }
 
-  @override
   Color get color {
     PlatformData data = PlatformData.getPlatform(platform.membershipType);
     return data.color;

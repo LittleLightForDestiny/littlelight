@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:little_light/utils/item_filters/total_stats_constraints_filter.dart';
 import 'package:little_light/widgets/common/small_rect_range_slider_indicator_shape.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-import 'package:little_light/widgets/flutter/smaller_switch.dart';
 import 'package:little_light/widgets/search/search.controller.dart';
 import 'package:little_light/widgets/search/search_filters/base_search_filter.widget.dart';
 
@@ -40,7 +39,7 @@ class TotalStatsConstraintsWidgetState extends BaseSearchFilterWidgetState<
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   TranslatedTextWidget("Include non-armor items"),
-                  SmallerSwitch(
+                  Switch(
                     value: filter.value.includeNonArmorItems,
                     onChanged: (value) {
                       filter.value.includeNonArmorItems = value;

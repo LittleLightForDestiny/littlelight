@@ -10,6 +10,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/exceptions/exception_handler.dart';
 import 'package:little_light/screens/initial.screen.dart';
 import 'package:little_light/utils/platform_capabilities.dart';
@@ -59,38 +60,39 @@ class LittleLight extends StatelessWidget {
       key: key,
       title: 'Little Light',
       navigatorObservers: observers,
-      theme: new ThemeData(
-          disabledColor: Colors.lightBlue.shade900,
-          backgroundColor: Colors.blueGrey.shade900,
-          primarySwatch: Colors.lightBlue,
-          primaryColor: Colors.blueGrey,
-          brightness: Brightness.dark,
-          colorScheme: ColorScheme.dark(),
-          accentColor: Colors.lightBlueAccent.shade100,
-          toggleableActiveColor: Colors.lightBlueAccent.shade200,
-          fontFamily: Platform.isMacOS ? "NeueHaasDisplay" : null,
-          textSelectionColor: Colors.blueGrey.shade400,
-          textSelectionHandleColor: Colors.lightBlueAccent.shade200,
-          // textSelectionTheme: TextSelectionThemeData(
-          //   selectionColor: Colors.blueGrey.shade400,
-          //   selectionHandleColor: Colors.lightBlueAccent.shade200,
-          // ),
+      theme: LittleLightTheme().theme,
+      // theme: new ThemeData(
+      //     disabledColor: Colors.lightBlue.shade900,
+      //     backgroundColor: Colors.blueGrey.shade900,
+      //     primarySwatch: Colors.lightBlue,
+      //     primaryColor: Colors.blueGrey,
+      //     brightness: Brightness.dark,
+      //     colorScheme: ColorScheme.dark(),
+      //     accentColor: Colors.lightBlueAccent.shade100,
+      //     toggleableActiveColor: Colors.lightBlueAccent.shade200,
+      //     fontFamily: Platform.isMacOS ? "NeueHaasDisplay" : null,
+      //     textSelectionColor: Colors.blueGrey.shade400,
+      //     textSelectionHandleColor: Colors.lightBlueAccent.shade200,
+      //     textSelectionTheme: TextSelectionThemeData(
+      //     selectionColor: Colors.blueGrey.shade400,
+      //     selectionHandleColor: Colors.lightBlueAccent.shade200,
+      //   ),
 
-          textTheme: TextTheme(
-              bodyText1: TextStyle(
-                  color: Colors.grey.shade300, fontWeight: FontWeight.w500),
-              button: TextStyle(
-                fontWeight: FontWeight.bold,
-              )),
-          pageTransitionsTheme: PageTransitionsTheme(builders: {
-            TargetPlatform.android: CupertinoPageTransitionsBuilder(),
-            TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-          }),
-          sliderTheme: SliderThemeData.fromPrimaryColors(
-              primaryColor: Colors.lightBlue,
-              primaryColorDark: Colors.lightBlue,
-              primaryColorLight: Colors.lightBlue,
-              valueIndicatorTextStyle: TextStyle())),
+      // textTheme: TextTheme(
+      //     bodyText1: TextStyle(
+      //         color: Colors.grey.shade300, fontWeight: FontWeight.w500),
+      //     button: TextStyle(
+      //       fontWeight: FontWeight.bold,
+      //     )),
+      // pageTransitionsTheme: PageTransitionsTheme(builders: {
+      //   TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+      //   TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+      // }),
+      // sliderTheme: SliderThemeData.fromPrimaryColors(
+      //     primaryColor: Colors.lightBlue,
+      //     primaryColorDark: Colors.lightBlue,
+      //     primaryColorLight: Colors.lightBlue,
+      //     valueIndicatorTextStyle: TextStyle())),
       builder: (context, child) {
         return ScrollConfiguration(
           behavior: LittleLightScrollBehaviour(),

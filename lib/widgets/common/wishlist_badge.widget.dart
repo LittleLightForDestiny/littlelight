@@ -10,7 +10,7 @@ class WishlistBadgeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> badges = List();
+    List<Widget> badges = [];
     if (tags.contains(WishlistTag.GodPVE)) {
       badges.add(buildBadge(context, WishlistTag.GodPVE));
     } else if (tags.contains(WishlistTag.PVE)) {

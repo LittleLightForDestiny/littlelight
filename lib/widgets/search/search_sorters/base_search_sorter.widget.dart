@@ -78,9 +78,11 @@ class BaseSearchSorterWidgetState<T extends BaseSearchSorterWidget>
         Container(
             width: 30,
             height: 30,
-            child: RaisedButton(
-              color: Theme.of(context).errorColor,
-              padding: EdgeInsets.all(0),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Theme.of(context).errorColor,
+                padding: EdgeInsets.all(0),
+              ),
               child: Icon(Icons.remove),
               onPressed: () => removeSorter(),
             ))
@@ -91,8 +93,10 @@ class BaseSearchSorterWidgetState<T extends BaseSearchSorterWidget>
       Container(
           width: 30,
           height: 30,
-          child: RaisedButton(
-            padding: EdgeInsets.all(0),
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              padding: EdgeInsets.all(0),
+            ),
             child: Icon(Icons.add),
             onPressed: () => addSorter(context),
           ))
@@ -104,9 +108,13 @@ class BaseSearchSorterWidgetState<T extends BaseSearchSorterWidget>
     return Container(
       width: 20,
       height: 20,
-      child: RaisedButton(
-          color: selected ? Colors.lightBlue : Colors.blueGrey.shade800,
-          padding: EdgeInsets.all(0),
+      child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            primary: selected
+                ? Theme.of(context).toggleButtonsTheme.selectedColor
+                : Theme.of(context).toggleButtonsTheme.color,
+            padding: EdgeInsets.all(0),
+          ),
           child: Icon(
               direction > 0
                   ? FontAwesomeIcons.chevronUp

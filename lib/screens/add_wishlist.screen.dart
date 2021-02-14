@@ -151,7 +151,7 @@ class _AddWishlistScreenState extends State<AddWishlistScreen> {
   }
 
   Widget buildButton(BuildContext context, String label, Function onPressed) {
-    return RaisedButton(
+    return ElevatedButton(
       child: TranslatedTextWidget(label),
       onPressed: onPressed,
     );
@@ -221,7 +221,7 @@ class _AddWishlistScreenState extends State<AddWishlistScreen> {
                               padding: EdgeInsets.all(8),
                               child: Row(children: [
                                 Expanded(child: Container()),
-                                RaisedButton(
+                                ElevatedButton(
                                     child: TranslatedTextWidget("Add Wishlist"),
                                     onPressed: () {
                                       Navigator.of(context).pop(w);

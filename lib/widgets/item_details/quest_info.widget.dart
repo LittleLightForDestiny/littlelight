@@ -88,8 +88,11 @@ class QuestInfoWidgetState extends BaseDestinyItemState<QuestInfoWidget> {
         !showSpoilers) {
       items.add(Container(
           padding: EdgeInsets.symmetric(horizontal: 8),
-          child: RaisedButton(
-            color: DestinyData.getTierColor(definition?.inventory?.tierType),
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              primary:
+                  DestinyData.getTierColor(definition?.inventory?.tierType),
+            ),
             child: TranslatedTextWidget("View next steps",
                 style: TextStyle(
                     color: DestinyData.getTierTextColor(

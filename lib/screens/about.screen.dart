@@ -256,61 +256,33 @@ class _AboutScreenState extends State<AboutScreen> {
             child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Flexible(
-                child: RaisedButton(
-              padding: EdgeInsets.all(4),
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              child: Column(children: [
-                Expanded(child: Icon(FontAwesomeIcons.twitter, size: 32)),
-                Container(height: 4),
-                Text(
+            buildExternalLinkButton(context,
+                icon: Icon(FontAwesomeIcons.twitter, size: 32),
+                label: Text(
                   "@LittleLightD2",
                   textAlign: TextAlign.center,
-                )
-              ]),
-              onPressed: () {
-                launch("http://www.twitter.com/littlelightD2");
-              },
-            )),
+                ), onPressed: () {
+              launch("http://www.twitter.com/littlelightD2");
+            }),
             Container(
               width: 4,
             ),
-            Flexible(
-                child: RaisedButton(
-              padding: EdgeInsets.all(4),
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              color: Colors.blueGrey.shade400,
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(child: Icon(FontAwesomeIcons.discord, size: 32)),
-                    Container(height: 4),
-                    TranslatedTextWidget("Discord")
-                  ]),
-              onPressed: () {
-                launch("https://discord.gg/ztdFGGz");
-              },
-            )),
+            buildExternalLinkButton(context,
+                color: Colors.blueGrey.shade400,
+                icon: Icon(FontAwesomeIcons.discord, size: 32),
+                label: TranslatedTextWidget("Discord"), onPressed: () {
+              launch("https://discord.gg/ztdFGGz");
+            }),
             Container(
               width: 4,
             ),
-            Flexible(
-                child: RaisedButton(
-              padding: EdgeInsets.all(4),
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              color: Colors.red.shade600,
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(child: Icon(FontAwesomeIcons.github, size: 32)),
-                    Container(height: 4),
-                    TranslatedTextWidget("Issues")
-                  ]),
-              onPressed: () {
-                launch(
-                    "https://github.com/LittleLightForDestiny/LittleLight/issues");
-              },
-            )),
+            buildExternalLinkButton(context,
+                color: Colors.red.shade600,
+                icon: Icon(FontAwesomeIcons.github, size: 32),
+                label: TranslatedTextWidget("Issues"), onPressed: () {
+              launch(
+                  "https://github.com/LittleLightForDestiny/LittleLight/issues");
+            }),
           ],
         )),
       ],
@@ -318,6 +290,8 @@ class _AboutScreenState extends State<AboutScreen> {
   }
 
   Widget buildSupport(BuildContext context) {
+    bool isMobile = Platform.isAndroid || Platform.isIOS;
+    if (!isMobile && !showDonationLinks) return Container();
     return Column(
       children: <Widget>[
         HeaderWidget(
@@ -333,75 +307,44 @@ class _AboutScreenState extends State<AboutScreen> {
               ? buildRateButton(context)
               : Row(
                   children: <Widget>[
-                    Expanded(child: buildRateButton(context)),
+                    isMobile
+                        ? Expanded(child: buildRateButton(context))
+                        : Container(),
+                    Container(
+                      width: isMobile ? 4 : 0,
+                    ),
+                    buildExternalLinkButton(context,
+                        color: Color.fromRGBO(249, 104, 84, 1),
+                        icon: Container(
+                            width: 36,
+                            height: 36,
+                            child: Image.asset("assets/imgs/patreon-icon.png")),
+                        label: TranslatedTextWidget("Become a Patron",
+                            uppercase: true,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12)), onPressed: () {
+                      launch('https://www.patreon.com/littlelightD2');
+                    }),
                     Container(
                       width: 4,
                     ),
-                    Expanded(
-                      child: RaisedButton(
-                          padding: EdgeInsets.all(4),
-                          color: Color.fromRGBO(249, 104, 84, 1),
-                          materialTapTargetSize:
-                              MaterialTapTargetSize.shrinkWrap,
-                          child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Expanded(
-                                  child: Container(
-                                      width: 36,
-                                      height: 36,
-                                      child: Image.asset(
-                                          "assets/imgs/patreon-icon.png")),
-                                ),
-                                Container(
-                                  height: 4,
-                                ),
-                                TranslatedTextWidget(
-                                  "Become a Patron",
-                                  uppercase: true,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 12),
-                                )
-                              ]),
-                          onPressed: () {
-                            launch('https://www.patreon.com/littlelightD2');
-                          }),
-                    ),
-                    Container(
-                      width: 4,
-                    ),
-                    Expanded(
-                        child: RaisedButton(
-                            padding: EdgeInsets.all(4),
-                            color: Color.fromRGBO(26, 169, 222, 1),
-                            materialTapTargetSize:
-                                MaterialTapTargetSize.shrinkWrap,
-                            child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Expanded(
-                                      child: Container(
-                                          width: 36,
-                                          height: 36,
-                                          child: Image.asset(
-                                              "assets/imgs/ko-fi-icon.png"))),
-                                  Container(
-                                    height: 4,
-                                  ),
-                                  TranslatedTextWidget(
-                                    "Buy me a Coffee",
-                                    uppercase: true,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 12),
-                                  )
-                                ]),
-                            onPressed: () {
-                              launch('https://ko-fi.com/littlelight');
-                            })),
+                    buildExternalLinkButton(context,
+                        color: Color.fromRGBO(26, 169, 222, 1),
+                        icon: Container(
+                            width: 36,
+                            height: 36,
+                            child: Image.asset("assets/imgs/ko-fi-icon.png")),
+                        label: TranslatedTextWidget(
+                          "Buy me a Coffee",
+                          uppercase: true,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 12),
+                        ), onPressed: () {
+                      launch('https://ko-fi.com/littlelight');
+                    }),
                   ],
                 ),
         ),
@@ -411,12 +354,14 @@ class _AboutScreenState extends State<AboutScreen> {
 
   Widget buildRateButton(BuildContext context) {
     bool isIOS = Platform.isIOS;
-    return RaisedButton(
-        color: isIOS
-            ? Color.fromARGB(255, 22, 147, 245)
-            : Color.fromARGB(255, 49, 159, 185),
-        padding: EdgeInsets.all(4),
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+    return ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          primary: isIOS
+              ? Color.fromARGB(255, 22, 147, 245)
+              : Color.fromARGB(255, 49, 159, 185),
+          padding: EdgeInsets.all(4),
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        ),
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           Expanded(
               child: Icon(
@@ -438,5 +383,27 @@ class _AboutScreenState extends State<AboutScreen> {
           LaunchReview.launch(
               androidAppId: 'me.markezine.luzinha', iOSAppId: '1373037254');
         });
+  }
+
+  Widget buildExternalLinkButton(BuildContext context,
+      {Color color, Widget icon, Widget label, Function onPressed}) {
+    return Expanded(
+      child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            padding: EdgeInsets.all(4),
+            primary: color ?? Theme.of(context).buttonColor,
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
+          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Expanded(
+              child: Container(width: 36, height: 36, child: icon),
+            ),
+            Container(
+              height: 4,
+            ),
+            label
+          ]),
+          onPressed: onPressed),
+    );
   }
 }

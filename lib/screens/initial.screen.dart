@@ -113,18 +113,19 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
                 child: TranslatedTextWidget(
                     "Can't connect to Bungie servers. Please check your internet connection and try again."),
               ),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: () {
                   changeContent(null, "");
                   checkManifest();
                 },
                 child: TranslatedTextWidget("Try Again"),
               ),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: () {
                   exit(0);
                 },
-                color: Theme.of(context).colorScheme.error,
+                style: ElevatedButton.styleFrom(
+                    primary: Theme.of(context).errorColor),
                 child: TranslatedTextWidget("Exit"),
               )
             ],

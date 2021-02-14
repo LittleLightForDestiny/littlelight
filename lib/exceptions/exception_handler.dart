@@ -120,7 +120,7 @@ class ErrorDialogButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RaisedButton(
+    return ElevatedButton(
       child: Container(
           constraints: BoxConstraints(minWidth: double.infinity),
           child: TranslatedTextWidget(
