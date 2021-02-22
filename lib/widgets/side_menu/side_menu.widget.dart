@@ -19,6 +19,7 @@ import 'package:little_light/screens/loadouts.screen.dart';
 import 'package:little_light/screens/objectives.screen.dart';
 import 'package:little_light/screens/progress.screen.dart';
 import 'package:little_light/screens/settings.screen.dart';
+import 'package:little_light/screens/old_triumphs.screen.dart';
 import 'package:little_light/screens/triumphs.screen.dart';
 import 'package:little_light/screens/vendors.screen.dart';
 import 'package:little_light/services/auth/auth.service.dart';
@@ -166,9 +167,14 @@ class SideMenuWidgetState extends State<SideMenuWidget> {
                       onTap: () {
                     open(context, CollectionsScreen());
                   }),
+                  isDebug
+                      ? menuItem(context, Text("New Triumphs"), onTap: () {
+                          open(context, TriumphsScreen());
+                        })
+                      : Container(),
                   menuItem(context, TranslatedTextWidget("Triumphs"),
                       onTap: () {
-                    open(context, TriumphsScreen());
+                    open(context, OldTriumphsScreen());
                   }),
                   menuItem(context, TranslatedTextWidget("Duplicated Items"),
                       requireLogin: true, onTap: () {

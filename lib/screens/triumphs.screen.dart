@@ -1,56 +1,28 @@
+import 'package:bungie_api/models/destiny_presentation_node_definition.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/screens/presentation_node.screen.dart';
-import 'package:little_light/screens/triumph_search.screen.dart';
+import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/profile/destiny_settings.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/utils/selected_page_persistence.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
-import 'package:little_light/widgets/presentation_nodes/presentation_node_tabs.widget.dart';
+import 'package:little_light/utils/media_query_helper.dart';
+import 'package:little_light/widgets/common/definition_provider.widget.dart';
+import 'package:little_light/widgets/common/manifest_text.widget.dart';
+import 'package:little_light/widgets/common/queued_network_image.widget.dart';
+import 'package:little_light/widgets/triumphs/seals_grid.widget.dart';
+import 'package:little_light/widgets/triumphs/triumph_categories_grid.widget.dart';
 
-class TriumphsScreen extends PresentationNodeScreen {
-  TriumphsScreen({presentationNodeHash, depth = 0})
-      : super(presentationNodeHash: presentationNodeHash, depth: depth);
-
+class TriumphsScreen extends StatefulWidget {
   @override
-  PresentationNodeScreenState createState() => TriumphsScreenState();
+  _TriumphsScreenState createState() => _TriumphsScreenState();
 }
 
-class TriumphsScreenState extends PresentationNodeScreenState<TriumphsScreen> {
-  @override
-  void initState() {
-    super.initState();
-    ProfileService().updateComponents = ProfileComponentGroups.triumphs;
-    SelectedPagePersistence.saveLatestScreen(SelectedPagePersistence.triumphs);
-  }
-
-  @override
-  Widget buildBody(BuildContext context) {
-    var settings = DestinySettingsService();
-    return PresentationNodeTabsWidget(
-      presentationNodeHashes: [
-        settings.triumphsRootNode,
-        settings.sealsRootNode,
-        511607103,
-        settings.medalsRootNode,
-        settings.loreRootNode,
-        3215903653,
-        1881970629
-      ],
-      depth: 0,
-      itemBuilder: this.itemBuilder,
-      tileBuilder: this.tileBuilder,
-    );
-  }
+class _TriumphsScreenState extends State<TriumphsScreen> {
+  DestinySettingsService settings = DestinySettingsService();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: buildAppBar(context), body: buildScaffoldBody(context));
+    return Scaffold(appBar: appBar(context), body: body(context));
   }
 
-  buildAppBar(BuildContext context) {
-    if (widget.depth == 0) {
-      return AppBar(
+  AppBar appBar(BuildContext context) => AppBar(
         leading: IconButton(
           enableFeedback: false,
           icon: Icon(Icons.menu),
@@ -58,23 +30,39 @@ class TriumphsScreenState extends PresentationNodeScreenState<TriumphsScreen> {
             Scaffold.of(context).openDrawer();
           },
         ),
-        title: TranslatedTextWidget("Triumphs"),
-        actions: <Widget>[
-          IconButton(
-            enableFeedback: false,
-            icon: Icon(Icons.search),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => TriumphSearchScreen(),
-                ),
-              );
-            },
-          )
-        ],
+        title: ManifestText<DestinyPresentationNodeDefinition>(
+            settings.triumphsRootNode),
       );
-    }
-    return AppBar(title: Text(definition?.displayProperties?.name ?? ""));
+
+  Widget body(BuildContext context) => SingleChildScrollView(
+      padding: EdgeInsets.all(8),
+      child: Column(children: [
+        TriumphCategoriesGridWidget(
+          nodeHash: settings.triumphsRootNode,
+          columns: MediaQueryHelper(context)
+              .responsiveValue<int>(3, tablet: 4, laptop: 5, desktop: 8),
+        ),
+        SealsGridWidget(
+          nodeHash: settings.sealsRootNode,
+          rows: 1,
+          columns: MediaQueryHelper(context)
+              .responsiveValue<int>(4, tablet: 6, laptop: 8, desktop: 10),
+        ),
+        buildRootItem(context, settings.loreRootNode)
+      ]));
+
+  Widget buildRootItem(BuildContext context, int nodeHash) {
+    return Container(
+        height: 120,
+        child: DefinitionProviderWidget<DestinyPresentationNodeDefinition>(
+            nodeHash,
+            (def) => Stack(
+                  children: [
+                    QueuedNetworkImage(
+                      imageUrl: BungieApiService.url(
+                          def.displayProperties.iconSequences[0].frames[0]),
+                    )
+                  ],
+                )));
   }
 }

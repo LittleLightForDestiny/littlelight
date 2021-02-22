@@ -95,7 +95,7 @@ class SupporterCharacterWidgetState extends State<SupporterCharacterWidget>
                   child: InkWell(
                     onTap: () {
                       launch(widget.link ??
-                          "https://www.bungie.net/en/Profile/${widget.membershipType}/${widget.membershipId}");
+                          "https://www.bungie.net/en/Profile/${widget.membershipType.value}/${widget.membershipId}");
                     },
                   )))
         ]));

@@ -3,7 +3,7 @@ import 'package:little_light/screens/collections.screen.dart';
 import 'package:little_light/screens/equipment.screen.dart';
 import 'package:little_light/screens/loadouts.screen.dart';
 import 'package:little_light/screens/progress.screen.dart';
-import 'package:little_light/screens/triumphs.screen.dart';
+import 'package:little_light/screens/old_triumphs.screen.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/littlelight/item_notes.service.dart';
 import 'package:little_light/services/littlelight/loadouts.service.dart';
@@ -77,7 +77,7 @@ class MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
         break;
 
       case SelectedPagePersistence.triumphs:
-        currentScreen = TriumphsScreen();
+        currentScreen = OldTriumphsScreen();
         break;
 
       case SelectedPagePersistence.loadouts:

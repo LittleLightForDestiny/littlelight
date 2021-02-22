@@ -157,7 +157,9 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
     } on BungieApiException catch (e) {
       bool needsLogin = [
             PlatformErrorCodes.DestinyAccountNotFound,
-            PlatformErrorCodes.WebAuthRequired
+            PlatformErrorCodes.WebAuthRequired,
+            PlatformErrorCodes.AccessTokenHasExpired,
+            PlatformErrorCodes.AuthorizationRecordExpired,
           ].contains(e.errorCode) ||
           ["invalid_grant"].contains(e.errorStatus);
       if (needsLogin) {
