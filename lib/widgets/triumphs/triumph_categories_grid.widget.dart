@@ -1,15 +1,9 @@
-import 'dart:math';
-
 import 'package:bungie_api/models/destiny_presentation_node_child_entry.dart';
 import 'package:bungie_api/models/destiny_presentation_node_definition.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
-import 'package:little_light/widgets/common/arrow_navigation.button.dart';
-import 'package:little_light/widgets/common/grid.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/mixins/tab_grid/tab_grid.mixin.dart';
-import 'package:little_light/widgets/common/tab_page_selector.widget.dart';
 import 'package:little_light/widgets/triumphs/triumph_category_item.widget.dart';
 
 class TriumphCategoriesGridWidget extends StatefulWidget {
@@ -36,9 +30,6 @@ class _TriumphCategoriesGridWidgetState
         TickerProviderStateMixin,
         TabGridMixin<TriumphCategoriesGridWidget,
             DestinyPresentationNodeChildEntry> {
-  double _spacing = 8;
-  double _arrowButtonWidth = 24;
-
   DestinyPresentationNodeDefinition definition;
   TabController _controller;
 

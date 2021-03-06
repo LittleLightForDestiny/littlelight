@@ -16,6 +16,9 @@ mixin TabGridMixin<S extends StatefulWidget, T> on TickerProviderStateMixin<S> {
     _controller?.dispose();
     _controller =
         TabController(initialIndex: 0, length: pageCount, vsync: this);
+    _controller.addListener(() {
+      setState(() {});
+    });
   }
 
   @override
@@ -52,14 +55,17 @@ mixin TabGridMixin<S extends StatefulWidget, T> on TickerProviderStateMixin<S> {
                     Container(
                         width: _arrowButtonWidth,
                         child: ArrowNavigationButton(
-                            enabled: _controller.index > 0,
+                            index: 0,
+                            controller: _controller,
                             icon: FontAwesomeIcons.caretLeft)),
                     Expanded(child: tabBarView(context, constraints)),
                     Container(
                         width: _arrowButtonWidth,
                         child: ArrowNavigationButton(
-                            enabled: _controller.index < _controller.length - 1,
-                            icon: FontAwesomeIcons.caretRight)),
+                          index: _controller.length - 1,
+                          controller: _controller,
+                          icon: FontAwesomeIcons.caretRight,
+                        )),
                   ])),
               Positioned(
                   bottom: 0,
