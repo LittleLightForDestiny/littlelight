@@ -103,7 +103,7 @@ class LittleLightApiService {
       body['secret'] = secret;
     }
 
-    String apiRoot = DotEnv().env["littlelight_api_root"];
+    String apiRoot = env["littlelight_api_root"];
 
     Uri uri = Uri.parse("$apiRoot/$path");
     Map<String, String> headers = {

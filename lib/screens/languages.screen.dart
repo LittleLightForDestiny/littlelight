@@ -66,9 +66,10 @@ class _LanguagesScreenState extends State<LanguagesScreen> {
     if (currentLanguage == selectedLanguage) {
       return Container(height: 0);
     }
+    var bottomPadding = MediaQuery.of(context).padding.bottom;
     return Container(
       color: Colors.blueGrey.shade700,
-      padding: EdgeInsets.all(8),
+      padding: EdgeInsets.all(8).copyWith(bottom: bottomPadding + 8),
       child: ElevatedButton(
           onPressed: () {
             StorageService.setLanguage(selectedLanguage);

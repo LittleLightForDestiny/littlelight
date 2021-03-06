@@ -50,15 +50,15 @@ class BungieApiService {
   }
 
   static String get clientSecret {
-    return DotEnv().env['client_secret'];
+    return env['client_secret'];
   }
 
   static String get apiKey {
-    return DotEnv().env['api_key'];
+    return env['api_key'];
   }
 
   static String get clientId {
-    return DotEnv().env['client_id'];
+    return env['client_id'];
   }
 
   Future<DestinyManifestResponse> getManifest() {

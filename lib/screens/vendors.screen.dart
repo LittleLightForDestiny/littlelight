@@ -48,14 +48,12 @@ class VendorsScreenState extends State<VendorsScreen>
     double paddingTop = MediaQuery.of(context).padding.top;
     var screenPadding = MediaQuery.of(context).padding;
     var topOffset = screenPadding.top + kToolbarHeight;
-    var bottomOffset = screenPadding.bottom;
     return Scaffold(
       body: Stack(
         children: <Widget>[
           buildBackground(context),
           Positioned.fill(
             top: topOffset + 8,
-            bottom: bottomOffset,
             child: buildCharacterTabView(context),
           ),
           Positioned(
@@ -68,7 +66,8 @@ class VendorsScreenState extends State<VendorsScreen>
             top: paddingTop,
             width: kToolbarHeight,
             height: kToolbarHeight,
-            child: IconButton(enableFeedback: false,
+            child: IconButton(
+              enableFeedback: false,
               icon: Icon(Icons.menu),
               onPressed: () {
                 Scaffold.of(context).openDrawer();

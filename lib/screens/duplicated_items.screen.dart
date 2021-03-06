@@ -33,7 +33,6 @@ class DuplicatedItemsScreenState extends State<DuplicatedItemsScreen>
 
   @override
   Widget build(BuildContext context) {
-    var screenPadding = MediaQuery.of(context).padding;
     return Scaffold(
         appBar: buildAppBar(context),
         body: Stack(children: [
@@ -43,7 +42,6 @@ class DuplicatedItemsScreenState extends State<DuplicatedItemsScreen>
                     searchController: widget.searchController)),
             SelectedItemsWidget(),
             PseudoItemTypeFilterWidget(widget.searchController),
-            Container(height: screenPadding.bottom)
           ]),
         ]));
   }

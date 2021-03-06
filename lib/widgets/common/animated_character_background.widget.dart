@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:bungie_api/enums/damage_type.dart';
 import 'package:bungie_api/enums/destiny_class.dart';
@@ -60,7 +61,7 @@ class _AnimatedCharacterBackgroundWidgetState
 
   updateCharacters() async {
     var _characters = ProfileService().getCharacters();
-    if(_characters == null) return;
+    if (_characters == null) return;
     characters = [];
     for (var c in _characters) {
       var equipment = ProfileService().getCharacterEquipment(c.characterId);
@@ -108,10 +109,16 @@ class _AnimatedCharacterBackgroundWidgetState
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: _controller,
-      builder: (context, child){
-        return Container(color: tween.evaluate(_controller),);  
-      }
-    );
+        animation: _controller,
+        builder: (context, child) {
+          return Container(
+              decoration: BoxDecoration(
+            gradient:
+                RadialGradient(center: Alignment.topCenter, radius: 1, colors: [
+              tween.evaluate(_controller),
+              Color.lerp(tween.evaluate(_controller), Colors.black, .9),
+            ]),
+          ));
+        });
   }
 }

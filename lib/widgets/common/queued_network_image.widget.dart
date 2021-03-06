@@ -29,16 +29,10 @@ class QueuedNetworkImage extends StatelessWidget {
       imageUrl: imageUrl,
       fit: fit,
       alignment: alignment,
+      placeholderFadeInDuration: Duration(seconds: 2),
       progressIndicatorBuilder: (context, url, downloadProgress) =>
           placeholder ?? Container(),
       errorWidget: (context, url, error) => Icon(Icons.error),
     );
-    // return TransitionToImage(
-    //   image: AdvancedNetworkImage(imageUrl,
-    //       useDiskCache: true, fallbackAssetImage: "assets/imgs/cant_load.png"),
-    //   fit: fit,
-    //   loadingWidget: placeholder ?? Container(),
-    //   alignment: alignment,
-    // );
   }
 }

@@ -17,7 +17,7 @@ class FloatingContentState<T extends StatefulWidget> extends State<T>
   @override
   void initState() {
     super.initState();
-    
+
     controller = AnimationController(
         duration: const Duration(milliseconds: 300), vsync: this);
     animation = CurvedAnimation(parent: controller, curve: Curves.easeIn);
@@ -60,7 +60,7 @@ class FloatingContentState<T extends StatefulWidget> extends State<T>
   }
 
   Widget getContentContainer() {
-    return new AnimatedContentBox(
+    return AnimatedContentBox(
       currentContent,
       previousContent,
       currentTitle,
@@ -72,7 +72,7 @@ class FloatingContentState<T extends StatefulWidget> extends State<T>
   }
 
   changeContent(Widget content, String title) {
-    if(!mounted) return;
+    if (!mounted) return;
     setState(() {
       loading = content == null;
       previousContent = currentContent;
@@ -106,8 +106,7 @@ class AnimatedContentBox extends AnimatedWidget {
   final TickerProvider ticker;
   AnimatedContentBox(this.currentContent, this.previousContent,
       this.currentTitle, this.previousTitle, this.ticker,
-      {Key key, Animation<double> animation,
-      this.language})
+      {Key key, Animation<double> animation, this.language})
       : super(key: key, listenable: animation);
 
   @override
@@ -138,11 +137,11 @@ class AnimatedContentBox extends AnimatedWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               Container(
-                color: Theme.of(context).primaryColor,
+                color: Theme.of(context).colorScheme.primaryVariant,
                 child: Padding(
                     child: TranslatedTextWidget(currentTitle,
-                    key:Key("$currentTitle $language"),
-                    language: language,
+                        key: Key("$currentTitle $language"),
+                        language: language,
                         style: TextStyle(
                             color: Colors.white, fontWeight: FontWeight.bold)),
                     padding: EdgeInsets.all(16)),
@@ -153,8 +152,8 @@ class AnimatedContentBox extends AnimatedWidget {
               ),
               DecoratedBox(
                   child: Padding(padding: EdgeInsets.all(4)),
-                  decoration:
-                      BoxDecoration(color: Theme.of(context).primaryColor))
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primaryVariant))
             ],
           ),
         ));
@@ -176,7 +175,7 @@ class AnimatedContentBox extends AnimatedWidget {
                 color: Theme.of(context).primaryColor,
                 child: Padding(
                     child: TranslatedTextWidget(previousTitle,
-                      language: language,
+                        language: language,
                         style: TextStyle(
                             color: Colors.white, fontWeight: FontWeight.bold)),
                     padding: EdgeInsets.all(16)),
@@ -207,7 +206,7 @@ class AnimatedContentBox extends AnimatedWidget {
             color: Theme.of(context).primaryColor,
             child: Padding(
                 child: TranslatedTextWidget(currentTitle,
-                language: language,
+                    language: language,
                     style: TextStyle(
                         color: Colors.white, fontWeight: FontWeight.bold)),
                 padding: EdgeInsets.all(16)),

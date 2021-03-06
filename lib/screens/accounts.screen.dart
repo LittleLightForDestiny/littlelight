@@ -42,6 +42,7 @@ class _AccountsScreenState extends State<AccountsScreen> {
       var membership = UserMembershipData.fromJson(json ?? {});
       memberships[account] = membership;
     }
+    memberships.removeWhere((key, value) => value == null);
     this.memberships = memberships;
     setState(() {});
   }
@@ -67,9 +68,10 @@ class _AccountsScreenState extends State<AccountsScreen> {
   }
 
   Widget buildBottomBar(BuildContext context) {
+    var bottomPadding = MediaQuery.of(context).padding.bottom;
     return Container(
       color: Colors.blueGrey.shade700,
-      padding: EdgeInsets.all(8),
+      padding: EdgeInsets.all(8).copyWith(bottom: bottomPadding + 8),
       child: ElevatedButton(
           onPressed: () {
             addAccount(context);
@@ -273,6 +275,7 @@ class _AccountsScreenState extends State<AccountsScreen> {
     }
     await StorageService.account(membership?.bungieNetUser?.membershipId)
         .purge();
+
     await StorageService.removeAccount(membership?.bungieNetUser?.membershipId);
     loadAccounts();
   }

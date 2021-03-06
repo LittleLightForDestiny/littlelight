@@ -35,9 +35,7 @@ class VendorDetailsScreenState extends State<VendorDetailsScreen> {
   DestinyVendorDefinition definition;
   List<DestinyVendorCategory> _categories;
   Map<String, DestinyVendorSaleItemComponent> _sales;
-  final categoryIdsPriority = [
-    "bright_dust"
-  ];
+  final categoryIdsPriority = ["bright_dust"];
 
   @override
   initState() {
@@ -52,15 +50,17 @@ class VendorDetailsScreenState extends State<VendorDetailsScreen> {
     _categories = await _service.getVendorCategories(
         widget.characterId, widget.vendor.vendorHash);
     _categories = _categories.where((c) => shouldCategoryBeVisible(c)).toList();
-    _categories.sort((a,b){
+    _categories.sort((a, b) {
       var defA = definition.displayCategories[a.displayCategoryIndex];
       var defB = definition.displayCategories[b.displayCategoryIndex];
-      var priorityA = categoryIdsPriority.indexWhere((element) => defA.identifier.contains(element));
-      var priorityB = categoryIdsPriority.indexWhere((element) => defB.identifier.contains(element));
-      if(priorityA == -1) priorityA = 9999;
-      if(priorityB == -1) priorityB = 9999;
+      var priorityA = categoryIdsPriority
+          .indexWhere((element) => defA.identifier.contains(element));
+      var priorityB = categoryIdsPriority
+          .indexWhere((element) => defB.identifier.contains(element));
+      if (priorityA == -1) priorityA = 9999;
+      if (priorityB == -1) priorityB = 9999;
       var compare = priorityA.compareTo(priorityB);
-      if(compare != 0) return compare;
+      if (compare != 0) return compare;
       return defA.sortOrder.index.compareTo(defB.sortOrder.index);
     });
     _sales = await _service.getVendorSales(
@@ -73,7 +73,6 @@ class VendorDetailsScreenState extends State<VendorDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.blueGrey.shade800,
         appBar: AppBar(
             titleSpacing: 0,
             title: buildAppBarTitle(context),
@@ -109,32 +108,30 @@ class VendorDetailsScreenState extends State<VendorDetailsScreen> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         Container(
-          padding: EdgeInsets.all(8),
-          child:
-        AspectRatio(
-            aspectRatio: 1,
-            child: QueuedNetworkImage(
-              imageUrl: BungieApiService.url(
-                  definition.displayProperties.mapIcon),
-            ),
-          )),
-          Container(
-            width: 8,
-          ),
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                definition?.displayProperties?.name?.toUpperCase(),
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            padding: EdgeInsets.all(8),
+            child: AspectRatio(
+              aspectRatio: 1,
+              child: QueuedNetworkImage(
+                imageUrl:
+                    BungieApiService.url(definition.displayProperties.mapIcon),
               ),
-              Container(height: 2),
-              ManifestText<DestinyFactionDefinition>(
-                  definition?.factionHash,
-                  style: TextStyle(fontWeight: FontWeight.w300, fontSize: 14)),
-            ],
-          ),
+            )),
+        Container(
+          width: 8,
+        ),
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              definition?.displayProperties?.name?.toUpperCase(),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+            Container(height: 2),
+            ManifestText<DestinyFactionDefinition>(definition?.factionHash,
+                style: TextStyle(fontWeight: FontWeight.w300, fontSize: 14)),
+          ],
+        ),
       ],
     ));
   }
@@ -143,7 +140,10 @@ class VendorDetailsScreenState extends State<VendorDetailsScreen> {
     if (definition == null || _categories == null) return Container();
     var screenPadding = MediaQuery.of(context).padding;
     return ListView(
-        padding: EdgeInsets.all(8).copyWith( left: max(screenPadding.left, 8), right: max(screenPadding.right, 8)),
+        padding: EdgeInsets.all(8).copyWith(
+            left: max(screenPadding.left, 8),
+            right: max(screenPadding.right, 8),
+            bottom: screenPadding.bottom + 8),
         children: _categories.map((c) => buildCategory(context, c)).toList());
   }
 
@@ -152,7 +152,8 @@ class VendorDetailsScreenState extends State<VendorDetailsScreen> {
     if (def.identifier == 'category_preview') {
       return false;
     }
-    if (def.identifier.contains('categories.featured') && !def.identifier.contains('bright_dust')) {
+    if (def.identifier.contains('categories.featured') &&
+        !def.identifier.contains('bright_dust')) {
       return false; //eververse weird menus
     }
     return true;
@@ -163,9 +164,9 @@ class VendorDetailsScreenState extends State<VendorDetailsScreen> {
     return Column(children: [
       HeaderWidget(
           child: Text(
-            def?.displayProperties?.name?.toUpperCase(),
-          )),
-      Container(height:8),
+        def?.displayProperties?.name?.toUpperCase(),
+      )),
+      Container(height: 8),
       buildCategoryItems(context, category)
     ]);
   }
@@ -176,8 +177,7 @@ class VendorDetailsScreenState extends State<VendorDetailsScreen> {
         runSpacing: 8,
         spacing: 8,
         alignment: WrapAlignment.start,
-        children: category.itemIndexes
-            .reversed
+        children: category.itemIndexes.reversed
             .map((index) =>
                 buildItem(context, definition.itemList[index], index))
             .toList());
@@ -186,6 +186,11 @@ class VendorDetailsScreenState extends State<VendorDetailsScreen> {
   Widget buildItem(
       BuildContext context, DestinyVendorItemDefinition item, int index) {
     var sale = _sales["$index"];
-    return PurchasableItemWidget(item:item, sale:sale, characterId: widget.characterId, vendorHash: definition.hash,);
+    return PurchasableItemWidget(
+      item: item,
+      sale: sale,
+      characterId: widget.characterId,
+      vendorHash: definition.hash,
+    );
   }
 }

@@ -380,7 +380,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             widget.settings.itemOrdering = itemOrdering;
           },
           itemBuilder: (context, parameter, handle) =>
-              buildSortItem(context, parameter, handle, onSave: () {
+              buildSortItem(context, parameter.value, handle, onSave: () {
             widget.settings.itemOrdering = itemOrdering;
           }),
         ));
@@ -409,7 +409,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             widget.settings.pursuitOrdering = pursuitOrdering;
           },
           itemBuilder: (context, parameter, handle) =>
-              buildSortItem(context, parameter, handle, onSave: () {
+              buildSortItem(context, parameter.value, handle, onSave: () {
             widget.settings.pursuitOrdering = pursuitOrdering;
           }),
         ));

@@ -207,6 +207,12 @@ class EquipmentScreenState extends State<EquipmentScreen>
             ))
         ?.toList();
     headers?.add(VaultTabHeaderWidget());
+
+    if (charTabController?.length != headers?.length) {
+      charTabController?.dispose();
+      charTabController = TabController(length: headers?.length, vsync: this);
+    }
+
     return TabBarView(controller: charTabController, children: headers ?? []);
   }
 

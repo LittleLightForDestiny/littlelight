@@ -47,14 +47,15 @@ class _VendorsListWidgetState extends State<VendorsListWidget>
   Future<void> getVendors() async {
     var vendors = await widget.service.getVendors(widget.characterId);
     Map<int, List<DestinyVendorCategory>> _categories = {};
-    for(var vendor in vendors.values){
-      _categories[vendor.vendorHash] = await widget.service.getVendorCategories(widget.characterId, vendor.vendorHash);
+    for (var vendor in vendors.values) {
+      _categories[vendor.vendorHash] = await widget.service
+          .getVendorCategories(widget.characterId, vendor.vendorHash);
     }
     _vendors = vendors.values.where((v) {
       if (!v.enabled) return false;
       if (widget.ignoreVendorHashes.contains(v.vendorHash)) return false;
       var categories = _categories[v.vendorHash];
-    if ((categories?.length ?? 0) < 1) return false;
+      if ((categories?.length ?? 0) < 1) return false;
       return true;
     }).toList();
     var originalOrder = _vendors.map((v) => v.vendorHash).toList();
@@ -91,7 +92,11 @@ class _VendorsListWidgetState extends State<VendorsListWidget>
       addAutomaticKeepAlives: true,
       addRepaintBoundaries: true,
       itemCount: _vendors?.length ?? 0,
-      padding: EdgeInsets.all(4).copyWith(top: 0, left: max(screenPadding.left, 4), right: max(screenPadding.right, 4)),
+      padding: EdgeInsets.all(4).copyWith(
+          top: 0,
+          left: max(screenPadding.left, 4),
+          right: max(screenPadding.right, 4),
+          bottom: screenPadding.bottom + 8),
       mainAxisSpacing: 4,
       crossAxisSpacing: 4,
       staggeredTileBuilder: (index) {

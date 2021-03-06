@@ -73,6 +73,7 @@ class ObjectivesScreenState extends State<ObjectivesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var bottomPadding = MediaQuery.of(context).padding.bottom;
     return Stack(children: [
       Scaffold(
         appBar: AppBar(
@@ -88,7 +89,7 @@ class ObjectivesScreenState extends State<ObjectivesScreen> {
       ),
       Positioned(
         right: 8,
-        bottom: 8,
+        bottom: 8 + bottomPadding,
         child: Container(
           decoration: BoxDecoration(
               color: Colors.blueGrey.shade900,

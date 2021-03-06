@@ -4,18 +4,18 @@ import 'package:little_light/utils/item_filters/text_filter.dart';
 import 'package:little_light/widgets/search/search.controller.dart';
 import 'package:little_light/widgets/search/search_filters/base_search_filter.widget.dart';
 
-class TextSearchFilterWidget
-    extends BaseSearchFilterWidget<TextFilter> {
+class TextSearchFilterWidget extends BaseSearchFilterWidget<TextFilter> {
   final bool forceAutoFocus;
-  TextSearchFilterWidget(SearchController controller, {this.forceAutoFocus:false}) : super(controller);
+  TextSearchFilterWidget(SearchController controller,
+      {this.forceAutoFocus: false})
+      : super(controller);
 
   @override
-  _TextSearchFilterWidgetState createState() =>
-      _TextSearchFilterWidgetState();
+  _TextSearchFilterWidgetState createState() => _TextSearchFilterWidgetState();
 }
 
-class _TextSearchFilterWidgetState
-    extends BaseSearchFilterWidgetState<TextSearchFilterWidget, TextFilter, String> {
+class _TextSearchFilterWidgetState extends BaseSearchFilterWidgetState<
+    TextSearchFilterWidget, TextFilter, String> {
   TextEditingController _searchFieldController = new TextEditingController();
 
   @override
@@ -26,7 +26,7 @@ class _TextSearchFilterWidgetState
   }
 
   @override
-  dispose(){
+  dispose() {
     _searchFieldController.removeListener(updateText);
     super.dispose();
   }
@@ -36,12 +36,13 @@ class _TextSearchFilterWidgetState
     setState(() {});
     widget.controller.update();
   }
-  
 
   @override
   Widget build(BuildContext context) {
     return TextField(
-      autofocus: UserSettingsService().autoOpenKeyboard || widget.forceAutoFocus,
+      decoration: InputDecoration(isDense: true),
+      autofocus:
+          UserSettingsService().autoOpenKeyboard || widget.forceAutoFocus,
       controller: _searchFieldController,
     );
   }

@@ -94,6 +94,7 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
   Widget buildTitle(BuildContext context) {
     if (searchOpen) {
       return TextField(
+        decoration: InputDecoration(isDense: true),
         autofocus: true,
         controller: _searchFieldController,
       );
@@ -151,7 +152,7 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
     }
     double paddingBottom = MediaQuery.of(context).padding.bottom;
     return Material(
-        color: Theme.of(context).primaryColor,
+        color: Theme.of(context).bottomAppBarColor,
         elevation: 1,
         child: Container(
           constraints: BoxConstraints(minWidth: double.infinity),
@@ -182,7 +183,7 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
           LoadoutsService().saveLoadoutsOrder(loadouts);
         },
         itemBuilder: (context, parameter, handle) =>
-            buildSortItem(context, parameter, handle));
+            buildSortItem(context, parameter.value, handle));
   }
 
   Widget buildHandle(BuildContext context) {
