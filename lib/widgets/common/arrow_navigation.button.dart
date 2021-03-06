@@ -4,8 +4,6 @@ class ArrowNavigationButton extends StatelessWidget {
   final TabController controller;
   final IconData icon;
   final int index;
-  final _forwardTween = ColorTween(
-      begin: Colors.grey.shade100, end: Colors.grey.shade100.withOpacity(.5));
 
   ArrowNavigationButton(
       {Key key, this.controller, @required this.icon, this.index})
