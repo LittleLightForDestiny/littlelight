@@ -1,0 +1,3 @@
+- adds an option to login again to solve "AuthorizationRecordExpired"                                             
+- some layout updates and bug fixes
+

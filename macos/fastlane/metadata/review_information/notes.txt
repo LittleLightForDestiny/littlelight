@@ -1,0 +1,6 @@
+video showing the login process attached. It requires no special hardware, it's just a third party site that authenticates the user.
+
+login instructions:
+In the website that asks you to select a platform, you need to select Playstation Network, then you enter the provided user and password.
+user - psn@markezine.me
+password - appletest12

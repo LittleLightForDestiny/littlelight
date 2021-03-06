@@ -21,11 +21,6 @@ or alternatively using `brew install fastlane`
 fastlane ios release
 ```
 Push a new release build to the App Store
-### ios update_metadata
-```
-fastlane ios update_metadata
-```
-
 
 ----
 

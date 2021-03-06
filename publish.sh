@@ -1,7 +1,12 @@
 flutter clean
 flutter build appbundle --release
-flutter build ios --release --no-codesign
 cd android
-fastlane deploy
-cd ../ios
-fastlane release
+bundle exec fastlane deploy
+cd ..
+flutter build ios --release --no-codesign
+cd ios
+bundle exec fastlane release
+cd ..
+flutter build macos --release --no-codesign
+cd macos
+bundle exec fastlane release

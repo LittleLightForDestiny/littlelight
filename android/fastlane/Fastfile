@@ -1,52 +1,41 @@
-# Customise this file, documentation can be found here:
-# https://github.com/fastlane/fastlane/tree/master/fastlane/docs
-# All available actions: https://docs.fastlane.tools/actions
-# can also be listed using the `fastlane actions` command
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
 
-# Change the syntax highlighting to Ruby
-# All lines starting with a # are ignored when running `fastlane`
+# Uncomment the line if you want fastlane to automatically update itself
+update_fastlane
 
-fastlane_version "2.39.2"
-
-default_platform :android
+default_platform(:android)
 
 platform :android do
-  before_all do
-    
+  desc "Runs all the tests"
+  lane :test do
+    gradle(task: "test")
+  end
+
+  desc "Submit a new Beta Build to Crashlytics Beta"
+  lane :beta do
+    crashlytics
+  
+    # sh "your_script.sh"
+    # You can also use other beta testing services here
   end
 
   desc "Deploy a new version to the Google Play"
-  lane :beta do
-    upload_to_play_store(
-      metadata_path:'../translations/metadata/android',
-      aab:'../build/app/outputs/bundle/release/app-release.aab',
-      skip_upload_screenshots:true,
-      skip_upload_images:true,
-      track: 'beta'
-      )
-  end
   lane :deploy do
-    supply(
-      metadata_path:'../translations/metadata/android',
+    upload_to_play_store(
       aab:'../build/app/outputs/bundle/release/app-release.aab',
       skip_upload_screenshots:true,
       skip_upload_images:true,
+      skip_upload_metadata:true,
     )
   end
-
-  desc "Download metadata from google play"
-  lane :download_metadata do
-    download_from_play_store(
-      metadata_path:'../translations/metadata/android',
-    )
-  end
-
-  desc "Upload metadata to google play"
-  lane :upload_metadata do
-    supply(
-      metadata_path:'../translations/metadata/android',
-    )
-  end
-
-  
 end

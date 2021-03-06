@@ -66,6 +66,8 @@ android {
         release {
             if(keyAvailable) {
                 signingConfig signingConfigs.release
+            }else{
+                logger.error("Key not found, building unsigned app")
             }
         }
     }
