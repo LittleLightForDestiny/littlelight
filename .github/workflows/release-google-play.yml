@@ -26,7 +26,7 @@ jobs:
 
       - name: Create google-services.json
         run: |
-          echo "${{ secrets.ANDROID_GOOGLE_SERVICES_JSON }}" > android/app/google-services.json
+          echo '${{ secrets.ANDROID_GOOGLE_SERVICES_JSON }}' > android/app/google-services.json
 
       - name: Flutter version
         run: flutter --version
