@@ -22,7 +22,7 @@ jobs:
 
       - name: Create assets/_env
         run: |
-          echo "${{ secrets.FLUTTER_DOTENV }}" > asset/_env
+          echo "${{ secrets.FLUTTER_DOTENV }}" > assets/_env
 
       - name: Flutter version
         run: flutter --version
