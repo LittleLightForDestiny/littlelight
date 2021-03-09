@@ -76,3 +76,10 @@ jobs:
           gem install bundler:2.0.2
           bundle config path vendor/bundle
           bundle install
+
+      - name: Release to Google Play (production)
+        env:
+          SUPPLY_PACKAGE_NAME: ${{ secrets.SUPPLY_PACKAGE_NAME }}
+          SUPPLY_JSON_KEY_DATA: ${{ secrets.SUPPLY_JSON_KEY_DATA }}
+        run: |
+          bundle exec fastlane android deploy
