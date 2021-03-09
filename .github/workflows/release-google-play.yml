@@ -4,13 +4,6 @@ on:
   release:
     types: [published]
   workflow_dispatch:
-
-name: Google Play
-
-on:
-  release:
-    types: [published]
-  workflow_dispatch:
   
 jobs:
   google-play:
