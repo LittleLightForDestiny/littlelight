@@ -20,6 +20,10 @@ jobs:
         with:
           channel: stable
 
+      - name: Create assets/_env
+        run: |
+          echo "${{ secrets.FLUTTER_DOTENV }}" > asset/_env
+
       - name: Flutter version
         run: flutter --version
 
