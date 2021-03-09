@@ -30,7 +30,7 @@ jobs:
         run: |
           echo "${{ secrets.FLUTTER_DOTENV }}" > assets/_env
 
-      - name: Create google-services.json
+      - name: Create GoogleService-Info.plist
         run: |
           echo '${{ secrets.IOS_GOOGLE_SERVICE_INFO_PLIST }}' > ios/Runner/GoogleService-Info.plist
 
