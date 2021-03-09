@@ -1,0 +1,9 @@
+Luzinha é um gerenciador de inventário para Destiny 2 que vai tornar a sua vida de guardião bem mais fácil.
+- Transfira facilmente qualquer item entre seus personagens e o cofre.
+- Transfira mais de um item de uma vez (aperte e segure sobre um item para ativar a seleção múltipla).
+- Crie loadouts para equipar um set de armas/armadura inteiro de uma vez
+- Liste todos seus items duplicados e transfira para qualquer personagem
+- Veja todos os mods relevantes dos seus items (incluindo masterworks, ornamentos e shaders) na lista de equipamento.
+- Troque facilmente de plataforma quando estiver jogando em mais de uma.
+- Veja todos os detalhes de um item, incluindo estatisticas ocultas, perks, e lore.
+- Acompanhe o status das suas coleções de exóticos, coleções de itens cosméticos, sets de armas e armaduras

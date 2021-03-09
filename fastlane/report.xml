@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="fastlane.lanes">
+    
+    
+    
+      
+      <testcase classname="fastlane.lanes" name="0: match" time="2.592089">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="1: update_project_team" time="0.073944">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="2: update_project_provisioning" time="0.051666">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="3: build_app" time="85.55558">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="4: upload_to_app_store" time="151.857809">
+        
+      </testcase>
+    
+  </testsuite>
+</testsuites>
