@@ -24,6 +24,12 @@ jobs:
         run: |
           echo "${{ secrets.FLUTTER_DOTENV }}" > assets/_env
 
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_KEY }}
+          known_hosts: ${{ secrets.KNOWN_HOSTS }}
+
       - name: Create google-services.json
         run: |
           echo '${{ secrets.IOS_GOOGLE_SERVICE_INFO_PLIST }}' > ios/Runner/GoogleService-Info.plist
