@@ -15,24 +15,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v1
-        with:
-          channel: stable
-
-      - name: Create assets/_env
-        run: |
-          echo "${{ secrets.FLUTTER_DOTENV }}" > assets/_env
-
       - name: Install SSH key
         uses: shimataro/ssh-key-action@v2
         with:
           key: ${{ secrets.SSH_KEY }}
           known_hosts: ${{ secrets.KNOWN_HOSTS }}
-
-      - name: Create google-services.json
-        run: |
-          echo '${{ secrets.IOS_GOOGLE_SERVICE_INFO_PLIST }}' > ios/Runner/GoogleService-Info.plist
 
       - name: Release to App Store
         env:
@@ -46,6 +33,19 @@ jobs:
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
           APPLE_USERNAME: ${{ secrets.APPLE_USERNAME }}
         run: bundle exec fastlane ios release
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v1
+        with:
+          channel: stable
+
+      - name: Create assets/_env
+        run: |
+          echo "${{ secrets.FLUTTER_DOTENV }}" > assets/_env
+
+      - name: Create google-services.json
+        run: |
+          echo '${{ secrets.IOS_GOOGLE_SERVICE_INFO_PLIST }}' > ios/Runner/GoogleService-Info.plist
 
       - name: Flutter version
         run: flutter --version
