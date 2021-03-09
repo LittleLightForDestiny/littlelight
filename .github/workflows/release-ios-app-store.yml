@@ -41,7 +41,7 @@ jobs:
       - name: Download pub dependencies
         run: flutter pub get
 
-      - name: Build Android App Bundle
+      - name: Build iOS App Bundle
         run: flutter build ios --no-codesign
 
       - name: Cache bundle dependencies
@@ -69,6 +69,7 @@ jobs:
           FASTLANE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
           FASTLANE_SESSION: ${{ secrets.APPLE_SESSION }}
           FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APPLICATION_SPECIFIC_PASSWORD }}
+          MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
           MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
           APPLE_USERNAME: ${{ secrets.APPLE_USERNAME }}
