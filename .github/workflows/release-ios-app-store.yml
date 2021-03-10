@@ -9,7 +9,7 @@ jobs:
   ios-app-store:
     name: Release (full)
 
-    runs-on: macos-10.4
+    runs-on: macos-10.5
 
     steps:
       - name: Checkout
