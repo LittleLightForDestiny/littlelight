@@ -48,7 +48,7 @@ jobs:
         run: flutter pub get
 
       - name: Build iOS App Bundle
-        run: flutter build ios --no-codesign
+        run: flutter build ios --no-codesign --release
 
       - name: Cache bundle dependencies
         uses: actions/cache@v2
