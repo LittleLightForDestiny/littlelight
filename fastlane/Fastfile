@@ -61,21 +61,21 @@ platform :ios do
       output_directory:"build/ios",
       output_name: "LittleLight.ipa"
     )
-    upload_to_app_store(
-      ipa:"build/ios/LittleLight.ipa",
-      force: true,
-      automatic_release:true,
-      skip_screenshots:true,
-      reject_if_possible:true,
-      precheck_include_in_app_purchases:false,
-      submit_for_review:true,
-      metadata_path:"./metadata/ios",
-      screenshots_path:"./metadata/ios",
-      submission_information:{
-        export_compliance_uses_encryption:false,
-        export_compliance_encryption_updated:false,
-        add_id_info_uses_idfa:false,
-      }
-    )
+    # upload_to_app_store(
+    #   ipa:"build/ios/LittleLight.ipa",
+    #   force: true,
+    #   automatic_release:true,
+    #   skip_screenshots:true,
+    #   reject_if_possible:true,
+    #   precheck_include_in_app_purchases:false,
+    #   submit_for_review:true,
+    #   metadata_path:"./metadata/ios",
+    #   screenshots_path:"./metadata/ios",
+    #   submission_information:{
+    #     export_compliance_uses_encryption:false,
+    #     export_compliance_encryption_updated:false,
+    #     add_id_info_uses_idfa:false,
+    #   }
+    # )
   end
 end

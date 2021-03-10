@@ -45,8 +45,7 @@ build/
 **/android/local.properties
 **/android/**/GeneratedPluginRegistrant.java
 **/android/.keys
-**/android/fastlane/metadata
-**/android/fastlane/report.xml
+
 
 # iOS/XCode related
 **/ios/**/*.mode1v3
@@ -73,12 +72,9 @@ build/
 **/ios/Flutter/flutter_assets/
 **/ios/ServiceDefinitions.json
 **/ios/Runner/GeneratedPluginRegistrant.*
-**/ios/fastlane/metadata
-**/ios/fastlane/screenshots
-**/ios/fastlane/*.html
-**/ios/fastlane/report.xml
 **/ios/Runner.ipa
 **/ios/*.zip
+**/ios/Flutter/flutter_export_environment.sh
 
 # Exceptions to above rules.
 !**/ios/**/default.mode1v3
@@ -87,6 +83,10 @@ build/
 !**/ios/**/default.perspectivev3
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 
+
+#fastlane
+fastlane/report.xml
+fastlane/*.html
 
 # Firebase configs
 /**/GoogleService-Info.plist
