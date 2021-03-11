@@ -6,10 +6,10 @@ on:
   workflow_dispatch:
   
 jobs:
-  google-play:
+  ios-app-store:
     name: Release (full)
 
-    runs-on: macos-latest
+    runs-on: macos-10.5
 
     steps:
       - name: Checkout
