@@ -453,6 +453,10 @@ class CurrencyConversion {
         CurrencyConversionType.InventoryItem, 592227263), //Baryon Bough
     1923884703: CurrencyConversion(
         CurrencyConversionType.InventoryItem, 3592324052), //Helium Filaments
+    4106973372: CurrencyConversion(
+        CurrencyConversionType.InventoryItem, 293622383), //Spinmetal
+    1760701414: CurrencyConversion(
+        CurrencyConversionType.InventoryItem, 1485756901), //Glacial Starwort
     2654422615: CurrencyConversion(
         CurrencyConversionType.Currency, 1022552290), //Legendary Shards
     3664001560: CurrencyConversion(
