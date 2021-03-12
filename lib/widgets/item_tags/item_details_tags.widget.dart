@@ -51,6 +51,7 @@ class ItemDetailsTagsWidgetState
   }
 
   save() async {
+    tags = ItemNotesService().tagsByIds(notes?.tags);
     ItemNotesService().saveNotes(notes);
     if (widget.onUpdate != null) widget.onUpdate();
     if (mounted) setState(() {});
