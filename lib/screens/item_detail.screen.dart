@@ -215,7 +215,6 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
             buildQuestInfo(context),
             buildLore(context),
             buildCollectibleInfo(context),
-            buildRecipesInfo(context),
             Container(height: 50)
           ]))
         ],
@@ -273,7 +272,6 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
             buildQuestInfo(context),
             buildLore(context),
             buildCollectibleInfo(context),
-            buildRecipesInfo(context),
             Container(height: 50)
           ]))
         ],
@@ -759,13 +757,5 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
         padding: EdgeInsets.only(
             left: screenPadding.left, right: screenPadding.right),
         child: ItemCollectibleInfoWidget(definition.collectibleHash));
-  }
-
-  buildRecipesInfo(BuildContext context) {
-    var screenPadding = MediaQuery.of(context).padding;
-    return Container(
-        padding: EdgeInsets.only(
-            left: screenPadding.left, right: screenPadding.right),
-        child: ChaliceRecipeWidget(definition));
   }
 }
