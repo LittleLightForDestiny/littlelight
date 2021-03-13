@@ -1,3 +1,2 @@
-- adds an option to login again to solve "AuthorizationRecordExpired"                                             
-- some layout updates and bug fixes
-
+- fixes an issue that would prevent Little Light from loading on some devices
+- fixes an issue when adding tags to weapons won't update those immediately

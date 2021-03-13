@@ -71,6 +71,7 @@ class SelectLanguageWidgetState extends State<SelectLanguageWidget> {
                   widget.onChange(selectedLanguage);
                 });
               },
+              selected: language == selectedLanguage,
               language: language));
     }).toList();
     return buttons;
