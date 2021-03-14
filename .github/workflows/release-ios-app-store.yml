@@ -70,6 +70,7 @@ jobs:
         env:
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
           APPLE_APP_IDENTIFIER: ${{ secrets.APPLE_APP_IDENTIFIER }}
+          FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
           FASTLANE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
           FASTLANE_SESSION: ${{ secrets.APPLE_SESSION }}
           FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APPLICATION_SPECIFIC_PASSWORD }}
