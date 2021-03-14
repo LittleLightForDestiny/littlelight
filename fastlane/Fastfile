@@ -51,7 +51,6 @@ platform :ios do
     match(
       type: "appstore",
       app_identifier: ENV["APPLE_APP_IDENTIFIER"],
-      git_basic_authorization: ENV["MATCH_GIT_BASIC_AUTHORIZATION"],
       git_url: ENV["MATCH_GIT_URL"],
       readonly: is_ci
     )
