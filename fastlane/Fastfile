@@ -30,7 +30,7 @@ platform :android do
       skip_upload_screenshots:true,
       skip_upload_images:true,
       skip_upload_metadata:true,
-      track:'internal'
+      track:'production'
     )
   end
 end
@@ -38,12 +38,22 @@ end
 platform :ios do
   desc "Push a new release build to the App Store"
   lane :release do
+    if is_ci
+      create_keychain(
+        name: ENV['MATCH_KEYCHAIN_NAME'],
+        password: ENV["MATCH_KEYCHAIN_PASSWORD"],
+        default_keychain: true,
+        unlock: true,
+        timeout: 3600,
+        lock_when_sleeps: false
+      )
+    end
     match(
       type: "appstore",
       app_identifier: ENV["APPLE_APP_IDENTIFIER"],
       git_basic_authorization: ENV["MATCH_GIT_BASIC_AUTHORIZATION"],
       git_url: ENV["MATCH_GIT_URL"],
-      readonly:true
+      readonly: is_ci
     )
     update_project_team(
       path: "ios/Runner.xcodeproj",
@@ -61,21 +71,21 @@ platform :ios do
       output_directory:"build/ios",
       output_name: "LittleLight.ipa"
     )
-    # upload_to_app_store(
-    #   ipa:"build/ios/LittleLight.ipa",
-    #   force: true,
-    #   automatic_release:true,
-    #   skip_screenshots:true,
-    #   reject_if_possible:true,
-    #   precheck_include_in_app_purchases:false,
-    #   submit_for_review:true,
-    #   metadata_path:"./metadata/ios",
-    #   screenshots_path:"./metadata/ios",
-    #   submission_information:{
-    #     export_compliance_uses_encryption:false,
-    #     export_compliance_encryption_updated:false,
-    #     add_id_info_uses_idfa:false,
-    #   }
-    # )
+    upload_to_app_store(
+      ipa:"build/ios/LittleLight.ipa",
+      force: true,
+      automatic_release:true,
+      skip_screenshots:true,
+      reject_if_possible:true,
+      precheck_include_in_app_purchases:false,
+      submit_for_review:true,
+      metadata_path:"./metadata/ios",
+      screenshots_path:"./metadata/ios",
+      submission_information:{
+        export_compliance_uses_encryption:false,
+        export_compliance_encryption_updated:false,
+        add_id_info_uses_idfa:false,
+      }
+    )
   end
 end
