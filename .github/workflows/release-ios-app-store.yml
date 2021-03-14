@@ -15,11 +15,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Install SSH key
-        uses: shimataro/ssh-key-action@v2
-        with:
-          key: ${{ secrets.MATCH_GIT_SSH }}
-          known_hosts: ${{ secrets.KNOWN_HOSTS }}
+      - name: Config GIT API Keys
+        run: |
+          git config --global url."https://{{ secrets.MATCH_GIT_API_AUTH }}@github.com/".insteadOf "git@github.com:"
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v1
