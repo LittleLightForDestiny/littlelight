@@ -38,6 +38,13 @@ end
 platform :ios do
   desc "Push a new release build to the App Store"
   lane :release do
+    api_key = app_store_connect_api_key(
+      key_id: ENV["APPSTORE_CONNECT_KEY_ID"],
+      issuer_id: ENV["APPSTORE_CONNECT_ISSUER_ID"],
+      key_filepath: ENV["APPSTORE_CONNECT_KEY_FILE"],
+      # duration: 1200, # optional (maximum 1200)
+      # in_house: true, # optional but may be required if using match/sigh
+    )
     if is_ci
       create_keychain(
         name: ENV['MATCH_KEYCHAIN_NAME'],
@@ -72,14 +79,14 @@ platform :ios do
     )
     upload_to_app_store(
       ipa:"build/ios/LittleLight.ipa",
+      api_key: api_key,
       force: true,
       automatic_release:true,
       skip_screenshots:true,
       reject_if_possible:true,
       precheck_include_in_app_purchases:false,
       submit_for_review:true,
-      metadata_path:"./metadata/ios",
-      screenshots_path:"./metadata/ios",
+      metadata_path:"fastlane/metadata/ios",
       submission_information:{
         export_compliance_uses_encryption:false,
         export_compliance_encryption_updated:false,

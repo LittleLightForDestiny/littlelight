@@ -45,6 +45,13 @@ jobs:
       - name: Download pub dependencies
         run: flutter pub get
 
+      - name: Download Appstore Connect key
+        id: app_store_connect_key
+        uses: timheuer/base64-to-file@v1.0.3
+        with:
+          fileName: appstore_connect_key.p8
+          encodedString: ${{ secrets.APPSTORE_CONNECT_KEY_BASE64 }}
+
       - name: Build iOS App Bundle
         run: flutter build ios --no-codesign --release
 
@@ -68,11 +75,11 @@ jobs:
 
       - name: Release to App Store
         env:
+          APPSTORE_CONNECT_KEY_ID: ${{ secrets.APPSTORE_CONNECT_KEY_ID }}
+          APPSTORE_CONNECT_ISSUER_ID: ${{ secrets.APPSTORE_CONNECT_ISSUER_ID }}
+          APPSTORE_CONNECT_KEY_FILE: ${{ steps.app_store_connect_key.outputs.filePath }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
           APPLE_APP_IDENTIFIER: ${{ secrets.APPLE_APP_IDENTIFIER }}
-          FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
-          FASTLANE_PASSWORD: ${{ secrets.FASTLANE_PASSWORD }}
-          FASTLANE_SESSION: ${{ secrets.FASTLANE_SESSION }}
           FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD }}
           MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
