@@ -1,0 +1,13 @@
+import 'package:flutter/widgets.dart';
+
+class LittleLightIcons {
+  LittleLightIcons._();
+
+  static const _kFontFam = 'LittleLightIcons';
+  static const _kFontPkg = null;
+
+{{#icons}}
+  static const IconData {{name}} = IconData({{hex}}, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+{{/icons}}
+  
+}

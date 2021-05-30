@@ -1,0 +1,19 @@
+{
+  "name": "littlelight-iconfont-gen",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index"
+  },
+  "type": "commonjs",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "fs-extra": "^9.1.0",
+    "mustache": "^4.1.0",
+    "scale-that-svg": "^1.0.5",
+    "svg-dimensions": "^1.0.2",
+    "svg2ttf": "^5.0.0",
+    "svgicons2svgfont": "^9.1.1"
+  }
+}
