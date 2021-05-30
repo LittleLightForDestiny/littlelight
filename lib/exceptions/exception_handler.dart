@@ -52,10 +52,18 @@ class ExceptionHandler {
       print("Oauth Exception caught");
     }
 
+    print(error);
+    if (error is Error) {
+      var stack = error.stackTrace.toString().split('\n');
+      stack.removeWhere((s) => !s.contains("package:little_light"));
+      print(stack.join("\n"));
+    }
+
     if (error is BungieApiException) {
       bool shouldShowLoginButton = [
             PlatformErrorCodes.DestinyAccountNotFound,
-            PlatformErrorCodes.WebAuthRequired
+            PlatformErrorCodes.WebAuthRequired,
+            PlatformErrorCodes.AuthorizationRecordExpired
           ].contains(error.errorCode) ||
           ["invalid_grant"].contains(error.errorStatus);
       BungieApiException e = error;
@@ -101,7 +109,16 @@ class ExceptionHandler {
         ),
       );
     }
-    FirebaseCrashlytics.instance.recordFlutterError(error);
+    if (error is FlutterErrorDetails) {
+      FirebaseCrashlytics.instance.recordFlutterError(error);
+      return;
+    }
+
+    if (error is Error) {
+      FirebaseCrashlytics.instance
+          .recordError(error, error.stackTrace, printDetails: false);
+      return;
+    }
   }
 
   static setReportingUserInfo(String membershipId, String displayName,
