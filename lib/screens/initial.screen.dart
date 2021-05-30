@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:little_light/exceptions/exception_handler.dart';
 import 'package:little_light/screens/main.screen.dart';
 import 'package:little_light/services/auth/auth.service.dart';
+import 'package:little_light/services/bungie_api/bungie_api.exception.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/littlelight/littlelight_api.service.dart';
 import 'package:little_light/services/littlelight/loadouts.service.dart';
@@ -146,11 +147,6 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
   }
 
   checkLogin() async {
-    var authCode = await widget.auth.checkAuthorizationCode();
-    if (authCode != null) {
-      this.authCode(authCode);
-      return;
-    }
     BungieNetToken token;
     try {
       token = await widget.auth.getToken();
@@ -163,10 +159,21 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
           ].contains(e.errorCode) ||
           ["invalid_grant"].contains(e.errorStatus);
       if (needsLogin) {
-        showLogin();
+        showLogin(false);
         return;
       }
       throw e;
+    }
+
+    if (token != null) {
+      checkMembership();
+      return;
+    }
+
+    var authCode = await widget.auth.checkAuthorizationCode();
+    if (authCode != null) {
+      this.authCode(authCode);
+      return;
     }
 
     if (token == null) {
@@ -176,7 +183,7 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
     }
   }
 
-  showLogin() {
+  showLogin([bool forceReauth = true]) {
     LoginWidget loginWidget = new LoginWidget(
       onSkip: () {
         goForward();
@@ -184,6 +191,7 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
       onLogin: (code) {
         authCode(code);
       },
+      forceReauth: forceReauth,
     );
     this.changeContent(loginWidget, loginWidget.title);
   }
@@ -205,7 +213,9 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
                   }
                 },
               ));
-      ExceptionHandler().handleException(e, stackTrace);
+      ExceptionHandler(onRestart: () {
+        this.showLogin(false);
+      }).handleException(e, stackTrace);
     }
   }
 

@@ -31,9 +31,8 @@ GameData _$GameDataFromJson(Map<String, dynamic> json) {
     tabbedPresentationNodes: (json['tabbedPresentationNodes'] as List)
         ?.map((e) => e as int)
         ?.toList(),
-    ranks: json['ranks'] == null
-        ? null
-        : ReputationRanks.fromJson(json['ranks'] as Map<String, dynamic>),
+    ranks:
+        json['ranks'] == null ? null : ReputationRanks.fromJson(json['ranks']),
   );
 }
 

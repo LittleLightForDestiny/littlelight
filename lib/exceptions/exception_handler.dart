@@ -6,7 +6,7 @@ import 'package:bungie_api/enums/platform_error_codes.dart';
 import 'package:bungie_api/helpers/oauth.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/services/bungie_api/bungie_api.service.dart';
+import 'package:little_light/services/bungie_api/bungie_api.exception.dart';
 import 'package:little_light/services/storage/storage.service.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
@@ -87,6 +87,7 @@ class ExceptionHandler {
                     ErrorDialogButton(
                         text: "Try Again",
                         onPressed: () {
+                          Navigator.pop(context);
                           onRestart();
                         }),
                     shouldShowLoginButton
@@ -95,6 +96,7 @@ class ExceptionHandler {
                             onPressed: () async {
                               await StorageService.account()
                                   .remove(StorageKeys.latestToken, true);
+                              Navigator.pop(context);
                               onRestart();
                             })
                         : Container(height: 0),
@@ -137,14 +139,16 @@ class ErrorDialogButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      child: Container(
-          constraints: BoxConstraints(minWidth: double.infinity),
-          child: TranslatedTextWidget(
-            text,
-            textAlign: TextAlign.center,
-          )),
-      onPressed: onPressed,
-    );
+    return Container(
+        margin: EdgeInsets.only(bottom: 8),
+        child: ElevatedButton(
+          child: Container(
+              constraints: BoxConstraints(minWidth: double.infinity),
+              child: TranslatedTextWidget(
+                text,
+                textAlign: TextAlign.center,
+              )),
+          onPressed: onPressed,
+        ));
   }
 }

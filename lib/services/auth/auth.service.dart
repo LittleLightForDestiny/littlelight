@@ -12,6 +12,8 @@ import 'package:little_light/services/storage/storage.service.dart';
 import 'package:uni_links/uni_links.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+bool initialLinkHandled = false;
+
 class AuthService {
   BungieNetToken _currentToken;
   GroupUserInfoCard _currentMembership;
@@ -89,7 +91,12 @@ class AuthService {
   }
 
   Future<String> checkAuthorizationCode() async {
-    Uri uri = await getInitialUri();
+    Uri uri;
+    if (!initialLinkHandled) {
+      uri = await getInitialUri();
+      initialLinkHandled = true;
+    }
+
     if (uri?.queryParameters == null) return null;
     print("initialURI: $uri");
     if (uri.queryParameters.containsKey("code") ||
@@ -107,10 +114,11 @@ class AuthService {
     }
   }
 
-  Future<String> authorize([bool reauth = false]) async {
+  Future<String> authorize([bool forceReauth = true]) async {
     String currentLanguage = StorageService.getLanguage();
     var browser = new BungieAuthBrowser();
-    OAuth.openOAuth(browser, BungieApiService.clientId, currentLanguage, true);
+    OAuth.openOAuth(
+        browser, BungieApiService.clientId, currentLanguage, forceReauth);
     Stream<String> _stream = getLinksStream();
     Completer<String> completer = Completer();
 
