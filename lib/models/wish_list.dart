@@ -125,8 +125,6 @@ class Wishlist {
   String description;
   DateTime updatedAt;
   WishlistType type;
-  @JsonKey(defaultValue: true)
-  bool isDefault;
 
   Wishlist(
       {this.url,
@@ -134,8 +132,7 @@ class Wishlist {
       this.name,
       this.description,
       this.updatedAt,
-      this.type,
-      this.isDefault = false});
+      this.type});
 
   String get filename {
     if (localFilename != null) return localFilename;
@@ -155,8 +152,7 @@ class Wishlist {
         name: "Little Light default wishlist",
         type: WishlistType.DimWishlist,
         description:
-            "basically a compilation of pandapaxxy's Weapons Breakdown",
-        isDefault: true);
+            "basically a compilation of pandapaxxy's Weapons Breakdown");
   }
 
   dynamic toJson() {

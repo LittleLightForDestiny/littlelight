@@ -20,9 +20,9 @@ class WishlistsService {
 
   init() async {
     Map<int, WishlistItem> items;
-    try{
+    try {
       items = await _loadPreParsed();
-    }catch(_){}
+    } catch (_) {}
     this._wishlists = await _loadFromStorage(items == null);
     if (items != null) {
       _items = items;
@@ -31,10 +31,10 @@ class WishlistsService {
     this.updateWishlists();
   }
 
-  countBuilds(){
+  countBuilds() {
     var count = 0;
     _items.forEach((key, value) {
-      count+=value?.builds?.length ?? 0;
+      count += value?.builds?.length ?? 0;
     });
     print(count);
   }
@@ -64,13 +64,6 @@ class WishlistsService {
     bool needsParsing = false;
     for (var wishlist in _wishlists) {
       bool needUpdate = wishlist.updatedAt.isBefore(minimumDate);
-      var wishlistDefaultPath = "https://raw.githubusercontent.com/LittleLightForDestiny/littlelight_wishlists/master/littlelight_default.json";
-      if (wishlist.url != wishlistDefaultPath && wishlist.isDefault){
-        wishlist.url = wishlistDefaultPath;
-        wishlist.isDefault = true;
-        needUpdate = true;
-      }
-
       if (needUpdate) {
         await _downloadWishlist(wishlist);
       }
@@ -122,13 +115,13 @@ class WishlistsService {
   }
 
   Future<void> _parseWishlist(Wishlist wishlist, String contents) async {
-    try{
+    try {
       var parser = LittleLightWishlistParser();
       var w = await parser.parse(contents);
       wishlist.name = w.name ?? wishlist.name ?? "";
       wishlist.description = w.description ?? wishlist.description ?? "";
       return;
-    }catch(_){}
+    } catch (_) {}
     var parser = DimWishlistParser();
     parser.parse(contents);
   }
@@ -166,7 +159,9 @@ class WishlistsService {
     if (availablePlugs?.length == 0) return null;
     var wish = _items[item?.itemHash];
     var builds = wish?.builds?.where((build) {
-      return build.perks.every((element) => element.any((e)=>availablePlugs.contains(e)) || element.length == 0);
+      return build.perks.every((element) =>
+          element.any((e) => availablePlugs.contains(e)) ||
+          element.length == 0);
     });
     if ((builds?.length ?? 0) == 0) return null;
     Set<WishlistTag> tags = Set();
@@ -188,7 +183,9 @@ class WishlistsService {
     var wish = _items[item?.itemHash];
 
     var builds = wish?.builds?.where((build) {
-      return build.perks.every((element) => element.any((e)=>availablePlugs.contains(e)) || element.length == 0);
+      return build.perks.every((element) =>
+          element.any((e) => availablePlugs.contains(e)) ||
+          element.length == 0);
     });
     if ((builds?.length ?? 0) == 0) return null;
     Set<String> notes = Set();
@@ -198,12 +195,12 @@ class WishlistsService {
     return notes;
   }
 
-  addToWishList(String name, int hash, List<List<int>> perks, Set<WishlistTag> specialties,
-      Set<String> notes) {
+  addToWishList(String name, int hash, List<List<int>> perks,
+      Set<WishlistTag> specialties, Set<String> notes) {
     var wishlist =
         _items[hash] = _items[hash] ?? WishlistItem.builder(itemHash: hash);
-    var build =
-        WishlistBuild.builder(name:name, perks: perks.map((p) => p.toSet()).toList());
+    var build = WishlistBuild.builder(
+        name: name, perks: perks.map((p) => p.toSet()).toList());
     build.notes.addAll(notes.where((n) => (n?.length ?? 0) > 0));
     build.tags.addAll(specialties.where((s) => s != null));
     for (var p in perks) {

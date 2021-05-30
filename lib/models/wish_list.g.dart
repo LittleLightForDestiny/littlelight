@@ -143,7 +143,6 @@ Wishlist _$WishlistFromJson(Map<String, dynamic> json) {
         ? null
         : DateTime.parse(json['updatedAt'] as String),
     type: _$enumDecodeNullable(_$WishlistTypeEnumMap, json['type']),
-    isDefault: json['isDefault'] as bool ?? true,
   );
 }
 
@@ -154,7 +153,6 @@ Map<String, dynamic> _$WishlistToJson(Wishlist instance) => <String, dynamic>{
       'description': instance.description,
       'updatedAt': instance.updatedAt?.toIso8601String(),
       'type': _$WishlistTypeEnumMap[instance.type],
-      'isDefault': instance.isDefault,
     };
 
 const _$WishlistTypeEnumMap = {
