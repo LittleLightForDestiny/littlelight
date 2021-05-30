@@ -20,11 +20,8 @@ import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
-import 'package:little_light/widgets/item_details/chalice_recipe.widget.dart';
 import 'package:little_light/widgets/item_details/item_collectible_info.widget.dart';
-
 import 'package:little_light/widgets/item_details/item_cover/item_cover.widget.dart';
 import 'package:little_light/widgets/item_details/item_cover/landscape_item_cover.widget.dart';
 import 'package:little_light/widgets/item_details/item_detail_duplicates.widget.dart';

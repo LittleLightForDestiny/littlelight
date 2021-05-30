@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:core';
 
-import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 import 'package:little_light/services/storage/storage.service.dart';
 import 'package:little_light/services/translate/timeago_messages/cn_messages.dart';
 import 'package:little_light/services/translate/timeago_messages/de_messages.dart';
@@ -15,7 +15,6 @@ import 'package:little_light/services/translate/timeago_messages/pl_messages.dar
 import 'package:little_light/services/translate/timeago_messages/pt_messages.dart';
 import 'package:little_light/services/translate/timeago_messages/ru_messages.dart';
 import 'package:timeago/timeago.dart' as timeago;
-import 'package:http/http.dart' as http;
 
 class TranslateService {
   String fallbackLanguage = "en";
