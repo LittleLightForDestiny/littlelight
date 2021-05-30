@@ -49,7 +49,8 @@ enum StorageKeys {
   priorityTags,
   bucketDisplayOptions,
   latestVersion,
-  versionUpdatedDate
+  versionUpdatedDate,
+  littleLightTranslation
 }
 
 extension StorageKeysExtension on StorageKeys {

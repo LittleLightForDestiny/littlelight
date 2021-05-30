@@ -81,7 +81,6 @@ flutter:
     - assets/imgs/flags/
     - assets/subclasses/
     - assets/anim/
-    - assets/i18n/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.io/assets-and-images/#resolution-aware.
