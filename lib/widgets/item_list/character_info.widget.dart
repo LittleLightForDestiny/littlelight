@@ -90,13 +90,15 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
       currencyInfo(context),
       Positioned.fill(child: ghostIcon(context)),
       Positioned.fill(
-          child: MaterialButton(
-              child: Container(),
-              onPressed: () {
-                UserSettingsService().hasTappedGhost = true;
-                setState(() {});
-                showOptionsSheet(context);
-              }))
+          child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                  child: Container(),
+                  onTap: () {
+                    UserSettingsService().hasTappedGhost = true;
+                    setState(() {});
+                    showOptionsSheet(context);
+                  })))
     ]);
   }
 
