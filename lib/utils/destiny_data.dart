@@ -48,12 +48,6 @@ class RaidPhases {
   static const int sotpInsurrectionPrimeChallenge = 4140089399;
 }
 
-class DestinyRanks {
-  static const infamy = 2772425241;
-  static const valor = 2626549951;
-  static const glory = 2000925172;
-}
-
 class DestinyData {
   static const Map<DamageType, int> damageTypeHashes = {
     DamageType.Kinetic: 3373582085,

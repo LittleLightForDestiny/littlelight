@@ -1,18 +1,16 @@
 import 'dart:async';
 import 'dart:math';
+
 import 'package:bungie_api/models/destiny_faction_progression.dart';
 import 'package:bungie_api/models/destiny_progression.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-
+import 'package:little_light/services/littlelight/littlelight_data.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/utils/destiny_data.dart';
-
 import 'package:little_light/widgets/item_list/character_info.widget.dart';
 import 'package:little_light/widgets/progress_tabs/faction_rank_item.widget.dart';
-
 import 'package:little_light/widgets/progress_tabs/rank_item.widget.dart';
 
 class CharacterRanksListWidget extends StatefulWidget {
@@ -55,10 +53,11 @@ class _CharacterRanksListWidgetState extends State<CharacterRanksListWidget>
   Future<void> getRanks() async {
     var progressionsRoot =
         widget.profile.getCharacterProgression(widget.characterId);
+    var gameData = await LittleLightDataService().getGameData();
     ranks = [
-      progressionsRoot.progressions["${DestinyRanks.glory}"],
-      progressionsRoot.progressions["${DestinyRanks.valor}"],
-      progressionsRoot.progressions["${DestinyRanks.infamy}"]
+      progressionsRoot.progressions["${gameData.ranks.glory}"],
+      progressionsRoot.progressions["${gameData.ranks.valor}"],
+      progressionsRoot.progressions["${gameData.ranks.infamy}"]
     ];
     this.progressions = progressionsRoot.factions.values
         .where((p) => p.factionHash != null)
