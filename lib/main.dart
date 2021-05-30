@@ -28,6 +28,7 @@ void main() async {
 
   ExceptionHandler handler = ExceptionHandler(onRestart: () {
     restartCounter++;
+    print('restart');
     main();
   });
 

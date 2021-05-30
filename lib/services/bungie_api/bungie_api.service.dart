@@ -29,6 +29,7 @@ import 'package:bungie_api/responses/int32_response.dart';
 import 'package:bungie_api/responses/user_membership_data_response.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:little_light/services/auth/auth.service.dart';
+import 'package:little_light/services/bungie_api/bungie_api.exception.dart';
 
 class BungieApiService {
   static const String baseUrl = 'https://www.bungie.net';
@@ -291,28 +292,12 @@ class Client implements HttpClient {
     }
 
     if (response.statusCode != 200) {
-      throw BungieApiException(json, response.statusCode);
+      throw BungieApiException.fromJson(json, response.statusCode);
     }
 
     if (json["ErrorCode"] != null && json["ErrorCode"] > 2) {
-      throw BungieApiException(json, response.statusCode);
+      throw BungieApiException.fromJson(json, response.statusCode);
     }
     return HttpResponse(json, response.statusCode);
-  }
-}
-
-class BungieApiException implements Exception {
-  final dynamic data;
-  final int httpStatus;
-  BungieApiException(this.data, [this.httpStatus]);
-  int get errorCode => data["ErrorCode"];
-  String get errorStatus => data["ErrorStatus"] ?? data['error'];
-  String get message => data["Message"] ?? data['error_description'];
-  @override
-  String toString() {
-    if (data == null) {
-      return "httpStatus - $httpStatus";
-    }
-    return "$errorStatus - $message";
   }
 }

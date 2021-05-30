@@ -18,7 +18,7 @@ class LoginWidget extends StatefulWidget {
   final SkipCallback onSkip;
   final bool forceReauth;
 
-  LoginWidget({this.onLogin, this.onSkip, this.forceReauth = false});
+  LoginWidget({this.onLogin, this.onSkip, this.forceReauth = true});
 
   @override
   LoginWidgetState createState() => new LoginWidgetState();
@@ -83,16 +83,19 @@ class LoginWidgetState extends State<LoginWidget> {
   Widget build(BuildContext context) {
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       Padding(
-        padding: EdgeInsets.all(8),
-        child: TranslatedTextWidget(
-            "Authorize with Bungie.net to use inventory management features"),
-      ),
+          padding: EdgeInsets.all(8),
+          child: widget.forceReauth
+              ? TranslatedTextWidget(
+                  "Authorize with Bungie.net to use inventory management features")
+              : TranslatedTextWidget(
+                  "Please re-authorize Little Light to keep using inventory management features")),
       ElevatedButton(
         onPressed: () {
           this.authorizeClick(context);
         },
         child: TranslatedTextWidget("Authorize with Bungie.net"),
       ),
+      Container(height: 8),
       ElevatedButton(
         onPressed: () {
           this.laterClick();
