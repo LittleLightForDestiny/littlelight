@@ -20,6 +20,7 @@ class ItemPerksWidget extends StatefulWidget {
   final bool showUnusedPerks;
   final socketCategoryHash;
   final List<DestinyItemSocketState> itemSockets;
+  final Map<String, List<DestinyItemPlugBase>> reusablePlugs;
   ItemPerksWidget(
       {Key key,
       this.iconSize = 16,
@@ -27,6 +28,7 @@ class ItemPerksWidget extends StatefulWidget {
       this.showUnusedPerks = false,
       this.definition,
       this.itemSockets,
+      this.reusablePlugs,
       this.item})
       : super(key: key);
 
@@ -50,7 +52,7 @@ class ItemPerksWidgetState extends State<ItemPerksWidget> {
     _itemSockets =
         ProfileService().getItemSockets(widget?.item?.itemInstanceId);
     if (widget.showUnusedPerks) {
-      _reusablePlugs =
+      _reusablePlugs = widget.reusablePlugs ??
           ProfileService().getItemReusablePlugs(widget?.item?.itemInstanceId);
     }
     loadPerks();
@@ -113,7 +115,7 @@ class ItemPerksWidgetState extends State<ItemPerksWidget> {
     }
     var tags = WishlistsService().getPerkTags(widget.definition.hash, plugHash);
     return Container(
-      margin: EdgeInsets.only(top:1, left:1),
+      margin: EdgeInsets.only(top: 1, left: 1),
       width: widget.iconSize,
       height: widget.iconSize,
       child: Stack(children: [
@@ -131,24 +133,26 @@ class ItemPerksWidgetState extends State<ItemPerksWidget> {
     List<Color> colors = [];
     if (tags.contains(WishlistTag.GodPVE)) {
       colors.add(Colors.amber);
-    }else if(tags.contains(WishlistTag.PVE)){
-      colors.add(Color.lerp(WishlistsData.getBgColor(WishlistTag.PVE), Colors.white, .2));
+    } else if (tags.contains(WishlistTag.PVE)) {
+      colors.add(Color.lerp(
+          WishlistsData.getBgColor(WishlistTag.PVE), Colors.white, .2));
     }
     if (tags.contains(WishlistTag.GodPVP)) {
       colors.add(Colors.amber);
-    }else if(tags.contains(WishlistTag.PVP)){
-      colors.add(Color.lerp(WishlistsData.getBgColor(WishlistTag.PVP), Colors.white, .2));
+    } else if (tags.contains(WishlistTag.PVP)) {
+      colors.add(Color.lerp(
+          WishlistsData.getBgColor(WishlistTag.PVP), Colors.white, .2));
     }
     if (colors.length > 0) {
       return Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(4),
+              borderRadius: BorderRadius.circular(4),
               gradient: LinearGradient(
-        colors: colors,
-        stops: colors.map((c) => 0.5).toList(),
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      )));
+                colors: colors,
+                stops: colors.map((c) => 0.5).toList(),
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              )));
     }
     return Container();
   }
@@ -163,15 +167,15 @@ class ItemPerksWidgetState extends State<ItemPerksWidget> {
     }
     if (colors.length > 0) {
       return Container(
-        margin: EdgeInsets.all(1),
+          margin: EdgeInsets.all(1),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(4),
+              borderRadius: BorderRadius.circular(4),
               gradient: LinearGradient(
-        colors: colors,
-        stops: colors.map((c) => 0.5).toList(),
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      )));
+                colors: colors,
+                stops: colors.map((c) => 0.5).toList(),
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              )));
     }
     return Container();
   }

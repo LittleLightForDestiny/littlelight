@@ -81,7 +81,7 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget> {
   Widget build(BuildContext context) {
     if (definition == null)
       return Container(
-          color: Colors.grey.shade900, height: iconSize + padding * 2 + 34);
+          color: Colors.grey.shade900, height: iconSize + padding * 2 + 42);
     return Container(
         decoration: BoxDecoration(
             border: Border.all(
@@ -91,7 +91,7 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget> {
         child: Stack(children: [
           Column(children: [
             Container(
-                height: iconSize + padding * 2,
+                height: iconSize + padding * 2 + 8,
                 child: Stack(
                     children: <Widget>[
                   background(context),
@@ -230,7 +230,9 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget> {
       middleContent = ItemPerksWidget(
         definition: definition,
         itemSockets: sockets,
+        reusablePlugs: reusablePlugs,
         iconSize: 24,
+        showUnusedPerks: true,
         socketCategoryHash: perksCategory?.socketCategoryHash,
       );
     }
@@ -416,7 +418,12 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget> {
       collectedBadge(context),
     ].where((element) => element != null).toList();
     if (list.length == 0) return null;
-    return Row(children: list);
+    var spacedList = list.fold<List<Widget>>(
+        <Widget>[],
+        (previousValue, element) =>
+            previousValue + [element, Container(width: 4)]).toList();
+    spacedList.removeLast();
+    return Row(children: spacedList);
   }
 
   Widget wishlistTags(BuildContext context) {

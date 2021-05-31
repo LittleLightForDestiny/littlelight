@@ -179,11 +179,14 @@ class PrimaryStatWidget extends StatelessWidget {
 
   Widget ammoTypeIcon(BuildContext context) {
     return Row(children: [
-      Icon(
-        DestinyData.getAmmoTypeIcon(definition.equippingBlock.ammoType),
-        color: DestinyData.getAmmoTypeColor(definition.equippingBlock.ammoType),
-        size: fontSize,
-      ),
+      Container(
+          width: fontSize * 1.5,
+          child: Icon(
+            DestinyData.getAmmoTypeIcon(definition.equippingBlock.ammoType),
+            color: DestinyData.getAmmoTypeColor(
+                definition.equippingBlock.ammoType),
+            size: fontSize,
+          )),
       ammoTypeDivider(context),
     ]);
   }
