@@ -35,7 +35,8 @@ class ScreenshotSocketDetailsWidget extends BaseSocketDetailsWidget {
 }
 
 class _ScreenshotPerkDetailsWidgetState
-    extends BaseSocketDetailsWidgetState<ScreenshotSocketDetailsWidget> with PlugWishlistTagIconsMixin{
+    extends BaseSocketDetailsWidgetState<ScreenshotSocketDetailsWidget>
+    with PlugWishlistTagIconsMixin {
   int _currentPage = 0;
 
   @override
@@ -142,7 +143,7 @@ class _ScreenshotPerkDetailsWidgetState
     var isPerk =
         DestinyData.socketCategoryPerkHashes.contains(cat?.socketCategoryHash);
 
-    if (isPerk && controller.item != null) {
+    if (isPerk && controller.reusablePlugs != null) {
       return Container();
     }
     if (isPerk) {
@@ -322,7 +323,7 @@ class _ScreenshotPerkDetailsWidgetState
                   controller.selectSocket(socketIndex, plugItemHash);
                 },
               )),
-              Positioned(
+          Positioned(
               top: 0,
               right: 0,
               left: 0,

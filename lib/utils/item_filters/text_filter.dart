@@ -44,7 +44,7 @@ class TextFilter extends BaseItemFilter<String> {
         Set<int>());
     var wishlistBuildNotes =
         WishlistsService().getWishlistBuildNotes(item.item);
-    var wishlistTags = WishlistsService().getWishlistBuildTags(item.item);
+    var wishlistTags = WishlistsService().getWishlistBuildTags(item: item.item);
 
     var loadoutNames = this.loadouts.where((l) {
       var equipped =

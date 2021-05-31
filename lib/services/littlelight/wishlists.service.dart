@@ -1,4 +1,6 @@
 import 'package:bungie_api/models/destiny_item_component.dart';
+import 'package:bungie_api/models/destiny_item_plug_base.dart';
+import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:http/http.dart' as http;
 import 'package:little_light/models/wish_list.dart';
 import 'package:little_light/services/littlelight/parsers/dim_wishlist.parser.dart';
@@ -148,16 +150,26 @@ class WishlistsService {
     return _items[itemHash]?.perks[plugItemHash] ?? Set();
   }
 
-  Set<WishlistTag> getWishlistBuildTags(DestinyItemComponent item) {
-    if (item == null) return null;
-    var reusable = ProfileService().getItemReusablePlugs(item.itemInstanceId);
-    var sockets = ProfileService().getItemSockets(item.itemInstanceId);
+  Set<WishlistTag> getWishlistBuildTags({
+    int itemHash,
+    @Deprecated('Use itemHash, reusablePlugs and sockets instead')
+        DestinyItemComponent item,
+    Map<String, List<DestinyItemPlugBase>> reusablePlugs,
+    List<DestinyItemSocketState> sockets,
+  }) {
+    itemHash ??= item?.itemHash;
+    reusablePlugs ??=
+        ProfileService().getItemReusablePlugs(item?.itemInstanceId);
+    sockets ??= ProfileService().getItemSockets(item?.itemInstanceId);
+    if ([itemHash, reusablePlugs, sockets].contains(null)) {
+      return null;
+    }
     Set<int> availablePlugs = Set();
-    reusable?.values?.forEach((plugs) =>
+    reusablePlugs?.values?.forEach((plugs) =>
         plugs.forEach((plug) => availablePlugs.add(plug.plugItemHash)));
-    sockets?.map((plug) => availablePlugs.add(plug.plugHash))?.toSet();
+    sockets?.forEach((plug) => availablePlugs.add(plug.plugHash));
     if (availablePlugs?.length == 0) return null;
-    var wish = _items[item?.itemHash];
+    var wish = _items[itemHash];
     var builds = wish?.builds?.where((build) {
       return build.perks.every((element) =>
           element.any((e) => availablePlugs.contains(e)) ||

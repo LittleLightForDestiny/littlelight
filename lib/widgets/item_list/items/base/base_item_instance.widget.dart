@@ -88,7 +88,7 @@ class BaseItemInstanceWidget extends BaseInventoryItemWidget {
   }
 
   Widget buildTags(BuildContext context) {
-    var wishlistTags = WishlistsService().getWishlistBuildTags(item);
+    var wishlistTags = WishlistsService().getWishlistBuildTags(item: item);
     List<Widget> upper = [];
     var notes = ItemNotesService()
         .getNotesForItem(item?.itemHash, item?.itemInstanceId);

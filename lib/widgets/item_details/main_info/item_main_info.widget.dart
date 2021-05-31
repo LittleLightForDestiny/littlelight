@@ -76,7 +76,7 @@ class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget> {
   }
 
   Widget buildWishListInfo(BuildContext context) {
-    var tags = WishlistsService().getWishlistBuildTags(item);
+    var tags = WishlistsService().getWishlistBuildTags(item: item);
     if (tags == null) return Container();
     if (tags.contains(WishlistTag.GodPVE) &&
         tags.contains(WishlistTag.GodPVP)) {

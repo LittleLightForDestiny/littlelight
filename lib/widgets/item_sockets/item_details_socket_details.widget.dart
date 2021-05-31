@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:bungie_api/enums/destiny_energy_type.dart';
-import 'package:bungie_api/enums/tier_type.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_socket_category_definition.dart';
@@ -19,6 +18,7 @@ import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/item_sockets/base_socket_details.widget.dart';
 import 'package:little_light/widgets/item_sockets/item_socket.controller.dart';
 import 'package:little_light/widgets/item_sockets/plug_wishlist_tag_icons.mixin.dart';
+import 'package:little_light/widgets/item_sockets/selectable_perk.widget.dart';
 import 'package:little_light/widgets/item_stats/item_details_socket_item_stats.widget.dart';
 
 class ItemDetailsSocketDetailsWidget extends BaseSocketDetailsWidget {
@@ -308,57 +308,25 @@ class ItemDetailsSocketDetailsWidgetState
 
   Widget buildPerk(BuildContext context, int socketIndex, int plugItemHash) {
     var plugDef = controller.plugDefinitions[plugItemHash];
-    bool intrinsic = plugDef?.plug?.plugCategoryIdentifier == "intrinsics";
     int equippedHash = controller.socketEquippedPlugHash(socketIndex);
     bool isEquipped = equippedHash == plugItemHash;
-    bool isExotic = definition.inventory.tierType == TierType.Exotic;
     bool isSelectedOnSocket =
         plugItemHash == controller.socketSelectedPlugHash(socketIndex);
     bool isSelected = plugItemHash == controller.selectedPlugHash;
-    Color bgColor = Colors.transparent;
-    Color borderColor = Colors.grey.shade300.withOpacity(.5);
-    if (isEquipped && !intrinsic) {
-      bgColor = DestinyData.perkColor.withOpacity(.5);
-    }
-    if (isSelectedOnSocket && !intrinsic) {
-      bgColor = DestinyData.perkColor;
-      borderColor = Colors.grey.shade300;
-    }
-
-    if (intrinsic && !isSelected) {
-      borderColor = Colors.transparent;
-    }
-
-    BorderSide borderSide = BorderSide(color: borderColor, width: 2);
     var screenWidth = MediaQuery.of(context).size.width;
     return Container(
         width: min(64, screenWidth / 8),
-        key: Key("plug_${socketIndex}_$plugItemHash"),
-        padding: EdgeInsets.all(0),
-        child: Stack(children: [
-          AspectRatio(
-              aspectRatio: 1,
-              child: MaterialButton(
-                shape: intrinsic && !isExotic
-                    ? RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(4),
-                        side: borderSide)
-                    : CircleBorder(side: borderSide),
-                padding: EdgeInsets.all(intrinsic ? 0 : 8),
-                color: bgColor,
-                child: ManifestImageWidget<DestinyInventoryItemDefinition>(
-                    plugItemHash),
-                onPressed: () {
-                  controller.selectSocket(socketIndex, plugItemHash);
-                },
-              )),
-          Positioned(
-              top: 0,
-              right: 0,
-              left: 0,
-              child: Center(
-                  child: buildWishlistTagIcons(
-                      context, itemDefinition.hash, plugItemHash)))
-        ]));
+        child: SelectablePerkWidget(
+          selected: isSelected,
+          selectedOnSocket: isSelectedOnSocket,
+          itemDefinition: widget.definition,
+          plugHash: plugItemHash,
+          plugDefinition: plugDef,
+          equipped: isEquipped,
+          key: Key("$plugItemHash $isSelected $isSelectedOnSocket"),
+          onTap: () {
+            controller.selectSocket(socketIndex, plugItemHash);
+          },
+        ));
   }
 }
