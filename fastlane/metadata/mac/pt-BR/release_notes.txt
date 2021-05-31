@@ -1,4 +1,5 @@
-- fixes an issue that would prevent Little Light from loading on some devices
-- fixes an issue when adding tags to weapons won't update those immediately
-- removing menagerie recipes (a bit late on this one hehe)
-- adding correct inventory counts for spinmetal and glacial starwort on spider listings
+- fixes to wishlists
+- hopefully fixes AuthorizationRecordExpired
+- adds perks to banshee's weapons
+- fixes godrolls on banshee's weapons
+
