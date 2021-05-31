@@ -138,7 +138,7 @@ class WishlistsService {
   }
 
   Future<String> _downloadWishlist(Wishlist wishlist) async {
-    var res = await http.get(wishlist.url);
+    var res = await http.get(Uri.parse(wishlist.url));
     storage.saveRawFile(StorageKeys.rawWishlists, wishlist.filename, res.body);
     wishlist.updatedAt = DateTime.now();
     return res.body;

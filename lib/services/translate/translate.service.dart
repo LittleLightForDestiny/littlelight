@@ -103,7 +103,7 @@ class TranslateService {
       String languageCode) async {
     var url =
         "https://raw.githubusercontent.com/LittleLightForDestiny/LittleLightTranslations/master/languages/$languageCode.json";
-    var req = await http.get(url);
+    var req = await http.get(Uri.parse(url));
     var raw = req.body;
     StorageService.language(languageCode).saveRawFile(
         StorageKeys.rawData, StorageKeys.littleLightTranslation.path, raw);
