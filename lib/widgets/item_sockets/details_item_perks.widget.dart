@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:bungie_api/enums/tier_type.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_socket_category_definition.dart';
@@ -161,20 +160,18 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
 
   @override
   Set<int> socketPlugHashes(int socketIndex) {
-    if (item == null) {
-      var isRandom = controller.randomizedPlugHashes(socketIndex).length > 0;
-      if (isRandom) {
-        return controller.bungieRollPlugHashes(socketIndex).followedBy(
-            [controller.socketRandomizedSelectedPlugHash(socketIndex)]).toSet();
-      }
+    var isRandom = controller.randomizedPlugHashes(socketIndex).length > 0;
+    if (controller.reusablePlugs == null && isRandom) {
+      return controller.bungieRollPlugHashes(socketIndex).followedBy(
+          [controller.socketRandomizedSelectedPlugHash(socketIndex)]).toSet();
     }
+
     return super.socketPlugHashes(socketIndex);
   }
 
   Widget buildPlugCategoryTitle(BuildContext context, int socketIndex) {
     var hashes = socketPlugHashes(socketIndex);
     var hash = hashes.first;
-
     Widget contents =
         DefinitionProviderWidget<DestinyInventoryItemDefinition>(hash, (def) {
       if ((def?.itemTypeDisplayName?.length ?? 0) <= 1) {

@@ -15,8 +15,8 @@ import 'package:little_light/utils/destiny_data.dart';
 class ItemSocketController extends ChangeNotifier {
   final DestinyItemComponent item;
   final DestinyInventoryItemDefinition definition;
-  List<DestinyItemSocketState> _socketStates;
-  Map<String, List<DestinyItemPlugBase>> _reusablePlugs;
+  List<DestinyItemSocketState> socketStates;
+  Map<String, List<DestinyItemPlugBase>> reusablePlugs;
   List<int> _selectedSockets;
   List<int> _randomizedSelectedSockets;
   Map<int, DestinyInventoryItemDefinition> _plugDefinitions;
@@ -79,15 +79,17 @@ class ItemSocketController extends ChangeNotifier {
   List<int> get selectedSockets => _selectedSockets;
   List<int> get randomizedSelectedSockets => _randomizedSelectedSockets;
 
-  ItemSocketController({this.item, this.definition}) {
+  ItemSocketController(
+      {this.item, this.definition, this.socketStates, this.reusablePlugs}) {
     _initDefaults();
     _loadPlugDefinitions();
   }
 
   _initDefaults() {
     var entries = definition?.sockets?.socketEntries;
-    _socketStates = ProfileService().getItemSockets(item?.itemInstanceId);
-    _reusablePlugs =
+    socketStates =
+        socketStates ?? ProfileService().getItemSockets(item?.itemInstanceId);
+    reusablePlugs = reusablePlugs ??
         ProfileService().getItemReusablePlugs(item?.itemInstanceId);
     _selectedSockets = List<int>.filled(entries?.length ?? 0, null);
     _randomizedSelectedSockets = List<int>.filled(entries?.length ?? 0, null);
@@ -96,8 +98,8 @@ class ItemSocketController extends ChangeNotifier {
   Future<void> _loadPlugDefinitions() async {
     Set<int> plugHashes = new Set();
     var manifest = ManifestService();
-    if (_socketStates != null) {
-      plugHashes = _socketStates
+    if (reusablePlugs != null) {
+      plugHashes = socketStates
           .expand((socket) {
             Set<int> hashes = new Set();
             hashes.add(socket.plugHash);
@@ -105,7 +107,7 @@ class ItemSocketController extends ChangeNotifier {
           })
           .where((i) => (i ?? 0) != 0)
           .toSet();
-      _reusablePlugs?.forEach((hash, reusable) {
+      reusablePlugs?.forEach((hash, reusable) {
         plugHashes.addAll(reusable.map((r) => r.plugItemHash));
       });
     }
@@ -179,8 +181,8 @@ class ItemSocketController extends ChangeNotifier {
   Set<int> socketPlugHashes(int socketIndex) {
     var entry = definition?.sockets?.socketEntries?.elementAt(socketIndex);
 
-    if (_socketStates != null) {
-      var state = _socketStates?.elementAt(socketIndex);
+    if (socketStates != null) {
+      var state = socketStates?.elementAt(socketIndex);
       if (state?.isVisible == false) return null;
       if (state?.plugHash == null) return null;
       Set<int> hashes = Set();
@@ -201,9 +203,9 @@ class ItemSocketController extends ChangeNotifier {
       }
       hashes.add(state.plugHash);
 
-      if (_reusablePlugs?.containsKey("$socketIndex") ?? false) {
+      if (reusablePlugs?.containsKey("$socketIndex") ?? false) {
         hashes
-            .addAll(_reusablePlugs["$socketIndex"]?.map((r) => r.plugItemHash));
+            .addAll(reusablePlugs["$socketIndex"]?.map((r) => r.plugItemHash));
       }
       return hashes.where((h) => h != null).toSet();
     }
@@ -275,8 +277,8 @@ class ItemSocketController extends ChangeNotifier {
   }
 
   int socketEquippedPlugHash(int socketIndex) {
-    if (_socketStates != null) {
-      var state = _socketStates?.elementAt(socketIndex);
+    if (socketStates != null) {
+      var state = socketStates?.elementAt(socketIndex);
       return state.plugHash;
     }
     var entry = definition?.sockets?.socketEntries?.elementAt(socketIndex);

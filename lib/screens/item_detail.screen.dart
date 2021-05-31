@@ -5,6 +5,7 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_stat_group_definition.dart';
+import 'package:bungie_api/models/destiny_vendor_item_definition.dart';
 import 'package:bungie_api/models/destiny_vendor_sale_item_component.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -14,6 +15,7 @@ import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enu
 import 'package:little_light/services/inventory/inventory.service.dart';
 import 'package:little_light/services/littlelight/item_notes.service.dart';
 import 'package:little_light/services/littlelight/loadouts.service.dart';
+import 'package:little_light/services/profile/vendors.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_with_owner.dart';
@@ -52,20 +54,22 @@ class ItemDetailScreen extends BaseDestinyStatefulItemWidget {
   final bool hideItemManagement;
   final List<DestinyItemSocketState> socketStates;
   final DestinyVendorSaleItemComponent sale;
+  final DestinyVendorItemDefinition vendorItem;
   final int vendorHash;
 
-  ItemDetailScreen(
-      {String characterId,
-      DestinyItemComponent item,
-      DestinyInventoryItemDefinition definition,
-      DestinyItemInstanceComponent instanceInfo,
-      this.vendorHash,
-      this.hideItemManagement = false,
-      this.socketStates,
-      Key key,
-      this.uniqueId,
-      this.sale})
-      : super(
+  ItemDetailScreen({
+    String characterId,
+    DestinyItemComponent item,
+    DestinyInventoryItemDefinition definition,
+    DestinyItemInstanceComponent instanceInfo,
+    this.vendorItem,
+    this.vendorHash,
+    this.hideItemManagement = false,
+    this.socketStates,
+    Key key,
+    this.uniqueId,
+    this.sale,
+  }) : super(
             item: item,
             definition: definition,
             instanceInfo: instanceInfo,
@@ -92,9 +96,25 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
 
   initState() {
     super.initState();
-    socketController =
-        ItemSocketController(definition: widget.definition, item: widget.item);
+    initSocketController();
     this.loadDefinitions();
+  }
+
+  initSocketController() async {
+    if (widget.vendorItem != null) {
+      var reusable = await VendorsService().getSaleItemReusablePerks(
+          characterId, widget.vendorHash, widget.vendorItem?.vendorItemIndex);
+      socketController = ItemSocketController(
+          definition: widget.definition,
+          item: widget.item,
+          reusablePlugs: reusable,
+          socketStates: socketStates);
+    } else {
+      socketController = ItemSocketController(
+          definition: widget.definition,
+          item: widget.item,
+          socketStates: socketStates);
+    }
   }
 
   Future<void> loadDefinitions() async {
@@ -540,7 +560,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
         (s) =>
             DestinyData.socketCategoryPerkHashes.contains(s.socketCategoryHash),
         orElse: () => null);
-    if (perksCategory == null) return Container();
+    if (perksCategory == null || socketController == null) return Container();
     var screenPadding = MediaQuery.of(context).padding;
     return Container(
         padding: EdgeInsets.only(
@@ -562,7 +582,8 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
             (s) => DestinyData.socketCategoryIntrinsicPerkHashes
                 .contains(s.socketCategoryHash),
             orElse: () => null);
-    if (intrinsicperkCategory == null) return Container();
+    if (intrinsicperkCategory == null || socketController == null)
+      return Container();
     var screenPadding = MediaQuery.of(context).padding;
     return Container(
         padding: EdgeInsets.only(
@@ -583,7 +604,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
         (s) =>
             DestinyData.socketCategoryTierHashes.contains(s.socketCategoryHash),
         orElse: () => null);
-    if (tierCategory == null) return Container();
+    if (tierCategory == null || socketController == null) return Container();
     var screenPadding = MediaQuery.of(context).padding;
     return Container(
         padding: EdgeInsets.only(
@@ -604,7 +625,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
         (s) =>
             DestinyData.socketCategoryPerkHashes.contains(s.socketCategoryHash),
         orElse: () => null);
-    if (perksCategory == null) return Container();
+    if (perksCategory == null || socketController == null) return Container();
     var screenPadding = MediaQuery.of(context).padding;
     return Container(
         padding: EdgeInsets.only(
@@ -624,7 +645,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
         (s) => DestinyData.socketCategoryIntrinsicPerkHashes
             .contains(s.socketCategoryHash),
         orElse: () => null);
-    if (perksCategory == null) return Container();
+    if (perksCategory == null || socketController == null) return Container();
     var screenPadding = MediaQuery.of(context).padding;
     return Container(
         padding: EdgeInsets.only(
@@ -644,7 +665,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
         (s) =>
             DestinyData.socketCategoryModHashes.contains(s.socketCategoryHash),
         orElse: () => null);
-    if (modsCategory == null) return Container();
+    if (modsCategory == null || socketController == null) return Container();
     var screenPadding = MediaQuery.of(context).padding;
     return Container(
         padding: EdgeInsets.only(
@@ -665,7 +686,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
         (s) =>
             DestinyData.socketCategoryModHashes.contains(s.socketCategoryHash),
         orElse: () => null);
-    if (modsCategory == null) return Container();
+    if (modsCategory == null || socketController == null) return Container();
     var screenPadding = MediaQuery.of(context).padding;
     return Container(
         padding: EdgeInsets.only(
@@ -685,7 +706,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
         (s) => DestinyData.socketCategoryCosmeticModHashes
             .contains(s.socketCategoryHash),
         orElse: () => null);
-    if (modsCategory == null) return Container();
+    if (modsCategory == null || socketController == null) return Container();
     var screenPadding = MediaQuery.of(context).padding;
     return Container(
         padding: EdgeInsets.only(
@@ -706,7 +727,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
         (s) => DestinyData.socketCategoryCosmeticModHashes
             .contains(s.socketCategoryHash),
         orElse: () => null);
-    if (modsCategory == null) return Container();
+    if (modsCategory == null || socketController == null) return Container();
     var screenPadding = MediaQuery.of(context).padding;
     return Container(
         padding: EdgeInsets.only(

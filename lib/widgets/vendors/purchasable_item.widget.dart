@@ -7,10 +7,12 @@ import 'package:bungie_api/models/destiny_vendor_item_definition.dart';
 import 'package:bungie_api/models/destiny_vendor_sale_item_component.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
+import 'package:bungie_api/src/models/destiny_item_plug_base.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/screens/item_detail.screen.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
+import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/profile/vendors.service.dart';
@@ -21,6 +23,7 @@ import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/primary_stat.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:little_light/widgets/common/wishlist_badge.widget.dart';
 
 import 'package:little_light/widgets/item_list/items/base/item_armor_tier.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/item_mods.widget.dart';
@@ -45,6 +48,7 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget> {
   List<DestinyItemSocketState> sockets;
   DestinyItemInstanceComponent instanceInfo;
   bool isUnlocked = false;
+  Map<String, List<DestinyItemPlugBase>> reusablePlugs;
 
   @override
   void initState() {
@@ -58,6 +62,8 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget> {
     sockets = await VendorsService().getSaleItemSockets(
         widget.characterId, widget.vendorHash, widget?.item?.vendorItemIndex);
     instanceInfo = await VendorsService().getSaleItemInstanceInfo(
+        widget.characterId, widget.vendorHash, widget?.item?.vendorItemIndex);
+    reusablePlugs = await VendorsService().getSaleItemReusablePerks(
         widget.characterId, widget.vendorHash, widget?.item?.vendorItemIndex);
 
     isUnlocked = ProfileService().isCollectibleUnlocked(
@@ -115,6 +121,7 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget> {
                 socketStates: sockets,
                 sale: widget.sale,
                 vendorHash: widget.vendorHash,
+                vendorItem: widget.item,
               ),
             ),
           );
@@ -394,13 +401,31 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget> {
   Widget nameBar(BuildContext context) {
     return ItemNameBarWidget(null, definition, null,
         fontSize: titleFontSize,
-        trailing: collectedBadge(context),
+        trailing: badges(context),
         padding: EdgeInsets.only(
           left: iconSize + padding * 2,
           top: padding,
           bottom: padding,
           right: padding,
         ));
+  }
+
+  Widget badges(BuildContext context) {
+    var list = [
+      wishlistTags(context),
+      collectedBadge(context),
+    ].where((element) => element != null).toList();
+    if (list.length == 0) return null;
+    return Row(children: list);
+  }
+
+  Widget wishlistTags(BuildContext context) {
+    var wishlistTags = WishlistsService().getWishlistBuildTags(
+        itemHash: widget.item?.itemHash,
+        reusablePlugs: reusablePlugs,
+        sockets: sockets);
+    if ((wishlistTags?.length ?? 0) == 0) return null;
+    return WishlistBadgeWidget(tags: wishlistTags, size: 22);
   }
 
   Widget collectedBadge(BuildContext context) {

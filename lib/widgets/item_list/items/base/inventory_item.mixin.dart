@@ -163,7 +163,7 @@ mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget {
   }
 
   Widget wishlistBackground(BuildContext context) {
-    var tags = WishlistsService().getWishlistBuildTags(item);
+    var tags = WishlistsService().getWishlistBuildTags(item: item);
     if (tags == null) return Container();
     if (tags.contains(WishlistTag.PVE) && tags.contains(WishlistTag.PVP)) {
       return Image.asset(
@@ -199,7 +199,7 @@ mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget {
 
   Widget namebarTrailingWidget(BuildContext context) {
     List<Widget> items = [];
-    var wishlistTags = WishlistsService().getWishlistBuildTags(item);
+    var wishlistTags = WishlistsService().getWishlistBuildTags(item: item);
     var notes = ItemNotesService()
         .getNotesForItem(item?.itemHash, item?.itemInstanceId);
     var tags = ItemNotesService().tagsByIds(notes?.tags);
