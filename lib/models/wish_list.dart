@@ -148,7 +148,7 @@ class Wishlist {
   factory Wishlist.defaults() {
     return Wishlist(
         url:
-            "https://raw.githubusercontent.com/LittleLightForDestiny/littlelight_wishlists/master/littlelight_default.json",
+            "https://cdn.jsdelivr.net/gh/LittleLightForDestiny/littlelight_wishlists/master/littlelight_default.json",
         name: "Little Light default wishlist",
         type: WishlistType.DimWishlist,
         description:
