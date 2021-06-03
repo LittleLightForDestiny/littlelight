@@ -1,5 +1,1 @@
-- fixes to wishlists
-- hopefully fixes AuthorizationRecordExpired
-- adds perks to banshee's weapons
-- fixes godrolls on banshee's weapons
-
+- fixing translations and wishlist access for our good friends at china
