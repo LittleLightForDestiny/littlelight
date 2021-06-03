@@ -75,11 +75,11 @@ class LittleLightDataService {
   String _getURL(StorageKeys key) {
     switch (key) {
       case StorageKeys.collaboratorsData:
-        return "https://cdn.jsdelivr.net/gh/LittleLightForDestiny/littleLightData/master/collaborators.json";
+        return "https://cdn.jsdelivr.net/gh/LittleLightForDestiny/littleLightData/collaborators.json";
       case StorageKeys.featuredWishlists:
-        return "https://cdn.jsdelivr.net/gh/LittleLightForDestiny/littleLightData/master/popular_wishlists.json";
+        return "https://cdn.jsdelivr.net/gh/LittleLightForDestiny/littleLightData/popular_wishlists.json";
       case StorageKeys.gameData:
-        return "https://cdn.jsdelivr.net/gh/LittleLightForDestiny/littleLightData/master/game_data.json";
+        return "https://cdn.jsdelivr.net/gh/LittleLightForDestiny/littleLightData/game_data.json";
       default:
         return null;
     }
