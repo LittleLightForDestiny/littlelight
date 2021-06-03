@@ -102,7 +102,7 @@ class TranslateService {
   Future<Map<String, String>> _updateTranslationsFromWeb(
       String languageCode) async {
     var url =
-        "https://cdn.jsdelivr.net/gh/LittleLightForDestiny/LittleLightTranslations/master/languages/$languageCode.json";
+        "https://cdn.jsdelivr.net/gh/LittleLightForDestiny/LittleLightTranslations/languages/$languageCode.json";
     var req = await http.get(Uri.parse(url));
     var raw = req.body;
     StorageService.language(languageCode).saveRawFile(
