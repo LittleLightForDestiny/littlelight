@@ -3,9 +3,7 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_socket_category_definition.dart';
 import 'package:bungie_api/models/destiny_socket_category_definition.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/models/wish_list.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
-import 'package:little_light/widgets/common/wishlist_badge.widget.dart';
 import 'package:little_light/widgets/item_sockets/base_item_sockets.widget.dart';
 import 'package:little_light/widgets/item_sockets/item_socket.controller.dart';
 import 'package:little_light/widgets/item_sockets/plug_wishlist_tag_icons.mixin.dart';
@@ -141,16 +139,12 @@ class ScreenShotItemPerksWidgetState<T extends ScreenShotItemPerksWidget>
       plugHash: plugItemHash,
       plugDefinition: plugDef,
       equipped: isEquipped,
+      scale: widget.pixelSize,
+      wishlistScale: widget.pixelSize * 1.8,
       key: Key("$plugItemHash $isSelected $isSelectedOnSocket"),
       onTap: () {
         controller.selectSocket(socketIndex, plugItemHash);
       },
     );
-  }
-
-  @override
-  Widget buildWishlistIcon(BuildContext context, WishlistTag tag) {
-    return WishlistBadgeWidget(
-        tags: [tag].toSet(), size: 24 * widget.pixelSize);
   }
 }

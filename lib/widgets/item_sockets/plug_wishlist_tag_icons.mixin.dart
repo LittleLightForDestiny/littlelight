@@ -3,36 +3,39 @@ import 'package:little_light/models/wish_list.dart';
 import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/widgets/common/wishlist_badge.widget.dart';
 
-mixin PlugWishlistTagIconsMixin{
-  List<Widget> wishlistIcons(BuildContext context, int itemHash, int plugItemHash) {
+mixin PlugWishlistTagIconsMixin {
+  List<Widget> wishlistIcons(
+      BuildContext context, int itemHash, int plugItemHash,
+      [double scale = 1]) {
     var tags = WishlistsService().getPerkTags(itemHash, plugItemHash);
     if (tags == null) return [];
     List<Widget> items = [];
     if (tags.contains(WishlistTag.GodPVE)) {
-      items.add(buildWishlistIcon(context, WishlistTag.GodPVE));
-    }else if (tags.contains(WishlistTag.PVE)) {
-      items.add(buildWishlistIcon(context, WishlistTag.PVE));
-    }else{
+      items.add(buildWishlistIcon(context, WishlistTag.GodPVE, scale));
+    } else if (tags.contains(WishlistTag.PVE)) {
+      items.add(buildWishlistIcon(context, WishlistTag.PVE, scale));
+    } else {
       items.add(Container());
     }
     if (tags.contains(WishlistTag.GodPVP)) {
-      items.add(buildWishlistIcon(context, WishlistTag.GodPVP));
-    }else if (tags.contains(WishlistTag.PVP)) {
-      items.add(buildWishlistIcon(context, WishlistTag.PVP));
+      items.add(buildWishlistIcon(context, WishlistTag.GodPVP, scale));
+    } else if (tags.contains(WishlistTag.PVP)) {
+      items.add(buildWishlistIcon(context, WishlistTag.PVP, scale));
     }
     return items;
   }
 
-  buildWishlistIcon(BuildContext context, WishlistTag tag){
-    return WishlistBadgeWidget(tags:[tag].toSet(), size:16);
+  buildWishlistIcon(BuildContext context, WishlistTag tag, [double scale = 1]) {
+    return WishlistBadgeWidget(tags: [tag].toSet(), size: 16 * scale);
   }
 
-  Widget buildWishlistTagIcons(BuildContext context, int itemHash, int plugItemHash) {
-    var icons = wishlistIcons(context, itemHash, plugItemHash);
+  Widget buildWishlistTagIcons(
+      BuildContext context, int itemHash, int plugItemHash,
+      [double scale = 1]) {
+    var icons = wishlistIcons(context, itemHash, plugItemHash, scale);
     if ((icons?.length ?? 0) > 0) {
       return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: icons);
+          mainAxisAlignment: MainAxisAlignment.spaceBetween, children: icons);
     }
     return Container();
   }
