@@ -8,8 +8,9 @@ part of 'bungie_api.exception.dart';
 
 BungieApiError _$BungieApiErrorFromJson(Map<String, dynamic> json) {
   return BungieApiError(
-    errorCode:
-        _$enumDecodeNullable(_$PlatformErrorCodesEnumMap, json['ErrorCode']),
+    errorCode: _$enumDecodeNullable(
+        _$PlatformErrorCodesEnumMap, json['ErrorCode'],
+        unknownValue: PlatformErrorCodes.ProtectedInvalidEnumValue),
     errorStatus: json['ErrorStatus'] as String,
     error: json['error'] as String,
     message: json['Message'] as String,

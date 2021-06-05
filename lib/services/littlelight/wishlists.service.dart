@@ -177,6 +177,11 @@ class WishlistsService {
     return tags;
   }
 
+  List<WishlistBuild> getWishlistBuilds({int itemHash}) {
+    final builds = _items[itemHash];
+    return builds?.builds;
+  }
+
   Set<String> getWishlistBuildNotes(DestinyItemComponent item) {
     if (item == null) return null;
     var reusable = ProfileService().getItemReusablePlugs(item.itemInstanceId);

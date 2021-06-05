@@ -57,6 +57,7 @@ WishlistBuild _$WishlistBuildFromJson(Map<String, dynamic> json) {
         ?.map((e) => _$enumDecodeNullable(_$WishlistTagEnumMap, e))
         ?.toSet(),
     notes: (json['notes'] as List)?.map((e) => e as String)?.toSet(),
+    originalWishlist: json['originalWishlist'] as String,
   );
 }
 
@@ -66,6 +67,7 @@ Map<String, dynamic> _$WishlistBuildToJson(WishlistBuild instance) =>
       'perks': instance.perks?.map((e) => e?.toList())?.toList(),
       'tags': instance.tags?.map((e) => _$WishlistTagEnumMap[e])?.toList(),
       'notes': instance.notes?.toList(),
+      'originalWishlist': instance.originalWishlist,
     };
 
 T _$enumDecode<T>(

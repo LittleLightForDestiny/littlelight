@@ -10,9 +10,6 @@ class BungieApiError {
       unknownEnumValue: PlatformErrorCodes.ProtectedInvalidEnumValue)
   PlatformErrorCodes errorCode;
 
-  @JsonKey(name: "ErrorCode")
-  int errorCodeInt;
-
   @JsonKey(name: "ErrorStatus")
   String errorStatus;
 

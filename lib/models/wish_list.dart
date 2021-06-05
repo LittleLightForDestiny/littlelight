@@ -63,19 +63,24 @@ class WishlistBuild {
   List<Set<int>> perks = [];
   Set<WishlistTag> tags = Set();
   Set<String> notes = Set();
-  WishlistBuild({this.name, this.perks, this.tags, this.notes});
+  String originalWishlist;
+
+  WishlistBuild(
+      {this.name, this.perks, this.tags, this.notes, this.originalWishlist});
 
   factory WishlistBuild.builder({
     String name,
     List<Set<int>> perks,
     Set<WishlistTag> specialties,
     Set<String> notes,
+    String originalWishlist,
   }) {
     return WishlistBuild(
         name: name,
         perks: perks ?? Set(),
         tags: specialties ?? Set(),
-        notes: notes ?? Set());
+        notes: notes ?? Set(),
+        originalWishlist: originalWishlist);
   }
 
   factory WishlistBuild.fromJson(dynamic json) {
