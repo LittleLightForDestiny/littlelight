@@ -133,7 +133,7 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
           child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
-        children: [buildPlugCategoryTitle(context, socketIndex)]
+        children: <Widget>[buildPlugCategoryTitle(context, socketIndex)]
             .followedBy(plugs.map((p) => buildPlug(context, socketIndex, p)))
             .toList(),
       ));
@@ -238,34 +238,38 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
         .toSet();
 
     return Container(
-        key: Key("item_perk_$plugItemHash"),
-        padding: EdgeInsets.all(0),
         margin: EdgeInsets.only(bottom: 8),
-        foregroundDecoration: (tags?.length ?? 0) > 0
-            ? WishlistCornerBadgeDecoration(tags: tags, badgeSize: 14)
-            : null,
-        child: MaterialButton(
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(4), side: borderSide),
-          padding: EdgeInsets.all(8),
-          color: bgColor,
-          child: Row(children: [
-            Container(
-                width: 36,
-                height: 36,
-                child: ManifestImageWidget<DestinyInventoryItemDefinition>(
-                    plugItemHash)),
-            Container(width: 8),
-            Expanded(
-              child: ManifestText<DestinyInventoryItemDefinition>(
-                plugItemHash,
-                maxLines: 2,
-              ),
-            )
-          ]),
-          onPressed: () {
-            controller.selectSocket(socketIndex, plugItemHash);
-          },
+        decoration: BoxDecoration(
+            border: Border.all(color: borderColor, width: 2),
+            color: bgColor,
+            borderRadius: BorderRadius.circular(4)),
+        child: Material(
+          key: Key("item_perk_$plugItemHash"),
+          color: Colors.transparent,
+          child: InkWell(
+              onTap: () {
+                controller.selectSocket(socketIndex, plugItemHash);
+              },
+              child: Container(
+                foregroundDecoration: (tags?.length ?? 0) > 0
+                    ? WishlistCornerBadgeDecoration(tags: tags, badgeSize: 14)
+                    : null,
+                padding: EdgeInsets.all(8),
+                child: Row(children: [
+                  Container(
+                      width: 36,
+                      height: 36,
+                      child:
+                          ManifestImageWidget<DestinyInventoryItemDefinition>(
+                              plugItemHash)),
+                  Container(width: 8),
+                  Expanded(
+                      child: ManifestText<DestinyInventoryItemDefinition>(
+                    plugItemHash,
+                    maxLines: 2,
+                  ))
+                ]),
+              )),
         ));
   }
 
