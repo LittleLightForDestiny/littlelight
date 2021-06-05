@@ -152,15 +152,9 @@ class WishlistsService {
 
   Set<WishlistTag> getWishlistBuildTags({
     int itemHash,
-    @Deprecated('Use itemHash, reusablePlugs and sockets instead')
-        DestinyItemComponent item,
     Map<String, List<DestinyItemPlugBase>> reusablePlugs,
     List<DestinyItemSocketState> sockets,
   }) {
-    itemHash ??= item?.itemHash;
-    reusablePlugs ??=
-        ProfileService().getItemReusablePlugs(item?.itemInstanceId);
-    sockets ??= ProfileService().getItemSockets(item?.itemInstanceId);
     if ([itemHash, reusablePlugs, sockets].contains(null)) {
       return null;
     }

@@ -1,6 +1,7 @@
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:little_light/models/wish_list.dart';
 import 'package:little_light/services/littlelight/wishlists.service.dart';
+import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 
 import 'base_item_filter.dart';
@@ -14,8 +15,16 @@ class WishlistTagFilter extends BaseItemFilter<Set<WishlistTag>> {
     availableValues.clear();
     List<WishlistTag> tags = items
         .expand((i) {
-          var tags =
-              WishlistsService().getWishlistBuildTags(item: i?.item)?.toList();
+          final profile = ProfileService();
+          final reusable =
+              profile.getItemReusablePlugs(i?.item?.itemInstanceId);
+          final sockets = profile.getItemSockets(i?.item?.itemInstanceId);
+          final tags = WishlistsService()
+              .getWishlistBuildTags(
+                  itemHash: i?.item?.itemHash,
+                  reusablePlugs: reusable,
+                  sockets: sockets)
+              ?.toList();
           if (tags == null) return <WishlistTag>[];
           if (tags.length == 0) return <WishlistTag>[null];
           return tags;
@@ -32,8 +41,15 @@ class WishlistTagFilter extends BaseItemFilter<Set<WishlistTag>> {
 
   bool filterItem(ItemWithOwner item,
       {Map<int, DestinyInventoryItemDefinition> definitions}) {
-    var tags =
-        WishlistsService().getWishlistBuildTags(item: item?.item)?.toList();
+    final profile = ProfileService();
+    final reusable = profile.getItemReusablePlugs(item?.item?.itemInstanceId);
+    final sockets = profile.getItemSockets(item?.item?.itemInstanceId);
+    final tags = WishlistsService()
+        .getWishlistBuildTags(
+            itemHash: item?.item?.itemHash,
+            reusablePlugs: reusable,
+            sockets: sockets)
+        ?.toList();
     if (value?.any((element) => tags?.contains(element) ?? false) ?? false)
       return true;
     if (value.contains(null) && tags?.length == 0) return true;

@@ -88,7 +88,10 @@ class BaseItemInstanceWidget extends BaseInventoryItemWidget {
   }
 
   Widget buildTags(BuildContext context) {
-    var wishlistTags = WishlistsService().getWishlistBuildTags(item: item);
+    final reusable = profile.getItemReusablePlugs(item?.itemInstanceId);
+    final sockets = profile.getItemSockets(item?.itemInstanceId);
+    final wishlistTags = WishlistsService().getWishlistBuildTags(
+        itemHash: item?.itemHash, reusablePlugs: reusable, sockets: sockets);
     List<Widget> upper = [];
     var notes = ItemNotesService()
         .getNotesForItem(item?.itemHash, item?.itemInstanceId);
