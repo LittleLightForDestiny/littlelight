@@ -206,12 +206,19 @@ class WishlistsService {
     return notes;
   }
 
-  addToWishList(String name, int hash, List<List<int>> perks,
-      Set<WishlistTag> specialties, Set<String> notes) {
+  addToWishList(
+      {String name,
+      int hash,
+      List<List<int>> perks,
+      Set<WishlistTag> specialties,
+      Set<String> notes,
+      String originalWishlist}) {
     var wishlist =
         _items[hash] = _items[hash] ?? WishlistItem.builder(itemHash: hash);
     var build = WishlistBuild.builder(
-        name: name, perks: perks.map((p) => p.toSet()).toList());
+        name: name,
+        perks: perks.map((p) => p.toSet()).toList(),
+        originalWishlist: originalWishlist);
     build.notes.addAll(notes.where((n) => (n?.length ?? 0) > 0));
     build.tags.addAll(specialties.where((s) => s != null));
     for (var p in perks) {

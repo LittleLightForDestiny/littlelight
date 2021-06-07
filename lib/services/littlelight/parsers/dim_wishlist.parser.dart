@@ -18,19 +18,19 @@ class DimWishlistParser {
       if (line.contains("dimwishlist:")) {
         Set<WishlistTag> tags = _getBuildTags(line, genericTags) ?? Set();
         Set<String> notes = Set();
-        var note = _getBuildNotes(line); 
-        if(note != null){
+        var note = _getBuildNotes(line);
+        if (note != null) {
           notes.add(_getBuildNotes(line));
         }
         notes.addAll(genericNotes ?? Set());
         _addLineToWishList(line, tags, notes.followedBy(genericNotes).toSet());
-      }else{
+      } else {
         var note = _getGenericNotes(line);
-        if(note != null){
+        if (note != null) {
           genericNotes.add(_getGenericNotes(line));
         }
         var tags = _getGenericTags(line);
-        if(tags != null){
+        if (tags != null) {
           genericTags.addAll(tags);
         }
       }
@@ -52,9 +52,11 @@ class DimWishlistParser {
       return _parseTags(line.substring(line.indexOf("|tags:") + 6));
     }
     if (line.contains("#notes:")) {
-      return _parseTags(line.substring(line.indexOf("#notes:") + 7))?.followedBy(genericTags)?.toSet();
+      return _parseTags(line.substring(line.indexOf("#notes:") + 7))
+          ?.followedBy(genericTags)
+          ?.toSet();
     }
-    if((genericTags?.length ?? 0) > 0){
+    if ((genericTags?.length ?? 0) > 0) {
       return genericTags;
     }
     return null;
@@ -115,7 +117,13 @@ class DimWishlistParser {
             ?.toList() ??
         [];
     var hash = int.parse(itemHashStr);
-    WishlistsService().addToWishList(null, hash, perks, specialties, notes);
+    WishlistsService().addToWishList(
+        name: "",
+        hash: hash,
+        perks: perks,
+        specialties: specialties,
+        originalWishlist: "",
+        notes: notes);
     _itemHashes.add(hash);
   }
 }

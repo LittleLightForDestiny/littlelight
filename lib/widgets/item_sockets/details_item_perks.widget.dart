@@ -226,7 +226,6 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
       borderColor = Colors.grey.shade300;
     }
 
-    BorderSide borderSide = BorderSide(color: borderColor, width: 2);
     var tags = WishlistsService()
         .getPerkTags(definition?.hash, plugItemHash)
         .where((element) => [

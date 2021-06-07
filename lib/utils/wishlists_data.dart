@@ -34,8 +34,10 @@ class WishlistsData {
       case WishlistTag.Trash:
         return Colors.lightGreen.shade500;
         break;
+
+      default:
+        return Colors.amber;
     }
-    return Colors.amber;
   }
 
   static Widget getLabel(WishlistTag tag) {
@@ -56,8 +58,9 @@ class WishlistsData {
       case WishlistTag.Trash:
         return TranslatedTextWidget("Trash");
         break;
+      default:
+        return TranslatedTextWidget("Uncategorized");
     }
-    return TranslatedTextWidget("Uncategorized");
   }
 
   static Widget getIcon(WishlistTag tag, double size) {
@@ -97,12 +100,14 @@ class WishlistsData {
               "assets/imgs/trash-roll-icon.png",
             ));
         break;
+
+      default:
+        return Container(
+            alignment: Alignment.center,
+            child: CenterIconWorkaround(
+              Icons.star,
+              size: size * .8,
+            ));
     }
-    return Container(
-        alignment: Alignment.center,
-        child: CenterIconWorkaround(
-          Icons.star,
-          size: size * .8,
-        ));
   }
 }
