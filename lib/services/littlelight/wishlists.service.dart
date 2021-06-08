@@ -170,7 +170,7 @@ class WishlistsService {
           element.length == 0);
     });
 
-    return builds.toList();
+    return builds?.toList() ?? [];
   }
 
   Set<WishlistTag> getWishlistBuildTags({
