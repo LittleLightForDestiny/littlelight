@@ -14,6 +14,8 @@ class SelectablePerkWidget extends StatelessWidget
   final bool selected;
   final int plugHash;
   final Function onTap;
+  final double scale;
+  final double wishlistScale;
 
   const SelectablePerkWidget(
       {Key key,
@@ -23,7 +25,9 @@ class SelectablePerkWidget extends StatelessWidget
       this.selected,
       this.equipped,
       this.onTap,
-      this.plugHash})
+      this.plugHash,
+      this.scale = 1,
+      this.wishlistScale = 1})
       : super(key: key);
 
   @override
@@ -51,23 +55,23 @@ class SelectablePerkWidget extends StatelessWidget
     return Container(
         key: Key("item_perk_$plugItemHash"),
         padding: EdgeInsets.all(0),
-        margin: EdgeInsets.only(bottom: 8),
+        margin: EdgeInsets.only(bottom: 8 * scale),
         child: Stack(children: [
           AspectRatio(
               aspectRatio: 1,
               child: InkWell(
                 borderRadius: intrinsic && !isExotic
-                    ? BorderRadius.circular(4)
-                    : BorderRadius.circular(48),
+                    ? BorderRadius.circular(4 * scale)
+                    : BorderRadius.circular(48 * scale),
                 child: Material(
                     shape: intrinsic && !isExotic
                         ? RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4),
+                            borderRadius: BorderRadius.circular(4 * scale),
                             side: borderSide)
                         : CircleBorder(side: borderSide),
                     color: bgColor,
                     child: Padding(
-                        padding: EdgeInsets.all(intrinsic ? 0 : 8),
+                        padding: EdgeInsets.all(intrinsic ? 0 : 8 * scale),
                         child:
                             ManifestImageWidget<DestinyInventoryItemDefinition>(
                                 plugItemHash))),
@@ -78,8 +82,8 @@ class SelectablePerkWidget extends StatelessWidget
               right: 0,
               left: 0,
               child: Center(
-                  child: buildWishlistTagIcons(
-                      context, itemDefinition.hash, plugItemHash)))
+                  child: buildWishlistTagIcons(context, itemDefinition.hash,
+                      plugItemHash, wishlistScale)))
         ]));
   }
 }

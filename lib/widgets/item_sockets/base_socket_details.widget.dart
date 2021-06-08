@@ -21,7 +21,7 @@ import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-import 'package:little_light/widgets/common/wishlist_badge.widget.dart';
+import 'package:little_light/widgets/common/wishlist_badges.widget.dart';
 import 'package:little_light/widgets/item_stats/item_details_socket_item_stats.widget.dart';
 
 import 'item_socket.controller.dart';
@@ -429,7 +429,7 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget>
       return Container(
           padding: EdgeInsets.symmetric(vertical: iconSize / 2),
           child: Row(children: [
-            WishlistBadgeWidget(
+            WishlistBadgesWidget(
                 tags: [WishlistTag.GodPVE, WishlistTag.GodPVP].toSet(),
                 size: iconSize),
             Container(
@@ -445,7 +445,8 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget>
     if (tags.contains(WishlistTag.GodPVE)) {
       rows.add(Container(
           child: Row(children: [
-        WishlistBadgeWidget(tags: [WishlistTag.GodPVE].toSet(), size: iconSize),
+        WishlistBadgesWidget(
+            tags: [WishlistTag.GodPVE].toSet(), size: iconSize),
         Container(
           width: 4,
         ),
@@ -459,7 +460,8 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget>
     if (tags.contains(WishlistTag.GodPVP)) {
       rows.add(Container(
           child: Row(children: [
-        WishlistBadgeWidget(tags: [WishlistTag.GodPVP].toSet(), size: iconSize),
+        WishlistBadgesWidget(
+            tags: [WishlistTag.GodPVP].toSet(), size: iconSize),
         Container(
           width: 4,
         ),
@@ -476,7 +478,7 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget>
       return Container(
           padding: EdgeInsets.symmetric(vertical: iconSize / 2),
           child: Row(children: [
-            WishlistBadgeWidget(
+            WishlistBadgesWidget(
                 tags: [WishlistTag.PVE, WishlistTag.PVP].toSet(),
                 size: iconSize),
             Container(
@@ -492,7 +494,7 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget>
     if (tags.contains(WishlistTag.PVE) && !tags.contains(WishlistTag.GodPVE)) {
       rows.add(Container(
           child: Row(children: [
-        WishlistBadgeWidget(tags: [WishlistTag.PVE].toSet(), size: iconSize),
+        WishlistBadgesWidget(tags: [WishlistTag.PVE].toSet(), size: iconSize),
         Container(
           width: 4,
         ),
@@ -506,7 +508,7 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget>
     if (tags.contains(WishlistTag.PVP) && !tags.contains(WishlistTag.GodPVP)) {
       rows.add(Container(
           child: Row(children: [
-        WishlistBadgeWidget(tags: [WishlistTag.PVP].toSet(), size: iconSize),
+        WishlistBadgesWidget(tags: [WishlistTag.PVP].toSet(), size: iconSize),
         Container(
           width: 4,
         ),

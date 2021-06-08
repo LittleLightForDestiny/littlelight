@@ -23,7 +23,7 @@ import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/primary_stat.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-import 'package:little_light/widgets/common/wishlist_badge.widget.dart';
+import 'package:little_light/widgets/common/wishlist_badges.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/item_armor_tier.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/item_mods.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/item_perks.widget.dart';
@@ -431,7 +431,7 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget> {
         reusablePlugs: reusablePlugs,
         sockets: sockets);
     if ((wishlistTags?.length ?? 0) == 0) return null;
-    return WishlistBadgeWidget(tags: wishlistTags, size: 22);
+    return WishlistBadgesWidget(tags: wishlistTags, size: 22);
   }
 
   Widget collectedBadge(BuildContext context) {

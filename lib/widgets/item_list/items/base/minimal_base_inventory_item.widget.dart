@@ -37,7 +37,10 @@ class MinimalBaseInventoryItemWidget extends BaseInventoryItemWidget
   }
 
   Widget buildTagsBadges(BuildContext context) {
-    var tags = WishlistsService().getWishlistBuildTags(item: item);
+    final reusable = profile.getItemReusablePlugs(item?.itemInstanceId);
+    final sockets = profile.getItemSockets(item?.itemInstanceId);
+    final tags = WishlistsService().getWishlistBuildTags(
+        itemHash: item?.itemHash, reusablePlugs: reusable, sockets: sockets);
     if (tags == null) return Container();
     return Positioned.fill(
         child: FractionallySizedBox(

@@ -12,7 +12,7 @@ import 'package:little_light/widgets/common/base/base_destiny_stateless_item.wid
 import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/item_name_bar/item_name_bar.widget.dart';
 import 'package:little_light/widgets/common/primary_stat.widget.dart';
-import 'package:little_light/widgets/common/wishlist_badge.widget.dart';
+import 'package:little_light/widgets/common/wishlist_badges.widget.dart';
 import 'package:little_light/widgets/item_tags/item_tag.widget.dart';
 
 mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget {
@@ -163,7 +163,10 @@ mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget {
   }
 
   Widget wishlistBackground(BuildContext context) {
-    var tags = WishlistsService().getWishlistBuildTags(item: item);
+    final reusable = profile.getItemReusablePlugs(item?.itemInstanceId);
+    final sockets = profile.getItemSockets(item?.itemInstanceId);
+    final tags = WishlistsService().getWishlistBuildTags(
+        itemHash: item?.itemHash, reusablePlugs: reusable, sockets: sockets);
     if (tags == null) return Container();
     if (tags.contains(WishlistTag.PVE) && tags.contains(WishlistTag.PVP)) {
       return Image.asset(
@@ -199,7 +202,10 @@ mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget {
 
   Widget namebarTrailingWidget(BuildContext context) {
     List<Widget> items = [];
-    var wishlistTags = WishlistsService().getWishlistBuildTags(item: item);
+    final reusable = profile.getItemReusablePlugs(item?.itemInstanceId);
+    final sockets = profile.getItemSockets(item?.itemInstanceId);
+    final wishlistTags = WishlistsService().getWishlistBuildTags(
+        itemHash: item?.itemHash, reusablePlugs: reusable, sockets: sockets);
     var notes = ItemNotesService()
         .getNotesForItem(item?.itemHash, item?.itemInstanceId);
     var tags = ItemNotesService().tagsByIds(notes?.tags);
@@ -216,7 +222,7 @@ mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget {
           )));
     }
     if (wishlistTags != null) {
-      items.add(WishlistBadgeWidget(tags: wishlistTags, size: tagIconSize));
+      items.add(WishlistBadgesWidget(tags: wishlistTags, size: tagIconSize));
     }
     if (trailing != null) {
       items.add(trailing);

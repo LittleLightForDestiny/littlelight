@@ -150,32 +150,40 @@ class WishlistsService {
     return _items[itemHash]?.perks[plugItemHash] ?? Set();
   }
 
-  Set<WishlistTag> getWishlistBuildTags({
+  List<WishlistBuild> getWishlistBuilds({
     int itemHash,
-    @Deprecated('Use itemHash, reusablePlugs and sockets instead')
-        DestinyItemComponent item,
     Map<String, List<DestinyItemPlugBase>> reusablePlugs,
     List<DestinyItemSocketState> sockets,
   }) {
-    itemHash ??= item?.itemHash;
-    reusablePlugs ??=
-        ProfileService().getItemReusablePlugs(item?.itemInstanceId);
-    sockets ??= ProfileService().getItemSockets(item?.itemInstanceId);
-    if ([itemHash, reusablePlugs, sockets].contains(null)) {
-      return null;
+    final wishlistItem = _items[itemHash];
+    if (reusablePlugs == null && sockets == null) {
+      return wishlistItem?.builds;
     }
     Set<int> availablePlugs = Set();
     reusablePlugs?.values?.forEach((plugs) =>
         plugs.forEach((plug) => availablePlugs.add(plug.plugItemHash)));
     sockets?.forEach((plug) => availablePlugs.add(plug.plugHash));
     if (availablePlugs?.length == 0) return null;
-    var wish = _items[itemHash];
-    var builds = wish?.builds?.where((build) {
+    final builds = wishlistItem?.builds?.where((build) {
       return build.perks.every((element) =>
           element.any((e) => availablePlugs.contains(e)) ||
           element.length == 0);
     });
-    if ((builds?.length ?? 0) == 0) return null;
+
+    return builds.toList();
+  }
+
+  Set<WishlistTag> getWishlistBuildTags({
+    int itemHash,
+    Map<String, List<DestinyItemPlugBase>> reusablePlugs,
+    List<DestinyItemSocketState> sockets,
+  }) {
+    if ([itemHash, reusablePlugs, sockets].contains(null)) {
+      return null;
+    }
+    final builds = getWishlistBuilds(
+        itemHash: itemHash, reusablePlugs: reusablePlugs, sockets: sockets);
+    if (builds.length == 0) return null;
     Set<WishlistTag> tags = Set();
     builds.forEach((b) {
       tags.addAll(b.tags);
@@ -207,12 +215,19 @@ class WishlistsService {
     return notes;
   }
 
-  addToWishList(String name, int hash, List<List<int>> perks,
-      Set<WishlistTag> specialties, Set<String> notes) {
+  addToWishList(
+      {String name,
+      int hash,
+      List<List<int>> perks,
+      Set<WishlistTag> specialties,
+      Set<String> notes,
+      String originalWishlist}) {
     var wishlist =
         _items[hash] = _items[hash] ?? WishlistItem.builder(itemHash: hash);
     var build = WishlistBuild.builder(
-        name: name, perks: perks.map((p) => p.toSet()).toList());
+        name: name,
+        perks: perks.map((p) => p.toSet()).toList(),
+        originalWishlist: originalWishlist);
     build.notes.addAll(notes.where((n) => (n?.length ?? 0) > 0));
     build.tags.addAll(specialties.where((s) => s != null));
     for (var p in perks) {

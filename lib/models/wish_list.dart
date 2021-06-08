@@ -5,7 +5,17 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'wish_list.g.dart';
 
-enum WishlistTag { GodPVE, GodPVP, PVE, PVP, Bungie, Trash }
+enum WishlistTag {
+  GodPVE,
+  GodPVP,
+  PVE,
+  PVP,
+  Bungie,
+  Trash,
+  Mouse,
+  Controller,
+  UnknownEnumValue
+}
 
 List<Set<int>> _jsonPlugsFromJson(List<dynamic> json) {
   return json
@@ -14,68 +24,32 @@ List<Set<int>> _jsonPlugsFromJson(List<dynamic> json) {
 }
 
 @JsonSerializable()
-class LittleLightWishlist {
-  String name;
-  String description;
-  List<LittleLightWishlistItem> data;
-
-  LittleLightWishlist({this.name, this.description, this.data});
-
-  factory LittleLightWishlist.fromJson(dynamic json) {
-    return _$LittleLightWishlistFromJson(json);
-  }
-
-  dynamic toJson() {
-    return _$LittleLightWishlistToJson(this);
-  }
-}
-
-@JsonSerializable()
-class LittleLightWishlistItem {
-  String name;
-  String description;
-  List<List<int>> plugs;
-  int hash;
-  List<String> tags;
-  List<String> authors;
-  LittleLightWishlistItem(
-    this.name,
-    this.description,
-    this.plugs,
-    this.hash,
-    this.tags,
-    this.authors,
-  );
-
-  factory LittleLightWishlistItem.fromJson(dynamic json) {
-    return _$LittleLightWishlistItemFromJson(json);
-  }
-
-  dynamic toJson() {
-    return _$LittleLightWishlistItemToJson(this);
-  }
-}
-
-@JsonSerializable()
 class WishlistBuild {
   String name;
   @JsonKey(fromJson: _jsonPlugsFromJson)
   List<Set<int>> perks = [];
+
+  @JsonKey(unknownEnumValue: WishlistTag.UnknownEnumValue)
   Set<WishlistTag> tags = Set();
   Set<String> notes = Set();
-  WishlistBuild({this.name, this.perks, this.tags, this.notes});
+  String originalWishlist;
+
+  WishlistBuild(
+      {this.name, this.perks, this.tags, this.notes, this.originalWishlist});
 
   factory WishlistBuild.builder({
     String name,
     List<Set<int>> perks,
-    Set<WishlistTag> specialties,
+    Set<WishlistTag> tags,
     Set<String> notes,
+    String originalWishlist,
   }) {
     return WishlistBuild(
         name: name,
         perks: perks ?? Set(),
-        tags: specialties ?? Set(),
-        notes: notes ?? Set());
+        tags: tags ?? Set(),
+        notes: notes ?? Set(),
+        originalWishlist: originalWishlist);
   }
 
   factory WishlistBuild.fromJson(dynamic json) {

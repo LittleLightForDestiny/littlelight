@@ -35,6 +35,7 @@ import 'package:little_light/widgets/item_details/main_info/item_main_info.widge
 import 'package:little_light/widgets/item_details/management_block.widget.dart';
 import 'package:little_light/widgets/item_details/quest_info.widget.dart';
 import 'package:little_light/widgets/item_details/rewards_info.widget.dart';
+import 'package:little_light/widgets/item_details/wishlist_builds.widget.dart';
 import 'package:little_light/widgets/item_details/wishlist_notes.widget.dart';
 import 'package:little_light/widgets/item_notes/item_details_notes.widget.dart';
 import 'package:little_light/widgets/item_sockets/details_armor_tier.widget.dart';
@@ -102,7 +103,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
 
   initSocketController() async {
     if (widget.vendorItem != null) {
-      var reusable = await VendorsService().getSaleItemReusablePerks(
+      final reusable = await VendorsService().getSaleItemReusablePerks(
           characterId, widget.vendorHash, widget.vendorItem?.vendorItemIndex);
       socketController = ItemSocketController(
           definition: widget.definition,
@@ -220,6 +221,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
             buildStats(context),
             buildPerks(context),
             buildPerkDetails(context),
+            buildWishlistBuilds(context),
             buildArmorTier(context),
             buildMods(context),
             buildModDetails(context),
@@ -277,6 +279,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
             buildStats(context),
             buildPerks(context),
             buildPerkDetails(context),
+            buildWishlistBuilds(context),
             buildArmorTier(context),
             buildMods(context),
             buildModDetails(context),
@@ -323,6 +326,17 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
             left: screenPadding.left, right: screenPadding.right),
         child: WishlistNotesWidget(
           item,
+        ));
+  }
+
+  Widget buildWishlistBuilds(BuildContext context) {
+    var screenPadding = MediaQuery.of(context).padding;
+    return Container(
+        padding: EdgeInsets.only(
+            left: screenPadding.left, right: screenPadding.right),
+        child: WishlistBuildsWidget(
+          widget.definition?.hash,
+          reusablePlugs: socketController.reusablePlugs,
         ));
   }
 
