@@ -1,0 +1,3 @@
+- added wishlist build info to item details
+- fixed some visual glitches on landscape mode
+

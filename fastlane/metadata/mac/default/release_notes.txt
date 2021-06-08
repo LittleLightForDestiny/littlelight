@@ -1,3 +1,2 @@
-- added wishlist build info to item details
-- fixed some visual glitches on landscape mode
+- quick fix for armor items not showing up
 
