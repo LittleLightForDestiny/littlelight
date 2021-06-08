@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/models/wish_list.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/flutter/center_icon_workaround.dart';
@@ -13,6 +14,16 @@ class WishlistsData {
             border: Border.all(color: Colors.amber, width: 1),
             gradient: RadialGradient(
                 radius: 1, colors: [getBgColor(tag), Colors.amber]));
+
+      case WishlistTag.Controller:
+        return BoxDecoration(
+            border: Border.all(color: Colors.blueGrey.shade800, width: 1),
+            color: Colors.blueGrey.shade200);
+
+      case WishlistTag.Mouse:
+        return BoxDecoration(
+            border: Border.all(color: Colors.blueGrey.shade200, width: 1),
+            color: Colors.blueGrey.shade800);
       default:
         return BoxDecoration(color: getBgColor(tag));
     }
@@ -30,6 +41,12 @@ class WishlistsData {
         break;
       case WishlistTag.Bungie:
         return Colors.black;
+
+      case WishlistTag.Controller:
+        return Colors.blueGrey.shade800;
+
+      case WishlistTag.Mouse:
+        return Colors.blueGrey.shade200;
 
       case WishlistTag.Trash:
         return Colors.lightGreen.shade500;
@@ -100,6 +117,24 @@ class WishlistsData {
               "assets/imgs/trash-roll-icon.png",
             ));
         break;
+
+      case WishlistTag.Controller:
+        return Container(
+            alignment: Alignment.center,
+            child: CenterIconWorkaround(
+              FontAwesomeIcons.gamepad,
+              size: size * .6,
+              color: Colors.blueGrey.shade800,
+            ));
+
+      case WishlistTag.Mouse:
+        return Container(
+            alignment: Alignment.center,
+            child: CenterIconWorkaround(
+              FontAwesomeIcons.mouse,
+              size: size * .7,
+              color: Colors.blueGrey.shade200,
+            ));
 
       default:
         return Container(

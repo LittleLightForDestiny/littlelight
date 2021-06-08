@@ -12,7 +12,7 @@ import 'package:little_light/widgets/common/base/base_destiny_stateless_item.wid
 import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/item_name_bar/item_name_bar.widget.dart';
 import 'package:little_light/widgets/common/primary_stat.widget.dart';
-import 'package:little_light/widgets/common/wishlist_badge.widget.dart';
+import 'package:little_light/widgets/common/wishlist_badges.widget.dart';
 import 'package:little_light/widgets/item_tags/item_tag.widget.dart';
 
 mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget {
@@ -222,7 +222,7 @@ mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget {
           )));
     }
     if (wishlistTags != null) {
-      items.add(WishlistBadgeWidget(tags: wishlistTags, size: tagIconSize));
+      items.add(WishlistBadgesWidget(tags: wishlistTags, size: tagIconSize));
     }
     if (trailing != null) {
       items.add(trailing);

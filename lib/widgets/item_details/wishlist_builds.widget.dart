@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:bungie_api/models/destiny_item_component.dart';
+import 'package:bungie_api/models/destiny_item_plug_base.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/models/wish_list.dart';
 import 'package:little_light/services/littlelight/wishlists.service.dart';
@@ -47,14 +47,21 @@ extension WishlistBuildSortingPriority on WishlistBuild {
 }
 
 class WishlistBuildsWidget extends StatelessWidget {
-  final DestinyItemComponent item;
+  final int itemHash;
 
-  WishlistBuildsWidget(this.item, {Key key}) : super(key: key);
+  final Map<String, List<DestinyItemPlugBase>> reusablePlugs;
+
+  WishlistBuildsWidget(
+    this.itemHash, {
+    Key key,
+    this.reusablePlugs,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var builds = WishlistsService().getWishlistBuilds(itemHash: item?.itemHash);
-
+    final builds = WishlistsService()
+        .getWishlistBuilds(itemHash: itemHash, reusablePlugs: reusablePlugs);
+    if ((builds?.length ?? 0) == 0) return Container();
     return Container(
       padding: EdgeInsets.all(8),
       child: Column(children: [
@@ -119,14 +126,25 @@ class WishlistBuildsWidget extends StatelessWidget {
     return Column(
       children: rows
           .map((r) => IntrinsicHeight(
-              child: Row(
-                  children: r
-                      .map((b) => Expanded(
-                            child: WishlistBuildPerksWidget(
-                              build: b,
-                            ),
-                          ))
-                      .toList())))
+                  child: Row(
+                children: r
+                    .map((b) => Expanded(
+                          child: WishlistBuildPerksWidget(
+                            wishlistBuild: b,
+                          ),
+                        ))
+                    .fold(
+                        <Widget>[],
+                        (previousValue, element) => previousValue
+                            .followedBy([Container(width: 8), element]))
+                    .skip(1)
+                    .toList(),
+              )))
+          .fold(
+              <Widget>[],
+              (previousValue, element) =>
+                  previousValue.followedBy([Container(height: 8), element]))
+          .skip(1)
           .toList(),
     );
   }

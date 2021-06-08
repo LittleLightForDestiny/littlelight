@@ -2,7 +2,7 @@ import 'package:little_light/models/wish_list.dart';
 import 'package:little_light/utils/item_filters/wishlist_tag_filter.dart';
 import 'package:little_light/utils/wishlists_data.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-import 'package:little_light/widgets/common/wishlist_badge.widget.dart';
+import 'package:little_light/widgets/common/wishlist_badges.widget.dart';
 import 'package:little_light/widgets/search/search.controller.dart';
 import 'package:little_light/widgets/search/search_filters/base_search_filter.widget.dart';
 import 'package:flutter/material.dart';
@@ -37,15 +37,17 @@ class _WishlistTagsFilterWidgetState extends BaseSearchFilterWidgetState<
       return super.buildButton(context, value);
     }
     var length = options.length;
-    if(options.contains(null)) length = length - 1;
+    if (options.contains(null)) length = length - 1;
     if (length % 2 == 0) {
       return FractionallySizedBox(
-          widthFactor: .5, child: 
-          Container(height:70, child:super.buildButton(context, value)));
+          widthFactor: .5,
+          child:
+              Container(height: 70, child: super.buildButton(context, value)));
     } else {
       return FractionallySizedBox(
-          widthFactor: 1 / 3, child: 
-          Container(height:70, child:super.buildButton(context, value)));
+          widthFactor: 1 / 3,
+          child:
+              Container(height: 70, child: super.buildButton(context, value)));
     }
   }
 
@@ -58,7 +60,7 @@ class _WishlistTagsFilterWidgetState extends BaseSearchFilterWidgetState<
   Widget buildButtonLabel(BuildContext context, WishlistTag value) {
     var children = <Widget>[
       WishlistsData.getIcon(value, 24),
-      Container(width: 4, height:4),
+      Container(width: 4, height: 4),
       WishlistsData.getLabel(value)
     ];
     return DefaultTextStyle(
@@ -78,10 +80,13 @@ class _WishlistTagsFilterWidgetState extends BaseSearchFilterWidgetState<
 
   @override
   Widget buildDisabledValue(BuildContext context) {
-    try{
+    try {
       var tag = this.filter.value.single;
-    return WishlistBadgeWidget(tags:[tag].toSet());
-    }catch(_){}
-    return TranslatedTextWidget("None", uppercase: true,);
+      return WishlistBadgesWidget(tags: [tag].toSet());
+    } catch (_) {}
+    return TranslatedTextWidget(
+      "None",
+      uppercase: true,
+    );
   }
 }

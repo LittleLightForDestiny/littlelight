@@ -103,7 +103,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
 
   initSocketController() async {
     if (widget.vendorItem != null) {
-      var reusable = await VendorsService().getSaleItemReusablePerks(
+      final reusable = await VendorsService().getSaleItemReusablePerks(
           characterId, widget.vendorHash, widget.vendorItem?.vendorItemIndex);
       socketController = ItemSocketController(
           definition: widget.definition,
@@ -330,13 +330,13 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
   }
 
   Widget buildWishlistBuilds(BuildContext context) {
-    if (item == null) return Container();
     var screenPadding = MediaQuery.of(context).padding;
     return Container(
         padding: EdgeInsets.only(
             left: screenPadding.left, right: screenPadding.right),
         child: WishlistBuildsWidget(
-          item,
+          widget.definition?.hash,
+          reusablePlugs: socketController.reusablePlugs,
         ));
   }
 

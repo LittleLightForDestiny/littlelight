@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/models/wish_list.dart';
 import 'package:little_light/services/littlelight/wishlists.service.dart';
-import 'package:little_light/widgets/common/wishlist_badge.widget.dart';
+import 'package:little_light/widgets/common/wishlist_badges.widget.dart';
 
 mixin PlugWishlistTagIconsMixin {
   List<Widget> wishlistIcons(
@@ -26,7 +26,7 @@ mixin PlugWishlistTagIconsMixin {
   }
 
   buildWishlistIcon(BuildContext context, WishlistTag tag, [double scale = 1]) {
-    return WishlistBadgeWidget(tags: [tag].toSet(), size: 16 * scale);
+    return WishlistBadgesWidget(tags: [tag].toSet(), size: 16 * scale);
   }
 
   Widget buildWishlistTagIcons(

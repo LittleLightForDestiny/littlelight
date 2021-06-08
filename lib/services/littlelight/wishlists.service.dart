@@ -150,6 +150,29 @@ class WishlistsService {
     return _items[itemHash]?.perks[plugItemHash] ?? Set();
   }
 
+  List<WishlistBuild> getWishlistBuilds({
+    int itemHash,
+    Map<String, List<DestinyItemPlugBase>> reusablePlugs,
+    List<DestinyItemSocketState> sockets,
+  }) {
+    final wishlistItem = _items[itemHash];
+    if (reusablePlugs == null && sockets == null) {
+      return wishlistItem?.builds;
+    }
+    Set<int> availablePlugs = Set();
+    reusablePlugs?.values?.forEach((plugs) =>
+        plugs.forEach((plug) => availablePlugs.add(plug.plugItemHash)));
+    sockets?.forEach((plug) => availablePlugs.add(plug.plugHash));
+    if (availablePlugs?.length == 0) return null;
+    final builds = wishlistItem?.builds?.where((build) {
+      return build.perks.every((element) =>
+          element.any((e) => availablePlugs.contains(e)) ||
+          element.length == 0);
+    });
+
+    return builds.toList();
+  }
+
   Set<WishlistTag> getWishlistBuildTags({
     int itemHash,
     Map<String, List<DestinyItemPlugBase>> reusablePlugs,
@@ -158,28 +181,14 @@ class WishlistsService {
     if ([itemHash, reusablePlugs, sockets].contains(null)) {
       return null;
     }
-    Set<int> availablePlugs = Set();
-    reusablePlugs?.values?.forEach((plugs) =>
-        plugs.forEach((plug) => availablePlugs.add(plug.plugItemHash)));
-    sockets?.forEach((plug) => availablePlugs.add(plug.plugHash));
-    if (availablePlugs?.length == 0) return null;
-    var wish = _items[itemHash];
-    var builds = wish?.builds?.where((build) {
-      return build.perks.every((element) =>
-          element.any((e) => availablePlugs.contains(e)) ||
-          element.length == 0);
-    });
-    if ((builds?.length ?? 0) == 0) return null;
+    final builds = getWishlistBuilds(
+        itemHash: itemHash, reusablePlugs: reusablePlugs, sockets: sockets);
+    if (builds.length == 0) return null;
     Set<WishlistTag> tags = Set();
     builds.forEach((b) {
       tags.addAll(b.tags);
     });
     return tags;
-  }
-
-  List<WishlistBuild> getWishlistBuilds({int itemHash}) {
-    final builds = _items[itemHash];
-    return builds?.builds;
   }
 
   Set<String> getWishlistBuildNotes(DestinyItemComponent item) {

@@ -16,7 +16,7 @@ import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/primary_stat.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-import 'package:little_light/widgets/common/wishlist_badge.widget.dart';
+import 'package:little_light/widgets/common/wishlist_badges.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/base_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/item_armor_stats.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/item_mods.widget.dart';
@@ -124,7 +124,7 @@ class BaseItemInstanceWidget extends BaseInventoryItemWidget {
       rows.add(Row(children: upper));
     }
     if (wishlistTags != null) {
-      rows.add(WishlistBadgeWidget(tags: wishlistTags, size: tagIconSize));
+      rows.add(WishlistBadgesWidget(tags: wishlistTags, size: tagIconSize));
     }
 
     if (rows.length == 0) return Container();
