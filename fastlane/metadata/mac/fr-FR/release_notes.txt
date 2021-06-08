@@ -1,1 +1,3 @@
-- fixing translations and wishlist access for our good friends at china
+- added wishlist build info to item details
+- fixed some visual glitches on landscape mode
+
