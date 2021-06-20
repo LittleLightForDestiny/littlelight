@@ -50,7 +50,8 @@ enum StorageKeys {
   bucketDisplayOptions,
   latestVersion,
   versionUpdatedDate,
-  littleLightTranslation
+  littleLightTranslation,
+  detailsSectionDisplayVisibility,
 }
 
 extension StorageKeysExtension on StorageKeys {

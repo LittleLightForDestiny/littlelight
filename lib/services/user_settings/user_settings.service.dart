@@ -29,6 +29,7 @@ class UserSettingsService {
   CharacterSortParameter _characterOrdering;
   Set<String> _priorityTags;
   Map<String, BucketDisplayOptions> _bucketDisplayOptions;
+  Map<String, bool> _detailsSectionDisplayVisibility;
 
   factory UserSettingsService() {
     return _singleton;
@@ -40,6 +41,7 @@ class UserSettingsService {
     await initCharacterOrdering();
     await initPriorityTags();
     await initBucketDisplayOptions();
+    await initDetailsSectionDisplayOptions();
   }
 
   initItemOrdering() async {
@@ -110,6 +112,19 @@ class UserSettingsService {
     }
   }
 
+  initDetailsSectionDisplayOptions() async {
+    try {
+      Map<String, dynamic> json = await membershipStorage
+          .getJson(StorageKeys.detailsSectionDisplayVisibility);
+      _detailsSectionDisplayVisibility = Map();
+      json.forEach((key, value) {
+        _detailsSectionDisplayVisibility[key] = json[value] ?? true;
+      });
+    } catch (e) {
+      _detailsSectionDisplayVisibility = Map();
+    }
+  }
+
   BucketDisplayOptions getDisplayOptionsForBucket(String id) {
     id = removeDiacritics(id ?? "").toLowerCase();
     if (_bucketDisplayOptions?.containsKey(id) ?? false) {
@@ -132,6 +147,29 @@ class UserSettingsService {
       json[k] = v.toJson();
     });
     membershipStorage.setJson(StorageKeys.bucketDisplayOptions, json);
+  }
+
+  bool getVisibilityForDetailsSection(String id) {
+    id = removeDiacritics(id).toLowerCase();
+    try {
+      return _detailsSectionDisplayVisibility[id] ?? true;
+    } catch (e) {}
+    return true;
+  }
+
+  setVisibilityForDetailsSection(String key, bool visible) {
+    key = removeDiacritics(key).toLowerCase();
+    try {
+      _detailsSectionDisplayVisibility[key] = visible;
+    } catch (e) {
+      return;
+    }
+    var json = Map<String, bool>();
+    _detailsSectionDisplayVisibility.forEach((k, v) {
+      json[k] = v;
+    });
+    membershipStorage.setJson(
+        StorageKeys.detailsSectionDisplayVisibility, json);
   }
 
   bool get hasTappedGhost {

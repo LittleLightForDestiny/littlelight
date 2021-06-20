@@ -31,8 +31,16 @@ class ScreenShotArmorTierWidget extends BaseItemSocketsWidget {
   }
 }
 
+const _sectionId = "screenshot_item_perks";
+
 class ScreenShotItemPerksWidgetState<T extends ScreenShotArmorTierWidget>
     extends BaseItemSocketsWidgetState<T> {
+  @override
+  String get sectionId => _sectionId;
+
+  @override
+  bool get visible => true;
+
   @override
   Widget build(BuildContext context) {
     if (category == null) return Container();
@@ -90,73 +98,91 @@ class ScreenShotItemPerksWidgetState<T extends ScreenShotArmorTierWidget>
     var color = DestinyData.getEnergyTypeColor(
         plugDef?.plug?.energyCapacity?.energyType);
     var total = plugDef?.plug?.energyCapacity?.capacityValue;
-    return Column(children:[
+    return Column(children: [
       Container(
-        height: widget.pixelSize * 50,
-        padding: EdgeInsets.symmetric(horizontal: widget.pixelSize * 10),
-        color: color.withOpacity(.6),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Icon(
-                DestinyData.getEnergyTypeIcon(
-                    plugDef?.plug?.energyCapacity?.energyType),
-                color: DestinyData.getEnergyTypeLightColor(
-        plugDef?.plug?.energyCapacity?.energyType),
-                size: widget.pixelSize * 44),
-            Container(
-              width: widget.pixelSize * 8,
-            ),
-            Text(
-              "$total",
-              style: TextStyle(
-                  fontWeight: FontWeight.bold, fontSize: widget.pixelSize * 38),
-            ),
-            Container(
-              width: widget.pixelSize * 16,
-            ),
-            TranslatedTextWidget(
-              "Energy",
-              uppercase: true,
-              style: TextStyle(
-                  fontWeight: FontWeight.w500, fontSize: widget.pixelSize * 22),
-            )
-          ],
-        )),
-        buildBars(context, plugItemHash)
-        ]);
+          height: widget.pixelSize * 50,
+          padding: EdgeInsets.symmetric(horizontal: widget.pixelSize * 10),
+          color: color.withOpacity(.6),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Icon(
+                  DestinyData.getEnergyTypeIcon(
+                      plugDef?.plug?.energyCapacity?.energyType),
+                  color: DestinyData.getEnergyTypeLightColor(
+                      plugDef?.plug?.energyCapacity?.energyType),
+                  size: widget.pixelSize * 44),
+              Container(
+                width: widget.pixelSize * 8,
+              ),
+              Text(
+                "$total",
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: widget.pixelSize * 38),
+              ),
+              Container(
+                width: widget.pixelSize * 16,
+              ),
+              TranslatedTextWidget(
+                "Energy",
+                uppercase: true,
+                style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: widget.pixelSize * 22),
+              )
+            ],
+          )),
+      buildBars(context, plugItemHash)
+    ]);
   }
 
-  Widget buildBars(BuildContext context, int plugItemHash){
-     if (plugDefinitions == null) return Container();
+  Widget buildBars(BuildContext context, int plugItemHash) {
+    if (plugDefinitions == null) return Container();
     var plugDef = plugDefinitions[plugItemHash];
     var total = plugDef?.plug?.energyCapacity?.capacityValue;
     var used = controller.usedEnergyWithoutFailedSocket;
     var requiredEnergy = controller.requiredEnergy;
     List<Widget> pieces = [];
-    for(var i=0; i<10; i++){
-      pieces.add(Expanded(child: buildEnergyPiece(context, i, total, used, requiredEnergy)));
+    for (var i = 0; i < 10; i++) {
+      pieces.add(Expanded(
+          child: buildEnergyPiece(context, i, total, used, requiredEnergy)));
     }
-    return Row(children: pieces,);
+    return Row(
+      children: pieces,
+    );
   }
 
-  Widget buildEnergyPiece(BuildContext context, int index, int total, int used, int requiredEnergy){
-    if(index < total){
-      Color color = index < requiredEnergy ? DestinyData.negativeFeedback.withOpacity(.8) : Colors.transparent;
-      if(index < used){
+  Widget buildEnergyPiece(BuildContext context, int index, int total, int used,
+      int requiredEnergy) {
+    if (index < total) {
+      Color color = index < requiredEnergy
+          ? DestinyData.negativeFeedback.withOpacity(.8)
+          : Colors.transparent;
+      if (index < used) {
         color = Colors.white;
       }
       return Container(
-        height:30*widget.pixelSize,
-        padding: EdgeInsets.all(2*widget.pixelSize),
-        child: Container(decoration: BoxDecoration(border: Border.all(width:4*widget.pixelSize, color:Colors.white), color:color),),
+        height: 30 * widget.pixelSize,
+        padding: EdgeInsets.all(2 * widget.pixelSize),
+        child: Container(
+          decoration: BoxDecoration(
+              border:
+                  Border.all(width: 4 * widget.pixelSize, color: Colors.white),
+              color: color),
+        ),
       );
     }
 
     return Container(
-        height:30*widget.pixelSize,
-        padding: EdgeInsets.symmetric(horizontal:2*widget.pixelSize, vertical: 8*widget.pixelSize),
-        child: Container(color: index < requiredEnergy ? DestinyData.negativeFeedback.withOpacity(.8) : Colors.black.withOpacity(.5),),
-      );
+      height: 30 * widget.pixelSize,
+      padding: EdgeInsets.symmetric(
+          horizontal: 2 * widget.pixelSize, vertical: 8 * widget.pixelSize),
+      child: Container(
+        color: index < requiredEnergy
+            ? DestinyData.negativeFeedback.withOpacity(.8)
+            : Colors.black.withOpacity(.5),
+      ),
+    );
   }
 }

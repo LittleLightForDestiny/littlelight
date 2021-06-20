@@ -34,8 +34,16 @@ class ScreenShotItemModsWidget extends BaseItemSocketsWidget {
   }
 }
 
+const _sectionId = "screenshot_item_mods";
+
 class ScreenShotItemModsWidgetState<T extends ScreenShotItemModsWidget>
     extends BaseItemSocketsWidgetState<T> {
+  @override
+  String get sectionId => _sectionId;
+
+  @override
+  bool get visible => true;
+
   @override
   Widget build(BuildContext context) {
     if (category == null) return Container();
@@ -93,7 +101,7 @@ class ScreenShotItemModsWidgetState<T extends ScreenShotItemModsWidget>
     if (plugHash == null) return null;
 
     return Container(
-      height:96 * widget.pixelSize,
+      height: 96 * widget.pixelSize,
       width: 96 * widget.pixelSize,
       child: buildPlug(context, socketIndex, plugHash),
     );
@@ -108,32 +116,39 @@ class ScreenShotItemModsWidgetState<T extends ScreenShotItemModsWidget>
     var canEquip = controller?.canEquip(socketIndex, plugItemHash);
     return Material(
         child: InkWell(
-          onTap: () {
-          controller.selectSocket(socketIndex, plugItemHash);
-        },
-          child:Container(
-            decoration: BoxDecoration(
-                border: Border.all(
-                    color: Colors.grey.shade400, width: 3 * widget.pixelSize)),
-            child: Stack(children: [
-                ManifestImageWidget<DestinyInventoryItemDefinition>(
-                    plugItemHash, key:Key("plug_$plugItemHash")),
-                energyType == DestinyEnergyType.Any
-                    ? Container()
-                    : Positioned.fill(
-                        child: ManifestImageWidget<DestinyStatDefinition>(
-                          DestinyData.getEnergyTypeCostHash(energyType)
-                        )),
-                energyCost == 0
-                    ? Container()
-                    : Positioned(
-                        top: 8 * widget.pixelSize,
-                        right: 8 * widget.pixelSize,
-                        child: Text(
-                          "$energyCost",
-                          style: TextStyle(fontSize: 20*widget.pixelSize),
-                        )),
-              canEquip ? Container(): Positioned.fill(child: Container(color: Colors.black.withOpacity(.5),),)
-              ]))));
+            onTap: () {
+              controller.selectSocket(socketIndex, plugItemHash);
+            },
+            child: Container(
+                decoration: BoxDecoration(
+                    border: Border.all(
+                        color: Colors.grey.shade400,
+                        width: 3 * widget.pixelSize)),
+                child: Stack(children: [
+                  ManifestImageWidget<DestinyInventoryItemDefinition>(
+                      plugItemHash,
+                      key: Key("plug_$plugItemHash")),
+                  energyType == DestinyEnergyType.Any
+                      ? Container()
+                      : Positioned.fill(
+                          child: ManifestImageWidget<DestinyStatDefinition>(
+                              DestinyData.getEnergyTypeCostHash(energyType))),
+                  energyCost == 0
+                      ? Container()
+                      : Positioned(
+                          top: 8 * widget.pixelSize,
+                          right: 8 * widget.pixelSize,
+                          child: Text(
+                            "$energyCost",
+                            style: TextStyle(fontSize: 20 * widget.pixelSize),
+                          )),
+                  canEquip
+                      ? Container()
+                      : Positioned.fill(
+                          child: Container(
+                            color: Colors.black.withOpacity(.5),
+                          ),
+                        )
+                ]))));
   }
 }

@@ -8,9 +8,10 @@ import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:little_light/widgets/item_details/section_header.widget.dart';
 import 'package:little_light/widgets/item_sockets/item_socket.controller.dart';
 
-class BaseItemSocketsWidget extends BaseDestinyStatefulItemWidget {
+abstract class BaseItemSocketsWidget extends BaseDestinyStatefulItemWidget {
   final ProfileService profile = ProfileService();
   final ManifestService manifest = ManifestService();
   final ItemSocketController controller;
@@ -26,22 +27,17 @@ class BaseItemSocketsWidget extends BaseDestinyStatefulItemWidget {
       this.iconSize = 72,
       this.controller})
       : super(key: key, item: item, definition: definition);
-
-  @override
-  State<StatefulWidget> createState() {
-    return BaseItemSocketsWidgetState();
-  }
 }
 
-class BaseItemSocketsWidgetState<T extends BaseItemSocketsWidget>
-    extends BaseDestinyItemState<T> {
-  
+abstract class BaseItemSocketsWidgetState<T extends BaseItemSocketsWidget>
+    extends BaseDestinyItemState<T> with VisibleSectionMixin {
   List<DestinyItemSocketState> _socketStates;
   List<DestinyItemSocketState> get socketStates => _socketStates;
   Map<int, DestinyInventoryItemDefinition> get plugDefinitions =>
       controller?.plugDefinitions;
   DestinyItemSocketCategoryDefinition get category => widget.category;
   ItemSocketController _controller;
+
   ItemSocketController get controller {
     if (widget.controller != null) {
       return widget.controller;
@@ -93,8 +89,13 @@ class BaseItemSocketsWidgetState<T extends BaseItemSocketsWidget>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         buildHeader(context),
-        buildErrorMessage(context),
-        buildSockets(context),
+        visible
+            ? Container(
+                height: 16,
+              )
+            : Container(),
+        visible ? buildErrorMessage(context) : Container(),
+        visible ? buildSockets(context) : Container(),
       ],
     );
   }
@@ -144,7 +145,4 @@ class BaseItemSocketsWidgetState<T extends BaseItemSocketsWidget>
               plugItemHash,
             )));
   }
-
-
-  
 }

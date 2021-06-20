@@ -37,28 +37,21 @@ class DetailsItemModsWidget extends BaseItemSocketsWidget {
   }
 }
 
+const _sectionId = "item_mods";
+
 class DetailsItemPerksWidgetState<T extends DetailsItemModsWidget>
     extends BaseItemSocketsWidgetState<T> {
   bool showDetails = false;
 
+  String get sectionId => "${_sectionId}_${category.socketCategoryHash}";
+
   Widget buildHeader(BuildContext context) {
-    bool isLandscape = MediaQueryHelper(context).isLandscape;
-    return Container(
-        padding: EdgeInsets.only(bottom: 16),
-        child: HeaderWidget(
-            child: Container(
-                alignment: Alignment.centerLeft,
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      ManifestText<DestinySocketCategoryDefinition>(
-                        category.socketCategoryHash,
-                        uppercase: true,
-                        textAlign: TextAlign.left,
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      isLandscape ? Container() : buildDetailsSwitch(context)
-                    ]))));
+    return getHeader(ManifestText<DestinySocketCategoryDefinition>(
+      category.socketCategoryHash,
+      uppercase: true,
+      textAlign: TextAlign.left,
+      style: TextStyle(fontWeight: FontWeight.bold),
+    ));
   }
 
   Widget buildDetailsSwitch(BuildContext context) {
@@ -73,16 +66,18 @@ class DetailsItemPerksWidgetState<T extends DetailsItemModsWidget>
     var mq = MediaQueryHelper(context);
     var largeScreen = mq.isDesktop || (mq.tabletOrBigger && mq.isLandscape);
     var screenWidth = MediaQuery.of(context).size.width - 16;
-    var dividerMargin = min(screenWidth/50, 8.0);
-    if(children.length > 0){
+    var dividerMargin = min(screenWidth / 50, 8.0);
+    if (children.length > 0) {
       children = children.expand((w) => [
-          w,
-          largeScreen ? Container(
-              margin: EdgeInsets.symmetric(horizontal: dividerMargin),
-              width: 2,
-              color: Colors.white.withOpacity(.4)) : Container(width:dividerMargin)
-        ]);
-    children = children.take(children.length - 1);
+            w,
+            largeScreen
+                ? Container(
+                    margin: EdgeInsets.symmetric(horizontal: dividerMargin),
+                    width: 2,
+                    color: Colors.white.withOpacity(.4))
+                : Container(width: dividerMargin)
+          ]);
+      children = children.take(children.length - 1);
     }
     if (!largeScreen && showDetails) {
       return Column(
@@ -108,9 +103,8 @@ class DetailsItemPerksWidgetState<T extends DetailsItemModsWidget>
           child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
-        children: [buildPlugCategoryTitle(context, socketIndex)]
-            .followedBy([buildPlug(context, socketIndex, selectedPlugHash)])
-            .toList(),
+        children: [buildPlugCategoryTitle(context, socketIndex)].followedBy(
+            [buildPlug(context, socketIndex, selectedPlugHash)]).toList(),
       ));
     }
     if (showDetails) {
@@ -123,11 +117,11 @@ class DetailsItemPerksWidgetState<T extends DetailsItemModsWidget>
       );
     }
     var screenWidth = MediaQuery.of(context).size.width - 16;
-    
+
     return Container(
-        width: min(64, screenWidth / 8),
-        child: buildPlug(context, socketIndex, selectedPlugHash),
-        );
+      width: min(64, screenWidth / 8),
+      child: buildPlug(context, socketIndex, selectedPlugHash),
+    );
   }
 
   Widget buildPlugCategoryTitle(BuildContext context, int socketIndex) {
@@ -191,7 +185,7 @@ class DetailsItemPerksWidgetState<T extends DetailsItemModsWidget>
     BorderSide borderSide = BorderSide(color: borderColor, width: 2);
 
     return Container(
-        key:Key("item_mod_$plugItemHash"),
+        key: Key("item_mod_$plugItemHash"),
         padding: EdgeInsets.all(0),
         margin: EdgeInsets.only(bottom: 8),
         child: MaterialButton(
@@ -226,12 +220,17 @@ class DetailsItemPerksWidgetState<T extends DetailsItemModsWidget>
     var selectedSocketIndex = controller.selectedSocketIndex;
     bool selected = selectedSocketIndex == socketIndex;
     return Container(
-        key:Key("item_mod_$plugItemHash"),
+        key: Key("item_mod_$plugItemHash"),
         child: AspectRatio(
             aspectRatio: 1,
             child: MaterialButton(
               padding: EdgeInsets.all(0),
-              shape: ContinuousRectangleBorder(side: BorderSide(color: selected ? Colors.white : Colors.grey.shade300.withOpacity(.5), width: 1.5)),
+              shape: ContinuousRectangleBorder(
+                  side: BorderSide(
+                      color: selected
+                          ? Colors.white
+                          : Colors.grey.shade300.withOpacity(.5),
+                      width: 1.5)),
               child: Stack(children: [
                 ManifestImageWidget<DestinyInventoryItemDefinition>(
                     plugItemHash),
