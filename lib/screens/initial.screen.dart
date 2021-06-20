@@ -157,7 +157,8 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
             PlatformErrorCodes.AccessTokenHasExpired,
             PlatformErrorCodes.AuthorizationRecordExpired,
           ].contains(e.errorCode) ||
-          ["invalid_grant"].contains(e.errorStatus);
+          ["invalid_grant", "authorizationrecordexpired"]
+              .contains(e.errorStatus?.toLowerCase());
       if (needsLogin) {
         showLogin(false);
         return;
