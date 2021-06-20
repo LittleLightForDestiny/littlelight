@@ -32,10 +32,11 @@ class DevToolsScreen extends StatelessWidget {
                         context,
                         "Clear Data",
                         () async {
-                          StorageService.language().purge();
-                          StorageService.membership().purge();
-                          StorageService.global().purge();
-                          StorageService.account().purge();
+                          await StorageService.language().purge();
+                          await StorageService.membership().purge();
+                          await StorageService.account().purge();
+                          await StorageService.global().purge();
+                          print(StorageService.getAccount());
                         },
                       ),
                       buildDivider(context),
