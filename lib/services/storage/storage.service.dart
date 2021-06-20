@@ -157,7 +157,12 @@ class StorageService {
       }
       return;
     }
-    await _prefs.remove("$_path/$key");
+
+    if ((_path?.length ?? 0) > 0) {
+      await _prefs.remove("$_path/${key.path}");
+    } else {
+      await _prefs.remove("${key.path}");
+    }
   }
 
   Future<void> purge() async {
@@ -321,8 +326,11 @@ class StorageService {
   }
 
   static Future<void> setAccount(String accountId) async {
+    if (accountId == null) {
+      await _prefs.remove(StorageKeys.selectedAccountId.path);
+      return;
+    }
     await _prefs.setString(StorageKeys.selectedAccountId.path, accountId);
-    if (accountId == null) return;
     var accounts = getAccounts();
     if (!accounts.contains(accountId)) {
       accounts.add(accountId);
@@ -345,6 +353,10 @@ class StorageService {
   }
 
   static Future<void> setMembership(String membershipId) async {
+    if (membershipId == null) {
+      await _prefs.remove(StorageKeys.selectedMembershipId.path);
+      return;
+    }
     await _prefs.setString(StorageKeys.selectedMembershipId.path, membershipId);
   }
 
