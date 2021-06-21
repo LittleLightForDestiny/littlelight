@@ -32,16 +32,24 @@ class ScreenShotItemIntrinsicPerkWidget extends BaseItemSocketsWidget {
   }
 }
 
+const _sectionId = "screenshot_intrinsic_perks";
+
 class ScreenShotItemIntrinsicPerkWidgetState<
         T extends ScreenShotItemIntrinsicPerkWidget>
     extends BaseItemSocketsWidgetState<T> {
   @override
+  String get sectionId => _sectionId;
+
+  @override
+  bool get visible => true;
+
+  @override
   Widget build(BuildContext context) {
     if (category == null) return Container();
-     Iterable<int> plugs = category.socketIndexes
+    Iterable<int> plugs = category.socketIndexes
         .map((socketIndex) => socketPlugHashes(socketIndex).length)
         .where((l) => l > 0);
-    if(plugs.length == 0) return Container();
+    if (plugs.length == 0) return Container();
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -89,9 +97,7 @@ class ScreenShotItemIntrinsicPerkWidgetState<
     var plugs = socketPlugHashes(socketIndex);
     var plugHash = socketSelectedPlugHash(socketIndex);
     if ((plugs?.length ?? 0) == 0) return null;
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+    return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Container(
           width: 80 * widget.pixelSize,
           child: buildPlug(context, socketIndex, plugHash)),
@@ -103,21 +109,22 @@ class ScreenShotItemIntrinsicPerkWidgetState<
           ManifestText<DestinyInventoryItemDefinition>(
             plugHash,
             uppercase: true,
-            style: TextStyle(fontSize: 22 * widget.pixelSize, fontWeight: FontWeight.bold),
+            style: TextStyle(
+                fontSize: 22 * widget.pixelSize, fontWeight: FontWeight.bold),
           ),
-          Container(height:10*widget.pixelSize),
+          Container(height: 10 * widget.pixelSize),
           ManifestText<DestinyInventoryItemDefinition>(
             plugHash,
             textExtractor: (def) => def.displayProperties.description,
             softWrap: true,
-            style: TextStyle(fontSize: 22 * widget.pixelSize, fontWeight: FontWeight.w300),
+            style: TextStyle(
+                fontSize: 22 * widget.pixelSize, fontWeight: FontWeight.w300),
           ),
         ],
       ))
     ]);
   }
 
-  
   @override
   Widget buildPlug(BuildContext context, int socketIndex, int plugItemHash) {
     if (plugDefinitions == null) return Container();

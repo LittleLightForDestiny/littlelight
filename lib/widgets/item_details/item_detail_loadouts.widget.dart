@@ -6,12 +6,13 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/screens/equip_loadout.screen.dart';
 import 'package:little_light/utils/media_query_helper.dart';
-import 'package:little_light/widgets/common/base/base_destiny_stateless_item.widget.dart';
+import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:little_light/widgets/item_details/section_header.widget.dart';
 
-class ItemDetailLoadoutsWidget extends BaseDestinyStatelessItemWidget {
+class ItemDetailLoadoutsWidget extends BaseDestinyStatefulItemWidget {
   final List<Loadout> loadouts;
 
   ItemDetailLoadoutsWidget(
@@ -27,26 +28,38 @@ class ItemDetailLoadoutsWidget extends BaseDestinyStatelessItemWidget {
             key: key);
 
   @override
+  State<StatefulWidget> createState() {
+    return ItemDetailLoadoutsWidgetState();
+  }
+}
+
+const _sectionId = "item_loadouts";
+
+class ItemDetailLoadoutsWidgetState
+    extends BaseDestinyItemState<ItemDetailLoadoutsWidget>
+    with VisibleSectionMixin {
+  @override
+  String get sectionId => _sectionId;
+
+  @override
   Widget build(BuildContext context) {
-    if ((loadouts?.length ?? 0) < 1) {
+    if ((widget.loadouts?.length ?? 0) < 1) {
       return Container();
     }
     return Container(
       padding: EdgeInsets.all(8).copyWith(bottom: 4),
       child: Column(
         children: <Widget>[
-          HeaderWidget(
-              child: Container(
-            alignment: Alignment.centerLeft,
-            child: TranslatedTextWidget(
+          getHeader(
+            TranslatedTextWidget(
               "Loadouts",
               uppercase: true,
               textAlign: TextAlign.left,
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-          )),
-          Container(height: 8),
-          buildLoadouts(context)
+          ),
+          visible ? Container(height: 8) : Container(),
+          visible ? buildLoadouts(context) : Container()
         ],
       ),
     );
@@ -59,13 +72,14 @@ class ItemDetailLoadoutsWidget extends BaseDestinyStatelessItemWidget {
         crossAxisSpacing: 2,
         mainAxisSpacing: 2,
         crossAxisCount: 3,
-        staggeredTiles: loadouts
+        staggeredTiles: widget.loadouts
             .map((item) => StaggeredTile.fit(isTablet ? 1 : 3))
             .toList(),
         shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),
-        children:
-            loadouts.map((item) => buildLoadoutItem(item, context)).toList());
+        children: widget.loadouts
+            .map((item) => buildLoadoutItem(item, context))
+            .toList());
   }
 
   Widget buildLoadoutItem(Loadout loadout, BuildContext context) {

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:little_light/widgets/item_details/section_header.widget.dart';
 import 'package:little_light/widgets/item_sockets/item_socket.controller.dart';
 import 'package:little_light/widgets/item_stats/base_item_stat.widget.dart';
 import 'package:little_light/widgets/item_stats/base_item_stats.widget.dart';
@@ -29,8 +30,14 @@ class DetailsItemStatsWidget extends BaseItemStatsWidget {
   }
 }
 
+const _sectionId = "item_stats";
+
 class ScreenShotItemStatsState
-    extends BaseItemStatsState<DetailsItemStatsWidget> {
+    extends BaseItemStatsState<DetailsItemStatsWidget>
+    with VisibleSectionMixin {
+  @override
+  String get sectionId => _sectionId;
+
   @override
   Widget build(BuildContext context) {
     if (stats == null) return Container();
@@ -40,10 +47,12 @@ class ScreenShotItemStatsState
       child: Column(
         children: <Widget>[
           buildHeader(context),
-          Container(
-              constraints: BoxConstraints.tightFor(width: 600),
-              padding: EdgeInsets.symmetric(vertical: 8),
-              child: Column(children: buildStats(context))),
+          visible
+              ? Container(
+                  constraints: BoxConstraints.tightFor(width: 600),
+                  padding: EdgeInsets.symmetric(vertical: 8),
+                  child: Column(children: buildStats(context)))
+              : Container(),
         ],
       ),
     );
@@ -51,22 +60,20 @@ class ScreenShotItemStatsState
 
   @override
   buildHeader(BuildContext context) {
-    return HeaderWidget(
-        child: Container(
-      alignment: Alignment.centerLeft,
-      child: TranslatedTextWidget(
+    return getHeader(
+      TranslatedTextWidget(
         "Stats",
         uppercase: true,
         textAlign: TextAlign.left,
         style: TextStyle(fontWeight: FontWeight.bold),
       ),
-    ));
+    );
   }
 
   @override
   List<Widget> buildStats(context) {
     Map<int, StatValues> statValues = getStatValues();
-    
+
     StatValues totalStat;
     if (definition.itemType == DestinyItemType.Armor) {
       totalStat = StatValues();

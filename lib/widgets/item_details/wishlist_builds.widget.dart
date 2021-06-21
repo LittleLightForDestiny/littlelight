@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:little_light/models/wish_list.dart';
 import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/utils/media_query_helper.dart';
-import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:little_light/widgets/item_details/section_header.widget.dart';
 import 'package:little_light/widgets/wishlist_builds/wishlist_build_perks.widget.dart';
+
+const _sectionId = "wishlist_builds";
 
 extension WishlistBuildSortingPriority on WishlistBuild {
   int get inputPriority {
@@ -46,11 +48,9 @@ extension WishlistBuildSortingPriority on WishlistBuild {
   }
 }
 
-class WishlistBuildsWidget extends StatelessWidget {
+class WishlistBuildsWidget extends StatefulWidget {
   final int itemHash;
-
   final Map<String, List<DestinyItemPlugBase>> reusablePlugs;
-
   WishlistBuildsWidget(
     this.itemHash, {
     Key key,
@@ -58,24 +58,36 @@ class WishlistBuildsWidget extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<StatefulWidget> createState() => WishlistBuildsWidgetState();
+}
+
+class WishlistBuildsWidgetState extends State<WishlistBuildsWidget>
+    with VisibleSectionMixin {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  String get sectionId => _sectionId;
+
+  @override
   Widget build(BuildContext context) {
-    final builds = WishlistsService()
-        .getWishlistBuilds(itemHash: itemHash, reusablePlugs: reusablePlugs);
+    final builds = WishlistsService().getWishlistBuilds(
+        itemHash: widget.itemHash, reusablePlugs: widget.reusablePlugs);
     if ((builds?.length ?? 0) == 0) return Container();
     return Container(
       padding: EdgeInsets.all(8),
       child: Column(children: [
-        HeaderWidget(
-            child: Container(
-          alignment: Alignment.centerLeft,
-          child: TranslatedTextWidget(
+        getHeader(
+          TranslatedTextWidget(
             "Wishlist Builds",
             uppercase: true,
             textAlign: TextAlign.left,
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
-        )),
-        buildWishlists(context, builds)
+        ),
+        visible ? buildWishlists(context, builds) : Container()
       ]),
     );
   }

@@ -40,9 +40,14 @@ class DetailsItemPerksWidget extends BaseItemSocketsWidget {
   }
 }
 
+const _sectionId = "item_perks";
+
 class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
     extends BaseItemSocketsWidgetState<T> with PlugWishlistTagIconsMixin {
   bool showDetails = false;
+
+  @override
+  String get sectionId => "${_sectionId}_${category?.socketCategoryHash}";
 
   @override
   Widget build(BuildContext context) {
@@ -50,23 +55,11 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
   }
 
   Widget buildHeader(BuildContext context) {
-    bool isLandscape = MediaQueryHelper(context).isLandscape;
-    return Container(
-        padding: EdgeInsets.only(bottom: 16),
-        child: HeaderWidget(
-            child: Container(
-                alignment: Alignment.centerLeft,
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      ManifestText<DestinySocketCategoryDefinition>(
-                        category.socketCategoryHash,
-                        uppercase: true,
-                        textAlign: TextAlign.left,
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      isLandscape ? Container() : buildDetailsSwitch(context)
-                    ]))));
+    return getHeader(ManifestText<DestinySocketCategoryDefinition>(
+        category.socketCategoryHash,
+        uppercase: true,
+        textAlign: TextAlign.left,
+        style: TextStyle(fontWeight: FontWeight.bold)));
   }
 
   Widget buildDetailsSwitch(BuildContext context) {

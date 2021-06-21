@@ -1,4 +1,3 @@
-
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_socket_category_definition.dart';
@@ -33,9 +32,14 @@ class DetailsArmorTierWidget extends BaseItemSocketsWidget {
   }
 }
 
+const _sectionId = "armor_tier";
+
 class DetailsArmorTierWidgetState<T extends DetailsArmorTierWidget>
     extends BaseItemSocketsWidgetState<T> {
   bool showDetails = false;
+
+  @override
+  String get sectionId => "${_sectionId}_${category.socketCategoryHash}";
 
   @override
   Widget build(BuildContext context) {
@@ -43,17 +47,14 @@ class DetailsArmorTierWidgetState<T extends DetailsArmorTierWidget>
   }
 
   Widget buildHeader(BuildContext context) {
-    return Container(
-        padding: EdgeInsets.only(bottom: 16),
-        child: HeaderWidget(
-          alignment: Alignment.centerLeft,
-          child: ManifestText<DestinySocketCategoryDefinition>(
-            category.socketCategoryHash,
-            uppercase: true,
-            textAlign: TextAlign.left,
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ));
+    return getHeader(
+      ManifestText<DestinySocketCategoryDefinition>(
+        category.socketCategoryHash,
+        uppercase: true,
+        textAlign: TextAlign.left,
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ),
+    );
   }
 
   @override
@@ -62,10 +63,10 @@ class DetailsArmorTierWidgetState<T extends DetailsArmorTierWidget>
         .map((socketIndex) => buildSocketPlugs(context, socketIndex))
         .where((w) => w != null);
     return Container(
-      alignment: Alignment.center,
-      child:Container(
-        constraints: BoxConstraints.tightFor(width:600),
-        child:Column(children: children.toList())));
+        alignment: Alignment.center,
+        child: Container(
+            constraints: BoxConstraints.tightFor(width: 600),
+            child: Column(children: children.toList())));
   }
 
   @override

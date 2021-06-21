@@ -31,8 +31,16 @@ class ScreenShotItemPerksWidget extends BaseItemSocketsWidget {
   }
 }
 
+const _sectionId = "screenshot_item_perks";
+
 class ScreenShotItemPerksWidgetState<T extends ScreenShotItemPerksWidget>
     extends BaseItemSocketsWidgetState<T> with PlugWishlistTagIconsMixin {
+  @override
+  String get sectionId => _sectionId;
+
+  @override
+  bool get visible => true;
+
   @override
   Widget build(BuildContext context) {
     if (category == null) return Container();

@@ -1,5 +1,3 @@
-
-
 import 'package:bungie_api/enums/tier_type.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
@@ -7,10 +5,9 @@ import 'package:bungie_api/models/destiny_item_socket_category_definition.dart';
 import 'package:bungie_api/models/destiny_socket_category_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/utils/destiny_data.dart';
-
-import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
+import 'package:little_light/widgets/item_details/section_header.widget.dart';
 import 'package:little_light/widgets/item_sockets/base_item_sockets.widget.dart';
 import 'package:little_light/widgets/item_sockets/item_socket.controller.dart';
 
@@ -34,38 +31,36 @@ class DetailsItemIntrinsicPerkWidget extends BaseItemSocketsWidget {
   }
 }
 
-class DetailsItemArmorExoticPerkWidgetState<T extends DetailsItemIntrinsicPerkWidget>
-    extends BaseItemSocketsWidgetState<T> {
+const _sectionId = "intrinsic_perks";
+
+class DetailsItemArmorExoticPerkWidgetState<
+        T extends DetailsItemIntrinsicPerkWidget>
+    extends BaseItemSocketsWidgetState<T> with VisibleSectionMixin {
   bool showDetails = false;
 
   @override
+  String get sectionId => _sectionId;
+
+  @override
   Widget build(BuildContext context) {
-     if (category == null) return Container();
-     Iterable<int> plugs = category.socketIndexes
+    if (category == null) return Container();
+    Iterable<int> plugs = category.socketIndexes
         .map((socketIndex) => socketPlugHashes(socketIndex).length)
         .where((l) => l > 0);
-    if(plugs.length == 0) return Container();
+    if (plugs.length == 0) return Container();
     return super.build(context);
   }
 
   Widget buildHeader(BuildContext context) {
-    return Container(
-        padding: EdgeInsets.only(bottom: 8),
-        child: HeaderWidget(
-            child: Container(
-                alignment: Alignment.centerLeft,
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      ManifestText<DestinySocketCategoryDefinition>(
-                        category.socketCategoryHash,
-                        uppercase: true,
-                        textAlign: TextAlign.left,
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ]))));
+    return getHeader(
+      ManifestText<DestinySocketCategoryDefinition>(
+        category.socketCategoryHash,
+        uppercase: true,
+        textAlign: TextAlign.left,
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ),
+    );
   }
-
 
   @override
   Widget buildSockets(BuildContext context) {
@@ -83,12 +78,8 @@ class DetailsItemArmorExoticPerkWidgetState<T extends DetailsItemIntrinsicPerkWi
     var plugs = socketPlugHashes(socketIndex);
     var plugHash = socketSelectedPlugHash(socketIndex);
     if ((plugs?.length ?? 0) == 0) return null;
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-      Container(
-          width: 64,
-          child: buildPlug(context, socketIndex, plugHash)),
+    return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Container(width: 64, child: buildPlug(context, socketIndex, plugHash)),
       Container(width: 16),
       Expanded(
           child: Column(
@@ -99,7 +90,7 @@ class DetailsItemArmorExoticPerkWidgetState<T extends DetailsItemIntrinsicPerkWi
             uppercase: true,
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
-          Container(height:8),
+          Container(height: 8),
           ManifestText<DestinyInventoryItemDefinition>(
             plugHash,
             textExtractor: (def) => def.displayProperties.description,
@@ -111,7 +102,6 @@ class DetailsItemArmorExoticPerkWidgetState<T extends DetailsItemIntrinsicPerkWi
     ]);
   }
 
-  
   @override
   Widget buildPlug(BuildContext context, int socketIndex, int plugItemHash) {
     if (plugDefinitions == null) return Container();
@@ -137,8 +127,7 @@ class DetailsItemArmorExoticPerkWidgetState<T extends DetailsItemIntrinsicPerkWi
       borderColor = Colors.transparent;
     }
 
-    BorderSide borderSide =
-        BorderSide(color: borderColor, width: 2);
+    BorderSide borderSide = BorderSide(color: borderColor, width: 2);
 
     return Container(
         key: Key("plug_${socketIndex}_$plugItemHash"),
@@ -148,8 +137,7 @@ class DetailsItemArmorExoticPerkWidgetState<T extends DetailsItemIntrinsicPerkWi
             child: MaterialButton(
               shape: intrinsic && !isExotic
                   ? RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
-                      side: borderSide)
+                      borderRadius: BorderRadius.circular(4), side: borderSide)
                   : CircleBorder(side: borderSide),
               padding: EdgeInsets.all(0),
               color: bgColor,

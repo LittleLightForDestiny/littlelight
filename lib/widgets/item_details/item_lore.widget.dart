@@ -3,15 +3,29 @@ import 'package:flutter/material.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:little_light/widgets/item_details/section_header.widget.dart';
 
-class ItemLoreWidget extends StatelessWidget {
+class ItemLoreWidget extends StatefulWidget {
   final int hash;
 
   ItemLoreWidget(this.hash, {Key key}) : super(key: key);
 
   @override
+  State<StatefulWidget> createState() {
+    return ItemLoreWidgetState();
+  }
+}
+
+const _sectionId = "item_lore";
+
+class ItemLoreWidgetState extends State<ItemLoreWidget>
+    with VisibleSectionMixin {
+  @override
+  String get sectionId => _sectionId;
+
+  @override
   Widget build(BuildContext context) {
-    if (hash == null) {
+    if (widget.hash == null) {
       return Container();
     }
     return Container(
@@ -19,26 +33,26 @@ class ItemLoreWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          HeaderWidget(
-              child: Container(
-            alignment: Alignment.centerLeft,
-            child: TranslatedTextWidget(
+          getHeader(
+            TranslatedTextWidget(
               "Lore",
               uppercase: true,
               textAlign: TextAlign.left,
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-          )),
-          Container(
-              padding: EdgeInsets.all(8),
-              child: DefinitionProviderWidget<DestinyLoreDefinition>(
-                  hash,
-                  (def) => SelectableText(
-                        def?.displayProperties?.description,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w300,
-                        ),
-                      )))
+          ),
+          visible
+              ? Container(
+                  padding: EdgeInsets.all(8),
+                  child: DefinitionProviderWidget<DestinyLoreDefinition>(
+                      widget.hash,
+                      (def) => SelectableText(
+                            def?.displayProperties?.description,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w300,
+                            ),
+                          )))
+              : Container()
         ],
       ),
     );
