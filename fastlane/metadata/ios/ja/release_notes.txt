@@ -1,2 +1,1 @@
-- quick fix for armor items not showing up
-
+- fixed add account process
