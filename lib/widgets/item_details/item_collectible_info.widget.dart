@@ -1,6 +1,5 @@
 import 'package:bungie_api/models/destiny_collectible_definition.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/item_details/section_header.widget.dart';
