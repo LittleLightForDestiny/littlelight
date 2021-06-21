@@ -462,7 +462,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
         padding: EdgeInsets.only(
             left: screenPadding.left, right: screenPadding.right),
         child: Container(
-            padding: EdgeInsets.all(8),
+            padding: EdgeInsets.symmetric(horizontal: 8),
             child: Row(children: buttons.toList())));
   }
 
@@ -540,7 +540,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
         padding: EdgeInsets.only(
             left: screenPadding.left, right: screenPadding.right),
         child: Container(
-            padding: EdgeInsets.all(8),
+            padding: EdgeInsets.symmetric(horizontal: 8),
             child: RewardsInfoWidget(item, definition, instanceInfo,
                 characterId: characterId, key: Key("item_rewards_widget"))));
   }
@@ -580,7 +580,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
         padding: EdgeInsets.only(
             left: screenPadding.left, right: screenPadding.right),
         child: Container(
-            padding: EdgeInsets.all(8),
+            padding: EdgeInsets.symmetric(horizontal: 8),
             child: DetailsItemPerksWidget(
               controller: socketController,
               definition: definition,
@@ -603,7 +603,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
         padding: EdgeInsets.only(
             left: screenPadding.left, right: screenPadding.right),
         child: Container(
-            padding: EdgeInsets.all(8),
+            padding: EdgeInsets.symmetric(horizontal: 8),
             child: DetailsItemIntrinsicPerkWidget(
               controller: socketController,
               definition: definition,
@@ -624,7 +624,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
         padding: EdgeInsets.only(
             left: screenPadding.left, right: screenPadding.right),
         child: Container(
-            padding: EdgeInsets.all(8),
+            padding: EdgeInsets.symmetric(horizontal: 8),
             child: DetailsArmorTierWidget(
               controller: socketController,
               definition: definition,
@@ -645,7 +645,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
         padding: EdgeInsets.only(
             left: screenPadding.left, right: screenPadding.right),
         child: Container(
-            padding: EdgeInsets.all(8),
+            padding: EdgeInsets.symmetric(horizontal: 8),
             child: ItemDetailsSocketDetailsWidget(
               controller: socketController,
               parentDefinition: definition,
@@ -665,7 +665,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
         padding: EdgeInsets.only(
             left: screenPadding.left, right: screenPadding.right),
         child: Container(
-            padding: EdgeInsets.all(8),
+            padding: EdgeInsets.symmetric(horizontal: 8),
             child: ItemDetailsSocketDetailsWidget(
               controller: socketController,
               parentDefinition: definition,
@@ -685,7 +685,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
         padding: EdgeInsets.only(
             left: screenPadding.left, right: screenPadding.right),
         child: Container(
-            padding: EdgeInsets.all(8),
+            padding: EdgeInsets.symmetric(horizontal: 8),
             child: DetailsItemModsWidget(
               controller: socketController,
               definition: definition,
@@ -706,7 +706,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
         padding: EdgeInsets.only(
             left: screenPadding.left, right: screenPadding.right),
         child: Container(
-            padding: EdgeInsets.all(8),
+            padding: EdgeInsets.symmetric(horizontal: 8),
             child: ItemDetailsSocketDetailsWidget(
               controller: socketController,
               parentDefinition: definition,
@@ -726,7 +726,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
         padding: EdgeInsets.only(
             left: screenPadding.left, right: screenPadding.right),
         child: Container(
-            padding: EdgeInsets.all(8),
+            padding: EdgeInsets.symmetric(horizontal: 8),
             child: DetailsItemModsWidget(
               controller: socketController,
               definition: definition,
@@ -747,7 +747,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
         padding: EdgeInsets.only(
             left: screenPadding.left, right: screenPadding.right),
         child: Container(
-            padding: EdgeInsets.all(8),
+            padding: EdgeInsets.symmetric(horizontal: 8),
             child: ItemDetailsSocketDetailsWidget(
               controller: socketController,
               parentDefinition: definition,

@@ -6,13 +6,15 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/screens/item_detail.screen.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/media_query_helper.dart';
+import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateless_item.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:little_light/widgets/item_details/section_header.widget.dart';
 
 import 'package:little_light/widgets/item_list/items/base/base_item_instance.widget.dart';
 
-class ItemDetailDuplicatesWidget extends BaseDestinyStatelessItemWidget {
+class ItemDetailDuplicatesWidget extends BaseDestinyStatefulItemWidget {
   final List<ItemWithOwner> duplicates;
 
   ItemDetailDuplicatesWidget(
@@ -28,26 +30,38 @@ class ItemDetailDuplicatesWidget extends BaseDestinyStatelessItemWidget {
             key: key);
 
   @override
+  State<StatefulWidget> createState() {
+    return ItemDetailDuplicatesWidgetState();
+  }
+}
+
+const _sectionId = "duplicated_items";
+
+class ItemDetailDuplicatesWidgetState
+    extends BaseDestinyItemState<ItemDetailDuplicatesWidget>
+    with VisibleSectionMixin {
+  @override
+  String get sectionId => _sectionId;
+
+  @override
   Widget build(BuildContext context) {
-    if ((duplicates?.length ?? 0) < 1) {
+    if ((widget.duplicates?.length ?? 0) < 1) {
       return Container();
     }
     return Container(
       padding: EdgeInsets.all(8),
       child: Column(
         children: <Widget>[
-          HeaderWidget(
-              child: Container(
-            alignment: Alignment.centerLeft,
-            child: TranslatedTextWidget(
+          getHeader(
+            TranslatedTextWidget(
               "Duplicates",
               uppercase: true,
               textAlign: TextAlign.left,
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-          )),
-          Container(height: 8),
-          buildDuplicatedItems(context)
+          ),
+          visible ? Container(height: 8) : Container(),
+          visible ? buildDuplicatedItems(context) : Container()
         ],
       ),
     );
@@ -60,18 +74,18 @@ class ItemDetailDuplicatesWidget extends BaseDestinyStatelessItemWidget {
         crossAxisSpacing: 2,
         mainAxisSpacing: 2,
         crossAxisCount: 10,
-        staggeredTiles: duplicates
+        staggeredTiles: widget.duplicates
             .map((item) => StaggeredTile.extent(isTablet ? 2 : 5, 132))
             .toList(),
         shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),
-        children: duplicates
+        children: widget.duplicates
             .map((item) => buildItemInstance(item, context))
             .toList());
   }
 
   Widget buildItemInstance(ItemWithOwner item, BuildContext context) {
-    var instance = profile.getInstanceInfo(item.item.itemInstanceId);
+    var instance = widget.profile.getInstanceInfo(item.item.itemInstanceId);
     return Stack(
         key: Key("duplicate_${item.item.itemInstanceId}_${item.ownerId}"),
         children: <Widget>[
@@ -90,7 +104,7 @@ class ItemDetailDuplicatesWidget extends BaseDestinyStatelessItemWidget {
     BuildContext context,
     ItemWithOwner item,
   ) {
-    var instance = profile.getInstanceInfo(item.item.itemInstanceId);
+    var instance = widget.profile.getInstanceInfo(item.item.itemInstanceId);
     var route = MaterialPageRoute(
       builder: (context) => ItemDetailScreen(
         item: item.item,

@@ -9,6 +9,7 @@ import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/littlelight_custom.dialog.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/flutter/center_icon_workaround.dart';
+import 'package:little_light/widgets/item_details/section_header.widget.dart';
 
 class ItemDetailsNotesWidget extends BaseDestinyStatefulItemWidget {
   final Function onUpdate;
@@ -32,9 +33,15 @@ class ItemDetailsNotesWidget extends BaseDestinyStatefulItemWidget {
   }
 }
 
+const _sectionId = "item_tag_notes";
+
 class ItemDetailsNotesWidgetState
-    extends BaseDestinyItemState<ItemDetailsNotesWidget> {
+    extends BaseDestinyItemState<ItemDetailsNotesWidget>
+    with VisibleSectionMixin {
   ItemNotes notes;
+
+  @override
+  String get sectionId => _sectionId;
 
   @override
   void initState() {
@@ -69,18 +76,12 @@ class ItemDetailsNotesWidgetState
     return Container(
         padding: EdgeInsets.all(8),
         child: Column(children: <Widget>[
-          HeaderWidget(
-              padding: EdgeInsets.all(0),
-              alignment: Alignment.centerLeft,
-              child: Container(
-                  padding: EdgeInsets.all(8),
-                  child: TranslatedTextWidget("Item Notes",
-                      uppercase: true,
-                      style: TextStyle(fontWeight: FontWeight.bold)))),
-          Container(height: 8),
-          buildCustomName(context),
-          Container(height: 8),
-          buildNotes(context),
+          getHeader(TranslatedTextWidget("Item Notes",
+              uppercase: true, style: TextStyle(fontWeight: FontWeight.bold))),
+          visible ? Container(height: 8) : Container(),
+          visible ? buildCustomName(context) : Container(),
+          visible ? Container(height: 8) : Container(),
+          visible ? buildNotes(context) : Container(),
         ]));
   }
 
