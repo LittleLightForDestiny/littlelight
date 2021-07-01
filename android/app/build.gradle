@@ -21,6 +21,11 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
+def appId = localProperties.getProperty('applicationid')
+if(appId == null) {
+    appId = "me.markezine.luzinha"
+}
+
 def keystoreProperties = new Properties()
 def keystorePropertiesFile = rootProject.file('.keys/release.properties')
 def keyAvailable = keystorePropertiesFile.exists()
@@ -40,7 +45,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "me.markezine.luzinha"
+        applicationId "$appId"
         minSdkVersion 17
         targetSdkVersion 29
         versionCode flutterVersionCode.toInteger()

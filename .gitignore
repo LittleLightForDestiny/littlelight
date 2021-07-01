@@ -91,6 +91,7 @@ fastlane/*.html
 # Firebase configs
 /**/GoogleService-Info.plist
 /**/google-services.json
+/**/google-services.js
 
 #keys
 /**/.keys
