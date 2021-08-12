@@ -1,0 +1,8 @@
+var firebaseConfig = {
+    apiKey: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    authDomain: "projectid.firebaseapp.com",
+    projectId: "projectid",
+    storageBucket: "projectid.appspot.com",
+    messagingSenderId: "000000000000",
+    appId: "0:000000000000:web:xxxxxxxxxxxxxxxxxxxxxx"
+  };
