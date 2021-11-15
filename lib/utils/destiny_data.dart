@@ -256,6 +256,8 @@ class DestinyData {
         return LittleLightIcons.damage_solar;
       case DestinyEnergyType.Void:
         return LittleLightIcons.damage_void;
+      case DestinyEnergyType.Stasis:
+        return LittleLightIcons.damage_stasis;
 
       default:
         return null;
@@ -286,6 +288,8 @@ class DestinyData {
         return Color.fromARGB(255, 243, 98, 39);
       case DestinyEnergyType.Void:
         return Color.fromARGB(255, 64, 34, 101);
+      case DestinyEnergyType.Stasis:
+        return Color.fromARGB(255, 180, 201, 255);
 
       default:
         return Colors.blueGrey.shade700;
@@ -300,6 +304,8 @@ class DestinyData {
         return Color.fromARGB(255, 255, 156, 74);
       case DestinyEnergyType.Void:
         return Color.fromARGB(255, 177, 120, 248);
+      case DestinyEnergyType.Stasis:
+        return Color.fromARGB(255, 180, 201, 255);
 
       default:
         return Colors.grey.shade300;
@@ -315,6 +321,9 @@ class DestinyData {
       case DestinyEnergyType.Void:
         return 2399985800;
 
+      case DestinyEnergyType.Stasis:
+        return 998798867;
+
       default:
         return null;
     }
@@ -329,7 +338,7 @@ class DestinyData {
       case DamageType.Void:
         return Color.fromARGB(255, 177, 120, 248);
       case DamageType.Stasis:
-        return Color.fromARGB(255, 77, 136, 255);
+        return Color.fromARGB(255, 150, 171, 255);
       default:
         return Colors.white;
     }
