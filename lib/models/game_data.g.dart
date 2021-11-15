@@ -1,4 +1,5 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// @dart=2.12
 
 part of 'game_data.dart';
 
@@ -26,13 +27,13 @@ GameData _$GameDataFromJson(Map<String, dynamic> json) {
     softCap: json['softCap'] as int,
     powerfulCap: json['powerfulCap'] as int,
     pinnacleCap: json['pinnacleCap'] as int,
-    seasonalModSlots:
-        (json['seasonalModSlots'] as List)?.map((e) => e as int)?.toList(),
-    tabbedPresentationNodes: (json['tabbedPresentationNodes'] as List)
+    seasonalModSlots: (json['seasonalModSlots'] as List<dynamic>?)
         ?.map((e) => e as int)
-        ?.toList(),
-    ranks:
-        json['ranks'] == null ? null : ReputationRanks.fromJson(json['ranks']),
+        .toList(),
+    tabbedPresentationNodes: (json['tabbedPresentationNodes'] as List<dynamic>?)
+        ?.map((e) => e as int)
+        .toList(),
+    ranks: ReputationRanks.fromJson(json['ranks']),
   );
 }
 

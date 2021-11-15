@@ -1,3 +1,5 @@
+//@dart=2.12
+
 import 'package:json_annotation/json_annotation.dart';
 
 part 'game_data.g.dart';
@@ -7,7 +9,11 @@ class ReputationRanks {
   int glory;
   int valor;
   int infamy;
-  ReputationRanks({this.glory, this.valor, this.infamy});
+  ReputationRanks({
+    required this.glory,
+    required this.valor,
+    required this.infamy,
+  });
 
   factory ReputationRanks.fromJson(dynamic json) {
     return _$ReputationRanksFromJson(json);
@@ -23,17 +29,18 @@ class GameData {
   int softCap;
   int powerfulCap;
   int pinnacleCap;
-  List<int> seasonalModSlots;
-  List<int> tabbedPresentationNodes;
+  List<int>? seasonalModSlots;
+  List<int>? tabbedPresentationNodes;
   ReputationRanks ranks;
 
-  GameData(
-      {this.softCap,
-      this.powerfulCap,
-      this.pinnacleCap,
-      this.seasonalModSlots,
-      this.tabbedPresentationNodes,
-      this.ranks});
+  GameData({
+    required this.softCap,
+    required this.powerfulCap,
+    required this.pinnacleCap,
+    this.seasonalModSlots,
+    this.tabbedPresentationNodes,
+    required this.ranks,
+  });
 
   factory GameData.fromJson(dynamic json) {
     return _$GameDataFromJson(json);

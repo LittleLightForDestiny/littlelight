@@ -1,6 +1,8 @@
+//@dart=2.12
+
 import 'package:flutter/material.dart';
 
-Color colorFromHex(String hex) {
+Color? colorFromHex(String hex) {
   hex = hex.replaceAll("#", "");
   if (hex.length == 6) {
     hex = "FF" + hex;

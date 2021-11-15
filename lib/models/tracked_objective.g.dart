@@ -1,4 +1,5 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// @dart=2.12
 
 part of 'tracked_objective.dart';
 
@@ -8,11 +9,11 @@ part of 'tracked_objective.dart';
 
 TrackedObjective _$TrackedObjectiveFromJson(Map<String, dynamic> json) {
   return TrackedObjective(
-    type: _$enumDecodeNullable(_$TrackedObjectiveTypeEnumMap, json['type']),
+    type: _$enumDecode(_$TrackedObjectiveTypeEnumMap, json['type']),
     hash: json['hash'] as int,
-    instanceId: json['instanceId'] as String,
-    characterId: json['characterId'] as String,
-    parentHash: json['parentHash'] as int,
+    instanceId: json['instanceId'] as String?,
+    characterId: json['characterId'] as String?,
+    parentHash: json['parentHash'] as int?,
   );
 }
 
@@ -25,36 +26,30 @@ Map<String, dynamic> _$TrackedObjectiveToJson(TrackedObjective instance) =>
       'parentHash': instance.parentHash,
     };
 
-T _$enumDecode<T>(
-  Map<T, dynamic> enumValues,
-  dynamic source, {
-  T unknownValue,
+K _$enumDecode<K, V>(
+  Map<K, V> enumValues,
+  Object? source, {
+  K? unknownValue,
 }) {
   if (source == null) {
-    throw ArgumentError('A value must be provided. Supported values: '
-        '${enumValues.values.join(', ')}');
+    throw ArgumentError(
+      'A value must be provided. Supported values: '
+      '${enumValues.values.join(', ')}',
+    );
   }
 
-  final value = enumValues.entries
-      .singleWhere((e) => e.value == source, orElse: () => null)
-      ?.key;
-
-  if (value == null && unknownValue == null) {
-    throw ArgumentError('`$source` is not one of the supported values: '
-        '${enumValues.values.join(', ')}');
-  }
-  return value ?? unknownValue;
-}
-
-T _$enumDecodeNullable<T>(
-  Map<T, dynamic> enumValues,
-  dynamic source, {
-  T unknownValue,
-}) {
-  if (source == null) {
-    return null;
-  }
-  return _$enumDecode<T>(enumValues, source, unknownValue: unknownValue);
+  return enumValues.entries.singleWhere(
+    (e) => e.value == source,
+    orElse: () {
+      if (unknownValue == null) {
+        throw ArgumentError(
+          '`$source` is not one of the supported values: '
+          '${enumValues.values.join(', ')}',
+        );
+      }
+      return MapEntry(unknownValue, enumValues.values.first);
+    },
+  ).key;
 }
 
 const _$TrackedObjectiveTypeEnumMap = {

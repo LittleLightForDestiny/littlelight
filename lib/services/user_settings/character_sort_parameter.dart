@@ -1,3 +1,4 @@
+//@dart=2.12
 import 'package:json_annotation/json_annotation.dart';
 
 part 'character_sort_parameter.g.dart';
@@ -12,7 +13,7 @@ enum CharacterSortParameterType {
 @JsonSerializable()
 class CharacterSortParameter {
   CharacterSortParameterType type;
-  List<String> customOrder;
+  List<String>? customOrder;
 
   CharacterSortParameter(
       {this.type = CharacterSortParameterType.LastPlayed, this.customOrder});

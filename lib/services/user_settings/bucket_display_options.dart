@@ -1,3 +1,4 @@
+//@dart=2.12
 import 'package:json_annotation/json_annotation.dart';
 
 part 'bucket_display_options.g.dart';
@@ -14,7 +15,7 @@ enum BucketDisplayType {
 class BucketDisplayOptions {
   final BucketDisplayType type;
 
-  const BucketDisplayOptions({this.type});
+  const BucketDisplayOptions({required this.type});
 
   static BucketDisplayOptions fromJson(dynamic json) {
     return _$BucketDisplayOptionsFromJson(json);

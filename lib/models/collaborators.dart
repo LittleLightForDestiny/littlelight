@@ -1,3 +1,4 @@
+//@dart=2.12
 import 'package:bungie_api/enums/bungie_membership_type.dart';
 
 import 'package:json_annotation/json_annotation.dart';
@@ -6,11 +7,11 @@ part 'collaborators.g.dart';
 
 @JsonSerializable()
 class CollaboratorsResponse {
-  List<Collaborator> developers;
-  List<Collaborator> designers;
-  List<Collaborator> curators;
-  List<TranslationLanguage> translators;
-  List<Collaborator> supporters;
+  List<Collaborator>? developers;
+  List<Collaborator>? designers;
+  List<Collaborator>? curators;
+  List<TranslationLanguage>? translators;
+  List<Collaborator>? supporters;
 
   CollaboratorsResponse({
     this.developers,
@@ -34,10 +35,7 @@ class TranslationLanguage {
   List<String> languages;
   List<Collaborator> translators;
 
-  TranslationLanguage({
-    this.languages,
-    this.translators
-  });
+  TranslationLanguage({required this.languages, required this.translators});
 
   factory TranslationLanguage.fromJson(dynamic json) {
     return _$TranslationLanguageFromJson(json);
@@ -52,9 +50,13 @@ class TranslationLanguage {
 class Collaborator {
   String membershipId;
   BungieMembershipType membershipType;
-  String link;
+  String? link;
 
-  Collaborator({this.membershipId, this.membershipType, this.link});
+  Collaborator({
+    required this.membershipId,
+    required this.membershipType,
+    this.link,
+  });
 
   factory Collaborator.fromJson(dynamic json) {
     return _$CollaboratorFromJson(json);

@@ -1,4 +1,5 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// @dart=2.12
 
 part of 'collaborators.dart';
 
@@ -9,21 +10,21 @@ part of 'collaborators.dart';
 CollaboratorsResponse _$CollaboratorsResponseFromJson(
     Map<String, dynamic> json) {
   return CollaboratorsResponse(
-    developers: (json['developers'] as List)
-        ?.map((e) => e == null ? null : Collaborator.fromJson(e))
-        ?.toList(),
-    designers: (json['designers'] as List)
-        ?.map((e) => e == null ? null : Collaborator.fromJson(e))
-        ?.toList(),
-    curators: (json['curators'] as List)
-        ?.map((e) => e == null ? null : Collaborator.fromJson(e))
-        ?.toList(),
-    translators: (json['translators'] as List)
-        ?.map((e) => e == null ? null : TranslationLanguage.fromJson(e))
-        ?.toList(),
-    supporters: (json['supporters'] as List)
-        ?.map((e) => e == null ? null : Collaborator.fromJson(e))
-        ?.toList(),
+    developers: (json['developers'] as List<dynamic>?)
+        ?.map((e) => Collaborator.fromJson(e))
+        .toList(),
+    designers: (json['designers'] as List<dynamic>?)
+        ?.map((e) => Collaborator.fromJson(e))
+        .toList(),
+    curators: (json['curators'] as List<dynamic>?)
+        ?.map((e) => Collaborator.fromJson(e))
+        .toList(),
+    translators: (json['translators'] as List<dynamic>?)
+        ?.map((e) => TranslationLanguage.fromJson(e))
+        .toList(),
+    supporters: (json['supporters'] as List<dynamic>?)
+        ?.map((e) => Collaborator.fromJson(e))
+        .toList(),
   );
 }
 
@@ -39,10 +40,11 @@ Map<String, dynamic> _$CollaboratorsResponseToJson(
 
 TranslationLanguage _$TranslationLanguageFromJson(Map<String, dynamic> json) {
   return TranslationLanguage(
-    languages: (json['languages'] as List)?.map((e) => e as String)?.toList(),
-    translators: (json['translators'] as List)
-        ?.map((e) => e == null ? null : Collaborator.fromJson(e))
-        ?.toList(),
+    languages:
+        (json['languages'] as List<dynamic>).map((e) => e as String).toList(),
+    translators: (json['translators'] as List<dynamic>)
+        .map((e) => Collaborator.fromJson(e))
+        .toList(),
   );
 }
 
@@ -56,9 +58,9 @@ Map<String, dynamic> _$TranslationLanguageToJson(
 Collaborator _$CollaboratorFromJson(Map<String, dynamic> json) {
   return Collaborator(
     membershipId: json['membershipId'] as String,
-    membershipType: _$enumDecodeNullable(
-        _$BungieMembershipTypeEnumMap, json['membershipType']),
-    link: json['link'] as String,
+    membershipType:
+        _$enumDecode(_$BungieMembershipTypeEnumMap, json['membershipType']),
+    link: json['link'] as String?,
   );
 }
 
@@ -69,36 +71,30 @@ Map<String, dynamic> _$CollaboratorToJson(Collaborator instance) =>
       'link': instance.link,
     };
 
-T _$enumDecode<T>(
-  Map<T, dynamic> enumValues,
-  dynamic source, {
-  T unknownValue,
+K _$enumDecode<K, V>(
+  Map<K, V> enumValues,
+  Object? source, {
+  K? unknownValue,
 }) {
   if (source == null) {
-    throw ArgumentError('A value must be provided. Supported values: '
-        '${enumValues.values.join(', ')}');
+    throw ArgumentError(
+      'A value must be provided. Supported values: '
+      '${enumValues.values.join(', ')}',
+    );
   }
 
-  final value = enumValues.entries
-      .singleWhere((e) => e.value == source, orElse: () => null)
-      ?.key;
-
-  if (value == null && unknownValue == null) {
-    throw ArgumentError('`$source` is not one of the supported values: '
-        '${enumValues.values.join(', ')}');
-  }
-  return value ?? unknownValue;
-}
-
-T _$enumDecodeNullable<T>(
-  Map<T, dynamic> enumValues,
-  dynamic source, {
-  T unknownValue,
-}) {
-  if (source == null) {
-    return null;
-  }
-  return _$enumDecode<T>(enumValues, source, unknownValue: unknownValue);
+  return enumValues.entries.singleWhere(
+    (e) => e.value == source,
+    orElse: () {
+      if (unknownValue == null) {
+        throw ArgumentError(
+          '`$source` is not one of the supported values: '
+          '${enumValues.values.join(', ')}',
+        );
+      }
+      return MapEntry(unknownValue, enumValues.values.first);
+    },
+  ).key;
 }
 
 const _$BungieMembershipTypeEnumMap = {

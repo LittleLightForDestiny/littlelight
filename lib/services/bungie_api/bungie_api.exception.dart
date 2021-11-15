@@ -1,3 +1,4 @@
+//@dart=2.12
 import 'package:bungie_api/enums/platform_error_codes.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -8,19 +9,19 @@ class BungieApiError {
   @JsonKey(
       name: "ErrorCode",
       unknownEnumValue: PlatformErrorCodes.ProtectedInvalidEnumValue)
-  PlatformErrorCodes errorCode;
+  PlatformErrorCodes? errorCode;
 
   @JsonKey(name: "ErrorStatus")
-  String errorStatus;
+  String? errorStatus;
 
   @JsonKey(name: "error")
-  String error;
+  String? error;
 
   @JsonKey(name: "Message")
-  String message;
+  String? message;
 
   @JsonKey(name: "error_description")
-  String errorDescription;
+  String? errorDescription;
 
   BungieApiError(
       {this.errorCode,
@@ -39,16 +40,16 @@ class BungieApiError {
 }
 
 class BungieApiException implements Exception {
-  BungieApiError error;
-  int httpStatus;
-  factory BungieApiException.fromJson(dynamic json, [int httpStatus]) {
+  BungieApiError? error;
+  int? httpStatus;
+  factory BungieApiException.fromJson(dynamic json, [int? httpStatus]) {
     var error = BungieApiError.fromJson(json);
     return BungieApiException._(error, httpStatus);
   }
   BungieApiException._(this.error, [this.httpStatus]);
-  PlatformErrorCodes get errorCode => error?.errorCode;
-  String get errorStatus => error?.errorStatus ?? error?.error;
-  String get message => error?.message ?? error?.errorDescription;
+  PlatformErrorCodes? get errorCode => error?.errorCode;
+  String? get errorStatus => error?.errorStatus ?? error?.error;
+  String get message => error?.message ?? error?.errorDescription ?? error.toString();
   @override
   String toString() {
     if (error == null) {

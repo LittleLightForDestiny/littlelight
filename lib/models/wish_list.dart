@@ -1,3 +1,4 @@
+//@dart=2.12
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
 
@@ -25,28 +26,33 @@ List<Set<int>> _jsonPlugsFromJson(List<dynamic> json) {
 
 @JsonSerializable()
 class WishlistBuild {
-  String name;
+  String? name;
+
   @JsonKey(fromJson: _jsonPlugsFromJson)
-  List<Set<int>> perks = [];
+  List<Set<int>> perks;
 
   @JsonKey(unknownEnumValue: WishlistTag.UnknownEnumValue)
-  Set<WishlistTag> tags = Set();
-  Set<String> notes = Set();
-  String originalWishlist;
+  Set<WishlistTag>? tags;
+  Set<String>? notes;
+  String? originalWishlist;
 
   WishlistBuild(
-      {this.name, this.perks, this.tags, this.notes, this.originalWishlist});
+      {this.name,
+      this.perks = const [],
+      this.tags,
+      this.notes,
+      this.originalWishlist});
 
   factory WishlistBuild.builder({
-    String name,
-    List<Set<int>> perks,
-    Set<WishlistTag> tags,
-    Set<String> notes,
-    String originalWishlist,
+    String? name,
+    List<Set<int>>? perks,
+    Set<WishlistTag>? tags,
+    Set<String>? notes,
+    String? originalWishlist,
   }) {
     return WishlistBuild(
         name: name,
-        perks: perks ?? Set(),
+        perks: perks ?? [],
         tags: tags ?? Set(),
         notes: notes ?? Set(),
         originalWishlist: originalWishlist);
@@ -64,17 +70,21 @@ class WishlistBuild {
 @JsonSerializable()
 class WishlistItem {
   int itemHash;
-  Map<int, Set<WishlistTag>> perks = Map();
-  List<WishlistBuild> builds = [];
-  WishlistItem({this.itemHash, this.builds, this.perks});
+  Map<int, Set<WishlistTag>> perks;
+  List<WishlistBuild> builds;
+  WishlistItem({
+    required this.itemHash,
+    this.builds = const [],
+    required this.perks,
+  });
 
   factory WishlistItem.builder({
-    int itemHash,
-    Map<int, Set<WishlistTag>> perks,
-    Map<String, WishlistBuild> builds,
+    required int itemHash,
+    Map<int, Set<WishlistTag>>? perks,
+    List<WishlistBuild>? builds,
   }) {
     return WishlistItem(
-        itemHash: itemHash, perks: perks ?? Map(), builds: builds ?? []);
+        itemHash: itemHash, perks: perks ?? Map(), builds: builds ?? <WishlistBuild>[]);
   }
 
   factory WishlistItem.fromJson(dynamic json) {
@@ -93,12 +103,12 @@ enum WishlistType {
 
 @JsonSerializable()
 class Wishlist {
-  String url;
-  String localFilename;
-  String name;
-  String description;
-  DateTime updatedAt;
-  WishlistType type;
+  String? url;
+  String? localFilename;
+  String? name;
+  String? description;
+  DateTime? updatedAt;
+  WishlistType? type;
 
   Wishlist(
       {this.url,
@@ -109,10 +119,10 @@ class Wishlist {
       this.type});
 
   String get filename {
-    if (localFilename != null) return localFilename;
+    if (localFilename != null) return localFilename!;
     localFilename =
-        (md5.convert(Utf8Encoder().convert(url)).toString() + ".txt");
-    return localFilename;
+        (md5.convert(Utf8Encoder().convert(url!)).toString() + ".txt");
+    return localFilename!;
   }
 
   factory Wishlist.fromJson(dynamic json) {

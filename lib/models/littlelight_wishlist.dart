@@ -1,3 +1,4 @@
+//@dart=2.12
 import 'package:json_annotation/json_annotation.dart';
 
 part 'littlelight_wishlist.g.dart';
@@ -8,10 +9,13 @@ class LittleLightWishlist {
   String description;
   List<LittleLightWishlistItem> data;
 
-  Map<String, String> versionRedirects;
+  Map<String, String>? versionRedirects;
 
   LittleLightWishlist(
-      {this.name, this.description, this.data, this.versionRedirects});
+      {required this.name, 
+      required this.description, 
+      required this.data, 
+      this.versionRedirects});
 
   factory LittleLightWishlist.fromJson(dynamic json) {
     return _$LittleLightWishlistFromJson(json);
@@ -24,19 +28,19 @@ class LittleLightWishlist {
 
 @JsonSerializable()
 class LittleLightWishlistItem {
-  String name;
-  String description;
+  String? name;
+  String? description;
   List<List<int>> plugs;
   int hash;
   List<String> tags;
-  List<String> authors;
-  String originalWishlist;
+  List<String>? authors;
+  String? originalWishlist;
   LittleLightWishlistItem(
       {this.name,
       this.description,
-      this.plugs,
-      this.hash,
-      this.tags,
+      required this.plugs,
+      required this.hash,
+      required this.tags,
       this.authors,
       this.originalWishlist});
 
