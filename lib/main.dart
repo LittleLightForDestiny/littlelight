@@ -13,6 +13,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/exceptions/exception_handler.dart';
 import 'package:little_light/screens/initial.screen.dart';
+import 'package:little_light/services/setup.dart';
 import 'package:little_light/utils/platform_capabilities.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
@@ -23,6 +24,8 @@ void main() async {
 
   await Firebase.initializeApp();
   FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+  
+  await setupServices();
 
   await dotEnv.load(fileName: 'assets/_env');
 

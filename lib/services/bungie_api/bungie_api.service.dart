@@ -28,10 +28,11 @@ import 'package:bungie_api/responses/destiny_vendors_response_response.dart';
 import 'package:bungie_api/responses/int32_response.dart';
 import 'package:bungie_api/responses/user_membership_data_response.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie_api/bungie_api.exception.dart';
 
-class BungieApiService {
+class BungieApiService with AuthConsumer{
   static const String baseUrl = 'https://www.bungie.net';
   static const String apiUrl = "$baseUrl/Platform";
 
@@ -41,8 +42,6 @@ class BungieApiService {
     return _singleton;
   }
   BungieApiService._internal();
-
-  AuthService get auth => AuthService();
 
   static String url(String url) {
     if (url == null ?? url.length == 0) return null;
@@ -207,7 +206,7 @@ class BungieApiService {
   }
 }
 
-class Client implements HttpClient {
+class Client with AuthConsumer implements HttpClient{
   BungieNetToken token;
   bool autoRefreshToken;
   int retries = 0;
@@ -276,7 +275,7 @@ class Client implements HttpClient {
     }
 
     if (response.statusCode == 401 && autoRefreshToken) {
-      this.token = await AuthService().refreshToken(token);
+      this.token = await auth.refreshToken(token);
       return _request(config);
     }
     dynamic json;

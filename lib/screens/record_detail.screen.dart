@@ -3,6 +3,7 @@ import 'package:bungie_api/models/destiny_record_component.dart';
 import 'package:bungie_api/models/destiny_record_definition.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/models/tracked_objective.dart';
+import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/littlelight/objectives.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
@@ -28,8 +29,8 @@ class RecordDetailScreen extends StatefulWidget {
   }
 }
 
-class RecordDetailScreenState extends State<RecordDetailScreen> {
-  bool get isLogged => AuthService().isLogged;
+class RecordDetailScreenState extends State<RecordDetailScreen> with AuthConsumer{
+  bool get isLogged => auth.isLogged;
   bool isTracking = false;
 
   DestinyRecordDefinition get definition => widget.definition;
@@ -40,7 +41,7 @@ class RecordDetailScreenState extends State<RecordDetailScreen> {
 
   DestinyRecordComponent get record {
     if (definition == null) return null;
-    if (!AuthService().isLogged) return null;
+    if (!auth.isLogged) return null;
     return ProfileService().getRecord(definition.hash, definition.scope);
   }
 

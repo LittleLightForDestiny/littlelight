@@ -1,4 +1,5 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/storage/storage.service.dart';
 import 'package:little_light/utils/platform_capabilities.dart';
@@ -20,7 +21,7 @@ class SelectedPagePersistence {
   static Future<String> getLatestScreen() async {
     StorageService _prefs = StorageService.global();
     String latest = _prefs.getString(StorageKeys.latestScreen);
-    AuthService auth = new AuthService();
+    AuthService auth = getInjectedAuthService();
     if (auth.isLogged) {
       List<String> all = logged + public;
       if (all.contains(latest)) {

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:bungie_api/helpers/oauth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -10,10 +11,9 @@ import 'package:little_light/widgets/common/translated_text.widget.dart';
 typedef void LoginCallback(String code);
 typedef void SkipCallback();
 
-class LoginWidget extends StatefulWidget {
+class LoginWidget extends StatefulWidget with AuthConsumer{
   final String title = "Login";
   final BungieApiService api = new BungieApiService();
-  final AuthService auth = new AuthService();
   final LoginCallback onLogin;
   final SkipCallback onSkip;
   final bool forceReauth;

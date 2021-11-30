@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:little_light/models/item_notes.dart';
 import 'package:little_light/models/item_notes_tag.dart';
 import 'package:little_light/models/loadout.dart';
+import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/storage/storage.service.dart';
 import 'package:uuid/uuid.dart';
@@ -20,7 +21,7 @@ class NotesResponse {
   NotesResponse({this.notes, this.tags});
 }
 
-class LittleLightApiService {
+class LittleLightApiService with AuthConsumer{
   String _uuid;
   String _secret;
 
@@ -88,7 +89,6 @@ class LittleLightApiService {
 
   Future<dynamic> _authorizedRequest(String path,
       {Map<String, dynamic> body = const {}}) async {
-    AuthService auth = AuthService();
     GroupUserInfoCard membership = await auth.getMembership();
     BungieNetToken token = await auth.getToken();
     String uuid = await _getUuid();

@@ -7,6 +7,7 @@ import 'package:bungie_api/models/destiny_record_component.dart';
 import 'package:bungie_api/models/destiny_record_definition.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/models/tracked_objective.dart';
+import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/littlelight/objectives.service.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +31,7 @@ class RecordItemWidget extends StatefulWidget {
 }
 
 class RecordItemWidgetState extends State<RecordItemWidget>
-    with AutomaticKeepAliveClientMixin {
+    with AutomaticKeepAliveClientMixin, AuthConsumer{
   DestinyRecordDefinition _definition;
   bool isLogged = false;
   Map<int, DestinyObjectiveDefinition> objectiveDefinitions;
@@ -63,7 +64,7 @@ class RecordItemWidgetState extends State<RecordItemWidget>
   }
 
   loadDefinitions() async {
-    isLogged = AuthService().isLogged;
+    isLogged = auth.isLogged;
     var manifest = ManifestService();
     if (this.definition == null) {
       _definition =
@@ -87,7 +88,7 @@ class RecordItemWidgetState extends State<RecordItemWidget>
 
   DestinyRecordComponent get record {
     if (definition == null) return null;
-    if (!AuthService().isLogged) return null;
+    if (!auth.isLogged) return null;
     return ProfileService().getRecord(definition.hash, definition.scope);
   }
 

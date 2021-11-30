@@ -7,12 +7,17 @@ import 'package:bungie_api/helpers/oauth.dart';
 import 'package:bungie_api/models/group_user_info_card.dart';
 import 'package:bungie_api/models/user_membership_data.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/storage/storage.service.dart';
 import 'package:uni_links/uni_links.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 bool initialLinkHandled = false;
+
+setupAuthService() async {
+  GetIt.I.registerSingleton(AuthService._internal());
+}
 
 class AuthService {
   BungieNetToken _currentToken;
@@ -22,11 +27,6 @@ class AuthService {
 
   StreamSubscription<String> linkStreamSub;
 
-  static final AuthService _singleton = new AuthService._internal();
-
-  factory AuthService() {
-    return _singleton;
-  }
   AuthService._internal();
 
   Future<BungieNetToken> _getStoredToken() async {

@@ -4,6 +4,7 @@ import 'package:little_light/screens/equipment.screen.dart';
 import 'package:little_light/screens/loadouts.screen.dart';
 import 'package:little_light/screens/progress.screen.dart';
 import 'package:little_light/screens/old_triumphs.screen.dart';
+import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/littlelight/item_notes.service.dart';
 import 'package:little_light/services/littlelight/loadouts.service.dart';
@@ -21,7 +22,7 @@ class MainScreen extends StatefulWidget {
   MainScreenState createState() => MainScreenState();
 }
 
-class MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
+class MainScreenState extends State<MainScreen> with WidgetsBindingObserver, AuthConsumer {
   Widget currentScreen;
 
   @override
@@ -32,7 +33,6 @@ class MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   }
 
   initUpdaters() {
-    AuthService auth = AuthService();
     ProfileService profile = ProfileService();
     if (auth.isLogged) {
       auth.getMembershipData();

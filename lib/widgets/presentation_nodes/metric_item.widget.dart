@@ -7,6 +7,7 @@ import 'package:bungie_api/models/destiny_trait_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:little_light/models/tracked_objective.dart';
+import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/littlelight/objectives.service.dart';
@@ -27,7 +28,7 @@ class MetricItemWidget extends StatefulWidget {
   }
 }
 
-class MetricItemWidgetState extends State<MetricItemWidget> {
+class MetricItemWidgetState extends State<MetricItemWidget> with AuthConsumer{
   DestinyMetricDefinition _definition;
   bool isLogged = false;
   Map<int, DestinyObjectiveDefinition> objectiveDefinitions;
@@ -64,7 +65,7 @@ class MetricItemWidgetState extends State<MetricItemWidget> {
   }
 
   loadDefinitions() async {
-    isLogged = AuthService().isLogged;
+    isLogged = auth.isLogged;
     var manifest = ManifestService();
     if (this.definition == null) {
       _definition =

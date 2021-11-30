@@ -10,6 +10,7 @@ import 'package:bungie_api/models/destiny_vendor_sale_item_component.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/models/loadout.dart';
+import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/inventory/inventory.service.dart';
@@ -83,7 +84,7 @@ class ItemDetailScreen extends BaseDestinyStatefulItemWidget {
   }
 }
 
-class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
+class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> with AuthConsumer{
   int selectedPerk;
   Map<int, int> selectedPerks = new Map();
   ItemSocketController socketController;
@@ -136,7 +137,6 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> {
   }
 
   findDuplicates() async {
-    AuthService auth = AuthService();
     if (!auth.isLogged) {
       return;
     }

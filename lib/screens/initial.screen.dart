@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:little_light/exceptions/exception_handler.dart';
 import 'package:little_light/screens/main.screen.dart';
+import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie_api/bungie_api.exception.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
@@ -18,6 +19,7 @@ import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/destiny_settings.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/setup.dart';
 import 'package:little_light/services/storage/storage.service.dart';
 import 'package:little_light/services/translate/translate.service.dart';
 import 'package:little_light/services/user_settings/user_settings.service.dart';
@@ -32,7 +34,6 @@ import 'package:little_light/widgets/layouts/floating_content_layout.dart';
 
 class InitialScreen extends StatefulWidget {
   final BungieApiService apiService = new BungieApiService();
-  final AuthService auth = new AuthService();
   final ManifestService manifest = new ManifestService();
   final ProfileService profile = new ProfileService();
   final TranslateService translate = new TranslateService();
@@ -44,7 +45,7 @@ class InitialScreen extends StatefulWidget {
   InitialScreenState createState() => new InitialScreenState();
 }
 
-class InitialScreenState extends FloatingContentState<InitialScreen> {
+class InitialScreenState extends FloatingContentState<InitialScreen> with AuthConsumer{
   @override
   void initState() {
     super.initState();
@@ -58,12 +59,12 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
 
   initLoading() async {
     await StorageService.init();
-    AuthService().reset();
+    auth.reset();
     await LittleLightApiService().reset();
     await LoadoutsService().reset();
     await ObjectivesService().reset();
     await ManifestService().reset();
-    if (widget.authCode != null) {
+    if (authCode != null) {
       authCode(widget.authCode);
       return;
     }
@@ -149,7 +150,7 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
   checkLogin() async {
     BungieNetToken token;
     try {
-      token = await widget.auth.getToken();
+      token = await auth.getToken();
     } on BungieApiException catch (e) {
       bool needsLogin = [
             PlatformErrorCodes.DestinyAccountNotFound,
@@ -171,7 +172,7 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
       return;
     }
 
-    var authCode = await widget.auth.checkAuthorizationCode();
+    var authCode = await auth.checkAuthorizationCode();
     if (authCode != null) {
       this.authCode(authCode);
       return;
@@ -200,7 +201,7 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
   authCode(String code) async {
     this.changeContent(null, "");
     try {
-      await widget.auth.requestToken(code);
+      await auth.requestToken(code);
       checkMembership();
     } catch (e, stackTrace) {
       showDialog(
@@ -221,7 +222,7 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
   }
 
   checkMembership() async {
-    GroupUserInfoCard membership = await widget.auth.getMembership();
+    GroupUserInfoCard membership = await auth.getMembership();
     if (membership == null) {
       return showSelectMembership();
     }
@@ -236,7 +237,7 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
         await this.widget.apiService.getMemberships();
 
     if (membershipData?.destinyMemberships?.length == 1) {
-      await this.widget.auth.saveMembership(
+      await this.auth.saveMembership(
           membershipData, membershipData?.destinyMemberships[0].membershipId);
       await loadProfile();
       return;
@@ -249,7 +250,7 @@ class InitialScreenState extends FloatingContentState<InitialScreen> {
             this.showLogin();
             return;
           }
-          await this.widget.auth.saveMembership(membershipData, membershipId);
+          await this.auth.saveMembership(membershipData, membershipId);
           await loadProfile();
         });
     this.changeContent(widget, widget.title);

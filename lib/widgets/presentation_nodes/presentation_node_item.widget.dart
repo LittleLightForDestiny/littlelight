@@ -2,6 +2,7 @@ import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:bungie_api/models/destiny_presentation_node_component.dart';
 import 'package:bungie_api/models/destiny_presentation_node_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
@@ -33,7 +34,7 @@ class PresentationNodeItemWidget extends StatefulWidget {
   }
 }
 
-class PresentationNodeWidgetState extends State<PresentationNodeItemWidget> {
+class PresentationNodeWidgetState extends State<PresentationNodeItemWidget> with AuthConsumer{
   DestinyPresentationNodeComponent progress;
   Map<String, DestinyPresentationNodeComponent> multiProgress;
   DestinyPresentationNodeDefinition definition;
@@ -42,7 +43,7 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget> {
   void initState() {
     super.initState();
     this.loadDefinition();
-    if (AuthService().isLogged) {
+    if (auth.isLogged) {
       this.loadCompletionData();
     }
   }

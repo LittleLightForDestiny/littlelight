@@ -22,6 +22,7 @@ import 'package:little_light/screens/settings.screen.dart';
 import 'package:little_light/screens/old_triumphs.screen.dart';
 import 'package:little_light/screens/triumphs.screen.dart';
 import 'package:little_light/screens/vendors.screen.dart';
+import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/storage/storage.service.dart';
 import 'package:little_light/utils/platform_data.dart';
@@ -32,7 +33,6 @@ import 'package:little_light/widgets/side_menu/profile_info.widget.dart';
 typedef void OnPageChange(Widget screen);
 
 class SideMenuWidget extends StatefulWidget {
-  final AuthService auth = new AuthService();
   final OnPageChange onPageChange;
 
   SideMenuWidget({Key key, this.onPageChange}) : super(key: key);
@@ -43,7 +43,7 @@ class SideMenuWidget extends StatefulWidget {
   }
 }
 
-class SideMenuWidgetState extends State<SideMenuWidget> {
+class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer{
   List<UserMembershipData> memberships;
 
   @override
@@ -230,7 +230,7 @@ class SideMenuWidgetState extends State<SideMenuWidget> {
 
   Widget menuItem(BuildContext context, Widget label,
       {void onTap(), requireLogin: false}) {
-    var needToLogin = requireLogin && !widget.auth.isLogged;
+    var needToLogin = requireLogin && !auth.isLogged;
     return Material(
         color: Colors.transparent,
         child: InkWell(
@@ -267,7 +267,7 @@ class SideMenuWidgetState extends State<SideMenuWidget> {
 
   addAccount(BuildContext context) async {
     try {
-      String code = await widget.auth.authorize(true);
+      String code = await auth.authorize(true);
       if (code != null) {
         await StorageService.setAccount(null);
         await StorageService.setMembership(null);

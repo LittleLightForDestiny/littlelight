@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/screens/collectible_search.screen.dart';
 import 'package:little_light/screens/presentation_node.screen.dart';
+import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/profile/destiny_settings.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
@@ -21,7 +22,7 @@ class CollectionsScreen extends PresentationNodeScreen {
 }
 
 class CollectionsScreenState
-    extends PresentationNodeScreenState<CollectionsScreen> {
+    extends PresentationNodeScreenState<CollectionsScreen> with AuthConsumer{
   Map<int, List<ItemWithOwner>> itemsByHash;
   @override
   void initState() {
@@ -29,7 +30,6 @@ class CollectionsScreenState
     ProfileService().fetchProfileData();
     SelectedPagePersistence.saveLatestScreen(
         SelectedPagePersistence.collections);
-    AuthService auth = AuthService();
     if (auth.isLogged) {
       this.loadItems();
     }
