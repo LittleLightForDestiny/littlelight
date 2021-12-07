@@ -10,9 +10,12 @@ import 'package:little_light/services/bungie_api/bungie_api.exception.dart';
 import 'package:little_light/services/storage/storage.service.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
+
+typedef OnRestart = Function(BuildContext context);
+
 class ExceptionHandler {
   static BuildContext context;
-  Function onRestart;
+  OnRestart onRestart;
   ExceptionHandler({this.onRestart}) {
     initCustomErrorMessage();
     FlutterError.onError = (FlutterErrorDetails details) {
@@ -88,7 +91,7 @@ class ExceptionHandler {
                         text: "Try Again",
                         onPressed: () {
                           Navigator.pop(context);
-                          onRestart();
+                          onRestart(context);
                         }),
                     shouldShowLoginButton
                         ? ErrorDialogButton(
@@ -97,7 +100,7 @@ class ExceptionHandler {
                               await StorageService.account()
                                   .remove(StorageKeys.latestToken, true);
                               Navigator.pop(context);
-                              onRestart();
+                              onRestart(context);
                             })
                         : Container(height: 0),
                     ErrorDialogButton(

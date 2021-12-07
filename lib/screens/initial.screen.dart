@@ -9,7 +9,6 @@ import 'package:flutter/services.dart';
 import 'package:little_light/exceptions/exception_handler.dart';
 import 'package:little_light/screens/main.screen.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
-import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie_api/bungie_api.exception.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/littlelight/littlelight_api.service.dart';
@@ -25,7 +24,6 @@ import 'package:little_light/services/translate/translate.service.dart';
 import 'package:little_light/services/user_settings/user_settings.service.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/exceptions/exception_dialog.dart';
-
 import 'package:little_light/widgets/initial_page/download_manifest.widget.dart';
 import 'package:little_light/widgets/initial_page/login_widget.dart';
 import 'package:little_light/widgets/initial_page/select_language.widget.dart';
@@ -58,12 +56,7 @@ class InitialScreenState extends FloatingContentState<InitialScreen> with AuthCo
   }
 
   initLoading() async {
-    await StorageService.init();
-    auth.reset();
-    await LittleLightApiService().reset();
-    await LoadoutsService().reset();
-    await ObjectivesService().reset();
-    await ManifestService().reset();
+    await initServices();
     if (authCode != null) {
       authCode(widget.authCode);
       return;
@@ -215,7 +208,7 @@ class InitialScreenState extends FloatingContentState<InitialScreen> with AuthCo
                   }
                 },
               ));
-      ExceptionHandler(onRestart: () {
+      ExceptionHandler(onRestart: (context) {
         this.showLogin(false);
       }).handleException(e, stackTrace);
     }

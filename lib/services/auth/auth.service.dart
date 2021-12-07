@@ -16,7 +16,7 @@ import 'package:url_launcher/url_launcher.dart';
 bool initialLinkHandled = false;
 
 setupAuthService() async {
-  GetIt.I.registerSingleton(AuthService._internal());
+  GetIt.I.registerSingleton<AuthService>(AuthService._internal());
 }
 
 class AuthService {
@@ -90,30 +90,6 @@ class AuthService {
     return token;
   }
 
-  Future<String> checkAuthorizationCode() async {
-    Uri uri;
-    if (!initialLinkHandled) {
-      uri = await getInitialUri();
-      initialLinkHandled = true;
-    }
-
-    if (uri?.queryParameters == null) return null;
-    print("initialURI: $uri");
-    if (uri.queryParameters.containsKey("code") ||
-        uri.queryParameters.containsKey("error")) {
-      closeWebView();
-    }
-
-    if (uri.queryParameters.containsKey("code")) {
-      return uri.queryParameters["code"];
-    } else {
-      String errorType = uri.queryParameters["error"];
-      String errorDescription =
-          uri.queryParameters["error_description"] ?? uri.toString();
-      throw OAuthException(errorType, errorDescription);
-    }
-  }
-
   Future<String> authorize([bool forceReauth = true]) async {
     String currentLanguage = StorageService.getLanguage();
     var browser = new BungieAuthBrowser();
@@ -167,6 +143,30 @@ class AuthService {
     //   String errorDescription = uri.queryParameters["error_description"];
     //   throw OAuthException(errorType, errorDescription);
     // }
+  }
+
+  Future<String> checkAuthorizationCode() async {
+    Uri uri;
+    if (!initialLinkHandled) {
+      uri = await getInitialUri();
+      initialLinkHandled = true;
+    }
+
+    if (uri?.queryParameters == null) return null;
+    print("initialURI: $uri");
+    if (uri.queryParameters.containsKey("code") ||
+        uri.queryParameters.containsKey("error")) {
+      closeWebView();
+    }
+
+    if (uri.queryParameters.containsKey("code")) {
+      return uri.queryParameters["code"];
+    } else {
+      String errorType = uri.queryParameters["error"];
+      String errorDescription =
+          uri.queryParameters["error_description"] ?? uri.toString();
+      throw OAuthException(errorType, errorDescription);
+    }
   }
 
   Future<UserMembershipData> updateMembershipData() async {

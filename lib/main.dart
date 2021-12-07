@@ -8,8 +8,8 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart' as dotEnv;
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/exceptions/exception_handler.dart';
 import 'package:little_light/screens/initial.screen.dart';
@@ -17,7 +17,8 @@ import 'package:little_light/services/setup.dart';
 import 'package:little_light/utils/platform_capabilities.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
-int restartCounter = 0;
+
+
 void main() async {
   // debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,16 +28,12 @@ void main() async {
   
   await setupServices();
 
-  await dotEnv.load(fileName: 'assets/_env');
-
-  ExceptionHandler handler = ExceptionHandler(onRestart: () {
-    restartCounter++;
-    print('restart');
-    main();
+  ExceptionHandler handler = ExceptionHandler(onRestart: (context) {
+    Phoenix.rebirth(context);
   });
 
   runZonedGuarded<Future<void>>(() async {
-    runApp(new LittleLight(key: Key("little_light_$restartCounter")));
+    runApp(Phoenix(child:LittleLight()));
   }, (error, stackTrace) {
     handler.handleException(error, stackTrace);
   });
