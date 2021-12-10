@@ -32,7 +32,7 @@ class LoginWidgetState extends State<LoginWidget> {
 
   void authorizeClick(BuildContext context) async {
     try {
-      String code = await widget.auth.authorize(widget.forceReauth);
+      String code = await widget.auth.authorizeLegacy(widget.forceReauth);
       widget.onLogin(code);
     } on OAuthException catch (e) {
       bool isIOS = Platform.isIOS;

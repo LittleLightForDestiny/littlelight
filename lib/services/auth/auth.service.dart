@@ -90,7 +90,14 @@ class AuthService {
     return token;
   }
 
-  Future<String> authorize([bool forceReauth = true]) async {
+  void openBungieLogin(bool forceReauth) async{
+    String currentLanguage = StorageService.getLanguage();
+    var browser = new BungieAuthBrowser();
+    OAuth.openOAuth(
+        browser, BungieApiService.clientId, currentLanguage, forceReauth);
+  }
+
+  Future<String> authorizeLegacy([bool forceReauth = true]) async {
     String currentLanguage = StorageService.getLanguage();
     var browser = new BungieAuthBrowser();
     OAuth.openOAuth(

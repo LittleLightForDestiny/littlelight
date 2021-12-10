@@ -1,0 +1,4 @@
+enum LittleLightPage{
+  Login,
+  Main
+}

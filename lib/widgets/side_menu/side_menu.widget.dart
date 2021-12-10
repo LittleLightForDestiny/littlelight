@@ -267,7 +267,7 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer{
 
   addAccount(BuildContext context) async {
     try {
-      String code = await auth.authorize(true);
+      String code = await auth.authorizeLegacy(true);
       if (code != null) {
         await StorageService.setAccount(null);
         await StorageService.setMembership(null);
