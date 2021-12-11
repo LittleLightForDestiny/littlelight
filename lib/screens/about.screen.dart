@@ -6,7 +6,8 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:launch_review/launch_review.dart';
 import 'package:little_light/models/collaborators.dart';
 import 'package:little_light/services/littlelight/littlelight_data.service.dart';
-import 'package:little_light/services/storage/storage.service.dart';
+
+import 'package:little_light/services/storage/export.dart';
 import 'package:little_light/services/translate/translate.service.dart';
 import 'package:little_light/widgets/about/supporter_character.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
@@ -22,7 +23,7 @@ class AboutScreen extends StatefulWidget {
   _AboutScreenState createState() => _AboutScreenState();
 }
 
-class _AboutScreenState extends State<AboutScreen> {
+class _AboutScreenState extends State<AboutScreen> with StorageConsumer {
   String packageVersion = "";
   String appName = "";
   CollaboratorsResponse collaborators;
@@ -39,8 +40,7 @@ class _AboutScreenState extends State<AboutScreen> {
     packageVersion = info.version;
     appName = info.appName;
     if (Platform.isIOS) {
-      var lastUpdated =
-          StorageService.global().getDate(StorageKeys.versionUpdatedDate);
+      var lastUpdated = globalStorage.getDate(StorageKeys.versionUpdatedDate);
       var now = DateTime.now();
       if (lastUpdated == null || now.difference(lastUpdated).inDays < 3) {
         showDonationLinks = false;

@@ -1,4 +1,4 @@
-enum LittleLightPage{
+enum LittleLightRoutePage{
   Login,
   Main
 }

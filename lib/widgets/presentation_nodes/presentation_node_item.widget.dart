@@ -3,11 +3,10 @@ import 'package:bungie_api/models/destiny_presentation_node_component.dart';
 import 'package:bungie_api/models/destiny_presentation_node_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
-import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/services/user_settings/user_settings.service.dart';
+import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
@@ -34,7 +33,8 @@ class PresentationNodeItemWidget extends StatefulWidget {
   }
 }
 
-class PresentationNodeWidgetState extends State<PresentationNodeItemWidget> with AuthConsumer{
+class PresentationNodeWidgetState extends State<PresentationNodeItemWidget>
+    with AuthConsumer, UserSettingsConsumer {
   DestinyPresentationNodeComponent progress;
   Map<String, DestinyPresentationNodeComponent> multiProgress;
   DestinyPresentationNodeDefinition definition;
@@ -65,7 +65,7 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget> with
     if (this.progress != null) return;
 
     var characters =
-        widget.profile.getCharacters(UserSettingsService().characterOrdering);
+        widget.profile.getCharacters(userSettings.characterOrdering);
     if (characters == null || characters.length == 0) return;
 
     DestinyPresentationNodeComponent highest;

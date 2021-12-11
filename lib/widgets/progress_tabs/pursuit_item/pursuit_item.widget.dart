@@ -13,7 +13,7 @@ import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/selection/selection.service.dart';
-import 'package:little_light/services/user_settings/user_settings.service.dart';
+import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/common/corner_badge.decoration.dart';
@@ -55,7 +55,7 @@ class PursuitItemWidget extends StatefulWidget {
   PursuitItemWidgetState createState() => PursuitItemWidgetState();
 }
 
-class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T> {
+class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T> with UserSettingsConsumer{
   DestinyInventoryItemDefinition definition;
   Map<int, DestinyObjectiveDefinition> objectiveDefinitions;
   List<DestinyObjectiveProgress> itemObjectives;
@@ -170,7 +170,7 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T> {
   }
 
   onTap(BuildContext context) {
-    if (widget.selectable && UserSettingsService().tapToSelect) {
+    if (widget.selectable && userSettings.tapToSelect) {
       if (selected) {
         SelectionService().clear();
       } else {
@@ -193,7 +193,7 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T> {
   }
 
   onLongPress(BuildContext context) {
-    if (UserSettingsService().tapToSelect) {
+    if (userSettings.tapToSelect) {
       Navigator.push(
         context,
         MaterialPageRoute(

@@ -4,14 +4,15 @@ import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/screens/search.screen.dart';
+import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:little_light/services/bungie_api/enums/destiny_item_category.enum.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/services/user_settings/user_settings.service.dart';
+import 'package:little_light/services/user_settings/little_light_page.dart';
+import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/item_filters/pseudo_item_type_filter.dart';
 import 'package:little_light/utils/media_query_helper.dart';
-import 'package:little_light/utils/selected_page_persistence.dart';
 import 'package:little_light/widgets/common/animated_character_background.widget.dart';
 import 'package:little_light/widgets/common/refresh_button.widget.dart';
 import 'package:little_light/widgets/flutter/passive_tab_bar_view.dart';
@@ -42,8 +43,10 @@ class EquipmentScreen extends StatefulWidget {
   EquipmentScreenState createState() => new EquipmentScreenState();
 }
 
+const _page = LittleLightPage.Equipment;
+
 class EquipmentScreenState extends State<EquipmentScreen>
-    with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+    with TickerProviderStateMixin, AutomaticKeepAliveClientMixin, UserSettingsConsumer, AnalyticsConsumer {
   int currentGroup = DestinyItemCategory.Weapon;
   Map<int, double> scrollPositions = new Map();
 
@@ -57,7 +60,8 @@ class EquipmentScreenState extends State<EquipmentScreen>
   void initState() {
     super.initState();
     ProfileService().updateComponents = ProfileComponentGroups.basicProfile;
-    SelectedPagePersistence.saveLatestScreen(SelectedPagePersistence.equipment);
+    userSettings.startingPage = _page;
+    analytics.registerPageOpen(_page);
 
     typeTabController = typeTabController ??
         TabController(
@@ -291,7 +295,7 @@ class EquipmentScreenState extends State<EquipmentScreen>
 
   List<DestinyCharacterComponent> get characters {
     return widget.profile
-        .getCharacters(UserSettingsService().characterOrdering);
+        .getCharacters(userSettings.characterOrdering);
   }
 
   buildCharacterMenu(BuildContext context) {

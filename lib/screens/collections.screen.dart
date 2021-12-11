@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/screens/collectible_search.screen.dart';
 import 'package:little_light/screens/presentation_node.screen.dart';
+import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/profile/destiny_settings.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/user_settings/little_light_page.dart';
+import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/item_with_owner.dart';
-import 'package:little_light/utils/selected_page_persistence.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/presentation_nodes/collectible_item.widget.dart';
 import 'package:little_light/widgets/presentation_nodes/nested_collectible_item.widget.dart';
@@ -20,15 +22,19 @@ class CollectionsScreen extends PresentationNodeScreen {
   PresentationNodeScreenState createState() => new CollectionsScreenState();
 }
 
+const _page = LittleLightPage.Collections;
+
 class CollectionsScreenState
-    extends PresentationNodeScreenState<CollectionsScreen> with AuthConsumer{
+    extends PresentationNodeScreenState<CollectionsScreen>
+    with AuthConsumer, UserSettingsConsumer, AnalyticsConsumer {
   Map<int, List<ItemWithOwner>> itemsByHash;
   @override
   void initState() {
     ProfileService().updateComponents = ProfileComponentGroups.collections;
     ProfileService().fetchProfileData();
-    SelectedPagePersistence.saveLatestScreen(
-        SelectedPagePersistence.collections);
+    userSettings.startingPage = _page;
+    analytics.registerPageOpen(_page);
+
     if (auth.isLogged) {
       this.loadItems();
     }
@@ -70,7 +76,7 @@ class CollectionsScreenState
         appBar: buildAppBar(context), body: buildScaffoldBody(context));
   }
 
-  Widget itemBuilder(CollectionListItem item, int depth, bool isCategorySet) { 
+  Widget itemBuilder(CollectionListItem item, int depth, bool isCategorySet) {
     switch (item.type) {
       case CollectionListItemType.nestedCollectible:
         return NestedCollectibleItemWidget(
@@ -104,14 +110,16 @@ class CollectionsScreenState
   buildAppBar(BuildContext context) {
     if (widget.depth == 0) {
       return AppBar(
-          leading: IconButton(enableFeedback: false,
+          leading: IconButton(
+            enableFeedback: false,
             icon: Icon(Icons.menu),
             onPressed: () {
               Scaffold.of(context).openDrawer();
             },
           ),
           actions: <Widget>[
-            IconButton(enableFeedback: false,
+            IconButton(
+              enableFeedback: false,
               icon: Icon(Icons.search),
               onPressed: () {
                 Navigator.push(

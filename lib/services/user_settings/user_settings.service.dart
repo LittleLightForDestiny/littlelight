@@ -1,28 +1,19 @@
+import 'package:get_it/get_it.dart';
 import 'package:little_light/models/item_notes_tag.dart';
-import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/services/storage/storage.service.dart';
+import 'package:little_light/services/auth/auth.consumer.dart';
+import 'package:little_light/services/storage/export.dart';
 import 'package:little_light/services/user_settings/bucket_display_options.dart';
 import 'package:little_light/services/user_settings/character_sort_parameter.dart';
 import 'package:little_light/services/user_settings/item_sort_parameter.dart';
+import 'package:little_light/services/user_settings/little_light_page.dart';
 import 'package:little_light/utils/remove_diacritics.dart';
 
-const _defaultBucketDisplayOptions = {
-  "${InventoryBucket.engrams}":
-      BucketDisplayOptions(type: BucketDisplayType.Small),
-  "${InventoryBucket.lostItems}":
-      BucketDisplayOptions(type: BucketDisplayType.Small),
-  "${InventoryBucket.consumables}":
-      BucketDisplayOptions(type: BucketDisplayType.Small),
-  "${InventoryBucket.shaders}":
-      BucketDisplayOptions(type: BucketDisplayType.Small),
-  "${InventoryBucket.modifications}":
-      BucketDisplayOptions(type: BucketDisplayType.Small),
-  "pursuits_53_null": BucketDisplayOptions(type: BucketDisplayType.Large),
-};
 
-class UserSettingsService {
-  static UserSettingsService _singleton = UserSettingsService._internal();
-  StorageService get globalStorage => StorageService.global();
+setupUserSettingsService() async {
+  GetIt.I.registerSingleton<UserSettingsService>(UserSettingsService._internal());
+}
+
+class UserSettingsService with StorageConsumer, AuthConsumer {
   StorageService get membershipStorage => StorageService.membership();
   List<ItemSortParameter> _itemOrdering;
   List<ItemSortParameter> _pursuitOrdering;
@@ -31,9 +22,6 @@ class UserSettingsService {
   Map<String, BucketDisplayOptions> _bucketDisplayOptions;
   Map<String, bool> _detailsSectionDisplayVisibility;
 
-  factory UserSettingsService() {
-    return _singleton;
-  }
   UserSettingsService._internal();
   init() async {
     await initItemOrdering();
@@ -130,8 +118,8 @@ class UserSettingsService {
     if (_bucketDisplayOptions?.containsKey(id) ?? false) {
       return _bucketDisplayOptions[id];
     }
-    if (_defaultBucketDisplayOptions?.containsKey(id) ?? false) {
-      return _defaultBucketDisplayOptions[id];
+    if (defaultBucketDisplayOptions?.containsKey(id) ?? false) {
+      return defaultBucketDisplayOptions[id];
     }
     if (id?.startsWith("vault") ?? false) {
       return BucketDisplayOptions(type: BucketDisplayType.Small);
@@ -240,5 +228,20 @@ class UserSettingsService {
     _characterOrdering = ordering;
     var json = ordering.toJson();
     membershipStorage.setJson(StorageKeys.characterOrdering, json);
+  }
+
+  LittleLightPage get startingPage {
+    String pageName = globalStorage.getString(StorageKeys.latestScreen);
+    
+    if (auth.isLogged) {
+      final _page = LittleLightPage.values.findByName(pageName);
+      return _page ?? LittleLightPage.Equipment;
+    }
+    final _page = publicPages.findByName(pageName);
+    return _page ?? LittleLightPage.Collections;
+  }
+
+  set startingPage(LittleLightPage page){
+    globalStorage.setString(StorageKeys.latestScreen, page.name);
   }
 }

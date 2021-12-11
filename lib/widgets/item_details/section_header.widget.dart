@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:little_light/services/user_settings/user_settings.service.dart';
+import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 
 mixin VisibleSectionMixin<T extends StatefulWidget> on State<T> {
   String get sectionId;
 
   bool get visible =>
-      UserSettingsService().getVisibilityForDetailsSection(sectionId);
+      getInjectedUserSettings().getVisibilityForDetailsSection(sectionId);
 
   Widget getHeader(Widget label) {
     return SectionHeaderWidget(
@@ -37,15 +37,15 @@ class SectionHeaderWidget extends StatefulWidget {
   SectionHeaderWidgetState createState() => new SectionHeaderWidgetState();
 }
 
-class SectionHeaderWidgetState<T extends SectionHeaderWidget> extends State<T> {
+class SectionHeaderWidgetState<T extends SectionHeaderWidget> extends State<T>
+    with UserSettingsConsumer {
   bool visible = true;
 
   @override
   void initState() {
     super.initState();
-    visible = UserSettingsService()
-            .getVisibilityForDetailsSection(widget.sectionId) ??
-        true;
+    visible =
+        userSettings.getVisibilityForDetailsSection(widget.sectionId) ?? true;
   }
 
   @override
@@ -61,8 +61,8 @@ class SectionHeaderWidgetState<T extends SectionHeaderWidget> extends State<T> {
     return InkWell(
         onTap: () {
           visible = !visible;
-          UserSettingsService()
-              .setVisibilityForDetailsSection(widget.sectionId, visible);
+          userSettings.setVisibilityForDetailsSection(
+              widget.sectionId, visible);
           setState(() {});
           widget.onChanged?.call();
         },

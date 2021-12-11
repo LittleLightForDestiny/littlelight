@@ -1,6 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:little_light/core/routes/pages.dart';
 
-class LittleLightRoute {
-  final LittleLightPage page;
-  LittleLightRoute({this.page = LittleLightPage.Main});
+class LittleLightRoute extends Route{
+  final LittleLightRoutePage page;
+  LittleLightRoute({this.page = LittleLightRoutePage.Main});
 }

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/screens/search.screen.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/services/user_settings/user_settings.service.dart';
+import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/item_filters/class_type_filter.dart';
 import 'package:little_light/utils/item_filters/item_bucket_filter.dart';
 import 'package:little_light/utils/item_filters/item_owner_filter.dart';
@@ -30,8 +30,7 @@ Set<String> _characterIdsExcept(
   return all;
 }
 
-class QuickTransferScreen extends SearchScreen {
-  final UserSettingsService settings = UserSettingsService();
+class QuickTransferScreen extends SearchScreen with UserSettingsConsumer{
   final DestinyInventoryBucketDefinition bucketDefinition;
   final String characterId;
   final DestinyClass classType;

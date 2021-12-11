@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:bungie_api/enums/destiny_collectible_state.dart';
+import 'package:bungie_api/enums/destiny_component_type.dart';
+import 'package:bungie_api/enums/destiny_scope.dart';
 import 'package:bungie_api/models/destiny_artifact_profile_scoped.dart';
 import 'package:bungie_api/models/destiny_character_activities_component.dart';
 import 'package:bungie_api/models/destiny_character_component.dart';
@@ -20,13 +22,11 @@ import 'package:bungie_api/models/destiny_profile_response.dart';
 import 'package:bungie_api/models/destiny_record_component.dart';
 import 'package:bungie_api/models/destiny_stat.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:bungie_api/enums/destiny_component_type.dart';
-import 'package:bungie_api/enums/destiny_scope.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/notification/notification.service.dart';
-import 'package:little_light/services/storage/storage.service.dart';
+import 'package:little_light/services/storage/export.dart';
 import 'package:little_light/services/user_settings/character_sort_parameter.dart';
-import 'package:little_light/services/user_settings/user_settings.service.dart';
+import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 
 enum LastLoadedFrom { server, cache }
 
@@ -92,7 +92,7 @@ class ProfileComponentGroups {
   ];
 }
 
-class ProfileService {
+class ProfileService with UserSettingsConsumer {
   final NotificationService _broadcaster = new NotificationService();
   static final ProfileService _singleton = new ProfileService._internal();
 
@@ -114,6 +114,7 @@ class ProfileService {
 
   bool pauseAutomaticUpdater = false;
 
+  //TODO: remove this
   List<DestinyComponentType> updateComponents =
       ProfileComponentGroups.everything;
 
@@ -398,7 +399,7 @@ class ProfileService {
       return null;
     }
     if (order == null) {
-      order = UserSettingsService().characterOrdering;
+      order = userSettings.characterOrdering;
     }
 
     List<DestinyCharacterComponent> list =

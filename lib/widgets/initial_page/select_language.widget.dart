@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:little_light/services/storage/storage.service.dart';
+import 'package:little_light/services/storage/export.dart';
 import 'package:little_light/services/translate/translate.service.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';

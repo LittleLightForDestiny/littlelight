@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
+import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/auth/auth.service.dart';
-import 'package:little_light/services/storage/storage.service.dart';
+import 'package:little_light/services/storage/export.dart';
 
 import 'littlelight/littlelight_api.service.dart';
 import 'littlelight/loadouts.service.dart';
@@ -15,8 +16,10 @@ setupServices() async {
 }
 
 initServices() async {
-  final auth = GetIt.instance.get<AuthService>();
-  await StorageService.init();
+  final globalStorage = getInjectedGlobalStorage();
+  final auth = getInjectedAuthService();
+  
+  await globalStorage.setup();
   auth.reset();
   await dotEnv.load(fileName: 'assets/_env');
   await LittleLightApiService().reset();

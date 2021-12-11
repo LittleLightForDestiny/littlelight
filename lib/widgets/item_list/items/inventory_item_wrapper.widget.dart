@@ -15,9 +15,8 @@ import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/selection/selection.service.dart';
-import 'package:little_light/services/user_settings/user_settings.service.dart';
+import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/item_with_owner.dart';
-
 import 'package:little_light/widgets/item_list/items/armor/armor_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/armor/medium_armor_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/armor/minimal_armor_inventory_item.widget.dart';
@@ -57,7 +56,7 @@ class InventoryItemWrapperWidget extends StatefulWidget {
 }
 
 class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
-    extends State<T> {
+    extends State<T> with UserSettingsConsumer{
   DestinyInventoryItemDefinition definition;
   String uniqueId;
   bool selected = false;
@@ -236,7 +235,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
       onLongPress(context);
       return;
     }
-    if (UserSettingsService().tapToSelect) {
+    if (userSettings.tapToSelect) {
       onTapSelect(context);
     } else {
       onTapDetails(context);
@@ -244,7 +243,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
   }
 
   void onDoubleTap(BuildContext context) {
-    if (UserSettingsService().tapToSelect) {
+    if (userSettings.tapToSelect) {
       onTapDetails(context);
     }
   }

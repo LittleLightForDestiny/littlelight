@@ -4,10 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/services/inventory/inventory.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/services/user_settings/user_settings.service.dart';
+import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/widgets/common/equip_on_character.button.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
-
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/option_sheets/free_slots_slider.widget.dart';
 
@@ -23,14 +22,15 @@ class LoadoutDestinationsWidget extends StatefulWidget {
   }
 }
 
-class LoadoutDestinationsWidgetState extends State<LoadoutDestinationsWidget> {
+class LoadoutDestinationsWidgetState extends State<LoadoutDestinationsWidget>
+    with UserSettingsConsumer {
   int freeSlots = 0;
 
   @override
   void initState() {
     super.initState();
-    
-    freeSlots = UserSettingsService().defaultFreeSlots;
+
+    freeSlots = userSettings.defaultFreeSlots;
   }
 
   @override
@@ -38,7 +38,9 @@ class LoadoutDestinationsWidgetState extends State<LoadoutDestinationsWidget> {
     var screenPadding = MediaQuery.of(context).padding;
     return Container(
         color: Colors.blueGrey.shade800,
-        padding: EdgeInsets.only(left: max(screenPadding.left, 4), right: max(screenPadding.right, 4)),
+        padding: EdgeInsets.only(
+            left: max(screenPadding.left, 4),
+            right: max(screenPadding.right, 4)),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           FreeSlotsSliderWidget(
             initialValue: freeSlots,
@@ -146,7 +148,7 @@ class LoadoutDestinationsWidgetState extends State<LoadoutDestinationsWidget> {
 
   List<TransferDestination> get equipDestinations {
     return widget.profile
-        .getCharacters(UserSettingsService().characterOrdering)
+        .getCharacters(userSettings.characterOrdering)
         .map((char) => TransferDestination(ItemDestination.Character,
             characterId: char.characterId, action: InventoryAction.Equip))
         .toList();
@@ -154,7 +156,7 @@ class LoadoutDestinationsWidgetState extends State<LoadoutDestinationsWidget> {
 
   List<TransferDestination> get transferDestinations {
     List<TransferDestination> list = widget.profile
-        .getCharacters(UserSettingsService().characterOrdering)
+        .getCharacters(userSettings.characterOrdering)
         .map((char) => TransferDestination(ItemDestination.Character,
             characterId: char.characterId))
         .toList();

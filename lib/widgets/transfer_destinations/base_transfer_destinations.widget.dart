@@ -2,17 +2,14 @@ import 'package:bungie_api/enums/destiny_class.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
-
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/inventory/inventory.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/services/user_settings/user_settings.service.dart';
+import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
-
 import 'package:little_light/widgets/common/equip_on_character.button.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
-
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
 class BaseTransferDestinationsWidget extends BaseDestinyStatefulItemWidget {
@@ -37,7 +34,7 @@ class BaseTransferDestinationsWidget extends BaseDestinyStatefulItemWidget {
 }
 
 class BaseTransferDestinationState<T extends BaseTransferDestinationsWidget>
-    extends BaseDestinyItemState<T> {
+    extends BaseDestinyItemState<T> with UserSettingsConsumer {
   @override
   Widget build(BuildContext context) {
     if (item == null) {
@@ -112,7 +109,8 @@ class BaseTransferDestinationState<T extends BaseTransferDestinationsWidget>
         ));
   }
 
-  Widget buildButtons(BuildContext context, List<TransferDestination> destinations,
+  Widget buildButtons(
+      BuildContext context, List<TransferDestination> destinations,
       [Alignment align = Alignment.centerRight]) {
     return Container(
         alignment: align,
@@ -165,7 +163,7 @@ class BaseTransferDestinationState<T extends BaseTransferDestinationsWidget>
       return [];
     }
     return widget.profile
-        .getCharacters(UserSettingsService().characterOrdering)
+        .getCharacters(userSettings.characterOrdering)
         .where((char) =>
             !(instanceInfo.isEquipped && char.characterId == characterId) &&
             !(definition.nonTransferrable && char.characterId != characterId) &&
@@ -190,7 +188,7 @@ class BaseTransferDestinationState<T extends BaseTransferDestinationsWidget>
     }
 
     List<TransferDestination> list = widget.profile
-        .getCharacters(UserSettingsService().characterOrdering)
+        .getCharacters(userSettings.characterOrdering)
         .where((char) => !(char.characterId == characterId))
         .map((char) => TransferDestination(ItemDestination.Character,
             characterId: char.characterId))

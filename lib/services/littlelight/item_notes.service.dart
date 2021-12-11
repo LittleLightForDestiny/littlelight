@@ -1,7 +1,8 @@
 import 'package:little_light/models/item_notes.dart';
 import 'package:little_light/models/item_notes_tag.dart';
 import 'package:little_light/services/littlelight/littlelight_api.service.dart';
-import 'package:little_light/services/storage/storage.service.dart';
+
+import 'package:little_light/services/storage/export.dart';
 
 final Map<String, ItemNotesTag> _defaultTags = {
   "favorite": ItemNotesTag.favorite(),

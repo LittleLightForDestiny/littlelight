@@ -3,13 +3,13 @@ import 'dart:convert';
 import 'package:little_light/models/collaborators.dart';
 import 'package:little_light/models/game_data.dart';
 import 'package:little_light/models/wish_list.dart';
-import 'package:little_light/services/storage/storage.service.dart';
+
+import 'package:little_light/services/storage/export.dart';
 import 'package:http/http.dart' as http;
 
-class LittleLightDataService {
+class LittleLightDataService with StorageConsumer {
   static final LittleLightDataService _singleton =
       new LittleLightDataService._internal();
-  StorageService storage = StorageService.global();
   factory LittleLightDataService() {
     return _singleton;
   }
@@ -45,12 +45,12 @@ class LittleLightDataService {
 
   Future<dynamic> _loadFromStorage(StorageKeys key, [Duration time]) async {
     DateTime lastModified =
-        await storage.getRawFileDate(StorageKeys.rawData, key.path);
+        await globalStorage.getRawFileDate(StorageKeys.rawData, key.path);
     DateTime minimumDate = DateTime.now().subtract(time ?? Duration(days: 7));
     if (lastModified == null || lastModified.isBefore(minimumDate)) {
       return null;
     }
-    String raw = await storage.getRawFile(StorageKeys.rawData, key.path);
+    String raw = await globalStorage.getRawFile(StorageKeys.rawData, key.path);
     if (raw == null) return null;
     var data = _decodeData(raw, key);
     _data[key] = data;
@@ -66,7 +66,7 @@ class LittleLightDataService {
       raw = res.body;
     } catch (e) {}
     if (raw == null) return null;
-    storage.saveRawFile(StorageKeys.rawData, key.path, raw);
+    globalStorage.saveRawFile(StorageKeys.rawData, key.path, raw);
     var data = _decodeData(raw, key);
     _data[key] = data;
     return data;

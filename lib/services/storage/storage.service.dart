@@ -1,131 +1,76 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:get_it/get_it.dart';
 import 'package:little_light/services/storage/storage_migrations.dart';
 import 'package:package_info/package_info.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
-enum StorageKeys {
-  latestToken,
-  latestTokenDate,
-  membershipData,
-  languages,
-  accountIds,
-  membershipIds,
-  selectedLanguage,
-  selectedAccountId,
-  selectedMembershipId,
-  cachedProfile,
-  cachedLoadouts,
-  cachedNotes,
-  cachedTags,
-  trackedObjectives,
-  membershipUUID,
-  membershipSecret,
-  manifestVersion,
-  manifestFile,
-  currentVersion,
-  keepAwake,
-  tapToSelect,
-  itemOrdering,
-  pursuitOrdering,
-  characterOrdering,
-  autoOpenKeyboard,
-  defaultFreeSlots,
-  hasTappedGhost,
-  bungieCommonSettings,
-  cachedVendors,
-  loadoutsOrder,
-  parsedWishlists,
-  wishlists,
-  latestScreen,
-  rawWishlists,
-  rawData,
-  featuredWishlists,
-  collaboratorsData,
-  gameData,
-  priorityTags,
-  bucketDisplayOptions,
-  latestVersion,
-  versionUpdatedDate,
-  littleLightTranslation,
-  detailsSectionDisplayVisibility,
+import 'storage.keys.dart';
+
+setupStorageService() async {
+  GetIt.I.registerSingleton<GlobalStorage>(GlobalStorage._internal());
+  GetIt.I.registerFactoryParam<AccountStorage, String, void>(
+      (accountID, _) => AccountStorage._internal(accountID));
+  GetIt.I.registerFactoryParam<MembershipStorage, String, void>(
+      (membershipID, _) => MembershipStorage._internal(membershipID));
+  GetIt.I.registerFactoryParam<LanguageStorage, String, void>(
+      (languageCode, _) => LanguageStorage._internal(languageCode));
 }
 
-extension StorageKeysExtension on StorageKeys {
-  String get path {
-    String name = this.toString().split(".")[1];
-    switch (this) {
-      //specific
-      case StorageKeys.membershipData:
-        return "memberships";
-      case StorageKeys.manifestFile:
-        return "manifest.db";
+class GlobalStorage extends StorageService {
+  bool _hasRunSetup = false;
+  GlobalStorage._internal() : super();
 
-      //camelCase to snakecase
-      case StorageKeys.accountIds:
-      case StorageKeys.membershipIds:
-      case StorageKeys.selectedLanguage:
-      case StorageKeys.selectedAccountId:
-      case StorageKeys.selectedMembershipId:
-      case StorageKeys.cachedProfile:
-      case StorageKeys.cachedVendors:
-      case StorageKeys.cachedLoadouts:
-      case StorageKeys.cachedNotes:
-      case StorageKeys.cachedTags:
-      case StorageKeys.loadoutsOrder:
-      case StorageKeys.trackedObjectives:
-      case StorageKeys.bungieCommonSettings:
-      case StorageKeys.membershipUUID:
-      case StorageKeys.membershipSecret:
-      case StorageKeys.latestScreen:
-        return name.replaceAllMapped(
-            RegExp(r'[A-Z]'), (letter) => "_${letter[0].toLowerCase()}");
-
-      //user prefs
-      case StorageKeys.keepAwake:
-      case StorageKeys.autoOpenKeyboard:
-      case StorageKeys.defaultFreeSlots:
-      case StorageKeys.itemOrdering:
-      case StorageKeys.pursuitOrdering:
-      case StorageKeys.characterOrdering:
-      case StorageKeys.hasTappedGhost:
-        return "userpref_$name";
-
-      default:
-        return name;
-    }
-  }
-}
-
-class StorageService {
-  static SharedPreferences _prefs;
-  static init() async {
-    _prefs = await SharedPreferences.getInstance();
-    await StorageMigrations().run();
-
+  setup() async {
+    if (_hasRunSetup) return;
+    await super.setup();
     _versionCheck();
+    _hasRunSetup = true;
   }
 
-  static _versionCheck() async {
-    var storedVersion =
-        StorageService.global().getString(StorageKeys.currentVersion);
+  _versionCheck() async {
+    var storedVersion = getString(StorageKeys.currentVersion);
     var info = await PackageInfo.fromPlatform();
     var packageVersion = info.version;
     if (storedVersion != packageVersion) {
-      StorageService.global()
-          .setString(StorageKeys.currentVersion, packageVersion);
-      StorageService.global()
-          .setDate(StorageKeys.versionUpdatedDate, DateTime.now());
+      setString(StorageKeys.currentVersion, packageVersion);
+      setDate(StorageKeys.versionUpdatedDate, DateTime.now());
     }
+  }
+}
+
+class AccountStorage extends StorageService {
+  AccountStorage._internal(String accountID) : super("accounts/$accountID");
+}
+
+class MembershipStorage extends StorageService {
+  MembershipStorage._internal(String membershipID)
+      : super("memberships/$membershipID");
+}
+
+class LanguageStorage extends StorageService {
+  LanguageStorage._internal(String languageCode)
+      : super("languages/$languageCode");
+}
+
+class StorageService {
+  static bool _hasRunSetup = false;
+  static SharedPreferences _prefs;
+
+  setup() async {
+    if (_hasRunSetup) return;
+    _prefs = await SharedPreferences.getInstance();
+    await StorageMigrations().run();
+    _hasRunSetup = true;
   }
 
   final String _path;
   StorageService([this._path = ""]);
 
-  factory StorageService.global() => StorageService();
+  // factory StorageService.global() => StorageService();
   factory StorageService.language([String languageCode]) {
     var code = languageCode ?? StorageService.getLanguage();
     return StorageService("languages/$code");

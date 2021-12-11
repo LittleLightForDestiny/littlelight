@@ -3,10 +3,13 @@ import 'dart:io';
 
 import 'package:bungie_api/helpers/bungie_net_token.dart';
 import 'package:bungie_api/models/user_membership_data.dart';
-import 'package:little_light/services/storage/storage.service.dart';
+
+import 'package:little_light/services/storage/export.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
+
+import 'storage.keys.dart';
 
 class StorageMigrations {
   String rootPath;

@@ -6,11 +6,10 @@ import 'package:little_light/models/wish_list.dart';
 import 'package:little_light/services/littlelight/parsers/dim_wishlist.parser.dart';
 import 'package:little_light/services/littlelight/parsers/littlelight_wishlist.parser.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/services/storage/storage.service.dart';
+import 'package:little_light/services/storage/export.dart';
 
-class WishlistsService {
+class WishlistsService with StorageConsumer {
   static final WishlistsService _singleton = new WishlistsService._internal();
-  StorageService storage = StorageService.global();
   factory WishlistsService() {
     return _singleton;
   }
@@ -43,7 +42,7 @@ class WishlistsService {
 
   Future<Map<int, WishlistItem>> _loadPreParsed() async {
     Map<String, dynamic> json =
-        await storage.getJson(StorageKeys.parsedWishlists);
+        await globalStorage.getJson(StorageKeys.parsedWishlists);
     if (json == null) return null;
     var items = json.map<int, WishlistItem>(
         (key, value) => MapEntry(int.parse(key), WishlistItem.fromJson(value)));
@@ -51,7 +50,7 @@ class WishlistsService {
   }
 
   Future<List<Wishlist>> _loadFromStorage(bool forceParse) async {
-    List<dynamic> json = await storage.getJson(StorageKeys.wishlists);
+    List<dynamic> json = await globalStorage.getJson(StorageKeys.wishlists);
     var wishlists = json != null
         ? json.map((item) => Wishlist.fromJson(item)).toList()
         : [Wishlist.defaults()];
@@ -96,7 +95,7 @@ class WishlistsService {
 
   Future<List<Wishlist>> removeWishlist(Wishlist wishlist) async {
     _wishlists.remove(wishlist);
-    await storage.deleteFile(StorageKeys.rawWishlists, wishlist.filename);
+    await globalStorage.deleteFile(StorageKeys.rawWishlists, wishlist.filename);
     _items = Map();
     _wishlists = await _parseWishlists(_wishlists);
     this._save();
@@ -107,7 +106,7 @@ class WishlistsService {
     for (var wishlist in wishlists) {
       var filename = wishlist.filename;
       var contents =
-          await storage.getRawFile(StorageKeys.rawWishlists, filename);
+          await globalStorage.getRawFile(StorageKeys.rawWishlists, filename);
       if (contents == null) {
         contents = await _downloadWishlist(wishlist);
       }
@@ -130,16 +129,17 @@ class WishlistsService {
 
   Future<void> _save() async {
     var json = this._wishlists.map((w) => w.toJson()).toList();
-    await storage.setJson(StorageKeys.wishlists, json);
+    await globalStorage.setJson(StorageKeys.wishlists, json);
     var parsed = this
         ._items
         .map<String, dynamic>((k, v) => MapEntry(k.toString(), v.toJson()));
-    await storage.setJson(StorageKeys.parsedWishlists, parsed);
+    await globalStorage.setJson(StorageKeys.parsedWishlists, parsed);
   }
 
   Future<String> _downloadWishlist(Wishlist wishlist) async {
     var res = await http.get(Uri.parse(wishlist.url));
-    storage.saveRawFile(StorageKeys.rawWishlists, wishlist.filename, res.body);
+    globalStorage.saveRawFile(
+        StorageKeys.rawWishlists, wishlist.filename, res.body);
     wishlist.updatedAt = DateTime.now();
     return res.body;
   }

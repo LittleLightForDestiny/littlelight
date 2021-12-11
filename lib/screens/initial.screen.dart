@@ -11,17 +11,13 @@ import 'package:little_light/screens/main.screen.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.exception.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/services/littlelight/littlelight_api.service.dart';
-import 'package:little_light/services/littlelight/loadouts.service.dart';
-import 'package:little_light/services/littlelight/objectives.service.dart';
 import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/destiny_settings.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/setup.dart';
-import 'package:little_light/services/storage/storage.service.dart';
+import 'package:little_light/services/storage/export.dart';
 import 'package:little_light/services/translate/translate.service.dart';
-import 'package:little_light/services/user_settings/user_settings.service.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/exceptions/exception_dialog.dart';
 import 'package:little_light/widgets/initial_page/download_manifest.widget.dart';
@@ -256,7 +252,6 @@ class InitialScreenState extends FloatingContentState<InitialScreen> with AuthCo
   }
 
   goForward() async {
-    await UserSettingsService().init();
     try {
       await DestinySettingsService().init();
     } catch (e) {}

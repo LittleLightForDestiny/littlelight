@@ -3,9 +3,9 @@ import 'package:bungie_api/models/destiny_season_definition.dart';
 import 'package:bungie_api/models/destiny_season_pass_definition.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
-import 'package:little_light/services/storage/storage.service.dart';
+import 'package:little_light/services/storage/export.dart';
 
-class DestinySettingsService {
+class DestinySettingsService with StorageConsumer {
   static final DestinySettingsService _singleton =
       new DestinySettingsService._internal();
   DateTime lastUpdated;
@@ -23,7 +23,7 @@ class DestinySettingsService {
 
   init() async {
     var json =
-        await StorageService.global().getJson(StorageKeys.bungieCommonSettings);
+        await globalStorage.getJson(StorageKeys.bungieCommonSettings);
     var settings = CoreSettingsConfiguration.fromJson(json ?? {});
     var seasonHash = settings?.destiny2CoreSettings?.currentSeasonHash;
     var seasonDef = await ManifestService()
@@ -38,7 +38,7 @@ class DestinySettingsService {
       seasonHash = settings?.destiny2CoreSettings?.currentSeasonHash;
       seasonDef = await ManifestService()
           .getDefinition<DestinySeasonDefinition>(seasonHash);
-      await StorageService.global()
+      await globalStorage
           .setJson(StorageKeys.bungieCommonSettings, settings.toJson());
     }
     _currentSettings = settings;

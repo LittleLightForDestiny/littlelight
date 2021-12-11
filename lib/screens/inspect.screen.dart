@@ -2,7 +2,7 @@ import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/services/user_settings/user_settings.service.dart';
+import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/selected_items.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/tabs_character_menu.widget.dart';
@@ -22,7 +22,7 @@ class InspectScreen extends StatefulWidget {
 }
 
 class InspectScreenState extends State<InspectScreen>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, UserSettingsConsumer{
   TabController charTabController;
   TabController typeTabController;
 
@@ -106,7 +106,7 @@ class InspectScreenState extends State<InspectScreen>
   }
 
   List<DestinyCharacterComponent> get characters {
-    return widget.profile.getCharacters(UserSettingsService().characterOrdering);
+    return widget.profile.getCharacters(userSettings.characterOrdering);
   }
 
   Widget buildLoading(BuildContext context) {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/user_settings/bucket_display_options.dart';
-import 'package:little_light/services/user_settings/user_settings.service.dart';
+import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/icon_fonts/littlelight_icons.dart';
 
@@ -20,14 +20,14 @@ class BucketDisplayOptionsSelectorWidget extends StatefulWidget {
 }
 
 class BucketDisplayOptionsSelectorWidgetState<
-    T extends BucketDisplayOptionsSelectorWidget> extends State<T> {
+    T extends BucketDisplayOptionsSelectorWidget> extends State<T> with UserSettingsConsumer{
   BucketDisplayType currentType;
 
   @override
   void initState() {
     super.initState();
     currentType =
-        UserSettingsService().getDisplayOptionsForBucket(bucketKey)?.type;
+        userSettings.getDisplayOptionsForBucket(bucketKey)?.type;
   }
 
   String get bucketKey {
@@ -81,7 +81,7 @@ class BucketDisplayOptionsSelectorWidgetState<
                           .toList(),
                       onChanged: (selected) {
                         this.currentType = selected;
-                        UserSettingsService().setDisplayOptionsForBucket(
+                        userSettings.setDisplayOptionsForBucket(
                             bucketKey,
                             BucketDisplayOptions(type: this.currentType));
                         setState(() {});

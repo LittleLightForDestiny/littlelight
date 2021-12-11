@@ -11,7 +11,7 @@ import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/user_settings/bucket_display_options.dart';
-import 'package:little_light/services/user_settings/user_settings.service.dart';
+import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/media_query_helper.dart';
@@ -69,7 +69,7 @@ class ItemListWidget extends StatefulWidget {
 }
 
 class ItemListWidgetState extends State<ItemListWidget>
-    with AutomaticKeepAliveClientMixin {
+    with AutomaticKeepAliveClientMixin, UserSettingsConsumer {
   Map<int, DestinyInventoryBucketDefinition> bucketDefs;
   List<ListBucket> buckets;
   StreamSubscription<NotificationEvent> subscription;
@@ -377,7 +377,7 @@ class ItemListWidgetState extends State<ItemListWidget>
 
   BucketDisplayOptions getBucketOptions(ListItem item) {
     var options =
-        UserSettingsService().getDisplayOptionsForBucket("${item?.bucketHash}");
+        userSettings.getDisplayOptionsForBucket("${item?.bucketHash}");
     return options;
   }
 

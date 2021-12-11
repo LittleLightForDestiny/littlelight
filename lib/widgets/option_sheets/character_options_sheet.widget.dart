@@ -18,14 +18,13 @@ import 'package:little_light/services/littlelight/littlelight_data.service.dart'
 import 'package:little_light/services/littlelight/loadouts.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/services/user_settings/user_settings.service.dart';
+import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_sorters/power_level_sorter.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-
 import 'package:little_light/widgets/option_sheets/free_slots_slider.widget.dart';
 import 'package:little_light/widgets/option_sheets/loadout_select_sheet.widget.dart';
 import 'package:shimmer/shimmer.dart';
@@ -43,7 +42,7 @@ class CharacterOptionsSheet extends StatefulWidget {
   }
 }
 
-class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
+class CharacterOptionsSheetState extends State<CharacterOptionsSheet> with UserSettingsConsumer {
   Map<int, DestinyItemComponent> maxLightLoadout;
   Map<int, DestinyItemComponent> underAverageSlots;
   double maxLight;
@@ -345,7 +344,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> {
               ),
               onTap: () async {
                 Navigator.of(context).pop();
-                int freeSlots = UserSettingsService().defaultFreeSlots;
+                int freeSlots = userSettings.defaultFreeSlots;
                 showModalBottomSheet(
                     context: context,
                     builder: (context) => LoadoutSelectSheet(

@@ -3,16 +3,15 @@ import 'dart:convert';
 import 'package:bungie_api/enums/bungie_membership_type.dart';
 import 'package:bungie_api/helpers/bungie_net_token.dart';
 import 'package:bungie_api/models/group_user_info_card.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:little_light/models/item_notes.dart';
 import 'package:little_light/models/item_notes_tag.dart';
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
-import 'package:little_light/services/auth/auth.service.dart';
-import 'package:little_light/services/storage/storage.service.dart';
-import 'package:uuid/uuid.dart';
 
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:little_light/services/storage/export.dart';
+import 'package:uuid/uuid.dart';
 
 class NotesResponse {
   List<ItemNotes> notes;

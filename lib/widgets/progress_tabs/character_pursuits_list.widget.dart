@@ -10,7 +10,7 @@ import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/user_settings/bucket_display_options.dart';
-import 'package:little_light/services/user_settings/user_settings.service.dart';
+import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/media_query_helper.dart';
@@ -52,7 +52,7 @@ class _PursuitListItem {
 
 class _CharacterPursuitsListWidgetState
     extends State<CharacterPursuitsListWidget>
-    with AutomaticKeepAliveClientMixin {
+    with AutomaticKeepAliveClientMixin, UserSettingsConsumer {
   List<_PursuitListItem> items;
   StreamSubscription<NotificationEvent> subscription;
   bool fullyLoaded = false;
@@ -85,7 +85,7 @@ class _CharacterPursuitsListWidgetState
         .getDefinitions<DestinyInventoryItemDefinition>(pursuitHashes);
     pursuits = (await InventoryUtils.sortDestinyItems(
             pursuits.map((p) => ItemWithOwner(p, null)),
-            sortingParams: UserSettingsService().pursuitOrdering))
+            sortingParams: userSettings.pursuitOrdering))
         .map((i) => i.item)
         .toList();
 
@@ -176,7 +176,7 @@ class _CharacterPursuitsListWidgetState
         return StaggeredTile.extent(30, 40);
         break;
       case _PursuitListItemType.Pursuit:
-        var options = UserSettingsService()
+        var options = userSettings
             .getDisplayOptionsForBucket(item.categoryId ?? "pursuits");
         switch (options.type) {
           case BucketDisplayType.Hidden:
@@ -233,7 +233,7 @@ class _CharacterPursuitsListWidgetState
         );
         break;
       case _PursuitListItemType.Pursuit:
-        var options = UserSettingsService()
+        var options = userSettings
             .getDisplayOptionsForBucket(item.categoryId ?? "pursuits");
         if (options.type == BucketDisplayType.Hidden) {
           return Container();

@@ -6,7 +6,7 @@ import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/user_settings/item_sort_parameter.dart';
-import 'package:little_light/services/user_settings/user_settings.service.dart';
+import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_filters/ammo_type_filter.dart';
 import 'package:little_light/utils/item_filters/base_item_filter.dart';
@@ -107,7 +107,7 @@ class SearchController extends ChangeNotifier {
                   type: ItemSortParameterType.BucketHash,
                   direction: 1)
             ] +
-            UserSettingsService().itemOrdering,
+            getInjectedUserSettings().itemOrdering,
         customSorting: []);
   }
 
@@ -150,7 +150,7 @@ class SearchController extends ChangeNotifier {
         preFilters: _replaceDefaultFilters(_defaultPreFilters, preFilters),
         filters: _replaceDefaultFilters(_defaultFilters, filters),
         postFilters: _replaceDefaultFilters(_defaultPostFilters, postFilters),
-        defaultSorting: defaultSorting ?? UserSettingsService().itemOrdering,
+        defaultSorting: defaultSorting ?? getInjectedUserSettings().itemOrdering,
         customSorting: customSorting ?? [],
         availableSorters:
             availableSorters ?? ItemSortParameter.availableEquipmentSorters);

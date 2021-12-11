@@ -3,16 +3,13 @@ import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:little_light/models/wish_list.dart';
 import 'package:little_light/services/littlelight/littlelight_data.service.dart';
 import 'package:little_light/services/translate/translate.service.dart';
-import 'package:little_light/services/user_settings/user_settings.service.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-
 import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AddWishlistScreen extends StatefulWidget {
-  final UserSettingsService settings = new UserSettingsService();
   @override
   _AddWishlistScreenState createState() => _AddWishlistScreenState();
 }

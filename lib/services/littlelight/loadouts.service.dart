@@ -1,6 +1,7 @@
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/services/littlelight/littlelight_api.service.dart';
-import 'package:little_light/services/storage/storage.service.dart';
+
+import 'package:little_light/services/storage/export.dart';
 
 class LoadoutsService {
   static final LoadoutsService _singleton = new LoadoutsService._internal();

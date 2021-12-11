@@ -4,7 +4,7 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/user_settings/bucket_display_options.dart';
-import 'package:little_light/services/user_settings/user_settings.service.dart';
+import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/item_list/bucket_header.widget.dart';
@@ -26,7 +26,7 @@ class VaultItemListWidget extends ItemListWidget {
   VaultItemListWidgetState createState() => new VaultItemListWidgetState();
 }
 
-class VaultItemListWidgetState extends ItemListWidgetState {
+class VaultItemListWidgetState extends ItemListWidgetState with UserSettingsConsumer{
   @override
   bool suppressEmptySpaces(bucketHash) => true;
 
@@ -97,7 +97,7 @@ class VaultItemListWidgetState extends ItemListWidgetState {
 
   @override
   BucketDisplayOptions getBucketOptions(ListItem item) {
-    var options = UserSettingsService()
+    var options = userSettings
         .getDisplayOptionsForBucket("vault_${item?.bucketHash}");
     return options;
   }

@@ -11,7 +11,7 @@ import 'package:little_light/screens/item_detail.screen.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/selection/selection.service.dart';
-import 'package:little_light/services/user_settings/user_settings.service.dart';
+import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
@@ -39,7 +39,8 @@ class DuplicatedListItem {
       {this.hash, this.item, this.ownerId, this.items});
 }
 
-class DuplicatedItemListWidget extends StatefulWidget {
+class DuplicatedItemListWidget extends StatefulWidget
+    with UserSettingsConsumer {
   final ProfileService profile = ProfileService();
   final SearchController searchController;
   DuplicatedItemListWidget({Key key, this.searchController}) : super(key: key);
@@ -280,7 +281,8 @@ class _ItemInstanceWrapper extends StatefulWidget {
   }
 }
 
-class _ItemInstanceWrapperState extends State<_ItemInstanceWrapper> {
+class _ItemInstanceWrapperState extends State<_ItemInstanceWrapper>
+    with UserSettingsConsumer {
   DestinyItemInstanceComponent instance;
   bool get selected => SelectionService()
       .isSelected(ItemWithOwner(widget.item, widget.characterId));
@@ -337,7 +339,7 @@ class _ItemInstanceWrapperState extends State<_ItemInstanceWrapper> {
       onLongPress(context);
       return;
     }
-    if (UserSettingsService().tapToSelect) {
+    if (userSettings.tapToSelect) {
       SelectionService()
           .setItem(ItemWithOwner(widget.item, widget.characterId));
       return;

@@ -2,19 +2,17 @@ import 'package:bungie_api/enums/destiny_class.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
-
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/inventory/inventory.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/services/user_settings/user_settings.service.dart';
+import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateless_item.widget.dart';
 import 'package:little_light/widgets/common/equip_on_character.button.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
-
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
-class ManagementBlockWidget extends BaseDestinyStatelessItemWidget {
+class ManagementBlockWidget extends BaseDestinyStatelessItemWidget with UserSettingsConsumer{
   final InventoryService inventory = new InventoryService();
   ManagementBlockWidget(
       DestinyItemComponent item,
@@ -157,7 +155,7 @@ class ManagementBlockWidget extends BaseDestinyStatelessItemWidget {
     }
     return this
         .profile
-        .getCharacters(UserSettingsService().characterOrdering)
+        .getCharacters(userSettings.characterOrdering)
         .where((char) =>
             !((instanceInfo?.isEquipped ?? false) &&
                 char.characterId == characterId) &&
@@ -184,7 +182,7 @@ class ManagementBlockWidget extends BaseDestinyStatelessItemWidget {
 
     List<TransferDestination> list = this
         .profile
-        .getCharacters(UserSettingsService().characterOrdering)
+        .getCharacters(userSettings.characterOrdering)
         .where((char) => !(char.characterId == characterId))
         .map((char) => TransferDestination(ItemDestination.Character,
             characterId: char.characterId))

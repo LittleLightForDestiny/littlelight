@@ -9,8 +9,8 @@ import 'package:bungie_api/models/user_membership_data.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/services/storage/storage.service.dart';
-import 'package:uni_links/uni_links.dart';
+
+import 'package:little_light/services/storage/export.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 bool initialLinkHandled = false;
@@ -23,11 +23,20 @@ class AuthService {
   BungieNetToken _currentToken;
   GroupUserInfoCard _currentMembership;
   UserMembershipData _membershipData;
-  bool waitingAuthCode = false;
-
-  StreamSubscription<String> linkStreamSub;
 
   AuthService._internal();
+
+  void openBungieLogin(bool forceReauth) async {
+    String currentLanguage = StorageService.getLanguage();
+    var browser = new BungieAuthBrowser();
+    OAuth.openOAuth(
+        browser, BungieApiService.clientId, currentLanguage, forceReauth);
+  }
+
+  Future<BungieNetToken> addAccount(String authorizationCode) async{
+    BungieNetToken token = await BungieApiService().requestToken(authorizationCode);
+    return token;
+  }
 
   Future<BungieNetToken> _getStoredToken() async {
     StorageService storage = StorageService.account();
@@ -90,45 +99,41 @@ class AuthService {
     return token;
   }
 
-  void openBungieLogin(bool forceReauth) async{
-    String currentLanguage = StorageService.getLanguage();
-    var browser = new BungieAuthBrowser();
-    OAuth.openOAuth(
-        browser, BungieApiService.clientId, currentLanguage, forceReauth);
-  }
+  
 
   Future<String> authorizeLegacy([bool forceReauth = true]) async {
     String currentLanguage = StorageService.getLanguage();
     var browser = new BungieAuthBrowser();
     OAuth.openOAuth(
         browser, BungieApiService.clientId, currentLanguage, forceReauth);
-    Stream<String> _stream = getLinksStream();
-    Completer<String> completer = Completer();
+    return null;
+    // Stream<String> _stream = getLinksStream();
+    // Completer<String> completer = Completer();
 
-    linkStreamSub?.cancel();
+    // linkStreamSub?.cancel();
 
-    linkStreamSub = _stream.listen((link) {
-      Uri uri = Uri.parse(link);
-      if (uri.queryParameters.containsKey("code") ||
-          uri.queryParameters.containsKey("error")) {
-        closeWebView();
-        linkStreamSub.cancel();
-      }
-      if (uri.queryParameters.containsKey("code")) {
-        String code = uri.queryParameters["code"];
-        completer.complete(code);
-      } else {
-        String errorType = uri.queryParameters["error"];
-        String errorDescription = uri.queryParameters["error_description"];
-        try {
-          throw OAuthException(errorType, errorDescription);
-        } on OAuthException catch (e, stack) {
-          completer.completeError(e, stack);
-        }
-      }
-    });
+    // linkStreamSub = _stream.listen((link) {
+    //   Uri uri = Uri.parse(link);
+    //   if (uri.queryParameters.containsKey("code") ||
+    //       uri.queryParameters.containsKey("error")) {
+    //     closeWebView();
+    //     linkStreamSub.cancel();
+    //   }
+    //   if (uri.queryParameters.containsKey("code")) {
+    //     String code = uri.queryParameters["code"];
+    //     completer.complete(code);
+    //   } else {
+    //     String errorType = uri.queryParameters["error"];
+    //     String errorDescription = uri.queryParameters["error_description"];
+    //     try {
+    //       throw OAuthException(errorType, errorDescription);
+    //     } on OAuthException catch (e, stack) {
+    //       completer.completeError(e, stack);
+    //     }
+    //   }
+    // });
 
-    return completer.future;
+    // return completer.future;
 
     // Uri uri;
     // if(waitingAuthCode) return null;
@@ -154,10 +159,10 @@ class AuthService {
 
   Future<String> checkAuthorizationCode() async {
     Uri uri;
-    if (!initialLinkHandled) {
-      uri = await getInitialUri();
-      initialLinkHandled = true;
-    }
+    // if (!initialLinkHandled) {
+    //   uri = await getInitialUri();
+    //   initialLinkHandled = true;
+    // }
 
     if (uri?.queryParameters == null) return null;
     print("initialURI: $uri");

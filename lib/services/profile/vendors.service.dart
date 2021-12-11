@@ -11,7 +11,7 @@ import 'package:bungie_api/models/destiny_vendor_sale_item_component.dart';
 import 'package:bungie_api/models/destiny_vendors_response.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 
-import 'package:little_light/services/storage/storage.service.dart';
+import 'package:little_light/services/storage/export.dart';
 
 const _vendorComponents = [
   DestinyComponentType.ItemInstances,

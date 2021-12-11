@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'dart:math' as math;
 
 import 'package:bungie_api/models/destiny_character_component.dart';
@@ -17,7 +16,7 @@ import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/destiny_settings.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/services/user_settings/user_settings.service.dart';
+import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -40,7 +39,7 @@ class CharacterInfoWidget extends StatefulWidget {
   }
 }
 
-class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
+class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> with UserSettingsConsumer{
   DestinyClassDefinition classDef;
   DestinyRaceDefinition raceDef;
   DestinyCharacterComponent character;
@@ -95,7 +94,7 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
               child: InkWell(
                   child: Container(),
                   onTap: () {
-                    UserSettingsService().hasTappedGhost = true;
+                    userSettings.hasTappedGhost = true;
                     setState(() {});
                     showOptionsSheet(context);
                   })))
@@ -158,7 +157,7 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
             period: Duration(seconds: 5),
             child: Icon(LittleLightIcons.ghost,
                 size: 50, color: Colors.grey.shade300)));
-    if (UserSettingsService().hasTappedGhost) {
+    if (userSettings.hasTappedGhost) {
       return ghost;
     }
     return Stack(children: [

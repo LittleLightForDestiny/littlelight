@@ -8,9 +8,9 @@ import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/littlelight/item_notes.service.dart';
 import 'package:little_light/services/littlelight/loadouts.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/services/user_settings/user_settings.service.dart';
+import 'package:little_light/services/user_settings/little_light_page.dart';
+import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/platform_capabilities.dart';
-import 'package:little_light/utils/selected_page_persistence.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/side_menu/side_menu.widget.dart';
 import 'package:screen/screen.dart';
@@ -20,7 +20,7 @@ class MainScreen extends StatefulWidget {
   MainScreenState createState() => MainScreenState();
 }
 
-class MainScreenState extends State<MainScreen> with WidgetsBindingObserver, AuthConsumer {
+class MainScreenState extends State<MainScreen> with WidgetsBindingObserver, AuthConsumer,UserSettingsConsumer {
   Widget currentScreen;
 
   @override
@@ -60,31 +60,34 @@ class MainScreenState extends State<MainScreen> with WidgetsBindingObserver, Aut
   }
 
   getInitScreen() async {
-    String screen = await SelectedPagePersistence.getLatestScreen();
-    switch (screen) {
-      case SelectedPagePersistence.equipment:
+    switch (userSettings.startingPage) {
+      case LittleLightPage.Equipment:
         currentScreen = EquipmentScreen();
         break;
 
-      case SelectedPagePersistence.progress:
+      case LittleLightPage.Progress:
         currentScreen = ProgressScreen();
         break;
 
-      case SelectedPagePersistence.collections:
+      case LittleLightPage.Collections:
         currentScreen = CollectionsScreen();
         break;
 
-      case SelectedPagePersistence.triumphs:
+      case LittleLightPage.Triumphs:
         currentScreen = OldTriumphsScreen();
         break;
 
-      case SelectedPagePersistence.loadouts:
+      case LittleLightPage.Loadouts:
         currentScreen = LoadoutsScreen();
+        break;
+
+      default:
+        currentScreen = EquipmentScreen();
         break;
     }
 
     setState(() {});
-    bool keepAwake = UserSettingsService().keepAwake;
+    bool keepAwake = userSettings.keepAwake;
 
     if (PlatformCapabilities.keepScreenOnAvailable) {
       Screen.keepOn(keepAwake);

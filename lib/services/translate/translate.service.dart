@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:core';
 
 import 'package:http/http.dart' as http;
-import 'package:little_light/services/storage/storage.service.dart';
+import 'package:little_light/services/storage/export.dart';
 import 'package:little_light/services/translate/timeago_messages/cn_messages.dart';
 import 'package:little_light/services/translate/timeago_messages/de_messages.dart';
 import 'package:little_light/services/translate/timeago_messages/en_messages.dart';

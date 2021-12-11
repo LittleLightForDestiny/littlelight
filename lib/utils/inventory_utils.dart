@@ -10,7 +10,7 @@ import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enu
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/user_settings/item_sort_parameter.dart';
-import 'package:little_light/services/user_settings/user_settings.service.dart';
+import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/item_sorters/base_item_sorter.dart';
 import 'package:little_light/utils/item_sorters/power_level_sorter.dart';
 import 'package:little_light/utils/item_sorters/priority_tags_sorter.dart';
@@ -50,7 +50,8 @@ class InventoryUtils {
       {List<ItemSortParameter> sortingParams,
       bool sortTags: true}) async {
     if (sortingParams == null) {
-      sortingParams = UserSettingsService().itemOrdering;
+      final userSettings = getInjectedUserSettings();
+      sortingParams = userSettings.itemOrdering;
     }
     await ManifestService().getDefinitions<DestinyInventoryItemDefinition>(
         items.map((i) => i?.item?.itemHash));
