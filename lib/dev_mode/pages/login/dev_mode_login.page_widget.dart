@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:bungie_api/helpers/bungie_net_token.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:little_light/core/routes/little_light_route.dart';
 import 'package:little_light/dev_mode/pages/login/dev_mode_login.page.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 
@@ -31,7 +30,6 @@ class _DevModeLoginPageWidgetState extends State<DevModeLoginPageWidget>
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(icon: Icon(FontAwesomeIcons.home), onPressed: (){
-          Navigator.pushAndRemoveUntil(context, LittleLightRoute(), (route) => false);
         },),
         title: Text("Login"),
       ),

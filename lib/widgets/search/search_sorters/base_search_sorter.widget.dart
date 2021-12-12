@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:little_light/services/user_settings/item_sort_parameter.dart';
+import 'package:little_light/models/item_sort_parameter.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
 import 'package:little_light/widgets/search/search.controller.dart';

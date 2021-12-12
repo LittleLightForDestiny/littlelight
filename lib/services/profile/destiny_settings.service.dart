@@ -22,9 +22,7 @@ class DestinySettingsService with StorageConsumer {
   static const int SeasonOverlevel = 2140885848;
 
   init() async {
-    var json =
-        await globalStorage.getJson(StorageKeys.bungieCommonSettings);
-    var settings = CoreSettingsConfiguration.fromJson(json ?? {});
+    var settings = await globalStorage.getBungieCommonSettings();
     var seasonHash = settings?.destiny2CoreSettings?.currentSeasonHash;
     var seasonDef = await ManifestService()
         .getDefinition<DestinySeasonDefinition>(seasonHash);
@@ -38,8 +36,7 @@ class DestinySettingsService with StorageConsumer {
       seasonHash = settings?.destiny2CoreSettings?.currentSeasonHash;
       seasonDef = await ManifestService()
           .getDefinition<DestinySeasonDefinition>(seasonHash);
-      await globalStorage
-          .setJson(StorageKeys.bungieCommonSettings, settings.toJson());
+      await globalStorage.setBungieCommonSettings(settings);
     }
     _currentSettings = settings;
     _currentSeasonPassDef = await ManifestService()

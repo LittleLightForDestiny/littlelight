@@ -6,8 +6,8 @@ import 'package:little_light/screens/search.screen.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/services/user_settings/item_sort_parameter.dart';
-import 'package:little_light/services/user_settings/little_light_page.dart';
+import 'package:little_light/models/item_sort_parameter.dart';
+import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/item_filters/item_owner_filter.dart';
 import 'package:little_light/utils/item_filters/pseudo_item_type_filter.dart';
@@ -32,7 +32,7 @@ class ProgressScreen extends StatefulWidget {
   ProgressScreenState createState() => new ProgressScreenState();
 }
 
-const _page = LittleLightPage.Progress;
+const _page = LittleLightPersistentPage.Progress;
 
 class ProgressScreenState extends State<ProgressScreen>
     with TickerProviderStateMixin, UserSettingsConsumer, AnalyticsConsumer {

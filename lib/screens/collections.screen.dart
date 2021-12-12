@@ -5,7 +5,7 @@ import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/profile/destiny_settings.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/services/user_settings/little_light_page.dart';
+import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -22,7 +22,7 @@ class CollectionsScreen extends PresentationNodeScreen {
   PresentationNodeScreenState createState() => new CollectionsScreenState();
 }
 
-const _page = LittleLightPage.Collections;
+const _page = LittleLightPersistentPage.Collections;
 
 class CollectionsScreenState
     extends PresentationNodeScreenState<CollectionsScreen>

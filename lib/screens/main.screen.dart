@@ -8,7 +8,7 @@ import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/littlelight/item_notes.service.dart';
 import 'package:little_light/services/littlelight/loadouts.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/services/user_settings/little_light_page.dart';
+import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/platform_capabilities.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -61,23 +61,23 @@ class MainScreenState extends State<MainScreen> with WidgetsBindingObserver, Aut
 
   getInitScreen() async {
     switch (userSettings.startingPage) {
-      case LittleLightPage.Equipment:
+      case LittleLightPersistentPage.Equipment:
         currentScreen = EquipmentScreen();
         break;
 
-      case LittleLightPage.Progress:
+      case LittleLightPersistentPage.Progress:
         currentScreen = ProgressScreen();
         break;
 
-      case LittleLightPage.Collections:
+      case LittleLightPersistentPage.Collections:
         currentScreen = CollectionsScreen();
         break;
 
-      case LittleLightPage.Triumphs:
+      case LittleLightPersistentPage.Triumphs:
         currentScreen = OldTriumphsScreen();
         break;
 
-      case LittleLightPage.Loadouts:
+      case LittleLightPersistentPage.Loadouts:
         currentScreen = LoadoutsScreen();
         break;
 

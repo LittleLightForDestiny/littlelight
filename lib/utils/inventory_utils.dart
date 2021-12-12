@@ -9,7 +9,7 @@ import 'package:little_light/models/loadout.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/services/user_settings/item_sort_parameter.dart';
+import 'package:little_light/models/item_sort_parameter.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/item_sorters/base_item_sorter.dart';
 import 'package:little_light/utils/item_sorters/power_level_sorter.dart';

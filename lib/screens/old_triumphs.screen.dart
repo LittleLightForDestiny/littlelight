@@ -4,7 +4,7 @@ import 'package:little_light/screens/triumph_search.screen.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:little_light/services/profile/destiny_settings.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/services/user_settings/little_light_page.dart';
+import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/presentation_nodes/presentation_node_tabs.widget.dart';
@@ -17,7 +17,7 @@ class OldTriumphsScreen extends PresentationNodeScreen {
   PresentationNodeScreenState createState() => TriumphsScreenState();
 }
 
-const _page = LittleLightPage.Triumphs;
+const _page = LittleLightPersistentPage.Triumphs;
 
 class TriumphsScreenState extends PresentationNodeScreenState<OldTriumphsScreen>
     with UserSettingsConsumer, AnalyticsConsumer {

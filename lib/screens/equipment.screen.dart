@@ -9,7 +9,7 @@ import 'package:little_light/services/bungie_api/enums/destiny_item_category.enu
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/services/user_settings/little_light_page.dart';
+import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/item_filters/pseudo_item_type_filter.dart';
 import 'package:little_light/utils/media_query_helper.dart';
@@ -43,7 +43,7 @@ class EquipmentScreen extends StatefulWidget {
   EquipmentScreenState createState() => new EquipmentScreenState();
 }
 
-const _page = LittleLightPage.Equipment;
+const _page = LittleLightPersistentPage.Equipment;
 
 class EquipmentScreenState extends State<EquipmentScreen>
     with TickerProviderStateMixin, AutomaticKeepAliveClientMixin, UserSettingsConsumer, AnalyticsConsumer {

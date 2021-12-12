@@ -4,13 +4,13 @@ import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/storage/export.dart';
 import 'package:little_light/services/user_settings/bucket_display_options.dart';
 import 'package:little_light/services/user_settings/character_sort_parameter.dart';
-import 'package:little_light/services/user_settings/item_sort_parameter.dart';
-import 'package:little_light/services/user_settings/little_light_page.dart';
+import 'package:little_light/models/item_sort_parameter.dart';
+import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
 import 'package:little_light/utils/remove_diacritics.dart';
 
-
 setupUserSettingsService() async {
-  GetIt.I.registerSingleton<UserSettingsService>(UserSettingsService._internal());
+  GetIt.I
+      .registerSingleton<UserSettingsService>(UserSettingsService._internal());
 }
 
 class UserSettingsService with StorageConsumer, AuthConsumer {
@@ -33,12 +33,9 @@ class UserSettingsService with StorageConsumer, AuthConsumer {
   }
 
   initItemOrdering() async {
-    List<dynamic> jsonList =
-        await globalStorage.getJson(StorageKeys.itemOrdering);
-    List<ItemSortParameter> savedParams =
-        (jsonList ?? []).map((j) => ItemSortParameter.fromJson(j)).toList();
+    List<ItemSortParameter> savedParams = await globalStorage.getItemOrdering();
     List<ItemSortParameterType> presentParams =
-        savedParams.map((p) => p.type).toList();
+        (savedParams ?? []).map((p) => p.type).toList();
     var defaults = ItemSortParameter.defaultItemList;
     var defaultParams = defaults.map((p) => p.type);
     savedParams.removeWhere((p) => !defaultParams.contains(p.type));
@@ -51,10 +48,8 @@ class UserSettingsService with StorageConsumer, AuthConsumer {
   }
 
   initPursuitOrdering() async {
-    List<dynamic> jsonList =
-        await globalStorage.getJson(StorageKeys.pursuitOrdering);
     List<ItemSortParameter> savedParams =
-        (jsonList ?? []).map((j) => ItemSortParameter.fromJson(j)).toList();
+        await globalStorage.getPursuitOrdering();
     Iterable<ItemSortParameterType> presentParams =
         savedParams.map((p) => p.type);
     var defaults = ItemSortParameter.defaultPursuitList;
@@ -160,66 +155,41 @@ class UserSettingsService with StorageConsumer, AuthConsumer {
         StorageKeys.detailsSectionDisplayVisibility, json);
   }
 
-  bool get hasTappedGhost {
-    return globalStorage.getBool(StorageKeys.hasTappedGhost) ?? false;
-  }
+  bool get hasTappedGhost => globalStorage.hasTappedGhost ?? false;
+  set hasTappedGhost(bool value) => globalStorage.hasTappedGhost = value;
 
-  set hasTappedGhost(bool value) {
-    globalStorage.setBool(StorageKeys.hasTappedGhost, value);
-  }
+  bool get keepAwake => globalStorage.keepAwake ?? false;
+  set keepAwake(bool value) => globalStorage.keepAwake = value;
 
-  bool get keepAwake {
-    return globalStorage.getBool(StorageKeys.keepAwake) ?? false;
-  }
+  bool get tapToSelect => globalStorage.tapToSelect ?? false;
 
-  set keepAwake(bool value) {
-    globalStorage.setBool(StorageKeys.keepAwake, value);
-  }
+  set tapToSelect(bool value) => globalStorage.tapToSelect = value;
 
-  bool get tapToSelect =>
-      globalStorage.getBool(StorageKeys.tapToSelect) ?? false;
+  int get defaultFreeSlots => globalStorage.defaultFreeSlots ?? 0;
+  set defaultFreeSlots(int value) => globalStorage.defaultFreeSlots = value;
 
-  set tapToSelect(bool value) {
-    globalStorage.setBool(StorageKeys.tapToSelect, value);
-  }
-
-  int get defaultFreeSlots {
-    return globalStorage.getInt(StorageKeys.defaultFreeSlots) ?? 0;
-  }
-
-  set defaultFreeSlots(int value) {
-    globalStorage.setInt(StorageKeys.defaultFreeSlots, value);
-  }
-
-  bool get autoOpenKeyboard {
-    return globalStorage.getBool(StorageKeys.autoOpenKeyboard) ?? false;
-  }
-
-  set autoOpenKeyboard(bool value) {
-    globalStorage.setBool(StorageKeys.autoOpenKeyboard, value);
-  }
+  bool get autoOpenKeyboard => globalStorage.autoOpenKeyboard ?? false;
+  set autoOpenKeyboard(bool value) => globalStorage.autoOpenKeyboard = value;
 
   List<ItemSortParameter> get itemOrdering => _itemOrdering;
 
   set itemOrdering(List<ItemSortParameter> ordering) {
     _itemOrdering = ordering;
-    var json = ordering.map((p) => p.toJson()).toList();
-    globalStorage.setJson(StorageKeys.itemOrdering, json);
+    globalStorage.setItemOrdering(_itemOrdering);
   }
 
   Set<String> get priorityTags => _priorityTags;
 
   set priorityTags(Set<String> tags) {
     _priorityTags = tags;
-    globalStorage.setJson(StorageKeys.priorityTags, List.from(_priorityTags));
+    membershipStorage.setJson(StorageKeys.priorityTags, List.from(_priorityTags));
   }
 
   List<ItemSortParameter> get pursuitOrdering => _pursuitOrdering;
 
   set pursuitOrdering(List<ItemSortParameter> ordering) {
     _pursuitOrdering = ordering;
-    var json = ordering.map((p) => p.toJson()).toList();
-    globalStorage.setJson(StorageKeys.pursuitOrdering, json);
+    globalStorage.setPursuitOrdering(_pursuitOrdering);
   }
 
   CharacterSortParameter get characterOrdering => _characterOrdering;
@@ -230,18 +200,19 @@ class UserSettingsService with StorageConsumer, AuthConsumer {
     membershipStorage.setJson(StorageKeys.characterOrdering, json);
   }
 
-  LittleLightPage get startingPage {
-    String pageName = globalStorage.getString(StorageKeys.latestScreen);
-    
+  LittleLightPersistentPage get startingPage {
+    final _page = globalStorage.startingPage;
+
     if (auth.isLogged) {
-      final _page = LittleLightPage.values.findByName(pageName);
-      return _page ?? LittleLightPage.Equipment;
+      return _page ?? LittleLightPersistentPage.Equipment;
     }
-    final _page = publicPages.findByName(pageName);
-    return _page ?? LittleLightPage.Collections;
+    if(publicPages.contains(_page)){
+      return _page;
+    }
+    return LittleLightPersistentPage.Collections;
   }
 
-  set startingPage(LittleLightPage page){
-    globalStorage.setString(StorageKeys.latestScreen, page.name);
+  set startingPage(LittleLightPersistentPage page) {
+    globalStorage.startingPage = page;
   }
 }

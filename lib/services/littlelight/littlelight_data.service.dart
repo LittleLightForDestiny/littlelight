@@ -8,6 +8,13 @@ import 'package:little_light/services/storage/export.dart';
 import 'package:http/http.dart' as http;
 
 class LittleLightDataService with StorageConsumer {
+  final _collaboratorsDataURL =
+      "https://cdn.jsdelivr.net/gh/LittleLightForDestiny/littleLightData/collaborators.json";
+  final _featuredWishlistsURL =
+      "https://cdn.jsdelivr.net/gh/LittleLightForDestiny/littleLightData/popular_wishlists.json";
+  final _gameDataURL =
+      "https://cdn.jsdelivr.net/gh/LittleLightForDestiny/littleLightData/game_data.json";
+  
   static final LittleLightDataService _singleton =
       new LittleLightDataService._internal();
   factory LittleLightDataService() {
@@ -15,89 +22,54 @@ class LittleLightDataService with StorageConsumer {
   }
   LittleLightDataService._internal();
 
-  Map<StorageKeys, dynamic> _data = Map();
 
   Future<List<Wishlist>> getFeaturedWishlists() async {
-    List<Wishlist> data =
-        await _getData(StorageKeys.featuredWishlists, Duration(seconds: 1));
+    List<Wishlist> data = await globalStorage.getFeaturedWishlists();
+    if (data != null) return data;
+    List<dynamic> contents = await fetchDataFromCDN(_featuredWishlistsURL);
+    try {
+      data = contents.map((e) => Wishlist.fromJson(e)).toList(); 
+      globalStorage.saveFeaturedWishlists(data);
+    }catch(e){
+      print("can't parse featured wishlists");
+    }
     return data;
   }
 
   Future<CollaboratorsResponse> getCollaborators() async {
-    CollaboratorsResponse data =
-        await _getData(StorageKeys.collaboratorsData, Duration(seconds: 1));
+    CollaboratorsResponse data = await globalStorage.getCollaborators();
+    if (data != null) return data;
+    dynamic contents = await fetchDataFromCDN(_collaboratorsDataURL);
+    try {
+      data = CollaboratorsResponse.fromJson(contents);
+      globalStorage.saveCollaborators(data);
+    }catch(e){
+      print("can't parse collaborators");
+    }
     return data;
   }
 
   Future<GameData> getGameData() async {
-    GameData data = await _getData(StorageKeys.gameData, Duration(seconds: 1));
-    return data;
-  }
-
-  Future<dynamic> _getData(StorageKeys key, [Duration time]) async {
-    if (_data[key] != null) return _data[key];
+    GameData data = await globalStorage.getGameData();
+    if (data != null) return data;
+    dynamic contents = await fetchDataFromCDN(_gameDataURL);
     try {
-      var fromStorage = await _loadFromStorage(key, time);
-      if (fromStorage != null) return fromStorage;
-    } catch (_) {}
-    return await _download(key);
-  }
-
-  Future<dynamic> _loadFromStorage(StorageKeys key, [Duration time]) async {
-    DateTime lastModified =
-        await globalStorage.getRawFileDate(StorageKeys.rawData, key.path);
-    DateTime minimumDate = DateTime.now().subtract(time ?? Duration(days: 7));
-    if (lastModified == null || lastModified.isBefore(minimumDate)) {
-      return null;
+      data = GameData.fromJson(contents);
+      globalStorage.saveGameData(data);
+    }catch(e){
+      print("can't parse game data");
     }
-    String raw = await globalStorage.getRawFile(StorageKeys.rawData, key.path);
-    if (raw == null) return null;
-    var data = _decodeData(raw, key);
-    _data[key] = data;
     return data;
   }
 
-  Future<dynamic> _download(StorageKeys key) async {
-    String url = _getURL(key);
-    if (url == null) return null;
-    String raw;
+  Future<dynamic> fetchDataFromCDN(String url) async {
     try {
       http.Response res = await http.get(Uri.parse(url));
-      raw = res.body;
-    } catch (e) {}
-    if (raw == null) return null;
-    globalStorage.saveRawFile(StorageKeys.rawData, key.path, raw);
-    var data = _decodeData(raw, key);
-    _data[key] = data;
-    return data;
-  }
+      String raw = res.body;
+      return jsonDecode(raw);
+    } catch (e) {
 
-  String _getURL(StorageKeys key) {
-    switch (key) {
-      case StorageKeys.collaboratorsData:
-        return "https://cdn.jsdelivr.net/gh/LittleLightForDestiny/littleLightData/collaborators.json";
-      case StorageKeys.featuredWishlists:
-        return "https://cdn.jsdelivr.net/gh/LittleLightForDestiny/littleLightData/popular_wishlists.json";
-      case StorageKeys.gameData:
-        return "https://cdn.jsdelivr.net/gh/LittleLightForDestiny/littleLightData/game_data.json";
-      default:
-        return null;
     }
-  }
-
-  dynamic _decodeData(String data, StorageKeys key) {
-    switch (key) {
-      case StorageKeys.featuredWishlists:
-        List<dynamic> json = jsonDecode(data);
-        return json.map((j) => Wishlist.fromJson(j)).toList();
-      case StorageKeys.collaboratorsData:
-        dynamic json = jsonDecode(data);
-        return CollaboratorsResponse.fromJson(json);
-      case StorageKeys.gameData:
-        dynamic json = jsonDecode(data);
-        return GameData.fromJson(json);
-      default:
-        return null;
-    }
+    return null;
   }
 }

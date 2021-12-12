@@ -1,5 +1,6 @@
 //@dart=2.12
 import 'package:get_it/get_it.dart';
+import 'global_storage.service.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'storage.service.dart';
 

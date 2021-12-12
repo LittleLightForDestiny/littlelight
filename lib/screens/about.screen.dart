@@ -36,12 +36,12 @@ class _AboutScreenState extends State<AboutScreen> with StorageConsumer {
   }
 
   void getInfo() async {
-    var info = await PackageInfo.fromPlatform();
+    final info = await PackageInfo.fromPlatform();
     packageVersion = info.version;
     appName = info.appName;
     if (Platform.isIOS) {
-      var lastUpdated = globalStorage.getDate(StorageKeys.versionUpdatedDate);
-      var now = DateTime.now();
+      final lastUpdated = globalStorage.lastUpdated;
+      final now = DateTime.now();
       if (lastUpdated == null || now.difference(lastUpdated).inDays < 3) {
         showDonationLinks = false;
       }

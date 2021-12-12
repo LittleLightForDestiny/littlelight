@@ -3,15 +3,15 @@ import 'dart:io';
 
 import 'package:get_it/get_it.dart';
 import 'package:little_light/services/storage/storage_migrations.dart';
-import 'package:package_info/package_info.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
+import 'global_storage.service.dart';
 import 'storage.keys.dart';
 
 setupStorageService() async {
-  GetIt.I.registerSingleton<GlobalStorage>(GlobalStorage._internal());
+  await setupGlobalStorageService();
   GetIt.I.registerFactoryParam<AccountStorage, String, void>(
       (accountID, _) => AccountStorage._internal(accountID));
   GetIt.I.registerFactoryParam<MembershipStorage, String, void>(
@@ -20,27 +20,27 @@ setupStorageService() async {
       (languageCode, _) => LanguageStorage._internal(languageCode));
 }
 
-class GlobalStorage extends StorageService {
-  bool _hasRunSetup = false;
-  GlobalStorage._internal() : super();
+// class GlobalStorage extends StorageService {
+//   bool _hasRunSetup = false;
+//   GlobalStorage._internal() : super();
 
-  setup() async {
-    if (_hasRunSetup) return;
-    await super.setup();
-    _versionCheck();
-    _hasRunSetup = true;
-  }
+//   setup() async {
+//     if (_hasRunSetup) return;
+//     await super.setup();
+//     _versionCheck();
+//     _hasRunSetup = true;
+//   }
 
-  _versionCheck() async {
-    var storedVersion = getString(StorageKeys.currentVersion);
-    var info = await PackageInfo.fromPlatform();
-    var packageVersion = info.version;
-    if (storedVersion != packageVersion) {
-      setString(StorageKeys.currentVersion, packageVersion);
-      setDate(StorageKeys.versionUpdatedDate, DateTime.now());
-    }
-  }
-}
+//   _versionCheck() async {
+//     var storedVersion = getString(StorageKeys.currentVersion);
+//     var info = await PackageInfo.fromPlatform();
+//     var packageVersion = info.version;
+//     if (storedVersion != packageVersion) {
+//       setString(StorageKeys.currentVersion, packageVersion);
+//       setDate(StorageKeys.versionUpdatedDate, DateTime.now());
+//     }
+//   }
+// }
 
 class AccountStorage extends StorageService {
   AccountStorage._internal(String accountID) : super("accounts/$accountID");
