@@ -42,10 +42,6 @@ setupStorageService() async {
 //   }
 // }
 
-class AccountStorage extends StorageService {
-  AccountStorage._internal(String accountID) : super("accounts/$accountID");
-}
-
 class LanguageStorage extends StorageService {
   LanguageStorage._internal(String languageCode)
       : super("languages/$languageCode");

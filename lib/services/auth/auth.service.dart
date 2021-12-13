@@ -45,15 +45,8 @@ class AuthService with StorageConsumer {
   }
 
   Future<BungieNetToken> _getStoredToken() async {
-    var json = await currentAccountStorage.getJson(StorageKeys.latestToken);
-    try {
-      return BungieNetToken.fromJson(json);
-    } catch (e) {
-      print(
-          "failed retrieving token for account: ${StorageService.getAccount()}");
-      print(e);
-    }
-    return null;
+    final token = await currentAccountStorage.getLatestToken();
+    return token;
   }
 
   Future<BungieNetToken> refreshToken(BungieNetToken token) async {
