@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:get_it/get_it.dart';
+import 'package:little_light/services/storage/account_storage.service.dart';
+import 'package:little_light/services/storage/membership_storage.service.dart';
 import 'package:little_light/services/storage/storage_migrations.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,10 +14,8 @@ import 'storage.keys.dart';
 
 setupStorageService() async {
   await setupGlobalStorageService();
-  GetIt.I.registerFactoryParam<AccountStorage, String, void>(
-      (accountID, _) => AccountStorage._internal(accountID));
-  GetIt.I.registerFactoryParam<MembershipStorage, String, void>(
-      (membershipID, _) => MembershipStorage._internal(membershipID));
+  await setupAccountStorageService();
+  await setupMembershipStorageService();
   GetIt.I.registerFactoryParam<LanguageStorage, String, void>(
       (languageCode, _) => LanguageStorage._internal(languageCode));
 }
@@ -46,11 +46,6 @@ class AccountStorage extends StorageService {
   AccountStorage._internal(String accountID) : super("accounts/$accountID");
 }
 
-class MembershipStorage extends StorageService {
-  MembershipStorage._internal(String membershipID)
-      : super("memberships/$membershipID");
-}
-
 class LanguageStorage extends StorageService {
   LanguageStorage._internal(String languageCode)
       : super("languages/$languageCode");
@@ -75,17 +70,7 @@ class StorageService {
     var code = languageCode ?? StorageService.getLanguage();
     return StorageService("languages/$code");
   }
-
-  factory StorageService.account([String accountId]) {
-    var id = accountId ?? StorageService.getAccount();
-    return StorageService("accounts/$id");
-  }
-
-  factory StorageService.membership([String membershipId]) {
-    var id = membershipId ?? StorageService.getMembership();
-    return StorageService("memberships/$id");
-  }
-
+  
   bool getBool(StorageKeys key) {
     return _prefs.getBool("$_path/${key.path}");
   }

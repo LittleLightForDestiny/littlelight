@@ -1,9 +1,8 @@
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/services/littlelight/littlelight_api.service.dart';
-
 import 'package:little_light/services/storage/export.dart';
 
-class LoadoutsService {
+class LoadoutsService with StorageConsumer{
   static final LoadoutsService _singleton = new LoadoutsService._internal();
   factory LoadoutsService() {
     return _singleton;
@@ -42,14 +41,11 @@ class LoadoutsService {
   }
 
   Future<List<Loadout>> _loadLoadoutsFromCache() async {
-    var storage = StorageService.membership();
-    List<dynamic> json = await storage.getJson(StorageKeys.cachedLoadouts);
-    if (json != null) {
-      List<Loadout> loadouts = json.map((j) => Loadout.fromJson(j)).toList();
-      this._loadouts = loadouts;
-      return loadouts;
+    final cached = await currentMembershipStorage.getCachedLoadouts();
+    if(cached != null){
+      this._loadouts = cached;
     }
-    return null;
+    return cached;
   }
 
   Future<List<Loadout>> _fetchLoadouts() async {
@@ -103,28 +99,23 @@ class LoadoutsService {
   }
 
   Future<void> _saveLoadoutsToStorage() async {
-    var storage = StorageService.membership();
     Set<String> _ids = Set();
     List<Loadout> distinctLoadouts = _loadouts.where((l) {
       bool exists = _ids.contains(l.assignedId);
       _ids.add(l.assignedId);
       return !exists;
     }).toList();
-    List<dynamic> json = distinctLoadouts.map((l) => l.toJson()).toList();
-    await storage.setJson(StorageKeys.cachedLoadouts, json);
+    await currentMembershipStorage.saveLoadouts(distinctLoadouts);
+  }
+
+  Future<List<String>> _getLoadoutsOrder() async {
+    final order = await currentMembershipStorage.getLoadoutsOrder();
+    return order ?? <String>[];
   }
 
   Future<void> saveLoadoutsOrder(List<Loadout> loadouts) async {
     List<String> order =
         loadouts.map((l) => l.assignedId).toList().reversed.toList();
-    var storage = StorageService.membership();
-    await storage.setJson(StorageKeys.loadoutsOrder, order);
-  }
-
-  Future<List<String>> _getLoadoutsOrder() async {
-    var storage = StorageService.membership();
-    var order = List<String>.from(
-        await storage.getJson(StorageKeys.loadoutsOrder) ?? []);
-    return order ?? <String>[];
+    await currentMembershipStorage.saveLoadoutsOrder(order);
   }
 }

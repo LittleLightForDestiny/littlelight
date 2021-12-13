@@ -10,7 +10,6 @@ import 'package:bungie_api/models/destiny_vendor_group.dart';
 import 'package:bungie_api/models/destiny_vendor_sale_item_component.dart';
 import 'package:bungie_api/models/destiny_vendors_response.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-
 import 'package:little_light/services/storage/export.dart';
 
 const _vendorComponents = [
@@ -22,7 +21,7 @@ const _vendorComponents = [
   DestinyComponentType.VendorSales,
 ];
 
-class VendorsService {
+class VendorsService with StorageConsumer {
   static final VendorsService _singleton = new VendorsService._internal();
   DateTime lastUpdated;
   factory VendorsService() {
@@ -110,12 +109,11 @@ class VendorsService {
 
   _cacheVendors(Map<String, DestinyVendorsResponse> vendors) async {
     if (vendors == null) return;
-    StorageService storage = StorageService.membership();
-    var json = _vendors.map<String, dynamic>(
-        (characterId, vendors) => MapEntry(characterId, vendors.toJson()));
-    storage.setJson(StorageKeys.cachedVendors, json);
+    currentMembershipStorage.saveCachedVendors(vendors);
   }
 
+
+  ///TODO: reimplement load from cache
   // Future<Map<String, DestinyVendorsResponse>> _loadFromCache() async {
   //   StorageService storage = StorageService.membership();
   //   Map<String, dynamic> json = await storage.getJson(StorageKeys.cachedVendors);

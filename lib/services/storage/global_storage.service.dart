@@ -31,7 +31,10 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
   setup() async {
     if (_hasRunSetup) return;
     await super.setup();
-    _versionCheck();
+    try {
+      await _versionCheck();
+    } catch (e) {}
+
     _hasRunSetup = true;
   }
 
@@ -44,6 +47,14 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
       setDate(GlobalStorageKeys.versionUpdatedDate, DateTime.now());
     }
   }
+
+  String? get currentAccountID => getString(GlobalStorageKeys.currentAccountID);
+  set currentAccountID(String? selectedAccountID) =>
+      setString(GlobalStorageKeys.currentAccountID, selectedAccountID);
+
+  String? get currentMembershipID => getString(GlobalStorageKeys.currentMembershipID);
+  set currentMembershipID(String? selectedMembershipID) =>
+      setString(GlobalStorageKeys.currentMembershipID, selectedMembershipID);
 
   Future<List<ItemSortParameter>?> getItemOrdering() async {
     List<dynamic>? jsonList = await getJson(GlobalStorageKeys.itemOrdering);
@@ -221,7 +232,7 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
     try {
       dynamic json = data.map((e) => e.toJson());
       await setJson(GlobalStorageKeys.featuredWishlists, json);
-    }catch(e){
+    } catch (e) {
       print("error saving featured wishlists");
       print(e);
     }
@@ -231,7 +242,7 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
     try {
       dynamic json = data.toJson();
       await setJson(GlobalStorageKeys.gameData, json);
-    }catch(e){
+    } catch (e) {
       print("error saving game data");
       print(e);
     }
@@ -241,7 +252,7 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
     try {
       dynamic json = data.toJson();
       await setJson(GlobalStorageKeys.gameData, json);
-    }catch(e){
+    } catch (e) {
       print("error saving collaborators");
       print(e);
     }

@@ -35,6 +35,7 @@ class StorageMigrations {
   }
 
   updateAccountInfo() async {
+    ///TODO: implement migrations for new file structure
     if(currentVersion > 106003) return;
     var latestMembership = prefs.getString("latestMembership");
     var latestToken = prefs.getString("latestToken");
@@ -57,9 +58,9 @@ class StorageMigrations {
           .firstWhere((m) => m.membershipType == membershipType,
               orElse: () => null)
           ?.membershipId;
-
-      var accountStorage = StorageService.account(selectedAccount);
-      var membershipStorage = StorageService.membership(selectedMembership);
+      
+      var accountStorage;//StorageService.account(selectedAccount);
+      // var membershipStorage = StorageService.membership(selectedMembership);
 
       accountStorage.setJson(StorageKeys.latestToken, bungieNetToken);
       accountStorage.setJson(
@@ -68,22 +69,22 @@ class StorageMigrations {
       StorageService.setAccount(selectedAccount);
       StorageService.setMembership(selectedMembership);
 
-      membershipStorage.setString(StorageKeys.membershipSecret,
-          prefs.getString("littlelight_secret"));
-      membershipStorage.setString(StorageKeys.membershipUUID,
-          prefs.getString("littlelight_device_id"));
+      // membershipStorage.setString(StorageKeys.membershipSecret,
+      //     prefs.getString("littlelight_secret"));
+      // membershipStorage.setString(StorageKeys.membershipUUID,
+      //     prefs.getString("littlelight_device_id"));
 
       if (await cachedLoadoutsFile.exists()) {
         var str = await cachedLoadoutsFile.readAsString();
         var json = jsonDecode(str);
-        membershipStorage.setJson(StorageKeys.cachedLoadouts, json);
+        // membershipStorage.setJson(StorageKeys.cachedLoadouts, json);
         await cachedLoadoutsFile.delete();
       }
 
       if (await trackedObjectivesFile.exists()) {
         var str = await trackedObjectivesFile.readAsString();
         var json = jsonDecode(str);
-        membershipStorage.setJson(StorageKeys.trackedObjectives, json);
+        // membershipStorage.setJson(StorageKeys.trackedObjectives, json);
         await trackedObjectivesFile.delete();
       }
 

@@ -1,4 +1,5 @@
 
+
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:little_light/models/tracked_objective.dart';
@@ -6,7 +7,7 @@ import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/storage/export.dart';
 
-class ObjectivesService {
+class ObjectivesService with StorageConsumer{
   static final ObjectivesService _singleton = new ObjectivesService._internal();
   factory ObjectivesService() {
     return _singleton;
@@ -105,8 +106,7 @@ class ObjectivesService {
   }
 
   Future<List<TrackedObjective>> _loadTrackedObjectivesFromCache() async {
-    var storage = StorageService.membership();
-    List<dynamic> json = await storage.getJson(StorageKeys.trackedObjectives);
+    List<dynamic> json = await currentMembershipStorage.getTrackedObjectives();
 
     if (json != null) {
       List<TrackedObjective> objectives =
@@ -150,11 +150,6 @@ class ObjectivesService {
   }
 
   Future<void> _saveTrackedObjectives() async {
-    StorageService storage = StorageService.membership();
-    dynamic json = _trackedObjectives
-        .where((l) => l.hash != null)
-        .map((l) => l.toJson())
-        .toList();
-    await storage.setJson(StorageKeys.trackedObjectives, json);
+    await currentMembershipStorage.saveTrackedObjectives(_trackedObjectives);
   }
 }

@@ -19,7 +19,7 @@ setupAuthService() async {
   GetIt.I.registerSingleton<AuthService>(AuthService._internal());
 }
 
-class AuthService {
+class AuthService with StorageConsumer {
   BungieNetToken _currentToken;
   GroupUserInfoCard _currentMembership;
   UserMembershipData _membershipData;
@@ -33,14 +33,19 @@ class AuthService {
         browser, BungieApiService.clientId, currentLanguage, forceReauth);
   }
 
-  Future<BungieNetToken> addAccount(String authorizationCode) async{
-    BungieNetToken token = await BungieApiService().requestToken(authorizationCode);
+  Future<BungieNetToken> addAccount(String authorizationCode) async {
+    BungieNetToken token =
+        await BungieApiService().requestToken(authorizationCode);
     return token;
   }
 
+  resetToken() {
+    /// TODO:implement clearToken
+    // currentAccountStorage.clearToken();
+  }
+
   Future<BungieNetToken> _getStoredToken() async {
-    StorageService storage = StorageService.account();
-    var json = await storage.getJson(StorageKeys.latestToken);
+    var json = await currentAccountStorage.getJson(StorageKeys.latestToken);
     try {
       return BungieNetToken.fromJson(json);
     } catch (e) {
@@ -62,10 +67,12 @@ class AuthService {
     if (token?.accessToken == null) {
       return;
     }
-    await StorageService.setAccount(token.membershipId);
-    StorageService storage = StorageService.account();
-    await storage.setJson(StorageKeys.latestToken, token.toJson());
-    await storage.setDate(StorageKeys.latestTokenDate, DateTime.now());
+    /// TODO: implement saveAccount on globalStorage
+    // await StorageService.setAccount(token.membershipId);
+
+    ///TODO : implement saveToken on accountStorage
+    // await storage.setJson(StorageKeys.latestToken, token.toJson());
+    // await storage.setDate(StorageKeys.latestTokenDate, DateTime.now());
     await Future.delayed(Duration(milliseconds: 1));
     _currentToken = token;
   }
@@ -79,17 +86,18 @@ class AuthService {
       return null;
     }
     DateTime now = DateTime.now();
-    StorageService storage = StorageService.account();
-    DateTime savedDate = storage.getDate(StorageKeys.latestTokenDate);
-    DateTime expire = savedDate.add(Duration(seconds: token.expiresIn));
-    DateTime refreshExpire =
-        savedDate.add(Duration(seconds: token.refreshExpiresIn));
-    if (refreshExpire.isBefore(now)) {
-      return null;
-    }
-    if (expire.isBefore(now)) {
-      token = await refreshToken(token);
-    }
+    
+    ///TODO :implement getToken on accountStorage
+    // DateTime savedDate = storage.getDate(StorageKeys.latestTokenDate);
+    // DateTime expire = savedDate.add(Duration(seconds: token.expiresIn));
+    // DateTime refreshExpire =
+    //     savedDate.add(Duration(seconds: token.refreshExpiresIn));
+    // if (refreshExpire.isBefore(now)) {
+    //   return null;
+    // }
+    // if (expire.isBefore(now)) {
+    //   token = await refreshToken(token);
+    // }
     return token;
   }
 
@@ -98,8 +106,6 @@ class AuthService {
     await _saveToken(token);
     return token;
   }
-
-  
 
   Future<String> authorizeLegacy([bool forceReauth = true]) async {
     String currentLanguage = StorageService.getLanguage();
@@ -184,8 +190,10 @@ class AuthService {
   Future<UserMembershipData> updateMembershipData() async {
     UserMembershipData membershipData =
         await BungieApiService().getMemberships();
-    var storage = StorageService.account();
-    await storage.setJson(StorageKeys.membershipData, membershipData);
+
+    /// TODO :implement saveMembershipData on accountStorage
+    // var storage = StorageService.account();
+    // await storage.setJson(StorageKeys.membershipData, membershipData);
     return membershipData;
   }
 
@@ -194,13 +202,15 @@ class AuthService {
   }
 
   Future<UserMembershipData> _getStoredMembershipData() async {
-    var storage = StorageService.account();
-    var json = await storage.getJson(StorageKeys.membershipData);
-    if (json == null) {
-      return null;
-    }
-    UserMembershipData membershipData = UserMembershipData.fromJson(json);
-    return membershipData;
+    /// TODO :implement getMembershipData on accountStorage
+    // var storage = StorageService.account();
+    // var json = await storage.getJson(StorageKeys.membershipData);
+    // if (json == null) {
+    //   return null;
+    // }
+    // UserMembershipData membershipData = UserMembershipData.fromJson(json);
+    // return membershipData;
+    return null;
   }
 
   void reset() {
@@ -233,10 +243,12 @@ class AuthService {
 
   Future<void> saveMembership(
       UserMembershipData membershipData, String membershipId) async {
-    StorageService storage = StorageService.account();
-    _currentMembership = getMembershipById(membershipData, membershipId);
-    storage.setJson(StorageKeys.membershipData, membershipData.toJson());
-    StorageService.setMembership(membershipId);
+
+      /// TODO: implement currentMembershipID on global storage
+    // StorageService storage = StorageService.account();
+    // _currentMembership = getMembershipById(membershipData, membershipId);
+    // storage.setJson(StorageKeys.membershipData, membershipData.toJson());
+    // StorageService.setMembership(membershipId);
   }
 
   bool get isLogged {

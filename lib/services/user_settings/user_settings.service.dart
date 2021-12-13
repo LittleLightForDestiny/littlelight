@@ -1,10 +1,10 @@
 import 'package:get_it/get_it.dart';
+import 'package:little_light/models/bucket_display_options.dart';
+import 'package:little_light/models/character_sort_parameter.dart';
 import 'package:little_light/models/item_notes_tag.dart';
+import 'package:little_light/models/item_sort_parameter.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/storage/export.dart';
-import 'package:little_light/services/user_settings/bucket_display_options.dart';
-import 'package:little_light/services/user_settings/character_sort_parameter.dart';
-import 'package:little_light/models/item_sort_parameter.dart';
 import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
 import 'package:little_light/utils/remove_diacritics.dart';
 
@@ -14,7 +14,6 @@ setupUserSettingsService() async {
 }
 
 class UserSettingsService with StorageConsumer, AuthConsumer {
-  StorageService get membershipStorage => StorageService.membership();
   List<ItemSortParameter> _itemOrdering;
   List<ItemSortParameter> _pursuitOrdering;
   CharacterSortParameter _characterOrdering;
@@ -64,47 +63,30 @@ class UserSettingsService with StorageConsumer, AuthConsumer {
   }
 
   initCharacterOrdering() async {
-    dynamic json =
-        await membershipStorage.getJson(StorageKeys.characterOrdering);
-    if (json == null) {
+    _characterOrdering = await currentMembershipStorage.getCharacterOrdering();
+    if (_characterOrdering == null) {
       _characterOrdering = CharacterSortParameter();
-      return;
     }
-    _characterOrdering = CharacterSortParameter.fromJson(json);
   }
 
   initPriorityTags() async {
-    dynamic json = await membershipStorage.getJson(StorageKeys.priorityTags);
-    if (json == null) {
+    _priorityTags = await currentMembershipStorage.getPriorityTags();
+    if (_priorityTags == null) {
       _priorityTags = Set.from([ItemNotesTag.favorite().tagId]);
-      return;
     }
-    _priorityTags = Set.from(json);
   }
 
   initBucketDisplayOptions() async {
-    try {
-      Map<String, dynamic> json =
-          await membershipStorage.getJson(StorageKeys.bucketDisplayOptions);
-      _bucketDisplayOptions = Map();
-      json.forEach((key, value) {
-        _bucketDisplayOptions[key] = BucketDisplayOptions.fromJson(value);
-      });
-    } catch (e) {
-      _bucketDisplayOptions = Map();
+    _bucketDisplayOptions = await currentMembershipStorage.getBucketDisplayOptions();
+    if(_bucketDisplayOptions == null){
+      _bucketDisplayOptions = Map<String, BucketDisplayOptions>();
     }
   }
 
   initDetailsSectionDisplayOptions() async {
-    try {
-      Map<String, dynamic> json = await membershipStorage
-          .getJson(StorageKeys.detailsSectionDisplayVisibility);
-      _detailsSectionDisplayVisibility = Map();
-      json.forEach((key, value) {
-        _detailsSectionDisplayVisibility[key] = json[value] ?? true;
-      });
-    } catch (e) {
-      _detailsSectionDisplayVisibility = Map();
+    _detailsSectionDisplayVisibility = await currentMembershipStorage.getDetailsSectionDisplayVisibility();
+    if(_detailsSectionDisplayVisibility == null){
+      _detailsSectionDisplayVisibility = Map<String, bool>();
     }
   }
 
@@ -125,11 +107,7 @@ class UserSettingsService with StorageConsumer, AuthConsumer {
   setDisplayOptionsForBucket(String key, BucketDisplayOptions options) {
     key = removeDiacritics(key).toLowerCase();
     _bucketDisplayOptions[key] = options;
-    var json = Map<String, dynamic>();
-    _bucketDisplayOptions.forEach((k, v) {
-      json[k] = v.toJson();
-    });
-    membershipStorage.setJson(StorageKeys.bucketDisplayOptions, json);
+    currentMembershipStorage.saveBucketDisplayOptions(_bucketDisplayOptions);
   }
 
   bool getVisibilityForDetailsSection(String id) {
@@ -147,12 +125,7 @@ class UserSettingsService with StorageConsumer, AuthConsumer {
     } catch (e) {
       return;
     }
-    var json = Map<String, bool>();
-    _detailsSectionDisplayVisibility.forEach((k, v) {
-      json[k] = v;
-    });
-    membershipStorage.setJson(
-        StorageKeys.detailsSectionDisplayVisibility, json);
+    currentMembershipStorage.saveDetailsSectionDisplayVisibility(_detailsSectionDisplayVisibility);
   }
 
   bool get hasTappedGhost => globalStorage.hasTappedGhost ?? false;
@@ -182,7 +155,7 @@ class UserSettingsService with StorageConsumer, AuthConsumer {
 
   set priorityTags(Set<String> tags) {
     _priorityTags = tags;
-    membershipStorage.setJson(StorageKeys.priorityTags, List.from(_priorityTags));
+    currentMembershipStorage.savePriorityTags(_priorityTags);
   }
 
   List<ItemSortParameter> get pursuitOrdering => _pursuitOrdering;
@@ -196,8 +169,7 @@ class UserSettingsService with StorageConsumer, AuthConsumer {
 
   set characterOrdering(CharacterSortParameter ordering) {
     _characterOrdering = ordering;
-    var json = ordering.toJson();
-    membershipStorage.setJson(StorageKeys.characterOrdering, json);
+    currentMembershipStorage.saveCharacterOrdering(_characterOrdering);
   }
 
   LittleLightPersistentPage get startingPage {
@@ -206,7 +178,7 @@ class UserSettingsService with StorageConsumer, AuthConsumer {
     if (auth.isLogged) {
       return _page ?? LittleLightPersistentPage.Equipment;
     }
-    if(publicPages.contains(_page)){
+    if (publicPages.contains(_page)) {
       return _page;
     }
     return LittleLightPersistentPage.Collections;

@@ -10,7 +10,7 @@ final Map<String, ItemNotesTag> _defaultTags = {
   "infuse": ItemNotesTag.infuse(),
 };
 
-class ItemNotesService {
+class ItemNotesService with StorageConsumer {
   static final ItemNotesService _singleton = new ItemNotesService._internal();
   factory ItemNotesService() {
     return _singleton;
@@ -53,23 +53,9 @@ class ItemNotesService {
   }
 
   Future<bool> _loadNotesFromCache() async {
-    var storage = StorageService.membership();
-    List<dynamic> notesJson = await storage.getJson(StorageKeys.cachedNotes);
-    List<dynamic> tagsJson = await storage.getJson(StorageKeys.cachedTags);
-
-    if (notesJson != null && tagsJson != null) {
-      _notes = Map.fromEntries(notesJson.map((j) {
-        var note = ItemNotes.fromJson(j);
-        return MapEntry(note.uniqueId, note);
-      }));
-      _tags = Map.fromEntries(tagsJson.map((j) {
-        var tag = ItemNotesTag.fromJson(j);
-        return MapEntry(tag.tagId, tag);
-      }));
-      return true;
-    }
-
-    return false;
+    _notes = await currentMembershipStorage.getCachedNotes();
+    _tags = await currentMembershipStorage.getCachedTags();
+    return _notes != null && _tags != null;
   }
 
   Future<bool> _fetchNotes() async {
@@ -129,21 +115,10 @@ class ItemNotesService {
   }
 
   Future<void> _saveTagsToStorage() async {
-    var storage = StorageService.membership();
-    List<dynamic> json = _tags?.values?.map((l) => l.toJson())?.toList() ?? [];
-    await storage.setJson(StorageKeys.cachedTags, json);
+    await currentMembershipStorage.saveCachedTags(_tags ?? Map());
   }
 
   Future<void> _saveNotesToStorage() async {
-    var storage = StorageService.membership();
-    List<dynamic> json = _notes?.values
-            ?.where((element) =>
-                (element?.notes?.length ?? 0) > 0 ||
-                (element?.customName?.length ?? 0) > 0 ||
-                (element?.tags?.length ?? 0) > 0)
-            ?.map((l) => l.toJson())
-            ?.toList() ??
-        [];
-    await storage.setJson(StorageKeys.cachedNotes, json);
+    await currentMembershipStorage.saveCachedNotes(_notes ?? Map());
   }
 }

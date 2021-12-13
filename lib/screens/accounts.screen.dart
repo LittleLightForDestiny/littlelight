@@ -33,18 +33,19 @@ class _AccountsScreenState extends State<AccountsScreen> with AuthConsumer {
   }
 
   void loadAccounts() async {
-    currentAccount = StorageService.getAccount();
-    accounts = StorageService.getAccounts();
-    Map<String, UserMembershipData> memberships = new Map();
-    for (var account in accounts) {
-      var storage = StorageService.account(account);
-      var json = await storage.getJson(StorageKeys.membershipData);
-      var membership = UserMembershipData.fromJson(json ?? {});
-      memberships[account] = membership;
-    }
-    memberships.removeWhere((key, value) => value == null);
-    this.memberships = memberships;
-    setState(() {});
+    /// TODO: implement getAccounts on AuthService
+    // currentAccount = StorageService.getAccount();
+    // accounts = StorageService.getAccounts();
+    // Map<String, UserMembershipData> memberships = new Map();
+    // for (var account in accounts) {
+    //   var storage = StorageService.account(account);
+    //   var json = await storage.getJson(StorageKeys.membershipData);
+    //   var membership = UserMembershipData.fromJson(json ?? {});
+    //   memberships[account] = membership;
+    // }
+    // memberships.removeWhere((key, value) => value == null);
+    // this.memberships = memberships;
+    // setState(() {});
   }
 
   @override
@@ -268,15 +269,16 @@ class _AccountsScreenState extends State<AccountsScreen> with AuthConsumer {
   }
 
   void deleteAccount(UserMembershipData membership) async {
-    if (membership?.destinyMemberships != null) {
-      for (var m in membership.destinyMemberships) {
-        await StorageService.membership(m.membershipId).purge();
-      }
-    }
-    await StorageService.account(membership?.bungieNetUser?.membershipId)
-        .purge();
+    /// TODO: implement removeAccount on authService
+    // if (membership?.destinyMemberships != null) {
+    //   for (var m in membership.destinyMemberships) {
+    //     await StorageService.membership(m.membershipId).purge();
+    //   }
+    // }
+    // await StorageService.account(membership?.bungieNetUser?.membershipId)
+    //     .purge();
 
-    await StorageService.removeAccount(membership?.bungieNetUser?.membershipId);
-    loadAccounts();
+    // await StorageService.removeAccount(membership?.bungieNetUser?.membershipId);
+    // loadAccounts();
   }
 }

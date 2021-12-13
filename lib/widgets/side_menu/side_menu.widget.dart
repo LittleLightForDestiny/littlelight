@@ -52,16 +52,17 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer{
   }
 
   fetchMemberships() async {
-    var accounts = StorageService.getAccounts();
-    memberships = [];
-    for (var accountId in accounts) {
-      var storage = StorageService.account(accountId);
-      var json = await storage.getJson(StorageKeys.membershipData);
-      var membershipData = UserMembershipData.fromJson(json ?? {});
-      memberships.add(membershipData);
-    }
-    if (!mounted) return;
-    setState(() {});
+    /// TODO: implement fetchMemberships on AuthService
+    // var accounts = StorageService.getAccounts();
+    // memberships = [];
+    // for (var accountId in accounts) {
+    //   var storage = StorageService.account(accountId);
+    //   var json = await storage.getJson(StorageKeys.membershipData);
+    //   var membershipData = UserMembershipData.fromJson(json ?? {});
+    //   memberships.add(membershipData);
+    // }
+    // if (!mounted) return;
+    // setState(() {});
   }
 
   @override

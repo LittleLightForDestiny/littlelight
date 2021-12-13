@@ -14,7 +14,7 @@ enum TrackedObjectiveType {
 @JsonSerializable()
 class TrackedObjective {
   TrackedObjectiveType type;
-  int hash;
+  int? hash;
   String? instanceId;
   String? characterId;
   int? parentHash;

@@ -20,7 +20,7 @@ class NotesResponse {
   NotesResponse({this.notes, this.tags});
 }
 
-class LittleLightApiService with AuthConsumer{
+class LittleLightApiService with AuthConsumer, StorageConsumer {
   String _uuid;
   String _secret;
 
@@ -122,11 +122,10 @@ class LittleLightApiService with AuthConsumer{
 
   Future<String> _getUuid() async {
     if (_uuid != null) return _uuid;
-    StorageService prefs = StorageService.membership();
-    String uuid = prefs.getString(StorageKeys.membershipUUID);
+    String uuid = currentMembershipStorage.littleLightMembershipUUID;
     if (uuid == null) {
       uuid = Uuid().v4();
-      prefs.setString(StorageKeys.membershipUUID, uuid);
+      currentMembershipStorage.littleLightMembershipUUID = uuid;
       _uuid = uuid;
     }
     return uuid;
@@ -134,15 +133,13 @@ class LittleLightApiService with AuthConsumer{
 
   Future<String> _getSecret() async {
     if (_secret != null) return _secret;
-    StorageService prefs = StorageService.membership();
-    String secret = prefs.getString(StorageKeys.membershipSecret);
+    String secret = currentMembershipStorage.littleLightMembershipSecret;
     _secret = secret;
     return secret;
   }
 
   _setSecret(String secret) async {
-    StorageService prefs = StorageService.membership();
-    prefs.setString(StorageKeys.membershipSecret, secret);
+    currentMembershipStorage.littleLightMembershipSecret = secret;
     _secret = secret;
   }
 }

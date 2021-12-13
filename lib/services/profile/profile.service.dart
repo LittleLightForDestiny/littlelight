@@ -21,11 +21,11 @@ import 'package:bungie_api/models/destiny_presentation_node_component.dart';
 import 'package:bungie_api/models/destiny_profile_response.dart';
 import 'package:bungie_api/models/destiny_record_component.dart';
 import 'package:bungie_api/models/destiny_stat.dart';
+import 'package:little_light/models/character_sort_parameter.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/storage/export.dart';
-import 'package:little_light/services/user_settings/character_sort_parameter.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 
 enum LastLoadedFrom { server, cache }
@@ -92,7 +92,7 @@ class ProfileComponentGroups {
   ];
 }
 
-class ProfileService with UserSettingsConsumer {
+class ProfileService with UserSettingsConsumer, StorageConsumer {
   final NotificationService _broadcaster = new NotificationService();
   static final ProfileService _singleton = new ProfileService._internal();
 
@@ -271,26 +271,19 @@ class ProfileService with UserSettingsConsumer {
 
   _cacheProfile(DestinyProfileResponse profile) async {
     if (profile == null) return;
-    StorageService storage = StorageService.membership();
-    storage.setJson(StorageKeys.cachedProfile, profile.toJson());
+    await currentMembershipStorage.saveCachedProfile(profile);
     print('saved to cache');
   }
 
   Future<DestinyProfileResponse> loadFromCache() async {
-    StorageService storage = StorageService.membership();
-    var json = await storage.getJson(StorageKeys.cachedProfile);
-    if (json != null) {
-      try {
-        DestinyProfileResponse response = DestinyProfileResponse.fromJson(json);
-        if ((response?.characters?.data?.length ?? 0) > 0) {
-          this._profile = response;
-          this._lastLoadedFrom = LastLoadedFrom.cache;
-          print('loaded profile from cache');
-          return response;
-        }
-      } catch (e) {}
+    final data = await currentMembershipStorage.getCachedProfile();
+    if( data != null){
+      this._profile = data;
+      this._lastLoadedFrom = LastLoadedFrom.cache;
+      print('loaded profile from cache');
+      return data;
     }
-
+    /// TODO: handle profile loading from web somewhere else
     DestinyProfileResponse response = await fetchProfileData();
     print('loaded profile from server');
     return response;

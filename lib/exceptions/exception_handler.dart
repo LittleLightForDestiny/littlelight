@@ -6,15 +6,14 @@ import 'package:bungie_api/enums/platform_error_codes.dart';
 import 'package:bungie_api/helpers/oauth.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.exception.dart';
-
-import 'package:little_light/services/storage/export.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
 
 typedef OnRestart = Function(BuildContext context);
 
-class ExceptionHandler {
+class ExceptionHandler with AuthConsumer {
   static BuildContext context;
   OnRestart onRestart;
   ExceptionHandler({this.onRestart}) {
@@ -98,8 +97,7 @@ class ExceptionHandler {
                         ? ErrorDialogButton(
                             text: "Login with another account",
                             onPressed: () async {
-                              await StorageService.account()
-                                  .remove(StorageKeys.latestToken, true);
+                              await auth.resetToken();
                               Navigator.pop(context);
                               onRestart(context);
                             })
