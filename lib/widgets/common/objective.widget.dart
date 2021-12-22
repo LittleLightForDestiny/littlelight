@@ -155,18 +155,19 @@ class ObjectiveWidgetState extends State<ObjectiveWidget> {
     if (forceComplete) {
       progress = total;
     }
-    var formatter = NumberFormat.decimalPattern(StorageService.getLanguage());
-    String formattedProgress = formatter.format(progress);
-    String formattedTotal = formatter.format(total);
+    ///TODO: add getLanguage method on language service
+    // var formatter = NumberFormat.decimalPattern(StorageService.getLanguage());
+    // String formattedProgress = formatter.format(progress);
+    // String formattedTotal = formatter.format(total);
 
-    return Text(
-        total <= 1
-            ? "$formattedProgress"
-            : "$formattedProgress/$formattedTotal",
-        style: TextStyle(
-            fontWeight: FontWeight.w500,
-            fontSize: 13,
-            color: this.color ?? Colors.grey.shade300));
+    // return Text(
+    //     total <= 1
+    //         ? "$formattedProgress"
+    //         : "$formattedProgress/$formattedTotal",
+    //     style: TextStyle(
+    //         fontWeight: FontWeight.w500,
+    //         fontSize: 13,
+    //         color: this.color ?? Colors.grey.shade300));
   }
 
   buildProgressBar(BuildContext context) {

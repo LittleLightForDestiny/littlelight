@@ -13,7 +13,7 @@ import 'package:sqflite/sqflite.dart' as sqflite;
 
 typedef void DownloadProgress(int downloaded, int total);
 
-class ManifestService {
+class ManifestService with StorageConsumer{
   sqflite.Database _db;
   DestinyManifest _manifestInfo;
   final BungieApiService _api = new BungieApiService();
@@ -67,15 +67,18 @@ class ManifestService {
   Future<bool> needsUpdate() async {
     DestinyManifest manifestInfo = await loadManifestInfo();
     String currentVersion = await getSavedVersion();
-    String language = StorageService.getLanguage();
-    var working = await test();
-    return !working ||
-        currentVersion != manifestInfo.mobileWorldContentPaths[language];
+    ///TODO: add getLanguage method on language service
+    // String language = StorageService.getLanguage();
+    // var working = await test();
+    // return !working ||
+    //     currentVersion != manifestInfo.mobileWorldContentPaths[language];
   }
 
   Future<bool> download({DownloadProgress onProgress}) async {
     DestinyManifest info = await loadManifestInfo();
-    String language = StorageService.getLanguage();
+    ///TODO: add getLanguage method on language service
+    // String language = StorageService.getLanguage();
+    String language;
     String path = info.mobileWorldContentPaths[language];
     String url = BungieApiService.url(path);
     String localPath = await _localPath;
@@ -98,8 +101,8 @@ class ManifestService {
     await sink.close();
 
     List<int> unzippedData = await compute(_extractFromZip, zipFile);
-    StorageService storage = StorageService.language();
-    await storage.saveDatabase(StorageKeys.manifestFile, unzippedData);
+    /// TODO: add method to save database on language storage
+    // await currentLanguageStorage.saveDatabase(StorageKeys.manifestFile, unzippedData);
 
     await zipFile.delete();
 
@@ -135,8 +138,9 @@ class ManifestService {
     if (_db?.isOpen == true) {
       return _db;
     }
-    var storage = StorageService.language();
-    var path = await storage.getPath(StorageKeys.manifestFile, dbPath: true);
+    /// TODO: add method to get language manifest db path
+    // var path = await currentLanguageStorage.getPath(StorageKeys.manifestFile, dbPath: true);
+    var path;
     var dbFile = File(path);
     var dbExists = await dbFile.exists();
     if(!dbExists) return null;
@@ -153,8 +157,10 @@ class ManifestService {
   }
 
   Future<String> getSavedVersion() async {
-    StorageService _prefs = StorageService.language();
-    String version = _prefs.getString(StorageKeys.manifestVersion);
+    /// TODO: add method to return current manifest version
+    // StorageService _prefs = StorageService.language();
+    // String version = _prefs.getString(StorageKeys.manifestVersion);
+    String version;
     if (version == null) {
       return null;
     }
@@ -162,8 +168,9 @@ class ManifestService {
   }
 
   Future<void> saveManifestVersion(String version) async {
-    StorageService _prefs = StorageService.language();
-    _prefs.setString(StorageKeys.manifestVersion, version);
+    /// TODO: add method to save current manifest version
+    // StorageService _prefs = StorageService.language();
+    // _prefs.setString(StorageKeys.manifestVersion, version);
   }
 
   Future<Map<int, T>> searchDefinitions<T>(List<String> parameters,

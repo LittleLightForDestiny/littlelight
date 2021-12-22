@@ -1,12 +1,11 @@
 //@dart=2.12
 
-enum AccountStorageKeys {
+enum LanguageStorageKeys {
   latestToken,
   latestTokenDate,
-  membershipData
 }
 
-extension StorageKeyPathsExtension on AccountStorageKeys {
+extension StorageKeyPathsExtension on LanguageStorageKeys {
   String get path {
     String name = this.toString().split(".")[1];
     return name;

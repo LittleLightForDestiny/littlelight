@@ -5,6 +5,7 @@ enum GlobalStorageKeys {
   accountIDs,
   currentMembershipID,
   membershipIDs,
+  currentLanguageCode,
   currentVersion,
   versionUpdatedDate,
   keepAwake,

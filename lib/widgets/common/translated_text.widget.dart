@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:little_light/services/translate/translate.service.dart';
+import 'package:little_light/services/language/language.service.dart';
 
 typedef String ExtractTextFromData(dynamic data);
 
 class TranslatedTextWidget extends StatefulWidget {
-  final TranslateService translate = new TranslateService();
+  final LanguageService translate = new LanguageService();
   final String text;
   final String language;
   final Map<String,String> replace;

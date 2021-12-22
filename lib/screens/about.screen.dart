@@ -8,7 +8,7 @@ import 'package:little_light/models/collaborators.dart';
 import 'package:little_light/services/littlelight/littlelight_data.service.dart';
 
 import 'package:little_light/services/storage/export.dart';
-import 'package:little_light/services/translate/translate.service.dart';
+import 'package:little_light/services/language/language.service.dart';
 import 'package:little_light/widgets/about/supporter_character.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 
@@ -219,7 +219,7 @@ class _AboutScreenState extends State<AboutScreen> with StorageConsumer {
   buildTranslationHeader(BuildContext context, List<String> languages) {
     List<Widget> flags = languages.map((l) => flagIcon(l)).toList();
     Text languageNames = Text(
-        languages.map((l) => TranslateService().languageNames[l]).join("/"));
+        languages.map((l) => LanguageService().languageNames[l]).join("/"));
     return Container(
         color: Colors.blueGrey.shade600,
         padding: EdgeInsets.all(4),

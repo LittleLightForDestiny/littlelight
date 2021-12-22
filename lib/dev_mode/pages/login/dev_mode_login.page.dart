@@ -1,16 +1,10 @@
+//@dart=2.12
+
 import 'package:flutter/material.dart';
-import 'dev_mode_login.page_widget.dart';
+import 'package:little_light/dev_mode/pages/login/dev_mode_login.page_widget.dart';
 
-class DevModeLoginPageArguments {
-  final String code;
-  final String error;
-
-  DevModeLoginPageArguments({this.code, this.error});
-}
-
-class DevModeLoginPage extends MaterialPage {
-  DevModeLoginPage(String code, String error)
+class DevModeLoginPageRoute extends MaterialPageRoute {
+  DevModeLoginPageRoute(RouteSettings settings)
       : super(
-            arguments: DevModeLoginPageArguments(code: code, error: error),
-            child: DevModeLoginPageWidget());
+            settings: settings, builder: (context) => DevModeLoginPageWidget());
 }

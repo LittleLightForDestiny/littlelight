@@ -1,6 +1,4 @@
-import 'dart:io';
 
-import 'package:bungie_api/helpers/oauth.dart';
 import 'package:bungie_api/models/general_user.dart';
 import 'package:bungie_api/models/group_user_info_card.dart';
 import 'package:bungie_api/models/user_membership_data.dart';
@@ -9,8 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:little_light/screens/initial.screen.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-
-import 'package:little_light/services/storage/export.dart';
 import 'package:little_light/utils/platform_data.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
@@ -22,7 +18,7 @@ class AccountsScreen extends StatefulWidget {
 }
 
 class _AccountsScreenState extends State<AccountsScreen> with AuthConsumer {
-  List<String> accounts;
+  Set<String> accounts;
   String currentAccount;
   Map<String, UserMembershipData> memberships;
 
@@ -33,19 +29,10 @@ class _AccountsScreenState extends State<AccountsScreen> with AuthConsumer {
   }
 
   void loadAccounts() async {
-    /// TODO: implement getAccounts on AuthService
-    // currentAccount = StorageService.getAccount();
-    // accounts = StorageService.getAccounts();
-    // Map<String, UserMembershipData> memberships = new Map();
-    // for (var account in accounts) {
-    //   var storage = StorageService.account(account);
-    //   var json = await storage.getJson(StorageKeys.membershipData);
-    //   var membership = UserMembershipData.fromJson(json ?? {});
-    //   memberships[account] = membership;
-    // }
-    // memberships.removeWhere((key, value) => value == null);
-    // this.memberships = memberships;
-    // setState(() {});
+    currentAccount = auth.currentAccountID;
+    accounts = auth.accountIDs;
+    this.memberships = await auth.fetchMembershipDataForAllAccounts();
+    setState(() {});
   }
 
   @override
@@ -92,8 +79,8 @@ class _AccountsScreenState extends State<AccountsScreen> with AuthConsumer {
   }
 
   Widget buildAccountItem(BuildContext context, String accountId) {
-    var membership = memberships[accountId];
-    var isCurrent = accountId == StorageService.getAccount();
+    final membership = memberships[accountId];
+    final isCurrent = accountId == currentAccount;
     return Container(
         margin: EdgeInsets.symmetric(vertical: 4),
         height: 140,
@@ -188,8 +175,9 @@ class _AccountsScreenState extends State<AccountsScreen> with AuthConsumer {
       color: plat.color,
       child: InkWell(
         onTap: () {
-          StorageService.setAccount(bungieNetUser.membershipId);
-          StorageService.setMembership(membership.membershipId);
+          auth.currentAccountID = bungieNetUser.membershipId;
+          auth.currentMembershipID = membership.membershipId;
+          
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
@@ -213,55 +201,8 @@ class _AccountsScreenState extends State<AccountsScreen> with AuthConsumer {
 
   addAccount(BuildContext context) async {
     try {
-      String code = await auth.authorizeLegacy(true);
-      if (code != null) {
-        await StorageService.setAccount(null);
-        await StorageService.setMembership(null);
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => InitialScreen(
-                authCode: code,
-              ),
-            ));
-      }
-    } on OAuthException catch (e) {
-      print(e);
-      bool isIOS = Platform.isIOS;
-      String platformMessage =
-          "If this keeps happening, please try to login with a mainstream browser.";
-      if (isIOS) {
-        platformMessage =
-            "Please dont open the auth process in another safari window, this could prevent you from getting logged in.";
-      }
-      showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-                actions: <Widget>[
-                  MaterialButton(
-                    enableFeedback: false,
-                    textColor: Colors.blueGrey.shade300,
-                    child: TranslatedTextWidget("OK"),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  )
-                ],
-                title: TranslatedTextWidget(e.error),
-                content: Container(
-                    padding: EdgeInsets.all(16),
-                    child: Column(mainAxisSize: MainAxisSize.min, children: [
-                      TranslatedTextWidget(
-                        e.errorDescription,
-                        textAlign: TextAlign.center,
-                      ),
-                      TranslatedTextWidget(
-                        platformMessage,
-                        textAlign: TextAlign.center,
-                      )
-                    ])),
-              ));
-    }
+      auth.openBungieLogin(true);
+    }catch(e){}
     WidgetsBinding.instance.renderView.automaticSystemUiAdjustment = false;
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,

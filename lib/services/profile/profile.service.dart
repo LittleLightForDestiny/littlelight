@@ -161,13 +161,14 @@ class ProfileService with UserSettingsConsumer, StorageConsumer {
 
   Future<DestinyProfileResponse> _updateProfileData(
       List<DestinyComponentType> components) async {
-    var membership = StorageService.getMembership();
+    ///TODO: add getMembership method on auth service
+    // var membership = StorageService.getMembership();
     DestinyProfileResponse response;
     response = await _api.getCurrentProfile(components);
-
-    if (membership != StorageService.getMembership()) {
-      return _profile;
-    }
+    ///TODO: add getMembership method on auth service
+    // if (membership != StorageService.getMembership()) {
+    //   return _profile;
+    // }
     lastUpdated = DateTime.now();
 
     if (response == null) {

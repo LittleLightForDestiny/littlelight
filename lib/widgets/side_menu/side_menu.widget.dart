@@ -70,7 +70,8 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer{
     bool isDebug = false;
     assert(isDebug = true);
     List<Widget> settingsMenuOptions = [];
-    var currentMembership = StorageService.getMembership();
+    ///TODO: add getMembership method on auth service
+    // var currentMembership = StorageService.getMembership();
     var altMembershipCount = 0;
     if (memberships != null) {
       for (var account in memberships) {
@@ -78,11 +79,12 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer{
           var memberships = account.destinyMemberships
               .where((p) => (p?.applicableMembershipTypes?.length ?? 0) > 0);
           for (var membership in memberships) {
-            if (currentMembership != membership.membershipId) {
-              altMembershipCount++;
-              settingsMenuOptions.add(
-                  membershipButton(context, account.bungieNetUser, membership));
-            }
+            ///TODO: add getMembership method on auth service
+            // if (currentMembership != membership.membershipId) {
+            //   altMembershipCount++;
+            //   settingsMenuOptions.add(
+            //       membershipButton(context, account.bungieNetUser, membership));
+            // }
           }
         }
       }
@@ -205,8 +207,9 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer{
             borderRadius: BorderRadius.circular(4),
             child: InkWell(
                 onTap: () {
-                  StorageService.setAccount(bungieNetUser.membershipId);
-                  StorageService.setMembership(membership.membershipId);
+                  ///TODO: add method to set account and membership on authService
+                  // StorageService.setAccount(bungieNetUser.membershipId);
+                  // StorageService.setMembership(membership.membershipId);
                   Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
@@ -269,8 +272,9 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer{
     try {
       String code = await auth.authorizeLegacy(true);
       if (code != null) {
-        await StorageService.setAccount(null);
-        await StorageService.setMembership(null);
+        ///TODO: add method to set account and membership on authService
+        // await StorageService.setAccount(null);
+        // await StorageService.setMembership(null);
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(

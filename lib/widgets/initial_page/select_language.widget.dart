@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/services/storage/export.dart';
-import 'package:little_light/services/translate/translate.service.dart';
+import 'package:little_light/services/language/language.service.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
@@ -13,7 +13,7 @@ class SelectLanguageWidget extends StatefulWidget {
   final List<String> availableLanguages;
   final LanguageSelectCallback onChange;
   final LanguageSelectCallback onSelect;
-  final TranslateService translate = new TranslateService();
+  final LanguageService translate = new LanguageService();
 
   SelectLanguageWidget({this.availableLanguages, this.onChange, this.onSelect});
 
@@ -32,7 +32,8 @@ class SelectLanguageWidgetState extends State<SelectLanguageWidget> {
 
   void getLanguage() async {
     await Future.delayed(Duration(milliseconds: 1));
-    selectedLanguage = StorageService.getLanguage();
+    ///TODO: add getLanguage method on language service
+    // selectedLanguage = StorageService.getLanguage();
     Locale locale = Localizations.localeOf(context);
     if (selectedLanguage == null && locale != null) {
       String localeName =
@@ -48,7 +49,8 @@ class SelectLanguageWidgetState extends State<SelectLanguageWidget> {
   }
 
   void okClick() {
-    StorageService.setLanguage(selectedLanguage);
+    ///TODO: add setLanguage method on language service
+    // StorageService.setLanguage(selectedLanguage);
     if (widget.onSelect != null) {
       widget.onSelect(selectedLanguage);
     }

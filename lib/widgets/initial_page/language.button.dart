@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:little_light/services/translate/translate.service.dart';
+import 'package:little_light/services/language/language.service.dart';
 
 class LanguageButton extends StatelessWidget {
   final String language;
   final bool selected;
-  final TranslateService translate = new TranslateService();
+  final LanguageService translate = new LanguageService();
   final Function onPressed;
 
   LanguageButton({this.language, this.selected = false, this.onPressed})

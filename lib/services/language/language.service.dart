@@ -1,34 +1,40 @@
 import 'dart:convert';
 import 'dart:core';
 
+import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:little_light/services/storage/export.dart';
-import 'package:little_light/services/translate/timeago_messages/cn_messages.dart';
-import 'package:little_light/services/translate/timeago_messages/de_messages.dart';
-import 'package:little_light/services/translate/timeago_messages/en_messages.dart';
-import 'package:little_light/services/translate/timeago_messages/es_messages.dart';
-import 'package:little_light/services/translate/timeago_messages/fr_messages.dart';
-import 'package:little_light/services/translate/timeago_messages/it_messages.dart';
-import 'package:little_light/services/translate/timeago_messages/ja_messages.dart';
-import 'package:little_light/services/translate/timeago_messages/ko_messages.dart';
-import 'package:little_light/services/translate/timeago_messages/pl_messages.dart';
-import 'package:little_light/services/translate/timeago_messages/pt_messages.dart';
-import 'package:little_light/services/translate/timeago_messages/ru_messages.dart';
+import 'package:little_light/services/language/timeago_messages/cn_messages.dart';
+import 'package:little_light/services/language/timeago_messages/de_messages.dart';
+import 'package:little_light/services/language/timeago_messages/en_messages.dart';
+import 'package:little_light/services/language/timeago_messages/es_messages.dart';
+import 'package:little_light/services/language/timeago_messages/fr_messages.dart';
+import 'package:little_light/services/language/timeago_messages/it_messages.dart';
+import 'package:little_light/services/language/timeago_messages/ja_messages.dart';
+import 'package:little_light/services/language/timeago_messages/ko_messages.dart';
+import 'package:little_light/services/language/timeago_messages/pl_messages.dart';
+import 'package:little_light/services/language/timeago_messages/pt_messages.dart';
+import 'package:little_light/services/language/timeago_messages/ru_messages.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-class TranslateService {
+setupLanguageService(){
+  GetIt.I.registerSingleton<LanguageService>(LanguageService());
+}
+
+class LanguageService with StorageConsumer {
   String fallbackLanguage = "en";
-  String get _currentLanguage =>
-      StorageService.getLanguage() ?? fallbackLanguage;
+  String get selectedLanguage => globalStorage.currentLanguage;
+  String get currentLanguage =>
+      selectedLanguage ?? fallbackLanguage;
   Map<String, Map<String, String>> _translationMaps = new Map();
 
-  static TranslateService _singleton = TranslateService._internal();
+  static LanguageService _singleton = LanguageService._internal();
 
-  factory TranslateService() {
+  factory LanguageService() {
     return _singleton;
   }
 
-  TranslateService._internal() {
+  LanguageService._internal() {
     timeago.setLocaleMessages('de', DeMessages());
     timeago.setLocaleMessages('en', EnMessages());
     timeago.setLocaleMessages('es', EsMessages());
@@ -63,7 +69,7 @@ class TranslateService {
   Future<String> getTranslation(String text,
       {String languageCode, Map<String, String> replace = const {}}) async {
     if (text == null || text.length == 0) return "";
-    String code = languageCode ?? _currentLanguage;
+    String code = languageCode ?? currentLanguage;
 
     Map<String, String> translationMap = await _getTranslationMap(code);
     if (translationMap != null && translationMap.containsKey(text)) {
@@ -105,8 +111,10 @@ class TranslateService {
         "https://cdn.jsdelivr.net/gh/LittleLightForDestiny/LittleLightTranslations/languages/$languageCode.json";
     var req = await http.get(Uri.parse(url));
     var raw = req.body;
-    StorageService.language(languageCode).saveRawFile(
-        StorageKeys.rawData, StorageKeys.littleLightTranslation.path, raw);
+
+    ///Add method to cache translations files
+    // StorageService.language(languageCode).saveRawFile(
+    //     StorageKeys.rawData, StorageKeys.littleLightTranslation.path, raw);
     Map<String, String> translation = Map<String, String>.from(jsonDecode(raw));
     _translationMaps[languageCode] = translation;
     return _translationMaps[languageCode];
@@ -115,12 +123,13 @@ class TranslateService {
   Future<Map<String, String>> _loadTranslationMapFromSavedData(
       String languageCode) async {
     try {
-      var storage = StorageService.language(languageCode);
-      String raw = await storage.getRawFile(
-          StorageKeys.rawData, StorageKeys.littleLightTranslation.path);
-      Map<String, String> translation =
-          Map<String, String>.from(jsonDecode(raw));
-      _translationMaps[languageCode] = translation;
+      ///Add method to load cached translations files
+      // var storage = StorageService.language(languageCode);
+      // String raw = await storage.getRawFile(
+      // StorageKeys.rawData, StorageKeys.littleLightTranslation.path);
+      // Map<String, String> translation =
+      // Map<String, String>.from(jsonDecode(raw));
+      // _translationMaps[languageCode] = translation;
       return _translationMaps[languageCode];
     } catch (e) {
       print(e);

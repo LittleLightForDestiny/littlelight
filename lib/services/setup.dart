@@ -24,7 +24,7 @@ initServices() async {
   final globalStorage = getInjectedGlobalStorage();
   final auth = getInjectedAuthService();
   await globalStorage.setup();
-  auth.reset();
+  auth.setup();
   await dotEnv.load(fileName: 'assets/_env');
   await LittleLightApiService().reset();
   await LoadoutsService().reset();

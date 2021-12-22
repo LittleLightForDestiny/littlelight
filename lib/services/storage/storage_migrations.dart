@@ -66,8 +66,8 @@ class StorageMigrations {
       accountStorage.setJson(
           StorageKeys.membershipData, bungieNetToken);
       accountStorage.setDate(StorageKeys.latestTokenDate, tokenDate);
-      StorageService.setAccount(selectedAccount);
-      StorageService.setMembership(selectedMembership);
+      // StorageService.setAccount(selectedAccount);
+      // StorageService.setMembership(selectedMembership);
 
       // membershipStorage.setString(StorageKeys.membershipSecret,
       //     prefs.getString("littlelight_secret"));

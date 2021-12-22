@@ -1,6 +1,11 @@
+//@dart=2.12
+
+import 'package:flutter/material.dart';
 import 'package:little_light/core/routes/pages.dart';
 
-class LittleLightRoute{
+abstract class LittleLightRoute<T extends Object> extends RouteSettings {
   final LittleLightRoutePage page;
-  LittleLightRoute({this.page = LittleLightRoutePage.Main});
+  T get arguments => super.arguments as T;
+  LittleLightRoute({this.page = LittleLightRoutePage.Main, T? arguments})
+      : super(name: page.name, arguments: arguments);
 }

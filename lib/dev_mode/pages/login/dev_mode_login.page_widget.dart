@@ -1,14 +1,13 @@
-import 'dart:convert';
+//@dart=2.12
 
-import 'package:bungie_api/helpers/bungie_net_token.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:little_light/dev_mode/pages/login/dev_mode_login.page.dart';
+import 'package:little_light/core/routes/login_route.dart';
 import 'package:little_light/dev_mode/pages/main/dev_mode_main.page.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 
 class DevModeLoginPageWidget extends StatefulWidget {
-  const DevModeLoginPageWidget({Key key}) : super(key: key);
+  const DevModeLoginPageWidget({Key? key}) : super(key: key);
 
   @override
   _DevModeLoginPageWidgetState createState() => _DevModeLoginPageWidgetState();
@@ -16,10 +15,8 @@ class DevModeLoginPageWidget extends StatefulWidget {
 
 class _DevModeLoginPageWidgetState extends State<DevModeLoginPageWidget>
     with AuthConsumer {
-  DevModeLoginPageArguments get arguments =>
-      ModalRoute.of(context).settings.arguments;
-
-  BungieNetToken token;
+  LittleLightLoginArguments? get arguments =>
+      ModalRoute.of(context)?.settings.arguments as LittleLightLoginArguments?;
 
   @override
   void initState() {
@@ -30,15 +27,18 @@ class _DevModeLoginPageWidgetState extends State<DevModeLoginPageWidget>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(icon: Icon(FontAwesomeIcons.home), onPressed: (){
-          Navigator.of(context).pushAndRemoveUntil(DevModeMainPageRoute(), (_)=>true);
-        },),
+        leading: IconButton(
+          icon: Icon(FontAwesomeIcons.home),
+          onPressed: () async {
+            Navigator.of(context)
+                .pushAndRemoveUntil(DevModeMainPageRoute(), (route) => false);
+          },
+        ),
         title: Text("Login"),
       ),
       body: SingleChildScrollView(
           child: Column(children: [
         buildAuthCode(context),
-        if (token != null) buildTokenInfo(context)
       ])),
     );
   }
@@ -48,29 +48,20 @@ class _DevModeLoginPageWidgetState extends State<DevModeLoginPageWidget>
         child: Column(children: [
       ListTile(
         title: Text("Authorization Code"),
-        subtitle: Text("${arguments.code}"),
+        subtitle: Text("${arguments?.code}"),
       ),
       ButtonBar(
         children: [
           TextButton(
               onPressed: () async {
-                final token = await auth.addAccount(arguments.code);
-                setState(() {
-                  this.token = token;
-                });
+                if (arguments == null) return;
+                await auth.addAccount(arguments?.code);
+                Navigator.of(context).pushAndRemoveUntil(
+                    DevModeMainPageRoute(), (route) => false);
               },
               child: Text("Add Account"))
         ],
       )
     ]));
-  }
-
-  Widget buildTokenInfo(BuildContext context) {
-    final _tokenStr = jsonEncode(token.toJson());
-    return Card(
-        child: ListTile(
-      title: Text("Token"),
-      subtitle: Text("$_tokenStr"),
-    ));
   }
 }

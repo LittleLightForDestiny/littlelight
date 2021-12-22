@@ -1,6 +1,7 @@
 //@dart=2.12
 
 import 'package:bungie_api/helpers/bungie_net_token.dart';
+import 'package:bungie_api/models/user_membership_data.dart';
 import 'package:get_it/get_it.dart';
 
 import 'account_storage.keys.dart';
@@ -12,7 +13,7 @@ setupAccountStorageService() async {
 }
 
 class AccountStorage extends StorageBase<AccountStorageKeys> {
-  AccountStorage._internal(_accountID):super("accounts/$_accountID");
+  AccountStorage._internal(String _accountID) : super("accounts/$_accountID");
 
   @override
   String getKeyPath(AccountStorageKeys? key) {
@@ -21,7 +22,8 @@ class AccountStorage extends StorageBase<AccountStorageKeys> {
 
   Future<BungieNetToken?> getLatestToken() async {
     try {
-      final Map<String, dynamic> json = await getJson(AccountStorageKeys.latestToken);
+      final Map<String, dynamic> json =
+          await getJson(AccountStorageKeys.latestToken);
       return BungieNetToken.fromJson(json);
     } catch (e) {
       print("can't parse latest token");
@@ -32,5 +34,30 @@ class AccountStorage extends StorageBase<AccountStorageKeys> {
 
   Future<void> saveLatestToken(BungieNetToken token) async {
     await setJson(AccountStorageKeys.latestToken, token);
+    await setDate(AccountStorageKeys.latestTokenDate, DateTime.now());
+  }
+
+  Future<void> saveMembershipData(UserMembershipData membershipData) async {
+    await setJson(AccountStorageKeys.membershipData, membershipData.toJson());
+  }
+
+  Future<UserMembershipData?> getMembershipData() async {
+    try {
+      final Map<String, dynamic> json =
+          await getJson(AccountStorageKeys.membershipData);
+      return UserMembershipData.fromJson(json);
+    } catch (e) {
+      print("can't parse latest token");
+      print(e);
+    }
+    return null;
+  }
+
+  Future<void> purge() async {
+    for (var key in AccountStorageKeys.values) {
+      await clearKey(key);
+    }
+    final accountRoot = getFilePath(null);
+    await deleteFile(accountRoot);
   }
 }

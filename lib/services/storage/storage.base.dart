@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:get_it/get_it.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -13,9 +14,9 @@ extension on StoredFileExtensions {
 }
 
 abstract class StorageBase<T> {
-  late SharedPreferences _prefs;
+  SharedPreferences get _prefs => GetIt.I<SharedPreferences>();
   final String _path;
-  late String? _fileRoot;
+  static String? _fileRoot;
   String get basePath => _path;
 
   String getKeyPath(T? key);
@@ -37,8 +38,7 @@ abstract class StorageBase<T> {
   StorageBase([this._path = ""]);
 
   setup() async {
-    _prefs = await SharedPreferences.getInstance();
-    _fileRoot = await _getFileRoot();
+    _fileRoot ??= await _getFileRoot();
   }
 
   Future<String?> _getFileRoot() async {
@@ -51,7 +51,9 @@ abstract class StorageBase<T> {
       return directory.path;
     } catch (e) {}
   }
+}
 
+extension StorageOperations<T> on StorageBase<T> {
   bool? getBool(T key) {
     return _prefs.getBool(getPath(key));
   }
@@ -63,9 +65,7 @@ abstract class StorageBase<T> {
       _prefs.remove(getPath(key));
     }
   }
-}
 
-extension StorageOperations<T> on StorageBase<T> {
   String? getString(T key) {
     return _prefs.getString(getPath(key));
   }
@@ -133,8 +133,6 @@ extension StorageOperations<T> on StorageBase<T> {
     await file.writeAsString(contents);
   }
 
-
-
   Future<dynamic> getJson(T key) async {
     final path = getFilePath(key, extension: StoredFileExtensions.JSON);
     String? contents =
@@ -156,7 +154,7 @@ extension StorageOperations<T> on StorageBase<T> {
     if (!await dir.exists()) {
       await dir.create(recursive: true);
     }
-    File cached = new File(getFilePath(key));
+    File cached = new File(getFilePath(key, extension: StoredFileExtensions.JSON));
     await cached.writeAsString(jsonEncode(object));
   }
 
@@ -166,6 +164,10 @@ extension StorageOperations<T> on StorageBase<T> {
     if (exists) {
       await file.delete(recursive: true);
     }
+  }
+
+  Future<void> clearKey(T key) async{
+    await this._prefs.remove(getPath(key));
   }
 
   Future<dynamic> getExpireableJson(T key, Duration expiration) async {

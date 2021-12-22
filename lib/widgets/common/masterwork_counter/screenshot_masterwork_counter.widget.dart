@@ -69,11 +69,12 @@ class ScreenshotMasterworkCounterState extends BaseMasterworkCounterWidgetState<
   }
 
   Widget buildProgressValue(BuildContext context) {
-    var formatter = NumberFormat.decimalPattern(StorageService.getLanguage());
-    var formattedValue = formatter.format(masterworkObjective.progress);
-    return Text("$formattedValue",
-        style: TextStyle(
-            color: Colors.amber.shade200, fontSize: widget.pixelSize * 20));
+    ///TODO: add getLanguage method on language service
+    // var formatter = NumberFormat.decimalPattern(StorageService.getLanguage());
+    // var formattedValue = formatter.format(masterworkObjective.progress);
+    // return Text("$formattedValue",
+    //     style: TextStyle(
+    //         color: Colors.amber.shade200, fontSize: widget.pixelSize * 20));
   }
 
   Widget buildBigIcon(BuildContext context) {

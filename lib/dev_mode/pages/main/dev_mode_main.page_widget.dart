@@ -1,15 +1,42 @@
+//@dart=2.12
+
+import 'package:bungie_api/models/user_membership_data.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
+// ignore: import_of_legacy_library_into_null_safe
+import 'package:little_light/services/bungie_api/bungie_api.service.dart';
+import 'package:little_light/widgets/icon_fonts/littlelight_icons.dart';
 
 class DevModeMainPageWidget extends StatefulWidget {
-  const DevModeMainPageWidget({Key key}) : super(key: key);
+  const DevModeMainPageWidget({Key? key}) : super(key: key);
 
   @override
   _DevModeMainPageWidgetState createState() => _DevModeMainPageWidgetState();
 }
 
-class _DevModeMainPageWidgetState extends State<DevModeMainPageWidget> with AuthConsumer{
+class _DevModeMainPageWidgetState extends State<DevModeMainPageWidget>
+    with AuthConsumer {
+  List<UserMembershipData>? memberships;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchAccounts();
+  }
+
+  void fetchAccounts() async {
+    await Future.delayed(Duration(seconds: 1));
+    final accounts = auth.accountIDs;
+    List<UserMembershipData> memberships = <UserMembershipData>[];
+    for (var account in accounts) {
+      memberships.add(await auth.getMembershipDataForAccount(account));
+    }
+    setState(() {
+      this.memberships = memberships;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,13 +47,65 @@ class _DevModeMainPageWidgetState extends State<DevModeMainPageWidget> with Auth
         padding: EdgeInsets.all(8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [buildAuthCard(context)],
+          children: [
+            buildAccounts(context),
+            buildLoginCard(context),
+          ],
         ),
       ),
     );
   }
 
-  Widget buildAuthCard(BuildContext context) => Card(
+  Widget buildAccounts(BuildContext context) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Text(
+            "Accounts",
+            style: Theme.of(context).textTheme.headline5,
+          )
+        ]
+            .followedBy(
+              memberships?.map((m) => buildAccountCard(context, m)).toList() ??
+                  [],
+            )
+            .toList(),
+      );
+
+  Widget buildAccountCard(
+          BuildContext context, UserMembershipData membership) =>
+      Card(
+        child: Column(children: [
+          Row(
+            children: [
+              buildAccountAvatar(context, membership),
+              buildAccountInfo(context, membership),
+            ],
+          ),
+          if (membership.primaryMembershipId != null)
+            buildCrossSaveInfo(context, membership)
+        ]),
+      );
+
+  Widget buildAccountAvatar(
+      BuildContext context, UserMembershipData membership) {
+    Widget image;
+    if (membership.bungieNetUser?.profilePicturePath != null) {
+      image = Image.network(
+          (BungieApiService.url(membership.bungieNetUser!.profilePicturePath)));
+    } else {
+      image =
+          Container(color: Colors.white, child: Icon(FontAwesomeIcons.user));
+    }
+    return Container(
+        width: 64,
+        height: 64,
+        margin: EdgeInsets.all(8),
+        padding: EdgeInsets.all(2),
+        color: Colors.blueGrey.shade300,
+        child: image);
+  }
+
+  Widget buildLoginCard(BuildContext context) => Card(
         child: Container(
             padding: EdgeInsets.all(8),
             child: Column(
@@ -37,12 +116,44 @@ class _DevModeMainPageWidgetState extends State<DevModeMainPageWidget> with Auth
                 ),
                 ButtonBar(
                   children: [
-                    TextButton(child: Text("Login"), onPressed: (){
-                      auth.openBungieLogin(true);
-                    },)
+                    TextButton(
+                      child: Text("Login"),
+                      onPressed: () {
+                        auth.openBungieLogin(true);
+                      },
+                    )
                   ],
                 )
               ],
             )),
       );
+
+  buildAccountInfo(BuildContext context, UserMembershipData membership) {
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Text(membership.bungieNetUser?.displayName ?? ""),
+      Text(membership.bungieNetUser?.uniqueName ?? ""),
+    ]);
+  }
+
+  buildCrossSaveInfo(BuildContext context, UserMembershipData membership) {
+    final primary = membership.destinyMemberships
+        ?.where((m) => m.membershipId == membership.primaryMembershipId);
+    String? platform;
+    if (primary?.isNotEmpty ?? false) {
+      platform = primary?.first.iconPath;
+    }
+    return Container(
+      padding: EdgeInsets.all(8),
+      child: Row(
+        children: [
+          Text("Cross save enabled"),
+          Container(width: 4,),
+          Container(
+              width: 16,
+              height: 16,
+              child: Image.network(BungieApiService.url(platform)))
+        ],
+      ),
+    );
+  }
 }

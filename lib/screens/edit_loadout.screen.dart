@@ -15,7 +15,7 @@ import 'package:little_light/screens/select_loadout_item.screen.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
-import 'package:little_light/services/translate/translate.service.dart';
+import 'package:little_light/services/language/language.service.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
@@ -65,7 +65,7 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> {
   }
 
   fetchTranslations() async {
-    TranslateService translate = new TranslateService();
+    LanguageService translate = new LanguageService();
     _nameInputLabel = await translate.getTranslation("Loadout Name");
     setState(() {});
   }

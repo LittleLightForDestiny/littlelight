@@ -89,7 +89,7 @@ class LittleLightApiService with AuthConsumer, StorageConsumer {
   Future<dynamic> _authorizedRequest(String path,
       {Map<String, dynamic> body = const {}}) async {
     GroupUserInfoCard membership = await auth.getMembership();
-    BungieNetToken token = await auth.getToken();
+    BungieNetToken token = await auth.getCurrentToken();
     String uuid = await _getUuid();
     String secret = await _getSecret();
     body = {

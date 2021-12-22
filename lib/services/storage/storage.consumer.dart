@@ -1,10 +1,10 @@
 //@dart=2.12
 import 'package:get_it/get_it.dart';
+
 import 'account_storage.service.dart';
 import 'global_storage.service.dart';
+import 'language_storage.service.dart';
 import 'membership_storage.service.dart';
-// ignore: import_of_legacy_library_into_null_safe
-import 'storage.service.dart';
 
 GlobalStorage getInjectedGlobalStorage() => GetIt.I<GlobalStorage>();
 AccountStorage getInjectedAccountStorage(String accountID) =>
@@ -20,6 +20,7 @@ mixin StorageConsumer {
   AccountStorage get currentAccountStorage => getInjectedAccountStorage(globalStorage.currentAccountID!);
   MembershipStorage membershipStorage(String membershipID) => getInjectedMembershipStorage(membershipID);
   MembershipStorage get currentMembershipStorage => getInjectedMembershipStorage(globalStorage.currentMembershipID!);
-  // MembershipStorage membershipStorage(String membershipID) => getInjectedMembershipStorage(membershipID);
+  LanguageStorage languageStorage(String code) => getInjectedLanguageStorage(code);
+  LanguageStorage get currentLanguageStorage => getInjectedLanguageStorage(globalStorage.currentLanguage!);
   // LanguageStorage languageStorage(String languageID) => getInjectedLanguageStorage(languageID);
 }

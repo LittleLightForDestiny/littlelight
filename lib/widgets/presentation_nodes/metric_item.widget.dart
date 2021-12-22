@@ -169,9 +169,10 @@ class MetricItemWidgetState extends State<MetricItemWidget> with AuthConsumer{
 
   buildObjective(BuildContext context) {
     if (metric.objectiveProgress.progress == null) return Container();
-    var formatter = NumberFormat.decimalPattern(StorageService.getLanguage());
-    var formattedProgress = formatter.format(metric.objectiveProgress.progress);
-    return Text(formattedProgress, style: TextStyle(fontSize: 18));
+    ///TODO: add getLanguage method on language service
+    // var formatter = NumberFormat.decimalPattern(StorageService.getLanguage());
+    // var formattedProgress = formatter.format(metric.objectiveProgress.progress);
+    // return Text(formattedProgress, style: TextStyle(fontSize: 18));
   }
 
   // @override

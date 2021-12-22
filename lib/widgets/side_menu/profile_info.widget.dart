@@ -189,7 +189,9 @@ class ProfileInfoState extends State<ProfileInfoWidget>
     }
     var lastPlayed = DateTime.parse(lastCharacter.dateLastPlayed);
     var currentSession = lastCharacter.minutesPlayedThisSession;
-    var time = timeago.format(lastPlayed, allowFromNow: true, locale: StorageService.getLanguage());
+    ///TODO: add getLanguage method on language service
+    // var time = timeago.format(lastPlayed, allowFromNow: true, locale: StorageService.getLanguage());
+    final time = "";
     if (lastPlayed
         .add(Duration(minutes: int.parse(currentSession) + 10))
         .isBefore(DateTime.now().toUtc())) {

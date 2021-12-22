@@ -75,7 +75,7 @@ class BungieApiService with AuthConsumer{
 
   Future<DestinyProfileResponse> getCurrentProfile(
       List<DestinyComponentType> components) async {
-    BungieNetToken token = await auth.getToken();
+    BungieNetToken token = await auth.getCurrentToken();
     GroupUserInfoCard membership = await auth.getMembership();
     if (membership == null) return null;
     var profile = await getProfile(
@@ -95,7 +95,7 @@ class BungieApiService with AuthConsumer{
 
   Future<DestinyVendorsResponse> getVendors(
       List<DestinyComponentType> components, String characterId) async {
-    BungieNetToken token = await auth.getToken();
+    BungieNetToken token = await auth.getCurrentToken();
     GroupUserInfoCard membership = await auth.getMembership();
     if (membership == null) return null;
     DestinyVendorsResponseResponse response = await Destiny2.getVendors(
@@ -109,7 +109,11 @@ class BungieApiService with AuthConsumer{
   }
 
   Future<UserMembershipData> getMemberships() async {
-    BungieNetToken token = await auth.getToken();
+    BungieNetToken token = await auth.getCurrentToken();
+    return getMembershipsForToken(token);
+  }
+
+  Future<UserMembershipData> getMembershipsForToken(BungieNetToken token) async {
     UserMembershipDataResponse response =
         await User.getMembershipDataForCurrentUser(new Client(token: token));
     return response.response;
@@ -117,7 +121,7 @@ class BungieApiService with AuthConsumer{
 
   Future<int> transferItem(int itemHash, int stackSize, bool transferToVault,
       String itemId, String characterId) async {
-    BungieNetToken token = await auth.getToken();
+    BungieNetToken token = await auth.getCurrentToken();
     GroupUserInfoCard membership = await auth.getMembership();
     Int32Response response = await Destiny2.transferItem(
         new Client(token: token),
@@ -133,7 +137,7 @@ class BungieApiService with AuthConsumer{
 
   Future<int> pullFromPostMaster(
       int itemHash, int stackSize, String itemId, String characterId) async {
-    BungieNetToken token = await auth.getToken();
+    BungieNetToken token = await auth.getCurrentToken();
     GroupUserInfoCard membership = await auth.getMembership();
     Int32Response response = await Destiny2.pullFromPostmaster(
         new Client(token: token),
@@ -147,7 +151,7 @@ class BungieApiService with AuthConsumer{
   }
 
   Future<int> equipItem(String itemId, String characterId) async {
-    BungieNetToken token = await auth.getToken();
+    BungieNetToken token = await auth.getCurrentToken();
     GroupUserInfoCard membership = await auth.getMembership();
     Int32Response response = await Destiny2.equipItem(
         new Client(token: token),
@@ -160,7 +164,7 @@ class BungieApiService with AuthConsumer{
 
   Future<int> changeLockState(
       String itemId, String characterId, bool locked) async {
-    BungieNetToken token = await auth.getToken();
+    BungieNetToken token = await auth.getCurrentToken();
     GroupUserInfoCard membership = await auth.getMembership();
     var response = await Destiny2.setItemLockState(
         Client(token: token),
@@ -174,7 +178,7 @@ class BungieApiService with AuthConsumer{
 
   Future<int> changeTrackState(
       String itemId, String characterId, bool tracked) async {
-    BungieNetToken token = await auth.getToken();
+    BungieNetToken token = await auth.getCurrentToken();
     GroupUserInfoCard membership = await auth.getMembership();
     var response = await Destiny2.setQuestTrackedState(
         Client(token: token),
@@ -188,7 +192,7 @@ class BungieApiService with AuthConsumer{
 
   Future<List<DestinyEquipItemResult>> equipItems(
       List<String> itemIds, String characterId) async {
-    BungieNetToken token = await auth.getToken();
+    BungieNetToken token = await auth.getCurrentToken();
     GroupUserInfoCard membership = await auth.getMembership();
     var response = await Destiny2.equipItems(
         new Client(token: token),

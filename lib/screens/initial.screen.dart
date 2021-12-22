@@ -11,13 +11,13 @@ import 'package:little_light/screens/main.screen.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.exception.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
+import 'package:little_light/services/language/language.consumer.dart';
+import 'package:little_light/services/language/language.service.dart';
 import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/destiny_settings.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/setup.dart';
-import 'package:little_light/services/storage/export.dart';
-import 'package:little_light/services/translate/translate.service.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/exceptions/exception_dialog.dart';
 import 'package:little_light/widgets/initial_page/download_manifest.widget.dart';
@@ -30,7 +30,7 @@ class InitialScreen extends StatefulWidget {
   final BungieApiService apiService = new BungieApiService();
   final ManifestService manifest = new ManifestService();
   final ProfileService profile = new ProfileService();
-  final TranslateService translate = new TranslateService();
+  final LanguageService translate = new LanguageService();
   final String authCode;
 
   InitialScreen({Key key, this.authCode}) : super(key: key);
@@ -39,7 +39,7 @@ class InitialScreen extends StatefulWidget {
   InitialScreenState createState() => new InitialScreenState();
 }
 
-class InitialScreenState extends FloatingContentState<InitialScreen> with AuthConsumer{
+class InitialScreenState extends FloatingContentState<InitialScreen> with AuthConsumer, LanguageConsumer{
   @override
   void initState() {
     super.initState();
@@ -61,8 +61,7 @@ class InitialScreenState extends FloatingContentState<InitialScreen> with AuthCo
   }
 
   Future checkLanguage() async {
-    String selectedLanguage = StorageService.getLanguage();
-    bool hasSelectedLanguage = selectedLanguage != null;
+    bool hasSelectedLanguage = languageService.selectedLanguage != null;
     if (hasSelectedLanguage) {
       checkManifest();
     } else {
@@ -126,9 +125,8 @@ class InitialScreenState extends FloatingContentState<InitialScreen> with AuthCo
   }
 
   showDownloadManifest() async {
-    String language = StorageService.getLanguage();
     DownloadManifestWidget screen = new DownloadManifestWidget(
-      selectedLanguage: language,
+      selectedLanguage: languageService.currentLanguage,
       onFinish: () {
         checkLogin();
       },
@@ -139,7 +137,7 @@ class InitialScreenState extends FloatingContentState<InitialScreen> with AuthCo
   checkLogin() async {
     BungieNetToken token;
     try {
-      token = await auth.getToken();
+      token = await auth.getCurrentToken();
     } on BungieApiException catch (e) {
       bool needsLogin = [
             PlatformErrorCodes.DestinyAccountNotFound,

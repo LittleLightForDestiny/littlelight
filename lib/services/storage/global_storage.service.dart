@@ -9,11 +9,14 @@ import 'package:little_light/models/item_sort_parameter.dart';
 import 'package:little_light/models/wish_list.dart';
 import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
 import 'package:package_info/package_info.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'global_storage.keys.dart';
 import 'storage.base.dart';
 
 setupGlobalStorageService() async {
+  final _sharedPrefs = await SharedPreferences.getInstance();
+  GetIt.I.registerSingleton<SharedPreferences>(_sharedPrefs);
   GetIt.I.registerSingleton<GlobalStorage>(GlobalStorage._internal());
 }
 
@@ -21,6 +24,15 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
   bool _hasRunSetup = false;
 
   GlobalStorage._internal();
+
+  Future<Set<String>?> get accountIDs async {
+    final List<dynamic>? ids = await getJson(GlobalStorageKeys.accountIDs);
+    return Set<String>.from(ids ?? []);
+  }
+
+  Future<void> setAccountIDs(Set<String>? ids) async{
+    await setJson(GlobalStorageKeys.accountIDs, ids?.toList());
+  }
 
   @override
   String getKeyPath(GlobalStorageKeys? key) {
@@ -47,6 +59,10 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
       setDate(GlobalStorageKeys.versionUpdatedDate, DateTime.now());
     }
   }
+
+  String? get currentLanguage => getString(GlobalStorageKeys.currentLanguageCode);
+  set currentLanguage(String? languageCode) =>
+      setString(GlobalStorageKeys.currentLanguageCode, languageCode);
 
   String? get currentAccountID => getString(GlobalStorageKeys.currentAccountID);
   set currentAccountID(String? selectedAccountID) =>

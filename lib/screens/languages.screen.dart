@@ -5,7 +5,7 @@ import 'package:little_light/screens/initial.screen.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 
 import 'package:little_light/services/storage/export.dart';
-import 'package:little_light/services/translate/translate.service.dart';
+import 'package:little_light/services/language/language.service.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
@@ -27,16 +27,18 @@ class _LanguagesScreenState extends State<LanguagesScreen> {
   }
 
   void loadLanguages() async {
-    currentLanguage = selectedLanguage = StorageService.getLanguage();
+    ///TODO: add getLanguage method on language service
+    // currentLanguage = selectedLanguage = StorageService.getLanguage();
     languages = await ManifestService().getAvailableLanguages();
     fileSizes = new Map();
     for (var l in languages) {
-      var storage = StorageService.language(l);
-      var path = await storage.getPath(StorageKeys.manifestFile, dbPath: true);
-      var file = File(path);
-      if (await file.exists()) {
-        fileSizes[l] = await file.length();
-      }
+      /// TODO: implement method to get language file size on language service
+      // var storage = StorageService.language(l);
+      // var path = await storage.getPath(StorageKeys.manifestFile, dbPath: true);
+      // var file = File(path);
+      // if (await file.exists()) {
+      //   fileSizes[l] = await file.length();
+      // }
     }
     setState(() {});
   }
@@ -73,7 +75,8 @@ class _LanguagesScreenState extends State<LanguagesScreen> {
       padding: EdgeInsets.all(8).copyWith(bottom: bottomPadding + 8),
       child: ElevatedButton(
           onPressed: () {
-            StorageService.setLanguage(selectedLanguage);
+            ///TODO: add setLanguage method on language service
+            // StorageService.setLanguage(selectedLanguage);
             Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
@@ -127,7 +130,7 @@ class _LanguagesScreenState extends State<LanguagesScreen> {
   }
 
   Widget buildLanguageInfo(BuildContext context, String languageCode) {
-    var service = TranslateService();
+    var service = LanguageService();
     var languageName = service.languageNames[languageCode];
     return Row(children: [
       Container(width: 8, height: 40),
@@ -162,7 +165,8 @@ class _LanguagesScreenState extends State<LanguagesScreen> {
               child: InkWell(
                   borderRadius: BorderRadius.circular(30),
                   onTap: () async {
-                    await StorageService.language(languageCode).purge();
+                    /// Add method to delete language from storage
+                    // await StorageService.language(languageCode).purge();
                     print('purge');
                     loadLanguages();
                   },

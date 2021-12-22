@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:little_light/models/wish_list.dart';
 import 'package:little_light/services/littlelight/littlelight_data.service.dart';
-import 'package:little_light/services/translate/translate.service.dart';
+import 'package:little_light/services/language/language.service.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -35,7 +35,7 @@ class _AddWishlistScreenState extends State<AddWishlistScreen> {
   }
 
   fetchTranslations() async {
-    TranslateService translate = new TranslateService();
+    LanguageService translate = new LanguageService();
     var labels = ["URL", "Name", "Description"];
     for (var l in labels) {
       labelTranslations[l] = await translate.getTranslation(l);
