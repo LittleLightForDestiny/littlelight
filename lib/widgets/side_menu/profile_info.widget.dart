@@ -6,7 +6,7 @@ import 'package:bungie_api/models/group_user_info_card.dart';
 import 'package:bungie_api/models/user_membership_data.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/models/character_sort_parameter.dart';
-import 'package:little_light/screens/initial.screen.dart';
+import 'package:little_light/pages/initial/initial.page.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
@@ -254,7 +254,7 @@ class ProfileInfoState extends State<ProfileInfoWidget>
                 Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => InitialScreen(),
+                      builder: (context) => InitialPage(),
                     ));
               },
             )),
@@ -278,7 +278,7 @@ class ProfileInfoState extends State<ProfileInfoWidget>
           children: <Widget>[
             Padding(
                 padding: EdgeInsets.symmetric(horizontal: 8),
-                child: Icon(platform.iconData)),
+                child: Icon(platform.icon)),
             Expanded(child: Text(selectedMembership?.displayName ?? "")),
             IconButton(enableFeedback: false,
               icon: Transform.rotate(

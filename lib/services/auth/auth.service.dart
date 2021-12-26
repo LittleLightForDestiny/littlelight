@@ -1,3 +1,5 @@
+//@dart=2.12
+
 import 'dart:async';
 import 'dart:io';
 
@@ -7,8 +9,10 @@ import 'package:bungie_api/models/group_user_info_card.dart';
 import 'package:bungie_api/models/user_membership_data.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/services/language/language.service.dart';
+import 'package:little_light/services/language/language.consumer.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/services/storage/export.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -16,29 +20,27 @@ setupAuthService() async {
   GetIt.I.registerSingleton<AuthService>(AuthService._internal());
 }
 
-class AuthService with StorageConsumer {
-  Set<String> _accountIDs;
-  BungieNetToken _currentToken;
-  GroupUserInfoCard _currentMembership;
+class AuthService with StorageConsumer, LanguageConsumer {
+  Set<String>? _accountIDs;
+  BungieNetToken? _currentToken;
+  GroupUserInfoCard? _currentMembership;
   BungieApiService bungieApi = BungieApiService();
 
   AuthService._internal();
 
-  Future<void> setup() async{
-    _accountIDs = await globalStorage.accountIDs ?? [];
+  Future<void> setup() async {
+    _accountIDs = await globalStorage.accountIDs ?? Set<String>();
   }
 
   void openBungieLogin(bool forceReauth) async {
     var browser = new BungieAuthBrowser();
-    OAuth.openOAuth(
-        browser, BungieApiService.clientId, LanguageService().currentLanguage, forceReauth);
+    OAuth.openOAuth(browser, BungieApiService.clientId, languageService.currentLanguage, forceReauth);
   }
 
   Future<UserMembershipData> addAccount(String authorizationCode) async {
-    final token =
-        await bungieApi.requestToken(authorizationCode);
+    final token = await bungieApi.requestToken(authorizationCode);
     final memberships = await bungieApi.getMembershipsForToken(token);
-    final accountID = token.membershipId;
+    final accountID = token.membershipId!;
     final storage = accountStorage(accountID);
     await this._saveToken(token);
     await storage.saveMembershipData(memberships);
@@ -46,44 +48,51 @@ class AuthService with StorageConsumer {
     return memberships;
   }
 
-  Future<UserMembershipData> getMembershipData() async {
+  Future<UserMembershipData?> getMembershipData() async {
     return await currentAccountStorage.getMembershipData();
   }
 
-  Future<UserMembershipData> getMembershipDataForAccount(String accountID) async {
+  Future<UserMembershipData?> getMembershipDataForAccount(String accountID) async {
     final membershipData = await accountStorage(accountID).getMembershipData();
     return membershipData;
   }
 
   Future<void> removeAccount(String accountID) async {
     ///TODO:implement removeMembership
-    
-    _accountIDs.remove(accountID);
+
+    _accountIDs?.remove(accountID);
     await globalStorage.setAccountIDs(_accountIDs);
     await accountStorage(accountID).purge();
 
-    if(accountID == currentAccountID){
+    if (accountID == currentAccountID) {
       currentAccountID = null;
     }
   }
-  
-  Set<String> get accountIDs => _accountIDs;
-  String get currentAccountID => globalStorage.currentAccountID;
-  set currentAccountID(String id) {
-    if(!_accountIDs.contains(id) && id != null){
-      _accountIDs.add(id);
+
+  Set<String>? get accountIDs => _accountIDs;
+  String? get currentAccountID => globalStorage.currentAccountID;
+  set currentAccountID(String? id) {
+    final containsID = _accountIDs?.contains(id) ?? false;
+    if (!containsID && id != null) {
+      _accountIDs?.add(id);
       globalStorage.setAccountIDs(_accountIDs);
     }
     globalStorage.currentAccountID = id;
+    globalStorage.currentMembershipID = null;
   }
 
-  String get currentMembershipID => globalStorage.currentMembershipID;
-  set currentMembershipID(String id) => globalStorage.currentMembershipID = id;
-
+  String? get currentMembershipID => globalStorage.currentMembershipID;
+  setCurrentMembershipID(String? membershipID, String accountID) {
+    globalStorage.currentMembershipID = membershipID;
+    globalStorage.currentAccountID = accountID;
+  }
 
   Future<Map<String, UserMembershipData>> fetchMembershipDataForAllAccounts() async {
     final result = Map<String, UserMembershipData>();
-    for(final id in _accountIDs){
+    if (_accountIDs == null) {
+      return result;
+    }
+    for (final id in _accountIDs!) {
       final token = await accountStorage(id).getLatestToken();
       final membership = await bungieApi.getMembershipsForToken(token);
       result[id] = membership;
@@ -96,30 +105,29 @@ class AuthService with StorageConsumer {
     // currentAccountStorage.clearToken();
   }
 
-  Future<BungieNetToken> _getStoredToken() async {
+  Future<BungieNetToken?> _getStoredToken() async {
     final token = await currentAccountStorage.getLatestToken();
     return token;
   }
 
   Future<BungieNetToken> refreshToken(BungieNetToken token) async {
-    BungieNetToken bNetToken =
-        await BungieApiService().refreshToken(token.refreshToken);
+    BungieNetToken bNetToken = await BungieApiService().refreshToken(token.refreshToken);
     await _saveToken(bNetToken);
     return bNetToken;
   }
 
-  Future<void> _saveToken(BungieNetToken token) async {
-    if (token?.accessToken == null) {
+  Future<void> _saveToken(BungieNetToken? token) async {
+    if (token == null || token.accessToken == null) {
       return;
     }
     this.currentAccountID = token.membershipId;
-    await accountStorage(currentAccountID).saveLatestToken(token);
+    await accountStorage(currentAccountID!).saveLatestToken(token);
     await Future.delayed(Duration(milliseconds: 1));
     _currentToken = token;
   }
 
-  Future<BungieNetToken> getCurrentToken() async {
-    BungieNetToken token = _currentToken;
+  Future<BungieNetToken?> getCurrentToken() async {
+    BungieNetToken? token = _currentToken;
     if (token == null) {
       token = await _getStoredToken();
     }
@@ -148,29 +156,10 @@ class AuthService with StorageConsumer {
     return token;
   }
 
-  Future<String> authorizeLegacy([bool forceReauth = true]) async {
-    ///TODO:remove authorizeLegacy
-    return null;
-  }
-
   Future<String> checkAuthorizationCode() async {
     ///TODO:remove checkAuthorizationCode
     return "";
   }
-
-
-
-  @Deprecated("Use fetchMembershipData instead")
-  Future<UserMembershipData> updateMembershipData() async {
-    UserMembershipData membershipData =
-        await BungieApiService().getMemberships();
-    
-    /// TODO :implement saveMembershipData on accountStorage
-    // var storage = StorageService.account();
-    // await storage.setJson(StorageKeys.membershipData, membershipData);
-    return membershipData;
-  }
-
 
   // void reset() {
   //   _currentMembership = null;
@@ -178,7 +167,7 @@ class AuthService with StorageConsumer {
   //   _membershipData = null;
   // }
 
-  Future<GroupUserInfoCard> getMembership() async {
+  Future<GroupUserInfoCard?> getMembership() async {
     if (_currentMembership == null) {
       // var _membershipData = await _getStoredMembershipData();
 
@@ -189,23 +178,8 @@ class AuthService with StorageConsumer {
     return _currentMembership;
   }
 
-  GroupUserInfoCard getMembershipById(
-      UserMembershipData membershipData, String membershipId) {
-    return membershipData?.destinyMemberships?.firstWhere(
-        (membership) => membership?.membershipId == membershipId,
-        orElse: () => membershipData?.destinyMemberships?.first ?? null);
-  }
-
-  Future<void> saveMembership(
-      UserMembershipData membershipData, String membershipId) async {
-    /// TODO: implement currentMembershipID on global storage
-    // StorageService storage = StorageService.account();
-    // _currentMembership = getMembershipById(membershipData, membershipId);
-    // storage.setJson(StorageKeys.membershipData, membershipData.toJson());
-    // StorageService.setMembership(membershipId);
-  }
-
   bool get isLogged {
+    return true;
     return _currentMembership != null;
   }
 }
@@ -216,8 +190,7 @@ class BungieAuthBrowser implements OAuthBrowser {
   @override
   dynamic open(String url) async {
     if (Platform.isIOS) {
-      await launch(url,
-          forceSafariVC: true, statusBarBrightness: Brightness.light);
+      await launch(url, forceSafariVC: true, statusBarBrightness: Brightness.light);
     } else {
       await launch(url, forceSafariVC: true);
     }

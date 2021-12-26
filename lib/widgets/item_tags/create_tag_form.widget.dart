@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/models/item_notes_tag.dart';
+import 'package:little_light/services/language/language.consumer.dart';
 import 'package:little_light/services/littlelight/item_notes.service.dart';
-import 'package:little_light/services/language/language.service.dart';
 import 'package:little_light/utils/color_utils.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/item_tags/item_tag.widget.dart';
@@ -36,7 +36,7 @@ const _availableColors = [
   Colors.brown,
 ];
 
-class _CreateTagFormWidgetState extends State<CreateTagFormWidget> {
+class _CreateTagFormWidgetState extends State<CreateTagFormWidget> with LanguageConsumer{
   List<String> colors;
   String tagNameLabel = "";
   TextEditingController tagNameController;
@@ -61,7 +61,7 @@ class _CreateTagFormWidgetState extends State<CreateTagFormWidget> {
       ].map(hexFromColor));
     });
 
-    tagNameLabel = await LanguageService().getTranslation("Tag name");
+    tagNameLabel = await languageService.getTranslation("Tag name");
     setState(() {});
 
     tagNameController.addListener(() {

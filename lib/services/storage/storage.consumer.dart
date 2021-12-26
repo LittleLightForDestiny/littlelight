@@ -1,5 +1,6 @@
 //@dart=2.12
 import 'package:get_it/get_it.dart';
+import 'package:little_light/services/language/language.consumer.dart';
 
 import 'account_storage.service.dart';
 import 'global_storage.service.dart';
@@ -16,11 +17,24 @@ LanguageStorage getInjectedLanguageStorage(String languageCode) =>
 
 mixin StorageConsumer {
   GlobalStorage get globalStorage => getInjectedGlobalStorage();
-  AccountStorage accountStorage(String accountID) => getInjectedAccountStorage(accountID);
-  AccountStorage get currentAccountStorage => getInjectedAccountStorage(globalStorage.currentAccountID!);
-  MembershipStorage membershipStorage(String membershipID) => getInjectedMembershipStorage(membershipID);
-  MembershipStorage get currentMembershipStorage => getInjectedMembershipStorage(globalStorage.currentMembershipID!);
-  LanguageStorage languageStorage(String code) => getInjectedLanguageStorage(code);
-  LanguageStorage get currentLanguageStorage => getInjectedLanguageStorage(globalStorage.currentLanguage!);
-  // LanguageStorage languageStorage(String languageID) => getInjectedLanguageStorage(languageID);
+  
+  AccountStorage accountStorage(String accountID) =>
+      getInjectedAccountStorage(accountID);
+
+  AccountStorage get currentAccountStorage =>
+      getInjectedAccountStorage(globalStorage.currentAccountID!);
+
+  MembershipStorage membershipStorage(String membershipID) =>
+      getInjectedMembershipStorage(membershipID);
+
+  MembershipStorage get currentMembershipStorage =>
+      getInjectedMembershipStorage(globalStorage.currentMembershipID!);
+
+  LanguageStorage languageStorage(String code) =>
+      getInjectedLanguageStorage(code);
+
+  LanguageStorage get currentLanguageStorage {
+    final language = getInjectedLanguageService().currentLanguage;
+    return getInjectedLanguageStorage(language);
+  }
 }

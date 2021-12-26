@@ -1,28 +1,37 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
+
+import 'package:archive/archive.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_manifest.dart';
 import 'package:bungie_api/responses/destiny_manifest_response.dart';
 import 'package:flutter/foundation.dart';
+import 'package:get_it/get_it.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/bungie_api/enums/definition_table_names.enum.dart';
+import 'package:little_light/services/language/language.consumer.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/services/manifest/manifest_download_progress.dart';
 import 'package:little_light/services/storage/export.dart';
-import 'dart:io';
-import 'package:archive/archive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart' as sqflite;
+import 'package:uuid/uuid.dart';
 
-typedef void DownloadProgress(int downloaded, int total);
+setupManifest() {
+  GetIt.I.registerSingleton<ManifestService>(ManifestService._internal());
+}
 
-class ManifestService with StorageConsumer{
+class ManifestService with StorageConsumer, LanguageConsumer {
   sqflite.Database _db;
   DestinyManifest _manifestInfo;
   final BungieApiService _api = new BungieApiService();
   final Map<String, dynamic> _cached = Map();
-  static final ManifestService _singleton = new ManifestService._internal();
 
   factory ManifestService() {
-    return _singleton;
+    return getInjectedManifestService();
   }
+
   ManifestService._internal();
 
   Future<void> reset() async {
@@ -48,7 +57,7 @@ class ManifestService with StorageConsumer{
     return _cached["${type}_$hash"];
   }
 
-  Future<DestinyManifest> loadManifestInfo() async {
+  Future<DestinyManifest> _getManifestInfo() async {
     if (_manifestInfo != null) {
       return _manifestInfo;
     }
@@ -58,32 +67,34 @@ class ManifestService with StorageConsumer{
   }
 
   Future<List<String>> getAvailableLanguages() async {
-    DestinyManifest manifestInfo = await loadManifestInfo();
+    DestinyManifest manifestInfo = await _getManifestInfo();
     List<String> availableLanguages =
         manifestInfo.mobileWorldContentPaths.keys.toList();
     return availableLanguages;
   }
 
   Future<bool> needsUpdate() async {
-    DestinyManifest manifestInfo = await loadManifestInfo();
+    DestinyManifest manifestInfo = await _getManifestInfo();
     String currentVersion = await getSavedVersion();
-    ///TODO: add getLanguage method on language service
-    // String language = StorageService.getLanguage();
-    // var working = await test();
-    // return !working ||
-    //     currentVersion != manifestInfo.mobileWorldContentPaths[language];
+    String language = languageService.currentLanguage;
+    var working = await test();
+    return !working ||
+        currentVersion != manifestInfo.mobileWorldContentPaths[language];
   }
 
-  Future<bool> download({DownloadProgress onProgress}) async {
-    DestinyManifest info = await loadManifestInfo();
-    ///TODO: add getLanguage method on language service
-    // String language = StorageService.getLanguage();
-    String language;
-    String path = info.mobileWorldContentPaths[language];
-    String url = BungieApiService.url(path);
+  Future<void> _downloadManifest(StreamController<DownloadProgress> _controller, {bool skipCache = false}) async{
+    DestinyManifest info = await _getManifestInfo();
+    String language = languageService.currentLanguage;
+    String manifestFileURL = info.mobileWorldContentPaths[language];
+    String url = BungieApiService.url(manifestFileURL);
     String localPath = await _localPath;
     HttpClient httpClient = new HttpClient();
-    HttpClientRequest req = await httpClient.getUrl(Uri.parse(url));
+    Uri uri = Uri.parse(url);
+    if(skipCache){
+      final uuid = Uuid().v4();
+      uri = Uri.parse("$uri?cache_killer=$uuid");
+    }
+    HttpClientRequest req = await httpClient.getUrl(uri);
     HttpClientResponse res = await req.close();
     File zipFile = new File("$localPath/manifest_temp.zip");
     IOSink sink = zipFile.openWrite();
@@ -93,27 +104,48 @@ class ManifestService with StorageConsumer{
     await for (var data in stream) {
       loaded += data.length;
       sink.add(data);
-      if (onProgress != null) {
-        onProgress(loaded, totalSize);
-      }
+      
+        _controller.add(DownloadProgress(
+          downloadedBytes: loaded,
+          totalBytes: totalSize,
+        ));
     }
     await sink.flush();
     await sink.close();
-
+    _controller.add(DownloadProgress(
+      downloadedBytes: loaded,
+      totalBytes: totalSize,
+      downloaded: true,
+    ));
     List<int> unzippedData = await compute(_extractFromZip, zipFile);
-    /// TODO: add method to save database on language storage
-    // await currentLanguageStorage.saveDatabase(StorageKeys.manifestFile, unzippedData);
-
+    await currentLanguageStorage.saveManifestDatabase(unzippedData);
     await zipFile.delete();
 
     await _openDb();
 
     bool success = await test();
-    if (!success) return false;
+    if(success){
+      currentLanguageStorage.manifestVersion = manifestFileURL;
+      _cached.clear();
+      _controller.add(DownloadProgress(
+      downloadedBytes: loaded,
+      totalBytes: totalSize,
+      downloaded: true,
+      unzipped: true
+      ));
+    }
+  }
 
-    await saveManifestVersion(path);
-    _cached.clear();
-    return success;
+  Stream<DownloadProgress> download([skipCache=false]) {
+    final _controller = StreamController<DownloadProgress>();
+    _downloadManifest(_controller, skipCache: skipCache).catchError((error, stack){
+      print(error);
+      _controller.close();
+    }).then((_) {
+      _controller.close();
+    });
+    
+    return _controller.stream;
   }
 
   static List<int> _extractFromZip(dynamic zipFile) {
@@ -138,15 +170,12 @@ class ManifestService with StorageConsumer{
     if (_db?.isOpen == true) {
       return _db;
     }
-    /// TODO: add method to get language manifest db path
-    // var path = await currentLanguageStorage.getPath(StorageKeys.manifestFile, dbPath: true);
-    var path;
-    var dbFile = File(path);
-    var dbExists = await dbFile.exists();
-    if(!dbExists) return null;
+
+    final dbFile = await currentLanguageStorage.getManifestDatabaseFile();
+    if (dbFile == null) return null;
     try {
       sqflite.Database database =
-          await sqflite.openDatabase("$path", readOnly: true);
+          await sqflite.openDatabase(dbFile.path, readOnly: true);
       _db = database;
     } catch (e) {
       print(e);
@@ -157,20 +186,11 @@ class ManifestService with StorageConsumer{
   }
 
   Future<String> getSavedVersion() async {
-    /// TODO: add method to return current manifest version
-    // StorageService _prefs = StorageService.language();
-    // String version = _prefs.getString(StorageKeys.manifestVersion);
-    String version;
+    String version = currentLanguageStorage.manifestVersion;
     if (version == null) {
       return null;
     }
     return version;
-  }
-
-  Future<void> saveManifestVersion(String version) async {
-    /// TODO: add method to save current manifest version
-    // StorageService _prefs = StorageService.language();
-    // _prefs.setString(StorageKeys.manifestVersion, version);
   }
 
   Future<Map<int, T>> searchDefinitions<T>(List<String> parameters,

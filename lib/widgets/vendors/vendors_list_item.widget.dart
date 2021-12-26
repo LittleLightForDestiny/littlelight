@@ -10,7 +10,7 @@ import 'package:bungie_api/models/destiny_vendor_item_definition.dart';
 import 'package:bungie_api/models/destiny_vendor_sale_item_component.dart';
 
 import 'package:flutter/material.dart';
-import 'package:little_light/screens/vendor_details.screen.dart';
+import 'package:little_light/pages/vendor_details.screen.dart';
 
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';

@@ -1,8 +1,7 @@
 //@dart=2.12
 
 enum LanguageStorageKeys {
-  latestToken,
-  latestTokenDate,
+  manifestVersion
 }
 
 extension StorageKeyPathsExtension on LanguageStorageKeys {

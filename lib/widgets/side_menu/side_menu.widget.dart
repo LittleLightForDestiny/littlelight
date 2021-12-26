@@ -7,23 +7,24 @@ import 'package:bungie_api/models/user_membership_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:little_light/screens/about.screen.dart';
-import 'package:little_light/screens/accounts.screen.dart';
-import 'package:little_light/screens/collections.screen.dart';
-import 'package:little_light/screens/dev_tools.screen.dart';
-import 'package:little_light/screens/duplicated_items.screen.dart';
-import 'package:little_light/screens/equipment.screen.dart';
-import 'package:little_light/screens/initial.screen.dart';
-import 'package:little_light/screens/languages.screen.dart';
-import 'package:little_light/screens/loadouts.screen.dart';
-import 'package:little_light/screens/objectives.screen.dart';
-import 'package:little_light/screens/old_triumphs.screen.dart';
-import 'package:little_light/screens/progress.screen.dart';
-import 'package:little_light/screens/settings.screen.dart';
-import 'package:little_light/screens/triumphs.screen.dart';
-import 'package:little_light/screens/vendors.screen.dart';
+import 'package:little_light/pages/about.screen.dart';
+import 'package:little_light/pages/accounts.screen.dart';
+import 'package:little_light/pages/collections.screen.dart';
+import 'package:little_light/pages/dev_tools.screen.dart';
+import 'package:little_light/pages/duplicated_items.screen.dart';
+import 'package:little_light/pages/equipment.screen.dart';
+import 'package:little_light/pages/initial/initial.page.dart';
+import 'package:little_light/pages/initial/main.page_route.dart';
+import 'package:little_light/pages/languages.screen.dart';
+import 'package:little_light/pages/loadouts.screen.dart';
+import 'package:little_light/pages/objectives.screen.dart';
+import 'package:little_light/pages/old_triumphs.screen.dart';
+import 'package:little_light/pages/progress.screen.dart';
+import 'package:little_light/pages/settings.screen.dart';
+import 'package:little_light/pages/triumphs.screen.dart';
+import 'package:little_light/pages/vendors.screen.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
-import 'package:little_light/services/storage/export.dart';
+import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/utils/platform_data.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -52,17 +53,12 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer{
   }
 
   fetchMemberships() async {
-    /// TODO: implement fetchMemberships on AuthService
-    // var accounts = StorageService.getAccounts();
-    // memberships = [];
-    // for (var accountId in accounts) {
-    //   var storage = StorageService.account(accountId);
-    //   var json = await storage.getJson(StorageKeys.membershipData);
-    //   var membershipData = UserMembershipData.fromJson(json ?? {});
-    //   memberships.add(membershipData);
-    // }
-    // if (!mounted) return;
-    // setState(() {});
+    final accountIDs = auth.accountIDs;
+    final _accounts = await Future.wait(accountIDs.map((a)=>auth.getMembershipDataForAccount(a)));
+    if (!mounted) return;
+    setState(() {
+      memberships = _accounts;
+    });
   }
 
   @override
@@ -70,8 +66,7 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer{
     bool isDebug = false;
     assert(isDebug = true);
     List<Widget> settingsMenuOptions = [];
-    ///TODO: add getMembership method on auth service
-    // var currentMembership = StorageService.getMembership();
+    var currentMembership = auth.currentMembershipID;
     var altMembershipCount = 0;
     if (memberships != null) {
       for (var account in memberships) {
@@ -79,12 +74,11 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer{
           var memberships = account.destinyMemberships
               .where((p) => (p?.applicableMembershipTypes?.length ?? 0) > 0);
           for (var membership in memberships) {
-            ///TODO: add getMembership method on auth service
-            // if (currentMembership != membership.membershipId) {
-            //   altMembershipCount++;
-            //   settingsMenuOptions.add(
-            //       membershipButton(context, account.bungieNetUser, membership));
-            // }
+            if (currentMembership != membership.membershipId) {
+              altMembershipCount++;
+              settingsMenuOptions.add(
+                  membershipButton(context, account.bungieNetUser, membership));
+            }
           }
         }
       }
@@ -212,9 +206,7 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer{
                   // StorageService.setMembership(membership.membershipId);
                   Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => InitialScreen(),
-                      ));
+                      MainPageRoute());
                 },
                 child: Container(
                   padding: EdgeInsets.all(8),
@@ -226,7 +218,7 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer{
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     Container(width: 4),
-                    Icon(plat.iconData)
+                    Icon(plat.icon)
                   ]),
                 ))));
   }
@@ -242,7 +234,7 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer{
                     Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => InitialScreen(),
+                          builder: (context) => InitialPage(),
                         ));
                   }
                 : onTap,
@@ -269,59 +261,7 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer{
   }
 
   addAccount(BuildContext context) async {
-    try {
-      String code = await auth.authorizeLegacy(true);
-      if (code != null) {
-        ///TODO: add method to set account and membership on authService
-        // await StorageService.setAccount(null);
-        // await StorageService.setMembership(null);
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => InitialScreen(
-                authCode: code,
-              ),
-            ));
-      }
-    } on OAuthException catch (e) {
-      bool isIOS = Platform.isIOS;
-      String platformMessage =
-          "If this keeps happening, please try to login with a mainstream browser.";
-      if (isIOS) {
-        platformMessage =
-            "Please dont open the auth process in another safari window, this could prevent you from getting logged in.";
-      }
-      showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-                actions: <Widget>[
-                  MaterialButton(
-                    textColor: Colors.blueGrey.shade300,
-                    child: TranslatedTextWidget("OK"),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  )
-                ],
-                title: TranslatedTextWidget(e.error),
-                content: Container(
-                    padding: EdgeInsets.all(16),
-                    child: Column(mainAxisSize: MainAxisSize.min, children: [
-                      TranslatedTextWidget(
-                        e.errorDescription,
-                        textAlign: TextAlign.center,
-                      ),
-                      TranslatedTextWidget(
-                        platformMessage,
-                        textAlign: TextAlign.center,
-                      )
-                    ])),
-              ));
-    }
-    WidgetsBinding.instance.renderView.automaticSystemUiAdjustment = false;
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarBrightness: Brightness.dark));
+    auth.openBungieLogin(true);
   }
 
   changeLanguage(BuildContext context) {

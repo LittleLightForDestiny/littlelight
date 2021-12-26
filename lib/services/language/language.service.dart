@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:core';
 
+import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:little_light/services/storage/export.dart';
@@ -17,24 +18,22 @@ import 'package:little_light/services/language/timeago_messages/pt_messages.dart
 import 'package:little_light/services/language/timeago_messages/ru_messages.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-setupLanguageService(){
-  GetIt.I.registerSingleton<LanguageService>(LanguageService());
+setupLanguageService() {
+  GetIt.I.registerSingleton<LanguageService>(LanguageService._internal());
 }
 
 class LanguageService with StorageConsumer {
-  String fallbackLanguage = "en";
+  final _fallbackLanguage = "en";
+  String _systemLanguage;
   String get selectedLanguage => globalStorage.currentLanguage;
+  set selectedLanguage(String value) => globalStorage.currentLanguage = value;
   String get currentLanguage =>
-      selectedLanguage ?? fallbackLanguage;
+      selectedLanguage ?? _systemLanguage ?? _fallbackLanguage;
   Map<String, Map<String, String>> _translationMaps = new Map();
 
-  static LanguageService _singleton = LanguageService._internal();
+  LanguageService._internal();
 
-  factory LanguageService() {
-    return _singleton;
-  }
-
-  LanguageService._internal() {
+  init(BuildContext context) {
     timeago.setLocaleMessages('de', DeMessages());
     timeago.setLocaleMessages('en', EnMessages());
     timeago.setLocaleMessages('es', EsMessages());
@@ -48,6 +47,19 @@ class LanguageService with StorageConsumer {
     timeago.setLocaleMessages('ru', RuMessages());
     timeago.setLocaleMessages('zh-cht', ZhMessages());
     timeago.setLocaleMessages('zh-chs', ZhMessages());
+
+    Locale locale = Localizations.localeOf(context);
+    if (locale != null) {
+      _systemLanguage = languageNames.keys.firstWhere(
+          (language) =>
+              locale.countryCode != null &&
+              locale.languageCode != null &&
+              language.startsWith(locale.languageCode?.toLowerCase()) &&
+              language.endsWith(locale.countryCode?.toLowerCase()),
+          orElse: () => null);
+      _systemLanguage ??= languageNames.keys.firstWhere((language) =>
+          language.startsWith(locale.languageCode?.toLowerCase()));
+    }
   }
 
   Map<String, String> languageNames = {
@@ -76,7 +88,7 @@ class LanguageService with StorageConsumer {
       return _replace(translationMap[text], replace);
     }
 
-    translationMap = await _getTranslationMap(fallbackLanguage);
+    translationMap = await _getTranslationMap(_fallbackLanguage);
     if (translationMap != null && translationMap.containsKey(text)) {
       return _replace(translationMap[text], replace);
     }

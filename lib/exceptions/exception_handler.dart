@@ -14,6 +14,7 @@ import 'package:little_light/widgets/common/translated_text.widget.dart';
 typedef OnRestart = Function(BuildContext context);
 
 class ExceptionHandler with AuthConsumer {
+  bool isDialogOpen = false;
   static BuildContext context;
   OnRestart onRestart;
   ExceptionHandler({this.onRestart}) {
@@ -71,6 +72,10 @@ class ExceptionHandler with AuthConsumer {
           ["invalid_grant"].contains(error.errorStatus);
       BungieApiException e = error;
       print(e.errorStatus);
+      if(isDialogOpen){
+        Navigator.pop(context);
+      }
+      isDialogOpen = true;
       showDialog(
         barrierDismissible: false,
         context: context,
@@ -111,7 +116,7 @@ class ExceptionHandler with AuthConsumer {
                 ))
           ],
         ),
-      );
+      ).then((value) => isDialogOpen = false);
     }
     if (error is FlutterErrorDetails) {
       FirebaseCrashlytics.instance.recordFlutterError(error);

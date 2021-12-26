@@ -1,0 +1,34 @@
+//@dart=2.12
+
+import 'package:flutter/material.dart';
+import 'package:little_light/services/language/language.consumer.dart';
+
+class LanguageButton extends StatelessWidget with LanguageConsumer {
+  final String language;
+  final bool selected;
+  final Function onPressed;
+
+  LanguageButton(
+      {required this.language, this.selected = false, required this.onPressed})
+      : super();
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+          primary:
+              selected ? Theme.of(context).buttonColor : Colors.transparent,
+          elevation: 0,
+          padding: EdgeInsets.all(8)),
+      child: _child,
+      onPressed: () {
+        this.onPressed();
+      },
+    );
+  }
+
+  Widget get _child {
+    final languageName = languageService.languageNames[language]?.toUpperCase() ?? language;
+    return Text(languageName);
+  }
+}

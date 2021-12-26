@@ -54,8 +54,9 @@ class _DevModeLoginPageWidgetState extends State<DevModeLoginPageWidget>
         children: [
           TextButton(
               onPressed: () async {
-                if (arguments == null) return;
-                await auth.addAccount(arguments?.code);
+                final args = arguments;
+                if (args == null || args.code == null) return;
+                await auth.addAccount(args.code!);
                 Navigator.of(context).pushAndRemoveUntil(
                     DevModeMainPageRoute(), (route) => false);
               },

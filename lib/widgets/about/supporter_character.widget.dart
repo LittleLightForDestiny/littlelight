@@ -156,7 +156,7 @@ class SupporterCharacterWidgetState extends State<SupporterCharacterWidget>
         decoration: BoxDecoration(
             color: plat.color, borderRadius: BorderRadius.circular(20)),
         child: Icon(
-          plat.iconData,
+          plat.icon,
           size: 20,
         ));
   }
