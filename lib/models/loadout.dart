@@ -8,7 +8,8 @@ import 'package:uuid/uuid.dart';
 
 part 'loadout.g.dart';
 
-@JsonSerializable()
+///TODO: bring this to null safety
+// @JsonSerializable()
 class Loadout {
   String assignedId;
   String name;
@@ -16,7 +17,7 @@ class Loadout {
   List<LoadoutItem> equipped;
   List<LoadoutItem> unequipped;
 
-  @JsonKey(name: 'updated_at')
+  // @JsonKey(name: 'updated_at')
   DateTime updatedAt;
 
   Loadout(
@@ -120,7 +121,8 @@ class Loadout {
   }
 }
 
-@JsonSerializable()
+///TODO: bring this to null safety
+// @JsonSerializable()
 class LoadoutItem {
   String itemInstanceId;
   int itemHash;

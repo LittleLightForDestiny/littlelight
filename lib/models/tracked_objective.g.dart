@@ -10,7 +10,7 @@ part of 'tracked_objective.dart';
 TrackedObjective _$TrackedObjectiveFromJson(Map<String, dynamic> json) {
   return TrackedObjective(
     type: _$enumDecode(_$TrackedObjectiveTypeEnumMap, json['type']),
-    hash: json['hash'] as int,
+    hash: json['hash'] as int?,
     instanceId: json['instanceId'] as String?,
     characterId: json['characterId'] as String?,
     parentHash: json['parentHash'] as int?,

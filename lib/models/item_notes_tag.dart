@@ -92,7 +92,9 @@ const Map<ItemTagIcon, IconData> tagIconData = {
   ItemTagIcon.BlockerGiant: LittleLightIcons.blocker_giant
 };
 
-@JsonSerializable()
+
+///TODO: bring this to null safety
+// @JsonSerializable()
 class ItemNotesTag {
   bool custom;
   String tagId;

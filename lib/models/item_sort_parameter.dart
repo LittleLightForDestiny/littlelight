@@ -36,7 +36,8 @@ enum ItemSortParameterType {
   DamageType
 }
 
-@JsonSerializable()
+///TODO: bring this to null safety
+// @JsonSerializable()
 class ItemSortParameter {
   ItemSortParameterType type;
   int direction;
