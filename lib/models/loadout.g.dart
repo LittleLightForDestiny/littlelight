@@ -1,4 +1,5 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// @dart=2.12
 
 part of 'loadout.dart';
 
@@ -8,15 +9,15 @@ part of 'loadout.dart';
 
 Loadout _$LoadoutFromJson(Map<String, dynamic> json) {
   return Loadout(
-    assignedId: json['assignedId'] as String,
+    assignedId: json['assignedId'] as String?,
     name: json['name'] as String,
-    emblemHash: json['emblemHash'] as int,
-    equipped: (json['equipped'] as List)
-        ?.map((e) => e == null ? null : LoadoutItem.fromJson(e))
-        ?.toList(),
-    unequipped: (json['unequipped'] as List)
-        ?.map((e) => e == null ? null : LoadoutItem.fromJson(e))
-        ?.toList(),
+    emblemHash: json['emblemHash'] as int?,
+    equipped: (json['equipped'] as List<dynamic>)
+        .map((e) => LoadoutItem.fromJson(e))
+        .toList(),
+    unequipped: (json['unequipped'] as List<dynamic>)
+        .map((e) => LoadoutItem.fromJson(e))
+        .toList(),
     updatedAt: json['updated_at'] == null
         ? null
         : DateTime.parse(json['updated_at'] as String),
@@ -34,8 +35,8 @@ Map<String, dynamic> _$LoadoutToJson(Loadout instance) => <String, dynamic>{
 
 LoadoutItem _$LoadoutItemFromJson(Map<String, dynamic> json) {
   return LoadoutItem(
-    itemInstanceId: json['itemInstanceId'] as String,
-    itemHash: json['itemHash'] as int,
+    itemInstanceId: json['itemInstanceId'] as String?,
+    itemHash: json['itemHash'] as int?,
   );
 }
 

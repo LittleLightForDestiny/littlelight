@@ -1,11 +1,9 @@
-import 'dart:io';
 
-import 'package:bungie_api/helpers/oauth.dart';
 import 'package:bungie_api/models/general_user.dart';
 import 'package:bungie_api/models/group_user_info_card.dart';
 import 'package:bungie_api/models/user_membership_data.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/pages/about.screen.dart';
 import 'package:little_light/pages/accounts.screen.dart';
@@ -14,7 +12,6 @@ import 'package:little_light/pages/dev_tools.screen.dart';
 import 'package:little_light/pages/duplicated_items.screen.dart';
 import 'package:little_light/pages/equipment.screen.dart';
 import 'package:little_light/pages/initial/initial.page.dart';
-import 'package:little_light/pages/initial/main.page_route.dart';
 import 'package:little_light/pages/languages.screen.dart';
 import 'package:little_light/pages/loadouts.screen.dart';
 import 'package:little_light/pages/objectives.screen.dart';
@@ -24,7 +21,6 @@ import 'package:little_light/pages/settings.screen.dart';
 import 'package:little_light/pages/triumphs.screen.dart';
 import 'package:little_light/pages/vendors.screen.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
-import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/utils/platform_data.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -201,12 +197,8 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer{
             borderRadius: BorderRadius.circular(4),
             child: InkWell(
                 onTap: () {
-                  ///TODO: add method to set account and membership on authService
-                  // StorageService.setAccount(bungieNetUser.membershipId);
-                  // StorageService.setMembership(membership.membershipId);
-                  Navigator.pushReplacement(
-                      context,
-                      MainPageRoute());
+                  auth.setCurrentMembershipID(membership.membershipId, bungieNetUser.membershipId);
+                  Phoenix.rebirth(context);
                 },
                 child: Container(
                   padding: EdgeInsets.all(8),

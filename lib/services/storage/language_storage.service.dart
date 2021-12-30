@@ -2,9 +2,7 @@
 
 import 'dart:io';
 
-import 'package:bungie_api/helpers/bungie_net_token.dart';
 import 'package:get_it/get_it.dart';
-import 'package:little_light/services/storage/storage.keys.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'language_storage.keys.dart';
@@ -46,5 +44,26 @@ class LanguageStorage extends StorageBase<LanguageStorageKeys> {
       return manifestFile;
     }
     return null;
+  }
+
+  
+
+  Future<Map<String, String>?> getTranslations() async {
+    try {
+      final Map<String, dynamic> json = await getJson(LanguageStorageKeys.littleLightTranslation);
+      return Map<String, String>.from(json);
+    } catch (e) {
+      print("can't parse translations");
+      print(e);
+    }
+    return null;
+  }
+
+  Future<void> saveTranslations(Map<String, String> translations) async {
+    await setJson(LanguageStorageKeys.littleLightTranslation, translations);
+  }
+
+  Future<void> purge() async{
+    await purgePath(this.basePath);
   }
 }

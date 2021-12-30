@@ -6,7 +6,7 @@ import 'package:bungie_api/models/destiny_item_socket_category_definition.dart';
 import 'package:bungie_api/models/destiny_socket_category_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/models/wish_list.dart';
-import 'package:little_light/services/littlelight/wishlists.service.dart';
+import 'package:little_light/services/littlelight/old.wishlists.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
@@ -218,7 +218,7 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
       borderColor = Colors.grey.shade300;
     }
 
-    var tags = WishlistsService()
+    var tags = OldWishlistsService()
         .getPerkTags(definition?.hash, plugItemHash)
         .where((element) => [
               WishlistTag.GodPVE,

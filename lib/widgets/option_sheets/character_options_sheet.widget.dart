@@ -14,7 +14,7 @@ import 'package:little_light/models/loadout.dart';
 import 'package:little_light/pages/edit_loadout.screen.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/inventory/inventory.service.dart';
-import 'package:little_light/services/littlelight/littlelight_data.service.dart';
+import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
 import 'package:little_light/services/littlelight/loadouts.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
@@ -42,7 +42,7 @@ class CharacterOptionsSheet extends StatefulWidget {
   }
 }
 
-class CharacterOptionsSheetState extends State<CharacterOptionsSheet> with UserSettingsConsumer {
+class CharacterOptionsSheetState extends State<CharacterOptionsSheet> with UserSettingsConsumer, LittleLightDataConsumer {
   Map<int, DestinyItemComponent> maxLightLoadout;
   Map<int, DestinyItemComponent> underAverageSlots;
   double maxLight;
@@ -621,7 +621,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet> with UserS
   }
 
   getMaxLightLoadout() async {
-    gameData = await LittleLightDataService().getGameData();
+    gameData = await littleLightData.getGameData();
     var allItems = widget.profile.getAllItems();
     var instancedItems =
         allItems.where((i) => i.itemInstanceId != null).toList();

@@ -9,8 +9,8 @@ part of 'littlelight_wishlist.dart';
 
 LittleLightWishlist _$LittleLightWishlistFromJson(Map<String, dynamic> json) {
   return LittleLightWishlist(
-    name: json['name'] as String,
-    description: json['description'] as String,
+    name: json['name'] as String?,
+    description: json['description'] as String?,
     data: (json['data'] as List<dynamic>)
         .map((e) => LittleLightWishlistItem.fromJson(e))
         .toList(),

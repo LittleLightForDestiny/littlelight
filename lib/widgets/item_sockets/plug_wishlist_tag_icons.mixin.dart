@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/models/wish_list.dart';
-import 'package:little_light/services/littlelight/wishlists.service.dart';
+import 'package:little_light/services/littlelight/old.wishlists.service.dart';
 import 'package:little_light/widgets/common/wishlist_badges.widget.dart';
 
 mixin PlugWishlistTagIconsMixin {
   List<Widget> wishlistIcons(
       BuildContext context, int itemHash, int plugItemHash,
       [double scale = 1]) {
-    var tags = WishlistsService().getPerkTags(itemHash, plugItemHash);
+    var tags = OldWishlistsService().getPerkTags(itemHash, plugItemHash);
     if (tags == null) return [];
     List<Widget> items = [];
     if (tags.contains(WishlistTag.GodPVE)) {

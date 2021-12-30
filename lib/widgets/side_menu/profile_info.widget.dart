@@ -1,16 +1,14 @@
-import 'package:bungie_api/models/destiny_activity_definition.dart';
-import 'package:bungie_api/models/destiny_activity_mode_definition.dart';
-import 'package:bungie_api/models/destiny_place_definition.dart';
-import 'package:bungie_api/models/general_user.dart';
-import 'package:bungie_api/models/group_user_info_card.dart';
-import 'package:bungie_api/models/user_membership_data.dart';
+
+import 'package:bungie_api/destiny2.dart';
+import 'package:bungie_api/groupsv2.dart';
+import 'package:bungie_api/user.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/models/character_sort_parameter.dart';
 import 'package:little_light/pages/initial/initial.page.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
+import 'package:little_light/services/language/language.consumer.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/services/storage/export.dart';
 import 'package:little_light/utils/platform_data.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
@@ -32,7 +30,7 @@ class ProfileInfoWidget extends StatefulWidget {
 }
 
 class ProfileInfoState extends State<ProfileInfoWidget>
-    with SingleTickerProviderStateMixin, AuthConsumer {
+    with SingleTickerProviderStateMixin, AuthConsumer, LanguageConsumer{
   GeneralUser bungieNetUser;
   GroupUserInfoCard selectedMembership;
 
@@ -182,16 +180,14 @@ class ProfileInfoState extends State<ProfileInfoWidget>
   }
 
   Widget buildActivityInfo(BuildContext context) {
-    var lastCharacter =
+    final lastCharacter =
         widget.profile.getCharacters(CharacterSortParameter())?.first;
     if(lastCharacter == null){
       return Container();
     }
-    var lastPlayed = DateTime.parse(lastCharacter.dateLastPlayed);
-    var currentSession = lastCharacter.minutesPlayedThisSession;
-    ///TODO: add getLanguage method on language service
-    // var time = timeago.format(lastPlayed, allowFromNow: true, locale: StorageService.getLanguage());
-    final time = "";
+    final lastPlayed = DateTime.parse(lastCharacter.dateLastPlayed);
+    final currentSession = lastCharacter.minutesPlayedThisSession;
+    final time = timeago.format(lastPlayed, allowFromNow: true, locale: languageService.currentLanguage);
     if (lastPlayed
         .add(Duration(minutes: int.parse(currentSession) + 10))
         .isBefore(DateTime.now().toUtc())) {
@@ -201,7 +197,7 @@ class ProfileInfoState extends State<ProfileInfoWidget>
         style: TextStyle(fontSize: 12, color: Colors.grey.shade100),
       );
     }
-    var activities =
+    final activities =
         widget.profile.getCharacterActivities(lastCharacter.characterId);
     if(activities.currentActivityHash ==  82913930){
       return ManifestText<DestinyPlaceDefinition>(2961497387,

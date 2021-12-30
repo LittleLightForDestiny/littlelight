@@ -1,10 +1,11 @@
 //@dart=2.12
 
 import 'package:flutter/material.dart';
+import 'package:little_light/models/language_info.dart';
 import 'package:little_light/services/language/language.consumer.dart';
 
 class LanguageButton extends StatelessWidget with LanguageConsumer {
-  final String language;
+  final LanguageInfo language;
   final bool selected;
   final Function onPressed;
 
@@ -28,7 +29,6 @@ class LanguageButton extends StatelessWidget with LanguageConsumer {
   }
 
   Widget get _child {
-    final languageName = languageService.languageNames[language]?.toUpperCase() ?? language;
-    return Text(languageName);
+    return Text(language.name.toUpperCase());
   }
 }

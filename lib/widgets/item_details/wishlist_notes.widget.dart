@@ -1,6 +1,6 @@
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/services/littlelight/wishlists.service.dart';
+import 'package:little_light/services/littlelight/old.wishlists.service.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
@@ -11,7 +11,7 @@ class WishlistNotesWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var notes = WishlistsService().getWishlistBuildNotes(item);
+    var notes = OldWishlistsService().getWishlistBuildNotes(item);
     if ((notes?.length ?? 0) == 0) {
       return Container();
     }

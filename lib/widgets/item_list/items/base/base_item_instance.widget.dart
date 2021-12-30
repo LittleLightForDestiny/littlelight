@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/littlelight/item_notes.service.dart';
-import 'package:little_light/services/littlelight/wishlists.service.dart';
+import 'package:little_light/services/littlelight/old.wishlists.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
@@ -90,7 +90,7 @@ class BaseItemInstanceWidget extends BaseInventoryItemWidget {
   Widget buildTags(BuildContext context) {
     final reusable = profile.getItemReusablePlugs(item?.itemInstanceId);
     final sockets = profile.getItemSockets(item?.itemInstanceId);
-    final wishlistTags = WishlistsService().getWishlistBuildTags(
+    final wishlistTags = OldWishlistsService().getWishlistBuildTags(
         itemHash: item?.itemHash, reusablePlugs: reusable, sockets: sockets);
     List<Widget> upper = [];
     var notes = ItemNotesService()

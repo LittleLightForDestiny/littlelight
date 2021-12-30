@@ -2,31 +2,15 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io' as io;
 
-import 'package:bungie_api/api/destiny2.dart';
-import 'package:bungie_api/api/settings.dart';
-import 'package:bungie_api/api/user.dart';
-import 'package:bungie_api/enums/bungie_membership_type.dart';
-import 'package:bungie_api/enums/destiny_component_type.dart';
-import 'package:bungie_api/enums/destiny_vendor_filter.dart';
+import 'package:bungie_api/common.dart';
+import 'package:bungie_api/core.dart';
+import 'package:bungie_api/groupsv2.dart';
 import 'package:bungie_api/helpers/bungie_net_token.dart';
 import 'package:bungie_api/helpers/http.dart';
 import 'package:bungie_api/helpers/oauth.dart';
-import 'package:bungie_api/models/core_settings_configuration.dart';
-import 'package:bungie_api/models/destiny_equip_item_result.dart';
-import 'package:bungie_api/models/destiny_item_action_request.dart';
-import 'package:bungie_api/models/destiny_item_set_action_request.dart';
-import 'package:bungie_api/models/destiny_item_state_request.dart';
-import 'package:bungie_api/models/destiny_item_transfer_request.dart';
-import 'package:bungie_api/models/destiny_postmaster_transfer_request.dart';
-import 'package:bungie_api/models/destiny_profile_response.dart';
-import 'package:bungie_api/models/destiny_vendors_response.dart';
-import 'package:bungie_api/models/group_user_info_card.dart';
-import 'package:bungie_api/models/user_membership_data.dart';
-import 'package:bungie_api/responses/destiny_manifest_response.dart';
-import 'package:bungie_api/responses/destiny_profile_response_response.dart';
-import 'package:bungie_api/responses/destiny_vendors_response_response.dart';
-import 'package:bungie_api/responses/int32_response.dart';
-import 'package:bungie_api/responses/user_membership_data_response.dart';
+import 'package:bungie_api/destiny2.dart';
+import 'package:bungie_api/settings.dart';
+import 'package:bungie_api/user.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.exception.dart';
@@ -206,6 +190,21 @@ class BungieApiService with AuthConsumer{
   Future<CoreSettingsConfiguration> getCommonSettings() async {
     var response = await Settings.getCommonSettings(new Client());
     return response.response;
+  }
+
+  applySocket(String itemInstanceID, int plugHash, int socketIndex, String characterID) async {
+    final plug = DestinyInsertPlugsRequestEntry()
+      ..plugItemHash = plugHash
+      ..socketIndex = socketIndex
+      ..socketArrayType = DestinySocketArrayType.Default;
+    final reqBody = DestinyInsertPlugsFreeActionRequest()
+      ..characterId = characterID
+      ..membershipType = BungieMembershipType.TigerPsn
+      ..itemId = itemInstanceID
+      ..plug = plug;
+    final token = await auth.getCurrentToken();
+    final res = await Destiny2.insertSocketPlugFree(Client(token: token), reqBody);
+    print(res.response.item.toJson());
   }
 }
 

@@ -2,21 +2,46 @@
 
 import 'package:flutter/material.dart';
 import 'package:little_light/core/routes/login_route.dart';
+import 'package:little_light/pages/initial/notifiers/manifest_downloader.notifier.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/pages/main.screen.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/language/language.consumer.dart';
+import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
+import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
+import 'package:little_light/services/profile/profile_component_groups.dart';
 import 'package:little_light/services/setup.dart';
+import 'package:provider/provider.dart';
 
-enum InitialPagePhase { Loading, LanguageSelect, ManifestDownload, AuthorizationRequest, MembershipSelect, WishlistsSelect }
+enum InitialPagePhase {
+  Loading,
+  LanguageSelect,
+  ManifestDownload,
+  AuthorizationRequest,
+  MembershipSelect,
+  WishlistsSelect,
+  EnsureCache
+}
 
-class InitialPageStateNotifier with ChangeNotifier, ManifestConsumer, LanguageConsumer, AuthConsumer {
+class InitialPageStateNotifier
+    with
+        ChangeNotifier,
+        ManifestConsumer,
+        LanguageConsumer,
+        AuthConsumer,
+        LittleLightDataConsumer,
+        WishlistsConsumer,
+        ProfileConsumer {
   InitialPagePhase _phase = InitialPagePhase.Loading;
   InitialPagePhase get phase => _phase;
 
   bool _loading = true;
   bool get loading => _loading;
+
+  bool _error = false;
+  bool get error => _error;
 
   bool get forceReauth => true;
 
@@ -26,10 +51,19 @@ class InitialPageStateNotifier with ChangeNotifier, ManifestConsumer, LanguageCo
     _initLoading();
   }
 
-  _initLoading() async {
+  Future<void> _initLoading() async {
     _loading = true;
     notifyListeners();
-    await initServices(_context);
+    
+    try{
+      await initServices(_context);
+    }catch(e){
+      print("loading Error: $e");
+      _error = true;
+      notifyListeners();
+      return;
+    }
+
     final routeSettings = ModalRoute.of(_context)?.settings;
     if (routeSettings is LittleLightLoginRoute) {
       _checkAuthorizationCode();
@@ -38,7 +72,7 @@ class InitialPageStateNotifier with ChangeNotifier, ManifestConsumer, LanguageCo
     _checkLanguage();
   }
 
-  _checkAuthorizationCode() async {
+  Future<void> _checkAuthorizationCode() async {
     _loading = true;
     notifyListeners();
 
@@ -53,10 +87,10 @@ class InitialPageStateNotifier with ChangeNotifier, ManifestConsumer, LanguageCo
     _checkLanguage();
   }
 
-  _checkLanguage() async {
+  Future<void> _checkLanguage() async {
     _loading = true;
     notifyListeners();
-    
+
     final hasSelectedLanguage = languageService.selectedLanguage != null;
 
     if (hasSelectedLanguage) {
@@ -69,11 +103,11 @@ class InitialPageStateNotifier with ChangeNotifier, ManifestConsumer, LanguageCo
     notifyListeners();
   }
 
-  languageSelected() {
+  void languageSelected() {
     _checkManifest();
   }
 
-  _checkManifest() async {
+  Future<void> _checkManifest() async {
     _loading = true;
     notifyListeners();
 
@@ -86,13 +120,23 @@ class InitialPageStateNotifier with ChangeNotifier, ManifestConsumer, LanguageCo
     _phase = InitialPagePhase.ManifestDownload;
     _loading = false;
     notifyListeners();
+
+    _context.read<ManifestDownloaderNotifier>().addListener(_manifestDownloadListener);
   }
 
-  manifestDownloaded() {
+  void _manifestDownloadListener() {
+    final downloader = _context.read<ManifestDownloaderNotifier>();
+    if (downloader.finishedUncompressing) {
+      downloader.removeListener(_manifestDownloadListener);
+      manifestDownloaded();
+    }
+  }
+
+  void manifestDownloaded() {
     _checkAccounts();
   }
 
-  _checkAccounts() {
+  Future<void> _checkAccounts() async {
     _loading = true;
     notifyListeners();
 
@@ -108,17 +152,17 @@ class InitialPageStateNotifier with ChangeNotifier, ManifestConsumer, LanguageCo
     notifyListeners();
   }
 
-  accountsChecked() {
+  void accountsChecked() {
     _checkMemberships();
   }
 
-  _checkMemberships() {
+  Future<void> _checkMemberships() async {
     _loading = true;
     notifyListeners();
 
     final accountID = auth.currentAccountID;
     final membershipID = auth.currentMembershipID;
-    if(accountID != null && membershipID != null){
+    if (accountID != null && membershipID != null) {
       membershipSelected();
       return;
     }
@@ -128,24 +172,42 @@ class InitialPageStateNotifier with ChangeNotifier, ManifestConsumer, LanguageCo
     notifyListeners();
   }
 
-  membershipSelected(){
-    _checkWishlist();    
+  void membershipSelected() {
+    _checkWishlist();
   }
 
-  _checkWishlist() async{
+  Future<void> _checkWishlist() async {
     _loading = true;
     notifyListeners();
+    final wishlists = await wishlistsService.getWishlists();
+
+    if (wishlists != null) {
+      wishlistsSelected();
+      return;
+    }
+
+    await littleLightData.getFeaturedWishlists();
 
     _phase = InitialPagePhase.WishlistsSelect;
     _loading = false;
     notifyListeners();
   }
 
-  _checkCache() async {
+  void wishlistsSelected() {
+    _ensureCache();
+  }
+
+  Future<void> _ensureCache() async {
+    _loading = true;
+    notifyListeners();
+
+    await initPostLoadedServices(_context);
+    await profile.fetchProfileData(components: ProfileComponentGroups.everything);
+
     _startApp();
   }
 
-  _startApp() {
+  Future<void> _startApp() async {
     Navigator.of(_context).pushReplacement(MaterialPageRoute(builder: (context) => MainScreen()));
   }
 }

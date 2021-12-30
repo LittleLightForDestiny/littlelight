@@ -4,7 +4,7 @@ import 'package:bungie_api/models/destiny_objective_progress.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/services/storage/export.dart';
+import 'package:little_light/services/language/language.consumer.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
@@ -19,7 +19,7 @@ class BaseMasterworkCounterWidget extends BaseDestinyStatefulItemWidget {
 }
 
 class BaseMasterworkCounterWidgetState<T extends BaseMasterworkCounterWidget>
-    extends BaseDestinyItemState<T> with AutomaticKeepAliveClientMixin {
+    extends BaseDestinyItemState<T> with AutomaticKeepAliveClientMixin, LanguageConsumer {
   DestinyObjectiveProgress masterworkObjective;
   DestinyObjectiveDefinition masterworkObjectiveDefinition;
 
@@ -101,10 +101,10 @@ class BaseMasterworkCounterWidgetState<T extends BaseMasterworkCounterWidget>
   }
 
   Widget buildProgressValue(BuildContext context) {
-    ///TODO: add getLanguage method on language service
-    // var formatter = NumberFormat.decimalPattern(StorageService.getLanguage());
-    // var formattedValue = formatter.format(masterworkObjective.progress);
-    // return Text("$formattedValue",
-    //     style: TextStyle(color: Colors.amber.shade200, fontSize: 15));
+    
+    var formatter = NumberFormat.decimalPattern(languageService.currentLanguage);
+    var formattedValue = formatter.format(masterworkObjective.progress);
+    return Text("$formattedValue",
+        style: TextStyle(color: Colors.amber.shade200, fontSize: 15));
   }
 }

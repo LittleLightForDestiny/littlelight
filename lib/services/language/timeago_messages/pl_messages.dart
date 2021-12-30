@@ -1,3 +1,4 @@
+//@dart=2.12
 import 'package:timeago/timeago.dart';
 
 class PlMessages implements LookupMessages {

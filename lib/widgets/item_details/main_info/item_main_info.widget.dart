@@ -5,7 +5,7 @@ import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/models/wish_list.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/services/littlelight/wishlists.service.dart';
+import 'package:little_light/services/littlelight/old.wishlists.service.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
 import 'package:little_light/widgets/common/primary_stat.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
@@ -78,7 +78,7 @@ class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget> {
   Widget buildWishListInfo(BuildContext context) {
     final reusable = widget.profile.getItemReusablePlugs(item?.itemInstanceId);
     final sockets = widget.profile.getItemSockets(item?.itemInstanceId);
-    final tags = WishlistsService().getWishlistBuildTags(
+    final tags = OldWishlistsService().getWishlistBuildTags(
         itemHash: item?.itemHash, reusablePlugs: reusable, sockets: sockets);
     if (tags == null) return Container();
     if (tags.contains(WishlistTag.GodPVE) &&

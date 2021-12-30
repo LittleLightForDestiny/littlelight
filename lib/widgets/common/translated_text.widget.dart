@@ -62,7 +62,7 @@ class TranslatedTextWidgetState extends State<TranslatedTextWidget> with Languag
 
   @override
   Widget build(BuildContext context) {
-    String text = translatedText ?? "";
+    String text = translatedText ?? widget.text;
     if (widget.uppercase) {
       text = text.toUpperCase();
     }

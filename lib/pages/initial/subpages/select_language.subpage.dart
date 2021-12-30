@@ -33,15 +33,15 @@ class SelectLanguageSubPageState extends SubpageBaseState<SelectLanguageSubPage>
   }
 
   List<Widget> getLanguageButtons(BuildContext context) {
-    List<String> languages = languageService.languageNames.keys.toList();
+    final languages = languageService.languages;
     return languages.map<Widget>((language) {
       return LanguageButton(
           onPressed: () {
             this.setState(() {
-              selectedLanguage = language;
+              selectedLanguage = language.code;
             });
           },
-          selected: language == selectedLanguage,
+          selected: language.code == selectedLanguage,
           language: language);
     }).toList();
   }

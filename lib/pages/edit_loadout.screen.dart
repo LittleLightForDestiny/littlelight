@@ -19,6 +19,7 @@ import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/loadouts/loadout_slot.widget.dart';
+import 'package:little_light/utils/loadout_utils.dart';
 
 class EditLoadoutScreen extends StatefulWidget {
   final Loadout loadout;

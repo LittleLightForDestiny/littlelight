@@ -1,3 +1,5 @@
+//@dart=2.12
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -93,25 +95,25 @@ const Map<ItemTagIcon, IconData> tagIconData = {
 };
 
 
-///TODO: bring this to null safety
-// @JsonSerializable()
+
+@JsonSerializable()
 class ItemNotesTag {
   bool custom;
-  String tagId;
+  String? tagId;
   String name;
   String backgroundColorHex;
   String foregroundColorHex;
   ItemTagIcon icon;
 
-  Color get backgroundColor {
+  Color? get backgroundColor {
     return colorFromHex(backgroundColorHex);
   }
 
-  Color get foregroundColor {
+  Color? get foregroundColor {
     return colorFromHex(foregroundColorHex);
   }
 
-  IconData get iconData {
+  IconData? get iconData {
     return tagIconData[icon];
   }
 

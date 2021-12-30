@@ -2,7 +2,7 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/services/littlelight/item_notes.service.dart';
 import 'package:little_light/services/littlelight/loadouts.service.dart';
-import 'package:little_light/services/littlelight/wishlists.service.dart';
+import 'package:little_light/services/littlelight/old.wishlists.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/remove_diacritics.dart';
@@ -43,8 +43,8 @@ class TextFilter extends BaseItemFilter<String> {
                 l.followedBy(r.map((e) => e.plugItemHash)).toList())?.toSet() ??
         Set<int>());
     var wishlistBuildNotes =
-        WishlistsService().getWishlistBuildNotes(item.item);
-    var wishlistTags = WishlistsService().getWishlistBuildTags(
+        OldWishlistsService().getWishlistBuildNotes(item.item);
+    var wishlistTags = OldWishlistsService().getWishlistBuildTags(
         itemHash: item.item.itemHash,
         reusablePlugs: reusablePlugs,
         sockets: sockets);

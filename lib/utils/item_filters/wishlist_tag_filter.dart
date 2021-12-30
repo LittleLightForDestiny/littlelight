@@ -1,6 +1,6 @@
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:little_light/models/wish_list.dart';
-import 'package:little_light/services/littlelight/wishlists.service.dart';
+import 'package:little_light/services/littlelight/old.wishlists.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 
@@ -19,7 +19,7 @@ class WishlistTagFilter extends BaseItemFilter<Set<WishlistTag>> {
           final reusable =
               profile.getItemReusablePlugs(i?.item?.itemInstanceId);
           final sockets = profile.getItemSockets(i?.item?.itemInstanceId);
-          final tags = WishlistsService()
+          final tags = OldWishlistsService()
               .getWishlistBuildTags(
                   itemHash: i?.item?.itemHash,
                   reusablePlugs: reusable,
@@ -44,7 +44,7 @@ class WishlistTagFilter extends BaseItemFilter<Set<WishlistTag>> {
     final profile = ProfileService();
     final reusable = profile.getItemReusablePlugs(item?.item?.itemInstanceId);
     final sockets = profile.getItemSockets(item?.item?.itemInstanceId);
-    final tags = WishlistsService()
+    final tags = OldWishlistsService()
         .getWishlistBuildTags(
             itemHash: item?.item?.itemHash,
             reusablePlugs: reusable,

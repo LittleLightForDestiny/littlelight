@@ -2,7 +2,7 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/services/storage/export.dart';
+import 'package:little_light/services/language/language.consumer.dart';
 import 'package:little_light/widgets/common/masterwork_counter/base_masterwork_counter.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
@@ -19,7 +19,7 @@ class ScreenshotMasterworkCounterWidget extends BaseMasterworkCounterWidget {
 }
 
 class ScreenshotMasterworkCounterState extends BaseMasterworkCounterWidgetState<
-    ScreenshotMasterworkCounterWidget> {
+    ScreenshotMasterworkCounterWidget> with LanguageConsumer{
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -69,12 +69,12 @@ class ScreenshotMasterworkCounterState extends BaseMasterworkCounterWidgetState<
   }
 
   Widget buildProgressValue(BuildContext context) {
-    ///TODO: add getLanguage method on language service
-    // var formatter = NumberFormat.decimalPattern(StorageService.getLanguage());
-    // var formattedValue = formatter.format(masterworkObjective.progress);
-    // return Text("$formattedValue",
-    //     style: TextStyle(
-    //         color: Colors.amber.shade200, fontSize: widget.pixelSize * 20));
+    
+    var formatter = NumberFormat.decimalPattern(languageService.currentLanguage);
+    var formattedValue = formatter.format(masterworkObjective.progress);
+    return Text("$formattedValue",
+        style: TextStyle(
+            color: Colors.amber.shade200, fontSize: widget.pixelSize * 20));
   }
 
   Widget buildBigIcon(BuildContext context) {

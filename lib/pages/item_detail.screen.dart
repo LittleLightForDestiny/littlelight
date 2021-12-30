@@ -49,6 +49,7 @@ import 'package:little_light/widgets/item_stats/details_item_stats.widget.dart';
 import 'package:little_light/widgets/item_tags/item_details_tags.widget.dart';
 import 'package:little_light/widgets/option_sheets/as_equipped_switch.widget.dart';
 import 'package:little_light/widgets/option_sheets/loadout_select_sheet.widget.dart';
+import 'package:little_light/utils/loadout_utils.dart';
 
 class ItemDetailScreen extends BaseDestinyStatefulItemWidget {
   final String uniqueId;

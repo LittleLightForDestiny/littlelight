@@ -1,15 +1,12 @@
 import 'dart:convert';
 
-import 'package:bungie_api/enums/bungie_membership_type.dart';
 import 'package:bungie_api/helpers/bungie_net_token.dart';
-import 'package:bungie_api/models/group_user_info_card.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:little_light/models/item_notes.dart';
 import 'package:little_light/models/item_notes_tag.dart';
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
-
 import 'package:little_light/services/storage/export.dart';
 import 'package:uuid/uuid.dart';
 
@@ -88,14 +85,13 @@ class LittleLightApiService with AuthConsumer, StorageConsumer {
 
   Future<dynamic> _authorizedRequest(String path,
       {Map<String, dynamic> body = const {}}) async {
-    GroupUserInfoCard membership = await auth.getMembership();
+    String membershipID = auth.currentMembershipID;
     BungieNetToken token = await auth.getCurrentToken();
     String uuid = await _getUuid();
     String secret = await _getSecret();
     body = {
       ...body,
-      'membership_id': membership.membershipId,
-      'membership_type': "${membership.membershipType.value}",
+      'membership_id': membershipID,
       'uuid': uuid,
     };
     if (secret != null) {

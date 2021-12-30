@@ -100,6 +100,7 @@ class ItemDetailsSocketDetailsWidgetState
       buildStats(context),
       buildObjectives(context),
       buildWishlistInfo(context),
+      buildApplyButton(context)
     ];
     return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -329,4 +330,8 @@ class ItemDetailsSocketDetailsWidgetState
           },
         ));
   }
+
+  Widget buildApplyButton(BuildContext context) => ElevatedButton(onPressed: (){
+    controller.applySocket(controller.selectedSocketIndex, controller.selectedPlugHash);
+  }, child: TranslatedTextWidget("Apply perk"));
 }

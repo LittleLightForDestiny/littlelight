@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:bungie_api/models/destiny_item_plug_base.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/models/wish_list.dart';
-import 'package:little_light/services/littlelight/wishlists.service.dart';
+import 'package:little_light/services/littlelight/old.wishlists.service.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/item_details/section_header.widget.dart';
@@ -73,7 +73,7 @@ class WishlistBuildsWidgetState extends State<WishlistBuildsWidget>
 
   @override
   Widget build(BuildContext context) {
-    final builds = WishlistsService().getWishlistBuilds(
+    final builds = OldWishlistsService().getWishlistBuilds(
         itemHash: widget.itemHash, reusablePlugs: widget.reusablePlugs);
     if ((builds?.length ?? 0) == 0) return Container();
     return Container(

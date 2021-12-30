@@ -34,24 +34,24 @@ class VendorsService with StorageConsumer {
 
   Future<Map<String, DestinyVendorComponent>> getVendors(
       String characterId) async {
-    var vendors = await _getVendorsData(characterId);
+    var vendors = await _getVendorsDataForCharacter(characterId);
     return vendors?.vendors?.data;
   }
 
   Future<List<DestinyVendorCategory>> getVendorCategories(
       String characterId, int vendorHash) async {
-    var vendors = await _getVendorsData(characterId);
+    var vendors = await _getVendorsDataForCharacter(characterId);
     return vendors?.categories?.data["$vendorHash"]?.categories;
   }
 
   Future<List<DestinyVendorGroup>> getVendorGroups(String characterId) async {
-    var vendors = await _getVendorsData(characterId);
+    var vendors = await _getVendorsDataForCharacter(characterId);
     return vendors?.vendorGroups?.data?.groups;
   }
 
   Future<List<DestinyItemSocketState>> getSaleItemSockets(
       String characterId, int vendorHash, int index) async {
-    var vendors = await _getVendorsData(characterId);
+    var vendors = await _getVendorsDataForCharacter(characterId);
     try {
       return vendors
           ?.itemComponents["$vendorHash"].sockets.data["$index"].sockets;
@@ -61,7 +61,7 @@ class VendorsService with StorageConsumer {
 
   Future<Map<String, List<DestinyItemPlugBase>>> getSaleItemReusablePerks(
       String characterId, int vendorHash, int index) async {
-    var vendors = await _getVendorsData(characterId);
+    var vendors = await _getVendorsDataForCharacter(characterId);
     try {
       return vendors
           .itemComponents["$vendorHash"].reusablePlugs.data["$index"]?.plugs;
@@ -71,7 +71,7 @@ class VendorsService with StorageConsumer {
 
   Future<DestinyItemInstanceComponent> getSaleItemInstanceInfo(
       String characterId, int vendorHash, int index) async {
-    var vendors = await _getVendorsData(characterId);
+    var vendors = await _getVendorsDataForCharacter(characterId);
     try {
       return vendors?.itemComponents["$vendorHash"].instances.data["$index"];
     } catch (e) {}
@@ -80,11 +80,11 @@ class VendorsService with StorageConsumer {
 
   Future<Map<String, DestinyVendorSaleItemComponent>> getVendorSales(
       String characterId, int vendorHash) async {
-    var vendors = await _getVendorsData(characterId);
+    var vendors = await _getVendorsDataForCharacter(characterId);
     return vendors?.sales?.data["$vendorHash"]?.saleItems;
   }
 
-  Future<DestinyVendorsResponse> _getVendorsData(String characterId) async {
+  Future<DestinyVendorsResponse> _getVendorsDataForCharacter(String characterId) async {
     if (!_vendors.containsKey(characterId)) {
       _vendors[characterId] =
           await _api.getVendors(_vendorComponents, characterId);
@@ -95,7 +95,7 @@ class VendorsService with StorageConsumer {
   Future<Map<String, DestinyVendorsResponse>> fetchVendorData() async {
     try {
       Map<String, DestinyVendorsResponse> res = await _updateVendorsData();
-      this._cacheVendors(_vendors);
+      currentMembershipStorage.saveCachedVendors(_vendors);
       return res;
     } catch (e) {}
     return _vendors;
@@ -106,25 +106,4 @@ class VendorsService with StorageConsumer {
 
     return response;
   }
-
-  _cacheVendors(Map<String, DestinyVendorsResponse> vendors) async {
-    if (vendors == null) return;
-    currentMembershipStorage.saveCachedVendors(vendors);
-  }
-
-
-  ///TODO: reimplement load from cache
-  // Future<Map<String, DestinyVendorsResponse>> _loadFromCache() async {
-  //   StorageService storage = StorageService.membership();
-  //   Map<String, dynamic> json = await storage.getJson(StorageKeys.cachedVendors);
-  //   if (json != null) {
-  //     this._vendors = json.map<String, DestinyVendorsResponse>((charId, obj)=>MapEntry(charId, DestinyVendorsResponse.fromJson(obj)));
-  //     print('loaded vendors from cache');
-  //     return this._vendors;
-  //   }
-
-  //   Map<String, DestinyVendorsResponse> response = await fetchVendorData();
-  //   print('loaded vendors from server');
-  //   return response;
-  // }
 }

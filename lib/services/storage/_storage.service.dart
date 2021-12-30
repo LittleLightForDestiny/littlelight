@@ -1,17 +1,9 @@
-import 'dart:convert';
-import 'dart:io';
 
-import 'package:get_it/get_it.dart';
 import 'package:little_light/services/storage/account_storage.service.dart';
 import 'package:little_light/services/storage/language_storage.service.dart';
 import 'package:little_light/services/storage/membership_storage.service.dart';
-import 'package:little_light/services/storage/storage_migrations.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sqflite/sqflite.dart';
 
 import 'global_storage.service.dart';
-import 'storage.keys.dart';
 
 setupStorageService() async {
   await setupGlobalStorageService();
@@ -21,8 +13,8 @@ setupStorageService() async {
 }
 
 class StorageService {
-  static bool _hasRunSetup = false;
-  static SharedPreferences _prefs;
+  // static bool _hasRunSetup = false;
+  // static SharedPreferences _prefs;
 
   // setup() async {
   //   if (_hasRunSetup) return;
@@ -31,8 +23,8 @@ class StorageService {
   //   _hasRunSetup = true;
   // }
 
-  final String _path;
-  StorageService([this._path = ""]);
+  // final String _path;
+  // StorageService([this._path = ""]);
   
   // Future<void> remove(StorageKeys key, [bool json = false]) async {
   //   if (json) {

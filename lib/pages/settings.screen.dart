@@ -7,7 +7,7 @@ import 'package:little_light/models/item_notes_tag.dart';
 import 'package:little_light/models/wish_list.dart';
 import 'package:little_light/pages/add_wishlist.screen.dart';
 import 'package:little_light/services/littlelight/item_notes.service.dart';
-import 'package:little_light/services/littlelight/wishlists.service.dart';
+import 'package:little_light/services/littlelight/old.wishlists.service.dart';
 import 'package:little_light/models/item_sort_parameter.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/platform_capabilities.dart';
@@ -38,7 +38,7 @@ class _SettingsScreenState extends State<SettingsScreen> with UserSettingsConsum
     itemOrdering = userSettings.itemOrdering;
     pursuitOrdering = userSettings.pursuitOrdering;
     priorityTags = userSettings.priorityTags;
-    wishlists = WishlistsService().getWishlists();
+    wishlists = OldWishlistsService().getWishlists();
   }
 
   @override
@@ -195,7 +195,7 @@ class _SettingsScreenState extends State<SettingsScreen> with UserSettingsConsum
                     useRootNavigator: true,
                     context: context,
                     builder: (context) => buildProcessingDialog(context));
-                wishlists = await WishlistsService().addWishlist(wishlist);
+                wishlists = await OldWishlistsService().addWishlist(wishlist);
                 Navigator.of(context).pop();
                 setState(() {});
               }
@@ -261,13 +261,13 @@ class _SettingsScreenState extends State<SettingsScreen> with UserSettingsConsum
                                           context: context,
                                           builder: (context) =>
                                               buildProcessingDialog(context));
-                                      wishlists = await WishlistsService()
+                                      wishlists = await OldWishlistsService()
                                           .removeWishlist(w);
-                                      wishlists = await WishlistsService()
+                                      wishlists = await OldWishlistsService()
                                           .addWishlist(w);
                                       Navigator.of(context).pop();
                                       setState(() {});
-                                      WishlistsService().countBuilds();
+                                      OldWishlistsService().countBuilds();
                                     }),
                                 Container(
                                   width: 8,
@@ -284,7 +284,7 @@ class _SettingsScreenState extends State<SettingsScreen> with UserSettingsConsum
                                           context: context,
                                           builder: (context) =>
                                               buildProcessingDialog(context));
-                                      wishlists = await WishlistsService()
+                                      wishlists = await OldWishlistsService()
                                           .removeWishlist(w);
                                       Navigator.of(context).pop();
                                       setState(() {});

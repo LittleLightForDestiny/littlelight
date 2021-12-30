@@ -208,16 +208,7 @@ class _AccountsScreenState extends State<AccountsScreen> with AuthConsumer {
   }
 
   void deleteAccount(UserMembershipData membership) async {
-    /// TODO: implement removeAccount on authService
-    // if (membership?.destinyMemberships != null) {
-    //   for (var m in membership.destinyMemberships) {
-    //     await StorageService.membership(m.membershipId).purge();
-    //   }
-    // }
-    // await StorageService.account(membership?.bungieNetUser?.membershipId)
-    //     .purge();
-
-    // await StorageService.removeAccount(membership?.bungieNetUser?.membershipId);
-    // loadAccounts();
+    await auth.removeAccount(membership.bungieNetUser.membershipId);
+    loadAccounts();
   }
 }

@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/pages/initial/subpages/authorization_request.subpage.dart';
 import 'package:little_light/pages/initial/subpages/download_manifest_progress.subpage.dart';
+import 'package:little_light/pages/initial/subpages/error.subpage.dart';
 import 'package:little_light/pages/initial/subpages/select_language.subpage.dart';
 import 'package:little_light/pages/initial/subpages/select_membership.subpage.dart';
 import 'package:little_light/pages/initial/subpages/select_wishlists.subpage.dart';
@@ -34,11 +35,15 @@ class InitialPageState extends State<InitialPage> with AuthConsumer, LanguageCon
 
   Widget buildContent(BuildContext context) {
     final controller = Provider.of<InitialPageStateNotifier>(context);
+    if (controller.error) {
+      return buildError(context);
+    }
     if (controller.loading) {
       return buildLoadingAnim(context);
     }
     switch (controller.phase) {
       case InitialPagePhase.Loading:
+      case InitialPagePhase.EnsureCache:
         return buildLoadingAnim(context);
       case InitialPagePhase.LanguageSelect:
         return languageSelectPage(context);
@@ -50,6 +55,7 @@ class InitialPageState extends State<InitialPage> with AuthConsumer, LanguageCon
         return selectMembershipPage(context);
       case InitialPagePhase.WishlistsSelect:
         return selectWishlistsPage(context);
+      
     }
   }
 
@@ -70,4 +76,6 @@ class InitialPageState extends State<InitialPage> with AuthConsumer, LanguageCon
   Widget selectMembershipPage(BuildContext context) => SelectMembershipSubPage();
   
   Widget selectWishlistsPage(BuildContext context) => SelectWishlistsSubPage();
+
+  Widget buildError(BuildContext context) => StartupErrorSubPage();
 }

@@ -21,84 +21,29 @@ import 'package:bungie_api/models/destiny_presentation_node_component.dart';
 import 'package:bungie_api/models/destiny_profile_response.dart';
 import 'package:bungie_api/models/destiny_record_component.dart';
 import 'package:bungie_api/models/destiny_stat.dart';
+import 'package:get_it/get_it.dart';
 import 'package:little_light/models/character_sort_parameter.dart';
+import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/notification/notification.service.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
+import 'package:little_light/services/profile/profile_component_groups.dart';
 import 'package:little_light/services/storage/export.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 
 enum LastLoadedFrom { server, cache }
 
-class ProfileComponentGroups {
-  static const List<DestinyComponentType> basicProfile = [
-    DestinyComponentType.Characters,
-    DestinyComponentType.CharacterActivities,
-    DestinyComponentType.CharacterProgressions,
-    DestinyComponentType.CharacterEquipment,
-    DestinyComponentType.CharacterInventories,
-    DestinyComponentType.ProfileInventories,
-    DestinyComponentType.ProfileCurrencies,
-    DestinyComponentType.ProfileProgression,
-    DestinyComponentType.ItemInstances,
-    DestinyComponentType.ItemStats,
-    DestinyComponentType.ItemObjectives,
-    DestinyComponentType.ItemTalentGrids,
-    DestinyComponentType.ItemSockets,
-    DestinyComponentType.ItemPlugStates,
-    DestinyComponentType.ItemPlugObjectives,
-    DestinyComponentType.ItemReusablePlugs,
-  ];
-
-  static const List<DestinyComponentType> inventories = [
-    DestinyComponentType.CharacterEquipment,
-    DestinyComponentType.CharacterInventories,
-    DestinyComponentType.ProfileInventories,
-  ];
-
-  static const List<DestinyComponentType> collections = [
-    DestinyComponentType.Collectibles,
-    DestinyComponentType.PresentationNodes,
-  ];
-
-  static const List<DestinyComponentType> triumphs = [
-    DestinyComponentType.Records,
-    DestinyComponentType.Metrics,
-    DestinyComponentType.PresentationNodes,
-  ];
-
-  static const List<DestinyComponentType> everything = [
-    DestinyComponentType.Characters,
-    DestinyComponentType.CharacterActivities,
-    DestinyComponentType.CharacterProgressions,
-    DestinyComponentType.CharacterEquipment,
-    DestinyComponentType.CharacterInventories,
-    DestinyComponentType.ProfileInventories,
-    DestinyComponentType.ProfileCurrencies,
-    DestinyComponentType.ProfileProgression,
-    DestinyComponentType.ItemInstances,
-    DestinyComponentType.ItemStats,
-    DestinyComponentType.ItemObjectives,
-    DestinyComponentType.ItemTalentGrids,
-    DestinyComponentType.ItemSockets,
-    DestinyComponentType.ItemPlugStates,
-    DestinyComponentType.ItemPlugObjectives,
-    DestinyComponentType.ItemReusablePlugs,
-    DestinyComponentType.Collectibles,
-    DestinyComponentType.Records,
-    DestinyComponentType.Metrics,
-    DestinyComponentType.PresentationNodes,
-    DestinyComponentType.Profiles,
-  ];
+setupProfileService(){
+  GetIt.I.registerLazySingleton<ProfileService>(() => ProfileService._internal());
 }
 
-class ProfileService with UserSettingsConsumer, StorageConsumer {
+class ProfileService with UserSettingsConsumer, StorageConsumer, AuthConsumer {
   final NotificationService _broadcaster = new NotificationService();
-  static final ProfileService _singleton = new ProfileService._internal();
 
   DateTime lastUpdated;
   factory ProfileService() {
-    return _singleton;
+    return getInjectedProfileService();
   }
   ProfileService._internal();
 
@@ -161,14 +106,9 @@ class ProfileService with UserSettingsConsumer, StorageConsumer {
 
   Future<DestinyProfileResponse> _updateProfileData(
       List<DestinyComponentType> components) async {
-    ///TODO: add getMembership method on auth service
-    // var membership = StorageService.getMembership();
+    // final membershipID = auth.currentMembershipID;
     DestinyProfileResponse response;
     response = await _api.getCurrentProfile(components);
-    ///TODO: add getMembership method on auth service
-    // if (membership != StorageService.getMembership()) {
-    //   return _profile;
-    // }
     lastUpdated = DateTime.now();
 
     if (response == null) {

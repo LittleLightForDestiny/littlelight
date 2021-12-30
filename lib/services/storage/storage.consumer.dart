@@ -15,7 +15,7 @@ MembershipStorage getInjectedMembershipStorage(String membershipID) =>
 LanguageStorage getInjectedLanguageStorage(String languageCode) =>
     GetIt.I<LanguageStorage>(param1: languageCode);
 
-mixin StorageConsumer {
+extension Storages on StorageConsumer {
   GlobalStorage get globalStorage => getInjectedGlobalStorage();
   
   AccountStorage accountStorage(String accountID) =>
@@ -27,8 +27,13 @@ mixin StorageConsumer {
   MembershipStorage membershipStorage(String membershipID) =>
       getInjectedMembershipStorage(membershipID);
 
-  MembershipStorage get currentMembershipStorage =>
-      getInjectedMembershipStorage(globalStorage.currentMembershipID!);
+  MembershipStorage? get currentMembershipStorage{
+    final membershipID = globalStorage.currentMembershipID;
+    if(membershipID != null){
+      return getInjectedMembershipStorage(membershipID);
+    }
+    return null;
+  }
 
   LanguageStorage languageStorage(String code) =>
       getInjectedLanguageStorage(code);
@@ -37,4 +42,7 @@ mixin StorageConsumer {
     final language = getInjectedLanguageService().currentLanguage;
     return getInjectedLanguageStorage(language);
   }
+}
+
+mixin StorageConsumer {
 }

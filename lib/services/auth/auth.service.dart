@@ -7,6 +7,7 @@ import 'package:bungie_api/helpers/bungie_net_token.dart';
 import 'package:bungie_api/helpers/oauth.dart';
 import 'package:bungie_api/models/group_user_info_card.dart';
 import 'package:bungie_api/models/user_membership_data.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 // ignore: import_of_legacy_library_into_null_safe
@@ -40,7 +41,7 @@ class AuthService with StorageConsumer, LanguageConsumer {
   Future<UserMembershipData> addAccount(String authorizationCode) async {
     final token = await bungieApi.requestToken(authorizationCode);
     final memberships = await bungieApi.getMembershipsForToken(token);
-    final accountID = token.membershipId!;
+    final accountID = token.membershipId;
     final storage = accountStorage(accountID);
     await this._saveToken(token);
     await storage.saveMembershipData(memberships);
@@ -58,7 +59,12 @@ class AuthService with StorageConsumer, LanguageConsumer {
   }
 
   Future<void> removeAccount(String accountID) async {
-    ///TODO:implement removeMembership
+    final membershipData = await getMembershipDataForAccount(accountID);
+    final memberships = membershipData?.destinyMemberships?.map((e) => e.membershipId).whereType<String>() ?? [];
+
+    for(final m in memberships){
+      membershipStorage(m).purge();
+    }
 
     _accountIDs?.remove(accountID);
     await globalStorage.setAccountIDs(_accountIDs);
@@ -66,6 +72,10 @@ class AuthService with StorageConsumer, LanguageConsumer {
 
     if (accountID == currentAccountID) {
       currentAccountID = null;
+    }
+
+    if (memberships.contains(currentMembershipID)) {
+      setCurrentMembershipID(null, currentAccountID);
     }
   }
 
@@ -82,7 +92,7 @@ class AuthService with StorageConsumer, LanguageConsumer {
   }
 
   String? get currentMembershipID => globalStorage.currentMembershipID;
-  setCurrentMembershipID(String? membershipID, String accountID) {
+  setCurrentMembershipID(String? membershipID, String? accountID) {
     globalStorage.currentMembershipID = membershipID;
     globalStorage.currentAccountID = accountID;
   }
@@ -101,8 +111,7 @@ class AuthService with StorageConsumer, LanguageConsumer {
   }
 
   resetToken() {
-    /// TODO:implement clearToken
-    // currentAccountStorage.clearToken();
+    currentAccountStorage.clearToken();
   }
 
   Future<BungieNetToken?> _getStoredToken() async {
@@ -117,7 +126,7 @@ class AuthService with StorageConsumer, LanguageConsumer {
   }
 
   Future<void> _saveToken(BungieNetToken? token) async {
-    if (token == null || token.accessToken == null) {
+    if (token == null) {
       return;
     }
     this.currentAccountID = token.membershipId;
@@ -131,22 +140,22 @@ class AuthService with StorageConsumer, LanguageConsumer {
     if (token == null) {
       token = await _getStoredToken();
     }
-    if (token?.accessToken == null || token?.expiresIn == null) {
+    if (token == null) {
       return null;
     }
     DateTime now = DateTime.now();
 
-    ///TODO :implement getToken on accountStorage
-    // DateTime savedDate = storage.getDate(StorageKeys.latestTokenDate);
-    // DateTime expire = savedDate.add(Duration(seconds: token.expiresIn));
-    // DateTime refreshExpire =
-    //     savedDate.add(Duration(seconds: token.refreshExpiresIn));
-    // if (refreshExpire.isBefore(now)) {
-    //   return null;
-    // }
-    // if (expire.isBefore(now)) {
-    //   token = await refreshToken(token);
-    // }
+    DateTime? tokenDate = currentAccountStorage.getLatestTokenDate();
+    if (tokenDate == null) return null;
+
+    DateTime expire = tokenDate.add(Duration(seconds: token.expiresIn));
+    DateTime refreshExpire = tokenDate.add(Duration(seconds: token.refreshExpiresIn));
+    if (refreshExpire.isBefore(now)) {
+      return null;
+    }
+    if (expire.isBefore(now)) {
+      token = await refreshToken(token);
+    }
     return token;
   }
 
@@ -156,10 +165,6 @@ class AuthService with StorageConsumer, LanguageConsumer {
     return token;
   }
 
-  Future<String> checkAuthorizationCode() async {
-    ///TODO:remove checkAuthorizationCode
-    return "";
-  }
 
   // void reset() {
   //   _currentMembership = null;
@@ -169,17 +174,15 @@ class AuthService with StorageConsumer, LanguageConsumer {
 
   Future<GroupUserInfoCard?> getMembership() async {
     if (_currentMembership == null) {
-      // var _membershipData = await _getStoredMembershipData();
-
-      ///TODO: add getMembership method on language service
-      // var _membershipId = StorageService.getMembership();
-      // _currentMembership = getMembershipById(_membershipData, _membershipId);
+      final membershipData = await currentAccountStorage.getMembershipData();
+      final membershipID = globalStorage.currentMembershipID;
+      _currentMembership = membershipData?.destinyMemberships?.firstWhereOrNull((m) => m.membershipId == membershipID);
     }
     return _currentMembership;
   }
 
   bool get isLogged {
-    return true;
+    ///TODO: return if user is logged in or not
     return _currentMembership != null;
   }
 }

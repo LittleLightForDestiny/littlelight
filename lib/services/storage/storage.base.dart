@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:get_it/get_it.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite/sqflite.dart';
 
 enum StoredFileExtensions { JSON }
 
@@ -30,8 +31,7 @@ abstract class StorageBase<T> {
   String getFilePath(T? key, {StoredFileExtensions? extension}) {
     var trailingSlash = (basePath.length) > 0 ? "/" : "";
     String keyPath = getKeyPath(key);
-    final fileExtension =
-        extension?.extension != null ? ".${extension?.extension}" : "";
+    final fileExtension = extension?.extension != null ? ".${extension?.extension}" : "";
     return "$_fileRoot/$basePath$trailingSlash$keyPath$fileExtension";
   }
 
@@ -126,7 +126,7 @@ extension StorageOperations<T> on StorageBase<T> {
 
   Future<void> saveFileContents(String filePath, String contents) async {
     File file = File("$filePath");
-    if(!await file.exists()){
+    if (!await file.exists()) {
       file = await file.create(recursive: true);
     }
 
@@ -135,8 +135,7 @@ extension StorageOperations<T> on StorageBase<T> {
 
   Future<dynamic> getJson(T key) async {
     final path = getFilePath(key, extension: StoredFileExtensions.JSON);
-    String? contents =
-        await getFileContents(path);
+    String? contents = await getFileContents(path);
     if (contents == null) {
       return null;
     }
@@ -166,7 +165,7 @@ extension StorageOperations<T> on StorageBase<T> {
     }
   }
 
-  Future<void> clearKey(T key) async{
+  Future<void> clearKey(T key) async {
     await this._prefs.remove(getPath(key));
   }
 
@@ -195,6 +194,45 @@ extension StorageOperations<T> on StorageBase<T> {
       print("error decoding file:$_path/$key");
       print(e);
       return null;
+    }
+  }
+
+  Future<void> purgePath(String path) async {
+    if (path.isEmpty) {
+      await _prefs.clear();
+    } else {
+      final keys = _prefs.getKeys();
+      for (final key in keys) {
+        final match = key.startsWith(path);
+        if (match) {
+          await _prefs.remove(key);
+        }
+      }
+    }
+
+    final _dbRoot = await getDatabasesPath();
+    if (path.isEmpty) {
+      final dbDir = Directory(_dbRoot);
+      final dbFiles = dbDir.listSync();
+      for (final dbFile in dbFiles) {
+        await dbFile.delete(recursive: true);
+      }
+    } else {
+      final dbPath = File("$_dbRoot/$path");
+      await dbPath.delete(recursive: true);
+    }
+
+    final _fileRoot = await _getFileRoot();
+    if (_fileRoot == null) return;
+    if (path.isEmpty) {
+      final rootDir = Directory(_fileRoot);
+      final files = rootDir.listSync();
+      for (final file in files) {
+        await file.delete(recursive: true);
+      }
+    } else {
+      final filesPath = File("$_fileRoot/$path");
+      await filesPath.delete(recursive: true);
     }
   }
 }

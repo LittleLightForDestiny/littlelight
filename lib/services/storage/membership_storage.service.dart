@@ -21,8 +21,7 @@ setupMembershipStorageService() async {
 }
 
 class MembershipStorage extends StorageBase<MembershipStorageKeys> {
-  MembershipStorage._internal(_membershipID)
-      : super("memberships/$_membershipID");
+  MembershipStorage._internal(_membershipID) : super("memberships/$_membershipID");
 
   @override
   String getKeyPath(MembershipStorageKeys? key) {
@@ -31,11 +30,9 @@ class MembershipStorage extends StorageBase<MembershipStorageKeys> {
 
   Future<Map<String, ItemNotes>?> getCachedNotes() async {
     try {
-      final List<dynamic> json =
-          await getJson(MembershipStorageKeys.cachedNotes);
-      return Map.fromEntries(json
-          .map((n) => ItemNotes.fromJson(n))
-          .map((e) => MapEntry(e.uniqueId, e)));
+      final dynamic json = await getJson(MembershipStorageKeys.cachedNotes);
+      if (json == null) return null;
+      return Map.fromEntries(json.map((n) => ItemNotes.fromJson(n)).map((e) => MapEntry(e.uniqueId, e)));
     } catch (e) {
       print("can't parse cached item notes");
       print(e);
@@ -56,13 +53,11 @@ class MembershipStorage extends StorageBase<MembershipStorageKeys> {
 
   Future<Map<String, ItemNotesTag>?> getCachedTags() async {
     try {
-      final List<dynamic> json =
-          await getJson(MembershipStorageKeys.cachedNotes);
-      return Map.fromEntries(json
-          .map((n) => ItemNotesTag.fromJson(n))
-          .map((e) => MapEntry(e.tagId, e)));
+      final dynamic json = await getJson(MembershipStorageKeys.cachedNotes);
+      if (json == null) return null;
+      return Map.fromEntries(json.map((n) => ItemNotesTag.fromJson(n)).map((e) => MapEntry(e.tagId, e)));
     } catch (e) {
-      print("can't parse cached item notes");
+      print("can't parse item tags");
       print(e);
     }
     return null;
@@ -75,8 +70,7 @@ class MembershipStorage extends StorageBase<MembershipStorageKeys> {
 
   Future<List<Loadout>?> getCachedLoadouts() async {
     try {
-      final List<dynamic> json =
-          await getJson(MembershipStorageKeys.cachedNotes);
+      final List<dynamic> json = await getJson(MembershipStorageKeys.cachedNotes);
       return json.map((n) => Loadout.fromJson(n)).toList();
     } catch (e) {
       print("can't parse cached loadouts");
@@ -92,8 +86,7 @@ class MembershipStorage extends StorageBase<MembershipStorageKeys> {
 
   Future<List<String>?> getLoadoutsOrder() async {
     try {
-      final List<String> json =
-          await getJson(MembershipStorageKeys.loadoutsOrder);
+      final List<String> json = await getJson(MembershipStorageKeys.loadoutsOrder);
       return json;
     } catch (e) {
       print("can't parse loadouts order");
@@ -110,7 +103,7 @@ class MembershipStorage extends StorageBase<MembershipStorageKeys> {
     try {
       final json = await getJson(MembershipStorageKeys.cachedProfile);
       return DestinyProfileResponse.fromJson(json);
-    }catch (e){
+    } catch (e) {
       print("can't parse tracked Objectives");
       print(e);
     }
@@ -121,20 +114,27 @@ class MembershipStorage extends StorageBase<MembershipStorageKeys> {
     await setJson(MembershipStorageKeys.cachedProfile, profile.toJson());
   }
 
+  Future<Map<String, DestinyVendorsResponse>?> getCachedVendors() async {
+    try {
+      final Map<String, dynamic> json = await getExpireableJson(MembershipStorageKeys.priorityTags, Duration(hours: 12));
+      
+      return json.map((key, value) => MapEntry<String, DestinyVendorsResponse>(key, DestinyVendorsResponse.fromJson(value)));
+    } catch (e) {
+      print("can't parse cached vendors");
+      print(e);
+    }
+    return null;
+  }
+
   Future<void> saveCachedVendors(Map<String, DestinyVendorsResponse> vendors) async {
-    final json = vendors.map<String, dynamic>(
-        (characterId, vendors) => MapEntry(characterId, vendors.toJson()));
+    final json = vendors.map<String, dynamic>((characterId, vendors) => MapEntry(characterId, vendors.toJson()));
     await setJson(MembershipStorageKeys.cachedVendors, json);
   }
 
   Future<List<TrackedObjective>?> getTrackedObjectives() async {
     try {
-      final List<dynamic> json =
-          await getJson(MembershipStorageKeys.trackedObjectives);
-      return json
-          .map((n) => TrackedObjective.fromJson(n))
-          .where((o) => o.hash != null)
-          .toList();
+      final List<dynamic> json = await getJson(MembershipStorageKeys.trackedObjectives);
+      return json.map((n) => TrackedObjective.fromJson(n)).where((o) => o.hash != null).toList();
     } catch (e) {
       print("can't parse tracked Objectives");
       print(e);
@@ -143,15 +143,13 @@ class MembershipStorage extends StorageBase<MembershipStorageKeys> {
   }
 
   Future<void> saveTrackedObjectives(List<TrackedObjective> objectives) async {
-    List<dynamic> json =
-        objectives.where((l) => l.hash != null).map((l) => l.toJson()).toList();
+    List<dynamic> json = objectives.where((l) => l.hash != null).map((l) => l.toJson()).toList();
     await setJson(MembershipStorageKeys.trackedObjectives, json);
   }
 
   Future<CharacterSortParameter?> getCharacterOrdering() async {
     try {
-      final List<dynamic> json =
-          await getJson(MembershipStorageKeys.characterOrdering);
+      final List<dynamic> json = await getJson(MembershipStorageKeys.characterOrdering);
       return CharacterSortParameter.fromJson(json);
     } catch (e) {
       print("can't parse character ordering");
@@ -159,16 +157,15 @@ class MembershipStorage extends StorageBase<MembershipStorageKeys> {
     }
     return null;
   }
-  
+
   Future<void> saveCharacterOrdering(CharacterSortParameter characterOrdering) async {
     await setJson(MembershipStorageKeys.trackedObjectives, characterOrdering.toJson());
   }
 
   Future<Map<String, BucketDisplayOptions>?> getBucketDisplayOptions() async {
     try {
-      final Map<String, dynamic> json =
-          await getJson(MembershipStorageKeys.bucketDisplayOptions);
-      return json.map((key, value)=>MapEntry(key, BucketDisplayOptions.fromJson(value)));
+      final Map<String, dynamic> json = await getJson(MembershipStorageKeys.bucketDisplayOptions);
+      return json.map((key, value) => MapEntry(key, BucketDisplayOptions.fromJson(value)));
     } catch (e) {
       print("can't parse bucket display options");
       print(e);
@@ -196,12 +193,9 @@ class MembershipStorage extends StorageBase<MembershipStorageKeys> {
     await setJson(MembershipStorageKeys.bucketDisplayOptions, sectionVisibility);
   }
 
-  
-
   Future<Set<String>?> getPriorityTags() async {
     try {
-      final List<String> json =
-          await getJson(MembershipStorageKeys.priorityTags);
+      final List<String> json = await getJson(MembershipStorageKeys.priorityTags);
       return Set.from(json);
     } catch (e) {
       print("can't parse priority tags");
@@ -214,14 +208,18 @@ class MembershipStorage extends StorageBase<MembershipStorageKeys> {
     await setJson(MembershipStorageKeys.priorityTags, tags.toList());
   }
 
+  String? get littleLightMembershipUUID => getString(MembershipStorageKeys.littleLightAPIMembershipUUID);
+  set littleLightMembershipUUID(String? value) => setString(MembershipStorageKeys.littleLightAPIMembershipUUID, value);
 
-  String? get littleLightMembershipUUID =>
-      getString(MembershipStorageKeys.littleLightAPIMembershipUUID);
-  set littleLightMembershipUUID(String? value) =>
-      setString(MembershipStorageKeys.littleLightAPIMembershipUUID, value);
-
-  String? get littleLightMembershipSecret =>
-      getString(MembershipStorageKeys.littleLightAPIMembershipSecret);
+  String? get littleLightMembershipSecret => getString(MembershipStorageKeys.littleLightAPIMembershipSecret);
   set littleLightMembershipSecret(String? value) =>
       setString(MembershipStorageKeys.littleLightAPIMembershipSecret, value);
+
+  Future<void> purge() async {
+    for (var key in MembershipStorageKeys.values) {
+      await clearKey(key);
+    }
+    final accountRoot = getFilePath(null);
+    await deleteFile(accountRoot);
+  }
 }

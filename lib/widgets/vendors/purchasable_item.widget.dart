@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/pages/item_detail.screen.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/services/littlelight/wishlists.service.dart';
+import 'package:little_light/services/littlelight/old.wishlists.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/profile/vendors.service.dart';
@@ -426,7 +426,7 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget> {
   }
 
   Widget wishlistTags(BuildContext context) {
-    var wishlistTags = WishlistsService().getWishlistBuildTags(
+    var wishlistTags = OldWishlistsService().getWishlistBuildTags(
         itemHash: widget.item?.itemHash,
         reusablePlugs: reusablePlugs,
         sockets: sockets);

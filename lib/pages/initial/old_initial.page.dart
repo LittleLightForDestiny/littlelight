@@ -13,7 +13,7 @@ import 'package:little_light/services/bungie_api/bungie_api.exception.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/language/language.consumer.dart';
 import 'package:little_light/services/language/language.service.dart';
-import 'package:little_light/services/littlelight/wishlists.service.dart';
+import 'package:little_light/services/littlelight/old.wishlists.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/destiny_settings.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
@@ -65,8 +65,8 @@ class InitialScreenState extends FloatingContentState<InitialScreen> with AuthCo
   }
 
   showSelectLanguage() async {
-    List<String> availableLanguages =
-        await widget.manifest.getAvailableLanguages();
+    // List<String> availableLanguages =
+    //     await widget.manifest.getAvailableLanguages();
     // // SelectLanguageWidget childWidget = SelectLanguageWidget(
     // //   availableLanguages: availableLanguages,
     // //   onChange: (language) {
@@ -147,7 +147,7 @@ class InitialScreenState extends FloatingContentState<InitialScreen> with AuthCo
       return;
     }
 
-    var authCode = await auth.checkAuthorizationCode();
+    var authCode;
     if (authCode != null) {
       this.authCode(authCode);
       return;
@@ -219,7 +219,7 @@ class InitialScreenState extends FloatingContentState<InitialScreen> with AuthCo
     try {
       await DestinySettingsService().init();
     } catch (e) {}
-    await WishlistsService().init();
+    await OldWishlistsService().init();
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(

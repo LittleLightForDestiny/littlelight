@@ -4,8 +4,8 @@ import 'package:bungie_api/models/destiny_objective_definition.dart';
 import 'package:bungie_api/models/destiny_objective_progress.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:little_light/services/language/language.consumer.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
-import 'package:little_light/services/storage/export.dart';
 import 'package:little_light/utils/destiny_data.dart';
 
 class ObjectiveWidget extends StatefulWidget {
@@ -34,7 +34,7 @@ class ObjectiveWidget extends StatefulWidget {
   }
 }
 
-class ObjectiveWidgetState extends State<ObjectiveWidget> {
+class ObjectiveWidgetState extends State<ObjectiveWidget> with LanguageConsumer {
   DestinyObjectiveDefinition _definition;
   DestinyObjectiveDefinition get definition => widget.definition ?? _definition;
 
@@ -52,9 +52,7 @@ class ObjectiveWidgetState extends State<ObjectiveWidget> {
 
   void loadDefinitions() async {
     if (widget.definition == null) {
-      _definition = await ManifestService()
-          .getDefinition<DestinyObjectiveDefinition>(
-              widget.objective.objectiveHash);
+      _definition = await ManifestService().getDefinition<DestinyObjectiveDefinition>(widget.objective.objectiveHash);
       if (mounted) setState(() {});
     }
   }
@@ -73,9 +71,7 @@ class ObjectiveWidgetState extends State<ObjectiveWidget> {
 
   Widget buildCheck(BuildContext context) {
     return Container(
-        decoration: BoxDecoration(
-            border: Border.all(
-                width: 1, color: widget.color ?? Colors.grey.shade300)),
+        decoration: BoxDecoration(border: Border.all(width: 1, color: widget.color ?? Colors.grey.shade300)),
         width: 22,
         height: 22,
         padding: EdgeInsets.all(2),
@@ -96,19 +92,13 @@ class ObjectiveWidgetState extends State<ObjectiveWidget> {
     if ((definition?.completionValue ?? 0) <= 1) {
       return Container(
           padding: EdgeInsets.only(left: 8, right: 4),
-          child: Row(children: [
-            Expanded(child: buildTitle(context)),
-            buildCount(context)
-          ]));
+          child: Row(children: [Expanded(child: buildTitle(context)), buildCount(context)]));
     }
     return Container(
         margin: EdgeInsets.only(left: 4),
         height: 22,
-        decoration: isComplete
-            ? null
-            : BoxDecoration(
-                border: Border.all(
-                    width: 1, color: this.color ?? Colors.grey.shade300)),
+        decoration:
+            isComplete ? null : BoxDecoration(border: Border.all(width: 1, color: this.color ?? Colors.grey.shade300)),
         child: Stack(
           children: <Widget>[
             Positioned.fill(
@@ -120,10 +110,7 @@ class ObjectiveWidgetState extends State<ObjectiveWidget> {
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(child: buildTitle(context)),
-                      buildCount(context)
-                    ]))
+                    children: [Expanded(child: buildTitle(context)), buildCount(context)]))
           ],
         ));
   }
@@ -139,10 +126,7 @@ class ObjectiveWidgetState extends State<ObjectiveWidget> {
             maxLines: 1,
             softWrap: false,
             overflow: TextOverflow.fade,
-            style: TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 13,
-                color: this.color ?? Colors.grey.shade300)));
+            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 13, color: this.color ?? Colors.grey.shade300)));
   }
 
   buildCount(BuildContext context) {
@@ -155,19 +139,13 @@ class ObjectiveWidgetState extends State<ObjectiveWidget> {
     if (forceComplete) {
       progress = total;
     }
-    ///TODO: add getLanguage method on language service
-    // var formatter = NumberFormat.decimalPattern(StorageService.getLanguage());
-    // String formattedProgress = formatter.format(progress);
-    // String formattedTotal = formatter.format(total);
 
-    // return Text(
-    //     total <= 1
-    //         ? "$formattedProgress"
-    //         : "$formattedProgress/$formattedTotal",
-    //     style: TextStyle(
-    //         fontWeight: FontWeight.w500,
-    //         fontSize: 13,
-    //         color: this.color ?? Colors.grey.shade300));
+    final formatter = NumberFormat.decimalPattern(languageService.currentLanguage);
+    String formattedProgress = formatter.format(progress);
+    String formattedTotal = formatter.format(total);
+
+    return Text(total <= 1 ? "$formattedProgress" : "$formattedProgress/$formattedTotal",
+        style: TextStyle(fontWeight: FontWeight.w500, fontSize: 13, color: this.color ?? Colors.grey.shade300));
   }
 
   buildProgressBar(BuildContext context) {

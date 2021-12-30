@@ -1,8 +1,10 @@
+//@dart=2.12
 import 'dart:convert';
 
 import 'package:little_light/models/littlelight_wishlist.dart';
 import 'package:little_light/models/wish_list.dart';
-import 'package:little_light/services/littlelight/wishlists.service.dart';
+// ignore: import_of_legacy_library_into_null_safe
+import 'package:little_light/services/littlelight/old.wishlists.service.dart';
 
 class LittleLightWishlistParser {
   Future<LittleLightWishlist> parse(String text) async {
@@ -11,13 +13,13 @@ class LittleLightWishlistParser {
 
     for (var item in wishlist.data) {
       var tags = parseTags(item.tags);
-      WishlistsService().addToWishList(
+      OldWishlistsService().addToWishList(
           originalWishlist: item.originalWishlist ?? wishlist.name ?? "",
-          name: item.name,
+          name: item.name ?? "",
           hash: item.hash,
           perks: item.plugs,
           specialties: tags,
-          notes: [item.description].toSet());
+          notes: [item.description].whereType<String>().toSet());
     }
     return wishlist;
   }
@@ -39,9 +41,7 @@ class LittleLightWishlistParser {
             case "curated":
             case "bungie":
               return WishlistTag.Bungie;
-            case "💩":
-            case "🤢":
-            case "🤢🤢🤢":
+            
             case "trash":
               return WishlistTag.Trash;
 
@@ -54,7 +54,7 @@ class LittleLightWishlistParser {
           }
           return null;
         })
-        .where((element) => element != null)
+        .whereType<WishlistTag>()
         .toSet();
   }
 }

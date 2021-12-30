@@ -32,7 +32,7 @@ class UserSettingsService with StorageConsumer, AuthConsumer {
   }
 
   initItemOrdering() async {
-    List<ItemSortParameter> savedParams = await globalStorage.getItemOrdering();
+    List<ItemSortParameter> savedParams = await globalStorage.getItemOrdering() ?? [];
     List<ItemSortParameterType> presentParams =
         (savedParams ?? []).map((p) => p.type).toList();
     var defaults = ItemSortParameter.defaultItemList;
@@ -48,7 +48,7 @@ class UserSettingsService with StorageConsumer, AuthConsumer {
 
   initPursuitOrdering() async {
     List<ItemSortParameter> savedParams =
-        await globalStorage.getPursuitOrdering();
+        await globalStorage.getPursuitOrdering() ?? [];
     Iterable<ItemSortParameterType> presentParams =
         savedParams.map((p) => p.type);
     var defaults = ItemSortParameter.defaultPursuitList;

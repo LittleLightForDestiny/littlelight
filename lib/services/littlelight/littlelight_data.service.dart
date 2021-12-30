@@ -1,34 +1,32 @@
 import 'dart:convert';
 
+import 'package:get_it/get_it.dart';
+import 'package:http/http.dart' as http;
 import 'package:little_light/models/collaborators.dart';
 import 'package:little_light/models/game_data.dart';
-import 'package:little_light/models/wish_list.dart';
-
+import 'package:little_light/models/wishlist_index.dart';
 import 'package:little_light/services/storage/export.dart';
-import 'package:http/http.dart' as http;
+
+setupLittleLightDataService() {
+  GetIt.I.registerSingleton<LittleLightDataService>(LittleLightDataService._internal());
+}
 
 class LittleLightDataService with StorageConsumer {
-  final _collaboratorsDataURL =
-      "https://cdn.jsdelivr.net/gh/LittleLightForDestiny/littleLightData/collaborators.json";
   final _featuredWishlistsURL =
-      "https://cdn.jsdelivr.net/gh/LittleLightForDestiny/littleLightData/popular_wishlists.json";
+      "https://cdn.jsdelivr.net/gh/LittleLightForDestiny/littlelight_wishlists@HEAD/deliverables/index.json";
+  final _collaboratorsDataURL =
+      "https://cdn.jsdelivr.net/gh/LittleLightForDestiny/littleLightData@HEAD/collaborators.json";
   final _gameDataURL =
-      "https://cdn.jsdelivr.net/gh/LittleLightForDestiny/littleLightData/game_data.json";
+      "https://cdn.jsdelivr.net/gh/LittleLightForDestiny/littleLightData@HEAD/game_data.json";
   
-  static final LittleLightDataService _singleton =
-      new LittleLightDataService._internal();
-  factory LittleLightDataService() {
-    return _singleton;
-  }
   LittleLightDataService._internal();
 
-
-  Future<List<Wishlist>> getFeaturedWishlists() async {
-    List<Wishlist> data = await globalStorage.getFeaturedWishlists();
+  Future<WishlistFolder> getFeaturedWishlists() async {
+    WishlistFolder data = await globalStorage.getFeaturedWishlists();
     if (data != null) return data;
-    List<dynamic> contents = await fetchDataFromCDN(_featuredWishlistsURL);
+    Map<String,dynamic> contents = await fetchDataFromCDN(_featuredWishlistsURL);
     try {
-      data = contents.map((e) => Wishlist.fromJson(e)).toList(); 
+      data = WishlistFolder.fromJson(contents);
       globalStorage.saveFeaturedWishlists(data);
     }catch(e){
       print("can't parse featured wishlists");

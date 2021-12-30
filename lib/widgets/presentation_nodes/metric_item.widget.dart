@@ -9,10 +9,10 @@ import 'package:intl/intl.dart';
 import 'package:little_light/models/tracked_objective.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
+import 'package:little_light/services/language/language.consumer.dart';
 import 'package:little_light/services/littlelight/objectives.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/services/storage/export.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
@@ -27,7 +27,7 @@ class MetricItemWidget extends StatefulWidget {
   }
 }
 
-class MetricItemWidgetState extends State<MetricItemWidget> with AuthConsumer{
+class MetricItemWidgetState extends State<MetricItemWidget> with AuthConsumer, LanguageConsumer{
   DestinyMetricDefinition _definition;
   bool isLogged = false;
   Map<int, DestinyObjectiveDefinition> objectiveDefinitions;
@@ -169,12 +169,9 @@ class MetricItemWidgetState extends State<MetricItemWidget> with AuthConsumer{
 
   buildObjective(BuildContext context) {
     if (metric.objectiveProgress.progress == null) return Container();
-    ///TODO: add getLanguage method on language service
-    // var formatter = NumberFormat.decimalPattern(StorageService.getLanguage());
-    // var formattedProgress = formatter.format(metric.objectiveProgress.progress);
-    // return Text(formattedProgress, style: TextStyle(fontSize: 18));
+    
+    var formatter = NumberFormat.decimalPattern(languageService.currentLanguage);
+    var formattedProgress = formatter.format(metric.objectiveProgress.progress);
+    return Text(formattedProgress, style: TextStyle(fontSize: 18));
   }
-
-  // @override
-  // bool get wantKeepAlive => true;
 }

@@ -8,8 +8,7 @@ import 'account_storage.keys.dart';
 import 'storage.base.dart';
 
 setupAccountStorageService() async {
-  GetIt.I.registerFactoryParam<AccountStorage, String, void>(
-      (accountID, _) => AccountStorage._internal(accountID));
+  GetIt.I.registerFactoryParam<AccountStorage, String, void>((accountID, _) => AccountStorage._internal(accountID));
 }
 
 class AccountStorage extends StorageBase<AccountStorageKeys> {
@@ -22,8 +21,7 @@ class AccountStorage extends StorageBase<AccountStorageKeys> {
 
   Future<BungieNetToken?> getLatestToken() async {
     try {
-      final Map<String, dynamic> json =
-          await getJson(AccountStorageKeys.latestToken);
+      final Map<String, dynamic> json = await getJson(AccountStorageKeys.latestToken);
       return BungieNetToken.fromJson(json);
     } catch (e) {
       print("can't parse latest token");
@@ -32,9 +30,15 @@ class AccountStorage extends StorageBase<AccountStorageKeys> {
     return null;
   }
 
+  DateTime? getLatestTokenDate() => getDate(AccountStorageKeys.latestTokenDate);
+
   Future<void> saveLatestToken(BungieNetToken token) async {
     await setJson(AccountStorageKeys.latestToken, token);
     await setDate(AccountStorageKeys.latestTokenDate, DateTime.now());
+  }
+
+  Future<void> clearToken() async {
+    await setJson(AccountStorageKeys.latestToken, null);
   }
 
   Future<void> saveMembershipData(UserMembershipData membershipData) async {
@@ -43,8 +47,7 @@ class AccountStorage extends StorageBase<AccountStorageKeys> {
 
   Future<UserMembershipData?> getMembershipData() async {
     try {
-      final Map<String, dynamic> json =
-          await getJson(AccountStorageKeys.membershipData);
+      final Map<String, dynamic> json = await getJson(AccountStorageKeys.membershipData);
       return UserMembershipData.fromJson(json);
     } catch (e) {
       print("can't parse latest token");

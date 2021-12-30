@@ -5,7 +5,7 @@ import 'package:bungie_api/models/destiny_faction_progression.dart';
 import 'package:bungie_api/models/destiny_progression.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:little_light/services/littlelight/littlelight_data.service.dart';
+import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
@@ -26,7 +26,7 @@ class CharacterRanksListWidget extends StatefulWidget {
 }
 
 class _CharacterRanksListWidgetState extends State<CharacterRanksListWidget>
-    with AutomaticKeepAliveClientMixin {
+    with AutomaticKeepAliveClientMixin, LittleLightDataConsumer{
   List<DestinyProgression> ranks;
   List<DestinyFactionProgression> progressions;
   StreamSubscription<NotificationEvent> subscription;
@@ -53,7 +53,7 @@ class _CharacterRanksListWidgetState extends State<CharacterRanksListWidget>
   Future<void> getRanks() async {
     var progressionsRoot =
         widget.profile.getCharacterProgression(widget.characterId);
-    var gameData = await LittleLightDataService().getGameData();
+    var gameData = await littleLightData.getGameData();
     ranks = [
       progressionsRoot.progressions["${gameData.ranks.glory}"],
       progressionsRoot.progressions["${gameData.ranks.valor}"],

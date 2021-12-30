@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:little_light/models/wish_list.dart';
 import 'package:little_light/services/language/language.consumer.dart';
-import 'package:little_light/services/language/language.service.dart';
-import 'package:little_light/services/littlelight/littlelight_data.service.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -44,7 +42,7 @@ class _AddWishlistScreenState extends State<AddWishlistScreen> with LanguageCons
   }
 
   loadPopular() async {
-    popular = await LittleLightDataService().getFeaturedWishlists();
+    // popular = await LittleLightDataService().getFeaturedWishlists();
     setState(() {});
   }
 

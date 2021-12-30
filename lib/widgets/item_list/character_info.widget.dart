@@ -120,12 +120,15 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> w
         left: 8,
         bottom: 0,
         right: 8,
-        child: Row(
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          reverse: true,
+          child:Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.end,
           crossAxisAlignment: CrossAxisAlignment.end,
           children: currencies.map((c) => buildCurrency(context, c)).toList(),
-        ));
+        )));
   }
 
   Widget buildCurrency(BuildContext context, DestinyItemComponent currency) {

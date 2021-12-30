@@ -8,6 +8,7 @@ import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_plug_set_definition.dart';
 import 'package:bungie_api/models/destiny_item_plug_base.dart';
 import 'package:flutter/widgets.dart';
+import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
@@ -176,6 +177,11 @@ class ItemSocketController extends ChangeNotifier {
       }
     }
     this.notifyListeners();
+  }
+
+  applySocket(int socketIndex, int plugHash){
+    String characterID = ProfileService().getCharacters().first.characterId;
+    BungieApiService().applySocket(this.item.itemInstanceId, plugHash, socketIndex, characterID);
   }
 
   Set<int> socketPlugHashes(int socketIndex) {

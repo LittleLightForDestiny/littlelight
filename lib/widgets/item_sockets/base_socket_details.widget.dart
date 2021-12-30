@@ -12,7 +12,7 @@ import 'package:bungie_api/models/destiny_stat_group_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/models/wish_list.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/services/littlelight/wishlists.service.dart';
+import 'package:little_light/services/littlelight/old.wishlists.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
@@ -415,7 +415,7 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget>
   Widget buildWishlistInfo(BuildContext context,
       [double iconSize = 16, double fontSize = 13]) {
     var tags =
-        WishlistsService().getPerkTags(itemDefinition?.hash, definition.hash);
+        OldWishlistsService().getPerkTags(itemDefinition?.hash, definition.hash);
     if (tags == null) return Container();
     return buildWishlistTagsInfo((context),
         tags: tags, iconSize: iconSize, fontSize: fontSize);
