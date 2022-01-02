@@ -9,7 +9,7 @@ import 'package:bungie_api/models/destiny_vendor_component.dart';
 import 'package:bungie_api/models/destiny_vendor_group.dart';
 import 'package:bungie_api/models/destiny_vendor_sale_item_component.dart';
 import 'package:bungie_api/models/destiny_vendors_response.dart';
-import 'package:little_light/services/bungie_api/bungie_api.service.dart';
+import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
 import 'package:little_light/services/storage/export.dart';
 
 const _vendorComponents = [
@@ -21,14 +21,13 @@ const _vendorComponents = [
   DestinyComponentType.VendorSales,
 ];
 
-class VendorsService with StorageConsumer {
+class VendorsService with StorageConsumer, BungieApiConsumer {
   static final VendorsService _singleton = new VendorsService._internal();
   DateTime lastUpdated;
   factory VendorsService() {
     return _singleton;
   }
   VendorsService._internal();
-  final _api = BungieApiService();
 
   Map<String, DestinyVendorsResponse> _vendors = {};
 
@@ -87,7 +86,7 @@ class VendorsService with StorageConsumer {
   Future<DestinyVendorsResponse> _getVendorsDataForCharacter(String characterId) async {
     if (!_vendors.containsKey(characterId)) {
       _vendors[characterId] =
-          await _api.getVendors(_vendorComponents, characterId);
+          await bungieAPI.getVendors(_vendorComponents, characterId);
     }
     return _vendors[characterId];
   }

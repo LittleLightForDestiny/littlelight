@@ -1,26 +1,21 @@
 import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
-
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_vendor_definition.dart';
-
 import 'package:flutter/material.dart';
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/inventory/inventory.service.dart';
-import 'package:little_light/services/littlelight/loadouts.service.dart';
+import 'package:little_light/services/littlelight/loadouts.consumer.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-
-
 import 'package:little_light/widgets/item_list/character_info.widget.dart';
 import 'package:little_light/widgets/option_sheets/loadout_select_sheet.widget.dart';
 
@@ -120,7 +115,7 @@ class VaultOptionsSheet extends StatefulWidget {
   }
 }
 
-class VaultOptionsSheetState extends State<VaultOptionsSheet> {
+class VaultOptionsSheetState extends State<VaultOptionsSheet> with LoadoutsConsumer{
   final TextStyle buttonStyle =
       TextStyle(fontWeight: FontWeight.bold, fontSize: 12);
 
@@ -193,7 +188,7 @@ class VaultOptionsSheetState extends State<VaultOptionsSheet> {
       children: <Widget>[
         Positioned.fill(
             child: Material(
-          color: Colors.blueGrey.shade500,
+          color: Theme.of(context).colorScheme.secondary,
         )),
         Container(padding: EdgeInsets.all(8), child: content),
         Positioned.fill(
@@ -277,8 +272,7 @@ class VaultOptionsSheetState extends State<VaultOptionsSheet> {
   }
 
   void getLoadouts() async {
-    var littlelight = LoadoutsService();
-    this.loadouts = await littlelight.getLoadouts();
+    this.loadouts = await loadoutService.getLoadouts();
     if (mounted) {
       setState(() {});
     }

@@ -44,7 +44,7 @@ class LoadoutBackgroundItemWidgetState
   Widget build(BuildContext context) {
     return Container(
       child:buildEmblemBackground(context),
-      decoration: BoxDecoration(border: Border.all(color: Colors.blueGrey.shade300, width: 1)),
+      decoration: BoxDecoration(border: Border.all(color: Theme.of(context).colorScheme.primaryVariant, width: 1)),
     );
   }
 

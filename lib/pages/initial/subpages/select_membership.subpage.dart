@@ -9,7 +9,6 @@ import 'package:little_light/pages/initial/notifiers/initial_page_state.notifier
 import 'package:little_light/pages/initial/notifiers/select_membership.notifier.dart';
 import 'package:little_light/pages/initial/subpages/subpage_base.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/utils/platform_data.dart';
 // ignore: import_of_legacy_library_into_null_safe

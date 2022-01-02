@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/dev_mode/router/dev_mode_router.dart';
 import 'package:little_light/services/setup.dart';
 
@@ -45,6 +46,8 @@ class _LittleLightDevModeAppState extends State<LittleLightDevModeApp> {
   @override
   Widget build(BuildContext context) {
     if (!ready) return Container();
-    return MaterialApp(onGenerateRoute: (route) => router.getPage(route));
+    return MaterialApp(
+      theme: LittleLightThemeData().materialTheme,
+      onGenerateRoute: (route) => router.getPage(route));
   }
 }

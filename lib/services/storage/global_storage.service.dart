@@ -1,13 +1,16 @@
 //@dart=2.12
 
 
+import 'dart:convert';
+
 import 'package:bungie_api/models/core_settings_configuration.dart';
+import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:little_light/models/collaborators.dart';
 import 'package:little_light/models/game_data.dart';
 import 'package:little_light/models/item_sort_parameter.dart';
-import 'package:little_light/models/wish_list.dart';
+import 'package:little_light/models/parsed_wishlist.dart';
 import 'package:little_light/models/wishlist_index.dart';
 import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
 import 'package:package_info/package_info.dart';
@@ -15,6 +18,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'global_storage.keys.dart';
 import 'storage.base.dart';
+
+extension on WishlistFile {
+  String get filename {
+    final _filename = md5.convert(Utf8Encoder().convert(url!)).toString() + ".json";
+    return _filename;
+  }
+}
 
 setupGlobalStorageService() async {
   final _sharedPrefs = await SharedPreferences.getInstance();
@@ -73,8 +83,12 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
   set currentAccountID(String? selectedAccountID) => setString(GlobalStorageKeys.currentAccountID, selectedAccountID);
 
   String? get currentMembershipID => getString(GlobalStorageKeys.currentMembershipID);
-  set currentMembershipID(String? selectedMembershipID) =>
+  set currentMembershipID(String? selectedMembershipID) {
+    if(selectedMembershipID == null){
+      print(selectedMembershipID);
+    }
       setString(GlobalStorageKeys.currentMembershipID, selectedMembershipID);
+  }
 
   Future<List<ItemSortParameter>?> getItemOrdering() async {
     List<dynamic>? jsonList = await getJson(GlobalStorageKeys.itemOrdering);
@@ -140,19 +154,19 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
     setString(GlobalStorageKeys.latestScreen, page?.name);
   }
 
-  Future<Map<int, WishlistItem>?> getParsedWishlists() async {
+  Future<ParsedWishlist?> getParsedWishlists() async {
     try {
       Map<String, dynamic>? json = await getJson(GlobalStorageKeys.parsedWishlists);
-      var items = json?.map<int, WishlistItem>((key, value) => MapEntry(int.parse(key), WishlistItem.fromJson(value)));
+      var items = ParsedWishlist.fromJson(json);
       return items;
     } catch (e) {
       return null;
     }
   }
 
-  Future<void> saveParsedWishlists(Map<int, WishlistItem> parsedWishlists) async {
+  Future<void> saveParsedWishlists(ParsedWishlist parsedWishlists) async {
     try {
-      final json = parsedWishlists.map<String, dynamic>((k, v) => MapEntry(k.toString(), v.toJson()));
+      final json = parsedWishlists.toJson();
       await setJson(GlobalStorageKeys.parsedWishlists, json);
     } catch (e) {
       print("error saving parsed wishlists");
@@ -181,24 +195,24 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
     }
   }
 
-  String _getWishlistPath(Wishlist wishlist) {
+  String _getWishlistPath(WishlistFile wishlist) {
     final wishlistsPath = getFilePath(GlobalStorageKeys.rawWishlists);
     final filePath = "$wishlistsPath/${wishlist.filename}";
     return filePath;
   }
 
-  Future<String?> getWishlistContent(Wishlist wishlist) async {
+  Future<String?> getWishlistContent(WishlistFile wishlist) async {
     final filePath = _getWishlistPath(wishlist);
     final contents = await getFileContents(filePath);
     return contents;
   }
 
-  Future<void> saveWishlistContents(Wishlist wishlist, String contents) async {
+  Future<void> saveWishlistContents(WishlistFile wishlist, String contents) async {
     final filePath = _getWishlistPath(wishlist);
     await saveFileContents(filePath, contents);
   }
 
-  Future<void> deleteWishlist(Wishlist wishlist) async {
+  Future<void> deleteWishlist(WishlistFile wishlist) async {
     final filePath = _getWishlistPath(wishlist);
     await deleteFile(filePath);
   }

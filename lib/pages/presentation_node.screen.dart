@@ -74,7 +74,7 @@ class PresentationNodeScreenState<T extends PresentationNodeScreen>
         bottom: 8,
         child: Container(
           decoration: BoxDecoration(
-              color: Colors.blueGrey.shade900,
+              color: Theme.of(context).colorScheme.secondaryVariant,
               borderRadius: BorderRadius.circular(18)),
           width: 36,
           height: 36,

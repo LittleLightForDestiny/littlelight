@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/utils/color_utils.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/icon_fonts/littlelight_icons.dart';
@@ -136,7 +137,7 @@ class ItemNotesTag {
       name: "Favorite",
       icon: ItemTagIcon.Heart,
       backgroundColorHex: hexFromColor(Colors.yellow.shade800),
-      foregroundColorHex: hexFromColor(Colors.white),
+      foregroundColorHex: hexFromColor(LittleLightThemeData().onSurfaceLayers),
     );
   }
 
@@ -147,7 +148,7 @@ class ItemNotesTag {
       name: "Trash",
       icon: ItemTagIcon.Trash,
       backgroundColorHex: hexFromColor(Colors.red.shade700),
-      foregroundColorHex: hexFromColor(Colors.white),
+      foregroundColorHex: hexFromColor(LittleLightThemeData().onSurfaceLayers),
     );
   }
 

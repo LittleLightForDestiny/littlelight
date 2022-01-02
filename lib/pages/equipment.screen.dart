@@ -144,7 +144,7 @@ class EquipmentScreenState extends State<EquipmentScreen>
             bottom: 8,
             child: Container(
               decoration: BoxDecoration(
-                  color: Colors.blueGrey.shade900,
+                  color: Theme.of(context).colorScheme.background,
                   borderRadius: BorderRadius.circular(18)),
               width: 36,
               height: 36,
@@ -304,7 +304,7 @@ class EquipmentScreenState extends State<EquipmentScreen>
     return Row(children: [
       IconButton(
           enableFeedback: false,
-          icon: Icon(FontAwesomeIcons.search, color: Colors.white),
+          icon: Icon(FontAwesomeIcons.search, color: Theme.of(context).colorScheme.onSurface),
           onPressed: () {
             Iterable<PseudoItemType> available = [
               PseudoItemType.Weapons,

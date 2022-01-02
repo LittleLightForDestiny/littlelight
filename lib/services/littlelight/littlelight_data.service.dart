@@ -1,7 +1,10 @@
+//@dart=2.12
 import 'dart:convert';
 
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
+import 'package:little_light/exceptions/network_error.exception.dart';
+import 'package:little_light/exceptions/parse.exception.dart';
 import 'package:little_light/models/collaborators.dart';
 import 'package:little_light/models/game_data.dart';
 import 'package:little_light/models/wishlist_index.dart';
@@ -22,33 +25,37 @@ class LittleLightDataService with StorageConsumer {
   LittleLightDataService._internal();
 
   Future<WishlistFolder> getFeaturedWishlists() async {
-    WishlistFolder data = await globalStorage.getFeaturedWishlists();
+    WishlistFolder? data = await globalStorage.getFeaturedWishlists();
     if (data != null) return data;
     Map<String,dynamic> contents = await fetchDataFromCDN(_featuredWishlistsURL);
     try {
       data = WishlistFolder.fromJson(contents);
       globalStorage.saveFeaturedWishlists(data);
+      return data;
     }catch(e){
       print("can't parse featured wishlists");
+      throw ParseException(contents, e);
     }
-    return data;
+
   }
 
   Future<CollaboratorsResponse> getCollaborators() async {
-    CollaboratorsResponse data = await globalStorage.getCollaborators();
+    CollaboratorsResponse? data = await globalStorage.getCollaborators();
     if (data != null) return data;
     dynamic contents = await fetchDataFromCDN(_collaboratorsDataURL);
     try {
       data = CollaboratorsResponse.fromJson(contents);
       globalStorage.saveCollaborators(data);
+      return data;
     }catch(e){
       print("can't parse collaborators");
+      throw ParseException(contents, e);
     }
-    return data;
+    
   }
 
   Future<GameData> getGameData() async {
-    GameData data = await globalStorage.getGameData();
+    GameData? data = await globalStorage.getGameData();
     if (data != null) return data;
     dynamic contents = await fetchDataFromCDN(_gameDataURL);
     try {
@@ -56,6 +63,7 @@ class LittleLightDataService with StorageConsumer {
       globalStorage.saveGameData(data);
     }catch(e){
       print("can't parse game data");
+      throw ParseException(contents, e);
     }
     return data;
   }
@@ -66,8 +74,7 @@ class LittleLightDataService with StorageConsumer {
       String raw = res.body;
       return jsonDecode(raw);
     } catch (e) {
-
+      throw NetworkErrorException(e, url:url);
     }
-    return null;
   }
 }

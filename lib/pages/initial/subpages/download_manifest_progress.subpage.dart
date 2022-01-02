@@ -19,12 +19,6 @@ class DownloadManifestProgressSubPageState extends SubpageBaseState<DownloadMani
   @override
   void initState() {
     super.initState();
-    startDownload();
-  }
-
-  void startDownload() async {
-    await Future.delayed(Duration(milliseconds: 1));
-    Provider.of<ManifestDownloaderNotifier>(context, listen: false).downloadManifest();
   }
 
   @override

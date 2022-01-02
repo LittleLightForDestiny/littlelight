@@ -117,13 +117,13 @@ class VendorsListItemWidgetState<T extends VendorsListItemWidget>
   Widget build(BuildContext context) {
     super.build(context);
     if (definition == null) {
-      return Container(height: 200, color: Colors.blueGrey.shade900);
+      return Container(height: 200, color: Theme.of(context).colorScheme.secondaryVariant);
     }
     return Stack(children: [
       Container(
         decoration: BoxDecoration(
-            color: Colors.blueGrey.shade900,
-            border: Border.all(color: Colors.blueGrey.shade300, width: 1)),
+            color: Theme.of(context).colorScheme.secondaryVariant,
+            border: Border.all(color: Theme.of(context).colorScheme.primaryVariant, width: 1)),
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [buildHeader(context), buildContent(context)]),

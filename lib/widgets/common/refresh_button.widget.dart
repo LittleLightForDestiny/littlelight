@@ -81,7 +81,7 @@ class RefreshButtonWidgetState extends State<RefreshButtonWidget> with TickerPro
 
   Widget buildRotatingIcon(){
     return RotationTransition(turns: Tween(begin: 0.0, end: 1.0).animate(rotationController),
-    child: Icon(Icons.refresh, color:rotationController.isAnimating ? Colors.grey.shade500 : Colors.white),
+    child: Icon(Icons.refresh, color:rotationController.isAnimating ? Colors.grey.shade500 : Theme.of(context).colorScheme.onSurface),
     );
   }
 }

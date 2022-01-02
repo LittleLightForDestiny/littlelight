@@ -64,7 +64,7 @@ class ScreenshotMasterworkCounterState extends BaseMasterworkCounterWidgetState<
         overflow: TextOverflow.fade,
         style: TextStyle(
             fontWeight: FontWeight.w300,
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.onSurface,
             fontSize: widget.pixelSize * 20));
   }
 

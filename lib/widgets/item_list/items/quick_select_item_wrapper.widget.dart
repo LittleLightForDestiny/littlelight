@@ -141,7 +141,7 @@ class QuickSelectItemWrapperWidgetState<T extends QuickSelectItemWrapperWidget>
 
     return Container(
         foregroundDecoration: instanceInfo?.isEquipped == true
-            ? BoxDecoration(border: Border.all(width: 2, color: Colors.white))
+            ? BoxDecoration(border: Border.all(width: 2, color: Theme.of(context).colorScheme.onSurface))
             : null,
         width: 26,
         height: 26,

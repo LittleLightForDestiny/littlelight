@@ -178,7 +178,7 @@ class SelectWishlistsSubPageState extends SubpageBaseState<SelectWishlistsSubPag
       margin: EdgeInsets.only(bottom: 8),
       child: Material(
           borderRadius: BorderRadius.circular(8),
-          color: Colors.blueGrey.shade700,
+          color: Theme.of(context).colorScheme.secondary,
           child: InkWell(
               onTap: () {
                 context.read<SelectWishlistNotifier>().toggleChecked(file);
@@ -216,7 +216,7 @@ class SelectWishlistsSubPageState extends SubpageBaseState<SelectWishlistsSubPag
       margin: EdgeInsets.only(bottom: 8),
       child: Material(
           borderRadius: BorderRadius.circular(8),
-          color: Colors.blueGrey.shade700,
+          color: Theme.of(context).colorScheme.secondary,
           child: InkWell(
               onTap: () {
                 context.read<SelectWishlistNotifier>().goToFolder(folder);

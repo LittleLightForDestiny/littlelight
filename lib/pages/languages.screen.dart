@@ -55,7 +55,7 @@ class _LanguagesScreenState extends State<LanguagesScreen> with LanguageConsumer
     }
     var bottomPadding = MediaQuery.of(context).padding.bottom;
     return Container(
-      color: Colors.blueGrey.shade700,
+      color: Theme.of(context).colorScheme.secondary,
       padding: EdgeInsets.all(8).copyWith(bottom: bottomPadding + 8),
       child: ElevatedButton(
           onPressed: () {
@@ -77,9 +77,9 @@ class _LanguagesScreenState extends State<LanguagesScreen> with LanguageConsumer
   }
 
   Widget buildLanguageItem(BuildContext context, LanguageInfo language) {
-    var color = Colors.blueGrey.shade800;
+    var color = Theme.of(context).colorScheme.secondaryVariant;
     if (language.code == currentLanguage) {
-      color = Colors.blueGrey.shade600;
+      color = Theme.of(context).colorScheme.secondary;
     }
     if (language.code == selectedLanguage) {
       color = Colors.lightBlue.shade500;

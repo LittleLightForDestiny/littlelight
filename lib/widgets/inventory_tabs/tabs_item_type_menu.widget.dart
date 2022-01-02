@@ -32,7 +32,7 @@ class ItemTypeMenuWidget extends StatelessWidget {
               Expanded(child:TabBar(
                 indicator: BoxDecoration(
                     border:
-                        Border(top: BorderSide(width: 2, color: Colors.white))),
+                        Border(top: BorderSide(width: 2, color: Theme.of(context).colorScheme.onSurface))),
                 controller: controller,
                 labelPadding: EdgeInsets.all(0),
                 tabs: getButtons(),

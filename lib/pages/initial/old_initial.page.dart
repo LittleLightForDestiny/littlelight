@@ -9,11 +9,10 @@ import 'package:flutter/services.dart';
 import 'package:little_light/exceptions/exception_handler.dart';
 import 'package:little_light/pages/main.screen.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
+import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.exception.dart';
-import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/language/language.consumer.dart';
 import 'package:little_light/services/language/language.service.dart';
-import 'package:little_light/services/littlelight/old.wishlists.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/destiny_settings.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
@@ -22,7 +21,6 @@ import 'package:little_light/widgets/exceptions/exception_dialog.dart';
 import 'package:little_light/widgets/layouts/floating_content_layout.dart';
 
 class InitialScreen extends StatefulWidget {
-  final BungieApiService apiService = new BungieApiService();
   final ManifestService manifest = new ManifestService();
   final ProfileService profile = new ProfileService();
   final LanguageService translate = null;
@@ -34,7 +32,7 @@ class InitialScreen extends StatefulWidget {
   InitialScreenState createState() => new InitialScreenState();
 }
 
-class InitialScreenState extends FloatingContentState<InitialScreen> with AuthConsumer, LanguageConsumer{
+class InitialScreenState extends FloatingContentState<InitialScreen> with AuthConsumer, LanguageConsumer, BungieApiConsumer{
   @override
   void initState() {
     super.initState();
@@ -199,7 +197,7 @@ class InitialScreenState extends FloatingContentState<InitialScreen> with AuthCo
   showSelectMembership() async {
     this.changeContent(null, null);
     UserMembershipData membershipData =
-        await this.widget.apiService.getMemberships();
+        await bungieAPI.getMemberships();
 
     if (membershipData?.destinyMemberships?.length == 1) {
       // await this.auth.saveMembership(
@@ -211,7 +209,7 @@ class InitialScreenState extends FloatingContentState<InitialScreen> with AuthCo
 
   loadProfile() async {
     this.changeContent(null, null);
-    await widget.profile.loadFromCache();
+    await widget.profile.initialLoad();
     this.goForward();
   }
 
@@ -219,7 +217,7 @@ class InitialScreenState extends FloatingContentState<InitialScreen> with AuthCo
     try {
       await DestinySettingsService().init();
     } catch (e) {}
-    await OldWishlistsService().init();
+    // await wishlistsService.init();
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(

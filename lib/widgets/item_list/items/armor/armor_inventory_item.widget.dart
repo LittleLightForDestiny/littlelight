@@ -52,7 +52,7 @@ class ArmorInventoryItemWidget extends BaseInventoryItemWidget {
                       margin: EdgeInsets.symmetric(horizontal: 2),
                       height: 24,
                       width: 1,
-                      color: Colors.white)
+                      color: Theme.of(context).colorScheme.onSurface)
                   : Container(),
               PrimaryStatWidget(
                 item: item,

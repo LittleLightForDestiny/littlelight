@@ -78,7 +78,7 @@ class SmallObjectiveWidgetState extends ObjectiveWidgetState {
     int total = definition.completionValue ?? 0;
     return Container(
         height: 4,
-        color: Colors.blueGrey.shade700,
+        color: Theme.of(context).colorScheme.secondary,
         alignment: Alignment.centerLeft,
         child: progress <= 0
             ? Container()

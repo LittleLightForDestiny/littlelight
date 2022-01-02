@@ -68,7 +68,7 @@ class BucketDisplayOptionsSelectorWidgetState<
                       items: types.map((t) => buildItem(t)).toList(),
                       value: currentType,
                       underline: Container(),
-                      iconEnabledColor: Colors.white,
+                      iconEnabledColor: Theme.of(context).colorScheme.onSurface,
                       icon: Icon(getIcon(currentType)),
                       selectedItemBuilder: (context) => types
                           .map((t) => Opacity(

@@ -16,11 +16,11 @@ import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
+import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/base_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/base_item_instance.widget.dart';
 import 'package:little_light/widgets/search/search.controller.dart';
-import 'package:shimmer/shimmer.dart';
 
 enum DuplicatedListItemType {
   bucketTitle,
@@ -100,14 +100,7 @@ class DuplicatedItemListWidgetState extends State<DuplicatedItemListWidget>
   Widget build(BuildContext context) {
     super.build(context);
     if (listItems == null) {
-      return Center(
-          child: Container(
-              width: 96,
-              child: Shimmer.fromColors(
-                baseColor: Colors.blueGrey.shade300,
-                highlightColor: Colors.white,
-                child: Image.asset("assets/anim/loading.webp"),
-              )));
+      return LoadingAnimWidget();
     }
     var screenPadding = MediaQuery.of(context).padding;
     return StaggeredGridView.countBuilder(

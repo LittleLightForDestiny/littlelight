@@ -3,6 +3,7 @@ import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/pages/item_detail.screen.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
@@ -65,7 +66,7 @@ class LoadoutSlotWidget extends StatelessWidget {
       return Container();
     return Container(
         padding: EdgeInsets.all(4),
-        color: Colors.blueGrey.shade800,
+        color: Theme.of(context).colorScheme.secondaryVariant,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
@@ -144,7 +145,7 @@ class LoadoutSlotWidget extends StatelessWidget {
           child: Container(
               alignment: Alignment.center,
               child: Icon(iconData ?? Icons.add_circle_outline,
-                  size: 26, color: Colors.blueGrey.shade200)));
+                  size: 26, color: LittleLightTheme.of(context).surfaceLayers.layer3)));
     } else {
       icon = Positioned(
           right: 2,
@@ -156,7 +157,7 @@ class LoadoutSlotWidget extends StatelessWidget {
                   color: Theme.of(context).errorColor,
                   borderRadius: BorderRadius.circular(8)),
               child: Icon(iconData ?? Icons.remove_circle_outline,
-                  size: 12, color: Colors.white)));
+                  size: 12, color: Theme.of(context).colorScheme.onSurface)));
     }
     var isTablet = MediaQueryHelper(context).tabletOrBigger;
     var itemIcon = Container(

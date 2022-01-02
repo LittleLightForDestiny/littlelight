@@ -183,7 +183,7 @@ class ProgressScreenState extends State<ProgressScreen>
                   labelPadding: EdgeInsets.all(4),
                   indicator: BoxDecoration(
                       border: Border(
-                          top: BorderSide(width: 2, color: Colors.white))),
+                          top: BorderSide(width: 2, color: Theme.of(context).colorScheme.onSurface))),
                   controller: typeTabController,
                   tabs: [
                 TranslatedTextWidget("Milestones",
@@ -217,7 +217,7 @@ class ProgressScreenState extends State<ProgressScreen>
     return Row(children: [
       IconButton(
           enableFeedback: false,
-          icon: Icon(FontAwesomeIcons.search, color: Colors.white),
+          icon: Icon(FontAwesomeIcons.search, color: Theme.of(context).colorScheme.onSurface),
           onPressed: () {
             var char = characters[charTabController.index];
             var types = [PseudoItemType.Pursuits];

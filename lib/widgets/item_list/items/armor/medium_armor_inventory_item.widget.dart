@@ -49,7 +49,7 @@ class MediumArmorInventoryItemWidget extends MediumBaseInventoryItemWidget {
                       margin: EdgeInsets.symmetric(horizontal: 2),
                       height: 16,
                       width: 1,
-                      color: Colors.white)
+                      color: Theme.of(context).colorScheme.onSurface)
                   : Container(),
               PrimaryStatWidget(
                 item: item,

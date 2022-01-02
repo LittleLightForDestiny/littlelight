@@ -11,7 +11,7 @@ class HeaderWidget extends StatelessWidget {
         alignment: alignment,
         padding: padding,
         decoration: BoxDecoration(
-          border: BorderDirectional(bottom: BorderSide(color: Colors.white)),
+          border: BorderDirectional(bottom: BorderSide(color: Theme.of(context).colorScheme.onSurface)),
           gradient: LinearGradient(colors: [Color.fromRGBO(255, 255, 255, 0), Color.fromRGBO(255, 255, 255, .1)], begin: Alignment.topCenter, end: Alignment.bottomCenter)
         ),
         child: 

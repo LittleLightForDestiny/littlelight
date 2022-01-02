@@ -92,7 +92,7 @@ class ItemDetailsTagsWidgetState
                 trailing: Container(
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: Colors.white),
+                        color: Theme.of(context).colorScheme.onSurface),
                     width: 20,
                     height: 20,
                     alignment: Alignment.center,

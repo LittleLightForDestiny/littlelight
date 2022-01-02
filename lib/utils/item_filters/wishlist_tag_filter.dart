@@ -1,12 +1,12 @@
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
-import 'package:little_light/models/wish_list.dart';
-import 'package:little_light/services/littlelight/old.wishlists.service.dart';
+import 'package:little_light/models/parsed_wishlist.dart';
+import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 
 import 'base_item_filter.dart';
 
-class WishlistTagFilter extends BaseItemFilter<Set<WishlistTag>> {
+class WishlistTagFilter extends BaseItemFilter<Set<WishlistTag>> with WishlistsConsumer {
   WishlistTagFilter() : super(Set(), Set());
 
   @override
@@ -18,12 +18,10 @@ class WishlistTagFilter extends BaseItemFilter<Set<WishlistTag>> {
           final profile = ProfileService();
           final reusable =
               profile.getItemReusablePlugs(i?.item?.itemInstanceId);
-          final sockets = profile.getItemSockets(i?.item?.itemInstanceId);
-          final tags = OldWishlistsService()
+          final tags = wishlistsService
               .getWishlistBuildTags(
                   itemHash: i?.item?.itemHash,
-                  reusablePlugs: reusable,
-                  sockets: sockets)
+                  reusablePlugs: reusable)
               ?.toList();
           if (tags == null) return <WishlistTag>[];
           if (tags.length == 0) return <WishlistTag>[null];
@@ -43,12 +41,10 @@ class WishlistTagFilter extends BaseItemFilter<Set<WishlistTag>> {
       {Map<int, DestinyInventoryItemDefinition> definitions}) {
     final profile = ProfileService();
     final reusable = profile.getItemReusablePlugs(item?.item?.itemInstanceId);
-    final sockets = profile.getItemSockets(item?.item?.itemInstanceId);
-    final tags = OldWishlistsService()
+    final tags = wishlistsService
         .getWishlistBuildTags(
             itemHash: item?.item?.itemHash,
-            reusablePlugs: reusable,
-            sockets: sockets)
+            reusablePlugs: reusable)
         ?.toList();
     if (value?.any((element) => tags?.contains(element) ?? false) ?? false)
       return true;

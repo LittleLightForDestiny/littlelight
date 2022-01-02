@@ -71,7 +71,7 @@ class DevToolsScreen extends StatelessWidget with StorageConsumer {
 
   Widget buildDivider(BuildContext context) {
     return Container(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.onSurface,
         height: 1,
         margin: EdgeInsets.symmetric(vertical: 16));
   }

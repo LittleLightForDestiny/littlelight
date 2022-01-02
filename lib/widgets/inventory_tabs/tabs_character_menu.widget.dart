@@ -23,7 +23,7 @@ class TabsCharacterMenuWidget extends StatelessWidget {
         child: TabBar(
       controller: controller,
       isScrollable: true,
-      indicatorColor: Colors.white,
+      indicatorColor: Theme.of(context).colorScheme.onSurface,
       labelPadding: EdgeInsets.all(0),
       indicatorSize: TabBarIndicatorSize.label,
       tabs: getButtons(),
@@ -100,7 +100,7 @@ class TabMenuButtonState extends State<TabMenuButton> {
   Widget build(BuildContext context) {
     return Container(
         decoration:
-            BoxDecoration(border: Border.all(color: Colors.white, width: 1)),
+            BoxDecoration(border: Border.all(color: Theme.of(context).colorScheme.onSurface, width: 1)),
         foregroundDecoration: widget.lastPlayed
             ? CornerBadgeDecoration(
                 badgeSize: 15,
@@ -144,7 +144,7 @@ class VaultTabMenuButtonState extends TabMenuButtonState {
   Widget build(BuildContext context) {
     return Container(
         decoration:
-            BoxDecoration(border: Border.all(color: Colors.white, width: 1)),
+            BoxDecoration(border: Border.all(color: Theme.of(context).colorScheme.onSurface, width: 1)),
         width: 40,
         height: 40,
         margin: EdgeInsets.only(left: 4, right: 4, bottom: 10),

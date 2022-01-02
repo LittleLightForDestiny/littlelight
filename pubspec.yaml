@@ -32,7 +32,7 @@ dependencies:
   timeago: ^3.0.1
   firebase_crashlytics: ^2.0.0
   firebase_analytics: ^8.0.0
-  flutter_dotenv: ^3.1.0
+  flutter_dotenv: ^5.0.2
   url_launcher: ^6.0.2
   screen: ^0.0.5 
 

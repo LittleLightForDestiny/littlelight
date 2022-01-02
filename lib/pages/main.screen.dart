@@ -6,7 +6,7 @@ import 'package:little_light/pages/old_triumphs.screen.dart';
 import 'package:little_light/pages/progress.screen.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/littlelight/item_notes.service.dart';
-import 'package:little_light/services/littlelight/loadouts.service.dart';
+import 'package:little_light/services/littlelight/loadouts.consumer.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
@@ -20,7 +20,8 @@ class MainScreen extends StatefulWidget {
   MainScreenState createState() => MainScreenState();
 }
 
-class MainScreenState extends State<MainScreen> with WidgetsBindingObserver, AuthConsumer,UserSettingsConsumer {
+class MainScreenState extends State<MainScreen>
+    with WidgetsBindingObserver, AuthConsumer, UserSettingsConsumer, LoadoutsConsumer {
   Widget currentScreen;
 
   @override
@@ -34,7 +35,7 @@ class MainScreenState extends State<MainScreen> with WidgetsBindingObserver, Aut
     ProfileService profile = ProfileService();
     if (auth.isLogged) {
       auth.getMembershipData();
-      LoadoutsService().getLoadouts(forceFetch: true);
+      loadoutService.getLoadouts(forceFetch: true);
       ItemNotesService().getNotes(forceFetch: true);
       profile.startAutomaticUpdater();
       WidgetsBinding.instance.addObserver(this);
@@ -119,8 +120,7 @@ class MainScreenState extends State<MainScreen> with WidgetsBindingObserver, Aut
           context: context,
           builder: (context) => AlertDialog(
             title: TranslatedTextWidget('Exit'),
-            content: TranslatedTextWidget(
-                'Do you really want to exit Little Light?'),
+            content: TranslatedTextWidget('Do you really want to exit Little Light?'),
             actions: <Widget>[
               MaterialButton(
                 onPressed: () => Navigator.of(context).pop(false),

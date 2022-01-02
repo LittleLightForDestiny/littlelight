@@ -32,7 +32,7 @@ class EmblemInventoryItemWidget extends BaseInventoryItemWidget {
         bottom: 0,
         right: 0,
         child: Container(
-            color: Colors.blueGrey.shade900,
+            color: Theme.of(context).cardColor,
             child: QueuedNetworkImage(
                 alignment: Alignment.center,
                 fit: BoxFit.cover,

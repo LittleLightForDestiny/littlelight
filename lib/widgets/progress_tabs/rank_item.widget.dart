@@ -72,7 +72,7 @@ class RankItemWidgetState<T extends RankItemWidget> extends State<T>
   Widget build(BuildContext context) {
     super.build(context);
     if (definition == null || progression == null) {
-      return Container(height: 200, color: Colors.blueGrey.shade900);
+      return Container(height: 200, color: Theme.of(context).colorScheme.secondaryVariant);
     }
     return Stack(children: [
       Positioned.fill(
@@ -170,9 +170,9 @@ class RankItemWidgetState<T extends RankItemWidget> extends State<T>
         child: AspectRatio(
           aspectRatio: 1,
           child: FilledCircularProgressIndicator(
-              backgroundColor: Colors.blueGrey.shade500,
+              backgroundColor: Theme.of(context).colorScheme.secondary,
               valueColor: AlwaysStoppedAnimation<Color>(
-                  Color.lerp(mainColor, Colors.white, .5)),
+                  Color.lerp(mainColor, Theme.of(context).colorScheme.onSurface, .5)),
               value: progression.currentProgress / progressTotal),
         ));
   }
@@ -183,7 +183,7 @@ class RankItemWidgetState<T extends RankItemWidget> extends State<T>
         child: AspectRatio(
           aspectRatio: 1,
           child: FilledCircularProgressIndicator(
-              backgroundColor: Colors.blueGrey.shade700,
+              backgroundColor: Theme.of(context).colorScheme.secondary,
               valueColor: AlwaysStoppedAnimation<Color>(Color.fromARGB(
                   255,
                   definition.color.red,

@@ -128,7 +128,7 @@ class QuestInfoWidgetState extends BaseDestinyItemState<QuestInfoWidget> {
     var item = questlineDefinition.setData.itemList[index];
     var def = questSteps[item.itemHash];
     return Container(
-        color: Colors.blueGrey.shade700,
+        color: Theme.of(context).colorScheme.secondary,
         margin: EdgeInsets.all(8).copyWith(top: 0),
         child: Column(
             children: <Widget>[

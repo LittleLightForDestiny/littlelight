@@ -112,7 +112,7 @@ class ItemDetailsSocketDetailsWidgetState
     return Column(children: [
       Divider(
         thickness: 1,
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.onSurface,
       ),
       ItemDetailSocketItemStatsWidget(
         plugDefinition: definition,
@@ -132,7 +132,7 @@ class ItemDetailsSocketDetailsWidgetState
         children: <Widget>[
       Divider(
         thickness: 1,
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.onSurface,
       )
     ]
             .followedBy(objectives.map((o) => ObjectiveWidget(
@@ -168,7 +168,7 @@ class ItemDetailsSocketDetailsWidgetState
   Widget buildMod(BuildContext context, int socketIndex, int plugItemHash) {
     bool isSelected = plugItemHash == controller.selectedPlugHash;
     Color borderColor =
-        isSelected ? Colors.white : Colors.grey.shade300.withOpacity(.5);
+        isSelected ? Theme.of(context).colorScheme.onSurface : Colors.grey.shade300.withOpacity(.5);
 
     BorderSide borderSide = BorderSide(color: borderColor, width: 1);
     var def = controller.plugDefinitions[plugItemHash];

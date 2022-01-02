@@ -67,7 +67,7 @@ class TabHeaderWidgetState extends State<TabHeaderWidget> {
   Widget emblemIcon(BuildContext context) {
     Shimmer shimmer = Shimmer.fromColors(
         baseColor: Colors.transparent,
-        highlightColor: Colors.white,
+        highlightColor: Theme.of(context).colorScheme.onSurface,
         child: Icon(
           DestinyData.getClassIcon(widget.character.classType),
           size: 56,
@@ -92,7 +92,7 @@ class TabHeaderWidgetState extends State<TabHeaderWidget> {
             Theme.of(context).primaryColor, .1),
         highlightColor: Color.lerp(Theme.of(context).backgroundColor,
             Theme.of(context).primaryColor, .3),
-        child: Container(color: Colors.white));
+        child: Container(color: Theme.of(context).colorScheme.onSurface));
     double height = getTopPadding(context) + kToolbarHeight;
     return Container(
         height: height,
@@ -126,7 +126,7 @@ class TabHeaderWidgetState extends State<TabHeaderWidget> {
             period: Duration(seconds: 2),
             highlightColor: shine,
             child: Container(
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.onSurface,
             )),
       ),
     );

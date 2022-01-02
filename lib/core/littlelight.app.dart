@@ -17,14 +17,12 @@ class LittleLightApp extends StatefulWidget {
   _LittleLightAppState createState() => _LittleLightAppState();
 }
 
-class _LittleLightAppState extends State<LittleLightApp>
-    with AnalyticsConsumer {
+class _LittleLightAppState extends State<LittleLightApp> with AnalyticsConsumer {
   @override
   void initState() {
     super.initState();
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarBrightness: Brightness.dark));
+    SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle(statusBarColor: Colors.transparent, statusBarBrightness: Brightness.dark));
   }
 
   @override
@@ -33,10 +31,9 @@ class _LittleLightAppState extends State<LittleLightApp>
       debugShowCheckedModeBanner: false,
       title: 'Little Light',
       navigatorObservers: analytics.observers,
-      theme: LittleLightTheme().theme,
       builder: (context, child) => ScrollConfiguration(
         behavior: LittleLightScrollBehaviour(),
-        child: child ?? Container(),
+        child: LittleLightTheme(child ?? Container()),
       ),
       onGenerateRoute: (route) => _router.getPage(route),
       localizationsDelegates: [

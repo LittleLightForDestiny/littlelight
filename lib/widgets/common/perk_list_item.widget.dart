@@ -61,7 +61,7 @@ class PerkListItemState extends State<PerkListItem>
         margin: EdgeInsets.symmetric(vertical: 4),
         padding: EdgeInsets.all(4),
         decoration: BoxDecoration(
-            color: Colors.blueGrey.shade700,
+            color: Theme.of(context).colorScheme.secondary,
             borderRadius: BorderRadius.circular(8)),
         child: Column(children: [
           Row(
@@ -153,7 +153,7 @@ class PerkListItemState extends State<PerkListItem>
       return ItemStatWidget(stat.statTypeHash, 0, values);
     }).toList();
     return Container(
-        color: Colors.blueGrey.shade900,
+        color: Theme.of(context).colorScheme.secondaryVariant,
         margin: EdgeInsets.all(4),
         child: Column(children: [
           Container(

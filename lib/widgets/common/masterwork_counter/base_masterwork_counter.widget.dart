@@ -97,7 +97,7 @@ class BaseMasterworkCounterWidgetState<T extends BaseMasterworkCounterWidget>
     return Text(masterworkObjectiveDefinition.progressDescription,
         softWrap: false,
         overflow: TextOverflow.fade,
-        style: TextStyle(color: Colors.white, fontSize: 11));
+        style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontSize: 11));
   }
 
   Widget buildProgressValue(BuildContext context) {

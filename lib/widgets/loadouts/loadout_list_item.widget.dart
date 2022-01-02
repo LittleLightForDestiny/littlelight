@@ -6,7 +6,7 @@ import 'package:little_light/models/loadout.dart';
 import 'package:little_light/pages/edit_loadout.screen.dart';
 import 'package:little_light/pages/equip_loadout.screen.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/services/littlelight/loadouts.service.dart';
+import 'package:little_light/services/littlelight/loadouts.consumer.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/inventory_utils.dart';
@@ -31,7 +31,7 @@ class LoadoutListItemWidget extends StatefulWidget {
   }
 }
 
-class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> {
+class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> with LoadoutsConsumer{
   LoadoutItemIndex _itemIndex;
   Loadout _loadout;
   @override
@@ -62,7 +62,7 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> {
         margin: EdgeInsets.all(8),
         child: Material(
             elevation: 1,
-            color: Colors.blueGrey.shade800,
+            color: Theme.of(context).colorScheme.secondaryVariant,
             child: Column(children: [
               Container(
                 height: kToolbarHeight,
@@ -110,7 +110,7 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> {
 
   Widget buildButtonBar(BuildContext context) {
     return Container(
-        color: Colors.blueGrey.shade800,
+        color: Theme.of(context).colorScheme.secondaryVariant,
         padding: EdgeInsets.symmetric(horizontal: 6),
         child: Row(children: [
           Expanded(
@@ -197,8 +197,7 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> {
                     )),
                 title: Text(_loadout?.name?.toUpperCase() ?? ""),
                 maxWidth: 400, yesPressed: () async {
-              LoadoutsService service = LoadoutsService();
-              await service.deleteLoadout(_loadout);
+              await loadoutService.deleteLoadout(_loadout);
               Navigator.of(context).pop();
               if (widget.onChange != null) {
                 widget.onChange();
@@ -247,7 +246,7 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> {
         .map((child) => FractionallySizedBox(
               widthFactor: 1 / (buckets.length + 1),
               child: Container(
-                  color: Colors.blueGrey.shade800,
+                  color: Theme.of(context).colorScheme.secondaryVariant,
                   padding: EdgeInsets.all(4),
                   child: AspectRatio(
                     aspectRatio: 1,

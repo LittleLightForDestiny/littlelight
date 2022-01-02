@@ -25,10 +25,10 @@ abstract class SubpageBaseState<T extends StatefulWidget> extends State<T> {
       padding: EdgeInsets.only(top:mq.viewPadding.top, bottom:mq.viewPadding.bottom,),
       child:AnimatedContainer(
         decoration: BoxDecoration(
-            color: open ? Theme.of(context).backgroundColor : Colors.white,
+            color: open ? Theme.of(context).backgroundColor : Theme.of(context).colorScheme.onSurface,
             border: Border(
                 bottom: BorderSide(
-              color: open ? Theme.of(context).appBarTheme.backgroundColor! : Colors.white,
+              color: open ? Theme.of(context).appBarTheme.backgroundColor! : Theme.of(context).colorScheme.onSurface,
               width: open ? 4 : 0,
             ))),
         duration: Duration(milliseconds: 300),

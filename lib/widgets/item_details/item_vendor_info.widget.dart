@@ -82,7 +82,7 @@ class ItemVendorInfoState extends State<ItemVendorInfoWidget> {
                       "${c.quantity}/$total",
                       style: TextStyle(
                           fontSize: 12,
-                          color: isEnough ? Colors.white : Colors.red.shade300),
+                          color: isEnough ? Theme.of(context).colorScheme.onSurface : Colors.red.shade300),
                     ),
                     Container(
                       width: 4,

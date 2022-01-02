@@ -84,7 +84,7 @@ class FactionRankItemWidgetState<T extends FactionRankItemWidget>
     if (definition == null ||
         progression == null ||
         factionDefinition == null) {
-      return Container(height: 200, color: Colors.blueGrey.shade900);
+      return Container(height: 200, color: Theme.of(context).colorScheme.secondaryVariant);
     }
     return Container(
         padding: EdgeInsets.all(2),
@@ -108,7 +108,7 @@ class FactionRankItemWidgetState<T extends FactionRankItemWidget>
                 decoration: BoxDecoration(
                     color: Colors.black,
                     border:
-                        Border.all(color: Colors.blueGrey.shade300, width: 1)),
+                        Border.all(color: Theme.of(context).colorScheme.primaryVariant, width: 1)),
                 child: Stack(fit: StackFit.passthrough, children: [
                   QueuedNetworkImage(
                     fit: BoxFit.fitHeight,
@@ -184,9 +184,9 @@ class FactionRankItemWidgetState<T extends FactionRankItemWidget>
         child: Stack(children: [
           Positioned.fill(
               child: FilledDiamondProgressIndicator(
-                  backgroundColor: Colors.blueGrey.shade500,
+                  backgroundColor: Theme.of(context).colorScheme.secondary,
                   valueColor:
-                      AlwaysStoppedAnimation<Color>(Colors.blueGrey.shade100),
+                      AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.primary),
                   value: progression.progressToNextLevel /
                       progression.nextLevelAt)),
           Positioned.fill(

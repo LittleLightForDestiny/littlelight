@@ -55,7 +55,7 @@ class BaseSearchFilterWidgetState<T extends BaseSearchFilterWidget,
         child: Container(
             height: 58,
             margin: EdgeInsets.only(top: 8),
-            color: Colors.blueGrey.shade800,
+            color: Theme.of(context).colorScheme.secondaryVariant,
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -76,11 +76,11 @@ class BaseSearchFilterWidgetState<T extends BaseSearchFilterWidget,
   Widget buildExpansionTile(BuildContext context) {
     return Container(
         margin: EdgeInsets.only(top: 8),
-        color: Colors.blueGrey.shade800,
+        color: Theme.of(context).colorScheme.secondaryVariant,
         child: Theme(
             data: Theme.of(context).copyWith(
-                accentColor: Colors.white,
-                dividerColor: Colors.blueGrey.shade800),
+                accentColor: Theme.of(context).colorScheme.onSurface,
+                dividerColor: Theme.of(context).colorScheme.secondaryVariant),
             child: ExpansionTile(
                 trailing: IgnorePointer(
                     child: Switch(
@@ -92,14 +92,14 @@ class BaseSearchFilterWidgetState<T extends BaseSearchFilterWidget,
                   this.controller.update();
                 },
                 initiallyExpanded: this.filter.enabled,
-                backgroundColor: Colors.blueGrey.shade600,
+                backgroundColor: Theme.of(context).colorScheme.secondary,
                 title: DefaultTextStyle(
                     child: buildFilterLabel(context),
                     style: TextStyle(fontWeight: FontWeight.w700)),
                 children: [
                   Container(
                       constraints: BoxConstraints(minWidth: double.infinity),
-                      color: Colors.blueGrey.shade900,
+                      color: Theme.of(context).colorScheme.secondaryVariant,
                       padding: EdgeInsets.all(4),
                       child: buildButtons(context))
                 ])));
@@ -146,7 +146,7 @@ class BaseSearchFilterWidgetState<T extends BaseSearchFilterWidget,
   }
 
   Color buttonBgColor(A value) {
-    return Colors.blueGrey.shade700;
+    return Theme.of(context).colorScheme.secondary;
   }
 
   bool isSelected(A value) {

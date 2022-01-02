@@ -96,10 +96,10 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget> {
                     begin: Alignment(0, 0),
                     end: Alignment(1, 2),
                     colors: [
-                      Colors.white.withOpacity(.05),
-                      Colors.white.withOpacity(.1),
-                      Colors.white.withOpacity(.03),
-                      Colors.white.withOpacity(.1)
+                      Theme.of(context).colorScheme.onSurface.withOpacity(.05),
+                      Theme.of(context).colorScheme.onSurface.withOpacity(.1),
+                      Theme.of(context).colorScheme.onSurface.withOpacity(.03),
+                      Theme.of(context).colorScheme.onSurface.withOpacity(.1)
                     ])),
             child: Stack(children: [
               buildItem(context),
@@ -258,11 +258,11 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget> {
       height: 18,
       decoration: BoxDecoration(
         border: Border.all(
-          color: Colors.blueGrey.shade300,
+          color: Theme.of(context).colorScheme.primaryVariant,
           width: 1,
         ),
         borderRadius: BorderRadius.circular(10),
-        color: Colors.blueGrey.shade700.withOpacity(.8),
+        color: Theme.of(context).colorScheme.secondary.withOpacity(.8),
       ),
       alignment: Alignment.center,
       child: Text(

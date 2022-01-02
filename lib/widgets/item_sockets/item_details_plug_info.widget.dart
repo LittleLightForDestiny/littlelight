@@ -128,7 +128,7 @@ class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget {
     }
     return Container(
         padding: EdgeInsets.all(8),
-        color: Colors.blueGrey.shade600,
+        color: Theme.of(context).colorScheme.secondary,
         child: Row(
           children: pieces,
         ));
@@ -139,14 +139,14 @@ class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget {
     if (index < total) {
       Color color = Colors.transparent;
       if (index < used) {
-        color = Colors.white;
+        color = Theme.of(context).colorScheme.onSurface;
       }
       return Container(
         height: 16,
         padding: EdgeInsets.all(2),
         child: Container(
           decoration: BoxDecoration(
-              border: Border.all(width: 2, color: Colors.white), color: color),
+              border: Border.all(width: 2, color: Theme.of(context).colorScheme.onSurface), color: color),
         ),
       );
     }

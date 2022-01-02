@@ -53,7 +53,7 @@ class VaultTabHeaderWidgetState extends TabHeaderWidgetState {
   }
 
   Widget powerBar(BuildContext context) {
-    return Container(height:2,color:Colors.blueGrey.shade700);
+    return Container(height:2,color:Theme.of(context).colorScheme.secondary);
   }
 
   double getTopPadding(BuildContext context) {

@@ -9,8 +9,8 @@ import 'package:little_light/pages/initial/subpages/select_membership.subpage.da
 import 'package:little_light/pages/initial/subpages/select_wishlists.subpage.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/language/language.consumer.dart';
+import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:provider/provider.dart';
-import 'package:shimmer/shimmer.dart';
 
 import 'notifiers/initial_page_state.notifier.dart';
 
@@ -35,7 +35,7 @@ class InitialPageState extends State<InitialPage> with AuthConsumer, LanguageCon
 
   Widget buildContent(BuildContext context) {
     final controller = Provider.of<InitialPageStateNotifier>(context);
-    if (controller.error) {
+    if (controller.error != null) {
       return buildError(context);
     }
     if (controller.loading) {
@@ -59,13 +59,7 @@ class InitialPageState extends State<InitialPage> with AuthConsumer, LanguageCon
     }
   }
 
-  Widget buildLoadingAnim(BuildContext context) => Container(
-      width: 96,
-      child: Shimmer.fromColors(
-        baseColor: Colors.blueGrey.shade300,
-        highlightColor: Colors.white,
-        child: Image.asset("assets/anim/loading.webp"),
-      ));
+  Widget buildLoadingAnim(BuildContext context) => LoadingAnimWidget();
 
   Widget languageSelectPage(BuildContext context) => SelectLanguageSubPage();
 

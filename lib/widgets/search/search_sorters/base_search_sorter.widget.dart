@@ -51,7 +51,7 @@ class BaseSearchSorterWidgetState<T extends BaseSearchSorterWidget>
         child: Container(
             height: 48,
             margin: EdgeInsets.only(top: 8),
-            color: Colors.blueGrey.shade600,
+            color: Theme.of(context).colorScheme.secondary,
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -142,7 +142,7 @@ class BaseSearchSorterWidgetState<T extends BaseSearchSorterWidget>
   Widget buildSortLabel(BuildContext context) {
     var style = TextStyle(
         fontWeight: FontWeight.bold,
-        color: sortParameter.active ? Colors.white : Colors.grey.shade300);
+        color: sortParameter.active ? Theme.of(context).colorScheme.onSurface : Colors.grey.shade300);
     switch (sortParameter.type) {
       case ItemSortParameterType.PowerLevel:
         return TranslatedTextWidget(

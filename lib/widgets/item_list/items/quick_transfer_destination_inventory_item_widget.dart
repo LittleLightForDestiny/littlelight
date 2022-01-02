@@ -8,13 +8,13 @@ class QuickTransferDestinationItemWidget extends StatelessWidget {
       return Container(
         margin: EdgeInsets.all(1),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(.1),
+          color: Theme.of(context).colorScheme.onSurface.withOpacity(.1),
           border: Border.all(
-            color: Colors.blueGrey.shade900,
+            color: Theme.of(context).colorScheme.secondaryVariant,
             width: 2,
             )
         ),
-        child:Center(child: Icon(Icons.add_circle_outline, color:Colors.blueGrey.shade100),)
+        child:Center(child: Icon(Icons.add_circle_outline, color:Theme.of(context).colorScheme.primary),)
       );
     }
 }

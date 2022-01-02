@@ -194,7 +194,7 @@ class PrimaryStatWidget extends StatelessWidget {
   Widget ammoTypeDivider(BuildContext context) {
     return Container(
         margin: EdgeInsets.only(left: padding / 2, right: padding / 4),
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.onSurface,
         width: 1,
         height: fontSize);
   }

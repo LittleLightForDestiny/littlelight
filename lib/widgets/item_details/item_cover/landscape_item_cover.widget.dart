@@ -263,7 +263,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
                         fontStyle: FontStyle.italic,
                         fontSize: convertSize(24, context),
                         fontWeight: FontWeight.w500,
-                        color: Colors.white.withOpacity(.7),
+                        color: Theme.of(context).colorScheme.onSurface.withOpacity(.7),
                       ),
                     )),
                 Container(
@@ -351,7 +351,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
                         margin: EdgeInsets.symmetric(
                             horizontal: convertSize(16, context)),
                         width: convertSize(2, context),
-                        color: Colors.white.withOpacity(.4)),
+                        color: Theme.of(context).colorScheme.onSurface.withOpacity(.4)),
                 ScreenShotItemStatsWidget(
                     socketController: socketController,
                     pixelSize: pixelSize(context),
@@ -422,7 +422,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
         Container(
             height: convertSize(26, context),
             width: convertSize(2, context),
-            color: Colors.white),
+            color: Theme.of(context).colorScheme.onSurface),
         Container(
           width: convertSize(4, context),
         ),
@@ -516,27 +516,27 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
               imageUrl: BungieApiService.url(imgUrl),
               fit: BoxFit.cover,
               placeholder: Shimmer.fromColors(
-                  baseColor: Colors.blueGrey.shade500,
+                  baseColor: Theme.of(context).colorScheme.secondary,
                   highlightColor: Colors.grey.shade300,
-                  child: Container(color: Colors.white)));
+                  child: Container(color: Theme.of(context).colorScheme.onSurface)));
         }
 
         return QueuedNetworkImage(
             imageUrl: BungieApiService.url(def?.screenshot ?? imgUrl),
             fit: BoxFit.cover,
             placeholder: Shimmer.fromColors(
-                baseColor: Colors.blueGrey.shade500,
+                baseColor: Theme.of(context).colorScheme.secondary,
                 highlightColor: Colors.grey.shade300,
-                child: Container(color: Colors.white)));
+                child: Container(color: Theme.of(context).colorScheme.onSurface)));
       });
     }
     return QueuedNetworkImage(
         imageUrl: BungieApiService.url(imgUrl),
         fit: BoxFit.cover,
         placeholder: Shimmer.fromColors(
-            baseColor: Colors.blueGrey.shade500,
+            baseColor: Theme.of(context).colorScheme.secondary,
             highlightColor: Colors.grey.shade300,
-            child: Container(color: Colors.white)));
+            child: Container(color: Theme.of(context).colorScheme.onSurface)));
   }
 
   Widget tierBar(BuildContext context, double expandRatio) {

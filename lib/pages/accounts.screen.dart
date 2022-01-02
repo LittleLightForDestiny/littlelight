@@ -58,7 +58,7 @@ class _AccountsScreenState extends State<AccountsScreen> with AuthConsumer {
   Widget buildBottomBar(BuildContext context) {
     var bottomPadding = MediaQuery.of(context).padding.bottom;
     return Container(
-      color: Colors.blueGrey.shade700,
+      color: Theme.of(context).colorScheme.secondaryVariant,
       padding: EdgeInsets.all(8).copyWith(bottom: bottomPadding + 8),
       child: ElevatedButton(
           onPressed: () {
@@ -85,7 +85,7 @@ class _AccountsScreenState extends State<AccountsScreen> with AuthConsumer {
         margin: EdgeInsets.symmetric(vertical: 4),
         height: 140,
         decoration: BoxDecoration(
-            border: Border.all(width: 1, color: Colors.blueGrey.shade300)),
+            border: Border.all(width: 1, color: Theme.of(context).colorScheme.secondaryVariant)),
         child: Stack(
           children: <Widget>[
             Positioned.fill(
@@ -101,7 +101,7 @@ class _AccountsScreenState extends State<AccountsScreen> with AuthConsumer {
               height: 56,
               child: Container(
                 alignment: Alignment.centerLeft,
-                color: Colors.black.withOpacity(.5),
+                color: Theme.of(context).backgroundColor,
                 padding: EdgeInsets.all(8).copyWith(left: 70),
                 child: Text(membership?.bungieNetUser?.displayName ?? "",
                     style: TextStyle(fontWeight: FontWeight.bold)),
@@ -132,7 +132,7 @@ class _AccountsScreenState extends State<AccountsScreen> with AuthConsumer {
                         height: 56,
                         alignment: Alignment.center,
                         child: Material(
-                            color: Colors.red,
+                            color: Theme.of(context).errorColor,
                             child: InkWell(
                               onTap: () {
                                 deleteAccount(membership);

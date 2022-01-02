@@ -14,11 +14,12 @@ import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/inventory/inventory.service.dart';
 import 'package:little_light/services/littlelight/item_notes.service.dart';
-import 'package:little_light/services/littlelight/loadouts.service.dart';
+import 'package:little_light/services/littlelight/loadouts.consumer.dart';
 import 'package:little_light/services/profile/vendors.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_with_owner.dart';
+import 'package:little_light/utils/loadout_utils.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -49,7 +50,6 @@ import 'package:little_light/widgets/item_stats/details_item_stats.widget.dart';
 import 'package:little_light/widgets/item_tags/item_details_tags.widget.dart';
 import 'package:little_light/widgets/option_sheets/as_equipped_switch.widget.dart';
 import 'package:little_light/widgets/option_sheets/loadout_select_sheet.widget.dart';
-import 'package:little_light/utils/loadout_utils.dart';
 
 class ItemDetailScreen extends BaseDestinyStatefulItemWidget {
   final String uniqueId;
@@ -84,7 +84,7 @@ class ItemDetailScreen extends BaseDestinyStatefulItemWidget {
   }
 }
 
-class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> with AuthConsumer{
+class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> with AuthConsumer, LoadoutsConsumer{
   int selectedPerk;
   Map<int, int> selectedPerks = new Map();
   ItemSocketController socketController;
@@ -126,7 +126,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> with 
   }
 
   findLoadouts() async {
-    var allLoadouts = await LoadoutsService().getLoadouts();
+    var allLoadouts = await loadoutService.getLoadouts();
     loadouts = allLoadouts.where((loadout) {
       var equip = loadout.equipped
           .where((element) => element.itemInstanceId == item?.itemInstanceId);
@@ -326,6 +326,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> with 
             left: screenPadding.left, right: screenPadding.right),
         child: WishlistNotesWidget(
           item,
+          reusablePlugs:socketController.reusablePlugs
         ));
   }
 
@@ -409,7 +410,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> with 
                 softWrap: false,
               ),
               onPressed: () async {
-                var loadouts = await LoadoutsService().getLoadouts();
+                var loadouts = await loadoutService.getLoadouts();
                 var equipped = false;
                 showModalBottomSheet(
                     context: context,
@@ -423,7 +424,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> with 
                         onSelect: (loadout) async {
                           loadout.addItem(widget.item.itemHash,
                               widget.item.itemInstanceId, equipped);
-                          await LoadoutsService().saveLoadout(loadout);
+                          await loadoutService.saveLoadout(loadout);
                         }));
               })));
     }

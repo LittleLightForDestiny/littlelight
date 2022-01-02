@@ -2,6 +2,7 @@
 import 'package:bungie_api/models/general_user.dart';
 import 'package:bungie_api/models/group_user_info_card.dart';
 import 'package:bungie_api/models/user_membership_data.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -17,14 +18,13 @@ import 'package:little_light/pages/loadouts.screen.dart';
 import 'package:little_light/pages/objectives.screen.dart';
 import 'package:little_light/pages/old_triumphs.screen.dart';
 import 'package:little_light/pages/progress.screen.dart';
-import 'package:little_light/pages/settings.screen.dart';
 import 'package:little_light/pages/triumphs.screen.dart';
 import 'package:little_light/pages/vendors.screen.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/utils/platform_data.dart';
-import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/side_menu/profile_info.widget.dart';
+import 'package:little_light/widgets/side_menu/side_menu_settings.widget.dart';
 
 typedef void OnPageChange(Widget screen);
 
@@ -59,70 +59,9 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer{
 
   @override
   Widget build(BuildContext context) {
-    bool isDebug = false;
-    assert(isDebug = true);
-    List<Widget> settingsMenuOptions = [];
-    var currentMembership = auth.currentMembershipID;
-    var altMembershipCount = 0;
-    if (memberships != null) {
-      for (var account in memberships) {
-        if (account?.destinyMemberships != null) {
-          var memberships = account.destinyMemberships
-              .where((p) => (p?.applicableMembershipTypes?.length ?? 0) > 0);
-          for (var membership in memberships) {
-            if (currentMembership != membership.membershipId) {
-              altMembershipCount++;
-              settingsMenuOptions.add(
-                  membershipButton(context, account.bungieNetUser, membership));
-            }
-          }
-        }
-      }
-    }
-    if (altMembershipCount > 0) {
-      settingsMenuOptions.insert(
-          0,
-          Container(
-              padding: EdgeInsets.symmetric(horizontal: 8),
-              color: Colors.blueGrey.shade600,
-              child: HeaderWidget(
-                alignment: Alignment.centerRight,
-                child: TranslatedTextWidget(
-                  "Switch Account",
-                  uppercase: true,
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              )));
-      settingsMenuOptions
-          .add(Container(height: 8, color: Colors.blueGrey.shade600));
-    }
-
-    if (memberships.length == 1) {
-      settingsMenuOptions.add(menuItem(
-          context, TranslatedTextWidget("Add Account"), requireLogin: true,
-          onTap: () {
-        addAccount(context);
-      }));
-    }
-
-    if (memberships.length > 1) {
-      settingsMenuOptions.add(menuItem(
-          context, TranslatedTextWidget("Manage Accounts"), requireLogin: true,
-          onTap: () {
-        manageAccounts(context);
-      }));
-    }
-
-    settingsMenuOptions.add(
-        menuItem(context, TranslatedTextWidget("Change Language"), onTap: () {
-      changeLanguage(context);
-    }));
-    settingsMenuOptions
-        .add(menuItem(context, TranslatedTextWidget("Settings"), onTap: () {
-      open(context, SettingsScreen());
-    }));
+    
     return Container(
-        color: Theme.of(context).backgroundColor,
+        color: Theme.of(context).cardColor,
         width: 280,
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -132,9 +71,7 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer{
                   child: ListView(
                 padding: EdgeInsets.all(0),
                 children: <Widget>[
-                  ProfileInfoWidget(
-                    menuItems: settingsMenuOptions,
-                  ),
+                  profileInfo(context),
                   menuItem(context, TranslatedTextWidget("Equipment"),
                       requireLogin: true, onTap: () {
                     open(context, EquipmentScreen());
@@ -159,7 +96,7 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer{
                       onTap: () {
                     open(context, CollectionsScreen());
                   }),
-                  isDebug
+                  kDebugMode
                       ? menuItem(context, Text("New Triumphs"), onTap: () {
                           open(context, TriumphsScreen());
                         })
@@ -175,7 +112,7 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer{
                   menuItem(context, TranslatedTextWidget("About"), onTap: () {
                     open(context, AboutScreen());
                   }),
-                  isDebug
+                  kDebugMode
                       ? menuItem(context, TranslatedTextWidget("Dev Tools"),
                           onTap: () {
                           open(context, DevToolsScreen());
@@ -186,11 +123,15 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer{
             ]));
   }
 
+  Widget profileInfo(BuildContext context){
+    return ProfileInfoWidget(menuContent:SideMenuSettingsWidget());
+  }
+
   Widget membershipButton(BuildContext context, GeneralUser bungieNetUser,
       GroupUserInfoCard membership) {
     var plat = PlatformData.getPlatform(membership.membershipType);
     return Container(
-        color: Colors.blueGrey.shade600,
+        color: Theme.of(context).colorScheme.secondary,
         padding: EdgeInsets.all(8).copyWith(bottom: 0),
         child: Material(
             color: plat.color,

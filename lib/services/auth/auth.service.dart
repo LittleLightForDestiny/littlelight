@@ -3,15 +3,16 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:bungie_api/groupsv2.dart';
 import 'package:bungie_api/helpers/bungie_net_token.dart';
 import 'package:bungie_api/helpers/oauth.dart';
-import 'package:bungie_api/models/group_user_info_card.dart';
-import 'package:bungie_api/models/user_membership_data.dart';
+import 'package:bungie_api/user.dart';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-// ignore: import_of_legacy_library_into_null_safe
-import 'package:little_light/services/bungie_api/bungie_api.service.dart';
+import 'package:little_light/services/app_config/app_config.consumer.dart';
+import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
 import 'package:little_light/services/language/language.consumer.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/services/storage/export.dart';
@@ -21,11 +22,10 @@ setupAuthService() async {
   GetIt.I.registerSingleton<AuthService>(AuthService._internal());
 }
 
-class AuthService with StorageConsumer, LanguageConsumer {
+class AuthService with StorageConsumer, LanguageConsumer, AppConfigConsumer, BungieApiConsumer{
   Set<String>? _accountIDs;
   BungieNetToken? _currentToken;
   GroupUserInfoCard? _currentMembership;
-  BungieApiService bungieApi = BungieApiService();
 
   AuthService._internal();
 
@@ -35,12 +35,12 @@ class AuthService with StorageConsumer, LanguageConsumer {
 
   void openBungieLogin(bool forceReauth) async {
     var browser = new BungieAuthBrowser();
-    OAuth.openOAuth(browser, BungieApiService.clientId, languageService.currentLanguage, forceReauth);
+    OAuth.openOAuth(browser, appConfig.clientId, languageService.currentLanguage, forceReauth);
   }
 
   Future<UserMembershipData> addAccount(String authorizationCode) async {
-    final token = await bungieApi.requestToken(authorizationCode);
-    final memberships = await bungieApi.getMembershipsForToken(token);
+    final token = await bungieAPI.requestToken(authorizationCode);
+    final memberships = await bungieAPI.getMembershipsForToken(token);
     final accountID = token.membershipId;
     final storage = accountStorage(accountID);
     await this._saveToken(token);
@@ -104,7 +104,7 @@ class AuthService with StorageConsumer, LanguageConsumer {
     }
     for (final id in _accountIDs!) {
       final token = await accountStorage(id).getLatestToken();
-      final membership = await bungieApi.getMembershipsForToken(token);
+      final membership = await bungieAPI.getMembershipsForToken(token);
       result[id] = membership;
     }
     return result;
@@ -120,7 +120,7 @@ class AuthService with StorageConsumer, LanguageConsumer {
   }
 
   Future<BungieNetToken> refreshToken(BungieNetToken token) async {
-    BungieNetToken bNetToken = await BungieApiService().refreshToken(token.refreshToken);
+    BungieNetToken bNetToken = await bungieAPI.refreshToken(token.refreshToken);
     await _saveToken(bNetToken);
     return bNetToken;
   }
@@ -129,7 +129,6 @@ class AuthService with StorageConsumer, LanguageConsumer {
     if (token == null) {
       return;
     }
-    this.currentAccountID = token.membershipId;
     await accountStorage(currentAccountID!).saveLatestToken(token);
     await Future.delayed(Duration(milliseconds: 1));
     _currentToken = token;
@@ -160,7 +159,7 @@ class AuthService with StorageConsumer, LanguageConsumer {
   }
 
   Future<BungieNetToken> requestToken(String code) async {
-    BungieNetToken token = await BungieApiService().requestToken(code);
+    BungieNetToken token = await bungieAPI.requestToken(code);
     await _saveToken(token);
     return token;
   }

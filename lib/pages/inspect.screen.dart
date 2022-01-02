@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
+import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/selected_items.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/tabs_character_menu.widget.dart';
-import 'package:shimmer/shimmer.dart';
 
 class InspectScreen extends StatefulWidget {
   final profile = new ProfileService();
@@ -110,13 +110,6 @@ class InspectScreenState extends State<InspectScreen>
   }
 
   Widget buildLoading(BuildContext context) {
-    return Center(
-        child: Container(
-            width: 96,
-            child: Shimmer.fromColors(
-              baseColor: Colors.blueGrey.shade300,
-              highlightColor: Colors.white,
-              child: Image.asset("assets/anim/loading.webp"),
-            )));
+    return LoadingAnimWidget();
   }
 }

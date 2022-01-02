@@ -6,6 +6,7 @@ import 'package:bungie_api/enums/destiny_item_sub_type.dart';
 import 'package:bungie_api/enums/destiny_item_type.dart';
 import 'package:bungie_api/enums/tier_type.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/widgets/icon_fonts/littlelight_icons.dart';
 
 class RaidPhases {
@@ -226,7 +227,7 @@ class DestinyData {
         return Color.fromARGB(255, 179, 127, 251);
 
       default:
-        return Colors.white;
+        return LittleLightThemeData().onSurfaceLayers;
     }
   }
 
@@ -276,7 +277,7 @@ class DestinyData {
         return Color.fromARGB(255, 77, 136, 255);
 
       default:
-        return Colors.white;
+        return LittleLightThemeData().onSurfaceLayers;
     }
   }
 
@@ -292,7 +293,8 @@ class DestinyData {
         return Color.fromARGB(255, 77, 136, 255);
 
       default:
-        return Colors.blueGrey.shade700;
+        // return Theme.of(context).colorScheme.secondary;
+        return null;
     }
   }
 
@@ -308,7 +310,8 @@ class DestinyData {
         return Color.fromARGB(255, 180, 201, 255);
 
       default:
-        return Colors.grey.shade300;
+        // return Theme.of(context).colorScheme.secondaryVariant;
+        return null;
     }
   }
 
@@ -339,7 +342,7 @@ class DestinyData {
       case DamageType.Stasis:
         return Color.fromARGB(255, 180, 201, 255);
       default:
-        return Colors.white;
+        return LittleLightThemeData().onSurfaceLayers;
     }
   }
 
@@ -373,7 +376,7 @@ class DestinyData {
         return Colors.grey.shade800;
 
       default:
-        return Colors.white;
+        return LittleLightThemeData().onSurfaceLayers;
     }
   }
 

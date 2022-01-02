@@ -12,7 +12,7 @@ LittleLightWishlist _$LittleLightWishlistFromJson(Map<String, dynamic> json) {
     name: json['name'] as String?,
     description: json['description'] as String?,
     data: (json['data'] as List<dynamic>)
-        .map((e) => LittleLightWishlistItem.fromJson(e))
+        .map((e) => LittleLightWishlistBuild.fromJson(e))
         .toList(),
     versionRedirects: (json['versionRedirects'] as Map<String, dynamic>?)?.map(
       (k, e) => MapEntry(k, e as String),
@@ -29,9 +29,9 @@ Map<String, dynamic> _$LittleLightWishlistToJson(
       'versionRedirects': instance.versionRedirects,
     };
 
-LittleLightWishlistItem _$LittleLightWishlistItemFromJson(
+LittleLightWishlistBuild _$LittleLightWishlistBuildFromJson(
     Map<String, dynamic> json) {
-  return LittleLightWishlistItem(
+  return LittleLightWishlistBuild(
     name: json['name'] as String?,
     description: json['description'] as String?,
     plugs: (json['plugs'] as List<dynamic>)
@@ -45,8 +45,8 @@ LittleLightWishlistItem _$LittleLightWishlistItemFromJson(
   );
 }
 
-Map<String, dynamic> _$LittleLightWishlistItemToJson(
-        LittleLightWishlistItem instance) =>
+Map<String, dynamic> _$LittleLightWishlistBuildToJson(
+        LittleLightWishlistBuild instance) =>
     <String, dynamic>{
       'name': instance.name,
       'description': instance.description,

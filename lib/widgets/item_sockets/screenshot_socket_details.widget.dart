@@ -227,7 +227,7 @@ class _ScreenshotPerkDetailsWidgetState
   Widget buildMod(BuildContext context, int socketIndex, int plugItemHash) {
     bool isSelected = plugItemHash == controller.selectedPlugHash;
     Color borderColor =
-        isSelected ? Colors.white : Colors.grey.shade300.withOpacity(.5);
+        isSelected ? Theme.of(context).colorScheme.onSurface : Colors.grey.shade300.withOpacity(.5);
 
     BorderSide borderSide =
         BorderSide(color: borderColor, width: 3 * widget.pixelSize);
@@ -392,7 +392,7 @@ class _ScreenshotPerkDetailsWidgetState
     return Column(children: [
       Divider(
         thickness: 1 * widget.pixelSize,
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.onSurface,
       ),
       ScreenShotSocketItemStatsWidget(
         plugDefinition: definition,

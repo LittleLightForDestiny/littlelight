@@ -2,8 +2,8 @@ import 'dart:math';
 
 import 'package:bungie_api/models/destiny_item_plug_base.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/models/wish_list.dart';
-import 'package:little_light/services/littlelight/old.wishlists.service.dart';
+import 'package:little_light/models/parsed_wishlist.dart';
+import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/item_details/section_header.widget.dart';
@@ -11,7 +11,7 @@ import 'package:little_light/widgets/wishlist_builds/wishlist_build_perks.widget
 
 const _sectionId = "wishlist_builds";
 
-extension WishlistBuildSortingPriority on WishlistBuild {
+extension WishlistBuildSortingPriority on ParsedWishlistBuild {
   int get inputPriority {
     if (tags.containsAll([WishlistTag.Mouse, WishlistTag.Controller])) {
       return 0;
@@ -62,7 +62,7 @@ class WishlistBuildsWidget extends StatefulWidget {
 }
 
 class WishlistBuildsWidgetState extends State<WishlistBuildsWidget>
-    with VisibleSectionMixin {
+    with VisibleSectionMixin, WishlistsConsumer {
   @override
   void initState() {
     super.initState();
@@ -73,7 +73,7 @@ class WishlistBuildsWidgetState extends State<WishlistBuildsWidget>
 
   @override
   Widget build(BuildContext context) {
-    final builds = OldWishlistsService().getWishlistBuilds(
+    final builds = wishlistsService.getWishlistBuilds(
         itemHash: widget.itemHash, reusablePlugs: widget.reusablePlugs);
     if ((builds?.length ?? 0) == 0) return Container();
     return Container(
@@ -92,7 +92,7 @@ class WishlistBuildsWidgetState extends State<WishlistBuildsWidget>
     );
   }
 
-  Widget buildWishlists(BuildContext context, List<WishlistBuild> builds) {
+  Widget buildWishlists(BuildContext context, List<ParsedWishlistBuild> builds) {
     Set<String> wishlists = builds.map((b) => b.originalWishlist ?? "").toSet();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -119,7 +119,7 @@ class WishlistBuildsWidgetState extends State<WishlistBuildsWidget>
   }
 
   Widget buildWishlistBuilds(BuildContext context, String originalWishlistName,
-      List<WishlistBuild> builds) {
+      List<ParsedWishlistBuild> builds) {
     final wishlistBuilds = builds
         .where((element) => element.originalWishlist == originalWishlistName)
         .toList();
@@ -129,7 +129,7 @@ class WishlistBuildsWidgetState extends State<WishlistBuildsWidget>
       return a.activityTypePriority.compareTo(b.activityTypePriority);
     });
     var crossAxisCount = MediaQueryHelper(context).tabletOrBigger ? 4 : 2;
-    List<List<WishlistBuild>> rows = [];
+    List<List<ParsedWishlistBuild>> rows = [];
     for (var i = 0; i < wishlistBuilds.length; i += crossAxisCount) {
       final start = i;
       final end = min(i + crossAxisCount, wishlistBuilds.length);

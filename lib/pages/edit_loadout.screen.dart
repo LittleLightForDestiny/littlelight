@@ -12,14 +12,14 @@ import 'package:little_light/pages/select_loadout_item.screen.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/language/language.consumer.dart';
-import 'package:little_light/services/littlelight/loadouts.service.dart';
+import 'package:little_light/services/littlelight/loadouts.consumer.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_with_owner.dart';
+import 'package:little_light/utils/loadout_utils.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/loadouts/loadout_slot.widget.dart';
-import 'package:little_light/utils/loadout_utils.dart';
 
 class EditLoadoutScreen extends StatefulWidget {
   final Loadout loadout;
@@ -33,7 +33,7 @@ class EditLoadoutScreen extends StatefulWidget {
   EditLoadoutScreenState createState() => new EditLoadoutScreenState();
 }
 
-class EditLoadoutScreenState extends State<EditLoadoutScreen> with LanguageConsumer{
+class EditLoadoutScreenState extends State<EditLoadoutScreen> with LanguageConsumer, LoadoutsConsumer{
   bool changed = false;
   LoadoutItemIndex _itemIndex;
   DestinyInventoryItemDefinition emblemDefinition;
@@ -87,13 +87,13 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> with LanguageConsu
   }
 
   Color get emblemColor {
-    if (emblemDefinition == null) return Colors.grey.shade900;
+    if (emblemDefinition == null) return Theme.of(context).colorScheme.background;
     Color color = Color.fromRGBO(
         emblemDefinition.backgroundColor.red,
         emblemDefinition.backgroundColor.green,
         emblemDefinition.backgroundColor.blue,
         1.0);
-    return Color.lerp(color, Colors.grey.shade900, .5);
+    return Color.lerp(color, Theme.of(context).colorScheme.background, .5);
   }
 
   @override
@@ -163,8 +163,7 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> with LanguageConsu
               child: ElevatedButton(
                 child: TranslatedTextWidget("Save Loadout"),
                 onPressed: () {
-                  LoadoutsService service = LoadoutsService();
-                  service.saveLoadout(_itemIndex.loadout);
+                  loadoutService.saveLoadout(_itemIndex.loadout);
                   Navigator.pop(context, _loadout);
                 },
               ),

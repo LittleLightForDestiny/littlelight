@@ -97,7 +97,7 @@ class GenericProgressBarWidget extends StatelessWidget {
     if(completed) return Container();
     return Container(
         margin: EdgeInsets.all(2),
-        color: Colors.blueGrey.shade800,
+        color: Theme.of(context).colorScheme.secondaryVariant,
         alignment: Alignment.centerLeft,
         child: FractionallySizedBox(
           widthFactor: min(progress / total, 1),

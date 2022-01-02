@@ -19,7 +19,7 @@ class SmallPursuitItemWidgetState<T extends SmallPursuitItemWidget>
   @override
   Widget build(BuildContext context) {
     if (definition == null) {
-      return Container(height: 200, color: Colors.blueGrey.shade900);
+      return Container(height: 200, color: Theme.of(context).colorScheme.secondaryVariant);
     }
     return Stack(children: [
       Positioned.fill(child: buildIcon(context)),

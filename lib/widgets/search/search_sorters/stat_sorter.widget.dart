@@ -77,7 +77,7 @@ class StatSorterWidgetState
   Widget buildSortLabel(BuildContext context) {
     var style = TextStyle(
         fontWeight: FontWeight.bold,
-        color: sortParameter.active ? Colors.white : Colors.grey.shade300);
+        color: sortParameter.active ? Theme.of(context).colorScheme.onSurface : Colors.grey.shade300);
     if (statHash != null) {
       return ManifestText<DestinyStatDefinition>(statHash,
           uppercase: true, style: style);

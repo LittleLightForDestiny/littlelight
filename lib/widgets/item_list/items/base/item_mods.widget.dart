@@ -103,8 +103,8 @@ class ItemModsWidgetState extends State<ItemModsWidget> {
           width: widget.iconSize,
           height: widget.iconSize,
           decoration: BoxDecoration(
-              border: Border.all(width: .5, color: Colors.white),
-              color: Colors.blueGrey.shade900),
+              border: Border.all(width: .5, color: Theme.of(context).colorScheme.onSurface),
+              color: Theme.of(context).cardColor),
           child: ManifestImageWidget<DestinyInventoryItemDefinition>(
             plugHash,
             placeholder: Container(),

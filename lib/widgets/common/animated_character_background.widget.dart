@@ -82,6 +82,7 @@ class _AnimatedCharacterBackgroundWidgetState
   dispose() {
     widget.tabController.removeListener(characterChangedListener);
     subscription.cancel();
+    _controller.dispose();
     super.dispose();
   }
 

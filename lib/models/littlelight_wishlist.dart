@@ -7,7 +7,7 @@ part 'littlelight_wishlist.g.dart';
 class LittleLightWishlist {
   String? name;
   String? description;
-  List<LittleLightWishlistItem> data;
+  List<LittleLightWishlistBuild> data;
 
   Map<String, String>? versionRedirects;
 
@@ -27,7 +27,7 @@ class LittleLightWishlist {
 }
 
 @JsonSerializable()
-class LittleLightWishlistItem {
+class LittleLightWishlistBuild {
   String? name;
   String? description;
   List<List<int>> plugs;
@@ -35,7 +35,7 @@ class LittleLightWishlistItem {
   List<String> tags;
   List<String>? authors;
   String? originalWishlist;
-  LittleLightWishlistItem(
+  LittleLightWishlistBuild(
       {this.name,
       this.description,
       required this.plugs,
@@ -44,11 +44,11 @@ class LittleLightWishlistItem {
       this.authors,
       this.originalWishlist});
 
-  factory LittleLightWishlistItem.fromJson(dynamic json) {
-    return _$LittleLightWishlistItemFromJson(json);
+  factory LittleLightWishlistBuild.fromJson(dynamic json) {
+    return _$LittleLightWishlistBuildFromJson(json);
   }
 
   dynamic toJson() {
-    return _$LittleLightWishlistItemToJson(this);
+    return _$LittleLightWishlistBuildToJson(this);
   }
 }

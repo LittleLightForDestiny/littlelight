@@ -13,3 +13,8 @@ class DownloadProgress {
     this.unzipped = false,
   });
 }
+
+class DownloadError extends DownloadProgress {
+  DownloadError()
+      : super(downloadedBytes: 0, totalBytes: 0);
+}

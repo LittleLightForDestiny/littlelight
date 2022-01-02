@@ -8,6 +8,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/profile/vendors.service.dart';
+import 'package:little_light/widgets/common/loading_anim.widget.dart';
 
 import 'package:little_light/widgets/vendors/vendors_list_item.widget.dart';
 import 'package:shimmer/shimmer.dart';
@@ -77,14 +78,7 @@ class _VendorsListWidgetState extends State<VendorsListWidget>
   Widget build(BuildContext context) {
     super.build(context);
     if (_vendors == null) {
-      return Center(
-          child: Container(
-              width: 96,
-              child: Shimmer.fromColors(
-                baseColor: Colors.blueGrey.shade300,
-                highlightColor: Colors.white,
-                child: Image.asset("assets/anim/loading.webp"),
-              )));
+      return LoadingAnimWidget();
     }
     var screenPadding = MediaQuery.of(context).padding;
     return StaggeredGridView.countBuilder(

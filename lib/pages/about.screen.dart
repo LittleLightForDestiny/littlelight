@@ -208,7 +208,7 @@ class _AboutScreenState extends State<AboutScreen> with StorageConsumer, Languag
     Text languageNames = Text(
         languages.map((l) => languageService.languages.firstWhereOrNull((element) => element.code == l)).join("/"));
     return Container(
-        color: Colors.blueGrey.shade600,
+        color: Theme.of(context).colorScheme.secondaryVariant,
         padding: EdgeInsets.all(4),
         child: Row(
           children: flags + [Container(width: 4), languageNames],
@@ -250,7 +250,7 @@ class _AboutScreenState extends State<AboutScreen> with StorageConsumer, Languag
               width: 4,
             ),
             buildExternalLinkButton(context,
-                color: Colors.blueGrey.shade400,
+                color: Theme.of(context).primaryColor,
                 icon: Icon(FontAwesomeIcons.discord, size: 32),
                 label: TranslatedTextWidget("Discord"), onPressed: () {
               launch("https://discord.gg/ztdFGGz");
@@ -259,7 +259,7 @@ class _AboutScreenState extends State<AboutScreen> with StorageConsumer, Languag
               width: 4,
             ),
             buildExternalLinkButton(context,
-                color: Colors.red.shade600,
+                color: Theme.of(context).errorColor,
                 icon: Icon(FontAwesomeIcons.github, size: 32),
                 label: TranslatedTextWidget("Issues"), onPressed: () {
               launch("https://github.com/LittleLightForDestiny/LittleLight/issues");

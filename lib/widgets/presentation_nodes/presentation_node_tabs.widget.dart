@@ -62,11 +62,11 @@ class PresentationNodeTabsWidgetState
   Widget build(BuildContext context) {
     if (nodeHashes == null) return Container();
     List<Color> colors = [
-      Colors.blueGrey.shade500,
-      Colors.blueGrey.shade600,
-      Colors.blueGrey.shade700,
-      Colors.blueGrey.shade800,
-      Colors.blueGrey.shade900
+      Theme.of(context).colorScheme.secondary,
+      Theme.of(context).colorScheme.secondary,
+      Theme.of(context).colorScheme.secondary,
+      Theme.of(context).colorScheme.secondaryVariant,
+      Theme.of(context).colorScheme.secondaryVariant
     ];
     int depth = widget.depth > -1 ? widget.depth : 0;
     if (nodeHashes.length == 1) {
@@ -92,7 +92,7 @@ class PresentationNodeTabsWidgetState
                   color: colors[depth],
                   child: TabBar(
                     labelPadding: EdgeInsets.all(0),
-                    indicatorColor: Colors.white,
+                    indicatorColor: Theme.of(context).colorScheme.onSurface,
                     isScrollable: true,
                     tabs: buildTabButtons(context),
                   ))),

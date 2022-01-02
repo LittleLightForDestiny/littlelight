@@ -1,4 +1,4 @@
-import 'package:little_light/models/wish_list.dart';
+import 'package:little_light/models/parsed_wishlist.dart';
 import 'package:little_light/utils/item_filters/wishlist_tag_filter.dart';
 import 'package:little_light/utils/wishlists_data.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -53,18 +53,18 @@ class _WishlistTagsFilterWidgetState extends BaseSearchFilterWidgetState<
 
   @override
   Color buttonBgColor(WishlistTag value) {
-    return WishlistsData.getBgColor(value);
+    return WishlistsData.getBgColor(context, value);
   }
 
   @override
   Widget buildButtonLabel(BuildContext context, WishlistTag value) {
     var children = <Widget>[
-      WishlistsData.getIcon(value, 24),
+      WishlistsData.getIcon(context, value, 24),
       Container(width: 4, height: 4),
       WishlistsData.getLabel(value)
     ];
     return DefaultTextStyle(
-        style: TextStyle(color: Colors.white),
+        style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
         child: value == null
             ? Row(
                 crossAxisAlignment: CrossAxisAlignment.center,

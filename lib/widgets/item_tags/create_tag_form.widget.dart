@@ -147,7 +147,7 @@ class _CreateTagFormWidgetState extends State<CreateTagFormWidget> with Language
                           border: Border.all(
                               width: 2,
                               color: currentColorHex == c
-                                  ? Colors.white
+                                  ? Theme.of(context).colorScheme.onSurface
                                   : Colors.transparent)),
                       padding: EdgeInsets.all(3),
                       child: Material(
@@ -179,7 +179,7 @@ class _CreateTagFormWidgetState extends State<CreateTagFormWidget> with Language
                           border: Border.all(
                               width: 2,
                               color: currentIcon == i
-                                  ? Colors.white
+                                  ? Theme.of(context).colorScheme.onSurface
                                   : Colors.transparent)),
                       padding: EdgeInsets.all(3),
                       child: Material(

@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/pages/item_detail.screen.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/services/littlelight/old.wishlists.service.dart';
+import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/profile/vendors.service.dart';
@@ -34,15 +34,14 @@ class PurchasableItemWidget extends StatefulWidget {
   final String characterId;
   final int vendorHash;
 
-  PurchasableItemWidget(
-      {this.item, this.sale, this.characterId, this.vendorHash});
+  PurchasableItemWidget({this.item, this.sale, this.characterId, this.vendorHash});
   @override
   State<StatefulWidget> createState() {
     return PurchasableItemWidgetState();
   }
 }
 
-class PurchasableItemWidgetState extends State<PurchasableItemWidget> {
+class PurchasableItemWidgetState extends State<PurchasableItemWidget> with WishlistsConsumer {
   DestinyInventoryItemDefinition definition;
   List<DestinyItemSocketState> sockets;
   DestinyItemInstanceComponent instanceInfo;
@@ -56,20 +55,17 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget> {
   }
 
   void loadDefinitions() async {
-    definition = await ManifestService()
-        .getDefinition<DestinyInventoryItemDefinition>(widget.item.itemHash);
-    sockets = await VendorsService().getSaleItemSockets(
-        widget.characterId, widget.vendorHash, widget?.item?.vendorItemIndex);
-    instanceInfo = await VendorsService().getSaleItemInstanceInfo(
-        widget.characterId, widget.vendorHash, widget?.item?.vendorItemIndex);
-    reusablePlugs = await VendorsService().getSaleItemReusablePerks(
-        widget.characterId, widget.vendorHash, widget?.item?.vendorItemIndex);
+    definition = await ManifestService().getDefinition<DestinyInventoryItemDefinition>(widget.item.itemHash);
+    sockets =
+        await VendorsService().getSaleItemSockets(widget.characterId, widget.vendorHash, widget?.item?.vendorItemIndex);
+    instanceInfo = await VendorsService()
+        .getSaleItemInstanceInfo(widget.characterId, widget.vendorHash, widget?.item?.vendorItemIndex);
+    reusablePlugs = await VendorsService()
+        .getSaleItemReusablePerks(widget.characterId, widget.vendorHash, widget?.item?.vendorItemIndex);
 
-    isUnlocked = ProfileService().isCollectibleUnlocked(
-        definition.collectibleHash, DestinyScope.Profile);
+    isUnlocked = ProfileService().isCollectibleUnlocked(definition.collectibleHash, DestinyScope.Profile);
     if (!isUnlocked) {
-      isUnlocked = ProfileService().isCollectibleUnlocked(
-          definition.collectibleHash, DestinyScope.Character);
+      isUnlocked = ProfileService().isCollectibleUnlocked(definition.collectibleHash, DestinyScope.Character);
     }
     if (mounted) {
       setState(() {});
@@ -78,9 +74,7 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (definition == null)
-      return Container(
-          color: Colors.grey.shade900, height: iconSize + padding * 2 + 42);
+    if (definition == null) return Container(color: Colors.grey.shade900, height: iconSize + padding * 2 + 42);
     return Container(
         decoration: BoxDecoration(
             border: Border.all(
@@ -130,12 +124,7 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget> {
   }
 
   Widget positionedIcon(BuildContext context) {
-    return Positioned(
-        top: padding,
-        left: padding,
-        width: iconSize,
-        height: iconSize,
-        child: itemIconHero(context));
+    return Positioned(top: padding, left: padding, width: iconSize, height: iconSize, child: itemIconHero(context));
   }
 
   Widget itemIconHero(BuildContext context) {
@@ -172,12 +161,7 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget> {
 
   Widget positionedContent(BuildContext context) {
     var top = padding * 3 + titleFontSize;
-    return Positioned(
-        left: padding * 2 + iconSize,
-        top: top,
-        bottom: padding,
-        right: padding,
-        child: content(context));
+    return Positioned(left: padding * 2 + iconSize, top: top, bottom: padding, right: padding, child: content(context));
   }
 
   Widget content(BuildContext context) {
@@ -209,14 +193,10 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget> {
   }
 
   Widget contentEquipment(BuildContext context) {
-    var perksCategory = definition.sockets?.socketCategories?.firstWhere(
-        (c) =>
-            DestinyData.socketCategoryPerkHashes.contains(c.socketCategoryHash),
-        orElse: () => null);
-    var tierCategory = definition.sockets?.socketCategories?.firstWhere(
-        (c) =>
-            DestinyData.socketCategoryTierHashes.contains(c.socketCategoryHash),
-        orElse: () => null);
+    var perksCategory = definition.sockets?.socketCategories
+        ?.firstWhere((c) => DestinyData.socketCategoryPerkHashes.contains(c.socketCategoryHash), orElse: () => null);
+    var tierCategory = definition.sockets?.socketCategories
+        ?.firstWhere((c) => DestinyData.socketCategoryTierHashes.contains(c.socketCategoryHash), orElse: () => null);
     Widget middleContent = Container();
     if (tierCategory != null) {
       middleContent = ItemArmorTierWidget(
@@ -284,10 +264,8 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget> {
                 children: definition.perks?.map((p) {
                       return ManifestText<DestinySandboxPerkDefinition>(
                         p.perkHash,
-                        textExtractor: (def) =>
-                            def?.displayProperties?.description,
-                        style: TextStyle(
-                            fontSize: 12, fontWeight: FontWeight.w300),
+                        textExtractor: (def) => def?.displayProperties?.description,
+                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
                       );
                     })?.toList() ??
                     [])),
@@ -303,8 +281,7 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget> {
       var conversion = CurrencyConversion.purchaseables[definition.hash];
       if (conversion.type == CurrencyConversionType.Currency) {
         var currencies = ProfileService().getProfileCurrencies();
-        var currency =
-            currencies.where((curr) => curr.itemHash == conversion.hash);
+        var currency = currencies.where((curr) => curr.itemHash == conversion.hash);
         count = currency.fold<int>(count, (t, curr) => t + curr.quantity);
       } else {
         var inventory = ProfileService().getProfileInventory();
@@ -316,8 +293,7 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget> {
       var currencies = ProfileService().getProfileCurrencies();
       var items = inventory.where((i) => i.itemHash == definition.hash);
       count = items.fold<int>(count, (t, i) => t + i.quantity);
-      var currency =
-          currencies.where((curr) => curr.itemHash == definition.hash);
+      var currency = currencies.where((curr) => curr.itemHash == definition.hash);
       count = currency.fold<int>(count, (t, curr) => t + curr.quantity);
     }
 
@@ -359,10 +335,8 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget> {
           ].followedBy(costs.map((c) {
             var items = inventory.where((i) => i.itemHash == c.itemHash);
             var itemsTotal = items.fold<int>(0, (t, i) => t + i.quantity);
-            var currency =
-                currencies.where((curr) => curr.itemHash == c.itemHash);
-            var total =
-                currency.fold<int>(itemsTotal, (t, curr) => t + curr.quantity);
+            var currency = currencies.where((curr) => curr.itemHash == c.itemHash);
+            var total = currency.fold<int>(itemsTotal, (t, curr) => t + curr.quantity);
             bool isEnough = total >= c.quantity;
             return Container(
                 padding: EdgeInsets.only(left: 8),
@@ -371,19 +345,13 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget> {
                   children: <Widget>[
                     Text(
                       "${c.quantity}/$total",
-                      style: TextStyle(
-                          fontSize: 12,
-                          color: isEnough ? Colors.white : Colors.red.shade300),
+                      style: TextStyle(fontSize: 12, color: isEnough ? Theme.of(context).colorScheme.onSurface : Colors.red.shade300),
                     ),
                     Container(
                       width: 4,
                     ),
                     Container(
-                        width: 18,
-                        height: 18,
-                        child:
-                            ManifestImageWidget<DestinyInventoryItemDefinition>(
-                                c.itemHash)),
+                        width: 18, height: 18, child: ManifestImageWidget<DestinyInventoryItemDefinition>(c.itemHash)),
                   ],
                 ));
           })).toList(),
@@ -418,18 +386,14 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget> {
     ].where((element) => element != null).toList();
     if (list.length == 0) return null;
     var spacedList = list.fold<List<Widget>>(
-        <Widget>[],
-        (previousValue, element) =>
-            previousValue + [element, Container(width: 4)]).toList();
+        <Widget>[], (previousValue, element) => previousValue + [element, Container(width: 4)]).toList();
     spacedList.removeLast();
     return Row(children: spacedList);
   }
 
   Widget wishlistTags(BuildContext context) {
-    var wishlistTags = OldWishlistsService().getWishlistBuildTags(
-        itemHash: widget.item?.itemHash,
-        reusablePlugs: reusablePlugs,
-        sockets: sockets);
+    var wishlistTags = wishlistsService.getWishlistBuildTags(
+        itemHash: widget.item?.itemHash, reusablePlugs: reusablePlugs);
     if ((wishlistTags?.length ?? 0) == 0) return null;
     return WishlistBadgesWidget(tags: wishlistTags, size: 22);
   }
@@ -437,19 +401,13 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget> {
   Widget collectedBadge(BuildContext context) {
     if (isUnlocked) {
       return Icon(FontAwesomeIcons.solidCheckCircle,
-          color: DestinyData.getTierTextColor(definition?.inventory?.tierType),
-          size: 18);
+          color: DestinyData.getTierTextColor(definition?.inventory?.tierType), size: 18);
     }
     return null;
   }
 
   background(BuildContext context) {
-    return Positioned(
-        top: 0,
-        left: 0,
-        bottom: 0,
-        right: 0,
-        child: Container(color: Colors.blueGrey.shade900));
+    return Positioned(top: 0, left: 0, bottom: 0, right: 0, child: Container(color: Theme.of(context).colorScheme.secondaryVariant));
   }
 
   double get iconSize {

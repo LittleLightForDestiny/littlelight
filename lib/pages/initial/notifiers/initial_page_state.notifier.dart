@@ -1,18 +1,26 @@
 //@dart=2.12
 
 import 'package:flutter/material.dart';
+// ignore: import_of_legacy_library_into_null_safe
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:little_light/core/routes/login_route.dart';
+import 'package:little_light/exceptions/not_authorized.exception.dart';
+import 'package:little_light/pages/initial/errors/authorization_failed.error.dart';
+import 'package:little_light/pages/initial/errors/init_services.error.dart';
+import 'package:little_light/pages/initial/errors/initial_page_base.error.dart';
+import 'package:little_light/pages/initial/errors/manifest_download.error.dart';
 import 'package:little_light/pages/initial/notifiers/manifest_downloader.notifier.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/pages/main.screen.dart';
+import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/language/language.consumer.dart';
 import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
-import 'package:little_light/services/profile/profile_component_groups.dart';
 import 'package:little_light/services/setup.dart';
+import 'package:little_light/services/storage/storage.consumer.dart';
 import 'package:provider/provider.dart';
 
 enum InitialPagePhase {
@@ -33,15 +41,17 @@ class InitialPageStateNotifier
         AuthConsumer,
         LittleLightDataConsumer,
         WishlistsConsumer,
-        ProfileConsumer {
+        ProfileConsumer,
+        AnalyticsConsumer,
+        StorageConsumer {
   InitialPagePhase _phase = InitialPagePhase.Loading;
   InitialPagePhase get phase => _phase;
 
   bool _loading = true;
   bool get loading => _loading;
 
-  bool _error = false;
-  bool get error => _error;
+  InitialPageBaseError? _error;
+  InitialPageBaseError? get error => _error;
 
   bool get forceReauth => true;
 
@@ -54,12 +64,13 @@ class InitialPageStateNotifier
   Future<void> _initLoading() async {
     _loading = true;
     notifyListeners();
-    
-    try{
+
+    try {
       await initServices(_context);
-    }catch(e){
-      print("loading Error: $e");
-      _error = true;
+    } catch (e, stackTrace) {
+      print("initServicesError: $e");
+      analytics.registerNonFatal(e, stackTrace);
+      _error = InitServicesError();
       notifyListeners();
       return;
     }
@@ -75,15 +86,22 @@ class InitialPageStateNotifier
   Future<void> _checkAuthorizationCode() async {
     _loading = true;
     notifyListeners();
+    try {
+      final routeSettings = ModalRoute.of(_context)?.settings;
+      final loginRoute = routeSettings as LittleLightLoginRoute;
+      final code = loginRoute.loginArguments.code;
 
-    final routeSettings = ModalRoute.of(_context)?.settings;
-    final loginRoute = routeSettings as LittleLightLoginRoute;
-    final code = loginRoute.loginArguments.code;
-
-    if (code == null) {
+      if (code == null) {
+        throw NotAuthorizedException("No Authorization code");
+      }
+      await auth.addAccount(code);
+    } catch (e, stackTrace) {
+      print("initServicesError: $e");
+      analytics.registerNonFatal(e, stackTrace);
+      _error = AuthorizationFailedError();
+      notifyListeners();
       return;
     }
-    await auth.addAccount(code);
     _checkLanguage();
   }
 
@@ -107,6 +125,16 @@ class InitialPageStateNotifier
     _checkManifest();
   }
 
+  retryManifestDownload(){
+    _error = null;
+    _phase = InitialPagePhase.ManifestDownload;
+    notifyListeners();
+
+    final downloader = _context.read<ManifestDownloaderNotifier>();
+    downloader.addListener(_manifestDownloadListener);
+    downloader.downloadManifest(true);
+  }
+
   Future<void> _checkManifest() async {
     _loading = true;
     notifyListeners();
@@ -119,13 +147,21 @@ class InitialPageStateNotifier
 
     _phase = InitialPagePhase.ManifestDownload;
     _loading = false;
+    
     notifyListeners();
-
-    _context.read<ManifestDownloaderNotifier>().addListener(_manifestDownloadListener);
+    final downloader = _context.read<ManifestDownloaderNotifier>();
+    downloader.addListener(_manifestDownloadListener);
+    downloader.downloadManifest();
   }
 
   void _manifestDownloadListener() {
     final downloader = _context.read<ManifestDownloaderNotifier>();
+    if(downloader.error){
+      downloader.removeListener(_manifestDownloadListener);
+      _error = ManifestDownloadError();
+      notifyListeners();
+      return;
+    }
     if (downloader.finishedUncompressing) {
       downloader.removeListener(_manifestDownloadListener);
       manifestDownloaded();
@@ -200,14 +236,38 @@ class InitialPageStateNotifier
   Future<void> _ensureCache() async {
     _loading = true;
     notifyListeners();
-
-    await initPostLoadedServices(_context);
-    await profile.fetchProfileData(components: ProfileComponentGroups.everything);
+    try{
+      await initPostLoadingServices(_context);
+      await profile.initialLoad();
+    }catch(e, stackTrace){
+      print("initPostLoadingServicesError: $e");
+      analytics.registerNonFatal(e, stackTrace);
+      ///TODO: define a error for this
+      notifyListeners();
+      return;
+    }
+    
+    try{
+      await wishlistsService.checkForUpdates();
+    }catch(e, stackTrace){
+      print("non breaking error: $e");
+      analytics.registerNonFatal(e, stackTrace);
+    }
+    
 
     _startApp();
   }
 
   Future<void> _startApp() async {
     Navigator.of(_context).pushReplacement(MaterialPageRoute(builder: (context) => MainScreen()));
+  }
+
+  void clearDataAndRestart() async {
+    await globalStorage.purge();
+    Phoenix.rebirth(_context);
+  }
+
+  void restartApp() {
+    Phoenix.rebirth(_context);
   }
 }

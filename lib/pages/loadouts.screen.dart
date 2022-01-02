@@ -7,7 +7,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/pages/edit_loadout.screen.dart';
-import 'package:little_light/services/littlelight/loadouts.service.dart';
+import 'package:little_light/services/littlelight/loadouts.consumer.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/profile/profile_component_groups.dart';
 import 'package:little_light/utils/inventory_utils.dart';
@@ -22,7 +22,7 @@ class LoadoutsScreen extends StatefulWidget {
   LoadoutScreenState createState() => new LoadoutScreenState();
 }
 
-class LoadoutScreenState extends State<LoadoutsScreen> {
+class LoadoutScreenState extends State<LoadoutsScreen> with LoadoutsConsumer{
   final Map<String, LoadoutItemIndex> itemIndexes = new Map();
   bool reordering = false;
   bool searchOpen = false;
@@ -52,8 +52,7 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
   }
 
   void loadLoadouts() async {
-    LoadoutsService service = LoadoutsService();
-    loadouts = await service.getLoadouts();
+    loadouts = await loadoutService.getLoadouts();
     filteredLoadouts = loadouts;
     setState(() {});
   }
@@ -84,7 +83,7 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
           IconButton(
             icon: Icon(Icons.refresh),
             onPressed: () async {
-              loadouts = await LoadoutsService().getLoadouts(forceFetch: true);
+              loadouts = await loadoutService.getLoadouts(forceFetch: true);
               setState(() {});
             },
           )
@@ -181,7 +180,7 @@ class LoadoutScreenState extends State<LoadoutsScreen> {
         onItemReorder: (oldIndex, newIndex) {
           var removed = loadouts.removeAt(oldIndex);
           loadouts.insert(newIndex, removed);
-          LoadoutsService().saveLoadoutsOrder(loadouts);
+          loadoutService.saveLoadoutsOrder(loadouts);
         },
         itemBuilder: (context, parameter, handle) =>
             buildSortItem(context, parameter.value, handle));

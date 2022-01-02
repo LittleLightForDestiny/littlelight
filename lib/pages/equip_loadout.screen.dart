@@ -51,13 +51,13 @@ class EquipLoadoutScreenState extends State<EquipLoadoutScreen> {
   }
 
   Color get emblemColor {
-    if (emblemDefinition == null) return Colors.grey.shade900;
+    if (emblemDefinition == null) return Theme.of(context).colorScheme.background;
     Color color = Color.fromRGBO(
         emblemDefinition.backgroundColor.red,
         emblemDefinition.backgroundColor.green,
         emblemDefinition.backgroundColor.blue,
         1.0);
-    return Color.lerp(color, Colors.grey.shade900, .5);
+    return Color.lerp(color, Theme.of(context).colorScheme.background, .5);
   }
 
   @override

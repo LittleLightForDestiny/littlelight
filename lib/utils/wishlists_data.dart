@@ -1,35 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:little_light/models/wish_list.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
+import 'package:little_light/models/parsed_wishlist.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/flutter/center_icon_workaround.dart';
 import 'package:little_light/widgets/icon_fonts/littlelight_icons.dart';
 
 class WishlistsData {
-  static BoxDecoration getBoxDecoration(WishlistTag tag) {
+  static BoxDecoration getBoxDecoration(BuildContext context, WishlistTag tag) {
     switch (tag) {
       case WishlistTag.GodPVE:
       case WishlistTag.GodPVP:
         return BoxDecoration(
-            border: Border.all(color: Colors.amber, width: 1),
+            border: Border.all(color: LittleLightTheme.of(context).achievementLayers, width: 1),
             gradient: RadialGradient(
-                radius: 1, colors: [getBgColor(tag), Colors.amber]));
+                radius: 1, colors: [getBgColor(context,tag), LittleLightTheme.of(context).achievementLayers]));
 
       case WishlistTag.Controller:
         return BoxDecoration(
-            border: Border.all(color: Colors.blueGrey.shade800, width: 1),
-            color: Colors.blueGrey.shade200);
+            border: Border.all(color: Theme.of(context).colorScheme.secondaryVariant, width: 1),
+            color: Theme.of(context).colorScheme.primary);
 
       case WishlistTag.Mouse:
         return BoxDecoration(
-            border: Border.all(color: Colors.blueGrey.shade200, width: 1),
-            color: Colors.blueGrey.shade800);
+            border: Border.all(color: Theme.of(context).colorScheme.primary, width: 1),
+            color: Theme.of(context).colorScheme.secondaryVariant);
       default:
-        return BoxDecoration(color: getBgColor(tag));
+        return BoxDecoration(color: getBgColor(context, tag));
     }
   }
 
-  static Color getBgColor(WishlistTag tag) {
+  static Color getBgColor(BuildContext context, WishlistTag tag) {
     switch (tag) {
       case WishlistTag.GodPVE:
       case WishlistTag.PVE:
@@ -43,17 +44,17 @@ class WishlistsData {
         return Colors.black;
 
       case WishlistTag.Controller:
-        return Colors.blueGrey.shade800;
+        return Theme.of(context).colorScheme.secondaryVariant;
 
       case WishlistTag.Mouse:
-        return Colors.blueGrey.shade200;
+        return Theme.of(context).colorScheme.primary;
 
       case WishlistTag.Trash:
         return Colors.lightGreen.shade500;
         break;
 
       default:
-        return Colors.amber;
+        return Colors.transparent;
     }
   }
 
@@ -63,41 +64,37 @@ class WishlistsData {
         return TranslatedTextWidget("PvE godroll");
       case WishlistTag.PVE:
         return TranslatedTextWidget("PvE");
-        break;
       case WishlistTag.GodPVP:
         return TranslatedTextWidget("PvP godroll");
       case WishlistTag.PVP:
         return TranslatedTextWidget("PvP");
-        break;
       case WishlistTag.Bungie:
         return TranslatedTextWidget("Curated");
 
       case WishlistTag.Trash:
         return TranslatedTextWidget("Trash");
-        break;
       default:
-        return TranslatedTextWidget("Uncategorized");
+        return Container();
     }
   }
 
-  static Widget getIcon(WishlistTag tag, double size) {
+  static Widget getIcon(BuildContext context, WishlistTag tag, double size) {
     switch (tag) {
       case WishlistTag.GodPVE:
         return Container(
             alignment: Alignment.center,
             child: CenterIconWorkaround(LittleLightIcons.vanguard,
-                size: size * .8, color: Colors.white));
+                size: size * .8, color: LittleLightThemeData().onSurfaceLayers));
       case WishlistTag.PVE:
         return Container(
             alignment: Alignment.center,
             child: CenterIconWorkaround(LittleLightIcons.vanguard,
                 size: size * .8));
-        break;
       case WishlistTag.GodPVP:
         return Container(
             alignment: Alignment.center,
             child: CenterIconWorkaround(LittleLightIcons.crucible,
-                size: size * .9, color: Colors.white));
+                size: size * .9, color: LittleLightThemeData().onSurfaceLayers));
       case WishlistTag.PVP:
         return Container(
             alignment: Alignment.center,
@@ -124,7 +121,7 @@ class WishlistsData {
             child: CenterIconWorkaround(
               FontAwesomeIcons.gamepad,
               size: size * .6,
-              color: Colors.blueGrey.shade800,
+              color: Theme.of(context).colorScheme.secondaryVariant,
             ));
 
       case WishlistTag.Mouse:
@@ -133,16 +130,11 @@ class WishlistsData {
             child: CenterIconWorkaround(
               FontAwesomeIcons.mouse,
               size: size * .7,
-              color: Colors.blueGrey.shade200,
+              color: Theme.of(context).colorScheme.primary,
             ));
 
       default:
-        return Container(
-            alignment: Alignment.center,
-            child: CenterIconWorkaround(
-              Icons.star,
-              size: size * .8,
-            ));
+        return Container();
     }
   }
 }

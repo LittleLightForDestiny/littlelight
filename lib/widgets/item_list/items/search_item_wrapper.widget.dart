@@ -33,14 +33,14 @@ class SearchItemWrapperWidgetState<T extends SearchItemWrapperWidget>
   Widget build(BuildContext context) {
     return Container(
         decoration: BoxDecoration(
-            border: Border.all(width: 1, color: Colors.blueGrey.shade600)),
+            border: Border.all(width: 1, color: Theme.of(context).colorScheme.primary)),
         child: Stack(children: [
           Positioned.fill(child: buildItem(context)),
           selected
               ? Container(
                   foregroundDecoration: BoxDecoration(
                       border: Border.all(
-                          color: Colors.lightBlue.shade400, width: 2)),
+                          color: Theme.of(context).selectedRowColor, width: 2)),
                 )
               : Container(),
           buildTapHandler(context)
@@ -130,7 +130,7 @@ class SearchItemWrapperWidgetState<T extends SearchItemWrapperWidget>
 
     return Container(
         foregroundDecoration: instanceInfo?.isEquipped == true
-            ? BoxDecoration(border: Border.all(width: 2, color: Colors.white))
+            ? BoxDecoration(border: Border.all(width: 2, color: Theme.of(context).colorScheme.onSurface))
             : null,
         width: 26,
         height: 26,

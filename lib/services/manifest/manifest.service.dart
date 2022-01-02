@@ -8,6 +8,9 @@ import 'package:bungie_api/models/destiny_manifest.dart';
 import 'package:bungie_api/responses/destiny_manifest_response.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
+import 'package:little_light/exceptions/parse.exception.dart';
+import 'package:little_light/services/analytics/analytics.consumer.dart';
+import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/bungie_api/enums/definition_table_names.enum.dart';
 import 'package:little_light/services/language/language.consumer.dart';
@@ -22,10 +25,9 @@ setupManifest() {
   GetIt.I.registerSingleton<ManifestService>(ManifestService._internal());
 }
 
-class ManifestService with StorageConsumer, LanguageConsumer {
+class ManifestService with StorageConsumer, LanguageConsumer, BungieApiConsumer, AnalyticsConsumer {
   sqflite.Database _db;
   DestinyManifest _manifestInfo;
-  final BungieApiService _api = new BungieApiService();
   final Map<String, dynamic> _cached = Map();
 
   factory ManifestService() {
@@ -61,15 +63,14 @@ class ManifestService with StorageConsumer, LanguageConsumer {
     if (_manifestInfo != null) {
       return _manifestInfo;
     }
-    DestinyManifestResponse response = await _api.getManifest();
+    DestinyManifestResponse response = await bungieAPI.getManifest();
     _manifestInfo = response.response;
     return _manifestInfo;
   }
 
   Future<List<String>> getAvailableLanguages() async {
     DestinyManifest manifestInfo = await _getManifestInfo();
-    List<String> availableLanguages =
-        manifestInfo.mobileWorldContentPaths.keys.toList();
+    List<String> availableLanguages = manifestInfo.mobileWorldContentPaths.keys.toList();
     return availableLanguages;
   }
 
@@ -78,73 +79,71 @@ class ManifestService with StorageConsumer, LanguageConsumer {
     String currentVersion = await getSavedVersion();
     String language = languageService.currentLanguage;
     var working = await test();
-    return !working ||
-        currentVersion != manifestInfo.mobileWorldContentPaths[language];
+    return !working || currentVersion != manifestInfo.mobileWorldContentPaths[language];
   }
 
-  Future<void> _downloadManifest(StreamController<DownloadProgress> _controller, {bool skipCache = false}) async{
-    DestinyManifest info = await _getManifestInfo();
-    String language = languageService.currentLanguage;
-    String manifestFileURL = info.mobileWorldContentPaths[language];
-    String url = BungieApiService.url(manifestFileURL);
-    String localPath = await _localPath;
-    HttpClient httpClient = new HttpClient();
-    Uri uri = Uri.parse(url);
-    if(skipCache){
-      final uuid = Uuid().v4();
-      uri = Uri.parse("$uri?cache_killer=$uuid");
-    }
-    HttpClientRequest req = await httpClient.getUrl(uri);
-    HttpClientResponse res = await req.close();
-    File zipFile = new File("$localPath/manifest_temp.zip");
-    IOSink sink = zipFile.openWrite();
-    int totalSize = res.contentLength;
-    int loaded = 0;
-    Stream<List<int>> stream = res.asBroadcastStream();
-    await for (var data in stream) {
-      loaded += data.length;
-      sink.add(data);
-      
+  Future<void> _downloadManifest(StreamController<DownloadProgress> _controller, {bool skipCache = false}) async {
+    try {
+      DestinyManifest info = await _getManifestInfo();
+      String language = languageService.currentLanguage;
+      String manifestFileURL = info.mobileWorldContentPaths[language];
+      String url = BungieApiService.url(manifestFileURL);
+      String localPath = await _localPath;
+      HttpClient httpClient = new HttpClient();
+      Uri uri = Uri.parse(url);
+      if (skipCache) {
+        final uuid = Uuid().v4();
+        uri = Uri.parse("$uri?cache_killer=$uuid");
+      }
+      HttpClientRequest req = await httpClient.getUrl(uri);
+      HttpClientResponse res = await req.close();
+      File zipFile = new File("$localPath/manifest_temp.zip");
+      IOSink sink = zipFile.openWrite();
+      int totalSize = res.contentLength;
+      int loaded = 0;
+      Stream<List<int>> stream = res.asBroadcastStream();
+      await for (var data in stream) {
+        loaded += data.length;
+        sink.add(data);
         _controller.add(DownloadProgress(
           downloadedBytes: loaded,
           totalBytes: totalSize,
         ));
-    }
-    await sink.flush();
-    await sink.close();
-    _controller.add(DownloadProgress(
-      downloadedBytes: loaded,
-      totalBytes: totalSize,
-      downloaded: true,
-    ));
-    List<int> unzippedData = await compute(_extractFromZip, zipFile);
-    await currentLanguageStorage.saveManifestDatabase(unzippedData);
-    await zipFile.delete();
+      }
+      await sink.flush();
+      await sink.close();
+      _controller.add(DownloadProgress(
+        downloadedBytes: loaded,
+        totalBytes: totalSize,
+        downloaded: true,
+      ));
+      List<int> unzippedData = await compute(_extractFromZip, zipFile);
+      await currentLanguageStorage.saveManifestDatabase(unzippedData);
+      await zipFile.delete();
 
-    await _openDb();
+      await _openDb();
 
-    bool success = await test();
-    if(success){
+      bool success = await test();
+      if(!success){
+        throw ParseException(url, "Manifest Database file isn't valid");
+      }
       currentLanguageStorage.manifestVersion = manifestFileURL;
       _cached.clear();
-      _controller.add(DownloadProgress(
-      downloadedBytes: loaded,
-      totalBytes: totalSize,
-      downloaded: true,
-      unzipped: true
-      ));
+      _controller
+          .add(DownloadProgress(downloadedBytes: loaded, totalBytes: totalSize, downloaded: true, unzipped: true));
+    } catch (e, stackTrace) {
+      analytics.registerNonFatal(e, stackTrace);
+      _controller.add(DownloadError());
+      _controller.close();
     }
   }
 
-  Stream<DownloadProgress> download([skipCache=false]) {
+  Stream<DownloadProgress> download([skipCache = false]) {
     final _controller = StreamController<DownloadProgress>();
-    _downloadManifest(_controller, skipCache: skipCache).catchError((error, stack){
-      print(error);
-      _controller.close();
-    }).then((_) {
+    _downloadManifest(_controller, skipCache: skipCache).then((_) {
       _controller.close();
     });
-    
+
     return _controller.stream;
   }
 
@@ -174,8 +173,7 @@ class ManifestService with StorageConsumer, LanguageConsumer {
     final dbFile = await currentLanguageStorage.getManifestDatabaseFile();
     if (dbFile == null) return null;
     try {
-      sqflite.Database database =
-          await sqflite.openDatabase(dbFile.path, readOnly: true);
+      sqflite.Database database = await sqflite.openDatabase(dbFile.path, readOnly: true);
       _db = database;
     } catch (e) {
       print(e);
@@ -207,8 +205,7 @@ class ManifestService with StorageConsumer, LanguageConsumer {
         return "UPPER(json) LIKE \"%${p.toUpperCase()}%\"";
       }).join(" AND ");
     }
-    List<Map<String, dynamic>> results = await db.query(type,
-        columns: ['id', 'json'], where: where, limit: limit);
+    List<Map<String, dynamic>> results = await db.query(type, columns: ['id', 'json'], where: where, limit: limit);
     try {
       results.forEach((res) {
         int id = res['id'];
@@ -222,8 +219,7 @@ class ManifestService with StorageConsumer, LanguageConsumer {
     return defs.cast<int, T>();
   }
 
-  Future<Map<int, T>> getDefinitions<T>(Iterable<int> hashes,
-      [dynamic identity(Map<String, dynamic> json)]) async {
+  Future<Map<int, T>> getDefinitions<T>(Iterable<int> hashes, [dynamic identity(Map<String, dynamic> json)]) async {
     Set<int> hashesSet = hashes?.toSet();
     hashesSet?.retainWhere((h) => h != null);
     if (hashesSet == null) return null;
@@ -243,17 +239,13 @@ class ManifestService with StorageConsumer, LanguageConsumer {
     if (hashesSet.length == 0) {
       return defs;
     }
-    List<int> searchHashes = hashesSet
-        .map((hash) => hash > 2147483648 ? hash - 4294967296 : hash)
-        .toList();
+    List<int> searchHashes = hashesSet.map((hash) => hash > 2147483648 ? hash - 4294967296 : hash).toList();
     String idList = "(" + List.filled(hashesSet.length, '?').join(',') + ")";
 
     sqflite.Database db = await _openDb();
 
-    List<Map<String, dynamic>> results = await db.query(type,
-        columns: ['id', 'json'],
-        where: "id in $idList",
-        whereArgs: searchHashes);
+    List<Map<String, dynamic>> results =
+        await db.query(type, columns: ['id', 'json'], where: "id in $idList", whereArgs: searchHashes);
     try {
       for (var res in results) {
         int id = res['id'];
@@ -267,8 +259,7 @@ class ManifestService with StorageConsumer, LanguageConsumer {
     return defs.cast<int, T>();
   }
 
-  Future<T> getDefinition<T>(int hash,
-      [dynamic identity(Map<String, dynamic> json)]) async {
+  Future<T> getDefinition<T>(int hash, [dynamic identity(Map<String, dynamic> json)]) async {
     if (hash == null) return null;
     String type = DefinitionTableNames.fromClass[T];
 
@@ -288,8 +279,8 @@ class ManifestService with StorageConsumer, LanguageConsumer {
     int searchHash = hash > 2147483648 ? hash - 4294967296 : hash;
     sqflite.Database db = await _openDb();
     try {
-      List<Map<String, dynamic>> results = await db.query(type,
-          columns: ['json'], where: "id=?", whereArgs: [searchHash]);
+      List<Map<String, dynamic>> results =
+          await db.query(type, columns: ['json'], where: "id=?", whereArgs: [searchHash]);
       if (results.length < 1) {
         return null;
       }

@@ -93,7 +93,7 @@ class ObjectivesScreenState extends State<ObjectivesScreen> {
         bottom: 8 + bottomPadding,
         child: Container(
           decoration: BoxDecoration(
-              color: Colors.blueGrey.shade900,
+              color: Theme.of(context).colorScheme.secondaryVariant,
               borderRadius: BorderRadius.circular(18)),
           width: 36,
           height: 36,

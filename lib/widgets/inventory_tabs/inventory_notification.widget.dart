@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/utils/shimmer_helper.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
@@ -192,8 +194,8 @@ class InventoryNotificationWidgetState
         margin: widget.notificationMargin,
         decoration: BoxDecoration(
             color: _isError
-                ? Colors.red.shade900
-                : Colors.blueGrey.shade900.withOpacity(.9),
+                ? Theme.of(context).errorColor
+                : LittleLightTheme.of(context).surfaceLayers.layer2,
             borderRadius: BorderRadius.all(Radius.circular(16))),
         alignment: Alignment.bottomRight,
         padding: EdgeInsets.symmetric(horizontal: 16),
@@ -202,19 +204,16 @@ class InventoryNotificationWidgetState
               padding: EdgeInsets.symmetric(vertical: 8),
               child: _isError
                   ? buildMessage(context)
-                  : Shimmer.fromColors(
-                      baseColor: Colors.blueGrey.shade400,
-                      highlightColor: Colors.grey.shade100,
-                      child: buildMessage(context))),
+                  : ShimmerHelper.getDefaultShimmer(context, child:buildMessage(context))),
           buildIcons(context)
         ]));
   }
 
   Widget shimmerBar(BuildContext context) {
     return Shimmer.fromColors(
-        baseColor: Colors.blueGrey.shade700,
+        baseColor: Theme.of(context).colorScheme.secondary,
         highlightColor: Colors.grey.shade100,
-        child: Container(height: 2, color: Colors.white));
+        child: Container(height: 2, color: Theme.of(context).colorScheme.onSurface));
   }
 
   Widget bottomPaddingShimmer(BuildContext context) {
@@ -224,7 +223,7 @@ class InventoryNotificationWidgetState
         child: Container(
           decoration: BoxDecoration(
               gradient: LinearGradient(
-                  colors: [Colors.transparent, Colors.white],
+                  colors: [Colors.transparent, Theme.of(context).colorScheme.onSurface],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter)),
         ));

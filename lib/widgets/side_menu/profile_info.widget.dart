@@ -1,4 +1,3 @@
-
 import 'package:bungie_api/destiny2.dart';
 import 'package:bungie_api/groupsv2.dart';
 import 'package:bungie_api/user.dart';
@@ -20,8 +19,8 @@ const Duration _kExpand = Duration(milliseconds: 200);
 
 class ProfileInfoWidget extends StatefulWidget {
   final ProfileService profile = ProfileService();
-  final List<Widget> menuItems;
-  ProfileInfoWidget({this.menuItems});
+  final Widget menuContent;
+  ProfileInfoWidget({this.menuContent});
 
   @override
   createState() {
@@ -30,12 +29,11 @@ class ProfileInfoWidget extends StatefulWidget {
 }
 
 class ProfileInfoState extends State<ProfileInfoWidget>
-    with SingleTickerProviderStateMixin, AuthConsumer, LanguageConsumer{
+    with SingleTickerProviderStateMixin, AuthConsumer, LanguageConsumer {
   GeneralUser bungieNetUser;
   GroupUserInfoCard selectedMembership;
 
-  static final Animatable<double> _easeInTween =
-      CurveTween(curve: Curves.easeIn);
+  static final Animatable<double> _easeInTween = CurveTween(curve: Curves.easeIn);
 
   AnimationController _controller;
   Animation<double> _heightFactor;
@@ -78,7 +76,7 @@ class ProfileInfoState extends State<ProfileInfoWidget>
 
   Widget _buildChildren(BuildContext context, Widget child) {
     return Container(
-      color: Colors.grey.shade900,
+      color: Theme.of(context).backgroundColor,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
@@ -100,14 +98,17 @@ class ProfileInfoState extends State<ProfileInfoWidget>
     return AnimatedBuilder(
       animation: _controller.view,
       builder: _buildChildren,
-      child: closed ? null : Column(children: widget.menuItems),
+      child: closed ? null : 
+      Container(
+        color: Theme.of(context).backgroundColor,
+        child:widget.menuContent),
     );
   }
 
   loadUser() async {
     UserMembershipData membershipData = await auth.getMembershipData();
     GroupUserInfoCard currentMembership = await auth.getMembership();
-    if(!mounted) return;
+    if (!mounted) return;
     setState(() {
       bungieNetUser = membershipData?.bungieNetUser;
       selectedMembership = currentMembership;
@@ -122,91 +123,70 @@ class ProfileInfoState extends State<ProfileInfoWidget>
           Container(height: kToolbarHeight, child: profileInfo(context)),
         ],
       ),
-      Positioned(
-          child: profilePicture(context),
-          left: 8,
-          bottom: 8,
-          width: 72,
-          height: 72)
+      Positioned(child: profilePicture(context), left: 8, bottom: 8, width: 72, height: 72)
     ]);
   }
 
+  Widget get shimmer => Shimmer.fromColors(
+      baseColor: Color.lerp(Theme.of(context).backgroundColor, Theme.of(context).primaryColor, .1),
+      highlightColor: Color.lerp(Theme.of(context).backgroundColor, Theme.of(context).primaryColor, .3),
+      child: Container(color: Theme.of(context).colorScheme.onSurface));
+
   Widget background(context) {
-    if (!auth.isLogged) {
-      return Container(
-          alignment: Alignment.center,
-          child: TranslatedTextWidget("Not logged in"));
+    if (bungieNetUser == null) {
+      return shimmer;
     }
-    Shimmer shimmer = Shimmer.fromColors(
-        baseColor: Color.lerp(Theme.of(context).backgroundColor,
-            Theme.of(context).primaryColor, .1),
-        highlightColor: Color.lerp(Theme.of(context).backgroundColor,
-            Theme.of(context).primaryColor, .3),
-        child: Container(color: Colors.white));
-    if (bungieNetUser?.profileThemeName != null) {
-      String url = BungieApiService.url(
-          "/img/UserThemes/${bungieNetUser.profileThemeName}/mobiletheme.jpg");
-      return Stack(
-        children: <Widget>[
-          Positioned.fill(
-              child: QueuedNetworkImage(
-            imageUrl: url,
-            placeholder: shimmer,
-            fit: BoxFit.cover,
-          )),
-          Container(
-            decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                  Colors.black26,
-                  Colors.transparent,
-                  Colors.transparent,
-                  Colors.black54
-                ],
-                    stops: [
-                  0,
-                  .2,
-                  .7,
-                  1
-                ])),
-          ),
-          Positioned(bottom: 4, left: 88, child: buildActivityInfo(context))
-        ],
+    if (bungieNetUser?.profileThemeName == null) {
+      return Container(
+        color: Theme.of(context).backgroundColor,
       );
     }
-    return shimmer;
+
+    String url = BungieApiService.url("/img/UserThemes/${bungieNetUser.profileThemeName}/mobiletheme.jpg");
+    return Stack(
+      children: <Widget>[
+        Positioned.fill(
+            child: QueuedNetworkImage(
+          imageUrl: url,
+          placeholder: shimmer,
+          fit: BoxFit.cover,
+        )),
+        Container(
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Colors.black26, Colors.transparent, Colors.transparent, Colors.black54],
+                  stops: [0, .2, .7, 1])),
+        ),
+        Positioned(bottom: 4, left: 88, child: buildActivityInfo(context))
+      ],
+    );
   }
 
   Widget buildActivityInfo(BuildContext context) {
-    final lastCharacter =
-        widget.profile.getCharacters(CharacterSortParameter())?.first;
-    if(lastCharacter == null){
+    final lastCharacter = widget.profile.getCharacters(CharacterSortParameter())?.first;
+    if (lastCharacter == null) {
       return Container();
     }
     final lastPlayed = DateTime.parse(lastCharacter.dateLastPlayed);
     final currentSession = lastCharacter.minutesPlayedThisSession;
     final time = timeago.format(lastPlayed, allowFromNow: true, locale: languageService.currentLanguage);
-    if (lastPlayed
-        .add(Duration(minutes: int.parse(currentSession) + 10))
-        .isBefore(DateTime.now().toUtc())) {
+    if (lastPlayed.add(Duration(minutes: int.parse(currentSession) + 10)).isBefore(DateTime.now().toUtc())) {
       return TranslatedTextWidget(
         "Last played {timeago}",
         replace: {'timeago': time.toLowerCase()},
         style: TextStyle(fontSize: 12, color: Colors.grey.shade100),
       );
     }
-    final activities =
-        widget.profile.getCharacterActivities(lastCharacter.characterId);
-    if(activities.currentActivityHash ==  82913930){
+    final activities = widget.profile.getCharacterActivities(lastCharacter.characterId);
+    if (activities.currentActivityHash == 82913930) {
       return ManifestText<DestinyPlaceDefinition>(2961497387,
-        textExtractor: (def)=>def.displayProperties.description,
+          textExtractor: (def) => def.displayProperties.description,
           style: TextStyle(fontSize: 12, color: Colors.grey.shade100, fontWeight: FontWeight.bold));
     }
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      ManifestText<DestinyActivityModeDefinition>(
-          activities.currentActivityModeHash,
+      ManifestText<DestinyActivityModeDefinition>(activities.currentActivityModeHash,
           style: TextStyle(fontSize: 10, color: Colors.grey.shade100)),
       ManifestText<DestinyActivityDefinition>(activities.currentActivityHash,
           style: TextStyle(fontSize: 12, color: Colors.grey.shade100, fontWeight: FontWeight.bold))
@@ -218,9 +198,7 @@ class ProfileInfoState extends State<ProfileInfoWidget>
       return Container();
     }
     Shimmer shimmer = Shimmer.fromColors(
-        baseColor: Colors.grey.shade500,
-        highlightColor: Colors.grey.shade400,
-        child: Container(color: Colors.white));
+        baseColor: Colors.grey.shade500, highlightColor: Colors.grey.shade400, child: Container(color: Theme.of(context).colorScheme.onSurface));
     if (bungieNetUser != null && bungieNetUser.profileThemeName != null) {
       String url = BungieApiService.url(bungieNetUser.profilePicturePath);
       return QueuedNetworkImage(
@@ -243,8 +221,7 @@ class ProfileInfoState extends State<ProfileInfoWidget>
                 child: MaterialButton(
               child: Container(
                 alignment: Alignment.centerLeft,
-                child: TranslatedTextWidget("Tap to Login",
-                    textAlign: TextAlign.left),
+                child: TranslatedTextWidget("Tap to Login", textAlign: TextAlign.left),
               ),
               onPressed: () {
                 Navigator.pushReplacement(
@@ -254,32 +231,27 @@ class ProfileInfoState extends State<ProfileInfoWidget>
                     ));
               },
             )),
-            IconButton(enableFeedback: false,
-              icon: Transform.rotate(
-                  angle: -_heightFactor.value * 1.5,
-                  child: Icon(Icons.settings)),
+            IconButton(
+              enableFeedback: false,
+              icon: Transform.rotate(angle: -_heightFactor.value * 1.5, child: Icon(Icons.settings)),
               onPressed: _handleTap,
             )
           ],
         ),
       );
     }
-    PlatformData platform =
-        PlatformData.getPlatform(selectedMembership?.membershipType);
+    PlatformData platform = PlatformData.getPlatform(selectedMembership?.membershipType);
     return Container(
         color: platform.color,
         padding: EdgeInsets.only(left: 80),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8),
-                child: Icon(platform.icon)),
+            Padding(padding: EdgeInsets.symmetric(horizontal: 8), child: Icon(platform.icon)),
             Expanded(child: Text(selectedMembership?.displayName ?? "")),
-            IconButton(enableFeedback: false,
-              icon: Transform.rotate(
-                  angle: -_heightFactor.value * 1.5,
-                  child: Icon(Icons.settings)),
+            IconButton(
+              enableFeedback: false,
+              icon: Transform.rotate(angle: -_heightFactor.value * 1.5, child: Icon(Icons.settings)),
               onPressed: _handleTap,
             )
           ],

@@ -86,16 +86,16 @@ class _DevModeMainPageWidgetState extends State<DevModeMainPageWidget> with Auth
   Widget buildAccountAvatar(BuildContext context, UserMembershipData membership) {
     Widget image;
     if (membership.bungieNetUser?.profilePicturePath != null) {
-      image = Image.network((BungieApiService.url(membership.bungieNetUser!.profilePicturePath)));
+      image = Image.network(BungieApiService.url(membership.bungieNetUser!.profilePicturePath)!);
     } else {
-      image = Container(color: Colors.white, child: Icon(FontAwesomeIcons.user));
+      image = Container(color: Theme.of(context).colorScheme.onSurface, child: Icon(FontAwesomeIcons.user));
     }
     return Container(
         width: 64,
         height: 64,
         margin: EdgeInsets.all(8),
         padding: EdgeInsets.all(2),
-        color: Colors.blueGrey.shade300,
+        color: Theme.of(context).colorScheme.secondary,
         child: image);
   }
 
@@ -143,7 +143,7 @@ class _DevModeMainPageWidgetState extends State<DevModeMainPageWidget> with Auth
           Container(
             width: 4,
           ),
-          Container(width: 16, height: 16, child: Image.network(BungieApiService.url(platform)))
+          Container(width: 16, height: 16, child: Image.network(BungieApiService.url(platform)!))
         ],
       ),
     );

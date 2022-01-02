@@ -37,7 +37,7 @@ class LoadoutDestinationsWidgetState extends State<LoadoutDestinationsWidget>
   Widget build(BuildContext context) {
     var screenPadding = MediaQuery.of(context).padding;
     return Container(
-        color: Colors.blueGrey.shade800,
+        color: Theme.of(context).colorScheme.secondaryVariant,
         padding: EdgeInsets.only(
             left: max(screenPadding.left, 4),
             right: max(screenPadding.right, 4)),

@@ -4,21 +4,21 @@ import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/models/character_sort_parameter.dart';
 import 'package:little_light/models/item_notes_tag.dart';
-import 'package:little_light/models/wish_list.dart';
+import 'package:little_light/models/item_sort_parameter.dart';
+import 'package:little_light/models/wishlist_index.dart';
 import 'package:little_light/pages/add_wishlist.screen.dart';
 import 'package:little_light/services/littlelight/item_notes.service.dart';
-import 'package:little_light/services/littlelight/old.wishlists.service.dart';
-import 'package:little_light/models/item_sort_parameter.dart';
+import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/platform_capabilities.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/littlelight_custom.dialog.dart';
+import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/flutter/center_icon_workaround.dart';
 import 'package:little_light/widgets/item_tags/item_tag.widget.dart';
 import 'package:little_light/widgets/option_sheets/free_slots_slider.widget.dart';
 import 'package:screen/screen.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -26,19 +26,23 @@ class SettingsScreen extends StatefulWidget {
   _SettingsScreenState createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> with UserSettingsConsumer{
+class _SettingsScreenState extends State<SettingsScreen> with UserSettingsConsumer, WishlistsConsumer{
   List<ItemSortParameter> itemOrdering;
   List<ItemSortParameter> pursuitOrdering;
   Set<String> priorityTags;
-  List<Wishlist> wishlists;
+  List<WishlistFile> wishlists;
 
   @override
   void initState() {
     super.initState();
+    asyncInit();
+  }
+
+  asyncInit() async{
     itemOrdering = userSettings.itemOrdering;
     pursuitOrdering = userSettings.pursuitOrdering;
     priorityTags = userSettings.priorityTags;
-    wishlists = OldWishlistsService().getWishlists();
+    wishlists = await wishlistsService.getWishlists();
   }
 
   @override
@@ -170,6 +174,7 @@ class _SettingsScreenState extends State<SettingsScreen> with UserSettingsConsum
         buildWishlistsList(context),
         Container(
             padding: EdgeInsets.all(8),
+            ///TODO: replace this description with something that makes more sense
             child: TranslatedTextWidget(
                 "You can add community curated wishlists (aka DIM™️ wishlists) on Little Light to check your god rolls.")),
         Container(
@@ -184,18 +189,18 @@ class _SettingsScreenState extends State<SettingsScreen> with UserSettingsConsum
           ElevatedButton(
             child: TranslatedTextWidget("Add Wishlist"),
             onPressed: () async {
-              Wishlist wishlist = await Navigator.push(
+              WishlistFile wishlist = await Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => AddWishlistScreen(),
                   ));
-              if (wishlist is Wishlist) {
+              if (wishlist is WishlistFile) {
                 showDialog(
                     barrierDismissible: false,
                     useRootNavigator: true,
                     context: context,
                     builder: (context) => buildProcessingDialog(context));
-                wishlists = await OldWishlistsService().addWishlist(wishlist);
+                wishlists = await wishlistsService.addWishlist(wishlist);
                 Navigator.of(context).pop();
                 setState(() {});
               }
@@ -209,14 +214,7 @@ class _SettingsScreenState extends State<SettingsScreen> with UserSettingsConsum
   SimpleDialog buildProcessingDialog(BuildContext context) {
     return SimpleDialog(
       children: <Widget>[
-        Container(
-            width: 96,
-            height: 96,
-            child: Shimmer.fromColors(
-              baseColor: Colors.blueGrey.shade300,
-              highlightColor: Colors.white,
-              child: Image.asset("assets/anim/loading.webp"),
-            )),
+        LoadingAnimWidget(),
         Center(child: TranslatedTextWidget("Processing wishlists"))
       ],
     );
@@ -228,7 +226,7 @@ class _SettingsScreenState extends State<SettingsScreen> with UserSettingsConsum
             .map((w) => Container(
                 padding: EdgeInsets.all(8),
                 child: Material(
-                    color: Colors.blueGrey.shade600,
+                    color: Theme.of(context).colorScheme.secondary,
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
@@ -245,7 +243,7 @@ class _SettingsScreenState extends State<SettingsScreen> with UserSettingsConsum
                               padding: EdgeInsets.all(8).copyWith(bottom: 0),
                               child: Linkify(
                                   text: w.description ?? "",
-                                  linkStyle: TextStyle(color: Colors.white),
+                                  linkStyle: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                                   onOpen: (link) =>
                                       launch(link.url, forceSafariVC: true))),
                           Container(
@@ -261,13 +259,13 @@ class _SettingsScreenState extends State<SettingsScreen> with UserSettingsConsum
                                           context: context,
                                           builder: (context) =>
                                               buildProcessingDialog(context));
-                                      wishlists = await OldWishlistsService()
-                                          .removeWishlist(w);
-                                      wishlists = await OldWishlistsService()
-                                          .addWishlist(w);
+                                      ///TODO: handle wishlist update in a better way
+                                      // wishlists = await wishlistsService.removeWishlist(w);
+                                      // wishlists = await wishlistsService
+                                      //     .addWishlist(w);
                                       Navigator.of(context).pop();
                                       setState(() {});
-                                      OldWishlistsService().countBuilds();
+                                      // wishlistsService.countBuilds();
                                     }),
                                 Container(
                                   width: 8,
@@ -284,7 +282,7 @@ class _SettingsScreenState extends State<SettingsScreen> with UserSettingsConsum
                                           context: context,
                                           builder: (context) =>
                                               buildProcessingDialog(context));
-                                      wishlists = await OldWishlistsService()
+                                      wishlists = wishlistsService
                                           .removeWishlist(w);
                                       Navigator.of(context).pop();
                                       setState(() {});
@@ -428,7 +426,7 @@ class _SettingsScreenState extends State<SettingsScreen> with UserSettingsConsum
                     trailing: Container(
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
-                            color: Colors.white),
+                            color: Theme.of(context).colorScheme.onSurface),
                         width: 20,
                         height: 20,
                         alignment: Alignment.center,
@@ -525,8 +523,8 @@ class _SettingsScreenState extends State<SettingsScreen> with UserSettingsConsum
         key: Key("param_${parameter.type}"),
         child: Container(
             color: parameter.active
-                ? Colors.blueGrey.shade700
-                : Colors.blueGrey.shade800,
+                ? Theme.of(context).colorScheme.secondary
+                : Theme.of(context).colorScheme.secondaryVariant,
             child:
                 Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
               handle,

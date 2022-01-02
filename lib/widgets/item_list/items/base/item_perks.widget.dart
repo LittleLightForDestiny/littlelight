@@ -1,12 +1,12 @@
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
+import 'package:bungie_api/models/destiny_item_plug_base.dart';
 import 'package:bungie_api/models/destiny_item_socket_entry_definition.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_socket_category_definition.dart';
-import 'package:bungie_api/models/destiny_item_plug_base.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/models/wish_list.dart';
-import 'package:little_light/services/littlelight/old.wishlists.service.dart';
+import 'package:little_light/models/parsed_wishlist.dart';
+import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/utils/wishlists_data.dart';
@@ -38,7 +38,7 @@ class ItemPerksWidget extends StatefulWidget {
   }
 }
 
-class ItemPerksWidgetState extends State<ItemPerksWidget> {
+class ItemPerksWidgetState extends State<ItemPerksWidget> with WishlistsConsumer{
   List<DestinyItemSocketState> _itemSockets;
   Map<String, List<DestinyItemPlugBase>> _reusablePlugs;
   List<DestinyItemSocketState> get itemSockets =>
@@ -113,7 +113,7 @@ class ItemPerksWidgetState extends State<ItemPerksWidget> {
     if (plugHash == null) {
       return Container();
     }
-    var tags = OldWishlistsService().getPerkTags(widget.definition.hash, plugHash);
+    var tags = wishlistsService.getPlugTags(widget.definition.hash, plugHash);
     return Container(
       margin: EdgeInsets.only(top: 1, left: 1),
       width: widget.iconSize,
@@ -135,13 +135,13 @@ class ItemPerksWidgetState extends State<ItemPerksWidget> {
       colors.add(Colors.amber);
     } else if (tags.contains(WishlistTag.PVE)) {
       colors.add(Color.lerp(
-          WishlistsData.getBgColor(WishlistTag.PVE), Colors.white, .2));
+          WishlistsData.getBgColor(context, WishlistTag.PVE), Theme.of(context).colorScheme.onSurface, .2));
     }
     if (tags.contains(WishlistTag.GodPVP)) {
       colors.add(Colors.amber);
     } else if (tags.contains(WishlistTag.PVP)) {
       colors.add(Color.lerp(
-          WishlistsData.getBgColor(WishlistTag.PVP), Colors.white, .2));
+          WishlistsData.getBgColor(context, WishlistTag.PVP), Theme.of(context).colorScheme.onSurface, .2));
     }
     if (colors.length > 0) {
       return Container(
@@ -160,10 +160,10 @@ class ItemPerksWidgetState extends State<ItemPerksWidget> {
   buildTagBackground(Set<WishlistTag> tags) {
     List<Color> colors = [];
     if (tags.contains(WishlistTag.PVE) || tags.contains(WishlistTag.GodPVE)) {
-      colors.add(WishlistsData.getBgColor(WishlistTag.PVE));
+      colors.add(WishlistsData.getBgColor(context, WishlistTag.PVE));
     }
     if (tags.contains(WishlistTag.PVP) || tags.contains(WishlistTag.GodPVP)) {
-      colors.add(WishlistsData.getBgColor(WishlistTag.PVP));
+      colors.add(WishlistsData.getBgColor(context, WishlistTag.PVP));
     }
     if (colors.length > 0) {
       return Container(

@@ -1,17 +1,19 @@
+import 'package:bungie_api/destiny2.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/services/littlelight/old.wishlists.service.dart';
+import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
-class WishlistNotesWidget extends StatelessWidget {
+class WishlistNotesWidget extends StatelessWidget with WishlistsConsumer{
   final DestinyItemComponent item;
+  final Map<String, List<DestinyItemPlugBase>> reusablePlugs;
 
-  WishlistNotesWidget(this.item, {Key key}) : super(key: key);
+  WishlistNotesWidget(this.item, {Key key, this.reusablePlugs}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var notes = OldWishlistsService().getWishlistBuildNotes(item);
+    var notes = wishlistsService.getWishlistBuildNotes(itemHash:item.itemHash);
     if ((notes?.length ?? 0) == 0) {
       return Container();
     }

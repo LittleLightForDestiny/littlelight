@@ -113,7 +113,7 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T> with 
   @override
   Widget build(BuildContext context) {
     if (definition == null) {
-      return Container(height: 200, color: Colors.blueGrey.shade900);
+      return Container(height: 200, color: Theme.of(context).colorScheme.surface);
     }
     return LayoutBuilder(
         builder: (context, constraints) => buildLayout(context, constraints));
@@ -126,7 +126,7 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T> with 
             border: Border.all(
                 color: DestinyData.getTierColor(definition.inventory.tierType),
                 width: 1),
-            color: Colors.blueGrey.shade900,
+            color: Theme.of(context).colorScheme.surface,
           ),
           child: Column(children: <Widget>[
             buildMainInfo(context, constraints),

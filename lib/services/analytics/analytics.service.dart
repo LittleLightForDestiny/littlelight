@@ -20,14 +20,15 @@ class AnalyticsService {
   AnalyticsService._internal();
 
   List<NavigatorObserver> get observers =>
-      PlatformCapabilities.firebaseAnalyticsAvailable
-          ? [FirebaseAnalyticsObserver(analytics: _analytics)]
-          : [];
+      PlatformCapabilities.firebaseAnalyticsAvailable ? [FirebaseAnalyticsObserver(analytics: _analytics)] : [];
 
   registerPageOpen(LittleLightPersistentPage page) {
     if (PlatformCapabilities.firebaseAnalyticsAvailable) {
-      _analytics.setCurrentScreen(
-          screenName: page.name, screenClassOverride: page.name);
+      _analytics.setCurrentScreen(screenName: page.name, screenClassOverride: page.name);
     }
+  }
+
+  void registerNonFatal(e, StackTrace? stackTrace) {
+    FirebaseCrashlytics.instance.recordError(e, stackTrace);
   }
 }

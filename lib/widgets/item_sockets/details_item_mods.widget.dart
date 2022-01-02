@@ -73,7 +73,7 @@ class DetailsItemPerksWidgetState<T extends DetailsItemModsWidget>
                 ? Container(
                     margin: EdgeInsets.symmetric(horizontal: dividerMargin),
                     width: 2,
-                    color: Colors.white.withOpacity(.4))
+                    color: Theme.of(context).colorScheme.onSurface.withOpacity(.4))
                 : Container(width: dividerMargin)
           ]);
       children = children.take(children.length - 1);
@@ -227,7 +227,7 @@ class DetailsItemPerksWidgetState<T extends DetailsItemModsWidget>
               shape: ContinuousRectangleBorder(
                   side: BorderSide(
                       color: selected
-                          ? Colors.white
+                          ? Theme.of(context).colorScheme.onSurface
                           : Colors.grey.shade300.withOpacity(.5),
                       width: 1.5)),
               child: Stack(children: [

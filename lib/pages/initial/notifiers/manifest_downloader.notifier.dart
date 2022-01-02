@@ -16,9 +16,10 @@ class ManifestDownloaderNotifier with ChangeNotifier, ManifestConsumer {
   int get downloadedSize => ((_progress?.downloadedBytes ?? 0)/1024).floor();
   bool get finishedDownloading => _progress?.downloaded ?? false;
   bool get finishedUncompressing => _progress?.unzipped ?? false;
+  bool get error => _progress is DownloadError;
 
-  downloadManifest() async{
-    final stream = manifest.download();
+  downloadManifest([bool skipCache = false]) async{
+    final stream = manifest.download(skipCache);
     await for(final value in stream){
       _progress = value;
       notifyListeners();

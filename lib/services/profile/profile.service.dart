@@ -24,7 +24,7 @@ import 'package:bungie_api/models/destiny_stat.dart';
 import 'package:get_it/get_it.dart';
 import 'package:little_light/models/character_sort_parameter.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
-import 'package:little_light/services/bungie_api/bungie_api.service.dart';
+import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
@@ -38,7 +38,7 @@ setupProfileService(){
   GetIt.I.registerLazySingleton<ProfileService>(() => ProfileService._internal());
 }
 
-class ProfileService with UserSettingsConsumer, StorageConsumer, AuthConsumer {
+class ProfileService with UserSettingsConsumer, StorageConsumer, AuthConsumer, BungieApiConsumer {
   final NotificationService _broadcaster = new NotificationService();
 
   DateTime lastUpdated;
@@ -52,7 +52,6 @@ class ProfileService with UserSettingsConsumer, StorageConsumer, AuthConsumer {
     InventoryBucket.shaders,
     InventoryBucket.consumables
   ];
-  final _api = BungieApiService();
 
   DestinyProfileResponse _profile;
   LastLoadedFrom _lastLoadedFrom;
@@ -108,7 +107,7 @@ class ProfileService with UserSettingsConsumer, StorageConsumer, AuthConsumer {
       List<DestinyComponentType> components) async {
     // final membershipID = auth.currentMembershipID;
     DestinyProfileResponse response;
-    response = await _api.getCurrentProfile(components);
+    response = await bungieAPI.getCurrentProfile(components);
     lastUpdated = DateTime.now();
 
     if (response == null) {
@@ -216,15 +215,15 @@ class ProfileService with UserSettingsConsumer, StorageConsumer, AuthConsumer {
     print('saved to cache');
   }
 
-  Future<DestinyProfileResponse> loadFromCache() async {
+  Future<DestinyProfileResponse> initialLoad() async {
     final data = await currentMembershipStorage.getCachedProfile();
     if( data != null){
       this._profile = data;
       this._lastLoadedFrom = LastLoadedFrom.cache;
       print('loaded profile from cache');
+      fetchProfileData();
       return data;
     }
-    /// TODO: handle profile loading from web somewhere else
     DestinyProfileResponse response = await fetchProfileData();
     print('loaded profile from server');
     return response;

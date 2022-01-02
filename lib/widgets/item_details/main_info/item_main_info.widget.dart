@@ -3,9 +3,9 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/models/wish_list.dart';
+import 'package:little_light/models/parsed_wishlist.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/services/littlelight/old.wishlists.service.dart';
+import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
 import 'package:little_light/widgets/common/primary_stat.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
@@ -32,7 +32,7 @@ class ItemMainInfoWidget extends BaseDestinyStatefulItemWidget {
   }
 }
 
-class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget> {
+class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget> with WishlistsConsumer {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -77,10 +77,9 @@ class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget> {
 
   Widget buildWishListInfo(BuildContext context) {
     final reusable = widget.profile.getItemReusablePlugs(item?.itemInstanceId);
-    final sockets = widget.profile.getItemSockets(item?.itemInstanceId);
-    final tags = OldWishlistsService().getWishlistBuildTags(
-        itemHash: item?.itemHash, reusablePlugs: reusable, sockets: sockets);
-    if (tags == null) return Container();
+    final tags = wishlistsService.getWishlistBuildTags(
+        itemHash: item?.itemHash, reusablePlugs: reusable);
+    if (tags == null || tags.length == 0) return Container();
     if (tags.contains(WishlistTag.GodPVE) &&
         tags.contains(WishlistTag.GodPVP)) {
       return Container(
@@ -191,19 +190,6 @@ class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget> {
             Expanded(
                 child: TranslatedTextWidget(
                     "This item is considered a trash roll."))
-          ]));
-    }
-    if (tags.length == 0) {
-      return Container(
-          padding: EdgeInsets.only(bottom: 8, left: 8, right: 8),
-          child: Row(children: [
-            WishlistBadgesWidget(tags: Set()),
-            Container(
-              width: 8,
-            ),
-            Expanded(
-                child: TranslatedTextWidget(
-                    "This item is considered an uncategorized godroll."))
           ]));
     }
     return Container();

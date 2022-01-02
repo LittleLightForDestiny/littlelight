@@ -4,6 +4,7 @@ import 'package:bungie_api/models/destiny_milestone_activity_phase.dart';
 import 'package:bungie_api/models/destiny_milestone_challenge_activity.dart';
 
 import 'package:flutter/material.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
@@ -86,7 +87,7 @@ class _MilestoneRaidItemWidgetState
             alignment: Alignment.center,
             padding: EdgeInsets.all(4),
             margin: EdgeInsets.all(2),
-            color: Colors.blueGrey.shade700,
+            color: LittleLightTheme.of(context).surfaceLayers.layer2,
             child: buildPhaseLabel(context, phase)));
   }
 
@@ -186,8 +187,9 @@ class _MilestoneRaidItemWidgetState
         text = "Sanctified Mind";
         break;
     }
+    final theme = LittleLightTheme.of(context);
     Color color =
-        phase.complete ? Colors.amber.shade100 : Colors.blueGrey.shade200;
+        phase.complete ? theme.achievementLayers.layer1 : theme.onSurfaceLayers.layer2.withOpacity(.7);
     if (icon != null) {
       return Icon(icon, color: color, size: 30);
     }

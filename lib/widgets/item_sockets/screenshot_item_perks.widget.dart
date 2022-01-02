@@ -63,13 +63,13 @@ class ScreenShotItemPerksWidgetState<T extends ScreenShotItemPerksWidget>
           style: TextStyle(
             fontSize: 24 * widget.pixelSize,
             fontWeight: FontWeight.w500,
-            color: Colors.white.withOpacity(.7),
+            color: Theme.of(context).colorScheme.onSurface.withOpacity(.7),
           ),
         ),
         Container(
             margin: EdgeInsets.only(
                 top: 2 * widget.pixelSize, bottom: 16 * widget.pixelSize),
-            color: Colors.white.withOpacity(.7),
+            color: Theme.of(context).colorScheme.onSurface.withOpacity(.7),
             height: 3 * widget.pixelSize)
       ],
     );
@@ -85,7 +85,7 @@ class ScreenShotItemPerksWidgetState<T extends ScreenShotItemPerksWidget>
           Container(
               margin: EdgeInsets.symmetric(horizontal: widget.pixelSize * 12),
               width: 2 * widget.pixelSize,
-              color: Colors.white.withOpacity(.4))
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(.4))
         ]);
     children = children.take(children.length - 1);
     return Stack(children: [

@@ -28,7 +28,7 @@ class SelectLanguageSubPageState extends SubpageBaseState<SelectLanguageSubPage>
   }
 
   void okClick() {
-    languageService.selectedLanguage = _selectedLanguage;
+    languageService.selectedLanguage = selectedLanguage;
     Provider.of<InitialPageStateNotifier>(context, listen: false).languageSelected();
   }
 

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
-import 'package:little_light/models/wish_list.dart';
+import 'package:little_light/models/wishlist_index.dart';
 import 'package:little_light/services/language/language.consumer.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AddWishlistScreen extends StatefulWidget {
@@ -15,10 +14,10 @@ class AddWishlistScreen extends StatefulWidget {
 
 enum ImportType { Link, File, Popular }
 
-class _AddWishlistScreenState extends State<AddWishlistScreen> with LanguageConsumer{
+class _AddWishlistScreenState extends State<AddWishlistScreen> with LanguageConsumer {
   final Map<String, TextEditingController> fieldControllers = Map();
   ImportType _importType = ImportType.Link;
-  List<Wishlist> popular;
+  List<WishlistFile> popular;
   Map<String, String> labelTranslations = Map();
   Map<ImportType, TranslatedTextWidget> comboLabels = {
     ImportType.File: TranslatedTextWidget("Local File"),
@@ -56,8 +55,7 @@ class _AddWishlistScreenState extends State<AddWishlistScreen> with LanguageCons
             _importType = newValue;
           });
         },
-        items: ImportType.values
-            .map<DropdownMenuItem<ImportType>>((ImportType value) {
+        items: ImportType.values.map<DropdownMenuItem<ImportType>>((ImportType value) {
           return DropdownMenuItem<ImportType>(
             value: value,
             child: comboLabels[value],
@@ -82,17 +80,15 @@ class _AddWishlistScreenState extends State<AddWishlistScreen> with LanguageCons
               buildTextField(context, "URL", maxLength: null),
 
               buildTextField(context, "Name"),
-              buildTextField(context, "Description",
-                  multiline: true, maxLength: 300),
+              buildTextField(context, "Description", multiline: true, maxLength: 300),
               Container(
                   alignment: Alignment.centerRight,
                   child: buildButton(context, "Add Wishlist", () {
-                    bool isValidUrl =
-                        Uri.parse(this.fieldControllers["URL"].text).isAbsolute;
+                    bool isValidUrl = Uri.parse(this.fieldControllers["URL"].text).isAbsolute;
                     if (!isValidUrl) {
                       return;
                     }
-                    Navigator.of(context).pop(Wishlist(
+                    Navigator.of(context).pop(WishlistFile(
                       url: this.fieldControllers["URL"].text,
                       name: this.fieldControllers["Name"].text,
                       description: this.fieldControllers["Description"].text,
@@ -111,14 +107,12 @@ class _AddWishlistScreenState extends State<AddWishlistScreen> with LanguageCons
     return Column(
       children: [
         Container(
-            padding: EdgeInsets.all(8),
-            child: TranslatedTextWidget(
-                "To create your own wishlists, please check:")),
+            padding: EdgeInsets.all(8), child: TranslatedTextWidget("To create your own wishlists, please check:")),
         Container(
             padding: EdgeInsets.all(8),
             child: Linkify(
               text: "https://wishlists.littlelight.club",
-              linkStyle: TextStyle(color: Colors.white),
+              linkStyle: TextStyle(color: Theme.of(context).colorScheme.onSurface),
               onOpen: onLinkClick,
             )),
       ],
@@ -140,8 +134,7 @@ class _AddWishlistScreenState extends State<AddWishlistScreen> with LanguageCons
           maxLength: maxLength,
           autocorrect: false,
           controller: controller,
-          decoration:
-              InputDecoration(labelText: labelTranslations[label] ?? label),
+          decoration: InputDecoration(labelText: labelTranslations[label] ?? label),
         ));
   }
 
@@ -154,9 +147,7 @@ class _AddWishlistScreenState extends State<AddWishlistScreen> with LanguageCons
 
   Widget buildDivider(BuildContext context) {
     return Container(
-        color: Colors.white,
-        height: 1,
-        margin: EdgeInsets.symmetric(vertical: 16));
+        color: Theme.of(context).colorScheme.onSurface, height: 1, margin: EdgeInsets.symmetric(vertical: 16));
   }
 
   Widget buildPopularWishlists(BuildContext context) {
@@ -176,53 +167,39 @@ class _AddWishlistScreenState extends State<AddWishlistScreen> with LanguageCons
     ]);
   }
 
-  Widget buildLoadingAnim(BuildContext context) {
-    return Center(
-        child: Container(
-            width: 96,
-            child: Shimmer.fromColors(
-              baseColor: Colors.blueGrey.shade300,
-              highlightColor: Colors.white,
-              child: Image.asset("assets/anim/loading.webp"),
-            )));
-  }
-
   buildWishlistsList(BuildContext context) {
     return Column(
         children: popular
             .map((w) => Container(
                 padding: EdgeInsets.all(8),
                 child: Material(
-                    color: Colors.blueGrey.shade600,
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Material(
-                              color: Colors.lightBlue.shade600,
-                              child: Container(
-                                  padding: EdgeInsets.all(8),
-                                  child: Text(
-                                    w.name,
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.w700),
-                                  ))),
-                          Container(
-                              padding: EdgeInsets.all(8).copyWith(bottom: 0),
-                              child: Linkify(
-                                  text: w.description,
-                                  linkStyle: TextStyle(color: Colors.white),
-                                  onOpen: onLinkClick)),
-                          Container(
+                    color: Theme.of(context).colorScheme.secondaryVariant,
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                      Material(
+                          color: Theme.of(context).colorScheme.secondaryVariant,
+                          child: Container(
                               padding: EdgeInsets.all(8),
-                              child: Row(children: [
-                                Expanded(child: Container()),
-                                ElevatedButton(
-                                    child: TranslatedTextWidget("Add Wishlist"),
-                                    onPressed: () {
-                                      Navigator.of(context).pop(w);
-                                    })
-                              ]))
-                        ]))))
+                              child: Text(
+                                w.name,
+                                style: TextStyle(fontWeight: FontWeight.w700),
+                              ))),
+                      Container(
+                          padding: EdgeInsets.all(8).copyWith(bottom: 0),
+                          child: Linkify(
+                              text: w.description,
+                              linkStyle: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+                              onOpen: onLinkClick)),
+                      Container(
+                          padding: EdgeInsets.all(8),
+                          child: Row(children: [
+                            Expanded(child: Container()),
+                            ElevatedButton(
+                                child: TranslatedTextWidget("Add Wishlist"),
+                                onPressed: () {
+                                  Navigator.of(context).pop(w);
+                                })
+                          ]))
+                    ]))))
             .toList());
   }
 }

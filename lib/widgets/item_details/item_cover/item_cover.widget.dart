@@ -233,27 +233,27 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
               imageUrl: BungieApiService.url(imgUrl),
               fit: BoxFit.cover,
               placeholder: Shimmer.fromColors(
-                  baseColor: Colors.blueGrey.shade500,
+                  baseColor: Theme.of(context).colorScheme.secondary,
                   highlightColor: Colors.grey.shade300,
-                  child: Container(color: Colors.white)));
+                  child: Container(color: Theme.of(context).colorScheme.onSurface)));
         }
 
         return QueuedNetworkImage(
             imageUrl: BungieApiService.url(def?.screenshot ?? imgUrl),
             fit: BoxFit.cover,
             placeholder: Shimmer.fromColors(
-                baseColor: Colors.blueGrey.shade500,
+                baseColor: Theme.of(context).colorScheme.secondary,
                 highlightColor: Colors.grey.shade300,
-                child: Container(color: Colors.white)));
+                child: Container(color: Theme.of(context).colorScheme.onSurface)));
       });
     }
     return QueuedNetworkImage(
         imageUrl: BungieApiService.url(imgUrl),
         fit: BoxFit.cover,
         placeholder: Shimmer.fromColors(
-            baseColor: Colors.blueGrey.shade500,
+            baseColor: Theme.of(context).colorScheme.secondary,
             highlightColor: Colors.grey.shade300,
-            child: Container(color: Colors.white)));
+            child: Container(color: Theme.of(context).colorScheme.onSurface)));
   }
 
   @override

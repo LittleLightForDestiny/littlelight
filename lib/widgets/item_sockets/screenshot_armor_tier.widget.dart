@@ -63,13 +63,13 @@ class ScreenShotItemPerksWidgetState<T extends ScreenShotArmorTierWidget>
           style: TextStyle(
             fontSize: 24 * widget.pixelSize,
             fontWeight: FontWeight.w500,
-            color: Colors.white.withOpacity(.7),
+            color: Theme.of(context).colorScheme.onSurface.withOpacity(.7),
           ),
         ),
         Container(
             margin: EdgeInsets.only(
                 top: 2 * widget.pixelSize, bottom: 16 * widget.pixelSize),
-            color: Colors.white.withOpacity(.7),
+            color: Theme.of(context).colorScheme.onSurface.withOpacity(.7),
             height: 3 * widget.pixelSize)
       ],
     );
@@ -160,7 +160,7 @@ class ScreenShotItemPerksWidgetState<T extends ScreenShotArmorTierWidget>
           ? DestinyData.negativeFeedback.withOpacity(.8)
           : Colors.transparent;
       if (index < used) {
-        color = Colors.white;
+        color = Theme.of(context).colorScheme.onSurface;
       }
       return Container(
         height: 30 * widget.pixelSize,
@@ -168,7 +168,7 @@ class ScreenShotItemPerksWidgetState<T extends ScreenShotArmorTierWidget>
         child: Container(
           decoration: BoxDecoration(
               border:
-                  Border.all(width: 4 * widget.pixelSize, color: Colors.white),
+                  Border.all(width: 4 * widget.pixelSize, color: Theme.of(context).colorScheme.onSurface),
               color: color),
         ),
       );
