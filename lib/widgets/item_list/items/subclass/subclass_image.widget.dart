@@ -4,6 +4,7 @@ import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_talent_grid_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/destiny_utils/subclass_talentgrid_info.dart';
 import 'package:little_light/widgets/common/destiny_item.stateful_widget.dart';
@@ -19,7 +20,7 @@ class SubClassImageWidget extends DestinyItemStatefulWidget {
   _SubClassImageWidgetState createState() => _SubClassImageWidgetState();
 }
 
-class _SubClassImageWidgetState extends DestinyItemState<SubClassImageWidget> {
+class _SubClassImageWidgetState extends DestinyItemState<SubClassImageWidget> with ProfileConsumer{
   String imagePath;
   bool loaded = false;
 
@@ -33,7 +34,7 @@ class _SubClassImageWidgetState extends DestinyItemState<SubClassImageWidget> {
     var talentGridDef = await widget.manifest
         .getDefinition<DestinyTalentGridDefinition>(
             definition.talentGrid.talentGridHash);
-    var talentGrid = widget.profile.getTalentGrid(item?.itemInstanceId);
+    var talentGrid = profile.getTalentGrid(item?.itemInstanceId);
     var cat = extractTalentGridNodeCategory(talentGridDef, talentGrid);
     var path = DestinyData.getSubclassImagePath(definition.classType,
         definition.talentGrid.hudDamageType, cat?.identifier);

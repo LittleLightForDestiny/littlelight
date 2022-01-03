@@ -15,6 +15,7 @@ import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enu
 import 'package:little_light/services/inventory/inventory.service.dart';
 import 'package:little_light/services/littlelight/item_notes.service.dart';
 import 'package:little_light/services/littlelight/loadouts.consumer.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/profile/vendors.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/inventory_utils.dart';
@@ -84,7 +85,7 @@ class ItemDetailScreen extends BaseDestinyStatefulItemWidget {
   }
 }
 
-class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> with AuthConsumer, LoadoutsConsumer{
+class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> with AuthConsumer, LoadoutsConsumer, ProfileConsumer {
   int selectedPerk;
   Map<int, int> selectedPerks = new Map();
   ItemSocketController socketController;
@@ -94,7 +95,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> with 
 
   List<DestinyItemSocketState> get socketStates =>
       widget.socketStates ??
-      widget.profile.getItemSockets(item?.itemInstanceId);
+      profile.getItemSockets(item?.itemInstanceId);
 
   initState() {
     super.initState();
@@ -142,18 +143,18 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen> with 
     }
     List<ItemWithOwner> allItems = [];
     Iterable<String> charIds =
-        widget.profile.getCharacters().map((char) => char.characterId);
+        profile.getCharacters().map((char) => char.characterId);
     charIds.forEach((charId) {
-      allItems.addAll(widget.profile
+      allItems.addAll(profile
           .getCharacterEquipment(charId)
           .where((i) => i.itemHash == this.definition.hash)
           .map((item) => ItemWithOwner(item, charId)));
-      allItems.addAll(widget.profile
+      allItems.addAll(profile
           .getCharacterInventory(charId)
           .where((i) => i.itemHash == this.definition.hash)
           .map((item) => ItemWithOwner(item, charId)));
     });
-    allItems.addAll(widget.profile
+    allItems.addAll(profile
         .getProfileInventory()
         .where((i) => i.itemHash == this.definition.hash)
         .map((item) => ItemWithOwner(item, null)));

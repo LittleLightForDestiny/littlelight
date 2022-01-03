@@ -6,7 +6,7 @@ import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 
 abstract class BaseDestinyStatefulItemWidget extends StatefulWidget {
-  final ProfileService profile = ProfileService();
+
   final ManifestService manifest = ManifestService();
   final DestinyItemComponent item;
   final DestinyInventoryItemDefinition definition;

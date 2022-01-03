@@ -19,7 +19,7 @@ import 'package:little_light/widgets/presentation_nodes/record_item.widget.dart'
 
 class PresentationNodeScreen extends StatefulWidget {
   final ManifestService manifest = new ManifestService();
-  final ProfileService profile = new ProfileService();
+
   final int presentationNodeHash;
   final int depth;
   final PresentationNodeItemBuilder itemBuilder;

@@ -6,13 +6,14 @@ import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/services/littlelight/item_notes.service.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/widgets/common/wishlist_corner_badge.decoration.dart';
 import 'package:little_light/widgets/item_list/items/base/base_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/minimal_info_label.mixin.dart';
 import 'package:little_light/widgets/item_tags/item_tag.widget.dart';
 
 class MinimalBaseInventoryItemWidget extends BaseInventoryItemWidget
-    with MinimalInfoLabelMixin {
+    with MinimalInfoLabelMixin, ProfileConsumer {
   MinimalBaseInventoryItemWidget(
       DestinyItemComponent item,
       DestinyInventoryItemDefinition itemDefinition,

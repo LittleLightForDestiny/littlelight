@@ -2,7 +2,7 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:little_light/models/item_sort_parameter.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/item_sorters/power_level_sorter.dart';
 import 'package:little_light/utils/item_sorters/subtype_sorter.dart';
 import 'package:little_light/utils/item_sorters/tier_type_sorter.dart';
@@ -21,12 +21,12 @@ import 'quest_group_sorter.dart';
 import 'stat_sorter.dart';
 import 'stat_total_sorter.dart';
 
-abstract class BaseItemSorter {
+abstract class BaseItemSorter with ProfileConsumer {
   int direction;
   BaseItemSorter(this.direction);
 
   DestinyItemInstanceComponent instance(ItemWithOwner item) =>
-      ProfileService().getInstanceInfo(item?.item?.itemInstanceId);
+      profile.getInstanceInfo(item?.item?.itemInstanceId);
   DestinyInventoryItemDefinition def(ItemWithOwner item) =>
       ManifestService().getDefinitionFromCache<DestinyInventoryItemDefinition>(item?.item?.itemHash);
 

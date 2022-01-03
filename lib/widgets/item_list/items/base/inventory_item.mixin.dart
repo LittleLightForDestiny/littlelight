@@ -8,6 +8,7 @@ import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enu
 import 'package:little_light/services/littlelight/item_notes.service.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.service.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateless_item.widget.dart';
 import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
@@ -16,7 +17,7 @@ import 'package:little_light/widgets/common/primary_stat.widget.dart';
 import 'package:little_light/widgets/common/wishlist_badges.widget.dart';
 import 'package:little_light/widgets/item_tags/item_tag.widget.dart';
 
-mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget{
+mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget, ProfileConsumer{
   WishlistsService get wishlistsService => getInjectedWishlistsService();
 
   final String uniqueId = "";

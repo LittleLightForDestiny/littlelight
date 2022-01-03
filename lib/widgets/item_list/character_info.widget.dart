@@ -16,7 +16,7 @@ import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enu
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/destiny_settings.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
@@ -28,7 +28,7 @@ import 'package:speech_bubble/speech_bubble.dart';
 
 class CharacterInfoWidget extends StatefulWidget {
   final ManifestService manifest = new ManifestService();
-  final ProfileService profile = new ProfileService();
+
   final String characterId;
   final NotificationService broadcaster = NotificationService();
 
@@ -40,7 +40,7 @@ class CharacterInfoWidget extends StatefulWidget {
   }
 }
 
-class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> with UserSettingsConsumer {
+class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> with UserSettingsConsumer, ProfileConsumer {
   DestinyClassDefinition classDef;
   DestinyRaceDefinition raceDef;
   DestinyCharacterComponent character;
@@ -52,11 +52,11 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> w
   void initState() {
     super.initState();
 
-    character = widget.profile.getCharacter(widget.characterId);
+    character = profile.getCharacter(widget.characterId);
     loadDefinitions();
     subscription = widget.broadcaster.listen((event) {
       if (event.type == NotificationType.receivedUpdate && mounted) {
-        character = widget.profile.getCharacter(widget.characterId);
+        character = profile.getCharacter(widget.characterId);
         setState(() {});
       }
     });
@@ -110,7 +110,7 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> w
   }
 
   Widget currencyInfo(BuildContext context) {
-    var currencies = widget.profile.getProfileCurrencies();
+    var currencies = profile.getProfileCurrencies();
     if (currencies == null) {
       return Container();
     }
@@ -175,11 +175,11 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> w
   }
 
   int get artifactLevel {
-    var item = widget.profile
+    var item = profile
         .getCharacterEquipment(widget.characterId)
         .firstWhere((item) => item.bucketHash == InventoryBucket.artifact, orElse: () => null);
     if (item == null) return 0;
-    var instanceInfo = widget.profile.getInstanceInfo(item?.itemInstanceId);
+    var instanceInfo = profile.getInstanceInfo(item?.itemInstanceId);
     return instanceInfo?.primaryStat?.value ?? 0;
   }
 
@@ -284,7 +284,7 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> w
 
   Widget expInfo(BuildContext context, DestinyCharacterComponent character) {
     var settings = DestinySettingsService();
-    var progression = widget.profile.getCharacterProgression(character.characterId);
+    var progression = profile.getCharacterProgression(character.characterId);
     DestinyProgression levelProg = progression.progressions["${settings.seasonalRankProgressionHash}"];
     DestinyProgression overLevelProg = progression.progressions["${settings.seasonalPrestigeRankProgressionHash}"];
 
@@ -323,7 +323,7 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> w
 
   DestinyProgression get legendProgression {
     var overlevelHash = DestinySettingsService().seasonalPrestigeRankProgressionHash;
-    return widget.profile.getCharacterProgression(character.characterId).progressions["$overlevelHash"];
+    return profile.getCharacterProgression(character.characterId).progressions["$overlevelHash"];
   }
 
   bool get isWellRested =>

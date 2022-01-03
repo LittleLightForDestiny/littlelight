@@ -13,7 +13,7 @@ import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enu
 import 'package:little_light/services/inventory/inventory.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/selection/selection.service.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/item_with_owner.dart';
@@ -40,7 +40,7 @@ enum ContentDensity { MINIMAL, MEDIUM, FULL }
 
 class InventoryItemWrapperWidget extends StatefulWidget {
   final ManifestService manifest = ManifestService();
-  final ProfileService profile = ProfileService();
+
   final DestinyItemComponent item;
   final String characterId;
   final ContentDensity density;
@@ -56,7 +56,7 @@ class InventoryItemWrapperWidget extends StatefulWidget {
 }
 
 class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
-    extends State<T> with UserSettingsConsumer{
+    extends State<T> with UserSettingsConsumer, ProfileConsumer {
   DestinyInventoryItemDefinition definition;
   String uniqueId;
   bool selected = false;
@@ -65,7 +65,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
   StreamSubscription<NotificationEvent> stateSubscription;
 
   DestinyItemInstanceComponent get instanceInfo {
-    return widget.profile.getInstanceInfo(widget.item.itemInstanceId);
+    return profile.getInstanceInfo(widget.item.itemInstanceId);
   }
 
   static int queueSize = 0;
@@ -207,7 +207,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
   void onEmptyTap(BuildContext context) async {
     var bucketDef = await widget.manifest
         .getDefinition<DestinyInventoryBucketDefinition>(widget.bucketHash);
-    var character = widget.profile.getCharacter(widget.characterId);
+    var character = profile.getCharacter(widget.characterId);
     ItemWithOwner item = await Navigator.push(
       context,
       MaterialPageRoute(

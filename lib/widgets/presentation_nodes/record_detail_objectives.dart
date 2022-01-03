@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/profile/profile_component_groups.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/objective.widget.dart';
@@ -18,7 +18,7 @@ import 'package:little_light/widgets/common/translated_text.widget.dart';
 
 class RecordObjectivesWidget extends StatefulWidget {
   final ManifestService manifest = new ManifestService();
-  final ProfileService profile = new ProfileService();
+
   final NotificationService broadcaster = new NotificationService();
   final DestinyRecordDefinition definition;
 
@@ -30,7 +30,7 @@ class RecordObjectivesWidget extends StatefulWidget {
   }
 }
 
-class RecordObjectivesWidgetState extends State<RecordObjectivesWidget> with AuthConsumer{
+class RecordObjectivesWidgetState extends State<RecordObjectivesWidget> with AuthConsumer, ProfileConsumer {
   bool isLogged = false;
   Map<int, DestinyObjectiveDefinition> objectiveDefinitions;
   StreamSubscription<NotificationEvent> subscription;
@@ -79,7 +79,7 @@ class RecordObjectivesWidgetState extends State<RecordObjectivesWidget> with Aut
 
   DestinyRecordComponent get record {
     if (!auth.isLogged) return null;
-    return ProfileService().getRecord(definition.hash, definition.scope);
+    return profile.getRecord(definition.hash, definition.scope);
   }
 
   DestinyRecordState get recordState {
@@ -126,7 +126,7 @@ class RecordObjectivesWidgetState extends State<RecordObjectivesWidget> with Aut
                 child: Container(
                     padding: EdgeInsets.all(8), child: Icon(Icons.refresh)),
                 onTap: () {
-                  widget.profile.fetchProfileData(
+                  profile.fetchProfileData(
                       components: ProfileComponentGroups.triumphs);
                 })
           ],

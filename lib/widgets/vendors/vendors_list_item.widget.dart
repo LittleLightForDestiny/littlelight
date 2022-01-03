@@ -24,7 +24,7 @@ import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
 class VendorsListItemWidget extends StatefulWidget {
   final String characterId;
-  final ProfileService profile = ProfileService();
+
   final ManifestService manifest = ManifestService();
   final NotificationService broadcaster = NotificationService();
   final DestinyVendorComponent vendor;

@@ -17,7 +17,7 @@ import 'package:little_light/services/inventory/inventory.service.dart';
 import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
 import 'package:little_light/services/littlelight/loadouts.consumer.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_sorters/power_level_sorter.dart';
@@ -31,7 +31,7 @@ import 'package:shimmer/shimmer.dart';
 
 class CharacterOptionsSheet extends StatefulWidget {
   final DestinyCharacterComponent character;
-  final ProfileService profile = ProfileService();
+
   final ManifestService manifest = ManifestService();
 
   CharacterOptionsSheet({Key key, this.character}) : super(key: key);
@@ -43,7 +43,7 @@ class CharacterOptionsSheet extends StatefulWidget {
 }
 
 class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
-    with UserSettingsConsumer, LittleLightDataConsumer, LoadoutsConsumer {
+    with UserSettingsConsumer, LittleLightDataConsumer, LoadoutsConsumer, ProfileConsumer {
   Map<int, DestinyItemComponent> maxLightLoadout;
   Map<int, DestinyItemComponent> underAverageSlots;
   double maxLight;
@@ -80,7 +80,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
   }
 
   void getItemsInPostmaster() {
-    var all = widget.profile.getCharacterInventory(widget.character.characterId);
+    var all = profile.getCharacterInventory(widget.character.characterId);
     var inPostmaster = all.where((i) => i.bucketHash == InventoryBucket.lostItems).toList();
     itemsInPostmaster = inPostmaster;
   }
@@ -183,7 +183,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
               child: Row(
                   children: underAverageSlots
                       .map((k, v) {
-                        var instance = ProfileService().getInstanceInfo(v.itemInstanceId);
+                        var instance = profile.getInstanceInfo(v.itemInstanceId);
                         return MapEntry(
                             k,
                             Expanded(
@@ -245,12 +245,12 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
           onTap: () async {
             Navigator.of(context).pop();
             LoadoutItemIndex loadout = LoadoutItemIndex();
-            var equipment = widget.profile.getCharacterEquipment(widget.character.characterId);
+            var equipment = profile.getCharacterEquipment(widget.character.characterId);
             for (var bucket in maxLightLoadout.keys) {
               var item = maxLightLoadout[bucket];
-              var power = widget.profile.getInstanceInfo(item.itemInstanceId)?.primaryStat?.value ?? 0;
+              var power = profile.getInstanceInfo(item.itemInstanceId)?.primaryStat?.value ?? 0;
               var equipped = equipment.firstWhere((i) => i.bucketHash == bucket, orElse: null);
-              var equippedPower = widget.profile.getInstanceInfo(equipped?.itemInstanceId)?.primaryStat?.value ?? 0;
+              var equippedPower = profile.getInstanceInfo(equipped?.itemInstanceId)?.primaryStat?.value ?? 0;
               var def = await widget.manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
               if (power > equippedPower) {
                 loadout.addEquippedItem(item, def);
@@ -485,7 +485,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
     var itemIndex = new LoadoutItemIndex();
     itemIndex.loadout.emblemHash = widget.character.emblemHash;
     var slots = LoadoutItemIndex.classBucketHashes + LoadoutItemIndex.genericBucketHashes;
-    var equipment = widget.profile.getCharacterEquipment(widget.character.characterId);
+    var equipment = profile.getCharacterEquipment(widget.character.characterId);
     var equipped = equipment.where((i) => slots.contains(i.bucketHash));
     for (var item in equipped) {
       var def = await widget.manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
@@ -497,7 +497,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
       }
     }
     if (!includeUnequipped) return itemIndex;
-    var inventory = widget.profile.getCharacterInventory(widget.character.characterId);
+    var inventory = profile.getCharacterInventory(widget.character.characterId);
     var unequipped = inventory.where((i) => slots.contains(i.bucketHash));
     for (var item in unequipped) {
       var def = await widget.manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
@@ -527,7 +527,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
 
   randomizeLoadout(List<int> requiredSlots) async {
     LoadoutItemIndex randomLoadout = new LoadoutItemIndex();
-    var allItems = widget.profile.getAllItems().where((i) => i.itemInstanceId != null).toList();
+    var allItems = profile.getAllItems().where((i) => i.itemInstanceId != null).toList();
     Map<int, String> slots = {};
     int exoticSlot;
     for (int i = 0; i < 1000; i++) {
@@ -561,7 +561,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
 
   getMaxLightLoadout() async {
     gameData = await littleLightData.getGameData();
-    var allItems = widget.profile.getAllItems();
+    var allItems = profile.getAllItems();
     var instancedItems = allItems.where((i) => i.itemInstanceId != null).toList();
     var sorter = PowerLevelSorter(-1);
     instancedItems.sort((itemA, itemB) => sorter.sort(ItemWithOwner(itemA, null), ItemWithOwner(itemB, null)));
@@ -574,7 +574,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
       InventoryBucket.classArmor
     ];
     var validSlots = weaponSlots + armorSlots;
-    var equipment = widget.profile.getCharacterEquipment(widget.character.characterId);
+    var equipment = profile.getCharacterEquipment(widget.character.characterId);
     var availableSlots = equipment.where((i) => validSlots.contains(i.bucketHash)).map((i) => i.bucketHash);
     Map<int, DestinyItemComponent> maxLightLoadout = Map();
     Map<int, DestinyItemComponent> maxLightExotics = Map();
@@ -648,7 +648,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
     beyondSoftCap = true;
     beyondPowerfulCap = true;
     for (var item in maxLightLoadout.values) {
-      var instanceInfo = ProfileService().getInstanceInfo(item.itemInstanceId);
+      var instanceInfo = profile.getInstanceInfo(item.itemInstanceId);
       var power = instanceInfo?.primaryStat?.value ?? 0;
       var def = await widget.manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
       if (power < maxLight?.floor()) {
@@ -672,17 +672,17 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
   }
 
   int get artifactLevel {
-    var item = widget.profile
+    var item = profile
         .getCharacterEquipment(widget.character.characterId)
         .firstWhere((item) => item.bucketHash == InventoryBucket.artifact, orElse: () => null);
     if (item == null) return 0;
-    var instanceInfo = widget.profile.getInstanceInfo(item?.itemInstanceId);
+    var instanceInfo = profile.getInstanceInfo(item?.itemInstanceId);
     return instanceInfo?.primaryStat?.value ?? 0;
   }
 
   double _getAvgLight(Iterable<DestinyItemComponent> items) {
     var total = items.fold(
-        0, (light, item) => light + widget.profile.getInstanceInfo(item.itemInstanceId)?.primaryStat?.value ?? 0);
+        0, (light, item) => light + profile.getInstanceInfo(item.itemInstanceId)?.primaryStat?.value ?? 0);
     return total / items.length;
   }
 }

@@ -171,8 +171,8 @@
 
 //   Set<String> getWishlistBuildNotes(DestinyItemComponent item) {
 //     if (item == null) return null;
-//     var reusable = ProfileService().getItemReusablePlugs(item.itemInstanceId);
-//     var sockets = ProfileService().getItemSockets(item.itemInstanceId);
+//     var reusable = profile.getItemReusablePlugs(item.itemInstanceId);
+//     var sockets = profile.getItemSockets(item.itemInstanceId);
 //     Set<int> availablePlugs = Set();
 //     reusable?.values?.forEach((plugs) =>
 //         plugs.forEach((plug) => availablePlugs.add(plug.plugItemHash)));

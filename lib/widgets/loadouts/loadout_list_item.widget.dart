@@ -7,7 +7,7 @@ import 'package:little_light/pages/edit_loadout.screen.dart';
 import 'package:little_light/pages/equip_loadout.screen.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/littlelight/loadouts.consumer.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
@@ -31,7 +31,7 @@ class LoadoutListItemWidget extends StatefulWidget {
   }
 }
 
-class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> with LoadoutsConsumer{
+class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> with LoadoutsConsumer, ProfileConsumer {
   LoadoutItemIndex _itemIndex;
   Loadout _loadout;
   @override
@@ -261,7 +261,7 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> with Loado
       return ManifestImageWidget<DestinyInventoryItemDefinition>(1835369552,
           key: Key("item_icon_empty"));
     }
-    var instance = ProfileService().getInstanceInfo(item?.itemInstanceId);
+    var instance = profile.getInstanceInfo(item?.itemInstanceId);
     return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
         item.itemHash,
         (def) => ItemIconWidget.builder(

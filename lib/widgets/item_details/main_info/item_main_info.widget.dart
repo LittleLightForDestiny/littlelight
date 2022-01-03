@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/models/parsed_wishlist.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
 import 'package:little_light/widgets/common/primary_stat.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
@@ -32,7 +33,7 @@ class ItemMainInfoWidget extends BaseDestinyStatefulItemWidget {
   }
 }
 
-class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget> with WishlistsConsumer {
+class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget> with WishlistsConsumer, ProfileConsumer {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -76,7 +77,7 @@ class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget> w
   }
 
   Widget buildWishListInfo(BuildContext context) {
-    final reusable = widget.profile.getItemReusablePlugs(item?.itemInstanceId);
+    final reusable = profile.getItemReusablePlugs(item?.itemInstanceId);
     final tags = wishlistsService.getWishlistBuildTags(
         itemHash: item?.itemHash, reusablePlugs: reusable);
     if (tags == null || tags.length == 0) return Container();

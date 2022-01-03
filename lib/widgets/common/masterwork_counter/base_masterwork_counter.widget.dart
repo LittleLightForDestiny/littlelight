@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/language/language.consumer.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
@@ -19,7 +20,7 @@ class BaseMasterworkCounterWidget extends BaseDestinyStatefulItemWidget {
 }
 
 class BaseMasterworkCounterWidgetState<T extends BaseMasterworkCounterWidget>
-    extends BaseDestinyItemState<T> with AutomaticKeepAliveClientMixin, LanguageConsumer {
+    extends BaseDestinyItemState<T> with AutomaticKeepAliveClientMixin, LanguageConsumer, ProfileConsumer {
   DestinyObjectiveProgress masterworkObjective;
   DestinyObjectiveDefinition masterworkObjectiveDefinition;
 
@@ -31,7 +32,7 @@ class BaseMasterworkCounterWidgetState<T extends BaseMasterworkCounterWidget>
   loadDefinitions() async {
     if (widget.item == null) return;
     var plugObjectives =
-        widget.profile.getPlugObjectives(widget?.item?.itemInstanceId);
+        profile.getPlugObjectives(widget?.item?.itemInstanceId);
 
     if (plugObjectives == null) return;
     for (var objectives in plugObjectives?.values) {

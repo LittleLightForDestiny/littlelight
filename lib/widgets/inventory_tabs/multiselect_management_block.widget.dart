@@ -6,14 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/inventory/inventory.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/selection/selection.service.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/common/equip_on_character.button.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
-class MultiselectManagementBlockWidget extends StatelessWidget {
+class MultiselectManagementBlockWidget extends StatelessWidget with ProfileConsumer {
   final InventoryService inventory = new InventoryService();
   final List<ItemWithOwner> items;
   MultiselectManagementBlockWidget({Key key, this.items})
@@ -122,7 +122,7 @@ class MultiselectManagementBlockWidget extends StatelessWidget {
   }
 
   List<TransferDestination> get equipDestinations {
-    var characters = ProfileService().getCharacters();
+    var characters = profile.getCharacters();
     return characters
         .where((c) {
           return items.any((i) {
@@ -136,7 +136,7 @@ class MultiselectManagementBlockWidget extends StatelessWidget {
               return false;
 
             var instanceInfo =
-                ProfileService().getInstanceInfo(i?.item?.itemInstanceId);
+                profile.getInstanceInfo(i?.item?.itemInstanceId);
             if (instanceInfo?.isEquipped == true && i.ownerId == c.characterId)
               return false;
 
@@ -155,7 +155,7 @@ class MultiselectManagementBlockWidget extends StatelessWidget {
     var hasItemsOnVault = false;
     var hasItemsOnPostmaster = false;
     var allCharacterIds =
-        ProfileService().getCharacters().map((c) => c.characterId);
+        profile.getCharacters().map((c) => c.characterId);
     Set<String> destinationCharacterIds = Set();
 
     for (var i in items) {

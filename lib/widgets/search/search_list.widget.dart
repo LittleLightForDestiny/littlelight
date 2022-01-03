@@ -9,7 +9,7 @@ import 'package:little_light/widgets/item_list/items/search_item_wrapper.widget.
 import 'package:little_light/widgets/search/search.controller.dart';
 
 class SearchListWidget extends StatefulWidget {
-  final ProfileService profile = ProfileService();
+
   final SearchController controller;
 
   SearchListWidget({Key key, this.controller}) : super(key: key);

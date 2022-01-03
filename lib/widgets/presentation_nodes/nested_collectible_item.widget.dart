@@ -1,3 +1,4 @@
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,7 @@ class NestedCollectibleItemWidget extends CollectibleItemWidget {
   }
 }
 
-class NestedCollectibleItemWidgetState extends CollectibleItemWidgetState {
+class NestedCollectibleItemWidgetState extends CollectibleItemWidgetState with ProfileConsumer {
   @override
   Widget build(BuildContext context) {
     return Opacity(
@@ -41,8 +42,8 @@ class NestedCollectibleItemWidgetState extends CollectibleItemWidgetState {
 
 
   bool get unlocked {
-    if (!widget.auth.isLogged) return true;
+    if (!auth.isLogged) return true;
     if (definition == null) return false;
-    return widget.profile.isCollectibleUnlocked(widget.hash, definition.scope);
+    return profile.isCollectibleUnlocked(widget.hash, definition.scope);
   }
 }

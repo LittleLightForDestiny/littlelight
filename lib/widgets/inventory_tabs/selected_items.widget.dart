@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/pages/item_detail.screen.dart';
 import 'package:little_light/services/inventory/inventory.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/selection/selection.service.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/media_query_helper.dart';
@@ -28,7 +28,7 @@ class SelectedItemsWidget extends StatefulWidget {
   }
 }
 
-class SelectedItemsWidgetState extends State<SelectedItemsWidget> {
+class SelectedItemsWidgetState extends State<SelectedItemsWidget> with ProfileConsumer {
   StreamSubscription<List<ItemWithOwner>> subscription;
   List<ItemWithOwner> items;
 
@@ -111,7 +111,7 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget> {
         onPressed: () async {
           var item = items.single;
           var instanceInfo =
-              ProfileService().getInstanceInfo(item?.item?.itemInstanceId);
+              profile.getInstanceInfo(item?.item?.itemInstanceId);
           var def = await ManifestService()
               .getDefinition<DestinyInventoryItemDefinition>(
                   item?.item?.itemHash);

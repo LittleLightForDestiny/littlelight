@@ -7,7 +7,7 @@ import 'package:little_light/pages/progress.screen.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/littlelight/item_notes.service.dart';
 import 'package:little_light/services/littlelight/loadouts.consumer.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/platform_capabilities.dart';
@@ -21,7 +21,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class MainScreenState extends State<MainScreen>
-    with WidgetsBindingObserver, AuthConsumer, UserSettingsConsumer, LoadoutsConsumer {
+    with WidgetsBindingObserver, AuthConsumer, UserSettingsConsumer, LoadoutsConsumer, ProfileConsumer {
   Widget currentScreen;
 
   @override
@@ -32,7 +32,7 @@ class MainScreenState extends State<MainScreen>
   }
 
   initUpdaters() {
-    ProfileService profile = ProfileService();
+
     if (auth.isLogged) {
       auth.getMembershipData();
       loadoutService.getLoadouts(forceFetch: true);
@@ -44,7 +44,7 @@ class MainScreenState extends State<MainScreen>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
-    ProfileService profile = ProfileService();
+
     switch (state) {
       case AppLifecycleState.resumed:
         await profile.fetchProfileData();

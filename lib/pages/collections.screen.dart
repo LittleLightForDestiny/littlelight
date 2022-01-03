@@ -4,7 +4,7 @@ import 'package:little_light/pages/presentation_node.screen.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/profile/destiny_settings.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/profile/profile_component_groups.dart';
 import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
@@ -27,12 +27,12 @@ const _page = LittleLightPersistentPage.Collections;
 
 class CollectionsScreenState
     extends PresentationNodeScreenState<CollectionsScreen>
-    with AuthConsumer, UserSettingsConsumer, AnalyticsConsumer {
+    with AuthConsumer, UserSettingsConsumer, AnalyticsConsumer, ProfileConsumer {
   Map<int, List<ItemWithOwner>> itemsByHash;
   @override
   void initState() {
-    ProfileService().updateComponents = ProfileComponentGroups.collections;
-    ProfileService().fetchProfileData();
+    profile.updateComponents = ProfileComponentGroups.collections;
+    profile.fetchProfileData();
     userSettings.startingPage = _page;
     analytics.registerPageOpen(_page);
 
@@ -44,7 +44,7 @@ class CollectionsScreenState
 
   loadItems() async {
     List<ItemWithOwner> allItems = [];
-    ProfileService profile = ProfileService();
+
     Iterable<String> charIds =
         profile.getCharacters().map((char) => char.characterId);
     charIds.forEach((charId) {

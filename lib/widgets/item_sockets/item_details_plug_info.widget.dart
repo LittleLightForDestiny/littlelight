@@ -4,7 +4,7 @@ import 'package:bungie_api/models/destiny_item_socket_category_definition.dart';
 import 'package:bungie_api/models/destiny_material_requirement_set_definition.dart';
 import 'package:bungie_api/models/destiny_sandbox_perk_definition.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateless_item.widget.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
@@ -15,7 +15,7 @@ import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/item_stats/base_item_stat.widget.dart';
 import 'package:little_light/widgets/item_stats/details_item_stat.widget.dart';
 
-class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget {
+class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget with ProfileConsumer{
   ItemDetailsPlugInfoWidget(
       {DestinyItemComponent item,
       DestinyInventoryItemDefinition definition,
@@ -165,8 +165,8 @@ class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget {
     if (requirementHash == null) {
       return Container();
     }
-    var inventory = ProfileService().getProfileInventory();
-    var currencies = ProfileService().getProfileCurrencies();
+    var inventory = profile.getProfileInventory();
+    var currencies = profile.getProfileCurrencies();
     return Column(children: [
       Container(
           padding: EdgeInsets.symmetric(vertical: 16),

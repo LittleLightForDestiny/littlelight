@@ -5,7 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/pages/search.screen.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/models/item_sort_parameter.dart';
 import 'package:little_light/services/profile/profile_component_groups.dart';
 import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
@@ -26,7 +26,7 @@ import 'package:little_light/widgets/progress_tabs/character_ranks_list.widget.d
 import 'package:little_light/widgets/search/search.controller.dart';
 
 class ProgressScreen extends StatefulWidget {
-  final profile = new ProfileService();
+
   final manifest = new ManifestService();
 
   @override
@@ -36,7 +36,7 @@ class ProgressScreen extends StatefulWidget {
 const _page = LittleLightPersistentPage.Progress;
 
 class ProgressScreenState extends State<ProgressScreen>
-    with TickerProviderStateMixin, UserSettingsConsumer, AnalyticsConsumer {
+    with TickerProviderStateMixin, UserSettingsConsumer, AnalyticsConsumer, ProfileConsumer {
   Map<int, double> scrollPositions = new Map();
 
   TabController charTabController;
@@ -48,7 +48,7 @@ class ProgressScreenState extends State<ProgressScreen>
   void initState() {
     super.initState();
     
-    ProfileService().updateComponents = ProfileComponentGroups.basicProfile;
+    profile.updateComponents = ProfileComponentGroups.basicProfile;
     
     userSettings.startingPage = _page;
     analytics.registerPageOpen(_page);
@@ -248,7 +248,7 @@ class ProgressScreenState extends State<ProgressScreen>
   }
 
   List<DestinyCharacterComponent> get characters {
-    return widget.profile
+    return profile
         .getCharacters(userSettings.characterOrdering);
   }
 }

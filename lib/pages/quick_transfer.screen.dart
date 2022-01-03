@@ -4,7 +4,7 @@ import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/pages/search.screen.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/item_filters/class_type_filter.dart';
 import 'package:little_light/utils/item_filters/item_bucket_filter.dart';
@@ -15,8 +15,9 @@ import 'package:little_light/widgets/search/search.controller.dart';
 
 Set<String> _characterIdsExcept(
     String characterId, DestinyInventoryBucketDefinition bucketDef) {
+  final profile = getInjectedProfileService();
   Set<String> all =
-      ProfileService().getCharacters().map((c) => c.characterId).toSet();
+      profile.getCharacters().map((c) => c.characterId).toSet();
   all.add(ItemWithOwner.OWNER_VAULT);
   all.add(ItemWithOwner.OWNER_PROFILE);
   if (bucketDef.scope == BucketScope.Account) {
@@ -30,7 +31,7 @@ Set<String> _characterIdsExcept(
   return all;
 }
 
-class QuickTransferScreen extends SearchScreen with UserSettingsConsumer{
+class QuickTransferScreen extends SearchScreen with UserSettingsConsumer, ProfileConsumer {
   final DestinyInventoryBucketDefinition bucketDefinition;
   final String characterId;
   final DestinyClass classType;

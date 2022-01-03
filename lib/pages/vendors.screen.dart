@@ -1,7 +1,7 @@
 import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/widgets/common/animated_character_background.widget.dart';
 import 'package:little_light/widgets/flutter/passive_tab_bar_view.dart';
@@ -11,7 +11,7 @@ import 'package:little_light/widgets/inventory_tabs/tabs_character_menu.widget.d
 import 'package:little_light/widgets/vendors/vendors_list.widget.dart';
 
 class VendorsScreen extends StatefulWidget {
-  final profile = ProfileService();
+
   final manifest = ManifestService();
 
   @override
@@ -19,7 +19,7 @@ class VendorsScreen extends StatefulWidget {
 }
 
 class VendorsScreenState extends State<VendorsScreen>
-    with TickerProviderStateMixin, UserSettingsConsumer {
+    with TickerProviderStateMixin, UserSettingsConsumer, ProfileConsumer {
   TabController charTabController;
 
   get totalCharacterTabs => characters?.length != null ? characters.length : 3;
@@ -123,7 +123,7 @@ class VendorsScreenState extends State<VendorsScreen>
   }
 
   List<DestinyCharacterComponent> get characters {
-    return widget.profile
+    return profile
         .getCharacters(userSettings.characterOrdering);
   }
 }

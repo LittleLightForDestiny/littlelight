@@ -10,10 +10,10 @@ import 'package:bungie_api/models/destiny_plug_set_definition.dart';
 import 'package:flutter/widgets.dart';
 import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 
-class ItemSocketController extends ChangeNotifier with BungieApiConsumer {
+class ItemSocketController extends ChangeNotifier with BungieApiConsumer, ProfileConsumer {
   final DestinyItemComponent item;
   final DestinyInventoryItemDefinition definition;
   List<DestinyItemSocketState> socketStates;
@@ -86,8 +86,8 @@ class ItemSocketController extends ChangeNotifier with BungieApiConsumer {
 
   _initDefaults() {
     var entries = definition?.sockets?.socketEntries;
-    socketStates = socketStates ?? ProfileService().getItemSockets(item?.itemInstanceId);
-    reusablePlugs = reusablePlugs ?? ProfileService().getItemReusablePlugs(item?.itemInstanceId);
+    socketStates = socketStates ?? profile.getItemSockets(item?.itemInstanceId);
+    reusablePlugs = reusablePlugs ?? profile.getItemReusablePlugs(item?.itemInstanceId);
     _selectedSockets = List<int>.filled(entries?.length ?? 0, null);
     _randomizedSelectedSockets = List<int>.filled(entries?.length ?? 0, null);
   }
@@ -163,7 +163,7 @@ class ItemSocketController extends ChangeNotifier with BungieApiConsumer {
   }
 
   applySocket(int socketIndex, int plugHash) {
-    String characterID = ProfileService().getCharacters().first.characterId;
+    String characterID = profile.getCharacters().first.characterId;
     bungieAPI.applySocket(this.item.itemInstanceId, plugHash, socketIndex, characterID);
   }
 
@@ -178,7 +178,7 @@ class ItemSocketController extends ChangeNotifier with BungieApiConsumer {
       var isPlugSet = (entry.plugSources.contains(SocketPlugSources.CharacterPlugSet)) ||
           (entry.plugSources.contains(SocketPlugSources.ProfilePlugSet));
       if (isPlugSet) {
-        var profile = ProfileService();
+
         var plugSet = profile.getPlugSets(entry.reusablePlugSetHash);
         hashes.addAll(plugSet.map((p) => p.plugItemHash).where((p) {
           if (_armorTierIndex == null) return true;

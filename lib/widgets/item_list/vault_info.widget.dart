@@ -10,7 +10,7 @@ import 'package:little_light/services/inventory/inventory.service.dart';
 import 'package:little_light/services/littlelight/loadouts.consumer.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
@@ -21,7 +21,7 @@ import 'package:little_light/widgets/option_sheets/loadout_select_sheet.widget.d
 
 class VaultInfoWidget extends CharacterInfoWidget {
   final ManifestService manifest = new ManifestService();
-  final ProfileService profile = new ProfileService();
+
   final NotificationService broadcaster = NotificationService();
 
   VaultInfoWidget({Key key}) : super(key: key);
@@ -76,7 +76,7 @@ class VaultInfoWidgetState extends CharacterInfoWidgetState<VaultInfoWidget> {
 
   Widget characterStatsInfo(
       BuildContext context, DestinyCharacterComponent character) {
-    int itemCount = widget.profile
+    int itemCount = profile
         .getAllItems()
         .where((i) => i.bucketHash == InventoryBucket.general)
         .length;
@@ -104,7 +104,7 @@ class VaultInfoWidgetState extends CharacterInfoWidgetState<VaultInfoWidget> {
 }
 
 class VaultOptionsSheet extends StatefulWidget {
-  final ProfileService profile = ProfileService();
+
   final ManifestService manifest = ManifestService();
 
   VaultOptionsSheet({Key key}) : super(key: key);
@@ -115,7 +115,7 @@ class VaultOptionsSheet extends StatefulWidget {
   }
 }
 
-class VaultOptionsSheetState extends State<VaultOptionsSheet> with LoadoutsConsumer{
+class VaultOptionsSheetState extends State<VaultOptionsSheet> with LoadoutsConsumer, ProfileConsumer {
   final TextStyle buttonStyle =
       TextStyle(fontWeight: FontWeight.bold, fontSize: 12);
 
@@ -202,10 +202,10 @@ class VaultOptionsSheetState extends State<VaultOptionsSheet> with LoadoutsConsu
   }
 
   transferEverythingFromPostmaster() async {
-    var characters = widget.profile.getCharacters();
+    var characters = profile.getCharacters();
     var inventory = InventoryService();
     for (var char in characters) {
-      var all = widget.profile.getCharacterInventory(char.characterId);
+      var all = profile.getCharacterInventory(char.characterId);
       var inPostmaster =
           all.where((i) => i.bucketHash == InventoryBucket.lostItems).toList();
       await inventory.transferMultiple(
@@ -279,7 +279,7 @@ class VaultOptionsSheetState extends State<VaultOptionsSheet> with LoadoutsConsu
   }
 
   void getItemsInPostmaster() {
-    var all = widget.profile.getAllItems();
+    var all = profile.getAllItems();
     var inPostmaster =
         all.where((i) => i.bucketHash == InventoryBucket.lostItems).toList();
     itemsInPostmaster = inPostmaster;

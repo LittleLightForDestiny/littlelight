@@ -8,7 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/pages/edit_loadout.screen.dart';
 import 'package:little_light/services/littlelight/loadouts.consumer.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/profile/profile_component_groups.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/media_query_helper.dart';
@@ -22,7 +22,7 @@ class LoadoutsScreen extends StatefulWidget {
   LoadoutScreenState createState() => new LoadoutScreenState();
 }
 
-class LoadoutScreenState extends State<LoadoutsScreen> with LoadoutsConsumer{
+class LoadoutScreenState extends State<LoadoutsScreen> with LoadoutsConsumer, ProfileConsumer {
   final Map<String, LoadoutItemIndex> itemIndexes = new Map();
   bool reordering = false;
   bool searchOpen = false;
@@ -33,7 +33,7 @@ class LoadoutScreenState extends State<LoadoutsScreen> with LoadoutsConsumer{
   @override
   void initState() {
     super.initState();
-    ProfileService().updateComponents = ProfileComponentGroups.basicProfile;
+    profile.updateComponents = ProfileComponentGroups.basicProfile;
     _searchFieldController.addListener(() {
       filteredLoadouts = filterLoadouts();
       setState(() {});

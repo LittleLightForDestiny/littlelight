@@ -12,7 +12,7 @@ typedef void OnLoadoutSelect(Loadout loadout);
 class LoadoutSelectSheet extends StatelessWidget {
   final DestinyCharacterComponent character;
   final List<Loadout> loadouts;
-  final ProfileService profile = ProfileService();
+
   final ManifestService manifest = ManifestService();
   final OnLoadoutSelect onSelect;
   final Widget header;

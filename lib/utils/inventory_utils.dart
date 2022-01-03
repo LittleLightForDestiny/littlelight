@@ -5,11 +5,12 @@ import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/interpolation_point.dart';
+import 'package:little_light/models/item_sort_parameter.dart';
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/models/item_sort_parameter.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/item_sorters/base_item_sorter.dart';
 import 'package:little_light/utils/item_sorters/power_level_sorter.dart';
@@ -17,6 +18,7 @@ import 'package:little_light/utils/item_sorters/priority_tags_sorter.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 
 class InventoryUtils {
+  static ProfileService get _profile => getInjectedProfileService();
   static int interpolateStat(
       int investmentValue, List<InterpolationPoint> displayInterpolation) {
     var interpolation = displayInterpolation.toList();
@@ -80,7 +82,7 @@ class InventoryUtils {
 
   static debugLoadout(LoadoutItemIndex loadout, int classType) async {
     ManifestService manifest = ManifestService();
-    ProfileService profile = ProfileService();
+
 
     var isInDebug = false;
     assert(isInDebug = true);
@@ -92,7 +94,7 @@ class InventoryUtils {
       var bucket =
           await manifest.getDefinition<DestinyInventoryBucketDefinition>(
               def.inventory.bucketTypeHash);
-      var instance = profile.getInstanceInfo(item.itemInstanceId);
+      var instance = _profile.getInstanceInfo(item.itemInstanceId);
       print("---------------------------------------------------------------");
       print(bucket.displayProperties.name);
       print("---------------------------------------------------------------");
@@ -107,7 +109,7 @@ class InventoryUtils {
       var bucket =
           await manifest.getDefinition<DestinyInventoryBucketDefinition>(
               def.inventory.bucketTypeHash);
-      var instance = profile.getInstanceInfo(item.itemInstanceId);
+      var instance = _profile.getInstanceInfo(item.itemInstanceId);
       print("---------------------------------------------------------------");
       print(bucket.displayProperties.name);
       print("---------------------------------------------------------------");
@@ -117,7 +119,7 @@ class InventoryUtils {
   }
 }
 
-class LoadoutItemIndex {
+class LoadoutItemIndex with ProfileConsumer{
   static const List<int> genericBucketHashes = [
     InventoryBucket.kineticWeapons,
     InventoryBucket.energyWeapons,
@@ -159,7 +161,7 @@ class LoadoutItemIndex {
   }
 
   build() async {
-    ProfileService profile = new ProfileService();
+
     List<String> equippedIds =
         loadout.equipped.map((item) => item.itemInstanceId).toList();
     List<String> itemIds = equippedIds;

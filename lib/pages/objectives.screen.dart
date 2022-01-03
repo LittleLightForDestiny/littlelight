@@ -9,7 +9,7 @@ import 'package:little_light/pages/item_detail.screen.dart';
 import 'package:little_light/services/littlelight/objectives.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/profile/profile_component_groups.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/refresh_button.widget.dart';
@@ -18,13 +18,13 @@ import 'package:little_light/widgets/presentation_nodes/record_item.widget.dart'
 import 'package:little_light/widgets/progress_tabs/pursuit_item/tracked_pursuit_item.widget.dart';
 
 class ObjectivesScreen extends StatefulWidget {
-  final ProfileService profile = ProfileService();
+
   final ManifestService manifest = ManifestService();
   @override
   ObjectivesScreenState createState() => new ObjectivesScreenState();
 }
 
-class ObjectivesScreenState extends State<ObjectivesScreen> {
+class ObjectivesScreenState extends State<ObjectivesScreen> with ProfileConsumer{
   List<TrackedObjective> objectives;
   Map<TrackedObjective, DestinyItemComponent> items;
 
@@ -40,7 +40,7 @@ class ObjectivesScreenState extends State<ObjectivesScreen> {
   void initState() {
     super.initState();
     loadObjectives();
-    ProfileService().updateComponents = ProfileComponentGroups.everything;
+    profile.updateComponents = ProfileComponentGroups.everything;
     subscription = NotificationService().listen((event) {
       if (event.type == NotificationType.receivedUpdate ||
           event.type == NotificationType.localUpdate) {

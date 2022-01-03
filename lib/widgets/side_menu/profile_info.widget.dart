@@ -12,7 +12,7 @@ import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/language/language.consumer.dart';
 // ignore: import_of_legacy_library_into_null_safe
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/platform_data.dart';
 import 'package:little_light/utils/shimmer_helper.dart';
 // ignore: import_of_legacy_library_into_null_safe
@@ -25,7 +25,7 @@ import 'package:timeago/timeago.dart' as timeago;
 const Duration _kExpand = Duration(milliseconds: 200);
 
 class ProfileInfoWidget extends StatefulWidget {
-  final ProfileService profile = ProfileService();
+
   final Widget? menuContent;
   ProfileInfoWidget({this.menuContent});
 
@@ -36,7 +36,7 @@ class ProfileInfoWidget extends StatefulWidget {
 }
 
 class ProfileInfoState extends State<ProfileInfoWidget>
-    with SingleTickerProviderStateMixin, AuthConsumer, LanguageConsumer {
+    with SingleTickerProviderStateMixin, AuthConsumer, LanguageConsumer, ProfileConsumer {
   UserMembershipData? account;
   GroupUserInfoCard? membership;
 
@@ -168,7 +168,7 @@ class ProfileInfoState extends State<ProfileInfoWidget>
   }
 
   Widget buildActivityInfo(BuildContext context) {
-    final lastCharacter = widget.profile.getCharacters(CharacterSortParameter())?.first;
+    final lastCharacter = profile.getCharacters(CharacterSortParameter())?.first;
     if (lastCharacter == null) {
       return Container();
     }
@@ -186,7 +186,7 @@ class ProfileInfoState extends State<ProfileInfoWidget>
         style: TextStyle(fontSize: 12, color: Colors.grey.shade100),
       );
     }
-    final activities = widget.profile.getCharacterActivities(lastCharacter.characterId);
+    final activities = profile.getCharacterActivities(lastCharacter.characterId);
     if (activities.currentActivityHash == 82913930) {
       return ManifestText<DestinyPlaceDefinition>(2961497387,
           textExtractor: (def) => "${def.displayProperties?.description}",

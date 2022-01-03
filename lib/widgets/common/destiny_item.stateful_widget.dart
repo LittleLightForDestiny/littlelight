@@ -10,7 +10,7 @@ abstract class DestinyItemStatefulWidget extends StatefulWidget {
   final DestinyInventoryItemDefinition definition;
   final DestinyItemInstanceComponent instanceInfo;
   final String characterId;
-  final ProfileService profile = new ProfileService();
+
   final ManifestService manifest = new ManifestService();
 
   DestinyItemStatefulWidget(this.item, this.definition, this.instanceInfo,

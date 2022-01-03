@@ -14,7 +14,7 @@ import 'package:little_light/pages/item_detail.screen.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/profile/vendors.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
@@ -41,7 +41,7 @@ class PurchasableItemWidget extends StatefulWidget {
   }
 }
 
-class PurchasableItemWidgetState extends State<PurchasableItemWidget> with WishlistsConsumer {
+class PurchasableItemWidgetState extends State<PurchasableItemWidget> with WishlistsConsumer, ProfileConsumer {
   DestinyInventoryItemDefinition definition;
   List<DestinyItemSocketState> sockets;
   DestinyItemInstanceComponent instanceInfo;
@@ -63,9 +63,9 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget> with Wishl
     reusablePlugs = await VendorsService()
         .getSaleItemReusablePerks(widget.characterId, widget.vendorHash, widget?.item?.vendorItemIndex);
 
-    isUnlocked = ProfileService().isCollectibleUnlocked(definition.collectibleHash, DestinyScope.Profile);
+    isUnlocked = profile.isCollectibleUnlocked(definition.collectibleHash, DestinyScope.Profile);
     if (!isUnlocked) {
-      isUnlocked = ProfileService().isCollectibleUnlocked(definition.collectibleHash, DestinyScope.Character);
+      isUnlocked = profile.isCollectibleUnlocked(definition.collectibleHash, DestinyScope.Character);
     }
     if (mounted) {
       setState(() {});
@@ -280,17 +280,17 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget> with Wishl
     if (CurrencyConversion.purchaseables.containsKey(definition.hash)) {
       var conversion = CurrencyConversion.purchaseables[definition.hash];
       if (conversion.type == CurrencyConversionType.Currency) {
-        var currencies = ProfileService().getProfileCurrencies();
+        var currencies = profile.getProfileCurrencies();
         var currency = currencies.where((curr) => curr.itemHash == conversion.hash);
         count = currency.fold<int>(count, (t, curr) => t + curr.quantity);
       } else {
-        var inventory = ProfileService().getProfileInventory();
+        var inventory = profile.getProfileInventory();
         var items = inventory.where((i) => i.itemHash == conversion.hash);
         count = items.fold<int>(count, (t, i) => t + i.quantity);
       }
     } else {
-      var inventory = ProfileService().getProfileInventory();
-      var currencies = ProfileService().getProfileCurrencies();
+      var inventory = profile.getProfileInventory();
+      var currencies = profile.getProfileCurrencies();
       var items = inventory.where((i) => i.itemHash == definition.hash);
       count = items.fold<int>(count, (t, i) => t + i.quantity);
       var currency = currencies.where((curr) => curr.itemHash == definition.hash);
@@ -317,8 +317,8 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget> with Wishl
 
   buildCost(BuildContext context) {
     var costs = widget.sale.costs;
-    var inventory = ProfileService().getProfileInventory();
-    var currencies = ProfileService().getProfileCurrencies();
+    var inventory = profile.getProfileInventory();
+    var currencies = profile.getProfileCurrencies();
     return Container(
         color: Colors.grey.shade900,
         padding: EdgeInsets.all(8),

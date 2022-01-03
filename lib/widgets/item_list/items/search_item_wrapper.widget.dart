@@ -5,6 +5,7 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/selection/selection.service.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
@@ -28,7 +29,7 @@ class SearchItemWrapperWidget extends InventoryItemWrapperWidget {
 }
 
 class SearchItemWrapperWidgetState<T extends SearchItemWrapperWidget>
-    extends InventoryItemWrapperWidgetState<SearchItemWrapperWidget> {
+    extends InventoryItemWrapperWidgetState<SearchItemWrapperWidget> with ProfileConsumer {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -123,7 +124,7 @@ class SearchItemWrapperWidgetState<T extends SearchItemWrapperWidget>
     } else if (widget.characterId == ItemWithOwner.OWNER_PROFILE) {
       icon = Image.asset("assets/imgs/inventory-icon.jpg");
     } else {
-      var character = widget.profile.getCharacter(widget.characterId);
+      var character = profile.getCharacter(widget.characterId);
       icon = QueuedNetworkImage(
           imageUrl: BungieApiService.url(character.emblemPath));
     }

@@ -4,7 +4,7 @@ import 'package:bungie_api/models/destiny_item_socket_category_definition.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -12,7 +12,7 @@ import 'package:little_light/widgets/item_details/section_header.widget.dart';
 import 'package:little_light/widgets/item_sockets/item_socket.controller.dart';
 
 abstract class BaseItemSocketsWidget extends BaseDestinyStatefulItemWidget {
-  final ProfileService profile = ProfileService();
+
   final ManifestService manifest = ManifestService();
   final ItemSocketController controller;
   final DestinyItemSocketCategoryDefinition category;
@@ -30,7 +30,7 @@ abstract class BaseItemSocketsWidget extends BaseDestinyStatefulItemWidget {
 }
 
 abstract class BaseItemSocketsWidgetState<T extends BaseItemSocketsWidget>
-    extends BaseDestinyItemState<T> with VisibleSectionMixin {
+    extends BaseDestinyItemState<T> with VisibleSectionMixin, ProfileConsumer {
   List<DestinyItemSocketState> _socketStates;
   List<DestinyItemSocketState> get socketStates => _socketStates;
   Map<int, DestinyInventoryItemDefinition> get plugDefinitions =>
@@ -51,7 +51,7 @@ abstract class BaseItemSocketsWidgetState<T extends BaseItemSocketsWidget>
   @override
   initState() {
     super.initState();
-    _socketStates = widget.profile.getItemSockets(item?.itemInstanceId);
+    _socketStates = profile.getItemSockets(item?.itemInstanceId);
     initController();
   }
 

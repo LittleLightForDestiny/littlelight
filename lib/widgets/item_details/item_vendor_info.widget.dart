@@ -5,7 +5,7 @@ import 'package:bungie_api/models/destiny_vendor_sale_item_component.dart';
 import 'package:bungie_api/enums/vendor_item_status.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
@@ -25,7 +25,7 @@ class ItemVendorInfoWidget extends StatefulWidget {
   }
 }
 
-class ItemVendorInfoState extends State<ItemVendorInfoWidget> {
+class ItemVendorInfoState extends State<ItemVendorInfoWidget> with ProfileConsumer {
   DestinyVendorDefinition vendorDefinition;
 
   @override
@@ -50,8 +50,8 @@ class ItemVendorInfoState extends State<ItemVendorInfoWidget> {
 
   buildCost(BuildContext context) {
     var costs = widget.sale.costs;
-    var inventory = ProfileService().getProfileInventory();
-    var currencies = ProfileService().getProfileCurrencies();
+    var inventory = profile.getProfileInventory();
+    var currencies = profile.getProfileCurrencies();
     return Container(
         color: Colors.grey.shade900,
         padding: EdgeInsets.all(8),

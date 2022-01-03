@@ -28,7 +28,6 @@ import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/notification/notification.service.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/profile/profile_component_groups.dart';
 import 'package:little_light/services/storage/export.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
@@ -43,9 +42,6 @@ class ProfileService with UserSettingsConsumer, StorageConsumer, AuthConsumer, B
   final NotificationService _broadcaster = new NotificationService();
 
   DateTime lastUpdated;
-  factory ProfileService() {
-    return getInjectedProfileService();
-  }
   ProfileService._internal();
 
   static const List<int> profileBuckets = const [

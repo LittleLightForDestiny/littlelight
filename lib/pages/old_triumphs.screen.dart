@@ -3,7 +3,7 @@ import 'package:little_light/pages/presentation_node.screen.dart';
 import 'package:little_light/pages/triumph_search.screen.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:little_light/services/profile/destiny_settings.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/profile/profile_component_groups.dart';
 import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
@@ -21,11 +21,11 @@ class OldTriumphsScreen extends PresentationNodeScreen {
 const _page = LittleLightPersistentPage.Triumphs;
 
 class TriumphsScreenState extends PresentationNodeScreenState<OldTriumphsScreen>
-    with UserSettingsConsumer, AnalyticsConsumer {
+    with UserSettingsConsumer, AnalyticsConsumer, ProfileConsumer {
   @override
   void initState() {
     super.initState();
-    ProfileService().updateComponents = ProfileComponentGroups.triumphs;
+    profile.updateComponents = ProfileComponentGroups.triumphs;
     userSettings.startingPage = _page;
     analytics.registerPageOpen(_page);
   }

@@ -7,14 +7,14 @@ import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:shimmer/shimmer.dart';
 
 class TabHeaderWidget extends StatefulWidget {
   final DestinyCharacterComponent character;
   final ManifestService manifest = new ManifestService();
-  final ProfileService profile = new ProfileService();
+
   @override
   TabHeaderWidget(this.character, {Key key}) : super(key: key);
 
@@ -22,15 +22,14 @@ class TabHeaderWidget extends StatefulWidget {
   TabHeaderWidgetState createState() => new TabHeaderWidgetState();
 }
 
-class TabHeaderWidgetState extends State<TabHeaderWidget> {
+class TabHeaderWidgetState extends State<TabHeaderWidget> with ProfileConsumer {
   DestinyInventoryItemDefinition emblemDefinition;
 
   DestinyCharacterProgressionComponent progression;
   @override
   void initState() {
     if (widget.character != null) {
-      progression =
-          widget.profile.getCharacterProgression(widget.character.characterId);
+      progression = profile.getCharacterProgression(widget.character.characterId);
     }
 
     super.initState();
@@ -38,9 +37,7 @@ class TabHeaderWidgetState extends State<TabHeaderWidget> {
   }
 
   getDefinitions() async {
-    emblemDefinition = await widget.manifest
-        .getDefinition<DestinyInventoryItemDefinition>(
-            widget.character.emblemHash);
+    emblemDefinition = await widget.manifest.getDefinition<DestinyInventoryItemDefinition>(widget.character.emblemHash);
     if (mounted) {
       setState(() {});
     }
@@ -88,10 +85,8 @@ class TabHeaderWidgetState extends State<TabHeaderWidget> {
 
   Widget emblemBackground(BuildContext context) {
     Shimmer shimmer = Shimmer.fromColors(
-        baseColor: Color.lerp(Theme.of(context).backgroundColor,
-            Theme.of(context).primaryColor, .1),
-        highlightColor: Color.lerp(Theme.of(context).backgroundColor,
-            Theme.of(context).primaryColor, .3),
+        baseColor: Color.lerp(Theme.of(context).backgroundColor, Theme.of(context).primaryColor, .1),
+        highlightColor: Color.lerp(Theme.of(context).backgroundColor, Theme.of(context).primaryColor, .3),
         child: Container(color: Theme.of(context).colorScheme.onSurface));
     double height = getTopPadding(context) + kToolbarHeight;
     return Container(

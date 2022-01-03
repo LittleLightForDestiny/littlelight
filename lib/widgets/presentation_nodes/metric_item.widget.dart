@@ -12,7 +12,7 @@ import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/language/language.consumer.dart';
 import 'package:little_light/services/littlelight/objectives.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
@@ -27,7 +27,7 @@ class MetricItemWidget extends StatefulWidget {
   }
 }
 
-class MetricItemWidgetState extends State<MetricItemWidget> with AuthConsumer, LanguageConsumer{
+class MetricItemWidgetState extends State<MetricItemWidget> with AuthConsumer, LanguageConsumer, ProfileConsumer {
   DestinyMetricDefinition _definition;
   bool isLogged = false;
   Map<int, DestinyObjectiveDefinition> objectiveDefinitions;
@@ -41,7 +41,7 @@ class MetricItemWidgetState extends State<MetricItemWidget> with AuthConsumer, L
   }
 
   DestinyMetricComponent get metric {
-    return ProfileService().getMetric(definition?.hash);
+    return profile.getMetric(definition?.hash);
   }
 
   @override

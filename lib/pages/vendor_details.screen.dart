@@ -18,7 +18,7 @@ import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/vendors/purchasable_item.widget.dart';
 
 class VendorDetailsScreen extends StatefulWidget {
-  final ProfileService profile = ProfileService();
+
   final ManifestService manifest = ManifestService();
   final String characterId;
   final DestinyVendorComponent vendor;

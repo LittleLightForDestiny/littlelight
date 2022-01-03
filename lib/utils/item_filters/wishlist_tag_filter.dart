@@ -1,12 +1,12 @@
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:little_light/models/parsed_wishlist.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 
 import 'base_item_filter.dart';
 
-class WishlistTagFilter extends BaseItemFilter<Set<WishlistTag>> with WishlistsConsumer {
+class WishlistTagFilter extends BaseItemFilter<Set<WishlistTag>> with WishlistsConsumer, ProfileConsumer {
   WishlistTagFilter() : super(Set(), Set());
 
   @override
@@ -15,7 +15,7 @@ class WishlistTagFilter extends BaseItemFilter<Set<WishlistTag>> with WishlistsC
     availableValues.clear();
     List<WishlistTag> tags = items
         .expand((i) {
-          final profile = ProfileService();
+
           final reusable =
               profile.getItemReusablePlugs(i?.item?.itemInstanceId);
           final tags = wishlistsService
@@ -39,7 +39,7 @@ class WishlistTagFilter extends BaseItemFilter<Set<WishlistTag>> with WishlistsC
 
   bool filterItem(ItemWithOwner item,
       {Map<int, DestinyInventoryItemDefinition> definitions}) {
-    final profile = ProfileService();
+
     final reusable = profile.getItemReusablePlugs(item?.item?.itemInstanceId);
     final tags = wishlistsService
         .getWishlistBuildTags(

@@ -15,14 +15,14 @@ import 'package:little_light/services/language/language.consumer.dart';
 import 'package:little_light/services/language/language.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/destiny_settings.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/exceptions/exception_dialog.dart';
 import 'package:little_light/widgets/layouts/floating_content_layout.dart';
 
 class InitialScreen extends StatefulWidget {
   final ManifestService manifest = new ManifestService();
-  final ProfileService profile = new ProfileService();
+
   final LanguageService translate = null;
   final String authCode;
 
@@ -32,7 +32,7 @@ class InitialScreen extends StatefulWidget {
   InitialScreenState createState() => new InitialScreenState();
 }
 
-class InitialScreenState extends FloatingContentState<InitialScreen> with AuthConsumer, LanguageConsumer, BungieApiConsumer{
+class InitialScreenState extends FloatingContentState<InitialScreen> with AuthConsumer, LanguageConsumer, BungieApiConsumer, ProfileConsumer {
   @override
   void initState() {
     super.initState();
@@ -209,7 +209,7 @@ class InitialScreenState extends FloatingContentState<InitialScreen> with AuthCo
 
   loadProfile() async {
     this.changeContent(null, null);
-    await widget.profile.initialLoad();
+    await profile.initialLoad();
     this.goForward();
   }
 

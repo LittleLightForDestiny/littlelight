@@ -15,7 +15,7 @@ import 'package:shimmer/shimmer.dart';
 
 class VendorsListWidget extends StatefulWidget {
   final String characterId;
-  final ProfileService profile = ProfileService();
+
   final ManifestService manifest = ManifestService();
   final VendorsService service = VendorsService();
   final List<int> ignoreVendorHashes = const [

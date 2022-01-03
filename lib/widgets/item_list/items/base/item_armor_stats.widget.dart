@@ -3,7 +3,7 @@ import 'package:bungie_api/models/destiny_stat.dart';
 import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 
 class ItemArmorStatsWidget extends StatefulWidget {
@@ -19,13 +19,13 @@ class ItemArmorStatsWidget extends StatefulWidget {
   }
 }
 
-class ItemArmorStatsWidgetState extends State<ItemArmorStatsWidget> {
+class ItemArmorStatsWidgetState extends State<ItemArmorStatsWidget> with ProfileConsumer {
   Map<String, DestinyStat> stats;
 
   @override
   void initState() {
     super.initState();
-    stats = ProfileService().getPrecalculatedStats(widget.item?.itemInstanceId);
+    stats = profile.getPrecalculatedStats(widget.item?.itemInstanceId);
     setState(() {});
   }
 

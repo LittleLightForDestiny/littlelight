@@ -8,7 +8,7 @@ import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:little_light/services/bungie_api/enums/destiny_item_category.enum.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/profile/profile_component_groups.dart';
 import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
@@ -30,7 +30,7 @@ import 'package:little_light/widgets/inventory_tabs/vault_tab_header.widget.dart
 import 'package:little_light/widgets/search/search.controller.dart';
 
 class EquipmentScreen extends StatefulWidget {
-  final profile = new ProfileService();
+
   final manifest = new ManifestService();
   final NotificationService broadcaster = new NotificationService();
 
@@ -47,7 +47,7 @@ class EquipmentScreen extends StatefulWidget {
 const _page = LittleLightPersistentPage.Equipment;
 
 class EquipmentScreenState extends State<EquipmentScreen>
-    with TickerProviderStateMixin, AutomaticKeepAliveClientMixin, UserSettingsConsumer, AnalyticsConsumer {
+    with TickerProviderStateMixin, AutomaticKeepAliveClientMixin, UserSettingsConsumer, AnalyticsConsumer, ProfileConsumer {
   int currentGroup = DestinyItemCategory.Weapon;
   Map<int, double> scrollPositions = new Map();
 
@@ -60,7 +60,7 @@ class EquipmentScreenState extends State<EquipmentScreen>
   @override
   void initState() {
     super.initState();
-    ProfileService().updateComponents = ProfileComponentGroups.basicProfile;
+    profile.updateComponents = ProfileComponentGroups.basicProfile;
     userSettings.startingPage = _page;
     analytics.registerPageOpen(_page);
 
@@ -295,7 +295,7 @@ class EquipmentScreenState extends State<EquipmentScreen>
   }
 
   List<DestinyCharacterComponent> get characters {
-    return widget.profile
+    return profile
         .getCharacters(userSettings.characterOrdering);
   }
 

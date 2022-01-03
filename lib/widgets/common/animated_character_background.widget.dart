@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 
 class AnimatedCharacterBackgroundWidget extends StatefulWidget {
   final TabController tabController;
@@ -33,7 +33,7 @@ class _CharacterInfo {
 
 class _AnimatedCharacterBackgroundWidgetState
     extends State<AnimatedCharacterBackgroundWidget>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, ProfileConsumer {
   List<_CharacterInfo> characters;
   AnimationController _controller;
   ColorTween tween;
@@ -60,11 +60,11 @@ class _AnimatedCharacterBackgroundWidgetState
   }
 
   updateCharacters() async {
-    var _characters = ProfileService().getCharacters();
+    var _characters = profile.getCharacters();
     if (_characters == null) return;
     characters = [];
     for (var c in _characters) {
-      var equipment = ProfileService().getCharacterEquipment(c.characterId);
+      var equipment = profile.getCharacterEquipment(c.characterId);
       var subclass =
           equipment.firstWhere((i) => i.bucketHash == InventoryBucket.subclass);
       var subclassDef = await ManifestService()

@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/services/inventory/inventory.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/widgets/common/equip_on_character.button.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
@@ -12,7 +12,7 @@ import 'package:little_light/widgets/option_sheets/free_slots_slider.widget.dart
 
 class LoadoutDestinationsWidget extends StatefulWidget {
   final InventoryService inventory = new InventoryService();
-  final ProfileService profile = new ProfileService();
+
   final Loadout loadout;
   LoadoutDestinationsWidget(this.loadout, {Key key}) : super(key: key);
 
@@ -23,7 +23,7 @@ class LoadoutDestinationsWidget extends StatefulWidget {
 }
 
 class LoadoutDestinationsWidgetState extends State<LoadoutDestinationsWidget>
-    with UserSettingsConsumer {
+    with UserSettingsConsumer, ProfileConsumer {
   int freeSlots = 0;
 
   @override
@@ -147,7 +147,7 @@ class LoadoutDestinationsWidgetState extends State<LoadoutDestinationsWidget>
   }
 
   List<TransferDestination> get equipDestinations {
-    return widget.profile
+    return profile
         .getCharacters(userSettings.characterOrdering)
         .map((char) => TransferDestination(ItemDestination.Character,
             characterId: char.characterId, action: InventoryAction.Equip))
@@ -155,7 +155,7 @@ class LoadoutDestinationsWidgetState extends State<LoadoutDestinationsWidget>
   }
 
   List<TransferDestination> get transferDestinations {
-    List<TransferDestination> list = widget.profile
+    List<TransferDestination> list = profile
         .getCharacters(userSettings.characterOrdering)
         .map((char) => TransferDestination(ItemDestination.Character,
             characterId: char.characterId))

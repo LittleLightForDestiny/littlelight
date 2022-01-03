@@ -10,7 +10,7 @@ import 'package:little_light/widgets/presentation_nodes/presentation_node_tabs.w
 
 class PresentationNodeBodyWidget extends StatefulWidget {
   final ManifestService manifest = new ManifestService();
-  final ProfileService profile = new ProfileService();
+
   final PresentationNodeItemBuilder itemBuilder;
   final PresentationNodeTileBuilder tileBuilder;
   final int presentationNodeHash;

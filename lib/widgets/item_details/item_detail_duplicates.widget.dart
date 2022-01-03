@@ -4,6 +4,7 @@ import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/pages/item_detail.screen.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
@@ -36,7 +37,7 @@ const _sectionId = "duplicated_items";
 
 class ItemDetailDuplicatesWidgetState
     extends BaseDestinyItemState<ItemDetailDuplicatesWidget>
-    with VisibleSectionMixin {
+    with VisibleSectionMixin, ProfileConsumer {
   @override
   String get sectionId => _sectionId;
 
@@ -82,7 +83,7 @@ class ItemDetailDuplicatesWidgetState
   }
 
   Widget buildItemInstance(ItemWithOwner item, BuildContext context) {
-    var instance = widget.profile.getInstanceInfo(item.item.itemInstanceId);
+    var instance = profile.getInstanceInfo(item.item.itemInstanceId);
     return Stack(
         key: Key("duplicate_${item.item.itemInstanceId}_${item.ownerId}"),
         children: <Widget>[
@@ -101,7 +102,7 @@ class ItemDetailDuplicatesWidgetState
     BuildContext context,
     ItemWithOwner item,
   ) {
-    var instance = widget.profile.getInstanceInfo(item.item.itemInstanceId);
+    var instance = profile.getInstanceInfo(item.item.itemInstanceId);
     var route = MaterialPageRoute(
       builder: (context) => ItemDetailScreen(
         item: item.item,

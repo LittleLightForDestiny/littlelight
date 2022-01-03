@@ -10,7 +10,7 @@ import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
 class LoadoutBackgroundItemWidget extends StatefulWidget {
   final ManifestService manifest = new ManifestService();
-  final ProfileService profile = new ProfileService();
+
   final int hash;
   LoadoutBackgroundItemWidget({Key key, this.hash}) : super(key: key);
 

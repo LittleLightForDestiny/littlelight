@@ -8,7 +8,7 @@ import 'package:little_light/pages/item_detail.screen.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/selection/selection.service.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
@@ -18,9 +18,9 @@ import 'package:little_light/widgets/item_list/items/emblem/emblem_inventory_ite
 import 'package:little_light/widgets/item_list/items/mod/mod_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/weapon/weapon_inventory_item.widget.dart';
 
-class CollectibleItemWidget extends StatefulWidget with AuthConsumer{
+class CollectibleItemWidget extends StatefulWidget {
   final ManifestService manifest = new ManifestService();
-  final ProfileService profile = new ProfileService();
+
   final Map<int, List<ItemWithOwner>> itemsByHash;
   final int hash;
   CollectibleItemWidget({Key key, this.hash, this.itemsByHash})
@@ -32,7 +32,7 @@ class CollectibleItemWidget extends StatefulWidget with AuthConsumer{
   }
 }
 
-class CollectibleItemWidgetState extends State<CollectibleItemWidget> {
+class CollectibleItemWidgetState extends State<CollectibleItemWidget> with AuthConsumer, ProfileConsumer {
   DestinyCollectibleDefinition _definition;
   DestinyInventoryItemDefinition _itemDefinition;
   DestinyCollectibleDefinition get definition {
@@ -274,8 +274,8 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget> {
   }
 
   bool get unlocked {
-    if (!widget.auth.isLogged) return true;
+    if (!auth.isLogged) return true;
     if (definition == null) return false;
-    return widget.profile.isCollectibleUnlocked(widget.hash, definition.scope);
+    return profile.isCollectibleUnlocked(widget.hash, definition.scope);
   }
 }

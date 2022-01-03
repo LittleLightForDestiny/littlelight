@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/pages/item_detail.screen.dart';
 import 'package:little_light/services/notification/notification.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/selection/selection.service.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/item_with_owner.dart';
@@ -40,8 +40,8 @@ class DuplicatedListItem {
 }
 
 class DuplicatedItemListWidget extends StatefulWidget
-    with UserSettingsConsumer {
-  final ProfileService profile = ProfileService();
+    with UserSettingsConsumer, ProfileConsumer {
+
   final SearchController searchController;
   DuplicatedItemListWidget({Key key, this.searchController}) : super(key: key);
   final NotificationService broadcaster = new NotificationService();
@@ -275,7 +275,7 @@ class _ItemInstanceWrapper extends StatefulWidget {
 }
 
 class _ItemInstanceWrapperState extends State<_ItemInstanceWrapper>
-    with UserSettingsConsumer {
+    with UserSettingsConsumer, ProfileConsumer {
   DestinyItemInstanceComponent instance;
   bool get selected => SelectionService()
       .isSelected(ItemWithOwner(widget.item, widget.characterId));
@@ -284,7 +284,7 @@ class _ItemInstanceWrapperState extends State<_ItemInstanceWrapper>
   void initState() {
     super.initState();
 
-    instance = ProfileService().getInstanceInfo(widget.item.itemInstanceId);
+    instance = profile.getInstanceInfo(widget.item.itemInstanceId);
 
     StreamSubscription<List<ItemWithOwner>> sub;
     sub = SelectionService().broadcaster.listen((selectedItems) {

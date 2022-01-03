@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
@@ -18,7 +18,7 @@ class PresentationNodeItemWidget extends StatefulWidget {
   final int depth;
   final PresentationNodePressedHandler onPressed;
   final ManifestService manifest = ManifestService();
-  final ProfileService profile = ProfileService();
+
   final bool isCategorySet;
   PresentationNodeItemWidget(
       {Key key,
@@ -34,7 +34,7 @@ class PresentationNodeItemWidget extends StatefulWidget {
 }
 
 class PresentationNodeWidgetState extends State<PresentationNodeItemWidget>
-    with AuthConsumer, UserSettingsConsumer {
+    with AuthConsumer, UserSettingsConsumer, ProfileConsumer {
   DestinyPresentationNodeComponent progress;
   Map<String, DestinyPresentationNodeComponent> multiProgress;
   DestinyPresentationNodeDefinition definition;
@@ -57,7 +57,7 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget>
   }
 
   loadCompletionData() {
-    var profileNodes = widget.profile.getProfilePresentationNodes();
+    var profileNodes = profile.getProfilePresentationNodes();
 
     if (profileNodes?.containsKey("${widget.hash}") ?? false) {
       this.progress = profileNodes["${widget.hash}"];
@@ -65,7 +65,7 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget>
     if (this.progress != null) return;
 
     var characters =
-        widget.profile.getCharacters(userSettings.characterOrdering);
+        profile.getCharacters(userSettings.characterOrdering);
     if (characters == null || characters.length == 0) return;
 
     DestinyPresentationNodeComponent highest;
@@ -74,7 +74,7 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget>
 
     for (var c in characters) {
       var characterNodes =
-          widget.profile.getCharacterPresentationNodes(c.characterId);
+          profile.getCharacterPresentationNodes(c.characterId);
       var node = characterNodes["${widget.hash}"];
       if (highest == null ||
           (node?.progressValue ?? 0) > highest?.progressValue) {
@@ -172,7 +172,7 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget>
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: multiProgress.entries.map((e) {
-          var c = widget.profile.getCharacter(e.key);
+          var c = profile.getCharacter(e.key);
           return buildSingleCount(context, e.value, c);
         }).toList(),
       );

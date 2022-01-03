@@ -19,7 +19,7 @@ import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/profile/profile_component_groups.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 
@@ -52,8 +52,8 @@ class TransferDestination {
 
 enum InventoryAction { Transfer, Equip, Unequip, Pull }
 
-class InventoryService with BungieApiConsumer {
-  final profile = ProfileService();
+class InventoryService with BungieApiConsumer, ProfileConsumer {
+
   final manifest = ManifestService();
   final _broadcaster = NotificationService();
 
@@ -280,7 +280,7 @@ class InventoryService with BungieApiConsumer {
       stackSize = item.quantity;
     }
     if (sourceCharacterId == ItemWithOwner.OWNER_PROFILE) {
-      sourceCharacterId = ProfileService().getCharacters()?.first?.characterId;
+      sourceCharacterId = profile.getCharacters()?.first?.characterId;
     }
 
     bool needsToUnequip = instanceInfo?.isEquipped ?? false;
@@ -623,7 +623,7 @@ class InventoryService with BungieApiConsumer {
     } else if (!item.item.state.contains(ItemState.Locked) && locked) {
       item?.item?.state = ItemState(item.item.state.value + ItemState.Locked.value);
     }
-    var profileItem = ProfileService().getAllItems().firstWhere(
+    var profileItem = profile.getAllItems().firstWhere(
         (i) => i.itemHash == item.item.itemHash && i.itemInstanceId == item.item.itemInstanceId,
         orElse: () => null);
     profileItem.state = item?.item?.state;

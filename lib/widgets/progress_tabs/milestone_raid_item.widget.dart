@@ -18,7 +18,7 @@ import 'package:little_light/widgets/progress_tabs/milestone_item.widget.dart';
 
 class MilestoneRaidItemWidget extends MilestoneItemWidget {
   final String characterId;
-  final ProfileService profile = ProfileService();
+
   final ManifestService manifest = ManifestService();
   final NotificationService broadcaster = NotificationService();
 

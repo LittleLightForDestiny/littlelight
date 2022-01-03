@@ -1,4 +1,4 @@
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/item_sorters/base_item_sorter.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 
@@ -9,7 +9,7 @@ class ItemOwnerSorter extends BaseItemSorter {
 
   get characterOrder{
     if(_characterOrder != null) return _characterOrder;
-    _characterOrder = ProfileService().getCharacters().map((c)=>c.characterId).toList();
+    _characterOrder = profile.getCharacters().map((c)=>c.characterId).toList();
     return _characterOrder;
   }
 

@@ -5,6 +5,7 @@ import 'package:bungie_api/models/destiny_objective_definition.dart';
 import 'package:bungie_api/models/destiny_objective_progress.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
@@ -12,7 +13,7 @@ import 'package:little_light/widgets/common/objective.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
-class QuestInfoWidget extends BaseDestinyStatefulItemWidget {
+class QuestInfoWidget extends BaseDestinyStatefulItemWidget{
   QuestInfoWidget(
       {DestinyItemComponent item,
       DestinyInventoryItemDefinition definition,
@@ -32,7 +33,7 @@ class QuestInfoWidget extends BaseDestinyStatefulItemWidget {
   }
 }
 
-class QuestInfoWidgetState extends BaseDestinyItemState<QuestInfoWidget> {
+class QuestInfoWidgetState extends BaseDestinyItemState<QuestInfoWidget> with ProfileConsumer{
   DestinyInventoryItemDefinition questlineDefinition;
   Map<int, DestinyInventoryItemDefinition> questSteps;
   Map<int, DestinyObjectiveDefinition> objectiveDefinitions;
@@ -48,7 +49,7 @@ class QuestInfoWidgetState extends BaseDestinyItemState<QuestInfoWidget> {
   }
 
   loadDefinitions() async {
-    itemObjectives = widget.profile
+    itemObjectives = profile
         .getItemObjectives(item?.itemInstanceId, characterId, item?.itemHash);
     questlineDefinition = await widget.manifest
         .getDefinition<DestinyInventoryItemDefinition>(

@@ -4,7 +4,7 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/widgets.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/models/item_sort_parameter.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/inventory_utils.dart';
@@ -43,7 +43,7 @@ List<BaseItemFilter> _replaceDefaultFilters(
   return finalList;
 }
 
-class SearchController extends ChangeNotifier {
+class SearchController extends ChangeNotifier with ProfileConsumer{
   List<ItemWithOwner> _unfilteredList;
   List<ItemWithOwner> _prefilteredList;
   List<ItemWithOwner> _filteredList;
@@ -225,7 +225,7 @@ class SearchController extends ChangeNotifier {
 
   List<ItemWithOwner> _getItems() {
     List<ItemWithOwner> allItems = [];
-    ProfileService profile = ProfileService();
+
     Iterable<String> charIds =
         profile.getCharacters().map((char) => char.characterId);
     charIds.forEach((charId) {
@@ -255,9 +255,9 @@ class SearchController extends ChangeNotifier {
   _loadPlugDefinitions() async {
     Set<int> hashes = Set();
     _prefilteredList.forEach((item) {
-      var sockets = ProfileService().getItemSockets(item?.item?.itemInstanceId);
+      var sockets = profile.getItemSockets(item?.item?.itemInstanceId);
       var reusablePlugs =
-          ProfileService().getItemReusablePlugs(item?.item?.itemInstanceId);
+          profile.getItemReusablePlugs(item?.item?.itemInstanceId);
       hashes.addAll(sockets?.map((s) => s.plugHash) ?? []);
       reusablePlugs?.values?.forEach((plug) {
         hashes.addAll(plug?.map((p) => p.plugItemHash) ?? []);

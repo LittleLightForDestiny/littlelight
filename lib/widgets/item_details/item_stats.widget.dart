@@ -10,6 +10,7 @@ import 'package:bungie_api/models/destiny_stat_display_definition.dart';
 import 'package:bungie_api/models/destiny_stat_group_definition.dart';
 import 'package:bungie_api/models/interpolation_point.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
@@ -43,7 +44,7 @@ class ItemStatsWidget extends BaseDestinyStatefulItemWidget {
 }
 
 class DestinyStatsWidgetState extends BaseDestinyItemState<ItemStatsWidget>
-    with AutomaticKeepAliveClientMixin {
+    with AutomaticKeepAliveClientMixin, ProfileConsumer {
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -178,7 +179,7 @@ class DestinyStatsWidgetState extends BaseDestinyItemState<ItemStatsWidget>
 
   List<DestinyItemSocketState> get socketStates {
     if (item == null) return null;
-    return widget.profile.getItemSockets(item.itemInstanceId);
+    return profile.getItemSockets(item.itemInstanceId);
   }
 
   @override

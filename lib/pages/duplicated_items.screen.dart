@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/profile/profile_component_groups.dart';
 import 'package:little_light/utils/item_filters/text_filter.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -18,13 +18,13 @@ class DuplicatedItemsScreen extends StatefulWidget {
 }
 
 class DuplicatedItemsScreenState extends State<DuplicatedItemsScreen>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, ProfileConsumer {
   bool searchOpen = false;
 
   @override
   initState() {
     super.initState();
-    ProfileService().updateComponents = ProfileComponentGroups.basicProfile;
+    profile.updateComponents = ProfileComponentGroups.basicProfile;
   }
 
   @override

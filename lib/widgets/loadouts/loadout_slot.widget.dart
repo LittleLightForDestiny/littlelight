@@ -7,7 +7,7 @@ import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/pages/item_detail.screen.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_with_owner.dart';
@@ -22,9 +22,9 @@ import 'package:little_light/widgets/item_list/items/quick_select_item_wrapper.w
 typedef void OnRemoveItemFromLoadout(DestinyItemComponent item, bool equipped);
 typedef void OnAddItemToLoadout(bool equipped, DestinyClass classType);
 
-class LoadoutSlotWidget extends StatelessWidget {
+class LoadoutSlotWidget extends StatelessWidget with ProfileConsumer {
   final ManifestService manifest = new ManifestService();
-  final ProfileService profile = new ProfileService();
+
   final DestinyInventoryBucketDefinition bucketDefinition;
   final Map<DestinyClass, DestinyItemComponent> equippedClassItems;
   final DestinyItemComponent equippedGenericItem;
@@ -60,19 +60,14 @@ class LoadoutSlotWidget extends StatelessWidget {
     ]);
   }
 
-  Widget buildSlotBlock(BuildContext context,
-      {String headerText, bool isEquipment = true}) {
-    if (!isEquipment && !bucketDefinition.hasTransferDestination)
-      return Container();
+  Widget buildSlotBlock(BuildContext context, {String headerText, bool isEquipment = true}) {
+    if (!isEquipment && !bucketDefinition.hasTransferDestination) return Container();
     return Container(
         padding: EdgeInsets.all(4),
         color: Theme.of(context).colorScheme.secondaryVariant,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            buildBlockTitle(context, headerText),
-            buildItemIcons(context, isEquipment: isEquipment)
-          ],
+          children: <Widget>[buildBlockTitle(context, headerText), buildItemIcons(context, isEquipment: isEquipment)],
         ));
   }
 
@@ -92,19 +87,12 @@ class LoadoutSlotWidget extends StatelessWidget {
     List<Widget> items = [];
     if (isEquipment) {
       if (LoadoutItemIndex.classBucketHashes.contains(bucketDefinition.hash)) {
-        items.addAll([
-          DestinyClass.Titan,
-          DestinyClass.Hunter,
-          DestinyClass.Warlock
-        ].map((classType) => buildItemIcon(context,
-            item: equippedClassItems[classType], classType: classType)));
+        items.addAll([DestinyClass.Titan, DestinyClass.Hunter, DestinyClass.Warlock]
+            .map((classType) => buildItemIcon(context, item: equippedClassItems[classType], classType: classType)));
       } else {
         items.addAll(equippedClassItems
-            .map((classType, item) => MapEntry(
-                classType,
-                item == null
-                    ? null
-                    : buildItemIcon(context, item: item, classType: classType)))
+            .map((classType, item) =>
+                MapEntry(classType, item == null ? null : buildItemIcon(context, item: item, classType: classType)))
             .values
             .where((i) => i != null));
 
@@ -115,25 +103,17 @@ class LoadoutSlotWidget extends StatelessWidget {
         items.add(buildItemIcon(context, equipped: false));
       }
       if (unequippedItems != null) {
-        items.addAll(unequippedItems.map(
-            (item) => buildItemIcon(context, item: item, equipped: false)));
+        items.addAll(unequippedItems.map((item) => buildItemIcon(context, item: item, equipped: false)));
       }
     }
 
-    return Container(
-        padding: EdgeInsets.symmetric(vertical: 4),
-        child: Wrap(children: items));
+    return Container(padding: EdgeInsets.symmetric(vertical: 4), child: Wrap(children: items));
   }
 
-  Widget buildItemIcon(BuildContext context,
-      {DestinyItemComponent item,
-      DestinyClass classType,
-      bool equipped: true}) {
-    BoxDecoration decoration =
-        item != null && bucketDefinition.hash == InventoryBucket.subclass
-            ? null
-            : BoxDecoration(
-                border: Border.all(width: 1, color: Colors.grey.shade300));
+  Widget buildItemIcon(BuildContext context, {DestinyItemComponent item, DestinyClass classType, bool equipped: true}) {
+    BoxDecoration decoration = item != null && bucketDefinition.hash == InventoryBucket.subclass
+        ? null
+        : BoxDecoration(border: Border.all(width: 1, color: Colors.grey.shade300));
 
     IconData iconData;
     Widget icon;
@@ -153,9 +133,7 @@ class LoadoutSlotWidget extends StatelessWidget {
           child: Container(
               alignment: Alignment.center,
               padding: EdgeInsets.all(2),
-              decoration: BoxDecoration(
-                  color: Theme.of(context).errorColor,
-                  borderRadius: BorderRadius.circular(8)),
+              decoration: BoxDecoration(color: Theme.of(context).errorColor, borderRadius: BorderRadius.circular(8)),
               child: Icon(iconData ?? Icons.remove_circle_outline,
                   size: 12, color: Theme.of(context).colorScheme.onSurface)));
     }
@@ -170,8 +148,7 @@ class LoadoutSlotWidget extends StatelessWidget {
                       (def) => ItemIconWidget(item, def, null),
                       key: Key('slot_item_${item?.itemInstanceId}'),
                     )
-                  : ManifestImageWidget<DestinyInventoryItemDefinition>(
-                      item?.itemHash ?? 1835369552)),
+                  : ManifestImageWidget<DestinyInventoryItemDefinition>(item?.itemHash ?? 1835369552)),
           icon != null ? icon : Container(),
           Material(
             color: Colors.transparent,
@@ -188,8 +165,7 @@ class LoadoutSlotWidget extends StatelessWidget {
                 if (item == null) {
                   return;
                 }
-                var def = await manifest.getDefinition<
-                    DestinyInventoryItemDefinition>(item.itemHash);
+                var def = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
                 var instanceInfo = profile.getInstanceInfo(item.itemInstanceId);
                 Navigator.push(
                   context,
@@ -208,21 +184,15 @@ class LoadoutSlotWidget extends StatelessWidget {
           )
         ]));
     if (isTablet) {
-      return Container(
-          margin: EdgeInsets.only(right: 4),
-          width: 64,
-          height: 64,
-          child: itemIcon);
+      return Container(margin: EdgeInsets.only(right: 4), width: 64, height: 64, child: itemIcon);
     }
     return FractionallySizedBox(
         widthFactor: 1 / 6,
-        child: Container(
-            margin: EdgeInsets.only(right: 4),
-            child: AspectRatio(aspectRatio: 1, child: itemIcon)));
+        child: Container(margin: EdgeInsets.only(right: 4), child: AspectRatio(aspectRatio: 1, child: itemIcon)));
   }
 
   openModal(BuildContext context, DestinyItemComponent item, bool equipped) {
-    var ownerId = ProfileService().getItemOwner(item.itemInstanceId);
+    var ownerId = profile.getItemOwner(item.itemInstanceId);
     var padding = EdgeInsets.all(8).copyWith(bottom: 4);
     var screenWidth = MediaQuery.of(context).size.width;
     if (screenWidth < 500) {
@@ -238,16 +208,13 @@ class LoadoutSlotWidget extends StatelessWidget {
                   padding: padding,
                   constraints: BoxConstraints(maxWidth: 500),
                   child: Column(mainAxisSize: MainAxisSize.min, children: [
-                    QuickSelectItemWrapperWidget(item, null,
-                        characterId: ownerId ?? ItemWithOwner.OWNER_VAULT),
+                    QuickSelectItemWrapperWidget(item, null, characterId: ownerId ?? ItemWithOwner.OWNER_VAULT),
                     Row(
                       children: [
                         Expanded(
                             child: ElevatedButton(
                                 child: TranslatedTextWidget("Cancel",
-                                    uppercase: true,
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
+                                    uppercase: true, style: TextStyle(fontWeight: FontWeight.bold)),
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 })),
@@ -257,16 +224,11 @@ class LoadoutSlotWidget extends StatelessWidget {
                         Expanded(
                             child: ElevatedButton(
                                 child: TranslatedTextWidget("Details",
-                                    uppercase: true,
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
+                                    uppercase: true, style: TextStyle(fontWeight: FontWeight.bold)),
                                 onPressed: () async {
                                   Navigator.of(context).pop();
-                                  var def = await manifest.getDefinition<
-                                          DestinyInventoryItemDefinition>(
-                                      item.itemHash);
-                                  var instanceInfo = profile
-                                      .getInstanceInfo(item.itemInstanceId);
+                                  var def = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
+                                  var instanceInfo = profile.getInstanceInfo(item.itemInstanceId);
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -283,12 +245,9 @@ class LoadoutSlotWidget extends StatelessWidget {
                         Container(width: 4),
                         Expanded(
                             child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    primary: Theme.of(context).errorColor),
+                                style: ElevatedButton.styleFrom(primary: Theme.of(context).errorColor),
                                 child: TranslatedTextWidget("Remove",
-                                    uppercase: true,
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
+                                    uppercase: true, style: TextStyle(fontWeight: FontWeight.bold)),
                                 onPressed: () {
                                   onRemove(item, equipped);
                                   Navigator.of(context).pop();

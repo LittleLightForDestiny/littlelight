@@ -3,13 +3,13 @@ import 'package:little_light/models/loadout.dart';
 import 'package:little_light/services/littlelight/item_notes.service.dart';
 import 'package:little_light/services/littlelight/loadouts.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/remove_diacritics.dart';
 
 import 'base_item_filter.dart';
 
-class TextFilter extends BaseItemFilter<String> with LoadoutsConsumer, WishlistsConsumer {
+class TextFilter extends BaseItemFilter<String> with LoadoutsConsumer, WishlistsConsumer, ProfileConsumer {
   List<Loadout> loadouts;
   TextFilter({initialText: "", enabled: true}) : super(null, initialText, enabled: enabled);
 
@@ -26,8 +26,8 @@ class TextFilter extends BaseItemFilter<String> with LoadoutsConsumer, Wishlists
     var _def = definitions[item?.item?.itemHash];
     var name = removeDiacritics(_def?.displayProperties?.name?.toLowerCase()?.trim() ?? "");
     var itemType = removeDiacritics(_def?.itemTypeDisplayName?.toLowerCase()?.trim() ?? "");
-    var sockets = ProfileService().getItemSockets(item?.item?.itemInstanceId);
-    var reusablePlugs = ProfileService().getItemReusablePlugs(item?.item?.itemInstanceId);
+    var sockets = profile.getItemSockets(item?.item?.itemInstanceId);
+    var reusablePlugs = profile.getItemReusablePlugs(item?.item?.itemInstanceId);
     var plugHashes = Set<int>();
     plugHashes.addAll(sockets?.map((s) => s.plugHash)?.toSet() ?? Set());
     plugHashes.addAll(reusablePlugs?.values
