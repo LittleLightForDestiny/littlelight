@@ -72,7 +72,7 @@ class TranslatedTextWidgetState extends State<TranslatedTextWidget> with Languag
       overflow: widget.overflow,
       semanticsLabel: widget.semanticsLabel,
       softWrap: widget.softWrap,
-      style: widget.style,
+      style: widget.style ?? DefaultTextStyle.of(context).style,
       textAlign: widget.textAlign,
       textDirection: widget.textDirection,
       textScaleFactor: widget.textScaleFactor,

@@ -5,6 +5,7 @@ import 'package:bungie_api/models/group_user_info_card.dart';
 import 'package:bungie_api/models/user_membership_data.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/pages/initial/notifiers/initial_page_state.notifier.dart';
 import 'package:little_light/pages/initial/notifiers/select_membership.notifier.dart';
 import 'package:little_light/pages/initial/subpages/subpage_base.dart';
@@ -92,7 +93,7 @@ class SelectMembershipSubPageState extends SubpageBaseState<SelectMembershipSubP
     return Column(children: [
       Container(
         decoration: BoxDecoration(
-            color: Theme.of(context).primaryColor,
+            color: LittleLightTheme.of(context).surfaceLayers.layer2,
             borderRadius: BorderRadius.vertical(top: Radius.circular(8))),
         padding: EdgeInsets.all(8),
         child: Row(children: [
@@ -108,7 +109,7 @@ class SelectMembershipSubPageState extends SubpageBaseState<SelectMembershipSubP
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text(account.bungieNetUser?.uniqueName ?? "", style: Theme.of(context).textTheme.button),
+                Text(account.bungieNetUser?.uniqueName ?? "", style: LittleLightTheme.of(context).textTheme.subtitle),
                 if (account.bungieNetUser?.membershipId != null)
                   TranslatedTextWidget("membershipID: {membershipID}",
                       replace: {"membershipID": account.bungieNetUser?.membershipId ?? ""},
@@ -120,8 +121,7 @@ class SelectMembershipSubPageState extends SubpageBaseState<SelectMembershipSubP
       ),
       Container(
           decoration: BoxDecoration(
-            border: Border.all(color: Theme.of(context).primaryColor, width: 2),
-            color: Theme.of(context).cardColor,
+            border: Border.all(color: LittleLightTheme.of(context).surfaceLayers.layer2, width: 2),
             borderRadius: BorderRadius.vertical(bottom: Radius.circular(8)),
           ),
           margin: EdgeInsets.only(bottom: 16),

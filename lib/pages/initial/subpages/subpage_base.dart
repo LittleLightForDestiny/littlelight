@@ -1,10 +1,11 @@
 //@dart=2.12
 import 'package:flutter/material.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 
 abstract class SubpageBaseState<T extends StatefulWidget> extends State<T> {
   bool open = false;
 
-  TextStyle get titleStyle => Theme.of(context).textTheme.headline1 ?? TextStyle();
+  TextStyle get titleStyle => LittleLightTheme.of(context).textTheme.title;
   @override
   void initState() {
     super.initState();
@@ -25,10 +26,10 @@ abstract class SubpageBaseState<T extends StatefulWidget> extends State<T> {
       padding: EdgeInsets.only(top:mq.viewPadding.top, bottom:mq.viewPadding.bottom,),
       child:AnimatedContainer(
         decoration: BoxDecoration(
-            color: open ? Theme.of(context).backgroundColor : Theme.of(context).colorScheme.onSurface,
+            color: open ? LittleLightTheme.of(context).surfaceLayers : LittleLightTheme.of(context).onSurfaceLayers,
             border: Border(
                 bottom: BorderSide(
-              color: open ? Theme.of(context).appBarTheme.backgroundColor! : Theme.of(context).colorScheme.onSurface,
+              color: open ? LittleLightTheme.of(context).surfaceLayers.layer3 : LittleLightTheme.of(context).onSurfaceLayers,
               width: open ? 4 : 0,
             ))),
         duration: Duration(milliseconds: 300),
@@ -37,7 +38,7 @@ abstract class SubpageBaseState<T extends StatefulWidget> extends State<T> {
             physics: NeverScrollableScrollPhysics(),
             child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
               Container(
-                color: Theme.of(context).appBarTheme.backgroundColor!,
+                color: LittleLightTheme.of(context).surfaceLayers.layer3,
                 padding: EdgeInsets.all(8).add(EdgeInsets.only(
                   left: mq.viewPadding.left,
                   right: mq.viewPadding.right,

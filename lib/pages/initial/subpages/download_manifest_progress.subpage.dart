@@ -37,7 +37,6 @@ class DownloadManifestProgressSubPageState extends SubpageBaseState<DownloadMani
       constraints: BoxConstraints(maxWidth: 400),
       child: Column(children: [
         LinearProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
           backgroundColor: Theme.of(context).secondaryHeaderColor,
           value: downloading ? progress : null,
         ),

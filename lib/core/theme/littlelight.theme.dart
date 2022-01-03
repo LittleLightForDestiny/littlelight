@@ -15,7 +15,7 @@ class LayeredSwatch extends Color {
   Color get layer3 => _swatches[SwatchLayer.Layer3] ?? layer2;
 
   LayeredSwatch get reverse {
-    final indexes = _swatches.keys.map((k)=>SwatchLayer.values.indexOf(k)).toList();
+    final indexes = _swatches.keys.map((k) => SwatchLayer.values.indexOf(k)).toList();
     final reversedIndex = indexes.reversed.toList();
     final _reversedSwatches = _swatches.map((key, value) {
       final index = SwatchLayer.values.indexOf(key);
@@ -40,7 +40,16 @@ class LayeredSwatch extends Color {
       });
 }
 
+class LittleLightTextTheme {
+  final TextStyle title = TextStyle(fontSize: 18, fontWeight: FontWeight.w500);
+  final TextStyle subtitle = TextStyle(fontSize: 15, fontWeight: FontWeight.w600);
+  final TextStyle body = TextStyle(fontSize: 13, fontWeight: FontWeight.w400);
+  final TextStyle button = TextStyle(fontSize: 15, fontWeight: FontWeight.w600);
+}
+
 class LittleLightThemeData {
+  final textTheme = LittleLightTextTheme();
+
   final surfaceLayers = LayeredSwatch({
     SwatchLayer.Layer0: Color(0xFF21212B),
     SwatchLayer.Layer1: Color(0xFF2B3A45),
@@ -125,14 +134,15 @@ class LittleLightThemeData {
         thumbColor: MaterialStateColor.resolveWith((states) => _getSwitchColor(states).shade400),
       );
 
-  // TextTheme get _textTheme => TextTheme(
-  //     headline1: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-  //     bodyText1: TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
-  //     button: TextStyle(fontSize: 15, fontWeight: FontWeight.w600));
+  TextTheme get _textTheme => TextTheme(
+      headline1: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+      bodyText1: TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
+      button: TextStyle(fontSize: 15, fontWeight: FontWeight.w600));
 
   CardTheme get _cardTheme => CardTheme(color: colorScheme.surface);
 
   ThemeData get materialTheme => ThemeData.from(colorScheme: colorScheme).copyWith(
+      primaryColor: primaryLayers,
       appBarTheme: _appBarTheme,
       cardColor: _cardTheme.color,
       cardTheme: _cardTheme,
@@ -144,7 +154,7 @@ class LittleLightThemeData {
       // appBarTheme: _appBarTheme,
       // inputDecorationTheme: _inputDecorationTheme,
       // toggleableActiveColor: colorScheme.primary,
-      // textTheme: _textTheme,
+      textTheme: _textTheme,
       switchTheme: _switchTheme);
 }
 

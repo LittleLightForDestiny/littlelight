@@ -10,6 +10,7 @@ import 'package:bungie_api/user.dart';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:get_it/get_it.dart';
 import 'package:little_light/services/app_config/app_config.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
@@ -42,10 +43,10 @@ class AuthService with StorageConsumer, LanguageConsumer, AppConfigConsumer, Bun
     final token = await bungieAPI.requestToken(authorizationCode);
     final memberships = await bungieAPI.getMembershipsForToken(token);
     final accountID = token.membershipId;
+    this._currentAccountID = accountID;
     final storage = accountStorage(accountID);
     await this._saveToken(token);
     await storage.saveMembershipData(memberships);
-    this.currentAccountID = accountID;
     return memberships;
   }
 
@@ -71,7 +72,7 @@ class AuthService with StorageConsumer, LanguageConsumer, AppConfigConsumer, Bun
     await accountStorage(accountID).purge();
 
     if (accountID == currentAccountID) {
-      currentAccountID = null;
+      _currentAccountID = null;
     }
 
     if (memberships.contains(currentMembershipID)) {
@@ -81,7 +82,7 @@ class AuthService with StorageConsumer, LanguageConsumer, AppConfigConsumer, Bun
 
   Set<String>? get accountIDs => _accountIDs;
   String? get currentAccountID => globalStorage.currentAccountID;
-  set currentAccountID(String? id) {
+  set _currentAccountID(String? id) {
     final containsID = _accountIDs?.contains(id) ?? false;
     if (!containsID && id != null) {
       _accountIDs?.add(id);
@@ -96,6 +97,12 @@ class AuthService with StorageConsumer, LanguageConsumer, AppConfigConsumer, Bun
     globalStorage.currentMembershipID = membershipID;
     globalStorage.currentAccountID = accountID;
   }
+
+  void changeMembership(BuildContext context, String membershipID, String accountID){
+    setCurrentMembershipID(membershipID, accountID);
+    Phoenix.rebirth(context);
+  }
+  
 
   Future<Map<String, UserMembershipData>> fetchMembershipDataForAllAccounts() async {
     final result = Map<String, UserMembershipData>();
