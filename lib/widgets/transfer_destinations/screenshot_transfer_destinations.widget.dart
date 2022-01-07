@@ -4,7 +4,7 @@ import 'package:bungie_api/models/destiny_item_instance_component.dart';
 
 import 'package:flutter/material.dart';
 
-import 'package:little_light/services/inventory/inventory.service.dart';
+import 'package:little_light/services/inventory/inventory.package.dart';
 import 'package:little_light/widgets/common/equip_on_character.button.dart';
 
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -13,7 +13,6 @@ import 'package:little_light/widgets/transfer_destinations/base_transfer_destina
 
 class ScreenshotTransferDestinationsWidget
     extends BaseTransferDestinationsWidget {
-  final InventoryService inventory = new InventoryService();
   final double pixelSize;
   ScreenshotTransferDestinationsWidget(
       {DestinyItemComponent item,

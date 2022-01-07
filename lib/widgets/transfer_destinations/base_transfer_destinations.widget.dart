@@ -4,7 +4,7 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/services/inventory/inventory.service.dart';
+import 'package:little_light/services/inventory/inventory.package.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
@@ -14,7 +14,6 @@ import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
 class BaseTransferDestinationsWidget extends BaseDestinyStatefulItemWidget {
-  final InventoryService inventory = new InventoryService();
   BaseTransferDestinationsWidget(
       {DestinyItemComponent item,
       DestinyInventoryItemDefinition definition,
@@ -35,7 +34,7 @@ class BaseTransferDestinationsWidget extends BaseDestinyStatefulItemWidget {
 }
 
 class BaseTransferDestinationState<T extends BaseTransferDestinationsWidget>
-    extends BaseDestinyItemState<T> with UserSettingsConsumer, ProfileConsumer {
+    extends BaseDestinyItemState<T> with UserSettingsConsumer, ProfileConsumer, InventoryConsumer {
   @override
   Widget build(BuildContext context) {
     if (item == null) {
@@ -132,26 +131,26 @@ class BaseTransferDestinationState<T extends BaseTransferDestinationsWidget>
     switch (destination.action) {
       case InventoryAction.Equip:
         {
-          widget.inventory.equip(item, characterId, destination.characterId);
+          inventory.equip(item, characterId, destination.characterId);
           Navigator.pop(context);
           break;
         }
       case InventoryAction.Unequip:
         {
-          widget.inventory.unequip(item, characterId);
+          inventory.unequip(item, characterId);
           Navigator.pop(context);
           break;
         }
       case InventoryAction.Transfer:
         {
-          widget.inventory.transfer(
+          inventory.transfer(
               item, characterId, destination.type, destination.characterId);
           Navigator.pop(context);
           break;
         }
       case InventoryAction.Pull:
         {
-          widget.inventory.transfer(
+          inventory.transfer(
               item, characterId, destination.type, destination.characterId);
           Navigator.pop(context);
           break;

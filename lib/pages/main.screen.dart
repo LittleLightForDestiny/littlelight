@@ -16,6 +16,7 @@ import 'package:little_light/widgets/side_menu/side_menu.widget.dart';
 import 'package:screen/screen.dart';
 
 class MainScreen extends StatefulWidget {
+  MainScreen({Key key}):super(key:key);
   @override
   MainScreenState createState() => MainScreenState();
 }

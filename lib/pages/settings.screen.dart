@@ -176,7 +176,7 @@ class _SettingsScreenState extends State<SettingsScreen> with UserSettingsConsum
             padding: EdgeInsets.all(8),
             ///TODO: replace this description with something that makes more sense
             child: TranslatedTextWidget(
-                "You can add community curated wishlists (aka DIM™️ wishlists) on Little Light to check your god rolls.")),
+                "You can add community curated wishlists (aka DIM wishlists) on Little Light to check your god rolls.")),
         Container(
           color: Colors.grey.shade400,
           height: 1,

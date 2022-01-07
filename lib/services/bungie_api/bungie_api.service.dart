@@ -27,6 +27,7 @@ Future<void> setupBungieApiService() async{
 class BungieApiService with AuthConsumer, AppConfigConsumer {
   static const String baseUrl = 'https://www.bungie.net';
   static const String apiUrl = "$baseUrl/Platform";
+  
   BungieApiService._internal();
 
   static String? url(String? url) {

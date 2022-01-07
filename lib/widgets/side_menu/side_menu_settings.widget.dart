@@ -1,5 +1,5 @@
 //@dart=2.12
-import 'package:bungie_api/src/models/group_user_info_card.dart';
+import 'package:bungie_api/groupsv2.dart';
 import 'package:collection/collection.dart';
 import 'package:bungie_api/user.dart';
 import 'package:flutter/material.dart';

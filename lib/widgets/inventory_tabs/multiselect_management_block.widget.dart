@@ -4,7 +4,9 @@ import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/services/inventory/inventory.service.dart';
+import 'package:little_light/services/inventory/enums/item_destination.dart';
+import 'package:little_light/services/inventory/inventory.consumer.dart';
+import 'package:little_light/services/inventory/transfer_destination.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/selection/selection.service.dart';
@@ -13,8 +15,7 @@ import 'package:little_light/widgets/common/equip_on_character.button.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
-class MultiselectManagementBlockWidget extends StatelessWidget with ProfileConsumer {
-  final InventoryService inventory = new InventoryService();
+class MultiselectManagementBlockWidget extends StatelessWidget with ProfileConsumer, InventoryConsumer {
   final List<ItemWithOwner> items;
   MultiselectManagementBlockWidget({Key key, this.items})
       : super(

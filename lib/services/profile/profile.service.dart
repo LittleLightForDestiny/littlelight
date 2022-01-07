@@ -35,7 +35,7 @@ import 'package:little_light/services/user_settings/user_settings.consumer.dart'
 enum LastLoadedFrom { server, cache }
 
 setupProfileService(){
-  GetIt.I.registerSingleton<ProfileService>(ProfileService._internal());
+  GetIt.I.registerSingleton<ProfileService>(ProfileService._internal(), dispose: (p)=>p._dispose());
 }
 
 class ProfileService with UserSettingsConsumer, StorageConsumer, AuthConsumer, BungieApiConsumer {
@@ -54,6 +54,12 @@ class ProfileService with UserSettingsConsumer, StorageConsumer, AuthConsumer, B
   LastLoadedFrom _lastLoadedFrom;
 
   bool pauseAutomaticUpdater = false;
+
+  bool _disposed = false;
+
+  _dispose(){
+    _disposed = true;
+  }
 
   //TODO: remove this
   List<DestinyComponentType> updateComponents =
@@ -82,11 +88,14 @@ class ProfileService with UserSettingsConsumer, StorageConsumer, AuthConsumer, B
     return _profile;
   }
 
+
+  ///TODO: fix timer
   startAutomaticUpdater() async {
     if (this._lastLoadedFrom == LastLoadedFrom.cache) {
       await fetchProfileData(components: ProfileComponentGroups.everything);
     }
     while (true) {
+      if( _disposed) return;
       var duration = Duration(seconds: 30);
       await Future.delayed(duration);
       if (pauseAutomaticUpdater != true) {

@@ -5,7 +5,7 @@ import 'package:little_light/services/littlelight/littlelight_api.service.dart';
 import 'package:little_light/services/storage/export.dart';
 
 setupLoadoutsService() {
-  GetIt.I.registerLazySingleton<LoadoutsService>(() => LoadoutsService._internal());
+  GetIt.I.registerSingleton<LoadoutsService>(LoadoutsService._internal());
 }
 
 class LoadoutsService with StorageConsumer {

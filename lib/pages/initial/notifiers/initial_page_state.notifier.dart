@@ -183,6 +183,8 @@ class InitialPageStateNotifier
       return;
     }
 
+    
+
     _loading = false;
     _phase = InitialPagePhase.AuthorizationRequest;
     notifyListeners();
@@ -238,7 +240,6 @@ class InitialPageStateNotifier
     notifyListeners();
     try{
       await initPostLoadingServices(_context);
-      await profile.initialLoad();
     }catch(e, stackTrace){
       print("initPostLoadingServicesError: $e");
       analytics.registerNonFatal(e, stackTrace);

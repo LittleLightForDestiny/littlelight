@@ -2,7 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:little_light/models/loadout.dart';
-import 'package:little_light/services/inventory/inventory.service.dart';
+import 'package:little_light/services/inventory/inventory.consumer.dart';
+import 'package:little_light/services/inventory/inventory.package.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/widgets/common/equip_on_character.button.dart';
@@ -11,7 +12,7 @@ import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/option_sheets/free_slots_slider.widget.dart';
 
 class LoadoutDestinationsWidget extends StatefulWidget {
-  final InventoryService inventory = new InventoryService();
+
 
   final Loadout loadout;
   LoadoutDestinationsWidget(this.loadout, {Key key}) : super(key: key);
@@ -23,7 +24,7 @@ class LoadoutDestinationsWidget extends StatefulWidget {
 }
 
 class LoadoutDestinationsWidgetState extends State<LoadoutDestinationsWidget>
-    with UserSettingsConsumer, ProfileConsumer {
+    with UserSettingsConsumer, ProfileConsumer, InventoryConsumer {
   int freeSlots = 0;
 
   @override
@@ -122,7 +123,7 @@ class LoadoutDestinationsWidgetState extends State<LoadoutDestinationsWidget>
     switch (destination.action) {
       case InventoryAction.Equip:
         {
-          widget.inventory.transferLoadout(
+          inventory.transferLoadout(
               widget.loadout,
               destination.characterId,
               true,
@@ -132,7 +133,7 @@ class LoadoutDestinationsWidgetState extends State<LoadoutDestinationsWidget>
         }
       case InventoryAction.Transfer:
         {
-          widget.inventory.transferLoadout(
+          inventory.transferLoadout(
               widget.loadout,
               destination.characterId,
               false,

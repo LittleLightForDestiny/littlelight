@@ -10,7 +10,9 @@ import 'package:flutter/material.dart';
 import 'package:little_light/pages/item_detail.screen.dart';
 import 'package:little_light/pages/quick_transfer.screen.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/services/inventory/inventory.service.dart';
+import 'package:little_light/services/inventory/enums/item_destination.dart';
+import 'package:little_light/services/inventory/inventory.consumer.dart';
+import 'package:little_light/services/inventory/inventory.package.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
@@ -56,7 +58,7 @@ class InventoryItemWrapperWidget extends StatefulWidget {
 }
 
 class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
-    extends State<T> with UserSettingsConsumer, ProfileConsumer {
+    extends State<T> with UserSettingsConsumer, ProfileConsumer, InventoryConsumer {
   DestinyInventoryItemDefinition definition;
   String uniqueId;
   bool selected = false;
@@ -219,7 +221,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
       ),
     );
     if (item != null) {
-      InventoryService().transfer(item.item, item.ownerId,
+      inventory.transfer(item.item, item.ownerId,
           ItemDestination.Character, widget.characterId);
     }
   }

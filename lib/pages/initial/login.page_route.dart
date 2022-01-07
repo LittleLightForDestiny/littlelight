@@ -1,34 +1,10 @@
 //@dart=2.12
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:little_light/pages/initial/initial.page_route.base.dart';
 
-import 'initial.page.dart';
-import 'notifiers/initial_page_state.notifier.dart';
-import 'notifiers/manifest_downloader.notifier.dart';
-import 'notifiers/select_membership.notifier.dart';
-import 'notifiers/select_wishlists.notifier.dart';
-
-class LoginPageRoute extends MaterialPageRoute {
+class LoginPageRoute extends InitialPageRouteBase {
   LoginPageRoute(RouteSettings settings)
       : super(
-            settings: settings,
-            builder: (context) => WillPopScope(
-                onWillPop: () async => false,
-                child: MultiProvider(
-                  providers: [
-                    ChangeNotifierProvider<ManifestDownloaderNotifier>(
-                      create: (context) => ManifestDownloaderNotifier(context),
-                    ),
-                    ChangeNotifierProvider<SelectMembershipNotifier>(
-                      create: (context) => SelectMembershipNotifier(context),
-                    ),
-                    ChangeNotifierProvider<SelectWishlistNotifier>(
-                      create: (context) => SelectWishlistNotifier(context),
-                    ),
-                    ChangeNotifierProvider<InitialPageStateNotifier>(
-                      create: (context) => InitialPageStateNotifier(context),
-                    ),
-                  ],
-                  child: InitialPage(),
-                )));
+          settings:settings,
+        );
 }

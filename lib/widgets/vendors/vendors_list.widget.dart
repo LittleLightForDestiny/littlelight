@@ -1,17 +1,14 @@
 import 'dart:async';
 import 'dart:math';
+
 import 'package:bungie_api/models/destiny_vendor_category.dart';
 import 'package:bungie_api/models/destiny_vendor_component.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-
 import 'package:little_light/services/manifest/manifest.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/profile/vendors.service.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
-
 import 'package:little_light/widgets/vendors/vendors_list_item.widget.dart';
-import 'package:shimmer/shimmer.dart';
 
 class VendorsListWidget extends StatefulWidget {
   final String characterId;

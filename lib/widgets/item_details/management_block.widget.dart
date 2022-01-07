@@ -4,7 +4,10 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/services/inventory/inventory.service.dart';
+import 'package:little_light/services/inventory/enums/item_destination.dart';
+import 'package:little_light/services/inventory/inventory.consumer.dart';
+import 'package:little_light/services/inventory/inventory.package.dart';
+import 'package:little_light/services/inventory/transfer_destination.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
@@ -13,8 +16,7 @@ import 'package:little_light/widgets/common/equip_on_character.button.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
-class ManagementBlockWidget extends BaseDestinyStatelessItemWidget with UserSettingsConsumer, ProfileConsumer {
-  final InventoryService inventory = new InventoryService();
+class ManagementBlockWidget extends BaseDestinyStatelessItemWidget with UserSettingsConsumer, ProfileConsumer, InventoryConsumer {
   ManagementBlockWidget(
       DestinyItemComponent item, DestinyInventoryItemDefinition definition, DestinyItemInstanceComponent instanceInfo,
       {Key key, String characterId})

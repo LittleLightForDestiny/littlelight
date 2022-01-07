@@ -13,7 +13,7 @@ import 'package:little_light/models/game_data.dart';
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/pages/edit_loadout.screen.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/services/inventory/inventory.service.dart';
+import 'package:little_light/services/inventory/inventory.package.dart';
 import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
 import 'package:little_light/services/littlelight/loadouts.consumer.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
@@ -43,7 +43,7 @@ class CharacterOptionsSheet extends StatefulWidget {
 }
 
 class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
-    with UserSettingsConsumer, LittleLightDataConsumer, LoadoutsConsumer, ProfileConsumer {
+    with UserSettingsConsumer, LittleLightDataConsumer, LoadoutsConsumer, ProfileConsumer, InventoryConsumer {
   Map<int, DestinyItemComponent> maxLightLoadout;
   Map<int, DestinyItemComponent> underAverageSlots;
   double maxLight;
@@ -256,7 +256,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
                 loadout.addEquippedItem(item, def);
               }
             }
-            InventoryService().transferLoadout(loadout.loadout, widget.character.characterId, true);
+            inventory.transferLoadout(loadout.loadout, widget.character.characterId, true);
           },
         )),
         Container(width: 4),
@@ -328,7 +328,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
                     character: widget.character,
                     loadouts: loadouts,
                     onSelect: (loadout) =>
-                        InventoryService().transferLoadout(loadout, widget.character.characterId, false, freeSlots)));
+                        inventory.transferLoadout(loadout, widget.character.characterId, false, freeSlots)));
           },
         )),
         Container(width: 4),
@@ -354,7 +354,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
                     character: widget.character,
                     loadouts: loadouts,
                     onSelect: (loadout) =>
-                        InventoryService().transferLoadout(loadout, widget.character.characterId, true, freeSlots)));
+                        inventory.transferLoadout(loadout, widget.character.characterId, true, freeSlots)));
           },
         )),
       ]))
@@ -443,7 +443,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
       ),
       onTap: () {
         Navigator.of(context).pop();
-        InventoryService().transferMultiple(
+        inventory.transferMultiple(
             itemsInPostmaster.map((i) => ItemWithOwner(i, widget.character.characterId)).toList(),
             ItemDestination.Character,
             widget.character.characterId);
@@ -556,7 +556,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
       randomLoadout.addEquippedItem(item, itemDef);
     }
 
-    InventoryService().transferLoadout(randomLoadout.loadout, widget.character.characterId, true);
+    inventory.transferLoadout(randomLoadout.loadout, widget.character.characterId, true);
   }
 
   getMaxLightLoadout() async {
