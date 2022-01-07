@@ -71,7 +71,7 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T> with 
 
   bool get selected =>
       widget.selectable &&
-      SelectionService()
+      selection
           .isSelected(ItemWithOwner(widget.item, widget.characterId));
 
   @override
@@ -174,7 +174,7 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T> with 
       if (selected) {
         selection.clear();
       } else {
-        SelectionService()
+        selection
             .setItem(ItemWithOwner(widget.item, widget.characterId));
       }
     } else {
@@ -210,7 +210,7 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T> with 
       if (selected) {
         selection.clear();
       } else {
-        SelectionService()
+        selection
             .setItem(ItemWithOwner(widget.item, widget.characterId));
       }
       return;

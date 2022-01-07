@@ -312,7 +312,7 @@ class _ItemInstanceWrapperState extends State<_ItemInstanceWrapper>
       return;
     }
     if (userSettings.tapToSelect) {
-      SelectionService().setItem(ItemWithOwner(widget.item, widget.characterId));
+      selection.setItem(ItemWithOwner(widget.item, widget.characterId));
       return;
     }
     selection.clear();

@@ -19,7 +19,6 @@ import 'package:little_light/widgets/inventory_tabs/multiselect_management_block
 import 'package:little_light/widgets/item_list/items/quick_select_item_wrapper.widget.dart';
 
 class SelectedItemsWidget extends StatefulWidget {
-  final service = SelectionService();
 
   SelectedItemsWidget({Key key}) : super(key: key);
 
@@ -29,7 +28,7 @@ class SelectedItemsWidget extends StatefulWidget {
   }
 }
 
-class SelectedItemsWidgetState extends State<SelectedItemsWidget> with ProfileConsumer, InventoryConsumer, ManifestConsumer {
+class SelectedItemsWidgetState extends State<SelectedItemsWidget> with ProfileConsumer, InventoryConsumer, ManifestConsumer, SelectionConsumer {
   StreamSubscription<List<ItemWithOwner>> subscription;
   List<ItemWithOwner> items;
 
@@ -37,9 +36,9 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget> with ProfileCo
   void initState() {
     super.initState();
 
-    this.items = widget.service.items;
+    this.items = selection.items;
 
-    subscription = widget.service.broadcaster.listen((selected) {
+    subscription = selection.broadcaster.listen((selected) {
       this.items = selected;
       setState(() {});
     });
@@ -53,7 +52,7 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget> with ProfileCo
 
   @override
   Widget build(BuildContext context) {
-    if (widget.service.items.length == 0) {
+    if (selection.items.length == 0) {
       return Container();
     }
     return Container(
@@ -176,7 +175,7 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget> with ProfileCo
                   ]),
                 ),
                 onTap: () {
-                  widget.service.clear();
+                  selection.clear();
                 }))
       ]),
     );
@@ -223,7 +222,7 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget> with ProfileCo
                                   color: Colors.transparent,
                                   child: InkWell(
                                     onTap: () {
-                                      widget.service.removeItem(i);
+                                      selection.removeItem(i);
                                     },
                                   ))
                             ])))))
