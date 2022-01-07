@@ -8,12 +8,12 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/services/notification/notification.service.dart';
+import 'package:little_light/services/notification/notification.consumer.dart';
+import 'package:little_light/services/notification/notification.package.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 
 class AnimatedCharacterBackgroundWidget extends StatefulWidget {
   final TabController tabController;
-  final NotificationService broadcaster = NotificationService();
   AnimatedCharacterBackgroundWidget({
     this.tabController,
     Key key,
@@ -33,7 +33,7 @@ class _CharacterInfo {
 
 class _AnimatedCharacterBackgroundWidgetState
     extends State<AnimatedCharacterBackgroundWidget>
-    with SingleTickerProviderStateMixin, ProfileConsumer, ManifestConsumer {
+    with SingleTickerProviderStateMixin, ProfileConsumer, ManifestConsumer, NotificationConsumer {
   List<_CharacterInfo> characters;
   AnimationController _controller;
   ColorTween tween;
@@ -50,7 +50,7 @@ class _AnimatedCharacterBackgroundWidgetState
       vsync: this,
     );
     _controller.forward();
-    subscription = widget.broadcaster.listen((event) {
+    subscription = notifications.listen((event) {
       if (!mounted) return;
       if (event.type == NotificationType.receivedUpdate ||
           event.type == NotificationType.localUpdate) {

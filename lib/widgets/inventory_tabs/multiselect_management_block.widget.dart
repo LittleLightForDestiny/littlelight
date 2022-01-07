@@ -10,14 +10,14 @@ import 'package:little_light/services/inventory/transfer_destination.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 
 import 'package:little_light/services/profile/profile.consumer.dart';
-import 'package:little_light/services/selection/selection.service.dart';
+import 'package:little_light/services/selection/selection.consumer.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/common/equip_on_character.button.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
 class MultiselectManagementBlockWidget extends StatelessWidget
-    with ProfileConsumer, InventoryConsumer, ManifestConsumer {
+    with ProfileConsumer, InventoryConsumer, ManifestConsumer, SelectionConsumer {
   final List<ItemWithOwner> items;
   MultiselectManagementBlockWidget({Key key, this.items})
       : super(
@@ -96,7 +96,7 @@ class MultiselectManagementBlockWidget extends StatelessWidget
       case InventoryAction.Equip:
         {
           inventory.equipMultiple(List.from(items), destination.characterId);
-          SelectionService().clear();
+          selection.clear();
           break;
         }
       case InventoryAction.Unequip:
@@ -106,7 +106,7 @@ class MultiselectManagementBlockWidget extends StatelessWidget
       case InventoryAction.Transfer:
         {
           inventory.transferMultiple(List.from(items), destination.type, destination.characterId);
-          SelectionService().clear();
+          selection.clear();
           break;
         }
       case InventoryAction.Pull:

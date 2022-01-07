@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/models/tracked_objective.dart';
 import 'package:little_light/services/littlelight/objectives.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/services/notification/notification.service.dart';
+import 'package:little_light/services/notification/notification.package.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/profile/profile_component_groups.dart';
 import 'package:little_light/utils/destiny_data.dart';
@@ -19,7 +19,6 @@ import 'package:little_light/widgets/common/objective.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
 class ItemObjectivesWidget extends BaseDestinyStatefulItemWidget {
-  final NotificationService broadcaster = NotificationService();
   ItemObjectivesWidget(
       {DestinyItemComponent item,
       DestinyInventoryItemDefinition definition,
@@ -34,7 +33,7 @@ class ItemObjectivesWidget extends BaseDestinyStatefulItemWidget {
   }
 }
 
-class ItemObjectivesWidgetState extends BaseDestinyItemState<ItemObjectivesWidget> with ProfileConsumer, ManifestConsumer {
+class ItemObjectivesWidgetState extends BaseDestinyItemState<ItemObjectivesWidget> with ProfileConsumer, ManifestConsumer, NotificationConsumer {
   Map<int, DestinyObjectiveDefinition> objectiveDefinitions;
   List<DestinyObjectiveProgress> itemObjectives;
   StreamSubscription<NotificationEvent> subscription;
@@ -45,7 +44,7 @@ class ItemObjectivesWidgetState extends BaseDestinyItemState<ItemObjectivesWidge
     super.initState();
     loadDefinitions();
     this.updateTrackStatus();
-    subscription = widget.broadcaster.listen((event) {
+    subscription = notifications.listen((event) {
       if (event.type == NotificationType.receivedUpdate || event.type == NotificationType.localUpdate && mounted) {
         updateProgress();
       }

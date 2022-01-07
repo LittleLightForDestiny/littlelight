@@ -1,12 +1,14 @@
 import 'dart:async';
 
+import 'package:get_it/get_it.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 
+setupSelectionService(){
+  GetIt.I.registerLazySingleton(() => SelectionService._internal());
+}
+
 class SelectionService {
-  static final SelectionService _singleton = SelectionService._internal();
-  factory SelectionService() {
-    return _singleton;
-  }
+  
   SelectionService._internal();
 
   List<ItemWithOwner> _selectedItems = [];

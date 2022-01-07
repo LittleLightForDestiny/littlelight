@@ -9,7 +9,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/models/bucket_display_options.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/services/notification/notification.service.dart';
+import 'package:little_light/services/notification/notification.package.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/inventory_utils.dart';
@@ -39,8 +39,6 @@ const _suppressEmptySpaces = [
 class ItemListWidget extends StatefulWidget {
   final String characterId;
   
-
-  final NotificationService broadcaster = new NotificationService();
   final EdgeInsets padding;
   final List<int> bucketHashes;
   final Map<int, double> scrollPositions;
@@ -68,7 +66,7 @@ class ItemListWidget extends StatefulWidget {
   ItemListWidgetState createState() => new ItemListWidgetState();
 }
 
-class ItemListWidgetState extends State<ItemListWidget> with AutomaticKeepAliveClientMixin, UserSettingsConsumer, ProfileConsumer, ManifestConsumer {
+class ItemListWidgetState extends State<ItemListWidget> with AutomaticKeepAliveClientMixin, UserSettingsConsumer, ProfileConsumer, ManifestConsumer, NotificationConsumer {
   Map<int, DestinyInventoryBucketDefinition> bucketDefs;
   List<ListBucket> buckets;
   StreamSubscription<NotificationEvent> subscription;
@@ -81,7 +79,7 @@ class ItemListWidgetState extends State<ItemListWidget> with AutomaticKeepAliveC
   void initState() {
     super.initState();
     buildIndex();
-    subscription = widget.broadcaster.listen((event) {
+    subscription = notifications.listen((event) {
       if (event.type == NotificationType.receivedUpdate || event.type == NotificationType.localUpdate) {
         buildIndex();
       }

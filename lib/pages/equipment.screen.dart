@@ -6,7 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/pages/search.screen.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:little_light/services/bungie_api/enums/destiny_item_category.enum.dart';
-import 'package:little_light/services/notification/notification.service.dart';
+import 'package:little_light/services/notification/notification.package.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/profile/profile_component_groups.dart';
 import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
@@ -29,13 +29,7 @@ import 'package:little_light/widgets/inventory_tabs/vault_tab_header.widget.dart
 import 'package:little_light/widgets/search/search.controller.dart';
 
 class EquipmentScreen extends StatefulWidget {
-  final NotificationService broadcaster = new NotificationService();
-
-  final List<int> itemTypes = [
-    DestinyItemCategory.Weapon,
-    DestinyItemCategory.Armor,
-    DestinyItemCategory.Inventory
-  ];
+  final List<int> itemTypes = [DestinyItemCategory.Weapon, DestinyItemCategory.Armor, DestinyItemCategory.Inventory];
 
   @override
   EquipmentScreenState createState() => new EquipmentScreenState();
@@ -44,7 +38,13 @@ class EquipmentScreen extends StatefulWidget {
 const _page = LittleLightPersistentPage.Equipment;
 
 class EquipmentScreenState extends State<EquipmentScreen>
-    with TickerProviderStateMixin, AutomaticKeepAliveClientMixin, UserSettingsConsumer, AnalyticsConsumer, ProfileConsumer {
+    with
+        TickerProviderStateMixin,
+        AutomaticKeepAliveClientMixin,
+        UserSettingsConsumer,
+        AnalyticsConsumer,
+        ProfileConsumer,
+        NotificationConsumer {
   int currentGroup = DestinyItemCategory.Weapon;
   Map<int, double> scrollPositions = new Map();
 
@@ -78,7 +78,7 @@ class EquipmentScreenState extends State<EquipmentScreen>
       scrollPositions[type] = 0;
     });
 
-    subscription = widget.broadcaster.listen((event) {
+    subscription = notifications.listen((event) {
       if (!mounted) return;
       if (event.type == NotificationType.receivedUpdate) {
         setState(() {});
@@ -110,12 +110,7 @@ class EquipmentScreenState extends State<EquipmentScreen>
       child: Stack(
         children: <Widget>[
           buildBackground(context),
-          Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: buildTabletCharacterTabView(context)),
+          Positioned(top: 0, left: 0, right: 0, bottom: 0, child: buildTabletCharacterTabView(context)),
           Positioned(
             top: screenPadding.top,
             width: kToolbarHeight,
@@ -133,26 +128,19 @@ class EquipmentScreenState extends State<EquipmentScreen>
               right: 8,
               child: buildCharacterMenu(context)),
           InventoryNotificationWidget(
-              notificationMargin: EdgeInsets.only(right: 44),
-              barHeight: 0,
-              key: Key('inventory_notification_widget')),
+              notificationMargin: EdgeInsets.only(right: 44), barHeight: 0, key: Key('inventory_notification_widget')),
           Positioned(
             right: 8,
             bottom: 8,
             child: Container(
               decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.background,
-                  borderRadius: BorderRadius.circular(18)),
+                  color: Theme.of(context).colorScheme.background, borderRadius: BorderRadius.circular(18)),
               width: 36,
               height: 36,
               child: RefreshButtonWidget(),
             ),
           ),
-          Positioned(
-              bottom: screenPadding.bottom,
-              left: 0,
-              right: 0,
-              child: SelectedItemsWidget()),
+          Positioned(bottom: screenPadding.bottom, left: 0, right: 0, child: SelectedItemsWidget()),
         ],
       ),
     );
@@ -166,12 +154,7 @@ class EquipmentScreenState extends State<EquipmentScreen>
         children: <Widget>[
           buildBackground(context),
           buildItemTypeTabBarView(context),
-          Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              height: topOffset + 16,
-              child: buildCharacterHeaderTabView(context)),
+          Positioned(top: 0, left: 0, right: 0, height: topOffset + 16, child: buildCharacterHeaderTabView(context)),
           Positioned(
             top: screenPadding.top,
             width: kToolbarHeight,
@@ -189,13 +172,8 @@ class EquipmentScreenState extends State<EquipmentScreen>
               right: 8,
               child: buildCharacterMenu(context)),
           ItemTypeMenuWidget(widget.itemTypes, controller: typeTabController),
-          InventoryNotificationWidget(
-              key: Key('inventory_notification_widget')),
-          Positioned(
-              bottom: screenPadding.bottom,
-              left: 0,
-              right: 0,
-              child: SelectedItemsWidget()),
+          InventoryNotificationWidget(key: Key('inventory_notification_widget')),
+          Positioned(bottom: screenPadding.bottom, left: 0, right: 0, child: SelectedItemsWidget()),
         ],
       ),
     );
@@ -244,12 +222,7 @@ class EquipmentScreenState extends State<EquipmentScreen>
           child: LargeScreenVaultListWidget(
         key: Key("vault_tab"),
       )),
-      Positioned(
-          top: 0,
-          left: 0,
-          right: 0,
-          height: topOffset + 16,
-          child: VaultTabHeaderWidget())
+      Positioned(top: 0, left: 0, right: 0, height: topOffset + 16, child: VaultTabHeaderWidget())
     ]));
     return TabBarView(controller: charTabController, children: pages ?? []);
   }
@@ -263,37 +236,30 @@ class EquipmentScreenState extends State<EquipmentScreen>
 
   Widget buildItemTypeTabBarView(BuildContext context) {
     if (characters == null) return Container();
-    return TabBarView(
-        controller: typeTabController, children: buildItemTypeTabs(context));
+    return TabBarView(controller: typeTabController, children: buildItemTypeTabs(context));
   }
 
   List<Widget> buildItemTypeTabs(BuildContext context) {
-    return widget.itemTypes
-        .map((type) => buildCharacterTabBarView(context, type))
-        .toList();
+    return widget.itemTypes.map((type) => buildCharacterTabBarView(context, type)).toList();
   }
 
   Widget buildCharacterTabBarView(BuildContext context, int group) {
     if (characters == null) return Container();
     return PassiveTabBarView(
-        physics: NeverScrollableScrollPhysics(),
-        controller: charTabController,
-        children: buildCharacterTabs(group));
+        physics: NeverScrollableScrollPhysics(), controller: charTabController, children: buildCharacterTabs(group));
   }
 
   List<Widget> buildCharacterTabs(int group) {
     List<Widget> characterTabs = characters?.map((character) {
       return CharacterTabWidget(character, group,
-          key: Key("character_tab_${character.characterId}"),
-          scrollPositions: scrollPositions);
+          key: Key("character_tab_${character.characterId}"), scrollPositions: scrollPositions);
     })?.toList();
     characterTabs?.add(VaultTabWidget(group));
     return characterTabs ?? [];
   }
 
   List<DestinyCharacterComponent> get characters {
-    return profile
-        .getCharacters(userSettings.characterOrdering);
+    return profile.getCharacters(userSettings.characterOrdering);
   }
 
   buildCharacterMenu(BuildContext context) {
@@ -326,20 +292,14 @@ class EquipmentScreenState extends State<EquipmentScreen>
             }
             var query = MediaQueryHelper(context);
             if (query.isLandscape) {
-              selected = [
-                PseudoItemType.Weapons,
-                PseudoItemType.Armor,
-                PseudoItemType.Cosmetics
-              ];
+              selected = [PseudoItemType.Weapons, PseudoItemType.Armor, PseudoItemType.Cosmetics];
             }
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => SearchScreen(
                   controller: SearchController.withDefaultFilters(
-                    firstRunFilters: [
-                      PseudoItemTypeFilter(available, available)
-                    ],
+                    firstRunFilters: [PseudoItemTypeFilter(available, available)],
                     preFilters: [
                       PseudoItemTypeFilter(available, selected),
                     ],

@@ -10,8 +10,6 @@ import 'package:little_light/services/inventory/enums/item_destination.dart';
 import 'package:little_light/services/inventory/inventory.consumer.dart';
 import 'package:little_light/services/inventory/inventory.package.dart';
 import 'package:little_light/services/littlelight/loadouts.consumer.dart';
-
-import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_with_owner.dart';
@@ -24,7 +22,7 @@ import 'package:little_light/widgets/option_sheets/loadout_select_sheet.widget.d
 class VaultInfoWidget extends CharacterInfoWidget {
   
 
-  final NotificationService broadcaster = NotificationService();
+  
 
   VaultInfoWidget({Key key}) : super(key: key);
 

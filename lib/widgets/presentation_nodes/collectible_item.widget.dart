@@ -9,7 +9,7 @@ import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
-import 'package:little_light/services/selection/selection.service.dart';
+import 'package:little_light/services/selection/selection.consumer.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/item_list/items/armor/armor_inventory_item.widget.dart';
@@ -32,7 +32,7 @@ class CollectibleItemWidget extends StatefulWidget {
   }
 }
 
-class CollectibleItemWidgetState extends State<CollectibleItemWidget> with AuthConsumer, ProfileConsumer, ManifestConsumer {
+class CollectibleItemWidgetState extends State<CollectibleItemWidget> with AuthConsumer, ProfileConsumer, ManifestConsumer, SelectionConsumer {
   DestinyCollectibleDefinition _definition;
   DestinyInventoryItemDefinition _itemDefinition;
   DestinyCollectibleDefinition get definition {
@@ -52,7 +52,7 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget> with AuthC
 
   bool get selected => items != null
       ? items.every((i) {
-          return SelectionService().isSelected(i);
+          return selection.isSelected(i);
         })
       : false;
 
@@ -61,7 +61,7 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget> with AuthC
     super.initState();
     loadDefinition();
     StreamSubscription<List<ItemWithOwner>> sub;
-    sub = SelectionService().broadcaster.listen((selectedItems) {
+    sub = selection.broadcaster.listen((selectedItems) {
       if (!mounted) {
         sub.cancel();
         return;
@@ -195,7 +195,7 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget> with AuthC
     if (definition.itemHash == null) {
       return;
     }
-    if (SelectionService().multiselectActivated) {
+    if (selection.multiselectActivated) {
       onLongPress(context);
       return;
     }
@@ -216,15 +216,15 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget> with AuthC
   void onLongPress(BuildContext context) {
     if ((items?.length ?? 0) == 0) return;
     if (!selected) {
-      SelectionService().activateMultiSelect();
+      selection.activateMultiSelect();
       for (var item in this.items) {
-        if (!SelectionService().isSelected(item)) {
-          SelectionService().addItem(ItemWithOwner(item.item, item.ownerId));
+        if (!selection.isSelected(item)) {
+          selection.addItem(ItemWithOwner(item.item, item.ownerId));
         }
       }
     } else {
       for (var item in this.items) {
-        SelectionService().removeItem(ItemWithOwner(item.item, item.ownerId));
+        selection.removeItem(ItemWithOwner(item.item, item.ownerId));
       }
     }
 

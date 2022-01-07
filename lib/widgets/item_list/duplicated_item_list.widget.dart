@@ -8,9 +8,9 @@ import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/pages/item_detail.screen.dart';
-import 'package:little_light/services/notification/notification.service.dart';
+import 'package:little_light/services/notification/notification.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
-import 'package:little_light/services/selection/selection.service.dart';
+import 'package:little_light/services/selection/selection.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/media_query_helper.dart';
@@ -22,12 +22,7 @@ import 'package:little_light/widgets/item_list/items/base/base_inventory_item.wi
 import 'package:little_light/widgets/item_list/items/base/base_item_instance.widget.dart';
 import 'package:little_light/widgets/search/search.controller.dart';
 
-enum DuplicatedListItemType {
-  bucketTitle,
-  itemDefinition,
-  itemInstance,
-  spacer
-}
+enum DuplicatedListItemType { bucketTitle, itemDefinition, itemInstance, spacer }
 
 class DuplicatedListItem {
   final DuplicatedListItemType type;
@@ -35,24 +30,19 @@ class DuplicatedListItem {
   final DestinyItemComponent item;
   final List<ItemWithOwner> items;
   final String ownerId;
-  DuplicatedListItem(this.type,
-      {this.hash, this.item, this.ownerId, this.items});
+  DuplicatedListItem(this.type, {this.hash, this.item, this.ownerId, this.items});
 }
 
-class DuplicatedItemListWidget extends StatefulWidget
-    with UserSettingsConsumer, ProfileConsumer {
-
+class DuplicatedItemListWidget extends StatefulWidget with UserSettingsConsumer, ProfileConsumer {
   final SearchController searchController;
   DuplicatedItemListWidget({Key key, this.searchController}) : super(key: key);
-  final NotificationService broadcaster = new NotificationService();
 
   @override
-  DuplicatedItemListWidgetState createState() =>
-      new DuplicatedItemListWidgetState();
+  DuplicatedItemListWidgetState createState() => new DuplicatedItemListWidgetState();
 }
 
 class DuplicatedItemListWidgetState extends State<DuplicatedItemListWidget>
-    with AutomaticKeepAliveClientMixin {
+    with AutomaticKeepAliveClientMixin, NotificationConsumer, SelectionConsumer {
   List<DuplicatedListItem> listItems;
 
   @override
@@ -84,8 +74,7 @@ class DuplicatedItemListWidgetState extends State<DuplicatedItemListWidget>
       // items.add(DuplicatedListItem(DuplicatedListItemType.bucketTitle,
       //     hash: bucketHash));
       var instances = itemsByHash[hash];
-      listItems.add(DuplicatedListItem(DuplicatedListItemType.itemDefinition,
-          hash: hash, items: instances));
+      listItems.add(DuplicatedListItem(DuplicatedListItemType.itemDefinition, hash: hash, items: instances));
       for (var instance in instances) {
         listItems.add(DuplicatedListItem(DuplicatedListItemType.itemInstance,
             hash: hash, item: instance.item, ownerId: instance.ownerId));
@@ -105,9 +94,7 @@ class DuplicatedItemListWidgetState extends State<DuplicatedItemListWidget>
     var screenPadding = MediaQuery.of(context).padding;
     return StaggeredGridView.countBuilder(
       padding: EdgeInsets.all(4).copyWith(
-          left: max(screenPadding.left, 4),
-          right: max(screenPadding.right, 4),
-          bottom: screenPadding.bottom + 150),
+          left: max(screenPadding.left, 4), right: max(screenPadding.right, 4), bottom: screenPadding.bottom + 150),
       crossAxisCount: 6,
       itemCount: listItems?.length ?? 0,
       itemBuilder: (BuildContext context, int index) => getItem(context, index),
@@ -167,8 +154,7 @@ class DuplicatedItemListWidgetState extends State<DuplicatedItemListWidget>
                   definition: def,
                   characterId: item.ownerId,
                 ),
-            key: Key(
-                "item_${item.hash}_${item.item.itemInstanceId}_${item.ownerId}"));
+            key: Key("item_${item.hash}_${item.item.itemInstanceId}_${item.ownerId}"));
 
       case DuplicatedListItemType.spacer:
         return Container();
@@ -190,9 +176,9 @@ class _DefinitionItemWrapper extends StatefulWidget {
   }
 }
 
-class _DefinitionItemWrapperState extends State<_DefinitionItemWrapper> {
+class _DefinitionItemWrapperState extends State<_DefinitionItemWrapper> with SelectionConsumer {
   bool get selected => widget.items.every((i) {
-        return SelectionService().isSelected(i);
+        return selection.isSelected(i);
       });
 
   @override
@@ -200,7 +186,7 @@ class _DefinitionItemWrapperState extends State<_DefinitionItemWrapper> {
     super.initState();
 
     StreamSubscription<List<ItemWithOwner>> sub;
-    sub = SelectionService().broadcaster.listen((selectedItems) {
+    sub = selection.broadcaster.listen((selectedItems) {
       if (!mounted) {
         sub.cancel();
         return;
@@ -224,9 +210,7 @@ class _DefinitionItemWrapperState extends State<_DefinitionItemWrapper> {
       selected
           ? Positioned.fill(
               child: Container(
-                foregroundDecoration: BoxDecoration(
-                    border:
-                        Border.all(color: Colors.lightBlue.shade400, width: 2)),
+                foregroundDecoration: BoxDecoration(border: Border.all(color: Colors.lightBlue.shade400, width: 2)),
               ),
             )
           : Container(),
@@ -247,13 +231,13 @@ class _DefinitionItemWrapperState extends State<_DefinitionItemWrapper> {
   void onTap(context) {
     if (selected) {
       for (var item in widget.items) {
-        SelectionService().removeItem(item);
+        selection.removeItem(item);
       }
     } else {
-      SelectionService().activateMultiSelect();
+      selection.activateMultiSelect();
       for (var item in widget.items) {
-        if (!SelectionService().isSelected(item)) {
-          SelectionService().addItem(item);
+        if (!selection.isSelected(item)) {
+          selection.addItem(item);
         }
       }
     }
@@ -265,8 +249,7 @@ class _ItemInstanceWrapper extends StatefulWidget {
   final DestinyInventoryItemDefinition definition;
   final String characterId;
 
-  _ItemInstanceWrapper({Key key, this.item, this.definition, this.characterId})
-      : super(key: key);
+  _ItemInstanceWrapper({Key key, this.item, this.definition, this.characterId}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -275,10 +258,9 @@ class _ItemInstanceWrapper extends StatefulWidget {
 }
 
 class _ItemInstanceWrapperState extends State<_ItemInstanceWrapper>
-    with UserSettingsConsumer, ProfileConsumer {
+    with UserSettingsConsumer, ProfileConsumer, SelectionConsumer {
   DestinyItemInstanceComponent instance;
-  bool get selected => SelectionService()
-      .isSelected(ItemWithOwner(widget.item, widget.characterId));
+  bool get selected => selection.isSelected(ItemWithOwner(widget.item, widget.characterId));
 
   @override
   void initState() {
@@ -287,7 +269,7 @@ class _ItemInstanceWrapperState extends State<_ItemInstanceWrapper>
     instance = profile.getInstanceInfo(widget.item.itemInstanceId);
 
     StreamSubscription<List<ItemWithOwner>> sub;
-    sub = SelectionService().broadcaster.listen((selectedItems) {
+    sub = selection.broadcaster.listen((selectedItems) {
       if (!mounted) {
         sub.cancel();
         return;
@@ -300,15 +282,12 @@ class _ItemInstanceWrapperState extends State<_ItemInstanceWrapper>
   Widget build(BuildContext context) {
     return Stack(children: [
       Positioned.fill(
-          child: BaseItemInstanceWidget(
-              widget.item, widget.definition, instance,
+          child: BaseItemInstanceWidget(widget.item, widget.definition, instance,
               characterId: widget.characterId, uniqueId: null)),
       selected
           ? Positioned.fill(
               child: Container(
-                foregroundDecoration: BoxDecoration(
-                    border:
-                        Border.all(color: Colors.lightBlue.shade400, width: 2)),
+                foregroundDecoration: BoxDecoration(border: Border.all(color: Colors.lightBlue.shade400, width: 2)),
               ),
             )
           : Container(),
@@ -328,16 +307,15 @@ class _ItemInstanceWrapperState extends State<_ItemInstanceWrapper>
   }
 
   void onTap(context) {
-    if (SelectionService().multiselectActivated) {
+    if (selection.multiselectActivated) {
       onLongPress(context);
       return;
     }
     if (userSettings.tapToSelect) {
-      SelectionService()
-          .setItem(ItemWithOwner(widget.item, widget.characterId));
+      SelectionService().setItem(ItemWithOwner(widget.item, widget.characterId));
       return;
     }
-    SelectionService().clear();
+    selection.clear();
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -354,8 +332,8 @@ class _ItemInstanceWrapperState extends State<_ItemInstanceWrapper>
 
   void onLongPress(context) {
     if (widget.definition.nonTransferrable) return;
-    SelectionService().activateMultiSelect();
-    SelectionService().addItem(ItemWithOwner(widget.item, widget.characterId));
+    selection.activateMultiSelect();
+    selection.addItem(ItemWithOwner(widget.item, widget.characterId));
     setState(() {});
   }
 }

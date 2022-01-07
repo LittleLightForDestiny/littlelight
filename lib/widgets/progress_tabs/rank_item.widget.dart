@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/services/notification/notification.service.dart';
+import 'package:little_light/services/notification/notification.package.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
@@ -17,7 +17,7 @@ class RankItemWidget extends StatefulWidget {
   final String characterId;
 
   
-  final NotificationService broadcaster = NotificationService();
+  
 
   final DestinyProgression progression;
 
@@ -28,7 +28,7 @@ class RankItemWidget extends StatefulWidget {
 }
 
 class RankItemWidgetState<T extends RankItemWidget> extends State<T>
-    with AutomaticKeepAliveClientMixin, ProfileConsumer, ManifestConsumer {
+    with AutomaticKeepAliveClientMixin, ProfileConsumer, ManifestConsumer, NotificationConsumer {
   DestinyProgressionDefinition definition;
   StreamSubscription<NotificationEvent> subscription;
 
@@ -43,7 +43,7 @@ class RankItemWidgetState<T extends RankItemWidget> extends State<T>
     
     progression = widget.progression;
     loadDefinitions();
-    subscription = widget.broadcaster.listen((event) {
+    subscription = notifications.listen((event) {
       if (event.type == NotificationType.receivedUpdate && mounted) {
         progression = profile
             .getCharacterProgression(widget.characterId)

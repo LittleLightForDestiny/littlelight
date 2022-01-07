@@ -13,7 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/services/notification/notification.service.dart';
+import 'package:little_light/services/notification/notification.package.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/generic_progress_bar.widget.dart';
@@ -27,7 +27,7 @@ class MilestoneItemWidget extends StatefulWidget {
   final String characterId;
 
   
-  final NotificationService broadcaster = NotificationService();
+  
 
   final DestinyMilestone milestone;
 
@@ -36,7 +36,7 @@ class MilestoneItemWidget extends StatefulWidget {
   MilestoneItemWidgetState createState() => MilestoneItemWidgetState();
 }
 
-class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T> with AutomaticKeepAliveClientMixin, ProfileConsumer, ManifestConsumer {
+class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T> with AutomaticKeepAliveClientMixin, ProfileConsumer, ManifestConsumer, NotificationConsumer {
   DestinyMilestoneDefinition definition;
   StreamSubscription<NotificationEvent> subscription;
   DestinyMilestone milestone;
@@ -50,7 +50,7 @@ class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T> w
 
     milestone = widget.milestone;
     loadDefinitions();
-    subscription = widget.broadcaster.listen((event) {
+    subscription = notifications.listen((event) {
       if (event.type == NotificationType.receivedUpdate && mounted) {
         milestone = profile.getCharacterProgression(widget.characterId).milestones["$hash"];
         setState(() {});

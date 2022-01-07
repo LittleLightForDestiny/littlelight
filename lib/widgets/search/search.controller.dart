@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/widgets.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/services/notification/notification.service.dart';
+import 'package:little_light/services/notification/notification.package.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/models/item_sort_parameter.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
@@ -43,7 +43,7 @@ List<BaseItemFilter> _replaceDefaultFilters(
   return finalList;
 }
 
-class SearchController extends ChangeNotifier with ProfileConsumer, ManifestConsumer {
+class SearchController extends ChangeNotifier with ProfileConsumer, ManifestConsumer, NotificationConsumer {
   List<ItemWithOwner> _unfilteredList;
   List<ItemWithOwner> _prefilteredList;
   List<ItemWithOwner> _filteredList;
@@ -158,7 +158,7 @@ class SearchController extends ChangeNotifier with ProfileConsumer, ManifestCons
 
   _init() {
     _reload();
-    _subscription = NotificationService().listen((event) {
+    _subscription = notifications.listen((event) {
       if (event.type == NotificationType.receivedUpdate) {
         _reload();
       }

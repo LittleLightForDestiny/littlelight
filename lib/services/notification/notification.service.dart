@@ -1,34 +1,11 @@
 import 'dart:async';
 
-import 'package:bungie_api/models/destiny_item_component.dart';
-import 'package:little_light/services/inventory/enums/transfer_error_type.dart';
+import 'package:get_it/get_it.dart';
 
-enum NotificationType {
-  localUpdate,
-  requestedTransfer,
-  requestedVaulting,
-  requestedEquip,
-  requestedUpdate,
-  receivedUpdate,
-  itemStateUpdate,
-  transferError,
-  equipError,
-  updateError
-}
+import 'events/notification.event.dart';
 
-class NotificationEvent {
-  final NotificationType type;
-  final DestinyItemComponent item;
-  final String characterId;
-  NotificationEvent(this.type, {this.item, this.characterId});
-  
-}
-
-class TransferErrorEvent extends NotificationEvent {
-  final TransferErrorType code;
-  TransferErrorEvent(NotificationType type,
-      {DestinyItemComponent item, String characterId, this.code})
-      : super(type, item: item, characterId: characterId);
+setupNotificationService(){
+  GetIt.I.registerSingleton<NotificationService>(NotificationService._internal());
 }
 
 class NotificationService {
@@ -36,11 +13,6 @@ class NotificationService {
   final StreamController<NotificationEvent> _streamController =
       new StreamController.broadcast();
 
-  static final NotificationService _singleton =
-      new NotificationService._internal();
-  factory NotificationService() {
-    return _singleton;
-  }
   NotificationService._internal();
 
   NotificationEvent latestNotification;

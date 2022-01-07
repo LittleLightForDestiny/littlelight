@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/pages/vendor_details.screen.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/services/notification/notification.service.dart';
+import 'package:little_light/services/notification/notification.package.dart';
 import 'package:little_light/services/profile/vendors.service.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
@@ -21,7 +21,6 @@ import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 class VendorsListItemWidget extends StatefulWidget {
   final String characterId;
 
-  final NotificationService broadcaster = NotificationService();
   final DestinyVendorComponent vendor;
 
   VendorsListItemWidget({Key key, this.characterId, this.vendor}) : super(key: key);
@@ -30,7 +29,7 @@ class VendorsListItemWidget extends StatefulWidget {
 }
 
 class VendorsListItemWidgetState<T extends VendorsListItemWidget> extends State<T>
-    with AutomaticKeepAliveClientMixin, ManifestConsumer {
+    with AutomaticKeepAliveClientMixin, ManifestConsumer, NotificationConsumer {
   DestinyVendorDefinition definition;
   StreamSubscription<NotificationEvent> subscription;
   List<DestinyVendorCategory> _categories;
@@ -42,7 +41,7 @@ class VendorsListItemWidgetState<T extends VendorsListItemWidget> extends State<
   void initState() {
     super.initState();
     loadDefinitions();
-    subscription = widget.broadcaster.listen((event) {
+    subscription = notifications.listen((event) {
       if (event.type == NotificationType.receivedUpdate && mounted) {}
     });
   }

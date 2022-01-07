@@ -7,7 +7,8 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/models/tracked_objective.dart';
 import 'package:little_light/pages/item_detail.screen.dart';
 import 'package:little_light/services/littlelight/objectives.service.dart';
-import 'package:little_light/services/notification/notification.service.dart';
+import 'package:little_light/services/notification/events/notification.event.dart';
+import 'package:little_light/services/notification/notification.package.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/profile/profile_component_groups.dart';
 import 'package:little_light/utils/media_query_helper.dart';
@@ -23,7 +24,7 @@ class ObjectivesScreen extends StatefulWidget {
   ObjectivesScreenState createState() => new ObjectivesScreenState();
 }
 
-class ObjectivesScreenState extends State<ObjectivesScreen> with ProfileConsumer{
+class ObjectivesScreenState extends State<ObjectivesScreen> with ProfileConsumer, NotificationConsumer{
   List<TrackedObjective> objectives;
   Map<TrackedObjective, DestinyItemComponent> items;
 
@@ -40,7 +41,7 @@ class ObjectivesScreenState extends State<ObjectivesScreen> with ProfileConsumer
     super.initState();
     loadObjectives();
     profile.updateComponents = ProfileComponentGroups.everything;
-    subscription = NotificationService().listen((event) {
+    subscription = notifications.listen((event) {
       if (event.type == NotificationType.receivedUpdate ||
           event.type == NotificationType.localUpdate) {
         loadObjectives();

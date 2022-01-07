@@ -20,7 +20,8 @@ import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/inventory/transfer_error.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/services/notification/notification.service.dart';
+import 'package:little_light/services/notification/notification.consumer.dart';
+import 'package:little_light/services/notification/notification.package.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/profile/profile_component_groups.dart';
 import 'package:little_light/utils/item_with_owner.dart';
@@ -32,20 +33,20 @@ setupInventoryService() {
   GetIt.I.registerSingleton(InventoryService._internal());
 }
 
-class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer {
+class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer, NotificationConsumer {
   InventoryService._internal();
   
-  final _broadcaster = NotificationService();
+  
 
   transfer(DestinyItemComponent item, String sourceCharacterId, ItemDestination destination,
       [String destinationCharacterId]) async {
-    _broadcaster
+    notifications
         .push(NotificationEvent(NotificationType.requestedTransfer, item: item, characterId: destinationCharacterId));
     profile.pauseAutomaticUpdater = true;
     try {
       await _transfer(item, sourceCharacterId, destination, destinationCharacterId: destinationCharacterId);
     } catch (e) {
-      _broadcaster
+      notifications
           .push(NotificationEvent(NotificationType.transferError, item: item, characterId: destinationCharacterId));
       await Future.delayed(Duration(seconds: 3));
     }
@@ -56,18 +57,18 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
 
   equip(DestinyItemComponent item, String sourceCharacterId, String destinationCharacterId) async {
     profile.pauseAutomaticUpdater = true;
-    _broadcaster
+    notifications
         .push(NotificationEvent(NotificationType.requestedTransfer, item: item, characterId: destinationCharacterId));
     try {
       await _transfer(item, sourceCharacterId, ItemDestination.Character,
           destinationCharacterId: destinationCharacterId);
 
-      _broadcaster
+      notifications
           .push(NotificationEvent(NotificationType.requestedEquip, item: item, characterId: destinationCharacterId));
 
       await _equip(item, destinationCharacterId);
     } catch (e) {
-      _broadcaster
+      notifications
           .push(NotificationEvent(NotificationType.equipError, item: item, characterId: destinationCharacterId));
       await Future.delayed(Duration(seconds: 2));
     }
@@ -98,13 +99,13 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
           ownerId == destinationCharacterId &&
           item.item.bucketHash != InventoryBucket.lostItems) continue;
       if (def.nonTransferrable) continue;
-      _broadcaster.push(
+      notifications.push(
           NotificationEvent(NotificationType.requestedTransfer, item: item.item, characterId: destinationCharacterId));
       try {
         await _transfer(item.item, ownerId, destination,
             destinationCharacterId: destinationCharacterId, idsToAvoid: idsToAvoid, hashesToAvoid: hashesToAvoid);
       } catch (e) {
-        _broadcaster.push(
+        notifications.push(
             NotificationEvent(NotificationType.transferError, item: item.item, characterId: destinationCharacterId));
         await Future.delayed(Duration(seconds: 3));
       }
@@ -140,7 +141,7 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
     }).toList();
     await transferMultiple(itemsToTransfer, ItemDestination.Character, destinationCharacterId, true);
 
-    _broadcaster.push(NotificationEvent(NotificationType.requestedEquip, characterId: destinationCharacterId));
+    notifications.push(NotificationEvent(NotificationType.requestedEquip, characterId: destinationCharacterId));
 
     await _equipMultiple(itemsToEquip.map((i) => i.item).toList(), destinationCharacterId);
 
@@ -184,7 +185,7 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
       if (def.nonTransferrable) continue;
 
       ItemDestination destination = character == null ? ItemDestination.Vault : ItemDestination.Character;
-      _broadcaster.push(NotificationEvent(NotificationType.requestedTransfer, item: item, characterId: characterId));
+      notifications.push(NotificationEvent(NotificationType.requestedTransfer, item: item, characterId: characterId));
 
       try {
         await _transfer(item, ownerId, destination, destinationCharacterId: characterId, idsToAvoid: idsToAvoid);
@@ -194,7 +195,7 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
     }
 
     if (andEquip && itemsToEquip.length > 0) {
-      _broadcaster.push(NotificationEvent(NotificationType.requestedEquip, characterId: characterId));
+      notifications.push(NotificationEvent(NotificationType.requestedEquip, characterId: characterId));
       try {
         await _equipMultiple(itemsToEquip, characterId);
       } catch (e) {
@@ -209,7 +210,7 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
       if (def.nonTransferrable) continue;
 
       ItemDestination destination = character == null ? ItemDestination.Vault : ItemDestination.Character;
-      _broadcaster.push(NotificationEvent(NotificationType.requestedTransfer, item: item, characterId: characterId));
+      notifications.push(NotificationEvent(NotificationType.requestedTransfer, item: item, characterId: characterId));
       try {
         await _transfer(item, ownerId, destination, destinationCharacterId: characterId, idsToAvoid: idsToAvoid);
       } catch (e) {
@@ -511,7 +512,7 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
     var itemsToRemove = min(count - freeSlots, items.length);
     for (var i = 0; i < itemsToRemove; i++) {
       try {
-        _broadcaster
+        notifications
             .push(NotificationEvent(NotificationType.requestedVaulting, item: items[i], characterId: characterId));
         await _transfer(items[i], characterId, ItemDestination.Vault);
       } catch (e) {
@@ -607,11 +608,11 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
         (i) => i.itemHash == item.item.itemHash && i.itemInstanceId == item.item.itemInstanceId,
         orElse: () => null);
     profileItem.state = item?.item?.state;
-    _broadcaster.push(new NotificationEvent(NotificationType.itemStateUpdate, item: item.item));
+    notifications.push(new NotificationEvent(NotificationType.itemStateUpdate, item: item.item));
     await bungieAPI.changeLockState(item?.item?.itemInstanceId, ownerId, locked);
   }
 
   fireLocalUpdate() {
-    _broadcaster.push(new NotificationEvent(NotificationType.localUpdate));
+    notifications.push(new NotificationEvent(NotificationType.localUpdate));
   }
 }

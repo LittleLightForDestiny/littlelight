@@ -14,7 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/services/notification/notification.service.dart';
+import 'package:little_light/services/notification/notification.package.dart';
 import 'package:little_light/services/profile/destiny_settings.service.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
@@ -27,10 +27,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:speech_bubble/speech_bubble.dart';
 
 class CharacterInfoWidget extends StatefulWidget {
-  
-
   final String characterId;
-  final NotificationService broadcaster = NotificationService();
 
   CharacterInfoWidget({this.characterId, Key key}) : super(key: key);
 
@@ -40,7 +37,8 @@ class CharacterInfoWidget extends StatefulWidget {
   }
 }
 
-class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> with UserSettingsConsumer, ProfileConsumer, ManifestConsumer {
+class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T>
+    with UserSettingsConsumer, ProfileConsumer, ManifestConsumer, NotificationConsumer {
   DestinyClassDefinition classDef;
   DestinyRaceDefinition raceDef;
   DestinyCharacterComponent character;
@@ -54,7 +52,7 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> w
 
     character = profile.getCharacter(widget.characterId);
     loadDefinitions();
-    subscription = widget.broadcaster.listen((event) {
+    subscription = notifications.listen((event) {
       if (event.type == NotificationType.receivedUpdate && mounted) {
         character = profile.getCharacter(widget.characterId);
         setState(() {});
@@ -222,7 +220,9 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> w
                 ),
                 artifactLevel == 0
                     ? Container()
-                    : Text(" +$artifactLevel", style: TextStyle(fontWeight: FontWeight.bold, color: LittleLightTheme.of(context).upgradeLayers))
+                    : Text(" +$artifactLevel",
+                        style:
+                            TextStyle(fontWeight: FontWeight.bold, color: LittleLightTheme.of(context).upgradeLayers))
               ],
             )
           ],
