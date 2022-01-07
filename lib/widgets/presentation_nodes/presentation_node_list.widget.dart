@@ -8,14 +8,12 @@ import 'package:bungie_api/models/destiny_presentation_node_metric_child_entry.d
 import 'package:bungie_api/models/destiny_presentation_node_record_child_entry.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 
 typedef StaggeredTile PresentationNodeTileBuilder(CollectionListItem item);
-typedef Widget PresentationNodeItemBuilder(
-    CollectionListItem item, int depth, bool isCategorySet);
+typedef Widget PresentationNodeItemBuilder(CollectionListItem item, int depth, bool isCategorySet);
 
 class PresentationNodeListWidget extends StatefulWidget {
-  final ManifestService manifest = new ManifestService();
   final int presentationNodeHash;
   final PresentationNodeTileBuilder tileBuilder;
   final PresentationNodeItemBuilder itemBuilder;
@@ -35,8 +33,7 @@ class PresentationNodeListWidget extends StatefulWidget {
   }
 }
 
-class PresentationNodeListWidgetState
-    extends State<PresentationNodeListWidget> {
+class PresentationNodeListWidgetState extends State<PresentationNodeListWidget> with ManifestConsumer {
   DestinyPresentationNodeDefinition definition;
   Map<int, DestinyPresentationNodeDefinition> _presentationNodeDefinitions;
 
@@ -51,41 +48,31 @@ class PresentationNodeListWidgetState
   }
 
   void buildIndex() async {
-    definition = await widget.manifest
-        .getDefinition<DestinyPresentationNodeDefinition>(
-            widget.presentationNodeHash);
+    definition = await manifest.getDefinition<DestinyPresentationNodeDefinition>(widget.presentationNodeHash);
     if (presentationNodes.length > 0) {
-      List<int> hashes =
-          presentationNodes.map((node) => node.presentationNodeHash).toList();
-      _presentationNodeDefinitions = await widget.manifest
-          .getDefinitions<DestinyPresentationNodeDefinition>(hashes);
+      List<int> hashes = presentationNodes.map((node) => node.presentationNodeHash).toList();
+      _presentationNodeDefinitions = await manifest.getDefinitions<DestinyPresentationNodeDefinition>(hashes);
     }
     listIndex = [];
     presentationNodes.forEach((node) {
-      listIndex.add(CollectionListItem(
-          CollectionListItemType.presentationNode, node.presentationNodeHash));
+      listIndex.add(CollectionListItem(CollectionListItemType.presentationNode, node.presentationNodeHash));
       var def = _presentationNodeDefinitions[node.presentationNodeHash];
       if (widget.isCategorySets) {
         def?.children?.collectibles?.forEach((collectible) {
-          listIndex.add(CollectionListItem(
-              CollectionListItemType.nestedCollectible,
-              collectible.collectibleHash));
+          listIndex.add(CollectionListItem(CollectionListItemType.nestedCollectible, collectible.collectibleHash));
         });
       }
     });
     collectibles.forEach((collectible) {
-      listIndex.add(CollectionListItem(
-          CollectionListItemType.collectible, collectible.collectibleHash));
+      listIndex.add(CollectionListItem(CollectionListItemType.collectible, collectible.collectibleHash));
     });
 
     records.forEach((record) {
-      listIndex.add(
-          CollectionListItem(CollectionListItemType.record, record.recordHash));
+      listIndex.add(CollectionListItem(CollectionListItemType.record, record.recordHash));
     });
 
     metrics.forEach((metric) {
-      listIndex.add(
-          CollectionListItem(CollectionListItemType.metric, metric.metricHash));
+      listIndex.add(CollectionListItem(CollectionListItemType.metric, metric.metricHash));
     });
     if (mounted) {
       setState(() {});
@@ -98,9 +85,7 @@ class PresentationNodeListWidgetState
 
     return StaggeredGridView.countBuilder(
       padding: EdgeInsets.all(4).copyWith(
-          left: max(screenPadding.left, 4),
-          right: max(screenPadding.right, 4),
-          bottom: 4 + screenPadding.bottom),
+          left: max(screenPadding.left, 4), right: max(screenPadding.right, 4), bottom: 4 + screenPadding.bottom),
       crossAxisCount: 30,
       itemCount: count,
       itemBuilder: (BuildContext context, int index) => getItem(context, index),
@@ -117,20 +102,15 @@ class PresentationNodeListWidgetState
   }
 
   bool get isCategorySets =>
-      widget.isCategorySets ||
-      definition?.screenStyle == DestinyPresentationScreenStyle.CategorySets;
+      widget.isCategorySets || definition?.screenStyle == DestinyPresentationScreenStyle.CategorySets;
 
-  List<DestinyPresentationNodeChildEntry> get presentationNodes =>
-      definition?.children?.presentationNodes;
+  List<DestinyPresentationNodeChildEntry> get presentationNodes => definition?.children?.presentationNodes;
 
-  List<DestinyPresentationNodeCollectibleChildEntry> get collectibles =>
-      definition?.children?.collectibles;
+  List<DestinyPresentationNodeCollectibleChildEntry> get collectibles => definition?.children?.collectibles;
 
-  List<DestinyPresentationNodeRecordChildEntry> get records =>
-      definition?.children?.records;
+  List<DestinyPresentationNodeRecordChildEntry> get records => definition?.children?.records;
 
-  List<DestinyPresentationNodeMetricChildEntry> get metrics =>
-      definition?.children?.metrics;
+  List<DestinyPresentationNodeMetricChildEntry> get metrics => definition?.children?.metrics;
 
   int get count => listIndex?.length ?? 0;
 
@@ -140,14 +120,7 @@ class PresentationNodeListWidgetState
   }
 }
 
-enum CollectionListItemType {
-  presentationNode,
-  collectible,
-  nestedCollectible,
-  nestedRecord,
-  record,
-  metric
-}
+enum CollectionListItemType { presentationNode, collectible, nestedCollectible, nestedRecord, record, metric }
 
 class CollectionListItem {
   final CollectionListItemType type;

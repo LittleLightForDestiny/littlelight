@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/pages/item_detail.screen.dart';
 import 'package:little_light/services/littlelight/item_notes.service.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/selection/selection.service.dart';
@@ -26,7 +26,7 @@ import 'package:little_light/widgets/item_tags/item_tag.widget.dart';
 class PursuitItemWidget extends StatefulWidget {
   final String characterId;
 
-  final ManifestService manifest = ManifestService();
+  
   final NotificationService broadcaster = NotificationService();
   final Widget trailing;
   final DestinyItemComponent item;
@@ -55,7 +55,7 @@ class PursuitItemWidget extends StatefulWidget {
   PursuitItemWidgetState createState() => PursuitItemWidgetState();
 }
 
-class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T> with UserSettingsConsumer, ProfileConsumer {
+class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T> with UserSettingsConsumer, ProfileConsumer, ManifestConsumer {
   DestinyInventoryItemDefinition definition;
   Map<int, DestinyObjectiveDefinition> objectiveDefinitions;
   List<DestinyObjectiveProgress> itemObjectives;
@@ -97,10 +97,10 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T> with 
   }
 
   Future<void> loadDefinitions() async {
-    definition = await widget.manifest
+    definition = await manifest
         .getDefinition<DestinyInventoryItemDefinition>(hash);
     if ((itemObjectives?.length ?? 0) > 0) {
-      objectiveDefinitions = await widget.manifest
+      objectiveDefinitions = await manifest
           .getDefinitions<DestinyObjectiveDefinition>(
               itemObjectives?.map((o) => o.objectiveHash));
     }

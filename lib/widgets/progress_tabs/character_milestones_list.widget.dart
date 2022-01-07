@@ -1,7 +1,7 @@
 import 'package:bungie_api/models/destiny_milestone.dart';
 import 'package:bungie_api/models/destiny_milestone_definition.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/widgets/item_list/character_info.widget.dart';
 import 'package:little_light/widgets/progress_tabs/milestone_item.widget.dart';
@@ -10,7 +10,7 @@ import 'package:little_light/widgets/progress_tabs/milestone_raid_item.widget.da
 class CharacterMilestonesListWidget extends StatefulWidget {
   final String characterId;
 
-  final ManifestService manifest = ManifestService();
+  
 
   CharacterMilestonesListWidget({Key key, this.characterId}) : super(key: key);
 
@@ -19,7 +19,7 @@ class CharacterMilestonesListWidget extends StatefulWidget {
 }
 
 class _CharacterMilestonesListWidgetState
-    extends State<CharacterMilestonesListWidget> with ProfileConsumer{
+    extends State<CharacterMilestonesListWidget> with ProfileConsumer, ManifestConsumer {
   List<int> raidHashes = [
     3660836525,
     2986584050,
@@ -42,7 +42,7 @@ class _CharacterMilestonesListWidgetState
     milestones =
         profile.getCharacterProgression(widget.characterId).milestones;
     var hashes = milestones.values.map((m) => m.milestoneHash);
-    milestoneDefinitions = await widget.manifest
+    milestoneDefinitions = await manifest
         .getDefinitions<DestinyMilestoneDefinition>(hashes);
     if (!mounted) {
       return;

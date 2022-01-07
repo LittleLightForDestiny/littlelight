@@ -3,12 +3,12 @@ import 'package:bungie_api/models/destiny_objective_definition.dart';
 import 'package:bungie_api/models/destiny_objective_progress.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
 class MasterworkCounterWidget extends StatefulWidget {
-  final ManifestService manifest = ManifestService();
+  
 
   final DestinyItemComponent item;
 
@@ -21,7 +21,7 @@ class MasterworkCounterWidget extends StatefulWidget {
 }
 
 class MasterworkCounterWidgetState extends State<MasterworkCounterWidget>
-    with AutomaticKeepAliveClientMixin, ProfileConsumer {
+    with AutomaticKeepAliveClientMixin, ProfileConsumer, ManifestConsumer {
   DestinyObjectiveProgress masterworkObjective;
   DestinyObjectiveDefinition masterworkObjectiveDefinition;
 
@@ -38,7 +38,7 @@ class MasterworkCounterWidgetState extends State<MasterworkCounterWidget>
       for (var objective in objectives) {
         if (objective.visible) {
           masterworkObjective = objective;
-          masterworkObjectiveDefinition = await widget.manifest
+          masterworkObjectiveDefinition = await manifest
               .getDefinition<DestinyObjectiveDefinition>(
                   objective.objectiveHash);
         }

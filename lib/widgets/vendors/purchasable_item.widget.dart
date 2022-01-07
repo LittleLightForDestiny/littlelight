@@ -13,7 +13,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/pages/item_detail.screen.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/profile/vendors.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
@@ -41,7 +41,7 @@ class PurchasableItemWidget extends StatefulWidget {
   }
 }
 
-class PurchasableItemWidgetState extends State<PurchasableItemWidget> with WishlistsConsumer, ProfileConsumer {
+class PurchasableItemWidgetState extends State<PurchasableItemWidget> with WishlistsConsumer, ProfileConsumer, ManifestConsumer {
   DestinyInventoryItemDefinition definition;
   List<DestinyItemSocketState> sockets;
   DestinyItemInstanceComponent instanceInfo;
@@ -55,7 +55,7 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget> with Wishl
   }
 
   void loadDefinitions() async {
-    definition = await ManifestService().getDefinition<DestinyInventoryItemDefinition>(widget.item.itemHash);
+    definition = await manifest.getDefinition<DestinyInventoryItemDefinition>(widget.item.itemHash);
     sockets =
         await VendorsService().getSaleItemSockets(widget.characterId, widget.vendorHash, widget?.item?.vendorItemIndex);
     instanceInfo = await VendorsService()

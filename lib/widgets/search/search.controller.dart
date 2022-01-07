@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/widgets.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/models/item_sort_parameter.dart';
@@ -43,7 +43,7 @@ List<BaseItemFilter> _replaceDefaultFilters(
   return finalList;
 }
 
-class SearchController extends ChangeNotifier with ProfileConsumer{
+class SearchController extends ChangeNotifier with ProfileConsumer, ManifestConsumer {
   List<ItemWithOwner> _unfilteredList;
   List<ItemWithOwner> _prefilteredList;
   List<ItemWithOwner> _filteredList;
@@ -246,7 +246,7 @@ class SearchController extends ChangeNotifier with ProfileConsumer{
         .map((item) => item?.item?.itemHash)
         .where((i) => i != null)
         .toSet();
-    var _defs = await ManifestService()
+    var _defs = await manifest
         .getDefinitions<DestinyInventoryItemDefinition>(
             hashes?.where((element) => element != null));
     return _defs;
@@ -263,7 +263,7 @@ class SearchController extends ChangeNotifier with ProfileConsumer{
         hashes.addAll(plug?.map((p) => p.plugItemHash) ?? []);
       });
     });
-    var _defs = await ManifestService()
+    var _defs = await manifest
         .getDefinitions<DestinyInventoryItemDefinition>(
             hashes?.where((element) => element != null));
     return _defs;

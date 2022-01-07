@@ -13,7 +13,7 @@ import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enu
 import 'package:little_light/services/inventory/enums/item_destination.dart';
 import 'package:little_light/services/inventory/inventory.consumer.dart';
 import 'package:little_light/services/inventory/inventory.package.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/selection/selection.service.dart';
@@ -41,7 +41,7 @@ import 'package:uuid/uuid.dart';
 enum ContentDensity { MINIMAL, MEDIUM, FULL }
 
 class InventoryItemWrapperWidget extends StatefulWidget {
-  final ManifestService manifest = ManifestService();
+  
 
   final DestinyItemComponent item;
   final String characterId;
@@ -58,7 +58,7 @@ class InventoryItemWrapperWidget extends StatefulWidget {
 }
 
 class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
-    extends State<T> with UserSettingsConsumer, ProfileConsumer, InventoryConsumer {
+    extends State<T> with UserSettingsConsumer, ProfileConsumer, InventoryConsumer, ManifestConsumer {
   DestinyInventoryItemDefinition definition;
   String uniqueId;
   bool selected = false;
@@ -75,7 +75,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
   @override
   void initState() {
     uniqueId = Uuid().v4();
-    this.definition = widget.manifest
+    this.definition = manifest
         .getDefinitionFromCache<DestinyInventoryItemDefinition>(
             widget?.item?.itemHash);
 
@@ -117,7 +117,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
     if (widget.item == null) {
       return false;
     }
-    return widget.manifest
+    return manifest
         .isLoaded<DestinyInventoryItemDefinition>(widget.item.itemHash);
   }
 
@@ -140,7 +140,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
         return;
       }
     }
-    definition = await widget.manifest
+    definition = await manifest
         .getDefinition<DestinyInventoryItemDefinition>(widget.item.itemHash);
     if (mounted) {
       setState(() {});
@@ -207,7 +207,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
   }
 
   void onEmptyTap(BuildContext context) async {
-    var bucketDef = await widget.manifest
+    var bucketDef = await manifest
         .getDefinition<DestinyInventoryBucketDefinition>(widget.bucketHash);
     var character = profile.getCharacter(widget.characterId);
     ItemWithOwner item = await Navigator.push(

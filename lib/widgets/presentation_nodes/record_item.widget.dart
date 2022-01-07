@@ -13,13 +13,13 @@ import 'package:little_light/pages/record_detail.screen.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/littlelight/objectives.service.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/widgets/common/objective.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
 class RecordItemWidget extends StatefulWidget {
-  final ManifestService manifest = new ManifestService();
+  
   final int hash;
   RecordItemWidget({Key key, this.hash}) : super(key: key);
 
@@ -30,7 +30,7 @@ class RecordItemWidget extends StatefulWidget {
 }
 
 class RecordItemWidgetState extends State<RecordItemWidget>
-    with AutomaticKeepAliveClientMixin, AuthConsumer, ProfileConsumer {
+    with AutomaticKeepAliveClientMixin, AuthConsumer, ProfileConsumer, ManifestConsumer {
   DestinyRecordDefinition _definition;
   bool isLogged = false;
   Map<int, DestinyObjectiveDefinition> objectiveDefinitions;
@@ -38,7 +38,7 @@ class RecordItemWidgetState extends State<RecordItemWidget>
   bool isTracking = false;
 
   DestinyRecordDefinition get definition {
-    return widget.manifest
+    return manifest
             .getDefinitionFromCache<DestinyRecordDefinition>(widget.hash) ??
         _definition;
   }
@@ -64,7 +64,6 @@ class RecordItemWidgetState extends State<RecordItemWidget>
 
   loadDefinitions() async {
     isLogged = auth.isLogged;
-    var manifest = ManifestService();
     if (this.definition == null) {
       _definition =
           await manifest.getDefinition<DestinyRecordDefinition>(widget.hash);

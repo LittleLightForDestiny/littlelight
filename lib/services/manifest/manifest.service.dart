@@ -14,7 +14,7 @@ import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/bungie_api/enums/definition_table_names.enum.dart';
 import 'package:little_light/services/language/language.consumer.dart';
-import 'package:little_light/services/manifest/manifest.consumer.dart';
+
 import 'package:little_light/services/manifest/manifest_download_progress.dart';
 import 'package:little_light/services/storage/export.dart';
 import 'package:path_provider/path_provider.dart';
@@ -30,13 +30,9 @@ class ManifestService with StorageConsumer, LanguageConsumer, BungieApiConsumer,
   DestinyManifest _manifestInfo;
   final Map<String, dynamic> _cached = Map();
 
-  factory ManifestService() {
-    return getInjectedManifestService();
-  }
-
   ManifestService._internal();
 
-  Future<void> reset() async {
+  Future<void> setup() async {
     _cached.clear();
     if (_db?.isOpen ?? false) {
       await _db.close();

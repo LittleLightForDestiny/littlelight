@@ -11,13 +11,13 @@ import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/language/language.consumer.dart';
 import 'package:little_light/services/littlelight/objectives.service.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
 class MetricItemWidget extends StatefulWidget {
-  final ManifestService manifest = new ManifestService();
+  
   final int hash;
   MetricItemWidget({Key key, this.hash}) : super(key: key);
 
@@ -27,7 +27,7 @@ class MetricItemWidget extends StatefulWidget {
   }
 }
 
-class MetricItemWidgetState extends State<MetricItemWidget> with AuthConsumer, LanguageConsumer, ProfileConsumer {
+class MetricItemWidgetState extends State<MetricItemWidget> with AuthConsumer, LanguageConsumer, ProfileConsumer, ManifestConsumer {
   DestinyMetricDefinition _definition;
   bool isLogged = false;
   Map<int, DestinyObjectiveDefinition> objectiveDefinitions;
@@ -35,7 +35,7 @@ class MetricItemWidgetState extends State<MetricItemWidget> with AuthConsumer, L
   bool isTracking = false;
 
   DestinyMetricDefinition get definition {
-    return widget.manifest
+    return manifest
             .getDefinitionFromCache<DestinyMetricDefinition>(widget.hash) ??
         _definition;
   }
@@ -65,7 +65,6 @@ class MetricItemWidgetState extends State<MetricItemWidget> with AuthConsumer, L
 
   loadDefinitions() async {
     isLogged = auth.isLogged;
-    var manifest = ManifestService();
     if (this.definition == null) {
       _definition =
           await manifest.getDefinition<DestinyMetricDefinition>(widget.hash);

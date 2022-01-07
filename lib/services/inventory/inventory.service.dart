@@ -19,7 +19,7 @@ import 'package:little_light/models/loadout.dart';
 import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/inventory/transfer_error.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/profile/profile_component_groups.dart';
@@ -32,9 +32,9 @@ setupInventoryService() {
   GetIt.I.registerSingleton(InventoryService._internal());
 }
 
-class InventoryService with BungieApiConsumer, ProfileConsumer {
+class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer {
   InventoryService._internal();
-  final manifest = ManifestService();
+  
   final _broadcaster = NotificationService();
 
   transfer(DestinyItemComponent item, String sourceCharacterId, ItemDestination destination,
@@ -120,7 +120,7 @@ class InventoryService with BungieApiConsumer, ProfileConsumer {
     profile.pauseAutomaticUpdater = true;
     DestinyCharacterComponent character = profile.getCharacter(destinationCharacterId);
     List<ItemWithOwner> itemsToTransfer = itemStates.where((i) {
-      var def = ManifestService().getDefinitionFromCache<DestinyInventoryItemDefinition>(i?.item?.itemHash);
+      var def = manifest.getDefinitionFromCache<DestinyInventoryItemDefinition>(i?.item?.itemHash);
       if (def?.equippable == false) return false;
       if (def?.nonTransferrable == true && i?.ownerId != character.characterId) return false;
       if (![character?.classType, DestinyClass.Unknown].contains(def?.classType)) return false;
@@ -129,7 +129,7 @@ class InventoryService with BungieApiConsumer, ProfileConsumer {
     Set<int> ocuppiedBuckets = Set();
     Set<DestinyItemType> ocuppiedExoticTypes = Set();
     List<ItemWithOwner> itemsToEquip = itemsToTransfer.where((i) {
-      var def = ManifestService().getDefinitionFromCache<DestinyInventoryItemDefinition>(i?.item?.itemHash);
+      var def = manifest.getDefinitionFromCache<DestinyInventoryItemDefinition>(i?.item?.itemHash);
       if (ocuppiedBuckets.contains(def?.inventory?.bucketTypeHash)) return false;
       if (def?.inventory?.tierType == TierType.Exotic) {
         if (ocuppiedExoticTypes.contains(def?.itemType)) return false;

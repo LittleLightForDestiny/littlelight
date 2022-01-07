@@ -22,7 +22,7 @@ class SelectLoadoutBackgroundScreen extends PresentationNodeScreen {
 class SelectLoadoutBackgroundScreenState extends PresentationNodeScreenState {
   @override
   loadDefinition() async {
-    DestinyPresentationNodeDefinition rootDefinition = await widget.manifest
+    DestinyPresentationNodeDefinition rootDefinition = await manifest
         .getDefinition<DestinyPresentationNodeDefinition>(
             widget.presentationNodeHash);
     await loadNestedDefinitions(rootDefinition);
@@ -54,13 +54,13 @@ class SelectLoadoutBackgroundScreenState extends PresentationNodeScreenState {
     Iterable<int> collectibleHashes = definition.children.collectibles
         .map((collectible) => collectible.collectibleHash)
         .toList();
-    var collectibleDefs = await widget.manifest
+    var collectibleDefs = await manifest
         .getDefinitions<DestinyCollectibleDefinition>(collectibleHashes);
     var emblemHashes =
         collectibleDefs.values.map((def) => def.itemHash).toList();
-    await widget.manifest
+    await manifest
         .getDefinitions<DestinyInventoryItemDefinition>(emblemHashes);
-    var nodeDefs = await widget.manifest
+    var nodeDefs = await manifest
         .getDefinitions<DestinyPresentationNodeDefinition>(nodeHashes);
     for (var def in nodeDefs.values) {
       await loadNestedDefinitions(def);

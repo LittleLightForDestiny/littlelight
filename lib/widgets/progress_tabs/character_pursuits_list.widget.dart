@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/models/bucket_display_options.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
@@ -23,7 +23,7 @@ import 'package:little_light/widgets/progress_tabs/pursuit_item/small_pursuit_it
 class CharacterPursuitsListWidget extends StatefulWidget {
   final String characterId;
 
-  final ManifestService manifest = ManifestService();
+  
   final NotificationService broadcaster = NotificationService();
 
   CharacterPursuitsListWidget({Key key, this.characterId}) : super(key: key);
@@ -52,7 +52,7 @@ class _PursuitListItem {
 
 class _CharacterPursuitsListWidgetState
     extends State<CharacterPursuitsListWidget>
-    with AutomaticKeepAliveClientMixin, UserSettingsConsumer, ProfileConsumer {
+    with AutomaticKeepAliveClientMixin, UserSettingsConsumer, ProfileConsumer, ManifestConsumer {
   List<_PursuitListItem> items;
   StreamSubscription<NotificationEvent> subscription;
   bool fullyLoaded = false;
@@ -81,7 +81,7 @@ class _CharacterPursuitsListWidgetState
         .where((i) => i.bucketHash == InventoryBucket.pursuits)
         .toList();
     var pursuitHashes = pursuits.map((i) => i.itemHash);
-    var defs = await widget.manifest
+    var defs = await manifest
         .getDefinitions<DestinyInventoryItemDefinition>(pursuitHashes);
     pursuits = (await InventoryUtils.sortDestinyItems(
             pursuits.map((p) => ItemWithOwner(p, null)),

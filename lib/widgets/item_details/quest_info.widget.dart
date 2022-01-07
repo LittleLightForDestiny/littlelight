@@ -5,6 +5,7 @@ import 'package:bungie_api/models/destiny_objective_definition.dart';
 import 'package:bungie_api/models/destiny_objective_progress.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
@@ -33,7 +34,7 @@ class QuestInfoWidget extends BaseDestinyStatefulItemWidget{
   }
 }
 
-class QuestInfoWidgetState extends BaseDestinyItemState<QuestInfoWidget> with ProfileConsumer{
+class QuestInfoWidgetState extends BaseDestinyItemState<QuestInfoWidget> with ProfileConsumer, ManifestConsumer {
   DestinyInventoryItemDefinition questlineDefinition;
   Map<int, DestinyInventoryItemDefinition> questSteps;
   Map<int, DestinyObjectiveDefinition> objectiveDefinitions;
@@ -51,7 +52,7 @@ class QuestInfoWidgetState extends BaseDestinyItemState<QuestInfoWidget> with Pr
   loadDefinitions() async {
     itemObjectives = profile
         .getItemObjectives(item?.itemInstanceId, characterId, item?.itemHash);
-    questlineDefinition = await widget.manifest
+    questlineDefinition = await manifest
         .getDefinition<DestinyInventoryItemDefinition>(
             definition.objectives.questlineItemHash);
     List<int> stepHashes = questlineDefinition.setData?.itemList
@@ -59,11 +60,11 @@ class QuestInfoWidgetState extends BaseDestinyItemState<QuestInfoWidget> with Pr
             ?.toList() ??
         [];
     currentIndex = stepHashes.indexOf(item.itemHash);
-    questSteps = await widget.manifest
+    questSteps = await manifest
         .getDefinitions<DestinyInventoryItemDefinition>(stepHashes);
     Iterable<int> objectiveHashes =
         questSteps.values.expand((step) => step.objectives.objectiveHashes);
-    objectiveDefinitions = await widget.manifest
+    objectiveDefinitions = await manifest
         .getDefinitions<DestinyObjectiveDefinition>(objectiveHashes);
     setState(() {});
   }

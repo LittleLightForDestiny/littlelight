@@ -2,7 +2,7 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
+
 
 abstract class DestinyItemWidget extends StatelessWidget {
   final DestinyItemComponent item;
@@ -10,7 +10,7 @@ abstract class DestinyItemWidget extends StatelessWidget {
   final DestinyItemInstanceComponent instanceInfo;
   final String characterId;
 
-  final ManifestService manifest = new ManifestService();
+  
 
   DestinyItemWidget(this.item, this.definition, this.instanceInfo,
       {Key key, this.characterId})

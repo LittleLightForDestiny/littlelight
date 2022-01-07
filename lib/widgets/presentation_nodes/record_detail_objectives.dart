@@ -7,7 +7,7 @@ import 'package:bungie_api/models/destiny_record_component.dart';
 import 'package:bungie_api/models/destiny_record_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/profile/profile_component_groups.dart';
@@ -17,7 +17,7 @@ import 'package:little_light/widgets/common/translated_text.widget.dart';
 
 
 class RecordObjectivesWidget extends StatefulWidget {
-  final ManifestService manifest = new ManifestService();
+  
 
   final NotificationService broadcaster = new NotificationService();
   final DestinyRecordDefinition definition;
@@ -30,7 +30,7 @@ class RecordObjectivesWidget extends StatefulWidget {
   }
 }
 
-class RecordObjectivesWidgetState extends State<RecordObjectivesWidget> with AuthConsumer, ProfileConsumer {
+class RecordObjectivesWidgetState extends State<RecordObjectivesWidget> with AuthConsumer, ProfileConsumer, ManifestConsumer {
   bool isLogged = false;
   Map<int, DestinyObjectiveDefinition> objectiveDefinitions;
   StreamSubscription<NotificationEvent> subscription;
@@ -66,7 +66,6 @@ class RecordObjectivesWidgetState extends State<RecordObjectivesWidget> with Aut
   }
 
   loadDefinitions() async {
-    var manifest = ManifestService();
     if (definition?.objectiveHashes != null) {
       objectiveDefinitions =
           await manifest.getDefinitions<DestinyObjectiveDefinition>(

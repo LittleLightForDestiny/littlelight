@@ -1,7 +1,7 @@
 import 'package:bungie_api/enums/destiny_presentation_screen_style.dart';
 import 'package:bungie_api/models/destiny_presentation_node_definition.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
@@ -9,7 +9,6 @@ import 'package:little_light/widgets/presentation_nodes/presentation_node_body.w
 import 'package:little_light/widgets/presentation_nodes/presentation_node_list.widget.dart';
 
 class PresentationNodeTabsWidget extends StatefulWidget {
-  final _manifest = new ManifestService();
   final int presentationNodeHash;
   final List<int> presentationNodeHashes;
   final int depth;
@@ -28,12 +27,10 @@ class PresentationNodeTabsWidget extends StatefulWidget {
       this.isCategorySet = false});
 
   @override
-  PresentationNodeTabsWidgetState createState() =>
-      new PresentationNodeTabsWidgetState();
+  PresentationNodeTabsWidgetState createState() => new PresentationNodeTabsWidgetState();
 }
 
-class PresentationNodeTabsWidgetState
-    extends State<PresentationNodeTabsWidget> {
+class PresentationNodeTabsWidgetState extends State<PresentationNodeTabsWidget> with ManifestConsumer {
   DestinyPresentationNodeDefinition definition;
   @override
   void initState() {
@@ -44,9 +41,7 @@ class PresentationNodeTabsWidgetState
   }
 
   loadDefinition() async {
-    definition = await widget._manifest
-        .getDefinition<DestinyPresentationNodeDefinition>(
-            widget.presentationNodeHash);
+    definition = await manifest.getDefinition<DestinyPresentationNodeDefinition>(widget.presentationNodeHash);
     if (mounted) {
       setState(() {});
     }
@@ -54,9 +49,7 @@ class PresentationNodeTabsWidgetState
 
   List<int> get nodeHashes =>
       widget.presentationNodeHashes ??
-      definition?.children?.presentationNodes
-          ?.map((p) => p.presentationNodeHash)
-          ?.toList();
+      definition?.children?.presentationNodes?.map((p) => p.presentationNodeHash)?.toList();
 
   @override
   Widget build(BuildContext context) {
@@ -75,9 +68,7 @@ class PresentationNodeTabsWidgetState
         presentationNodeHash: nodeHashes[0],
         itemBuilder: widget.itemBuilder,
         tileBuilder: widget.tileBuilder,
-        isCategorySet: widget.isCategorySet ||
-            definition.screenStyle ==
-                DestinyPresentationScreenStyle.CategorySets,
+        isCategorySet: widget.isCategorySet || definition.screenStyle == DestinyPresentationScreenStyle.CategorySets,
       );
     }
     return DefaultTabController(
@@ -87,8 +78,7 @@ class PresentationNodeTabsWidgetState
               elevation: (depth * 2) / 3,
               color: colors[depth],
               child: Container(
-                  constraints: BoxConstraints(
-                      minWidth: MediaQuery.of(context).size.width),
+                  constraints: BoxConstraints(minWidth: MediaQuery.of(context).size.width),
                   color: colors[depth],
                   child: TabBar(
                     labelPadding: EdgeInsets.all(0),
@@ -111,35 +101,30 @@ class PresentationNodeTabsWidgetState
 
   Widget buildTabButton(BuildContext context, int hash, [int tabCount = 3]) {
     return Container(
-        constraints: BoxConstraints(
-            minWidth: MediaQuery.of(context).size.width / tabCount),
+        constraints: BoxConstraints(minWidth: MediaQuery.of(context).size.width / tabCount),
         padding: EdgeInsets.all(8),
-        child: DefinitionProviderWidget<DestinyPresentationNodeDefinition>(hash,
-            (def) {
+        child: DefinitionProviderWidget<DestinyPresentationNodeDefinition>(hash, (def) {
           if (widget.depth > 0 && (def?.displayProperties?.hasIcon ?? false)) {
-            return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                      constraints: BoxConstraints(maxHeight: 48),
-                      child: AspectRatio(
-                          aspectRatio: 1,
-                          child: ManifestImageWidget<
-                              DestinyPresentationNodeDefinition>(
-                            hash,
-                            placeholder: Container(),
-                          ))),
-                  Container(
-                    height: 8,
-                  ),
-                  ManifestText<DestinyPresentationNodeDefinition>(hash,
-                      uppercase: true,
-                      textAlign: TextAlign.center,
-                      maxLines: 1,
-                      style: TextStyle(
-                        fontSize: 12,
-                      ))
-                ]);
+            return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Container(
+                  constraints: BoxConstraints(maxHeight: 48),
+                  child: AspectRatio(
+                      aspectRatio: 1,
+                      child: ManifestImageWidget<DestinyPresentationNodeDefinition>(
+                        hash,
+                        placeholder: Container(),
+                      ))),
+              Container(
+                height: 8,
+              ),
+              ManifestText<DestinyPresentationNodeDefinition>(hash,
+                  uppercase: true,
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  style: TextStyle(
+                    fontSize: 12,
+                  ))
+            ]);
           }
           return ManifestText<DestinyPresentationNodeDefinition>(hash,
               uppercase: true,

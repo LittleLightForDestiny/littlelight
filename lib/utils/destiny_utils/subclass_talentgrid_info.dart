@@ -5,7 +5,7 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_talent_grid_component.dart';
 import 'package:bungie_api/models/destiny_talent_grid_definition.dart';
 import 'package:bungie_api/models/destiny_talent_node_category.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 
 class SubclassTalentGridInfo {
@@ -73,10 +73,11 @@ const Map<String, int> _subclassMainPerks = {
 Future<SubclassTalentGridInfo> getSubclassTalentGridInfo(
     DestinyItemComponent item) async {
   final profile = getInjectedProfileService();
-  var def = await ManifestService()
+  final manifest = getInjectedManifestService();
+  var def = await manifest
       .getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
   var talentGrid = profile.getTalentGrid(item?.itemInstanceId);
-  var talentGridDef = await ManifestService()
+  var talentGridDef = await manifest
       .getDefinition<DestinyTalentGridDefinition>(talentGrid.talentGridHash);
   var talentgridCategory =
       extractTalentGridNodeCategory(talentGridDef, talentGrid);

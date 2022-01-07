@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/language/language.consumer.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
@@ -20,7 +21,7 @@ class BaseMasterworkCounterWidget extends BaseDestinyStatefulItemWidget {
 }
 
 class BaseMasterworkCounterWidgetState<T extends BaseMasterworkCounterWidget>
-    extends BaseDestinyItemState<T> with AutomaticKeepAliveClientMixin, LanguageConsumer, ProfileConsumer {
+    extends BaseDestinyItemState<T> with AutomaticKeepAliveClientMixin, LanguageConsumer, ProfileConsumer, ManifestConsumer {
   DestinyObjectiveProgress masterworkObjective;
   DestinyObjectiveDefinition masterworkObjectiveDefinition;
 
@@ -39,7 +40,7 @@ class BaseMasterworkCounterWidgetState<T extends BaseMasterworkCounterWidget>
       for (var objective in objectives) {
         if (objective.visible) {
           masterworkObjective = objective;
-          masterworkObjectiveDefinition = await widget.manifest
+          masterworkObjectiveDefinition = await manifest
               .getDefinition<DestinyObjectiveDefinition>(
                   objective.objectiveHash);
         }

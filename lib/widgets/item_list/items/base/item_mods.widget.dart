@@ -2,14 +2,14 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_socket_category_definition.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 
 class ItemModsWidget extends StatefulWidget {
   final double iconSize;
-  final ManifestService manifest = ManifestService();
+  
   final List<DestinyItemSocketState> itemSockets;
   final DestinyInventoryItemDefinition definition;
   ItemModsWidget(
@@ -22,7 +22,7 @@ class ItemModsWidget extends StatefulWidget {
   }
 }
 
-class ItemModsWidgetState extends State<ItemModsWidget> {
+class ItemModsWidgetState extends State<ItemModsWidget> with ManifestConsumer{
   DestinySocketCategoryDefinition modsCatDefinition;
   List<DestinyItemSocketState> get itemSockets => widget.itemSockets;
   DestinyInventoryItemDefinition get definition => widget.definition;
@@ -43,7 +43,7 @@ class ItemModsWidgetState extends State<ItemModsWidget> {
         (s) => DestinyData.socketCategoryModHashes.contains(s),
         orElse: () => null);
 
-    modsCatDefinition = await widget.manifest
+    modsCatDefinition = await manifest
         .getDefinition<DestinySocketCategoryDefinition>(socketCategoryHash);
     if (!mounted) {
       return;

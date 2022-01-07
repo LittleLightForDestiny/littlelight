@@ -5,7 +5,7 @@ import 'package:bungie_api/models/destiny_objective_progress.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:little_light/services/language/language.consumer.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 
 class ObjectiveWidget extends StatefulWidget {
@@ -34,7 +34,7 @@ class ObjectiveWidget extends StatefulWidget {
   }
 }
 
-class ObjectiveWidgetState extends State<ObjectiveWidget> with LanguageConsumer {
+class ObjectiveWidgetState extends State<ObjectiveWidget> with LanguageConsumer, ManifestConsumer {
   DestinyObjectiveDefinition _definition;
   DestinyObjectiveDefinition get definition => widget.definition ?? _definition;
 
@@ -52,7 +52,7 @@ class ObjectiveWidgetState extends State<ObjectiveWidget> with LanguageConsumer 
 
   void loadDefinitions() async {
     if (widget.definition == null) {
-      _definition = await ManifestService().getDefinition<DestinyObjectiveDefinition>(widget.objective.objectiveHash);
+      _definition = await manifest.getDefinition<DestinyObjectiveDefinition>(widget.objective.objectiveHash);
       if (mounted) setState(() {});
     }
   }

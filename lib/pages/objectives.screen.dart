@@ -7,7 +7,6 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/models/tracked_objective.dart';
 import 'package:little_light/pages/item_detail.screen.dart';
 import 'package:little_light/services/littlelight/objectives.service.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/profile/profile_component_groups.dart';
@@ -19,7 +18,7 @@ import 'package:little_light/widgets/progress_tabs/pursuit_item/tracked_pursuit_
 
 class ObjectivesScreen extends StatefulWidget {
 
-  final ManifestService manifest = ManifestService();
+  
   @override
   ObjectivesScreenState createState() => new ObjectivesScreenState();
 }

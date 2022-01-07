@@ -7,13 +7,13 @@ import 'package:bungie_api/models/destiny_socket_category_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/models/parsed_wishlist.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/wishlists_data.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 
 class ItemPerksWidget extends StatefulWidget {
-  final ManifestService manifest = ManifestService();
+  
   final DestinyInventoryItemDefinition definition;
   final double iconSize;
   final DestinyItemComponent item;
@@ -38,7 +38,7 @@ class ItemPerksWidget extends StatefulWidget {
   }
 }
 
-class ItemPerksWidgetState extends State<ItemPerksWidget> with WishlistsConsumer, ProfileConsumer {
+class ItemPerksWidgetState extends State<ItemPerksWidget> with WishlistsConsumer, ProfileConsumer, ManifestConsumer {
   List<DestinyItemSocketState> _itemSockets;
   Map<String, List<DestinyItemPlugBase>> _reusablePlugs;
   List<DestinyItemSocketState> get itemSockets =>
@@ -62,7 +62,7 @@ class ItemPerksWidgetState extends State<ItemPerksWidget> with WishlistsConsumer
     if (definition?.sockets?.socketCategories == null) {
       return;
     }
-    perksCatDefinition = await widget.manifest
+    perksCatDefinition = await manifest
         .getDefinition<DestinySocketCategoryDefinition>(
             widget.socketCategoryHash);
     if (!mounted) return;

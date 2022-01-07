@@ -2,11 +2,10 @@ import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:little_light/models/item_sort_parameter.dart';
 import 'package:little_light/pages/search.screen.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
-import 'package:little_light/models/item_sort_parameter.dart';
 import 'package:little_light/services/profile/profile_component_groups.dart';
 import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
@@ -27,7 +26,7 @@ import 'package:little_light/widgets/search/search.controller.dart';
 
 class ProgressScreen extends StatefulWidget {
 
-  final manifest = new ManifestService();
+  
 
   @override
   ProgressScreenState createState() => new ProgressScreenState();

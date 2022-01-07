@@ -9,7 +9,7 @@ import 'package:bungie_api/models/destiny_vendor_item_definition.dart';
 import 'package:bungie_api/models/destiny_vendor_sale_item_component.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/profile/vendors.service.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
@@ -18,7 +18,7 @@ import 'package:little_light/widgets/vendors/purchasable_item.widget.dart';
 
 class VendorDetailsScreen extends StatefulWidget {
 
-  final ManifestService manifest = ManifestService();
+  
   final String characterId;
   final DestinyVendorComponent vendor;
 
@@ -29,7 +29,7 @@ class VendorDetailsScreen extends StatefulWidget {
   VendorDetailsScreenState createState() => new VendorDetailsScreenState();
 }
 
-class VendorDetailsScreenState extends State<VendorDetailsScreen> {
+class VendorDetailsScreenState extends State<VendorDetailsScreen> with ManifestConsumer{
   DestinyInventoryItemDefinition emblemDefinition;
   DestinyVendorDefinition definition;
   List<DestinyVendorCategory> _categories;
@@ -43,7 +43,7 @@ class VendorDetailsScreenState extends State<VendorDetailsScreen> {
   }
 
   Future<void> loadDefinitions() async {
-    definition = await widget.manifest
+    definition = await manifest
         .getDefinition<DestinyVendorDefinition>(widget.vendor.vendorHash);
     var _service = VendorsService();
     _categories = await _service.getVendorCategories(

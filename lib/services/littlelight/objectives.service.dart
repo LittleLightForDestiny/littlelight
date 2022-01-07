@@ -3,11 +3,11 @@
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:little_light/models/tracked_objective.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/storage/export.dart';
 
-class ObjectivesService with StorageConsumer, ProfileConsumer {
+class ObjectivesService with StorageConsumer, ProfileConsumer, ManifestConsumer {
   static final ObjectivesService _singleton = new ObjectivesService._internal();
   factory ObjectivesService() {
     return _singleton;
@@ -59,7 +59,6 @@ class ObjectivesService with StorageConsumer, ProfileConsumer {
   Future<DestinyItemComponent> findObjectiveItem(
       TrackedObjective objective) async {
 
-    var manifest = ManifestService();
     DestinyItemComponent item;
     if (objective.instanceId != null) {
       item = profile.getCharacterInventory(objective.characterId).firstWhere(

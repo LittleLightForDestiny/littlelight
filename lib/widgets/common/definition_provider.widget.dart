@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 
 typedef DefinitionWidgetBuilder<T> = Widget Function(T definition);
 
 class DefinitionProviderWidget<T> extends StatefulWidget {
-  final ManifestService _manifest = new ManifestService();
   final int hash;
   final DefinitionWidgetBuilder<T> widgetBuilder;
   final Widget placeholder;
@@ -18,7 +17,7 @@ class DefinitionProviderWidget<T> extends StatefulWidget {
   }
 }
 
-class DefinitionProviderWidgetState<T> extends State<DefinitionProviderWidget<T>> {
+class DefinitionProviderWidgetState<T> extends State<DefinitionProviderWidget<T>> with ManifestConsumer{
   T definition;
   @override
   void initState() {
@@ -27,7 +26,7 @@ class DefinitionProviderWidgetState<T> extends State<DefinitionProviderWidget<T>
   }
 
   void loadDefinition() async {
-    definition = await widget._manifest.getDefinition<T>(widget.hash);
+    definition = await manifest.getDefinition<T>(widget.hash);
     if(mounted == true){
       setState(() {});
     }

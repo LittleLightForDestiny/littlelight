@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
 
@@ -11,7 +11,7 @@ abstract class DefinitionSearchScreen extends StatefulWidget {
 }
 
 abstract class DefinitionSearchScreenState<T extends DefinitionSearchScreen, DT>
-    extends State<T> with UserSettingsConsumer{
+    extends State<T> with UserSettingsConsumer, ManifestConsumer {
   TextEditingController _searchFieldController = new TextEditingController();
   List<DT> items;
 
@@ -26,7 +26,7 @@ abstract class DefinitionSearchScreenState<T extends DefinitionSearchScreen, DT>
   }
 
   loadItems() async {
-    this.items = (await ManifestService()
+    this.items = (await manifest
             .searchDefinitions<DT>([_searchFieldController.text]))
         .values
         .toList();

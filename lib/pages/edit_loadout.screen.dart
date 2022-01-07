@@ -13,7 +13,7 @@ import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/language/language.consumer.dart';
 import 'package:little_light/services/littlelight/loadouts.consumer.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/loadout_utils.dart';
@@ -27,13 +27,11 @@ class EditLoadoutScreen extends StatefulWidget {
   EditLoadoutScreen({Key key, this.loadout, this.forceCreate = false})
       : super(key: key);
 
-  final ManifestService manifest = new ManifestService();
-
   @override
   EditLoadoutScreenState createState() => new EditLoadoutScreenState();
 }
 
-class EditLoadoutScreenState extends State<EditLoadoutScreen> with LanguageConsumer, LoadoutsConsumer{
+class EditLoadoutScreenState extends State<EditLoadoutScreen> with LanguageConsumer, LoadoutsConsumer, ManifestConsumer {
   bool changed = false;
   LoadoutItemIndex _itemIndex;
   DestinyInventoryItemDefinition emblemDefinition;
@@ -71,13 +69,13 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> with LanguageConsu
 
   loadEmblemDefinition() async {
     if (_loadout.emblemHash == null) return;
-    emblemDefinition = await widget.manifest
+    emblemDefinition = await manifest
         .getDefinition<DestinyInventoryItemDefinition>(_loadout.emblemHash);
     setState(() {});
   }
 
   buildItemIndex() async {
-    bucketDefinitions = await widget.manifest
+    bucketDefinitions = await manifest
         .getDefinitions<DestinyInventoryBucketDefinition>(
             InventoryBucket.loadoutBucketHashes);
     _itemIndex = await InventoryUtils.buildLoadoutItemIndex(_loadout);
@@ -205,7 +203,7 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> with LanguageConsu
   }
 
   showRemovingExoticMessage(BuildContext context, int hash) async {
-    DestinyInventoryItemDefinition definition = await widget.manifest
+    DestinyInventoryItemDefinition definition = await manifest
         .getDefinition<DestinyInventoryItemDefinition>(hash);
     if (definition.itemType == DestinyItemType.Weapon) {
       _showSnackBar(
@@ -229,7 +227,7 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> with LanguageConsu
   }
 
   void removeItem(bool equipped, DestinyItemComponent item) async {
-    var def = await ManifestService()
+    var def = await manifest
         .getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
     if (equipped) {
       _itemIndex.removeEquippedItem(item, def);

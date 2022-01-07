@@ -31,7 +31,7 @@ class _SubClassImageWidgetState extends DestinyItemState<SubClassImageWidget> wi
   }
 
   getDefinitions() async {
-    var talentGridDef = await widget.manifest
+    var talentGridDef = await manifest
         .getDefinition<DestinyTalentGridDefinition>(
             definition.talentGrid.talentGridHash);
     var talentGrid = profile.getTalentGrid(item?.itemInstanceId);

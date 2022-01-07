@@ -6,7 +6,7 @@ import 'package:bungie_api/models/destiny_progression.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
+
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/widgets/item_list/character_info.widget.dart';
@@ -16,7 +16,7 @@ import 'package:little_light/widgets/progress_tabs/rank_item.widget.dart';
 class CharacterRanksListWidget extends StatefulWidget {
   final String characterId;
 
-  final ManifestService manifest = ManifestService();
+  
   final NotificationService broadcaster = NotificationService();
 
   CharacterRanksListWidget({Key key, this.characterId}) : super(key: key);

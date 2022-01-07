@@ -13,7 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/models/parsed_wishlist.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
@@ -27,7 +27,7 @@ import 'package:little_light/widgets/item_stats/item_details_socket_item_stats.w
 import 'item_socket.controller.dart';
 
 class BaseSocketDetailsWidget extends BaseDestinyStatefulItemWidget {
-  final ManifestService manifest = ManifestService();
+  
   final ItemSocketController controller;
   final DestinyItemSocketCategoryDefinition category;
 
@@ -46,7 +46,7 @@ class BaseSocketDetailsWidget extends BaseDestinyStatefulItemWidget {
 }
 
 class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget> extends BaseDestinyItemState<T>
-    with TickerProviderStateMixin, WishlistsConsumer {
+    with TickerProviderStateMixin, WishlistsConsumer, ManifestConsumer {
   DestinyStatGroupDefinition _statGroupDefinition;
   ItemSocketController get controller => widget.controller;
   Map<int, DestinySandboxPerkDefinition> _sandboxPerkDefinitions;
@@ -84,17 +84,17 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget> extends Ba
       }
       return;
     }
-    _definition = await widget.manifest.getDefinition<DestinyInventoryItemDefinition>(controller.selectedPlugHash);
+    _definition = await manifest.getDefinition<DestinyInventoryItemDefinition>(controller.selectedPlugHash);
 
-    _sandboxPerkDefinitions = await widget.manifest
+    _sandboxPerkDefinitions = await manifest
         .getDefinitions<DestinySandboxPerkDefinition>(_definition?.perks?.map((p) => p.perkHash)?.toList() ?? []);
 
     _statGroupDefinition =
-        await widget.manifest.getDefinition<DestinyStatGroupDefinition>(itemDefinition?.stats?.statGroupHash);
+        await manifest.getDefinition<DestinyStatGroupDefinition>(itemDefinition?.stats?.statGroupHash);
 
     if ((definition?.objectives?.objectiveHashes?.length ?? 0) > 0) {
       objectiveDefinitions =
-          await widget.manifest.getDefinitions<DestinyObjectiveDefinition>(definition.objectives.objectiveHashes);
+          await manifest.getDefinitions<DestinyObjectiveDefinition>(definition.objectives.objectiveHashes);
     }
 
     if (mounted) {

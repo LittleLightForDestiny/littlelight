@@ -15,6 +15,7 @@ import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enu
 import 'package:little_light/services/inventory/inventory.consumer.dart';
 import 'package:little_light/services/littlelight/item_notes.service.dart';
 import 'package:little_light/services/littlelight/loadouts.consumer.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/profile/vendors.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
@@ -81,7 +82,7 @@ class ItemDetailScreen extends BaseDestinyStatefulItemWidget {
 }
 
 class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen>
-    with AuthConsumer, LoadoutsConsumer, ProfileConsumer, InventoryConsumer {
+    with AuthConsumer, LoadoutsConsumer, ProfileConsumer, InventoryConsumer, ManifestConsumer {
   int selectedPerk;
   Map<int, int> selectedPerks = new Map();
   ItemSocketController socketController;
@@ -158,7 +159,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen>
   Future loadStatGroupDefinition() async {
     if (definition?.stats?.statGroupHash != null) {
       statGroupDefinition =
-          await widget.manifest.getDefinition<DestinyStatGroupDefinition>(definition?.stats?.statGroupHash);
+          await manifest.getDefinition<DestinyStatGroupDefinition>(definition?.stats?.statGroupHash);
       if (mounted) {
         setState(() {});
       }

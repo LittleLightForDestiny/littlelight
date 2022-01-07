@@ -15,6 +15,7 @@ import 'package:little_light/services/language/language.service.dart';
 import 'package:little_light/services/littlelight/littlelight_data.service.dart';
 import 'package:little_light/services/littlelight/loadouts.service.dart';
 import 'package:little_light/services/littlelight/wishlists.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/services/profile/profile.service.dart';
@@ -53,13 +54,14 @@ initServices(BuildContext context) async {
   final globalStorage = getInjectedGlobalStorage();
   final auth = getInjectedAuthService();
   final language = getInjectedLanguageService();
+  final manifest = getInjectedManifestService();
   await appConfig.setup();
   await globalStorage.setup();
   auth.setup();
   await language.init(context);
   await LittleLightApiService().reset();
   await ObjectivesService().reset();
-  await ManifestService().reset();
+  await manifest.setup();
 }
 
 initPostLoadingServices(BuildContext context) async{

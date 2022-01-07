@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/pages/item_detail.screen.dart';
 import 'package:little_light/services/inventory/inventory.consumer.dart';
 import 'package:little_light/services/inventory/inventory.package.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/selection/selection.service.dart';
 import 'package:little_light/utils/item_with_owner.dart';
@@ -29,7 +29,7 @@ class SelectedItemsWidget extends StatefulWidget {
   }
 }
 
-class SelectedItemsWidgetState extends State<SelectedItemsWidget> with ProfileConsumer, InventoryConsumer {
+class SelectedItemsWidgetState extends State<SelectedItemsWidget> with ProfileConsumer, InventoryConsumer, ManifestConsumer {
   StreamSubscription<List<ItemWithOwner>> subscription;
   List<ItemWithOwner> items;
 
@@ -113,7 +113,7 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget> with ProfileCo
           var item = items.single;
           var instanceInfo =
               profile.getInstanceInfo(item?.item?.itemInstanceId);
-          var def = await ManifestService()
+          var def = await manifest
               .getDefinition<DestinyInventoryItemDefinition>(
                   item?.item?.itemHash);
           Navigator.push(

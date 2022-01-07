@@ -9,11 +9,11 @@ import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_plug_set_definition.dart';
 import 'package:flutter/widgets.dart';
 import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 
-class ItemSocketController extends ChangeNotifier with BungieApiConsumer, ProfileConsumer {
+class ItemSocketController extends ChangeNotifier with BungieApiConsumer, ProfileConsumer, ManifestConsumer {
   final DestinyItemComponent item;
   final DestinyInventoryItemDefinition definition;
   List<DestinyItemSocketState> socketStates;
@@ -94,7 +94,6 @@ class ItemSocketController extends ChangeNotifier with BungieApiConsumer, Profil
 
   Future<void> _loadPlugDefinitions() async {
     Set<int> plugHashes = new Set();
-    var manifest = ManifestService();
     if (reusablePlugs != null) {
       plugHashes = socketStates
           .expand((socket) {

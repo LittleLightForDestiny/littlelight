@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/pages/item_detail.screen.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/inventory_utils.dart';
@@ -22,8 +22,8 @@ import 'package:little_light/widgets/item_list/items/quick_select_item_wrapper.w
 typedef void OnRemoveItemFromLoadout(DestinyItemComponent item, bool equipped);
 typedef void OnAddItemToLoadout(bool equipped, DestinyClass classType);
 
-class LoadoutSlotWidget extends StatelessWidget with ProfileConsumer {
-  final ManifestService manifest = new ManifestService();
+class LoadoutSlotWidget extends StatelessWidget with ProfileConsumer, ManifestConsumer {
+  
 
   final DestinyInventoryBucketDefinition bucketDefinition;
   final Map<DestinyClass, DestinyItemComponent> equippedClassItems;

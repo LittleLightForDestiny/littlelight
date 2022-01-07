@@ -13,7 +13,7 @@ import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/destiny_settings.service.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
@@ -27,7 +27,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:speech_bubble/speech_bubble.dart';
 
 class CharacterInfoWidget extends StatefulWidget {
-  final ManifestService manifest = new ManifestService();
+  
 
   final String characterId;
   final NotificationService broadcaster = NotificationService();
@@ -40,7 +40,7 @@ class CharacterInfoWidget extends StatefulWidget {
   }
 }
 
-class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> with UserSettingsConsumer, ProfileConsumer {
+class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> with UserSettingsConsumer, ProfileConsumer, ManifestConsumer {
   DestinyClassDefinition classDef;
   DestinyRaceDefinition raceDef;
   DestinyCharacterComponent character;
@@ -69,9 +69,9 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> w
   }
 
   loadDefinitions() async {
-    classDef = await widget.manifest.getDefinition<DestinyClassDefinition>(character.classHash);
-    raceDef = await widget.manifest.getDefinition<DestinyRaceDefinition>(character.raceHash);
-    legendProgressionDefinition = await widget.manifest
+    classDef = await manifest.getDefinition<DestinyClassDefinition>(character.classHash);
+    raceDef = await manifest.getDefinition<DestinyRaceDefinition>(character.raceHash);
+    legendProgressionDefinition = await manifest
         .getDefinition<DestinyProgressionDefinition>(DestinySettingsService().seasonalRankProgressionHash);
     if (mounted) {
       setState(() {});

@@ -6,7 +6,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/pages/search.screen.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:little_light/services/bungie_api/enums/destiny_item_category.enum.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/profile/profile_component_groups.dart';
@@ -30,8 +29,6 @@ import 'package:little_light/widgets/inventory_tabs/vault_tab_header.widget.dart
 import 'package:little_light/widgets/search/search.controller.dart';
 
 class EquipmentScreen extends StatefulWidget {
-
-  final manifest = new ManifestService();
   final NotificationService broadcaster = new NotificationService();
 
   final List<int> itemTypes = [

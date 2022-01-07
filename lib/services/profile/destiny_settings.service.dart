@@ -2,10 +2,10 @@ import 'package:bungie_api/models/core_settings_configuration.dart';
 import 'package:bungie_api/models/destiny_season_definition.dart';
 import 'package:bungie_api/models/destiny_season_pass_definition.dart';
 import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/storage/export.dart';
 
-class DestinySettingsService with StorageConsumer, BungieApiConsumer {
+class DestinySettingsService with StorageConsumer, BungieApiConsumer, ManifestConsumer {
   static final DestinySettingsService _singleton =
       new DestinySettingsService._internal();
   DateTime lastUpdated;
@@ -23,7 +23,7 @@ class DestinySettingsService with StorageConsumer, BungieApiConsumer {
   init() async {
     var settings = await globalStorage.getBungieCommonSettings();
     var seasonHash = settings?.destiny2CoreSettings?.currentSeasonHash;
-    var seasonDef = await ManifestService()
+    var seasonDef = await manifest
         .getDefinition<DestinySeasonDefinition>(seasonHash);
     var seasonEnd = seasonDef != null
         ? DateTime.parse(seasonDef?.endDate)
@@ -33,12 +33,12 @@ class DestinySettingsService with StorageConsumer, BungieApiConsumer {
       print("loaded settings from web");
       settings = await bungieAPI.getCommonSettings();
       seasonHash = settings?.destiny2CoreSettings?.currentSeasonHash;
-      seasonDef = await ManifestService()
+      seasonDef = await manifest
           .getDefinition<DestinySeasonDefinition>(seasonHash);
       await globalStorage.setBungieCommonSettings(settings);
     }
     _currentSettings = settings;
-    _currentSeasonPassDef = await ManifestService()
+    _currentSeasonPassDef = await manifest
         .getDefinition<DestinySeasonPassDefinition>(seasonDef.seasonPassHash);
   }
 

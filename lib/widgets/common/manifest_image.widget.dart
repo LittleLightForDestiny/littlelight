@@ -1,8 +1,8 @@
-import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/utils/shimmer_helper.dart';
+import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:shimmer/shimmer.dart';
 
 typedef ExtractUrlFromData<T> = String Function(T definition);
@@ -10,7 +10,6 @@ typedef ExtractUrlFromData<T> = String Function(T definition);
 class ManifestImageWidget<T> extends StatefulWidget {
   final int hash;
   final ExtractUrlFromData<T> urlExtractor;
-  final ManifestService _manifest = new ManifestService();
 
   final Widget placeholder;
 
@@ -31,7 +30,7 @@ class ManifestImageWidget<T> extends StatefulWidget {
   }
 }
 
-class ManifestImageState<T> extends State<ManifestImageWidget<T>> {
+class ManifestImageState<T> extends State<ManifestImageWidget<T>> with ManifestConsumer{
   T definition;
 
   @override
@@ -42,7 +41,7 @@ class ManifestImageState<T> extends State<ManifestImageWidget<T>> {
 
   Future<void> loadDefinition() async {
     definition =
-        await widget._manifest.getDefinition<T>(widget.hash);
+        await manifest.getDefinition<T>(widget.hash);
     if (mounted) {
       setState(() {});
     }

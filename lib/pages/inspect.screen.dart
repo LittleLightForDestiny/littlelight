@@ -1,6 +1,5 @@
 import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
@@ -10,7 +9,7 @@ import 'package:little_light/widgets/inventory_tabs/tabs_character_menu.widget.d
 
 class InspectScreen extends StatefulWidget {
 
-  final manifest = new ManifestService();
+  
 
   final String membershipId;
   final int membershipType;

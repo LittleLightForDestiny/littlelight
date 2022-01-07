@@ -13,7 +13,7 @@ import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.exception.dart';
 import 'package:little_light/services/language/language.consumer.dart';
 import 'package:little_light/services/language/language.service.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/profile/destiny_settings.service.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -21,7 +21,7 @@ import 'package:little_light/widgets/exceptions/exception_dialog.dart';
 import 'package:little_light/widgets/layouts/floating_content_layout.dart';
 
 class InitialScreen extends StatefulWidget {
-  final ManifestService manifest = new ManifestService();
+  
 
   final LanguageService translate = null;
   final String authCode;
@@ -32,7 +32,7 @@ class InitialScreen extends StatefulWidget {
   InitialScreenState createState() => new InitialScreenState();
 }
 
-class InitialScreenState extends FloatingContentState<InitialScreen> with AuthConsumer, LanguageConsumer, BungieApiConsumer, ProfileConsumer {
+class InitialScreenState extends FloatingContentState<InitialScreen> with AuthConsumer, LanguageConsumer, BungieApiConsumer, ProfileConsumer, ManifestConsumer {
   @override
   void initState() {
     super.initState();
@@ -64,7 +64,7 @@ class InitialScreenState extends FloatingContentState<InitialScreen> with AuthCo
 
   showSelectLanguage() async {
     // List<String> availableLanguages =
-    //     await widget.manifest.getAvailableLanguages();
+    //     await manifest.getAvailableLanguages();
     // // SelectLanguageWidget childWidget = SelectLanguageWidget(
     // //   availableLanguages: availableLanguages,
     // //   onChange: (language) {
@@ -79,7 +79,7 @@ class InitialScreenState extends FloatingContentState<InitialScreen> with AuthCo
 
   checkManifest() async {
     try {
-      bool needsUpdate = await widget.manifest.needsUpdate();
+      bool needsUpdate = await manifest.needsUpdate();
       if (needsUpdate) {
         showDownloadManifest();
       } else {

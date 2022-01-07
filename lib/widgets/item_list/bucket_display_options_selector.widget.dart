@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/models/bucket_display_options.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
+
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/icon_fonts/littlelight_icons.dart';
 
 class BucketDisplayOptionsSelectorWidget extends StatefulWidget {
-  final ManifestService manifest = new ManifestService();
+  
   final int hash;
   final bool isEquippable;
   final Function onChanged;

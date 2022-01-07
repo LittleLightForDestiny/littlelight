@@ -1,7 +1,7 @@
 import 'package:bungie_api/models/destiny_presentation_node_child_entry.dart';
 import 'package:bungie_api/models/destiny_presentation_node_definition.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/mixins/tab_grid/tab_grid.mixin.dart';
 import 'package:little_light/widgets/triumphs/seal_item.widget.dart';
@@ -26,7 +26,7 @@ class SealsGridWidget extends StatefulWidget {
 class _SealsGridWidgetState extends State<SealsGridWidget>
     with
         TickerProviderStateMixin,
-        TabGridMixin<SealsGridWidget, DestinyPresentationNodeChildEntry> {
+        TabGridMixin<SealsGridWidget, DestinyPresentationNodeChildEntry>, ManifestConsumer {
   DestinyPresentationNodeDefinition definition;
 
   @override
@@ -36,7 +36,7 @@ class _SealsGridWidgetState extends State<SealsGridWidget>
   }
 
   void getDefinitions() async {
-    definition = await ManifestService()
+    definition = await manifest
         .getDefinition<DestinyPresentationNodeDefinition>(widget.nodeHash);
     setState(() {});
   }

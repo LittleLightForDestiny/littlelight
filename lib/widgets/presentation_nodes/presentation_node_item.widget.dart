@@ -4,7 +4,7 @@ import 'package:bungie_api/models/destiny_presentation_node_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
@@ -17,7 +17,7 @@ class PresentationNodeItemWidget extends StatefulWidget {
   final int hash;
   final int depth;
   final PresentationNodePressedHandler onPressed;
-  final ManifestService manifest = ManifestService();
+  
 
   final bool isCategorySet;
   PresentationNodeItemWidget(
@@ -34,7 +34,7 @@ class PresentationNodeItemWidget extends StatefulWidget {
 }
 
 class PresentationNodeWidgetState extends State<PresentationNodeItemWidget>
-    with AuthConsumer, UserSettingsConsumer, ProfileConsumer {
+    with AuthConsumer, UserSettingsConsumer, ProfileConsumer, ManifestConsumer {
   DestinyPresentationNodeComponent progress;
   Map<String, DestinyPresentationNodeComponent> multiProgress;
   DestinyPresentationNodeDefinition definition;
@@ -49,7 +49,7 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget>
   }
 
   loadDefinition() async {
-    definition = await widget.manifest
+    definition = await manifest
         .getDefinition<DestinyPresentationNodeDefinition>(widget.hash);
     if (mounted) {
       setState(() {});

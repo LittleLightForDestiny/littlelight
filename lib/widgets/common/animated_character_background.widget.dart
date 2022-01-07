@@ -7,7 +7,7 @@ import 'package:bungie_api/models/destiny_color.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 
@@ -33,7 +33,7 @@ class _CharacterInfo {
 
 class _AnimatedCharacterBackgroundWidgetState
     extends State<AnimatedCharacterBackgroundWidget>
-    with SingleTickerProviderStateMixin, ProfileConsumer {
+    with SingleTickerProviderStateMixin, ProfileConsumer, ManifestConsumer {
   List<_CharacterInfo> characters;
   AnimationController _controller;
   ColorTween tween;
@@ -67,7 +67,7 @@ class _AnimatedCharacterBackgroundWidgetState
       var equipment = profile.getCharacterEquipment(c.characterId);
       var subclass =
           equipment.firstWhere((i) => i.bucketHash == InventoryBucket.subclass);
-      var subclassDef = await ManifestService()
+      var subclassDef = await manifest
           .getDefinition<DestinyInventoryItemDefinition>(subclass.itemHash);
 
       characters.add(_CharacterInfo(
