@@ -1,6 +1,6 @@
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:little_light/models/loadout.dart';
-import 'package:little_light/services/littlelight/item_notes.service.dart';
+import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/services/littlelight/loadouts.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
@@ -9,7 +9,7 @@ import 'package:little_light/utils/remove_diacritics.dart';
 
 import 'base_item_filter.dart';
 
-class TextFilter extends BaseItemFilter<String> with LoadoutsConsumer, WishlistsConsumer, ProfileConsumer {
+class TextFilter extends BaseItemFilter<String> with LoadoutsConsumer, WishlistsConsumer, ProfileConsumer, ItemNotesConsumer {
   List<Loadout> loadouts;
   TextFilter({initialText: "", enabled: true}) : super(null, initialText, enabled: enabled);
 
@@ -44,7 +44,7 @@ class TextFilter extends BaseItemFilter<String> with LoadoutsConsumer, Wishlists
       return equipped.length > 0 || unequipped.length > 0;
     }).map((l) => l.name ?? "");
 
-    var customName = ItemNotesService()
+    var customName = itemNotes
             .getNotesForItem(item?.item?.itemHash, item?.item?.itemInstanceId)
             ?.customName
             ?.toLowerCase() ??

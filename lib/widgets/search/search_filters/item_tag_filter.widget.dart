@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/models/item_notes_tag.dart';
-import 'package:little_light/services/littlelight/item_notes.service.dart';
+import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/utils/item_filters/item_tag_filter.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/search/search.controller.dart';
@@ -15,10 +15,10 @@ class ItemTagFilterWidget extends BaseSearchFilterWidget<ItemTagFilter> {
 }
 
 class _WishlistTagsFilterWidgetState extends BaseSearchFilterWidgetState<
-    ItemTagFilterWidget, ItemTagFilter, ItemNotesTag> {
+    ItemTagFilterWidget, ItemTagFilter, ItemNotesTag> with ItemNotesConsumer{
   @override
   Iterable<ItemNotesTag> get options {
-    var tags = ItemNotesService().tagsByIds(filter.availableValues);
+    var tags = itemNotes.tagsByIds(filter.availableValues);
     return tags;
   }
 

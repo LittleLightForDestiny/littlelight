@@ -5,7 +5,7 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:little_light/services/littlelight/item_notes.service.dart';
+import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/widgets/common/wishlist_corner_badge.decoration.dart';
 import 'package:little_light/widgets/item_list/items/base/base_inventory_item.widget.dart';
@@ -13,7 +13,7 @@ import 'package:little_light/widgets/item_list/items/base/minimal_info_label.mix
 import 'package:little_light/widgets/item_tags/item_tag.widget.dart';
 
 class MinimalBaseInventoryItemWidget extends BaseInventoryItemWidget
-    with MinimalInfoLabelMixin, ProfileConsumer {
+    with MinimalInfoLabelMixin, ProfileConsumer, ItemNotesConsumer {
   MinimalBaseInventoryItemWidget(
       DestinyItemComponent item,
       DestinyInventoryItemDefinition itemDefinition,
@@ -92,9 +92,9 @@ class MinimalBaseInventoryItemWidget extends BaseInventoryItemWidget
 
   Widget buildItemTags(BuildContext context) {
     List<Widget> items = [];
-    var notes = ItemNotesService()
+    var notes = itemNotes
         .getNotesForItem(item?.itemHash, item?.itemInstanceId);
-    var tags = ItemNotesService().tagsByIds(notes?.tags);
+    var tags = itemNotes.tagsByIds(notes?.tags);
     var locked = item?.state?.contains(ItemState.Locked) ?? false;
     if (tags != null) {
       items.addAll(tags.map((t) => ItemTagWidget(

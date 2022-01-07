@@ -13,7 +13,7 @@ import 'package:little_light/models/loadout.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/inventory/inventory.consumer.dart';
-import 'package:little_light/services/littlelight/item_notes.service.dart';
+import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/services/littlelight/loadouts.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
@@ -82,7 +82,7 @@ class ItemDetailScreen extends BaseDestinyStatefulItemWidget {
 }
 
 class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen>
-    with AuthConsumer, LoadoutsConsumer, ProfileConsumer, InventoryConsumer, ManifestConsumer {
+    with AuthConsumer, LoadoutsConsumer, ProfileConsumer, InventoryConsumer, ManifestConsumer, ItemNotesConsumer {
   int selectedPerk;
   Map<int, int> selectedPerks = new Map();
   ItemSocketController socketController;
@@ -175,7 +175,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen>
   }
 
   Widget buildPortrait(BuildContext context) {
-    var customName = ItemNotesService().getNotesForItem(item?.itemHash, item?.itemInstanceId)?.customName;
+    var customName = itemNotes.getNotesForItem(item?.itemHash, item?.itemInstanceId)?.customName;
     return Scaffold(
         body: Stack(children: [
       CustomScrollView(
@@ -228,7 +228,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen>
   }
 
   Widget buildLandscape(BuildContext context) {
-    var customName = ItemNotesService().getNotesForItem(item?.itemHash, item?.itemInstanceId)?.customName;
+    var customName = itemNotes.getNotesForItem(item?.itemHash, item?.itemInstanceId)?.customName;
     return Scaffold(
         body: Stack(children: [
       CustomScrollView(

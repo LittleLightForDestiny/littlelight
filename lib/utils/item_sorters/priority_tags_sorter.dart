@@ -1,9 +1,9 @@
-import 'package:little_light/services/littlelight/item_notes.service.dart';
+import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/item_sorters/base_item_sorter.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 
-class PriorityTagsSorter extends BaseItemSorter with UserSettingsConsumer{
+class PriorityTagsSorter extends BaseItemSorter with UserSettingsConsumer, ItemNotesConsumer {
   PriorityTagsSorter() : super(0);
   List<String> _priorityTags;
 
@@ -16,11 +16,11 @@ class PriorityTagsSorter extends BaseItemSorter with UserSettingsConsumer{
 
   @override
   int sort(ItemWithOwner a, ItemWithOwner b) {
-    Set<String> tagsA = ItemNotesService()
+    Set<String> tagsA = itemNotes
             .getNotesForItem(a.item.itemHash, a.item.itemInstanceId)
             ?.tags ??
         Set();
-    Set<String> tagsB = ItemNotesService()
+    Set<String> tagsB = itemNotes
             .getNotesForItem(b.item.itemHash, b.item.itemInstanceId)
             ?.tags ??
         Set();

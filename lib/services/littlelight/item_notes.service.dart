@@ -1,3 +1,4 @@
+import 'package:get_it/get_it.dart';
 import 'package:little_light/models/item_notes.dart';
 import 'package:little_light/models/item_notes_tag.dart';
 import 'package:little_light/services/littlelight/littlelight_api.service.dart';
@@ -10,11 +11,11 @@ final Map<String, ItemNotesTag> _defaultTags = {
   "infuse": ItemNotesTag.infuse(),
 };
 
+setupitemNotes(){
+  GetIt.I.registerLazySingleton<ItemNotesService>(() => ItemNotesService._internal());
+}
+
 class ItemNotesService with StorageConsumer {
-  static final ItemNotesService _singleton = new ItemNotesService._internal();
-  factory ItemNotesService() {
-    return _singleton;
-  }
   ItemNotesService._internal();
 
   Map<String, ItemNotes> _notes;

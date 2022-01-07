@@ -7,7 +7,7 @@ import 'package:little_light/models/item_notes_tag.dart';
 import 'package:little_light/models/item_sort_parameter.dart';
 import 'package:little_light/models/wishlist_index.dart';
 import 'package:little_light/pages/add_wishlist.screen.dart';
-import 'package:little_light/services/littlelight/item_notes.service.dart';
+import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/platform_capabilities.dart';
@@ -26,7 +26,7 @@ class SettingsScreen extends StatefulWidget {
   _SettingsScreenState createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> with UserSettingsConsumer, WishlistsConsumer{
+class _SettingsScreenState extends State<SettingsScreen> with UserSettingsConsumer, WishlistsConsumer, ItemNotesConsumer {
   List<ItemSortParameter> itemOrdering;
   List<ItemSortParameter> pursuitOrdering;
   Set<String> priorityTags;
@@ -411,7 +411,7 @@ class _SettingsScreenState extends State<SettingsScreen> with UserSettingsConsum
   }
 
   Widget buildPriorityTags(BuildContext context) {
-    var tags = ItemNotesService().tagsByIds(priorityTags);
+    var tags = itemNotes.tagsByIds(priorityTags);
     return Container(
         padding: EdgeInsets.all(8),
         child: Wrap(
@@ -454,7 +454,7 @@ class _SettingsScreenState extends State<SettingsScreen> with UserSettingsConsum
   }
 
   openAddTagDialog(BuildContext context) async {
-    var tags = ItemNotesService().getAvailableTags();
+    var tags = itemNotes.getAvailableTags();
     var result = await showDialog<String>(
         context: context,
         builder: (BuildContext context) {

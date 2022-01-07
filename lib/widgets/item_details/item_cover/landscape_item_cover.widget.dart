@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'dart:ui';
+
 import 'package:bungie_api/enums/destiny_item_type.dart';
 import 'package:bungie_api/enums/item_state.dart';
 import 'package:bungie_api/enums/tier_type.dart';
@@ -8,19 +9,17 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_power_cap_definition.dart';
 import 'package:bungie_api/models/destiny_stat_definition.dart';
-import 'package:flutter/rendering.dart';
-import 'package:little_light/services/littlelight/item_notes.service.dart';
-import 'package:little_light/widgets/common/definition_provider.widget.dart';
-import 'package:little_light/widgets/common/manifest_text.widget.dart';
-
-import 'package:little_light/widgets/common/masterwork_counter/screenshot_masterwork_counter.widget.dart';
-import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
+import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateless_item.widget.dart';
+import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
-
+import 'package:little_light/widgets/common/manifest_text.widget.dart';
+import 'package:little_light/widgets/common/masterwork_counter/screenshot_masterwork_counter.widget.dart';
+import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/item_sockets/item_socket.controller.dart';
 import 'package:little_light/widgets/item_sockets/screenshot_armor_tier.widget.dart';
 import 'package:little_light/widgets/item_sockets/screenshot_item_intrinsic_perk.widget.dart';
@@ -75,7 +74,7 @@ class LandscapeItemCoverWidget extends BaseDestinyStatelessItemWidget {
   }
 }
 
-class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
+class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with ItemNotesConsumer {
   final DestinyItemComponent item;
   final DestinyInventoryItemDefinition definition;
   final DestinyItemInstanceComponent instanceInfo;
@@ -174,7 +173,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
 
   Widget buildNameAndType(BuildContext context, double expandRatio) {
     double paddingTop = MediaQuery.of(context).padding.top;
-    var customName = ItemNotesService()
+    var customName = itemNotes
         .getNotesForItem(item?.itemHash, item?.itemInstanceId)
         ?.customName
         ?.toUpperCase();

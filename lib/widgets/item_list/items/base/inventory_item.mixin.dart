@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/models/parsed_wishlist.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/services/littlelight/item_notes.service.dart';
+import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
@@ -17,7 +17,7 @@ import 'package:little_light/widgets/common/primary_stat.widget.dart';
 import 'package:little_light/widgets/common/wishlist_badges.widget.dart';
 import 'package:little_light/widgets/item_tags/item_tag.widget.dart';
 
-mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget, ProfileConsumer{
+mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget, ProfileConsumer, ItemNotesConsumer {
   WishlistsService get wishlistsService => getInjectedWishlistsService();
 
   final String uniqueId = "";
@@ -208,9 +208,9 @@ mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget, ProfileConsu
     final reusable = profile.getItemReusablePlugs(item?.itemInstanceId);
     final wishlistTags = wishlistsService.getWishlistBuildTags(
         itemHash: item?.itemHash, reusablePlugs: reusable);
-    var notes = ItemNotesService()
+    var notes = itemNotes
         .getNotesForItem(item?.itemHash, item?.itemInstanceId);
-    var tags = ItemNotesService().tagsByIds(notes?.tags);
+    var tags = itemNotes.tagsByIds(notes?.tags);
     var locked = item?.state?.contains(ItemState.Locked) ?? false;
     if (locked) {
       items.add(Container(

@@ -6,21 +6,13 @@ import 'package:bungie_api/helpers/bungie_net_token.dart';
 import 'package:http/http.dart' as http;
 import 'package:little_light/exceptions/not_authorized.exception.dart';
 import 'package:little_light/models/item_notes.dart';
+import 'package:little_light/models/item_notes_response.dart';
 import 'package:little_light/models/item_notes_tag.dart';
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/services/app_config/app_config.consumer.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/storage/export.dart';
 import 'package:uuid/uuid.dart';
-
-class NotesResponse {
-  List<ItemNotes> notes;
-  List<ItemNotesTag> tags;
-
-  NotesResponse({List<ItemNotes>? notes, List<ItemNotesTag>? tags}):
-    this.notes = notes ?? [],
-    this.tags = tags ?? [];
-}
 
 final _credentialsMissingException = Exception("Credentials are missing");
 class LittleLightApiService with AuthConsumer, StorageConsumer, AppConfigConsumer {
