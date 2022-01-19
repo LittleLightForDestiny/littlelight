@@ -45,13 +45,12 @@ class WishlistsService with StorageConsumer {
   Future<void> setWishlists(List<WishlistFile> wishlists) async => await globalStorage.setWishlists(wishlists);
   WishlistsService._internal();
 
-  Future<void> checkForUpdates() async {
-    // _parsedWishlists = await globalStorage.getParsedWishlists();
-    if (_parsedWishlists == null) {
+  Future<void> checkForUpdates([bool forceUpdate = false]) async {
+    _parsedWishlists ??= await globalStorage.getParsedWishlists();
+    if (_parsedWishlists == null || forceUpdate) {
       await _updateIfNeeded();
       return;
     }
-    
     _updateIfNeeded();
   }
 
@@ -133,11 +132,13 @@ class WishlistsService with StorageConsumer {
     return _parsedWishlists?.items[itemHash]?.perks[plugItemHash] ?? Set();
   }
 
-  addWishlist(WishlistFile wishlist) {
+  Future<List<WishlistFile>> addWishlist(WishlistFile wishlist) async {
+    return [];
     ///TODO: get this method right;
   }
 
-  removeWishlist(WishlistFile w) {
+  Future<List<WishlistFile>> removeWishlist(WishlistFile w) async {
+    return [];
     ///TODO: get this method right;
   }
 

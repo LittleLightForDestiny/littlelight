@@ -33,9 +33,9 @@ class LayeredSwatch extends Color {
         300: layer0,
         400: layer0,
         500: layer1,
-        600: layer2,
-        700: layer3,
-        800: layer3,
+        600: layer1,
+        700: layer1,
+        800: layer2,
         900: layer3
       });
 }
@@ -80,6 +80,13 @@ class LittleLightThemeData {
     SwatchLayer.Layer1: Color(0xFFCAF1F7),
   });
 
+  final errorLayers = LayeredSwatch({
+    SwatchLayer.Layer0: Color(0xFFB8023B),
+    SwatchLayer.Layer1: Color(0xFFA30335),
+    SwatchLayer.Layer2: Color(0xFF8E042F),
+    SwatchLayer.Layer3: Color(0xFF630523),
+  });
+
   Color get _background => surfaceLayers.layer0;
   Color get _surface => surfaceLayers.layer1;
   Color get _secondaryVariant => surfaceLayers.layer2;
@@ -87,8 +94,7 @@ class LittleLightThemeData {
 
   Color get _primary => const Color.fromARGB(255, 63, 152, 200);
   Color get _primaryVariant => const Color.fromARGB(255, 0, 119, 182);
-
-  final _error = const Color.fromARGB(255, 184, 2, 59);
+        
 
   // InputDecorationTheme get _inputDecorationTheme => InputDecorationTheme(
   //         enabledBorder: UnderlineInputBorder(
@@ -110,7 +116,7 @@ class LittleLightThemeData {
       onSecondary: onSurfaceLayers.layer0,
       onSurface: onSurfaceLayers.layer0,
       onError: onSurfaceLayers.layer0,
-      error: _error);
+      error: errorLayers.layer0);
 
   // SnackBarThemeData get snackBarTheme =>
   //     SnackBarThemeData(contentTextStyle: TextStyle(color: Theme.of(context).colorScheme.primary));
@@ -154,6 +160,8 @@ class LittleLightThemeData {
       // appBarTheme: _appBarTheme,
       // inputDecorationTheme: _inputDecorationTheme,
       // toggleableActiveColor: colorScheme.primary,
+      textButtonTheme: TextButtonThemeData(
+          style: ButtonStyle(foregroundColor: MaterialStateColor.resolveWith((states) => primaryLayers.layer3))),
       textTheme: _textTheme,
       switchTheme: _switchTheme);
 }

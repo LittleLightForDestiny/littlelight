@@ -1,9 +1,7 @@
 import 'package:bungie_api/enums/destiny_presentation_screen_style.dart';
 import 'package:bungie_api/models/destiny_presentation_node_definition.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/refresh_button.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/selected_items.widget.dart';
 import 'package:little_light/widgets/presentation_nodes/collectible_item.widget.dart';
@@ -20,12 +18,10 @@ class PresentationNodeScreen extends StatefulWidget {
   final int presentationNodeHash;
   final int depth;
   final PresentationNodeItemBuilder itemBuilder;
-  final PresentationNodeTileBuilder tileBuilder;
   final bool isCategorySet;
   PresentationNodeScreen(
       {this.presentationNodeHash,
       this.itemBuilder,
-      this.tileBuilder,
       this.isCategorySet = false,
       this.depth = 0});
 
@@ -88,8 +84,7 @@ class PresentationNodeScreenState<T extends PresentationNodeScreen>
                 DestinyPresentationScreenStyle.CategorySets,
         presentationNodeHash: widget.presentationNodeHash,
         depth: widget.depth,
-        itemBuilder: widget.itemBuilder,
-        tileBuilder: widget.tileBuilder);
+        itemBuilder: widget.itemBuilder,);
   }
 
   Widget itemBuilder(CollectionListItem item, int depth, bool isCategorySet) {
@@ -125,39 +120,39 @@ class PresentationNodeScreenState<T extends PresentationNodeScreen>
     }
   }
 
-  StaggeredTile tileBuilder(CollectionListItem item) {
-    switch (item.type) {
-      case CollectionListItemType.presentationNode:
-        return StaggeredTile.extent(30, 92);
+  // StaggeredGridTile tileBuilder(CollectionListItem item) {
+  //   switch (item.type) {
+  //     case CollectionListItemType.presentationNode:
+  //       return StaggeredGridTile.extent(crossAxisCellCount:30, mainAxisExtent:92);
 
-      case CollectionListItemType.nestedCollectible:
-        if (MediaQueryHelper(context).tabletOrBigger) {
-          return StaggeredTile.count(3, 3);
-        }
-        return StaggeredTile.count(6, 6);
+  //     case CollectionListItemType.nestedCollectible:
+  //       if (MediaQueryHelper(context).tabletOrBigger) {
+  //         return StaggeredGridTile.count(crossAxisCellCount:3, mainAxisCellCount:3);
+  //       }
+  //       return StaggeredGridTile.count(crossAxisCellCount:6, mainAxisCellCount:6);
 
-      case CollectionListItemType.collectible:
-        if (MediaQueryHelper(context).tabletOrBigger) {
-          return StaggeredTile.extent(10, 96);
-        }
-        return StaggeredTile.extent(30, 96);
+  //     case CollectionListItemType.collectible:
+  //       if (MediaQueryHelper(context).tabletOrBigger) {
+  //         return StaggeredGridTile.extent(crossAxisCellCount:10, mainAxisExtent:96);
+  //       }
+  //       return StaggeredGridTile.extent(crossAxisCellCount:30, mainAxisExtent:96);
 
-      case CollectionListItemType.record:
-        if (MediaQueryHelper(context).tabletOrBigger) {
-          return StaggeredTile.fit(10);
-        }
-        return StaggeredTile.fit(30);
+  //     case CollectionListItemType.record:
+  //       if (MediaQueryHelper(context).tabletOrBigger) {
+  //         return StaggeredGridTile.fit(crossAxisCellCount:10);
+  //       }
+  //       return StaggeredGridTile.fit(crossAxisCellCount:30);
 
-      case CollectionListItemType.metric:
-        if (MediaQueryHelper(context).tabletOrBigger) {
-          return StaggeredTile.extent(10, 96);
-        }
-        return StaggeredTile.extent(30, 96);
+  //     case CollectionListItemType.metric:
+  //       if (MediaQueryHelper(context).tabletOrBigger) {
+  //         return StaggeredGridTile.extent(crossAxisCellCount:10, mainAxisExtent:96);
+  //       }
+  //       return StaggeredGridTile.extent(crossAxisCellCount:30, mainAxisExtent:96);
 
-      default:
-        return StaggeredTile.count(30, 7);
-    }
-  }
+  //     default:
+  //       return StaggeredGridTile.count(crossAxisCellCount:30, mainAxisCellCount:7);
+  //   }
+  // }
 
   void onPresentationNodePressed(int hash, int depth, bool isCategorySet) {
     Navigator.push(
@@ -167,7 +162,6 @@ class PresentationNodeScreenState<T extends PresentationNodeScreen>
             presentationNodeHash: hash,
             depth: depth + 1,
             itemBuilder: widget.itemBuilder ?? itemBuilder,
-            tileBuilder: widget.tileBuilder ?? tileBuilder,
             isCategorySet: isCategorySet),
       ),
     );

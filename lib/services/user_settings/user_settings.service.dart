@@ -9,8 +9,7 @@ import 'package:little_light/services/user_settings/little_light_persistent_page
 import 'package:little_light/utils/remove_diacritics.dart';
 
 setupUserSettingsService() async {
-  GetIt.I
-      .registerSingleton<UserSettingsService>(UserSettingsService._internal());
+  GetIt.I.registerSingleton<UserSettingsService>(UserSettingsService._internal());
 }
 
 class UserSettingsService with StorageConsumer, AuthConsumer {
@@ -33,8 +32,7 @@ class UserSettingsService with StorageConsumer, AuthConsumer {
 
   initItemOrdering() async {
     List<ItemSortParameter> savedParams = await globalStorage.getItemOrdering() ?? [];
-    List<ItemSortParameterType> presentParams =
-        (savedParams ?? []).map((p) => p.type).toList();
+    List<ItemSortParameterType> presentParams = (savedParams ?? []).map((p) => p.type).toList();
     var defaults = ItemSortParameter.defaultItemList;
     var defaultParams = defaults.map((p) => p.type);
     savedParams.removeWhere((p) => !defaultParams.contains(p.type));
@@ -47,10 +45,8 @@ class UserSettingsService with StorageConsumer, AuthConsumer {
   }
 
   initPursuitOrdering() async {
-    List<ItemSortParameter> savedParams =
-        await globalStorage.getPursuitOrdering() ?? [];
-    Iterable<ItemSortParameterType> presentParams =
-        savedParams.map((p) => p.type);
+    List<ItemSortParameter> savedParams = await globalStorage.getPursuitOrdering() ?? [];
+    Iterable<ItemSortParameterType> presentParams = savedParams.map((p) => p.type);
     var defaults = ItemSortParameter.defaultPursuitList;
     var defaultParams = defaults.map((p) => p.type);
     savedParams.removeWhere((p) => !defaultParams.contains(p.type));
@@ -78,14 +74,14 @@ class UserSettingsService with StorageConsumer, AuthConsumer {
 
   initBucketDisplayOptions() async {
     _bucketDisplayOptions = await currentMembershipStorage.getBucketDisplayOptions();
-    if(_bucketDisplayOptions == null){
+    if (_bucketDisplayOptions == null) {
       _bucketDisplayOptions = Map<String, BucketDisplayOptions>();
     }
   }
 
   initDetailsSectionDisplayOptions() async {
     _detailsSectionDisplayVisibility = await currentMembershipStorage.getDetailsSectionDisplayVisibility();
-    if(_detailsSectionDisplayVisibility == null){
+    if (_detailsSectionDisplayVisibility == null) {
       _detailsSectionDisplayVisibility = Map<String, bool>();
     }
   }
@@ -153,9 +149,21 @@ class UserSettingsService with StorageConsumer, AuthConsumer {
 
   Set<String> get priorityTags => _priorityTags;
 
-  set priorityTags(Set<String> tags) {
+  _setPriorityTags(Set<String> tags) {
     _priorityTags = tags;
     currentMembershipStorage.savePriorityTags(_priorityTags);
+  }
+
+  addPriorityTag(ItemNotesTag tag){
+    final tags = priorityTags;
+    tags.add(tag.tagId);
+    _setPriorityTags(tags);
+  }
+
+  removePriorityTag(ItemNotesTag tag){
+    final tags = priorityTags;
+    tags.remove(tag.tagId);
+    _setPriorityTags(tags);
   }
 
   List<ItemSortParameter> get pursuitOrdering => _pursuitOrdering;
@@ -175,13 +183,7 @@ class UserSettingsService with StorageConsumer, AuthConsumer {
   LittleLightPersistentPage get startingPage {
     final _page = globalStorage.startingPage;
 
-    if (auth.isLogged) {
-      return _page ?? LittleLightPersistentPage.Equipment;
-    }
-    if (publicPages.contains(_page)) {
-      return _page;
-    }
-    return LittleLightPersistentPage.Collections;
+    return _page ?? LittleLightPersistentPage.Equipment;
   }
 
   set startingPage(LittleLightPersistentPage page) {

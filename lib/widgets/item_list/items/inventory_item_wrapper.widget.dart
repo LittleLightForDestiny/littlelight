@@ -7,7 +7,7 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/pages/item_detail.screen.dart';
+import 'package:little_light/pages/item_details/item_details.page.dart';
 import 'package:little_light/pages/quick_transfer.screen.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/inventory/enums/item_destination.dart';
@@ -258,7 +258,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> exte
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ItemDetailScreen(
+        builder: (context) => ItemDetailsPage(
           item: widget.item,
           definition: definition,
           instanceInfo: instanceInfo,

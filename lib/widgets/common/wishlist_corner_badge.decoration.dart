@@ -22,7 +22,7 @@ class WishlistCornerBadgeDecoration extends CornerBadgeDecoration {
     if (tags.contains(WishlistTag.PVP) || tags.contains(WishlistTag.GodPVP)) {
       colors.add(Colors.red.shade800);
     }
-    if (colors.length > 0) {
+    if ((colors?.length ?? 0) > 0) {
       return colors;
     }
     if (tags.contains(WishlistTag.Trash)) {
@@ -46,7 +46,7 @@ class WishlistCornerBadgeDecoration extends CornerBadgeDecoration {
     } else if (tags.contains(WishlistTag.PVP)) {
       colors.add(Colors.red.shade800);
     }
-    if (colors.length > 0) {
+    if ((colors?.length ?? 0) > 0) {
       return colors;
     }
     if (tags.contains(WishlistTag.Trash)) {

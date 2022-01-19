@@ -1,3 +1,5 @@
+//@dart=2.12
+
 import 'package:bungie_api/enums/bungie_membership_type.dart';
 import 'package:bungie_api/enums/destiny_component_type.dart';
 import 'package:bungie_api/models/destiny_character_component.dart';
@@ -16,8 +18,8 @@ import 'package:url_launcher/url_launcher.dart';
 class SupporterCharacterWidget extends StatefulWidget {
   final String membershipId;
   final BungieMembershipType membershipType;
-  final String link;
-  final Widget badge;
+  final String? link;
+  final Widget? badge;
   SupporterCharacterWidget(this.membershipId, this.membershipType, [this.link, this.badge]);
 
   @override
@@ -28,8 +30,8 @@ class SupporterCharacterWidget extends StatefulWidget {
 
 class SupporterCharacterWidgetState extends State<SupporterCharacterWidget>
     with AutomaticKeepAliveClientMixin, BungieApiConsumer {
-  DestinyCharacterComponent lastPlayed;
-  UserInfoCard userInfo;
+  DestinyCharacterComponent? lastPlayed;
+  UserInfoCard? userInfo;
 
   @override
   void initState() {
@@ -40,14 +42,15 @@ class SupporterCharacterWidgetState extends State<SupporterCharacterWidget>
   loadCharacters() async {
     var profile = await bungieAPI.getProfile([DestinyComponentType.Characters, DestinyComponentType.Profiles],
         "${widget.membershipId}", widget.membershipType);
-    List<DestinyCharacterComponent> list = profile.characters.data.values.toList();
+    List<DestinyCharacterComponent>? list = profile?.characters?.data?.values.toList();
+    if(list == null || list.length == 0) return;
     list.sort((charA, charB) {
-      DateTime dateA = DateTime.parse(charA.dateLastPlayed);
-      DateTime dateB = DateTime.parse(charB.dateLastPlayed);
+      DateTime dateA = DateTime.tryParse(charA.dateLastPlayed ?? "") ?? DateTime.fromMillisecondsSinceEpoch(0);
+      DateTime dateB = DateTime.tryParse(charB.dateLastPlayed ?? "") ?? DateTime.fromMillisecondsSinceEpoch(0);
       return dateB.compareTo(dateA);
     });
     lastPlayed = list.first;
-    userInfo = profile.profile.data.userInfo;
+    userInfo = profile?.profile?.data?.userInfo;
     if (!mounted) return;
     setState(() {});
   }
@@ -61,7 +64,7 @@ class SupporterCharacterWidgetState extends State<SupporterCharacterWidget>
           Positioned.fill(child: buildEmblemBackground(context)),
           Positioned(left: 8, top: 8, bottom: 8, child: buildEmblemIcon(context)),
           Positioned(
-              left: 68,
+              left: 82,
               top: 4,
               bottom: 4,
               child: Column(
@@ -70,7 +73,7 @@ class SupporterCharacterWidgetState extends State<SupporterCharacterWidget>
                   children: [
                     buildPlayerName(context),
                     buildPlayerClass(context),
-                    widget.badge != null ? widget.badge : Container()
+                    widget.badge ?? Container()
                   ])),
           Positioned(
             bottom: 8,
@@ -95,9 +98,10 @@ class SupporterCharacterWidgetState extends State<SupporterCharacterWidget>
   }
 
   Widget buildEmblemBackground(BuildContext context) {
-    if (lastPlayed == null) return Container();
+    final emblemHash = this.lastPlayed?.emblemHash;
+    if (emblemHash == null) return Container();
     return ManifestImageWidget<DestinyInventoryItemDefinition>(
-      lastPlayed.emblemHash,
+      emblemHash,
       fit: BoxFit.cover,
       alignment: Alignment.centerLeft,
       urlExtractor: (def) {
@@ -107,17 +111,21 @@ class SupporterCharacterWidgetState extends State<SupporterCharacterWidget>
   }
 
   Widget buildEmblemIcon(BuildContext context) {
-    if (lastPlayed == null) return Container();
-    return ManifestImageWidget<DestinyInventoryItemDefinition>(
-      lastPlayed.emblemHash,
+    final emblemHash = this.lastPlayed?.emblemHash;
+    if (emblemHash == null) return Container();
+    return Container(
+      width: 64,
+        child: ManifestImageWidget<DestinyInventoryItemDefinition>(
+      emblemHash,
       urlExtractor: (def) {
         return def.secondaryOverlay;
       },
-    );
+    ));
   }
 
   Widget buildPlayerName(BuildContext context) {
-    if (userInfo == null) return Text(" ");
+    final userInfo = this.userInfo;
+    if (userInfo == null) return Container();
     return Text(
       "${userInfo.displayName}",
       style: TextStyle(fontWeight: FontWeight.bold),
@@ -125,7 +133,8 @@ class SupporterCharacterWidgetState extends State<SupporterCharacterWidget>
   }
 
   Widget buildPlayerLevel(BuildContext context) {
-    if (lastPlayed == null) return Text(" ");
+    final lightLevel = lastPlayed?.light;
+    if (lightLevel == null) return Text(" ");
     return Row(
       children: <Widget>[
         Icon(
@@ -133,7 +142,7 @@ class SupporterCharacterWidgetState extends State<SupporterCharacterWidget>
           size: 12,
           color: Colors.amber.shade200,
         ),
-        Text("${lastPlayed.light}",
+        Text("$lightLevel",
             style: TextStyle(color: Colors.amber.shade200, fontSize: 22, fontWeight: FontWeight.bold)),
       ],
     );
@@ -151,15 +160,17 @@ class SupporterCharacterWidgetState extends State<SupporterCharacterWidget>
   }
 
   Widget buildPlayerClass(BuildContext context) {
-    if (lastPlayed == null) return Text(" ");
+    final genderHash = lastPlayed?.genderHash;
+    final classHash = lastPlayed?.classHash;
+    final raceHash = lastPlayed?.raceHash;
     return Row(children: [
-      ManifestText<DestinyClassDefinition>(lastPlayed.classHash, textExtractor: (def) {
-        return def.genderedClassNamesByGenderHash["${lastPlayed.genderHash}"];
-      }, style: TextStyle(fontSize: 12)),
+      classHash != null ? ManifestText<DestinyClassDefinition>(classHash, textExtractor: (def) {
+        return def.genderedClassNamesByGenderHash?["$genderHash"] ?? def.displayProperties?.name;
+      }, style: TextStyle(fontSize: 12)) : Container(),
       Text(" - ", style: TextStyle(fontSize: 12)),
-      ManifestText<DestinyRaceDefinition>(lastPlayed.raceHash, textExtractor: (def) {
-        return def.genderedRaceNamesByGenderHash["${lastPlayed.genderHash}"];
-      }, style: TextStyle(fontSize: 12)),
+      raceHash != null ? ManifestText<DestinyRaceDefinition>(raceHash, textExtractor: (def) {
+        return def.genderedRaceNamesByGenderHash?["$genderHash"] ?? def.displayProperties?.name;
+      }, style: TextStyle(fontSize: 12)) : Container(),
     ]);
   }
 

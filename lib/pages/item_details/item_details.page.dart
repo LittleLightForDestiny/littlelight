@@ -53,7 +53,7 @@ import 'package:little_light/widgets/item_tags/item_details_tags.widget.dart';
 import 'package:little_light/widgets/option_sheets/as_equipped_switch.widget.dart';
 import 'package:little_light/widgets/option_sheets/loadout_select_sheet.widget.dart';
 
-class ItemDetailScreen extends BaseDestinyStatefulItemWidget {
+class ItemDetailsPage extends BaseDestinyStatefulItemWidget {
   final String uniqueId;
   final bool hideItemManagement;
   final List<DestinyItemSocketState> socketStates;
@@ -61,7 +61,7 @@ class ItemDetailScreen extends BaseDestinyStatefulItemWidget {
   final DestinyVendorItemDefinition vendorItem;
   final int vendorHash;
 
-  ItemDetailScreen({
+  ItemDetailsPage({
     String characterId,
     DestinyItemComponent item,
     DestinyInventoryItemDefinition definition,
@@ -81,7 +81,7 @@ class ItemDetailScreen extends BaseDestinyStatefulItemWidget {
   }
 }
 
-class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen>
+class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailsPage>
     with AuthConsumer, LoadoutsConsumer, ProfileConsumer, InventoryConsumer, ManifestConsumer, ItemNotesConsumer {
   int selectedPerk;
   Map<int, int> selectedPerks = new Map();
@@ -126,9 +126,6 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen>
   }
 
   findDuplicates() async {
-    if (!auth.isLogged) {
-      return;
-    }
     List<ItemWithOwner> allItems = [];
     Iterable<String> charIds = profile.getCharacters().map((char) => char.characterId);
     charIds.forEach((charId) {
@@ -410,7 +407,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailScreen>
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ItemDetailScreen(
+                    builder: (context) => ItemDetailsPage(
                       definition: widget.definition,
                       uniqueId: null,
                     ),

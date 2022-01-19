@@ -4,7 +4,7 @@ import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_item_quantity.dart';
 
 import 'package:flutter/material.dart';
-import 'package:little_light/pages/item_detail.screen.dart';
+import 'package:little_light/pages/item_details/item_details.page.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateless_item.widget.dart';
@@ -79,7 +79,7 @@ class RewardsInfoWidget extends BaseDestinyStatelessItemWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ItemDetailScreen(definition: def),
+                        builder: (context) => ItemDetailsPage(definition: def),
                       ),
                     );
                   },

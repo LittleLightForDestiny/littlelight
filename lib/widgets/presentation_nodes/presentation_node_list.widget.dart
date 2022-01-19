@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:bungie_api/enums/destiny_presentation_screen_style.dart';
 import 'package:bungie_api/models/destiny_presentation_node_child_entry.dart';
 import 'package:bungie_api/models/destiny_presentation_node_collectible_child_entry.dart';
@@ -9,19 +7,20 @@ import 'package:bungie_api/models/destiny_presentation_node_record_child_entry.d
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/widgets/common/loading_anim.widget.dart';
+import 'package:little_light/widgets/multisection_scrollview/multisection_scrollview.dart';
+import 'package:little_light/widgets/multisection_scrollview/sliver_section.dart';
 
-typedef StaggeredTile PresentationNodeTileBuilder(CollectionListItem item);
+typedef StaggeredGridTile PresentationNodeTileBuilder(CollectionListItem item);
 typedef Widget PresentationNodeItemBuilder(CollectionListItem item, int depth, bool isCategorySet);
 
 class PresentationNodeListWidget extends StatefulWidget {
   final int presentationNodeHash;
-  final PresentationNodeTileBuilder tileBuilder;
   final PresentationNodeItemBuilder itemBuilder;
   final int depth;
   final bool isCategorySets;
   PresentationNodeListWidget({
     Key key,
-    @required this.tileBuilder,
     @required this.itemBuilder,
     this.isCategorySets = false,
     this.presentationNodeHash,
@@ -81,20 +80,22 @@ class PresentationNodeListWidgetState extends State<PresentationNodeListWidget> 
 
   @override
   Widget build(BuildContext context) {
-    var screenPadding = MediaQuery.of(context).padding;
-
-    return StaggeredGridView.countBuilder(
-      padding: EdgeInsets.all(4).copyWith(
-          left: max(screenPadding.left, 4), right: max(screenPadding.right, 4), bottom: 4 + screenPadding.bottom),
-      crossAxisCount: 30,
-      itemCount: count,
-      itemBuilder: (BuildContext context, int index) => getItem(context, index),
-      staggeredTileBuilder: (int index) => getTileBuilder(index),
-      mainAxisSpacing: 4,
-      crossAxisSpacing: 4,
-      physics: const AlwaysScrollableScrollPhysics(),
+    if (listIndex == null) return LoadingAnimWidget();
+    return MultiSectionScrollView(
+      [
+        SliverSection(
+          itemCount: listIndex?.length,
+          itemHeight: itemHeight,
+          itemBuilder: (context, index) => getItem(context, index),
+        )
+      ],
+      padding: EdgeInsets.all(4),
+      crossAxisSpacing: 2,
+      mainAxisSpacing: 2,
     );
   }
+
+  double get itemHeight => 112;
 
   Widget getItem(BuildContext context, int index) {
     var item = listIndex[index];
@@ -114,10 +115,11 @@ class PresentationNodeListWidgetState extends State<PresentationNodeListWidget> 
 
   int get count => listIndex?.length ?? 0;
 
-  StaggeredTile getTileBuilder(int index) {
-    var item = listIndex[index];
-    return widget.tileBuilder(item);
-  }
+  ///TODO: remove tile builder
+  // StaggeredGridTile getTileBuilder(int index) {
+  //   var item = listIndex[index];
+  //   return widget.tileBuilder(item);
+  // }
 }
 
 enum CollectionListItemType { presentationNode, collectible, nestedCollectible, nestedRecord, record, metric }

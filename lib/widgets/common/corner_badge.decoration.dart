@@ -80,7 +80,7 @@ class CornerBadgePainter extends BoxPainter {
   }
 
   Paint getSingleColorPaint(List<Color> colors) => Paint()
-    ..color = colors.single
+    ..color = colors?.single ?? Color(0x0000000)
     ..isAntiAlias = true;
 
   Paint getMultiColorPaint(List<Offset> points, List<Color> colors) => Paint()
@@ -88,7 +88,7 @@ class CornerBadgePainter extends BoxPainter {
     ..isAntiAlias = true;
 
   ui.Gradient gradient(List<Offset> points, List<Color> colors) {
-    double partSize = 1 / colors.length;
+    double partSize = 1 / (colors?.length ?? 1);
     var stops = colors
         .expand((element) => [
               colors.indexOf(element) * partSize,
@@ -101,7 +101,7 @@ class CornerBadgePainter extends BoxPainter {
   }
 
   Paint getBadgePaint(List<Offset> points, List<Color> colors) =>
-      colors.length > 1
+      (colors?.length ?? 0) > 1
           ? getMultiColorPaint(points, colors)
           : getSingleColorPaint(colors);
 

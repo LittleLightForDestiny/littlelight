@@ -35,10 +35,8 @@ class CollectionsScreenState
     profile.fetchProfileData();
     userSettings.startingPage = _page;
     analytics.registerPageOpen(_page);
-
-    if (auth.isLogged) {
-      this.loadItems();
-    }
+    
+    this.loadItems();
     super.initState();
   }
 
@@ -104,7 +102,6 @@ class CollectionsScreenState
       ],
       depth: 0,
       itemBuilder: this.itemBuilder,
-      tileBuilder: this.tileBuilder,
     );
   }
 

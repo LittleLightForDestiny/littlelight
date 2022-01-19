@@ -1,6 +1,5 @@
 //@dart=2.12
 
-
 import 'dart:convert';
 
 import 'package:bungie_api/models/core_settings_configuration.dart';
@@ -84,10 +83,10 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
 
   String? get currentMembershipID => getString(GlobalStorageKeys.currentMembershipID);
   set currentMembershipID(String? selectedMembershipID) {
-    if(selectedMembershipID == null){
+    if (selectedMembershipID == null) {
       print(selectedMembershipID);
     }
-      setString(GlobalStorageKeys.currentMembershipID, selectedMembershipID);
+    setString(GlobalStorageKeys.currentMembershipID, selectedMembershipID);
   }
 
   Future<List<ItemSortParameter>?> getItemOrdering() async {

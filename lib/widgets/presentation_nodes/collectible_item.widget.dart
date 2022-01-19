@@ -4,7 +4,7 @@ import 'package:bungie_api/enums/destiny_item_type.dart';
 import 'package:bungie_api/models/destiny_collectible_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/pages/item_detail.screen.dart';
+import 'package:little_light/pages/item_details/item_details.page.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
@@ -208,7 +208,7 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget> with AuthC
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ItemDetailScreen(definition: itemDef),
+        builder: (context) => ItemDetailsPage(definition: itemDef),
       ),
     );
   }
@@ -274,7 +274,6 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget> with AuthC
   }
 
   bool get unlocked {
-    if (!auth.isLogged) return true;
     if (definition == null) return false;
     return profile.isCollectibleUnlocked(widget.hash, definition.scope);
   }

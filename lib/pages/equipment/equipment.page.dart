@@ -4,10 +4,6 @@ import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 // ignore: import_of_legacy_library_into_null_safe
-import 'package:little_light/widgets/common/manifest_image.widget.dart';
-// ignore: import_of_legacy_library_into_null_safe
-import 'package:little_light/widgets/common/manifest_text.widget.dart';
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/widgets/side_menu/side_menu.widget.dart';
 
 class EquipmentPage extends StatefulWidget {
@@ -40,9 +36,9 @@ class _EquipmentPageState extends State<EquipmentPage> with ProfileConsumer {
               padding: EdgeInsets.all(8),
               child: Row(
                 children: [
-                  ManifestImageWidget<DestinyInventoryItemDefinition>(c.emblemHash),
-                  ManifestText<DestinyClassDefinition>(c.classHash),
-                  Text("${c.light}")
+                  // c.embManifestImageWidget<DestinyInventoryItemDefinition>(c.emblemHash),
+                  // ManifestText<DestinyClassDefinition>(c.classHash),
+                  // Text("${c.light}")
                 ],
               ));
         }).toList());

@@ -7,7 +7,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/character_sort_parameter.dart';
-import 'package:little_light/pages/initial/initial.page.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/language/language.consumer.dart';
@@ -25,7 +24,6 @@ import 'package:timeago/timeago.dart' as timeago;
 const Duration _kExpand = Duration(milliseconds: 200);
 
 class ProfileInfoWidget extends StatefulWidget {
-
   final Widget? menuContent;
   ProfileInfoWidget({this.menuContent});
 
@@ -55,9 +53,7 @@ class ProfileInfoState extends State<ProfileInfoWidget>
     _isExpanded = PageStorage.of(context)?.readState(context) ?? false;
     if (_isExpanded) _controller?.value = 1.0;
 
-    if (auth.isLogged) {
-      loadUser();
-    }
+    loadUser();
   }
 
   @override
@@ -112,7 +108,8 @@ class ProfileInfoState extends State<ProfileInfoWidget>
 
   loadUser() async {
     UserMembershipData? membershipData = await auth.getMembershipData();
-    GroupUserInfoCard? currentMembership = membershipData?.destinyMemberships?.firstWhereOrNull((m) => m.membershipId == auth.currentMembershipID);
+    GroupUserInfoCard? currentMembership =
+        membershipData?.destinyMemberships?.firstWhereOrNull((m) => m.membershipId == auth.currentMembershipID);
     if (!mounted) return;
     setState(() {
       account = membershipData;
@@ -149,11 +146,13 @@ class ProfileInfoState extends State<ProfileInfoWidget>
     return Stack(
       children: <Widget>[
         Positioned.fill(
-            child: QueuedNetworkImage(
-          imageUrl: url,
-          placeholder: shimmer,
-          fit: BoxFit.cover,
-        )),
+            child: url != null
+                ? QueuedNetworkImage(
+                    imageUrl: url,
+                    placeholder: shimmer,
+                    fit: BoxFit.cover,
+                  )
+                : Container()),
         Container(
           decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -192,61 +191,37 @@ class ProfileInfoState extends State<ProfileInfoWidget>
           textExtractor: (def) => "${def.displayProperties?.description}",
           style: TextStyle(fontSize: 12, color: Colors.grey.shade100, fontWeight: FontWeight.bold));
     }
+    final activityModeHash = activities.currentActivityModeHash;
+    final activityHash = activities.currentActivityHash;
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      ManifestText<DestinyActivityModeDefinition>(activities.currentActivityModeHash,
-          style: TextStyle(fontSize: 10, color: Colors.grey.shade100)),
-      ManifestText<DestinyActivityDefinition>(activities.currentActivityHash,
-          style: TextStyle(fontSize: 12, color: Colors.grey.shade100, fontWeight: FontWeight.bold))
+      activityModeHash != null
+          ? ManifestText<DestinyActivityModeDefinition>(activityModeHash,
+              style: TextStyle(fontSize: 10, color: Colors.grey.shade100))
+          : Container(),
+      activityHash != null
+          ? ManifestText<DestinyActivityDefinition>(activityHash,
+              style: TextStyle(fontSize: 12, color: Colors.grey.shade100, fontWeight: FontWeight.bold))
+          : Container(),
     ]);
   }
 
   Widget profilePicture(BuildContext context) {
     String? url = BungieApiService.url(account?.bungieNetUser?.profilePicturePath);
 
-      return Container(
-          decoration:
-              BoxDecoration(
-                color: LittleLightTheme.of(context).surfaceLayers.layer0,
-                border: Border.all(width: 2, color: LittleLightTheme.of(context).surfaceLayers.layer3)),
-          child: url == null ? shimmer : QueuedNetworkImage(
-            imageUrl: url,
-            placeholder: shimmer,
-            fit: BoxFit.cover,
-          ));
-    
-    
+    return Container(
+        decoration: BoxDecoration(
+            color: LittleLightTheme.of(context).surfaceLayers.layer0,
+            border: Border.all(width: 2, color: LittleLightTheme.of(context).surfaceLayers.layer3)),
+        child: url == null
+            ? shimmer
+            : QueuedNetworkImage(
+                imageUrl: url,
+                placeholder: shimmer,
+                fit: BoxFit.cover,
+              ));
   }
 
   Widget profileInfo(context) {
-    if (!auth.isLogged) {
-      return Container(
-        color: Theme.of(context).primaryColor,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Expanded(
-                child: MaterialButton(
-              child: Container(
-                alignment: Alignment.centerLeft,
-                child: TranslatedTextWidget("Tap to Login", textAlign: TextAlign.left),
-              ),
-              onPressed: () {
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => InitialPage(),
-                    ));
-              },
-            )),
-            IconButton(
-              enableFeedback: false,
-              icon: Transform.rotate(angle: -(_heightFactor?.value ?? 0) * 1.5, child: Icon(Icons.settings)),
-              onPressed: _handleTap,
-            )
-          ],
-        ),
-      );
-    }
     bool isCrossSaveAccount = membership?.membershipId == account?.primaryMembershipId;
     PlatformData? platform = isCrossSaveAccount ? PlatformData.crossPlayData : membership?.membershipType?.data;
     return Container(

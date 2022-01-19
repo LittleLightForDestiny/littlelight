@@ -5,21 +5,25 @@ import 'package:little_light/services/analytics/analytics.service.dart';
 import 'package:little_light/services/app_config/app_config.consumer.dart';
 import 'package:little_light/services/app_config/app_config.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/services/language/language.consumer.dart';
 // ignore: import_of_legacy_library_into_null_safe
+import 'package:little_light/services/inventory/inventory.service.dart';
+import 'package:little_light/services/language/language.consumer.dart';
 import 'package:little_light/services/language/language.service.dart';
 // ignore: import_of_legacy_library_into_null_safe
+import 'package:little_light/services/littlelight/item_notes.service.dart';
 import 'package:little_light/services/littlelight/littlelight_data.service.dart';
 import 'package:little_light/services/littlelight/loadouts.service.dart';
 import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
+// ignore: import_of_legacy_library_into_null_safe
+import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/services/profile/profile.service.dart';
 // ignore: import_of_legacy_library_into_null_safe
+import 'package:little_light/services/selection/selection.service.dart';
 import 'package:little_light/services/storage/export.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
@@ -47,6 +51,10 @@ Future<void> setupServices() async {
   await setupWishlistsService();
   await setupBungieApiService();
   await setupLoadoutsService();
+  await setupNotificationService();
+  await setupSelectionService();
+  await setupitemNotes();
+  await setupInventoryService();
 }
 
 initServices(BuildContext context) async {

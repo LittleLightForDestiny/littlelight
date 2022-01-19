@@ -6,12 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/pages/about.screen.dart';
-import 'package:little_light/pages/accounts.screen.dart';
 import 'package:little_light/pages/collections.screen.dart';
 import 'package:little_light/pages/dev_tools.screen.dart';
 import 'package:little_light/pages/duplicated_items.screen.dart';
 import 'package:little_light/pages/equipment.screen.dart';
-import 'package:little_light/pages/languages.screen.dart';
+import 'package:little_light/pages/languages/languages.page_route.dart';
 import 'package:little_light/pages/loadouts.screen.dart';
 import 'package:little_light/pages/objectives.screen.dart';
 import 'package:little_light/pages/old_triumphs.screen.dart';
@@ -102,7 +101,8 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer {
                   ? menuItem(context, TranslatedTextWidget("Dev Tools"), onTap: () {
                       open(context, DevToolsScreen());
                     })
-                  : Container()
+                  : Container(),
+              Container(height:MediaQuery.of(context).viewPadding.bottom)
             ],
           )),
         ]));
@@ -161,15 +161,20 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer {
     }
   }
 
+  pushRoute(BuildContext context, MaterialPageRoute route){
+    Navigator.of(context).pop();
+    Navigator.of(context).push(route);
+  }
+
   addAccount(BuildContext context) async {
     auth.openBungieLogin(true);
   }
 
   changeLanguage(BuildContext context) {
-    open(context, LanguagesScreen());
+    pushRoute(context, LanguagesPageRoute());
   }
 
   manageAccounts(BuildContext context) {
-    open(context, AccountsScreen());
+    // open(context, AccountsScreen());
   }
 }

@@ -1,3 +1,4 @@
+//@dart=2.12
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
@@ -22,16 +23,14 @@ mixin VisibleSectionMixin<T extends StatefulWidget> on State<T> {
 }
 
 class SectionHeaderWidget extends StatefulWidget {
-  final int hash;
-  final Function onChanged;
+  final Function? onChanged;
   final Widget label;
   final String sectionId;
   SectionHeaderWidget({
-    this.label,
-    this.hash,
+    required this.label,
     this.onChanged,
-    @required this.sectionId,
-    Key key,
+    required this.sectionId,
+    Key? key,
   }) : super(key: key);
   @override
   SectionHeaderWidgetState createState() => new SectionHeaderWidgetState();

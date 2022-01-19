@@ -4,6 +4,46 @@ import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enu
 
 part 'bucket_display_options.g.dart';
 
+
+extension ListParameters on BucketDisplayOptions{
+  double? get unequippedItemHeight {
+    switch(this.type){
+      case BucketDisplayType.Hidden:
+      case BucketDisplayType.OnlyEquipped:
+        return 0;
+      case BucketDisplayType.Large:
+        return 112;
+      case BucketDisplayType.Medium:
+        return 76;
+      default:
+        return null;
+    }
+  }
+
+  double? get equippedItemHeight {
+    switch(this.type){
+      case BucketDisplayType.Hidden:
+        return 0;
+      default:
+        return 112;
+    }
+  }
+
+  int? get unequippedItemsPerRow {
+    switch(this.type){
+      case BucketDisplayType.Hidden:
+      case BucketDisplayType.OnlyEquipped:
+        return 0;
+      case BucketDisplayType.Large:
+        return 1;
+      case BucketDisplayType.Medium:
+        return 3;
+      case BucketDisplayType.Small:
+        return 5;
+    }
+  }
+}
+
 enum BucketDisplayType {
   Hidden,
   OnlyEquipped,

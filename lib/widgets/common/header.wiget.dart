@@ -1,10 +1,11 @@
+//@dart=2.12
 import 'package:flutter/material.dart';
 
 class HeaderWidget extends StatelessWidget {
   final Widget child;
   final EdgeInsets padding;
   final Alignment alignment;
-  HeaderWidget({this.child, this.padding = const EdgeInsets.all(8), this.alignment = Alignment.centerLeft});
+  HeaderWidget({required this.child, this.padding = const EdgeInsets.all(8), this.alignment = Alignment.centerLeft});
   @override
   Widget build(BuildContext context) {
     return Container(

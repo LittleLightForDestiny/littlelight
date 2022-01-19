@@ -42,7 +42,6 @@ class NestedCollectibleItemWidgetState extends CollectibleItemWidgetState with P
 
 
   bool get unlocked {
-    if (!auth.isLogged) return true;
     if (definition == null) return false;
     return profile.isCollectibleUnlocked(widget.hash, definition.scope);
   }

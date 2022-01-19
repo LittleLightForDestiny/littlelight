@@ -11,18 +11,24 @@ import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/platform_capabilities.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:little_light/widgets/dialogs/confirm_exit.dialog.dart';
 import 'package:little_light/widgets/side_menu/side_menu.widget.dart';
 import 'package:screen/screen.dart';
 
 class MainScreen extends StatefulWidget {
-  MainScreen({Key key}):super(key:key);
+  MainScreen({Key key}) : super(key: key);
   @override
   MainScreenState createState() => MainScreenState();
 }
 
 class MainScreenState extends State<MainScreen>
-    with WidgetsBindingObserver, AuthConsumer, UserSettingsConsumer, LoadoutsConsumer, ProfileConsumer, ItemNotesConsumer {
+    with
+        WidgetsBindingObserver,
+        AuthConsumer,
+        UserSettingsConsumer,
+        LoadoutsConsumer,
+        ProfileConsumer,
+        ItemNotesConsumer {
   Widget currentScreen;
 
   @override
@@ -33,19 +39,15 @@ class MainScreenState extends State<MainScreen>
   }
 
   initUpdaters() {
-
-    if (auth.isLogged) {
-      auth.getMembershipData();
-      loadoutService.getLoadouts(forceFetch: true);
-      itemNotes.getNotes(forceFetch: true);
-      profile.startAutomaticUpdater();
-      WidgetsBinding.instance.addObserver(this);
-    }
+    auth.getMembershipData();
+    loadoutService.getLoadouts(forceFetch: true);
+    itemNotes.getNotes(forceFetch: true);
+    profile.startAutomaticUpdater();
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
-
     switch (state) {
       case AppLifecycleState.resumed:
         await profile.fetchProfileData();
@@ -116,24 +118,8 @@ class MainScreenState extends State<MainScreen>
         ));
   }
 
-  Future<bool> _exitApp(BuildContext context) {
-    return showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: TranslatedTextWidget('Exit'),
-            content: TranslatedTextWidget('Do you really want to exit Little Light?'),
-            actions: <Widget>[
-              MaterialButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                child: TranslatedTextWidget('No'),
-              ),
-              MaterialButton(
-                onPressed: () => Navigator.of(context).pop(true),
-                child: TranslatedTextWidget('Yes'),
-              ),
-            ],
-          ),
-        ) ??
-        false;
+  Future<bool> _exitApp(BuildContext context) async {
+    final exit = await Navigator.of(context).push(ConfirmExitDialogRoute(context));
+    return exit ?? false;
   }
 }

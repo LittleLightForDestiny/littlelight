@@ -43,6 +43,7 @@ class _SubClassImageWidgetState extends DestinyItemState<SubClassImageWidget> wi
       imagePath = path;
     } catch (e) {}
     loaded = true;
+    if(!mounted) return;
     setState(() {});
   }
 

@@ -12,18 +12,16 @@ import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
-import 'package:little_light/widgets/common/littlelight_custom.dialog.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:little_light/widgets/dialogs/confirm_delete_loadout.dialog.dart';
 
 class LoadoutListItemWidget extends StatefulWidget {
   final Map<String, LoadoutItemIndex> itemIndexes;
   final Loadout loadout;
   final Function onChange;
-  const LoadoutListItemWidget(this.loadout,
-      {Key key, this.itemIndexes, this.onChange})
-      : super(key: key);
+  const LoadoutListItemWidget(this.loadout, {Key key, this.itemIndexes, this.onChange}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -103,8 +101,7 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> with Loado
         alignment: Alignment.centerLeft,
         child: Text(
           _loadout.name?.toUpperCase() ?? "",
-          style: TextStyle(
-              color: Colors.grey.shade200, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.grey.shade200, fontWeight: FontWeight.bold),
         ));
   }
 
@@ -117,8 +114,7 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> with Loado
               child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 2),
                   child: ElevatedButton(
-                    style:
-                        ButtonStyle(visualDensity: VisualDensity.comfortable),
+                    style: ButtonStyle(visualDensity: VisualDensity.comfortable),
                     child: TranslatedTextWidget("Equip",
                         maxLines: 1,
                         softWrap: false,
@@ -129,8 +125,7 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> with Loado
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                              EquipLoadoutScreen(loadout: _loadout),
+                          builder: (context) => EquipLoadoutScreen(loadout: _loadout),
                         ),
                       );
                     },
@@ -139,8 +134,7 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> with Loado
               child: Container(
                   padding: EdgeInsets.all(2),
                   child: ElevatedButton(
-                    style:
-                        ButtonStyle(visualDensity: VisualDensity.comfortable),
+                    style: ButtonStyle(visualDensity: VisualDensity.comfortable),
                     child: TranslatedTextWidget("Edit",
                         uppercase: true,
                         maxLines: 1,
@@ -151,8 +145,7 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> with Loado
                       var loadout = await Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                              EditLoadoutScreen(loadout: _loadout),
+                          builder: (context) => EditLoadoutScreen(loadout: _loadout),
                         ),
                       );
                       if (loadout != null) {
@@ -169,8 +162,7 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> with Loado
                   padding: EdgeInsets.all(2),
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                        visualDensity: VisualDensity.comfortable,
-                        primary: Theme.of(context).errorColor),
+                        visualDensity: VisualDensity.comfortable, primary: Theme.of(context).errorColor),
                     child: TranslatedTextWidget("Delete",
                         maxLines: 1,
                         softWrap: false,
@@ -185,26 +177,13 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> with Loado
   }
 
   Future<void> deletePressed(BuildContext context) async {
-    showDialog(
-        context: context,
-        builder: (context) => LittleLightCustomDialog.withYesNoButtons(
-                Container(
-                    padding: EdgeInsets.all(8),
-                    child: TranslatedTextWidget(
-                      "Do you really want to delete the loadout {loadoutName} ?",
-                      replace: {"loadoutName": _loadout.name},
-                      style: TextStyle(fontSize: 16),
-                    )),
-                title: Text(_loadout?.name?.toUpperCase() ?? ""),
-                maxWidth: 400, yesPressed: () async {
-              await loadoutService.deleteLoadout(_loadout);
-              Navigator.of(context).pop();
-              if (widget.onChange != null) {
-                widget.onChange();
-              }
-            }, noPressed: () {
-              Navigator.of(context).pop();
-            }));
+    final confirm = await Navigator.of(context).push(ConfirmDeleteLoadoutDialogRoute(context, _loadout));
+    if (confirm ?? false) {
+      loadoutService.deleteLoadout(_loadout);
+    }
+    if (widget.onChange != null) {
+      widget.onChange();
+    }
   }
 
   Widget buildItemRows(BuildContext context) {
@@ -216,18 +195,15 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> with Loado
       );
     List<Widget> icons = [];
 
-    icons.addAll(buildItemRow(
-        context,
-        DestinyData.getClassIcon(DestinyClass.Unknown),
-        LoadoutItemIndex.genericBucketHashes,
-        itemIndex.generic));
+    icons.addAll(buildItemRow(context, DestinyData.getClassIcon(DestinyClass.Unknown),
+        LoadoutItemIndex.genericBucketHashes, itemIndex.generic));
 
     DestinyClass.values.forEach((classType) {
-      Map<int, DestinyItemComponent> items = itemIndex.classSpecific
-          .map((bucketHash, items) => MapEntry(bucketHash, items[classType]));
+      Map<int, DestinyItemComponent> items =
+          itemIndex.classSpecific.map((bucketHash, items) => MapEntry(bucketHash, items[classType]));
       if (items.values.any((i) => i != null)) {
-        icons.addAll(buildItemRow(context, DestinyData.getClassIcon(classType),
-            LoadoutItemIndex.classBucketHashes, items));
+        icons.addAll(
+            buildItemRow(context, DestinyData.getClassIcon(classType), LoadoutItemIndex.classBucketHashes, items));
       }
     });
 
@@ -236,12 +212,11 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> with Loado
     );
   }
 
-  List<Widget> buildItemRow(BuildContext context, IconData icon,
-      List<int> buckets, Map<int, DestinyItemComponent> items) {
+  List<Widget> buildItemRow(
+      BuildContext context, IconData icon, List<int> buckets, Map<int, DestinyItemComponent> items) {
     List<Widget> itemWidgets = [];
     itemWidgets.add(Icon(icon));
-    itemWidgets
-        .addAll(buckets.map((bucketHash) => itemIcon(items[bucketHash])));
+    itemWidgets.addAll(buckets.map((bucketHash) => itemIcon(items[bucketHash])));
     return itemWidgets
         .map((child) => FractionallySizedBox(
               widthFactor: 1 / (buckets.length + 1),
@@ -258,16 +233,12 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> with Loado
 
   Widget itemIcon(DestinyItemComponent item) {
     if (item == null) {
-      return ManifestImageWidget<DestinyInventoryItemDefinition>(1835369552,
-          key: Key("item_icon_empty"));
+      return ManifestImageWidget<DestinyInventoryItemDefinition>(1835369552, key: Key("item_icon_empty"));
     }
     var instance = profile.getInstanceInfo(item?.itemInstanceId);
     return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
         item.itemHash,
         (def) => ItemIconWidget.builder(
-            item: item,
-            definition: def,
-            instanceInfo: instance,
-            key: Key("item_icon_${item.itemInstanceId}")));
+            item: item, definition: def, instanceInfo: instance, key: Key("item_icon_${item.itemInstanceId}")));
   }
 }

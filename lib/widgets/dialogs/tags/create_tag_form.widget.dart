@@ -1,3 +1,5 @@
+//@dart=2.12
+
 import 'package:flutter/material.dart';
 import 'package:little_light/models/item_notes_tag.dart';
 import 'package:little_light/services/language/language.consumer.dart';
@@ -36,21 +38,21 @@ const _availableColors = [
 ];
 
 class _CreateTagFormWidgetState extends State<CreateTagFormWidget> with LanguageConsumer, ItemNotesConsumer {
-  List<String> colors;
+  List<String>? colors;
   String tagNameLabel = "";
-  TextEditingController tagNameController;
+  TextEditingController? tagNameController;
 
   @override
   void initState() {
     super.initState();
-    tagNameController = TextEditingController(text: widget.tag?.name ?? "");
+    tagNameController = TextEditingController(text: widget.tag.name);
     initData();
   }
 
   initData() async {
     colors = [];
     _availableColors.forEach((element) {
-      colors.addAll([
+      colors?.addAll([
         element.shade900,
         element.shade700,
         element.shade500,
@@ -63,8 +65,8 @@ class _CreateTagFormWidgetState extends State<CreateTagFormWidget> with Language
     tagNameLabel = await languageService.getTranslation("Tag name");
     setState(() {});
 
-    tagNameController.addListener(() {
-      widget?.tag?.name = tagNameController.text;
+    tagNameController?.addListener(() {
+      widget.tag.name = tagNameController?.text ?? "";
       setState(() {});
     });
   }
@@ -83,20 +85,20 @@ class _CreateTagFormWidgetState extends State<CreateTagFormWidget> with Language
           buildNameField(context),
           Container(height: 16),
           TranslatedTextWidget("Background color"),
-          buildColors(context, widget?.tag?.backgroundColorHex, (color) {
-            widget?.tag?.backgroundColorHex = color;
+          buildColors(context, widget.tag.backgroundColorHex, (color) {
+            widget.tag.backgroundColorHex = color;
             setState(() {});
           }, ["#00000000", "#FF000000", "#FFFFFFFF"]),
           Container(height: 16),
           TranslatedTextWidget("Text/icon color"),
-          buildColors(context, widget?.tag?.foregroundColorHex, (color) {
-            widget?.tag?.foregroundColorHex = color;
+          buildColors(context, widget.tag.foregroundColorHex, (color) {
+            widget.tag.foregroundColorHex = color;
             setState(() {});
           }),
           Container(height: 16),
           TranslatedTextWidget("Tag icon"),
-          buildIcons(context, widget?.tag?.icon, (icon) {
-            widget?.tag?.icon = icon;
+          buildIcons(context, widget.tag.icon, (icon) {
+            widget.tag.icon = icon;
             setState(() {});
           })
         ],
@@ -108,28 +110,23 @@ class _CreateTagFormWidgetState extends State<CreateTagFormWidget> with Language
     return Container(
         padding: EdgeInsets.all(8),
         child: Row(mainAxisSize: MainAxisSize.min, children: [
-          ItemTagWidget(widget?.tag),
+          ItemTagWidget(widget.tag),
           Container(
             width: 8,
           ),
-          Flexible(
-              child:
-                  ItemTagWidget(widget?.tag, includeLabel: true, padding: 4)),
+          Flexible(child: ItemTagWidget(widget.tag, includeLabel: true, padding: 4)),
         ]));
   }
 
   Widget buildNameField(BuildContext context) {
     return TextField(
-      decoration: InputDecoration(
-          labelText: tagNameLabel,
-          floatingLabelBehavior: FloatingLabelBehavior.auto),
+      decoration: InputDecoration(labelText: tagNameLabel, floatingLabelBehavior: FloatingLabelBehavior.auto),
       controller: tagNameController,
       maxLength: 20,
     );
   }
 
-  Widget buildColors(BuildContext context, String currentColorHex,
-      Function(String color) onChange,
+  Widget buildColors(BuildContext context, String currentColorHex, Function(String color) onChange,
       [List<String> additionalColors = const []]) {
     return Container(
         height: 150,
@@ -137,7 +134,7 @@ class _CreateTagFormWidgetState extends State<CreateTagFormWidget> with Language
             shrinkWrap: false,
             scrollDirection: Axis.horizontal,
             crossAxisCount: 3,
-            children: additionalColors.followedBy(colors).map((c) {
+            children: additionalColors.followedBy(colors ?? <String>[]).map((c) {
               return AspectRatio(
                   aspectRatio: 1,
                   child: Container(
@@ -145,9 +142,8 @@ class _CreateTagFormWidgetState extends State<CreateTagFormWidget> with Language
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(
                               width: 2,
-                              color: currentColorHex == c
-                                  ? Theme.of(context).colorScheme.onSurface
-                                  : Colors.transparent)),
+                              color:
+                                  currentColorHex == c ? Theme.of(context).colorScheme.onSurface : Colors.transparent)),
                       padding: EdgeInsets.all(3),
                       child: Material(
                         borderRadius: BorderRadius.circular(8),
@@ -161,8 +157,7 @@ class _CreateTagFormWidgetState extends State<CreateTagFormWidget> with Language
             }).toList()));
   }
 
-  Widget buildIcons(BuildContext context, ItemTagIcon currentIcon,
-      Function(ItemTagIcon icon) onChange) {
+  Widget buildIcons(BuildContext context, ItemTagIcon currentIcon, Function(ItemTagIcon icon) onChange) {
     return Container(
         height: 150,
         child: GridView.count(
@@ -177,16 +172,13 @@ class _CreateTagFormWidgetState extends State<CreateTagFormWidget> with Language
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(
                               width: 2,
-                              color: currentIcon == i
-                                  ? Theme.of(context).colorScheme.onSurface
-                                  : Colors.transparent)),
+                              color: currentIcon == i ? Theme.of(context).colorScheme.onSurface : Colors.transparent)),
                       padding: EdgeInsets.all(3),
                       child: Material(
                           borderRadius: BorderRadius.circular(8),
                           color: widget.tag.backgroundColor,
                           child: InkWell(
-                            child: Icon(tagIconData[i],
-                                color: widget.tag.foregroundColor),
+                            child: Icon(tagIconData[i], color: widget.tag.foregroundColor),
                             onTap: () {
                               onChange(i);
                             },

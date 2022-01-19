@@ -170,4 +170,6 @@ class ItemNotesTag {
   dynamic toJson() {
     return _$ItemNotesTagToJson(this);
   }
+
+  ItemNotesTag clone()=>ItemNotesTag.fromJson(toJson());
 }

@@ -43,7 +43,6 @@ class RecordObjectivesWidgetState extends State<RecordObjectivesWidget> with Aut
   @override
   void initState() {
     super.initState();
-    isLogged = auth.isLogged;
     loadDefinitions();
     if(isLogged){
       listenToUpdates();
@@ -77,7 +76,6 @@ class RecordObjectivesWidgetState extends State<RecordObjectivesWidget> with Aut
   
 
   DestinyRecordComponent get record {
-    if (!auth.isLogged) return null;
     return profile.getRecord(definition.hash, definition.scope);
   }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 
 class QuickTransferDestinationItemWidget extends StatelessWidget {
   QuickTransferDestinationItemWidget();
@@ -14,7 +15,7 @@ class QuickTransferDestinationItemWidget extends StatelessWidget {
             width: 2,
             )
         ),
-        child:Center(child: Icon(Icons.add_circle_outline, color:Theme.of(context).colorScheme.primary),)
+        child:Center(child: Icon(Icons.add_circle_outline, color:LittleLightTheme.of(context).surfaceLayers.layer3),)
       );
     }
 }

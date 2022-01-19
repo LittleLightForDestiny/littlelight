@@ -1,27 +1,6 @@
-
 import 'dart:async';
 
-import 'package:bungie_api/enums/destiny_collectible_state.dart';
-import 'package:bungie_api/enums/destiny_component_type.dart';
-import 'package:bungie_api/enums/destiny_scope.dart';
-import 'package:bungie_api/models/destiny_artifact_profile_scoped.dart';
-import 'package:bungie_api/models/destiny_character_activities_component.dart';
-import 'package:bungie_api/models/destiny_character_component.dart';
-import 'package:bungie_api/models/destiny_character_progression_component.dart';
-import 'package:bungie_api/models/destiny_collectible_component.dart';
-import 'package:bungie_api/models/destiny_item_component.dart';
-import 'package:bungie_api/models/destiny_item_instance_component.dart';
-import 'package:bungie_api/models/destiny_item_plug.dart';
-import 'package:bungie_api/models/destiny_item_plug_base.dart';
-import 'package:bungie_api/models/destiny_item_socket_state.dart';
-import 'package:bungie_api/models/destiny_item_sockets_component.dart';
-import 'package:bungie_api/models/destiny_item_talent_grid_component.dart';
-import 'package:bungie_api/models/destiny_metric_component.dart';
-import 'package:bungie_api/models/destiny_objective_progress.dart';
-import 'package:bungie_api/models/destiny_presentation_node_component.dart';
-import 'package:bungie_api/models/destiny_profile_response.dart';
-import 'package:bungie_api/models/destiny_record_component.dart';
-import 'package:bungie_api/models/destiny_stat.dart';
+import 'package:bungie_api/destiny2.dart';
 import 'package:get_it/get_it.dart';
 import 'package:little_light/models/character_sort_parameter.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
@@ -34,12 +13,11 @@ import 'package:little_light/services/user_settings/user_settings.consumer.dart'
 
 enum LastLoadedFrom { server, cache }
 
-setupProfileService(){
-  GetIt.I.registerSingleton<ProfileService>(ProfileService._internal(), dispose: (p)=>p._dispose());
+setupProfileService() {
+  GetIt.I.registerSingleton<ProfileService>(ProfileService._internal(), dispose: (p) => p._dispose());
 }
 
 class ProfileService with UserSettingsConsumer, StorageConsumer, AuthConsumer, BungieApiConsumer, NotificationConsumer {
-
   DateTime lastUpdated;
   ProfileService._internal();
 
@@ -56,37 +34,30 @@ class ProfileService with UserSettingsConsumer, StorageConsumer, AuthConsumer, B
 
   bool _disposed = false;
 
-  _dispose(){
+  _dispose() {
     _disposed = true;
   }
 
   //TODO: remove this
-  List<DestinyComponentType> updateComponents =
-      ProfileComponentGroups.everything;
+  List<DestinyComponentType> updateComponents = ProfileComponentGroups.everything;
 
   Future<DestinyProfileResponse> fetchProfileData(
       {List<DestinyComponentType> components, bool skipUpdate = false}) async {
-    if (!skipUpdate)
-      notifications.push(NotificationEvent(NotificationType.requestedUpdate));
+    if (!skipUpdate) notifications.push(NotificationEvent(NotificationType.requestedUpdate));
     try {
-      DestinyProfileResponse res =
-          await _updateProfileData(components ?? updateComponents);
+      DestinyProfileResponse res = await _updateProfileData(components ?? updateComponents);
       this._lastLoadedFrom = LastLoadedFrom.server;
-      if (!skipUpdate)
-        notifications.push(NotificationEvent(NotificationType.receivedUpdate));
+      if (!skipUpdate) notifications.push(NotificationEvent(NotificationType.receivedUpdate));
       this._cacheProfile(_profile);
       return res;
     } catch (e) {
       print(e);
-      if (!skipUpdate)
-        notifications.push(NotificationEvent(NotificationType.updateError));
+      if (!skipUpdate) notifications.push(NotificationEvent(NotificationType.updateError));
       if (!skipUpdate) await Future.delayed(Duration(seconds: 2));
-      if (!skipUpdate)
-        notifications.push(NotificationEvent(NotificationType.receivedUpdate));
+      if (!skipUpdate) notifications.push(NotificationEvent(NotificationType.receivedUpdate));
     }
     return _profile;
   }
-
 
   ///TODO: fix timer
   startAutomaticUpdater() async {
@@ -94,7 +65,7 @@ class ProfileService with UserSettingsConsumer, StorageConsumer, AuthConsumer, B
       await fetchProfileData(components: ProfileComponentGroups.everything);
     }
     while (true) {
-      if( _disposed) return;
+      if (_disposed) return;
       var duration = Duration(seconds: 30);
       await Future.delayed(duration);
       if (pauseAutomaticUpdater != true) {
@@ -108,8 +79,7 @@ class ProfileService with UserSettingsConsumer, StorageConsumer, AuthConsumer, B
     }
   }
 
-  Future<DestinyProfileResponse> _updateProfileData(
-      List<DestinyComponentType> components) async {
+  Future<DestinyProfileResponse> _updateProfileData(List<DestinyComponentType> components) async {
     // final membershipID = auth.currentMembershipID;
     DestinyProfileResponse response;
     response = await bungieAPI.getCurrentProfile(components);
@@ -183,8 +153,7 @@ class ProfileService with UserSettingsConsumer, StorageConsumer, AuthConsumer, B
     }
 
     if (components.contains(DestinyComponentType.ItemObjectives)) {
-      _profile.characterUninstancedItemComponents =
-          response.characterUninstancedItemComponents;
+      _profile.characterUninstancedItemComponents = response.characterUninstancedItemComponents;
       _profile.itemComponents = response.itemComponents;
     }
 
@@ -200,15 +169,11 @@ class ProfileService with UserSettingsConsumer, StorageConsumer, AuthConsumer, B
 
   bool isPlaying() {
     try {
-      var lastCharacter = getCharacters(CharacterSortParameter(
-              type: CharacterSortParameterType.LastPlayed))
-          ?.first;
+      var lastCharacter = getCharacters(CharacterSortParameter(type: CharacterSortParameterType.LastPlayed))?.first;
       if (lastCharacter == null) return false;
       var lastPlayed = DateTime.parse(lastCharacter.dateLastPlayed);
       var currentSession = lastCharacter.minutesPlayedThisSession;
-      return lastPlayed
-          .add(Duration(minutes: int.parse(currentSession) + 10))
-          .isBefore(DateTime.now().toUtc());
+      return lastPlayed.add(Duration(minutes: int.parse(currentSession) + 10)).isBefore(DateTime.now().toUtc());
     } catch (e) {
       return false;
     }
@@ -222,7 +187,7 @@ class ProfileService with UserSettingsConsumer, StorageConsumer, AuthConsumer, B
 
   Future<DestinyProfileResponse> initialLoad() async {
     final data = await currentMembershipStorage.getCachedProfile();
-    if( data != null){
+    if (data != null) {
       this._profile = data;
       this._lastLoadedFrom = LastLoadedFrom.cache;
       print('loaded profile from cache');
@@ -239,8 +204,7 @@ class ProfileService with UserSettingsConsumer, StorageConsumer, AuthConsumer, B
   }
 
   DestinyItemTalentGridComponent getTalentGrid(String instanceId) {
-    if (_profile?.itemComponents?.talentGrids?.data?.containsKey(instanceId) ??
-        false) {
+    if (_profile?.itemComponents?.talentGrids?.data?.containsKey(instanceId) ?? false) {
       return _profile.itemComponents.talentGrids.data[instanceId];
     }
     return null;
@@ -257,41 +221,34 @@ class ProfileService with UserSettingsConsumer, StorageConsumer, AuthConsumer, B
     return null;
   }
 
-  Map<String, List<DestinyItemPlugBase>> getItemReusablePlugs(
-      String itemInstanceId) {
+  Map<String, List<DestinyItemPlugBase>> getItemReusablePlugs(String itemInstanceId) {
     try {
       return _profile.itemComponents.reusablePlugs.data[itemInstanceId]?.plugs;
     } catch (e) {}
     return null;
   }
 
-  Map<String, List<DestinyObjectiveProgress>> getPlugObjectives(
-      String itemInstanceId) {
+  Map<String, List<DestinyObjectiveProgress>> getPlugObjectives(String itemInstanceId) {
     try {
-      return _profile
-          .itemComponents.plugObjectives.data[itemInstanceId].objectivesPerPlug;
+      return _profile.itemComponents.plugObjectives.data[itemInstanceId].objectivesPerPlug;
     } catch (e) {}
     return null;
   }
 
   Map<String, DestinyStat> getPrecalculatedStats(String itemInstanceId) {
-    if (_profile?.itemComponents?.stats?.data?.containsKey(itemInstanceId) ??
-        false) {
+    if (_profile?.itemComponents?.stats?.data?.containsKey(itemInstanceId) ?? false) {
       return _profile?.itemComponents?.stats?.data[itemInstanceId]?.stats;
     }
     return null;
   }
 
-  List<DestinyObjectiveProgress> getItemObjectives(
-      String itemInstanceId, String characterId, int hash) {
+  List<DestinyObjectiveProgress> getItemObjectives(String itemInstanceId, String characterId, int hash) {
     try {
-      var objectives =
-          _profile.itemComponents.objectives?.data[itemInstanceId]?.objectives;
+      var objectives = _profile.itemComponents.objectives?.data[itemInstanceId]?.objectives;
       if (objectives != null) return objectives;
     } catch (e) {}
     try {
-      var objectives = _profile?.characterProgressions?.data[characterId]
-          ?.uninstancedItemObjectives["$hash"];
+      var objectives = _profile?.characterProgressions?.data[characterId]?.uninstancedItemObjectives["$hash"];
       return objectives;
     } catch (e) {}
     return null;
@@ -301,18 +258,15 @@ class ProfileService with UserSettingsConsumer, StorageConsumer, AuthConsumer, B
     return _profile?.profilePresentationNodes?.data?.nodes;
   }
 
-  List<DestinyItemPlug> getCharacterPlugSets(
-      String characterId, int plugSetHash) {
+  List<DestinyItemPlug> getCharacterPlugSets(String characterId, int plugSetHash) {
     var plugs = _profile?.characterPlugSets?.data[characterId]?.plugs;
-    if (plugs?.containsKey("$plugSetHash") ?? false)
-      return plugs["$plugSetHash"];
+    if (plugs?.containsKey("$plugSetHash") ?? false) return plugs["$plugSetHash"];
     return null;
   }
 
   List<DestinyItemPlug> getProfilePlugSets(int plugSetHash) {
     var plugs = _profile?.profilePlugSets?.data?.plugs;
-    if (plugs?.containsKey("$plugSetHash") ?? false)
-      return plugs["$plugSetHash"];
+    if (plugs?.containsKey("$plugSetHash") ?? false) return plugs["$plugSetHash"];
     return null;
   }
 
@@ -320,19 +274,16 @@ class ProfileService with UserSettingsConsumer, StorageConsumer, AuthConsumer, B
     List<DestinyItemPlug> plugs = [];
     plugs.addAll(getProfilePlugSets(plugSetHash) ?? []);
     var characters = getCharacters();
-    characters.forEach((c) =>
-        plugs.addAll(getCharacterPlugSets(c.characterId, plugSetHash) ?? []));
+    characters.forEach((c) => plugs.addAll(getCharacterPlugSets(c.characterId, plugSetHash) ?? []));
     return plugs;
   }
 
-  Map<String, DestinyPresentationNodeComponent> getCharacterPresentationNodes(
-      String characterId) {
+  Map<String, DestinyPresentationNodeComponent> getCharacterPresentationNodes(String characterId) {
     if (_profile?.characterPresentationNodes?.data == null) return null;
     return _profile?.characterPresentationNodes?.data[characterId]?.nodes;
   }
 
-  List<DestinyCharacterComponent> getCharacters(
-      [CharacterSortParameter order]) {
+  List<DestinyCharacterComponent> getCharacters([CharacterSortParameter order]) {
     if (_profile?.characters == null) {
       return null;
     }
@@ -340,8 +291,7 @@ class ProfileService with UserSettingsConsumer, StorageConsumer, AuthConsumer, B
       order = userSettings.characterOrdering;
     }
 
-    List<DestinyCharacterComponent> list =
-        _profile.characters.data.values.toList();
+    List<DestinyCharacterComponent> list = _profile.characters.data.values.toList();
 
     switch (order.type) {
       case CharacterSortParameterType.LastPlayed:
@@ -382,8 +332,7 @@ class ProfileService with UserSettingsConsumer, StorageConsumer, AuthConsumer, B
     return _profile.characters.data[characterId];
   }
 
-  DestinyCharacterActivitiesComponent getCharacterActivities(
-      String characterId) {
+  DestinyCharacterActivitiesComponent getCharacterActivities(String characterId) {
     return _profile?.characterActivities?.data[characterId];
   }
 
@@ -405,8 +354,7 @@ class ProfileService with UserSettingsConsumer, StorageConsumer, AuthConsumer, B
     return _profile?.profileCurrencies?.data?.items;
   }
 
-  DestinyCharacterProgressionComponent getCharacterProgression(
-      String characterId) {
+  DestinyCharacterProgressionComponent getCharacterProgression(String characterId) {
     return _profile.characterProgressions.data[characterId];
   }
 
@@ -414,21 +362,18 @@ class ProfileService with UserSettingsConsumer, StorageConsumer, AuthConsumer, B
     return _profile?.profileCollectibles?.data?.collectibles;
   }
 
-  Map<String, DestinyCollectibleComponent> getCharacterCollectibles(
-      String characterId) {
+  Map<String, DestinyCollectibleComponent> getCharacterCollectibles(String characterId) {
     return _profile?.characterCollectibles?.data[characterId]?.collectibles;
   }
 
   bool isCollectibleUnlocked(int hash, DestinyScope scope) {
     String hashStr = "$hash";
-    Map<String, DestinyCollectibleComponent> collectibles =
-        _profile?.profileCollectibles?.data?.collectibles;
+    Map<String, DestinyCollectibleComponent> collectibles = _profile?.profileCollectibles?.data?.collectibles;
     if (collectibles == null) {
       return true;
     }
     if (scope == DestinyScope.Profile) {
-      DestinyCollectibleComponent collectible =
-          _profile?.profileCollectibles?.data?.collectibles[hashStr] ?? null;
+      DestinyCollectibleComponent collectible = _profile?.profileCollectibles?.data?.collectibles[hashStr] ?? null;
       if (collectible != null) {
         return !(collectible?.state ?? DestinyCollectibleState.NotAcquired)
             .contains(DestinyCollectibleState.NotAcquired);
@@ -436,8 +381,7 @@ class ProfileService with UserSettingsConsumer, StorageConsumer, AuthConsumer, B
     }
 
     return _profile?.characterCollectibles?.data?.values?.any((data) {
-          DestinyCollectibleState state = data?.collectibles[hashStr]?.state ??
-              DestinyCollectibleState.NotAcquired;
+          DestinyCollectibleState state = data?.collectibles[hashStr]?.state ?? DestinyCollectibleState.NotAcquired;
           return !state.contains(DestinyCollectibleState.NotAcquired);
         }) ??
         false;
@@ -474,17 +418,13 @@ class ProfileService with UserSettingsConsumer, StorageConsumer, AuthConsumer, B
   List<DestinyItemComponent> getItemsByInstanceId(List<String> ids) {
     ids = ids.where((id) => id != null).toList();
     List<DestinyItemComponent> items = [];
-    List<DestinyItemComponent> profileInventory =
-        _profile.profileInventory.data.items;
-    items.addAll(
-        profileInventory.where((item) => ids.contains(item.itemInstanceId)));
+    List<DestinyItemComponent> profileInventory = _profile.profileInventory.data.items;
+    items.addAll(profileInventory.where((item) => ids.contains(item.itemInstanceId)));
     _profile.characterEquipment.data.forEach((id, equipment) {
-      items.addAll(
-          equipment.items.where((item) => ids.contains(item.itemInstanceId)));
+      items.addAll(equipment.items.where((item) => ids.contains(item.itemInstanceId)));
     });
     _profile.characterInventories.data.forEach((id, equipment) {
-      items.addAll(
-          equipment.items.where((item) => ids.contains(item.itemInstanceId)));
+      items.addAll(equipment.items.where((item) => ids.contains(item.itemInstanceId)));
     });
     return items;
   }
@@ -492,16 +432,14 @@ class ProfileService with UserSettingsConsumer, StorageConsumer, AuthConsumer, B
   String getItemOwner(String itemInstanceId) {
     String owner;
     _profile.characterEquipment.data.forEach((charId, inventory) {
-      bool has =
-          inventory.items.any((item) => item.itemInstanceId == itemInstanceId);
+      bool has = inventory.items.any((item) => item.itemInstanceId == itemInstanceId);
       if (has) {
         owner = charId;
       }
     });
     if (owner != null) return owner;
     _profile.characterInventories.data.forEach((charId, inventory) {
-      bool has =
-          inventory.items.any((item) => item.itemInstanceId == itemInstanceId);
+      bool has = inventory.items.any((item) => item.itemInstanceId == itemInstanceId);
       if (has) {
         owner = charId;
       }

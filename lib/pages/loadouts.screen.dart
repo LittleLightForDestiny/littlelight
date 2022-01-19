@@ -99,18 +99,14 @@ class LoadoutScreenState extends State<LoadoutsScreen> with LoadoutsConsumer, Pr
         controller: _searchFieldController,
       );
     }
-    return reordering
-        ? TranslatedTextWidget("Reordering Loadouts")
-        : TranslatedTextWidget("Loadouts");
+    return reordering ? TranslatedTextWidget("Reordering Loadouts") : TranslatedTextWidget("Loadouts");
   }
 
   Widget buildSearchButton(BuildContext context) {
     if (reordering) return Container();
     return IconButton(
         enableFeedback: false,
-        icon: searchOpen
-            ? Icon(FontAwesomeIcons.times)
-            : Icon(FontAwesomeIcons.search),
+        icon: searchOpen ? Icon(FontAwesomeIcons.times) : Icon(FontAwesomeIcons.search),
         onPressed: () async {
           searchOpen = !searchOpen;
           if (!searchOpen) {
@@ -126,8 +122,7 @@ class LoadoutScreenState extends State<LoadoutsScreen> with LoadoutsConsumer, Pr
         enableFeedback: false,
         icon: reordering
             ? Icon(FontAwesomeIcons.check)
-            : Transform.rotate(
-                angle: pi / 2, child: Icon(FontAwesomeIcons.exchangeAlt)),
+            : Transform.rotate(angle: pi / 2, child: Icon(FontAwesomeIcons.exchangeAlt)),
         onPressed: () async {
           reordering = !reordering;
           setState(() {});
@@ -157,8 +152,7 @@ class LoadoutScreenState extends State<LoadoutsScreen> with LoadoutsConsumer, Pr
         child: Container(
           constraints: BoxConstraints(minWidth: double.infinity),
           height: kToolbarHeight + paddingBottom,
-          padding: EdgeInsets.symmetric(horizontal: 16)
-              .copyWith(top: 8, bottom: 8 + paddingBottom),
+          padding: EdgeInsets.symmetric(horizontal: 16).copyWith(top: 8, bottom: 8 + paddingBottom),
           child: ElevatedButton(
             child: TranslatedTextWidget("Create Loadout"),
             onPressed: () {
@@ -173,27 +167,21 @@ class LoadoutScreenState extends State<LoadoutsScreen> with LoadoutsConsumer, Pr
     return DragList<Loadout>(
         items: loadouts,
         itemExtent: 56,
-        padding: EdgeInsets.all(8).copyWith(
-            left: max(screenPadding.left, 8),
-            right: max(screenPadding.right, 8)),
+        padding: EdgeInsets.all(8).copyWith(left: max(screenPadding.left, 8), right: max(screenPadding.right, 8)),
         handleBuilder: (context) => buildHandle(context),
         onItemReorder: (oldIndex, newIndex) {
           var removed = loadouts.removeAt(oldIndex);
           loadouts.insert(newIndex, removed);
           loadoutService.saveLoadoutsOrder(loadouts);
         },
-        itemBuilder: (context, parameter, handle) =>
-            buildSortItem(context, parameter.value, handle));
+        itemBuilder: (context, parameter, handle) => buildSortItem(context, parameter.value, handle));
   }
 
   Widget buildHandle(BuildContext context) {
     return GestureDetector(
         onVerticalDragStart: (_) {},
         onVerticalDragDown: (_) {},
-        child: AspectRatio(
-            aspectRatio: 1,
-            child:
-                Container(color: Colors.transparent, child: Icon(Icons.menu))));
+        child: AspectRatio(aspectRatio: 1, child: Container(color: Colors.transparent, child: Icon(Icons.menu))));
   }
 
   Widget buildSortItem(BuildContext context, Loadout loadout, Widget handle) {
@@ -233,17 +221,11 @@ class LoadoutScreenState extends State<LoadoutsScreen> with LoadoutsConsumer, Pr
     if (loadouts.length == 0) {
       return buildNoLoadoutsBody(context);
     }
-    var screenPadding = MediaQuery.of(context).padding;
-    return StaggeredGridView.countBuilder(
-      padding: EdgeInsets.all(4).copyWith(
-          left: max(screenPadding.left, 4), right: max(screenPadding.right, 4)),
-      crossAxisCount: 30,
-      itemCount: filteredLoadouts.length,
-      itemBuilder: (BuildContext context, int index) => getItem(context, index),
-      staggeredTileBuilder: (int index) => getTileBuilder(index),
-      mainAxisSpacing: 2,
-      crossAxisSpacing: 2,
-      physics: const AlwaysScrollableScrollPhysics(),
+    bool isTablet = MediaQueryHelper(context).tabletOrBigger;
+    return MasonryGridView.count(
+      itemCount: loadouts.length,
+      crossAxisCount: isTablet ? 2 : 1,
+      itemBuilder: (context, index) => getItem(context, index),
     );
   }
 
@@ -264,11 +246,6 @@ class LoadoutScreenState extends State<LoadoutsScreen> with LoadoutsConsumer, Pr
                 onPressed: createNew,
               )
             ]));
-  }
-
-  StaggeredTile getTileBuilder(int index) {
-    bool isTablet = MediaQueryHelper(context).tabletOrBigger;
-    return StaggeredTile.fit(isTablet ? 15 : 30);
   }
 
   Widget getItem(BuildContext context, int index) {

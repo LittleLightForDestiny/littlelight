@@ -1,3 +1,4 @@
+//@dart=2.12
 import 'package:flutter/material.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 
@@ -6,9 +7,9 @@ typedef DefinitionWidgetBuilder<T> = Widget Function(T definition);
 class DefinitionProviderWidget<T> extends StatefulWidget {
   final int hash;
   final DefinitionWidgetBuilder<T> widgetBuilder;
-  final Widget placeholder;
+  final Widget? placeholder;
   DefinitionProviderWidget(this.hash, this.widgetBuilder,
-      {this.placeholder, Key key})
+      {this.placeholder, Key? key})
       : super(key: key);
 
   @override
@@ -18,7 +19,7 @@ class DefinitionProviderWidget<T> extends StatefulWidget {
 }
 
 class DefinitionProviderWidgetState<T> extends State<DefinitionProviderWidget<T>> with ManifestConsumer{
-  T definition;
+  T? definition;
   @override
   void initState() {
     super.initState();
@@ -33,11 +34,13 @@ class DefinitionProviderWidgetState<T> extends State<DefinitionProviderWidget<T>
   }
   @override
   Widget build(BuildContext context) {
+    final definition = this.definition;
     if(definition != null){
       return widget.widgetBuilder(definition);
     }
-    if(widget.placeholder != null){
-      return widget.placeholder;
+    final placeholder = widget.placeholder;
+    if(placeholder != null){
+      return placeholder;
     }
     return Container();
   }

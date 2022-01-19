@@ -1,6 +1,7 @@
 import 'package:bungie_api/models/destiny_collectible_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/utils/shimmer_helper.dart';
@@ -35,7 +36,11 @@ class LoadoutBackgroundItemWidgetState extends State<LoadoutBackgroundItemWidget
   Widget build(BuildContext context) {
     return Container(
       child: buildEmblemBackground(context),
-      decoration: BoxDecoration(border: Border.all(color: Theme.of(context).colorScheme.primaryVariant, width: 1)),
+      decoration: BoxDecoration(
+          border: Border.all(
+        color: LittleLightTheme.of(context).onSurfaceLayers.layer2,
+        width: 1,
+      )),
     );
   }
 

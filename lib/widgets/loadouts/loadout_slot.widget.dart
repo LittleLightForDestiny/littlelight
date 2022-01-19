@@ -4,27 +4,25 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
-import 'package:little_light/pages/item_detail.screen.dart';
+import 'package:little_light/pages/item_details/item_details.page.dart';
+import 'package:little_light/pages/item_details/item_details.page_route.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/inventory_utils.dart';
-import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-import 'package:little_light/widgets/item_list/items/quick_select_item_wrapper.widget.dart';
+import 'package:little_light/widgets/dialogs/loadout_slot_options.dialog.dart';
 
 typedef void OnRemoveItemFromLoadout(DestinyItemComponent item, bool equipped);
 typedef void OnAddItemToLoadout(bool equipped, DestinyClass classType);
 
 class LoadoutSlotWidget extends StatelessWidget with ProfileConsumer, ManifestConsumer {
-  
-
   final DestinyInventoryBucketDefinition bucketDefinition;
   final Map<DestinyClass, DestinyItemComponent> equippedClassItems;
   final DestinyItemComponent equippedGenericItem;
@@ -170,7 +168,7 @@ class LoadoutSlotWidget extends StatelessWidget with ProfileConsumer, ManifestCo
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ItemDetailScreen(
+                    builder: (context) => ItemDetailsPage(
                       item: item,
                       definition: def,
                       instanceInfo: instanceInfo,
@@ -191,70 +189,25 @@ class LoadoutSlotWidget extends StatelessWidget with ProfileConsumer, ManifestCo
         child: Container(margin: EdgeInsets.only(right: 4), child: AspectRatio(aspectRatio: 1, child: itemIcon)));
   }
 
-  openModal(BuildContext context, DestinyItemComponent item, bool equipped) {
-    var ownerId = profile.getItemOwner(item.itemInstanceId);
-    var padding = EdgeInsets.all(8).copyWith(bottom: 4);
-    var screenWidth = MediaQuery.of(context).size.width;
-    if (screenWidth < 500) {
-      padding = padding.copyWith(left: 0, right: 0);
+  Future<void> openModal(BuildContext context, DestinyItemComponent item, bool equipped) async {
+    final option = await Navigator.of(context).push(LoadoutSlotOptionsDialogRoute(context, item: item));
+    if (option == null) return;
+    switch (option) {
+      case LoadoutSlotOptionsResponse.Details:
+        final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
+        final instanceInfo = profile.getInstanceInfo(item.itemInstanceId);
+        Navigator.push(
+            context,
+            ItemDetailsPageRoute(
+              definition: def,
+              instanceInfo: instanceInfo,
+              item: item,
+              hideItemManagement: true,
+            ));
+        return;
+      case LoadoutSlotOptionsResponse.Remove:
+        onRemove(item, equipped);
+        break;
     }
-    showDialog(
-        context: context,
-        builder: (context) {
-          return Dialog(
-              insetPadding: EdgeInsets.all(0),
-              child: Container(
-                  width: screenWidth + 16,
-                  padding: padding,
-                  constraints: BoxConstraints(maxWidth: 500),
-                  child: Column(mainAxisSize: MainAxisSize.min, children: [
-                    QuickSelectItemWrapperWidget(item, null, characterId: ownerId ?? ItemWithOwner.OWNER_VAULT),
-                    Row(
-                      children: [
-                        Expanded(
-                            child: ElevatedButton(
-                                child: TranslatedTextWidget("Cancel",
-                                    uppercase: true, style: TextStyle(fontWeight: FontWeight.bold)),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                })),
-                        Container(
-                          width: 4,
-                        ),
-                        Expanded(
-                            child: ElevatedButton(
-                                child: TranslatedTextWidget("Details",
-                                    uppercase: true, style: TextStyle(fontWeight: FontWeight.bold)),
-                                onPressed: () async {
-                                  Navigator.of(context).pop();
-                                  var def = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
-                                  var instanceInfo = profile.getInstanceInfo(item.itemInstanceId);
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => ItemDetailScreen(
-                                        item: item,
-                                        definition: def,
-                                        instanceInfo: instanceInfo,
-                                        characterId: null,
-                                        hideItemManagement: true,
-                                      ),
-                                    ),
-                                  );
-                                })),
-                        Container(width: 4),
-                        Expanded(
-                            child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(primary: Theme.of(context).errorColor),
-                                child: TranslatedTextWidget("Remove",
-                                    uppercase: true, style: TextStyle(fontWeight: FontWeight.bold)),
-                                onPressed: () {
-                                  onRemove(item, equipped);
-                                  Navigator.of(context).pop();
-                                })),
-                      ],
-                    )
-                  ])));
-        });
   }
 }

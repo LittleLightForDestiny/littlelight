@@ -12,7 +12,6 @@ import 'package:little_light/pages/initial/subpages/subpage_base.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/utils/platform_data.dart';
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:provider/provider.dart';
@@ -51,7 +50,8 @@ class SelectMembershipSubPageState extends SubpageBaseState<SelectMembershipSubP
           Container(
               constraints: BoxConstraints(maxHeight: max(240, MediaQuery.of(context).size.height - 300)),
               child: SingleChildScrollView(
-                  child: Container(child:Column(
+                  child: Container(
+                      child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   buildCurrentAccount(context),
@@ -90,6 +90,7 @@ class SelectMembershipSubPageState extends SubpageBaseState<SelectMembershipSubP
   Widget buildAccount(BuildContext context, UserMembershipData account) {
     final mainMembership = buildMainMembership(context, account);
     final memberships = buildSecondaryMemberships(context, account);
+    final profilePicturePath = BungieApiService.url(account.bungieNetUser?.profilePicturePath);
     return Column(children: [
       Container(
         decoration: BoxDecoration(
@@ -100,7 +101,7 @@ class SelectMembershipSubPageState extends SubpageBaseState<SelectMembershipSubP
           Container(
             width: 48,
             height: 48,
-            child: QueuedNetworkImage(imageUrl: BungieApiService.url(account.bungieNetUser?.profilePicturePath)),
+            child: profilePicturePath != null ? QueuedNetworkImage(imageUrl: profilePicturePath) : Container(),
           ),
           Container(
             width: 8,
@@ -150,7 +151,8 @@ class SelectMembershipSubPageState extends SubpageBaseState<SelectMembershipSubP
     );
   }
 
-  Widget buildMembership(BuildContext context, GroupUserInfoCard destinyInfoCard, UserMembershipData account, {bool crossSaveMembership = false}) {
+  Widget buildMembership(BuildContext context, GroupUserInfoCard destinyInfoCard, UserMembershipData account,
+      {bool crossSaveMembership = false}) {
     final data = crossSaveMembership ? PlatformData.crossPlayData : destinyInfoCard.membershipType!.data;
     return Container(
         margin: EdgeInsets.only(bottom: 8),

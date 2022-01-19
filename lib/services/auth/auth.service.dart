@@ -185,11 +185,6 @@ class AuthService with StorageConsumer, LanguageConsumer, AppConfigConsumer, Bun
     }
     return _currentMembership;
   }
-
-  bool get isLogged {
-    ///TODO: return if user is logged in or not
-    return _currentMembership != null;
-  }
 }
 
 class BungieAuthBrowser implements OAuthBrowser {

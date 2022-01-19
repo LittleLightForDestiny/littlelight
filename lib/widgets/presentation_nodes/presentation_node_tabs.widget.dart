@@ -14,7 +14,6 @@ class PresentationNodeTabsWidget extends StatefulWidget {
   final int depth;
 
   final PresentationNodeItemBuilder itemBuilder;
-  final PresentationNodeTileBuilder tileBuilder;
 
   final bool isCategorySet;
 
@@ -23,7 +22,6 @@ class PresentationNodeTabsWidget extends StatefulWidget {
       this.presentationNodeHashes,
       this.depth = 0,
       this.itemBuilder,
-      this.tileBuilder,
       this.isCategorySet = false});
 
   @override
@@ -67,7 +65,6 @@ class PresentationNodeTabsWidgetState extends State<PresentationNodeTabsWidget> 
         depth: widget.depth + 1,
         presentationNodeHash: nodeHashes[0],
         itemBuilder: widget.itemBuilder,
-        tileBuilder: widget.tileBuilder,
         isCategorySet: widget.isCategorySet || definition.screenStyle == DestinyPresentationScreenStyle.CategorySets,
       );
     }
@@ -142,7 +139,6 @@ class PresentationNodeTabsWidgetState extends State<PresentationNodeTabsWidget> 
         depth: widget.depth + 1,
         presentationNodeHash: hash,
         itemBuilder: widget.itemBuilder,
-        tileBuilder: widget.tileBuilder,
         isCategorySet: widget.isCategorySet,
       );
     }).toList();

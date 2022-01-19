@@ -1,19 +1,22 @@
+//@dart=2.12
 import 'package:flutter/material.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/language_info.dart';
 import 'package:little_light/services/language/language.consumer.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
-class LanguagesScreen extends StatefulWidget {
+class LanguagesPage extends StatefulWidget {
   @override
-  _LanguagesScreenState createState() => _LanguagesScreenState();
+  _LanguagesPageState createState() => _LanguagesPageState();
 }
 
-class _LanguagesScreenState extends State<LanguagesScreen> with LanguageConsumer {
-  List<LanguageInfo> languages;
-  String currentLanguage;
-  String selectedLanguage;
+class _LanguagesPageState extends State<LanguagesPage> with LanguageConsumer {
+  List<LanguageInfo>? languages;
+  String? currentLanguage;
+  String? selectedLanguage;
 
   @override
   void initState() {
@@ -31,13 +34,6 @@ class _LanguagesScreenState extends State<LanguagesScreen> with LanguageConsumer
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          enableFeedback: false,
-          icon: Icon(Icons.menu),
-          onPressed: () {
-            Scaffold.of(context).openDrawer();
-          },
-        ),
         title: TranslatedTextWidget(
           "Change Language",
           language: selectedLanguage,
@@ -71,6 +67,8 @@ class _LanguagesScreenState extends State<LanguagesScreen> with LanguageConsumer
   }
 
   Widget buildBody(BuildContext context) {
+    final languages = this.languages;
+    if(languages == null) return LoadingAnimWidget();
     return SingleChildScrollView(
         padding: EdgeInsets.all(8),
         child: Column(children: languages.map((l) => buildLanguageItem(context, l)).toList()));
@@ -115,10 +113,8 @@ class _LanguagesScreenState extends State<LanguagesScreen> with LanguageConsumer
   }
 
   Widget buildFileInfo(BuildContext context, LanguageInfo language) {
-    double size;
-    if (language.sizeInKB != null) {
-      size = language.sizeInKB / 1024;
-    }
+    final sizeInKB = language.sizeInKB;
+    final size = sizeInKB != null ? sizeInKB / 1024 : null;
 
     var canDelete = language.code != currentLanguage && size != null;
     return Row(children: [
@@ -131,7 +127,7 @@ class _LanguagesScreenState extends State<LanguagesScreen> with LanguageConsumer
       !canDelete
           ? Container()
           : Material(
-              color: Colors.red,
+              color: LittleLightTheme.of(context).colorScheme.error,
               borderRadius: BorderRadius.circular(30),
               child: InkWell(
                   borderRadius: BorderRadius.circular(30),

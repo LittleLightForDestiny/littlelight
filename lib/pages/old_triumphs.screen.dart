@@ -45,7 +45,6 @@ class TriumphsScreenState extends PresentationNodeScreenState<OldTriumphsScreen>
       ],
       depth: 0,
       itemBuilder: this.itemBuilder,
-      tileBuilder: this.tileBuilder,
     );
   }
 

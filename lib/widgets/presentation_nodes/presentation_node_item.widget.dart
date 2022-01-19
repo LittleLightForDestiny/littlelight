@@ -43,9 +43,7 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget>
   void initState() {
     super.initState();
     this.loadDefinition();
-    if (auth.isLogged) {
-      this.loadCompletionData();
-    }
+    this.loadCompletionData();
   }
 
   loadDefinition() async {

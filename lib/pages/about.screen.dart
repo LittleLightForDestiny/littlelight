@@ -1,20 +1,44 @@
+//@dart=2.12
+
 import 'dart:io';
 
-import 'package:collection/collection.dart';
 import 'package:bungie_api/enums/bungie_membership_type.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:launch_review/launch_review.dart';
 import 'package:little_light/models/collaborators.dart';
+import 'package:little_light/models/language_info.dart';
 import 'package:little_light/services/language/language.consumer.dart';
 import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
 import 'package:little_light/services/storage/export.dart';
 import 'package:little_light/widgets/about/supporter_character.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:little_light/widgets/multisection_scrollview/multisection_scrollview.dart';
+import 'package:little_light/widgets/multisection_scrollview/sliver_section.dart';
 import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+enum AboutScreenActionType { ExternalLink, Rate }
+
+class AboutScreenAction {
+  final Widget? iconWidget;
+  final IconData? icon;
+  final Color? color;
+  final Widget label;
+  final String? url;
+  final AboutScreenActionType type;
+
+  AboutScreenAction({
+    this.icon,
+    this.iconWidget,
+    this.color,
+    required this.label,
+    this.url,
+    this.type = AboutScreenActionType.ExternalLink,
+  });
+}
 
 class AboutScreen extends StatefulWidget {
   @override
@@ -22,9 +46,9 @@ class AboutScreen extends StatefulWidget {
 }
 
 class _AboutScreenState extends State<AboutScreen> with StorageConsumer, LanguageConsumer, LittleLightDataConsumer {
-  String packageVersion = "";
-  String appName = "";
-  CollaboratorsResponse collaborators;
+  String? packageVersion;
+  String? appName;
+  CollaboratorsResponse? collaborators;
   bool showDonationLinks = true;
 
   @override
@@ -46,13 +70,12 @@ class _AboutScreenState extends State<AboutScreen> with StorageConsumer, Languag
     }
     setState(() {});
     collaborators = await littleLightData.getCollaborators();
-    collaborators.supporters.shuffle();
+    collaborators?.supporters?.shuffle();
     this.setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    EdgeInsets screenPadding = MediaQuery.of(context).padding;
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -64,149 +87,196 @@ class _AboutScreenState extends State<AboutScreen> with StorageConsumer, Languag
           ),
           title: TranslatedTextWidget("About"),
         ),
-        body: StaggeredGridView.countBuilder(
-          padding: EdgeInsets.all(8).add(screenPadding),
-          addAutomaticKeepAlives: true,
-          itemBuilder: itemBuilder,
-          staggeredTileBuilder: tileBuilder,
-          mainAxisSpacing: 8,
-          crossAxisCount: 1,
+        body: MultiSectionScrollView(
+          _sections,
+          crossAxisSpacing: 4,
+          mainAxisSpacing: 4,
+          padding: EdgeInsets.all(8) + MediaQuery.of(context).viewPadding.copyWith(top: 0),
         ));
   }
 
-  Widget itemBuilder(BuildContext context, int index) {
-    switch (index) {
-      case 0:
-        return buildAppInfo(context);
-      case 1:
-        return buildContact(context);
-      case 2:
-        return buildSupport(context);
+  List<SliverSection> get _sections {
+    List<SliverSection> list = [
+      appInfoSliver,
+      headerSliver(TranslatedTextWidget("Contact", uppercase: true)),
+      contactInfoSliver,
+      spacerSliver,
+    ];
+    final isMobile = Platform.isAndroid || Platform.isIOS;
+    if (isMobile || showDonationLinks) {
+      list += [
+        headerSliver(TranslatedTextWidget("Support Little Light", uppercase: true)),
+        supportSliver,
+        spacerSliver,
+      ];
     }
-    if (collaborators == null) return null;
-    int currentIndex = 3;
-    if (currentIndex == index)
-      return HeaderWidget(
-        child: TranslatedTextWidget(
-          "Supporters",
-          uppercase: true,
-        ),
-        alignment: Alignment.centerLeft,
+    final supporters = collaborators?.supporters;
+    if (supporters != null) {
+      list += [
+        headerSliver(TranslatedTextWidget("Supporters", uppercase: true)),
+        collaboratorsSliver(supporters),
+      ];
+    }
+    final developers = collaborators?.developers;
+    if (developers != null) {
+      list += [
+        headerSliver(TranslatedTextWidget("Development", uppercase: true)),
+        collaboratorsSliver(developers),
+      ];
+    }
+    final curators = collaborators?.curators;
+    if (curators != null) {
+      list += [
+        headerSliver(TranslatedTextWidget("Godroll Curators", uppercase: true)),
+        collaboratorsSliver(curators),
+      ];
+    }
+    final translators = collaborators?.translators;
+    if (translators != null) {
+      list += [
+        headerSliver(TranslatedTextWidget("Translations", uppercase: true)),
+      ];
+      for (var language in translators) {
+        list += [
+          translationHeaderSliver(language),
+          collaboratorsSliver(language.translators),
+        ];
+      }
+    }
+
+    return list;
+  }
+
+  SliverSection get appInfoSliver => SliverSection(
+      itemHeight: 112,
+      itemCount: 1,
+      itemBuilder: (context, _) => Row(
+            children: <Widget>[
+              Container(
+                  width: 96,
+                  height: 96,
+                  padding: EdgeInsets.only(right: 8),
+                  child: Image.asset('assets/imgs/app_icon.png')),
+              Expanded(
+                  child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    "$appName v$packageVersion",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ))
+            ],
+          ));
+
+  SliverSection headerSliver(Widget title) => SliverSection(
+        itemHeight: 40,
+        itemCount: 1,
+        itemBuilder: (context, _) => HeaderWidget(child: title),
       );
-    currentIndex++;
-    if (index - currentIndex < collaborators.supporters.length) {
-      var player = collaborators.supporters[index - currentIndex];
-      return buildTagAndPlatform(player.membershipId, player.membershipType, player.link);
-    }
-    currentIndex += collaborators.supporters.length;
-    if (currentIndex == index) return HeaderWidget(child: TranslatedTextWidget("Development", uppercase: true));
-    currentIndex++;
-    if (index - currentIndex < collaborators.developers.length) {
-      var player = collaborators.developers[index - currentIndex];
-      return buildTagAndPlatform(player.membershipId, player.membershipType, player.link);
-    }
-    currentIndex += collaborators.developers.length;
-    if (currentIndex == index) return HeaderWidget(child: TranslatedTextWidget("Godroll Curators", uppercase: true));
-    currentIndex++;
-    if (index - currentIndex < (collaborators.curators?.length ?? 0)) {
-      var player = collaborators.curators[index - currentIndex];
-      return buildTagAndPlatform(player.membershipId, player.membershipType, player.link);
-    }
-    currentIndex += collaborators.curators?.length ?? 0;
-    if (currentIndex == index)
-      return HeaderWidget(
-          child: TranslatedTextWidget(
-        "Translations",
-        uppercase: true,
-      ));
-    currentIndex++;
-    for (var language in collaborators.translators) {
-      if (currentIndex == index) {
-        return buildTranslationHeader(context, language.languages);
-      }
-      currentIndex++;
-      if (index - currentIndex < language.translators.length) {
-        var player = language.translators[index - currentIndex];
-        return buildTagAndPlatform(player.membershipId, player.membershipType, player.link);
-      }
-      currentIndex += language.translators.length;
-    }
-    return null;
+
+  SliverSection get contactInfoSliver {
+    final actions = [
+      AboutScreenAction(
+        icon: FontAwesomeIcons.twitter,
+        label: Text("@LittleLightD2"),
+        url: "http://www.twitter.com/littlelightD2",
+      ),
+      AboutScreenAction(
+        icon: FontAwesomeIcons.discord,
+        label: TranslatedTextWidget("Discord"),
+        url: "https://discord.gg/ztdFGGz",
+      ),
+      AboutScreenAction(
+        icon: FontAwesomeIcons.github,
+        color: Theme.of(context).errorColor,
+        label: TranslatedTextWidget("Issues"),
+        url: "https://discord.gg/ztdFGGz",
+      ),
+    ];
+    return SliverSection(
+        itemHeight: 88,
+        itemsPerRow: actions.length,
+        itemCount: actions.length,
+        itemBuilder: (context, index) {
+          final action = actions[index];
+          return buildExternalLinkButton(context, action);
+        });
   }
 
-  StaggeredTile tileBuilder(int index) {
-    switch (index) {
-      case 0:
-        return StaggeredTile.extent(1, 96);
-      case 1:
-      case 2:
-        return StaggeredTile.extent(1, 120);
-    }
-    if (collaborators == null) return null;
-    var titleTile = StaggeredTile.extent(1, 40);
-    var usertag = StaggeredTile.extent(1, 72);
-    var languageTile = StaggeredTile.extent(1, 40);
-
-    int currentIndex = 3;
-    if (currentIndex == index) return titleTile;
-    currentIndex++;
-    if (index - currentIndex < collaborators.supporters.length) {
-      return usertag;
-    }
-    currentIndex += collaborators.supporters.length;
-    if (currentIndex == index) return titleTile;
-    currentIndex++;
-    if (index - currentIndex < collaborators.developers.length) {
-      return usertag;
-    }
-    currentIndex += collaborators.developers.length;
-    if (currentIndex == index) return titleTile;
-    currentIndex++;
-    if (index - currentIndex < (collaborators.curators?.length ?? 0)) {
-      return usertag;
-    }
-    currentIndex += (collaborators.curators?.length ?? 0);
-    if (currentIndex == index) return titleTile;
-    currentIndex++;
-    for (var language in collaborators.translators) {
-      if (currentIndex == index) {
-        return languageTile;
-      }
-      currentIndex++;
-      if (index - currentIndex < language.translators.length) {
-        return usertag;
-      }
-      currentIndex += language.translators.length;
-    }
-    return null;
-  }
-
-  Widget buildAppInfo(BuildContext context) {
-    return Row(
-      children: <Widget>[
-        Container(width: 96, height: 96, child: Image.asset('assets/imgs/app_icon.png')),
-        Container(
-          width: 8,
+  SliverSection get supportSliver {
+    bool isIOS = Platform.isIOS;
+    bool isMobile = Platform.isAndroid || Platform.isIOS;
+    final actions = [
+      if (isMobile)
+        AboutScreenAction(
+            color: isIOS ? Color.fromARGB(255, 22, 147, 245) : Color.fromARGB(255, 49, 159, 185),
+            icon: isIOS ? FontAwesomeIcons.appStoreIos : FontAwesomeIcons.googlePlay,
+            label: TranslatedTextWidget("Rate it", uppercase: true),
+            type: AboutScreenActionType.Rate),
+      if (showDonationLinks)
+        AboutScreenAction(
+          color: Color.fromRGBO(249, 104, 84, 1),
+          iconWidget: Image.asset("assets/imgs/patreon-icon.png"),
+          label: TranslatedTextWidget(
+            "Become a Patron",
+            textAlign: TextAlign.center,
+          ),
+          url: 'https://www.patreon.com/littlelightD2',
         ),
-        Expanded(
-            child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              "$appName v$packageVersion",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-          ],
-        ))
-      ],
-    );
+      if (showDonationLinks)
+        AboutScreenAction(
+          color: Color.fromRGBO(26, 169, 222, 1),
+          iconWidget: Image.asset("assets/imgs/ko-fi-icon.png"),
+          label: TranslatedTextWidget(
+            "Buy me a Coffee",
+            textAlign: TextAlign.center,
+          ),
+          url: "https://ko-fi.com/littlelight",
+        ),
+    ];
+    return SliverSection(
+        itemHeight: 88,
+        itemsPerRow: actions.length,
+        itemCount: actions.length,
+        itemBuilder: (context, index) {
+          final action = actions[index];
+          return buildExternalLinkButton(context, action);
+        });
   }
 
-  buildTranslationHeader(BuildContext context, List<String> languages) {
+  SliverSection collaboratorsSliver(List<Collaborator> collaborators) {
+    return SliverSection(
+        itemHeight: 72,
+        itemCount: collaborators.length,
+        itemBuilder: (context, index) {
+          final collaborator = collaborators[index];
+          return buildTagAndPlatform(collaborator.membershipId, collaborator.membershipType);
+        });
+  }
+
+  SliverSection translationHeaderSliver(TranslationLanguage language) {
+    return SliverSection(
+        itemHeight: 40,
+        itemCount: 1,
+        itemBuilder: (context, _) {
+          return buildTranslationHeader(context, language);
+        });
+  }
+
+  SliverSection get spacerSliver =>
+      SliverSection(itemHeight: 48, itemCount: 1, itemBuilder: (context, index) => Container());
+
+  buildTranslationHeader(BuildContext context, TranslationLanguage language) {
+    final languages = language.languages;
     List<Widget> flags = languages.map((l) => flagIcon(l)).toList();
-    Text languageNames = Text(
-        languages.map((l) => languageService.languages.firstWhereOrNull((element) => element.code == l)).join("/"));
+    Text languageNames = Text(languages
+        .map((l) => languageService.languages.firstWhereOrNull((element) => element.code == l))
+        .whereType<LanguageInfo>()
+        .map((l) => l.name)
+        .join("/"));
     return Container(
         color: Theme.of(context).colorScheme.secondaryVariant,
         padding: EdgeInsets.all(4),
@@ -219,152 +289,37 @@ class _AboutScreenState extends State<AboutScreen> with StorageConsumer, Languag
     return Container(width: 24, height: 24, child: Image.asset("assets/imgs/flags/$code.png"));
   }
 
-  Widget buildTagAndPlatform(String membershipId, BungieMembershipType membershipType, [String link, Widget badge]) {
+  Widget buildTagAndPlatform(String membershipId, BungieMembershipType membershipType, [String? link, Widget? badge]) {
     return SupporterCharacterWidget(membershipId, membershipType, link, badge);
   }
 
-  Widget buildContact(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        HeaderWidget(
-            child: TranslatedTextWidget(
-          "Contact",
-          uppercase: true,
-        )),
-        Container(
-          height: 4,
-        ),
-        IntrinsicHeight(
-            child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            buildExternalLinkButton(context,
-                icon: Icon(FontAwesomeIcons.twitter, size: 32),
-                label: Text(
-                  "@LittleLightD2",
-                  textAlign: TextAlign.center,
-                ), onPressed: () {
-              launch("http://www.twitter.com/littlelightD2");
-            }),
-            Container(
-              width: 4,
-            ),
-            buildExternalLinkButton(context,
-                color: Theme.of(context).primaryColor,
-                icon: Icon(FontAwesomeIcons.discord, size: 32),
-                label: TranslatedTextWidget("Discord"), onPressed: () {
-              launch("https://discord.gg/ztdFGGz");
-            }),
-            Container(
-              width: 4,
-            ),
-            buildExternalLinkButton(context,
-                color: Theme.of(context).errorColor,
-                icon: Icon(FontAwesomeIcons.github, size: 32),
-                label: TranslatedTextWidget("Issues"), onPressed: () {
-              launch("https://github.com/LittleLightForDestiny/LittleLight/issues");
-            }),
-          ],
-        )),
-      ],
-    );
-  }
-
-  Widget buildSupport(BuildContext context) {
-    bool isMobile = Platform.isAndroid || Platform.isIOS;
-    if (!isMobile && !showDonationLinks) return Container();
-    return Column(
-      children: <Widget>[
-        HeaderWidget(
-            child: TranslatedTextWidget(
-          "Support Little Light",
-          uppercase: true,
-        )),
-        Container(
-          height: 4,
-        ),
-        IntrinsicHeight(
-          child: !showDonationLinks
-              ? buildRateButton(context)
-              : Row(
-                  children: <Widget>[
-                    isMobile ? Expanded(child: buildRateButton(context)) : Container(),
-                    Container(
-                      width: isMobile ? 4 : 0,
-                    ),
-                    buildExternalLinkButton(context,
-                        color: Color.fromRGBO(249, 104, 84, 1),
-                        icon: Container(width: 36, height: 36, child: Image.asset("assets/imgs/patreon-icon.png")),
-                        label: TranslatedTextWidget("Become a Patron",
-                            uppercase: true,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)), onPressed: () {
-                      launch('https://www.patreon.com/littlelightD2');
-                    }),
-                    Container(
-                      width: 4,
-                    ),
-                    buildExternalLinkButton(context,
-                        color: Color.fromRGBO(26, 169, 222, 1),
-                        icon: Container(width: 36, height: 36, child: Image.asset("assets/imgs/ko-fi-icon.png")),
-                        label: TranslatedTextWidget(
-                          "Buy me a Coffee",
-                          uppercase: true,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-                        ), onPressed: () {
-                      launch('https://ko-fi.com/littlelight');
-                    }),
-                  ],
-                ),
-        ),
-      ],
-    );
-  }
-
-  Widget buildRateButton(BuildContext context) {
-    bool isIOS = Platform.isIOS;
+  Widget buildExternalLinkButton(BuildContext context, AboutScreenAction action) {
     return ElevatedButton(
         style: ElevatedButton.styleFrom(
-          primary: isIOS ? Color.fromARGB(255, 22, 147, 245) : Color.fromARGB(255, 49, 159, 185),
           padding: EdgeInsets.all(4),
+          primary: action.color ?? Theme.of(context).buttonColor,
           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         ),
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Expanded(child: Icon(isIOS ? FontAwesomeIcons.appStoreIos : FontAwesomeIcons.googlePlay, size: 36)),
+          Expanded(
+            child: action.iconWidget ?? Container(width: 36, height: 36, child: Icon(action.icon, size: 32)),
+          ),
           Container(
             height: 4,
           ),
-          TranslatedTextWidget(
-            "Rate it",
-            uppercase: true,
-            textAlign: TextAlign.center,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-          )
+          action.label
         ]),
-        onPressed: () {
-          LaunchReview.launch(androidAppId: 'me.markezine.luzinha', iOSAppId: '1373037254');
-        });
+        onPressed: () => doAction(action));
   }
 
-  Widget buildExternalLinkButton(BuildContext context, {Color color, Widget icon, Widget label, Function onPressed}) {
-    return Expanded(
-      child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            padding: EdgeInsets.all(4),
-            primary: color ?? Theme.of(context).buttonColor,
-            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          ),
-          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Expanded(
-              child: Container(width: 36, height: 36, child: icon),
-            ),
-            Container(
-              height: 4,
-            ),
-            label
-          ]),
-          onPressed: onPressed),
-    );
+  void doAction(AboutScreenAction action) {
+    switch (action.type) {
+      case AboutScreenActionType.ExternalLink:
+        if (action.url != null) launch(action.url!);
+        break;
+      case AboutScreenActionType.Rate:
+        LaunchReview.launch(androidAppId: 'me.markezine.luzinha', iOSAppId: '1373037254');
+        return;
+    }
   }
 }

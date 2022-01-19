@@ -2,7 +2,6 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/pages/equip_loadout.screen.dart';
 import 'package:little_light/utils/media_query_helper.dart';
@@ -66,19 +65,21 @@ class ItemDetailLoadoutsWidgetState
 
   Widget buildLoadouts(BuildContext context) {
     var isTablet = MediaQueryHelper(context).tabletOrBigger;
-    return StaggeredGridView.count(
-        padding: EdgeInsets.all(0),
-        crossAxisSpacing: 2,
-        mainAxisSpacing: 2,
-        crossAxisCount: 3,
-        staggeredTiles: widget.loadouts
-            .map((item) => StaggeredTile.fit(isTablet ? 1 : 3))
-            .toList(),
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
-        children: widget.loadouts
-            .map((item) => buildLoadoutItem(item, context))
-            .toList());
+    return Container();
+    ///TODO: fix tiling
+    // return StaggeredGrid.count(
+    //     padding: EdgeInsets.all(0),
+    //     crossAxisSpacing: 2,
+    //     mainAxisSpacing: 2,
+    //     crossAxisCount: 3,
+    //     Tiles: widget.loadouts
+    //         .map((item) => Tile.fit(isTablet ? 1 : 3))
+    //         .toList(),
+    //     shrinkWrap: true,
+    //     physics: NeverScrollableScrollPhysics(),
+    //     children: widget.loadouts
+    //         .map((item) => buildLoadoutItem(item, context))
+    //         .toList());
   }
 
   Widget buildLoadoutItem(Loadout loadout, BuildContext context) {

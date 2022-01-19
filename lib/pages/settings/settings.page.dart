@@ -12,21 +12,21 @@ import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/platform_capabilities.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
-import 'package:little_light/widgets/common/littlelight_custom.dialog.dart';
-import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:little_light/widgets/dialogs/busy.dialog.dart';
+import 'package:little_light/widgets/dialogs/tags/select_tag.dialog.dart';
 import 'package:little_light/widgets/flutter/center_icon_workaround.dart';
 import 'package:little_light/widgets/item_tags/item_tag.widget.dart';
 import 'package:little_light/widgets/option_sheets/free_slots_slider.widget.dart';
 import 'package:screen/screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class SettingsScreen extends StatefulWidget {
+class SettingsPage extends StatefulWidget {
   @override
-  _SettingsScreenState createState() => _SettingsScreenState();
+  _SettingsPageState createState() => _SettingsPageState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> with UserSettingsConsumer, WishlistsConsumer, ItemNotesConsumer {
+class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, WishlistsConsumer, ItemNotesConsumer {
   List<ItemSortParameter> itemOrdering;
   List<ItemSortParameter> pursuitOrdering;
   Set<String> priorityTags;
@@ -38,77 +38,69 @@ class _SettingsScreenState extends State<SettingsScreen> with UserSettingsConsum
     asyncInit();
   }
 
-  asyncInit() async{
+  asyncInit() async {
     itemOrdering = userSettings.itemOrdering;
     pursuitOrdering = userSettings.pursuitOrdering;
     priorityTags = userSettings.priorityTags;
     wishlists = await wishlistsService.getWishlists();
+    if(mounted) setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          leading: IconButton(
-            enableFeedback: false,
-            icon: Icon(Icons.menu),
-            onPressed: () {
-              Scaffold.of(context).openDrawer();
-            },
-          ),
           title: TranslatedTextWidget("Settings"),
         ),
         body: SingleChildScrollView(
             padding: EdgeInsets.all(8),
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  buildTapToSelect(context),
-                  Container(height: 16),
-                  buildKeepAwake(context),
-                  Container(height: 16),
-                  buildAutoOpenSearch(context),
-                  Container(height: 16),
-                  HeaderWidget(
-                      child: TranslatedTextWidget(
-                    "Default free slots",
-                    uppercase: true,
-                  )),
-                  buildDefaultFreeSlots(context),
-                  HeaderWidget(
-                      child: TranslatedTextWidget(
-                    "Wishlists",
-                    uppercase: true,
-                  )),
-                  buildWishlists(context),
-                  Container(height: 16),
-                  HeaderWidget(
-                      child: TranslatedTextWidget(
-                    "Order characters by",
-                    uppercase: true,
-                  )),
-                  buildCharacterOrdering(context),
-                  Container(height: 32),
-                  HeaderWidget(
-                      child: TranslatedTextWidget(
-                    "Order items by",
-                    uppercase: true,
-                  )),
-                  buildItemOrderList(context),
-                  HeaderWidget(
-                      child: TranslatedTextWidget(
-                    "Order pursuits by",
-                    uppercase: true,
-                  )),
-                  buildPursuitOrderList(context),
-                  HeaderWidget(
-                      child: TranslatedTextWidget(
-                    "Priority Tags",
-                    uppercase: true,
-                  )),
-                  buildPriorityTags(context),
-                  Container(height: 32),
-                ])));
+            child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: <Widget>[
+              buildTapToSelect(context),
+              Container(height: 16),
+              buildKeepAwake(context),
+              Container(height: 16),
+              buildAutoOpenSearch(context),
+              Container(height: 16),
+              HeaderWidget(
+                  child: TranslatedTextWidget(
+                "Default free slots",
+                uppercase: true,
+              )),
+              buildDefaultFreeSlots(context),
+              HeaderWidget(
+                  child: TranslatedTextWidget(
+                "Wishlists",
+                uppercase: true,
+              )),
+              buildWishlists(context),
+              Container(height: 16),
+              HeaderWidget(
+                  child: TranslatedTextWidget(
+                "Order characters by",
+                uppercase: true,
+              )),
+              buildCharacterOrdering(context),
+              Container(height: 32),
+              HeaderWidget(
+                  child: TranslatedTextWidget(
+                "Order items by",
+                uppercase: true,
+              )),
+              buildItemOrderList(context),
+              HeaderWidget(
+                  child: TranslatedTextWidget(
+                "Order pursuits by",
+                uppercase: true,
+              )),
+              buildPursuitOrderList(context),
+              HeaderWidget(
+                  child: TranslatedTextWidget(
+                "Priority Tags",
+                uppercase: true,
+              )),
+              buildPriorityTags(context),
+              Container(height: 32),
+            ])));
   }
 
   buildKeepAwake(BuildContext context) {
@@ -119,8 +111,7 @@ class _SettingsScreenState extends State<SettingsScreen> with UserSettingsConsum
         title: TranslatedTextWidget(
           "Keep Awake",
         ),
-        subtitle:
-            TranslatedTextWidget("Keep device awake while the app is open"),
+        subtitle: TranslatedTextWidget("Keep device awake while the app is open"),
         trailing: Switch(
           value: userSettings.keepAwake,
           onChanged: (val) {
@@ -136,8 +127,7 @@ class _SettingsScreenState extends State<SettingsScreen> with UserSettingsConsum
         title: TranslatedTextWidget(
           "Tap to select",
         ),
-        subtitle:
-            Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        subtitle: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           TranslatedTextWidget(
               "Tapping on items will select them for quick transfer and equip instead of opening details"),
           TranslatedTextWidget("Double tap for details"),
@@ -156,8 +146,7 @@ class _SettingsScreenState extends State<SettingsScreen> with UserSettingsConsum
         title: TranslatedTextWidget(
           "Auto open Keyboard",
         ),
-        subtitle:
-            TranslatedTextWidget("Open keyboard automatically in quick search"),
+        subtitle: TranslatedTextWidget("Open keyboard automatically in quick search"),
         trailing: Switch(
           value: userSettings.autoOpenKeyboard,
           onChanged: (val) {
@@ -174,9 +163,8 @@ class _SettingsScreenState extends State<SettingsScreen> with UserSettingsConsum
         buildWishlistsList(context),
         Container(
             padding: EdgeInsets.all(8),
-            ///TODO: replace this description with something that makes more sense
             child: TranslatedTextWidget(
-                "You can add community curated wishlists (aka DIM wishlists) on Little Light to check your god rolls.")),
+                "You can add community curated wishlists (or your custom ones) on Little Light to check your rolls.")),
         Container(
           color: Colors.grey.shade400,
           height: 1,
@@ -195,13 +183,7 @@ class _SettingsScreenState extends State<SettingsScreen> with UserSettingsConsum
                     builder: (context) => AddWishlistScreen(),
                   ));
               if (wishlist is WishlistFile) {
-                showDialog(
-                    barrierDismissible: false,
-                    useRootNavigator: true,
-                    context: context,
-                    builder: (context) => buildProcessingDialog(context));
-                wishlists = await wishlistsService.addWishlist(wishlist);
-                Navigator.of(context).pop();
+                wishlists = await showWishlistsProcessing(context, wishlistsService.addWishlist(wishlist));
                 setState(() {});
               }
             },
@@ -211,84 +193,59 @@ class _SettingsScreenState extends State<SettingsScreen> with UserSettingsConsum
     );
   }
 
-  SimpleDialog buildProcessingDialog(BuildContext context) {
-    return SimpleDialog(
-      children: <Widget>[
-        LoadingAnimWidget(),
-        Center(child: TranslatedTextWidget("Processing wishlists"))
-      ],
-    );
+  Future<T> showWishlistsProcessing<T>(BuildContext context, Future<T> future) {
+    return Navigator.of(context)
+        .push(BusyDialogRoute(context, label: TranslatedTextWidget("Processing wishlists"), awaitFuture: future));
   }
 
   buildWishlistsList(BuildContext context) {
+    if (wishlists == null) return Container();
     return Column(
         children: wishlists
             .map((w) => Container(
                 padding: EdgeInsets.all(8),
                 child: Material(
                     color: Theme.of(context).colorScheme.secondary,
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Material(
-                              color: Colors.lightBlue.shade600,
-                              child: Container(
-                                  padding: EdgeInsets.all(8),
-                                  child: Text(
-                                    w.name ?? "",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.w700),
-                                  ))),
-                          Container(
-                              padding: EdgeInsets.all(8).copyWith(bottom: 0),
-                              child: Linkify(
-                                  text: w.description ?? "",
-                                  linkStyle: TextStyle(color: Theme.of(context).colorScheme.onSurface),
-                                  onOpen: (link) =>
-                                      launch(link.url, forceSafariVC: true))),
-                          Container(
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                      Material(
+                          color: Colors.lightBlue.shade600,
+                          child: Container(
                               padding: EdgeInsets.all(8),
-                              child: Row(children: [
-                                Expanded(child: Container()),
-                                ElevatedButton(
-                                    child: TranslatedTextWidget("Update"),
-                                    onPressed: () async {
-                                      showDialog(
-                                          barrierDismissible: false,
-                                          useRootNavigator: true,
-                                          context: context,
-                                          builder: (context) =>
-                                              buildProcessingDialog(context));
-                                      ///TODO: handle wishlist update in a better way
-                                      // wishlists = await wishlistsService.removeWishlist(w);
-                                      // wishlists = await wishlistsService
-                                      //     .addWishlist(w);
-                                      Navigator.of(context).pop();
-                                      setState(() {});
-                                      // wishlistsService.countBuilds();
-                                    }),
-                                Container(
-                                  width: 8,
+                              child: Text(
+                                w.name ?? "",
+                                style: TextStyle(fontWeight: FontWeight.w700),
+                              ))),
+                      Container(
+                          padding: EdgeInsets.all(8).copyWith(bottom: 0),
+                          child: Linkify(
+                              text: w.description ?? "",
+                              linkStyle: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+                              onOpen: (link) => launch(link.url, forceSafariVC: true))),
+                      Container(
+                          padding: EdgeInsets.all(8),
+                          child: Row(children: [
+                            Expanded(child: Container()),
+                            ElevatedButton(
+                                child: TranslatedTextWidget("Update"),
+                                onPressed: () async {
+                                  await showWishlistsProcessing(context, wishlistsService.checkForUpdates());
+                                  setState(() {});
+                                }),
+                            Container(
+                              width: 8,
+                            ),
+                            ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  primary: Theme.of(context).errorColor,
                                 ),
-                                ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      primary: Theme.of(context).errorColor,
-                                    ),
-                                    child: TranslatedTextWidget("Remove"),
-                                    onPressed: () async {
-                                      showDialog(
-                                          barrierDismissible: false,
-                                          useRootNavigator: true,
-                                          context: context,
-                                          builder: (context) =>
-                                              buildProcessingDialog(context));
-                                      wishlists = wishlistsService
-                                          .removeWishlist(w);
-                                      Navigator.of(context).pop();
-                                      setState(() {});
-                                    })
-                              ]))
-                        ]))))
+                                child: TranslatedTextWidget("Remove"),
+                                onPressed: () async {
+                                  wishlists =
+                                      await showWishlistsProcessing(context, wishlistsService.removeWishlist(w));
+                                  setState(() {});
+                                })
+                          ]))
+                    ]))))
             .toList());
   }
 
@@ -339,8 +296,7 @@ class _SettingsScreenState extends State<SettingsScreen> with UserSettingsConsum
         )));
   }
 
-  buildCharacterOrderItem(
-      BuildContext context, Widget label, CharacterSortParameterType type) {
+  buildCharacterOrderItem(BuildContext context, Widget label, CharacterSortParameterType type) {
     var selected = type == userSettings.characterOrdering.type;
     return Expanded(
       child: Material(
@@ -353,8 +309,7 @@ class _SettingsScreenState extends State<SettingsScreen> with UserSettingsConsum
           ),
           onTap: () {
             userSettings.characterOrdering.type = type;
-            userSettings.characterOrdering =
-                userSettings.characterOrdering;
+            userSettings.characterOrdering = userSettings.characterOrdering;
             setState(() {});
           },
         ),
@@ -374,8 +329,7 @@ class _SettingsScreenState extends State<SettingsScreen> with UserSettingsConsum
             itemOrdering.insert(newIndex, removed);
             userSettings.itemOrdering = itemOrdering;
           },
-          itemBuilder: (context, parameter, handle) =>
-              buildSortItem(context, parameter.value, handle, onSave: () {
+          itemBuilder: (context, parameter, handle) => buildSortItem(context, parameter.value, handle, onSave: () {
             userSettings.itemOrdering = itemOrdering;
           }),
         ));
@@ -385,10 +339,7 @@ class _SettingsScreenState extends State<SettingsScreen> with UserSettingsConsum
     return GestureDetector(
         onVerticalDragStart: (_) {},
         onVerticalDragDown: (_) {},
-        child: AspectRatio(
-            aspectRatio: 1,
-            child:
-                Container(color: Colors.transparent, child: Icon(Icons.menu))));
+        child: AspectRatio(aspectRatio: 1, child: Container(color: Colors.transparent, child: Icon(Icons.menu))));
   }
 
   buildPursuitOrderList(BuildContext context) {
@@ -403,8 +354,7 @@ class _SettingsScreenState extends State<SettingsScreen> with UserSettingsConsum
             pursuitOrdering.insert(newIndex, removed);
             userSettings.pursuitOrdering = pursuitOrdering;
           },
-          itemBuilder: (context, parameter, handle) =>
-              buildSortItem(context, parameter.value, handle, onSave: () {
+          itemBuilder: (context, parameter, handle) => buildSortItem(context, parameter.value, handle, onSave: () {
             userSettings.pursuitOrdering = pursuitOrdering;
           }),
         ));
@@ -425,108 +375,42 @@ class _SettingsScreenState extends State<SettingsScreen> with UserSettingsConsum
                     padding: 4,
                     trailing: Container(
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Theme.of(context).colorScheme.onSurface),
+                            borderRadius: BorderRadius.circular(10), color: Theme.of(context).colorScheme.onSurface),
                         width: 20,
                         height: 20,
                         alignment: Alignment.center,
-                        child: CenterIconWorkaround(
-                            FontAwesomeIcons.solidTimesCircle,
-                            size: 16,
-                            color: Colors.red)),
+                        child: CenterIconWorkaround(FontAwesomeIcons.solidTimesCircle, size: 16, color: Colors.red)),
                     onClick: () {
-                      priorityTags.remove(t.tagId);
-                      userSettings.priorityTags = priorityTags;
+                      userSettings.removePriorityTag(t);
                       setState(() {});
                     },
                   ))
               .followedBy([
-            ItemTagWidget(
-                ItemNotesTag(
-                    icon: null, name: "Add Tag", backgroundColorHex: "#03A9f4"),
+            ItemTagWidget(ItemNotesTag(icon: null, name: "Add Tag", backgroundColorHex: "#03A9f4"),
                 includeLabel: true,
                 padding: 4,
-                trailing:
-                    CenterIconWorkaround(FontAwesomeIcons.plusCircle, size: 18),
+                trailing: CenterIconWorkaround(FontAwesomeIcons.plusCircle, size: 18),
                 onClick: () => openAddTagDialog(context)),
           ]).toList(),
         ));
   }
 
-  openAddTagDialog(BuildContext context) async {
-    var tags = itemNotes.getAvailableTags();
-    var result = await showDialog<String>(
-        context: context,
-        builder: (BuildContext context) {
-          return LittleLightCustomDialog.withHorizontalButtons(
-              SingleChildScrollView(
-                  child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: tags
-                    .map((t) => Container(
-                        margin: EdgeInsets.only(top: 8),
-                        child: (t?.custom ?? false)
-                            ? Row(children: [
-                                Expanded(
-                                    child: ItemTagWidget(
-                                  t,
-                                  includeLabel: true,
-                                  padding: 4,
-                                  onClick: () {
-                                    Navigator.of(context).pop(t.tagId);
-                                  },
-                                )),
-                                Container(
-                                  width: 8,
-                                ),
-                              ])
-                            : ItemTagWidget(
-                                t,
-                                includeLabel: true,
-                                padding: 4,
-                                onClick: () {
-                                  Navigator.of(context).pop(t.tagId);
-                                },
-                              )))
-                    .toList(),
-              )),
-              maxWidth: 400,
-              buttons: [
-                ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      visualDensity: VisualDensity.comfortable,
-                    ),
-                    child: TranslatedTextWidget("Cancel",
-                        uppercase: true,
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    }),
-              ],
-              title: TranslatedTextWidget(
-                'Select tag',
-                uppercase: true,
-              ));
-        });
-
-    if (result != null) {
-      priorityTags.add(result);
-      userSettings.priorityTags = priorityTags;
-      setState(() {});
+  void openAddTagDialog(BuildContext context) async {
+    final tag = await Navigator.of(context).push(SelectTagDialogRoute(context));
+    if (tag != null) {
+      userSettings.addPriorityTag(tag);
     }
+    setState(() {});
   }
 
-  Widget buildSortItem(
-      BuildContext context, ItemSortParameter parameter, Widget handle,
-      {@required Function onSave}) {
+  Widget buildSortItem(BuildContext context, ItemSortParameter parameter, Widget handle, {@required Function onSave}) {
     return Container(
         key: Key("param_${parameter.type}"),
         child: Container(
             color: parameter.active
                 ? Theme.of(context).colorScheme.secondary
                 : Theme.of(context).colorScheme.secondaryVariant,
-            child:
-                Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+            child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
               handle,
               Container(width: 8),
               Expanded(child: buildSortLabel(parameter)),
@@ -547,8 +431,7 @@ class _SettingsScreenState extends State<SettingsScreen> with UserSettingsConsum
             ])));
   }
 
-  Widget buildDirectionButton(ItemSortParameter parameter, int direction,
-      {@required Function onSave}) {
+  Widget buildDirectionButton(ItemSortParameter parameter, int direction, {@required Function onSave}) {
     var selected = parameter.direction == direction;
     if (!parameter.active) return Container();
     return Container(
@@ -561,11 +444,7 @@ class _SettingsScreenState extends State<SettingsScreen> with UserSettingsConsum
                 : Theme.of(context).toggleButtonsTheme.color,
             padding: EdgeInsets.all(0),
           ),
-          child: Icon(
-              direction > 0
-                  ? FontAwesomeIcons.chevronUp
-                  : FontAwesomeIcons.chevronDown,
-              size: 14),
+          child: Icon(direction > 0 ? FontAwesomeIcons.chevronUp : FontAwesomeIcons.chevronDown, size: 14),
           onPressed: () {
             parameter.direction = direction;
             setState(() {});

@@ -74,7 +74,6 @@ class InventoryBucket {
   static const inventoryBucketHashes = [
     consumables,
     modifications,
-    shaders,
   ];
 
   static const pursuitBucketHashes = [

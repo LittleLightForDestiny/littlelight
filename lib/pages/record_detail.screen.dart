@@ -18,7 +18,6 @@ import 'package:little_light/widgets/presentation_nodes/record_detail_objectives
 class RecordDetailScreen extends StatefulWidget {
   final DestinyRecordDefinition definition;
 
-
   RecordDetailScreen(this.definition, {Key key}) : super(key: key);
 
   @override
@@ -28,7 +27,6 @@ class RecordDetailScreen extends StatefulWidget {
 }
 
 class RecordDetailScreenState extends State<RecordDetailScreen> with AuthConsumer, ProfileConsumer {
-  bool get isLogged => auth.isLogged;
   bool isTracking = false;
 
   DestinyRecordDefinition get definition => widget.definition;
@@ -39,7 +37,6 @@ class RecordDetailScreenState extends State<RecordDetailScreen> with AuthConsume
 
   DestinyRecordComponent get record {
     if (definition == null) return null;
-    if (!auth.isLogged) return null;
     return profile.getRecord(definition.hash, definition.scope);
   }
 
@@ -54,9 +51,7 @@ class RecordDetailScreenState extends State<RecordDetailScreen> with AuthConsume
   @override
   void initState() {
     super.initState();
-    if (isLogged) {
-      updateTrackStatus();
-    }
+    updateTrackStatus();
   }
 
   @override
@@ -67,9 +62,7 @@ class RecordDetailScreenState extends State<RecordDetailScreen> with AuthConsume
   updateTrackStatus() async {
     var objectives = await ObjectivesService().getTrackedObjectives();
     var tracked = objectives.firstWhere(
-        (o) =>
-            o.hash == widget.definition.hash &&
-            o.type == TrackedObjectiveType.Triumph,
+        (o) => o.hash == widget.definition.hash && o.type == TrackedObjectiveType.Triumph,
         orElse: () => null);
     isTracking = tracked != null;
     if (!mounted) return;
@@ -134,8 +127,7 @@ class RecordDetailScreenState extends State<RecordDetailScreen> with AuthConsume
         child: definition == null
             ? Container()
             : QueuedNetworkImage(
-                imageUrl:
-                    BungieApiService.url(definition.displayProperties.icon),
+                imageUrl: BungieApiService.url(definition.displayProperties.icon),
               ));
   }
 
@@ -148,18 +140,14 @@ class RecordDetailScreenState extends State<RecordDetailScreen> with AuthConsume
               child: Text(
                 definition.displayProperties.name,
                 softWrap: true,
-                style: TextStyle(
-                    color: foregroundColor, fontWeight: FontWeight.bold),
+                style: TextStyle(color: foregroundColor, fontWeight: FontWeight.bold),
               ))),
       buildTrackingIcon(context),
       Container(
           padding: EdgeInsets.all(4),
           child: Text(
             "${definition?.completionInfo?.scoreValue ?? ""}",
-            style: TextStyle(
-                fontWeight: FontWeight.w300,
-                color: foregroundColor,
-                fontSize: 13),
+            style: TextStyle(fontWeight: FontWeight.w300, color: foregroundColor, fontSize: 13),
           )),
     ]);
   }
@@ -169,9 +157,7 @@ class RecordDetailScreenState extends State<RecordDetailScreen> with AuthConsume
     return Container(
         margin: EdgeInsets.only(top: 4),
         padding: EdgeInsets.all(2),
-        decoration: BoxDecoration(
-            color: Colors.green.shade800,
-            borderRadius: BorderRadius.circular(20)),
+        decoration: BoxDecoration(color: Colors.green.shade800, borderRadius: BorderRadius.circular(20)),
         child: Icon(
           FontAwesomeIcons.crosshairs,
           size: 12,
@@ -181,18 +167,14 @@ class RecordDetailScreenState extends State<RecordDetailScreen> with AuthConsume
 
   buildDescription(BuildContext context) {
     if (definition == null) return Container();
-    if ((definition?.displayProperties?.description?.length ?? 0) == 0)
-      return Container();
+    if ((definition?.displayProperties?.description?.length ?? 0) == 0) return Container();
 
     return Container(
         padding: EdgeInsets.all(4),
         child: Text(
           definition.displayProperties.description,
           softWrap: true,
-          style: TextStyle(
-              color: foregroundColor,
-              fontWeight: FontWeight.w300,
-              fontSize: 13),
+          style: TextStyle(color: foregroundColor, fontWeight: FontWeight.w300, fontSize: 13),
         ));
   }
 
@@ -201,22 +183,17 @@ class RecordDetailScreenState extends State<RecordDetailScreen> with AuthConsume
       padding: EdgeInsets.all(8),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          primary: isTracking
-              ? DestinyData.trackingOnColor
-              : DestinyData.trackingOffColor,
+          primary: isTracking ? DestinyData.trackingOnColor : DestinyData.trackingOffColor,
         ),
         child: isTracking
             ? TranslatedTextWidget("Stop Tracking", key: Key("stop_tracking"))
-            : TranslatedTextWidget("Track Objectives",
-                key: Key("track_objectives")),
+            : TranslatedTextWidget("Track Objectives", key: Key("track_objectives")),
         onPressed: () {
           var service = ObjectivesService();
           if (isTracking) {
-            service.removeTrackedObjective(
-                TrackedObjectiveType.Triumph, definition.hash);
+            service.removeTrackedObjective(TrackedObjectiveType.Triumph, definition.hash);
           } else {
-            service.addTrackedObjective(
-                TrackedObjectiveType.Triumph, definition.hash);
+            service.addTrackedObjective(TrackedObjectiveType.Triumph, definition.hash);
           }
           updateTrackStatus();
         },

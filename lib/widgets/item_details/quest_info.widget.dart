@@ -1,8 +1,4 @@
-import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
-import 'package:bungie_api/models/destiny_item_component.dart';
-import 'package:bungie_api/models/destiny_item_instance_component.dart';
-import 'package:bungie_api/models/destiny_objective_definition.dart';
-import 'package:bungie_api/models/destiny_objective_progress.dart';
+import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';

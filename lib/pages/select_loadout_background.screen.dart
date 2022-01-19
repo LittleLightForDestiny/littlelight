@@ -2,12 +2,11 @@ import 'package:bungie_api/models/destiny_collectible_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_presentation_node_definition.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/loadouts/loadout_background_item.widget.dart';
 import 'package:little_light/widgets/presentation_nodes/presentation_node_list.widget.dart';
-
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/presentation_nodes/presentation_node_tabs.widget.dart';
+
 import 'presentation_node.screen.dart';
 
 class SelectLoadoutBackgroundScreen extends PresentationNodeScreen {
@@ -38,15 +37,6 @@ class SelectLoadoutBackgroundScreenState extends PresentationNodeScreenState {
         body: buildScaffoldBody(context));
   }
 
-  //  Widget buildBody(BuildContext context, {int hash, int depth}) {
-  //   if(definition?.children == null) return Container();
-  //   if((definition?.children?.presentationNodes?.length ?? 0) == 0){
-  //     return listBuilder(hash, depth);
-  //   }
-
-  //   return tabBuilder(hash, 0);
-  // }
-
   loadNestedDefinitions(DestinyPresentationNodeDefinition definition) async {
     Iterable<int> nodeHashes = definition.children.presentationNodes
         .map((node) => node.presentationNodeHash)
@@ -74,7 +64,6 @@ class SelectLoadoutBackgroundScreenState extends PresentationNodeScreenState {
       presentationNodeHashes: definition.children.presentationNodes.map((p)=>p.presentationNodeHash).toList(),
       depth: 0,
       itemBuilder: this.itemBuilder,
-      tileBuilder: this.tileBuilder,
     );
   }
 
@@ -83,10 +72,5 @@ class SelectLoadoutBackgroundScreenState extends PresentationNodeScreenState {
     return LoadoutBackgroundItemWidget(
       hash: item.hash,
     );
-  }
-
-  @override
-  StaggeredTile tileBuilder(CollectionListItem item) {
-    return StaggeredTile.extent(30, kToolbarHeight);
   }
 }

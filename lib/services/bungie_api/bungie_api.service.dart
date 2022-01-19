@@ -53,16 +53,18 @@ class BungieApiService with AuthConsumer, AppConfigConsumer {
   Future<DestinyProfileResponse?> getCurrentProfile(List<DestinyComponentType> components) async {
     BungieNetToken? token = await auth.getCurrentToken();
     GroupUserInfoCard? membership = await auth.getMembership();
-    var profile = await getProfile(components, membership?.membershipId, membership?.membershipType, token);
+    final membershipId = membership?.membershipId;
+    final membershipType = membership?.membershipType;
+    if (token == null || membershipId == null || membershipType == null) {
+      throw NotAuthorizedException(_credentialsMissingException);
+    }
+    final profile = await getProfile(components, membershipId, membershipType, token);
     return profile;
   }
 
   Future<DestinyProfileResponse?> getProfile(
-      List<DestinyComponentType> components, String? membershipId, BungieMembershipType? membershipType,
+      List<DestinyComponentType> components, String membershipId, BungieMembershipType membershipType,
       [BungieNetToken? token]) async {
-    if (token == null || membershipId == null || membershipType == null) {
-      throw NotAuthorizedException(_credentialsMissingException);
-    }
     DestinyProfileResponseResponse response =
         await Destiny2.getProfile(new Client(token: token), components, membershipId, membershipType);
     return response.response;

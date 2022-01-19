@@ -7,7 +7,7 @@ import 'package:bungie_api/models/destiny_objective_definition.dart';
 import 'package:bungie_api/models/destiny_objective_progress.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:little_light/pages/item_detail.screen.dart';
+import 'package:little_light/pages/item_details/item_details.page.dart';
 import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/notification/notification.package.dart';
@@ -181,7 +181,7 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T> with 
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ItemDetailScreen(
+          builder: (context) => ItemDetailsPage(
             item: item,
             definition: definition,
             instanceInfo: instanceInfo,
@@ -197,7 +197,7 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T> with 
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ItemDetailScreen(
+          builder: (context) => ItemDetailsPage(
             item: item,
             definition: definition,
             instanceInfo: instanceInfo,

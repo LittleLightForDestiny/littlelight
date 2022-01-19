@@ -30,7 +30,7 @@ class MembershipStorage extends StorageBase<MembershipStorageKeys> {
 
   Future<Map<String, ItemNotes>?> getCachedNotes() async {
     try {
-      final dynamic json = await getJson(MembershipStorageKeys.cachedNotes);
+      final List<dynamic>? json = await getJson(MembershipStorageKeys.cachedNotes);
       if (json == null) return null;
       return Map.fromEntries(json.map((n) => ItemNotes.fromJson(n)).map((e) => MapEntry(e.uniqueId, e)));
     } catch (e) {
@@ -53,11 +53,11 @@ class MembershipStorage extends StorageBase<MembershipStorageKeys> {
 
   Future<Map<String, ItemNotesTag>?> getCachedTags() async {
     try {
-      final dynamic json = await getJson(MembershipStorageKeys.cachedNotes);
+      final List<dynamic>? json = await getJson(MembershipStorageKeys.cachedTags);
       if (json == null) return null;
-      return Map.fromEntries(json.map((n) => ItemNotesTag.fromJson(n)).map((e) => MapEntry(e.tagId, e)));
+      return Map.fromEntries(json.map((n) => ItemNotesTag.fromJson(n)).where((element) => element.tagId != null).map((e) => MapEntry(e.tagId!, e)));
     } catch (e) {
-      print("can't parse item tags");
+      print("can't parse tags");
       print(e);
     }
     return null;
@@ -70,7 +70,8 @@ class MembershipStorage extends StorageBase<MembershipStorageKeys> {
 
   Future<List<Loadout>?> getCachedLoadouts() async {
     try {
-      final List<dynamic> json = await getJson(MembershipStorageKeys.cachedNotes);
+      final List<dynamic>? json = await getJson(MembershipStorageKeys.cachedLoadouts);
+      if (json == null) return null;
       return json.map((n) => Loadout.fromJson(n)).toList();
     } catch (e) {
       print("can't parse cached loadouts");
@@ -86,7 +87,8 @@ class MembershipStorage extends StorageBase<MembershipStorageKeys> {
 
   Future<List<String>?> getLoadoutsOrder() async {
     try {
-      final List<String> json = await getJson(MembershipStorageKeys.loadoutsOrder);
+      final List<String>? json = await getJson(MembershipStorageKeys.loadoutsOrder);
+      if (json == null) return null;
       return json;
     } catch (e) {
       print("can't parse loadouts order");
@@ -116,9 +118,11 @@ class MembershipStorage extends StorageBase<MembershipStorageKeys> {
 
   Future<Map<String, DestinyVendorsResponse>?> getCachedVendors() async {
     try {
-      final Map<String, dynamic> json = await getExpireableJson(MembershipStorageKeys.priorityTags, Duration(hours: 12));
-      
-      return json.map((key, value) => MapEntry<String, DestinyVendorsResponse>(key, DestinyVendorsResponse.fromJson(value)));
+      final Map<String, dynamic> json =
+          await getExpireableJson(MembershipStorageKeys.priorityTags, Duration(hours: 12));
+
+      return json
+          .map((key, value) => MapEntry<String, DestinyVendorsResponse>(key, DestinyVendorsResponse.fromJson(value)));
     } catch (e) {
       print("can't parse cached vendors");
       print(e);
@@ -133,7 +137,8 @@ class MembershipStorage extends StorageBase<MembershipStorageKeys> {
 
   Future<List<TrackedObjective>?> getTrackedObjectives() async {
     try {
-      final List<dynamic> json = await getJson(MembershipStorageKeys.trackedObjectives);
+      final List<dynamic>? json = await getJson(MembershipStorageKeys.trackedObjectives);
+      if (json == null) return null;
       return json.map((n) => TrackedObjective.fromJson(n)).where((o) => o.hash != null).toList();
     } catch (e) {
       print("can't parse tracked Objectives");
@@ -149,7 +154,8 @@ class MembershipStorage extends StorageBase<MembershipStorageKeys> {
 
   Future<CharacterSortParameter?> getCharacterOrdering() async {
     try {
-      final List<dynamic> json = await getJson(MembershipStorageKeys.characterOrdering);
+      final List<dynamic>? json = await getJson(MembershipStorageKeys.characterOrdering);
+      if (json == null) return null;
       return CharacterSortParameter.fromJson(json);
     } catch (e) {
       print("can't parse character ordering");
@@ -164,7 +170,8 @@ class MembershipStorage extends StorageBase<MembershipStorageKeys> {
 
   Future<Map<String, BucketDisplayOptions>?> getBucketDisplayOptions() async {
     try {
-      final Map<String, dynamic> json = await getJson(MembershipStorageKeys.bucketDisplayOptions);
+      final Map<String, dynamic>? json = await getJson(MembershipStorageKeys.bucketDisplayOptions);
+      if (json == null) return null;
       return json.map((key, value) => MapEntry(key, BucketDisplayOptions.fromJson(value)));
     } catch (e) {
       print("can't parse bucket display options");
@@ -175,28 +182,30 @@ class MembershipStorage extends StorageBase<MembershipStorageKeys> {
 
   Future<void> saveBucketDisplayOptions(Map<String, BucketDisplayOptions> bucketDisplayOptions) async {
     final json = bucketDisplayOptions.map((key, value) => MapEntry(key, value.toJson()));
-    await setJson(MembershipStorageKeys.detailsSectionDisplayVisibility, json);
+    await setJson(MembershipStorageKeys.bucketDisplayOptions, json);
   }
 
   Future<Map<String, bool>?> getDetailsSectionDisplayVisibility() async {
     try {
-      final Map<String, bool> json = await getJson(MembershipStorageKeys.detailsSectionDisplayVisibility);
-      return json;
+      final Map<String, dynamic>? json = await getJson(MembershipStorageKeys.detailsSectionDisplayVisibility);
+      if (json == null) return null;
+      return Map<String, bool>.from(json.map((key, value) => MapEntry(key, value)));
     } catch (e) {
-      print("can't parse bucket display options");
+      print("can't parse details section display visibility options");
       print(e);
     }
     return null;
   }
 
   Future<void> saveDetailsSectionDisplayVisibility(Map<String, bool> sectionVisibility) async {
-    await setJson(MembershipStorageKeys.bucketDisplayOptions, sectionVisibility);
+    await setJson(MembershipStorageKeys.detailsSectionDisplayVisibility, sectionVisibility);
   }
 
   Future<Set<String>?> getPriorityTags() async {
     try {
-      final List<String> json = await getJson(MembershipStorageKeys.priorityTags);
-      return Set.from(json);
+      final List<dynamic>? json = await getJson(MembershipStorageKeys.priorityTags);
+      if (json == null) return null;
+      return Set<String>.from(json);
     } catch (e) {
       print("can't parse priority tags");
       print(e);

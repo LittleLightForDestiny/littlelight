@@ -11,12 +11,11 @@ class PresentationNodeBodyWidget extends StatefulWidget {
   
 
   final PresentationNodeItemBuilder itemBuilder;
-  final PresentationNodeTileBuilder tileBuilder;
   final int presentationNodeHash;
   final int depth;
   final bool isCategorySet;
   PresentationNodeBodyWidget(
-      {this.presentationNodeHash, this.itemBuilder, this.tileBuilder, this.depth = 0, this.isCategorySet = false});
+      {this.presentationNodeHash, this.itemBuilder, this.depth = 0, this.isCategorySet = false});
 
   @override
   PresentationNodeBodyWidgetState createState() => new PresentationNodeBodyWidgetState();
@@ -46,7 +45,6 @@ class PresentationNodeBodyWidgetState<T extends PresentationNodeBodyWidget> exte
   @override
   Widget build(BuildContext context) {
     if (definition?.children == null) return Container();
-    print(widget.presentationNodeHash);
     if (gameData?.tabbedPresentationNodes?.contains(widget.presentationNodeHash) ?? false) return tabBuilder();
     if (definition?.children?.presentationNodes?.length == 1) {
       return tabBuilder();
@@ -59,7 +57,6 @@ class PresentationNodeBodyWidgetState<T extends PresentationNodeBodyWidget> exte
         presentationNodeHash: widget.presentationNodeHash,
         depth: widget.depth,
         itemBuilder: widget.itemBuilder,
-        tileBuilder: widget.tileBuilder,
         isCategorySet: widget.isCategorySet ?? definition?.screenStyle == DestinyPresentationScreenStyle.CategorySets);
   }
 
@@ -69,7 +66,6 @@ class PresentationNodeBodyWidgetState<T extends PresentationNodeBodyWidget> exte
       isCategorySets: widget.isCategorySet,
       depth: widget.depth,
       itemBuilder: widget.itemBuilder,
-      tileBuilder: widget.tileBuilder,
     );
   }
 }
