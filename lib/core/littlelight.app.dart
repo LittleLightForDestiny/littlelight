@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:little_light/core/navigator_key.dart';
 import 'package:little_light/core/router/littlelight_router.dart';
 import 'package:little_light/core/theme/littlelight.scroll_behavior.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
@@ -27,6 +28,7 @@ class _LittleLightAppState extends State<LittleLightApp> with AnalyticsConsumer 
     asyncInit();
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle(statusBarColor: Colors.transparent, statusBarBrightness: Brightness.dark));
+    LittleLightNavigatorKeyContainer.navigatorKey = GlobalKey<NavigatorState>();
   }
 
   void asyncInit() async {
@@ -42,6 +44,7 @@ class _LittleLightAppState extends State<LittleLightApp> with AnalyticsConsumer 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Little Light',
+      navigatorKey: LittleLightNavigatorKeyContainer.navigatorKey,
       navigatorObservers: analytics.observers,
       builder: (context, child) => ScrollConfiguration(
         behavior: LittleLightScrollBehaviour(),

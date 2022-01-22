@@ -1,29 +1,31 @@
+//@dart=2.12
+
 import 'dart:async';
-import 'dart:io';
 
 import 'package:bungie_api/enums/bungie_membership_type.dart';
-import 'package:bungie_api/enums/platform_error_codes.dart';
-import 'package:bungie_api/helpers/oauth.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/navigator_key.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.exception.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:little_light/widgets/dialogs/bungie_api_exception.dialog.dart';
+import 'package:little_light/widgets/dialogs/report_error.dialog.dart';
 
-
-typedef OnRestart = Function(BuildContext context);
-
+extension on StackTrace{
+  String get onlyRelevant => this.toString().split('\n').where((s)=>s.contains('package:little_light')).join('\n');
+}
 class ExceptionHandler with AuthConsumer {
   bool isDialogOpen = false;
-  static BuildContext context;
-  OnRestart onRestart;
-  ExceptionHandler({this.onRestart}) {
+  ExceptionHandler() {
     initCustomErrorMessage();
     FlutterError.onError = (FlutterErrorDetails details) {
-      if (isInDebugMode) {
-        FlutterError.dumpErrorToConsole(details);
-      } else {
-        Zone.current.handleUncaughtError(details.exception, details.stack);
+      final stack = details.stack;
+      if (kDebugMode) {
+        FlutterError.dumpErrorToConsole(details.copyWith(stackFilter: (input)=>input.where((s) => s.contains('package:little_light'))));
+      } else if (stack != null) {
+        Zone.current.handleUncaughtError(details.exception, stack);
       }
 
       FirebaseCrashlytics.instance.recordFlutterError(details);
@@ -31,131 +33,45 @@ class ExceptionHandler with AuthConsumer {
   }
 
   initCustomErrorMessage() {
-    if (!isInDebugMode) {
-      ErrorWidget.builder = (FlutterErrorDetails details) {
-        return Container(
-            padding: EdgeInsets.all(8),
-            alignment: Alignment.center,
-            child: Column(mainAxisSize: MainAxisSize.min, children: [
-              TranslatedTextWidget(
-                  "Couldn&#39;t render this widget properly. Please report this to @LittleLightD2 on Twitter or via GitHub issues"),
-              Text(details?.exceptionAsString() ?? ""),
-            ]));
-      };
-    }
+    ErrorWidget.builder = (FlutterErrorDetails details) {
+      return Container(
+          padding: EdgeInsets.all(8),
+          alignment: Alignment.center,
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            TranslatedTextWidget("Render Error"),
+            ElevatedButton(onPressed: () {
+              final context = LittleLightNavigatorKeyContainer.navigatorKey?.currentContext;
+              if(context == null) return;
+              Navigator.of(context).push(ReportErrorDialogRoute(context, error: details));
+            }, child: TranslatedTextWidget("Report"))
+          ]));
+    };
   }
 
-  static bool get isInDebugMode {
-    bool inDebugMode = false;
-    assert(inDebugMode = true);
-    return inDebugMode;
-  }
-
-  Future<void> handleException(dynamic error, dynamic stackTrace) async {
-    if (error is OAuthException) {
-      print("Oauth Exception caught");
-    }
-
+  Future<void> handleException(dynamic error, StackTrace? stackTrace) async {
+    final relevantStackTrace = stackTrace?.toString().split('\n').where((s) => s.contains('package:little_light'));
     print(error);
-    if (error is Error) {
-      var stack = error.stackTrace.toString().split('\n');
-      stack.removeWhere((s) => !s.contains("package:little_light"));
-      print(stack.join("\n"));
+    if (relevantStackTrace != null) {
+      print(relevantStackTrace.join('\n'));
     }
 
     if (error is BungieApiException) {
-      bool shouldShowLoginButton = [
-            PlatformErrorCodes.DestinyAccountNotFound,
-            PlatformErrorCodes.WebAuthRequired,
-            PlatformErrorCodes.AuthorizationRecordExpired
-          ].contains(error.errorCode) ||
-          ["invalid_grant"].contains(error.errorStatus);
-      BungieApiException e = error;
-      print(e.errorStatus);
-      if(isDialogOpen){
-        Navigator.pop(context);
+      final context = LittleLightNavigatorKeyContainer.navigatorKey?.currentContext;
+      if (context != null) {
+        Navigator.of(context).push(BungieApiExceptionDialogRoute(context, error: error));
       }
-      isDialogOpen = true;
-      showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (context) => SimpleDialog(
-          title: TranslatedTextWidget(e.errorStatus),
-          children: [
-            Container(
-                padding: EdgeInsets.all(16),
-                child: TranslatedTextWidget(
-                  e.message,
-                )),
-            Container(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    ErrorDialogButton(
-                        text: "Try Again",
-                        onPressed: () {
-                          Navigator.pop(context);
-                          onRestart(context);
-                        }),
-                    shouldShowLoginButton
-                        ? ErrorDialogButton(
-                            text: "Login with another account",
-                            onPressed: () async {
-                              await auth.resetToken();
-                              Navigator.pop(context);
-                              onRestart(context);
-                            })
-                        : Container(height: 0),
-                    ErrorDialogButton(
-                        text: "Exit",
-                        onPressed: () {
-                          exit(0);
-                        })
-                  ],
-                ))
-          ],
-        ),
-      ).then((value) => isDialogOpen = false);
     }
     if (error is FlutterErrorDetails) {
       FirebaseCrashlytics.instance.recordFlutterError(error);
       return;
     }
 
-    if (error is Error) {
-      FirebaseCrashlytics.instance
-          .recordError(error, error.stackTrace, printDetails: false);
-      return;
-    }
+    FirebaseCrashlytics.instance.recordError(error, stackTrace, printDetails: false);
   }
 
-  static setReportingUserInfo(String membershipId, String displayName,
-      BungieMembershipType platformId) {
+  static setReportingUserInfo(String membershipId, String displayName, BungieMembershipType platformId) {
     FirebaseCrashlytics.instance.setUserIdentifier(membershipId);
     FirebaseCrashlytics.instance.setCustomKey('User Name', displayName);
-    FirebaseCrashlytics.instance.setCustomKey("platform", platformId.value);
-  }
-}
-
-class ErrorDialogButton extends StatelessWidget {
-  final Function onPressed;
-  final String text;
-  const ErrorDialogButton({Key key, this.onPressed, this.text})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        margin: EdgeInsets.only(bottom: 8),
-        child: ElevatedButton(
-          child: Container(
-              constraints: BoxConstraints(minWidth: double.infinity),
-              child: TranslatedTextWidget(
-                text,
-                textAlign: TextAlign.center,
-              )),
-          onPressed: onPressed,
-        ));
+    FirebaseCrashlytics.instance.setCustomKey("platform", platformId.value ?? "not informed");
   }
 }
