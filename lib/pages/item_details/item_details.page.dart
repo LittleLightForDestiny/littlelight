@@ -24,6 +24,7 @@ import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/loadout_utils.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
+import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
 import 'package:little_light/widgets/item_details/item_collectible_info.widget.dart';
@@ -89,13 +90,25 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailsPage>
   DestinyStatGroupDefinition statGroupDefinition;
   List<ItemWithOwner> duplicates;
   List<Loadout> loadouts;
+  bool loaded = false;
 
   List<DestinyItemSocketState> get socketStates => widget.socketStates ?? profile.getItemSockets(item?.itemInstanceId);
 
   initState() {
     super.initState();
-    initSocketController();
-    this.loadDefinitions();
+    asyncInit();
+  }
+
+  asyncInit() async {
+    await Future.delayed(Duration.zero);
+    final route = ModalRoute.of(context);
+    await Future.delayed(route?.transitionDuration ?? Duration.zero);
+    await initSocketController();
+    await this.loadDefinitions();
+    if (mounted)
+      setState(() {
+        loaded = true;
+      });
   }
 
   initSocketController() async {
@@ -111,9 +124,9 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailsPage>
   }
 
   Future<void> loadDefinitions() async {
-    findLoadouts();
-    findDuplicates();
-    loadStatGroupDefinition();
+    await findLoadouts();
+    await findDuplicates();
+    await loadStatGroupDefinition();
   }
 
   findLoadouts() async {
@@ -147,19 +160,11 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailsPage>
     }).toList();
 
     duplicates = await InventoryUtils.sortDestinyItems(duplicates);
-
-    if (mounted) {
-      setState(() {});
-    }
   }
 
   Future loadStatGroupDefinition() async {
     if (definition?.stats?.statGroupHash != null) {
-      statGroupDefinition =
-          await manifest.getDefinition<DestinyStatGroupDefinition>(definition?.stats?.statGroupHash);
-      if (mounted) {
-        setState(() {});
-      }
+      statGroupDefinition = await manifest.getDefinition<DestinyStatGroupDefinition>(definition?.stats?.statGroupHash);
     }
   }
 
@@ -188,33 +193,38 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailsPage>
               instanceInfo,
               characterId: characterId,
             ),
-            buildManagementBlock(context),
-            buildLockInfo(context),
-            buildActionButtons(context),
-            buildLoadouts(context),
-            buildWishlistNotes(context),
-            buildDuplicates(context),
-            buildIntrinsicPerk(context),
-            buildExoticPerkDetails(context),
-            buildModInfo(context),
-            buildStats(context),
-            buildPerks(context),
-            buildPerkDetails(context),
-            buildArmorTier(context),
-            buildMods(context),
-            buildModDetails(context),
-            buildWishlistBuilds(context),
-            buildCosmetics(context),
-            buildCosmeticDetails(context),
-            buildNotes(context),
-            buildTags(context),
-            buildObjectives(context),
-            buildRewards(context),
-            buildQuestInfo(context),
-            buildLore(context),
-            buildCollectibleInfo(context),
-            Container(height: 50)
-          ]))
+          ]
+                  .followedBy(loaded
+                      ? [
+                          buildManagementBlock(context),
+                          buildLockInfo(context),
+                          buildActionButtons(context),
+                          buildLoadouts(context),
+                          buildWishlistNotes(context),
+                          buildDuplicates(context),
+                          buildIntrinsicPerk(context),
+                          buildExoticPerkDetails(context),
+                          buildModInfo(context),
+                          buildStats(context),
+                          buildPerks(context),
+                          buildPerkDetails(context),
+                          buildArmorTier(context),
+                          buildMods(context),
+                          buildModDetails(context),
+                          buildWishlistBuilds(context),
+                          buildCosmetics(context),
+                          buildCosmeticDetails(context),
+                          buildNotes(context),
+                          buildTags(context),
+                          buildObjectives(context),
+                          buildRewards(context),
+                          buildQuestInfo(context),
+                          buildLore(context),
+                          buildCollectibleInfo(context),
+                          Container(height: 50)
+                        ]
+                      : [LoadingAnimWidget()])
+                  .toList()))
         ],
       ),
       InventoryNotificationWidget(
@@ -245,32 +255,37 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailsPage>
               instanceInfo,
               characterId: characterId,
             ),
-            buildWishlistNotes(context),
-            buildManagementBlock(context),
-            buildLockInfo(context),
-            buildActionButtons(context),
-            buildDuplicates(context),
-            buildIntrinsicPerk(context),
-            buildExoticPerkDetails(context),
-            buildModInfo(context),
-            buildStats(context),
-            buildPerks(context),
-            buildPerkDetails(context),
-            buildArmorTier(context),
-            buildMods(context),
-            buildModDetails(context),
-            buildWishlistBuilds(context),
-            buildCosmetics(context),
-            buildCosmeticDetails(context),
-            buildNotes(context),
-            buildTags(context),
-            buildObjectives(context),
-            buildRewards(context),
-            buildQuestInfo(context),
-            buildLore(context),
-            buildCollectibleInfo(context),
-            Container(height: 50)
-          ]))
+          ]
+                  .followedBy(loaded
+                      ? [
+                          buildWishlistNotes(context),
+                          buildManagementBlock(context),
+                          buildLockInfo(context),
+                          buildActionButtons(context),
+                          buildDuplicates(context),
+                          buildIntrinsicPerk(context),
+                          buildExoticPerkDetails(context),
+                          buildModInfo(context),
+                          buildStats(context),
+                          buildPerks(context),
+                          buildPerkDetails(context),
+                          buildArmorTier(context),
+                          buildMods(context),
+                          buildModDetails(context),
+                          buildWishlistBuilds(context),
+                          buildCosmetics(context),
+                          buildCosmeticDetails(context),
+                          buildNotes(context),
+                          buildTags(context),
+                          buildObjectives(context),
+                          buildRewards(context),
+                          buildQuestInfo(context),
+                          buildLore(context),
+                          buildCollectibleInfo(context),
+                          Container(height: 50)
+                        ]
+                      : [LoadingAnimWidget()])
+                  .toList()))
         ],
       ),
       InventoryNotificationWidget(
@@ -296,6 +311,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailsPage>
 
   Widget buildWishlistNotes(BuildContext context) {
     if (item == null) return Container();
+    if (socketController == null) return Container();
     var screenPadding = MediaQuery.of(context).padding;
     return Container(
         padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),

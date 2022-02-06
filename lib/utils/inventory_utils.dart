@@ -175,36 +175,36 @@ class LoadoutItemIndex with ProfileConsumer, ManifestConsumer{
     Iterable<String> notFoundInstanceIds =
         itemIds.where((id) => !foundItemIds.contains(id));
     if (notFoundInstanceIds.length > 0) {
-      List<DestinyItemComponent> allItems = profile.getAllItems();
+      List<ItemWithOwner> allItems = profile.getAllItems();
       notFoundInstanceIds.forEach((id) {
         LoadoutItem equipped = loadout.equipped
             .firstWhere((i) => i.itemInstanceId == id, orElse: () => null);
         LoadoutItem unequipped = loadout.unequipped
             .firstWhere((i) => i.itemInstanceId == id, orElse: () => null);
         int itemHash = equipped?.itemHash ?? unequipped?.itemHash;
-        List<DestinyItemComponent> substitutes =
-            allItems.where((i) => i.itemHash == itemHash).toList();
+        List<ItemWithOwner> substitutes =
+            allItems.where((i) => i.item.itemHash == itemHash).toList();
         if (substitutes.length == 0) return;
         var powerSorter = PowerLevelSorter(-1);
         substitutes.sort((a, b) =>
-            powerSorter.sort(ItemWithOwner(a, null), ItemWithOwner(b, null)));
-        DestinyItemComponent substitute = substitutes.first;
+            powerSorter.sort(a, b));
+        ItemWithOwner substitute = substitutes.first;
 
         if (equipped != null) {
           loadout.equipped.remove(equipped);
           loadout.equipped.add(LoadoutItem(
-              itemInstanceId: substitute.itemInstanceId,
-              itemHash: substitute.itemHash));
-          equippedIds.add(substitute.itemInstanceId);
+              itemInstanceId: substitute.item.itemInstanceId,
+              itemHash: substitute.item.itemHash));
+          equippedIds.add(substitute.item.itemInstanceId);
         }
         if (unequipped != null) {
           loadout.unequipped.remove(unequipped);
           loadout.unequipped.remove(unequipped);
           loadout.unequipped.add(LoadoutItem(
-              itemInstanceId: substitute.itemInstanceId,
-              itemHash: substitute.itemHash));
+              itemInstanceId: substitute.item.itemInstanceId,
+              itemHash: substitute.item.itemHash));
         }
-        items.add(substitute);
+        items.add(substitute.item);
       });
     }
 

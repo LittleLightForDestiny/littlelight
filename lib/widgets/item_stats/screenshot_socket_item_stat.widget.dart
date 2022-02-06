@@ -34,7 +34,7 @@ class ScreenshotSocketItemStatWidget extends BaseItemStatWidget {
       child: ManifestText<DestinyStatDefinition>(
         statHash,
         style: TextStyle(
-          color: nameColor,
+          color: getNameColor(context),
           fontSize: pixelSize * 20,
           fontWeight: FontWeight.w300,
         ),
@@ -49,7 +49,7 @@ class ScreenshotSocketItemStatWidget extends BaseItemStatWidget {
       child: Text(
         "$currentValue",
         style: TextStyle(
-          color: valueColor,
+          color: getValueColor(context),
           fontSize: pixelSize * 20,
           fontWeight: FontWeight.bold,
         ),
@@ -71,7 +71,7 @@ class ScreenshotSocketItemStatWidget extends BaseItemStatWidget {
         children: <Widget>[
           Container(
               width: (modBarSize / maxBarSize) * (pixelSize * 240),
-              color: modBarColor),
+              color: getModBarColor(context)),
         ],
       ),
     );
@@ -85,5 +85,5 @@ class ScreenshotSocketItemStatWidget extends BaseItemStatWidget {
   }
 
   @override
-  Color get nameColor => neutralColor;
+  Color getNameColor(BuildContext context) => getNeutralColor(context);
 }

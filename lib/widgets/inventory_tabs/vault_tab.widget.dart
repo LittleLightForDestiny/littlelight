@@ -22,8 +22,7 @@ class VaultTabWidgetState extends CharacterTabWidgetState {
   Widget build(BuildContext context) {
     return VaultItemListWidget(
       key: Key("${widget.currentGroup}_vault"),
-      padding:
-          EdgeInsets.only(top: getListTopOffset(context), left: 2, right: 2),
+      padding: EdgeInsets.all(4) + EdgeInsets.symmetric(vertical: kToolbarHeight) + MediaQuery.of(context).viewPadding,
       bucketHashes: bucketHashes,
     );
   }
@@ -39,11 +38,7 @@ class VaultTabWidgetState extends CharacterTabWidgetState {
           InventoryBucket.classArmor,
         ];
       case DestinyItemCategory.Weapon:
-        return [
-          InventoryBucket.kineticWeapons,
-          InventoryBucket.energyWeapons,
-          InventoryBucket.powerWeapons
-        ];
+        return [InventoryBucket.kineticWeapons, InventoryBucket.energyWeapons, InventoryBucket.powerWeapons];
     }
     return [
       InventoryBucket.ghost,
@@ -51,7 +46,6 @@ class VaultTabWidgetState extends CharacterTabWidgetState {
       InventoryBucket.ships,
       InventoryBucket.consumables,
       InventoryBucket.modifications,
-      InventoryBucket.shaders,
     ];
   }
 }

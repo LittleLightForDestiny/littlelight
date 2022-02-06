@@ -5,7 +5,9 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/utils/destiny_data.dart';
+import 'package:little_light/utils/element_type_data.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/base_inventory_item.widget.dart';
@@ -36,7 +38,7 @@ class ModInventoryItemWidget extends BaseInventoryItemWidget {
       aspectRatio: 1,
       child: Stack(children: [
         Positioned.fill(child: super.itemIcon(context)),
-        energyType == DestinyEnergyType.Any
+        [DestinyEnergyType.Any, DestinyEnergyType.Ghost, DestinyEnergyType.Subclass].contains(energyType)
             ? Container()
             : Positioned.fill(
                 child: ManifestImageWidget<DestinyStatDefinition>(
@@ -59,7 +61,7 @@ class ModInventoryItemWidget extends BaseInventoryItemWidget {
     var energyType =
         definition?.plug?.energyCost?.energyType ?? DestinyEnergyType.Any;
     var energyCost = definition?.plug?.energyCost?.energyCost ?? 0;
-    var color = DestinyData.getEnergyTypeLightColor(energyType);
+    var color = energyType?.getColorLayer(context)?.layer1;
     if (energyCost == 0) return Container();
     return Positioned(
         bottom: 4,
@@ -86,6 +88,7 @@ class ModInventoryItemWidget extends BaseInventoryItemWidget {
 
   @override
   Widget perksWidget(BuildContext context) {
+    final theme = LittleLightTheme.of(context);
     return Positioned(
         bottom: 8,
         left: 96,
@@ -102,7 +105,7 @@ class ModInventoryItemWidget extends BaseInventoryItemWidget {
                                 s.statTypeHash),
                             Text("${s.value}",
                                 style: TextStyle(
-                                    color:s.value > 0 ? Colors.grey.shade300 : DestinyData.negativeFeedback,
+                                    color:s.value > 0 ? theme.onSurfaceLayers : theme.errorLayers,
                                     fontWeight: FontWeight.w500, fontSize: 16)),
                             Container(
                               width: 8,

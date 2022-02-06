@@ -5,7 +5,7 @@ import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_item_talent_grid_component.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
-import 'package:little_light/utils/destiny_data.dart';
+import 'package:little_light/utils/element_type_data.dart';
 import 'package:little_light/widgets/item_list/items/base/medium_base_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/subclass/subclass_properties.mixin.dart';
 
@@ -18,12 +18,10 @@ class MediumSubclassInventoryItemWidget extends MediumBaseInventoryItemWidget
     @required String characterId,
     Key key,
     @required String uniqueId,
-  }) : super(item, definition, instanceInfo,
-            characterId: characterId, key: key, uniqueId: uniqueId);
+  }) : super(item, definition, instanceInfo, characterId: characterId, key: key, uniqueId: uniqueId);
 
   @override
-  DestinyItemTalentGridComponent get talentGrid =>
-      profile.getTalentGrid(item?.itemInstanceId);
+  DestinyItemTalentGridComponent get talentGrid => profile.getTalentGrid(item?.itemInstanceId);
 
   @override
   double get iconSize {
@@ -32,26 +30,18 @@ class MediumSubclassInventoryItemWidget extends MediumBaseInventoryItemWidget
 
   @override
   background(BuildContext context) {
-    var damageTypeColor =
-        DestinyData.getDamageTypeColor(definition?.talentGrid?.hudDamageType);
+    var damageTypeColor = definition?.talentGrid?.hudDamageType?.getColorLayer(context);
     BoxDecoration decoration = BoxDecoration(
         gradient: RadialGradient(
             radius: 2,
-            center: Alignment(
-                definition?.talentGrid?.hudDamageType == DamageType.Stasis
-                    ? -2
-                    : 2,
-                0),
+            center: Alignment(definition?.talentGrid?.hudDamageType == DamageType.Stasis ? -2 : 2, 0),
             colors: <Color>[
-          startBgColor(),
+          startBgColor(context),
           damageTypeColor,
-          endBgColor(),
+          endBgColor(context),
         ]));
     return Positioned.fill(
-        child: Container(
-            alignment: Alignment.centerRight,
-            decoration: decoration,
-            child: buildTalentGridImage()));
+        child: Container(alignment: Alignment.centerRight, decoration: decoration, child: buildTalentGridImage()));
   }
 
   @override

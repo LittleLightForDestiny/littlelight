@@ -11,6 +11,7 @@ import 'package:bungie_api/models/destiny_power_cap_definition.dart';
 import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
@@ -428,7 +429,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
         Text("${def.powerCap}",
             style: TextStyle(
                 fontSize: convertSize(24, context),
-                color: DestinyData.masterworkColor))
+                color: LittleLightTheme.of(context).achievementLayers))
       ]);
     });
   }

@@ -5,18 +5,17 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
-import 'package:little_light/pages/about.screen.dart';
-import 'package:little_light/pages/collections.screen.dart';
+import 'package:little_light/pages/collections/collections_root.page.dart';
 import 'package:little_light/pages/dev_tools.screen.dart';
 import 'package:little_light/pages/duplicated_items.screen.dart';
-import 'package:little_light/pages/equipment.screen.dart';
+import 'package:little_light/pages/equipment/equipment.screen.dart';
 import 'package:little_light/pages/languages/languages.page_route.dart';
-import 'package:little_light/pages/loadouts.screen.dart';
-import 'package:little_light/pages/objectives.screen.dart';
-import 'package:little_light/pages/old_triumphs.screen.dart';
-import 'package:little_light/pages/progress.screen.dart';
-import 'package:little_light/pages/triumphs.screen.dart';
-import 'package:little_light/pages/vendors.screen.dart';
+import 'package:little_light/pages/loadouts/loadouts.screen.dart';
+import 'package:little_light/pages/objectives/objectives.screen.dart';
+import 'package:little_light/pages/progress/progress.screen.dart';
+import 'package:little_light/pages/settings/about.screen.dart';
+import 'package:little_light/pages/triumphs/triumphs_root.page.dart';
+import 'package:little_light/pages/vendors/vendors.screen.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/utils/platform_data.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -81,15 +80,10 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer {
                 open(context, VendorsScreen());
               }),
               menuItem(context, TranslatedTextWidget("Collections"), onTap: () {
-                open(context, CollectionsScreen());
+                open(context, CollectionsRootPage());
               }),
-              kDebugMode
-                  ? menuItem(context, Text("New Triumphs"), onTap: () {
-                      open(context, TriumphsScreen());
-                    })
-                  : Container(),
               menuItem(context, TranslatedTextWidget("Triumphs"), onTap: () {
-                open(context, OldTriumphsScreen());
+                open(context, TriumphsRootPage());
               }),
               menuItem(context, TranslatedTextWidget("Duplicated Items"), onTap: () {
                 open(context, DuplicatedItemsScreen());

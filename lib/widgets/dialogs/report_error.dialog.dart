@@ -17,8 +17,7 @@ class ReportErrorDialogRoute extends DialogRoute<void> {
       : super(
             context: context,
             builder: (context) => ReportErrorDialog(),
-            settings: RouteSettings(arguments: error),
-            barrierDismissible: false);
+            settings: RouteSettings(arguments: error),);
 }
 
 extension on BuildContext {

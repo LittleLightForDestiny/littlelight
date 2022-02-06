@@ -55,8 +55,8 @@ class ItemObjectivesWidgetState extends BaseDestinyItemState<ItemObjectivesWidge
     var itemInstanceId = widget.item?.itemInstanceId;
     if (itemInstanceId == null) {
       var allItems = profile.getAllItems();
-      var item = allItems.firstWhere((i) => i.itemHash == widget.definition?.hash, orElse: () => null);
-      itemInstanceId = item?.itemInstanceId;
+      var item = allItems.firstWhere((i) => i.item.itemHash == widget.definition?.hash, orElse: () => null);
+      itemInstanceId = item?.item?.itemInstanceId;
     }
 
     itemObjectives = profile.getItemObjectives(itemInstanceId, characterId, item?.itemHash);

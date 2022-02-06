@@ -114,7 +114,7 @@ class SelectMembershipSubPageState extends SubpageBaseState<SelectMembershipSubP
                 if (account.bungieNetUser?.membershipId != null)
                   TranslatedTextWidget("membershipID: {membershipID}",
                       replace: {"membershipID": account.bungieNetUser?.membershipId ?? ""},
-                      style: Theme.of(context).textTheme.caption)
+                      style: LittleLightTheme.of(context).textTheme.subtitle)
               ],
             ),
           )

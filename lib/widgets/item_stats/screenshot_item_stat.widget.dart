@@ -42,7 +42,7 @@ class ScreenshotItemStatWidget extends BaseItemStatWidget {
                 offset: Offset.fromDirection(.5),
                 blurRadius: 2 * pixelSize)
           ],
-          color: nameColor,
+          color: getNameColor(context),
           fontSize: pixelSize * 20,
           fontWeight: FontWeight.w500,
         ),
@@ -63,7 +63,7 @@ class ScreenshotItemStatWidget extends BaseItemStatWidget {
                 offset: Offset.fromDirection(.5),
                 blurRadius: 2 * pixelSize)
           ],
-          color: valueColor,
+          color: getValueColor(context),
           fontSize: pixelSize * 20,
           fontWeight: FontWeight.bold,
         ),
@@ -86,7 +86,7 @@ class ScreenshotItemStatWidget extends BaseItemStatWidget {
               child: DirectionStatBarWidget(
                   currentValue: currentValue,
                   equippedValue: equipped + masterwork,
-                  currentColor: valueColor,
+                  currentColor: getValueColor(context),
                   equippedColor: Colors.grey.shade500,
                   backgroundColor: Colors.grey.shade800.withOpacity(.5)),
               width: pixelSize * 60));
@@ -100,13 +100,13 @@ class ScreenshotItemStatWidget extends BaseItemStatWidget {
         children: <Widget>[
           Container(
               width: (baseBarSize / maxBarSize) * (pixelSize * 240),
-              color: nameColor),
+              color: getNameColor(context)),
           Container(
               width: (masterworkBarSize / maxBarSize) * (pixelSize * 240),
-              color: masterworkColor),
+              color: getMasterworkColor(context)),
           Container(
               width: (modBarSize / maxBarSize) * (pixelSize * 240),
-              color: modBarColor),
+              color: getModBarColor(context)),
         ],
       ),
     );

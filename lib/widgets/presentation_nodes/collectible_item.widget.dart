@@ -19,12 +19,8 @@ import 'package:little_light/widgets/item_list/items/mod/mod_inventory_item.widg
 import 'package:little_light/widgets/item_list/items/weapon/weapon_inventory_item.widget.dart';
 
 class CollectibleItemWidget extends StatefulWidget {
-  
-
-  final Map<int, List<ItemWithOwner>> itemsByHash;
   final int hash;
-  CollectibleItemWidget({Key key, this.hash, this.itemsByHash})
-      : super(key: key);
+  CollectibleItemWidget({Key key, this.hash}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -32,29 +28,20 @@ class CollectibleItemWidget extends StatefulWidget {
   }
 }
 
-class CollectibleItemWidgetState extends State<CollectibleItemWidget> with AuthConsumer, ProfileConsumer, ManifestConsumer, SelectionConsumer {
+class CollectibleItemWidgetState extends State<CollectibleItemWidget>
+    with AuthConsumer, ProfileConsumer, ManifestConsumer, SelectionConsumer {
   DestinyCollectibleDefinition _definition;
   DestinyInventoryItemDefinition _itemDefinition;
+  List<ItemWithOwner> items;
   DestinyCollectibleDefinition get definition {
-    return manifest.getDefinitionFromCache<DestinyCollectibleDefinition>(
-            widget.hash) ??
-        _definition;
+    return manifest.getDefinitionFromCache<DestinyCollectibleDefinition>(widget.hash) ?? _definition;
   }
 
-  List<ItemWithOwner> get items {
-    if (definition?.itemHash != null &&
-        widget.itemsByHash != null &&
-        widget.itemsByHash.containsKey(definition.itemHash)) {
-      return widget.itemsByHash[definition.itemHash];
-    }
-    return null;
-  }
-
-  bool get selected => items != null
-      ? items.every((i) {
-          return selection.isSelected(i);
-        })
-      : false;
+  bool get selected =>
+      (items?.length ?? 0) > 0 &&
+      items.every((i) {
+        return selection.isSelected(i);
+      });
 
   @override
   void initState() {
@@ -72,14 +59,13 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget> with AuthC
 
   loadDefinition() async {
     if (definition == null) {
-      _definition = await manifest
-          .getDefinition<DestinyCollectibleDefinition>(widget.hash);
+      _definition = await manifest.getDefinition<DestinyCollectibleDefinition>(widget.hash);
       if (mounted) {
         setState(() {});
       }
     }
-    _itemDefinition = await manifest
-        .getDefinition<DestinyInventoryItemDefinition>(definition.itemHash);
+    _itemDefinition = await manifest.getDefinition<DestinyInventoryItemDefinition>(definition.itemHash);
+    this.items = profile.getAllItems().where((element) => element.item.itemHash == definition.itemHash).toList();
     if (mounted) {
       setState(() {});
     }
@@ -92,15 +78,12 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget> with AuthC
         child: Container(
             decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey.shade600, width: 1),
-                gradient: LinearGradient(
-                    begin: Alignment(0, 0),
-                    end: Alignment(1, 2),
-                    colors: [
-                      Theme.of(context).colorScheme.onSurface.withOpacity(.05),
-                      Theme.of(context).colorScheme.onSurface.withOpacity(.1),
-                      Theme.of(context).colorScheme.onSurface.withOpacity(.03),
-                      Theme.of(context).colorScheme.onSurface.withOpacity(.1)
-                    ])),
+                gradient: LinearGradient(begin: Alignment(0, 0), end: Alignment(1, 2), colors: [
+                  Theme.of(context).colorScheme.onSurface.withOpacity(.05),
+                  Theme.of(context).colorScheme.onSurface.withOpacity(.1),
+                  Theme.of(context).colorScheme.onSurface.withOpacity(.03),
+                  Theme.of(context).colorScheme.onSurface.withOpacity(.1)
+                ])),
             child: Stack(children: [
               buildItem(context),
               Positioned(right: 4, bottom: 4, child: buildItemCount()),
@@ -114,9 +97,7 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget> with AuthC
   Widget buildItem(BuildContext context) {
     if (_itemDefinition == null) {
       if (definition?.redacted ?? false)
-        return Container(
-            alignment: Alignment.center,
-            child: Text(definition.displayProperties.name));
+        return Container(alignment: Alignment.center, child: Text(definition.displayProperties.name));
       return Container();
     }
     if (_itemDefinition.itemType == DestinyItemType.Armor) {
@@ -175,8 +156,7 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget> with AuthC
   }
 
   buildTitle(BuildContext context, DestinyCollectibleDefinition definition) {
-    return Expanded(
-        child: Container(padding: EdgeInsets.all(8), child: buildTitleText()));
+    return Expanded(child: Container(padding: EdgeInsets.all(8), child: buildTitleText()));
   }
 
   Widget buildButton(BuildContext context) {
@@ -200,8 +180,8 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget> with AuthC
       return;
     }
 
-    DestinyInventoryItemDefinition itemDef = await manifest
-        .getDefinition<DestinyInventoryItemDefinition>(definition.itemHash);
+    DestinyInventoryItemDefinition itemDef =
+        await manifest.getDefinition<DestinyInventoryItemDefinition>(definition.itemHash);
     if (itemDef == null) {
       return;
     }
@@ -234,8 +214,7 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget> with AuthC
   Widget buildSelectedBorder(BuildContext context) {
     if (selected) {
       return Container(
-        decoration: BoxDecoration(
-            border: Border.all(width: 2, color: Colors.lightBlue.shade400)),
+        decoration: BoxDecoration(border: Border.all(width: 2, color: Colors.lightBlue.shade400)),
       );
     }
     return Container();
@@ -244,9 +223,7 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget> with AuthC
   buildTitleText() {
     if (definition == null) return Container();
     return Text(definition.displayProperties.name,
-        softWrap: true,
-        style: TextStyle(
-            color: Colors.grey.shade300, fontWeight: FontWeight.bold));
+        softWrap: true, style: TextStyle(color: Colors.grey.shade300, fontWeight: FontWeight.bold));
   }
 
   Widget buildItemCount() {

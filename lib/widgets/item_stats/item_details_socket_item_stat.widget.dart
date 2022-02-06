@@ -31,7 +31,7 @@ class ItemDetailSocketItemStatWidget extends BaseItemStatWidget {
       child: ManifestText<DestinyStatDefinition>(
         statHash,
         style: TextStyle(
-          color: nameColor,
+          color: getNameColor(context),
           fontSize: 14,
           fontWeight: FontWeight.w300,
         ),
@@ -46,7 +46,7 @@ class ItemDetailSocketItemStatWidget extends BaseItemStatWidget {
       child: Text(
         "$currentValue",
         style: TextStyle(
-          color: valueColor,
+          color: getValueColor(context),
           fontSize: 14,
           fontWeight: FontWeight.bold,
         ),
@@ -69,7 +69,7 @@ class ItemDetailSocketItemStatWidget extends BaseItemStatWidget {
         children: <Widget>[
           Container(
               width: (modBarSize / maxBarSize) * width,
-              color: modBarColor),
+              color: getModBarColor(context)),
         ],
       ),
     );
@@ -83,5 +83,5 @@ class ItemDetailSocketItemStatWidget extends BaseItemStatWidget {
   }
 
   @override
-  Color get nameColor => neutralColor;
+  Color getNameColor(BuildContext context) => getNeutralColor(context);
 }

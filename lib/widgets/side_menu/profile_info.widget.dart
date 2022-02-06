@@ -168,7 +168,8 @@ class ProfileInfoState extends State<ProfileInfoWidget>
 
   Widget buildActivityInfo(BuildContext context) {
     final lastCharacter = profile.getCharacters(CharacterSortParameter())?.first;
-    if (lastCharacter == null) {
+    final lastCharacterID = lastCharacter?.characterId;
+    if (lastCharacter == null || lastCharacterID == null) {
       return Container();
     }
     final lastPlayed = DateTime.tryParse(lastCharacter.dateLastPlayed ?? "");
@@ -185,14 +186,14 @@ class ProfileInfoState extends State<ProfileInfoWidget>
         style: TextStyle(fontSize: 12, color: Colors.grey.shade100),
       );
     }
-    final activities = profile.getCharacterActivities(lastCharacter.characterId);
-    if (activities.currentActivityHash == 82913930) {
+    final activities = profile.getCharacterActivities(lastCharacterID);
+    if (activities?.currentActivityHash == 82913930) {
       return ManifestText<DestinyPlaceDefinition>(2961497387,
           textExtractor: (def) => "${def.displayProperties?.description}",
           style: TextStyle(fontSize: 12, color: Colors.grey.shade100, fontWeight: FontWeight.bold));
     }
-    final activityModeHash = activities.currentActivityModeHash;
-    final activityHash = activities.currentActivityHash;
+    final activityModeHash = activities?.currentActivityModeHash;
+    final activityHash = activities?.currentActivityHash;
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       activityModeHash != null
           ? ManifestText<DestinyActivityModeDefinition>(activityModeHash,

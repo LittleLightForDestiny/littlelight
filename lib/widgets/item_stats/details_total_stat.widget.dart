@@ -19,7 +19,7 @@ class DetailsTotalStatWidget extends DetailsItemStatWidget {
       child: TranslatedTextWidget(
         "Total",
         style: TextStyle(
-          color: nameColor,
+          color: getNameColor(context),
           fontSize: 14,
           fontWeight: FontWeight.w300,
         ),

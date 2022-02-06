@@ -1,12 +1,13 @@
 import 'package:drag_list/drag_list.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/character_sort_parameter.dart';
 import 'package:little_light/models/item_notes_tag.dart';
 import 'package:little_light/models/item_sort_parameter.dart';
 import 'package:little_light/models/wishlist_index.dart';
-import 'package:little_light/pages/add_wishlist.screen.dart';
+import 'package:little_light/pages/settings/add_wishlist.page_route.dart';
+import 'package:little_light/pages/settings/widgets/wishlist_file_item.dart';
 import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
@@ -19,7 +20,6 @@ import 'package:little_light/widgets/flutter/center_icon_workaround.dart';
 import 'package:little_light/widgets/item_tags/item_tag.widget.dart';
 import 'package:little_light/widgets/option_sheets/free_slots_slider.widget.dart';
 import 'package:screen/screen.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -43,7 +43,7 @@ class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, 
     pursuitOrdering = userSettings.pursuitOrdering;
     priorityTags = userSettings.priorityTags;
     wishlists = await wishlistsService.getWishlists();
-    if(mounted) setState(() {});
+    if (mounted) setState(() {});
   }
 
   @override
@@ -157,40 +157,29 @@ class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, 
   }
 
   buildWishlists(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        buildWishlistsList(context),
-        Container(
-            padding: EdgeInsets.all(8),
-            child: TranslatedTextWidget(
-                "You can add community curated wishlists (or your custom ones) on Little Light to check your rolls.")),
-        Container(
-          color: Colors.grey.shade400,
-          height: 1,
-          margin: EdgeInsets.all(8),
-        ),
-        Row(children: [
-          Expanded(
-            child: Container(),
-          ),
-          ElevatedButton(
-            child: TranslatedTextWidget("Add Wishlist"),
-            onPressed: () async {
-              WishlistFile wishlist = await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AddWishlistScreen(),
-                  ));
-              if (wishlist is WishlistFile) {
-                wishlists = await showWishlistsProcessing(context, wishlistsService.addWishlist(wishlist));
-                setState(() {});
-              }
-            },
-          )
-        ])
-      ],
-    );
+    return Container(
+        padding: EdgeInsets.all(8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            buildWishlistsList(context),
+            Container(
+                padding: EdgeInsets.all(8),
+                child: TranslatedTextWidget(
+                    "You can add community curated wishlists (or your custom ones) on Little Light to check your rolls.")),
+            Row(children: [
+              Expanded(child: Container()),
+              ElevatedButton(
+                child: TranslatedTextWidget("Add Wishlist", textAlign: TextAlign.center),
+                onPressed: () async {
+                  await Navigator.push(context, AddWishlistPageRoute());
+                  wishlists = await wishlistsService.getWishlists();
+                  setState(() {});
+                },
+              ),
+            ])
+          ],
+        ));
   }
 
   Future<T> showWishlistsProcessing<T>(BuildContext context, Future<T> future) {
@@ -200,53 +189,26 @@ class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, 
 
   buildWishlistsList(BuildContext context) {
     if (wishlists == null) return Container();
-    return Column(
-        children: wishlists
-            .map((w) => Container(
-                padding: EdgeInsets.all(8),
-                child: Material(
-                    color: Theme.of(context).colorScheme.secondary,
-                    child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-                      Material(
-                          color: Colors.lightBlue.shade600,
-                          child: Container(
-                              padding: EdgeInsets.all(8),
-                              child: Text(
-                                w.name ?? "",
-                                style: TextStyle(fontWeight: FontWeight.w700),
-                              ))),
-                      Container(
-                          padding: EdgeInsets.all(8).copyWith(bottom: 0),
-                          child: Linkify(
-                              text: w.description ?? "",
-                              linkStyle: TextStyle(color: Theme.of(context).colorScheme.onSurface),
-                              onOpen: (link) => launch(link.url, forceSafariVC: true))),
-                      Container(
-                          padding: EdgeInsets.all(8),
-                          child: Row(children: [
-                            Expanded(child: Container()),
-                            ElevatedButton(
-                                child: TranslatedTextWidget("Update"),
-                                onPressed: () async {
-                                  await showWishlistsProcessing(context, wishlistsService.checkForUpdates());
-                                  setState(() {});
-                                }),
-                            Container(
-                              width: 8,
-                            ),
-                            ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  primary: Theme.of(context).errorColor,
-                                ),
-                                child: TranslatedTextWidget("Remove"),
-                                onPressed: () async {
-                                  wishlists =
-                                      await showWishlistsProcessing(context, wishlistsService.removeWishlist(w));
-                                  setState(() {});
-                                })
-                          ]))
-                    ]))))
-            .toList());
+    return Container(
+        padding: EdgeInsets.only(top: 8),
+        child: Column(
+            children: wishlists
+                .map((e) => WishlistFileItem(file: e, actions: [
+                      ElevatedButton(
+                        onPressed: () async {
+                          final awaitable = () async {
+                            await wishlistsService.removeWishlist(e);
+                            this.wishlists = await wishlistsService.getWishlists();
+                          };
+                          await Navigator.push(context, BusyDialogRoute(context, awaitFuture: awaitable()));
+                          setState(() {});
+                        },
+                        child: TranslatedTextWidget("Remove"),
+                        style: ElevatedButton.styleFrom(
+                            primary: LittleLightTheme.of(context).errorLayers, visualDensity: VisualDensity.compact),
+                      )
+                    ]))
+                .toList()));
   }
 
   buildDefaultFreeSlots(BuildContext context) {

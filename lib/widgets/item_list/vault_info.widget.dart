@@ -1,7 +1,6 @@
 import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
-import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_vendor_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/models/loadout.dart';
@@ -46,7 +45,6 @@ class VaultInfoWidgetState extends CharacterInfoWidgetState<VaultInfoWidget> {
     return Stack(children: [
       mainCharacterInfo(context, character),
       Positioned.fill(
-        bottom: 16,
         child: ghostIcon(context),
       ),
       currencyInfo(context),
@@ -73,7 +71,7 @@ class VaultInfoWidgetState extends CharacterInfoWidgetState<VaultInfoWidget> {
   }
 
   Widget characterStatsInfo(BuildContext context, DestinyCharacterComponent character) {
-    int itemCount = profile.getAllItems().where((i) => i.bucketHash == InventoryBucket.general).length;
+    int itemCount = profile.getAllItems().where((i) => i.item.bucketHash == InventoryBucket.general).length;
     return Positioned(
       right: 8,
       top: 0,
@@ -112,7 +110,7 @@ class VaultOptionsSheetState extends State<VaultOptionsSheet>
   final TextStyle buttonStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 12);
 
   List<Loadout> loadouts;
-  List<DestinyItemComponent> itemsInPostmaster;
+  List<ItemWithOwner> itemsInPostmaster;
 
   @override
   void initState() {
@@ -257,7 +255,7 @@ class VaultOptionsSheetState extends State<VaultOptionsSheet>
 
   void getItemsInPostmaster() {
     var all = profile.getAllItems();
-    var inPostmaster = all.where((i) => i.bucketHash == InventoryBucket.lostItems).toList();
+    var inPostmaster = all.where((i) => i.item.bucketHash == InventoryBucket.lostItems).toList();
     itemsInPostmaster = inPostmaster;
   }
 }

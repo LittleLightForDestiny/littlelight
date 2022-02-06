@@ -1,19 +1,18 @@
 import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:bungie_api/models/destiny_character_progression_component.dart';
+import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_progression.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/services/profile/destiny_settings.service.dart';
-import 'package:little_light/widgets/common/queued_network_image.widget.dart';
-import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/services/profile/destiny_settings.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
+import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:shimmer/shimmer.dart';
 
 class TabHeaderWidget extends StatefulWidget {
   final DestinyCharacterComponent character;
-  
 
   @override
   TabHeaderWidget(this.character, {Key key}) : super(key: key);
@@ -22,7 +21,8 @@ class TabHeaderWidget extends StatefulWidget {
   TabHeaderWidgetState createState() => new TabHeaderWidgetState();
 }
 
-class TabHeaderWidgetState extends State<TabHeaderWidget> with ProfileConsumer, ManifestConsumer {
+class TabHeaderWidgetState extends State<TabHeaderWidget>
+    with ProfileConsumer, ManifestConsumer, DestinySettingsConsumer {
   DestinyInventoryItemDefinition emblemDefinition;
 
   DestinyCharacterProgressionComponent progression;
@@ -102,9 +102,9 @@ class TabHeaderWidgetState extends State<TabHeaderWidget> with ProfileConsumer, 
   }
 
   Widget powerBar(BuildContext context) {
-    var settings = DestinySettingsService();
-    DestinyProgression levelProg = progression.progressions["${settings.seasonalRankProgressionHash}"];
-    DestinyProgression overLevelProg = progression.progressions["${settings.seasonalPrestigeRankProgressionHash}"];
+    DestinyProgression levelProg = progression.progressions["${destinySettings.seasonalRankProgressionHash}"];
+    DestinyProgression overLevelProg =
+        progression.progressions["${destinySettings.seasonalPrestigeRankProgressionHash}"];
     Color fg = Colors.cyan.shade300;
     Color bg = Color.lerp(Colors.black, fg, .6);
     Color shine = Colors.cyan.shade100;

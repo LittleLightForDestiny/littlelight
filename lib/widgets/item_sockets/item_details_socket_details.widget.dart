@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
+import 'package:little_light/utils/element_type_data.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
@@ -243,7 +244,7 @@ class ItemDetailsSocketDetailsWidgetState
   Widget buildEnergyCost(BuildContext context) {
     var cost = definition?.plug?.energyCost;
     if (cost != null) {
-      var color = DestinyData.getEnergyTypeLightColor(cost.energyType);
+      final color = cost.energyType.getColorLayer(context).layer1;
       var icon = cost.energyType == DestinyEnergyType.Any
           ? Container()
           : Icon(

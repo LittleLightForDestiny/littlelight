@@ -8,7 +8,7 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/pages/item_details/item_details.page.dart';
-import 'package:little_light/pages/quick_transfer.screen.dart';
+import 'package:little_light/pages/item_search/quick_transfer.screen.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/inventory/enums/item_destination.dart';
 import 'package:little_light/services/inventory/inventory.consumer.dart';

@@ -9,7 +9,8 @@ import 'package:bungie_api/models/destiny_vendor_definition.dart';
 import 'package:bungie_api/models/destiny_vendor_item_definition.dart';
 import 'package:bungie_api/models/destiny_vendor_sale_item_component.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/pages/vendor_details.screen.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
+import 'package:little_light/pages/vendors/vendor_details.screen.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/notification/notification.package.dart';
@@ -112,8 +113,8 @@ class VendorsListItemWidgetState<T extends VendorsListItemWidget> extends State<
     return Stack(children: [
       Container(
         decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.secondaryVariant,
-            border: Border.all(color: Theme.of(context).colorScheme.primaryVariant, width: 1)),
+            color: LittleLightTheme.of(context).surfaceLayers.layer1,
+            border: Border.all(color: LittleLightTheme.of(context).surfaceLayers.layer3, width: 1)),
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch, children: [buildHeader(context), buildContent(context)]),
       ),

@@ -1,12 +1,12 @@
+import 'package:bungie_api/enums/vendor_item_status.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_unlock_definition.dart';
 import 'package:bungie_api/models/destiny_vendor_definition.dart';
 import 'package:bungie_api/models/destiny_vendor_sale_item_component.dart';
-import 'package:bungie_api/enums/vendor_item_status.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
-import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -121,7 +121,7 @@ class ItemVendorInfoState extends State<ItemVendorInfoWidget> with ProfileConsum
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: messages.map((message) {
           return Container(
-              color: DestinyData.negativeFeedback,
+              color: LittleLightTheme.of(context).errorLayers,
               padding: EdgeInsets.all(8),
               child: message);
         }).toList());

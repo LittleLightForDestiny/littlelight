@@ -33,8 +33,6 @@ class SearchItemWrapperWidgetState<T extends SearchItemWrapperWidget>
   @override
   Widget build(BuildContext context) {
     return Container(
-        decoration: BoxDecoration(
-            border: Border.all(width: 1, color: Theme.of(context).colorScheme.primary)),
         child: Stack(children: [
           Positioned.fill(child: buildItem(context)),
           selected

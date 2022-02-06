@@ -89,9 +89,9 @@ class WishlistsService with StorageConsumer {
     final isWebUri = uri.isScheme('HTTP') || uri.isScheme('HTTPS');
     if (!isWebUri) return false;
 
-    final fileContents = await globalStorage.getWishlistContent(wishlist);
-    final webContents = await http.get(uri);
     try {
+      final fileContents = await globalStorage.getWishlistContent(wishlist);
+      final webContents = await http.get(uri);
       final json = jsonDecode(webContents.body);
       LittleLightWishlist.fromJson(json);
       final updated = fileContents != webContents.body;
@@ -104,15 +104,27 @@ class WishlistsService with StorageConsumer {
     }
   }
 
+  Future<WishlistFile?> loadWishlistFromUrl(String url) async {
+    final uri = Uri.parse(url);
+    try {
+      final content = await http.get(uri);
+      final json = jsonDecode(content.body);
+      LittleLightWishlist.fromJson(json);
+      return WishlistFile(name: json["name"], description: json["description"], url: url);
+    } catch (e) {
+      return null;
+    }
+  }
+
   Set<String> getWishlistBuildNotes({required int itemHash, Map<String, List<DestinyItemPlugBase>>? reusablePlugs}) {
     final builds = getWishlistBuilds(itemHash: itemHash, reusablePlugs: reusablePlugs);
     final descriptions = Set<String>();
-    for(final build in builds){
+    for (final build in builds) {
       final description = build.description?.trim() ?? "";
-      if(description.length == 0) break;
+      if (description.length == 0) break;
       descriptions.removeWhere((d) => description.contains(d));
-      final alreadyExists = descriptions.any((d)=>d.contains(description));
-      if(!alreadyExists) descriptions.add(description);
+      final alreadyExists = descriptions.any((d) => d.contains(description));
+      if (!alreadyExists) descriptions.add(description);
     }
     return descriptions;
   }
@@ -123,7 +135,7 @@ class WishlistsService with StorageConsumer {
   }) {
     final builds = getWishlistBuilds(itemHash: itemHash, reusablePlugs: reusablePlugs);
     final tags = builds.map((e) => e.tags.toList());
-    if(tags.length == 0) return Set();
+    if (tags.length == 0) return Set();
     return tags.reduce((value, element) => value + element).toSet();
   }
 
@@ -133,16 +145,24 @@ class WishlistsService with StorageConsumer {
   }
 
   Future<List<WishlistFile>> addWishlist(WishlistFile wishlist) async {
-    return [];
-    ///TODO: get this method right;
+    final wishlists = await getWishlists() ?? <WishlistFile>[];
+    wishlists.removeWhere((element) => element.url == wishlist.url);
+    wishlists.add(wishlist);
+    await setWishlists(wishlists);
+    await checkForUpdates(true);
+    return wishlists;
   }
 
-  Future<List<WishlistFile>> removeWishlist(WishlistFile w) async {
-    return [];
-    ///TODO: get this method right;
+  Future<List<WishlistFile>> removeWishlist(WishlistFile wishlist) async {
+    final wishlists = await getWishlists() ?? <WishlistFile>[];
+    wishlists.removeWhere((element) => element.url == wishlist.url);
+    await setWishlists(wishlists);
+    await checkForUpdates(true);
+    return wishlists;
   }
 
-  List<ParsedWishlistBuild> getWishlistBuilds({required int itemHash, Map<String, List<DestinyItemPlugBase>>? reusablePlugs}) {
+  List<ParsedWishlistBuild> getWishlistBuilds(
+      {required int itemHash, Map<String, List<DestinyItemPlugBase>>? reusablePlugs}) {
     if (_parsedWishlists == null) throw _notInitializedException;
     final wishlistItem = _parsedWishlists?.items[itemHash];
     if (reusablePlugs == null) {

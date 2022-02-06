@@ -1,15 +1,14 @@
-import 'package:bungie_api/enums/damage_type.dart';
 import 'package:bungie_api/enums/destiny_item_type.dart';
 import 'package:bungie_api/enums/item_state.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/parsed_wishlist.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
-import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateless_item.widget.dart';
 import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/item_name_bar/item_name_bar.widget.dart';
@@ -256,8 +255,12 @@ mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget, ProfileConsu
     return 8;
   }
 
-  Color get defaultTextColor {
-    return DestinyData.getDamageTypeColor(DamageType.Kinetic);
+  LittleLightThemeData getTheme(BuildContext context){
+    return LittleLightTheme.of(context);
+  }
+
+  Color defaultTextColor(BuildContext context) {
+    return getTheme(context).onSurfaceLayers.layer0;
   }
 
   double get titleFontSize {

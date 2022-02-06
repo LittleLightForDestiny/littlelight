@@ -21,7 +21,7 @@ class ScreenshotTotalStatWidget extends ScreenshotItemStatWidget {
         "Total",
         style: TextStyle(
           shadows: [Shadow(color: Colors.black, offset: Offset.fromDirection(.5), blurRadius: 2*pixelSize)],
-          color: nameColor,
+          color: getNameColor(context),
           fontSize: pixelSize * 20,
           fontWeight: FontWeight.w500,
         ),

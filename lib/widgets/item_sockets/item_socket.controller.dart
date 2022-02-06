@@ -161,9 +161,11 @@ class ItemSocketController extends ChangeNotifier with BungieApiConsumer, Profil
     this.notifyListeners();
   }
 
-  applySocket(int socketIndex, int plugHash) {
+  applySocket(int socketIndex, int plugHash) async {
     String characterID = profile.getCharacters().first.characterId;
-    bungieAPI.applySocket(this.item.itemInstanceId, plugHash, socketIndex, characterID);
+    await bungieAPI.applySocket(this.item.itemInstanceId, plugHash, socketIndex, characterID);
+    socketStates[socketIndex].plugHash = plugHash;
+    this.notifyListeners();
   }
 
   Set<int> socketPlugHashes(int socketIndex) {
@@ -186,11 +188,11 @@ class ItemSocketController extends ChangeNotifier with BungieApiConsumer, Profil
           return (energyType == armorEnergyType || energyType == DestinyEnergyType.Any);
         }).toSet());
       }
-      hashes.add(state.plugHash);
 
       if (reusablePlugs?.containsKey("$socketIndex") ?? false) {
         hashes.addAll(reusablePlugs["$socketIndex"]?.map((r) => r.plugItemHash));
       }
+      hashes.add(state.plugHash);
       return hashes.where((h) => h != null).toSet();
     }
 

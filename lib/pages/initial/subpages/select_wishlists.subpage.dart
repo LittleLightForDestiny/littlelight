@@ -7,7 +7,6 @@ import 'package:little_light/models/wishlist_index.dart';
 import 'package:little_light/pages/initial/notifiers/initial_page_state.notifier.dart';
 import 'package:little_light/pages/initial/notifiers/select_wishlists.notifier.dart';
 import 'package:little_light/pages/initial/subpages/subpage_base.dart';
-import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:provider/provider.dart';
 
@@ -18,7 +17,7 @@ class SelectWishlistsSubPage extends StatefulWidget {
   SelectWishlistsSubPageState createState() => new SelectWishlistsSubPageState();
 }
 
-class SelectWishlistsSubPageState extends SubpageBaseState<SelectWishlistsSubPage> with AuthConsumer {
+class SelectWishlistsSubPageState extends SubpageBaseState<SelectWishlistsSubPage> {
   @override
   void initState() {
     super.initState();

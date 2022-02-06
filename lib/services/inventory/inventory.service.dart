@@ -605,9 +605,9 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
       item?.item?.state = ItemState(item.item.state.value + ItemState.Locked.value);
     }
     var profileItem = profile.getAllItems().firstWhere(
-        (i) => i.itemHash == item.item.itemHash && i.itemInstanceId == item.item.itemInstanceId,
+        (i) => i.item.itemHash == item.item.itemHash && i.item.itemInstanceId == item.item.itemInstanceId,
         orElse: () => null);
-    profileItem.state = item?.item?.state;
+    profileItem.item.state = item?.item?.state;
     notifications.push(new NotificationEvent(NotificationType.itemStateUpdate, item: item.item));
     await bungieAPI.changeLockState(item?.item?.itemInstanceId, ownerId, locked);
   }

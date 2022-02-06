@@ -4,8 +4,10 @@ import 'package:bungie_api/models/destiny_item_socket_category_definition.dart';
 import 'package:bungie_api/models/destiny_material_requirement_set_definition.dart';
 import 'package:bungie_api/models/destiny_sandbox_perk_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
+import 'package:little_light/utils/element_type_data.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateless_item.widget.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
@@ -88,12 +90,12 @@ class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget with Prof
           constraints: BoxConstraints(maxWidth: 600),
           height: 40,
           padding: EdgeInsets.symmetric(horizontal: 8),
-          color: DestinyData.getEnergyTypeColor(cost.energyType).withOpacity(.6),
+          color: cost.energyType.getColorLayer(context).withOpacity(.6),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Icon(DestinyData.getEnergyTypeIcon(cost.energyType),
-                  color: DestinyData.getEnergyTypeLightColor(cost.energyType),
+                  color: cost.energyType.getColorLayer(context).layer1,
                   size: 20),
               Container(
                 width: 4,
@@ -167,6 +169,7 @@ class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget with Prof
     }
     var inventory = profile.getProfileInventory();
     var currencies = profile.getProfileCurrencies();
+    final theme = LittleLightTheme.of(context);
     return Column(children: [
       Container(
           padding: EdgeInsets.symmetric(vertical: 16),
@@ -210,7 +213,7 @@ class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget with Prof
                         ),
                       ),
                       Text("${m.count}/$total",
-                          style: TextStyle(fontWeight: FontWeight.w300, color:isEnough ? Colors.grey.shade300 : DestinyData.negativeFeedback))
+                          style: TextStyle(fontWeight: FontWeight.w300, color:isEnough ? theme.onSurfaceLayers : theme.errorLayers))
                     ],
                   );
                 }).toList(),

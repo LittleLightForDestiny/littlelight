@@ -9,6 +9,7 @@ import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enu
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/notification/notification.package.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
+import 'package:little_light/services/selection/selection.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_with_owner.dart';
@@ -35,12 +36,13 @@ const _suppressEmptySpaces = [
   InventoryBucket.lostItems
 ];
 
+typedef void OnBucketOptionsChanged();
+
 class ItemListWidget extends StatefulWidget {
   final String characterId;
 
   final EdgeInsets padding;
   final List<int> bucketHashes;
-  final Map<int, double> scrollPositions;
 
   final int currentGroup;
 
@@ -50,6 +52,8 @@ class ItemListWidget extends StatefulWidget {
 
   final bool fixedSizedEquipmentBuckets;
 
+  final OnBucketOptionsChanged onBucketOptionsChanged;
+
   ItemListWidget(
       {this.padding,
       this.bucketHashes,
@@ -57,19 +61,27 @@ class ItemListWidget extends StatefulWidget {
       this.includeInfoHeader = true,
       this.shrinkWrap = false,
       Key key,
-      this.scrollPositions,
       this.currentGroup,
-      this.fixedSizedEquipmentBuckets = false})
+      this.fixedSizedEquipmentBuckets = false,
+      this.onBucketOptionsChanged})
       : super(key: key);
   @override
   ItemListWidgetState createState() => new ItemListWidgetState();
 }
 
 class ItemListWidgetState extends State<ItemListWidget>
-    with AutomaticKeepAliveClientMixin, UserSettingsConsumer, ProfileConsumer, ManifestConsumer, NotificationConsumer {
+    with
+        AutomaticKeepAliveClientMixin,
+        UserSettingsConsumer,
+        ProfileConsumer,
+        ManifestConsumer,
+        NotificationConsumer,
+        SelectionConsumer {
   Map<int, DestinyInventoryBucketDefinition> bucketDefs;
   List<ListBucket> buckets;
-  StreamSubscription<NotificationEvent> subscription;
+  StreamSubscription<NotificationEvent> notificationsSubscription;
+  StreamSubscription<List<ItemWithOwner>> selectionSubscription;
+  bool isSelectionOpen = false;
 
   bool suppressEmptySpaces(bucketHash) => _suppressEmptySpaces?.contains(bucketHash) ?? false;
 
@@ -79,16 +91,22 @@ class ItemListWidgetState extends State<ItemListWidget>
   void initState() {
     super.initState();
     buildIndex();
-    subscription = notifications.listen((event) {
+    notificationsSubscription = notifications.listen((event) {
       if (event.type == NotificationType.receivedUpdate || event.type == NotificationType.localUpdate) {
         buildIndex();
       }
+    });
+    selectionSubscription = selection.broadcaster.listen((event) {
+      setState(() {
+        isSelectionOpen = event.isNotEmpty;
+      });
     });
   }
 
   @override
   dispose() {
-    subscription.cancel();
+    notificationsSubscription.cancel();
+    selectionSubscription.cancel();
     super.dispose();
   }
 
@@ -131,6 +149,7 @@ class ItemListWidgetState extends State<ItemListWidget>
         child: MultiSectionScrollView(
       _sections,
       padding: widget.padding,
+      shrinkWrap: widget.shrinkWrap,
       mainAxisSpacing: 2,
       crossAxisSpacing: 2,
     ));
@@ -143,7 +162,7 @@ class ItemListWidgetState extends State<ItemListWidget>
     buckets.forEach((bucket) {
       final options = userSettings.getDisplayOptionsForBucket("${bucket.bucketHash}");
       final bool showEquipped = bucket.equipped != null && options.type != BucketDisplayType.Hidden;
-      final bool showUnequipped = (bucket.unequipped?.length ?? 0) > 0 &&
+      final bool showUnequipped = (showEquipped || (bucket.unequipped?.length ?? 0) > 0) &&
           ![BucketDisplayType.Hidden, BucketDisplayType.OnlyEquipped].contains(options.type);
       final bool addSpacer = showEquipped || showUnequipped;
       list += [
@@ -153,6 +172,10 @@ class ItemListWidgetState extends State<ItemListWidget>
         if (addSpacer) spacer
       ];
     });
+
+    if (isSelectionOpen) {
+      list += [SliverSection(itemCount: 1, itemHeight: 160, itemBuilder: (context, index) => Container())];
+    }
 
     return list;
   }
@@ -177,7 +200,12 @@ class ItemListWidgetState extends State<ItemListWidget>
             itemCount: itemCount,
             isEquippable: bucket.equipped != null,
             onChanged: () {
-              setState(() {});
+              if (widget.onBucketOptionsChanged != null) {
+                widget.onBucketOptionsChanged();
+              }
+              if (mounted) {
+                setState(() {});
+              }
             }),
         itemCount: 1,
         itemHeight: 40);
@@ -185,6 +213,7 @@ class ItemListWidgetState extends State<ItemListWidget>
 
   SliverSection buildEquippedItem(DestinyItemComponent item) {
     String itemKey = "equipped_${item?.itemInstanceId ?? item?.itemHash ?? 'empty'}";
+    final bucketOptions = getBucketOptions(item.bucketHash);
     return SliverSection(
         itemBuilder: (context, _) => InventoryItemWrapperWidget(
               item,
@@ -193,14 +222,22 @@ class ItemListWidgetState extends State<ItemListWidget>
               characterId: widget.characterId,
             ),
         itemCount: 1,
-        itemHeight: 96);
+        itemHeight: bucketOptions.equippedItemHeight);
+  }
+
+  BucketDisplayOptions getBucketOptions(int bucketHash) {
+    return userSettings.getDisplayOptionsForBucket("$bucketHash");
+  }
+
+  int getItemCountPerRow(BuildContext context, BucketDisplayOptions bucketOptions) {
+    return bucketOptions.unequippedItemsPerRow;
   }
 
   SliverSection buildUnequippedItems(List<DestinyItemComponent> items, ListBucket bucket) {
     final bucketDef = bucketDefs[bucket.bucketHash];
-    final bucketOptions = userSettings.getDisplayOptionsForBucket("${bucket.bucketHash}");
+    final bucketOptions = getBucketOptions(bucket.bucketHash);
     final maxSlots = bucketDef?.itemCount != null ? (bucketDef.itemCount - 1) : items.length;
-    final itemsPerRow = bucketOptions.unequippedItemsPerRow;
+    final itemsPerRow = getItemCountPerRow(context, bucketOptions);
     int bucketSize = maxSlots;
     if (!bucketDef.hasTransferDestination || suppressEmptySpaces(bucket.bucketHash)) {
       bucketSize = (items.length / itemsPerRow).ceil() * itemsPerRow;

@@ -1,3 +1,4 @@
+//@dart=2.12
 import 'package:bungie_api/enums/damage_type.dart';
 import 'package:bungie_api/enums/destiny_ammunition_type.dart';
 import 'package:bungie_api/enums/destiny_class.dart';
@@ -125,10 +126,6 @@ class DestinyData {
     DestinyItemSubType.Bow: 3317538576,
   };
 
-  static const Color positiveFeedback = Color.fromRGBO(67, 205, 57, 1);
-  static const Color negativeFeedback = Color.fromRGBO(204, 58, 56, 1);
-  static const Color masterworkColor = Color.fromRGBO(235, 196, 98, 1);
-
   static const Color trackingOnColor = Color(0xFF43A047);
   static const Color trackingOffColor = Color(0xFF2E7D32);
 
@@ -249,7 +246,7 @@ class DestinyData {
     }
   }
 
-  static IconData getEnergyTypeIcon(DestinyEnergyType type) {
+  static IconData? getEnergyTypeIcon(DestinyEnergyType type) {
     switch (type) {
       case DestinyEnergyType.Arc:
         return LittleLightIcons.damage_arc;
@@ -265,57 +262,8 @@ class DestinyData {
     }
   }
 
-  static Color getDamageTypeColor(DamageType damageType) {
-    switch (damageType) {
-      case DamageType.Arc:
-        return Color.fromARGB(255, 118, 186, 230);
-      case DamageType.Thermal:
-        return Color.fromARGB(255, 243, 98, 39);
-      case DamageType.Void:
-        return Color.fromARGB(255, 64, 34, 101);
-      case DamageType.Stasis:
-        return Color.fromARGB(255, 77, 136, 255);
 
-      default:
-        return LittleLightThemeData().onSurfaceLayers;
-    }
-  }
-
-  static Color getEnergyTypeColor(DestinyEnergyType energyType) {
-    switch (energyType) {
-      case DestinyEnergyType.Arc:
-        return Color.fromARGB(255, 118, 186, 230);
-      case DestinyEnergyType.Thermal:
-        return Color.fromARGB(255, 243, 98, 39);
-      case DestinyEnergyType.Void:
-        return Color.fromARGB(255, 64, 34, 101);
-      case DestinyEnergyType.Stasis:
-        return Color.fromARGB(255, 77, 136, 255);
-
-      default:
-        // return Theme.of(context).colorScheme.secondary;
-        return null;
-    }
-  }
-
-  static Color getEnergyTypeLightColor(DestinyEnergyType damageType) {
-    switch (damageType) {
-      case DestinyEnergyType.Arc:
-        return Color.fromARGB(255, 130, 200, 253);
-      case DestinyEnergyType.Thermal:
-        return Color.fromARGB(255, 255, 156, 74);
-      case DestinyEnergyType.Void:
-        return Color.fromARGB(255, 177, 120, 248);
-      case DestinyEnergyType.Stasis:
-        return Color.fromARGB(255, 180, 201, 255);
-
-      default:
-        // return Theme.of(context).colorScheme.secondaryVariant;
-        return null;
-    }
-  }
-
-  static int getEnergyTypeCostHash(DestinyEnergyType damageType) {
+  static int? getEnergyTypeCostHash(DestinyEnergyType damageType) {
     switch (damageType) {
       case DestinyEnergyType.Arc:
         return 3779394102;
@@ -328,21 +276,6 @@ class DestinyData {
 
       default:
         return null;
-    }
-  }
-
-  static Color getDamageTypeTextColor(DamageType damageType) {
-    switch (damageType) {
-      case DamageType.Arc:
-        return Color.fromARGB(255, 130, 200, 253);
-      case DamageType.Thermal:
-        return Color.fromARGB(255, 255, 156, 74);
-      case DamageType.Void:
-        return Color.fromARGB(255, 177, 120, 248);
-      case DamageType.Stasis:
-        return Color.fromARGB(255, 180, 201, 255);
-      default:
-        return LittleLightThemeData().onSurfaceLayers;
     }
   }
 
@@ -364,7 +297,6 @@ class DestinyData {
       case TierType.ProtectedInvalidEnumValue:
         return Color.fromARGB(255, 195, 188, 180);
     }
-    return null;
   }
 
   static Color getTierTextColor(TierType tierType) {
@@ -380,7 +312,7 @@ class DestinyData {
     }
   }
 
-  static String getSubclassImagePath(
+  static String? getSubclassImagePath(
       DestinyClass classType, DamageType damageType, String subclassPath) {
     String path = "assets/subclasses/";
     switch (classType) {
@@ -415,7 +347,7 @@ class DestinyData {
         return null;
     }
 
-    switch (subclassPath?.toLowerCase()) {
+    switch (subclassPath.toLowerCase()) {
       case "firstpath":
       case "secondpath":
         break;

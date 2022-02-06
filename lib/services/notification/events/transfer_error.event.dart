@@ -1,3 +1,4 @@
+//@dart=2.12
 import 'package:bungie_api/destiny2.dart';
 import 'package:little_light/services/inventory/enums/transfer_error_type.dart';
 
@@ -7,6 +8,6 @@ import 'notification_type.dart';
 class TransferErrorEvent extends NotificationEvent {
   final TransferErrorType code;
   TransferErrorEvent(NotificationType type,
-      {DestinyItemComponent item, String characterId, this.code})
+      {DestinyItemComponent? item, String? characterId, required this.code})
       : super(type, item: item, characterId: characterId);
 }

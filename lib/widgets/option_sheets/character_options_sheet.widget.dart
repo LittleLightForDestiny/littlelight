@@ -11,7 +11,7 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/models/game_data.dart';
 import 'package:little_light/models/loadout.dart';
-import 'package:little_light/pages/edit_loadout.screen.dart';
+import 'package:little_light/pages/loadouts/edit_loadout.screen.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/inventory/inventory.package.dart';
 import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
@@ -527,33 +527,33 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
 
   randomizeLoadout(List<int> requiredSlots) async {
     LoadoutItemIndex randomLoadout = new LoadoutItemIndex();
-    var allItems = profile.getAllItems().where((i) => i.itemInstanceId != null).toList();
+    var allItems = profile.getAllItems().where((i) => i.item.itemInstanceId != null).toList();
     Map<int, String> slots = {};
     int exoticSlot;
     for (int i = 0; i < 1000; i++) {
       var random = math.Random();
       var index = random.nextInt(allItems.length);
       var item = allItems[index];
-      var itemDef = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
+      var itemDef = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.item.itemHash);
       var itemBucket = itemDef.inventory.bucketTypeHash;
       var tierType = itemDef.inventory.tierType;
       var classType = itemDef.classType;
       if (requiredSlots.contains(itemBucket) &&
           [DestinyClass.Unknown, widget.character.classType].contains(classType)) {
         if (tierType == TierType.Exotic && exoticSlot == null) {
-          slots[itemBucket] = item.itemInstanceId;
+          slots[itemBucket] = item.item.itemInstanceId;
           exoticSlot = itemBucket;
         }
         if (tierType != TierType.Exotic && exoticSlot != itemBucket) {
-          slots[itemBucket] = item.itemInstanceId;
+          slots[itemBucket] = item.item.itemInstanceId;
         }
       }
     }
 
     for (var j in slots.values) {
-      var item = allItems.firstWhere((i) => i.itemInstanceId == j);
-      var itemDef = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
-      randomLoadout.addEquippedItem(item, itemDef);
+      var item = allItems.firstWhere((i) => i.item.itemInstanceId == j);
+      var itemDef = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.item.itemHash);
+      randomLoadout.addEquippedItem(item.item, itemDef);
     }
 
     inventory.transferLoadout(randomLoadout.loadout, widget.character.characterId, true);
@@ -562,9 +562,9 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
   getMaxLightLoadout() async {
     gameData = await littleLightData.getGameData();
     var allItems = profile.getAllItems();
-    var instancedItems = allItems.where((i) => i.itemInstanceId != null).toList();
+    var instancedItems = allItems.where((i) => i.item.itemInstanceId != null).toList();
     var sorter = PowerLevelSorter(-1);
-    instancedItems.sort((itemA, itemB) => sorter.sort(ItemWithOwner(itemA, null), ItemWithOwner(itemB, null)));
+    instancedItems.sort((itemA, itemB) => sorter.sort(itemA, itemB));
     var weaponSlots = [InventoryBucket.kineticWeapons, InventoryBucket.energyWeapons, InventoryBucket.powerWeapons];
     var armorSlots = [
       InventoryBucket.helmet,
@@ -579,18 +579,18 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
     Map<int, DestinyItemComponent> maxLightLoadout = Map();
     Map<int, DestinyItemComponent> maxLightExotics = Map();
     for (var item in instancedItems) {
-      var def = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
+      var def = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.item.itemHash);
       if (maxLightLoadout.containsKey(def?.inventory?.bucketTypeHash) ||
           !availableSlots.contains(def?.inventory?.bucketTypeHash) ||
           ![widget.character.classType, DestinyClass.Unknown].contains(def?.classType)) {
         continue;
       }
       if (def?.inventory?.tierType == TierType.Exotic && !maxLightExotics.containsKey(def?.inventory?.bucketTypeHash)) {
-        maxLightExotics[def?.inventory?.bucketTypeHash] = item;
+        maxLightExotics[def?.inventory?.bucketTypeHash] = item.item;
         continue;
       }
 
-      maxLightLoadout[def?.inventory?.bucketTypeHash] = item;
+      maxLightLoadout[def?.inventory?.bucketTypeHash] = item.item;
 
       if (maxLightLoadout.values.length >= availableSlots.length) {
         break;

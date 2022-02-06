@@ -1,3 +1,4 @@
+//@dart=2.12
 import 'package:get_it/get_it.dart';
 
 import 'notification.service.dart';

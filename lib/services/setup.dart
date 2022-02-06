@@ -19,6 +19,9 @@ import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/services/notification/notification.service.dart';
+import 'package:little_light/services/profile/destiny_settings.consumer.dart';
+// ignore: import_of_legacy_library_into_null_safe
+import 'package:little_light/services/profile/destiny_settings.service.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/services/profile/profile.service.dart';
@@ -55,6 +58,7 @@ Future<void> setupServices() async {
   await setupSelectionService();
   await setupitemNotes();
   await setupInventoryService();
+  await setupDestinySettingsService();
 }
 
 initServices(BuildContext context) async {
@@ -75,6 +79,8 @@ initServices(BuildContext context) async {
 initPostLoadingServices(BuildContext context) async{
   final settings = getInjectedUserSettings();
   await settings.init();
+  final destinySettings = getInjectedDestinySettingsService();
+  await destinySettings.init();
   final profile = getInjectedProfileService();
   await profile.initialLoad();
 }

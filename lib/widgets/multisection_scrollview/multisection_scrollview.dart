@@ -8,11 +8,13 @@ class MultiSectionScrollView extends StatelessWidget {
   final List<SliverSection> _sections;
   final double crossAxisSpacing;
   final double mainAxisSpacing;
+  final bool shrinkWrap;
   MultiSectionScrollView(
     this._sections, {
     this.padding,
     this.crossAxisSpacing = 0,
     this.mainAxisSpacing = 0,
+    this.shrinkWrap = false,
   });
 
   Widget get spacer=>SliverToBoxAdapter(child:Container(height: mainAxisSpacing,));
@@ -36,6 +38,8 @@ class MultiSectionScrollView extends StatelessWidget {
         padding: padding?.copyWith(top: 0, bottom: 0),
         child: CustomScrollView(
           cacheExtent: 200,
+          shrinkWrap: shrinkWrap,
+          physics: shrinkWrap ? NeverScrollableScrollPhysics() : null,
           slivers: _slivers,
         ));
   }

@@ -1,5 +1,4 @@
 
-import 'package:bungie_api/enums/damage_type.dart';
 import 'package:bungie_api/enums/destiny_scope.dart';
 import 'package:bungie_api/enums/vendor_item_status.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
@@ -11,6 +10,7 @@ import 'package:bungie_api/models/destiny_vendor_item_definition.dart';
 import 'package:bungie_api/models/destiny_vendor_sale_item_component.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/pages/item_details/item_details.page.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
@@ -423,8 +423,12 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget> with Wishl
     return 8;
   }
 
-  Color get defaultTextColor {
-    return DestinyData.getDamageTypeColor(DamageType.Kinetic);
+  LittleLightThemeData getTheme(BuildContext context){
+    return LittleLightTheme.of(context);
+  }
+
+  Color getDefaultTextColor (BuildContext context){
+    return getTheme(context).onSurfaceLayers;
   }
 
   double get titleFontSize {

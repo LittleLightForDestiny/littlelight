@@ -13,9 +13,6 @@ import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/dialogs/bungie_api_exception.dialog.dart';
 import 'package:little_light/widgets/dialogs/report_error.dialog.dart';
 
-extension on StackTrace{
-  String get onlyRelevant => this.toString().split('\n').where((s)=>s.contains('package:little_light')).join('\n');
-}
 class ExceptionHandler with AuthConsumer {
   bool isDialogOpen = false;
   ExceptionHandler() {

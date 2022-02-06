@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:little_light/pages/collections.screen.dart';
-import 'package:little_light/pages/equipment.screen.dart';
-import 'package:little_light/pages/loadouts.screen.dart';
-import 'package:little_light/pages/old_triumphs.screen.dart';
-import 'package:little_light/pages/progress.screen.dart';
+import 'package:little_light/pages/collections/collections_root.page.dart';
+import 'package:little_light/pages/equipment/equipment.screen.dart';
+import 'package:little_light/pages/loadouts/loadouts.screen.dart';
+import 'package:little_light/pages/progress/progress.screen.dart';
+import 'package:little_light/pages/triumphs/triumphs_root.page.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/services/littlelight/loadouts.consumer.dart';
@@ -74,11 +74,11 @@ class MainScreenState extends State<MainScreen>
         break;
 
       case LittleLightPersistentPage.Collections:
-        currentScreen = CollectionsScreen();
+        currentScreen = CollectionsRootPage();
         break;
 
       case LittleLightPersistentPage.Triumphs:
-        currentScreen = OldTriumphsScreen();
+        currentScreen = TriumphsRootPage();
         break;
 
       case LittleLightPersistentPage.Loadouts:

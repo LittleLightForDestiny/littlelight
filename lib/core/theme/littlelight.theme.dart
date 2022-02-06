@@ -1,6 +1,7 @@
 //@dart=2.12
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 enum SwatchLayer { Layer0, Layer1, Layer2, Layer3 }
@@ -40,15 +41,66 @@ class LayeredSwatch extends Color {
       });
 }
 
+class DamageTypeLayers {
+  LayeredSwatch damageTypeArc = LayeredSwatch({
+    SwatchLayer.Layer0: Color.fromARGB(255, 118, 186, 230),
+    SwatchLayer.Layer1: Color.fromARGB(255, 130, 200, 253),
+  });
+  LayeredSwatch damageTypeThermal = LayeredSwatch({
+    SwatchLayer.Layer0: Color.fromARGB(255, 243, 98, 39),
+    SwatchLayer.Layer1: Color.fromARGB(255, 255, 156, 74),
+  });
+  LayeredSwatch damageTypeVoid = LayeredSwatch({
+    SwatchLayer.Layer0: Color.fromARGB(255, 64, 34, 101),
+    SwatchLayer.Layer1: Color.fromARGB(255, 177, 120, 248),
+  });
+  LayeredSwatch damageTypeStasis = LayeredSwatch({
+    SwatchLayer.Layer0: Color.fromARGB(255, 77, 136, 255),
+    SwatchLayer.Layer1: Color.fromARGB(255, 180, 201, 255),
+  });
+}
+
+class ItemTierLayers {
+  LayeredSwatch basic = LayeredSwatch({
+    SwatchLayer.Layer0: Color.fromARGB(255, 195, 188, 180),
+  });
+  LayeredSwatch common = LayeredSwatch({
+    SwatchLayer.Layer0: Color.fromARGB(255, 48, 107, 61),
+  });
+  LayeredSwatch rare = LayeredSwatch({
+    SwatchLayer.Layer0: Color.fromARGB(255, 80, 118, 163),
+  });
+  LayeredSwatch superior = LayeredSwatch({
+    SwatchLayer.Layer0: Color.fromARGB(255, 82, 47, 101),
+  });
+  LayeredSwatch exotic = LayeredSwatch({
+    SwatchLayer.Layer0: Color.fromARGB(255, 206, 174, 51),
+  });
+}
+
 class LittleLightTextTheme {
-  final TextStyle title = TextStyle(fontSize: 18, fontWeight: FontWeight.w500);
-  final TextStyle subtitle = TextStyle(fontSize: 15, fontWeight: FontWeight.w600);
-  final TextStyle body = TextStyle(fontSize: 13, fontWeight: FontWeight.w400);
-  final TextStyle button = TextStyle(fontSize: 15, fontWeight: FontWeight.w600);
+  final TextStyle title;
+  final TextStyle subtitle;
+  final TextStyle body;
+  final TextStyle button;
+
+  LittleLightTextTheme({
+    required this.title,
+    required this.subtitle,
+    required this.body,
+    required this.button,
+  });
 }
 
 class LittleLightThemeData {
-  final textTheme = LittleLightTextTheme();
+  final damageTypeLayers = DamageTypeLayers();
+  final tierLayers = ItemTierLayers();
+  LittleLightTextTheme get textTheme => LittleLightTextTheme(
+    title: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color:onSurfaceLayers.layer0),
+    subtitle: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color:onSurfaceLayers.layer0),
+    body: TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color:onSurfaceLayers.layer0),
+    button: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color:onSurfaceLayers.layer0),
+  );
 
   final surfaceLayers = LayeredSwatch({
     SwatchLayer.Layer0: Color(0xFF21212B),
@@ -61,6 +113,7 @@ class LittleLightThemeData {
     SwatchLayer.Layer0: Color(0xFFF2F2F2),
     SwatchLayer.Layer1: Color(0xFFDEE1E3),
     SwatchLayer.Layer2: Color(0xFFCACDCE),
+    SwatchLayer.Layer3: Color(0xFFABAFB0),
   });
 
   final primaryLayers = LayeredSwatch({
@@ -87,21 +140,20 @@ class LittleLightThemeData {
     SwatchLayer.Layer3: Color(0xFF630523),
   });
 
+  final successLayers = LayeredSwatch({
+    SwatchLayer.Layer0: Color(0xFFB8023B),
+    SwatchLayer.Layer1: Color(0xFFA30335),
+    SwatchLayer.Layer2: Color(0xFF8E042F),
+    SwatchLayer.Layer3: Color(0xFF630523),
+  });
+
   Color get _background => surfaceLayers.layer0;
   Color get _surface => surfaceLayers.layer1;
   Color get _secondaryVariant => surfaceLayers.layer2;
   Color get _secondary => surfaceLayers.layer3;
 
-  Color get _primary => const Color.fromARGB(255, 63, 152, 200);
-  Color get _primaryVariant => const Color.fromARGB(255, 0, 119, 182);
-        
-
-  // InputDecorationTheme get _inputDecorationTheme => InputDecorationTheme(
-  //         enabledBorder: UnderlineInputBorder(
-  //             borderSide: BorderSide(
-  //       color: colorScheme.secondaryVariant,
-  //       width: 1,
-  //     )));
+  Color get _primary => primaryLayers.layer0;
+  Color get _primaryVariant => primaryLayers.layer0;
 
   ColorScheme get colorScheme => ColorScheme(
       brightness: Brightness.dark,
@@ -118,12 +170,6 @@ class LittleLightThemeData {
       onError: onSurfaceLayers.layer0,
       error: errorLayers.layer0);
 
-  // SnackBarThemeData get snackBarTheme =>
-  //     SnackBarThemeData(contentTextStyle: TextStyle(color: Theme.of(context).colorScheme.primary));
-
-  // ToggleButtonsThemeData get toggleButtonsTheme =>
-  //     ToggleButtonsThemeData(color: Theme.of(context).colorScheme.secondary, selectedColor: Colors.lightBlue.shade600);
-
   MaterialColor _getSwitchColor(Set<MaterialState> states) {
     if (states.contains(MaterialState.selected)) {
       return primaryLayers.reverse.asMaterialColor;
@@ -131,7 +177,9 @@ class LittleLightThemeData {
     return surfaceLayers.reverse.asMaterialColor;
   }
 
-  AppBarTheme get _appBarTheme => AppBarTheme(backgroundColor: surfaceLayers.layer1);
+  AppBarTheme get _appBarTheme => AppBarTheme(
+        backgroundColor: surfaceLayers.layer1,
+      );
 
   SwitchThemeData get _switchTheme => SwitchThemeData(
         splashRadius: 14,
@@ -141,9 +189,9 @@ class LittleLightThemeData {
       );
 
   TextTheme get _textTheme => TextTheme(
-      headline1: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-      bodyText1: TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
-      button: TextStyle(fontSize: 15, fontWeight: FontWeight.w600));
+      headline1: textTheme.title,
+      bodyText1: textTheme.body,
+      button: textTheme.button);
 
   CardTheme get _cardTheme => CardTheme(color: colorScheme.surface);
 
@@ -152,14 +200,6 @@ class LittleLightThemeData {
       appBarTheme: _appBarTheme,
       cardColor: _cardTheme.color,
       cardTheme: _cardTheme,
-      // cardColor: colorScheme.background,
-      // cardTheme: _cardTheme,
-      // snackBarTheme: snackBarTheme,
-      // toggleButtonsTheme: toggleButtonsTheme,
-      // primaryColor: Colors.lightBlue.shade700,
-      // appBarTheme: _appBarTheme,
-      // inputDecorationTheme: _inputDecorationTheme,
-      // toggleableActiveColor: colorScheme.primary,
       textButtonTheme: TextButtonThemeData(
           style: ButtonStyle(foregroundColor: MaterialStateColor.resolveWith((states) => primaryLayers.layer3))),
       textTheme: _textTheme,

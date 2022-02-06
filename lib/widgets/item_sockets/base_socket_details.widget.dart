@@ -77,7 +77,7 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget> extends Ba
   }
 
   Future<void> loadDefinitions() async {
-    if ((controller.selectedPlugHash ?? 0) == 0) {
+    if ((controller?.selectedPlugHash ?? 0) == 0) {
       _definition = null;
       if (mounted) {
         setState(() {});

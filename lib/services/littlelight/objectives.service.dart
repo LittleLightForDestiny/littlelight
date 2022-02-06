@@ -94,12 +94,12 @@ class ObjectivesService with StorageConsumer, ProfileConsumer, ManifestConsumer 
       TrackedObjective objective) async {
 
     var items = profile.getAllItems();
-    var item = items.firstWhere((i) => i.itemHash == objective.parentHash,
+    var item = items.firstWhere((i) => i.item.itemHash == objective.parentHash,
         orElse: () => null);
     if (item == null) return null;
-    var plugObjective = profile.getPlugObjectives(item?.itemInstanceId);
+    var plugObjective = profile.getPlugObjectives(item?.item?.itemInstanceId);
     if(plugObjective?.containsKey("${objective.hash}") ?? false){
-      return item;
+      return item.item;
     }
     return null;
   }

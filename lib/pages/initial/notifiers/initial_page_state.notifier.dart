@@ -183,8 +183,6 @@ class InitialPageStateNotifier
       return;
     }
 
-    
-
     _loading = false;
     _phase = InitialPagePhase.AuthorizationRequest;
     notifyListeners();
@@ -243,7 +241,7 @@ class InitialPageStateNotifier
     }catch(e, stackTrace){
       print("initPostLoadingServicesError: $e");
       analytics.registerNonFatal(e, stackTrace);
-      ///TODO: define a error for this
+      _error = InitServicesError();
       notifyListeners();
       return;
     }
