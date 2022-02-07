@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
-import 'package:drag_list/drag_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -37,7 +36,7 @@ class LoadoutScreenState extends State<LoadoutsScreen> with LoadoutsConsumer, Pr
     asyncInit();
   }
 
-  asyncInit() async{
+  asyncInit() async {
     await Future.delayed(Duration.zero);
     final route = ModalRoute.of(context);
     await Future.delayed(route?.transitionDuration ?? Duration.zero);
@@ -172,28 +171,31 @@ class LoadoutScreenState extends State<LoadoutsScreen> with LoadoutsConsumer, Pr
 
   Widget buildReorderingBody(BuildContext context) {
     var screenPadding = MediaQuery.of(context).padding;
-    return DragList<Loadout>(
-        items: loadouts,
+
+    return ReorderableList(
+        itemCount: loadouts.length,
+        itemBuilder: (context, index) {
+          return buildSortItem(context, index);
+        },
         itemExtent: 56,
         padding: EdgeInsets.all(8).copyWith(left: max(screenPadding.left, 8), right: max(screenPadding.right, 8)),
-        handleBuilder: (context) => buildHandle(context),
-        onItemReorder: (oldIndex, newIndex) {
+        onReorder: (oldIndex, newIndex) {
           var removed = loadouts.removeAt(oldIndex);
           loadouts.insert(newIndex, removed);
           loadoutService.saveLoadoutsOrder(loadouts);
-        },
-        itemBuilder: (context, parameter, handle) => buildSortItem(context, parameter.value, handle));
+        });
   }
 
-  Widget buildHandle(BuildContext context) {
-    return GestureDetector(
-        onVerticalDragStart: (_) {},
-        onVerticalDragDown: (_) {},
-        child: AspectRatio(aspectRatio: 1, child: Container(color: Colors.transparent, child: Icon(Icons.menu))));
+  Widget buildHandle(BuildContext context, int index) {
+    return ReorderableDragStartListener(
+        child: AspectRatio(aspectRatio: 1, child: Container(color: Colors.transparent, child: Icon(Icons.menu))),
+        index: index);
   }
 
-  Widget buildSortItem(BuildContext context, Loadout loadout, Widget handle) {
+  Widget buildSortItem(BuildContext context, int index) {
+    final loadout = loadouts[index];
     return Container(
+        key: Key("loadout-${loadout.assignedId}"),
         padding: EdgeInsets.symmetric(vertical: 4),
         color: Colors.transparent,
         child: Stack(
@@ -208,7 +210,7 @@ class LoadoutScreenState extends State<LoadoutsScreen> with LoadoutsConsumer, Pr
                 : Container(),
             Row(
               children: <Widget>[
-                handle,
+                buildHandle(context, index),
                 Expanded(
                   child: Text(
                     loadout?.name ?? "",

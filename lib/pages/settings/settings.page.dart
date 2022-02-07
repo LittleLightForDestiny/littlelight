@@ -1,4 +1,3 @@
-import 'package:drag_list/drag_list.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
@@ -282,43 +281,49 @@ class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, 
   buildItemOrderList(BuildContext context) {
     return Container(
         height: (itemOrdering.length + 1) * 48.0,
-        child: DragList<ItemSortParameter>(
-          items: itemOrdering,
+        child: ReorderableList(
+          itemCount: itemOrdering.length,
+          itemBuilder: (context, index) {
+            final item = itemOrdering[index];
+            return buildSortItem(context, item, index, onSave: () {
+              userSettings.itemOrdering = itemOrdering;
+            });
+          },
           itemExtent: 48,
-          handleBuilder: (context) => buildHandle(context),
-          onItemReorder: (oldIndex, newIndex) {
-            var removed = itemOrdering.removeAt(oldIndex);
+          onReorder: (oldIndex, newIndex) {
+            final removed = itemOrdering.removeAt(oldIndex);
             itemOrdering.insert(newIndex, removed);
             userSettings.itemOrdering = itemOrdering;
           },
-          itemBuilder: (context, parameter, handle) => buildSortItem(context, parameter.value, handle, onSave: () {
-            userSettings.itemOrdering = itemOrdering;
-          }),
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
         ));
   }
 
-  Widget buildHandle(BuildContext context) {
-    return GestureDetector(
-        onVerticalDragStart: (_) {},
-        onVerticalDragDown: (_) {},
+  Widget buildHandle(BuildContext context, int index) {
+    return ReorderableDragStartListener(
+        index: index,
         child: AspectRatio(aspectRatio: 1, child: Container(color: Colors.transparent, child: Icon(Icons.menu))));
   }
 
   buildPursuitOrderList(BuildContext context) {
     return Container(
         height: (pursuitOrdering.length + 1) * 48.0,
-        child: DragList<ItemSortParameter>(
-          items: pursuitOrdering,
+        child: ReorderableList(
+          itemCount: pursuitOrdering.length,
           itemExtent: 48,
-          handleBuilder: (context) => buildHandle(context),
-          onItemReorder: (oldIndex, newIndex) {
+          onReorder: (oldIndex, newIndex) {
             var removed = pursuitOrdering.removeAt(oldIndex);
             pursuitOrdering.insert(newIndex, removed);
             userSettings.pursuitOrdering = pursuitOrdering;
           },
-          itemBuilder: (context, parameter, handle) => buildSortItem(context, parameter.value, handle, onSave: () {
-            userSettings.pursuitOrdering = pursuitOrdering;
-          }),
+          itemBuilder: (context, index) {
+            final item = pursuitOrdering[index];
+            return buildSortItem(context, item, index, onSave: () {
+              userSettings.pursuitOrdering = pursuitOrdering;
+            });
+          },
+          shrinkWrap: true,
         ));
   }
 
@@ -365,15 +370,15 @@ class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, 
     setState(() {});
   }
 
-  Widget buildSortItem(BuildContext context, ItemSortParameter parameter, Widget handle, {@required Function onSave}) {
-    return Container(
+  Widget buildSortItem(BuildContext context, ItemSortParameter parameter, int index, {@required Function onSave}) {
+    return Material(
         key: Key("param_${parameter.type}"),
         child: Container(
             color: parameter.active
                 ? Theme.of(context).colorScheme.secondary
                 : Theme.of(context).colorScheme.secondaryVariant,
             child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-              handle,
+              buildHandle(context, index),
               Container(width: 8),
               Expanded(child: buildSortLabel(parameter)),
               buildDirectionButton(parameter, 1, onSave: onSave),
