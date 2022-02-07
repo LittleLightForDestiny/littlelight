@@ -34,7 +34,7 @@ dependencies:
   firebase_analytics: ^8.0.0
   flutter_dotenv: ^5.0.2
   url_launcher: ^6.0.2
-  screen: ^0.0.5 
+  wakelock: 0.6.1+1
 
   package_info: ^2.0.0
   
@@ -50,7 +50,8 @@ dependencies:
   flutter_linkify: ^5.0.0
   intl: any
 
-  speech_bubble: ^0.0.7
+  bubble: 1.2.1
+  # speech_bubble: ^0.0.9
 
   get_it: ^7.0.2
   provider: ^6.0.1

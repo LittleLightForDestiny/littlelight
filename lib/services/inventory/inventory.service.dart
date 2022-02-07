@@ -20,7 +20,6 @@ import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/inventory/transfer_error.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/services/notification/notification.consumer.dart';
 import 'package:little_light/services/notification/notification.package.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/profile/profile_component_groups.dart';
@@ -35,8 +34,6 @@ setupInventoryService() {
 
 class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer, NotificationConsumer {
   InventoryService._internal();
-  
-  
 
   transfer(DestinyItemComponent item, String sourceCharacterId, ItemDestination destination,
       [String destinationCharacterId]) async {

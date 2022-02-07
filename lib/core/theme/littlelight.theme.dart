@@ -1,7 +1,6 @@
 //@dart=2.12
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 enum SwatchLayer { Layer0, Layer1, Layer2, Layer3 }
@@ -96,11 +95,11 @@ class LittleLightThemeData {
   final damageTypeLayers = DamageTypeLayers();
   final tierLayers = ItemTierLayers();
   LittleLightTextTheme get textTheme => LittleLightTextTheme(
-    title: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color:onSurfaceLayers.layer0),
-    subtitle: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color:onSurfaceLayers.layer0),
-    body: TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color:onSurfaceLayers.layer0),
-    button: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color:onSurfaceLayers.layer0),
-  );
+        title: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: onSurfaceLayers.layer0),
+        subtitle: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: onSurfaceLayers.layer0),
+        body: TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: onSurfaceLayers.layer0),
+        button: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: onSurfaceLayers.layer0),
+      );
 
   final surfaceLayers = LayeredSwatch({
     SwatchLayer.Layer0: Color(0xFF21212B),
@@ -188,10 +187,8 @@ class LittleLightThemeData {
         thumbColor: MaterialStateColor.resolveWith((states) => _getSwitchColor(states).shade400),
       );
 
-  TextTheme get _textTheme => TextTheme(
-      headline1: textTheme.title,
-      bodyText1: textTheme.body,
-      button: textTheme.button);
+  TextTheme get _textTheme =>
+      TextTheme(headline1: textTheme.title, bodyText1: textTheme.body, button: textTheme.button);
 
   CardTheme get _cardTheme => CardTheme(color: colorScheme.surface);
 

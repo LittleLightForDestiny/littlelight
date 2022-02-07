@@ -7,6 +7,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:launch_review/launch_review.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/collaborators.dart';
 import 'package:little_light/models/language_info.dart';
 import 'package:little_light/services/language/language.consumer.dart';
@@ -297,7 +298,7 @@ class _AboutScreenState extends State<AboutScreen> with StorageConsumer, Languag
     return ElevatedButton(
         style: ElevatedButton.styleFrom(
           padding: EdgeInsets.all(4),
-          primary: action.color ?? Theme.of(context).buttonColor,
+          primary: action.color ?? LittleLightTheme.of(context).primaryLayers,
           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         ),
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [

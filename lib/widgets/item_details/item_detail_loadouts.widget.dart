@@ -3,6 +3,7 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/pages/loadouts/equip_loadout.screen.dart';
 import 'package:little_light/utils/media_query_helper.dart';
@@ -67,7 +68,7 @@ class ItemDetailLoadoutsWidgetState extends BaseDestinyItemState<ItemDetailLoado
 
   Widget buildLoadoutItem(Loadout loadout, BuildContext context) {
     return Container(
-        color: Theme.of(context).buttonColor,
+        color: LittleLightTheme.of(context).upgradeLayers,
         margin: EdgeInsets.only(bottom: 4),
         child: Stack(children: [
           Positioned.fill(

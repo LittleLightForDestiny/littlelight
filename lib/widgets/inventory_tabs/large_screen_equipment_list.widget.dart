@@ -1,8 +1,6 @@
 import 'dart:math';
 
 import 'package:bungie_api/destiny2.dart';
-import 'package:bungie_api/models/destiny_character_component.dart';
-import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/models/bucket_display_options.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
@@ -209,7 +207,7 @@ class LargeScreenEquipmentListWidgetState extends State<LargeScreenEquipmentList
           itemBuilder: (context, index) => BucketHeaderWidget(
                 hash: hash,
                 itemCount: unequipped.length,
-                onChanged: (){
+                onChanged: () {
                   setState(() {});
                 },
               )),
@@ -244,7 +242,7 @@ class LargeScreenEquipmentListWidgetState extends State<LargeScreenEquipmentList
 
     return SliverSection(
       itemBuilder: (context, index) {
-        if(index > maxSlots){
+        if (index > maxSlots) {
           return Container();
         }
         if (index >= items.length) {

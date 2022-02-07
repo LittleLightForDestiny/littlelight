@@ -19,7 +19,7 @@ import 'package:little_light/widgets/dialogs/tags/select_tag.dialog.dart';
 import 'package:little_light/widgets/flutter/center_icon_workaround.dart';
 import 'package:little_light/widgets/item_tags/item_tag.widget.dart';
 import 'package:little_light/widgets/option_sheets/free_slots_slider.widget.dart';
-import 'package:screen/screen.dart';
+import 'package:wakelock/wakelock.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -117,7 +117,7 @@ class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, 
           onChanged: (val) {
             userSettings.keepAwake = val;
             setState(() {});
-            Screen.keepOn(val);
+            Wakelock.toggle(enable: val);
           },
         ));
   }

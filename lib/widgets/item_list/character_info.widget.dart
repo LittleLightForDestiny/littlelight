@@ -1,7 +1,7 @@
-
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:bubble/bubble.dart';
 import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:bungie_api/models/destiny_class_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
@@ -25,7 +25,6 @@ import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/icon_fonts/littlelight_icons.dart';
 import 'package:little_light/widgets/option_sheets/character_options_sheet.widget.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:speech_bubble/speech_bubble.dart';
 
 class CharacterInfoWidget extends StatefulWidget {
   final String characterId;
@@ -70,8 +69,8 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T>
   loadDefinitions() async {
     classDef = await manifest.getDefinition<DestinyClassDefinition>(character.classHash);
     raceDef = await manifest.getDefinition<DestinyRaceDefinition>(character.raceHash);
-    legendProgressionDefinition = await manifest
-        .getDefinition<DestinyProgressionDefinition>(destinySettings.seasonalRankProgressionHash);
+    legendProgressionDefinition =
+        await manifest.getDefinition<DestinyProgressionDefinition>(destinySettings.seasonalRankProgressionHash);
     if (mounted) {
       setState(() {});
     }
@@ -165,9 +164,8 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T>
       Center(
           child: Container(
               margin: EdgeInsets.only(top: 60),
-              child: SpeechBubble(
-                nipLocation: NipLocation.TOP,
-                color: Colors.lightBlue,
+              child: Bubble(
+                color: LittleLightTheme.of(context).primaryLayers,
                 child: TranslatedTextWidget("Hey, tap me!"),
               )))
     ]);
@@ -286,7 +284,8 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T>
   Widget expInfo(BuildContext context, DestinyCharacterComponent character) {
     var progression = profile.getCharacterProgression(character.characterId);
     DestinyProgression levelProg = progression.progressions["${destinySettings.seasonalRankProgressionHash}"];
-    DestinyProgression overLevelProg = progression.progressions["${destinySettings.seasonalPrestigeRankProgressionHash}"];
+    DestinyProgression overLevelProg =
+        progression.progressions["${destinySettings.seasonalPrestigeRankProgressionHash}"];
 
     int seasonRank = (levelProg?.level ?? 0) + (overLevelProg?.level ?? 0);
     DestinyProgression expProg = (levelProg?.level ?? 0) < (levelProg?.levelCap ?? 0) ? levelProg : overLevelProg;

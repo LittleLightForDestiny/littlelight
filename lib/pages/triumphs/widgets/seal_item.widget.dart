@@ -2,7 +2,6 @@
 
 import 'package:collection/collection.dart';
 import 'package:bungie_api/destiny2.dart';
-import 'package:bungie_api/models/destiny_presentation_node_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/character_sort_parameter.dart';
@@ -112,8 +111,10 @@ class PresentationNodeWidgetState extends State<SealItemWidget>
             buildIcon(),
             Expanded(child: buildSealInfo()),
           ]),
-          Material(color:Colors.transparent, child:InkWell(child:Container(),
-          onTap: widget.onPressed),)
+          Material(
+            color: Colors.transparent,
+            child: InkWell(child: Container(), onTap: widget.onPressed),
+          )
         ]));
   }
 

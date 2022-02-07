@@ -10,7 +10,6 @@ import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_power_cap_definition.dart';
 import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/littlelight/item_notes.consumer.dart';
@@ -37,27 +36,15 @@ class LandscapeItemCoverWidget extends BaseDestinyStatelessItemWidget {
   final bool hideTransferBlock;
 
   LandscapeItemCoverWidget(
-      DestinyItemComponent item,
-      DestinyInventoryItemDefinition definition,
-      DestinyItemInstanceComponent instanceInfo,
-      {Key key,
-      this.hideTransferBlock = false,
-      String characterId,
-      this.uniqueId,
-      this.socketController})
-      : super(
-            item: item,
-            definition: definition,
-            instanceInfo: instanceInfo,
-            key: key,
-            characterId: characterId);
+      DestinyItemComponent item, DestinyInventoryItemDefinition definition, DestinyItemInstanceComponent instanceInfo,
+      {Key key, this.hideTransferBlock = false, String characterId, this.uniqueId, this.socketController})
+      : super(item: item, definition: definition, instanceInfo: instanceInfo, key: key, characterId: characterId);
 
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double paddingTop = MediaQuery.of(context).padding.top;
-    double screenshotHeight =
-        min(width / (16 / 9), MediaQuery.of(context).size.height);
+    double screenshotHeight = min(width / (16 / 9), MediaQuery.of(context).size.height);
     double minHeight = paddingTop + kToolbarHeight;
     double maxHeight = screenshotHeight;
     if ((definition?.screenshot?.length ?? 0) == 0) {
@@ -65,8 +52,7 @@ class LandscapeItemCoverWidget extends BaseDestinyStatelessItemWidget {
     }
     return SliverPersistentHeader(
         pinned: true,
-        delegate: LandscapeItemCoverDelegate(
-            item, definition, instanceInfo, tag, uniqueId,
+        delegate: LandscapeItemCoverDelegate(item, definition, instanceInfo, tag, uniqueId,
             characterId: characterId,
             socketController: socketController,
             hideTransferBlock: hideTransferBlock,
@@ -88,20 +74,13 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
 
   bool hideTransferBlock;
 
-  LandscapeItemCoverDelegate(
-      this.item, this.definition, this.instanceInfo, this.tag, this.uniqueId,
-      {this.minHeight = 50,
-      this.maxHeight = 200,
-      this.socketController,
-      this.characterId,
-      this.hideTransferBlock})
+  LandscapeItemCoverDelegate(this.item, this.definition, this.instanceInfo, this.tag, this.uniqueId,
+      {this.minHeight = 50, this.maxHeight = 200, this.socketController, this.characterId, this.hideTransferBlock})
       : super();
 
   @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
-    double expandRatio =
-        min(1, max(0, 1 - shrinkOffset / (this.maxHeight - this.minHeight)));
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+    double expandRatio = min(1, max(0, 1 - shrinkOffset / (this.maxHeight - this.minHeight)));
     if (maxHeight == minHeight) {
       expandRatio = 0;
     }
@@ -129,8 +108,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
     return Positioned(
         top: convertSize(96.0, context),
         right: convertSize(96.0, context),
-        child: Opacity(
-            opacity: expandRatio, child: transferBlock(context, expandRatio)));
+        child: Opacity(opacity: expandRatio, child: transferBlock(context, expandRatio)));
   }
 
   Widget backButton(BuildContext context, double expandRatio) {
@@ -142,9 +120,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
         height: kToolbarHeight,
         child: BackButton(
             color: Color.lerp(
-                DestinyData.getTierTextColor(definition.inventory.tierType),
-                Colors.grey.shade300,
-                expandRatio)));
+                DestinyData.getTierTextColor(definition.inventory.tierType), Colors.grey.shade300, expandRatio)));
   }
 
   Widget icon(BuildContext context, double expandRatio) {
@@ -152,10 +128,8 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
     double openSize = convertSize(96, context);
     double closedSize = kToolbarHeight - 8;
     double size = lerpDouble(closedSize, openSize, expandRatio);
-    double top =
-        lerpDouble(paddingTop + 4, convertSize(96, context), expandRatio);
-    double left =
-        lerpDouble(kTextTabBarHeight, convertSize(96, context), expandRatio);
+    double top = lerpDouble(paddingTop + 4, convertSize(96, context), expandRatio);
+    double left = lerpDouble(kTextTabBarHeight, convertSize(96, context), expandRatio);
     return Positioned(
         left: left,
         top: top,
@@ -167,22 +141,17 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
               item: item,
               definition: definition,
               instanceInfo: instanceInfo,
-              iconBorderWidth:
-                  lerpDouble(1, convertSize(3, context), expandRatio),
+              iconBorderWidth: lerpDouble(1, convertSize(3, context), expandRatio),
             )));
   }
 
   Widget buildNameAndType(BuildContext context, double expandRatio) {
     double paddingTop = MediaQuery.of(context).padding.top;
-    var customName = itemNotes
-        .getNotesForItem(item?.itemHash, item?.itemInstanceId)
-        ?.customName
-        ?.toUpperCase();
+    var customName = itemNotes.getNotesForItem(item?.itemHash, item?.itemInstanceId)?.customName?.toUpperCase();
 
     return Positioned(
         top: lerpDouble(paddingTop + 8, convertSize(96, context), expandRatio),
-        left: lerpDouble(kToolbarHeight * 2,
-            convertSize(96.0 * 2 + 24, context), expandRatio),
+        left: lerpDouble(kToolbarHeight * 2, convertSize(96.0 * 2 + 24, context), expandRatio),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -190,23 +159,17 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
             Text(
               customName ?? definition.displayProperties.name.toUpperCase(),
               style: TextStyle(
-                  color: DestinyData.getTierTextColor(
-                          definition?.inventory?.tierType)
-                      .withOpacity(.9),
-                  fontSize: lerpDouble(kToolbarHeight * .5,
-                      convertSize(74, context), expandRatio),
+                  color: DestinyData.getTierTextColor(definition?.inventory?.tierType).withOpacity(.9),
+                  fontSize: lerpDouble(kToolbarHeight * .5, convertSize(74, context), expandRatio),
                   fontWeight: FontWeight.bold,
                   height: .94),
             ),
             Text(
               definition.itemTypeDisplayName.toUpperCase(),
               style: TextStyle(
-                  fontSize: lerpDouble(kToolbarHeight * .3,
-                      convertSize(34, context), expandRatio),
+                  fontSize: lerpDouble(kToolbarHeight * .3, convertSize(34, context), expandRatio),
                   height: .94,
-                  color: DestinyData.getTierTextColor(
-                          definition?.inventory?.tierType)
-                      .withOpacity(.8),
+                  color: DestinyData.getTierTextColor(definition?.inventory?.tierType).withOpacity(.8),
                   fontWeight: FontWeight.w500),
             ),
           ],
@@ -229,23 +192,15 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
   }
 
   Widget leftColumn(BuildContext context, double expandRatio) {
-    var perksCategory = definition.sockets?.socketCategories?.firstWhere(
-        (s) =>
-            DestinyData.socketCategoryPerkHashes.contains(s.socketCategoryHash),
+    var perksCategory = definition.sockets?.socketCategories
+        ?.firstWhere((s) => DestinyData.socketCategoryPerkHashes.contains(s.socketCategoryHash), orElse: () => null);
+    var armorTierCategory = definition.sockets?.socketCategories
+        ?.firstWhere((s) => DestinyData.socketCategoryTierHashes.contains(s.socketCategoryHash), orElse: () => null);
+    var modsCategory = definition.sockets?.socketCategories
+        ?.firstWhere((s) => DestinyData.socketCategoryModHashes.contains(s.socketCategoryHash), orElse: () => null);
+    var exoticIntrinsicPerkCategory = definition.sockets?.socketCategories?.firstWhere(
+        (s) => DestinyData.socketCategoryIntrinsicPerkHashes.contains(s.socketCategoryHash),
         orElse: () => null);
-    var armorTierCategory = definition.sockets?.socketCategories?.firstWhere(
-        (s) =>
-            DestinyData.socketCategoryTierHashes.contains(s.socketCategoryHash),
-        orElse: () => null);
-    var modsCategory = definition.sockets?.socketCategories?.firstWhere(
-        (s) =>
-            DestinyData.socketCategoryModHashes.contains(s.socketCategoryHash),
-        orElse: () => null);
-    var exoticIntrinsicPerkCategory = definition.sockets?.socketCategories
-        ?.firstWhere(
-            (s) => DestinyData.socketCategoryIntrinsicPerkHashes
-                .contains(s.socketCategoryHash),
-            orElse: () => null);
     return Positioned(
         top: convertSize(96.0 * 2.4 + 1080 * (expandRatio - 1), context),
         left: convertSize(96.0, context),
@@ -341,15 +296,11 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                primaryStatHash == null
-                    ? Container()
-                    : buildPrimaryStat(context),
-                primaryStatHash == null ||
-                        (definition.stats.stats?.length ?? 0) == 0
+                primaryStatHash == null ? Container() : buildPrimaryStat(context),
+                primaryStatHash == null || (definition.stats.stats?.length ?? 0) == 0
                     ? Container()
                     : Container(
-                        margin: EdgeInsets.symmetric(
-                            horizontal: convertSize(16, context)),
+                        margin: EdgeInsets.symmetric(horizontal: convertSize(16, context)),
                         width: convertSize(2, context),
                         color: Theme.of(context).colorScheme.onSurface.withOpacity(.4)),
                 ScreenShotItemStatsWidget(
@@ -376,10 +327,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
                 child: Row(children: [
                   Text(
                     "$primaryStatValue",
-                    style: TextStyle(
-                        height: 1,
-                        fontSize: convertSize(70, context),
-                        fontWeight: FontWeight.bold),
+                    style: TextStyle(height: 1, fontSize: convertSize(70, context), fontWeight: FontWeight.bold),
                   ),
                   Container(
                     width: convertSize(8, context),
@@ -407,14 +355,12 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
   }
 
   Widget buildPowerCap(BuildContext context) {
-    var versionNumber =
-        item?.versionNumber ?? definition?.quality?.currentVersion;
+    var versionNumber = item?.versionNumber ?? definition?.quality?.currentVersion;
     if (versionNumber == null || definition?.quality?.versions == null) {
       return Container();
     }
     var version = definition.quality.versions[versionNumber];
-    return DefinitionProviderWidget<DestinyPowerCapDefinition>(
-        version.powerCapHash, (def) {
+    return DefinitionProviderWidget<DestinyPowerCapDefinition>(version.powerCapHash, (def) {
       if (def.powerCap > 9000) {
         return Container(height: convertSize(40, context));
       }
@@ -427,9 +373,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
           width: convertSize(4, context),
         ),
         Text("${def.powerCap}",
-            style: TextStyle(
-                fontSize: convertSize(24, context),
-                color: LittleLightTheme.of(context).achievementLayers))
+            style: TextStyle(fontSize: convertSize(24, context), color: LittleLightTheme.of(context).achievementLayers))
       ]);
     });
   }
@@ -474,8 +418,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
               )));
     }
     return Positioned(
-        top: -convertSize(1080 / 2, context) +
-            expandRatio * convertSize(1080 / 2, context),
+        top: -convertSize(1080 / 2, context) + expandRatio * convertSize(1080 / 2, context),
         left: 0,
         width: convertSize(500, context),
         child: Opacity(
@@ -490,11 +433,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
     double opacity = expandRatio;
 
     return Positioned(
-        top: 0,
-        bottom: 0,
-        left: 0,
-        right: 0,
-        child: Opacity(opacity: opacity, child: buildBackgroundImage(context)));
+        top: 0, bottom: 0, left: 0, right: 0, child: Opacity(opacity: opacity, child: buildBackgroundImage(context)));
   }
 
   Widget buildBackgroundImage(BuildContext context) {
@@ -509,8 +448,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
       return Container();
     }
     if (item?.overrideStyleItemHash != null) {
-      return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
-          item.overrideStyleItemHash, (def) {
+      return DefinitionProviderWidget<DestinyInventoryItemDefinition>(item.overrideStyleItemHash, (def) {
         if (def?.plug?.isDummyPlug ?? false) {
           return QueuedNetworkImage(
               imageUrl: BungieApiService.url(imgUrl),
@@ -589,8 +527,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
 
   @override
   bool shouldRebuild(LandscapeItemCoverDelegate oldDelegate) {
-    return maxHeight != oldDelegate.maxHeight ||
-        minHeight != oldDelegate.minHeight;
+    return maxHeight != oldDelegate.maxHeight || minHeight != oldDelegate.minHeight;
   }
 
   double convertSize(double value, BuildContext context) {

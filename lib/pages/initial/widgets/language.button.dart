@@ -1,6 +1,7 @@
 //@dart=2.12
 
 import 'package:flutter/material.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/language_info.dart';
 import 'package:little_light/services/language/language.consumer.dart';
 
@@ -9,16 +10,13 @@ class LanguageButton extends StatelessWidget with LanguageConsumer {
   final bool selected;
   final Function onPressed;
 
-  LanguageButton(
-      {required this.language, this.selected = false, required this.onPressed})
-      : super();
+  LanguageButton({required this.language, this.selected = false, required this.onPressed}) : super();
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-          primary:
-              selected ? Theme.of(context).buttonColor : Colors.transparent,
+          primary: selected ? LittleLightTheme.of(context).primaryLayers : Colors.transparent,
           elevation: 0,
           padding: EdgeInsets.all(8)),
       child: _child,

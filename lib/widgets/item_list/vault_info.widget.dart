@@ -3,10 +3,9 @@ import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_vendor_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/services/inventory/enums/item_destination.dart';
-import 'package:little_light/services/inventory/inventory.consumer.dart';
 import 'package:little_light/services/inventory/inventory.package.dart';
 import 'package:little_light/services/littlelight/loadouts.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
@@ -19,10 +18,6 @@ import 'package:little_light/widgets/item_list/character_info.widget.dart';
 import 'package:little_light/widgets/option_sheets/loadout_select_sheet.widget.dart';
 
 class VaultInfoWidget extends CharacterInfoWidget {
-  
-
-  
-
   VaultInfoWidget({Key key}) : super(key: key);
 
   @override
@@ -95,8 +90,6 @@ class VaultInfoWidgetState extends CharacterInfoWidgetState<VaultInfoWidget> {
 }
 
 class VaultOptionsSheet extends StatefulWidget {
-  
-
   VaultOptionsSheet({Key key}) : super(key: key);
 
   @override
@@ -204,7 +197,7 @@ class VaultOptionsSheetState extends State<VaultOptionsSheet>
               children: loadouts
                   .map(
                     (loadout) => Container(
-                        color: Theme.of(context).buttonColor,
+                        color: LittleLightTheme.of(context).primaryLayers,
                         margin: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         child: Stack(children: [
                           Positioned.fill(

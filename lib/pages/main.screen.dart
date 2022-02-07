@@ -13,7 +13,7 @@ import 'package:little_light/services/user_settings/user_settings.consumer.dart'
 import 'package:little_light/utils/platform_capabilities.dart';
 import 'package:little_light/widgets/dialogs/confirm_exit.dialog.dart';
 import 'package:little_light/widgets/side_menu/side_menu.widget.dart';
-import 'package:screen/screen.dart';
+import 'package:wakelock/wakelock.dart';
 
 class MainScreen extends StatefulWidget {
   MainScreen({Key key}) : super(key: key);
@@ -94,7 +94,7 @@ class MainScreenState extends State<MainScreen>
     bool keepAwake = userSettings.keepAwake;
 
     if (PlatformCapabilities.keepScreenOnAvailable) {
-      Screen.keepOn(keepAwake);
+      Wakelock.toggle(enable: keepAwake);
     }
   }
 

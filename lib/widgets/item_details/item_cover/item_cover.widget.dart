@@ -4,7 +4,6 @@ import 'package:bungie_api/enums/destiny_item_type.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
-import 'package:flutter/rendering.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/masterwork_counter/base_masterwork_counter.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
@@ -21,18 +20,9 @@ class ItemCoverWidget extends BaseDestinyStatelessItemWidget {
   final String uniqueId;
 
   ItemCoverWidget(
-      DestinyItemComponent item,
-      DestinyInventoryItemDefinition definition,
-      DestinyItemInstanceComponent instanceInfo,
-      {Key key,
-      String characterId,
-      this.uniqueId})
-      : super(
-            item: item,
-            definition: definition,
-            instanceInfo: instanceInfo,
-            key: key,
-            characterId: characterId);
+      DestinyItemComponent item, DestinyInventoryItemDefinition definition, DestinyItemInstanceComponent instanceInfo,
+      {Key key, String characterId, this.uniqueId})
+      : super(item: item, definition: definition, instanceInfo: instanceInfo, key: key, characterId: characterId);
 
   @override
   Widget build(BuildContext context) {
@@ -46,8 +36,7 @@ class ItemCoverWidget extends BaseDestinyStatelessItemWidget {
     }
     return SliverPersistentHeader(
         pinned: true,
-        delegate: ItemCoverDelegate(
-            item, definition, instanceInfo, tag, uniqueId,
+        delegate: ItemCoverDelegate(item, definition, instanceInfo, tag, uniqueId,
             minHeight: minHeight, maxHeight: maxHeight));
   }
 }
@@ -61,16 +50,13 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
   String tag;
   String uniqueId;
 
-  ItemCoverDelegate(
-      this.item, this.definition, this.instanceInfo, this.tag, this.uniqueId,
+  ItemCoverDelegate(this.item, this.definition, this.instanceInfo, this.tag, this.uniqueId,
       {this.minHeight = 50, this.maxHeight = 200})
       : super();
 
   @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
-    double expandRatio =
-        max(0, 1 - shrinkOffset / (this.maxHeight - this.minHeight));
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+    double expandRatio = max(0, 1 - shrinkOffset / (this.maxHeight - this.minHeight));
     if (maxHeight == minHeight) {
       expandRatio = 0;
     }
@@ -106,10 +92,7 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
               instanceInfo,
               multiline: true,
               padding: EdgeInsets.only(
-                  left: leftOffset + 8,
-                  right: 8,
-                  top: (kToolbarHeight - 16) / 2,
-                  bottom: (kToolbarHeight - 16) / 2),
+                  left: leftOffset + 8, right: 8, top: (kToolbarHeight - 16) / 2, bottom: (kToolbarHeight - 16) / 2),
               fontSize: 16,
             )));
   }
@@ -141,9 +124,7 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
         width: kToolbarHeight,
         height: kToolbarHeight,
         child: BackButton(
-            color: Color.lerp(
-                DestinyData.getTierTextColor(definition.inventory.tierType),
-                Colors.grey.shade300,
+            color: Color.lerp(DestinyData.getTierTextColor(definition.inventory.tierType), Colors.grey.shade300,
                 expandRatio?.clamp(0, 1) ?? 0)));
   }
 
@@ -178,10 +159,7 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
               onPressed: () async {},
               icon: Icon(Icons.share,
                   color: Color.lerp(
-                      DestinyData.getTierTextColor(
-                          definition.inventory.tierType),
-                      Colors.grey.shade300,
-                      expandRatio)),
+                      DestinyData.getTierTextColor(definition.inventory.tierType), Colors.grey.shade300, expandRatio)),
             )));
   }
 
@@ -226,8 +204,7 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
       return Container();
     }
     if (item?.overrideStyleItemHash != null) {
-      return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
-          item.overrideStyleItemHash, (def) {
+      return DefinitionProviderWidget<DestinyInventoryItemDefinition>(item.overrideStyleItemHash, (def) {
         if (def?.plug?.isDummyPlug ?? false) {
           return QueuedNetworkImage(
               imageUrl: BungieApiService.url(imgUrl),
@@ -264,7 +241,6 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   bool shouldRebuild(ItemCoverDelegate oldDelegate) {
-    return maxHeight != oldDelegate.maxHeight ||
-        minHeight != oldDelegate.minHeight;
+    return maxHeight != oldDelegate.maxHeight || minHeight != oldDelegate.minHeight;
   }
 }

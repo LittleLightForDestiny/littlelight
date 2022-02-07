@@ -143,7 +143,7 @@ class ItemDetailsNotesWidgetState extends BaseDestinyItemState<ItemDetailsNotesW
 
   iconButton(IconData icon, {Color color, Function onPressed}) {
     if (color == null) {
-      color = Theme.of(context).buttonColor;
+      color = LittleLightTheme.of(context).primaryLayers;
     }
     return Material(
         color: color,

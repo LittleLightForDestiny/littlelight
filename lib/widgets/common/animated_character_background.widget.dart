@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ui';
 
 import 'package:bungie_api/enums/damage_type.dart';
 import 'package:bungie_api/enums/destiny_class.dart';
@@ -8,7 +7,6 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/services/notification/notification.consumer.dart';
 import 'package:little_light/services/notification/notification.package.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 
@@ -20,8 +18,7 @@ class AnimatedCharacterBackgroundWidget extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _AnimatedCharacterBackgroundWidgetState createState() =>
-      _AnimatedCharacterBackgroundWidgetState();
+  _AnimatedCharacterBackgroundWidgetState createState() => _AnimatedCharacterBackgroundWidgetState();
 }
 
 class _CharacterInfo {
@@ -31,8 +28,7 @@ class _CharacterInfo {
   _CharacterInfo({this.emblemColor, this.characterClass, this.damageType});
 }
 
-class _AnimatedCharacterBackgroundWidgetState
-    extends State<AnimatedCharacterBackgroundWidget>
+class _AnimatedCharacterBackgroundWidgetState extends State<AnimatedCharacterBackgroundWidget>
     with SingleTickerProviderStateMixin, ProfileConsumer, ManifestConsumer, NotificationConsumer {
   List<_CharacterInfo> characters;
   AnimationController _controller;
@@ -52,8 +48,7 @@ class _AnimatedCharacterBackgroundWidgetState
     _controller.forward();
     subscription = notifications.listen((event) {
       if (!mounted) return;
-      if (event.type == NotificationType.receivedUpdate ||
-          event.type == NotificationType.localUpdate) {
+      if (event.type == NotificationType.receivedUpdate || event.type == NotificationType.localUpdate) {
         updateCharacters();
       }
     });
@@ -65,15 +60,11 @@ class _AnimatedCharacterBackgroundWidgetState
     characters = [];
     for (var c in _characters) {
       var equipment = profile.getCharacterEquipment(c.characterId);
-      var subclass =
-          equipment.firstWhere((i) => i.bucketHash == InventoryBucket.subclass);
-      var subclassDef = await manifest
-          .getDefinition<DestinyInventoryItemDefinition>(subclass.itemHash);
+      var subclass = equipment.firstWhere((i) => i.bucketHash == InventoryBucket.subclass);
+      var subclassDef = await manifest.getDefinition<DestinyInventoryItemDefinition>(subclass.itemHash);
 
       characters.add(_CharacterInfo(
-          emblemColor: c.emblemColor,
-          characterClass: c.classType,
-          damageType: subclassDef?.talentGrid?.hudDamageType));
+          emblemColor: c.emblemColor, characterClass: c.classType, damageType: subclassDef?.talentGrid?.hudDamageType));
     }
     characterChangedListener();
   }
@@ -88,19 +79,15 @@ class _AnimatedCharacterBackgroundWidgetState
 
   characterChangedListener() {
     Color emblemColor;
-    var character = widget.tabController.index < characters.length
-        ? characters[widget.tabController.index]
-        : null;
+    var character = widget.tabController.index < characters.length ? characters[widget.tabController.index] : null;
     if (character != null) {
-      emblemColor = Color.fromARGB(255, character.emblemColor.red,
-          character.emblemColor.green, character.emblemColor.blue);
+      emblemColor =
+          Color.fromARGB(255, character.emblemColor.red, character.emblemColor.green, character.emblemColor.blue);
     } else {
       emblemColor = Colors.black;
     }
 
-    tween = ColorTween(
-        begin: tween.lerp(_controller.value),
-        end: Color.lerp(emblemColor, Colors.grey.shade700, .4));
+    tween = ColorTween(begin: tween.lerp(_controller.value), end: Color.lerp(emblemColor, Colors.grey.shade700, .4));
     _controller.reset();
     _controller.forward();
     if (!mounted) return;
@@ -114,8 +101,7 @@ class _AnimatedCharacterBackgroundWidgetState
         builder: (context, child) {
           return Container(
               decoration: BoxDecoration(
-            gradient:
-                RadialGradient(center: Alignment.topCenter, radius: 1, colors: [
+            gradient: RadialGradient(center: Alignment.topCenter, radius: 1, colors: [
               tween.evaluate(_controller),
               Color.lerp(tween.evaluate(_controller), Colors.black, .9),
             ]),

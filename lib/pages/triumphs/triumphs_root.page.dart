@@ -1,6 +1,5 @@
 //@dart=2.12
 import 'package:bungie_api/destiny2.dart';
-import 'package:bungie_api/models/destiny_presentation_node_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/pages/triumphs/lore.page_route.dart';
 import 'package:little_light/pages/triumphs/triumphs.page_route.dart';

@@ -7,7 +7,6 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/models/tracked_objective.dart';
 import 'package:little_light/pages/item_details/item_details.page.dart';
 import 'package:little_light/services/littlelight/objectives.service.dart';
-import 'package:little_light/services/notification/events/notification.event.dart';
 import 'package:little_light/services/notification/notification.package.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/profile/profile_component_groups.dart';
@@ -127,8 +126,7 @@ class ObjectivesScreenState extends State<ObjectivesScreen> with ProfileConsumer
             top: 4),
         itemCount: items.length,
         gridDelegate: SliverSimpleGridDelegateWithFixedCrossAxisCount(crossAxisCount: isTablet ? 2 : 1),
-        itemBuilder: (context, index) =>
-            Container(height: 132, child: getItem(context, index)));
+        itemBuilder: (context, index) => Container(height: 132, child: getItem(context, index)));
   }
 
   Widget getItem(BuildContext context, int index) {
