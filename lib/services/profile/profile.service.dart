@@ -30,11 +30,11 @@ class ProfileService with UserSettingsConsumer, StorageConsumer, AuthConsumer, B
 
   bool pauseAutomaticUpdater = false;
   bool _disposed = false;
-  
+
   DateTime? lastUpdated;
   DestinyProfileResponse? _profile;
   LastLoadedFrom? _lastLoadedFrom;
-  
+
   ProfileService._internal();
 
   _dispose() {
@@ -51,7 +51,7 @@ class ProfileService with UserSettingsConsumer, StorageConsumer, AuthConsumer, B
       this._lastLoadedFrom = LastLoadedFrom.server;
       if (!skipUpdate) notifications.push(NotificationEvent(NotificationType.receivedUpdate));
       final profile = this._profile;
-      if(profile != null){
+      if (profile != null) {
         this._cacheProfile(profile);
       }
       return res;
@@ -176,7 +176,7 @@ class ProfileService with UserSettingsConsumer, StorageConsumer, AuthConsumer, B
       final lastPlayedStr = lastCharacter?.dateLastPlayed;
       if (lastPlayedStr == null) return false;
       var lastPlayed = DateTime.tryParse(lastPlayedStr);
-      if(lastPlayed == null) return false;
+      if (lastPlayed == null) return false;
       var currentSession = lastCharacter?.minutesPlayedThisSession ?? "0";
       return lastPlayed.add(Duration(minutes: int.parse(currentSession) + 10)).isBefore(DateTime.now().toUtc());
     } catch (e) {
@@ -298,7 +298,7 @@ class ProfileService with UserSettingsConsumer, StorageConsumer, AuthConsumer, B
 
     List<DestinyCharacterComponent>? list = _profile?.characters?.data?.values.toList();
 
-    switch (order.type) {
+    switch (order?.type) {
       case CharacterSortParameterType.LastPlayed:
         {
           list?.sort((charA, charB) {
@@ -425,15 +425,15 @@ class ProfileService with UserSettingsConsumer, StorageConsumer, AuthConsumer, B
     List<DestinyItemComponent> items = [];
     List<DestinyItemComponent>? profileInventory = _profile?.profileInventory?.data?.items;
     final profileItems = profileInventory?.where((item) => _ids.contains(item.itemInstanceId)).toList();
-    if(profileItems != null) items += profileItems;
+    if (profileItems != null) items += profileItems;
 
     _profile?.characterEquipment?.data?.forEach((id, equipment) {
       final equipmentItems = equipment.items?.where((item) => _ids.contains(item.itemInstanceId)).toList();
-      if(equipmentItems!= null) items += equipmentItems;
+      if (equipmentItems != null) items += equipmentItems;
     });
     _profile?.characterInventories?.data?.forEach((id, equipment) {
       final charItems = equipment.items?.where((item) => _ids.contains(item.itemInstanceId)).toList();
-      if(charItems != null) items += charItems;
+      if (charItems != null) items += charItems;
     });
     return items;
   }

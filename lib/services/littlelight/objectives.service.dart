@@ -1,7 +1,3 @@
-
-
-
-
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:collection/collection.dart' show IterableExtension;
@@ -28,19 +24,14 @@ class ObjectivesService with StorageConsumer, ProfileConsumer, ManifestConsumer 
       await _loadTrackedObjectivesFromCache();
     }
     var dirty = false;
-    var itemObjectives = _trackedObjectives!
-        .where((o) => o.type == TrackedObjectiveType.Item)
-        .toList();
-    var plugObjectives = _trackedObjectives!
-        .where((o) => o.type == TrackedObjectiveType.Plug)
-        .toList();
+    var itemObjectives = _trackedObjectives!.where((o) => o.type == TrackedObjectiveType.Item).toList();
+    var plugObjectives = _trackedObjectives!.where((o) => o.type == TrackedObjectiveType.Plug).toList();
     for (var o in itemObjectives) {
       DestinyItemComponent? item = await findObjectiveItem(o);
       if (item == null) {
         _trackedObjectives!.remove(o);
         dirty = true;
-      } else if (item?.itemHash != o.hash ||
-          item?.itemInstanceId != o.instanceId) {
+      } else if (item.itemHash != o.hash || item.itemInstanceId != o.instanceId) {
         o.hash = item.itemHash;
         o.instanceId = item.itemInstanceId;
         dirty = true;
@@ -59,30 +50,24 @@ class ObjectivesService with StorageConsumer, ProfileConsumer, ManifestConsumer 
     return _trackedObjectives;
   }
 
-  Future<DestinyItemComponent?> findObjectiveItem(
-      TrackedObjective objective) async {
-
+  Future<DestinyItemComponent?> findObjectiveItem(TrackedObjective objective) async {
     DestinyItemComponent? item;
     if (objective.instanceId != null) {
-      item = profile.getCharacterInventory(objective.characterId!).firstWhereOrNull(
-          (i) => i.itemInstanceId == objective.instanceId);
-    } else {
       item = profile
           .getCharacterInventory(objective.characterId!)
-          .firstWhereOrNull((i) => i.itemHash == objective.hash);
+          .firstWhereOrNull((i) => i.itemInstanceId == objective.instanceId);
+    } else {
+      item =
+          profile.getCharacterInventory(objective.characterId!).firstWhereOrNull((i) => i.itemHash == objective.hash);
     }
 
     if (item != null) return item;
     var items = profile.getItemsByInstanceId([objective.instanceId]);
     if (items.length > 0) return items.first;
-    var def = await manifest
-        .getDefinition<DestinyInventoryItemDefinition>(objective.hash);
+    var def = await manifest.getDefinition<DestinyInventoryItemDefinition>(objective.hash);
     if (def?.objectives?.questlineItemHash != null) {
-      var questline =
-          await manifest.getDefinition<DestinyInventoryItemDefinition>(
-              def!.objectives!.questlineItemHash);
-      var questStepHashes =
-          questline?.setData?.itemList?.map((i) => i.itemHash)?.toList() ?? [];
+      var questline = await manifest.getDefinition<DestinyInventoryItemDefinition>(def!.objectives!.questlineItemHash);
+      var questStepHashes = questline?.setData?.itemList?.map((i) => i.itemHash).toList() ?? [];
       var item = profile
           .getCharacterInventory(objective.characterId!)
           .firstWhereOrNull((i) => questStepHashes.contains(i.itemHash));
@@ -91,14 +76,12 @@ class ObjectivesService with StorageConsumer, ProfileConsumer, ManifestConsumer 
     return null;
   }
 
-  Future<DestinyItemComponent?> findObjectivePlugItem(
-      TrackedObjective objective) async {
-
+  Future<DestinyItemComponent?> findObjectivePlugItem(TrackedObjective objective) async {
     var items = profile.getAllItems();
     var item = items.firstWhereOrNull((i) => i.item.itemHash == objective.parentHash);
     if (item == null) return null;
-    var plugObjective = profile.getPlugObjectives(item?.item?.itemInstanceId!);
-    if(plugObjective?.containsKey("${objective.hash}") ?? false){
+    var plugObjective = profile.getPlugObjectives(item.item.itemInstanceId!);
+    if (plugObjective?.containsKey("${objective.hash}") ?? false) {
       return item.item;
     }
     return null;
@@ -108,8 +91,7 @@ class ObjectivesService with StorageConsumer, ProfileConsumer, ManifestConsumer 
     List<dynamic>? json = await currentMembershipStorage.getTrackedObjectives();
 
     if (json != null) {
-      List<TrackedObjective> objectives =
-          json.map((j) => TrackedObjective.fromJson(j)).toList();
+      List<TrackedObjective> objectives = json.map((j) => TrackedObjective.fromJson(j)).toList();
       this._trackedObjectives = objectives;
       return this._trackedObjectives;
     }
@@ -121,29 +103,18 @@ class ObjectivesService with StorageConsumer, ProfileConsumer, ManifestConsumer 
   Future<void> addTrackedObjective(TrackedObjectiveType type, int? hash,
       {String? instanceId, String? characterId, int? parentHash}) async {
     var found = _trackedObjectives!.firstWhereOrNull(
-        (o) =>
-            o.type == type &&
-            o.hash == hash &&
-            o.instanceId == instanceId &&
-            characterId == o.characterId);
+        (o) => o.type == type && o.hash == hash && o.instanceId == instanceId && characterId == o.characterId);
     if (found == null) {
       _trackedObjectives!.add(TrackedObjective(
-          type: type,
-          hash: hash,
-          instanceId: instanceId,
-          characterId: characterId,
-          parentHash: parentHash));
+          type: type, hash: hash, instanceId: instanceId, characterId: characterId, parentHash: parentHash));
     }
     await _saveTrackedObjectives();
   }
 
   Future<void> removeTrackedObjective(TrackedObjectiveType type, int? hash,
       {String? instanceId, String? characterId}) async {
-    _trackedObjectives!.removeWhere((o) =>
-        o.type == type &&
-        o.hash == hash &&
-        o.instanceId == instanceId &&
-        o.characterId == characterId);
+    _trackedObjectives!.removeWhere(
+        (o) => o.type == type && o.hash == hash && o.instanceId == instanceId && o.characterId == characterId);
     await _saveTrackedObjectives();
   }
 

@@ -1,5 +1,3 @@
-
-
 import 'package:get_it/get_it.dart';
 import 'package:little_light/models/bucket_display_options.dart';
 import 'package:little_light/models/character_sort_parameter.dart';
@@ -34,7 +32,7 @@ class UserSettingsService with StorageConsumer, AuthConsumer {
 
   initItemOrdering() async {
     List<ItemSortParameter> savedParams = await globalStorage.getItemOrdering() ?? [];
-    List<ItemSortParameterType?> presentParams = (savedParams ?? []).map((p) => p.type).toList();
+    List<ItemSortParameterType?> presentParams = (savedParams).map((p) => p.type).toList();
     var defaults = ItemSortParameter.defaultItemList;
     var defaultParams = defaults.map((p) => p.type);
     savedParams.removeWhere((p) => !defaultParams.contains(p.type));
@@ -93,10 +91,10 @@ class UserSettingsService with StorageConsumer, AuthConsumer {
     if (_bucketDisplayOptions?.containsKey(id) ?? false) {
       return _bucketDisplayOptions![id];
     }
-    if (defaultBucketDisplayOptions?.containsKey(id) ?? false) {
+    if (defaultBucketDisplayOptions.containsKey(id)) {
       return defaultBucketDisplayOptions[id];
     }
-    if (id?.startsWith("vault") ?? false) {
+    if (id.startsWith("vault")) {
       return BucketDisplayOptions(type: BucketDisplayType.Small);
     }
     return BucketDisplayOptions(type: BucketDisplayType.Medium);
@@ -156,13 +154,13 @@ class UserSettingsService with StorageConsumer, AuthConsumer {
     currentMembershipStorage.savePriorityTags(_priorityTags as Set<String>);
   }
 
-  addPriorityTag(ItemNotesTag tag){
+  addPriorityTag(ItemNotesTag tag) {
     final tags = priorityTags!;
     tags.add(tag.tagId);
     _setPriorityTags(tags);
   }
 
-  removePriorityTag(ItemNotesTag tag){
+  removePriorityTag(ItemNotesTag tag) {
     final tags = priorityTags!;
     tags.remove(tag.tagId);
     _setPriorityTags(tags);
