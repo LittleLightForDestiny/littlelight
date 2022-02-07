@@ -51,7 +51,6 @@ dependencies:
   intl: any
 
   bubble: 1.2.1
-  # speech_bubble: ^0.0.9
 
   get_it: ^7.0.2
   provider: ^6.0.1
