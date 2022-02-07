@@ -1,3 +1,5 @@
+
+
 import 'dart:async';
 
 import 'package:bungie_api/destiny2.dart';
@@ -15,70 +17,70 @@ const _vendorComponents = [
 
 class VendorsService with StorageConsumer, BungieApiConsumer {
   static final VendorsService _singleton = new VendorsService._internal();
-  DateTime lastUpdated;
+  DateTime? lastUpdated;
   factory VendorsService() {
     return _singleton;
   }
   VendorsService._internal();
 
-  Map<String, DestinyVendorsResponse> _vendors = {};
+  Map<String?, DestinyVendorsResponse?> _vendors = {};
 
-  Future<Map<String, DestinyVendorComponent>> getVendors(String characterId) async {
+  Future<Map<String, DestinyVendorComponent>?> getVendors(String? characterId) async {
     var vendors = await _getVendorsDataForCharacter(characterId);
     return vendors?.vendors?.data;
   }
 
-  Future<List<DestinyVendorCategory>> getVendorCategories(String characterId, int vendorHash) async {
+  Future<List<DestinyVendorCategory>?> getVendorCategories(String? characterId, int? vendorHash) async {
     var vendors = await _getVendorsDataForCharacter(characterId);
-    return vendors?.categories?.data["$vendorHash"]?.categories;
+    return vendors?.categories?.data!["$vendorHash"]?.categories;
   }
 
-  Future<List<DestinyVendorGroup>> getVendorGroups(String characterId) async {
+  Future<List<DestinyVendorGroup>?> getVendorGroups(String characterId) async {
     var vendors = await _getVendorsDataForCharacter(characterId);
     return vendors?.vendorGroups?.data?.groups;
   }
 
-  Future<List<DestinyItemSocketState>> getSaleItemSockets(String characterId, int vendorHash, int index) async {
+  Future<List<DestinyItemSocketState>?> getSaleItemSockets(String? characterId, int? vendorHash, int? index) async {
     var vendors = await _getVendorsDataForCharacter(characterId);
     try {
-      return vendors?.itemComponents["$vendorHash"].sockets.data["$index"].sockets;
+      return vendors?.itemComponents!["$vendorHash"]!.sockets!.data!["$index"]!.sockets;
     } catch (e) {}
     return null;
   }
 
-  Future<Map<String, List<DestinyItemPlugBase>>> getSaleItemReusablePerks(
-      String characterId, int vendorHash, int index) async {
-    var vendors = await _getVendorsDataForCharacter(characterId);
+  Future<Map<String, List<DestinyItemPlugBase>>?> getSaleItemReusablePerks(
+      String? characterId, int? vendorHash, int? index) async {
+    var vendors = await (_getVendorsDataForCharacter(characterId) as FutureOr<DestinyVendorsResponse>);
     try {
-      return vendors.itemComponents["$vendorHash"].reusablePlugs.data["$index"]?.plugs;
+      return vendors.itemComponents!["$vendorHash"]!.reusablePlugs!.data!["$index"]?.plugs;
     } catch (e) {}
     return null;
   }
 
-  Future<DestinyItemInstanceComponent> getSaleItemInstanceInfo(String characterId, int vendorHash, int index) async {
+  Future<DestinyItemInstanceComponent?> getSaleItemInstanceInfo(String? characterId, int? vendorHash, int? index) async {
     var vendors = await _getVendorsDataForCharacter(characterId);
     try {
-      return vendors?.itemComponents["$vendorHash"].instances.data["$index"];
+      return vendors?.itemComponents!["$vendorHash"]!.instances!.data!["$index"];
     } catch (e) {}
     return null;
   }
 
-  Future<Map<String, DestinyVendorSaleItemComponent>> getVendorSales(String characterId, int vendorHash) async {
+  Future<Map<String, DestinyVendorSaleItemComponent>?> getVendorSales(String? characterId, int? vendorHash) async {
     var vendors = await _getVendorsDataForCharacter(characterId);
-    return vendors?.sales?.data["$vendorHash"]?.saleItems;
+    return vendors?.sales?.data!["$vendorHash"]?.saleItems;
   }
 
-  Future<DestinyVendorsResponse> _getVendorsDataForCharacter(String characterId) async {
+  Future<DestinyVendorsResponse?> _getVendorsDataForCharacter(String? characterId) async {
     if (!_vendors.containsKey(characterId)) {
-      _vendors[characterId] = await bungieAPI.getVendors(_vendorComponents, characterId);
+      _vendors[characterId] = await bungieAPI.getVendors(_vendorComponents, characterId!);
     }
     return _vendors[characterId];
   }
 
-  Future<Map<String, DestinyVendorsResponse>> fetchVendorData() async {
+  Future<Map<String?, DestinyVendorsResponse?>> fetchVendorData() async {
     try {
       Map<String, DestinyVendorsResponse> res = await _updateVendorsData();
-      currentMembershipStorage.saveCachedVendors(_vendors);
+      currentMembershipStorage.saveCachedVendors(_vendors as Map<String, DestinyVendorsResponse>);
       return res;
     } catch (e) {}
     return _vendors;

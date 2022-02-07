@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'package:flutter/material.dart';
 import 'package:little_light/utils/item_filters/base_item_filter.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';

@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';

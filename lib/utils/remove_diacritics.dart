@@ -1,3 +1,5 @@
+// @dart=2.9
+
 final _defaultDiacriticsRemovalap = [
   {
     'base': 'A',

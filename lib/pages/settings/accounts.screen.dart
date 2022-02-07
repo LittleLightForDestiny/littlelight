@@ -1,3 +1,5 @@
+// @dart=2.9
+
 
 import 'package:bungie_api/models/general_user.dart';
 import 'package:bungie_api/models/group_user_info_card.dart';

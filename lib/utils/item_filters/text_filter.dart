@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/services/littlelight/item_notes.consumer.dart';

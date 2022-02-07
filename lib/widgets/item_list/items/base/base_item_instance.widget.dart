@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'package:bungie_api/enums/destiny_item_type.dart';
 import 'package:bungie_api/enums/item_state.dart';
 import 'package:bungie_api/models/destiny_character_component.dart';

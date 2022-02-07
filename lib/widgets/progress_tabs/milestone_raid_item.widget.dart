@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'package:bungie_api/models/destiny_activity_definition.dart';
 import 'package:bungie_api/models/destiny_milestone.dart';
 import 'package:bungie_api/models/destiny_milestone_activity_phase.dart';

@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'dart:math';
 import 'dart:ui';
 import 'package:bungie_api/enums/destiny_item_type.dart';

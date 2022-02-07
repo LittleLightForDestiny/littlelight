@@ -1,3 +1,5 @@
+// @dart=2.9
+
 
 import 'package:bungie_api/enums/destiny_scope.dart';
 import 'package:bungie_api/enums/vendor_item_status.dart';

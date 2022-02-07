@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/models/bucket_display_options.dart';

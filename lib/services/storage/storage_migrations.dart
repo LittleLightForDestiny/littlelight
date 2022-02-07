@@ -1,14 +1,15 @@
+
+
 import 'dart:io';
 
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'storage.keys.dart';
-
 class StorageMigrations {
-  String rootPath;
-  SharedPreferences prefs;
-  int get currentVersion => prefs.getInt(StorageKeys.currentVersion.path) ?? 0;
+  String? rootPath;
+  late SharedPreferences prefs;
+  // int get currentVersion => prefs.getInt(StorageKeys.currentVersion.path) ?? 0;
+  int get currentVersion => 0;
   constructor() {}
   run() async {
     var root = await getApplicationDocumentsDirectory();
@@ -20,7 +21,7 @@ class StorageMigrations {
   }
 
   removeOldManifest() async {
-    if(currentVersion > 106003) return;
+    if (currentVersion > 106003) return;
     var dbFile = File("$rootPath/manifest.db");
     if (await dbFile.exists()) {
       await dbFile.delete();
@@ -39,34 +40,34 @@ class StorageMigrations {
     // var cachedRaidHashesFile = File("$rootPath/cached_raid_hashes.json");
     // if (latestMembership == null) return;
     // try {
-      // var membershipJson = jsonDecode(latestMembership);
-      // var tokenJson = jsonDecode(latestToken);
+    // var membershipJson = jsonDecode(latestMembership);
+    // var tokenJson = jsonDecode(latestToken);
 
-      // var membershipType = membershipJson['membershipType'];
-      // var membershipData = UserMembershipData.fromJson(membershipJson);
-      // var bungieNetToken = BungieNetToken.fromJson(tokenJson);
-      // var tokenDate = DateTime.parse(tokenJson['saved_date']);
+    // var membershipType = membershipJson['membershipType'];
+    // var membershipData = UserMembershipData.fromJson(membershipJson);
+    // var bungieNetToken = BungieNetToken.fromJson(tokenJson);
+    // var tokenDate = DateTime.parse(tokenJson['saved_date']);
 
-      // var selectedAccount = membershipData.bungieNetUser.membershipId;
-      // var selectedMembership = membershipData.destinyMemberships
-      //     .firstWhere((m) => m.membershipType == membershipType,
-      //         orElse: () => null)
-      //     ?.membershipId;
-      
-      // var accountStorage;//StorageService.account(selectedAccount);
-      // var membershipStorage = StorageService.membership(selectedMembership);
+    // var selectedAccount = membershipData.bungieNetUser.membershipId;
+    // var selectedMembership = membershipData.destinyMemberships
+    //     .firstWhere((m) => m.membershipType == membershipType,
+    //         orElse: () => null)
+    //     ?.membershipId;
 
-      // accountStorage.setJson(StorageKeys.latestToken, bungieNetToken);
-      // accountStorage.setJson(
-      //     StorageKeys.membershipData, bungieNetToken);
-      // accountStorage.setDate(StorageKeys.latestTokenDate, tokenDate);
-      // StorageService.setAccount(selectedAccount);
-      // StorageService.setMembership(selectedMembership);
+    // var accountStorage;//StorageService.account(selectedAccount);
+    // var membershipStorage = StorageService.membership(selectedMembership);
 
-      // membershipStorage.setString(StorageKeys.membershipSecret,
-      //     prefs.getString("littlelight_secret"));
-      // membershipStorage.setString(StorageKeys.membershipUUID,
-      //     prefs.getString("littlelight_device_id"));
+    // accountStorage.setJson(StorageKeys.latestToken, bungieNetToken);
+    // accountStorage.setJson(
+    //     StorageKeys.membershipData, bungieNetToken);
+    // accountStorage.setDate(StorageKeys.latestTokenDate, tokenDate);
+    // StorageService.setAccount(selectedAccount);
+    // StorageService.setMembership(selectedMembership);
+
+    // membershipStorage.setString(StorageKeys.membershipSecret,
+    //     prefs.getString("littlelight_secret"));
+    // membershipStorage.setString(StorageKeys.membershipUUID,
+    //     prefs.getString("littlelight_device_id"));
 
     //   if (await cachedLoadoutsFile.exists()) {
     //     var str = await cachedLoadoutsFile.readAsString();
@@ -99,7 +100,7 @@ class StorageMigrations {
     // }
   }
 
-  v106003() async{
+  v106003() async {
     // if(currentVersion > 106003) return;
     // var dbPath = await getDatabasesPath();
     // var docPath = (await getApplicationDocumentsDirectory()).path;

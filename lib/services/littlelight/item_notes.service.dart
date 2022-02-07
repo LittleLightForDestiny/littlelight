@@ -1,3 +1,5 @@
+
+
 import 'package:get_it/get_it.dart';
 import 'package:little_light/models/item_notes.dart';
 import 'package:little_light/models/item_notes_tag.dart';
@@ -18,20 +20,20 @@ setupitemNotes(){
 class ItemNotesService with StorageConsumer {
   ItemNotesService._internal();
 
-  Map<String, ItemNotes> _notes;
-  Map<String, ItemNotesTag> _tags;
+  Map<String, ItemNotes>? _notes;
+  Map<String?, ItemNotesTag>? _tags;
 
   reset() {
     _notes = null;
     _tags = null;
   }
 
-  List<ItemNotesTag> tagsByIds(Set<String> ids) {
+  List<ItemNotesTag?>? tagsByIds(Set<String?>? ids) {
     if (ids == null) return null;
     return ids
         ?.map((i) {
-          if (_defaultTags.containsKey(i)) return _defaultTags[i];
-          if (_tags?.containsKey(i) ?? false) return _tags[i];
+          if (_defaultTags.containsKey(i)) return _defaultTags[i!];
+          if (_tags?.containsKey(i) ?? false) return _tags![i];
           return null;
         })
         ?.where((t) => t != null)
@@ -42,7 +44,7 @@ class ItemNotesService with StorageConsumer {
     return _defaultTags.values.toList() + (_tags?.values?.toList() ?? []);
   }
 
-  Future<Map<String, ItemNotes>> getNotes({forceFetch: false}) async {
+  Future<Map<String, ItemNotes>?> getNotes({forceFetch: false}) async {
     if (_notes != null && !forceFetch) {
       return _notes;
     }
@@ -76,22 +78,22 @@ class ItemNotesService with StorageConsumer {
     return false;
   }
 
-  ItemNotes getNotesForItem(int itemHash, String itemInstanceId,
+  ItemNotes? getNotesForItem(int? itemHash, String? itemInstanceId,
       [bool orNew = false]) {
     if (_notes == null) return null;
-    if (_notes.containsKey("${itemHash}_$itemInstanceId")) {
-      return _notes["${itemHash}_$itemInstanceId"];
+    if (_notes!.containsKey("${itemHash}_$itemInstanceId")) {
+      return _notes!["${itemHash}_$itemInstanceId"];
     }
     if (orNew) {
-      _notes["${itemHash}_$itemInstanceId"] = ItemNotes.fromScratch(
-          itemHash: itemHash, itemInstanceId: itemInstanceId);
-      return _notes["${itemHash}_$itemInstanceId"];
+      _notes!["${itemHash}_$itemInstanceId"] = ItemNotes.fromScratch(
+          itemHash: itemHash!, itemInstanceId: itemInstanceId);
+      return _notes!["${itemHash}_$itemInstanceId"];
     }
     return null;
   }
 
   Future<int> saveNotes(ItemNotes notes) async {
-    var allNotes = await this.getNotes();
+    var allNotes = await (this.getNotes() as FutureOr<Map<String, ItemNotes>>);
     allNotes[notes.uniqueId] = notes;
     await _saveNotesToStorage();
     var api = LittleLightApiService();
@@ -109,14 +111,14 @@ class ItemNotesService with StorageConsumer {
     if (_tags == null) {
       _tags = Map();
     }
-    _tags[tag.tagId] = tag;
+    _tags![tag.tagId] = tag;
     await _saveTagsToStorage();
     var api = LittleLightApiService();
     return await api.saveTag(tag);
   }
 
   Future<void> _saveTagsToStorage() async {
-    await currentMembershipStorage.saveCachedTags(_tags ?? Map());
+    await currentMembershipStorage.saveCachedTags(_tags as Map<String, ItemNotesTag>? ?? Map());
   }
 
   Future<void> _saveNotesToStorage() async {

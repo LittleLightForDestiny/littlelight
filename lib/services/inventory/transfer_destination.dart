@@ -1,8 +1,10 @@
 
+
+
 import 'enums/item_destination.dart';
 
 class TransferDestination {
-  final String characterId;
+  final String? characterId;
   final ItemDestination type;
   final InventoryAction action;
 

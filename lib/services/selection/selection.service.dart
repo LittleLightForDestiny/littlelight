@@ -1,5 +1,8 @@
+
+
 import 'dart:async';
 
+import 'package:collection/collection.dart' show IterableExtension;
 import 'package:get_it/get_it.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 
@@ -13,7 +16,7 @@ class SelectionService {
 
   List<ItemWithOwner> _selectedItems = [];
 
-  Stream<List<ItemWithOwner>> _eventsStream;
+  Stream<List<ItemWithOwner>>? _eventsStream;
   StreamController<List<ItemWithOwner>> _streamController =
       StreamController.broadcast();
 
@@ -26,7 +29,7 @@ class SelectionService {
     _multiSelectActivated = true;
   }
 
-  Stream<List<ItemWithOwner>> get broadcaster {
+  Stream<List<ItemWithOwner>>? get broadcaster {
     if (_eventsStream != null) {
       return _eventsStream;
     }
@@ -49,12 +52,12 @@ class SelectionService {
   }
 
   addItem(ItemWithOwner item) {
-    ItemWithOwner alreadyAdded = _selectedItems.firstWhere((i){
+    ItemWithOwner? alreadyAdded = _selectedItems.firstWhereOrNull((i){
       if(item.item.itemInstanceId != null){
         return i.item.itemInstanceId == item.item.itemInstanceId;
       }
       return i.item.itemHash == item.item.itemHash && i.ownerId == item.ownerId;
-    }, orElse: ()=>null);
+    });
     if(alreadyAdded != null){
       return removeItem(item);
     }

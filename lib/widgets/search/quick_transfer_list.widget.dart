@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'package:flutter/material.dart';
 import 'package:little_light/widgets/item_list/items/quicktransfer_search_item_wrapper.widget.dart';
 import 'package:little_light/widgets/search/search.controller.dart';

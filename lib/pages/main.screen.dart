@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'package:flutter/material.dart';
 import 'package:little_light/pages/collections/collections_root.page.dart';
 import 'package:little_light/pages/equipment/equipment.screen.dart';

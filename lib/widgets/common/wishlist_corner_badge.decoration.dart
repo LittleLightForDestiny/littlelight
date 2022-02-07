@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'package:flutter/material.dart';
 import 'package:little_light/models/parsed_wishlist.dart';
 import 'package:little_light/widgets/common/corner_badge.decoration.dart';

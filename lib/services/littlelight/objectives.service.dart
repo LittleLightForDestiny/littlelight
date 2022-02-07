@@ -1,7 +1,10 @@
 
 
+
+
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
+import 'package:collection/collection.dart' show IterableExtension;
 import 'package:little_light/models/tracked_objective.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
@@ -14,27 +17,27 @@ class ObjectivesService with StorageConsumer, ProfileConsumer, ManifestConsumer 
   }
   ObjectivesService._internal();
 
-  List<TrackedObjective> _trackedObjectives;
+  List<TrackedObjective>? _trackedObjectives;
 
   reset() {
     _trackedObjectives = null;
   }
 
-  Future<List<TrackedObjective>> getTrackedObjectives() async {
+  Future<List<TrackedObjective>?> getTrackedObjectives() async {
     if (_trackedObjectives == null) {
       await _loadTrackedObjectivesFromCache();
     }
     var dirty = false;
-    var itemObjectives = _trackedObjectives
+    var itemObjectives = _trackedObjectives!
         .where((o) => o.type == TrackedObjectiveType.Item)
         .toList();
-    var plugObjectives = _trackedObjectives
+    var plugObjectives = _trackedObjectives!
         .where((o) => o.type == TrackedObjectiveType.Plug)
         .toList();
     for (var o in itemObjectives) {
-      DestinyItemComponent item = await findObjectiveItem(o);
+      DestinyItemComponent? item = await findObjectiveItem(o);
       if (item == null) {
-        _trackedObjectives.remove(o);
+        _trackedObjectives!.remove(o);
         dirty = true;
       } else if (item?.itemHash != o.hash ||
           item?.itemInstanceId != o.instanceId) {
@@ -44,9 +47,9 @@ class ObjectivesService with StorageConsumer, ProfileConsumer, ManifestConsumer 
       }
     }
     for (var o in plugObjectives) {
-      DestinyItemComponent item = await findObjectivePlugItem(o);
+      DestinyItemComponent? item = await findObjectivePlugItem(o);
       if (item == null) {
-        _trackedObjectives.remove(o);
+        _trackedObjectives!.remove(o);
         dirty = true;
       }
     }
@@ -56,18 +59,17 @@ class ObjectivesService with StorageConsumer, ProfileConsumer, ManifestConsumer 
     return _trackedObjectives;
   }
 
-  Future<DestinyItemComponent> findObjectiveItem(
+  Future<DestinyItemComponent?> findObjectiveItem(
       TrackedObjective objective) async {
 
-    DestinyItemComponent item;
+    DestinyItemComponent? item;
     if (objective.instanceId != null) {
-      item = profile.getCharacterInventory(objective.characterId).firstWhere(
-          (i) => i.itemInstanceId == objective.instanceId,
-          orElse: () => null);
+      item = profile.getCharacterInventory(objective.characterId!).firstWhereOrNull(
+          (i) => i.itemInstanceId == objective.instanceId);
     } else {
       item = profile
-          .getCharacterInventory(objective.characterId)
-          .firstWhere((i) => i.itemHash == objective.hash, orElse: () => null);
+          .getCharacterInventory(objective.characterId!)
+          .firstWhereOrNull((i) => i.itemHash == objective.hash);
     }
 
     if (item != null) return item;
@@ -78,34 +80,32 @@ class ObjectivesService with StorageConsumer, ProfileConsumer, ManifestConsumer 
     if (def?.objectives?.questlineItemHash != null) {
       var questline =
           await manifest.getDefinition<DestinyInventoryItemDefinition>(
-              def.objectives.questlineItemHash);
+              def!.objectives!.questlineItemHash);
       var questStepHashes =
           questline?.setData?.itemList?.map((i) => i.itemHash)?.toList() ?? [];
       var item = profile
-          .getCharacterInventory(objective.characterId)
-          .firstWhere((i) => questStepHashes.contains(i.itemHash),
-              orElse: () => null);
+          .getCharacterInventory(objective.characterId!)
+          .firstWhereOrNull((i) => questStepHashes.contains(i.itemHash));
       if (item != null) return item;
     }
     return null;
   }
 
-  Future<DestinyItemComponent> findObjectivePlugItem(
+  Future<DestinyItemComponent?> findObjectivePlugItem(
       TrackedObjective objective) async {
 
     var items = profile.getAllItems();
-    var item = items.firstWhere((i) => i.item.itemHash == objective.parentHash,
-        orElse: () => null);
+    var item = items.firstWhereOrNull((i) => i.item.itemHash == objective.parentHash);
     if (item == null) return null;
-    var plugObjective = profile.getPlugObjectives(item?.item?.itemInstanceId);
+    var plugObjective = profile.getPlugObjectives(item?.item?.itemInstanceId!);
     if(plugObjective?.containsKey("${objective.hash}") ?? false){
       return item.item;
     }
     return null;
   }
 
-  Future<List<TrackedObjective>> _loadTrackedObjectivesFromCache() async {
-    List<dynamic> json = await currentMembershipStorage.getTrackedObjectives();
+  Future<List<TrackedObjective>?> _loadTrackedObjectivesFromCache() async {
+    List<dynamic>? json = await currentMembershipStorage.getTrackedObjectives();
 
     if (json != null) {
       List<TrackedObjective> objectives =
@@ -118,17 +118,16 @@ class ObjectivesService with StorageConsumer, ProfileConsumer, ManifestConsumer 
     return this._trackedObjectives;
   }
 
-  Future<void> addTrackedObjective(TrackedObjectiveType type, int hash,
-      {String instanceId, String characterId, int parentHash}) async {
-    var found = _trackedObjectives.firstWhere(
+  Future<void> addTrackedObjective(TrackedObjectiveType type, int? hash,
+      {String? instanceId, String? characterId, int? parentHash}) async {
+    var found = _trackedObjectives!.firstWhereOrNull(
         (o) =>
             o.type == type &&
             o.hash == hash &&
             o.instanceId == instanceId &&
-            characterId == o.characterId,
-        orElse: () => null);
+            characterId == o.characterId);
     if (found == null) {
-      _trackedObjectives.add(TrackedObjective(
+      _trackedObjectives!.add(TrackedObjective(
           type: type,
           hash: hash,
           instanceId: instanceId,
@@ -138,9 +137,9 @@ class ObjectivesService with StorageConsumer, ProfileConsumer, ManifestConsumer 
     await _saveTrackedObjectives();
   }
 
-  Future<void> removeTrackedObjective(TrackedObjectiveType type, int hash,
-      {String instanceId, String characterId}) async {
-    _trackedObjectives.removeWhere((o) =>
+  Future<void> removeTrackedObjective(TrackedObjectiveType type, int? hash,
+      {String? instanceId, String? characterId}) async {
+    _trackedObjectives!.removeWhere((o) =>
         o.type == type &&
         o.hash == hash &&
         o.instanceId == instanceId &&
@@ -149,6 +148,6 @@ class ObjectivesService with StorageConsumer, ProfileConsumer, ManifestConsumer 
   }
 
   Future<void> _saveTrackedObjectives() async {
-    await currentMembershipStorage.saveTrackedObjectives(_trackedObjectives);
+    await currentMembershipStorage.saveTrackedObjectives(_trackedObjectives!);
   }
 }

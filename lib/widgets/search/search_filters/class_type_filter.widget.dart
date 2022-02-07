@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'package:bungie_api/enums/destiny_class.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/utils/destiny_data.dart';

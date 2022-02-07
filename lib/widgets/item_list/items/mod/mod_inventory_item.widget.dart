@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'package:bungie_api/enums/destiny_energy_type.dart';
 import 'package:bungie_api/enums/destiny_stat_category.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';

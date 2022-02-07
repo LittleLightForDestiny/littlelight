@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'package:bungie_api/enums/destiny_energy_type.dart';
 import 'package:bungie_api/models/destiny_energy_type_definition.dart';
 import 'package:flutter/material.dart';

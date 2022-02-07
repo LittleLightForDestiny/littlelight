@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'package:bungie_api/models/destiny_lore_definition.dart';
 import 'package:bungie_api/models/destiny_metric_component.dart';
 import 'package:bungie_api/models/destiny_metric_definition.dart';

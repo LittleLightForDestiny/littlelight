@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'package:little_light/models/parsed_wishlist.dart';
 import 'package:little_light/utils/item_filters/wishlist_tag_filter.dart';
 import 'package:little_light/utils/wishlists_data.dart';

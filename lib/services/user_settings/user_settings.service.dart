@@ -1,3 +1,5 @@
+
+
 import 'package:get_it/get_it.dart';
 import 'package:little_light/models/bucket_display_options.dart';
 import 'package:little_light/models/character_sort_parameter.dart';
@@ -13,12 +15,12 @@ setupUserSettingsService() async {
 }
 
 class UserSettingsService with StorageConsumer, AuthConsumer {
-  List<ItemSortParameter> _itemOrdering;
-  List<ItemSortParameter> _pursuitOrdering;
-  CharacterSortParameter _characterOrdering;
-  Set<String> _priorityTags;
-  Map<String, BucketDisplayOptions> _bucketDisplayOptions;
-  Map<String, bool> _detailsSectionDisplayVisibility;
+  List<ItemSortParameter>? _itemOrdering;
+  List<ItemSortParameter>? _pursuitOrdering;
+  CharacterSortParameter? _characterOrdering;
+  Set<String?>? _priorityTags;
+  Map<String, BucketDisplayOptions>? _bucketDisplayOptions;
+  Map<String, bool>? _detailsSectionDisplayVisibility;
 
   UserSettingsService._internal();
   init() async {
@@ -32,7 +34,7 @@ class UserSettingsService with StorageConsumer, AuthConsumer {
 
   initItemOrdering() async {
     List<ItemSortParameter> savedParams = await globalStorage.getItemOrdering() ?? [];
-    List<ItemSortParameterType> presentParams = (savedParams ?? []).map((p) => p.type).toList();
+    List<ItemSortParameterType?> presentParams = (savedParams ?? []).map((p) => p.type).toList();
     var defaults = ItemSortParameter.defaultItemList;
     var defaultParams = defaults.map((p) => p.type);
     savedParams.removeWhere((p) => !defaultParams.contains(p.type));
@@ -46,7 +48,7 @@ class UserSettingsService with StorageConsumer, AuthConsumer {
 
   initPursuitOrdering() async {
     List<ItemSortParameter> savedParams = await globalStorage.getPursuitOrdering() ?? [];
-    Iterable<ItemSortParameterType> presentParams = savedParams.map((p) => p.type);
+    Iterable<ItemSortParameterType?> presentParams = savedParams.map((p) => p.type);
     var defaults = ItemSortParameter.defaultPursuitList;
     var defaultParams = defaults.map((p) => p.type);
     savedParams.removeWhere((p) => !defaultParams.contains(p.type));
@@ -86,10 +88,10 @@ class UserSettingsService with StorageConsumer, AuthConsumer {
     }
   }
 
-  BucketDisplayOptions getDisplayOptionsForBucket(String id) {
+  BucketDisplayOptions? getDisplayOptionsForBucket(String? id) {
     id = removeDiacritics(id ?? "").toLowerCase();
     if (_bucketDisplayOptions?.containsKey(id) ?? false) {
-      return _bucketDisplayOptions[id];
+      return _bucketDisplayOptions![id];
     }
     if (defaultBucketDisplayOptions?.containsKey(id) ?? false) {
       return defaultBucketDisplayOptions[id];
@@ -102,14 +104,14 @@ class UserSettingsService with StorageConsumer, AuthConsumer {
 
   setDisplayOptionsForBucket(String key, BucketDisplayOptions options) {
     key = removeDiacritics(key).toLowerCase();
-    _bucketDisplayOptions[key] = options;
-    currentMembershipStorage.saveBucketDisplayOptions(_bucketDisplayOptions);
+    _bucketDisplayOptions![key] = options;
+    currentMembershipStorage.saveBucketDisplayOptions(_bucketDisplayOptions!);
   }
 
   bool getVisibilityForDetailsSection(String id) {
     id = removeDiacritics(id).toLowerCase();
     try {
-      return _detailsSectionDisplayVisibility[id] ?? true;
+      return _detailsSectionDisplayVisibility![id] ?? true;
     } catch (e) {}
     return true;
   }
@@ -117,11 +119,11 @@ class UserSettingsService with StorageConsumer, AuthConsumer {
   setVisibilityForDetailsSection(String key, bool visible) {
     key = removeDiacritics(key).toLowerCase();
     try {
-      _detailsSectionDisplayVisibility[key] = visible;
+      _detailsSectionDisplayVisibility![key] = visible;
     } catch (e) {
       return;
     }
-    currentMembershipStorage.saveDetailsSectionDisplayVisibility(_detailsSectionDisplayVisibility);
+    currentMembershipStorage.saveDetailsSectionDisplayVisibility(_detailsSectionDisplayVisibility!);
   }
 
   bool get hasTappedGhost => globalStorage.hasTappedGhost ?? false;
@@ -140,44 +142,44 @@ class UserSettingsService with StorageConsumer, AuthConsumer {
   bool get autoOpenKeyboard => globalStorage.autoOpenKeyboard ?? false;
   set autoOpenKeyboard(bool value) => globalStorage.autoOpenKeyboard = value;
 
-  List<ItemSortParameter> get itemOrdering => _itemOrdering;
+  List<ItemSortParameter>? get itemOrdering => _itemOrdering;
 
-  set itemOrdering(List<ItemSortParameter> ordering) {
+  set itemOrdering(List<ItemSortParameter>? ordering) {
     _itemOrdering = ordering;
-    globalStorage.setItemOrdering(_itemOrdering);
+    globalStorage.setItemOrdering(_itemOrdering!);
   }
 
-  Set<String> get priorityTags => _priorityTags;
+  Set<String?>? get priorityTags => _priorityTags;
 
-  _setPriorityTags(Set<String> tags) {
+  _setPriorityTags(Set<String?> tags) {
     _priorityTags = tags;
-    currentMembershipStorage.savePriorityTags(_priorityTags);
+    currentMembershipStorage.savePriorityTags(_priorityTags as Set<String>);
   }
 
   addPriorityTag(ItemNotesTag tag){
-    final tags = priorityTags;
+    final tags = priorityTags!;
     tags.add(tag.tagId);
     _setPriorityTags(tags);
   }
 
   removePriorityTag(ItemNotesTag tag){
-    final tags = priorityTags;
+    final tags = priorityTags!;
     tags.remove(tag.tagId);
     _setPriorityTags(tags);
   }
 
-  List<ItemSortParameter> get pursuitOrdering => _pursuitOrdering;
+  List<ItemSortParameter>? get pursuitOrdering => _pursuitOrdering;
 
-  set pursuitOrdering(List<ItemSortParameter> ordering) {
+  set pursuitOrdering(List<ItemSortParameter>? ordering) {
     _pursuitOrdering = ordering;
-    globalStorage.setPursuitOrdering(_pursuitOrdering);
+    globalStorage.setPursuitOrdering(_pursuitOrdering!);
   }
 
-  CharacterSortParameter get characterOrdering => _characterOrdering;
+  CharacterSortParameter? get characterOrdering => _characterOrdering;
 
-  set characterOrdering(CharacterSortParameter ordering) {
+  set characterOrdering(CharacterSortParameter? ordering) {
     _characterOrdering = ordering;
-    currentMembershipStorage.saveCharacterOrdering(_characterOrdering);
+    currentMembershipStorage.saveCharacterOrdering(_characterOrdering!);
   }
 
   LittleLightPersistentPage get startingPage {

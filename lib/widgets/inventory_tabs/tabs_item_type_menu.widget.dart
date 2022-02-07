@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'package:bungie_api/models/destiny_item_category_definition.dart';
 import 'package:flutter/material.dart';
 
