@@ -8,7 +8,7 @@ import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/item_icon/subclass_icon.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/inventory_item.mixin.dart';
 import 'package:little_light/widgets/item_list/items/subclass/subclass_image.widget.dart';
-import 'package:tinycolor/tinycolor.dart';
+import 'package:tinycolor2/tinycolor2.dart';
 
 mixin SubclassPropertiesMixin on InventoryItemMixin {
   DestinyItemTalentGridComponent get talentGrid;
