@@ -1,0 +1,16 @@
+{
+    "configurations": [
+    {
+        "name": "Flutter",
+        "type": "dart",
+        "request": "launch",
+        "program": "lib/main.dart"
+    },
+    {
+        "name": "LittleLight Dev Mode",
+        "type": "dart",
+        "request": "launch",
+        "program": "lib/dev_mode_main.dart"
+    }
+    ]
+}
