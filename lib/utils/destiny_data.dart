@@ -313,7 +313,7 @@ class DestinyData {
   }
 
   static String? getSubclassImagePath(
-      DestinyClass classType, DamageType damageType, String subclassPath) {
+      DestinyClass classType, DamageType damageType, String? subclassPath) {
     String path = "assets/subclasses/";
     switch (classType) {
       case DestinyClass.Titan:
@@ -347,7 +347,7 @@ class DestinyData {
         return null;
     }
 
-    switch (subclassPath.toLowerCase()) {
+    switch (subclassPath?.toLowerCase()) {
       case "firstpath":
       case "secondpath":
         break;

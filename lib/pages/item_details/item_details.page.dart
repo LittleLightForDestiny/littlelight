@@ -599,7 +599,11 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailsPage>
     if (perksCategory == null || socketController == null) return Container();
     var screenPadding = MediaQuery.of(context).padding;
     return Container(
-        padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
+        margin: EdgeInsets.only(top: 8),
+        padding: EdgeInsets.only(
+          left: screenPadding.left,
+          right: screenPadding.right,
+        ),
         child: Container(
             padding: EdgeInsets.symmetric(horizontal: 8),
             child: ItemDetailsSocketDetailsWidget(
@@ -617,6 +621,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailsPage>
     if (perksCategory == null || socketController == null) return Container();
     var screenPadding = MediaQuery.of(context).padding;
     return Container(
+        margin: EdgeInsets.only(top: 8),
         padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
         child: Container(
             padding: EdgeInsets.symmetric(horizontal: 8),
@@ -634,6 +639,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailsPage>
     if (modsCategory == null || socketController == null) return Container();
     var screenPadding = MediaQuery.of(context).padding;
     return Container(
+        margin: EdgeInsets.only(top: 8),
         padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
         child: Container(
             padding: EdgeInsets.symmetric(horizontal: 8),
@@ -652,6 +658,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailsPage>
     if (modsCategory == null || socketController == null) return Container();
     var screenPadding = MediaQuery.of(context).padding;
     return Container(
+        margin: EdgeInsets.only(top: 8),
         padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
         child: Container(
             padding: EdgeInsets.symmetric(horizontal: 8),

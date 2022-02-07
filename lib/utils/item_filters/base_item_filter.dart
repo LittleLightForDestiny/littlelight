@@ -19,8 +19,8 @@ abstract class BaseItemFilter<T> with ProfileConsumer, ManifestConsumer {
     if (!available || !enabled) return items.toList();
     return items
             ?.where((item) => filterItem(item, definitions: definitions))
-            ?.toList(growable: false) ??
-        items;
+            ?.toList() ??
+        items.toList();
   }
 
   bool filterItem(ItemWithOwner item,
