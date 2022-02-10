@@ -15,7 +15,6 @@ import 'package:little_light/utils/wishlists_data.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 
 class ItemPerksWidget extends StatefulWidget {
-  
   final DestinyInventoryItemDefinition definition;
   final double iconSize;
   final DestinyItemComponent item;
@@ -43,19 +42,16 @@ class ItemPerksWidget extends StatefulWidget {
 class ItemPerksWidgetState extends State<ItemPerksWidget> with WishlistsConsumer, ProfileConsumer, ManifestConsumer {
   List<DestinyItemSocketState> _itemSockets;
   Map<String, List<DestinyItemPlugBase>> _reusablePlugs;
-  List<DestinyItemSocketState> get itemSockets =>
-      _itemSockets ?? widget.itemSockets;
+  List<DestinyItemSocketState> get itemSockets => _itemSockets ?? widget.itemSockets;
   DestinyInventoryItemDefinition get definition => widget.definition;
   DestinySocketCategoryDefinition perksCatDefinition;
 
   @override
   void initState() {
     super.initState();
-    _itemSockets =
-        profile.getItemSockets(widget?.item?.itemInstanceId);
+    _itemSockets = profile.getItemSockets(widget?.item?.itemInstanceId);
     if (widget.showUnusedPerks) {
-      _reusablePlugs = widget.reusablePlugs ??
-          profile.getItemReusablePlugs(widget?.item?.itemInstanceId);
+      _reusablePlugs = widget.reusablePlugs ?? profile.getItemReusablePlugs(widget?.item?.itemInstanceId);
     }
     loadPerks();
   }
@@ -64,9 +60,7 @@ class ItemPerksWidgetState extends State<ItemPerksWidget> with WishlistsConsumer
     if (definition?.sockets?.socketCategories == null) {
       return;
     }
-    perksCatDefinition = await manifest
-        .getDefinition<DestinySocketCategoryDefinition>(
-            widget.socketCategoryHash);
+    perksCatDefinition = await manifest.getDefinition<DestinySocketCategoryDefinition>(widget.socketCategoryHash);
     if (!mounted) return;
     setState(() {});
   }
@@ -80,9 +74,8 @@ class ItemPerksWidgetState extends State<ItemPerksWidget> with WishlistsConsumer
   }
 
   Widget buildPerks(BuildContext context, DestinySocketCategoryDefinition def) {
-    var socketCategory = definition.sockets.socketCategories.firstWhere(
-        (s) => s.socketCategoryHash == def.hash,
-        orElse: () => null);
+    var socketCategory =
+        definition.sockets.socketCategories.firstWhere((s) => s.socketCategoryHash == def.hash, orElse: () => null);
     List<Widget> columns = [];
     if (socketCategory == null) return Container();
     socketCategory.socketIndexes.forEach((index) {
@@ -97,9 +90,7 @@ class ItemPerksWidgetState extends State<ItemPerksWidget> with WishlistsConsumer
 
   Widget buildPerkColumn(BuildContext context, int index) {
     if (!widget.showUnusedPerks || itemSockets == null) {
-      var hash = itemSockets != null
-          ? getEquippedPlugHashBySocketIndex(index)
-          : getDefaultPerkBySocketIndex(index);
+      var hash = itemSockets != null ? getEquippedPlugHashBySocketIndex(index) : getDefaultPerkBySocketIndex(index);
       return buildPerkIcon(context, hash);
     }
 
@@ -136,14 +127,14 @@ class ItemPerksWidgetState extends State<ItemPerksWidget> with WishlistsConsumer
     if (tags.contains(WishlistTag.GodPVE)) {
       colors.add(Colors.amber);
     } else if (tags.contains(WishlistTag.PVE)) {
-      colors.add(Color.lerp(
-          WishlistsData.getBgColor(context, WishlistTag.PVE), Theme.of(context).colorScheme.onSurface, .2));
+      colors.add(
+          Color.lerp(WishlistsData.getBgColor(context, WishlistTag.PVE), Theme.of(context).colorScheme.onSurface, .2));
     }
     if (tags.contains(WishlistTag.GodPVP)) {
       colors.add(Colors.amber);
     } else if (tags.contains(WishlistTag.PVP)) {
-      colors.add(Color.lerp(
-          WishlistsData.getBgColor(context, WishlistTag.PVP), Theme.of(context).colorScheme.onSurface, .2));
+      colors.add(
+          Color.lerp(WishlistsData.getBgColor(context, WishlistTag.PVP), Theme.of(context).colorScheme.onSurface, .2));
     }
     if (colors.length > 0) {
       return Container(

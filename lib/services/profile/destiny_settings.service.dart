@@ -1,6 +1,5 @@
 //@dart=2.12
 
-
 import 'package:bungie_api/models/core_settings_configuration.dart';
 import 'package:bungie_api/models/destiny_season_definition.dart';
 import 'package:bungie_api/models/destiny_season_pass_definition.dart';

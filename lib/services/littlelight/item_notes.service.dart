@@ -91,10 +91,10 @@ class ItemNotesService with StorageConsumer {
   }
 
   Future<bool> saveNotes(ItemNotes notes) async {
-    var allNotes = await this.getNotes();
+    final allNotes = this._notes ?? await this.getNotes();
     allNotes[notes.uniqueId] = notes;
     await _saveNotesToStorage();
-    var api = LittleLightApiService();
+    final api = LittleLightApiService();
     final result = await api.saveItemNotes(notes);
     return result == 1;
   }

@@ -12,13 +12,18 @@ import 'package:bungie_api/models/destiny_plug_set_definition.dart';
 import 'package:flutter/widgets.dart';
 import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/services/notification/events/notification.event.dart';
+import 'package:little_light/services/notification/events/notification_type.dart';
+import 'package:little_light/services/notification/notification.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 
-class ItemSocketController extends ChangeNotifier with BungieApiConsumer, ProfileConsumer, ManifestConsumer {
+class ItemSocketController extends ChangeNotifier
+    with BungieApiConsumer, ProfileConsumer, ManifestConsumer, NotificationConsumer {
   final DestinyItemComponent item;
   final DestinyInventoryItemDefinition definition;
   List<DestinyItemSocketState> socketStates;
+  List<bool> _socketBusy;
   Map<String, List<DestinyItemPlugBase>> reusablePlugs;
   List<int> _selectedSockets;
   List<int> _randomizedSelectedSockets;
@@ -92,6 +97,7 @@ class ItemSocketController extends ChangeNotifier with BungieApiConsumer, Profil
     reusablePlugs = reusablePlugs ?? profile.getItemReusablePlugs(item?.itemInstanceId);
     _selectedSockets = List<int>.filled(entries?.length ?? 0, null);
     _randomizedSelectedSockets = List<int>.filled(entries?.length ?? 0, null);
+    _socketBusy = List<bool>.generate(socketStates.length, (index) => false);
   }
 
   Future<void> _loadPlugDefinitions() async {
@@ -144,7 +150,7 @@ class ItemSocketController extends ChangeNotifier with BungieApiConsumer, Profil
   int get selectedSocketIndex => _selectedSocketIndex;
   int get selectedPlugHash => _selectedSocket;
 
-  selectSocket(int socketIndex, int plugHash) {
+  void selectSocket(int socketIndex, int plugHash) {
     if (plugHash == this._selectedSocket && socketIndex == _selectedSocketIndex) {
       this._selectedSocket = null;
       this._selectedSocketIndex = null;
@@ -163,11 +169,26 @@ class ItemSocketController extends ChangeNotifier with BungieApiConsumer, Profil
     this.notifyListeners();
   }
 
-  applySocket(int socketIndex, int plugHash) async {
+  void applySocket(int socketIndex, int plugHash) async {
     String characterID = profile.getCharacters().first.characterId;
-    await bungieAPI.applySocket(this.item.itemInstanceId, plugHash, socketIndex, characterID);
-    socketStates[socketIndex].plugHash = plugHash;
+    _socketBusy[socketIndex] = true;
     this.notifyListeners();
+    try {
+      await bungieAPI.applySocket(this.item.itemInstanceId, plugHash, socketIndex, characterID);
+      socketStates[socketIndex].plugHash = plugHash;
+    } catch (e) {}
+    _socketBusy[socketIndex] = false;
+
+    this.notifyListeners();
+    notifications.push(NotificationEvent(NotificationType.itemStateUpdate, item: this.item));
+  }
+
+  bool isSocketBusy(int socketIndex) {
+    return _socketBusy[socketIndex] ?? false;
+  }
+
+  bool canApplySocket(int socketIndex, int plugHash) {
+    return _plugDefinitions[plugHash].allowActions;
   }
 
   Set<int> socketPlugHashes(int socketIndex) {
@@ -181,9 +202,8 @@ class ItemSocketController extends ChangeNotifier with BungieApiConsumer, Profil
       var isPlugSet = (entry.plugSources.contains(SocketPlugSources.CharacterPlugSet)) ||
           (entry.plugSources.contains(SocketPlugSources.ProfilePlugSet));
       if (isPlugSet) {
-
         var plugSet = profile.getPlugSets(entry.reusablePlugSetHash);
-        hashes.addAll(plugSet.map((p) => p.plugItemHash).where((p) {
+        hashes.addAll(plugSet.where((p) => p.canInsert).map((p) => p.plugItemHash).where((p) {
           if (_armorTierIndex == null) return true;
           var def = _plugDefinitions[p];
           var energyType = def?.plug?.energyCost?.energyType ?? DestinyEnergyType.Any;

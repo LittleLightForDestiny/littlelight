@@ -14,6 +14,7 @@ import 'package:bungie_api/models/destiny_stat_group_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/models/parsed_wishlist.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
+import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
@@ -29,7 +30,6 @@ import 'package:little_light/widgets/item_stats/item_details_socket_item_stats.w
 import 'item_socket.controller.dart';
 
 class BaseSocketDetailsWidget extends BaseDestinyStatefulItemWidget {
-  
   final ItemSocketController controller;
   final DestinyItemSocketCategoryDefinition category;
 
@@ -48,7 +48,7 @@ class BaseSocketDetailsWidget extends BaseDestinyStatefulItemWidget {
 }
 
 class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget> extends BaseDestinyItemState<T>
-    with TickerProviderStateMixin, WishlistsConsumer, ManifestConsumer {
+    with TickerProviderStateMixin, WishlistsConsumer, ManifestConsumer, ItemNotesConsumer {
   DestinyStatGroupDefinition _statGroupDefinition;
   ItemSocketController get controller => widget.controller;
   Map<int, DestinySandboxPerkDefinition> _sandboxPerkDefinitions;
@@ -109,7 +109,8 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget> extends Ba
     return Container(
         margin: EdgeInsets.symmetric(vertical: 4),
         padding: EdgeInsets.all(4),
-        decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary, borderRadius: BorderRadius.circular(8)),
+        decoration:
+            BoxDecoration(color: Theme.of(context).colorScheme.secondary, borderRadius: BorderRadius.circular(8)),
         child: Column(children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -180,13 +181,14 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget> extends Ba
   }
 
   Widget buildReusableMods(BuildContext context) {
-    var plugs = controller.socketPlugHashes(controller.selectedSocketIndex);
+    var plugs = controller.socketPlugHashes(controller.selectedSocketIndex).toList();
     if ((plugs?.length ?? 0) <= 1) return Container();
-    return Wrap(
-        alignment: WrapAlignment.start,
-        runSpacing: 10,
-        spacing: 10,
-        children: plugs.map((h) => buildMod(context, controller.selectedSocketIndex, h)).toList());
+    return LayoutBuilder(
+        builder: (context, constraints) => Wrap(
+            alignment: WrapAlignment.start,
+            runSpacing: 8,
+            spacing: 8,
+            children: plugs.map((h) => buildMod(context, controller.selectedSocketIndex, h)).toList()));
   }
 
   Widget buildRandomPerks(BuildContext context) {

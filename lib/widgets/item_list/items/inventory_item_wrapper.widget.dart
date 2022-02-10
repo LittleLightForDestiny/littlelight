@@ -101,6 +101,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> exte
       if (event.type == NotificationType.itemStateUpdate &&
           event.item.itemHash == widget.item?.itemHash &&
           event.item.itemInstanceId == widget.item?.itemInstanceId) {
+        uniqueId = Uuid().v4();
         setState(() {});
       }
     });
@@ -148,15 +149,18 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> exte
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      Positioned.fill(child: buildCrossfade(context)),
-      selected
-          ? Container(
-              foregroundDecoration: BoxDecoration(border: Border.all(color: Colors.lightBlue.shade400, width: 2)),
-            )
-          : Container(),
-      buildTapHandler(context)
-    ]);
+    return Stack(
+      key: Key("item ${widget.item?.itemInstanceId} $uniqueId"),
+      children: [
+        Positioned.fill(child: buildCrossfade(context)),
+        selected
+            ? Container(
+                foregroundDecoration: BoxDecoration(border: Border.all(color: Colors.lightBlue.shade400, width: 2)),
+              )
+            : Container(),
+        buildTapHandler(context)
+      ],
+    );
   }
 
   Widget buildCrossfade(BuildContext context) {

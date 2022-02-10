@@ -17,10 +17,7 @@ class InventoryNotificationWidget extends StatefulWidget {
   final double barHeight;
   final EdgeInsets notificationMargin;
 
-  InventoryNotificationWidget(
-      {Key key,
-      this.barHeight = kBottomNavigationBarHeight,
-      this.notificationMargin})
+  InventoryNotificationWidget({Key key, this.barHeight = kBottomNavigationBarHeight, this.notificationMargin})
       : super(key: key);
 
   @override
@@ -29,17 +26,14 @@ class InventoryNotificationWidget extends StatefulWidget {
   }
 }
 
-class InventoryNotificationWidgetState
-    extends State<InventoryNotificationWidget> with ProfileConsumer, NotificationConsumer {
+class InventoryNotificationWidgetState extends State<InventoryNotificationWidget>
+    with ProfileConsumer, NotificationConsumer {
   NotificationEvent _latestEvent;
   bool get _busy =>
       _latestEvent != null &&
-      _latestEvent?.type != NotificationType.receivedUpdate;
-  bool get _isError => [
-        NotificationType.transferError,
-        NotificationType.equipError,
-        NotificationType.updateError
-      ].contains(_latestEvent?.type);
+      ![NotificationType.receivedUpdate, NotificationType.itemStateUpdate].contains(_latestEvent?.type);
+  bool get _isError => [NotificationType.transferError, NotificationType.equipError, NotificationType.updateError]
+      .contains(_latestEvent?.type);
   StreamSubscription<NotificationEvent> subscription;
 
   @override
@@ -81,22 +75,10 @@ class InventoryNotificationWidgetState
   Widget busyWidget(BuildContext context) {
     double bottomPadding = MediaQuery.of(context).padding.bottom;
     return Stack(fit: StackFit.expand, children: [
-      Positioned(
-          left: 0,
-          right: 0,
-          bottom: bottomPadding + widget.barHeight,
-          child: shimmerBar(context)),
-      Positioned(
-          right: 8,
-          bottom: bottomPadding + widget.barHeight + 10,
-          child: buildBusyContent(context)),
+      Positioned(left: 0, right: 0, bottom: bottomPadding + widget.barHeight, child: shimmerBar(context)),
+      Positioned(right: 8, bottom: bottomPadding + widget.barHeight + 10, child: buildBusyContent(context)),
       bottomPadding > 1
-          ? Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              height: bottomPadding,
-              child: bottomPaddingShimmer(context))
+          ? Positioned(bottom: 0, left: 0, right: 0, height: bottomPadding, child: bottomPaddingShimmer(context))
           : Container()
     ]);
   }
@@ -104,38 +86,31 @@ class InventoryNotificationWidgetState
   Widget buildMessage(BuildContext context) {
     switch (_latestEvent.type) {
       case NotificationType.requestedUpdate:
-        return TranslatedTextWidget("Updating",
-            uppercase: true, style: TextStyle(fontWeight: FontWeight.bold));
+        return TranslatedTextWidget("Updating", uppercase: true, style: TextStyle(fontWeight: FontWeight.bold));
         break;
 
       case NotificationType.requestedTransfer:
-        return TranslatedTextWidget("Transferring",
-            uppercase: true, style: TextStyle(fontWeight: FontWeight.bold));
+        return TranslatedTextWidget("Transferring", uppercase: true, style: TextStyle(fontWeight: FontWeight.bold));
         break;
 
       case NotificationType.requestedVaulting:
-        return TranslatedTextWidget("Moving Away",
-            uppercase: true, style: TextStyle(fontWeight: FontWeight.bold));
+        return TranslatedTextWidget("Moving Away", uppercase: true, style: TextStyle(fontWeight: FontWeight.bold));
         break;
 
       case NotificationType.requestedEquip:
-        return TranslatedTextWidget("Equipping",
-            uppercase: true, style: TextStyle(fontWeight: FontWeight.bold));
+        return TranslatedTextWidget("Equipping", uppercase: true, style: TextStyle(fontWeight: FontWeight.bold));
         break;
 
       case NotificationType.updateError:
-        return TranslatedTextWidget("Update failed",
-            uppercase: true, style: TextStyle(fontWeight: FontWeight.bold));
+        return TranslatedTextWidget("Update failed", uppercase: true, style: TextStyle(fontWeight: FontWeight.bold));
         break;
 
       case NotificationType.transferError:
-        return TranslatedTextWidget("Transfer failed",
-            uppercase: true, style: TextStyle(fontWeight: FontWeight.bold));
+        return TranslatedTextWidget("Transfer failed", uppercase: true, style: TextStyle(fontWeight: FontWeight.bold));
         break;
 
       case NotificationType.equipError:
-        return TranslatedTextWidget("Equip failed",
-            uppercase: true, style: TextStyle(fontWeight: FontWeight.bold));
+        return TranslatedTextWidget("Equip failed", uppercase: true, style: TextStyle(fontWeight: FontWeight.bold));
         break;
 
       default:
@@ -147,8 +122,7 @@ class InventoryNotificationWidgetState
     switch (_latestEvent.type) {
       case NotificationType.requestedTransfer:
       case NotificationType.requestedVaulting:
-        var instanceInfo =
-            profile.getInstanceInfo(_latestEvent.item.itemInstanceId);
+        var instanceInfo = profile.getInstanceInfo(_latestEvent.item.itemInstanceId);
         return Container(
           margin: EdgeInsets.only(left: 8),
           width: 24,
@@ -180,8 +154,7 @@ class InventoryNotificationWidgetState
           width: 24,
           height: 24,
           key: Key("item_${_latestEvent.item.itemHash}"),
-          child: ManifestImageWidget<DestinyInventoryItemDefinition>(
-              _latestEvent.item.itemHash),
+          child: ManifestImageWidget<DestinyInventoryItemDefinition>(_latestEvent.item.itemHash),
         );
         break;
 
@@ -194,9 +167,7 @@ class InventoryNotificationWidgetState
     return Container(
         margin: widget.notificationMargin,
         decoration: BoxDecoration(
-            color: _isError
-                ? Theme.of(context).errorColor
-                : LittleLightTheme.of(context).surfaceLayers.layer2,
+            color: _isError ? Theme.of(context).errorColor : LittleLightTheme.of(context).surfaceLayers.layer2,
             borderRadius: BorderRadius.all(Radius.circular(16))),
         alignment: Alignment.bottomRight,
         padding: EdgeInsets.symmetric(horizontal: 16),
@@ -205,7 +176,7 @@ class InventoryNotificationWidgetState
               padding: EdgeInsets.symmetric(vertical: 8),
               child: _isError
                   ? buildMessage(context)
-                  : ShimmerHelper.getDefaultShimmer(context, child:buildMessage(context))),
+                  : ShimmerHelper.getDefaultShimmer(context, child: buildMessage(context))),
           buildIcons(context)
         ]));
   }
