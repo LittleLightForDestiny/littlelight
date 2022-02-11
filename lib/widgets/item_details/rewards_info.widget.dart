@@ -18,25 +18,15 @@ import 'package:little_light/widgets/item_list/items/weapon/weapon_inventory_ite
 
 class RewardsInfoWidget extends BaseDestinyStatelessItemWidget {
   RewardsInfoWidget(
-      DestinyItemComponent item,
-      DestinyInventoryItemDefinition definition,
-      DestinyItemInstanceComponent instanceInfo,
-      {Key key,
-      String characterId})
-      : super(
-            item: item,
-            definition: definition,
-            instanceInfo: instanceInfo,
-            key: key,
-            characterId: characterId);
+      DestinyItemComponent item, DestinyInventoryItemDefinition definition, DestinyItemInstanceComponent instanceInfo,
+      {Key key, String characterId})
+      : super(item: item, definition: definition, instanceInfo: instanceInfo, key: key, characterId: characterId);
 
   @override
   Widget build(BuildContext context) {
-    var items =
-        definition.value?.itemValue?.where((i) => i.itemHash != null)?.toList();
+    var items = definition.value?.itemValue?.where((i) => i.itemHash != null)?.toList();
     if ((items?.length ?? 0) == 0) return Container();
-    return Column(
-        children: [buildHeader(context), buildRewardItems(context, items)]);
+    return Column(children: [buildHeader(context), buildRewardItems(context, items)]);
   }
 
   Widget buildHeader(BuildContext context) {
@@ -49,15 +39,12 @@ class RewardsInfoWidget extends BaseDestinyStatelessItemWidget {
         ));
   }
 
-  Widget buildRewardItems(
-      BuildContext context, List<DestinyItemQuantity> items) {
-    return Column(
-        children: items.map((item) => buildRewardItem(context, item)).toList());
+  Widget buildRewardItems(BuildContext context, List<DestinyItemQuantity> items) {
+    return Column(children: items.map((item) => buildRewardItem(context, item)).toList());
   }
 
   Widget buildRewardItem(BuildContext context, DestinyItemQuantity rewardItem) {
-    return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
-        rewardItem.itemHash, (def) {
+    return DefinitionProviderWidget<DestinyInventoryItemDefinition>(rewardItem.itemHash, (def) {
       if (def.equippable ?? false) {
         return Container(
             margin: EdgeInsets.all(4),
@@ -89,6 +76,7 @@ class RewardsInfoWidget extends BaseDestinyStatelessItemWidget {
               ))
             ]));
       }
+      final quantity = rewardItem?.quantity ?? 0;
       return Container(
           padding: EdgeInsets.all(4),
           child: Row(children: [
@@ -101,10 +89,13 @@ class RewardsInfoWidget extends BaseDestinyStatelessItemWidget {
             Container(
               width: 8,
             ),
-            Text(def.displayProperties.name),
-            (rewardItem.quantity ?? 0) > 1
-                ? Text(" x ${rewardItem.quantity}")
-                : Container()
+            Expanded(
+                child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(children: [
+                      Text(def.displayProperties.name),
+                      if (quantity > 1) Text(" x $quantity"),
+                    ])))
           ]));
     });
   }

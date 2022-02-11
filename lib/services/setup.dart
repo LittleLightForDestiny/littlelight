@@ -42,10 +42,11 @@ import 'manifest/manifest.service.dart';
 
 Future<void> setupServices() async {
   await GetIt.I.reset();
+  await setupStorageService();
+  // TODO: return here to test migrations;
   await setupAnalyticsService();
   await setupAppConfig();
   await setupAuthService();
-  await setupStorageService();
   await setupLanguageService();
   await setupUserSettingsService();
   await setupManifest();
@@ -76,7 +77,7 @@ initServices(BuildContext context) async {
   await manifest.setup();
 }
 
-initPostLoadingServices(BuildContext context) async{
+initPostLoadingServices(BuildContext context) async {
   final settings = getInjectedUserSettings();
   await settings.init();
   final destinySettings = getInjectedDestinySettingsService();

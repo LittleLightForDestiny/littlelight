@@ -97,7 +97,7 @@ class ItemSocketController extends ChangeNotifier
     reusablePlugs = reusablePlugs ?? profile.getItemReusablePlugs(item?.itemInstanceId);
     _selectedSockets = List<int>.filled(entries?.length ?? 0, null);
     _randomizedSelectedSockets = List<int>.filled(entries?.length ?? 0, null);
-    _socketBusy = List<bool>.generate(socketStates.length, (index) => false);
+    _socketBusy = List<bool>.generate(socketStates?.length ?? 0, (index) => false);
   }
 
   Future<void> _loadPlugDefinitions() async {

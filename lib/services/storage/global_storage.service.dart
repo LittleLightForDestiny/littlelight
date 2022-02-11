@@ -11,8 +11,8 @@ import 'package:little_light/models/game_data.dart';
 import 'package:little_light/models/item_sort_parameter.dart';
 import 'package:little_light/models/parsed_wishlist.dart';
 import 'package:little_light/models/wishlist_index.dart';
+import 'package:little_light/services/storage/migrations/storage_migrations.dart';
 import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
-import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'global_storage.keys.dart';
@@ -26,6 +26,7 @@ extension on WishlistFile {
 }
 
 setupGlobalStorageService() async {
+  await StorageMigration.runAllMigrations();
   final _sharedPrefs = await SharedPreferences.getInstance();
   GetIt.I.registerSingleton<SharedPreferences>(_sharedPrefs);
   GetIt.I.registerSingleton<GlobalStorage>(GlobalStorage._internal());
@@ -54,25 +55,12 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
   setup() async {
     if (_hasRunSetup) return;
     await super.setup();
-    try {
-      await _versionCheck();
-    } catch (e) {}
 
     if (kDebugMode) {
       print("root storage path: ${getFilePath(null)}");
     }
 
     _hasRunSetup = true;
-  }
-
-  _versionCheck() async {
-    var storedVersion = getString(GlobalStorageKeys.currentVersion);
-    var info = await PackageInfo.fromPlatform();
-    var packageVersion = info.version;
-    if (storedVersion != packageVersion) {
-      setString(GlobalStorageKeys.currentVersion, packageVersion);
-      setDate(GlobalStorageKeys.versionUpdatedDate, DateTime.now());
-    }
   }
 
   String? get currentLanguage => getString(GlobalStorageKeys.currentLanguageCode);

@@ -3,7 +3,6 @@
 import 'dart:math';
 
 import 'package:bungie_api/enums/destiny_energy_type.dart';
-import 'package:bungie_api/enums/destiny_item_type.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_socket_category_definition.dart';

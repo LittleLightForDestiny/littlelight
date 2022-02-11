@@ -33,6 +33,7 @@ class _LittleLightAppState extends State<LittleLightApp> with AnalyticsConsumer 
 
   void asyncInit() async {
     await setupServices();
+    // TODO: return here to test migrations;
     setState(() {
       canInit = true;
     });
@@ -40,7 +41,7 @@ class _LittleLightAppState extends State<LittleLightApp> with AnalyticsConsumer 
 
   @override
   Widget build(BuildContext context) {
-    if(!canInit) return Container();
+    if (!canInit) return Container();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Little Light',
