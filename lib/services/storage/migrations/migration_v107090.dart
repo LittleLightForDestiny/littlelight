@@ -158,11 +158,12 @@ class MigrationV1x7x90 extends StorageMigration {
 
     /*TODO: migrations
         migrate tracked objectives
-        migrate currentVersion
         migrate character order
         migrate item order
         migrate pursuit order
     */
+    prefs.remove("/currentVersion");
+    prefs.remove("/versionUpdatedDate");
     await tryDelete("$storageRoot/bungie_common_settings.json");
     await tryDelete("$storageRoot/parsedWishlists.json");
     await tryDelete("$storageRoot/rawData", true);

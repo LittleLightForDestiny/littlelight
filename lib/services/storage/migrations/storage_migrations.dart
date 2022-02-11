@@ -45,7 +45,8 @@ abstract class StorageMigration {
 
   static runAllMigrations() async {
     final _prefs = await SharedPreferences.getInstance();
-    final lastVersion = Version.fromString(_prefs.getString("/currentVersion") ?? "");
+    final versionValue = _prefs.get("currentVersion");
+    final lastVersion = Version.fromString(versionValue is String ? versionValue : "");
     final info = await PackageInfo.fromPlatform();
     final currentVersion = Version.fromString(info.version);
     if (lastVersion == currentVersion) {
@@ -57,8 +58,8 @@ abstract class StorageMigration {
       if (migrationVersion > currentVersion) continue;
       await migration.migrate();
     }
-    _prefs.setString("/currentVersion", info.version);
-    _prefs.setString("/versionUpdatedDate", DateTime.now().toIso8601String());
+    _prefs.setString("currentVersion", info.version);
+    _prefs.setString("versionUpdatedDate", DateTime.now().toIso8601String());
   }
 
   String get version;
