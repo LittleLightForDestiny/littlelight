@@ -1,50 +1,22 @@
-name: Update version and changelog
+name: Update Version
+description: Updates app version and changelogs
 
-on:
-  workflow_dispatch:
-    inputs:
-      version:
-        type: string
-        description: Version
-        required: true
+inputs:
+  version:
+    type: string
+    description: Version
+    required: true
 
-      changelog:
-        type: string
-        description: what's new ?
-        multiline: true
-        required: true
+  changelog:
+    type: string
+    description: What's new ?
+    required: true
+
+outputs:
+  pubspec:
+    description: "Updated pubspec"
   
-jobs:
-  format:
-    if: github.event.pull_request.head.repo.fork == false
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          ref: ${{ github.head_ref }}
-
-      - uses: actions/setup-node@v2
-        with:
-          node-version: '14'
-          cache: 'npm'
-          cache-dependency-path: .github/workflows/scripts
-
-      - name: Install script dependencies
-        run: npm ci
-        working-directory: .github/workflows/scripts
-      
-      - name: Update pubspec and changelogs
-        run: npm run version-update
-        working-directory: .github/workflows/scripts
-        
-      # - name: Check for modified files
-      #   id: git-check
-      #   run: echo ::set-output name=modified::$(if git diff-index --quiet HEAD --; then echo "false"; else echo "true"; fi)
-      
-      # - name: Push changes
-      #   run: |
-      #     git config --global user.name 'LittleLightBot'
-      #     git config --global user.email 'littlelight-bot@users.noreply.github.com'
-      #     git remote set-url origin https://x-access-token:${{ secrets.BOT_PAT }}@github.com/${{ github.repository }}
-      #     git commit -am "Code formatting"
-      #     git push
+runs:
+  using: 'node16'
+  main: '.github/workflows/scripts/version-update/index.js'
+  working-directory: './'
