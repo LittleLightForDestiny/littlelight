@@ -16,7 +16,7 @@ import 'package:get_it/get_it.dart';
 import 'package:little_light/exceptions/not_authorized.exception.dart';
 import 'package:little_light/services/app_config/app_config.consumer.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
-import 'package:little_light/services/bungie_api/bungie_api.exception.dart';
+import 'package:little_light/models/bungie_api.exception.dart';
 
 final _credentialsMissingException = Exception("Credentials are missing");
 

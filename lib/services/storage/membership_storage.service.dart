@@ -157,7 +157,7 @@ class MembershipStorage extends StorageBase<MembershipStorageKeys> {
 
   Future<CharacterSortParameter?> getCharacterOrdering() async {
     try {
-      final List<dynamic>? json = await getJson(MembershipStorageKeys.characterOrdering);
+      final Map<String, dynamic>? json = await getJson(MembershipStorageKeys.characterOrdering);
       if (json == null) return null;
       return CharacterSortParameter.fromJson(json);
     } catch (e) {

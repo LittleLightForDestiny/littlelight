@@ -8,7 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/navigator_key.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
-import 'package:little_light/services/bungie_api/bungie_api.exception.dart';
+import 'package:little_light/models/bungie_api.exception.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/dialogs/bungie_api_exception.dialog.dart';
 import 'package:little_light/widgets/dialogs/report_error.dialog.dart';
