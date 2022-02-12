@@ -15,19 +15,26 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
       
-      
-      - uses: dart-lang/setup-dart@v1
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v1
         with:
-          sdk: stable
+          channel: stable
+
+      - name: Cache pub dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.FLUTTER_HOME }}/.pub-cache
+          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: ${{ runner.os }}-pub-
 
       - name: Download pub dependencies
-        run: dart pub get
+        run: flutter pub get
 
-      - name: Flutter Build
-        run: dart pub run build_runner build --delete-conflicting-outputs
+      - name: Flutter Build generated models
+        run: flutter pub run build_runner build --delete-conflicting-outputs
       
       - name: Flutter Format
-        run: dart format --line-length 120 --fix ./lib
+        run: flutter format --line-length 120 --fix ./lib
         
       - name: Check for modified files
         id: git-check
