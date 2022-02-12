@@ -78,6 +78,7 @@ async function updatePubspec(versionString, versionNumber) {
   const versionRegexp = /# application version\nversion: .*?\n/s;
   const changedFileContents = file.replace(versionRegexp, `# application version\nversion: ${versionString}+${versionNumber}\n`)
   console.log(changedFileContents);
+  core.setOutput("pubspec", changedFileContents);
   return true;
 }
 
