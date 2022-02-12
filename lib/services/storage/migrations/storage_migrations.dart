@@ -88,4 +88,55 @@ abstract class StorageMigration {
       print(e);
     }
   }
+
+  void replacePref(String oldKey, String newKey, SharedPreferences prefs) {
+    try {
+      final value = prefs.get(oldKey);
+      if (value is String) {
+        prefs.setString(newKey, value);
+      }
+      if (value is int) {
+        prefs.setInt(newKey, value);
+      }
+      if (value is double) {
+        prefs.setDouble(newKey, value);
+      }
+      if (value is bool) {
+        prefs.setBool(newKey, value);
+      }
+      if (value is List<String>) {
+        prefs.setStringList(newKey, value);
+      }
+      if (value != null) {
+        prefs.remove(oldKey);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> moveFileOnSubdir(String folderRoot, String oldFileName, String newFileName) async {
+    try {
+      final folder = Directory(folderRoot).listSync();
+      for (final subfolder in folder) {
+        final stat = await subfolder.stat();
+        if (stat.type != FileSystemEntityType.directory) continue;
+        try {
+          await File("${subfolder.path}/$oldFileName").rename("${subfolder.path}/$newFileName");
+        } catch (e) {
+          print(e);
+        }
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> moveFile(String oldFilePath, String newFilePath) async {
+    try {
+      await File(oldFilePath).rename(newFilePath);
+    } catch (e) {
+      print(e);
+    }
+  }
 }

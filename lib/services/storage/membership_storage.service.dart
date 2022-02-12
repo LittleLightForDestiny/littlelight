@@ -55,7 +55,10 @@ class MembershipStorage extends StorageBase<MembershipStorageKeys> {
     try {
       final List<dynamic>? json = await getJson(MembershipStorageKeys.cachedTags);
       if (json == null) return null;
-      return Map.fromEntries(json.map((n) => ItemNotesTag.fromJson(n)).where((element) => element.tagId != null).map((e) => MapEntry(e.tagId!, e)));
+      return Map.fromEntries(json
+          .map((n) => ItemNotesTag.fromJson(n))
+          .where((element) => element.tagId != null)
+          .map((e) => MapEntry(e.tagId!, e)));
     } catch (e) {
       print("can't parse tags");
       print(e);
@@ -165,7 +168,7 @@ class MembershipStorage extends StorageBase<MembershipStorageKeys> {
   }
 
   Future<void> saveCharacterOrdering(CharacterSortParameter characterOrdering) async {
-    await setJson(MembershipStorageKeys.trackedObjectives, characterOrdering.toJson());
+    await setJson(MembershipStorageKeys.characterOrdering, characterOrdering.toJson());
   }
 
   Future<Map<String, BucketDisplayOptions>?> getBucketDisplayOptions() async {

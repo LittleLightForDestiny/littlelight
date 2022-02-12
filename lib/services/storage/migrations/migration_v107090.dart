@@ -10,13 +10,50 @@ class MigrationV1x7x90 extends StorageMigration {
 
   @override
   Future<void> migrate() async {
-    final prefs = await SharedPreferences.getInstance();
-    final prefKeys = prefs.getKeys();
-    final storageRoot = await getFileRoot();
-    final dbRoot = await getDatabaseRoot();
+    final _prefs = await SharedPreferences.getInstance();
+    final _prefKeys = _prefs.getKeys();
+    final _storageRoot = await getFileRoot();
+    final _dbRoot = await getDatabaseRoot();
 
+    _prefs.remove("/currentVersion");
+    _prefs.remove("/versionUpdatedDate");
+
+    removeLegacyCurrentVersion(_prefs, _prefKeys);
+    removeLittleLightAPICredentials(_prefs, _prefKeys);
+
+    replacePref('/latest_screen', 'latestScreen', _prefs);
+    replacePref('/userpref_autoOpenKeyboard', 'autoOpenKeyboard', _prefs);
+    replacePref('selected_account_id', 'currentAccountID', _prefs);
+    replacePref('selected_language', 'currentLanguageCode', _prefs);
+    replacePref('selected_membership_id', 'currentMembershipID', _prefs);
+    replacePref('/userpref_defaultFreeSlots', 'defaultFreeSlots', _prefs);
+    replacePref('/userpref_hasTappedGhost', 'hasTappedGhost', _prefs);
+    replacePref('/userpref_keepAwake', 'keepAwake', _prefs);
+    replacePref('/tapToSelect', 'tapToSelect', _prefs);
+
+    await migrateAccountIDs(_prefs, _storageRoot);
+
+    await moveFileOnSubdir("$_storageRoot/accounts", "memberships.json", "membershipData.json");
+
+    await moveFileOnSubdir("$_storageRoot/memberships", "tracked_objectives.json", "trackedObjectives.json");
+    await moveFileOnSubdir("$_storageRoot/memberships", "userpref_characterOrdering.json", "characterOrdering.json");
+
+    await moveFile("$_storageRoot/userpref_itemOrdering.json", "$_storageRoot/itemOrdering.json");
+    await moveFile("$_storageRoot/userpref_pursuitOrdering.json", "$_storageRoot/pursuitOrdering.json");
+
+    await tryDelete("$_storageRoot/bungie_common_settings.json");
+    await tryDelete("$_storageRoot/parsedWishlists.json");
+    await tryDelete("$_storageRoot/wishlists.json");
+    await tryDelete("$_storageRoot/priorityTags.json");
+    await tryDelete("$_storageRoot/rawData", true);
+    await tryDelete("$_storageRoot/rawWishlists", true);
+    await tryDelete("$_storageRoot/languages", true);
+
+    await tryDelete("$_dbRoot/languages", true);
+  }
+
+  removeLegacyCurrentVersion(SharedPreferences prefs, Iterable<String> prefKeys) {
     try {
-      prefs.remove('currentVersion');
       final manifestVersionKeys = prefKeys.where((k) {
         final regexp = RegExp("languages\/.*?\/manifestVersion");
         return regexp.hasMatch(k);
@@ -27,7 +64,9 @@ class MigrationV1x7x90 extends StorageMigration {
     } catch (e) {
       print(e);
     }
+  }
 
+  void removeLittleLightAPICredentials(SharedPreferences prefs, Iterable<String> prefKeys) {
     try {
       final membershipSecretKeys = prefKeys.where((k) {
         final regexp = RegExp("memberships\/.*?\/membership_secret");
@@ -40,6 +79,7 @@ class MigrationV1x7x90 extends StorageMigration {
       print(e);
     }
 
+    /// remove membership files `membership_uuid`
     try {
       final membershipUUIDKeys = prefKeys.where((k) {
         final regexp = RegExp("memberships\/.*?\/membership_u_u_i_d");
@@ -51,87 +91,9 @@ class MigrationV1x7x90 extends StorageMigration {
     } catch (e) {
       print(e);
     }
+  }
 
-    try {
-      final latestScreen = prefs.getString('/latest_screen');
-      if (latestScreen != null) {
-        prefs.setString("latestScreen", latestScreen);
-        prefs.remove('/latest_screen');
-      }
-    } catch (e) {
-      print(e);
-    }
-
-    try {
-      final autoOpenKeyboard = prefs.getBool('/userpref_autoOpenKeyboard');
-      if (autoOpenKeyboard != null) {
-        prefs.setBool("autoOpenKeyboard", autoOpenKeyboard);
-        prefs.remove('/userpref_autoOpenKeyboard');
-      }
-    } catch (e) {
-      print(e);
-    }
-
-    try {
-      final currentAccountID = prefs.getString('selected_account_id');
-      if (currentAccountID != null) {
-        prefs.setString("currentAccountID", currentAccountID);
-        prefs.remove('selected_account_id');
-      }
-    } catch (e) {
-      print(e);
-    }
-
-    try {
-      final currentLanguageCode = prefs.getString('selected_language');
-      if (currentLanguageCode != null) {
-        prefs.setString("currentLanguageCode", currentLanguageCode);
-        prefs.remove('selected_language');
-      }
-    } catch (e) {
-      print(e);
-    }
-
-    try {
-      final currentMembershipID = prefs.getString('selected_membership_id');
-      if (currentMembershipID != null) {
-        prefs.setString("currentMembershipID", currentMembershipID);
-        prefs.remove('selected_membership_id');
-      }
-    } catch (e) {
-      print(e);
-    }
-
-    try {
-      final defaultFreeSlots = prefs.getInt('/userpref_defaultFreeSlots');
-      if (defaultFreeSlots != null) {
-        prefs.setInt("defaultFreeSlots", defaultFreeSlots);
-        prefs.remove('/userpref_defaultFreeSlots');
-      }
-    } catch (e) {
-      print(e);
-    }
-
-    try {
-      final hasTappedGhost = prefs.getBool('/userpref_hasTappedGhost');
-      if (hasTappedGhost != null) {
-        prefs.setBool("hasTappedGhost", hasTappedGhost);
-        prefs.remove('/userpref_hasTappedGhost');
-      }
-    } catch (e) {
-      print(e);
-    }
-
-    try {
-      final keepAwake = prefs.getBool('/userpref_keepAwake');
-      if (keepAwake != null) {
-        prefs.setBool("keepAwake", keepAwake);
-        prefs.remove('/userpref_keepAwake');
-      }
-    } catch (e) {
-      print(e);
-    }
-
+  Future<void> migrateAccountIDs(SharedPreferences prefs, String? storageRoot) async {
     try {
       final accountIDs = prefs.getStringList('account_ids');
       if (accountIDs != null) {
@@ -140,36 +102,5 @@ class MigrationV1x7x90 extends StorageMigration {
     } catch (e) {
       print(e);
     }
-
-    try {
-      final accounts = Directory("$storageRoot/accounts").listSync();
-      for (final account in accounts) {
-        final stat = await account.stat();
-        if (stat.type != FileSystemEntityType.directory) continue;
-        try {
-          await File("${account.path}/memberships.json").rename("${account.path}/membershipData.json");
-        } catch (e) {
-          print(e);
-        }
-      }
-    } catch (e) {
-      print(e);
-    }
-
-    /*TODO: migrations
-        migrate tracked objectives
-        migrate character order
-        migrate item order
-        migrate pursuit order
-    */
-    prefs.remove("/currentVersion");
-    prefs.remove("/versionUpdatedDate");
-    await tryDelete("$storageRoot/bungie_common_settings.json");
-    await tryDelete("$storageRoot/parsedWishlists.json");
-    await tryDelete("$storageRoot/rawData", true);
-    await tryDelete("$storageRoot/rawWishlists", true);
-    await tryDelete("$storageRoot/wishlists.json", true);
-    await tryDelete("$storageRoot/languages", true);
-    await tryDelete("$dbRoot/languages", true);
   }
 }
