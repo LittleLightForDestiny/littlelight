@@ -19,9 +19,9 @@ class DevModeRouter {
   }
 
   void _closeWebView() async {
-    try{
+    try {
       await closeWebView();
-    }catch(e){
+    } catch (e) {
       print("can't close webview");
     }
   }
