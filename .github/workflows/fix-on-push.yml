@@ -15,10 +15,10 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
       
-      - name: Set up Dart
-        uses: dart-lang/setup-dart@v1
-          with:
-            sdk: stable
+      
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
 
       - name: Download pub dependencies
         run: dart pub get
