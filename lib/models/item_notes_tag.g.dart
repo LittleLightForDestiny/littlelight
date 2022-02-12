@@ -7,18 +7,18 @@ part of 'item_notes_tag.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-ItemNotesTag _$ItemNotesTagFromJson(Map<String, dynamic> json) {
-  return ItemNotesTag(
-    custom: json['custom'] as bool,
-    tagId: json['tagId'] as String?,
-    name: json['name'] as String,
-    backgroundColorHex: json['backgroundColorHex'] as String,
-    foregroundColorHex: json['foregroundColorHex'] as String,
-    icon: _$enumDecode(_$ItemTagIconEnumMap, json['icon']),
-  );
-}
+ItemNotesTag _$ItemNotesTagFromJson(Map<String, dynamic> json) => ItemNotesTag(
+      custom: json['custom'] as bool? ?? false,
+      tagId: json['tagId'] as String?,
+      name: json['name'] as String? ?? "",
+      backgroundColorHex: json['backgroundColorHex'] as String? ?? "#00000000",
+      foregroundColorHex: json['foregroundColorHex'] as String? ?? "#FFFFFFFF",
+      icon: $enumDecodeNullable(_$ItemTagIconEnumMap, json['icon']) ??
+          ItemTagIcon.Star,
+    );
 
-Map<String, dynamic> _$ItemNotesTagToJson(ItemNotesTag instance) => <String, dynamic>{
+Map<String, dynamic> _$ItemNotesTagToJson(ItemNotesTag instance) =>
+    <String, dynamic>{
       'custom': instance.custom,
       'tagId': instance.tagId,
       'name': instance.name,
@@ -26,32 +26,6 @@ Map<String, dynamic> _$ItemNotesTagToJson(ItemNotesTag instance) => <String, dyn
       'foregroundColorHex': instance.foregroundColorHex,
       'icon': _$ItemTagIconEnumMap[instance.icon],
     };
-
-K _$enumDecode<K, V>(
-  Map<K, V> enumValues,
-  Object? source, {
-  K? unknownValue,
-}) {
-  if (source == null) {
-    throw ArgumentError(
-      'A value must be provided. Supported values: '
-      '${enumValues.values.join(', ')}',
-    );
-  }
-
-  return enumValues.entries.singleWhere(
-    (e) => e.value == source,
-    orElse: () {
-      if (unknownValue == null) {
-        throw ArgumentError(
-          '`$source` is not one of the supported values: '
-          '${enumValues.values.join(', ')}',
-        );
-      }
-      return MapEntry(unknownValue, enumValues.values.first);
-    },
-  ).key;
-}
 
 const _$ItemTagIconEnumMap = {
   ItemTagIcon.Heart: 'Heart',

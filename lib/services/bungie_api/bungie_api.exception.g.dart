@@ -7,61 +7,25 @@ part of 'bungie_api.exception.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-BungieApiError _$BungieApiErrorFromJson(Map<String, dynamic> json) {
-  return BungieApiError(
-    errorCode: _$enumDecodeNullable(_$PlatformErrorCodesEnumMap, json['ErrorCode'],
-        unknownValue: PlatformErrorCodes.ProtectedInvalidEnumValue),
-    errorStatus: json['ErrorStatus'] as String?,
-    error: json['error'] as String?,
-    message: json['Message'] as String?,
-    errorDescription: json['error_description'] as String?,
-  );
-}
+BungieApiError _$BungieApiErrorFromJson(Map<String, dynamic> json) =>
+    BungieApiError(
+      errorCode: $enumDecodeNullable(
+          _$PlatformErrorCodesEnumMap, json['ErrorCode'],
+          unknownValue: PlatformErrorCodes.ProtectedInvalidEnumValue),
+      errorStatus: json['ErrorStatus'] as String?,
+      error: json['error'] as String?,
+      message: json['Message'] as String?,
+      errorDescription: json['error_description'] as String?,
+    );
 
-Map<String, dynamic> _$BungieApiErrorToJson(BungieApiError instance) => <String, dynamic>{
+Map<String, dynamic> _$BungieApiErrorToJson(BungieApiError instance) =>
+    <String, dynamic>{
       'ErrorCode': _$PlatformErrorCodesEnumMap[instance.errorCode],
       'ErrorStatus': instance.errorStatus,
       'error': instance.error,
       'Message': instance.message,
       'error_description': instance.errorDescription,
     };
-
-K _$enumDecode<K, V>(
-  Map<K, V> enumValues,
-  Object? source, {
-  K? unknownValue,
-}) {
-  if (source == null) {
-    throw ArgumentError(
-      'A value must be provided. Supported values: '
-      '${enumValues.values.join(', ')}',
-    );
-  }
-
-  return enumValues.entries.singleWhere(
-    (e) => e.value == source,
-    orElse: () {
-      if (unknownValue == null) {
-        throw ArgumentError(
-          '`$source` is not one of the supported values: '
-          '${enumValues.values.join(', ')}',
-        );
-      }
-      return MapEntry(unknownValue, enumValues.values.first);
-    },
-  ).key;
-}
-
-K? _$enumDecodeNullable<K, V>(
-  Map<K, V> enumValues,
-  dynamic source, {
-  K? unknownValue,
-}) {
-  if (source == null) {
-    return null;
-  }
-  return _$enumDecode<K, V>(enumValues, source, unknownValue: unknownValue);
-}
 
 const _$PlatformErrorCodesEnumMap = {
   PlatformErrorCodes.None: 0,
@@ -792,7 +756,8 @@ const _$PlatformErrorCodesEnumMap = {
   PlatformErrorCodes.ClanFireteamScheduledFireteamsDisabled: 3017,
   PlatformErrorCodes.ClanFireteamNotReadyForInvitesNotScheduledYet: 3018,
   PlatformErrorCodes.ClanFireteamNotReadyForInvitesClosed: 3019,
-  PlatformErrorCodes.ClanFireteamScheduledFireteamsRequireAdminPermissions: 3020,
+  PlatformErrorCodes.ClanFireteamScheduledFireteamsRequireAdminPermissions:
+      3020,
   PlatformErrorCodes.ClanFireteamNonPublicMustHaveClan: 3021,
   PlatformErrorCodes.ClanFireteamPublicCreationRestriction: 3022,
   PlatformErrorCodes.ClanFireteamAlreadyJoined: 3023,
@@ -815,8 +780,10 @@ const _$PlatformErrorCodesEnumMap = {
   PlatformErrorCodes.CrossSaveThresholdExceeded: 3208,
   PlatformErrorCodes.CrossSaveIncompatibleMembershipType: 3209,
   PlatformErrorCodes.CrossSaveCouldNotFindLinkedAccountForMembershipType: 3210,
-  PlatformErrorCodes.CrossSaveCouldNotCreateDestinyProfileForMembershipType: 3211,
-  PlatformErrorCodes.CrossSaveErrorCreatingDestinyProfileForMembershipType: 3212,
+  PlatformErrorCodes.CrossSaveCouldNotCreateDestinyProfileForMembershipType:
+      3211,
+  PlatformErrorCodes.CrossSaveErrorCreatingDestinyProfileForMembershipType:
+      3212,
   PlatformErrorCodes.CrossSaveCannotOverrideSelf: 3213,
   PlatformErrorCodes.CrossSaveRecentSilverPurchase: 3214,
   PlatformErrorCodes.CrossSaveSilverBalanceNegative: 3215,
