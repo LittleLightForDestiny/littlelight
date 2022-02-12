@@ -8,35 +8,26 @@ on:
   
 jobs:
   format:
-    # if: github.event.pull_request.head.repo.full_name == github.repository
+    if: github.event.pull_request.head.repo.full_name == LittleLightForDestiny/littlelight
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         with:
           ref: ${{ github.head_ref }}
       
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v1
-        with:
-          channel: stable
-
-      - name: Cache pub dependencies
-        uses: actions/cache@v2
-        with:
-          path: ${{ env.FLUTTER_HOME }}/.pub-cache
-          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
-          restore-keys: ${{ runner.os }}-pub-
+      - name: Set up Dart
+        uses: dart-lang/setup-dart@v1
+          with:
+            sdk: stable
 
       - name: Download pub dependencies
-        run: flutter pub get
+        run: dart pub get
 
-      - name: Flutter Format
-        run: flutter pub run build_runner build --delete-conflicting-outputs
+      - name: Flutter Build
+        run: dart pub run build_runner build --delete-conflicting-outputs
       
       - name: Flutter Format
-        run: flutter format --line-length 40 --fix ./lib
-
-      
+        run: dart format --line-length 120 --fix ./lib
         
       - name: Check for modified files
         id: git-check
