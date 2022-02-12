@@ -29,5 +29,9 @@ jobs:
           cache-dependency-path: .github/workflows/scripts/package-lock.json
       
       - name: Updates version and changelog
+        run: npm ci
+        working-directory: .github/workflows/scripts/
+
+      - name: Updates version and changelog
         run: npm run version-update -- --version=${{github.event.inputs.version}} --changelog==${{github.event.inputs.changelog}}
         working-directory: .github/workflows/scripts/
