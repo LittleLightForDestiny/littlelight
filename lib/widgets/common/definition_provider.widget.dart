@@ -8,9 +8,7 @@ class DefinitionProviderWidget<T> extends StatefulWidget {
   final int hash;
   final DefinitionWidgetBuilder<T> widgetBuilder;
   final Widget? placeholder;
-  DefinitionProviderWidget(this.hash, this.widgetBuilder,
-      {this.placeholder, Key? key})
-      : super(key: key);
+  DefinitionProviderWidget(this.hash, this.widgetBuilder, {this.placeholder, Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -18,7 +16,7 @@ class DefinitionProviderWidget<T> extends StatefulWidget {
   }
 }
 
-class DefinitionProviderWidgetState<T> extends State<DefinitionProviderWidget<T>> with ManifestConsumer{
+class DefinitionProviderWidgetState<T> extends State<DefinitionProviderWidget<T>> with ManifestConsumer {
   T? definition;
   @override
   void initState() {
@@ -28,18 +26,19 @@ class DefinitionProviderWidgetState<T> extends State<DefinitionProviderWidget<T>
 
   void loadDefinition() async {
     definition = await manifest.getDefinition<T>(widget.hash);
-    if(mounted == true){
+    if (mounted == true) {
       setState(() {});
     }
   }
+
   @override
   Widget build(BuildContext context) {
     final definition = this.definition;
-    if(definition != null){
+    if (definition != null) {
       return widget.widgetBuilder(definition);
     }
     final placeholder = widget.placeholder;
-    if(placeholder != null){
+    if (placeholder != null) {
       return placeholder;
     }
     return Container();

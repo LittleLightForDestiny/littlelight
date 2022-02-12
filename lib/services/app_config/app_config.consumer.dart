@@ -6,7 +6,7 @@ import 'app_config.dart';
 
 AppConfig getInjectedAppConfig() => GetIt.I<AppConfig>();
 
-extension AppConfigProvider on AppConfigConsumer{
+extension AppConfigProvider on AppConfigConsumer {
   AppConfig get appConfig => getInjectedAppConfig();
 }
 

@@ -18,11 +18,7 @@ class SubclassTalentGridInfo {
   int classSkillPerkHash;
 
   SubclassTalentGridInfo(
-      {this.damageType,
-      this.mainPerkHash,
-      this.grenadePerkHash,
-      this.jumpPerkHash,
-      this.classSkillPerkHash});
+      {this.damageType, this.mainPerkHash, this.grenadePerkHash, this.jumpPerkHash, this.classSkillPerkHash});
 }
 
 const Map<String, int> _subclassMainPerks = {
@@ -72,25 +68,19 @@ const Map<String, int> _subclassMainPerks = {
   "warlock_stasis": 1507879500,
 };
 
-Future<SubclassTalentGridInfo> getSubclassTalentGridInfo(
-    DestinyItemComponent item) async {
+Future<SubclassTalentGridInfo> getSubclassTalentGridInfo(DestinyItemComponent item) async {
   final profile = getInjectedProfileService();
   final manifest = getInjectedManifestService();
-  var def = await manifest
-      .getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
+  var def = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
   var talentGrid = profile.getTalentGrid(item?.itemInstanceId);
-  var talentGridDef = await manifest
-      .getDefinition<DestinyTalentGridDefinition>(talentGrid.talentGridHash);
-  var talentgridCategory =
-      extractTalentGridNodeCategory(talentGridDef, talentGrid);
+  var talentGridDef = await manifest.getDefinition<DestinyTalentGridDefinition>(talentGrid.talentGridHash);
+  var talentgridCategory = extractTalentGridNodeCategory(talentGridDef, talentGrid);
   var mainPerk = getSubclassMainPerk(def, talentgridCategory);
 
-  return SubclassTalentGridInfo(
-      mainPerkHash: mainPerk, damageType: def.talentGrid.hudDamageType);
+  return SubclassTalentGridInfo(mainPerkHash: mainPerk, damageType: def.talentGrid.hudDamageType);
 }
 
-int getSubclassMainPerk(DestinyInventoryItemDefinition def,
-    DestinyTalentNodeCategory talentgridCategory) {
+int getSubclassMainPerk(DestinyInventoryItemDefinition def, DestinyTalentNodeCategory talentgridCategory) {
   var str = "";
   switch (def.classType) {
     case DestinyClass.Titan:
@@ -133,18 +123,13 @@ int getSubclassMainPerk(DestinyInventoryItemDefinition def,
 }
 
 DestinyTalentNodeCategory extractTalentGridNodeCategory(
-    DestinyTalentGridDefinition talentGridDef,
-    DestinyItemTalentGridComponent talentGrid) {
-  Iterable<int> activatedNodes = talentGrid?.nodes
-      ?.where((node) => node.isActivated)
-      ?.map((node) => node.nodeIndex);
-  Iterable<DestinyTalentNodeCategory> selectedSkills =
-      talentGridDef?.nodeCategories?.where((category) {
-    var overlapping = category.nodeHashes
-        .where((nodeHash) => activatedNodes?.contains(nodeHash) ?? false);
+    DestinyTalentGridDefinition talentGridDef, DestinyItemTalentGridComponent talentGrid) {
+  Iterable<int> activatedNodes = talentGrid?.nodes?.where((node) => node.isActivated)?.map((node) => node.nodeIndex);
+  Iterable<DestinyTalentNodeCategory> selectedSkills = talentGridDef?.nodeCategories?.where((category) {
+    var overlapping = category.nodeHashes.where((nodeHash) => activatedNodes?.contains(nodeHash) ?? false);
     return overlapping.length > 0;
   })?.toList();
-  DestinyTalentNodeCategory subclassPath = selectedSkills
-      ?.firstWhere((nodeDef) => nodeDef.isLoreDriven, orElse: () => null);
+  DestinyTalentNodeCategory subclassPath =
+      selectedSkills?.firstWhere((nodeDef) => nodeDef.isLoreDriven, orElse: () => null);
   return subclassPath;
 }

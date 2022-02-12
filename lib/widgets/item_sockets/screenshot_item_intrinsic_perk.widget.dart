@@ -21,12 +21,7 @@ class ScreenShotItemIntrinsicPerkWidget extends BaseItemSocketsWidget {
     DestinyItemSocketCategoryDefinition category,
     ItemSocketController controller,
     this.pixelSize = 1,
-  }) : super(
-            key: key,
-            item: item,
-            definition: definition,
-            category: category,
-            controller: controller);
+  }) : super(key: key, item: item, definition: definition, category: category, controller: controller);
 
   @override
   State<StatefulWidget> createState() {
@@ -36,8 +31,7 @@ class ScreenShotItemIntrinsicPerkWidget extends BaseItemSocketsWidget {
 
 const _sectionId = "screenshot_intrinsic_perks";
 
-class ScreenShotItemIntrinsicPerkWidgetState<
-        T extends ScreenShotItemIntrinsicPerkWidget>
+class ScreenShotItemIntrinsicPerkWidgetState<T extends ScreenShotItemIntrinsicPerkWidget>
     extends BaseItemSocketsWidgetState<T> {
   @override
   String get sectionId => _sectionId;
@@ -48,9 +42,8 @@ class ScreenShotItemIntrinsicPerkWidgetState<
   @override
   Widget build(BuildContext context) {
     if (category == null) return Container();
-    Iterable<int> plugs = category.socketIndexes
-        .map((socketIndex) => socketPlugHashes(socketIndex).length)
-        .where((l) => l > 0);
+    Iterable<int> plugs =
+        category.socketIndexes.map((socketIndex) => socketPlugHashes(socketIndex).length).where((l) => l > 0);
     if (plugs.length == 0) return Container();
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -75,8 +68,7 @@ class ScreenShotItemIntrinsicPerkWidgetState<
           ),
         ),
         Container(
-            margin: EdgeInsets.only(
-                top: 2 * widget.pixelSize, bottom: 16 * widget.pixelSize),
+            margin: EdgeInsets.only(top: 2 * widget.pixelSize, bottom: 16 * widget.pixelSize),
             color: Theme.of(context).colorScheme.onSurface.withOpacity(.7),
             height: 3 * widget.pixelSize)
       ],
@@ -85,9 +77,8 @@ class ScreenShotItemIntrinsicPerkWidgetState<
 
   @override
   Widget buildSockets(BuildContext context) {
-    Iterable<Widget> children = category.socketIndexes
-        .map((socketIndex) => buildSocketPlugs(context, socketIndex))
-        .where((w) => w != null);
+    Iterable<Widget> children =
+        category.socketIndexes.map((socketIndex) => buildSocketPlugs(context, socketIndex)).where((w) => w != null);
     return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -100,9 +91,7 @@ class ScreenShotItemIntrinsicPerkWidgetState<
     var plugHash = socketSelectedPlugHash(socketIndex);
     if ((plugs?.length ?? 0) == 0) return null;
     return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Container(
-          width: 80 * widget.pixelSize,
-          child: buildPlug(context, socketIndex, plugHash)),
+      Container(width: 80 * widget.pixelSize, child: buildPlug(context, socketIndex, plugHash)),
       Container(width: 20 * widget.pixelSize),
       Expanded(
           child: Column(
@@ -111,16 +100,14 @@ class ScreenShotItemIntrinsicPerkWidgetState<
           ManifestText<DestinyInventoryItemDefinition>(
             plugHash,
             uppercase: true,
-            style: TextStyle(
-                fontSize: 22 * widget.pixelSize, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 22 * widget.pixelSize, fontWeight: FontWeight.bold),
           ),
           Container(height: 10 * widget.pixelSize),
           ManifestText<DestinyInventoryItemDefinition>(
             plugHash,
             textExtractor: (def) => def.displayProperties.description,
             softWrap: true,
-            style: TextStyle(
-                fontSize: 22 * widget.pixelSize, fontWeight: FontWeight.w300),
+            style: TextStyle(fontSize: 22 * widget.pixelSize, fontWeight: FontWeight.w300),
           ),
         ],
       ))
@@ -135,8 +122,7 @@ class ScreenShotItemIntrinsicPerkWidgetState<
     int equippedHash = socketEquippedPlugHash(socketIndex);
     bool isEquipped = equippedHash == plugItemHash;
     bool isExotic = definition.inventory.tierType == TierType.Exotic;
-    bool isSelectedOnSocket =
-        plugItemHash == controller.socketSelectedPlugHash(socketIndex);
+    bool isSelectedOnSocket = plugItemHash == controller.socketSelectedPlugHash(socketIndex);
     bool isSelected = plugItemHash == controller.selectedPlugHash;
     Color bgColor = Colors.transparent;
     Color borderColor = Colors.grey.shade300.withOpacity(.5);
@@ -152,8 +138,7 @@ class ScreenShotItemIntrinsicPerkWidgetState<
       borderColor = Colors.transparent;
     }
 
-    BorderSide borderSide =
-        BorderSide(color: borderColor, width: 2 * widget.pixelSize);
+    BorderSide borderSide = BorderSide(color: borderColor, width: 2 * widget.pixelSize);
 
     return Container(
         key: Key("plug_${socketIndex}_$plugItemHash"),
@@ -163,14 +148,11 @@ class ScreenShotItemIntrinsicPerkWidgetState<
             aspectRatio: 1,
             child: MaterialButton(
               shape: intrinsic && !isExotic
-                  ? RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4 * widget.pixelSize),
-                      side: borderSide)
+                  ? RoundedRectangleBorder(borderRadius: BorderRadius.circular(4 * widget.pixelSize), side: borderSide)
                   : CircleBorder(side: borderSide),
               padding: EdgeInsets.all(intrinsic ? 0 : 8 * widget.pixelSize),
               color: bgColor,
-              child: ManifestImageWidget<DestinyInventoryItemDefinition>(
-                  plugItemHash),
+              child: ManifestImageWidget<DestinyInventoryItemDefinition>(plugItemHash),
               onPressed: () {
                 controller.selectSocket(socketIndex, plugItemHash);
               },

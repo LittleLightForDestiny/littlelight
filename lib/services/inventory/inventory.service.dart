@@ -322,7 +322,7 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
     if (needsVaulting) {
       int result = await bungieAPI.transferItem(item.itemHash, stackSize, true, item.itemInstanceId, sourceCharacterId);
       if (result != 0) {
-        throw new TransferError(TransferErrorType.cantMoveToVault);
+        throw TransferError(TransferErrorType.cantMoveToVault);
       }
       if (def.inventory.isInstanceItem) {
         item.bucketHash = InventoryBucket.general;
@@ -360,7 +360,7 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
       int result =
           await bungieAPI.transferItem(item.itemHash, stackSize, false, item.itemInstanceId, destinationCharacterId);
       if (result != 0) {
-        throw new TransferError(TransferErrorType.cantMoveToCharacter);
+        throw TransferError(TransferErrorType.cantMoveToCharacter);
       }
 
       if (def.inventory.isInstanceItem) {
@@ -400,7 +400,7 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
     DestinyItemComponent currentlyEquipped = equipment.firstWhere((i) => i.bucketHash == item.bucketHash);
     int result = await bungieAPI.equipItem(item.itemInstanceId, characterId);
     if (result != 0) {
-      throw new TransferError(TransferErrorType.cantEquip);
+      throw TransferError(TransferErrorType.cantEquip);
     }
     List<DestinyItemComponent> inventory = profile.getCharacterInventory(characterId);
     inventory.removeWhere((i) => i.itemInstanceId == item.itemInstanceId);
@@ -451,7 +451,7 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
       DestinyItemInstanceComponent previouslyEquippedInstance =
           profile.getInstanceInfo(previouslyEquippedItem.itemInstanceId);
       if (![PlatformErrorCodes.Success, PlatformErrorCodes.None].contains(result.equipStatus)) {
-        throw new TransferError(TransferErrorType.cantEquip);
+        throw TransferError(TransferErrorType.cantEquip);
       }
       previouslyEquippedInstance.isEquipped = false;
       charEquipment.removeWhere((item) => item.itemInstanceId == previouslyEquippedItem.itemInstanceId);
@@ -607,11 +607,11 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
         (i) => i.item.itemHash == item.item.itemHash && i.item.itemInstanceId == item.item.itemInstanceId,
         orElse: () => null);
     profileItem.item.state = item?.item?.state;
-    notifications.push(new NotificationEvent(NotificationType.itemStateUpdate, item: item.item));
+    notifications.push(NotificationEvent(NotificationType.itemStateUpdate, item: item.item));
     await bungieAPI.changeLockState(item?.item?.itemInstanceId, ownerId, locked);
   }
 
   fireLocalUpdate() {
-    notifications.push(new NotificationEvent(NotificationType.localUpdate));
+    notifications.push(NotificationEvent(NotificationType.localUpdate));
   }
 }

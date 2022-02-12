@@ -35,7 +35,8 @@ class ItemObjectivesWidget extends BaseDestinyStatefulItemWidget {
   }
 }
 
-class ItemObjectivesWidgetState extends BaseDestinyItemState<ItemObjectivesWidget> with ProfileConsumer, ManifestConsumer, NotificationConsumer {
+class ItemObjectivesWidgetState extends BaseDestinyItemState<ItemObjectivesWidget>
+    with ProfileConsumer, ManifestConsumer, NotificationConsumer {
   Map<int, DestinyObjectiveDefinition> objectiveDefinitions;
   List<DestinyObjectiveProgress> itemObjectives;
   StreamSubscription<NotificationEvent> subscription;

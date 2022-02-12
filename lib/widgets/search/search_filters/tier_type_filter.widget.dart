@@ -14,19 +14,17 @@ class TierTypeFilterWidget extends BaseSearchFilterWidget<TierTypeFilter> {
   _TierTypeFilterWidgetState createState() => _TierTypeFilterWidgetState();
 }
 
-class _TierTypeFilterWidgetState extends BaseSearchFilterWidgetState<
-    TierTypeFilterWidget, TierTypeFilter, FilterTierType> {
+class _TierTypeFilterWidgetState
+    extends BaseSearchFilterWidgetState<TierTypeFilterWidget, TierTypeFilter, FilterTierType> {
   @override
   Widget buildButtons(BuildContext context) {
     return Wrap(
-        alignment: WrapAlignment.center,
-        children: options?.map((o) => buildButton(context, o))?.toList() ?? []);
+        alignment: WrapAlignment.center, children: options?.map((o) => buildButton(context, o))?.toList() ?? []);
   }
 
   @override
   Widget buildButton(BuildContext context, FilterTierType value) {
-    return FractionallySizedBox(
-        widthFactor: 1 / 3, child: super.buildButton(context, value));
+    return FractionallySizedBox(widthFactor: 1 / 3, child: super.buildButton(context, value));
   }
 
   @override
@@ -57,9 +55,7 @@ class _TierTypeFilterWidgetState extends BaseSearchFilterWidgetState<
     try {
       var value = options.single;
       return Container(
-        decoration: BoxDecoration(
-            color: buttonBgColor(value),
-            borderRadius: BorderRadius.circular(8)),
+        decoration: BoxDecoration(color: buttonBgColor(value), borderRadius: BorderRadius.circular(8)),
         padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
         child: Text(
           value.tierName.toUpperCase(),

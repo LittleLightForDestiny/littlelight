@@ -17,12 +17,10 @@ import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/item_details/item_stats.widget.dart';
 
 class PerkListItem extends StatefulWidget {
-  
   final DestinyInventoryItemDefinition definition;
   final DestinyItemPlug plug;
 
-  PerkListItem({Key key, this.definition, this.plug})
-      : super(key: key);
+  PerkListItem({Key key, this.definition, this.plug}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -30,8 +28,7 @@ class PerkListItem extends StatefulWidget {
   }
 }
 
-class PerkListItemState extends State<PerkListItem>
-    with TickerProviderStateMixin, ManifestConsumer {
+class PerkListItemState extends State<PerkListItem> with TickerProviderStateMixin, ManifestConsumer {
   bool isTracking = false;
 
   DestinyInventoryItemDefinition get definition => widget.definition;
@@ -47,9 +44,8 @@ class PerkListItemState extends State<PerkListItem>
 
   loadDefinitions() async {
     if ((definition?.objectives?.objectiveHashes?.length ?? 0) > 0) {
-      objectiveDefinitions = await manifest
-          .getDefinitions<DestinyObjectiveDefinition>(
-              definition.objectives.objectiveHashes);
+      objectiveDefinitions =
+          await manifest.getDefinitions<DestinyObjectiveDefinition>(definition.objectives.objectiveHashes);
       if (mounted) {
         setState(() {});
       }
@@ -61,28 +57,28 @@ class PerkListItemState extends State<PerkListItem>
     return Container(
         margin: EdgeInsets.symmetric(vertical: 4),
         padding: EdgeInsets.all(4),
-        decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.secondary,
-            borderRadius: BorderRadius.circular(8)),
+        decoration:
+            BoxDecoration(color: Theme.of(context).colorScheme.secondary, borderRadius: BorderRadius.circular(8)),
         child: Column(children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Expanded(child:Row(
+              Expanded(
+                  child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Container(
                     width: 32,
                     height: 32,
                     child: QueuedNetworkImage(
-                      imageUrl: BungieApiService.url(
-                          definition?.displayProperties?.icon),
+                      imageUrl: BungieApiService.url(definition?.displayProperties?.icon),
                     ),
                   ),
                   Container(
                     width: 8,
                   ),
-                  Expanded(child:Text(
+                  Expanded(
+                      child: Text(
                     definition?.displayProperties?.name ?? "",
                     softWrap: true,
                     overflow: TextOverflow.fade,
@@ -90,13 +86,10 @@ class PerkListItemState extends State<PerkListItem>
                   )),
                 ],
               )),
-             
             ],
           ),
           AnimatedCrossFade(
-              crossFadeState: open 
-                  ? CrossFadeState.showSecond
-                  : CrossFadeState.showFirst,
+              crossFadeState: open ? CrossFadeState.showSecond : CrossFadeState.showFirst,
               alignment: Alignment.topCenter,
               duration: Duration(milliseconds: 300),
               firstChild: Container(),
@@ -124,9 +117,7 @@ class PerkListItemState extends State<PerkListItem>
           width: 25,
           height: 25,
           alignment: Alignment.center,
-          child: Icon(
-              open ? FontAwesomeIcons.minusCircle : FontAwesomeIcons.plusCircle,
-              size: 18)),
+          child: Icon(open ? FontAwesomeIcons.minusCircle : FontAwesomeIcons.plusCircle, size: 18)),
       Positioned.fill(
           child: Material(
               color: Colors.transparent,
@@ -141,8 +132,7 @@ class PerkListItemState extends State<PerkListItem>
   }
 
   buildStats(BuildContext context) {
-    List<DestinyItemInvestmentStatDefinition> stats =
-        definition?.investmentStats;
+    List<DestinyItemInvestmentStatDefinition> stats = definition?.investmentStats;
 
     if (stats == null || stats.length == 0) {
       return Container();
@@ -162,9 +152,7 @@ class PerkListItemState extends State<PerkListItem>
               color: Colors.black,
               alignment: Alignment.center,
               padding: EdgeInsets.all(4),
-              child: TranslatedTextWidget("Stats",
-                  uppercase: true,
-                  style: TextStyle(fontWeight: FontWeight.w700))),
+              child: TranslatedTextWidget("Stats", uppercase: true, style: TextStyle(fontWeight: FontWeight.w700))),
           Container(
               padding: EdgeInsets.all(8),
               child: Column(
@@ -177,8 +165,7 @@ class PerkListItemState extends State<PerkListItem>
     if ((definition?.objectives?.objectiveHashes?.length ?? 0) == 0) {
       return Container();
     }
-    List<Widget> children =
-        definition.objectives.objectiveHashes.map<Widget>((hash) {
+    List<Widget> children = definition.objectives.objectiveHashes.map<Widget>((hash) {
       var objective = getObjective(hash);
       if (!(objective?.visible ?? false)) return Container();
       return ObjectiveWidget(
@@ -189,9 +176,7 @@ class PerkListItemState extends State<PerkListItem>
     }).toList();
     return Container(
         // padding: EdgeInsets.all(8),
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: children));
+        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: children));
   }
 
   updateTrackStatus() async {
@@ -215,7 +200,6 @@ class PerkListItemState extends State<PerkListItem>
 
   DestinyObjectiveProgress getObjective(hash) {
     if (widget.plug?.plugObjectives == null) return null;
-    return widget.plug?.plugObjectives
-        ?.firstWhere((o) => o.objectiveHash == hash, orElse: () => null);
+    return widget.plug?.plugObjectives?.firstWhere((o) => o.objectiveHash == hash, orElse: () => null);
   }
 }

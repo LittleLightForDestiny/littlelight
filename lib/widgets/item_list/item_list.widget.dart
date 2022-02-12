@@ -38,7 +38,7 @@ const _suppressEmptySpaces = [
   InventoryBucket.lostItems
 ];
 
-typedef void OnBucketOptionsChanged();
+typedef OnBucketOptionsChanged = void Function();
 
 class ItemListWidget extends StatefulWidget {
   final String characterId;
@@ -68,7 +68,7 @@ class ItemListWidget extends StatefulWidget {
       this.onBucketOptionsChanged})
       : super(key: key);
   @override
-  ItemListWidgetState createState() => new ItemListWidgetState();
+  ItemListWidgetState createState() => ItemListWidgetState();
 }
 
 class ItemListWidgetState extends State<ItemListWidget>

@@ -17,8 +17,7 @@ TrackedObjective _$TrackedObjectiveFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$TrackedObjectiveToJson(TrackedObjective instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$TrackedObjectiveToJson(TrackedObjective instance) => <String, dynamic>{
       'type': _$TrackedObjectiveTypeEnumMap[instance.type],
       'hash': instance.hash,
       'instanceId': instance.instanceId,

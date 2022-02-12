@@ -20,8 +20,7 @@ import 'package:little_light/widgets/item_list/items/weapon/weapon_inventory_ite
 import 'package:little_light/widgets/progress_tabs/pursuit_item/large_pursuit_item.widget.dart';
 
 class SearchItemWrapperWidget extends InventoryItemWrapperWidget {
-  SearchItemWrapperWidget(DestinyItemComponent item, int bucketHash,
-      {String characterId, Key key})
+  SearchItemWrapperWidget(DestinyItemComponent item, int bucketHash, {String characterId, Key key})
       : super(item, bucketHash, characterId: characterId, key: key);
 
   @override
@@ -36,16 +35,15 @@ class SearchItemWrapperWidgetState<T extends SearchItemWrapperWidget>
   Widget build(BuildContext context) {
     return Container(
         child: Stack(children: [
-          Positioned.fill(child: buildItem(context)),
-          selected
-              ? Container(
-                  foregroundDecoration: BoxDecoration(
-                      border: Border.all(
-                          color: Theme.of(context).selectedRowColor, width: 2)),
-                )
-              : Container(),
-          buildTapHandler(context)
-        ]));
+      Positioned.fill(child: buildItem(context)),
+      selected
+          ? Container(
+              foregroundDecoration:
+                  BoxDecoration(border: Border.all(color: Theme.of(context).selectedRowColor, width: 2)),
+            )
+          : Container(),
+      buildTapHandler(context)
+    ]));
   }
 
   @override
@@ -98,8 +96,7 @@ class SearchItemWrapperWidgetState<T extends SearchItemWrapperWidget>
         }
 
       default:
-        if (InventoryBucket.pursuitBucketHashes
-            .contains(widget?.item?.bucketHash)) {
+        if (InventoryBucket.pursuitBucketHashes.contains(widget?.item?.bucketHash)) {
           return LargePursuitItemWidget(
             characterId: widget.characterId,
             trailing: buildCharacterIcon(context),
@@ -125,8 +122,7 @@ class SearchItemWrapperWidgetState<T extends SearchItemWrapperWidget>
       icon = Image.asset("assets/imgs/inventory-icon.jpg");
     } else {
       var character = profile.getCharacter(widget.characterId);
-      icon = QueuedNetworkImage(
-          imageUrl: BungieApiService.url(character.emblemPath));
+      icon = QueuedNetworkImage(imageUrl: BungieApiService.url(character.emblemPath));
     }
 
     return Container(

@@ -10,7 +10,7 @@ class NotesResponse {
   List<ItemNotes> notes;
   List<ItemNotesTag> tags;
 
-  NotesResponse({List<ItemNotes>? notes, List<ItemNotesTag>? tags}):
-    this.notes = notes ?? [],
-    this.tags = tags ?? [];
+  NotesResponse({List<ItemNotes>? notes, List<ItemNotesTag>? tags})
+      : this.notes = notes ?? [],
+        this.tags = tags ?? [];
 }

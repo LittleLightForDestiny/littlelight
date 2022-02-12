@@ -1,6 +1,3 @@
-
-
-
 import 'enums/item_destination.dart';
 
 class TransferDestination {

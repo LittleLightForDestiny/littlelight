@@ -3,12 +3,10 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
-class SmallRectRangeSliderValueIndicatorShape
-    extends RangeSliderValueIndicatorShape {
+class SmallRectRangeSliderValueIndicatorShape extends RangeSliderValueIndicatorShape {
   const SmallRectRangeSliderValueIndicatorShape();
 
-  static const _SmallRectSliderTrackShapePathPainter _pathPainter =
-      _SmallRectSliderTrackShapePathPainter();
+  static const _SmallRectSliderTrackShapePathPainter _pathPainter = _SmallRectSliderTrackShapePathPainter();
 
   @override
   Size getPreferredSize(
@@ -97,10 +95,8 @@ class _SmallRectSliderTrackShapePathPainter {
   static const double _bottomLobeRadius = 10.0;
   static const double _labelPadding = 8.0;
   static const double _distanceBetweenTopBottomCenters = 30.0;
-  static const Offset _topLobeCenter =
-      Offset(0.0, -_distanceBetweenTopBottomCenters);
-  static const double _preferredHeight =
-      _distanceBetweenTopBottomCenters + _topLobeRadius + _bottomLobeRadius;
+  static const Offset _topLobeCenter = Offset(0.0, -_distanceBetweenTopBottomCenters);
+  static const double _preferredHeight = _distanceBetweenTopBottomCenters + _topLobeRadius + _bottomLobeRadius;
 
   Size getPreferredSize(
     bool isEnabled,
@@ -109,8 +105,7 @@ class _SmallRectSliderTrackShapePathPainter {
   ) {
     assert(labelPainter != null);
     final double textScaleFactor = labelPainter.height / _labelTextDesignSize;
-    return Size(labelPainter.width + 2 * _labelPadding * textScaleFactor,
-        _preferredHeight * textScaleFactor);
+    return Size(labelPainter.width + 2 * _labelPadding * textScaleFactor, _preferredHeight * textScaleFactor);
   }
 
   // Adds an arc to the path that has the attributes passed in. This is
@@ -123,15 +118,13 @@ class _SmallRectSliderTrackShapePathPainter {
     double scale,
   }) {
     final double textScaleFactor = labelPainter.height / _labelTextDesignSize;
-    final double inverseTextScale =
-        textScaleFactor != 0 ? 1.0 / textScaleFactor : 0.0;
+    final double inverseTextScale = textScaleFactor != 0 ? 1.0 / textScaleFactor : 0.0;
     final double labelHalfWidth = labelPainter.width / 2.0;
     final double halfWidthNeeded = math.max(
       0.0,
       inverseTextScale * labelHalfWidth - (_topLobeRadius - _labelPadding),
     );
-    final double shift = _getIdealOffset(
-        parentBox, halfWidthNeeded, textScaleFactor * scale, center);
+    final double shift = _getIdealOffset(parentBox, halfWidthNeeded, textScaleFactor * scale, center);
     return shift * textScaleFactor;
   }
 
@@ -161,9 +154,7 @@ class _SmallRectSliderTrackShapePathPainter {
       shift = startGlobal + edgeMargin - topLeft.dx;
     }
 
-    final double endGlobal = parentBox
-        .localToGlobal(Offset(parentBox.size.width, parentBox.size.height))
-        .dx;
+    final double endGlobal = parentBox.localToGlobal(Offset(parentBox.size.width, parentBox.size.height)).dx;
     if (bottomRight.dx > endGlobal - edgeMargin) {
       shift = endGlobal - edgeMargin - bottomRight.dx;
     }
@@ -198,8 +189,7 @@ class _SmallRectSliderTrackShapePathPainter {
     // to keep it large enough to encompass the label text.
     final double textScaleFactor = labelPainter.height / _labelTextDesignSize;
     final double overallScale = scale * textScaleFactor;
-    final double inverseTextScale =
-        textScaleFactor != 0 ? 1.0 / textScaleFactor : 0.0;
+    final double inverseTextScale = textScaleFactor != 0 ? 1.0 / textScaleFactor : 0.0;
     final double labelHalfWidth = labelPainter.width / 2.0;
 
     canvas.save();
@@ -213,8 +203,7 @@ class _SmallRectSliderTrackShapePathPainter {
       inverseTextScale * labelHalfWidth - (_topLobeRadius - _labelPadding),
     );
 
-    final double shift =
-        _getIdealOffset(parentBox, halfWidthNeeded, overallScale, center);
+    final double shift = _getIdealOffset(parentBox, halfWidthNeeded, overallScale, center);
     final double leftWidthNeeded = halfWidthNeeded - shift;
     final double rightWidthNeeded = halfWidthNeeded + shift;
 
@@ -242,8 +231,7 @@ class _SmallRectSliderTrackShapePathPainter {
     canvas.save();
     canvas.translate(shift, -_distanceBetweenTopBottomCenters);
     canvas.scale(inverseTextScale, inverseTextScale);
-    labelPainter.paint(canvas,
-        Offset.zero - Offset(labelHalfWidth, labelPainter.height / 2.0));
+    labelPainter.paint(canvas, Offset.zero - Offset(labelHalfWidth, labelPainter.height / 2.0));
     canvas.restore();
     canvas.restore();
   }

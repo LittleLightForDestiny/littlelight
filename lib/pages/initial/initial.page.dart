@@ -55,7 +55,6 @@ class InitialPageState extends State<InitialPage> with AuthConsumer, LanguageCon
         return selectMembershipPage(context);
       case InitialPagePhase.WishlistsSelect:
         return selectWishlistsPage(context);
-      
     }
   }
 
@@ -68,7 +67,7 @@ class InitialPageState extends State<InitialPage> with AuthConsumer, LanguageCon
   Widget authorizationRequestPage(BuildContext context) => AuthorizationRequestSubPage();
 
   Widget selectMembershipPage(BuildContext context) => SelectMembershipSubPage();
-  
+
   Widget selectWishlistsPage(BuildContext context) => SelectWishlistsSubPage();
 
   Widget buildError(BuildContext context) => StartupErrorSubPage();

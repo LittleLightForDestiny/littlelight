@@ -18,13 +18,9 @@ import 'package:little_light/widgets/flutter/filled_circular_progress_indicator.
 class RankItemWidget extends StatefulWidget {
   final String characterId;
 
-  
-  
-
   final DestinyProgression progression;
 
-  RankItemWidget({Key key, this.characterId, this.progression})
-      : super(key: key);
+  RankItemWidget({Key key, this.characterId, this.progression}) : super(key: key);
 
   RankItemWidgetState createState() => RankItemWidgetState();
 }
@@ -42,14 +38,12 @@ class RankItemWidgetState<T extends RankItemWidget> extends State<T>
   @override
   void initState() {
     super.initState();
-    
+
     progression = widget.progression;
     loadDefinitions();
     subscription = notifications.listen((event) {
       if (event.type == NotificationType.receivedUpdate && mounted) {
-        progression = profile
-            .getCharacterProgression(widget.characterId)
-            .progressions["$hash"];
+        progression = profile.getCharacterProgression(widget.characterId).progressions["$hash"];
         setState(() {});
       }
     });
@@ -62,8 +56,7 @@ class RankItemWidgetState<T extends RankItemWidget> extends State<T>
   }
 
   Future<void> loadDefinitions() async {
-    definition =
-        await manifest.getDefinition<DestinyProgressionDefinition>(hash);
+    definition = await manifest.getDefinition<DestinyProgressionDefinition>(hash);
     progressTotal = definition.steps.fold(0, (v, s) => v + s.progressTotal);
     if (mounted) {
       setState(() {});
@@ -77,16 +70,9 @@ class RankItemWidgetState<T extends RankItemWidget> extends State<T>
       return Container(height: 200, color: Theme.of(context).colorScheme.secondaryVariant);
     }
     return Stack(children: [
-      Positioned.fill(
-          child: Container(
-              alignment: Alignment.center, child: buildRankProgress(context))),
-      Positioned.fill(
-          child: Container(
-              alignment: Alignment.center, child: buildStepProgress(context))),
-      Positioned.fill(
-          child: Container(
-              alignment: Alignment.center,
-              child: buildBackgroundCircle(context))),
+      Positioned.fill(child: Container(alignment: Alignment.center, child: buildRankProgress(context))),
+      Positioned.fill(child: Container(alignment: Alignment.center, child: buildStepProgress(context))),
+      Positioned.fill(child: Container(alignment: Alignment.center, child: buildBackgroundCircle(context))),
       Positioned.fill(
           child: Container(
               alignment: Alignment.center,
@@ -121,20 +107,19 @@ class RankItemWidgetState<T extends RankItemWidget> extends State<T>
         child: AspectRatio(
             aspectRatio: 1,
             child: Container(
-              decoration: BoxDecoration(
-                  color: Colors.grey.shade900,
-                  borderRadius: BorderRadius.circular(200)),
+              decoration: BoxDecoration(color: Colors.grey.shade900, borderRadius: BorderRadius.circular(200)),
             )));
   }
 
   Widget buildLabels(BuildContext context) {
-    return Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, crossAxisAlignment: CrossAxisAlignment.stretch ,children: [
-      buildTopLabels(context),
-      FractionallySizedBox(
-          widthFactor: .60,
-          child: AspectRatio(aspectRatio: 1, child: Container())),
-      buildBottomLabels(context),
-    ]);
+    return Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          buildTopLabels(context),
+          FractionallySizedBox(widthFactor: .60, child: AspectRatio(aspectRatio: 1, child: Container())),
+          buildBottomLabels(context),
+        ]);
   }
 
   buildTopLabels(BuildContext context) {
@@ -164,8 +149,7 @@ class RankItemWidgetState<T extends RankItemWidget> extends State<T>
   }
 
   buildRankProgress(BuildContext context) {
-    var mainColor = Color.fromARGB(255, definition.color.red,
-        definition.color.green, definition.color.blue);
+    var mainColor = Color.fromARGB(255, definition.color.red, definition.color.green, definition.color.blue);
 
     return FractionallySizedBox(
         widthFactor: .72,
@@ -173,8 +157,8 @@ class RankItemWidgetState<T extends RankItemWidget> extends State<T>
           aspectRatio: 1,
           child: FilledCircularProgressIndicator(
               backgroundColor: Theme.of(context).colorScheme.secondary,
-              valueColor: AlwaysStoppedAnimation<Color>(
-                  Color.lerp(mainColor, Theme.of(context).colorScheme.onSurface, .5)),
+              valueColor:
+                  AlwaysStoppedAnimation<Color>(Color.lerp(mainColor, Theme.of(context).colorScheme.onSurface, .5)),
               value: progression.currentProgress / progressTotal),
         ));
   }
@@ -186,17 +170,14 @@ class RankItemWidgetState<T extends RankItemWidget> extends State<T>
           aspectRatio: 1,
           child: FilledCircularProgressIndicator(
               backgroundColor: Theme.of(context).colorScheme.secondary,
-              valueColor: AlwaysStoppedAnimation<Color>(Color.fromARGB(
-                  255,
-                  definition.color.red,
-                  definition.color.green,
-                  definition.color.blue)),
+              valueColor: AlwaysStoppedAnimation<Color>(
+                  Color.fromARGB(255, definition.color.red, definition.color.green, definition.color.blue)),
               value: (progression?.progressToNextLevel ?? 0) / (progression?.nextLevelAt ?? 1)),
         ));
   }
 
   DestinyProgressionStepDefinition get currentStep =>
-      definition.steps[widget.progression.level.clamp(0, definition.steps.length -1)];
+      definition.steps[widget.progression.level.clamp(0, definition.steps.length - 1)];
 
   @override
   bool get wantKeepAlive => true;

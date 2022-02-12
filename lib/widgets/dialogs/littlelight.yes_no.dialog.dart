@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/dialogs/littlelight.base.dialog.dart';
 
-typedef DialogOptionSelected(BuildContext context, bool value);
+typedef DialogOptionSelected = Function(BuildContext context, bool value);
 
 abstract class LittleLightYesNoDialog extends LittleLightBaseDialog {
   final DialogOptionSelected? onSelectCallback;

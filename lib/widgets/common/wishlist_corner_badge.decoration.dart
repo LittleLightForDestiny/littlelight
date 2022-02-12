@@ -7,10 +7,7 @@ import 'package:little_light/widgets/common/corner_badge.decoration.dart';
 class WishlistCornerBadgeDecoration extends CornerBadgeDecoration {
   final Set<WishlistTag> tags;
 
-  const WishlistCornerBadgeDecoration(
-      {this.tags,
-      double badgeSize,
-      CornerPosition position = CornerPosition.TopRight})
+  const WishlistCornerBadgeDecoration({this.tags, double badgeSize, CornerPosition position = CornerPosition.TopRight})
       : super(badgeSize: badgeSize, colors: null, position: position);
 
   List<Color> get badgeColors {
@@ -58,15 +55,13 @@ class WishlistCornerBadgeDecoration extends CornerBadgeDecoration {
   }
 
   @override
-  BoxPainter createBoxPainter([onChanged]) =>
-      WishlistBadgePainter(badgeColors, borderColors, badgeSize, this.position);
+  BoxPainter createBoxPainter([onChanged]) => WishlistBadgePainter(badgeColors, borderColors, badgeSize, this.position);
 }
 
 class WishlistBadgePainter extends CornerBadgePainter {
   List<Color> borderColors;
 
-  WishlistBadgePainter(List<Color> colors, this.borderColors, double badgeSize,
-      CornerPosition position)
+  WishlistBadgePainter(List<Color> colors, this.borderColors, double badgeSize, CornerPosition position)
       : super(colors, badgeSize, position);
 
   @override
@@ -75,14 +70,11 @@ class WishlistBadgePainter extends CornerBadgePainter {
     canvas.save();
     canvas.translate(offset.dx + configuration.size.width - size, offset.dy);
     var points = getPoints(size);
-    canvas.drawPath(
-        buildBadgePath(points), getBadgePaint(points, borderColors));
+    canvas.drawPath(buildBadgePath(points), getBadgePaint(points, borderColors));
     canvas.restore();
-    canvas.translate(
-        offset.dx + configuration.size.width - size * .8, offset.dy);
+    canvas.translate(offset.dx + configuration.size.width - size * .8, offset.dy);
     var internalPoints = getPoints(size * .8);
-    canvas.drawPath(buildBadgePath(internalPoints),
-        getBadgePaint(internalPoints, badgeColors));
+    canvas.drawPath(buildBadgePath(internalPoints), getBadgePaint(internalPoints, badgeColors));
     canvas.restore();
   }
 }

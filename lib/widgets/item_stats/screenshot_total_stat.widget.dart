@@ -9,20 +9,15 @@ import 'package:little_light/widgets/item_stats/screenshot_item_stat.widget.dart
 class ScreenshotTotalStatWidget extends ScreenshotItemStatWidget {
   final double pixelSize;
 
-  ScreenshotTotalStatWidget(
-      {Key key,
-        this.pixelSize = 1,
-      StatValues modValues,
-      DestinyStatDisplayDefinition scaled})
-      : super(key:key, modValues: modValues, scaled: scaled);
-
+  ScreenshotTotalStatWidget({Key key, this.pixelSize = 1, StatValues modValues, DestinyStatDisplayDefinition scaled})
+      : super(key: key, modValues: modValues, scaled: scaled);
 
   Widget buildLabel(BuildContext context) {
     return Container(
       child: TranslatedTextWidget(
         "Total",
         style: TextStyle(
-          shadows: [Shadow(color: Colors.black, offset: Offset.fromDirection(.5), blurRadius: 2*pixelSize)],
+          shadows: [Shadow(color: Colors.black, offset: Offset.fromDirection(.5), blurRadius: 2 * pixelSize)],
           color: getNameColor(context),
           fontSize: pixelSize * 20,
           fontWeight: FontWeight.w500,

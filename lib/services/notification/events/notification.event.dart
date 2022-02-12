@@ -7,5 +7,4 @@ class NotificationEvent {
   final DestinyItemComponent? item;
   final String? characterId;
   NotificationEvent(this.type, {this.item, this.characterId});
-  
 }

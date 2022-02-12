@@ -16,64 +16,45 @@ import 'package:little_light/widgets/progress_tabs/milestone_item.widget.dart';
 class MilestoneRaidItemWidget extends MilestoneItemWidget {
   final String characterId;
 
-  
-  
-
   final DestinyMilestone milestone;
 
-  MilestoneRaidItemWidget({Key key, this.characterId, this.milestone})
-      : super(key: key);
+  MilestoneRaidItemWidget({Key key, this.characterId, this.milestone}) : super(key: key);
 
-  _MilestoneRaidItemWidgetState createState() =>
-      _MilestoneRaidItemWidgetState();
+  _MilestoneRaidItemWidgetState createState() => _MilestoneRaidItemWidgetState();
 }
 
-class _MilestoneRaidItemWidgetState
-    extends MilestoneItemWidgetState<MilestoneRaidItemWidget> {
+class _MilestoneRaidItemWidgetState extends MilestoneItemWidgetState<MilestoneRaidItemWidget> {
   buildMilestoneActivities(BuildContext context) {
-    var activities = milestone?.activities
-        ?.where((a) => a.phases != null && a.phases.length > 0);
+    var activities = milestone?.activities?.where((a) => a.phases != null && a.phases.length > 0);
     if ((activities?.length ?? 0) == 0) {
       return Container();
     }
     if (activities.length == 1) {
       return Container(
-          padding: EdgeInsets.all(2),
-          child: Column(
-              children:
-                  activities.map((a) => buildPhases(context, a)).toList()));
+          padding: EdgeInsets.all(2), child: Column(children: activities.map((a) => buildPhases(context, a)).toList()));
     }
     return Container(
-        padding: EdgeInsets.all(2),
-        child: Column(
-            children:
-                activities.map((a) => buildActivity(context, a)).toList()));
+        padding: EdgeInsets.all(2), child: Column(children: activities.map((a) => buildActivity(context, a)).toList()));
   }
 
-  Widget buildActivity(
-      BuildContext context, DestinyMilestoneChallengeActivity activity) {
+  Widget buildActivity(BuildContext context, DestinyMilestoneChallengeActivity activity) {
     return Column(
       children: <Widget>[
         Container(
             padding: EdgeInsets.all(2),
             child: HeaderWidget(
-                child: ManifestText<DestinyActivityDefinition>(
-                    activity.activityHash,
+                child: ManifestText<DestinyActivityDefinition>(activity.activityHash,
                     uppercase: true,
-                    textExtractor: (def) =>
-                        def?.selectionScreenDisplayProperties?.name ??
-                        def.displayProperties.name,
+                    textExtractor: (def) => def?.selectionScreenDisplayProperties?.name ?? def.displayProperties.name,
                     style: TextStyle(fontWeight: FontWeight.bold)))),
         buildPhases(context, activity)
       ],
     );
   }
 
-  Widget buildPhases(
-      BuildContext context, DestinyMilestoneChallengeActivity activity) {
+  Widget buildPhases(BuildContext context, DestinyMilestoneChallengeActivity activity) {
     return Row(
-      children:
-          activity?.phases?.map((p) => buildPhase(context, p))?.toList() ?? [],
+      children: activity?.phases?.map((p) => buildPhase(context, p))?.toList() ?? [],
     );
   }
 
@@ -88,8 +69,7 @@ class _MilestoneRaidItemWidgetState
             child: buildPhaseLabel(context, phase)));
   }
 
-  Widget buildPhaseLabel(
-      BuildContext context, DestinyMilestoneActivityPhase phase) {
+  Widget buildPhaseLabel(BuildContext context, DestinyMilestoneActivityPhase phase) {
     String text;
     IconData icon;
     switch (phase.phaseHash) {
@@ -185,8 +165,7 @@ class _MilestoneRaidItemWidgetState
         break;
     }
     final theme = LittleLightTheme.of(context);
-    Color color =
-        phase.complete ? theme.achievementLayers.layer1 : theme.onSurfaceLayers.layer2.withOpacity(.7);
+    Color color = phase.complete ? theme.achievementLayers.layer1 : theme.onSurfaceLayers.layer2.withOpacity(.7);
     if (icon != null) {
       return Icon(icon, color: color, size: 30);
     }
@@ -195,11 +174,9 @@ class _MilestoneRaidItemWidgetState
         text,
         uppercase: true,
         textAlign: TextAlign.center,
-        style:
-            TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: 10),
+        style: TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: 10),
       );
     }
-    return Icon(phase.complete ? Icons.check_circle : Icons.remove_circle,
-        color: color);
+    return Icon(phase.complete ? Icons.check_circle : Icons.remove_circle, color: color);
   }
 }

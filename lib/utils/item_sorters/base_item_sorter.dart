@@ -27,8 +27,7 @@ abstract class BaseItemSorter with ProfileConsumer, ManifestConsumer {
   int direction;
   BaseItemSorter(this.direction);
 
-  DestinyItemInstanceComponent instance(ItemWithOwner item) =>
-      profile.getInstanceInfo(item?.item?.itemInstanceId);
+  DestinyItemInstanceComponent instance(ItemWithOwner item) => profile.getInstanceInfo(item?.item?.itemInstanceId);
   DestinyInventoryItemDefinition def(ItemWithOwner item) =>
       manifest.getDefinitionFromCache<DestinyInventoryItemDefinition>(item?.item?.itemHash);
 

@@ -11,12 +11,10 @@ import 'package:little_light/widgets/common/manifest_image.widget.dart';
 
 class ItemModsWidget extends StatefulWidget {
   final double iconSize;
-  
+
   final List<DestinyItemSocketState> itemSockets;
   final DestinyInventoryItemDefinition definition;
-  ItemModsWidget(
-      {Key key, this.definition, this.itemSockets, this.iconSize = 16})
-      : super(key: key);
+  ItemModsWidget({Key key, this.definition, this.itemSockets, this.iconSize = 16}) : super(key: key);
 
   @override
   ItemModsWidgetState createState() {
@@ -24,7 +22,7 @@ class ItemModsWidget extends StatefulWidget {
   }
 }
 
-class ItemModsWidgetState extends State<ItemModsWidget> with ManifestConsumer{
+class ItemModsWidgetState extends State<ItemModsWidget> with ManifestConsumer {
   DestinySocketCategoryDefinition modsCatDefinition;
   List<DestinyItemSocketState> get itemSockets => widget.itemSockets;
   DestinyInventoryItemDefinition get definition => widget.definition;
@@ -39,14 +37,11 @@ class ItemModsWidgetState extends State<ItemModsWidget> with ManifestConsumer{
     if (widget.definition?.sockets?.socketCategories == null) {
       return;
     }
-    var socketCategoryHashes =
-        definition.sockets.socketCategories.map((s) => s.socketCategoryHash);
-    var socketCategoryHash = socketCategoryHashes.firstWhere(
-        (s) => DestinyData.socketCategoryModHashes.contains(s),
-        orElse: () => null);
+    var socketCategoryHashes = definition.sockets.socketCategories.map((s) => s.socketCategoryHash);
+    var socketCategoryHash =
+        socketCategoryHashes.firstWhere((s) => DestinyData.socketCategoryModHashes.contains(s), orElse: () => null);
 
-    modsCatDefinition = await manifest
-        .getDefinition<DestinySocketCategoryDefinition>(socketCategoryHash);
+    modsCatDefinition = await manifest.getDefinition<DestinySocketCategoryDefinition>(socketCategoryHash);
     if (!mounted) {
       return;
     }
@@ -62,16 +57,13 @@ class ItemModsWidgetState extends State<ItemModsWidget> with ManifestConsumer{
   }
 
   Widget buildMods(BuildContext context, DestinySocketCategoryDefinition def) {
-    var socketCategory = definition.sockets.socketCategories.firstWhere(
-        (s) => s.socketCategoryHash == def.hash,
-        orElse: () => null);
+    var socketCategory =
+        definition.sockets.socketCategories.firstWhere((s) => s.socketCategoryHash == def.hash, orElse: () => null);
     if (socketCategory == null || itemSockets == null) return Container();
 
     List<Widget> columns = [];
     socketCategory.socketIndexes.forEach((index) {
-      if (isSocketVisible(index) &&
-          index > -1 &&
-          index < (itemSockets?.length ?? 0)) {
+      if (isSocketVisible(index) && index > -1 && index < (itemSockets?.length ?? 0)) {
         columns.add(buildModIcon(context, itemSockets[index].plugHash));
         columns.add(Container(
           width: 1,
@@ -82,10 +74,7 @@ class ItemModsWidgetState extends State<ItemModsWidget> with ManifestConsumer{
       return Container();
     }
     columns.removeLast();
-    return Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: columns.toList());
+    return Row(mainAxisAlignment: MainAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: columns.toList());
   }
 
   bool isSocketVisible(int index) {
@@ -96,8 +85,7 @@ class ItemModsWidgetState extends State<ItemModsWidget> with ManifestConsumer{
   }
 
   Widget buildModIcon(BuildContext context, int plugHash) {
-    return DefinitionProviderWidget<DestinyInventoryItemDefinition>(plugHash,
-        (def) {
+    return DefinitionProviderWidget<DestinyInventoryItemDefinition>(plugHash, (def) {
       if (def?.plug?.isDummyPlug ?? false) {
         return Container();
       }

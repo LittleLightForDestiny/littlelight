@@ -9,17 +9,15 @@ import 'package:little_light/widgets/search/search.controller.dart';
 import 'package:little_light/widgets/search/search_filters/base_search_filter.widget.dart';
 import 'package:flutter/material.dart';
 
-class WishlistTagsFilterWidget
-    extends BaseSearchFilterWidget<WishlistTagFilter> {
+class WishlistTagsFilterWidget extends BaseSearchFilterWidget<WishlistTagFilter> {
   WishlistTagsFilterWidget(SearchController controller) : super(controller);
 
   @override
-  _WishlistTagsFilterWidgetState createState() =>
-      _WishlistTagsFilterWidgetState();
+  _WishlistTagsFilterWidgetState createState() => _WishlistTagsFilterWidgetState();
 }
 
-class _WishlistTagsFilterWidgetState extends BaseSearchFilterWidgetState<
-    WishlistTagsFilterWidget, WishlistTagFilter, WishlistTag> {
+class _WishlistTagsFilterWidgetState
+    extends BaseSearchFilterWidgetState<WishlistTagsFilterWidget, WishlistTagFilter, WishlistTag> {
   @override
   Widget buildFilterLabel(BuildContext context) {
     return TranslatedTextWidget(
@@ -42,14 +40,10 @@ class _WishlistTagsFilterWidgetState extends BaseSearchFilterWidgetState<
     if (options.contains(null)) length = length - 1;
     if (length % 2 == 0) {
       return FractionallySizedBox(
-          widthFactor: .5,
-          child:
-              Container(height: 70, child: super.buildButton(context, value)));
+          widthFactor: .5, child: Container(height: 70, child: super.buildButton(context, value)));
     } else {
       return FractionallySizedBox(
-          widthFactor: 1 / 3,
-          child:
-              Container(height: 70, child: super.buildButton(context, value)));
+          widthFactor: 1 / 3, child: Container(height: 70, child: super.buildButton(context, value)));
     }
   }
 

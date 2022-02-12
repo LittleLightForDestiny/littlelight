@@ -15,5 +15,4 @@ class MasterworkStatusSorter extends BaseItemSorter {
     var intB = mwB ? 1 : 0;
     return direction * intA.compareTo(intB);
   }
-
 }

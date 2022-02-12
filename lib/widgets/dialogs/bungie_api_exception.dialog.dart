@@ -15,20 +15,18 @@ import 'package:little_light/widgets/dialogs/littlelight.base.dialog.dart';
 class BungieApiExceptionDialogRoute extends DialogRoute<void> {
   BungieApiExceptionDialogRoute(BuildContext context, {required BungieApiException error})
       : super(
-          context: context,
-          builder: (context) => BungieApiExceptionDialog(),
-          settings: RouteSettings(arguments: error),
-          barrierDismissible: false
-        );
+            context: context,
+            builder: (context) => BungieApiExceptionDialog(),
+            settings: RouteSettings(arguments: error),
+            barrierDismissible: false);
 }
 
 extension on BuildContext {
   BungieApiException? get errorArgument => ModalRoute.of(this)?.settings.arguments as BungieApiException;
 }
 
-class BungieApiExceptionDialog extends LittleLightBaseDialog with AuthConsumer, StorageConsumer{
-  BungieApiExceptionDialog()
-      : super();
+class BungieApiExceptionDialog extends LittleLightBaseDialog with AuthConsumer, StorageConsumer {
+  BungieApiExceptionDialog() : super();
 
   @override
   Widget? buildTitle(BuildContext context) {
@@ -40,8 +38,7 @@ class BungieApiExceptionDialog extends LittleLightBaseDialog with AuthConsumer, 
   Widget? buildBody(BuildContext context) {
     final error = context.errorArgument;
     if (error == null) return Container();
-    return Container(
-        child: TranslatedTextWidget(error.message));
+    return Container(child: TranslatedTextWidget(error.message));
   }
 
   @override
@@ -63,7 +60,11 @@ class BungieApiExceptionDialog extends LittleLightBaseDialog with AuthConsumer, 
           },
         ),
         TextButton(
-          child: TranslatedTextWidget("Clear app data", uppercase: true, style: TextStyle(color: LittleLightTheme.of(context).errorLayers),),
+          child: TranslatedTextWidget(
+            "Clear app data",
+            uppercase: true,
+            style: TextStyle(color: LittleLightTheme.of(context).errorLayers),
+          ),
           onPressed: () async {
             await globalStorage.purge();
             Phoenix.rebirth(context);

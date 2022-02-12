@@ -18,9 +18,9 @@ class PlMessages implements LookupMessages {
   String aboutAYear(int year) => 'około rok';
   String years(int years) => _is234(years) ? '$years lata' : '$years lat';
   String wordSeparator() => ' ';
-  
-  bool _is234(int v){
+
+  bool _is234(int v) {
     var mod = v % 10;
     return (mod == 2 || mod == 3 || mod == 4) && (v / 10) != 1;
-  } 
+  }
 }

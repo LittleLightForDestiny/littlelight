@@ -4,9 +4,8 @@ import 'analytics.service.dart';
 
 AnalyticsService getInjectedAnalyticsService() => GetIt.I<AnalyticsService>();
 
-extension AnalyticsConumerExtension on AnalyticsConsumer{
+extension AnalyticsConumerExtension on AnalyticsConsumer {
   AnalyticsService get analytics => getInjectedAnalyticsService();
 }
 
-mixin AnalyticsConsumer {
-}
+mixin AnalyticsConsumer {}

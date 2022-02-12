@@ -13,8 +13,7 @@ class PowerCapFilterWidget extends BaseSearchFilterWidget<PowerCapFilter> {
   _PowerCapFilterWidgetState createState() => _PowerCapFilterWidgetState();
 }
 
-class _PowerCapFilterWidgetState extends BaseSearchFilterWidgetState<
-    PowerCapFilterWidget, PowerCapFilter, int> {
+class _PowerCapFilterWidgetState extends BaseSearchFilterWidgetState<PowerCapFilterWidget, PowerCapFilter, int> {
   @override
   Iterable<int> get options {
     var values = filter.availableValues.toList();

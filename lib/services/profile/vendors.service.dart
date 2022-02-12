@@ -1,5 +1,3 @@
-
-
 import 'dart:async';
 
 import 'package:bungie_api/destiny2.dart';
@@ -16,7 +14,7 @@ const _vendorComponents = [
 ];
 
 class VendorsService with StorageConsumer, BungieApiConsumer {
-  static final VendorsService _singleton = new VendorsService._internal();
+  static final VendorsService _singleton = VendorsService._internal();
   DateTime? lastUpdated;
   factory VendorsService() {
     return _singleton;
@@ -57,7 +55,8 @@ class VendorsService with StorageConsumer, BungieApiConsumer {
     return null;
   }
 
-  Future<DestinyItemInstanceComponent?> getSaleItemInstanceInfo(String? characterId, int? vendorHash, int? index) async {
+  Future<DestinyItemInstanceComponent?> getSaleItemInstanceInfo(
+      String? characterId, int? vendorHash, int? index) async {
     var vendors = await _getVendorsDataForCharacter(characterId);
     try {
       return vendors?.itemComponents!["$vendorHash"]!.instances!.data!["$index"];

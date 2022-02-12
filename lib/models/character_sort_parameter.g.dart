@@ -7,19 +7,14 @@ part of 'character_sort_parameter.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-CharacterSortParameter _$CharacterSortParameterFromJson(
-    Map<String, dynamic> json) {
+CharacterSortParameter _$CharacterSortParameterFromJson(Map<String, dynamic> json) {
   return CharacterSortParameter(
     type: _$enumDecode(_$CharacterSortParameterTypeEnumMap, json['type']),
-    customOrder: (json['customOrder'] as List<dynamic>?)
-        ?.map((e) => e as String)
-        .toList(),
+    customOrder: (json['customOrder'] as List<dynamic>?)?.map((e) => e as String).toList(),
   );
 }
 
-Map<String, dynamic> _$CharacterSortParameterToJson(
-        CharacterSortParameter instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$CharacterSortParameterToJson(CharacterSortParameter instance) => <String, dynamic>{
       'type': _$CharacterSortParameterTypeEnumMap[instance.type],
       'customOrder': instance.customOrder,
     };

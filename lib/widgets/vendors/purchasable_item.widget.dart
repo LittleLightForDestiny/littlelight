@@ -1,6 +1,5 @@
 // @dart=2.9
 
-
 import 'package:bungie_api/enums/destiny_scope.dart';
 import 'package:bungie_api/enums/vendor_item_status.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
@@ -44,7 +43,8 @@ class PurchasableItemWidget extends StatefulWidget {
   }
 }
 
-class PurchasableItemWidgetState extends State<PurchasableItemWidget> with WishlistsConsumer, ProfileConsumer, ManifestConsumer {
+class PurchasableItemWidgetState extends State<PurchasableItemWidget>
+    with WishlistsConsumer, ProfileConsumer, ManifestConsumer {
   DestinyInventoryItemDefinition definition;
   List<DestinyItemSocketState> sockets;
   DestinyItemInstanceComponent instanceInfo;
@@ -348,7 +348,9 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget> with Wishl
                   children: <Widget>[
                     Text(
                       "${c.quantity}/$total",
-                      style: TextStyle(fontSize: 12, color: isEnough ? Theme.of(context).colorScheme.onSurface : Colors.red.shade300),
+                      style: TextStyle(
+                          fontSize: 12,
+                          color: isEnough ? Theme.of(context).colorScheme.onSurface : Colors.red.shade300),
                     ),
                     Container(
                       width: 4,
@@ -395,8 +397,8 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget> with Wishl
   }
 
   Widget wishlistTags(BuildContext context) {
-    var wishlistTags = wishlistsService.getWishlistBuildTags(
-        itemHash: widget.item?.itemHash, reusablePlugs: reusablePlugs);
+    var wishlistTags =
+        wishlistsService.getWishlistBuildTags(itemHash: widget.item?.itemHash, reusablePlugs: reusablePlugs);
     if ((wishlistTags?.length ?? 0) == 0) return null;
     return WishlistBadgesWidget(tags: wishlistTags, size: 22);
   }
@@ -410,7 +412,8 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget> with Wishl
   }
 
   background(BuildContext context) {
-    return Positioned(top: 0, left: 0, bottom: 0, right: 0, child: Container(color: Theme.of(context).colorScheme.secondaryVariant));
+    return Positioned(
+        top: 0, left: 0, bottom: 0, right: 0, child: Container(color: Theme.of(context).colorScheme.secondaryVariant));
   }
 
   double get iconSize {
@@ -425,11 +428,11 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget> with Wishl
     return 8;
   }
 
-  LittleLightThemeData getTheme(BuildContext context){
+  LittleLightThemeData getTheme(BuildContext context) {
     return LittleLightTheme.of(context);
   }
 
-  Color getDefaultTextColor (BuildContext context){
+  Color getDefaultTextColor(BuildContext context) {
     return getTheme(context).onSurfaceLayers;
   }
 

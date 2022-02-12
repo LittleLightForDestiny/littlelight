@@ -17,14 +17,9 @@ class WishlistTagFilter extends BaseItemFilter<Set<WishlistTag>> with WishlistsC
     availableValues.clear();
     List<WishlistTag> tags = items
         .expand((i) {
-
-          final reusable =
-              profile.getItemReusablePlugs(i?.item?.itemInstanceId);
-          final tags = wishlistsService
-              .getWishlistBuildTags(
-                  itemHash: i?.item?.itemHash,
-                  reusablePlugs: reusable)
-              ?.toList();
+          final reusable = profile.getItemReusablePlugs(i?.item?.itemInstanceId);
+          final tags =
+              wishlistsService.getWishlistBuildTags(itemHash: i?.item?.itemHash, reusablePlugs: reusable)?.toList();
           if (tags == null) return <WishlistTag>[];
           if (tags.length == 0) return <WishlistTag>[null];
           return tags;
@@ -39,17 +34,11 @@ class WishlistTagFilter extends BaseItemFilter<Set<WishlistTag>> with WishlistsC
     return super.filter(items, definitions: definitions);
   }
 
-  bool filterItem(ItemWithOwner item,
-      {Map<int, DestinyInventoryItemDefinition> definitions}) {
-
+  bool filterItem(ItemWithOwner item, {Map<int, DestinyInventoryItemDefinition> definitions}) {
     final reusable = profile.getItemReusablePlugs(item?.item?.itemInstanceId);
-    final tags = wishlistsService
-        .getWishlistBuildTags(
-            itemHash: item?.item?.itemHash,
-            reusablePlugs: reusable)
-        ?.toList();
-    if (value?.any((element) => tags?.contains(element) ?? false) ?? false)
-      return true;
+    final tags =
+        wishlistsService.getWishlistBuildTags(itemHash: item?.item?.itemHash, reusablePlugs: reusable)?.toList();
+    if (value?.any((element) => tags?.contains(element) ?? false) ?? false) return true;
     if (value.contains(null) && tags?.length == 0) return true;
     return false;
   }

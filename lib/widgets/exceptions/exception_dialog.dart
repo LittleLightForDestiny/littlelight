@@ -4,7 +4,7 @@ import 'package:bungie_api/helpers/oauth.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
-typedef void OnDismiss(String labelClicked);
+typedef OnDismiss = void Function(String labelClicked);
 
 class ExceptionDialog extends AlertDialog {
   final dynamic exception;

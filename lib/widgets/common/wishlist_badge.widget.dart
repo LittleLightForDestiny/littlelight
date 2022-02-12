@@ -18,8 +18,8 @@ class WishlistBadgeWidget extends StatelessWidget {
             aspectRatio: 1,
             child: Container(
                 alignment: Alignment.center,
-                decoration: WishlistsData.getBoxDecoration(context, tag)
-                    .copyWith(borderRadius: BorderRadius.circular(4)),
+                decoration:
+                    WishlistsData.getBoxDecoration(context, tag).copyWith(borderRadius: BorderRadius.circular(4)),
                 child: WishlistsData.getIcon(context, tag, size))));
   }
 }

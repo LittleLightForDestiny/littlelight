@@ -18,19 +18,18 @@ extension on BuildContext {
 class ConfirmDeleteLoadoutDialogRoute extends DialogRoute<bool> {
   ConfirmDeleteLoadoutDialogRoute(BuildContext context, Loadout loadout)
       : super(
-          context: context,
-          builder: (context) => ConfirmDeleteLoadoutDialog(),
-          settings: RouteSettings(
-            arguments: loadout
-          )
-        );
+            context: context,
+            builder: (context) => ConfirmDeleteLoadoutDialog(),
+            settings: RouteSettings(arguments: loadout));
 }
 
 class ConfirmDeleteLoadoutDialog extends LittleLightYesNoDialog {
   ConfirmDeleteLoadoutDialog()
       : super(
           titleBuilder: (context) => TranslatedTextWidget('Delete loadout'),
-          bodyBuilder: (context) => TranslatedTextWidget('Do you really want to delete the loadout {loadoutName} ?',
-                      replace: {"loadoutName": context.loadoutArgument?.name ?? ""},),
+          bodyBuilder: (context) => TranslatedTextWidget(
+            'Do you really want to delete the loadout {loadoutName} ?',
+            replace: {"loadoutName": context.loadoutArgument?.name ?? ""},
+          ),
         );
 }

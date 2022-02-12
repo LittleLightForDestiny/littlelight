@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 
-typedef Widget DialogWidgetBuilder(BuildContext context);
+typedef DialogWidgetBuilder = Widget Function(BuildContext context);
 
 const _defaultInsetPaddings = EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0);
 
@@ -14,14 +14,9 @@ abstract class LittleLightBaseDialog extends StatelessWidget {
   final double maxWidth;
   final double maxHeight;
 
-  const LittleLightBaseDialog({
-    Key? key,
-    this.titleBuilder,
-    this.bodyBuilder,
-    this.actionsBuilder,
-    this.maxWidth = 600,
-    this.maxHeight = 500
-  }) : super(key: key);
+  const LittleLightBaseDialog(
+      {Key? key, this.titleBuilder, this.bodyBuilder, this.actionsBuilder, this.maxWidth = 600, this.maxHeight = 500})
+      : super(key: key);
 
   CrossAxisAlignment get crossAxisAlignment => CrossAxisAlignment.stretch;
 
@@ -56,14 +51,15 @@ abstract class LittleLightBaseDialog extends StatelessWidget {
     final body = buildBody(context);
     if (body == null) return Container();
     return Container(
-      constraints: BoxConstraints(maxWidth: maxWidth, maxHeight: maxHeight),
-      padding: EdgeInsets.all(16), child: body);
+        constraints: BoxConstraints(maxWidth: maxWidth, maxHeight: maxHeight),
+        padding: EdgeInsets.all(16),
+        child: body);
   }
 
   Widget buildActionsContainer(BuildContext context) {
     final actions = buildActions(context);
     if (actions == null) return Container();
-    return Container(padding: EdgeInsets.all(8).copyWith(top:0), child: actions);
+    return Container(padding: EdgeInsets.all(8).copyWith(top: 0), child: actions);
   }
 
   Widget? buildTitle(BuildContext context) => titleBuilder?.call(context);

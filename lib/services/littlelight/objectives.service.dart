@@ -7,7 +7,7 @@ import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/storage/export.dart';
 
 class ObjectivesService with StorageConsumer, ProfileConsumer, ManifestConsumer {
-  static final ObjectivesService _singleton = new ObjectivesService._internal();
+  static final ObjectivesService _singleton = ObjectivesService._internal();
   factory ObjectivesService() {
     return _singleton;
   }

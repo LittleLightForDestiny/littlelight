@@ -18,8 +18,7 @@ ItemNotesTag _$ItemNotesTagFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$ItemNotesTagToJson(ItemNotesTag instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$ItemNotesTagToJson(ItemNotesTag instance) => <String, dynamic>{
       'custom': instance.custom,
       'tagId': instance.tagId,
       'name': instance.name,

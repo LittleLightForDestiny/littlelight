@@ -20,14 +20,14 @@ import 'package:little_light/services/bungie_api/bungie_api.exception.dart';
 
 final _credentialsMissingException = Exception("Credentials are missing");
 
-Future<void> setupBungieApiService() async{
+Future<void> setupBungieApiService() async {
   GetIt.I.registerSingleton<BungieApiService>(BungieApiService._internal());
 }
 
 class BungieApiService with AuthConsumer, AppConfigConsumer {
   static const String baseUrl = 'https://www.bungie.net';
   static const String apiUrl = "$baseUrl/Platform";
-  
+
   BungieApiService._internal();
 
   static String? url(String? url) {
@@ -38,16 +38,16 @@ class BungieApiService with AuthConsumer, AppConfigConsumer {
   }
 
   Future<DestinyManifestResponse> getManifest() {
-    return Destiny2.getDestinyManifest(new Client());
+    return Destiny2.getDestinyManifest(Client());
   }
 
   Future<BungieNetToken> requestToken(String code) {
-    return OAuth.getToken(new Client(), appConfig.clientId, appConfig.clientSecret, code);
+    return OAuth.getToken(Client(), appConfig.clientId, appConfig.clientSecret, code);
   }
 
   Future<BungieNetToken> refreshToken(String refreshToken) {
     return OAuth.refreshToken(
-        new Client(autoRefreshToken: false), appConfig.clientId, appConfig.clientSecret, refreshToken);
+        Client(autoRefreshToken: false), appConfig.clientId, appConfig.clientSecret, refreshToken);
   }
 
   Future<DestinyProfileResponse?> getCurrentProfile(List<DestinyComponentType> components) async {
@@ -66,7 +66,7 @@ class BungieApiService with AuthConsumer, AppConfigConsumer {
       List<DestinyComponentType> components, String membershipId, BungieMembershipType membershipType,
       [BungieNetToken? token]) async {
     DestinyProfileResponseResponse response =
-        await Destiny2.getProfile(new Client(token: token), components, membershipId, membershipType);
+        await Destiny2.getProfile(Client(token: token), components, membershipId, membershipType);
     return response.response;
   }
 
@@ -79,7 +79,7 @@ class BungieApiService with AuthConsumer, AppConfigConsumer {
       throw NotAuthorizedException(_credentialsMissingException);
     }
     DestinyVendorsResponseResponse response = await Destiny2.getVendors(
-        new Client(token: token), characterId, components, membershipID, DestinyVendorFilter.None, membershipType);
+        Client(token: token), characterId, components, membershipID, DestinyVendorFilter.None, membershipType);
     return response.response;
   }
 
@@ -92,7 +92,7 @@ class BungieApiService with AuthConsumer, AppConfigConsumer {
     if (token == null) {
       throw NotAuthorizedException(_credentialsMissingException);
     }
-    UserMembershipDataResponse response = await User.getMembershipDataForCurrentUser(new Client(token: token));
+    UserMembershipDataResponse response = await User.getMembershipDataForCurrentUser(Client(token: token));
     return response.response!;
   }
 
@@ -106,7 +106,7 @@ class BungieApiService with AuthConsumer, AppConfigConsumer {
       throw NotAuthorizedException(_credentialsMissingException);
     }
     Int32Response response = await Destiny2.transferItem(
-        new Client(token: token),
+        Client(token: token),
         DestinyItemTransferRequest()
           ..itemReferenceHash = itemHash
           ..stackSize = stackSize
@@ -125,7 +125,7 @@ class BungieApiService with AuthConsumer, AppConfigConsumer {
       throw NotAuthorizedException(_credentialsMissingException);
     }
     Int32Response response = await Destiny2.pullFromPostmaster(
-        new Client(token: token),
+        Client(token: token),
         DestinyPostmasterTransferRequest()
           ..itemReferenceHash = itemHash
           ..stackSize = stackSize
@@ -143,7 +143,7 @@ class BungieApiService with AuthConsumer, AppConfigConsumer {
       throw NotAuthorizedException(_credentialsMissingException);
     }
     Int32Response response = await Destiny2.equipItem(
-        new Client(token: token),
+        Client(token: token),
         DestinyItemActionRequest()
           ..itemId = itemId
           ..characterId = characterId
@@ -193,7 +193,7 @@ class BungieApiService with AuthConsumer, AppConfigConsumer {
       throw NotAuthorizedException(_credentialsMissingException);
     }
     var response = await Destiny2.equipItems(
-        new Client(token: token),
+        Client(token: token),
         DestinyItemSetActionRequest()
           ..itemIds = itemIds
           ..characterId = characterId
@@ -202,7 +202,7 @@ class BungieApiService with AuthConsumer, AppConfigConsumer {
   }
 
   Future<CoreSettingsConfiguration?> getCommonSettings() async {
-    var response = await Settings.getCommonSettings(new Client());
+    var response = await Settings.getCommonSettings(Client());
     return response.response;
   }
 

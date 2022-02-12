@@ -7,7 +7,7 @@ class VaultTabHeaderWidget extends TabHeaderWidget {
   VaultTabHeaderWidget() : super(null);
 
   @override
-  VaultTabHeaderWidgetState createState() => new VaultTabHeaderWidgetState();
+  VaultTabHeaderWidgetState createState() => VaultTabHeaderWidgetState();
 }
 
 class VaultTabHeaderWidgetState extends TabHeaderWidgetState {
@@ -39,7 +39,9 @@ class VaultTabHeaderWidgetState extends TabHeaderWidgetState {
         top: top,
         width: 56,
         height: 56,
-        child: Image.asset("assets/imgs/vault-secondary-overlay.png",));
+        child: Image.asset(
+          "assets/imgs/vault-secondary-overlay.png",
+        ));
   }
 
   Widget emblemBackground(BuildContext context) {
@@ -55,7 +57,7 @@ class VaultTabHeaderWidgetState extends TabHeaderWidgetState {
   }
 
   Widget powerBar(BuildContext context) {
-    return Container(height:2,color:Theme.of(context).colorScheme.secondary);
+    return Container(height: 2, color: Theme.of(context).colorScheme.secondary);
   }
 
   double getTopPadding(BuildContext context) {

@@ -20,11 +20,7 @@ class ItemDetailSocketItemStatsWidget extends BaseItemStatsWidget {
       DestinyInventoryItemDefinition definition,
       ItemSocketController socketController,
       this.plugDefinition})
-      : super(
-            socketController: socketController,
-            item: item,
-            definition: definition,
-            key: key);
+      : super(socketController: socketController, item: item, definition: definition, key: key);
 
   @override
   BaseDestinyItemState<BaseDestinyStatefulItemWidget> createState() {
@@ -32,8 +28,7 @@ class ItemDetailSocketItemStatsWidget extends BaseItemStatsWidget {
   }
 }
 
-class ItemDetailSocketItemStatsState
-    extends BaseItemStatsState<ItemDetailSocketItemStatsWidget> {
+class ItemDetailSocketItemStatsState extends BaseItemStatsState<ItemDetailSocketItemStatsWidget> {
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -54,29 +49,26 @@ class ItemDetailSocketItemStatsState
         key: Key("stat_${stat.statTypeHash}"),
         statHash: stat.statTypeHash,
         modValues: entry,
-        scaled: statGroupDefinition?.scaledStats?.firstWhere(
-            (s) => s.statHash == stat.statTypeHash,
-            orElse: () => null),
+        scaled:
+            statGroupDefinition?.scaledStats?.firstWhere((s) => s.statHash == stat.statTypeHash, orElse: () => null),
       );
     }).toList();
   }
 
   Iterable<DestinyItemInvestmentStatDefinition> get stats {
-    var statWhitelist =
-        statGroupDefinition?.scaledStats?.map((s) => s.statHash)?.toList() ?? []; 
+    var statWhitelist = statGroupDefinition?.scaledStats?.map((s) => s.statHash)?.toList() ?? [];
     List<int> statHashes = widget.plugDefinition.investmentStats
-        ?.map((s) => s.statTypeHash)
-        ?.where((s) => statWhitelist.contains(s) || DestinyData.hiddenStats.contains(s))
-        ?.toList() ?? [];
-    var noBarStats = statGroupDefinition?.scaledStats
-        ?.where((s) => s.displayAsNumeric)
-        ?.map((s) => s.statHash)
-        ?.toList() ?? [];
+            ?.map((s) => s.statTypeHash)
+            ?.where((s) => statWhitelist.contains(s) || DestinyData.hiddenStats.contains(s))
+            ?.toList() ??
+        [];
+    var noBarStats =
+        statGroupDefinition?.scaledStats?.where((s) => s.displayAsNumeric)?.map((s) => s.statHash)?.toList() ?? [];
 
     List<DestinyItemInvestmentStatDefinition> result = [];
     for (var statHash in statHashes) {
-      var itemStat = widget.definition?.investmentStats
-          ?.firstWhere((s) => s.statTypeHash == statHash, orElse: () => null);
+      var itemStat =
+          widget.definition?.investmentStats?.firstWhere((s) => s.statTypeHash == statHash, orElse: () => null);
       if (itemStat == null) {
         itemStat = DestinyItemInvestmentStatDefinition()
           ..statTypeHash = statHash
@@ -89,23 +81,26 @@ class ItemDetailSocketItemStatsState
     result.sort((statA, statB) {
       int valA = noBarStats.contains(statA.statTypeHash)
           ? 2
-          : DestinyData.hiddenStats.contains(statA.statTypeHash) ? 1 : 0;
+          : DestinyData.hiddenStats.contains(statA.statTypeHash)
+              ? 1
+              : 0;
       int valB = noBarStats.contains(statB.statTypeHash)
           ? 2
-          : DestinyData.hiddenStats.contains(statB.statTypeHash) ? 1 : 0;
+          : DestinyData.hiddenStats.contains(statB.statTypeHash)
+              ? 1
+              : 0;
       return valA - valB;
     });
     return result;
   }
 
   Map<int, StatValues> getStatValues() {
-    Map<int, StatValues> map = new Map();
+    Map<int, StatValues> map = Map();
     if (plugDefinitions == null) {
       return map;
     }
     stats.forEach((s) {
-      map[s.statTypeHash] =
-          new StatValues(equipped: s.value, selected: s.value);
+      map[s.statTypeHash] = StatValues(equipped: s.value, selected: s.value);
     });
     var statHashes = map.keys;
     var entries = definition?.sockets?.socketEntries;
@@ -113,7 +108,7 @@ class ItemDetailSocketItemStatsState
       var selectedPlugHash = socketController.socketSelectedPlugHash(index);
       var def = plugDefinitions[selectedPlugHash];
       def?.investmentStats?.forEach((s) {
-        if(!statHashes.contains(s.statTypeHash)) return;
+        if (!statHashes.contains(s.statTypeHash)) return;
         if (index == socketController.selectedSocketIndex) {
           map[s.statTypeHash].selected += s.value;
         } else {

@@ -18,14 +18,8 @@ class PriorityTagsSorter extends BaseItemSorter with UserSettingsConsumer, ItemN
 
   @override
   int sort(ItemWithOwner a, ItemWithOwner b) {
-    Set<String> tagsA = itemNotes
-            .getNotesForItem(a.item.itemHash, a.item.itemInstanceId)
-            ?.tags ??
-        Set();
-    Set<String> tagsB = itemNotes
-            .getNotesForItem(b.item.itemHash, b.item.itemInstanceId)
-            ?.tags ??
-        Set();
+    Set<String> tagsA = itemNotes.getNotesForItem(a.item.itemHash, a.item.itemInstanceId)?.tags ?? Set();
+    Set<String> tagsB = itemNotes.getNotesForItem(b.item.itemHash, b.item.itemInstanceId)?.tags ?? Set();
     var indexA = 9999;
     var indexB = 9999;
     for (var i = 0; i < priorityTags.length; i++) {

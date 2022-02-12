@@ -21,7 +21,6 @@ import 'package:little_light/widgets/inventory_tabs/multiselect_management_block
 import 'package:little_light/widgets/item_list/items/quick_select_item_wrapper.widget.dart';
 
 class SelectedItemsWidget extends StatefulWidget {
-
   SelectedItemsWidget({Key key}) : super(key: key);
 
   @override
@@ -30,7 +29,8 @@ class SelectedItemsWidget extends StatefulWidget {
   }
 }
 
-class SelectedItemsWidgetState extends State<SelectedItemsWidget> with ProfileConsumer, InventoryConsumer, ManifestConsumer, SelectionConsumer {
+class SelectedItemsWidgetState extends State<SelectedItemsWidget>
+    with ProfileConsumer, InventoryConsumer, ManifestConsumer, SelectionConsumer {
   StreamSubscription<List<ItemWithOwner>> subscription;
   List<ItemWithOwner> items;
 
@@ -70,12 +70,10 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget> with ProfileCo
 
   Widget buildOptions(BuildContext context) {
     var buttons = <ElevatedButton>[];
-    var lockableItems = items.where((i) =>
-        i?.item?.lockable == true &&
-        i?.item?.state?.contains(ItemState.Locked) != true);
-    var unlockableItems = items.where((i) =>
-        i?.item?.lockable == true &&
-        i?.item?.state?.contains(ItemState.Locked) != false);
+    var lockableItems =
+        items.where((i) => i?.item?.lockable == true && i?.item?.state?.contains(ItemState.Locked) != true);
+    var unlockableItems =
+        items.where((i) => i?.item?.lockable == true && i?.item?.state?.contains(ItemState.Locked) != false);
     if (lockableItems.length > 0) {
       buttons.add(ElevatedButton(
         key: Key("lock_button"),
@@ -84,8 +82,7 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget> with ProfileCo
           uppercase: true,
         ),
         onPressed: () async {
-          inventory
-              .changeMultipleLockState(lockableItems.toList(), true);
+          inventory.changeMultipleLockState(lockableItems.toList(), true);
           setState(() {});
         },
       ));
@@ -98,8 +95,7 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget> with ProfileCo
           uppercase: true,
         ),
         onPressed: () async {
-          inventory
-              .changeMultipleLockState(unlockableItems.toList(), false);
+          inventory.changeMultipleLockState(unlockableItems.toList(), false);
           setState(() {});
         },
       ));
@@ -112,11 +108,8 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget> with ProfileCo
         ),
         onPressed: () async {
           var item = items.single;
-          var instanceInfo =
-              profile.getInstanceInfo(item?.item?.itemInstanceId);
-          var def = await manifest
-              .getDefinition<DestinyInventoryItemDefinition>(
-                  item?.item?.itemHash);
+          var instanceInfo = profile.getInstanceInfo(item?.item?.itemInstanceId);
+          var def = await manifest.getDefinition<DestinyInventoryItemDefinition>(item?.item?.itemHash);
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -211,13 +204,11 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget> with ProfileCo
                     child: AspectRatio(
                         aspectRatio: 1,
                         child: Container(
-                            foregroundDecoration: BoxDecoration(
-                                border: Border.all(
-                                    color: Colors.grey.shade300, width: .5)),
+                            foregroundDecoration:
+                                BoxDecoration(border: Border.all(color: Colors.grey.shade300, width: .5)),
                             child: Stack(children: [
                               Positioned.fill(
-                                  child: ManifestImageWidget<
-                                      DestinyInventoryItemDefinition>(
+                                  child: ManifestImageWidget<DestinyInventoryItemDefinition>(
                                 i.item.itemHash,
                               )),
                               Material(

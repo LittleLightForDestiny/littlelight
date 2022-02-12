@@ -110,7 +110,7 @@ extension StorageOperations<T> on StorageBase<T> {
   }
 
   Future<String?> getFileContents(String filePath) async {
-    File cached = new File(filePath);
+    File cached = File(filePath);
     bool exists = await cached.exists();
     if (exists) {
       try {
@@ -149,11 +149,11 @@ extension StorageOperations<T> on StorageBase<T> {
   }
 
   Future<void> setJson(T key, dynamic object) async {
-    Directory dir = new Directory(getFilePath(null));
+    Directory dir = Directory(getFilePath(null));
     if (!await dir.exists()) {
       await dir.create(recursive: true);
     }
-    File cached = new File(getFilePath(key, extension: StoredFileExtensions.JSON));
+    File cached = File(getFilePath(key, extension: StoredFileExtensions.JSON));
     await cached.writeAsString(jsonEncode(object));
   }
 
@@ -171,7 +171,7 @@ extension StorageOperations<T> on StorageBase<T> {
 
   Future<dynamic> getExpireableJson(T key, Duration expiration) async {
     final path = getFilePath(key, extension: StoredFileExtensions.JSON);
-    File file = new File(path);
+    File file = File(path);
     bool exists = await file.exists();
     if (!exists) return null;
     try {

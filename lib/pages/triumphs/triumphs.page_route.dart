@@ -11,7 +11,10 @@ class TriumphsPageRouteArguments {
   final int? badgeCategoryHash;
 
   TriumphsPageRouteArguments(
-      {this.parentCategoryHashes, this.categoryPresentationNodeHash, this.subcategoryPresentationNodeHash, this.badgeCategoryHash});
+      {this.parentCategoryHashes,
+      this.categoryPresentationNodeHash,
+      this.subcategoryPresentationNodeHash,
+      this.badgeCategoryHash});
 
   static TriumphsPageRouteArguments? of(BuildContext context) {
     final pageRoute = ModalRoute.of(context);
@@ -31,11 +34,10 @@ class TriumphsPageRoute extends MaterialPageRoute {
   }) : super(
             settings: RouteSettings(
                 arguments: TriumphsPageRouteArguments(
-              parentCategoryHashes: parentCategoryHashes,
-              categoryPresentationNodeHash: categoryPresentationNodeHash,
-              subcategoryPresentationNodeHash: subcategoryPresentationNodeHash,
-              badgeCategoryHash: badgeCategoryHash
-            )),
+                    parentCategoryHashes: parentCategoryHashes,
+                    categoryPresentationNodeHash: categoryPresentationNodeHash,
+                    subcategoryPresentationNodeHash: subcategoryPresentationNodeHash,
+                    badgeCategoryHash: badgeCategoryHash)),
             builder: (context) {
               if (categoryPresentationNodeHash != null) {
                 return TriumphsCategoryPage();

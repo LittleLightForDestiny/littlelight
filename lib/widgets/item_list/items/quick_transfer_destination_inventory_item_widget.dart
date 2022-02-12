@@ -8,16 +8,16 @@ class QuickTransferDestinationItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-      return Container(
+    return Container(
         margin: EdgeInsets.all(1),
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.onSurface.withOpacity(.1),
-          border: Border.all(
-            color: Theme.of(context).colorScheme.secondaryVariant,
-            width: 2,
-            )
-        ),
-        child:Center(child: Icon(Icons.add_circle_outline, color:LittleLightTheme.of(context).surfaceLayers.layer3),)
-      );
-    }
+            color: Theme.of(context).colorScheme.onSurface.withOpacity(.1),
+            border: Border.all(
+              color: Theme.of(context).colorScheme.secondaryVariant,
+              width: 2,
+            )),
+        child: Center(
+          child: Icon(Icons.add_circle_outline, color: LittleLightTheme.of(context).surfaceLayers.layer3),
+        ));
+  }
 }

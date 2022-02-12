@@ -6,10 +6,7 @@ class TrackingIconWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        width: 20,
-        height: 20,
-        child: Stack(
-            children: [buildBackground(context), buildAnimation(context)]));
+        width: 20, height: 20, child: Stack(children: [buildBackground(context), buildAnimation(context)]));
   }
 
   buildBackground(BuildContext context) {

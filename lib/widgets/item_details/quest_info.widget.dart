@@ -12,19 +12,14 @@ import 'package:little_light/widgets/common/objective.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
-class QuestInfoWidget extends BaseDestinyStatefulItemWidget{
+class QuestInfoWidget extends BaseDestinyStatefulItemWidget {
   QuestInfoWidget(
       {DestinyItemComponent item,
       DestinyInventoryItemDefinition definition,
       DestinyItemInstanceComponent instanceInfo,
       Key key,
       String characterId})
-      : super(
-            item: item,
-            definition: definition,
-            instanceInfo: instanceInfo,
-            key: key,
-            characterId: characterId);
+      : super(item: item, definition: definition, instanceInfo: instanceInfo, key: key, characterId: characterId);
 
   @override
   QuestInfoWidgetState createState() {
@@ -48,22 +43,14 @@ class QuestInfoWidgetState extends BaseDestinyItemState<QuestInfoWidget> with Pr
   }
 
   loadDefinitions() async {
-    itemObjectives = profile
-        .getItemObjectives(item?.itemInstanceId, characterId, item?.itemHash);
-    questlineDefinition = await manifest
-        .getDefinition<DestinyInventoryItemDefinition>(
-            definition.objectives.questlineItemHash);
-    List<int> stepHashes = questlineDefinition.setData?.itemList
-            ?.map((i) => i.itemHash)
-            ?.toList() ??
-        [];
+    itemObjectives = profile.getItemObjectives(item?.itemInstanceId, characterId, item?.itemHash);
+    questlineDefinition =
+        await manifest.getDefinition<DestinyInventoryItemDefinition>(definition.objectives.questlineItemHash);
+    List<int> stepHashes = questlineDefinition.setData?.itemList?.map((i) => i.itemHash)?.toList() ?? [];
     currentIndex = stepHashes.indexOf(item.itemHash);
-    questSteps = await manifest
-        .getDefinitions<DestinyInventoryItemDefinition>(stepHashes);
-    Iterable<int> objectiveHashes =
-        questSteps.values.expand((step) => step.objectives.objectiveHashes);
-    objectiveDefinitions = await manifest
-        .getDefinitions<DestinyObjectiveDefinition>(objectiveHashes);
+    questSteps = await manifest.getDefinitions<DestinyInventoryItemDefinition>(stepHashes);
+    Iterable<int> objectiveHashes = questSteps.values.expand((step) => step.objectives.objectiveHashes);
+    objectiveDefinitions = await manifest.getDefinitions<DestinyObjectiveDefinition>(objectiveHashes);
     setState(() {});
   }
 
@@ -80,23 +67,18 @@ class QuestInfoWidgetState extends BaseDestinyItemState<QuestInfoWidget> with Pr
           child: HeaderWidget(
               alignment: Alignment.centerLeft,
               child: TranslatedTextWidget("Quest steps",
-                  uppercase: true,
-                  style: TextStyle(fontWeight: FontWeight.bold)))));
+                  uppercase: true, style: TextStyle(fontWeight: FontWeight.bold)))));
     }
     items.addAll(buildQuestSteps(context));
-    if (currentIndex < questlineDefinition.setData.itemList.length &&
-        !showSpoilers) {
+    if (currentIndex < questlineDefinition.setData.itemList.length && !showSpoilers) {
       items.add(Container(
           padding: EdgeInsets.symmetric(horizontal: 8),
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
-              primary:
-                  DestinyData.getTierColor(definition?.inventory?.tierType),
+              primary: DestinyData.getTierColor(definition?.inventory?.tierType),
             ),
             child: TranslatedTextWidget("View next steps",
-                style: TextStyle(
-                    color: DestinyData.getTierTextColor(
-                        definition?.inventory?.tierType))),
+                style: TextStyle(color: DestinyData.getTierTextColor(definition?.inventory?.tierType))),
             onPressed: () {
               showSpoilers = true;
               setState(() {});
@@ -104,8 +86,7 @@ class QuestInfoWidgetState extends BaseDestinyItemState<QuestInfoWidget> with Pr
           )));
     }
     if (items.length > 0) {
-      return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch, children: items);
+      return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: items);
     }
 
     return Container();
@@ -113,9 +94,7 @@ class QuestInfoWidgetState extends BaseDestinyItemState<QuestInfoWidget> with Pr
 
   List<Widget> buildQuestSteps(BuildContext context) {
     List<Widget> items = [];
-    int lastIndex = showSpoilers
-        ? questlineDefinition.setData.itemList.length - 1
-        : currentIndex;
+    int lastIndex = showSpoilers ? questlineDefinition.setData.itemList.length - 1 : currentIndex;
     for (int i = 0; i <= lastIndex; i++) {
       items.add(buildQueststep(context, i));
     }
@@ -123,8 +102,7 @@ class QuestInfoWidgetState extends BaseDestinyItemState<QuestInfoWidget> with Pr
   }
 
   Widget buildQueststep(BuildContext context, int index) {
-    if (questlineDefinition?.setData?.itemList == null || questSteps == null)
-      return Container();
+    if (questlineDefinition?.setData?.itemList == null || questSteps == null) return Container();
     var item = questlineDefinition.setData.itemList[index];
     var def = questSteps[item.itemHash];
     return Container(
@@ -158,42 +136,29 @@ class QuestInfoWidgetState extends BaseDestinyItemState<QuestInfoWidget> with Pr
                 width: 72,
                 height: 72,
                 child: Container(
-                    foregroundDecoration: BoxDecoration(
-                        border:
-                            Border.all(width: 2, color: Colors.grey.shade300)),
+                    foregroundDecoration: BoxDecoration(border: Border.all(width: 2, color: Colors.grey.shade300)),
                     color: DestinyData.getTierColor(def.inventory.tierType),
-                    child: QueuedNetworkImage(
-                        imageUrl:
-                            BungieApiService.url(def.displayProperties.icon))))
+                    child: QueuedNetworkImage(imageUrl: BungieApiService.url(def.displayProperties.icon))))
           ])
         ].followedBy(buildObjectives(context, def, index)).toList()));
   }
 
-  List<Widget> buildObjectives(BuildContext context,
-      DestinyInventoryItemDefinition questStepDef, int stepIndex) {
+  List<Widget> buildObjectives(BuildContext context, DestinyInventoryItemDefinition questStepDef, int stepIndex) {
     if (stepIndex == currentIndex && itemObjectives != null) {
-      return itemObjectives
-          .map((objective) => buildCurrentObjective(context, objective))
-          .toList();
+      return itemObjectives.map((objective) => buildCurrentObjective(context, objective)).toList();
     }
-    return questStepDef.objectives.objectiveHashes
-        .map((hash) => buildObjective(context, hash, stepIndex))
-        .toList();
+    return questStepDef.objectives.objectiveHashes.map((hash) => buildObjective(context, hash, stepIndex)).toList();
   }
 
   Widget buildObjective(BuildContext context, int hash, int stepIndex) {
     if (objectiveDefinitions == null) return Container();
     var def = objectiveDefinitions[hash];
     return Column(
-      children: <Widget>[
-        ObjectiveWidget(
-            definition: def, forceComplete: stepIndex < currentIndex)
-      ],
+      children: <Widget>[ObjectiveWidget(definition: def, forceComplete: stepIndex < currentIndex)],
     );
   }
 
-  Widget buildCurrentObjective(
-      BuildContext context, DestinyObjectiveProgress objective) {
+  Widget buildCurrentObjective(BuildContext context, DestinyObjectiveProgress objective) {
     if (objectiveDefinitions == null) return Container();
     var def = objectiveDefinitions[objective.objectiveHash];
     return Column(
@@ -214,36 +179,29 @@ class QuestInfoWidgetState extends BaseDestinyItemState<QuestInfoWidget> with Pr
             HeaderWidget(
                 alignment: Alignment.centerLeft,
                 child: TranslatedTextWidget("From the questline",
-                    uppercase: true,
-                    style: TextStyle(fontWeight: FontWeight.bold))),
+                    uppercase: true, style: TextStyle(fontWeight: FontWeight.bold))),
             Container(
               height: 8,
             ),
             Container(
-                color: DestinyData.getTierColor(
-                    questlineDefinition.inventory.tierType),
+                color: DestinyData.getTierColor(questlineDefinition.inventory.tierType),
                 child: Row(
                   children: <Widget>[
                     Container(
                         margin: EdgeInsets.all(4),
-                        foregroundDecoration: BoxDecoration(
-                            border: Border.all(
-                                width: 2, color: Colors.grey.shade300)),
+                        foregroundDecoration: BoxDecoration(border: Border.all(width: 2, color: Colors.grey.shade300)),
                         child: SizedBox(
                             width: 72,
                             height: 72,
                             child: QueuedNetworkImage(
-                              imageUrl: BungieApiService.url(
-                                  questlineDefinition.displayProperties.icon),
+                              imageUrl: BungieApiService.url(questlineDefinition.displayProperties.icon),
                             ))),
                     Expanded(
                       child: Text(
-                        questlineDefinition?.displayProperties?.name
-                            ?.toUpperCase(),
+                        questlineDefinition?.displayProperties?.name?.toUpperCase(),
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            color: DestinyData.getTierTextColor(
-                                questlineDefinition.inventory.tierType)),
+                            color: DestinyData.getTierTextColor(questlineDefinition.inventory.tierType)),
                       ),
                     )
                   ],

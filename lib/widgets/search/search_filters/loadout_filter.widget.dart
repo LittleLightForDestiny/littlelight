@@ -15,8 +15,8 @@ class LoadoutFilterWidget extends BaseSearchFilterWidget<LoadoutFilter> {
   _LoadoutFilterWidgetState createState() => _LoadoutFilterWidgetState();
 }
 
-class _LoadoutFilterWidgetState extends BaseSearchFilterWidgetState<
-    LoadoutFilterWidget, LoadoutFilter, Loadout> with LoadoutsConsumer{
+class _LoadoutFilterWidgetState extends BaseSearchFilterWidgetState<LoadoutFilterWidget, LoadoutFilter, Loadout>
+    with LoadoutsConsumer {
   List<Loadout> allLoadouts;
 
   @override

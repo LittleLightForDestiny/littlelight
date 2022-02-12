@@ -9,16 +9,15 @@ class HeaderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        alignment: alignment,
-        padding: padding,
-        decoration: BoxDecoration(
+      alignment: alignment,
+      padding: padding,
+      decoration: BoxDecoration(
           border: BorderDirectional(bottom: BorderSide(color: Theme.of(context).colorScheme.onSurface)),
-          gradient: LinearGradient(colors: [Color.fromRGBO(255, 255, 255, 0), Color.fromRGBO(255, 255, 255, .1)], begin: Alignment.topCenter, end: Alignment.bottomCenter)
-        ),
-        child: 
-        DefaultTextStyle(
-          textAlign: TextAlign.left,
-          style: TextStyle(fontWeight: FontWeight.bold),
-          child: child),);
+          gradient: LinearGradient(
+              colors: [Color.fromRGBO(255, 255, 255, 0), Color.fromRGBO(255, 255, 255, .1)],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter)),
+      child: DefaultTextStyle(textAlign: TextAlign.left, style: TextStyle(fontWeight: FontWeight.bold), child: child),
+    );
   }
 }

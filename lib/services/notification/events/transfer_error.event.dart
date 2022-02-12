@@ -7,7 +7,6 @@ import 'notification_type.dart';
 
 class TransferErrorEvent extends NotificationEvent {
   final TransferErrorType code;
-  TransferErrorEvent(NotificationType type,
-      {DestinyItemComponent? item, String? characterId, required this.code})
+  TransferErrorEvent(NotificationType type, {DestinyItemComponent? item, String? characterId, required this.code})
       : super(type, item: item, characterId: characterId);
 }

@@ -21,13 +21,13 @@ import 'package:little_light/widgets/multisection_scrollview/sliver_section.dart
 import 'package:little_light/widgets/presentation_nodes/presentation_node_item.widget.dart';
 import 'package:little_light/widgets/presentation_nodes/presentation_node_list.widget.dart';
 
-typedef void OnPresentationNodeSelect(DestinyPresentationNodeChildEntry node);
+typedef OnPresentationNodeSelect = void Function(DestinyPresentationNodeChildEntry node);
 
 class TriumphsRootPage extends PresentationNodesTabsScaffoldWidget {
   TriumphsRootPage() : super();
 
   @override
-  createState() => new TriumphsRootPageState();
+  createState() => TriumphsRootPageState();
 }
 
 const _page = LittleLightPersistentPage.Triumphs;

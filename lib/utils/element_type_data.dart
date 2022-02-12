@@ -7,9 +7,9 @@ import 'package:little_light/core/theme/littlelight.theme.dart';
 const DamageTypeColorsToken = 'DamageTypeColors';
 
 extension DamageTypeColorLayers on DamageType {
-  LayeredSwatch getColorLayer(BuildContext context){
+  LayeredSwatch getColorLayer(BuildContext context) {
     final theme = LittleLightTheme.of(context);
-    switch(this){
+    switch (this) {
       case DamageType.Arc:
         return theme.damageTypeLayers.damageTypeArc;
       case DamageType.Thermal:
@@ -19,15 +19,15 @@ extension DamageTypeColorLayers on DamageType {
       case DamageType.Stasis:
         return theme.damageTypeLayers.damageTypeStasis;
       default:
-      return theme.onSurfaceLayers;
+        return theme.onSurfaceLayers;
     }
   }
 }
 
 extension EnergyTypeColorLayers on DestinyEnergyType {
-  LayeredSwatch getColorLayer(BuildContext context){
+  LayeredSwatch getColorLayer(BuildContext context) {
     final theme = LittleLightTheme.of(context);
-    switch(this){
+    switch (this) {
       case DestinyEnergyType.Arc:
         return theme.damageTypeLayers.damageTypeArc;
       case DestinyEnergyType.Thermal:
@@ -37,7 +37,7 @@ extension EnergyTypeColorLayers on DestinyEnergyType {
       case DestinyEnergyType.Stasis:
         return theme.damageTypeLayers.damageTypeStasis;
       default:
-      return theme.onSurfaceLayers;
+        return theme.onSurfaceLayers;
     }
   }
 }

@@ -28,9 +28,6 @@ import 'package:little_light/widgets/icon_fonts/littlelight_icons.dart';
 class MilestoneItemWidget extends StatefulWidget {
   final String characterId;
 
-  
-  
-
   final DestinyMilestone milestone;
 
   MilestoneItemWidget({Key key, this.characterId, this.milestone}) : super(key: key);
@@ -38,7 +35,8 @@ class MilestoneItemWidget extends StatefulWidget {
   MilestoneItemWidgetState createState() => MilestoneItemWidgetState();
 }
 
-class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T> with AutomaticKeepAliveClientMixin, ProfileConsumer, ManifestConsumer, NotificationConsumer {
+class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
+    with AutomaticKeepAliveClientMixin, ProfileConsumer, ManifestConsumer, NotificationConsumer {
   DestinyMilestoneDefinition definition;
   StreamSubscription<NotificationEvent> subscription;
   DestinyMilestone milestone;

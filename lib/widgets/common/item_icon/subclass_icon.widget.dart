@@ -13,11 +13,8 @@ import '../queued_network_image.widget.dart';
 
 class SubclassIconWidget extends ItemIconWidget {
   SubclassIconWidget(
-      DestinyItemComponent item,
-      DestinyInventoryItemDefinition definition,
-      DestinyItemInstanceComponent instanceInfo,
-      {Key key,
-      double iconBorderWidth})
+      DestinyItemComponent item, DestinyInventoryItemDefinition definition, DestinyItemInstanceComponent instanceInfo,
+      {Key key, double iconBorderWidth})
       : super(item, definition, instanceInfo, key: key);
 
   BoxDecoration iconBoxDecoration() {

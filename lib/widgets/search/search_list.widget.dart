@@ -14,7 +14,7 @@ class SearchListWidget extends StatefulWidget {
   SearchListWidget({Key key, this.controller}) : super(key: key);
 
   @override
-  SearchListWidgetState createState() => new SearchListWidgetState();
+  SearchListWidgetState createState() => SearchListWidgetState();
 }
 
 class SearchListWidgetState<T extends SearchListWidget> extends State<T> {

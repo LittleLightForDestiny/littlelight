@@ -15,10 +15,8 @@ class ClassTypeFilterWidget extends BaseSearchFilterWidget<ClassTypeFilter> {
   _ClassTypeFilterWidgetState createState() => _ClassTypeFilterWidgetState();
 }
 
-class _ClassTypeFilterWidgetState extends BaseSearchFilterWidgetState<
-    ClassTypeFilterWidget, ClassTypeFilter, DestinyClass> {
-  
-
+class _ClassTypeFilterWidgetState
+    extends BaseSearchFilterWidgetState<ClassTypeFilterWidget, ClassTypeFilter, DestinyClass> {
   @override
   Widget buildButtons(BuildContext context) {
     var textButtons = options
@@ -29,18 +27,13 @@ class _ClassTypeFilterWidgetState extends BaseSearchFilterWidgetState<
         .where((e) => (e ?? DestinyClass.Unknown) != DestinyClass.Unknown)
         .map((e) => Expanded(child: buildButton(context, e)))
         .toList();
-    return Column(
-        children: [Column(children: textButtons), Row(children: iconButtons)]);
+    return Column(children: [Column(children: textButtons), Row(children: iconButtons)]);
   }
 
   @override
   Widget buildButtonLabel(BuildContext context, DestinyClass value) {
     if ((value ?? DestinyClass.Unknown) != DestinyClass.Unknown) {
-      return Container(
-          margin: EdgeInsets.all(8),
-          width: 32,
-          height: 32,
-          child: Icon(DestinyData.getClassIcon(value)));
+      return Container(margin: EdgeInsets.all(8), width: 32, height: 32, child: Icon(DestinyData.getClassIcon(value)));
     }
 
     return TranslatedTextWidget("None", uppercase: true);
@@ -56,12 +49,12 @@ class _ClassTypeFilterWidgetState extends BaseSearchFilterWidgetState<
 
   @override
   Widget buildDisabledLabel(BuildContext context) {
-    try{
+    try {
       var value = options.single;
-      if(value == DestinyClass.Unknown){
+      if (value == DestinyClass.Unknown) {
         return Container();
       }
-    }catch(_){
+    } catch (_) {
       return Container();
     }
     return super.buildDisabledLabel(context);

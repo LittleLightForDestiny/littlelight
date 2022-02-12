@@ -15,8 +15,7 @@ ReputationRanks _$ReputationRanksFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$ReputationRanksToJson(ReputationRanks instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$ReputationRanksToJson(ReputationRanks instance) => <String, dynamic>{
       'glory': instance.glory,
       'valor': instance.valor,
       'infamy': instance.infamy,
@@ -27,12 +26,8 @@ GameData _$GameDataFromJson(Map<String, dynamic> json) {
     softCap: json['softCap'] as int,
     powerfulCap: json['powerfulCap'] as int,
     pinnacleCap: json['pinnacleCap'] as int,
-    seasonalModSlots: (json['seasonalModSlots'] as List<dynamic>?)
-        ?.map((e) => e as int)
-        .toList(),
-    tabbedPresentationNodes: (json['tabbedPresentationNodes'] as List<dynamic>?)
-        ?.map((e) => e as int)
-        .toList(),
+    seasonalModSlots: (json['seasonalModSlots'] as List<dynamic>?)?.map((e) => e as int).toList(),
+    tabbedPresentationNodes: (json['tabbedPresentationNodes'] as List<dynamic>?)?.map((e) => e as int).toList(),
     ranks: ReputationRanks.fromJson(json['ranks']),
   );
 }

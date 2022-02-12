@@ -35,12 +35,8 @@ class SmallObjectiveWidget extends ObjectiveWidget {
 class SmallObjectiveWidgetState extends ObjectiveWidgetState {
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      buildCount(context),
-      buildProgressBar(context),
-      Container(height: 2),
-      buildTitle(context)
-    ]);
+    return Column(
+        children: [buildCount(context), buildProgressBar(context), Container(height: 2), buildTitle(context)]);
   }
 
   bool get isComplete {
@@ -53,10 +49,7 @@ class SmallObjectiveWidgetState extends ObjectiveWidgetState {
     if (total <= 1)
       return Text(
         "",
-        style: TextStyle(
-            fontWeight: FontWeight.w500,
-            fontSize: 10,
-            color: this.color ?? Colors.grey.shade300),
+        style: TextStyle(fontWeight: FontWeight.w500, fontSize: 10, color: this.color ?? Colors.grey.shade300),
       );
     if (!definition.allowOvercompletion) {
       progress = min(total, progress);
@@ -69,10 +62,7 @@ class SmallObjectiveWidgetState extends ObjectiveWidgetState {
     return Text("$percent%",
         softWrap: false,
         overflow: TextOverflow.clip,
-        style: TextStyle(
-            fontWeight: FontWeight.w500,
-            fontSize: 10,
-            color: this.color ?? Colors.grey.shade300));
+        style: TextStyle(fontWeight: FontWeight.w500, fontSize: 10, color: this.color ?? Colors.grey.shade300));
   }
 
   buildProgressBar(BuildContext context) {
@@ -101,10 +91,7 @@ class SmallObjectiveWidgetState extends ObjectiveWidgetState {
             maxLines: 1,
             softWrap: false,
             overflow: TextOverflow.fade,
-            style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 9,
-                color: this.color ?? Colors.grey.shade300)));
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 9, color: this.color ?? Colors.grey.shade300)));
   }
 
   Color get barColor {

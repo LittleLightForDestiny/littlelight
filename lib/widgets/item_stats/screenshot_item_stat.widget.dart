@@ -11,13 +11,8 @@ class ScreenshotItemStatWidget extends BaseItemStatWidget {
   final double pixelSize;
 
   ScreenshotItemStatWidget(
-      {Key key,
-      this.pixelSize = 1,
-      StatValues modValues,
-      int statHash,
-      DestinyStatDisplayDefinition scaled})
-      : super(
-            key: key, statHash: statHash, modValues: modValues, scaled: scaled);
+      {Key key, this.pixelSize = 1, StatValues modValues, int statHash, DestinyStatDisplayDefinition scaled})
+      : super(key: key, statHash: statHash, modValues: modValues, scaled: scaled);
 
   @override
   Widget build(BuildContext context) {
@@ -26,11 +21,7 @@ class ScreenshotItemStatWidget extends BaseItemStatWidget {
         child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              buildLabel(context),
-              buildValue(context),
-              buildBar(context)
-            ]));
+            children: [buildLabel(context), buildValue(context), buildBar(context)]));
   }
 
   Widget buildLabel(BuildContext context) {
@@ -38,12 +29,7 @@ class ScreenshotItemStatWidget extends BaseItemStatWidget {
       child: ManifestText<DestinyStatDefinition>(
         statHash,
         style: TextStyle(
-          shadows: [
-            Shadow(
-                color: Colors.black,
-                offset: Offset.fromDirection(.5),
-                blurRadius: 2 * pixelSize)
-          ],
+          shadows: [Shadow(color: Colors.black, offset: Offset.fromDirection(.5), blurRadius: 2 * pixelSize)],
           color: getNameColor(context),
           fontSize: pixelSize * 20,
           fontWeight: FontWeight.w500,
@@ -59,12 +45,7 @@ class ScreenshotItemStatWidget extends BaseItemStatWidget {
       child: Text(
         "$currentValue",
         style: TextStyle(
-          shadows: [
-            Shadow(
-                color: Colors.black,
-                offset: Offset.fromDirection(.5),
-                blurRadius: 2 * pixelSize)
-          ],
+          shadows: [Shadow(color: Colors.black, offset: Offset.fromDirection(.5), blurRadius: 2 * pixelSize)],
           color: getValueColor(context),
           fontSize: pixelSize * 20,
           fontWeight: FontWeight.bold,
@@ -100,15 +81,9 @@ class ScreenshotItemStatWidget extends BaseItemStatWidget {
       color: Colors.grey.shade800.withOpacity(.5),
       child: Row(
         children: <Widget>[
-          Container(
-              width: (baseBarSize / maxBarSize) * (pixelSize * 240),
-              color: getNameColor(context)),
-          Container(
-              width: (masterworkBarSize / maxBarSize) * (pixelSize * 240),
-              color: getMasterworkColor(context)),
-          Container(
-              width: (modBarSize / maxBarSize) * (pixelSize * 240),
-              color: getModBarColor(context)),
+          Container(width: (baseBarSize / maxBarSize) * (pixelSize * 240), color: getNameColor(context)),
+          Container(width: (masterworkBarSize / maxBarSize) * (pixelSize * 240), color: getMasterworkColor(context)),
+          Container(width: (modBarSize / maxBarSize) * (pixelSize * 240), color: getModBarColor(context)),
         ],
       ),
     );

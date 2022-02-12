@@ -23,7 +23,7 @@ setupAuthService() async {
   GetIt.I.registerSingleton<AuthService>(AuthService._internal());
 }
 
-class AuthService with StorageConsumer, LanguageConsumer, AppConfigConsumer, BungieApiConsumer{
+class AuthService with StorageConsumer, LanguageConsumer, AppConfigConsumer, BungieApiConsumer {
   Set<String>? _accountIDs;
   BungieNetToken? _currentToken;
   GroupUserInfoCard? _currentMembership;
@@ -35,7 +35,7 @@ class AuthService with StorageConsumer, LanguageConsumer, AppConfigConsumer, Bun
   }
 
   void openBungieLogin(bool forceReauth) async {
-    var browser = new BungieAuthBrowser();
+    var browser = BungieAuthBrowser();
     OAuth.openOAuth(browser, appConfig.clientId, languageService.currentLanguage, forceReauth);
   }
 
@@ -63,7 +63,7 @@ class AuthService with StorageConsumer, LanguageConsumer, AppConfigConsumer, Bun
     final membershipData = await getMembershipDataForAccount(accountID);
     final memberships = membershipData?.destinyMemberships?.map((e) => e.membershipId).whereType<String>() ?? [];
 
-    for(final m in memberships){
+    for (final m in memberships) {
       membershipStorage(m).purge();
     }
 
@@ -98,11 +98,10 @@ class AuthService with StorageConsumer, LanguageConsumer, AppConfigConsumer, Bun
     globalStorage.currentAccountID = accountID;
   }
 
-  void changeMembership(BuildContext context, String membershipID, String accountID){
+  void changeMembership(BuildContext context, String membershipID, String accountID) {
     setCurrentMembershipID(membershipID, accountID);
     Phoenix.rebirth(context);
   }
-  
 
   Future<Map<String, UserMembershipData>> fetchMembershipDataForAllAccounts() async {
     final result = Map<String, UserMembershipData>();
@@ -171,7 +170,6 @@ class AuthService with StorageConsumer, LanguageConsumer, AppConfigConsumer, Bun
     return token;
   }
 
-
   // void reset() {
   //   _currentMembership = null;
   //   _currentToken = null;
@@ -181,7 +179,8 @@ class AuthService with StorageConsumer, LanguageConsumer, AppConfigConsumer, Bun
   Future<GroupUserInfoCard?> getMembership() async {
     if (_currentMembership == null) {
       final membershipData = await currentAccountStorage.getMembershipData();
-      _currentMembership = membershipData?.destinyMemberships?.firstWhereOrNull((m) => m.membershipId == currentMembershipID);
+      _currentMembership =
+          membershipData?.destinyMemberships?.firstWhereOrNull((m) => m.membershipId == currentMembershipID);
     }
     return _currentMembership;
   }

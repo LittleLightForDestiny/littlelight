@@ -10,7 +10,7 @@ setupNotificationService() {
 }
 
 class NotificationService {
-  final StreamController<NotificationEvent> _streamController = new StreamController.broadcast();
+  final StreamController<NotificationEvent> _streamController = StreamController.broadcast();
   NotificationEvent? latestNotification;
 
   NotificationService._internal();

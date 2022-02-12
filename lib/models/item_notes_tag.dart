@@ -95,8 +95,6 @@ const Map<ItemTagIcon, IconData> tagIconData = {
   ItemTagIcon.BlockerGiant: LittleLightIcons.blocker_giant
 };
 
-
-
 @JsonSerializable()
 class ItemNotesTag {
   bool custom;
@@ -171,5 +169,5 @@ class ItemNotesTag {
     return _$ItemNotesTagToJson(this);
   }
 
-  ItemNotesTag clone()=>ItemNotesTag.fromJson(toJson());
+  ItemNotesTag clone() => ItemNotesTag.fromJson(toJson());
 }

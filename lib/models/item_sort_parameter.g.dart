@@ -16,8 +16,7 @@ ItemSortParameter _$ItemSortParameterFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$ItemSortParameterToJson(ItemSortParameter instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$ItemSortParameterToJson(ItemSortParameter instance) => <String, dynamic>{
       'type': _$ItemSortParameterTypeEnumMap[instance.type],
       'direction': instance.direction,
       'active': instance.active,

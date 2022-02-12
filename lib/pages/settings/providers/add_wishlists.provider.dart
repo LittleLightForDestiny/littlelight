@@ -36,17 +36,17 @@ class AddWishlistsProvider with ChangeNotifier, LittleLightDataConsumer, Wishlis
     notifyListeners();
   }
 
-  bool isAdded(WishlistFile wishlist){
-   return wishlists?.any((w) => w.url == wishlist.url) ?? false;
+  bool isAdded(WishlistFile wishlist) {
+    return wishlists?.any((w) => w.url == wishlist.url) ?? false;
   }
 
-  Future<void> addWishlist(WishlistFile wishlist) async{
+  Future<void> addWishlist(WishlistFile wishlist) async {
     await wishlistsService.addWishlist(wishlist);
     wishlists = await wishlistsService.getWishlists();
     notifyListeners();
   }
 
-  Future<void> removeWishlist(WishlistFile wishlist) async{
+  Future<void> removeWishlist(WishlistFile wishlist) async {
     await wishlistsService.removeWishlist(wishlist);
     wishlists = await wishlistsService.getWishlists();
     notifyListeners();

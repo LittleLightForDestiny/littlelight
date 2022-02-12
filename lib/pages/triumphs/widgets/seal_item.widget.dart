@@ -11,7 +11,7 @@ import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
-typedef void OnPressed();
+typedef OnPressed = void Function();
 
 class SealItemWidget extends StatefulWidget {
   final int? hash;

@@ -7,27 +7,22 @@ import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/search/search.controller.dart';
 import 'package:little_light/widgets/search/search_filters/base_search_filter.widget.dart';
 
-class PowerLevelConstraintsWidget
-    extends BaseSearchFilterWidget<PowerLevelConstraintsFilter> {
+class PowerLevelConstraintsWidget extends BaseSearchFilterWidget<PowerLevelConstraintsFilter> {
   PowerLevelConstraintsWidget(SearchController controller) : super(controller);
 
   @override
-  _PowerLevelConstraintsWidgetState createState() =>
-      _PowerLevelConstraintsWidgetState();
+  _PowerLevelConstraintsWidgetState createState() => _PowerLevelConstraintsWidgetState();
 }
 
-class _PowerLevelConstraintsWidgetState extends BaseSearchFilterWidgetState<
-    PowerLevelConstraintsWidget,
-    PowerLevelConstraintsFilter,
-    PowerLevelConstraints> {
+class _PowerLevelConstraintsWidgetState extends BaseSearchFilterWidgetState<PowerLevelConstraintsWidget,
+    PowerLevelConstraintsFilter, PowerLevelConstraints> {
   @override
   Widget buildButtons(BuildContext context) {
     var aMin = filter?.availableValues?.min ?? -999;
     var aMax = filter?.availableValues?.max ?? 999;
     var min = filter?.value?.min ?? -999;
     var max = filter?.value?.max ?? 999;
-    var powerlessAvaialable =
-        filter?.availableValues?.includePowerlessItems ?? false;
+    var powerlessAvaialable = filter?.availableValues?.includePowerlessItems ?? false;
     if (aMax <= aMin) {
       return Container();
     }
@@ -58,8 +53,7 @@ class _PowerLevelConstraintsWidgetState extends BaseSearchFilterWidgetState<
           )),
       SliderTheme(
           data: SliderTheme.of(context).copyWith(
-              rangeValueIndicatorShape:
-                  SmallRectRangeSliderValueIndicatorShape(),
+              rangeValueIndicatorShape: SmallRectRangeSliderValueIndicatorShape(),
               rangeTrackShape: RoundedRectRangeSliderTrackShape()),
           child: RangeSlider(
             values: RangeValues(min?.toDouble(), max?.toDouble()),

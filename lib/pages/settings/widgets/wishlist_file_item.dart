@@ -48,12 +48,12 @@ class WishlistFileItem extends StatelessWidget {
 
   Widget buildActions(BuildContext context) {
     final actions = this.actions;
-    if(actions == null) return Container();
+    if (actions == null) return Container();
     return Container(
-      padding: EdgeInsets.only(top:4),
+      padding: EdgeInsets.only(top: 4),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
-        children: actions.map((e) => Container(child:e)).toList(),
+        children: actions.map((e) => Container(child: e)).toList(),
       ),
     );
   }

@@ -80,7 +80,9 @@ class _VendorsListWidgetState extends State<VendorsListWidget> with AutomaticKee
         ),
         crossAxisSpacing: 2,
         mainAxisSpacing: 2,
-        padding: MediaQuery.of(context).viewPadding + EdgeInsets.only(top:kToolbarHeight) + EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+        padding: MediaQuery.of(context).viewPadding +
+            EdgeInsets.only(top: kToolbarHeight) +
+            EdgeInsets.symmetric(horizontal: 4, vertical: 8),
         itemCount: _vendors.length,
         itemBuilder: (context, index) {
           final vendor = _vendors[index];

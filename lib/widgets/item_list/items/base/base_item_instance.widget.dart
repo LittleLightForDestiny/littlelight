@@ -26,13 +26,11 @@ import 'package:little_light/widgets/item_list/items/base/item_mods.widget.dart'
 import 'package:little_light/widgets/item_list/items/base/item_perks.widget.dart';
 import 'package:little_light/widgets/item_tags/item_tag.widget.dart';
 
-typedef void OnItemHandler(
-    DestinyItemComponent item,
-    DestinyInventoryItemDefinition itemDefinition,
-    DestinyItemInstanceComponent instanceInfo,
-    String characterId);
+typedef OnItemHandler = void Function(DestinyItemComponent item, DestinyInventoryItemDefinition itemDefinition,
+    DestinyItemInstanceComponent instanceInfo, String characterId);
 
-class BaseItemInstanceWidget extends BaseInventoryItemWidget with WishlistsConsumer, ProfileConsumer, ItemNotesConsumer {
+class BaseItemInstanceWidget extends BaseInventoryItemWidget
+    with WishlistsConsumer, ProfileConsumer, ItemNotesConsumer {
   BaseItemInstanceWidget(
     DestinyItemComponent item,
     DestinyInventoryItemDefinition itemDefinition,
@@ -40,8 +38,7 @@ class BaseItemInstanceWidget extends BaseInventoryItemWidget with WishlistsConsu
     Key key,
     @required String uniqueId,
     @required String characterId,
-  }) : super(item, itemDefinition, instanceInfo,
-            key: key, characterId: characterId, uniqueId: uniqueId);
+  }) : super(item, itemDefinition, instanceInfo, key: key, characterId: characterId, uniqueId: uniqueId);
 
   @override
   Widget build(BuildContext context) {
@@ -59,11 +56,9 @@ class BaseItemInstanceWidget extends BaseInventoryItemWidget with WishlistsConsu
       Positioned(
         left: 4,
         bottom: 4,
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          buildTags(context),
-          Container(height: 4),
-          modsWidget(context)
-        ]),
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [buildTags(context), Container(height: 4), modsWidget(context)]),
       ),
       Positioned.fill(
           child: Container(
@@ -92,11 +87,9 @@ class BaseItemInstanceWidget extends BaseInventoryItemWidget with WishlistsConsu
 
   Widget buildTags(BuildContext context) {
     final reusable = profile.getItemReusablePlugs(item?.itemInstanceId);
-    final wishlistTags = wishlistsService.getWishlistBuildTags(
-        itemHash: item?.itemHash, reusablePlugs: reusable);
+    final wishlistTags = wishlistsService.getWishlistBuildTags(itemHash: item?.itemHash, reusablePlugs: reusable);
     List<Widget> upper = [];
-    var notes = itemNotes
-        .getNotesForItem(item?.itemHash, item?.itemInstanceId);
+    var notes = itemNotes.getNotesForItem(item?.itemHash, item?.itemInstanceId);
     var tags = itemNotes.tagsByIds(notes?.tags);
     var locked = item?.state?.contains(ItemState.Locked) ?? false;
     if (tags != null) {
@@ -108,9 +101,7 @@ class BaseItemInstanceWidget extends BaseInventoryItemWidget with WishlistsConsu
     }
     if (locked) {
       upper.add(Container(
-          height: tagIconSize,
-          width: tagIconSize,
-          child: Icon(FontAwesomeIcons.lock, size: titleFontSize * .9)));
+          height: tagIconSize, width: tagIconSize, child: Icon(FontAwesomeIcons.lock, size: titleFontSize * .9)));
     }
     List<Widget> rows = [];
     if (upper.length > 0) {
@@ -139,25 +130,21 @@ class BaseItemInstanceWidget extends BaseInventoryItemWidget with WishlistsConsu
       return ManifestText<DestinyClassDefinition>(
         character.classHash,
         uppercase: true,
-        style: TextStyle(
-            color: Theme.of(context).colorScheme.onSurface, fontWeight: FontWeight.bold, fontSize: 12),
-        textExtractor: (def) =>
-            def.genderedClassNamesByGenderHash["${character.genderHash}"],
+        style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontWeight: FontWeight.bold, fontSize: 12),
+        textExtractor: (def) => def.genderedClassNamesByGenderHash["${character.genderHash}"],
       );
     }
     if (item.bucketHash == InventoryBucket.general) {
       return ManifestText<DestinyVendorDefinition>(
         1037843411,
         uppercase: true,
-        style: TextStyle(
-            color: Theme.of(context).colorScheme.onSurface, fontWeight: FontWeight.bold, fontSize: 12),
+        style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontWeight: FontWeight.bold, fontSize: 12),
         textExtractor: (def) => def.displayProperties.name,
       );
     }
     return TranslatedTextWidget("Inventory",
         uppercase: true,
-        style: TextStyle(
-            color: Theme.of(context).colorScheme.onSurface, fontWeight: FontWeight.bold, fontSize: 12));
+        style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontWeight: FontWeight.bold, fontSize: 12));
   }
 
   Widget buildEmblemBackground(BuildContext context) {
@@ -198,8 +185,7 @@ class BaseItemInstanceWidget extends BaseInventoryItemWidget with WishlistsConsu
 
   @override
   Widget primaryStatWidget(BuildContext context) {
-    return PrimaryStatWidget(
-        item: item, definition: definition, instanceInfo: instanceInfo);
+    return PrimaryStatWidget(item: item, definition: definition, instanceInfo: instanceInfo);
   }
 
   @override
@@ -216,8 +202,7 @@ class BaseItemInstanceWidget extends BaseInventoryItemWidget with WishlistsConsu
   Widget perksWidget(BuildContext context) {
     var socketCategoryHash = definition.sockets?.socketCategories
         ?.map((sc) => sc.socketCategoryHash)
-        ?.firstWhere((h) => DestinyData.socketCategoryPerkHashes.contains(h),
-            orElse: () => null);
+        ?.firstWhere((h) => DestinyData.socketCategoryPerkHashes.contains(h), orElse: () => null);
     return ItemPerksWidget(
       socketCategoryHash: socketCategoryHash,
       item: item,
@@ -228,7 +213,6 @@ class BaseItemInstanceWidget extends BaseInventoryItemWidget with WishlistsConsu
   }
 
   Widget statsWidget(BuildContext context) {
-    return Container(
-        alignment: Alignment.topRight, child: ItemArmorStatsWidget(item: item));
+    return Container(alignment: Alignment.topRight, child: ItemArmorStatsWidget(item: item));
   }
 }

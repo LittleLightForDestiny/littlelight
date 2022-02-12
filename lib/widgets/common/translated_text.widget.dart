@@ -3,12 +3,12 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/services/language/language.consumer.dart';
 
-typedef String ExtractTextFromData(dynamic data);
+typedef ExtractTextFromData = String Function(dynamic data);
 
-class TranslatedTextWidget extends StatefulWidget with LanguageConsumer{
+class TranslatedTextWidget extends StatefulWidget with LanguageConsumer {
   final String text;
   final String? language;
-  final Map<String,String> replace;
+  final Map<String, String> replace;
   final bool uppercase;
   final int? maxLines;
   final TextOverflow? overflow;
@@ -31,7 +31,6 @@ class TranslatedTextWidget extends StatefulWidget with LanguageConsumer{
       this.textAlign,
       this.textDirection,
       this.textScaleFactor,
-      
       this.uppercase = false})
       : super(key: key ?? Key(text));
 
@@ -41,7 +40,7 @@ class TranslatedTextWidget extends StatefulWidget with LanguageConsumer{
   }
 }
 
-class TranslatedTextWidgetState extends State<TranslatedTextWidget> with LanguageConsumer{
+class TranslatedTextWidgetState extends State<TranslatedTextWidget> with LanguageConsumer {
   String? translatedText;
   @override
   void initState() {
@@ -50,10 +49,11 @@ class TranslatedTextWidgetState extends State<TranslatedTextWidget> with Languag
   }
 
   Future<void> loadTranslation() async {
-    if(widget.language != null){
-      translatedText = await languageService.getTranslation(widget.text, replace:widget.replace, languageCode: widget.language);  
-    }else{
-      translatedText = await languageService.getTranslation(widget.text, replace:widget.replace);
+    if (widget.language != null) {
+      translatedText =
+          await languageService.getTranslation(widget.text, replace: widget.replace, languageCode: widget.language);
+    } else {
+      translatedText = await languageService.getTranslation(widget.text, replace: widget.replace);
     }
     if (mounted) {
       setState(() {});
@@ -66,17 +66,15 @@ class TranslatedTextWidgetState extends State<TranslatedTextWidget> with Languag
     if (widget.uppercase) {
       text = text.toUpperCase();
     }
-    return Text(
-      text,
-      maxLines: widget.maxLines,
-      overflow: widget.overflow,
-      semanticsLabel: widget.semanticsLabel,
-      softWrap: widget.softWrap,
-      style: widget.style ?? DefaultTextStyle.of(context).style,
-      textAlign: widget.textAlign,
-      textDirection: widget.textDirection,
-      textScaleFactor: widget.textScaleFactor,
-      key:Key(text)
-    );
+    return Text(text,
+        maxLines: widget.maxLines,
+        overflow: widget.overflow,
+        semanticsLabel: widget.semanticsLabel,
+        softWrap: widget.softWrap,
+        style: widget.style ?? DefaultTextStyle.of(context).style,
+        textAlign: widget.textAlign,
+        textDirection: widget.textDirection,
+        textScaleFactor: widget.textScaleFactor,
+        key: Key(text));
   }
 }

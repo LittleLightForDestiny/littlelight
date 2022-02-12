@@ -10,8 +10,7 @@ import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
 class ScreenshotMasterworkCounterWidget extends BaseMasterworkCounterWidget {
   final double pixelSize;
-  ScreenshotMasterworkCounterWidget(
-      {DestinyItemComponent item, Key key, this.pixelSize = 1})
+  ScreenshotMasterworkCounterWidget({DestinyItemComponent item, Key key, this.pixelSize = 1})
       : super(item: item, key: key);
 
   @override
@@ -20,13 +19,12 @@ class ScreenshotMasterworkCounterWidget extends BaseMasterworkCounterWidget {
   }
 }
 
-class ScreenshotMasterworkCounterState extends BaseMasterworkCounterWidgetState<
-    ScreenshotMasterworkCounterWidget> with LanguageConsumer{
+class ScreenshotMasterworkCounterState extends BaseMasterworkCounterWidgetState<ScreenshotMasterworkCounterWidget>
+    with LanguageConsumer {
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    if (this.masterworkObjective == null ||
-        this.masterworkObjectiveDefinition?.displayProperties?.icon == null) {
+    if (this.masterworkObjective == null || this.masterworkObjectiveDefinition?.displayProperties?.icon == null) {
       return Container();
     }
     return Container(
@@ -54,9 +52,7 @@ class ScreenshotMasterworkCounterState extends BaseMasterworkCounterWidgetState<
     return Container(
       width: widget.pixelSize * 24,
       height: widget.pixelSize * 24,
-      child: QueuedNetworkImage(
-          imageUrl: BungieApiService.url(
-              masterworkObjectiveDefinition.displayProperties.icon)),
+      child: QueuedNetworkImage(imageUrl: BungieApiService.url(masterworkObjectiveDefinition.displayProperties.icon)),
     );
   }
 
@@ -71,12 +67,9 @@ class ScreenshotMasterworkCounterState extends BaseMasterworkCounterWidgetState<
   }
 
   Widget buildProgressValue(BuildContext context) {
-    
     var formatter = NumberFormat.decimalPattern(languageService.currentLanguage);
     var formattedValue = formatter.format(masterworkObjective.progress);
-    return Text("$formattedValue",
-        style: TextStyle(
-            color: Colors.amber.shade200, fontSize: widget.pixelSize * 20));
+    return Text("$formattedValue", style: TextStyle(color: Colors.amber.shade200, fontSize: widget.pixelSize * 20));
   }
 
   Widget buildBigIcon(BuildContext context) {

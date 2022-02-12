@@ -17,7 +17,7 @@ class CollectionsRootPage extends PresentationNodesTabsScaffoldWidget {
   CollectionsRootPage() : super();
 
   @override
-  createState() => new CollectionsRootPageState();
+  createState() => CollectionsRootPageState();
 }
 
 const _page = LittleLightPersistentPage.Collections;

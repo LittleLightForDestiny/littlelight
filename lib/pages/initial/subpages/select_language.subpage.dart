@@ -13,7 +13,7 @@ class SelectLanguageSubPage extends StatefulWidget {
   SelectLanguageSubPage();
 
   @override
-  SelectLanguageSubPageState createState() => new SelectLanguageSubPageState();
+  SelectLanguageSubPageState createState() => SelectLanguageSubPageState();
 }
 
 class SelectLanguageSubPageState extends SubpageBaseState<SelectLanguageSubPage> with LanguageConsumer {

@@ -7,8 +7,7 @@ import 'package:little_light/utils/item_with_owner.dart';
 import 'base_item_filter.dart';
 
 class ClassTypeFilter extends BaseItemFilter<Set<DestinyClass>> {
-  ClassTypeFilter({Set<DestinyClass> selected, enabled: false})
-      : super(Set(), selected ?? Set(), enabled: enabled);
+  ClassTypeFilter({Set<DestinyClass> selected, enabled = false}) : super(Set(), selected ?? Set(), enabled: enabled);
 
   clear() {
     availableValues.clear();
@@ -18,16 +17,14 @@ class ClassTypeFilter extends BaseItemFilter<Set<DestinyClass>> {
   Future<List<ItemWithOwner>> filter(List<ItemWithOwner> items,
       {Map<int, DestinyInventoryItemDefinition> definitions}) async {
     clear();
-    var classes =
-        items.map((i) => definitions[i?.item?.itemHash]?.classType).toSet();
+    var classes = items.map((i) => definitions[i?.item?.itemHash]?.classType).toSet();
     this.availableValues = classes;
     this.available = availableValues.length > 1;
     value.retainAll(availableValues);
     return super.filter(items, definitions: definitions);
   }
 
-  bool filterItem(ItemWithOwner item,
-      {Map<int, DestinyInventoryItemDefinition> definitions}) {
+  bool filterItem(ItemWithOwner item, {Map<int, DestinyInventoryItemDefinition> definitions}) {
     if (value?.length == 0) {
       return true;
     }

@@ -50,13 +50,7 @@ class InventoryBucket {
     ships,
   ];
 
-  static const armorBucketHashes = [
-    helmet,
-    gauntlets,
-    chestArmor,
-    legArmor,
-    classArmor
-  ];
+  static const armorBucketHashes = [helmet, gauntlets, chestArmor, legArmor, classArmor];
 
   static const weaponBucketHashes = [
     kineticWeapons,
@@ -76,9 +70,7 @@ class InventoryBucket {
     modifications,
   ];
 
-  static const pursuitBucketHashes = [
-    pursuits
-  ];
+  static const pursuitBucketHashes = [pursuits];
 
   static const List<int> exoticWeaponBlockBuckets = weaponBucketHashes;
 

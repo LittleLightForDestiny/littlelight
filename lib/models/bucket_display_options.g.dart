@@ -13,9 +13,7 @@ BucketDisplayOptions _$BucketDisplayOptionsFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$BucketDisplayOptionsToJson(
-        BucketDisplayOptions instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$BucketDisplayOptionsToJson(BucketDisplayOptions instance) => <String, dynamic>{
       'type': _$BucketDisplayTypeEnumMap[instance.type],
     };
 

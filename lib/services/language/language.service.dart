@@ -31,7 +31,7 @@ class LanguageService with StorageConsumer {
   String? get selectedLanguage => globalStorage.currentLanguage;
   set selectedLanguage(String? value) => globalStorage.currentLanguage = value;
   String get currentLanguage => selectedLanguage ?? _systemLanguage ?? _fallbackLanguage;
-  Map<String, Map<String, String>> _translationMaps = new Map();
+  Map<String, Map<String, String>> _translationMaps = Map();
 
   LanguageService._internal();
 

@@ -6,8 +6,7 @@ class LorePageRouteArguments {
   final List<int>? parentCategoryHashes;
   final int? categoryPresentationNodeHash;
 
-  LorePageRouteArguments(
-      {this.parentCategoryHashes, this.categoryPresentationNodeHash});
+  LorePageRouteArguments({this.parentCategoryHashes, this.categoryPresentationNodeHash});
 
   static LorePageRouteArguments? of(BuildContext context) {
     final pageRoute = ModalRoute.of(context);

@@ -21,8 +21,7 @@ extension Storages on StorageConsumer {
   AccountStorage get currentAccountStorage {
     final accountID = globalStorage.currentAccountID;
     if (accountID == null) {
-      throw NotInitializedException(
-          Exception("currentMembershipStorage was called before currentAccountID was set"));
+      throw NotInitializedException(Exception("currentMembershipStorage was called before currentAccountID was set"));
     }
     return getInjectedAccountStorage(accountID);
   }

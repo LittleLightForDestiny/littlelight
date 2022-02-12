@@ -9,11 +9,8 @@ import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 
 class EngramIconWidget extends ItemIconWidget {
   EngramIconWidget(
-      DestinyItemComponent item,
-      DestinyInventoryItemDefinition definition,
-      DestinyItemInstanceComponent instanceInfo,
-      {Key key,
-      double iconBorderWidth})
+      DestinyItemComponent item, DestinyInventoryItemDefinition definition, DestinyItemInstanceComponent instanceInfo,
+      {Key key, double iconBorderWidth})
       : super(item, definition, instanceInfo, key: key);
 
   BoxDecoration iconBoxDecoration() {
@@ -21,7 +18,6 @@ class EngramIconWidget extends ItemIconWidget {
   }
 
   Widget itemIconPlaceholder(BuildContext context) {
-    return ShimmerHelper.getDefaultShimmer(context,
-        child: Image.asset("assets/imgs/engram-placeholder.png"));
+    return ShimmerHelper.getDefaultShimmer(context, child: Image.asset("assets/imgs/engram-placeholder.png"));
   }
 }

@@ -24,7 +24,7 @@ import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/side_menu/profile_info.widget.dart';
 import 'package:little_light/widgets/side_menu/side_menu_settings.widget.dart';
 
-typedef void OnPageChange(Widget screen);
+typedef OnPageChange = void Function(Widget screen);
 
 class SideMenuWidget extends StatefulWidget {
   final OnPageChange onPageChange;
@@ -98,7 +98,7 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer {
                       open(context, DevToolsScreen());
                     })
                   : Container(),
-              Container(height:MediaQuery.of(context).viewPadding.bottom)
+              Container(height: MediaQuery.of(context).viewPadding.bottom)
             ],
           )),
         ]));
@@ -142,12 +142,11 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer {
         child: InkWell(
             onTap: onTap,
             child: Container(
-              alignment: Alignment.centerRight,
-              padding: EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-              decoration: BoxDecoration(
-                  border: Border(bottom: BorderSide(color: LittleLightTheme.of(context).surfaceLayers.layer2))),
-              child: label
-            )));
+                alignment: Alignment.centerRight,
+                padding: EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+                decoration: BoxDecoration(
+                    border: Border(bottom: BorderSide(color: LittleLightTheme.of(context).surfaceLayers.layer2))),
+                child: label)));
   }
 
   open(BuildContext context, Widget screen) {
@@ -157,7 +156,7 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer {
     }
   }
 
-  pushRoute(BuildContext context, MaterialPageRoute route){
+  pushRoute(BuildContext context, MaterialPageRoute route) {
     Navigator.of(context).pop();
     Navigator.of(context).push(route);
   }

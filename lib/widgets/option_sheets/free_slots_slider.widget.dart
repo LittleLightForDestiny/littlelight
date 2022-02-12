@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
-typedef void FreeSlotsChanged(int freeSlots);
+typedef FreeSlotsChanged = void Function(int freeSlots);
 
 class FreeSlotsSliderWidget extends StatefulWidget {
   final FreeSlotsChanged onChanged;

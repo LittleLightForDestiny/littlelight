@@ -15,7 +15,7 @@ class StartupErrorSubPage extends StatefulWidget {
   StartupErrorSubPage();
 
   @override
-  StartupErrorSubPageState createState() => new StartupErrorSubPageState();
+  StartupErrorSubPageState createState() => StartupErrorSubPageState();
 }
 
 class StartupErrorSubPageState extends SubpageBaseState<StartupErrorSubPage> with AuthConsumer {
@@ -43,7 +43,7 @@ class StartupErrorSubPageState extends SubpageBaseState<StartupErrorSubPage> wit
       child: Column(children: [buildDescription(context), buildOptions(context)]));
 
   Widget buildDescription(BuildContext context) {
-    if(controller.error is ManifestDownloadError){
+    if (controller.error is ManifestDownloadError) {
       return buildMultilineDescription([manifestDownloadErrorMessage, manifestDownloadErrorInstruction]);
     }
     if (controller.error is AuthorizationFailedError) {
@@ -54,10 +54,12 @@ class StartupErrorSubPageState extends SubpageBaseState<StartupErrorSubPage> wit
 
   Widget buildOptions(BuildContext context) {
     if (controller.error is ManifestDownloadError) {
-      return buildMultiButtonOptions([retryManifestDownloadOption, checkBungieNetTwitterOption, clearDataAndRestartOption]);
+      return buildMultiButtonOptions(
+          [retryManifestDownloadOption, checkBungieNetTwitterOption, clearDataAndRestartOption]);
     }
     if (controller.error is AuthorizationFailedError) {
-      return buildMultiButtonOptions([openBungieLoginOption, checkBungieNetTwitterOption, checkLittleLightD2TwitterOption]);
+      return buildMultiButtonOptions(
+          [openBungieLoginOption, checkBungieNetTwitterOption, checkLittleLightD2TwitterOption]);
     }
     return buildMultiButtonOptions([restartOption, clearDataAndRestartOption]);
   }
@@ -72,8 +74,6 @@ class StartupErrorSubPageState extends SubpageBaseState<StartupErrorSubPage> wit
       constraints: BoxConstraints(maxWidth: 400),
       padding: EdgeInsets.all(8),
       child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: buttons));
-
-
 
   /// Title options
   Widget get genericErrorTitle => TranslatedTextWidget("Unexpected error");
@@ -110,7 +110,6 @@ class StartupErrorSubPageState extends SubpageBaseState<StartupErrorSubPage> wit
         textAlign: TextAlign.center,
       );
 
-  
   /// Button options
 
   Widget get restartOption => ElevatedButton(
@@ -144,7 +143,7 @@ class StartupErrorSubPageState extends SubpageBaseState<StartupErrorSubPage> wit
       ));
 
   Widget get retryManifestDownloadOption => ElevatedButton(
-      onPressed: controller.retryManifestDownload,
-      child: TranslatedTextWidget("Retry download"),
+        onPressed: controller.retryManifestDownload,
+        child: TranslatedTextWidget("Retry download"),
       );
 }

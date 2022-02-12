@@ -11,7 +11,7 @@ class AuthorizationRequestSubPage extends StatefulWidget {
   AuthorizationRequestSubPage();
 
   @override
-  AuthorizationRequestSubPageState createState() => new AuthorizationRequestSubPageState();
+  AuthorizationRequestSubPageState createState() => AuthorizationRequestSubPageState();
 }
 
 class AuthorizationRequestSubPageState extends SubpageBaseState<AuthorizationRequestSubPage> with AuthConsumer {

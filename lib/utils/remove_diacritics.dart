@@ -177,7 +177,7 @@ final _defaultDiacriticsRemovalap = [
 
 final _diacriticsMap = {};
 
-final _diacriticsRegExp = new RegExp('[^\u0000-\u007E]', multiLine: true);
+final _diacriticsRegExp = RegExp('[^\u0000-\u007E]', multiLine: true);
 
 String removeDiacritics(String? str) {
   str = str ?? "";

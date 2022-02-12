@@ -99,7 +99,7 @@ class RecordItemWidgetState extends State<RecordItemWidget>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    if(definition == null) return Container();
+    if (definition == null) return Container();
     final hasLore = definition?.loreHash != null;
     return LayoutBuilder(
         builder: (context, constraints) => Container(

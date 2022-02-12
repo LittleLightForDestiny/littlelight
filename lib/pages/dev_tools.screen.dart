@@ -22,38 +22,34 @@ class DevToolsScreen extends StatelessWidget with StorageConsumer, ProfileConsum
         body: SingleChildScrollView(
             child: Container(
                 padding: EdgeInsets.all(8),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      buildTextField(context, "membershipId"),
-                      buildButton(context, "Reload", () async {
-                        await profile.fetchProfileData();
-                        print(profile.getCharacters());
-                      }),
-                      buildButton(
-                        context,
-                        "Clear Data",
-                        () async {
-                          globalStorage.purge();
-                        },
-                      ),
-                      buildDivider(context),
-                      buildTextField(context, "Wishlist URL",
-                          "https://raw.githubusercontent.com/48klocs/dim-wish-list-sources/master/voltron.txt"),
-                      buildButton(
-                        context,
-                        "Load Wishlist",
-                        () async {},
-                      ),
-                    ]))));
+                child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                  buildTextField(context, "membershipId"),
+                  buildButton(context, "Reload", () async {
+                    await profile.fetchProfileData();
+                    print(profile.getCharacters());
+                  }),
+                  buildButton(
+                    context,
+                    "Clear Data",
+                    () async {
+                      globalStorage.purge();
+                    },
+                  ),
+                  buildDivider(context),
+                  buildTextField(context, "Wishlist URL",
+                      "https://raw.githubusercontent.com/48klocs/dim-wish-list-sources/master/voltron.txt"),
+                  buildButton(
+                    context,
+                    "Load Wishlist",
+                    () async {},
+                  ),
+                ]))));
   }
 
-  Widget buildTextField(BuildContext context, String label,
-      [String initialValue = ""]) {
+  Widget buildTextField(BuildContext context, String label, [String initialValue = ""]) {
     var controller = fieldControllers[label];
     if (controller == null) {
-      controller =
-          fieldControllers[label] = TextEditingController(text: initialValue);
+      controller = fieldControllers[label] = TextEditingController(text: initialValue);
     }
     return Container(
         padding: EdgeInsets.all(8),
@@ -73,8 +69,6 @@ class DevToolsScreen extends StatelessWidget with StorageConsumer, ProfileConsum
 
   Widget buildDivider(BuildContext context) {
     return Container(
-        color: Theme.of(context).colorScheme.onSurface,
-        height: 1,
-        margin: EdgeInsets.symmetric(vertical: 16));
+        color: Theme.of(context).colorScheme.onSurface, height: 1, margin: EdgeInsets.symmetric(vertical: 16));
   }
 }

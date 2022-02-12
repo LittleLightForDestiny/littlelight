@@ -11,7 +11,7 @@ class CharacterTabWidget extends StatefulWidget {
   final int currentGroup;
   CharacterTabWidget(this.character, this.currentGroup, {Key key}) : super(key: key);
   @override
-  CharacterTabWidgetState createState() => new CharacterTabWidgetState();
+  CharacterTabWidgetState createState() => CharacterTabWidgetState();
 }
 
 class CharacterTabWidgetState extends State<CharacterTabWidget> {

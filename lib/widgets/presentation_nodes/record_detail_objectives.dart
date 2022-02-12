@@ -17,11 +17,7 @@ import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/objective.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
-
 class RecordObjectivesWidget extends StatefulWidget {
-  
-
-  
   final DestinyRecordDefinition definition;
 
   RecordObjectivesWidget({Key key, this.definition}) : super(key: key);
@@ -32,7 +28,8 @@ class RecordObjectivesWidget extends StatefulWidget {
   }
 }
 
-class RecordObjectivesWidgetState extends State<RecordObjectivesWidget> with AuthConsumer, ProfileConsumer, ManifestConsumer, NotificationConsumer {
+class RecordObjectivesWidgetState extends State<RecordObjectivesWidget>
+    with AuthConsumer, ProfileConsumer, ManifestConsumer, NotificationConsumer {
   bool isLogged = false;
   Map<int, DestinyObjectiveDefinition> objectiveDefinitions;
   StreamSubscription<NotificationEvent> subscription;
@@ -41,25 +38,24 @@ class RecordObjectivesWidgetState extends State<RecordObjectivesWidget> with Aut
     return widget.definition;
   }
 
-
   @override
   void initState() {
     super.initState();
     loadDefinitions();
-    if(isLogged){
+    if (isLogged) {
       listenToUpdates();
     }
   }
 
   @override
-  void dispose(){
-    if(subscription != null) subscription.cancel();
+  void dispose() {
+    if (subscription != null) subscription.cancel();
     super.dispose();
   }
 
-  listenToUpdates(){
+  listenToUpdates() {
     subscription = notifications.listen((event) {
-      if(!mounted) return;
+      if (!mounted) return;
       if (event.type == NotificationType.receivedUpdate) {
         setState(() {});
       }
@@ -68,14 +64,10 @@ class RecordObjectivesWidgetState extends State<RecordObjectivesWidget> with Aut
 
   loadDefinitions() async {
     if (definition?.objectiveHashes != null) {
-      objectiveDefinitions =
-          await manifest.getDefinitions<DestinyObjectiveDefinition>(
-              definition.objectiveHashes);
+      objectiveDefinitions = await manifest.getDefinitions<DestinyObjectiveDefinition>(definition.objectiveHashes);
       if (mounted) setState(() {});
     }
   }
-
-  
 
   DestinyRecordComponent get record {
     return profile.getRecord(definition.hash, definition.scope);
@@ -99,9 +91,7 @@ class RecordObjectivesWidgetState extends State<RecordObjectivesWidget> with Aut
         child: Column(children: [
           HeaderWidget(
               padding: EdgeInsets.all(0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+              child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                 Container(
                     padding: EdgeInsets.all(8),
                     child: TranslatedTextWidget(
@@ -122,11 +112,9 @@ class RecordObjectivesWidgetState extends State<RecordObjectivesWidget> with Aut
         child: Stack(
           children: <Widget>[
             InkWell(
-                child: Container(
-                    padding: EdgeInsets.all(8), child: Icon(Icons.refresh)),
+                child: Container(padding: EdgeInsets.all(8), child: Icon(Icons.refresh)),
                 onTap: () {
-                  profile.fetchProfileData(
-                      components: ProfileComponentGroups.triumphs);
+                  profile.fetchProfileData(components: ProfileComponentGroups.triumphs);
                 })
           ],
         ));
@@ -137,23 +125,19 @@ class RecordObjectivesWidgetState extends State<RecordObjectivesWidget> with Aut
     return Container(
         padding: EdgeInsets.all(8),
         child: Column(
-            children: definition.objectiveHashes
-                .map((hash){
-                  var objective = getRecordObjective(hash);
-                  return ObjectiveWidget(
-                    definition: objectiveDefinitions != null
-                        ? objectiveDefinitions[hash]
-                        : null,
-                    key:Key("objective_${hash}_${objective?.progress}"),
-                    objective: objective,
-                    placeholder: definition?.displayProperties?.name ?? "",
-                    color: foregroundColor);})
-                .toList()));
+            children: definition.objectiveHashes.map((hash) {
+          var objective = getRecordObjective(hash);
+          return ObjectiveWidget(
+              definition: objectiveDefinitions != null ? objectiveDefinitions[hash] : null,
+              key: Key("objective_${hash}_${objective?.progress}"),
+              objective: objective,
+              placeholder: definition?.displayProperties?.name ?? "",
+              color: foregroundColor);
+        }).toList()));
   }
 
   DestinyObjectiveProgress getRecordObjective(hash) {
     if (record == null) return null;
-    return record.objectives
-        .firstWhere((o) => o.objectiveHash == hash, orElse: () => null);
+    return record.objectives.firstWhere((o) => o.objectiveHash == hash, orElse: () => null);
   }
 }

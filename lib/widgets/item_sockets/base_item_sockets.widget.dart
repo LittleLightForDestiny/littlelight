@@ -14,8 +14,6 @@ import 'package:little_light/widgets/item_details/section_header.widget.dart';
 import 'package:little_light/widgets/item_sockets/item_socket.controller.dart';
 
 abstract class BaseItemSocketsWidget extends BaseDestinyStatefulItemWidget {
-
-  
   final ItemSocketController controller;
   final DestinyItemSocketCategoryDefinition category;
 
@@ -31,12 +29,11 @@ abstract class BaseItemSocketsWidget extends BaseDestinyStatefulItemWidget {
       : super(key: key, item: item, definition: definition);
 }
 
-abstract class BaseItemSocketsWidgetState<T extends BaseItemSocketsWidget>
-    extends BaseDestinyItemState<T> with VisibleSectionMixin, ProfileConsumer {
+abstract class BaseItemSocketsWidgetState<T extends BaseItemSocketsWidget> extends BaseDestinyItemState<T>
+    with VisibleSectionMixin, ProfileConsumer {
   List<DestinyItemSocketState> _socketStates;
   List<DestinyItemSocketState> get socketStates => _socketStates;
-  Map<int, DestinyInventoryItemDefinition> get plugDefinitions =>
-      controller?.plugDefinitions;
+  Map<int, DestinyInventoryItemDefinition> get plugDefinitions => controller?.plugDefinitions;
   DestinyItemSocketCategoryDefinition get category => widget.category;
   ItemSocketController _controller;
 
@@ -122,9 +119,7 @@ abstract class BaseItemSocketsWidgetState<T extends BaseItemSocketsWidget>
     return Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
-        children: category.socketIndexes
-            .map((socketIndex) => buildSocketPlugs(context, socketIndex))
-            .toList());
+        children: category.socketIndexes.map((socketIndex) => buildSocketPlugs(context, socketIndex)).toList());
   }
 
   Widget buildSocketPlugs(BuildContext context, int socketIndex) {
@@ -134,8 +129,7 @@ abstract class BaseItemSocketsWidgetState<T extends BaseItemSocketsWidget>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
-          children:
-              plugs.map((p) => buildPlug(context, socketIndex, p)).toList(),
+          children: plugs.map((p) => buildPlug(context, socketIndex, p)).toList(),
         ));
   }
 

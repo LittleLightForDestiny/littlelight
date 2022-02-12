@@ -2,12 +2,10 @@
 import 'package:get_it/get_it.dart';
 import 'loadouts.service.dart';
 
+LoadoutsService getInjectedLoadoutsService() => GetIt.I<LoadoutsService>();
 
-
-LoadoutsService getInjectedLoadoutsService()=>GetIt.I<LoadoutsService>();
-
-extension LoadoutsServiceProvider on LoadoutsConsumer{
+extension LoadoutsServiceProvider on LoadoutsConsumer {
   LoadoutsService get loadoutService => getInjectedLoadoutsService();
 }
-mixin LoadoutsConsumer {
-}
+
+mixin LoadoutsConsumer {}

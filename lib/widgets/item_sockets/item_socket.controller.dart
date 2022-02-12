@@ -101,11 +101,11 @@ class ItemSocketController extends ChangeNotifier
   }
 
   Future<void> _loadPlugDefinitions() async {
-    Set<int> plugHashes = new Set();
+    Set<int> plugHashes = Set();
     if (reusablePlugs != null) {
       plugHashes = socketStates
           .expand((socket) {
-            Set<int> hashes = new Set();
+            Set<int> hashes = Set();
             hashes.add(socket.plugHash);
             return hashes;
           })

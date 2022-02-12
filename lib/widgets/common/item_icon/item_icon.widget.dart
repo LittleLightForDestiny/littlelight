@@ -28,49 +28,34 @@ class ItemIconWidget extends BaseDestinyStatelessItemWidget {
       double iconBorderWidth = 2}) {
     switch (definition.itemType) {
       case DestinyItemType.Subclass:
-        return SubclassIconWidget(item, definition, instanceInfo,
-            key: key, iconBorderWidth: iconBorderWidth);
+        return SubclassIconWidget(item, definition, instanceInfo, key: key, iconBorderWidth: iconBorderWidth);
 
       case DestinyItemType.Engram:
-        return EngramIconWidget(item, definition, instanceInfo,
-            key: key, iconBorderWidth: iconBorderWidth);
+        return EngramIconWidget(item, definition, instanceInfo, key: key, iconBorderWidth: iconBorderWidth);
 
       default:
-        return ItemIconWidget(item, definition, instanceInfo,
-            key: key, iconBorderWidth: iconBorderWidth);
+        return ItemIconWidget(item, definition, instanceInfo, key: key, iconBorderWidth: iconBorderWidth);
     }
   }
 
   ItemIconWidget(
-      DestinyItemComponent item,
-      DestinyInventoryItemDefinition definition,
-      DestinyItemInstanceComponent instanceInfo,
-      {Key key,
-      String characterId,
-      this.iconBorderWidth = 2})
-      : super(
-            item: item,
-            definition: definition,
-            instanceInfo: instanceInfo,
-            key: key,
-            characterId: characterId);
+      DestinyItemComponent item, DestinyInventoryItemDefinition definition, DestinyItemInstanceComponent instanceInfo,
+      {Key key, String characterId, this.iconBorderWidth = 2})
+      : super(item: item, definition: definition, instanceInfo: instanceInfo, key: key, characterId: characterId);
 
   @override
   Widget build(BuildContext context) {
     ItemState state = item?.state ?? ItemState.None;
     if (state.contains(ItemState.Masterwork)) {}
     bool useBackgroundColor = true;
-    if ([DestinyItemType.Subclass, DestinyItemType.Engram]
-            .contains(definition?.itemType) ||
+    if ([DestinyItemType.Subclass, DestinyItemType.Engram].contains(definition?.itemType) ||
         definition?.inventory?.bucketTypeHash == InventoryBucket.subclass) {
       useBackgroundColor = false;
     }
     return Stack(children: [
       Positioned.fill(
           child: Container(
-              color: useBackgroundColor
-                  ? DestinyData.getTierColor(definition.inventory.tierType)
-                  : null,
+              color: useBackgroundColor ? DestinyData.getTierColor(definition.inventory.tierType) : null,
               child: itemIconImage(context))),
       itemSeasonIcon(context),
       Positioned.fill(
@@ -93,8 +78,7 @@ class ItemIconWidget extends BaseDestinyStatelessItemWidget {
 
   String seasonBadgeUrl() {
     try {
-      var version =
-          definition?.quality?.displayVersionWatermarkIcons[item.versionNumber];
+      var version = definition?.quality?.displayVersionWatermarkIcons[item.versionNumber];
       if (version.length > 0) return version;
     } catch (_) {}
     return null;
@@ -112,19 +96,15 @@ class ItemIconWidget extends BaseDestinyStatelessItemWidget {
   }
 
   BoxDecoration iconBoxDecoration() {
-    if ([InventoryBucket.engrams, InventoryBucket.subclass]
-        .contains(item?.bucketHash)) {
+    if ([InventoryBucket.engrams, InventoryBucket.subclass].contains(item?.bucketHash)) {
       return null;
     }
-    return BoxDecoration(
-        border:
-            Border.all(color: Colors.grey.shade300, width: iconBorderWidth));
+    return BoxDecoration(border: Border.all(color: Colors.grey.shade300, width: iconBorderWidth));
   }
 
   Widget itemIconImage(BuildContext context) {
     if (item?.overrideStyleItemHash != null) {
-      return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
-          item?.overrideStyleItemHash, (def) {
+      return DefinitionProviderWidget<DestinyInventoryItemDefinition>(item?.overrideStyleItemHash, (def) {
         return QueuedNetworkImage(
           imageUrl: BungieApiService.url(def.displayProperties.icon),
           fit: BoxFit.fill,

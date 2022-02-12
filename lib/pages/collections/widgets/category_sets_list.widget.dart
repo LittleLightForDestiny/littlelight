@@ -12,7 +12,7 @@ import 'package:little_light/widgets/presentation_nodes/nested_collectible_item.
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/widgets/presentation_nodes/presentation_node_item.widget.dart';
 
-typedef void PresentationNodeTap(int presentationNodeHash);
+typedef PresentationNodeTap = void Function(int presentationNodeHash);
 
 class CategorySetsListWidget extends StatefulWidget {
   final DestinyPresentationNodeDefinition node;

@@ -15,10 +15,9 @@ class SelectWishlistNotifier with ChangeNotifier, LittleLightDataConsumer, Wishl
   bool get isRootFolder => wishlistsIndex == currentFolder;
   Set<String> _selectedFiles = Set<String>();
 
-
   SelectWishlistNotifier(this.context);
 
-  void getFeaturedWishlists() async{
+  void getFeaturedWishlists() async {
     final index = await littleLightData.getFeaturedWishlists();
     index.files?.shuffle();
     index.folders?.shuffle();
@@ -26,7 +25,7 @@ class SelectWishlistNotifier with ChangeNotifier, LittleLightDataConsumer, Wishl
     notifyListeners();
   }
 
-  bool isChecked(WishlistFile file){
+  bool isChecked(WishlistFile file) {
     return _selectedFiles.contains(file.url);
   }
 
@@ -34,30 +33,30 @@ class SelectWishlistNotifier with ChangeNotifier, LittleLightDataConsumer, Wishl
     return _selectedFiles.length;
   }
 
-  void goToFolder(WishlistFolder folder){
+  void goToFolder(WishlistFolder folder) {
     _currentFolder = folder;
     notifyListeners();
   }
 
-  void goToRoot(){
+  void goToRoot() {
     _currentFolder = _wishlistsIndexRoot;
     notifyListeners();
   }
 
   void toggleChecked(WishlistFile file) {
-    if(isChecked(file)){
+    if (isChecked(file)) {
       _selectedFiles.remove(file.url);
-    }else{
+    } else {
       _selectedFiles.add(file.url!);
     }
     notifyListeners();
   }
 
-  _getSelectedWishlists([WishlistFolder? folder]){
+  _getSelectedWishlists([WishlistFolder? folder]) {
     folder ??= _wishlistsIndexRoot;
     final wishlists = <WishlistFile>[];
     final folders = folder?.folders ?? [];
-    for(final f in folders){
+    for (final f in folders) {
       wishlists.addAll(_getSelectedWishlists(f));
     }
     final files = folder?.files ?? [];
@@ -65,7 +64,7 @@ class SelectWishlistNotifier with ChangeNotifier, LittleLightDataConsumer, Wishl
     return wishlists;
   }
 
-  Future<void> saveSelections() async{
+  Future<void> saveSelections() async {
     final wishlists = _getSelectedWishlists();
     await wishlistsService.setWishlists(wishlists);
   }

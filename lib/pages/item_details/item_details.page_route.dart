@@ -14,17 +14,16 @@ class ItemDetailsPageRoute extends MaterialPageRoute {
     bool hideItemManagement = false,
     List<DestinyItemSocketState>? socketStates,
     String? uniqueId,
-  })
-      : super(
+  }) : super(
           builder: (context) => ItemDetailsPage(
-            key:key,
-            characterId:characterId,
-            item:item,
-            definition:definition,
+            key: key,
+            characterId: characterId,
+            item: item,
+            definition: definition,
             instanceInfo: instanceInfo,
-            hideItemManagement:hideItemManagement,
-            socketStates:socketStates,
-            uniqueId:uniqueId,
+            hideItemManagement: hideItemManagement,
+            socketStates: socketStates,
+            uniqueId: uniqueId,
           ),
         );
 }

@@ -8,18 +8,15 @@ import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/search/search.controller.dart';
 import 'package:little_light/widgets/search/search_filters/base_search_filter.widget.dart';
 
-class PseudoItemTypeFilterWidget
-    extends BaseSearchFilterWidget<PseudoItemTypeFilter> {
+class PseudoItemTypeFilterWidget extends BaseSearchFilterWidget<PseudoItemTypeFilter> {
   PseudoItemTypeFilterWidget(SearchController controller) : super(controller);
 
   @override
-  _PseudoItemTypeFilterWidgetState createState() =>
-      _PseudoItemTypeFilterWidgetState();
+  _PseudoItemTypeFilterWidgetState createState() => _PseudoItemTypeFilterWidgetState();
 }
 
-class _PseudoItemTypeFilterWidgetState extends BaseSearchFilterWidgetState<
-    PseudoItemTypeFilterWidget, PseudoItemTypeFilter, PseudoItemType> {
-
+class _PseudoItemTypeFilterWidgetState
+    extends BaseSearchFilterWidgetState<PseudoItemTypeFilterWidget, PseudoItemTypeFilter, PseudoItemType> {
   @override
   Widget build(BuildContext context) {
     double paddingBottom = MediaQuery.of(context).padding.bottom;
@@ -35,13 +32,11 @@ class _PseudoItemTypeFilterWidgetState extends BaseSearchFilterWidgetState<
 
   @override
   Widget buildButtons(BuildContext context) {
-    if((filter?.availableValues?.length ?? 0) <= 1) return Container();
+    if ((filter?.availableValues?.length ?? 0) <= 1) return Container();
     return SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
-          children: filter.availableValues
-              .map((e) => buildButton(context, e))
-              .toList(),
+          children: filter.availableValues.map((e) => buildButton(context, e)).toList(),
         ));
   }
 
@@ -50,8 +45,7 @@ class _PseudoItemTypeFilterWidgetState extends BaseSearchFilterWidgetState<
     bool isSelected = filter.value.contains(value);
     var query = MediaQuery.of(context);
     return Container(
-      constraints: BoxConstraints(
-          minWidth: (query.size.width - 40) / filter.availableValues.length),
+      constraints: BoxConstraints(minWidth: (query.size.width - 40) / filter.availableValues.length),
       child: Material(
           color: isSelected ? Theme.of(context).colorScheme.secondary : Colors.transparent,
           child: InkWell(
@@ -59,8 +53,7 @@ class _PseudoItemTypeFilterWidgetState extends BaseSearchFilterWidgetState<
                 foregroundDecoration: BoxDecoration(
                     border: Border(
                         top: BorderSide(
-                            color:
-                                isSelected ? Theme.of(context).colorScheme.onSurface : Colors.transparent,
+                            color: isSelected ? Theme.of(context).colorScheme.onSurface : Colors.transparent,
                             width: 2))),
                 alignment: Alignment.center,
                 padding: EdgeInsets.all(8),
@@ -68,14 +61,14 @@ class _PseudoItemTypeFilterWidgetState extends BaseSearchFilterWidgetState<
             onTap: () {
               if (isSelected && filter.value.length <= 1) return;
               if (!isSelected) {
-                if(filter.value.length <= 1) filter.value.clear();
+                if (filter.value.length <= 1) filter.value.clear();
                 filter.value.add(value);
-              }else{
+              } else {
                 filter.value.remove(value);
               }
               widget.controller.update();
             },
-            onLongPress: (){
+            onLongPress: () {
               filter.value.add(value);
               widget.controller.update();
             },

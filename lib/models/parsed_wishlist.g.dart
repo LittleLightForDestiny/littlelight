@@ -15,8 +15,7 @@ ParsedWishlist _$ParsedWishlistFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$ParsedWishlistToJson(ParsedWishlist instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$ParsedWishlistToJson(ParsedWishlist instance) => <String, dynamic>{
       'items': instance.items.map((k, e) => MapEntry(k.toString(), e)),
     };
 
@@ -24,8 +23,7 @@ ParsedWishlistBuild _$ParsedWishlistBuildFromJson(Map<String, dynamic> json) {
   return ParsedWishlistBuild(
     plugs: _jsonPlugsFromJson(json['plugs'] as List),
     tags: (json['tags'] as List<dynamic>?)
-        ?.map((e) => _$enumDecode(_$WishlistTagEnumMap, e,
-            unknownValue: WishlistTag.UnknownEnumValue))
+        ?.map((e) => _$enumDecode(_$WishlistTagEnumMap, e, unknownValue: WishlistTag.UnknownEnumValue))
         .toSet(),
     hash: json['hash'] as int?,
     name: json['name'] as String?,
@@ -34,9 +32,7 @@ ParsedWishlistBuild _$ParsedWishlistBuildFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$ParsedWishlistBuildToJson(
-        ParsedWishlistBuild instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$ParsedWishlistBuildToJson(ParsedWishlistBuild instance) => <String, dynamic>{
       'hash': instance.hash,
       'name': instance.name,
       'plugs': instance.plugs.map((e) => e.toList()).toList(),
@@ -86,23 +82,15 @@ const _$WishlistTagEnumMap = {
 ParsedWishlistItem _$ParsedWishlistItemFromJson(Map<String, dynamic> json) {
   return ParsedWishlistItem(
     itemHash: json['itemHash'] as int,
-    builds: (json['builds'] as List<dynamic>?)
-        ?.map((e) => ParsedWishlistBuild.fromJson(e))
-        .toList(),
+    builds: (json['builds'] as List<dynamic>?)?.map((e) => ParsedWishlistBuild.fromJson(e)).toList(),
     perks: (json['perks'] as Map<String, dynamic>?)?.map(
-      (k, e) => MapEntry(
-          int.parse(k),
-          (e as List<dynamic>)
-              .map((e) => _$enumDecode(_$WishlistTagEnumMap, e))
-              .toSet()),
+      (k, e) => MapEntry(int.parse(k), (e as List<dynamic>).map((e) => _$enumDecode(_$WishlistTagEnumMap, e)).toSet()),
     ),
   );
 }
 
-Map<String, dynamic> _$ParsedWishlistItemToJson(ParsedWishlistItem instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$ParsedWishlistItemToJson(ParsedWishlistItem instance) => <String, dynamic>{
       'itemHash': instance.itemHash,
       'builds': instance.builds,
-      'perks': instance.perks.map((k, e) => MapEntry(
-          k.toString(), e.map((e) => _$WishlistTagEnumMap[e]).toList())),
+      'perks': instance.perks.map((k, e) => MapEntry(k.toString(), e.map((e) => _$WishlistTagEnumMap[e]).toList())),
     };

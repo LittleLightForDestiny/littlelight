@@ -7,6 +7,4 @@ extension NotificationConsumerExtension on NotificationConsumer {
   NotificationService get notifications => GetIt.I<NotificationService>();
 }
 
-mixin NotificationConsumer {
-
-}
+mixin NotificationConsumer {}

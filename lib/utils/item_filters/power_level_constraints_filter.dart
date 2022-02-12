@@ -12,14 +12,11 @@ class PowerLevelConstraints {
   bool includePowerlessItems;
   int max;
   int min;
-  PowerLevelConstraints(
-      [this.min, this.max, this.includePowerlessItems = true]);
+  PowerLevelConstraints([this.min, this.max, this.includePowerlessItems = true]);
 }
 
-class PowerLevelConstraintsFilter
-    extends BaseItemFilter<PowerLevelConstraints> {
-  PowerLevelConstraintsFilter(
-      PowerLevelConstraints available, PowerLevelConstraints selected)
+class PowerLevelConstraintsFilter extends BaseItemFilter<PowerLevelConstraints> {
+  PowerLevelConstraintsFilter(PowerLevelConstraints available, PowerLevelConstraints selected)
       : super(available, selected);
 
   @override
@@ -29,21 +26,17 @@ class PowerLevelConstraintsFilter
     availableValues.min = 9999;
     availableValues.max = -9999;
     items.forEach((element) {
-      var instanceInfo =
-          profile.getInstanceInfo(element?.item?.itemInstanceId);
+      var instanceInfo = profile.getInstanceInfo(element?.item?.itemInstanceId);
       var power = instanceInfo?.primaryStat?.value;
       if (power != null) {
-        this.availableValues.min =
-            min(this.availableValues?.min ?? power, power);
-        this.availableValues.max =
-            max(this.availableValues?.max ?? power, power);
+        this.availableValues.min = min(this.availableValues?.min ?? power, power);
+        this.availableValues.max = max(this.availableValues?.max ?? power, power);
       } else {
         availableValues.includePowerlessItems = true;
       }
     });
 
-    this.available = (this.availableValues?.min ?? 9999) <
-        (this.availableValues?.max ?? -9999);
+    this.available = (this.availableValues?.min ?? 9999) < (this.availableValues?.max ?? -9999);
 
     if (this.available) {
       this.value.max = min(this.availableValues.max, this.value.max ?? 9999);
@@ -53,15 +46,12 @@ class PowerLevelConstraintsFilter
     return super.filter(items, definitions: definitions);
   }
 
-  bool filterItem(ItemWithOwner item,
-      {Map<int, DestinyInventoryItemDefinition> definitions}) {
-    var instanceInfo =
-        profile.getInstanceInfo(item?.item?.itemInstanceId);
+  bool filterItem(ItemWithOwner item, {Map<int, DestinyInventoryItemDefinition> definitions}) {
+    var instanceInfo = profile.getInstanceInfo(item?.item?.itemInstanceId);
     var power = instanceInfo?.primaryStat?.value;
-    if(power == null) return value.includePowerlessItems;
-    if(power < value.min) return false;
-    if(power > value.max) return false;
+    if (power == null) return value.includePowerlessItems;
+    if (power < value.min) return false;
+    if (power > value.max) return false;
     return true;
   }
-  
 }

@@ -68,7 +68,9 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget> extends Base
     children = children.expand((w) => [
           w,
           Container(
-              margin: EdgeInsets.symmetric(horizontal: dividerMargin), width: 2, color: Theme.of(context).colorScheme.onSurface.withOpacity(.4))
+              margin: EdgeInsets.symmetric(horizontal: dividerMargin),
+              width: 2,
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(.4))
         ]);
     if (children.length > 0) {
       children = children.take(children.length - 1);

@@ -19,24 +19,22 @@ class LittleLightDataService with StorageConsumer {
       "https://cdn.jsdelivr.net/gh/LittleLightForDestiny/littlelight_wishlists@HEAD/deliverables/index.json";
   final _collaboratorsDataURL =
       "https://cdn.jsdelivr.net/gh/LittleLightForDestiny/littleLightData@HEAD/collaborators.json";
-  final _gameDataURL =
-      "https://cdn.jsdelivr.net/gh/LittleLightForDestiny/littleLightData@HEAD/game_data.json";
-  
+  final _gameDataURL = "https://cdn.jsdelivr.net/gh/LittleLightForDestiny/littleLightData@HEAD/game_data.json";
+
   LittleLightDataService._internal();
 
   Future<WishlistFolder> getFeaturedWishlists() async {
     WishlistFolder? data = await globalStorage.getFeaturedWishlists();
     if (data != null) return data;
-    Map<String,dynamic> contents = await fetchDataFromCDN(_featuredWishlistsURL);
+    Map<String, dynamic> contents = await fetchDataFromCDN(_featuredWishlistsURL);
     try {
       data = WishlistFolder.fromJson(contents);
       globalStorage.saveFeaturedWishlists(data);
       return data;
-    }catch(e){
+    } catch (e) {
       print("can't parse featured wishlists");
       throw ParseException(contents, e);
     }
-
   }
 
   Future<CollaboratorsResponse> getCollaborators() async {
@@ -47,11 +45,10 @@ class LittleLightDataService with StorageConsumer {
       data = CollaboratorsResponse.fromJson(contents);
       globalStorage.saveCollaborators(data);
       return data;
-    }catch(e){
+    } catch (e) {
       print("can't parse collaborators");
       throw ParseException(contents, e);
     }
-    
   }
 
   Future<GameData> getGameData() async {
@@ -61,7 +58,7 @@ class LittleLightDataService with StorageConsumer {
     try {
       data = GameData.fromJson(contents);
       globalStorage.saveGameData(data);
-    }catch(e){
+    } catch (e) {
       print("can't parse game data");
       throw ParseException(contents, e);
     }
@@ -74,7 +71,7 @@ class LittleLightDataService with StorageConsumer {
       String raw = res.body;
       return jsonDecode(raw);
     } catch (e) {
-      throw NetworkErrorException(e, url:url);
+      throw NetworkErrorException(e, url: url);
     }
   }
 }

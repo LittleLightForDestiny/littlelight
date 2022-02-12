@@ -102,7 +102,7 @@ class TagListWidget extends StatelessWidget with ItemNotesConsumer {
           LittleLightTheme.of(context).primaryLayers,
           () async {
             final edited = await Navigator.of(context).push(EditTagDialogRoute(context, tag));
-            if(edited != null){
+            if (edited != null) {
               itemNotes.saveTag(edited);
             }
             context.read<TagsChangedNotifier>().changed();

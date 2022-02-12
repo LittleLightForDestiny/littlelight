@@ -89,7 +89,7 @@ class ManifestService with StorageConsumer, LanguageConsumer, BungieApiConsumer,
       String? manifestFileURL = info.mobileWorldContentPaths?[language];
       String? url = BungieApiService.url(manifestFileURL);
       String localPath = await _localPath;
-      HttpClient httpClient = new HttpClient();
+      HttpClient httpClient = HttpClient();
       if (url == null) {
         throw ("No manifest url found");
       }
@@ -100,7 +100,7 @@ class ManifestService with StorageConsumer, LanguageConsumer, BungieApiConsumer,
       }
       HttpClientRequest req = await httpClient.getUrl(uri);
       HttpClientResponse res = await req.close();
-      File zipFile = new File("$localPath/manifest_temp.zip");
+      File zipFile = File("$localPath/manifest_temp.zip");
       IOSink sink = zipFile.openWrite();
       int totalSize = res.contentLength;
       int loaded = 0;
@@ -153,7 +153,7 @@ class ManifestService with StorageConsumer, LanguageConsumer, BungieApiConsumer,
   static List<int> _extractFromZip(dynamic zipFile) {
     List<int>? unzippedData;
     List<int> bytes = zipFile.readAsBytesSync();
-    ZipDecoder decoder = new ZipDecoder();
+    ZipDecoder decoder = ZipDecoder();
     Archive archive = decoder.decodeBytes(bytes);
     for (ArchiveFile file in archive) {
       if (file.isFile) {
@@ -203,7 +203,7 @@ class ManifestService with StorageConsumer, LanguageConsumer, BungieApiConsumer,
     if (identity == null) {
       identity = DefinitionTableNames.identities[T];
     }
-    Map<int, T> defs = new Map();
+    Map<int, T> defs = Map();
     sqflite.Database? db = await _openDb();
     String? where;
     if (parameters != null && parameters.length > 0) {
@@ -239,7 +239,7 @@ class ManifestService with StorageConsumer, LanguageConsumer, BungieApiConsumer,
     if (identity == null) {
       identity = DefinitionTableNames.identities[T];
     }
-    Map<int, T> defs = new Map();
+    Map<int, T> defs = Map();
     hashesSet.removeWhere((hash) {
       if (_cached.keys.contains("${tableName}_$hash")) {
         defs[hash] = _cached["${tableName}_$hash"];

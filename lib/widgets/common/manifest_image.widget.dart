@@ -18,11 +18,7 @@ class ManifestImageWidget<T> extends StatefulWidget {
   final Alignment alignment;
 
   ManifestImageWidget(this.hash,
-      {Key? key,
-      this.fit = BoxFit.contain,
-      this.alignment = Alignment.center,
-      this.urlExtractor,
-      this.placeholder})
+      {Key? key, this.fit = BoxFit.contain, this.alignment = Alignment.center, this.urlExtractor, this.placeholder})
       : super(key: key);
 
   @override
@@ -31,7 +27,7 @@ class ManifestImageWidget<T> extends StatefulWidget {
   }
 }
 
-class ManifestImageState<T> extends State<ManifestImageWidget<T>> with ManifestConsumer{
+class ManifestImageState<T> extends State<ManifestImageWidget<T>> with ManifestConsumer {
   T? definition;
 
   @override
@@ -41,8 +37,7 @@ class ManifestImageState<T> extends State<ManifestImageWidget<T>> with ManifestC
   }
 
   Future<void> loadDefinition() async {
-    definition =
-        await manifest.getDefinition<T>(widget.hash);
+    definition = await manifest.getDefinition<T>(widget.hash);
     if (mounted) {
       setState(() {});
     }
@@ -52,7 +47,7 @@ class ManifestImageState<T> extends State<ManifestImageWidget<T>> with ManifestC
   Widget build(BuildContext context) {
     Shimmer shimmer = ShimmerHelper.getDefaultShimmer(context);
     final definition = this.definition;
-    if(definition == null) return shimmer;
+    if (definition == null) return shimmer;
     String? url;
     try {
       final extractor = widget.urlExtractor;
@@ -64,11 +59,11 @@ class ManifestImageState<T> extends State<ManifestImageWidget<T>> with ManifestC
     } catch (e) {
       print(e);
     }
-    if(url == null || url.length == 0){
+    if (url == null || url.length == 0) {
       return shimmer;
     }
     final bungieUrl = BungieApiService.url(url);
-    if(bungieUrl == null){
+    if (bungieUrl == null) {
       return shimmer;
     }
     return QueuedNetworkImage(
