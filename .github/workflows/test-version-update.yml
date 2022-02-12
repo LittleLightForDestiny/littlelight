@@ -27,5 +27,5 @@ jobs:
         with:
           version: ${{github.event.inputs.version}}
           changelog: ${{github.event.inputs.changelog}}
-      - nome: Updated pubspec
+      - name: Updated pubspec
         run: echo "${{ steps.update.outputs.pubspec }}"
