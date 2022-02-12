@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'dart:math';
 
 import 'package:bungie_api/enums/destiny_energy_type.dart';
@@ -23,12 +25,7 @@ class DetailsItemModsWidget extends BaseItemSocketsWidget {
     DestinyInventoryItemDefinition definition,
     DestinyItemSocketCategoryDefinition category,
     ItemSocketController controller,
-  }) : super(
-            key: key,
-            item: item,
-            definition: definition,
-            category: category,
-            controller: controller);
+  }) : super(key: key, item: item, definition: definition, category: category, controller: controller);
 
   @override
   State<StatefulWidget> createState() {
@@ -38,8 +35,7 @@ class DetailsItemModsWidget extends BaseItemSocketsWidget {
 
 const _sectionId = "item_mods";
 
-class DetailsItemPerksWidgetState<T extends DetailsItemModsWidget>
-    extends BaseItemSocketsWidgetState<T> {
+class DetailsItemPerksWidgetState<T extends DetailsItemModsWidget> extends BaseItemSocketsWidgetState<T> {
   bool showDetails = false;
 
   String get sectionId => "${_sectionId}_${category.socketCategoryHash}";
@@ -59,9 +55,8 @@ class DetailsItemPerksWidgetState<T extends DetailsItemModsWidget>
 
   @override
   Widget buildSockets(BuildContext context) {
-    Iterable<Widget> children = category.socketIndexes
-        .map((socketIndex) => buildSocketPlugs(context, socketIndex))
-        .where((w) => w != null);
+    Iterable<Widget> children =
+        category.socketIndexes.map((socketIndex) => buildSocketPlugs(context, socketIndex)).where((w) => w != null);
     var mq = MediaQueryHelper(context);
     var largeScreen = mq.isDesktop || (mq.tabletOrBigger && mq.isLandscape);
     var screenWidth = MediaQuery.of(context).size.width - 16;
@@ -73,7 +68,7 @@ class DetailsItemPerksWidgetState<T extends DetailsItemModsWidget>
                 ? Container(
                     margin: EdgeInsets.symmetric(horizontal: dividerMargin),
                     width: 2,
-                    color: Colors.white.withOpacity(.4))
+                    color: Theme.of(context).colorScheme.onSurface.withOpacity(.4))
                 : Container(width: dividerMargin)
           ]);
       children = children.take(children.length - 1);
@@ -93,8 +88,9 @@ class DetailsItemPerksWidgetState<T extends DetailsItemModsWidget>
 
   @override
   Widget buildSocketPlugs(BuildContext context, int socketIndex) {
-    var plugs = socketPlugHashes(socketIndex);
-    var selectedPlugHash = controller.socketSelectedPlugHash(socketIndex);
+    final plugs = socketPlugHashes(socketIndex);
+    final socketBusy = controller.isSocketBusy(socketIndex);
+    final equippedPlugHash = socketBusy ? null : controller.socketEquippedPlugHash(socketIndex);
     if (plugs.length == 0) return null;
     var mq = MediaQueryHelper(context);
     if (mq.isDesktop || (mq.tabletOrBigger && mq.isLandscape)) {
@@ -102,8 +98,8 @@ class DetailsItemPerksWidgetState<T extends DetailsItemModsWidget>
           child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
-        children: [buildPlugCategoryTitle(context, socketIndex)].followedBy(
-            [buildPlug(context, socketIndex, selectedPlugHash)]).toList(),
+        children: [buildPlugCategoryTitle(context, socketIndex)]
+            .followedBy([buildPlug(context, socketIndex, equippedPlugHash)]).toList(),
       ));
     }
     if (showDetails) {
@@ -119,7 +115,7 @@ class DetailsItemPerksWidgetState<T extends DetailsItemModsWidget>
 
     return Container(
       width: min(64, screenWidth / 8),
-      child: buildPlug(context, socketIndex, selectedPlugHash),
+      child: buildPlug(context, socketIndex, equippedPlugHash),
     );
   }
 
@@ -127,8 +123,7 @@ class DetailsItemPerksWidgetState<T extends DetailsItemModsWidget>
     var hashes = socketPlugHashes(socketIndex);
     var hash = hashes.first;
 
-    Widget contents =
-        DefinitionProviderWidget<DestinyInventoryItemDefinition>(hash, (def) {
+    Widget contents = DefinitionProviderWidget<DestinyInventoryItemDefinition>(hash, (def) {
       if ((def?.itemTypeDisplayName?.length ?? 0) <= 1) {
         return TranslatedTextWidget(
           "Other",
@@ -164,14 +159,11 @@ class DetailsItemPerksWidgetState<T extends DetailsItemModsWidget>
     return buildPlugIcon(context, socketIndex, plugItemHash);
   }
 
-  Widget buildPlugListItem(
-      BuildContext context, int socketIndex, int plugItemHash) {
+  Widget buildPlugListItem(BuildContext context, int socketIndex, int plugItemHash) {
     int equippedHash = socketEquippedPlugHash(socketIndex);
     bool isEquipped = equippedHash == plugItemHash;
-    bool isSelectedOnSocket =
-        plugItemHash == controller.socketSelectedPlugHash(socketIndex);
-    Color bgColor =
-        Color.lerp(DestinyData.perkColor, Colors.black, .7).withOpacity(.8);
+    bool isSelectedOnSocket = plugItemHash == controller.socketSelectedPlugHash(socketIndex);
+    Color bgColor = Color.lerp(DestinyData.perkColor, Colors.black, .7).withOpacity(.8);
     Color borderColor = Colors.grey.shade300.withOpacity(.5);
     if (isEquipped) {
       bgColor = DestinyData.perkColor.withOpacity(.5);
@@ -188,16 +180,11 @@ class DetailsItemPerksWidgetState<T extends DetailsItemModsWidget>
         padding: EdgeInsets.all(0),
         margin: EdgeInsets.only(bottom: 8),
         child: MaterialButton(
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(4), side: borderSide),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4), side: borderSide),
           padding: EdgeInsets.all(8),
           color: bgColor,
           child: Row(children: [
-            Container(
-                width: 36,
-                height: 36,
-                child: ManifestImageWidget<DestinyInventoryItemDefinition>(
-                    plugItemHash)),
+            Container(width: 36, height: 36, child: ManifestImageWidget<DestinyInventoryItemDefinition>(plugItemHash)),
             Container(width: 8),
             Expanded(
               child: ManifestText<DestinyInventoryItemDefinition>(plugItemHash),
@@ -209,8 +196,7 @@ class DetailsItemPerksWidgetState<T extends DetailsItemModsWidget>
         ));
   }
 
-  Widget buildPlugIcon(
-      BuildContext context, int socketIndex, int plugItemHash) {
+  Widget buildPlugIcon(BuildContext context, int socketIndex, int plugItemHash) {
     if (plugDefinitions == null) return Container();
     var def = controller.plugDefinitions[plugItemHash];
     var energyType = def?.plug?.energyCost?.energyType ?? DestinyEnergyType.Any;
@@ -226,18 +212,15 @@ class DetailsItemPerksWidgetState<T extends DetailsItemModsWidget>
               padding: EdgeInsets.all(0),
               shape: ContinuousRectangleBorder(
                   side: BorderSide(
-                      color: selected
-                          ? Colors.white
-                          : Colors.grey.shade300.withOpacity(.5),
+                      color: selected ? Theme.of(context).colorScheme.onSurface : Colors.grey.shade300.withOpacity(.5),
                       width: 1.5)),
               child: Stack(children: [
-                ManifestImageWidget<DestinyInventoryItemDefinition>(
-                    plugItemHash),
+                ManifestImageWidget<DestinyInventoryItemDefinition>(plugItemHash),
                 energyType == DestinyEnergyType.Any
                     ? Container()
                     : Positioned.fill(
-                        child: ManifestImageWidget<DestinyStatDefinition>(
-                            DestinyData.getEnergyTypeCostHash(energyType))),
+                        child:
+                            ManifestImageWidget<DestinyStatDefinition>(DestinyData.getEnergyTypeCostHash(energyType))),
                 energyCost == 0
                     ? Container()
                     : Positioned(

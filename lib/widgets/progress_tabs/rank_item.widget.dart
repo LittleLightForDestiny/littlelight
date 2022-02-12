@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'dart:async';
 import 'package:bungie_api/models/destiny_progression.dart';
 import 'package:bungie_api/models/destiny_progression_definition.dart';
@@ -6,18 +8,18 @@ import 'package:bungie_api/models/destiny_progression_step_definition.dart';
 import 'package:flutter/material.dart';
 
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
-import 'package:little_light/services/notification/notification.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/services/notification/notification.package.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/flutter/filled_circular_progress_indicator.dart';
 
 class RankItemWidget extends StatefulWidget {
   final String characterId;
-  final ProfileService profile = ProfileService();
-  final ManifestService manifest = ManifestService();
-  final NotificationService broadcaster = NotificationService();
+
+  
+  
 
   final DestinyProgression progression;
 
@@ -28,7 +30,7 @@ class RankItemWidget extends StatefulWidget {
 }
 
 class RankItemWidgetState<T extends RankItemWidget> extends State<T>
-    with AutomaticKeepAliveClientMixin {
+    with AutomaticKeepAliveClientMixin, ProfileConsumer, ManifestConsumer, NotificationConsumer {
   DestinyProgressionDefinition definition;
   StreamSubscription<NotificationEvent> subscription;
 
@@ -43,9 +45,9 @@ class RankItemWidgetState<T extends RankItemWidget> extends State<T>
     
     progression = widget.progression;
     loadDefinitions();
-    subscription = widget.broadcaster.listen((event) {
+    subscription = notifications.listen((event) {
       if (event.type == NotificationType.receivedUpdate && mounted) {
-        progression = widget.profile
+        progression = profile
             .getCharacterProgression(widget.characterId)
             .progressions["$hash"];
         setState(() {});
@@ -61,7 +63,7 @@ class RankItemWidgetState<T extends RankItemWidget> extends State<T>
 
   Future<void> loadDefinitions() async {
     definition =
-        await widget.manifest.getDefinition<DestinyProgressionDefinition>(hash);
+        await manifest.getDefinition<DestinyProgressionDefinition>(hash);
     progressTotal = definition.steps.fold(0, (v, s) => v + s.progressTotal);
     if (mounted) {
       setState(() {});
@@ -72,7 +74,7 @@ class RankItemWidgetState<T extends RankItemWidget> extends State<T>
   Widget build(BuildContext context) {
     super.build(context);
     if (definition == null || progression == null) {
-      return Container(height: 200, color: Colors.blueGrey.shade900);
+      return Container(height: 200, color: Theme.of(context).colorScheme.secondaryVariant);
     }
     return Stack(children: [
       Positioned.fill(
@@ -170,9 +172,9 @@ class RankItemWidgetState<T extends RankItemWidget> extends State<T>
         child: AspectRatio(
           aspectRatio: 1,
           child: FilledCircularProgressIndicator(
-              backgroundColor: Colors.blueGrey.shade500,
+              backgroundColor: Theme.of(context).colorScheme.secondary,
               valueColor: AlwaysStoppedAnimation<Color>(
-                  Color.lerp(mainColor, Colors.white, .5)),
+                  Color.lerp(mainColor, Theme.of(context).colorScheme.onSurface, .5)),
               value: progression.currentProgress / progressTotal),
         ));
   }
@@ -183,7 +185,7 @@ class RankItemWidgetState<T extends RankItemWidget> extends State<T>
         child: AspectRatio(
           aspectRatio: 1,
           child: FilledCircularProgressIndicator(
-              backgroundColor: Colors.blueGrey.shade700,
+              backgroundColor: Theme.of(context).colorScheme.secondary,
               valueColor: AlwaysStoppedAnimation<Color>(Color.fromARGB(
                   255,
                   definition.color.red,

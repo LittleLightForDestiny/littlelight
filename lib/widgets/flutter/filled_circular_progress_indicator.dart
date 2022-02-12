@@ -1,5 +1,9 @@
+// @dart=2.9
+
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
+
+import 'package:little_light/core/theme/littlelight.theme.dart';
 
 class FilledCircularProgressIndicator extends ProgressIndicator {
   const FilledCircularProgressIndicator({
@@ -33,12 +37,10 @@ class FilledCircularProgressIndicator extends ProgressIndicator {
     );
   }
 
-  Color _getValueColor(BuildContext context) =>
-      valueColor?.value ?? Theme.of(context).accentColor;
+  Color _getValueColor(BuildContext context) => valueColor?.value ?? LittleLightTheme.of(context).upgradeLayers;
 
   @override
-  _FilledCircularProgressIndicatorState createState() =>
-      _FilledCircularProgressIndicatorState();
+  _FilledCircularProgressIndicatorState createState() => _FilledCircularProgressIndicatorState();
 }
 
 // Tweens used by circular progress indicator
@@ -58,8 +60,7 @@ final Animatable<int> _kStepTween = StepTween(begin: 0, end: 5);
 
 final Animatable<double> _kRotationTween = CurveTween(curve: const SawTooth(5));
 
-class _FilledCircularProgressIndicatorState
-    extends State<FilledCircularProgressIndicator>
+class _FilledCircularProgressIndicatorState extends State<FilledCircularProgressIndicator>
     with SingleTickerProviderStateMixin {
   AnimationController _controller;
 
@@ -78,8 +79,7 @@ class _FilledCircularProgressIndicatorState
     super.didUpdateWidget(oldWidget);
     if (widget.value == null && !_controller.isAnimating)
       _controller.repeat();
-    else if (widget.value != null && _controller.isAnimating)
-      _controller.stop();
+    else if (widget.value != null && _controller.isAnimating) _controller.stop();
   }
 
   @override
@@ -88,8 +88,8 @@ class _FilledCircularProgressIndicatorState
     super.dispose();
   }
 
-  Widget _buildIndicator(BuildContext context, double headValue,
-      double tailValue, int stepValue, double rotationValue) {
+  Widget _buildIndicator(
+      BuildContext context, double headValue, double tailValue, int stepValue, double rotationValue) {
     return widget._buildSemanticsWrapper(
       context: context,
       child: Container(
@@ -98,8 +98,7 @@ class _FilledCircularProgressIndicatorState
             backgroundColor: widget.backgroundColor,
             valueColor: widget._getValueColor(context),
             value: widget.value, // may be null
-            headValue:
-                headValue, // remaining arguments are ignored if widget.value is not null
+            headValue: headValue, // remaining arguments are ignored if widget.value is not null
             tailValue: tailValue,
             stepValue: stepValue,
             rotationValue: rotationValue,
@@ -142,15 +141,10 @@ class _CircularProgressIndicatorPainter extends CustomPainter {
     this.rotationValue,
   })  : arcStart = value != null
             ? _startAngle
-            : _startAngle +
-                tailValue * 3 / 2 * math.pi +
-                rotationValue * math.pi * 1.7 -
-                stepValue * 0.8 * math.pi,
+            : _startAngle + tailValue * 3 / 2 * math.pi + rotationValue * math.pi * 1.7 - stepValue * 0.8 * math.pi,
         arcSweep = value != null
             ? value.clamp(0.0, 1.0) * _sweep
-            : math.max(
-                headValue * 3 / 2 * math.pi - tailValue * 3 / 2 * math.pi,
-                _epsilon);
+            : math.max(headValue * 3 / 2 * math.pi - tailValue * 3 / 2 * math.pi, _epsilon);
 
   final Color backgroundColor;
   final Color valueColor;

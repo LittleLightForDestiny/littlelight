@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'package:bungie_api/enums/destiny_energy_type.dart';
 import 'package:bungie_api/enums/item_perk_visibility.dart';
 import 'package:bungie_api/enums/tier_type.dart';
@@ -10,10 +12,11 @@ import 'package:bungie_api/models/destiny_sandbox_perk_definition.dart';
 import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:bungie_api/models/destiny_stat_group_definition.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/models/wish_list.dart';
+import 'package:little_light/models/parsed_wishlist.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/services/littlelight/wishlists.service.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/littlelight/item_notes.consumer.dart';
+import 'package:little_light/services/littlelight/wishlists.consumer.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
@@ -27,7 +30,6 @@ import 'package:little_light/widgets/item_stats/item_details_socket_item_stats.w
 import 'item_socket.controller.dart';
 
 class BaseSocketDetailsWidget extends BaseDestinyStatefulItemWidget {
-  final ManifestService manifest = ManifestService();
   final ItemSocketController controller;
   final DestinyItemSocketCategoryDefinition category;
 
@@ -45,13 +47,12 @@ class BaseSocketDetailsWidget extends BaseDestinyStatefulItemWidget {
   }
 }
 
-class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget>
-    extends BaseDestinyItemState<T> with TickerProviderStateMixin {
+class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget> extends BaseDestinyItemState<T>
+    with TickerProviderStateMixin, WishlistsConsumer, ManifestConsumer, ItemNotesConsumer {
   DestinyStatGroupDefinition _statGroupDefinition;
   ItemSocketController get controller => widget.controller;
   Map<int, DestinySandboxPerkDefinition> _sandboxPerkDefinitions;
-  Map<int, DestinySandboxPerkDefinition> get sandboxPerkDefinitions =>
-      _sandboxPerkDefinitions;
+  Map<int, DestinySandboxPerkDefinition> get sandboxPerkDefinitions => _sandboxPerkDefinitions;
   Map<int, DestinyObjectiveDefinition> objectiveDefinitions;
   DestinyInventoryItemDefinition _definition;
   DestinyInventoryItemDefinition get definition => _definition;
@@ -78,29 +79,24 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget>
   }
 
   Future<void> loadDefinitions() async {
-    if ((controller.selectedPlugHash ?? 0) == 0) {
+    if ((controller?.selectedPlugHash ?? 0) == 0) {
       _definition = null;
       if (mounted) {
         setState(() {});
       }
       return;
     }
-    _definition = await widget.manifest
-        .getDefinition<DestinyInventoryItemDefinition>(
-            controller.selectedPlugHash);
+    _definition = await manifest.getDefinition<DestinyInventoryItemDefinition>(controller.selectedPlugHash);
 
-    _sandboxPerkDefinitions = await widget.manifest
-        .getDefinitions<DestinySandboxPerkDefinition>(
-            _definition?.perks?.map((p) => p.perkHash)?.toList() ?? []);
+    _sandboxPerkDefinitions = await manifest
+        .getDefinitions<DestinySandboxPerkDefinition>(_definition?.perks?.map((p) => p.perkHash)?.toList() ?? []);
 
-    _statGroupDefinition = await widget.manifest
-        .getDefinition<DestinyStatGroupDefinition>(
-            itemDefinition?.stats?.statGroupHash);
+    _statGroupDefinition =
+        await manifest.getDefinition<DestinyStatGroupDefinition>(itemDefinition?.stats?.statGroupHash);
 
     if ((definition?.objectives?.objectiveHashes?.length ?? 0) > 0) {
-      objectiveDefinitions = await widget.manifest
-          .getDefinitions<DestinyObjectiveDefinition>(
-              definition.objectives.objectiveHashes);
+      objectiveDefinitions =
+          await manifest.getDefinitions<DestinyObjectiveDefinition>(definition.objectives.objectiveHashes);
     }
 
     if (mounted) {
@@ -113,9 +109,8 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget>
     return Container(
         margin: EdgeInsets.symmetric(vertical: 4),
         padding: EdgeInsets.all(4),
-        decoration: BoxDecoration(
-            color: Colors.blueGrey.shade700,
-            borderRadius: BorderRadius.circular(8)),
+        decoration:
+            BoxDecoration(color: Theme.of(context).colorScheme.secondary, borderRadius: BorderRadius.circular(8)),
         child: Column(children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -128,8 +123,7 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget>
                     width: 32,
                     height: 32,
                     child: QueuedNetworkImage(
-                      imageUrl: BungieApiService.url(
-                          definition?.displayProperties?.icon),
+                      imageUrl: BungieApiService.url(definition?.displayProperties?.icon),
                     ),
                   ),
                   Container(
@@ -147,8 +141,7 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget>
             ],
           ),
           AnimatedCrossFade(
-              crossFadeState:
-                  open ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+              crossFadeState: open ? CrossFadeState.showSecond : CrossFadeState.showFirst,
               alignment: Alignment.topCenter,
               duration: Duration(milliseconds: 300),
               firstChild: Container(),
@@ -168,18 +161,15 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget>
 
   Widget buildOptions(BuildContext context) {
     var index = controller.selectedSocketIndex;
-    var cat = itemDefinition?.sockets?.socketCategories?.firstWhere(
-        (s) => s?.socketIndexes?.contains(index),
-        orElse: () => null);
+    var cat = itemDefinition?.sockets?.socketCategories
+        ?.firstWhere((s) => s?.socketIndexes?.contains(index), orElse: () => null);
 
-    var isExoticPerk = DestinyData.socketCategoryIntrinsicPerkHashes
-        .contains(cat?.socketCategoryHash);
+    var isExoticPerk = DestinyData.socketCategoryIntrinsicPerkHashes.contains(cat?.socketCategoryHash);
     if (isExoticPerk) {
       return Container();
     }
 
-    var isPerk =
-        DestinyData.socketCategoryPerkHashes.contains(cat?.socketCategoryHash);
+    var isPerk = DestinyData.socketCategoryPerkHashes.contains(cat?.socketCategoryHash);
 
     if (isPerk && controller.reusablePlugs != null) {
       return Container();
@@ -191,20 +181,18 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget>
   }
 
   Widget buildReusableMods(BuildContext context) {
-    var plugs = controller.socketPlugHashes(controller.selectedSocketIndex);
+    var plugs = controller.socketPlugHashes(controller.selectedSocketIndex).toList();
     if ((plugs?.length ?? 0) <= 1) return Container();
-    return Wrap(
-        alignment: WrapAlignment.start,
-        runSpacing: 10,
-        spacing: 10,
-        children: plugs
-            .map((h) => buildMod(context, controller.selectedSocketIndex, h))
-            .toList());
+    return LayoutBuilder(
+        builder: (context, constraints) => Wrap(
+            alignment: WrapAlignment.start,
+            runSpacing: 8,
+            spacing: 8,
+            children: plugs.map((h) => buildMod(context, controller.selectedSocketIndex, h)).toList()));
   }
 
   Widget buildRandomPerks(BuildContext context) {
-    var randomHashes =
-        controller.randomizedPlugHashes(controller.selectedSocketIndex);
+    var randomHashes = controller.randomizedPlugHashes(controller.selectedSocketIndex);
     if ((randomHashes?.length ?? 0) == 0) {
       return Container(height: 80);
     }
@@ -213,16 +201,13 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget>
     return Wrap(
       runSpacing: 6,
       spacing: 6,
-      children: plugs
-          .map((h) => buildPerk(context, controller.selectedSocketIndex, h))
-          .toList(),
+      children: plugs.map((h) => buildPerk(context, controller.selectedSocketIndex, h)).toList(),
     );
   }
 
   Widget buildMod(BuildContext context, int socketIndex, int plugItemHash) {
     bool isSelected = plugItemHash == controller.selectedPlugHash;
-    Color borderColor =
-        isSelected ? Colors.white : Colors.grey.shade300.withOpacity(.5);
+    Color borderColor = isSelected ? Theme.of(context).colorScheme.onSurface : Colors.grey.shade300.withOpacity(.5);
 
     BorderSide borderSide = BorderSide(color: borderColor, width: 3);
     var def = controller.plugDefinitions[plugItemHash];
@@ -239,13 +224,12 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget>
               shape: ContinuousRectangleBorder(side: borderSide),
               padding: EdgeInsets.all(0),
               child: Stack(children: [
-                ManifestImageWidget<DestinyInventoryItemDefinition>(
-                    plugItemHash),
+                ManifestImageWidget<DestinyInventoryItemDefinition>(plugItemHash),
                 energyType == DestinyEnergyType.Any
                     ? Container()
                     : Positioned.fill(
-                        child: ManifestImageWidget<DestinyStatDefinition>(
-                            DestinyData.getEnergyTypeCostHash(energyType))),
+                        child:
+                            ManifestImageWidget<DestinyStatDefinition>(DestinyData.getEnergyTypeCostHash(energyType))),
                 energyCost == 0
                     ? Container()
                     : Positioned(
@@ -275,8 +259,7 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget>
     int equippedHash = controller.socketEquippedPlugHash(socketIndex);
     bool isEquipped = equippedHash == plugItemHash;
     bool isExotic = definition.inventory.tierType == TierType.Exotic;
-    bool isSelectedOnSocket =
-        plugItemHash == controller.socketSelectedPlugHash(socketIndex);
+    bool isSelectedOnSocket = plugItemHash == controller.socketSelectedPlugHash(socketIndex);
     bool isSelected = plugItemHash == controller.selectedPlugHash;
     Color bgColor = Colors.transparent;
     Color borderColor = Colors.grey.shade300.withOpacity(.5);
@@ -302,13 +285,11 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget>
             aspectRatio: 1,
             child: MaterialButton(
               shape: intrinsic && !isExotic
-                  ? RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4), side: borderSide)
+                  ? RoundedRectangleBorder(borderRadius: BorderRadius.circular(4), side: borderSide)
                   : CircleBorder(side: borderSide),
               padding: EdgeInsets.all(intrinsic ? 0 : 8),
               color: bgColor,
-              child: ManifestImageWidget<DestinyInventoryItemDefinition>(
-                  plugItemHash),
+              child: ManifestImageWidget<DestinyInventoryItemDefinition>(plugItemHash),
               onPressed: () {
                 controller.selectSocket(socketIndex, plugItemHash);
               },
@@ -335,8 +316,7 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget>
                       Container(
                           width: 20,
                           height: 20,
-                          child: ManifestImageWidget<
-                              DestinyInventoryItemDefinition>(m.itemHash)),
+                          child: ManifestImageWidget<DestinyInventoryItemDefinition>(m.itemHash)),
                       Container(
                         width: 20,
                       ),
@@ -359,14 +339,10 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget>
   }
 
   bool get shouldShowStats {
-    var statWhitelist =
-        _statGroupDefinition?.scaledStats?.map((s) => s.statHash)?.toList() ??
-            [];
+    var statWhitelist = _statGroupDefinition?.scaledStats?.map((s) => s.statHash)?.toList() ?? [];
     List<int> statHashes = definition.investmentStats
             ?.map((s) => s.statTypeHash)
-            ?.where((s) =>
-                statWhitelist.contains(s) ||
-                DestinyData.hiddenStats.contains(s))
+            ?.where((s) => statWhitelist.contains(s) || DestinyData.hiddenStats.contains(s))
             ?.toList() ??
         [];
 
@@ -394,8 +370,7 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget>
                   Container(
                     height: 36,
                     width: 36,
-                    child: ManifestImageWidget<DestinySandboxPerkDefinition>(
-                        p.perkHash),
+                    child: ManifestImageWidget<DestinySandboxPerkDefinition>(p.perkHash),
                   ),
                   Container(
                     width: 8,
@@ -412,83 +387,63 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget>
     );
   }
 
-  Widget buildWishlistInfo(BuildContext context,
-      [double iconSize = 16, double fontSize = 13]) {
-    var tags =
-        WishlistsService().getPerkTags(itemDefinition?.hash, definition.hash);
+  Widget buildWishlistInfo(BuildContext context, [double iconSize = 16, double fontSize = 13]) {
+    var tags = wishlistsService.getPlugTags(itemDefinition?.hash, definition.hash);
     if (tags == null) return Container();
-    return buildWishlistTagsInfo((context),
-        tags: tags, iconSize: iconSize, fontSize: fontSize);
+    return buildWishlistTagsInfo((context), tags: tags, iconSize: iconSize, fontSize: fontSize);
   }
 
   Widget buildWishlistTagsInfo(BuildContext context,
       {double iconSize = 16, double fontSize = 13, Set<WishlistTag> tags}) {
     List<Widget> rows = [];
-    if (tags.contains(WishlistTag.GodPVE) &&
-        tags.contains(WishlistTag.GodPVP)) {
+    if (tags.contains(WishlistTag.GodPVE) && tags.contains(WishlistTag.GodPVP)) {
       return Container(
           padding: EdgeInsets.symmetric(vertical: iconSize / 2),
           child: Row(children: [
-            WishlistBadgesWidget(
-                tags: [WishlistTag.GodPVE, WishlistTag.GodPVP].toSet(),
-                size: iconSize),
+            WishlistBadgesWidget(tags: [WishlistTag.GodPVE, WishlistTag.GodPVP].toSet(), size: iconSize),
             Container(
               width: 4,
             ),
             Expanded(
-                child: TranslatedTextWidget(
-                    "This perk is considered the best for both PvE and PvP on this item.",
-                    style: TextStyle(
-                        fontSize: fontSize, fontWeight: FontWeight.w300)))
+                child: TranslatedTextWidget("This perk is considered the best for both PvE and PvP on this item.",
+                    style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w300)))
           ]));
     }
     if (tags.contains(WishlistTag.GodPVE)) {
       rows.add(Container(
           child: Row(children: [
-        WishlistBadgesWidget(
-            tags: [WishlistTag.GodPVE].toSet(), size: iconSize),
+        WishlistBadgesWidget(tags: [WishlistTag.GodPVE].toSet(), size: iconSize),
         Container(
           width: 4,
         ),
         Expanded(
-            child: TranslatedTextWidget(
-                "This perk is considered the best for PvE on this item.",
-                style:
-                    TextStyle(fontSize: fontSize, fontWeight: FontWeight.w300)))
+            child: TranslatedTextWidget("This perk is considered the best for PvE on this item.",
+                style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w300)))
       ])));
     }
     if (tags.contains(WishlistTag.GodPVP)) {
       rows.add(Container(
           child: Row(children: [
-        WishlistBadgesWidget(
-            tags: [WishlistTag.GodPVP].toSet(), size: iconSize),
+        WishlistBadgesWidget(tags: [WishlistTag.GodPVP].toSet(), size: iconSize),
         Container(
           width: 4,
         ),
         Expanded(
-            child: TranslatedTextWidget(
-                "This perk is considered the best for PvP on this item.",
-                style:
-                    TextStyle(fontSize: fontSize, fontWeight: FontWeight.w300)))
+            child: TranslatedTextWidget("This perk is considered the best for PvP on this item.",
+                style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w300)))
       ])));
     }
-    if (tags.contains(WishlistTag.PVE) &&
-        tags.contains(WishlistTag.PVP) &&
-        rows.length == 0) {
+    if (tags.contains(WishlistTag.PVE) && tags.contains(WishlistTag.PVP) && rows.length == 0) {
       return Container(
           padding: EdgeInsets.symmetric(vertical: iconSize / 2),
           child: Row(children: [
-            WishlistBadgesWidget(
-                tags: [WishlistTag.PVE, WishlistTag.PVP].toSet(),
-                size: iconSize),
+            WishlistBadgesWidget(tags: [WishlistTag.PVE, WishlistTag.PVP].toSet(), size: iconSize),
             Container(
               width: 4,
             ),
             Expanded(
-                child: TranslatedTextWidget(
-                    "This perk is considered good for both PvE and PvP on this item.",
-                    style: TextStyle(
-                        fontSize: fontSize, fontWeight: FontWeight.w300)))
+                child: TranslatedTextWidget("This perk is considered good for both PvE and PvP on this item.",
+                    style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w300)))
           ]));
     }
     if (tags.contains(WishlistTag.PVE) && !tags.contains(WishlistTag.GodPVE)) {
@@ -499,10 +454,8 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget>
           width: 4,
         ),
         Expanded(
-            child: TranslatedTextWidget(
-                "This perk is considered good for PvE on this item.",
-                style:
-                    TextStyle(fontSize: fontSize, fontWeight: FontWeight.w300)))
+            child: TranslatedTextWidget("This perk is considered good for PvE on this item.",
+                style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w300)))
       ])));
     }
     if (tags.contains(WishlistTag.PVP) && !tags.contains(WishlistTag.GodPVP)) {
@@ -513,10 +466,8 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget>
           width: 4,
         ),
         Expanded(
-            child: TranslatedTextWidget(
-                "This perk is considered good for PvP on this item.",
-                style:
-                    TextStyle(fontSize: fontSize, fontWeight: FontWeight.w300)))
+            child: TranslatedTextWidget("This perk is considered good for PvP on this item.",
+                style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w300)))
       ])));
     }
     if (rows.length > 0) {

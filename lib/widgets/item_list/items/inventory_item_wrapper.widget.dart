@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'dart:async';
 import 'dart:math';
 
@@ -7,17 +9,16 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/screens/item_detail.screen.dart';
-import 'package:little_light/screens/quick_transfer.screen.dart';
+import 'package:little_light/pages/item_details/item_details.page.dart';
+import 'package:little_light/pages/item_search/quick_transfer.screen.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/services/inventory/inventory.service.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
-import 'package:little_light/services/notification/notification.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/services/selection/selection.service.dart';
-import 'package:little_light/services/user_settings/user_settings.service.dart';
+import 'package:little_light/services/inventory/inventory.package.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/services/notification/notification.package.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
+import 'package:little_light/services/selection/selection.consumer.dart';
+import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/item_with_owner.dart';
-
 import 'package:little_light/widgets/item_list/items/armor/armor_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/armor/medium_armor_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/armor/minimal_armor_inventory_item.widget.dart';
@@ -40,8 +41,6 @@ import 'package:uuid/uuid.dart';
 enum ContentDensity { MINIMAL, MEDIUM, FULL }
 
 class InventoryItemWrapperWidget extends StatefulWidget {
-  final ManifestService manifest = ManifestService();
-  final ProfileService profile = ProfileService();
   final DestinyItemComponent item;
   final String characterId;
   final ContentDensity density;
@@ -56,8 +55,14 @@ class InventoryItemWrapperWidget extends StatefulWidget {
   }
 }
 
-class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
-    extends State<T> {
+class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> extends State<T>
+    with
+        UserSettingsConsumer,
+        ProfileConsumer,
+        InventoryConsumer,
+        ManifestConsumer,
+        NotificationConsumer,
+        SelectionConsumer {
   DestinyInventoryItemDefinition definition;
   String uniqueId;
   bool selected = false;
@@ -66,7 +71,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
   StreamSubscription<NotificationEvent> stateSubscription;
 
   DestinyItemInstanceComponent get instanceInfo {
-    return widget.profile.getInstanceInfo(widget.item.itemInstanceId);
+    return profile.getInstanceInfo(widget.item.itemInstanceId);
   }
 
   static int queueSize = 0;
@@ -74,32 +79,29 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
   @override
   void initState() {
     uniqueId = Uuid().v4();
-    this.definition = widget.manifest
-        .getDefinitionFromCache<DestinyInventoryItemDefinition>(
-            widget?.item?.itemHash);
+    this.definition = manifest.getDefinitionFromCache<DestinyInventoryItemDefinition>(widget?.item?.itemHash);
 
     super.initState();
     if (widget.item != null && this.definition == null) {
       getDefinitions();
     }
 
-    selected = SelectionService()
-        .isSelected(ItemWithOwner(widget.item, widget.characterId));
+    selected = selection.isSelected(ItemWithOwner(widget.item, widget.characterId));
 
-    selectionSubscription = SelectionService().broadcaster.listen((event) {
+    selectionSubscription = selection.broadcaster.listen((event) {
       if (!mounted) return;
-      var isSelected = SelectionService()
-          .isSelected(ItemWithOwner(widget.item, widget.characterId));
+      var isSelected = selection.isSelected(ItemWithOwner(widget.item, widget.characterId));
       if (isSelected != selected) {
         selected = isSelected;
         setState(() {});
       }
     });
-    stateSubscription = NotificationService().listen((event) {
+    stateSubscription = notifications.listen((event) {
       if (!mounted) return;
       if (event.type == NotificationType.itemStateUpdate &&
           event.item.itemHash == widget.item?.itemHash &&
           event.item.itemInstanceId == widget.item?.itemInstanceId) {
+        uniqueId = Uuid().v4();
         setState(() {});
       }
     });
@@ -116,8 +118,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
     if (widget.item == null) {
       return false;
     }
-    return widget.manifest
-        .isLoaded<DestinyInventoryItemDefinition>(widget.item.itemHash);
+    return manifest.isLoaded<DestinyInventoryItemDefinition>(widget.item.itemHash);
   }
 
   bool get quickTransferAvailable {
@@ -139,8 +140,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
         return;
       }
     }
-    definition = await widget.manifest
-        .getDefinition<DestinyInventoryItemDefinition>(widget.item.itemHash);
+    definition = await manifest.getDefinition<DestinyInventoryItemDefinition>(widget.item.itemHash);
     if (mounted) {
       setState(() {});
     }
@@ -149,17 +149,18 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      Positioned.fill(child: buildCrossfade(context)),
-      selected
-          ? Container(
-              foregroundDecoration: BoxDecoration(
-                  border:
-                      Border.all(color: Colors.lightBlue.shade400, width: 2)),
-            )
-          : Container(),
-      buildTapHandler(context)
-    ]);
+    return Stack(
+      key: Key("item ${widget.item?.itemInstanceId} $uniqueId"),
+      children: [
+        Positioned.fill(child: buildCrossfade(context)),
+        selected
+            ? Container(
+                foregroundDecoration: BoxDecoration(border: Border.all(color: Colors.lightBlue.shade400, width: 2)),
+              )
+            : Container(),
+        buildTapHandler(context)
+      ],
+    );
   }
 
   Widget buildCrossfade(BuildContext context) {
@@ -167,9 +168,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
       duration: Duration(milliseconds: 500),
       firstChild: buildEmpty(context),
       secondChild: buildItem(context),
-      crossFadeState: definition == null
-          ? CrossFadeState.showFirst
-          : CrossFadeState.showSecond,
+      crossFadeState: definition == null ? CrossFadeState.showFirst : CrossFadeState.showSecond,
     );
   }
 
@@ -206,9 +205,8 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
   }
 
   void onEmptyTap(BuildContext context) async {
-    var bucketDef = await widget.manifest
-        .getDefinition<DestinyInventoryBucketDefinition>(widget.bucketHash);
-    var character = widget.profile.getCharacter(widget.characterId);
+    var bucketDef = await manifest.getDefinition<DestinyInventoryBucketDefinition>(widget.bucketHash);
+    var character = profile.getCharacter(widget.characterId);
     ItemWithOwner item = await Navigator.push(
       context,
       MaterialPageRoute(
@@ -220,23 +218,22 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
       ),
     );
     if (item != null) {
-      InventoryService().transfer(item.item, item.ownerId,
-          ItemDestination.Character, widget.characterId);
+      inventory.transfer(item.item, item.ownerId, ItemDestination.Character, widget.characterId);
     }
   }
 
   void onLongPress(context) {
-    SelectionService().activateMultiSelect();
-    SelectionService().addItem(ItemWithOwner(widget.item, widget.characterId));
+    selection.activateMultiSelect();
+    selection.addItem(ItemWithOwner(widget.item, widget.characterId));
     setState(() {});
   }
 
   void onTap(BuildContext context) {
-    if (SelectionService().multiselectActivated) {
+    if (selection.multiselectActivated) {
       onLongPress(context);
       return;
     }
-    if (UserSettingsService().tapToSelect) {
+    if (userSettings.tapToSelect) {
       onTapSelect(context);
     } else {
       onTapDetails(context);
@@ -244,17 +241,16 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
   }
 
   void onDoubleTap(BuildContext context) {
-    if (UserSettingsService().tapToSelect) {
+    if (userSettings.tapToSelect) {
       onTapDetails(context);
     }
   }
 
   void onTapSelect(context) {
     if (selected) {
-      SelectionService().clear();
+      selection.clear();
     } else {
-      SelectionService()
-          .setItem(ItemWithOwner(widget.item, widget.characterId));
+      selection.setItem(ItemWithOwner(widget.item, widget.characterId));
     }
   }
 
@@ -262,11 +258,11 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
     if (definition == null) {
       return;
     }
-    SelectionService().clear();
+    selection.clear();
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ItemDetailScreen(
+        builder: (context) => ItemDetailsPage(
           item: widget.item,
           definition: definition,
           instanceInfo: instanceInfo,
@@ -323,8 +319,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
 
   Widget buildMinimal(BuildContext context) {
     var type = definition?.itemType;
-    if (type == DestinyItemType.None &&
-        definition?.inventory?.bucketTypeHash == InventoryBucket.subclass) {
+    if (type == DestinyItemType.None && definition?.inventory?.bucketTypeHash == InventoryBucket.subclass) {
       type = DestinyItemType.Subclass;
     }
     switch (type) {
@@ -373,8 +368,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
 
   Widget buildMedium(BuildContext context) {
     var type = definition?.itemType;
-    if (type == DestinyItemType.None &&
-        definition?.inventory?.bucketTypeHash == InventoryBucket.subclass) {
+    if (type == DestinyItemType.None && definition?.inventory?.bucketTypeHash == InventoryBucket.subclass) {
       type = DestinyItemType.Subclass;
     }
     switch (type) {
@@ -425,8 +419,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
 
   Widget buildFull(BuildContext context) {
     var type = definition?.itemType;
-    if (type == DestinyItemType.None &&
-        definition?.inventory?.bucketTypeHash == InventoryBucket.subclass) {
+    if (type == DestinyItemType.None && definition?.inventory?.bucketTypeHash == InventoryBucket.subclass) {
       type = DestinyItemType.Subclass;
     }
     switch (type) {

@@ -1,9 +1,12 @@
+// @dart=2.9
+
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:little_light/screens/item_detail.screen.dart';
+import 'package:little_light/pages/item_details/item_details.page.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
@@ -15,16 +18,9 @@ class ItemDetailDuplicatesWidget extends BaseDestinyStatefulItemWidget {
   final List<ItemWithOwner> duplicates;
 
   ItemDetailDuplicatesWidget(
-      DestinyItemComponent item,
-      DestinyInventoryItemDefinition definition,
-      DestinyItemInstanceComponent instanceInfo,
-      {Key key,
-      this.duplicates})
-      : super(
-            item: item,
-            definition: definition,
-            instanceInfo: instanceInfo,
-            key: key);
+      DestinyItemComponent item, DestinyInventoryItemDefinition definition, DestinyItemInstanceComponent instanceInfo,
+      {Key key, this.duplicates})
+      : super(item: item, definition: definition, instanceInfo: instanceInfo, key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -34,9 +30,8 @@ class ItemDetailDuplicatesWidget extends BaseDestinyStatefulItemWidget {
 
 const _sectionId = "duplicated_items";
 
-class ItemDetailDuplicatesWidgetState
-    extends BaseDestinyItemState<ItemDetailDuplicatesWidget>
-    with VisibleSectionMixin {
+class ItemDetailDuplicatesWidgetState extends BaseDestinyItemState<ItemDetailDuplicatesWidget>
+    with VisibleSectionMixin, ProfileConsumer {
   @override
   String get sectionId => _sectionId;
 
@@ -66,44 +61,39 @@ class ItemDetailDuplicatesWidgetState
 
   Widget buildDuplicatedItems(BuildContext context) {
     var isTablet = MediaQueryHelper(context).tabletOrBigger;
-    return StaggeredGridView.count(
-        padding: EdgeInsets.all(0),
+    return StaggeredGrid.count(
         crossAxisSpacing: 2,
         mainAxisSpacing: 2,
         crossAxisCount: 10,
-        staggeredTiles: widget.duplicates
-            .map((item) => StaggeredTile.extent(isTablet ? 2 : 5, 132))
-            .toList(),
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
         children: widget.duplicates
-            .map((item) => buildItemInstance(item, context))
+            .map((item) => StaggeredGridTile.extent(
+                  crossAxisCellCount: isTablet ? 2 : 5,
+                  mainAxisExtent: 132,
+                  child: buildItemInstance(item, context),
+                ))
             .toList());
   }
 
   Widget buildItemInstance(ItemWithOwner item, BuildContext context) {
-    var instance = widget.profile.getInstanceInfo(item.item.itemInstanceId);
-    return Stack(
-        key: Key("duplicate_${item.item.itemInstanceId}_${item.ownerId}"),
-        children: <Widget>[
-          BaseItemInstanceWidget(item.item, definition, instance,
-              characterId: item.ownerId, uniqueId: null),
-          Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: () => instanceTap(context, item),
-            ),
-          )
-        ]);
+    var instance = profile.getInstanceInfo(item.item.itemInstanceId);
+    return Stack(key: Key("duplicate_${item.item.itemInstanceId}_${item.ownerId}"), children: <Widget>[
+      BaseItemInstanceWidget(item.item, definition, instance, characterId: item.ownerId, uniqueId: null),
+      Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => instanceTap(context, item),
+        ),
+      )
+    ]);
   }
 
   void instanceTap(
     BuildContext context,
     ItemWithOwner item,
   ) {
-    var instance = widget.profile.getInstanceInfo(item.item.itemInstanceId);
+    var instance = profile.getInstanceInfo(item.item.itemInstanceId);
     var route = MaterialPageRoute(
-      builder: (context) => ItemDetailScreen(
+      builder: (context) => ItemDetailsPage(
         item: item.item,
         definition: definition,
         instanceInfo: instance,

@@ -1,6 +1,8 @@
+// @dart=2.9
+
 import 'package:bungie_api/models/destiny_item_category_definition.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
+
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/refresh_button.widget.dart';
 
@@ -32,7 +34,7 @@ class ItemTypeMenuWidget extends StatelessWidget {
               Expanded(child:TabBar(
                 indicator: BoxDecoration(
                     border:
-                        Border(top: BorderSide(width: 2, color: Colors.white))),
+                        Border(top: BorderSide(width: 2, color: Theme.of(context).colorScheme.onSurface))),
                 controller: controller,
                 labelPadding: EdgeInsets.all(0),
                 tabs: getButtons(),
@@ -52,7 +54,7 @@ class ItemTypeMenuWidget extends StatelessWidget {
 }
 
 class ItemTypeMenuButton extends StatelessWidget {
-  final ManifestService manifest = new ManifestService();
+  
   final int categoryHash;
 
   ItemTypeMenuButton(this.categoryHash);

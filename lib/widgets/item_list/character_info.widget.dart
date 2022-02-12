@@ -1,7 +1,9 @@
-import 'dart:async';
+// @dart=2.9
 
+import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:bubble/bubble.dart';
 import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:bungie_api/models/destiny_class_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
@@ -12,25 +14,22 @@ import 'package:bungie_api/models/destiny_race_definition.dart';
 import 'package:bungie_api/models/destiny_sandbox_perk_definition.dart';
 import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
-import 'package:little_light/services/notification/notification.service.dart';
-import 'package:little_light/services/profile/destiny_settings.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/services/user_settings/user_settings.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/services/notification/notification.package.dart';
+import 'package:little_light/services/profile/destiny_settings.consumer.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
+import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/icon_fonts/littlelight_icons.dart';
 import 'package:little_light/widgets/option_sheets/character_options_sheet.widget.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:speech_bubble/speech_bubble.dart';
 
 class CharacterInfoWidget extends StatefulWidget {
-  final ManifestService manifest = new ManifestService();
-  final ProfileService profile = new ProfileService();
   final String characterId;
-  final NotificationService broadcaster = NotificationService();
 
   CharacterInfoWidget({this.characterId, Key key}) : super(key: key);
 
@@ -40,7 +39,8 @@ class CharacterInfoWidget extends StatefulWidget {
   }
 }
 
-class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
+class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T>
+    with UserSettingsConsumer, ProfileConsumer, ManifestConsumer, NotificationConsumer, DestinySettingsConsumer {
   DestinyClassDefinition classDef;
   DestinyRaceDefinition raceDef;
   DestinyCharacterComponent character;
@@ -52,11 +52,11 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
   void initState() {
     super.initState();
 
-    character = widget.profile.getCharacter(widget.characterId);
+    character = profile.getCharacter(widget.characterId);
     loadDefinitions();
-    subscription = widget.broadcaster.listen((event) {
+    subscription = notifications.listen((event) {
       if (event.type == NotificationType.receivedUpdate && mounted) {
-        character = widget.profile.getCharacter(widget.characterId);
+        character = profile.getCharacter(widget.characterId);
         setState(() {});
       }
     });
@@ -69,13 +69,10 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
   }
 
   loadDefinitions() async {
-    classDef = await widget.manifest
-        .getDefinition<DestinyClassDefinition>(character.classHash);
-    raceDef = await widget.manifest
-        .getDefinition<DestinyRaceDefinition>(character.raceHash);
-    legendProgressionDefinition = await widget.manifest
-        .getDefinition<DestinyProgressionDefinition>(
-            DestinySettingsService().seasonalRankProgressionHash);
+    classDef = await manifest.getDefinition<DestinyClassDefinition>(character.classHash);
+    raceDef = await manifest.getDefinition<DestinyRaceDefinition>(character.raceHash);
+    legendProgressionDefinition =
+        await manifest.getDefinition<DestinyProgressionDefinition>(destinySettings.seasonalRankProgressionHash);
     if (mounted) {
       setState(() {});
     }
@@ -95,7 +92,7 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
               child: InkWell(
                   child: Container(),
                   onTap: () {
-                    UserSettingsService().hasTappedGhost = true;
+                    userSettings.hasTappedGhost = true;
                     setState(() {});
                     showOptionsSheet(context);
                   })))
@@ -113,7 +110,7 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
   }
 
   Widget currencyInfo(BuildContext context) {
-    var currencies = widget.profile.getProfileCurrencies();
+    var currencies = profile.getProfileCurrencies();
     if (currencies == null) {
       return Container();
     }
@@ -121,12 +118,15 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
         left: 8,
         bottom: 0,
         right: 8,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: currencies.map((c) => buildCurrency(context, c)).toList(),
-        ));
+        child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            reverse: true,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: currencies.map((c) => buildCurrency(context, c)).toList(),
+            )));
   }
 
   Widget buildCurrency(BuildContext context, DestinyItemComponent currency) {
@@ -137,8 +137,7 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
           margin: EdgeInsets.only(left: 16, right: 4),
           width: 16,
           height: 16,
-          child: ManifestImageWidget<DestinyInventoryItemDefinition>(
-              currency.itemHash),
+          child: ManifestImageWidget<DestinyInventoryItemDefinition>(currency.itemHash),
         ),
         Text(
           "${currency.quantity}",
@@ -156,9 +155,8 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
             baseColor: Colors.grey.shade400,
             highlightColor: Colors.grey.shade100,
             period: Duration(seconds: 5),
-            child: Icon(LittleLightIcons.ghost,
-                size: 50, color: Colors.grey.shade300)));
-    if (UserSettingsService().hasTappedGhost) {
+            child: Icon(LittleLightIcons.ghost, size: 50, color: Colors.grey.shade300)));
+    if (userSettings.hasTappedGhost) {
       return ghost;
     }
     return Stack(children: [
@@ -168,26 +166,23 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
       Center(
           child: Container(
               margin: EdgeInsets.only(top: 60),
-              child: SpeechBubble(
-                nipLocation: NipLocation.TOP,
-                color: Colors.lightBlue,
+              child: Bubble(
+                color: LittleLightTheme.of(context).primaryLayers,
                 child: TranslatedTextWidget("Hey, tap me!"),
               )))
     ]);
   }
 
   int get artifactLevel {
-    var item = widget.profile
+    var item = profile
         .getCharacterEquipment(widget.characterId)
-        .firstWhere((item) => item.bucketHash == InventoryBucket.artifact,
-            orElse: () => null);
+        .firstWhere((item) => item.bucketHash == InventoryBucket.artifact, orElse: () => null);
     if (item == null) return 0;
-    var instanceInfo = widget.profile.getInstanceInfo(item?.itemInstanceId);
+    var instanceInfo = profile.getInstanceInfo(item?.itemInstanceId);
     return instanceInfo?.primaryStat?.value ?? 0;
   }
 
-  Widget characterStatsInfo(
-      BuildContext context, DestinyCharacterComponent character) {
+  Widget characterStatsInfo(BuildContext context, DestinyCharacterComponent character) {
     var armorLevel = character.light - artifactLevel;
     return Positioned(
         right: 8,
@@ -204,16 +199,17 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
                     padding: EdgeInsets.only(top: 8),
                     child: Icon(
                       LittleLightIcons.power,
-                      color: Colors.amber.shade500,
+                      color: LittleLightTheme.of(context).achievementLayers,
                       size: 16,
                     )),
                 Text(
                   "${character.light}",
                   key: Key("${character.light}"),
                   style: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 34,
-                      color: Colors.amber.shade500),
+                    fontWeight: FontWeight.w700,
+                    fontSize: 34,
+                    color: LittleLightTheme.of(context).achievementLayers,
+                  ),
                 )
               ],
             ),
@@ -226,17 +222,15 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
                 artifactLevel == 0
                     ? Container()
                     : Text(" +$artifactLevel",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.cyanAccent))
+                        style:
+                            TextStyle(fontWeight: FontWeight.bold, color: LittleLightTheme.of(context).upgradeLayers))
               ],
             )
           ],
         ));
   }
 
-  Widget mainCharacterInfo(
-      BuildContext context, DestinyCharacterComponent character) {
+  Widget mainCharacterInfo(BuildContext context, DestinyCharacterComponent character) {
     if (classDef == null || raceDef == null) {
       return Container();
     }
@@ -249,10 +243,7 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text(
-                classDef
-                    .genderedClassNamesByGenderHash["${character.genderHash}"]
-                    .toUpperCase(),
+            Text(classDef.genderedClassNamesByGenderHash["${character.genderHash}"].toUpperCase(),
                 style: TextStyle(fontWeight: FontWeight.w700, fontSize: 20)),
             Container(height: 2),
             Text(
@@ -265,8 +256,7 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
         ));
   }
 
-  Widget characterStats(
-      BuildContext context, DestinyCharacterComponent character) {
+  Widget characterStats(BuildContext context, DestinyCharacterComponent character) {
     List<Widget> stats = [];
     character.stats.forEach((hash, stat) {
       if (hash == "${ProgressionHash.Power}") return;
@@ -288,29 +278,19 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
           ])));
     });
     return Column(children: [
-      Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: stats.take(3).toList()),
-      Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: stats.skip(3).toList())
+      Row(crossAxisAlignment: CrossAxisAlignment.center, children: stats.take(3).toList()),
+      Row(crossAxisAlignment: CrossAxisAlignment.center, children: stats.skip(3).toList())
     ]);
   }
 
   Widget expInfo(BuildContext context, DestinyCharacterComponent character) {
-    var settings = DestinySettingsService();
-    var progression =
-        widget.profile.getCharacterProgression(character.characterId);
-    DestinyProgression levelProg =
-        progression.progressions["${settings.seasonalRankProgressionHash}"];
-    DestinyProgression overLevelProg = progression
-        .progressions["${settings.seasonalPrestigeRankProgressionHash}"];
+    var progression = profile.getCharacterProgression(character.characterId);
+    DestinyProgression levelProg = progression.progressions["${destinySettings.seasonalRankProgressionHash}"];
+    DestinyProgression overLevelProg =
+        progression.progressions["${destinySettings.seasonalPrestigeRankProgressionHash}"];
 
     int seasonRank = (levelProg?.level ?? 0) + (overLevelProg?.level ?? 0);
-    DestinyProgression expProg =
-        (levelProg?.level ?? 0) < (levelProg?.levelCap ?? 0)
-            ? levelProg
-            : overLevelProg;
+    DestinyProgression expProg = (levelProg?.level ?? 0) < (levelProg?.levelCap ?? 0) ? levelProg : overLevelProg;
     return Positioned(
         right: 8,
         top: 4,
@@ -330,34 +310,25 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
           Container(
             width: 16,
             height: 16,
-            child: isWellRested
-                ? ManifestImageWidget<DestinySandboxPerkDefinition>(2352765282)
-                : Container(),
+            child: isWellRested ? ManifestImageWidget<DestinySandboxPerkDefinition>(2352765282) : Container(),
           ),
           Container(
             width: 4,
           ),
           Text(
             "${expProg?.progressToNextLevel}/${expProg?.nextLevelAt}",
-            style: TextStyle(
-                color: Colors.grey.shade300,
-                fontSize: 11,
-                fontWeight: FontWeight.bold),
+            style: TextStyle(color: Colors.grey.shade300, fontSize: 11, fontWeight: FontWeight.bold),
           )
         ]));
   }
 
   DestinyProgression get legendProgression {
-    var overlevelHash =
-        DestinySettingsService().seasonalPrestigeRankProgressionHash;
-    return widget.profile
-        .getCharacterProgression(character.characterId)
-        .progressions["$overlevelHash"];
+    var overlevelHash = destinySettings.seasonalPrestigeRankProgressionHash;
+    return profile.getCharacterProgression(character.characterId).progressions["$overlevelHash"];
   }
 
   bool get isWellRested =>
-      (character?.levelProgression?.level ?? 0) >=
-          (character?.levelProgression?.levelCap ?? 0) &&
+      (character?.levelProgression?.level ?? 0) >= (character?.levelProgression?.levelCap ?? 0) &&
       (legendProgression?.level ?? 0) > 3 &&
       (legendProgression?.weeklyProgress ?? 0) < wellRestedTotal;
 
@@ -366,8 +337,7 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T> {
       return 0;
     }
     return [0, 1, 2].fold<int>(0, (total, levelOffset) {
-      var step = math.min(
-          math.max((legendProgression?.level ?? 0) - levelOffset, 0),
+      var step = math.min(math.max((legendProgression?.level ?? 0) - levelOffset, 0),
           (legendProgressionDefinition?.steps?.length ?? 1) - 1);
       return total + legendProgressionDefinition.steps[step].progressTotal;
     });

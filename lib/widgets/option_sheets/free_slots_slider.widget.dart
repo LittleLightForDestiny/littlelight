@@ -1,5 +1,6 @@
+// @dart=2.9
+
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
 typedef void FreeSlotsChanged(int freeSlots);
@@ -9,11 +10,7 @@ class FreeSlotsSliderWidget extends StatefulWidget {
   final int initialValue;
   final bool suppressLabel;
 
-  const FreeSlotsSliderWidget(
-      {Key key,
-      this.onChanged,
-      this.initialValue = 0,
-      this.suppressLabel = false})
+  const FreeSlotsSliderWidget({Key key, this.onChanged, this.initialValue = 0, this.suppressLabel = false})
       : super(key: key);
 
   @override
@@ -28,7 +25,7 @@ class FreeSlotsSliderWidgetState extends State<FreeSlotsSliderWidget> {
   @override
   void initState() {
     super.initState();
-    
+
     freeSlots = widget.initialValue;
   }
 
@@ -38,9 +35,7 @@ class FreeSlotsSliderWidgetState extends State<FreeSlotsSliderWidget> {
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
         child: Row(
           children: <Widget>[
-            widget.suppressLabel
-                ? Container()
-                : TranslatedTextWidget("Free Slots"),
+            widget.suppressLabel ? Container() : TranslatedTextWidget("Free Slots"),
             Expanded(
                 child: Slider(
               min: 0,

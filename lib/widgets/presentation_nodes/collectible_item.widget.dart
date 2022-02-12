@@ -1,15 +1,17 @@
+// @dart=2.9
+
 import 'dart:async';
 
 import 'package:bungie_api/enums/destiny_item_type.dart';
 import 'package:bungie_api/models/destiny_collectible_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/screens/item_detail.screen.dart';
+import 'package:little_light/pages/item_details/item_details.page.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/services/selection/selection.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
+import 'package:little_light/services/selection/selection.consumer.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/item_list/items/armor/armor_inventory_item.widget.dart';
@@ -18,13 +20,9 @@ import 'package:little_light/widgets/item_list/items/emblem/emblem_inventory_ite
 import 'package:little_light/widgets/item_list/items/mod/mod_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/weapon/weapon_inventory_item.widget.dart';
 
-class CollectibleItemWidget extends StatefulWidget with AuthConsumer{
-  final ManifestService manifest = new ManifestService();
-  final ProfileService profile = new ProfileService();
-  final Map<int, List<ItemWithOwner>> itemsByHash;
+class CollectibleItemWidget extends StatefulWidget {
   final int hash;
-  CollectibleItemWidget({Key key, this.hash, this.itemsByHash})
-      : super(key: key);
+  CollectibleItemWidget({Key key, this.hash}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -32,36 +30,27 @@ class CollectibleItemWidget extends StatefulWidget with AuthConsumer{
   }
 }
 
-class CollectibleItemWidgetState extends State<CollectibleItemWidget> {
+class CollectibleItemWidgetState extends State<CollectibleItemWidget>
+    with AuthConsumer, ProfileConsumer, ManifestConsumer, SelectionConsumer {
   DestinyCollectibleDefinition _definition;
   DestinyInventoryItemDefinition _itemDefinition;
+  List<ItemWithOwner> items;
   DestinyCollectibleDefinition get definition {
-    return widget.manifest.getDefinitionFromCache<DestinyCollectibleDefinition>(
-            widget.hash) ??
-        _definition;
+    return manifest.getDefinitionFromCache<DestinyCollectibleDefinition>(widget.hash) ?? _definition;
   }
 
-  List<ItemWithOwner> get items {
-    if (definition?.itemHash != null &&
-        widget.itemsByHash != null &&
-        widget.itemsByHash.containsKey(definition.itemHash)) {
-      return widget.itemsByHash[definition.itemHash];
-    }
-    return null;
-  }
-
-  bool get selected => items != null
-      ? items.every((i) {
-          return SelectionService().isSelected(i);
-        })
-      : false;
+  bool get selected =>
+      (items?.length ?? 0) > 0 &&
+      items.every((i) {
+        return selection.isSelected(i);
+      });
 
   @override
   void initState() {
     super.initState();
     loadDefinition();
     StreamSubscription<List<ItemWithOwner>> sub;
-    sub = SelectionService().broadcaster.listen((selectedItems) {
+    sub = selection.broadcaster.listen((selectedItems) {
       if (!mounted) {
         sub.cancel();
         return;
@@ -72,14 +61,13 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget> {
 
   loadDefinition() async {
     if (definition == null) {
-      _definition = await widget.manifest
-          .getDefinition<DestinyCollectibleDefinition>(widget.hash);
+      _definition = await manifest.getDefinition<DestinyCollectibleDefinition>(widget.hash);
       if (mounted) {
         setState(() {});
       }
     }
-    _itemDefinition = await widget.manifest
-        .getDefinition<DestinyInventoryItemDefinition>(definition.itemHash);
+    _itemDefinition = await manifest.getDefinition<DestinyInventoryItemDefinition>(definition.itemHash);
+    this.items = profile.getAllItems().where((element) => element.item.itemHash == definition.itemHash).toList();
     if (mounted) {
       setState(() {});
     }
@@ -92,15 +80,12 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget> {
         child: Container(
             decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey.shade600, width: 1),
-                gradient: LinearGradient(
-                    begin: Alignment(0, 0),
-                    end: Alignment(1, 2),
-                    colors: [
-                      Colors.white.withOpacity(.05),
-                      Colors.white.withOpacity(.1),
-                      Colors.white.withOpacity(.03),
-                      Colors.white.withOpacity(.1)
-                    ])),
+                gradient: LinearGradient(begin: Alignment(0, 0), end: Alignment(1, 2), colors: [
+                  Theme.of(context).colorScheme.onSurface.withOpacity(.05),
+                  Theme.of(context).colorScheme.onSurface.withOpacity(.1),
+                  Theme.of(context).colorScheme.onSurface.withOpacity(.03),
+                  Theme.of(context).colorScheme.onSurface.withOpacity(.1)
+                ])),
             child: Stack(children: [
               buildItem(context),
               Positioned(right: 4, bottom: 4, child: buildItemCount()),
@@ -114,9 +99,7 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget> {
   Widget buildItem(BuildContext context) {
     if (_itemDefinition == null) {
       if (definition?.redacted ?? false)
-        return Container(
-            alignment: Alignment.center,
-            child: Text(definition.displayProperties.name));
+        return Container(alignment: Alignment.center, child: Text(definition.displayProperties.name));
       return Container();
     }
     if (_itemDefinition.itemType == DestinyItemType.Armor) {
@@ -175,8 +158,7 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget> {
   }
 
   buildTitle(BuildContext context, DestinyCollectibleDefinition definition) {
-    return Expanded(
-        child: Container(padding: EdgeInsets.all(8), child: buildTitleText()));
+    return Expanded(child: Container(padding: EdgeInsets.all(8), child: buildTitleText()));
   }
 
   Widget buildButton(BuildContext context) {
@@ -195,20 +177,20 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget> {
     if (definition.itemHash == null) {
       return;
     }
-    if (SelectionService().multiselectActivated) {
+    if (selection.multiselectActivated) {
       onLongPress(context);
       return;
     }
 
-    DestinyInventoryItemDefinition itemDef = await widget.manifest
-        .getDefinition<DestinyInventoryItemDefinition>(definition.itemHash);
+    DestinyInventoryItemDefinition itemDef =
+        await manifest.getDefinition<DestinyInventoryItemDefinition>(definition.itemHash);
     if (itemDef == null) {
       return;
     }
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ItemDetailScreen(definition: itemDef),
+        builder: (context) => ItemDetailsPage(definition: itemDef),
       ),
     );
   }
@@ -216,15 +198,15 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget> {
   void onLongPress(BuildContext context) {
     if ((items?.length ?? 0) == 0) return;
     if (!selected) {
-      SelectionService().activateMultiSelect();
+      selection.activateMultiSelect();
       for (var item in this.items) {
-        if (!SelectionService().isSelected(item)) {
-          SelectionService().addItem(ItemWithOwner(item.item, item.ownerId));
+        if (!selection.isSelected(item)) {
+          selection.addItem(ItemWithOwner(item.item, item.ownerId));
         }
       }
     } else {
       for (var item in this.items) {
-        SelectionService().removeItem(ItemWithOwner(item.item, item.ownerId));
+        selection.removeItem(ItemWithOwner(item.item, item.ownerId));
       }
     }
 
@@ -234,8 +216,7 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget> {
   Widget buildSelectedBorder(BuildContext context) {
     if (selected) {
       return Container(
-        decoration: BoxDecoration(
-            border: Border.all(width: 2, color: Colors.lightBlue.shade400)),
+        decoration: BoxDecoration(border: Border.all(width: 2, color: Colors.lightBlue.shade400)),
       );
     }
     return Container();
@@ -244,9 +225,7 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget> {
   buildTitleText() {
     if (definition == null) return Container();
     return Text(definition.displayProperties.name,
-        softWrap: true,
-        style: TextStyle(
-            color: Colors.grey.shade300, fontWeight: FontWeight.bold));
+        softWrap: true, style: TextStyle(color: Colors.grey.shade300, fontWeight: FontWeight.bold));
   }
 
   Widget buildItemCount() {
@@ -258,11 +237,11 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget> {
       height: 18,
       decoration: BoxDecoration(
         border: Border.all(
-          color: Colors.blueGrey.shade300,
+          color: Theme.of(context).colorScheme.primaryVariant,
           width: 1,
         ),
         borderRadius: BorderRadius.circular(10),
-        color: Colors.blueGrey.shade700.withOpacity(.8),
+        color: Theme.of(context).colorScheme.secondary.withOpacity(.8),
       ),
       alignment: Alignment.center,
       child: Text(
@@ -274,8 +253,7 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget> {
   }
 
   bool get unlocked {
-    if (!widget.auth.isLogged) return true;
     if (definition == null) return false;
-    return widget.profile.isCollectibleUnlocked(widget.hash, definition.scope);
+    return profile.isCollectibleUnlocked(widget.hash, definition.scope);
   }
 }

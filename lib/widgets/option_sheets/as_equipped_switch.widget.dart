@@ -1,5 +1,6 @@
+// @dart=2.9
+
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
 typedef void AsEquippedChanged(bool equipped);
@@ -20,16 +21,16 @@ class AsEquippedSwitchWidgetState extends State<AsEquippedSwitchWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.symmetric(horizontal:16, vertical: 4),
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
         child: Row(
           children: <Widget>[
-            Expanded(child:TranslatedTextWidget("As Equipped")),
+            Expanded(child: TranslatedTextWidget("As Equipped")),
             Switch(
               value: asEquipped,
               onChanged: (bool value) {
                 asEquipped = value;
                 setState(() {});
-                if(widget.onChanged != null){
+                if (widget.onChanged != null) {
                   widget.onChanged(asEquipped);
                 }
               },

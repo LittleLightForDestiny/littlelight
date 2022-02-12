@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'dart:math';
 
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
@@ -10,6 +12,8 @@ import 'package:bungie_api/models/destiny_stat_display_definition.dart';
 import 'package:bungie_api/models/destiny_stat_group_definition.dart';
 import 'package:bungie_api/models/interpolation_point.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
@@ -43,7 +47,7 @@ class ItemStatsWidget extends BaseDestinyStatefulItemWidget {
 }
 
 class DestinyStatsWidgetState extends BaseDestinyItemState<ItemStatsWidget>
-    with AutomaticKeepAliveClientMixin {
+    with AutomaticKeepAliveClientMixin, ProfileConsumer {
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -178,7 +182,7 @@ class DestinyStatsWidgetState extends BaseDestinyItemState<ItemStatsWidget>
 
   List<DestinyItemSocketState> get socketStates {
     if (item == null) return null;
-    return widget.profile.getItemSockets(item.itemInstanceId);
+    return profile.getItemSockets(item.itemInstanceId);
   }
 
   @override
@@ -221,7 +225,7 @@ class ItemStatWidget extends StatelessWidget {
                   maxLines: 1,
                   softWrap: false,
                   style: TextStyle(
-                      color: modColor,
+                      color: getModColor(context),
                       fontWeight: FontWeight.bold,
                       fontSize: 12),
                   overflow: TextOverflow.fade,
@@ -255,7 +259,7 @@ class ItemStatWidget extends StatelessWidget {
                   Container(
                     height: 8,
                     width: (modBarSize / maxBarSize).abs() * barWidth,
-                    color: modColor,
+                    color: getModColor(context),
                   ),
                   Container(
                       height: 8,
@@ -294,15 +298,15 @@ class ItemStatWidget extends StatelessWidget {
     return value;
   }
 
-  Color get modColor {
+  Color getModColor(BuildContext context) {
     if (selected > equipped) {
-      return DestinyData.positiveFeedback;
+      return LittleLightTheme.of(context).successLayers;
     }
     if (equipped > selected) {
-      return DestinyData.negativeFeedback;
+      return LittleLightTheme.of(context).errorLayers;
     }
     if (masterwork > 0) {
-      return Colors.amberAccent.shade400;
+      return LittleLightTheme.of(context).achievementLayers;
     }
     return color;
   }

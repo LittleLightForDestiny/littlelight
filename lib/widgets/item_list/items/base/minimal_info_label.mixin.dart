@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'package:flutter/material.dart';
 import 'package:little_light/widgets/item_list/items/base/inventory_item.mixin.dart';
 

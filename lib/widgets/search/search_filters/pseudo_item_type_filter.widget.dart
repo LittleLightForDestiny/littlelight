@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'package:flutter/material.dart';
 import 'package:little_light/utils/item_filters/pseudo_item_type_filter.dart';
 import 'package:little_light/widgets/common/refresh_button.widget.dart';
@@ -51,14 +53,14 @@ class _PseudoItemTypeFilterWidgetState extends BaseSearchFilterWidgetState<
       constraints: BoxConstraints(
           minWidth: (query.size.width - 40) / filter.availableValues.length),
       child: Material(
-          color: isSelected ? Colors.blueGrey.shade700 : Colors.transparent,
+          color: isSelected ? Theme.of(context).colorScheme.secondary : Colors.transparent,
           child: InkWell(
             child: Container(
                 foregroundDecoration: BoxDecoration(
                     border: Border(
                         top: BorderSide(
                             color:
-                                isSelected ? Colors.white : Colors.transparent,
+                                isSelected ? Theme.of(context).colorScheme.onSurface : Colors.transparent,
                             width: 2))),
                 alignment: Alignment.center,
                 padding: EdgeInsets.all(8),
@@ -83,7 +85,7 @@ class _PseudoItemTypeFilterWidgetState extends BaseSearchFilterWidgetState<
 
   @override
   Widget buildButtonLabel(BuildContext context, PseudoItemType value) {
-    var style = TextStyle(color: Colors.white, fontWeight: FontWeight.w500);
+    var style = TextStyle(color: Theme.of(context).colorScheme.onSurface, fontWeight: FontWeight.w500);
     switch (value) {
       case PseudoItemType.Weapons:
         return TranslatedTextWidget(

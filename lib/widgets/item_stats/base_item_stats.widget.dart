@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_investment_stat_definition.dart';
@@ -5,6 +7,8 @@ import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_stat.dart';
 import 'package:bungie_api/models/destiny_stat_group_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
@@ -27,10 +31,9 @@ class BaseItemStatsWidget extends BaseDestinyStatefulItemWidget {
   }
 }
 
-class BaseItemStatsState<T extends BaseItemStatsWidget>
-    extends BaseDestinyItemState<T> with AutomaticKeepAliveClientMixin {
-  Map<int, DestinyInventoryItemDefinition> get plugDefinitions =>
-      socketController.plugDefinitions;
+class BaseItemStatsState<T extends BaseItemStatsWidget> extends BaseDestinyItemState<T>
+    with AutomaticKeepAliveClientMixin, ProfileConsumer, ManifestConsumer {
+  Map<int, DestinyInventoryItemDefinition> get plugDefinitions => socketController.plugDefinitions;
   Map<String, DestinyStat> precalculatedStats;
   List<DestinyItemSocketState> socketStates;
 
@@ -38,9 +41,7 @@ class BaseItemStatsState<T extends BaseItemStatsWidget>
   ItemSocketController _socketController;
   ItemSocketController get socketController {
     if (widget.socketController != null) return widget.socketController;
-    if (_socketController == null)
-      _socketController =
-          ItemSocketController(item: item, definition: definition);
+    if (_socketController == null) _socketController = ItemSocketController(item: item, definition: definition);
     return _socketController;
   }
 
@@ -48,10 +49,9 @@ class BaseItemStatsState<T extends BaseItemStatsWidget>
   void initState() {
     super.initState();
 
-    precalculatedStats =
-        widget.profile.getPrecalculatedStats(item?.itemInstanceId);
+    precalculatedStats = profile.getPrecalculatedStats(item?.itemInstanceId);
 
-    socketStates = widget.profile.getItemSockets(item?.itemInstanceId);
+    socketStates = profile.getItemSockets(item?.itemInstanceId);
     loadStatGroupDefinition();
     initializeSocketController();
   }
@@ -72,9 +72,7 @@ class BaseItemStatsState<T extends BaseItemStatsWidget>
 
   Future loadStatGroupDefinition() async {
     if (definition?.stats?.statGroupHash != null) {
-      statGroupDefinition = await widget.manifest
-          .getDefinition<DestinyStatGroupDefinition>(
-              definition?.stats?.statGroupHash);
+      statGroupDefinition = await manifest.getDefinition<DestinyStatGroupDefinition>(definition?.stats?.statGroupHash);
       if (mounted) {
         setState(() {});
       }
@@ -89,9 +87,7 @@ class BaseItemStatsState<T extends BaseItemStatsWidget>
       child: Column(
         children: <Widget>[
           buildHeader(context),
-          Container(
-              padding: EdgeInsets.symmetric(vertical: 8),
-              child: Column(children: buildStats(context))),
+          Container(padding: EdgeInsets.symmetric(vertical: 8), child: Column(children: buildStats(context))),
         ],
       ),
     );
@@ -134,9 +130,7 @@ class BaseItemStatsState<T extends BaseItemStatsWidget>
       return BaseItemStatWidget(
         statHash: stat.statTypeHash,
         modValues: entry,
-        scaled: statGroupDefinition.scaledStats.firstWhere(
-            (s) => s.statHash == stat.statTypeHash,
-            orElse: () => null),
+        scaled: statGroupDefinition.scaledStats.firstWhere((s) => s.statHash == stat.statTypeHash, orElse: () => null),
       );
     }).toList();
   }
@@ -150,12 +144,11 @@ class BaseItemStatsState<T extends BaseItemStatsWidget>
       var pre = precalculatedStats?.containsKey("${s.statTypeHash}") ?? false
           ? precalculatedStats["${s.statTypeHash}"].value
           : 0;
-      map[s.statTypeHash] = new StatValues(
-          equipped: s.value, selected: s.value, precalculated: pre);
+      map[s.statTypeHash] = new StatValues(equipped: s.value, selected: s.value, precalculated: pre);
     });
 
-    List<int> plugHashes = List.generate(socketController.socketCount,
-        (i) => socketController.socketEquippedPlugHash(i));
+    List<int> plugHashes =
+        List.generate(socketController.socketCount, (i) => socketController.socketEquippedPlugHash(i));
 
     plugHashes.forEach((plugHash) {
       int index = plugHashes.indexOf(plugHash);
@@ -164,8 +157,7 @@ class BaseItemStatsState<T extends BaseItemStatsWidget>
         return;
       }
       var selectedPlugHash = socketController.socketSelectedPlugHash(index);
-      DestinyInventoryItemDefinition selectedDef =
-          plugDefinitions[selectedPlugHash];
+      DestinyInventoryItemDefinition selectedDef = plugDefinitions[selectedPlugHash];
       def?.investmentStats?.forEach((stat) {
         StatValues values = map[stat.statTypeHash] ?? new StatValues();
         if (def.plug?.uiPlugLabel == 'masterwork') {
@@ -201,20 +193,14 @@ class BaseItemStatsState<T extends BaseItemStatsWidget>
     if (statGroupDefinition?.scaledStats == null) {
       return null;
     }
-    var statWhitelist =
-        statGroupDefinition.scaledStats.map((s) => s.statHash).toList();
-    var noBarStats = statGroupDefinition.scaledStats
-        .where((s) => s.displayAsNumeric)
-        .map((s) => s.statHash)
-        .toList();
+    var statWhitelist = statGroupDefinition.scaledStats.map((s) => s.statHash).toList();
+    var noBarStats = statGroupDefinition.scaledStats.where((s) => s.displayAsNumeric).map((s) => s.statHash).toList();
     statWhitelist.addAll(DestinyData.hiddenStats);
-    List<DestinyItemInvestmentStatDefinition> stats = definition.investmentStats
-        .where((stat) => statWhitelist.contains(stat.statTypeHash))
-        .toList();
+    List<DestinyItemInvestmentStatDefinition> stats =
+        definition.investmentStats.where((stat) => statWhitelist.contains(stat.statTypeHash)).toList();
 
     for (var stat in statGroupDefinition?.scaledStats) {
-      if (statWhitelist.contains(stat.statHash) &&
-          stats.where((s) => s.statTypeHash == stat.statHash).length == 0) {
+      if (statWhitelist.contains(stat.statHash) && stats.where((s) => s.statTypeHash == stat.statHash).length == 0) {
         var newStat = DestinyItemInvestmentStatDefinition()
           ..statTypeHash = stat.statHash
           ..value = 0
@@ -226,20 +212,18 @@ class BaseItemStatsState<T extends BaseItemStatsWidget>
     stats.sort((statA, statB) {
       int valA = noBarStats.contains(statA.statTypeHash)
           ? 2
-          : DestinyData.hiddenStats.contains(statA.statTypeHash) ? 1 : 0;
+          : DestinyData.hiddenStats.contains(statA.statTypeHash)
+              ? 1
+              : 0;
       int valB = noBarStats.contains(statB.statTypeHash)
           ? 2
-          : DestinyData.hiddenStats.contains(statB.statTypeHash) ? 1 : 0;
+          : DestinyData.hiddenStats.contains(statB.statTypeHash)
+              ? 1
+              : 0;
       var result = valA - valB;
       if (result != 0) return result;
-      int posA = statGroupDefinition.scaledStats
-          .map((i) => i.statHash)
-          .toList()
-          .indexOf(statA.statTypeHash);
-      int posB = statGroupDefinition.scaledStats
-          .map((i) => i.statHash)
-          .toList()
-          .indexOf(statB.statTypeHash);
+      int posA = statGroupDefinition.scaledStats.map((i) => i.statHash).toList().indexOf(statA.statTypeHash);
+      int posB = statGroupDefinition.scaledStats.map((i) => i.statHash).toList().indexOf(statB.statTypeHash);
       return posA - posB;
     });
     return stats;

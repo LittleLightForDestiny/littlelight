@@ -1,8 +1,11 @@
+// @dart=2.9
+
 import 'dart:math';
 import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:bungie_api/models/destiny_stat_display_definition.dart';
 import 'package:bungie_api/models/interpolation_point.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
@@ -28,7 +31,7 @@ class BaseItemStatWidget extends StatelessWidget {
             maxLines: 1,
             softWrap: false,
             style: TextStyle(
-                color: nameColor, fontWeight: FontWeight.bold, fontSize: 12),
+                color: getNameColor(context), fontWeight: FontWeight.bold, fontSize: 12),
             overflow: TextOverflow.fade,
           )),
           Expanded(
@@ -43,11 +46,11 @@ class BaseItemStatWidget extends StatelessWidget {
         ]));
   }
 
-  Color get positiveColor => DestinyData.positiveFeedback;
-  Color get negativeColor => DestinyData.negativeFeedback;
-  Color get masterworkColor => DestinyData.masterworkColor;
-  Color get hiddenStatColor => Colors.cyan.shade100;
-  Color get neutralColor => Colors.grey.shade300;
+  Color getPositiveColor(BuildContext context) => LittleLightTheme.of(context).successLayers;
+  Color getNegativeColor(BuildContext context) => LittleLightTheme.of(context).errorLayers;
+  Color getMasterworkColor(BuildContext context) => LittleLightTheme.of(context).achievementLayers;
+  Color getHiddenStatColor(BuildContext context) => LittleLightTheme.of(context).upgradeLayers;
+  Color getNeutralColor(BuildContext context) => LittleLightTheme.of(context).onSurfaceLayers;
 
   int get maxBarSize {
     if(scaled?.maximumValue != null){
@@ -99,37 +102,37 @@ class BaseItemStatWidget extends StatelessWidget {
     return (masterwork).abs();
   }
 
-  Color get nameColor{
+  Color getNameColor(BuildContext context){
     if(isHiddenStat){
-      return hiddenStatColor;
+      return getHiddenStatColor(context);
     }
-    return neutralColor;
+    return getNeutralColor(context);
   }
 
-  Color get valueColor{
+  Color getValueColor(BuildContext context){
     if(masterwork > 0){
-      return masterworkColor;
+      getMasterworkColor(context);
     }
     if (selected > equipped) {
-      return positiveColor;
+      return getPositiveColor(context);
     }
     if (equipped > selected) {
-      return negativeColor;
+      return getNegativeColor(context);
     }
     if(isHiddenStat){
-      return hiddenStatColor;
+      return getHiddenStatColor(context);
     }
-    return neutralColor;
+    return getNeutralColor(context);
   }
 
-  Color get modBarColor {
+  Color getModBarColor(BuildContext context) {
     if (selected > equipped) {
-      return positiveColor;
+      return getPositiveColor(context);
     }
     if (equipped > selected) {
-      return negativeColor;
+      return getNegativeColor(context);
     }
-    return neutralColor;
+    return getNeutralColor(context);
   }
 
 

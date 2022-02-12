@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_investment_stat_definition.dart';
 import 'package:bungie_api/models/destiny_item_plug.dart';
@@ -8,15 +10,14 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/models/tracked_objective.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/littlelight/objectives.service.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/widgets/common/objective.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-
 import 'package:little_light/widgets/item_details/item_stats.widget.dart';
 
 class PerkListItem extends StatefulWidget {
-  final ManifestService manifest = ManifestService();
+  
   final DestinyInventoryItemDefinition definition;
   final DestinyItemPlug plug;
 
@@ -30,7 +31,7 @@ class PerkListItem extends StatefulWidget {
 }
 
 class PerkListItemState extends State<PerkListItem>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, ManifestConsumer {
   bool isTracking = false;
 
   DestinyInventoryItemDefinition get definition => widget.definition;
@@ -46,7 +47,7 @@ class PerkListItemState extends State<PerkListItem>
 
   loadDefinitions() async {
     if ((definition?.objectives?.objectiveHashes?.length ?? 0) > 0) {
-      objectiveDefinitions = await widget.manifest
+      objectiveDefinitions = await manifest
           .getDefinitions<DestinyObjectiveDefinition>(
               definition.objectives.objectiveHashes);
       if (mounted) {
@@ -61,7 +62,7 @@ class PerkListItemState extends State<PerkListItem>
         margin: EdgeInsets.symmetric(vertical: 4),
         padding: EdgeInsets.all(4),
         decoration: BoxDecoration(
-            color: Colors.blueGrey.shade700,
+            color: Theme.of(context).colorScheme.secondary,
             borderRadius: BorderRadius.circular(8)),
         child: Column(children: [
           Row(
@@ -153,7 +154,7 @@ class PerkListItemState extends State<PerkListItem>
       return ItemStatWidget(stat.statTypeHash, 0, values);
     }).toList();
     return Container(
-        color: Colors.blueGrey.shade900,
+        color: Theme.of(context).colorScheme.secondaryVariant,
         margin: EdgeInsets.all(4),
         child: Column(children: [
           Container(

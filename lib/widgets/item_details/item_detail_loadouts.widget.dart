@@ -1,10 +1,13 @@
+// @dart=2.9
+
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/loadout.dart';
-import 'package:little_light/screens/equip_loadout.screen.dart';
+import 'package:little_light/pages/loadouts/equip_loadout.screen.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
@@ -15,16 +18,9 @@ class ItemDetailLoadoutsWidget extends BaseDestinyStatefulItemWidget {
   final List<Loadout> loadouts;
 
   ItemDetailLoadoutsWidget(
-      DestinyItemComponent item,
-      DestinyInventoryItemDefinition definition,
-      DestinyItemInstanceComponent instanceInfo,
-      {Key key,
-      this.loadouts})
-      : super(
-            item: item,
-            definition: definition,
-            instanceInfo: instanceInfo,
-            key: key);
+      DestinyItemComponent item, DestinyInventoryItemDefinition definition, DestinyItemInstanceComponent instanceInfo,
+      {Key key, this.loadouts})
+      : super(item: item, definition: definition, instanceInfo: instanceInfo, key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -34,9 +30,7 @@ class ItemDetailLoadoutsWidget extends BaseDestinyStatefulItemWidget {
 
 const _sectionId = "item_loadouts";
 
-class ItemDetailLoadoutsWidgetState
-    extends BaseDestinyItemState<ItemDetailLoadoutsWidget>
-    with VisibleSectionMixin {
+class ItemDetailLoadoutsWidgetState extends BaseDestinyItemState<ItemDetailLoadoutsWidget> with VisibleSectionMixin {
   @override
   String get sectionId => _sectionId;
 
@@ -65,25 +59,18 @@ class ItemDetailLoadoutsWidgetState
   }
 
   Widget buildLoadouts(BuildContext context) {
-    var isTablet = MediaQueryHelper(context).tabletOrBigger;
-    return StaggeredGridView.count(
-        padding: EdgeInsets.all(0),
-        crossAxisSpacing: 2,
-        mainAxisSpacing: 2,
-        crossAxisCount: 3,
-        staggeredTiles: widget.loadouts
-            .map((item) => StaggeredTile.fit(isTablet ? 1 : 3))
-            .toList(),
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
-        children: widget.loadouts
-            .map((item) => buildLoadoutItem(item, context))
-            .toList());
+    return StaggeredGrid.count(
+      crossAxisCount: MediaQueryHelper(context).responsiveValue(1, tablet: 3),
+      axisDirection: AxisDirection.down,
+      crossAxisSpacing: 2,
+      mainAxisSpacing: 2,
+      children: widget.loadouts.map((e) => buildLoadoutItem(e, context)).toList(),
+    );
   }
 
   Widget buildLoadoutItem(Loadout loadout, BuildContext context) {
     return Container(
-        color: Theme.of(context).buttonColor,
+        color: LittleLightTheme.of(context).upgradeLayers,
         margin: EdgeInsets.only(bottom: 4),
         child: Stack(children: [
           Positioned.fill(

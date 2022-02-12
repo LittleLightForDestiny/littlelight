@@ -1,11 +1,13 @@
+// @dart=2.9
+
 
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
-import 'package:little_light/services/littlelight/littlelight_data.service.dart';
+import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 
 import 'base_item_filter.dart';
 
-class SeasonSlotFilter extends BaseItemFilter<Set<int>> {
+class SeasonSlotFilter extends BaseItemFilter<Set<int>> with LittleLightDataConsumer{
   SeasonSlotFilter() : super(Set(), Set());
   List<int> seasonalSlots;
   
@@ -17,7 +19,7 @@ class SeasonSlotFilter extends BaseItemFilter<Set<int>> {
   Future<List<ItemWithOwner>> filter(List<ItemWithOwner> items, {Map<int, DestinyInventoryItemDefinition> definitions}) async {
     clear();
 
-    var gameData = await LittleLightDataService().getGameData();
+    var gameData = await littleLightData.getGameData();
     seasonalSlots = gameData.seasonalModSlots;
     Set<int> hashes = Set();
     for(var item in items){

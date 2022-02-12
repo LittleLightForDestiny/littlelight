@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'package:bungie_api/enums/damage_type.dart';
 
 enum RunePosition { Top, Left, Right }

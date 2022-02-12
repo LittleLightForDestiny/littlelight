@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'dart:math';
 
 import 'package:bungie_api/enums/destiny_class.dart';
@@ -5,18 +7,22 @@ import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/interpolation_point.dart';
+import 'package:little_light/models/item_sort_parameter.dart';
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/services/user_settings/item_sort_parameter.dart';
-import 'package:little_light/services/user_settings/user_settings.service.dart';
+import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/item_sorters/base_item_sorter.dart';
 import 'package:little_light/utils/item_sorters/power_level_sorter.dart';
 import 'package:little_light/utils/item_sorters/priority_tags_sorter.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 
 class InventoryUtils {
+  static ProfileService get _profile => getInjectedProfileService();
+  static ManifestService get _manifest => getInjectedManifestService();
   static int interpolateStat(
       int investmentValue, List<InterpolationPoint> displayInterpolation) {
     var interpolation = displayInterpolation.toList();
@@ -50,9 +56,10 @@ class InventoryUtils {
       {List<ItemSortParameter> sortingParams,
       bool sortTags: true}) async {
     if (sortingParams == null) {
-      sortingParams = UserSettingsService().itemOrdering;
+      final userSettings = getInjectedUserSettings();
+      sortingParams = userSettings.itemOrdering;
     }
-    await ManifestService().getDefinitions<DestinyInventoryItemDefinition>(
+    await _manifest.getDefinitions<DestinyInventoryItemDefinition>(
         items.map((i) => i?.item?.itemHash));
     List<BaseItemSorter> sorters =
         sortingParams.map((p) => p.sorter).where((s) => s != null).toList();
@@ -78,20 +85,20 @@ class InventoryUtils {
   }
 
   static debugLoadout(LoadoutItemIndex loadout, int classType) async {
-    ManifestService manifest = ManifestService();
-    ProfileService profile = ProfileService();
+
+
 
     var isInDebug = false;
     assert(isInDebug = true);
     if (!isInDebug) return;
     for (var item in loadout.generic.values) {
       if (item == null) continue;
-      var def = await manifest
+      var def = await _manifest
           .getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
       var bucket =
-          await manifest.getDefinition<DestinyInventoryBucketDefinition>(
+          await _manifest.getDefinition<DestinyInventoryBucketDefinition>(
               def.inventory.bucketTypeHash);
-      var instance = profile.getInstanceInfo(item.itemInstanceId);
+      var instance = _profile.getInstanceInfo(item.itemInstanceId);
       print("---------------------------------------------------------------");
       print(bucket.displayProperties.name);
       print("---------------------------------------------------------------");
@@ -101,12 +108,12 @@ class InventoryUtils {
     for (var items in loadout.classSpecific.values) {
       var item = items[classType];
       if (item == null) continue;
-      var def = await manifest
+      var def = await _manifest
           .getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
       var bucket =
-          await manifest.getDefinition<DestinyInventoryBucketDefinition>(
+          await _manifest.getDefinition<DestinyInventoryBucketDefinition>(
               def.inventory.bucketTypeHash);
-      var instance = profile.getInstanceInfo(item.itemInstanceId);
+      var instance = _profile.getInstanceInfo(item.itemInstanceId);
       print("---------------------------------------------------------------");
       print(bucket.displayProperties.name);
       print("---------------------------------------------------------------");
@@ -116,7 +123,7 @@ class InventoryUtils {
   }
 }
 
-class LoadoutItemIndex {
+class LoadoutItemIndex with ProfileConsumer, ManifestConsumer{
   static const List<int> genericBucketHashes = [
     InventoryBucket.kineticWeapons,
     InventoryBucket.energyWeapons,
@@ -158,7 +165,7 @@ class LoadoutItemIndex {
   }
 
   build() async {
-    ProfileService profile = new ProfileService();
+
     List<String> equippedIds =
         loadout.equipped.map((item) => item.itemInstanceId).toList();
     List<String> itemIds = equippedIds;
@@ -170,41 +177,40 @@ class LoadoutItemIndex {
     Iterable<String> notFoundInstanceIds =
         itemIds.where((id) => !foundItemIds.contains(id));
     if (notFoundInstanceIds.length > 0) {
-      List<DestinyItemComponent> allItems = profile.getAllItems();
+      List<ItemWithOwner> allItems = profile.getAllItems();
       notFoundInstanceIds.forEach((id) {
         LoadoutItem equipped = loadout.equipped
             .firstWhere((i) => i.itemInstanceId == id, orElse: () => null);
         LoadoutItem unequipped = loadout.unequipped
             .firstWhere((i) => i.itemInstanceId == id, orElse: () => null);
         int itemHash = equipped?.itemHash ?? unequipped?.itemHash;
-        List<DestinyItemComponent> substitutes =
-            allItems.where((i) => i.itemHash == itemHash).toList();
+        List<ItemWithOwner> substitutes =
+            allItems.where((i) => i.item.itemHash == itemHash).toList();
         if (substitutes.length == 0) return;
         var powerSorter = PowerLevelSorter(-1);
         substitutes.sort((a, b) =>
-            powerSorter.sort(ItemWithOwner(a, null), ItemWithOwner(b, null)));
-        DestinyItemComponent substitute = substitutes.first;
+            powerSorter.sort(a, b));
+        ItemWithOwner substitute = substitutes.first;
 
         if (equipped != null) {
           loadout.equipped.remove(equipped);
           loadout.equipped.add(LoadoutItem(
-              itemInstanceId: substitute.itemInstanceId,
-              itemHash: substitute.itemHash));
-          equippedIds.add(substitute.itemInstanceId);
+              itemInstanceId: substitute.item.itemInstanceId,
+              itemHash: substitute.item.itemHash));
+          equippedIds.add(substitute.item.itemInstanceId);
         }
         if (unequipped != null) {
           loadout.unequipped.remove(unequipped);
           loadout.unequipped.remove(unequipped);
           loadout.unequipped.add(LoadoutItem(
-              itemInstanceId: substitute.itemInstanceId,
-              itemHash: substitute.itemHash));
+              itemInstanceId: substitute.item.itemInstanceId,
+              itemHash: substitute.item.itemHash));
         }
-        items.add(substitute);
+        items.add(substitute.item);
       });
     }
 
     List<int> hashes = items.map((item) => item.itemHash).toList();
-    ManifestService manifest = ManifestService();
     Map<int, DestinyInventoryItemDefinition> defs =
         await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
 

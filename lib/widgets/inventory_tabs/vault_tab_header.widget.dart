@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'package:flutter/material.dart';
 import 'package:little_light/widgets/inventory_tabs/character_tab_header.widget.dart';
 
@@ -53,7 +55,7 @@ class VaultTabHeaderWidgetState extends TabHeaderWidgetState {
   }
 
   Widget powerBar(BuildContext context) {
-    return Container(height:2,color:Colors.blueGrey.shade700);
+    return Container(height:2,color:Theme.of(context).colorScheme.secondary);
   }
 
   double getTopPadding(BuildContext context) {

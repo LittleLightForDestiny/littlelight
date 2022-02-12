@@ -1,3 +1,5 @@
+//@dart=2.12
+
 class InventoryBucket {
   static const int kineticWeapons = 1498876634;
   static const int energyWeapons = 2465295065;
@@ -72,7 +74,6 @@ class InventoryBucket {
   static const inventoryBucketHashes = [
     consumables,
     modifications,
-    shaders,
   ];
 
   static const pursuitBucketHashes = [

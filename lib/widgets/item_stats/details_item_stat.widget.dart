@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:bungie_api/models/destiny_stat_display_definition.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +38,7 @@ class DetailsItemStatWidget extends BaseItemStatWidget {
       child: ManifestText<DestinyStatDefinition>(
         statHash,
         style: TextStyle(
-          color: nameColor,
+          color: getNameColor(context),
           fontSize: 14,
           fontWeight: FontWeight.w300,
         ),
@@ -52,7 +54,7 @@ class DetailsItemStatWidget extends BaseItemStatWidget {
       child: Text(
         "$currentValue",
         style: TextStyle(
-          color: valueColor,
+          color: getValueColor(context),
           fontSize: 14,
           fontWeight: FontWeight.bold,
         ),
@@ -75,7 +77,7 @@ class DetailsItemStatWidget extends BaseItemStatWidget {
               child: DirectionStatBarWidget(
                   currentValue: currentValue,
                   equippedValue: equipped + masterwork,
-                  currentColor: valueColor,
+                  currentColor: getValueColor(context),
                   equippedColor: Colors.grey.shade500,
                   backgroundColor: Colors.grey.shade700.withOpacity(.7)),
               width: 40));
@@ -88,12 +90,12 @@ class DetailsItemStatWidget extends BaseItemStatWidget {
       child: Row(
         children: <Widget>[
           Container(
-              width: (baseBarSize / maxBarSize) * (width), color: nameColor),
+              width: (baseBarSize / maxBarSize) * (width), color: getNameColor(context)),
           Container(
               width: (masterworkBarSize / maxBarSize) * (width),
-              color: masterworkColor),
+              color: getMasterworkColor(context)),
           Container(
-              width: (modBarSize / maxBarSize) * (width), color: modBarColor),
+              width: (modBarSize / maxBarSize) * (width), color: getModBarColor(context)),
         ],
       ),
     );

@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';

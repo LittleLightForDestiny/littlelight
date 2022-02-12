@@ -1,5 +1,9 @@
+// @dart=2.9
+
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
+
+import 'package:little_light/core/theme/littlelight.theme.dart';
 
 class FilledDiamondProgressIndicator extends ProgressIndicator {
   const FilledDiamondProgressIndicator({
@@ -33,12 +37,10 @@ class FilledDiamondProgressIndicator extends ProgressIndicator {
     );
   }
 
-  Color _getValueColor(BuildContext context) =>
-      valueColor?.value ?? Theme.of(context).accentColor;
+  Color _getValueColor(BuildContext context) => valueColor?.value ?? LittleLightTheme.of(context).upgradeLayers;
 
   @override
-  _FilledCircularProgressIndicatorState createState() =>
-      _FilledCircularProgressIndicatorState();
+  _FilledCircularProgressIndicatorState createState() => _FilledCircularProgressIndicatorState();
 }
 
 // Tweens used by circular progress indicator
@@ -58,8 +60,7 @@ final Animatable<int> _kStepTween = StepTween(begin: 0, end: 5);
 
 final Animatable<double> _kRotationTween = CurveTween(curve: const SawTooth(5));
 
-class _FilledCircularProgressIndicatorState
-    extends State<FilledDiamondProgressIndicator>
+class _FilledCircularProgressIndicatorState extends State<FilledDiamondProgressIndicator>
     with SingleTickerProviderStateMixin {
   AnimationController _controller;
 
@@ -78,8 +79,7 @@ class _FilledCircularProgressIndicatorState
     super.didUpdateWidget(oldWidget);
     if (widget.value == null && !_controller.isAnimating)
       _controller.repeat();
-    else if (widget.value != null && _controller.isAnimating)
-      _controller.stop();
+    else if (widget.value != null && _controller.isAnimating) _controller.stop();
   }
 
   @override
@@ -88,8 +88,8 @@ class _FilledCircularProgressIndicatorState
     super.dispose();
   }
 
-  Widget _buildIndicator(BuildContext context, double headValue,
-      double tailValue, int stepValue, double rotationValue) {
+  Widget _buildIndicator(
+      BuildContext context, double headValue, double tailValue, int stepValue, double rotationValue) {
     return widget._buildSemanticsWrapper(
       context: context,
       child: Container(
@@ -97,9 +97,8 @@ class _FilledCircularProgressIndicatorState
           painter: _CircularProgressIndicatorPainter(
             backgroundColor: widget.backgroundColor,
             valueColor: widget._getValueColor(context),
-            value: widget.value, 
-            headValue:
-                headValue, 
+            value: widget.value,
+            headValue: headValue,
             tailValue: tailValue,
             stepValue: stepValue,
             rotationValue: rotationValue,
@@ -142,15 +141,10 @@ class _CircularProgressIndicatorPainter extends CustomPainter {
     this.rotationValue,
   })  : arcStart = value != null
             ? _startAngle
-            : _startAngle +
-                tailValue * 3 / 2 * math.pi +
-                rotationValue * math.pi * 1.7 -
-                stepValue * 0.8 * math.pi,
+            : _startAngle + tailValue * 3 / 2 * math.pi + rotationValue * math.pi * 1.7 - stepValue * 0.8 * math.pi,
         arcSweep = value != null
             ? value.clamp(0.0, 1.0) * _sweep
-            : math.max(
-                headValue * 3 / 2 * math.pi - tailValue * 3 / 2 * math.pi,
-                _epsilon);
+            : math.max(headValue * 3 / 2 * math.pi - tailValue * 3 / 2 * math.pi, _epsilon);
 
   final Color backgroundColor;
   final Color valueColor;
@@ -171,11 +165,11 @@ class _CircularProgressIndicatorPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     var clip = Path();
-    clip.moveTo(0, size.height/2);
-    clip.lineTo(size.width/2, size.height);
-    clip.lineTo(size.width, size.height/2);
-    clip.lineTo(size.width/2, 0);
-    canvas.clipPath(clip, doAntiAlias:true);
+    clip.moveTo(0, size.height / 2);
+    clip.lineTo(size.width / 2, size.height);
+    clip.lineTo(size.width, size.height / 2);
+    clip.lineTo(size.width / 2, 0);
+    canvas.clipPath(clip, doAntiAlias: true);
     final Paint paint = Paint()
       ..color = valueColor
       ..style = PaintingStyle.fill;

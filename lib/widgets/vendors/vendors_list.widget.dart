@@ -1,21 +1,17 @@
+// @dart=2.9
+
 import 'dart:async';
-import 'dart:math';
-import 'package:bungie_api/models/destiny_vendor_category.dart';
-import 'package:bungie_api/models/destiny_vendor_component.dart';
+
+import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-
-import 'package:little_light/services/manifest/manifest.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/profile/vendors.service.dart';
-
+import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/vendors/vendors_list_item.widget.dart';
-import 'package:shimmer/shimmer.dart';
 
 class VendorsListWidget extends StatefulWidget {
   final String characterId;
-  final ProfileService profile = ProfileService();
-  final ManifestService manifest = ManifestService();
+
   final VendorsService service = VendorsService();
   final List<int> ignoreVendorHashes = const [
     997622907, //prismatic matrix
@@ -34,8 +30,7 @@ class VendorsListWidget extends StatefulWidget {
   _VendorsListWidgetState createState() => _VendorsListWidgetState();
 }
 
-class _VendorsListWidgetState extends State<VendorsListWidget>
-    with AutomaticKeepAliveClientMixin {
+class _VendorsListWidgetState extends State<VendorsListWidget> with AutomaticKeepAliveClientMixin {
   List<DestinyVendorComponent> _vendors;
 
   @override
@@ -48,8 +43,7 @@ class _VendorsListWidgetState extends State<VendorsListWidget>
     var vendors = await widget.service.getVendors(widget.characterId);
     Map<int, List<DestinyVendorCategory>> _categories = {};
     for (var vendor in vendors.values) {
-      _categories[vendor.vendorHash] = await widget.service
-          .getVendorCategories(widget.characterId, vendor.vendorHash);
+      _categories[vendor.vendorHash] = await widget.service.getVendorCategories(widget.characterId, vendor.vendorHash);
     }
     _vendors = vendors.values.where((v) {
       if (!v.enabled) return false;
@@ -77,41 +71,25 @@ class _VendorsListWidgetState extends State<VendorsListWidget>
   Widget build(BuildContext context) {
     super.build(context);
     if (_vendors == null) {
-      return Center(
-          child: Container(
-              width: 96,
-              child: Shimmer.fromColors(
-                baseColor: Colors.blueGrey.shade300,
-                highlightColor: Colors.white,
-                child: Image.asset("assets/anim/loading.webp"),
-              )));
+      return LoadingAnimWidget();
     }
-    var screenPadding = MediaQuery.of(context).padding;
-    return StaggeredGridView.countBuilder(
-      crossAxisCount: 6,
-      addAutomaticKeepAlives: true,
-      addRepaintBoundaries: true,
-      itemCount: _vendors?.length ?? 0,
-      padding: EdgeInsets.all(4).copyWith(
-          top: 0,
-          left: max(screenPadding.left, 4),
-          right: max(screenPadding.right, 4),
-          bottom: screenPadding.bottom + 8),
-      mainAxisSpacing: 4,
-      crossAxisSpacing: 4,
-      staggeredTileBuilder: (index) {
-        return StaggeredTile.fit(6);
-      },
-      itemBuilder: (context, index) {
-        if (_vendors == null) return Container();
-        var vendor = _vendors[index];
-        return VendorsListItemWidget(
-          characterId: widget.characterId,
-          vendor: vendor,
-          key: Key("progression_${vendor.vendorHash}"),
-        );
-      },
-    );
+
+    return MasonryGridView.builder(
+        gridDelegate: SliverSimpleGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 1,
+        ),
+        crossAxisSpacing: 2,
+        mainAxisSpacing: 2,
+        padding: MediaQuery.of(context).viewPadding + EdgeInsets.only(top:kToolbarHeight) + EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+        itemCount: _vendors.length,
+        itemBuilder: (context, index) {
+          final vendor = _vendors[index];
+          return VendorsListItemWidget(
+            characterId: widget.characterId,
+            vendor: vendor,
+            key: Key("vendor_${vendor.vendorHash}"),
+          );
+        });
   }
 
   @override

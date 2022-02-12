@@ -1,9 +1,13 @@
+// @dart=2.9
+
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_socket_category_definition.dart';
 import 'package:bungie_api/models/destiny_socket_category_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/utils/destiny_data.dart';
+import 'package:little_light/utils/element_type_data.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/item_sockets/base_item_sockets.widget.dart';
@@ -18,12 +22,7 @@ class ScreenShotArmorTierWidget extends BaseItemSocketsWidget {
     DestinyItemSocketCategoryDefinition category,
     ItemSocketController controller,
     this.pixelSize = 1,
-  }) : super(
-            key: key,
-            item: item,
-            definition: definition,
-            category: category,
-            controller: controller);
+  }) : super(key: key, item: item, definition: definition, category: category, controller: controller);
 
   @override
   State<StatefulWidget> createState() {
@@ -33,8 +32,7 @@ class ScreenShotArmorTierWidget extends BaseItemSocketsWidget {
 
 const _sectionId = "screenshot_item_perks";
 
-class ScreenShotItemPerksWidgetState<T extends ScreenShotArmorTierWidget>
-    extends BaseItemSocketsWidgetState<T> {
+class ScreenShotItemPerksWidgetState<T extends ScreenShotArmorTierWidget> extends BaseItemSocketsWidgetState<T> {
   @override
   String get sectionId => _sectionId;
 
@@ -63,13 +61,12 @@ class ScreenShotItemPerksWidgetState<T extends ScreenShotArmorTierWidget>
           style: TextStyle(
             fontSize: 24 * widget.pixelSize,
             fontWeight: FontWeight.w500,
-            color: Colors.white.withOpacity(.7),
+            color: Theme.of(context).colorScheme.onSurface.withOpacity(.7),
           ),
         ),
         Container(
-            margin: EdgeInsets.only(
-                top: 2 * widget.pixelSize, bottom: 16 * widget.pixelSize),
-            color: Colors.white.withOpacity(.7),
+            margin: EdgeInsets.only(top: 2 * widget.pixelSize, bottom: 16 * widget.pixelSize),
+            color: Theme.of(context).colorScheme.onSurface.withOpacity(.7),
             height: 3 * widget.pixelSize)
       ],
     );
@@ -77,26 +74,22 @@ class ScreenShotItemPerksWidgetState<T extends ScreenShotArmorTierWidget>
 
   @override
   Widget buildSockets(BuildContext context) {
-    Iterable<Widget> children = category.socketIndexes
-        .map((socketIndex) => buildSocketPlugs(context, socketIndex))
-        .where((w) => w != null);
+    Iterable<Widget> children =
+        category.socketIndexes.map((socketIndex) => buildSocketPlugs(context, socketIndex)).where((w) => w != null);
     return Column(children: children.toList());
   }
 
   @override
   Widget buildSocketPlugs(BuildContext context, int socketIndex) {
     int equippedHash = socketEquippedPlugHash(socketIndex);
-    return Container(
-        width: widget.pixelSize * 520,
-        child: buildPlug(context, socketIndex, equippedHash));
+    return Container(width: widget.pixelSize * 520, child: buildPlug(context, socketIndex, equippedHash));
   }
 
   @override
   Widget buildPlug(BuildContext context, int socketIndex, int plugItemHash) {
     if (plugDefinitions == null) return Container();
     var plugDef = plugDefinitions[plugItemHash];
-    var color = DestinyData.getEnergyTypeColor(
-        plugDef?.plug?.energyCapacity?.energyType);
+    final color = plugDef?.plug?.energyCapacity?.energyType?.getColorLayer(context);
     var total = plugDef?.plug?.energyCapacity?.capacityValue;
     return Column(children: [
       Container(
@@ -106,20 +99,15 @@ class ScreenShotItemPerksWidgetState<T extends ScreenShotArmorTierWidget>
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Icon(
-                  DestinyData.getEnergyTypeIcon(
-                      plugDef?.plug?.energyCapacity?.energyType),
-                  color: DestinyData.getEnergyTypeLightColor(
-                      plugDef?.plug?.energyCapacity?.energyType),
+              Icon(DestinyData.getEnergyTypeIcon(plugDef?.plug?.energyCapacity?.energyType),
+                  color: plugDef?.plug?.energyCapacity?.energyType?.getColorLayer(context)?.layer1,
                   size: widget.pixelSize * 44),
               Container(
                 width: widget.pixelSize * 8,
               ),
               Text(
                 "$total",
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: widget.pixelSize * 38),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: widget.pixelSize * 38),
               ),
               Container(
                 width: widget.pixelSize * 16,
@@ -127,9 +115,7 @@ class ScreenShotItemPerksWidgetState<T extends ScreenShotArmorTierWidget>
               TranslatedTextWidget(
                 "Energy",
                 uppercase: true,
-                style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    fontSize: widget.pixelSize * 22),
+                style: TextStyle(fontWeight: FontWeight.w500, fontSize: widget.pixelSize * 22),
               )
             ],
           )),
@@ -145,30 +131,26 @@ class ScreenShotItemPerksWidgetState<T extends ScreenShotArmorTierWidget>
     var requiredEnergy = controller.requiredEnergy;
     List<Widget> pieces = [];
     for (var i = 0; i < 10; i++) {
-      pieces.add(Expanded(
-          child: buildEnergyPiece(context, i, total, used, requiredEnergy)));
+      pieces.add(Expanded(child: buildEnergyPiece(context, i, total, used, requiredEnergy)));
     }
     return Row(
       children: pieces,
     );
   }
 
-  Widget buildEnergyPiece(BuildContext context, int index, int total, int used,
-      int requiredEnergy) {
+  Widget buildEnergyPiece(BuildContext context, int index, int total, int used, int requiredEnergy) {
+    final theme = LittleLightTheme.of(context);
     if (index < total) {
-      Color color = index < requiredEnergy
-          ? DestinyData.negativeFeedback.withOpacity(.8)
-          : Colors.transparent;
+      Color color = index < requiredEnergy ? theme.errorLayers.withOpacity(.8) : Colors.transparent;
       if (index < used) {
-        color = Colors.white;
+        color = Theme.of(context).colorScheme.onSurface;
       }
       return Container(
         height: 30 * widget.pixelSize,
         padding: EdgeInsets.all(2 * widget.pixelSize),
         child: Container(
           decoration: BoxDecoration(
-              border:
-                  Border.all(width: 4 * widget.pixelSize, color: Colors.white),
+              border: Border.all(width: 4 * widget.pixelSize, color: Theme.of(context).colorScheme.onSurface),
               color: color),
         ),
       );
@@ -176,12 +158,9 @@ class ScreenShotItemPerksWidgetState<T extends ScreenShotArmorTierWidget>
 
     return Container(
       height: 30 * widget.pixelSize,
-      padding: EdgeInsets.symmetric(
-          horizontal: 2 * widget.pixelSize, vertical: 8 * widget.pixelSize),
+      padding: EdgeInsets.symmetric(horizontal: 2 * widget.pixelSize, vertical: 8 * widget.pixelSize),
       child: Container(
-        color: index < requiredEnergy
-            ? DestinyData.negativeFeedback.withOpacity(.8)
-            : Colors.black.withOpacity(.5),
+        color: index < requiredEnergy ? theme.errorLayers.withOpacity(.8) : Colors.black.withOpacity(.5),
       ),
     );
   }

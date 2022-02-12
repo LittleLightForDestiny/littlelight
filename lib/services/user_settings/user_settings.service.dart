@@ -1,39 +1,25 @@
+import 'package:get_it/get_it.dart';
+import 'package:little_light/models/bucket_display_options.dart';
+import 'package:little_light/models/character_sort_parameter.dart';
 import 'package:little_light/models/item_notes_tag.dart';
-import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/services/storage/storage.service.dart';
-import 'package:little_light/services/user_settings/bucket_display_options.dart';
-import 'package:little_light/services/user_settings/character_sort_parameter.dart';
-import 'package:little_light/services/user_settings/item_sort_parameter.dart';
+import 'package:little_light/models/item_sort_parameter.dart';
+import 'package:little_light/services/auth/auth.consumer.dart';
+import 'package:little_light/services/storage/export.dart';
+import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
 import 'package:little_light/utils/remove_diacritics.dart';
 
-const _defaultBucketDisplayOptions = {
-  "${InventoryBucket.engrams}":
-      BucketDisplayOptions(type: BucketDisplayType.Small),
-  "${InventoryBucket.lostItems}":
-      BucketDisplayOptions(type: BucketDisplayType.Small),
-  "${InventoryBucket.consumables}":
-      BucketDisplayOptions(type: BucketDisplayType.Small),
-  "${InventoryBucket.shaders}":
-      BucketDisplayOptions(type: BucketDisplayType.Small),
-  "${InventoryBucket.modifications}":
-      BucketDisplayOptions(type: BucketDisplayType.Small),
-  "pursuits_53_null": BucketDisplayOptions(type: BucketDisplayType.Large),
-};
+setupUserSettingsService() async {
+  GetIt.I.registerSingleton<UserSettingsService>(UserSettingsService._internal());
+}
 
-class UserSettingsService {
-  static UserSettingsService _singleton = UserSettingsService._internal();
-  StorageService get globalStorage => StorageService.global();
-  StorageService get membershipStorage => StorageService.membership();
-  List<ItemSortParameter> _itemOrdering;
-  List<ItemSortParameter> _pursuitOrdering;
-  CharacterSortParameter _characterOrdering;
-  Set<String> _priorityTags;
-  Map<String, BucketDisplayOptions> _bucketDisplayOptions;
-  Map<String, bool> _detailsSectionDisplayVisibility;
+class UserSettingsService with StorageConsumer, AuthConsumer {
+  List<ItemSortParameter>? _itemOrdering;
+  List<ItemSortParameter>? _pursuitOrdering;
+  CharacterSortParameter? _characterOrdering;
+  Set<String?>? _priorityTags;
+  Map<String, BucketDisplayOptions>? _bucketDisplayOptions;
+  Map<String, bool>? _detailsSectionDisplayVisibility;
 
-  factory UserSettingsService() {
-    return _singleton;
-  }
   UserSettingsService._internal();
   init() async {
     await initItemOrdering();
@@ -45,12 +31,8 @@ class UserSettingsService {
   }
 
   initItemOrdering() async {
-    List<dynamic> jsonList =
-        await globalStorage.getJson(StorageKeys.itemOrdering);
-    List<ItemSortParameter> savedParams =
-        (jsonList ?? []).map((j) => ItemSortParameter.fromJson(j)).toList();
-    List<ItemSortParameterType> presentParams =
-        savedParams.map((p) => p.type).toList();
+    List<ItemSortParameter> savedParams = await globalStorage.getItemOrdering() ?? [];
+    List<ItemSortParameterType?> presentParams = (savedParams).map((p) => p.type).toList();
     var defaults = ItemSortParameter.defaultItemList;
     var defaultParams = defaults.map((p) => p.type);
     savedParams.removeWhere((p) => !defaultParams.contains(p.type));
@@ -63,12 +45,8 @@ class UserSettingsService {
   }
 
   initPursuitOrdering() async {
-    List<dynamic> jsonList =
-        await globalStorage.getJson(StorageKeys.pursuitOrdering);
-    List<ItemSortParameter> savedParams =
-        (jsonList ?? []).map((j) => ItemSortParameter.fromJson(j)).toList();
-    Iterable<ItemSortParameterType> presentParams =
-        savedParams.map((p) => p.type);
+    List<ItemSortParameter> savedParams = await globalStorage.getPursuitOrdering() ?? [];
+    Iterable<ItemSortParameterType?> presentParams = savedParams.map((p) => p.type);
     var defaults = ItemSortParameter.defaultPursuitList;
     var defaultParams = defaults.map((p) => p.type);
     savedParams.removeWhere((p) => !defaultParams.contains(p.type));
@@ -81,59 +59,42 @@ class UserSettingsService {
   }
 
   initCharacterOrdering() async {
-    dynamic json =
-        await membershipStorage.getJson(StorageKeys.characterOrdering);
-    if (json == null) {
+    _characterOrdering = await currentMembershipStorage.getCharacterOrdering();
+    if (_characterOrdering == null) {
       _characterOrdering = CharacterSortParameter();
-      return;
     }
-    _characterOrdering = CharacterSortParameter.fromJson(json);
   }
 
   initPriorityTags() async {
-    dynamic json = await membershipStorage.getJson(StorageKeys.priorityTags);
-    if (json == null) {
+    _priorityTags = await currentMembershipStorage.getPriorityTags();
+    if (_priorityTags == null) {
       _priorityTags = Set.from([ItemNotesTag.favorite().tagId]);
-      return;
     }
-    _priorityTags = Set.from(json);
   }
 
   initBucketDisplayOptions() async {
-    try {
-      Map<String, dynamic> json =
-          await membershipStorage.getJson(StorageKeys.bucketDisplayOptions);
-      _bucketDisplayOptions = Map();
-      json.forEach((key, value) {
-        _bucketDisplayOptions[key] = BucketDisplayOptions.fromJson(value);
-      });
-    } catch (e) {
-      _bucketDisplayOptions = Map();
+    _bucketDisplayOptions = await currentMembershipStorage.getBucketDisplayOptions();
+    if (_bucketDisplayOptions == null) {
+      _bucketDisplayOptions = Map<String, BucketDisplayOptions>();
     }
   }
 
   initDetailsSectionDisplayOptions() async {
-    try {
-      Map<String, dynamic> json = await membershipStorage
-          .getJson(StorageKeys.detailsSectionDisplayVisibility);
-      _detailsSectionDisplayVisibility = Map();
-      json.forEach((key, value) {
-        _detailsSectionDisplayVisibility[key] = json[value] ?? true;
-      });
-    } catch (e) {
-      _detailsSectionDisplayVisibility = Map();
+    _detailsSectionDisplayVisibility = await currentMembershipStorage.getDetailsSectionDisplayVisibility();
+    if (_detailsSectionDisplayVisibility == null) {
+      _detailsSectionDisplayVisibility = Map<String, bool>();
     }
   }
 
-  BucketDisplayOptions getDisplayOptionsForBucket(String id) {
+  BucketDisplayOptions? getDisplayOptionsForBucket(String? id) {
     id = removeDiacritics(id ?? "").toLowerCase();
     if (_bucketDisplayOptions?.containsKey(id) ?? false) {
-      return _bucketDisplayOptions[id];
+      return _bucketDisplayOptions![id];
     }
-    if (_defaultBucketDisplayOptions?.containsKey(id) ?? false) {
-      return _defaultBucketDisplayOptions[id];
+    if (defaultBucketDisplayOptions.containsKey(id)) {
+      return defaultBucketDisplayOptions[id];
     }
-    if (id?.startsWith("vault") ?? false) {
+    if (id.startsWith("vault")) {
       return BucketDisplayOptions(type: BucketDisplayType.Small);
     }
     return BucketDisplayOptions(type: BucketDisplayType.Medium);
@@ -141,18 +102,14 @@ class UserSettingsService {
 
   setDisplayOptionsForBucket(String key, BucketDisplayOptions options) {
     key = removeDiacritics(key).toLowerCase();
-    _bucketDisplayOptions[key] = options;
-    var json = Map<String, dynamic>();
-    _bucketDisplayOptions.forEach((k, v) {
-      json[k] = v.toJson();
-    });
-    membershipStorage.setJson(StorageKeys.bucketDisplayOptions, json);
+    _bucketDisplayOptions![key] = options;
+    currentMembershipStorage.saveBucketDisplayOptions(_bucketDisplayOptions!);
   }
 
   bool getVisibilityForDetailsSection(String id) {
     id = removeDiacritics(id).toLowerCase();
     try {
-      return _detailsSectionDisplayVisibility[id] ?? true;
+      return _detailsSectionDisplayVisibility![id] ?? true;
     } catch (e) {}
     return true;
   }
@@ -160,85 +117,76 @@ class UserSettingsService {
   setVisibilityForDetailsSection(String key, bool visible) {
     key = removeDiacritics(key).toLowerCase();
     try {
-      _detailsSectionDisplayVisibility[key] = visible;
+      _detailsSectionDisplayVisibility![key] = visible;
     } catch (e) {
       return;
     }
-    var json = Map<String, bool>();
-    _detailsSectionDisplayVisibility.forEach((k, v) {
-      json[k] = v;
-    });
-    membershipStorage.setJson(
-        StorageKeys.detailsSectionDisplayVisibility, json);
+    currentMembershipStorage.saveDetailsSectionDisplayVisibility(_detailsSectionDisplayVisibility!);
   }
 
-  bool get hasTappedGhost {
-    return globalStorage.getBool(StorageKeys.hasTappedGhost) ?? false;
-  }
+  bool get hasTappedGhost => globalStorage.hasTappedGhost ?? false;
+  set hasTappedGhost(bool value) => globalStorage.hasTappedGhost = value;
 
-  set hasTappedGhost(bool value) {
-    globalStorage.setBool(StorageKeys.hasTappedGhost, value);
-  }
+  bool get keepAwake => globalStorage.keepAwake ?? false;
+  set keepAwake(bool value) => globalStorage.keepAwake = value;
 
-  bool get keepAwake {
-    return globalStorage.getBool(StorageKeys.keepAwake) ?? false;
-  }
+  bool get tapToSelect => globalStorage.tapToSelect ?? false;
 
-  set keepAwake(bool value) {
-    globalStorage.setBool(StorageKeys.keepAwake, value);
-  }
+  set tapToSelect(bool value) => globalStorage.tapToSelect = value;
 
-  bool get tapToSelect =>
-      globalStorage.getBool(StorageKeys.tapToSelect) ?? false;
+  int get defaultFreeSlots => globalStorage.defaultFreeSlots ?? 0;
+  set defaultFreeSlots(int value) => globalStorage.defaultFreeSlots = value;
 
-  set tapToSelect(bool value) {
-    globalStorage.setBool(StorageKeys.tapToSelect, value);
-  }
+  bool get autoOpenKeyboard => globalStorage.autoOpenKeyboard ?? false;
+  set autoOpenKeyboard(bool value) => globalStorage.autoOpenKeyboard = value;
 
-  int get defaultFreeSlots {
-    return globalStorage.getInt(StorageKeys.defaultFreeSlots) ?? 0;
-  }
+  List<ItemSortParameter>? get itemOrdering => _itemOrdering;
 
-  set defaultFreeSlots(int value) {
-    globalStorage.setInt(StorageKeys.defaultFreeSlots, value);
-  }
-
-  bool get autoOpenKeyboard {
-    return globalStorage.getBool(StorageKeys.autoOpenKeyboard) ?? false;
-  }
-
-  set autoOpenKeyboard(bool value) {
-    globalStorage.setBool(StorageKeys.autoOpenKeyboard, value);
-  }
-
-  List<ItemSortParameter> get itemOrdering => _itemOrdering;
-
-  set itemOrdering(List<ItemSortParameter> ordering) {
+  set itemOrdering(List<ItemSortParameter>? ordering) {
     _itemOrdering = ordering;
-    var json = ordering.map((p) => p.toJson()).toList();
-    globalStorage.setJson(StorageKeys.itemOrdering, json);
+    globalStorage.setItemOrdering(_itemOrdering!);
   }
 
-  Set<String> get priorityTags => _priorityTags;
+  Set<String?>? get priorityTags => _priorityTags;
 
-  set priorityTags(Set<String> tags) {
+  _setPriorityTags(Set<String?> tags) {
     _priorityTags = tags;
-    globalStorage.setJson(StorageKeys.priorityTags, List.from(_priorityTags));
+    currentMembershipStorage.savePriorityTags(_priorityTags as Set<String>);
   }
 
-  List<ItemSortParameter> get pursuitOrdering => _pursuitOrdering;
+  addPriorityTag(ItemNotesTag tag) {
+    final tags = priorityTags!;
+    tags.add(tag.tagId);
+    _setPriorityTags(tags);
+  }
 
-  set pursuitOrdering(List<ItemSortParameter> ordering) {
+  removePriorityTag(ItemNotesTag tag) {
+    final tags = priorityTags!;
+    tags.remove(tag.tagId);
+    _setPriorityTags(tags);
+  }
+
+  List<ItemSortParameter>? get pursuitOrdering => _pursuitOrdering;
+
+  set pursuitOrdering(List<ItemSortParameter>? ordering) {
     _pursuitOrdering = ordering;
-    var json = ordering.map((p) => p.toJson()).toList();
-    globalStorage.setJson(StorageKeys.pursuitOrdering, json);
+    globalStorage.setPursuitOrdering(_pursuitOrdering!);
   }
 
-  CharacterSortParameter get characterOrdering => _characterOrdering;
+  CharacterSortParameter? get characterOrdering => _characterOrdering;
 
-  set characterOrdering(CharacterSortParameter ordering) {
+  set characterOrdering(CharacterSortParameter? ordering) {
     _characterOrdering = ordering;
-    var json = ordering.toJson();
-    membershipStorage.setJson(StorageKeys.characterOrdering, json);
+    currentMembershipStorage.saveCharacterOrdering(_characterOrdering!);
+  }
+
+  LittleLightPersistentPage get startingPage {
+    final _page = globalStorage.startingPage;
+
+    return _page ?? LittleLightPersistentPage.Equipment;
+  }
+
+  set startingPage(LittleLightPersistentPage page) {
+    globalStorage.startingPage = page;
   }
 }

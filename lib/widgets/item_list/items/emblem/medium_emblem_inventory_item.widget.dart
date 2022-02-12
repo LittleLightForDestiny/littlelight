@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
@@ -21,7 +23,7 @@ class MediumEmblemInventoryItemWidget extends MediumBaseInventoryItemWidget {
         left: 0,
         bottom: 0,
         right: 0,
-        child: Container(color: Colors.blueGrey.shade900,
+        child: Container(color: Theme.of(context).cardColor,
         child:QueuedNetworkImage(
           alignment: Alignment.center,
           fit:BoxFit.cover,

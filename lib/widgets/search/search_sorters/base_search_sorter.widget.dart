@@ -1,6 +1,8 @@
+// @dart=2.9
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:little_light/services/user_settings/item_sort_parameter.dart';
+import 'package:little_light/models/item_sort_parameter.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
 import 'package:little_light/widgets/search/search.controller.dart';
@@ -51,7 +53,7 @@ class BaseSearchSorterWidgetState<T extends BaseSearchSorterWidget>
         child: Container(
             height: 48,
             margin: EdgeInsets.only(top: 8),
-            color: Colors.blueGrey.shade600,
+            color: Theme.of(context).colorScheme.secondary,
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -142,7 +144,7 @@ class BaseSearchSorterWidgetState<T extends BaseSearchSorterWidget>
   Widget buildSortLabel(BuildContext context) {
     var style = TextStyle(
         fontWeight: FontWeight.bold,
-        color: sortParameter.active ? Colors.white : Colors.grey.shade300);
+        color: sortParameter.active ? Theme.of(context).colorScheme.onSurface : Colors.grey.shade300);
     switch (sortParameter.type) {
       case ItemSortParameterType.PowerLevel:
         return TranslatedTextWidget(

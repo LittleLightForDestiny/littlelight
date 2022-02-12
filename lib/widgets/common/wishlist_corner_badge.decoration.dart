@@ -1,5 +1,7 @@
+// @dart=2.9
+
 import 'package:flutter/material.dart';
-import 'package:little_light/models/wish_list.dart';
+import 'package:little_light/models/parsed_wishlist.dart';
 import 'package:little_light/widgets/common/corner_badge.decoration.dart';
 
 class WishlistCornerBadgeDecoration extends CornerBadgeDecoration {
@@ -22,11 +24,8 @@ class WishlistCornerBadgeDecoration extends CornerBadgeDecoration {
     if (tags.contains(WishlistTag.PVP) || tags.contains(WishlistTag.GodPVP)) {
       colors.add(Colors.red.shade800);
     }
-    if (colors.length > 0) {
+    if ((colors?.length ?? 0) > 0) {
       return colors;
-    }
-    if (tags.length == 0) {
-      return [Colors.amber.shade500];
     }
     if (tags.contains(WishlistTag.Trash)) {
       return [Colors.lightGreen.shade500];
@@ -49,11 +48,8 @@ class WishlistCornerBadgeDecoration extends CornerBadgeDecoration {
     } else if (tags.contains(WishlistTag.PVP)) {
       colors.add(Colors.red.shade800);
     }
-    if (colors.length > 0) {
+    if ((colors?.length ?? 0) > 0) {
       return colors;
-    }
-    if (tags.length == 0) {
-      return [Colors.amber.shade500];
     }
     if (tags.contains(WishlistTag.Trash)) {
       return [Colors.lightGreen.shade500];

@@ -1,16 +1,18 @@
+// @dart=2.9
+
 import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:bungie_api/models/destiny_class_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/services/inventory/inventory.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/inventory/enums/item_destination.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
 
 
-class EquipOnCharacterButton extends StatelessWidget {
+class EquipOnCharacterButton extends StatelessWidget with ProfileConsumer {
   final ItemDestination type;
   final String characterId;
   final Function onTap;
@@ -55,7 +57,7 @@ class EquipOnCharacterButton extends StatelessWidget {
 
       default:
       DestinyCharacterComponent character =
-        ProfileService().getCharacter(characterId);
+        profile.getCharacter(characterId);
         return ManifestImageWidget<DestinyInventoryItemDefinition>(
             character.emblemHash);
     }
@@ -65,7 +67,7 @@ class EquipOnCharacterButton extends StatelessWidget {
     switch (type) {
       case ItemDestination.Character:
         DestinyCharacterComponent character =
-          ProfileService().getCharacter(characterId);
+          profile.getCharacter(characterId);
         return Positioned(bottom: 1, left:1, right:1, child: Container(
           padding:EdgeInsets.all(2),
           color:Colors.black.withOpacity(.7),

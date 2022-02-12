@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'dart:async';
 
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
@@ -7,13 +9,13 @@ import 'package:bungie_api/models/destiny_objective_definition.dart';
 import 'package:bungie_api/models/destiny_objective_progress.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:little_light/screens/item_detail.screen.dart';
-import 'package:little_light/services/littlelight/item_notes.service.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
-import 'package:little_light/services/notification/notification.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/services/selection/selection.service.dart';
-import 'package:little_light/services/user_settings/user_settings.service.dart';
+import 'package:little_light/pages/item_details/item_details.page.dart';
+import 'package:little_light/services/littlelight/item_notes.consumer.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/services/notification/notification.package.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
+import 'package:little_light/services/selection/selection.consumer.dart';
+import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/common/corner_badge.decoration.dart';
@@ -25,9 +27,9 @@ import 'package:little_light/widgets/item_tags/item_tag.widget.dart';
 
 class PursuitItemWidget extends StatefulWidget {
   final String characterId;
-  final ProfileService profile = ProfileService();
-  final ManifestService manifest = ManifestService();
-  final NotificationService broadcaster = NotificationService();
+
+  
+  
   final Widget trailing;
   final DestinyItemComponent item;
   final Function onTap;
@@ -55,7 +57,7 @@ class PursuitItemWidget extends StatefulWidget {
   PursuitItemWidgetState createState() => PursuitItemWidgetState();
 }
 
-class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T> {
+class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T> with UserSettingsConsumer, ProfileConsumer, ManifestConsumer, NotificationConsumer, SelectionConsumer, ItemNotesConsumer {
   DestinyInventoryItemDefinition definition;
   Map<int, DestinyObjectiveDefinition> objectiveDefinitions;
   List<DestinyObjectiveProgress> itemObjectives;
@@ -71,7 +73,7 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T> {
 
   bool get selected =>
       widget.selectable &&
-      SelectionService()
+      selection
           .isSelected(ItemWithOwner(widget.item, widget.characterId));
 
   @override
@@ -79,12 +81,12 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T> {
     super.initState();
     updateProgress();
     loadDefinitions();
-    subscription = widget.broadcaster.listen((event) {
+    subscription = notifications.listen((event) {
       if (event.type == NotificationType.receivedUpdate && mounted) {
         updateProgress();
       }
     });
-    selectionSub = SelectionService().broadcaster.listen((event) {
+    selectionSub = selection.broadcaster.listen((event) {
       if (mounted) setState(() {});
     });
   }
@@ -97,10 +99,10 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T> {
   }
 
   Future<void> loadDefinitions() async {
-    definition = await widget.manifest
+    definition = await manifest
         .getDefinition<DestinyInventoryItemDefinition>(hash);
     if ((itemObjectives?.length ?? 0) > 0) {
-      objectiveDefinitions = await widget.manifest
+      objectiveDefinitions = await manifest
           .getDefinitions<DestinyObjectiveDefinition>(
               itemObjectives?.map((o) => o.objectiveHash));
     }
@@ -113,7 +115,7 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T> {
   @override
   Widget build(BuildContext context) {
     if (definition == null) {
-      return Container(height: 200, color: Colors.blueGrey.shade900);
+      return Container(height: 200, color: Theme.of(context).colorScheme.surface);
     }
     return LayoutBuilder(
         builder: (context, constraints) => buildLayout(context, constraints));
@@ -126,7 +128,7 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T> {
             border: Border.all(
                 color: DestinyData.getTierColor(definition.inventory.tierType),
                 width: 1),
-            color: Colors.blueGrey.shade900,
+            color: Theme.of(context).colorScheme.surface,
           ),
           child: Column(children: <Widget>[
             buildMainInfo(context, constraints),
@@ -170,18 +172,18 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T> {
   }
 
   onTap(BuildContext context) {
-    if (widget.selectable && UserSettingsService().tapToSelect) {
+    if (widget.selectable && userSettings.tapToSelect) {
       if (selected) {
-        SelectionService().clear();
+        selection.clear();
       } else {
-        SelectionService()
+        selection
             .setItem(ItemWithOwner(widget.item, widget.characterId));
       }
     } else {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ItemDetailScreen(
+          builder: (context) => ItemDetailsPage(
             item: item,
             definition: definition,
             instanceInfo: instanceInfo,
@@ -193,11 +195,11 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T> {
   }
 
   onLongPress(BuildContext context) {
-    if (UserSettingsService().tapToSelect) {
+    if (userSettings.tapToSelect) {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ItemDetailScreen(
+          builder: (context) => ItemDetailsPage(
             item: item,
             definition: definition,
             instanceInfo: instanceInfo,
@@ -208,9 +210,9 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T> {
     }
     if (widget.selectable) {
       if (selected) {
-        SelectionService().clear();
+        selection.clear();
       } else {
-        SelectionService()
+        selection
             .setItem(ItemWithOwner(widget.item, widget.characterId));
       }
       return;
@@ -220,9 +222,9 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T> {
   Widget namebarTrailingWidget(BuildContext context) {
     List<Widget> items = [];
 
-    var notes = ItemNotesService()
+    var notes = itemNotes
         .getNotesForItem(item?.itemHash, item?.itemInstanceId);
-    var tags = ItemNotesService().tagsByIds(notes?.tags);
+    var tags = itemNotes.tagsByIds(notes?.tags);
     if (tags != null) {
       items.addAll(tags.map((t) => ItemTagWidget(
             t,
@@ -318,8 +320,8 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T> {
   }
 
   updateProgress() {
-    instanceInfo = widget.profile.getInstanceInfo(itemInstanceId);
-    itemObjectives = widget.profile
+    instanceInfo = profile.getInstanceInfo(itemInstanceId);
+    itemObjectives = profile
         .getItemObjectives(itemInstanceId, widget.characterId, hash);
     setState(() {});
   }

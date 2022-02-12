@@ -1,8 +1,12 @@
+// @dart=2.9
+
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 
-abstract class BaseItemFilter<T> {
+abstract class BaseItemFilter<T> with ProfileConsumer, ManifestConsumer {
   T availableValues;
   T value;
 
@@ -17,8 +21,8 @@ abstract class BaseItemFilter<T> {
     if (!available || !enabled) return items.toList();
     return items
             ?.where((item) => filterItem(item, definitions: definitions))
-            ?.toList(growable: false) ??
-        items;
+            ?.toList() ??
+        items.toList();
   }
 
   bool filterItem(ItemWithOwner item,

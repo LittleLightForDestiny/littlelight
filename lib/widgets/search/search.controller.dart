@@ -1,12 +1,14 @@
+// @dart=2.9
+
 import 'dart:async';
 
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/widgets.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
-import 'package:little_light/services/notification/notification.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/services/user_settings/item_sort_parameter.dart';
-import 'package:little_light/services/user_settings/user_settings.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/services/notification/notification.package.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
+import 'package:little_light/models/item_sort_parameter.dart';
+import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_filters/ammo_type_filter.dart';
 import 'package:little_light/utils/item_filters/base_item_filter.dart';
@@ -43,7 +45,7 @@ List<BaseItemFilter> _replaceDefaultFilters(
   return finalList;
 }
 
-class SearchController extends ChangeNotifier {
+class SearchController extends ChangeNotifier with ProfileConsumer, ManifestConsumer, NotificationConsumer {
   List<ItemWithOwner> _unfilteredList;
   List<ItemWithOwner> _prefilteredList;
   List<ItemWithOwner> _filteredList;
@@ -107,7 +109,7 @@ class SearchController extends ChangeNotifier {
                   type: ItemSortParameterType.BucketHash,
                   direction: 1)
             ] +
-            UserSettingsService().itemOrdering,
+            getInjectedUserSettings().itemOrdering,
         customSorting: []);
   }
 
@@ -150,7 +152,7 @@ class SearchController extends ChangeNotifier {
         preFilters: _replaceDefaultFilters(_defaultPreFilters, preFilters),
         filters: _replaceDefaultFilters(_defaultFilters, filters),
         postFilters: _replaceDefaultFilters(_defaultPostFilters, postFilters),
-        defaultSorting: defaultSorting ?? UserSettingsService().itemOrdering,
+        defaultSorting: defaultSorting ?? getInjectedUserSettings().itemOrdering,
         customSorting: customSorting ?? [],
         availableSorters:
             availableSorters ?? ItemSortParameter.availableEquipmentSorters);
@@ -158,7 +160,7 @@ class SearchController extends ChangeNotifier {
 
   _init() {
     _reload();
-    _subscription = NotificationService().listen((event) {
+    _subscription = notifications.listen((event) {
       if (event.type == NotificationType.receivedUpdate) {
         _reload();
       }
@@ -225,7 +227,7 @@ class SearchController extends ChangeNotifier {
 
   List<ItemWithOwner> _getItems() {
     List<ItemWithOwner> allItems = [];
-    ProfileService profile = ProfileService();
+
     Iterable<String> charIds =
         profile.getCharacters().map((char) => char.characterId);
     charIds.forEach((charId) {
@@ -246,7 +248,7 @@ class SearchController extends ChangeNotifier {
         .map((item) => item?.item?.itemHash)
         .where((i) => i != null)
         .toSet();
-    var _defs = await ManifestService()
+    var _defs = await manifest
         .getDefinitions<DestinyInventoryItemDefinition>(
             hashes?.where((element) => element != null));
     return _defs;
@@ -255,15 +257,15 @@ class SearchController extends ChangeNotifier {
   _loadPlugDefinitions() async {
     Set<int> hashes = Set();
     _prefilteredList.forEach((item) {
-      var sockets = ProfileService().getItemSockets(item?.item?.itemInstanceId);
+      var sockets = profile.getItemSockets(item?.item?.itemInstanceId);
       var reusablePlugs =
-          ProfileService().getItemReusablePlugs(item?.item?.itemInstanceId);
+          profile.getItemReusablePlugs(item?.item?.itemInstanceId);
       hashes.addAll(sockets?.map((s) => s.plugHash) ?? []);
       reusablePlugs?.values?.forEach((plug) {
         hashes.addAll(plug?.map((p) => p.plugItemHash) ?? []);
       });
     });
-    var _defs = await ManifestService()
+    var _defs = await manifest
         .getDefinitions<DestinyInventoryItemDefinition>(
             hashes?.where((element) => element != null));
     return _defs;

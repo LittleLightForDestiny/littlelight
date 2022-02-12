@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'package:bungie_api/enums/destiny_item_type.dart';
 import 'package:bungie_api/enums/item_state.dart';
 import 'package:bungie_api/models/destiny_character_component.dart';
@@ -9,8 +11,9 @@ import 'package:bungie_api/models/destiny_vendor_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/services/littlelight/item_notes.service.dart';
-import 'package:little_light/services/littlelight/wishlists.service.dart';
+import 'package:little_light/services/littlelight/item_notes.consumer.dart';
+import 'package:little_light/services/littlelight/wishlists.consumer.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
@@ -29,7 +32,7 @@ typedef void OnItemHandler(
     DestinyItemInstanceComponent instanceInfo,
     String characterId);
 
-class BaseItemInstanceWidget extends BaseInventoryItemWidget {
+class BaseItemInstanceWidget extends BaseInventoryItemWidget with WishlistsConsumer, ProfileConsumer, ItemNotesConsumer {
   BaseItemInstanceWidget(
     DestinyItemComponent item,
     DestinyInventoryItemDefinition itemDefinition,
@@ -89,13 +92,12 @@ class BaseItemInstanceWidget extends BaseInventoryItemWidget {
 
   Widget buildTags(BuildContext context) {
     final reusable = profile.getItemReusablePlugs(item?.itemInstanceId);
-    final sockets = profile.getItemSockets(item?.itemInstanceId);
-    final wishlistTags = WishlistsService().getWishlistBuildTags(
-        itemHash: item?.itemHash, reusablePlugs: reusable, sockets: sockets);
+    final wishlistTags = wishlistsService.getWishlistBuildTags(
+        itemHash: item?.itemHash, reusablePlugs: reusable);
     List<Widget> upper = [];
-    var notes = ItemNotesService()
+    var notes = itemNotes
         .getNotesForItem(item?.itemHash, item?.itemInstanceId);
-    var tags = ItemNotesService().tagsByIds(notes?.tags);
+    var tags = itemNotes.tagsByIds(notes?.tags);
     var locked = item?.state?.contains(ItemState.Locked) ?? false;
     if (tags != null) {
       upper.addAll(tags.map((t) => ItemTagWidget(
@@ -138,7 +140,7 @@ class BaseItemInstanceWidget extends BaseInventoryItemWidget {
         character.classHash,
         uppercase: true,
         style: TextStyle(
-            color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12),
+            color: Theme.of(context).colorScheme.onSurface, fontWeight: FontWeight.bold, fontSize: 12),
         textExtractor: (def) =>
             def.genderedClassNamesByGenderHash["${character.genderHash}"],
       );
@@ -148,14 +150,14 @@ class BaseItemInstanceWidget extends BaseInventoryItemWidget {
         1037843411,
         uppercase: true,
         style: TextStyle(
-            color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12),
+            color: Theme.of(context).colorScheme.onSurface, fontWeight: FontWeight.bold, fontSize: 12),
         textExtractor: (def) => def.displayProperties.name,
       );
     }
     return TranslatedTextWidget("Inventory",
         uppercase: true,
         style: TextStyle(
-            color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12));
+            color: Theme.of(context).colorScheme.onSurface, fontWeight: FontWeight.bold, fontSize: 12));
   }
 
   Widget buildEmblemBackground(BuildContext context) {

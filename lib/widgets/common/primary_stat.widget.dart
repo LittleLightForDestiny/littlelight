@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'package:bungie_api/enums/damage_type.dart';
 import 'package:bungie_api/enums/destiny_item_type.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
@@ -6,7 +8,9 @@ import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_power_cap_definition.dart';
 import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/utils/destiny_data.dart';
+import 'package:little_light/utils/element_type_data.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 
@@ -75,7 +79,7 @@ class PrimaryStatWidget extends StatelessWidget {
       widgets.add(classTypeIcon(context));
     }
     widgets.add(valueAndCapField(
-        context, DestinyData.getDamageTypeTextColor(damageType)));
+        context, damageType?.getColorLayer(context)?.layer1));
     if (inlinePowerCap) {
       widgets.add(inlinePowerCapField(context));
     }
@@ -110,7 +114,7 @@ class PrimaryStatWidget extends StatelessWidget {
         style: TextStyle(
             fontSize: fontSize * .65,
             height: .9,
-            color: DestinyData.masterworkColor));
+            color: LittleLightTheme.of(context).achievementLayers));
   }
 
   Widget valueAndCapField(BuildContext context, Color color) {
@@ -162,7 +166,7 @@ class PrimaryStatWidget extends StatelessWidget {
     return Row(children: [
       Icon(
         DestinyData.getClassIcon(definition.classType),
-        color: DestinyData.getDamageTypeTextColor(damageType),
+        color: damageType?.getColorLayer(context)?.layer1,
         size: fontSize,
       ),
       ammoTypeDivider(context)
@@ -172,7 +176,7 @@ class PrimaryStatWidget extends StatelessWidget {
   Widget damageTypeIcon(BuildContext context) {
     return Icon(
       DestinyData.getDamageTypeIcon(damageType),
-      color: DestinyData.getDamageTypeTextColor(damageType),
+      color: damageType?.getColorLayer(context)?.layer1,
       size: fontSize,
     );
   }
@@ -194,7 +198,7 @@ class PrimaryStatWidget extends StatelessWidget {
   Widget ammoTypeDivider(BuildContext context) {
     return Container(
         margin: EdgeInsets.only(left: padding / 2, right: padding / 4),
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.onSurface,
         width: 1,
         height: fontSize);
   }

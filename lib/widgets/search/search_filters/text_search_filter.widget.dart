@@ -1,5 +1,7 @@
+// @dart=2.9
+
 import 'package:flutter/material.dart';
-import 'package:little_light/services/user_settings/user_settings.service.dart';
+import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/item_filters/text_filter.dart';
 import 'package:little_light/widgets/search/search.controller.dart';
 import 'package:little_light/widgets/search/search_filters/base_search_filter.widget.dart';
@@ -15,7 +17,7 @@ class TextSearchFilterWidget extends BaseSearchFilterWidget<TextFilter> {
 }
 
 class _TextSearchFilterWidgetState extends BaseSearchFilterWidgetState<
-    TextSearchFilterWidget, TextFilter, String> {
+    TextSearchFilterWidget, TextFilter, String> with UserSettingsConsumer {
   TextEditingController _searchFieldController = new TextEditingController();
 
   @override
@@ -41,8 +43,7 @@ class _TextSearchFilterWidgetState extends BaseSearchFilterWidgetState<
   Widget build(BuildContext context) {
     return TextField(
       decoration: InputDecoration(isDense: true),
-      autofocus:
-          UserSettingsService().autoOpenKeyboard || widget.forceAutoFocus,
+      autofocus: userSettings.autoOpenKeyboard || widget.forceAutoFocus,
       controller: _searchFieldController,
     );
   }

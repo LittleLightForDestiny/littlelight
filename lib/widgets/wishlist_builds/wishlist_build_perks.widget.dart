@@ -1,11 +1,13 @@
+// @dart=2.9
+
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/models/wish_list.dart';
+import 'package:little_light/models/parsed_wishlist.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/wishlist_badge.widget.dart';
 
 class WishlistBuildPerksWidget extends StatelessWidget {
-  final WishlistBuild wishlistBuild;
+  final ParsedWishlistBuild wishlistBuild;
   final double perkIconSize;
 
   const WishlistBuildPerksWidget(
@@ -41,7 +43,7 @@ class WishlistBuildPerksWidget extends StatelessWidget {
         padding: EdgeInsets.only(left: 8),
         child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: wishlistBuild.perks
+            children: wishlistBuild.plugs
                 .map((perks) => Column(
                       children: perks
                           .map((p) => Container(

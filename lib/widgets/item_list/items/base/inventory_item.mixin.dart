@@ -1,13 +1,16 @@
-import 'package:bungie_api/enums/damage_type.dart';
+// @dart=2.9
+
 import 'package:bungie_api/enums/destiny_item_type.dart';
 import 'package:bungie_api/enums/item_state.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:little_light/models/wish_list.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
+import 'package:little_light/models/parsed_wishlist.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/services/littlelight/item_notes.service.dart';
+import 'package:little_light/services/littlelight/item_notes.consumer.dart';
+import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.service.dart';
-import 'package:little_light/utils/destiny_data.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateless_item.widget.dart';
 import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/item_name_bar/item_name_bar.widget.dart';
@@ -15,7 +18,9 @@ import 'package:little_light/widgets/common/primary_stat.widget.dart';
 import 'package:little_light/widgets/common/wishlist_badges.widget.dart';
 import 'package:little_light/widgets/item_tags/item_tag.widget.dart';
 
-mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget {
+mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget, ProfileConsumer, ItemNotesConsumer {
+  WishlistsService get wishlistsService => getInjectedWishlistsService();
+
   final String uniqueId = "";
   final Widget trailing = null;
   @override
@@ -156,7 +161,7 @@ mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget {
         bottom: 0,
         right: 0,
         child: Container(
-            color: Colors.blueGrey.shade900,
+            color: Theme.of(context).cardTheme.color,
             padding: EdgeInsets.only(
                 top: titleFontSize + padding * 2, left: iconSize),
             child: wishlistBackground(context)));
@@ -164,9 +169,8 @@ mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget {
 
   Widget wishlistBackground(BuildContext context) {
     final reusable = profile.getItemReusablePlugs(item?.itemInstanceId);
-    final sockets = profile.getItemSockets(item?.itemInstanceId);
-    final tags = WishlistsService().getWishlistBuildTags(
-        itemHash: item?.itemHash, reusablePlugs: reusable, sockets: sockets);
+    final tags = wishlistsService.getWishlistBuildTags(
+        itemHash: item?.itemHash, reusablePlugs: reusable);
     if (tags == null) return Container();
     if (tags.contains(WishlistTag.PVE) && tags.contains(WishlistTag.PVP)) {
       return Image.asset(
@@ -203,12 +207,11 @@ mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget {
   Widget namebarTrailingWidget(BuildContext context) {
     List<Widget> items = [];
     final reusable = profile.getItemReusablePlugs(item?.itemInstanceId);
-    final sockets = profile.getItemSockets(item?.itemInstanceId);
-    final wishlistTags = WishlistsService().getWishlistBuildTags(
-        itemHash: item?.itemHash, reusablePlugs: reusable, sockets: sockets);
-    var notes = ItemNotesService()
+    final wishlistTags = wishlistsService.getWishlistBuildTags(
+        itemHash: item?.itemHash, reusablePlugs: reusable);
+    var notes = itemNotes
         .getNotesForItem(item?.itemHash, item?.itemInstanceId);
-    var tags = ItemNotesService().tagsByIds(notes?.tags);
+    var tags = itemNotes.tagsByIds(notes?.tags);
     var locked = item?.state?.contains(ItemState.Locked) ?? false;
     if (locked) {
       items.add(Container(
@@ -254,8 +257,12 @@ mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget {
     return 8;
   }
 
-  Color get defaultTextColor {
-    return DestinyData.getDamageTypeColor(DamageType.Kinetic);
+  LittleLightThemeData getTheme(BuildContext context){
+    return LittleLightTheme.of(context);
+  }
+
+  Color defaultTextColor(BuildContext context) {
+    return getTheme(context).onSurfaceLayers.layer0;
   }
 
   double get titleFontSize {

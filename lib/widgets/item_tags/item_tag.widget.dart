@@ -1,3 +1,4 @@
+//@dart=2.12
 import 'package:flutter/material.dart';
 import 'package:little_light/models/item_notes_tag.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -8,8 +9,8 @@ class ItemTagWidget extends StatelessWidget {
   final double fontSize;
   final bool includeLabel;
   final bool fullWidth;
-  final Widget trailing;
-  final Function onClick;
+  final Widget? trailing;
+  final Function? onClick;
   final double padding;
   ItemTagWidget(this.tag,
       {this.includeLabel = false,
@@ -26,16 +27,17 @@ class ItemTagWidget extends StatelessWidget {
   }
 
   Widget buildContents(BuildContext context) {
+    final trailing = this.trailing;
     if (this.includeLabel) {
       return Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          tag?.icon != null ? buildIcon(context) : Container(),
+          buildIcon(context),
           fullWidth
               ? Expanded(child: buildLabel(context))
               : Flexible(child: buildLabel(context)),
-          trailing != null ? trailing : Container(),
+          if(trailing != null) trailing
         ],
       );
     }
@@ -44,15 +46,15 @@ class ItemTagWidget extends StatelessWidget {
 
   Widget buildLabel(BuildContext context) {
     var style = TextStyle(
-        color: tag?.foregroundColor,
+        color: tag.foregroundColor,
         fontSize: fontSize,
         fontWeight: FontWeight.w500);
-    var tagName = (tag?.name?.length ?? 0) > 0 ? tag.name : null;
-    if ((tag?.custom ?? false) && tagName != null) {
+    var tagName = tag.name.length > 0 ? tag.name : null;
+    if (tag.custom && tagName != null) {
       return Container(
           padding: EdgeInsets.symmetric(horizontal: padding * 2),
           child: Text(
-            tag?.name?.toUpperCase() ?? "",
+            tag.name.toUpperCase(),
             softWrap: false,
             maxLines: 1,
             overflow: TextOverflow.fade,
@@ -73,6 +75,7 @@ class ItemTagWidget extends StatelessWidget {
 
   Widget buildIcon(BuildContext context) {
     var icon = tag.iconData;
+    if(icon == null) return Container();
     return Container(
         alignment: Alignment.center,
         width: fontSize * 1.2,
@@ -88,11 +91,11 @@ class ItemTagWidget extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(fontSize),
           side: BorderSide(
-              color: tag?.foregroundColor ?? Colors.transparent, width: 1),
+              color: tag.foregroundColor ?? Colors.transparent, width: 1),
         ),
         child: InkWell(
             onTap: () {
-              onClick();
+              onClick?.call();
             },
             child:
                 Container(padding: EdgeInsets.all(padding), child: contents)),
@@ -101,7 +104,7 @@ class ItemTagWidget extends StatelessWidget {
     return Container(
         decoration: BoxDecoration(
             border: Border.all(
-                color: tag?.foregroundColor ?? Colors.transparent, width: 1),
+                color: tag.foregroundColor ?? Colors.transparent, width: 1),
             color: tag.backgroundColor,
             borderRadius: BorderRadius.circular(fontSize)),
         padding: EdgeInsets.all(padding),

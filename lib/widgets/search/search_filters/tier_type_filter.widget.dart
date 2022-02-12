@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'package:flutter/material.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/item_filters/tier_type_filter.dart';

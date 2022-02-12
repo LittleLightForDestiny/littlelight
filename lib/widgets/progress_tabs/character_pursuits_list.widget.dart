@@ -1,59 +1,111 @@
-import 'dart:async';
-import 'dart:math';
+// @dart=2.9
 
-import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
-import 'package:bungie_api/models/destiny_item_component.dart';
+
+
+import 'dart:async';
+
+import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:little_light/models/bucket_display_options.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
-import 'package:little_light/services/notification/notification.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/services/user_settings/bucket_display_options.dart';
-import 'package:little_light/services/user_settings/user_settings.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/services/notification/notification.package.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
+import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/item_list/character_info.widget.dart';
+import 'package:little_light/widgets/multisection_scrollview/multisection_scrollview.dart';
+import 'package:little_light/widgets/multisection_scrollview/sliver_section.dart';
 import 'package:little_light/widgets/progress_tabs/pursuit_category_header.widget.dart';
 import 'package:little_light/widgets/progress_tabs/pursuit_item/large_pursuit_item.widget.dart';
 import 'package:little_light/widgets/progress_tabs/pursuit_item/pursuit_item.widget.dart';
 import 'package:little_light/widgets/progress_tabs/pursuit_item/small_pursuit_item.widget.dart';
 
+class _PursuitCategory {
+  final int nameHash;
+  final String customLabel;
+  final List<DestinyItemComponent> items;
+  final String categoryID;
+
+  _PursuitCategory({this.nameHash, this.customLabel, this.items, this.categoryID});
+}
+
+extension PursuitLayoutOptions on BucketDisplayOptions {
+  double get itemHeight {
+    switch (type) {
+      case BucketDisplayType.Hidden:
+      case BucketDisplayType.OnlyEquipped:
+        return 0;
+      case BucketDisplayType.Large:
+        return 150;
+      case BucketDisplayType.Medium:
+        return 132;
+        break;
+      case BucketDisplayType.Small:
+        return null;
+    }
+    return null;
+  }
+
+  int get itemsPerRow {
+    switch (type) {
+      case BucketDisplayType.Hidden:
+      case BucketDisplayType.OnlyEquipped:
+        return 1;
+      case BucketDisplayType.Large:
+        return 1;
+      case BucketDisplayType.Medium:
+        return 2;
+      case BucketDisplayType.Small:
+        return 5;
+    }
+    return 1;
+  }
+
+  int get itemsPerRowTablet {
+    switch (type) {
+      case BucketDisplayType.Hidden:
+      case BucketDisplayType.OnlyEquipped:
+        return 1;
+      case BucketDisplayType.Large:
+        return 2;
+      case BucketDisplayType.Medium:
+        return 5;
+      case BucketDisplayType.Small:
+        return 10;
+    }
+    return 1;
+  }
+
+  int get itemsPerRowDesktop {
+    switch (type) {
+      case BucketDisplayType.Hidden:
+      case BucketDisplayType.OnlyEquipped:
+        return 1;
+      case BucketDisplayType.Large:
+        return 3;
+      case BucketDisplayType.Medium:
+        return 6;
+      case BucketDisplayType.Small:
+        return 15;
+    }
+    return 1;
+  }
+}
+
 class CharacterPursuitsListWidget extends StatefulWidget {
   final String characterId;
-  final ProfileService profile = ProfileService();
-  final ManifestService manifest = ManifestService();
-  final NotificationService broadcaster = NotificationService();
 
   CharacterPursuitsListWidget({Key key, this.characterId}) : super(key: key);
 
-  _CharacterPursuitsListWidgetState createState() =>
-      _CharacterPursuitsListWidgetState();
+  _CharacterPursuitsListWidgetState createState() => _CharacterPursuitsListWidgetState();
 }
 
-enum _PursuitListItemType {
-  CharacterInfo,
-  Header,
-  Pursuit,
-}
-
-class _PursuitListItem {
-  final _PursuitListItemType type;
-  final String categoryId;
-  final int hash;
-  final String label;
-  final DestinyItemComponent item;
-  final int count;
-
-  _PursuitListItem(this.type,
-      {this.hash, this.item, this.label, this.count = 0, this.categoryId});
-}
-
-class _CharacterPursuitsListWidgetState
-    extends State<CharacterPursuitsListWidget>
-    with AutomaticKeepAliveClientMixin {
-  List<_PursuitListItem> items;
+class _CharacterPursuitsListWidgetState extends State<CharacterPursuitsListWidget>
+    with AutomaticKeepAliveClientMixin, UserSettingsConsumer, ProfileConsumer, ManifestConsumer, NotificationConsumer {
+  List<_PursuitCategory> categories;
   StreamSubscription<NotificationEvent> subscription;
   bool fullyLoaded = false;
 
@@ -61,9 +113,8 @@ class _CharacterPursuitsListWidgetState
   void initState() {
     super.initState();
     getPursuits();
-    subscription = widget.broadcaster.listen((event) {
-      if (event.type == NotificationType.receivedUpdate ||
-          event.type == NotificationType.localUpdate && mounted) {
+    subscription = notifications.listen((event) {
+      if (event.type == NotificationType.receivedUpdate || event.type == NotificationType.localUpdate && mounted) {
         getPursuits();
       }
     });
@@ -76,16 +127,12 @@ class _CharacterPursuitsListWidgetState
   }
 
   Future<void> getPursuits() async {
-    var allItems = widget.profile.getCharacterInventory(widget.characterId);
-    var pursuits = allItems
-        .where((i) => i.bucketHash == InventoryBucket.pursuits)
-        .toList();
+    var allItems = profile.getCharacterInventory(widget.characterId);
+    var pursuits = allItems.where((i) => i.bucketHash == InventoryBucket.pursuits).toList();
     var pursuitHashes = pursuits.map((i) => i.itemHash);
-    var defs = await widget.manifest
-        .getDefinitions<DestinyInventoryItemDefinition>(pursuitHashes);
-    pursuits = (await InventoryUtils.sortDestinyItems(
-            pursuits.map((p) => ItemWithOwner(p, null)),
-            sortingParams: UserSettingsService().pursuitOrdering))
+    var defs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(pursuitHashes);
+    pursuits = (await InventoryUtils.sortDestinyItems(pursuits.map((p) => ItemWithOwner(p, null)),
+            sortingParams: userSettings.pursuitOrdering))
         .map((i) => i.item)
         .toList();
 
@@ -110,33 +157,18 @@ class _CharacterPursuitsListWidgetState
       other[def.itemTypeDisplayName].add(p);
     });
 
-    items = [_PursuitListItem(_PursuitListItemType.CharacterInfo)];
+    categories = <_PursuitCategory>[];
 
     if (bounties.length > 0) {
-      items.add(_PursuitListItem(_PursuitListItemType.Header,
-          hash: 1784235469, count: bounties.length));
-      items.addAll(bounties.map((q) => _PursuitListItem(
-          _PursuitListItemType.Pursuit,
-          item: q,
-          categoryId: "pursuits_1784235469_null")));
+      categories.add(_PursuitCategory(nameHash: 1784235469, items: bounties, categoryID: "pursuits_1784235469_null"));
     }
 
     if (questSteps.length > 0) {
-      items.add(_PursuitListItem(_PursuitListItemType.Header,
-          hash: 53, count: questSteps.length));
-      items.addAll(questSteps.map((q) => _PursuitListItem(
-          _PursuitListItemType.Pursuit,
-          item: q,
-          categoryId: "pursuits_53_null")));
+      categories.add(_PursuitCategory(nameHash: 53, items: questSteps, categoryID: "pursuits_53_null"));
     }
 
-    other.forEach((k, v) {
-      items.add(_PursuitListItem(_PursuitListItemType.Header,
-          label: k, count: v.length));
-      v.forEach((p) {
-        items.add(_PursuitListItem(_PursuitListItemType.Pursuit,
-            item: p, categoryId: "pursuits_null_$k"));
-      });
+    other?.forEach((category, items) {
+      categories.add(_PursuitCategory(customLabel: category, items: items, categoryID: "pursuits_null_$category"));
     });
 
     if (mounted) {
@@ -148,121 +180,102 @@ class _CharacterPursuitsListWidgetState
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    var screenPadding = MediaQuery.of(context).padding;
-    return StaggeredGridView.countBuilder(
-        crossAxisCount: 30,
-        crossAxisSpacing: 4,
-        addRepaintBoundaries: true,
-        itemCount: (items?.length ?? 0),
-        padding: EdgeInsets.all(4).copyWith(
-            top: screenPadding.top,
-            bottom: 150,
-            left: max(screenPadding.left, 4),
-            right: max(screenPadding.right, 4)),
-        mainAxisSpacing: 4,
-        staggeredTileBuilder: (index) => tileBuilder(context, index),
-        itemBuilder: itemBuilder);
+    return Container(
+        child: MultiSectionScrollView(
+      _sections,
+      padding: EdgeInsets.all(4),
+      mainAxisSpacing: 2,
+      crossAxisSpacing: 2,
+    ));
   }
 
-  StaggeredTile tileBuilder(BuildContext context, int index) {
-    var item = items[index];
-    var isDesktop = MediaQueryHelper(context).isDesktop;
-    var isTablet = MediaQueryHelper(context).tabletOrBigger;
-    switch (item.type) {
-      case _PursuitListItemType.CharacterInfo:
-        return StaggeredTile.extent(30, 112);
-        break;
-      case _PursuitListItemType.Header:
-        return StaggeredTile.extent(30, 40);
-        break;
-      case _PursuitListItemType.Pursuit:
-        var options = UserSettingsService()
-            .getDisplayOptionsForBucket(item.categoryId ?? "pursuits");
-        switch (options.type) {
-          case BucketDisplayType.Hidden:
-          case BucketDisplayType.OnlyEquipped:
-            return StaggeredTile.extent(1, 1);
-            break;
-          case BucketDisplayType.Large:
-            if (isDesktop) {
-              return StaggeredTile.extent(10, 150);
-            }
-            if (isTablet) {
-              return StaggeredTile.extent(15, 150);
-            }
-            return StaggeredTile.extent(30, 150);
-          case BucketDisplayType.Medium:
-            if (isDesktop) {
-              return StaggeredTile.extent(5, 132);
-            }
-            if (isTablet) {
-              return StaggeredTile.extent(6, 132);
-            }
-            return StaggeredTile.extent(15, 132);
-          case BucketDisplayType.Small:
-            if (isDesktop) {
-              return StaggeredTile.count(2, 2);
-            }
-            if (isTablet) {
-              return StaggeredTile.count(3, 3);
-            }
-            return StaggeredTile.count(6, 6);
-            break;
-        }
-    }
-    return StaggeredTile.count(3, 2);
+  List<SliverSection> get _sections {
+    List<SliverSection> list = [
+      buildCharInfoSliver(),
+    ];
+    if(categories == null) return list;
+    categories.forEach((category) {
+      final options = userSettings.getDisplayOptionsForBucket(category.categoryID);
+      final categoryVisible = ![BucketDisplayType.Hidden, BucketDisplayType.OnlyEquipped].contains(options.type);
+      list += [
+        buildCategoryHeaderSliver(category),
+        if (categoryVisible) buildPursuitItemsSliver(category, options),
+      ];
+    });
+
+    return list;
   }
 
-  Widget itemBuilder(BuildContext context, int index) {
-    var item = items[index];
-    switch (item.type) {
-      case _PursuitListItemType.CharacterInfo:
-        return CharacterInfoWidget(
-          key: Key("characterinfo_${widget.characterId}"),
-          characterId: widget.characterId,
-        );
-        break;
-      case _PursuitListItemType.Header:
-        return PursuitCategoryHeaderWidget(
-          hash: item.hash,
-          label: item.label,
-          itemCount: item.count,
-          onChanged: () {
-            setState(() {});
-          },
-        );
-        break;
-      case _PursuitListItemType.Pursuit:
-        var options = UserSettingsService()
-            .getDisplayOptionsForBucket(item.categoryId ?? "pursuits");
-        if (options.type == BucketDisplayType.Hidden) {
-          return Container();
-        }
-        if (options.type == BucketDisplayType.Small) {
-          return SmallPursuitItemWidget(
-              characterId: widget.characterId,
-              item: item.item,
-              selectable: true,
-              key: Key(
-                  "pursuits_${item.item?.itemHash}_${item.item?.itemInstanceId}_${widget.characterId}"));
-        }
-        if (options.type == BucketDisplayType.Large) {
-          return LargePursuitItemWidget(
-              characterId: widget.characterId,
-              item: item.item,
-              selectable: true,
-              key: Key(
-                  "pursuits_${item.item?.itemHash}_${item.item?.itemInstanceId}_${widget.characterId}"));
-        }
+  SliverSection buildCharInfoSliver() {
+    return SliverSection(
+      itemHeight: 112,
+      itemCount: 1,
+      itemBuilder: (context, _) => CharacterInfoWidget(
+        key: Key("characterinfo_${widget.characterId}"),
+        characterId: widget.characterId,
+      ),
+    );
+  }
+
+  SliverSection buildCategoryHeaderSliver(_PursuitCategory category) {
+    return SliverSection(
+        itemBuilder: (context, _) => PursuitCategoryHeaderWidget(
+              hash: category.nameHash,
+              label: category.customLabel,
+              itemCount: category.items.length,
+              onChanged: () {
+                setState(() {});
+              },
+            ),
+        itemCount: 1,
+        itemHeight: 40);
+  }
+
+  SliverSection buildPursuitItemsSliver(_PursuitCategory category, BucketDisplayOptions options) {
+    final itemsPerRow = MediaQueryHelper(context).responsiveValue<int>(
+      options.itemsPerRow,
+      tablet: options.itemsPerRowTablet,
+      desktop: options.itemsPerRowDesktop,
+    );
+    return SliverSection(
+        itemBuilder: (context, index) {
+          final item = category.items[index];
+          return buildPursuitItem(item, options);
+        },
+        itemsPerRow: itemsPerRow,
+        itemCount: category.items.length,
+        itemHeight: options.itemHeight);
+  }
+
+  Widget buildPursuitItem(DestinyItemComponent item, BucketDisplayOptions options) {
+    switch (options.type) {
+      case BucketDisplayType.Hidden:
+      case BucketDisplayType.OnlyEquipped:
+        return Container();
+      case BucketDisplayType.Large:
+        return LargePursuitItemWidget(
+            characterId: widget.characterId,
+            item: item,
+            selectable: true,
+            key: Key("pursuits_${item?.itemHash}_${item?.itemInstanceId}_${widget.characterId}"));
+      case BucketDisplayType.Medium:
         return PursuitItemWidget(
             characterId: widget.characterId,
-            item: item.item,
+            item: item,
             selectable: true,
-            key: Key(
-                "pursuits_${item.item?.itemHash}_${item.item?.itemInstanceId}_${widget.characterId}"));
+            key: Key("pursuits_${item?.itemHash}_${item?.itemInstanceId}_${widget.characterId}"));
+      case BucketDisplayType.Small:
+        return SmallPursuitItemWidget(
+            characterId: widget.characterId,
+            item: item,
+            selectable: true,
+            key: Key("pursuits_${item?.itemHash}_${item?.itemInstanceId}_${widget.characterId}"));
     }
-
-    return Container();
+    return PursuitItemWidget(
+        characterId: widget.characterId,
+        item: item,
+        selectable: true,
+        key: Key("pursuits_${item?.itemHash}_${item?.itemInstanceId}_${widget.characterId}"));
   }
 
   @override

@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'package:bungie_api/enums/destiny_energy_type.dart';
 import 'package:bungie_api/enums/item_perk_visibility.dart';
 import 'package:bungie_api/enums/tier_type.dart';
@@ -9,6 +11,7 @@ import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/utils/destiny_data.dart';
+import 'package:little_light/utils/element_type_data.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
@@ -227,7 +230,7 @@ class _ScreenshotPerkDetailsWidgetState
   Widget buildMod(BuildContext context, int socketIndex, int plugItemHash) {
     bool isSelected = plugItemHash == controller.selectedPlugHash;
     Color borderColor =
-        isSelected ? Colors.white : Colors.grey.shade300.withOpacity(.5);
+        isSelected ? Theme.of(context).colorScheme.onSurface : Colors.grey.shade300.withOpacity(.5);
 
     BorderSide borderSide =
         BorderSide(color: borderColor, width: 3 * widget.pixelSize);
@@ -360,7 +363,7 @@ class _ScreenshotPerkDetailsWidgetState
   Widget buildEnergyCost(BuildContext context) {
     var cost = definition?.plug?.energyCost;
     if (cost != null) {
-      var color = DestinyData.getEnergyTypeLightColor(cost.energyType);
+      final color = cost.energyType?.getColorLayer(context)?.layer1;
       var icon = cost.energyType == DestinyEnergyType.Any
           ? Container()
           : Icon(
@@ -392,7 +395,7 @@ class _ScreenshotPerkDetailsWidgetState
     return Column(children: [
       Divider(
         thickness: 1 * widget.pixelSize,
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.onSurface,
       ),
       ScreenShotSocketItemStatsWidget(
         plugDefinition: definition,

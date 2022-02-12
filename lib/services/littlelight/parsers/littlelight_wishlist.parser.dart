@@ -1,26 +1,26 @@
+//@dart=2.12
 import 'dart:convert';
 
 import 'package:little_light/models/littlelight_wishlist.dart';
-import 'package:little_light/models/wish_list.dart';
-import 'package:little_light/services/littlelight/wishlists.service.dart';
+import 'package:little_light/models/parsed_wishlist.dart';
+import 'package:little_light/services/littlelight/parsers/wishlists.base.parser.dart';
 
-class LittleLightWishlistParser {
-  Future<LittleLightWishlist> parse(String text) async {
-    var json = jsonDecode(text);
-    var wishlist = LittleLightWishlist.fromJson(json);
-
-    for (var item in wishlist.data) {
-      var tags = parseTags(item.tags);
-      WishlistsService().addToWishList(
-          originalWishlist: item.originalWishlist ?? wishlist.name ?? "",
-          name: item.name,
-          hash: item.hash,
-          perks: item.plugs,
-          specialties: tags,
-          notes: [item.description].toSet());
-    }
-    return wishlist;
+class LittleLightWishlistParser implements WishlistBaseParser{
+  @override
+  Future<List<ParsedWishlistBuild>> parse(String content) async{
+    final json = jsonDecode(content);
+    final sourceWishlist = LittleLightWishlist.fromJson(json);
+    return sourceWishlist.data.map((sourceBuild)=>ParsedWishlistBuild(
+        hash:sourceBuild.hash,
+        name: sourceBuild.name,
+        description: sourceBuild.description,
+        plugs:parsePlugs(sourceBuild.plugs),
+        tags:parseTags(sourceBuild.tags),
+        originalWishlist: sourceBuild.originalWishlist
+      )).toList();
   }
+
+  List<Set<int>> parsePlugs(List<List<int>> plugs) => plugs.map((p)=>Set<int>.from(p)).toList();
 
   Set<WishlistTag> parseTags(List<String> tags) {
     return tags
@@ -39,9 +39,7 @@ class LittleLightWishlistParser {
             case "curated":
             case "bungie":
               return WishlistTag.Bungie;
-            case "💩":
-            case "🤢":
-            case "🤢🤢🤢":
+            
             case "trash":
               return WishlistTag.Trash;
 
@@ -54,7 +52,8 @@ class LittleLightWishlistParser {
           }
           return null;
         })
-        .where((element) => element != null)
+        .whereType<WishlistTag>()
         .toSet();
   }
+
 }

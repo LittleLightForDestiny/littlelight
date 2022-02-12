@@ -1,33 +1,26 @@
+// @dart=2.9
+
 import 'package:bungie_api/enums/destiny_class.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
-
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/services/inventory/inventory.service.dart';
+import 'package:little_light/services/inventory/inventory.package.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/services/user_settings/user_settings.service.dart';
+import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateless_item.widget.dart';
 import 'package:little_light/widgets/common/equip_on_character.button.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
-
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
-class ManagementBlockWidget extends BaseDestinyStatelessItemWidget {
-  final InventoryService inventory = new InventoryService();
+class ManagementBlockWidget extends BaseDestinyStatelessItemWidget
+    with UserSettingsConsumer, ProfileConsumer, InventoryConsumer {
   ManagementBlockWidget(
-      DestinyItemComponent item,
-      DestinyInventoryItemDefinition definition,
-      DestinyItemInstanceComponent instanceInfo,
-      {Key key,
-      String characterId})
-      : super(
-            item: item,
-            definition: definition,
-            instanceInfo: instanceInfo,
-            key: key,
-            characterId: characterId);
+      DestinyItemComponent item, DestinyInventoryItemDefinition definition, DestinyItemInstanceComponent instanceInfo,
+      {Key key, String characterId})
+      : super(item: item, definition: definition, instanceInfo: instanceInfo, key: key, characterId: characterId);
 
   @override
   Widget build(BuildContext context) {
@@ -44,30 +37,21 @@ class ManagementBlockWidget extends BaseDestinyStatelessItemWidget {
             transferDestinations.length > 0
                 ? Expanded(
                     flex: 3,
-                    child: buildEquippingBlock(context, "Transfer",
-                        transferDestinations, Alignment.centerLeft))
+                    child: buildEquippingBlock(context, "Transfer", transferDestinations, Alignment.centerLeft))
                 : null,
-            pullDestinations.length > 0
-                ? buildEquippingBlock(context, "Pull", pullDestinations)
-                : null
+            pullDestinations.length > 0 ? buildEquippingBlock(context, "Pull", pullDestinations) : null
           ].where((value) => value != null).toList(),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             unequipDestinations.length > 0
-                ? buildEquippingBlock(context, "Unequip", unequipDestinations,
-                    Alignment.centerLeft)
+                ? buildEquippingBlock(context, "Unequip", unequipDestinations, Alignment.centerLeft)
                 : null,
             equipDestinations.length > 0
                 ? Expanded(
-                    child: buildEquippingBlock(
-                        context,
-                        "Equip",
-                        equipDestinations,
-                        unequipDestinations.length > 0
-                            ? Alignment.centerRight
-                            : Alignment.centerLeft))
+                    child: buildEquippingBlock(context, "Equip", equipDestinations,
+                        unequipDestinations.length > 0 ? Alignment.centerRight : Alignment.centerLeft))
                 : null
           ].where((value) => value != null).toList(),
         ),
@@ -75,21 +59,14 @@ class ManagementBlockWidget extends BaseDestinyStatelessItemWidget {
     ));
   }
 
-  Widget buildEquippingBlock(BuildContext context, String title,
-      List<TransferDestination> destinations,
+  Widget buildEquippingBlock(BuildContext context, String title, List<TransferDestination> destinations,
       [Alignment align = Alignment.centerRight]) {
     return Column(
-        crossAxisAlignment: align == Alignment.centerRight
-            ? CrossAxisAlignment.end
-            : CrossAxisAlignment.start,
-        children: <Widget>[
-          buildLabel(context, title, align),
-          buttons(context, destinations, align)
-        ]);
+        crossAxisAlignment: align == Alignment.centerRight ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        children: <Widget>[buildLabel(context, title, align), buttons(context, destinations, align)]);
   }
 
-  Widget buildLabel(BuildContext context, String title,
-      [Alignment align = Alignment.centerRight]) {
+  Widget buildLabel(BuildContext context, String title, [Alignment align = Alignment.centerRight]) {
     return Container(
         padding: EdgeInsets.symmetric(horizontal: 8),
         child: HeaderWidget(
@@ -136,15 +113,13 @@ class ManagementBlockWidget extends BaseDestinyStatelessItemWidget {
         }
       case InventoryAction.Transfer:
         {
-          inventory.transfer(
-              item, characterId, destination.type, destination.characterId);
+          inventory.transfer(item, characterId, destination.type, destination.characterId);
           Navigator.pop(context);
           break;
         }
       case InventoryAction.Pull:
         {
-          inventory.transfer(
-              item, characterId, destination.type, destination.characterId);
+          inventory.transfer(item, characterId, destination.type, destination.characterId);
           Navigator.pop(context);
           break;
         }
@@ -155,15 +130,12 @@ class ManagementBlockWidget extends BaseDestinyStatelessItemWidget {
     if (!definition.equippable) {
       return [];
     }
-    return this
-        .profile
-        .getCharacters(UserSettingsService().characterOrdering)
+    return profile
+        .getCharacters(userSettings.characterOrdering)
         .where((char) =>
-            !((instanceInfo?.isEquipped ?? false) &&
-                char.characterId == characterId) &&
+            !((instanceInfo?.isEquipped ?? false) && char.characterId == characterId) &&
             !(definition.nonTransferrable && char.characterId != characterId) &&
-            [DestinyClass.Unknown, char.classType]
-                .contains(definition.classType))
+            [DestinyClass.Unknown, char.classType].contains(definition.classType))
         .map((char) => TransferDestination(ItemDestination.Character,
             characterId: char.characterId, action: InventoryAction.Equip))
         .toList();
@@ -174,20 +146,17 @@ class ManagementBlockWidget extends BaseDestinyStatelessItemWidget {
       return [];
     }
 
-    if (ProfileService.profileBuckets
-        .contains(definition.inventory.bucketTypeHash)) {
+    if (ProfileService.profileBuckets.contains(definition.inventory.bucketTypeHash)) {
       if (item.bucketHash == InventoryBucket.general) {
         return [TransferDestination(ItemDestination.Inventory)];
       }
       return [TransferDestination(ItemDestination.Vault)];
     }
 
-    List<TransferDestination> list = this
-        .profile
-        .getCharacters(UserSettingsService().characterOrdering)
+    List<TransferDestination> list = profile
+        .getCharacters(userSettings.characterOrdering)
         .where((char) => !(char.characterId == characterId))
-        .map((char) => TransferDestination(ItemDestination.Character,
-            characterId: char.characterId))
+        .map((char) => TransferDestination(ItemDestination.Character, characterId: char.characterId))
         .toList();
 
     if (item.bucketHash != InventoryBucket.general) {
@@ -197,19 +166,14 @@ class ManagementBlockWidget extends BaseDestinyStatelessItemWidget {
   }
 
   List<TransferDestination> get pullDestinations {
-    if (item.bucketHash == InventoryBucket.lostItems &&
-        !definition.doesPostmasterPullHaveSideEffects) {
+    if (item.bucketHash == InventoryBucket.lostItems && !definition.doesPostmasterPullHaveSideEffects) {
       ItemDestination type;
-      if (ProfileService.profileBuckets
-          .contains(definition.inventory.bucketTypeHash)) {
+      if (ProfileService.profileBuckets.contains(definition.inventory.bucketTypeHash)) {
         type = ItemDestination.Inventory;
       } else {
         type = ItemDestination.Character;
       }
-      return [
-        TransferDestination(type,
-            characterId: characterId, action: InventoryAction.Pull)
-      ];
+      return [TransferDestination(type, characterId: characterId, action: InventoryAction.Pull)];
     }
     return [];
   }
@@ -221,8 +185,7 @@ class ManagementBlockWidget extends BaseDestinyStatelessItemWidget {
     bool isEquipped = instanceInfo?.isEquipped ?? false;
     if (isEquipped) {
       return [
-        TransferDestination(ItemDestination.Character,
-            characterId: characterId, action: InventoryAction.Unequip)
+        TransferDestination(ItemDestination.Character, characterId: characterId, action: InventoryAction.Unequip)
       ];
     }
     return [];

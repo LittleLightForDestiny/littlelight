@@ -1,13 +1,16 @@
+// @dart=2.9
+
 import 'dart:async';
 
 import 'package:bungie_api/enums/item_state.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/screens/item_detail.screen.dart';
-import 'package:little_light/services/inventory/inventory.service.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/services/selection/selection.service.dart';
+import 'package:little_light/pages/item_details/item_details.page.dart';
+import 'package:little_light/services/inventory/inventory.consumer.dart';
+import 'package:little_light/services/inventory/inventory.package.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
+import 'package:little_light/services/selection/selection.consumer.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
@@ -18,7 +21,6 @@ import 'package:little_light/widgets/inventory_tabs/multiselect_management_block
 import 'package:little_light/widgets/item_list/items/quick_select_item_wrapper.widget.dart';
 
 class SelectedItemsWidget extends StatefulWidget {
-  final service = SelectionService();
 
   SelectedItemsWidget({Key key}) : super(key: key);
 
@@ -28,7 +30,7 @@ class SelectedItemsWidget extends StatefulWidget {
   }
 }
 
-class SelectedItemsWidgetState extends State<SelectedItemsWidget> {
+class SelectedItemsWidgetState extends State<SelectedItemsWidget> with ProfileConsumer, InventoryConsumer, ManifestConsumer, SelectionConsumer {
   StreamSubscription<List<ItemWithOwner>> subscription;
   List<ItemWithOwner> items;
 
@@ -36,9 +38,9 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget> {
   void initState() {
     super.initState();
 
-    this.items = widget.service.items;
+    this.items = selection.items;
 
-    subscription = widget.service.broadcaster.listen((selected) {
+    subscription = selection.broadcaster.listen((selected) {
       this.items = selected;
       setState(() {});
     });
@@ -52,7 +54,7 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.service.items.length == 0) {
+    if (selection.items.length == 0) {
       return Container();
     }
     return Container(
@@ -82,7 +84,7 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget> {
           uppercase: true,
         ),
         onPressed: () async {
-          InventoryService()
+          inventory
               .changeMultipleLockState(lockableItems.toList(), true);
           setState(() {});
         },
@@ -96,7 +98,7 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget> {
           uppercase: true,
         ),
         onPressed: () async {
-          InventoryService()
+          inventory
               .changeMultipleLockState(unlockableItems.toList(), false);
           setState(() {});
         },
@@ -111,14 +113,14 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget> {
         onPressed: () async {
           var item = items.single;
           var instanceInfo =
-              ProfileService().getInstanceInfo(item?.item?.itemInstanceId);
-          var def = await ManifestService()
+              profile.getInstanceInfo(item?.item?.itemInstanceId);
+          var def = await manifest
               .getDefinition<DestinyInventoryItemDefinition>(
                   item?.item?.itemHash);
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => ItemDetailScreen(
+              builder: (context) => ItemDetailsPage(
                 item: item.item,
                 definition: def,
                 instanceInfo: instanceInfo,
@@ -175,7 +177,7 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget> {
                   ]),
                 ),
                 onTap: () {
-                  widget.service.clear();
+                  selection.clear();
                 }))
       ]),
     );
@@ -222,7 +224,7 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget> {
                                   color: Colors.transparent,
                                   child: InkWell(
                                     onTap: () {
-                                      widget.service.removeItem(i);
+                                      selection.removeItem(i);
                                     },
                                   ))
                             ])))))

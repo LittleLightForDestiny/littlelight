@@ -1,11 +1,15 @@
+// @dart=2.9
+
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_socket_category_definition.dart';
 import 'package:bungie_api/models/destiny_material_requirement_set_definition.dart';
 import 'package:bungie_api/models/destiny_sandbox_perk_definition.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
+import 'package:little_light/utils/element_type_data.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateless_item.widget.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
@@ -15,7 +19,7 @@ import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/item_stats/base_item_stat.widget.dart';
 import 'package:little_light/widgets/item_stats/details_item_stat.widget.dart';
 
-class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget {
+class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget with ProfileConsumer{
   ItemDetailsPlugInfoWidget(
       {DestinyItemComponent item,
       DestinyInventoryItemDefinition definition,
@@ -88,12 +92,12 @@ class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget {
           constraints: BoxConstraints(maxWidth: 600),
           height: 40,
           padding: EdgeInsets.symmetric(horizontal: 8),
-          color: DestinyData.getEnergyTypeColor(cost.energyType).withOpacity(.6),
+          color: cost.energyType.getColorLayer(context).withOpacity(.6),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Icon(DestinyData.getEnergyTypeIcon(cost.energyType),
-                  color: DestinyData.getEnergyTypeLightColor(cost.energyType),
+                  color: cost.energyType.getColorLayer(context).layer1,
                   size: 20),
               Container(
                 width: 4,
@@ -128,7 +132,7 @@ class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget {
     }
     return Container(
         padding: EdgeInsets.all(8),
-        color: Colors.blueGrey.shade600,
+        color: Theme.of(context).colorScheme.secondary,
         child: Row(
           children: pieces,
         ));
@@ -139,14 +143,14 @@ class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget {
     if (index < total) {
       Color color = Colors.transparent;
       if (index < used) {
-        color = Colors.white;
+        color = Theme.of(context).colorScheme.onSurface;
       }
       return Container(
         height: 16,
         padding: EdgeInsets.all(2),
         child: Container(
           decoration: BoxDecoration(
-              border: Border.all(width: 2, color: Colors.white), color: color),
+              border: Border.all(width: 2, color: Theme.of(context).colorScheme.onSurface), color: color),
         ),
       );
     }
@@ -165,8 +169,9 @@ class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget {
     if (requirementHash == null) {
       return Container();
     }
-    var inventory = ProfileService().getProfileInventory();
-    var currencies = ProfileService().getProfileCurrencies();
+    var inventory = profile.getProfileInventory();
+    var currencies = profile.getProfileCurrencies();
+    final theme = LittleLightTheme.of(context);
     return Column(children: [
       Container(
           padding: EdgeInsets.symmetric(vertical: 16),
@@ -210,7 +215,7 @@ class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget {
                         ),
                       ),
                       Text("${m.count}/$total",
-                          style: TextStyle(fontWeight: FontWeight.w300, color:isEnough ? Colors.grey.shade300 : DestinyData.negativeFeedback))
+                          style: TextStyle(fontWeight: FontWeight.w300, color:isEnough ? theme.onSurfaceLayers : theme.errorLayers))
                     ],
                   );
                 }).toList(),

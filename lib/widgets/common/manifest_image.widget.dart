@@ -1,24 +1,24 @@
-import 'package:little_light/widgets/common/queued_network_image.widget.dart';
+//@dart=2.12
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/utils/shimmer_helper.dart';
+import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:shimmer/shimmer.dart';
 
-typedef ExtractUrlFromData<T> = String Function(T definition);
+typedef ExtractUrlFromData<T> = String? Function(T definition);
 
 class ManifestImageWidget<T> extends StatefulWidget {
   final int hash;
-  final ExtractUrlFromData<T> urlExtractor;
-  final ManifestService _manifest = new ManifestService();
+  final ExtractUrlFromData<T>? urlExtractor;
 
-  final Widget placeholder;
+  final Widget? placeholder;
 
   final BoxFit fit;
   final Alignment alignment;
 
   ManifestImageWidget(this.hash,
-      {Key key,
+      {Key? key,
       this.fit = BoxFit.contain,
       this.alignment = Alignment.center,
       this.urlExtractor,
@@ -31,8 +31,8 @@ class ManifestImageWidget<T> extends StatefulWidget {
   }
 }
 
-class ManifestImageState<T> extends State<ManifestImageWidget<T>> {
-  T definition;
+class ManifestImageState<T> extends State<ManifestImageWidget<T>> with ManifestConsumer{
+  T? definition;
 
   @override
   void initState() {
@@ -42,7 +42,7 @@ class ManifestImageState<T> extends State<ManifestImageWidget<T>> {
 
   Future<void> loadDefinition() async {
     definition =
-        await widget._manifest.getDefinition<T>(widget.hash);
+        await manifest.getDefinition<T>(widget.hash);
     if (mounted) {
       setState(() {});
     }
@@ -51,13 +51,15 @@ class ManifestImageState<T> extends State<ManifestImageWidget<T>> {
   @override
   Widget build(BuildContext context) {
     Shimmer shimmer = ShimmerHelper.getDefaultShimmer(context);
+    final definition = this.definition;
     if(definition == null) return shimmer;
-    String url = "";
+    String? url;
     try {
-      if (widget.urlExtractor == null) {
+      final extractor = widget.urlExtractor;
+      if (extractor == null) {
         url = (definition as dynamic).displayProperties.icon;
       } else {
-        url = widget.urlExtractor(definition);
+        url = extractor(definition);
       }
     } catch (e) {
       print(e);
@@ -65,8 +67,12 @@ class ManifestImageState<T> extends State<ManifestImageWidget<T>> {
     if(url == null || url.length == 0){
       return shimmer;
     }
+    final bungieUrl = BungieApiService.url(url);
+    if(bungieUrl == null){
+      return shimmer;
+    }
     return QueuedNetworkImage(
-      imageUrl: BungieApiService.url(url),
+      imageUrl: bungieUrl,
       fit: widget.fit,
       alignment: widget.alignment,
       placeholder: widget.placeholder ?? shimmer,

@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'package:bungie_api/enums/damage_type.dart';
 import 'package:bungie_api/enums/destiny_class.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
@@ -5,8 +7,8 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_talent_grid_component.dart';
 import 'package:bungie_api/models/destiny_talent_grid_definition.dart';
 import 'package:bungie_api/models/destiny_talent_node_category.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 
 class SubclassTalentGridInfo {
   DamageType damageType;
@@ -72,10 +74,12 @@ const Map<String, int> _subclassMainPerks = {
 
 Future<SubclassTalentGridInfo> getSubclassTalentGridInfo(
     DestinyItemComponent item) async {
-  var def = await ManifestService()
+  final profile = getInjectedProfileService();
+  final manifest = getInjectedManifestService();
+  var def = await manifest
       .getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
-  var talentGrid = ProfileService().getTalentGrid(item?.itemInstanceId);
-  var talentGridDef = await ManifestService()
+  var talentGrid = profile.getTalentGrid(item?.itemInstanceId);
+  var talentGridDef = await manifest
       .getDefinition<DestinyTalentGridDefinition>(talentGrid.talentGridHash);
   var talentgridCategory =
       extractTalentGridNodeCategory(talentGridDef, talentGrid);

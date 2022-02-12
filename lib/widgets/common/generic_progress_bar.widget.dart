@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:little_light/utils/destiny_data.dart';
@@ -97,7 +99,7 @@ class GenericProgressBarWidget extends StatelessWidget {
     if(completed) return Container();
     return Container(
         margin: EdgeInsets.all(2),
-        color: Colors.blueGrey.shade800,
+        color: Theme.of(context).colorScheme.secondaryVariant,
         alignment: Alignment.centerLeft,
         child: FractionallySizedBox(
           widthFactor: min(progress / total, 1),

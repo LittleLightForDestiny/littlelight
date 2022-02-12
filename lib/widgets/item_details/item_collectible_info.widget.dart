@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'package:bungie_api/models/destiny_collectible_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';

@@ -1,19 +1,20 @@
+// @dart=2.9
+
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
+import 'package:bungie_api/models/destiny_item_plug_base.dart';
 import 'package:bungie_api/models/destiny_item_socket_entry_definition.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_socket_category_definition.dart';
-import 'package:bungie_api/models/destiny_item_plug_base.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/models/wish_list.dart';
-import 'package:little_light/services/littlelight/wishlists.service.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/models/parsed_wishlist.dart';
+import 'package:little_light/services/littlelight/wishlists.consumer.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/wishlists_data.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 
 class ItemPerksWidget extends StatefulWidget {
-  final ManifestService manifest = ManifestService();
   final DestinyInventoryItemDefinition definition;
   final double iconSize;
   final DestinyItemComponent item;
@@ -38,22 +39,19 @@ class ItemPerksWidget extends StatefulWidget {
   }
 }
 
-class ItemPerksWidgetState extends State<ItemPerksWidget> {
+class ItemPerksWidgetState extends State<ItemPerksWidget> with WishlistsConsumer, ProfileConsumer, ManifestConsumer {
   List<DestinyItemSocketState> _itemSockets;
   Map<String, List<DestinyItemPlugBase>> _reusablePlugs;
-  List<DestinyItemSocketState> get itemSockets =>
-      _itemSockets ?? widget.itemSockets;
+  List<DestinyItemSocketState> get itemSockets => _itemSockets ?? widget.itemSockets;
   DestinyInventoryItemDefinition get definition => widget.definition;
   DestinySocketCategoryDefinition perksCatDefinition;
 
   @override
   void initState() {
     super.initState();
-    _itemSockets =
-        ProfileService().getItemSockets(widget?.item?.itemInstanceId);
+    _itemSockets = profile.getItemSockets(widget?.item?.itemInstanceId);
     if (widget.showUnusedPerks) {
-      _reusablePlugs = widget.reusablePlugs ??
-          ProfileService().getItemReusablePlugs(widget?.item?.itemInstanceId);
+      _reusablePlugs = widget.reusablePlugs ?? profile.getItemReusablePlugs(widget?.item?.itemInstanceId);
     }
     loadPerks();
   }
@@ -62,9 +60,7 @@ class ItemPerksWidgetState extends State<ItemPerksWidget> {
     if (definition?.sockets?.socketCategories == null) {
       return;
     }
-    perksCatDefinition = await widget.manifest
-        .getDefinition<DestinySocketCategoryDefinition>(
-            widget.socketCategoryHash);
+    perksCatDefinition = await manifest.getDefinition<DestinySocketCategoryDefinition>(widget.socketCategoryHash);
     if (!mounted) return;
     setState(() {});
   }
@@ -78,9 +74,8 @@ class ItemPerksWidgetState extends State<ItemPerksWidget> {
   }
 
   Widget buildPerks(BuildContext context, DestinySocketCategoryDefinition def) {
-    var socketCategory = definition.sockets.socketCategories.firstWhere(
-        (s) => s.socketCategoryHash == def.hash,
-        orElse: () => null);
+    var socketCategory =
+        definition.sockets.socketCategories.firstWhere((s) => s.socketCategoryHash == def.hash, orElse: () => null);
     List<Widget> columns = [];
     if (socketCategory == null) return Container();
     socketCategory.socketIndexes.forEach((index) {
@@ -95,9 +90,7 @@ class ItemPerksWidgetState extends State<ItemPerksWidget> {
 
   Widget buildPerkColumn(BuildContext context, int index) {
     if (!widget.showUnusedPerks || itemSockets == null) {
-      var hash = itemSockets != null
-          ? getEquippedPlugHashBySocketIndex(index)
-          : getDefaultPerkBySocketIndex(index);
+      var hash = itemSockets != null ? getEquippedPlugHashBySocketIndex(index) : getDefaultPerkBySocketIndex(index);
       return buildPerkIcon(context, hash);
     }
 
@@ -113,7 +106,7 @@ class ItemPerksWidgetState extends State<ItemPerksWidget> {
     if (plugHash == null) {
       return Container();
     }
-    var tags = WishlistsService().getPerkTags(widget.definition.hash, plugHash);
+    var tags = wishlistsService.getPlugTags(widget.definition.hash, plugHash);
     return Container(
       margin: EdgeInsets.only(top: 1, left: 1),
       width: widget.iconSize,
@@ -134,14 +127,14 @@ class ItemPerksWidgetState extends State<ItemPerksWidget> {
     if (tags.contains(WishlistTag.GodPVE)) {
       colors.add(Colors.amber);
     } else if (tags.contains(WishlistTag.PVE)) {
-      colors.add(Color.lerp(
-          WishlistsData.getBgColor(WishlistTag.PVE), Colors.white, .2));
+      colors.add(
+          Color.lerp(WishlistsData.getBgColor(context, WishlistTag.PVE), Theme.of(context).colorScheme.onSurface, .2));
     }
     if (tags.contains(WishlistTag.GodPVP)) {
       colors.add(Colors.amber);
     } else if (tags.contains(WishlistTag.PVP)) {
-      colors.add(Color.lerp(
-          WishlistsData.getBgColor(WishlistTag.PVP), Colors.white, .2));
+      colors.add(
+          Color.lerp(WishlistsData.getBgColor(context, WishlistTag.PVP), Theme.of(context).colorScheme.onSurface, .2));
     }
     if (colors.length > 0) {
       return Container(
@@ -160,10 +153,10 @@ class ItemPerksWidgetState extends State<ItemPerksWidget> {
   buildTagBackground(Set<WishlistTag> tags) {
     List<Color> colors = [];
     if (tags.contains(WishlistTag.PVE) || tags.contains(WishlistTag.GodPVE)) {
-      colors.add(WishlistsData.getBgColor(WishlistTag.PVE));
+      colors.add(WishlistsData.getBgColor(context, WishlistTag.PVE));
     }
     if (tags.contains(WishlistTag.PVP) || tags.contains(WishlistTag.GodPVP)) {
-      colors.add(WishlistsData.getBgColor(WishlistTag.PVP));
+      colors.add(WishlistsData.getBgColor(context, WishlistTag.PVP));
     }
     if (colors.length > 0) {
       return Container(

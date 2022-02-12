@@ -1,12 +1,14 @@
-import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
-import 'package:bungie_api/models/destiny_item_component.dart';
-import 'package:bungie_api/models/destiny_item_instance_component.dart';
+// @dart=2.9
+
+import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/item_notes.dart';
-import 'package:little_light/services/littlelight/item_notes.service.dart';
+import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
-import 'package:little_light/widgets/common/littlelight_custom.dialog.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:little_light/widgets/dialogs/set_item_nickname.dialog.dart';
+import 'package:little_light/widgets/dialogs/set_item_notes.dialog.dart';
 import 'package:little_light/widgets/flutter/center_icon_workaround.dart';
 import 'package:little_light/widgets/item_details/section_header.widget.dart';
 
@@ -19,12 +21,7 @@ class ItemDetailsNotesWidget extends BaseDestinyStatefulItemWidget {
       Key key,
       this.onUpdate,
       String characterId})
-      : super(
-            item: item,
-            definition: definition,
-            instanceInfo: instanceInfo,
-            key: key,
-            characterId: characterId);
+      : super(item: item, definition: definition, instanceInfo: instanceInfo, key: key, characterId: characterId);
 
   @override
   ItemDetailsNotesWidgetState createState() {
@@ -34,9 +31,8 @@ class ItemDetailsNotesWidget extends BaseDestinyStatefulItemWidget {
 
 const _sectionId = "item_tag_notes";
 
-class ItemDetailsNotesWidgetState
-    extends BaseDestinyItemState<ItemDetailsNotesWidget>
-    with VisibleSectionMixin {
+class ItemDetailsNotesWidgetState extends BaseDestinyItemState<ItemDetailsNotesWidget>
+    with VisibleSectionMixin, ItemNotesConsumer {
   ItemNotes notes;
 
   @override
@@ -45,8 +41,7 @@ class ItemDetailsNotesWidgetState
   @override
   void initState() {
     super.initState();
-    notes = ItemNotesService()
-        .getNotesForItem(item.itemHash, item.itemInstanceId, true);
+    notes = itemNotes.getNotesForItem(item.itemHash, item.itemInstanceId, true);
     setState(() {});
   }
 
@@ -57,7 +52,7 @@ class ItemDetailsNotesWidgetState
     return null;
   }
 
-  String get itemNotes {
+  String get notesText {
     if ((notes?.notes?.length ?? 0) > 0) {
       return notes.notes;
     }
@@ -65,7 +60,7 @@ class ItemDetailsNotesWidgetState
   }
 
   save() async {
-    await ItemNotesService().saveNotes(notes);
+    itemNotes.saveNotes(notes);
     if (mounted) setState(() {});
     if (widget.onUpdate != null) widget.onUpdate();
   }
@@ -75,8 +70,7 @@ class ItemDetailsNotesWidgetState
     return Container(
         padding: EdgeInsets.all(8),
         child: Column(children: <Widget>[
-          getHeader(TranslatedTextWidget("Item Notes",
-              uppercase: true, style: TextStyle(fontWeight: FontWeight.bold))),
+          getHeader(TranslatedTextWidget("Item Notes", uppercase: true, style: TextStyle(fontWeight: FontWeight.bold))),
           visible ? Container(height: 8) : Container(),
           visible ? buildCustomName(context) : Container(),
           visible ? Container(height: 8) : Container(),
@@ -92,9 +86,7 @@ class ItemDetailsNotesWidgetState
         child: Container(
             padding: EdgeInsets.all(8),
             color: Colors.black54,
-            child: customName != null
-                ? Text(customName)
-                : TranslatedTextWidget("Not set")),
+            child: customName != null ? Text(customName) : TranslatedTextWidget("Not set")),
       ),
       Container(width: 8),
       iconButton(
@@ -122,12 +114,10 @@ class ItemDetailsNotesWidgetState
         child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       Expanded(
           child: Container(
-              key: Key(itemNotes),
+              key: Key(notesText),
               padding: EdgeInsets.all(8),
               color: Colors.black54,
-              child: itemNotes != null
-                  ? Text(itemNotes)
-                  : TranslatedTextWidget("No notes added yet"))),
+              child: notesText != null ? Text(notesText) : TranslatedTextWidget("No notes added yet"))),
       Container(
         width: 8,
       ),
@@ -142,7 +132,7 @@ class ItemDetailsNotesWidgetState
         itemNotes != null
             ? iconButton(
                 Icons.delete,
-                color: Colors.red,
+                color: LittleLightTheme.of(context).errorLayers.layer0,
                 onPressed: () {
                   notes.notes = null;
                   save();
@@ -155,67 +145,28 @@ class ItemDetailsNotesWidgetState
 
   iconButton(IconData icon, {Color color, Function onPressed}) {
     if (color == null) {
-      color = Theme.of(context).buttonColor;
+      color = LittleLightTheme.of(context).primaryLayers;
     }
     return Material(
         color: color,
         child: InkWell(
-          child: Container(
-              padding: EdgeInsets.all(4),
-              child: CenterIconWorkaround(icon, size: 22)),
+          child: Container(padding: EdgeInsets.all(4), child: CenterIconWorkaround(icon, size: 22)),
           onTap: onPressed,
         ));
   }
 
   openEditNameDialog(BuildContext context) async {
-    TextEditingController _textFieldController =
-        TextEditingController(text: customName);
-    var result = await showDialog<String>(
-        context: context,
-        builder: (BuildContext context) {
-          return LittleLightCustomDialog.withSaveCancelButtons(
-            TextField(
-              autofocus: true,
-              controller: _textFieldController,
-            ),
-            title: TranslatedTextWidget(
-              'Set nickname',
-              uppercase: true,
-            ),
-            onCancel: () => Navigator.of(context).pop(),
-            onSave: () => Navigator.of(context).pop(_textFieldController.text),
-          );
-        });
-    if (result != null) {
-      notes.customName = result;
+    final nickname = await Navigator.of(context).push(SetItemNicknameDialogRoute(context, notes.customName));
+    if (nickname != null) {
+      notes.customName = nickname;
       save();
     }
   }
 
   openEditNotesDialog(BuildContext context) async {
-    TextEditingController _textFieldController =
-        TextEditingController(text: notes.notes ?? "");
-    var result = await showDialog<String>(
-        context: context,
-        builder: (BuildContext context) {
-          return LittleLightCustomDialog.withSaveCancelButtons(
-              TextField(
-                autofocus: true,
-                controller: _textFieldController,
-                keyboardType: TextInputType.multiline,
-                maxLines: 4,
-              ),
-              title: TranslatedTextWidget(
-                'Set item notes',
-                uppercase: true,
-              ),
-              onCancel: () => Navigator.of(context).pop(),
-              onSave: () =>
-                  Navigator.of(context).pop(_textFieldController.text));
-        });
-
-    if (result != null) {
-      notes.notes = result;
+    final updatedNotes = await Navigator.of(context).push(SetItemNotesDialogRoute(context, notes.notes));
+    if (updatedNotes != null) {
+      notes.notes = updatedNotes;
       save();
     }
   }

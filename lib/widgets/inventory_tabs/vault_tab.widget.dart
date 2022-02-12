@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/enums/destiny_item_category.enum.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
@@ -22,8 +24,7 @@ class VaultTabWidgetState extends CharacterTabWidgetState {
   Widget build(BuildContext context) {
     return VaultItemListWidget(
       key: Key("${widget.currentGroup}_vault"),
-      padding:
-          EdgeInsets.only(top: getListTopOffset(context), left: 2, right: 2),
+      padding: EdgeInsets.all(4) + EdgeInsets.symmetric(vertical: kToolbarHeight) + MediaQuery.of(context).viewPadding,
       bucketHashes: bucketHashes,
     );
   }
@@ -39,11 +40,7 @@ class VaultTabWidgetState extends CharacterTabWidgetState {
           InventoryBucket.classArmor,
         ];
       case DestinyItemCategory.Weapon:
-        return [
-          InventoryBucket.kineticWeapons,
-          InventoryBucket.energyWeapons,
-          InventoryBucket.powerWeapons
-        ];
+        return [InventoryBucket.kineticWeapons, InventoryBucket.energyWeapons, InventoryBucket.powerWeapons];
     }
     return [
       InventoryBucket.ghost,
@@ -51,7 +48,6 @@ class VaultTabWidgetState extends CharacterTabWidgetState {
       InventoryBucket.ships,
       InventoryBucket.consumables,
       InventoryBucket.modifications,
-      InventoryBucket.shaders,
     ];
   }
 }

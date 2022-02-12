@@ -1,89 +1,87 @@
+//@dart=2.12
+
 import 'package:bungie_api/models/core_settings_configuration.dart';
 import 'package:bungie_api/models/destiny_season_definition.dart';
 import 'package:bungie_api/models/destiny_season_pass_definition.dart';
-import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
-import 'package:little_light/services/storage/storage.service.dart';
+import 'package:get_it/get_it.dart';
+import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/services/storage/export.dart';
 
-class DestinySettingsService {
-  static final DestinySettingsService _singleton =
-      new DestinySettingsService._internal();
-  DateTime lastUpdated;
-  factory DestinySettingsService() {
-    return _singleton;
-  }
+setupDestinySettingsService() {
+  GetIt.I.registerSingleton<DestinySettingsService>(DestinySettingsService._internal());
+}
+
+class DestinySettingsService with StorageConsumer, BungieApiConsumer, ManifestConsumer {
+  DateTime? lastUpdated;
+
   DestinySettingsService._internal();
-  final _api = BungieApiService();
 
-  CoreSettingsConfiguration _currentSettings;
-  DestinySeasonPassDefinition _currentSeasonPassDef;
+  CoreSettingsConfiguration? _currentSettings;
+  DestinySeasonPassDefinition? _currentSeasonPassDef;
 
   static const int SeasonLevel = 3256821400;
   static const int SeasonOverlevel = 2140885848;
 
   init() async {
-    var json =
-        await StorageService.global().getJson(StorageKeys.bungieCommonSettings);
-    var settings = CoreSettingsConfiguration.fromJson(json ?? {});
+    var settings = await globalStorage.getBungieCommonSettings();
     var seasonHash = settings?.destiny2CoreSettings?.currentSeasonHash;
-    var seasonDef = await ManifestService()
-        .getDefinition<DestinySeasonDefinition>(seasonHash);
-    var seasonEnd = seasonDef != null
-        ? DateTime.parse(seasonDef?.endDate)
-        : DateTime.fromMillisecondsSinceEpoch(0);
+    var seasonDef = await manifest.getDefinition<DestinySeasonDefinition>(seasonHash);
+    final endDateStr = seasonDef?.endDate;
+    var seasonEnd = endDateStr != null ? DateTime.parse(endDateStr) : DateTime.fromMillisecondsSinceEpoch(0);
     var now = DateTime.now();
     if (now.isAfter(seasonEnd)) {
       print("loaded settings from web");
-      settings = await _api.getCommonSettings();
+      settings = await bungieAPI.getCommonSettings();
       seasonHash = settings?.destiny2CoreSettings?.currentSeasonHash;
-      seasonDef = await ManifestService()
-          .getDefinition<DestinySeasonDefinition>(seasonHash);
-      await StorageService.global()
-          .setJson(StorageKeys.bungieCommonSettings, settings.toJson());
+      seasonDef = await manifest.getDefinition<DestinySeasonDefinition>(seasonHash);
+      await globalStorage.setBungieCommonSettings(settings);
     }
     _currentSettings = settings;
-    _currentSeasonPassDef = await ManifestService()
-        .getDefinition<DestinySeasonPassDefinition>(seasonDef.seasonPassHash);
+    _currentSeasonPassDef = await manifest.getDefinition<DestinySeasonPassDefinition>(seasonDef?.seasonPassHash);
   }
 
-  int get seasonalRankProgressionHash {
-    return _currentSeasonPassDef?.rewardProgressionHash ?? 3256821400;
+  int? get seasonalRankProgressionHash {
+    return _currentSeasonPassDef?.rewardProgressionHash;
   }
 
-  int get seasonalPrestigeRankProgressionHash {
-    return _currentSeasonPassDef?.prestigeProgressionHash ?? 2140885848;
+  int? get seasonalPrestigeRankProgressionHash {
+    return _currentSeasonPassDef?.prestigeProgressionHash;
   }
 
-  int get collectionsRootNode {
-    return _currentSettings?.destiny2CoreSettings?.collectionRootNode ??
-        3790247699;
+  int? get collectionsRootNode {
+    return _currentSettings?.destiny2CoreSettings?.collectionRootNode;
   }
 
-  int get badgesRootNode {
-    return _currentSettings?.destiny2CoreSettings?.badgesRootNode ?? 498211331;
+  int? get badgesRootNode {
+    return _currentSettings?.destiny2CoreSettings?.badgesRootNode;
   }
 
-  int get triumphsRootNode {
-    return _currentSettings?.destiny2CoreSettings?.recordsRootNode ??
-        1024788583;
+  int? get triumphsRootNode {
+    return _currentSettings?.destiny2CoreSettings?.activeTriumphsRootNodeHash;
   }
 
-  int get loreRootNode {
-    return _currentSettings?.destiny2CoreSettings?.loreRootNodeHash ??
-        1993337477;
+  int? get legacyTriumphsRootNode {
+    return _currentSettings?.destiny2CoreSettings?.legacyTriumphsRootNodeHash;
   }
 
-  int get medalsRootNode {
-    return _currentSettings?.destiny2CoreSettings?.medalsRootNodeHash ??
-        3901403713;
+  int? get loreRootNode {
+    return _currentSettings?.destiny2CoreSettings?.loreRootNodeHash;
   }
 
-  int get statsRootNode {
-    return _currentSettings?.destiny2CoreSettings?.metricsRootNode ??
-        1024788583;
+  int? get medalsRootNode {
+    return _currentSettings?.destiny2CoreSettings?.medalsRootNodeHash;
   }
 
-  int get sealsRootNode {
-    return _currentSettings?.destiny2CoreSettings?.medalsRootNode ?? 1652422747;
+  int? get statsRootNode {
+    return _currentSettings?.destiny2CoreSettings?.metricsRootNode;
+  }
+
+  int? get sealsRootNode {
+    return _currentSettings?.destiny2CoreSettings?.medalsRootNode;
+  }
+
+  int? get legacySealsRootNode {
+    return _currentSettings?.destiny2CoreSettings?.legacySealsRootNodeHash;
   }
 }

@@ -1,13 +1,16 @@
+// @dart=2.9
+
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/primary_stat.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/item_armor_tier.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/medium_base_inventory_item.widget.dart';
 
-class MediumArmorInventoryItemWidget extends MediumBaseInventoryItemWidget {
+class MediumArmorInventoryItemWidget extends MediumBaseInventoryItemWidget with ProfileConsumer{
   MediumArmorInventoryItemWidget(
       DestinyItemComponent item,
       DestinyInventoryItemDefinition itemDefinition,
@@ -49,7 +52,7 @@ class MediumArmorInventoryItemWidget extends MediumBaseInventoryItemWidget {
                       margin: EdgeInsets.symmetric(horizontal: 2),
                       height: 16,
                       width: 1,
-                      color: Colors.white)
+                      color: Theme.of(context).colorScheme.onSurface)
                   : Container(),
               PrimaryStatWidget(
                 item: item,

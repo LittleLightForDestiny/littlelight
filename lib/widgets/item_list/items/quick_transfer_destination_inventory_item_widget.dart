@@ -1,4 +1,7 @@
+// @dart=2.9
+
 import 'package:flutter/material.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 
 class QuickTransferDestinationItemWidget extends StatelessWidget {
   QuickTransferDestinationItemWidget();
@@ -8,13 +11,13 @@ class QuickTransferDestinationItemWidget extends StatelessWidget {
       return Container(
         margin: EdgeInsets.all(1),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(.1),
+          color: Theme.of(context).colorScheme.onSurface.withOpacity(.1),
           border: Border.all(
-            color: Colors.blueGrey.shade900,
+            color: Theme.of(context).colorScheme.secondaryVariant,
             width: 2,
             )
         ),
-        child:Center(child: Icon(Icons.add_circle_outline, color:Colors.blueGrey.shade100),)
+        child:Center(child: Icon(Icons.add_circle_outline, color:LittleLightTheme.of(context).surfaceLayers.layer3),)
       );
     }
 }

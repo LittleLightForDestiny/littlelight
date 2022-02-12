@@ -1,7 +1,9 @@
+// @dart=2.9
+
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/services/littlelight/littlelight_data.service.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/utils/item_filters/season_slot_filter.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/search/search.controller.dart';
@@ -19,7 +21,7 @@ class SeasonalSlotFilterWidget
 class _SeasonalSlotFilterWidgetState extends BaseSearchFilterWidgetState<
     SeasonalSlotFilterWidget,
     SeasonSlotFilter,
-    DestinyInventoryItemDefinition> {
+    DestinyInventoryItemDefinition> with LittleLightDataConsumer, ManifestConsumer {
   Map<int, DestinyInventoryItemDefinition> _definitions;
   List<int> seasonalSlots;
 
@@ -40,9 +42,9 @@ class _SeasonalSlotFilterWidgetState extends BaseSearchFilterWidgetState<
 
   @override
   onUpdate() async {
-    var gameData = await LittleLightDataService().getGameData();
+    var gameData = await littleLightData.getGameData();
     seasonalSlots = gameData.seasonalModSlots;
-    _definitions = await ManifestService()
+    _definitions = await manifest
         .getDefinitions<DestinyInventoryItemDefinition>(filter.availableValues);
     super.onUpdate();
   }

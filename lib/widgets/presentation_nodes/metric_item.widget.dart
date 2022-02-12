@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'package:bungie_api/models/destiny_lore_definition.dart';
 import 'package:bungie_api/models/destiny_metric_component.dart';
 import 'package:bungie_api/models/destiny_metric_definition.dart';
@@ -8,17 +10,15 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:little_light/models/tracked_objective.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
-import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
+import 'package:little_light/services/language/language.consumer.dart';
 import 'package:little_light/services/littlelight/objectives.service.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/services/storage/storage.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
 class MetricItemWidget extends StatefulWidget {
-  final ManifestService manifest = new ManifestService();
   final int hash;
   MetricItemWidget({Key key, this.hash}) : super(key: key);
 
@@ -28,36 +28,31 @@ class MetricItemWidget extends StatefulWidget {
   }
 }
 
-class MetricItemWidgetState extends State<MetricItemWidget> with AuthConsumer{
+class MetricItemWidgetState extends State<MetricItemWidget>
+    with AuthConsumer, LanguageConsumer, ProfileConsumer, ManifestConsumer {
   DestinyMetricDefinition _definition;
-  bool isLogged = false;
   Map<int, DestinyObjectiveDefinition> objectiveDefinitions;
   DestinyLoreDefinition loreDefinition;
   bool isTracking = false;
 
   DestinyMetricDefinition get definition {
-    return widget.manifest
-            .getDefinitionFromCache<DestinyMetricDefinition>(widget.hash) ??
-        _definition;
+    return manifest.getDefinitionFromCache<DestinyMetricDefinition>(widget.hash) ?? _definition;
   }
 
   DestinyMetricComponent get metric {
-    return ProfileService().getMetric(definition?.hash);
+    return profile.getMetric(definition?.hash);
   }
 
   @override
   void initState() {
     super.initState();
     loadDefinitions();
-    if (isLogged) {
-      updateTrackStatus();
-    }
+    updateTrackStatus();
   }
 
   updateTrackStatus() async {
     var objectives = await ObjectivesService().getTrackedObjectives();
-    var tracked = objectives.firstWhere(
-        (o) => o.hash == widget.hash && o.type == TrackedObjectiveType.Triumph,
+    var tracked = objectives.firstWhere((o) => o.hash == widget.hash && o.type == TrackedObjectiveType.Triumph,
         orElse: () => null);
     isTracking = tracked != null;
     if (!mounted) return;
@@ -65,11 +60,8 @@ class MetricItemWidgetState extends State<MetricItemWidget> with AuthConsumer{
   }
 
   loadDefinitions() async {
-    isLogged = auth.isLogged;
-    var manifest = ManifestService();
     if (this.definition == null) {
-      _definition =
-          await manifest.getDefinition<DestinyMetricDefinition>(widget.hash);
+      _definition = await manifest.getDefinition<DestinyMetricDefinition>(widget.hash);
       if (!mounted) return;
       setState(() {});
     }
@@ -97,10 +89,7 @@ class MetricItemWidgetState extends State<MetricItemWidget> with AuthConsumer{
         decoration: BoxDecoration(
           border: Border.all(color: foregroundColor, width: 1),
         ),
-        child: Row(children: [
-          Expanded(child: buildContent(context)),
-          buildBadge(context)
-        ]));
+        child: Row(children: [Expanded(child: buildContent(context)), buildBadge(context)]));
   }
 
   Widget buildBadge(BuildContext context) {
@@ -111,8 +100,7 @@ class MetricItemWidgetState extends State<MetricItemWidget> with AuthConsumer{
         icons.add(ManifestImageWidget<DestinyTraitDefinition>(t));
       }
     }
-    icons.add(QueuedNetworkImage(
-        imageUrl: BungieApiService.url(definition?.displayProperties?.icon)));
+    icons.add(QueuedNetworkImage(imageUrl: BungieApiService.url(definition?.displayProperties?.icon)));
     return Container(
         width: 28,
         margin: EdgeInsets.only(right: 8),
@@ -121,22 +109,17 @@ class MetricItemWidgetState extends State<MetricItemWidget> with AuthConsumer{
           Positioned(
               top: 0,
               bottom: 8,
-              child: ManifestImageWidget<DestinyPresentationNodeDefinition>(
-                  definition.parentNodeHashes[0])),
-          Positioned(
-              left: 2, right: 2, bottom: 20, child: Column(children: icons))
+              child: ManifestImageWidget<DestinyPresentationNodeDefinition>(definition.parentNodeHashes[0])),
+          Positioned(left: 2, right: 2, bottom: 20, child: Column(children: icons))
         ]));
   }
 
   buildContent(BuildContext context) {
     return Container(
         padding: EdgeInsets.all(8),
-        child:
-            Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          buildTitle(context),
-          buildObjective(context),
-          Expanded(child: buildDescription(context))
-        ]));
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [buildTitle(context), buildObjective(context), Expanded(child: buildDescription(context))]));
   }
 
   buildTitle(BuildContext context) {
@@ -152,8 +135,7 @@ class MetricItemWidgetState extends State<MetricItemWidget> with AuthConsumer{
 
   buildDescription(BuildContext context) {
     if (definition == null) return Container();
-    if ((definition?.displayProperties?.description?.length ?? 0) == 0)
-      return Container();
+    if ((definition?.displayProperties?.description?.length ?? 0) == 0) return Container();
 
     return Container(
         alignment: Alignment.bottomLeft,
@@ -161,20 +143,15 @@ class MetricItemWidgetState extends State<MetricItemWidget> with AuthConsumer{
           definition.displayProperties.description.replaceAll("\n\n", "\n"),
           softWrap: true,
           overflow: TextOverflow.fade,
-          style: TextStyle(
-              color: foregroundColor,
-              fontWeight: FontWeight.w300,
-              fontSize: 13),
+          style: TextStyle(color: foregroundColor, fontWeight: FontWeight.w300, fontSize: 13),
         ));
   }
 
   buildObjective(BuildContext context) {
     if (metric.objectiveProgress.progress == null) return Container();
-    var formatter = NumberFormat.decimalPattern(StorageService.getLanguage());
+
+    var formatter = NumberFormat.decimalPattern(languageService.currentLanguage);
     var formattedProgress = formatter.format(metric.objectiveProgress.progress);
     return Text(formattedProgress, style: TextStyle(fontSize: 18));
   }
-
-  // @override
-  // bool get wantKeepAlive => true;
 }

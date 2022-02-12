@@ -1,15 +1,16 @@
+// @dart=2.9
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:little_light/services/notification/notification.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/notification/notification.package.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 
 
 typedef String ExtractTextFromData(dynamic data);
 
 class RefreshButtonWidget extends StatefulWidget {
-  final NotificationService notifications = NotificationService();
-  final ProfileService profile = ProfileService();
+
   final EdgeInsets padding;
   RefreshButtonWidget({Key key, this.padding}) : super(key: key);
 
@@ -19,7 +20,7 @@ class RefreshButtonWidget extends StatefulWidget {
   }
 }
 
-class RefreshButtonWidgetState extends State<RefreshButtonWidget> with TickerProviderStateMixin {
+class RefreshButtonWidgetState extends State<RefreshButtonWidget> with TickerProviderStateMixin, ProfileConsumer, NotificationConsumer {
   AnimationController rotationController;
   StreamSubscription<NotificationEvent> subscription;
 
@@ -27,7 +28,7 @@ class RefreshButtonWidgetState extends State<RefreshButtonWidget> with TickerPro
   void initState() {
     super.initState();
     rotationController = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
-    subscription = widget.notifications.listen((event) {
+    subscription = notifications.listen((event) {
       handleNotification(event);
     });
   }
@@ -72,7 +73,7 @@ class RefreshButtonWidgetState extends State<RefreshButtonWidget> with TickerPro
         enableFeedback: !rotationController.isAnimating,
         onTap: (){ 
           if(!rotationController.isAnimating){
-            widget.profile.fetchProfileData();
+            profile.fetchProfileData();
           }
         },
       )
@@ -81,7 +82,7 @@ class RefreshButtonWidgetState extends State<RefreshButtonWidget> with TickerPro
 
   Widget buildRotatingIcon(){
     return RotationTransition(turns: Tween(begin: 0.0, end: 1.0).animate(rotationController),
-    child: Icon(Icons.refresh, color:rotationController.isAnimating ? Colors.grey.shade500 : Colors.white),
+    child: Icon(Icons.refresh, color:rotationController.isAnimating ? Colors.grey.shade500 : Theme.of(context).colorScheme.onSurface),
     );
   }
 }

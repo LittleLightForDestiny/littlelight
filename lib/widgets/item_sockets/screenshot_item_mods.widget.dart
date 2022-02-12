@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'package:bungie_api/enums/destiny_energy_type.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
@@ -66,13 +68,13 @@ class ScreenShotItemModsWidgetState<T extends ScreenShotItemModsWidget>
           style: TextStyle(
             fontSize: 24 * widget.pixelSize,
             fontWeight: FontWeight.w500,
-            color: Colors.white.withOpacity(.7),
+            color: Theme.of(context).colorScheme.onSurface.withOpacity(.7),
           ),
         ),
         Container(
             margin: EdgeInsets.only(
                 top: 2 * widget.pixelSize, bottom: 16 * widget.pixelSize),
-            color: Colors.white.withOpacity(.7),
+            color: Theme.of(context).colorScheme.onSurface.withOpacity(.7),
             height: 3 * widget.pixelSize)
       ],
     );

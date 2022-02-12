@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'package:bungie_api/enums/damage_type.dart';
 import 'package:bungie_api/enums/destiny_ammunition_type.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
@@ -7,6 +9,7 @@ import 'package:bungie_api/models/destiny_stat.dart';
 import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/utils/destiny_data.dart';
+import 'package:little_light/utils/element_type_data.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/minimal_base_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/minimal_info_label.mixin.dart';
@@ -37,7 +40,7 @@ class MinimalWeaponInventoryItemWidget extends MinimalBaseInventoryItemWidget
   }
 
   Widget weaponPrimaryStat(BuildContext context) {
-    Color damageTypeColor = DestinyData.getDamageTypeTextColor(damageType);
+    Color damageTypeColor = damageType?.getColorLayer(context)?.layer1;
     return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,

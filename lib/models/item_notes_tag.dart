@@ -1,6 +1,9 @@
+//@dart=2.12
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/utils/color_utils.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/icon_fonts/littlelight_icons.dart';
@@ -92,24 +95,26 @@ const Map<ItemTagIcon, IconData> tagIconData = {
   ItemTagIcon.BlockerGiant: LittleLightIcons.blocker_giant
 };
 
+
+
 @JsonSerializable()
 class ItemNotesTag {
   bool custom;
-  String tagId;
+  String? tagId;
   String name;
   String backgroundColorHex;
   String foregroundColorHex;
   ItemTagIcon icon;
 
-  Color get backgroundColor {
+  Color? get backgroundColor {
     return colorFromHex(backgroundColorHex);
   }
 
-  Color get foregroundColor {
+  Color? get foregroundColor {
     return colorFromHex(foregroundColorHex);
   }
 
-  IconData get iconData {
+  IconData? get iconData {
     return tagIconData[icon];
   }
 
@@ -132,7 +137,7 @@ class ItemNotesTag {
       name: "Favorite",
       icon: ItemTagIcon.Heart,
       backgroundColorHex: hexFromColor(Colors.yellow.shade800),
-      foregroundColorHex: hexFromColor(Colors.white),
+      foregroundColorHex: hexFromColor(LittleLightThemeData().onSurfaceLayers),
     );
   }
 
@@ -143,7 +148,7 @@ class ItemNotesTag {
       name: "Trash",
       icon: ItemTagIcon.Trash,
       backgroundColorHex: hexFromColor(Colors.red.shade700),
-      foregroundColorHex: hexFromColor(Colors.white),
+      foregroundColorHex: hexFromColor(LittleLightThemeData().onSurfaceLayers),
     );
   }
 
@@ -165,4 +170,6 @@ class ItemNotesTag {
   dynamic toJson() {
     return _$ItemNotesTagToJson(this);
   }
+
+  ItemNotesTag clone()=>ItemNotesTag.fromJson(toJson());
 }

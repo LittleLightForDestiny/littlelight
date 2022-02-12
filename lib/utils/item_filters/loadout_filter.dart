@@ -1,11 +1,13 @@
+// @dart=2.9
+
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:little_light/models/loadout.dart';
-import 'package:little_light/services/littlelight/loadouts.service.dart';
+import 'package:little_light/services/littlelight/loadouts.consumer.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 
 import 'base_item_filter.dart';
 
-class LoadoutFilter extends BaseItemFilter<Set<String>> {
+class LoadoutFilter extends BaseItemFilter<Set<String>> with LoadoutsConsumer{
   Map<String, Loadout> allLoadouts;
 
   LoadoutFilter() : super(Set(), Set());
@@ -20,7 +22,7 @@ class LoadoutFilter extends BaseItemFilter<Set<String>> {
     clear();
 
     allLoadouts = Map<String, Loadout>.fromIterable(
-        await LoadoutsService().getLoadouts(),
+        await loadoutService.getLoadouts(),
         key: (loadout) => loadout.assignedId,
         value: (loadout) => loadout);
     for (var item in items) {

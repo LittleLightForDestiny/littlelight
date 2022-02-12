@@ -1,34 +1,28 @@
-import 'dart:io';
+// @dart=2.9
 
-import 'package:bungie_api/helpers/oauth.dart';
 import 'package:bungie_api/models/general_user.dart';
 import 'package:bungie_api/models/group_user_info_card.dart';
 import 'package:bungie_api/models/user_membership_data.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:little_light/screens/accounts.screen.dart';
-import 'package:little_light/screens/collections.screen.dart';
-import 'package:little_light/screens/about.screen.dart';
-import 'package:little_light/screens/dev_tools.screen.dart';
-import 'package:little_light/screens/duplicated_items.screen.dart';
-import 'package:little_light/screens/equipment.screen.dart';
-import 'package:little_light/screens/initial.screen.dart';
-import 'package:little_light/screens/languages.screen.dart';
-import 'package:little_light/screens/loadouts.screen.dart';
-import 'package:little_light/screens/objectives.screen.dart';
-import 'package:little_light/screens/progress.screen.dart';
-import 'package:little_light/screens/settings.screen.dart';
-import 'package:little_light/screens/old_triumphs.screen.dart';
-import 'package:little_light/screens/triumphs.screen.dart';
-import 'package:little_light/screens/vendors.screen.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
+import 'package:little_light/pages/collections/collections_root.page.dart';
+import 'package:little_light/pages/dev_tools.screen.dart';
+import 'package:little_light/pages/duplicated_items.screen.dart';
+import 'package:little_light/pages/equipment/equipment.screen.dart';
+import 'package:little_light/pages/languages/languages.page_route.dart';
+import 'package:little_light/pages/loadouts/loadouts.screen.dart';
+import 'package:little_light/pages/objectives/objectives.screen.dart';
+import 'package:little_light/pages/progress/progress.screen.dart';
+import 'package:little_light/pages/settings/about.screen.dart';
+import 'package:little_light/pages/triumphs/triumphs_root.page.dart';
+import 'package:little_light/pages/vendors/vendors.screen.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
-import 'package:little_light/services/auth/auth.service.dart';
-import 'package:little_light/services/storage/storage.service.dart';
 import 'package:little_light/utils/platform_data.dart';
-import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/side_menu/profile_info.widget.dart';
+import 'package:little_light/widgets/side_menu/side_menu_settings.widget.dart';
 
 typedef void OnPageChange(Widget screen);
 
@@ -43,7 +37,7 @@ class SideMenuWidget extends StatefulWidget {
   }
 }
 
-class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer{
+class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer {
   List<UserMembershipData> memberships;
 
   @override
@@ -53,165 +47,79 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer{
   }
 
   fetchMemberships() async {
-    var accounts = StorageService.getAccounts();
-    memberships = [];
-    for (var accountId in accounts) {
-      var storage = StorageService.account(accountId);
-      var json = await storage.getJson(StorageKeys.membershipData);
-      var membershipData = UserMembershipData.fromJson(json ?? {});
-      memberships.add(membershipData);
-    }
+    final accountIDs = auth.accountIDs;
+    final _accounts = await Future.wait(accountIDs.map((a) => auth.getMembershipDataForAccount(a)));
     if (!mounted) return;
-    setState(() {});
+    setState(() {
+      memberships = _accounts;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    bool isDebug = false;
-    assert(isDebug = true);
-    List<Widget> settingsMenuOptions = [];
-    var currentMembership = StorageService.getMembership();
-    var altMembershipCount = 0;
-    if (memberships != null) {
-      for (var account in memberships) {
-        if (account?.destinyMemberships != null) {
-          var memberships = account.destinyMemberships
-              .where((p) => (p?.applicableMembershipTypes?.length ?? 0) > 0);
-          for (var membership in memberships) {
-            if (currentMembership != membership.membershipId) {
-              altMembershipCount++;
-              settingsMenuOptions.add(
-                  membershipButton(context, account.bungieNetUser, membership));
-            }
-          }
-        }
-      }
-    }
-    if (altMembershipCount > 0) {
-      settingsMenuOptions.insert(
-          0,
-          Container(
-              padding: EdgeInsets.symmetric(horizontal: 8),
-              color: Colors.blueGrey.shade600,
-              child: HeaderWidget(
-                alignment: Alignment.centerRight,
-                child: TranslatedTextWidget(
-                  "Switch Account",
-                  uppercase: true,
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              )));
-      settingsMenuOptions
-          .add(Container(height: 8, color: Colors.blueGrey.shade600));
-    }
-
-    if (memberships.length == 1) {
-      settingsMenuOptions.add(menuItem(
-          context, TranslatedTextWidget("Add Account"), requireLogin: true,
-          onTap: () {
-        addAccount(context);
-      }));
-    }
-
-    if (memberships.length > 1) {
-      settingsMenuOptions.add(menuItem(
-          context, TranslatedTextWidget("Manage Accounts"), requireLogin: true,
-          onTap: () {
-        manageAccounts(context);
-      }));
-    }
-
-    settingsMenuOptions.add(
-        menuItem(context, TranslatedTextWidget("Change Language"), onTap: () {
-      changeLanguage(context);
-    }));
-    settingsMenuOptions
-        .add(menuItem(context, TranslatedTextWidget("Settings"), onTap: () {
-      open(context, SettingsScreen());
-    }));
     return Container(
-        color: Theme.of(context).backgroundColor,
+        color: Theme.of(context).cardColor,
         width: 280,
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Expanded(
-                  child: ListView(
-                padding: EdgeInsets.all(0),
-                children: <Widget>[
-                  ProfileInfoWidget(
-                    menuItems: settingsMenuOptions,
-                  ),
-                  menuItem(context, TranslatedTextWidget("Equipment"),
-                      requireLogin: true, onTap: () {
-                    open(context, EquipmentScreen());
-                  }),
-                  menuItem(context, TranslatedTextWidget("Progress"),
-                      requireLogin: true, onTap: () {
-                    open(context, ProgressScreen());
-                  }),
-                  menuItem(context, TranslatedTextWidget("Objectives"),
-                      requireLogin: true, onTap: () {
-                    open(context, ObjectivesScreen());
-                  }),
-                  menuItem(context, TranslatedTextWidget("Loadouts"),
-                      requireLogin: true, onTap: () {
-                    open(context, LoadoutsScreen());
-                  }),
-                  menuItem(context, TranslatedTextWidget("Vendors"),
-                      requireLogin: true, onTap: () {
-                    open(context, VendorsScreen());
-                  }),
-                  menuItem(context, TranslatedTextWidget("Collections"),
-                      onTap: () {
-                    open(context, CollectionsScreen());
-                  }),
-                  isDebug
-                      ? menuItem(context, Text("New Triumphs"), onTap: () {
-                          open(context, TriumphsScreen());
-                        })
-                      : Container(),
-                  menuItem(context, TranslatedTextWidget("Triumphs"),
-                      onTap: () {
-                    open(context, OldTriumphsScreen());
-                  }),
-                  menuItem(context, TranslatedTextWidget("Duplicated Items"),
-                      requireLogin: true, onTap: () {
-                    open(context, DuplicatedItemsScreen());
-                  }),
-                  menuItem(context, TranslatedTextWidget("About"), onTap: () {
-                    open(context, AboutScreen());
-                  }),
-                  isDebug
-                      ? menuItem(context, TranslatedTextWidget("Dev Tools"),
-                          onTap: () {
-                          open(context, DevToolsScreen());
-                        })
-                      : Container()
-                ],
-              )),
-            ]));
+        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, mainAxisSize: MainAxisSize.max, children: [
+          Expanded(
+              child: ListView(
+            padding: EdgeInsets.all(0),
+            children: <Widget>[
+              profileInfo(context),
+              menuItem(context, TranslatedTextWidget("Equipment"), onTap: () {
+                open(context, EquipmentScreen());
+              }),
+              menuItem(context, TranslatedTextWidget("Progress"), onTap: () {
+                open(context, ProgressScreen());
+              }),
+              menuItem(context, TranslatedTextWidget("Objectives"), onTap: () {
+                open(context, ObjectivesScreen());
+              }),
+              menuItem(context, TranslatedTextWidget("Loadouts"), onTap: () {
+                open(context, LoadoutsScreen());
+              }),
+              menuItem(context, TranslatedTextWidget("Vendors"), onTap: () {
+                open(context, VendorsScreen());
+              }),
+              menuItem(context, TranslatedTextWidget("Collections"), onTap: () {
+                open(context, CollectionsRootPage());
+              }),
+              menuItem(context, TranslatedTextWidget("Triumphs"), onTap: () {
+                open(context, TriumphsRootPage());
+              }),
+              menuItem(context, TranslatedTextWidget("Duplicated Items"), onTap: () {
+                open(context, DuplicatedItemsScreen());
+              }),
+              menuItem(context, TranslatedTextWidget("About"), onTap: () {
+                open(context, AboutScreen());
+              }),
+              kDebugMode
+                  ? menuItem(context, TranslatedTextWidget("Dev Tools"), onTap: () {
+                      open(context, DevToolsScreen());
+                    })
+                  : Container(),
+              Container(height:MediaQuery.of(context).viewPadding.bottom)
+            ],
+          )),
+        ]));
   }
 
-  Widget membershipButton(BuildContext context, GeneralUser bungieNetUser,
-      GroupUserInfoCard membership) {
+  Widget profileInfo(BuildContext context) {
+    return ProfileInfoWidget(menuContent: SideMenuSettingsWidget());
+  }
+
+  Widget membershipButton(BuildContext context, GeneralUser bungieNetUser, GroupUserInfoCard membership) {
     var plat = PlatformData.getPlatform(membership.membershipType);
     return Container(
-        color: Colors.blueGrey.shade600,
+        color: Theme.of(context).colorScheme.secondary,
         padding: EdgeInsets.all(8).copyWith(bottom: 0),
         child: Material(
             color: plat.color,
             borderRadius: BorderRadius.circular(4),
             child: InkWell(
                 onTap: () {
-                  StorageService.setAccount(bungieNetUser.membershipId);
-                  StorageService.setMembership(membership.membershipId);
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => InitialScreen(),
-                      ));
+                  auth.setCurrentMembershipID(membership.membershipId, bungieNetUser.membershipId);
+                  Phoenix.rebirth(context);
                 },
                 child: Container(
                   padding: EdgeInsets.all(8),
@@ -223,38 +131,22 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer{
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     Container(width: 4),
-                    Icon(plat.iconData)
+                    Icon(plat.icon)
                   ]),
                 ))));
   }
 
-  Widget menuItem(BuildContext context, Widget label,
-      {void onTap(), requireLogin: false}) {
-    var needToLogin = requireLogin && !auth.isLogged;
+  Widget menuItem(BuildContext context, Widget label, {void onTap()}) {
     return Material(
         color: Colors.transparent,
         child: InkWell(
-            onTap: needToLogin
-                ? () {
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => InitialScreen(),
-                        ));
-                  }
-                : onTap,
+            onTap: onTap,
             child: Container(
+              alignment: Alignment.centerRight,
               padding: EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-              child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                needToLogin
-                    ? Container(
-                        padding: EdgeInsets.only(right: 8),
-                        child: Icon(FontAwesomeIcons.exclamationCircle,
-                            color: Theme.of(context).errorColor, size: 12),
-                      )
-                    : Container(),
-                Opacity(opacity: needToLogin ? .5 : 1, child: label)
-              ]),
+              decoration: BoxDecoration(
+                  border: Border(bottom: BorderSide(color: LittleLightTheme.of(context).surfaceLayers.layer2))),
+              child: label
             )));
   }
 
@@ -265,66 +157,20 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer{
     }
   }
 
+  pushRoute(BuildContext context, MaterialPageRoute route){
+    Navigator.of(context).pop();
+    Navigator.of(context).push(route);
+  }
+
   addAccount(BuildContext context) async {
-    try {
-      String code = await auth.authorize(true);
-      if (code != null) {
-        await StorageService.setAccount(null);
-        await StorageService.setMembership(null);
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => InitialScreen(
-                authCode: code,
-              ),
-            ));
-      }
-    } on OAuthException catch (e) {
-      bool isIOS = Platform.isIOS;
-      String platformMessage =
-          "If this keeps happening, please try to login with a mainstream browser.";
-      if (isIOS) {
-        platformMessage =
-            "Please dont open the auth process in another safari window, this could prevent you from getting logged in.";
-      }
-      showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-                actions: <Widget>[
-                  MaterialButton(
-                    textColor: Colors.blueGrey.shade300,
-                    child: TranslatedTextWidget("OK"),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  )
-                ],
-                title: TranslatedTextWidget(e.error),
-                content: Container(
-                    padding: EdgeInsets.all(16),
-                    child: Column(mainAxisSize: MainAxisSize.min, children: [
-                      TranslatedTextWidget(
-                        e.errorDescription,
-                        textAlign: TextAlign.center,
-                      ),
-                      TranslatedTextWidget(
-                        platformMessage,
-                        textAlign: TextAlign.center,
-                      )
-                    ])),
-              ));
-    }
-    WidgetsBinding.instance.renderView.automaticSystemUiAdjustment = false;
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarBrightness: Brightness.dark));
+    auth.openBungieLogin(true);
   }
 
   changeLanguage(BuildContext context) {
-    open(context, LanguagesScreen());
+    pushRoute(context, LanguagesPageRoute());
   }
 
   manageAccounts(BuildContext context) {
-    open(context, AccountsScreen());
+    // open(context, AccountsScreen());
   }
 }

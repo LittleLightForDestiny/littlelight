@@ -1,5 +1,7 @@
+// @dart=2.9
+
 import 'package:flutter/material.dart';
-import 'package:little_light/models/wish_list.dart';
+import 'package:little_light/models/parsed_wishlist.dart';
 import 'package:little_light/widgets/common/wishlist_badge.widget.dart';
 
 class WishlistBadgesWidget extends StatelessWidget {
@@ -28,9 +30,6 @@ class WishlistBadgesWidget extends StatelessWidget {
       return Row(
         children: badges,
       );
-    }
-    if (tags.length == 0) {
-      return WishlistBadgeWidget(size: size, tag: null);
     }
     if (tags.contains(WishlistTag.Trash)) {
       return WishlistBadgeWidget(size: size, tag: WishlistTag.Trash);

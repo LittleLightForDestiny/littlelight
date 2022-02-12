@@ -1,29 +1,25 @@
+//@dart=2.12
+
 import 'dart:convert';
 
-import 'package:bungie_api/enums/bungie_membership_type.dart';
 import 'package:bungie_api/helpers/bungie_net_token.dart';
-import 'package:bungie_api/models/group_user_info_card.dart';
 import 'package:http/http.dart' as http;
+import 'package:little_light/exceptions/not_authorized.exception.dart';
 import 'package:little_light/models/item_notes.dart';
+import 'package:little_light/models/item_notes_response.dart';
 import 'package:little_light/models/item_notes_tag.dart';
 import 'package:little_light/models/loadout.dart';
+import 'package:little_light/services/app_config/app_config.consumer.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
-import 'package:little_light/services/auth/auth.service.dart';
-import 'package:little_light/services/storage/storage.service.dart';
+import 'package:little_light/services/storage/export.dart';
 import 'package:uuid/uuid.dart';
 
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+final _credentialsMissingException = Exception("Credentials are missing");
+class LittleLightApiService with AuthConsumer, StorageConsumer, AppConfigConsumer {
+  String? _uuid;
+  String? _secret;
 
-class NotesResponse {
-  List<ItemNotes> notes;
-  List<ItemNotesTag> tags;
-
-  NotesResponse({this.notes, this.tags});
-}
-
-class LittleLightApiService with AuthConsumer{
-  String _uuid;
-  String _secret;
+  String get apiRoot => appConfig.littleLightApiRoot;
 
   static final LittleLightApiService _singleton =
       new LittleLightApiService._internal();
@@ -66,7 +62,7 @@ class LittleLightApiService with AuthConsumer{
     return json["result"] ?? 0;
   }
 
-  Future<List<Loadout>> fetchLoadouts() async {
+  Future<List<Loadout>>? fetchLoadouts() async {
     dynamic json = await _authorizedRequest("loadout");
     List<dynamic> list = json['data'] ?? [];
     List<Loadout> _fetchedLoadouts =
@@ -89,25 +85,28 @@ class LittleLightApiService with AuthConsumer{
 
   Future<dynamic> _authorizedRequest(String path,
       {Map<String, dynamic> body = const {}}) async {
-    GroupUserInfoCard membership = await auth.getMembership();
-    BungieNetToken token = await auth.getToken();
+    String? membershipID = auth.currentMembershipID;
+    BungieNetToken? token = await auth.getCurrentToken();
+    String? accessToken = token?.accessToken;
     String uuid = await _getUuid();
-    String secret = await _getSecret();
+    String? secret = await _getSecret();
+    
+    if(accessToken == null || membershipID == null){
+      throw NotAuthorizedException(_credentialsMissingException);
+    }
+
     body = {
       ...body,
-      'membership_id': membership.membershipId,
-      'membership_type': "${membership.membershipType.value}",
+      'membership_id': membershipID,
       'uuid': uuid,
     };
     if (secret != null) {
       body['secret'] = secret;
     }
 
-    String apiRoot = env["littlelight_api_root"];
-
     Uri uri = Uri.parse("$apiRoot/$path");
     Map<String, String> headers = {
-      'Authorization': token.accessToken,
+      'Authorization': accessToken,
       'Accept': 'application/json'
     };
     http.Response response;
@@ -122,28 +121,25 @@ class LittleLightApiService with AuthConsumer{
   }
 
   Future<String> _getUuid() async {
-    if (_uuid != null) return _uuid;
-    StorageService prefs = StorageService.membership();
-    String uuid = prefs.getString(StorageKeys.membershipUUID);
-    if (uuid == null) {
-      uuid = Uuid().v4();
-      prefs.setString(StorageKeys.membershipUUID, uuid);
-      _uuid = uuid;
-    }
+    String? uuid = _uuid;
+    if (uuid != null) return uuid;
+    uuid = currentMembershipStorage.littleLightMembershipUUID;
+    if (uuid != null) return uuid;
+    uuid = Uuid().v4();
+    currentMembershipStorage.littleLightMembershipUUID = uuid;
+    _uuid = uuid;
     return uuid;
   }
 
-  Future<String> _getSecret() async {
+  Future<String?> _getSecret() async {
     if (_secret != null) return _secret;
-    StorageService prefs = StorageService.membership();
-    String secret = prefs.getString(StorageKeys.membershipSecret);
+    String? secret = currentMembershipStorage.littleLightMembershipSecret;
     _secret = secret;
     return secret;
   }
 
   _setSecret(String secret) async {
-    StorageService prefs = StorageService.membership();
-    prefs.setString(StorageKeys.membershipSecret, secret);
+    currentMembershipStorage.littleLightMembershipSecret = secret;
     _secret = secret;
   }
 }

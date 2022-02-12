@@ -1,4 +1,7 @@
+//@dart=2.12
+
 import 'package:flutter/material.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:shimmer/shimmer.dart';
 
 class LoadingAnimWidget extends StatelessWidget {
@@ -8,8 +11,8 @@ class LoadingAnimWidget extends StatelessWidget {
         child: Container(
             width: 96,
             child: Shimmer.fromColors(
-              baseColor: Colors.blueGrey.shade300,
-              highlightColor: Colors.white,
+              baseColor: LittleLightTheme.of(context).onSurfaceLayers.layer2,
+              highlightColor: LittleLightTheme.of(context).surfaceLayers.layer2,
               child: Image.asset("assets/anim/loading.webp"),
             )));
   }

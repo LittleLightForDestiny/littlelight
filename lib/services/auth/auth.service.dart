@@ -1,80 +1,161 @@
+//@dart=2.12
+
 import 'dart:async';
 import 'dart:io';
 
-import 'package:bungie_api/enums/bungie_membership_type.dart';
+import 'package:bungie_api/groupsv2.dart';
 import 'package:bungie_api/helpers/bungie_net_token.dart';
 import 'package:bungie_api/helpers/oauth.dart';
-import 'package:bungie_api/models/group_user_info_card.dart';
-import 'package:bungie_api/models/user_membership_data.dart';
+import 'package:bungie_api/user.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+// ignore: import_of_legacy_library_into_null_safe
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:get_it/get_it.dart';
-import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/services/storage/storage.service.dart';
-import 'package:uni_links/uni_links.dart';
+import 'package:little_light/services/app_config/app_config.consumer.dart';
+import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
+import 'package:little_light/services/language/language.consumer.dart';
+// ignore: import_of_legacy_library_into_null_safe
+import 'package:little_light/services/storage/export.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-bool initialLinkHandled = false;
-
 setupAuthService() async {
-  GetIt.I.registerSingleton(AuthService._internal());
+  GetIt.I.registerSingleton<AuthService>(AuthService._internal());
 }
 
-class AuthService {
-  BungieNetToken _currentToken;
-  GroupUserInfoCard _currentMembership;
-  UserMembershipData _membershipData;
-  bool waitingAuthCode = false;
-
-  StreamSubscription<String> linkStreamSub;
+class AuthService with StorageConsumer, LanguageConsumer, AppConfigConsumer, BungieApiConsumer{
+  Set<String>? _accountIDs;
+  BungieNetToken? _currentToken;
+  GroupUserInfoCard? _currentMembership;
 
   AuthService._internal();
 
-  Future<BungieNetToken> _getStoredToken() async {
-    StorageService storage = StorageService.account();
-    var json = await storage.getJson(StorageKeys.latestToken);
-    try {
-      return BungieNetToken.fromJson(json);
-    } catch (e) {
-      print(
-          "failed retrieving token for account: ${StorageService.getAccount()}");
-      print(e);
+  Future<void> setup() async {
+    _accountIDs = await globalStorage.accountIDs ?? Set<String>();
+  }
+
+  void openBungieLogin(bool forceReauth) async {
+    var browser = new BungieAuthBrowser();
+    OAuth.openOAuth(browser, appConfig.clientId, languageService.currentLanguage, forceReauth);
+  }
+
+  Future<UserMembershipData> addAccount(String authorizationCode) async {
+    final token = await bungieAPI.requestToken(authorizationCode);
+    final memberships = await bungieAPI.getMembershipsForToken(token);
+    final accountID = token.membershipId;
+    this._currentAccountID = accountID;
+    final storage = accountStorage(accountID);
+    await this._saveToken(token);
+    await storage.saveMembershipData(memberships);
+    return memberships;
+  }
+
+  Future<UserMembershipData?> getMembershipData() async {
+    return await currentAccountStorage.getMembershipData();
+  }
+
+  Future<UserMembershipData?> getMembershipDataForAccount(String accountID) async {
+    final membershipData = await accountStorage(accountID).getMembershipData();
+    return membershipData;
+  }
+
+  Future<void> removeAccount(String accountID) async {
+    final membershipData = await getMembershipDataForAccount(accountID);
+    final memberships = membershipData?.destinyMemberships?.map((e) => e.membershipId).whereType<String>() ?? [];
+
+    for(final m in memberships){
+      membershipStorage(m).purge();
     }
-    return null;
+
+    _accountIDs?.remove(accountID);
+    await globalStorage.setAccountIDs(_accountIDs);
+    await accountStorage(accountID).purge();
+
+    if (accountID == currentAccountID) {
+      _currentAccountID = null;
+    }
+
+    if (memberships.contains(currentMembershipID)) {
+      setCurrentMembershipID(null, currentAccountID);
+    }
+  }
+
+  Set<String>? get accountIDs => _accountIDs;
+  String? get currentAccountID => globalStorage.currentAccountID;
+  set _currentAccountID(String? id) {
+    final containsID = _accountIDs?.contains(id) ?? false;
+    if (!containsID && id != null) {
+      _accountIDs?.add(id);
+      globalStorage.setAccountIDs(_accountIDs);
+    }
+    globalStorage.currentAccountID = id;
+    globalStorage.currentMembershipID = null;
+  }
+
+  String? get currentMembershipID => globalStorage.currentMembershipID;
+  setCurrentMembershipID(String? membershipID, String? accountID) {
+    globalStorage.currentMembershipID = membershipID;
+    globalStorage.currentAccountID = accountID;
+  }
+
+  void changeMembership(BuildContext context, String membershipID, String accountID){
+    setCurrentMembershipID(membershipID, accountID);
+    Phoenix.rebirth(context);
+  }
+  
+
+  Future<Map<String, UserMembershipData>> fetchMembershipDataForAllAccounts() async {
+    final result = Map<String, UserMembershipData>();
+    if (_accountIDs == null) {
+      return result;
+    }
+    for (final id in _accountIDs!) {
+      final token = await accountStorage(id).getLatestToken();
+      final membership = await bungieAPI.getMembershipsForToken(token);
+      result[id] = membership;
+    }
+    return result;
+  }
+
+  resetToken() {
+    currentAccountStorage.clearToken();
+  }
+
+  Future<BungieNetToken?> _getStoredToken() async {
+    final token = await currentAccountStorage.getLatestToken();
+    return token;
   }
 
   Future<BungieNetToken> refreshToken(BungieNetToken token) async {
-    BungieNetToken bNetToken =
-        await BungieApiService().refreshToken(token.refreshToken);
-    _saveToken(bNetToken);
+    BungieNetToken bNetToken = await bungieAPI.refreshToken(token.refreshToken);
+    await _saveToken(bNetToken);
     return bNetToken;
   }
 
-  Future<void> _saveToken(BungieNetToken token) async {
-    if (token?.accessToken == null) {
+  Future<void> _saveToken(BungieNetToken? token) async {
+    if (token == null) {
       return;
     }
-    await StorageService.setAccount(token.membershipId);
-    StorageService storage = StorageService.account();
-    await storage.setJson(StorageKeys.latestToken, token.toJson());
-    await storage.setDate(StorageKeys.latestTokenDate, DateTime.now());
+    await accountStorage(currentAccountID!).saveLatestToken(token);
     await Future.delayed(Duration(milliseconds: 1));
     _currentToken = token;
   }
 
-  Future<BungieNetToken> getToken() async {
-    BungieNetToken token = _currentToken;
+  Future<BungieNetToken?> getCurrentToken() async {
+    BungieNetToken? token = _currentToken;
     if (token == null) {
       token = await _getStoredToken();
     }
-    if (token?.accessToken == null || token?.expiresIn == null) {
+    if (token == null) {
       return null;
     }
     DateTime now = DateTime.now();
-    StorageService storage = StorageService.account();
-    DateTime savedDate = storage.getDate(StorageKeys.latestTokenDate);
-    DateTime expire = savedDate.add(Duration(seconds: token.expiresIn));
-    DateTime refreshExpire =
-        savedDate.add(Duration(seconds: token.refreshExpiresIn));
+
+    DateTime? tokenDate = currentAccountStorage.getLatestTokenDate();
+    if (tokenDate == null) return null;
+
+    DateTime expire = tokenDate.add(Duration(seconds: token.expiresIn));
+    DateTime refreshExpire = tokenDate.add(Duration(seconds: token.refreshExpiresIn));
     if (refreshExpire.isBefore(now)) {
       return null;
     }
@@ -85,150 +166,24 @@ class AuthService {
   }
 
   Future<BungieNetToken> requestToken(String code) async {
-    BungieNetToken token = await BungieApiService().requestToken(code);
+    BungieNetToken token = await bungieAPI.requestToken(code);
     await _saveToken(token);
     return token;
   }
 
-  Future<String> checkAuthorizationCode() async {
-    Uri uri;
-    if (!initialLinkHandled) {
-      uri = await getInitialUri();
-      initialLinkHandled = true;
-    }
 
-    if (uri?.queryParameters == null) return null;
-    print("initialURI: $uri");
-    if (uri.queryParameters.containsKey("code") ||
-        uri.queryParameters.containsKey("error")) {
-      closeWebView();
-    }
+  // void reset() {
+  //   _currentMembership = null;
+  //   _currentToken = null;
+  //   _membershipData = null;
+  // }
 
-    if (uri.queryParameters.containsKey("code")) {
-      return uri.queryParameters["code"];
-    } else {
-      String errorType = uri.queryParameters["error"];
-      String errorDescription =
-          uri.queryParameters["error_description"] ?? uri.toString();
-      throw OAuthException(errorType, errorDescription);
-    }
-  }
-
-  Future<String> authorize([bool forceReauth = true]) async {
-    String currentLanguage = StorageService.getLanguage();
-    var browser = new BungieAuthBrowser();
-    OAuth.openOAuth(
-        browser, BungieApiService.clientId, currentLanguage, forceReauth);
-    Stream<String> _stream = getLinksStream();
-    Completer<String> completer = Completer();
-
-    linkStreamSub?.cancel();
-
-    linkStreamSub = _stream.listen((link) {
-      Uri uri = Uri.parse(link);
-      if (uri.queryParameters.containsKey("code") ||
-          uri.queryParameters.containsKey("error")) {
-        closeWebView();
-        linkStreamSub.cancel();
-      }
-      if (uri.queryParameters.containsKey("code")) {
-        String code = uri.queryParameters["code"];
-        completer.complete(code);
-      } else {
-        String errorType = uri.queryParameters["error"];
-        String errorDescription = uri.queryParameters["error_description"];
-        try {
-          throw OAuthException(errorType, errorDescription);
-        } on OAuthException catch (e, stack) {
-          completer.completeError(e, stack);
-        }
-      }
-    });
-
-    return completer.future;
-
-    // Uri uri;
-    // if(waitingAuthCode) return null;
-    // waitingAuthCode = true;
-    // await for (var link in _stream) {
-    //   uri = Uri.parse(link);
-    //   if (uri.queryParameters.containsKey("code") ||
-    //       uri.queryParameters.containsKey("error")) {
-    //     break;
-    //   }
-    // }
-
-    // closeWebView();
-    // waitingAuthCode = false;
-    // if (uri.queryParameters.containsKey("code")) {
-    //   return uri.queryParameters["code"];
-    // } else {
-    //   String errorType = uri.queryParameters["error"];
-    //   String errorDescription = uri.queryParameters["error_description"];
-    //   throw OAuthException(errorType, errorDescription);
-    // }
-  }
-
-  Future<UserMembershipData> updateMembershipData() async {
-    UserMembershipData membershipData =
-        await BungieApiService().getMemberships();
-    var storage = StorageService.account();
-    await storage.setJson(StorageKeys.membershipData, membershipData);
-    return membershipData;
-  }
-
-  Future<UserMembershipData> getMembershipData() async {
-    return _membershipData ?? await _getStoredMembershipData();
-  }
-
-  Future<UserMembershipData> _getStoredMembershipData() async {
-    var storage = StorageService.account();
-    var json = await storage.getJson(StorageKeys.membershipData);
-    if (json == null) {
-      return null;
-    }
-    UserMembershipData membershipData = UserMembershipData.fromJson(json);
-    return membershipData;
-  }
-
-  void reset() {
-    _currentMembership = null;
-    _currentToken = null;
-    _membershipData = null;
-  }
-
-  Future<GroupUserInfoCard> getMembership() async {
+  Future<GroupUserInfoCard?> getMembership() async {
     if (_currentMembership == null) {
-      var _membershipData = await _getStoredMembershipData();
-      var _membershipId = StorageService.getMembership();
-      _currentMembership = getMembershipById(_membershipData, _membershipId);
-    }
-    if (_currentMembership?.membershipType ==
-        BungieMembershipType.TigerBlizzard) {
-      var account = StorageService.getAccount();
-      StorageService.removeAccount(account);
-      return null;
+      final membershipData = await currentAccountStorage.getMembershipData();
+      _currentMembership = membershipData?.destinyMemberships?.firstWhereOrNull((m) => m.membershipId == currentMembershipID);
     }
     return _currentMembership;
-  }
-
-  GroupUserInfoCard getMembershipById(
-      UserMembershipData membershipData, String membershipId) {
-    return membershipData?.destinyMemberships?.firstWhere(
-        (membership) => membership?.membershipId == membershipId,
-        orElse: () => membershipData?.destinyMemberships?.first ?? null);
-  }
-
-  Future<void> saveMembership(
-      UserMembershipData membershipData, String membershipId) async {
-    StorageService storage = StorageService.account();
-    _currentMembership = getMembershipById(membershipData, membershipId);
-    storage.setJson(StorageKeys.membershipData, membershipData.toJson());
-    StorageService.setMembership(membershipId);
-  }
-
-  bool get isLogged {
-    return _currentMembership != null;
   }
 }
 
@@ -238,8 +193,7 @@ class BungieAuthBrowser implements OAuthBrowser {
   @override
   dynamic open(String url) async {
     if (Platform.isIOS) {
-      await launch(url,
-          forceSafariVC: true, statusBarBrightness: Brightness.light);
+      await launch(url, forceSafariVC: true, statusBarBrightness: Brightness.light);
     } else {
       await launch(url, forceSafariVC: true);
     }

@@ -1,20 +1,21 @@
+// @dart=2.9
+
 import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:bungie_api/models/destiny_character_progression_component.dart';
+import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_progression.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/services/profile/destiny_settings.service.dart';
-import 'package:little_light/widgets/common/queued_network_image.widget.dart';
-import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/services/profile/destiny_settings.consumer.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
+import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:shimmer/shimmer.dart';
 
 class TabHeaderWidget extends StatefulWidget {
   final DestinyCharacterComponent character;
-  final ManifestService manifest = new ManifestService();
-  final ProfileService profile = new ProfileService();
+
   @override
   TabHeaderWidget(this.character, {Key key}) : super(key: key);
 
@@ -22,15 +23,15 @@ class TabHeaderWidget extends StatefulWidget {
   TabHeaderWidgetState createState() => new TabHeaderWidgetState();
 }
 
-class TabHeaderWidgetState extends State<TabHeaderWidget> {
+class TabHeaderWidgetState extends State<TabHeaderWidget>
+    with ProfileConsumer, ManifestConsumer, DestinySettingsConsumer {
   DestinyInventoryItemDefinition emblemDefinition;
 
   DestinyCharacterProgressionComponent progression;
   @override
   void initState() {
     if (widget.character != null) {
-      progression =
-          widget.profile.getCharacterProgression(widget.character.characterId);
+      progression = profile.getCharacterProgression(widget.character.characterId);
     }
 
     super.initState();
@@ -38,9 +39,7 @@ class TabHeaderWidgetState extends State<TabHeaderWidget> {
   }
 
   getDefinitions() async {
-    emblemDefinition = await widget.manifest
-        .getDefinition<DestinyInventoryItemDefinition>(
-            widget.character.emblemHash);
+    emblemDefinition = await manifest.getDefinition<DestinyInventoryItemDefinition>(widget.character.emblemHash);
     if (mounted) {
       setState(() {});
     }
@@ -67,7 +66,7 @@ class TabHeaderWidgetState extends State<TabHeaderWidget> {
   Widget emblemIcon(BuildContext context) {
     Shimmer shimmer = Shimmer.fromColors(
         baseColor: Colors.transparent,
-        highlightColor: Colors.white,
+        highlightColor: Theme.of(context).colorScheme.onSurface,
         child: Icon(
           DestinyData.getClassIcon(widget.character.classType),
           size: 56,
@@ -88,11 +87,9 @@ class TabHeaderWidgetState extends State<TabHeaderWidget> {
 
   Widget emblemBackground(BuildContext context) {
     Shimmer shimmer = Shimmer.fromColors(
-        baseColor: Color.lerp(Theme.of(context).backgroundColor,
-            Theme.of(context).primaryColor, .1),
-        highlightColor: Color.lerp(Theme.of(context).backgroundColor,
-            Theme.of(context).primaryColor, .3),
-        child: Container(color: Colors.white));
+        baseColor: Color.lerp(Theme.of(context).backgroundColor, Theme.of(context).primaryColor, .1),
+        highlightColor: Color.lerp(Theme.of(context).backgroundColor, Theme.of(context).primaryColor, .3),
+        child: Container(color: Theme.of(context).colorScheme.onSurface));
     double height = getTopPadding(context) + kToolbarHeight;
     return Container(
         height: height,
@@ -107,9 +104,9 @@ class TabHeaderWidgetState extends State<TabHeaderWidget> {
   }
 
   Widget powerBar(BuildContext context) {
-    var settings = DestinySettingsService();
-    DestinyProgression levelProg = progression.progressions["${settings.seasonalRankProgressionHash}"];
-    DestinyProgression overLevelProg = progression.progressions["${settings.seasonalPrestigeRankProgressionHash}"];
+    DestinyProgression levelProg = progression.progressions["${destinySettings.seasonalRankProgressionHash}"];
+    DestinyProgression overLevelProg =
+        progression.progressions["${destinySettings.seasonalPrestigeRankProgressionHash}"];
     Color fg = Colors.cyan.shade300;
     Color bg = Color.lerp(Colors.black, fg, .6);
     Color shine = Colors.cyan.shade100;
@@ -126,7 +123,7 @@ class TabHeaderWidgetState extends State<TabHeaderWidget> {
             period: Duration(seconds: 2),
             highlightColor: shine,
             child: Container(
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.onSurface,
             )),
       ),
     );

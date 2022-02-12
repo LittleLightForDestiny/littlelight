@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'dart:math';
 
 import 'package:bungie_api/models/destiny_objective_definition.dart';
@@ -78,7 +80,7 @@ class SmallObjectiveWidgetState extends ObjectiveWidgetState {
     int total = definition.completionValue ?? 0;
     return Container(
         height: 4,
-        color: Colors.blueGrey.shade700,
+        color: Theme.of(context).colorScheme.secondary,
         alignment: Alignment.centerLeft,
         child: progress <= 0
             ? Container()

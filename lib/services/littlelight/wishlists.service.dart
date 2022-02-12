@@ -1,241 +1,183 @@
-import 'package:bungie_api/models/destiny_item_component.dart';
-import 'package:bungie_api/models/destiny_item_plug_base.dart';
-import 'package:bungie_api/models/destiny_item_socket_state.dart';
-import 'package:http/http.dart' as http;
-import 'package:little_light/models/wish_list.dart';
-import 'package:little_light/services/littlelight/parsers/dim_wishlist.parser.dart';
-import 'package:little_light/services/littlelight/parsers/littlelight_wishlist.parser.dart';
-import 'package:little_light/services/profile/profile.service.dart';
-import 'package:little_light/services/storage/storage.service.dart';
+//@dart=2.12
+import 'dart:convert';
 
-class WishlistsService {
-  static final WishlistsService _singleton = new WishlistsService._internal();
-  StorageService storage = StorageService.global();
-  factory WishlistsService() {
-    return _singleton;
+import 'package:bungie_api/destiny2.dart';
+import 'package:get_it/get_it.dart';
+import 'package:http/http.dart' as http;
+import 'package:little_light/exceptions/not_initialized.exception.dart';
+import 'package:little_light/models/littlelight_wishlist.dart';
+import 'package:little_light/models/parsed_wishlist.dart';
+import 'package:little_light/models/wishlist_index.dart';
+import 'package:little_light/services/littlelight/parsers/littlelight_wishlist.parser.dart';
+import 'package:little_light/services/storage/storage.consumer.dart';
+
+setupWishlistsService() {
+  GetIt.I.registerSingleton<WishlistsService>(WishlistsService._internal());
+}
+
+extension on Map<int, ParsedWishlistItem> {
+  ParsedWishlistItem? upsertItem(int? hash) {
+    if (hash == null) return null;
+    if (this[hash] == null) {
+      this[hash] = ParsedWishlistItem(itemHash: hash);
+    }
+    return this[hash];
   }
+}
+
+extension on ParsedWishlistItem {
+  ParsedWishlistItem? addBuild(ParsedWishlistBuild build) {
+    this.builds.add(build);
+    build.plugs.forEach((socket) {
+      socket.forEach((plugHash) {
+        final itemPlugs = perks[plugHash] ??= Set<WishlistTag>();
+        itemPlugs.addAll(build.tags);
+      });
+    });
+  }
+}
+
+final _notInitializedException = NotInitializedException("_parsedWishlists was not initialized");
+
+class WishlistsService with StorageConsumer {
+  ParsedWishlist? _parsedWishlists;
+  Future<List<WishlistFile>?> getWishlists() => globalStorage.getWishlists();
+  Future<void> setWishlists(List<WishlistFile> wishlists) async => await globalStorage.setWishlists(wishlists);
   WishlistsService._internal();
 
-  Map<int, WishlistItem> _items = Map();
-
-  List<Wishlist> _wishlists;
-
-  init() async {
-    Map<int, WishlistItem> items;
-    try {
-      items = await _loadPreParsed();
-    } catch (_) {}
-    this._wishlists = await _loadFromStorage(items == null);
-    if (items != null) {
-      _items = items;
-    }
-    this._save();
-    this.updateWishlists();
-  }
-
-  countBuilds() {
-    var count = 0;
-    _items.forEach((key, value) {
-      count += value?.builds?.length ?? 0;
-    });
-    print(count);
-  }
-
-  Future<Map<int, WishlistItem>> _loadPreParsed() async {
-    Map<String, dynamic> json =
-        await storage.getJson(StorageKeys.parsedWishlists);
-    if (json == null) return null;
-    var items = json.map<int, WishlistItem>(
-        (key, value) => MapEntry(int.parse(key), WishlistItem.fromJson(value)));
-    return items;
-  }
-
-  Future<List<Wishlist>> _loadFromStorage(bool forceParse) async {
-    List<dynamic> json = await storage.getJson(StorageKeys.wishlists);
-    var wishlists = json != null
-        ? json.map((item) => Wishlist.fromJson(item)).toList()
-        : [Wishlist.defaults()];
-    if (forceParse) {
-      wishlists = await _parseWishlists(wishlists);
-    }
-    return wishlists;
-  }
-
-  Future<void> updateWishlists() async {
-    DateTime minimumDate = DateTime.now().subtract(Duration(days: 7));
-    bool needsParsing = false;
-    for (var wishlist in _wishlists) {
-      bool needUpdate = wishlist.updatedAt.isBefore(minimumDate);
-      if (needUpdate) {
-        await _downloadWishlist(wishlist);
-      }
-      needsParsing = needsParsing || needUpdate;
-    }
-    if (needsParsing) {
-      await _parseWishlists(_wishlists);
-    }
-  }
-
-  List<Wishlist> getWishlists() {
-    return _wishlists;
-  }
-
-  Future<List<Wishlist>> addWishlist(Wishlist wishlist) async {
-    var existing =
-        _wishlists.firstWhere((w) => w.url == wishlist.url, orElse: () => null);
-    if (existing == null) {
-      _wishlists.add(wishlist);
-    } else {
-      wishlist = existing;
-    }
-    var contents = await _downloadWishlist(wishlist);
-    await _parseWishlist(wishlist, contents);
-    this._save();
-    return _wishlists;
-  }
-
-  Future<List<Wishlist>> removeWishlist(Wishlist wishlist) async {
-    _wishlists.remove(wishlist);
-    await storage.deleteFile(StorageKeys.rawWishlists, wishlist.filename);
-    _items = Map();
-    _wishlists = await _parseWishlists(_wishlists);
-    this._save();
-    return _wishlists;
-  }
-
-  Future<List<Wishlist>> _parseWishlists(List<Wishlist> wishlists) async {
-    for (var wishlist in wishlists) {
-      var filename = wishlist.filename;
-      var contents =
-          await storage.getRawFile(StorageKeys.rawWishlists, filename);
-      if (contents == null) {
-        contents = await _downloadWishlist(wishlist);
-      }
-      await _parseWishlist(wishlist, contents);
-    }
-    return wishlists;
-  }
-
-  Future<void> _parseWishlist(Wishlist wishlist, String contents) async {
-    try {
-      var parser = LittleLightWishlistParser();
-      var w = await parser.parse(contents);
-      wishlist.name = w.name ?? wishlist.name ?? "";
-      wishlist.description = w.description ?? wishlist.description ?? "";
+  Future<void> checkForUpdates([bool forceUpdate = false]) async {
+    _parsedWishlists ??= await globalStorage.getParsedWishlists();
+    if (_parsedWishlists == null || forceUpdate) {
+      await _updateIfNeeded();
       return;
-    } catch (_) {}
-    var parser = DimWishlistParser();
-    parser.parse(contents);
-  }
-
-  Future<void> _save() async {
-    var json = this._wishlists.map((w) => w.toJson()).toList();
-    await storage.setJson(StorageKeys.wishlists, json);
-    var parsed = this
-        ._items
-        .map<String, dynamic>((k, v) => MapEntry(k.toString(), v.toJson()));
-    await storage.setJson(StorageKeys.parsedWishlists, parsed);
-  }
-
-  Future<String> _downloadWishlist(Wishlist wishlist) async {
-    var res = await http.get(Uri.parse(wishlist.url));
-    storage.saveRawFile(StorageKeys.rawWishlists, wishlist.filename, res.body);
-    wishlist.updatedAt = DateTime.now();
-    return res.body;
-  }
-
-  Set<WishlistTag> getPerkTags(int itemHash, int plugItemHash) {
-    var wishlist = _items[itemHash];
-    if (wishlist?.perks == null) return Set();
-    return _items[itemHash]?.perks[plugItemHash] ?? Set();
-  }
-
-  List<WishlistBuild> getWishlistBuilds({
-    int itemHash,
-    Map<String, List<DestinyItemPlugBase>> reusablePlugs,
-    List<DestinyItemSocketState> sockets,
-  }) {
-    final wishlistItem = _items[itemHash];
-    if (reusablePlugs == null && sockets == null) {
-      return wishlistItem?.builds;
     }
-    Set<int> availablePlugs = Set();
-    reusablePlugs?.values?.forEach((plugs) =>
-        plugs.forEach((plug) => availablePlugs.add(plug.plugItemHash)));
-    sockets?.forEach((plug) => availablePlugs.add(plug.plugHash));
-    if (availablePlugs?.length == 0) return null;
-    final builds = wishlistItem?.builds?.where((build) {
-      return build.perks.every((element) =>
-          element.any((e) => availablePlugs.contains(e)) ||
-          element.length == 0);
-    });
+    _updateIfNeeded();
+  }
 
-    return builds?.toList() ?? [];
+  Future<void> _updateIfNeeded() async {
+    final wishlists = await getWishlists();
+    if (wishlists == null) return;
+    bool needsToReprocess = _parsedWishlists == null || true;
+    for (final wishlist in wishlists) {
+      final updated = await _updateWishlistFile(wishlist);
+      needsToReprocess = needsToReprocess || updated;
+    }
+    if (!needsToReprocess) {
+      return;
+    }
+    final items = Map<int, ParsedWishlistItem>();
+    for (final wishlist in wishlists) {
+      final contents = await globalStorage.getWishlistContent(wishlist);
+      if (contents == null) continue;
+      final parsed = await LittleLightWishlistParser().parse(contents);
+      for (final build in parsed) {
+        final hash = build.hash;
+        final item = items.upsertItem(hash);
+        if (item == null) continue;
+        item.addBuild(build);
+      }
+    }
+    _parsedWishlists = ParsedWishlist(items);
+    await globalStorage.saveParsedWishlists(_parsedWishlists!);
+  }
+
+  Future<bool> _updateWishlistFile(WishlistFile wishlist) async {
+    final url = wishlist.url;
+    if (url == null) return false;
+
+    final uri = Uri.parse(url);
+    final isWebUri = uri.isScheme('HTTP') || uri.isScheme('HTTPS');
+    if (!isWebUri) return false;
+
+    try {
+      final fileContents = await globalStorage.getWishlistContent(wishlist);
+      final webContents = await http.get(uri);
+      final json = jsonDecode(webContents.body);
+      LittleLightWishlist.fromJson(json);
+      final updated = fileContents != webContents.body;
+      if (updated) {
+        await globalStorage.saveWishlistContents(wishlist, webContents.body);
+      }
+      return updated;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  Future<WishlistFile?> loadWishlistFromUrl(String url) async {
+    final uri = Uri.parse(url);
+    try {
+      final content = await http.get(uri);
+      final json = jsonDecode(content.body);
+      LittleLightWishlist.fromJson(json);
+      return WishlistFile(name: json["name"], description: json["description"], url: url);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Set<String> getWishlistBuildNotes({required int itemHash, Map<String, List<DestinyItemPlugBase>>? reusablePlugs}) {
+    final builds = getWishlistBuilds(itemHash: itemHash, reusablePlugs: reusablePlugs);
+    final descriptions = Set<String>();
+    for (final build in builds) {
+      final description = build.description?.trim() ?? "";
+      if (description.length == 0) break;
+      descriptions.removeWhere((d) => description.contains(d));
+      final alreadyExists = descriptions.any((d) => d.contains(description));
+      if (!alreadyExists) descriptions.add(description);
+    }
+    return descriptions;
   }
 
   Set<WishlistTag> getWishlistBuildTags({
-    int itemHash,
-    Map<String, List<DestinyItemPlugBase>> reusablePlugs,
-    List<DestinyItemSocketState> sockets,
+    required int itemHash,
+    required Map<String, List<DestinyItemPlugBase>> reusablePlugs,
   }) {
-    if ([itemHash, reusablePlugs, sockets].contains(null)) {
-      return null;
-    }
-    final builds = getWishlistBuilds(
-        itemHash: itemHash, reusablePlugs: reusablePlugs, sockets: sockets);
-    if (builds.length == 0) return null;
-    Set<WishlistTag> tags = Set();
-    builds.forEach((b) {
-      tags.addAll(b.tags);
-    });
-    return tags;
+    final builds = getWishlistBuilds(itemHash: itemHash, reusablePlugs: reusablePlugs);
+    final tags = builds.map((e) => e.tags.toList());
+    if (tags.length == 0) return Set();
+    return tags.reduce((value, element) => value + element).toSet();
   }
 
-  Set<String> getWishlistBuildNotes(DestinyItemComponent item) {
-    if (item == null) return null;
-    var reusable = ProfileService().getItemReusablePlugs(item.itemInstanceId);
-    var sockets = ProfileService().getItemSockets(item.itemInstanceId);
-    Set<int> availablePlugs = Set();
-    reusable?.values?.forEach((plugs) =>
-        plugs.forEach((plug) => availablePlugs.add(plug.plugItemHash)));
-    sockets?.map((plug) => availablePlugs.add(plug.plugHash))?.toSet();
-    if (availablePlugs?.length == 0) return null;
-    var wish = _items[item?.itemHash];
-
-    var builds = wish?.builds?.where((build) {
-      return build.perks.every((element) =>
-          element.any((e) => availablePlugs.contains(e)) ||
-          element.length == 0);
-    });
-    if ((builds?.length ?? 0) == 0) return null;
-    Set<String> notes = Set();
-    builds.forEach((b) {
-      notes.addAll(b.notes);
-    });
-    return notes;
+  Set<WishlistTag> getPlugTags(int itemHash, int plugItemHash) {
+    if (_parsedWishlists == null) throw _notInitializedException;
+    return _parsedWishlists?.items[itemHash]?.perks[plugItemHash] ?? Set();
   }
 
-  addToWishList(
-      {String name,
-      int hash,
-      List<List<int>> perks,
-      Set<WishlistTag> specialties,
-      Set<String> notes,
-      String originalWishlist}) {
-    var wishlist =
-        _items[hash] = _items[hash] ?? WishlistItem.builder(itemHash: hash);
-    var build = WishlistBuild.builder(
-        name: name,
-        perks: perks.map((p) => p.toSet()).toList(),
-        originalWishlist: originalWishlist);
-    build.notes.addAll(notes.where((n) => (n?.length ?? 0) > 0));
-    build.tags.addAll(specialties.where((s) => s != null));
-    for (var p in perks) {
-      for (var p2 in p) {
-        var perk = wishlist.perks[p2] = wishlist.perks[p2] ?? Set();
-        perk.addAll(specialties);
-      }
+  Future<List<WishlistFile>> addWishlist(WishlistFile wishlist) async {
+    final wishlists = await getWishlists() ?? <WishlistFile>[];
+    wishlists.removeWhere((element) => element.url == wishlist.url);
+    wishlists.add(wishlist);
+    await setWishlists(wishlists);
+    await checkForUpdates(true);
+    return wishlists;
+  }
+
+  Future<List<WishlistFile>> removeWishlist(WishlistFile wishlist) async {
+    final wishlists = await getWishlists() ?? <WishlistFile>[];
+    wishlists.removeWhere((element) => element.url == wishlist.url);
+    await setWishlists(wishlists);
+    await checkForUpdates(true);
+    return wishlists;
+  }
+
+  List<ParsedWishlistBuild> getWishlistBuilds(
+      {required int itemHash, Map<String, List<DestinyItemPlugBase>>? reusablePlugs}) {
+    if (_parsedWishlists == null) throw _notInitializedException;
+    final wishlistItem = _parsedWishlists?.items[itemHash];
+    if (reusablePlugs == null) {
+      return wishlistItem?.builds ?? [];
     }
-    wishlist.builds.add(build);
+    Set<int> availablePlugs = reusablePlugs.values
+        .reduce((value, element) => value + element)
+        .map((p) => p.plugItemHash)
+        .whereType<int>()
+        .toSet();
+    if (availablePlugs.length == 0) return [];
+    final builds = wishlistItem?.builds.where((build) {
+      return build.plugs.every((element) => element.any((e) => availablePlugs.contains(e)) || element.length == 0);
+    });
+
+    return builds?.toList() ?? [];
   }
 }

@@ -1,10 +1,10 @@
-import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
-import 'package:bungie_api/models/destiny_item_component.dart';
-import 'package:bungie_api/models/destiny_item_instance_component.dart';
-import 'package:bungie_api/models/destiny_objective_definition.dart';
-import 'package:bungie_api/models/destiny_objective_progress.dart';
+// @dart=2.9
+
+import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
@@ -12,7 +12,7 @@ import 'package:little_light/widgets/common/objective.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
-class QuestInfoWidget extends BaseDestinyStatefulItemWidget {
+class QuestInfoWidget extends BaseDestinyStatefulItemWidget{
   QuestInfoWidget(
       {DestinyItemComponent item,
       DestinyInventoryItemDefinition definition,
@@ -32,7 +32,7 @@ class QuestInfoWidget extends BaseDestinyStatefulItemWidget {
   }
 }
 
-class QuestInfoWidgetState extends BaseDestinyItemState<QuestInfoWidget> {
+class QuestInfoWidgetState extends BaseDestinyItemState<QuestInfoWidget> with ProfileConsumer, ManifestConsumer {
   DestinyInventoryItemDefinition questlineDefinition;
   Map<int, DestinyInventoryItemDefinition> questSteps;
   Map<int, DestinyObjectiveDefinition> objectiveDefinitions;
@@ -48,9 +48,9 @@ class QuestInfoWidgetState extends BaseDestinyItemState<QuestInfoWidget> {
   }
 
   loadDefinitions() async {
-    itemObjectives = widget.profile
+    itemObjectives = profile
         .getItemObjectives(item?.itemInstanceId, characterId, item?.itemHash);
-    questlineDefinition = await widget.manifest
+    questlineDefinition = await manifest
         .getDefinition<DestinyInventoryItemDefinition>(
             definition.objectives.questlineItemHash);
     List<int> stepHashes = questlineDefinition.setData?.itemList
@@ -58,11 +58,11 @@ class QuestInfoWidgetState extends BaseDestinyItemState<QuestInfoWidget> {
             ?.toList() ??
         [];
     currentIndex = stepHashes.indexOf(item.itemHash);
-    questSteps = await widget.manifest
+    questSteps = await manifest
         .getDefinitions<DestinyInventoryItemDefinition>(stepHashes);
     Iterable<int> objectiveHashes =
         questSteps.values.expand((step) => step.objectives.objectiveHashes);
-    objectiveDefinitions = await widget.manifest
+    objectiveDefinitions = await manifest
         .getDefinitions<DestinyObjectiveDefinition>(objectiveHashes);
     setState(() {});
   }
@@ -128,7 +128,7 @@ class QuestInfoWidgetState extends BaseDestinyItemState<QuestInfoWidget> {
     var item = questlineDefinition.setData.itemList[index];
     var def = questSteps[item.itemHash];
     return Container(
-        color: Colors.blueGrey.shade700,
+        color: Theme.of(context).colorScheme.secondary,
         margin: EdgeInsets.all(8).copyWith(top: 0),
         child: Column(
             children: <Widget>[

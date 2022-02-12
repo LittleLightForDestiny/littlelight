@@ -1,5 +1,7 @@
+// @dart=2.9
+
 import 'package:flutter/material.dart';
-import 'package:little_light/services/storage/storage.service.dart';
+import 'package:little_light/services/language/language.consumer.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -16,7 +18,7 @@ class ExpiryDateWidget extends StatefulWidget {
   }
 }
 
-class ExpiryDateWidgetState extends State<ExpiryDateWidget> {
+class ExpiryDateWidgetState extends State<ExpiryDateWidget> with LanguageConsumer {
   bool expired = false;
   String expiresIn = "";
 
@@ -33,17 +35,14 @@ class ExpiryDateWidgetState extends State<ExpiryDateWidget> {
       setState(() {});
       return;
     }
-    var locale = StorageService.getLanguage();
-    expiresIn = timeago.format(expiry, allowFromNow: true, locale: locale);
+
+    expiresIn = timeago.format(expiry, allowFromNow: true, locale: languageService.currentLanguage);
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    var style = TextStyle(
-        color: Colors.red.shade300,
-        fontSize: widget.fontSize,
-        fontStyle: FontStyle.italic);
+    var style = TextStyle(color: Colors.red.shade300, fontSize: widget.fontSize, fontStyle: FontStyle.italic);
     if (expired) {
       return TranslatedTextWidget(
         "Expired",

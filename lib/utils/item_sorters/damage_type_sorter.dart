@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'package:bungie_api/enums/damage_type.dart';
 import 'package:little_light/utils/item_sorters/base_item_sorter.dart';
 import 'package:little_light/utils/item_with_owner.dart';

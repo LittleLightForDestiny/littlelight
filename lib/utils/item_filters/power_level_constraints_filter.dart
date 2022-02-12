@@ -1,7 +1,9 @@
+// @dart=2.9
+
 import 'dart:math';
 
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 
 import 'base_item_filter.dart';
@@ -28,7 +30,7 @@ class PowerLevelConstraintsFilter
     availableValues.max = -9999;
     items.forEach((element) {
       var instanceInfo =
-          ProfileService().getInstanceInfo(element?.item?.itemInstanceId);
+          profile.getInstanceInfo(element?.item?.itemInstanceId);
       var power = instanceInfo?.primaryStat?.value;
       if (power != null) {
         this.availableValues.min =
@@ -54,7 +56,7 @@ class PowerLevelConstraintsFilter
   bool filterItem(ItemWithOwner item,
       {Map<int, DestinyInventoryItemDefinition> definitions}) {
     var instanceInfo =
-        ProfileService().getInstanceInfo(item?.item?.itemInstanceId);
+        profile.getInstanceInfo(item?.item?.itemInstanceId);
     var power = instanceInfo?.primaryStat?.value;
     if(power == null) return value.includePowerlessItems;
     if(power < value.min) return false;

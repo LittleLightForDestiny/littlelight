@@ -1,34 +1,25 @@
+// @dart=2.9
+
 import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
-
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
-import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_vendor_definition.dart';
-
 import 'package:flutter/material.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/services/inventory/inventory.service.dart';
-import 'package:little_light/services/littlelight/loadouts.service.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
-import 'package:little_light/services/notification/notification.service.dart';
-import 'package:little_light/services/profile/profile.service.dart';
-
+import 'package:little_light/services/inventory/inventory.package.dart';
+import 'package:little_light/services/littlelight/loadouts.consumer.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-
-
 import 'package:little_light/widgets/item_list/character_info.widget.dart';
 import 'package:little_light/widgets/option_sheets/loadout_select_sheet.widget.dart';
 
 class VaultInfoWidget extends CharacterInfoWidget {
-  final ManifestService manifest = new ManifestService();
-  final ProfileService profile = new ProfileService();
-  final NotificationService broadcaster = NotificationService();
-
   VaultInfoWidget({Key key}) : super(key: key);
 
   @override
@@ -51,7 +42,6 @@ class VaultInfoWidgetState extends CharacterInfoWidgetState<VaultInfoWidget> {
     return Stack(children: [
       mainCharacterInfo(context, character),
       Positioned.fill(
-        bottom: 16,
         child: ghostIcon(context),
       ),
       currencyInfo(context),
@@ -65,8 +55,7 @@ class VaultInfoWidgetState extends CharacterInfoWidgetState<VaultInfoWidget> {
     ]);
   }
 
-  Widget mainCharacterInfo(
-      BuildContext context, DestinyCharacterComponent character) {
+  Widget mainCharacterInfo(BuildContext context, DestinyCharacterComponent character) {
     return Positioned(
         top: 0,
         left: 8,
@@ -74,25 +63,19 @@ class VaultInfoWidgetState extends CharacterInfoWidgetState<VaultInfoWidget> {
         child: Container(
           alignment: Alignment.centerLeft,
           child: ManifestText<DestinyVendorDefinition>(1037843411,
-              uppercase: true,
-              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 20)),
+              uppercase: true, style: TextStyle(fontWeight: FontWeight.w700, fontSize: 20)),
         ));
   }
 
-  Widget characterStatsInfo(
-      BuildContext context, DestinyCharacterComponent character) {
-    int itemCount = widget.profile
-        .getAllItems()
-        .where((i) => i.bucketHash == InventoryBucket.general)
-        .length;
+  Widget characterStatsInfo(BuildContext context, DestinyCharacterComponent character) {
+    int itemCount = profile.getAllItems().where((i) => i.item.bucketHash == InventoryBucket.general).length;
     return Positioned(
       right: 8,
       top: 0,
       bottom: 16,
       child: Container(
           alignment: Alignment.centerRight,
-          child: ManifestText<DestinyInventoryBucketDefinition>(
-              InventoryBucket.general,
+          child: ManifestText<DestinyInventoryBucketDefinition>(InventoryBucket.general,
               textExtractor: (def) => "$itemCount/${def.itemCount}",
               key: Key("$itemCount"),
               style: TextStyle(fontWeight: FontWeight.w700, fontSize: 20))),
@@ -109,9 +92,6 @@ class VaultInfoWidgetState extends CharacterInfoWidgetState<VaultInfoWidget> {
 }
 
 class VaultOptionsSheet extends StatefulWidget {
-  final ProfileService profile = ProfileService();
-  final ManifestService manifest = ManifestService();
-
   VaultOptionsSheet({Key key}) : super(key: key);
 
   @override
@@ -120,12 +100,12 @@ class VaultOptionsSheet extends StatefulWidget {
   }
 }
 
-class VaultOptionsSheetState extends State<VaultOptionsSheet> {
-  final TextStyle buttonStyle =
-      TextStyle(fontWeight: FontWeight.bold, fontSize: 12);
+class VaultOptionsSheetState extends State<VaultOptionsSheet>
+    with LoadoutsConsumer, ProfileConsumer, InventoryConsumer {
+  final TextStyle buttonStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 12);
 
   List<Loadout> loadouts;
-  List<DestinyItemComponent> itemsInPostmaster;
+  List<ItemWithOwner> itemsInPostmaster;
 
   @override
   void initState() {
@@ -141,11 +121,7 @@ class VaultOptionsSheetState extends State<VaultOptionsSheet> {
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisSize: MainAxisSize.min,
-            children: [
-              buildTransferLoadout(),
-              Container(height:4),
-              buildPullFromPostmaster()
-            ]));
+            children: [buildTransferLoadout(), Container(height: 4), buildPullFromPostmaster()]));
   }
 
   Widget buildTransferLoadout() {
@@ -160,12 +136,9 @@ class VaultOptionsSheetState extends State<VaultOptionsSheet> {
       onTap: () {
         Navigator.of(context).pop();
         showModalBottomSheet(
-                    context: context,
-                    builder: (context) => LoadoutSelectSheet(
-                        loadouts: loadouts,
-                        onSelect: (loadout) => InventoryService()
-                            .transferLoadout(
-                                loadout)));
+            context: context,
+            builder: (context) =>
+                LoadoutSelectSheet(loadouts: loadouts, onSelect: (loadout) => inventory.transferLoadout(loadout)));
       },
     );
   }
@@ -193,7 +166,7 @@ class VaultOptionsSheetState extends State<VaultOptionsSheet> {
       children: <Widget>[
         Positioned.fill(
             child: Material(
-          color: Colors.blueGrey.shade500,
+          color: Theme.of(context).colorScheme.secondary,
         )),
         Container(padding: EdgeInsets.all(8), child: content),
         Positioned.fill(
@@ -207,18 +180,12 @@ class VaultOptionsSheetState extends State<VaultOptionsSheet> {
   }
 
   transferEverythingFromPostmaster() async {
-    var characters = widget.profile.getCharacters();
-    var inventory = InventoryService();
+    var characters = profile.getCharacters();
     for (var char in characters) {
-      var all = widget.profile.getCharacterInventory(char.characterId);
-      var inPostmaster =
-          all.where((i) => i.bucketHash == InventoryBucket.lostItems).toList();
-      await inventory.transferMultiple(
-          inPostmaster
-              .map((i) => ItemWithOwner(i, char.characterId))
-              .toList(),
-          ItemDestination.Vault,
-          char.characterId);
+      var all = profile.getCharacterInventory(char.characterId);
+      var inPostmaster = all.where((i) => i.bucketHash == InventoryBucket.lostItems).toList();
+      await inventory.transferMultiple(inPostmaster.map((i) => ItemWithOwner(i, char.characterId)).toList(),
+          ItemDestination.Vault, char.characterId);
     }
   }
 
@@ -232,14 +199,12 @@ class VaultOptionsSheetState extends State<VaultOptionsSheet> {
               children: loadouts
                   .map(
                     (loadout) => Container(
-                        color: Theme.of(context).buttonColor,
-                        margin:
-                            EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        color: LittleLightTheme.of(context).primaryLayers,
+                        margin: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         child: Stack(children: [
                           Positioned.fill(
                               child: loadout.emblemHash != null
-                                  ? ManifestImageWidget<
-                                      DestinyInventoryItemDefinition>(
+                                  ? ManifestImageWidget<DestinyInventoryItemDefinition>(
                                       loadout.emblemHash,
                                       fit: BoxFit.cover,
                                       urlExtractor: (def) {
@@ -262,7 +227,7 @@ class VaultOptionsSheetState extends State<VaultOptionsSheet> {
                             child: InkWell(
                               onTap: () {
                                 Navigator.of(context).pop();
-                                InventoryService().transferLoadout(loadout);
+                                inventory.transferLoadout(loadout);
                               },
                             ),
                           ))
@@ -277,17 +242,15 @@ class VaultOptionsSheetState extends State<VaultOptionsSheet> {
   }
 
   void getLoadouts() async {
-    var littlelight = LoadoutsService();
-    this.loadouts = await littlelight.getLoadouts();
+    this.loadouts = await loadoutService.getLoadouts();
     if (mounted) {
       setState(() {});
     }
   }
 
   void getItemsInPostmaster() {
-    var all = widget.profile.getAllItems();
-    var inPostmaster =
-        all.where((i) => i.bucketHash == InventoryBucket.lostItems).toList();
+    var all = profile.getAllItems();
+    var inPostmaster = all.where((i) => i.item.bucketHash == InventoryBucket.lostItems).toList();
     itemsInPostmaster = inPostmaster;
   }
 }

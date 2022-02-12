@@ -1,6 +1,8 @@
+// @dart=2.9
+
 import 'package:flutter/material.dart';
 import 'package:little_light/models/loadout.dart';
-import 'package:little_light/services/littlelight/loadouts.service.dart';
+import 'package:little_light/services/littlelight/loadouts.consumer.dart';
 import 'package:little_light/utils/item_filters/loadout_filter.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/search/search.controller.dart';
@@ -14,7 +16,7 @@ class LoadoutFilterWidget extends BaseSearchFilterWidget<LoadoutFilter> {
 }
 
 class _LoadoutFilterWidgetState extends BaseSearchFilterWidgetState<
-    LoadoutFilterWidget, LoadoutFilter, Loadout> {
+    LoadoutFilterWidget, LoadoutFilter, Loadout> with LoadoutsConsumer{
   List<Loadout> allLoadouts;
 
   @override
@@ -26,7 +28,7 @@ class _LoadoutFilterWidgetState extends BaseSearchFilterWidgetState<
 
   @override
   onUpdate() async {
-    allLoadouts = await LoadoutsService().getLoadouts();
+    allLoadouts = await loadoutService.getLoadouts();
     return super.onUpdate();
   }
 

@@ -1,8 +1,9 @@
+// @dart=2.9
+
 import 'dart:math' as math;
 
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_power_cap_definition.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 
 import 'base_item_filter.dart';
@@ -27,7 +28,7 @@ class PowerCapFilter extends BaseItemFilter<Set<int>> {
           def?.quality?.currentVersion != null) {
         var powercapHash =
             def.quality.versions[def.quality.currentVersion].powerCapHash;
-        var powerCapDef = await ManifestService()
+        var powerCapDef = await manifest
             .getDefinition<DestinyPowerCapDefinition>(powercapHash);
         var powerCap = math.min(powerCapDef.powerCap, 9000);
         powercapValues[powercapHash] = powerCap;

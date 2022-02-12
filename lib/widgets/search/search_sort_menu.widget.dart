@@ -1,6 +1,7 @@
-import 'package:drag_list/drag_list.dart';
+// @dart=2.9
+
 import 'package:flutter/material.dart';
-import 'package:little_light/services/user_settings/item_sort_parameter.dart';
+import 'package:little_light/models/item_sort_parameter.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/search/search.controller.dart';
@@ -53,8 +54,7 @@ class _SearchSortMenuState extends State<SearchSortMenu> {
         ),
         Expanded(
             child: ListView(
-                padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).padding.bottom),
+                padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
                 children: buildParameters(context)))
       ],
     ));
@@ -66,54 +66,53 @@ class _SearchSortMenuState extends State<SearchSortMenu> {
       widgets.add(HeaderWidget(
         child: TranslatedTextWidget("Active Sorters", uppercase: true),
       ));
-      widgets.add(Container(
-          height: widget.controller.customSorting.length * 56.0,
-          child: buildDragList(context)));
+      widgets.add(Container(height: widget.controller.customSorting.length * 56.0, child: buildDragList(context)));
     }
     if ((widget.controller.availableSorters?.length ?? 0) > 0) {
       widgets.add(HeaderWidget(
         child: TranslatedTextWidget("Available Sorters", uppercase: true),
       ));
     }
-    widgets.addAll(widget.controller.availableSorters.map((s) => buildSortItem(
-        context, ItemSortParameter(active: false, type: s), Container())));
+    widgets.addAll(widget.controller.availableSorters
+        .map((s) => buildSortItem(context, ItemSortParameter(active: false, type: s))));
     return widgets;
   }
 
   Widget buildDragList(BuildContext context) {
-    return DragList<ItemSortParameter>(
-      items: widget.controller.customSorting,
+    return ReorderableList(
       padding: EdgeInsets.all(0),
+      itemCount: widget.controller.customSorting.length,
       itemExtent: 48,
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
-      handleBuilder: (context) => buildHandle(context),
-      onItemReorder: (oldIndex, newIndex) {
+      itemBuilder: (context, index) {
+        final item = widget.controller.customSorting[index];
+        return buildSortItem(context, item, index);
+      },
+      onReorder: (oldIndex, newIndex) {
         var itemOrdering = widget.controller.customSorting;
         var removed = itemOrdering.removeAt(oldIndex);
         itemOrdering.insert(newIndex, removed);
         widget.controller.sort();
       },
-      itemBuilder: (context, parameter, handle) =>
-          buildSortItem(context, parameter.value, handle),
     );
   }
 
-  Widget buildSortItem(
-      BuildContext context, ItemSortParameter parameter, Widget handle) {
+  Widget buildSortItem(BuildContext context, ItemSortParameter parameter, [int index]) {
+    final handle = index != null ? buildHandle(context, index) : null;
     if (parameter.type == ItemSortParameterType.Stat) {
-      return StatSorterWidget(widget.controller, parameter, handle: handle);
+      return Material(
+          key: Key("sort-stat-${parameter.type}"),
+          child: StatSorterWidget(widget.controller, parameter, handle: handle));
     }
-    return BaseSearchSorterWidget(widget.controller, parameter, handle: handle);
+    return Material(
+        key: Key("sort-${parameter.type}"),
+        child: BaseSearchSorterWidget(widget.controller, parameter, handle: handle));
   }
 
-  Widget buildHandle(BuildContext context) {
-    return GestureDetector(
-        onVerticalDragStart: (_) {},
-        onVerticalDragDown: (_) {},
-        child: AspectRatio(
-            aspectRatio: 1,
-            child:
-                Container(color: Colors.transparent, child: Icon(Icons.menu))));
+  Widget buildHandle(BuildContext context, int index) {
+    return ReorderableDragStartListener(
+        index: index,
+        child: AspectRatio(aspectRatio: 1, child: Container(color: Colors.transparent, child: Icon(Icons.menu))));
   }
 }
