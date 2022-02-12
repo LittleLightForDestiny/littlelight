@@ -20,7 +20,13 @@ end
 platform :android do
   desc "Submit a new Beta Build to Crashlytics Beta"
   lane :beta do
-    crashlytics
+    upload_to_play_store(
+      aab:'./build/app/outputs/bundle/release/app-release.aab',
+      skip_upload_screenshots:true,
+      skip_upload_images:true,
+      skip_upload_metadata:true,
+      track:'production'
+    )
   end
 
   desc "Deploy a new version to the Google Play"

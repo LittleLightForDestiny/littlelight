@@ -1,0 +1,84 @@
+name: Google Play
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+  
+jobs:
+  google-play-beta:
+    name: Release (beta)
+    if: github.event.pull_request.head.repo.fork == false
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v1
+        with:
+          flutter-version: '2.8.1'
+
+      - name: Create assets/_env
+        run: |
+          echo "${{ secrets.FLUTTER_DOTENV }}" > assets/_env
+
+      - name: Create google-services.json
+        run: |
+          echo '${{ secrets.ANDROID_GOOGLE_SERVICES_JSON }}' > android/app/google-services.json
+
+      - name: Cache pub dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.FLUTTER_HOME }}/.pub-cache
+          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: ${{ runner.os }}-pub-
+
+      - name: Download pub dependencies
+        run: flutter pub get
+
+      - name: Download Android keystore
+        id: android_keystore
+        uses: timheuer/base64-to-file@v1.0.3
+        with:
+          fileName: release.keystore
+          encodedString: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+
+      - name: Create release.properties
+        run: |
+          mkdir android/.keys
+          echo "storeFile=${{ steps.android_keystore.outputs.filePath }}" > android/.keys/release.properties
+          echo "storePassword=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" >> android/.keys/release.properties
+          echo "keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}" >> android/.keys/release.properties
+          echo "keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}" >> android/.keys/release.properties
+
+      - name: Build Android App Bundle
+        run: flutter build appbundle
+
+      - name: Cache bundle dependencies
+        uses: actions/cache@v2
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: ${{ runner.os }}-gems-
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.6
+
+      - name: Download bundle dependencies
+        run: |
+          gem install bundler:2.0.2
+          bundle config path vendor/bundle
+          bundle install
+
+      - name: Release to Google Play (production)
+        env:
+          SUPPLY_PACKAGE_NAME: ${{ secrets.SUPPLY_PACKAGE_NAME }}
+          SUPPLY_JSON_KEY_DATA: ${{ secrets.SUPPLY_JSON_KEY_DATA }}
+        run: |
+          bundle exec fastlane android beta
