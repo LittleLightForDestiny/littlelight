@@ -29,11 +29,13 @@ jobs:
 
       - name: Install script dependencies
         run: npm ci
-        working-dir: .github/workflows/scripts/version-update
+        with:
+          working-dir: .github/workflows/scripts
       
       - name: Update pubspec and changelogs
         run: npm run version-update
-        working-dir: .github/workflows/scripts/version-update
+        with:
+          working-dir: .github/workflows/scripts
         
       - name: Check for modified files
         if: steps.changed-lib.outputs.changed == 'true'
