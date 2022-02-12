@@ -11,17 +11,9 @@ Loadout _$LoadoutFromJson(Map<String, dynamic> json) => Loadout(
       assignedId: json['assignedId'] as String?,
       name: json['name'] as String? ?? "",
       emblemHash: json['emblemHash'] as int?,
-      equipped: (json['equipped'] as List<dynamic>?)
-              ?.map((e) => LoadoutItem.fromJson(e))
-              .toList() ??
-          const [],
-      unequipped: (json['unequipped'] as List<dynamic>?)
-              ?.map((e) => LoadoutItem.fromJson(e))
-              .toList() ??
-          const [],
-      updatedAt: json['updated_at'] == null
-          ? null
-          : DateTime.parse(json['updated_at'] as String),
+      equipped: (json['equipped'] as List<dynamic>?)?.map((e) => LoadoutItem.fromJson(e)).toList() ?? const [],
+      unequipped: (json['unequipped'] as List<dynamic>?)?.map((e) => LoadoutItem.fromJson(e)).toList() ?? const [],
+      updatedAt: json['updated_at'] == null ? null : DateTime.parse(json['updated_at'] as String),
     );
 
 Map<String, dynamic> _$LoadoutToJson(Loadout instance) => <String, dynamic>{
@@ -38,8 +30,7 @@ LoadoutItem _$LoadoutItemFromJson(Map<String, dynamic> json) => LoadoutItem(
       itemHash: json['itemHash'] as int?,
     );
 
-Map<String, dynamic> _$LoadoutItemToJson(LoadoutItem instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$LoadoutItemToJson(LoadoutItem instance) => <String, dynamic>{
       'itemInstanceId': instance.itemInstanceId,
       'itemHash': instance.itemHash,
     };

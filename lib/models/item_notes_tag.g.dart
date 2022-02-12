@@ -13,12 +13,10 @@ ItemNotesTag _$ItemNotesTagFromJson(Map<String, dynamic> json) => ItemNotesTag(
       name: json['name'] as String? ?? "",
       backgroundColorHex: json['backgroundColorHex'] as String? ?? "#00000000",
       foregroundColorHex: json['foregroundColorHex'] as String? ?? "#FFFFFFFF",
-      icon: $enumDecodeNullable(_$ItemTagIconEnumMap, json['icon']) ??
-          ItemTagIcon.Star,
+      icon: $enumDecodeNullable(_$ItemTagIconEnumMap, json['icon']) ?? ItemTagIcon.Star,
     );
 
-Map<String, dynamic> _$ItemNotesTagToJson(ItemNotesTag instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$ItemNotesTagToJson(ItemNotesTag instance) => <String, dynamic>{
       'custom': instance.custom,
       'tagId': instance.tagId,
       'name': instance.name,

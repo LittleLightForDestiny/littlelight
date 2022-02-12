@@ -7,8 +7,7 @@ part of 'tracked_objective.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-TrackedObjective _$TrackedObjectiveFromJson(Map<String, dynamic> json) =>
-    TrackedObjective(
+TrackedObjective _$TrackedObjectiveFromJson(Map<String, dynamic> json) => TrackedObjective(
       type: $enumDecode(_$TrackedObjectiveTypeEnumMap, json['type']),
       hash: json['hash'] as int?,
       instanceId: json['instanceId'] as String?,
@@ -16,8 +15,7 @@ TrackedObjective _$TrackedObjectiveFromJson(Map<String, dynamic> json) =>
       parentHash: json['parentHash'] as int?,
     );
 
-Map<String, dynamic> _$TrackedObjectiveToJson(TrackedObjective instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$TrackedObjectiveToJson(TrackedObjective instance) => <String, dynamic>{
       'type': _$TrackedObjectiveTypeEnumMap[instance.type],
       'hash': instance.hash,
       'instanceId': instance.instanceId,
