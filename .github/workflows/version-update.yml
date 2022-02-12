@@ -35,16 +35,14 @@ jobs:
         run: npm run version-update
         working-directory: .github/workflows/scripts
         
-      - name: Check for modified files
-        if: steps.changed-lib.outputs.changed == 'true'
-        id: git-check
-        run: echo ::set-output name=modified::$(if git diff-index --quiet HEAD --; then echo "false"; else echo "true"; fi)
+      # - name: Check for modified files
+      #   id: git-check
+      #   run: echo ::set-output name=modified::$(if git diff-index --quiet HEAD --; then echo "false"; else echo "true"; fi)
       
-      - name: Push changes
-        if: steps.changed-lib.outputs.changed == 'true'
-        run: |
-          git config --global user.name 'LittleLightBot'
-          git config --global user.email 'littlelight-bot@users.noreply.github.com'
-          git remote set-url origin https://x-access-token:${{ secrets.BOT_PAT }}@github.com/${{ github.repository }}
-          git commit -am "Code formatting"
-          git push
+      # - name: Push changes
+      #   run: |
+      #     git config --global user.name 'LittleLightBot'
+      #     git config --global user.email 'littlelight-bot@users.noreply.github.com'
+      #     git remote set-url origin https://x-access-token:${{ secrets.BOT_PAT }}@github.com/${{ github.repository }}
+      #     git commit -am "Code formatting"
+      #     git push
