@@ -1,5 +1,3 @@
-const core = require('@actions/core');
-const github = require('@actions/github');
 const fs = require('fs-extra');
 
 
@@ -26,24 +24,7 @@ function getCommandLineArgs() {
 /**
  * @returns {Object.<string, string>}
  */
-function getWorkflowDispatchInputs() {
-  let mappedArgs = {};
-  try {
-    mappedArgs['version'] = core.getInput('version');
-    mappedArgs['changelog'] = core.getMultilineInput('changelog');
-  } catch (e) { };
-  if (mappedArgs.version) {
-    return mappedArgs;
-  }
-  return null;
-}
-
-/**
- * @returns {Object.<string, string>}
- */
 function getParams() {
-  const workflowDispatchInput = getWorkflowDispatchInputs();
-  if (workflowDispatchInput) return workflowDispatchInput;
   return getCommandLineArgs();
 }
 
@@ -78,7 +59,6 @@ async function updatePubspec(versionString, versionNumber) {
   const versionRegexp = /# application version\nversion: .*?\n/s;
   const changedFileContents = file.replace(versionRegexp, `# application version\nversion: ${versionString}+${versionNumber}\n`)
   console.log(changedFileContents);
-  core.setOutput("pubspec", changedFileContents);
   return true;
 }
 

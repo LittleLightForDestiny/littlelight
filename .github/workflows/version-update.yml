@@ -1,22 +1,33 @@
-name: Update Version
-description: Updates app version and changelogs
+name: Version update test script
 
-inputs:
-  version:
-    type: string
-    description: Version
-    required: true
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        type: string
+        description: Version
+        required: true
 
-  changelog:
-    type: string
-    description: What's new ?
-    required: true
-
-outputs:
-  pubspec:
-    description: "Updated pubspec"
+      changelog:
+        type: multiline
+        description: what's new ?
+        required: true
   
-runs:
-  using: 'node16'
-  main: '.github/workflows/scripts/version-update/index.js'
-  working-directory: './'
+jobs:
+  version-update:
+    if: github.event.pull_request.head.repo.fork == false
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
+      
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+          cache: 'npm'
+          cache-dependency-path: ./github/workflows/scripts/package-lock.json
+      
+      - name: Updates version and changelog
+        run: npm run version-update -- --version=${{github.event.inputs.version}} --changelog==${{github.event.inputs.changelog}}
+        working-directory: ./github/workflows/scripts/
