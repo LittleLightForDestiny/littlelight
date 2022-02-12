@@ -11,6 +11,7 @@ on:
       changelog:
         type: string
         description: what's new ?
+        multiline: true
         required: true
   
 jobs:
@@ -26,6 +27,7 @@ jobs:
         with:
           node-version: '14'
           cache: 'npm'
+          cache-dependency-path: .github/workflows/scripts
 
       - name: Install script dependencies
         run: npm ci
