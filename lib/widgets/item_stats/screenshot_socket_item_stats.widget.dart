@@ -22,11 +22,7 @@ class ScreenShotSocketItemStatsWidget extends BaseItemStatsWidget {
       ItemSocketController socketController,
       this.plugDefinition,
       this.pixelSize})
-      : super(
-            socketController: socketController,
-            item: item,
-            definition: definition,
-            key: key);
+      : super(socketController: socketController, item: item, definition: definition, key: key);
 
   @override
   BaseDestinyItemState<BaseDestinyStatefulItemWidget> createState() {
@@ -34,20 +30,19 @@ class ScreenShotSocketItemStatsWidget extends BaseItemStatsWidget {
   }
 }
 
-class ScreenShotSocketItemStatsState
-    extends BaseItemStatsState<ScreenShotSocketItemStatsWidget> {
+class ScreenShotSocketItemStatsState extends BaseItemStatsState<ScreenShotSocketItemStatsWidget> {
   @override
   Widget build(BuildContext context) {
     super.build(context);
     var statWidgets = buildStats(context);
-    if(statWidgets.length == 0) return Container();
+    if (statWidgets.length == 0) return Container();
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 8*widget.pixelSize),
-      child:Column(
-      mainAxisAlignment: MainAxisAlignment.end,
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: buildStats(context),
-    ));
+        padding: EdgeInsets.symmetric(vertical: 8 * widget.pixelSize),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: buildStats(context),
+        ));
   }
 
   List<Widget> buildStats(context) {
@@ -60,29 +55,26 @@ class ScreenShotSocketItemStatsState
         statHash: stat.statTypeHash,
         modValues: entry,
         pixelSize: widget.pixelSize,
-        scaled: statGroupDefinition?.scaledStats?.firstWhere(
-            (s) => s.statHash == stat.statTypeHash,
-            orElse: () => null),
+        scaled:
+            statGroupDefinition?.scaledStats?.firstWhere((s) => s.statHash == stat.statTypeHash, orElse: () => null),
       );
     }).toList();
   }
 
   Iterable<DestinyItemInvestmentStatDefinition> get stats {
-    var statWhitelist =
-        statGroupDefinition?.scaledStats?.map((s) => s.statHash)?.toList() ?? []; 
+    var statWhitelist = statGroupDefinition?.scaledStats?.map((s) => s.statHash)?.toList() ?? [];
     List<int> statHashes = widget.plugDefinition.investmentStats
-        ?.map((s) => s.statTypeHash)
-        ?.where((s) => statWhitelist.contains(s) || DestinyData.hiddenStats.contains(s))
-        ?.toList() ?? [];
-    var noBarStats = statGroupDefinition?.scaledStats
-        ?.where((s) => s.displayAsNumeric)
-        ?.map((s) => s.statHash)
-        ?.toList() ?? [];
+            ?.map((s) => s.statTypeHash)
+            ?.where((s) => statWhitelist.contains(s) || DestinyData.hiddenStats.contains(s))
+            ?.toList() ??
+        [];
+    var noBarStats =
+        statGroupDefinition?.scaledStats?.where((s) => s.displayAsNumeric)?.map((s) => s.statHash)?.toList() ?? [];
 
     List<DestinyItemInvestmentStatDefinition> result = [];
     for (var statHash in statHashes) {
-      var itemStat = widget.definition?.investmentStats
-          ?.firstWhere((s) => s.statTypeHash == statHash, orElse: () => null);
+      var itemStat =
+          widget.definition?.investmentStats?.firstWhere((s) => s.statTypeHash == statHash, orElse: () => null);
       if (itemStat == null) {
         itemStat = DestinyItemInvestmentStatDefinition()
           ..statTypeHash = statHash
@@ -95,23 +87,26 @@ class ScreenShotSocketItemStatsState
     result.sort((statA, statB) {
       int valA = noBarStats.contains(statA.statTypeHash)
           ? 2
-          : DestinyData.hiddenStats.contains(statA.statTypeHash) ? 1 : 0;
+          : DestinyData.hiddenStats.contains(statA.statTypeHash)
+              ? 1
+              : 0;
       int valB = noBarStats.contains(statB.statTypeHash)
           ? 2
-          : DestinyData.hiddenStats.contains(statB.statTypeHash) ? 1 : 0;
+          : DestinyData.hiddenStats.contains(statB.statTypeHash)
+              ? 1
+              : 0;
       return valA - valB;
     });
     return result;
   }
 
   Map<int, StatValues> getStatValues() {
-    Map<int, StatValues> map = new Map();
+    Map<int, StatValues> map = Map();
     if (plugDefinitions == null) {
       return map;
     }
     stats.forEach((s) {
-      map[s.statTypeHash] =
-          new StatValues(equipped: s.value, selected: s.value);
+      map[s.statTypeHash] = StatValues(equipped: s.value, selected: s.value);
     });
     var statHashes = map.keys;
     var entries = definition?.sockets?.socketEntries;
@@ -119,7 +114,7 @@ class ScreenShotSocketItemStatsState
       var selectedPlugHash = socketController.socketSelectedPlugHash(index);
       var def = plugDefinitions[selectedPlugHash];
       def?.investmentStats?.forEach((s) {
-        if(!statHashes.contains(s.statTypeHash)) return;
+        if (!statHashes.contains(s.statTypeHash)) return;
         if (index == socketController.selectedSocketIndex) {
           map[s.statTypeHash].selected += s.value;
         } else {

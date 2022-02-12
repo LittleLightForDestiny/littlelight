@@ -11,7 +11,7 @@ class DownloadManifestProgressSubPage extends StatefulWidget {
   DownloadManifestProgressSubPage();
 
   @override
-  DownloadManifestProgressSubPageState createState() => new DownloadManifestProgressSubPageState();
+  DownloadManifestProgressSubPageState createState() => DownloadManifestProgressSubPageState();
 }
 
 class DownloadManifestProgressSubPageState extends SubpageBaseState<DownloadManifestProgressSubPage>

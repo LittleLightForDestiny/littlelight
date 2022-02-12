@@ -17,15 +17,12 @@ class CornerBadgeDecoration extends Decoration {
   final CornerPosition position;
 
   const CornerBadgeDecoration(
-      {@required this.colors,
-      @required this.badgeSize,
-      this.position = CornerPosition.TopRight});
+      {@required this.colors, @required this.badgeSize, this.position = CornerPosition.TopRight});
 
   List<Color> get badgeColors => colors;
 
   @override
-  BoxPainter createBoxPainter([onChanged]) =>
-      CornerBadgePainter(badgeColors, badgeSize, this.position);
+  BoxPainter createBoxPainter([onChanged]) => CornerBadgePainter(badgeColors, badgeSize, this.position);
 }
 
 class CornerBadgePainter extends BoxPainter {
@@ -65,8 +62,7 @@ class CornerBadgePainter extends BoxPainter {
     return [bottomLeft, bottomRight, topRight];
   }
 
-  Offset getOffset(
-      Offset offset, ImageConfiguration configuration, double size) {
+  Offset getOffset(Offset offset, ImageConfiguration configuration, double size) {
     switch (this.position) {
       case CornerPosition.TopLeft:
         return Offset(offset.dx, offset.dy);
@@ -75,8 +71,7 @@ class CornerBadgePainter extends BoxPainter {
       case CornerPosition.BottomLeft:
         return Offset(offset.dx, offset.dy + configuration.size.height - size);
       case CornerPosition.BottomRight:
-        return Offset(offset.dx + configuration.size.width - size,
-            offset.dy + configuration.size.height - size);
+        return Offset(offset.dx + configuration.size.width - size, offset.dy + configuration.size.height - size);
     }
     return Offset(0, 0);
   }
@@ -92,26 +87,20 @@ class CornerBadgePainter extends BoxPainter {
   ui.Gradient gradient(List<Offset> points, List<Color> colors) {
     double partSize = 1 / (colors?.length ?? 1);
     var stops = colors
-        .expand((element) => [
-              colors.indexOf(element) * partSize,
-              (colors.indexOf(element) + 1) * partSize + .001
-            ])
+        .expand((element) => [colors.indexOf(element) * partSize, (colors.indexOf(element) + 1) * partSize + .001])
         .toList();
     var doubledColors = colors.expand((element) => [element, element]).toList();
-    return ui.Gradient.linear(Offset(points[0].dx, points[0].dy),
-        Offset(points[2].dx, points[2].dy), doubledColors, stops);
+    return ui.Gradient.linear(
+        Offset(points[0].dx, points[0].dy), Offset(points[2].dx, points[2].dy), doubledColors, stops);
   }
 
   Paint getBadgePaint(List<Offset> points, List<Color> colors) =>
-      (colors?.length ?? 0) > 1
-          ? getMultiColorPaint(points, colors)
-          : getSingleColorPaint(colors);
+      (colors?.length ?? 0) > 1 ? getMultiColorPaint(points, colors) : getSingleColorPaint(colors);
 
   Path buildBadgePath(List<Offset> points) => Path.combine(
       PathOperation.difference,
       Path()
-        ..addRRect(RRect.fromLTRBAndCorners(
-            points[0].dx, points[0].dy, points[2].dx, points[2].dy,
+        ..addRRect(RRect.fromLTRBAndCorners(points[0].dx, points[0].dy, points[2].dx, points[2].dy,
             topRight: Radius.circular(CORNER_RADIUS))),
       Path()
         ..moveTo(points[0].dx, points[0].dy)

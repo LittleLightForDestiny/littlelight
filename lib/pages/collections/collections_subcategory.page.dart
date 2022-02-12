@@ -15,7 +15,7 @@ class CollectionsSubcategoryPage extends PresentationNodesTabsScaffoldWidget {
   CollectionsSubcategoryPage() : super();
 
   @override
-  createState() => new CollectionsSubcategoryPageState();
+  createState() => CollectionsSubcategoryPageState();
 }
 
 class CollectionsSubcategoryPageState extends PresentationNodesTabsScaffoldState<CollectionsSubcategoryPage>
@@ -46,8 +46,10 @@ class CollectionsSubcategoryPageState extends PresentationNodesTabsScaffoldState
     await Future.delayed(route?.transitionDuration ?? Duration.zero);
     final args = CollectionsPageRouteArguments.of(context);
     final categoryNodeHash = args?.subcategoryPresentationNodeHash;
-    final parentNodesDefs = await manifest.getDefinitions<DestinyPresentationNodeDefinition>(args?.parentCategoryHashes ?? []);
-    isCategorySets = parentNodesDefs.values.any((element) => element.screenStyle == DestinyPresentationScreenStyle.CategorySets);
+    final parentNodesDefs =
+        await manifest.getDefinitions<DestinyPresentationNodeDefinition>(args?.parentCategoryHashes ?? []);
+    isCategorySets =
+        parentNodesDefs.values.any((element) => element.screenStyle == DestinyPresentationScreenStyle.CategorySets);
     if (categoryNodeHash == null) return;
     final categoryDefinition = await manifest.getDefinition<DestinyPresentationNodeDefinition>(categoryNodeHash);
     setState(() {
@@ -64,7 +66,7 @@ class CollectionsSubcategoryPageState extends PresentationNodesTabsScaffoldState
   Widget buildBody(BuildContext context) {
     final categoryDefinition = this.categoryDefinition;
     if (categoryDefinition == null) return LoadingAnimWidget();
-    if(isCategorySets) return CategorySetsListWidget(node: categoryDefinition);
+    if (isCategorySets) return CategorySetsListWidget(node: categoryDefinition);
     return CollectibleListWidget(
       node: categoryDefinition,
       onItemTap: (collectibleHash) {},
@@ -77,7 +79,6 @@ class CollectionsSubcategoryPageState extends PresentationNodesTabsScaffoldState
     if (nodeHashes == null) return null;
     return CategoryBreadcrumbWidget(parentCategoryHashes: nodeHashes);
   }
-
 
   @override
   PreferredSizeWidget? buildAppBarBottom(BuildContext context) => buildBreadcrumb(context);

@@ -17,7 +17,7 @@ class TriumphsCategoryPage extends PresentationNodesTabsScaffoldWidget {
   TriumphsCategoryPage() : super();
 
   @override
-  createState() => new TriumphsCategoryPageState();
+  createState() => TriumphsCategoryPageState();
 }
 
 class TriumphsCategoryPageState extends PresentationNodesTabsScaffoldState<TriumphsCategoryPage>
@@ -89,9 +89,9 @@ class TriumphsCategoryPageState extends PresentationNodesTabsScaffoldState<Trium
     return super.buildBody(context);
   }
 
-  Widget buildTablessBody(BuildContext context){
+  Widget buildTablessBody(BuildContext context) {
     final categoryDefinition = this.categoryDefinition;
-    if(categoryDefinition == null) return LoadingAnimWidget();
+    if (categoryDefinition == null) return LoadingAnimWidget();
     return TriumphListWidget(node: categoryDefinition);
   }
 

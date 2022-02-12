@@ -8,11 +8,7 @@ import 'large_pursuit_item.widget.dart';
 
 class TrackedPursuitItemWidget extends LargePursuitItemWidget {
   TrackedPursuitItemWidget(
-      {Key key,
-      String characterId,
-      DestinyItemComponent item,
-      Function onTap,
-      Function onLongPress})
+      {Key key, String characterId, DestinyItemComponent item, Function onTap, Function onLongPress})
       : super(
             key: key,
             characterId: characterId,
@@ -20,12 +16,10 @@ class TrackedPursuitItemWidget extends LargePursuitItemWidget {
             // includeCharacterIcon: true,
             onTap: onTap);
 
-  TrackedPursuitItemWidgetState createState() =>
-      TrackedPursuitItemWidgetState();
+  TrackedPursuitItemWidgetState createState() => TrackedPursuitItemWidgetState();
 }
 
-class TrackedPursuitItemWidgetState<T extends TrackedPursuitItemWidget>
-    extends LargePursuitItemWidgetState<T> {
+class TrackedPursuitItemWidgetState<T extends TrackedPursuitItemWidget> extends LargePursuitItemWidgetState<T> {
   DestinyItemComponent _item;
 
   @override
@@ -48,8 +42,7 @@ class TrackedPursuitItemWidgetState<T extends TrackedPursuitItemWidget>
     return super.build(context);
   }
 
-  Widget buildObjective(
-      BuildContext context, DestinyObjectiveProgress objective) {
+  Widget buildObjective(BuildContext context, DestinyObjectiveProgress objective) {
     if (objectiveDefinitions == null) return Container();
     return super.buildObjective(context, objective);
   }

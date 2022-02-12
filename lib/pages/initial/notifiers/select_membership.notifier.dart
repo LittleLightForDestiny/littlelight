@@ -15,25 +15,23 @@ class SelectMembershipNotifier with ChangeNotifier, AuthConsumer {
 
   SelectMembershipNotifier(this.context);
 
-  void loadAccounts() async{
+  void loadAccounts() async {
     final currentAccountID = auth.currentAccountID;
-    if(currentAccountID != null){
+    if (currentAccountID != null) {
       _currentAccount = await auth.getMembershipDataForAccount(currentAccountID);
       notifyListeners();
     }
     final otherAccountIDs = auth.accountIDs?.where((element) => element != currentAccountID) ?? [];
-    if(otherAccountIDs.length > 0){
+    if (otherAccountIDs.length > 0) {
       final _accounts = <UserMembershipData>[];
-      for (final accountID in otherAccountIDs){
+      for (final accountID in otherAccountIDs) {
         final account = await auth.getMembershipDataForAccount(accountID);
-        if(account != null) _accounts.add(account);
+        if (account != null) _accounts.add(account);
       }
-      if(_accounts.length > 0){
+      if (_accounts.length > 0) {
         _otherAccounts = _accounts;
         notifyListeners();
       }
     }
   }
-
-  
 }

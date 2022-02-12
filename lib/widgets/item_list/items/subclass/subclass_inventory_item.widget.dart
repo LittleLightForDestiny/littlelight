@@ -11,11 +11,20 @@ import 'package:little_light/widgets/item_list/items/subclass/subclass_propertie
 
 class SubclassInventoryItemWidget extends BaseInventoryItemWidget with SubclassPropertiesMixin, ProfileConsumer {
   SubclassInventoryItemWidget(
-      DestinyItemComponent item,
-      DestinyInventoryItemDefinition definition,
-      DestinyItemInstanceComponent instanceInfo,
-      {@required String characterId, Key key, @required String uniqueId,})
-      : super(item, definition, instanceInfo, characterId:characterId, key:key, uniqueId: uniqueId,);
+    DestinyItemComponent item,
+    DestinyInventoryItemDefinition definition,
+    DestinyItemInstanceComponent instanceInfo, {
+    @required String characterId,
+    Key key,
+    @required String uniqueId,
+  }) : super(
+          item,
+          definition,
+          instanceInfo,
+          characterId: characterId,
+          key: key,
+          uniqueId: uniqueId,
+        );
 
   @override
   DestinyItemTalentGridComponent get talentGrid => profile.getTalentGrid(item.itemInstanceId);

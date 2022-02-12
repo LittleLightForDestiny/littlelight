@@ -22,7 +22,7 @@ setupProfileService() {
 }
 
 class ProfileService with UserSettingsConsumer, StorageConsumer, AuthConsumer, BungieApiConsumer, NotificationConsumer {
-  static const List<int> profileBuckets = const [
+  static const List<int> profileBuckets = [
     InventoryBucket.modifications,
     InventoryBucket.shaders,
     InventoryBucket.consumables

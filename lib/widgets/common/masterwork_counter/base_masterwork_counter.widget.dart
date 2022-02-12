@@ -13,8 +13,7 @@ import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widg
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
 class BaseMasterworkCounterWidget extends BaseDestinyStatefulItemWidget {
-  BaseMasterworkCounterWidget({DestinyItemComponent item, Key key})
-      : super(item: item, key: key);
+  BaseMasterworkCounterWidget({DestinyItemComponent item, Key key}) : super(item: item, key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -22,8 +21,8 @@ class BaseMasterworkCounterWidget extends BaseDestinyStatefulItemWidget {
   }
 }
 
-class BaseMasterworkCounterWidgetState<T extends BaseMasterworkCounterWidget>
-    extends BaseDestinyItemState<T> with AutomaticKeepAliveClientMixin, LanguageConsumer, ProfileConsumer, ManifestConsumer {
+class BaseMasterworkCounterWidgetState<T extends BaseMasterworkCounterWidget> extends BaseDestinyItemState<T>
+    with AutomaticKeepAliveClientMixin, LanguageConsumer, ProfileConsumer, ManifestConsumer {
   DestinyObjectiveProgress masterworkObjective;
   DestinyObjectiveDefinition masterworkObjectiveDefinition;
 
@@ -34,17 +33,15 @@ class BaseMasterworkCounterWidgetState<T extends BaseMasterworkCounterWidget>
 
   loadDefinitions() async {
     if (widget.item == null) return;
-    var plugObjectives =
-        profile.getPlugObjectives(widget?.item?.itemInstanceId);
+    var plugObjectives = profile.getPlugObjectives(widget?.item?.itemInstanceId);
 
     if (plugObjectives == null) return;
     for (var objectives in plugObjectives?.values) {
       for (var objective in objectives) {
         if (objective.visible) {
           masterworkObjective = objective;
-          masterworkObjectiveDefinition = await manifest
-              .getDefinition<DestinyObjectiveDefinition>(
-                  objective.objectiveHash);
+          masterworkObjectiveDefinition =
+              await manifest.getDefinition<DestinyObjectiveDefinition>(objective.objectiveHash);
         }
       }
     }
@@ -56,8 +53,7 @@ class BaseMasterworkCounterWidgetState<T extends BaseMasterworkCounterWidget>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    if (this.masterworkObjective == null ||
-        this.masterworkObjectiveDefinition?.displayProperties?.icon == null) {
+    if (this.masterworkObjective == null || this.masterworkObjectiveDefinition?.displayProperties?.icon == null) {
       return Container();
     }
     return Container(
@@ -91,9 +87,7 @@ class BaseMasterworkCounterWidgetState<T extends BaseMasterworkCounterWidget>
     return Container(
       width: 26,
       height: 26,
-      child: QueuedNetworkImage(
-          imageUrl: BungieApiService.url(
-              masterworkObjectiveDefinition.displayProperties.icon)),
+      child: QueuedNetworkImage(imageUrl: BungieApiService.url(masterworkObjectiveDefinition.displayProperties.icon)),
     );
   }
 
@@ -105,10 +99,8 @@ class BaseMasterworkCounterWidgetState<T extends BaseMasterworkCounterWidget>
   }
 
   Widget buildProgressValue(BuildContext context) {
-    
     var formatter = NumberFormat.decimalPattern(languageService.currentLanguage);
     var formattedValue = formatter.format(masterworkObjective.progress);
-    return Text("$formattedValue",
-        style: TextStyle(color: Colors.amber.shade200, fontSize: 15));
+    return Text("$formattedValue", style: TextStyle(color: Colors.amber.shade200, fontSize: 15));
   }
 }

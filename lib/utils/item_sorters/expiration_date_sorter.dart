@@ -7,10 +7,10 @@ import 'package:little_light/utils/item_sorters/base_item_sorter.dart';
 class ExpirationDateSorter extends BaseItemSorter {
   ExpirationDateSorter(int direction) : super(direction);
 
-  int expirationToInt(String exp){
-    if(exp == null) return 99999999*direction;
+  int expirationToInt(String exp) {
+    if (exp == null) return 99999999 * direction;
     var date = DateTime.parse(exp);
-    if(date.isBefore(DateTime.now())) return 99999998*direction;
+    if (date.isBefore(DateTime.now())) return 99999998 * direction;
     return date.difference(DateTime.now()).inMinutes;
   }
 
@@ -20,5 +20,4 @@ class ExpirationDateSorter extends BaseItemSorter {
     var expB = expirationToInt(b?.item?.expirationDate);
     return expA.compareTo(expB) * direction;
   }
-
 }

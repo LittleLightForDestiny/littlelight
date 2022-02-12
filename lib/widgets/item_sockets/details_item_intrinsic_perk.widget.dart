@@ -20,12 +20,7 @@ class DetailsItemIntrinsicPerkWidget extends BaseItemSocketsWidget {
     DestinyInventoryItemDefinition definition,
     DestinyItemSocketCategoryDefinition category,
     ItemSocketController controller,
-  }) : super(
-            key: key,
-            item: item,
-            definition: definition,
-            category: category,
-            controller: controller);
+  }) : super(key: key, item: item, definition: definition, category: category, controller: controller);
 
   @override
   State<StatefulWidget> createState() {
@@ -35,8 +30,7 @@ class DetailsItemIntrinsicPerkWidget extends BaseItemSocketsWidget {
 
 const _sectionId = "intrinsic_perks";
 
-class DetailsItemArmorExoticPerkWidgetState<
-        T extends DetailsItemIntrinsicPerkWidget>
+class DetailsItemArmorExoticPerkWidgetState<T extends DetailsItemIntrinsicPerkWidget>
     extends BaseItemSocketsWidgetState<T> with VisibleSectionMixin {
   bool showDetails = false;
 
@@ -46,9 +40,8 @@ class DetailsItemArmorExoticPerkWidgetState<
   @override
   Widget build(BuildContext context) {
     if (category == null) return Container();
-    Iterable<int> plugs = category.socketIndexes
-        .map((socketIndex) => socketPlugHashes(socketIndex).length)
-        .where((l) => l > 0);
+    Iterable<int> plugs =
+        category.socketIndexes.map((socketIndex) => socketPlugHashes(socketIndex).length).where((l) => l > 0);
     if (plugs.length == 0) return Container();
     return super.build(context);
   }
@@ -66,9 +59,8 @@ class DetailsItemArmorExoticPerkWidgetState<
 
   @override
   Widget buildSockets(BuildContext context) {
-    Iterable<Widget> children = category.socketIndexes
-        .map((socketIndex) => buildSocketPlugs(context, socketIndex))
-        .where((w) => w != null);
+    Iterable<Widget> children =
+        category.socketIndexes.map((socketIndex) => buildSocketPlugs(context, socketIndex)).where((w) => w != null);
     return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -112,8 +104,7 @@ class DetailsItemArmorExoticPerkWidgetState<
     int equippedHash = socketEquippedPlugHash(socketIndex);
     bool isEquipped = equippedHash == plugItemHash;
     bool isExotic = definition.inventory.tierType == TierType.Exotic;
-    bool isSelectedOnSocket =
-        plugItemHash == controller.socketSelectedPlugHash(socketIndex);
+    bool isSelectedOnSocket = plugItemHash == controller.socketSelectedPlugHash(socketIndex);
     bool isSelected = plugItemHash == controller.selectedPlugHash;
     Color bgColor = Colors.transparent;
     Color borderColor = Colors.grey.shade300.withOpacity(.5);
@@ -138,13 +129,11 @@ class DetailsItemArmorExoticPerkWidgetState<
             aspectRatio: 1,
             child: MaterialButton(
               shape: intrinsic && !isExotic
-                  ? RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4), side: borderSide)
+                  ? RoundedRectangleBorder(borderRadius: BorderRadius.circular(4), side: borderSide)
                   : CircleBorder(side: borderSide),
               padding: EdgeInsets.all(0),
               color: bgColor,
-              child: ManifestImageWidget<DestinyInventoryItemDefinition>(
-                  plugItemHash),
+              child: ManifestImageWidget<DestinyInventoryItemDefinition>(plugItemHash),
               onPressed: () {
                 controller.selectSocket(socketIndex, plugItemHash);
               },

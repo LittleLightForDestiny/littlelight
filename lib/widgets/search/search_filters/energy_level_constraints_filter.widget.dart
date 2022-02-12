@@ -7,27 +7,22 @@ import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/search/search.controller.dart';
 import 'package:little_light/widgets/search/search_filters/base_search_filter.widget.dart';
 
-class EnergyLevelConstraintsWidget
-    extends BaseSearchFilterWidget<EnergyLevelConstraintsFilter> {
+class EnergyLevelConstraintsWidget extends BaseSearchFilterWidget<EnergyLevelConstraintsFilter> {
   EnergyLevelConstraintsWidget(SearchController controller) : super(controller);
 
   @override
-  EnergyLevelConstraintsWidgetState createState() =>
-      EnergyLevelConstraintsWidgetState();
+  EnergyLevelConstraintsWidgetState createState() => EnergyLevelConstraintsWidgetState();
 }
 
-class EnergyLevelConstraintsWidgetState extends BaseSearchFilterWidgetState<
-    EnergyLevelConstraintsWidget,
-    EnergyLevelConstraintsFilter,
-    EnergyLevelConstraints> {
+class EnergyLevelConstraintsWidgetState extends BaseSearchFilterWidgetState<EnergyLevelConstraintsWidget,
+    EnergyLevelConstraintsFilter, EnergyLevelConstraints> {
   @override
   Widget buildButtons(BuildContext context) {
     var aMin = filter?.availableValues?.min ?? -999;
     var aMax = filter?.availableValues?.max ?? 999;
     var min = filter?.value?.min ?? -999;
     var max = filter?.value?.max ?? 999;
-    var powerlessAvaialable =
-        filter?.availableValues?.includeEnergylessItems ?? false;
+    var powerlessAvaialable = filter?.availableValues?.includeEnergylessItems ?? false;
     return Column(children: [
       !powerlessAvaialable
           ? Container()
@@ -55,8 +50,7 @@ class EnergyLevelConstraintsWidgetState extends BaseSearchFilterWidgetState<
           )),
       SliderTheme(
           data: SliderTheme.of(context).copyWith(
-              rangeValueIndicatorShape:
-                  SmallRectRangeSliderValueIndicatorShape(),
+              rangeValueIndicatorShape: SmallRectRangeSliderValueIndicatorShape(),
               rangeTrackShape: RoundedRectRangeSliderTrackShape()),
           child: RangeSlider(
             values: RangeValues(min?.toDouble(), max?.toDouble()),

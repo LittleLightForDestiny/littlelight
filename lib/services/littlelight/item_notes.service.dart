@@ -42,7 +42,7 @@ class ItemNotesService with StorageConsumer {
     return _defaultTags.values.toList() + (_tags?.values.toList() ?? []);
   }
 
-  Future<Map<String, ItemNotes>> getNotes({forceFetch: false}) async {
+  Future<Map<String, ItemNotes>> getNotes({forceFetch = false}) async {
     final _notes = this._notes;
     if (_notes != null && !forceFetch) {
       return _notes;

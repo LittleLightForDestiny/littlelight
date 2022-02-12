@@ -8,7 +8,7 @@ import 'package:little_light/models/loadout.dart';
 
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 
-typedef void OnLoadoutSelect(Loadout loadout);
+typedef OnLoadoutSelect = void Function(Loadout loadout);
 
 class LoadoutSelectSheet extends StatelessWidget {
   final DestinyCharacterComponent character;

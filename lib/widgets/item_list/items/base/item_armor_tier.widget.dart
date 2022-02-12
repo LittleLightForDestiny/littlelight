@@ -9,7 +9,6 @@ import 'package:little_light/utils/element_type_data.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 
 class ItemArmorTierWidget extends StatefulWidget {
-  
   final DestinyInventoryItemDefinition definition;
   final double iconSize;
   final List<DestinyItemSocketState> itemSockets;
@@ -40,9 +39,8 @@ class ItemArmorTierWidgetState extends State<ItemArmorTierWidget> {
   }
 
   Widget build(BuildContext context) {
-    var socketCategory = definition.sockets.socketCategories.firstWhere(
-        (s) => s.socketCategoryHash == widget.socketCategoryHash,
-        orElse: () => null);
+    var socketCategory = definition.sockets.socketCategories
+        .firstWhere((s) => s.socketCategoryHash == widget.socketCategoryHash, orElse: () => null);
     List<Widget> columns = [];
     if (socketCategory == null) return Container();
     socketCategory.socketIndexes.forEach((index) {
@@ -56,9 +54,7 @@ class ItemArmorTierWidgetState extends State<ItemArmorTierWidget> {
   }
 
   Widget buildPerkColumn(BuildContext context, int index) {
-    var hash = itemSockets != null
-        ? getEquippedPlugHashBySocketIndex(index)
-        : getDefaultPerkBySocketIndex(index);
+    var hash = itemSockets != null ? getEquippedPlugHashBySocketIndex(index) : getDefaultPerkBySocketIndex(index);
     return buildPerkIcon(context, hash);
   }
 
@@ -77,9 +73,7 @@ class ItemArmorTierWidgetState extends State<ItemArmorTierWidget> {
               children: <Widget>[
                 !widget.suppressIcon
                     ? Icon(DestinyData.getEnergyTypeIcon(capacity?.energyType),
-                        color: 
-                            capacity?.energyType?.getColorLayer(context)?.layer1,
-                        size: widget.iconSize * .7)
+                        color: capacity?.energyType?.getColorLayer(context)?.layer1, size: widget.iconSize * .7)
                     : Container(),
                 Text("${def?.plug?.energyCapacity?.capacityValue ?? 0}",
                     style: TextStyle(

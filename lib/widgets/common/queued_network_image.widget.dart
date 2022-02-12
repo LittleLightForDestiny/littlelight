@@ -13,7 +13,7 @@ class QueuedNetworkImage extends StatelessWidget {
   QueuedNetworkImage(
       {required this.imageUrl,
       this.placeholder,
-      this.fit: BoxFit.contain,
+      this.fit = BoxFit.contain,
       this.alignment = Alignment.center,
       this.fadeInDuration,
       Key? key})
@@ -22,7 +22,7 @@ class QueuedNetworkImage extends StatelessWidget {
   factory QueuedNetworkImage.fromBungie(
     String relativeURL, {
     Widget? placeholder,
-    BoxFit fit: BoxFit.contain,
+    BoxFit fit = BoxFit.contain,
     Alignment alignment = Alignment.center,
     Duration? fadeInDuration,
     Key? key,

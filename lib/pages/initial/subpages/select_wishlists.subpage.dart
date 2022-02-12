@@ -14,7 +14,7 @@ class SelectWishlistsSubPage extends StatefulWidget {
   SelectWishlistsSubPage();
 
   @override
-  SelectWishlistsSubPageState createState() => new SelectWishlistsSubPageState();
+  SelectWishlistsSubPageState createState() => SelectWishlistsSubPageState();
 }
 
 class SelectWishlistsSubPageState extends SubpageBaseState<SelectWishlistsSubPage> {
@@ -106,33 +106,35 @@ class SelectWishlistsSubPageState extends SubpageBaseState<SelectWishlistsSubPag
 
   Widget buildFolderHeader(BuildContext context) {
     final folder = context.watch<SelectWishlistNotifier>().currentFolder;
-    return Container(child:Row(
-      children: [
-        BackButton(
-          onPressed: () {
-            context.read<SelectWishlistNotifier>().goToRoot();
-          },
-        ),
-        Container(
-          width: 8,
-        ),
-        Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+    return Container(
+        child: Row(
           children: [
-            Text(
-              folder!.name!,
-              style: Theme.of(context).textTheme.button,
+            BackButton(
+              onPressed: () {
+                context.read<SelectWishlistNotifier>().goToRoot();
+              },
             ),
-            Container(height:4),
-            Text(
-              folder.description!,
-              style: Theme.of(context).textTheme.caption,
+            Container(
+              width: 8,
             ),
+            Expanded(
+                child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  folder!.name!,
+                  style: Theme.of(context).textTheme.button,
+                ),
+                Container(height: 4),
+                Text(
+                  folder.description!,
+                  style: Theme.of(context).textTheme.caption,
+                ),
+              ],
+            ))
           ],
-        ))
-      ],
-    ), margin:EdgeInsets.only(top:8, bottom: 16));
+        ),
+        margin: EdgeInsets.only(top: 8, bottom: 16));
   }
 
   Widget buildDescription(BuildContext context) {

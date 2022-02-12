@@ -12,25 +12,14 @@ import 'package:little_light/widgets/progress_tabs/milestone_raid_item.widget.da
 class CharacterMilestonesListWidget extends StatefulWidget {
   final String characterId;
 
-  
-
   CharacterMilestonesListWidget({Key key, this.characterId}) : super(key: key);
 
-  _CharacterMilestonesListWidgetState createState() =>
-      _CharacterMilestonesListWidgetState();
+  _CharacterMilestonesListWidgetState createState() => _CharacterMilestonesListWidgetState();
 }
 
-class _CharacterMilestonesListWidgetState
-    extends State<CharacterMilestonesListWidget> with ProfileConsumer, ManifestConsumer {
-  List<int> raidHashes = [
-    3660836525,
-    2986584050,
-    2683538554,
-    3181387331,
-    1342567285,
-    2590427074,
-    2712317338
-  ];
+class _CharacterMilestonesListWidgetState extends State<CharacterMilestonesListWidget>
+    with ProfileConsumer, ManifestConsumer {
+  List<int> raidHashes = [3660836525, 2986584050, 2683538554, 3181387331, 1342567285, 2590427074, 2712317338];
   Map<String, DestinyMilestone> milestones;
   Map<int, DestinyMilestoneDefinition> milestoneDefinitions;
 
@@ -41,11 +30,9 @@ class _CharacterMilestonesListWidgetState
   }
 
   Future<void> getMilestones() async {
-    milestones =
-        profile.getCharacterProgression(widget.characterId).milestones;
+    milestones = profile.getCharacterProgression(widget.characterId).milestones;
     var hashes = milestones.values.map((m) => m.milestoneHash);
-    milestoneDefinitions = await manifest
-        .getDefinitions<DestinyMilestoneDefinition>(hashes);
+    milestoneDefinitions = await manifest.getDefinitions<DestinyMilestoneDefinition>(hashes);
     if (!mounted) {
       return;
     }
@@ -56,7 +43,7 @@ class _CharacterMilestonesListWidgetState
   Widget build(BuildContext context) {
     var screenPadding = MediaQuery.of(context).padding;
     return SingleChildScrollView(
-      padding: EdgeInsets.only(left:screenPadding.left, right:screenPadding.right),
+      padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
       child: Column(
         children: buildMilestones(context),
       ),
@@ -66,18 +53,14 @@ class _CharacterMilestonesListWidgetState
   List<Widget> buildMilestones(BuildContext context) {
     List<Widget> widgets = [];
     if (milestoneDefinitions == null) return widgets;
-    widgets.add(Container(
-        height: 112,
-        child: CharacterInfoWidget(characterId: widget.characterId)));
+    widgets.add(Container(height: 112, child: CharacterInfoWidget(characterId: widget.characterId)));
     widgets.add(Container(
       height: 8,
     ));
-    var raidMilestones =
-        milestones.values.where((m) => raidHashes.contains(m.milestoneHash));
+    var raidMilestones = milestones.values.where((m) => raidHashes.contains(m.milestoneHash));
     var otherMilestones = milestones.values.where((m) {
       return !raidHashes.contains(m.milestoneHash) &&
-          ((m.availableQuests?.length ?? 0) > 0 ||
-              (m.activities?.length ?? 0) > 0);
+          ((m.availableQuests?.length ?? 0) > 0 || (m.activities?.length ?? 0) > 0);
     });
     raidMilestones.forEach((milestone) {
       widgets.add(buildRaidMilestone(context, milestone));

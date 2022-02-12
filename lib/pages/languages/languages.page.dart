@@ -68,7 +68,7 @@ class _LanguagesPageState extends State<LanguagesPage> with LanguageConsumer {
 
   Widget buildBody(BuildContext context) {
     final languages = this.languages;
-    if(languages == null) return LoadingAnimWidget();
+    if (languages == null) return LoadingAnimWidget();
     return SingleChildScrollView(
         padding: EdgeInsets.all(8),
         child: Column(children: languages.map((l) => buildLanguageItem(context, l)).toList()));

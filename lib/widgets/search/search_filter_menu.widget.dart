@@ -48,8 +48,7 @@ class _SearchFilterMenuState extends State<SearchFilterMenu> {
         ),
         Expanded(
             child: ListView(
-                padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).padding.bottom),
+                padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
                 children: buildFilters(context)))
       ],
     ));

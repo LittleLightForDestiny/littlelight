@@ -125,7 +125,7 @@ class InitialPageStateNotifier
     _checkManifest();
   }
 
-  retryManifestDownload(){
+  retryManifestDownload() {
     _error = null;
     _phase = InitialPagePhase.ManifestDownload;
     notifyListeners();
@@ -147,7 +147,7 @@ class InitialPageStateNotifier
 
     _phase = InitialPagePhase.ManifestDownload;
     _loading = false;
-    
+
     notifyListeners();
     final downloader = _context.read<ManifestDownloaderNotifier>();
     downloader.addListener(_manifestDownloadListener);
@@ -156,7 +156,7 @@ class InitialPageStateNotifier
 
   void _manifestDownloadListener() {
     final downloader = _context.read<ManifestDownloaderNotifier>();
-    if(downloader.error){
+    if (downloader.error) {
       downloader.removeListener(_manifestDownloadListener);
       _error = ManifestDownloadError();
       notifyListeners();
@@ -236,23 +236,22 @@ class InitialPageStateNotifier
   Future<void> _ensureCache() async {
     _loading = true;
     notifyListeners();
-    try{
+    try {
       await initPostLoadingServices(_context);
-    }catch(e, stackTrace){
+    } catch (e, stackTrace) {
       print("initPostLoadingServicesError: $e");
       analytics.registerNonFatal(e, stackTrace);
       _error = InitServicesError();
       notifyListeners();
       return;
     }
-    
-    try{
+
+    try {
       await wishlistsService.checkForUpdates();
-    }catch(e, stackTrace){
+    } catch (e, stackTrace) {
       print("non breaking error: $e");
       analytics.registerNonFatal(e, stackTrace);
     }
-    
 
     _startApp();
   }

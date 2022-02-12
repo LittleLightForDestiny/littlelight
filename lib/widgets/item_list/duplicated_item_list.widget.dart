@@ -49,7 +49,7 @@ class DuplicatedItemListWidget extends StatefulWidget {
   DuplicatedItemListWidget({Key key, this.searchController}) : super(key: key);
 
   @override
-  DuplicatedItemListWidgetState createState() => new DuplicatedItemListWidgetState();
+  DuplicatedItemListWidgetState createState() => DuplicatedItemListWidgetState();
 }
 
 class DuplicatedItemListWidgetState extends State<DuplicatedItemListWidget>

@@ -1,5 +1,3 @@
-
-
 export 'enums/item_destination.dart';
 export 'enums/transfer_error_type.dart';
 export 'transfer_destination.dart';

@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 
-typedef Widget ItemBuilder(BuildContext context, int index);
+typedef ItemBuilder = Widget Function(BuildContext context, int index);
 
 class SliverSection {
   final int itemsPerRow;
@@ -32,7 +32,10 @@ class SliverSection {
 
   SliverChildBuilderDelegate _builderDelegate() {
     final itemCount = this.itemCount;
-    if (itemCount == null) return SliverChildBuilderDelegate(itemBuilder,);
+    if (itemCount == null)
+      return SliverChildBuilderDelegate(
+        itemBuilder,
+      );
     return SliverChildBuilderDelegate(
       (context, index) => index < itemCount ? itemBuilder(context, index) : null,
       childCount: itemCount,

@@ -1,2 +1,2 @@
 //@dart=2.12
-abstract class InitialPageBaseError{}
+abstract class InitialPageBaseError {}

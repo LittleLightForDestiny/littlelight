@@ -10,16 +10,13 @@ import 'package:little_light/widgets/inventory_tabs/selected_items.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/tabs_character_menu.widget.dart';
 
 class InspectScreen extends StatefulWidget {
-
-  
-
   final String membershipId;
   final int membershipType;
 
-  InspectScreen(this.membershipId, this.membershipType, {Key key}):super(key:key);
+  InspectScreen(this.membershipId, this.membershipType, {Key key}) : super(key: key);
 
   @override
-  InspectScreenState createState() => new InspectScreenState();
+  InspectScreenState createState() => InspectScreenState();
 }
 
 class InspectScreenState extends State<InspectScreen>
@@ -60,7 +57,8 @@ class InspectScreenState extends State<InspectScreen>
             top: screenPadding.top,
             width: kToolbarHeight,
             height: kToolbarHeight,
-            child: IconButton(enableFeedback: false,
+            child: IconButton(
+              enableFeedback: false,
               icon: Icon(Icons.menu),
               onPressed: () {
                 Scaffold.of(context).openDrawer();
@@ -68,13 +66,8 @@ class InspectScreenState extends State<InspectScreen>
             ),
           ),
           TabsCharacterMenuWidget(characters, controller: charTabController),
-          InventoryNotificationWidget(
-              key: Key('inventory_notification_widget')),
-          Positioned(
-              bottom: screenPadding.bottom,
-              left: 0,
-              right: 0,
-              child: SelectedItemsWidget()),
+          InventoryNotificationWidget(key: Key('inventory_notification_widget')),
+          Positioned(bottom: screenPadding.bottom, left: 0, right: 0, child: SelectedItemsWidget()),
         ],
       ),
     );
@@ -94,8 +87,7 @@ class InspectScreenState extends State<InspectScreen>
     )));
   }
 
-  Widget buildCharacterTabController(
-      BuildContext context, TabController controller) {
+  Widget buildCharacterTabController(BuildContext context, TabController controller) {
     return TabBarView(controller: controller, children: getTabs());
   }
 

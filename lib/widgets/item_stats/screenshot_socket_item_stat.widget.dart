@@ -10,12 +10,8 @@ class ScreenshotSocketItemStatWidget extends BaseItemStatWidget {
   final double pixelSize;
 
   ScreenshotSocketItemStatWidget(
-      {Key key,
-        this.pixelSize = 1,
-      StatValues modValues,
-      int statHash,
-      DestinyStatDisplayDefinition scaled})
-      : super(key:key, statHash: statHash, modValues: modValues, scaled: scaled);
+      {Key key, this.pixelSize = 1, StatValues modValues, int statHash, DestinyStatDisplayDefinition scaled})
+      : super(key: key, statHash: statHash, modValues: modValues, scaled: scaled);
 
   @override
   Widget build(BuildContext context) {
@@ -24,11 +20,7 @@ class ScreenshotSocketItemStatWidget extends BaseItemStatWidget {
         child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              buildLabel(context),
-              buildValue(context),
-              buildBar(context)
-            ]));
+            children: [buildLabel(context), buildValue(context), buildBar(context)]));
   }
 
   Widget buildLabel(BuildContext context) {
@@ -71,9 +63,7 @@ class ScreenshotSocketItemStatWidget extends BaseItemStatWidget {
       child: Row(
         mainAxisAlignment: currentValue > 0 ? MainAxisAlignment.start : MainAxisAlignment.end,
         children: <Widget>[
-          Container(
-              width: (modBarSize / maxBarSize) * (pixelSize * 240),
-              color: getModBarColor(context)),
+          Container(width: (modBarSize / maxBarSize) * (pixelSize * 240), color: getModBarColor(context)),
         ],
       ),
     );

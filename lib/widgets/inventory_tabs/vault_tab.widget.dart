@@ -11,7 +11,7 @@ class VaultTabWidget extends CharacterTabWidget {
   VaultTabWidget(this.currentGroup) : super(null, currentGroup);
 
   @override
-  VaultTabWidgetState createState() => new VaultTabWidgetState();
+  VaultTabWidgetState createState() => VaultTabWidgetState();
 }
 
 class VaultTabWidgetState extends CharacterTabWidgetState {

@@ -27,18 +27,15 @@ import 'package:little_light/widgets/progress_tabs/character_ranks_list.widget.d
 import 'package:little_light/widgets/search/search.controller.dart';
 
 class ProgressScreen extends StatefulWidget {
-
-  
-
   @override
-  ProgressScreenState createState() => new ProgressScreenState();
+  ProgressScreenState createState() => ProgressScreenState();
 }
 
 const _page = LittleLightPersistentPage.Progress;
 
 class ProgressScreenState extends State<ProgressScreen>
     with TickerProviderStateMixin, UserSettingsConsumer, AnalyticsConsumer, ProfileConsumer {
-  Map<int, double> scrollPositions = new Map();
+  Map<int, double> scrollPositions = Map();
 
   TabController charTabController;
   TabController typeTabController;
@@ -48,12 +45,12 @@ class ProgressScreenState extends State<ProgressScreen>
   @override
   void initState() {
     super.initState();
-    
+
     profile.updateComponents = ProfileComponentGroups.basicProfile;
-    
+
     userSettings.startingPage = _page;
     analytics.registerPageOpen(_page);
-    
+
     charTabController = charTabController ??
         TabController(
           initialIndex: 0,
@@ -91,12 +88,7 @@ class ProgressScreenState extends State<ProgressScreen>
             bottom: bottomOffset,
             child: buildTypeTabView(context),
           ),
-          Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              height: topOffset + 16,
-              child: buildCharacterHeaderTabView(context)),
+          Positioned(top: 0, left: 0, right: 0, height: topOffset + 16, child: buildCharacterHeaderTabView(context)),
           Positioned(
             top: paddingTop,
             width: kToolbarHeight,
@@ -119,13 +111,8 @@ class ProgressScreenState extends State<ProgressScreen>
             right: 0,
             child: buildTypeTabBar(context),
           ),
-          InventoryNotificationWidget(
-              key: Key('inventory_notification_widget')),
-          Positioned(
-              bottom: screenPadding.bottom,
-              left: 0,
-              right: 0,
-              child: SelectedItemsWidget()),
+          InventoryNotificationWidget(key: Key('inventory_notification_widget')),
+          Positioned(bottom: screenPadding.bottom, left: 0, right: 0, child: SelectedItemsWidget()),
         ],
       ),
     );
@@ -136,14 +123,11 @@ class ProgressScreenState extends State<ProgressScreen>
   }
 
   Widget buildTypeTabView(BuildContext context) {
-    return TabBarView(
-        controller: typeTabController, children: buildTypeTabs(context));
+    return TabBarView(controller: typeTabController, children: buildTypeTabs(context));
   }
 
   List<Widget> buildTypeTabs(BuildContext context) {
-    return [0, 1, 2]
-        .map((index) => buildCharacterTabView(context, index))
-        .toList();
+    return [0, 1, 2].map((index) => buildCharacterTabView(context, index)).toList();
   }
 
   Widget buildCharacterHeaderTabView(BuildContext context) {
@@ -183,28 +167,21 @@ class ProgressScreenState extends State<ProgressScreen>
               child: TabBar(
                   labelPadding: EdgeInsets.all(4),
                   indicator: BoxDecoration(
-                      border: Border(
-                          top: BorderSide(width: 2, color: Theme.of(context).colorScheme.onSurface))),
+                      border: Border(top: BorderSide(width: 2, color: Theme.of(context).colorScheme.onSurface))),
                   controller: typeTabController,
                   tabs: [
                 TranslatedTextWidget("Milestones",
-                    uppercase: true,
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                    uppercase: true, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
                 TranslatedTextWidget("Pursuits",
-                    uppercase: true,
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                    uppercase: true, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
                 TranslatedTextWidget("Ranks",
-                    uppercase: true,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13))
+                    uppercase: true, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13))
               ])),
           Container(width: 40, child: RefreshButtonWidget())
         ]));
   }
 
-  Widget buildContentTab(
-      BuildContext context, String characterId, int tabIndex) {
+  Widget buildContentTab(BuildContext context, String characterId, int tabIndex) {
     if (tabIndex == 0) {
       return CharacterMilestonesListWidget(characterId: characterId);
     }
@@ -235,8 +212,7 @@ class ProgressScreenState extends State<ProgressScreen>
                           PseudoItemTypeFilter(types, types),
                         ],
                         defaultSorting: userSettings.pursuitOrdering,
-                        availableSorters:
-                            ItemSortParameter.availablePursuitSorters),
+                        availableSorters: ItemSortParameter.availablePursuitSorters),
                   ),
                 ));
           }),
@@ -249,7 +225,6 @@ class ProgressScreenState extends State<ProgressScreen>
   }
 
   List<DestinyCharacterComponent> get characters {
-    return profile
-        .getCharacters(userSettings.characterOrdering);
+    return profile.getCharacters(userSettings.characterOrdering);
   }
 }

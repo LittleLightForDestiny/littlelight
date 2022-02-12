@@ -32,8 +32,7 @@ class ModInventoryItemWidget extends BaseInventoryItemWidget {
 
   @override
   itemIcon(BuildContext context) {
-    var energyType =
-        definition?.plug?.energyCost?.energyType ?? DestinyEnergyType.Any;
+    var energyType = definition?.plug?.energyCost?.energyType ?? DestinyEnergyType.Any;
     var energyCost = definition?.plug?.energyCost?.energyCost ?? 0;
     return Container(
         child: AspectRatio(
@@ -43,8 +42,7 @@ class ModInventoryItemWidget extends BaseInventoryItemWidget {
         [DestinyEnergyType.Any, DestinyEnergyType.Ghost, DestinyEnergyType.Subclass].contains(energyType)
             ? Container()
             : Positioned.fill(
-                child: ManifestImageWidget<DestinyStatDefinition>(
-                    DestinyData.getEnergyTypeCostHash(energyType))),
+                child: ManifestImageWidget<DestinyStatDefinition>(DestinyData.getEnergyTypeCostHash(energyType))),
         energyCost == 0
             ? Container()
             : Positioned(
@@ -60,32 +58,27 @@ class ModInventoryItemWidget extends BaseInventoryItemWidget {
 
   @override
   Widget modsWidget(BuildContext context) {
-    var energyType =
-        definition?.plug?.energyCost?.energyType ?? DestinyEnergyType.Any;
+    var energyType = definition?.plug?.energyCost?.energyType ?? DestinyEnergyType.Any;
     var energyCost = definition?.plug?.energyCost?.energyCost ?? 0;
     var color = energyType?.getColorLayer(context)?.layer1;
     if (energyCost == 0) return Container();
     return Positioned(
         bottom: 4,
         right: 8,
-        child: 
-          Row(
-            children: <Widget>[
-              energyType != DestinyEnergyType.Any
-                  ? Icon(DestinyData.getEnergyTypeIcon(energyType),
-                      size: 22, color: color)
-                  : Container(),
-              Container(
-                width: energyType != DestinyEnergyType.Any ? 4 : 0,
-              ),
-              Text(
-                "$energyCost",
-                style: TextStyle(
-                    fontWeight: FontWeight.w700, fontSize: 22, color: color),
-              )
-            ],
-          )
-        );
+        child: Row(
+          children: <Widget>[
+            energyType != DestinyEnergyType.Any
+                ? Icon(DestinyData.getEnergyTypeIcon(energyType), size: 22, color: color)
+                : Container(),
+            Container(
+              width: energyType != DestinyEnergyType.Any ? 4 : 0,
+            ),
+            Text(
+              "$energyCost",
+              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 22, color: color),
+            )
+          ],
+        ));
   }
 
   @override
@@ -97,18 +90,16 @@ class ModInventoryItemWidget extends BaseInventoryItemWidget {
         height: 18,
         child: Row(
           children: definition?.investmentStats
-                  ?.map((s) => DefinitionProviderWidget<DestinyStatDefinition>(
-                          s.statTypeHash, (def) {
-                        if (def?.statCategory != DestinyStatCategory.Defense)
-                          return Container();
+                  ?.map((s) => DefinitionProviderWidget<DestinyStatDefinition>(s.statTypeHash, (def) {
+                        if (def?.statCategory != DestinyStatCategory.Defense) return Container();
                         return Row(
                           children: <Widget>[
-                            ManifestImageWidget<DestinyStatDefinition>(
-                                s.statTypeHash),
+                            ManifestImageWidget<DestinyStatDefinition>(s.statTypeHash),
                             Text("${s.value}",
                                 style: TextStyle(
-                                    color:s.value > 0 ? theme.onSurfaceLayers : theme.errorLayers,
-                                    fontWeight: FontWeight.w500, fontSize: 16)),
+                                    color: s.value > 0 ? theme.onSurfaceLayers : theme.errorLayers,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16)),
                             Container(
                               width: 8,
                             )

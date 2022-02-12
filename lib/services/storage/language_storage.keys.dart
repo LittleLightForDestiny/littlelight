@@ -1,9 +1,6 @@
 //@dart=2.12
 
-enum LanguageStorageKeys {
-  manifestVersion,
-  littleLightTranslation
-}
+enum LanguageStorageKeys { manifestVersion, littleLightTranslation }
 
 extension StorageKeyPathsExtension on LanguageStorageKeys {
   String get path {

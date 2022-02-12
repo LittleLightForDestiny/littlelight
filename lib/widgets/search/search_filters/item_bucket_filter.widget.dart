@@ -16,8 +16,7 @@ class ItemBucketFilterWidget extends BaseSearchFilterWidget<ItemBucketFilter> {
   _ItemBucketFilterWidgetState createState() => _ItemBucketFilterWidgetState();
 }
 
-class _ItemBucketFilterWidgetState extends BaseSearchFilterWidgetState<
-    ItemBucketFilterWidget, ItemBucketFilter, int> {
+class _ItemBucketFilterWidgetState extends BaseSearchFilterWidgetState<ItemBucketFilterWidget, ItemBucketFilter, int> {
   @override
   Iterable<int> get options {
     var ordered = super.options.toList();

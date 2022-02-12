@@ -9,25 +9,19 @@ import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/item_list/bucket_display_options_selector.widget.dart';
 
 class BucketHeaderWidget extends StatefulWidget {
-  
   final int hash;
   final int itemCount;
   final bool isVault;
   final bool isEquippable;
   final Function onChanged;
   BucketHeaderWidget(
-      {this.hash,
-      this.itemCount = 0,
-      this.isVault = false,
-      this.isEquippable = false,
-      this.onChanged,
-      Key key})
+      {this.hash, this.itemCount = 0, this.isVault = false, this.isEquippable = false, this.onChanged, Key key})
       : super(key: key);
   @override
-  BucketHeaderWidgetState createState() => new BucketHeaderWidgetState();
+  BucketHeaderWidgetState createState() => BucketHeaderWidgetState();
 }
 
-class BucketHeaderWidgetState<T extends BucketHeaderWidget> extends State<T> with ManifestConsumer{
+class BucketHeaderWidgetState<T extends BucketHeaderWidget> extends State<T> with ManifestConsumer {
   DestinyInventoryBucketDefinition bucketDef;
 
   @override
@@ -39,8 +33,7 @@ class BucketHeaderWidgetState<T extends BucketHeaderWidget> extends State<T> wit
   }
 
   fetchDefinition() async {
-    bucketDef = await manifest
-        .getDefinition<DestinyInventoryBucketDefinition>(widget.hash);
+    bucketDef = await manifest.getDefinition<DestinyInventoryBucketDefinition>(widget.hash);
     if (mounted) {
       setState(() {});
     }
@@ -52,10 +45,7 @@ class BucketHeaderWidgetState<T extends BucketHeaderWidget> extends State<T> wit
         child: Row(
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-          Expanded(child: buildLabel(context)),
-          buildTrailing(context)
-        ]));
+            children: [Expanded(child: buildLabel(context)), buildTrailing(context)]));
   }
 
   buildLabel(BuildContext context) {
@@ -69,10 +59,7 @@ class BucketHeaderWidgetState<T extends BucketHeaderWidget> extends State<T> wit
   buildTrailing(BuildContext context) {
     return Row(children: [
       BucketDisplayOptionsSelectorWidget(
-          hash: widget.hash,
-          isVault: widget.isVault,
-          isEquippable: widget.isEquippable,
-          onChanged: widget.onChanged),
+          hash: widget.hash, isVault: widget.isVault, isEquippable: widget.isEquippable, onChanged: widget.onChanged),
       Container(width: 8),
       buildCount(context),
     ]);

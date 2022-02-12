@@ -17,17 +17,9 @@ import 'package:little_light/widgets/common/wishlist_badges.widget.dart';
 
 class ItemMainInfoWidget extends BaseDestinyStatefulItemWidget {
   ItemMainInfoWidget(
-      DestinyItemComponent item,
-      DestinyInventoryItemDefinition definition,
-      DestinyItemInstanceComponent instanceInfo,
-      {Key key,
-      String characterId})
-      : super(
-            item: item,
-            definition: definition,
-            instanceInfo: instanceInfo,
-            key: key,
-            characterId: characterId);
+      DestinyItemComponent item, DestinyInventoryItemDefinition definition, DestinyItemInstanceComponent instanceInfo,
+      {Key key, String characterId})
+      : super(item: item, definition: definition, instanceInfo: instanceInfo, key: key, characterId: characterId);
 
   @override
   State<StatefulWidget> createState() {
@@ -46,8 +38,7 @@ class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget> w
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(definition?.itemTypeDisplayName ?? ""),
-              Padding(
-                  padding: EdgeInsets.only(top: 8), child: primaryStat(context))
+              Padding(padding: EdgeInsets.only(top: 8), child: primaryStat(context))
             ],
           ),
           Container(
@@ -80,22 +71,17 @@ class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget> w
 
   Widget buildWishListInfo(BuildContext context) {
     final reusable = profile.getItemReusablePlugs(item?.itemInstanceId);
-    final tags = wishlistsService.getWishlistBuildTags(
-        itemHash: item?.itemHash, reusablePlugs: reusable);
+    final tags = wishlistsService.getWishlistBuildTags(itemHash: item?.itemHash, reusablePlugs: reusable);
     if (tags == null || tags.length == 0) return Container();
-    if (tags.contains(WishlistTag.GodPVE) &&
-        tags.contains(WishlistTag.GodPVP)) {
+    if (tags.contains(WishlistTag.GodPVE) && tags.contains(WishlistTag.GodPVP)) {
       return Container(
           padding: EdgeInsets.only(bottom: 8, left: 8, right: 8),
           child: Row(children: [
-            WishlistBadgesWidget(
-                tags: [WishlistTag.GodPVE, WishlistTag.GodPVP].toSet()),
+            WishlistBadgesWidget(tags: [WishlistTag.GodPVE, WishlistTag.GodPVP].toSet()),
             Container(
               width: 8,
             ),
-            Expanded(
-                child: TranslatedTextWidget(
-                    "This item is considered a godroll for both PvE and PvP."))
+            Expanded(child: TranslatedTextWidget("This item is considered a godroll for both PvE and PvP."))
           ]));
     }
     var rows = <Widget>[];
@@ -106,9 +92,7 @@ class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget> w
         Container(
           width: 8,
         ),
-        Expanded(
-            child:
-                TranslatedTextWidget("This item is considered a PvE godroll."))
+        Expanded(child: TranslatedTextWidget("This item is considered a PvE godroll."))
       ])));
     }
     if (tags.contains(WishlistTag.GodPVP)) {
@@ -118,25 +102,18 @@ class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget> w
         Container(
           width: 8,
         ),
-        Expanded(
-            child:
-                TranslatedTextWidget("This item is considered a PvP godroll."))
+        Expanded(child: TranslatedTextWidget("This item is considered a PvP godroll."))
       ])));
     }
-    if (tags.contains(WishlistTag.PVE) &&
-        tags.contains(WishlistTag.PVP) &&
-        rows.length == 0) {
+    if (tags.contains(WishlistTag.PVE) && tags.contains(WishlistTag.PVP) && rows.length == 0) {
       return Container(
           padding: EdgeInsets.only(bottom: 8, left: 8, right: 8),
           child: Row(children: [
-            WishlistBadgesWidget(
-                tags: [WishlistTag.PVE, WishlistTag.PVP].toSet()),
+            WishlistBadgesWidget(tags: [WishlistTag.PVE, WishlistTag.PVP].toSet()),
             Container(
               width: 8,
             ),
-            Expanded(
-                child: TranslatedTextWidget(
-                    "This item is considered a good roll for both PvE and PvP."))
+            Expanded(child: TranslatedTextWidget("This item is considered a good roll for both PvE and PvP."))
           ]));
     }
     if (tags.contains(WishlistTag.PVE) && !tags.contains(WishlistTag.GodPVE)) {
@@ -146,9 +123,7 @@ class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget> w
         Container(
           width: 8,
         ),
-        Expanded(
-            child: TranslatedTextWidget(
-                "This item is considered a good roll for PVE."))
+        Expanded(child: TranslatedTextWidget("This item is considered a good roll for PVE."))
       ])));
     }
     if (tags.contains(WishlistTag.PVP) && !tags.contains(WishlistTag.GodPVP)) {
@@ -158,9 +133,7 @@ class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget> w
         Container(
           width: 8,
         ),
-        Expanded(
-            child: TranslatedTextWidget(
-                "This item is considered a good roll for PVP."))
+        Expanded(child: TranslatedTextWidget("This item is considered a good roll for PVP."))
       ])));
     }
     if (tags.contains(WishlistTag.Bungie)) {
@@ -170,8 +143,7 @@ class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget> w
         Container(
           width: 8,
         ),
-        Expanded(
-            child: TranslatedTextWidget("This item is a Bungie curated roll."))
+        Expanded(child: TranslatedTextWidget("This item is a Bungie curated roll."))
       ])));
     }
     if (rows.length > 0) {
@@ -190,9 +162,7 @@ class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget> w
             Container(
               width: 8,
             ),
-            Expanded(
-                child: TranslatedTextWidget(
-                    "This item is considered a trash roll."))
+            Expanded(child: TranslatedTextWidget("This item is considered a trash roll."))
           ]));
     }
     return Container();

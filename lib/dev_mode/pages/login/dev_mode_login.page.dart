@@ -5,6 +5,5 @@ import 'package:little_light/dev_mode/pages/login/dev_mode_login.page_widget.dar
 
 class DevModeLoginPageRoute extends MaterialPageRoute {
   DevModeLoginPageRoute(RouteSettings settings)
-      : super(
-            settings: settings, builder: (context) => DevModeLoginPageWidget());
+      : super(settings: settings, builder: (context) => DevModeLoginPageWidget());
 }

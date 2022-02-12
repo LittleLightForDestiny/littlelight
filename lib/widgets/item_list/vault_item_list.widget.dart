@@ -19,7 +19,7 @@ class VaultItemListWidget extends ItemListWidget {
   VaultItemListWidget({EdgeInsets padding, List<int> bucketHashes, Key key})
       : super(key: key, padding: padding, bucketHashes: bucketHashes);
   @override
-  VaultItemListWidgetState createState() => new VaultItemListWidgetState();
+  VaultItemListWidgetState createState() => VaultItemListWidgetState();
 }
 
 class VaultItemListWidgetState extends ItemListWidgetState
@@ -68,8 +68,8 @@ class VaultItemListWidgetState extends ItemListWidgetState
   @override
   SliverSection buildBucketHeaderSliver(ListBucket bucket) {
     final itemCount = (bucket.equipped != null ? 1 : 0) + (bucket.unequipped?.length ?? 0);
-    if(itemCount == 0){
-      return SliverSection(itemCount:1, itemHeight:0, itemBuilder: (context, index)=>Container());
+    if (itemCount == 0) {
+      return SliverSection(itemCount: 1, itemHeight: 0, itemBuilder: (context, index) => Container());
     }
     return SliverSection(
         itemBuilder: (context, _) => BucketHeaderWidget(

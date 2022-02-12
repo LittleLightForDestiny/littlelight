@@ -20,7 +20,7 @@ class SelectMembershipSubPage extends StatefulWidget {
   SelectMembershipSubPage();
 
   @override
-  SelectMembershipSubPageState createState() => new SelectMembershipSubPageState();
+  SelectMembershipSubPageState createState() => SelectMembershipSubPageState();
 }
 
 class SelectMembershipSubPageState extends SubpageBaseState<SelectMembershipSubPage> with AuthConsumer {

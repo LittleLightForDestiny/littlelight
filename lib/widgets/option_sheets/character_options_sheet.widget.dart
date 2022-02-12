@@ -34,8 +34,6 @@ import 'package:shimmer/shimmer.dart';
 class CharacterOptionsSheet extends StatefulWidget {
   final DestinyCharacterComponent character;
 
-  
-
   CharacterOptionsSheet({Key key, this.character}) : super(key: key);
 
   @override
@@ -45,7 +43,13 @@ class CharacterOptionsSheet extends StatefulWidget {
 }
 
 class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
-    with UserSettingsConsumer, LittleLightDataConsumer, LoadoutsConsumer, ProfileConsumer, InventoryConsumer, ManifestConsumer {
+    with
+        UserSettingsConsumer,
+        LittleLightDataConsumer,
+        LoadoutsConsumer,
+        ProfileConsumer,
+        InventoryConsumer,
+        ManifestConsumer {
   Map<int, DestinyItemComponent> maxLightLoadout;
   Map<int, DestinyItemComponent> underAverageSlots;
   double maxLight;
@@ -484,7 +488,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
   }
 
   Future<LoadoutItemIndex> createLoadout([includeUnequipped = false]) async {
-    var itemIndex = new LoadoutItemIndex();
+    var itemIndex = LoadoutItemIndex();
     itemIndex.loadout.emblemHash = widget.character.emblemHash;
     var slots = LoadoutItemIndex.classBucketHashes + LoadoutItemIndex.genericBucketHashes;
     var equipment = profile.getCharacterEquipment(widget.character.characterId);
@@ -528,7 +532,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
   }
 
   randomizeLoadout(List<int> requiredSlots) async {
-    LoadoutItemIndex randomLoadout = new LoadoutItemIndex();
+    LoadoutItemIndex randomLoadout = LoadoutItemIndex();
     var allItems = profile.getAllItems().where((i) => i.item.itemInstanceId != null).toList();
     Map<int, String> slots = {};
     int exoticSlot;
@@ -683,8 +687,8 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
   }
 
   double _getAvgLight(Iterable<DestinyItemComponent> items) {
-    var total = items.fold(
-        0, (light, item) => light + profile.getInstanceInfo(item.itemInstanceId)?.primaryStat?.value ?? 0);
+    var total =
+        items.fold(0, (light, item) => light + profile.getInstanceInfo(item.itemInstanceId)?.primaryStat?.value ?? 0);
     return total / items.length;
   }
 }

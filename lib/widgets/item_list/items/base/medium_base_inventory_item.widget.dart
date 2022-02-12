@@ -9,26 +9,26 @@ import 'package:little_light/widgets/common/item_name_bar/item_name_bar.widget.d
 import 'package:little_light/widgets/item_list/items/base/base_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/item_mods.widget.dart';
 
-class MediumBaseInventoryItemWidget extends BaseInventoryItemWidget with ProfileConsumer{
-  MediumBaseInventoryItemWidget(
-      DestinyItemComponent item,
-      DestinyInventoryItemDefinition itemDefinition,
+class MediumBaseInventoryItemWidget extends BaseInventoryItemWidget with ProfileConsumer {
+  MediumBaseInventoryItemWidget(DestinyItemComponent item, DestinyInventoryItemDefinition itemDefinition,
       DestinyItemInstanceComponent instanceInfo,
       {Key key, @required String uniqueId, @required String characterId})
-      : super(item, itemDefinition, instanceInfo, key:key, characterId:characterId, uniqueId:uniqueId);
+      : super(item, itemDefinition, instanceInfo, key: key, characterId: characterId, uniqueId: uniqueId);
 
   Widget positionedNameBar(BuildContext context) {
-    return Positioned(
-        left: 0,
-        right: 0,
-        child: itemHeroNamebar(context));
+    return Positioned(left: 0, right: 0, child: itemHeroNamebar(context));
   }
 
-  Widget nameBar(BuildContext context){
-    return ItemNameBarWidget(item, definition, instanceInfo,
-            trailing: namebarTrailingWidget(context),
-            padding: EdgeInsets.all(
-                padding),fontSize: titleFontSize, fontWeight: FontWeight.w500,);
+  Widget nameBar(BuildContext context) {
+    return ItemNameBarWidget(
+      item,
+      definition,
+      instanceInfo,
+      trailing: namebarTrailingWidget(context),
+      padding: EdgeInsets.all(padding),
+      fontSize: titleFontSize,
+      fontWeight: FontWeight.w500,
+    );
   }
 
   Widget categoryName(BuildContext context) {
@@ -60,8 +60,9 @@ class MediumBaseInventoryItemWidget extends BaseInventoryItemWidget with Profile
   double get titleFontSize {
     return 10;
   }
+
   @override
-  double get tagIconSize{
+  double get tagIconSize {
     return 12;
   }
 
@@ -71,14 +72,11 @@ class MediumBaseInventoryItemWidget extends BaseInventoryItemWidget with Profile
 
   @override
   Widget modsWidget(BuildContext context) {
-    if(item?.itemInstanceId == null) return Container();
+    if (item?.itemInstanceId == null) return Container();
     return Positioned(
-      bottom: 4,
-      right:4,
-      child:ItemModsWidget(
-      definition: definition,
-      itemSockets: profile.getItemSockets(item?.itemInstanceId),
-      iconSize: 22
-    ));
+        bottom: 4,
+        right: 4,
+        child: ItemModsWidget(
+            definition: definition, itemSockets: profile.getItemSockets(item?.itemInstanceId), iconSize: 22));
   }
 }

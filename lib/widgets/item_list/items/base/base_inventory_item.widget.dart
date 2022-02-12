@@ -13,21 +13,14 @@ import 'package:little_light/widgets/item_list/items/base/item_armor_stats.widge
 import 'package:little_light/widgets/item_list/items/base/item_mods.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/item_perks.widget.dart';
 
-class BaseInventoryItemWidget extends BaseDestinyStatelessItemWidget
-    with InventoryItemMixin, ProfileConsumer {
+class BaseInventoryItemWidget extends BaseDestinyStatelessItemWidget with InventoryItemMixin, ProfileConsumer {
   final String uniqueId;
   final Widget trailing;
   final bool showUnusedPerks;
 
   BaseInventoryItemWidget(
-      DestinyItemComponent item,
-      DestinyInventoryItemDefinition definition,
-      DestinyItemInstanceComponent instanceInfo,
-      {Key key,
-      @required String characterId,
-      this.showUnusedPerks = false,
-      this.trailing,
-      @required this.uniqueId})
+      DestinyItemComponent item, DestinyInventoryItemDefinition definition, DestinyItemInstanceComponent instanceInfo,
+      {Key key, @required String characterId, this.showUnusedPerks = false, this.trailing, @required this.uniqueId})
       : super(
           item: item,
           definition: definition,
@@ -38,11 +31,9 @@ class BaseInventoryItemWidget extends BaseDestinyStatelessItemWidget
 
   @override
   Widget perksWidget(BuildContext context) {
-    var socketCategoryHashes =
-        definition?.sockets?.socketCategories?.map((s) => s.socketCategoryHash);
-    var perksCategoryHash = socketCategoryHashes?.firstWhere(
-        (s) => DestinyData.socketCategoryPerkHashes.contains(s),
-        orElse: () => null);
+    var socketCategoryHashes = definition?.sockets?.socketCategories?.map((s) => s.socketCategoryHash);
+    var perksCategoryHash =
+        socketCategoryHashes?.firstWhere((s) => DestinyData.socketCategoryPerkHashes.contains(s), orElse: () => null);
     if (perksCategoryHash != null) {
       return Positioned(
           bottom: 6,
@@ -92,8 +83,7 @@ class BaseInventoryItemWidget extends BaseDestinyStatelessItemWidget
 
   @override
   Widget primaryStatWidget(BuildContext context) {
-    if ([DestinyItemType.Engram, DestinyItemType.Subclass]
-        .contains(definition.itemType)) {
+    if ([DestinyItemType.Engram, DestinyItemType.Subclass].contains(definition.itemType)) {
       return Container();
     }
     if ((item?.quantity ?? 0) > 1) {

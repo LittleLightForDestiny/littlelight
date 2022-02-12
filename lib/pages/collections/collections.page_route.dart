@@ -13,7 +13,10 @@ class CollectionsPageRouteArguments {
   final int? badgeCategoryHash;
 
   CollectionsPageRouteArguments(
-      {this.parentCategoryHashes, this.categoryPresentationNodeHash, this.subcategoryPresentationNodeHash, this.badgeCategoryHash});
+      {this.parentCategoryHashes,
+      this.categoryPresentationNodeHash,
+      this.subcategoryPresentationNodeHash,
+      this.badgeCategoryHash});
 
   static CollectionsPageRouteArguments? of(BuildContext context) {
     final pageRoute = ModalRoute.of(context);
@@ -33,19 +36,18 @@ class CollectionsPageRoute extends MaterialPageRoute {
   }) : super(
             settings: RouteSettings(
                 arguments: CollectionsPageRouteArguments(
-              parentCategoryHashes: parentCategoryHashes,
-              categoryPresentationNodeHash: categoryPresentationNodeHash,
-              subcategoryPresentationNodeHash: subcategoryPresentationNodeHash,
-              badgeCategoryHash: badgeCategoryHash
-            )),
+                    parentCategoryHashes: parentCategoryHashes,
+                    categoryPresentationNodeHash: categoryPresentationNodeHash,
+                    subcategoryPresentationNodeHash: subcategoryPresentationNodeHash,
+                    badgeCategoryHash: badgeCategoryHash)),
             builder: (context) {
-              if(subcategoryPresentationNodeHash != null){
+              if (subcategoryPresentationNodeHash != null) {
                 return CollectionsSubcategoryPage();
               }
               if (categoryPresentationNodeHash != null) {
                 return CollectionsCategoryPage();
               }
-              if(badgeCategoryHash != null){
+              if (badgeCategoryHash != null) {
                 return CollectionsBadgePage();
               }
               return CollectionsRootPage();

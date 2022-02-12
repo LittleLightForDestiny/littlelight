@@ -1,6 +1,5 @@
 // @dart=2.9
 
-
 import 'package:bungie_api/models/general_user.dart';
 import 'package:bungie_api/models/group_user_info_card.dart';
 import 'package:bungie_api/models/user_membership_data.dart';
@@ -75,9 +74,7 @@ class _AccountsScreenState extends State<AccountsScreen> with AuthConsumer {
   Widget buildBody(BuildContext context) {
     return SingleChildScrollView(
         padding: EdgeInsets.all(8),
-        child: Column(
-            children:
-                accounts.map((l) => buildAccountItem(context, l)).toList()));
+        child: Column(children: accounts.map((l) => buildAccountItem(context, l)).toList()));
   }
 
   Widget buildAccountItem(BuildContext context, String accountId) {
@@ -86,8 +83,7 @@ class _AccountsScreenState extends State<AccountsScreen> with AuthConsumer {
     return Container(
         margin: EdgeInsets.symmetric(vertical: 4),
         height: 140,
-        decoration: BoxDecoration(
-            border: Border.all(width: 1, color: Theme.of(context).colorScheme.secondaryVariant)),
+        decoration: BoxDecoration(border: Border.all(width: 1, color: Theme.of(context).colorScheme.secondaryVariant)),
         child: Stack(
           children: <Widget>[
             Positioned.fill(
@@ -105,8 +101,8 @@ class _AccountsScreenState extends State<AccountsScreen> with AuthConsumer {
                 alignment: Alignment.centerLeft,
                 color: Theme.of(context).backgroundColor,
                 padding: EdgeInsets.all(8).copyWith(left: 70),
-                child: Text(membership?.bungieNetUser?.displayName ?? "",
-                    style: TextStyle(fontWeight: FontWeight.bold)),
+                child:
+                    Text(membership?.bungieNetUser?.displayName ?? "", style: TextStyle(fontWeight: FontWeight.bold)),
               ),
             ),
             Positioned(
@@ -114,8 +110,7 @@ class _AccountsScreenState extends State<AccountsScreen> with AuthConsumer {
               top: 60,
               right: 4,
               bottom: 4,
-              child: Container(
-                  child: buildDestinyMemberships(context, membership)),
+              child: Container(child: buildDestinyMemberships(context, membership)),
             ),
             Positioned(
                 top: 4,
@@ -124,8 +119,7 @@ class _AccountsScreenState extends State<AccountsScreen> with AuthConsumer {
                 height: 48,
                 child: QueuedNetworkImage(
                   fit: BoxFit.cover,
-                  imageUrl: BungieApiService.url(
-                      membership?.bungieNetUser?.profilePicturePath),
+                  imageUrl: BungieApiService.url(membership?.bungieNetUser?.profilePicturePath),
                 )),
             !isCurrent
                 ? Positioned(
@@ -144,8 +138,7 @@ class _AccountsScreenState extends State<AccountsScreen> with AuthConsumer {
                                   child: TranslatedTextWidget(
                                     "Remove",
                                     uppercase: true,
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
+                                    style: TextStyle(fontWeight: FontWeight.bold),
                                   )),
                             ))))
                 : Container()
@@ -153,11 +146,9 @@ class _AccountsScreenState extends State<AccountsScreen> with AuthConsumer {
         ));
   }
 
-  Widget buildDestinyMemberships(
-      BuildContext context, UserMembershipData membership) {
+  Widget buildDestinyMemberships(BuildContext context, UserMembershipData membership) {
     List<Widget> children = membership.destinyMemberships
-        ?.map(
-            (m) => buildMembershipButton(context, m, membership.bungieNetUser))
+        ?.map((m) => buildMembershipButton(context, m, membership.bungieNetUser))
         ?.expand((w) => [w, Container(width: 4)])
         ?.toList();
     if (children == null) return Container();
@@ -169,8 +160,7 @@ class _AccountsScreenState extends State<AccountsScreen> with AuthConsumer {
         children: children);
   }
 
-  Widget buildMembershipButton(BuildContext context,
-      GroupUserInfoCard membership, GeneralUser bungieNetUser) {
+  Widget buildMembershipButton(BuildContext context, GroupUserInfoCard membership, GeneralUser bungieNetUser) {
     var plat = PlatformData.getPlatform(membership.membershipType);
     return Expanded(
         child: Material(
@@ -202,11 +192,10 @@ class _AccountsScreenState extends State<AccountsScreen> with AuthConsumer {
   addAccount(BuildContext context) async {
     try {
       auth.openBungieLogin(true);
-    }catch(e){}
+    } catch (e) {}
     WidgetsBinding.instance.renderView.automaticSystemUiAdjustment = false;
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarBrightness: Brightness.dark));
+    SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle(statusBarColor: Colors.transparent, statusBarBrightness: Brightness.dark));
   }
 
   void deleteAccount(UserMembershipData membership) async {

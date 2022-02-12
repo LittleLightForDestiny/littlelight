@@ -13,7 +13,7 @@ class CollectionsCategoryPage extends PresentationNodesTabsScaffoldWidget {
   CollectionsCategoryPage() : super();
 
   @override
-  createState() => new CollectionsCategoryPageState();
+  createState() => CollectionsCategoryPageState();
 }
 
 class CollectionsCategoryPageState extends PresentationNodesTabsScaffoldState<CollectionsCategoryPage>
@@ -36,8 +36,6 @@ class CollectionsCategoryPageState extends PresentationNodesTabsScaffoldState<Co
     await Future.delayed(route?.transitionDuration ?? Duration.zero);
     loadNodes();
   }
-
-  
 
   Future<void> loadNodes() async {
     await Future.delayed(Duration.zero);
@@ -81,8 +79,8 @@ class CollectionsCategoryPageState extends PresentationNodesTabsScaffoldState<Co
     return PresentationNodeListWidget(
       node: node,
       onItemTap: (nodeHash) {
-        Navigator.of(context).push(
-            CollectionsPageRoute(parentCategoryHashes: parentNodeHashes + [nodeHash], subcategoryPresentationNodeHash: nodeHash));
+        Navigator.of(context).push(CollectionsPageRoute(
+            parentCategoryHashes: parentNodeHashes + [nodeHash], subcategoryPresentationNodeHash: nodeHash));
       },
     );
   }

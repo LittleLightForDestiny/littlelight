@@ -32,7 +32,7 @@ class SectionHeaderWidget extends StatefulWidget {
     Key? key,
   }) : super(key: key);
   @override
-  SectionHeaderWidgetState createState() => new SectionHeaderWidgetState();
+  SectionHeaderWidgetState createState() => SectionHeaderWidgetState();
 }
 
 class SectionHeaderWidgetState<T extends SectionHeaderWidget> extends State<T> with UserSettingsConsumer {

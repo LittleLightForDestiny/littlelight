@@ -1,6 +1,5 @@
 //@dart=2.12
 
-
 import 'dart:io';
 
 import 'package:device_info/device_info.dart';
@@ -15,9 +14,10 @@ import 'package:little_light/widgets/dialogs/littlelight.base.dialog.dart';
 class ReportErrorDialogRoute extends DialogRoute<void> {
   ReportErrorDialogRoute(BuildContext context, {required FlutterErrorDetails error})
       : super(
-            context: context,
-            builder: (context) => ReportErrorDialog(),
-            settings: RouteSettings(arguments: error),);
+          context: context,
+          builder: (context) => ReportErrorDialog(),
+          settings: RouteSettings(arguments: error),
+        );
 }
 
 extension on BuildContext {
@@ -40,28 +40,36 @@ class ReportErrorDialog extends LittleLightBaseDialog with AuthConsumer, Analyti
         child: SingleChildScrollView(
             child: Column(mainAxisSize: MainAxisSize.min, children: [
       TranslatedTextWidget("This will be the info that will be sent along with the error report:"),
-      Container(height: 8,),
+      Container(
+        height: 8,
+      ),
       FutureBuilder<Map<String, String>?>(
-        future: getData(),
-        builder: (context, data){
-          String text = "";
-          final fields = data.data;
-          if(fields!=null){
-            for(final key in fields.keys){
-              final value = fields[key];
-              if(value != null){
-                text += "$key : $value \n";
+          future: getData(),
+          builder: (context, data) {
+            String text = "";
+            final fields = data.data;
+            if (fields != null) {
+              for (final key in fields.keys) {
+                final value = fields[key];
+                if (value != null) {
+                  text += "$key : $value \n";
+                }
               }
             }
-          }
-          final cleanStack = error.stack.toString().split('\n').where((s) => s.contains('package:little_light')).join('\n');
-          text += "exception:\n${error.exceptionAsString()}\n";
-          text += "stackTrace:\n$cleanStack\n";
-          return Container(
-            decoration: BoxDecoration(color: LittleLightTheme.of(context).surfaceLayers.layer2, borderRadius: BorderRadius.circular(8)),
-            padding: EdgeInsets.all(8),
-            child: Text(text, style: TextStyle(fontSize: 11),),);
-        })
+            final cleanStack =
+                error.stack.toString().split('\n').where((s) => s.contains('package:little_light')).join('\n');
+            text += "exception:\n${error.exceptionAsString()}\n";
+            text += "stackTrace:\n$cleanStack\n";
+            return Container(
+              decoration: BoxDecoration(
+                  color: LittleLightTheme.of(context).surfaceLayers.layer2, borderRadius: BorderRadius.circular(8)),
+              padding: EdgeInsets.all(8),
+              child: Text(
+                text,
+                style: TextStyle(fontSize: 11),
+              ),
+            );
+          })
     ])));
   }
 
@@ -81,7 +89,7 @@ class ReportErrorDialog extends LittleLightBaseDialog with AuthConsumer, Analyti
           child: TranslatedTextWidget("Send report", uppercase: true),
           onPressed: () async {
             final error = context.errorArgument;
-            if(error == null) return;
+            if (error == null) return;
             final data = await getData();
             analytics.registerUserFeedback(error, data?["playerID"] ?? "", data ?? {});
             Navigator.of(context).pop();
@@ -99,13 +107,13 @@ class ReportErrorDialog extends LittleLightBaseDialog with AuthConsumer, Analyti
       "membershipID": auth.currentMembershipID ?? "",
       "currentLanguage": languageService.currentLanguage,
     };
-    if(Platform.isAndroid){
+    if (Platform.isAndroid) {
       final deviceInfo = await DeviceInfoPlugin().androidInfo;
       data["manufacturer"] = deviceInfo.manufacturer;
       data["model"] = deviceInfo.model;
       data["androidVersion"] = deviceInfo.version.codename;
     }
-    if(Platform.isIOS){
+    if (Platform.isIOS) {
       final deviceInfo = await DeviceInfoPlugin().iosInfo;
       data["model"] = deviceInfo.model;
       data["iosVersion"] = deviceInfo.systemVersion;

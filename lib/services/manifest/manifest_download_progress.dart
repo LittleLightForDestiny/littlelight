@@ -15,6 +15,5 @@ class DownloadProgress {
 }
 
 class DownloadError extends DownloadProgress {
-  DownloadError()
-      : super(downloadedBytes: 0, totalBytes: 0);
+  DownloadError() : super(downloadedBytes: 0, totalBytes: 0);
 }

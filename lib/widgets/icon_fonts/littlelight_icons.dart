@@ -34,12 +34,17 @@ class LittleLightIcons {
   static const IconData gambit_reaper = IconData(0xe018, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData gambit_sentry = IconData(0xe019, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData ghost = IconData(0xe01a, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData icon_display_options_equipped_only = IconData(0xe01b, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData icon_display_options_equipped_with_medium = IconData(0xe01c, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData icon_display_options_equipped_with_small = IconData(0xe01d, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData icon_display_options_equipped_only =
+      IconData(0xe01b, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData icon_display_options_equipped_with_medium =
+      IconData(0xe01c, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData icon_display_options_equipped_with_small =
+      IconData(0xe01d, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData icon_display_options_list = IconData(0xe01e, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData icon_display_options_only_medium = IconData(0xe01f, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData icon_display_options_small_only = IconData(0xe020, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData icon_display_options_only_medium =
+      IconData(0xe01f, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData icon_display_options_small_only =
+      IconData(0xe020, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData infuse = IconData(0xe021, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData intellect = IconData(0xe022, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData ironbanner = IconData(0xe023, fontFamily: _kFontFam, fontPackage: _kFontPkg);
@@ -67,5 +72,4 @@ class LittleLightIcons {
   static const IconData triumphs_total = IconData(0xe039, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData vanguard = IconData(0xe03a, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData vanguard2 = IconData(0xe03b, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  
 }

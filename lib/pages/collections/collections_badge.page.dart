@@ -13,7 +13,7 @@ class CollectionsBadgePage extends PresentationNodesTabsScaffoldWidget {
   CollectionsBadgePage() : super();
 
   @override
-  createState() => new CollectionsBadgePageState();
+  createState() => CollectionsBadgePageState();
 }
 
 class CollectionsBadgePageState extends PresentationNodesTabsScaffoldState<CollectionsBadgePage>
@@ -72,7 +72,7 @@ class CollectionsBadgePageState extends PresentationNodesTabsScaffoldState<Colle
   }
 
   @override
-  Widget buildTab(BuildContext context, DestinyPresentationNodeDefinition node) {    
+  Widget buildTab(BuildContext context, DestinyPresentationNodeDefinition node) {
     return CollectibleListWidget(
       node: node,
       onItemTap: (collectibleHash) {},

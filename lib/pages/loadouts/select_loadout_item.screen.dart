@@ -22,15 +22,10 @@ class SelectLoadoutItemScreen extends SearchScreen {
   final Iterable<String> idsToAvoid;
   final DestinyClass classType;
 
-  SelectLoadoutItemScreen(
-      {this.bucketDefinition,
-      this.emblemDefinition,
-      this.classType,
-      this.idsToAvoid})
+  SelectLoadoutItemScreen({this.bucketDefinition, this.emblemDefinition, this.classType, this.idsToAvoid})
       : super(
             controller: SearchController.withDefaultFilters(firstRunFilters: [
-          ItemBucketFilter(
-              selected: [bucketDefinition.hash].toSet(), enabled: true),
+          ItemBucketFilter(selected: [bucketDefinition.hash].toSet(), enabled: true),
           ClassTypeFilter(selected: [classType].toSet(), enabled: true),
           AvoidInstanceIdsFilter(selected: idsToAvoid.toSet(), enabled: true)
         ], filters: [
@@ -38,12 +33,10 @@ class SelectLoadoutItemScreen extends SearchScreen {
         ]));
 
   @override
-  SelectLoadoutItemScreenState createState() =>
-      new SelectLoadoutItemScreenState();
+  SelectLoadoutItemScreenState createState() => SelectLoadoutItemScreenState();
 }
 
-class SelectLoadoutItemScreenState
-    extends SearchScreenState<SelectLoadoutItemScreen> {
+class SelectLoadoutItemScreenState extends SearchScreenState<SelectLoadoutItemScreen> {
   TextFilter get textFilter {
     return [controller.preFilters, controller.filters, controller.postFilters]
         .expand((element) => element)
@@ -57,7 +50,8 @@ class SelectLoadoutItemScreenState
       title: buildAppBarTitle(context),
       elevation: 2,
       actions: <Widget>[
-        IconButton(enableFeedback: false,
+        IconButton(
+          enableFeedback: false,
           icon: textFilter.enabled ? Icon(Icons.close) : Icon(Icons.search),
           onPressed: () {
             textFilter.enabled = !textFilter.enabled;
@@ -66,7 +60,8 @@ class SelectLoadoutItemScreenState
           },
         ),
         Builder(
-            builder: (context) => IconButton(enableFeedback: false,
+            builder: (context) => IconButton(
+                  enableFeedback: false,
                   icon: Icon(Icons.filter_list),
                   onPressed: () {
                     Scaffold.of(context).openEndDrawer();
@@ -92,8 +87,7 @@ class SelectLoadoutItemScreenState
     return Container(
         constraints: BoxConstraints.expand(),
         child: QueuedNetworkImage(
-            imageUrl:
-                BungieApiService.url(widget.emblemDefinition.secondarySpecial),
+            imageUrl: BungieApiService.url(widget.emblemDefinition.secondarySpecial),
             fit: BoxFit.cover,
             alignment: Alignment(-.8, 0)));
   }

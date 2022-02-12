@@ -136,7 +136,7 @@ class BaseItemStatsState<T extends BaseItemStatsWidget> extends BaseDestinyItemS
   }
 
   Map<int, StatValues> getStatValues() {
-    Map<int, StatValues> map = new Map();
+    Map<int, StatValues> map = Map();
     if (plugDefinitions == null) {
       return map;
     }
@@ -144,7 +144,7 @@ class BaseItemStatsState<T extends BaseItemStatsWidget> extends BaseDestinyItemS
       var pre = precalculatedStats?.containsKey("${s.statTypeHash}") ?? false
           ? precalculatedStats["${s.statTypeHash}"].value
           : 0;
-      map[s.statTypeHash] = new StatValues(equipped: s.value, selected: s.value, precalculated: pre);
+      map[s.statTypeHash] = StatValues(equipped: s.value, selected: s.value, precalculated: pre);
     });
 
     List<int> plugHashes =
@@ -159,7 +159,7 @@ class BaseItemStatsState<T extends BaseItemStatsWidget> extends BaseDestinyItemS
       var selectedPlugHash = socketController.socketSelectedPlugHash(index);
       DestinyInventoryItemDefinition selectedDef = plugDefinitions[selectedPlugHash];
       def?.investmentStats?.forEach((stat) {
-        StatValues values = map[stat.statTypeHash] ?? new StatValues();
+        StatValues values = map[stat.statTypeHash] ?? StatValues();
         if (def.plug?.uiPlugLabel == 'masterwork') {
           if (selectedDef == null) {
             values.masterwork += stat.value;
@@ -175,7 +175,7 @@ class BaseItemStatsState<T extends BaseItemStatsWidget> extends BaseDestinyItemS
 
       if (selectedDef != null) {
         selectedDef?.investmentStats?.forEach((stat) {
-          StatValues values = map[stat.statTypeHash] ?? new StatValues();
+          StatValues values = map[stat.statTypeHash] ?? StatValues();
           if (selectedDef.plug?.uiPlugLabel == 'masterwork') {
             values.masterwork += stat.value;
           } else {

@@ -5,16 +5,11 @@ import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
 class LittleLightCustomDialog extends Dialog {
-  LittleLightCustomDialog(Widget content,
-      {Widget title,
-      Widget footer,
-      double maxWidth = 600,
-      double maxHeight = 500})
+  LittleLightCustomDialog(Widget content, {Widget title, Widget footer, double maxWidth = 600, double maxHeight = 500})
       : super(
             insetPadding: EdgeInsets.all(8),
             child: Container(
-              constraints:
-                  BoxConstraints(maxWidth: maxWidth, maxHeight: maxHeight),
+              constraints: BoxConstraints(maxWidth: maxWidth, maxHeight: maxHeight),
               padding: EdgeInsets.all(8).copyWith(bottom: 4),
               child: Column(mainAxisSize: MainAxisSize.min, children: [
                 title != null ? HeaderWidget(child: title) : Container(),
@@ -47,66 +42,46 @@ class LittleLightCustomDialog extends Dialog {
   }
 
   factory LittleLightCustomDialog.withSaveCancelButtons(Widget content,
-      {Widget title,
-      @required Function onSave,
-      @required Function onCancel,
-      double maxWidth = 600}) {
-    return LittleLightCustomDialog.withHorizontalButtons(content,
-        maxWidth: maxWidth,
-        title: title,
-        buttons: [
-          ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                visualDensity: VisualDensity.comfortable,
-              ),
-              child: TranslatedTextWidget("Cancel",
-                  uppercase: true,
-                  style: TextStyle(fontWeight: FontWeight.bold)),
-              onPressed: () {
-                onCancel();
-              }),
-          ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                visualDensity: VisualDensity.comfortable,
-              ),
-              child: TranslatedTextWidget("Save",
-                  uppercase: true,
-                  style: TextStyle(fontWeight: FontWeight.bold)),
-              onPressed: () {
-                onSave();
-              })
-        ]);
+      {Widget title, @required Function onSave, @required Function onCancel, double maxWidth = 600}) {
+    return LittleLightCustomDialog.withHorizontalButtons(content, maxWidth: maxWidth, title: title, buttons: [
+      ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            visualDensity: VisualDensity.comfortable,
+          ),
+          child: TranslatedTextWidget("Cancel", uppercase: true, style: TextStyle(fontWeight: FontWeight.bold)),
+          onPressed: () {
+            onCancel();
+          }),
+      ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            visualDensity: VisualDensity.comfortable,
+          ),
+          child: TranslatedTextWidget("Save", uppercase: true, style: TextStyle(fontWeight: FontWeight.bold)),
+          onPressed: () {
+            onSave();
+          })
+    ]);
   }
 
   factory LittleLightCustomDialog.withYesNoButtons(Widget content,
-      {Widget title,
-      double maxWidth = 600,
-      @required Function yesPressed,
-      @required Function noPressed}) {
-    return LittleLightCustomDialog.withHorizontalButtons(content,
-        title: title,
-        maxWidth: maxWidth,
-        buttons: [
-          ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                visualDensity: VisualDensity.comfortable,
-              ),
-              child: TranslatedTextWidget("No",
-                  uppercase: true,
-                  style: TextStyle(fontWeight: FontWeight.bold)),
-              onPressed: () {
-                noPressed();
-              }),
-          ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                visualDensity: VisualDensity.comfortable,
-              ),
-              child: TranslatedTextWidget("Yes",
-                  uppercase: true,
-                  style: TextStyle(fontWeight: FontWeight.bold)),
-              onPressed: () {
-                yesPressed();
-              })
-        ]);
+      {Widget title, double maxWidth = 600, @required Function yesPressed, @required Function noPressed}) {
+    return LittleLightCustomDialog.withHorizontalButtons(content, title: title, maxWidth: maxWidth, buttons: [
+      ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            visualDensity: VisualDensity.comfortable,
+          ),
+          child: TranslatedTextWidget("No", uppercase: true, style: TextStyle(fontWeight: FontWeight.bold)),
+          onPressed: () {
+            noPressed();
+          }),
+      ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            visualDensity: VisualDensity.comfortable,
+          ),
+          child: TranslatedTextWidget("Yes", uppercase: true, style: TextStyle(fontWeight: FontWeight.bold)),
+          onPressed: () {
+            yesPressed();
+          })
+    ]);
   }
 }

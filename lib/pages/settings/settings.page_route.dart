@@ -4,7 +4,5 @@ import 'package:flutter/material.dart';
 import 'settings.page.dart';
 
 class SettingsPageRoute extends MaterialPageRoute {
-  SettingsPageRoute()
-      : super(
-            builder: (context) => SettingsPage());
+  SettingsPageRoute() : super(builder: (context) => SettingsPage());
 }

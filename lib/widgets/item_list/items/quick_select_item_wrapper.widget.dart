@@ -19,8 +19,7 @@ import 'package:little_light/widgets/item_list/items/weapon/weapon_inventory_ite
 import 'package:little_light/widgets/progress_tabs/pursuit_item/large_pursuit_item.widget.dart';
 
 class QuickSelectItemWrapperWidget extends InventoryItemWrapperWidget {
-  QuickSelectItemWrapperWidget(DestinyItemComponent item, int bucketHash,
-      {String characterId, Key key})
+  QuickSelectItemWrapperWidget(DestinyItemComponent item, int bucketHash, {String characterId, Key key})
       : super(item, bucketHash, characterId: characterId, key: key);
 
   @override
@@ -53,8 +52,7 @@ class QuickSelectItemWrapperWidgetState<T extends QuickSelectItemWrapperWidget>
         }
       case DestinyItemType.Weapon:
         {
-          var reusablePlugs = profile
-              .getItemReusablePlugs(widget?.item?.itemInstanceId);
+          var reusablePlugs = profile.getItemReusablePlugs(widget?.item?.itemInstanceId);
           int maxPlugs = 1;
           reusablePlugs?.forEach((key, value) {
             maxPlugs = max(maxPlugs, value.length);
@@ -137,8 +135,7 @@ class QuickSelectItemWrapperWidgetState<T extends QuickSelectItemWrapperWidget>
       icon = Image.asset("assets/imgs/inventory-icon.jpg");
     } else {
       var character = profile.getCharacter(widget.characterId);
-      icon = QueuedNetworkImage(
-          imageUrl: BungieApiService.url(character?.emblemPath));
+      icon = QueuedNetworkImage(imageUrl: BungieApiService.url(character?.emblemPath));
     }
 
     return Container(

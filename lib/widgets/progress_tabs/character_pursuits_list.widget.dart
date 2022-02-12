@@ -1,7 +1,5 @@
 // @dart=2.9
 
-
-
 import 'dart:async';
 
 import 'package:bungie_api/destiny2.dart';
@@ -193,7 +191,7 @@ class _CharacterPursuitsListWidgetState extends State<CharacterPursuitsListWidge
     List<SliverSection> list = [
       buildCharInfoSliver(),
     ];
-    if(categories == null) return list;
+    if (categories == null) return list;
     categories.forEach((category) {
       final options = userSettings.getDisplayOptionsForBucket(category.categoryID);
       final categoryVisible = ![BucketDisplayType.Hidden, BucketDisplayType.OnlyEquipped].contains(options.type);

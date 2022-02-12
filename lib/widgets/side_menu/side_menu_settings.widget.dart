@@ -50,7 +50,7 @@ class _SideMenuSettingsWidgetState extends State<SideMenuSettingsWidget> with Au
             children: [
               TranslatedTextWidget("Logout"),
               Container(width: 4),
-              Icon(Icons.logout, size:16),
+              Icon(Icons.logout, size: 16),
             ],
           ), onTap: () async {
         final context = this.context;

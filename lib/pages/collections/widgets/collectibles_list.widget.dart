@@ -8,7 +8,7 @@ import 'package:little_light/widgets/multisection_scrollview/sliver_section.dart
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/widgets/presentation_nodes/collectible_item.widget.dart';
 
-typedef void PresentationNodeTap(int presentationNodeHash);
+typedef PresentationNodeTap = void Function(int presentationNodeHash);
 
 class CollectibleListWidget extends StatelessWidget {
   final DestinyPresentationNodeDefinition node;
@@ -36,6 +36,6 @@ class CollectibleListWidget extends StatelessWidget {
   Widget buildItem(BuildContext context, int index) {
     final childNode = node.children?.collectibles?[index];
     if (childNode == null) return Container();
-    return CollectibleItemWidget(hash:childNode.collectibleHash);
+    return CollectibleItemWidget(hash: childNode.collectibleHash);
   }
 }

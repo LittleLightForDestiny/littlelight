@@ -73,7 +73,7 @@ class TabMenuButton extends StatefulWidget {
   TabMenuButton({this.character, Key key, this.lastPlayed = true}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => new TabMenuButtonState();
+  State<StatefulWidget> createState() => TabMenuButtonState();
 }
 
 class TabMenuButtonState extends State<TabMenuButton> with ManifestConsumer {
@@ -118,7 +118,7 @@ class TabMenuButtonState extends State<TabMenuButton> with ManifestConsumer {
 
 class VaultTabMenuButton extends TabMenuButton {
   @override
-  State<StatefulWidget> createState() => new VaultTabMenuButtonState();
+  State<StatefulWidget> createState() => VaultTabMenuButtonState();
 }
 
 class VaultTabMenuButtonState extends TabMenuButtonState {

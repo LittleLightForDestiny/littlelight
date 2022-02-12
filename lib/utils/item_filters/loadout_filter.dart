@@ -7,7 +7,7 @@ import 'package:little_light/utils/item_with_owner.dart';
 
 import 'base_item_filter.dart';
 
-class LoadoutFilter extends BaseItemFilter<Set<String>> with LoadoutsConsumer{
+class LoadoutFilter extends BaseItemFilter<Set<String>> with LoadoutsConsumer {
   Map<String, Loadout> allLoadouts;
 
   LoadoutFilter() : super(Set(), Set());
@@ -21,18 +21,12 @@ class LoadoutFilter extends BaseItemFilter<Set<String>> with LoadoutsConsumer{
       {Map<int, DestinyInventoryItemDefinition> definitions}) async {
     clear();
 
-    allLoadouts = Map<String, Loadout>.fromIterable(
-        await loadoutService.getLoadouts(),
-        key: (loadout) => loadout.assignedId,
-        value: (loadout) => loadout);
+    allLoadouts = Map<String, Loadout>.fromIterable(await loadoutService.getLoadouts(),
+        key: (loadout) => loadout.assignedId, value: (loadout) => loadout);
     for (var item in items) {
       var loadouts = allLoadouts.values.where((l) {
-        var equipped = l.equipped
-            .where((e) => e.itemInstanceId == item.item.itemInstanceId)
-            .toList();
-        var unequipped = l.unequipped
-            .where((e) => e.itemInstanceId == item.item.itemInstanceId)
-            .toList();
+        var equipped = l.equipped.where((e) => e.itemInstanceId == item.item.itemInstanceId).toList();
+        var unequipped = l.unequipped.where((e) => e.itemInstanceId == item.item.itemInstanceId).toList();
         return equipped.length > 0 || unequipped.length > 0;
       }).toSet();
       availableValues.addAll(loadouts.map((l) => l.assignedId));
@@ -43,23 +37,16 @@ class LoadoutFilter extends BaseItemFilter<Set<String>> with LoadoutsConsumer{
     return super.filter(items, definitions: definitions);
   }
 
-  bool filterItem(ItemWithOwner item,
-      {Map<int, DestinyInventoryItemDefinition> definitions}) {
+  bool filterItem(ItemWithOwner item, {Map<int, DestinyInventoryItemDefinition> definitions}) {
     if (value?.length == 0) {
       return true;
     }
 
     for (var assignedId in value) {
       var loadout = allLoadouts[assignedId];
-      if (loadout.equipped
-              .where((e) => e.itemInstanceId == item.item.itemInstanceId)
-              .length >
-          0) return true;
+      if (loadout.equipped.where((e) => e.itemInstanceId == item.item.itemInstanceId).length > 0) return true;
 
-      if (loadout.unequipped
-              .where((e) => e.itemInstanceId == item.item.itemInstanceId)
-              .length >
-          0) return true;
+      if (loadout.unequipped.where((e) => e.itemInstanceId == item.item.itemInstanceId).length > 0) return true;
     }
     return false;
   }

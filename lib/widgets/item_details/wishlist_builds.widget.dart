@@ -63,8 +63,7 @@ class WishlistBuildsWidget extends StatefulWidget {
   State<StatefulWidget> createState() => WishlistBuildsWidgetState();
 }
 
-class WishlistBuildsWidgetState extends State<WishlistBuildsWidget>
-    with VisibleSectionMixin, WishlistsConsumer {
+class WishlistBuildsWidgetState extends State<WishlistBuildsWidget> with VisibleSectionMixin, WishlistsConsumer {
   @override
   void initState() {
     super.initState();
@@ -75,8 +74,7 @@ class WishlistBuildsWidgetState extends State<WishlistBuildsWidget>
 
   @override
   Widget build(BuildContext context) {
-    final builds = wishlistsService.getWishlistBuilds(
-        itemHash: widget.itemHash, reusablePlugs: widget.reusablePlugs);
+    final builds = wishlistsService.getWishlistBuilds(itemHash: widget.itemHash, reusablePlugs: widget.reusablePlugs);
     if ((builds?.length ?? 0) == 0) return Container();
     return Container(
       padding: EdgeInsets.all(8),
@@ -100,11 +98,8 @@ class WishlistBuildsWidgetState extends State<WishlistBuildsWidget>
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: wishlists
               ?.map((name) => Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        buildWishlistTitle(context, name),
-                        buildWishlistBuilds(context, name, builds)
-                      ]))
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [buildWishlistTitle(context, name), buildWishlistBuilds(context, name, builds)]))
               ?.toList() ??
           [],
     );
@@ -120,11 +115,8 @@ class WishlistBuildsWidgetState extends State<WishlistBuildsWidget>
     );
   }
 
-  Widget buildWishlistBuilds(BuildContext context, String originalWishlistName,
-      List<ParsedWishlistBuild> builds) {
-    final wishlistBuilds = builds
-        .where((element) => element.originalWishlist == originalWishlistName)
-        .toList();
+  Widget buildWishlistBuilds(BuildContext context, String originalWishlistName, List<ParsedWishlistBuild> builds) {
+    final wishlistBuilds = builds.where((element) => element.originalWishlist == originalWishlistName).toList();
     wishlistBuilds.sort((a, b) {
       var inputPriority = a.inputPriority.compareTo(b.inputPriority);
       if (inputPriority != 0) return inputPriority;
@@ -147,17 +139,12 @@ class WishlistBuildsWidgetState extends State<WishlistBuildsWidget>
                             wishlistBuild: b,
                           ),
                         ))
-                    .fold(
-                        <Widget>[],
-                        (previousValue, element) => previousValue
-                            .followedBy([Container(width: 8), element]))
+                    .fold(<Widget>[],
+                        (previousValue, element) => previousValue.followedBy([Container(width: 8), element]))
                     .skip(1)
                     .toList(),
               )))
-          .fold(
-              <Widget>[],
-              (previousValue, element) =>
-                  previousValue.followedBy([Container(height: 8), element]))
+          .fold(<Widget>[], (previousValue, element) => previousValue.followedBy([Container(height: 8), element]))
           .skip(1)
           .toList(),
     );

@@ -1,7 +1,7 @@
 //@dart=2.12
 import 'package:flutter/material.dart';
 
-typedef Widget ItemBuilder(int plugHash);
+typedef ItemBuilder = Widget Function(int plugHash);
 
 class PlugGridView extends StatefulWidget {
   final List<int> plugHashes;

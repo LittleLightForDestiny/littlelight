@@ -8,14 +8,15 @@ import 'package:little_light/widgets/common/item_icon/engram_icon.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/minimal_base_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/minimal_info_label.mixin.dart';
 
-class MinimalEngramInventoryItemWidget extends MinimalBaseInventoryItemWidget
-    with MinimalInfoLabelMixin {
+class MinimalEngramInventoryItemWidget extends MinimalBaseInventoryItemWidget with MinimalInfoLabelMixin {
   MinimalEngramInventoryItemWidget(
-      DestinyItemComponent item,
-      DestinyInventoryItemDefinition itemDefinition,
-      DestinyItemInstanceComponent instanceInfo,
-      {@required String characterId, Key key, @required String uniqueId,})
-      : super(item, itemDefinition, instanceInfo, uniqueId:uniqueId, characterId:characterId, key:key);
+    DestinyItemComponent item,
+    DestinyInventoryItemDefinition itemDefinition,
+    DestinyItemInstanceComponent instanceInfo, {
+    @required String characterId,
+    Key key,
+    @required String uniqueId,
+  }) : super(item, itemDefinition, instanceInfo, uniqueId: uniqueId, characterId: characterId, key: key);
 
   @override
   Widget itemIconHero(BuildContext context) {

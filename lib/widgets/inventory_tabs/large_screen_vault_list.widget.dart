@@ -9,12 +9,10 @@ class LargeScreenVaultListWidget extends StatefulWidget {
   final DestinyCharacterComponent character;
   LargeScreenVaultListWidget({Key key, this.character}) : super(key: key);
   @override
-  LargeScreenVaultListWidgetState createState() =>
-      new LargeScreenVaultListWidgetState();
+  LargeScreenVaultListWidgetState createState() => LargeScreenVaultListWidgetState();
 }
 
-class LargeScreenVaultListWidgetState
-    extends State<LargeScreenVaultListWidget> {
+class LargeScreenVaultListWidgetState extends State<LargeScreenVaultListWidget> {
   List<int> bucketHashes = [
     InventoryBucket.kineticWeapons,
     InventoryBucket.energyWeapons,

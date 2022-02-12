@@ -87,7 +87,7 @@ class ItemDetailsPage extends BaseDestinyStatefulItemWidget {
 class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailsPage>
     with AuthConsumer, LoadoutsConsumer, ProfileConsumer, InventoryConsumer, ManifestConsumer, ItemNotesConsumer {
   int selectedPerk;
-  Map<int, int> selectedPerks = new Map();
+  Map<int, int> selectedPerks = Map();
   ItemSocketController socketController;
   DestinyStatGroupDefinition statGroupDefinition;
   List<ItemWithOwner> duplicates;

@@ -4,13 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/widgets/progress_tabs/pursuit_item/pursuit_item.widget.dart';
 
 class LargePursuitItemWidget extends PursuitItemWidget {
-  LargePursuitItemWidget(
-      {Key key,
-      characterId,
-      item,
-      onTap,
-      bool selectable = false,
-      Widget trailing})
+  LargePursuitItemWidget({Key key, characterId, item, onTap, bool selectable = false, Widget trailing})
       : super(
             key: key,
             characterId: characterId,
@@ -26,5 +20,4 @@ class LargePursuitItemWidget extends PursuitItemWidget {
   LargePursuitItemWidgetState createState() => LargePursuitItemWidgetState();
 }
 
-class LargePursuitItemWidgetState<T extends LargePursuitItemWidget>
-    extends PursuitItemWidgetState<T> {}
+class LargePursuitItemWidgetState<T extends LargePursuitItemWidget> extends PursuitItemWidgetState<T> {}

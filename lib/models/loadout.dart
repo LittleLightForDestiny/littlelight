@@ -4,7 +4,6 @@ import 'package:uuid/uuid.dart';
 
 part 'loadout.g.dart';
 
-
 @JsonSerializable()
 class Loadout {
   String? assignedId;
@@ -25,12 +24,7 @@ class Loadout {
       this.updatedAt});
 
   factory Loadout.fromScratch() {
-    return Loadout(
-        assignedId: Uuid().v4(),
-        name: "",
-        equipped: [],
-        unequipped: [],
-        updatedAt: DateTime.now());
+    return Loadout(assignedId: Uuid().v4(), name: "", equipped: [], unequipped: [], updatedAt: DateTime.now());
   }
 
   factory Loadout.copy(Loadout original) {
@@ -50,10 +44,7 @@ class Loadout {
   dynamic toJson() {
     return _$LoadoutToJson(this);
   }
-
-  
 }
-
 
 @JsonSerializable()
 class LoadoutItem {

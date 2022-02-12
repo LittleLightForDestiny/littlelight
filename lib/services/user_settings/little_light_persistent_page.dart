@@ -15,9 +15,8 @@ const publicPages = [
   LittleLightPersistentPage.Triumphs,
 ];
 
-final Map<String, LittleLightPersistentPage> _nameToPageMap = LittleLightPersistentPage.values
-    .asMap()
-    .map((key, value) => MapEntry(value.name, value));
+final Map<String, LittleLightPersistentPage> _nameToPageMap =
+    LittleLightPersistentPage.values.asMap().map((key, value) => MapEntry(value.name, value));
 
 extension LittleLightPageName on LittleLightPersistentPage {
   String get name => this.toString().split(".").last;

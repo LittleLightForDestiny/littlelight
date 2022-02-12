@@ -13,16 +13,14 @@ import 'package:little_light/widgets/common/destiny_item.stateful_widget.dart';
 
 class SubClassImageWidget extends DestinyItemStatefulWidget {
   SubClassImageWidget(
-      DestinyItemComponent item,
-      DestinyInventoryItemDefinition definition,
-      DestinyItemInstanceComponent instanceInfo)
+      DestinyItemComponent item, DestinyInventoryItemDefinition definition, DestinyItemInstanceComponent instanceInfo)
       : super(item, definition, instanceInfo);
 
   @override
   _SubClassImageWidgetState createState() => _SubClassImageWidgetState();
 }
 
-class _SubClassImageWidgetState extends DestinyItemState<SubClassImageWidget> with ProfileConsumer{
+class _SubClassImageWidgetState extends DestinyItemState<SubClassImageWidget> with ProfileConsumer {
   String imagePath;
   bool loaded = false;
 
@@ -33,19 +31,17 @@ class _SubClassImageWidgetState extends DestinyItemState<SubClassImageWidget> wi
   }
 
   getDefinitions() async {
-    var talentGridDef = await manifest
-        .getDefinition<DestinyTalentGridDefinition>(
-            definition.talentGrid.talentGridHash);
+    var talentGridDef = await manifest.getDefinition<DestinyTalentGridDefinition>(definition.talentGrid.talentGridHash);
     var talentGrid = profile.getTalentGrid(item?.itemInstanceId);
     var cat = extractTalentGridNodeCategory(talentGridDef, talentGrid);
-    var path = DestinyData.getSubclassImagePath(definition.classType,
-        definition.talentGrid.hudDamageType, cat?.identifier);
+    var path =
+        DestinyData.getSubclassImagePath(definition.classType, definition.talentGrid.hudDamageType, cat?.identifier);
     try {
       await rootBundle.load(path);
       imagePath = path;
     } catch (e) {}
     loaded = true;
-    if(!mounted) return;
+    if (!mounted) return;
     setState(() {});
   }
 

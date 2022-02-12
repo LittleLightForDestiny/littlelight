@@ -33,11 +33,7 @@ class ItemNotes {
     required int itemHash,
     String? itemInstanceId,
   }) {
-    return ItemNotes(
-        updatedAt: DateTime.now(),
-        itemHash: itemHash,
-        tags: Set(),
-        itemInstanceId: itemInstanceId);
+    return ItemNotes(updatedAt: DateTime.now(), itemHash: itemHash, tags: Set(), itemInstanceId: itemInstanceId);
   }
 
   factory ItemNotes.fromJson(dynamic json) {

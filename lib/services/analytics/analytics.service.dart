@@ -32,10 +32,10 @@ class AnalyticsService {
     FirebaseCrashlytics.instance.recordError(e, stackTrace);
   }
 
-  void registerUserFeedback(FlutterErrorDetails e, String userIdentifier, Map<String, String> customData){
+  void registerUserFeedback(FlutterErrorDetails e, String userIdentifier, Map<String, String> customData) {
     FirebaseCrashlytics.instance.setUserIdentifier(userIdentifier);
-    for(final key in customData.keys){
-      if(customData[key] != null){
+    for (final key in customData.keys) {
+      if (customData[key] != null) {
         FirebaseCrashlytics.instance.setCustomKey(key, customData[key]!);
       }
     }

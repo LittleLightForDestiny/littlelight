@@ -23,12 +23,7 @@ class ScreenShotItemModsWidget extends BaseItemSocketsWidget {
     DestinyItemSocketCategoryDefinition category,
     ItemSocketController controller,
     this.pixelSize = 1,
-  }) : super(
-            key: key,
-            item: item,
-            definition: definition,
-            category: category,
-            controller: controller);
+  }) : super(key: key, item: item, definition: definition, category: category, controller: controller);
 
   @override
   State<StatefulWidget> createState() {
@@ -38,8 +33,7 @@ class ScreenShotItemModsWidget extends BaseItemSocketsWidget {
 
 const _sectionId = "screenshot_item_mods";
 
-class ScreenShotItemModsWidgetState<T extends ScreenShotItemModsWidget>
-    extends BaseItemSocketsWidgetState<T> {
+class ScreenShotItemModsWidgetState<T extends ScreenShotItemModsWidget> extends BaseItemSocketsWidgetState<T> {
   @override
   String get sectionId => _sectionId;
 
@@ -72,8 +66,7 @@ class ScreenShotItemModsWidgetState<T extends ScreenShotItemModsWidget>
           ),
         ),
         Container(
-            margin: EdgeInsets.only(
-                top: 2 * widget.pixelSize, bottom: 16 * widget.pixelSize),
+            margin: EdgeInsets.only(top: 2 * widget.pixelSize, bottom: 16 * widget.pixelSize),
             color: Theme.of(context).colorScheme.onSurface.withOpacity(.7),
             height: 3 * widget.pixelSize)
       ],
@@ -122,14 +115,9 @@ class ScreenShotItemModsWidgetState<T extends ScreenShotItemModsWidget>
               controller.selectSocket(socketIndex, plugItemHash);
             },
             child: Container(
-                decoration: BoxDecoration(
-                    border: Border.all(
-                        color: Colors.grey.shade400,
-                        width: 3 * widget.pixelSize)),
+                decoration: BoxDecoration(border: Border.all(color: Colors.grey.shade400, width: 3 * widget.pixelSize)),
                 child: Stack(children: [
-                  ManifestImageWidget<DestinyInventoryItemDefinition>(
-                      plugItemHash,
-                      key: Key("plug_$plugItemHash")),
+                  ManifestImageWidget<DestinyInventoryItemDefinition>(plugItemHash, key: Key("plug_$plugItemHash")),
                   energyType == DestinyEnergyType.Any
                       ? Container()
                       : Positioned.fill(

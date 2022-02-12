@@ -23,7 +23,7 @@ class EmblemInventoryItemWidget extends BaseInventoryItemWidget {
           instanceInfo,
           characterId: characterId,
           uniqueId: uniqueId,
-          trailing:trailing,
+          trailing: trailing,
         );
 
   @override

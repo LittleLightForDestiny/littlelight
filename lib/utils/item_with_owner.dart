@@ -7,12 +7,13 @@ class ItemWithOwner {
   static const OWNER_PROFILE = "profile";
   final DestinyItemComponent item;
   final String? _ownerId;
-  String get ownerId{
-    if(_ownerId != null){
+  String get ownerId {
+    if (_ownerId != null) {
       return _ownerId!;
     }
-    if(item.bucketHash == InventoryBucket.general) return OWNER_VAULT;
+    if (item.bucketHash == InventoryBucket.general) return OWNER_VAULT;
     return OWNER_PROFILE;
   }
+
   ItemWithOwner(this.item, this._ownerId);
 }

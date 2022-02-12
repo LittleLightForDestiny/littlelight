@@ -34,10 +34,8 @@ class ItemTagWidget extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           buildIcon(context),
-          fullWidth
-              ? Expanded(child: buildLabel(context))
-              : Flexible(child: buildLabel(context)),
-          if(trailing != null) trailing
+          fullWidth ? Expanded(child: buildLabel(context)) : Flexible(child: buildLabel(context)),
+          if (trailing != null) trailing
         ],
       );
     }
@@ -45,10 +43,7 @@ class ItemTagWidget extends StatelessWidget {
   }
 
   Widget buildLabel(BuildContext context) {
-    var style = TextStyle(
-        color: tag.foregroundColor,
-        fontSize: fontSize,
-        fontWeight: FontWeight.w500);
+    var style = TextStyle(color: tag.foregroundColor, fontSize: fontSize, fontWeight: FontWeight.w500);
     var tagName = tag.name.length > 0 ? tag.name : null;
     if (tag.custom && tagName != null) {
       return Container(
@@ -75,13 +70,12 @@ class ItemTagWidget extends StatelessWidget {
 
   Widget buildIcon(BuildContext context) {
     var icon = tag.iconData;
-    if(icon == null) return Container();
+    if (icon == null) return Container();
     return Container(
         alignment: Alignment.center,
         width: fontSize * 1.2,
         height: fontSize * 1.2,
-        child: CenterIconWorkaround(icon,
-            color: tag.foregroundColor, size: fontSize));
+        child: CenterIconWorkaround(icon, color: tag.foregroundColor, size: fontSize));
   }
 
   Widget buildBg(BuildContext context, Widget contents) {
@@ -90,21 +84,18 @@ class ItemTagWidget extends StatelessWidget {
         color: tag.backgroundColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(fontSize),
-          side: BorderSide(
-              color: tag.foregroundColor ?? Colors.transparent, width: 1),
+          side: BorderSide(color: tag.foregroundColor ?? Colors.transparent, width: 1),
         ),
         child: InkWell(
             onTap: () {
               onClick?.call();
             },
-            child:
-                Container(padding: EdgeInsets.all(padding), child: contents)),
+            child: Container(padding: EdgeInsets.all(padding), child: contents)),
       );
     }
     return Container(
         decoration: BoxDecoration(
-            border: Border.all(
-                color: tag.foregroundColor ?? Colors.transparent, width: 1),
+            border: Border.all(color: tag.foregroundColor ?? Colors.transparent, width: 1),
             color: tag.backgroundColor,
             borderRadius: BorderRadius.circular(fontSize)),
         padding: EdgeInsets.all(padding),

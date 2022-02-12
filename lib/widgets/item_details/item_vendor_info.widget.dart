@@ -18,8 +18,7 @@ class ItemVendorInfoWidget extends StatefulWidget {
   final DestinyVendorSaleItemComponent sale;
   final int vendorHash;
 
-  ItemVendorInfoWidget({Key key, this.sale, this.vendorHash, this.definition})
-      : super(key: key);
+  ItemVendorInfoWidget({Key key, this.sale, this.vendorHash, this.definition}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -37,8 +36,7 @@ class ItemVendorInfoState extends State<ItemVendorInfoWidget> with ProfileConsum
   }
 
   loadDefinition() async {
-    vendorDefinition = await manifest
-        .getDefinition<DestinyVendorDefinition>(widget.vendorHash);
+    vendorDefinition = await manifest.getDefinition<DestinyVendorDefinition>(widget.vendorHash);
     setState(() {});
   }
 
@@ -46,8 +44,7 @@ class ItemVendorInfoState extends State<ItemVendorInfoWidget> with ProfileConsum
   Widget build(BuildContext context) {
     if (vendorDefinition == null) return Container();
     return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [buildFailures(context), buildCost(context)]);
+        crossAxisAlignment: CrossAxisAlignment.stretch, children: [buildFailures(context), buildCost(context)]);
   }
 
   buildCost(BuildContext context) {
@@ -70,10 +67,8 @@ class ItemVendorInfoState extends State<ItemVendorInfoWidget> with ProfileConsum
           ].followedBy(costs.map((c) {
             var items = inventory.where((i) => i.itemHash == c.itemHash);
             var itemsTotal = items.fold<int>(0, (t, i) => t + i.quantity);
-            var currency =
-                currencies.where((curr) => curr.itemHash == c.itemHash);
-            var total =
-                currency.fold<int>(itemsTotal, (t, curr) => t + curr.quantity);
+            var currency = currencies.where((curr) => curr.itemHash == c.itemHash);
+            var total = currency.fold<int>(itemsTotal, (t, curr) => t + curr.quantity);
             bool isEnough = total >= c.quantity;
             return Container(
                 padding: EdgeInsets.only(left: 8),
@@ -90,11 +85,7 @@ class ItemVendorInfoState extends State<ItemVendorInfoWidget> with ProfileConsum
                       width: 4,
                     ),
                     Container(
-                        width: 18,
-                        height: 18,
-                        child:
-                            ManifestImageWidget<DestinyInventoryItemDefinition>(
-                                c.itemHash)),
+                        width: 18, height: 18, child: ManifestImageWidget<DestinyInventoryItemDefinition>(c.itemHash)),
                   ],
                 ));
           })).toList(),
@@ -122,10 +113,7 @@ class ItemVendorInfoState extends State<ItemVendorInfoWidget> with ProfileConsum
     return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: messages.map((message) {
-          return Container(
-              color: LittleLightTheme.of(context).errorLayers,
-              padding: EdgeInsets.all(8),
-              child: message);
+          return Container(color: LittleLightTheme.of(context).errorLayers, padding: EdgeInsets.all(8), child: message);
         }).toList());
   }
 
@@ -144,8 +132,7 @@ class ItemVendorInfoState extends State<ItemVendorInfoWidget> with ProfileConsum
     if (widget.sale.saleStatus.contains(VendorItemStatus.NoQuantity)) {
       //no message for now
     }
-    if (widget.sale.saleStatus
-        .contains(VendorItemStatus.OutsidePurchaseWindow)) {
+    if (widget.sale.saleStatus.contains(VendorItemStatus.OutsidePurchaseWindow)) {
       messages.add(TranslatedTextWidget("Outside Purchase Window"));
     }
     if (widget.sale.saleStatus.contains(VendorItemStatus.NotAvailable)) {

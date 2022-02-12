@@ -13,12 +13,7 @@ class GenericProgressBarWidget extends StatelessWidget {
   final int progress;
 
   const GenericProgressBarWidget(
-      {Key key,
-      this.color,
-      this.completed = false,
-      this.total = 0,
-      this.progress = 0,
-      this.description})
+      {Key key, this.color, this.completed = false, this.total = 0, this.progress = 0, this.description})
       : super(key: key);
 
   @override
@@ -35,9 +30,7 @@ class GenericProgressBarWidget extends StatelessWidget {
 
   Widget buildCheck(BuildContext context) {
     return Container(
-        decoration: BoxDecoration(
-            border: Border.all(
-                width: 1, color: this.color ?? Colors.grey.shade300)),
+        decoration: BoxDecoration(border: Border.all(width: 1, color: this.color ?? Colors.grey.shade300)),
         width: 22,
         height: 22,
         padding: EdgeInsets.all(2),
@@ -51,15 +44,13 @@ class GenericProgressBarWidget extends StatelessWidget {
 
   buildBar(BuildContext context) {
     if (total <= 1) {
-      return Container(
-          padding: EdgeInsets.only(left: 8), child: buildTitle(context));
+      return Container(padding: EdgeInsets.only(left: 8), child: buildTitle(context));
     }
     return Container(
         margin: EdgeInsets.only(left: 4),
         height: 22,
-        decoration: completed ? null : BoxDecoration(
-            border: Border.all(
-                width: 1, color: this.color ?? Colors.grey.shade300)),
+        decoration:
+            completed ? null : BoxDecoration(border: Border.all(width: 1, color: this.color ?? Colors.grey.shade300)),
         child: Stack(
           children: <Widget>[
             Positioned.fill(
@@ -71,32 +62,25 @@ class GenericProgressBarWidget extends StatelessWidget {
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(child: buildTitle(context)),
-                      buildCount(context)
-                    ]))
+                    children: [Expanded(child: buildTitle(context)), buildCount(context)]))
           ],
         ));
   }
 
   buildTitle(BuildContext context) {
-    return Container(
-        child: description);
+    return Container(child: description);
   }
 
   buildCount(BuildContext context) {
     if (total <= 1) return Container();
 
     return Text("$progress/$total",
-        style: TextStyle(
-            fontWeight: FontWeight.w500,
-            fontSize: 13,
-            color: this.color ?? Colors.grey.shade300));
+        style: TextStyle(fontWeight: FontWeight.w500, fontSize: 13, color: this.color ?? Colors.grey.shade300));
   }
 
   buildProgressBar(BuildContext context) {
     Color color = Color.lerp(barColor, Colors.black, .1);
-    if(completed) return Container();
+    if (completed) return Container();
     return Container(
         margin: EdgeInsets.all(2),
         color: Theme.of(context).colorScheme.secondaryVariant,
@@ -107,7 +91,7 @@ class GenericProgressBarWidget extends StatelessWidget {
         ));
   }
 
-  Color get barColor{
+  Color get barColor {
     return DestinyData.objectiveProgress;
   }
 }

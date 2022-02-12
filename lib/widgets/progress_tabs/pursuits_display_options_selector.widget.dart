@@ -8,28 +8,21 @@ import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/icon_fonts/littlelight_icons.dart';
 import 'package:little_light/widgets/item_list/bucket_display_options_selector.widget.dart';
 
-class PursuitsDisplayOptionsSelectorWidget
-    extends BucketDisplayOptionsSelectorWidget {
-  
+class PursuitsDisplayOptionsSelectorWidget extends BucketDisplayOptionsSelectorWidget {
   final String typeIdentifier;
-  PursuitsDisplayOptionsSelectorWidget(
-      {this.typeIdentifier, Function onChanged})
-      : super(onChanged: onChanged);
+  PursuitsDisplayOptionsSelectorWidget({this.typeIdentifier, Function onChanged}) : super(onChanged: onChanged);
   @override
-  PursuitsDisplayOptionsSelectorWidgetState createState() =>
-      new PursuitsDisplayOptionsSelectorWidgetState();
+  PursuitsDisplayOptionsSelectorWidgetState createState() => PursuitsDisplayOptionsSelectorWidgetState();
 }
 
 class PursuitsDisplayOptionsSelectorWidgetState
-    extends BucketDisplayOptionsSelectorWidgetState<
-        PursuitsDisplayOptionsSelectorWidget> {
+    extends BucketDisplayOptionsSelectorWidgetState<PursuitsDisplayOptionsSelectorWidget> {
   BucketDisplayType currentType;
 
   @override
   void initState() {
     super.initState();
-    currentType =
-        userSettings.getDisplayOptionsForBucket(bucketKey)?.type;
+    currentType = userSettings.getDisplayOptionsForBucket(bucketKey)?.type;
   }
 
   String get bucketKey {
@@ -49,13 +42,8 @@ class PursuitsDisplayOptionsSelectorWidgetState
     var icon = getIcon(type);
     return DropdownMenuItem<BucketDisplayType>(
         value: type,
-        child: Container(
-            width: 200,
-            child: Row(children: [
-              Icon(icon, size: 16),
-              Container(width: 8),
-              getLabel(type)
-            ])));
+        child:
+            Container(width: 200, child: Row(children: [Icon(icon, size: 16), Container(width: 8), getLabel(type)])));
   }
 
   Widget getLabel(BucketDisplayType type) {

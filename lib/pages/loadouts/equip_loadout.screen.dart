@@ -26,7 +26,7 @@ class EquipLoadoutScreen extends StatefulWidget {
   const EquipLoadoutScreen({Key key, this.loadout}) : super(key: key);
 
   @override
-  EquipLoadoutScreenState createState() => new EquipLoadoutScreenState();
+  EquipLoadoutScreenState createState() => EquipLoadoutScreenState();
 }
 
 class EquipLoadoutScreenState extends State<EquipLoadoutScreen> with ProfileConsumer, ManifestConsumer {
@@ -41,11 +41,8 @@ class EquipLoadoutScreenState extends State<EquipLoadoutScreen> with ProfileCons
   buildItemIndex() async {
     _itemIndex = await InventoryUtils.buildLoadoutItemIndex(widget.loadout);
 
-    
     if (widget?.loadout?.emblemHash != null) {
-      emblemDefinition =
-          await manifest.getDefinition<DestinyInventoryItemDefinition>(
-              widget.loadout.emblemHash);
+      emblemDefinition = await manifest.getDefinition<DestinyInventoryItemDefinition>(widget.loadout.emblemHash);
       if (mounted) {
         setState(() {});
       }
@@ -54,11 +51,8 @@ class EquipLoadoutScreenState extends State<EquipLoadoutScreen> with ProfileCons
 
   Color get emblemColor {
     if (emblemDefinition == null) return Theme.of(context).colorScheme.background;
-    Color color = Color.fromRGBO(
-        emblemDefinition.backgroundColor.red,
-        emblemDefinition.backgroundColor.green,
-        emblemDefinition.backgroundColor.blue,
-        1.0);
+    Color color = Color.fromRGBO(emblemDefinition.backgroundColor.red, emblemDefinition.backgroundColor.green,
+        emblemDefinition.backgroundColor.blue, 1.0);
     return Color.lerp(color, Theme.of(context).colorScheme.background, .5);
   }
 
@@ -67,37 +61,26 @@ class EquipLoadoutScreenState extends State<EquipLoadoutScreen> with ProfileCons
     var screenPadding = MediaQuery.of(context).padding;
     return Scaffold(
         backgroundColor: emblemColor,
-        appBar: AppBar(
-            title: Text(widget.loadout.name),
-            flexibleSpace: buildAppBarBackground(context)),
+        appBar: AppBar(title: Text(widget.loadout.name), flexibleSpace: buildAppBarBackground(context)),
         bottomNavigationBar: LoadoutDestinationsWidget(widget.loadout),
         body: Container(
             alignment: Alignment.center,
             child: Container(
                 constraints: BoxConstraints(maxWidth: 500),
                 child: ListView(
-                    padding: EdgeInsets.all(8).copyWith(
-                        top: 0,
-                        left: max(screenPadding.left, 8),
-                        right: max(screenPadding.right, 8)),
+                    padding: EdgeInsets.all(8)
+                        .copyWith(top: 0, left: max(screenPadding.left, 8), right: max(screenPadding.right, 8)),
                     children: <Widget>[
-                      HeaderWidget(
-                          child: TranslatedTextWidget("Items to Equip",
-                              uppercase: true)),
-                      Container(
-                          padding: EdgeInsets.all(8),
-                          child: buildEquippedItems(context)),
+                      HeaderWidget(child: TranslatedTextWidget("Items to Equip", uppercase: true)),
+                      Container(padding: EdgeInsets.all(8), child: buildEquippedItems(context)),
                       (_itemIndex?.unequippedCount ?? 0) == 0
                           ? Container()
                           : HeaderWidget(
-                              child: TranslatedTextWidget("Items to Transfer",
-                                  uppercase: true),
+                              child: TranslatedTextWidget("Items to Transfer", uppercase: true),
                             ),
                       (_itemIndex?.unequippedCount ?? 0) == 0
                           ? Container()
-                          : Container(
-                              padding: EdgeInsets.all(8),
-                              child: buildUnequippedItems(context)),
+                          : Container(padding: EdgeInsets.all(8), child: buildUnequippedItems(context)),
                     ]))));
   }
 
@@ -124,18 +107,15 @@ class EquipLoadoutScreenState extends State<EquipLoadoutScreen> with ProfileCons
       );
     List<Widget> icons = [];
 
-    icons.addAll(buildItemRow(
-        context,
-        DestinyData.getClassIcon(DestinyClass.Unknown),
-        LoadoutItemIndex.genericBucketHashes,
-        _itemIndex.generic));
+    icons.addAll(buildItemRow(context, DestinyData.getClassIcon(DestinyClass.Unknown),
+        LoadoutItemIndex.genericBucketHashes, _itemIndex.generic));
 
     DestinyClass.values.forEach((classType) {
-      Map<int, DestinyItemComponent> items = _itemIndex.classSpecific
-          .map((bucketHash, items) => MapEntry(bucketHash, items[classType]));
+      Map<int, DestinyItemComponent> items =
+          _itemIndex.classSpecific.map((bucketHash, items) => MapEntry(bucketHash, items[classType]));
       if (items.values.any((i) => i != null)) {
-        icons.addAll(buildItemRow(context, DestinyData.getClassIcon(classType),
-            LoadoutItemIndex.classBucketHashes, items));
+        icons.addAll(
+            buildItemRow(context, DestinyData.getClassIcon(classType), LoadoutItemIndex.classBucketHashes, items));
       }
     });
 
@@ -153,8 +133,7 @@ class EquipLoadoutScreenState extends State<EquipLoadoutScreen> with ProfileCons
       );
     if (_itemIndex.unequipped == null) return Container();
     List<DestinyItemComponent> items = [];
-    List<int> bucketHashes = LoadoutItemIndex.genericBucketHashes +
-        LoadoutItemIndex.classBucketHashes;
+    List<int> bucketHashes = LoadoutItemIndex.genericBucketHashes + LoadoutItemIndex.classBucketHashes;
     bucketHashes.forEach((bucketHash) {
       if (_itemIndex.unequipped[bucketHash] != null) {
         items += _itemIndex.unequipped[bucketHash];
@@ -164,19 +143,16 @@ class EquipLoadoutScreenState extends State<EquipLoadoutScreen> with ProfileCons
       children: items
           .map((item) => FractionallySizedBox(
               widthFactor: 1 / 7,
-              child: Container(
-                  padding: EdgeInsets.all(4),
-                  child: AspectRatio(aspectRatio: 1, child: itemIcon(item)))))
+              child: Container(padding: EdgeInsets.all(4), child: AspectRatio(aspectRatio: 1, child: itemIcon(item)))))
           .toList(),
     );
   }
 
-  List<Widget> buildItemRow(BuildContext context, IconData icon,
-      List<int> buckets, Map<int, DestinyItemComponent> items) {
+  List<Widget> buildItemRow(
+      BuildContext context, IconData icon, List<int> buckets, Map<int, DestinyItemComponent> items) {
     List<Widget> itemWidgets = [];
     itemWidgets.add(CenterIconWorkaround(icon));
-    itemWidgets
-        .addAll(buckets.map((bucketHash) => itemIcon(items[bucketHash])));
+    itemWidgets.addAll(buckets.map((bucketHash) => itemIcon(items[bucketHash])));
     return itemWidgets
         .map((child) => FractionallySizedBox(
               widthFactor: 1 / (buckets.length + 1),
@@ -192,16 +168,12 @@ class EquipLoadoutScreenState extends State<EquipLoadoutScreen> with ProfileCons
 
   Widget itemIcon(DestinyItemComponent item) {
     if (item == null) {
-      return ManifestImageWidget<DestinyInventoryItemDefinition>(1835369552,
-          key: Key("item_icon_empty"));
+      return ManifestImageWidget<DestinyInventoryItemDefinition>(1835369552, key: Key("item_icon_empty"));
     }
     var instance = profile.getInstanceInfo(item?.itemInstanceId);
     return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
         item.itemHash,
         (def) => ItemIconWidget.builder(
-            item: item,
-            definition: def,
-            instanceInfo: instance,
-            key: Key("item_icon_${item.itemInstanceId}")));
+            item: item, definition: def, instanceInfo: instance, key: Key("item_icon_${item.itemInstanceId}")));
   }
 }

@@ -12,7 +12,7 @@ class LoadoutsService with StorageConsumer {
   LoadoutsService._internal();
   List<Loadout>? _loadouts;
 
-  Future<List<Loadout>> getLoadouts({forceFetch: false}) async {
+  Future<List<Loadout>> getLoadouts({forceFetch = false}) async {
     if (_loadouts != null && !forceFetch) {
       await _sortLoadouts();
       return _loadouts!;
@@ -121,7 +121,7 @@ class LoadoutsService with StorageConsumer {
       if (l.assignedId != null) _ids.add(l.assignedId!);
       return !exists;
     }).toList();
-    if(distinctLoadouts != null){
+    if (distinctLoadouts != null) {
       await currentMembershipStorage.saveLoadouts(distinctLoadouts);
     }
   }

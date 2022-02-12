@@ -17,8 +17,7 @@ class BaseSearchSorterWidget extends StatefulWidget {
   BaseSearchSorterWidgetState createState() => BaseSearchSorterWidgetState();
 }
 
-class BaseSearchSorterWidgetState<T extends BaseSearchSorterWidget>
-    extends State<T> {
+class BaseSearchSorterWidgetState<T extends BaseSearchSorterWidget> extends State<T> {
   ItemSortParameter get sortParameter => widget.sortParameter;
 
   SearchController get controller => widget.controller;
@@ -117,11 +116,7 @@ class BaseSearchSorterWidgetState<T extends BaseSearchSorterWidget>
                 : Theme.of(context).toggleButtonsTheme.color,
             padding: EdgeInsets.all(0),
           ),
-          child: Icon(
-              direction > 0
-                  ? FontAwesomeIcons.chevronUp
-                  : FontAwesomeIcons.chevronDown,
-              size: 14),
+          child: Icon(direction > 0 ? FontAwesomeIcons.chevronUp : FontAwesomeIcons.chevronDown, size: 14),
           onPressed: () {
             if (selected) return;
             sortParameter.direction = direction;
@@ -131,8 +126,7 @@ class BaseSearchSorterWidgetState<T extends BaseSearchSorterWidget>
   }
 
   addSorter(BuildContext context) {
-    controller.customSorting.insert(
-        0, ItemSortParameter(active: true, type: this.sortParameter.type));
+    controller.customSorting.insert(0, ItemSortParameter(active: true, type: this.sortParameter.type));
     controller.sort();
   }
 
@@ -207,16 +201,13 @@ class BaseSearchSorterWidgetState<T extends BaseSearchSorterWidget>
         return TranslatedTextWidget("Group", uppercase: true, style: style);
 
       case ItemSortParameterType.ItemOwner:
-        return TranslatedTextWidget("Item Holder",
-            uppercase: true, style: style);
+        return TranslatedTextWidget("Item Holder", uppercase: true, style: style);
 
       case ItemSortParameterType.StatTotal:
-        return TranslatedTextWidget("Stats Total",
-            uppercase: true, style: style);
+        return TranslatedTextWidget("Stats Total", uppercase: true, style: style);
 
       case ItemSortParameterType.MasterworkStatus:
-        return TranslatedTextWidget("Masterwork Status",
-            uppercase: true, style: style);
+        return TranslatedTextWidget("Masterwork Status", uppercase: true, style: style);
         break;
 
       case ItemSortParameterType.Stat:
@@ -224,8 +215,7 @@ class BaseSearchSorterWidgetState<T extends BaseSearchSorterWidget>
         break;
 
       case ItemSortParameterType.DamageType:
-        return TranslatedTextWidget("Damage Type",
-            uppercase: true, style: style);
+        return TranslatedTextWidget("Damage Type", uppercase: true, style: style);
     }
     return Text(
       sortParameter.type.toString(),

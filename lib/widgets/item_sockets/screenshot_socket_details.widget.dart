@@ -33,56 +33,46 @@ class ScreenshotSocketDetailsWidget extends BaseSocketDetailsWidget {
       : super(item: item, definition: parentDefinition, controller: controller);
 
   @override
-  _ScreenshotPerkDetailsWidgetState createState() =>
-      _ScreenshotPerkDetailsWidgetState();
+  _ScreenshotPerkDetailsWidgetState createState() => _ScreenshotPerkDetailsWidgetState();
 }
 
-class _ScreenshotPerkDetailsWidgetState
-    extends BaseSocketDetailsWidgetState<ScreenshotSocketDetailsWidget>
+class _ScreenshotPerkDetailsWidgetState extends BaseSocketDetailsWidgetState<ScreenshotSocketDetailsWidget>
     with PlugWishlistTagIconsMixin {
   int _currentPage = 0;
 
   @override
   Widget build(BuildContext context) {
     if (definition == null) return Container();
-    return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          buildOptions(context),
-          Container(
-            height: widget.pixelSize * 16,
-          ),
-          Container(
-            height: widget.pixelSize * 5,
-            color: Colors.grey.shade400,
-          ),
-          Container(
-              padding: EdgeInsets.all(16 * widget.pixelSize),
-              color: Colors.black,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    definition?.displayProperties?.name?.toUpperCase(),
-                    style: TextStyle(
-                        fontSize: 30 * widget.pixelSize,
-                        fontWeight: FontWeight.w500),
-                  ),
-                  Text(definition?.itemTypeDisplayName,
-                      style: TextStyle(
-                          fontSize: 24 * widget.pixelSize,
-                          color: Colors.grey.shade500,
-                          fontWeight: FontWeight.w300))
-                ],
-              )),
-          Container(
-              padding: EdgeInsets.symmetric(
-                  horizontal: 16 * widget.pixelSize,
-                  vertical: 8 * widget.pixelSize),
-              color: Colors.black.withOpacity(.7),
-              child: buildContent(context)),
-          buildResourceCost(context)
-        ]);
+    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: <Widget>[
+      buildOptions(context),
+      Container(
+        height: widget.pixelSize * 16,
+      ),
+      Container(
+        height: widget.pixelSize * 5,
+        color: Colors.grey.shade400,
+      ),
+      Container(
+          padding: EdgeInsets.all(16 * widget.pixelSize),
+          color: Colors.black,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                definition?.displayProperties?.name?.toUpperCase(),
+                style: TextStyle(fontSize: 30 * widget.pixelSize, fontWeight: FontWeight.w500),
+              ),
+              Text(definition?.itemTypeDisplayName,
+                  style: TextStyle(
+                      fontSize: 24 * widget.pixelSize, color: Colors.grey.shade500, fontWeight: FontWeight.w300))
+            ],
+          )),
+      Container(
+          padding: EdgeInsets.symmetric(horizontal: 16 * widget.pixelSize, vertical: 8 * widget.pixelSize),
+          color: Colors.black.withOpacity(.7),
+          child: buildContent(context)),
+      buildResourceCost(context)
+    ]);
   }
 
   Widget buildResourceCost(BuildContext context) {
@@ -93,35 +83,27 @@ class _ScreenshotPerkDetailsWidgetState
           (def) => Container(
               decoration: BoxDecoration(
                 color: Colors.black.withOpacity(.7),
-                border: Border(
-                    top: BorderSide(color: Colors.grey.shade500, width: 1)),
+                border: Border(top: BorderSide(color: Colors.grey.shade500, width: 1)),
               ),
               padding: EdgeInsets.all(16 * widget.pixelSize),
               child: Column(
-                children:
-                    def.materials.where((m) => (m.count ?? 0) > 0).map((m) {
+                children: def.materials.where((m) => (m.count ?? 0) > 0).map((m) {
                   return Row(
                     children: <Widget>[
                       Container(
                           width: 24 * widget.pixelSize,
                           height: 24 * widget.pixelSize,
-                          child: ManifestImageWidget<
-                              DestinyInventoryItemDefinition>(m.itemHash)),
+                          child: ManifestImageWidget<DestinyInventoryItemDefinition>(m.itemHash)),
                       Expanded(
                         child: Container(
                           padding: EdgeInsets.only(left: 8 * widget.pixelSize),
                           child: ManifestText<DestinyInventoryItemDefinition>(
                             m.itemHash,
-                            style: TextStyle(
-                                fontWeight: FontWeight.w300,
-                                fontSize: 22 * widget.pixelSize),
+                            style: TextStyle(fontWeight: FontWeight.w300, fontSize: 22 * widget.pixelSize),
                           ),
                         ),
                       ),
-                      Text("${m.count}",
-                          style: TextStyle(
-                              fontWeight: FontWeight.w300,
-                              fontSize: widget.pixelSize * 22))
+                      Text("${m.count}", style: TextStyle(fontWeight: FontWeight.w300, fontSize: widget.pixelSize * 22))
                     ],
                   );
                 }).toList(),
@@ -133,18 +115,15 @@ class _ScreenshotPerkDetailsWidgetState
 
   Widget buildOptions(BuildContext context) {
     var index = controller.selectedSocketIndex;
-    var cat = itemDefinition?.sockets?.socketCategories?.firstWhere(
-        (s) => s?.socketIndexes?.contains(index),
-        orElse: () => null);
+    var cat = itemDefinition?.sockets?.socketCategories
+        ?.firstWhere((s) => s?.socketIndexes?.contains(index), orElse: () => null);
 
-    var isExoticPerk = DestinyData.socketCategoryIntrinsicPerkHashes
-        .contains(cat?.socketCategoryHash);
+    var isExoticPerk = DestinyData.socketCategoryIntrinsicPerkHashes.contains(cat?.socketCategoryHash);
     if (isExoticPerk) {
       return Container();
     }
 
-    var isPerk =
-        DestinyData.socketCategoryPerkHashes.contains(cat?.socketCategoryHash);
+    var isPerk = DestinyData.socketCategoryPerkHashes.contains(cat?.socketCategoryHash);
 
     if (isPerk && controller.reusablePlugs != null) {
       return Container();
@@ -162,8 +141,7 @@ class _ScreenshotPerkDetailsWidgetState
     var page = _currentPage.clamp(0, maxPage);
     _currentPage = page;
     return IntrinsicHeight(
-        child:
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
       pagingButton(context, -1, page > 0),
       Container(
           width: 521 * widget.pixelSize,
@@ -174,20 +152,17 @@ class _ScreenshotPerkDetailsWidgetState
             children: plugs
                 .skip(page * 10)
                 .take(10)
-                .map(
-                    (h) => buildMod(context, controller.selectedSocketIndex, h))
+                .map((h) => buildMod(context, controller.selectedSocketIndex, h))
                 .toList(),
           )),
       pagingButton(context, 1, page < maxPage),
     ]));
   }
 
-  Widget pagingButton(BuildContext context,
-      [int direction = 1, bool enabled = false]) {
+  Widget pagingButton(BuildContext context, [int direction = 1, bool enabled = false]) {
     return Container(
       constraints: BoxConstraints.expand(width: 32 * widget.pixelSize),
-      decoration:
-          BoxDecoration(border: Border.all(color: Colors.grey.shade300)),
+      decoration: BoxDecoration(border: Border.all(color: Colors.grey.shade300)),
       padding: EdgeInsets.all(0),
       alignment: Alignment.center,
       child: !enabled
@@ -202,17 +177,13 @@ class _ScreenshotPerkDetailsWidgetState
                   },
                   child: Container(
                       constraints: BoxConstraints.expand(),
-                      child: Icon(
-                          direction > 0
-                              ? FontAwesomeIcons.caretRight
-                              : FontAwesomeIcons.caretLeft,
+                      child: Icon(direction > 0 ? FontAwesomeIcons.caretRight : FontAwesomeIcons.caretLeft,
                           size: 30 * widget.pixelSize)))),
     );
   }
 
   Widget buildRandomPerks(BuildContext context) {
-    var randomHashes =
-        controller.randomizedPlugHashes(controller.selectedSocketIndex);
+    var randomHashes = controller.randomizedPlugHashes(controller.selectedSocketIndex);
     if ((randomHashes?.length ?? 0) == 0) {
       return Container(height: 80 * widget.pixelSize);
     }
@@ -221,19 +192,15 @@ class _ScreenshotPerkDetailsWidgetState
     return Wrap(
       runSpacing: 6 * widget.pixelSize,
       spacing: 6 * widget.pixelSize,
-      children: plugs
-          .map((h) => buildPerk(context, controller.selectedSocketIndex, h))
-          .toList(),
+      children: plugs.map((h) => buildPerk(context, controller.selectedSocketIndex, h)).toList(),
     );
   }
 
   Widget buildMod(BuildContext context, int socketIndex, int plugItemHash) {
     bool isSelected = plugItemHash == controller.selectedPlugHash;
-    Color borderColor =
-        isSelected ? Theme.of(context).colorScheme.onSurface : Colors.grey.shade300.withOpacity(.5);
+    Color borderColor = isSelected ? Theme.of(context).colorScheme.onSurface : Colors.grey.shade300.withOpacity(.5);
 
-    BorderSide borderSide =
-        BorderSide(color: borderColor, width: 3 * widget.pixelSize);
+    BorderSide borderSide = BorderSide(color: borderColor, width: 3 * widget.pixelSize);
     var def = controller.plugDefinitions[plugItemHash];
     var energyType = def?.plug?.energyCost?.energyType ?? DestinyEnergyType.Any;
     var energyCost = def?.plug?.energyCost?.energyCost ?? 0;
@@ -248,13 +215,12 @@ class _ScreenshotPerkDetailsWidgetState
               shape: ContinuousRectangleBorder(side: borderSide),
               padding: EdgeInsets.all(0),
               child: Stack(children: [
-                ManifestImageWidget<DestinyInventoryItemDefinition>(
-                    plugItemHash),
+                ManifestImageWidget<DestinyInventoryItemDefinition>(plugItemHash),
                 energyType == DestinyEnergyType.Any
                     ? Container()
                     : Positioned.fill(
-                        child: ManifestImageWidget<DestinyStatDefinition>(
-                            DestinyData.getEnergyTypeCostHash(energyType))),
+                        child:
+                            ManifestImageWidget<DestinyStatDefinition>(DestinyData.getEnergyTypeCostHash(energyType))),
                 energyCost == 0
                     ? Container()
                     : Positioned(
@@ -284,8 +250,7 @@ class _ScreenshotPerkDetailsWidgetState
     int equippedHash = controller.socketEquippedPlugHash(socketIndex);
     bool isEquipped = equippedHash == plugItemHash;
     bool isExotic = definition.inventory.tierType == TierType.Exotic;
-    bool isSelectedOnSocket =
-        plugItemHash == controller.socketSelectedPlugHash(socketIndex);
+    bool isSelectedOnSocket = plugItemHash == controller.socketSelectedPlugHash(socketIndex);
     bool isSelected = plugItemHash == controller.selectedPlugHash;
     Color bgColor = Colors.transparent;
     Color borderColor = Colors.grey.shade300.withOpacity(.5);
@@ -301,8 +266,7 @@ class _ScreenshotPerkDetailsWidgetState
       borderColor = Colors.transparent;
     }
 
-    BorderSide borderSide =
-        BorderSide(color: borderColor, width: 2 * widget.pixelSize);
+    BorderSide borderSide = BorderSide(color: borderColor, width: 2 * widget.pixelSize);
 
     return Container(
         width: 80 * widget.pixelSize,
@@ -314,14 +278,11 @@ class _ScreenshotPerkDetailsWidgetState
               child: MaterialButton(
                 shape: intrinsic && !isExotic
                     ? RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(4 * widget.pixelSize),
-                        side: borderSide)
+                        borderRadius: BorderRadius.circular(4 * widget.pixelSize), side: borderSide)
                     : CircleBorder(side: borderSide),
                 padding: EdgeInsets.all(intrinsic ? 0 : 8 * widget.pixelSize),
                 color: bgColor,
-                child: ManifestImageWidget<DestinyInventoryItemDefinition>(
-                    plugItemHash),
+                child: ManifestImageWidget<DestinyInventoryItemDefinition>(plugItemHash),
                 onPressed: () {
                   controller.selectSocket(socketIndex, plugItemHash);
                 },
@@ -330,9 +291,7 @@ class _ScreenshotPerkDetailsWidgetState
               top: 0,
               right: 0,
               left: 0,
-              child: Center(
-                  child: buildWishlistTagIcons(
-                      context, itemDefinition.hash, plugItemHash)))
+              child: Center(child: buildWishlistTagIcons(context, itemDefinition.hash, plugItemHash)))
         ]));
   }
 
@@ -344,19 +303,15 @@ class _ScreenshotPerkDetailsWidgetState
       buildSandBoxPerks(context),
       buildStats(context),
     ];
-    return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: items.toList());
+    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: items.toList());
   }
 
   Widget buildDescription(BuildContext context) {
-    if ((definition?.displayProperties?.description?.length ?? 0) == 0)
-      return Container();
+    if ((definition?.displayProperties?.description?.length ?? 0) == 0) return Container();
     return Container(
         padding: EdgeInsets.symmetric(vertical: 8 * widget.pixelSize),
         child: Text(definition?.displayProperties?.description,
-            style: TextStyle(
-                fontSize: 24 * widget.pixelSize, fontWeight: FontWeight.w300)));
+            style: TextStyle(fontSize: 24 * widget.pixelSize, fontWeight: FontWeight.w300)));
   }
 
   @override
@@ -374,15 +329,11 @@ class _ScreenshotPerkDetailsWidgetState
       var value = Container(
           padding: EdgeInsets.all(8 * widget.pixelSize),
           child: Text("${cost.energyCost}",
-              style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 50 * widget.pixelSize,
-                  color: color)));
+              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 50 * widget.pixelSize, color: color)));
       var description = TranslatedTextWidget(
         "Energy Cost",
         uppercase: true,
-        style: TextStyle(
-            fontWeight: FontWeight.w300, fontSize: widget.pixelSize * 26),
+        style: TextStyle(fontWeight: FontWeight.w300, fontSize: widget.pixelSize * 26),
       );
       return Row(children: <Widget>[icon, value, description]);
     }
@@ -428,8 +379,7 @@ class _ScreenshotPerkDetailsWidgetState
                   Container(
                     height: 64 * widget.pixelSize,
                     width: 64 * widget.pixelSize,
-                    child: ManifestImageWidget<DestinySandboxPerkDefinition>(
-                        p.perkHash),
+                    child: ManifestImageWidget<DestinySandboxPerkDefinition>(p.perkHash),
                   ),
                   Container(
                     width: 16 * widget.pixelSize,
@@ -437,9 +387,7 @@ class _ScreenshotPerkDetailsWidgetState
                   Expanded(
                       child: ManifestText<DestinySandboxPerkDefinition>(
                     p.perkHash,
-                    style: TextStyle(
-                        fontSize: 22 * widget.pixelSize,
-                        fontWeight: FontWeight.w300),
+                    style: TextStyle(fontSize: 22 * widget.pixelSize, fontWeight: FontWeight.w300),
                     textExtractor: (def) => def.displayProperties?.description,
                   )),
                 ],

@@ -8,13 +8,11 @@ import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/presentation_nodes/collectible_item.widget.dart';
 
 class NestedCollectibleItemWidget extends CollectibleItemWidget {
-  NestedCollectibleItemWidget(
-      {Key? key, required int hash})
-      : super(key: key, hash: hash);
+  NestedCollectibleItemWidget({Key? key, required int hash}) : super(key: key, hash: hash);
 
   @override
   CollectibleItemWidgetState createState() {
-    return new NestedCollectibleItemWidgetState();
+    return NestedCollectibleItemWidgetState();
   }
 }
 
@@ -26,12 +24,13 @@ class NestedCollectibleItemWidgetState extends CollectibleItemWidgetState with P
         child: AspectRatio(
             aspectRatio: 1,
             child: Container(
-                decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey.shade300, width: 1)),
+                decoration: BoxDecoration(border: Border.all(color: Colors.grey.shade300, width: 1)),
                 child: Stack(children: [
-                  Positioned.fill(child:buildIcon(context)),
+                  Positioned.fill(child: buildIcon(context)),
                   Positioned(right: 4, bottom: 4, child: buildItemCount()),
-                  Positioned.fill(child: buildSelectedBorder(context),),
+                  Positioned.fill(
+                    child: buildSelectedBorder(context),
+                  ),
                   buildButton(context)
                 ]))));
   }
@@ -39,10 +38,8 @@ class NestedCollectibleItemWidgetState extends CollectibleItemWidgetState with P
   Widget buildIcon(BuildContext context) {
     final iconURL = BungieApiService.url(definition?.displayProperties?.icon);
     if (iconURL == null) return Container();
-    return QueuedNetworkImage(
-        imageUrl: iconURL);
+    return QueuedNetworkImage(imageUrl: iconURL);
   }
-
 
   bool get unlocked {
     final scope = definition?.scope;

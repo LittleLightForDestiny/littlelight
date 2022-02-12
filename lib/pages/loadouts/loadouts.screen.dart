@@ -21,16 +21,16 @@ import 'package:little_light/widgets/loadouts/loadout_list_item.widget.dart';
 
 class LoadoutsScreen extends StatefulWidget {
   @override
-  LoadoutScreenState createState() => new LoadoutScreenState();
+  LoadoutScreenState createState() => LoadoutScreenState();
 }
 
 class LoadoutScreenState extends State<LoadoutsScreen> with LoadoutsConsumer, ProfileConsumer {
-  final Map<String, LoadoutItemIndex> itemIndexes = new Map();
+  final Map<String, LoadoutItemIndex> itemIndexes = Map();
   bool reordering = false;
   bool searchOpen = false;
   List<Loadout> loadouts;
   List<Loadout> filteredLoadouts;
-  TextEditingController _searchFieldController = new TextEditingController();
+  TextEditingController _searchFieldController = TextEditingController();
 
   @override
   void initState() {

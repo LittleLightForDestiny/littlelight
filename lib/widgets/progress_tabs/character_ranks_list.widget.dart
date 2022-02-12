@@ -66,7 +66,7 @@ class _CharacterRanksListWidgetState extends State<CharacterRanksListWidget>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    if(ranks == null || progressions == null) return LoadingAnimWidget();
+    if (ranks == null || progressions == null) return LoadingAnimWidget();
     var screenPadding = MediaQuery.of(context).padding;
     return MultiSectionScrollView(
       [

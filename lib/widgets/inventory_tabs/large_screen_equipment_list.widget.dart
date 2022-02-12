@@ -30,7 +30,7 @@ class LargeScreenEquipmentListWidget extends StatefulWidget {
   final DestinyCharacterComponent character;
   LargeScreenEquipmentListWidget({Key key, this.character}) : super(key: key);
   @override
-  LargeScreenEquipmentListWidgetState createState() => new LargeScreenEquipmentListWidgetState();
+  LargeScreenEquipmentListWidgetState createState() => LargeScreenEquipmentListWidgetState();
 }
 
 class LargeScreenEquipmentListWidgetState extends State<LargeScreenEquipmentListWidget>

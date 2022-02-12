@@ -20,7 +20,7 @@ class TabHeaderWidget extends StatefulWidget {
   TabHeaderWidget(this.character, {Key key}) : super(key: key);
 
   @override
-  TabHeaderWidgetState createState() => new TabHeaderWidgetState();
+  TabHeaderWidgetState createState() => TabHeaderWidgetState();
 }
 
 class TabHeaderWidgetState extends State<TabHeaderWidget>

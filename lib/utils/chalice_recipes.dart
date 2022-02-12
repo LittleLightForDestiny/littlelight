@@ -32,15 +32,15 @@ class RuneInfo {
   final RuneColor color;
   final int itemHash;
   final ArmorIntrinsics armorPerk;
-  
+
   const RuneInfo({
     this.color,
     this.itemHash,
     this.armorPerk,
   });
 
-  DamageType get armorMasterworkDamageType{
-    switch(color){
+  DamageType get armorMasterworkDamageType {
+    switch (color) {
       case RuneColor.Purple:
         return DamageType.Arc;
       case RuneColor.Red:
@@ -53,8 +53,8 @@ class RuneInfo {
     return null;
   }
 
-  WeaponMasterwork get weaponMasterwork{
-    switch(color){
+  WeaponMasterwork get weaponMasterwork {
+    switch (color) {
       case RuneColor.Purple:
         return WeaponMasterwork.Handling;
       case RuneColor.Green:
@@ -68,59 +68,23 @@ class RuneInfo {
   }
 }
 
-const Map<Rune, RuneInfo> _runeSpecs = const {
+const Map<Rune, RuneInfo> _runeSpecs = {
   Rune.AnyPurple: RuneInfo(color: RuneColor.Purple),
-  Rune.Joy: RuneInfo(
-      color: RuneColor.Purple,
-      itemHash: 2149082453,
-      armorPerk: ArmorIntrinsics.Mobility),
-  Rune.Beast: RuneInfo(
-      color: RuneColor.Purple,
-      itemHash: 2149082452,
-      armorPerk: ArmorIntrinsics.Recovery),
-  Rune.Jubilation: RuneInfo(
-      color: RuneColor.Purple,
-      itemHash: 2149082455,
-      armorPerk: ArmorIntrinsics.Resilience),
+  Rune.Joy: RuneInfo(color: RuneColor.Purple, itemHash: 2149082453, armorPerk: ArmorIntrinsics.Mobility),
+  Rune.Beast: RuneInfo(color: RuneColor.Purple, itemHash: 2149082452, armorPerk: ArmorIntrinsics.Recovery),
+  Rune.Jubilation: RuneInfo(color: RuneColor.Purple, itemHash: 2149082455, armorPerk: ArmorIntrinsics.Resilience),
   Rune.AnyRed: RuneInfo(color: RuneColor.Red),
-  Rune.Cunning: RuneInfo(
-      color: RuneColor.Red,
-      itemHash: 2149082454,
-      armorPerk: ArmorIntrinsics.Mobility),
-  Rune.Gluttony: RuneInfo(
-      color: RuneColor.Red,
-      itemHash: 2149082449,
-      armorPerk: ArmorIntrinsics.Recovery),
-  Rune.Ambition: RuneInfo(
-      color: RuneColor.Red,
-      itemHash: 2149082448,
-      armorPerk: ArmorIntrinsics.Resilience),
+  Rune.Cunning: RuneInfo(color: RuneColor.Red, itemHash: 2149082454, armorPerk: ArmorIntrinsics.Mobility),
+  Rune.Gluttony: RuneInfo(color: RuneColor.Red, itemHash: 2149082449, armorPerk: ArmorIntrinsics.Recovery),
+  Rune.Ambition: RuneInfo(color: RuneColor.Red, itemHash: 2149082448, armorPerk: ArmorIntrinsics.Resilience),
   Rune.AnyGreen: RuneInfo(color: RuneColor.Green),
-  Rune.War: RuneInfo(
-      color: RuneColor.Green,
-      itemHash: 2149082451,
-      armorPerk: ArmorIntrinsics.Mobility),
-  Rune.Desire: RuneInfo(
-      color: RuneColor.Green,
-      itemHash: 2149082450,
-      armorPerk: ArmorIntrinsics.Recovery),
-  Rune.Pride: RuneInfo(
-      color: RuneColor.Green,
-      itemHash: 2149082461,
-      armorPerk: ArmorIntrinsics.Resilience),
+  Rune.War: RuneInfo(color: RuneColor.Green, itemHash: 2149082451, armorPerk: ArmorIntrinsics.Mobility),
+  Rune.Desire: RuneInfo(color: RuneColor.Green, itemHash: 2149082450, armorPerk: ArmorIntrinsics.Recovery),
+  Rune.Pride: RuneInfo(color: RuneColor.Green, itemHash: 2149082461, armorPerk: ArmorIntrinsics.Resilience),
   Rune.AnyBlue: RuneInfo(color: RuneColor.Blue),
-  Rune.Pleasure: RuneInfo(
-      color: RuneColor.Blue,
-      itemHash: 2149082460,
-      armorPerk: ArmorIntrinsics.Mobility),
-  Rune.Excess: RuneInfo(
-      color: RuneColor.Blue,
-      itemHash: 4201087756,
-      armorPerk: ArmorIntrinsics.Recovery),
-  Rune.Wealth: RuneInfo(
-      color: RuneColor.Blue,
-      itemHash: 4201087757,
-      armorPerk: ArmorIntrinsics.Resilience),
+  Rune.Pleasure: RuneInfo(color: RuneColor.Blue, itemHash: 2149082460, armorPerk: ArmorIntrinsics.Mobility),
+  Rune.Excess: RuneInfo(color: RuneColor.Blue, itemHash: 4201087756, armorPerk: ArmorIntrinsics.Recovery),
+  Rune.Wealth: RuneInfo(color: RuneColor.Blue, itemHash: 4201087757, armorPerk: ArmorIntrinsics.Resilience),
 };
 
 const Map<RuneColor, List<Rune>> _runesByColor = {
@@ -161,15 +125,13 @@ class ChaliceRecipe {
       Rune.Joy,
     ].contains(_top)) {
       var _spec = _runeSpecs[_left];
-      return _runesByColor[_spec.color].map((r)=>_runeSpecs[r]).toList();
+      return _runesByColor[_spec.color].map((r) => _runeSpecs[r]).toList();
     }
     return [_runeSpecs[_left]];
   }
 
   List<RuneInfo> get right {
-    return [Rune.AnyPurple, Rune.AnyRed, Rune.AnyGreen, Rune.AnyBlue]
-        .map((r) => _runeSpecs[r])
-        .toList();
+    return [Rune.AnyPurple, Rune.AnyRed, Rune.AnyGreen, Rune.AnyBlue].map((r) => _runeSpecs[r]).toList();
   }
 }
 
@@ -180,8 +142,7 @@ class _ArmorRecipe {
   final ChaliceRecipe boots;
   final ChaliceRecipe classItem;
 
-  const _ArmorRecipe(
-      {this.helmet, this.gauntlets, this.chest, this.boots, this.classItem});
+  const _ArmorRecipe({this.helmet, this.gauntlets, this.chest, this.boots, this.classItem});
 }
 
 final _tangledWebArmor = _ArmorRecipe(

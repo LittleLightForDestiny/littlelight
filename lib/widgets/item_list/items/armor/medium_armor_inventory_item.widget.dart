@@ -10,34 +10,24 @@ import 'package:little_light/widgets/common/primary_stat.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/item_armor_tier.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/medium_base_inventory_item.widget.dart';
 
-class MediumArmorInventoryItemWidget extends MediumBaseInventoryItemWidget with ProfileConsumer{
-  MediumArmorInventoryItemWidget(
-      DestinyItemComponent item,
-      DestinyInventoryItemDefinition itemDefinition,
+class MediumArmorInventoryItemWidget extends MediumBaseInventoryItemWidget with ProfileConsumer {
+  MediumArmorInventoryItemWidget(DestinyItemComponent item, DestinyInventoryItemDefinition itemDefinition,
       DestinyItemInstanceComponent instanceInfo,
-      {Key key,
-      @required String uniqueId,
-      String characterId})
-      : super(item, itemDefinition, instanceInfo,
-            key: key, characterId: characterId, uniqueId: uniqueId);
+      {Key key, @required String uniqueId, String characterId})
+      : super(item, itemDefinition, instanceInfo, key: key, characterId: characterId, uniqueId: uniqueId);
 
   @override
   Widget primaryStatWidget(BuildContext context) {
-    var sockets = item?.itemInstanceId == null
-        ? null
-        : profile.getItemSockets(item?.itemInstanceId);
-    var socketCategoryHashes =
-        definition?.sockets?.socketCategories?.map((s) => s.socketCategoryHash);
-    var tierCategoryHash = socketCategoryHashes?.firstWhere(
-        (s) => DestinyData.socketCategoryTierHashes.contains(s),
-        orElse: () => null);
+    var sockets = item?.itemInstanceId == null ? null : profile.getItemSockets(item?.itemInstanceId);
+    var socketCategoryHashes = definition?.sockets?.socketCategories?.map((s) => s.socketCategoryHash);
+    var tierCategoryHash =
+        socketCategoryHashes?.firstWhere((s) => DestinyData.socketCategoryTierHashes.contains(s), orElse: () => null);
     return Positioned(
         top: titleFontSize + padding * 1.5,
         right: 0,
         child: Container(
             padding: EdgeInsets.all(padding),
-            child:
-                Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+            child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
               tierCategoryHash != null
                   ? ItemArmorTierWidget(
                       socketCategoryHash: tierCategoryHash,

@@ -11,9 +11,10 @@ import 'package:little_light/utils/remove_diacritics.dart';
 
 import 'base_item_filter.dart';
 
-class TextFilter extends BaseItemFilter<String> with LoadoutsConsumer, WishlistsConsumer, ProfileConsumer, ItemNotesConsumer {
+class TextFilter extends BaseItemFilter<String>
+    with LoadoutsConsumer, WishlistsConsumer, ProfileConsumer, ItemNotesConsumer {
   List<Loadout> loadouts;
-  TextFilter({initialText: "", enabled: true}) : super(null, initialText, enabled: enabled);
+  TextFilter({initialText = "", enabled = true}) : super(null, initialText, enabled: enabled);
 
   Future<List<ItemWithOwner>> filter(List<ItemWithOwner> items,
       {Map<int, DestinyInventoryItemDefinition> definitions}) async {
@@ -37,8 +38,8 @@ class TextFilter extends BaseItemFilter<String> with LoadoutsConsumer, Wishlists
         Set<int>());
     final wishlistBuildNotes =
         wishlistsService.getWishlistBuildNotes(itemHash: item.item.itemHash, reusablePlugs: reusablePlugs);
-    final wishlistTags = wishlistsService.getWishlistBuildTags(
-        itemHash: item.item.itemHash, reusablePlugs: reusablePlugs);
+    final wishlistTags =
+        wishlistsService.getWishlistBuildTags(itemHash: item.item.itemHash, reusablePlugs: reusablePlugs);
 
     var loadoutNames = this.loadouts.where((l) {
       var equipped = l.equipped.where((e) => e.itemInstanceId == item.item.itemInstanceId);
@@ -46,11 +47,8 @@ class TextFilter extends BaseItemFilter<String> with LoadoutsConsumer, Wishlists
       return equipped.length > 0 || unequipped.length > 0;
     }).map((l) => l.name ?? "");
 
-    var customName = itemNotes
-            .getNotesForItem(item?.item?.itemHash, item?.item?.itemInstanceId)
-            ?.customName
-            ?.toLowerCase() ??
-        "";
+    var customName =
+        itemNotes.getNotesForItem(item?.item?.itemHash, item?.item?.itemInstanceId)?.customName?.toLowerCase() ?? "";
 
     return _terms.every((t) {
       var words = t.split(" ");

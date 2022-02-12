@@ -1,5 +1,3 @@
-
-
 import 'package:bungie_api/destiny2.dart';
 
 import 'enums/item_destination.dart';

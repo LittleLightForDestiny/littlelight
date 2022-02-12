@@ -9,12 +9,11 @@ import 'language_storage.keys.dart';
 import 'storage.base.dart';
 
 setupLanguageStorageService() async {
-  GetIt.I.registerFactoryParam<LanguageStorage, String, void>(
-      (accountID, _) => LanguageStorage._internal(accountID));
+  GetIt.I.registerFactoryParam<LanguageStorage, String, void>((accountID, _) => LanguageStorage._internal(accountID));
 }
 
 class LanguageStorage extends StorageBase<LanguageStorageKeys> {
-  LanguageStorage._internal(languageCode):super("languages/$languageCode");
+  LanguageStorage._internal(languageCode) : super("languages/$languageCode");
 
   @override
   String getKeyPath(LanguageStorageKeys? key) {
@@ -26,7 +25,7 @@ class LanguageStorage extends StorageBase<LanguageStorageKeys> {
     return "$dbRoot/$basePath/manifest.db";
   }
 
-  set manifestVersion(String? manifestVersion)=> setString(LanguageStorageKeys.manifestVersion, manifestVersion);
+  set manifestVersion(String? manifestVersion) => setString(LanguageStorageKeys.manifestVersion, manifestVersion);
   String? get manifestVersion => getString(LanguageStorageKeys.manifestVersion);
 
   Future<void> saveManifestDatabase(List<int> data) async {
@@ -40,13 +39,11 @@ class LanguageStorage extends StorageBase<LanguageStorageKeys> {
 
   Future<File?> getManifestDatabaseFile() async {
     final manifestFile = File(await _getManifestDBPath());
-    if(await manifestFile.exists()){
+    if (await manifestFile.exists()) {
       return manifestFile;
     }
     return null;
   }
-
-  
 
   Future<Map<String, String>?> getTranslations() async {
     try {
@@ -63,7 +60,7 @@ class LanguageStorage extends StorageBase<LanguageStorageKeys> {
     await setJson(LanguageStorageKeys.littleLightTranslation, translations);
   }
 
-  Future<void> purge() async{
+  Future<void> purge() async {
     await purgePath(this.basePath);
   }
 }

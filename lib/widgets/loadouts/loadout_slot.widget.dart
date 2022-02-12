@@ -21,8 +21,8 @@ import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/dialogs/loadout_slot_options.dialog.dart';
 
-typedef void OnRemoveItemFromLoadout(DestinyItemComponent item, bool equipped);
-typedef void OnAddItemToLoadout(bool equipped, DestinyClass classType);
+typedef OnRemoveItemFromLoadout = void Function(DestinyItemComponent item, bool equipped);
+typedef OnAddItemToLoadout = void Function(bool equipped, DestinyClass classType);
 
 class LoadoutSlotWidget extends StatelessWidget with ProfileConsumer, ManifestConsumer {
   final DestinyInventoryBucketDefinition bucketDefinition;
@@ -110,7 +110,8 @@ class LoadoutSlotWidget extends StatelessWidget with ProfileConsumer, ManifestCo
     return Container(padding: EdgeInsets.symmetric(vertical: 4), child: Wrap(children: items));
   }
 
-  Widget buildItemIcon(BuildContext context, {DestinyItemComponent item, DestinyClass classType, bool equipped: true}) {
+  Widget buildItemIcon(BuildContext context,
+      {DestinyItemComponent item, DestinyClass classType, bool equipped = true}) {
     BoxDecoration decoration = item != null && bucketDefinition.hash == InventoryBucket.subclass
         ? null
         : BoxDecoration(border: Border.all(width: 1, color: Colors.grey.shade300));

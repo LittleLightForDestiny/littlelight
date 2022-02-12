@@ -7,12 +7,8 @@ import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/item_stats/base_item_stat.widget.dart';
 
 class ItemDetailSocketItemStatWidget extends BaseItemStatWidget {
-  ItemDetailSocketItemStatWidget(
-      {Key key,
-      StatValues modValues,
-      int statHash,
-      DestinyStatDisplayDefinition scaled})
-      : super(key:key, statHash: statHash, modValues: modValues, scaled: scaled);
+  ItemDetailSocketItemStatWidget({Key key, StatValues modValues, int statHash, DestinyStatDisplayDefinition scaled})
+      : super(key: key, statHash: statHash, modValues: modValues, scaled: scaled);
 
   @override
   Widget build(BuildContext context) {
@@ -21,11 +17,7 @@ class ItemDetailSocketItemStatWidget extends BaseItemStatWidget {
         child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              buildLabel(context),
-              buildValue(context),
-              buildBar(context)
-            ]));
+            children: [buildLabel(context), buildValue(context), buildBar(context)]));
   }
 
   Widget buildLabel(BuildContext context) {
@@ -58,7 +50,7 @@ class ItemDetailSocketItemStatWidget extends BaseItemStatWidget {
   }
 
   Widget buildBar(BuildContext context) {
-    var width = MediaQuery.of(context).size.width*.4;
+    var width = MediaQuery.of(context).size.width * .4;
     if (noBar) {
       return Container(width: width);
     }
@@ -69,9 +61,7 @@ class ItemDetailSocketItemStatWidget extends BaseItemStatWidget {
       child: Row(
         mainAxisAlignment: currentValue > 0 ? MainAxisAlignment.start : MainAxisAlignment.end,
         children: <Widget>[
-          Container(
-              width: (modBarSize / maxBarSize) * width,
-              color: getModBarColor(context)),
+          Container(width: (modBarSize / maxBarSize) * width, color: getModBarColor(context)),
         ],
       ),
     );

@@ -7,9 +7,7 @@ class ArrowNavigationButton extends StatelessWidget {
   final IconData icon;
   final int index;
 
-  ArrowNavigationButton(
-      {Key key, this.controller, @required this.icon, this.index})
-      : super(key: key);
+  ArrowNavigationButton({Key key, this.controller, @required this.icon, this.index}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -30,8 +28,7 @@ class ArrowNavigationButton extends StatelessWidget {
     return Opacity(
         opacity: 0.5 + 0.5 * value,
         child: Material(
-            color:
-                Theme.of(context).primaryTextTheme.button.color.withOpacity(.3),
+            color: Theme.of(context).primaryTextTheme.button.color.withOpacity(.3),
             child: InkWell(
               child: Icon(
                 icon,

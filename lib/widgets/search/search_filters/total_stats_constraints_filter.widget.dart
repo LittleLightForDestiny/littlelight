@@ -9,19 +9,15 @@ import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/search/search.controller.dart';
 import 'package:little_light/widgets/search/search_filters/base_search_filter.widget.dart';
 
-class TotalStatsConstraintsWidget
-    extends BaseSearchFilterWidget<TotalStatsConstraintsFilter> {
+class TotalStatsConstraintsWidget extends BaseSearchFilterWidget<TotalStatsConstraintsFilter> {
   TotalStatsConstraintsWidget(SearchController controller) : super(controller);
 
   @override
-  TotalStatsConstraintsWidgetState createState() =>
-      TotalStatsConstraintsWidgetState();
+  TotalStatsConstraintsWidgetState createState() => TotalStatsConstraintsWidgetState();
 }
 
-class TotalStatsConstraintsWidgetState extends BaseSearchFilterWidgetState<
-    TotalStatsConstraintsWidget,
-    TotalStatsConstraintsFilter,
-    TotalStatsConstraints> {
+class TotalStatsConstraintsWidgetState extends BaseSearchFilterWidgetState<TotalStatsConstraintsWidget,
+    TotalStatsConstraintsFilter, TotalStatsConstraints> {
   @override
   Widget buildButtons(BuildContext context) {
     var aMin = filter?.availableValues?.min ?? -999;
@@ -30,8 +26,7 @@ class TotalStatsConstraintsWidgetState extends BaseSearchFilterWidgetState<
     var max = filter?.value?.max ?? 999;
     min = min.clamp(aMin, aMax);
     max = max.clamp(min, aMax);
-    var nonArmorAvailable =
-        filter?.availableValues?.includeNonArmorItems ?? false;
+    var nonArmorAvailable = filter?.availableValues?.includeNonArmorItems ?? false;
     return Column(children: [
       !nonArmorAvailable
           ? Container()
@@ -59,8 +54,7 @@ class TotalStatsConstraintsWidgetState extends BaseSearchFilterWidgetState<
           )),
       SliderTheme(
           data: SliderTheme.of(context).copyWith(
-              rangeValueIndicatorShape:
-                  SmallRectRangeSliderValueIndicatorShape(),
+              rangeValueIndicatorShape: SmallRectRangeSliderValueIndicatorShape(),
               rangeTrackShape: RoundedRectRangeSliderTrackShape()),
           child: RangeSlider(
             values: RangeValues(min?.toDouble(), max?.toDouble()),

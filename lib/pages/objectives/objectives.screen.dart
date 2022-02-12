@@ -20,7 +20,7 @@ import 'package:little_light/widgets/progress_tabs/pursuit_item/tracked_pursuit_
 
 class ObjectivesScreen extends StatefulWidget {
   @override
-  ObjectivesScreenState createState() => new ObjectivesScreenState();
+  ObjectivesScreenState createState() => ObjectivesScreenState();
 }
 
 class ObjectivesScreenState extends State<ObjectivesScreen> with ProfileConsumer, NotificationConsumer {
@@ -50,7 +50,7 @@ class ObjectivesScreenState extends State<ObjectivesScreen> with ProfileConsumer
   void loadObjectives() async {
     ObjectivesService service = ObjectivesService();
     objectives = (await service.getTrackedObjectives()).reversed.toList();
-    items = new Map();
+    items = Map();
     var itemObjectives = objectives.where((o) => o.type == TrackedObjectiveType.Item);
     var plugObjectives = objectives.where((o) => o.type == TrackedObjectiveType.Plug);
     for (var o in itemObjectives) {

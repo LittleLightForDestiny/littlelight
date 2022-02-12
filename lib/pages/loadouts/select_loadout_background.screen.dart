@@ -19,7 +19,7 @@ class SelectLoadoutBackgroundScreen extends StatefulWidget {
   SelectLoadoutBackgroundScreen() : super();
 
   @override
-  SelectLoadoutBackgroundScreenState createState() => new SelectLoadoutBackgroundScreenState();
+  SelectLoadoutBackgroundScreenState createState() => SelectLoadoutBackgroundScreenState();
 }
 
 class SelectLoadoutBackgroundScreenState extends State<SelectLoadoutBackgroundScreen>

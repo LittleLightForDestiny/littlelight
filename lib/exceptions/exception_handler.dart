@@ -20,7 +20,8 @@ class ExceptionHandler with AuthConsumer {
     FlutterError.onError = (FlutterErrorDetails details) {
       final stack = details.stack;
       if (kDebugMode) {
-        FlutterError.dumpErrorToConsole(details.copyWith(stackFilter: (input)=>input.where((s) => s.contains('package:little_light'))));
+        FlutterError.dumpErrorToConsole(
+            details.copyWith(stackFilter: (input) => input.where((s) => s.contains('package:little_light'))));
       } else if (stack != null) {
         Zone.current.handleUncaughtError(details.exception, stack);
       }
@@ -36,11 +37,13 @@ class ExceptionHandler with AuthConsumer {
           alignment: Alignment.center,
           child: Column(mainAxisSize: MainAxisSize.min, children: [
             TranslatedTextWidget("Render Error"),
-            ElevatedButton(onPressed: () {
-              final context = LittleLightNavigatorKeyContainer.navigatorKey?.currentContext;
-              if(context == null) return;
-              Navigator.of(context).push(ReportErrorDialogRoute(context, error: details));
-            }, child: TranslatedTextWidget("Report"))
+            ElevatedButton(
+                onPressed: () {
+                  final context = LittleLightNavigatorKeyContainer.navigatorKey?.currentContext;
+                  if (context == null) return;
+                  Navigator.of(context).push(ReportErrorDialogRoute(context, error: details));
+                },
+                child: TranslatedTextWidget("Report"))
           ]));
     };
   }

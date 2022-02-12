@@ -18,7 +18,7 @@ class LoreRootPage extends PresentationNodesTabsScaffoldWidget {
   LoreRootPage() : super();
 
   @override
-  createState() => new LoreRootPageState();
+  createState() => LoreRootPageState();
 }
 
 class LoreRootPageState extends PresentationNodesTabsScaffoldState<LoreRootPage>
@@ -42,7 +42,7 @@ class LoreRootPageState extends PresentationNodesTabsScaffoldState<LoreRootPage>
     await Future.delayed(route?.transitionDuration ?? Duration.zero);
     await loadNodes();
   }
-  
+
   Future<int?> getLoreNodeHash() async {
     int? loreNodeHash = destinySettings.loreRootNode;
     if (loreNodeHash == null) return null;
@@ -116,9 +116,9 @@ class LoreRootPageState extends PresentationNodesTabsScaffoldState<LoreRootPage>
     return super.buildBody(context);
   }
 
-  Widget buildTablessBody(BuildContext context){
+  Widget buildTablessBody(BuildContext context) {
     final categoryDefinition = this.rootNode;
-    if(categoryDefinition == null) return LoadingAnimWidget();
+    if (categoryDefinition == null) return LoadingAnimWidget();
     return TriumphListWidget(node: categoryDefinition);
   }
 

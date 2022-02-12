@@ -26,14 +26,14 @@ import 'package:little_light/widgets/loadouts/loadout_slot.widget.dart';
 class EditLoadoutScreen extends StatefulWidget {
   final Loadout loadout;
   final bool forceCreate;
-  EditLoadoutScreen({Key key, this.loadout, this.forceCreate = false})
-      : super(key: key);
+  EditLoadoutScreen({Key key, this.loadout, this.forceCreate = false}) : super(key: key);
 
   @override
-  EditLoadoutScreenState createState() => new EditLoadoutScreenState();
+  EditLoadoutScreenState createState() => EditLoadoutScreenState();
 }
 
-class EditLoadoutScreenState extends State<EditLoadoutScreen> with LanguageConsumer, LoadoutsConsumer, ManifestConsumer {
+class EditLoadoutScreenState extends State<EditLoadoutScreen>
+    with LanguageConsumer, LoadoutsConsumer, ManifestConsumer {
   bool changed = false;
   LoadoutItemIndex _itemIndex;
   DestinyInventoryItemDefinition emblemDefinition;
@@ -41,7 +41,7 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> with LanguageConsu
   Loadout _loadout;
   String _nameInputLabel = "";
 
-  TextEditingController _nameFieldController = new TextEditingController();
+  TextEditingController _nameFieldController = TextEditingController();
 
   @override
   initState() {
@@ -71,15 +71,13 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> with LanguageConsu
 
   loadEmblemDefinition() async {
     if (_loadout.emblemHash == null) return;
-    emblemDefinition = await manifest
-        .getDefinition<DestinyInventoryItemDefinition>(_loadout.emblemHash);
+    emblemDefinition = await manifest.getDefinition<DestinyInventoryItemDefinition>(_loadout.emblemHash);
     setState(() {});
   }
 
   buildItemIndex() async {
-    bucketDefinitions = await manifest
-        .getDefinitions<DestinyInventoryBucketDefinition>(
-            InventoryBucket.loadoutBucketHashes);
+    bucketDefinitions =
+        await manifest.getDefinitions<DestinyInventoryBucketDefinition>(InventoryBucket.loadoutBucketHashes);
     _itemIndex = await InventoryUtils.buildLoadoutItemIndex(_loadout);
     if (mounted) {
       setState(() {});
@@ -88,11 +86,8 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> with LanguageConsu
 
   Color get emblemColor {
     if (emblemDefinition == null) return Theme.of(context).colorScheme.background;
-    Color color = Color.fromRGBO(
-        emblemDefinition.backgroundColor.red,
-        emblemDefinition.backgroundColor.green,
-        emblemDefinition.backgroundColor.blue,
-        1.0);
+    Color color = Color.fromRGBO(emblemDefinition.backgroundColor.red, emblemDefinition.backgroundColor.green,
+        emblemDefinition.backgroundColor.blue, 1.0);
     return Color.lerp(color, Theme.of(context).colorScheme.background, .5);
   }
 
@@ -102,19 +97,13 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> with LanguageConsu
     return Scaffold(
       backgroundColor: emblemColor,
       appBar: AppBar(
-          title: TranslatedTextWidget(
-              (widget.loadout == null || widget.forceCreate)
-                  ? "Create Loadout"
-                  : "Edit Loadout"),
+          title:
+              TranslatedTextWidget((widget.loadout == null || widget.forceCreate) ? "Create Loadout" : "Edit Loadout"),
           flexibleSpace: buildAppBarBackground(context)),
       body: ListView.builder(
-          padding: EdgeInsets.all(8).copyWith(
-              top: 0,
-              left: max(screenPadding.left, 8),
-              right: max(screenPadding.right, 8)),
-          itemCount: _itemIndex == null
-              ? 2
-              : InventoryBucket.loadoutBucketHashes.length + 2,
+          padding:
+              EdgeInsets.all(8).copyWith(top: 0, left: max(screenPadding.left, 8), right: max(screenPadding.right, 8)),
+          itemCount: _itemIndex == null ? 2 : InventoryBucket.loadoutBucketHashes.length + 2,
           itemBuilder: itemBuilder),
       bottomNavigationBar: buildFooter(context),
     );
@@ -158,8 +147,7 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> with LanguageConsu
             Positioned.fill(child: buildAppBarBackground(context)),
             Container(
               constraints: BoxConstraints(minWidth: double.infinity),
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4)
-                  .copyWith(bottom: 4 + paddingBottom),
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4).copyWith(bottom: 4 + paddingBottom),
               child: ElevatedButton(
                 child: TranslatedTextWidget("Save Loadout"),
                 onPressed: () {
@@ -173,10 +161,7 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> with LanguageConsu
   }
 
   void openItemSelect(
-      BuildContext context,
-      DestinyInventoryBucketDefinition bucketDef,
-      bool equipped,
-      DestinyClass classType) async {
+      BuildContext context, DestinyInventoryBucketDefinition bucketDef, bool equipped, DestinyClass classType) async {
     ItemWithOwner item = await Navigator.push(
       context,
       MaterialPageRoute(
@@ -184,17 +169,14 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> with LanguageConsu
           bucketDefinition: bucketDef,
           emblemDefinition: emblemDefinition,
           classType: classType,
-          idsToAvoid:
-              (_itemIndex.loadout.equipped + _itemIndex.loadout.unequipped)
-                  .map((i) => i.itemInstanceId),
+          idsToAvoid: (_itemIndex.loadout.equipped + _itemIndex.loadout.unequipped).map((i) => i.itemInstanceId),
         ),
       ),
     );
     if (item == null) {
       return;
     }
-    int removedItem = await _loadout.addItem(
-        item.item.itemHash, item.item.itemInstanceId, equipped);
+    int removedItem = await _loadout.addItem(item.item.itemHash, item.item.itemInstanceId, equipped);
     if (removedItem != null) {
       showRemovingExoticMessage(context, removedItem);
     }
@@ -205,20 +187,17 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> with LanguageConsu
   }
 
   showRemovingExoticMessage(BuildContext context, int hash) async {
-    DestinyInventoryItemDefinition definition = await manifest
-        .getDefinition<DestinyInventoryItemDefinition>(hash);
+    DestinyInventoryItemDefinition definition = await manifest.getDefinition<DestinyInventoryItemDefinition>(hash);
     if (definition.itemType == DestinyItemType.Weapon) {
       _showSnackBar(
           context,
-          TranslatedTextWidget(
-              "You can only equip one exotic weapon at a time. Removing {itemName}.",
+          TranslatedTextWidget("You can only equip one exotic weapon at a time. Removing {itemName}.",
               replace: {"itemName": definition.displayProperties.name}));
     }
     if (definition.itemType == DestinyItemType.Armor) {
       _showSnackBar(
           context,
-          TranslatedTextWidget(
-              "You can only equip one exotic armor piece at a time. Removing {itemName}.",
+          TranslatedTextWidget("You can only equip one exotic armor piece at a time. Removing {itemName}.",
               replace: {"itemName": definition.displayProperties.name}));
     }
   }
@@ -229,8 +208,7 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen> with LanguageConsu
   }
 
   void removeItem(bool equipped, DestinyItemComponent item) async {
-    var def = await manifest
-        .getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
+    var def = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
     if (equipped) {
       _itemIndex.removeEquippedItem(item, def);
     } else {

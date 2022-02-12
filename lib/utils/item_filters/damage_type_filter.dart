@@ -19,8 +19,7 @@ class DamageTypeFilter extends BaseItemFilter<Set<int>> {
     if (items == null) return items;
     clear();
     var damageTypeHashes = items.map<int>((i) {
-      var instanceInfo =
-          profile.getInstanceInfo(i?.item?.itemInstanceId);
+      var instanceInfo = profile.getInstanceInfo(i?.item?.itemInstanceId);
       return instanceInfo?.damageTypeHash;
     }).toSet();
     availableValues.addAll(damageTypeHashes);
@@ -29,13 +28,11 @@ class DamageTypeFilter extends BaseItemFilter<Set<int>> {
     return super.filter(items, definitions: definitions);
   }
 
-  bool filterItem(ItemWithOwner item,
-      {Map<int, DestinyInventoryItemDefinition> definitions}) {
+  bool filterItem(ItemWithOwner item, {Map<int, DestinyInventoryItemDefinition> definitions}) {
     if (value?.length == 0) {
       return true;
     }
-    var instanceInfo =
-        profile.getInstanceInfo(item?.item?.itemInstanceId);
+    var instanceInfo = profile.getInstanceInfo(item?.item?.itemInstanceId);
     return value.contains(instanceInfo?.damageTypeHash);
   }
 }

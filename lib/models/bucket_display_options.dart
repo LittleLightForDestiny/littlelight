@@ -52,9 +52,9 @@ extension ListParameters on BucketDisplayOptions {
       case BucketDisplayType.Large:
         return 1;
       case BucketDisplayType.Medium:
-        return MediaQueryHelper(context).responsiveValue(3, tablet:5, laptop:8, desktop:10);
+        return MediaQueryHelper(context).responsiveValue(3, tablet: 5, laptop: 8, desktop: 10);
       case BucketDisplayType.Small:
-        return MediaQueryHelper(context).responsiveValue(5, tablet:10, laptop:15, desktop:20);
+        return MediaQueryHelper(context).responsiveValue(5, tablet: 10, laptop: 15, desktop: 20);
     }
   }
 }

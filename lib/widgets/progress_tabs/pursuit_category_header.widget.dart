@@ -16,7 +16,7 @@ class PursuitCategoryHeaderWidget extends BucketHeaderWidget {
   PursuitCategoryHeaderWidget({this.onChanged, Key key, this.label, int hash, int itemCount})
       : super(key: key, hash: hash, itemCount: itemCount);
   @override
-  PursuitCategoryHeaderWidgetState createState() => new PursuitCategoryHeaderWidgetState();
+  PursuitCategoryHeaderWidgetState createState() => PursuitCategoryHeaderWidgetState();
 }
 
 class PursuitCategoryHeaderWidgetState extends BucketHeaderWidgetState<PursuitCategoryHeaderWidget>

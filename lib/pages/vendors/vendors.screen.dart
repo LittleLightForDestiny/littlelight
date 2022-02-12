@@ -12,9 +12,6 @@ import 'package:little_light/widgets/inventory_tabs/tabs_character_menu.widget.d
 import 'package:little_light/widgets/vendors/vendors_list.widget.dart';
 
 class VendorsScreen extends StatefulWidget {
-
-  
-
   @override
   VendorsScreenState createState() => VendorsScreenState();
 }
@@ -56,12 +53,7 @@ class VendorsScreenState extends State<VendorsScreen>
           Positioned.fill(
             child: buildCharacterTabView(context),
           ),
-          Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              height: topOffset + 16,
-              child: buildCharacterHeaderTabView(context)),
+          Positioned(top: 0, left: 0, right: 0, height: topOffset + 16, child: buildCharacterHeaderTabView(context)),
           Positioned(
             top: paddingTop,
             width: kToolbarHeight,
@@ -78,8 +70,7 @@ class VendorsScreenState extends State<VendorsScreen>
               top: MediaQuery.of(context).padding.top + kToolbarHeight - 52,
               right: 8,
               child: buildCharacterMenu(context)),
-          InventoryNotificationWidget(
-              barHeight: 0, key: Key('inventory_notification_widget')),
+          InventoryNotificationWidget(barHeight: 0, key: Key('inventory_notification_widget')),
         ],
       ),
     );
@@ -102,15 +93,12 @@ class VendorsScreenState extends State<VendorsScreen>
   }
 
   Widget buildCharacterTabView(BuildContext context) {
-    return TabBarView(
-        controller: charTabController, children: buildCharacterTabs(context));
+    return TabBarView(controller: charTabController, children: buildCharacterTabs(context));
   }
 
   List<Widget> buildCharacterTabs(BuildContext context) {
-    List<Widget> characterTabs = characters
-        .map((character) =>
-            VendorsListWidget(characterId: character.characterId))
-        .toList();
+    List<Widget> characterTabs =
+        characters.map((character) => VendorsListWidget(characterId: character.characterId)).toList();
     return characterTabs;
   }
 
@@ -123,7 +111,6 @@ class VendorsScreenState extends State<VendorsScreen>
   }
 
   List<DestinyCharacterComponent> get characters {
-    return profile
-        .getCharacters(userSettings.characterOrdering);
+    return profile.getCharacters(userSettings.characterOrdering);
   }
 }

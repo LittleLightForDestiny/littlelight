@@ -16,8 +16,7 @@ mixin TabGridMixin<S extends StatefulWidget, T> on TickerProviderStateMixin<S> {
 
   void _initController() {
     _controller?.dispose();
-    _controller =
-        TabController(initialIndex: 0, length: pageCount, vsync: this);
+    _controller = TabController(initialIndex: 0, length: pageCount, vsync: this);
     _controller.addListener(() {
       setState(() {});
     });
@@ -48,27 +47,21 @@ mixin TabGridMixin<S extends StatefulWidget, T> on TickerProviderStateMixin<S> {
 
   Widget tabBar(BuildContext context) {
     return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) =>
-            Stack(children: [
+        builder: (BuildContext context, BoxConstraints constraints) => Stack(children: [
               IntrinsicHeight(
-                  child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                    Container(
-                        width: _arrowButtonWidth,
-                        child: ArrowNavigationButton(
-                            index: 0,
-                            controller: _controller,
-                            icon: FontAwesomeIcons.caretLeft)),
-                    Expanded(child: tabBarView(context, constraints)),
-                    Container(
-                        width: _arrowButtonWidth,
-                        child: ArrowNavigationButton(
-                          index: _controller.length - 1,
-                          controller: _controller,
-                          icon: FontAwesomeIcons.caretRight,
-                        )),
-                  ])),
+                  child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                Container(
+                    width: _arrowButtonWidth,
+                    child: ArrowNavigationButton(index: 0, controller: _controller, icon: FontAwesomeIcons.caretLeft)),
+                Expanded(child: tabBarView(context, constraints)),
+                Container(
+                    width: _arrowButtonWidth,
+                    child: ArrowNavigationButton(
+                      index: _controller.length - 1,
+                      controller: _controller,
+                      icon: FontAwesomeIcons.caretRight,
+                    )),
+              ])),
               Positioned(
                   bottom: 0,
                   left: _arrowButtonWidth,
@@ -82,14 +75,10 @@ mixin TabGridMixin<S extends StatefulWidget, T> on TickerProviderStateMixin<S> {
     var itemWidth = (width - _spacing * (columnCount + 1)) / columnCount;
     var itemHeight = itemWidth / itemAspectRatio;
     var height = (itemHeight * rowCount) + (_spacing * (rowCount + 2));
-    return Container(
-        width: width,
-        height: height,
-        child: TabBarView(controller: _controller, children: tabs(context)));
+    return Container(width: width, height: height, child: TabBarView(controller: _controller, children: tabs(context)));
   }
 
-  List<Widget> tabs(BuildContext context) =>
-      List.generate(pageCount, (index) => tab(context, index));
+  List<Widget> tabs(BuildContext context) => List.generate(pageCount, (index) => tab(context, index));
 
   Widget tab(BuildContext context, int tabIndex) {
     var start = tabIndex * tilesPerPage;

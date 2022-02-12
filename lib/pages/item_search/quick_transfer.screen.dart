@@ -15,11 +15,9 @@ import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/search/quick_transfer_list.widget.dart';
 import 'package:little_light/widgets/search/search.controller.dart';
 
-Set<String> _characterIdsExcept(
-    String characterId, DestinyInventoryBucketDefinition bucketDef) {
+Set<String> _characterIdsExcept(String characterId, DestinyInventoryBucketDefinition bucketDef) {
   final profile = getInjectedProfileService();
-  Set<String> all =
-      profile.getCharacters().map((c) => c.characterId).toSet();
+  Set<String> all = profile.getCharacters().map((c) => c.characterId).toSet();
   all.add(ItemWithOwner.OWNER_VAULT);
   all.add(ItemWithOwner.OWNER_PROFILE);
   if (bucketDef.scope == BucketScope.Account) {
@@ -41,22 +39,17 @@ class QuickTransferScreen extends SearchScreen with UserSettingsConsumer, Profil
   QuickTransferScreen({this.bucketDefinition, this.classType, this.characterId})
       : super(
             controller: SearchController.withDefaultFilters(firstRunFilters: [
-          ItemBucketFilter(
-              selected: [bucketDefinition.hash].toSet(), enabled: true),
+          ItemBucketFilter(selected: [bucketDefinition.hash].toSet(), enabled: true),
           ClassTypeFilter(
-              selected: [
-                InventoryBucket.armorBucketHashes
-                        .contains(bucketDefinition.hash)
-                    ? classType
-                    : null
-              ].where((i)=>i!=null).toSet(),
+              selected: [InventoryBucket.armorBucketHashes.contains(bucketDefinition.hash) ? classType : null]
+                  .where((i) => i != null)
+                  .toSet(),
               enabled: true),
-          ItemOwnerFilter(_characterIdsExcept(characterId, bucketDefinition),
-              enabled: true)
+          ItemOwnerFilter(_characterIdsExcept(characterId, bucketDefinition), enabled: true)
         ]));
 
   @override
-  QuickTransferScreenState createState() => new QuickTransferScreenState();
+  QuickTransferScreenState createState() => QuickTransferScreenState();
 }
 
 class QuickTransferScreenState extends SearchScreenState<QuickTransferScreen> {

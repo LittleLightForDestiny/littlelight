@@ -15,7 +15,7 @@ class BaseItemStatWidget extends StatelessWidget {
   final StatValues modValues;
   final DestinyStatDisplayDefinition scaled;
 
-  BaseItemStatWidget({this.statHash, this.modValues, this.scaled, Key key}):super(key:key);
+  BaseItemStatWidget({this.statHash, this.modValues, this.scaled, Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -30,8 +30,7 @@ class BaseItemStatWidget extends StatelessWidget {
             uppercase: true,
             maxLines: 1,
             softWrap: false,
-            style: TextStyle(
-                color: getNameColor(context), fontWeight: FontWeight.bold, fontSize: 12),
+            style: TextStyle(color: getNameColor(context), fontWeight: FontWeight.bold, fontSize: 12),
             overflow: TextOverflow.fade,
           )),
           Expanded(
@@ -53,7 +52,7 @@ class BaseItemStatWidget extends StatelessWidget {
   Color getNeutralColor(BuildContext context) => LittleLightTheme.of(context).onSurfaceLayers;
 
   int get maxBarSize {
-    if(scaled?.maximumValue != null){
+    if (scaled?.maximumValue != null) {
       return max(scaled?.maximumValue, baseBarSize + modBarSize + masterworkBarSize);
     }
     return max(100, baseBarSize + modBarSize + masterworkBarSize);
@@ -82,10 +81,8 @@ class BaseItemStatWidget extends StatelessWidget {
 
   int get modBarSize {
     if (scaled != null) {
-      return (InventoryUtils.interpolateStat(
-                  selected, scaled.displayInterpolation) -
-              InventoryUtils.interpolateStat(
-                  equipped, scaled.displayInterpolation))
+      return (InventoryUtils.interpolateStat(selected, scaled.displayInterpolation) -
+              InventoryUtils.interpolateStat(equipped, scaled.displayInterpolation))
           .abs();
     }
     return (selected - equipped).abs();
@@ -93,24 +90,22 @@ class BaseItemStatWidget extends StatelessWidget {
 
   int get masterworkBarSize {
     if (scaled != null) {
-      return (InventoryUtils.interpolateStat(
-                  selected + masterwork, scaled.displayInterpolation) -
-              InventoryUtils.interpolateStat(
-                  selected, scaled.displayInterpolation))
+      return (InventoryUtils.interpolateStat(selected + masterwork, scaled.displayInterpolation) -
+              InventoryUtils.interpolateStat(selected, scaled.displayInterpolation))
           .abs();
     }
     return (masterwork).abs();
   }
 
-  Color getNameColor(BuildContext context){
-    if(isHiddenStat){
+  Color getNameColor(BuildContext context) {
+    if (isHiddenStat) {
       return getHiddenStatColor(context);
     }
     return getNeutralColor(context);
   }
 
-  Color getValueColor(BuildContext context){
-    if(masterwork > 0){
+  Color getValueColor(BuildContext context) {
+    if (masterwork > 0) {
       getMasterworkColor(context);
     }
     if (selected > equipped) {
@@ -119,7 +114,7 @@ class BaseItemStatWidget extends StatelessWidget {
     if (equipped > selected) {
       return getNegativeColor(context);
     }
-    if(isHiddenStat){
+    if (isHiddenStat) {
       return getHiddenStatColor(context);
     }
     return getNeutralColor(context);
@@ -135,7 +130,6 @@ class BaseItemStatWidget extends StatelessWidget {
     return getNeutralColor(context);
   }
 
-
   bool get isHiddenStat {
     return DestinyData.hiddenStats.contains(statHash);
   }
@@ -144,7 +138,7 @@ class BaseItemStatWidget extends StatelessWidget {
     return scaled?.displayAsNumeric ?? false;
   }
 
-  bool get isDirection{
+  bool get isDirection {
     return statHash == 2715839340;
   }
 
@@ -158,9 +152,5 @@ class StatValues {
   int equipped;
   int selected;
   int masterwork;
-  StatValues(
-      {this.equipped = 0,
-      this.selected = 0,
-      this.masterwork = 0,
-      this.precalculated = 0});
+  StatValues({this.equipped = 0, this.selected = 0, this.masterwork = 0, this.precalculated = 0});
 }

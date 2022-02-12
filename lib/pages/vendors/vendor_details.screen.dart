@@ -20,19 +20,16 @@ import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/vendors/purchasable_item.widget.dart';
 
 class VendorDetailsScreen extends StatefulWidget {
-
-  
   final String characterId;
   final DestinyVendorComponent vendor;
 
-  VendorDetailsScreen({Key key, this.vendor, this.characterId})
-      : super(key: key);
+  VendorDetailsScreen({Key key, this.vendor, this.characterId}) : super(key: key);
 
   @override
-  VendorDetailsScreenState createState() => new VendorDetailsScreenState();
+  VendorDetailsScreenState createState() => VendorDetailsScreenState();
 }
 
-class VendorDetailsScreenState extends State<VendorDetailsScreen> with ManifestConsumer{
+class VendorDetailsScreenState extends State<VendorDetailsScreen> with ManifestConsumer {
   DestinyInventoryItemDefinition emblemDefinition;
   DestinyVendorDefinition definition;
   List<DestinyVendorCategory> _categories;
@@ -46,27 +43,22 @@ class VendorDetailsScreenState extends State<VendorDetailsScreen> with ManifestC
   }
 
   Future<void> loadDefinitions() async {
-    definition = await manifest
-        .getDefinition<DestinyVendorDefinition>(widget.vendor.vendorHash);
+    definition = await manifest.getDefinition<DestinyVendorDefinition>(widget.vendor.vendorHash);
     var _service = VendorsService();
-    _categories = await _service.getVendorCategories(
-        widget.characterId, widget.vendor.vendorHash);
+    _categories = await _service.getVendorCategories(widget.characterId, widget.vendor.vendorHash);
     _categories = _categories.where((c) => shouldCategoryBeVisible(c)).toList();
     _categories.sort((a, b) {
       var defA = definition.displayCategories[a.displayCategoryIndex];
       var defB = definition.displayCategories[b.displayCategoryIndex];
-      var priorityA = categoryIdsPriority
-          .indexWhere((element) => defA.identifier.contains(element));
-      var priorityB = categoryIdsPriority
-          .indexWhere((element) => defB.identifier.contains(element));
+      var priorityA = categoryIdsPriority.indexWhere((element) => defA.identifier.contains(element));
+      var priorityB = categoryIdsPriority.indexWhere((element) => defB.identifier.contains(element));
       if (priorityA == -1) priorityA = 9999;
       if (priorityB == -1) priorityB = 9999;
       var compare = priorityA.compareTo(priorityB);
       if (compare != 0) return compare;
       return defA.sortOrder.index.compareTo(defB.sortOrder.index);
     });
-    _sales = await _service.getVendorSales(
-        widget.characterId, widget.vendor.vendorHash);
+    _sales = await _service.getVendorSales(widget.characterId, widget.vendor.vendorHash);
     if (mounted) {
       setState(() {});
     }
@@ -75,10 +67,8 @@ class VendorDetailsScreenState extends State<VendorDetailsScreen> with ManifestC
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-            titleSpacing: 0,
-            title: buildAppBarTitle(context),
-            flexibleSpace: buildAppBarBackground(context)),
+        appBar:
+            AppBar(titleSpacing: 0, title: buildAppBarTitle(context), flexibleSpace: buildAppBarBackground(context)),
         body: buildBody(context));
   }
 
@@ -90,16 +80,15 @@ class VendorDetailsScreenState extends State<VendorDetailsScreen> with ManifestC
         child: Stack(fit: StackFit.loose, children: [
           QueuedNetworkImage(
             fit: BoxFit.fitHeight,
-            imageUrl:
-                BungieApiService.url(definition.displayProperties.largeIcon),
+            imageUrl: BungieApiService.url(definition.displayProperties.largeIcon),
           ),
           Positioned.fill(
               child: Container(
                   decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          colors: <Color>[LittleLightTheme.of(context).surfaceLayers.layer0, LittleLightTheme.of(context).surfaceLayers.layer1],
-                          begin: Alignment.centerLeft,
-                          end: Alignment.center))))
+                      gradient: LinearGradient(colors: <Color>[
+            LittleLightTheme.of(context).surfaceLayers.layer0,
+            LittleLightTheme.of(context).surfaceLayers.layer1
+          ], begin: Alignment.centerLeft, end: Alignment.center))))
         ]));
   }
 
@@ -110,13 +99,12 @@ class VendorDetailsScreenState extends State<VendorDetailsScreen> with ManifestC
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         Container(
-          height:48,
+            height: 48,
             padding: EdgeInsets.all(8),
             child: AspectRatio(
               aspectRatio: 1,
               child: QueuedNetworkImage(
-                imageUrl:
-                    BungieApiService.url(definition.displayProperties.mapIcon),
+                imageUrl: BungieApiService.url(definition.displayProperties.mapIcon),
               ),
             )),
         Container(
@@ -144,9 +132,7 @@ class VendorDetailsScreenState extends State<VendorDetailsScreen> with ManifestC
     var screenPadding = MediaQuery.of(context).padding;
     return ListView(
         padding: EdgeInsets.all(8).copyWith(
-            left: max(screenPadding.left, 8),
-            right: max(screenPadding.right, 8),
-            bottom: screenPadding.bottom + 8),
+            left: max(screenPadding.left, 8), right: max(screenPadding.right, 8), bottom: screenPadding.bottom + 8),
         children: _categories.map((c) => buildCategory(context, c)).toList());
   }
 
@@ -155,8 +141,7 @@ class VendorDetailsScreenState extends State<VendorDetailsScreen> with ManifestC
     if (def.identifier == 'category_preview') {
       return false;
     }
-    if (def.identifier.contains('categories.featured') &&
-        !def.identifier.contains('bright_dust')) {
+    if (def.identifier.contains('categories.featured') && !def.identifier.contains('bright_dust')) {
       return false; //eververse weird menus
     }
     return true;
@@ -174,20 +159,17 @@ class VendorDetailsScreenState extends State<VendorDetailsScreen> with ManifestC
     ]);
   }
 
-  Widget buildCategoryItems(
-      BuildContext context, DestinyVendorCategory category) {
+  Widget buildCategoryItems(BuildContext context, DestinyVendorCategory category) {
     return Wrap(
         runSpacing: 8,
         spacing: 8,
         alignment: WrapAlignment.start,
         children: category.itemIndexes.reversed
-            .map((index) =>
-                buildItem(context, definition.itemList[index], index))
+            .map((index) => buildItem(context, definition.itemList[index], index))
             .toList());
   }
 
-  Widget buildItem(
-      BuildContext context, DestinyVendorItemDefinition item, int index) {
+  Widget buildItem(BuildContext context, DestinyVendorItemDefinition item, int index) {
     var sale = _sales["$index"];
     return PurchasableItemWidget(
       item: item,

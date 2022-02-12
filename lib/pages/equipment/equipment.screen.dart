@@ -34,7 +34,7 @@ class EquipmentScreen extends StatefulWidget {
   final List<int> itemTypes = [DestinyItemCategory.Weapon, DestinyItemCategory.Armor, DestinyItemCategory.Inventory];
 
   @override
-  EquipmentScreenState createState() => new EquipmentScreenState();
+  EquipmentScreenState createState() => EquipmentScreenState();
 }
 
 const _page = LittleLightPersistentPage.Equipment;
@@ -48,7 +48,7 @@ class EquipmentScreenState extends State<EquipmentScreen>
         ProfileConsumer,
         NotificationConsumer {
   int currentGroup = DestinyItemCategory.Weapon;
-  Map<int, double> scrollPositions = new Map();
+  Map<int, double> scrollPositions = Map();
 
   TabController charTabController;
   TabController typeTabController;
