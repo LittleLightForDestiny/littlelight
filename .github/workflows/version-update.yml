@@ -26,7 +26,7 @@ jobs:
         with:
           node-version: '14'
           cache: 'npm'
-          cache-dependency-path: ./github/workflows/scripts/package-lock.json
+          cache-dependency-path: .github/workflows/scripts/package-lock.json
       
       - name: Updates version and changelog
         run: npm run version-update -- --version=${{github.event.inputs.version}} --changelog==${{github.event.inputs.changelog}}
