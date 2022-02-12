@@ -28,4 +28,4 @@ jobs:
           version: ${{github.event.inputs.version}}
           changelog: ${{github.event.inputs.changelog}}
       - nome: Updated pubspec
-        executar: echo "${{ steps.update.outputs.pubspec }}"
+        run: echo "${{ steps.update.outputs.pubspec }}"
