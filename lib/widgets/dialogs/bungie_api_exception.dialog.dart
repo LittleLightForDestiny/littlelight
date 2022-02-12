@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
-import 'package:little_light/services/bungie_api/bungie_api.exception.dart';
+import 'package:little_light/models/bungie_api.exception.dart';
 import 'package:little_light/services/storage/storage.consumer.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/dialogs/littlelight.base.dialog.dart';
