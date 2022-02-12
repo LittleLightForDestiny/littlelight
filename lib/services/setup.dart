@@ -43,7 +43,6 @@ import 'manifest/manifest.service.dart';
 Future<void> setupServices() async {
   await GetIt.I.reset();
   await setupStorageService();
-  // TODO: return here to test migrations;
   await setupAnalyticsService();
   await setupAppConfig();
   await setupAuthService();

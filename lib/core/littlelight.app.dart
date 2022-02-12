@@ -33,7 +33,6 @@ class _LittleLightAppState extends State<LittleLightApp> with AnalyticsConsumer 
 
   void asyncInit() async {
     await setupServices();
-    // TODO: return here to test migrations;
     setState(() {
       canInit = true;
     });
