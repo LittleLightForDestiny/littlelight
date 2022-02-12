@@ -30,4 +30,4 @@ jobs:
       
       - name: Updates version and changelog
         run: npm run version-update -- --version=${{github.event.inputs.version}} --changelog==${{github.event.inputs.changelog}}
-        working-directory: ./github/workflows/scripts/
+        working-directory: .github/workflows/scripts/
