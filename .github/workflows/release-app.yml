@@ -29,11 +29,11 @@ jobs:
       - name: Defines variables according to how the workflow should behave
         id: variables
         run: |
-          if[[ "${{ github.event_name }}" == "release"]] then
+          if [[ "${{ github.event_name }}" == "release"]] then
             echo ::set-output name=version::"${{ github.event.release.tag_name }}";
             echo ::set-output name=changelog::"${{ github.event.release.body }}";
           fi
-          if[[ "${{ github.event_name }}" == "workflow_dispatch"]] then
+          if [[ "${{ github.event_name }}" == "workflow_dispatch"]] then
             echo ::set-output name=version::"${{ github.event.inputs.version }}";
             echo ::set-output name=changelog::"${{ github.event.inputs.changelog }}";
           fi
