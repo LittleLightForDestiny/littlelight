@@ -2,7 +2,8 @@ const fs = require('fs-extra');
 
 
 const pubspecPath = "./pubspec.yaml";
-
+const androidLanguages = ['de-DE', 'en-US', 'es-ES', 'fr-FR', 'it-IT', 'ja-JP', 'pt-BR'];
+const iosLanguages = ['de-DE', 'default', 'en-US', 'es-ES', 'fr-FR', 'it', 'ja', 'pt-BR'];
 
 /**
  * @returns {Object.<string, string>}
@@ -61,22 +62,41 @@ function getVersionNumber(versionNumber) {
 /**
  * @param {string} versionString
  * @param {string} versionNumber
- * @returns {Promise<bool>}
+ * @returns {Promise<void>}
  */
 async function updatePubspec(versionString, versionNumber) {
   const file = await fs.readFile(pubspecPath, "utf-8");
   const versionRegexp = /# application version\nversion: .*?\n/s;
   const changedFileContents = file.replace(versionRegexp, `# application version\nversion: ${versionString}+${versionNumber}\n`)
-  console.log(changedFileContents);
-  return true;
+  await fs.writeFile(pubspecPath, changedFileContents);
+}
+
+/**
+ * @param {string} versionNumber
+ * @param {string} changelog
+ * @returns {Promise<void>}
+ */
+async function updateChangelogs(versionNumber, changelog) {
+  for (let language of androidLanguages) {
+    const path = `./fastlane/metadata/android/${language}/changelogs/${versionNumber}.txt`;
+    await fs.writeFile(path, changelog);
+  }
+
+  for (let language of iosLanguages) {
+    const path = `./fastlane/metadata/ios/${language}/release_notes.txt`;
+    await fs.writeFile(path, changelog);
+  }
+
 }
 
 
 async function main() {
   const version = getVersionString();
   const versionNumber = getVersionNumber(version);
+  const changelog = getChangelog();
   await updatePubspec(version, versionNumber);
-  console.log(changelog);
+
+
 }
 
 main();
