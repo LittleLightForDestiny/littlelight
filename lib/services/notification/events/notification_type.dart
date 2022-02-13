@@ -6,6 +6,7 @@ enum NotificationType {
   requestedEquip,
   requestedUpdate,
   receivedUpdate,
+  requestApplyPlug,
   itemStateUpdate,
   transferError,
   equipError,

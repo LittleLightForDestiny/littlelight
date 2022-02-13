@@ -15,6 +15,7 @@ import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/element_type_data.dart';
+import 'package:little_light/utils/shimmer_helper.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
@@ -43,6 +44,7 @@ class ItemDetailsSocketDetailsWidget extends BaseSocketDetailsWidget {
 class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<ItemDetailsSocketDetailsWidget>
     with PlugWishlistTagIconsMixin, ProfileConsumer, ItemNotesConsumer {
   bool get favoritable => definition.plug.plugCategoryIdentifier == 'shader';
+
   @override
   Widget build(BuildContext context) {
     if (definition == null) return Container();
@@ -333,12 +335,33 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
 
   Widget buildApplyButton(BuildContext context) {
     var requirementHash = definition?.plug?.insertionMaterialRequirementHash;
-    final applyButton = ElevatedButton(
-      onPressed: () {
-        controller.applySocket(controller.selectedSocketIndex, controller.selectedPlugHash);
-      },
-      child: TranslatedTextWidget("Apply perk"),
-    );
+    final isApplied = controller.selectedPlugHash == controller.socketEquippedPlugHash(controller.selectedSocketIndex);
+    if (isApplied) {
+      return Container();
+    }
+    final isEnabled = !controller.isSocketBusy(controller.selectedSocketIndex);
+    final applyButton = Container(
+        padding: EdgeInsets.only(top: 8),
+        child: ElevatedButton(
+            key: Key("apply_button_${definition.hash}_$isEnabled"),
+            onPressed: isEnabled
+                ? () {
+                    controller.applySocket(controller.selectedSocketIndex, controller.selectedPlugHash);
+                  }
+                : null,
+            child: DefinitionProviderWidget<DestinyInventoryItemDefinition>(
+              definition.hash,
+              (def) => isEnabled
+                  ? TranslatedTextWidget(
+                      "Apply {modType}",
+                      replace: {"modType": def.itemTypeDisplayName.toLowerCase()},
+                    )
+                  : ShimmerHelper.getDefaultShimmer(context,
+                      child: TranslatedTextWidget(
+                        "Applying {modType}",
+                        replace: {"modType": def.itemTypeDisplayName.toLowerCase()},
+                      )),
+            )));
     if (requirementHash != null && requirementHash != 0) {
       return DefinitionProviderWidget<DestinyMaterialRequirementSetDefinition>(requirementHash, (def) {
         final materials = def?.materials?.where((element) => (element.count ?? 0) > 0);

@@ -171,6 +171,7 @@ class ItemSocketController extends ChangeNotifier
 
   void applySocket(int socketIndex, int plugHash) async {
     String characterID = profile.getCharacters().first.characterId;
+    notifications.push(NotificationEvent(NotificationType.requestApplyPlug, item: this.item, plugHash: plugHash));
     _socketBusy[socketIndex] = true;
     this.notifyListeners();
     try {

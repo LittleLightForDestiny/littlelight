@@ -16,7 +16,7 @@ on:
         description: What's new ?
         required: true
 
-      channel:
+      track:
         required: true
         description: Release track
         type: choice
@@ -96,3 +96,18 @@ jobs:
           git remote set-url origin https://x-access-token:${{ secrets.BOT_PAT }}@github.com/${{ github.repository }}
           git commit -am "Updating pubspec and changelogs to version ${{steps.variables.outputs.version}}"
           git push
+
+  publish-google-play:
+    uses: ./.github/workflows/workflow-2.yml
+    needs: [version-update]
+    with:
+      track: ${{ steps.variables.outputs.version }}
+    secrets:
+      FLUTTER_DOTENV: ${{ secrets.FLUTTER_DOTENV }}
+      ANDROID_GOOGLE_SERVICES_JSON: ${{ secrets.ANDROID_GOOGLE_SERVICES_JSON }}
+      ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+      ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+      ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+      ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+      SUPPLY_PACKAGE_NAME: ${{ secrets.SUPPLY_PACKAGE_NAME }}
+      SUPPLY_JSON_KEY_DATA: ${{ secrets.SUPPLY_JSON_KEY_DATA }}

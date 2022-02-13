@@ -3,9 +3,8 @@ import 'package:bungie_api/groupsv2.dart';
 import 'package:bungie_api/user.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-// ignore: import_of_legacy_library_into_null_safe
-import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
+import 'package:little_light/pages/languages/languages.page_route.dart';
 import 'package:little_light/pages/settings/settings.page_route.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
@@ -63,8 +62,7 @@ class _SideMenuSettingsWidgetState extends State<SideMenuSettingsWidget> with Au
         auth.openBungieLogin(true);
       }),
       settingsItem(TranslatedTextWidget("Change Language"), onTap: () {
-        Phoenix.rebirth(context);
-        // pushRoute(context, LanguagesPageRoute());
+        pushRoute(context, LanguagesPageRoute());
       }),
       settingsItem(TranslatedTextWidget("Settings"), onTap: () {
         Navigator.of(context).push(SettingsPageRoute());

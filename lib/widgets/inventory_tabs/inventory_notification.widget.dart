@@ -87,31 +87,34 @@ class InventoryNotificationWidgetState extends State<InventoryNotificationWidget
     switch (_latestEvent.type) {
       case NotificationType.requestedUpdate:
         return TranslatedTextWidget("Updating", uppercase: true, style: TextStyle(fontWeight: FontWeight.bold));
-        break;
 
       case NotificationType.requestedTransfer:
         return TranslatedTextWidget("Transferring", uppercase: true, style: TextStyle(fontWeight: FontWeight.bold));
-        break;
 
       case NotificationType.requestedVaulting:
         return TranslatedTextWidget("Moving Away", uppercase: true, style: TextStyle(fontWeight: FontWeight.bold));
-        break;
 
       case NotificationType.requestedEquip:
         return TranslatedTextWidget("Equipping", uppercase: true, style: TextStyle(fontWeight: FontWeight.bold));
-        break;
 
       case NotificationType.updateError:
         return TranslatedTextWidget("Update failed", uppercase: true, style: TextStyle(fontWeight: FontWeight.bold));
-        break;
 
       case NotificationType.transferError:
         return TranslatedTextWidget("Transfer failed", uppercase: true, style: TextStyle(fontWeight: FontWeight.bold));
-        break;
 
       case NotificationType.equipError:
         return TranslatedTextWidget("Equip failed", uppercase: true, style: TextStyle(fontWeight: FontWeight.bold));
-        break;
+
+      case NotificationType.requestApplyPlug:
+        return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
+          _latestEvent.plugHash,
+          (def) => TranslatedTextWidget("Applying {modType}",
+              replace: {"modType": def.itemTypeDisplayName},
+              uppercase: true,
+              style: TextStyle(fontWeight: FontWeight.bold)),
+          key: Key("apply_mod_${_latestEvent.plugHash}"),
+        );
 
       default:
         return Container();
@@ -138,6 +141,30 @@ class InventoryNotificationWidgetState extends State<InventoryNotificationWidget
                   )),
         );
         break;
+
+      case NotificationType.requestApplyPlug:
+        return Container(
+          margin: EdgeInsets.only(left: 8),
+          key: Key("item_${_latestEvent.item.itemHash}"),
+          child: Row(mainAxisSize: MainAxisSize.min, children: [
+            Container(
+                width: 24,
+                height: 24,
+                child: ManifestImageWidget<DestinyInventoryItemDefinition>(
+                  _latestEvent.plugHash,
+                )),
+            Container(
+              width: 8,
+            ),
+            Container(
+              child: ManifestImageWidget<DestinyInventoryItemDefinition>(
+                _latestEvent.item.itemHash,
+              ),
+              width: 24,
+              height: 24,
+            )
+          ]),
+        );
 
       case NotificationType.updateError:
         return Container(

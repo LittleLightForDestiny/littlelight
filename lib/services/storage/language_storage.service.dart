@@ -47,7 +47,8 @@ class LanguageStorage extends StorageBase<LanguageStorageKeys> {
 
   Future<Map<String, String>?> getTranslations() async {
     try {
-      final Map<String, dynamic> json = await getJson(LanguageStorageKeys.littleLightTranslation);
+      final Map<String, dynamic>? json = await getJson(LanguageStorageKeys.littleLightTranslation);
+      if (json == null) return null;
       return Map<String, String>.from(json);
     } catch (e) {
       print("can't parse translations");

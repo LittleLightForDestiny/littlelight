@@ -198,7 +198,15 @@ class LittleLightThemeData {
       cardColor: _cardTheme.color,
       cardTheme: _cardTheme,
       textButtonTheme: TextButtonThemeData(
-          style: ButtonStyle(foregroundColor: MaterialStateColor.resolveWith((states) => primaryLayers.layer3))),
+          style: ButtonStyle(
+        foregroundColor: MaterialStateColor.resolveWith((states) => primaryLayers.layer3),
+      )),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          primary: primaryLayers,
+          onSurface: primaryLayers,
+        ),
+      ),
       textTheme: _textTheme,
       switchTheme: _switchTheme);
 }
