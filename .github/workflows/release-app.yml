@@ -29,11 +29,13 @@ jobs:
       - name: Defines variables according to triggers
         id: variables
         run: |
-          if [ "${{ github.event_name }}" == "release" ] then
-            echo "::set-output name=version::${{ github.event.release.tag_name }}";
+          if [ "${{ github.event_name }}" == "release" ] 
+          then
+            echo "::set-output name=version::${{ github.event.release.tag_name }}"
           fi
-          if [ "${{ github.event_name }}" == "workflow_dispatch" ] then
-            echo "::set-output name=version::${{ github.event.inputs.version }}";
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ] 
+          then
+            echo "::set-output name=version::${{ github.event.inputs.version }}"
           fi
 
       - uses: actions/setup-node@v2
