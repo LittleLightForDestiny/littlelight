@@ -24,7 +24,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: ${{ github.head_ref }}
+          ref: main
 
       - name: Defines variables according to triggers
         id: variables
