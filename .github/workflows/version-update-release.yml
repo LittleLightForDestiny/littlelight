@@ -1,0 +1,27 @@
+name: Version update test script
+
+on:
+  release:
+  
+jobs:
+  version-update:
+    if: github.event.pull_request.head.repo.fork == false
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
+      
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+          cache: 'npm'
+          cache-dependency-path: .github/workflows/scripts/package-lock.json
+      
+      - name: Updates version and changelog
+        run: npm ci
+        working-directory: .github/workflows/scripts/
+
+      - name: Updates version and changelog
+        run: npm run version-update -- --version=${{ github.event.release.tag_name }} --changelog==${{ github.event.release.body }}
+        working-directory: .github/workflows/scripts/
