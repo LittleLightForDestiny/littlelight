@@ -30,12 +30,12 @@ jobs:
         id: variables
         run: |
           if [[ "${{ github.event_name }}" == "release" ]] then
-            echo ::set-output name=version::"${{ github.event.release.tag_name }}";
-            echo ::set-output name=changelog::"${{ github.event.release.body }}";
+          echo ::set-output name=version::"${{ github.event.release.tag_name }}";
+          echo ::set-output name=changelog::"${{ github.event.release.body }}";
           fi
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]] then
-            echo ::set-output name=version::"${{ github.event.inputs.version }}";
-            echo ::set-output name=changelog::"${{ github.event.inputs.changelog }}";
+          echo ::set-output name=version::"${{ github.event.inputs.version }}";
+          echo ::set-output name=changelog::"${{ github.event.inputs.changelog }}";
           fi
 
       - uses: actions/setup-node@v2
