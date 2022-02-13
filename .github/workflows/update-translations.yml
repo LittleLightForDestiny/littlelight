@@ -1,4 +1,4 @@
-name: Google Play
+name: Update translations
 
 on:
   workflow_call:
