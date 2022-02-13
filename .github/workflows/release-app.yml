@@ -36,7 +36,7 @@ jobs:
             CHANGELOG="${CHANGELOG//$'\n'/'%0A'}"
             CHANGELOG="${CHANGELOG//$'\r'/'%0D'}"
             echo "::set-output name=version::${{ github.event.release.tag_name }}"
-            echo "::set-output name=changelog::${ CHANGELOG }"
+            echo "::set-output name=changelog::${CHANGELOG}"
           fi
           if [ "${{ github.event_name }}" == "workflow_dispatch" ] 
           then
@@ -45,7 +45,7 @@ jobs:
             CHANGELOG="${CHANGELOG//$'\n'/'%0A'}"
             CHANGELOG="${CHANGELOG//$'\r'/'%0D'}"
             echo "::set-output name=version::${{ github.event.inputs.version }}"
-            echo "::set-output name=changelog::${ CHANGELOG }"
+            echo "::set-output name=changelog::${CHANGELOG}"
           fi
 
       - uses: actions/setup-node@v2
