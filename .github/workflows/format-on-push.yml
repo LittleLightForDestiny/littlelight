@@ -12,6 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
+          token: ${{ secrets.BOT_PAT }}
           ref: ${{ github.head_ref }}
 
       - uses: marceloprado/has-changed-path@v1
