@@ -1,1 +1,1 @@
-- Added toggleable sections for item details (yeah, wishlists won't take your entire screen anymore)
+=- Enables mod swapping for weapons and armor
