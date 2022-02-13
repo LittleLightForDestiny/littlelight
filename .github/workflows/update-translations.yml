@@ -35,3 +35,18 @@ jobs:
       - name: Update translations map
         run: npm run import
         working-directory: translations
+
+      - name: Check for modified files
+        id: git-check
+        working-directory: translations
+        run: echo ::set-output name=modified::$(if git diff-index --quiet HEAD --; then echo "false"; else echo "true"; fi)
+
+      - name: Push changes
+        if: steps.git-check.outputs.modified == 'true'
+        working-directory: translations
+        run: |
+          git config --global user.name 'LittleLightBot'
+          git config --global user.email 'littlelight-bot@users.noreply.github.com'
+          git remote set-url origin https://x-access-token:${{ secrets.BOT_PAT }}@github.com/${{ github.repository }}
+          git commit -am "Updating translation maps"
+          git push
