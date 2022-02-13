@@ -29,6 +29,8 @@ jobs:
   version-update:
     if: github.event.pull_request.head.repo.fork == false
     runs-on: ubuntu-latest
+    outputs:
+      track: ${{ steps.variables.track }}
 
     steps:
       - uses: actions/checkout@v2
@@ -100,7 +102,7 @@ jobs:
     uses: ./.github/workflows/publish-google-play.yml
     needs: [version-update]
     with:
-      track: ${{ jobs.version-update.steps.variables.outputs.track }}
+      track: ${{ needs.version-update.outputs.track }}
     secrets:
       FLUTTER_DOTENV: ${{ secrets.FLUTTER_DOTENV }}
       ANDROID_GOOGLE_SERVICES_JSON: ${{ secrets.ANDROID_GOOGLE_SERVICES_JSON }}
