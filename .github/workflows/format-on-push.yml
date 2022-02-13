@@ -50,16 +50,9 @@ jobs:
         if: steps.changed-lib.outputs.changed == 'true'
         run: flutter format --line-length 120 --fix ./lib
 
-      - name: Check for modified files
-        if: steps.changed-lib.outputs.changed == 'true'
-        id: git-check
-        run: echo ::set-output name=modified::$(if git diff-index --quiet HEAD --; then echo "false"; else echo "true"; fi)
-
       - name: Push changes
-        if: steps.git-check.outputs.modified == 'true'
-        run: |
-          git config --global user.name 'LittleLightBot'
-          git config --global user.email 'littlelight-bot@users.noreply.github.com'
-          git remote set-url origin https://x-access-token:${{ secrets.BOT_PAT }}@github.com/${{ github.repository }}
-          git commit -am "Code formatting"
-          git push
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Code formatting
+          commit_user_name: LittleLightBot
+          commit_user_email: LittleLightBot@users.noreply.github.com
