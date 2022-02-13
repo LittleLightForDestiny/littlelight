@@ -119,7 +119,7 @@ jobs:
           bundle install
 
       - name: Release to Google Play (beta)
-        if: steps.variables.outputs.track == "beta"
+        if: steps.variables.outputs.track == 'beta'
         env:
           SUPPLY_PACKAGE_NAME: ${{ secrets.SUPPLY_PACKAGE_NAME }}
           SUPPLY_JSON_KEY_DATA: ${{ secrets.SUPPLY_JSON_KEY_DATA }}
@@ -127,7 +127,7 @@ jobs:
           bundle exec fastlane android beta
 
       - name: Release to Google Play (production)
-        if: steps.variables.outputs.track == "production"
+        if: steps.variables.outputs.track == 'production'
         env:
           SUPPLY_PACKAGE_NAME: ${{ secrets.SUPPLY_PACKAGE_NAME }}
           SUPPLY_JSON_KEY_DATA: ${{ secrets.SUPPLY_JSON_KEY_DATA }}
