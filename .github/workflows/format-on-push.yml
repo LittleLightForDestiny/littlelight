@@ -1,11 +1,10 @@
-name: Format and generate on push
-
+name: Format code on push
 on:
   push:
     branches:
       - main
   workflow_dispatch:
-  
+
 jobs:
   format:
     if: github.event.pull_request.head.repo.fork == false
@@ -24,7 +23,7 @@ jobs:
         id: changed-models
         with:
           paths: lib/models
-      
+
       - name: Setup Flutter
         if: steps.changed-lib.outputs.changed == 'true'
         uses: subosito/flutter-action@v1
@@ -46,18 +45,18 @@ jobs:
       - name: Flutter Build generated models
         if: steps.changed-models.outputs.changed == 'true'
         run: flutter pub run build_runner build --delete-conflicting-outputs
-      
+
       - name: Flutter Format
         if: steps.changed-lib.outputs.changed == 'true'
         run: flutter format --line-length 120 --fix ./lib
-        
+
       - name: Check for modified files
         if: steps.changed-lib.outputs.changed == 'true'
         id: git-check
         run: echo ::set-output name=modified::$(if git diff-index --quiet HEAD --; then echo "false"; else echo "true"; fi)
-      
+
       - name: Push changes
-        if: steps.changed-lib.outputs.changed == 'true'
+        if: steps.git-check.outputs.modified == 'true'
         run: |
           git config --global user.name 'LittleLightBot'
           git config --global user.email 'littlelight-bot@users.noreply.github.com'

@@ -1,4 +1,4 @@
-name: Version update test script
+name: Release App
 
 on:
   release:
@@ -20,6 +20,7 @@ jobs:
   version-update:
     if: github.event.pull_request.head.repo.fork == false
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v2
         with:
@@ -50,3 +51,20 @@ jobs:
       - name: Updates version and changelog
         run: npm run version-update -- --version=${{ env.VERSION }} --changelog=="${{ env.CHANGELOG }}"
         working-directory: .github/workflows/scripts/
+
+      - name: Add changes to commit
+        run: |
+          git add pubspec.yaml
+          git add CHANGELOG.md
+          git add fastlane
+
+      - name: Check for modified files
+        id: git-check
+        run: echo ::set-output name=modified::$(if git diff-index --quiet HEAD --; then echo "false"; else echo "true"; fi)
+
+      - name: Push changes
+        if: steps.git-check.outputs.modified == 'true'
+        run: |
+          git remote set-url origin https://x-access-token:${{ secrets.BOT_PAT }}@github.com/${{ github.repository }}
+          git commit -am "Updating pubspec and changelogs to version ${{env.VERSION}}"
+          git push
