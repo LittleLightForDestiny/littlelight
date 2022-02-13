@@ -2,6 +2,7 @@ name: Version update test script
 
 on:
   release:
+    types: [created]
   
 jobs:
   version-update:
