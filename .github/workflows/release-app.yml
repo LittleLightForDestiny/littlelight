@@ -2,7 +2,7 @@ name: Release App
 
 on:
   release:
-    types: [published, edited]
+    types: [published]
 
   workflow_dispatch:
     inputs:
@@ -65,6 +65,8 @@ jobs:
       - name: Push changes
         if: steps.git-check.outputs.modified == 'true'
         run: |
+          git config --global user.name 'LittleLightBot'
+          git config --global user.email 'littlelight-bot@users.noreply.github.com'
           git remote set-url origin https://x-access-token:${{ secrets.BOT_PAT }}@github.com/${{ github.repository }}
           git commit -am "Updating pubspec and changelogs to version ${{env.VERSION}}"
           git push
