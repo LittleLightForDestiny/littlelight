@@ -73,10 +73,11 @@ async function updatePubspec(versionString, versionNumber) {
 
 /**
  * @param {string} versionNumber
+ * @param {string} versionNumber
  * @param {string} changelog
  * @returns {Promise<void>}
  */
-async function updateChangelogs(versionNumber, changelog) {
+async function updateChangelogs(versionString, versionNumber, changelog) {
   for (let language of androidLanguages) {
     const path = `./fastlane/metadata/android/${language}/changelogs/${versionNumber}.txt`;
     await fs.writeFile(path, changelog);
@@ -86,6 +87,24 @@ async function updateChangelogs(versionNumber, changelog) {
     const path = `./fastlane/metadata/ios/${language}/release_notes.txt`;
     await fs.writeFile(path, changelog);
   }
+
+  let changelogsMD = await fs.readFile('./CHANGELOG.md', 'utf-8');
+  let currentVersionRegexp = RegExp("## \[" + versionString + "\].*?## \[", 's');
+  let hasCurrentVersion = changelogsMD?.match(currentVersionRegexp);
+  let date = new Date();
+  let year = date.getFullYear().toString();
+  let month = (date.getMonth() + 1).toString().padStart(2, '0');
+  let day = (date.getDate()).toString().padStart(2, '0');
+  let currentVersionText = "" +
+    `## [${versionString}] - ${year}-${month}-${day}\n` +
+    `\n` + changelog + `\n\n`;
+
+  if (hasCurrentVersion) {
+    changelogsMD.replace(currentVersionRegexp, `${currentVersionText}## \[`)
+  } else {
+    changelogsMD = currentVersionText + (changelogsMD || '');
+  }
+  await fs.writeFile('./CHANGELOG.md', changelogsMD);
 }
 
 
