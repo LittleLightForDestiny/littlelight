@@ -6,6 +6,23 @@ on:
       track:
         required: true
         type: string
+    secrets:
+      FLUTTER_DOTENV:
+        required: true
+      ANDROID_GOOGLE_SERVICES_JSON:
+        required: true
+      ANDROID_KEYSTORE_BASE64:
+        required: true
+      ANDROID_KEYSTORE_PASSWORD:
+        required: true
+      ANDROID_KEY_PASSWORD:
+        required: true
+      ANDROID_KEY_ALIAS:
+        required: true
+      SUPPLY_PACKAGE_NAME:
+        required: true
+      SUPPLY_JSON_KEY_DATA:
+        required: true
 
   workflow_dispatch:
     inputs:
