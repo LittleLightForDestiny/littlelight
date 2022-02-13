@@ -78,5 +78,5 @@ jobs:
           git config --global user.name 'LittleLightBot'
           git config --global user.email 'littlelight-bot@users.noreply.github.com'
           git remote set-url origin https://x-access-token:${{ secrets.BOT_PAT }}@github.com/${{ github.repository }}
-          git commit -am "Updating pubspec and changelogs to version ${{variables.version}}"
+          git commit -am "Updating pubspec and changelogs to version ${{steps.variables.outputs.version}}"
           git push
