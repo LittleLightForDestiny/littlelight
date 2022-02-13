@@ -100,7 +100,7 @@ jobs:
     uses: ./.github/workflows/publish-google-play.yml
     needs: [version-update]
     with:
-      track: ${{ steps.variables.outputs.track }}
+      track: ${{ jobs.version-update.steps.variables.outputs.track }}
     secrets:
       FLUTTER_DOTENV: ${{ secrets.FLUTTER_DOTENV }}
       ANDROID_GOOGLE_SERVICES_JSON: ${{ secrets.ANDROID_GOOGLE_SERVICES_JSON }}
