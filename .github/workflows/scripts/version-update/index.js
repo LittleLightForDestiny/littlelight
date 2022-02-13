@@ -88,8 +88,11 @@ async function updateChangelogs(versionString, versionNumber, changelog) {
     await fs.writeFile(path, changelog);
   }
 
-  let changelogsMD = await fs.readFile('./CHANGELOG.md', 'utf-8');
-  let currentVersionRegexp = RegExp("## \[" + versionString + "\].*?## \[", 's');
+  let changelogsMD = "";
+  try {
+    changelogsMD = await fs.readFile('./CHANGELOG.md', 'utf-8');
+  } catch (e) { }
+  let currentVersionRegexp = RegExp("## \\[" + versionString.replace('.', '\\.') + "\\].*?## \\[", 's');
   let hasCurrentVersion = changelogsMD?.match(currentVersionRegexp);
   let date = new Date();
   let year = date.getFullYear().toString();
@@ -100,7 +103,7 @@ async function updateChangelogs(versionString, versionNumber, changelog) {
     `\n` + changelog + `\n\n`;
 
   if (hasCurrentVersion) {
-    changelogsMD.replace(currentVersionRegexp, `${currentVersionText}## \[`)
+    changelogsMD = changelogsMD.replace(currentVersionRegexp, `${currentVersionText}## \[`)
   } else {
     changelogsMD = currentVersionText + (changelogsMD || '');
   }
@@ -113,7 +116,7 @@ async function main() {
   const versionNumber = getVersionNumber(version);
   const changelog = getChangelog();
   await updatePubspec(version, versionNumber);
-  await updateChangelogs(versionNumber, changelog);
+  await updateChangelogs(version, versionNumber, changelog);
 }
 
 main();
