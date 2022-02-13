@@ -98,7 +98,7 @@ jobs:
           git push
 
   publish-google-play:
-    uses: ./.github/workflows/workflow-2.yml
+    uses: ./.github/workflows/publish-google-play.yml
     needs: [version-update]
     with:
       track: ${{ steps.variables.outputs.version }}
