@@ -21,6 +21,7 @@ jobs:
         with:
           path: translations
           repository: LittleLightForDestiny/LittleLightTranslations
+          token: ${{ secrets.BOT_PAT }}
 
       - uses: actions/setup-node@v2
         with:
@@ -36,17 +37,10 @@ jobs:
         run: npm run import
         working-directory: translations
 
-      - name: Check for modified files
-        id: git-check
-        working-directory: translations
-        run: echo ::set-output name=modified::$(if git diff-index --quiet HEAD --; then echo "false"; else echo "true"; fi)
-
       - name: Push changes
-        if: steps.git-check.outputs.modified == 'true'
-        working-directory: translations
-        run: |
-          git config --global user.name 'LittleLightBot'
-          git config --global user.email 'LittleLightBot@users.noreply.github.com'
-          git remote set-url origin https://x-access-token:${{ secrets.BOT_PAT }}@github.com/LittleLightForDestiny/LittleLightTranslations
-          git commit -am "Updating translation maps"
-          git push
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          repository: translations
+          commit_message: Updating translation maps
+          commit_user_name: LittleLightBot
+          commit_user_email: LittleLightBot@users.noreply.github.com
