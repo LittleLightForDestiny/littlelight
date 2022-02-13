@@ -47,6 +47,6 @@ jobs:
         run: |
           git config --global user.name 'LittleLightBot'
           git config --global user.email 'littlelight-bot@users.noreply.github.com'
-          git remote set-url origin https://x-access-token:${{ secrets.BOT_PAT }}@github.com/${{ github.repository }}
+          git remote set-url origin https://x-access-token:${{ secrets.BOT_PAT }}@github.com/LittleLightForDestiny/LittleLightTranslations
           git commit -am "Updating translation maps"
           git push
