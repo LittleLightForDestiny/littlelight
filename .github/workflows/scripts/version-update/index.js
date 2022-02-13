@@ -86,7 +86,6 @@ async function updateChangelogs(versionNumber, changelog) {
     const path = `./fastlane/metadata/ios/${language}/release_notes.txt`;
     await fs.writeFile(path, changelog);
   }
-
 }
 
 
@@ -95,8 +94,7 @@ async function main() {
   const versionNumber = getVersionNumber(version);
   const changelog = getChangelog();
   await updatePubspec(version, versionNumber);
-
-
+  await updateChangelogs(versionNumber, changelog);
 }
 
 main();
