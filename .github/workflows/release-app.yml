@@ -33,6 +33,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
+          token: ${{ secrets.BOT_PAT }}
           ref: main
 
       - name: Defines variables according to triggers
@@ -89,19 +90,17 @@ jobs:
         run: echo ::set-output name=modified::$(if git diff-index --quiet HEAD --; then echo "false"; else echo "true"; fi)
 
       - name: Push changes
-        if: steps.git-check.outputs.modified == 'true'
-        run: |
-          git config --global user.name 'LittleLightBot'
-          git config --global user.email 'littlelight-bot@users.noreply.github.com'
-          git remote set-url origin https://x-access-token:${{ secrets.BOT_PAT }}@github.com/${{ github.repository }}
-          git commit -am "Updating pubspec and changelogs to version ${{steps.variables.outputs.version}}"
-          git push
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Updating pubspec and changelogs to version ${{steps.variables.outputs.version}}
+          commit_user_name: LittleLightBot
+          commit_user_email: LittleLightBot@users.noreply.github.com
 
   publish-google-play:
     uses: ./.github/workflows/publish-google-play.yml
     needs: [version-update]
     with:
-      track: ${{ steps.variables.outputs.version }}
+      track: ${{ steps.variables.outputs.track }}
     secrets:
       FLUTTER_DOTENV: ${{ secrets.FLUTTER_DOTENV }}
       ANDROID_GOOGLE_SERVICES_JSON: ${{ secrets.ANDROID_GOOGLE_SERVICES_JSON }}
@@ -111,3 +110,30 @@ jobs:
       ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
       SUPPLY_PACKAGE_NAME: ${{ secrets.SUPPLY_PACKAGE_NAME }}
       SUPPLY_JSON_KEY_DATA: ${{ secrets.SUPPLY_JSON_KEY_DATA }}
+
+  # publish-ios:
+  #   uses: ./.github/workflows/publish-ios.yml
+  #   needs: [version-update]
+  #   with:
+  #     track: ${{ steps.variables.outputs.track }}
+  #   secrets:
+  #     MATCH_GIT_API_AUTH: secrets.MATCH_GIT_API_AUTH
+  #     FLUTTER_DOTENV: secrets.FLUTTER_DOTENV
+  #     IOS_GOOGLE_SERVICE_INFO_PLIST: secrets.IOS_GOOGLE_SERVICE_INFO_PLIST
+  #     APPSTORE_CONNECT_KEY_BASE64: secrets.APPSTORE_CONNECT_KEY_BASE64
+  #     APPSTORE_CONNECT_KEY_ID: secrets.APPSTORE_CONNECT_KEY_ID
+  #     APPSTORE_CONNECT_ISSUER_ID: secrets.APPSTORE_CONNECT_ISSUER_ID
+  #     APPLE_TEAM_ID: secrets.APPLE_TEAM_ID
+  #     APPLE_APP_IDENTIFIER: secrets.APPLE_APP_IDENTIFIER
+  #     FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD
+  #     MATCH_GIT_URL: secrets.MATCH_GIT_URL
+  #     MATCH_PASSWORD: secrets.MATCH_PASSWORD
+  #     APPLE_USERNAME: secrets.APPLE_USERNAME
+  #     MATCH_KEYCHAIN_NAME: secrets.MATCH_KEYCHAIN_NAME
+  #     MATCH_KEYCHAIN_PASSWORD: secrets.MATCH_KEYCHAIN_PASSWORD
+
+  update-translations:
+    uses: ./.github/workflows/update-translations.yml
+    needs: [version-update]
+    secrets:
+      BOT_PAT: ${{ secrets.BOT_PAT }}
