@@ -2,6 +2,9 @@ name: Update translations
 
 on:
   workflow_call:
+    secrets:
+      BOT_PAT:
+        required: true
   workflow_dispatch:
 
 jobs:
