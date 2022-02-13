@@ -38,6 +38,15 @@ function getVersionString() {
 }
 
 /**
+ * @returns {string}
+ */
+function getChangelog() {
+  let changelog = getParams().changelog;
+  return changelog;
+}
+
+
+/**
  * @param {string} versionNumber
  * @returns {string}
  */
@@ -67,6 +76,7 @@ async function main() {
   const version = getVersionString();
   const versionNumber = getVersionNumber(version);
   await updatePubspec(version, versionNumber);
+  console.log(changelog);
 }
 
 main();
