@@ -33,5 +33,5 @@ jobs:
         working-directory: translations
 
       - name: Update translations map
-        run: npm start
+        run: npm run import
         working-directory: translations
