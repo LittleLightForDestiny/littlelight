@@ -2,10 +2,6 @@ name: Publish to iOS App Store
 
 on:
   workflow_call:
-    inputs:
-      track:
-        required: true
-        type: string
 
   workflow_dispatch:
     inputs:
@@ -30,13 +26,18 @@ jobs:
       - name: Defines variables according to triggers
         id: variables
         run: |
-          if [ "${{ github.event_name }}" == "workflow_call" ] 
+          if [ "${{ github.event_name }}" == "release" ] 
           then
-            echo "::set-output name=track::${{ github.event.inputs.track }}"
+            if [ "${{ github.event.release.prerelease }}" == true ]
+            then
+              echo "::set-output name=track:beta"
+            else
+              echo "::set-output name=track:production"
+            fi
           fi
           if [ "${{ github.event_name }}" == "workflow_dispatch" ] 
           then
-            echo "::set-output name=track::${{ inputs.track }}"
+            echo "::set-output name=track::${{ github.event.inputs.track }}"
           fi
 
       - name: Config GIT API Keys
