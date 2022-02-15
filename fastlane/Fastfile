@@ -102,6 +102,7 @@ platform :ios do
       precheck_include_in_app_purchases: false,
       reject_if_possible: true,
       automatic_release: false,
+      submit_for_review: true,
       metadata_path: "fastlane/metadata/ios",
       submission_information:{
         export_compliance_uses_encryption: false,
@@ -122,6 +123,7 @@ platform :ios do
       precheck_include_in_app_purchases: false,
       reject_if_possible: true,
       automatic_release: true,
+      submit_for_review: true,
       metadata_path: "fastlane/metadata/ios",
       submission_information:{
         export_compliance_uses_encryption: false,
