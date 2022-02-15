@@ -17,6 +17,7 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:get_it/get_it.dart';
+import 'package:little_light/models/bungie_api.exception.dart';
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
@@ -45,8 +46,8 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
     try {
       await _transfer(item, sourceCharacterId, destination, destinationCharacterId: destinationCharacterId);
     } catch (e) {
-      notifications
-          .push(NotificationEvent(NotificationType.transferError, item: item, characterId: destinationCharacterId));
+      final notification = ErrorNotificationEvent(ErrorNotificationType.genericTransferError);
+      notifications.push(notification);
       await Future.delayed(Duration(seconds: 3));
     }
     profile.pauseAutomaticUpdater = false;
@@ -66,9 +67,18 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
           .push(NotificationEvent(NotificationType.requestedEquip, item: item, characterId: destinationCharacterId));
 
       await _equip(item, destinationCharacterId);
+    } on TransferError catch (e) {
+      if (e.platformError == PlatformErrorCodes.DestinyCannotPerformActionAtThisLocation) {
+        notifications.push(ErrorNotificationEvent(ErrorNotificationType.onCombatZoneEquipError,
+            item: item, characterId: destinationCharacterId));
+        await Future.delayed(Duration(seconds: 3));
+      } else {
+        rethrow;
+      }
     } catch (e) {
-      notifications
-          .push(NotificationEvent(NotificationType.equipError, item: item, characterId: destinationCharacterId));
+      notifications.push(ErrorNotificationEvent(ErrorNotificationType.genericEquipError,
+          item: item, characterId: destinationCharacterId));
+
       await Future.delayed(Duration(seconds: 2));
     }
 
@@ -77,11 +87,12 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
     await profile.fetchProfileData();
   }
 
-  unequip(DestinyItemComponent item, String characterId) async {
+  Future<void> unequip(DestinyItemComponent item, String characterId) async {
     await _unequip(item, characterId);
   }
 
-  transferMultiple(List<ItemWithOwner> itemStates, ItemDestination destination, String destinationCharacterId,
+  Future<void> transferMultiple(
+      List<ItemWithOwner> itemStates, ItemDestination destination, String destinationCharacterId,
       [bool skipUpdate = false]) async {
     profile.pauseAutomaticUpdater = true;
     List<String> idsToAvoid =
@@ -104,8 +115,7 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
         await _transfer(item.item, ownerId, destination,
             destinationCharacterId: destinationCharacterId, idsToAvoid: idsToAvoid, hashesToAvoid: hashesToAvoid);
       } catch (e) {
-        notifications.push(
-            NotificationEvent(NotificationType.transferError, item: item.item, characterId: destinationCharacterId));
+        notifications.push(ErrorNotificationEvent(ErrorNotificationType.genericTransferError));
         await Future.delayed(Duration(seconds: 3));
       }
     }
@@ -116,7 +126,11 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
     }
   }
 
-  equipMultiple(List<ItemWithOwner> itemStates, String destinationCharacterId) async {
+  Future<void> equipMultiple(List<ItemWithOwner> itemStates, String destinationCharacterId) async {
+    if (itemStates.length == 1) {
+      equip(itemStates[0].item, itemStates[0].ownerId, destinationCharacterId);
+      return;
+    }
     profile.pauseAutomaticUpdater = true;
     DestinyCharacterComponent character = profile.getCharacter(destinationCharacterId);
     List<ItemWithOwner> itemsToTransfer = itemStates.where((i) {
@@ -138,11 +152,14 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
       ocuppiedBuckets.add(def?.inventory?.bucketTypeHash);
       return true;
     }).toList();
-    await transferMultiple(itemsToTransfer, ItemDestination.Character, destinationCharacterId, true);
+    try {
+      await transferMultiple(itemsToTransfer, ItemDestination.Character, destinationCharacterId, true);
+    } catch (e) {}
 
     notifications.push(NotificationEvent(NotificationType.requestedEquip, characterId: destinationCharacterId));
-
-    await _equipMultiple(itemsToEquip.map((i) => i.item).toList(), destinationCharacterId);
+    try {
+      await _equipMultiple(itemsToEquip.map((i) => i.item).toList(), destinationCharacterId);
+    } catch (e) {}
 
     await Future.delayed(Duration(seconds: 1));
     await profile.fetchProfileData();
@@ -248,7 +265,7 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
     print("vault = ${profileInventory.length}");
   }
 
-  Future<dynamic> _transfer(DestinyItemComponent item, String sourceCharacterId, ItemDestination destination,
+  Future<void> _transfer(DestinyItemComponent item, String sourceCharacterId, ItemDestination destination,
       {String destinationCharacterId,
       List<String> idsToAvoid = const [],
       List<int> hashesToAvoid = const [],
@@ -281,7 +298,8 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
         print("Coudn't pull from postmaster: $e");
       }
       if (result != 0) {
-        throw TransferError(TransferErrorType.cantPullFromPostmaster, item, destination, sourceCharacterId);
+        throw TransferError(TransferErrorType.cantPullFromPostmaster,
+            item: item, destination: destination, characterId: sourceCharacterId);
       }
       var destinationBucketDef =
           await manifest.getDefinition<DestinyInventoryBucketDefinition>(def.inventory.bucketTypeHash);
@@ -398,8 +416,14 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
     }
     List<DestinyItemComponent> equipment = profile.getCharacterEquipment(characterId);
     DestinyItemComponent currentlyEquipped = equipment.firstWhere((i) => i.bucketHash == item.bucketHash);
-    int result = await bungieAPI.equipItem(item.itemInstanceId, characterId);
-    if (result != 0) {
+    try {
+      int result = await bungieAPI.equipItem(item.itemInstanceId, characterId);
+      if (result != 0) {
+        throw TransferError(TransferErrorType.cantEquip);
+      }
+    } on BungieApiException catch (e) {
+      throw TransferError(TransferErrorType.cantEquip, platformError: e.errorCode);
+    } catch (e) {
       throw TransferError(TransferErrorType.cantEquip);
     }
     List<DestinyItemComponent> inventory = profile.getCharacterInventory(characterId);
@@ -451,7 +475,7 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
       DestinyItemInstanceComponent previouslyEquippedInstance =
           profile.getInstanceInfo(previouslyEquippedItem.itemInstanceId);
       if (![PlatformErrorCodes.Success, PlatformErrorCodes.None].contains(result.equipStatus)) {
-        throw TransferError(TransferErrorType.cantEquip);
+        throw TransferError(TransferErrorType.cantEquip, platformError: result.equipStatus);
       }
       previouslyEquippedInstance.isEquipped = false;
       charEquipment.removeWhere((item) => item.itemInstanceId == previouslyEquippedItem.itemInstanceId);

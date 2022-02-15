@@ -409,8 +409,8 @@ class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, 
       child: ElevatedButton(
           style: ElevatedButton.styleFrom(
             primary: selected
-                ? Theme.of(context).toggleButtonsTheme.selectedColor
-                : Theme.of(context).toggleButtonsTheme.color,
+                ? LittleLightTheme.of(context).primaryLayers
+                : LittleLightTheme.of(context).surfaceLayers.layer2,
             padding: EdgeInsets.all(0),
           ),
           child: Icon(direction > 0 ? FontAwesomeIcons.chevronUp : FontAwesomeIcons.chevronDown, size: 14),

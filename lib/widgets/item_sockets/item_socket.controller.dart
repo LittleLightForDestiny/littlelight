@@ -2,6 +2,7 @@
 
 import 'package:bungie_api/enums/destiny_energy_type.dart';
 import 'package:bungie_api/enums/socket_plug_sources.dart';
+import 'package:bungie_api/exceptions.dart';
 import 'package:bungie_api/models/destiny_energy_capacity_entry.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
@@ -10,11 +11,11 @@ import 'package:bungie_api/models/destiny_item_socket_category_definition.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_plug_set_definition.dart';
 import 'package:flutter/widgets.dart';
+import 'package:little_light/models/bungie_api.exception.dart';
+import 'package:little_light/models/character_sort_parameter.dart';
 import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/services/notification/events/notification.event.dart';
-import 'package:little_light/services/notification/events/notification_type.dart';
-import 'package:little_light/services/notification/notification.consumer.dart';
+import 'package:little_light/services/notification/notification.package.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 
@@ -170,14 +171,28 @@ class ItemSocketController extends ChangeNotifier
   }
 
   void applySocket(int socketIndex, int plugHash) async {
-    String characterID = profile.getCharacters().first.characterId;
+    String characterID = profile.getItemOwner(item.itemInstanceId) ??
+        profile.getCharacters(CharacterSortParameter(type: CharacterSortParameterType.LastPlayed)).last.characterId;
     notifications.push(NotificationEvent(NotificationType.requestApplyPlug, item: this.item, plugHash: plugHash));
     _socketBusy[socketIndex] = true;
     this.notifyListeners();
     try {
       await bungieAPI.applySocket(this.item.itemInstanceId, plugHash, socketIndex, characterID);
       socketStates[socketIndex].plugHash = plugHash;
-    } catch (e) {}
+    } on BungieApiException catch (e) {
+      if ([
+        PlatformErrorCodes.DestinyCharacterNotInTower,
+        PlatformErrorCodes.DestinyCannotPerformActionAtThisLocation,
+      ].contains(e.errorCode)) {
+        notifications.push(ErrorNotificationEvent(ErrorNotificationType.onCombatZoneApplyModError, item: this.item));
+        await Future.delayed(Duration(seconds: 3));
+      } else {
+        rethrow;
+      }
+    } catch (e) {
+      notifications.push(ErrorNotificationEvent(ErrorNotificationType.genericApplyModError, item: this.item));
+      await Future.delayed(Duration(seconds: 3));
+    }
     _socketBusy[socketIndex] = false;
 
     this.notifyListeners();

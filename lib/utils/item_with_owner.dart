@@ -5,13 +5,13 @@ import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enu
 class ItemWithOwner {
   static const OWNER_VAULT = "vault";
   static const OWNER_PROFILE = "profile";
-  final DestinyItemComponent item;
+  final DestinyItemComponent? item;
   final String? _ownerId;
   String get ownerId {
     if (_ownerId != null) {
       return _ownerId!;
     }
-    if (item.bucketHash == InventoryBucket.general) return OWNER_VAULT;
+    if (item?.bucketHash == InventoryBucket.general) return OWNER_VAULT;
     return OWNER_PROFILE;
   }
 
