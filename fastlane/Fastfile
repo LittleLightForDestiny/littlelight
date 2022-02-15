@@ -21,7 +21,7 @@ platform :android do
   desc "Submit a new Beta Build to Crashlytics Beta"
   lane :beta do
     upload_to_play_store(
-      aab:'./build/app/outputs/bundle/release/app-release.aab',
+      aab: './build/app/outputs/bundle/release/app-release.aab',
       skip_upload_screenshots: true,
       skip_upload_images: true,
       skip_upload_metadata: true,
@@ -32,7 +32,7 @@ platform :android do
   desc "Deploy a new version to the Google Play"
   lane :deploy do
     upload_to_play_store(
-      aab:'./build/app/outputs/bundle/release/app-release.aab',
+      aab: './build/app/outputs/bundle/release/app-release.aab',
       skip_upload_screenshots: true,
       skip_upload_images: true,
       skip_upload_metadata: true,
@@ -95,7 +95,7 @@ platform :ios do
       skip_screenshots: true,
       skip_metadata: true,
       force: true,
-      precheck_include_in_app_purchases: false
+      precheck_include_in_app_purchases: false,
       reject_if_possible: true,
       automatic_release: false,
       metadata_path: "fastlane/metadata/ios",
@@ -115,7 +115,7 @@ platform :ios do
       skip_screenshots: true,
       skip_metadata: true,
       force: true,
-      precheck_include_in_app_purchases: false
+      precheck_include_in_app_purchases: false,
       reject_if_possible: true,
       automatic_release: true,
       metadata_path: "fastlane/metadata/ios",
