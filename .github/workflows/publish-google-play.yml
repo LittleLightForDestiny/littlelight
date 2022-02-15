@@ -50,9 +50,9 @@ jobs:
           then
             if [ "${{ github.event.release.prerelease }}" == true ]
             then
-              echo "::set-output name=track:beta"
+              echo "::set-output name=track::beta"
             else
-              echo "::set-output name=track:production"
+              echo "::set-output name=track::production"
             fi
           fi
           if [ "${{ github.event_name }}" == "workflow_dispatch" ] 
