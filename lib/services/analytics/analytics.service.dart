@@ -28,7 +28,13 @@ class AnalyticsService {
     }
   }
 
-  void registerNonFatal(e, StackTrace? stackTrace) {
+  void registerNonFatal(e, StackTrace? stackTrace, {Map<String, String>? additionalInfo}) {
+    if (additionalInfo != null) {
+      for (final key in additionalInfo.keys) {
+        FirebaseCrashlytics.instance.log("$key : ${additionalInfo[key]}");
+      }
+    }
+
     FirebaseCrashlytics.instance.recordError(e, stackTrace);
   }
 
