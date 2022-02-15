@@ -49,12 +49,6 @@ jobs:
             CHANGELOG="${CHANGELOG//$'\r'/'%0D'}"
             echo "::set-output name=version::${{ github.event.release.tag_name }}"
             echo "::set-output name=changelog::${CHANGELOG}"
-            if [ "${{ github.event.release.prerelease }}" == true ]
-            then
-              echo "::set-output name=track:beta"
-            else
-              echo "::set-output name=track:production"
-            fi
           fi
           if [ "${{ github.event_name }}" == "workflow_dispatch" ] 
           then
@@ -64,7 +58,6 @@ jobs:
             CHANGELOG="${CHANGELOG//$'\r'/'%0D'}"
             echo "::set-output name=version::${{ github.event.inputs.version }}"
             echo "::set-output name=changelog::${CHANGELOG}"
-            echo "::set-output name=track::${{ github.event.inputs.track }}"
           fi
 
       - uses: actions/setup-node@v2
@@ -101,17 +94,6 @@ jobs:
   publish-google-play:
     uses: ./.github/workflows/publish-google-play.yml
     needs: [version-update]
-    with:
-      track: ${{ needs.version-update.outputs.track }}
-    secrets:
-      FLUTTER_DOTENV: ${{ secrets.FLUTTER_DOTENV }}
-      ANDROID_GOOGLE_SERVICES_JSON: ${{ secrets.ANDROID_GOOGLE_SERVICES_JSON }}
-      ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
-      ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-      ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
-      ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-      SUPPLY_PACKAGE_NAME: ${{ secrets.SUPPLY_PACKAGE_NAME }}
-      SUPPLY_JSON_KEY_DATA: ${{ secrets.SUPPLY_JSON_KEY_DATA }}
 
   # publish-ios:
   #   uses: ./.github/workflows/publish-ios.yml

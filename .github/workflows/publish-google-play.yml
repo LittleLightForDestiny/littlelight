@@ -2,27 +2,6 @@ name: Publish to Google Play
 
 on:
   workflow_call:
-    inputs:
-      track:
-        required: true
-        type: string
-    secrets:
-      FLUTTER_DOTENV:
-        required: true
-      ANDROID_GOOGLE_SERVICES_JSON:
-        required: true
-      ANDROID_KEYSTORE_BASE64:
-        required: true
-      ANDROID_KEYSTORE_PASSWORD:
-        required: true
-      ANDROID_KEY_PASSWORD:
-        required: true
-      ANDROID_KEY_ALIAS:
-        required: true
-      SUPPLY_PACKAGE_NAME:
-        required: true
-      SUPPLY_JSON_KEY_DATA:
-        required: true
 
   workflow_dispatch:
     inputs:
@@ -50,7 +29,15 @@ jobs:
       - name: Defines variables according to triggers
         id: variables
         run: |
-          echo "::set-output name=track::${{ inputs.track }}"
+          if [ "${{ github.event_name }}" == "release" ] 
+          then
+            if [ "${{ github.event.release.prerelease }}" == true ]
+            then
+              echo "::set-output name=track:beta"
+            else
+              echo "::set-output name=track:production"
+            fi
+          fi
           if [ "${{ github.event_name }}" == "workflow_dispatch" ] 
           then
             echo "::set-output name=track::${{ github.event.inputs.track }}"
