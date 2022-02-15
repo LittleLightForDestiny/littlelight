@@ -2,10 +2,6 @@ name: Publish to Google Play
 
 on:
   workflow_call:
-    inputs:
-      track:
-        required: true
-        type: string
     secrets:
       FLUTTER_DOTENV:
         required: true
