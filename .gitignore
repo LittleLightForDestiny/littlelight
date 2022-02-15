@@ -34,6 +34,7 @@ translations
 .pub/
 build/
 **/Flutter/ephemeral
+!pubspec.lock
 
 # Android related
 **/android/**/gradle-wrapper.jar
