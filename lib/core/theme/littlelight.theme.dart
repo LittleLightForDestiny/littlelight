@@ -7,7 +7,8 @@ enum SwatchLayer { Layer0, Layer1, Layer2, Layer3 }
 
 class LayeredSwatch extends Color {
   final Map<SwatchLayer, Color> _swatches;
-  LayeredSwatch(this._swatches) : super(_swatches[SwatchLayer.Layer0]!.value);
+  LayeredSwatch(this._swatches, {SwatchLayer defaultLayer = SwatchLayer.Layer0})
+      : super(_swatches[defaultLayer]!.value);
 
   Color get layer0 => _swatches[SwatchLayer.Layer0] ?? this;
   Color get layer1 => _swatches[SwatchLayer.Layer1] ?? layer0;
@@ -119,7 +120,7 @@ class LittleLightThemeData {
     SwatchLayer.Layer0: Color(0xFF097EEC),
     SwatchLayer.Layer1: Color(0xFF2F97F7),
     SwatchLayer.Layer2: Color(0xFF7ABAF5),
-  });
+  }, defaultLayer: SwatchLayer.Layer1);
 
   final achievementLayers = LayeredSwatch({
     SwatchLayer.Layer0: Color(0xFFFFC107),
@@ -133,18 +134,14 @@ class LittleLightThemeData {
   });
 
   final errorLayers = LayeredSwatch({
-    SwatchLayer.Layer0: Color(0xFFB8023B),
-    SwatchLayer.Layer1: Color(0xFFA30335),
-    SwatchLayer.Layer2: Color(0xFF8E042F),
-    SwatchLayer.Layer3: Color(0xFF630523),
-  });
+    SwatchLayer.Layer0: Color(0xFFA30335),
+    SwatchLayer.Layer1: Color(0xFFB8023B),
+  }, defaultLayer: SwatchLayer.Layer1);
 
   final successLayers = LayeredSwatch({
-    SwatchLayer.Layer0: Color(0xFFB8023B),
-    SwatchLayer.Layer1: Color(0xFFA30335),
-    SwatchLayer.Layer2: Color(0xFF8E042F),
-    SwatchLayer.Layer3: Color(0xFF630523),
-  });
+    SwatchLayer.Layer0: Color(0xFF45B319),
+    SwatchLayer.Layer1: Color(0xFF46E038),
+  }, defaultLayer: SwatchLayer.Layer1);
 
   Color get _background => surfaceLayers.layer0;
   Color get _surface => surfaceLayers.layer1;

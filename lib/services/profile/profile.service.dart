@@ -56,8 +56,7 @@ class ProfileService with UserSettingsConsumer, StorageConsumer, AuthConsumer, B
       }
       return res;
     } catch (e) {
-      print(e);
-      if (!skipUpdate) notifications.push(NotificationEvent(NotificationType.updateError));
+      if (!skipUpdate) ErrorNotificationEvent(ErrorNotificationType.genericUpdateError);
       if (!skipUpdate) await Future.delayed(Duration(seconds: 2));
       if (!skipUpdate) notifications.push(NotificationEvent(NotificationType.receivedUpdate));
     }

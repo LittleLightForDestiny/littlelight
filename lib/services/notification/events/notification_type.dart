@@ -8,7 +8,4 @@ enum NotificationType {
   receivedUpdate,
   requestApplyPlug,
   itemStateUpdate,
-  transferError,
-  equipError,
-  updateError
 }

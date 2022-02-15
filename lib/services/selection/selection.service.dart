@@ -39,9 +39,9 @@ class SelectionService {
 
   isSelected(ItemWithOwner item) {
     return _selectedItems.any((i) =>
-        i.item.itemHash == item.item.itemHash &&
+        i.item?.itemHash == item.item?.itemHash &&
         i.ownerId == item.ownerId &&
-        item.item.itemInstanceId == i.item.itemInstanceId);
+        item.item?.itemInstanceId == i.item?.itemInstanceId);
   }
 
   setItem(ItemWithOwner item) {
@@ -52,10 +52,10 @@ class SelectionService {
 
   addItem(ItemWithOwner item) {
     ItemWithOwner? alreadyAdded = _selectedItems.firstWhereOrNull((i) {
-      if (item.item.itemInstanceId != null) {
-        return i.item.itemInstanceId == item.item.itemInstanceId;
+      if (item.item?.itemInstanceId != null) {
+        return i.item?.itemInstanceId == item.item?.itemInstanceId;
       }
-      return i.item.itemHash == item.item.itemHash && i.ownerId == item.ownerId;
+      return i.item?.itemHash == item.item?.itemHash && i.ownerId == item.ownerId;
     });
     if (alreadyAdded != null) {
       return removeItem(item);
@@ -67,10 +67,10 @@ class SelectionService {
   }
 
   removeItem(ItemWithOwner item) {
-    if (item.item.itemInstanceId != null) {
-      _selectedItems.removeWhere((i) => i.item.itemInstanceId == item.item.itemInstanceId);
+    if (item.item?.itemInstanceId != null) {
+      _selectedItems.removeWhere((i) => i.item?.itemInstanceId == item.item?.itemInstanceId);
     } else {
-      _selectedItems.removeWhere((i) => i.item.itemHash == item.item.itemHash && i.ownerId == item.ownerId);
+      _selectedItems.removeWhere((i) => i.item?.itemHash == item.item?.itemHash && i.ownerId == item.ownerId);
     }
     if (_selectedItems.length == 0) {
       _multiSelectActivated = false;

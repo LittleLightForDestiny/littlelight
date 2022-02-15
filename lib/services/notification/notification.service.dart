@@ -25,6 +25,7 @@ class NotificationService {
   }
 
   push(NotificationEvent notification) {
+    print(notification);
     _streamController.add(notification);
     latestNotification = notification;
   }
