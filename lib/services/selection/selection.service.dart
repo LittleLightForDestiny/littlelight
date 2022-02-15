@@ -38,10 +38,13 @@ class SelectionService {
   }
 
   isSelected(ItemWithOwner item) {
+    final itemHash = item.item?.itemHash;
+    final itemInstanceId = item.item?.itemInstanceId;
     return _selectedItems.any((i) =>
-        i.item?.itemHash == item.item?.itemHash &&
+        i.item != null &&
+        i.item?.itemHash == itemHash &&
         i.ownerId == item.ownerId &&
-        item.item?.itemInstanceId == i.item?.itemInstanceId);
+        item.item?.itemInstanceId == itemInstanceId);
   }
 
   setItem(ItemWithOwner item) {

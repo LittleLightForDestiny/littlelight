@@ -13,6 +13,7 @@ import 'package:bungie_api/models/destiny_plug_set_definition.dart';
 import 'package:flutter/widgets.dart';
 import 'package:little_light/models/bungie_api.exception.dart';
 import 'package:little_light/models/character_sort_parameter.dart';
+import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/notification/notification.package.dart';
@@ -20,7 +21,7 @@ import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 
 class ItemSocketController extends ChangeNotifier
-    with BungieApiConsumer, ProfileConsumer, ManifestConsumer, NotificationConsumer {
+    with BungieApiConsumer, ProfileConsumer, ManifestConsumer, NotificationConsumer, AnalyticsConsumer {
   final DestinyItemComponent item;
   final DestinyInventoryItemDefinition definition;
   List<DestinyItemSocketState> socketStates;
@@ -179,7 +180,7 @@ class ItemSocketController extends ChangeNotifier
     try {
       await bungieAPI.applySocket(this.item.itemInstanceId, plugHash, socketIndex, characterID);
       socketStates[socketIndex].plugHash = plugHash;
-    } on BungieApiException catch (e) {
+    } on BungieApiException catch (e, stackTrace) {
       if ([
         PlatformErrorCodes.DestinyCharacterNotInTower,
         PlatformErrorCodes.DestinyCannotPerformActionAtThisLocation,
@@ -187,11 +188,18 @@ class ItemSocketController extends ChangeNotifier
         notifications.push(ErrorNotificationEvent(ErrorNotificationType.onCombatZoneApplyModError, item: this.item));
         await Future.delayed(Duration(seconds: 3));
       } else {
+        analytics.registerNonFatal(e, stackTrace, additionalInfo: {
+          "itemHash": "${this.item?.itemHash}",
+          "errorCode": "${e.errorCode}",
+          "plugHash": "$plugHash",
+          "socketIndex": "$socketIndex"
+        });
         rethrow;
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
       notifications.push(ErrorNotificationEvent(ErrorNotificationType.genericApplyModError, item: this.item));
       await Future.delayed(Duration(seconds: 3));
+      analytics.registerNonFatal(e, stackTrace);
     }
     _socketBusy[socketIndex] = false;
 
@@ -200,6 +208,7 @@ class ItemSocketController extends ChangeNotifier
   }
 
   bool isSocketBusy(int socketIndex) {
+    if (socketIndex >= _socketBusy.length) return false;
     return _socketBusy[socketIndex] ?? false;
   }
 
