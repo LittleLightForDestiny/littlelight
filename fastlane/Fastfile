@@ -42,14 +42,14 @@ platform :android do
 end
 
 platform :ios do
-  desc "Push a new release build to the App Store"
-  lane :release do
+
+  desc "Build iOS app for distribution"
+  lane :build do
     api_key = app_store_connect_api_key(
+      in_house:false,
       key_id: ENV["APPSTORE_CONNECT_KEY_ID"],
       issuer_id: ENV["APPSTORE_CONNECT_ISSUER_ID"],
       key_filepath: ENV["APPSTORE_CONNECT_KEY_FILE"],
-      # duration: 1200, # optional (maximum 1200)
-      # in_house: true, # optional but may be required if using match/sigh
     )
     if is_ci
       create_keychain(
@@ -58,6 +58,7 @@ platform :ios do
         default_keychain: false,
         unlock: true,
         timeout: 3600,
+        add_to_search_list: true,
         lock_when_sleeps: false
       )
     end
@@ -81,17 +82,42 @@ platform :ios do
       workspace: "ios/Runner.xcworkspace",
       scheme: "Runner",
       output_directory:"build/ios",
-      output_name: "LittleLight.ipa"
+      output_name: "LittleLight.ipa",
+      export_method: "app-store"
     )
-    upload_to_app_store(
+  end
+
+  desc "Deploy iOS version to app store (manual release)"
+  lane :beta do
+      upload_to_app_store(
       ipa:"build/ios/LittleLight.ipa",
       api_key: api_key,
+      skip_screenshots: true,
+      skip_metadata: true,
       force: true,
-      automatic_release:true,
-      skip_screenshots:true,
+      precheck_include_in_app_purchases: false
       reject_if_possible:true,
-      precheck_include_in_app_purchases:false,
-      submit_for_review:true,
+      automatic_release:false,
+      metadata_path:"fastlane/metadata/ios",
+      submission_information:{
+        export_compliance_uses_encryption:false,
+        export_compliance_encryption_updated:false,
+        add_id_info_uses_idfa:false,
+      }
+    )
+  end
+
+  desc "Deploy iOS version to app store (automatic release)"
+  lane :deploy do
+      upload_to_app_store(
+      ipa:"build/ios/LittleLight.ipa",
+      api_key: api_key,
+      skip_screenshots: true,
+      skip_metadata: true,
+      force: true,
+      precheck_include_in_app_purchases: false
+      reject_if_possible:true,
+      automatic_release:true,
       metadata_path:"fastlane/metadata/ios",
       submission_information:{
         export_compliance_uses_encryption:false,
