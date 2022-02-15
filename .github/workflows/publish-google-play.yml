@@ -50,10 +50,7 @@ jobs:
       - name: Defines variables according to triggers
         id: variables
         run: |
-          if [ "${{ github.event_name }}" == "workflow_call" ] 
-          then
-            echo "::set-output name=track::${{ github.event.inputs.track }}"
-          fi
+          echo "::set-output name=track::${{ inputs.track }}"
           if [ "${{ github.event_name }}" == "workflow_dispatch" ] 
           then
             echo "::set-output name=track::${{ github.event.inputs.track }}"
