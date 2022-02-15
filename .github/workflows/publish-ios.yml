@@ -141,6 +141,8 @@ jobs:
 
       - name: Build iOS via Fastlane
         run: bundle exec fastlane ios build
+        env:
+          APPSTORE_CONNECT_KEY_FILE: ${{ steps.app_store_connect_key.outputs.filePath }}
 
       - name: Upload to App Store (manual release)
         if: steps.variables.outputs.track == 'beta'
