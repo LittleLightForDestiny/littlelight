@@ -1,1 +1,3 @@
-- Enables mod swapping for weapons and armor \n- Improved authentication flow \n- Bug fixes
+- Enables mod swapping for weapons and armor
+- Improved authentication flow
+- Bug fixes
