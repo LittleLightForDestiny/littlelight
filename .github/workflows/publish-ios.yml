@@ -60,9 +60,6 @@ jobs:
       MATCH_KEYCHAIN_PASSWORD: ${{ secrets.MATCH_KEYCHAIN_PASSWORD }}
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
       - name: Defines variables according to triggers
         id: variables
         run: |
@@ -74,11 +71,19 @@ jobs:
             else
               echo "::set-output name=track::production"
             fi
+            echo "::set-output name=head_ref::main"
           fi
+
           if [ "${{ github.event_name }}" == "workflow_dispatch" ] 
           then
             echo "::set-output name=track::${{ github.event.inputs.track }}"
+            echo "::set-output name=head_ref::${{ github.head_ref }}"
           fi
+
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ steps.variables.outputs.head_ref }}
 
       - name: Config GIT API Keys
         run: |
