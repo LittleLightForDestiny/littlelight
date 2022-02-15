@@ -200,6 +200,7 @@ class ItemSocketController extends ChangeNotifier
   }
 
   bool isSocketBusy(int socketIndex) {
+    if (socketIndex >= _socketBusy.length) return false;
     return _socketBusy[socketIndex] ?? false;
   }
 

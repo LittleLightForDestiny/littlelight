@@ -336,7 +336,8 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
   Widget buildApplyButton(BuildContext context) {
     var requirementHash = definition?.plug?.insertionMaterialRequirementHash;
     final isApplied = controller.selectedPlugHash == controller.socketEquippedPlugHash(controller.selectedSocketIndex);
-    if (isApplied) {
+    final canApply = controller.canApplySocket(controller.selectedSocketIndex, controller.selectedPlugHash);
+    if (isApplied || !canApply) {
       return Container();
     }
     final isEnabled = !controller.isSocketBusy(controller.selectedSocketIndex);
