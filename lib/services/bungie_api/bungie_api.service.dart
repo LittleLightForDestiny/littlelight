@@ -220,7 +220,7 @@ class BungieApiService with AuthConsumer, AppConfigConsumer {
       ..socketArrayType = DestinySocketArrayType.Default;
     final reqBody = DestinyInsertPlugsFreeActionRequest()
       ..characterId = characterID
-      ..membershipType = BungieMembershipType.TigerPsn
+      ..membershipType = membershipType
       ..itemId = itemInstanceID
       ..plug = plug;
     final res = await Destiny2.insertSocketPlugFree(Client(token: token), reqBody);
