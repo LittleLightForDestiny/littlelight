@@ -337,7 +337,8 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
     var requirementHash = definition?.plug?.insertionMaterialRequirementHash;
     final isApplied = controller.selectedPlugHash == controller.socketEquippedPlugHash(controller.selectedSocketIndex);
     final canApply = controller.canApplySocket(controller.selectedSocketIndex, controller.selectedPlugHash);
-    if (isApplied || !canApply) {
+
+    if (isApplied || !canApply || item?.itemInstanceId == null) {
       return Container();
     }
     final isEnabled = !controller.isSocketBusy(controller.selectedSocketIndex);

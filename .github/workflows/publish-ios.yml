@@ -160,6 +160,6 @@ jobs:
 
       - name: Release to App Store (automatic release)
         if: steps.variables.outputs.track == 'production'
-        run: bundle exec fastlane ios release
+        run: bundle exec fastlane ios deploy
         env:
           APPSTORE_CONNECT_KEY_FILE: ${{ steps.app_store_connect_key.outputs.filePath }}
