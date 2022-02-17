@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:little_light/services/storage/migrations/migration_v107090.dart';
-import 'package:package_info/package_info.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
@@ -74,6 +74,7 @@ abstract class StorageMigration {
       final directory = await getApplicationSupportDirectory();
       return directory.path;
     } catch (e) {}
+    return null;
   }
 
   Future<String?> getDatabaseRoot() async {
