@@ -157,7 +157,7 @@ class ObjectiveWidgetState extends State<ObjectiveWidget> with LanguageConsumer,
     if (isComplete) return Container();
     return Container(
         margin: EdgeInsets.all(2),
-        color: Theme.of(context).colorScheme.secondaryVariant,
+        color: Theme.of(context).colorScheme.secondaryContainer,
         alignment: Alignment.centerLeft,
         child: FractionallySizedBox(
           widthFactor: max(0.01, min(progress / total, 1)),

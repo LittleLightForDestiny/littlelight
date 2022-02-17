@@ -379,7 +379,7 @@ class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, 
         child: Container(
             color: parameter.active
                 ? Theme.of(context).colorScheme.secondary
-                : Theme.of(context).colorScheme.secondaryVariant,
+                : Theme.of(context).colorScheme.secondaryContainer,
             child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
               buildHandle(context, index),
               Container(width: 8),

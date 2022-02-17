@@ -89,7 +89,7 @@ class ObjectivesScreenState extends State<ObjectivesScreen> with ProfileConsumer
         bottom: 8 + bottomPadding,
         child: Container(
           decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.secondaryVariant, borderRadius: BorderRadius.circular(18)),
+              color: Theme.of(context).colorScheme.secondaryContainer, borderRadius: BorderRadius.circular(18)),
           width: 36,
           height: 36,
           child: RefreshButtonWidget(),

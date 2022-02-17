@@ -56,7 +56,7 @@ class BaseSearchFilterWidgetState<T extends BaseSearchFilterWidget, F extends Ba
         child: Container(
             height: 58,
             margin: EdgeInsets.only(top: 8),
-            color: Theme.of(context).colorScheme.secondaryVariant,
+            color: Theme.of(context).colorScheme.secondaryContainer,
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -74,10 +74,10 @@ class BaseSearchFilterWidgetState<T extends BaseSearchFilterWidget, F extends Ba
   Widget buildExpansionTile(BuildContext context) {
     return Container(
         margin: EdgeInsets.only(top: 8),
-        color: Theme.of(context).colorScheme.secondaryVariant,
+        color: Theme.of(context).colorScheme.secondaryContainer,
         child: Theme(
             data: Theme.of(context).copyWith(
-                dividerColor: Theme.of(context).colorScheme.secondaryVariant,
+                dividerColor: Theme.of(context).colorScheme.secondaryContainer,
                 colorScheme: ColorScheme.fromSwatch().copyWith(secondary: Theme.of(context).colorScheme.onSurface)),
             child: ExpansionTile(
                 trailing: IgnorePointer(
@@ -96,7 +96,7 @@ class BaseSearchFilterWidgetState<T extends BaseSearchFilterWidget, F extends Ba
                 children: [
                   Container(
                       constraints: BoxConstraints(minWidth: double.infinity),
-                      color: Theme.of(context).colorScheme.secondaryVariant,
+                      color: Theme.of(context).colorScheme.secondaryContainer,
                       padding: EdgeInsets.all(4),
                       child: buildButtons(context))
                 ])));

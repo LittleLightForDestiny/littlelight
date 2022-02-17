@@ -20,13 +20,13 @@ class WishlistsData {
 
       case WishlistTag.Controller:
         return BoxDecoration(
-            border: Border.all(color: Theme.of(context).colorScheme.secondaryVariant, width: 1),
+            border: Border.all(color: Theme.of(context).colorScheme.secondaryContainer, width: 1),
             color: Theme.of(context).colorScheme.primary);
 
       case WishlistTag.Mouse:
         return BoxDecoration(
             border: Border.all(color: Theme.of(context).colorScheme.primary, width: 1),
-            color: Theme.of(context).colorScheme.secondaryVariant);
+            color: Theme.of(context).colorScheme.secondaryContainer);
       default:
         return BoxDecoration(color: getBgColor(context, tag));
     }
@@ -46,7 +46,7 @@ class WishlistsData {
         return Colors.black;
 
       case WishlistTag.Controller:
-        return Theme.of(context).colorScheme.secondaryVariant;
+        return Theme.of(context).colorScheme.secondaryContainer;
 
       case WishlistTag.Mouse:
         return Theme.of(context).colorScheme.primary;
@@ -117,7 +117,7 @@ class WishlistsData {
             child: CenterIconWorkaround(
               FontAwesomeIcons.gamepad,
               size: size * .6,
-              color: Theme.of(context).colorScheme.secondaryVariant,
+              color: Theme.of(context).colorScheme.secondaryContainer,
             ));
 
       case WishlistTag.Mouse:

@@ -67,7 +67,7 @@ class RankItemWidgetState<T extends RankItemWidget> extends State<T>
   Widget build(BuildContext context) {
     super.build(context);
     if (definition == null || progression == null) {
-      return Container(height: 200, color: Theme.of(context).colorScheme.secondaryVariant);
+      return Container(height: 200, color: Theme.of(context).colorScheme.secondaryContainer);
     }
     return Stack(children: [
       Positioned.fill(child: Container(alignment: Alignment.center, child: buildRankProgress(context))),

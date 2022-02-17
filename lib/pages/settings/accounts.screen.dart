@@ -59,7 +59,7 @@ class _AccountsScreenState extends State<AccountsScreen> with AuthConsumer {
   Widget buildBottomBar(BuildContext context) {
     var bottomPadding = MediaQuery.of(context).padding.bottom;
     return Container(
-      color: Theme.of(context).colorScheme.secondaryVariant,
+      color: Theme.of(context).colorScheme.secondaryContainer,
       padding: EdgeInsets.all(8).copyWith(bottom: bottomPadding + 8),
       child: ElevatedButton(
           onPressed: () {
@@ -83,7 +83,8 @@ class _AccountsScreenState extends State<AccountsScreen> with AuthConsumer {
     return Container(
         margin: EdgeInsets.symmetric(vertical: 4),
         height: 140,
-        decoration: BoxDecoration(border: Border.all(width: 1, color: Theme.of(context).colorScheme.secondaryVariant)),
+        decoration:
+            BoxDecoration(border: Border.all(width: 1, color: Theme.of(context).colorScheme.secondaryContainer)),
         child: Stack(
           children: <Widget>[
             Positioned.fill(

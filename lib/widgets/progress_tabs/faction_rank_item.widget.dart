@@ -75,7 +75,7 @@ class FactionRankItemWidgetState<T extends FactionRankItemWidget> extends State<
   Widget build(BuildContext context) {
     super.build(context);
     if (definition == null || progression == null || factionDefinition == null) {
-      return Container(height: 200, color: Theme.of(context).colorScheme.secondaryVariant);
+      return Container(height: 200, color: Theme.of(context).colorScheme.secondaryContainer);
     }
     return Container(
         padding: EdgeInsets.all(2),

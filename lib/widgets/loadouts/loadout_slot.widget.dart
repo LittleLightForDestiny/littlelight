@@ -64,7 +64,7 @@ class LoadoutSlotWidget extends StatelessWidget with ProfileConsumer, ManifestCo
     if (!isEquipment && !bucketDefinition.hasTransferDestination) return Container();
     return Container(
         padding: EdgeInsets.all(4),
-        color: Theme.of(context).colorScheme.secondaryVariant,
+        color: Theme.of(context).colorScheme.secondaryContainer,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[buildBlockTitle(context, headerText), buildItemIcons(context, isEquipment: isEquipment)],

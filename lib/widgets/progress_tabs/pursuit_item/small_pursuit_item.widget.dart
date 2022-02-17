@@ -14,7 +14,7 @@ class SmallPursuitItemWidgetState<T extends SmallPursuitItemWidget> extends Purs
   @override
   Widget build(BuildContext context) {
     if (definition == null) {
-      return Container(height: 200, color: Theme.of(context).colorScheme.secondaryVariant);
+      return Container(height: 200, color: Theme.of(context).colorScheme.secondaryContainer);
     }
     return Stack(children: [
       Positioned.fill(child: buildIcon(context)),
