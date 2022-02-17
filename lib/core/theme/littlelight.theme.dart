@@ -145,20 +145,20 @@ class LittleLightThemeData {
 
   Color get _background => surfaceLayers.layer0;
   Color get _surface => surfaceLayers.layer1;
-  Color get _secondaryVariant => surfaceLayers.layer2;
+  Color get _secondaryContainer => surfaceLayers.layer2;
   Color get _secondary => surfaceLayers.layer3;
 
   Color get _primary => primaryLayers.layer0;
-  Color get _primaryVariant => primaryLayers.layer0;
+  Color get _primaryContainer => primaryLayers.layer0;
 
   ColorScheme get colorScheme => ColorScheme(
       brightness: Brightness.dark,
       background: _background,
       surface: _surface,
       primary: _primary,
-      primaryVariant: _primaryVariant,
+      primaryContainer: _primaryContainer,
       secondary: _secondary,
-      secondaryVariant: _secondaryVariant,
+      secondaryContainer: _secondaryContainer,
       onBackground: onSurfaceLayers.layer0,
       onPrimary: onSurfaceLayers.layer0,
       onSecondary: onSurfaceLayers.layer0,

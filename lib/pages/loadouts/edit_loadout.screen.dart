@@ -93,12 +93,12 @@ class EditLoadoutScreenState extends State<EditLoadoutScreen>
 
   @override
   Widget build(BuildContext context) {
-    var screenPadding = MediaQuery.of(context).padding;
+    final screenPadding = MediaQuery.of(context).padding;
+    final creating = (widget.loadout == null || widget.forceCreate);
     return Scaffold(
       backgroundColor: emblemColor,
       appBar: AppBar(
-          title:
-              TranslatedTextWidget((widget.loadout == null || widget.forceCreate) ? "Create Loadout" : "Edit Loadout"),
+          title: creating ? TranslatedTextWidget("Create Loadout") : TranslatedTextWidget("Edit Loadout"),
           flexibleSpace: buildAppBarBackground(context)),
       body: ListView.builder(
           padding:

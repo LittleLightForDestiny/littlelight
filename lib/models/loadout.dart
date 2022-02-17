@@ -50,7 +50,8 @@ class Loadout {
 class LoadoutItem {
   String? itemInstanceId;
   int? itemHash;
-  LoadoutItem({this.itemInstanceId, this.itemHash});
+  Map<int, int>? socketPlugs;
+  LoadoutItem({this.itemInstanceId, this.itemHash, this.socketPlugs});
 
   factory LoadoutItem.fromJson(dynamic json) {
     return _$LoadoutItemFromJson(json);

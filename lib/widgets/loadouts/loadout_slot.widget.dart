@@ -211,6 +211,9 @@ class LoadoutSlotWidget extends StatelessWidget with ProfileConsumer, ManifestCo
       case LoadoutSlotOptionsResponse.Remove:
         onRemove(item, equipped);
         break;
+
+      default:
+        return;
     }
   }
 }
