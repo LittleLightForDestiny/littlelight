@@ -213,7 +213,7 @@ class ItemSocketController extends ChangeNotifier
   }
 
   bool canApplySocket(int socketIndex, int plugHash) {
-    return _plugDefinitions[plugHash].allowActions;
+    return _plugDefinitions[plugHash]?.allowActions ?? false;
   }
 
   Set<int> socketPlugHashes(int socketIndex) {

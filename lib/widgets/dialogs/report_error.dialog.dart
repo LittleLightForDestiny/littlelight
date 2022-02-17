@@ -2,7 +2,7 @@
 
 import 'dart:io';
 
-import 'package:device_info/device_info.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
@@ -109,14 +109,14 @@ class ReportErrorDialog extends LittleLightBaseDialog with AuthConsumer, Analyti
     };
     if (Platform.isAndroid) {
       final deviceInfo = await DeviceInfoPlugin().androidInfo;
-      data["manufacturer"] = deviceInfo.manufacturer;
-      data["model"] = deviceInfo.model;
-      data["androidVersion"] = deviceInfo.version.codename;
+      data["manufacturer"] = deviceInfo.manufacturer ?? "";
+      data["model"] = deviceInfo.model ?? "";
+      data["androidVersion"] = deviceInfo.version.codename ?? "";
     }
     if (Platform.isIOS) {
       final deviceInfo = await DeviceInfoPlugin().iosInfo;
-      data["model"] = deviceInfo.model;
-      data["iosVersion"] = deviceInfo.systemVersion;
+      data["model"] = deviceInfo.model ?? "";
+      data["iosVersion"] = deviceInfo.systemVersion ?? "";
     }
     return data;
   }
