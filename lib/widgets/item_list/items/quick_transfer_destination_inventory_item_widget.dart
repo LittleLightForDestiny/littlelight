@@ -13,7 +13,7 @@ class QuickTransferDestinationItemWidget extends StatelessWidget {
         decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.onSurface.withOpacity(.1),
             border: Border.all(
-              color: Theme.of(context).colorScheme.secondaryVariant,
+              color: Theme.of(context).colorScheme.secondaryContainer,
               width: 2,
             )),
         child: Center(

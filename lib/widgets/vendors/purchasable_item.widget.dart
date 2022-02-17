@@ -413,7 +413,11 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget>
 
   background(BuildContext context) {
     return Positioned(
-        top: 0, left: 0, bottom: 0, right: 0, child: Container(color: Theme.of(context).colorScheme.secondaryVariant));
+        top: 0,
+        left: 0,
+        bottom: 0,
+        right: 0,
+        child: Container(color: Theme.of(context).colorScheme.secondaryContainer));
   }
 
   double get iconSize {

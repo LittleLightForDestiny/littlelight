@@ -75,7 +75,7 @@ class _LanguagesPageState extends State<LanguagesPage> with LanguageConsumer {
   }
 
   Widget buildLanguageItem(BuildContext context, LanguageInfo language) {
-    var color = Theme.of(context).colorScheme.secondaryVariant;
+    var color = Theme.of(context).colorScheme.secondaryContainer;
     if (language.code == currentLanguage) {
       color = Theme.of(context).colorScheme.secondary;
     }

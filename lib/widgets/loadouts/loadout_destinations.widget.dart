@@ -37,7 +37,7 @@ class LoadoutDestinationsWidgetState extends State<LoadoutDestinationsWidget>
   Widget build(BuildContext context) {
     var screenPadding = MediaQuery.of(context).padding;
     return Container(
-        color: Theme.of(context).colorScheme.secondaryVariant,
+        color: Theme.of(context).colorScheme.secondaryContainer,
         padding: EdgeInsets.only(left: max(screenPadding.left, 4), right: max(screenPadding.right, 4)),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           FreeSlotsSliderWidget(

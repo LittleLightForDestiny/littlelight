@@ -34,6 +34,7 @@ extension on ParsedWishlistItem {
         itemPlugs.addAll(build.tags);
       });
     });
+    return this;
   }
 }
 

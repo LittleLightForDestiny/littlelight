@@ -62,7 +62,7 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> with Loado
         margin: EdgeInsets.all(8),
         child: Material(
             elevation: 1,
-            color: Theme.of(context).colorScheme.secondaryVariant,
+            color: Theme.of(context).colorScheme.secondaryContainer,
             child: Column(children: [
               Container(
                 height: kToolbarHeight,
@@ -109,7 +109,7 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> with Loado
 
   Widget buildButtonBar(BuildContext context) {
     return Container(
-        color: Theme.of(context).colorScheme.secondaryVariant,
+        color: Theme.of(context).colorScheme.secondaryContainer,
         padding: EdgeInsets.symmetric(horizontal: 6),
         child: Row(children: [
           Expanded(
@@ -223,7 +223,7 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> with Loado
         .map((child) => FractionallySizedBox(
               widthFactor: 1 / (buckets.length + 1),
               child: Container(
-                  color: Theme.of(context).colorScheme.secondaryVariant,
+                  color: Theme.of(context).colorScheme.secondaryContainer,
                   padding: EdgeInsets.all(4),
                   child: AspectRatio(
                     aspectRatio: 1,

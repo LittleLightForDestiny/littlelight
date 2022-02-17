@@ -50,6 +50,7 @@ abstract class StorageBase<T> {
       final directory = await getApplicationSupportDirectory();
       return directory.path;
     } catch (e) {}
+    return null;
   }
 }
 

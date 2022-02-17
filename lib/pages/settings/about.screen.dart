@@ -279,7 +279,7 @@ class _AboutScreenState extends State<AboutScreen> with StorageConsumer, Languag
         .map((l) => l.name)
         .join("/"));
     return Container(
-        color: Theme.of(context).colorScheme.secondaryVariant,
+        color: Theme.of(context).colorScheme.secondaryContainer,
         padding: EdgeInsets.all(4),
         child: Row(
           children: flags + [Container(width: 4), languageNames],

@@ -204,6 +204,10 @@ class LittleLightThemeData {
           onSurface: primaryLayers,
         ),
       ),
+      toggleButtonsTheme: ToggleButtonsThemeData(
+        selectedColor: primaryLayers.layer1,
+        color: surfaceLayers.layer2,
+      ),
       textTheme: _textTheme,
       switchTheme: _switchTheme);
 }

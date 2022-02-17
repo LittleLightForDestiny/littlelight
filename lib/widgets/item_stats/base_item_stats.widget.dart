@@ -159,6 +159,7 @@ class BaseItemStatsState<T extends BaseItemStatsWidget> extends BaseDestinyItemS
       var selectedPlugHash = socketController.socketSelectedPlugHash(index);
       DestinyInventoryItemDefinition selectedDef = plugDefinitions[selectedPlugHash];
       def?.investmentStats?.forEach((stat) {
+        if (stat.isConditionallyActive) return;
         StatValues values = map[stat.statTypeHash] ?? StatValues();
         if (def.plug?.uiPlugLabel == 'masterwork') {
           if (selectedDef == null) {
@@ -175,6 +176,7 @@ class BaseItemStatsState<T extends BaseItemStatsWidget> extends BaseDestinyItemS
 
       if (selectedDef != null) {
         selectedDef?.investmentStats?.forEach((stat) {
+          if (stat.isConditionallyActive) return;
           StatValues values = map[stat.statTypeHash] ?? StatValues();
           if (selectedDef.plug?.uiPlugLabel == 'masterwork') {
             values.masterwork += stat.value;

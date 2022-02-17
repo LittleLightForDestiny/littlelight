@@ -237,7 +237,7 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget>
       height: 18,
       decoration: BoxDecoration(
         border: Border.all(
-          color: Theme.of(context).colorScheme.primaryVariant,
+          color: Theme.of(context).colorScheme.onPrimary,
           width: 1,
         ),
         borderRadius: BorderRadius.circular(10),

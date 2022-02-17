@@ -110,7 +110,7 @@ class VendorsListItemWidgetState<T extends VendorsListItemWidget> extends State<
   Widget build(BuildContext context) {
     super.build(context);
     if (definition == null) {
-      return Container(height: 200, color: Theme.of(context).colorScheme.secondaryVariant);
+      return Container(height: 200, color: Theme.of(context).colorScheme.secondaryContainer);
     }
     return Stack(children: [
       Container(
