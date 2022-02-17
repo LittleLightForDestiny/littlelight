@@ -92,7 +92,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v1
         with:
-          flutter-version: "2.8.1"
+          flutter-version: "2.10.0"
 
       - name: Create assets/_env
         run: |
@@ -108,6 +108,9 @@ jobs:
           path: ${{ env.FLUTTER_HOME }}/.pub-cache
           key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
           restore-keys: ${{ runner.os }}-pub-
+
+      - name: Delete Podfile.lock
+        run: rm ios/Podfile.lock
 
       - name: Download pub dependencies
         run: flutter pub get
