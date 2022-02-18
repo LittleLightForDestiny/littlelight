@@ -6,6 +6,7 @@ import 'package:bungie_api/enums/destiny_class.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:little_light/models/loadout.dart';
+import 'package:little_light/providers/loadouts/loadout_item_index.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';

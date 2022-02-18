@@ -5,8 +5,8 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/models/loadout.dart';
-import 'package:little_light/pages/loadouts/edit_loadout.screen.dart';
 import 'package:little_light/pages/loadouts/equip_loadout.screen.dart';
+import 'package:little_light/providers/loadouts/loadout_item_index.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/littlelight/loadouts.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
@@ -144,19 +144,20 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> with Loado
                         overflow: TextOverflow.fade,
                         style: TextStyle(fontWeight: FontWeight.bold)),
                     onPressed: () async {
-                      var loadout = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => EditLoadoutScreen(loadout: _loadout),
-                        ),
-                      );
-                      if (loadout != null) {
-                        _loadout = loadout;
-                        await buildItemIndex();
-                        if (widget.onChange != null) {
-                          widget.onChange();
-                        }
-                      }
+                      // TODO: update to use pageroute
+                      // var loadout = await Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //     builder: (context) => EditLoadoutPage(loadout: _loadout),
+                      //   ),
+                      // );
+                      // if (loadout != null) {
+                      //   _loadout = loadout;
+                      //   await buildItemIndex();
+                      //   if (widget.onChange != null) {
+                      //     widget.onChange();
+                      //   }
+                      // }
                     },
                   ))),
           Expanded(

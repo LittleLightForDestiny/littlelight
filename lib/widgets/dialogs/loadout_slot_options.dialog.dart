@@ -84,6 +84,12 @@ class LoadoutSlotOptionsDialog extends LittleLightBaseDialog with ProfileConsume
           },
         ),
         TextButton(
+          child: TranslatedTextWidget("Edit mods", uppercase: true),
+          onPressed: () async {
+            Navigator.of(context).pop(LoadoutSlotOptionsResponse.EditMods);
+          },
+        ),
+        TextButton(
           child: TranslatedTextWidget("Remove", uppercase: true),
           onPressed: () async {
             Navigator.of(context).pop(LoadoutSlotOptionsResponse.Remove);

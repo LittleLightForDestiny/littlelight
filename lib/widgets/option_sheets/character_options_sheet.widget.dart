@@ -13,7 +13,7 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/models/game_data.dart';
 import 'package:little_light/models/loadout.dart';
-import 'package:little_light/pages/loadouts/edit_loadout.screen.dart';
+import 'package:little_light/providers/loadouts/loadout_item_index.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/inventory/inventory.package.dart';
 import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
@@ -21,7 +21,6 @@ import 'package:little_light/services/littlelight/loadouts.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
-import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_sorters/power_level_sorter.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
@@ -250,7 +249,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
           ),
           onTap: () async {
             Navigator.of(context).pop();
-            LoadoutItemIndex loadout = LoadoutItemIndex();
+            LoadoutItemIndex loadout = LoadoutItemIndex(Loadout());
             var equipment = profile.getCharacterEquipment(widget.character.characterId);
             for (var bucket in maxLightLoadout.keys) {
               var item = maxLightLoadout[bucket];
@@ -408,12 +407,13 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
             textAlign: TextAlign.center,
           ),
           onTap: () async {
-            var itemIndex = await createLoadout(true);
-            Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => EditLoadoutScreen(
-                      loadout: itemIndex.loadout,
-                      forceCreate: true,
-                    )));
+            // TODO: update to use pageroute
+            // var itemIndex = await createLoadout(true);
+            // Navigator.of(context).pushReplacement(MaterialPageRoute(
+            //     builder: (context) => EditLoadoutPage(
+            //           loadout: itemIndex.loadout,
+            //           forceCreate: true,
+            //         )));
           },
         )),
         Container(width: 4),
@@ -427,11 +427,12 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
           ),
           onTap: () async {
             var itemIndex = await createLoadout();
-            Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => EditLoadoutScreen(
-                      loadout: itemIndex.loadout,
-                      forceCreate: true,
-                    )));
+            // TODO: update to use pageroute
+            // Navigator.of(context).pushReplacement(MaterialPageRoute(
+            //     builder: (context) => EditLoadoutPage(
+            //           loadout: itemIndex.loadout,
+            //           forceCreate: true,
+            //         )));
           },
         )),
       ]))
@@ -488,7 +489,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
   }
 
   Future<LoadoutItemIndex> createLoadout([includeUnequipped = false]) async {
-    var itemIndex = LoadoutItemIndex();
+    var itemIndex = LoadoutItemIndex(Loadout());
     itemIndex.loadout.emblemHash = widget.character.emblemHash;
     var slots = LoadoutItemIndex.classBucketHashes + LoadoutItemIndex.genericBucketHashes;
     var equipment = profile.getCharacterEquipment(widget.character.characterId);
@@ -532,7 +533,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
   }
 
   randomizeLoadout(List<int> requiredSlots) async {
-    LoadoutItemIndex randomLoadout = LoadoutItemIndex();
+    LoadoutItemIndex randomLoadout = LoadoutItemIndex(Loadout());
     var allItems = profile.getAllItems().where((i) => i.item.itemInstanceId != null).toList();
     Map<int, String> slots = {};
     int exoticSlot;

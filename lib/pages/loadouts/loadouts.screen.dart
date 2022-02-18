@@ -7,11 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/models/loadout.dart';
-import 'package:little_light/pages/loadouts/edit_loadout.screen.dart';
+import 'package:little_light/pages/loadouts/edit_loadout.page.dart';
+import 'package:little_light/providers/loadouts/loadout_item_index.dart';
 import 'package:little_light/services/littlelight/loadouts.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/profile/profile_component_groups.dart';
-import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
@@ -142,7 +142,7 @@ class LoadoutScreenState extends State<LoadoutsScreen> with LoadoutsConsumer, Pr
     var newLoadout = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => EditLoadoutScreen(),
+        builder: (context) => EditLoadoutPage(),
       ),
     );
     if (newLoadout != null) {

@@ -8,11 +8,11 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/pages/item_details/item_details.page.dart';
 import 'package:little_light/pages/item_details/item_details.page_route.dart';
+import 'package:little_light/providers/loadouts/loadout_item_index.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
-import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
@@ -156,7 +156,6 @@ class LoadoutSlotWidget extends StatelessWidget with ProfileConsumer, ManifestCo
             child: InkWell(
               onTap: () {
                 if (item != null) {
-                  // onRemove(item, equipped);
                   openModal(context, item, equipped);
                 } else {
                   onAdd(equipped, classType);
