@@ -101,7 +101,8 @@ jobs:
       - name: Create GoogleService-Info.plist
         uses: timheuer/base64-to-file@v1.0.3
         with:
-          fileName: ios/Runner/GoogleService-Info.plist
+          fileName: GoogleService-Info.plist
+          fileDir: ./ios/Runner/
           encodedString: ${{ secrets.IOS_GOOGLE_SERVICE_INFO_PLIST_BASE64 }}
 
       - name: Cache pub dependencies
