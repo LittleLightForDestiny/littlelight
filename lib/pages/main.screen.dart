@@ -24,13 +24,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class MainScreenState extends State<MainScreen>
-    with
-        WidgetsBindingObserver,
-        AuthConsumer,
-        UserSettingsConsumer,
-        LoadoutsConsumer,
-        ProfileConsumer,
-        ItemNotesConsumer {
+    with AuthConsumer, UserSettingsConsumer, LoadoutsConsumer, ProfileConsumer, ItemNotesConsumer {
   Widget currentScreen;
 
   @override
@@ -44,25 +38,6 @@ class MainScreenState extends State<MainScreen>
     auth.getMembershipData();
     loadoutService.getLoadouts(forceFetch: true);
     itemNotes.getNotes(forceFetch: true);
-    profile.startAutomaticUpdater();
-    WidgetsBinding.instance.addObserver(this);
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) async {
-    switch (state) {
-      case AppLifecycleState.resumed:
-        await profile.fetchProfileData();
-        profile.pauseAutomaticUpdater = false;
-        break;
-
-      case AppLifecycleState.detached:
-      case AppLifecycleState.inactive:
-      case AppLifecycleState.paused:
-        profile.pauseAutomaticUpdater = true;
-        break;
-    }
-    print("state changed: $state");
   }
 
   getInitScreen() async {

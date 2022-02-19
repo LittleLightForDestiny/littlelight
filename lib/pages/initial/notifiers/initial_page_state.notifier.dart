@@ -1,6 +1,7 @@
 //@dart=2.12
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:little_light/core/routes/login_route.dart';
@@ -58,12 +59,15 @@ class InitialPageStateNotifier
   final BuildContext _context;
 
   InitialPageStateNotifier(this._context) {
+    SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle(statusBarColor: Colors.transparent, statusBarBrightness: Brightness.dark));
     _initLoading();
   }
 
   Future<void> _initLoading() async {
     _loading = true;
     notifyListeners();
+    await setupServices();
 
     try {
       await initServices(_context);
@@ -257,7 +261,7 @@ class InitialPageStateNotifier
   }
 
   Future<void> _startApp() async {
-    Navigator.of(_context).pushReplacement(MaterialPageRoute(builder: (context) => MainScreen()));
+    Navigator.of(_context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => MainScreen()), (r) => false);
   }
 
   void clearDataAndRestart() async {

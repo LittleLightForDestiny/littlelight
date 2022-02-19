@@ -8,7 +8,6 @@ import 'package:little_light/core/router/littlelight_router.dart';
 import 'package:little_light/core/theme/littlelight.scroll_behavior.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
-import 'package:little_light/services/setup.dart';
 
 const _router = LittleLightRouter();
 
@@ -20,28 +19,16 @@ class LittleLightApp extends StatefulWidget {
 }
 
 class _LittleLightAppState extends State<LittleLightApp> with AnalyticsConsumer {
-  bool canInit = false;
-
   @override
   void initState() {
     super.initState();
-    asyncInit();
-    SystemChrome.setSystemUIOverlayStyle(
-        SystemUiOverlayStyle(statusBarColor: Colors.transparent, statusBarBrightness: Brightness.dark));
     LittleLightNavigatorKeyContainer.navigatorKey = GlobalKey<NavigatorState>();
-  }
-
-  void asyncInit() async {
-    await setupServices();
-    setState(() {
-      canInit = true;
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (!canInit) return Container();
-    return MaterialApp(
+    return Container(
+        child: MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Little Light',
       navigatorKey: LittleLightNavigatorKeyContainer.navigatorKey,
@@ -70,6 +57,6 @@ class _LittleLightAppState extends State<LittleLightApp> with AnalyticsConsumer 
         const Locale('zh', 'CHT'), // Chinese
         const Locale('zh', 'CHS'), // Chinese
       ],
-    );
+    ));
   }
 }

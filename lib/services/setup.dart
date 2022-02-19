@@ -40,10 +40,16 @@ import 'littlelight/objectives.service.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'manifest/manifest.service.dart';
 
+final getItCoreInstance = GetIt.asNewInstance();
+
+Future<void> setupCoreServices() async {
+  getItCoreInstance.reset();
+  await setupAnalyticsService();
+}
+
 Future<void> setupServices() async {
   await GetIt.I.reset();
   await setupStorageService();
-  await setupAnalyticsService();
   await setupAppConfig();
   await setupAuthService();
   await setupLanguageService();
@@ -82,5 +88,5 @@ initPostLoadingServices(BuildContext context) async {
   final destinySettings = getInjectedDestinySettingsService();
   await destinySettings.init();
   final profile = getInjectedProfileService();
-  await profile.initialLoad();
+  await profile.init();
 }
