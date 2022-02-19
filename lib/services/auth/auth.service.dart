@@ -9,9 +9,8 @@ import 'package:bungie_api/helpers/oauth.dart';
 import 'package:bungie_api/user.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-// ignore: import_of_legacy_library_into_null_safe
-import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:get_it/get_it.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:little_light/services/app_config/app_config.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
 import 'package:little_light/services/language/language.consumer.dart';

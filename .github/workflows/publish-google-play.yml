@@ -118,7 +118,7 @@ jobs:
 
       - name: Download bundle dependencies
         run: |
-          gem install bundler:2.0.2
+          gem install bundler
           bundle config path vendor/bundle
           bundle install
 
