@@ -27,7 +27,7 @@ on:
         required: true
       FLUTTER_DOTENV:
         required: true
-      IOS_GOOGLE_SERVICE_INFO_PLIST:
+      IOS_GOOGLE_SERVICE_INFO_PLIST_BASE64:
         required: true
       APPSTORE_CONNECT_KEY_BASE64:
         required: true
@@ -99,8 +99,10 @@ jobs:
           echo "${{ secrets.FLUTTER_DOTENV }}" > assets/_env
 
       - name: Create GoogleService-Info.plist
-        run: |
-          echo '${{ secrets.IOS_GOOGLE_SERVICE_INFO_PLIST }}' > ios/Runner/GoogleService-Info.plist
+        uses: timheuer/base64-to-file@v1.0.3
+        with:
+          fileName: ios/Runner/GoogleService-Info.plist
+          encodedString: ${{ secrets.IOS_GOOGLE_SERVICE_INFO_PLIST_BASE64 }}
 
       - name: Cache pub dependencies
         uses: actions/cache@v2
