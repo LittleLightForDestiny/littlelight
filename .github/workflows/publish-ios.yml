@@ -99,7 +99,7 @@ jobs:
           echo "${{ secrets.FLUTTER_DOTENV }}" > assets/_env
 
       - name: Create GoogleService-Info.plist
-        uses: timheuer/base64-to-file@v1.0.3
+        uses: timheuer/base64-to-file@v1.1
         with:
           fileName: GoogleService-Info.plist
           fileDir: ./ios/Runner/
@@ -124,7 +124,7 @@ jobs:
 
       - name: Download Appstore Connect key
         id: app_store_connect_key
-        uses: timheuer/base64-to-file@v1.0.3
+        uses: timheuer/base64-to-file@v1.1
         with:
           fileName: appstore_connect_key.p8
           encodedString: ${{ secrets.APPSTORE_CONNECT_KEY_BASE64 }}
