@@ -1,6 +1,7 @@
 //@dart=2.12
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:little_light/services/analytics/analytics.service.dart';
 import 'package:little_light/services/app_config/app_config.consumer.dart';
 import 'package:little_light/services/app_config/app_config.dart';
@@ -89,4 +90,6 @@ initPostLoadingServices(BuildContext context) async {
   await destinySettings.init();
   final profile = getInjectedProfileService();
   await profile.init();
+  final analytics = getInjectedAnalyticsService();
+  analytics.updateCurrentUser();
 }

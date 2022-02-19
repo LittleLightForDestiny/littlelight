@@ -50,11 +50,29 @@ class EquipmentScreenState extends State<EquipmentScreen>
   int currentGroup = DestinyItemCategory.Weapon;
   Map<int, double> scrollPositions = Map();
 
-  // TabController charTabController;
-  // TabController typeTabController;
   StreamSubscription<NotificationEvent> subscription;
 
-  get totalCharacterTabs => (characters?.length ?? 0) + 1;
+  TabController _charTabController;
+  TabController get charTabController {
+    final totalCharacterTabs = (characters?.length ?? 0) + 1;
+    final current = _charTabController;
+    if (current != null && current?.length == totalCharacterTabs) return current;
+    _charTabController = TabController(length: totalCharacterTabs, vsync: this, initialIndex: current?.index ?? 0);
+    return _charTabController;
+  }
+
+  TabController _typeTabController;
+  TabController get typeTabController {
+    final current = _typeTabController;
+    final length = widget.itemTypes.length;
+    if (current != null && current?.length == length) return current;
+    _typeTabController = TabController(
+      initialIndex: current?.index ?? 0,
+      length: length,
+      vsync: this,
+    );
+    return _typeTabController;
+  }
 
   @override
   void initState() {
@@ -85,37 +103,21 @@ class EquipmentScreenState extends State<EquipmentScreen>
   Widget build(BuildContext context) {
     super.build(context);
 
-    final typeTabController = TabController(
-      initialIndex: 0,
-      length: widget.itemTypes.length,
-      vsync: this,
-    );
-    final charTabController = TabController(
-      initialIndex: 0,
-      length: totalCharacterTabs,
-      vsync: this,
-    );
-
     var query = MediaQueryHelper(context);
     if (query.isLandscape || query.tabletOrBigger) {
-      return buildTablet(
-        context,
-        typeTabController,
-        charTabController,
-      );
+      return buildTablet(context);
     }
 
-    return buildPhone(context, typeTabController, charTabController);
+    return buildPhone(context);
   }
 
-  Widget buildTablet(BuildContext context, TabController typeTabController, TabController charTabController) {
+  Widget buildTablet(BuildContext context) {
     EdgeInsets screenPadding = MediaQuery.of(context).padding;
     return Material(
       child: Stack(
         children: <Widget>[
-          buildBackground(context, charTabController),
-          Positioned(
-              top: 0, left: 0, right: 0, bottom: 0, child: buildTabletCharacterTabView(context, charTabController)),
+          buildBackground(context),
+          Positioned(top: 0, left: 0, right: 0, bottom: 0, child: buildTabletCharacterTabView(context)),
           Positioned(
             top: screenPadding.top,
             width: kToolbarHeight,
@@ -131,7 +133,7 @@ class EquipmentScreenState extends State<EquipmentScreen>
           Positioned(
               top: MediaQuery.of(context).padding.top + kToolbarHeight - 52,
               right: 8,
-              child: buildCharacterMenu(context, typeTabController, charTabController)),
+              child: buildCharacterMenu(context)),
           InventoryNotificationWidget(
               notificationMargin: EdgeInsets.only(right: 44), barHeight: 0, key: Key('inventory_notification_widget')),
           Positioned(
@@ -151,20 +153,15 @@ class EquipmentScreenState extends State<EquipmentScreen>
     );
   }
 
-  Widget buildPhone(BuildContext context, TabController typeTabController, TabController charTabController) {
+  Widget buildPhone(BuildContext context) {
     EdgeInsets screenPadding = MediaQuery.of(context).padding;
     var topOffset = screenPadding.top + kToolbarHeight;
     return Material(
       child: Stack(
         children: <Widget>[
-          buildBackground(context, charTabController),
-          buildItemTypeTabBarView(context, typeTabController, charTabController),
-          Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              height: topOffset + 16,
-              child: buildCharacterHeaderTabView(context, charTabController)),
+          buildBackground(context),
+          buildItemTypeTabBarView(context),
+          Positioned(top: 0, left: 0, right: 0, height: topOffset + 16, child: buildCharacterHeaderTabView(context)),
           Positioned(
             top: screenPadding.top,
             width: kToolbarHeight,
@@ -180,7 +177,7 @@ class EquipmentScreenState extends State<EquipmentScreen>
           Positioned(
               top: MediaQuery.of(context).padding.top + kToolbarHeight - 52,
               right: 8,
-              child: buildCharacterMenu(context, typeTabController, charTabController)),
+              child: buildCharacterMenu(context)),
           ItemTypeMenuWidget(widget.itemTypes, controller: typeTabController),
           InventoryNotificationWidget(key: Key('inventory_notification_widget')),
           Positioned(bottom: screenPadding.bottom, left: 0, right: 0, child: SelectedItemsWidget()),
@@ -189,7 +186,7 @@ class EquipmentScreenState extends State<EquipmentScreen>
     );
   }
 
-  Widget buildCharacterHeaderTabView(BuildContext context, TabController charTabController) {
+  Widget buildCharacterHeaderTabView(BuildContext context) {
     var headers = characters
         ?.map((character) => TabHeaderWidget(
               character,
@@ -198,15 +195,10 @@ class EquipmentScreenState extends State<EquipmentScreen>
         ?.toList();
     headers?.add(VaultTabHeaderWidget());
 
-    if (charTabController?.length != headers?.length) {
-      charTabController?.dispose();
-      charTabController = TabController(length: headers?.length, vsync: this);
-    }
-
     return TabBarView(controller: charTabController, children: headers ?? []);
   }
 
-  Widget buildTabletCharacterTabView(BuildContext context, TabController charTabController) {
+  Widget buildTabletCharacterTabView(BuildContext context) {
     EdgeInsets screenPadding = MediaQuery.of(context).padding;
     var topOffset = screenPadding.top + kToolbarHeight;
     var pages = characters
@@ -237,24 +229,23 @@ class EquipmentScreenState extends State<EquipmentScreen>
     return TabBarView(controller: charTabController, children: pages ?? []);
   }
 
-  Widget buildBackground(BuildContext context, TabController charTabController) {
+  Widget buildBackground(BuildContext context) {
     if (characters == null) return Container();
     return AnimatedCharacterBackgroundWidget(
       tabController: charTabController,
     );
   }
 
-  Widget buildItemTypeTabBarView(
-      BuildContext context, TabController typeTabController, TabController charTabController) {
+  Widget buildItemTypeTabBarView(BuildContext context) {
     if (characters == null) return Container();
-    return TabBarView(controller: typeTabController, children: buildItemTypeTabs(context, charTabController));
+    return TabBarView(controller: typeTabController, children: buildItemTypeTabs(context));
   }
 
-  List<Widget> buildItemTypeTabs(BuildContext context, TabController charTabController) {
-    return widget.itemTypes.map((type) => buildCharacterTabBarView(context, type, charTabController)).toList();
+  List<Widget> buildItemTypeTabs(BuildContext context) {
+    return widget.itemTypes.map((type) => buildCharacterTabBarView(context, type)).toList();
   }
 
-  Widget buildCharacterTabBarView(BuildContext context, int group, TabController charTabController) {
+  Widget buildCharacterTabBarView(BuildContext context, int group) {
     if (characters == null) return Container();
     return PassiveTabBarView(
         physics: NeverScrollableScrollPhysics(), controller: charTabController, children: buildCharacterTabs(group));
@@ -272,7 +263,7 @@ class EquipmentScreenState extends State<EquipmentScreen>
     return profile.getCharacters(userSettings.characterOrdering);
   }
 
-  buildCharacterMenu(BuildContext context, TabController typeTabController, TabController charTabController) {
+  buildCharacterMenu(BuildContext context) {
     if (characters == null) return Container();
     return Row(children: [
       IconButton(
