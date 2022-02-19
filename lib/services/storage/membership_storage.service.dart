@@ -101,7 +101,7 @@ class MembershipStorage extends StorageBase<MembershipStorageKeys> {
   }
 
   Future<void> saveLoadoutsOrder(List<String> order) async {
-    await setJson(MembershipStorageKeys.cachedLoadouts, order);
+    await setJson(MembershipStorageKeys.loadoutsOrder, order);
   }
 
   Future<DestinyProfileResponse?> getCachedProfile() async {
