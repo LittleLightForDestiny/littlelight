@@ -15,7 +15,7 @@ abstract class LittleLightBaseDialog extends StatelessWidget {
   final double maxHeight;
 
   const LittleLightBaseDialog(
-      {Key? key, this.titleBuilder, this.bodyBuilder, this.actionsBuilder, this.maxWidth = 600, this.maxHeight = 500})
+      {Key? key, this.titleBuilder, this.bodyBuilder, this.actionsBuilder, this.maxWidth = 600, this.maxHeight = 400})
       : super(key: key);
 
   CrossAxisAlignment get crossAxisAlignment => CrossAxisAlignment.stretch;
@@ -24,13 +24,19 @@ abstract class LittleLightBaseDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final padding = getDialogInsetPaddings(context) ?? EdgeInsets.all(0);
+    final size = MediaQuery.of(context).size;
+    double maxWidth = this.maxWidth.clamp(0, size.width - padding.left - padding.right);
+    double maxHeight = this.maxHeight.clamp(0, size.height - padding.top - padding.bottom);
     return Dialog(
-      insetPadding: getDialogInsetPaddings(context),
-      child: Column(
-        crossAxisAlignment: crossAxisAlignment,
-        mainAxisSize: MainAxisSize.min,
-        children: [buildTitleContainer(context), buildBodyContainer(context), buildActionsContainer(context)],
-      ),
+      insetPadding: padding,
+      child: Container(
+          constraints: BoxConstraints(maxHeight: maxHeight, maxWidth: maxWidth),
+          child: Column(
+            crossAxisAlignment: crossAxisAlignment,
+            mainAxisSize: MainAxisSize.min,
+            children: [buildTitleContainer(context), buildBodyContainer(context), buildActionsContainer(context)],
+          )),
     );
   }
 
@@ -50,10 +56,7 @@ abstract class LittleLightBaseDialog extends StatelessWidget {
   Widget buildBodyContainer(BuildContext context) {
     final body = buildBody(context);
     if (body == null) return Container();
-    return Container(
-        constraints: BoxConstraints(maxWidth: maxWidth, maxHeight: maxHeight),
-        padding: EdgeInsets.all(16),
-        child: body);
+    return Flexible(child: Container(padding: EdgeInsets.all(16), child: body));
   }
 
   Widget buildActionsContainer(BuildContext context) {
