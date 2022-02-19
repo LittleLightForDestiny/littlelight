@@ -126,7 +126,7 @@ class ObjectivesScreenState extends State<ObjectivesScreen> with ProfileConsumer
             right: max(screenPadding.right, 4),
             bottom: max(screenPadding.bottom, 4),
             top: 4),
-        itemCount: items.length,
+        itemCount: objectives.length,
         gridDelegate: SliverSimpleGridDelegateWithFixedCrossAxisCount(crossAxisCount: isTablet ? 2 : 1),
         itemBuilder: (context, index) => Container(height: 132, child: getItem(context, index)));
   }
@@ -135,9 +135,7 @@ class ObjectivesScreenState extends State<ObjectivesScreen> with ProfileConsumer
     TrackedObjective objective = objectives[index];
     switch (objective.type) {
       case TrackedObjectiveType.Triumph:
-        return RecordItemWidget(
-            key: Key("objective_${objective.hash}_objective_${objective.instanceId}_${objective.characterId}"),
-            hash: objective.hash);
+        return RecordItemWidget(key: Key("objective_${objective.hash}"), hash: objective.hash);
 
       case TrackedObjectiveType.Item:
         if (items[objective] != null) {

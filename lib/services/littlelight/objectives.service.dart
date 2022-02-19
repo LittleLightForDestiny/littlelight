@@ -24,8 +24,8 @@ class ObjectivesService with StorageConsumer, ProfileConsumer, ManifestConsumer 
       await _loadTrackedObjectivesFromCache();
     }
     var dirty = false;
-    var itemObjectives = _trackedObjectives!.where((o) => o.type == TrackedObjectiveType.Item).toList();
-    var plugObjectives = _trackedObjectives!.where((o) => o.type == TrackedObjectiveType.Plug).toList();
+    final itemObjectives = _trackedObjectives!.where((o) => o.type == TrackedObjectiveType.Item).toList();
+    final plugObjectives = _trackedObjectives!.where((o) => o.type == TrackedObjectiveType.Plug).toList();
     for (var o in itemObjectives) {
       DestinyItemComponent? item = await findObjectiveItem(o);
       if (item == null) {

@@ -84,4 +84,8 @@ class DestinySettingsService with StorageConsumer, BungieApiConsumer, ManifestCo
   int? get legacySealsRootNode {
     return _currentSettings?.destiny2CoreSettings?.legacySealsRootNodeHash;
   }
+
+  int? get catalystsRootNode {
+    return _currentSettings?.destiny2CoreSettings?.exoticCatalystsRootNodeHash;
+  }
 }
