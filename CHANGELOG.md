@@ -1,3 +1,10 @@
+## [1.8.2] - 2022-02-19
+
+- Enables mod swapping for weapons and armor
+- Improved authentication flow
+- Bug fixes
+- fixes multi account support
+
 ## [1.8.1] - 2022-02-19
 
 - Enables mod swapping for weapons and armor
