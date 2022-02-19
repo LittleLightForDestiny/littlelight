@@ -179,9 +179,10 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
   Widget buildMod(BuildContext context, int socketIndex, int plugItemHash) {
     bool isFavorite = itemNotes.getNotesForItem(plugItemHash, null)?.tags?.contains("favorite") ?? false;
     bool isSelected = plugItemHash == controller.selectedPlugHash;
-    Color borderColor = isSelected ? Theme.of(context).colorScheme.onSurface : Colors.grey.shade300.withOpacity(.5);
+    Color borderColor =
+        isSelected ? Theme.of(context).colorScheme.onSurface : Theme.of(context).colorScheme.onSurface.withOpacity(.5);
 
-    BorderSide borderSide = BorderSide(color: borderColor, width: 1);
+    BorderSide borderSide = BorderSide(color: borderColor, width: isSelected ? 3 : 1);
     var def = controller.plugDefinitions[plugItemHash];
     var energyType = def?.plug?.energyCost?.energyType ?? DestinyEnergyType.Any;
     var energyCost = def?.plug?.energyCost?.energyCost ?? 0;
