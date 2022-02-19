@@ -90,9 +90,9 @@ class MembershipStorage extends StorageBase<MembershipStorageKeys> {
 
   Future<List<String>?> getLoadoutsOrder() async {
     try {
-      final List<String>? json = await getJson(MembershipStorageKeys.loadoutsOrder);
+      final List<dynamic>? json = await getJson(MembershipStorageKeys.loadoutsOrder);
       if (json == null) return null;
-      return json;
+      return json.map((s) => "$s").toList();
     } catch (e) {
       print("can't parse loadouts order");
       print(e);
