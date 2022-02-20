@@ -45,7 +45,7 @@ platform :ios do
   desc "Prints path and changelog"
   lane :changelogs do
     puts Dir.pwd
-    puts File.read(Dir.pwd + 'metadata/ios/default/release_notes.txt')
+    puts File.read(Dir.pwd + '/metadata/ios/default/release_notes.txt')
   end
 
   desc "Setup certificates before doing anything"
