@@ -136,11 +136,15 @@ extension StorageOperations<T> on StorageBase<T> {
 
   Future<void> saveFileContents(String filePath, String contents) async {
     File file = File("$filePath");
-    if (!await file.exists()) {
-      file = await file.create(recursive: true);
-    }
+    try {
+      if (!await file.exists()) {
+        file = await file.create(recursive: true);
+      }
 
-    await file.writeAsString(contents);
+      await file.writeAsString(contents);
+    } catch (e, stackTrace) {
+      analytics.registerNonFatal(e, stackTrace, additionalInfo: {"reason": "Couldn't write file"});
+    }
   }
 
   Future<dynamic> getJson(T key) async {

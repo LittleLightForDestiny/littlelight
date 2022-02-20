@@ -36,13 +36,29 @@ Deploy a new version to the Google Play
 
 ## iOS
 
-### ios release
+### ios build
 
 ```sh
-[bundle exec] fastlane ios release
+[bundle exec] fastlane ios build
 ```
 
-Push a new release build to the App Store
+Build iOS app for distribution
+
+### ios beta
+
+```sh
+[bundle exec] fastlane ios beta
+```
+
+Deploy iOS version to app store (manual release)
+
+### ios deploy
+
+```sh
+[bundle exec] fastlane ios deploy
+```
+
+Deploy iOS version to app store (automatic release)
 
 ----
 
