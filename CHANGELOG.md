@@ -1,3 +1,12 @@
+## [1.8.4] - 2022-02-20
+
+- Enables mod swapping for weapons and armor
+- Improved authentication flow
+- Bug fixes
+- fixes multi account support
+- fixes infinite loading on item details
+- fixes multiselection
+
 ## [1.8.3] - 2022-02-19
 
 - Enables mod swapping for weapons and armor
