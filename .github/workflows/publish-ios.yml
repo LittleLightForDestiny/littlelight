@@ -99,11 +99,7 @@ jobs:
           echo "${{ secrets.FLUTTER_DOTENV }}" > assets/_env
 
       - name: Create GoogleService-Info.plist
-        uses: timheuer/base64-to-file@v1.1
-        with:
-          fileName: GoogleService-Info.plist
-          fileDir: ./ios/Runner/
-          encodedString: ${{ secrets.IOS_GOOGLE_SERVICE_INFO_PLIST_BASE64 }}
+        run: echo ${{ secrets.IOS_GOOGLE_SERVICE_INFO_PLIST_BASE64 }} | base64 --decode >> ios/Runner/GoogleService-Info.plist
 
       - name: Cache pub dependencies
         uses: actions/cache@v2
