@@ -246,6 +246,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.1"
+  dio:
+    dependency: transitive
+    description:
+      name: dio
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.0.4"
   fake_async:
     dependency: transitive
     description:
@@ -504,6 +511,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.1"
+  lehttp_overrides:
+    dependency: "direct main"
+    description:
+      name: lehttp_overrides
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.2"
   linkify:
     dependency: transitive
     description:

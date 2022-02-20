@@ -44,7 +44,7 @@ class SelectionService {
         i.item != null &&
         i.item?.itemHash == itemHash &&
         i.ownerId == item.ownerId &&
-        item.item?.itemInstanceId == itemInstanceId);
+        i.item?.itemInstanceId == itemInstanceId);
   }
 
   setItem(ItemWithOwner item) {
