@@ -1,4 +1,4 @@
 languages(['en-US','de-DE', 'es-ES', 'fr-FR', 'it', 'ja', 'pt-BR'])
 release_notes({
-    'default' => File.read(Dir.pwd + '/metadata/ios/default/release_notes.txt'),
+    'default' => File.read(Dir.pwd + '/fastlane/metadata/ios/default/release_notes.txt'),
   })
