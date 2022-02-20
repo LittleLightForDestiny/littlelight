@@ -108,6 +108,7 @@ platform :ios do
       reject_if_possible: true,
       automatic_release: false,
       submit_for_review: true,
+      metadata_path: "fastlane/metadata/ios",
       submission_information:{
         export_compliance_uses_encryption: false,
         export_compliance_encryption_updated: false,
@@ -127,6 +128,7 @@ platform :ios do
       reject_if_possible: true,
       automatic_release: true,
       submit_for_review: true,
+      metadata_path: "fastlane/metadata/ios",
       submission_information:{
         export_compliance_uses_encryption: false,
         export_compliance_encryption_updated: false,
