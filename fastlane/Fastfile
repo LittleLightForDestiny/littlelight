@@ -42,6 +42,7 @@ platform :android do
 end
 
 platform :ios do
+
   desc "Setup certificates before doing anything"
   private_lane :setup_api_key do
     app_store_connect_api_key(
