@@ -51,8 +51,6 @@ dependencies:
   collection: ^1.15.0-nullsafety.4
   json_annotation: ^4.4.0
 
-  lehttp_overrides: ^1.0.2
-
 dev_dependencies:
   build_runner: ^2.1.7
 

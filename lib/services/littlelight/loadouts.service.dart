@@ -46,18 +46,22 @@ class LoadoutsService with StorageConsumer {
   // }
 
   Future<List<Loadout>?> _fetchLoadouts() async {
-    var api = LittleLightApiService();
-    List<Loadout>? _fetchedLoadouts = await api.fetchLoadouts();
-    if (_loadouts == null && _fetchedLoadouts != null) {
-      _loadouts = _fetchedLoadouts;
-      _saveLoadoutsToStorage();
+    try {
+      var api = LittleLightApiService();
+      List<Loadout>? _fetchedLoadouts = await api.fetchLoadouts();
+      if (_loadouts == null && _fetchedLoadouts != null) {
+        _loadouts = _fetchedLoadouts;
+        _saveLoadoutsToStorage();
+        return _loadouts;
+      }
+      if (_fetchedLoadouts != null) {
+        _loadouts = mergeLoadouts(_loadouts, _fetchedLoadouts);
+        _saveLoadoutsToStorage();
+      }
       return _loadouts;
+    } catch (e) {
+      return [];
     }
-    if (_fetchedLoadouts != null) {
-      _loadouts = mergeLoadouts(_loadouts, _fetchedLoadouts);
-      _saveLoadoutsToStorage();
-    }
-    return _loadouts;
   }
 
   List<Loadout> mergeLoadouts(List<Loadout>? localLoadouts, List<Loadout>? remoteLoadouts) {
