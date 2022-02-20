@@ -2,3 +2,5 @@
 - Improved authentication flow
 - Bug fixes
 - fixes multi account support
+- fixes infinite loading on item details
+- fixes multiselection
