@@ -56,17 +56,20 @@ class ItemListWidget extends StatefulWidget {
 
   final OnBucketOptionsChanged onBucketOptionsChanged;
 
-  ItemListWidget(
-      {this.padding,
-      this.bucketHashes,
-      this.characterId,
-      this.includeInfoHeader = true,
-      this.shrinkWrap = false,
-      Key key,
-      this.currentGroup,
-      this.fixedSizedEquipmentBuckets = false,
-      this.onBucketOptionsChanged})
-      : super(key: key);
+  final int columnCount;
+
+  ItemListWidget({
+    Key key,
+    this.padding,
+    this.bucketHashes,
+    this.characterId,
+    this.includeInfoHeader = true,
+    this.shrinkWrap = false,
+    this.columnCount = 1,
+    this.currentGroup,
+    this.fixedSizedEquipmentBuckets = false,
+    this.onBucketOptionsChanged,
+  }) : super(key: key);
   @override
   ItemListWidgetState createState() => ItemListWidgetState();
 }
@@ -232,7 +235,7 @@ class ItemListWidgetState extends State<ItemListWidget>
   }
 
   int getItemCountPerRow(BuildContext context, BucketDisplayOptions bucketOptions) {
-    return bucketOptions.unequippedItemsPerRow;
+    return bucketOptions.responsiveUnequippedItemsPerRow(context, widget.columnCount);
   }
 
   SliverSection buildUnequippedItems(List<DestinyItemComponent> items, ListBucket bucket) {

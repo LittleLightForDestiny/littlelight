@@ -1,6 +1,7 @@
 //@dart=2.12
 import 'dart:io';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 class LittleLightScrollBehaviour extends ScrollBehavior {
@@ -23,4 +24,11 @@ class LittleLightScrollBehaviour extends ScrollBehavior {
     }
     return super.getScrollPhysics(context);
   }
+
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+        PointerDeviceKind.unknown,
+      };
 }
