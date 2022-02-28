@@ -35,10 +35,31 @@ class Version {
     return false;
   }
 
-  operator <=(Version version) {
+  operator <(Version version) {
     final result = version > this;
     return result;
   }
+
+  operator >=(Version version) {
+    return this == version || this > version;
+  }
+
+  operator <=(Version version) {
+    return this == version || this < version;
+  }
+
+  bool operator ==(dynamic version) {
+    if (version is String) {
+      version = Version.fromString(version);
+    }
+    if (version is Version) {
+      return this.major == version.major && this.minor == version.minor && this.patch == version.patch;
+    }
+    return false;
+  }
+
+  @override
+  int get hashCode => major.hashCode + minor.hashCode + patch.hashCode;
 }
 
 abstract class StorageMigration {
@@ -57,8 +78,10 @@ abstract class StorageMigration {
     }
     for (final migration in _allMigrations) {
       final migrationVersion = Version.fromString(migration.version);
-      if (migrationVersion <= lastVersion) continue;
-      if (migrationVersion > currentVersion) continue;
+      final isOlderThanLast = migrationVersion <= lastVersion;
+      final isNewerThanCurrent = migrationVersion > currentVersion;
+      if (isOlderThanLast) continue;
+      if (isNewerThanCurrent) continue;
       await migration.migrate();
     }
     _prefs.setString("currentVersion", info.version);
