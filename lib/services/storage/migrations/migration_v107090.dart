@@ -4,9 +4,9 @@ import 'dart:io';
 import 'package:little_light/services/storage/migrations/storage_migrations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class MigrationV1x7x90 extends StorageMigration {
+class MigrationV1x9x0 extends StorageMigration {
   @override
-  String get version => '1.7.90';
+  String get version => '1.9.0';
 
   @override
   Future<void> migrate() async {

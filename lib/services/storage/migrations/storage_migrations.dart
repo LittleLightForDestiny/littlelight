@@ -22,6 +22,9 @@ class Version {
   Version(this.major, this.minor, this.patch);
   factory Version.fromString(String version) {
     final splitted = version.split('.').map((e) => int.tryParse(e)).toList();
+    if (splitted.length < 3) {
+      return Version(0, 0, 0);
+    }
     return Version(splitted.safeElementAt(0) ?? 0, splitted.safeElementAt(1) ?? 0, splitted.safeElementAt(2) ?? 0);
   }
 
@@ -40,7 +43,7 @@ class Version {
 
 abstract class StorageMigration {
   static final _allMigrations = [
-    MigrationV1x7x90(),
+    MigrationV1x9x0(),
   ];
 
   static runAllMigrations() async {
