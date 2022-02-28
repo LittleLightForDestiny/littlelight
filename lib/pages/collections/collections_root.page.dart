@@ -70,6 +70,17 @@ class CollectionsRootPageState extends PresentationNodesTabsScaffoldState<Collec
       );
 
   @override
+  List<Widget>? buildAppBarActions(BuildContext context) => [
+        IconButton(
+          enableFeedback: false,
+          icon: Icon(Icons.search),
+          onPressed: () {
+            Navigator.of(context).push(CollectionsSearchPageRoute());
+          },
+        )
+      ];
+
+  @override
   Widget buildAppBarTitle(BuildContext context) {
     return TranslatedTextWidget("Collections");
   }

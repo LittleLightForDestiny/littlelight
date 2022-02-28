@@ -33,12 +33,12 @@ abstract class BaseItemSocketsWidgetState<T extends BaseItemSocketsWidget> exten
   }
 
   void initController() {
-    controller.addListener(update);
+    controller?.addListener(update);
   }
 
   @override
   dispose() {
-    controller.removeListener(update);
+    controller?.removeListener(update);
     super.dispose();
   }
 

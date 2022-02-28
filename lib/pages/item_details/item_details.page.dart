@@ -279,7 +279,7 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
               uniqueId: this.uniqueId,
               socketController: socketController,
               hideTransferBlock: this.hideItemManagement,
-              key: Key("cover_${item?.itemHash}_$customName")),
+              key: Key("cover_${item?.itemHash}_${customName}_$loaded")),
           SliverList(
               delegate: SliverChildListDelegate([
             buildSaleDetails(context),

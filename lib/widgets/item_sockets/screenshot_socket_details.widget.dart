@@ -2,7 +2,6 @@
 
 import 'package:bungie_api/enums/destiny_energy_type.dart';
 import 'package:bungie_api/enums/item_perk_visibility.dart';
-import 'package:bungie_api/enums/tier_type.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_material_requirement_set_definition.dart';
@@ -10,15 +9,17 @@ import 'package:bungie_api/models/destiny_sandbox_perk_definition.dart';
 import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/element_type_data.dart';
+import 'package:little_light/utils/shimmer_helper.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-
 import 'package:little_light/widgets/item_sockets/base_socket_details.widget.dart';
 import 'package:little_light/widgets/item_sockets/plug_wishlist_tag_icons.mixin.dart';
+import 'package:little_light/widgets/item_sockets/selectable_perk.widget.dart';
 import 'package:little_light/widgets/item_stats/screenshot_socket_item_stats.widget.dart';
 
 import 'item_socket.controller.dart';
@@ -64,12 +65,13 @@ class _ScreenshotPerkDetailsWidgetState extends BaseSocketDetailsWidgetState<Scr
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                definition?.displayProperties?.name?.toUpperCase(),
+                definition?.displayProperties?.name?.toUpperCase() ?? "",
                 style: TextStyle(fontSize: 30 * widget.pixelSize, fontWeight: FontWeight.w500),
               ),
-              Text(definition?.itemTypeDisplayName,
-                  style: TextStyle(
-                      fontSize: 24 * widget.pixelSize, color: Colors.grey.shade500, fontWeight: FontWeight.w300))
+              if (definition?.itemTypeDisplayName != null)
+                Text(definition?.itemTypeDisplayName ?? "",
+                    style: TextStyle(
+                        fontSize: 24 * widget.pixelSize, color: Colors.grey.shade500, fontWeight: FontWeight.w300))
             ],
           )),
       Container(
@@ -256,62 +258,42 @@ class _ScreenshotPerkDetailsWidgetState extends BaseSocketDetailsWidgetState<Scr
 
   Widget buildPerk(BuildContext context, int socketIndex, int plugItemHash) {
     var plugDef = controller.plugDefinitions[plugItemHash];
-    bool intrinsic = plugDef?.plug?.plugCategoryIdentifier == "intrinsics";
     int equippedHash = controller.socketEquippedPlugHash(socketIndex);
     bool isEquipped = equippedHash == plugItemHash;
-    bool isExotic = definition.inventory.tierType == TierType.Exotic;
+
     bool isSelectedOnSocket = plugItemHash == controller.socketSelectedPlugHash(socketIndex);
     bool isSelected = plugItemHash == controller.selectedPlugHash;
-    Color bgColor = Colors.transparent;
-    Color borderColor = Colors.grey.shade300.withOpacity(.5);
-    if (isEquipped && !intrinsic) {
-      bgColor = DestinyData.perkColor.withOpacity(.5);
-    }
-    if (isSelectedOnSocket && !intrinsic) {
-      bgColor = DestinyData.perkColor;
-      borderColor = Colors.grey.shade300;
-    }
 
-    if (intrinsic && !isSelected) {
-      borderColor = Colors.transparent;
-    }
-
-    BorderSide borderSide = BorderSide(color: borderColor, width: 2 * widget.pixelSize);
+    final canRoll = widget.item == null && controller.canRollPerk(socketIndex, plugItemHash);
 
     return Container(
         width: 80 * widget.pixelSize,
-        key: Key("plug_${socketIndex}_$plugItemHash"),
-        padding: EdgeInsets.all(0),
-        child: Stack(children: [
-          AspectRatio(
-              aspectRatio: 1,
-              child: MaterialButton(
-                shape: intrinsic && !isExotic
-                    ? RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(4 * widget.pixelSize), side: borderSide)
-                    : CircleBorder(side: borderSide),
-                padding: EdgeInsets.all(intrinsic ? 0 : 8 * widget.pixelSize),
-                color: bgColor,
-                child: ManifestImageWidget<DestinyInventoryItemDefinition>(plugItemHash),
-                onPressed: () {
-                  controller.selectSocket(socketIndex, plugItemHash);
-                },
-              )),
-          Positioned(
-              top: 0,
-              right: 0,
-              left: 0,
-              child: Center(child: buildWishlistTagIcons(context, itemDefinition.hash, plugItemHash)))
-        ]));
+        child: SelectablePerkWidget(
+          selected: isSelected,
+          selectedOnSocket: isSelectedOnSocket,
+          itemDefinition: controller.definition,
+          plugHash: plugItemHash,
+          plugDefinition: plugDef,
+          equipped: isEquipped,
+          canRoll: canRoll,
+          scale: widget.pixelSize,
+          wishlistScale: widget.pixelSize * 1.8,
+          key: Key("$plugItemHash $isSelected $isSelectedOnSocket"),
+          onTap: () {
+            controller.selectSocket(socketIndex, plugItemHash);
+          },
+        ));
   }
 
   buildContent(BuildContext context) {
     Iterable<Widget> items = [
       buildDescription(context),
       buildWishlistInfo(context, 24 * widget.pixelSize, 20 * widget.pixelSize),
+      buildPerkNotAvailable(context),
       buildEnergyCost(context),
       buildSandBoxPerks(context),
       buildStats(context),
+      buildApplyButton(context)
     ];
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: items.toList());
   }
@@ -322,6 +304,71 @@ class _ScreenshotPerkDetailsWidgetState extends BaseSocketDetailsWidgetState<Scr
         padding: EdgeInsets.symmetric(vertical: 8 * widget.pixelSize),
         child: Text(definition?.displayProperties?.description,
             style: TextStyle(fontSize: 24 * widget.pixelSize, fontWeight: FontWeight.w300)));
+  }
+
+  Widget buildPerkNotAvailable(BuildContext context) {
+    final canRoll = controller.canRollPerk(controller.selectedSocketIndex, controller.selectedPlugHash);
+    if (canRoll) return Container();
+    return Container(
+      decoration: BoxDecoration(
+          color: LittleLightTheme.of(context).errorLayers, borderRadius: BorderRadius.circular(8 * widget.pixelSize)),
+      margin: EdgeInsets.all(8 * widget.pixelSize),
+      padding: EdgeInsets.all(16 * widget.pixelSize),
+      child: TranslatedTextWidget("This perk isn't available on the current season anymore",
+          style: TextStyle(fontSize: 24 * widget.pixelSize, fontWeight: FontWeight.w300)),
+    );
+  }
+
+  Widget buildApplyButton(BuildContext context) {
+    var requirementHash = definition?.plug?.insertionMaterialRequirementHash;
+    final isApplied = controller.selectedPlugHash == controller.socketEquippedPlugHash(controller.selectedSocketIndex);
+    final canApply = controller.canApplySocket(controller.selectedSocketIndex, controller.selectedPlugHash);
+    final style = TextStyle(fontSize: 24 * widget.pixelSize, fontWeight: FontWeight.w300);
+    if (isApplied || !canApply || item?.itemInstanceId == null) {
+      return Container();
+    }
+    final isEnabled = !controller.isSocketBusy(controller.selectedSocketIndex);
+    final applyButton = Container(
+        padding: EdgeInsets.all(8 * widget.pixelSize),
+        child: Material(
+            color: isEnabled
+                ? LittleLightTheme.of(context).primaryLayers
+                : LittleLightTheme.of(context).primaryLayers.withOpacity(.5),
+            key: Key("apply_button_${definition.hash}_$isEnabled"),
+            child: InkWell(
+                onTap: isEnabled
+                    ? () {
+                        controller.applySocket(controller.selectedSocketIndex, controller.selectedPlugHash);
+                      }
+                    : null,
+                child: Container(
+                    alignment: Alignment.center,
+                    padding: EdgeInsets.all(16 * widget.pixelSize),
+                    child: DefinitionProviderWidget<DestinyInventoryItemDefinition>(
+                      definition.hash,
+                      (def) => isEnabled
+                          ? TranslatedTextWidget(
+                              "Apply {modType}",
+                              replace: {"modType": def.itemTypeDisplayName.toLowerCase()},
+                              style: style,
+                            )
+                          : ShimmerHelper.getDefaultShimmer(context,
+                              child: TranslatedTextWidget(
+                                "Applying {modType}",
+                                replace: {"modType": def.itemTypeDisplayName.toLowerCase()},
+                                style: style,
+                              )),
+                    )))));
+    if (requirementHash != null && requirementHash != 0) {
+      return DefinitionProviderWidget<DestinyMaterialRequirementSetDefinition>(requirementHash, (def) {
+        final materials = def?.materials?.where((element) => (element.count ?? 0) > 0);
+        if (materials?.isNotEmpty ?? true) {
+          return Container();
+        }
+        return applyButton;
+      }, key: Key('apply_button_$requirementHash'));
+    }
+    return applyButton;
   }
 
   @override

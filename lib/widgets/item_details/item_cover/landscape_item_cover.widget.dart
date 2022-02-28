@@ -10,7 +10,6 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_power_cap_definition.dart';
 import 'package:bungie_api/models/destiny_stat_definition.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
@@ -46,6 +45,7 @@ class LandscapeItemCoverWidget extends StatelessWidget {
     this.instanceInfo, {
     this.hideTransferBlock = false,
     this.uniqueId,
+    // ItemSocketController socketController,
     this.socketController,
     Key key,
   }) : super(key: key);
@@ -101,14 +101,13 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
     return Container(
         color: DestinyData.getTierColor(definition?.inventory?.tierType),
         child: Stack(
-          // overflow: Overflow.visible,
           fit: StackFit.expand,
           children: <Widget>[
             background(context, expandRatio),
             secondaryIcon(context, expandRatio),
             backButton(context, expandRatio),
             tierBar(context, expandRatio),
-            leftColumn(context, expandRatio),
+            if (socketController != null) leftColumn(context, expandRatio),
             icon(context, expandRatio),
             buildNameAndType(context, expandRatio),
             rightColumn(context, expandRatio)
@@ -144,7 +143,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
                   children: [
                     managementBlock(context, expandRatio),
                     Container(height: convertSize(16.0, context)),
-                    Expanded(child: socketDetails(context, expandRatio)),
+                    Expanded(child: socketController == null ? Container() : socketDetails(context, expandRatio)),
                     Container(height: convertSize(16.0, context)),
                     statsBlock(context, expandRatio)
                   ],
@@ -204,7 +203,10 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
             Container(
                 width: convertSize(1030, context),
                 child: Text(
-                  customName ?? definition?.displayProperties?.name?.toUpperCase(),
+                  customName ?? definition?.displayProperties?.name?.toUpperCase() ?? "",
+                  maxLines: 1,
+                  softWrap: false,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                       color: DestinyData.getTierTextColor(definition?.inventory?.tierType).withOpacity(.9),
                       fontSize: lerpDouble(kToolbarHeight * .5, convertSize(74, context), expandRatio),
@@ -212,7 +214,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
                       height: .94),
                 )),
             Text(
-              definition?.itemTypeDisplayName?.toUpperCase(),
+              definition?.itemTypeDisplayName?.toUpperCase() ?? "",
               style: TextStyle(
                   fontSize: lerpDouble(kToolbarHeight * .3, convertSize(34, context), expandRatio),
                   height: .94,
@@ -227,14 +229,13 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
     return Opacity(
         opacity: expandRatio,
         child: SingleChildScrollView(
-            child: GestureDetector(
-                child: Container(
-                    width: convertSize(600, context),
-                    child: ScreenshotSocketDetailsWidget(
-                        item: item?.item,
-                        parentDefinition: definition,
-                        pixelSize: pixelSize(context),
-                        controller: socketController)))));
+            child: Container(
+                width: convertSize(600, context),
+                child: ScreenshotSocketDetailsWidget(
+                    item: item?.item,
+                    parentDefinition: definition,
+                    pixelSize: pixelSize(context),
+                    controller: socketController))));
   }
 
   Widget leftColumn(BuildContext context, double expandRatio) {
