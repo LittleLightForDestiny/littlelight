@@ -1,6 +1,6 @@
-- Enables mod swapping for weapons and armor
-- Improved authentication flow
-- Bug fixes
-- fixes multi account support
-- fixes infinite loading on item details
-- fixes multiselection
+- Fixes some database downloading issues
+- Fixes faulty authentication flow on some devices
+- Fixes mod selection on landscape view
+- Adds non rollable rolls hint on collections
+- Adds back collections search
+- Adds back Triumphs search

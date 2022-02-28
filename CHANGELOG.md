@@ -1,3 +1,12 @@
+## [1.9.0] - 2022-02-28
+
+- Fixes some database downloading issues
+- Fixes faulty authentication flow on some devices
+- Fixes mod selection on landscape view
+- Adds non rollable rolls hint on collections
+- Adds back collections search
+- Adds back Triumphs search
+
 ## [1.8.4] - 2022-02-20
 
 - Enables mod swapping for weapons and armor
