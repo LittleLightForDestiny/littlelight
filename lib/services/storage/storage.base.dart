@@ -233,11 +233,16 @@ extension StorageOperations<T> on StorageBase<T> {
       }
     } else {
       final dbPath = File("$_dbRoot/$path");
-      await dbPath.delete(recursive: true);
+      try {
+        await dbPath.delete(recursive: true);
+      } catch (e, stackTrace) {
+        analytics.registerNonFatal(e, stackTrace);
+      }
     }
 
     final _fileRoot = await _getFileRoot();
     if (_fileRoot == null) return;
+    if (_fileRoot == _dbRoot) return;
     if (path.isEmpty) {
       final rootDir = Directory(_fileRoot);
       final files = rootDir.listSync();
@@ -246,7 +251,11 @@ extension StorageOperations<T> on StorageBase<T> {
       }
     } else {
       final filesPath = File("$_fileRoot/$path");
-      await filesPath.delete(recursive: true);
+      try {
+        await filesPath.delete(recursive: true);
+      } catch (e, stackTrace) {
+        analytics.registerNonFatal(e, stackTrace);
+      }
     }
   }
 }

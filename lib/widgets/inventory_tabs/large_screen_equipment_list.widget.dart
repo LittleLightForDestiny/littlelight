@@ -254,7 +254,7 @@ class LargeScreenEquipmentListWidgetState extends State<LargeScreenEquipmentList
         final item = items[index];
         final itemKey = "equipped_${item?.itemInstanceId ?? item?.itemHash ?? 'empty'}";
         return InventoryItemWrapperWidget(
-          item,
+          item != null ? ItemWithOwner(item, widget.character.characterId) : null,
           item?.bucketHash,
           key: Key(itemKey),
           characterId: widget.character.characterId,

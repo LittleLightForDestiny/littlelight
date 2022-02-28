@@ -18,6 +18,7 @@ import 'package:little_light/services/language/timeago_messages/ko_messages.dart
 import 'package:little_light/services/language/timeago_messages/pl_messages.dart';
 import 'package:little_light/services/language/timeago_messages/pt_messages.dart';
 import 'package:little_light/services/language/timeago_messages/ru_messages.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/storage/export.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -25,11 +26,15 @@ setupLanguageService() {
   GetIt.I.registerSingleton<LanguageService>(LanguageService._internal());
 }
 
-class LanguageService with StorageConsumer {
+class LanguageService with StorageConsumer, ManifestConsumer {
   final _fallbackLanguage = "en";
   String? _systemLanguage;
   String? get selectedLanguage => globalStorage.currentLanguage;
-  set selectedLanguage(String? value) => globalStorage.currentLanguage = value;
+  set selectedLanguage(String? value) {
+    manifest.closeDB();
+    globalStorage.currentLanguage = value;
+  }
+
   String get currentLanguage => selectedLanguage ?? _systemLanguage ?? _fallbackLanguage;
   Map<String, Map<String, String>> _translationMaps = Map();
 
@@ -133,9 +138,12 @@ class LanguageService with StorageConsumer {
     for (final language in languages) {
       final file = await languageStorage(language.code).getManifestDatabaseFile();
       final stat = await file?.stat();
+      final exists = await file?.exists() ?? false;
       final size = stat?.size;
-      if (size != null) {
+      if (size != null && exists) {
         language.sizeInKB = (size / 1024).floor();
+      } else {
+        language.sizeInKB = null;
       }
     }
     return languages;

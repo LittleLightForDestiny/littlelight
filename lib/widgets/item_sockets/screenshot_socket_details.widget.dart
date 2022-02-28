@@ -22,6 +22,7 @@ import 'package:little_light/widgets/item_sockets/plug_wishlist_tag_icons.mixin.
 import 'package:little_light/widgets/item_stats/screenshot_socket_item_stats.widget.dart';
 
 import 'item_socket.controller.dart';
+import 'plug_grid_view.dart';
 
 class ScreenshotSocketDetailsWidget extends BaseSocketDetailsWidget {
   final double pixelSize;
@@ -38,7 +39,11 @@ class ScreenshotSocketDetailsWidget extends BaseSocketDetailsWidget {
 
 class _ScreenshotPerkDetailsWidgetState extends BaseSocketDetailsWidgetState<ScreenshotSocketDetailsWidget>
     with PlugWishlistTagIconsMixin {
-  int _currentPage = 0;
+  @override
+  void initState() {
+    print(super.controller);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -137,58 +142,63 @@ class _ScreenshotPerkDetailsWidgetState extends BaseSocketDetailsWidgetState<Scr
   Widget buildReusableMods(BuildContext context) {
     var plugs = controller.socketPlugHashes(controller.selectedSocketIndex);
     if ((plugs?.length ?? 0) <= 1) return Container();
-    int maxPage = ((plugs.length - 1) / 10).floor();
-    var page = _currentPage.clamp(0, maxPage);
-    _currentPage = page;
-    return IntrinsicHeight(
-        child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      pagingButton(context, -1, page > 0),
-      Container(
-          width: 521 * widget.pixelSize,
-          child: Wrap(
-            alignment: WrapAlignment.start,
-            runSpacing: 10 * widget.pixelSize,
-            spacing: 10 * widget.pixelSize,
-            children: plugs
-                .skip(page * 10)
-                .take(10)
-                .map((h) => buildMod(context, controller.selectedSocketIndex, h))
-                .toList(),
-          )),
-      pagingButton(context, 1, page < maxPage),
-    ]));
+    final tabCount = (plugs.length / 10).ceil();
+    final rowCount = (plugs.length / 5).ceil().clamp(0, 2);
+    final rowHeight = 96 * widget.pixelSize;
+    return DefaultTabController(
+        length: tabCount,
+        child: Container(
+            height: rowHeight * rowCount + (rowCount > 1 ? 8 * widget.pixelSize : 0),
+            child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              Builder(builder: (context) => pagingButton(context, -1)),
+              Container(
+                  width: 520 * widget.pixelSize,
+                  child: PlugGridView(
+                    plugs,
+                    maxRows: 2,
+                    itemsPerRow: 5,
+                    gridSpacing: 8 * widget.pixelSize,
+                    itemBuilder: (h) => buildMod(context, controller.selectedSocketIndex, h),
+                  )),
+              Builder(builder: (context) => pagingButton(context, 1)),
+            ])));
   }
 
-  Widget pagingButton(BuildContext context, [int direction = 1, bool enabled = false]) {
-    return Container(
-      constraints: BoxConstraints.expand(width: 32 * widget.pixelSize),
-      decoration: BoxDecoration(border: Border.all(color: Colors.grey.shade300)),
-      padding: EdgeInsets.all(0),
-      alignment: Alignment.center,
-      child: !enabled
-          ? Container(color: Colors.grey.shade300.withOpacity(.2))
-          : Material(
-              color: Colors.transparent,
-              child: InkWell(
-                  onTap: () {
-                    if (!enabled) return;
-                    _currentPage += direction;
-                    setState(() {});
-                  },
-                  child: Container(
-                      constraints: BoxConstraints.expand(),
-                      child: Icon(direction > 0 ? FontAwesomeIcons.caretRight : FontAwesomeIcons.caretLeft,
-                          size: 30 * widget.pixelSize)))),
-    );
+  Widget pagingButton(BuildContext context, [int direction = 1]) {
+    final controller = DefaultTabController.of(context);
+    final length = controller.length;
+
+    return AnimatedBuilder(
+        animation: controller.animation,
+        builder: (context, child) {
+          final currentIndex = controller.index;
+          final enabled = direction < 0 ? currentIndex > 0 : currentIndex < length - 1;
+          return Container(
+            constraints: BoxConstraints.expand(width: 32 * widget.pixelSize),
+            decoration: BoxDecoration(border: Border.all(color: Colors.grey.shade300)),
+            padding: EdgeInsets.all(0),
+            alignment: Alignment.center,
+            child: !enabled
+                ? Container(color: Colors.grey.shade300.withOpacity(.2))
+                : Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                        onTap: () {
+                          controller.animateTo(currentIndex + direction);
+                        },
+                        child: Container(
+                            constraints: BoxConstraints.expand(),
+                            child: Icon(direction > 0 ? FontAwesomeIcons.caretRight : FontAwesomeIcons.caretLeft,
+                                size: 30 * widget.pixelSize)))),
+          );
+        });
   }
 
   Widget buildRandomPerks(BuildContext context) {
-    var randomHashes = controller.randomizedPlugHashes(controller.selectedSocketIndex);
-    if ((randomHashes?.length ?? 0) == 0) {
+    var plugs = controller.possiblePlugHashes(controller.selectedSocketIndex);
+    if (plugs?.isEmpty ?? false) {
       return Container(height: 80 * widget.pixelSize);
     }
-    var plugs = controller.socketPlugHashes(controller.selectedSocketIndex);
-    plugs.addAll(randomHashes);
     return Wrap(
       runSpacing: 6 * widget.pixelSize,
       spacing: 6 * widget.pixelSize,

@@ -13,23 +13,25 @@ class SelectablePerkWidget extends StatelessWidget with PlugWishlistTagIconsMixi
   final bool equipped;
   final bool selectedOnSocket;
   final bool selected;
+  final bool canRoll;
   final int plugHash;
   final Function onTap;
   final double scale;
   final double wishlistScale;
 
-  const SelectablePerkWidget(
-      {Key key,
-      this.itemDefinition,
-      this.plugDefinition,
-      this.selectedOnSocket,
-      this.selected,
-      this.equipped,
-      this.onTap,
-      this.plugHash,
-      this.scale = 1,
-      this.wishlistScale = 1})
-      : super(key: key);
+  const SelectablePerkWidget({
+    Key key,
+    this.itemDefinition,
+    this.plugDefinition,
+    this.selectedOnSocket,
+    this.selected,
+    this.equipped,
+    this.onTap,
+    this.plugHash,
+    this.scale = 1,
+    this.wishlistScale = 1,
+    this.canRoll = true,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -55,28 +57,30 @@ class SelectablePerkWidget extends StatelessWidget with PlugWishlistTagIconsMixi
     return Container(
         key: Key("item_perk_$plugItemHash"),
         padding: EdgeInsets.all(0),
-        margin: EdgeInsets.only(bottom: 8 * scale),
-        child: Stack(children: [
-          AspectRatio(
-              aspectRatio: 1,
-              child: InkWell(
-                borderRadius:
-                    intrinsic && !isExotic ? BorderRadius.circular(4 * scale) : BorderRadius.circular(48 * scale),
-                child: Material(
-                    shape: intrinsic && !isExotic
-                        ? RoundedRectangleBorder(borderRadius: BorderRadius.circular(4 * scale), side: borderSide)
-                        : CircleBorder(side: borderSide),
-                    color: bgColor,
-                    child: Padding(
-                        padding: EdgeInsets.all(intrinsic ? 0 : 8 * scale),
-                        child: ManifestImageWidget<DestinyInventoryItemDefinition>(plugItemHash))),
-                onTap: onTap,
-              )),
-          Positioned(
-              top: 0,
-              right: 0,
-              left: 0,
-              child: Center(child: buildWishlistTagIcons(context, itemDefinition.hash, plugItemHash, wishlistScale)))
-        ]));
+        child: Opacity(
+            opacity: canRoll ? 1 : .3,
+            child: Stack(children: [
+              AspectRatio(
+                  aspectRatio: 1,
+                  child: InkWell(
+                    borderRadius:
+                        intrinsic && !isExotic ? BorderRadius.circular(4 * scale) : BorderRadius.circular(48 * scale),
+                    child: Material(
+                        shape: intrinsic && !isExotic
+                            ? RoundedRectangleBorder(borderRadius: BorderRadius.circular(4 * scale), side: borderSide)
+                            : CircleBorder(side: borderSide),
+                        color: bgColor,
+                        child: Padding(
+                            padding: EdgeInsets.all(intrinsic ? 0 : 8 * scale),
+                            child: ManifestImageWidget<DestinyInventoryItemDefinition>(plugItemHash))),
+                    onTap: onTap,
+                  )),
+              Positioned(
+                  top: 0,
+                  right: 0,
+                  left: 0,
+                  child:
+                      Center(child: buildWishlistTagIcons(context, itemDefinition.hash, plugItemHash, wishlistScale)))
+            ])));
   }
 }

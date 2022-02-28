@@ -4,7 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 
 class QueuedNetworkImage extends StatelessWidget {
-  final String imageUrl;
+  final String? imageUrl;
   final Alignment alignment;
   final Widget? placeholder;
   final Duration? fadeInDuration;
@@ -20,7 +20,7 @@ class QueuedNetworkImage extends StatelessWidget {
       : super(key: key);
 
   factory QueuedNetworkImage.fromBungie(
-    String relativeURL, {
+    String? relativeURL, {
     Widget? placeholder,
     BoxFit fit = BoxFit.contain,
     Alignment alignment = Alignment.center,
@@ -37,8 +37,11 @@ class QueuedNetworkImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (imageUrl == null) {
+      return placeholder ?? Container();
+    }
     return CachedNetworkImage(
-      imageUrl: imageUrl,
+      imageUrl: imageUrl!,
       fit: fit,
       alignment: alignment,
       placeholderFadeInDuration: fadeInDuration ?? Duration(seconds: 2),

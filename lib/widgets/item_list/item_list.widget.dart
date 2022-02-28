@@ -221,7 +221,7 @@ class ItemListWidgetState extends State<ItemListWidget>
     final bucketOptions = getBucketOptions(item.bucketHash);
     return SliverSection(
         itemBuilder: (context, _) => InventoryItemWrapperWidget(
-              item,
+              item != null ? ItemWithOwner(item, widget.characterId) : null,
               item?.bucketHash,
               key: Key(itemKey),
               characterId: widget.characterId,
@@ -265,7 +265,7 @@ class ItemListWidgetState extends State<ItemListWidget>
         final item = items[index];
         final itemKey = "equipped_${item?.itemInstanceId ?? item?.itemHash ?? 'empty'}";
         return InventoryItemWrapperWidget(
-          item,
+          item != null ? ItemWithOwner(item, widget.characterId) : null,
           item?.bucketHash,
           key: Key(itemKey),
           characterId: widget.characterId,

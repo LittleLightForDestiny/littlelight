@@ -3,15 +3,14 @@
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_objective_progress.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/utils/item_with_owner.dart';
 
 import 'large_pursuit_item.widget.dart';
 
 class TrackedPursuitItemWidget extends LargePursuitItemWidget {
-  TrackedPursuitItemWidget(
-      {Key key, String characterId, DestinyItemComponent item, Function onTap, Function onLongPress})
+  TrackedPursuitItemWidget({Key key, String characterId, ItemWithOwner item, Function onTap, Function onLongPress})
       : super(
             key: key,
-            characterId: characterId,
             item: item,
             // includeCharacterIcon: true,
             onTap: onTap);

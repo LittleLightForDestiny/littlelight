@@ -1,13 +1,18 @@
 // @dart=2.9
 
 import 'package:flutter/material.dart';
+import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/progress_tabs/pursuit_item/pursuit_item.widget.dart';
 
 class LargePursuitItemWidget extends PursuitItemWidget {
-  LargePursuitItemWidget({Key key, characterId, item, onTap, bool selectable = false, Widget trailing})
-      : super(
+  LargePursuitItemWidget({
+    Key key,
+    ItemWithOwner item,
+    onTap,
+    bool selectable = false,
+    Widget trailing,
+  }) : super(
             key: key,
-            characterId: characterId,
             item: item,
             onTap: onTap,
             titleFontSize: 14,

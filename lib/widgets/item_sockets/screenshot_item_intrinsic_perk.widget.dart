@@ -21,7 +21,7 @@ class ScreenShotItemIntrinsicPerkWidget extends BaseItemSocketsWidget {
     DestinyItemSocketCategoryDefinition category,
     ItemSocketController controller,
     this.pixelSize = 1,
-  }) : super(key: key, item: item, definition: definition, category: category, controller: controller);
+  }) : super(key: key, category: category, controller: controller);
 
   @override
   State<StatefulWidget> createState() {
@@ -121,7 +121,7 @@ class ScreenShotItemIntrinsicPerkWidgetState<T extends ScreenShotItemIntrinsicPe
     bool intrinsic = plugDef?.plug?.plugCategoryIdentifier == "intrinsics";
     int equippedHash = socketEquippedPlugHash(socketIndex);
     bool isEquipped = equippedHash == plugItemHash;
-    bool isExotic = definition.inventory.tierType == TierType.Exotic;
+    bool isExotic = controller.definition.inventory.tierType == TierType.Exotic;
     bool isSelectedOnSocket = plugItemHash == controller.socketSelectedPlugHash(socketIndex);
     bool isSelected = plugItemHash == controller.selectedPlugHash;
     Color bgColor = Colors.transparent;

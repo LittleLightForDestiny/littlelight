@@ -60,10 +60,11 @@ class LoadoutSlotOptionsDialog extends LittleLightBaseDialog with ProfileConsume
   Widget? buildBody(BuildContext context) {
     final item = context.itemArgument;
     final instanceID = item?.itemInstanceId;
-    if (instanceID == null) return Container();
+    if (instanceID == null || item == null) return Container();
     final String? ownerID = profile.getItemOwner(instanceID);
+    final itemWithOwner = ItemWithOwner(item, ownerID);
     return Container(
-        child: QuickSelectItemWrapperWidget(item, null, characterId: ownerID ?? ItemWithOwner.OWNER_VAULT));
+        child: QuickSelectItemWrapperWidget(itemWithOwner, null, characterId: ownerID ?? ItemWithOwner.OWNER_VAULT));
   }
 
   @override

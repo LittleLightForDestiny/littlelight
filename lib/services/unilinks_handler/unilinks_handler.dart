@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:little_light/services/setup.dart';
 import 'package:uni_links_platform_interface/uni_links_platform_interface.dart';
 
+bool get _enabled => Platform.isAndroid;
+
 setupUnilinksHandler() async {
-  if (Platform.isAndroid || Platform.isIOS) return;
+  if (_enabled) return;
   if (!getItCoreInstance.isRegistered<UnilinksHandler>()) {
     getItCoreInstance.registerSingleton<UnilinksHandler>(UnilinksHandler._internal());
   }
@@ -14,7 +16,7 @@ setupUnilinksHandler() async {
 class UnilinksHandler extends ChangeNotifier {
   String? _currentLink;
   UnilinksHandler._internal() {
-    if (Platform.isAndroid || Platform.isIOS) return;
+    if (_enabled) return;
     _asyncInit();
   }
 

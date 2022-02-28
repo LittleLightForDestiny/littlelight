@@ -1,56 +1,34 @@
 // @dart=2.9
 
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
-import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_socket_category_definition.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:flutter/material.dart';
-
 import 'package:little_light/services/profile/profile.consumer.dart';
-import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/item_details/section_header.widget.dart';
 import 'package:little_light/widgets/item_sockets/item_socket.controller.dart';
 
-abstract class BaseItemSocketsWidget extends BaseDestinyStatefulItemWidget {
+abstract class BaseItemSocketsWidget extends StatefulWidget {
   final ItemSocketController controller;
   final DestinyItemSocketCategoryDefinition category;
 
   final double iconSize;
 
-  BaseItemSocketsWidget(
-      {Key key,
-      DestinyItemComponent item,
-      DestinyInventoryItemDefinition definition,
-      this.category,
-      this.iconSize = 72,
-      this.controller})
-      : super(key: key, item: item, definition: definition);
+  BaseItemSocketsWidget({Key key, this.category, this.iconSize = 72, this.controller}) : super(key: key);
 }
 
-abstract class BaseItemSocketsWidgetState<T extends BaseItemSocketsWidget> extends BaseDestinyItemState<T>
+abstract class BaseItemSocketsWidgetState<T extends BaseItemSocketsWidget> extends State<T>
     with VisibleSectionMixin, ProfileConsumer {
-  List<DestinyItemSocketState> _socketStates;
-  List<DestinyItemSocketState> get socketStates => _socketStates;
+  List<DestinyItemSocketState> get socketStates => controller?.socketStates;
   Map<int, DestinyInventoryItemDefinition> get plugDefinitions => controller?.plugDefinitions;
   DestinyItemSocketCategoryDefinition get category => widget.category;
-  ItemSocketController _controller;
-
-  ItemSocketController get controller {
-    if (widget.controller != null) {
-      return widget.controller;
-    }
-    if (_controller == null) {
-      _controller = ItemSocketController(item: item, definition: definition);
-    }
-    return _controller;
-  }
+  ItemSocketController get controller => widget.controller;
 
   @override
   initState() {
     super.initState();
-    _socketStates = profile.getItemSockets(item?.itemInstanceId);
     initController();
   }
 
@@ -68,8 +46,8 @@ abstract class BaseItemSocketsWidgetState<T extends BaseItemSocketsWidget> exten
     setState(() {});
   }
 
-  Set<int> socketPlugHashes(int socketIndex) {
-    return controller.socketPlugHashes(socketIndex) ?? Set();
+  List<int> socketPlugHashes(int socketIndex) {
+    return controller.socketPlugHashes(socketIndex) ?? [];
   }
 
   int socketEquippedPlugHash(int socketIndex) {
@@ -104,7 +82,7 @@ abstract class BaseItemSocketsWidgetState<T extends BaseItemSocketsWidget> exten
   }
 
   Widget buildErrorMessage(BuildContext context) {
-    if (item?.itemInstanceId != null && socketStates == null) {
+    if (controller.socketsOffline) {
       return Container(
           margin: EdgeInsets.only(bottom: 16),
           child: TranslatedTextWidget(

@@ -3,7 +3,6 @@
 import 'dart:math';
 
 import 'package:bungie_api/enums/destiny_item_type.dart';
-import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
@@ -19,7 +18,7 @@ import 'package:little_light/widgets/item_list/items/weapon/weapon_inventory_ite
 import 'package:little_light/widgets/progress_tabs/pursuit_item/large_pursuit_item.widget.dart';
 
 class QuickSelectItemWrapperWidget extends InventoryItemWrapperWidget {
-  QuickSelectItemWrapperWidget(DestinyItemComponent item, int bucketHash, {String characterId, Key key})
+  QuickSelectItemWrapperWidget(ItemWithOwner item, int bucketHash, {String characterId, Key key})
       : super(item, bucketHash, characterId: characterId, key: key);
 
   @override
@@ -43,7 +42,7 @@ class QuickSelectItemWrapperWidgetState<T extends QuickSelectItemWrapperWidget>
           return Container(
               height: 96,
               child: SubclassInventoryItemWidget(
-                widget.item,
+                widget.item?.item,
                 definition,
                 instanceInfo,
                 characterId: widget.characterId,
@@ -52,7 +51,7 @@ class QuickSelectItemWrapperWidgetState<T extends QuickSelectItemWrapperWidget>
         }
       case DestinyItemType.Weapon:
         {
-          var reusablePlugs = profile.getItemReusablePlugs(widget?.item?.itemInstanceId);
+          var reusablePlugs = profile.getItemReusablePlugs(widget?.item?.item?.itemInstanceId);
           int maxPlugs = 1;
           reusablePlugs?.forEach((key, value) {
             maxPlugs = max(maxPlugs, value.length);
@@ -67,7 +66,7 @@ class QuickSelectItemWrapperWidgetState<T extends QuickSelectItemWrapperWidget>
           return Container(
               height: height,
               child: WeaponInventoryItemWidget(
-                widget.item,
+                widget.item?.item,
                 definition,
                 instanceInfo,
                 characterId: widget.characterId,
@@ -82,7 +81,7 @@ class QuickSelectItemWrapperWidgetState<T extends QuickSelectItemWrapperWidget>
           return Container(
               height: 96,
               child: ArmorInventoryItemWidget(
-                widget.item,
+                widget.item?.item,
                 definition,
                 instanceInfo,
                 characterId: widget.characterId,
@@ -96,7 +95,7 @@ class QuickSelectItemWrapperWidgetState<T extends QuickSelectItemWrapperWidget>
           return Container(
               height: 96,
               child: EmblemInventoryItemWidget(
-                widget.item,
+                widget.item?.item,
                 definition,
                 instanceInfo,
                 characterId: widget.characterId,
@@ -108,8 +107,7 @@ class QuickSelectItemWrapperWidgetState<T extends QuickSelectItemWrapperWidget>
       default:
         if (definition?.inventory?.bucketTypeHash == InventoryBucket.pursuits) {
           return LargePursuitItemWidget(
-            item: widget.item,
-            characterId: widget.characterId,
+            item: ItemWithOwner(item, widget.characterId),
             selectable: false,
             trailing: buildCharacterIcon(context),
           );
@@ -117,7 +115,7 @@ class QuickSelectItemWrapperWidgetState<T extends QuickSelectItemWrapperWidget>
         return Container(
             height: 96,
             child: BaseInventoryItemWidget(
-              widget.item,
+              widget.item?.item,
               definition,
               instanceInfo,
               characterId: widget.characterId,
