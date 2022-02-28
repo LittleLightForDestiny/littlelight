@@ -6,13 +6,13 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
-import 'package:little_light/pages/item_details/item_details.page.dart';
 import 'package:little_light/pages/item_details/item_details.page_route.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/inventory_utils.dart';
+import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
@@ -166,18 +166,10 @@ class LoadoutSlotWidget extends StatelessWidget with ProfileConsumer, ManifestCo
                 if (item == null) {
                   return;
                 }
-                var def = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
-                var instanceInfo = profile.getInstanceInfo(item.itemInstanceId);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => ItemDetailsPage(
-                      item: item,
-                      definition: def,
-                      instanceInfo: instanceInfo,
-                      characterId: null,
-                      hideItemManagement: true,
-                    ),
+                  ItemDetailsPageRoute.viewOnly(
+                    item: ItemWithOwner(item, null),
                   ),
                 );
               },
@@ -197,15 +189,10 @@ class LoadoutSlotWidget extends StatelessWidget with ProfileConsumer, ManifestCo
     if (option == null) return;
     switch (option) {
       case LoadoutSlotOptionsResponse.Details:
-        final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
-        final instanceInfo = profile.getInstanceInfo(item.itemInstanceId);
         Navigator.push(
             context,
-            ItemDetailsPageRoute(
-              definition: def,
-              instanceInfo: instanceInfo,
-              item: item,
-              hideItemManagement: true,
+            ItemDetailsPageRoute.viewOnly(
+              item: ItemWithOwner(item, null),
             ));
         return;
       case LoadoutSlotOptionsResponse.Remove:

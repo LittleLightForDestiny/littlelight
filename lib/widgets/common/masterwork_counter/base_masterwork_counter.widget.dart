@@ -1,19 +1,19 @@
-// @dart=2.9
+// @dart=2.12
 
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_objective_definition.dart';
 import 'package:bungie_api/models/destiny_objective_progress.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/language/language.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
-import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
-class BaseMasterworkCounterWidget extends BaseDestinyStatefulItemWidget {
-  BaseMasterworkCounterWidget({DestinyItemComponent item, Key key}) : super(item: item, key: key);
+class BaseMasterworkCounterWidget extends StatefulWidget {
+  final DestinyItemComponent? item;
+
+  BaseMasterworkCounterWidget({this.item, Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -21,10 +21,10 @@ class BaseMasterworkCounterWidget extends BaseDestinyStatefulItemWidget {
   }
 }
 
-class BaseMasterworkCounterWidgetState<T extends BaseMasterworkCounterWidget> extends BaseDestinyItemState<T>
+class BaseMasterworkCounterWidgetState<T extends BaseMasterworkCounterWidget> extends State<T>
     with AutomaticKeepAliveClientMixin, LanguageConsumer, ProfileConsumer, ManifestConsumer {
-  DestinyObjectiveProgress masterworkObjective;
-  DestinyObjectiveDefinition masterworkObjectiveDefinition;
+  DestinyObjectiveProgress? masterworkObjective;
+  DestinyObjectiveDefinition? masterworkObjectiveDefinition;
 
   initState() {
     super.initState();
@@ -32,13 +32,14 @@ class BaseMasterworkCounterWidgetState<T extends BaseMasterworkCounterWidget> ex
   }
 
   loadDefinitions() async {
-    if (widget.item == null) return;
-    var plugObjectives = profile.getPlugObjectives(widget?.item?.itemInstanceId);
+    final itemInstanceID = widget.item?.itemInstanceId;
+    if (itemInstanceID == null) return;
+    final plugObjectives = profile.getPlugObjectives(itemInstanceID);
 
     if (plugObjectives == null) return;
-    for (var objectives in plugObjectives?.values) {
-      for (var objective in objectives) {
-        if (objective.visible) {
+    for (final objectives in plugObjectives.values) {
+      for (final objective in objectives) {
+        if (objective.visible ?? false) {
           masterworkObjective = objective;
           masterworkObjectiveDefinition =
               await manifest.getDefinition<DestinyObjectiveDefinition>(objective.objectiveHash);
@@ -87,12 +88,14 @@ class BaseMasterworkCounterWidgetState<T extends BaseMasterworkCounterWidget> ex
     return Container(
       width: 26,
       height: 26,
-      child: QueuedNetworkImage(imageUrl: BungieApiService.url(masterworkObjectiveDefinition.displayProperties.icon)),
+      child: QueuedNetworkImage.fromBungie(masterworkObjectiveDefinition?.displayProperties?.icon),
     );
   }
 
   Widget buildProgressDescription(BuildContext context) {
-    return Text(masterworkObjectiveDefinition.progressDescription,
+    final description = masterworkObjectiveDefinition?.progressDescription;
+    if (description == null) return Container();
+    return Text(description,
         softWrap: false,
         overflow: TextOverflow.fade,
         style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontSize: 11));
@@ -100,7 +103,7 @@ class BaseMasterworkCounterWidgetState<T extends BaseMasterworkCounterWidget> ex
 
   Widget buildProgressValue(BuildContext context) {
     var formatter = NumberFormat.decimalPattern(languageService.currentLanguage);
-    var formattedValue = formatter.format(masterworkObjective.progress);
+    var formattedValue = formatter.format(masterworkObjective?.progress ?? 0);
     return Text("$formattedValue", style: TextStyle(color: Colors.amber.shade200, fontSize: 15));
   }
 }

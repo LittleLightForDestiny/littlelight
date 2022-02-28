@@ -28,7 +28,7 @@ class DetailsItemPerksWidget extends BaseItemSocketsWidget {
     DestinyInventoryItemDefinition definition,
     DestinyItemSocketCategoryDefinition category,
     ItemSocketController controller,
-  }) : super(key: key, item: item, definition: definition, category: category, controller: controller);
+  }) : super(key: key, category: category, controller: controller);
 
   @override
   State<StatefulWidget> createState() {
@@ -143,12 +143,12 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget> extends Base
   }
 
   @override
-  Set<int> socketPlugHashes(int socketIndex) {
+  List<int> socketPlugHashes(int socketIndex) {
     var isRandom = controller.randomizedPlugHashes(socketIndex).length > 0;
     if (controller.reusablePlugs == null && isRandom) {
       return controller
           .bungieRollPlugHashes(socketIndex)
-          .followedBy([controller.socketRandomizedSelectedPlugHash(socketIndex)]).toSet();
+          .followedBy([controller.socketRandomizedSelectedPlugHash(socketIndex)]).toList();
     }
 
     return super.socketPlugHashes(socketIndex);
@@ -208,7 +208,7 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget> extends Base
     }
 
     final tags = wishlistsService
-        .getPlugTags(definition?.hash, plugItemHash)
+        .getPlugTags(controller.definition.hash, plugItemHash)
         .where(
             (element) => [WishlistTag.GodPVE, WishlistTag.PVE, WishlistTag.GodPVP, WishlistTag.PVP].contains(element))
         .toSet();
@@ -250,17 +250,20 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget> extends Base
     bool isSelectedOnSocket = plugItemHash == controller.socketSelectedPlugHash(socketIndex);
     bool isSelected = plugItemHash == controller.selectedPlugHash;
 
-    return SelectablePerkWidget(
-      selected: isSelected,
-      selectedOnSocket: isSelectedOnSocket,
-      itemDefinition: widget.definition,
-      plugHash: plugItemHash,
-      plugDefinition: plugDef,
-      equipped: isEquipped,
-      key: Key("$plugItemHash $isSelected $isSelectedOnSocket"),
-      onTap: () {
-        controller.selectSocket(socketIndex, plugItemHash);
-      },
+    return Container(
+      child: SelectablePerkWidget(
+        selected: isSelected,
+        selectedOnSocket: isSelectedOnSocket,
+        itemDefinition: controller.definition,
+        plugHash: plugItemHash,
+        plugDefinition: plugDef,
+        equipped: isEquipped,
+        key: Key("$plugItemHash $isSelected $isSelectedOnSocket"),
+        onTap: () {
+          controller.selectSocket(socketIndex, plugItemHash);
+        },
+      ),
+      padding: EdgeInsets.only(bottom: 8),
     );
   }
 }

@@ -154,7 +154,7 @@ class LargeScreenEquipmentListWidgetState extends State<LargeScreenEquipmentList
     final mq = MediaQuery.of(context);
     final headerHeight = 40;
     final equippedHeight = bucketOptions.equippedItemHeight;
-    final itemsPerRow = bucketOptions.unequippedItemsPerRow;
+    final itemsPerRow = bucketOptions.responsiveUnequippedItemsPerRow(context, columnCount);
     final columnWidth =
         (mq.size.width - (columnCount - 1) * 10 - 8 - mq.viewPadding.left - mq.viewPadding.right) / columnCount;
     final itemWidth = itemsPerRow >= 0 ? (columnWidth - (itemsPerRow - 1) * 2) / itemsPerRow : 0;
@@ -181,6 +181,7 @@ class LargeScreenEquipmentListWidgetState extends State<LargeScreenEquipmentList
                     setState(() {});
                   }
                 },
+                columnCount: columnHashes.length,
                 key: Key("bucket${bucket}_${widget.character}"),
                 characterId: widget.character.characterId,
                 includeInfoHeader: false,
@@ -221,17 +222,13 @@ class LargeScreenEquipmentListWidgetState extends State<LargeScreenEquipmentList
     return userSettings.getDisplayOptionsForBucket("$bucketHash");
   }
 
-  int getItemCountPerRow(BuildContext context, BucketDisplayOptions bucketOptions) {
-    return bucketOptions.responsiveUnequippedItemsPerRow(context);
-  }
-
   bool suppressEmptySpaces(bucketHash) => _suppressEmptySpaces?.contains(bucketHash) ?? false;
 
   SliverSection buildUnequippedItems(List<DestinyItemComponent> items, ListBucket bucket) {
     final bucketDef = bucketDefinitions[bucket.bucketHash];
     final bucketOptions = getBucketOptions(bucket.bucketHash);
     final maxSlots = bucketDef?.itemCount != null ? (bucketDef.itemCount - 1) : items.length;
-    final itemsPerRow = getItemCountPerRow(context, bucketOptions);
+    final itemsPerRow = bucketOptions.responsiveUnequippedItemsPerRow(context);
     int bucketSize = maxSlots;
     if (!bucketDef.hasTransferDestination || suppressEmptySpaces(bucket.bucketHash)) {
       bucketSize = (items.length / itemsPerRow).ceil() * itemsPerRow;
@@ -257,7 +254,7 @@ class LargeScreenEquipmentListWidgetState extends State<LargeScreenEquipmentList
         final item = items[index];
         final itemKey = "equipped_${item?.itemInstanceId ?? item?.itemHash ?? 'empty'}";
         return InventoryItemWrapperWidget(
-          item,
+          item != null ? ItemWithOwner(item, widget.character.characterId) : null,
           item?.bucketHash,
           key: Key(itemKey),
           characterId: widget.character.characterId,

@@ -7,6 +7,7 @@ import 'package:little_light/core/router/littlelight_router.dart';
 import 'package:little_light/core/theme/littlelight.scroll_behavior.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
+import 'package:little_light/services/unilinks_handler/unilinks.consumer.dart';
 
 const _router = LittleLightRouter();
 
@@ -17,11 +18,27 @@ class LittleLightApp extends StatefulWidget {
   _LittleLightAppState createState() => _LittleLightAppState();
 }
 
-class _LittleLightAppState extends State<LittleLightApp> with AnalyticsConsumer {
+class _LittleLightAppState extends State<LittleLightApp> with AnalyticsConsumer, UnilinksConsumer {
   @override
   void initState() {
     super.initState();
     LittleLightNavigatorKeyContainer.navigatorKey = GlobalKey<NavigatorState>();
+    unilinks?.addListener(updateUnilinks);
+  }
+
+  @override
+  void dispose() {
+    unilinks?.removeListener(updateUnilinks);
+    super.dispose();
+  }
+
+  void updateUnilinks() {
+    final context = LittleLightNavigatorKeyContainer.navigatorKey?.currentContext;
+    if (context == null) return;
+    final currentLink = unilinks?.currentLink;
+    if (currentLink == null) return;
+    final unilinksRoute = RouteSettings(name: currentLink);
+    Navigator.of(context).pushAndRemoveUntil(_router.getPage(unilinksRoute), (r) => false);
   }
 
   @override
@@ -36,11 +53,15 @@ class _LittleLightAppState extends State<LittleLightApp> with AnalyticsConsumer 
         behavior: LittleLightScrollBehaviour(),
         child: LittleLightTheme(child ?? Container()),
       ),
-      onGenerateRoute: (route) => _router.getPage(route),
-      localizationsDelegates: [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ],
+      onGenerateRoute: (route) {
+        final currentLink = unilinks?.currentLink;
+        if (currentLink != null) {
+          final unilinksRoute = RouteSettings(name: currentLink);
+          return _router.getPage(unilinksRoute);
+        }
+        return _router.getPage(route);
+      },
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
       supportedLocales: [
         const Locale('en'), // English
         const Locale('fr'), // French

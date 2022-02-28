@@ -78,9 +78,9 @@ class ObjectivesService with StorageConsumer, ProfileConsumer, ManifestConsumer 
 
   Future<DestinyItemComponent?> findObjectivePlugItem(TrackedObjective objective) async {
     var items = profile.getAllItems();
-    var item = items.firstWhereOrNull((i) => i.item?.itemHash == objective.parentHash);
-    if (item == null || item.item == null) return null;
-    var plugObjective = profile.getPlugObjectives(item.item!.itemInstanceId!);
+    var item = items.firstWhereOrNull((i) => i.item.itemHash == objective.parentHash);
+    if (item == null) return null;
+    var plugObjective = profile.getPlugObjectives(item.item.itemInstanceId!);
     if (plugObjective?.containsKey("${objective.hash}") ?? false) {
       return item.item;
     }

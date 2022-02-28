@@ -24,6 +24,7 @@ import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/selection/selection.service.dart';
 import 'package:little_light/services/storage/export.dart';
+import 'package:little_light/services/unilinks_handler/unilinks_handler.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.service.dart';
 
@@ -38,6 +39,7 @@ Future<void> setupCoreServices() async {
   getItCoreInstance.reset();
   await setupAnalyticsService();
   await setupHttpsOverrides();
+  await setupUnilinksHandler();
 }
 
 Future<void> setupServices() async {

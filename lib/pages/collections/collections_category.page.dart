@@ -50,7 +50,8 @@ class CollectionsCategoryPageState extends PresentationNodesTabsScaffoldState<Co
     final nodesDefinitions = await manifest.getDefinitions<DestinyPresentationNodeDefinition>(nodeHashes);
     setState(() {
       this.categoryDefinition = categoryDefinition;
-      this.nodesDefinitions = nodesDefinitions.values.toList();
+      this.nodesDefinitions =
+          nodeHashes.map((h) => nodesDefinitions[h]).whereType<DestinyPresentationNodeDefinition>().toList();
     });
   }
 

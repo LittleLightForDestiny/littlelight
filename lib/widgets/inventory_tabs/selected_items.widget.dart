@@ -5,7 +5,7 @@ import 'dart:async';
 import 'package:bungie_api/enums/item_state.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/pages/item_details/item_details.page.dart';
+import 'package:little_light/pages/item_details/item_details.page_route.dart';
 import 'package:little_light/services/inventory/inventory.consumer.dart';
 import 'package:little_light/services/inventory/inventory.package.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
@@ -16,7 +16,6 @@ import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-
 import 'package:little_light/widgets/inventory_tabs/multiselect_management_block.widget.dart';
 import 'package:little_light/widgets/item_list/items/quick_select_item_wrapper.widget.dart';
 
@@ -107,20 +106,12 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget>
           uppercase: true,
         ),
         onPressed: () async {
-          var item = items.single;
-          var instanceInfo = profile.getInstanceInfo(item?.item?.itemInstanceId);
-          var def = await manifest.getDefinition<DestinyInventoryItemDefinition>(item?.item?.itemHash);
+          var item = items.first;
           Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ItemDetailsPage(
-                item: item.item,
-                definition: def,
-                instanceInfo: instanceInfo,
-                characterId: item.ownerId,
-              ),
-            ),
-          );
+              context,
+              ItemDetailsPageRoute(
+                item: item,
+              ));
         },
       ));
     }
@@ -183,7 +174,7 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget>
       return Container(
           key: ObjectKey(item),
           child: QuickSelectItemWrapperWidget(
-            item?.item,
+            item,
             null,
             characterId: item?.ownerId,
           ));

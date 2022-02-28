@@ -1,11 +1,10 @@
 // @dart=2.9
 
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
-import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:little_light/pages/item_details/item_details.page.dart';
+import 'package:little_light/pages/item_details/item_details.page_route.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/media_query_helper.dart';
@@ -18,9 +17,10 @@ class ItemDetailDuplicatesWidget extends BaseDestinyStatefulItemWidget {
   final List<ItemWithOwner> duplicates;
 
   ItemDetailDuplicatesWidget(
-      DestinyItemComponent item, DestinyInventoryItemDefinition definition, DestinyItemInstanceComponent instanceInfo,
+      ItemWithOwner item, DestinyInventoryItemDefinition definition, DestinyItemInstanceComponent instanceInfo,
       {Key key, this.duplicates})
-      : super(item: item, definition: definition, instanceInfo: instanceInfo, key: key);
+      : super(
+            item: item?.item, characterId: item?.ownerId, definition: definition, instanceInfo: instanceInfo, key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -91,15 +91,8 @@ class ItemDetailDuplicatesWidgetState extends BaseDestinyItemState<ItemDetailDup
     BuildContext context,
     ItemWithOwner item,
   ) {
-    var instance = profile.getInstanceInfo(item.item.itemInstanceId);
-    var route = MaterialPageRoute(
-      builder: (context) => ItemDetailsPage(
-        item: item.item,
-        definition: definition,
-        instanceInfo: instance,
-        characterId: item.ownerId,
-        uniqueId: null,
-      ),
+    final route = ItemDetailsPageRoute(
+      item: item,
     );
     if (this.instanceInfo != null) {
       Navigator.pushReplacement(context, route);

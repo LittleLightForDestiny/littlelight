@@ -7,7 +7,6 @@ import 'package:bungie_api/enums/destiny_item_type.dart';
 import 'package:bungie_api/enums/item_state.dart';
 import 'package:bungie_api/enums/tier_type.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
-import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_power_cap_definition.dart';
 import 'package:bungie_api/models/destiny_stat_definition.dart';
@@ -16,7 +15,7 @@ import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
-import 'package:little_light/widgets/common/base/base_destiny_stateless_item.widget.dart';
+import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
@@ -32,30 +31,44 @@ import 'package:little_light/widgets/item_stats/screenshot_item_stats.widget.dar
 import 'package:little_light/widgets/transfer_destinations/screenshot_transfer_destinations.widget.dart';
 import 'package:shimmer/shimmer.dart';
 
-class LandscapeItemCoverWidget extends BaseDestinyStatelessItemWidget {
+class LandscapeItemCoverWidget extends StatelessWidget {
   final String uniqueId;
   final ItemSocketController socketController;
   final bool hideTransferBlock;
+  final ItemWithOwner item;
+  final DestinyInventoryItemDefinition definition;
+  final DestinyItemInstanceComponent instanceInfo;
 
   LandscapeItemCoverWidget(
-      DestinyItemComponent item, DestinyInventoryItemDefinition definition, DestinyItemInstanceComponent instanceInfo,
-      {Key key, this.hideTransferBlock = false, String characterId, this.uniqueId, this.socketController})
-      : super(item: item, definition: definition, instanceInfo: instanceInfo, key: key, characterId: characterId);
+    this.item,
+    this.definition,
+    this.instanceInfo, {
+    this.hideTransferBlock = false,
+    this.uniqueId,
+    // ItemSocketController socketController,
+    this.socketController,
+    Key key,
+  }) : super(key: key);
+
+  String get tag {
+    List<dynamic> params = [item?.item?.itemInstanceId, item?.item?.itemHash ?? definition?.hash, item?.ownerId];
+    params.removeWhere((p) => p == null);
+    return params.map((p) => "$p").join("_");
+  }
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
+    final size = MediaQuery.of(context).size;
     double paddingTop = MediaQuery.of(context).padding.top;
-    double screenshotHeight = min(width / (16 / 9), MediaQuery.of(context).size.height);
+    double screenshotHeight = size.width / (16 / 9);
     double minHeight = paddingTop + kToolbarHeight;
-    double maxHeight = screenshotHeight;
+    double maxHeight = screenshotHeight.clamp(0, size.height);
     if ((definition?.screenshot?.length ?? 0) == 0) {
       maxHeight = minHeight;
     }
     return SliverPersistentHeader(
         pinned: true,
         delegate: LandscapeItemCoverDelegate(item, definition, instanceInfo, tag, uniqueId,
-            characterId: characterId,
             socketController: socketController,
             hideTransferBlock: hideTransferBlock,
             minHeight: minHeight,
@@ -64,7 +77,7 @@ class LandscapeItemCoverWidget extends BaseDestinyStatelessItemWidget {
 }
 
 class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with ItemNotesConsumer {
-  final DestinyItemComponent item;
+  final ItemWithOwner item;
   final DestinyInventoryItemDefinition definition;
   final DestinyItemInstanceComponent instanceInfo;
   final double minHeight;
@@ -72,45 +85,73 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
   final String tag;
   final String uniqueId;
   final ItemSocketController socketController;
-  final String characterId;
 
   bool hideTransferBlock;
 
   LandscapeItemCoverDelegate(this.item, this.definition, this.instanceInfo, this.tag, this.uniqueId,
-      {this.minHeight = 50, this.maxHeight = 200, this.socketController, this.characterId, this.hideTransferBlock})
+      {this.minHeight = 50, this.maxHeight = 200, this.socketController, this.hideTransferBlock})
       : super();
 
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
-    double expandRatio = min(1, max(0, 1 - shrinkOffset / (this.maxHeight - this.minHeight)));
+    double expandRatio = min(1, max(0, 1 - (shrinkOffset) / (this.maxHeight - this.minHeight)));
     if (maxHeight == minHeight) {
       expandRatio = 0;
     }
     return Container(
-        color: DestinyData.getTierColor(definition.inventory.tierType),
+        color: DestinyData.getTierColor(definition?.inventory?.tierType),
         child: Stack(
-          // overflow: Overflow.visible,
           fit: StackFit.expand,
           children: <Widget>[
             background(context, expandRatio),
             secondaryIcon(context, expandRatio),
+            backButton(context, expandRatio),
             tierBar(context, expandRatio),
-            rightColumn(context, expandRatio),
-            topRightBlock(context, expandRatio),
-            leftColumn(context, expandRatio),
-            socketDetails(context, expandRatio),
+            if (socketController != null) leftColumn(context, expandRatio),
             icon(context, expandRatio),
             buildNameAndType(context, expandRatio),
-            backButton(context, expandRatio),
+            rightColumn(context, expandRatio)
           ],
         ));
   }
 
-  Widget topRightBlock(BuildContext context, double expandRatio) {
+  double topPadding(BuildContext context, double expandRatio) =>
+      max(convertSize(48.0, context), MediaQuery.of(context).viewPadding.top);
+
+  double bottomPadding(BuildContext context, double expandRatio) =>
+      max(convertSize(48.0, context), MediaQuery.of(context).viewPadding.bottom);
+
+  double leftPadding(BuildContext context, double expandRatio) =>
+      max(convertSize(96.0, context), MediaQuery.of(context).viewPadding.left);
+
+  double rightPadding(BuildContext context, double expandRatio) =>
+      max(convertSize(96.0, context), MediaQuery.of(context).viewPadding.right);
+
+  Widget rightColumn(BuildContext context, double expandRatio) {
     return Positioned(
-        top: convertSize(96.0, context),
-        right: convertSize(96.0, context),
-        child: Opacity(opacity: expandRatio, child: transferBlock(context, expandRatio)));
+        top: topPadding(context, expandRatio),
+        bottom: bottomPadding(context, expandRatio),
+        right: rightPadding(context, expandRatio),
+        child: SingleChildScrollView(
+            physics: NeverScrollableScrollPhysics(),
+            child: Container(
+                height: MediaQuery.of(context).size.height -
+                    topPadding(context, expandRatio) -
+                    bottomPadding(context, expandRatio),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    managementBlock(context, expandRatio),
+                    Container(height: convertSize(16.0, context)),
+                    Expanded(child: socketController == null ? Container() : socketDetails(context, expandRatio)),
+                    Container(height: convertSize(16.0, context)),
+                    statsBlock(context, expandRatio)
+                  ],
+                ))));
+  }
+
+  Widget managementBlock(BuildContext context, double expandRatio) {
+    return Opacity(opacity: expandRatio, child: transferBlock(context, expandRatio));
   }
 
   Widget backButton(BuildContext context, double expandRatio) {
@@ -122,7 +163,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
         height: kToolbarHeight,
         child: BackButton(
             color: Color.lerp(
-                DestinyData.getTierTextColor(definition.inventory.tierType), Colors.grey.shade300, expandRatio)));
+                DestinyData.getTierTextColor(definition?.inventory?.tierType), Colors.grey.shade300, expandRatio)));
   }
 
   Widget icon(BuildContext context, double expandRatio) {
@@ -140,7 +181,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
         child: Hero(
             tag: "item_icon_${tag}_$uniqueId",
             child: ItemIconWidget.builder(
-              item: item,
+              item: item?.item,
               definition: definition,
               instanceInfo: instanceInfo,
               iconBorderWidth: lerpDouble(1, convertSize(3, context), expandRatio),
@@ -149,7 +190,8 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
 
   Widget buildNameAndType(BuildContext context, double expandRatio) {
     double paddingTop = MediaQuery.of(context).padding.top;
-    var customName = itemNotes.getNotesForItem(item?.itemHash, item?.itemInstanceId)?.customName?.toUpperCase();
+    var customName =
+        itemNotes.getNotesForItem(item?.item?.itemHash, item?.item?.itemInstanceId)?.customName?.toUpperCase();
 
     return Positioned(
         top: lerpDouble(paddingTop + 8, convertSize(96, context), expandRatio),
@@ -158,16 +200,21 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+            Container(
+                width: convertSize(1030, context),
+                child: Text(
+                  customName ?? definition?.displayProperties?.name?.toUpperCase() ?? "",
+                  maxLines: 1,
+                  softWrap: false,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                      color: DestinyData.getTierTextColor(definition?.inventory?.tierType).withOpacity(.9),
+                      fontSize: lerpDouble(kToolbarHeight * .5, convertSize(74, context), expandRatio),
+                      fontWeight: FontWeight.bold,
+                      height: .94),
+                )),
             Text(
-              customName ?? definition.displayProperties.name.toUpperCase(),
-              style: TextStyle(
-                  color: DestinyData.getTierTextColor(definition?.inventory?.tierType).withOpacity(.9),
-                  fontSize: lerpDouble(kToolbarHeight * .5, convertSize(74, context), expandRatio),
-                  fontWeight: FontWeight.bold,
-                  height: .94),
-            ),
-            Text(
-              definition.itemTypeDisplayName.toUpperCase(),
+              definition?.itemTypeDisplayName?.toUpperCase() ?? "",
               style: TextStyle(
                   fontSize: lerpDouble(kToolbarHeight * .3, convertSize(34, context), expandRatio),
                   height: .94,
@@ -179,139 +226,157 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
   }
 
   Widget socketDetails(BuildContext context, double expandRatio) {
-    return Positioned(
-        top: convertSize(96.0 * 2.4 + 1080 * (expandRatio - 1), context),
-        left: convertSize(862, context),
-        child: Opacity(
-            opacity: expandRatio,
+    return Opacity(
+        opacity: expandRatio,
+        child: SingleChildScrollView(
             child: Container(
                 width: convertSize(600, context),
                 child: ScreenshotSocketDetailsWidget(
-                    item: item,
+                    item: item?.item,
                     parentDefinition: definition,
                     pixelSize: pixelSize(context),
                     controller: socketController))));
   }
 
   Widget leftColumn(BuildContext context, double expandRatio) {
-    var perksCategory = definition.sockets?.socketCategories
+    final leftColumnWidth = convertSize(730, context);
+    var perksCategory = definition?.sockets?.socketCategories
         ?.firstWhere((s) => DestinyData.socketCategoryPerkHashes.contains(s.socketCategoryHash), orElse: () => null);
-    var armorTierCategory = definition.sockets?.socketCategories
+    var armorTierCategory = definition?.sockets?.socketCategories
         ?.firstWhere((s) => DestinyData.socketCategoryTierHashes.contains(s.socketCategoryHash), orElse: () => null);
-    var modsCategory = definition.sockets?.socketCategories
+    var modsCategory = definition?.sockets?.socketCategories
         ?.firstWhere((s) => DestinyData.socketCategoryModHashes.contains(s.socketCategoryHash), orElse: () => null);
-    var exoticIntrinsicPerkCategory = definition.sockets?.socketCategories?.firstWhere(
+    var shaderCategory = definition?.sockets?.socketCategories?.firstWhere(
+        (s) => DestinyData.socketCategoryCosmeticModHashes.contains(s.socketCategoryHash),
+        orElse: () => null);
+    var exoticIntrinsicPerkCategory = definition?.sockets?.socketCategories?.firstWhere(
         (s) => DestinyData.socketCategoryIntrinsicPerkHashes.contains(s.socketCategoryHash),
         orElse: () => null);
+    final topPadding = (this.topPadding(context, expandRatio) + convertSize(180.0, context)) * expandRatio +
+        kToolbarHeight * (1 - expandRatio);
     return Positioned(
-        top: convertSize(96.0 * 2.4 + 1080 * (expandRatio - 1), context),
-        left: convertSize(96.0, context),
+        top: topPadding,
+        left: leftPadding(context, expandRatio),
+        bottom: bottomPadding(context, expandRatio),
         child: Opacity(
             opacity: expandRatio,
-            child: Column(
+            child: SingleChildScrollView(
+                child: Container(
+                    child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Container(
-                    width: convertSize(730, context),
-                    child: Text(
-                      definition.displayProperties?.description ?? "",
-                      style: TextStyle(
-                        fontStyle: FontStyle.italic,
-                        fontSize: convertSize(24, context),
-                        fontWeight: FontWeight.w500,
-                        color: Theme.of(context).colorScheme.onSurface.withOpacity(.7),
+                if (definition?.displayProperties?.description?.isNotEmpty ?? false)
+                  Container(
+                      width: leftColumnWidth,
+                      padding: EdgeInsets.only(
+                        bottom: convertSize(16, context),
                       ),
-                    )),
+                      child: Text(
+                        definition?.displayProperties?.description ?? "",
+                        style: TextStyle(
+                          fontStyle: FontStyle.italic,
+                          fontSize: convertSize(24, context),
+                          fontWeight: FontWeight.w500,
+                          color: Theme.of(context).colorScheme.onSurface.withOpacity(.7),
+                        ),
+                      )),
                 Container(
-                  height: convertSize(32, context),
-                ),
-                Container(
-                    width: convertSize(730, context),
+                    width: leftColumnWidth,
+                    padding: EdgeInsets.only(
+                      bottom: convertSize(16, context),
+                    ),
                     child: ScreenShotItemPerksWidget(
                       controller: socketController,
                       category: perksCategory,
                       definition: definition,
-                      item: item,
+                      item: item?.item,
                       pixelSize: pixelSize(context),
                     )),
                 Container(
-                  height: convertSize(16, context),
-                ),
-                Container(
-                    width: convertSize(730, context),
+                    width: leftColumnWidth,
+                    padding: EdgeInsets.only(
+                      bottom: convertSize(16, context),
+                    ),
                     child: ScreenShotArmorTierWidget(
                       controller: socketController,
                       category: armorTierCategory,
                       definition: definition,
-                      item: item,
+                      item: item?.item,
                       pixelSize: pixelSize(context),
                     )),
                 Container(
-                  height: convertSize(16, context),
-                ),
-                Container(
-                    width: convertSize(730, context),
+                    width: leftColumnWidth,
+                    padding: EdgeInsets.only(
+                      bottom: convertSize(16, context),
+                    ),
                     child: ScreenShotItemModsWidget(
                       controller: socketController,
                       category: modsCategory,
                       definition: definition,
-                      item: item,
+                      item: item?.item,
                       pixelSize: pixelSize(context),
                     )),
                 Container(
-                  height: convertSize(16, context),
-                ),
-                Container(
-                    width: convertSize(730, context),
+                    width: leftColumnWidth,
+                    padding: EdgeInsets.only(
+                      bottom: convertSize(16, context),
+                    ),
                     child: ScreenShotItemIntrinsicPerkWidget(
                       controller: socketController,
                       category: exoticIntrinsicPerkCategory,
                       definition: definition,
-                      item: item,
+                      item: item?.item,
+                      pixelSize: pixelSize(context),
+                    )),
+                Container(
+                    width: leftColumnWidth,
+                    child: ScreenShotItemModsWidget(
+                      controller: socketController,
+                      category: shaderCategory,
+                      definition: definition,
+                      item: item?.item,
                       pixelSize: pixelSize(context),
                     )),
               ],
-            )));
+            )))));
   }
 
   Widget transferBlock(BuildContext context, double expandRatio) {
     if (hideTransferBlock || item == null) return Container();
     return Container(
         child: ScreenshotTransferDestinationsWidget(
-      pixelSize: pixelSize(context),
-      item: item,
+      pixelSize: pixelSize(context).clamp(0, .7),
+      item: item?.item,
       instanceInfo: instanceInfo,
       definition: definition,
-      characterId: characterId,
+      characterId: item?.ownerId,
     ));
   }
 
-  Widget rightColumn(BuildContext context, double expandRatio) {
-    return Positioned(
-        bottom: convertSize(96.0, context),
-        right: convertSize(96.0, context),
-        child: Opacity(
-            opacity: expandRatio,
-            child: IntrinsicHeight(
-                child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                primaryStatHash == null ? Container() : buildPrimaryStat(context),
-                primaryStatHash == null || (definition.stats.stats?.length ?? 0) == 0
-                    ? Container()
-                    : Container(
-                        margin: EdgeInsets.symmetric(horizontal: convertSize(16, context)),
-                        width: convertSize(2, context),
-                        color: Theme.of(context).colorScheme.onSurface.withOpacity(.4)),
-                ScreenShotItemStatsWidget(
-                    socketController: socketController,
-                    pixelSize: pixelSize(context),
-                    item: item,
-                    definition: definition),
-              ],
-            ))));
+  Widget statsBlock(BuildContext context, double expandRatio) {
+    return Opacity(
+        opacity: expandRatio,
+        child: IntrinsicHeight(
+            child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            primaryStatHash == null ? Container() : buildPrimaryStat(context),
+            primaryStatHash == null || (definition?.stats?.stats?.length ?? 0) == 0
+                ? Container()
+                : Container(
+                    margin: EdgeInsets.symmetric(horizontal: convertSize(16, context)),
+                    width: convertSize(2, context),
+                    color: Theme.of(context).colorScheme.onSurface.withOpacity(.4)),
+            ScreenShotItemStatsWidget(
+              socketController: socketController,
+              pixelSize: pixelSize(context),
+              item: item?.item,
+              definition: definition,
+            ),
+          ],
+        )));
   }
 
   int get primaryStatHash => instanceInfo?.primaryStat?.statHash;
@@ -357,11 +422,11 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
   }
 
   Widget buildPowerCap(BuildContext context) {
-    var versionNumber = item?.versionNumber ?? definition?.quality?.currentVersion;
+    var versionNumber = item?.item?.versionNumber ?? definition?.quality?.currentVersion;
     if (versionNumber == null || definition?.quality?.versions == null) {
       return Container();
     }
-    var version = definition.quality.versions[versionNumber];
+    var version = definition?.quality?.versions[versionNumber];
     return DefinitionProviderWidget<DestinyPowerCapDefinition>(version.powerCapHash, (def) {
       if (def.powerCap > 9000) {
         return Container(height: convertSize(40, context));
@@ -382,7 +447,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
 
   Widget buildMasterworkCounter(BuildContext context) {
     return ScreenshotMasterworkCounterWidget(
-      item: item,
+      item: item?.item,
       pixelSize: pixelSize(context),
     );
   }
@@ -403,7 +468,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
 
   Widget secondaryIcon(BuildContext context, double expandRatio) {
     double opacity = expandRatio;
-    String imgUrl = definition.secondaryIcon;
+    String imgUrl = definition?.secondaryIcon;
     if (imgUrl == null) {
       return Container();
     }
@@ -439,18 +504,18 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
   }
 
   Widget buildBackgroundImage(BuildContext context) {
-    String imgUrl = definition.screenshot;
-    if (definition.itemType == DestinyItemType.Emblem) {
-      imgUrl = definition.secondarySpecial;
+    String imgUrl = definition?.screenshot;
+    if (definition?.itemType == DestinyItemType.Emblem) {
+      imgUrl = definition?.secondarySpecial;
     }
-    if (definition.itemType == DestinyItemType.QuestStep) {
-      imgUrl = definition.secondaryIcon;
+    if (definition?.itemType == DestinyItemType.QuestStep) {
+      imgUrl = definition?.secondaryIcon;
     }
     if (imgUrl == null) {
       return Container();
     }
-    if (item?.overrideStyleItemHash != null) {
-      return DefinitionProviderWidget<DestinyInventoryItemDefinition>(item.overrideStyleItemHash, (def) {
+    if (item?.item?.overrideStyleItemHash != null) {
+      return DefinitionProviderWidget<DestinyInventoryItemDefinition>(item?.item?.overrideStyleItemHash, (def) {
         if (def?.plug?.isDummyPlug ?? false) {
           return QueuedNetworkImage(
               imageUrl: BungieApiService.url(imgUrl),
@@ -480,8 +545,8 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
   }
 
   Widget tierBar(BuildContext context, double expandRatio) {
-    Color tierColor = DestinyData.getTierColor(definition.inventory?.tierType);
-    ItemState state = item?.state ?? ItemState.None;
+    Color tierColor = DestinyData.getTierColor(definition?.inventory?.tierType);
+    ItemState state = item?.item?.state ?? ItemState.None;
     bool isMasterwork = state.contains(ItemState.Masterwork);
     if (isMasterwork && definition?.inventory?.tierType == TierType.Exotic) {}
     if (isMasterwork) {}
@@ -494,7 +559,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
             child: Column(
               children: <Widget>[
                 Container(
-                    height: 60 * pixelSize(context),
+                    height: topPadding(context, expandRatio) * .6,
                     decoration: BoxDecoration(
                         gradient: LinearGradient(colors: [
                       tierColor.withOpacity(.6),
@@ -506,7 +571,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
                       1
                     ]))),
                 Container(
-                    height: 10 * pixelSize(context),
+                    height: topPadding(context, expandRatio) * .1,
                     decoration: BoxDecoration(
                         gradient: LinearGradient(colors: [
                       tierColor,

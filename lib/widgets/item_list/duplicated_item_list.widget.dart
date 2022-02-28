@@ -4,7 +4,7 @@ import 'dart:async';
 
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/pages/item_details/item_details.page.dart';
+import 'package:little_light/pages/item_details/item_details.page_route.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/notification/notification.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
@@ -165,9 +165,8 @@ class DuplicatedItemListWidgetState extends State<DuplicatedItemListWidget>
           return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
               item.item.itemHash,
               (def) => _ItemInstanceWrapper(
-                    item: item.item,
+                    item: item,
                     definition: def,
-                    characterId: item.ownerId,
                   ),
               key: Key("item_${item.item.itemHash}_${item.item.itemInstanceId}_${item.ownerId}"));
         });
@@ -260,11 +259,10 @@ class _DefinitionItemWrapperState extends State<_DefinitionItemWrapper> with Sel
 }
 
 class _ItemInstanceWrapper extends StatefulWidget {
-  final DestinyItemComponent item;
+  final ItemWithOwner item;
   final DestinyInventoryItemDefinition definition;
-  final String characterId;
 
-  _ItemInstanceWrapper({Key key, this.item, this.definition, this.characterId}) : super(key: key);
+  _ItemInstanceWrapper({Key key, this.item, this.definition}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -275,13 +273,13 @@ class _ItemInstanceWrapper extends StatefulWidget {
 class _ItemInstanceWrapperState extends State<_ItemInstanceWrapper>
     with UserSettingsConsumer, ProfileConsumer, SelectionConsumer {
   DestinyItemInstanceComponent instance;
-  bool get selected => selection.isSelected(ItemWithOwner(widget.item, widget.characterId));
+  bool get selected => selection.isSelected(widget.item);
 
   @override
   void initState() {
     super.initState();
 
-    instance = profile.getInstanceInfo(widget.item.itemInstanceId);
+    instance = profile.getInstanceInfo(widget.item.item.itemInstanceId);
 
     StreamSubscription<List<ItemWithOwner>> sub;
     sub = selection.broadcaster.listen((selectedItems) {
@@ -297,8 +295,8 @@ class _ItemInstanceWrapperState extends State<_ItemInstanceWrapper>
   Widget build(BuildContext context) {
     return Stack(children: [
       Positioned.fill(
-          child: BaseItemInstanceWidget(widget.item, widget.definition, instance,
-              characterId: widget.characterId, uniqueId: null)),
+          child: BaseItemInstanceWidget(widget.item.item, widget.definition, instance,
+              characterId: widget.item.ownerId, uniqueId: null)),
       selected
           ? Positioned.fill(
               child: Container(
@@ -327,20 +325,14 @@ class _ItemInstanceWrapperState extends State<_ItemInstanceWrapper>
       return;
     }
     if (userSettings.tapToSelect) {
-      selection.setItem(ItemWithOwner(widget.item, widget.characterId));
+      selection.setItem(ItemWithOwner(widget.item.item, widget.item.ownerId));
       return;
     }
     selection.clear();
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => ItemDetailsPage(
-          item: widget.item,
-          definition: widget.definition,
-          instanceInfo: instance,
-          characterId: widget.characterId,
-          uniqueId: null,
-        ),
+      ItemDetailsPageRoute(
+        item: widget.item,
       ),
     );
   }
@@ -348,7 +340,7 @@ class _ItemInstanceWrapperState extends State<_ItemInstanceWrapper>
   void onLongPress(context) {
     if (widget.definition.nonTransferrable) return;
     selection.activateMultiSelect();
-    selection.addItem(ItemWithOwner(widget.item, widget.characterId));
+    selection.addItem(widget.item);
     setState(() {});
   }
 }

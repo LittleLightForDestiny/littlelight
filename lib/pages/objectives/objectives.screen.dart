@@ -7,15 +7,16 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/models/tracked_objective.dart';
-import 'package:little_light/pages/item_details/item_details.page.dart';
+import 'package:little_light/pages/item_details/item_details.page_route.dart';
+import 'package:little_light/pages/triumphs/widgets/record_item.widget.dart';
 import 'package:little_light/services/littlelight/objectives.service.dart';
 import 'package:little_light/services/notification/notification.package.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/profile/profile_component_groups.dart';
+import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/refresh_button.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-import 'package:little_light/pages/triumphs/widgets/record_item.widget.dart';
 import 'package:little_light/widgets/progress_tabs/pursuit_item/tracked_pursuit_item.widget.dart';
 
 class ObjectivesScreen extends StatefulWidget {
@@ -25,7 +26,7 @@ class ObjectivesScreen extends StatefulWidget {
 
 class ObjectivesScreenState extends State<ObjectivesScreen> with ProfileConsumer, NotificationConsumer {
   List<TrackedObjective> objectives;
-  Map<TrackedObjective, DestinyItemComponent> items;
+  Map<TrackedObjective, ItemWithOwner> items;
 
   StreamSubscription<NotificationEvent> subscription;
 
@@ -56,13 +57,15 @@ class ObjectivesScreenState extends State<ObjectivesScreen> with ProfileConsumer
     for (var o in itemObjectives) {
       DestinyItemComponent item = await service.findObjectiveItem(o);
       if (item != null) {
-        items[o] = item;
+        final ownerID = profile.getItemOwner(item.itemInstanceId);
+        items[o] = ItemWithOwner(item, ownerID);
       }
     }
     for (var o in plugObjectives) {
       DestinyItemComponent item = await service.findObjectivePlugItem(o);
       if (item != null) {
-        items[o] = item;
+        final ownerID = profile.getItemOwner(item.itemInstanceId);
+        items[o] = ItemWithOwner(item, ownerID);
       }
     }
     setState(() {});
@@ -146,14 +149,7 @@ class ObjectivesScreenState extends State<ObjectivesScreen> with ProfileConsumer
               onTap: (item, definition, instanceInfo, characterId) async {
                 await Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => ItemDetailsPage(
-                      item: item,
-                      definition: definition,
-                      instanceInfo: instanceInfo,
-                      characterId: characterId,
-                    ),
-                  ),
+                  ItemDetailsPageRoute(item: item),
                 );
                 loadObjectives();
               });

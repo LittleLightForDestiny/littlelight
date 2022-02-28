@@ -1,6 +1,7 @@
 //@dart=2.12
 import 'package:flutter/material.dart';
 import 'package:little_light/pages/triumphs/triumphs_category.page.dart';
+import 'package:little_light/pages/triumphs/triumphs_search.page.dart';
 
 import 'triumphs_root.page.dart';
 
@@ -44,4 +45,11 @@ class TriumphsPageRoute extends MaterialPageRoute {
               }
               return TriumphsRootPage();
             });
+}
+
+class TriumphsSearchPageRoute extends MaterialPageRoute {
+  TriumphsSearchPageRoute()
+      : super(builder: (context) {
+          return TriumphsSearchPage();
+        });
 }

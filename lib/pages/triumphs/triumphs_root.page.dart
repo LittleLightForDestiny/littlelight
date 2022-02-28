@@ -62,6 +62,17 @@ class TriumphsRootPageState extends PresentationNodesTabsScaffoldState<TriumphsR
     loadRootNodes();
   }
 
+  @override
+  List<Widget>? buildAppBarActions(BuildContext context) => [
+        IconButton(
+          enableFeedback: false,
+          icon: Icon(Icons.search),
+          onPressed: () {
+            Navigator.of(context).push(TriumphsSearchPageRoute());
+          },
+        )
+      ];
+
   Future<int?> getLoreNodeHash() async {
     int? loreNodeHash = destinySettings.loreRootNode;
     if (loreNodeHash == null) return null;

@@ -1,4 +1,4 @@
-// @dart=2.9
+// @dart=2.12
 
 import 'package:bungie_api/enums/item_state.dart';
 import 'package:bungie_api/enums/tier_type.dart';
@@ -15,13 +15,13 @@ class ItemNameBarWidget extends BaseDestinyStatelessItemWidget with ItemNotesCon
   final EdgeInsets padding;
   final bool multiline;
   final FontWeight fontWeight;
-  final Widget trailing;
+  final Widget? trailing;
   ItemNameBarWidget(
-    DestinyItemComponent item,
-    DestinyInventoryItemDefinition definition,
-    DestinyItemInstanceComponent instanceInfo, {
-    Key key,
-    String characterId,
+    DestinyItemComponent? item,
+    DestinyInventoryItemDefinition? definition,
+    DestinyItemInstanceComponent? instanceInfo, {
+    Key? key,
+    String? characterId,
     this.fontSize = 14,
     this.padding = const EdgeInsets.all(8),
     this.multiline = false,
@@ -43,16 +43,16 @@ class ItemNameBarWidget extends BaseDestinyStatelessItemWidget with ItemNotesCon
   BoxDecoration nameBarBoxDecoration() {
     ItemState state = item?.state ?? ItemState.None;
     if (!state.contains(ItemState.Masterwork)) {
-      return BoxDecoration(color: DestinyData.getTierColor(definition.inventory.tierType));
+      return BoxDecoration(color: DestinyData.getTierColor(definition?.inventory?.tierType));
     }
     return BoxDecoration(
-        color: DestinyData.getTierColor(definition.inventory.tierType),
+        color: DestinyData.getTierColor(definition?.inventory?.tierType),
         image: DecorationImage(
             repeat: ImageRepeat.repeatX, alignment: Alignment.topCenter, image: getMasterWorkTopOverlay()));
   }
 
   ExactAssetImage getMasterWorkTopOverlay() {
-    if (definition.inventory.tierType == TierType.Exotic) {
+    if (definition?.inventory?.tierType == TierType.Exotic) {
       return ExactAssetImage("assets/imgs/masterwork-top-exotic.png");
     }
     return ExactAssetImage("assets/imgs/masterwork-top.png");
@@ -76,13 +76,13 @@ class ItemNameBarWidget extends BaseDestinyStatelessItemWidget with ItemNotesCon
     if ((customName?.length ?? 0) == 0) {
       customName = null;
     }
-    return Text(customName ?? definition.displayProperties.name.toUpperCase(),
+    return Text(customName ?? definition?.displayProperties?.name?.toUpperCase() ?? "",
         overflow: TextOverflow.fade,
         maxLines: multiline ? 2 : 1,
         softWrap: multiline,
         style: TextStyle(
           fontSize: fontSize,
-          color: DestinyData.getTierTextColor(definition.inventory.tierType),
+          color: DestinyData.getTierTextColor(definition?.inventory?.tierType),
           fontWeight: fontWeight,
         ));
   }

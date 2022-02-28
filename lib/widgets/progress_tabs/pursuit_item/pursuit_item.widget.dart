@@ -9,7 +9,7 @@ import 'package:bungie_api/models/destiny_objective_definition.dart';
 import 'package:bungie_api/models/destiny_objective_progress.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:little_light/pages/item_details/item_details.page.dart';
+import 'package:little_light/pages/item_details/item_details.page_route.dart';
 import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/notification/notification.package.dart';
@@ -26,10 +26,8 @@ import 'package:little_light/widgets/common/small_objective.widget.dart';
 import 'package:little_light/widgets/item_tags/item_tag.widget.dart';
 
 class PursuitItemWidget extends StatefulWidget {
-  final String characterId;
-
   final Widget trailing;
-  final DestinyItemComponent item;
+  final ItemWithOwner item;
   final Function onTap;
   final Function onLongPress;
   final bool selectable;
@@ -40,7 +38,6 @@ class PursuitItemWidget extends StatefulWidget {
 
   PursuitItemWidget(
       {Key key,
-      this.characterId,
       this.item,
       this.trailing,
       this.selectable = false,
@@ -72,11 +69,12 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
 
   DestinyItemInstanceComponent instanceInfo;
 
-  String get itemInstanceId => widget.item.itemInstanceId;
-  int get hash => widget.item.itemHash;
-  DestinyItemComponent get item => widget.item;
+  String get itemInstanceId => widget.item.item.itemInstanceId;
+  int get hash => widget.item.item.itemHash;
+  DestinyItemComponent get item => widget.item.item;
+  String get characterId => widget.item.ownerId;
 
-  bool get selected => widget.selectable && selection.isSelected(ItemWithOwner(widget.item, widget.characterId));
+  bool get selected => widget.selectable && selection.isSelected(widget.item);
 
   @override
   void initState() {
@@ -168,18 +166,13 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
       if (selected) {
         selection.clear();
       } else {
-        selection.setItem(ItemWithOwner(widget.item, widget.characterId));
+        selection.setItem(widget.item);
       }
     } else {
       Navigator.push(
         context,
-        MaterialPageRoute(
-          builder: (context) => ItemDetailsPage(
-            item: item,
-            definition: definition,
-            instanceInfo: instanceInfo,
-            characterId: widget.characterId,
-          ),
+        ItemDetailsPageRoute(
+          item: widget.item,
         ),
       );
     }
@@ -189,13 +182,8 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
     if (userSettings.tapToSelect) {
       Navigator.push(
         context,
-        MaterialPageRoute(
-          builder: (context) => ItemDetailsPage(
-            item: item,
-            definition: definition,
-            instanceInfo: instanceInfo,
-            characterId: widget.characterId,
-          ),
+        ItemDetailsPageRoute(
+          item: widget.item,
         ),
       );
     }
@@ -203,7 +191,7 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
       if (selected) {
         selection.clear();
       } else {
-        selection.setItem(ItemWithOwner(widget.item, widget.characterId));
+        selection.setItem(widget.item);
       }
       return;
     }
@@ -248,7 +236,7 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
               item,
               definition,
               instanceInfo,
-              characterId: widget.characterId,
+              characterId: characterId,
               fontSize: widget.titleFontSize,
               multiline: false,
               padding: EdgeInsets.all(widget.paddingSize).copyWith(left: widget.iconSize + widget.paddingSize * 2),
@@ -304,7 +292,7 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
 
   updateProgress() {
     instanceInfo = profile.getInstanceInfo(itemInstanceId);
-    itemObjectives = profile.getItemObjectives(itemInstanceId, widget.characterId, hash);
+    itemObjectives = profile.getItemObjectives(itemInstanceId, characterId, hash);
     setState(() {});
   }
 

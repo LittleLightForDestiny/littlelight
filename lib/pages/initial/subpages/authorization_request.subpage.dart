@@ -29,10 +29,9 @@ class AuthorizationRequestSubPageState extends SubpageBaseState<AuthorizationReq
 
   @override
   Widget buildContent(BuildContext context) => Container(
-      constraints: BoxConstraints(maxWidth: 400),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         Padding(
-            padding: EdgeInsets.all(8),
+            padding: EdgeInsets.all(8).copyWith(bottom: 24),
             child: forceReauth
                 ? TranslatedTextWidget("Authorize with Bungie.net to use inventory management features")
                 : TranslatedTextWidget("Please re-authorize Little Light to keep using inventory management features")),

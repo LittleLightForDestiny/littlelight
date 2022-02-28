@@ -1,11 +1,21 @@
 // @dart=2.9
 
 import 'package:flutter/material.dart';
+import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/progress_tabs/pursuit_item/pursuit_item.widget.dart';
 
 class SmallPursuitItemWidget extends PursuitItemWidget {
-  SmallPursuitItemWidget({Key key, characterId, item, onTap, bool selectable = false})
-      : super(key: key, characterId: characterId, item: item, onTap: onTap, selectable: selectable);
+  SmallPursuitItemWidget({
+    Key key,
+    ItemWithOwner item,
+    onTap,
+    bool selectable = false,
+  }) : super(
+          key: key,
+          item: item,
+          onTap: onTap,
+          selectable: selectable,
+        );
 
   SmallPursuitItemWidgetState createState() => SmallPursuitItemWidgetState();
 }

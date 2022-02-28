@@ -5,13 +5,12 @@ import 'package:bungie_api/enums/item_state.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
-import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:bungie_api/models/destiny_stat_group_definition.dart';
-import 'package:bungie_api/models/destiny_vendor_item_definition.dart';
 import 'package:bungie_api/models/destiny_vendor_sale_item_component.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/models/loadout.dart';
+import 'package:little_light/pages/item_details/item_details.page_route.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/inventory/inventory.consumer.dart';
@@ -19,13 +18,11 @@ import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/services/littlelight/loadouts.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
-import 'package:little_light/services/profile/vendors.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/loadout_utils.dart';
 import 'package:little_light/utils/media_query_helper.dart';
-import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
@@ -56,36 +53,35 @@ import 'package:little_light/widgets/item_tags/item_details_tags.widget.dart';
 import 'package:little_light/widgets/option_sheets/as_equipped_switch.widget.dart';
 import 'package:little_light/widgets/option_sheets/loadout_select_sheet.widget.dart';
 
-class ItemDetailsPage extends BaseDestinyStatefulItemWidget {
-  final String uniqueId;
-  final bool hideItemManagement;
-  final List<DestinyItemSocketState> socketStates;
-  final DestinyVendorSaleItemComponent sale;
-  final DestinyVendorItemDefinition vendorItem;
-  final int vendorHash;
-
+class ItemDetailsPage extends StatefulWidget {
   ItemDetailsPage({
-    String characterId,
-    DestinyItemComponent item,
-    DestinyInventoryItemDefinition definition,
-    DestinyItemInstanceComponent instanceInfo,
-    this.vendorItem,
-    this.vendorHash,
-    this.hideItemManagement = false,
-    this.socketStates,
     Key key,
-    this.uniqueId,
-    this.sale,
-  }) : super(item: item, definition: definition, instanceInfo: instanceInfo, key: key, characterId: characterId);
+  });
 
   @override
-  BaseDestinyItemState<BaseDestinyStatefulItemWidget> createState() {
-    return ItemDetailScreenState();
-  }
+  State<ItemDetailsPage> createState() => ItemDetailScreenState();
 }
 
-class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailsPage>
+class ItemDetailScreenState extends State<ItemDetailsPage>
     with AuthConsumer, LoadoutsConsumer, ProfileConsumer, InventoryConsumer, ManifestConsumer, ItemNotesConsumer {
+  ItemDetailsPageArgumentsBase get routeArgs {
+    final args = ModalRoute.of(context).settings.arguments;
+    if (args is ItemDetailsPageArgumentsBase) return args;
+    return null;
+  }
+
+  ItemDetailsPageArguments get itemRouteArgs {
+    final args = routeArgs;
+    if (args is ItemDetailsPageArguments) return args;
+    return null;
+  }
+
+  VendorItemDetailsPageArguments get vendorItemRouteArgs {
+    final args = routeArgs;
+    if (args is VendorItemDetailsPageArguments) return args;
+    return null;
+  }
+
   int selectedPerk;
   Map<int, int> selectedPerks = Map();
   ItemSocketController socketController;
@@ -94,7 +90,31 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailsPage>
   List<Loadout> loadouts;
   bool loaded = false;
 
-  List<DestinyItemSocketState> get socketStates => widget.socketStates ?? profile.getItemSockets(item?.itemInstanceId);
+  int get itemHash => routeArgs.itemHash;
+  String get uniqueId => routeArgs.uniqueId;
+  bool get hideItemManagement => routeArgs.hideItemManagement;
+
+  ItemWithOwner get itemWithOwner {
+    final args = routeArgs;
+    if (args is ItemDetailsPageArguments) {
+      return args.item;
+    }
+    return null;
+  }
+
+  DestinyVendorSaleItemComponent get vendorItem {
+    final args = routeArgs;
+    if (args is VendorItemDetailsPageArguments) {
+      return args.vendorItem;
+    }
+    return null;
+  }
+
+  DestinyInventoryItemDefinition definition;
+  DestinyItemComponent get item => itemWithOwner?.item;
+  String get characterId => itemWithOwner?.ownerId;
+
+  DestinyItemInstanceComponent get instanceInfo => profile.getInstanceInfo(item?.itemInstanceId);
 
   initState() {
     super.initState();
@@ -104,25 +124,38 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailsPage>
   asyncInit() async {
     await Future.delayed(Duration.zero);
     final route = ModalRoute.of(context);
+    await getDefinitionFromCache();
     await Future.delayed(route?.transitionDuration ?? Duration.zero);
+    await loadItemDefinition();
     await initSocketController();
-    await this.loadDefinitions();
+    await loadDefinitions();
     if (mounted)
       setState(() {
         loaded = true;
       });
   }
 
-  initSocketController() async {
-    if (widget.vendorItem != null) {
-      final reusable = await VendorsService()
-          .getSaleItemReusablePerks(characterId, widget.vendorHash, widget.vendorItem?.vendorItemIndex);
-      socketController = ItemSocketController(
-          definition: widget.definition, item: widget.item, reusablePlugs: reusable, socketStates: socketStates);
-    } else {
-      socketController =
-          ItemSocketController(definition: widget.definition, item: widget.item, socketStates: socketStates);
+  Future<void> getDefinitionFromCache() async {
+    this.definition = manifest.getDefinitionFromCache<DestinyInventoryItemDefinition>(itemHash);
+    if (this.definition != null) setState(() {});
+  }
+
+  Future<void> loadItemDefinition() async {
+    if (this.definition != null) return;
+    this.definition = await manifest.getDefinition<DestinyInventoryItemDefinition>(itemHash);
+  }
+
+  Future<void> initSocketController() async {
+    if (itemWithOwner != null) {
+      socketController = ItemSocketController.fromItem(itemWithOwner);
+      return;
     }
+    if (routeArgs is VendorItemDetailsPageArguments) {
+      final args = routeArgs as VendorItemDetailsPageArguments;
+      socketController = ItemSocketController.fromVendorItem(
+          characterId: args.characterId, vendorHash: args.vendorHash, vendorItem: vendorItem);
+    }
+    socketController = ItemSocketController.fromItemHash(itemHash);
   }
 
   Future<void> loadDefinitions() async {
@@ -185,7 +218,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailsPage>
       CustomScrollView(
         slivers: [
           ItemCoverWidget(item, definition, instanceInfo,
-              uniqueId: widget.uniqueId, characterId: widget.characterId, key: Key("cover_$customName")),
+              uniqueId: this.uniqueId, characterId: characterId, key: Key("cover_$customName")),
           SliverList(
               delegate: SliverChildListDelegate([
             buildSaleDetails(context),
@@ -242,12 +275,11 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailsPage>
         body: Stack(children: [
       CustomScrollView(
         slivers: [
-          LandscapeItemCoverWidget(item, definition, instanceInfo,
-              uniqueId: widget.uniqueId,
-              characterId: widget.characterId,
+          LandscapeItemCoverWidget(itemWithOwner, definition, instanceInfo,
+              uniqueId: this.uniqueId,
               socketController: socketController,
-              hideTransferBlock: widget.hideItemManagement,
-              key: Key("cover_${item?.itemHash}_$customName")),
+              hideTransferBlock: this.hideItemManagement,
+              key: Key("cover_${item?.itemHash}_${customName}_$loaded")),
           SliverList(
               delegate: SliverChildListDelegate([
             buildSaleDetails(context),
@@ -298,15 +330,16 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailsPage>
   }
 
   Widget buildSaleDetails(BuildContext context) {
-    if (widget?.sale == null) {
+    if (vendorItem == null) {
       return Container(height: 1);
     }
+    final args = routeArgs as VendorItemDetailsPageArguments;
     var screenPadding = MediaQuery.of(context).padding;
     return Container(
         padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
         child: ItemVendorInfoWidget(
-          sale: widget.sale,
-          vendorHash: widget.vendorHash,
+          sale: vendorItem,
+          vendorHash: args.vendorHash,
           definition: definition,
         ));
   }
@@ -325,13 +358,13 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailsPage>
     return Container(
         padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
         child: WishlistBuildsWidget(
-          widget.definition?.hash,
+          definition?.hash,
           reusablePlugs: socketController.reusablePlugs,
         ));
   }
 
   Widget buildManagementBlock(BuildContext context) {
-    if (widget.hideItemManagement) return Container();
+    if (this.hideItemManagement) return Container();
     var screenPadding = MediaQuery.of(context).padding;
     return Container(
         padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
@@ -385,7 +418,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailsPage>
   }
 
   Widget buildActionButtons(BuildContext context) {
-    if (widget.hideItemManagement || widget.item == null) return Container();
+    if (this.hideItemManagement || item == null) return Container();
     List<Widget> buttons = [];
     if (InventoryBucket.loadoutBucketHashes.contains(definition?.inventory?.bucketTypeHash)) {
       buttons.add(Expanded(
@@ -408,12 +441,12 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailsPage>
                         ),
                         loadouts: loadouts,
                         onSelect: (loadout) async {
-                          loadout.addItem(widget.item.itemHash, widget.item.itemInstanceId, equipped);
+                          loadout.addItem(item.itemHash, item.itemInstanceId, equipped);
                           await loadoutService.saveLoadout(loadout);
                         }));
               })));
     }
-    if (widget?.definition?.collectibleHash != null || widget?.definition?.equippable == true) {
+    if (definition?.collectibleHash != null || definition?.equippable == true) {
       buttons.add(Expanded(
           child: ElevatedButton(
               child: TranslatedTextWidget(
@@ -424,12 +457,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailsPage>
               onPressed: () async {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => ItemDetailsPage(
-                      definition: widget.definition,
-                      uniqueId: null,
-                    ),
-                  ),
+                  ItemDetailsPageRoute.definition(hash: definition.hash),
                 );
               })));
     }
@@ -457,7 +485,7 @@ class ItemDetailScreenState extends BaseDestinyItemState<ItemDetailsPage>
     return Container(
         padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
         child: ItemDetailDuplicatesWidget(
-          item,
+          itemWithOwner,
           definition,
           instanceInfo,
           duplicates: duplicates,

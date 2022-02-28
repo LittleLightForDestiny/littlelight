@@ -26,7 +26,7 @@ class DetailsItemModsWidget extends BaseItemSocketsWidget {
     DestinyInventoryItemDefinition definition,
     DestinyItemSocketCategoryDefinition category,
     ItemSocketController controller,
-  }) : super(key: key, item: item, definition: definition, category: category, controller: controller);
+  }) : super(key: key, category: category, controller: controller);
 
   @override
   State<StatefulWidget> createState() {

@@ -6,7 +6,7 @@ import 'package:bungie_api/enums/destiny_item_type.dart';
 import 'package:bungie_api/models/destiny_collectible_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/pages/item_details/item_details.page.dart';
+import 'package:little_light/pages/item_details/item_details.page_route.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
@@ -145,8 +145,8 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget>
       null,
       _itemDefinition,
       null,
-      characterId: null,
       uniqueId: null,
+      characterId: null,
     );
   }
 
@@ -189,8 +189,8 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget>
     }
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => ItemDetailsPage(definition: itemDef),
+      ItemDetailsPageRoute.definition(
+        hash: itemDef.hash,
       ),
     );
   }

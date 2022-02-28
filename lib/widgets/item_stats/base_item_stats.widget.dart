@@ -41,7 +41,6 @@ class BaseItemStatsState<T extends BaseItemStatsWidget> extends BaseDestinyItemS
   ItemSocketController _socketController;
   ItemSocketController get socketController {
     if (widget.socketController != null) return widget.socketController;
-    if (_socketController == null) _socketController = ItemSocketController(item: item, definition: definition);
     return _socketController;
   }
 

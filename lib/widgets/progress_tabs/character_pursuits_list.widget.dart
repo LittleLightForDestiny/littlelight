@@ -252,26 +252,22 @@ class _CharacterPursuitsListWidgetState extends State<CharacterPursuitsListWidge
         return Container();
       case BucketDisplayType.Large:
         return LargePursuitItemWidget(
-            characterId: widget.characterId,
-            item: item,
+            item: ItemWithOwner(item, widget.characterId),
             selectable: true,
             key: Key("pursuits_${item?.itemHash}_${item?.itemInstanceId}_${widget.characterId}"));
       case BucketDisplayType.Medium:
         return PursuitItemWidget(
-            characterId: widget.characterId,
-            item: item,
+            item: ItemWithOwner(item, widget.characterId),
             selectable: true,
             key: Key("pursuits_${item?.itemHash}_${item?.itemInstanceId}_${widget.characterId}"));
       case BucketDisplayType.Small:
         return SmallPursuitItemWidget(
-            characterId: widget.characterId,
-            item: item,
+            item: ItemWithOwner(item, widget.characterId),
             selectable: true,
             key: Key("pursuits_${item?.itemHash}_${item?.itemInstanceId}_${widget.characterId}"));
     }
     return PursuitItemWidget(
-        characterId: widget.characterId,
-        item: item,
+        item: ItemWithOwner(item, widget.characterId),
         selectable: true,
         key: Key("pursuits_${item?.itemHash}_${item?.itemInstanceId}_${widget.characterId}"));
   }
