@@ -54,10 +54,8 @@ class DamageTypeLayers {
     SwatchLayer.Layer0: Color.fromARGB(255, 64, 34, 101),
     SwatchLayer.Layer1: Color.fromARGB(255, 177, 120, 248),
   });
-  LayeredSwatch damageTypeStasis = LayeredSwatch({
-    SwatchLayer.Layer0: Color.fromARGB(255, 77, 136, 255),
-    SwatchLayer.Layer1: Color.fromARGB(255, 180, 201, 255),
-  });
+  LayeredSwatch damageTypeStasis =
+      LayeredSwatch({SwatchLayer.Layer0: Color(0xFF4D88FF), SwatchLayer.Layer1: Color(0xFF84ADFD)});
 }
 
 class ItemTierLayers {
