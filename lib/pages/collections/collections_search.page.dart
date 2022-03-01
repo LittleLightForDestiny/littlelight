@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/widgets/presentation_nodes/collectible_item.widget.dart';
 
 class CollectionsSearchPage extends StatefulWidget {

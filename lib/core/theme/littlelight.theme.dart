@@ -43,20 +43,24 @@ class LayeredSwatch extends Color {
 
 class DamageTypeLayers {
   LayeredSwatch damageTypeArc = LayeredSwatch({
-    SwatchLayer.Layer0: Color.fromARGB(255, 118, 186, 230),
-    SwatchLayer.Layer1: Color.fromARGB(255, 130, 200, 253),
+    SwatchLayer.Layer0: Color.fromARGB(255, 36, 121, 177),
+    SwatchLayer.Layer1: Color(0xFFB8F3FF),
+    SwatchLayer.Layer2: Color(0xFFB8F3FF),
   });
   LayeredSwatch damageTypeThermal = LayeredSwatch({
-    SwatchLayer.Layer0: Color.fromARGB(255, 243, 98, 39),
-    SwatchLayer.Layer1: Color.fromARGB(255, 255, 156, 74),
+    SwatchLayer.Layer0: Color(0xFFB43B0C),
+    SwatchLayer.Layer1: Color(0xFFF36227),
+    SwatchLayer.Layer2: Color(0xFFFF9C4A),
   });
   LayeredSwatch damageTypeVoid = LayeredSwatch({
-    SwatchLayer.Layer0: Color.fromARGB(255, 64, 34, 101),
-    SwatchLayer.Layer1: Color.fromARGB(255, 177, 120, 248),
+    SwatchLayer.Layer0: Color(0xFF402265),
+    SwatchLayer.Layer1: Color(0xFFB178F8),
+    SwatchLayer.Layer2: Color(0xFFB178F8),
   });
   LayeredSwatch damageTypeStasis = LayeredSwatch({
-    SwatchLayer.Layer0: Color.fromARGB(255, 77, 136, 255),
-    SwatchLayer.Layer1: Color.fromARGB(255, 180, 201, 255),
+    SwatchLayer.Layer0: Color.fromARGB(255, 40, 95, 204),
+    SwatchLayer.Layer1: Color(0xFF86A4FF),
+    SwatchLayer.Layer2: Color(0xFF86A4FF),
   });
 }
 
@@ -93,7 +97,7 @@ class LittleLightTextTheme {
 }
 
 class LittleLightThemeData {
-  final damageTypeLayers = DamageTypeLayers();
+  DamageTypeLayers get damageTypeLayers => DamageTypeLayers();
   final tierLayers = ItemTierLayers();
   LittleLightTextTheme get textTheme => LittleLightTextTheme(
         title: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: onSurfaceLayers.layer0),
