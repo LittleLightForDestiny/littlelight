@@ -11,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/utils/destiny_data.dart';
-import 'package:little_light/utils/element_type_data.dart';
 import 'package:little_light/utils/shimmer_helper.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
@@ -375,7 +374,7 @@ class _ScreenshotPerkDetailsWidgetState extends BaseSocketDetailsWidgetState<Scr
   Widget buildEnergyCost(BuildContext context) {
     var cost = definition?.plug?.energyCost;
     if (cost != null) {
-      final color = cost.energyType?.getColorLayer(context)?.layer1;
+      final color = cost.energyType?.getColorLayer(context)?.layer2;
       var icon = cost.energyType == DestinyEnergyType.Any
           ? Container()
           : Icon(

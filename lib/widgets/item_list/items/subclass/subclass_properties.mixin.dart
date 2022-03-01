@@ -5,7 +5,7 @@ import 'package:bungie_api/models/destiny_item_talent_grid_component.dart';
 import 'package:bungie_api/models/destiny_talent_grid_definition.dart';
 import 'package:bungie_api/models/destiny_talent_node_category.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/utils/element_type_data.dart';
+import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/item_icon/subclass_icon.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/inventory_item.mixin.dart';
@@ -27,7 +27,7 @@ mixin SubclassPropertiesMixin on InventoryItemMixin {
 
   @override
   Widget positionedNameBar(BuildContext context) {
-    Color damageTypeColor = definition.talentGrid.hudDamageType?.getColorLayer(context);
+    Color damageTypeColor = definition.talentGrid.hudDamageType?.getColorLayer(context)?.layer0;
     BoxDecoration decoration = BoxDecoration(
         gradient: LinearGradient(
             colors: <Color>[TinyColor(damageTypeColor).saturate(30).darken(30).color, Colors.transparent]));
@@ -89,21 +89,19 @@ mixin SubclassPropertiesMixin on InventoryItemMixin {
   }
 
   startBgColor(BuildContext context) {
-    var damageTypeColor = definition.talentGrid.hudDamageType?.getColorLayer(context);
+    var damageTypeColor = definition.talentGrid.hudDamageType?.getColorLayer(context)?.layer0;
     return TinyColor(damageTypeColor).lighten(15).saturate(50).color;
   }
 
   endBgColor(BuildContext context) {
-    var damageTypeColor = definition.talentGrid.hudDamageType?.getColorLayer(context);
-    if (definition.talentGrid.hudDamageType == DamageType.Stasis) {
-      return Colors.black;
-    }
-    return TinyColor(damageTypeColor).darken(40).saturate(50).color;
+    final damageTypeColor = definition.talentGrid.hudDamageType?.getColorLayer(context)?.layer0;
+    return TinyColor(damageTypeColor).darken(25).desaturate(30).color;
+    ;
   }
 
   @override
   background(BuildContext context) {
-    var damageTypeColor = definition.talentGrid.hudDamageType?.getColorLayer(context);
+    var damageTypeColor = definition.talentGrid.hudDamageType?.getColorLayer(context)?.layer0;
     BoxDecoration decoration = BoxDecoration(
         gradient: RadialGradient(
             radius: 3,

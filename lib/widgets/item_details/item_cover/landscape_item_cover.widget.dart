@@ -105,8 +105,8 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
           children: <Widget>[
             background(context, expandRatio),
             secondaryIcon(context, expandRatio),
-            backButton(context, expandRatio),
             tierBar(context, expandRatio),
+            backButton(context, expandRatio),
             if (socketController != null) leftColumn(context, expandRatio),
             icon(context, expandRatio),
             buildNameAndType(context, expandRatio),
@@ -355,6 +355,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
   }
 
   Widget statsBlock(BuildContext context, double expandRatio) {
+    if (socketController == null) return Container();
     return Opacity(
         opacity: expandRatio,
         child: IntrinsicHeight(
@@ -383,6 +384,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
   int get primaryStatValue => instanceInfo?.primaryStat?.value;
 
   Widget buildPrimaryStat(BuildContext context) {
+    final damageType = definition.defaultDamageType;
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.end,
@@ -392,6 +394,13 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
             child: Container(
                 height: convertSize(60, context),
                 child: Row(children: [
+                  if (damageType.icon != null)
+                    Container(
+                        margin: EdgeInsets.only(right: convertSize(8, context)),
+                        height: convertSize(60, context),
+                        alignment: Alignment.bottomCenter,
+                        child: Icon(damageType.icon,
+                            size: convertSize(50, context), color: damageType.getColorLayer(context).layer1)),
                   Text(
                     "$primaryStatValue",
                     style: TextStyle(height: 1, fontSize: convertSize(70, context), fontWeight: FontWeight.bold),

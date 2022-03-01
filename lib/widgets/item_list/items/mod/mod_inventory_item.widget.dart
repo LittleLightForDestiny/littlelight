@@ -9,7 +9,6 @@ import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/utils/destiny_data.dart';
-import 'package:little_light/utils/element_type_data.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/base_inventory_item.widget.dart';
@@ -60,7 +59,7 @@ class ModInventoryItemWidget extends BaseInventoryItemWidget {
   Widget modsWidget(BuildContext context) {
     var energyType = definition?.plug?.energyCost?.energyType ?? DestinyEnergyType.Any;
     var energyCost = definition?.plug?.energyCost?.energyCost ?? 0;
-    var color = energyType?.getColorLayer(context)?.layer1;
+    var color = energyType?.getColorLayer(context)?.layer2;
     if (energyCost == 0) return Container();
     return Positioned(
         bottom: 4,

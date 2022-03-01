@@ -5,7 +5,6 @@ import 'package:bungie_api/models/destiny_item_socket_entry_definition.dart';
 import 'package:bungie_api/models/destiny_item_socket_state.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/utils/destiny_data.dart';
-import 'package:little_light/utils/element_type_data.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 
 class ItemArmorTierWidget extends StatefulWidget {
@@ -73,14 +72,14 @@ class ItemArmorTierWidgetState extends State<ItemArmorTierWidget> {
               children: <Widget>[
                 !widget.suppressIcon
                     ? Icon(DestinyData.getEnergyTypeIcon(capacity?.energyType),
-                        color: capacity?.energyType?.getColorLayer(context)?.layer1, size: widget.iconSize * .7)
+                        color: capacity?.energyType?.getColorLayer(context)?.layer2, size: widget.iconSize * .7)
                     : Container(),
                 Text("${def?.plug?.energyCapacity?.capacityValue ?? 0}",
                     style: TextStyle(
                         height: 1,
                         fontWeight: FontWeight.bold,
                         fontSize: widget.iconSize,
-                        color: capacity?.energyType?.getColorLayer(context)?.layer1)),
+                        color: capacity?.energyType?.getColorLayer(context)?.layer2)),
               ],
             );
           },
