@@ -1,6 +1,5 @@
-- Fixes some database downloading issues
-- Fixes faulty authentication flow on some devices
-- Fixes mod selection on landscape view
-- Adds non rollable rolls hint on collections
-- Adds back collections search
-- Adds back Triumphs search
+- fixes vault crashing when hiding items
+- fixes contrast between stasis and arc
+- fixes landscape item cover not showing damage type
+
+**Full Changelog**: https://github.com/LittleLightForDestiny/littlelight/compare/v1.9.0...v1.9.1

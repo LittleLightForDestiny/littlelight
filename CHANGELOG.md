@@ -1,3 +1,11 @@
+## [1.9.1] - 2022-03-01
+
+- fixes vault crashing when hiding items
+- fixes contrast between stasis and arc
+- fixes landscape item cover not showing damage type
+
+**Full Changelog**: https://github.com/LittleLightForDestiny/littlelight/compare/v1.9.0...v1.9.1
+
 ## [1.9.0] - 2022-02-28
 
 - Fixes some database downloading issues
