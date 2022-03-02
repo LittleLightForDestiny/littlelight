@@ -137,7 +137,7 @@ class BaseTransferDestinationState<T extends BaseTransferDestinationsWidget> ext
   }
 
   List<TransferDestination> get equipDestinations {
-    if (!definition.equippable) {
+    if (!(definition?.equippable ?? false)) {
       return [];
     }
     return profile
@@ -152,11 +152,11 @@ class BaseTransferDestinationState<T extends BaseTransferDestinationsWidget> ext
   }
 
   List<TransferDestination> get transferDestinations {
-    if (definition.nonTransferrable) {
+    if (definition?.nonTransferrable ?? false) {
       return [];
     }
 
-    if (ProfileService.profileBuckets.contains(definition.inventory.bucketTypeHash)) {
+    if (ProfileService.profileBuckets.contains(definition?.inventory?.bucketTypeHash)) {
       if (item.bucketHash == InventoryBucket.general) {
         return [TransferDestination(ItemDestination.Inventory)];
       }
@@ -189,7 +189,7 @@ class BaseTransferDestinationState<T extends BaseTransferDestinationsWidget> ext
   }
 
   List<TransferDestination> get unequipDestinations {
-    if (!definition.equippable) {
+    if (!(definition?.equippable ?? false)) {
       return [];
     }
     bool isEquipped = instanceInfo?.isEquipped ?? false;

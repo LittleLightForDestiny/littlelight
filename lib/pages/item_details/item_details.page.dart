@@ -146,7 +146,7 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
   }
 
   Future<void> initSocketController() async {
-    if (itemWithOwner != null) {
+    if (itemWithOwner != null && itemWithOwner?.item?.itemInstanceId != null) {
       socketController = ItemSocketController.fromItem(itemWithOwner);
       return;
     }
