@@ -5,6 +5,7 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateless_item.widget.dart';
@@ -57,12 +58,17 @@ class ItemIconWidget extends BaseDestinyStatelessItemWidget {
               color: useBackgroundColor && tierType != null ? DestinyData.getTierColor(tierType) : null,
               child: itemIconImage(context))),
       itemSeasonIcon(context),
+      itemDeepSightIcon(),
       Positioned.fill(
           child: state.contains(ItemState.Masterwork)
               ? getMasterworkOutline()
-              : Container(
-                  decoration: iconBoxDecoration(),
-                )),
+              : state.contains(ItemState.HighlightedObjective)
+                  ? Container(
+                      decoration: highlightedObjectiveBoxDecoration(context),
+                    )
+                  : Container(
+                      decoration: iconBoxDecoration(),
+                    )),
       state.contains(ItemState.Masterwork)
           ? Positioned.fill(
               child: Shimmer.fromColors(
@@ -73,6 +79,16 @@ class ItemIconWidget extends BaseDestinyStatelessItemWidget {
             ))
           : Container()
     ]);
+  }
+
+  Widget itemDeepSightIcon() {
+    if (item?.state?.contains(ItemState.Crafted) ?? false) {
+      return Image.asset(
+        "assets/imgs/crafted-icon-overlay.png",
+        fit: BoxFit.fill,
+      );
+    }
+    return Container();
   }
 
   String? seasonBadgeUrl() {
@@ -93,6 +109,14 @@ class ItemIconWidget extends BaseDestinyStatelessItemWidget {
       );
     }
     return Container();
+  }
+
+  BoxDecoration? highlightedObjectiveBoxDecoration(BuildContext context) {
+    if ([InventoryBucket.engrams, InventoryBucket.subclass].contains(item?.bucketHash)) {
+      return null;
+    }
+    return BoxDecoration(
+        border: Border.all(color: LittleLightTheme.of(context).highlightedObjectiveLayers, width: iconBorderWidth));
   }
 
   BoxDecoration? iconBoxDecoration() {

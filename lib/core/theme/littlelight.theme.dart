@@ -53,7 +53,7 @@ class DamageTypeLayers {
     SwatchLayer.Layer2: Color(0xFFFF9C4A),
   });
   LayeredSwatch damageTypeVoid = LayeredSwatch({
-    SwatchLayer.Layer0: Color(0xFF402265),
+    SwatchLayer.Layer0: Color.fromARGB(255, 77, 20, 148),
     SwatchLayer.Layer1: Color(0xFFB178F8),
     SwatchLayer.Layer2: Color(0xFFB178F8),
   });
@@ -118,6 +118,10 @@ class LittleLightThemeData {
     SwatchLayer.Layer1: Color(0xFFDEE1E3),
     SwatchLayer.Layer2: Color(0xFFCACDCE),
     SwatchLayer.Layer3: Color(0xFFABAFB0),
+  });
+
+  final highlightedObjectiveLayers = LayeredSwatch({
+    SwatchLayer.Layer0: Color(0xFFD95738),
   });
 
   final primaryLayers = LayeredSwatch({
