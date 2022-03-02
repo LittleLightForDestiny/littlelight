@@ -43,17 +43,18 @@ git clone https://github.com/LittleLightForDestiny/LittleLight
 2. Click `Add Project`
 3. Enter any application name, and click continue
    1. Optional: Disable Google Analytics
-4. Click `Add Firebase`
-5. Add an app for Android and/or iOS and/or Web - this depends on what platforms you'll be testing for
-6. Enter the details:
+4. Add an app for Android and/or iOS and/or Web - this depends on what platforms you'll be testing for
+5. Enter the details:
    1. Reverse domain name for your package (it doesn't need to be real!)
    2. Any app nickname
-7. Download the config file and place it in the following location(s):
+6. Download the config file and place it in the following location(s):
    1. Android: `google-services.json` → `./android/app/`
    2. iOS: `GoogleService-Info.plist` → `./ios/Runner/`
    3. Web: copy the JS `firebaseConfig` object into `./web/google-services.js`
-8. Add the following line to `./android/local.properties`
-   1. `applicationid=reverse.domain.name.from.step.6.1`
+7. Android:
+   1. Add the following line to `./android/local.properties`
+      - `applicationid=reverse.domain.name.from.step.6.1`
+   2. Repeat stps 4-6, adding `.debug` to the end of the reverse domain name, and replacing the old `google-services.json` with the new one
 
 ### Download Third Party Libs
 1. Run `flutter packages get` to download all the libraries used in the project
