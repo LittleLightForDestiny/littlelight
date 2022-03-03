@@ -1,3 +1,7 @@
+## [1.9.2] - 2022-03-03
+
+CI test
+
 ## [1.9.1] - 2022-03-01
 
 - fixes vault crashing when hiding items
