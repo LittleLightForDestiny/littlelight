@@ -2,6 +2,7 @@
 
 import 'dart:math';
 
+import 'package:bungie_api/enums/destiny_unlock_value_uistyle.dart';
 import 'package:bungie_api/models/destiny_objective_definition.dart';
 import 'package:bungie_api/models/destiny_objective_progress.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ import 'package:little_light/utils/destiny_data.dart';
 class ObjectiveWidget extends StatefulWidget {
   final DestinyObjectiveDefinition definition;
   final Color color;
+  final Color barColor;
   final bool forceComplete;
 
   final DestinyObjectiveProgress objective;
@@ -20,15 +22,19 @@ class ObjectiveWidget extends StatefulWidget {
   final String placeholder;
   final bool parentCompleted;
 
-  const ObjectiveWidget(
-      {Key key,
-      this.definition,
-      this.color,
-      this.parentCompleted,
-      this.objective,
-      this.forceComplete = false,
-      this.placeholder})
-      : super(key: key);
+  final bool omitCheckBox;
+
+  const ObjectiveWidget({
+    Key key,
+    this.definition,
+    this.color,
+    this.barColor,
+    this.parentCompleted,
+    this.objective,
+    this.forceComplete = false,
+    this.placeholder,
+    this.omitCheckBox = false,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -64,7 +70,7 @@ class ObjectiveWidgetState extends State<ObjectiveWidget> with LanguageConsumer,
     return Container(
         padding: EdgeInsets.all(4),
         child: Row(children: [
-          buildCheck(context),
+          if (!widget.omitCheckBox) buildCheck(context),
           Expanded(
             child: buildBar(context),
           )
@@ -94,7 +100,7 @@ class ObjectiveWidgetState extends State<ObjectiveWidget> with LanguageConsumer,
     if ((definition?.completionValue ?? 0) <= 1) {
       return Container(
           padding: EdgeInsets.only(left: 8, right: 4),
-          child: Row(children: [Expanded(child: buildTitle(context)), buildCount(context)]));
+          child: Row(children: [Expanded(child: buildTitle(context)), buildProgressValue(context)]));
     }
     return Container(
         margin: EdgeInsets.only(left: 4),
@@ -112,7 +118,7 @@ class ObjectiveWidgetState extends State<ObjectiveWidget> with LanguageConsumer,
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [Expanded(child: buildTitle(context)), buildCount(context)]))
+                    children: [Expanded(child: buildTitle(context)), buildProgressValue(context)]))
           ],
         ));
   }
@@ -131,7 +137,14 @@ class ObjectiveWidgetState extends State<ObjectiveWidget> with LanguageConsumer,
             style: TextStyle(fontWeight: FontWeight.w500, fontSize: 13, color: this.color ?? Colors.grey.shade300)));
   }
 
-  buildCount(BuildContext context) {
+  Widget buildProgressValue(BuildContext context) {
+    if (definition.completedValueStyle == DestinyUnlockValueUIStyle.DateTime) {
+      return buildDate(context);
+    }
+    return buildCount(context);
+  }
+
+  Widget buildCount(BuildContext context) {
     int progress = objective?.progress ?? 0;
     int total = definition.completionValue ?? 0;
     if (!definition.allowOvercompletion) {
@@ -147,6 +160,13 @@ class ObjectiveWidgetState extends State<ObjectiveWidget> with LanguageConsumer,
     String formattedTotal = formatter.format(total);
 
     return Text(total <= 1 ? "$formattedProgress" : "$formattedProgress/$formattedTotal",
+        style: TextStyle(fontWeight: FontWeight.w500, fontSize: 13, color: this.color ?? Colors.grey.shade300));
+  }
+
+  Widget buildDate(BuildContext context) {
+    final formatter = DateFormat.yMd(languageService.currentLanguage);
+    final progress = formatter.format(DateTime.fromMillisecondsSinceEpoch(objective.progress * 1000));
+    return Text("$progress",
         style: TextStyle(fontWeight: FontWeight.w500, fontSize: 13, color: this.color ?? Colors.grey.shade300));
   }
 
@@ -169,6 +189,6 @@ class ObjectiveWidgetState extends State<ObjectiveWidget> with LanguageConsumer,
     if (parentCompleted == true) {
       return color;
     }
-    return DestinyData.objectiveProgress;
+    return widget.barColor ?? DestinyData.objectiveProgress;
   }
 }

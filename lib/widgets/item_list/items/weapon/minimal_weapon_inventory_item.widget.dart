@@ -1,5 +1,6 @@
 // @dart=2.9
 
+import 'package:bungie_api/destiny2.dart';
 import 'package:bungie_api/enums/damage_type.dart';
 import 'package:bungie_api/enums/destiny_ammunition_type.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
@@ -8,6 +9,7 @@ import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_stat.dart';
 import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/minimal_base_inventory_item.widget.dart';
@@ -33,16 +35,16 @@ class MinimalWeaponInventoryItemWidget extends MinimalBaseInventoryItemWidget wi
     return infoContainer(context, weaponPrimaryStat(context));
   }
 
+  Widget buildAmmoType(BuildContext context) {
+    return Container(
+        padding: EdgeInsets.only(right: 8),
+        child: primaryStatIcon(context, DestinyData.getAmmoTypeIcon(ammoType), DestinyData.getAmmoTypeColor(ammoType),
+            size: 15));
+  }
+
   Widget weaponPrimaryStat(BuildContext context) {
     Color damageTypeColor = damageType?.getColorLayer(context)?.layer2;
-    return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          primaryStatIcon(context, DestinyData.getAmmoTypeIcon(ammoType), DestinyData.getAmmoTypeColor(ammoType),
-              size: 15),
-          primaryStatValueField(context, damageTypeColor),
-        ].where((w) => w != null).toList());
+    return primaryStatValueField(context, damageTypeColor);
   }
 
   Widget primaryStatValueField(BuildContext context, Color color) {
@@ -51,6 +53,21 @@ class MinimalWeaponInventoryItemWidget extends MinimalBaseInventoryItemWidget wi
       "$value",
       style: TextStyle(color: color, fontWeight: FontWeight.w700, fontSize: valueFontSize),
     );
+  }
+
+  Widget buildMiddleInfoRow(BuildContext context) {
+    var locked = item?.state?.contains(ItemState.Locked) ?? false;
+    return Positioned(
+        right: padding,
+        bottom: titleFontSize + padding * 4,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            buildItemTags(context),
+            buildAmmoType(context),
+            if (locked) Container(child: Icon(FontAwesomeIcons.lock, size: titleFontSize))
+          ],
+        ));
   }
 
   Widget primaryStatNameField(BuildContext context, Color color) {

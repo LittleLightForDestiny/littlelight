@@ -96,7 +96,6 @@ mixin SubclassPropertiesMixin on InventoryItemMixin {
   endBgColor(BuildContext context) {
     final damageTypeColor = definition.talentGrid.hudDamageType?.getColorLayer(context)?.layer0;
     return TinyColor(damageTypeColor).darken(25).desaturate(30).color;
-    ;
   }
 
   @override

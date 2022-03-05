@@ -5,9 +5,12 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateless_item.widget.dart';
+// ignore: import_of_legacy_library_into_null_safe
+import 'package:little_light/widgets/common/corner_badge.decoration.dart';
 import 'package:little_light/widgets/common/item_icon/engram_icon.widget.dart';
 import 'package:little_light/widgets/common/item_icon/subclass_icon.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
@@ -42,8 +45,6 @@ class ItemIconWidget extends BaseDestinyStatelessItemWidget {
 
   @override
   Widget build(BuildContext context) {
-    ItemState state = item?.state ?? ItemState.None;
-    if (state.contains(ItemState.Masterwork)) {}
     final tierType = definition?.inventory?.tierType;
     bool useBackgroundColor = true;
     if ([DestinyItemType.Subclass, DestinyItemType.Engram].contains(definition?.itemType) ||
@@ -57,22 +58,66 @@ class ItemIconWidget extends BaseDestinyStatelessItemWidget {
               color: useBackgroundColor && tierType != null ? DestinyData.getTierColor(tierType) : null,
               child: itemIconImage(context))),
       itemSeasonIcon(context),
-      Positioned.fill(
-          child: state.contains(ItemState.Masterwork)
-              ? getMasterworkOutline()
-              : Container(
-                  decoration: iconBoxDecoration(),
-                )),
-      state.contains(ItemState.Masterwork)
-          ? Positioned.fill(
-              child: Shimmer.fromColors(
-              baseColor: Colors.amber.withOpacity(.2),
-              highlightColor: Colors.amber.shade100,
-              child: getMasterworkOutline(),
-              period: Duration(seconds: 5),
-            ))
-          : Container()
+      Positioned.fill(child: itemStateOverlay(context)),
     ]);
+  }
+
+  Widget masterworkOverlay() {
+    final tierType = definition?.inventory?.tierType;
+    final isExotic = tierType == TierType.Exotic;
+    final imgPath = isExotic ? "assets/imgs/masterwork-outline-exotic.png" : "assets/imgs/masterwork-outline.png";
+    final img = Image.asset(
+      imgPath,
+      fit: BoxFit.cover,
+    );
+    return Stack(children: [
+      img,
+      Positioned.fill(
+          child: Shimmer.fromColors(
+        baseColor: Colors.amber.withOpacity(.2),
+        highlightColor: Colors.amber.shade100,
+        child: img,
+        period: Duration(seconds: 5),
+      ))
+    ]);
+  }
+
+  Widget itemStateOverlay(BuildContext context) {
+    if ([InventoryBucket.engrams, InventoryBucket.subclass].contains(item?.bucketHash)) {
+      return Container();
+    }
+    ItemState state = item?.state ?? ItemState.None;
+    if (state.contains(ItemState.Masterwork)) {
+      return masterworkOverlay();
+    }
+    if (state.contains(ItemState.HighlightedObjective)) {
+      final color = LittleLightTheme.of(context).highlightedObjectiveLayers;
+      return LayoutBuilder(
+          builder: (context, constraints) => Container(
+              child: Container(
+                  decoration: CornerBadgeDecoration(
+                colors: [color],
+                badgeSize: constraints.maxWidth * .25,
+                position: CornerPosition.BottomLeft,
+              )),
+              decoration: BoxDecoration(
+                border:
+                    Border.all(color: LittleLightTheme.of(context).highlightedObjectiveLayers, width: iconBorderWidth),
+              )));
+    }
+    if (state.contains(ItemState.Crafted)) {
+      return Container(
+          decoration: BoxDecoration(
+              border: Border.all(color: LittleLightTheme.of(context).onSurfaceLayers, width: iconBorderWidth)),
+          child: Image.asset(
+            "assets/imgs/crafted-icon-overlay.png",
+            fit: BoxFit.fill,
+          ));
+    }
+    return Container(
+      decoration: BoxDecoration(
+          border: Border.all(color: LittleLightTheme.of(context).onSurfaceLayers, width: iconBorderWidth)),
+    );
   }
 
   String? seasonBadgeUrl() {
@@ -95,13 +140,6 @@ class ItemIconWidget extends BaseDestinyStatelessItemWidget {
     return Container();
   }
 
-  BoxDecoration? iconBoxDecoration() {
-    if ([InventoryBucket.engrams, InventoryBucket.subclass].contains(item?.bucketHash)) {
-      return null;
-    }
-    return BoxDecoration(border: Border.all(color: Colors.grey.shade300, width: iconBorderWidth));
-  }
-
   Widget itemIconImage(BuildContext context) {
     final overrideStyleItemHash = item?.overrideStyleItemHash;
     if (overrideStyleItemHash != null) {
@@ -120,20 +158,5 @@ class ItemIconWidget extends BaseDestinyStatelessItemWidget {
 
   Widget itemIconPlaceholder(BuildContext context) {
     return Container();
-  }
-
-  Widget getMasterworkOutline() {
-    final tierType = definition?.inventory?.tierType;
-    if (tierType == null) return Container();
-    if (tierType == TierType.Exotic) {
-      return Image.asset(
-        "assets/imgs/masterwork-outline-exotic.png",
-        fit: BoxFit.cover,
-      );
-    }
-    return Image.asset(
-      "assets/imgs/masterwork-outline.png",
-      fit: BoxFit.cover,
-    );
   }
 }
