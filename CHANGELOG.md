@@ -1,3 +1,12 @@
+## [1.9.3] - 2022-03-05
+
+* fixes quest details not loading
+* Adds Deepsight and Shaped Weapon info on icons and details
+* fixes empty slots not showing quick search buttons
+* fixes plugs/sockets in vendors
+* fixes custom wishlists form
+* auth flow improvements
+
 ## [1.9.2] - 2022-03-03
 
 CI test
