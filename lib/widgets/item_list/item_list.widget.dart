@@ -167,8 +167,7 @@ class ItemListWidgetState extends State<ItemListWidget>
     buckets.forEach((bucket) {
       final options = getBucketOptions(bucket.bucketHash);
       final bool showEquipped = bucket.equipped != null && options.type != BucketDisplayType.Hidden;
-      final bool showUnequipped = ((bucket.unequipped?.length ?? 0) > 0) &&
-          ![BucketDisplayType.Hidden, BucketDisplayType.OnlyEquipped].contains(options.type);
+      final bool showUnequipped = ![BucketDisplayType.Hidden, BucketDisplayType.OnlyEquipped].contains(options.type);
       final bool addSpacer = showEquipped || showUnequipped;
       list += [
         buildBucketHeaderSliver(bucket),
@@ -245,11 +244,10 @@ class ItemListWidgetState extends State<ItemListWidget>
     final itemsPerRow = getItemCountPerRow(context, bucketOptions);
     int bucketSize = maxSlots;
     if (!bucketDef.hasTransferDestination || suppressEmptySpaces(bucket.bucketHash)) {
-      try {
-        bucketSize = (items.length / itemsPerRow).ceil() * itemsPerRow;
-      } catch (e) {
-        print(e);
-      }
+      bucketSize = (items.length / itemsPerRow).ceil() * itemsPerRow;
+    }
+    if (bucketDef.hasTransferDestination && bucketOptions.type == BucketDisplayType.Large) {
+      bucketSize = (items.length + 1).clamp(0, maxSlots);
     }
     final contentDensity = {
       BucketDisplayType.Large: ContentDensity.FULL,
