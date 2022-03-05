@@ -182,15 +182,16 @@ class EquipmentScreenState extends State<EquipmentScreen>
   }
 
   Widget buildCharacterHeaderTabView(BuildContext context) {
-    var headers = characters
-        ?.map((character) => TabHeaderWidget(
-              character,
-              key: Key("${character?.emblemHash}_${character?.characterId}"),
-            ))
-        ?.toList();
+    final headers = characters
+            ?.map((character) => TabHeaderWidget(
+                  character,
+                  key: Key("${character?.emblemHash}_${character?.characterId}"),
+                ))
+            ?.toList() ??
+        <Widget>[];
     headers?.add(VaultTabHeaderWidget());
 
-    return TabBarView(controller: charTabController, children: headers ?? []);
+    return TabBarView(controller: charTabController, children: headers);
   }
 
   Widget buildTabletCharacterTabView(BuildContext context) {
