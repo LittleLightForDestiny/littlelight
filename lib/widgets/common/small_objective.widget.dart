@@ -36,14 +36,14 @@ class SmallObjectiveWidgetState extends ObjectiveWidgetState {
   @override
   Widget build(BuildContext context) {
     return Column(
-        children: [buildCount(context), buildProgressBar(context), Container(height: 2), buildTitle(context)]);
+        children: [buildProgressValue(context), buildProgressBar(context), Container(height: 2), buildTitle(context)]);
   }
 
   bool get isComplete {
     return (objective?.complete == true || forceComplete) ?? false;
   }
 
-  buildCount(BuildContext context) {
+  buildProgressValue(BuildContext context) {
     int progress = objective?.progress ?? 0;
     int total = definition.completionValue ?? 0;
     if (total <= 1)

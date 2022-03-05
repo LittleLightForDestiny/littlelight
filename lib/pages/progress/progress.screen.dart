@@ -35,8 +35,6 @@ const _page = LittleLightPersistentPage.Progress;
 
 class ProgressScreenState extends State<ProgressScreen>
     with TickerProviderStateMixin, UserSettingsConsumer, AnalyticsConsumer, ProfileConsumer {
-  Map<int, double> scrollPositions = Map();
-
   TabController charTabController;
   TabController typeTabController;
 

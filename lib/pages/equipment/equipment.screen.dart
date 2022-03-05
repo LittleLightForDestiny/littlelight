@@ -48,7 +48,6 @@ class EquipmentScreenState extends State<EquipmentScreen>
         ProfileConsumer,
         NotificationConsumer {
   int currentGroup = DestinyItemCategory.Weapon;
-  Map<int, double> scrollPositions = Map();
 
   StreamSubscription<NotificationEvent> subscription;
 
@@ -80,10 +79,6 @@ class EquipmentScreenState extends State<EquipmentScreen>
     profile.updateComponents = ProfileComponentGroups.basicProfile;
     userSettings.startingPage = _page;
     analytics.registerPageOpen(_page);
-
-    widget.itemTypes.forEach((type) {
-      scrollPositions[type] = 0;
-    });
 
     subscription = notifications.listen((event) {
       if (!mounted) return;

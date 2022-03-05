@@ -23,11 +23,6 @@ class SubclassIconWidget extends ItemIconWidget {
   }
 
   @override
-  Widget getMasterworkOutline() {
-    return Container();
-  }
-
-  @override
   Widget itemIconImage(BuildContext context) {
     return ManifestImageWidget<DestinyInventoryItemDefinition>(
       definition!.hash!,

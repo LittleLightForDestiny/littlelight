@@ -1,5 +1,6 @@
 // @dart=2.9
 
+import 'dart:async';
 import 'dart:math';
 
 import 'package:bungie_api/destiny2.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/models/bucket_display_options.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/services/notification/notification.package.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/inventory_utils.dart';
@@ -34,7 +36,7 @@ class LargeScreenEquipmentListWidget extends StatefulWidget {
 }
 
 class LargeScreenEquipmentListWidgetState extends State<LargeScreenEquipmentListWidget>
-    with ManifestConsumer, UserSettingsConsumer, ProfileConsumer {
+    with ManifestConsumer, UserSettingsConsumer, ProfileConsumer, NotificationConsumer {
   Map<int, DestinyInventoryBucketDefinition> bucketDefinitions;
   final List<List<int>> bucketHashes = [
     [InventoryBucket.lostItems],
@@ -49,10 +51,18 @@ class LargeScreenEquipmentListWidgetState extends State<LargeScreenEquipmentList
   ];
   Map<int, ListBucket> singleColumnBuckets;
 
+  StreamSubscription<NotificationEvent> notificationsSubscription;
+
   @override
   void initState() {
     super.initState();
     asyncInit();
+
+    notificationsSubscription = notifications.listen((event) {
+      if (event.type == NotificationType.receivedUpdate || event.type == NotificationType.localUpdate) {
+        buildIndex();
+      }
+    });
   }
 
   void asyncInit() async {
@@ -99,6 +109,7 @@ class LargeScreenEquipmentListWidgetState extends State<LargeScreenEquipmentList
 
   @override
   dispose() {
+    notificationsSubscription.cancel();
     super.dispose();
   }
 

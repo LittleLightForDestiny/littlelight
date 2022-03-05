@@ -31,6 +31,7 @@ import 'package:little_light/widgets/item_details/item_cover/item_cover.widget.d
 import 'package:little_light/widgets/item_details/item_cover/landscape_item_cover.widget.dart';
 import 'package:little_light/widgets/item_details/item_detail_duplicates.widget.dart';
 import 'package:little_light/widgets/item_details/item_detail_loadouts.widget.dart';
+import 'package:little_light/widgets/item_details/item_level.widget.dart';
 import 'package:little_light/widgets/item_details/item_lore.widget.dart';
 import 'package:little_light/widgets/item_details/item_objectives.widget.dart';
 import 'package:little_light/widgets/item_details/item_vendor_info.widget.dart';
@@ -237,6 +238,7 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
                           buildLoadouts(context),
                           buildWishlistNotes(context),
                           buildDuplicates(context),
+                          buildItemLevel(context),
                           buildIntrinsicPerk(context),
                           buildExoticPerkDetails(context),
                           buildModInfo(context),
@@ -297,6 +299,7 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
                           buildLockInfo(context),
                           buildActionButtons(context),
                           buildDuplicates(context),
+                          buildItemLevel(context),
                           buildIntrinsicPerk(context),
                           buildExoticPerkDetails(context),
                           buildModInfo(context),
@@ -327,6 +330,10 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
         barHeight: 0,
       ),
     ]));
+  }
+
+  Widget buildItemLevel(BuildContext context) {
+    return ItemLevelWidget(item: item);
   }
 
   Widget buildSaleDetails(BuildContext context) {
