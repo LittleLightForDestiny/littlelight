@@ -155,6 +155,7 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
       final args = routeArgs as VendorItemDetailsPageArguments;
       socketController = ItemSocketController.fromVendorItem(
           characterId: args.characterId, vendorHash: args.vendorHash, vendorItem: vendorItem);
+      return;
     }
     socketController = ItemSocketController.fromItemHash(itemHash);
   }
@@ -333,6 +334,7 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
   }
 
   Widget buildItemLevel(BuildContext context) {
+    if (item == null) return Container();
     return ItemLevelWidget(item: item);
   }
 
