@@ -63,6 +63,7 @@ class _AddCustomWishlistFormState extends State<AddCustomWishlistForm> with Lang
           buildTextField(context, "URL", maxLength: null, onInput: () {
             setState(() {});
           }),
+          Container(height: 16),
           ElevatedButton(
             onPressed: isURLValid ? () => loadWishlist() : null,
             child: TranslatedTextWidget("Load wishlist"),
@@ -98,9 +99,12 @@ class _AddCustomWishlistFormState extends State<AddCustomWishlistForm> with Lang
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        buildTextField(context, "Name", maxLength: 50, initialValue: wishlistFile?.name),
+        buildTextField(context, "Name",
+            maxLength: 50,
+            initialValue: wishlistFile?.name ?? wishlistFile?.url?.split('/').last ?? "Untitled Wishlist"),
         buildTextField(context, "Description",
-            maxLength: 300, multiline: true, initialValue: wishlistFile?.description),
+            maxLength: 300, multiline: true, initialValue: wishlistFile?.description ?? ""),
+        Container(height: 16),
         ElevatedButton(
           onPressed: () => addWishlist(),
           child: TranslatedTextWidget("Add wishlist"),
@@ -124,7 +128,10 @@ class _AddCustomWishlistFormState extends State<AddCustomWishlistForm> with Lang
   }
 
   void addWishlist() async {
-    final wishlist = this.wishlistFile;
+    final wishlist = this.wishlistFile?.copyWith(
+          name: this.fieldControllers["Name"]?.value.text,
+          description: this.fieldControllers["Description"]?.value.text,
+        );
     if (wishlist == null) return;
     await Navigator.push(context, BusyDialogRoute(context, awaitFuture: wishlistsService.addWishlist(wishlist)));
     await Future.delayed(Duration(milliseconds: 10));
