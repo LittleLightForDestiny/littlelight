@@ -117,7 +117,7 @@ class ItemSocketController extends ChangeNotifier
   }) {
     final itemHash = vendorItem.itemHash;
     if (itemHash == null) {
-      throw ("Can't initialize without itemInstanceID");
+      throw ("Can't initialize without itemHash");
     }
     final vendorsService = VendorsService();
     final reusablePlugs =
