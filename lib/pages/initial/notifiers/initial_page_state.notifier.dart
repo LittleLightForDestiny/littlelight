@@ -1,20 +1,24 @@
 //@dart=2.12
 
+import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:little_light/core/routes/login_route.dart';
+import 'package:little_light/exceptions/invalid_membership.exception.dart';
 import 'package:little_light/exceptions/not_authorized.exception.dart';
 import 'package:little_light/pages/initial/errors/authorization_failed.error.dart';
 import 'package:little_light/pages/initial/errors/init_services.error.dart';
 import 'package:little_light/pages/initial/errors/initial_page_base.error.dart';
 import 'package:little_light/pages/initial/errors/manifest_download.error.dart';
+import 'package:little_light/pages/initial/errors/invalid_membership.error.dart';
 import 'package:little_light/pages/initial/notifiers/manifest_downloader.notifier.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/pages/main.screen.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
+import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
 import 'package:little_light/services/language/language.consumer.dart';
 import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
@@ -44,7 +48,8 @@ class InitialPageStateNotifier
         WishlistsConsumer,
         ProfileConsumer,
         AnalyticsConsumer,
-        StorageConsumer {
+        StorageConsumer,
+        BungieApiConsumer {
   InitialPagePhase _phase = InitialPagePhase.Loading;
   InitialPagePhase get phase => _phase;
 
@@ -99,8 +104,12 @@ class InitialPageStateNotifier
         throw NotAuthorizedException("No Authorization code");
       }
       await auth.addAccount(code);
+    } on InvalidMembershipException catch (e, stackTrace) {
+      analytics.registerNonFatal(e, stackTrace);
+      _error = InvalidMembershipError();
+      notifyListeners();
+      return;
     } catch (e, stackTrace) {
-      print("initServicesError: $e");
       analytics.registerNonFatal(e, stackTrace);
       _error = AuthorizationFailedError();
       notifyListeners();
@@ -255,6 +264,13 @@ class InitialPageStateNotifier
     } catch (e, stackTrace) {
       print("non breaking error: $e");
       analytics.registerNonFatal(e, stackTrace);
+    }
+
+    final characters = profile.getCharacters();
+    if (characters?.isEmpty ?? true) {
+      _error = InvalidMembershipError();
+      notifyListeners();
+      return;
     }
 
     _startApp();
