@@ -29,11 +29,11 @@ class WishlistFileItem extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           Text(
-                            file.name!,
+                            file.name ?? "",
                             style: Theme.of(context).textTheme.button,
                           ),
                           Text(
-                            file.description!,
+                            file.description ?? "",
                             style: Theme.of(context).textTheme.caption,
                           ),
                         ],
