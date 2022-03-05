@@ -58,6 +58,7 @@ jobs:
       APPLE_USERNAME: ${{ secrets.APPLE_USERNAME }}
       MATCH_KEYCHAIN_NAME: ${{ secrets.MATCH_KEYCHAIN_NAME }}
       MATCH_KEYCHAIN_PASSWORD: ${{ secrets.MATCH_KEYCHAIN_PASSWORD }}
+      IOS_GOOGLE_SERVICE_INFO_PLIST_BASE64: ${{ secrets.IOS_GOOGLE_SERVICE_INFO_PLIST_BASE64 }}
 
     steps:
       - name: Defines variables according to triggers
@@ -104,7 +105,7 @@ jobs:
         with:
           fileDir: "./ios/Runner/"
           fileName: GoogleService-Info.plist
-          encodedString: ${{ secrets.IOS_GOOGLE_SERVICE_INFO_PLIST_BASE64 }}
+          encodedString: ${{ env.IOS_GOOGLE_SERVICE_INFO_PLIST_BASE64 }}
 
       - name: Cache pub dependencies
         uses: actions/cache@v2
