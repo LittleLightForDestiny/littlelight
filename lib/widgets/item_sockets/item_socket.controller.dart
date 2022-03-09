@@ -395,7 +395,7 @@ class ItemSocketController extends ChangeNotifier
     final entry = definition?.sockets?.socketEntries?.elementAt(socketIndex);
     if (_plugSetDefinitions?.containsKey(entry?.randomizedPlugSetHash) ?? false) {
       final randomPlugs = _plugSetDefinitions?[entry?.randomizedPlugSetHash]?.reusablePlugItems;
-      final plug = randomPlugs?.firstWhereOrNull((p) => p.plugItemHash == plugHash);
+      final plug = randomPlugs?.lastWhereOrNull((p) => p.plugItemHash == plugHash);
       if (plug != null) return plug.currentlyCanRoll ?? false;
     }
     return true;
