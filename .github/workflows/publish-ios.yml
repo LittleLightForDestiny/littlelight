@@ -29,7 +29,7 @@ on:
         required: true
       IOS_GOOGLE_SERVICE_INFO_PLIST_BASE64:
         required: true
-      APPSTORE_CONNECT_KEY_BASE64:
+      APPSTORE_KEY_JSON:
         required: true
 
   workflow_dispatch:
@@ -128,8 +128,8 @@ jobs:
         id: app_store_connect_key
         uses: timheuer/base64-to-file@v1.1
         with:
-          fileName: appstore_connect_key.p8
-          encodedString: ${{ secrets.APPSTORE_CONNECT_KEY_BASE64 }}
+          fileName: appstore_connect_key.json
+          encodedString: ${{ secrets.APPSTORE_KEY_JSON }}
 
       - name: Cache bundle dependencies
         uses: actions/cache@v2

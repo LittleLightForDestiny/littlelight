@@ -48,21 +48,12 @@ platform :ios do
     puts File.read(Dir.pwd + '/metadata/ios/default/release_notes.txt')
   end
 
-  desc "Setup certificates before doing anything"
-  private_lane :setup_api_key do
-    app_store_connect_api_key(
-      in_house: false,
-      key_id: ENV["APPSTORE_CONNECT_KEY_ID"],
-      issuer_id: ENV["APPSTORE_CONNECT_ISSUER_ID"],
-      key_filepath: ENV["APPSTORE_CONNECT_KEY_FILE"],
-    )
-  end
-
   desc "Build iOS app for distribution"
   lane :build do
     setup_api_key
     if is_ci
       create_keychain(
+        api_key_path: ENV['APPSTORE_CONNECT_KEY_FILE'],
         name: ENV['MATCH_KEYCHAIN_NAME'],
         password: ENV["MATCH_KEYCHAIN_PASSWORD"],
         default_keychain: false,
@@ -72,21 +63,25 @@ platform :ios do
       )
     end
     match(
+      api_key_path: ENV['APPSTORE_CONNECT_KEY_FILE'],
       type: "appstore",
       app_identifier: ENV["APPLE_APP_IDENTIFIER"],
       git_url: ENV["MATCH_GIT_URL"],
     )
     update_project_team(
+      api_key_path: ENV['APPSTORE_CONNECT_KEY_FILE'],
       path: "ios/Runner.xcodeproj",
       teamid: ENV["APPLE_TEAM_ID"]
     )
     update_project_provisioning(
+      api_key_path: ENV['APPSTORE_CONNECT_KEY_FILE'],
       xcodeproj: "ios/Runner.xcodeproj",
       profile: ENV["sigh_#{ENV["APPLE_APP_IDENTIFIER"]}_appstore_profile-path"],
       build_configuration: "Release",
       code_signing_identity: "iPhone Distribution"
     )
     build_app(
+      api_key_path: ENV['APPSTORE_CONNECT_KEY_FILE'],
       workspace: "ios/Runner.xcworkspace",
       scheme: "Runner",
       output_directory:"build/ios",
@@ -99,6 +94,7 @@ platform :ios do
   lane :beta do
       setup_api_key
       upload_to_app_store(
+      api_key_path: ENV['APPSTORE_CONNECT_KEY_FILE'],
       ipa: "build/ios/LittleLight.ipa",
       skip_screenshots: true,
       force: true,
@@ -119,6 +115,7 @@ platform :ios do
   lane :deploy do
       setup_api_key
       upload_to_app_store(
+      api_key_path: ENV['APPSTORE_CONNECT_KEY_FILE'],
       ipa: "build/ios/LittleLight.ipa",
       skip_screenshots: true,
       force: true,
