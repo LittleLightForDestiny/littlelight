@@ -52,7 +52,6 @@ platform :ios do
   lane :build do
     if is_ci
       create_keychain(
-        api_key_path: ENV['APPSTORE_CONNECT_KEY_FILE'],
         name: ENV['MATCH_KEYCHAIN_NAME'],
         password: ENV["MATCH_KEYCHAIN_PASSWORD"],
         default_keychain: false,
@@ -68,12 +67,10 @@ platform :ios do
       git_url: ENV["MATCH_GIT_URL"],
     )
     update_project_team(
-      api_key_path: ENV['APPSTORE_CONNECT_KEY_FILE'],
       path: "ios/Runner.xcodeproj",
       teamid: ENV["APPLE_TEAM_ID"]
     )
     update_project_provisioning(
-      api_key_path: ENV['APPSTORE_CONNECT_KEY_FILE'],
       xcodeproj: "ios/Runner.xcodeproj",
       profile: ENV["sigh_#{ENV["APPLE_APP_IDENTIFIER"]}_appstore_profile-path"],
       build_configuration: "Release",
