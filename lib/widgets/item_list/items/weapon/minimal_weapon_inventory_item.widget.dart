@@ -1,13 +1,6 @@
 // @dart=2.9
 
 import 'package:bungie_api/destiny2.dart';
-import 'package:bungie_api/enums/damage_type.dart';
-import 'package:bungie_api/enums/destiny_ammunition_type.dart';
-import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
-import 'package:bungie_api/models/destiny_item_component.dart';
-import 'package:bungie_api/models/destiny_item_instance_component.dart';
-import 'package:bungie_api/models/destiny_stat.dart';
-import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/utils/destiny_data.dart';

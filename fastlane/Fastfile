@@ -69,14 +69,12 @@ platform :ios do
         unlock: true,
         timeout: 3600,
         add_to_search_list: true,
-        lock_when_sleeps: false
       )
     end
     match(
       type: "appstore",
       app_identifier: ENV["APPLE_APP_IDENTIFIER"],
       git_url: ENV["MATCH_GIT_URL"],
-      readonly: is_ci
     )
     update_project_team(
       path: "ios/Runner.xcodeproj",
