@@ -1,6 +1,5 @@
 //@dart=2.12
 
-import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 // ignore: import_of_legacy_library_into_null_safe
@@ -11,8 +10,8 @@ import 'package:little_light/exceptions/not_authorized.exception.dart';
 import 'package:little_light/pages/initial/errors/authorization_failed.error.dart';
 import 'package:little_light/pages/initial/errors/init_services.error.dart';
 import 'package:little_light/pages/initial/errors/initial_page_base.error.dart';
-import 'package:little_light/pages/initial/errors/manifest_download.error.dart';
 import 'package:little_light/pages/initial/errors/invalid_membership.error.dart';
+import 'package:little_light/pages/initial/errors/manifest_download.error.dart';
 import 'package:little_light/pages/initial/notifiers/manifest_downloader.notifier.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/pages/main.screen.dart';
