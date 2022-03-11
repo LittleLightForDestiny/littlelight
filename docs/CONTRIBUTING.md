@@ -33,7 +33,7 @@ git clone https://github.com/LittleLightForDestiny/LittleLight
 2. Click `Create New App`
 3. Enter any application name, and `https://github.com/YourGithubUsername/LittleLight`
 4. For `Oauth Client type` select `Confidential`
-5. Set your redirect url to `luzinha://login` (or whatever the IP or hostname is of your dev server)
+5. Set your redirect url to `luzinha://littelight/login` (or whatever the IP or hostname is of your dev server)
 6. Select all scopes _except_ the Administrate Groups/Clans
 7. Leave `Origin Header` empty
 8. Copy `assets/_env.example` to `assets/_env` and edit it to match your credentials
