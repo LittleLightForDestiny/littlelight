@@ -27,7 +27,7 @@ on:
         required: true
       FLUTTER_DOTENV:
         required: true
-      IOS_GOOGLE_SERVICE_INFO_PLIST_BASE64:
+      IOS_GOOGLE_SERVICE_INFO_PLIST:
         required: true
       APPSTORE_KEY_JSON:
         required: true
@@ -58,7 +58,6 @@ jobs:
       APPLE_USERNAME: ${{ secrets.APPLE_USERNAME }}
       MATCH_KEYCHAIN_NAME: ${{ secrets.MATCH_KEYCHAIN_NAME }}
       MATCH_KEYCHAIN_PASSWORD: ${{ secrets.MATCH_KEYCHAIN_PASSWORD }}
-      IOS_GOOGLE_SERVICE_INFO_PLIST_BASE64: ${{ secrets.IOS_GOOGLE_SERVICE_INFO_PLIST_BASE64 }}
 
     steps:
       - name: Defines variables according to triggers
@@ -100,12 +99,8 @@ jobs:
           echo "${{ secrets.FLUTTER_DOTENV }}" > assets/_env
 
       - name: Create GoogleService-Info.plist
-        id: google-service-plist
-        uses: timheuer/base64-to-file@v1.1
-        with:
-          fileDir: "./ios/Runner/"
-          fileName: GoogleService-Info.plist
-          encodedString: ${{ env.IOS_GOOGLE_SERVICE_INFO_PLIST_BASE64 }}
+        run: |
+          echo "${{ env.IOS_GOOGLE_SERVICE_INFO_PLIST }}" > ./ios/Runner/GoogleService-Info.plist
 
       - name: Cache pub dependencies
         uses: actions/cache@v2
@@ -125,11 +120,8 @@ jobs:
         run: pod install --repo-update
 
       - name: Download Appstore Connect key
-        id: app_store_connect_key
-        uses: timheuer/base64-to-file@v1.1
-        with:
-          fileName: appstore_connect_key.json
-          encodedString: ${{ secrets.APPSTORE_KEY_JSON }}
+        run: |
+          echo "${{ secrets.APPSTORE_KEY_JSON }}" > ./fastlane/appstore_connect_key.json
 
       - name: Cache bundle dependencies
         uses: actions/cache@v2
@@ -155,16 +147,16 @@ jobs:
       - name: Build iOS via Fastlane
         run: bundle exec fastlane ios build
         env:
-          APPSTORE_CONNECT_KEY_FILE: ${{ steps.app_store_connect_key.outputs.filePath }}
+          APPSTORE_CONNECT_KEY_FILE: ./fastlane/appstore_connect_key.json
 
       - name: Upload to App Store (manual release)
         if: steps.variables.outputs.track == 'beta'
         run: bundle exec fastlane ios beta
         env:
-          APPSTORE_CONNECT_KEY_FILE: ${{ steps.app_store_connect_key.outputs.filePath }}
+          APPSTORE_CONNECT_KEY_FILE: ./fastlane/appstore_connect_key.json
 
       - name: Release to App Store (automatic release)
         if: steps.variables.outputs.track == 'production'
         run: bundle exec fastlane ios deploy
         env:
-          APPSTORE_CONNECT_KEY_FILE: ${{ steps.app_store_connect_key.outputs.filePath }}
+          APPSTORE_CONNECT_KEY_FILE: ./fastlane/appstore_connect_key.json
