@@ -95,7 +95,6 @@ const defaultBucketDisplayOptions = {
   "${InventoryBucket.engrams}": BucketDisplayOptions(type: BucketDisplayType.Small),
   "${InventoryBucket.lostItems}": BucketDisplayOptions(type: BucketDisplayType.Small),
   "${InventoryBucket.consumables}": BucketDisplayOptions(type: BucketDisplayType.Small),
-  "${InventoryBucket.shaders}": BucketDisplayOptions(type: BucketDisplayType.Small),
   "${InventoryBucket.modifications}": BucketDisplayOptions(type: BucketDisplayType.Small),
   "pursuits_53_null": BucketDisplayOptions(type: BucketDisplayType.Large),
 };

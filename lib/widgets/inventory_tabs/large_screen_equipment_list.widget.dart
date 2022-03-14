@@ -23,9 +23,8 @@ import 'package:little_light/widgets/multisection_scrollview/sliver_section.dart
 
 const _suppressEmptySpaces = [
   InventoryBucket.consumables,
-  InventoryBucket.shaders,
   InventoryBucket.modifications,
-  InventoryBucket.lostItems
+  InventoryBucket.lostItems,
 ];
 
 class LargeScreenEquipmentListWidget extends StatefulWidget {

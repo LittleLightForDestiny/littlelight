@@ -6,6 +6,7 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
+import 'package:little_light/mixins/deepsight_helper.mixin.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateless_item.widget.dart';
@@ -17,7 +18,7 @@ import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:shimmer/shimmer.dart';
 
-class ItemIconWidget extends BaseDestinyStatelessItemWidget {
+class ItemIconWidget extends BaseDestinyStatelessItemWidget with DeepSightHelper {
   final double iconBorderWidth;
 
   factory ItemIconWidget.builder(
@@ -62,7 +63,7 @@ class ItemIconWidget extends BaseDestinyStatelessItemWidget {
     ]);
   }
 
-  Widget masterworkOverlay() {
+  Widget masterworkOverlay(BuildContext context) {
     final tierType = definition?.inventory?.tierType;
     final isExotic = tierType == TierType.Exotic;
     final imgPath = isExotic ? "assets/imgs/masterwork-outline-exotic.png" : "assets/imgs/masterwork-outline.png";
@@ -70,12 +71,13 @@ class ItemIconWidget extends BaseDestinyStatelessItemWidget {
       imgPath,
       fit: BoxFit.cover,
     );
+    final masterworkLayers = LittleLightTheme.of(context).achievementLayers;
     return Stack(children: [
       img,
       Positioned.fill(
           child: Shimmer.fromColors(
-        baseColor: Colors.amber.withOpacity(.2),
-        highlightColor: Colors.amber.shade100,
+        baseColor: masterworkLayers.withOpacity(.2),
+        highlightColor: masterworkLayers.layer3,
         child: img,
         period: Duration(seconds: 5),
       ))
@@ -88,36 +90,58 @@ class ItemIconWidget extends BaseDestinyStatelessItemWidget {
     }
     ItemState state = item?.state ?? ItemState.None;
     if (state.contains(ItemState.Masterwork)) {
-      return masterworkOverlay();
+      return masterworkOverlay(context);
     }
     if (state.contains(ItemState.HighlightedObjective)) {
-      final color = LittleLightTheme.of(context).highlightedObjectiveLayers;
-      return LayoutBuilder(
-          builder: (context, constraints) => Container(
-              child: Container(
-                  decoration: CornerBadgeDecoration(
-                colors: [color],
-                badgeSize: constraints.maxWidth * .25,
-                position: CornerPosition.BottomLeft,
-              )),
-              decoration: BoxDecoration(
-                border:
-                    Border.all(color: LittleLightTheme.of(context).highlightedObjectiveLayers, width: iconBorderWidth),
-              )));
+      return deepsightOverlay(context);
     }
     if (state.contains(ItemState.Crafted)) {
-      return Container(
-          decoration: BoxDecoration(
-              border: Border.all(color: LittleLightTheme.of(context).onSurfaceLayers, width: iconBorderWidth)),
-          child: Image.asset(
-            "assets/imgs/crafted-icon-overlay.png",
-            fit: BoxFit.fill,
-          ));
+      return craftedWeaponOverlay(context);
     }
     return Container(
       decoration: BoxDecoration(
           border: Border.all(color: LittleLightTheme.of(context).onSurfaceLayers, width: iconBorderWidth)),
     );
+  }
+
+  Widget deepsightOverlay(BuildContext context) {
+    final color = LittleLightTheme.of(context).highlightedObjectiveLayers;
+    final instanceID = item?.itemInstanceId;
+    if (instanceID == null) return Container();
+    final isComplete = isDeepSightObjectiveCompleted(instanceID);
+    return LayoutBuilder(
+        builder: (context, constraints) => Container(
+            child: Stack(children: [
+              Container(
+                  decoration: CornerBadgeDecoration(
+                colors: [color],
+                badgeSize: constraints.maxWidth * .4,
+                position: CornerPosition.BottomLeft,
+              )),
+              if (isComplete)
+                Positioned(
+                    bottom: 0,
+                    left: constraints.maxWidth * .07,
+                    child: Text(
+                      "!",
+                      style:
+                          LittleLightTheme.of(context).textTheme.button.copyWith(fontSize: constraints.maxWidth * .2),
+                    ))
+            ]),
+            decoration: BoxDecoration(
+              border:
+                  Border.all(color: LittleLightTheme.of(context).highlightedObjectiveLayers, width: iconBorderWidth),
+            )));
+  }
+
+  Widget craftedWeaponOverlay(BuildContext context) {
+    return Container(
+        decoration: BoxDecoration(
+            border: Border.all(color: LittleLightTheme.of(context).onSurfaceLayers, width: iconBorderWidth)),
+        child: Image.asset(
+          "assets/imgs/crafted-icon-overlay.png",
+          fit: BoxFit.fill,
+        ));
   }
 
   String? seasonBadgeUrl() {
