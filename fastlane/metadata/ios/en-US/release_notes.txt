@@ -1,6 +1,4 @@
-* fixes quest details not loading
-* Adds Deepsight and Shaped Weapon info on icons and details
-* fixes empty slots not showing quick search buttons
-* fixes plugs/sockets in vendors
-* fixes custom wishlists form
-* auth flow improvements
+- Fixes vault landscape view
+- adds enhanced perks highlights
+- adds visual clue for completed deepsight weapons
+- fixes item tagging

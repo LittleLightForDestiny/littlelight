@@ -1,3 +1,10 @@
+## [1.9.4] - 2022-03-14
+
+- Fixes vault landscape view
+- adds enhanced perks highlights
+- adds visual clue for completed deepsight weapons
+- fixes item tagging
+
 ## [1.9.3] - 2022-03-05
 
 * fixes quest details not loading
