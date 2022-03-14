@@ -17,7 +17,6 @@ class InventoryBucket {
   static const int lostItems = 215593132;
   static const int general = 138197802;
   static const int consumables = 1469714392;
-  static const int shaders = 2973005342;
   static const int specialOrders = 1367666825;
   static const int upgradePoint = 2689798304;
   static const int glimmer = 2689798308;

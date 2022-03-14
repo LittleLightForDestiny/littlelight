@@ -25,18 +25,12 @@ import 'items/inventory_item_wrapper.widget.dart';
 
 const _fullWidthBuckets = [
   InventoryBucket.consumables,
-  InventoryBucket.shaders,
   InventoryBucket.modifications,
   InventoryBucket.lostItems,
   InventoryBucket.engrams
 ];
 
-const _suppressEmptySpaces = [
-  InventoryBucket.consumables,
-  InventoryBucket.shaders,
-  InventoryBucket.modifications,
-  InventoryBucket.lostItems
-];
+const _suppressEmptySpaces = [InventoryBucket.consumables, InventoryBucket.modifications, InventoryBucket.lostItems];
 
 typedef OnBucketOptionsChanged = void Function();
 
@@ -243,6 +237,9 @@ class ItemListWidgetState extends State<ItemListWidget>
     final maxSlots = bucketDef?.itemCount != null ? (bucketDef.itemCount - 1) : items.length;
     final itemsPerRow = getItemCountPerRow(context, bucketOptions);
     int bucketSize = maxSlots;
+    if (bucketDef == null) {
+      print(bucket.bucketHash);
+    }
     if (!bucketDef.hasTransferDestination || suppressEmptySpaces(bucket.bucketHash)) {
       bucketSize = (items.length / itemsPerRow).ceil() * itemsPerRow;
     }

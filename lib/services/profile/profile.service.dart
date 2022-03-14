@@ -30,11 +30,7 @@ class ProfileService
         BungieApiConsumer,
         NotificationConsumer,
         WidgetsBindingObserver {
-  static const List<int> profileBuckets = [
-    InventoryBucket.modifications,
-    InventoryBucket.shaders,
-    InventoryBucket.consumables
-  ];
+  static const List<int> profileBuckets = [InventoryBucket.modifications, InventoryBucket.consumables];
 
   bool pauseAutomaticUpdater = false;
   bool _disposed = false;
@@ -267,7 +263,7 @@ class ProfileService
     return null;
   }
 
-  Map<String, List<DestinyObjectiveProgress>>? getPlugObjectives(String itemInstanceId) {
+  Map<String, List<DestinyObjectiveProgress>>? getPlugObjectives(String? itemInstanceId) {
     try {
       return _profile?.itemComponents?.plugObjectives?.data?[itemInstanceId]?.objectivesPerPlug;
     } catch (e) {}
@@ -281,7 +277,7 @@ class ProfileService
     return null;
   }
 
-  List<DestinyObjectiveProgress>? getItemObjectives(String itemInstanceId, String characterId, int hash) {
+  List<DestinyObjectiveProgress>? getItemObjectives(String? itemInstanceId, String? characterId, int? hash) {
     try {
       var objectives = _profile?.itemComponents?.objectives?.data?[itemInstanceId]?.objectives;
       if (objectives != null) return objectives;

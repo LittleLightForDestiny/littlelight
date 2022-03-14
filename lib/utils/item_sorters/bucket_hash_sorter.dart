@@ -21,7 +21,6 @@ List<int> _bucketOrder = [
   InventoryBucket.emblems,
   InventoryBucket.consumables,
   InventoryBucket.modifications,
-  InventoryBucket.shaders,
 ];
 
 class BucketHashSorter extends BaseItemSorter {

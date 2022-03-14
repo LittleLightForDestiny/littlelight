@@ -3,6 +3,7 @@
 import 'package:bungie_api/enums/tier_type.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/item_sockets/plug_wishlist_tag_icons.mixin.dart';
@@ -37,6 +38,7 @@ class SelectablePerkWidget extends StatelessWidget with PlugWishlistTagIconsMixi
   Widget build(BuildContext context) {
     bool intrinsic = plugDefinition?.plug?.plugCategoryIdentifier == "intrinsics";
     bool isExotic = itemDefinition.inventory.tierType == TierType.Exotic;
+    bool isEnhanced = plugDefinition?.inventory?.tierType == TierType.Common;
     int plugItemHash = plugHash ?? plugDefinition.hash;
     Color bgColor = Colors.transparent;
     Color borderColor = Colors.grey.shade300.withOpacity(.5);
@@ -75,6 +77,7 @@ class SelectablePerkWidget extends StatelessWidget with PlugWishlistTagIconsMixi
                             child: ManifestImageWidget<DestinyInventoryItemDefinition>(plugItemHash))),
                     onTap: onTap,
                   )),
+              if (isEnhanced) Positioned.fill(child: buildEnhancedPerkOverlay(context)),
               Positioned(
                   top: 0,
                   right: 0,
@@ -82,5 +85,23 @@ class SelectablePerkWidget extends StatelessWidget with PlugWishlistTagIconsMixi
                   child:
                       Center(child: buildWishlistTagIcons(context, itemDefinition.hash, plugItemHash, wishlistScale)))
             ])));
+  }
+
+  Widget buildEnhancedPerkOverlay(BuildContext context) {
+    return IgnorePointer(
+        child: Container(
+      margin: EdgeInsets.all(scale * 4),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(scale * 50),
+        gradient: LinearGradient(
+          begin: Alignment.bottomCenter,
+          end: Alignment.topCenter,
+          colors: [
+            LittleLightTheme.of(context).achievementLayers.layer0.withOpacity(.9),
+            LittleLightTheme.of(context).achievementLayers.layer3.withOpacity(0)
+          ],
+        ),
+      ),
+    ));
   }
 }

@@ -335,7 +335,10 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
 
   Widget buildItemLevel(BuildContext context) {
     if (item == null) return Container();
-    return ItemLevelWidget(item: item);
+    final screenPadding = MediaQuery.of(context).padding;
+    return Container(
+        padding: EdgeInsets.all(8) + EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
+        child: ItemLevelWidget(item: item));
   }
 
   Widget buildSaleDetails(BuildContext context) {
