@@ -100,7 +100,7 @@ jobs:
 
       - name: Create GoogleService-Info.plist
         run: |
-          echo "${{ env.IOS_GOOGLE_SERVICE_INFO_PLIST }}" > ./ios/Runner/GoogleService-Info.plist
+          echo "${{ secrets.IOS_GOOGLE_SERVICE_INFO_PLIST }}" > ios/Runner/GoogleService-Info.plist
 
       - name: Cache pub dependencies
         uses: actions/cache@v2
