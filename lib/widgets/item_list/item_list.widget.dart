@@ -159,10 +159,11 @@ class ItemListWidgetState extends State<ItemListWidget>
       if (widget.includeInfoHeader) buildCharInfoSliver(),
     ];
     buckets.forEach((bucket) {
+      final bucketDef = bucketDefs[bucket.bucketHash];
       final options = getBucketOptions(bucket.bucketHash);
       final bool showEquipped = bucket.equipped != null && options.type != BucketDisplayType.Hidden;
       final bool showUnequipped = ![BucketDisplayType.Hidden, BucketDisplayType.OnlyEquipped].contains(options.type) &&
-          (bucket.unequipped?.isNotEmpty ?? false);
+          ((bucket.unequipped?.isNotEmpty ?? false) || bucketDef.hasTransferDestination);
       final bool addSpacer = showEquipped || showUnequipped;
       list += [
         buildBucketHeaderSliver(bucket),
