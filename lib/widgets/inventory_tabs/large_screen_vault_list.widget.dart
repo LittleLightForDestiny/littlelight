@@ -27,7 +27,6 @@ class LargeScreenVaultListWidgetState extends State<LargeScreenVaultListWidget> 
     InventoryBucket.ships,
     InventoryBucket.consumables,
     InventoryBucket.modifications,
-    InventoryBucket.shaders,
   ];
 
   @override

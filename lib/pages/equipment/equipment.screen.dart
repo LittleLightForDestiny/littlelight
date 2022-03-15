@@ -48,13 +48,30 @@ class EquipmentScreenState extends State<EquipmentScreen>
         ProfileConsumer,
         NotificationConsumer {
   int currentGroup = DestinyItemCategory.Weapon;
-  Map<int, double> scrollPositions = Map();
 
-  TabController charTabController;
-  TabController typeTabController;
   StreamSubscription<NotificationEvent> subscription;
 
-  get totalCharacterTabs => (characters?.length ?? 0) + 1;
+  TabController _charTabController;
+  TabController get charTabController {
+    final totalCharacterTabs = (characters?.length ?? 0) + 1;
+    final current = _charTabController;
+    if (current != null && current?.length == totalCharacterTabs) return current;
+    _charTabController = TabController(length: totalCharacterTabs, vsync: this, initialIndex: current?.index ?? 0);
+    return _charTabController;
+  }
+
+  TabController _typeTabController;
+  TabController get typeTabController {
+    final current = _typeTabController;
+    final length = widget.itemTypes.length;
+    if (current != null && current?.length == length) return current;
+    _typeTabController = TabController(
+      initialIndex: current?.index ?? 0,
+      length: length,
+      vsync: this,
+    );
+    return _typeTabController;
+  }
 
   @override
   void initState() {
@@ -62,23 +79,6 @@ class EquipmentScreenState extends State<EquipmentScreen>
     profile.updateComponents = ProfileComponentGroups.basicProfile;
     userSettings.startingPage = _page;
     analytics.registerPageOpen(_page);
-
-    typeTabController = typeTabController ??
-        TabController(
-          initialIndex: 0,
-          length: widget.itemTypes.length,
-          vsync: this,
-        );
-    charTabController = charTabController ??
-        TabController(
-          initialIndex: 0,
-          length: totalCharacterTabs,
-          vsync: this,
-        );
-
-    widget.itemTypes.forEach((type) {
-      scrollPositions[type] = 0;
-    });
 
     subscription = notifications.listen((event) {
       if (!mounted) return;
@@ -182,20 +182,16 @@ class EquipmentScreenState extends State<EquipmentScreen>
   }
 
   Widget buildCharacterHeaderTabView(BuildContext context) {
-    var headers = characters
-        ?.map((character) => TabHeaderWidget(
-              character,
-              key: Key("${character?.emblemHash}_${character?.characterId}"),
-            ))
-        ?.toList();
+    final headers = characters
+            ?.map((character) => TabHeaderWidget(
+                  character,
+                  key: Key("${character?.emblemHash}_${character?.characterId}"),
+                ))
+            ?.toList() ??
+        <Widget>[];
     headers?.add(VaultTabHeaderWidget());
 
-    if (charTabController?.length != headers?.length) {
-      charTabController?.dispose();
-      charTabController = TabController(length: headers?.length, vsync: this);
-    }
-
-    return TabBarView(controller: charTabController, children: headers ?? []);
+    return TabBarView(controller: charTabController, children: headers);
   }
 
   Widget buildTabletCharacterTabView(BuildContext context) {

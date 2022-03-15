@@ -23,7 +23,7 @@ class ScreenShotItemModsWidget extends BaseItemSocketsWidget {
     DestinyItemSocketCategoryDefinition category,
     ItemSocketController controller,
     this.pixelSize = 1,
-  }) : super(key: key, item: item, definition: definition, category: category, controller: controller);
+  }) : super(key: key, category: category, controller: controller);
 
   @override
   State<StatefulWidget> createState() {

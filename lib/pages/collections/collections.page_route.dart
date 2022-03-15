@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/pages/collections/collections_badge.page.dart';
 import 'package:little_light/pages/collections/collections_category.page.dart';
+import 'package:little_light/pages/collections/collections_search.page.dart';
 import 'package:little_light/pages/collections/collections_subcategory.page.dart';
 
 import 'collections_root.page.dart';
@@ -52,4 +53,11 @@ class CollectionsPageRoute extends MaterialPageRoute {
               }
               return CollectionsRootPage();
             });
+}
+
+class CollectionsSearchPageRoute extends MaterialPageRoute {
+  CollectionsSearchPageRoute()
+      : super(builder: (context) {
+          return CollectionsSearchPage();
+        });
 }

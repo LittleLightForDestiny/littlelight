@@ -62,6 +62,17 @@ class TriumphsRootPageState extends PresentationNodesTabsScaffoldState<TriumphsR
     loadRootNodes();
   }
 
+  @override
+  List<Widget>? buildAppBarActions(BuildContext context) => [
+        IconButton(
+          enableFeedback: false,
+          icon: Icon(Icons.search),
+          onPressed: () {
+            Navigator.of(context).push(TriumphsSearchPageRoute());
+          },
+        )
+      ];
+
   Future<int?> getLoreNodeHash() async {
     int? loreNodeHash = destinySettings.loreRootNode;
     if (loreNodeHash == null) return null;
@@ -87,6 +98,7 @@ class TriumphsRootPageState extends PresentationNodesTabsScaffoldState<TriumphsR
       destinySettings.legacyTriumphsRootNode,
       destinySettings.legacySealsRootNode,
       destinySettings.loreRootNode,
+      destinySettings.catalystsRootNode
     ];
     final definitions = await manifest.getDefinitions<DestinyPresentationNodeDefinition>(rootNodes + subNodeHashes);
     setState(() {
@@ -142,6 +154,7 @@ class TriumphsRootPageState extends PresentationNodesTabsScaffoldState<TriumphsR
   Widget buildTriumphCategories(BuildContext context) {
     final triumphsHash = destinySettings.triumphsRootNode;
     final legacy = destinySettings.legacyTriumphsRootNode;
+    final catalystsHash = destinySettings.catalystsRootNode;
     return MultiSectionScrollView(
       [
         if (triumphsHash != null)
@@ -152,6 +165,15 @@ class TriumphsRootPageState extends PresentationNodesTabsScaffoldState<TriumphsR
                     pathHashes: [triumphsHash, node.presentationNodeHash],
                   )),
         if (triumphsHash != null) buildSpacer(),
+        if (catalystsHash != null) buildCategoryTitle(catalystsHash),
+        if (catalystsHash != null)
+          buildCategoryList(
+              catalystsHash,
+              (node) => onTriumphSelect(
+                    node,
+                    pathHashes: [catalystsHash, node.presentationNodeHash],
+                  )),
+        if (catalystsHash != null) buildSpacer(),
         if (legacy != null) buildCategoryTitle(legacy),
         if (legacy != null)
           buildCategoryList(

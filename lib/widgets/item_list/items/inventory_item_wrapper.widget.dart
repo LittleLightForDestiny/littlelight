@@ -9,7 +9,7 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/pages/item_details/item_details.page.dart';
+import 'package:little_light/pages/item_details/item_details.page_route.dart';
 import 'package:little_light/pages/item_search/quick_transfer.screen.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/inventory/inventory.package.dart';
@@ -41,7 +41,7 @@ import 'package:uuid/uuid.dart';
 enum ContentDensity { MINIMAL, MEDIUM, FULL }
 
 class InventoryItemWrapperWidget extends StatefulWidget {
-  final DestinyItemComponent item;
+  final ItemWithOwner item;
   final String characterId;
   final ContentDensity density;
   final int bucketHash;
@@ -70,8 +70,11 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> exte
   StreamSubscription<List<ItemWithOwner>> selectionSubscription;
   StreamSubscription<NotificationEvent> stateSubscription;
 
+  DestinyItemComponent get item => widget.item?.item;
+  ItemWithOwner get itemWithOwner => widget.item;
+
   DestinyItemInstanceComponent get instanceInfo {
-    return profile.getInstanceInfo(widget.item.itemInstanceId);
+    return profile.getInstanceInfo(this.item.itemInstanceId);
   }
 
   static int queueSize = 0;
@@ -79,18 +82,17 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> exte
   @override
   void initState() {
     uniqueId = Uuid().v4();
-    this.definition = manifest.getDefinitionFromCache<DestinyInventoryItemDefinition>(widget?.item?.itemHash);
+    this.definition = manifest.getDefinitionFromCache<DestinyInventoryItemDefinition>(this.item?.itemHash);
 
     super.initState();
-    if (widget.item != null && this.definition == null) {
+    if (this.item != null && this.definition == null) {
       getDefinitions();
     }
 
-    selected = selection.isSelected(ItemWithOwner(widget.item, widget.characterId));
-
     selectionSubscription = selection.broadcaster.listen((event) {
+      if (this.item == null) return;
       if (!mounted) return;
-      var isSelected = selection.isSelected(ItemWithOwner(widget.item, widget.characterId));
+      var isSelected = selection.isSelected(itemWithOwner);
       if (isSelected != selected) {
         selected = isSelected;
         setState(() {});
@@ -99,8 +101,8 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> exte
     stateSubscription = notifications.listen((event) {
       if (!mounted) return;
       if (event.type == NotificationType.itemStateUpdate &&
-          event.item.itemHash == widget.item?.itemHash &&
-          event.item.itemInstanceId == widget.item?.itemInstanceId) {
+          event.item.itemHash == this.item?.itemHash &&
+          event.item.itemInstanceId == this.item?.itemInstanceId) {
         uniqueId = Uuid().v4();
         setState(() {});
       }
@@ -115,10 +117,10 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> exte
   }
 
   bool get isLoaded {
-    if (widget.item == null) {
+    if (this.item == null) {
       return false;
     }
-    return manifest.isLoaded<DestinyInventoryItemDefinition>(widget.item.itemHash);
+    return manifest.isLoaded<DestinyInventoryItemDefinition>(this.item.itemHash);
   }
 
   bool get quickTransferAvailable {
@@ -140,7 +142,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> exte
         return;
       }
     }
-    definition = await manifest.getDefinition<DestinyInventoryItemDefinition>(widget.item.itemHash);
+    definition = await manifest.getDefinition<DestinyInventoryItemDefinition>(this.item.itemHash);
     if (mounted) {
       setState(() {});
     }
@@ -150,7 +152,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> exte
   @override
   Widget build(BuildContext context) {
     return Stack(
-      key: Key("item ${widget.item?.itemInstanceId} $uniqueId"),
+      key: Key("item ${this.item?.itemInstanceId} $uniqueId"),
       children: [
         Positioned.fill(child: buildCrossfade(context)),
         selected
@@ -173,7 +175,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> exte
   }
 
   Widget buildTapHandler(BuildContext context) {
-    if (widget.item == null && quickTransferAvailable) {
+    if (this.item == null && quickTransferAvailable) {
       return Positioned.fill(
           child: Material(
               color: Colors.transparent,
@@ -184,7 +186,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> exte
                 },
               )));
     }
-    if (widget.item != null) {
+    if (this.item != null) {
       return Positioned.fill(
           child: Material(
               color: Colors.transparent,
@@ -224,7 +226,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> exte
 
   void onLongPress(context) {
     selection.activateMultiSelect();
-    selection.addItem(ItemWithOwner(widget.item, widget.characterId));
+    selection.addItem(itemWithOwner);
     setState(() {});
   }
 
@@ -250,7 +252,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> exte
     if (selected) {
       selection.clear();
     } else {
-      selection.setItem(ItemWithOwner(widget.item, widget.characterId));
+      selection.setItem(itemWithOwner);
     }
   }
 
@@ -261,20 +263,15 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> exte
     selection.clear();
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => ItemDetailsPage(
-          item: widget.item,
-          definition: definition,
-          instanceInfo: instanceInfo,
-          characterId: widget.characterId,
-          uniqueId: uniqueId,
-        ),
+      ItemDetailsPageRoute(
+        item: widget.item,
+        heroKey: uniqueId,
       ),
     );
   }
 
   Widget buildItem(BuildContext context) {
-    if (widget.item == null) {
+    if (this.item == null) {
       return buildEmpty(context);
     }
     if (definition == null) {
@@ -293,7 +290,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> exte
     }
 
     return BaseInventoryItemWidget(
-      widget.item,
+      this.item,
       definition,
       instanceInfo,
       characterId: widget.characterId,
@@ -309,7 +306,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> exte
         }
       default:
         {
-          if (widget.item == null && quickTransferAvailable) {
+          if (this.item == null && quickTransferAvailable) {
             return QuickTransferDestinationItemWidget();
           }
           return LoadingInventoryItemWidget();
@@ -326,7 +323,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> exte
       case DestinyItemType.Armor:
         {
           return MinimalArmorInventoryItemWidget(
-            widget.item,
+            this.item,
             definition,
             instanceInfo,
             characterId: widget.characterId,
@@ -337,7 +334,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> exte
       case DestinyItemType.Weapon:
         {
           return MinimalWeaponInventoryItemWidget(
-            widget.item,
+            this.item,
             definition,
             instanceInfo,
             characterId: widget.characterId,
@@ -348,7 +345,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> exte
       case DestinyItemType.Engram:
         {
           return MinimalEngramInventoryItemWidget(
-            widget.item,
+            this.item,
             definition,
             instanceInfo,
             characterId: widget.characterId,
@@ -357,7 +354,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> exte
         }
       default:
         return MinimalBaseInventoryItemWidget(
-          widget.item,
+          this.item,
           definition,
           instanceInfo,
           characterId: widget.characterId,
@@ -374,7 +371,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> exte
     switch (type) {
       case DestinyItemType.Subclass:
         return MediumSubclassInventoryItemWidget(
-          widget.item,
+          this.item,
           definition,
           instanceInfo,
           characterId: widget.characterId,
@@ -382,7 +379,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> exte
         );
       case DestinyItemType.Weapon:
         return MediumWeaponInventoryItemWidget(
-          widget.item,
+          this.item,
           definition,
           instanceInfo,
           characterId: widget.characterId,
@@ -391,7 +388,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> exte
 
       case DestinyItemType.Armor:
         return MediumArmorInventoryItemWidget(
-          widget.item,
+          this.item,
           definition,
           instanceInfo,
           characterId: widget.characterId,
@@ -399,7 +396,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> exte
         );
       case DestinyItemType.Emblem:
         return MediumEmblemInventoryItemWidget(
-          widget.item,
+          this.item,
           definition,
           instanceInfo,
           characterId: widget.characterId,
@@ -408,7 +405,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> exte
 
       default:
         return MediumBaseInventoryItemWidget(
-          widget.item,
+          this.item,
           definition,
           instanceInfo,
           characterId: widget.characterId,
@@ -426,7 +423,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> exte
       case DestinyItemType.Subclass:
         {
           return SubclassInventoryItemWidget(
-            widget.item,
+            this.item,
             definition,
             instanceInfo,
             characterId: widget.characterId,
@@ -436,7 +433,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> exte
       case DestinyItemType.Weapon:
         {
           return WeaponInventoryItemWidget(
-            widget.item,
+            this.item,
             definition,
             instanceInfo,
             characterId: widget.characterId,
@@ -447,7 +444,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> exte
       case DestinyItemType.Armor:
         {
           return ArmorInventoryItemWidget(
-            widget.item,
+            this.item,
             definition,
             instanceInfo,
             characterId: widget.characterId,
@@ -458,7 +455,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> exte
       case DestinyItemType.Emblem:
         {
           return EmblemInventoryItemWidget(
-            widget.item,
+            this.item,
             definition,
             instanceInfo,
             characterId: widget.characterId,
@@ -467,7 +464,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> exte
         }
       default:
         return BaseInventoryItemWidget(
-          widget.item,
+          this.item,
           definition,
           instanceInfo,
           characterId: widget.characterId,

@@ -1,0 +1,6 @@
+- Enables mod swapping for weapons and armor
+- Improved authentication flow
+- Bug fixes
+- fixes multi account support
+- fixes infinite loading on item details
+- fixes multiselection

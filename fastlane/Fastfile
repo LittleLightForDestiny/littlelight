@@ -42,6 +42,7 @@ platform :android do
 end
 
 platform :ios do
+
   desc "Setup certificates before doing anything"
   private_lane :setup_api_key do
     app_store_connect_api_key(
@@ -50,6 +51,12 @@ platform :ios do
       issuer_id: ENV["APPSTORE_CONNECT_ISSUER_ID"],
       key_filepath: ENV["APPSTORE_CONNECT_KEY_FILE"],
     )
+  end
+
+  desc "Prints path and changelog"
+  lane :changelogs do
+    puts Dir.pwd
+    puts File.read(Dir.pwd + '/metadata/ios/default/release_notes.txt')
   end
 
   desc "Build iOS app for distribution"
@@ -63,14 +70,12 @@ platform :ios do
         unlock: true,
         timeout: 3600,
         add_to_search_list: true,
-        lock_when_sleeps: false
       )
     end
     match(
       type: "appstore",
       app_identifier: ENV["APPLE_APP_IDENTIFIER"],
       git_url: ENV["MATCH_GIT_URL"],
-      readonly: is_ci
     )
     update_project_team(
       path: "ios/Runner.xcodeproj",
@@ -97,7 +102,6 @@ platform :ios do
       upload_to_app_store(
       ipa: "build/ios/LittleLight.ipa",
       skip_screenshots: true,
-      skip_metadata: true,
       force: true,
       precheck_include_in_app_purchases: false,
       reject_if_possible: true,
@@ -118,7 +122,6 @@ platform :ios do
       upload_to_app_store(
       ipa: "build/ios/LittleLight.ipa",
       skip_screenshots: true,
-      skip_metadata: true,
       force: true,
       precheck_include_in_app_purchases: false,
       reject_if_possible: true,

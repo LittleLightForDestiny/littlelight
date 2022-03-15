@@ -2,5 +2,5 @@
 import 'package:flutter/material.dart';
 
 class LittleLightNavigatorKeyContainer {
-  static GlobalKey<NavigatorState>? navigatorKey;
+  static GlobalKey<NavigatorState>? navigatorKey = GlobalKey<NavigatorState>();
 }

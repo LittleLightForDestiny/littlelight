@@ -29,7 +29,7 @@ on:
         required: true
       IOS_GOOGLE_SERVICE_INFO_PLIST:
         required: true
-      APPSTORE_CONNECT_KEY_BASE64:
+      APPSTORE_KEY_JSON:
         required: true
 
   workflow_dispatch:
@@ -100,7 +100,7 @@ jobs:
 
       - name: Create GoogleService-Info.plist
         run: |
-          echo '${{ secrets.IOS_GOOGLE_SERVICE_INFO_PLIST }}' > ios/Runner/GoogleService-Info.plist
+          echo "${{ secrets.IOS_GOOGLE_SERVICE_INFO_PLIST }}" > ios/Runner/GoogleService-Info.plist
 
       - name: Cache pub dependencies
         uses: actions/cache@v2
@@ -121,7 +121,7 @@ jobs:
 
       - name: Download Appstore Connect key
         id: app_store_connect_key
-        uses: timheuer/base64-to-file@v1.0.3
+        uses: timheuer/base64-to-file@v1.1
         with:
           fileName: appstore_connect_key.p8
           encodedString: ${{ secrets.APPSTORE_CONNECT_KEY_BASE64 }}
@@ -140,7 +140,7 @@ jobs:
 
       - name: Download bundle dependencies
         run: |
-          gem install bundler:2.0.2
+          gem install bundler
           bundle config path vendor/bundle
           bundle install
 

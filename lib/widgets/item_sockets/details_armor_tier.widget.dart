@@ -7,7 +7,6 @@ import 'package:bungie_api/models/destiny_socket_category_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/utils/destiny_data.dart';
-import 'package:little_light/utils/element_type_data.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/item_sockets/base_item_sockets.widget.dart';
@@ -20,7 +19,7 @@ class DetailsArmorTierWidget extends BaseItemSocketsWidget {
     DestinyInventoryItemDefinition definition,
     DestinyItemSocketCategoryDefinition category,
     ItemSocketController controller,
-  }) : super(key: key, item: item, definition: definition, category: category, controller: controller);
+  }) : super(key: key, category: category, controller: controller);
 
   @override
   State<StatefulWidget> createState() {
@@ -82,7 +81,7 @@ class DetailsArmorTierWidgetState<T extends DetailsArmorTierWidget> extends Base
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Icon(DestinyData.getEnergyTypeIcon(plugDef?.plug?.energyCapacity?.energyType),
-                  color: plugDef?.plug?.energyCapacity?.energyType?.getColorLayer(context)?.layer1, size: 20),
+                  color: plugDef?.plug?.energyCapacity?.energyType?.getColorLayer(context)?.layer2, size: 20),
               Container(
                 width: 4,
               ),

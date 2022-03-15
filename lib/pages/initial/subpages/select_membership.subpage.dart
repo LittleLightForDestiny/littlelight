@@ -146,9 +146,12 @@ class SelectMembershipSubPageState extends SubpageBaseState<SelectMembershipSubP
     final memberships = account.destinyMemberships?.where((m) => m.membershipId != account.primaryMembershipId);
     if (memberships == null) return null;
     if (memberships.length == 0) return null;
-    return Column(
-      children: memberships.map((m) => buildMembership(context, m, account)).toList(),
-    );
+    final hasMainAccount = account.primaryMembershipId != null;
+    return Opacity(
+        opacity: hasMainAccount ? .5 : 1,
+        child: Column(
+          children: memberships.map((m) => buildMembership(context, m, account)).toList(),
+        ));
   }
 
   Widget buildMembership(BuildContext context, GroupUserInfoCard destinyInfoCard, UserMembershipData account,

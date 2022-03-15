@@ -84,6 +84,11 @@ class ManifestService with StorageConsumer, LanguageConsumer, BungieApiConsumer,
 
   Future<void> _downloadManifest(StreamController<DownloadProgress> _controller, {bool skipCache = false}) async {
     try {
+      _db?.close();
+    } catch (e, stackTrace) {
+      analytics.registerNonFatal(e, stackTrace);
+    }
+    try {
       DestinyManifest info = await _getManifestInfo();
       String language = languageService.currentLanguage;
       String? manifestFileURL = info.mobileWorldContentPaths?[language];
@@ -167,8 +172,15 @@ class ManifestService with StorageConsumer, LanguageConsumer, BungieApiConsumer,
   }
 
   Future<bool> test() async {
-    var def = await getDefinition<DestinyInventoryItemDefinition>(3628991658);
-    return def?.displayProperties?.name != null;
+    final def = await getDefinition<DestinyInventoryItemDefinition>(3628991658);
+    final success = def?.displayProperties?.name != null;
+    if (success) return success;
+    try {
+      _db?.close();
+    } catch (e, stackTrace) {
+      analytics.registerNonFatal(e, stackTrace);
+    }
+    return success;
   }
 
   Future<sqflite.Database?> _openDb() async {
@@ -277,6 +289,14 @@ class ManifestService with StorageConsumer, LanguageConsumer, BungieApiConsumer,
       }
     } catch (e) {}
     return defs.cast<int, T>();
+  }
+
+  void closeDB() {
+    try {
+      _db?.close();
+    } catch (e, stackTrace) {
+      analytics.registerNonFatal(e, stackTrace);
+    }
   }
 
   Future<T?> getDefinition<T>(int? hash, [DefinitionTableIdentityFunction? identity]) async {

@@ -22,6 +22,9 @@ class Version {
   Version(this.major, this.minor, this.patch);
   factory Version.fromString(String version) {
     final splitted = version.split('.').map((e) => int.tryParse(e)).toList();
+    if (splitted.length < 3) {
+      return Version(0, 0, 0);
+    }
     return Version(splitted.safeElementAt(0) ?? 0, splitted.safeElementAt(1) ?? 0, splitted.safeElementAt(2) ?? 0);
   }
 
@@ -32,15 +35,36 @@ class Version {
     return false;
   }
 
-  operator <=(Version version) {
+  operator <(Version version) {
     final result = version > this;
     return result;
   }
+
+  operator >=(Version version) {
+    return this == version || this > version;
+  }
+
+  operator <=(Version version) {
+    return this == version || this < version;
+  }
+
+  bool operator ==(dynamic version) {
+    if (version is String) {
+      version = Version.fromString(version);
+    }
+    if (version is Version) {
+      return this.major == version.major && this.minor == version.minor && this.patch == version.patch;
+    }
+    return false;
+  }
+
+  @override
+  int get hashCode => major.hashCode + minor.hashCode + patch.hashCode;
 }
 
 abstract class StorageMigration {
   static final _allMigrations = [
-    MigrationV1x7x90(),
+    MigrationV1x9x0(),
   ];
 
   static runAllMigrations() async {
@@ -54,8 +78,10 @@ abstract class StorageMigration {
     }
     for (final migration in _allMigrations) {
       final migrationVersion = Version.fromString(migration.version);
-      if (migrationVersion <= lastVersion) continue;
-      if (migrationVersion > currentVersion) continue;
+      final isOlderThanLast = migrationVersion <= lastVersion;
+      final isNewerThanCurrent = migrationVersion > currentVersion;
+      if (isOlderThanLast) continue;
+      if (isNewerThanCurrent) continue;
       await migration.migrate();
     }
     _prefs.setString("currentVersion", info.version);

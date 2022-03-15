@@ -16,7 +16,7 @@ class _QuickTransferListWidgetState extends SearchListWidgetState<QuickTransferL
   @override
   Widget getItem(BuildContext context, int index) {
     var item = widget.controller.filtered[index];
-    return QuickTransferSearchItemWrapper(item.item, null,
+    return QuickTransferSearchItemWrapper(item, null,
         characterId: item.ownerId, key: Key("item_${item.item.itemInstanceId}_${item.item.itemHash}"));
   }
 }

@@ -27,7 +27,7 @@ class MinimalBaseInventoryItemWidget extends BaseInventoryItemWidget
       children: <Widget>[
         positionedIcon(context),
         primaryStatWidget(context),
-        buildItemTags(context),
+        buildMiddleInfoRow(context),
         buildTagsBadges(context),
       ].where((w) => w != null).toList(),
     );
@@ -83,36 +83,30 @@ class MinimalBaseInventoryItemWidget extends BaseInventoryItemWidget
   }
 
   Widget buildItemTags(BuildContext context) {
-    List<Widget> items = [];
-    var notes = itemNotes.getNotesForItem(item?.itemHash, item?.itemInstanceId);
-    var tags = itemNotes.tagsByIds(notes?.tags);
+    final notes = itemNotes.getNotesForItem(item?.itemHash, item?.itemInstanceId);
+    final tags = itemNotes.tagsByIds(notes?.tags);
+    if (tags == null) return Container();
+    return Row(
+        children: tags
+            .map((t) => ItemTagWidget(
+                  t,
+                  fontSize: titleFontSize,
+                  padding: 0,
+                ))
+            .toList());
+  }
+
+  Widget buildMiddleInfoRow(BuildContext context) {
     var locked = item?.state?.contains(ItemState.Locked) ?? false;
-    if (tags != null) {
-      items.addAll(tags.map((t) => ItemTagWidget(
-            t,
-            fontSize: titleFontSize,
-            padding: 0,
-          )));
-    }
-    if (locked) {
-      items.add(Container(child: Icon(FontAwesomeIcons.lock, size: titleFontSize)));
-    }
-    if ((items?.length ?? 0) == 0) return Container();
-    items = items
-        .expand((i) => [
-              i,
-              Container(
-                width: padding / 4,
-              )
-            ])
-        .toList();
-    items.removeLast();
     return Positioned(
         right: padding,
         bottom: titleFontSize + padding * 4,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
-          children: items,
+          children: [
+            buildItemTags(context),
+            if (locked) Container(child: Icon(FontAwesomeIcons.lock, size: titleFontSize))
+          ],
         ));
   }
 

@@ -55,18 +55,16 @@ class ScreenShotItemStatsState extends BaseItemStatsState<ScreenShotItemStatsWid
     return stats
         .map<Widget>((stat) {
           var entry = statValues[stat.statTypeHash];
-          return Flexible(
-              child: ScreenshotItemStatWidget(
+          return ScreenshotItemStatWidget(
             statHash: stat.statTypeHash,
             modValues: entry,
             pixelSize: widget.pixelSize,
             scaled:
                 statGroupDefinition.scaledStats.firstWhere((s) => s.statHash == stat.statTypeHash, orElse: () => null),
-          ));
+          );
         })
-        .followedBy(totalStat == null
-            ? []
-            : [Flexible(child: ScreenshotTotalStatWidget(modValues: totalStat, pixelSize: widget.pixelSize))])
+        .followedBy(
+            totalStat == null ? [] : [ScreenshotTotalStatWidget(modValues: totalStat, pixelSize: widget.pixelSize)])
         .toList();
   }
 }

@@ -88,7 +88,7 @@ jobs:
 
       - name: Download Android keystore
         id: android_keystore
-        uses: timheuer/base64-to-file@v1.0.3
+        uses: timheuer/base64-to-file@v1.1
         with:
           fileName: release.keystore
           encodedString: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
@@ -118,7 +118,7 @@ jobs:
 
       - name: Download bundle dependencies
         run: |
-          gem install bundler:2.0.2
+          gem install bundler
           bundle config path vendor/bundle
           bundle install
 

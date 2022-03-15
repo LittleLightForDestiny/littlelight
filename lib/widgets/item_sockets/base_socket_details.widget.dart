@@ -192,12 +192,10 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget> extends Ba
   }
 
   Widget buildRandomPerks(BuildContext context) {
-    var randomHashes = controller.randomizedPlugHashes(controller.selectedSocketIndex);
-    if ((randomHashes?.length ?? 0) == 0) {
+    final plugs = controller.possiblePlugHashes(controller.selectedSocketIndex);
+    if (plugs?.isEmpty ?? false) {
       return Container(height: 80);
     }
-    var plugs = controller.socketPlugHashes(controller.selectedSocketIndex);
-    plugs.addAll(randomHashes);
     return Wrap(
       runSpacing: 6,
       spacing: 6,

@@ -72,11 +72,12 @@ class TagListWidget extends StatelessWidget with ItemNotesConsumer {
   @override
   Widget build(BuildContext context) {
     final tags = context.watch<TagsChangedNotifier>().tags;
-    return Column(
+    return SingleChildScrollView(
+        child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: tags.map((t) => buildTag(context, t)).toList(),
-    );
+    ));
   }
 
   Widget buildTag(BuildContext context, ItemNotesTag tag) => Container(

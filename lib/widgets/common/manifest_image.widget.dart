@@ -9,7 +9,7 @@ import 'package:shimmer/shimmer.dart';
 typedef ExtractUrlFromData<T> = String? Function(T definition);
 
 class ManifestImageWidget<T> extends StatefulWidget {
-  final int hash;
+  final int? hash;
   final ExtractUrlFromData<T>? urlExtractor;
 
   final Widget? placeholder;
@@ -37,6 +37,7 @@ class ManifestImageState<T> extends State<ManifestImageWidget<T>> with ManifestC
   }
 
   Future<void> loadDefinition() async {
+    if (widget.hash == null) return;
     definition = await manifest.getDefinition<T>(widget.hash);
     if (mounted) {
       setState(() {});

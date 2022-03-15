@@ -1,3 +1,4 @@
-- Enables mod swapping for weapons and armor
-- Improved authentication flow
-- Bug fixes
+- Fixes vault landscape view
+- adds enhanced perks highlights
+- adds visual clue for completed deepsight weapons
+- fixes item tagging

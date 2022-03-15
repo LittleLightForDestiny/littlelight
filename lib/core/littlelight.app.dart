@@ -1,14 +1,13 @@
 //@dart=2.12
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:little_light/core/navigator_key.dart';
 import 'package:little_light/core/router/littlelight_router.dart';
 import 'package:little_light/core/theme/littlelight.scroll_behavior.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
-import 'package:little_light/services/setup.dart';
+import 'package:little_light/services/unilinks_handler/unilinks.consumer.dart';
 
 const _router = LittleLightRouter();
 
@@ -19,29 +18,33 @@ class LittleLightApp extends StatefulWidget {
   _LittleLightAppState createState() => _LittleLightAppState();
 }
 
-class _LittleLightAppState extends State<LittleLightApp> with AnalyticsConsumer {
-  bool canInit = false;
-
+class _LittleLightAppState extends State<LittleLightApp> with AnalyticsConsumer, UnilinksConsumer {
   @override
   void initState() {
     super.initState();
-    asyncInit();
-    SystemChrome.setSystemUIOverlayStyle(
-        SystemUiOverlayStyle(statusBarColor: Colors.transparent, statusBarBrightness: Brightness.dark));
     LittleLightNavigatorKeyContainer.navigatorKey = GlobalKey<NavigatorState>();
+    unilinks?.addListener(updateUnilinks);
   }
 
-  void asyncInit() async {
-    await setupServices();
-    setState(() {
-      canInit = true;
-    });
+  @override
+  void dispose() {
+    unilinks?.removeListener(updateUnilinks);
+    super.dispose();
+  }
+
+  void updateUnilinks() {
+    final context = LittleLightNavigatorKeyContainer.navigatorKey?.currentContext;
+    if (context == null) return;
+    final currentLink = unilinks?.currentLink;
+    if (currentLink == null) return;
+    final unilinksRoute = RouteSettings(name: currentLink);
+    Navigator.of(context).pushAndRemoveUntil(_router.getPage(unilinksRoute), (r) => false);
   }
 
   @override
   Widget build(BuildContext context) {
-    if (!canInit) return Container();
-    return MaterialApp(
+    return Container(
+        child: MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Little Light',
       navigatorKey: LittleLightNavigatorKeyContainer.navigatorKey,
@@ -50,11 +53,15 @@ class _LittleLightAppState extends State<LittleLightApp> with AnalyticsConsumer 
         behavior: LittleLightScrollBehaviour(),
         child: LittleLightTheme(child ?? Container()),
       ),
-      onGenerateRoute: (route) => _router.getPage(route),
-      localizationsDelegates: [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ],
+      onGenerateRoute: (route) {
+        final currentLink = unilinks?.currentLink;
+        if (currentLink != null) {
+          final unilinksRoute = RouteSettings(name: currentLink);
+          return _router.getPage(unilinksRoute);
+        }
+        return _router.getPage(route);
+      },
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
       supportedLocales: [
         const Locale('en'), // English
         const Locale('fr'), // French
@@ -70,6 +77,6 @@ class _LittleLightAppState extends State<LittleLightApp> with AnalyticsConsumer 
         const Locale('zh', 'CHT'), // Chinese
         const Locale('zh', 'CHS'), // Chinese
       ],
-    );
+    ));
   }
 }

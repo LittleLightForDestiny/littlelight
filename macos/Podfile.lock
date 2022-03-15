@@ -1,37 +1,39 @@
 PODS:
-  - Firebase/CoreOnly (8.6.1):
-    - FirebaseCore (= 8.6.1)
-  - Firebase/Crashlytics (8.6.1):
-    - Firebase/CoreOnly
-    - FirebaseCrashlytics (~> 8.6.0)
-  - firebase_core (1.6.0):
-    - Firebase/CoreOnly (~> 8.6.0)
+  - device_info_plus_macos (0.0.1):
     - FlutterMacOS
-  - firebase_crashlytics (2.2.1):
-    - Firebase/CoreOnly (~> 8.6.0)
-    - Firebase/Crashlytics (~> 8.6.0)
+  - Firebase/CoreOnly (8.11.0):
+    - FirebaseCore (= 8.11.0)
+  - Firebase/Crashlytics (8.11.0):
+    - Firebase/CoreOnly
+    - FirebaseCrashlytics (~> 8.11.0)
+  - firebase_core (1.12.0):
+    - Firebase/CoreOnly (~> 8.11.0)
+    - FlutterMacOS
+  - firebase_crashlytics (2.5.1):
+    - Firebase/CoreOnly (~> 8.11.0)
+    - Firebase/Crashlytics (~> 8.11.0)
     - firebase_core
     - FlutterMacOS
-  - FirebaseCore (8.6.1):
+  - FirebaseCore (8.11.0):
     - FirebaseCoreDiagnostics (~> 8.0)
-    - GoogleUtilities/Environment (~> 7.4)
-    - GoogleUtilities/Logger (~> 7.4)
-  - FirebaseCoreDiagnostics (8.9.0):
+    - GoogleUtilities/Environment (~> 7.7)
+    - GoogleUtilities/Logger (~> 7.7)
+  - FirebaseCoreDiagnostics (8.12.0):
     - GoogleDataTransport (~> 9.1)
-    - GoogleUtilities/Environment (~> 7.6)
-    - GoogleUtilities/Logger (~> 7.6)
+    - GoogleUtilities/Environment (~> 7.7)
+    - GoogleUtilities/Logger (~> 7.7)
     - nanopb (~> 2.30908.0)
-  - FirebaseCrashlytics (8.6.0):
+  - FirebaseCrashlytics (8.11.0):
     - FirebaseCore (~> 8.0)
     - FirebaseInstallations (~> 8.0)
-    - GoogleDataTransport (~> 9.0)
-    - GoogleUtilities/Environment (~> 7.4)
+    - GoogleDataTransport (~> 9.1)
+    - GoogleUtilities/Environment (~> 7.7)
     - nanopb (~> 2.30908.0)
     - PromisesObjC (< 3.0, >= 1.2)
-  - FirebaseInstallations (8.9.0):
+  - FirebaseInstallations (8.12.0):
     - FirebaseCore (~> 8.0)
-    - GoogleUtilities/Environment (~> 7.6)
-    - GoogleUtilities/UserDefaults (~> 7.6)
+    - GoogleUtilities/Environment (~> 7.7)
+    - GoogleUtilities/UserDefaults (~> 7.7)
     - PromisesObjC (< 3.0, >= 1.2)
   - FlutterMacOS (1.0.0)
   - FMDB (2.7.5):
@@ -41,18 +43,18 @@ PODS:
     - GoogleUtilities/Environment (~> 7.2)
     - nanopb (~> 2.30908.0)
     - PromisesObjC (< 3.0, >= 1.2)
-  - GoogleUtilities/Environment (7.6.0):
+  - GoogleUtilities/Environment (7.7.0):
     - PromisesObjC (< 3.0, >= 1.2)
-  - GoogleUtilities/Logger (7.6.0):
+  - GoogleUtilities/Logger (7.7.0):
     - GoogleUtilities/Environment
-  - GoogleUtilities/UserDefaults (7.6.0):
+  - GoogleUtilities/UserDefaults (7.7.0):
     - GoogleUtilities/Logger
   - nanopb (2.30908.0):
     - nanopb/decode (= 2.30908.0)
     - nanopb/encode (= 2.30908.0)
   - nanopb/decode (2.30908.0)
   - nanopb/encode (2.30908.0)
-  - package_info (0.0.1):
+  - package_info_plus_macos (0.0.1):
     - FlutterMacOS
   - path_provider_macos (0.0.1):
     - FlutterMacOS
@@ -62,18 +64,25 @@ PODS:
   - sqflite (0.0.2):
     - FlutterMacOS
     - FMDB (>= 2.7.5)
+  - uni_links_macos (0.0.1):
+    - FlutterMacOS
   - url_launcher_macos (0.0.1):
+    - FlutterMacOS
+  - wakelock_macos (0.0.1):
     - FlutterMacOS
 
 DEPENDENCIES:
+  - device_info_plus_macos (from `Flutter/ephemeral/.symlinks/plugins/device_info_plus_macos/macos`)
   - firebase_core (from `Flutter/ephemeral/.symlinks/plugins/firebase_core/macos`)
   - firebase_crashlytics (from `Flutter/ephemeral/.symlinks/plugins/firebase_crashlytics/macos`)
   - FlutterMacOS (from `Flutter/ephemeral`)
-  - package_info (from `Flutter/ephemeral/.symlinks/plugins/package_info/macos`)
+  - package_info_plus_macos (from `Flutter/ephemeral/.symlinks/plugins/package_info_plus_macos/macos`)
   - path_provider_macos (from `Flutter/ephemeral/.symlinks/plugins/path_provider_macos/macos`)
   - shared_preferences_macos (from `Flutter/ephemeral/.symlinks/plugins/shared_preferences_macos/macos`)
   - sqflite (from `Flutter/ephemeral/.symlinks/plugins/sqflite/macos`)
+  - uni_links_macos (from `Flutter/ephemeral/.symlinks/plugins/uni_links_macos/macos`)
   - url_launcher_macos (from `Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos`)
+  - wakelock_macos (from `Flutter/ephemeral/.symlinks/plugins/wakelock_macos/macos`)
 
 SPEC REPOS:
   trunk:
@@ -89,43 +98,52 @@ SPEC REPOS:
     - PromisesObjC
 
 EXTERNAL SOURCES:
+  device_info_plus_macos:
+    :path: Flutter/ephemeral/.symlinks/plugins/device_info_plus_macos/macos
   firebase_core:
     :path: Flutter/ephemeral/.symlinks/plugins/firebase_core/macos
   firebase_crashlytics:
     :path: Flutter/ephemeral/.symlinks/plugins/firebase_crashlytics/macos
   FlutterMacOS:
     :path: Flutter/ephemeral
-  package_info:
-    :path: Flutter/ephemeral/.symlinks/plugins/package_info/macos
+  package_info_plus_macos:
+    :path: Flutter/ephemeral/.symlinks/plugins/package_info_plus_macos/macos
   path_provider_macos:
     :path: Flutter/ephemeral/.symlinks/plugins/path_provider_macos/macos
   shared_preferences_macos:
     :path: Flutter/ephemeral/.symlinks/plugins/shared_preferences_macos/macos
   sqflite:
     :path: Flutter/ephemeral/.symlinks/plugins/sqflite/macos
+  uni_links_macos:
+    :path: Flutter/ephemeral/.symlinks/plugins/uni_links_macos/macos
   url_launcher_macos:
     :path: Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos
+  wakelock_macos:
+    :path: Flutter/ephemeral/.symlinks/plugins/wakelock_macos/macos
 
 SPEC CHECKSUMS:
-  Firebase: e84d95f6d3a91f634abc384f0751c434cb3aecfa
-  firebase_core: 9a84b9f2d3a597a3ddc716942bc7e47d6eb85649
-  firebase_crashlytics: b571067e384448863aa09b4b030fc46c34f3f1a3
-  FirebaseCore: a753c231801f04f5ccd10cc92119ad1b12a61165
-  FirebaseCoreDiagnostics: 5daa63f1c1409d981a2d5007daa100b36eac6a34
-  FirebaseCrashlytics: 58f8ecea7c799c61c50e8111d2e438424a8a1d2e
-  FirebaseInstallations: caa7c8e0d3e2345b8829d2fa9ca1b4dfbf2fcc85
+  device_info_plus_macos: 1ad388a1ef433505c4038e7dd9605aadd1e2e9c7
+  Firebase: 44dd9724c84df18b486639e874f31436eaa9a20c
+  firebase_core: 76a7538b389ae1231102dbbdd4f3772eec9abbf8
+  firebase_crashlytics: 43d2c0c0999c16be5fe3d67bc5e49f9ab8b40626
+  FirebaseCore: 2f4f85b453cc8fea4bb2b37e370007d2bcafe3f0
+  FirebaseCoreDiagnostics: 3b40dfadef5b90433a60ae01f01e90fe87aa76aa
+  FirebaseCrashlytics: 62268addefae79601057818156e8bc69d71fee41
+  FirebaseInstallations: 25764cf322e77f99449395870a65b2bef88e1545
   FlutterMacOS: 57701585bf7de1b3fc2bb61f6378d73bbdea8424
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   GoogleDataTransport: 629c20a4d363167143f30ea78320d5a7eb8bd940
-  GoogleUtilities: 684ee790a24f73ebb2d1d966e9711c203f2a4237
+  GoogleUtilities: e0913149f6b0625b553d70dae12b49fc62914fd1
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
-  package_info: 6eba2fd8d3371dda2d85c8db6fe97488f24b74b2
+  package_info_plus_macos: f010621b07802a241d96d01876d6705f15e77c1c
   path_provider_macos: 160cab0d5461f0c0e02995469a98f24bdb9a3f1f
   PromisesObjC: 68159ce6952d93e17b2dfe273b8c40907db5ba58
-  shared_preferences_macos: 480ce071d0666e37cef23fe6c702293a3d21799e
+  shared_preferences_macos: a64dc611287ed6cbe28fd1297898db1336975727
   sqflite: a5789cceda41d54d23f31d6de539d65bb14100ea
-  url_launcher_macos: 45af3d61de06997666568a7149c1be98b41c95d4
+  uni_links_macos: ae11dc2c15cc71a7235cfbd51c4b20099064c5f3
+  url_launcher_macos: 597e05b8e514239626bcf4a850fcf9ef5c856ec3
+  wakelock_macos: bc3f2a9bd8d2e6c89fee1e1822e7ddac3bd004a9
 
 PODFILE CHECKSUM: 5cc9cc52306b46b5a0163f3cb69de318a6809ff3
 
-COCOAPODS: 1.10.1
+COCOAPODS: 1.11.2

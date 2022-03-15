@@ -9,6 +9,7 @@ import 'package:bungie_api/models/destiny_item_socket_category_definition.dart';
 import 'package:bungie_api/models/destiny_socket_category_definition.dart';
 import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
@@ -25,7 +26,7 @@ class DetailsItemModsWidget extends BaseItemSocketsWidget {
     DestinyInventoryItemDefinition definition,
     DestinyItemSocketCategoryDefinition category,
     ItemSocketController controller,
-  }) : super(key: key, item: item, definition: definition, category: category, controller: controller);
+  }) : super(key: key, category: category, controller: controller);
 
   @override
   State<StatefulWidget> createState() {
@@ -204,6 +205,8 @@ class DetailsItemPerksWidgetState<T extends DetailsItemModsWidget> extends BaseI
     var canEquip = controller?.canEquip(socketIndex, plugItemHash);
     var selectedSocketIndex = controller.selectedSocketIndex;
     bool selected = selectedSocketIndex == socketIndex;
+    int selectedPlugForSocket = controller.socketSelectedPlugHash(socketIndex);
+    bool isSelectedForSocket = plugItemHash == selectedPlugForSocket;
     return Container(
         key: Key("item_mod_$plugItemHash"),
         child: AspectRatio(
@@ -236,10 +239,21 @@ class DetailsItemPerksWidgetState<T extends DetailsItemModsWidget> extends BaseI
                         child: Container(
                           color: Colors.black.withOpacity(.5),
                         ),
-                      )
+                      ),
+                if (!isSelectedForSocket)
+                  Positioned(
+                      key: Key('selected_$selectedPlugForSocket'),
+                      child: Container(
+                          color: LittleLightTheme.of(context).onSurfaceLayers.layer3,
+                          padding: EdgeInsets.all(1),
+                          child: ManifestImageWidget<DestinyInventoryItemDefinition>(selectedPlugForSocket)),
+                      bottom: 2,
+                      right: 2,
+                      width: 24,
+                      height: 24)
               ]),
               onPressed: () {
-                controller.selectSocket(socketIndex, plugItemHash);
+                controller.selectSocket(socketIndex, selectedPlugForSocket);
               },
             )));
   }

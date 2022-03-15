@@ -38,10 +38,28 @@ class VendorsService with StorageConsumer, BungieApiConsumer {
     return vendors?.vendorGroups?.data?.groups;
   }
 
+  List<DestinyItemSocketState>? getSaleItemSocketsSync(String? characterId, int? vendorHash, int? index) {
+    try {
+      final sockets = _vendors[characterId]?.itemComponents!["$vendorHash"]!.sockets!.data!["$index"]!.sockets;
+      return sockets;
+    } catch (e) {}
+    return null;
+  }
+
   Future<List<DestinyItemSocketState>?> getSaleItemSockets(String? characterId, int? vendorHash, int? index) async {
     var vendors = await _getVendorsDataForCharacter(characterId);
     try {
-      return vendors?.itemComponents!["$vendorHash"]!.sockets!.data!["$index"]!.sockets;
+      final sockets = vendors?.itemComponents!["$vendorHash"]!.sockets!.data!["$index"]!.sockets;
+      return sockets;
+    } catch (e) {}
+    return null;
+  }
+
+  Map<String, List<DestinyItemPlugBase>>? getSaleItemReusablePerksSync(
+      String? characterId, int? vendorHash, int? index) {
+    try {
+      final plugs = _vendors[characterId]?.itemComponents!["$vendorHash"]!.reusablePlugs!.data!["$index"]?.plugs;
+      return plugs;
     } catch (e) {}
     return null;
   }

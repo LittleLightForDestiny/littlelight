@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/widgets/icon_fonts/littlelight_icons.dart';
 
+export 'element_type_data.dart';
+
 class RaidPhases {
   static const int leviathanGardens = 3847906370;
   static const int leviathanPools = 2188993306;
@@ -278,7 +280,7 @@ class DestinyData {
     }
   }
 
-  static Color getTierColor(TierType tierType) {
+  static Color getTierColor(TierType? tierType) {
     switch (tierType) {
       case TierType.Basic:
         return Color.fromARGB(255, 195, 188, 180);
@@ -293,12 +295,12 @@ class DestinyData {
 
       case TierType.Unknown:
       case TierType.Currency:
-      case TierType.ProtectedInvalidEnumValue:
+      default:
         return Color.fromARGB(255, 195, 188, 180);
     }
   }
 
-  static Color getTierTextColor(TierType tierType) {
+  static Color getTierTextColor(TierType? tierType) {
     switch (tierType) {
       case TierType.Basic:
       case TierType.Unknown:

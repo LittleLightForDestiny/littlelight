@@ -14,6 +14,17 @@ class WishlistFile {
 
   factory WishlistFile.fromJson(Map<String, dynamic> json) => _$WishlistFileFromJson(json);
   Map<String, dynamic> toJson() => _$WishlistFileToJson(this);
+
+  WishlistFile copyWith({
+    String? name,
+    String? description,
+    String? url,
+  }) =>
+      WishlistFile(
+        name: name ?? this.name,
+        description: description ?? this.description,
+        url: url ?? this.url,
+      );
 }
 
 @JsonSerializable()

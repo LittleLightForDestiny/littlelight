@@ -4,16 +4,14 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_item_quantity.dart';
-
 import 'package:flutter/material.dart';
-import 'package:little_light/pages/item_details/item_details.page.dart';
+import 'package:little_light/pages/item_details/item_details.page_route.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateless_item.widget.dart';
+import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-
 import 'package:little_light/widgets/item_list/items/weapon/weapon_inventory_item.widget.dart';
 
 class RewardsInfoWidget extends BaseDestinyStatelessItemWidget {
@@ -67,9 +65,7 @@ class RewardsInfoWidget extends BaseDestinyStatelessItemWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => ItemDetailsPage(definition: def),
-                      ),
+                      ItemDetailsPageRoute.definition(hash: def.hash),
                     );
                   },
                 ),

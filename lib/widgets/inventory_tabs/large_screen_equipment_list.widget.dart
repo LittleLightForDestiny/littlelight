@@ -1,5 +1,6 @@
 // @dart=2.9
 
+import 'dart:async';
 import 'dart:math';
 
 import 'package:bungie_api/destiny2.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/models/bucket_display_options.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/services/notification/notification.package.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/inventory_utils.dart';
@@ -21,9 +23,8 @@ import 'package:little_light/widgets/multisection_scrollview/sliver_section.dart
 
 const _suppressEmptySpaces = [
   InventoryBucket.consumables,
-  InventoryBucket.shaders,
   InventoryBucket.modifications,
-  InventoryBucket.lostItems
+  InventoryBucket.lostItems,
 ];
 
 class LargeScreenEquipmentListWidget extends StatefulWidget {
@@ -34,7 +35,7 @@ class LargeScreenEquipmentListWidget extends StatefulWidget {
 }
 
 class LargeScreenEquipmentListWidgetState extends State<LargeScreenEquipmentListWidget>
-    with ManifestConsumer, UserSettingsConsumer, ProfileConsumer {
+    with ManifestConsumer, UserSettingsConsumer, ProfileConsumer, NotificationConsumer {
   Map<int, DestinyInventoryBucketDefinition> bucketDefinitions;
   final List<List<int>> bucketHashes = [
     [InventoryBucket.lostItems],
@@ -49,10 +50,18 @@ class LargeScreenEquipmentListWidgetState extends State<LargeScreenEquipmentList
   ];
   Map<int, ListBucket> singleColumnBuckets;
 
+  StreamSubscription<NotificationEvent> notificationsSubscription;
+
   @override
   void initState() {
     super.initState();
     asyncInit();
+
+    notificationsSubscription = notifications.listen((event) {
+      if (event.type == NotificationType.receivedUpdate || event.type == NotificationType.localUpdate) {
+        buildIndex();
+      }
+    });
   }
 
   void asyncInit() async {
@@ -99,6 +108,7 @@ class LargeScreenEquipmentListWidgetState extends State<LargeScreenEquipmentList
 
   @override
   dispose() {
+    notificationsSubscription.cancel();
     super.dispose();
   }
 
@@ -154,7 +164,7 @@ class LargeScreenEquipmentListWidgetState extends State<LargeScreenEquipmentList
     final mq = MediaQuery.of(context);
     final headerHeight = 40;
     final equippedHeight = bucketOptions.equippedItemHeight;
-    final itemsPerRow = bucketOptions.unequippedItemsPerRow;
+    final itemsPerRow = bucketOptions.responsiveUnequippedItemsPerRow(context, columnCount);
     final columnWidth =
         (mq.size.width - (columnCount - 1) * 10 - 8 - mq.viewPadding.left - mq.viewPadding.right) / columnCount;
     final itemWidth = itemsPerRow >= 0 ? (columnWidth - (itemsPerRow - 1) * 2) / itemsPerRow : 0;
@@ -181,6 +191,7 @@ class LargeScreenEquipmentListWidgetState extends State<LargeScreenEquipmentList
                     setState(() {});
                   }
                 },
+                columnCount: columnHashes.length,
                 key: Key("bucket${bucket}_${widget.character}"),
                 characterId: widget.character.characterId,
                 includeInfoHeader: false,
@@ -221,17 +232,13 @@ class LargeScreenEquipmentListWidgetState extends State<LargeScreenEquipmentList
     return userSettings.getDisplayOptionsForBucket("$bucketHash");
   }
 
-  int getItemCountPerRow(BuildContext context, BucketDisplayOptions bucketOptions) {
-    return bucketOptions.responsiveUnequippedItemsPerRow(context);
-  }
-
   bool suppressEmptySpaces(bucketHash) => _suppressEmptySpaces?.contains(bucketHash) ?? false;
 
   SliverSection buildUnequippedItems(List<DestinyItemComponent> items, ListBucket bucket) {
     final bucketDef = bucketDefinitions[bucket.bucketHash];
     final bucketOptions = getBucketOptions(bucket.bucketHash);
     final maxSlots = bucketDef?.itemCount != null ? (bucketDef.itemCount - 1) : items.length;
-    final itemsPerRow = getItemCountPerRow(context, bucketOptions);
+    final itemsPerRow = bucketOptions.responsiveUnequippedItemsPerRow(context);
     int bucketSize = maxSlots;
     if (!bucketDef.hasTransferDestination || suppressEmptySpaces(bucket.bucketHash)) {
       bucketSize = (items.length / itemsPerRow).ceil() * itemsPerRow;
@@ -257,7 +264,7 @@ class LargeScreenEquipmentListWidgetState extends State<LargeScreenEquipmentList
         final item = items[index];
         final itemKey = "equipped_${item?.itemInstanceId ?? item?.itemHash ?? 'empty'}";
         return InventoryItemWrapperWidget(
-          item,
+          item != null ? ItemWithOwner(item, widget.character.characterId) : null,
           item?.bucketHash,
           key: Key(itemKey),
           characterId: widget.character.characterId,

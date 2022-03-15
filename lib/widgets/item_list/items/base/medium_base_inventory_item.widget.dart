@@ -46,7 +46,7 @@ class MediumBaseInventoryItemWidget extends BaseInventoryItemWidget with Profile
 
   @override
   double get iconBorderWidth {
-    return 1;
+    return 1.5;
   }
 
   double get iconSize {

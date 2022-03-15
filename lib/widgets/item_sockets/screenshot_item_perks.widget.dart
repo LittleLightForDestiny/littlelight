@@ -20,7 +20,7 @@ class ScreenShotItemPerksWidget extends BaseItemSocketsWidget {
     DestinyItemSocketCategoryDefinition category,
     ItemSocketController controller,
     this.pixelSize = 1,
-  }) : super(key: key, item: item, definition: definition, category: category, controller: controller);
+  }) : super(key: key, category: category, controller: controller);
 
   @override
   State<StatefulWidget> createState() {
@@ -113,13 +113,13 @@ class ScreenShotItemPerksWidgetState<T extends ScreenShotItemPerksWidget> extend
   }
 
   @override
-  Set<int> socketPlugHashes(int socketIndex) {
+  List<int> socketPlugHashes(int socketIndex) {
     if (controller.reusablePlugs == null) {
       var isRandom = controller.randomizedPlugHashes(socketIndex).length > 0;
       if (isRandom) {
         return controller
             .bungieRollPlugHashes(socketIndex)
-            .followedBy([controller.socketRandomizedSelectedPlugHash(socketIndex)]).toSet();
+            .followedBy([controller.socketRandomizedSelectedPlugHash(socketIndex)]).toList();
       }
     }
     return super.socketPlugHashes(socketIndex);
@@ -134,19 +134,21 @@ class ScreenShotItemPerksWidgetState<T extends ScreenShotItemPerksWidget> extend
     bool isSelectedOnSocket = plugItemHash == controller.socketSelectedPlugHash(socketIndex);
     bool isSelected = plugItemHash == controller.selectedPlugHash;
 
-    return SelectablePerkWidget(
-      selected: isSelected,
-      selectedOnSocket: isSelectedOnSocket,
-      itemDefinition: widget.definition,
-      plugHash: plugItemHash,
-      plugDefinition: plugDef,
-      equipped: isEquipped,
-      scale: widget.pixelSize,
-      wishlistScale: widget.pixelSize * 1.8,
-      key: Key("$plugItemHash $isSelected $isSelectedOnSocket"),
-      onTap: () {
-        controller.selectSocket(socketIndex, plugItemHash);
-      },
-    );
+    return Container(
+        padding: EdgeInsets.only(bottom: widget.pixelSize * 8),
+        child: SelectablePerkWidget(
+          selected: isSelected,
+          selectedOnSocket: isSelectedOnSocket,
+          itemDefinition: controller.definition,
+          plugHash: plugItemHash,
+          plugDefinition: plugDef,
+          equipped: isEquipped,
+          scale: widget.pixelSize,
+          wishlistScale: widget.pixelSize * 1.8,
+          key: Key("$plugItemHash $isSelected $isSelectedOnSocket"),
+          onTap: () {
+            controller.selectSocket(socketIndex, plugItemHash);
+          },
+        ));
   }
 }

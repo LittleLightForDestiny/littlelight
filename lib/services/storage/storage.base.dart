@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:get_it/get_it.dart';
+import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
@@ -14,7 +15,7 @@ extension on StoredFileExtensions {
   String get extension => this.toString().split(".").last.toLowerCase();
 }
 
-abstract class StorageBase<T> {
+abstract class StorageBase<T> with AnalyticsConsumer {
   SharedPreferences get _prefs => GetIt.I<SharedPreferences>();
   final String _path;
   static String? _fileRoot;
@@ -42,14 +43,23 @@ abstract class StorageBase<T> {
   }
 
   Future<String?> _getFileRoot() async {
+    dynamic error;
+    StackTrace? stack;
     try {
       final directory = await getApplicationDocumentsDirectory();
       return directory.path;
-    } catch (e) {}
+    } catch (e, stackTrace) {
+      error = e;
+      stack = stackTrace;
+    }
     try {
       final directory = await getApplicationSupportDirectory();
       return directory.path;
-    } catch (e) {}
+    } catch (e, stackTrace) {
+      error = e;
+      stack = stackTrace;
+    }
+    analytics.registerNonFatal(error, stack, additionalInfo: {"reason": "Coudn't find file root"});
     return null;
   }
 }
@@ -117,9 +127,8 @@ extension StorageOperations<T> on StorageBase<T> {
       try {
         String contents = await cached.readAsString();
         return contents;
-      } catch (e) {
-        print('error reading file');
-        print(e);
+      } catch (e, stackTrace) {
+        analytics.registerNonFatal(e, stackTrace, additionalInfo: {"reason": "Couldn't read file"});
       }
     }
     return null;
@@ -127,11 +136,15 @@ extension StorageOperations<T> on StorageBase<T> {
 
   Future<void> saveFileContents(String filePath, String contents) async {
     File file = File("$filePath");
-    if (!await file.exists()) {
-      file = await file.create(recursive: true);
-    }
+    try {
+      if (!await file.exists()) {
+        file = await file.create(recursive: true);
+      }
 
-    await file.writeAsString(contents);
+      await file.writeAsString(contents);
+    } catch (e, stackTrace) {
+      analytics.registerNonFatal(e, stackTrace, additionalInfo: {"reason": "Couldn't write file"});
+    }
   }
 
   Future<dynamic> getJson(T key) async {
@@ -220,11 +233,16 @@ extension StorageOperations<T> on StorageBase<T> {
       }
     } else {
       final dbPath = File("$_dbRoot/$path");
-      await dbPath.delete(recursive: true);
+      try {
+        await dbPath.delete(recursive: true);
+      } catch (e, stackTrace) {
+        analytics.registerNonFatal(e, stackTrace);
+      }
     }
 
     final _fileRoot = await _getFileRoot();
     if (_fileRoot == null) return;
+    if (_fileRoot == _dbRoot) return;
     if (path.isEmpty) {
       final rootDir = Directory(_fileRoot);
       final files = rootDir.listSync();
@@ -233,7 +251,11 @@ extension StorageOperations<T> on StorageBase<T> {
       }
     } else {
       final filesPath = File("$_fileRoot/$path");
-      await filesPath.delete(recursive: true);
+      try {
+        await filesPath.delete(recursive: true);
+      } catch (e, stackTrace) {
+        analytics.registerNonFatal(e, stackTrace);
+      }
     }
   }
 }

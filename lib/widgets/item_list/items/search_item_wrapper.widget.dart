@@ -3,7 +3,6 @@
 import 'dart:async';
 
 import 'package:bungie_api/enums/destiny_item_type.dart';
-import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
@@ -20,7 +19,7 @@ import 'package:little_light/widgets/item_list/items/weapon/weapon_inventory_ite
 import 'package:little_light/widgets/progress_tabs/pursuit_item/large_pursuit_item.widget.dart';
 
 class SearchItemWrapperWidget extends InventoryItemWrapperWidget {
-  SearchItemWrapperWidget(DestinyItemComponent item, int bucketHash, {String characterId, Key key})
+  SearchItemWrapperWidget(ItemWithOwner item, int bucketHash, {String characterId, Key key})
       : super(item, bucketHash, characterId: characterId, key: key);
 
   @override
@@ -52,7 +51,7 @@ class SearchItemWrapperWidgetState<T extends SearchItemWrapperWidget>
       case DestinyItemType.Subclass:
         {
           return SubclassInventoryItemWidget(
-            widget.item,
+            widget.item.item,
             definition,
             instanceInfo,
             characterId: widget.characterId,
@@ -62,7 +61,7 @@ class SearchItemWrapperWidgetState<T extends SearchItemWrapperWidget>
       case DestinyItemType.Weapon:
         {
           return WeaponInventoryItemWidget(
-            widget.item,
+            widget.item.item,
             definition,
             instanceInfo,
             characterId: widget.characterId,
@@ -74,7 +73,7 @@ class SearchItemWrapperWidgetState<T extends SearchItemWrapperWidget>
       case DestinyItemType.Armor:
         {
           return ArmorInventoryItemWidget(
-            widget.item,
+            widget.item.item,
             definition,
             instanceInfo,
             characterId: widget.characterId,
@@ -86,7 +85,7 @@ class SearchItemWrapperWidgetState<T extends SearchItemWrapperWidget>
       case DestinyItemType.Emblem:
         {
           return EmblemInventoryItemWidget(
-            widget.item,
+            widget.item.item,
             definition,
             instanceInfo,
             characterId: widget.characterId,
@@ -96,15 +95,14 @@ class SearchItemWrapperWidgetState<T extends SearchItemWrapperWidget>
         }
 
       default:
-        if (InventoryBucket.pursuitBucketHashes.contains(widget?.item?.bucketHash)) {
+        if (InventoryBucket.pursuitBucketHashes.contains(widget?.item?.item?.bucketHash)) {
           return LargePursuitItemWidget(
-            characterId: widget.characterId,
             trailing: buildCharacterIcon(context),
             item: widget.item,
           );
         }
         return BaseInventoryItemWidget(
-          widget.item,
+          widget.item.item,
           definition,
           instanceInfo,
           characterId: widget.characterId,
@@ -137,7 +135,7 @@ class SearchItemWrapperWidgetState<T extends SearchItemWrapperWidget>
   @override
   void onLongPress(context) {
     selection.activateMultiSelect();
-    selection.addItem(ItemWithOwner(widget.item, widget.characterId));
+    selection.addItem(widget.item);
     setState(() {});
 
     StreamSubscription<List<ItemWithOwner>> sub;

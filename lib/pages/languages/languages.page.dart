@@ -1,6 +1,5 @@
 //@dart=2.12
 import 'package:flutter/material.dart';
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/language_info.dart';

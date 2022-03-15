@@ -3,6 +3,7 @@
 import 'dart:async';
 
 import 'package:bungie_api/destiny2.dart';
+import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:little_light/models/character_sort_parameter.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
@@ -21,12 +22,15 @@ setupProfileService() {
   GetIt.I.registerSingleton<ProfileService>(ProfileService._internal(), dispose: (p) => p._dispose());
 }
 
-class ProfileService with UserSettingsConsumer, StorageConsumer, AuthConsumer, BungieApiConsumer, NotificationConsumer {
-  static const List<int> profileBuckets = [
-    InventoryBucket.modifications,
-    InventoryBucket.shaders,
-    InventoryBucket.consumables
-  ];
+class ProfileService
+    with
+        UserSettingsConsumer,
+        StorageConsumer,
+        AuthConsumer,
+        BungieApiConsumer,
+        NotificationConsumer,
+        WidgetsBindingObserver {
+  static const List<int> profileBuckets = [InventoryBucket.modifications, InventoryBucket.consumables];
 
   bool pauseAutomaticUpdater = false;
   bool _disposed = false;
@@ -37,8 +41,36 @@ class ProfileService with UserSettingsConsumer, StorageConsumer, AuthConsumer, B
 
   ProfileService._internal();
 
+  init() async {
+    WidgetsBinding.instance?.addObserver(this);
+    await _initialLoad();
+    _startAutomaticUpdater();
+  }
+
   _dispose() {
     _disposed = true;
+    lastUpdated = null;
+    pauseAutomaticUpdater = true;
+    _lastLoadedFrom = null;
+    _profile = null;
+    WidgetsBinding.instance?.removeObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    switch (state) {
+      case AppLifecycleState.resumed:
+        await fetchProfileData();
+        pauseAutomaticUpdater = false;
+        break;
+
+      case AppLifecycleState.detached:
+      case AppLifecycleState.inactive:
+      case AppLifecycleState.paused:
+        pauseAutomaticUpdater = true;
+        break;
+    }
+    print("state changed: $state");
   }
 
   List<DestinyComponentType> updateComponents = ProfileComponentGroups.everything;
@@ -47,14 +79,13 @@ class ProfileService with UserSettingsConsumer, StorageConsumer, AuthConsumer, B
       {List<DestinyComponentType>? components, bool skipUpdate = false}) async {
     if (!skipUpdate) notifications.push(NotificationEvent(NotificationType.requestedUpdate));
     try {
-      DestinyProfileResponse? res = await _updateProfileData(components ?? updateComponents);
+      DestinyProfileResponse? profile = await _updateProfileData(components ?? updateComponents);
       this._lastLoadedFrom = LastLoadedFrom.server;
       if (!skipUpdate) notifications.push(NotificationEvent(NotificationType.receivedUpdate));
-      final profile = this._profile;
       if (profile != null) {
         this._cacheProfile(profile);
       }
-      return res;
+      return profile;
     } catch (e) {
       if (!skipUpdate) ErrorNotificationEvent(ErrorNotificationType.genericUpdateError);
       if (!skipUpdate) await Future.delayed(Duration(seconds: 2));
@@ -63,7 +94,7 @@ class ProfileService with UserSettingsConsumer, StorageConsumer, AuthConsumer, B
     return _profile;
   }
 
-  startAutomaticUpdater() async {
+  _startAutomaticUpdater() async {
     if (this._lastLoadedFrom == LastLoadedFrom.cache) {
       await fetchProfileData(components: ProfileComponentGroups.everything);
     }
@@ -189,7 +220,7 @@ class ProfileService with UserSettingsConsumer, StorageConsumer, AuthConsumer, B
     print('saved to cache');
   }
 
-  Future<DestinyProfileResponse?> initialLoad() async {
+  Future<DestinyProfileResponse?> _initialLoad() async {
     final data = await currentMembershipStorage.getCachedProfile();
     if (data != null) {
       this._profile = data;
@@ -232,7 +263,7 @@ class ProfileService with UserSettingsConsumer, StorageConsumer, AuthConsumer, B
     return null;
   }
 
-  Map<String, List<DestinyObjectiveProgress>>? getPlugObjectives(String itemInstanceId) {
+  Map<String, List<DestinyObjectiveProgress>>? getPlugObjectives(String? itemInstanceId) {
     try {
       return _profile?.itemComponents?.plugObjectives?.data?[itemInstanceId]?.objectivesPerPlug;
     } catch (e) {}
@@ -246,7 +277,7 @@ class ProfileService with UserSettingsConsumer, StorageConsumer, AuthConsumer, B
     return null;
   }
 
-  List<DestinyObjectiveProgress>? getItemObjectives(String itemInstanceId, String characterId, int hash) {
+  List<DestinyObjectiveProgress>? getItemObjectives(String? itemInstanceId, String? characterId, int? hash) {
     try {
       var objectives = _profile?.itemComponents?.objectives?.data?[itemInstanceId]?.objectives;
       if (objectives != null) return objectives;

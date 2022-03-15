@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
@@ -9,11 +7,13 @@ import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 
 class EngramIconWidget extends ItemIconWidget {
   EngramIconWidget(
-      DestinyItemComponent item, DestinyInventoryItemDefinition definition, DestinyItemInstanceComponent instanceInfo,
-      {Key key, double iconBorderWidth})
-      : super(item, definition, instanceInfo, key: key);
+    DestinyItemComponent? item,
+    DestinyInventoryItemDefinition? definition,
+    DestinyItemInstanceComponent? instanceInfo, {
+    Key? key,
+  }) : super(item, definition, instanceInfo, key: key);
 
-  BoxDecoration iconBoxDecoration() {
+  BoxDecoration? iconBoxDecoration() {
     return null;
   }
 

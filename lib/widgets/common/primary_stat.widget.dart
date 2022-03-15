@@ -10,7 +10,6 @@ import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/utils/destiny_data.dart';
-import 'package:little_light/utils/element_type_data.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 
@@ -75,7 +74,7 @@ class PrimaryStatWidget extends StatelessWidget {
     if (definition?.itemType == DestinyItemType.Armor && !suppressClassTypeIcon) {
       widgets.add(classTypeIcon(context));
     }
-    widgets.add(valueAndCapField(context, damageType?.getColorLayer(context)?.layer1));
+    widgets.add(valueAndCapField(context, damageType?.getColorLayer(context)?.layer2));
     if (inlinePowerCap) {
       widgets.add(inlinePowerCapField(context));
     }
@@ -145,7 +144,7 @@ class PrimaryStatWidget extends StatelessWidget {
     return Row(children: [
       Icon(
         DestinyData.getClassIcon(definition.classType),
-        color: damageType?.getColorLayer(context)?.layer1,
+        color: damageType?.getColorLayer(context)?.layer2,
         size: fontSize,
       ),
       ammoTypeDivider(context)
@@ -155,7 +154,7 @@ class PrimaryStatWidget extends StatelessWidget {
   Widget damageTypeIcon(BuildContext context) {
     return Icon(
       DestinyData.getDamageTypeIcon(damageType),
-      color: damageType?.getColorLayer(context)?.layer1,
+      color: damageType?.getColorLayer(context)?.layer2,
       size: fontSize,
     );
   }

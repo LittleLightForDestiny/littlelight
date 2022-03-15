@@ -1,0 +1,11 @@
+languages(['en-US','de-DE', 'es-ES', 'fr-FR', 'it', 'ja', 'pt-BR'])
+release_notes({
+    'default' => File.read(Dir.pwd + '/fastlane/metadata/ios/default/release_notes.txt'),
+    'en-US' => File.read(Dir.pwd + '/fastlane/metadata/ios/default/release_notes.txt'),
+    'de-DE' => File.read(Dir.pwd + '/fastlane/metadata/ios/default/release_notes.txt'),
+    'es-ES' => File.read(Dir.pwd + '/fastlane/metadata/ios/default/release_notes.txt'),
+    'fr-FR' => File.read(Dir.pwd + '/fastlane/metadata/ios/default/release_notes.txt'),
+    'it' => File.read(Dir.pwd + '/fastlane/metadata/ios/default/release_notes.txt'),
+    'ja' => File.read(Dir.pwd + '/fastlane/metadata/ios/default/release_notes.txt'),
+    'pt-BR' => File.read(Dir.pwd + '/fastlane/metadata/ios/default/release_notes.txt'),
+  })

@@ -1,9 +1,11 @@
 //@dart=2.12
 
 import 'package:flutter/material.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/pages/initial/errors/authorization_failed.error.dart';
 import 'package:little_light/pages/initial/errors/manifest_download.error.dart';
+import 'package:little_light/pages/initial/errors/invalid_membership.error.dart';
 import 'package:little_light/pages/initial/notifiers/initial_page_state.notifier.dart';
 import 'package:little_light/pages/initial/subpages/subpage_base.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
@@ -49,6 +51,9 @@ class StartupErrorSubPageState extends SubpageBaseState<StartupErrorSubPage> wit
     if (controller.error is AuthorizationFailedError) {
       return buildMultilineDescription([authorizationErrorMessage, authorizationErrorInstructions]);
     }
+    if (controller.error is InvalidMembershipError) {
+      return buildMultilineDescription([invalidMembershipErrorMessage, invalidMembershipErrorInstruction]);
+    }
     return buildMultilineDescription([unexpectedErrorMessage, clearAndRestartInstructions]);
   }
 
@@ -60,6 +65,9 @@ class StartupErrorSubPageState extends SubpageBaseState<StartupErrorSubPage> wit
     if (controller.error is AuthorizationFailedError) {
       return buildMultiButtonOptions(
           [openBungieLoginOption, checkBungieNetTwitterOption, checkLittleLightD2TwitterOption]);
+    }
+    if (controller.error is InvalidMembershipError) {
+      return buildMultiButtonOptions([logoutOption]);
     }
     return buildMultiButtonOptions([restartOption, clearDataAndRestartOption]);
   }
@@ -110,6 +118,16 @@ class StartupErrorSubPageState extends SubpageBaseState<StartupErrorSubPage> wit
         textAlign: TextAlign.center,
       );
 
+  Widget get invalidMembershipErrorMessage => TranslatedTextWidget(
+        "Couldn't find playable Destiny 2 characters on your account.",
+        textAlign: TextAlign.center,
+      );
+
+  Widget get invalidMembershipErrorInstruction => TranslatedTextWidget(
+        "Please make sure you're using the same account you use to play Destiny 2 and the correct platform.",
+        textAlign: TextAlign.center,
+      );
+
   /// Button options
 
   Widget get restartOption => ElevatedButton(
@@ -126,6 +144,14 @@ class StartupErrorSubPageState extends SubpageBaseState<StartupErrorSubPage> wit
   Widget get openBungieLoginOption => ElevatedButton(
         onPressed: () => auth.openBungieLogin(false),
         child: TranslatedTextWidget("Authorize with Bungie.net"),
+      );
+
+  Widget get logoutOption => ElevatedButton(
+        onPressed: () {
+          auth.removeAccount(auth.currentAccountID!);
+          Phoenix.rebirth(context);
+        },
+        child: TranslatedTextWidget("Logout"),
       );
 
   Widget get checkBungieNetTwitterOption => ElevatedButton(

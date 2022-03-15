@@ -14,7 +14,6 @@ import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
-import 'package:little_light/utils/element_type_data.dart';
 import 'package:little_light/utils/shimmer_helper.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
@@ -43,8 +42,6 @@ class ItemDetailsSocketDetailsWidget extends BaseSocketDetailsWidget {
 
 class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<ItemDetailsSocketDetailsWidget>
     with PlugWishlistTagIconsMixin, ProfileConsumer, ItemNotesConsumer {
-  bool get favoritable => definition.plug.plugCategoryIdentifier == 'shader';
-
   @override
   Widget build(BuildContext context) {
     if (definition == null) return Container();
@@ -81,10 +78,10 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
                   definition?.displayProperties?.name?.toUpperCase(),
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
-                Text(definition?.itemTypeDisplayName, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300))
+                Text(definition?.itemTypeDisplayName ?? "", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300))
               ],
             )),
-            if (favoritable) buildFavoriteButton(context)
+            if (controller.isSocketFavoritable(controller.selectedSocketIndex)) buildFavoriteButton(context)
           ]),
         ));
   }
@@ -155,33 +152,75 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
   }
 
   Widget buildReusableMods(BuildContext context) {
-    final originalPlugs = controller.socketPlugHashes(controller.selectedSocketIndex).toList();
-    var plugs = originalPlugs.toList();
-    if (favoritable) {
-      plugs.sort((a, b) {
-        final favoriteA = itemNotes.getNotesForItem(a, null)?.tags?.contains("favorite") ?? false;
-        final favoriteB = itemNotes.getNotesForItem(b, null)?.tags?.contains("favorite") ?? false;
-        final valueA = favoriteA ? 1 : 0;
-        final valueB = favoriteB ? 1 : 0;
-        final favoriteOrder = valueB.compareTo(valueA);
-        if (favoriteOrder != 0) return favoriteOrder;
-        final orderA = originalPlugs.indexOf(a);
-        final orderB = originalPlugs.indexOf(b);
-        return orderA.compareTo(orderB);
-      });
-    }
-    return PlugGridView(
-      plugs,
-      itemBuilder: (h) => buildMod(context, controller.selectedSocketIndex, h),
-    );
+    final plugs = controller.socketPlugHashes(controller.selectedSocketIndex);
+
+    return Container(
+        padding: EdgeInsets.only(bottom: 8),
+        child: LayoutBuilder(builder: (context, constraints) {
+          final width = constraints.maxWidth - 32;
+          final itemsPerRow = (width / 48).floor();
+          final rowCount = (plugs.length / itemsPerRow).ceil().clamp(0, 3);
+          final tabCount = (plugs.length / (itemsPerRow * rowCount)).ceil();
+          final itemHeight = width / itemsPerRow;
+          final gridHeight = itemHeight * rowCount - 8;
+
+          return DefaultTabController(
+              length: tabCount,
+              child: Container(
+                height: gridHeight,
+                child: Row(children: [
+                  Builder(builder: (context) => pagingButton(context, -1)),
+                  Expanded(
+                      child: PlugGridView(
+                    plugs,
+                    itemBuilder: (h) => buildMod(context, controller.selectedSocketIndex, h),
+                    itemsPerRow: itemsPerRow,
+                    maxRows: rowCount,
+                    gridSpacing: 8,
+                  )),
+                  Builder(builder: (context) => pagingButton(context, 1)),
+                ]),
+              ));
+        }));
+  }
+
+  Widget pagingButton(BuildContext context, [int direction = 1]) {
+    final controller = DefaultTabController.of(context);
+    final length = controller.length;
+
+    return AnimatedBuilder(
+        animation: controller.animation,
+        builder: (context, child) {
+          final currentIndex = controller.index;
+          final enabled = direction < 0 ? currentIndex > 0 : currentIndex < length - 1;
+          return Container(
+            constraints: BoxConstraints.expand(width: 16),
+            decoration: BoxDecoration(border: Border.all(color: Colors.grey.shade300)),
+            padding: EdgeInsets.all(0),
+            alignment: Alignment.center,
+            child: !enabled
+                ? Container(color: Colors.grey.shade300.withOpacity(.2))
+                : Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                        onTap: () {
+                          controller.animateTo(currentIndex + direction);
+                        },
+                        child: Container(
+                            constraints: BoxConstraints.expand(),
+                            child: Icon(direction > 0 ? FontAwesomeIcons.caretRight : FontAwesomeIcons.caretLeft,
+                                size: 16)))),
+          );
+        });
   }
 
   Widget buildMod(BuildContext context, int socketIndex, int plugItemHash) {
     bool isFavorite = itemNotes.getNotesForItem(plugItemHash, null)?.tags?.contains("favorite") ?? false;
     bool isSelected = plugItemHash == controller.selectedPlugHash;
-    Color borderColor = isSelected ? Theme.of(context).colorScheme.onSurface : Colors.grey.shade300.withOpacity(.5);
+    Color borderColor =
+        isSelected ? Theme.of(context).colorScheme.onSurface : Theme.of(context).colorScheme.onSurface.withOpacity(.5);
 
-    BorderSide borderSide = BorderSide(color: borderColor, width: 1);
+    BorderSide borderSide = BorderSide(color: borderColor, width: isSelected ? 3 : 1);
     var def = controller.plugDefinitions[plugItemHash];
     var energyType = def?.plug?.energyCost?.energyType ?? DestinyEnergyType.Any;
     var energyCost = def?.plug?.energyCost?.energyCost ?? 0;
@@ -229,12 +268,10 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
   }
 
   Widget buildRandomPerks(BuildContext context) {
-    var randomHashes = controller.randomizedPlugHashes(controller.selectedSocketIndex);
-    if ((randomHashes?.length ?? 0) == 0) {
+    final plugs = controller.possiblePlugHashes(controller.selectedSocketIndex);
+    if (plugs?.isEmpty ?? false) {
       return Container();
     }
-    var plugs = controller.socketPlugHashes(controller.selectedSocketIndex);
-    plugs.addAll(randomHashes);
     var screenWidth = MediaQuery.of(context).size.width - 16;
     var dividerMargin = min(screenWidth / 50, 8.0);
     return Container(
@@ -242,7 +279,7 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
         child: Wrap(
           runSpacing: dividerMargin,
           spacing: dividerMargin,
-          children: plugs.map((h) => buildPerk(context, controller.selectedSocketIndex, h)).toList(),
+          children: plugs.map((p) => buildPerk(context, controller.selectedSocketIndex, p)).toList(),
         ));
   }
 
@@ -316,6 +353,7 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
     bool isEquipped = equippedHash == plugItemHash;
     bool isSelectedOnSocket = plugItemHash == controller.socketSelectedPlugHash(socketIndex);
     bool isSelected = plugItemHash == controller.selectedPlugHash;
+    bool canRoll = controller.item != null || controller.canRollPerk(socketIndex, plugItemHash);
     var screenWidth = MediaQuery.of(context).size.width;
     return Container(
         width: min(64, screenWidth / 8),
@@ -326,6 +364,7 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
           plugHash: plugItemHash,
           plugDefinition: plugDef,
           equipped: isEquipped,
+          canRoll: canRoll,
           key: Key("$plugItemHash $isSelected $isSelectedOnSocket"),
           onTap: () {
             controller.selectSocket(socketIndex, plugItemHash);

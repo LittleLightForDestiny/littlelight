@@ -6,7 +6,7 @@ import 'package:little_light/core/theme/littlelight.theme.dart';
 
 const TierTypeColorsToken = 'TierTypeColors';
 
-extension DamageTypeColorLayers on TierType {
+extension TierTypeColorLayers on TierType {
   LayeredSwatch getColorLayer(BuildContext context) {
     final theme = LittleLightTheme.of(context);
     switch (this) {

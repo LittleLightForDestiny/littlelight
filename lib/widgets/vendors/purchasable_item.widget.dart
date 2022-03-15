@@ -12,7 +12,7 @@ import 'package:bungie_api/models/destiny_vendor_sale_item_component.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
-import 'package:little_light/pages/item_details/item_details.page.dart';
+import 'package:little_light/pages/item_details/item_details.page_route.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
@@ -109,16 +109,11 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget>
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => ItemDetailsPage(
-                definition: definition,
-                instanceInfo: instanceInfo,
-                characterId: widget.characterId,
-                socketStates: sockets,
-                sale: widget.sale,
-                vendorHash: widget.vendorHash,
-                vendorItem: widget.item,
-              ),
+            ItemDetailsPageRoute.fromVendor(
+              instanceInfo: instanceInfo,
+              characterId: widget.characterId,
+              vendorHash: widget.vendorHash,
+              vendorItem: widget.sale,
             ),
           );
         },

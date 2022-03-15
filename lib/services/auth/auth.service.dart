@@ -3,15 +3,16 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:bungie_api/destiny2.dart';
 import 'package:bungie_api/groupsv2.dart';
 import 'package:bungie_api/helpers/bungie_net_token.dart';
 import 'package:bungie_api/helpers/oauth.dart';
 import 'package:bungie_api/user.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:get_it/get_it.dart';
+import 'package:little_light/exceptions/invalid_membership.exception.dart';
 import 'package:little_light/services/app_config/app_config.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
 import 'package:little_light/services/language/language.consumer.dart';
@@ -41,13 +42,32 @@ class AuthService with StorageConsumer, LanguageConsumer, AppConfigConsumer, Bun
 
   Future<UserMembershipData> addAccount(String authorizationCode) async {
     final token = await bungieAPI.requestToken(authorizationCode);
-    final memberships = await bungieAPI.getMembershipsForToken(token);
+    final membershipData = await bungieAPI.getMembershipsForToken(token);
+
     final accountID = token.membershipId;
     this._currentAccountID = accountID;
     final storage = accountStorage(accountID);
     await this._saveToken(token);
-    await storage.saveMembershipData(memberships);
-    return memberships;
+    final memberships = membershipData.destinyMemberships;
+    if (memberships == null || memberships.isEmpty) {
+      throw InvalidMembershipException("Account doesn't have any memberships");
+    }
+    List<GroupUserInfoCard> validMemberships = <GroupUserInfoCard>[];
+    for (final membership in memberships) {
+      try {
+        final profile = await bungieAPI
+            .getProfile([DestinyComponentType.Characters], membership.membershipId!, membership.membershipType!);
+        if (profile?.characters?.data?.isNotEmpty ?? false) {
+          validMemberships.add(membership);
+        }
+      } catch (e) {}
+    }
+    if (validMemberships.isEmpty) {
+      throw InvalidMembershipException("Account doesn't have any valid memberships");
+    }
+    membershipData.destinyMemberships = validMemberships;
+    await storage.saveMembershipData(membershipData);
+    return membershipData;
   }
 
   Future<UserMembershipData?> getMembershipData() async {
@@ -169,12 +189,6 @@ class AuthService with StorageConsumer, LanguageConsumer, AppConfigConsumer, Bun
     await _saveToken(token);
     return token;
   }
-
-  // void reset() {
-  //   _currentMembership = null;
-  //   _currentToken = null;
-  //   _membershipData = null;
-  // }
 
   Future<GroupUserInfoCard?> getMembership() async {
     if (_currentMembership == null) {

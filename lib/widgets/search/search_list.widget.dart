@@ -65,7 +65,7 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T> {
 
   Widget getItem(BuildContext context, int index) {
     var item = widget.controller.filtered[index];
-    return SearchItemWrapperWidget(item.item, null,
+    return SearchItemWrapperWidget(item, null,
         characterId: item.ownerId, key: Key("item_${item.item.itemInstanceId}_${item.item.itemHash}"));
   }
 

@@ -25,18 +25,12 @@ import 'items/inventory_item_wrapper.widget.dart';
 
 const _fullWidthBuckets = [
   InventoryBucket.consumables,
-  InventoryBucket.shaders,
   InventoryBucket.modifications,
   InventoryBucket.lostItems,
   InventoryBucket.engrams
 ];
 
-const _suppressEmptySpaces = [
-  InventoryBucket.consumables,
-  InventoryBucket.shaders,
-  InventoryBucket.modifications,
-  InventoryBucket.lostItems
-];
+const _suppressEmptySpaces = [InventoryBucket.consumables, InventoryBucket.modifications, InventoryBucket.lostItems];
 
 typedef OnBucketOptionsChanged = void Function();
 
@@ -56,17 +50,20 @@ class ItemListWidget extends StatefulWidget {
 
   final OnBucketOptionsChanged onBucketOptionsChanged;
 
-  ItemListWidget(
-      {this.padding,
-      this.bucketHashes,
-      this.characterId,
-      this.includeInfoHeader = true,
-      this.shrinkWrap = false,
-      Key key,
-      this.currentGroup,
-      this.fixedSizedEquipmentBuckets = false,
-      this.onBucketOptionsChanged})
-      : super(key: key);
+  final int columnCount;
+
+  ItemListWidget({
+    Key key,
+    this.padding,
+    this.bucketHashes,
+    this.characterId,
+    this.includeInfoHeader = true,
+    this.shrinkWrap = false,
+    this.columnCount = 1,
+    this.currentGroup,
+    this.fixedSizedEquipmentBuckets = false,
+    this.onBucketOptionsChanged,
+  }) : super(key: key);
   @override
   ItemListWidgetState createState() => ItemListWidgetState();
 }
@@ -162,10 +159,11 @@ class ItemListWidgetState extends State<ItemListWidget>
       if (widget.includeInfoHeader) buildCharInfoSliver(),
     ];
     buckets.forEach((bucket) {
-      final options = userSettings.getDisplayOptionsForBucket("${bucket.bucketHash}");
+      final bucketDef = bucketDefs[bucket.bucketHash];
+      final options = getBucketOptions(bucket.bucketHash);
       final bool showEquipped = bucket.equipped != null && options.type != BucketDisplayType.Hidden;
-      final bool showUnequipped = (showEquipped || (bucket.unequipped?.length ?? 0) > 0) &&
-          ![BucketDisplayType.Hidden, BucketDisplayType.OnlyEquipped].contains(options.type);
+      final bool showUnequipped = ![BucketDisplayType.Hidden, BucketDisplayType.OnlyEquipped].contains(options.type) &&
+          ((bucket.unequipped?.isNotEmpty ?? false) || bucketDef.hasTransferDestination);
       final bool addSpacer = showEquipped || showUnequipped;
       list += [
         buildBucketHeaderSliver(bucket),
@@ -218,7 +216,7 @@ class ItemListWidgetState extends State<ItemListWidget>
     final bucketOptions = getBucketOptions(item.bucketHash);
     return SliverSection(
         itemBuilder: (context, _) => InventoryItemWrapperWidget(
-              item,
+              item != null ? ItemWithOwner(item, widget.characterId) : null,
               item?.bucketHash,
               key: Key(itemKey),
               characterId: widget.characterId,
@@ -232,7 +230,7 @@ class ItemListWidgetState extends State<ItemListWidget>
   }
 
   int getItemCountPerRow(BuildContext context, BucketDisplayOptions bucketOptions) {
-    return bucketOptions.unequippedItemsPerRow;
+    return bucketOptions.responsiveUnequippedItemsPerRow(context, widget.columnCount);
   }
 
   SliverSection buildUnequippedItems(List<DestinyItemComponent> items, ListBucket bucket) {
@@ -241,8 +239,14 @@ class ItemListWidgetState extends State<ItemListWidget>
     final maxSlots = bucketDef?.itemCount != null ? (bucketDef.itemCount - 1) : items.length;
     final itemsPerRow = getItemCountPerRow(context, bucketOptions);
     int bucketSize = maxSlots;
+    if (bucketDef == null) {
+      print(bucket.bucketHash);
+    }
     if (!bucketDef.hasTransferDestination || suppressEmptySpaces(bucket.bucketHash)) {
       bucketSize = (items.length / itemsPerRow).ceil() * itemsPerRow;
+    }
+    if (bucketDef.hasTransferDestination && bucketOptions.type == BucketDisplayType.Large) {
+      bucketSize = (items.length + 1).clamp(0, bucketSize);
     }
     final contentDensity = {
       BucketDisplayType.Large: ContentDensity.FULL,
@@ -262,7 +266,7 @@ class ItemListWidgetState extends State<ItemListWidget>
         final item = items[index];
         final itemKey = "equipped_${item?.itemInstanceId ?? item?.itemHash ?? 'empty'}";
         return InventoryItemWrapperWidget(
-          item,
+          item != null ? ItemWithOwner(item, widget.characterId) : null,
           item?.bucketHash,
           key: Key(itemKey),
           characterId: widget.characterId,
