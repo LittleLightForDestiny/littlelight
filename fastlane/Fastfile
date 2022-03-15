@@ -42,6 +42,17 @@ platform :android do
 end
 
 platform :ios do
+
+  desc "Setup certificates before doing anything"
+  private_lane :setup_api_key do
+    app_store_connect_api_key(
+      in_house: false,
+      key_id: ENV["APPSTORE_CONNECT_KEY_ID"],
+      issuer_id: ENV["APPSTORE_CONNECT_ISSUER_ID"],
+      key_filepath: ENV["APPSTORE_CONNECT_KEY_FILE"],
+    )
+  end
+
   desc "Prints path and changelog"
   lane :changelogs do
     puts Dir.pwd
@@ -50,6 +61,7 @@ platform :ios do
 
   desc "Build iOS app for distribution"
   lane :build do
+    setup_api_key
     if is_ci
       create_keychain(
         name: ENV['MATCH_KEYCHAIN_NAME'],
@@ -61,7 +73,6 @@ platform :ios do
       )
     end
     match(
-      api_key_path: ENV['APPSTORE_CONNECT_KEY_FILE'],
       type: "appstore",
       app_identifier: ENV["APPLE_APP_IDENTIFIER"],
       git_url: ENV["MATCH_GIT_URL"],
@@ -77,7 +88,6 @@ platform :ios do
       code_signing_identity: "iPhone Distribution"
     )
     build_app(
-      api_key_path: ENV['APPSTORE_CONNECT_KEY_FILE'],
       workspace: "ios/Runner.xcworkspace",
       scheme: "Runner",
       output_directory:"build/ios",
@@ -88,8 +98,8 @@ platform :ios do
 
   desc "Deploy iOS version to app store (manual release)"
   lane :beta do
+      setup_api_key
       upload_to_app_store(
-      api_key_path: ENV['APPSTORE_CONNECT_KEY_FILE'],
       ipa: "build/ios/LittleLight.ipa",
       skip_screenshots: true,
       force: true,
@@ -108,8 +118,8 @@ platform :ios do
 
   desc "Deploy iOS version to app store (automatic release)"
   lane :deploy do
+      setup_api_key
       upload_to_app_store(
-      api_key_path: ENV['APPSTORE_CONNECT_KEY_FILE'],
       ipa: "build/ios/LittleLight.ipa",
       skip_screenshots: true,
       force: true,

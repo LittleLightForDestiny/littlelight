@@ -120,8 +120,11 @@ jobs:
         run: pod install --repo-update
 
       - name: Download Appstore Connect key
-        run: |
-          echo "${{ secrets.APPSTORE_KEY_JSON }}" > ./fastlane/appstore_connect_key.json
+        id: app_store_connect_key
+        uses: timheuer/base64-to-file@v1.1
+        with:
+          fileName: appstore_connect_key.p8
+          encodedString: ${{ secrets.APPSTORE_CONNECT_KEY_BASE64 }}
 
       - name: Cache bundle dependencies
         uses: actions/cache@v2
@@ -147,16 +150,16 @@ jobs:
       - name: Build iOS via Fastlane
         run: bundle exec fastlane ios build
         env:
-          APPSTORE_CONNECT_KEY_FILE: ./fastlane/appstore_connect_key.json
+          APPSTORE_CONNECT_KEY_FILE: ${{ steps.app_store_connect_key.outputs.filePath }}
 
       - name: Upload to App Store (manual release)
         if: steps.variables.outputs.track == 'beta'
         run: bundle exec fastlane ios beta
         env:
-          APPSTORE_CONNECT_KEY_FILE: ./fastlane/appstore_connect_key.json
+          APPSTORE_CONNECT_KEY_FILE: ${{ steps.app_store_connect_key.outputs.filePath }}
 
       - name: Release to App Store (automatic release)
         if: steps.variables.outputs.track == 'production'
         run: bundle exec fastlane ios deploy
         env:
-          APPSTORE_CONNECT_KEY_FILE: ./fastlane/appstore_connect_key.json
+          APPSTORE_CONNECT_KEY_FILE: ${{ steps.app_store_connect_key.outputs.filePath }}
