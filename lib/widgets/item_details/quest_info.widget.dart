@@ -35,7 +35,6 @@ class QuestInfoWidgetState extends BaseDestinyItemState<QuestInfoWidget> with Pr
   bool showSpoilers = false;
 
   int currentIndex = 0;
-  int allSteps = 0;
 
   @override
   void initState() {
@@ -49,7 +48,6 @@ class QuestInfoWidgetState extends BaseDestinyItemState<QuestInfoWidget> with Pr
         await manifest.getDefinition<DestinyInventoryItemDefinition>(definition.objectives.questlineItemHash);
     List<int> stepHashes = questlineDefinition.setData?.itemList?.map((i) => i.itemHash)?.toList() ?? [];
     currentIndex = stepHashes.indexOf(item.itemHash);
-    allSteps = stepHashes.length;
     questSteps = await manifest.getDefinitions<DestinyInventoryItemDefinition>(stepHashes);
     Iterable<int> objectiveHashes = questSteps.values.expand((step) => step.objectives.objectiveHashes);
     objectiveDefinitions = await manifest.getDefinitions<DestinyObjectiveDefinition>(objectiveHashes);
@@ -69,12 +67,7 @@ class QuestInfoWidgetState extends BaseDestinyItemState<QuestInfoWidget> with Pr
           padding: EdgeInsets.all(8),
           child: HeaderWidget(
             alignment: Alignment.centerLeft,
-            child: Row(
-              children: [
-                TranslatedTextWidget("Quest steps", uppercase: true, style: TextStyle(fontWeight: FontWeight.bold)),
-                Text(" ${currentIndex + 1}/$allSteps", style: TextStyle(fontWeight: FontWeight.bold)),
-              ],
-            ),
+            child: TranslatedTextWidget("Quest steps", uppercase: true, style: TextStyle(fontWeight: FontWeight.bold)),
           ),
         ),
       );
