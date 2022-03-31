@@ -105,10 +105,11 @@ class ScreenShotItemModsWidgetState<T extends ScreenShotItemModsWidget> extends 
   @override
   Widget buildPlug(BuildContext context, int socketIndex, int plugItemHash) {
     if (plugDefinitions == null) return Container();
-    var def = controller.plugDefinitions[plugItemHash];
-    var energyType = def?.plug?.energyCost?.energyType ?? DestinyEnergyType.Any;
-    var energyCost = def?.plug?.energyCost?.energyCost ?? 0;
-    var canEquip = controller?.canEquip(socketIndex, plugItemHash);
+    final def = controller.plugDefinitions[plugItemHash];
+    final energyType = def?.plug?.energyCost?.energyType ?? DestinyEnergyType.Any;
+    final energyCost = def?.plug?.energyCost?.energyCost ?? 0;
+    final canEquip = controller?.canEquip(socketIndex, plugItemHash);
+    final emptyModHash = 1835369552;
     return Material(
         child: InkWell(
             onTap: () {
@@ -117,7 +118,11 @@ class ScreenShotItemModsWidgetState<T extends ScreenShotItemModsWidget> extends 
             child: Container(
                 decoration: BoxDecoration(border: Border.all(color: Colors.grey.shade400, width: 3 * widget.pixelSize)),
                 child: Stack(children: [
-                  ManifestImageWidget<DestinyInventoryItemDefinition>(plugItemHash, key: Key("plug_$plugItemHash")),
+                  ManifestImageWidget<DestinyInventoryItemDefinition>(
+                    plugItemHash,
+                    key: Key("plug_$plugItemHash"),
+                    noIconPlaceholder: ManifestImageWidget<DestinyInventoryItemDefinition>(emptyModHash),
+                  ),
                   energyType == DestinyEnergyType.Any
                       ? Container()
                       : Positioned.fill(

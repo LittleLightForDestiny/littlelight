@@ -221,7 +221,7 @@ class DetailsItemPerksWidgetState<T extends DetailsItemModsWidget> extends BaseI
               child: Stack(children: [
                 ManifestImageWidget<DestinyInventoryItemDefinition>(
                   plugItemHash,
-                  placeholder: ManifestImageWidget<DestinyInventoryItemDefinition>(emptyModHash),
+                  noIconPlaceholder: ManifestImageWidget<DestinyInventoryItemDefinition>(emptyModHash),
                 ),
                 energyType == DestinyEnergyType.Any
                     ? Container()
