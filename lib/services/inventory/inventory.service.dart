@@ -196,8 +196,9 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
 
     for (var item in itemsToEquip) {
       String ownerId = profile.getItemOwner(item.itemInstanceId);
+      bool isOnPostMaster = item.bucketHash == InventoryBucket.lostItems;
       DestinyInventoryItemDefinition def = defs[item.itemHash];
-      if (ownerId == characterId) continue;
+      if (ownerId == characterId && !isOnPostMaster) continue;
       if (def.nonTransferrable) continue;
 
       ItemDestination destination = character == null ? ItemDestination.Vault : ItemDestination.Character;

@@ -49,12 +49,11 @@ class TranslatedTextWidgetState extends State<TranslatedTextWidget> with Languag
   }
 
   Future<void> loadTranslation() async {
-    if (widget.language != null) {
-      translatedText =
-          await languageService.getTranslation(widget.text, replace: widget.replace, languageCode: widget.language);
-    } else {
-      translatedText = await languageService.getTranslation(widget.text, replace: widget.replace);
-    }
+    translatedText =
+        languageService.getTranslationSync(widget.text, replace: widget.replace, languageCode: widget.language);
+    if (translatedText != null) return;
+    translatedText =
+        await languageService.getTranslation(widget.text, replace: widget.replace, languageCode: widget.language);
     if (mounted) {
       setState(() {});
     }

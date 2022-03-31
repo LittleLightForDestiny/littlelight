@@ -13,12 +13,18 @@ class ManifestImageWidget<T> extends StatefulWidget {
   final ExtractUrlFromData<T>? urlExtractor;
 
   final Widget? placeholder;
+  final Widget? noIconPlaceholder;
 
   final BoxFit fit;
   final Alignment alignment;
 
   ManifestImageWidget(this.hash,
-      {Key? key, this.fit = BoxFit.contain, this.alignment = Alignment.center, this.urlExtractor, this.placeholder})
+      {Key? key,
+      this.fit = BoxFit.contain,
+      this.alignment = Alignment.center,
+      this.urlExtractor,
+      this.placeholder,
+      this.noIconPlaceholder})
       : super(key: key);
 
   @override
@@ -60,8 +66,8 @@ class ManifestImageState<T> extends State<ManifestImageWidget<T>> with ManifestC
     } catch (e) {
       print(e);
     }
-    if (url == null || url.length == 0) {
-      return shimmer;
+    if (url?.isEmpty ?? true) {
+      return widget.noIconPlaceholder ?? widget.placeholder ?? shimmer;
     }
     final bungieUrl = BungieApiService.url(url);
     if (bungieUrl == null) {
