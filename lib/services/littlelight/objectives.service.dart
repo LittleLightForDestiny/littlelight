@@ -88,15 +88,7 @@ class ObjectivesService with StorageConsumer, ProfileConsumer, ManifestConsumer 
   }
 
   Future<List<TrackedObjective>?> _loadTrackedObjectivesFromCache() async {
-    List<dynamic>? json = await currentMembershipStorage.getTrackedObjectives();
-
-    if (json != null) {
-      List<TrackedObjective> objectives = json.map((j) => TrackedObjective.fromJson(j)).toList();
-      this._trackedObjectives = objectives;
-      return this._trackedObjectives;
-    }
-
-    this._trackedObjectives = [];
+    this._trackedObjectives = (await currentMembershipStorage.getTrackedObjectives()) ?? [];
     return this._trackedObjectives;
   }
 

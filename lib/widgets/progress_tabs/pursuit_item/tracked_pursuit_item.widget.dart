@@ -9,11 +9,7 @@ import 'large_pursuit_item.widget.dart';
 
 class TrackedPursuitItemWidget extends LargePursuitItemWidget {
   TrackedPursuitItemWidget({Key key, String characterId, ItemWithOwner item, Function onTap, Function onLongPress})
-      : super(
-            key: key,
-            item: item,
-            // includeCharacterIcon: true,
-            onTap: onTap);
+      : super(key: key, item: item, onTap: onTap, selectable: true);
 
   TrackedPursuitItemWidgetState createState() => TrackedPursuitItemWidgetState();
 }

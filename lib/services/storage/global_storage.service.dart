@@ -206,7 +206,7 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
 
   Future<WishlistFolder?> getFeaturedWishlists() async {
     try {
-      dynamic data = await getExpireableJson(GlobalStorageKeys.featuredWishlists, Duration(minutes: 30));
+      dynamic data = await getExpireableJson(GlobalStorageKeys.featuredWishlists, Duration(minutes: 5));
       if (data == null) return null;
       return WishlistFolder.fromJson(data);
     } catch (e) {

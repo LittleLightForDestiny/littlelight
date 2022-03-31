@@ -20,8 +20,8 @@ class ExceptionHandler with AuthConsumer {
     FlutterError.onError = (FlutterErrorDetails details) {
       final stack = details.stack;
       if (kDebugMode) {
-        FlutterError.dumpErrorToConsole(
-            details.copyWith(stackFilter: (input) => input.where((s) => s.contains('package:little_light'))));
+        FlutterError.dumpErrorToConsole(details.copyWith(
+            stackFilter: (input) => input.where((s) => s.contains('package:little_light') || !s.contains('package:'))));
       } else if (stack != null) {
         Zone.current.handleUncaughtError(details.exception, stack);
       }

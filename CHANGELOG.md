@@ -1,3 +1,10 @@
+## [1.9.6] - 2022-03-31
+
+- fixes quick select rendering on crafted and adept items
+- fixes translations loading
+- fixes infinite loading on deepsight weapons in collections
+- fixes equip max light when max light items are on postmaster
+
 ## [1.9.5] - 2022-03-15
 
 - Fixes vault landscape view

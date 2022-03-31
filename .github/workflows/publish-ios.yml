@@ -29,7 +29,7 @@ on:
         required: true
       IOS_GOOGLE_SERVICE_INFO_PLIST:
         required: true
-      APPSTORE_KEY_JSON:
+      APPSTORE_CONNECT_KEY_BASE64:
         required: true
 
   workflow_dispatch:

@@ -146,7 +146,8 @@ class ObjectivesScreenState extends State<ObjectivesScreen> with ProfileConsumer
               key: Key("objective_${objective.hash}_objective_${objective.instanceId}_${objective.characterId}"),
               characterId: objective.characterId,
               item: items[objective],
-              onTap: (item, definition, instanceInfo, characterId) async {
+              onTap: () async {
+                final item = items[objective];
                 await Navigator.push(
                   context,
                   ItemDetailsPageRoute(item: item),

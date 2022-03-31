@@ -126,14 +126,15 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
     await Future.delayed(Duration.zero);
     final route = ModalRoute.of(context);
     await getDefinitionFromCache();
-    await Future.delayed(route?.transitionDuration ?? Duration.zero);
     await loadItemDefinition();
+    await Future.delayed(route?.transitionDuration ?? Duration.zero);
     await initSocketController();
     await loadDefinitions();
-    if (mounted)
+    if (mounted) {
       setState(() {
         loaded = true;
       });
+    }
   }
 
   Future<void> getDefinitionFromCache() async {
@@ -220,7 +221,7 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
       CustomScrollView(
         slivers: [
           ItemCoverWidget(item, definition, instanceInfo,
-              uniqueId: this.uniqueId, characterId: characterId, key: Key("cover_$customName")),
+              uniqueId: this.uniqueId, characterId: characterId, key: Key("cover_${customName}_$loaded")),
           SliverList(
               delegate: SliverChildListDelegate([
             buildSaleDetails(context),
