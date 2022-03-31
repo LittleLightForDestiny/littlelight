@@ -34,10 +34,10 @@ class MainScreenState extends State<MainScreen>
     getInitScreen();
   }
 
-  initUpdaters() {
+  initUpdaters() async {
     auth.getMembershipData();
-    loadoutService.getLoadouts(forceFetch: true);
-    itemNotes.getNotes(forceFetch: true);
+    await loadoutService.getLoadouts(forceFetch: true);
+    await itemNotes.getNotes(forceFetch: true);
   }
 
   getInitScreen() async {
