@@ -122,7 +122,7 @@ jobs:
       MATCH_GIT_API_AUTH: $ {{secrets.MATCH_GIT_API_AUTH }}
       FLUTTER_DOTENV: $ {{secrets.FLUTTER_DOTENV }}
       IOS_GOOGLE_SERVICE_INFO_PLIST: $ {{secrets.IOS_GOOGLE_SERVICE_INFO_PLIST }}
-      APPSTORE_KEY_JSON: $ {{secrets.APPSTORE_KEY_JSON }}
+      APPSTORE_CONNECT_KEY_BASE64: $ {{secrets.APPSTORE_CONNECT_KEY_BASE64 }}
 
   update-translations:
     uses: ./.github/workflows/update-translations.yml
