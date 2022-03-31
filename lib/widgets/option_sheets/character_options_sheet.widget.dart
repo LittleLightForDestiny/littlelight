@@ -230,7 +230,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               TranslatedTextWidget(
-                "Max Light",
+                "Max Power",
                 style: buttonStyle,
                 uppercase: true,
                 textAlign: TextAlign.center,
