@@ -130,6 +130,9 @@ class LanguageService with StorageConsumer, ManifestConsumer {
 
   Future<Map<String, String>?> _loadTranslationMapFromSavedData(String languageCode) async {
     final translations = await languageStorage(languageCode).getTranslations();
+    if (translations != null) {
+      _translationMaps[languageCode] = translations;
+    }
     return translations;
   }
 
