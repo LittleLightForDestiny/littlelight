@@ -63,7 +63,8 @@ class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget> w
   String getEnhancedDefinitionName(DestinyInventoryItemDefinition definition) {
     String itemTypeDisplayName = definition?.itemTypeDisplayName ?? "";
 
-    if ((definition?.itemCategoryHashes?.indexOf(16) ?? -1) >= 0) {
+    final questCategoryHash = 16;
+    if (definition?.itemCategoryHashes?.contains(questCategoryHash) ?? false) {
       List<int> stepHashes = definition.setData.itemList.map((i) => i.itemHash)?.toList() ?? [];
       int currentIndex = stepHashes.indexOf(item.itemHash);
       int allSteps = stepHashes.length;
