@@ -85,6 +85,16 @@ class LanguageService with StorageConsumer, ManifestConsumer {
     LanguageInfo(code: 'zh-chs', name: "简体中文")
   ];
 
+  String? getTranslationSync(String text, {String? languageCode, Map<String, String> replace = const {}}) {
+    try {
+      String code = languageCode ?? currentLanguage;
+      final translated = _translationMaps[code]?[text];
+      if (translated == null) return null;
+      return _replace(translated, replace);
+    } catch (e) {}
+    return null;
+  }
+
   Future<String> getTranslation(String text, {String? languageCode, Map<String, String> replace = const {}}) async {
     String code = languageCode ?? currentLanguage;
     Map<String, String>? translationMap = await _getTranslationMap(code);
