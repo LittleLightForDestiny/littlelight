@@ -199,14 +199,15 @@ class DetailsItemPerksWidgetState<T extends DetailsItemModsWidget> extends BaseI
 
   Widget buildPlugIcon(BuildContext context, int socketIndex, int plugItemHash) {
     if (plugDefinitions == null) return Container();
-    var def = controller.plugDefinitions[plugItemHash];
-    var energyType = def?.plug?.energyCost?.energyType ?? DestinyEnergyType.Any;
-    var energyCost = def?.plug?.energyCost?.energyCost ?? 0;
-    var canEquip = controller?.canEquip(socketIndex, plugItemHash);
-    var selectedSocketIndex = controller.selectedSocketIndex;
+    final def = controller.plugDefinitions[plugItemHash];
+    final energyType = def?.plug?.energyCost?.energyType ?? DestinyEnergyType.Any;
+    final energyCost = def?.plug?.energyCost?.energyCost ?? 0;
+    final canEquip = controller?.canEquip(socketIndex, plugItemHash);
+    final selectedSocketIndex = controller.selectedSocketIndex;
     bool selected = selectedSocketIndex == socketIndex;
     int selectedPlugForSocket = controller.socketSelectedPlugHash(socketIndex);
     bool isSelectedForSocket = plugItemHash == selectedPlugForSocket;
+    final emptyModHash = 1835369552;
     return Container(
         key: Key("item_mod_$plugItemHash"),
         child: AspectRatio(
@@ -218,7 +219,10 @@ class DetailsItemPerksWidgetState<T extends DetailsItemModsWidget> extends BaseI
                       color: selected ? Theme.of(context).colorScheme.onSurface : Colors.grey.shade300.withOpacity(.5),
                       width: 1.5)),
               child: Stack(children: [
-                ManifestImageWidget<DestinyInventoryItemDefinition>(plugItemHash),
+                ManifestImageWidget<DestinyInventoryItemDefinition>(
+                  plugItemHash,
+                  placeholder: ManifestImageWidget<DestinyInventoryItemDefinition>(emptyModHash),
+                ),
                 energyType == DestinyEnergyType.Any
                     ? Container()
                     : Positioned.fill(

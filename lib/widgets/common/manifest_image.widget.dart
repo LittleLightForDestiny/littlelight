@@ -61,7 +61,7 @@ class ManifestImageState<T> extends State<ManifestImageWidget<T>> with ManifestC
       print(e);
     }
     if (url == null || url.length == 0) {
-      return shimmer;
+      return widget.placeholder ?? shimmer;
     }
     final bungieUrl = BungieApiService.url(url);
     if (bungieUrl == null) {
