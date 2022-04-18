@@ -11,6 +11,7 @@ import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/mixins/deepsight_helper.mixin.dart';
 import 'package:little_light/models/game_data.dart';
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/pages/loadouts/edit_loadout.screen.dart';
@@ -49,7 +50,8 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
         LoadoutsConsumer,
         ProfileConsumer,
         InventoryConsumer,
-        ManifestConsumer {
+        ManifestConsumer,
+        DeepSightHelper {
   Map<int, DestinyItemComponent> maxLightLoadout;
   Map<int, DestinyItemComponent> underAverageSlots;
   double maxLight;
@@ -108,7 +110,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
                   Container(
                     height: 8,
                   ),
-                  buildPullFromPostmaster(),
+                  buildPullSpecifics(),
                   buildPowerfulInfoBlock(),
                 ]))));
   }
@@ -438,9 +440,32 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
     ]);
   }
 
-  Widget buildPullFromPostmaster() {
+  Widget buildPullSpecifics() {
     if ((itemsInPostmaster?.length ?? 0) <= 0) return Container();
-    return buildActionButton(
+    return Column(
+      children: [
+        buildBlockHeader(TranslatedTextWidget("Pull Items", uppercase: true, style: headerStyle)),
+        IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: buildActionButton(
+                  TranslatedTextWidget(
+                    "Pull Deepsight Weapons",
+                    style: buttonStyle,
+                    uppercase: true,
+                    textAlign: TextAlign.center,
+                  ),
+                  onTap: () async {
+                    Navigator.of(context).pop();
+                    getDeepsightWeapons();
+                  },
+                ),
+              ),
+              Container(width: 4),
+              Expanded(
+                child: buildActionButton(
       TranslatedTextWidget(
         "Pull everything from postmaster",
         style: buttonStyle,
@@ -452,8 +477,15 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
         inventory.transferMultiple(
             itemsInPostmaster.map((i) => ItemWithOwner(i, widget.character.characterId)).toList(),
             ItemDestination.Character,
-            widget.character.characterId);
+                      widget.character.characterId,
+                    );
       },
+                ),
+              ),
+            ],
+          ),
+        )
+      ],
     );
   }
 
@@ -563,6 +595,43 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
     }
 
     inventory.transferLoadout(randomLoadout.loadout, widget.character.characterId, true);
+  }
+
+  getDeepsightWeapons() async {
+    Loadout deepsightLoadout = Loadout.fromScratch();
+    var allItems = profile
+        .getAllItems()
+        .where((i) =>
+            i.item.itemInstanceId != null &&
+            getDeepSightObjectives(i.item.itemInstanceId) != null &&
+            !isDeepSightObjectiveCompleted(i.item.itemInstanceId))
+        .toList();
+
+    Map<int, List<ItemWithOwner>> weapons = {};
+    for (var j in allItems) {
+      var item = j;
+      var itemDef = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.item.itemHash);
+      var itemBucket = itemDef.inventory.bucketTypeHash;
+      var classType = itemDef.classType;
+      if ([DestinyClass.Unknown, widget.character.classType].contains(classType)) {
+        if (weapons[itemBucket] == null) weapons[itemBucket] = [];
+        weapons[itemBucket].add(item);
+      }
+    }
+
+    for (var bucket in weapons.values) {
+      if (bucket.isNotEmpty) {
+        var item = bucket.first.item;
+        deepsightLoadout.equipped.add(LoadoutItem(itemInstanceId: item.itemInstanceId, itemHash: item.itemHash));
+
+        for (var i in bucket.skip(1)) {
+          item = i.item;
+          deepsightLoadout.unequipped.add(LoadoutItem(itemInstanceId: item.itemInstanceId, itemHash: item.itemHash));
+        }
+      }
+    }
+
+    inventory.transferLoadout(deepsightLoadout, widget.character.characterId, true);
   }
 
   getMaxLightLoadout() async {
