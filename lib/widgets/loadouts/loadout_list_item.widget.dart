@@ -49,7 +49,7 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> with Loado
   }
 
   buildItemIndex() async {
-    _itemIndex = await InventoryUtils.buildLoadoutItemIndex(_loadout);
+    _itemIndex = await LoadoutItemIndex.buildfromLoadout(_loadout);
     widget.itemIndexes[_loadout.assignedId] = _itemIndex;
     if (mounted) {
       setState(() {});

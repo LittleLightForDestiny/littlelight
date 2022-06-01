@@ -17,7 +17,6 @@ import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enu
 import 'package:little_light/services/language/language.consumer.dart';
 import 'package:little_light/services/littlelight/loadouts.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/loadout_utils.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
@@ -77,7 +76,7 @@ class EditLoadoutPageState extends State<EditLoadoutPage> with LanguageConsumer,
   buildItemIndex() async {
     bucketDefinitions =
         await manifest.getDefinitions<DestinyInventoryBucketDefinition>(InventoryBucket.loadoutBucketHashes);
-    _itemIndex = await InventoryUtils.buildLoadoutItemIndex(_loadout);
+    _itemIndex = await LoadoutItemIndex.buildfromLoadout(_loadout);
     if (mounted) {
       setState(() {});
     }
@@ -179,8 +178,7 @@ class EditLoadoutPageState extends State<EditLoadoutPage> with LanguageConsumer,
     if (removedItem != null) {
       showRemovingExoticMessage(context, removedItem);
     }
-    _itemIndex = LoadoutItemIndex(_loadout);
-    await _itemIndex.build();
+    _itemIndex = await LoadoutItemIndex.buildfromLoadout(_loadout);
     changed = true;
     setState(() {});
   }

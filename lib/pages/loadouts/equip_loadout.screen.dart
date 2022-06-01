@@ -5,19 +5,18 @@ import 'dart:math';
 import 'package:bungie_api/enums/destiny_class.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
+import 'package:flutter/material.dart';
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/providers/loadouts/loadout_item_index.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
-import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
-import 'package:little_light/widgets/common/queued_network_image.widget.dart';
-import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
-import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
+import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
+import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/flutter/center_icon_workaround.dart';
 import 'package:little_light/widgets/loadouts/loadout_destinations.widget.dart';
@@ -40,7 +39,7 @@ class EquipLoadoutScreenState extends State<EquipLoadoutScreen> with ProfileCons
   }
 
   buildItemIndex() async {
-    _itemIndex = await InventoryUtils.buildLoadoutItemIndex(widget.loadout);
+    _itemIndex = await LoadoutItemIndex.buildfromLoadout(widget.loadout);
 
     if (widget?.loadout?.emblemHash != null) {
       emblemDefinition = await manifest.getDefinition<DestinyInventoryItemDefinition>(widget.loadout.emblemHash);

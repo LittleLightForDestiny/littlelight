@@ -64,12 +64,6 @@ class InventoryUtils {
     return list;
   }
 
-  static Future<LoadoutItemIndex> buildLoadoutItemIndex(Loadout loadout) async {
-    LoadoutItemIndex itemIndex = LoadoutItemIndex(loadout);
-    await itemIndex.build();
-    return itemIndex;
-  }
-
   static debugLoadout(LoadoutItemIndex loadout, int classType) async {
     var isInDebug = false;
     assert(isInDebug = true);

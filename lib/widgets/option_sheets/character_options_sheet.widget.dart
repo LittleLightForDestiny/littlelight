@@ -249,7 +249,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
           ),
           onTap: () async {
             Navigator.of(context).pop();
-            LoadoutItemIndex loadout = LoadoutItemIndex(Loadout());
+            LoadoutItemIndex loadout = await LoadoutItemIndex.buildfromLoadout(Loadout());
             var equipment = profile.getCharacterEquipment(widget.character.characterId);
             for (var bucket in maxLightLoadout.keys) {
               var item = maxLightLoadout[bucket];
@@ -489,7 +489,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
   }
 
   Future<LoadoutItemIndex> createLoadout([includeUnequipped = false]) async {
-    var itemIndex = LoadoutItemIndex(Loadout());
+    var itemIndex = await LoadoutItemIndex.buildfromLoadout(Loadout());
     itemIndex.loadout.emblemHash = widget.character.emblemHash;
     var slots = LoadoutItemIndex.classBucketHashes + LoadoutItemIndex.genericBucketHashes;
     var equipment = profile.getCharacterEquipment(widget.character.characterId);
@@ -533,7 +533,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
   }
 
   randomizeLoadout(List<int> requiredSlots) async {
-    LoadoutItemIndex randomLoadout = LoadoutItemIndex(Loadout());
+    LoadoutItemIndex randomLoadout = await LoadoutItemIndex.buildfromLoadout(Loadout());
     var allItems = profile.getAllItems().where((i) => i.item.itemInstanceId != null).toList();
     Map<int, String> slots = {};
     int exoticSlot;
