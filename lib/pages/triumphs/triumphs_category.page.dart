@@ -1,8 +1,8 @@
 //@dart=2.12
 import 'package:bungie_api/models/destiny_presentation_node_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/modules/collections/widgets/category_breadcrumb.widget.dart';
 
-import 'package:little_light/pages/collections/widgets/category_breadcrumb.widget.dart';
 import 'package:little_light/pages/triumphs/widgets/triumph_list.widget.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/presentation_nodes/presentation_node_list.widget.dart';

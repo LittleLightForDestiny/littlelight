@@ -1,11 +1,11 @@
 //@dart=2.12
 import 'package:flutter/material.dart';
-import 'package:little_light/pages/collections/collections_badge.page.dart';
-import 'package:little_light/pages/collections/collections_category.page.dart';
-import 'package:little_light/pages/collections/collections_search.page.dart';
-import 'package:little_light/pages/collections/collections_subcategory.page.dart';
+import 'badge/collections_badge.page.dart';
+import 'category/collections_category.page.dart';
+import 'search/collections_search.page.dart';
+import 'subcategory/collections_subcategory.page.dart';
 
-import 'collections_root.page.dart';
+import 'home/collections_root.page.dart';
 
 class CollectionsPageRouteArguments {
   final List<int>? parentCategoryHashes;

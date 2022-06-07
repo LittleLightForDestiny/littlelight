@@ -7,12 +7,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
-import 'package:little_light/pages/collections/collections_root.page.dart';
+import 'package:little_light/modules/collections/pages/home/collections_root.page.dart';
+import 'package:little_light/modules/loadouts/pages/home/loadouts_home.page.dart';
 import 'package:little_light/pages/dev_tools.screen.dart';
 import 'package:little_light/pages/duplicated_items.screen.dart';
 import 'package:little_light/pages/equipment/equipment.screen.dart';
 import 'package:little_light/pages/languages/languages.page_route.dart';
-import 'package:little_light/pages/loadouts/loadouts.screen.dart';
 import 'package:little_light/pages/objectives/objectives.screen.dart';
 import 'package:little_light/pages/progress/progress.screen.dart';
 import 'package:little_light/pages/settings/about.screen.dart';
@@ -76,7 +76,7 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer {
                 open(context, ObjectivesScreen());
               }),
               menuItem(context, TranslatedTextWidget("Loadouts"), onTap: () {
-                open(context, LoadoutsScreen());
+                open(context, LoadoutsHomePage());
               }),
               menuItem(context, TranslatedTextWidget("Vendors"), onTap: () {
                 open(context, VendorsScreen());

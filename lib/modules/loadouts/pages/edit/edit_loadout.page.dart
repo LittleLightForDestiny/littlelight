@@ -9,9 +9,10 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/models/loadout.dart';
-import 'package:little_light/pages/loadouts/select_loadout_background.screen.dart';
-import 'package:little_light/pages/loadouts/select_loadout_item.screen.dart';
-import 'package:little_light/providers/loadouts/loadout_item_index.dart';
+import 'package:little_light/modules/loadouts/pages/select_item/select_loadout_background.screen.dart';
+import 'package:little_light/modules/loadouts/pages/select_item/select_loadout_item.screen.dart';
+import 'package:little_light/modules/loadouts/providers/loadout_item_index.dart';
+import 'package:little_light/modules/loadouts/widgets/loadout_slot.widget.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/language/language.consumer.dart';
@@ -21,7 +22,6 @@ import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/loadout_utils.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-import 'package:little_light/widgets/loadouts/loadout_slot.widget.dart';
 
 class EditLoadoutPage extends StatefulWidget {
   final bool forceCreate;

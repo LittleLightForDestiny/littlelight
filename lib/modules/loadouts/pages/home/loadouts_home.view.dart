@@ -1,4 +1,4 @@
-// @dart=2.9
+// @dart=2.12
 
 import 'dart:math';
 
@@ -6,64 +6,44 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:little_light/models/loadout.dart';
-import 'package:little_light/pages/loadouts/edit_loadout.page.dart';
-import 'package:little_light/providers/loadouts/loadout_item_index.dart';
+import 'package:little_light/modules/loadouts/pages/edit/edit_loadout.page.dart';
+import 'package:little_light/modules/loadouts/pages/home/loadouts_home.provider.dart';
+import 'package:little_light/modules/loadouts/widgets/loadout_list_item.widget.dart';
 import 'package:little_light/services/littlelight/loadouts.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
-import 'package:little_light/services/profile/profile_component_groups.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
-import 'package:little_light/widgets/loadouts/loadout_list_item.widget.dart';
+import 'package:provider/provider.dart';
 
-class LoadoutsScreen extends StatefulWidget {
+class LoadoutsHomeView extends StatefulWidget {
   @override
-  LoadoutScreenState createState() => LoadoutScreenState();
+  LoadoutsHomeViewState createState() => LoadoutsHomeViewState();
 }
 
-class LoadoutScreenState extends State<LoadoutsScreen> with LoadoutsConsumer, ProfileConsumer {
-  final Map<String, LoadoutItemIndex> itemIndexes = Map();
-  bool reordering = false;
-  bool searchOpen = false;
-  List<Loadout> loadouts;
-  List<Loadout> filteredLoadouts;
+class LoadoutsHomeViewState extends State<LoadoutsHomeView> with LoadoutsConsumer, ProfileConsumer {
   TextEditingController _searchFieldController = TextEditingController();
+  LoadoutsHomeProvider get _provider => context.read<LoadoutsHomeProvider>();
+  LoadoutsHomeProvider get _state => context.watch<LoadoutsHomeProvider>();
 
   @override
   void initState() {
     super.initState();
-    asyncInit();
+    initSearchController();
   }
 
-  asyncInit() async {
-    await Future.delayed(Duration.zero);
-    final route = ModalRoute.of(context);
-    await Future.delayed(route?.transitionDuration ?? Duration.zero);
-    profile.updateComponents = ProfileComponentGroups.basicProfile;
+  initSearchController() {
     _searchFieldController.addListener(() {
-      filteredLoadouts = filterLoadouts();
-      setState(() {});
+      _provider.searchString = _searchFieldController.text;
     });
-    loadLoadouts();
   }
 
-  List<Loadout> filterLoadouts() {
-    var text = _searchFieldController.text.toLowerCase();
-    return loadouts.where((l) {
-      if (text.length <= 3) {
-        return l?.name?.toLowerCase()?.startsWith(text) ?? false;
-      }
-      return l?.name?.toLowerCase()?.contains(text) ?? false;
-    }).toList();
-  }
-
-  void loadLoadouts() async {
-    loadouts = await loadoutService.getLoadouts();
-    filteredLoadouts = loadouts;
-    setState(() {});
+  @override
+  void dispose() {
+    super.dispose();
+    _searchFieldController.dispose();
   }
 
   @override
@@ -71,14 +51,14 @@ class LoadoutScreenState extends State<LoadoutsScreen> with LoadoutsConsumer, Pr
     return Stack(children: [
       Scaffold(
         appBar: buildAppBar(context),
-        body: reordering ? buildReorderingBody(context) : buildBody(context),
+        body: _state.reordering ? buildReorderingBody(context) : buildBody(context),
         bottomNavigationBar: buildFooter(context),
       ),
       InventoryNotificationWidget(key: Key("notification_widget"))
     ]);
   }
 
-  Widget buildAppBar(BuildContext context) {
+  AppBar buildAppBar(BuildContext context) {
     return AppBar(
         leading: IconButton(
           icon: Icon(Icons.menu),
@@ -91,51 +71,39 @@ class LoadoutScreenState extends State<LoadoutsScreen> with LoadoutsConsumer, Pr
           buildSearchButton(context),
           IconButton(
             icon: Icon(Icons.refresh),
-            onPressed: () async {
-              loadouts = await loadoutService.getLoadouts(forceFetch: true);
-              setState(() {});
-            },
+            onPressed: () => _provider.loadLoadouts(forceFetch: true),
           )
         ],
         title: buildTitle(context));
   }
 
   Widget buildTitle(BuildContext context) {
-    if (searchOpen) {
+    if (_state.searchOpen) {
       return TextField(
         decoration: InputDecoration(isDense: true),
         autofocus: true,
         controller: _searchFieldController,
       );
     }
-    return reordering ? TranslatedTextWidget("Reordering Loadouts") : TranslatedTextWidget("Loadouts");
+    return _state.reordering ? TranslatedTextWidget("Reordering Loadouts") : TranslatedTextWidget("Loadouts");
   }
 
   Widget buildSearchButton(BuildContext context) {
-    if (reordering) return Container();
+    if (_state.reordering) return Container();
     return IconButton(
         enableFeedback: false,
-        icon: searchOpen ? Icon(FontAwesomeIcons.times) : Icon(FontAwesomeIcons.search),
-        onPressed: () async {
-          searchOpen = !searchOpen;
-          if (!searchOpen) {
-            _searchFieldController.text = "";
-          }
-          setState(() {});
-        });
+        icon: _state.searchOpen ? Icon(FontAwesomeIcons.times) : Icon(FontAwesomeIcons.search),
+        onPressed: () => _provider.toggleSearch());
   }
 
   Widget buildReorderButton(BuildContext context) {
-    if (searchOpen) return Container();
+    if (_state.searchOpen) return Container();
     return IconButton(
         enableFeedback: false,
-        icon: reordering
+        icon: _state.reordering
             ? Icon(FontAwesomeIcons.check)
             : Transform.rotate(angle: pi / 2, child: Icon(FontAwesomeIcons.exchangeAlt)),
-        onPressed: () async {
-          reordering = !reordering;
-          setState(() {});
-        });
+        onPressed: () => _provider.toggleReordering());
   }
 
   void createNew() async {
@@ -146,11 +114,12 @@ class LoadoutScreenState extends State<LoadoutsScreen> with LoadoutsConsumer, Pr
       ),
     );
     if (newLoadout != null) {
-      loadLoadouts();
+      _provider.loadLoadouts();
     }
   }
 
-  Widget buildFooter(BuildContext context) {
+  Widget? buildFooter(BuildContext context) {
+    final loadouts = _state.loadouts;
     if ((loadouts?.length ?? 0) == 0) {
       return null;
     }
@@ -175,17 +144,13 @@ class LoadoutScreenState extends State<LoadoutsScreen> with LoadoutsConsumer, Pr
     var screenPadding = MediaQuery.of(context).padding;
 
     return ReorderableList(
-        itemCount: loadouts.length,
+        itemCount: _state.loadouts!.length,
         itemBuilder: (context, index) {
           return buildSortItem(context, index);
         },
         itemExtent: 56,
         padding: EdgeInsets.all(8).copyWith(left: max(screenPadding.left, 8), right: max(screenPadding.right, 8)),
-        onReorder: (oldIndex, newIndex) {
-          var removed = loadouts.removeAt(oldIndex);
-          loadouts.insert(newIndex, removed);
-          loadoutService.saveLoadoutsOrder(loadouts);
-        });
+        onReorder: (oldIndex, newIndex) => _provider.reorderLoadouts(oldIndex, newIndex));
   }
 
   Widget buildHandle(BuildContext context, int index) {
@@ -195,7 +160,7 @@ class LoadoutScreenState extends State<LoadoutsScreen> with LoadoutsConsumer, Pr
   }
 
   Widget buildSortItem(BuildContext context, int index) {
-    final loadout = loadouts[index];
+    final loadout = _state.loadouts![index].loadout;
     return Container(
         key: Key("loadout-${loadout.assignedId}"),
         padding: EdgeInsets.symmetric(vertical: 4),
@@ -215,7 +180,7 @@ class LoadoutScreenState extends State<LoadoutsScreen> with LoadoutsConsumer, Pr
                 buildHandle(context, index),
                 Expanded(
                   child: Text(
-                    loadout?.name ?? "",
+                    loadout.name,
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 )
@@ -226,11 +191,12 @@ class LoadoutScreenState extends State<LoadoutsScreen> with LoadoutsConsumer, Pr
   }
 
   Widget buildBody(BuildContext context) {
+    final loadouts = _state.loadouts;
     if (loadouts == null) {
       return LoadingAnimWidget();
     }
 
-    if (loadouts.length == 0) {
+    if (loadouts.isEmpty) {
       return buildNoLoadoutsBody(context);
     }
     bool isTablet = MediaQueryHelper(context).tabletOrBigger;
@@ -261,14 +227,25 @@ class LoadoutScreenState extends State<LoadoutsScreen> with LoadoutsConsumer, Pr
   }
 
   Widget getItem(BuildContext context, int index) {
-    Loadout loadout = filteredLoadouts[index];
+    final loadout = _state.loadouts![index];
     return LoadoutListItemWidget(
       loadout,
-      key: Key("loadout_${loadout.assignedId}_$index"),
-      itemIndexes: itemIndexes,
-      onChange: () {
-        this.loadLoadouts();
-      },
+      key: Key("loadout_${loadout.loadout.assignedId}_$index"),
+      onAction: onItemAction,
     );
+  }
+
+  void onItemAction(LoadoutListItemAction action) {
+    switch (action) {
+      case LoadoutListItemAction.Equip:
+        // TODO: Handle this case.
+        break;
+      case LoadoutListItemAction.Edit:
+        // TODO: Handle this case.
+        break;
+      case LoadoutListItemAction.Delete:
+        // TODO: Handle this case.
+        break;
+    }
   }
 }

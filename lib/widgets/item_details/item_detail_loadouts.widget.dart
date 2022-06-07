@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/loadout.dart';
-import 'package:little_light/pages/loadouts/equip_loadout.screen.dart';
+import 'package:little_light/modules/loadouts/pages/equip/equip_loadout.screen.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';

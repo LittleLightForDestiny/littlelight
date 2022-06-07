@@ -1,9 +1,10 @@
 //@dart=2.12
 import 'package:bungie_api/models/destiny_presentation_node_definition.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/pages/collections/collections.page_route.dart';
-import 'package:little_light/pages/collections/widgets/category_breadcrumb.widget.dart';
-import 'package:little_light/pages/collections/widgets/collectibles_list.widget.dart';
+import 'package:little_light/modules/collections/pages/collections.page_route.dart';
+import 'package:little_light/modules/collections/widgets/category_breadcrumb.widget.dart';
+import 'package:little_light/modules/collections/widgets/collectibles_list.widget.dart';
+
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/profile/destiny_settings.consumer.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';

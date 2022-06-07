@@ -234,7 +234,7 @@ class ProfileService
     return response;
   }
 
-  DestinyItemInstanceComponent? getInstanceInfo(String instanceId) {
+  DestinyItemInstanceComponent? getInstanceInfo(String? instanceId) {
     return _profile?.itemComponents?.instances?.data?[instanceId];
   }
 

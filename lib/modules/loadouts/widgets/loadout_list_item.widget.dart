@@ -4,57 +4,24 @@ import 'package:bungie_api/enums/destiny_class.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/models/loadout.dart';
-import 'package:little_light/pages/loadouts/equip_loadout.screen.dart';
-import 'package:little_light/providers/loadouts/loadout_item_index.dart';
+import 'package:little_light/modules/loadouts/providers/loadout_item_index.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/services/littlelight/loadouts.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
-import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-import 'package:little_light/widgets/dialogs/confirm_delete_loadout.dialog.dart';
 
-class LoadoutListItemWidget extends StatefulWidget {
-  final Map<String, LoadoutItemIndex> itemIndexes;
-  final Loadout loadout;
-  final Function onChange;
-  const LoadoutListItemWidget(this.loadout, {Key key, this.itemIndexes, this.onChange}) : super(key: key);
+enum LoadoutListItemAction { Equip, Edit, Delete }
 
-  @override
-  State<StatefulWidget> createState() {
-    return LoadoutListItemWidgetState();
-  }
-}
+typedef void OnLoadoutListItemAction(LoadoutListItemAction action);
 
-class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> with LoadoutsConsumer, ProfileConsumer {
-  LoadoutItemIndex _itemIndex;
-  Loadout _loadout;
-  @override
-  initState() {
-    super.initState();
-
-    _loadout = widget.loadout;
-    if (itemIndex == null) {
-      buildItemIndex();
-    }
-  }
-
-  LoadoutItemIndex get itemIndex {
-    return _itemIndex ?? widget.itemIndexes[_loadout.assignedId];
-  }
-
-  buildItemIndex() async {
-    _itemIndex = await LoadoutItemIndex.buildfromLoadout(_loadout);
-    widget.itemIndexes[_loadout.assignedId] = _itemIndex;
-    if (mounted) {
-      setState(() {});
-    }
-  }
+class LoadoutListItemWidget extends StatelessWidget {
+  final LoadoutItemIndex loadout;
+  final OnLoadoutListItemAction onAction;
+  const LoadoutListItemWidget(this.loadout, {Key key, this.onAction}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -74,11 +41,11 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> with Loado
   }
 
   Widget buildTitleBar(BuildContext context) {
-    if (_loadout.emblemHash == null) {
+    if (loadout.loadout.emblemHash == null) {
       return buildTitle(context);
     }
     return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
-      _loadout.emblemHash,
+      loadout.loadout.emblemHash,
       (definition) {
         return Stack(
           children: <Widget>[
@@ -93,7 +60,7 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> with Loado
         );
       },
       placeholder: buildTitle(context),
-      key: Key("emblem_${_loadout.emblemHash}"),
+      key: Key("emblem_${loadout.loadout.emblemHash}"),
     );
   }
 
@@ -102,7 +69,7 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> with Loado
         padding: EdgeInsets.all(16),
         alignment: Alignment.centerLeft,
         child: Text(
-          _loadout.name?.toUpperCase() ?? "",
+          loadout.loadout.name?.toUpperCase() ?? "",
           style: TextStyle(color: Colors.grey.shade200, fontWeight: FontWeight.bold),
         ));
   }
@@ -114,52 +81,52 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> with Loado
         child: Row(children: [
           Expanded(
               child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 2),
-                  child: ElevatedButton(
-                    style: ButtonStyle(visualDensity: VisualDensity.comfortable),
-                    child: TranslatedTextWidget("Equip",
-                        maxLines: 1,
-                        softWrap: false,
-                        overflow: TextOverflow.fade,
-                        uppercase: true,
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => EquipLoadoutScreen(loadout: _loadout),
-                        ),
-                      );
-                    },
-                  ))),
+            padding: EdgeInsets.symmetric(horizontal: 2),
+            child: ElevatedButton(
+                style: ButtonStyle(visualDensity: VisualDensity.comfortable),
+                child: TranslatedTextWidget("Equip",
+                    maxLines: 1,
+                    softWrap: false,
+                    overflow: TextOverflow.fade,
+                    uppercase: true,
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                onPressed: () => onAction(LoadoutListItemAction.Equip)
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //     builder: (context) => EquipLoadoutScreen(loadout: loadout.loadout),
+                //   ),
+                // );
+                ),
+          )),
           Expanded(
               child: Container(
                   padding: EdgeInsets.all(2),
                   child: ElevatedButton(
-                    style: ButtonStyle(visualDensity: VisualDensity.comfortable),
-                    child: TranslatedTextWidget("Edit",
-                        uppercase: true,
-                        maxLines: 1,
-                        softWrap: false,
-                        overflow: TextOverflow.fade,
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                    onPressed: () async {
+                      style: ButtonStyle(visualDensity: VisualDensity.comfortable),
+                      child: TranslatedTextWidget("Edit",
+                          uppercase: true,
+                          maxLines: 1,
+                          softWrap: false,
+                          overflow: TextOverflow.fade,
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      onPressed: () => onAction(LoadoutListItemAction.Edit)
+
                       // TODO: update to use pageroute
                       // var loadout = await Navigator.push(
                       //   context,
                       //   MaterialPageRoute(
-                      //     builder: (context) => EditLoadoutPage(loadout: _loadout),
+                      //     builder: (context) => EditLoadoutPage(loadout: loadout.loadout),
                       //   ),
                       // );
                       // if (loadout != null) {
-                      //   _loadout = loadout;
+                      //   loadout.loadout = loadout;
                       //   await buildItemIndex();
                       //   if (widget.onChange != null) {
                       //     widget.onChange();
                       //   }
                       // }
-                    },
-                  ))),
+                      ))),
           Expanded(
               child: Container(
                   padding: EdgeInsets.all(2),
@@ -172,25 +139,24 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> with Loado
                         overflow: TextOverflow.fade,
                         uppercase: true,
                         style: TextStyle(fontWeight: FontWeight.bold)),
-                    onPressed: () {
-                      deletePressed(context);
-                    },
+                    onPressed: () => onAction(LoadoutListItemAction.Delete),
                   )))
         ]));
   }
 
-  Future<void> deletePressed(BuildContext context) async {
-    final confirm = await Navigator.of(context).push(ConfirmDeleteLoadoutDialogRoute(context, _loadout));
-    if (confirm ?? false) {
-      loadoutService.deleteLoadout(_loadout);
-    }
-    if (widget.onChange != null) {
-      widget.onChange();
-    }
-  }
+  // Future<void> deletePressed(BuildContext context) async {
+
+  //   final confirm = await Navigator.of(context).push(ConfirmDeleteLoadoutDialogRoute(context, loadout.loadout));
+  //   if (confirm ?? false) {
+  //     loadoutService.deleteLoadout(loadout.loadout);
+  //   }
+  //   if (widget.onAction != null) {
+  //     widget.onAction();
+  //   }
+  // }
 
   Widget buildItemRows(BuildContext context) {
-    if (itemIndex == null)
+    if (loadout.loadout == null)
       return Container(
         child: AspectRatio(
           aspectRatio: 1,
@@ -199,11 +165,11 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> with Loado
     List<Widget> icons = [];
 
     icons.addAll(buildItemRow(context, DestinyData.getClassIcon(DestinyClass.Unknown),
-        LoadoutItemIndex.genericBucketHashes, itemIndex.generic));
+        LoadoutItemIndex.genericBucketHashes, loadout.generic));
 
     DestinyClass.values.forEach((classType) {
       Map<int, DestinyItemComponent> items =
-          itemIndex.classSpecific.map((bucketHash, items) => MapEntry(bucketHash, items[classType]));
+          loadout.classSpecific.map((bucketHash, items) => MapEntry(bucketHash, items[classType]));
       if (items.values.any((i) => i != null)) {
         icons.addAll(
             buildItemRow(context, DestinyData.getClassIcon(classType), LoadoutItemIndex.classBucketHashes, items));
@@ -238,7 +204,8 @@ class LoadoutListItemWidgetState extends State<LoadoutListItemWidget> with Loado
     if (item == null) {
       return ManifestImageWidget<DestinyInventoryItemDefinition>(1835369552, key: Key("item_icon_empty"));
     }
-    var instance = profile.getInstanceInfo(item?.itemInstanceId);
+    final profile = getInjectedProfileService();
+    final instance = profile.getInstanceInfo(item?.itemInstanceId);
     return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
         item.itemHash,
         (def) => ItemIconWidget.builder(

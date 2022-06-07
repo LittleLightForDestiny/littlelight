@@ -1,4 +1,4 @@
-// @dart=2.9
+// @dart=2.12
 
 import 'package:bungie_api/enums/destiny_item_sub_type.dart';
 import 'package:little_light/utils/item_with_owner.dart';
@@ -38,10 +38,10 @@ class SubTypeSorter extends BaseItemSorter {
 
   @override
   int sort(ItemWithOwner itemA, ItemWithOwner itemB) {
-    DestinyItemSubType subTypeA = def(itemA)?.itemSubType;
-    DestinyItemSubType subTypeB = def(itemB)?.itemSubType;
-    int orderA = _subtypeOrder.indexOf(subTypeA);
-    int orderB = _subtypeOrder.indexOf(subTypeB);
+    DestinyItemSubType? subTypeA = def(itemA)?.itemSubType;
+    DestinyItemSubType? subTypeB = def(itemB)?.itemSubType;
+    int orderA = subTypeA != null ? _subtypeOrder.indexOf(subTypeA) : -1;
+    int orderB = subTypeB != null ? _subtypeOrder.indexOf(subTypeB) : -1;
     return direction * orderA.compareTo(orderB);
   }
 }

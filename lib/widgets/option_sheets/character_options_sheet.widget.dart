@@ -13,7 +13,7 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/models/game_data.dart';
 import 'package:little_light/models/loadout.dart';
-import 'package:little_light/providers/loadouts/loadout_item_index.dart';
+import 'package:little_light/modules/loadouts/providers/loadout_item_index.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/inventory/inventory.package.dart';
 import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';

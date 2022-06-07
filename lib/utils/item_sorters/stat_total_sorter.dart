@@ -1,4 +1,4 @@
-// @dart=2.9
+// @dart=2.12
 
 import 'package:bungie_api/models/destiny_stat.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
@@ -11,10 +11,12 @@ class StatTotalSorter extends BaseItemSorter with ProfileConsumer {
 
   @override
   int sort(ItemWithOwner a, ItemWithOwner b) {
-    Map<String, DestinyStat> statsA = profile.getPrecalculatedStats(a.item.itemInstanceId);
-    Map<String, DestinyStat> statsB = profile.getPrecalculatedStats(b.item.itemInstanceId);
-    int totalA = statsA?.values?.fold(0, (v, s) => v + s.value) ?? 0;
-    int totalB = statsB?.values?.fold(0, (v, s) => v + s.value) ?? 0;
+    final instanceIdA = a.item.itemInstanceId;
+    final instanceIdB = b.item.itemInstanceId;
+    Map<String, DestinyStat>? statsA = instanceIdA != null ? profile.getPrecalculatedStats(instanceIdA) : null;
+    Map<String, DestinyStat>? statsB = instanceIdB != null ? profile.getPrecalculatedStats(instanceIdB) : null;
+    int totalA = statsA?.values.map((v) => v.value).whereType<int>().fold<int>(0, (v, s) => v + s) ?? 0;
+    int totalB = statsB?.values.map((v) => v.value).whereType<int>().fold<int>(0, (v, s) => v + s) ?? 0;
     return direction * totalA.compareTo(totalB);
   }
 }

@@ -1,4 +1,4 @@
-// @dart=2.9
+// @dart=2.12
 
 import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
@@ -6,14 +6,16 @@ import 'package:little_light/utils/item_sorters/base_item_sorter.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 
 class PriorityTagsSorter extends BaseItemSorter with UserSettingsConsumer, ItemNotesConsumer {
-  PriorityTagsSorter() : super(0);
-  List<String> _priorityTags;
+  List<String>? _priorityTags;
 
-  List<String> get priorityTags {
-    if (_priorityTags == null) {
-      _priorityTags = List.from(userSettings.priorityTags);
-    }
-    return _priorityTags;
+  PriorityTagsSorter() : super(0);
+
+  List<String>? get priorityTags {
+    final tags = _priorityTags;
+    if (tags != null) return tags;
+    final settingsTags = userSettings.priorityTags;
+    if (settingsTags != null) return _priorityTags = List.from(settingsTags);
+    return null;
   }
 
   @override
@@ -22,8 +24,12 @@ class PriorityTagsSorter extends BaseItemSorter with UserSettingsConsumer, ItemN
     Set<String> tagsB = itemNotes.getNotesForItem(b.item.itemHash, b.item.itemInstanceId)?.tags ?? Set();
     var indexA = 9999;
     var indexB = 9999;
-    for (var i = 0; i < priorityTags.length; i++) {
-      var tag = priorityTags[i];
+    final tags = priorityTags;
+    if (tags == null || tags.isEmpty) {
+      return 0;
+    }
+    for (var i = 0; i < tags.length; i++) {
+      var tag = tags[i];
       if (indexA > 1000 && tagsA.contains(tag)) indexA = i;
       if (indexB > 1000 && tagsB.contains(tag)) indexB = i;
     }

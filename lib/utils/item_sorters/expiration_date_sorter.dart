@@ -1,4 +1,4 @@
-// @dart=2.9
+// @dart=2.12
 
 import 'package:little_light/utils/item_with_owner.dart';
 
@@ -7,7 +7,7 @@ import 'package:little_light/utils/item_sorters/base_item_sorter.dart';
 class ExpirationDateSorter extends BaseItemSorter {
   ExpirationDateSorter(int direction) : super(direction);
 
-  int expirationToInt(String exp) {
+  int expirationToInt(String? exp) {
     if (exp == null) return 99999999 * direction;
     var date = DateTime.parse(exp);
     if (date.isBefore(DateTime.now())) return 99999998 * direction;
@@ -16,8 +16,8 @@ class ExpirationDateSorter extends BaseItemSorter {
 
   @override
   int sort(ItemWithOwner a, ItemWithOwner b) {
-    var expA = expirationToInt(a?.item?.expirationDate);
-    var expB = expirationToInt(b?.item?.expirationDate);
+    var expA = expirationToInt(a.item.expirationDate);
+    var expB = expirationToInt(b.item.expirationDate);
     return expA.compareTo(expB) * direction;
   }
 }
