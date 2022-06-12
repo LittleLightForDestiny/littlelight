@@ -1,11 +1,10 @@
-//@dart=2.12
 import 'package:bungie_api/groupsv2.dart';
 import 'package:bungie_api/user.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/pages/languages/languages.page_route.dart';
-import 'package:little_light/pages/settings/settings.page_route.dart';
+import 'package:little_light/modules/settings/pages/settings/settings.page_route.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/utils/platform_data.dart';

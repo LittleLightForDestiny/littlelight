@@ -11,7 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:little_light/models/tracked_objective.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/services/language/language.consumer.dart';
+import 'package:little_light/core/providers/language/language.consumer.dart';
 import 'package:little_light/services/littlelight/objectives.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
@@ -28,8 +28,7 @@ class MetricItemWidget extends StatefulWidget {
   }
 }
 
-class MetricItemWidgetState extends State<MetricItemWidget>
-    with AuthConsumer, LanguageConsumer, ProfileConsumer, ManifestConsumer {
+class MetricItemWidgetState extends State<MetricItemWidget> with AuthConsumer, ProfileConsumer, ManifestConsumer {
   DestinyMetricDefinition _definition;
   Map<int, DestinyObjectiveDefinition> objectiveDefinitions;
   DestinyLoreDefinition loreDefinition;
@@ -150,7 +149,7 @@ class MetricItemWidgetState extends State<MetricItemWidget>
   buildObjective(BuildContext context) {
     if (metric.objectiveProgress.progress == null) return Container();
 
-    var formatter = NumberFormat.decimalPattern(languageService.currentLanguage);
+    var formatter = NumberFormat.decimalPattern(context.currentLanguage);
     var formattedProgress = formatter.format(metric.objectiveProgress.progress);
     return Text(formattedProgress, style: TextStyle(fontSize: 18));
   }

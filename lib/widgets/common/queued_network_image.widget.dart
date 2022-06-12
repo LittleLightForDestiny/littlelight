@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';

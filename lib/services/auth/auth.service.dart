@@ -1,5 +1,3 @@
-//@dart=2.12
-
 import 'dart:async';
 import 'dart:io';
 
@@ -15,7 +13,7 @@ import 'package:get_it/get_it.dart';
 import 'package:little_light/exceptions/invalid_membership.exception.dart';
 import 'package:little_light/services/app_config/app_config.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
-import 'package:little_light/services/language/language.consumer.dart';
+import 'package:little_light/core/providers/language/language.consumer.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/services/storage/export.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -24,7 +22,7 @@ setupAuthService() async {
   GetIt.I.registerSingleton<AuthService>(AuthService._internal());
 }
 
-class AuthService with StorageConsumer, LanguageConsumer, AppConfigConsumer, BungieApiConsumer {
+class AuthService with StorageConsumer, AppConfigConsumer, BungieApiConsumer {
   Set<String>? _accountIDs;
   BungieNetToken? _currentToken;
   GroupUserInfoCard? _currentMembership;
@@ -37,7 +35,7 @@ class AuthService with StorageConsumer, LanguageConsumer, AppConfigConsumer, Bun
 
   void openBungieLogin(bool forceReauth) async {
     var browser = BungieAuthBrowser();
-    OAuth.openOAuth(browser, appConfig.clientId, languageService.currentLanguage, forceReauth);
+    OAuth.openOAuth(browser, appConfig.clientId, getInjectedLanguageService().currentLanguage, forceReauth);
   }
 
   Future<UserMembershipData> addAccount(String authorizationCode) async {

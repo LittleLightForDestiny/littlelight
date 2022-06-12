@@ -1,9 +1,6 @@
-//@dart=2.12
-
 import 'package:flutter/material.dart';
 import 'package:little_light/pages/initial/notifiers/manifest_downloader.notifier.dart';
 import 'package:little_light/pages/initial/subpages/subpage_base.dart';
-import 'package:little_light/services/language/language.consumer.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:provider/provider.dart';
 
@@ -14,8 +11,7 @@ class DownloadManifestProgressSubPage extends StatefulWidget {
   DownloadManifestProgressSubPageState createState() => DownloadManifestProgressSubPageState();
 }
 
-class DownloadManifestProgressSubPageState extends SubpageBaseState<DownloadManifestProgressSubPage>
-    with LanguageConsumer {
+class DownloadManifestProgressSubPageState extends SubpageBaseState<DownloadManifestProgressSubPage> {
   @override
   void initState() {
     super.initState();

@@ -1,8 +1,7 @@
-//@dart=2.12
-
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:little_light/core/navigator_key.dart';
+import 'package:little_light/core/providers/core_providers.dart';
 import 'package:little_light/core/router/littlelight_router.dart';
 import 'package:little_light/core/theme/littlelight.scroll_behavior.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
@@ -51,7 +50,7 @@ class _LittleLightAppState extends State<LittleLightApp> with AnalyticsConsumer,
       navigatorObservers: analytics.observers,
       builder: (context, child) => ScrollConfiguration(
         behavior: LittleLightScrollBehaviour(),
-        child: LittleLightTheme(child ?? Container()),
+        child: LittleLightTheme(CoreProvidersContainer(child ?? Container())),
       ),
       onGenerateRoute: (route) {
         final currentLink = unilinks?.currentLink;

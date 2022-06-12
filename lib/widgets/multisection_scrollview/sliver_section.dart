@@ -1,5 +1,3 @@
-//@dart=2.12
-
 import 'package:flutter/material.dart';
 
 typedef ItemBuilder = Widget Function(BuildContext context, int index);
@@ -19,15 +17,22 @@ class SliverSection {
   });
 
   Widget build(BuildContext context, {double crossAxisSpacing = 0, double mainAxisSpacing = 0}) {
-    return SliverGrid(
-        delegate: _builderDelegate(),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: itemsPerRow,
-          mainAxisExtent: itemHeight,
-          childAspectRatio: itemAspectRatio ?? 1,
-          crossAxisSpacing: crossAxisSpacing,
-          mainAxisSpacing: mainAxisSpacing,
-        ));
+    final useGrid = itemsPerRow > 1 || itemHeight != null || itemAspectRatio != null;
+    if (useGrid) {
+      return SliverGrid(
+          delegate: _builderDelegate(),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: itemsPerRow,
+            mainAxisExtent: itemHeight,
+            childAspectRatio: itemAspectRatio ?? 1,
+            crossAxisSpacing: crossAxisSpacing,
+            mainAxisSpacing: mainAxisSpacing,
+          ));
+    }
+
+    return SliverList(
+      delegate: _builderDelegate(),
+    );
   }
 
   SliverChildBuilderDelegate _builderDelegate() {

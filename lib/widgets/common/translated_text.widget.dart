@@ -1,11 +1,10 @@
-//@dart=2.12
-
 import 'package:flutter/material.dart';
-import 'package:little_light/services/language/language.consumer.dart';
+import 'package:little_light/core/providers/language/language.bloc.dart';
+import 'package:provider/provider.dart';
 
 typedef ExtractTextFromData = String Function(dynamic data);
 
-class TranslatedTextWidget extends StatefulWidget with LanguageConsumer {
+class TranslatedTextWidget extends StatelessWidget {
   final String text;
   final String? language;
   final Map<String, String> replace;
@@ -35,45 +34,24 @@ class TranslatedTextWidget extends StatefulWidget with LanguageConsumer {
       : super(key: key ?? Key(text));
 
   @override
-  State<StatefulWidget> createState() {
-    return TranslatedTextWidgetState();
-  }
-}
-
-class TranslatedTextWidgetState extends State<TranslatedTextWidget> with LanguageConsumer {
-  String? translatedText;
-  @override
-  void initState() {
-    super.initState();
-    loadTranslation();
-  }
-
-  Future<void> loadTranslation() async {
-    translatedText =
-        languageService.getTranslationSync(widget.text, replace: widget.replace, languageCode: widget.language);
-    if (translatedText != null) return;
-    translatedText =
-        await languageService.getTranslation(widget.text, replace: widget.replace, languageCode: widget.language);
-    if (mounted) {
-      setState(() {});
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    String text = translatedText ?? widget.text;
-    if (widget.uppercase) {
+    String text = context.watch<LanguageBloc>().translate(
+          this.text,
+          languageCode: this.language,
+          replace: this.replace,
+        );
+    if (uppercase) {
       text = text.toUpperCase();
     }
     return Text(text,
-        maxLines: widget.maxLines,
-        overflow: widget.overflow,
-        semanticsLabel: widget.semanticsLabel,
-        softWrap: widget.softWrap,
-        style: widget.style ?? DefaultTextStyle.of(context).style,
-        textAlign: widget.textAlign,
-        textDirection: widget.textDirection,
-        textScaleFactor: widget.textScaleFactor,
+        maxLines: maxLines,
+        overflow: overflow,
+        semanticsLabel: semanticsLabel,
+        softWrap: softWrap,
+        style: style ?? DefaultTextStyle.of(context).style,
+        textAlign: textAlign,
+        textDirection: textDirection,
+        textScaleFactor: textScaleFactor,
         key: Key(text));
   }
 }

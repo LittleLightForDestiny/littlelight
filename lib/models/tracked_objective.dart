@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'package:json_annotation/json_annotation.dart';
 part 'tracked_objective.g.dart';
 

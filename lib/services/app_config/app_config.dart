@@ -1,5 +1,3 @@
-//@dart=2.12
-
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 

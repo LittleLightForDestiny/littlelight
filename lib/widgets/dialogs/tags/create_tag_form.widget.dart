@@ -1,8 +1,6 @@
-//@dart=2.12
-
 import 'package:flutter/material.dart';
 import 'package:little_light/models/item_notes_tag.dart';
-import 'package:little_light/services/language/language.consumer.dart';
+import 'package:little_light/core/providers/language/language.consumer.dart';
 import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/utils/color_utils.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -37,9 +35,8 @@ const _availableColors = [
   Colors.brown,
 ];
 
-class _CreateTagFormWidgetState extends State<CreateTagFormWidget> with LanguageConsumer, ItemNotesConsumer {
+class _CreateTagFormWidgetState extends State<CreateTagFormWidget> with ItemNotesConsumer {
   List<String>? colors;
-  String tagNameLabel = "";
   TextEditingController? tagNameController;
 
   @override
@@ -61,9 +58,6 @@ class _CreateTagFormWidgetState extends State<CreateTagFormWidget> with Language
         element.shade100,
       ].map(hexFromColor));
     });
-
-    tagNameLabel = await languageService.getTranslation("Tag name");
-    setState(() {});
 
     tagNameController?.addListener(() {
       widget.tag.name = tagNameController?.text ?? "";
@@ -120,7 +114,8 @@ class _CreateTagFormWidgetState extends State<CreateTagFormWidget> with Language
 
   Widget buildNameField(BuildContext context) {
     return TextField(
-      decoration: InputDecoration(labelText: tagNameLabel, floatingLabelBehavior: FloatingLabelBehavior.auto),
+      decoration:
+          InputDecoration(labelText: context.translate("Tag name"), floatingLabelBehavior: FloatingLabelBehavior.auto),
       controller: tagNameController,
       maxLength: 20,
     );

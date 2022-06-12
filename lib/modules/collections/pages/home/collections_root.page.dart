@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/modules/collections/pages/collections.page_route.dart';

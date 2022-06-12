@@ -1,7 +1,7 @@
 // @dart=2.9
 
 import 'package:flutter/material.dart';
-import 'package:little_light/services/language/language.consumer.dart';
+import 'package:little_light/core/providers/language/language.consumer.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -18,7 +18,7 @@ class ExpiryDateWidget extends StatefulWidget {
   }
 }
 
-class ExpiryDateWidgetState extends State<ExpiryDateWidget> with LanguageConsumer {
+class ExpiryDateWidgetState extends State<ExpiryDateWidget> {
   bool expired = false;
   String expiresIn = "";
 
@@ -36,7 +36,7 @@ class ExpiryDateWidgetState extends State<ExpiryDateWidget> with LanguageConsume
       return;
     }
 
-    expiresIn = timeago.format(expiry, allowFromNow: true, locale: languageService.currentLanguage);
+    expiresIn = timeago.format(expiry, allowFromNow: true, locale: context.currentLanguage);
     setState(() {});
   }
 

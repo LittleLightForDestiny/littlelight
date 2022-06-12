@@ -1,5 +1,3 @@
-//@dart=2.12
-
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';

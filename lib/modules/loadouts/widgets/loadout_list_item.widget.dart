@@ -1,10 +1,8 @@
-// @dart=2.9
-
 import 'package:bungie_api/enums/destiny_class.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/modules/loadouts/providers/loadout_item_index.dart';
+import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
@@ -21,7 +19,7 @@ typedef void OnLoadoutListItemAction(LoadoutListItemAction action);
 class LoadoutListItemWidget extends StatelessWidget {
   final LoadoutItemIndex loadout;
   final OnLoadoutListItemAction onAction;
-  const LoadoutListItemWidget(this.loadout, {Key key, this.onAction}) : super(key: key);
+  const LoadoutListItemWidget(this.loadout, {Key? key, required this.onAction}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -41,11 +39,12 @@ class LoadoutListItemWidget extends StatelessWidget {
   }
 
   Widget buildTitleBar(BuildContext context) {
-    if (loadout.loadout.emblemHash == null) {
+    final emblemHash = loadout.loadout.emblemHash;
+    if (emblemHash == null) {
       return buildTitle(context);
     }
     return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
-      loadout.loadout.emblemHash,
+      emblemHash,
       (definition) {
         return Stack(
           children: <Widget>[
@@ -69,7 +68,7 @@ class LoadoutListItemWidget extends StatelessWidget {
         padding: EdgeInsets.all(16),
         alignment: Alignment.centerLeft,
         child: Text(
-          loadout.loadout.name?.toUpperCase() ?? "",
+          loadout.loadout.name.toUpperCase(),
           style: TextStyle(color: Colors.grey.shade200, fontWeight: FontWeight.bold),
         ));
   }
@@ -156,25 +155,19 @@ class LoadoutListItemWidget extends StatelessWidget {
   // }
 
   Widget buildItemRows(BuildContext context) {
-    if (loadout.loadout == null)
-      return Container(
-        child: AspectRatio(
-          aspectRatio: 1,
-        ),
-      );
     List<Widget> icons = [];
+    // TODO: rework
+    // icons.addAll(buildItemRow(context, DestinyData.getClassIcon(DestinyClass.Unknown),
+    //     LoadoutItemIndex.genericBucketHashes, loadout.generic));
 
-    icons.addAll(buildItemRow(context, DestinyData.getClassIcon(DestinyClass.Unknown),
-        LoadoutItemIndex.genericBucketHashes, loadout.generic));
-
-    DestinyClass.values.forEach((classType) {
-      Map<int, DestinyItemComponent> items =
-          loadout.classSpecific.map((bucketHash, items) => MapEntry(bucketHash, items[classType]));
-      if (items.values.any((i) => i != null)) {
-        icons.addAll(
-            buildItemRow(context, DestinyData.getClassIcon(classType), LoadoutItemIndex.classBucketHashes, items));
-      }
-    });
+    // DestinyClass.values.forEach((classType) {
+    //   Map<int, DestinyItemComponent?> items =
+    //       loadout.classSpecific.map((bucketHash, items) => MapEntry(bucketHash, items[classType]));
+    //   if (items.values.any((i) => i != null)) {
+    //     icons.addAll(
+    //         buildItemRow(context, DestinyData.getClassIcon(classType), LoadoutItemIndex.classBucketHashes, items));
+    //   }
+    // });
 
     return Wrap(
       children: icons,
@@ -182,7 +175,7 @@ class LoadoutListItemWidget extends StatelessWidget {
   }
 
   List<Widget> buildItemRow(
-      BuildContext context, IconData icon, List<int> buckets, Map<int, DestinyItemComponent> items) {
+      BuildContext context, IconData icon, List<int> buckets, Map<int, DestinyItemComponent?> items) {
     List<Widget> itemWidgets = [];
     itemWidgets.add(Icon(icon));
     itemWidgets.addAll(buckets.map((bucketHash) => itemIcon(items[bucketHash])));
@@ -200,14 +193,14 @@ class LoadoutListItemWidget extends StatelessWidget {
         .toList();
   }
 
-  Widget itemIcon(DestinyItemComponent item) {
+  Widget itemIcon(DestinyItemComponent? item) {
     if (item == null) {
       return ManifestImageWidget<DestinyInventoryItemDefinition>(1835369552, key: Key("item_icon_empty"));
     }
     final profile = getInjectedProfileService();
-    final instance = profile.getInstanceInfo(item?.itemInstanceId);
+    final instance = profile.getInstanceInfo(item.itemInstanceId);
     return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
-        item.itemHash,
+        item.itemHash!,
         (def) => ItemIconWidget.builder(
             item: item, definition: def, instanceInfo: instance, key: Key("item_icon_${item.itemInstanceId}")));
   }

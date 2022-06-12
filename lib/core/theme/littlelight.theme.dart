@@ -1,5 +1,3 @@
-//@dart=2.12
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -232,9 +230,9 @@ class LittleLightTheme extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Provider<LittleLightThemeData>(
-      create: (context) => theme,
-      child: Theme(data: theme.materialTheme, child: child),
-    );
+        create: (context) => theme,
+        builder: (context, child) => Theme(data: theme.materialTheme, child: child ?? Container()),
+        child: child);
   }
 
   static LittleLightThemeData of(BuildContext context) => context.read<LittleLightThemeData>();

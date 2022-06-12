@@ -6,7 +6,7 @@ import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/interpolation_point.dart';
 import 'package:little_light/models/item_sort_parameter.dart';
-import 'package:little_light/modules/loadouts/providers/loadout_item_index.dart';
+import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
@@ -67,28 +67,29 @@ class InventoryUtils {
     var isInDebug = false;
     assert(isInDebug = true);
     if (!isInDebug) return;
-    for (var item in loadout.generic.values) {
-      if (item == null) continue;
-      var def = await _manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
-      var bucket = await _manifest.getDefinition<DestinyInventoryBucketDefinition>(def.inventory.bucketTypeHash);
-      var instance = _profile.getInstanceInfo(item.itemInstanceId);
-      print("---------------------------------------------------------------");
-      print(bucket.displayProperties.name);
-      print("---------------------------------------------------------------");
-      print("${def.displayProperties.name} ${instance?.primaryStat?.value}");
-      print("---------------------------------------------------------------");
-    }
-    for (var items in loadout.classSpecific.values) {
-      var item = items[classType];
-      if (item == null) continue;
-      var def = await _manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
-      var bucket = await _manifest.getDefinition<DestinyInventoryBucketDefinition>(def.inventory.bucketTypeHash);
-      var instance = _profile.getInstanceInfo(item.itemInstanceId);
-      print("---------------------------------------------------------------");
-      print(bucket.displayProperties.name);
-      print("---------------------------------------------------------------");
-      print("${def.displayProperties.name} ${instance?.primaryStat?.value}");
-      print("---------------------------------------------------------------");
+    for (var slot in loadout.slots.values) {
+      final generic = slot.genericEquipped;
+      if (generic != null) {
+        final def = await _manifest.getDefinition<DestinyInventoryItemDefinition>(generic.itemHash);
+        final bucket = await _manifest.getDefinition<DestinyInventoryBucketDefinition>(def.inventory.bucketTypeHash);
+        final instance = _profile.getInstanceInfo(generic.itemInstanceId);
+        print("---------------------------------------------------------------");
+        print(bucket.displayProperties.name);
+        print("---------------------------------------------------------------");
+        print("${def.displayProperties.name} ${instance?.primaryStat?.value}");
+        print("---------------------------------------------------------------");
+      }
+      final classSpecific = slot.classSpecificEquipped[classType];
+      if (classSpecific != null) {
+        final def = await _manifest.getDefinition<DestinyInventoryItemDefinition>(classSpecific.itemHash);
+        final bucket = await _manifest.getDefinition<DestinyInventoryBucketDefinition>(def.inventory.bucketTypeHash);
+        final instance = _profile.getInstanceInfo(classSpecific.itemInstanceId);
+        print("---------------------------------------------------------------");
+        print(bucket.displayProperties.name);
+        print("---------------------------------------------------------------");
+        print("${def.displayProperties.name} ${instance?.primaryStat?.value}");
+        print("---------------------------------------------------------------");
+      }
     }
   }
 }

@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
@@ -10,8 +9,8 @@ import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/services/inventory/inventory.service.dart';
-import 'package:little_light/services/language/language.consumer.dart';
-import 'package:little_light/services/language/language.service.dart';
+import 'package:little_light/core/providers/language/language.consumer.dart';
+import 'package:little_light/core/providers/language/language.bloc.dart';
 import 'package:little_light/services/littlelight/item_notes.service.dart';
 import 'package:little_light/services/littlelight/littlelight_data.service.dart';
 import 'package:little_light/services/littlelight/loadouts.service.dart';

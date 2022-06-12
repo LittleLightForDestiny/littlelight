@@ -1,4 +1,3 @@
-//@dart=2.12
 enum TransferErrorType {
   cantFindSubstitute,
   cantPullFromPostmaster,

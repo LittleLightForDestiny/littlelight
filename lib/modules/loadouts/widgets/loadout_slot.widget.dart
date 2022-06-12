@@ -6,7 +6,7 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
-import 'package:little_light/modules/loadouts/providers/loadout_item_index.dart';
+import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
 import 'package:little_light/pages/item_details/item_details.page_route.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
@@ -86,7 +86,7 @@ class LoadoutSlotWidget extends StatelessWidget with ProfileConsumer, ManifestCo
   buildItemIcons(BuildContext context, {bool isEquipment = true}) {
     List<Widget> items = [];
     if (isEquipment) {
-      if (LoadoutItemIndex.classBucketHashes.contains(bucketDefinition.hash)) {
+      if (LoadoutItemIndex.isClassSpecificSlot(bucketDefinition.hash)) {
         items.addAll([DestinyClass.Titan, DestinyClass.Hunter, DestinyClass.Warlock]
             .map((classType) => buildItemIcon(context, item: equippedClassItems[classType], classType: classType)));
       } else {
@@ -95,7 +95,6 @@ class LoadoutSlotWidget extends StatelessWidget with ProfileConsumer, ManifestCo
                 MapEntry(classType, item == null ? null : buildItemIcon(context, item: item, classType: classType)))
             .values
             .where((i) => i != null));
-
         items.add(buildItemIcon(context, item: equippedGenericItem));
       }
     } else {

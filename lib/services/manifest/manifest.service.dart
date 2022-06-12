@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -12,7 +11,7 @@ import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/bungie_api/enums/definition_table_names.enum.dart';
-import 'package:little_light/services/language/language.consumer.dart';
+import 'package:little_light/core/providers/language/language.consumer.dart';
 import 'package:little_light/services/manifest/manifest_download_progress.dart';
 import 'package:little_light/services/storage/export.dart';
 import 'package:path_provider/path_provider.dart';
@@ -23,7 +22,7 @@ setupManifest() {
   GetIt.I.registerSingleton<ManifestService>(ManifestService._internal());
 }
 
-class ManifestService with StorageConsumer, LanguageConsumer, BungieApiConsumer, AnalyticsConsumer {
+class ManifestService with StorageConsumer, BungieApiConsumer, AnalyticsConsumer {
   sqflite.Database? _db;
   DestinyManifest? _manifestInfo;
   final Map<String, dynamic> _cached = Map();
@@ -77,7 +76,7 @@ class ManifestService with StorageConsumer, LanguageConsumer, BungieApiConsumer,
   Future<bool> needsUpdate() async {
     DestinyManifest manifestInfo = await _getManifestInfo();
     String? currentVersion = await getSavedVersion();
-    String language = languageService.currentLanguage;
+    String language = getInjectedLanguageService().currentLanguage;
     var working = await test();
     return !working || currentVersion != manifestInfo.mobileWorldContentPaths?[language];
   }
@@ -90,7 +89,7 @@ class ManifestService with StorageConsumer, LanguageConsumer, BungieApiConsumer,
     }
     try {
       DestinyManifest info = await _getManifestInfo();
-      String language = languageService.currentLanguage;
+      String language = getInjectedLanguageService().currentLanguage;
       String? manifestFileURL = info.mobileWorldContentPaths?[language];
       String? url = BungieApiService.url(manifestFileURL);
       String localPath = await _localPath;

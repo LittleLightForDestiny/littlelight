@@ -8,7 +8,6 @@ import 'package:little_light/pages/initial/subpages/select_language.subpage.dart
 import 'package:little_light/pages/initial/subpages/select_membership.subpage.dart';
 import 'package:little_light/pages/initial/subpages/select_wishlists.subpage.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
-import 'package:little_light/services/language/language.consumer.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:provider/provider.dart';
 
@@ -21,7 +20,7 @@ class InitialPage extends StatefulWidget {
   InitialPageState createState() => InitialPageState();
 }
 
-class InitialPageState extends State<InitialPage> with AuthConsumer, LanguageConsumer {
+class InitialPageState extends State<InitialPage> with AuthConsumer {
   @override
   Widget build(BuildContext context) => Scaffold(
       body: Container(

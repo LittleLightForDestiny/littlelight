@@ -1,5 +1,3 @@
-//@dart=2.12
-
 import 'package:bungie_api/models/destiny_profile_response.dart';
 import 'package:bungie_api/models/destiny_vendors_response.dart';
 import 'package:get_it/get_it.dart';

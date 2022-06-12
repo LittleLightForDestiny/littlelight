@@ -1,9 +1,8 @@
-//@dart=2.12
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:little_light/core/providers/language/language.bloc.dart';
 import 'package:little_light/core/routes/login_route.dart';
 import 'package:little_light/exceptions/invalid_membership.exception.dart';
 import 'package:little_light/exceptions/not_authorized.exception.dart';
@@ -18,7 +17,6 @@ import 'package:little_light/pages/main.screen.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
-import 'package:little_light/services/language/language.consumer.dart';
 import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
@@ -41,7 +39,6 @@ class InitialPageStateNotifier
     with
         ChangeNotifier,
         ManifestConsumer,
-        LanguageConsumer,
         AuthConsumer,
         LittleLightDataConsumer,
         WishlistsConsumer,
@@ -121,7 +118,7 @@ class InitialPageStateNotifier
     _loading = true;
     notifyListeners();
 
-    final hasSelectedLanguage = languageService.selectedLanguage != null;
+    final hasSelectedLanguage = _context.read<LanguageBloc>().selectedLanguage != null;
 
     if (hasSelectedLanguage) {
       languageSelected();

@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'dart:async';
 
 import 'package:get_it/get_it.dart';

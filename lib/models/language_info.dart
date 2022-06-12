@@ -1,5 +1,3 @@
-//@dart=2.12
-
 class LanguageInfo {
   String code;
 

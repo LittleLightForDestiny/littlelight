@@ -1,8 +1,8 @@
-//@dart=2.12
 import 'package:get_it/get_it.dart';
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/services/littlelight/littlelight_api.service.dart';
 import 'package:little_light/services/storage/export.dart';
+import 'package:collection/collection.dart';
 
 setupLoadoutsService() {
   GetIt.I.registerSingleton<LoadoutsService>(LoadoutsService._internal());
@@ -11,6 +11,10 @@ setupLoadoutsService() {
 class LoadoutsService with StorageConsumer {
   LoadoutsService._internal();
   List<Loadout>? _loadouts;
+
+  Loadout? getLoadoutById(String id) {
+    return _loadouts?.firstWhereOrNull((element) => element.assignedId == id);
+  }
 
   Future<List<Loadout>> getLoadouts({forceFetch = false}) async {
     if (_loadouts != null && !forceFetch) {

@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'package:bungie_api/enums/bungie_membership_type.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/widgets/icon_fonts/littlelight_icons.dart';

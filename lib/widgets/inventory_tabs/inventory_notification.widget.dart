@@ -1,5 +1,3 @@
-// @dart=2.12
-
 import 'dart:async';
 
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';

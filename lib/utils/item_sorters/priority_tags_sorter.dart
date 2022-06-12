@@ -1,5 +1,3 @@
-// @dart=2.12
-
 import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/item_sorters/base_item_sorter.dart';

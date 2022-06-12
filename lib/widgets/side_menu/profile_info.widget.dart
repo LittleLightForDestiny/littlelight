@@ -1,15 +1,13 @@
-//@dart=2.12
-
 import 'package:bungie_api/destiny2.dart';
 import 'package:bungie_api/groupsv2.dart';
 import 'package:bungie_api/user.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/providers/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/character_sort_parameter.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/services/language/language.consumer.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/platform_data.dart';
@@ -34,7 +32,7 @@ class ProfileInfoWidget extends StatefulWidget {
 }
 
 class ProfileInfoState extends State<ProfileInfoWidget>
-    with SingleTickerProviderStateMixin, AuthConsumer, LanguageConsumer, ProfileConsumer {
+    with SingleTickerProviderStateMixin, AuthConsumer, ProfileConsumer {
   UserMembershipData? account;
   GroupUserInfoCard? membership;
 
@@ -174,9 +172,8 @@ class ProfileInfoState extends State<ProfileInfoWidget>
     }
     final lastPlayed = DateTime.tryParse(lastCharacter.dateLastPlayed ?? "");
     final currentSession = int.tryParse(lastCharacter.minutesPlayedThisSession ?? "");
-    final time = lastPlayed != null
-        ? timeago.format(lastPlayed, allowFromNow: true, locale: languageService.currentLanguage)
-        : "";
+    final time =
+        lastPlayed != null ? timeago.format(lastPlayed, allowFromNow: true, locale: context.currentLanguage) : "";
     if (lastPlayed != null &&
         currentSession != null &&
         lastPlayed.add(Duration(minutes: currentSession + 10)).isBefore(DateTime.now().toUtc())) {

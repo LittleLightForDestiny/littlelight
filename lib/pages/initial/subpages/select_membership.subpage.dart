@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'dart:math';
 
 import 'package:bungie_api/models/group_user_info_card.dart';

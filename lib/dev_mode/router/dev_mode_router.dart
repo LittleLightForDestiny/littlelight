@@ -1,5 +1,3 @@
-//@dart=2.12
-
 import 'package:flutter/material.dart';
 import 'package:little_light/core/router/route_parser.dart';
 import 'package:little_light/core/routes/login_route.dart';

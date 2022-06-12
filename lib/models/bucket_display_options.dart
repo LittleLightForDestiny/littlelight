@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';

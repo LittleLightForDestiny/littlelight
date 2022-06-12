@@ -1,5 +1,3 @@
-//@dart=2.12
-
 import 'package:bungie_api/enums/destiny_component_type.dart';
 
 class ProfileComponentGroups {

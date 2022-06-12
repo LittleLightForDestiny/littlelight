@@ -4,7 +4,7 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/services/language/language.consumer.dart';
+import 'package:little_light/core/providers/language/language.consumer.dart';
 import 'package:little_light/widgets/common/masterwork_counter/base_masterwork_counter.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
@@ -19,8 +19,7 @@ class ScreenshotMasterworkCounterWidget extends BaseMasterworkCounterWidget {
   }
 }
 
-class ScreenshotMasterworkCounterState extends BaseMasterworkCounterWidgetState<ScreenshotMasterworkCounterWidget>
-    with LanguageConsumer {
+class ScreenshotMasterworkCounterState extends BaseMasterworkCounterWidgetState<ScreenshotMasterworkCounterWidget> {
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -67,7 +66,7 @@ class ScreenshotMasterworkCounterState extends BaseMasterworkCounterWidgetState<
   }
 
   Widget buildProgressValue(BuildContext context) {
-    var formatter = NumberFormat.decimalPattern(languageService.currentLanguage);
+    var formatter = NumberFormat.decimalPattern(context.currentLanguage);
     var formattedValue = formatter.format(masterworkObjective.progress);
     return Text("$formattedValue", style: TextStyle(color: Colors.amber.shade200, fontSize: widget.pixelSize * 20));
   }

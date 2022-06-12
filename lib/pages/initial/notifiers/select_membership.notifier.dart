@@ -1,5 +1,3 @@
-//@dart=2.12
-
 import 'package:bungie_api/models/user_membership_data.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';

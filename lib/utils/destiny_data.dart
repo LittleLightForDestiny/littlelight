@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'package:bungie_api/enums/damage_type.dart';
 import 'package:bungie_api/enums/destiny_ammunition_type.dart';
 import 'package:bungie_api/enums/destiny_class.dart';

@@ -1,5 +1,3 @@
-//@dart=2.12
-
 import 'package:bungie_api/enums/bungie_membership_type.dart';
 import 'package:bungie_api/enums/destiny_component_type.dart';
 import 'package:bungie_api/models/destiny_character_component.dart';

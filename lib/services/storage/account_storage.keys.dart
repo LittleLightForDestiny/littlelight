@@ -1,5 +1,3 @@
-//@dart=2.12
-
 enum AccountStorageKeys { latestToken, latestTokenDate, membershipData }
 
 extension StorageKeyPathsExtension on AccountStorageKeys {

@@ -1,11 +1,10 @@
-//@dart=2.12
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:little_light/core/providers/language/language.bloc.dart';
 import 'package:little_light/pages/initial/notifiers/initial_page_state.notifier.dart';
 import 'package:little_light/pages/initial/subpages/subpage_base.dart';
 import 'package:little_light/pages/initial/widgets/language.button.dart';
-import 'package:little_light/services/language/language.consumer.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:provider/provider.dart';
 
@@ -16,24 +15,20 @@ class SelectLanguageSubPage extends StatefulWidget {
   SelectLanguageSubPageState createState() => SelectLanguageSubPageState();
 }
 
-class SelectLanguageSubPageState extends SubpageBaseState<SelectLanguageSubPage> with LanguageConsumer {
+class SelectLanguageSubPageState extends SubpageBaseState<SelectLanguageSubPage> {
+  LanguageBloc get languageProvider => context.read<LanguageBloc>();
   String? _selectedLanguage;
   String get selectedLanguage =>
-      _selectedLanguage ?? languageService.selectedLanguage ?? languageService.currentLanguage;
+      _selectedLanguage ?? languageProvider.selectedLanguage ?? languageProvider.currentLanguage;
   set selectedLanguage(String value) => _selectedLanguage = value;
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
   void okClick() {
-    languageService.selectedLanguage = selectedLanguage;
+    languageProvider.selectedLanguage = selectedLanguage;
     Provider.of<InitialPageStateNotifier>(context, listen: false).languageSelected();
   }
 
   List<Widget> getLanguageButtons(BuildContext context) {
-    final languages = languageService.languages;
+    final languages = languageProvider.languages;
     return languages.map<Widget>((language) {
       return LanguageButton(
           onPressed: () {

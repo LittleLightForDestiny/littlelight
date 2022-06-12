@@ -1,5 +1,3 @@
-//@dart=2.12
-
 import 'dart:io';
 
 import 'package:get_it/get_it.dart';

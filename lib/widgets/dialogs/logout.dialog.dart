@@ -1,5 +1,3 @@
-//@dart=2.12
-
 import 'package:bungie_api/user.dart';
 import 'package:flutter/material.dart';
 // ignore: import_of_legacy_library_into_null_safe

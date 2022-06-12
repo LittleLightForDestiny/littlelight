@@ -1,5 +1,3 @@
-// @dart=2.12
-
 import 'package:bungie_api/models/destiny_stat.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/item_with_owner.dart';

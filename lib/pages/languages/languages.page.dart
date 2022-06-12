@@ -1,18 +1,19 @@
-//@dart=2.12
 import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:little_light/core/providers/language/language.bloc.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/language_info.dart';
-import 'package:little_light/services/language/language.consumer.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:provider/provider.dart';
 
 class LanguagesPage extends StatefulWidget {
   @override
   _LanguagesPageState createState() => _LanguagesPageState();
 }
 
-class _LanguagesPageState extends State<LanguagesPage> with LanguageConsumer {
+class _LanguagesPageState extends State<LanguagesPage> {
+  LanguageBloc get languageService => context.read<LanguageBloc>();
   List<LanguageInfo>? languages;
   String? currentLanguage;
   String? selectedLanguage;

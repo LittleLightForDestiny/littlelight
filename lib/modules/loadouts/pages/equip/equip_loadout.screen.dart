@@ -2,17 +2,15 @@
 
 import 'dart:math';
 
-import 'package:bungie_api/enums/destiny_class.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/models/loadout.dart';
-import 'package:little_light/modules/loadouts/providers/loadout_item_index.dart';
+import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
 import 'package:little_light/modules/loadouts/widgets/loadout_destinations.widget.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
-import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
@@ -58,7 +56,7 @@ class EquipLoadoutScreenState extends State<EquipLoadoutScreen> with ProfileCons
 
   @override
   Widget build(BuildContext context) {
-    var screenPadding = MediaQuery.of(context).padding;
+    final screenPadding = MediaQuery.of(context).padding;
     return Scaffold(
         backgroundColor: emblemColor,
         appBar: AppBar(title: Text(widget.loadout.name), flexibleSpace: buildAppBarBackground(context)),
@@ -73,12 +71,12 @@ class EquipLoadoutScreenState extends State<EquipLoadoutScreen> with ProfileCons
                     children: <Widget>[
                       HeaderWidget(child: TranslatedTextWidget("Items to Equip", uppercase: true)),
                       Container(padding: EdgeInsets.all(8), child: buildEquippedItems(context)),
-                      (_itemIndex?.unequippedCount ?? 0) == 0
+                      (_itemIndex?.unequippedItemCount ?? 0) == 0
                           ? Container()
                           : HeaderWidget(
                               child: TranslatedTextWidget("Items to Transfer", uppercase: true),
                             ),
-                      (_itemIndex?.unequippedCount ?? 0) == 0
+                      (_itemIndex?.unequippedItemCount ?? 0) == 0
                           ? Container()
                           : Container(padding: EdgeInsets.all(8), child: buildUnequippedItems(context)),
                     ]))));
@@ -106,18 +104,18 @@ class EquipLoadoutScreenState extends State<EquipLoadoutScreen> with ProfileCons
         ),
       );
     List<Widget> icons = [];
+    //TODO: rework
+    // icons.addAll(buildItemRow(context, DestinyData.getClassIcon(DestinyClass.Unknown),
+    //     LoadoutItemIndex.genericBucketHashes, _itemIndex.generic));
 
-    icons.addAll(buildItemRow(context, DestinyData.getClassIcon(DestinyClass.Unknown),
-        LoadoutItemIndex.genericBucketHashes, _itemIndex.generic));
-
-    DestinyClass.values.forEach((classType) {
-      Map<int, DestinyItemComponent> items =
-          _itemIndex.classSpecific.map((bucketHash, items) => MapEntry(bucketHash, items[classType]));
-      if (items.values.any((i) => i != null)) {
-        icons.addAll(
-            buildItemRow(context, DestinyData.getClassIcon(classType), LoadoutItemIndex.classBucketHashes, items));
-      }
-    });
+    // DestinyClass.values.forEach((classType) {
+    //   Map<int, DestinyItemComponent> items =
+    //       _itemIndex.classSpecific.map((bucketHash, items) => MapEntry(bucketHash, items[classType]));
+    //   if (items.values.any((i) => i != null)) {
+    //     icons.addAll(
+    //         buildItemRow(context, DestinyData.getClassIcon(classType), LoadoutItemIndex.classBucketHashes, items));
+    //   }
+    // });
 
     return Wrap(
       children: icons,
@@ -125,27 +123,28 @@ class EquipLoadoutScreenState extends State<EquipLoadoutScreen> with ProfileCons
   }
 
   Widget buildUnequippedItems(BuildContext context) {
-    if (_itemIndex == null)
-      return Container(
-        child: AspectRatio(
-          aspectRatio: 1,
-        ),
-      );
-    if (_itemIndex.unequipped == null) return Container();
-    List<DestinyItemComponent> items = [];
-    List<int> bucketHashes = LoadoutItemIndex.genericBucketHashes + LoadoutItemIndex.classBucketHashes;
-    bucketHashes.forEach((bucketHash) {
-      if (_itemIndex.unequipped[bucketHash] != null) {
-        items += _itemIndex.unequipped[bucketHash];
-      }
-    });
-    return Wrap(
-      children: items
-          .map((item) => FractionallySizedBox(
-              widthFactor: 1 / 7,
-              child: Container(padding: EdgeInsets.all(4), child: AspectRatio(aspectRatio: 1, child: itemIcon(item)))))
-          .toList(),
-    );
+    // TODO: rework
+    // if (_itemIndex == null)
+    //   return Container(
+    //     child: AspectRatio(
+    //       aspectRatio: 1,
+    //     ),
+    //   );
+    // if (_itemIndex.unequipped == null) return Container();
+    // List<DestinyItemComponent> items = [];
+    // List<int> bucketHashes = LoadoutItemIndex.genericBucketHashes + LoadoutItemIndex.classBucketHashes;
+    // bucketHashes.forEach((bucketHash) {
+    //   if (_itemIndex.unequipped[bucketHash] != null) {
+    //     items += _itemIndex.unequipped[bucketHash];
+    //   }
+    // });
+    // return Wrap(
+    //   children: items
+    //       .map((item) => FractionallySizedBox(
+    //           widthFactor: 1 / 7,
+    //           child: Container(padding: EdgeInsets.all(4), child: AspectRatio(aspectRatio: 1, child: itemIcon(item)))))
+    //       .toList(),
+    // );
   }
 
   List<Widget> buildItemRow(

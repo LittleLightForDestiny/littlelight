@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'package:bungie_api/enums/platform_error_codes.dart';
 import 'package:json_annotation/json_annotation.dart';
 

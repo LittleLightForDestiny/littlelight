@@ -1,11 +1,8 @@
-//@dart=2.12
-
 import 'package:flutter/material.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/language_info.dart';
-import 'package:little_light/services/language/language.consumer.dart';
 
-class LanguageButton extends StatelessWidget with LanguageConsumer {
+class LanguageButton extends StatelessWidget {
   final LanguageInfo language;
   final bool selected;
   final Function onPressed;

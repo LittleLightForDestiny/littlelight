@@ -1,5 +1,3 @@
-//@dart=2.12
-
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
@@ -7,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
-import 'package:little_light/services/language/language.consumer.dart';
+import 'package:little_light/core/providers/language/language.consumer.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/dialogs/littlelight.base.dialog.dart';
 
@@ -24,7 +22,7 @@ extension on BuildContext {
   FlutterErrorDetails? get errorArgument => ModalRoute.of(this)?.settings.arguments as FlutterErrorDetails;
 }
 
-class ReportErrorDialog extends LittleLightBaseDialog with AuthConsumer, AnalyticsConsumer, LanguageConsumer {
+class ReportErrorDialog extends LittleLightBaseDialog with AuthConsumer, AnalyticsConsumer {
   ReportErrorDialog() : super();
 
   @override
@@ -44,7 +42,7 @@ class ReportErrorDialog extends LittleLightBaseDialog with AuthConsumer, Analyti
         height: 8,
       ),
       FutureBuilder<Map<String, String>?>(
-          future: getData(),
+          future: getData(context),
           builder: (context, data) {
             String text = "";
             final fields = data.data;
@@ -90,7 +88,7 @@ class ReportErrorDialog extends LittleLightBaseDialog with AuthConsumer, Analyti
           onPressed: () async {
             final error = context.errorArgument;
             if (error == null) return;
-            final data = await getData();
+            final data = await getData(context);
             analytics.registerUserFeedback(error, data?["playerID"] ?? "", data ?? {});
             Navigator.of(context).pop();
           },
@@ -99,13 +97,13 @@ class ReportErrorDialog extends LittleLightBaseDialog with AuthConsumer, Analyti
     );
   }
 
-  Future<Map<String, String>?> getData() async {
+  Future<Map<String, String>?> getData(BuildContext context) async {
     final membership = await auth.getMembership();
     final Map<String, String> data = {
       "playerID": membership?.bungieGlobalDisplayName ?? "",
       "accountID": auth.currentAccountID ?? "",
       "membershipID": auth.currentMembershipID ?? "",
-      "currentLanguage": languageService.currentLanguage,
+      "currentLanguage": context.currentLanguage,
     };
     if (Platform.isAndroid) {
       final deviceInfo = await DeviceInfoPlugin().androidInfo;

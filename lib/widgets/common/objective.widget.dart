@@ -7,7 +7,7 @@ import 'package:bungie_api/models/destiny_objective_definition.dart';
 import 'package:bungie_api/models/destiny_objective_progress.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:little_light/services/language/language.consumer.dart';
+import 'package:little_light/core/providers/language/language.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 
@@ -42,7 +42,7 @@ class ObjectiveWidget extends StatefulWidget {
   }
 }
 
-class ObjectiveWidgetState extends State<ObjectiveWidget> with LanguageConsumer, ManifestConsumer {
+class ObjectiveWidgetState extends State<ObjectiveWidget> with ManifestConsumer {
   DestinyObjectiveDefinition _definition;
   DestinyObjectiveDefinition get definition => widget.definition ?? _definition;
 
@@ -155,7 +155,7 @@ class ObjectiveWidgetState extends State<ObjectiveWidget> with LanguageConsumer,
       progress = total;
     }
 
-    final formatter = NumberFormat.decimalPattern(languageService.currentLanguage);
+    final formatter = NumberFormat.decimalPattern(context.currentLanguage);
     String formattedProgress = formatter.format(progress);
     String formattedTotal = formatter.format(total);
 
@@ -164,7 +164,7 @@ class ObjectiveWidgetState extends State<ObjectiveWidget> with LanguageConsumer,
   }
 
   Widget buildDate(BuildContext context) {
-    final formatter = DateFormat.yMd(languageService.currentLanguage);
+    final formatter = DateFormat.yMd(context.currentLanguage);
     final progress = formatter.format(DateTime.fromMillisecondsSinceEpoch(objective.progress * 1000));
     return Text("$progress",
         style: TextStyle(fontWeight: FontWeight.w500, fontSize: 13, color: this.color ?? Colors.grey.shade300));

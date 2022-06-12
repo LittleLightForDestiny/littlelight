@@ -4,7 +4,6 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:bungie_api/enums/destiny_class.dart';
-import 'package:bungie_api/enums/destiny_item_type.dart';
 import 'package:bungie_api/enums/tier_type.dart';
 import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
@@ -13,7 +12,7 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/models/game_data.dart';
 import 'package:little_light/models/loadout.dart';
-import 'package:little_light/modules/loadouts/providers/loadout_item_index.dart';
+import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/inventory/inventory.package.dart';
 import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
@@ -491,30 +490,31 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
   Future<LoadoutItemIndex> createLoadout([includeUnequipped = false]) async {
     var itemIndex = await LoadoutItemIndex.buildfromLoadout(Loadout());
     itemIndex.loadout.emblemHash = widget.character.emblemHash;
-    var slots = LoadoutItemIndex.classBucketHashes + LoadoutItemIndex.genericBucketHashes;
-    var equipment = profile.getCharacterEquipment(widget.character.characterId);
-    var equipped = equipment.where((i) => slots.contains(i.bucketHash));
-    for (var item in equipped) {
-      var def = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
-      if ((def.itemType == DestinyItemType.Weapon || def.itemType == DestinyItemType.Subclass) && loadoutWeapons) {
-        itemIndex.addEquippedItem(item, def);
-      }
-      if (def.itemType == DestinyItemType.Armor && loadoutArmor) {
-        itemIndex.addEquippedItem(item, def);
-      }
-    }
-    if (!includeUnequipped) return itemIndex;
-    var inventory = profile.getCharacterInventory(widget.character.characterId);
-    var unequipped = inventory.where((i) => slots.contains(i.bucketHash));
-    for (var item in unequipped) {
-      var def = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
-      if (def.itemType == DestinyItemType.Weapon && loadoutWeapons) {
-        itemIndex.addUnequippedItem(item, def);
-      }
-      if (def.itemType == DestinyItemType.Armor && loadoutArmor) {
-        itemIndex.addUnequippedItem(item, def);
-      }
-    }
+    // TODO: rework
+    // var slots = LoadoutItemIndex.classBucketHashes + LoadoutItemIndex.genericBucketHashes;
+    // var equipment = profile.getCharacterEquipment(widget.character.characterId);
+    // var equipped = equipment.where((i) => slots.contains(i.bucketHash));
+    // for (var item in equipped) {
+    //   var def = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
+    //   if ((def.itemType == DestinyItemType.Weapon || def.itemType == DestinyItemType.Subclass) && loadoutWeapons) {
+    //     itemIndex.addEquippedItem(item, def);
+    //   }
+    //   if (def.itemType == DestinyItemType.Armor && loadoutArmor) {
+    //     itemIndex.addEquippedItem(item, def);
+    //   }
+    // }
+    // if (!includeUnequipped) return itemIndex;
+    // var inventory = profile.getCharacterInventory(widget.character.characterId);
+    // var unequipped = inventory.where((i) => slots.contains(i.bucketHash));
+    // for (var item in unequipped) {
+    //   var def = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
+    //   if (def.itemType == DestinyItemType.Weapon && loadoutWeapons) {
+    //     itemIndex.addUnequippedItem(item, def);
+    //   }
+    //   if (def.itemType == DestinyItemType.Armor && loadoutArmor) {
+    //     itemIndex.addUnequippedItem(item, def);
+    //   }
+    // }
     return itemIndex;
   }
 

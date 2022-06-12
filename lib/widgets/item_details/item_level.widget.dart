@@ -3,7 +3,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/mixins/deepsight_helper.mixin.dart';
-import 'package:little_light/services/language/language.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
@@ -24,7 +23,7 @@ extension on List {
   }
 }
 
-class ItemLevelWidget extends StatelessWidget with ProfileConsumer, LanguageConsumer, DeepSightHelper {
+class ItemLevelWidget extends StatelessWidget with ProfileConsumer, DeepSightHelper {
   final DestinyItemComponent item;
 
   ItemLevelWidget({Key? key, required this.item}) : super(key: key);

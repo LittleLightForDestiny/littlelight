@@ -1,5 +1,3 @@
-//@dart=2.12
-
 import 'package:flutter/material.dart';
 import 'package:little_light/models/wishlist_index.dart';
 import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';

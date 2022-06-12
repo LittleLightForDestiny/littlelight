@@ -15,7 +15,7 @@ import 'package:little_light/pages/equipment/equipment.screen.dart';
 import 'package:little_light/pages/languages/languages.page_route.dart';
 import 'package:little_light/pages/objectives/objectives.screen.dart';
 import 'package:little_light/pages/progress/progress.screen.dart';
-import 'package:little_light/pages/settings/about.screen.dart';
+import 'package:little_light/modules/settings/pages/about/about.screen.dart';
 import 'package:little_light/pages/triumphs/triumphs_root.page.dart';
 import 'package:little_light/pages/vendors/vendors.screen.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';

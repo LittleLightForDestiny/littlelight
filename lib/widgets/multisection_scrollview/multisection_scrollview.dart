@@ -1,5 +1,3 @@
-//@dart=2.12
-
 import 'package:flutter/material.dart';
 import 'package:little_light/widgets/multisection_scrollview/sliver_section.dart';
 

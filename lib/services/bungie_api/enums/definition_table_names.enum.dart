@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'package:bungie_api/destiny2.dart';
 
 typedef DefinitionTableIdentityFunction = dynamic Function(Map<String, dynamic> json);

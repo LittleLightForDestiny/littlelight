@@ -1,5 +1,3 @@
-// @dart=2.12
-
 import 'package:bungie_api/enums/destiny_ammunition_type.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 

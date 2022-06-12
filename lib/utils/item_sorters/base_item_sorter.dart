@@ -1,5 +1,3 @@
-// @dart=2.12
-
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:little_light/models/item_sort_parameter.dart';

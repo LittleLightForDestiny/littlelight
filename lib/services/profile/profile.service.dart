@@ -1,5 +1,3 @@
-//@dart=2.12
-
 import 'dart:async';
 
 import 'package:bungie_api/destiny2.dart';

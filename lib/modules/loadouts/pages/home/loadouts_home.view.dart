@@ -1,13 +1,12 @@
-// @dart=2.12
-
 import 'dart:math';
 
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:little_light/modules/loadouts/pages/edit/edit_loadout.page.dart';
-import 'package:little_light/modules/loadouts/pages/home/loadouts_home.provider.dart';
+import 'package:little_light/modules/loadouts/pages/edit/edit_loadout.page_route.dart';
+import 'package:little_light/modules/loadouts/pages/home/loadouts_home.bloc.dart';
+import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
 import 'package:little_light/modules/loadouts/widgets/loadout_list_item.widget.dart';
 import 'package:little_light/services/littlelight/loadouts.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
@@ -25,8 +24,8 @@ class LoadoutsHomeView extends StatefulWidget {
 
 class LoadoutsHomeViewState extends State<LoadoutsHomeView> with LoadoutsConsumer, ProfileConsumer {
   TextEditingController _searchFieldController = TextEditingController();
-  LoadoutsHomeProvider get _provider => context.read<LoadoutsHomeProvider>();
-  LoadoutsHomeProvider get _state => context.watch<LoadoutsHomeProvider>();
+  LoadoutsHomeBloc get _provider => context.read<LoadoutsHomeBloc>();
+  LoadoutsHomeBloc get _state => context.watch<LoadoutsHomeBloc>();
 
   @override
   void initState() {
@@ -107,20 +106,14 @@ class LoadoutsHomeViewState extends State<LoadoutsHomeView> with LoadoutsConsume
   }
 
   void createNew() async {
-    var newLoadout = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => EditLoadoutPage(),
-      ),
-    );
+    var newLoadout = await Navigator.push(context, CreateLoadoutPageRoute());
     if (newLoadout != null) {
       _provider.loadLoadouts();
     }
   }
 
   Widget? buildFooter(BuildContext context) {
-    final loadouts = _state.loadouts;
-    if ((loadouts?.length ?? 0) == 0) {
+    if (_state.isEmpty) {
       return null;
     }
     double paddingBottom = MediaQuery.of(context).padding.bottom;
@@ -133,9 +126,7 @@ class LoadoutsHomeViewState extends State<LoadoutsHomeView> with LoadoutsConsume
           padding: EdgeInsets.symmetric(horizontal: 16).copyWith(top: 8, bottom: 8 + paddingBottom),
           child: ElevatedButton(
             child: TranslatedTextWidget("Create Loadout"),
-            onPressed: () {
-              createNew();
-            },
+            onPressed: createNew,
           ),
         ));
   }
@@ -195,8 +186,7 @@ class LoadoutsHomeViewState extends State<LoadoutsHomeView> with LoadoutsConsume
     if (loadouts == null) {
       return LoadingAnimWidget();
     }
-
-    if (loadouts.isEmpty) {
+    if (_state.isEmpty) {
       return buildNoLoadoutsBody(context);
     }
     bool isTablet = MediaQueryHelper(context).tabletOrBigger;
@@ -231,20 +221,21 @@ class LoadoutsHomeViewState extends State<LoadoutsHomeView> with LoadoutsConsume
     return LoadoutListItemWidget(
       loadout,
       key: Key("loadout_${loadout.loadout.assignedId}_$index"),
-      onAction: onItemAction,
+      onAction: (action) => onItemAction(action, loadout),
     );
   }
 
-  void onItemAction(LoadoutListItemAction action) {
+  void onItemAction(LoadoutListItemAction action, LoadoutItemIndex loadout) async {
     switch (action) {
       case LoadoutListItemAction.Equip:
         // TODO: Handle this case.
         break;
       case LoadoutListItemAction.Edit:
-        // TODO: Handle this case.
+        final id = loadout.loadout.assignedId;
+        if (id == null) return;
+        Navigator.of(context).push(EditLoadoutPageRoute(loadoutID: id));
         break;
       case LoadoutListItemAction.Delete:
-        // TODO: Handle this case.
         break;
     }
   }

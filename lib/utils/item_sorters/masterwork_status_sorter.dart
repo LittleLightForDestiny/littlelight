@@ -1,5 +1,3 @@
-// @dart=2.12
-
 import 'package:bungie_api/enums/item_state.dart';
 import 'package:little_light/utils/item_sorters/base_item_sorter.dart';
 import 'package:little_light/utils/item_with_owner.dart';

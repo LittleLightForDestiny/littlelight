@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'package:flutter/material.dart';
 import 'badge/collections_badge.page.dart';
 import 'category/collections_category.page.dart';

@@ -1,25 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:little_light/models/loadout.dart';
+import 'package:little_light/modules/loadouts/pages/edit/edit_loadout.page.dart';
 
-// ignore: import_of_legacy_library_into_null_safe
-import 'edit_loadout.page.dart';
-
-extension on Loadout {
-  Loadout clone() => Loadout.fromJson(this.toJson());
+class EditLoadoutPageRouteArguments {
+  String? loadoutID;
+  EditLoadoutPageRouteArguments(this.loadoutID);
 }
 
 class EditLoadoutPageRoute extends MaterialPageRoute {
-  EditLoadoutPageRoute({required Loadout loadout})
+  EditLoadoutPageRoute({required String loadoutID})
       : super(
-          builder: (BuildContext context) => _builder(context, loadout),
+          settings: RouteSettings(arguments: EditLoadoutPageRouteArguments(loadoutID)),
+          builder: (BuildContext context) => EditLoadoutPage(),
         );
 }
 
 class CreateLoadoutPageRoute extends MaterialPageRoute {
   CreateLoadoutPageRoute()
       : super(
-          builder: (BuildContext context) => _builder(context),
+          builder: (BuildContext context) => EditLoadoutPage(),
         );
 }
-
-_builder(BuildContext context, [Loadout? loadout]) => EditLoadoutPage();
