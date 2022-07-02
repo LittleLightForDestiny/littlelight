@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:little_light/core/providers/language/language.bloc.dart';
+import 'package:little_light/core/blocs/language/language.bloc.dart';
 import 'package:little_light/pages/initial/notifiers/initial_page_state.notifier.dart';
 import 'package:little_light/pages/initial/subpages/subpage_base.dart';
 import 'package:little_light/pages/initial/widgets/language.button.dart';

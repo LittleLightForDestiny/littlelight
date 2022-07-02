@@ -1,15 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:little_light/modules/loadouts/pages/edit_item_mods/edit_loadout_item_mods.bloc.dart';
+import 'package:little_light/modules/loadouts/pages/edit_item_mods/edit_loadout_item_mods.view.dart';
+import 'package:provider/provider.dart';
 
-class EditLoadoutItemModsPage extends StatefulWidget {
-  const EditLoadoutItemModsPage({Key? key}) : super(key: key);
+import 'edit_loadout_item_mods.page_route.dart';
 
-  @override
-  _EditLoadoutItemModsPageState createState() => _EditLoadoutItemModsPageState();
-}
+class EditLoadoutItemModsPage extends StatelessWidget {
+  final EditLoadoutItemModsPageArguments args;
 
-class _EditLoadoutItemModsPageState extends State<EditLoadoutItemModsPage> {
+  const EditLoadoutItemModsPage(this.args, {Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return MultiProvider(
+      providers: [
+        Provider.value(value: args),
+        ChangeNotifierProvider(create: (context) => EditLoadoutItemModsBloc(context))
+      ],
+      child: EditLoadoutItemModsView(),
+    );
   }
 }

@@ -1,6 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:little_light/exceptions/not_initialized.exception.dart';
-import 'package:little_light/core/providers/language/language.consumer.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 
 import 'account_storage.service.dart';
 import 'global_storage.service.dart';

@@ -3,20 +3,21 @@ import 'package:little_light/modules/loadouts/pages/edit/edit_loadout.page.dart'
 
 class EditLoadoutPageRouteArguments {
   String? loadoutID;
-  EditLoadoutPageRouteArguments(this.loadoutID);
+  EditLoadoutPageRouteArguments([this.loadoutID]);
 }
 
 class EditLoadoutPageRoute extends MaterialPageRoute {
-  EditLoadoutPageRoute({required String loadoutID})
-      : super(
-          settings: RouteSettings(arguments: EditLoadoutPageRouteArguments(loadoutID)),
-          builder: (BuildContext context) => EditLoadoutPage(),
-        );
-}
+  factory EditLoadoutPageRoute.edit(String loadoutID) {
+    return EditLoadoutPageRoute._(EditLoadoutPageRouteArguments(loadoutID));
+  }
 
-class CreateLoadoutPageRoute extends MaterialPageRoute {
-  CreateLoadoutPageRoute()
+  factory EditLoadoutPageRoute.create() {
+    return EditLoadoutPageRoute._(EditLoadoutPageRouteArguments());
+  }
+
+  EditLoadoutPageRoute._(EditLoadoutPageRouteArguments args)
       : super(
-          builder: (BuildContext context) => EditLoadoutPage(),
+          settings: RouteSettings(arguments: args),
+          builder: (BuildContext context) => EditLoadoutPage(args),
         );
 }

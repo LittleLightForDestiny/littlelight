@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:little_light/core/providers/language/language.consumer.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/modules/loadouts/pages/edit/edit_loadout.bloc.dart';
 import 'package:little_light/modules/loadouts/pages/select_background/select_loadout_background.page_route.dart';
 import 'package:little_light/modules/loadouts/widgets/loadout_slot.widget.dart';
@@ -32,10 +32,10 @@ class EditLoadoutViewState extends State<EditLoadoutView> with LoadoutsConsumer,
   @override
   initState() {
     super.initState();
-    // _nameFieldController.text = _provider.loadoutName;
-    // _nameFieldController.addListener(() {
-    //   _provider.loadoutName = _nameFieldController.text;
-    // });
+    _nameFieldController.text = _provider.loadoutName;
+    _nameFieldController.addListener(() {
+      _provider.loadoutName = _nameFieldController.text;
+    });
   }
 
   @override
@@ -134,14 +134,12 @@ class EditLoadoutViewState extends State<EditLoadoutView> with LoadoutsConsumer,
     return LoadoutSlotWidget(
       bucketDefinition: definition,
       key: Key("loadout_slot_$hash"),
-      equippedClassItems: slot.classSpecificEquipped,
-      equippedGenericItem: slot.genericEquipped,
-      unequippedItems: slot.unequipped,
-      onAdd: (equipped, classType) {
-        // openItemSelect(context, definition, equipped, classType);
+      slot: slot,
+      onAdd: (classType, equipped) {
+        _provider.selectItemToAdd(classType, hash, equipped);
       },
-      onRemove: (item, equipped) {
-        // removeItem(equipped, item);
+      onOptions: (item, equipped) {
+        _provider.openItemOptions(item, equipped);
       },
     );
   }

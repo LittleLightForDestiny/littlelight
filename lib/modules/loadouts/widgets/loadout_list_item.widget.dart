@@ -4,6 +4,7 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
+import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
@@ -11,6 +12,7 @@ import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:little_light/widgets/flutter/center_icon_workaround.dart';
 
 enum LoadoutListItemAction { Equip, Edit, Delete }
 
@@ -33,9 +35,22 @@ class LoadoutListItemWidget extends StatelessWidget {
                 height: kToolbarHeight,
                 child: buildTitleBar(context),
               ),
-              buildItemRows(context),
+              buildLoadoutsContainer(context),
               buildButtonBar(context)
             ])));
+  }
+
+  Widget buildLoadoutsContainer(BuildContext context) {
+    return Container(
+        padding: EdgeInsets.all(4),
+        child: Column(
+          children: [
+            buildGenericItems(context),
+            buildClassSpecificItems(context, DestinyClass.Titan),
+            buildClassSpecificItems(context, DestinyClass.Hunter),
+            buildClassSpecificItems(context, DestinyClass.Warlock),
+          ],
+        ));
   }
 
   Widget buildTitleBar(BuildContext context) {
@@ -76,7 +91,7 @@ class LoadoutListItemWidget extends StatelessWidget {
   Widget buildButtonBar(BuildContext context) {
     return Container(
         color: Theme.of(context).colorScheme.secondaryContainer,
-        padding: EdgeInsets.symmetric(horizontal: 6),
+        padding: EdgeInsets.all(4).copyWith(top: 0),
         child: Row(children: [
           Expanded(
               child: Container(
@@ -154,24 +169,72 @@ class LoadoutListItemWidget extends StatelessWidget {
   //   }
   // }
 
-  Widget buildItemRows(BuildContext context) {
-    List<Widget> icons = [];
-    // TODO: rework
-    // icons.addAll(buildItemRow(context, DestinyData.getClassIcon(DestinyClass.Unknown),
-    //     LoadoutItemIndex.genericBucketHashes, loadout.generic));
+  Widget buildGenericItems(BuildContext context) {
+    final genericHashes = [
+      InventoryBucket.kineticWeapons,
+      InventoryBucket.energyWeapons,
+      InventoryBucket.powerWeapons,
+      InventoryBucket.ghost,
+      InventoryBucket.vehicle,
+      InventoryBucket.ships,
+    ];
 
-    // DestinyClass.values.forEach((classType) {
-    //   Map<int, DestinyItemComponent?> items =
-    //       loadout.classSpecific.map((bucketHash, items) => MapEntry(bucketHash, items[classType]));
-    //   if (items.values.any((i) => i != null)) {
-    //     icons.addAll(
-    //         buildItemRow(context, DestinyData.getClassIcon(classType), LoadoutItemIndex.classBucketHashes, items));
-    //   }
-    // });
+    final hasItem = genericHashes.any((e) => loadout.slots[e]?.genericEquipped != null);
+    if (!hasItem) return Container();
 
-    return Wrap(
-      children: icons,
+    return Row(
+      children: <Widget>[
+        buildClassIcon(DestinyClass.Unknown),
+      ]
+          .followedBy(genericHashes.map((e) => buildItem(loadout.slots[e]?.genericEquipped)))
+          .map((e) => Flexible(
+                  child: Container(
+                padding: EdgeInsets.all(4),
+                child: AspectRatio(aspectRatio: 1, child: e),
+              )))
+          .toList(),
     );
+  }
+
+  Widget buildClassSpecificItems(BuildContext context, DestinyClass destinyClass) {
+    final genericHashes = [
+      InventoryBucket.subclass,
+      InventoryBucket.helmet,
+      InventoryBucket.gauntlets,
+      InventoryBucket.chestArmor,
+      InventoryBucket.legArmor,
+      InventoryBucket.classArmor,
+    ];
+
+    final hasItem = genericHashes.any((e) => loadout.slots[e]?.classSpecificEquipped[destinyClass] != null);
+    if (!hasItem) return Container();
+
+    return Row(
+      children: <Widget>[
+        buildClassIcon(destinyClass),
+      ]
+          .followedBy(genericHashes.map((e) => buildItem(loadout.slots[e]?.classSpecificEquipped[destinyClass])))
+          .map((e) => Flexible(
+                  child: Container(
+                padding: EdgeInsets.all(4),
+                child: AspectRatio(aspectRatio: 1, child: e),
+              )))
+          .toList(),
+    );
+  }
+
+  Widget buildClassIcon(DestinyClass destinyClass) => CenterIconWorkaround(destinyClass.icon, size: 16);
+
+  Widget buildItem(DestinyItemComponent? item) {
+    if (item == null) {
+      return ManifestImageWidget<DestinyInventoryItemDefinition>(1835369552, key: Key("item_icon_empty"));
+    }
+    final profile = getInjectedProfileService();
+    final instance = profile.getInstanceInfo(item.itemInstanceId);
+    return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
+        item.itemHash!,
+        (def) => ItemIconWidget.builder(
+            item: item, definition: def, instanceInfo: instance, key: Key("item_icon_${item.itemInstanceId}")));
   }
 
   List<Widget> buildItemRow(

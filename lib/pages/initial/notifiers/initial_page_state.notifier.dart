@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:flutter_phoenix/flutter_phoenix.dart';
-import 'package:little_light/core/providers/language/language.bloc.dart';
+import 'package:little_light/core/blocs/language/language.bloc.dart';
 import 'package:little_light/core/routes/login_route.dart';
 import 'package:little_light/exceptions/invalid_membership.exception.dart';
 import 'package:little_light/exceptions/not_authorized.exception.dart';

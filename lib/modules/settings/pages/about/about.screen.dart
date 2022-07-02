@@ -5,7 +5,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:launch_review/launch_review.dart';
-import 'package:little_light/core/providers/language/language.bloc.dart';
+import 'package:little_light/core/blocs/language/language.bloc.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/collaborators.dart';
 import 'package:little_light/models/language_info.dart';

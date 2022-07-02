@@ -8,16 +8,7 @@ import 'package:little_light/widgets/dialogs/littlelight.base.dialog.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/widgets/item_list/items/quick_select_item_wrapper.widget.dart';
 
-enum LoadoutSlotOptionsResponse { Details, Remove, EditMods }
-
-class LoadoutSlotOptionsDialogRoute extends DialogRoute<LoadoutSlotOptionsResponse?> {
-  LoadoutSlotOptionsDialogRoute(BuildContext context, {required DestinyItemComponent item})
-      : super(
-          context: context,
-          builder: (context) => LoadoutSlotOptionsDialog(),
-          settings: RouteSettings(arguments: item),
-        );
-}
+import 'loadout_slot_options.dialog_route.dart';
 
 extension on BuildContext {
   DestinyItemComponent? get itemArgument {

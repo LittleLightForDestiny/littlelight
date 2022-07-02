@@ -51,6 +51,21 @@ class RaidPhases {
   static const int sotpInsurrectionPrimeChallenge = 4140089399;
 }
 
+extension DestinyClassData on DestinyClass {
+  IconData get icon {
+    switch (this) {
+      case DestinyClass.Hunter:
+        return LittleLightIcons.class_hunter;
+      case DestinyClass.Titan:
+        return LittleLightIcons.class_titan;
+      case DestinyClass.Warlock:
+        return LittleLightIcons.class_warlock;
+      default:
+        return LittleLightIcons.destiny;
+    }
+  }
+}
+
 class DestinyData {
   static const Map<DamageType, int> damageTypeHashes = {
     DamageType.Kinetic: 3373582085,
@@ -190,17 +205,9 @@ class DestinyData {
     2048875504, // weapon mods
   ];
 
+  @deprecated
   static IconData getClassIcon(DestinyClass type) {
-    switch (type) {
-      case DestinyClass.Hunter:
-        return LittleLightIcons.class_hunter;
-      case DestinyClass.Titan:
-        return LittleLightIcons.class_titan;
-      case DestinyClass.Warlock:
-        return LittleLightIcons.class_warlock;
-      default:
-        return LittleLightIcons.destiny;
-    }
+    return type.icon;
   }
 
   static IconData getAmmoTypeIcon(DestinyAmmunitionType type) {

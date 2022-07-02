@@ -41,6 +41,9 @@ class LoadoutItemIndex with ProfileConsumer, ManifestConsumer {
 
   int get unequippedItemCount => slots.values.fold<int>(0, (t, e) => t + e.unequipped.length);
 
+  static List<int> get genericBucketHashes => _genericBucketHashes;
+  static List<int> get classSpecificBucketHashes => _classBucketHashes;
+
   static bool isClassSpecificSlot(int hash) {
     return _classBucketHashes.contains(hash);
   }
@@ -67,12 +70,10 @@ class LoadoutItemIndex with ProfileConsumer, ManifestConsumer {
       loadoutItems = profile.getItemsByInstanceId(itemIds);
     }
 
-    final defs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(itemHashes);
+    await manifest.getDefinitions<DestinyInventoryItemDefinition>(itemHashes);
     for (final item in loadoutItems) {
-      final def = defs[item.itemHash];
       final isEquipped = loadout.equipped.any((e) => e.itemInstanceId == item.itemInstanceId);
-      if (def == null) continue;
-      _addItemToLoadoutIndex(item, def, isEquipped);
+      await _addItemToLoadoutIndex(item, isEquipped);
     }
   }
 
@@ -115,7 +116,9 @@ class LoadoutItemIndex with ProfileConsumer, ManifestConsumer {
     return substituteID;
   }
 
-  void _addItemToLoadoutIndex(DestinyItemComponent item, DestinyInventoryItemDefinition def, bool equipped) {
+  Future<void> _addItemToLoadoutIndex(DestinyItemComponent item, bool equipped) async {
+    final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
+    if (def == null) return;
     final isClassSpecificItem = [DestinyClass.Titan, DestinyClass.Hunter, DestinyClass.Warlock].contains(def.classType);
     final bucketTypeHash = def.inventory?.bucketTypeHash;
     if (bucketTypeHash == null) return;
@@ -134,7 +137,9 @@ class LoadoutItemIndex with ProfileConsumer, ManifestConsumer {
     slot.genericEquipped = item;
   }
 
-  void _removeItemFromLoadoutIndex(DestinyItemComponent item, DestinyInventoryItemDefinition def, bool equipped) {
+  Future<void> _removeItemFromLoadoutIndex(DestinyItemComponent item, bool equipped) async {
+    final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
+    if (def == null) return;
     final bucketTypeHash = def.inventory?.bucketTypeHash;
     if (bucketTypeHash == null) return;
     final slot = slots[bucketTypeHash];
@@ -149,23 +154,23 @@ class LoadoutItemIndex with ProfileConsumer, ManifestConsumer {
     }
   }
 
-  void addEquippedItem(DestinyItemComponent item, DestinyInventoryItemDefinition def) {
-    _addItemToLoadoutIndex(item, def, true);
+  Future<void> addEquippedItem(DestinyItemComponent item, DestinyInventoryItemDefinition def) async {
+    await _addItemToLoadoutIndex(item, true);
     loadout.equipped.add(LoadoutItem(itemInstanceId: item.itemInstanceId, itemHash: item.itemHash));
   }
 
-  void addUnequippedItem(DestinyItemComponent item, DestinyInventoryItemDefinition def) {
-    _addItemToLoadoutIndex(item, def, false);
+  Future<void> addUnequippedItem(DestinyItemComponent item, DestinyInventoryItemDefinition def) async {
+    await _addItemToLoadoutIndex(item, false);
     loadout.unequipped.add(LoadoutItem(itemInstanceId: item.itemInstanceId, itemHash: item.itemHash));
   }
 
-  removeEquippedItem(DestinyItemComponent item, DestinyInventoryItemDefinition def) {
-    _removeItemFromLoadoutIndex(item, def, true);
+  Future<void> removeEquippedItem(DestinyItemComponent item, DestinyInventoryItemDefinition def) async {
+    await _removeItemFromLoadoutIndex(item, true);
     loadout.equipped.removeWhere((e) => e.itemInstanceId == item.itemInstanceId);
   }
 
-  removeUnequippedItem(DestinyItemComponent item, DestinyInventoryItemDefinition def) {
-    _removeItemFromLoadoutIndex(item, def, false);
+  Future<void> removeUnequippedItem(DestinyItemComponent item, DestinyInventoryItemDefinition def) async {
+    await _removeItemFromLoadoutIndex(item, false);
     loadout.unequipped.removeWhere((e) => e.itemInstanceId == item.itemInstanceId);
   }
 

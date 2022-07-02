@@ -13,7 +13,7 @@ import 'package:get_it/get_it.dart';
 import 'package:little_light/exceptions/invalid_membership.exception.dart';
 import 'package:little_light/services/app_config/app_config.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
-import 'package:little_light/core/providers/language/language.consumer.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/services/storage/export.dart';
 import 'package:url_launcher/url_launcher.dart';

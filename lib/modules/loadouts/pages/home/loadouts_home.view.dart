@@ -106,7 +106,7 @@ class LoadoutsHomeViewState extends State<LoadoutsHomeView> with LoadoutsConsume
   }
 
   void createNew() async {
-    var newLoadout = await Navigator.push(context, CreateLoadoutPageRoute());
+    var newLoadout = await Navigator.push(context, EditLoadoutPageRoute.create());
     if (newLoadout != null) {
       _provider.loadLoadouts();
     }
@@ -233,7 +233,7 @@ class LoadoutsHomeViewState extends State<LoadoutsHomeView> with LoadoutsConsume
       case LoadoutListItemAction.Edit:
         final id = loadout.loadout.assignedId;
         if (id == null) return;
-        Navigator.of(context).push(EditLoadoutPageRoute(loadoutID: id));
+        Navigator.of(context).push(EditLoadoutPageRoute.edit(id));
         break;
       case LoadoutListItemAction.Delete:
         break;

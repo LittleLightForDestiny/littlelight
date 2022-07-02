@@ -1,5 +1,7 @@
 // @dart=2.9
 
+import 'dart:math';
+
 import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:bungie_api/models/destiny_stat_display_definition.dart';
 import 'package:flutter/material.dart';
@@ -81,11 +83,15 @@ class ScreenshotItemStatWidget extends BaseItemStatWidget {
       color: Colors.grey.shade800.withOpacity(.5),
       child: Row(
         children: <Widget>[
-          Container(width: (baseBarSize / maxBarSize) * (pixelSize * 240), color: getNameColor(context)),
-          Container(width: (masterworkBarSize / maxBarSize) * (pixelSize * 240), color: getMasterworkColor(context)),
-          Container(width: (modBarSize / maxBarSize) * (pixelSize * 240), color: getModBarColor(context)),
+          Container(width: convertToBarSize(baseBarSize), color: getNameColor(context)),
+          Container(width: convertToBarSize(masterworkBarSize), color: getMasterworkColor(context)),
+          Container(width: convertToBarSize(modBarSize), color: getModBarColor(context)),
         ],
       ),
     );
+  }
+
+  double convertToBarSize(int barSize) {
+    return min(max(0, (barSize / maxBarSize) * pixelSize * 240), pixelSize * 240);
   }
 }

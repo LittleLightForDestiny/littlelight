@@ -128,6 +128,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
       max(convertSize(96.0, context), MediaQuery.of(context).viewPadding.right);
 
   Widget rightColumn(BuildContext context, double expandRatio) {
+    final height = min(MediaQuery.of(context).size.height, MediaQuery.of(context).size.width * (9 / 16));
     return Positioned(
         top: topPadding(context, expandRatio),
         bottom: bottomPadding(context, expandRatio),
@@ -135,9 +136,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
         child: SingleChildScrollView(
             physics: NeverScrollableScrollPhysics(),
             child: Container(
-                height: MediaQuery.of(context).size.height -
-                    topPadding(context, expandRatio) -
-                    bottomPadding(context, expandRatio),
+                height: height - topPadding(context, expandRatio) - bottomPadding(context, expandRatio),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [

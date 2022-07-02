@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
-import 'package:little_light/core/providers/language/language.bloc.dart';
+import 'package:little_light/core/blocs/language/language.bloc.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/language_info.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';

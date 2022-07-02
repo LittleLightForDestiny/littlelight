@@ -2,8 +2,7 @@
 
 import 'dart:math';
 
-import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
-import 'package:bungie_api/models/destiny_item_component.dart';
+import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
@@ -11,6 +10,7 @@ import 'package:little_light/modules/loadouts/widgets/loadout_destinations.widge
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
+import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
@@ -104,9 +104,11 @@ class EquipLoadoutScreenState extends State<EquipLoadoutScreen> with ProfileCons
         ),
       );
     List<Widget> icons = [];
-    //TODO: rework
-    // icons.addAll(buildItemRow(context, DestinyData.getClassIcon(DestinyClass.Unknown),
-    //     LoadoutItemIndex.genericBucketHashes, _itemIndex.generic));
+    icons.add(CenterIconWorkaround(DestinyClass.Unknown.icon));
+    for (final hash in LoadoutItemIndex.genericBucketHashes) {}
+
+    // icons.addAll(
+    //     buildItemRow(context, DestinyClass.Unknown.icon, LoadoutItemIndex.genericBucketHashes, _itemIndex.generic));
 
     // DestinyClass.values.forEach((classType) {
     //   Map<int, DestinyItemComponent> items =

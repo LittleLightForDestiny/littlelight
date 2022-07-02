@@ -6,6 +6,7 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/pages/item_search/search.screen.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/utils/item_filters/avoid_instance_ids_filter.dart';
 import 'package:little_light/utils/item_filters/class_type_filter.dart';
 import 'package:little_light/utils/item_filters/item_bucket_filter.dart';
@@ -17,15 +18,17 @@ import 'package:little_light/widgets/search/search.controller.dart';
 import 'package:little_light/widgets/search/search_filters/text_search_filter.widget.dart';
 
 class SelectLoadoutItemView extends SearchScreen {
-  final DestinyInventoryItemDefinition emblemDefinition;
-  final DestinyInventoryBucketDefinition bucketDefinition;
   final Iterable<String> idsToAvoid;
   final DestinyClass classType;
 
-  SelectLoadoutItemView({this.bucketDefinition, this.emblemDefinition, this.classType, this.idsToAvoid})
+  final int bucketHash;
+
+  final int emblemHash;
+
+  SelectLoadoutItemView({this.bucketHash, this.emblemHash, this.classType, this.idsToAvoid})
       : super(
             controller: SearchController.withDefaultFilters(firstRunFilters: [
-          ItemBucketFilter(selected: [bucketDefinition.hash].toSet(), enabled: true),
+          ItemBucketFilter(selected: {bucketHash}, enabled: true),
           ClassTypeFilter(selected: [classType].toSet(), enabled: true),
           AvoidInstanceIdsFilter(selected: idsToAvoid.toSet(), enabled: true)
         ], filters: [
@@ -36,7 +39,23 @@ class SelectLoadoutItemView extends SearchScreen {
   SelectLoadoutItemScreenState createState() => SelectLoadoutItemScreenState();
 }
 
-class SelectLoadoutItemScreenState extends SearchScreenState<SelectLoadoutItemView> {
+class SelectLoadoutItemScreenState extends SearchScreenState<SelectLoadoutItemView> with ManifestConsumer {
+  DestinyInventoryItemDefinition emblemDefinition;
+  DestinyInventoryBucketDefinition bucketDefinition;
+
+  initState() {
+    super.initState();
+    loadDefs();
+  }
+
+  loadDefs() async {
+    bucketDefinition = await manifest.getDefinition<DestinyInventoryBucketDefinition>(widget.bucketHash);
+    if (widget.emblemHash != null) {
+      emblemDefinition = await manifest.getDefinition<DestinyInventoryItemDefinition>(widget.emblemHash);
+    }
+    setState(() {});
+  }
+
   TextFilter get textFilter {
     return [controller.preFilters, controller.filters, controller.postFilters]
         .expand((element) => element)
@@ -78,16 +97,16 @@ class SelectLoadoutItemScreenState extends SearchScreenState<SelectLoadoutItemVi
     return TranslatedTextWidget(
       "Select {bucketName}",
       overflow: TextOverflow.fade,
-      replace: {'bucketName': widget.bucketDefinition.displayProperties.name},
+      replace: {'bucketName': bucketDefinition?.displayProperties?.name ?? ""},
     );
   }
 
   buildAppBarBackground(BuildContext context) {
-    if (widget.emblemDefinition == null) return Container();
+    if (emblemDefinition == null) return Container();
     return Container(
         constraints: BoxConstraints.expand(),
         child: QueuedNetworkImage(
-            imageUrl: BungieApiService.url(widget.emblemDefinition.secondarySpecial),
+            imageUrl: BungieApiService.url(emblemDefinition.secondarySpecial),
             fit: BoxFit.cover,
             alignment: Alignment(-.8, 0)));
   }

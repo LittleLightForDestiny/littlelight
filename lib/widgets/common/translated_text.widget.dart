@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:little_light/core/providers/language/language.bloc.dart';
+import 'package:little_light/core/blocs/language/language.bloc.dart';
 import 'package:provider/provider.dart';
 
 typedef ExtractTextFromData = String Function(dynamic data);
