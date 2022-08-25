@@ -1,5 +1,4 @@
 import 'package:bungie_api/destiny2.dart';
-import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/modules/loadouts/pages/edit_item_mods/edit_loadout_item_mods.page_route.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
@@ -10,11 +9,17 @@ import 'package:provider/provider.dart';
 class EditLoadoutItemModsBloc extends BaseSocketController with ManifestConsumer, ProfileConsumer {
   final BuildContext context;
 
+  DestinyItemComponent? item;
   DestinyInventoryItemDefinition? itemDefinition;
+  List<DestinyItemSocketState>? itemSockets;
+  Map<String, List<DestinyItemPlugBase>>? itemReusablePlugs;
+
+  List<DestinyItemSocketCategoryDefinition> _availableCategories = [];
+
   Map<int, DestinyInventoryItemDefinition>? plugDefinitions;
-  Set<int> freeApplyingPlugHashes;
-  Set<int> freeApplyingSocketIndexes;
-  Set<int> freeApplyingSocketCategoryHashes;
+  // Set<int> freeApplyingPlugHashes;
+  // Set<int> freeApplyingSocketIndexes;
+  // Set<int> freeApplyingSocketCategoryHashes;
 
   EditLoadoutItemModsBloc(this.context) {
     _asyncInit();
@@ -22,11 +27,16 @@ class EditLoadoutItemModsBloc extends BaseSocketController with ManifestConsumer
 
   _asyncInit() async {
     final itemInstanceID = context.read<EditLoadoutItemModsPageArguments>().itemInstanceID;
-    final item = profile.getItemsByInstanceId([itemInstanceID]).first;
-    final itemHash = item.itemHash;
+
+    this.item = profile.getItemsByInstanceId([itemInstanceID]).first;
+    this.itemSockets = profile.getItemSockets(itemInstanceID);
+    this.itemReusablePlugs = profile.getItemReusablePlugs(itemInstanceID);
+
+    final itemHash = item?.itemHash;
     itemDefinition = await manifest.getDefinition<DestinyInventoryItemDefinition>(itemHash);
     await loadPlugDefinitions();
-    
+    await loadCategoryDefinitions();
+
     notifyListeners();
   }
 
@@ -66,8 +76,26 @@ class EditLoadoutItemModsBloc extends BaseSocketController with ManifestConsumer
     plugDefinitions = defs;
   }
 
-  List<DestinyItemSocketCategoryDefinition>? get categories => itemDefinition?.sockets?.socketCategories;
-  // List<DestinyItemSocketCategoryDefinition>? get sockets => itemDefinition?.sockets?.socketCategories;
+  Future<void> loadCategoryDefinitions() async {
+    final categories = itemDefinition?.sockets?.socketCategories;
+    final itemSockets = this.itemSockets;
+    if (categories == null || itemSockets == null) return;
+    for (final cat in categories) {
+      //TODO: fix this to check every available plug on every socket
+      final socketPlugHashes = cat.socketIndexes?.map((e) => itemSockets[e].plugHash).whereType<int>();
+      final materialRequirements =
+          socketPlugHashes?.map((e) => plugDefinitions?[e]?.plug?.insertionMaterialRequirementHash);
+      final hasFreePlugs = materialRequirements?.any((e) => e == 0) ?? true;
+      if (hasFreePlugs) _availableCategories.add(cat);
+    }
+  }
+
+  List<DestinyItemSocketCategoryDefinition>? get categories => _availableCategories;
+
+  List<int>? availablePlugHashesForSocket(int index) =>
+      this.itemReusablePlugs?["$index"]?.map((e) => e.plugItemHash).whereType<int>().toList() ??
+      [this.itemSockets![index].plugHash!];
+
   bool canApplyForFree() {
     return false;
   }
