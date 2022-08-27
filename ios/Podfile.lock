@@ -11,14 +11,14 @@ PODS:
   - Firebase/Crashlytics (8.11.0):
     - Firebase/CoreOnly
     - FirebaseCrashlytics (~> 8.11.0)
-  - firebase_analytics (8.3.4):
+  - firebase_analytics (9.1.0):
     - Firebase/Analytics (= 8.11.0)
     - firebase_core
     - Flutter
   - firebase_core (1.12.0):
     - Firebase/CoreOnly (= 8.11.0)
     - Flutter
-  - firebase_crashlytics (2.5.1):
+  - firebase_crashlytics (2.0.0):
     - Firebase/Crashlytics (= 8.11.0)
     - firebase_core
     - Flutter
@@ -193,9 +193,9 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   device_info_plus: e5c5da33f982a436e103237c0c85f9031142abed
   Firebase: 44dd9724c84df18b486639e874f31436eaa9a20c
-  firebase_analytics: 7f755057493ac8fc386f987c9233a037fb0a8a81
+  firebase_analytics: b267e923ba3cdc892bdcadc01efab50f3b8b7441
   firebase_core: 443bccfd6aa6b42f07be365b500773dc69db2d87
-  firebase_crashlytics: 0df152ee2d96f5a4aeddf2288fb277bbd0833b18
+  firebase_crashlytics: 88ea043aa1fd401169ec91e9753e186da26e07e9
   FirebaseAnalytics: 4e4b13031034e6561ed3bd1d47b6fdabbd6487c6
   FirebaseCore: 2f4f85b453cc8fea4bb2b37e370007d2bcafe3f0
   FirebaseCoreDiagnostics: 3b40dfadef5b90433a60ae01f01e90fe87aa76aa
