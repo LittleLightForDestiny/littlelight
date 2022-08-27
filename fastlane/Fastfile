@@ -85,8 +85,8 @@ platform :ios do
       xcodeproj: "ios/Runner.xcodeproj",
       profile: ENV["sigh_#{ENV["APPLE_APP_IDENTIFIER"]}_appstore_profile-path"],
       build_configuration: "Release",
-      code_signing_identity: "iPhone Distribution"
-      force:true 
+      code_signing_identity: "iPhone Distribution",
+      force: true 
     )
     build_app(
       workspace: "ios/Runner.xcworkspace",
