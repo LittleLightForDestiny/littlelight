@@ -62,12 +62,15 @@ class QuestInfoWidgetState extends BaseDestinyItemState<QuestInfoWidget> with Pr
     }
     items.add(buildQuestline(context));
     if ((questSteps?.length ?? 0) > 0) {
-      items.add(Container(
+      items.add(
+        Container(
           padding: EdgeInsets.all(8),
           child: HeaderWidget(
-              alignment: Alignment.centerLeft,
-              child: TranslatedTextWidget("Quest steps",
-                  uppercase: true, style: TextStyle(fontWeight: FontWeight.bold)))));
+            alignment: Alignment.centerLeft,
+            child: TranslatedTextWidget("Quest steps", uppercase: true, style: TextStyle(fontWeight: FontWeight.bold)),
+          ),
+        ),
+      );
     }
     items.addAll(buildQuestSteps(context));
     if (currentIndex < questlineDefinition.setData.itemList.length && !showSpoilers) {

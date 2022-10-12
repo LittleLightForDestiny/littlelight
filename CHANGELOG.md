@@ -1,3 +1,7 @@
+## [1.9.7] - 2022-08-26
+
+- Epic Games accounts quickfix
+
 ## [1.9.6] - 2022-03-31
 
 - fixes quick select rendering on crafted and adept items

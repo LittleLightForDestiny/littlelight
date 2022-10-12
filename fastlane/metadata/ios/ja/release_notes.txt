@@ -1,4 +1,1 @@
-- fixes quick select rendering on crafted and adept items
-- fixes translations loading
-- fixes infinite loading on deepsight weapons in collections
-- fixes equip max light when max light items are on postmaster
+- Epic Games accounts quickfix

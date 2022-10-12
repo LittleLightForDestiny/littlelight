@@ -37,7 +37,7 @@ class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget> w
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text(definition?.itemTypeDisplayName ?? ""),
+              Text(getEnhancedDefinitionName(definition)),
               Padding(padding: EdgeInsets.only(top: 8), child: primaryStat(context))
             ],
           ),
@@ -58,6 +58,20 @@ class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget> w
           buildWishListInfo(context),
           // buildLockInfo(context),
         ]));
+  }
+
+  String getEnhancedDefinitionName(DestinyInventoryItemDefinition definition) {
+    String itemTypeDisplayName = definition?.itemTypeDisplayName ?? "";
+
+    final questCategoryHash = 16;
+    if (definition?.itemCategoryHashes?.contains(questCategoryHash) ?? false) {
+      List<int> stepHashes = definition.setData.itemList.map((i) => i.itemHash)?.toList() ?? [];
+      int currentIndex = stepHashes.indexOf(item.itemHash);
+      int allSteps = stepHashes.length;
+      return itemTypeDisplayName + " (${currentIndex + 1}/$allSteps)";
+    }
+
+    return itemTypeDisplayName;
   }
 
   Widget buildEmblemInfo(BuildContext context) {
