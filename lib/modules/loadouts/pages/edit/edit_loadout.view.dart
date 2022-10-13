@@ -96,7 +96,7 @@ class EditLoadoutViewState extends State<EditLoadoutView> with LoadoutsConsumer,
           SliverSection(
             itemBuilder: (context, index) => buildSlot(context, index),
             itemCount: _state.bucketHashes.length,
-          )
+          ),
       ],
       padding: EdgeInsets.all(8).copyWith(top: 0, left: max(screenPadding.left, 8), right: max(screenPadding.right, 8)),
     );

@@ -186,7 +186,7 @@ class LoadoutListItemWidget extends StatelessWidget {
       children: <Widget>[
         buildClassIcon(DestinyClass.Unknown),
       ]
-          .followedBy(genericHashes.map((e) => buildItem(loadout.slots[e]?.genericEquipped)))
+          .followedBy(genericHashes.map((e) => buildItem(loadout.slots[e]?.genericEquipped.item)))
           .map((e) => Flexible(
                   child: Container(
                 padding: EdgeInsets.all(4),
@@ -213,7 +213,7 @@ class LoadoutListItemWidget extends StatelessWidget {
       children: <Widget>[
         buildClassIcon(destinyClass),
       ]
-          .followedBy(genericHashes.map((e) => buildItem(loadout.slots[e]?.classSpecificEquipped[destinyClass])))
+          .followedBy(genericHashes.map((e) => buildItem(loadout.slots[e]?.classSpecificEquipped[destinyClass]?.item)))
           .map((e) => Flexible(
                   child: Container(
                 padding: EdgeInsets.all(4),

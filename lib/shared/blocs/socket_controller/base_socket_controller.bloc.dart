@@ -1,307 +1,256 @@
+import 'package:collection/collection.dart';
+import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/services/littlelight/item_notes.consumer.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/services/profile/profile.consumer.dart';
+import 'package:little_light/utils/destiny_data.dart';
 
-abstract class BaseSocketController extends ChangeNotifier {
-  // DestinyInventoryItemDefinition? get definition;
-  // List<DestinyItemSocketState>? get socketStates;
-  // Map<String, List<DestinyItemPlugBase>>? get reusablePlugs;
-  // List<int?>? get _selectedSockets;
-  // List<int?>? get _randomizedSelectedSockets;
-  // Map<int, DestinyInventoryItemDefinition>? get _plugDefinitions;
-  // Map<int, DestinyPlugSetDefinition>? get _plugSetDefinitions;
+abstract class BaseSocketController extends ChangeNotifier with ManifestConsumer, ItemNotesConsumer, ProfileConsumer {
+  DestinyInventoryItemDefinition? get definition;
+  List<DestinyItemSocketState>? get socketStates;
+  Map<String, List<DestinyItemPlugBase>>? get reusablePlugs;
 
-  // Map<int, DestinyInventoryItemDefinition>? get plugDefinitions => _plugDefinitions;
+  Map<int, DestinyPlugSetDefinition>? _plugSetDefinitions;
+  Map<int, DestinyInventoryItemDefinition>? _plugDefinitions;
+  Map<int, DestinyMaterialRequirementSetDefinition>? _materialRequirementSetDefinitions;
 
-  // int? _selectedSocket;
-  // int? _selectedSocketIndex;
-  // int? get selectedSocketIndex => _selectedSocketIndex;
-  // int? get selectedPlugHash => _selectedSocket;
-  // int? _armorTierIndex;
+  int? _armorTierIndex;
 
-  // DestinyEnergyCapacityEntry? get armorEnergyCapacity {
-  //   if (_armorTierIndex == null) return null;
-  //   if (_plugDefinitions == null) return null;
-  //   var plugHash = socketEquippedPlugHash(_armorTierIndex!);
-  //   var def = _plugDefinitions![plugHash];
-  //   return def?.plug?.energyCapacity;
-  // }
+  Future<void> loadDefinitions() async {
+    final itemDefinition = this.definition;
+    if (itemDefinition == null) return;
+    final plugHashes = <int>{};
+    if (reusablePlugs != null) {
+      plugHashes.addAll(socketStates
+              ?.expand((socket) {
+                Set<int?> hashes = Set();
+                hashes.add(socket.plugHash);
+                return hashes.whereType<int>();
+              })
+              .where((i) => i != 0)
+              .toSet() ??
+          <int>{});
+      reusablePlugs?.forEach((hash, reusable) {
+        plugHashes.addAll(reusable.map((r) => r.plugItemHash).whereType<int>());
+      });
+    }
+    final plugSetHashes = itemDefinition.sockets?.socketEntries
+        ?.expand((s) => [s.reusablePlugSetHash, s.randomizedPlugSetHash])
+        .whereType<int>()
+        .where((h) => h != 0)
+        .toSet();
+    if (plugSetHashes == null) return;
+    _plugSetDefinitions = await manifest.getDefinitions<DestinyPlugSetDefinition>(plugSetHashes);
 
-  // DestinyEnergyType? get armorEnergyType {
-  //   return armorEnergyCapacity?.energyType;
-  // }
+    List<int?> socketTypeHashes = [];
+    final definitionPlugHashes = itemDefinition.sockets?.socketEntries
+        ?.expand((socket) {
+          socketTypeHashes.add(socket.socketTypeHash);
+          List<int?> hashes = [];
+          hashes.add(socket.singleInitialItemHash);
+          hashes.addAll(socket.reusablePlugItems?.map((p) => p.plugItemHash) ?? []);
+          DestinyPlugSetDefinition? reusablePlugSet = _plugSetDefinitions?[socket.reusablePlugSetHash];
+          DestinyPlugSetDefinition? randomizedPlugSet = _plugSetDefinitions?[socket.randomizedPlugSetHash];
+          hashes.addAll(reusablePlugSet?.reusablePlugItems?.map((i) => i.plugItemHash) ?? []);
+          hashes.addAll(randomizedPlugSet?.reusablePlugItems?.map((i) => i.plugItemHash) ?? []);
+          return hashes;
+        })
+        .whereType<int>()
+        .where((i) => i != 0)
+        .toSet();
 
-  // int get usedEnergy {
-  //   var energy = 0;
-  //   for (var i = 0; i < socketCount; i++) {
-  //     var plugHash = socketSelectedPlugHash(i);
-  //     var def = plugDefinitions?[plugHash];
-  //     energy += def?.plug?.energyCost?.energyCost ?? 0;
-  //   }
-  //   return energy;
-  // }
+    plugHashes.addAll(definitionPlugHashes ?? <int>{});
+    _plugDefinitions = await manifest.getDefinitions<DestinyInventoryItemDefinition>(plugHashes);
+    DestinyItemSocketCategoryDefinition? armorTierCategory = itemDefinition.sockets?.socketCategories
+        ?.firstWhereOrNull((s) => DestinyData.socketCategoryTierHashes.contains(s.socketCategoryHash));
+    _armorTierIndex = armorTierCategory?.socketIndexes?.first;
 
-  // int get usedEnergyWithoutFailedSocket {
-  //   var energy = 0;
-  //   for (var i = 0; i < socketCount; i++) {
-  //     var plugHash = socketSelectedPlugHash(i);
-  //     var def = plugDefinitions?[plugHash];
-  //     if (selectedSocketIndex != i || selectedPlugHash == plugHash) {
-  //       energy += def?.plug?.energyCost?.energyCost ?? 0;
-  //     }
-  //   }
-  //   return energy;
-  // }
+    final materialRequirementHashes =
+        _plugDefinitions?.values.map((p) => p.plug?.insertionMaterialRequirementHash).whereType<int>().toSet();
 
-  // int get requiredEnergy {
-  //   if (_selectedSocketIndex == null) return 0;
-  //   final socketSelectedHash = socketSelectedPlugHash(_selectedSocketIndex!);
-  //   final used = usedEnergy;
-  //   if (socketSelectedHash == selectedPlugHash) return used;
-  //   final def = plugDefinitions?[selectedPlugHash];
-  //   final currentDef = plugDefinitions?[socketSelectedHash];
-  //   var selectedEnergy = def?.plug?.energyCost?.energyCost ?? 0;
-  //   var currentEnergy = currentDef?.plug?.energyCost?.energyCost ?? 0;
-  //   var energy = used - currentEnergy + selectedEnergy;
-  //   return energy;
-  // }
+    if (materialRequirementHashes != null) {
+      _materialRequirementSetDefinitions =
+          await manifest.getDefinitions<DestinyMaterialRequirementSetDefinition>(materialRequirementHashes);
+    }
 
-  // int get socketCount => definition?.sockets?.socketEntries?.length ?? 0;
+    notifyListeners();
+  }
 
-  // List<int?>? get selectedSockets => _selectedSockets;
-  // List<int?>? get randomizedSelectedSockets => _randomizedSelectedSockets;
+  DestinyEnergyCapacityEntry? get armorEnergyCapacity {
+    if (_armorTierIndex == null) return null;
+    if (_plugDefinitions == null) return null;
+    var plugHash = socketEquippedPlugHash(_armorTierIndex!);
+    var def = _plugDefinitions![plugHash];
+    return def?.plug?.energyCapacity;
+  }
 
-  // void selectSocket(int socketIndex, int plugHash) {
-  //   if (plugHash == this._selectedSocket && socketIndex == _selectedSocketIndex) {
-  //     this._selectedSocket = null;
-  //     this._selectedSocketIndex = null;
-  //   } else {
-  //     this._selectedSocketIndex = socketIndex;
-  //     this._selectedSocket = plugHash;
-  //     var can = canEquip(socketIndex, plugHash);
-  //     if (can) {
-  //       this._selectedSockets?[socketIndex] = plugHash;
-  //       final plugHashes = socketPlugHashes(socketIndex);
-  //       final containsPlug = plugHashes?.contains(plugHash) ?? false;
-  //       if (!containsPlug) {
-  //         this._randomizedSelectedSockets?[socketIndex] = plugHash;
-  //       }
-  //     }
-  //   }
-  //   this.notifyListeners();
-  // }
+  DestinyEnergyType? get armorEnergyType {
+    return armorEnergyCapacity?.energyType;
+  }
 
-  // bool canApplySocket(int socketIndex, int plugHash) {
-  //   return _plugDefinitions?[plugHash]?.allowActions ?? false;
-  // }
+  List<int>? socketPlugHashes(int socketIndex) {
+    final plugHashes = _socketPlugHashes(socketIndex);
+    bool favoritable = isSocketFavoritable(socketIndex);
+    if (!favoritable) return plugHashes;
+    final plugs = plugHashes?.toList();
+    plugs?.sort((a, b) {
+      final favoriteA = itemNotes.getNotesForItem(a, null)?.tags?.contains("favorite") ?? false;
+      final favoriteB = itemNotes.getNotesForItem(b, null)?.tags?.contains("favorite") ?? false;
+      final valueA = favoriteA ? 1 : 0;
+      final valueB = favoriteB ? 1 : 0;
+      final favoriteOrder = valueB.compareTo(valueA);
+      if (favoriteOrder != 0) return favoriteOrder;
+      final orderA = plugHashes?.indexOf(a) ?? -1;
+      final orderB = plugHashes?.indexOf(b) ?? -1;
+      return orderB.compareTo(orderA);
+    });
+    return plugs;
+  }
 
-  // List<int>? _plugHashesFromSocketState(int socketIndex) {
-  //   final entry = definition?.sockets?.socketEntries?.elementAt(socketIndex);
-  //   final state = socketStates?.elementAt(socketIndex);
-  //   if (state?.isVisible == false) return null;
-  //   if (state?.plugHash == null) return null;
-  //   final hashes = <int>[];
-  //   final plugSources = entry?.plugSources;
+  List<int>? _socketPlugHashes(int socketIndex) {
+    final entry = definition?.sockets?.socketEntries?.elementAt(socketIndex);
 
-  //   final isPlugSet = (plugSources?.contains(SocketPlugSources.CharacterPlugSet) ?? false) ||
-  //       (plugSources?.contains(SocketPlugSources.ProfilePlugSet) ?? false);
-  //   final plugSetHash = entry?.reusablePlugSetHash;
-  //   if (isPlugSet && plugSetHash != null) {
-  //     var plugSet = profile.getPlugSets(plugSetHash);
-  //     hashes.addAll(plugSet.where((p) => p.canInsert ?? false).map((p) => p.plugItemHash).where((p) {
-  //       if (_armorTierIndex == null) return true;
-  //       var def = _plugDefinitions?[p];
-  //       var energyType = def?.plug?.energyCost?.energyType ?? DestinyEnergyType.Any;
-  //       return (energyType == armorEnergyType || energyType == DestinyEnergyType.Any);
-  //     }).whereType<int>());
-  //   }
+    if (socketStates != null) {
+      return _plugHashesFromSocketState(socketIndex);
+    }
 
-  //   if (reusablePlugs?.containsKey("$socketIndex") ?? false) {
-  //     final reusableHashes = reusablePlugs?["$socketIndex"]
-  //         ?.map((r) => r.plugItemHash)
-  //         .where((element) => !hashes.contains(element))
-  //         .whereType<int>();
-  //     hashes.addAll(reusableHashes ?? []);
-  //   }
-  //   final plugHash = state?.plugHash;
-  //   if (plugHash != null && !hashes.contains(plugHash)) hashes.add(plugHash);
-  //   return hashes.whereType<int>().toList();
-  // }
+    if (!(entry?.defaultVisible ?? false)) {
+      return null;
+    }
 
-  // List<int>? _plugHashesFromPlugSetsDefinitions(int socketIndex) {
-  //   final entry = definition?.sockets?.socketEntries?.elementAt(socketIndex);
-  //   return _plugSetDefinitions?[entry?.reusablePlugSetHash]
-  //       ?.reusablePlugItems
-  //       ?.map((p) => p.plugItemHash)
-  //       .where((p) {
-  //         if (_armorTierIndex == null) return true;
-  //         var def = _plugDefinitions?[p];
-  //         var energyType = def?.plug?.energyCost?.energyType ?? DestinyEnergyType.Any;
-  //         return (energyType == armorEnergyType || energyType == DestinyEnergyType.Any);
-  //       })
-  //       .whereType<int>()
-  //       .toList();
-  // }
+    if (_plugSetDefinitions?.containsKey(entry?.reusablePlugSetHash) ?? false) {
+      return _plugHashesFromPlugSetsDefinitions(socketIndex);
+    }
 
-  // List<int>? _socketPlugHashes(int socketIndex) {
-  //   final entry = definition?.sockets?.socketEntries?.elementAt(socketIndex);
+    if ((entry?.reusablePlugItems?.length ?? 0) > 0) {
+      return entry?.reusablePlugItems?.map((p) => p.plugItemHash).whereType<int>().where((h) => h != 0).toList();
+    }
 
-  //   if (socketStates != null) {
-  //     return _plugHashesFromSocketState(socketIndex);
-  //   }
+    if ((entry?.singleInitialItemHash ?? 0) != 0) {
+      return [entry?.singleInitialItemHash].whereType<int>().toList();
+    }
 
-  //   if (!(entry?.defaultVisible ?? false)) {
-  //     return null;
-  //   }
+    return <int>[];
+  }
 
-  //   if (_plugSetDefinitions?.containsKey(entry?.reusablePlugSetHash) ?? false) {
-  //     return _plugHashesFromPlugSetsDefinitions(socketIndex);
-  //   }
+  bool isSocketFavoritable(int socketIndex) {
+    final categories = definition?.sockets?.socketCategories
+        ?.where((element) => element.socketIndexes?.contains(socketIndex) ?? false)
+        .map((s) => s.socketCategoryHash)
+        .toSet();
 
-  //   if ((entry?.reusablePlugItems?.length ?? 0) > 0) {
-  //     return entry?.reusablePlugItems?.map((p) => p.plugItemHash).whereType<int>().where((h) => h != 0).toList();
-  //   }
+    final cosmeticsCategories = [
+      1926152773, //armor cosmetics
+      2048875504, //weapon cosmetics
+      2549160099, //ghost cosmetics
+    ];
 
-  //   if ((entry?.singleInitialItemHash ?? 0) != 0) {
-  //     return [entry?.singleInitialItemHash].whereType<int>().toList();
-  //   }
+    return categories?.any(cosmeticsCategories.contains) ?? false;
+  }
 
-  //   return <int>[];
-  // }
+  List<int>? _plugHashesFromSocketState(int socketIndex) {
+    final entry = definition?.sockets?.socketEntries?.elementAt(socketIndex);
+    final state = socketStates?.elementAt(socketIndex);
+    if (state?.isVisible == false) return null;
+    if (state?.plugHash == null) return null;
+    final hashes = <int>[];
+    final plugSources = entry?.plugSources;
 
-  // bool isSocketFavoritable(int socketIndex) {
-  //   final categories = definition?.sockets?.socketCategories
-  //       ?.where((element) => element.socketIndexes?.contains(socketIndex) ?? false)
-  //       .map((s) => s.socketCategoryHash)
-  //       .toSet();
+    final isPlugSet = (plugSources?.contains(SocketPlugSources.CharacterPlugSet) ?? false) ||
+        (plugSources?.contains(SocketPlugSources.ProfilePlugSet) ?? false);
+    final plugSetHash = entry?.reusablePlugSetHash;
+    if (isPlugSet && plugSetHash != null) {
+      var plugSet = profile.getPlugSets(plugSetHash);
+      hashes.addAll(plugSet.where((p) => p.canInsert ?? false).map((p) => p.plugItemHash).where((p) {
+        if (_armorTierIndex == null) return true;
+        var def = _plugDefinitions?[p];
+        var energyType = def?.plug?.energyCost?.energyType ?? DestinyEnergyType.Any;
+        return (energyType == armorEnergyType || energyType == DestinyEnergyType.Any);
+      }).whereType<int>());
+    }
 
-  //   final cosmeticsCategories = [
-  //     1926152773, //armor cosmetics
-  //     2048875504, //weapon cosmetics
-  //     2549160099, //ghost cosmetics
-  //   ];
+    if (reusablePlugs?.containsKey("$socketIndex") ?? false) {
+      final reusableHashes = reusablePlugs?["$socketIndex"]
+          ?.map((r) => r.plugItemHash)
+          .where((element) => !hashes.contains(element))
+          .whereType<int>();
+      hashes.addAll(reusableHashes ?? []);
+    }
+    final plugHash = state?.plugHash;
+    if (plugHash != null && !hashes.contains(plugHash)) hashes.add(plugHash);
+    return hashes.whereType<int>().toList();
+  }
 
-  //   return categories?.any(cosmeticsCategories.contains) ?? false;
-  // }
+  List<int>? _plugHashesFromPlugSetsDefinitions(int socketIndex) {
+    final entry = definition?.sockets?.socketEntries?.elementAt(socketIndex);
+    return _plugSetDefinitions?[entry?.reusablePlugSetHash]
+        ?.reusablePlugItems
+        ?.map((p) => p.plugItemHash)
+        .where((p) {
+          if (_armorTierIndex == null) return true;
+          var def = _plugDefinitions?[p];
+          var energyType = def?.plug?.energyCost?.energyType ?? DestinyEnergyType.Any;
+          return (energyType == armorEnergyType || energyType == DestinyEnergyType.Any);
+        })
+        .whereType<int>()
+        .toList();
+  }
 
-  // List<int>? socketPlugHashes(int socketIndex) {
-  //   final plugHashes = _socketPlugHashes(socketIndex);
-  //   bool favoritable = isSocketFavoritable(socketIndex);
-  //   if (!favoritable) return plugHashes;
-  //   final plugs = plugHashes?.toList();
-  //   plugs?.sort((a, b) {
-  //     final favoriteA = itemNotes.getNotesForItem(a, null)?.tags?.contains("favorite") ?? false;
-  //     final favoriteB = itemNotes.getNotesForItem(b, null)?.tags?.contains("favorite") ?? false;
-  //     final valueA = favoriteA ? 1 : 0;
-  //     final valueB = favoriteB ? 1 : 0;
-  //     final favoriteOrder = valueB.compareTo(valueA);
-  //     if (favoriteOrder != 0) return favoriteOrder;
-  //     final orderA = plugHashes?.indexOf(a) ?? -1;
-  //     final orderB = plugHashes?.indexOf(b) ?? -1;
-  //     return orderB.compareTo(orderA);
-  //   });
-  //   return plugs;
-  // }
+  int? socketEquippedPlugHash(int socketIndex) {
+    if (socketStates != null) {
+      var state = socketStates?.elementAt(socketIndex);
+      return state?.plugHash;
+    }
+    final entry = definition?.sockets?.socketEntries?.elementAt(socketIndex);
+    if ((entry?.singleInitialItemHash ?? 0) != 0) {
+      return entry?.singleInitialItemHash;
+    }
+    final socketPlugs = socketPlugHashes(socketIndex);
+    if ((socketPlugs?.length ?? 0) > 0) {
+      return socketPlugs?.first;
+    }
+    final random = randomizedPlugHashes(socketIndex);
+    if ((random?.length ?? 0) > 0) {
+      return random?.first;
+    }
+    return null;
+  }
 
-  // List<int>? possiblePlugHashes(int socketIndex) {
-  //   final randomHashes = randomizedPlugHashes(socketIndex);
-  //   if (randomHashes == null || randomHashes.isEmpty) {
-  //     return [];
-  //   }
-  //   final hashes = socketPlugHashes(socketIndex);
-  //   hashes?.addAll(randomHashes.where((p) => !hashes.contains(p)).whereType<int>());
-  //   hashes?.sort((a, b) {
-  //     final canRollA = canRollPerk(socketIndex, a) ? 1 : 0;
-  //     final canRollB = canRollPerk(socketIndex, b) ? 1 : 0;
-  //     return canRollB.compareTo(canRollA);
-  //   });
-  //   return hashes;
-  // }
+  List<int>? randomizedPlugHashes(int socketIndex) {
+    var entry = definition?.sockets?.socketEntries?.elementAt(socketIndex);
+    if ((entry?.randomizedPlugSetHash ?? 0) == 0) return <int>[];
+    if (!(_plugSetDefinitions?.containsKey(entry?.randomizedPlugSetHash) ?? false)) return <int>[];
+    final hashes = _plugSetDefinitions?[entry?.randomizedPlugSetHash]
+        ?.reusablePlugItems
+        ?.map((p) => p.plugItemHash)
+        .whereType<int>()
+        .toList();
+    return hashes;
+  }
 
-  // bool canRollPerk(int socketIndex, int plugHash) {
-  //   final entry = definition?.sockets?.socketEntries?.elementAt(socketIndex);
-  //   if (_plugSetDefinitions?.containsKey(entry?.randomizedPlugSetHash) ?? false) {
-  //     final randomPlugs = _plugSetDefinitions?[entry?.randomizedPlugSetHash]?.reusablePlugItems;
-  //     final plug = randomPlugs?.lastWhereOrNull((p) => p.plugItemHash == plugHash);
-  //     if (plug != null) return plug.currentlyCanRoll ?? false;
-  //   }
-  //   return true;
-  // }
+  bool canApplyPlug(int socketIndex, int plugHash) {
+    final state = socketStates?[socketIndex];
+    final isVisible = state?.isVisible ?? definition?.sockets?.socketEntries?[socketIndex].defaultVisible ?? false;
+    if (!isVisible) {
+      return false;
+    }
+    return _plugDefinitions?[plugHash]?.allowActions ?? false;
+  }
 
-  // List<int>? randomizedPlugHashes(int socketIndex) {
-  //   var entry = definition?.sockets?.socketEntries?.elementAt(socketIndex);
-  //   if ((entry?.randomizedPlugSetHash ?? 0) == 0) return <int>[];
-  //   if (!(_plugSetDefinitions?.containsKey(entry?.randomizedPlugSetHash) ?? false)) return <int>[];
-  //   final hashes = _plugSetDefinitions?[entry?.randomizedPlugSetHash]
-  //       ?.reusablePlugItems
-  //       ?.map((p) => p.plugItemHash)
-  //       .whereType<int>()
-  //       .toList();
-  //   return hashes;
-  // }
-
-  // List<int>? otherPlugHashes(int socketIndex) {
-  //   var entry = definition?.sockets?.socketEntries?.elementAt(socketIndex);
-  //   if ((entry?.randomizedPlugSetHash ?? 0) == 0) return <int>[];
-  //   if (!(_plugSetDefinitions?.containsKey(entry?.randomizedPlugSetHash) ?? false)) return <int>[];
-  //   final hashes = _plugSetDefinitions?[entry?.randomizedPlugSetHash]
-  //       ?.reusablePlugItems
-  //       ?.map((p) => p.plugItemHash)
-  //       .whereType<int>()
-  //       .toList();
-  //   return hashes;
-  // }
-
-  // List<int>? bungieRollPlugHashes(int socketIndex) {
-  //   var entry = definition?.sockets?.socketEntries?.elementAt(socketIndex);
-
-  //   if ((entry?.reusablePlugItems?.length ?? 0) > 0) {
-  //     return entry?.reusablePlugItems?.map((p) => p.plugItemHash).whereType<int>().toList();
-  //   }
-  //   if ((entry?.singleInitialItemHash ?? 0) != 0) {
-  //     return [entry?.singleInitialItemHash].whereType<int>().toList();
-  //   }
-  //   return [];
-  // }
-
-  // int? socketEquippedPlugHash(int socketIndex) {
-  //   if (socketStates != null) {
-  //     var state = socketStates?.elementAt(socketIndex);
-  //     return state?.plugHash;
-  //   }
-  //   final entry = definition?.sockets?.socketEntries?.elementAt(socketIndex);
-  //   if ((entry?.singleInitialItemHash ?? 0) != 0) {
-  //     return entry?.singleInitialItemHash;
-  //   }
-  //   final socketPlugs = socketPlugHashes(socketIndex);
-  //   if ((socketPlugs?.length ?? 0) > 0) {
-  //     return socketPlugs?.first;
-  //   }
-  //   final random = randomizedPlugHashes(socketIndex);
-  //   if ((random?.length ?? 0) > 0) {
-  //     return random?.first;
-  //   }
-  //   return null;
-  // }
-
-  // int? socketSelectedPlugHash(int? socketIndex) {
-  //   if (socketIndex == null) return null;
-  //   var selected = selectedSockets?.elementAt(socketIndex);
-  //   if (selected != null) return selected;
-  //   return socketEquippedPlugHash(socketIndex);
-  // }
-
-  // int socketRandomizedSelectedPlugHash(int socketIndex) {
-  //   var selected = randomizedSelectedSockets?.elementAt(socketIndex);
-  //   if (selected != null) return selected;
-  //   return 2328497849;
-  // }
-
-  // bool canEquip(int socketIndex, int plugHash) {
-  //   var def = plugDefinitions?[plugHash];
-  //   var cost = def?.plug?.energyCost?.energyCost;
-  //   if (cost == 0 || cost == null) return true;
-  //   var selectedDef = plugDefinitions?[socketSelectedPlugHash(socketIndex)];
-  //   var selectedCost = selectedDef?.plug?.energyCost?.energyCost ?? 0;
-  //   var energy = usedEnergy - selectedCost + cost;
-  //   return energy <= (armorEnergyCapacity?.capacityValue ?? 0);
-  // }
+  bool canApplyForFree(int socketIndex, int plugHash) {
+    final canApply = canApplyPlug(socketIndex, plugHash);
+    if (!canApply) return false;
+    final materialRequirementHash = _plugDefinitions?[plugHash]?.plug?.insertionMaterialRequirementHash;
+    if (materialRequirementHash == null || materialRequirementHash == 0) {
+      return true;
+    }
+    final materials = _materialRequirementSetDefinitions?[materialRequirementHash]?.materials;
+    if (materials == null) return true;
+    for (var m in materials) {
+      final count = m.count ?? 0;
+      if (count > 0) return false;
+    }
+    return true;
+  }
 }

@@ -24,10 +24,22 @@ const _classBucketHashes = [
   InventoryBucket.classArmor
 ];
 
+class LoadoutIndexItem {
+  DestinyItemComponent? item;
+  Map<int, int> itemPlugs;
+
+  LoadoutIndexItem({
+    this.item,
+    this.itemPlugs = const {},
+  });
+}
+
 class LoadoutIndexSlot {
-  DestinyItemComponent? genericEquipped;
-  Map<DestinyClass, DestinyItemComponent> classSpecificEquipped = {};
-  List<DestinyItemComponent> unequipped = [];
+  LoadoutIndexItem genericEquipped = LoadoutIndexItem();
+  Map<DestinyClass, LoadoutIndexItem> classSpecificEquipped = {};
+  List<LoadoutIndexItem> unequipped = [];
+
+  LoadoutIndexSlot();
 }
 
 class LoadoutItemIndex with ProfileConsumer, ManifestConsumer {
@@ -125,16 +137,16 @@ class LoadoutItemIndex with ProfileConsumer, ManifestConsumer {
     final slot = slots[bucketTypeHash];
     if (slot == null) return;
     if (!equipped) {
-      slot.unequipped.add(item);
+      slot.unequipped.add(LoadoutIndexItem(item: item));
       return;
     }
     if (isClassSpecificItem) {
       final classType = def.classType;
       if (classType == null) return;
-      slot.classSpecificEquipped[classType] = item;
+      slot.classSpecificEquipped[classType] = LoadoutIndexItem(item: item);
       return;
     }
-    slot.genericEquipped = item;
+    slot.genericEquipped = LoadoutIndexItem(item: item);
   }
 
   Future<void> _removeItemFromLoadoutIndex(DestinyItemComponent item, bool equipped) async {
@@ -145,12 +157,12 @@ class LoadoutItemIndex with ProfileConsumer, ManifestConsumer {
     final slot = slots[bucketTypeHash];
     if (slot == null) return;
     if (!equipped) {
-      slot.unequipped.removeWhere((e) => item.itemInstanceId == e.itemInstanceId);
+      slot.unequipped.removeWhere((e) => item.itemInstanceId == e.item?.itemInstanceId);
       return;
     }
-    slot.classSpecificEquipped.removeWhere((key, value) => item.itemInstanceId == value.itemInstanceId);
-    if (slot.genericEquipped?.itemInstanceId == item.itemInstanceId) {
-      slot.genericEquipped = null;
+    slot.classSpecificEquipped.removeWhere((key, value) => item.itemInstanceId == value.item?.itemInstanceId);
+    if (slot.genericEquipped.item?.itemInstanceId == item.itemInstanceId) {
+      slot.genericEquipped.item = null;
     }
   }
 

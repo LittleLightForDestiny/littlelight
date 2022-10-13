@@ -10,16 +10,14 @@ class EditLoadoutItemModsBloc extends BaseSocketController with ManifestConsumer
   final BuildContext context;
 
   DestinyItemComponent? item;
-  DestinyInventoryItemDefinition? itemDefinition;
-  List<DestinyItemSocketState>? itemSockets;
-  Map<String, List<DestinyItemPlugBase>>? itemReusablePlugs;
+  DestinyInventoryItemDefinition? definition;
+  List<DestinyItemSocketState>? socketStates;
+  Map<String, List<DestinyItemPlugBase>>? reusablePlugs;
 
-  List<DestinyItemSocketCategoryDefinition> _availableCategories = [];
-
-  Map<int, DestinyInventoryItemDefinition>? plugDefinitions;
-  // Set<int> freeApplyingPlugHashes;
-  // Set<int> freeApplyingSocketIndexes;
-  // Set<int> freeApplyingSocketCategoryHashes;
+  Map<int, List<int>> _availablePlugHashesForSocketIndexes = {};
+  Set<int> _availableSocketIndexes = {};
+  Set<int> _availableCategoryHashes = {};
+  Map<int, int> selectedPlugs = {};
 
   EditLoadoutItemModsBloc(this.context) {
     _asyncInit();
@@ -29,74 +27,56 @@ class EditLoadoutItemModsBloc extends BaseSocketController with ManifestConsumer
     final itemInstanceID = context.read<EditLoadoutItemModsPageArguments>().itemInstanceID;
 
     this.item = profile.getItemsByInstanceId([itemInstanceID]).first;
-    this.itemSockets = profile.getItemSockets(itemInstanceID);
-    this.itemReusablePlugs = profile.getItemReusablePlugs(itemInstanceID);
+    this.socketStates = profile.getItemSockets(itemInstanceID);
+    this.reusablePlugs = profile.getItemReusablePlugs(itemInstanceID);
 
     final itemHash = item?.itemHash;
-    itemDefinition = await manifest.getDefinition<DestinyInventoryItemDefinition>(itemHash);
-    await loadPlugDefinitions();
-    await loadCategoryDefinitions();
-
+    definition = await manifest.getDefinition<DestinyInventoryItemDefinition>(itemHash);
+    await loadDefinitions();
+    await computeAvailableCategories();
     notifyListeners();
   }
 
-  Future<void> loadPlugDefinitions() async {
-    final sockets = itemDefinition?.sockets?.socketEntries;
-    if (sockets == null) return;
-    final Set<int> plugSetHashes = {};
-    for (final socket in sockets) {
-      final randomHash = socket.randomizedPlugSetHash;
-      final reusableHash = socket.reusablePlugSetHash;
-      if (randomHash != null) plugSetHashes.add(randomHash);
-      if (reusableHash != null) plugSetHashes.add(reusableHash);
-    }
-    final plugSetDefinitions = await manifest.getDefinitions<DestinyPlugSetDefinition>(plugSetHashes);
-    final Set<int> plugHashes = {};
-    for (final socket in sockets) {
-      final initialHash = socket.singleInitialItemHash;
-      final reusablePlugItemHashes = socket //
-          .reusablePlugItems
-          ?.map((e) => e.plugItemHash)
-          .whereType<int>();
-      final reusablePlugSetItemHashes = plugSetDefinitions[socket.reusablePlugSetHash] //
-          ?.reusablePlugItems
-          ?.map((e) => e.plugItemHash)
-          .whereType<int>();
-      final randomizedPlugSetItemHashes = plugSetDefinitions[socket.randomizedPlugSetHash] //
-          ?.reusablePlugItems
-          ?.map((e) => e.plugItemHash)
-          .whereType<int>();
-
-      if (initialHash != null) plugHashes.add(initialHash);
-      if (reusablePlugItemHashes != null) plugHashes.addAll(reusablePlugItemHashes);
-      if (reusablePlugSetItemHashes != null) plugHashes.addAll(reusablePlugSetItemHashes);
-      if (randomizedPlugSetItemHashes != null) plugHashes.addAll(randomizedPlugSetItemHashes);
-    }
-    final defs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(plugHashes);
-    plugDefinitions = defs;
-  }
-
-  Future<void> loadCategoryDefinitions() async {
-    final categories = itemDefinition?.sockets?.socketCategories;
-    final itemSockets = this.itemSockets;
+  Future<void> computeAvailableCategories() async {
+    final categories = definition?.sockets?.socketCategories;
+    final socketCount = definition?.sockets?.socketEntries?.length ?? 0;
+    final itemSockets = this.socketStates;
     if (categories == null || itemSockets == null) return;
-    for (final cat in categories) {
-      //TODO: fix this to check every available plug on every socket
-      final socketPlugHashes = cat.socketIndexes?.map((e) => itemSockets[e].plugHash).whereType<int>();
-      final materialRequirements =
-          socketPlugHashes?.map((e) => plugDefinitions?[e]?.plug?.insertionMaterialRequirementHash);
-      final hasFreePlugs = materialRequirements?.any((e) => e == 0) ?? true;
-      if (hasFreePlugs) _availableCategories.add(cat);
+
+    Map<int, List<int>> availablePlughashesForIndexes = {};
+    Set<int> availableSocketIndexes = {};
+    Set<int> availableCategoryHashes = {};
+
+    for (var index = 0; index < socketCount; index++) {
+      final plugHashes = socketPlugHashes(index)?.where((p) => canApplyForFree(index, p)).toList();
+      if (plugHashes != null && plugHashes.length > 1) {
+        availablePlughashesForIndexes[index] = plugHashes;
+        availableSocketIndexes.add(index);
+      }
     }
+    for (final cat in categories) {
+      final containsValidSockets =
+          cat.socketIndexes?.any((element) => availableSocketIndexes.contains(element)) ?? false;
+      final categoryHash = cat.socketCategoryHash;
+      if (containsValidSockets && categoryHash != null) {
+        availableCategoryHashes.add(categoryHash);
+      }
+    }
+    this._availableCategoryHashes = availableCategoryHashes;
+    this._availablePlugHashesForSocketIndexes = availablePlughashesForIndexes;
+    this._availableSocketIndexes = availableSocketIndexes;
+    notifyListeners();
   }
 
-  List<DestinyItemSocketCategoryDefinition>? get categories => _availableCategories;
+  List<DestinyItemSocketCategoryDefinition>? get categories => definition?.sockets?.socketCategories
+      ?.where((element) => _availableCategoryHashes.contains(element.socketCategoryHash))
+      .toList();
 
-  List<int>? availablePlugHashesForSocket(int index) =>
-      this.itemReusablePlugs?["$index"]?.map((e) => e.plugItemHash).whereType<int>().toList() ??
-      [this.itemSockets![index].plugHash!];
+  int? equippedPlugHashForSocket(int index) => this.socketStates![index].plugHash;
 
-  bool canApplyForFree() {
-    return false;
+  List<int>? availableIndexesForCategory(DestinyItemSocketCategoryDefinition category) {
+    return category.socketIndexes?.where((element) => _availableSocketIndexes.contains(element)).toList();
   }
+
+  List<int>? availablePlugHashesForSocket(int index) => _availablePlugHashesForSocketIndexes[index];
 }

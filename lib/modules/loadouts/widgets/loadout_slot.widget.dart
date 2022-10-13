@@ -7,18 +7,15 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
-import 'package:little_light/pages/item_details/item_details.page_route.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
-import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-import 'package:little_light/modules/loadouts/dialogs/loadout_slot_options/loadout_slot_options.dialog.dart';
 
 typedef OnRemoveItemFromLoadout = void Function(DestinyItemComponent item, bool equipped);
 typedef OnAddItemToLoadout = void Function(DestinyClass classType, bool equipped);
@@ -81,19 +78,20 @@ class LoadoutSlotWidget extends StatelessWidget with ProfileConsumer, ManifestCo
     if (hash == null) return Container();
     if (isEquipment) {
       if (LoadoutItemIndex.isClassSpecificSlot(hash)) {
-        items.addAll([DestinyClass.Titan, DestinyClass.Hunter, DestinyClass.Warlock].map(
-            (classType) => buildItemIcon(context, item: slot.classSpecificEquipped[classType], classType: classType)));
+        items.addAll([DestinyClass.Titan, DestinyClass.Hunter, DestinyClass.Warlock].map((classType) =>
+            buildItemIcon(context, item: slot.classSpecificEquipped[classType]?.item, classType: classType)));
       } else {
         items.addAll(slot.classSpecificEquipped
-            .map((classType, item) => MapEntry(classType, buildItemIcon(context, item: item, classType: classType)))
+            .map(
+                (classType, item) => MapEntry(classType, buildItemIcon(context, item: item.item, classType: classType)))
             .values);
-        items.add(buildItemIcon(context, item: slot.genericEquipped));
+        items.add(buildItemIcon(context, item: slot.genericEquipped.item));
       }
     } else {
       if (slot.unequipped.length < 9) {
         items.add(buildItemIcon(context, equipped: false));
       }
-      items.addAll(slot.unequipped.map((item) => buildItemIcon(context, item: item, equipped: false)));
+      items.addAll(slot.unequipped.map((item) => buildItemIcon(context, item: item.item, equipped: false)));
     }
 
     return Container(padding: EdgeInsets.symmetric(vertical: 4), child: Wrap(children: items));

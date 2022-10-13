@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 
 class EditLoadoutItemModsView extends StatelessWidget {
   EditLoadoutItemModsBloc _state(BuildContext context) => context.watch<EditLoadoutItemModsBloc>();
+  EditLoadoutItemModsBloc _bloc(BuildContext context) => context.read<EditLoadoutItemModsBloc>();
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +19,20 @@ class EditLoadoutItemModsView extends StatelessWidget {
   }
 
   Widget buildBody(BuildContext context) {
+    return SingleChildScrollView(
+        child: Column(
+      children: [
+        IconButton(
+            onPressed: () {
+              _bloc(context).computeAvailableCategories();
+            },
+            icon: Icon(Icons.refresh)),
+        buildList(context),
+      ],
+    ));
+  }
+
+  Widget buildList(BuildContext context) {
     final categories = _state(context).categories;
     if (categories == null) return Container();
     return Column(
@@ -54,27 +69,60 @@ class EditLoadoutItemModsView extends StatelessWidget {
       case DestinySocketCategoryStyle.Supers:
       case DestinySocketCategoryStyle.ProtectedInvalidEnumValue:
       case null:
-        return buildPerks(context, category);
+        return buildCategoryContents(context, category);
     }
   }
 
-  Widget buildPerks(BuildContext context, DestinyItemSocketCategoryDefinition category) {
-    final indexes = category.socketIndexes;
+  Widget buildCategoryContents(BuildContext context, DestinyItemSocketCategoryDefinition category) {
+    final indexes = _bloc(context).availableIndexesForCategory(category);
     if (indexes == null) return Container();
-    return Row(children: indexes.map((index) => buildPerkSlot(context, index)).toList());
+    return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: indexes.map((index) => buildSocket(context, index)).toList());
   }
 
-  Widget buildPerkSlot(BuildContext context, int socketIndex) {
-    final perks = _state(context).availablePlugHashesForSocket(socketIndex);
-    if (perks == null) return Container();
-    return Column(
-      children: perks
-          .map((hash) => Container(
-                width: 64,
-                height: 64,
-                child: ManifestImageWidget<DestinyInventoryItemDefinition>(hash),
-              ))
-          .toList(),
+  Widget buildSocket(BuildContext context, int socketIndex) {
+    final equipped = _state(context).equippedPlugHashForSocket(socketIndex);
+    final available = _state(context).availablePlugHashesForSocket(socketIndex);
+    if (available == null && equipped == null) return Container();
+    return Column(children: [
+      if (equipped != null) buildEquippedPlug(context, socketIndex, equipped),
+      if (available != null) buildAvailablePlugs(context, socketIndex, available)
+    ]);
+  }
+
+  Widget buildEquippedPlug(BuildContext context, int socketIndex, int plugHash) {
+    final canApply = _state(context).canApplyForFree(socketIndex, plugHash);
+    return Row(
+      children: [
+        Container(
+          color: canApply ? Colors.transparent : Colors.red,
+          width: 64,
+          height: 64,
+          child:
+              Opacity(opacity: canApply ? 1 : .5, child: ManifestImageWidget<DestinyInventoryItemDefinition>(plugHash)),
+        ),
+        Container(
+          width: 16,
+        ),
+        ManifestText<DestinyInventoryItemDefinition>(plugHash)
+      ],
+    );
+  }
+
+  Widget buildAvailablePlugs(BuildContext context, int socketIndex, List<int> plugs) {
+    return Wrap(
+      children: plugs.map(
+        (p) {
+          final canApply = _state(context).canApplyForFree(socketIndex, p);
+          return Container(
+            width: 64,
+            height: 64,
+            color: canApply ? Colors.transparent : Colors.red,
+            child: Opacity(opacity: canApply ? 1 : .5, child: ManifestImageWidget<DestinyInventoryItemDefinition>(p)),
+          );
+        },
+      ).toList(),
     );
   }
 }

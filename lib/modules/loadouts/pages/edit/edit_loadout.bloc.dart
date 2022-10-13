@@ -135,7 +135,7 @@ class EditLoadoutBloc extends ChangeNotifier with LoadoutsConsumer, ManifestCons
         break;
 
       case LoadoutSlotOptionsResponse.EditMods:
-        Navigator.of(context).push(EditLoadoutItemModsPageRoute(item.itemInstanceId!, []));
+        Navigator.of(context).push(EditLoadoutItemModsPageRoute(item.itemInstanceId!, {}));
         break;
 
       default:
