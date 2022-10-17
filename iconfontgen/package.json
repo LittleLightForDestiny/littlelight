@@ -13,7 +13,7 @@
     "mustache": "^4.1.0",
     "scale-that-svg": "^1.0.5",
     "svg-dimensions": "^1.0.2",
-    "svg2ttf": "^5.0.0",
+    "svg2ttf": "^6.0.3",
     "svgicons2svgfont": "^9.1.1"
   }
 }
