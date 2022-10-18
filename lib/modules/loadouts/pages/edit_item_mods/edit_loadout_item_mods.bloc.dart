@@ -17,21 +17,39 @@ class EditLoadoutItemModsBloc extends BaseSocketController with ManifestConsumer
   Map<int, List<int>> _availablePlugHashesForSocketIndexes = {};
   Set<int> _availableSocketIndexes = {};
   Set<int> _availableCategoryHashes = {};
-  Map<int, int> selectedPlugs = {};
+  Map<int, int> _selectedPlugs = {};
+
+  int? _selectedSocket;
+
+  bool hasChanges = false;
+
+  int? get emblemHash => _emblemHash;
+  int? _emblemHash;
 
   EditLoadoutItemModsBloc(this.context) {
     _asyncInit();
   }
 
   _asyncInit() async {
-    final itemInstanceID = context.read<EditLoadoutItemModsPageArguments>().itemInstanceID;
+    final args = context.read<EditLoadoutItemModsPageArguments>();
+
+    final itemInstanceID = args.itemInstanceID;
+    final emblemHash = args.emblemHash;
+    final plugHashes = args.plugHashes;
+
+    this._emblemHash = emblemHash;
 
     this.item = profile.getItemsByInstanceId([itemInstanceID]).first;
     this.socketStates = profile.getItemSockets(itemInstanceID);
     this.reusablePlugs = profile.getItemReusablePlugs(itemInstanceID);
 
+    if (plugHashes != null) {
+      this._selectedPlugs = plugHashes;
+    }
+
     final itemHash = item?.itemHash;
     definition = await manifest.getDefinition<DestinyInventoryItemDefinition>(itemHash);
+
     await loadDefinitions();
     await computeAvailableCategories();
     notifyListeners();
@@ -72,11 +90,60 @@ class EditLoadoutItemModsBloc extends BaseSocketController with ManifestConsumer
       ?.where((element) => _availableCategoryHashes.contains(element.socketCategoryHash))
       .toList();
 
-  int? equippedPlugHashForSocket(int index) => this.socketStates![index].plugHash;
+  int? selectedSelectedPlugHash(int index) => _selectedPlugs[index];
 
   List<int>? availableIndexesForCategory(DestinyItemSocketCategoryDefinition category) {
     return category.socketIndexes?.where((element) => _availableSocketIndexes.contains(element)).toList();
   }
 
-  List<int>? availablePlugHashesForSocket(int index) => _availablePlugHashesForSocketIndexes[index];
+  void selectSocket(int socketIndex) {
+    _selectedSocket = socketIndex;
+    notifyListeners();
+  }
+
+  void unselectSockets() {
+    _selectedSocket = null;
+    notifyListeners();
+  }
+
+  void selectPlugHashForSocket(int plugHash, int socketIndex) {
+    _selectedPlugs[socketIndex] = plugHash;
+    hasChanges = true;
+    notifyListeners();
+  }
+
+  void removePlugHashForSocket(int socketIndex) {
+    _selectedPlugs.remove(socketIndex);
+    hasChanges = true;
+    notifyListeners();
+  }
+
+  bool isSocketSelected(int socketIndex) => _selectedSocket == socketIndex;
+
+  bool isPlugSelectedForSocket(int plugHash, int socketIndex) => _selectedPlugs[socketIndex] == plugHash;
+
+  List<int>? selectedSocketPlugs() => _availablePlugHashesForSocketIndexes[_selectedSocket];
+
+  int? get selectedSocketSelectedPlugHash {
+    final socket = _selectedSocket;
+    if (socket == null) return null;
+    return selectedSelectedPlugHash(socket);
+  }
+
+  int? get selectedSocketDefaultPlugHash {
+    final socket = _selectedSocket;
+    if (socket == null) return null;
+    final defaultPlugHash = definition?.sockets?.socketEntries?[socket].singleInitialItemHash;
+    if (defaultPlugHash != null && defaultPlugHash != 0) return defaultPlugHash;
+    return selectedSelectedPlugHash(socket);
+  }
+
+  int? get selectedSocket => _selectedSocket;
+
+  bool isCategorySelected(DestinyItemSocketCategoryDefinition category) =>
+      category.socketIndexes?.contains(_selectedSocket) ?? false;
+
+  void updateMods() {
+    Navigator.of(context).pop(this._selectedPlugs);
+  }
 }

@@ -154,7 +154,7 @@ class _ScreenshotPerkDetailsWidgetState extends BaseSocketDetailsWidgetState<Scr
               Builder(builder: (context) => pagingButton(context, -1)),
               Container(
                   width: 520 * widget.pixelSize,
-                  child: PlugGridView(
+                  child: PlugGridView.withItemsPerRow(
                     plugs,
                     maxRows: 2,
                     itemsPerRow: 5,

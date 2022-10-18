@@ -30,8 +30,8 @@ class LoadoutIndexItem {
 
   LoadoutIndexItem({
     this.item,
-    this.itemPlugs = const {},
-  });
+    Map<int, int>? itemPlugs,
+  }) : this.itemPlugs = itemPlugs ?? {};
 }
 
 class LoadoutIndexSlot {
@@ -163,25 +163,26 @@ class LoadoutItemIndex with ProfileConsumer, ManifestConsumer {
     slot.classSpecificEquipped.removeWhere((key, value) => item.itemInstanceId == value.item?.itemInstanceId);
     if (slot.genericEquipped.item?.itemInstanceId == item.itemInstanceId) {
       slot.genericEquipped.item = null;
+      slot.genericEquipped.itemPlugs = {};
     }
   }
 
-  Future<void> addEquippedItem(DestinyItemComponent item, DestinyInventoryItemDefinition def) async {
+  Future<void> addEquippedItem(DestinyItemComponent item) async {
     await _addItemToLoadoutIndex(item, true);
     loadout.equipped.add(LoadoutItem(itemInstanceId: item.itemInstanceId, itemHash: item.itemHash));
   }
 
-  Future<void> addUnequippedItem(DestinyItemComponent item, DestinyInventoryItemDefinition def) async {
+  Future<void> addUnequippedItem(DestinyItemComponent item) async {
     await _addItemToLoadoutIndex(item, false);
     loadout.unequipped.add(LoadoutItem(itemInstanceId: item.itemInstanceId, itemHash: item.itemHash));
   }
 
-  Future<void> removeEquippedItem(DestinyItemComponent item, DestinyInventoryItemDefinition def) async {
+  Future<void> removeEquippedItem(DestinyItemComponent item) async {
     await _removeItemFromLoadoutIndex(item, true);
     loadout.equipped.removeWhere((e) => e.itemInstanceId == item.itemInstanceId);
   }
 
-  Future<void> removeUnequippedItem(DestinyItemComponent item, DestinyInventoryItemDefinition def) async {
+  Future<void> removeUnequippedItem(DestinyItemComponent item) async {
     await _removeItemFromLoadoutIndex(item, false);
     loadout.unequipped.removeWhere((e) => e.itemInstanceId == item.itemInstanceId);
   }

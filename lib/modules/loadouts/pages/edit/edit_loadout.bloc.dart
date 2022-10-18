@@ -115,27 +115,45 @@ class EditLoadoutBloc extends ChangeNotifier with LoadoutsConsumer, ManifestCons
     final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.item.itemHash);
     if (def == null) return;
     if (asEquipped) {
-      await _itemIndex?.addEquippedItem(item.item, def);
+      await _itemIndex?.addEquippedItem(item.item);
     } else {
-      await _itemIndex?.addUnequippedItem(item.item, def);
+      await _itemIndex?.addUnequippedItem(item.item);
     }
     notifyListeners();
   }
 
-  Future<void> openItemOptions(DestinyItemComponent item, bool equipped) async {
+  Future<void> openItemOptions(LoadoutIndexItem item, bool equipped) async {
     final option = await Navigator.of(context).push(LoadoutSlotOptionsDialogRoute(context, item: item));
     if (option == null) return;
+    final inventoryItem = item.item;
+    if (inventoryItem == null) return;
     switch (option) {
       case LoadoutSlotOptionsResponse.Details:
         Navigator.of(context).push(ItemDetailsPageRoute.viewOnly(
-          item: ItemWithOwner(item, null),
+          item: ItemWithOwner(
+            inventoryItem,
+            null,
+          ),
         ));
         return;
       case LoadoutSlotOptionsResponse.Remove:
+        if (equipped) {
+          _itemIndex?.removeEquippedItem(inventoryItem);
+        } else {
+          _itemIndex?.removeUnequippedItem(inventoryItem);
+        }
+        notifyListeners();
         break;
 
       case LoadoutSlotOptionsResponse.EditMods:
-        Navigator.of(context).push(EditLoadoutItemModsPageRoute(item.itemInstanceId!, {}));
+        final plugs = await Navigator.of(context).push(EditLoadoutItemModsPageRoute(
+          inventoryItem.itemInstanceId!,
+          emblemHash: this._loadout.emblemHash,
+          plugHashes: item.itemPlugs,
+        ));
+        if (plugs != null) {
+          item.itemPlugs = plugs;
+        }
         break;
 
       default:

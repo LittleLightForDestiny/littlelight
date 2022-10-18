@@ -255,9 +255,8 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
               var power = profile.getInstanceInfo(item.itemInstanceId)?.primaryStat?.value ?? 0;
               var equipped = equipment.firstWhere((i) => i.bucketHash == bucket, orElse: null);
               var equippedPower = profile.getInstanceInfo(equipped?.itemInstanceId)?.primaryStat?.value ?? 0;
-              var def = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
               if (power > equippedPower) {
-                loadout.addEquippedItem(item, def);
+                loadout.addEquippedItem(item);
               }
             }
             inventory.transferLoadout(loadout.loadout, widget.character.characterId, true);
@@ -560,7 +559,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
     for (var j in slots.values) {
       var item = allItems.firstWhere((i) => i.item.itemInstanceId == j);
       var itemDef = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.item.itemHash);
-      randomLoadout.addEquippedItem(item.item, itemDef);
+      randomLoadout.addEquippedItem(item.item);
     }
 
     inventory.transferLoadout(randomLoadout.loadout, widget.character.characterId, true);

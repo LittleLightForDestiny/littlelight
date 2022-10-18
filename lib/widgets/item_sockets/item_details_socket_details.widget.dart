@@ -171,7 +171,7 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
                 child: Row(children: [
                   Builder(builder: (context) => pagingButton(context, -1)),
                   Expanded(
-                      child: PlugGridView(
+                      child: PlugGridView.withItemsPerRow(
                     plugs,
                     itemBuilder: (h) => buildMod(context, controller.selectedSocketIndex, h),
                     itemsPerRow: itemsPerRow,

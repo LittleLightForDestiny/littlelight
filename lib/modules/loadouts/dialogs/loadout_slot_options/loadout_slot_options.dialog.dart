@@ -1,5 +1,5 @@
-import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/media_query_helper.dart';
@@ -11,9 +11,9 @@ import 'package:little_light/widgets/item_list/items/quick_select_item_wrapper.w
 import 'loadout_slot_options.dialog_route.dart';
 
 extension on BuildContext {
-  DestinyItemComponent? get itemArgument {
+  LoadoutIndexItem? get itemArgument {
     final argument = ModalRoute.of(this)?.settings.arguments;
-    if (argument is DestinyItemComponent) {
+    if (argument is LoadoutIndexItem) {
       return argument;
     }
     return null;
@@ -47,7 +47,7 @@ class LoadoutSlotOptionsDialog extends LittleLightBaseDialog with ProfileConsume
 
   @override
   Widget? buildBody(BuildContext context) {
-    final item = context.itemArgument;
+    final item = context.itemArgument?.item;
     final instanceID = item?.itemInstanceId;
     if (instanceID == null || item == null) return Container();
     final String? ownerID = profile.getItemOwner(instanceID);

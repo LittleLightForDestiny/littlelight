@@ -3,7 +3,6 @@
 import 'package:bungie_api/enums/destiny_class.dart';
 import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
-import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
@@ -17,7 +16,7 @@ import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
-typedef OnRemoveItemFromLoadout = void Function(DestinyItemComponent item, bool equipped);
+typedef OnRemoveItemFromLoadout = void Function(LoadoutIndexItem item, bool equipped);
 typedef OnAddItemToLoadout = void Function(DestinyClass classType, bool equipped);
 
 class LoadoutSlotWidget extends StatelessWidget with ProfileConsumer, ManifestConsumer {
@@ -78,27 +77,26 @@ class LoadoutSlotWidget extends StatelessWidget with ProfileConsumer, ManifestCo
     if (hash == null) return Container();
     if (isEquipment) {
       if (LoadoutItemIndex.isClassSpecificSlot(hash)) {
-        items.addAll([DestinyClass.Titan, DestinyClass.Hunter, DestinyClass.Warlock].map((classType) =>
-            buildItemIcon(context, item: slot.classSpecificEquipped[classType]?.item, classType: classType)));
+        items.addAll([DestinyClass.Titan, DestinyClass.Hunter, DestinyClass.Warlock].map(
+            (classType) => buildItemIcon(context, item: slot.classSpecificEquipped[classType], classType: classType)));
       } else {
         items.addAll(slot.classSpecificEquipped
-            .map(
-                (classType, item) => MapEntry(classType, buildItemIcon(context, item: item.item, classType: classType)))
+            .map((classType, item) => MapEntry(classType, buildItemIcon(context, item: item, classType: classType)))
             .values);
-        items.add(buildItemIcon(context, item: slot.genericEquipped.item));
+        items.add(buildItemIcon(context, item: slot.genericEquipped));
       }
     } else {
       if (slot.unequipped.length < 9) {
         items.add(buildItemIcon(context, equipped: false));
       }
-      items.addAll(slot.unequipped.map((item) => buildItemIcon(context, item: item.item, equipped: false)));
+      items.addAll(slot.unequipped.map((item) => buildItemIcon(context, item: item, equipped: false)));
     }
 
     return Container(padding: EdgeInsets.symmetric(vertical: 4), child: Wrap(children: items));
   }
 
   Widget buildItemIcon(BuildContext context,
-      {DestinyItemComponent? item, DestinyClass classType = DestinyClass.Unknown, bool equipped = true}) {
+      {LoadoutIndexItem? item, DestinyClass classType = DestinyClass.Unknown, bool equipped = true}) {
     BoxDecoration? decoration = item != null && bucketDefinition?.hash == InventoryBucket.subclass
         ? null
         : BoxDecoration(border: Border.all(width: 1, color: Colors.grey.shade300));
@@ -123,7 +121,7 @@ class LoadoutSlotWidget extends StatelessWidget with ProfileConsumer, ManifestCo
                   size: 12, color: Theme.of(context).colorScheme.onSurface)));
     }
     var isTablet = MediaQueryHelper(context).tabletOrBigger;
-    final itemHash = item?.itemHash;
+    final itemHash = item?.item?.itemHash;
     var itemIcon = Container(
         foregroundDecoration: decoration,
         child: Stack(children: [
@@ -131,8 +129,8 @@ class LoadoutSlotWidget extends StatelessWidget with ProfileConsumer, ManifestCo
               child: itemHash != null
                   ? DefinitionProviderWidget<DestinyInventoryItemDefinition>(
                       itemHash,
-                      (def) => ItemIconWidget(item, def, null),
-                      key: Key('slot_item_${item?.itemInstanceId}'),
+                      (def) => ItemIconWidget(item?.item, def, null),
+                      key: Key('slot_item_${item?.item?.itemInstanceId}'),
                     )
                   : ManifestImageWidget<DestinyInventoryItemDefinition>(1835369552)),
           icon,
