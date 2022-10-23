@@ -9,6 +9,7 @@ class SelectLoadoutItemPageRoute extends MaterialPageRoute<ItemWithOwner?> {
       {int? emblemHash, int? bucketHash, DestinyClass? classType, required List<String> idsToAvoid})
       : super(
           builder: (BuildContext context) => SelectLoadoutItemView(
+            context,
             emblemHash: emblemHash,
             bucketHash: bucketHash,
             classType: classType,

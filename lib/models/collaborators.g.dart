@@ -6,15 +6,29 @@ part of 'collaborators.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-CollaboratorsResponse _$CollaboratorsResponseFromJson(Map<String, dynamic> json) => CollaboratorsResponse(
-      developers: (json['developers'] as List<dynamic>?)?.map((e) => Collaborator.fromJson(e)).toList(),
-      designers: (json['designers'] as List<dynamic>?)?.map((e) => Collaborator.fromJson(e)).toList(),
-      curators: (json['curators'] as List<dynamic>?)?.map((e) => Collaborator.fromJson(e)).toList(),
-      translators: (json['translators'] as List<dynamic>?)?.map((e) => TranslationLanguage.fromJson(e)).toList(),
-      supporters: (json['supporters'] as List<dynamic>?)?.map((e) => Collaborator.fromJson(e)).toList(),
+CollaboratorsResponse _$CollaboratorsResponseFromJson(
+        Map<String, dynamic> json) =>
+    CollaboratorsResponse(
+      developers: (json['developers'] as List<dynamic>?)
+          ?.map((e) => Collaborator.fromJson(e))
+          .toList(),
+      designers: (json['designers'] as List<dynamic>?)
+          ?.map((e) => Collaborator.fromJson(e))
+          .toList(),
+      curators: (json['curators'] as List<dynamic>?)
+          ?.map((e) => Collaborator.fromJson(e))
+          .toList(),
+      translators: (json['translators'] as List<dynamic>?)
+          ?.map((e) => TranslationLanguage.fromJson(e))
+          .toList(),
+      supporters: (json['supporters'] as List<dynamic>?)
+          ?.map((e) => Collaborator.fromJson(e))
+          .toList(),
     );
 
-Map<String, dynamic> _$CollaboratorsResponseToJson(CollaboratorsResponse instance) => <String, dynamic>{
+Map<String, dynamic> _$CollaboratorsResponseToJson(
+        CollaboratorsResponse instance) =>
+    <String, dynamic>{
       'developers': instance.developers,
       'designers': instance.designers,
       'curators': instance.curators,
@@ -22,23 +36,31 @@ Map<String, dynamic> _$CollaboratorsResponseToJson(CollaboratorsResponse instanc
       'supporters': instance.supporters,
     };
 
-TranslationLanguage _$TranslationLanguageFromJson(Map<String, dynamic> json) => TranslationLanguage(
-      languages: (json['languages'] as List<dynamic>).map((e) => e as String).toList(),
-      translators: (json['translators'] as List<dynamic>).map((e) => Collaborator.fromJson(e)).toList(),
+TranslationLanguage _$TranslationLanguageFromJson(Map<String, dynamic> json) =>
+    TranslationLanguage(
+      languages:
+          (json['languages'] as List<dynamic>).map((e) => e as String).toList(),
+      translators: (json['translators'] as List<dynamic>)
+          .map((e) => Collaborator.fromJson(e))
+          .toList(),
     );
 
-Map<String, dynamic> _$TranslationLanguageToJson(TranslationLanguage instance) => <String, dynamic>{
+Map<String, dynamic> _$TranslationLanguageToJson(
+        TranslationLanguage instance) =>
+    <String, dynamic>{
       'languages': instance.languages,
       'translators': instance.translators,
     };
 
 Collaborator _$CollaboratorFromJson(Map<String, dynamic> json) => Collaborator(
       membershipId: json['membershipId'] as String,
-      membershipType: $enumDecode(_$BungieMembershipTypeEnumMap, json['membershipType']),
+      membershipType:
+          $enumDecode(_$BungieMembershipTypeEnumMap, json['membershipType']),
       link: json['link'] as String?,
     );
 
-Map<String, dynamic> _$CollaboratorToJson(Collaborator instance) => <String, dynamic>{
+Map<String, dynamic> _$CollaboratorToJson(Collaborator instance) =>
+    <String, dynamic>{
       'membershipId': instance.membershipId,
       'membershipType': _$BungieMembershipTypeEnumMap[instance.membershipType],
       'link': instance.link,

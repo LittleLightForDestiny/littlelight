@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
 import 'package:little_light/modules/loadouts/pages/edit/edit_loadout.page.dart';
 
 class EditLoadoutPageRouteArguments {
@@ -6,7 +7,7 @@ class EditLoadoutPageRouteArguments {
   EditLoadoutPageRouteArguments([this.loadoutID]);
 }
 
-class EditLoadoutPageRoute extends MaterialPageRoute {
+class EditLoadoutPageRoute extends MaterialPageRoute<LoadoutItemIndex> {
   factory EditLoadoutPageRoute.edit(String loadoutID) {
     return EditLoadoutPageRoute._(EditLoadoutPageRouteArguments(loadoutID));
   }

@@ -13,7 +13,10 @@ import 'package:little_light/widgets/search/search_filters/pseudo_item_type_filt
 import 'package:little_light/widgets/search/search_filters/text_search_filter.widget.dart';
 
 class DuplicatedItemsScreen extends StatefulWidget {
-  final SearchController searchController = SearchController.withDuplicatedItemsFilters();
+  final SearchController searchController;
+
+  const DuplicatedItemsScreen({Key key, this.searchController}) : super(key: key);
+
   @override
   DuplicatedItemsScreenState createState() => DuplicatedItemsScreenState();
 }

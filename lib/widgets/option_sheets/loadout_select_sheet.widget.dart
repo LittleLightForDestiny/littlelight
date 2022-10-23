@@ -4,15 +4,14 @@ import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
-import 'package:little_light/models/loadout.dart';
-
+import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 
-typedef OnLoadoutSelect = void Function(Loadout loadout);
+typedef OnLoadoutSelect = void Function(LoadoutItemIndex loadout);
 
 class LoadoutSelectSheet extends StatelessWidget {
   final DestinyCharacterComponent character;
-  final List<Loadout> loadouts;
+  final List<LoadoutItemIndex> loadouts;
 
   final OnLoadoutSelect onSelect;
   final Widget header;

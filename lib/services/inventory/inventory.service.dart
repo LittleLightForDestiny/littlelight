@@ -18,7 +18,7 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:get_it/get_it.dart';
 import 'package:little_light/models/bungie_api.exception.dart';
-import 'package:little_light/models/loadout.dart';
+import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
 import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/inventory/transfer_error.dart';
@@ -166,10 +166,10 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
     profile.pauseAutomaticUpdater = false;
   }
 
-  transferLoadout(Loadout loadout, [String characterId, bool andEquip = false, int moveItemsAway = 0]) async {
+  transferLoadout(LoadoutItemIndex loadout, [String characterId, bool andEquip = false, int moveItemsAway = 0]) async {
     profile.pauseAutomaticUpdater = true;
-    List<String> equippedIds = loadout.equipped.map((item) => item.itemInstanceId).toList();
-    List<String> unequippedIds = loadout.unequipped.map((item) => item.itemInstanceId).toList();
+    List<String> equippedIds = loadout.equippedItemIds;
+    List<String> unequippedIds = loadout.unequippedItemIds;
     List<DestinyItemComponent> items = profile.getItemsByInstanceId(equippedIds + unequippedIds);
     List<int> hashes = items.map((item) => item.itemHash).toList();
     Map<int, DestinyInventoryItemDefinition> defs =

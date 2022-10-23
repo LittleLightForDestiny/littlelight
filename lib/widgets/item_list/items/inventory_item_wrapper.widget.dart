@@ -213,6 +213,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> exte
       context,
       MaterialPageRoute(
         builder: (context) => QuickTransferScreen(
+          context,
           bucketDefinition: bucketDef,
           classType: character.classType,
           characterId: widget.characterId,

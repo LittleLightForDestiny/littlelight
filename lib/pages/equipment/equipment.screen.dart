@@ -296,6 +296,7 @@ class EquipmentScreenState extends State<EquipmentScreen>
               MaterialPageRoute(
                 builder: (context) => SearchScreen(
                   controller: SearchController.withDefaultFilters(
+                    context,
                     firstRunFilters: [PseudoItemTypeFilter(available, available)],
                     preFilters: [
                       PseudoItemTypeFilter(available, selected),

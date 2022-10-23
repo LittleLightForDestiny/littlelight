@@ -10,9 +10,17 @@ Loadout _$LoadoutFromJson(Map<String, dynamic> json) => Loadout(
       assignedId: json['assignedId'] as String?,
       name: json['name'] as String? ?? "",
       emblemHash: json['emblemHash'] as int?,
-      equipped: (json['equipped'] as List<dynamic>?)?.map((e) => LoadoutItem.fromJson(e)).toList() ?? const [],
-      unequipped: (json['unequipped'] as List<dynamic>?)?.map((e) => LoadoutItem.fromJson(e)).toList() ?? const [],
-      updatedAt: json['updated_at'] == null ? null : DateTime.parse(json['updated_at'] as String),
+      equipped: (json['equipped'] as List<dynamic>?)
+              ?.map((e) => LoadoutItem.fromJson(e))
+              .toList() ??
+          const [],
+      unequipped: (json['unequipped'] as List<dynamic>?)
+              ?.map((e) => LoadoutItem.fromJson(e))
+              .toList() ??
+          const [],
+      updatedAt: json['updated_at'] == null
+          ? null
+          : DateTime.parse(json['updated_at'] as String),
     );
 
 Map<String, dynamic> _$LoadoutToJson(Loadout instance) => <String, dynamic>{
@@ -27,9 +35,19 @@ Map<String, dynamic> _$LoadoutToJson(Loadout instance) => <String, dynamic>{
 LoadoutItem _$LoadoutItemFromJson(Map<String, dynamic> json) => LoadoutItem(
       itemInstanceId: json['itemInstanceId'] as String?,
       itemHash: json['itemHash'] as int?,
+      socketPlugs: (json['socketPlugs'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(int.parse(k), e as int),
+      ),
+      bucketHash: json['bucketHash'] as int?,
+      classHash: json['classHash'] as int?,
     );
 
-Map<String, dynamic> _$LoadoutItemToJson(LoadoutItem instance) => <String, dynamic>{
+Map<String, dynamic> _$LoadoutItemToJson(LoadoutItem instance) =>
+    <String, dynamic>{
       'itemInstanceId': instance.itemInstanceId,
       'itemHash': instance.itemHash,
+      'socketPlugs':
+          instance.socketPlugs?.map((k, e) => MapEntry(k.toString(), e)),
+      'bucketHash': instance.bucketHash,
+      'classHash': instance.classHash,
     };

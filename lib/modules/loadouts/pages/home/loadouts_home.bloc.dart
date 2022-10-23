@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:little_light/models/loadout.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
-import 'package:little_light/services/littlelight/loadouts.consumer.dart';
+import 'package:little_light/modules/loadouts/blocs/loadouts.bloc.dart';
+import 'package:little_light/modules/loadouts/pages/edit/edit_loadout.page_route.dart';
+import 'package:little_light/modules/loadouts/widgets/loadout_list_item.widget.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/profile/profile_component_groups.dart';
 import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/remove_diacritics.dart';
+import 'package:provider/provider.dart';
 
-class LoadoutsHomeBloc extends ChangeNotifier with ProfileConsumer, LoadoutsConsumer, UserSettingsConsumer {
+class LoadoutsHomeBloc extends ChangeNotifier with ProfileConsumer, UserSettingsConsumer {
   final BuildContext context;
-  final Map<String, LoadoutItemIndex> _itemIndexes = Map();
-  List<Loadout>? _allLoadouts;
+  final LoadoutsBloc _loadoutsBloc;
 
   bool _reordering = false;
   bool get reordering => _reordering;
@@ -20,12 +21,34 @@ class LoadoutsHomeBloc extends ChangeNotifier with ProfileConsumer, LoadoutsCons
   bool get searchOpen => _searchOpen;
 
   bool get isEmpty => _allLoadouts?.length == 0;
-  List<LoadoutItemIndex>? loadouts;
+  List<LoadoutItemIndex>? get _allLoadouts => _loadoutsBloc.loadouts;
+
+  List<LoadoutItemIndex>? get loadouts {
+    final text = _searchString.toLowerCase().removeDiacritics();
+    return _allLoadouts?.where((l) {
+      final loadoutName = l.name;
+      if (text.length <= 3) {
+        return loadoutName.toLowerCase().removeDiacritics().startsWith(text);
+      }
+      return loadoutName.toLowerCase().removeDiacritics().contains(text);
+    }).toList();
+  }
+
   String _searchString = "";
 
-  LoadoutsHomeBloc(this.context) {
+  DateTime? _lastUpdated;
+  String get lastUpdated => _lastUpdated?.toIso8601String() ?? "";
+
+  LoadoutsHomeBloc(this.context) : _loadoutsBloc = context.read<LoadoutsBloc>() {
     userSettings.startingPage = LittleLightPersistentPage.Loadouts;
+    _loadoutsBloc.addListener(notifyListeners);
     _initLoadouts();
+  }
+
+  @override
+  void dispose() {
+    _loadoutsBloc.removeListener(notifyListeners);
+    super.dispose();
   }
 
   void _initLoadouts() async {
@@ -33,47 +56,18 @@ class LoadoutsHomeBloc extends ChangeNotifier with ProfileConsumer, LoadoutsCons
     final route = ModalRoute.of(context);
     await Future.delayed(route?.transitionDuration ?? Duration.zero);
     profile.updateComponents = ProfileComponentGroups.basicProfile;
-
-    loadLoadouts();
-  }
-
-  void loadLoadouts({bool forceFetch = false}) async {
-    _allLoadouts = await loadoutService.getLoadouts(forceFetch: forceFetch);
-    _updateLoadouts();
   }
 
   set searchString(String value) {
     _searchString = value;
-    _updateLoadouts();
+    notifyListeners();
   }
 
   void toggleSearch() {
     _searchOpen = !_searchOpen;
     if (!_searchOpen) {
       _searchString = "";
-      _updateLoadouts();
     }
-    notifyListeners();
-  }
-
-  void _updateLoadouts() async {
-    final text = _searchString.toLowerCase().removeDiacritics();
-    final allLoadouts = _allLoadouts;
-    if (allLoadouts == null) return;
-    final _filteredLoadouts = allLoadouts.where((l) {
-      if (text.length <= 3) {
-        return l.name.toLowerCase().removeDiacritics().startsWith(text);
-      }
-      return l.name.toLowerCase().removeDiacritics().contains(text);
-    });
-
-    final _indexes = <LoadoutItemIndex>[];
-    for (final loadout in _filteredLoadouts) {
-      if (loadout.assignedId == null) continue;
-      final index = _itemIndexes[loadout.assignedId!] ??= await LoadoutItemIndex.buildfromLoadout(loadout);
-      _indexes.add(index);
-    }
-    loadouts = _indexes;
     notifyListeners();
   }
 
@@ -83,11 +77,29 @@ class LoadoutsHomeBloc extends ChangeNotifier with ProfileConsumer, LoadoutsCons
   }
 
   void reorderLoadouts(int oldIndex, int newIndex) {
-    final _loadouts = _allLoadouts;
-    if (_loadouts == null) return;
-    final removed = _loadouts.removeAt(oldIndex);
-    _loadouts.insert(newIndex, removed);
-    loadoutService.saveLoadoutsOrder(_loadouts);
-    notifyListeners();
+    final order = _allLoadouts?.map((e) => e.assignedId).toList();
+    if (order == null) return;
+    final removed = order.removeAt(oldIndex);
+    if (newIndex > oldIndex) newIndex = newIndex - 1;
+    order.insert(newIndex, removed);
+    _loadoutsBloc.reorderLoadouts(order);
   }
+
+  void onItemAction(LoadoutListItemAction action, LoadoutItemIndex loadout) async {
+    switch (action) {
+      case LoadoutListItemAction.Equip:
+        // TODO: Handle this case.
+        break;
+      case LoadoutListItemAction.Edit:
+        final id = loadout.assignedId;
+        await Navigator.of(context).push(EditLoadoutPageRoute.edit(id));
+        break;
+
+      case LoadoutListItemAction.Delete:
+        _loadoutsBloc.deleteLoadout(loadout);
+        break;
+    }
+  }
+
+  void reloadLoadouts() => _loadoutsBloc.refresh();
 }

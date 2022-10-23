@@ -76,7 +76,7 @@ class SearchController extends ChangeNotifier with ProfileConsumer, ManifestCons
     _init();
   }
 
-  factory SearchController.withDuplicatedItemsFilters() {
+  factory SearchController.withDuplicatedItemsFilters(BuildContext context) {
     return SearchController(
         firstRunFilters: [
           PseudoItemTypeFilter([PseudoItemType.Weapons, PseudoItemType.Armor, PseudoItemType.Cosmetics],
@@ -88,13 +88,13 @@ class SearchController extends ChangeNotifier with ProfileConsumer, ManifestCons
           PseudoItemTypeFilter(
               [PseudoItemType.Weapons, PseudoItemType.Armor, PseudoItemType.Cosmetics], [PseudoItemType.Weapons])
         ],
-        postFilters: [TextFilter()],
+        postFilters: [TextFilter(context)],
         defaultSorting: [ItemSortParameter(active: true, type: ItemSortParameterType.BucketHash, direction: 1)] +
             getInjectedUserSettings().itemOrdering,
         customSorting: []);
   }
 
-  factory SearchController.withDefaultFilters(
+  factory SearchController.withDefaultFilters(BuildContext context,
       {List<BaseItemFilter> firstRunFilters,
       List<BaseItemFilter> preFilters,
       List<BaseItemFilter> filters,
@@ -117,12 +117,12 @@ class SearchController extends ChangeNotifier with ProfileConsumer, ManifestCons
       PowerLevelConstraintsFilter(PowerLevelConstraints(), PowerLevelConstraints()),
       EnergyLevelConstraintsFilter(EnergyLevelConstraints(), EnergyLevelConstraints()),
       TotalStatsConstraintsFilter(TotalStatsConstraints(), TotalStatsConstraints()),
-      LoadoutFilter(),
+      LoadoutFilter(context),
       ItemTagFilter(),
       WishlistTagFilter(),
     ];
     final _defaultPostFilters = <BaseItemFilter>[
-      TextFilter(),
+      TextFilter(context),
     ];
     return SearchController(
         firstRunFilters: _replaceDefaultFilters(_defaultFirstRunFilters, firstRunFilters),

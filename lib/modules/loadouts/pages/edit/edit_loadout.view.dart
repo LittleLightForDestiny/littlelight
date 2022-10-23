@@ -6,7 +6,6 @@ import 'package:little_light/modules/loadouts/pages/edit/edit_loadout.bloc.dart'
 import 'package:little_light/modules/loadouts/pages/select_background/select_loadout_background.page_route.dart';
 import 'package:little_light/modules/loadouts/widgets/loadout_slot.widget.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/services/littlelight/loadouts.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/utils/color_utils.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
@@ -24,7 +23,7 @@ class EditLoadoutView extends StatefulWidget {
   EditLoadoutViewState createState() => EditLoadoutViewState();
 }
 
-class EditLoadoutViewState extends State<EditLoadoutView> with LoadoutsConsumer, ManifestConsumer {
+class EditLoadoutViewState extends State<EditLoadoutView> with ManifestConsumer {
   TextEditingController _nameFieldController = TextEditingController();
   EditLoadoutBloc get _provider => context.read<EditLoadoutBloc>();
   EditLoadoutBloc get _state => context.watch<EditLoadoutBloc>();
@@ -154,13 +153,13 @@ class EditLoadoutViewState extends State<EditLoadoutView> with LoadoutsConsumer,
           children: <Widget>[
             Positioned.fill(child: buildAppBarBackground(context)),
             Container(
+              height: kToolbarHeight + paddingBottom,
               constraints: BoxConstraints(minWidth: double.infinity),
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4).copyWith(bottom: 4 + paddingBottom),
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8).copyWith(bottom: 8 + paddingBottom),
               child: ElevatedButton(
                   child: TranslatedTextWidget("Save Loadout"),
                   onPressed: () {
                     _provider.save();
-                    Navigator.of(context).pop();
                   }),
             )
           ],

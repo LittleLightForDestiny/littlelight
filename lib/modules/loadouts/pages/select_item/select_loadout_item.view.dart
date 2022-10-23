@@ -25,14 +25,14 @@ class SelectLoadoutItemView extends SearchScreen {
 
   final int emblemHash;
 
-  SelectLoadoutItemView({this.bucketHash, this.emblemHash, this.classType, this.idsToAvoid})
+  SelectLoadoutItemView(BuildContext context, {this.bucketHash, this.emblemHash, this.classType, this.idsToAvoid})
       : super(
-            controller: SearchController.withDefaultFilters(firstRunFilters: [
+            controller: SearchController.withDefaultFilters(context, firstRunFilters: [
           ItemBucketFilter(selected: {bucketHash}, enabled: true),
           ClassTypeFilter(selected: [classType].toSet(), enabled: true),
           AvoidInstanceIdsFilter(selected: idsToAvoid.toSet(), enabled: true)
         ], filters: [
-          TextFilter(enabled: false),
+          TextFilter(context, enabled: false),
         ]));
 
   @override
@@ -68,6 +68,7 @@ class SelectLoadoutItemScreenState extends SearchScreenState<SelectLoadoutItemVi
       flexibleSpace: buildAppBarBackground(context),
       title: buildAppBarTitle(context),
       elevation: 2,
+      leading: BackButton(),
       actions: <Widget>[
         IconButton(
           enableFeedback: false,

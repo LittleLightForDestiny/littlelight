@@ -6,9 +6,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/modules/loadouts/pages/edit/edit_loadout.page_route.dart';
 import 'package:little_light/modules/loadouts/pages/home/loadouts_home.bloc.dart';
-import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
 import 'package:little_light/modules/loadouts/widgets/loadout_list_item.widget.dart';
-import 'package:little_light/services/littlelight/loadouts.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
@@ -18,13 +16,14 @@ import 'package:little_light/widgets/inventory_tabs/inventory_notification.widge
 import 'package:provider/provider.dart';
 
 class LoadoutsHomeView extends StatefulWidget {
+  LoadoutsHomeView({Key? key}) : super(key: key);
   @override
   LoadoutsHomeViewState createState() => LoadoutsHomeViewState();
 }
 
-class LoadoutsHomeViewState extends State<LoadoutsHomeView> with LoadoutsConsumer, ProfileConsumer {
+class LoadoutsHomeViewState extends State<LoadoutsHomeView> with ProfileConsumer {
   TextEditingController _searchFieldController = TextEditingController();
-  LoadoutsHomeBloc get _provider => context.read<LoadoutsHomeBloc>();
+  LoadoutsHomeBloc get _bloc => context.read<LoadoutsHomeBloc>();
   LoadoutsHomeBloc get _state => context.watch<LoadoutsHomeBloc>();
 
   @override
@@ -35,7 +34,7 @@ class LoadoutsHomeViewState extends State<LoadoutsHomeView> with LoadoutsConsume
 
   initSearchController() {
     _searchFieldController.addListener(() {
-      _provider.searchString = _searchFieldController.text;
+      _bloc.searchString = _searchFieldController.text;
     });
   }
 
@@ -70,7 +69,7 @@ class LoadoutsHomeViewState extends State<LoadoutsHomeView> with LoadoutsConsume
           buildSearchButton(context),
           IconButton(
             icon: Icon(Icons.refresh),
-            onPressed: () => _provider.loadLoadouts(forceFetch: true),
+            onPressed: () => _bloc.reloadLoadouts(),
           )
         ],
         title: buildTitle(context));
@@ -92,7 +91,7 @@ class LoadoutsHomeViewState extends State<LoadoutsHomeView> with LoadoutsConsume
     return IconButton(
         enableFeedback: false,
         icon: _state.searchOpen ? Icon(FontAwesomeIcons.times) : Icon(FontAwesomeIcons.search),
-        onPressed: () => _provider.toggleSearch());
+        onPressed: () => _bloc.toggleSearch());
   }
 
   Widget buildReorderButton(BuildContext context) {
@@ -102,13 +101,13 @@ class LoadoutsHomeViewState extends State<LoadoutsHomeView> with LoadoutsConsume
         icon: _state.reordering
             ? Icon(FontAwesomeIcons.check)
             : Transform.rotate(angle: pi / 2, child: Icon(FontAwesomeIcons.exchangeAlt)),
-        onPressed: () => _provider.toggleReordering());
+        onPressed: () => _bloc.toggleReordering());
   }
 
   void createNew() async {
     var newLoadout = await Navigator.push(context, EditLoadoutPageRoute.create());
     if (newLoadout != null) {
-      _provider.loadLoadouts();
+      _bloc.reloadLoadouts();
     }
   }
 
@@ -141,7 +140,7 @@ class LoadoutsHomeViewState extends State<LoadoutsHomeView> with LoadoutsConsume
         },
         itemExtent: 56,
         padding: EdgeInsets.all(8).copyWith(left: max(screenPadding.left, 8), right: max(screenPadding.right, 8)),
-        onReorder: (oldIndex, newIndex) => _provider.reorderLoadouts(oldIndex, newIndex));
+        onReorder: (oldIndex, newIndex) => _bloc.reorderLoadouts(oldIndex, newIndex));
   }
 
   Widget buildHandle(BuildContext context, int index) {
@@ -151,7 +150,7 @@ class LoadoutsHomeViewState extends State<LoadoutsHomeView> with LoadoutsConsume
   }
 
   Widget buildSortItem(BuildContext context, int index) {
-    final loadout = _state.loadouts![index].loadout;
+    final loadout = _state.loadouts![index];
     return Container(
         key: Key("loadout-${loadout.assignedId}"),
         padding: EdgeInsets.symmetric(vertical: 4),
@@ -189,10 +188,10 @@ class LoadoutsHomeViewState extends State<LoadoutsHomeView> with LoadoutsConsume
     if (_state.isEmpty) {
       return buildNoLoadoutsBody(context);
     }
-    bool isTablet = MediaQueryHelper(context).tabletOrBigger;
     return MasonryGridView.count(
+      key: Key("loadouts_grid_${_state.lastUpdated}"),
       itemCount: loadouts.length,
-      crossAxisCount: isTablet ? 2 : 1,
+      crossAxisCount: MediaQueryHelper(context).responsiveValue<int>(1, tablet: 2, laptop: 3),
       itemBuilder: (context, index) => getItem(context, index),
     );
   }
@@ -220,23 +219,7 @@ class LoadoutsHomeViewState extends State<LoadoutsHomeView> with LoadoutsConsume
     final loadout = _state.loadouts![index];
     return LoadoutListItemWidget(
       loadout,
-      key: Key("loadout_${loadout.loadout.assignedId}_$index"),
-      onAction: (action) => onItemAction(action, loadout),
+      onAction: (action) => _bloc.onItemAction(action, loadout),
     );
-  }
-
-  void onItemAction(LoadoutListItemAction action, LoadoutItemIndex loadout) async {
-    switch (action) {
-      case LoadoutListItemAction.Equip:
-        // TODO: Handle this case.
-        break;
-      case LoadoutListItemAction.Edit:
-        final id = loadout.loadout.assignedId;
-        if (id == null) return;
-        Navigator.of(context).push(EditLoadoutPageRoute.edit(id));
-        break;
-      case LoadoutListItemAction.Delete:
-        break;
-    }
   }
 }

@@ -13,10 +13,10 @@ import 'package:flutter/material.dart';
 import 'package:little_light/models/game_data.dart';
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
+import 'package:little_light/modules/loadouts/blocs/loadouts.bloc.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/inventory/inventory.package.dart';
 import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
-import 'package:little_light/services/littlelight/loadouts.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
@@ -27,6 +27,7 @@ import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/option_sheets/free_slots_slider.widget.dart';
 import 'package:little_light/widgets/option_sheets/loadout_select_sheet.widget.dart';
+import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
 class CharacterOptionsSheet extends StatefulWidget {
@@ -41,13 +42,7 @@ class CharacterOptionsSheet extends StatefulWidget {
 }
 
 class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
-    with
-        UserSettingsConsumer,
-        LittleLightDataConsumer,
-        LoadoutsConsumer,
-        ProfileConsumer,
-        InventoryConsumer,
-        ManifestConsumer {
+    with UserSettingsConsumer, LittleLightDataConsumer, ProfileConsumer, InventoryConsumer, ManifestConsumer {
   Map<int, DestinyItemComponent> maxLightLoadout;
   Map<int, DestinyItemComponent> underAverageSlots;
   double maxLight;
@@ -55,7 +50,6 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
   bool beyondPowerfulCap = false;
   double currentLight;
   double achievableLight;
-  List<Loadout> loadouts;
   List<DestinyItemComponent> itemsInPostmaster;
 
   final TextStyle headerStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 12);
@@ -63,7 +57,6 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
   final TextStyle buttonStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 12);
 
   bool loadoutWeapons = true;
-
   bool loadoutArmor = true;
 
   GameData gameData;
@@ -73,14 +66,6 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
     super.initState();
     getItemsInPostmaster();
     getMaxLightLoadout();
-    getLoadouts();
-  }
-
-  void getLoadouts() async {
-    this.loadouts = await loadoutService.getLoadouts();
-    if (mounted) {
-      setState(() {});
-    }
   }
 
   void getItemsInPostmaster() {
@@ -259,7 +244,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
                 loadout.addEquippedItem(item);
               }
             }
-            inventory.transferLoadout(loadout.loadout, widget.character.characterId, true);
+            inventory.transferLoadout(loadout, widget.character.characterId, true);
           },
         )),
         Container(width: 4),
@@ -295,6 +280,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
   }
 
   Widget buildLoadoutBlock() {
+    final loadouts = context.watch<LoadoutsBloc>().loadouts;
     if ((loadouts?.length ?? 0) == 0) {
       return Container();
     }
@@ -488,7 +474,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
 
   Future<LoadoutItemIndex> createLoadout([includeUnequipped = false]) async {
     var itemIndex = await LoadoutItemIndex.buildfromLoadout(Loadout());
-    itemIndex.loadout.emblemHash = widget.character.emblemHash;
+    itemIndex.emblemHash = widget.character.emblemHash;
     // TODO: rework
     // var slots = LoadoutItemIndex.classBucketHashes + LoadoutItemIndex.genericBucketHashes;
     // var equipment = profile.getCharacterEquipment(widget.character.characterId);
@@ -562,7 +548,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
       randomLoadout.addEquippedItem(item.item);
     }
 
-    inventory.transferLoadout(randomLoadout.loadout, widget.character.characterId, true);
+    inventory.transferLoadout(randomLoadout, widget.character.characterId, true);
   }
 
   getMaxLightLoadout() async {

@@ -17,7 +17,7 @@ import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
 typedef OnRemoveItemFromLoadout = void Function(LoadoutIndexItem item, bool equipped);
-typedef OnAddItemToLoadout = void Function(DestinyClass classType, bool equipped);
+typedef OnAddItemToLoadout = void Function(DestinyClass? classType, bool equipped);
 
 class LoadoutSlotWidget extends StatelessWidget with ProfileConsumer, ManifestConsumer {
   final DestinyInventoryBucketDefinition? bucketDefinition;
@@ -95,15 +95,14 @@ class LoadoutSlotWidget extends StatelessWidget with ProfileConsumer, ManifestCo
     return Container(padding: EdgeInsets.symmetric(vertical: 4), child: Wrap(children: items));
   }
 
-  Widget buildItemIcon(BuildContext context,
-      {LoadoutIndexItem? item, DestinyClass classType = DestinyClass.Unknown, bool equipped = true}) {
-    BoxDecoration? decoration = item != null && bucketDefinition?.hash == InventoryBucket.subclass
+  Widget buildItemIcon(BuildContext context, {LoadoutIndexItem? item, DestinyClass? classType, bool equipped = true}) {
+    BoxDecoration? decoration = item?.item != null && bucketDefinition?.hash == InventoryBucket.subclass
         ? null
         : BoxDecoration(border: Border.all(width: 1, color: Colors.grey.shade300));
 
     IconData? iconData;
     Widget icon;
-    if (item == null) {
+    if (item?.item == null) {
       icon = Positioned.fill(
           child: Container(
               alignment: Alignment.center,
@@ -137,8 +136,8 @@ class LoadoutSlotWidget extends StatelessWidget with ProfileConsumer, ManifestCo
           Material(
               color: Colors.transparent,
               child: InkWell(onTap: () {
-                if (item != null) {
-                  onOptions?.call(item, equipped);
+                if (item?.item != null) {
+                  onOptions?.call(item!, equipped);
                 } else {
                   onAdd?.call(classType, equipped);
                 }

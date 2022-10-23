@@ -7,7 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/loadout.dart';
-import 'package:little_light/modules/loadouts/pages/equip/equip_loadout.screen.dart';
+import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
+import 'package:little_light/modules/loadouts/pages/equip/equip_loadout.page_route.dart';
+import 'package:little_light/modules/loadouts/pages/equip/equip_loadout.view.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
@@ -15,7 +17,7 @@ import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/item_details/section_header.widget.dart';
 
 class ItemDetailLoadoutsWidget extends BaseDestinyStatefulItemWidget {
-  final List<Loadout> loadouts;
+  final List<LoadoutItemIndex> loadouts;
 
   ItemDetailLoadoutsWidget(
       DestinyItemComponent item, DestinyInventoryItemDefinition definition, DestinyItemInstanceComponent instanceInfo,
@@ -68,7 +70,7 @@ class ItemDetailLoadoutsWidgetState extends BaseDestinyItemState<ItemDetailLoado
     );
   }
 
-  Widget buildLoadoutItem(Loadout loadout, BuildContext context) {
+  Widget buildLoadoutItem(LoadoutItemIndex loadout, BuildContext context) {
     return Container(
         color: LittleLightTheme.of(context).upgradeLayers,
         margin: EdgeInsets.only(bottom: 4),
@@ -97,10 +99,7 @@ class ItemDetailLoadoutsWidgetState extends BaseDestinyItemState<ItemDetailLoado
             color: Colors.transparent,
             child: InkWell(
               onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => EquipLoadoutScreen(
-                          loadout: loadout,
-                        )));
+                Navigator.of(context).push(EquipLoadoutPageRoute(loadout.assignedId));
               },
             ),
           ))

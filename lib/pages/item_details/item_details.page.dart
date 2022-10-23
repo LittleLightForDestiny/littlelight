@@ -9,19 +9,18 @@ import 'package:bungie_api/models/destiny_stat_group_definition.dart';
 import 'package:bungie_api/models/destiny_vendor_sale_item_component.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:little_light/models/loadout.dart';
+import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
+import 'package:little_light/modules/loadouts/blocs/loadouts.bloc.dart';
 import 'package:little_light/pages/item_details/item_details.page_route.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/inventory/inventory.consumer.dart';
 import 'package:little_light/services/littlelight/item_notes.consumer.dart';
-import 'package:little_light/services/littlelight/loadouts.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_with_owner.dart';
-import 'package:little_light/utils/loadout_utils.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -53,6 +52,7 @@ import 'package:little_light/widgets/item_stats/details_item_stats.widget.dart';
 import 'package:little_light/widgets/item_tags/item_details_tags.widget.dart';
 import 'package:little_light/widgets/option_sheets/as_equipped_switch.widget.dart';
 import 'package:little_light/widgets/option_sheets/loadout_select_sheet.widget.dart';
+import 'package:provider/provider.dart';
 
 class ItemDetailsPage extends StatefulWidget {
   ItemDetailsPage({
@@ -64,7 +64,7 @@ class ItemDetailsPage extends StatefulWidget {
 }
 
 class ItemDetailScreenState extends State<ItemDetailsPage>
-    with AuthConsumer, LoadoutsConsumer, ProfileConsumer, InventoryConsumer, ManifestConsumer, ItemNotesConsumer {
+    with AuthConsumer, ProfileConsumer, InventoryConsumer, ManifestConsumer, ItemNotesConsumer {
   ItemDetailsPageArgumentsBase get routeArgs {
     final args = ModalRoute.of(context).settings.arguments;
     if (args is ItemDetailsPageArgumentsBase) return args;
@@ -88,7 +88,7 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
   ItemSocketController socketController;
   DestinyStatGroupDefinition statGroupDefinition;
   List<ItemWithOwner> duplicates;
-  List<Loadout> loadouts;
+  List<LoadoutItemIndex> loadouts;
   bool loaded = false;
 
   int get itemHash => routeArgs.itemHash;
@@ -168,12 +168,9 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
   }
 
   findLoadouts() async {
-    var allLoadouts = await loadoutService.getLoadouts();
-    loadouts = allLoadouts.where((loadout) {
-      var equip = loadout.equipped.where((element) => element.itemInstanceId == item?.itemInstanceId);
-      var unequip = loadout.unequipped.where((element) => element.itemInstanceId == item?.itemInstanceId);
-      return equip.length > 0 || unequip.length > 0;
-    }).toList();
+    final allLoadouts = context.read<LoadoutsBloc>().loadouts;
+    if (item?.itemInstanceId == null) return;
+    loadouts = allLoadouts.where((l) => l.containsItem(item.itemInstanceId)).toList() ?? [];
   }
 
   findDuplicates() async {
@@ -442,7 +439,7 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
                 softWrap: false,
               ),
               onPressed: () async {
-                var loadouts = await loadoutService.getLoadouts();
+                var loadouts = context.read<LoadoutsBloc>().loadouts;
                 var equipped = false;
                 showModalBottomSheet(
                     context: context,
@@ -454,8 +451,8 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
                         ),
                         loadouts: loadouts,
                         onSelect: (loadout) async {
-                          loadout.addItem(item.itemHash, item.itemInstanceId, equipped);
-                          await loadoutService.saveLoadout(loadout);
+                          loadout.addItem(item, equipped);
+                          context.read<LoadoutsBloc>().saveLoadout(loadout);
                         }));
               })));
     }

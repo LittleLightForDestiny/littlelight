@@ -1,12 +1,13 @@
 // @dart=2.9
 
 import 'package:flutter/material.dart';
-import 'package:little_light/models/loadout.dart';
-import 'package:little_light/services/littlelight/loadouts.consumer.dart';
+import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
+import 'package:little_light/modules/loadouts/blocs/loadouts.bloc.dart';
 import 'package:little_light/utils/item_filters/loadout_filter.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/search/search.controller.dart';
 import 'package:little_light/widgets/search/search_filters/base_search_filter.widget.dart';
+import 'package:provider/provider.dart';
 
 class LoadoutFilterWidget extends BaseSearchFilterWidget<LoadoutFilter> {
   LoadoutFilterWidget(SearchController controller) : super(controller);
@@ -15,20 +16,18 @@ class LoadoutFilterWidget extends BaseSearchFilterWidget<LoadoutFilter> {
   _LoadoutFilterWidgetState createState() => _LoadoutFilterWidgetState();
 }
 
-class _LoadoutFilterWidgetState extends BaseSearchFilterWidgetState<LoadoutFilterWidget, LoadoutFilter, Loadout>
-    with LoadoutsConsumer {
-  List<Loadout> allLoadouts;
-
+class _LoadoutFilterWidgetState
+    extends BaseSearchFilterWidgetState<LoadoutFilterWidget, LoadoutFilter, LoadoutItemIndex> {
   @override
-  Iterable<Loadout> get options {
+  Iterable<LoadoutItemIndex> get options {
     var values = filter.availableValues.toList();
+    final allLoadouts = context.watch<LoadoutsBloc>().loadouts;
     if (allLoadouts == null) return [];
     return allLoadouts.where((l) => values.contains(l.assignedId));
   }
 
   @override
   onUpdate() async {
-    allLoadouts = await loadoutService.getLoadouts();
     return super.onUpdate();
   }
 
@@ -39,10 +38,9 @@ class _LoadoutFilterWidgetState extends BaseSearchFilterWidgetState<LoadoutFilte
   }
 
   @override
-  Widget buildButtonLabel(BuildContext context, Loadout value) {
-    return TranslatedTextWidget(
-      value.name,
-      uppercase: true,
+  Widget buildButtonLabel(BuildContext context, LoadoutItemIndex value) {
+    return Text(
+      value.name?.toUpperCase() ?? "",
       overflow: TextOverflow.fade,
       maxLines: 1,
       softWrap: false,
@@ -58,7 +56,7 @@ class _LoadoutFilterWidgetState extends BaseSearchFilterWidgetState<LoadoutFilte
   }
 
   @override
-  valueToFilter(Loadout value) {
+  valueToFilter(LoadoutItemIndex value) {
     return value.assignedId;
   }
 

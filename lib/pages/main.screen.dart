@@ -8,7 +8,6 @@ import 'package:little_light/pages/progress/progress.screen.dart';
 import 'package:little_light/pages/triumphs/triumphs_root.page.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/littlelight/item_notes.consumer.dart';
-import 'package:little_light/services/littlelight/loadouts.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
@@ -24,7 +23,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class MainScreenState extends State<MainScreen>
-    with AuthConsumer, UserSettingsConsumer, LoadoutsConsumer, ProfileConsumer, ItemNotesConsumer {
+    with AuthConsumer, UserSettingsConsumer, ProfileConsumer, ItemNotesConsumer {
   Widget currentScreen;
 
   @override
@@ -36,7 +35,6 @@ class MainScreenState extends State<MainScreen>
 
   initUpdaters() async {
     auth.getMembershipData();
-    await loadoutService.getLoadouts(forceFetch: true);
     await itemNotes.getNotes(forceFetch: true);
   }
 

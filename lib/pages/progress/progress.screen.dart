@@ -201,10 +201,8 @@ class ProgressScreenState extends State<ProgressScreen>
                 context,
                 MaterialPageRoute(
                   builder: (context) => SearchScreen(
-                    controller: SearchController.withDefaultFilters(
-                        firstRunFilters: [
-                          PseudoItemTypeFilter(types, types)
-                        ],
+                    controller: SearchController.withDefaultFilters(context,
+                        firstRunFilters: [PseudoItemTypeFilter(types, types)],
                         preFilters: [
                           ItemOwnerFilter([char.characterId].toSet()),
                           PseudoItemTypeFilter(types, types),

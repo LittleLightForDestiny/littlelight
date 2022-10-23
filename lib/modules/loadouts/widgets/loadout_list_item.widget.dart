@@ -54,7 +54,7 @@ class LoadoutListItemWidget extends StatelessWidget {
   }
 
   Widget buildTitleBar(BuildContext context) {
-    final emblemHash = loadout.loadout.emblemHash;
+    final emblemHash = loadout.emblemHash;
     if (emblemHash == null) {
       return buildTitle(context);
     }
@@ -74,7 +74,7 @@ class LoadoutListItemWidget extends StatelessWidget {
         );
       },
       placeholder: buildTitle(context),
-      key: Key("emblem_${loadout.loadout.emblemHash}"),
+      key: Key("emblem_${loadout.emblemHash}"),
     );
   }
 
@@ -83,7 +83,7 @@ class LoadoutListItemWidget extends StatelessWidget {
         padding: EdgeInsets.all(16),
         alignment: Alignment.centerLeft,
         child: Text(
-          loadout.loadout.name.toUpperCase(),
+          loadout.name.toUpperCase(),
           style: TextStyle(color: Colors.grey.shade200, fontWeight: FontWeight.bold),
         ));
   }
@@ -232,9 +232,10 @@ class LoadoutListItemWidget extends StatelessWidget {
     final profile = getInjectedProfileService();
     final instance = profile.getInstanceInfo(item.itemInstanceId);
     return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
-        item.itemHash!,
-        (def) => ItemIconWidget.builder(
-            item: item, definition: def, instanceInfo: instance, key: Key("item_icon_${item.itemInstanceId}")));
+      item.itemHash!,
+      (def) => ItemIconWidget.builder(item: item, definition: def, instanceInfo: instance),
+      key: Key("item_icon_${item.itemInstanceId}"),
+    );
   }
 
   List<Widget> buildItemRow(

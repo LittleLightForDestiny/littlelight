@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:little_light/core/blocs/language/language.bloc.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:little_light/services/analytics/analytics.service.dart';
 import 'package:little_light/services/app_config/app_config.consumer.dart';
@@ -9,11 +11,8 @@ import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/services/inventory/inventory.service.dart';
-import 'package:little_light/core/blocs/language/language.consumer.dart';
-import 'package:little_light/core/blocs/language/language.bloc.dart';
 import 'package:little_light/services/littlelight/item_notes.service.dart';
 import 'package:little_light/services/littlelight/littlelight_data.service.dart';
-import 'package:little_light/services/littlelight/loadouts.service.dart';
 import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/notification/notification.service.dart';
@@ -53,7 +52,6 @@ Future<void> setupServices() async {
   await setupLittleLightDataService();
   await setupWishlistsService();
   await setupBungieApiService();
-  await setupLoadoutsService();
   await setupNotificationService();
   await setupSelectionService();
   await setupitemNotes();

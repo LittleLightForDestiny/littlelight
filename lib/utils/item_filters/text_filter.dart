@@ -1,24 +1,26 @@
 // @dart=2.9
 
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
-import 'package:little_light/models/loadout.dart';
+import 'package:flutter/material.dart';
+import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
+import 'package:little_light/modules/loadouts/blocs/loadouts.bloc.dart';
 import 'package:little_light/services/littlelight/item_notes.consumer.dart';
-import 'package:little_light/services/littlelight/loadouts.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/remove_diacritics.dart';
+import 'package:provider/provider.dart';
 
 import 'base_item_filter.dart';
 
-class TextFilter extends BaseItemFilter<String>
-    with LoadoutsConsumer, WishlistsConsumer, ProfileConsumer, ItemNotesConsumer {
-  List<Loadout> loadouts;
-  TextFilter({initialText = "", enabled = true}) : super(null, initialText, enabled: enabled);
+class TextFilter extends BaseItemFilter<String> with WishlistsConsumer, ProfileConsumer, ItemNotesConsumer {
+  final BuildContext context;
+  List<LoadoutItemIndex> loadouts;
+  TextFilter(this.context, {initialText = "", enabled = true}) : super(null, initialText, enabled: enabled);
 
   Future<List<ItemWithOwner>> filter(List<ItemWithOwner> items,
       {Map<int, DestinyInventoryItemDefinition> definitions}) async {
-    loadouts = await loadoutService.getLoadouts();
+    loadouts = context.read<LoadoutsBloc>().loadouts;
     return super.filter(items, definitions: definitions);
   }
 
@@ -41,11 +43,12 @@ class TextFilter extends BaseItemFilter<String>
     final wishlistTags =
         wishlistsService.getWishlistBuildTags(itemHash: item.item.itemHash, reusablePlugs: reusablePlugs);
 
-    var loadoutNames = this.loadouts.where((l) {
-      var equipped = l.equipped.where((e) => e.itemInstanceId == item.item.itemInstanceId);
-      var unequipped = l.unequipped.where((e) => e.itemInstanceId == item.item.itemInstanceId);
-      return equipped.length > 0 || unequipped.length > 0;
-    }).map((l) => l.name ?? "");
+    var loadoutNames = this
+        .loadouts
+        .where(
+          (l) => l.containsItem(item.item.itemInstanceId),
+        )
+        .map((l) => l.name ?? "");
 
     var customName =
         itemNotes.getNotesForItem(item?.item?.itemHash, item?.item?.itemInstanceId)?.customName?.toLowerCase() ?? "";

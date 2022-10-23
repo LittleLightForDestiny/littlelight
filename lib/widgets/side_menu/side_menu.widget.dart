@@ -21,6 +21,7 @@ import 'package:little_light/pages/vendors/vendors.screen.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/utils/platform_data.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:little_light/widgets/search/search.controller.dart';
 import 'package:little_light/widgets/side_menu/profile_info.widget.dart';
 import 'package:little_light/widgets/side_menu/side_menu_settings.widget.dart';
 
@@ -88,7 +89,8 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer {
                 open(context, TriumphsRootPage());
               }),
               menuItem(context, TranslatedTextWidget("Duplicated Items"), onTap: () {
-                open(context, DuplicatedItemsScreen());
+                open(context,
+                    DuplicatedItemsScreen(searchController: SearchController.withDuplicatedItemsFilters(context)));
               }),
               menuItem(context, TranslatedTextWidget("About"), onTap: () {
                 open(context, AboutScreen());
