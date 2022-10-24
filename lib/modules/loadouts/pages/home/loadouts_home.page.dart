@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:little_light/modules/loadouts/blocs/loadouts.bloc.dart';
-import 'package:little_light/modules/loadouts/pages/home/loadouts_home.bloc.dart';
-import 'package:little_light/modules/loadouts/pages/home/loadouts_home.view.dart';
 import 'package:provider/provider.dart';
+
+import 'loadouts_home.bloc.dart';
+import 'loadouts_home.view.dart';
 
 class LoadoutsHomePage extends StatelessWidget {
   @override

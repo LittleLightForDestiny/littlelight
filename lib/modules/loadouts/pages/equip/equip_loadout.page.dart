@@ -13,6 +13,7 @@ class EquipLoadoutPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        Provider<EquipLoadoutPageRouteArguments>.value(value: args),
         ChangeNotifierProvider<EquipLoadoutBloc>(
           create: (context) => EquipLoadoutBloc(
             context,

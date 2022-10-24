@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
 import 'package:little_light/modules/loadouts/blocs/loadouts.bloc.dart';
 import 'package:little_light/modules/loadouts/pages/edit/edit_loadout.page_route.dart';
+import 'package:little_light/modules/loadouts/pages/equip/equip_loadout.page_route.dart';
 import 'package:little_light/modules/loadouts/widgets/loadout_list_item.widget.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/profile/profile_component_groups.dart';
@@ -88,8 +89,10 @@ class LoadoutsHomeBloc extends ChangeNotifier with ProfileConsumer, UserSettings
   void onItemAction(LoadoutListItemAction action, LoadoutItemIndex loadout) async {
     switch (action) {
       case LoadoutListItemAction.Equip:
-        // TODO: Handle this case.
+        final id = loadout.assignedId;
+        await Navigator.of(context).push(EquipLoadoutPageRoute(id));
         break;
+
       case LoadoutListItemAction.Edit:
         final id = loadout.assignedId;
         await Navigator.of(context).push(EditLoadoutPageRoute.edit(id));

@@ -90,13 +90,14 @@ class LoadoutListItemWidget extends StatelessWidget {
 
   Widget buildButtonBar(BuildContext context) {
     return Container(
-        color: Theme.of(context).colorScheme.secondaryContainer,
-        padding: EdgeInsets.all(4).copyWith(top: 0),
-        child: Row(children: [
+      color: Theme.of(context).colorScheme.secondaryContainer,
+      padding: EdgeInsets.all(4).copyWith(top: 0),
+      child: Row(
+        children: [
           Expanded(
-              child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 2),
-            child: ElevatedButton(
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 2),
+              child: ElevatedButton(
                 style: ButtonStyle(visualDensity: VisualDensity.comfortable),
                 child: TranslatedTextWidget("Equip",
                     maxLines: 1,
@@ -104,58 +105,44 @@ class LoadoutListItemWidget extends StatelessWidget {
                     overflow: TextOverflow.fade,
                     uppercase: true,
                     style: TextStyle(fontWeight: FontWeight.bold)),
-                onPressed: () => onAction(LoadoutListItemAction.Equip)
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //     builder: (context) => EquipLoadoutScreen(loadout: loadout.loadout),
-                //   ),
-                // );
-                ),
-          )),
+                onPressed: () => onAction(LoadoutListItemAction.Equip),
+              ),
+            ),
+          ),
           Expanded(
-              child: Container(
-                  padding: EdgeInsets.all(2),
-                  child: ElevatedButton(
-                      style: ButtonStyle(visualDensity: VisualDensity.comfortable),
-                      child: TranslatedTextWidget("Edit",
-                          uppercase: true,
-                          maxLines: 1,
-                          softWrap: false,
-                          overflow: TextOverflow.fade,
-                          style: TextStyle(fontWeight: FontWeight.bold)),
-                      onPressed: () => onAction(LoadoutListItemAction.Edit)
-
-                      // TODO: update to use pageroute
-                      // var loadout = await Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => EditLoadoutPage(loadout: loadout.loadout),
-                      //   ),
-                      // );
-                      // if (loadout != null) {
-                      //   loadout.loadout = loadout;
-                      //   await buildItemIndex();
-                      //   if (widget.onChange != null) {
-                      //     widget.onChange();
-                      //   }
-                      // }
-                      ))),
+            child: Container(
+              padding: EdgeInsets.all(2),
+              child: ElevatedButton(
+                style: ButtonStyle(visualDensity: VisualDensity.comfortable),
+                child: TranslatedTextWidget("Edit",
+                    uppercase: true,
+                    maxLines: 1,
+                    softWrap: false,
+                    overflow: TextOverflow.fade,
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                onPressed: () => onAction(LoadoutListItemAction.Edit),
+              ),
+            ),
+          ),
           Expanded(
-              child: Container(
-                  padding: EdgeInsets.all(2),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        visualDensity: VisualDensity.comfortable, primary: Theme.of(context).errorColor),
-                    child: TranslatedTextWidget("Delete",
-                        maxLines: 1,
-                        softWrap: false,
-                        overflow: TextOverflow.fade,
-                        uppercase: true,
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                    onPressed: () => onAction(LoadoutListItemAction.Delete),
-                  )))
-        ]));
+            child: Container(
+              padding: EdgeInsets.all(2),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    visualDensity: VisualDensity.comfortable, primary: Theme.of(context).errorColor),
+                child: TranslatedTextWidget("Delete",
+                    maxLines: 1,
+                    softWrap: false,
+                    overflow: TextOverflow.fade,
+                    uppercase: true,
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                onPressed: () => onAction(LoadoutListItemAction.Delete),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   // Future<void> deletePressed(BuildContext context) async {

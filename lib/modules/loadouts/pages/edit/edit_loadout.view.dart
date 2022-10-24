@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
-import 'package:little_light/modules/loadouts/pages/edit/edit_loadout.bloc.dart';
 import 'package:little_light/modules/loadouts/pages/select_background/select_loadout_background.page_route.dart';
 import 'package:little_light/modules/loadouts/widgets/loadout_slot.widget.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
@@ -15,6 +14,8 @@ import 'package:little_light/widgets/multisection_scrollview/multisection_scroll
 import 'package:little_light/widgets/multisection_scrollview/sliver_section.dart';
 import 'package:provider/provider.dart';
 
+import 'edit_loadout.bloc.dart';
+
 class EditLoadoutView extends StatefulWidget {
   final bool forceCreate;
   EditLoadoutView({Key? key, this.forceCreate = false}) : super(key: key);
@@ -25,15 +26,15 @@ class EditLoadoutView extends StatefulWidget {
 
 class EditLoadoutViewState extends State<EditLoadoutView> with ManifestConsumer {
   TextEditingController _nameFieldController = TextEditingController();
-  EditLoadoutBloc get _provider => context.read<EditLoadoutBloc>();
+  EditLoadoutBloc get _bloc => context.read<EditLoadoutBloc>();
   EditLoadoutBloc get _state => context.watch<EditLoadoutBloc>();
 
   @override
   initState() {
     super.initState();
-    _nameFieldController.text = _provider.loadoutName;
+    _nameFieldController.text = _bloc.loadoutName;
     _nameFieldController.addListener(() {
-      _provider.loadoutName = _nameFieldController.text;
+      _bloc.loadoutName = _nameFieldController.text;
     });
   }
 
@@ -44,7 +45,7 @@ class EditLoadoutViewState extends State<EditLoadoutView> with ManifestConsumer 
   }
 
   Color get backgroundColor {
-    final emblemDefinition = _provider.emblemDefinition;
+    final emblemDefinition = _state.emblemDefinition;
     final bgColor = emblemDefinition?.backgroundColor;
     final background = Theme.of(context).colorScheme.background;
     if (bgColor == null) return background;
@@ -117,7 +118,7 @@ class EditLoadoutViewState extends State<EditLoadoutView> with ManifestConsumer 
         child: ElevatedButton(
           child: TranslatedTextWidget("Select Loadout Background"),
           onPressed: () async {
-            _provider.emblemHash = await Navigator.of(context).push<int?>(SelectLoadoutBackgroundPageRoute());
+            _bloc.emblemHash = await Navigator.of(context).push<int?>(SelectLoadoutBackgroundPageRoute());
           },
         ));
   }
@@ -135,10 +136,10 @@ class EditLoadoutViewState extends State<EditLoadoutView> with ManifestConsumer 
       key: Key("loadout_slot_$hash"),
       slot: slot,
       onAdd: (classType, equipped) {
-        _provider.selectItemToAdd(classType, hash, equipped);
+        _bloc.selectItemToAdd(classType, hash, equipped);
       },
       onOptions: (item, equipped) {
-        _provider.openItemOptions(item, equipped);
+        _bloc.openItemOptions(item, equipped);
       },
     );
   }
@@ -159,7 +160,7 @@ class EditLoadoutViewState extends State<EditLoadoutView> with ManifestConsumer 
               child: ElevatedButton(
                   child: TranslatedTextWidget("Save Loadout"),
                   onPressed: () {
-                    _provider.save();
+                    _bloc.save();
                   }),
             )
           ],

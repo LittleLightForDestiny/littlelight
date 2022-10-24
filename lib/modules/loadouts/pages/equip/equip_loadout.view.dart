@@ -2,11 +2,12 @@ import 'dart:math';
 
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
-import 'package:little_light/modules/loadouts/widgets/loadout_destinations.widget.dart';
+import 'package:little_light/modules/loadouts/pages/equip/equip_loadout.bloc.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
+import 'package:little_light/utils/color_utils.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
@@ -14,140 +15,204 @@ import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-import 'package:little_light/widgets/flutter/center_icon_workaround.dart';
+import 'package:little_light/widgets/transfer_destinations/transfer_destinations.widget.dart';
+import 'package:provider/provider.dart';
 
-class EquipLoadoutView extends StatelessWidget {
-  // Color get emblemColor {
-  //   if (emblemDefinition == null) return Theme.of(context).colorScheme.background;
-  //   Color color = Color.fromRGBO(emblemDefinition.backgroundColor.red, emblemDefinition.backgroundColor.green,
-  //       emblemDefinition.backgroundColor.blue, 1.0);
-  //   return Color.lerp(color, Theme.of(context).colorScheme.background, .5);
-  // }
+class EquipLoadoutView extends StatelessWidget with ProfileConsumer {
+  EquipLoadoutBloc _bloc(BuildContext context) => context.read<EquipLoadoutBloc>();
+  EquipLoadoutBloc _state(BuildContext context) => context.watch<EquipLoadoutBloc>();
+
+  Color getBackgroundColor(BuildContext context) {
+    final emblemDefinition = _state(context).emblemDefinition;
+    final bgColor = emblemDefinition?.backgroundColor;
+    final background = Theme.of(context).colorScheme.background;
+    if (bgColor == null) return background;
+    return Color.lerp(bgColor.toMaterialColor(), background, .5) ?? background;
+  }
 
   @override
   Widget build(BuildContext context) {
-    final screenPadding = MediaQuery.of(context).padding;
     return Scaffold(
-        // backgroundColor: emblemColor,
-        // appBar: AppBar(title: Text(widget.loadout.name), flexibleSpace: buildAppBarBackground(context)),
-        // bottomNavigationBar: LoadoutDestinationsWidget(widget.loadout),
-        body: Container(
-            alignment: Alignment.center,
-            child: Container(
-                constraints: BoxConstraints(maxWidth: 500),
-                child: ListView(
-                    padding: EdgeInsets.all(8)
-                        .copyWith(top: 0, left: max(screenPadding.left, 8), right: max(screenPadding.right, 8)),
-                    children: <Widget>[
-                      HeaderWidget(child: TranslatedTextWidget("Items to Equip", uppercase: true)),
-                      Container(padding: EdgeInsets.all(8), child: buildEquippedItems(context)),
-                      // (_loadout?.unequippedItemCount ?? 0) == 0
-                      //     ? Container()
-                      //     : HeaderWidget(
-                      //         child: TranslatedTextWidget("Items to Transfer", uppercase: true),
-                      //       ),
-                      // (_loadout?.unequippedItemCount ?? 0) == 0
-                      //     ? Container()
-                      //     : Container(padding: EdgeInsets.all(8), child: buildUnequippedItems(context)),
-                    ]))));
-  }
-
-  buildAppBarBackground(BuildContext context) {
-    // if (widget.loadout.emblemHash == null) {
-    //   return Container();
-    // }
-    // return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
-    //     widget.loadout.emblemHash,
-    //     (def) => Container(
-    //         constraints: BoxConstraints.expand(),
-    //         child: QueuedNetworkImage(
-    //             imageUrl: BungieApiService.url(def.secondarySpecial),
-    //             fit: BoxFit.cover,
-    //             alignment: Alignment(-.8, 0))));
-    return Container();
-  }
-
-  Widget buildEquippedItems(BuildContext context) {
-    // if (_loadout == null)
-    //   return Container(
-    //     child: AspectRatio(
-    //       aspectRatio: 1,
-    //     ),
-    //   );
-    List<Widget> icons = [];
-    icons.add(CenterIconWorkaround(DestinyClass.Unknown.icon));
-    for (final hash in LoadoutItemIndex.genericBucketHashes) {}
-
-    // icons.addAll(
-    //     buildItemRow(context, DestinyClass.Unknown.icon, LoadoutItemIndex.genericBucketHashes, _itemIndex.generic));
-
-    // DestinyClass.values.forEach((classType) {
-    //   Map<int, DestinyItemComponent> items =
-    //       _itemIndex.classSpecific.map((bucketHash, items) => MapEntry(bucketHash, items[classType]));
-    //   if (items.values.any((i) => i != null)) {
-    //     icons.addAll(
-    //         buildItemRow(context, DestinyData.getClassIcon(classType), LoadoutItemIndex.classBucketHashes, items));
-    //   }
-    // });
-
-    return Wrap(
-      children: icons,
+      backgroundColor: getBackgroundColor(context),
+      appBar: buildAppBar(context),
+      body: Container(
+        alignment: Alignment.center,
+        child: buildBody(context),
+      ),
     );
   }
 
-  Widget buildUnequippedItems(BuildContext context) {
-    return Container();
-    // TODO: rework
-    // if (_itemIndex == null)
-    //   return Container(
-    //     child: AspectRatio(
-    //       aspectRatio: 1,
-    //     ),
-    //   );
-    // if (_itemIndex.unequipped == null) return Container();
-    // List<DestinyItemComponent> items = [];
-    // List<int> bucketHashes = LoadoutItemIndex.genericBucketHashes + LoadoutItemIndex.classBucketHashes;
-    // bucketHashes.forEach((bucketHash) {
-    //   if (_itemIndex.unequipped[bucketHash] != null) {
-    //     items += _itemIndex.unequipped[bucketHash];
-    //   }
-    // });
-    // return Wrap(
-    //   children: items
-    //       .map((item) => FractionallySizedBox(
-    //           widthFactor: 1 / 7,
-    //           child: Container(padding: EdgeInsets.all(4), child: AspectRatio(aspectRatio: 1, child: itemIcon(item)))))
-    //       .toList(),
-    // );
+  AppBar buildAppBar(BuildContext context) => AppBar(
+        title: Text(_state(context).loadoutName),
+        flexibleSpace: buildAppBarBackground(context),
+      );
+
+  Widget buildAppBarBackground(BuildContext context) {
+    final emblemDefinition = _state(context).emblemDefinition;
+    if (emblemDefinition == null) return Container();
+    if (emblemDefinition.secondarySpecial?.isEmpty ?? true) return Container();
+    return Container(
+        constraints: BoxConstraints.expand(),
+        child: QueuedNetworkImage(
+            imageUrl: BungieApiService.url(emblemDefinition.secondarySpecial),
+            fit: BoxFit.cover,
+            alignment: Alignment(-.8, 0)));
   }
 
-  List<Widget> buildItemRow(
-      BuildContext context, IconData icon, List<int> buckets, Map<int, DestinyItemComponent> items) {
-    List<Widget> itemWidgets = [];
-    itemWidgets.add(CenterIconWorkaround(icon));
-    // itemWidgets.addAll(buckets.map((bucketHash) => itemIcon(items[bucketHash])));
-    return itemWidgets
-        .map((child) => FractionallySizedBox(
-              widthFactor: 1 / (buckets.length + 1),
+  Widget buildBody(BuildContext context) {
+    final screenPadding = MediaQuery.of(context).padding;
+    return Column(children: [
+      Expanded(
+        child: Container(
+          alignment: Alignment.center,
+          child: SingleChildScrollView(
+            padding: EdgeInsets.all(8)
+                .copyWith(top: 0, left: max(screenPadding.left, 8), right: max(screenPadding.right, 8)),
+            child: Container(
+              alignment: Alignment.center,
+              constraints: BoxConstraints(minWidth: double.maxFinite),
               child: Container(
-                  padding: EdgeInsets.all(4),
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: child,
-                  )),
-            ))
-        .toList();
+                constraints: BoxConstraints(maxWidth: 600),
+                child: Column(children: [
+                  buildEquippableItems(context),
+                  Container(height: 16),
+                  buildUnequippable(context),
+                ]),
+              ),
+            ),
+          ),
+        ),
+      ),
+      buildFooter(context),
+    ]);
   }
 
-  Widget itemIcon(DestinyItemComponent item) {
-    if (item == null) {
-      return ManifestImageWidget<DestinyInventoryItemDefinition>(1835369552, key: Key("item_icon_empty"));
+  Widget buildEquippableItems(BuildContext context) {
+    final items = _state(context).equippableItems;
+    final classes = [DestinyClass.Titan, DestinyClass.Hunter, DestinyClass.Warlock];
+    if (items == null) return Container();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+            HeaderWidget(
+              child: TranslatedTextWidget(
+                "Items to Equip",
+                uppercase: true,
+              ),
+            ),
+            Container(
+              height: 8,
+            ),
+            buildEquippableRow(context, DestinyClass.Unknown, items[DestinyClass.Unknown]),
+          ] +
+          classes
+              .map((c) {
+                final classItems = items[c];
+                return buildEquippableRow(context, c, classItems);
+              })
+              .whereType<Widget>()
+              .toList(),
+    );
+  }
+
+  Widget buildUnequippable(BuildContext context) {
+    final unequippable = _state(context).unequippableItems;
+    if (unequippable == null || unequippable.length == 0) return Container();
+    return Column(children: [
+      HeaderWidget(
+        child: TranslatedTextWidget(
+          "Items to Transfer",
+          uppercase: true,
+        ),
+      ),
+      Container(
+        height: 8,
+      ),
+      GridView(
+        shrinkWrap: true,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 7, childAspectRatio: 1),
+        physics: NeverScrollableScrollPhysics(),
+        children: unequippable
+            .map((e) => Container(
+                  padding: EdgeInsets.all(2),
+                  child: buildItemIcon(e.item),
+                ))
+            .toList(),
+      ),
+    ]);
+  }
+
+  Widget buildEquippableRow(BuildContext context, DestinyClass destinyClass, List<LoadoutIndexItem?>? items) {
+    final rowItems = items ?? List<LoadoutIndexItem?>.filled(6, null);
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+            Expanded(child: buildClassIcon(context, destinyClass)),
+          ] +
+          rowItems
+              .map(
+                (e) => Expanded(
+                  child: Container(
+                    padding: EdgeInsets.all(2),
+                    child: buildItemIcon(e?.item),
+                  ),
+                ),
+              )
+              .toList(),
+    );
+  }
+
+  Widget buildClassIcon(BuildContext context, DestinyClass destinyClass) {
+    return AspectRatio(
+      aspectRatio: 1,
+      child: Container(
+        alignment: Alignment.center,
+        child: Icon(destinyClass.icon),
+      ),
+    );
+  }
+
+  Widget buildItemIcon(DestinyItemComponent? item) {
+    final itemHash = item?.itemHash;
+    if (item == null || itemHash == null) {
+      return AspectRatio(
+        aspectRatio: 1,
+        child: ManifestImageWidget<DestinyInventoryItemDefinition>(1835369552),
+      );
     }
-    return Container();
-    // var instance = profile.getInstanceInfo(item?.itemInstanceId);
-    // return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
-    //     item.itemHash,
-    //     (def) => ItemIconWidget.builder(
-    //         item: item, definition: def, instanceInfo: instance, key: Key("item_icon_${item.itemInstanceId}")));
+    final instance = profile.getInstanceInfo(item.itemInstanceId);
+    return AspectRatio(
+      aspectRatio: 1,
+      child: DefinitionProviderWidget<DestinyInventoryItemDefinition>(
+        itemHash,
+        (def) => ItemIconWidget.builder(
+          item: item,
+          definition: def,
+          instanceInfo: instance,
+          key: Key("item_icon_${item.itemInstanceId}"),
+        ),
+      ),
+    );
+  }
+
+  buildFooter(BuildContext context) {
+    final equip = _state(context).equipCharacters;
+    final transfer = _state(context).transferCharacters;
+    if (equip == null && transfer == null) return Container();
+    return Container(
+      alignment: Alignment.center,
+      constraints: BoxConstraints(minWidth: double.maxFinite),
+      color: LittleLightTheme.of(context).surfaceLayers.layer1,
+      child: SafeArea(
+        top: false,
+        child: Container(
+          constraints: BoxConstraints(maxWidth: 600),
+          child: TransferDestinationsWidget(
+            equipCharacters: equip,
+            transferCharacters: transfer,
+          ),
+        ),
+      ),
+    );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
-import 'package:little_light/modules/loadouts/pages/edit/edit_loadout.page.dart';
+
+import 'edit_loadout.page.dart';
 
 class EditLoadoutPageRouteArguments {
   String? loadoutID;

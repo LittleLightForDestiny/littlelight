@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/modules/loadouts/pages/edit/edit_loadout.page_route.dart';
-import 'package:little_light/modules/loadouts/pages/home/loadouts_home.bloc.dart';
 import 'package:little_light/modules/loadouts/widgets/loadout_list_item.widget.dart';
 import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/media_query_helper.dart';
@@ -14,6 +13,8 @@ import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
 import 'package:provider/provider.dart';
+
+import 'loadouts_home.bloc.dart';
 
 class LoadoutsHomeView extends StatefulWidget {
   LoadoutsHomeView({Key? key}) : super(key: key);

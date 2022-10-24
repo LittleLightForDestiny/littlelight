@@ -1,11 +1,9 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/models/loadout.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
 import 'package:little_light/modules/loadouts/blocs/loadouts.bloc.dart';
 import 'package:little_light/modules/loadouts/dialogs/loadout_slot_options/loadout_slot_options.dialog_route.dart';
-import 'package:little_light/modules/loadouts/pages/edit/edit_loadout.page_route.dart';
 import 'package:little_light/modules/loadouts/pages/edit_item_mods/edit_loadout_item_mods.page_route.dart';
 import 'package:little_light/modules/loadouts/pages/select_item/select_loadout_item.page_route.dart';
 import 'package:little_light/pages/item_details/item_details.page_route.dart';
@@ -14,9 +12,7 @@ import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:provider/provider.dart';
 
-extension on Loadout {
-  Loadout clone() => Loadout.copy(this);
-}
+import 'edit_loadout.page_route.dart';
 
 class EditLoadoutBloc extends ChangeNotifier with ManifestConsumer {
   final BuildContext context;
