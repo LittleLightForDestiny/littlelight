@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/mixins/deepsight_helper.mixin.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/utils/destiny_data.dart';
+import 'package:little_light/shared/utils/extensions/tier_type_data.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateless_item.widget.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/widgets/common/corner_badge.decoration.dart';
@@ -56,7 +56,7 @@ class ItemIconWidget extends BaseDestinyStatelessItemWidget with DeepSightHelper
     return Stack(children: [
       Positioned.fill(
           child: Container(
-              color: useBackgroundColor && tierType != null ? DestinyData.getTierColor(tierType) : null,
+              color: useBackgroundColor && tierType != null ? tierType.getColor(context) : null,
               child: itemIconImage(context))),
       itemSeasonIcon(context),
       Positioned.fill(child: itemStateOverlay(context)),

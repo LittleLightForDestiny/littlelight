@@ -4,17 +4,17 @@ import 'package:bungie_api/enums/destiny_class.dart';
 import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 
 typedef OnRemoveItemFromLoadout = void Function(LoadoutIndexItem item, bool equipped);
 typedef OnAddItemToLoadout = void Function(DestinyClass? classType, bool equipped);
@@ -37,10 +37,10 @@ class LoadoutSlotWidget extends StatelessWidget with ProfileConsumer, ManifestCo
       HeaderWidget(
           child: Text(bucketDef.displayProperties?.name?.toUpperCase() ?? "",
               style: TextStyle(fontWeight: FontWeight.bold))),
-      buildSlotBlock(context, headerText: "Equip"),
+      buildSlotBlock(context, headerText: "Equip".translate(context)),
       buildSlotBlock(
         context,
-        headerText: "Transfer",
+        headerText: "Transfer".translate(context),
         isEquipment: false,
       ),
       Container(height: 8)
@@ -63,10 +63,9 @@ class LoadoutSlotWidget extends StatelessWidget with ProfileConsumer, ManifestCo
     return Container(
       padding: EdgeInsets.all(8),
       color: Colors.grey.shade900,
-      child: TranslatedTextWidget(
-        text,
+      child: Text(
+        text.toUpperCase(),
         style: TextStyle(fontWeight: FontWeight.bold),
-        uppercase: true,
       ),
     );
   }

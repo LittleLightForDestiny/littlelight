@@ -1,18 +1,17 @@
 // @dart=2.9
 
-import 'dart:async';
 import 'dart:math';
 
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile_component_groups.dart';
 import 'package:little_light/models/tracked_objective.dart';
 import 'package:little_light/pages/item_details/item_details.page_route.dart';
 import 'package:little_light/pages/triumphs/widgets/record_item.widget.dart';
 import 'package:little_light/services/littlelight/objectives.service.dart';
-import 'package:little_light/services/notification/notification.package.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
-import 'package:little_light/services/profile/profile_component_groups.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/refresh_button.widget.dart';
@@ -24,15 +23,13 @@ class ObjectivesScreen extends StatefulWidget {
   ObjectivesScreenState createState() => ObjectivesScreenState();
 }
 
-class ObjectivesScreenState extends State<ObjectivesScreen> with ProfileConsumer, NotificationConsumer {
+class ObjectivesScreenState extends State<ObjectivesScreen> with ProfileConsumer {
   List<TrackedObjective> objectives;
   Map<TrackedObjective, ItemWithOwner> items;
 
-  StreamSubscription<NotificationEvent> subscription;
-
   @override
   dispose() {
-    subscription.cancel();
+    profile.removeListener(loadObjectives);
     super.dispose();
   }
 
@@ -41,11 +38,7 @@ class ObjectivesScreenState extends State<ObjectivesScreen> with ProfileConsumer
     super.initState();
     loadObjectives();
     profile.updateComponents = ProfileComponentGroups.everything;
-    subscription = notifications.listen((event) {
-      if (event.type == NotificationType.receivedUpdate || event.type == NotificationType.localUpdate) {
-        loadObjectives();
-      }
-    });
+    profile.addListener(loadObjectives);
   }
 
   void loadObjectives() async {
@@ -84,7 +77,7 @@ class ObjectivesScreenState extends State<ObjectivesScreen> with ProfileConsumer
                 Scaffold.of(context).openDrawer();
               },
             ),
-            title: TranslatedTextWidget("Objectives")),
+            title: Text("Objectives".translate(context))),
         body: buildBody(context),
       ),
       Positioned(

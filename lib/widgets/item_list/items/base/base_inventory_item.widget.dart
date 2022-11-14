@@ -5,8 +5,8 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
-import 'package:little_light/utils/destiny_data.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
+import 'package:little_light/utils/socket_category_hashes.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateless_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/inventory_item.mixin.dart';
 import 'package:little_light/widgets/item_list/items/base/item_armor_stats.widget.dart';
@@ -33,7 +33,7 @@ class BaseInventoryItemWidget extends BaseDestinyStatelessItemWidget with Invent
   Widget perksWidget(BuildContext context) {
     var socketCategoryHashes = definition?.sockets?.socketCategories?.map((s) => s.socketCategoryHash);
     var perksCategoryHash =
-        socketCategoryHashes?.firstWhere((s) => DestinyData.socketCategoryPerkHashes.contains(s), orElse: () => null);
+        socketCategoryHashes?.firstWhere((s) => SocketCategoryHashes.perks.contains(s), orElse: () => null);
     if (perksCategoryHash != null) {
       return Positioned(
           bottom: 6,

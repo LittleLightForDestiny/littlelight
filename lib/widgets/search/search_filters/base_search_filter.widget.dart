@@ -1,9 +1,8 @@
 // @dart=2.9
 
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/utils/item_filters/base_item_filter.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
-
 import 'package:little_light/widgets/search/search.controller.dart';
 
 class BaseSearchFilterWidget<T extends BaseItemFilter> extends StatefulWidget {
@@ -68,7 +67,9 @@ class BaseSearchFilterWidgetState<T extends BaseSearchFilterWidget, F extends Ba
     try {
       return buildButtonLabel(context, options.single);
     } catch (_) {}
-    return TranslatedTextWidget("None", uppercase: true);
+    return Text(
+      "None".translate(context).toUpperCase(),
+    );
   }
 
   Widget buildExpansionTile(BuildContext context) {

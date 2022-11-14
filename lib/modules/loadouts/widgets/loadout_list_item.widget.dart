@@ -2,16 +2,16 @@ import 'package:bungie_api/enums/destiny_class.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/flutter/center_icon_workaround.dart';
 
 enum LoadoutListItemAction { Equip, Edit, Delete }
@@ -99,11 +99,10 @@ class LoadoutListItemWidget extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 2),
               child: ElevatedButton(
                 style: ButtonStyle(visualDensity: VisualDensity.comfortable),
-                child: TranslatedTextWidget("Equip",
+                child: Text("Equip".translate(context).toUpperCase(),
                     maxLines: 1,
                     softWrap: false,
                     overflow: TextOverflow.fade,
-                    uppercase: true,
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 onPressed: () => onAction(LoadoutListItemAction.Equip),
               ),
@@ -114,8 +113,7 @@ class LoadoutListItemWidget extends StatelessWidget {
               padding: EdgeInsets.all(2),
               child: ElevatedButton(
                 style: ButtonStyle(visualDensity: VisualDensity.comfortable),
-                child: TranslatedTextWidget("Edit",
-                    uppercase: true,
+                child: Text("Edit".translate(context).toUpperCase(),
                     maxLines: 1,
                     softWrap: false,
                     overflow: TextOverflow.fade,
@@ -130,11 +128,10 @@ class LoadoutListItemWidget extends StatelessWidget {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                     visualDensity: VisualDensity.comfortable, primary: Theme.of(context).errorColor),
-                child: TranslatedTextWidget("Delete",
+                child: Text("Delete".translate(context).toUpperCase(),
                     maxLines: 1,
                     softWrap: false,
                     overflow: TextOverflow.fade,
-                    uppercase: true,
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 onPressed: () => onAction(LoadoutListItemAction.Delete),
               ),

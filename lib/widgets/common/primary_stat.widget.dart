@@ -143,7 +143,7 @@ class PrimaryStatWidget extends StatelessWidget {
   Widget classTypeIcon(BuildContext context) {
     return Row(children: [
       Icon(
-        DestinyData.getClassIcon(definition.classType),
+        definition.classType.icon,
         color: damageType?.getColorLayer(context)?.layer2,
         size: fontSize,
       ),

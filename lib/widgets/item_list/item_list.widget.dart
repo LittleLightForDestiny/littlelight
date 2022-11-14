@@ -6,11 +6,10 @@ import 'package:bungie_api/enums/bucket_scope.dart';
 import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/models/bucket_display_options.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/services/notification/notification.package.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/selection/selection.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/inventory_utils.dart';
@@ -69,16 +68,9 @@ class ItemListWidget extends StatefulWidget {
 }
 
 class ItemListWidgetState extends State<ItemListWidget>
-    with
-        AutomaticKeepAliveClientMixin,
-        UserSettingsConsumer,
-        ProfileConsumer,
-        ManifestConsumer,
-        NotificationConsumer,
-        SelectionConsumer {
+    with AutomaticKeepAliveClientMixin, UserSettingsConsumer, ProfileConsumer, ManifestConsumer, SelectionConsumer {
   Map<int, DestinyInventoryBucketDefinition> bucketDefs;
   List<ListBucket> buckets;
-  StreamSubscription<NotificationEvent> notificationsSubscription;
   StreamSubscription<List<ItemWithOwner>> selectionSubscription;
   bool isSelectionOpen = false;
 
@@ -90,11 +82,7 @@ class ItemListWidgetState extends State<ItemListWidget>
   void initState() {
     super.initState();
     buildIndex();
-    notificationsSubscription = notifications.listen((event) {
-      if (event.type == NotificationType.receivedUpdate || event.type == NotificationType.localUpdate) {
-        buildIndex();
-      }
-    });
+    profile.addListener(buildIndex);
     selectionSubscription = selection.broadcaster.listen((event) {
       setState(() {
         isSelectionOpen = event.isNotEmpty;
@@ -104,7 +92,7 @@ class ItemListWidgetState extends State<ItemListWidget>
 
   @override
   dispose() {
-    notificationsSubscription.cancel();
+    profile.removeListener(buildIndex);
     selectionSubscription.cancel();
     super.dispose();
   }

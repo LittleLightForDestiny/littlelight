@@ -1,20 +1,20 @@
 // @dart=2.9
 
-import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:bungie_api/models/destiny_character_progression_component.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_progression.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/profile/destiny_settings.consumer.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:shimmer/shimmer.dart';
 
 class TabHeaderWidget extends StatefulWidget {
-  final DestinyCharacterComponent character;
+  final DestinyCharacterInfo character;
 
   @override
   TabHeaderWidget(this.character, {Key key}) : super(key: key);
@@ -39,7 +39,8 @@ class TabHeaderWidgetState extends State<TabHeaderWidget>
   }
 
   getDefinitions() async {
-    emblemDefinition = await manifest.getDefinition<DestinyInventoryItemDefinition>(widget.character.emblemHash);
+    emblemDefinition =
+        await manifest.getDefinition<DestinyInventoryItemDefinition>(widget.character.character.emblemHash);
     if (mounted) {
       setState(() {});
     }
@@ -68,7 +69,7 @@ class TabHeaderWidgetState extends State<TabHeaderWidget>
         baseColor: Colors.transparent,
         highlightColor: Theme.of(context).colorScheme.onSurface,
         child: Icon(
-          DestinyData.getClassIcon(widget.character.classType),
+          widget.character.character.classType.icon,
           size: 56,
         ));
     double top = getTopPadding(context) + 10;

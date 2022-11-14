@@ -9,7 +9,7 @@ import 'package:little_light/pages/item_details/item_details.page_route.dart';
 import 'package:little_light/services/inventory/inventory.consumer.dart';
 import 'package:little_light/services/inventory/inventory.package.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/services/selection/selection.consumer.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/media_query_helper.dart';

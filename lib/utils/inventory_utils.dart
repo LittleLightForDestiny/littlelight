@@ -9,15 +9,15 @@ import 'package:little_light/models/item_sort_parameter.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
-import 'package:little_light/services/profile/profile.service.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/item_sorters/base_item_sorter.dart';
 import 'package:little_light/utils/item_sorters/priority_tags_sorter.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 
 class InventoryUtils {
-  static ProfileService get _profile => getInjectedProfileService();
+  static ProfileBloc get _profile => getInjectedProfileService();
   static ManifestService get _manifest => getInjectedManifestService();
   static int interpolateStat(int investmentValue, List<InterpolationPoint> displayInterpolation) {
     var interpolation = displayInterpolation.toList();

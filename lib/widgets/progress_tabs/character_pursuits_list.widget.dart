@@ -4,11 +4,10 @@ import 'dart:async';
 
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/models/bucket_display_options.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/services/notification/notification.package.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_with_owner.dart';
@@ -102,25 +101,20 @@ class CharacterPursuitsListWidget extends StatefulWidget {
 }
 
 class _CharacterPursuitsListWidgetState extends State<CharacterPursuitsListWidget>
-    with AutomaticKeepAliveClientMixin, UserSettingsConsumer, ProfileConsumer, ManifestConsumer, NotificationConsumer {
+    with AutomaticKeepAliveClientMixin, UserSettingsConsumer, ProfileConsumer, ManifestConsumer {
   List<_PursuitCategory> categories;
-  StreamSubscription<NotificationEvent> subscription;
   bool fullyLoaded = false;
 
   @override
   void initState() {
     super.initState();
     getPursuits();
-    subscription = notifications.listen((event) {
-      if (event.type == NotificationType.receivedUpdate || event.type == NotificationType.localUpdate && mounted) {
-        getPursuits();
-      }
-    });
+    profile.addListener(getPursuits);
   }
 
   @override
   dispose() {
-    subscription.cancel();
+    profile.removeListener(getPursuits);
     super.dispose();
   }
 

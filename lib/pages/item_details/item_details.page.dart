@@ -17,11 +17,12 @@ import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enu
 import 'package:little_light/services/inventory/inventory.consumer.dart';
 import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/media_query_helper.dart';
+import 'package:little_light/utils/socket_category_hashes.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
@@ -170,12 +171,12 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
   findLoadouts() async {
     final allLoadouts = context.read<LoadoutsBloc>().loadouts;
     if (item?.itemInstanceId == null) return;
-    loadouts = allLoadouts.where((l) => l.containsItem(item.itemInstanceId)).toList() ?? [];
+    loadouts = allLoadouts?.where((l) => l.containsItem(item.itemInstanceId))?.toList() ?? [];
   }
 
   findDuplicates() async {
     List<ItemWithOwner> allItems = [];
-    Iterable<String> charIds = profile.getCharacters().map((char) => char.characterId);
+    Iterable<String> charIds = profile.characters.map((char) => char.characterId);
     charIds.forEach((charId) {
       allItems.addAll(profile
           .getCharacterEquipment(charId)
@@ -580,7 +581,7 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
 
   Widget buildPerks(BuildContext context) {
     var perksCategory = definition.sockets?.socketCategories
-        ?.firstWhere((s) => DestinyData.socketCategoryPerkHashes.contains(s.socketCategoryHash), orElse: () => null);
+        ?.firstWhere((s) => SocketCategoryHashes.perks.contains(s.socketCategoryHash), orElse: () => null);
     if (perksCategory == null || socketController == null) return Container();
     var screenPadding = MediaQuery.of(context).padding;
     return Container(
@@ -635,7 +636,7 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
 
   Widget buildPerkDetails(BuildContext context) {
     var perksCategory = definition.sockets?.socketCategories
-        ?.firstWhere((s) => DestinyData.socketCategoryPerkHashes.contains(s.socketCategoryHash), orElse: () => null);
+        ?.firstWhere((s) => SocketCategoryHashes.perks.contains(s.socketCategoryHash), orElse: () => null);
     if (perksCategory == null || socketController == null) return Container();
     var screenPadding = MediaQuery.of(context).padding;
     return Container(
@@ -675,7 +676,7 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
 
   Widget buildMods(BuildContext context) {
     var modsCategory = definition.sockets?.socketCategories
-        ?.firstWhere((s) => DestinyData.socketCategoryModHashes.contains(s.socketCategoryHash), orElse: () => null);
+        ?.firstWhere((s) => SocketCategoryHashes.mods.contains(s.socketCategoryHash), orElse: () => null);
     if (modsCategory == null || socketController == null) return Container();
     var screenPadding = MediaQuery.of(context).padding;
     return Container(
@@ -694,7 +695,7 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
 
   Widget buildModDetails(BuildContext context) {
     var modsCategory = definition.sockets?.socketCategories
-        ?.firstWhere((s) => DestinyData.socketCategoryModHashes.contains(s.socketCategoryHash), orElse: () => null);
+        ?.firstWhere((s) => SocketCategoryHashes.mods.contains(s.socketCategoryHash), orElse: () => null);
     if (modsCategory == null || socketController == null) return Container();
     var screenPadding = MediaQuery.of(context).padding;
     return Container(

@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/models/parsed_wishlist.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/utils/wishlists_data.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 

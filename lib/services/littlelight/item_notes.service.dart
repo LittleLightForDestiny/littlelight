@@ -42,7 +42,7 @@ class ItemNotesService with StorageConsumer {
     return _defaultTags.values.toList() + (_tags?.values.toList() ?? []);
   }
 
-   Future<Map<String, ItemNotes>> getNotes({forceFetch = false}) async {
+  Future<Map<String, ItemNotes>> getNotes({forceFetch = false}) async {
     if (_notes != null && !forceFetch) return _notes!;
 
     await _loadNotesFromCache();
@@ -86,6 +86,13 @@ class ItemNotesService with StorageConsumer {
       return _notes!["${itemHash}_$itemInstanceId"];
     }
     return null;
+  }
+
+  Set<ItemNotesTag>? getTagsForItem(int itemHash, String? itemInstanceId) {
+    final notes = getNotesForItem(itemHash, itemInstanceId);
+    final tags = notes?.tags;
+    if (tags == null) return null;
+    return tagsByIds(tags)?.whereType<ItemNotesTag>().toSet();
   }
 
   Future<bool> saveNotes(ItemNotes notes) async {

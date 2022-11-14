@@ -12,18 +12,19 @@ import 'package:bungie_api/models/destiny_sandbox_perk_definition.dart';
 import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:bungie_api/models/destiny_stat_group_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/models/parsed_wishlist.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
+import 'package:little_light/utils/socket_category_hashes.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/common/wishlist_badges.widget.dart';
 import 'package:little_light/widgets/item_stats/item_details_socket_item_stats.widget.dart';
 
@@ -169,7 +170,7 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget> extends Ba
       return Container();
     }
 
-    var isPerk = DestinyData.socketCategoryPerkHashes.contains(cat?.socketCategoryHash);
+    var isPerk = SocketCategoryHashes.perks.contains(cat?.socketCategoryHash);
 
     if (isPerk && controller.reusablePlugs != null) {
       return Container();
@@ -403,7 +404,7 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget> extends Ba
               width: 4,
             ),
             Expanded(
-                child: TranslatedTextWidget("This perk is considered the best for both PvE and PvP on this item.",
+                child: Text("This perk is considered the best for both PvE and PvP on this item.".translate(context),
                     style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w300)))
           ]));
     }
@@ -415,7 +416,7 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget> extends Ba
           width: 4,
         ),
         Expanded(
-            child: TranslatedTextWidget("This perk is considered the best for PvE on this item.",
+            child: Text("This perk is considered the best for PvE on this item.".translate(context),
                 style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w300)))
       ])));
     }
@@ -427,7 +428,7 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget> extends Ba
           width: 4,
         ),
         Expanded(
-            child: TranslatedTextWidget("This perk is considered the best for PvP on this item.",
+            child: Text("This perk is considered the best for PvP on this item.".translate(context),
                 style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w300)))
       ])));
     }
@@ -440,7 +441,7 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget> extends Ba
               width: 4,
             ),
             Expanded(
-                child: TranslatedTextWidget("This perk is considered good for both PvE and PvP on this item.",
+                child: Text("This perk is considered good for both PvE and PvP on this item.".translate(context),
                     style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w300)))
           ]));
     }
@@ -452,7 +453,7 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget> extends Ba
           width: 4,
         ),
         Expanded(
-            child: TranslatedTextWidget("This perk is considered good for PvE on this item.",
+            child: Text("This perk is considered good for PvE on this item.".translate(context),
                 style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w300)))
       ])));
     }
@@ -464,7 +465,7 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget> extends Ba
           width: 4,
         ),
         Expanded(
-            child: TranslatedTextWidget("This perk is considered good for PvP on this item.",
+            child: Text("This perk is considered good for PvP on this item.".translate(context),
                 style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w300)))
       ])));
     }

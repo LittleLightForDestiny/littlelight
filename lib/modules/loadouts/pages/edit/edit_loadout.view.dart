@@ -9,7 +9,6 @@ import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/utils/color_utils.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/multisection_scrollview/multisection_scrollview.dart';
 import 'package:little_light/widgets/multisection_scrollview/sliver_section.dart';
 import 'package:provider/provider.dart';
@@ -63,7 +62,7 @@ class EditLoadoutViewState extends State<EditLoadoutView> with ManifestConsumer 
   }
 
   AppBar buildAppBar(BuildContext context) => AppBar(
-        title: _state.creating ? TranslatedTextWidget("Create Loadout") : TranslatedTextWidget("Edit Loadout"),
+        title: _state.creating ? Text("Create Loadout".translate(context)) : Text("Edit Loadout".translate(context)),
         flexibleSpace: buildAppBarBackground(context),
       );
 
@@ -116,7 +115,7 @@ class EditLoadoutViewState extends State<EditLoadoutView> with ManifestConsumer 
     return Container(
         padding: EdgeInsets.all(8),
         child: ElevatedButton(
-          child: TranslatedTextWidget("Select Loadout Background"),
+          child: Text("Select Loadout Background".translate(context)),
           onPressed: () async {
             _bloc.emblemHash = await Navigator.of(context).push<int?>(SelectLoadoutBackgroundPageRoute());
           },
@@ -158,7 +157,7 @@ class EditLoadoutViewState extends State<EditLoadoutView> with ManifestConsumer 
               constraints: BoxConstraints(minWidth: double.infinity),
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8).copyWith(bottom: 8 + paddingBottom),
               child: ElevatedButton(
-                  child: TranslatedTextWidget("Save Loadout"),
+                  child: Text("Save Loadout".translate(context)),
                   onPressed: () {
                     _bloc.save();
                   }),

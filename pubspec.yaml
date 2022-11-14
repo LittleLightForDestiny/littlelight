@@ -21,12 +21,12 @@ dependencies:
   http: ^0.13.0
   path_provider: ^2.0.2
   font_awesome_flutter: ^9.2.0
-  bungie_api: 13.16.0
+  bungie_api: 13.16.1
   shimmer: ^2.0.0
   flutter_staggered_grid_view: ^0.6.0
   timeago: ^3.0.1
-  firebase_crashlytics: ^2.0.0
-  firebase_analytics: ^9.0.0
+  firebase_crashlytics: ^3.0.5
+  firebase_analytics: ^10.0.5
   flutter_dotenv: ^5.0.2
   url_launcher: ^6.0.2
   wakelock: 0.6.1+1
@@ -78,7 +78,6 @@ flutter:
     - assets/
     - assets/imgs/
     - assets/imgs/flags/
-    - assets/subclasses/
     - assets/anim/
 
   # An image asset can refer to one or more resolution-specific "variants", see

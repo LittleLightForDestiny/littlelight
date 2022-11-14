@@ -6,7 +6,7 @@ import 'package:bungie_api/models/destiny_objective_progress.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
 class MasterworkCounterWidget extends StatefulWidget {

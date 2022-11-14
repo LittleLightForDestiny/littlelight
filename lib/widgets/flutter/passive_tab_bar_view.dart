@@ -3,6 +3,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
+typedef PageBuilder = Widget Function(BuildContext context, int index);
+
 /// A page view that displays the widget which corresponds to the currently
 /// selected tab. Typically used in conjunction with a [TabBar].
 ///
@@ -14,11 +16,12 @@ class PassiveTabBarView extends StatefulWidget {
   /// The length of [children] must be the same as the [controller]'s length.
   const PassiveTabBarView({
     Key key,
-    @required this.children,
+    this.children,
     this.controller,
     this.physics,
+    this.pageBuilder,
     this.dragStartBehavior = DragStartBehavior.start,
-  })  : assert(children != null),
+  })  : assert(children != null || pageBuilder != null),
         assert(dragStartBehavior != null),
         super(key: key);
 
@@ -44,6 +47,8 @@ class PassiveTabBarView extends StatefulWidget {
 
   /// {@macro flutter.widgets.scrollable.dragStartBehavior}
   final DragStartBehavior dragStartBehavior;
+
+  final PageBuilder pageBuilder;
 
   @override
   _TabBarViewState createState() => _TabBarViewState();
@@ -128,11 +133,14 @@ class _TabBarViewState extends State<PassiveTabBarView> {
   Widget build(BuildContext context) {
     return NotificationListener<ScrollNotification>(
       onNotification: _handleScrollNotification,
-      child: PageView(
+      child: PageView.builder(
+        itemBuilder: (context, index) {
+          if (widget.pageBuilder != null) return widget.pageBuilder(context, index);
+          return widget.children[index];
+        },
         dragStartBehavior: widget.dragStartBehavior,
         controller: _pageController,
         physics: widget.physics == null ? _kTabBarViewPhysics : _kTabBarViewPhysics.applyTo(widget.physics),
-        children: _children,
       ),
     );
   }

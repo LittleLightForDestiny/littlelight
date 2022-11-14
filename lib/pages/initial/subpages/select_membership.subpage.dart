@@ -4,6 +4,7 @@ import 'package:bungie_api/models/group_user_info_card.dart';
 import 'package:bungie_api/models/user_membership_data.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/pages/initial/notifiers/initial_page_state.notifier.dart';
 import 'package:little_light/pages/initial/notifiers/select_membership.notifier.dart';
@@ -111,8 +112,10 @@ class SelectMembershipSubPageState extends SubpageBaseState<SelectMembershipSubP
               children: [
                 Text(account.bungieNetUser?.uniqueName ?? "", style: LittleLightTheme.of(context).textTheme.subtitle),
                 if (account.bungieNetUser?.membershipId != null)
-                  TranslatedTextWidget("membershipID: {membershipID}",
-                      replace: {"membershipID": account.bungieNetUser?.membershipId ?? ""},
+                  Text(
+                      "membershipID: {membershipID}".translate(context, replace: {
+                        "membershipID": account.bungieNetUser?.membershipId ?? "",
+                      }),
                       style: LittleLightTheme.of(context).textTheme.subtitle)
               ],
             ),

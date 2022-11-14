@@ -10,11 +10,11 @@ import 'package:bungie_api/models/destiny_material_requirement_set_definition.da
 import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/littlelight/item_notes.consumer.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
+import 'package:little_light/shared/widgets/loading/default_loading_shimmer.dart';
 import 'package:little_light/utils/destiny_data.dart';
-import 'package:little_light/utils/shimmer_helper.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
@@ -397,11 +397,11 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
                       "Apply {modType}",
                       replace: {"modType": def.itemTypeDisplayName.toLowerCase()},
                     )
-                  : ShimmerHelper.getDefaultShimmer(context,
+                  : DefaultLoadingShimmer(
                       child: TranslatedTextWidget(
-                        "Applying {modType}",
-                        replace: {"modType": def.itemTypeDisplayName.toLowerCase()},
-                      )),
+                      "Applying {modType}",
+                      replace: {"modType": def.itemTypeDisplayName.toLowerCase()},
+                    )),
             )));
     if (requirementHash != null && requirementHash != 0) {
       return DefinitionProviderWidget<DestinyMaterialRequirementSetDefinition>(requirementHash, (def) {

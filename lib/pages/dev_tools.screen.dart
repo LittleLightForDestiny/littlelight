@@ -1,7 +1,7 @@
 // @dart=2.9
 
 import 'package:flutter/material.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/services/storage/storage.consumer.dart';
 
 class DevToolsScreen extends StatelessWidget with StorageConsumer, ProfileConsumer {
@@ -26,7 +26,7 @@ class DevToolsScreen extends StatelessWidget with StorageConsumer, ProfileConsum
                   buildTextField(context, "membershipId"),
                   buildButton(context, "Reload", () async {
                     await profile.fetchProfileData();
-                    print(profile.getCharacters());
+                    print(profile.characters);
                   }),
                   buildButton(
                     context,

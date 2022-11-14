@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/utils/shimmer_helper.dart';
+import 'package:little_light/shared/widgets/loading/default_loading_shimmer.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
-import 'package:shimmer/shimmer.dart';
 
 typedef ExtractUrlFromData<T> = String? Function(T definition);
 
-class ManifestImageWidget<T> extends StatefulWidget {
+class _ManifestImageState<T> {
+  final T? definition;
+  final bool finished;
+
+  _ManifestImageState(this.definition, this.finished);
+}
+
+class ManifestImageWidget<T> extends StatelessWidget with ManifestConsumer {
   final int? hash;
   final ExtractUrlFromData<T>? urlExtractor;
 
@@ -26,58 +32,42 @@ class ManifestImageWidget<T> extends StatefulWidget {
       this.noIconPlaceholder})
       : super(key: key);
 
-  @override
-  State<StatefulWidget> createState() {
-    return ManifestImageState<T>();
-  }
-}
-
-class ManifestImageState<T> extends State<ManifestImageWidget<T>> with ManifestConsumer {
-  T? definition;
-
-  @override
-  void initState() {
-    super.initState();
-    loadDefinition();
+  Future<_ManifestImageState<T>> get future async {
+    final def = await manifest.getDefinition<T>(hash);
+    return _ManifestImageState(def, true);
   }
 
-  Future<void> loadDefinition() async {
-    if (widget.hash == null) return;
-    definition = await manifest.getDefinition<T>(widget.hash);
-    if (mounted) {
-      setState(() {});
-    }
+  Widget buildShimmer(BuildContext context) => DefaultLoadingShimmer();
+
+  Widget buildPlaceholder(BuildContext context) => placeholder ?? buildShimmer(context);
+
+  String? getUrl(BuildContext context, T definition) {
+    if (urlExtractor != null) return urlExtractor!(definition);
+    return (definition as dynamic).displayProperties?.icon;
   }
 
   @override
   Widget build(BuildContext context) {
-    Shimmer shimmer = ShimmerHelper.getDefaultShimmer(context);
-    final definition = this.definition;
-    if (definition == null) return shimmer;
-    String? url;
-    try {
-      final extractor = widget.urlExtractor;
-      if (extractor == null) {
-        url = (definition as dynamic).displayProperties.icon;
-      } else {
-        url = extractor(definition);
-      }
-    } catch (e) {
-      print(e);
-    }
-    if (url?.isEmpty ?? true) {
-      return widget.noIconPlaceholder ?? widget.placeholder ?? shimmer;
-    }
-    final bungieUrl = BungieApiService.url(url);
-    if (bungieUrl == null) {
-      return shimmer;
-    }
-    return QueuedNetworkImage(
-      imageUrl: bungieUrl,
-      fit: widget.fit,
-      alignment: widget.alignment,
-      placeholder: widget.placeholder ?? shimmer,
-      fadeInDuration: Duration(milliseconds: 300),
+    return FutureBuilder<_ManifestImageState<T>>(
+      initialData: _ManifestImageState(null, false),
+      future: future,
+      builder: (context, snapshot) {
+        final loaded = snapshot.data?.finished ?? false;
+        final definition = snapshot.data?.definition;
+        if (!loaded) return buildPlaceholder(context);
+        if (definition == null) return noIconPlaceholder ?? buildPlaceholder(context);
+
+        final url = getUrl(context, definition);
+        final bungieUrl = BungieApiService.url(url);
+        if (bungieUrl == null || bungieUrl.isEmpty) return noIconPlaceholder ?? buildPlaceholder(context);
+        return QueuedNetworkImage(
+          imageUrl: bungieUrl,
+          fit: fit,
+          alignment: alignment,
+          placeholder: buildPlaceholder(context),
+          fadeInDuration: Duration(milliseconds: 300),
+        );
+      },
     );
   }
 }

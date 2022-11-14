@@ -1,19 +1,19 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile_component_groups.dart';
 import 'package:little_light/pages/triumphs/lore.page_route.dart';
 import 'package:little_light/pages/triumphs/triumphs.page_route.dart';
 import 'package:little_light/pages/triumphs/widgets/seal_item.widget.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/profile/destiny_settings.consumer.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
-import 'package:little_light/services/profile/profile_component_groups.dart';
 import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/layouts/presentation_nodes_tabs_scaffold.dart';
 import 'package:little_light/widgets/multisection_scrollview/multisection_scrollview.dart';
 import 'package:little_light/widgets/multisection_scrollview/sliver_section.dart';
@@ -120,7 +120,7 @@ class TriumphsRootPageState extends PresentationNodesTabsScaffoldState<TriumphsR
 
   @override
   Widget buildAppBarTitle(BuildContext context) {
-    return TranslatedTextWidget("Triumphs");
+    return Text("Triumphs".translate(context));
   }
 
   @override

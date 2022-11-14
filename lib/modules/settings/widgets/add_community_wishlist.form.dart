@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/wishlist_index.dart';
+import 'package:little_light/modules/settings/pages/add_wishlist/add_wishlists.bloc.dart';
 
 import 'package:little_light/widgets/dialogs/busy.dialog.dart';
 import 'package:provider/provider.dart';
 
-import '../pages/add_wishlist/add_wishlists.bloc.dart';
 import 'wishlist_file_item.dart';
 
 class AddCommunityWishlistForm extends StatefulWidget {

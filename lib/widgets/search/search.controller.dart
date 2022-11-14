@@ -4,10 +4,9 @@ import 'dart:async';
 
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/widgets.dart';
-import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/services/notification/notification.package.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/models/item_sort_parameter.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_filters/ammo_type_filter.dart';
@@ -43,12 +42,10 @@ List<BaseItemFilter> _replaceDefaultFilters(List<BaseItemFilter> defaultFilters,
   return finalList;
 }
 
-class SearchController extends ChangeNotifier with ProfileConsumer, ManifestConsumer, NotificationConsumer {
+class SearchController extends ChangeNotifier with ProfileConsumer, ManifestConsumer {
   List<ItemWithOwner> _unfilteredList;
   List<ItemWithOwner> _prefilteredList;
   List<ItemWithOwner> _filteredList;
-
-  StreamSubscription<NotificationEvent> _subscription;
 
   List<ItemWithOwner> get filtered => _filteredList;
   Map<int, DestinyInventoryItemDefinition> _itemDefinitions;
@@ -136,17 +133,12 @@ class SearchController extends ChangeNotifier with ProfileConsumer, ManifestCons
 
   _init() {
     _reload();
-    _subscription = notifications.listen((event) {
-      if (event.type == NotificationType.receivedUpdate) {
-        _reload();
-      }
-    });
+    profile.addListener(_reload);
   }
 
   @override
   dispose() {
-    _subscription?.cancel();
-    _subscription = null;
+    profile.removeListener(_reload);
     super.dispose();
   }
 
@@ -198,7 +190,7 @@ class SearchController extends ChangeNotifier with ProfileConsumer, ManifestCons
   List<ItemWithOwner> _getItems() {
     List<ItemWithOwner> allItems = [];
 
-    Iterable<String> charIds = profile.getCharacters().map((char) => char.characterId);
+    Iterable<String> charIds = profile.characters.map((char) => char.characterId);
     charIds.forEach((charId) {
       allItems.addAll(profile.getCharacterEquipment(charId).map((item) => ItemWithOwner(item, charId)));
       allItems.addAll(profile.getCharacterInventory(charId).map((item) => ItemWithOwner(item, charId)));

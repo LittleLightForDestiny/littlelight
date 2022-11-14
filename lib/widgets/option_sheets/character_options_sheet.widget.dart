@@ -10,6 +10,9 @@ import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/inventory/inventory.bloc.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/models/game_data.dart';
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
@@ -18,10 +21,8 @@ import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enu
 import 'package:little_light/services/inventory/inventory.package.dart';
 import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/item_sorters/power_level_sorter.dart';
-import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -43,6 +44,7 @@ class CharacterOptionsSheet extends StatefulWidget {
 
 class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
     with UserSettingsConsumer, LittleLightDataConsumer, ProfileConsumer, InventoryConsumer, ManifestConsumer {
+  InventoryBloc inventoryBloc(BuildContext context) => context.read<InventoryBloc>();
   Map<int, DestinyItemComponent> maxLightLoadout;
   Map<int, DestinyItemComponent> underAverageSlots;
   double maxLight;
@@ -105,9 +107,9 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
     var achievable = achievableLight?.floor() ?? 0;
     var goForPinnacle = current >= achievable && beyondSoftCap;
 
-    var title = TranslatedTextWidget("Go for powerful reward?", uppercase: true, style: headerStyle);
+    var title = Text("Go for powerful reward?".translate(context).toUpperCase(), style: headerStyle);
     if (beyondPowerfulCap) {
-      title = TranslatedTextWidget("Go for pinnacle reward?", uppercase: true, style: headerStyle);
+      title = Text("Go for pinnacle reward?".translate(context).toUpperCase(), style: headerStyle);
     }
 
     return Column(children: [
@@ -163,7 +165,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
           )),
       (underAverageSlots?.length ?? 0) <= 0
           ? Container()
-          : buildBlockHeader(TranslatedTextWidget("Under average slots", uppercase: true, style: headerStyle)),
+          : buildBlockHeader(Text("Under average slots".translate(context).toUpperCase(), style: headerStyle)),
       (underAverageSlots?.length ?? 0) <= 0
           ? Container()
           : DefaultTextStyle(
@@ -204,7 +206,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
 
   Widget buildEquipBlock() {
     return Column(children: [
-      buildBlockHeader(TranslatedTextWidget("Equip", uppercase: true, style: headerStyle)),
+      buildBlockHeader(Text("Equip".translate(context).toUpperCase(), style: headerStyle)),
       IntrinsicHeight(
           child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         Expanded(
@@ -354,9 +356,9 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       buildBlockHeader(
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          TranslatedTextWidget("Create Loadout", uppercase: true, style: headerStyle),
+          Text("Create Loadout".translate(context).toUpperCase(), style: headerStyle),
           Row(children: [
-            TranslatedTextWidget("Weapons", uppercase: true, style: headerStyle),
+            Text("Weapons".translate(context).toUpperCase(), style: headerStyle),
             Container(width: 2),
             Switch(
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -367,7 +369,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
                   });
                 }),
             Container(width: 6),
-            TranslatedTextWidget("Armor", uppercase: true, style: headerStyle),
+            Text("Armor".translate(context).toUpperCase(), style: headerStyle),
             Container(width: 2),
             Switch(
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -434,10 +436,10 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
       ),
       onTap: () {
         Navigator.of(context).pop();
-        inventory.transferMultiple(
-            itemsInPostmaster.map((i) => ItemWithOwner(i, widget.character.characterId)).toList(),
-            ItemDestination.Character,
-            widget.character.characterId);
+        inventoryBloc(context).transferMultiple(
+          itemsInPostmaster,
+          widget.character.characterId,
+        );
       },
     );
   }

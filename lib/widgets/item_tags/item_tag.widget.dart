@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/models/item_notes_tag.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/flutter/center_icon_workaround.dart';
@@ -42,7 +43,7 @@ class ItemTagWidget extends StatelessWidget {
   }
 
   Widget buildLabel(BuildContext context) {
-    var style = TextStyle(color: tag.foregroundColor, fontSize: fontSize, fontWeight: FontWeight.w500);
+    final style = TextStyle(color: tag.foregroundColor, fontSize: fontSize, fontWeight: FontWeight.w500);
     var tagName = tag.name.length > 0 ? tag.name : null;
     if (tag.custom && tagName != null) {
       return Container(
@@ -65,6 +66,17 @@ class ItemTagWidget extends StatelessWidget {
           overflow: TextOverflow.fade,
           style: style,
         ));
+  }
+
+  String getTagName(BuildContext context, ItemNotesTag tag) {
+    final useCustomName = tag.custom && tag.name.length > 0;
+    if (useCustomName) return tag.name;
+    if (tag.custom) return 'Untitled'.translate(context);
+    final defaultLabel = tag.defaultTagType?.getLabel(context);
+    if (defaultLabel != null) {
+      return defaultLabel;
+    }
+    return tag.name.translate(context);
   }
 
   Widget buildIcon(BuildContext context) {

@@ -2,8 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
-import 'package:little_light/services/profile/profile_component_groups.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile_component_groups.dart';
 import 'package:little_light/utils/item_filters/text_filter.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/selected_items.widget.dart';
@@ -86,8 +87,8 @@ class DuplicatedItemsScreenState extends State<DuplicatedItemsScreen>
         forceAutoFocus: true,
       );
     }
-    return TranslatedTextWidget(
-      "Duplicated Items",
+    return Text(
+      "Duplicated Items".translate(context),
       overflow: TextOverflow.fade,
     );
   }

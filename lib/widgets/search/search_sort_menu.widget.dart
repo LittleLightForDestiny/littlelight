@@ -1,9 +1,9 @@
 // @dart=2.9
 
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/models/item_sort_parameter.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/search/search.controller.dart';
 import 'package:little_light/widgets/search/search_sorters/base_search_sorter.widget.dart';
 import 'package:little_light/widgets/search/search_sorters/stat_sorter.widget.dart';
@@ -41,7 +41,7 @@ class _SearchSortMenuState extends State<SearchSortMenu> {
         child: Column(
       children: [
         AppBar(
-          title: TranslatedTextWidget("Sort"),
+          title: Text("Sort".translate(context)),
           automaticallyImplyLeading: false,
           actions: <Widget>[Container()],
           leading: IconButton(
@@ -64,13 +64,17 @@ class _SearchSortMenuState extends State<SearchSortMenu> {
     var widgets = <Widget>[];
     if ((widget.controller.customSorting?.length ?? 0) > 0) {
       widgets.add(HeaderWidget(
-        child: TranslatedTextWidget("Active Sorters", uppercase: true),
+        child: Text(
+          "Active Sorters".translate(context).toUpperCase(),
+        ),
       ));
       widgets.add(Container(height: widget.controller.customSorting.length * 56.0, child: buildDragList(context)));
     }
     if ((widget.controller.availableSorters?.length ?? 0) > 0) {
       widgets.add(HeaderWidget(
-        child: TranslatedTextWidget("Available Sorters", uppercase: true),
+        child: Text(
+          "Available Sorters".translate(context).toUpperCase(),
+        ),
       ));
     }
     widgets.addAll(widget.controller.availableSorters

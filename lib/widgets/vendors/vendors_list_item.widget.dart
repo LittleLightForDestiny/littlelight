@@ -15,7 +15,6 @@ import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/pages/vendors/vendor_details.screen.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/services/notification/notification.package.dart';
 import 'package:little_light/services/profile/vendors.service.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
@@ -32,9 +31,8 @@ class VendorsListItemWidget extends StatefulWidget {
 }
 
 class VendorsListItemWidgetState<T extends VendorsListItemWidget> extends State<T>
-    with AutomaticKeepAliveClientMixin, ManifestConsumer, NotificationConsumer {
+    with AutomaticKeepAliveClientMixin, ManifestConsumer {
   DestinyVendorDefinition definition;
-  StreamSubscription<NotificationEvent> subscription;
   List<DestinyVendorCategory> _categories;
   Map<String, DestinyVendorSaleItemComponent> _sales;
 
@@ -44,14 +42,10 @@ class VendorsListItemWidgetState<T extends VendorsListItemWidget> extends State<
   void initState() {
     super.initState();
     loadDefinitions();
-    subscription = notifications.listen((event) {
-      if (event.type == NotificationType.receivedUpdate && mounted) {}
-    });
   }
 
   @override
   dispose() {
-    subscription.cancel();
     super.dispose();
   }
 

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:launch_review/launch_review.dart';
 import 'package:little_light/core/blocs/language/language.bloc.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/collaborators.dart';
 import 'package:little_light/models/language_info.dart';
@@ -13,7 +14,6 @@ import 'package:little_light/services/littlelight/littlelight_data.consumer.dart
 import 'package:little_light/services/storage/export.dart';
 import 'package:little_light/widgets/about/supporter_character.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/multisection_scrollview/multisection_scrollview.dart';
 import 'package:little_light/widgets/multisection_scrollview/sliver_section.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -85,7 +85,7 @@ class _AboutScreenState extends State<AboutScreen> with StorageConsumer, LittleL
               Scaffold.of(context).openDrawer();
             },
           ),
-          title: TranslatedTextWidget("About"),
+          title: Text("About".translate(context)),
         ),
         body: MultiSectionScrollView(
           _sections,
@@ -98,14 +98,18 @@ class _AboutScreenState extends State<AboutScreen> with StorageConsumer, LittleL
   List<SliverSection> get _sections {
     List<SliverSection> list = [
       appInfoSliver,
-      headerSliver(TranslatedTextWidget("Contact", uppercase: true)),
+      headerSliver(Text(
+        "Contact".translate(context).toUpperCase(),
+      )),
       contactInfoSliver,
       spacerSliver,
     ];
     final isMobile = Platform.isAndroid || Platform.isIOS;
     if (isMobile || showDonationLinks) {
       list += [
-        headerSliver(TranslatedTextWidget("Support Little Light", uppercase: true)),
+        headerSliver(Text(
+          "Support Little Light".translate(context).toUpperCase(),
+        )),
         supportSliver,
         spacerSliver,
       ];
@@ -113,28 +117,36 @@ class _AboutScreenState extends State<AboutScreen> with StorageConsumer, LittleL
     final supporters = collaborators?.supporters;
     if (supporters != null) {
       list += [
-        headerSliver(TranslatedTextWidget("Supporters", uppercase: true)),
+        headerSliver(Text(
+          "Supporters".translate(context).toUpperCase(),
+        )),
         collaboratorsSliver(supporters),
       ];
     }
     final developers = collaborators?.developers;
     if (developers != null) {
       list += [
-        headerSliver(TranslatedTextWidget("Development", uppercase: true)),
+        headerSliver(Text(
+          "Development".translate(context).toUpperCase(),
+        )),
         collaboratorsSliver(developers),
       ];
     }
     final curators = collaborators?.curators;
     if (curators != null) {
       list += [
-        headerSliver(TranslatedTextWidget("Godroll Curators", uppercase: true)),
+        headerSliver(Text(
+          "Godroll Curators".translate(context).toUpperCase(),
+        )),
         collaboratorsSliver(curators),
       ];
     }
     final translators = collaborators?.translators;
     if (translators != null) {
       list += [
-        headerSliver(TranslatedTextWidget("Translations", uppercase: true)),
+        headerSliver(Text(
+          "Translations".translate(context).toUpperCase(),
+        )),
       ];
       for (var language in translators) {
         list += [
@@ -186,13 +198,13 @@ class _AboutScreenState extends State<AboutScreen> with StorageConsumer, LittleL
       ),
       AboutScreenAction(
         icon: FontAwesomeIcons.discord,
-        label: TranslatedTextWidget("Discord"),
+        label: Text("Discord".translate(context)),
         url: "https://discord.gg/ztdFGGz",
       ),
       AboutScreenAction(
         icon: FontAwesomeIcons.github,
         color: Theme.of(context).errorColor,
-        label: TranslatedTextWidget("Issues"),
+        label: Text("Issues".translate(context)),
         url: "https://discord.gg/ztdFGGz",
       ),
     ];
@@ -214,14 +226,16 @@ class _AboutScreenState extends State<AboutScreen> with StorageConsumer, LittleL
         AboutScreenAction(
             color: isIOS ? Color.fromARGB(255, 22, 147, 245) : Color.fromARGB(255, 49, 159, 185),
             icon: isIOS ? FontAwesomeIcons.appStoreIos : FontAwesomeIcons.googlePlay,
-            label: TranslatedTextWidget("Rate it", uppercase: true),
+            label: Text(
+              "Rate it".translate(context).toUpperCase(),
+            ),
             type: AboutScreenActionType.Rate),
       if (showDonationLinks)
         AboutScreenAction(
           color: Color.fromRGBO(249, 104, 84, 1),
           iconWidget: Image.asset("assets/imgs/patreon-icon.png"),
-          label: TranslatedTextWidget(
-            "Become a Patron",
+          label: Text(
+            "Become a Patron".translate(context),
             textAlign: TextAlign.center,
           ),
           url: 'https://www.patreon.com/littlelightD2',
@@ -230,8 +244,8 @@ class _AboutScreenState extends State<AboutScreen> with StorageConsumer, LittleL
         AboutScreenAction(
           color: Color.fromRGBO(26, 169, 222, 1),
           iconWidget: Image.asset("assets/imgs/ko-fi-icon.png"),
-          label: TranslatedTextWidget(
-            "Buy me a Coffee",
+          label: Text(
+            "Buy me a Coffee".translate(context),
             textAlign: TextAlign.center,
           ),
           url: "https://ko-fi.com/littlelight",

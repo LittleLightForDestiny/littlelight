@@ -3,7 +3,7 @@ import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 
 abstract class BaseSocketController extends ChangeNotifier with ManifestConsumer, ItemNotesConsumer, ProfileConsumer {

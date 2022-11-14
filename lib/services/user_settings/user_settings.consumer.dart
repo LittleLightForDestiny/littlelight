@@ -1,9 +1,8 @@
 import 'package:get_it/get_it.dart';
-// ignore: import_of_legacy_library_into_null_safe
-import 'package:little_light/services/user_settings/user_settings.service.dart';
+import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
 
-UserSettingsService getInjectedUserSettings() => GetIt.I<UserSettingsService>();
+UserSettingsBloc getInjectedUserSettings() => GetIt.I<UserSettingsBloc>();
 
 mixin UserSettingsConsumer {
-  UserSettingsService get userSettings => getInjectedUserSettings();
+  UserSettingsBloc get userSettings => getInjectedUserSettings();
 }

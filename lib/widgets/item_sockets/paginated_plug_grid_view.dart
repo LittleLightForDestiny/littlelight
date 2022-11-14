@@ -19,7 +19,7 @@ class PaginatedPlugGridView extends PlugGridView {
         );
 
   const PaginatedPlugGridView.withExpectedItemSize(
-    List<int> plugHashes, {
+    List<int?> plugHashes, {
     required ItemBuilder itemBuilder,
     required double expectedItemSize,
     double gridSpacing = 8,

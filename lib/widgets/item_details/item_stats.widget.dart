@@ -13,7 +13,7 @@ import 'package:bungie_api/models/destiny_stat_group_definition.dart';
 import 'package:bungie_api/models/interpolation_point.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
@@ -242,9 +242,6 @@ class ItemStatWidget extends StatelessWidget {
   }
 
   int get maxBarSize {
-    if (DestinyData.armorStats.contains(statHash)) {
-      return max(3, baseBarSize + modBarSize);
-    }
     return max(100, baseBarSize + modBarSize);
   }
 

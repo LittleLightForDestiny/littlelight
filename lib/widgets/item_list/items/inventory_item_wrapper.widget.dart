@@ -9,13 +9,14 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/inventory/inventory.bloc.dart';
 import 'package:little_light/pages/item_details/item_details.page_route.dart';
 import 'package:little_light/pages/item_search/quick_transfer.screen.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/inventory/inventory.package.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/notification/notification.package.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/services/selection/selection.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/item_with_owner.dart';
@@ -36,6 +37,7 @@ import 'package:little_light/widgets/item_list/items/subclass/subclass_inventory
 import 'package:little_light/widgets/item_list/items/weapon/medium_weapon_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/weapon/minimal_weapon_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/weapon/weapon_inventory_item.widget.dart';
+import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 enum ContentDensity { MINIMAL, MEDIUM, FULL }
@@ -63,6 +65,8 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> exte
         ManifestConsumer,
         NotificationConsumer,
         SelectionConsumer {
+  InventoryBloc inventoryBloc(BuildContext context) => context.read<InventoryBloc>();
+
   DestinyInventoryItemDefinition definition;
   String uniqueId;
   bool selected = false;
@@ -221,7 +225,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> exte
       ),
     );
     if (item != null) {
-      inventory.transfer(item.item, item.ownerId, ItemDestination.Character, widget.characterId);
+      await inventoryBloc(context).transfer(item.item, widget.characterId);
     }
   }
 

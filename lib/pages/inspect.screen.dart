@@ -1,8 +1,8 @@
 // @dart=2.9
 
-import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
+import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
@@ -98,8 +98,8 @@ class InspectScreenState extends State<InspectScreen>
     return characterTabs;
   }
 
-  List<DestinyCharacterComponent> get characters {
-    return profile.getCharacters(userSettings.characterOrdering);
+  List<DestinyCharacterInfo> get characters {
+    return profile.characters;
   }
 
   Widget buildLoading(BuildContext context) {

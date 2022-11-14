@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/utils/shimmer_helper.dart';
+import 'package:little_light/shared/widgets/loading/default_loading_shimmer.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
 class LoadoutBackgroundItemWidget extends StatefulWidget {
@@ -46,14 +46,12 @@ class LoadoutBackgroundItemWidgetState extends State<LoadoutBackgroundItemWidget
     );
   }
 
-  buildPlaceholder(BuildContext context) {
-    return ShimmerHelper.getDefaultShimmer(context);
-  }
-
   buildEmblemBackground(BuildContext context) {
-    if (definition == null) return buildPlaceholder(context);
+    if (definition == null) return DefaultLoadingShimmer();
+    ;
     String url = BungieApiService.url(definition.secondarySpecial);
-    if (url == null) return buildPlaceholder(context);
+    if (url == null) return DefaultLoadingShimmer();
+    ;
     return Stack(children: [
       Positioned.fill(
           child: QueuedNetworkImage(
@@ -61,7 +59,7 @@ class LoadoutBackgroundItemWidgetState extends State<LoadoutBackgroundItemWidget
         fadeInDuration: Duration(milliseconds: 300),
         imageUrl: "$url",
         fit: BoxFit.cover,
-        placeholder: buildPlaceholder(context),
+        placeholder: DefaultLoadingShimmer(),
       )),
       Positioned.fill(
           child: Material(

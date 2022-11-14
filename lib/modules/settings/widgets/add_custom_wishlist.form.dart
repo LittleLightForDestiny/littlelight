@@ -20,10 +20,6 @@ class _AddCustomWishlistFormState extends State<AddCustomWishlistForm> with Wish
   bool loadingError = false;
   WishlistFile? wishlistFile;
   final Map<String, TextEditingController> fieldControllers = Map();
-  Map<ImportType, TranslatedTextWidget> comboLabels = {
-    ImportType.File: TranslatedTextWidget("Local File"),
-    ImportType.Link: TranslatedTextWidget("Link"),
-  };
   TextEditingController? get urlController => this.fieldControllers["URL"];
 
   @override
@@ -54,7 +50,7 @@ class _AddCustomWishlistFormState extends State<AddCustomWishlistForm> with Wish
           Container(height: 16),
           ElevatedButton(
             onPressed: isURLValid ? () => loadWishlist() : null,
-            child: TranslatedTextWidget("Load wishlist"),
+            child: Text("Load wishlist".translate(context)),
           ),
           Container(
             height: 8,
@@ -77,8 +73,9 @@ class _AddCustomWishlistFormState extends State<AddCustomWishlistForm> with Wish
           child: Icon(FontAwesomeIcons.exclamationCircle),
         ),
         Expanded(
-            child: TranslatedTextWidget(
-                "Error loading wishlist file. Please make sure you're pointing to a raw json file using the Little Light wishlist format"))
+            child: Text(
+                "Error loading wishlist file. Please make sure you're pointing to a raw json file using the Little Light wishlist format"
+                    .translate(context)))
       ]),
     );
   }
@@ -95,7 +92,7 @@ class _AddCustomWishlistFormState extends State<AddCustomWishlistForm> with Wish
         Container(height: 16),
         ElevatedButton(
           onPressed: () => addWishlist(),
-          child: TranslatedTextWidget("Add wishlist"),
+          child: Text("Add wishlist".translate(context)),
         ),
       ],
     );
@@ -133,7 +130,7 @@ class _AddCustomWishlistFormState extends State<AddCustomWishlistForm> with Wish
   Widget buildInfo(BuildContext context) {
     return Column(
       children: [
-        TranslatedTextWidget("To create your own wishlists, please check:", textAlign: TextAlign.center),
+        Text("To create your own wishlists, please check:".translate(context), textAlign: TextAlign.center),
         Container(
           height: 8,
         ),
@@ -145,8 +142,9 @@ class _AddCustomWishlistFormState extends State<AddCustomWishlistForm> with Wish
         Container(
           height: 8,
         ),
-        TranslatedTextWidget(
-          "To use these wishlists on Little Light, you will need to export them as json and publish it somewhere (github.com for example), and then paste the url to raw file on the field below:",
+        Text(
+          "To use these wishlists on Little Light, you will need to export them as json and publish it somewhere (github.com for example), and then paste the url to raw file on the field below:"
+              .translate(context),
           textAlign: TextAlign.center,
         ),
       ],

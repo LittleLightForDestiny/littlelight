@@ -1,4 +1,5 @@
 enum LittleLightPersistentPage {
+  NewEquipment,
   Equipment,
   Collections,
   Triumphs,

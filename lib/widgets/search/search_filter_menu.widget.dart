@@ -1,7 +1,7 @@
 // @dart=2.9
 
 import 'package:flutter/material.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/widgets/search/search.controller.dart';
 import 'package:little_light/widgets/search/search_filters/ammo_type_filter.widget.dart';
 import 'package:little_light/widgets/search/search_filters/class_type_filter.widget.dart';
@@ -35,7 +35,7 @@ class _SearchFilterMenuState extends State<SearchFilterMenu> {
         child: Column(
       children: [
         AppBar(
-          title: TranslatedTextWidget("Filters"),
+          title: Text("Filters".translate(context)),
           automaticallyImplyLeading: false,
           actions: <Widget>[Container()],
           leading: IconButton(

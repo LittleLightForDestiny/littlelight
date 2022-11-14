@@ -57,7 +57,7 @@ class _WishlistTagsFilterWidgetState
     var children = <Widget>[
       WishlistsData.getIcon(context, value, 24),
       Container(width: 4, height: 4),
-      WishlistsData.getLabel(value)
+      WishlistsData.getLabel(value, context)
     ];
     return DefaultTextStyle(
         style: TextStyle(color: Theme.of(context).colorScheme.onSurface),

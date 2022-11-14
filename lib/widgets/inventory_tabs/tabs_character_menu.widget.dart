@@ -3,15 +3,15 @@
 import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/utils/shimmer_helper.dart';
+import 'package:little_light/shared/widgets/loading/default_loading_shimmer.dart';
 import 'package:little_light/widgets/common/corner_badge.decoration.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
-import 'package:shimmer/shimmer.dart';
 
 class TabsCharacterMenuWidget extends StatelessWidget {
-  final List<DestinyCharacterComponent> characters;
+  final List<DestinyCharacterInfo> characters;
   final TabController controller;
   final bool includeVault;
 
@@ -36,9 +36,9 @@ class TabsCharacterMenuWidget extends StatelessWidget {
     }
     String lastPlayedCharId = characters.first.characterId;
     DateTime lastPlayedDate =
-        DateTime.tryParse(characters.first.dateLastPlayed) ?? DateTime.fromMicrosecondsSinceEpoch(0);
+        DateTime.tryParse(characters.first.character.dateLastPlayed) ?? DateTime.fromMicrosecondsSinceEpoch(0);
     characters.forEach((char) {
-      var date = DateTime.tryParse(char.dateLastPlayed) ?? DateTime.fromMicrosecondsSinceEpoch(0);
+      var date = DateTime.tryParse(char.character.dateLastPlayed) ?? DateTime.fromMicrosecondsSinceEpoch(0);
       if (date.isAfter(lastPlayedDate)) {
         lastPlayedDate = date;
         lastPlayedCharId = char.characterId;
@@ -49,9 +49,9 @@ class TabsCharacterMenuWidget extends StatelessWidget {
         .map((index, character) => MapEntry<int, TabMenuButton>(
             index,
             TabMenuButton(
-                key: Key("tabmenu_${character.characterId}_${character.emblemHash}"),
+                key: Key("tabmenu_${character.characterId}_${character.character.emblemHash}"),
                 lastPlayed: character.characterId == lastPlayedCharId,
-                character: character)))
+                character: character.character)))
         .values
         .toList();
     if (this.includeVault) {
@@ -104,14 +104,13 @@ class TabMenuButtonState extends State<TabMenuButton> with ManifestConsumer {
   }
 
   Widget getImage(context) {
-    Shimmer shimmer = ShimmerHelper.getDefaultShimmer(context);
     if (emblemDefinition == null) {
-      return shimmer;
+      return DefaultLoadingShimmer();
     }
     return QueuedNetworkImage(
       key: Key("emblem_${emblemDefinition.hash}"),
       imageUrl: BungieApiService.url(emblemDefinition.displayProperties.icon),
-      placeholder: shimmer,
+      placeholder: DefaultLoadingShimmer(),
     );
   }
 }

@@ -1,5 +1,4 @@
 enum NotificationType {
-  localUpdate,
   requestedTransfer,
   requestedVaulting,
   requestedEquip,

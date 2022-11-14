@@ -96,7 +96,7 @@ class BungieApiService with AuthConsumer, AppConfigConsumer {
   }
 
   Future<int?> transferItem(
-      int itemHash, int stackSize, bool transferToVault, String itemId, String characterId) async {
+      int itemHash, int stackSize, bool transferToVault, String? itemId, String characterId) async {
     BungieNetToken? token = await auth.getCurrentToken();
     GroupUserInfoCard? membership = await auth.getMembership();
     final membershipID = membership?.membershipId;
@@ -311,6 +311,7 @@ class Client with AuthConsumer, AppConfigConsumer implements HttpClient {
     }
 
     if (response.statusCode != 200) {
+      print(response.statusCode);
       throw BungieApiException.fromJson(json, response.statusCode);
     }
 

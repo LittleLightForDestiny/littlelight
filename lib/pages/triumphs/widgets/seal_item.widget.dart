@@ -1,11 +1,11 @@
-import 'package:collection/collection.dart';
 import 'package:bungie_api/destiny2.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
-import 'package:little_light/models/character_sort_parameter.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
@@ -31,7 +31,7 @@ class PresentationNodeWidgetState extends State<SealItemWidget>
   DestinyObjectiveDefinition? objectiveDefinition;
   DestinyObjectiveDefinition? gildingObjectiveDefinition;
 
-  DestinyCharacterComponent? lastCharacter;
+  DestinyCharacterInfo? lastCharacter;
 
   DestinyRecordComponent? get completionRecord {
     final recordHash = completionRecordDefinition?.hash;
@@ -82,8 +82,7 @@ class PresentationNodeWidgetState extends State<SealItemWidget>
       gildingObjectiveDefinition = await manifest.getDefinition<DestinyObjectiveDefinition>(gildingObjectiveHash);
     }
 
-    lastCharacter =
-        profile.getCharacters(CharacterSortParameter(type: CharacterSortParameterType.LastPlayed))?.firstOrNull;
+    lastCharacter = profile.characters?.firstOrNull;
 
     if (mounted) {
       setState(() {});
@@ -156,7 +155,7 @@ class PresentationNodeWidgetState extends State<SealItemWidget>
   }
 
   Widget buildSealTitle(DestinyObjectiveDefinition? objectiveDef) {
-    final genderHash = lastCharacter?.genderHash;
+    final genderHash = lastCharacter?.character.genderHash;
     final titlesByGenderHash = completionRecordDefinition?.titleInfo?.titlesByGenderHash;
     final title = genderHash != null ? (titlesByGenderHash?["$genderHash"]) : titlesByGenderHash?.values.firstOrNull;
     final theme = LittleLightTheme.of(context);

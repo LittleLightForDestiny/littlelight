@@ -3,6 +3,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/utils/item_filters/total_stats_constraints_filter.dart';
 import 'package:little_light/widgets/common/small_rect_range_slider_indicator_shape.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -35,7 +36,7 @@ class TotalStatsConstraintsWidgetState extends BaseSearchFilterWidgetState<Total
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  TranslatedTextWidget("Include non-armor items"),
+                  Text("Include non-armor items".translate(context)),
                   Switch(
                     value: filter.value.includeNonArmorItems,
                     onChanged: (value) {
@@ -94,7 +95,9 @@ class TotalStatsConstraintsWidgetState extends BaseSearchFilterWidgetState<Total
   @override
   Widget buildDisabledValue(BuildContext context) {
     if (filter.availableValues.min > 9000) {
-      return TranslatedTextWidget("None", uppercase: true);
+      return Text(
+        "None".translate(context).toUpperCase(),
+      );
     }
     return Text("${filter.availableValues.min}");
   }

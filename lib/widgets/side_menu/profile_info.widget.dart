@@ -4,14 +4,13 @@ import 'package:bungie_api/user.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
+// ignore: import_of_legacy_library_into_null_safe
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
-import 'package:little_light/models/character_sort_parameter.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-// ignore: import_of_legacy_library_into_null_safe
-import 'package:little_light/services/profile/profile.consumer.dart';
+import 'package:little_light/shared/widgets/loading/default_loading_shimmer.dart';
 import 'package:little_light/utils/platform_data.dart';
-import 'package:little_light/utils/shimmer_helper.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 // ignore: import_of_legacy_library_into_null_safe
@@ -127,7 +126,7 @@ class ProfileInfoState extends State<ProfileInfoWidget>
     ]);
   }
 
-  Widget get shimmer => ShimmerHelper.getDefaultShimmer(context);
+  Widget get shimmer => DefaultLoadingShimmer();
 
   Widget background(context) {
     if (account == null) {
@@ -165,13 +164,13 @@ class ProfileInfoState extends State<ProfileInfoWidget>
   }
 
   Widget buildActivityInfo(BuildContext context) {
-    final lastCharacter = profile.getCharacters(CharacterSortParameter())?.first;
+    final lastCharacter = profile.characters?.first;
     final lastCharacterID = lastCharacter?.characterId;
     if (lastCharacter == null || lastCharacterID == null) {
       return Container();
     }
-    final lastPlayed = DateTime.tryParse(lastCharacter.dateLastPlayed ?? "");
-    final currentSession = int.tryParse(lastCharacter.minutesPlayedThisSession ?? "");
+    final lastPlayed = DateTime.tryParse(lastCharacter.character.dateLastPlayed ?? "");
+    final currentSession = int.tryParse(lastCharacter.character.minutesPlayedThisSession ?? "");
     final time =
         lastPlayed != null ? timeago.format(lastPlayed, allowFromNow: true, locale: context.currentLanguage) : "";
     if (lastPlayed != null &&

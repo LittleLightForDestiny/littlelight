@@ -1,7 +1,7 @@
 // @dart=2.9
 
 import 'package:flutter/material.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 
 typedef FreeSlotsChanged = void Function(int freeSlots);
 
@@ -35,7 +35,7 @@ class FreeSlotsSliderWidgetState extends State<FreeSlotsSliderWidget> {
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
         child: Row(
           children: <Widget>[
-            widget.suppressLabel ? Container() : TranslatedTextWidget("Free Slots"),
+            widget.suppressLabel ? Container() : Text("Free Slots".translate(context)),
             Expanded(
                 child: Slider(
               min: 0,

@@ -3,7 +3,7 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:little_light/models/tracked_objective.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/services/storage/export.dart';
 
 class ObjectivesService with StorageConsumer, ProfileConsumer, ManifestConsumer {

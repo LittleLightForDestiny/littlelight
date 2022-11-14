@@ -16,9 +16,11 @@ import 'package:little_light/pages/item_details/item_details.page_route.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/services/profile/vendors.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
+import 'package:little_light/utils/socket_category_hashes.dart';
+import 'package:little_light/shared/utils/extensions/tier_type_data.dart';
 import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/item_name_bar/item_name_bar.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
@@ -82,7 +84,7 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget>
         decoration: BoxDecoration(
             border: Border.all(
           width: 1,
-          color: DestinyData.getTierColor(definition.inventory.tierType),
+          color: definition.inventory.tierType?.getColor(context),
         )),
         child: Stack(children: [
           Column(children: [
@@ -192,7 +194,7 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget>
 
   Widget contentEquipment(BuildContext context) {
     var perksCategory = definition.sockets?.socketCategories
-        ?.firstWhere((c) => DestinyData.socketCategoryPerkHashes.contains(c.socketCategoryHash), orElse: () => null);
+        ?.firstWhere((c) => SocketCategoryHashes.perks.contains(c.socketCategoryHash), orElse: () => null);
     var tierCategory = definition.sockets?.socketCategories
         ?.firstWhere((c) => DestinyData.socketCategoryTierHashes.contains(c.socketCategoryHash), orElse: () => null);
     Widget middleContent = Container();
@@ -401,7 +403,7 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget>
   Widget collectedBadge(BuildContext context) {
     if (isUnlocked) {
       return Icon(FontAwesomeIcons.solidCheckCircle,
-          color: DestinyData.getTierTextColor(definition?.inventory?.tierType), size: 18);
+          color: definition?.inventory?.tierType?.getTextColor(context), size: 18);
     }
     return null;
   }

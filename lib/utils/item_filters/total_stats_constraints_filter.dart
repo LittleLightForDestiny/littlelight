@@ -4,7 +4,7 @@ import 'dart:math';
 
 import 'package:bungie_api/enums/destiny_item_type.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 
 import 'base_item_filter.dart';

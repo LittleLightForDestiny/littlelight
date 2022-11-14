@@ -33,7 +33,7 @@ class MinimalArmorInventoryItemWidget extends MinimalBaseInventoryItemWidget wit
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          primaryStatIcon(context, DestinyData.getClassIcon(definition.classType), size: valueFontSize),
+          primaryStatIcon(context, definition.classType?.icon, size: valueFontSize),
           primaryStatValueField(context),
         ].where((w) => w != null).toList());
   }

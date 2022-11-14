@@ -2,9 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/models/bucket_display_options.dart';
-
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/icon_fonts/littlelight_icons.dart';
 import 'package:little_light/widgets/item_list/bucket_display_options_selector.widget.dart';
 
@@ -49,19 +48,19 @@ class PursuitsDisplayOptionsSelectorWidgetState
   Widget getLabel(BucketDisplayType type) {
     switch (type) {
       case BucketDisplayType.Hidden:
-        return TranslatedTextWidget("Hidden");
+        return Text("Hidden".translate(context));
 
       case BucketDisplayType.OnlyEquipped:
-        return TranslatedTextWidget("Only Equipped");
+        return Text("Only Equipped".translate(context));
 
       case BucketDisplayType.Large:
-        return TranslatedTextWidget("Large");
+        return Text("Large".translate(context));
 
       case BucketDisplayType.Medium:
-        return TranslatedTextWidget("Medium");
+        return Text("Medium".translate(context));
 
       case BucketDisplayType.Small:
-        return TranslatedTextWidget("Small");
+        return Text("Small".translate(context));
     }
     return Container();
   }

@@ -1,5 +1,5 @@
 import 'package:bungie_api/models/destiny_stat.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 
 import 'package:little_light/utils/item_sorters/base_item_sorter.dart';

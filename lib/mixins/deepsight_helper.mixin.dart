@@ -1,5 +1,5 @@
 import 'package:bungie_api/destiny2.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:collection/collection.dart';
 
 /// TODO: implement this properly without relying on hardcoded hashes

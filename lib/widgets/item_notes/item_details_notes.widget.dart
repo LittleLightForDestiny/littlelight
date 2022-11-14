@@ -2,11 +2,11 @@
 
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/item_notes.dart';
 import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/dialogs/set_item_nickname.dialog.dart';
 import 'package:little_light/widgets/dialogs/set_item_notes.dialog.dart';
 import 'package:little_light/widgets/flutter/center_icon_workaround.dart';
@@ -70,7 +70,7 @@ class ItemDetailsNotesWidgetState extends BaseDestinyItemState<ItemDetailsNotesW
     return Container(
         padding: EdgeInsets.all(8),
         child: Column(children: <Widget>[
-          getHeader(TranslatedTextWidget("Item Notes", uppercase: true, style: TextStyle(fontWeight: FontWeight.bold))),
+          getHeader(Text("Item Notes".translate(context).toUpperCase(), style: TextStyle(fontWeight: FontWeight.bold))),
           visible ? Container(height: 8) : Container(),
           visible ? buildCustomName(context) : Container(),
           visible ? Container(height: 8) : Container(),
@@ -80,13 +80,13 @@ class ItemDetailsNotesWidgetState extends BaseDestinyItemState<ItemDetailsNotesW
 
   Widget buildCustomName(BuildContext context) {
     return Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-      TranslatedTextWidget("Nickname"),
+      Text("Nickname".translate(context)),
       Container(width: 8),
       Expanded(
         child: Container(
             padding: EdgeInsets.all(8),
             color: Colors.black54,
-            child: customName != null ? Text(customName) : TranslatedTextWidget("Not set")),
+            child: customName != null ? Text(customName) : Text("Not set".translate(context))),
       ),
       Container(width: 8),
       iconButton(
@@ -117,7 +117,7 @@ class ItemDetailsNotesWidgetState extends BaseDestinyItemState<ItemDetailsNotesW
               key: Key(notesText),
               padding: EdgeInsets.all(8),
               color: Colors.black54,
-              child: notesText != null ? Text(notesText) : TranslatedTextWidget("No notes added yet"))),
+              child: notesText != null ? Text(notesText) : Text("No notes added yet".translate(context)))),
       Container(
         width: 8,
       ),

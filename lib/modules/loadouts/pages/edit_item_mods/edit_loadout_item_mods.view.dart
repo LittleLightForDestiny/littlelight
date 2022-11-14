@@ -1,17 +1,17 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/modules/loadouts/pages/edit_item_mods/edit_loadout_item_mods.bloc.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/item_sockets/mod_grid_item.dart';
 import 'package:little_light/widgets/item_sockets/paginated_plug_grid_view.dart';
 import 'package:provider/provider.dart';
 
-const emptyLoadoutModSlot = 1219897208;
+const emptyLoadoutModHash = 1219897208;
 
 class EditLoadoutItemModsView extends StatelessWidget {
   EditLoadoutItemModsBloc _bloc(BuildContext context) => context.read<EditLoadoutItemModsBloc>();
@@ -27,7 +27,7 @@ class EditLoadoutItemModsView extends StatelessWidget {
   }
 
   PreferredSizeWidget buildAppBar(BuildContext context) => AppBar(
-        title: TranslatedTextWidget("Edit Mods"),
+        title: Text("Edit Mods".translate(context)),
         flexibleSpace: buildAppBarBackground(context),
       );
 
@@ -160,7 +160,7 @@ class EditLoadoutItemModsView extends StatelessWidget {
       height: 64,
       child: Stack(children: [
         Positioned.fill(
-          child: ModGridItem(emptyLoadoutModSlot),
+          child: ModGridItem(emptyLoadoutModHash),
         ),
         if (equippedPlugHash != null)
           Positioned(
@@ -206,13 +206,25 @@ class EditLoadoutItemModsView extends StatelessWidget {
             plugs,
             itemBuilder: (plugHash) {
               final isSelected = _state(context).isPlugSelectedForSocket(plugHash, socketIndex);
+              final isEquipped = _state(context).isPlugEquippedForSocket(plugHash, socketIndex);
+              if (plugHash == null) {
+                return ModGridItem(emptyLoadoutModHash, canEquip: true, selected: isSelected, equipped: isEquipped,
+                    onTap: () {
+                  if (isSelected) {
+                    _bloc(context).unselectSockets();
+                  } else {
+                    _bloc(context).removePlugHashForSocket(socketIndex);
+                  }
+                });
+              }
               return ModGridItem(
                 plugHash,
                 canEquip: true,
                 selected: isSelected,
+                equipped: isEquipped,
                 onTap: () {
                   if (isSelected) {
-                    _bloc(context).removePlugHashForSocket(socketIndex);
+                    _bloc(context).unselectSockets();
                   } else {
                     _bloc(context).selectPlugHashForSocket(plugHash, socketIndex);
                   }
@@ -240,7 +252,7 @@ class EditLoadoutItemModsView extends StatelessWidget {
               constraints: BoxConstraints(minWidth: double.infinity),
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8).copyWith(bottom: 8 + paddingBottom),
               child: ElevatedButton(
-                  child: TranslatedTextWidget("Update Mods"),
+                  child: Text("Update Mods".translate(context)),
                   onPressed: () {
                     _bloc(context).updateMods();
                   }),

@@ -16,6 +16,8 @@ import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/item_with_owner.dart';
+import 'package:little_light/utils/socket_category_hashes.dart';
+import 'package:little_light/shared/utils/extensions/tier_type_data.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
@@ -99,7 +101,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
       expandRatio = 0;
     }
     return Container(
-        color: DestinyData.getTierColor(definition?.inventory?.tierType),
+        color: definition?.inventory?.tierType?.getColor(context),
         child: Stack(
           fit: StackFit.expand,
           children: <Widget>[
@@ -162,7 +164,10 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
         height: kToolbarHeight,
         child: BackButton(
             color: Color.lerp(
-                DestinyData.getTierTextColor(definition?.inventory?.tierType), Colors.grey.shade300, expandRatio)));
+          definition?.inventory?.tierType?.getColor(context),
+          Colors.grey.shade300,
+          expandRatio,
+        )));
   }
 
   Widget icon(BuildContext context, double expandRatio) {
@@ -207,7 +212,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
                   softWrap: false,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                      color: DestinyData.getTierTextColor(definition?.inventory?.tierType).withOpacity(.9),
+                      color: definition?.inventory?.tierType?.getTextColor(context)?.withOpacity(.9),
                       fontSize: lerpDouble(kToolbarHeight * .5, convertSize(74, context), expandRatio),
                       fontWeight: FontWeight.bold,
                       height: .94),
@@ -217,7 +222,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
               style: TextStyle(
                   fontSize: lerpDouble(kToolbarHeight * .3, convertSize(34, context), expandRatio),
                   height: .94,
-                  color: DestinyData.getTierTextColor(definition?.inventory?.tierType).withOpacity(.8),
+                  color: definition?.inventory?.tierType?.getTextColor(context)?.withOpacity(.8),
                   fontWeight: FontWeight.w500),
             ),
           ],
@@ -240,11 +245,11 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
   Widget leftColumn(BuildContext context, double expandRatio) {
     final leftColumnWidth = convertSize(730, context);
     var perksCategory = definition?.sockets?.socketCategories
-        ?.firstWhere((s) => DestinyData.socketCategoryPerkHashes.contains(s.socketCategoryHash), orElse: () => null);
+        ?.firstWhere((s) => SocketCategoryHashes.perks.contains(s.socketCategoryHash), orElse: () => null);
     var armorTierCategory = definition?.sockets?.socketCategories
         ?.firstWhere((s) => DestinyData.socketCategoryTierHashes.contains(s.socketCategoryHash), orElse: () => null);
     var modsCategory = definition?.sockets?.socketCategories
-        ?.firstWhere((s) => DestinyData.socketCategoryModHashes.contains(s.socketCategoryHash), orElse: () => null);
+        ?.firstWhere((s) => SocketCategoryHashes.mods.contains(s.socketCategoryHash), orElse: () => null);
     var shaderCategory = definition?.sockets?.socketCategories?.firstWhere(
         (s) => DestinyData.socketCategoryCosmeticModHashes.contains(s.socketCategoryHash),
         orElse: () => null);
@@ -553,7 +558,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
   }
 
   Widget tierBar(BuildContext context, double expandRatio) {
-    Color tierColor = DestinyData.getTierColor(definition?.inventory?.tierType);
+    Color tierColor = definition?.inventory?.tierType?.getColor(context);
     ItemState state = item?.item?.state ?? ItemState.None;
     bool isMasterwork = state.contains(ItemState.Masterwork);
     if (isMasterwork && definition?.inventory?.tierType == TierType.Exotic) {}

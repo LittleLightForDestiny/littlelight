@@ -13,12 +13,14 @@ typedef OnTap = void Function();
 class ModGridItem extends StatelessWidget with ItemNotesConsumer {
   final int plugHash;
   final bool selected;
+  final bool equipped;
   final bool canEquip;
   final void Function()? onTap;
 
   ModGridItem(
     this.plugHash, {
     this.selected = false,
+    this.equipped = false,
     this.canEquip = true,
     this.onTap,
     Key? key,
@@ -94,7 +96,8 @@ class ModGridItem extends StatelessWidget with ItemNotesConsumer {
   }
 
   Widget? buildBorder(BuildContext context) {
-    final borderColor = LittleLightTheme.of(context).onSurfaceLayers.layer0;
+    final theme = LittleLightTheme.of(context);
+    final borderColor = equipped ? theme.primaryLayers.layer0 : theme.onSurfaceLayers.layer0;
     return Container(
       decoration: BoxDecoration(
         border: Border.all(color: borderColor.withOpacity(selected ? 1 : .5), width: 2),

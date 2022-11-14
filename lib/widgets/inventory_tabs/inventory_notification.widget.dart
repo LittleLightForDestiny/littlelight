@@ -2,10 +2,11 @@ import 'dart:async';
 
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/notification/notification.package.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
-import 'package:little_light/utils/shimmer_helper.dart';
+import 'package:little_light/shared/widgets/loading/default_loading_shimmer.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
@@ -14,11 +15,11 @@ import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:shimmer/shimmer.dart';
 
 extension on ErrorNotificationEvent {
-  Widget? get additionalMessage {
+  Widget? getAdditionalMessage(BuildContext context) {
     switch (this.errorType) {
       case ErrorNotificationType.onCombatZoneEquipError:
       case ErrorNotificationType.onCombatZoneApplyModError:
-        return TranslatedTextWidget("Try to do this while on orbit, a social space or offline");
+        return Text("Try to do this while on orbit, a social space or offline".translate(context));
       default:
         return null;
     }
@@ -62,7 +63,6 @@ class InventoryNotificationWidgetState extends State<InventoryNotificationWidget
   }
 
   void handleNotification(NotificationEvent event) async {
-    if (event.type == NotificationType.localUpdate) return;
     _latestEvent = event;
     setState(() {});
   }
@@ -106,16 +106,24 @@ class InventoryNotificationWidgetState extends State<InventoryNotificationWidget
     }
     switch (_latestEvent?.type) {
       case NotificationType.requestedUpdate:
-        return TranslatedTextWidget("Updating", uppercase: true);
+        return Text(
+          "Updating".translate(context).toUpperCase(),
+        );
 
       case NotificationType.requestedTransfer:
-        return TranslatedTextWidget("Transferring", uppercase: true);
+        return Text(
+          "Transferring".translate(context).toUpperCase(),
+        );
 
       case NotificationType.requestedVaulting:
-        return TranslatedTextWidget("Moving Away", uppercase: true);
+        return Text(
+          "Moving Away".translate(context).toUpperCase(),
+        );
 
       case NotificationType.requestedEquip:
-        return TranslatedTextWidget("Equipping", uppercase: true);
+        return Text(
+          "Equipping".translate(context).toUpperCase(),
+        );
 
       case NotificationType.requestApplyPlug:
         final plugHash = _latestEvent?.plugHash;
@@ -138,17 +146,29 @@ class InventoryNotificationWidgetState extends State<InventoryNotificationWidget
   Widget buildErrorMessage(BuildContext context, ErrorNotificationEvent event) {
     switch (event.errorType) {
       case ErrorNotificationType.genericTransferError:
-        return TranslatedTextWidget("Transfer failed", uppercase: true);
+        return Text(
+          "Transfer failed".translate(context).toUpperCase(),
+        );
       case ErrorNotificationType.genericEquipError:
-        return TranslatedTextWidget("Equip failed", uppercase: true);
+        return Text(
+          "Equip failed".translate(context).toUpperCase(),
+        );
       case ErrorNotificationType.onCombatZoneEquipError:
-        return TranslatedTextWidget("Can't equip on combat zones", uppercase: true);
+        return Text(
+          "Can't equip on combat zones".translate(context).toUpperCase(),
+        );
       case ErrorNotificationType.genericApplyModError:
-        return TranslatedTextWidget("Can't apply on combat zones", uppercase: true);
+        return Text(
+          "Can't apply on combat zones".translate(context).toUpperCase(),
+        );
       case ErrorNotificationType.onCombatZoneApplyModError:
-        return TranslatedTextWidget("Can't apply on combat zones", uppercase: true);
+        return Text(
+          "Can't apply on combat zones".translate(context).toUpperCase(),
+        );
       case ErrorNotificationType.genericUpdateError:
-        return TranslatedTextWidget("Update failed", uppercase: true);
+        return Text(
+          "Update failed".translate(context).toUpperCase(),
+        );
 
       default:
         return Container();
@@ -233,7 +253,7 @@ class InventoryNotificationWidgetState extends State<InventoryNotificationWidget
                     padding: EdgeInsets.symmetric(vertical: 8),
                     child: _latestEvent is ErrorNotificationEvent
                         ? buildErrorMessage(context, _latestEvent)
-                        : ShimmerHelper.getDefaultShimmer(context, child: buildMessage(context)))),
+                        : DefaultLoadingShimmer(child: buildMessage(context)))),
             if (icons != null) icons
           ]),
         ),
@@ -264,7 +284,7 @@ class InventoryNotificationWidgetState extends State<InventoryNotificationWidget
 
   Widget? getAdditionalMessage(BuildContext context) {
     final event = _latestEvent;
-    if (event is ErrorNotificationEvent && event.additionalMessage != null) {
+    if (event is ErrorNotificationEvent && event.getAdditionalMessage(context) != null) {
       return Container(
           margin: EdgeInsets.only(top: 8),
           padding: EdgeInsets.all(8),
@@ -272,7 +292,7 @@ class InventoryNotificationWidgetState extends State<InventoryNotificationWidget
             color: LittleLightTheme.of(context).errorLayers,
             borderRadius: BorderRadius.circular(8),
           ),
-          child: event.additionalMessage);
+          child: event.getAdditionalMessage(context));
     }
     return null;
   }

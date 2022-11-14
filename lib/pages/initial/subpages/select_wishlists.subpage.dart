@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/models/wishlist_index.dart';
 import 'package:little_light/pages/initial/notifiers/initial_page_state.notifier.dart';
 import 'package:little_light/pages/initial/notifiers/select_wishlists.notifier.dart';
@@ -51,8 +52,12 @@ class SelectWishlistsSubPageState extends SubpageBaseState<SelectWishlistsSubPag
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       Container(
         padding: EdgeInsets.all(8),
-        child: TranslatedTextWidget("{count} wishlists selected",
-            replace: {"count": "$count"}, key: Key("select_count_$count")),
+        child: Text(
+            "{count} wishlists selected".translate(
+              context,
+              replace: {"count": "$count"},
+            ),
+            key: Key("select_count_$count")),
       ),
       ElevatedButton(
         onPressed: () async {

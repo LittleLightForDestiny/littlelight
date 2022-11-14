@@ -1,85 +1,88 @@
-import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 
-translationPlaceholders() {
-  TranslatedTextWidget("Select Language");
-  TranslatedTextWidget("Download Database");
-  TranslatedTextWidget("Equipment");
-  TranslatedTextWidget("Progress");
-  TranslatedTextWidget("Pursuits");
-  TranslatedTextWidget("Milestones");
-  TranslatedTextWidget("Search");
-  TranslatedTextWidget("Duplicated Items");
-  TranslatedTextWidget("About");
-  TranslatedTextWidget("Change Language");
-  TranslatedTextWidget("Transfer");
-  TranslatedTextWidget("Stats");
-  TranslatedTextWidget("Unequip");
-  TranslatedTextWidget("Lore");
-  TranslatedTextWidget("Edit Loadout");
-  TranslatedTextWidget("Transfer to:");
-  TranslatedTextWidget("Equip on:");
-  TranslatedTextWidget("Do you really want to delete the loadout {loadoutName} ?");
-  TranslatedTextWidget("Select {bucketName}");
-  TranslatedTextWidget("Loadout Name");
-  TranslatedTextWidget("Pull");
+translationPlaceholders(BuildContext context) {
+  Text("Select Language".translate(context));
+  Text("Download Database".translate(context));
+  Text("Equipment".translate(context));
+  Text("Progress".translate(context));
+  Text("Pursuits".translate(context));
+  Text("Milestones".translate(context));
+  Text("Search".translate(context));
+  Text("Duplicated Items".translate(context));
+  Text("About".translate(context));
+  Text("Change Language".translate(context));
+  Text("Transfer".translate(context));
+  Text("Stats".translate(context));
+  Text("Unequip".translate(context));
+  Text("Lore".translate(context));
+  Text("Edit Loadout".translate(context));
+  Text("Transfer to:".translate(context));
+  Text("Equip on:".translate(context));
+  Text("Do you really want to delete the loadout {loadoutName} ?".translate(context));
+  Text("Select {bucketName}".translate(context));
+  Text("Loadout Name".translate(context));
+  Text("Pull".translate(context));
 
-  TranslatedTextWidget("Try Again");
-  TranslatedTextWidget("Exit");
-  TranslatedTextWidget("Login with another account");
+  Text("Try Again".translate(context));
+  Text("Exit".translate(context));
+  Text("Login with another account".translate(context));
 
-  TranslatedTextWidget("If this keeps happening, please try to login with a mainstream browser.");
-  TranslatedTextWidget(
-      "Please dont open the auth process in another safari window, this could prevent you from getting logged in.");
+  Text("If this keeps happening, please try to login with a mainstream browser.".translate(context));
 
-  TranslatedTextWidget("Transferring");
-  TranslatedTextWidget("Equipping");
-  TranslatedTextWidget("Weapon");
-  TranslatedTextWidget("Armor");
-  TranslatedTextWidget("Everything");
+  "Please dont open the auth process in another safari window, this could prevent you from getting logged in."
+      .translate(context);
+
+  Text("Transferring".translate(context));
+  Text("Equipping".translate(context));
+  Text("Weapon".translate(context));
+  Text("Armor".translate(context));
+  Text("Everything".translate(context));
 
   ///Bungie responses
-  TranslatedTextWidget("AuthorizationCodeInvalid");
-  TranslatedTextWidget("DestinyAccountNotFound");
-  TranslatedTextWidget("invalid_grant");
-  TranslatedTextWidget(
-      "We were unable to find your Destiny account information. If you have a valid Destiny Account, let us know.");
+  Text("AuthorizationCodeInvalid".translate(context));
+  Text("DestinyAccountNotFound".translate(context));
+  Text("invalid_grant".translate(context));
 
-  TranslatedTextWidget("access_denied");
+  "We were unable to find your Destiny account information. If you have a valid Destiny Account, let us know."
+      .translate(context);
 
-  TranslatedTextWidget("invalid_request");
-  TranslatedTextWidget("We&#39;ve encountered an error, please try again later.");
+  Text("access_denied".translate(context));
+
+  Text("invalid_request".translate(context));
+  Text("We&#39;ve encountered an error, please try again later.".translate(context));
 
   //Raid Phases
-  TranslatedTextWidget("Loyalists");
-  TranslatedTextWidget("Vex Rings");
-  TranslatedTextWidget("Shields");
-  TranslatedTextWidget("Argos");
-  TranslatedTextWidget("Statue Garden");
-  TranslatedTextWidget("Conduit Room");
-  TranslatedTextWidget("Ships");
-  TranslatedTextWidget("Kalli");
-  TranslatedTextWidget("Shuro Chi");
-  TranslatedTextWidget("Morgeth");
-  TranslatedTextWidget("Vault Room");
-  TranslatedTextWidget("Riven");
-  TranslatedTextWidget("Botza District");
-  TranslatedTextWidget("Vault Access");
-  TranslatedTextWidget("Insurrection Prime");
-  TranslatedTextWidget("Hive Ritual");
-  TranslatedTextWidget("Infiltration");
-  TranslatedTextWidget("Deception");
-  TranslatedTextWidget("Gahlran");
-  TranslatedTextWidget("Val Ca'uor");
+  Text("Loyalists".translate(context));
+  Text("Vex Rings".translate(context));
+  Text("Shields".translate(context));
+  Text("Argos".translate(context));
+  Text("Statue Garden".translate(context));
+  Text("Conduit Room".translate(context));
+  Text("Ships".translate(context));
+  Text("Kalli".translate(context));
+  Text("Shuro Chi".translate(context));
+  Text("Morgeth".translate(context));
+  Text("Vault Room".translate(context));
+  Text("Riven".translate(context));
+  Text("Botza District".translate(context));
+  Text("Vault Access".translate(context));
+  Text("Insurrection Prime".translate(context));
+  Text("Hive Ritual".translate(context));
+  Text("Infiltration".translate(context));
+  Text("Deception".translate(context));
+  Text("Gahlran".translate(context));
+  Text("Val Ca'uor".translate(context));
 
   //garden of salvation
-  TranslatedTextWidget("Evasion");
-  TranslatedTextWidget("Summon");
-  TranslatedTextWidget("Consecrated Mind");
-  TranslatedTextWidget("Sanctified Mind");
+  Text("Evasion".translate(context));
+  Text("Summon".translate(context));
+  Text("Consecrated Mind".translate(context));
+  Text("Sanctified Mind".translate(context));
 
   //Errors
-  TranslatedTextWidget("server_error");
-  TranslatedTextWidget("SystemDisabled");
-  TranslatedTextWidget("Tag name");
-  TranslatedTextWidget("Untitled");
+  Text("server_error".translate(context));
+  Text("SystemDisabled".translate(context));
+  Text("Tag name".translate(context));
+  Text("Untitled".translate(context));
 }

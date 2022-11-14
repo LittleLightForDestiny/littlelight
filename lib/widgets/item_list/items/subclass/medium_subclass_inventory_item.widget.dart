@@ -1,15 +1,14 @@
 // @dart=2.9
 
-import 'package:bungie_api/enums/damage_type.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
-import 'package:bungie_api/models/destiny_item_talent_grid_component.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
-import 'package:little_light/utils/destiny_data.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
+import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/medium_base_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/subclass/subclass_properties.mixin.dart';
+import 'package:shimmer/shimmer.dart';
 
 class MediumSubclassInventoryItemWidget extends MediumBaseInventoryItemWidget
     with SubclassPropertiesMixin, ProfileConsumer {
@@ -23,27 +22,42 @@ class MediumSubclassInventoryItemWidget extends MediumBaseInventoryItemWidget
   }) : super(item, definition, instanceInfo, characterId: characterId, key: key, uniqueId: uniqueId);
 
   @override
-  DestinyItemTalentGridComponent get talentGrid => profile.getTalentGrid(item?.itemInstanceId);
-
-  @override
   double get iconSize {
     return 68;
   }
 
   @override
   background(BuildContext context) {
-    var damageTypeColor = definition?.talentGrid?.hudDamageType?.getColorLayer(context);
     BoxDecoration decoration = BoxDecoration(
         gradient: RadialGradient(
-            radius: 2,
-            center: Alignment(definition?.talentGrid?.hudDamageType == DamageType.Stasis ? -2 : 2, 0),
-            colors: <Color>[
-          startBgColor(context),
-          damageTypeColor,
-          endBgColor(context),
-        ]));
+      radius: 2,
+      center: Alignment(1, 0),
+      colors: <Color>[
+        startBgColor(context),
+        Colors.transparent,
+        endBgColor(context),
+      ],
+      stops: [0, .3, .8],
+    ));
     return Positioned.fill(
-        child: Container(alignment: Alignment.centerRight, decoration: decoration, child: buildTalentGridImage()));
+      child: Container(
+          decoration: decoration,
+          child: Transform.translate(
+              offset: Offset(15, 0),
+              child: Container(
+                  foregroundDecoration: decoration,
+                  child: ManifestImageWidget<DestinyInventoryItemDefinition>(
+                    item.itemHash,
+                    urlExtractor: (def) => def.screenshot,
+                    alignment: Alignment.centerRight,
+                    fit: BoxFit.fitHeight,
+                    placeholder: Shimmer.fromColors(
+                      child: Container(color: Colors.white),
+                      baseColor: endBgColor(context),
+                      highlightColor: startBgColor(context),
+                    ),
+                  )))),
+    );
   }
 
   @override

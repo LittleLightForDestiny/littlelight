@@ -5,11 +5,11 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/models/item_notes.dart';
 import 'package:little_light/models/item_notes_tag.dart';
 import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/dialogs/tags/select_tag.dialog.dart';
 import 'package:little_light/widgets/flutter/center_icon_workaround.dart';
 import 'package:little_light/widgets/item_details/section_header.widget.dart';
@@ -63,7 +63,7 @@ class ItemDetailsTagsWidgetState extends BaseDestinyItemState<ItemDetailsTagsWid
     return Container(
         padding: EdgeInsets.all(8),
         child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: <Widget>[
-          getHeader(TranslatedTextWidget("Item Tags", uppercase: true, style: TextStyle(fontWeight: FontWeight.bold))),
+          getHeader(Text("Item Tags".translate(context).toUpperCase(), style: TextStyle(fontWeight: FontWeight.bold))),
           visible ? Container(height: 8) : Container(),
           visible ? buildTags(context) : Container(),
         ]));

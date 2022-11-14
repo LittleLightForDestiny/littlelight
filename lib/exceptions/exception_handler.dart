@@ -4,10 +4,10 @@ import 'package:bungie_api/enums/bungie_membership_type.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/navigator_key.dart';
-import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/models/bungie_api.exception.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/widgets/dialogs/bungie_api_exception.dialog.dart';
 import 'package:little_light/widgets/dialogs/report_error.dialog.dart';
 
@@ -33,16 +33,15 @@ class ExceptionHandler with AuthConsumer {
       return Container(
           padding: EdgeInsets.all(8),
           alignment: Alignment.center,
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            TranslatedTextWidget("Render Error"),
-            ElevatedButton(
-                onPressed: () {
-                  final context = LittleLightNavigatorKeyContainer.navigatorKey?.currentContext;
-                  if (context == null) return;
-                  Navigator.of(context).push(ReportErrorDialogRoute(context, error: details));
-                },
-                child: TranslatedTextWidget("Report"))
-          ]));
+          child: Builder(
+              builder: (context) => Column(mainAxisSize: MainAxisSize.min, children: [
+                    Text("Render Error".translate(context)),
+                    ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).push(ReportErrorDialogRoute(context, error: details));
+                        },
+                        child: Text("Report".translate(context)))
+                  ])));
     };
   }
 

@@ -1,26 +1,23 @@
-// @dart=2.9
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/models/bucket_display_options.dart';
-
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/icon_fonts/littlelight_icons.dart';
 
 class BucketDisplayOptionsSelectorWidget extends StatefulWidget {
-  final int hash;
+  final int? hash;
   final bool isEquippable;
-  final Function onChanged;
+  final Function? onChanged;
   final bool isVault;
-  BucketDisplayOptionsSelectorWidget({this.hash, this.isEquippable = false, this.onChanged, this.isVault});
+  BucketDisplayOptionsSelectorWidget({this.hash, this.isEquippable = false, this.onChanged, this.isVault = false});
   @override
   BucketDisplayOptionsSelectorWidgetState createState() => BucketDisplayOptionsSelectorWidgetState();
 }
 
 class BucketDisplayOptionsSelectorWidgetState<T extends BucketDisplayOptionsSelectorWidget> extends State<T>
     with UserSettingsConsumer {
-  BucketDisplayType currentType;
+  BucketDisplayType? currentType;
 
   @override
   void initState() {
@@ -71,11 +68,10 @@ class BucketDisplayOptionsSelectorWidgetState<T extends BucketDisplayOptionsSele
                       .toList(),
                   onChanged: (selected) {
                     this.currentType = selected;
-                    userSettings.setDisplayOptionsForBucket(bucketKey, BucketDisplayOptions(type: this.currentType));
+                    if (selected == null) return;
+                    userSettings.setDisplayOptionsForBucket(bucketKey, BucketDisplayOptions(type: selected));
                     setState(() {});
-                    if (widget.onChanged != null) {
-                      widget.onChanged();
-                    }
+                    widget.onChanged?.call();
                   }))
         ]));
   }
@@ -91,46 +87,36 @@ class BucketDisplayOptionsSelectorWidgetState<T extends BucketDisplayOptionsSele
   Widget getLabel(BucketDisplayType type) {
     switch (type) {
       case BucketDisplayType.Hidden:
-        return TranslatedTextWidget("Hidden");
-        break;
+        return Text("Hidden".translate(context));
       case BucketDisplayType.OnlyEquipped:
-        return TranslatedTextWidget("Only Equipped");
-        break;
+        return Text("Only Equipped".translate(context));
       case BucketDisplayType.Large:
-        return TranslatedTextWidget("Large");
-        break;
+        return Text("Large".translate(context));
       case BucketDisplayType.Medium:
-        return TranslatedTextWidget("Medium");
-        break;
+        return Text("Medium".translate(context));
       case BucketDisplayType.Small:
-        return TranslatedTextWidget("Small");
-        break;
+        return Text("Small".translate(context));
     }
-    return Container();
   }
 
-  IconData getIcon(BucketDisplayType type) {
+  IconData? getIcon(BucketDisplayType? type) {
     switch (type) {
       case BucketDisplayType.Hidden:
         return FontAwesomeIcons.eyeSlash;
-        break;
       case BucketDisplayType.OnlyEquipped:
         return LittleLightIcons.icon_display_options_equipped_only;
-        break;
       case BucketDisplayType.Large:
         return LittleLightIcons.icon_display_options_list;
-        break;
       case BucketDisplayType.Medium:
         return widget.isEquippable
             ? LittleLightIcons.icon_display_options_equipped_with_medium
             : LittleLightIcons.icon_display_options_only_medium;
-        break;
       case BucketDisplayType.Small:
         return widget.isEquippable
             ? LittleLightIcons.icon_display_options_equipped_with_small
             : LittleLightIcons.icon_display_options_small_only;
-        break;
+      case null:
+        return null;
     }
-    return FontAwesomeIcons.eyeSlash;
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/item_notes_tag.dart';
 import 'package:little_light/services/littlelight/item_notes.consumer.dart';
@@ -39,13 +40,17 @@ class SelectTagDialog extends LittleLightBaseDialog with ItemNotesConsumer {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         TextButton(
-          child: TranslatedTextWidget("Cancel", uppercase: true),
+          child: Text(
+            "Cancel".translate(context).toUpperCase(),
+          ),
           onPressed: () async {
             Navigator.of(context).pop(null);
           },
         ),
         TextButton(
-          child: TranslatedTextWidget("Create tag", uppercase: true),
+          child: Text(
+            "Create tag".translate(context).toUpperCase(),
+          ),
           onPressed: () async {
             final newTag = await Navigator.of(context).push(
               EditTagDialogRoute(

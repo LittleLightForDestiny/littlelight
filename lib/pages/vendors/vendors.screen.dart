@@ -1,8 +1,8 @@
 // @dart=2.9
 
-import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
+import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/widgets/common/animated_character_background.widget.dart';
 import 'package:little_light/widgets/flutter/passive_tab_bar_view.dart';
@@ -87,7 +87,7 @@ class VendorsScreenState extends State<VendorsScreen>
         children: characters
             .map((character) => TabHeaderWidget(
                   character,
-                  key: Key("${character.emblemHash}"),
+                  key: Key("${character.character.emblemHash}"),
                 ))
             .toList());
   }
@@ -110,7 +110,7 @@ class VendorsScreenState extends State<VendorsScreen>
     );
   }
 
-  List<DestinyCharacterComponent> get characters {
-    return profile.getCharacters(userSettings.characterOrdering);
+  List<DestinyCharacterInfo> get characters {
+    return profile.characters;
   }
 }

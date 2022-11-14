@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-typedef ItemBuilder = Widget Function(int plugHash);
+typedef ItemBuilder = Widget Function(int? plugHash);
 
 class PlugGridViewSpecifications {
   final int itemsPerRow;
@@ -72,7 +72,7 @@ enum PlugGridViewSizeStrategy {
 }
 
 class PlugGridView extends StatelessWidget {
-  final List<int> plugHashes;
+  final List<int?> plugHashes;
   final int maxRows;
   final double gridSpacing;
   final ItemBuilder itemBuilder;
@@ -165,7 +165,7 @@ class PlugGridView extends StatelessWidget {
         );
       });
 
-  Widget buildGridView(BuildContext context, Iterable<int> plugHashes, int itemsPerRow) {
+  Widget buildGridView(BuildContext context, Iterable<int?> plugHashes, int itemsPerRow) {
     return GridView(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: itemsPerRow,

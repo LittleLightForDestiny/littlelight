@@ -7,14 +7,11 @@ import 'package:bungie_api/models/destiny_faction_progression.dart';
 import 'package:bungie_api/models/destiny_progression_definition.dart';
 import 'package:bungie_api/models/destiny_progression_step_definition.dart';
 import 'package:bungie_api/models/destiny_vendor_definition.dart';
-
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
-
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/services/notification/notification.package.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/flutter/filled_diamond_progress_indicator.dart';
@@ -30,11 +27,10 @@ class FactionRankItemWidget extends StatefulWidget {
 }
 
 class FactionRankItemWidgetState<T extends FactionRankItemWidget> extends State<T>
-    with AutomaticKeepAliveClientMixin, ProfileConsumer, ManifestConsumer, NotificationConsumer {
+    with AutomaticKeepAliveClientMixin, ProfileConsumer, ManifestConsumer {
   DestinyProgressionDefinition definition;
   DestinyFactionDefinition factionDefinition;
   DestinyVendorDefinition vendorDefinition;
-  StreamSubscription<NotificationEvent> subscription;
   int get hash => widget.progression.factionHash;
   DestinyFactionProgression progression;
 
@@ -44,17 +40,18 @@ class FactionRankItemWidgetState<T extends FactionRankItemWidget> extends State<
 
     progression = widget.progression;
     loadDefinitions();
-    subscription = notifications.listen((event) {
-      if (event.type == NotificationType.receivedUpdate && mounted) {
-        progression = profile.getCharacterProgression(widget.characterId).factions["$hash"];
-        setState(() {});
-      }
-    });
+    profile.addListener(update);
+  }
+
+  update() {
+    if (!mounted) return;
+    progression = profile.getCharacterProgression(widget.characterId).factions["$hash"];
+    setState(() {});
   }
 
   @override
   dispose() {
-    subscription.cancel();
+    profile.removeListener(update);
     super.dispose();
   }
 

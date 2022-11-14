@@ -20,7 +20,7 @@ import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
 import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/services/setup.dart';
 import 'package:little_light/services/storage/storage.consumer.dart';
 import 'package:provider/provider.dart';
@@ -262,7 +262,7 @@ class InitialPageStateNotifier
       analytics.registerNonFatal(e, stackTrace);
     }
 
-    final characters = profile.getCharacters();
+    final characters = profile.characters;
     if (characters?.isEmpty ?? true) {
       _error = InvalidMembershipError();
       notifyListeners();

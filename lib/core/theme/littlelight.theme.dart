@@ -3,6 +3,11 @@ import 'package:provider/provider.dart';
 
 enum SwatchLayer { Layer0, Layer1, Layer2, Layer3 }
 
+extension ContextLittleLightTheme on BuildContext {
+  LittleLightThemeData? get theme => LittleLightTheme.of(this);
+  LittleLightTextTheme? get textTheme => theme?.textTheme;
+}
+
 class LayeredSwatch extends Color {
   final Map<SwatchLayer, Color> _swatches;
   LayeredSwatch(this._swatches, {SwatchLayer defaultLayer = SwatchLayer.Layer0})
@@ -60,6 +65,12 @@ class DamageTypeLayers {
     SwatchLayer.Layer1: Color(0xFF86A4FF),
     SwatchLayer.Layer2: Color(0xFF86A4FF),
   });
+
+  LayeredSwatch damageTypeKinetic = LayeredSwatch({
+    SwatchLayer.Layer0: Color(0xFFABAFB0),
+    SwatchLayer.Layer1: Color(0xFFCACDCE),
+    SwatchLayer.Layer2: Color(0xFFDEE1E3),
+  });
 }
 
 class ItemTierLayers {
@@ -85,12 +96,27 @@ class LittleLightTextTheme {
   final TextStyle subtitle;
   final TextStyle body;
   final TextStyle button;
+  final TextStyle notification;
+  final TextStyle itemNameHighDensity;
+  final TextStyle itemPrimaryStatHighDensity;
+  final TextStyle itemPrimaryStatMediumDensity;
+  final TextStyle itemPrimaryStatLowDensity;
+  final TextStyle itemTypeHighDensity;
+
+  TextStyle itemNameMediumDensity;
 
   LittleLightTextTheme({
     required this.title,
     required this.subtitle,
     required this.body,
     required this.button,
+    required this.notification,
+    required this.itemNameHighDensity,
+    required this.itemTypeHighDensity,
+    required this.itemPrimaryStatHighDensity,
+    required this.itemPrimaryStatMediumDensity,
+    required this.itemPrimaryStatLowDensity,
+    required this.itemNameMediumDensity,
   });
 }
 
@@ -102,13 +128,21 @@ class LittleLightThemeData {
         subtitle: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: onSurfaceLayers.layer0),
         body: TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: onSurfaceLayers.layer0),
         button: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: onSurfaceLayers.layer0),
+        notification: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: onSurfaceLayers.layer0),
+        itemNameHighDensity: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+        itemNameMediumDensity: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+        itemTypeHighDensity: TextStyle(fontSize: 12, fontWeight: FontWeight.w300, color: onSurfaceLayers.layer0),
+        itemPrimaryStatHighDensity: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: onSurfaceLayers.layer0),
+        itemPrimaryStatMediumDensity:
+            TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: onSurfaceLayers.layer0),
+        itemPrimaryStatLowDensity: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: onSurfaceLayers.layer0),
       );
 
   final surfaceLayers = LayeredSwatch({
-    SwatchLayer.Layer0: Color(0xFF21212B),
-    SwatchLayer.Layer1: Color(0xFF2B3A45),
-    SwatchLayer.Layer2: Color(0xFF3E4C56),
-    SwatchLayer.Layer3: Color(0xFF4D5E6A),
+    SwatchLayer.Layer0: Color(0xFF181818),
+    SwatchLayer.Layer1: Color(0xFF222126),
+    SwatchLayer.Layer2: Color(0xFF2C2933),
+    SwatchLayer.Layer3: Color(0xFF302A3D),
   });
 
   final onSurfaceLayers = LayeredSwatch({
@@ -121,6 +155,10 @@ class LittleLightThemeData {
   final highlightedObjectiveLayers = LayeredSwatch({
     SwatchLayer.Layer0: Color(0xFFD95738),
   });
+
+  // final secondaryLayers = LayeredSwatch(
+  //   SwatchLayer.Layer0: Color(0xFF)
+  // );
 
   final primaryLayers = LayeredSwatch({
     SwatchLayer.Layer0: Color(0xFF097EEC),
@@ -206,8 +244,9 @@ class LittleLightThemeData {
       )),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          primary: primaryLayers,
-          onSurface: primaryLayers,
+          backgroundColor: primaryLayers,
+          disabledForegroundColor: primaryLayers,
+          disabledBackgroundColor: primaryLayers,
         ),
       ),
       toggleButtonsTheme: ToggleButtonsThemeData(

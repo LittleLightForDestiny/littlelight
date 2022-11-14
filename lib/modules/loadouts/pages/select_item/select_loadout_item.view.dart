@@ -4,6 +4,7 @@ import 'package:bungie_api/enums/destiny_class.dart';
 import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/pages/item_search/search.screen.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
@@ -12,7 +13,6 @@ import 'package:little_light/utils/item_filters/class_type_filter.dart';
 import 'package:little_light/utils/item_filters/item_bucket_filter.dart';
 import 'package:little_light/utils/item_filters/text_filter.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/search/quick_transfer_list.widget.dart';
 import 'package:little_light/widgets/search/search.controller.dart';
 import 'package:little_light/widgets/search/search_filters/text_search_filter.widget.dart';
@@ -95,10 +95,10 @@ class SelectLoadoutItemScreenState extends SearchScreenState<SelectLoadoutItemVi
     if (textFilter.enabled) {
       return TextSearchFilterWidget(controller, forceAutoFocus: true);
     }
-    return TranslatedTextWidget(
-      "Select {bucketName}",
+    return Text(
+      "Select {bucketName}"
+          .translate(context, replace: {'bucketName': bucketDefinition?.displayProperties?.name ?? ""}),
       overflow: TextOverflow.fade,
-      replace: {'bucketName': bucketDefinition?.displayProperties?.name ?? ""},
     );
   }
 

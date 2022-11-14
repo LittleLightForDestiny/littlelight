@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:little_light/models/item_notes_tag.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
+import 'package:little_light/models/item_notes_tag.dart';
 import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/utils/color_utils.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/item_tags/item_tag.widget.dart';
 
 class CreateTagFormWidget extends StatefulWidget {
@@ -78,19 +77,19 @@ class _CreateTagFormWidgetState extends State<CreateTagFormWidget> with ItemNote
           Container(height: 16),
           buildNameField(context),
           Container(height: 16),
-          TranslatedTextWidget("Background color"),
+          Text("Background color".translate(context)),
           buildColors(context, widget.tag.backgroundColorHex, (color) {
             widget.tag.backgroundColorHex = color;
             setState(() {});
           }, ["#00000000", "#FF000000", "#FFFFFFFF"]),
           Container(height: 16),
-          TranslatedTextWidget("Text/icon color"),
+          Text("Text/icon color".translate(context)),
           buildColors(context, widget.tag.foregroundColorHex, (color) {
             widget.tag.foregroundColorHex = color;
             setState(() {});
           }),
           Container(height: 16),
-          TranslatedTextWidget("Tag icon"),
+          Text("Tag icon".translate(context)),
           buildIcons(context, widget.tag.icon, (icon) {
             widget.tag.icon = icon;
             setState(() {});

@@ -1,15 +1,14 @@
-import 'package:collection/collection.dart';
 import 'package:bungie_api/destiny2.dart';
 import 'package:bungie_api/exceptions.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/models/bungie_api.exception.dart';
-import 'package:little_light/models/character_sort_parameter.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
 import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/notification/notification.package.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/profile/vendors.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/item_with_owner.dart';
@@ -221,9 +220,8 @@ class ItemSocketController extends ChangeNotifier
     final instanceID = this.item?.item.itemInstanceId;
     if (instanceID == null) throw ("No item instance available");
 
-    final characterID = profile.getItemOwner(instanceID) ??
-        profile.getCharacters(CharacterSortParameter(type: CharacterSortParameterType.LastPlayed))?.last.characterId;
-    if (characterID == null) throw ("No item instance available");
+    final characterID = profile.getItemOwner(instanceID) ?? profile.characters?.last.characterId;
+    if (characterID == null) throw ("No character available");
 
     notifications.push(NotificationEvent(NotificationType.requestApplyPlug, item: item?.item, plugHash: plugHash));
     _socketBusy?[socketIndex] = true;

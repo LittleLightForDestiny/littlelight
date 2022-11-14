@@ -1,6 +1,7 @@
 // @dart=2.9
 
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/utils/item_filters/power_level_constraints_filter.dart';
 import 'package:little_light/widgets/common/small_rect_range_slider_indicator_shape.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -34,7 +35,7 @@ class _PowerLevelConstraintsWidgetState extends BaseSearchFilterWidgetState<Powe
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  TranslatedTextWidget("Include powerless items"),
+                  Text("Include powerless items".translate(context)),
                   Switch(
                     value: filter.value.includePowerlessItems,
                     onChanged: (value) {
@@ -93,7 +94,9 @@ class _PowerLevelConstraintsWidgetState extends BaseSearchFilterWidgetState<Powe
   @override
   Widget buildDisabledValue(BuildContext context) {
     if (filter.availableValues.min > 9000) {
-      return TranslatedTextWidget("None", uppercase: true);
+      return Text(
+        "None".translate(context).toUpperCase(),
+      );
     }
     return Text("${filter.availableValues.min}");
   }

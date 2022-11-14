@@ -5,14 +5,14 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/models/parsed_wishlist.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
 import 'package:little_light/widgets/common/primary_stat.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/common/wishlist_badges.widget.dart';
 
 class ItemMainInfoWidget extends BaseDestinyStatefulItemWidget {
@@ -95,7 +95,7 @@ class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget> w
             Container(
               width: 8,
             ),
-            Expanded(child: TranslatedTextWidget("This item is considered a godroll for both PvE and PvP."))
+            Expanded(child: Text("This item is considered a godroll for both PvE and PvP.".translate(context)))
           ]));
     }
     var rows = <Widget>[];
@@ -106,7 +106,7 @@ class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget> w
         Container(
           width: 8,
         ),
-        Expanded(child: TranslatedTextWidget("This item is considered a PvE godroll."))
+        Expanded(child: Text("This item is considered a PvE godroll.".translate(context)))
       ])));
     }
     if (tags.contains(WishlistTag.GodPVP)) {
@@ -116,7 +116,7 @@ class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget> w
         Container(
           width: 8,
         ),
-        Expanded(child: TranslatedTextWidget("This item is considered a PvP godroll."))
+        Expanded(child: Text("This item is considered a PvP godroll.".translate(context)))
       ])));
     }
     if (tags.contains(WishlistTag.PVE) && tags.contains(WishlistTag.PVP) && rows.length == 0) {
@@ -127,7 +127,7 @@ class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget> w
             Container(
               width: 8,
             ),
-            Expanded(child: TranslatedTextWidget("This item is considered a good roll for both PvE and PvP."))
+            Expanded(child: Text("This item is considered a good roll for both PvE and PvP.".translate(context)))
           ]));
     }
     if (tags.contains(WishlistTag.PVE) && !tags.contains(WishlistTag.GodPVE)) {
@@ -137,7 +137,7 @@ class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget> w
         Container(
           width: 8,
         ),
-        Expanded(child: TranslatedTextWidget("This item is considered a good roll for PVE."))
+        Expanded(child: Text("This item is considered a good roll for PVE.".translate(context)))
       ])));
     }
     if (tags.contains(WishlistTag.PVP) && !tags.contains(WishlistTag.GodPVP)) {
@@ -147,7 +147,7 @@ class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget> w
         Container(
           width: 8,
         ),
-        Expanded(child: TranslatedTextWidget("This item is considered a good roll for PVP."))
+        Expanded(child: Text("This item is considered a good roll for PVP.".translate(context)))
       ])));
     }
     if (tags.contains(WishlistTag.Bungie)) {
@@ -157,7 +157,7 @@ class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget> w
         Container(
           width: 8,
         ),
-        Expanded(child: TranslatedTextWidget("This item is a Bungie curated roll."))
+        Expanded(child: Text("This item is a Bungie curated roll.".translate(context)))
       ])));
     }
     if (rows.length > 0) {
@@ -176,7 +176,7 @@ class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget> w
             Container(
               width: 8,
             ),
-            Expanded(child: TranslatedTextWidget("This item is considered a trash roll."))
+            Expanded(child: Text("This item is considered a trash roll.".translate(context)))
           ]));
     }
     return Container();

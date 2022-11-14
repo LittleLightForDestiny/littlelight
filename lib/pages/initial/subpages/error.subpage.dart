@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/pages/initial/errors/authorization_failed.error.dart';
 import 'package:little_light/pages/initial/errors/manifest_download.error.dart';
 import 'package:little_light/pages/initial/errors/invalid_membership.error.dart';
@@ -82,9 +83,9 @@ class StartupErrorSubPageState extends SubpageBaseState<StartupErrorSubPage> wit
       child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: buttons));
 
   /// Title options
-  Widget get genericErrorTitle => TranslatedTextWidget("Unexpected error");
-  Widget get authorizationErrorTitle => TranslatedTextWidget("Authorization error");
-  Widget get manifestDownloadErrorTitle => TranslatedTextWidget("Error downloading Database");
+  Widget get genericErrorTitle => Text("Unexpected error".translate(context));
+  Widget get authorizationErrorTitle => Text("Authorization error".translate(context));
+  Widget get manifestDownloadErrorTitle => Text("Error downloading Database".translate(context));
 
   /// Description parts
   Widget get unexpectedErrorMessage => TranslatedTextWidget(
@@ -130,18 +131,18 @@ class StartupErrorSubPageState extends SubpageBaseState<StartupErrorSubPage> wit
 
   Widget get restartOption => ElevatedButton(
         onPressed: controller.restartApp,
-        child: TranslatedTextWidget("Restart Little Light"),
+        child: Text("Restart Little Light".translate(context)),
       );
 
   Widget get clearDataAndRestartOption => ElevatedButton(
         onPressed: controller.clearDataAndRestart,
-        child: TranslatedTextWidget("Clear data and restart"),
+        child: Text("Clear data and restart".translate(context)),
         style: ElevatedButton.styleFrom(primary: Theme.of(context).errorColor),
       );
 
   Widget get openBungieLoginOption => ElevatedButton(
         onPressed: () => auth.openBungieLogin(false),
-        child: TranslatedTextWidget("Authorize with Bungie.net"),
+        child: Text("Authorize with Bungie.net".translate(context)),
       );
 
   Widget get logoutOption => ElevatedButton(
@@ -149,25 +150,29 @@ class StartupErrorSubPageState extends SubpageBaseState<StartupErrorSubPage> wit
           auth.removeAccount(auth.currentAccountID!);
           Phoenix.rebirth(context);
         },
-        child: TranslatedTextWidget("Logout"),
+        child: Text("Logout".translate(context)),
       );
 
   Widget get checkBungieNetTwitterOption => ElevatedButton(
       onPressed: () => launch("https://twitter.com/BungieHelp"),
       child: Row(
         mainAxisSize: MainAxisSize.min,
-        children: [Icon(FontAwesomeIcons.twitter), Container(width: 8), TranslatedTextWidget("Check @BungieHelp")],
+        children: [Icon(FontAwesomeIcons.twitter), Container(width: 8), Text("Check @BungieHelp".translate(context))],
       ));
 
   Widget get checkLittleLightD2TwitterOption => ElevatedButton(
       onPressed: () => launch("https://twitter.com/LittleLightD2"),
       child: Row(
         mainAxisSize: MainAxisSize.min,
-        children: [Icon(FontAwesomeIcons.twitter), Container(width: 8), TranslatedTextWidget("Check @LittleLightD2")],
+        children: [
+          Icon(FontAwesomeIcons.twitter),
+          Container(width: 8),
+          Text("Check @LittleLightD2".translate(context))
+        ],
       ));
 
   Widget get retryManifestDownloadOption => ElevatedButton(
         onPressed: controller.retryManifestDownload,
-        child: TranslatedTextWidget("Retry download"),
+        child: Text("Retry download".translate(context)),
       );
 }

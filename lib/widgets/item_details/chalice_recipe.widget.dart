@@ -7,6 +7,7 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_sandbox_perk_definition.dart';
 import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/utils/chalice_recipes.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
@@ -53,7 +54,7 @@ class ChaliceRecipeWidget extends StatelessWidget {
         padding: EdgeInsets.all(4),
         child: Row(
           children: <Widget>[
-            TranslatedTextWidget("More recipes on"),
+            Text("More recipes on".translate(context)),
             MaterialButton(
               padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
               child: Row(children: [
@@ -185,7 +186,7 @@ class ChaliceRecipeWidget extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              buildRuneTitle(rune),
+              buildRuneTitle(context, rune),
               buildModifierText(context, rune, position),
             ],
           )
@@ -325,7 +326,7 @@ class ChaliceRecipeWidget extends StatelessWidget {
     return Container();
   }
 
-  Widget buildRuneTitle(RuneInfo rune) {
+  Widget buildRuneTitle(BuildContext context, RuneInfo rune) {
     if (rune.itemHash != null) {
       return ManifestText<DestinyInventoryItemDefinition>(rune.itemHash, style: TextStyle(fontWeight: FontWeight.bold));
     }
@@ -337,13 +338,13 @@ class ChaliceRecipeWidget extends StatelessWidget {
         );
         break;
       case RuneColor.Red:
-        return TranslatedTextWidget("Any Red rune", style: TextStyle(fontWeight: FontWeight.bold));
+        return Text("Any Red rune".translate(context), style: TextStyle(fontWeight: FontWeight.bold));
         break;
       case RuneColor.Green:
-        return TranslatedTextWidget("Any Green rune", style: TextStyle(fontWeight: FontWeight.bold));
+        return Text("Any Green rune".translate(context), style: TextStyle(fontWeight: FontWeight.bold));
         break;
       case RuneColor.Blue:
-        return TranslatedTextWidget("Any Blue rune", style: TextStyle(fontWeight: FontWeight.bold));
+        return Text("Any Blue rune".translate(context), style: TextStyle(fontWeight: FontWeight.bold));
         break;
     }
     return Container();

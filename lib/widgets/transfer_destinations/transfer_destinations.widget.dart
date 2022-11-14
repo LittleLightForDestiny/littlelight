@@ -1,11 +1,11 @@
 import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
+import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 
 enum TransferActionType {
   Transfer,
@@ -47,15 +47,19 @@ extension on _Side {
   }
 }
 
-class TransferDestinationsWidget extends StatelessWidget with ProfileConsumer {
-  final List<DestinyCharacterComponent?>? transferCharacters;
-  final List<DestinyCharacterComponent?>? equipCharacters;
-  final List<DestinyCharacterComponent?>? unequipCharacters;
+typedef OnTransferAction = Function(TransferActionType type, DestinyCharacterComponent? character);
+
+class TransferDestinationsWidget extends StatelessWidget {
+  final List<DestinyCharacterInfo?>? transferCharacters;
+  final List<DestinyCharacterInfo?>? equipCharacters;
+  final List<DestinyCharacterInfo?>? unequipCharacters;
+  final OnTransferAction? onTransferAction;
 
   TransferDestinationsWidget({
     this.transferCharacters,
     this.equipCharacters,
     this.unequipCharacters,
+    this.onTransferAction,
     Key? key,
   }) : super(key: key);
 
@@ -82,14 +86,14 @@ class TransferDestinationsWidget extends StatelessWidget with ProfileConsumer {
                   children: [
                     if (blocks.length == 1)
                       Expanded(
-                          child: buildCharacterBloc(
+                          child: buildCharacterBlock(
                         context,
                         expanded: true,
                         side: _Side.Right,
                         type: blocks[0],
                       )),
                     if (blocks.length > 1)
-                      buildCharacterBloc(
+                      buildCharacterBlock(
                         context,
                         expanded: false,
                         side: _Side.Left,
@@ -97,7 +101,7 @@ class TransferDestinationsWidget extends StatelessWidget with ProfileConsumer {
                       ),
                     if (blocks.length > 1)
                       Expanded(
-                        child: buildCharacterBloc(
+                        child: buildCharacterBlock(
                           context,
                           expanded: true,
                           side: _Side.Right,
@@ -107,7 +111,7 @@ class TransferDestinationsWidget extends StatelessWidget with ProfileConsumer {
                   ],
                 ),
                 if (blocks.length > 2)
-                  buildCharacterBloc(
+                  buildCharacterBlock(
                     context,
                     expanded: true,
                     side: _Side.Right,
@@ -121,7 +125,7 @@ class TransferDestinationsWidget extends StatelessWidget with ProfileConsumer {
     );
   }
 
-  Widget buildCharacterBloc(
+  Widget buildCharacterBlock(
     BuildContext context, {
     required bool expanded,
     required _Side side,
@@ -131,25 +135,31 @@ class TransferDestinationsWidget extends StatelessWidget with ProfileConsumer {
     return Container(
       padding: EdgeInsets.all(4),
       child: expanded
-          ? buildCharactersColumn(context, side: side, characters: characters, type: type)
+          ? buildCharactersColumn(context, side: side, characters: characters, action: type)
           : IntrinsicWidth(
-              child: buildCharactersColumn(context, side: side, characters: characters, type: type),
+              child: buildCharactersColumn(context, side: side, characters: characters, action: type),
             ),
     );
   }
 
-  Widget label(TransferActionType type) {
+  Widget label(BuildContext context, TransferActionType type) {
     switch (type) {
       case TransferActionType.Transfer:
-        return TranslatedTextWidget("Transfer", uppercase: true);
+        return Text(
+          "Transfer".translate(context).toUpperCase(),
+        );
       case TransferActionType.Equip:
-        return TranslatedTextWidget("Equip", uppercase: true);
+        return Text(
+          "Equip".translate(context).toUpperCase(),
+        );
       case TransferActionType.Unequip:
-        return TranslatedTextWidget("Unequip", uppercase: true);
+        return Text(
+          "Unequip".translate(context).toUpperCase(),
+        );
     }
   }
 
-  List<DestinyCharacterComponent?>? characters(TransferActionType type) {
+  List<DestinyCharacterInfo?>? characters(TransferActionType type) {
     switch (type) {
       case TransferActionType.Transfer:
         return transferCharacters;
@@ -162,45 +172,54 @@ class TransferDestinationsWidget extends StatelessWidget with ProfileConsumer {
 
   Widget buildCharactersColumn(
     BuildContext context, {
-    required TransferActionType type,
+    required TransferActionType action,
     required _Side side,
-    required List<DestinyCharacterComponent?> characters,
+    required List<DestinyCharacterInfo?> characters,
   }) {
     return Column(
       crossAxisAlignment: side.crossAxisAlignment,
       children: [
         HeaderWidget(
           alignment: side.alignment,
-          child: label(type),
+          child: label(context, action),
         ),
         Container(height: 8),
         Row(
           mainAxisAlignment: side.mainAxisAlignment,
           children: characters //
-              .map((c) => buildCharacterIcon(context, c))
+              .map((c) => buildCharacterIcon(context, c, action))
               .toList(),
         ),
       ],
     );
   }
 
-  Widget buildCharacterIcon(BuildContext context, DestinyCharacterComponent? character) {
+  Widget buildCharacterIcon(BuildContext context, DestinyCharacterInfo? character, TransferActionType action) {
     if (character == null) {
       return buildCharacterContainer(
         context,
         Image.asset("assets/imgs/vault-icon.jpg"),
+        action,
+        character,
       );
     }
 
     return buildCharacterContainer(
       context,
       ManifestImageWidget<DestinyInventoryItemDefinition>(
-        character.emblemHash,
+        character.character.emblemHash,
       ),
+      action,
+      character,
     );
   }
 
-  Widget buildCharacterContainer(BuildContext context, Widget child) {
+  Widget buildCharacterContainer(
+    BuildContext context,
+    Widget child,
+    TransferActionType type,
+    DestinyCharacterInfo? character,
+  ) {
     return Container(
       padding: EdgeInsets.all(4),
       child: Stack(
@@ -219,7 +238,10 @@ class TransferDestinationsWidget extends StatelessWidget with ProfileConsumer {
             child: Material(
               color: Colors.transparent,
               child: InkWell(
-                onTap: () {},
+                onTap: () => onTransferAction?.call(
+                  type,
+                  character?.character,
+                ),
               ),
             ),
           ),

@@ -1,17 +1,14 @@
 // @dart=2.9
 
 import 'dart:async';
+
 import 'package:bungie_api/models/destiny_progression.dart';
 import 'package:bungie_api/models/destiny_progression_definition.dart';
 import 'package:bungie_api/models/destiny_progression_step_definition.dart';
-
 import 'package:flutter/material.dart';
-
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/services/notification/notification.package.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
-
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/flutter/filled_circular_progress_indicator.dart';
 
@@ -26,9 +23,8 @@ class RankItemWidget extends StatefulWidget {
 }
 
 class RankItemWidgetState<T extends RankItemWidget> extends State<T>
-    with AutomaticKeepAliveClientMixin, ProfileConsumer, ManifestConsumer, NotificationConsumer {
+    with AutomaticKeepAliveClientMixin, ProfileConsumer, ManifestConsumer {
   DestinyProgressionDefinition definition;
-  StreamSubscription<NotificationEvent> subscription;
 
   int progressTotal;
 
@@ -41,17 +37,18 @@ class RankItemWidgetState<T extends RankItemWidget> extends State<T>
 
     progression = widget.progression;
     loadDefinitions();
-    subscription = notifications.listen((event) {
-      if (event.type == NotificationType.receivedUpdate && mounted) {
-        progression = profile.getCharacterProgression(widget.characterId).progressions["$hash"];
-        setState(() {});
-      }
-    });
+    profile.addListener(update);
+  }
+
+  void update() {
+    if (!mounted) return;
+    progression = profile.getCharacterProgression(widget.characterId).progressions["$hash"];
+    setState(() {});
   }
 
   @override
   dispose() {
-    subscription.cancel();
+    profile.removeListener(update);
     super.dispose();
   }
 

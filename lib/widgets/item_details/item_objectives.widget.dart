@@ -1,24 +1,21 @@
 // @dart=2.9
 
-import 'dart:async';
-
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_objective_definition.dart';
 import 'package:bungie_api/models/destiny_objective_progress.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile_component_groups.dart';
 import 'package:little_light/models/tracked_objective.dart';
 import 'package:little_light/services/littlelight/objectives.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/services/notification/notification.package.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
-import 'package:little_light/services/profile/profile_component_groups.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/objective.widget.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 
 class ItemObjectivesWidget extends BaseDestinyStatefulItemWidget {
   ItemObjectivesWidget(
@@ -36,10 +33,9 @@ class ItemObjectivesWidget extends BaseDestinyStatefulItemWidget {
 }
 
 class ItemObjectivesWidgetState extends BaseDestinyItemState<ItemObjectivesWidget>
-    with ProfileConsumer, ManifestConsumer, NotificationConsumer {
+    with ProfileConsumer, ManifestConsumer {
   Map<int, DestinyObjectiveDefinition> objectiveDefinitions;
   List<DestinyObjectiveProgress> itemObjectives;
-  StreamSubscription<NotificationEvent> subscription;
   bool isTracking = false;
 
   @override
@@ -47,11 +43,7 @@ class ItemObjectivesWidgetState extends BaseDestinyItemState<ItemObjectivesWidge
     super.initState();
     loadDefinitions();
     this.updateTrackStatus();
-    subscription = notifications.listen((event) {
-      if (event.type == NotificationType.receivedUpdate || event.type == NotificationType.localUpdate && mounted) {
-        updateProgress();
-      }
-    });
+    profile.addListener(updateProgress);
   }
 
   updateProgress() {
@@ -80,7 +72,7 @@ class ItemObjectivesWidgetState extends BaseDestinyItemState<ItemObjectivesWidge
 
   @override
   dispose() {
-    subscription.cancel();
+    profile.removeListener(updateProgress);
     super.dispose();
   }
 
@@ -109,8 +101,10 @@ class ItemObjectivesWidgetState extends BaseDestinyItemState<ItemObjectivesWidge
             child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
               Container(
                   padding: EdgeInsets.all(8),
-                  child: TranslatedTextWidget("Objectives",
-                      uppercase: true, style: TextStyle(fontWeight: FontWeight.bold))),
+                  child: Text(
+                    "Objectives".translate(context).toUpperCase(),
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  )),
               buildRefreshButton(context)
             ]))));
     items.addAll(buildObjectives(context));
@@ -141,8 +135,8 @@ class ItemObjectivesWidgetState extends BaseDestinyItemState<ItemObjectivesWidge
           primary: isTracking ? DestinyData.trackingOnColor : DestinyData.trackingOffColor,
         ),
         child: isTracking
-            ? TranslatedTextWidget("Stop Tracking", key: Key("stop_tracking"))
-            : TranslatedTextWidget("Track Objectives", key: Key("track_objectives")),
+            ? Text("Stop Tracking".translate(context), key: Key("stop_tracking"))
+            : Text("Track Objectives".translate(context), key: Key("track_objectives")),
         onPressed: () {
           var service = ObjectivesService();
           if (isTracking) {

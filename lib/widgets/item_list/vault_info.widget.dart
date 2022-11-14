@@ -5,12 +5,13 @@ import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_vendor_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/inventory/inventory.bloc.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
 import 'package:little_light/modules/loadouts/blocs/loadouts.bloc.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/inventory/inventory.package.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
@@ -101,6 +102,7 @@ class VaultOptionsSheet extends StatefulWidget {
 }
 
 class VaultOptionsSheetState extends State<VaultOptionsSheet> with ProfileConsumer, InventoryConsumer {
+  InventoryBloc inventoryBloc(BuildContext context) => context.read<InventoryBloc>();
   final TextStyle buttonStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 12);
 
   List<ItemWithOwner> itemsInPostmaster;
@@ -178,12 +180,11 @@ class VaultOptionsSheetState extends State<VaultOptionsSheet> with ProfileConsum
   }
 
   transferEverythingFromPostmaster() async {
-    var characters = profile.getCharacters();
+    var characters = profile.characters;
     for (var char in characters) {
       var all = profile.getCharacterInventory(char.characterId);
       var inPostmaster = all.where((i) => i.bucketHash == InventoryBucket.lostItems).toList();
-      await inventory.transferMultiple(inPostmaster.map((i) => ItemWithOwner(i, char.characterId)).toList(),
-          ItemDestination.Vault, char.characterId);
+      await inventoryBloc(context).transferMultiple(inPostmaster, char.characterId);
     }
   }
 

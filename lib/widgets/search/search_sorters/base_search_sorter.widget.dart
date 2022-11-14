@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/models/item_sort_parameter.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
@@ -198,24 +199,24 @@ class BaseSearchSorterWidgetState<T extends BaseSearchSorterWidget> extends Stat
         );
 
       case ItemSortParameterType.QuestGroup:
-        return TranslatedTextWidget("Group", uppercase: true, style: style);
+        return Text("Group".translate(context).toUpperCase(), style: style);
 
       case ItemSortParameterType.ItemOwner:
-        return TranslatedTextWidget("Item Holder", uppercase: true, style: style);
+        return Text("Item Holder".translate(context).toUpperCase(), style: style);
 
       case ItemSortParameterType.StatTotal:
-        return TranslatedTextWidget("Stats Total", uppercase: true, style: style);
+        return Text("Stats Total".translate(context).toUpperCase(), style: style);
 
       case ItemSortParameterType.MasterworkStatus:
-        return TranslatedTextWidget("Masterwork Status", uppercase: true, style: style);
+        return Text("Masterwork Status".translate(context).toUpperCase(), style: style);
         break;
 
       case ItemSortParameterType.Stat:
-        return TranslatedTextWidget("Stat", uppercase: true, style: style);
+        return Text("Stat".translate(context).toUpperCase(), style: style);
         break;
 
       case ItemSortParameterType.DamageType:
-        return TranslatedTextWidget("Damage Type", uppercase: true, style: style);
+        return Text("Damage Type".translate(context).toUpperCase(), style: style);
     }
     return Text(
       sortParameter.type.toString(),

@@ -2,9 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/parsed_wishlist.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/flutter/center_icon_workaround.dart';
 import 'package:little_light/widgets/icon_fonts/littlelight_icons.dart';
 
@@ -60,21 +60,21 @@ class WishlistsData {
     }
   }
 
-  static Widget getLabel(WishlistTag tag) {
+  static Widget getLabel(WishlistTag tag, BuildContext context) {
     switch (tag) {
       case WishlistTag.GodPVE:
-        return TranslatedTextWidget("PvE godroll");
+        return Text("PvE godroll".translate(context));
       case WishlistTag.PVE:
-        return TranslatedTextWidget("PvE");
+        return Text("PvE".translate(context));
       case WishlistTag.GodPVP:
-        return TranslatedTextWidget("PvP godroll");
+        return Text("PvP godroll".translate(context));
       case WishlistTag.PVP:
-        return TranslatedTextWidget("PvP");
+        return Text("PvP".translate(context));
       case WishlistTag.Bungie:
-        return TranslatedTextWidget("Curated");
+        return Text("Curated".translate(context));
 
       case WishlistTag.Trash:
-        return TranslatedTextWidget("Trash");
+        return Text("Trash".translate(context));
       default:
         return Container();
     }

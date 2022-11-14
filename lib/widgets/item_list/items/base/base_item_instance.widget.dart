@@ -10,15 +10,15 @@ import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_vendor_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
-import 'package:little_light/utils/destiny_data.dart';
+import 'package:little_light/utils/socket_category_hashes.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/primary_stat.widget.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/common/wishlist_badges.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/base_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/item_armor_stats.widget.dart';
@@ -142,8 +142,7 @@ class BaseItemInstanceWidget extends BaseInventoryItemWidget
         textExtractor: (def) => def.displayProperties.name,
       );
     }
-    return TranslatedTextWidget("Inventory",
-        uppercase: true,
+    return Text("Inventory".translate(context).toUpperCase(),
         style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontWeight: FontWeight.bold, fontSize: 12));
   }
 
@@ -202,7 +201,7 @@ class BaseItemInstanceWidget extends BaseInventoryItemWidget
   Widget perksWidget(BuildContext context) {
     var socketCategoryHash = definition.sockets?.socketCategories
         ?.map((sc) => sc.socketCategoryHash)
-        ?.firstWhere((h) => DestinyData.socketCategoryPerkHashes.contains(h), orElse: () => null);
+        ?.firstWhere((h) => SocketCategoryHashes.perks.contains(h), orElse: () => null);
     return ItemPerksWidget(
       socketCategoryHash: socketCategoryHash,
       item: item,

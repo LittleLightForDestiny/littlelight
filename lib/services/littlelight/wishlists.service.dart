@@ -136,7 +136,14 @@ class WishlistsService with StorageConsumer {
     final builds = getWishlistBuilds(itemHash: itemHash, reusablePlugs: reusablePlugs);
     final tags = builds.map((e) => e.tags.toList());
     if (tags.length == 0) return Set();
-    return tags.reduce((value, element) => value + element).toSet();
+    final tagsSet = tags.reduce((value, element) => value + element).toSet();
+    if (tagsSet.contains(WishlistTag.GodPVE)) tagsSet.remove(WishlistTag.PVE);
+    if (tagsSet.contains(WishlistTag.GodPVP)) tagsSet.remove(WishlistTag.PVP);
+    tagsSet.removeAll([
+      WishlistTag.Controller,
+      WishlistTag.Mouse,
+    ]);
+    return tagsSet.toSet();
   }
 
   Set<WishlistTag> getPlugTags(int itemHash, int plugItemHash) {

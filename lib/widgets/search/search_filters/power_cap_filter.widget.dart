@@ -1,6 +1,7 @@
 // @dart=2.9
 
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/utils/item_filters/power_cap_filter.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/search/search.controller.dart';
@@ -39,7 +40,9 @@ class _PowerCapFilterWidgetState extends BaseSearchFilterWidgetState<PowerCapFil
     if (value > -1) {
       return Text("$value");
     }
-    return TranslatedTextWidget("None", uppercase: true);
+    return Text(
+      "None".translate(context).toUpperCase(),
+    );
   }
 
   @override

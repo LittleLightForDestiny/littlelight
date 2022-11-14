@@ -1,16 +1,16 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile_component_groups.dart';
 import 'package:little_light/modules/collections/pages/collections.page_route.dart';
-import 'package:little_light/widgets/presentation_nodes/presentation_node_list.widget.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/profile/destiny_settings.consumer.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
-import 'package:little_light/services/profile/profile_component_groups.dart';
 import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/layouts/presentation_nodes_tabs_scaffold.dart';
+import 'package:little_light/widgets/presentation_nodes/presentation_node_list.widget.dart';
 
 class CollectionsRootPage extends PresentationNodesTabsScaffoldWidget {
   CollectionsRootPage() : super();
@@ -81,7 +81,7 @@ class CollectionsRootPageState extends PresentationNodesTabsScaffoldState<Collec
 
   @override
   Widget buildAppBarTitle(BuildContext context) {
-    return TranslatedTextWidget("Collections");
+    return Text("Collections".translate(context));
   }
 
   @override

@@ -11,3 +11,16 @@ extension LanguageContextConsumer on BuildContext {
   String translate(String text, {String? languageCode, Map<String, String> replace = const {}}) =>
       this.watch<LanguageBloc>().translate(text, languageCode: languageCode, replace: replace);
 }
+
+extension TranslateString on String {
+  String translate(
+    BuildContext context, {
+    String? languageCode,
+    Map<String, String> replace = const {},
+  }) =>
+      context.translate(
+        this,
+        languageCode: languageCode,
+        replace: replace,
+      );
+}

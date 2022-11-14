@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/bungie_api.exception.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
@@ -45,13 +46,13 @@ class BungieApiExceptionDialog extends LittleLightBaseDialog with AuthConsumer, 
       mainAxisSize: MainAxisSize.min,
       children: [
         TextButton(
-          child: TranslatedTextWidget("Restart app", uppercase: true),
+          child: Text("Restart app".translate(context).toUpperCase()),
           onPressed: () async {
             Phoenix.rebirth(context);
           },
         ),
         TextButton(
-          child: TranslatedTextWidget("Reauthenticate with Bungie", uppercase: true),
+          child: Text("Reauthenticate with Bungie".translate(context).toUpperCase()),
           onPressed: () async {
             auth.openBungieLogin(true);
           },
@@ -68,7 +69,7 @@ class BungieApiExceptionDialog extends LittleLightBaseDialog with AuthConsumer, 
           },
         ),
         TextButton(
-          child: TranslatedTextWidget("Exit app", uppercase: true),
+          child: Text("Exit app".translate(context).toUpperCase()),
           onPressed: () async {
             exit(0);
           },

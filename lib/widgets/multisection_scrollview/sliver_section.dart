@@ -8,6 +8,21 @@ class SliverSection {
   final double? itemHeight;
   final double? itemAspectRatio;
   final int? itemCount;
+
+  SliverSection.fixedHeight({
+    required this.itemBuilder,
+    this.itemCount = 1,
+    this.itemsPerRow = 1,
+    required this.itemHeight,
+  }) : itemAspectRatio = null;
+
+  SliverSection.aspectRatio({
+    required this.itemBuilder,
+    this.itemCount = 1,
+    this.itemsPerRow = 1,
+    required this.itemAspectRatio,
+  }) : itemHeight = null;
+
   SliverSection({
     required this.itemBuilder,
     this.itemCount,

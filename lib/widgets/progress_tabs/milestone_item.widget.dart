@@ -1,6 +1,7 @@
 // @dart=2.9
 
 import 'dart:async';
+
 import 'package:bungie_api/models/destiny_activity_definition.dart';
 import 'package:bungie_api/models/destiny_activity_modifier_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
@@ -12,11 +13,10 @@ import 'package:bungie_api/models/destiny_milestone_reward_category_definition.d
 import 'package:bungie_api/models/destiny_objective_definition.dart';
 import 'package:bungie_api/models/destiny_objective_progress.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/services/notification/notification.package.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/generic_progress_bar.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
@@ -36,9 +36,8 @@ class MilestoneItemWidget extends StatefulWidget {
 }
 
 class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
-    with AutomaticKeepAliveClientMixin, ProfileConsumer, ManifestConsumer, NotificationConsumer {
+    with AutomaticKeepAliveClientMixin, ProfileConsumer, ManifestConsumer {
   DestinyMilestoneDefinition definition;
-  StreamSubscription<NotificationEvent> subscription;
   DestinyMilestone milestone;
   int get hash => widget.milestone.milestoneHash;
   bool fullyLoaded = false;
@@ -50,17 +49,18 @@ class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
 
     milestone = widget.milestone;
     loadDefinitions();
-    subscription = notifications.listen((event) {
-      if (event.type == NotificationType.receivedUpdate && mounted) {
-        milestone = profile.getCharacterProgression(widget.characterId).milestones["$hash"];
-        setState(() {});
-      }
-    });
+    profile.addListener(update);
+  }
+
+  update() {
+    if (!mounted) return;
+    milestone = profile.getCharacterProgression(widget.characterId).milestones["$hash"];
+    setState(() {});
   }
 
   @override
   dispose() {
-    subscription.cancel();
+    profile.removeListener(update);
     super.dispose();
   }
 

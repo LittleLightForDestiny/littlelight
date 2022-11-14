@@ -2,6 +2,7 @@
 
 import 'package:bungie_api/enums/destiny_class.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/item_filters/class_type_filter.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -33,10 +34,12 @@ class _ClassTypeFilterWidgetState
   @override
   Widget buildButtonLabel(BuildContext context, DestinyClass value) {
     if ((value ?? DestinyClass.Unknown) != DestinyClass.Unknown) {
-      return Container(margin: EdgeInsets.all(8), width: 32, height: 32, child: Icon(DestinyData.getClassIcon(value)));
+      return Container(margin: EdgeInsets.all(8), width: 32, height: 32, child: Icon(value.icon));
     }
 
-    return TranslatedTextWidget("None", uppercase: true);
+    return Text(
+      "None".translate(context).toUpperCase(),
+    );
   }
 
   @override

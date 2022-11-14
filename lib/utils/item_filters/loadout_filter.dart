@@ -25,7 +25,7 @@ class LoadoutFilter extends BaseItemFilter<Set<String>> {
     clear();
 
     allLoadouts = context.read<LoadoutsBloc>().loadouts;
-    availableValues.addAll(allLoadouts.map((l) => l.assignedId));
+    availableValues.addAll(allLoadouts?.map((l) => l.assignedId) ?? []);
     this.available = availableValues.length > 1;
     value.retainAll(availableValues);
     return super.filter(items, definitions: definitions);

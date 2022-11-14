@@ -2,6 +2,7 @@
 
 import 'package:bungie_api/helpers/oauth.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
 typedef OnDismiss = void Function(String labelClicked);
@@ -15,9 +16,9 @@ class ExceptionDialog extends AlertDialog {
   @override
   Widget get title {
     if (exception is OAuthException) {
-      return TranslatedTextWidget("Authentication Error");
+      return Text("Authentication Error".translate(context));
     }
-    return TranslatedTextWidget("Error");
+    return Text("Error".translate(context));
   }
 
   @override
@@ -29,7 +30,7 @@ class ExceptionDialog extends AlertDialog {
         TranslatedTextWidget(ex.errorDescription),
       ]);
     }
-    return TranslatedTextWidget("UnknownError");
+    return Text("UnknownError".translate(context));
   }
 
   @override

@@ -4,11 +4,11 @@ import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:bungie_api/models/destiny_class_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/services/inventory/enums/item_destination.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 
 class EquipOnCharacterButton extends StatelessWidget with ProfileConsumer {
   final ItemDestination type;
@@ -96,12 +96,11 @@ class EquipOnCharacterButton extends StatelessWidget with ProfileConsumer {
           child: Container(
               padding: EdgeInsets.all(2),
               color: Colors.black.withOpacity(.7),
-              child: TranslatedTextWidget("Inventory",
+              child: Text("Inventory".translate(context).toUpperCase(),
                   overflow: TextOverflow.fade,
                   softWrap: false,
                   maxLines: 1,
                   textAlign: TextAlign.center,
-                  uppercase: true,
                   style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold))),
         );
 
@@ -113,12 +112,11 @@ class EquipOnCharacterButton extends StatelessWidget with ProfileConsumer {
           child: Container(
               padding: EdgeInsets.all(2),
               color: Colors.black.withOpacity(.7),
-              child: TranslatedTextWidget("Vault",
+              child: Text("Vault".translate(context).toUpperCase(),
                   overflow: TextOverflow.fade,
                   softWrap: false,
                   maxLines: 1,
                   textAlign: TextAlign.center,
-                  uppercase: true,
                   style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold))),
         );
       default:

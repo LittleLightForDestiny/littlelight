@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/widgets/presentation_nodes/collectible_item.widget.dart';

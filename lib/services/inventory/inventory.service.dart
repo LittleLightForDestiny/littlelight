@@ -17,6 +17,8 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:get_it/get_it.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile_component_groups.dart';
 import 'package:little_light/models/bungie_api.exception.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
 import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
@@ -24,8 +26,6 @@ import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enu
 import 'package:little_light/services/inventory/transfer_error.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/notification/notification.package.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
-import 'package:little_light/services/profile/profile_component_groups.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 
 import 'enums/item_destination.dart';
@@ -38,22 +38,22 @@ setupInventoryService() {
 class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer, NotificationConsumer {
   InventoryService._internal();
 
-  transfer(DestinyItemComponent item, String sourceCharacterId, ItemDestination destination,
-      [String destinationCharacterId]) async {
-    notifications
-        .push(NotificationEvent(NotificationType.requestedTransfer, item: item, characterId: destinationCharacterId));
-    profile.pauseAutomaticUpdater = true;
-    try {
-      await _transfer(item, sourceCharacterId, destination, destinationCharacterId: destinationCharacterId);
-    } catch (e) {
-      final notification = ErrorNotificationEvent(ErrorNotificationType.genericTransferError);
-      notifications.push(notification);
-      await Future.delayed(Duration(seconds: 3));
-    }
-    profile.pauseAutomaticUpdater = false;
-    await Future.delayed(Duration(milliseconds: 100));
-    await profile.fetchProfileData();
-  }
+  // transfer(DestinyItemComponent item, String sourceCharacterId, ItemDestination destination,
+  //     [String destinationCharacterId]) async {
+  //   notifications
+  //       .push(NotificationEvent(NotificationType.requestedTransfer, item: item, characterId: destinationCharacterId));
+  //   profile.pauseAutomaticUpdater = true;
+  //   try {
+  //     await _transfer(item, sourceCharacterId, destination, destinationCharacterId: destinationCharacterId);
+  //   } catch (e) {
+  //     final notification = ErrorNotificationEvent(ErrorNotificationType.genericTransferError);
+  //     notifications.push(notification);
+  //     await Future.delayed(Duration(seconds: 3));
+  //   }
+  //   profile.pauseAutomaticUpdater = false;
+  //   await Future.delayed(Duration(milliseconds: 100));
+  //   await profile.fetchProfileData();
+  // }
 
   equip(DestinyItemComponent item, String sourceCharacterId, String destinationCharacterId) async {
     profile.pauseAutomaticUpdater = true;
@@ -166,104 +166,191 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
     profile.pauseAutomaticUpdater = false;
   }
 
-  transferLoadout(LoadoutItemIndex loadout, [String characterId, bool andEquip = false, int moveItemsAway = 0]) async {
+  Future<void> transferLoadout(LoadoutItemIndex loadout,
+      [String characterID, bool andEquip = false, int moveItemsAway = 0]) async {
     profile.pauseAutomaticUpdater = true;
-    List<String> equippedIds = loadout.equippedItemIds;
-    List<String> unequippedIds = loadout.unequippedItemIds;
-    List<DestinyItemComponent> items = profile.getItemsByInstanceId(equippedIds + unequippedIds);
-    List<int> hashes = items.map((item) => item.itemHash).toList();
-    Map<int, DestinyInventoryItemDefinition> defs =
-        await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
-    DestinyCharacterComponent character = characterId != null ? profile.getCharacter(characterId) : null;
+    DestinyCharacterComponent character = characterID != null ? profile.getCharacter(characterID) : null;
+    final idsToAvoid = loadout.equippedItemIds + loadout.unequippedItemIds;
+    List<LoadoutIndexItem> loadoutItemsToEquip = await _filterLoadoutIndexItems(
+      loadout.equippedItems,
+      characterClass: character?.classType,
+      onlyOnePerSlot: true,
+    );
+    await _transferLoadoutItems(loadoutItemsToEquip, characterID: characterID, idsToAvoid: idsToAvoid);
+    await _applyLoadoutMods(loadoutItemsToEquip, characterID);
 
-    List<DestinyItemComponent> itemsToEquip = items.where((item) {
-      DestinyInventoryItemDefinition def = defs[item.itemHash];
-      if (!equippedIds.contains(item.itemInstanceId)) return false;
-      if (character != null && def.classType != character.classType && def.classType != DestinyClass.Unknown)
-        return false;
-      return true;
-    }).toList();
-
-    List<DestinyItemComponent> itemsToTransfer = items.where((item) {
-      DestinyInventoryItemDefinition def = defs[item.itemHash];
-      if (!unequippedIds.contains(item.itemInstanceId)) return false;
-      if (character != null && def.classType != character.classType && def.classType != DestinyClass.Unknown)
-        return false;
-      return true;
-    }).toList();
-
-    List<String> idsToAvoid = (itemsToEquip + itemsToTransfer).map((item) => item.itemInstanceId).toList();
-
-    for (var item in itemsToEquip) {
-      String ownerId = profile.getItemOwner(item.itemInstanceId);
-      bool isOnPostMaster = item.bucketHash == InventoryBucket.lostItems;
-      DestinyInventoryItemDefinition def = defs[item.itemHash];
-      if (ownerId == characterId && !isOnPostMaster) continue;
-      if (def.nonTransferrable) continue;
-
-      ItemDestination destination = character == null ? ItemDestination.Vault : ItemDestination.Character;
-      notifications.push(NotificationEvent(NotificationType.requestedTransfer, item: item, characterId: characterId));
-
-      try {
-        await _transfer(item, ownerId, destination, destinationCharacterId: characterId, idsToAvoid: idsToAvoid);
-      } catch (e) {
-        print("Error transferring loadout: $e");
-      }
+    if (andEquip) {
+      await _equipLoadoutItems(loadoutItemsToEquip, characterID);
     }
 
-    if (andEquip && itemsToEquip.length > 0) {
-      notifications.push(NotificationEvent(NotificationType.requestedEquip, characterId: characterId));
-      try {
-        await _equipMultiple(itemsToEquip, characterId);
-      } catch (e) {
-        print("Error equipping loadout: $e");
-      }
-    }
+    //   List<DestinyItemComponent> items = profile.getItemsByInstanceId(idsToEquip + idsToTransfer);
+    //   List<int> hashes = items.map((item) => item.itemHash).toList();
+    //   Map<int, DestinyInventoryItemDefinition> defs =
+    //       await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
+    //   DestinyCharacterComponent character = characterId != null ? profile.getCharacter(characterId) : null;
 
-    for (var item in itemsToTransfer) {
-      String ownerId = profile.getItemOwner(item.itemInstanceId);
-      DestinyInventoryItemDefinition def = defs[item.itemHash];
-      if (ownerId == characterId) continue;
-      if (def.nonTransferrable) continue;
+    //   List<DestinyItemComponent> itemsToEquip = items.where((item) {
+    //     DestinyInventoryItemDefinition def = defs[item.itemHash];
+    //     if (!idsToEquip.contains(item.itemInstanceId)) return false;
+    //     if (character != null && def.classType != character.classType && def.classType != DestinyClass.Unknown)
+    //       return false;
+    //     return true;
+    //   }).toList();
 
-      ItemDestination destination = character == null ? ItemDestination.Vault : ItemDestination.Character;
-      notifications.push(NotificationEvent(NotificationType.requestedTransfer, item: item, characterId: characterId));
-      try {
-        await _transfer(item, ownerId, destination, destinationCharacterId: characterId, idsToAvoid: idsToAvoid);
-      } catch (e) {
-        print("Loadout Transfer Error : $e");
-      }
-    }
-    _debugInventory("loadout transfer completed");
-    if (moveItemsAway > 0) {
-      var bucketsToClean = [
-        InventoryBucket.kineticWeapons,
-        InventoryBucket.energyWeapons,
-        InventoryBucket.powerWeapons,
-        InventoryBucket.helmet,
-        InventoryBucket.gauntlets,
-        InventoryBucket.chestArmor,
-        InventoryBucket.legArmor,
-        InventoryBucket.classArmor
-      ];
-      for (var bucketHash in bucketsToClean) {
-        await _freeSlotsOnBucket(bucketHash, characterId, idsToAvoid, moveItemsAway);
-      }
-    }
-    await Future.delayed(Duration(milliseconds: 500));
-    profile.pauseAutomaticUpdater = false;
-    await profile.fetchProfileData();
+    //   List<DestinyItemComponent> itemsToTransfer = items.where((item) {
+    //     DestinyInventoryItemDefinition def = defs[item.itemHash];
+    //     if (!idsToTransfer.contains(item.itemInstanceId)) return false;
+    //     if (character != null && def.classType != character.classType && def.classType != DestinyClass.Unknown)
+    //       return false;
+    //     return true;
+    //   }).toList();
+
+    //   List<String> idsToAvoid = (loadoutItemsToEquip + itemsToTransfer).map((item) => item.itemInstanceId).toList();
+
+    //   for (var item in loadoutItemsToEquip) {
+    //     String ownerId = profile.getItemOwner(item.itemInstanceId);
+    //     bool isOnPostMaster = item.bucketHash == InventoryBucket.lostItems;
+    //     DestinyInventoryItemDefinition def = defs[item.itemHash];
+    //     if (ownerId == characterId && !isOnPostMaster) continue;
+    //     if (def.nonTransferrable) continue;
+
+    //     ItemDestination destination = character == null ? ItemDestination.Vault : ItemDestination.Character;
+    //     notifications.push(NotificationEvent(NotificationType.requestedTransfer, item: item, characterId: characterId));
+
+    //     try {
+    //       await _transfer(item, ownerId, destination, destinationCharacterId: characterId, idsToAvoid: idsToAvoid);
+    //     } catch (e) {
+    //       print("Error transferring loadout: $e");
+    //     }
+    //   }
+
+    //   if (andEquip && loadoutItemsToEquip.length > 0) {
+    //     notifications.push(NotificationEvent(NotificationType.requestedEquip, characterId: characterId));
+    //     try {
+    //       await _equipMultiple(loadoutItemsToEquip, characterId);
+    //     } catch (e) {
+    //       print("Error equipping loadout: $e");
+    //     }
+    //   }
+
+    //   for (var item in itemsToTransfer) {
+    //     String ownerId = profile.getItemOwner(item.itemInstanceId);
+    //     DestinyInventoryItemDefinition def = defs[item.itemHash];
+    //     if (ownerId == characterId) continue;
+    //     if (def.nonTransferrable) continue;
+
+    //     ItemDestination destination = character == null ? ItemDestination.Vault : ItemDestination.Character;
+    //     notifications.push(NotificationEvent(NotificationType.requestedTransfer, item: item, characterId: characterId));
+    //     try {
+    //       await _transfer(item, ownerId, destination, destinationCharacterId: characterId, idsToAvoid: idsToAvoid);
+    //     } catch (e) {
+    //       print("Loadout Transfer Error : $e");
+    //     }
+    //   }
+    //   _debugInventory("loadout transfer completed");
+    //   if (moveItemsAway > 0) {
+    //     var bucketsToClean = [
+    //       InventoryBucket.kineticWeapons,
+    //       InventoryBucket.energyWeapons,
+    //       InventoryBucket.powerWeapons,
+    //       InventoryBucket.helmet,
+    //       InventoryBucket.gauntlets,
+    //       InventoryBucket.chestArmor,
+    //       InventoryBucket.legArmor,
+    //       InventoryBucket.classArmor
+    //     ];
+    //     for (var bucketHash in bucketsToClean) {
+    //       await _freeSlotsOnBucket(bucketHash, characterId, idsToAvoid, moveItemsAway);
+    //     }
+    //   }
+    //   await Future.delayed(Duration(milliseconds: 500));
+    //   profile.pauseAutomaticUpdater = false;
+    //   await profile.fetchProfileData();
+    // }
+
+    // _debugInventory(String title) {
+    //   print('------- $title --------');
+    //   var characters = profile.characters;
+    //   characters.forEach((char) {
+    //     var inventory = profile.getCharacterInventory(char.characterId);
+    //     print("${char.characterId} = ${inventory.length}");
+    //   });
+    //   var profileInventory = profile.getProfileInventory().where((item) => item.bucketHash == InventoryBucket.general);
+    //   print("vault = ${profileInventory.length}");
   }
 
-  _debugInventory(String title) {
-    print('------- $title --------');
-    var characters = profile.getCharacters();
-    characters.forEach((char) {
-      var inventory = profile.getCharacterInventory(char.characterId);
-      print("${char.characterId} = ${inventory.length}");
-    });
-    var profileInventory = profile.getProfileInventory().where((item) => item.bucketHash == InventoryBucket.general);
-    print("vault = ${profileInventory.length}");
+  Future<List<LoadoutIndexItem>> _filterLoadoutIndexItems(
+    Iterable<LoadoutIndexItem> items, {
+    DestinyClass characterClass,
+    bool onlyOnePerSlot = false,
+  }) async {
+    characterClass ??= DestinyClass.Unknown;
+    items = items.where((element) => element.item != null);
+    final hashes = items.map((element) => element?.item?.itemHash).whereType<int>();
+    final defs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
+    if (characterClass != DestinyClass.Unknown) {
+      items = items.where((element) {
+        final hash = element.item.itemHash;
+        final itemClass = defs[hash].classType;
+        return [DestinyClass.Unknown, characterClass].contains(itemClass);
+      });
+    }
+    if (!onlyOnePerSlot) return items;
+    Map<int, LoadoutIndexItem> slotMap = {};
+    final bucketHashes = items.map((e) => defs[e.item.itemHash]?.inventory?.bucketTypeHash).whereType<int>().toSet();
+    for (final bucketHash in bucketHashes) {
+      slotMap[bucketHash] = items.firstWhere((e) {
+        final hash = e.item.itemHash;
+        final itemClass = defs[hash].classType;
+        final itemBucketHash = defs[e.item.itemHash]?.inventory?.bucketTypeHash;
+        return itemClass == characterClass && itemBucketHash == bucketHash;
+      }, orElse: () => null);
+      slotMap[bucketHash] ??= items.firstWhere((e) {
+        final hash = e.item.itemHash;
+        final itemBucketHash = defs[hash]?.inventory?.bucketTypeHash;
+        return itemBucketHash == bucketHash;
+      }, orElse: () => null);
+    }
+    return slotMap.values.where((e) => e.item != null).toList();
+  }
+
+  Future<void> _transferLoadoutItems(List<LoadoutIndexItem> loadoutItems,
+      {String characterID, List<String> idsToAvoid}) async {
+    final itemIDs = loadoutItems.map((e) => e.item?.itemInstanceId).whereType<String>().toList();
+    final items = profile.getItemsByInstanceId(itemIDs);
+    for (final item in items) {
+      final ownerId = profile.getItemOwner(item.itemInstanceId);
+      final destination = characterID != null ? ItemDestination.Character : ItemDestination.Vault;
+      return _transfer(
+        item,
+        ownerId,
+        destination,
+        destinationCharacterId: characterID,
+        idsToAvoid: idsToAvoid,
+      );
+    }
+  }
+
+  Future<void> _applyLoadoutMods(List<LoadoutIndexItem> items, [String characterID]) async {
+    final futures = <Future<void>>[];
+    for (final item in items) {
+      final plugs = item?.itemPlugs;
+      final id = item.item?.itemInstanceId;
+      if (id == null) continue;
+      if (plugs.isEmpty) continue;
+      for (final socketIndex in plugs.keys) {
+        futures.add(bungieAPI.applySocket(id, plugs[socketIndex], socketIndex, characterID));
+      }
+    }
+    try {
+      await Future.wait(futures);
+    } catch (e) {}
+  }
+
+  Future<void> _equipLoadoutItems(List<LoadoutIndexItem> loadoutItems, [String characterID]) async {
+    final itemIDs = loadoutItems.map((e) => e.item?.itemInstanceId).whereType<String>().toList();
+    final items = profile.getItemsByInstanceId(itemIDs);
+    await _equipMultiple(items, characterID);
   }
 
   Future<void> _transfer(DestinyItemComponent item, String sourceCharacterId, ItemDestination destination,
@@ -278,10 +365,10 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
       stackSize = item.quantity;
     }
     if (sourceCharacterId == ItemWithOwner.OWNER_PROFILE) {
-      sourceCharacterId = profile.getCharacters()?.first?.characterId;
+      sourceCharacterId = profile.characters?.first?.characterId;
     }
 
-    bool needsToUnequip = instanceInfo?.isEquipped ?? false;
+    bool needsToUnequip = (instanceInfo?.isEquipped ?? false) && sourceCharacterId != destinationCharacterId;
     bool onVault = item.bucketHash == InventoryBucket.general;
     bool onPostmaster = item.bucketHash == InventoryBucket.lostItems;
     bool charToChar = !onVault && destination == ItemDestination.Character;
@@ -331,7 +418,6 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
           profile.getProfileInventory().add(item);
         }
       }
-      fireLocalUpdate();
     }
 
     if (needsToUnequip) {
@@ -365,7 +451,6 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
         profile.getProfileInventory().add(item);
       }
       onVault = true;
-      fireLocalUpdate();
     }
 
     if (onVault && destination != ItemDestination.Vault) {
@@ -374,7 +459,7 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
       var destinationBucketDef =
           await manifest.getDefinition<DestinyInventoryBucketDefinition>(def.inventory.bucketTypeHash);
       if (destinationBucketDef.scope == BucketScope.Account) {
-        destinationCharacterId = profile.getCharacters().first.characterId;
+        destinationCharacterId = profile.characters.first.characterId;
       }
       int result =
           await bungieAPI.transferItem(item.itemHash, stackSize, false, item.itemInstanceId, destinationCharacterId);
@@ -406,7 +491,6 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
           profile.getProfileInventory().add(item);
         }
       }
-      fireLocalUpdate();
     }
   }
 
@@ -436,8 +520,6 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
     sInfo.isEquipped = false;
     equipment.add(item);
     inventory.add(currentlyEquipped);
-
-    fireLocalUpdate();
   }
 
   _equipMultiple(List<DestinyItemComponent> items, String characterId, [List<String> idsToAvoid = const []]) async {
@@ -621,7 +703,7 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
 
   changeLockState(ItemWithOwner item, bool locked) async {
     if (!item.item.lockable) return;
-    var charIds = profile.getCharacters().map((c) => c.characterId);
+    var charIds = profile.characters.map((c) => c.characterId);
     var ownerId = charIds.contains(item?.ownerId) ? item?.ownerId : charIds.first;
     if (item.item.state.contains(ItemState.Locked) && !locked) {
       item?.item?.state = ItemState(item.item.state.value - ItemState.Locked.value);
@@ -634,9 +716,5 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
     profileItem.item.state = item?.item?.state;
     notifications.push(NotificationEvent(NotificationType.itemStateUpdate, item: item.item));
     await bungieAPI.changeLockState(item?.item?.itemInstanceId, ownerId, locked);
-  }
-
-  fireLocalUpdate() {
-    notifications.push(NotificationEvent(NotificationType.localUpdate));
   }
 }

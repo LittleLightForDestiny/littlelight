@@ -9,9 +9,11 @@ import 'package:bungie_api/models/destiny_sandbox_perk_definition.dart';
 import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
+import 'package:little_light/shared/widgets/loading/default_loading_shimmer.dart';
 import 'package:little_light/utils/destiny_data.dart';
-import 'package:little_light/utils/shimmer_helper.dart';
+import 'package:little_light/utils/socket_category_hashes.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
@@ -129,7 +131,7 @@ class _ScreenshotPerkDetailsWidgetState extends BaseSocketDetailsWidgetState<Scr
       return Container();
     }
 
-    var isPerk = DestinyData.socketCategoryPerkHashes.contains(cat?.socketCategoryHash);
+    var isPerk = SocketCategoryHashes.perks.contains(cat?.socketCategoryHash);
 
     if (isPerk && controller.reusablePlugs != null) {
       return Container();
@@ -313,7 +315,7 @@ class _ScreenshotPerkDetailsWidgetState extends BaseSocketDetailsWidgetState<Scr
           color: LittleLightTheme.of(context).errorLayers, borderRadius: BorderRadius.circular(8 * widget.pixelSize)),
       margin: EdgeInsets.all(8 * widget.pixelSize),
       padding: EdgeInsets.all(16 * widget.pixelSize),
-      child: TranslatedTextWidget("This perk isn't available on the current season anymore",
+      child: Text("This perk isn't available on the current season anymore".translate(context),
           style: TextStyle(fontSize: 24 * widget.pixelSize, fontWeight: FontWeight.w300)),
     );
   }
@@ -351,12 +353,12 @@ class _ScreenshotPerkDetailsWidgetState extends BaseSocketDetailsWidgetState<Scr
                               replace: {"modType": def.itemTypeDisplayName.toLowerCase()},
                               style: style,
                             )
-                          : ShimmerHelper.getDefaultShimmer(context,
+                          : DefaultLoadingShimmer(
                               child: TranslatedTextWidget(
-                                "Applying {modType}",
-                                replace: {"modType": def.itemTypeDisplayName.toLowerCase()},
-                                style: style,
-                              )),
+                              "Applying {modType}",
+                              replace: {"modType": def.itemTypeDisplayName.toLowerCase()},
+                              style: style,
+                            )),
                     )))));
     if (requirementHash != null && requirementHash != 0) {
       return DefinitionProviderWidget<DestinyMaterialRequirementSetDefinition>(requirementHash, (def) {

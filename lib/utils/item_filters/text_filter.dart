@@ -6,7 +6,7 @@ import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
 import 'package:little_light/modules/loadouts/blocs/loadouts.bloc.dart';
 import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/remove_diacritics.dart';
 import 'package:provider/provider.dart';

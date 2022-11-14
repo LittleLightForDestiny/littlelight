@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/modules/settings/widgets/add_community_wishlist.form.dart';
 import 'package:little_light/modules/settings/widgets/add_custom_wishlist.form.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:provider/provider.dart';
 
 import 'add_wishlists.bloc.dart';
@@ -29,8 +29,8 @@ class AddWishlistPageState extends State<AddWishlistPage> {
             title: buildTitle(context),
             bottom: TabBar(
               tabs: [
-                Container(padding: EdgeInsets.all(8), child: TranslatedTextWidget("Community")),
-                Container(padding: EdgeInsets.all(8), child: TranslatedTextWidget("Custom")),
+                Container(padding: EdgeInsets.all(8), child: Text("Community".translate(context))),
+                Container(padding: EdgeInsets.all(8), child: Text("Custom".translate(context))),
               ],
             ),
           ),
@@ -43,8 +43,8 @@ class AddWishlistPageState extends State<AddWishlistPage> {
         ));
   }
 
-  Widget buildTitle(BuildContext context) => TranslatedTextWidget(
-        "Add Wishlist",
+  Widget buildTitle(BuildContext context) => Text(
+        "Add Wishlist".translate(context),
         key: Key("title"),
       );
 }

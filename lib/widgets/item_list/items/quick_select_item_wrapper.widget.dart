@@ -4,11 +4,11 @@ import 'dart:math';
 
 import 'package:bungie_api/enums/destiny_item_type.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
-import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/item_with_owner.dart';
+import 'package:little_light/utils/socket_category_hashes.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/item_list/items/armor/armor_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/base_inventory_item.widget.dart';
@@ -54,9 +54,8 @@ class QuickSelectItemWrapperWidgetState<T extends QuickSelectItemWrapperWidget>
         {
           var reusablePlugs = profile.getItemReusablePlugs(widget?.item?.item?.itemInstanceId);
           int maxPlugs = 1;
-          final perksCategory = definition.sockets?.socketCategories?.firstWhere(
-              (s) => DestinyData.socketCategoryPerkHashes.contains(s.socketCategoryHash),
-              orElse: () => null);
+          final perksCategory = definition.sockets?.socketCategories
+              ?.firstWhere((s) => SocketCategoryHashes.perks.contains(s.socketCategoryHash), orElse: () => null);
           final indexes = perksCategory?.socketIndexes;
           reusablePlugs?.forEach((key, value) {
             if (indexes?.contains(value) ?? false) {

@@ -1,8 +1,8 @@
 // @dart=2.9
 
 import 'package:flutter/material.dart';
-import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/item_filters/tier_type_filter.dart';
+import 'package:little_light/shared/utils/extensions/tier_type_data.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/search/search.controller.dart';
 import 'package:little_light/widgets/search/search_filters/base_search_filter.widget.dart';
@@ -38,14 +38,14 @@ class _TierTypeFilterWidgetState
   }
 
   Color buttonTextColor(FilterTierType value) {
-    var color = DestinyData.getTierTextColor(value.tierType);
+    var color = value.tierType?.getTextColor(context);
     if (color != null) return color;
     return Colors.grey.shade300;
   }
 
   @override
   Color buttonBgColor(FilterTierType value) {
-    var color = DestinyData.getTierColor(value.tierType);
+    var color = value.tierType?.getColor(context);
     if (color != null) return color;
     return super.buttonBgColor(value);
   }

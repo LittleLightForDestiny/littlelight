@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/pages/initial/notifiers/manifest_downloader.notifier.dart';
 import 'package:little_light/pages/initial/subpages/subpage_base.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -44,7 +45,7 @@ class DownloadManifestProgressSubPageState extends SubpageBaseState<DownloadMani
                     "Downloading",
                     key: Key("downloading"),
                   )
-                : TranslatedTextWidget("Uncompressing", key: Key("unzipping")),
+                : Text("Uncompressing".translate(context), key: Key("unzipping")),
             Text("$downloadedSize/${totalDownloadSize}KB")
           ],
         )

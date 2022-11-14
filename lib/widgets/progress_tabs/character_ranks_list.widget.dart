@@ -5,9 +5,8 @@ import 'dart:async';
 import 'package:bungie_api/models/destiny_faction_progression.dart';
 import 'package:bungie_api/models/destiny_progression.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
-import 'package:little_light/services/notification/notification.package.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/item_list/character_info.widget.dart';
 import 'package:little_light/widgets/multisection_scrollview/multisection_scrollview.dart';
@@ -25,26 +24,21 @@ class CharacterRanksListWidget extends StatefulWidget {
 }
 
 class _CharacterRanksListWidgetState extends State<CharacterRanksListWidget>
-    with AutomaticKeepAliveClientMixin, LittleLightDataConsumer, ProfileConsumer, NotificationConsumer {
+    with AutomaticKeepAliveClientMixin, LittleLightDataConsumer, ProfileConsumer {
   List<DestinyProgression> ranks;
   List<DestinyFactionProgression> progressions;
-  StreamSubscription<NotificationEvent> subscription;
   bool fullyLoaded = false;
 
   @override
   void initState() {
     super.initState();
     getRanks();
-    subscription = notifications.listen((event) {
-      if (event.type == NotificationType.receivedUpdate || event.type == NotificationType.localUpdate && mounted) {
-        getRanks();
-      }
-    });
+    profile.addListener(getRanks);
   }
 
   @override
   dispose() {
-    subscription.cancel();
+    profile.removeListener(getRanks);
     super.dispose();
   }
 

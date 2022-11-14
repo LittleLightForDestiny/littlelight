@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/media_query_helper.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/dialogs/littlelight.base.dialog.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/widgets/item_list/items/quick_select_item_wrapper.widget.dart';
@@ -23,7 +23,7 @@ extension on BuildContext {
 class LoadoutSlotOptionsDialog extends LittleLightBaseDialog with ProfileConsumer {
   LoadoutSlotOptionsDialog()
       : super(
-          titleBuilder: (context) => TranslatedTextWidget('Loadout item options'),
+          titleBuilder: (context) => Text("Loadout item options".translate(context)),
         );
 
   @override
@@ -62,25 +62,33 @@ class LoadoutSlotOptionsDialog extends LittleLightBaseDialog with ProfileConsume
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         TextButton(
-          child: TranslatedTextWidget("Cancel", uppercase: true),
+          child: Text(
+            "Cancel".translate(context).toUpperCase(),
+          ),
           onPressed: () async {
             Navigator.of(context).pop(null);
           },
         ),
         TextButton(
-          child: TranslatedTextWidget("Details", uppercase: true),
+          child: Text(
+            "Details".translate(context).toUpperCase(),
+          ),
           onPressed: () async {
             Navigator.of(context).pop(LoadoutSlotOptionsResponse.Details);
           },
         ),
         TextButton(
-          child: TranslatedTextWidget("Edit mods", uppercase: true),
+          child: Text(
+            "Edit mods".translate(context).toUpperCase(),
+          ),
           onPressed: () async {
             Navigator.of(context).pop(LoadoutSlotOptionsResponse.EditMods);
           },
         ),
         TextButton(
-          child: TranslatedTextWidget("Remove", uppercase: true),
+          child: Text(
+            "Remove".translate(context).toUpperCase(),
+          ),
           onPressed: () async {
             Navigator.of(context).pop(LoadoutSlotOptionsResponse.Remove);
           },

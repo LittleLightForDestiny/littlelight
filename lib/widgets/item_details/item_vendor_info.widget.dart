@@ -6,9 +6,10 @@ import 'package:bungie_api/models/destiny_unlock_definition.dart';
 import 'package:bungie_api/models/destiny_vendor_definition.dart';
 import 'package:bungie_api/models/destiny_vendor_sale_item_component.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -120,44 +121,44 @@ class ItemVendorInfoState extends State<ItemVendorInfoWidget> with ProfileConsum
   List<Widget> buildCustomFailureMessage(BuildContext context) {
     List<Widget> messages = [];
     if (widget.sale.saleStatus.contains(VendorItemStatus.NoInventorySpace)) {
-      messages.add(TranslatedTextWidget("Not enough space"));
+      messages.add(Text("Not enough space".translate(context)));
     }
     if (widget.sale.saleStatus.contains(VendorItemStatus.NoFunds)) {
-      // messages.add(TranslatedTextWidget("Not enough resources"));
+      // messages.add(Text("Not enough resources".translate(context)));
     }
     if (widget.sale.saleStatus.contains(VendorItemStatus.NoProgression)) {}
     if (widget.sale.saleStatus.contains(VendorItemStatus.NoUnlock)) {
-      // messages.add(TranslatedTextWidget("No Unlock"));
+      // messages.add(Text("No Unlock".translate(context)));
     }
     if (widget.sale.saleStatus.contains(VendorItemStatus.NoQuantity)) {
       //no message for now
     }
     if (widget.sale.saleStatus.contains(VendorItemStatus.OutsidePurchaseWindow)) {
-      messages.add(TranslatedTextWidget("Outside Purchase Window"));
+      messages.add(Text("Outside Purchase Window".translate(context)));
     }
     if (widget.sale.saleStatus.contains(VendorItemStatus.NotAvailable)) {
-      messages.add(TranslatedTextWidget("Not Available"));
+      messages.add(Text("Not Available".translate(context)));
     }
     if (widget.sale.saleStatus.contains(VendorItemStatus.UniquenessViolation)) {
-      messages.add(TranslatedTextWidget("Can only hold one at a time"));
+      messages.add(Text("Can only hold one at a time".translate(context)));
     }
     if (widget.sale.saleStatus.contains(VendorItemStatus.UnknownError)) {
-      messages.add(TranslatedTextWidget("UnknownError"));
+      messages.add(Text("UnknownError".translate(context)));
     }
     if (widget.sale.saleStatus.contains(VendorItemStatus.AlreadySelling)) {
-      messages.add(TranslatedTextWidget("Already Selling"));
+      messages.add(Text("Already Selling".translate(context)));
     }
     if (widget.sale.saleStatus.contains(VendorItemStatus.Unsellable)) {
-      messages.add(TranslatedTextWidget("Unsellable"));
+      messages.add(Text("Unsellable".translate(context)));
     }
     if (widget.sale.saleStatus.contains(VendorItemStatus.SellingInhibited)) {
-      messages.add(TranslatedTextWidget("Selling Inhibited"));
+      messages.add(Text("Selling Inhibited".translate(context)));
     }
     if (widget.sale.saleStatus.contains(VendorItemStatus.AlreadyOwned)) {
-      messages.add(TranslatedTextWidget("Already Owned"));
+      messages.add(Text("Already Owned".translate(context)));
     }
     if (widget.sale.saleStatus.contains(VendorItemStatus.DisplayOnly)) {
-      messages.add(TranslatedTextWidget("Display Only"));
+      messages.add(Text("Display Only".translate(context)));
     }
     return messages;
   }

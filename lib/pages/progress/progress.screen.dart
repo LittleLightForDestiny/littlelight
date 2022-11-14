@@ -1,21 +1,21 @@
 // @dart=2.9
 
-import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
+import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile_component_groups.dart';
 import 'package:little_light/models/item_sort_parameter.dart';
 import 'package:little_light/pages/item_search/search.screen.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
-import 'package:little_light/services/profile/profile_component_groups.dart';
 import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/item_filters/item_owner_filter.dart';
 import 'package:little_light/utils/item_filters/pseudo_item_type_filter.dart';
 import 'package:little_light/widgets/common/animated_character_background.widget.dart';
 import 'package:little_light/widgets/common/refresh_button.widget.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/flutter/passive_tab_bar_view.dart';
 import 'package:little_light/widgets/inventory_tabs/character_tab_header.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
@@ -135,7 +135,7 @@ class ProgressScreenState extends State<ProgressScreen>
         children: characters
             .map((character) => TabHeaderWidget(
                   character,
-                  key: Key("${character.emblemHash}_${character.characterId}"),
+                  key: Key("${character.character.emblemHash}_${character.characterId}"),
                 ))
             .toList());
   }
@@ -168,12 +168,12 @@ class ProgressScreenState extends State<ProgressScreen>
                       border: Border(top: BorderSide(width: 2, color: Theme.of(context).colorScheme.onSurface))),
                   controller: typeTabController,
                   tabs: [
-                TranslatedTextWidget("Milestones",
-                    uppercase: true, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-                TranslatedTextWidget("Pursuits",
-                    uppercase: true, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-                TranslatedTextWidget("Ranks",
-                    uppercase: true, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13))
+                Text("Milestones".translate(context).toUpperCase(),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                Text("Pursuits".translate(context).toUpperCase(),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                Text("Ranks".translate(context).toUpperCase(),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13))
               ])),
           Container(width: 40, child: RefreshButtonWidget())
         ]));
@@ -220,7 +220,7 @@ class ProgressScreenState extends State<ProgressScreen>
     ]);
   }
 
-  List<DestinyCharacterComponent> get characters {
-    return profile.getCharacters(userSettings.characterOrdering);
+  List<DestinyCharacterInfo> get characters {
+    return profile.characters;
   }
 }

@@ -2,11 +2,10 @@ import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
-import 'package:little_light/core/blocs/language/language.consumer.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/dialogs/littlelight.base.dialog.dart';
 
 class ReportErrorDialogRoute extends DialogRoute<void> {
@@ -27,7 +26,7 @@ class ReportErrorDialog extends LittleLightBaseDialog with AuthConsumer, Analyti
 
   @override
   Widget? buildTitle(BuildContext context) {
-    return TranslatedTextWidget("Send error report");
+    return Text("Send error report".translate(context));
   }
 
   @override
@@ -37,7 +36,7 @@ class ReportErrorDialog extends LittleLightBaseDialog with AuthConsumer, Analyti
     return Container(
         child: SingleChildScrollView(
             child: Column(mainAxisSize: MainAxisSize.min, children: [
-      TranslatedTextWidget("This will be the info that will be sent along with the error report:"),
+      Text("This will be the info that will be sent along with the error report:".translate(context)),
       Container(
         height: 8,
       ),
@@ -78,13 +77,13 @@ class ReportErrorDialog extends LittleLightBaseDialog with AuthConsumer, Analyti
       mainAxisSize: MainAxisSize.min,
       children: [
         TextButton(
-          child: TranslatedTextWidget("Cancel", uppercase: true),
+          child: Text("Cancel".translate(context).toUpperCase()),
           onPressed: () async {
             Navigator.of(context).pop();
           },
         ),
         TextButton(
-          child: TranslatedTextWidget("Send report", uppercase: true),
+          child: Text("Send report".translate(context).toUpperCase()),
           onPressed: () async {
             final error = context.errorArgument;
             if (error == null) return;

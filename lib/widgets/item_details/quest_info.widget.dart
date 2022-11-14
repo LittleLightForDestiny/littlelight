@@ -2,15 +2,15 @@
 
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
-import 'package:little_light/utils/destiny_data.dart';
+import 'package:little_light/shared/utils/extensions/tier_type_data.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/objective.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 
 class QuestInfoWidget extends BaseDestinyStatefulItemWidget {
   QuestInfoWidget(
@@ -67,7 +67,7 @@ class QuestInfoWidgetState extends BaseDestinyItemState<QuestInfoWidget> with Pr
           padding: EdgeInsets.all(8),
           child: HeaderWidget(
             alignment: Alignment.centerLeft,
-            child: TranslatedTextWidget("Quest steps", uppercase: true, style: TextStyle(fontWeight: FontWeight.bold)),
+            child: Text("Quest steps".translate(context).toUpperCase(), style: TextStyle(fontWeight: FontWeight.bold)),
           ),
         ),
       );
@@ -78,10 +78,10 @@ class QuestInfoWidgetState extends BaseDestinyItemState<QuestInfoWidget> with Pr
           padding: EdgeInsets.symmetric(horizontal: 8),
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
-              primary: DestinyData.getTierColor(definition?.inventory?.tierType),
+              primary: definition?.inventory?.tierType?.getColor(context),
             ),
-            child: TranslatedTextWidget("View next steps",
-                style: TextStyle(color: DestinyData.getTierTextColor(definition?.inventory?.tierType))),
+            child: Text("View next steps".translate(context),
+                style: TextStyle(color: definition?.inventory?.tierType?.getTextColor(context))),
             onPressed: () {
               showSpoilers = true;
               setState(() {});
@@ -118,7 +118,7 @@ class QuestInfoWidgetState extends BaseDestinyItemState<QuestInfoWidget> with Pr
               Container(
                 alignment: Alignment.centerLeft,
                 padding: EdgeInsets.all(8).copyWith(left: 88),
-                color: DestinyData.getTierColor(def.inventory.tierType),
+                color: def.inventory.tierType?.getColor(context),
                 child: Text(
                   def.displayProperties.name.toUpperCase(),
                   style: TextStyle(fontWeight: FontWeight.bold),
@@ -140,7 +140,7 @@ class QuestInfoWidgetState extends BaseDestinyItemState<QuestInfoWidget> with Pr
                 height: 72,
                 child: Container(
                     foregroundDecoration: BoxDecoration(border: Border.all(width: 2, color: Colors.grey.shade300)),
-                    color: DestinyData.getTierColor(def.inventory.tierType),
+                    color: def.inventory.tierType?.getColor(context),
                     child: QueuedNetworkImage(imageUrl: BungieApiService.url(def.displayProperties.icon))))
           ])
         ].followedBy(buildObjectives(context, def, index)).toList()));
@@ -181,13 +181,15 @@ class QuestInfoWidgetState extends BaseDestinyItemState<QuestInfoWidget> with Pr
           children: <Widget>[
             HeaderWidget(
                 alignment: Alignment.centerLeft,
-                child: TranslatedTextWidget("From the questline",
-                    uppercase: true, style: TextStyle(fontWeight: FontWeight.bold))),
+                child: Text(
+                  "From the questline".translate(context).toUpperCase(),
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                )),
             Container(
               height: 8,
             ),
             Container(
-                color: DestinyData.getTierColor(questlineDefinition.inventory.tierType),
+                color: questlineDefinition.inventory.tierType?.getColor(context),
                 child: Row(
                   children: <Widget>[
                     Container(
@@ -204,7 +206,7 @@ class QuestInfoWidgetState extends BaseDestinyItemState<QuestInfoWidget> with Pr
                         questlineDefinition?.displayProperties?.name?.toUpperCase(),
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            color: DestinyData.getTierTextColor(questlineDefinition.inventory.tierType)),
+                            color: questlineDefinition.inventory.tierType?.getTextColor(context)),
                       ),
                     )
                   ],

@@ -1,18 +1,15 @@
 // @dart=2.9
 
-import 'dart:async';
-
 import 'package:bungie_api/enums/destiny_record_state.dart';
 import 'package:bungie_api/models/destiny_objective_definition.dart';
 import 'package:bungie_api/models/destiny_objective_progress.dart';
 import 'package:bungie_api/models/destiny_record_component.dart';
 import 'package:bungie_api/models/destiny_record_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile_component_groups.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/services/notification/notification.package.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
-import 'package:little_light/services/profile/profile_component_groups.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/objective.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -29,10 +26,9 @@ class RecordObjectivesWidget extends StatefulWidget {
 }
 
 class RecordObjectivesWidgetState extends State<RecordObjectivesWidget>
-    with AuthConsumer, ProfileConsumer, ManifestConsumer, NotificationConsumer {
+    with AuthConsumer, ProfileConsumer, ManifestConsumer {
   bool isLogged = false;
   Map<int, DestinyObjectiveDefinition> objectiveDefinitions;
-  StreamSubscription<NotificationEvent> subscription;
 
   DestinyRecordDefinition get definition {
     return widget.definition;
@@ -43,23 +39,19 @@ class RecordObjectivesWidgetState extends State<RecordObjectivesWidget>
     super.initState();
     loadDefinitions();
     if (isLogged) {
-      listenToUpdates();
+      profile.addListener(update);
     }
   }
 
   @override
   void dispose() {
-    if (subscription != null) subscription.cancel();
+    profile.removeListener(update);
     super.dispose();
   }
 
-  listenToUpdates() {
-    subscription = notifications.listen((event) {
-      if (!mounted) return;
-      if (event.type == NotificationType.receivedUpdate) {
-        setState(() {});
-      }
-    });
+  update() {
+    if (!mounted) return;
+    setState(() {});
   }
 
   loadDefinitions() async {

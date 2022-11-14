@@ -5,18 +5,22 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/inventory/inventory.bloc.dart';
+import 'package:little_light/core/blocs/profile/profile.bloc.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/inventory/inventory.package.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
-import 'package:little_light/services/profile/profile.service.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateless_item.widget.dart';
 import 'package:little_light/widgets/common/equip_on_character.button.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:provider/provider.dart';
 
 class ManagementBlockWidget extends BaseDestinyStatelessItemWidget
     with UserSettingsConsumer, ProfileConsumer, InventoryConsumer {
+  InventoryBloc inventoryBloc(BuildContext context) => context.read<InventoryBloc>();
+
   ManagementBlockWidget(
       DestinyItemComponent item, DestinyInventoryItemDefinition definition, DestinyItemInstanceComponent instanceInfo,
       {Key key, String characterId})
@@ -113,13 +117,13 @@ class ManagementBlockWidget extends BaseDestinyStatelessItemWidget
         }
       case InventoryAction.Transfer:
         {
-          inventory.transfer(item, characterId, destination.type, destination.characterId);
+          inventoryBloc(context).transfer(item, destination.characterId);
           Navigator.pop(context);
           break;
         }
       case InventoryAction.Pull:
         {
-          inventory.transfer(item, characterId, destination.type, destination.characterId);
+          inventoryBloc(context).transfer(item, destination.characterId);
           Navigator.pop(context);
           break;
         }
@@ -130,12 +134,11 @@ class ManagementBlockWidget extends BaseDestinyStatelessItemWidget
     if (!definition.equippable) {
       return [];
     }
-    return profile
-        .getCharacters(userSettings.characterOrdering)
+    return profile.characters
         .where((char) =>
             !((instanceInfo?.isEquipped ?? false) && char.characterId == characterId) &&
             !(definition.nonTransferrable && char.characterId != characterId) &&
-            [DestinyClass.Unknown, char.classType].contains(definition.classType))
+            [DestinyClass.Unknown, char.character.classType].contains(definition.classType))
         .map((char) => TransferDestination(ItemDestination.Character,
             characterId: char.characterId, action: InventoryAction.Equip))
         .toList();
@@ -146,15 +149,14 @@ class ManagementBlockWidget extends BaseDestinyStatelessItemWidget
       return [];
     }
 
-    if (ProfileService.profileBuckets.contains(definition.inventory.bucketTypeHash)) {
+    if (ProfileBloc.profileBuckets.contains(definition.inventory.bucketTypeHash)) {
       if (item.bucketHash == InventoryBucket.general) {
         return [TransferDestination(ItemDestination.Inventory)];
       }
       return [TransferDestination(ItemDestination.Vault)];
     }
 
-    List<TransferDestination> list = profile
-        .getCharacters(userSettings.characterOrdering)
+    List<TransferDestination> list = profile.characters
         .where((char) => !(char.characterId == characterId))
         .map((char) => TransferDestination(ItemDestination.Character, characterId: char.characterId))
         .toList();
@@ -168,7 +170,7 @@ class ManagementBlockWidget extends BaseDestinyStatelessItemWidget
   List<TransferDestination> get pullDestinations {
     if (item.bucketHash == InventoryBucket.lostItems && !definition.doesPostmasterPullHaveSideEffects) {
       ItemDestination type;
-      if (ProfileService.profileBuckets.contains(definition.inventory.bucketTypeHash)) {
+      if (ProfileBloc.profileBuckets.contains(definition.inventory.bucketTypeHash)) {
         type = ItemDestination.Inventory;
       } else {
         type = ItemDestination.Character;

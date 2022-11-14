@@ -4,13 +4,13 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/modules/loadouts/pages/edit/edit_loadout.page_route.dart';
 import 'package:little_light/modules/loadouts/widgets/loadout_list_item.widget.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
 import 'package:provider/provider.dart';
 
@@ -84,7 +84,13 @@ class LoadoutsHomeViewState extends State<LoadoutsHomeView> with ProfileConsumer
         controller: _searchFieldController,
       );
     }
-    return _state.reordering ? TranslatedTextWidget("Reordering Loadouts") : TranslatedTextWidget("Loadouts");
+    return _state.reordering
+        ? Text(
+            "Reordering Loadouts".translate(context),
+          )
+        : Text(
+            "Loadouts".translate(context),
+          );
   }
 
   Widget buildSearchButton(BuildContext context) {
@@ -125,7 +131,7 @@ class LoadoutsHomeViewState extends State<LoadoutsHomeView> with ProfileConsumer
           height: kToolbarHeight + paddingBottom,
           padding: EdgeInsets.symmetric(horizontal: 16).copyWith(top: 8, bottom: 8 + paddingBottom),
           child: ElevatedButton(
-            child: TranslatedTextWidget("Create Loadout"),
+            child: Text("Create Loadout".translate(context)),
             onPressed: createNew,
           ),
         ));
@@ -204,13 +210,13 @@ class LoadoutsHomeViewState extends State<LoadoutsHomeView> with ProfileConsumer
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              TranslatedTextWidget(
-                "You have no loadouts yet. Create your first one.",
+              Text(
+                "You have no loadouts yet. Create your first one.".translate(context).toUpperCase(),
                 textAlign: TextAlign.center,
               ),
               Container(height: 16),
               ElevatedButton(
-                child: TranslatedTextWidget("Create Loadout"),
+                child: Text("Create Loadout".translate(context)),
                 onPressed: createNew,
               )
             ]));

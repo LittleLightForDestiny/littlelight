@@ -8,7 +8,12 @@ import 'package:little_light/widgets/item_list/vault_item_list.widget.dart';
 
 class VaultTabWidget extends CharacterTabWidget {
   final int currentGroup;
-  VaultTabWidget(this.currentGroup) : super(null, currentGroup);
+  VaultTabWidget(this.currentGroup, {EdgeInsets padding})
+      : super(
+          null,
+          currentGroup,
+          padding: padding,
+        );
 
   @override
   VaultTabWidgetState createState() => VaultTabWidgetState();
@@ -24,7 +29,7 @@ class VaultTabWidgetState extends CharacterTabWidgetState {
   Widget build(BuildContext context) {
     return VaultItemListWidget(
       key: Key("${widget.currentGroup}_vault"),
-      padding: EdgeInsets.all(4) + EdgeInsets.symmetric(vertical: kToolbarHeight) + MediaQuery.of(context).viewPadding,
+      padding: widget.padding,
       bucketHashes: bucketHashes,
     );
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/utils/color_utils.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -49,6 +50,25 @@ enum ItemTagIcon {
   BlockerMedium,
   BlockerLarge,
   BlockerGiant,
+}
+
+extension DefaultTagTypeLabel on DefaultTagType {
+  String getLabel(BuildContext context) {
+    switch (this) {
+      case DefaultTagType.Favorite:
+        return "Favorite".translate(context);
+      case DefaultTagType.Trash:
+        return "Trash".translate(context);
+      case DefaultTagType.Infuse:
+        return "Infuse".translate(context);
+    }
+  }
+}
+
+enum DefaultTagType {
+  Favorite,
+  Trash,
+  Infuse,
 }
 
 const Map<ItemTagIcon, IconData> tagIconData = {
@@ -101,6 +121,7 @@ class ItemNotesTag {
   String backgroundColorHex;
   String foregroundColorHex;
   ItemTagIcon icon;
+  DefaultTagType? defaultTagType;
 
   Color? get backgroundColor {
     return colorFromHex(backgroundColorHex);
@@ -120,6 +141,7 @@ class ItemNotesTag {
       this.name = "",
       this.backgroundColorHex = "#00000000",
       this.foregroundColorHex = "#FFFFFFFF",
+      this.defaultTagType,
       this.icon = ItemTagIcon.Star});
 
   factory ItemNotesTag.fromJson(dynamic json) {
@@ -132,6 +154,7 @@ class ItemNotesTag {
       tagId: "favorite",
       name: "Favorite",
       icon: ItemTagIcon.Heart,
+      defaultTagType: DefaultTagType.Favorite,
       backgroundColorHex: hexFromColor(Colors.yellow.shade800),
       foregroundColorHex: hexFromColor(LittleLightThemeData().onSurfaceLayers),
     );
@@ -143,6 +166,7 @@ class ItemNotesTag {
       tagId: "trash",
       name: "Trash",
       icon: ItemTagIcon.Trash,
+      defaultTagType: DefaultTagType.Trash,
       backgroundColorHex: hexFromColor(Colors.red.shade700),
       foregroundColorHex: hexFromColor(LittleLightThemeData().onSurfaceLayers),
     );
@@ -154,6 +178,7 @@ class ItemNotesTag {
       tagId: "infuse",
       name: "Infuse",
       icon: ItemTagIcon.Infuse,
+      defaultTagType: DefaultTagType.Infuse,
       backgroundColorHex: hexFromColor(Colors.grey.shade900),
       foregroundColorHex: hexFromColor(Colors.amber.shade300),
     );

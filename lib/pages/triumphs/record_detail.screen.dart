@@ -5,14 +5,14 @@ import 'package:bungie_api/models/destiny_record_component.dart';
 import 'package:bungie_api/models/destiny_record_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/models/tracked_objective.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/littlelight/objectives.service.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
 import 'package:little_light/widgets/item_details/item_lore.widget.dart';
 import 'package:little_light/widgets/presentation_nodes/record_detail_objectives.dart';
@@ -188,8 +188,8 @@ class RecordDetailScreenState extends State<RecordDetailScreen> with AuthConsume
           primary: isTracking ? DestinyData.trackingOnColor : DestinyData.trackingOffColor,
         ),
         child: isTracking
-            ? TranslatedTextWidget("Stop Tracking", key: Key("stop_tracking"))
-            : TranslatedTextWidget("Track Objectives", key: Key("track_objectives")),
+            ? Text("Stop Tracking".translate(context), key: Key("stop_tracking"))
+            : Text("Track Objectives".translate(context), key: Key("track_objectives")),
         onPressed: () {
           var service = ObjectivesService();
           if (isTracking) {

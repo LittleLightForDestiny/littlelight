@@ -3,6 +3,7 @@
 import 'package:bungie_api/enums/damage_type.dart';
 import 'package:bungie_api/models/destiny_damage_type_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/utils/item_filters/damage_type_filter.dart';
@@ -61,7 +62,9 @@ class _DamageTypeFilterWidgetState
     if (name != null) {
       return Text(name.toUpperCase());
     }
-    return TranslatedTextWidget("None", uppercase: true);
+    return Text(
+      "None".translate(context).toUpperCase(),
+    );
   }
 
   @override

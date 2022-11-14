@@ -2,14 +2,14 @@ import 'package:bungie_api/groupsv2.dart';
 import 'package:bungie_api/user.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
-import 'package:little_light/pages/languages/languages.page_route.dart';
 import 'package:little_light/modules/settings/pages/settings/settings.page_route.dart';
+import 'package:little_light/pages/languages/languages.page_route.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/utils/platform_data.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/dialogs/logout.dialog.dart';
 
 class SideMenuSettingsWidget extends StatefulWidget {
@@ -46,7 +46,7 @@ class _SideMenuSettingsWidgetState extends State<SideMenuSettingsWidget> with Au
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              TranslatedTextWidget("Logout"),
+              Text("Logout".translate(context)),
               Container(width: 4),
               Icon(Icons.logout, size: 16),
             ],
@@ -57,13 +57,13 @@ class _SideMenuSettingsWidgetState extends State<SideMenuSettingsWidget> with Au
         Navigator.of(context).pop();
         await Navigator.push(context, LogoutDialogRoute(context, account: account));
       }),
-      settingsItem(TranslatedTextWidget("Add account"), onTap: () {
+      settingsItem(Text("Add account".translate(context)), onTap: () {
         auth.openBungieLogin(true);
       }),
-      settingsItem(TranslatedTextWidget("Change Language"), onTap: () {
+      settingsItem(Text("Change Language".translate(context)), onTap: () {
         pushRoute(context, LanguagesPageRoute());
       }),
-      settingsItem(TranslatedTextWidget("Settings"), onTap: () {
+      settingsItem(Text("Settings".translate(context)), onTap: () {
         Navigator.of(context).push(SettingsPageRoute());
       })
     ]);
@@ -108,7 +108,8 @@ class _SideMenuSettingsWidgetState extends State<SideMenuSettingsWidget> with Au
             Container(
                 padding: EdgeInsets.all(8),
                 alignment: Alignment.centerRight,
-                child: TranslatedTextWidget("Change account", style: LittleLightTheme.of(context).textTheme.subtitle))
+                child:
+                    Text("Change account".translate(context), style: LittleLightTheme.of(context).textTheme.subtitle))
           ].followedBy(accounts!.map((m) => buildAccount(m))).toList()),
     );
   }

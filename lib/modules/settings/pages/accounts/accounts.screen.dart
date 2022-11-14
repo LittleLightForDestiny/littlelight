@@ -5,13 +5,13 @@ import 'package:bungie_api/models/group_user_info_card.dart';
 import 'package:bungie_api/models/user_membership_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/pages/initial/initial.page.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/utils/platform_data.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 
 class AccountsScreen extends StatefulWidget {
   @override
@@ -47,8 +47,8 @@ class _AccountsScreenState extends State<AccountsScreen> with AuthConsumer {
             Scaffold.of(context).openDrawer();
           },
         ),
-        title: TranslatedTextWidget(
-          "Accounts",
+        title: Text(
+          "Accounts".translate(context),
         ),
       ),
       body: memberships == null ? LoadingAnimWidget() : buildBody(context),
@@ -65,8 +65,8 @@ class _AccountsScreenState extends State<AccountsScreen> with AuthConsumer {
           onPressed: () {
             addAccount(context);
           },
-          child: TranslatedTextWidget(
-            "Add Account",
+          child: Text(
+            "Add Account".translate(context),
           )),
     );
   }
@@ -136,9 +136,8 @@ class _AccountsScreenState extends State<AccountsScreen> with AuthConsumer {
                               },
                               child: Container(
                                   padding: EdgeInsets.all(8),
-                                  child: TranslatedTextWidget(
-                                    "Remove",
-                                    uppercase: true,
+                                  child: Text(
+                                    "Remove".translate(context).toUpperCase(),
                                     style: TextStyle(fontWeight: FontWeight.bold),
                                   )),
                             ))))

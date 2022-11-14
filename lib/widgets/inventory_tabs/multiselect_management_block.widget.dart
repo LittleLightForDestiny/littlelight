@@ -5,21 +5,24 @@ import 'package:bungie_api/enums/destiny_class.dart';
 import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/inventory/inventory.bloc.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/inventory/enums/item_destination.dart';
 import 'package:little_light/services/inventory/inventory.consumer.dart';
 import 'package:little_light/services/inventory/transfer_destination.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 
-import 'package:little_light/services/profile/profile.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/services/selection/selection.consumer.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/common/equip_on_character.button.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:provider/provider.dart';
 
 class MultiselectManagementBlockWidget extends StatelessWidget
     with ProfileConsumer, InventoryConsumer, ManifestConsumer, SelectionConsumer {
+  InventoryBloc inventoryBloc(BuildContext context) => context.read<InventoryBloc>();
   final List<ItemWithOwner> items;
   MultiselectManagementBlockWidget({Key key, this.items})
       : super(
@@ -107,7 +110,7 @@ class MultiselectManagementBlockWidget extends StatelessWidget
         }
       case InventoryAction.Transfer:
         {
-          inventory.transferMultiple(List.from(items), destination.type, destination.characterId);
+          inventoryBloc(context).transferMultiple(items.map((e) => e.item).toList(), destination.characterId);
           selection.clear();
           break;
         }
@@ -119,14 +122,14 @@ class MultiselectManagementBlockWidget extends StatelessWidget
   }
 
   List<TransferDestination> get equipDestinations {
-    var characters = profile.getCharacters();
+    var characters = profile.characters;
     return characters
         .where((c) {
           return items.any((i) {
             var def = manifest.getDefinitionFromCache<DestinyInventoryItemDefinition>(i?.item?.itemHash);
             if (def?.equippable == false) return false;
             if (def?.nonTransferrable == true && i?.ownerId != c.characterId) return false;
-            if (![c?.classType, DestinyClass.Unknown].contains(def?.classType)) return false;
+            if (![c?.character?.classType, DestinyClass.Unknown].contains(def?.classType)) return false;
 
             var instanceInfo = profile.getInstanceInfo(i?.item?.itemInstanceId);
             if (instanceInfo?.isEquipped == true && i.ownerId == c.characterId) return false;
@@ -145,7 +148,7 @@ class MultiselectManagementBlockWidget extends StatelessWidget
     var hasPullables = false;
     var hasItemsOnVault = false;
     var hasItemsOnPostmaster = false;
-    var allCharacterIds = profile.getCharacters().map((c) => c.characterId);
+    var allCharacterIds = profile.characters.map((c) => c.characterId);
     Set<String> destinationCharacterIds = Set();
 
     for (var i in items) {

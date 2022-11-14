@@ -9,7 +9,13 @@ import 'package:little_light/widgets/item_list/item_list.widget.dart';
 class CharacterTabWidget extends StatefulWidget {
   final DestinyCharacterComponent character;
   final int currentGroup;
-  CharacterTabWidget(this.character, this.currentGroup, {Key key}) : super(key: key);
+  final EdgeInsets padding;
+  CharacterTabWidget(
+    this.character,
+    this.currentGroup, {
+    Key key,
+    this.padding,
+  }) : super(key: key);
   @override
   CharacterTabWidgetState createState() => CharacterTabWidgetState();
 }
@@ -24,9 +30,8 @@ class CharacterTabWidgetState extends State<CharacterTabWidget> {
   Widget build(BuildContext context) {
     return ItemListWidget(
         key: Key("${widget.currentGroup}_${widget.character}"),
-        padding:
-            EdgeInsets.all(4) + EdgeInsets.symmetric(vertical: kToolbarHeight) + MediaQuery.of(context).viewPadding,
         characterId: widget.character.characterId,
+        padding: widget.padding,
         bucketHashes: bucketHashes,
         currentGroup: widget.currentGroup);
   }

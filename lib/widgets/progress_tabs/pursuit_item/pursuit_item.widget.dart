@@ -9,15 +9,14 @@ import 'package:bungie_api/models/destiny_objective_definition.dart';
 import 'package:bungie_api/models/destiny_objective_progress.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/pages/item_details/item_details.page_route.dart';
 import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/services/notification/notification.package.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/selection/selection.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
-import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/item_with_owner.dart';
+import 'package:little_light/shared/utils/extensions/tier_type_data.dart';
 import 'package:little_light/widgets/common/corner_badge.decoration.dart';
 import 'package:little_light/widgets/common/expiry_date.widget.dart';
 import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
@@ -53,17 +52,10 @@ class PursuitItemWidget extends StatefulWidget {
 }
 
 class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
-    with
-        UserSettingsConsumer,
-        ProfileConsumer,
-        ManifestConsumer,
-        NotificationConsumer,
-        SelectionConsumer,
-        ItemNotesConsumer {
+    with UserSettingsConsumer, ProfileConsumer, ManifestConsumer, SelectionConsumer, ItemNotesConsumer {
   DestinyInventoryItemDefinition definition;
   Map<int, DestinyObjectiveDefinition> objectiveDefinitions;
   List<DestinyObjectiveProgress> itemObjectives;
-  StreamSubscription<NotificationEvent> subscription;
   StreamSubscription<List<ItemWithOwner>> selectionSub;
   bool fullyLoaded = false;
 
@@ -81,11 +73,7 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
     super.initState();
     updateProgress();
     loadDefinitions();
-    subscription = notifications.listen((event) {
-      if (event.type == NotificationType.receivedUpdate && mounted) {
-        updateProgress();
-      }
-    });
+    profile.addListener(updateProgress);
     selectionSub = selection.broadcaster.listen((event) {
       if (mounted) setState(() {});
     });
@@ -93,7 +81,7 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
 
   @override
   dispose() {
-    subscription.cancel();
+    profile.removeListener(updateProgress);
     selectionSub.cancel();
     super.dispose();
   }
@@ -122,7 +110,7 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
     return Stack(children: [
       Container(
           decoration: BoxDecoration(
-            border: Border.all(color: DestinyData.getTierColor(definition.inventory.tierType), width: 1),
+            border: Border.all(color: definition.inventory.tierType?.getColor(context), width: 1),
             color: Theme.of(context).colorScheme.surface,
           ),
           child: Column(children: <Widget>[buildMainInfo(context, constraints), buildObjectives(context, definition)])),

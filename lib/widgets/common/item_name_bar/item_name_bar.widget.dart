@@ -5,7 +5,7 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/littlelight/item_notes.consumer.dart';
-import 'package:little_light/utils/destiny_data.dart';
+import 'package:little_light/shared/utils/extensions/tier_type_data.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateless_item.widget.dart';
 
 class ItemNameBarWidget extends BaseDestinyStatelessItemWidget with ItemNotesConsumer {
@@ -33,18 +33,18 @@ class ItemNameBarWidget extends BaseDestinyStatelessItemWidget with ItemNotesCon
       padding: EdgeInsets.only(left: padding.left, right: padding.right),
       height: fontSize + padding.top * 2,
       alignment: Alignment.centerLeft,
-      decoration: nameBarBoxDecoration(),
+      decoration: nameBarBoxDecoration(context),
       child: Material(color: Colors.transparent, child: nameBarContent(context)),
     );
   }
 
-  BoxDecoration nameBarBoxDecoration() {
+  BoxDecoration nameBarBoxDecoration(BuildContext context) {
     ItemState state = item?.state ?? ItemState.None;
     if (!state.contains(ItemState.Masterwork)) {
-      return BoxDecoration(color: DestinyData.getTierColor(definition?.inventory?.tierType));
+      return BoxDecoration(color: definition?.inventory?.tierType?.getColor(context));
     }
     return BoxDecoration(
-        color: DestinyData.getTierColor(definition?.inventory?.tierType),
+        color: definition?.inventory?.tierType?.getColor(context),
         image: DecorationImage(
             repeat: ImageRepeat.repeatX, alignment: Alignment.topCenter, image: getMasterWorkTopOverlay()));
   }
@@ -80,7 +80,7 @@ class ItemNameBarWidget extends BaseDestinyStatelessItemWidget with ItemNotesCon
         softWrap: multiline,
         style: TextStyle(
           fontSize: fontSize,
-          color: DestinyData.getTierTextColor(definition?.inventory?.tierType),
+          color: definition?.inventory?.tierType?.getTextColor(context),
           fontWeight: fontWeight,
         ));
   }

@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/character_sort_parameter.dart';
 import 'package:little_light/models/item_notes_tag.dart';
@@ -9,13 +10,11 @@ import 'package:little_light/models/item_sort_parameter.dart';
 import 'package:little_light/models/wishlist_index.dart';
 import 'package:little_light/modules/settings/pages/add_wishlist/add_wishlist.page_route.dart';
 import 'package:little_light/modules/settings/widgets/wishlist_file_item.dart';
-
 import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/platform_capabilities.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/dialogs/busy.dialog.dart';
 import 'package:little_light/widgets/dialogs/tags/select_tag.dialog.dart';
 import 'package:little_light/widgets/flutter/center_icon_workaround.dart';
@@ -52,7 +51,7 @@ class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, 
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: TranslatedTextWidget("Settings"),
+          title: Text("Settings".translate(context)),
         ),
         body: SingleChildScrollView(
             padding: EdgeInsets.all(8),
@@ -64,41 +63,35 @@ class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, 
               buildAutoOpenSearch(context),
               Container(height: 16),
               HeaderWidget(
-                  child: TranslatedTextWidget(
-                "Default free slots",
-                uppercase: true,
+                  child: Text(
+                "Default free slots".translate(context).toUpperCase(),
               )),
               buildDefaultFreeSlots(context),
               HeaderWidget(
-                  child: TranslatedTextWidget(
-                "Wishlists",
-                uppercase: true,
+                  child: Text(
+                "Wishlists".translate(context).toUpperCase(),
               )),
               buildWishlists(context),
               Container(height: 16),
               HeaderWidget(
-                  child: TranslatedTextWidget(
-                "Order characters by",
-                uppercase: true,
+                  child: Text(
+                "Order characters by".translate(context).toUpperCase(),
               )),
               buildCharacterOrdering(context),
               Container(height: 32),
               HeaderWidget(
-                  child: TranslatedTextWidget(
-                "Order items by",
-                uppercase: true,
+                  child: Text(
+                "Order items by".translate(context).toUpperCase(),
               )),
               buildItemOrderList(context),
               HeaderWidget(
-                  child: TranslatedTextWidget(
-                "Order pursuits by",
-                uppercase: true,
+                  child: Text(
+                "Order pursuits by".translate(context).toUpperCase(),
               )),
               buildPursuitOrderList(context),
               HeaderWidget(
-                  child: TranslatedTextWidget(
-                "Priority Tags",
-                uppercase: true,
+                  child: Text(
+                "Priority Tags".translate(context).toUpperCase(),
               )),
               buildPriorityTags(context),
               Container(height: 32),
@@ -110,10 +103,10 @@ class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, 
       return Container();
     }
     return ListTile(
-        title: TranslatedTextWidget(
-          "Keep Awake",
+        title: Text(
+          "Keep Awake".translate(context).toUpperCase(),
         ),
-        subtitle: TranslatedTextWidget("Keep device awake while the app is open"),
+        subtitle: Text("Keep device awake while the app is open".translate(context)),
         trailing: Switch(
           value: userSettings.keepAwake,
           onChanged: (val) {
@@ -126,13 +119,15 @@ class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, 
 
   buildTapToSelect(BuildContext context) {
     return ListTile(
-        title: TranslatedTextWidget(
-          "Tap to select",
+        title: Text(
+          "Tap to select".translate(context).toUpperCase(),
         ),
         subtitle: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          TranslatedTextWidget(
-              "Tapping on items will select them for quick transfer and equip instead of opening details"),
-          TranslatedTextWidget("Double tap for details"),
+          Text(
+            "Tapping on items will select them for quick transfer and equip instead of opening details"
+                .translate(context),
+          ),
+          Text("Double tap for details".translate(context)),
         ]),
         trailing: Switch(
           value: userSettings.tapToSelect,
@@ -145,10 +140,10 @@ class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, 
 
   buildAutoOpenSearch(BuildContext context) {
     return ListTile(
-        title: TranslatedTextWidget(
-          "Auto open Keyboard",
+        title: Text(
+          "Auto open Keyboard".translate(context),
         ),
-        subtitle: TranslatedTextWidget("Open keyboard automatically in quick search"),
+        subtitle: Text("Open keyboard automatically in quick search".translate(context)),
         trailing: Switch(
           value: userSettings.autoOpenKeyboard,
           onChanged: (val) {
@@ -167,12 +162,14 @@ class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, 
             buildWishlistsList(context),
             Container(
                 padding: EdgeInsets.all(8),
-                child: TranslatedTextWidget(
-                    "You can add community curated wishlists (or your custom ones) on Little Light to check your rolls.")),
+                child: Text(
+                  "You can add community curated wishlists (or your custom ones) on Little Light to check your rolls."
+                      .translate(context),
+                )),
             Row(children: [
               Expanded(child: Container()),
               ElevatedButton(
-                child: TranslatedTextWidget("Add Wishlist", textAlign: TextAlign.center),
+                child: Text("Add Wishlist".translate(context), textAlign: TextAlign.center),
                 onPressed: () async {
                   await Navigator.push(context, AddWishlistPageRoute());
                   wishlists = await wishlistsService.getWishlists();
@@ -186,7 +183,7 @@ class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, 
 
   Future<T> showWishlistsProcessing<T>(BuildContext context, Future<T> future) {
     return Navigator.of(context)
-        .push(BusyDialogRoute(context, label: TranslatedTextWidget("Processing wishlists"), awaitFuture: future));
+        .push(BusyDialogRoute(context, label: Text("Processing wishlists".translate(context)), awaitFuture: future));
   }
 
   buildWishlistsList(BuildContext context) {
@@ -205,7 +202,7 @@ class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, 
                           await Navigator.push(context, BusyDialogRoute(context, awaitFuture: awaitable()));
                           setState(() {});
                         },
-                        child: TranslatedTextWidget("Remove"),
+                        child: Text("Remove".translate(context)),
                         style: ElevatedButton.styleFrom(
                             primary: LittleLightTheme.of(context).errorLayers, visualDensity: VisualDensity.compact),
                       )
@@ -231,8 +228,8 @@ class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, 
           children: <Widget>[
             buildCharacterOrderItem(
                 context,
-                TranslatedTextWidget(
-                  "Last played",
+                Text(
+                  "Last played".translate(context),
                   textAlign: TextAlign.center,
                 ),
                 CharacterSortParameterType.LastPlayed),
@@ -241,8 +238,8 @@ class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, 
             ),
             buildCharacterOrderItem(
                 context,
-                TranslatedTextWidget(
-                  "First created",
+                Text(
+                  "First created".translate(context),
                   textAlign: TextAlign.center,
                 ),
                 CharacterSortParameterType.FirstCreated),
@@ -251,8 +248,8 @@ class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, 
             ),
             buildCharacterOrderItem(
                 context,
-                TranslatedTextWidget(
-                  "Last created",
+                Text(
+                  "Last created".translate(context),
                   textAlign: TextAlign.center,
                 ),
                 CharacterSortParameterType.LastCreated),
@@ -427,71 +424,75 @@ class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, 
   Widget buildSortLabel(ItemSortParameter parameter) {
     switch (parameter.type) {
       case ItemSortParameterType.PowerLevel:
-        return TranslatedTextWidget(
-          "Power Level",
-          uppercase: true,
+        return Text(
+          "Power Level".translate(context).toUpperCase(),
         );
 
       case ItemSortParameterType.TierType:
-        return TranslatedTextWidget(
-          "Rarity",
-          uppercase: true,
+        return Text(
+          "Rarity".translate(context).toUpperCase(),
         );
 
       case ItemSortParameterType.ExpirationDate:
-        return TranslatedTextWidget(
-          "Expiration Date",
-          uppercase: true,
+        return Text(
+          "Expiration Date".translate(context).toUpperCase(),
         );
       case ItemSortParameterType.Name:
-        return TranslatedTextWidget(
-          "Name",
-          uppercase: true,
+        return Text(
+          "Name".translate(context).toUpperCase(),
         );
       case ItemSortParameterType.SubType:
-        return TranslatedTextWidget(
-          "Type",
-          uppercase: true,
+        return Text(
+          "Type".translate(context).toUpperCase(),
         );
       case ItemSortParameterType.ClassType:
-        return TranslatedTextWidget(
-          "Class Type",
-          uppercase: true,
+        return Text(
+          "Class Type".translate(context).toUpperCase(),
         );
       case ItemSortParameterType.AmmoType:
-        return TranslatedTextWidget(
-          "Ammo Type",
-          uppercase: true,
+        return Text(
+          "Ammo Type".translate(context).toUpperCase(),
         );
       case ItemSortParameterType.BucketHash:
-        return TranslatedTextWidget(
-          "Slot",
-          uppercase: true,
+        return Text(
+          "Slot".translate(context).toUpperCase(),
         );
       case ItemSortParameterType.Quantity:
-        return TranslatedTextWidget(
-          "Quantity",
-          uppercase: true,
+        return Text(
+          "Quantity".translate(context).toUpperCase(),
         );
 
       case ItemSortParameterType.QuestGroup:
-        return TranslatedTextWidget("Group", uppercase: true);
+        return Text(
+          "Group".translate(context).toUpperCase(),
+        );
 
       case ItemSortParameterType.ItemOwner:
-        return TranslatedTextWidget("Item Holder", uppercase: true);
+        return Text(
+          "Item Holder".translate(context).toUpperCase(),
+        );
 
       case ItemSortParameterType.StatTotal:
-        return TranslatedTextWidget("Stats Total", uppercase: true);
+        return Text(
+          "Stats Total".translate(context).toUpperCase(),
+        );
 
       case ItemSortParameterType.MasterworkStatus:
-        return TranslatedTextWidget("Masterwork Status", uppercase: true);
+        return Text(
+          "Masterwork Status".translate(context).toUpperCase(),
+        );
         break;
 
       case ItemSortParameterType.Stat:
+        return Text(
+          "Stat".translate(context).toUpperCase(),
+        );
         break;
 
       case ItemSortParameterType.DamageType:
-        return TranslatedTextWidget("Damage Type", uppercase: true);
+        return Text(
+          "Damage Type".translate(context).toUpperCase(),
+        );
     }
     return Text(
       parameter.type.toString(),

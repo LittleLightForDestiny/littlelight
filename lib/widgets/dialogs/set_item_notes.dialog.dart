@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/dialogs/littlelight.base.dialog.dart';
 
@@ -45,13 +46,13 @@ class SetItemNotesDialog extends LittleLightBaseDialog {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         TextButton(
-          child: TranslatedTextWidget("Cancel", uppercase: true),
+          child: Text("Cancel".translate(context).toUpperCase()),
           onPressed: () async {
             Navigator.of(context).pop(null);
           },
         ),
         TextButton(
-          child: TranslatedTextWidget("Save", uppercase: true),
+          child: Text("Save".translate(context).toUpperCase()),
           onPressed: () async {
             Navigator.of(context).pop(_controller.value.text);
           },

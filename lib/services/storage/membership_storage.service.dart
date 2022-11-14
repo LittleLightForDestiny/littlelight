@@ -105,7 +105,8 @@ class MembershipStorage extends StorageBase<MembershipStorageKeys> {
   Future<DestinyProfileResponse?> getCachedProfile() async {
     try {
       final json = await getJson(MembershipStorageKeys.cachedProfile);
-      return DestinyProfileResponse.fromJson(json);
+      final response = await DestinyProfileResponse.asyncFromJson(json);
+      return response;
     } catch (e) {
       print("can't parse tracked Objectives");
       print(e);
@@ -114,7 +115,8 @@ class MembershipStorage extends StorageBase<MembershipStorageKeys> {
   }
 
   Future<void> saveCachedProfile(DestinyProfileResponse profile) async {
-    await setJson(MembershipStorageKeys.cachedProfile, profile.toJson());
+    final json = await profile.asyncToJson();
+    await setJson(MembershipStorageKeys.cachedProfile, json);
   }
 
   Future<Map<String, DestinyVendorsResponse>?> getCachedVendors() async {

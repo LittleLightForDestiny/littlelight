@@ -4,7 +4,7 @@ import 'package:bungie_api/models/destiny_milestone.dart';
 import 'package:bungie_api/models/destiny_milestone_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/widgets/item_list/character_info.widget.dart';
 import 'package:little_light/widgets/progress_tabs/milestone_item.widget.dart';
 import 'package:little_light/widgets/progress_tabs/milestone_raid_item.widget.dart';

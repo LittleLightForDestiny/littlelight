@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
@@ -51,7 +51,7 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget>
     }
     if (this.progress != null) return;
 
-    var characters = profile.getCharacters(userSettings.characterOrdering);
+    var characters = profile.characters;
     if (characters == null || characters.length == 0) return;
 
     DestinyPresentationNodeComponent? highest;
@@ -170,14 +170,7 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget>
     return Container(
         padding: EdgeInsets.only(top: 2, bottom: 2, right: 8),
         child: Row(children: [
-          classType != null
-              ? Icon(
-                  DestinyData.getClassIcon(
-                    classType,
-                  ),
-                  size: 16,
-                  color: color)
-              : Container(),
+          classType != null ? Icon(classType.icon, size: 16, color: color) : Container(),
           Container(width: 4),
           (completionValue ?? 0) > 0
               ? Text(

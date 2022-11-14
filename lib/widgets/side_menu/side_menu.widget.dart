@@ -6,21 +6,22 @@ import 'package:bungie_api/models/user_membership_data.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/modules/collections/pages/home/collections_root.page.dart';
+import 'package:little_light/modules/equipment/pages/equipment/equipment.page.dart';
 import 'package:little_light/modules/loadouts/pages/home/loadouts_home.page.dart';
+import 'package:little_light/modules/settings/pages/about/about.screen.dart';
 import 'package:little_light/pages/dev_tools.screen.dart';
 import 'package:little_light/pages/duplicated_items.screen.dart';
 import 'package:little_light/pages/equipment/equipment.screen.dart';
 import 'package:little_light/pages/languages/languages.page_route.dart';
 import 'package:little_light/pages/objectives/objectives.screen.dart';
 import 'package:little_light/pages/progress/progress.screen.dart';
-import 'package:little_light/modules/settings/pages/about/about.screen.dart';
 import 'package:little_light/pages/triumphs/triumphs_root.page.dart';
 import 'package:little_light/pages/vendors/vendors.screen.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/utils/platform_data.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/search/search.controller.dart';
 import 'package:little_light/widgets/side_menu/profile_info.widget.dart';
 import 'package:little_light/widgets/side_menu/side_menu_settings.widget.dart';
@@ -67,36 +68,39 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer {
             padding: EdgeInsets.all(0),
             children: <Widget>[
               profileInfo(context),
-              menuItem(context, TranslatedTextWidget("Equipment"), onTap: () {
+              menuItem(context, Text("Equipment".translate(context)), onTap: () {
                 open(context, EquipmentScreen());
               }),
-              menuItem(context, TranslatedTextWidget("Progress"), onTap: () {
+              menuItem(context, Text("NewEquipment".translate(context)), onTap: () {
+                open(context, EquipmentPage());
+              }),
+              menuItem(context, Text("Progress".translate(context)), onTap: () {
                 open(context, ProgressScreen());
               }),
-              menuItem(context, TranslatedTextWidget("Objectives"), onTap: () {
+              menuItem(context, Text("Objectives".translate(context)), onTap: () {
                 open(context, ObjectivesScreen());
               }),
-              menuItem(context, TranslatedTextWidget("Loadouts"), onTap: () {
+              menuItem(context, Text("Loadouts".translate(context)), onTap: () {
                 open(context, LoadoutsHomePage());
               }),
-              menuItem(context, TranslatedTextWidget("Vendors"), onTap: () {
+              menuItem(context, Text("Vendors".translate(context)), onTap: () {
                 open(context, VendorsScreen());
               }),
-              menuItem(context, TranslatedTextWidget("Collections"), onTap: () {
+              menuItem(context, Text("Collections".translate(context)), onTap: () {
                 open(context, CollectionsRootPage());
               }),
-              menuItem(context, TranslatedTextWidget("Triumphs"), onTap: () {
+              menuItem(context, Text("Triumphs".translate(context)), onTap: () {
                 open(context, TriumphsRootPage());
               }),
-              menuItem(context, TranslatedTextWidget("Duplicated Items"), onTap: () {
+              menuItem(context, Text("Duplicated Items".translate(context)), onTap: () {
                 open(context,
                     DuplicatedItemsScreen(searchController: SearchController.withDuplicatedItemsFilters(context)));
               }),
-              menuItem(context, TranslatedTextWidget("About"), onTap: () {
+              menuItem(context, Text("About".translate(context)), onTap: () {
                 open(context, AboutScreen());
               }),
               kDebugMode
-                  ? menuItem(context, TranslatedTextWidget("Dev Tools"), onTap: () {
+                  ? menuItem(context, Text("Dev Tools".translate(context)), onTap: () {
                       open(context, DevToolsScreen());
                     })
                   : Container(),

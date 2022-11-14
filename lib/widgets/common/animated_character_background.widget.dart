@@ -1,16 +1,13 @@
 // @dart=2.9
 
-import 'dart:async';
-
 import 'package:bungie_api/enums/damage_type.dart';
 import 'package:bungie_api/enums/destiny_class.dart';
 import 'package:bungie_api/models/destiny_color.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/services/notification/notification.package.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
 
 class AnimatedCharacterBackgroundWidget extends StatefulWidget {
   final TabController tabController;
@@ -31,11 +28,10 @@ class _CharacterInfo {
 }
 
 class _AnimatedCharacterBackgroundWidgetState extends State<AnimatedCharacterBackgroundWidget>
-    with SingleTickerProviderStateMixin, ProfileConsumer, ManifestConsumer, NotificationConsumer {
+    with SingleTickerProviderStateMixin, ProfileConsumer, ManifestConsumer {
   List<_CharacterInfo> characters;
   AnimationController _controller;
   ColorTween tween;
-  StreamSubscription<NotificationEvent> subscription;
 
   @override
   void initState() {
@@ -48,16 +44,11 @@ class _AnimatedCharacterBackgroundWidgetState extends State<AnimatedCharacterBac
       vsync: this,
     );
     _controller.forward();
-    subscription = notifications.listen((event) {
-      if (!mounted) return;
-      if (event.type == NotificationType.receivedUpdate || event.type == NotificationType.localUpdate) {
-        updateCharacters();
-      }
-    });
+    profile.addListener(updateCharacters);
   }
 
   updateCharacters() async {
-    var _characters = profile.getCharacters();
+    var _characters = profile.characters;
     if (_characters == null) return;
     characters = [];
     for (var c in _characters) {
@@ -66,7 +57,10 @@ class _AnimatedCharacterBackgroundWidgetState extends State<AnimatedCharacterBac
       var subclassDef = await manifest.getDefinition<DestinyInventoryItemDefinition>(subclass.itemHash);
 
       characters.add(_CharacterInfo(
-          emblemColor: c.emblemColor, characterClass: c.classType, damageType: subclassDef?.talentGrid?.hudDamageType));
+        emblemColor: c.character.emblemColor,
+        characterClass: c.character.classType,
+        damageType: subclassDef?.talentGrid?.hudDamageType,
+      ));
     }
     characterChangedListener();
   }
@@ -74,7 +68,7 @@ class _AnimatedCharacterBackgroundWidgetState extends State<AnimatedCharacterBac
   @override
   dispose() {
     widget.tabController.removeListener(characterChangedListener);
-    subscription.cancel();
+    profile.removeListener(updateCharacters);
     _controller.dispose();
     super.dispose();
   }

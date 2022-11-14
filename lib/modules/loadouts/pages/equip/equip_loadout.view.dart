@@ -2,11 +2,12 @@ import 'dart:math';
 
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
 import 'package:little_light/modules/loadouts/pages/equip/equip_loadout.bloc.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/utils/color_utils.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
@@ -14,7 +15,6 @@ import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/transfer_destinations/transfer_destinations.widget.dart';
 import 'package:provider/provider.dart';
 
@@ -95,9 +95,8 @@ class EquipLoadoutView extends StatelessWidget with ProfileConsumer {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
             HeaderWidget(
-              child: TranslatedTextWidget(
-                "Items to Equip",
-                uppercase: true,
+              child: Text(
+                "Items to Equip".translate(context).toUpperCase(),
               ),
             ),
             Container(
@@ -120,9 +119,8 @@ class EquipLoadoutView extends StatelessWidget with ProfileConsumer {
     if (unequippable == null || unequippable.length == 0) return Container();
     return Column(children: [
       HeaderWidget(
-        child: TranslatedTextWidget(
-          "Items to Transfer",
-          uppercase: true,
+        child: Text(
+          "Items to Transfer".translate(context).toUpperCase(),
         ),
       ),
       Container(
@@ -208,9 +206,20 @@ class EquipLoadoutView extends StatelessWidget with ProfileConsumer {
         child: Container(
           constraints: BoxConstraints(maxWidth: 600),
           child: TransferDestinationsWidget(
-            equipCharacters: equip,
-            transferCharacters: transfer,
-          ),
+              equipCharacters: equip,
+              transferCharacters: transfer,
+              onTransferAction: (action, character) {
+                switch (action) {
+                  case TransferActionType.Transfer:
+                    _bloc(context).transferLoadout(character);
+                    return;
+                  case TransferActionType.Equip:
+                    _bloc(context).equipLoadout(character);
+                    return;
+                  case TransferActionType.Unequip:
+                    return;
+                }
+              }),
         ),
       ),
     );

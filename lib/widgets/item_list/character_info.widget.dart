@@ -1,6 +1,5 @@
 // @dart=2.9
 
-import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:bubble/bubble.dart';
@@ -14,12 +13,12 @@ import 'package:bungie_api/models/destiny_race_definition.dart';
 import 'package:bungie_api/models/destiny_sandbox_perk_definition.dart';
 import 'package:bungie_api/models/destiny_stat_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/services/notification/notification.package.dart';
 import 'package:little_light/services/profile/destiny_settings.consumer.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
@@ -40,11 +39,10 @@ class CharacterInfoWidget extends StatefulWidget {
 }
 
 class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T>
-    with UserSettingsConsumer, ProfileConsumer, ManifestConsumer, NotificationConsumer, DestinySettingsConsumer {
+    with UserSettingsConsumer, ProfileConsumer, ManifestConsumer, DestinySettingsConsumer {
   DestinyClassDefinition classDef;
   DestinyRaceDefinition raceDef;
   DestinyCharacterComponent character;
-  StreamSubscription<NotificationEvent> subscription;
 
   DestinyProgressionDefinition legendProgressionDefinition;
 
@@ -54,17 +52,18 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T>
 
     character = profile.getCharacter(widget.characterId);
     loadDefinitions();
-    subscription = notifications.listen((event) {
-      if (event.type == NotificationType.receivedUpdate && mounted) {
-        character = profile.getCharacter(widget.characterId);
-        setState(() {});
-      }
-    });
+    profile.addListener(updateCharacter);
+  }
+
+  void updateCharacter() {
+    if (!mounted) return;
+    character = profile.getCharacter(widget.characterId);
+    setState(() {});
   }
 
   @override
   dispose() {
-    subscription.cancel();
+    profile.removeListener(updateCharacter);
     super.dispose();
   }
 
@@ -168,7 +167,7 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T>
               margin: EdgeInsets.only(top: 60),
               child: Bubble(
                 color: LittleLightTheme.of(context).primaryLayers,
-                child: TranslatedTextWidget("Hey, tap me!"),
+                child: Text("Hey, tap me!".translate(context)),
               )))
     ]);
   }

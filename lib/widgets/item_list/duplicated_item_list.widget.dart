@@ -4,10 +4,9 @@ import 'dart:async';
 
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/pages/item_details/item_details.page_route.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/services/notification/notification.consumer.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/selection/selection.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/item_with_owner.dart';
@@ -53,7 +52,7 @@ class DuplicatedItemListWidget extends StatefulWidget {
 }
 
 class DuplicatedItemListWidgetState extends State<DuplicatedItemListWidget>
-    with AutomaticKeepAliveClientMixin, NotificationConsumer, SelectionConsumer, ManifestConsumer {
+    with AutomaticKeepAliveClientMixin, SelectionConsumer, ManifestConsumer {
   List<_DuplicatedItemsBucket> duplicatedItemBuckets;
 
   @override

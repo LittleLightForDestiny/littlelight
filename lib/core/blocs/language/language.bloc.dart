@@ -82,7 +82,7 @@ class LanguageBloc extends ChangeNotifier with StorageConsumer, ManifestConsumer
     if (savedTranslations != null) {
       notifyListeners();
     }
-    final webTranslations = await _loadTranslationMapFromSavedData(code);
+    final webTranslations = await _updateTranslationsFromWeb(code);
     if (webTranslations != null) {
       notifyListeners();
     }

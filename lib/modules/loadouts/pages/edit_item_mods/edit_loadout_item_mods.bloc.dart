@@ -2,7 +2,7 @@ import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/modules/loadouts/pages/edit_item_mods/edit_loadout_item_mods.page_route.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/shared/blocs/socket_controller/base_socket_controller.bloc.dart';
 import 'package:provider/provider.dart';
 
@@ -44,7 +44,7 @@ class EditLoadoutItemModsBloc extends BaseSocketController with ManifestConsumer
     this.reusablePlugs = profile.getItemReusablePlugs(itemInstanceID);
 
     if (plugHashes != null) {
-      this._selectedPlugs = plugHashes;
+      this._selectedPlugs = Map.from(plugHashes);
     }
 
     final itemHash = item?.itemHash;
@@ -120,9 +120,19 @@ class EditLoadoutItemModsBloc extends BaseSocketController with ManifestConsumer
 
   bool isSocketSelected(int socketIndex) => _selectedSocket == socketIndex;
 
-  bool isPlugSelectedForSocket(int plugHash, int socketIndex) => _selectedPlugs[socketIndex] == plugHash;
+  bool isPlugSelectedForSocket(int? plugHash, int socketIndex) => _selectedPlugs[socketIndex] == plugHash;
+  bool isPlugEquippedForSocket(int? plugHash, int socketIndex) => socketEquippedPlugHash(socketIndex) == plugHash;
 
-  List<int>? selectedSocketPlugs() => _availablePlugHashesForSocketIndexes[_selectedSocket];
+  List<int?>? selectedSocketPlugs() {
+    final selectedSocket = _selectedSocket;
+    if (selectedSocket == null) return null;
+    List<int?>? plugs = _availablePlugHashesForSocketIndexes[selectedSocket];
+    if (plugs == null) return null;
+    final equipped = socketEquippedPlugHash(selectedSocket);
+    plugs = plugs.where((p) => p != equipped).toList();
+    plugs = [null, equipped] + plugs;
+    return plugs;
+  }
 
   int? get selectedSocketSelectedPlugHash {
     final socket = _selectedSocket;

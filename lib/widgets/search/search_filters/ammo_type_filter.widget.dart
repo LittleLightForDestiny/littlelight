@@ -2,6 +2,7 @@
 
 import 'package:bungie_api/enums/destiny_ammunition_type.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/item_filters/ammo_type_filter.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -40,7 +41,9 @@ class _AmmoTypeFilterWidgetState
           child: Icon(DestinyData.getAmmoTypeIcon(value), size: 32, color: DestinyData.getAmmoTypeColor(value)));
     }
 
-    return TranslatedTextWidget("None", uppercase: true);
+    return Text(
+      "None".translate(context).toUpperCase(),
+    );
   }
 
   @override

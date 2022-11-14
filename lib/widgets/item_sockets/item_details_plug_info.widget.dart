@@ -7,7 +7,7 @@ import 'package:bungie_api/models/destiny_material_requirement_set_definition.da
 import 'package:bungie_api/models/destiny_sandbox_perk_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateless_item.widget.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';

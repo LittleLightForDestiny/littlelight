@@ -1,18 +1,16 @@
 // @dart=2.9
 
-import 'dart:async';
-
-import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile_component_groups.dart';
 import 'package:little_light/pages/item_search/search.screen.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:little_light/services/bungie_api/enums/destiny_item_category.enum.dart';
-import 'package:little_light/services/notification/notification.package.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
-import 'package:little_light/services/profile/profile_component_groups.dart';
 import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
+import 'package:little_light/shared/widgets/notifications/notifications.widget.dart';
 import 'package:little_light/utils/item_filters/pseudo_item_type_filter.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/animated_character_background.widget.dart';
@@ -45,11 +43,8 @@ class EquipmentScreenState extends State<EquipmentScreen>
         AutomaticKeepAliveClientMixin,
         UserSettingsConsumer,
         AnalyticsConsumer,
-        ProfileConsumer,
-        NotificationConsumer {
+        ProfileConsumer {
   int currentGroup = DestinyItemCategory.Weapon;
-
-  StreamSubscription<NotificationEvent> subscription;
 
   TabController _charTabController;
   TabController get charTabController {
@@ -80,17 +75,17 @@ class EquipmentScreenState extends State<EquipmentScreen>
     userSettings.startingPage = _page;
     analytics.registerPageOpen(_page);
 
-    subscription = notifications.listen((event) {
-      if (!mounted) return;
-      if (event.type == NotificationType.receivedUpdate) {
-        setState(() {});
-      }
-    });
+    profile.addListener(update);
+  }
+
+  void update() {
+    if (!mounted) return;
+    setState(() {});
   }
 
   @override
   void dispose() {
-    subscription.cancel();
+    profile.removeListener(update);
     super.dispose();
   }
 
@@ -155,8 +150,36 @@ class EquipmentScreenState extends State<EquipmentScreen>
       child: Stack(
         children: <Widget>[
           buildBackground(context),
-          buildItemTypeTabBarView(context),
-          Positioned(top: 0, left: 0, right: 0, height: topOffset + 16, child: buildCharacterHeaderTabView(context)),
+          Column(
+            children: [
+              SizedBox(height: topOffset),
+              Expanded(
+                child: Stack(
+                  children: [
+                    buildItemTypeTabBarView(context),
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: Container(
+                        padding: EdgeInsets.all(8),
+                        child: NotificationsWidget(),
+                      ),
+                    )
+                  ],
+                  fit: StackFit.expand,
+                ),
+              ),
+              ItemTypeMenuWidget(widget.itemTypes, controller: typeTabController),
+              SelectedItemsWidget(),
+            ],
+          ),
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            height: topOffset + 16,
+            child: buildCharacterHeaderTabView(context),
+          ),
           Positioned(
             top: screenPadding.top,
             width: kToolbarHeight,
@@ -173,9 +196,7 @@ class EquipmentScreenState extends State<EquipmentScreen>
               top: MediaQuery.of(context).padding.top + kToolbarHeight - 52,
               right: 8,
               child: buildCharacterMenu(context)),
-          ItemTypeMenuWidget(widget.itemTypes, controller: typeTabController),
-          InventoryNotificationWidget(key: Key('inventory_notification_widget')),
-          Positioned(bottom: screenPadding.bottom, left: 0, right: 0, child: SelectedItemsWidget()),
+          // NotificationsWidget(),
         ],
       ),
     );
@@ -185,7 +206,7 @@ class EquipmentScreenState extends State<EquipmentScreen>
     final headers = characters
             ?.map((character) => TabHeaderWidget(
                   character,
-                  key: Key("${character?.emblemHash}_${character?.characterId}"),
+                  key: Key("${character.character?.emblemHash}_${character?.characterId}"),
                 ))
             ?.toList() ??
         <Widget>[];
@@ -202,7 +223,7 @@ class EquipmentScreenState extends State<EquipmentScreen>
               Positioned.fill(
                   child: LargeScreenEquipmentListWidget(
                 key: Key("character_tab${character.characterId}"),
-                character: character,
+                character: character.character,
               )),
               Positioned(
                   top: 0,
@@ -211,7 +232,7 @@ class EquipmentScreenState extends State<EquipmentScreen>
                   height: topOffset + 16,
                   child: TabHeaderWidget(
                     character,
-                    key: Key("${character.emblemHash}"),
+                    key: Key("${character.character.emblemHash}"),
                   ))
             ]))
         ?.toList();
@@ -249,14 +270,19 @@ class EquipmentScreenState extends State<EquipmentScreen>
 
   List<Widget> buildCharacterTabs(int group) {
     List<Widget> characterTabs = characters?.map((character) {
-      return CharacterTabWidget(character, group, key: Key("character_tab_${character.characterId}"));
+      return CharacterTabWidget(
+        character.character,
+        group,
+        key: Key("character_tab_${character.characterId}"),
+        padding: EdgeInsets.all(4),
+      );
     })?.toList();
     characterTabs?.add(VaultTabWidget(group));
     return characterTabs ?? [];
   }
 
-  List<DestinyCharacterComponent> get characters {
-    return profile.getCharacters(userSettings.characterOrdering);
+  List<DestinyCharacterInfo> get characters {
+    return profile.characters;
   }
 
   buildCharacterMenu(BuildContext context) {

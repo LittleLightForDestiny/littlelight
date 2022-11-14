@@ -7,7 +7,7 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/utils/destiny_data.dart';
+import 'package:little_light/shared/utils/extensions/tier_type_data.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateless_item.widget.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
@@ -81,7 +81,7 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
       expandRatio = 0;
     }
     return Container(
-        color: DestinyData.getTierColor(definition?.inventory?.tierType),
+        color: definition?.inventory?.tierType?.getColor(context),
         child: Stack(
           // overflow: Overflow.visible,
           fit: StackFit.expand,
@@ -144,7 +144,7 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
         width: kToolbarHeight,
         height: kToolbarHeight,
         child: BackButton(
-            color: Color.lerp(DestinyData.getTierTextColor(definition?.inventory?.tierType), Colors.grey.shade300,
+            color: Color.lerp(definition?.inventory?.tierType?.getTextColor(context), Colors.grey.shade300,
                 expandRatio.clamp(0, 1))));
   }
 
@@ -180,7 +180,7 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
               onPressed: () async {},
               icon: Icon(Icons.share,
                   color: Color.lerp(
-                    DestinyData.getTierTextColor(definition?.inventory?.tierType),
+                    definition?.inventory?.tierType?.getTextColor(context),
                     Colors.grey.shade300,
                     expandRatio,
                   )),

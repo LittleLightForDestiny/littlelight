@@ -3,7 +3,7 @@ import 'package:little_light/models/loadout.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
 import 'package:little_light/services/littlelight/littlelight_api.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/services/storage/storage.consumer.dart';
 
 class LoadoutsBloc extends ChangeNotifier with StorageConsumer, ProfileConsumer, ManifestConsumer {

@@ -1,20 +1,15 @@
 // @dart=2.9
 
-import 'package:bungie_api/enums/damage_type.dart';
-import 'package:bungie_api/models/destiny_item_talent_grid_component.dart';
-import 'package:bungie_api/models/destiny_talent_grid_definition.dart';
-import 'package:bungie_api/models/destiny_talent_node_category.dart';
+import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/utils/destiny_data.dart';
-import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/item_icon/subclass_icon.widget.dart';
+import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/inventory_item.mixin.dart';
-import 'package:little_light/widgets/item_list/items/subclass/subclass_image.widget.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:tinycolor2/tinycolor2.dart';
 
 mixin SubclassPropertiesMixin on InventoryItemMixin {
-  DestinyItemTalentGridComponent get talentGrid;
-
   @override
   Widget positionedIcon(BuildContext context) {
     return Positioned(
@@ -46,16 +41,6 @@ mixin SubclassPropertiesMixin on InventoryItemMixin {
             children: [
               Text(definition.displayProperties.name.toUpperCase(),
                   style: TextStyle(fontSize: titleFontSize, fontWeight: FontWeight.bold)),
-              talentGrid != null
-                  ? DefinitionProviderWidget<DestinyTalentGridDefinition>(talentGrid.talentGridHash, (def) {
-                      var text = extractTalentGridName(def);
-                      if (text.length > 0) {
-                        return Text(text,
-                            style: TextStyle(fontStyle: FontStyle.italic, fontWeight: FontWeight.w300, fontSize: 12));
-                      }
-                      return Container();
-                    })
-                  : Container()
             ],
           ),
         ),
@@ -63,54 +48,47 @@ mixin SubclassPropertiesMixin on InventoryItemMixin {
     );
   }
 
-  DestinyTalentNodeCategory extractTalentGridNodeCategory(DestinyTalentGridDefinition talentGridDef) {
-    Iterable<int> activatedNodes = talentGrid?.nodes?.where((node) => node.isActivated)?.map((node) => node.nodeIndex);
-    Iterable<DestinyTalentNodeCategory> selectedSkills = talentGridDef?.nodeCategories?.where((category) {
-      var overlapping = category.nodeHashes.where((nodeHash) => activatedNodes?.contains(nodeHash) ?? false);
-      return overlapping.length > 0;
-    })?.toList();
-    DestinyTalentNodeCategory subclassPath =
-        selectedSkills?.firstWhere((nodeDef) => nodeDef.isLoreDriven, orElse: () => null);
-    return subclassPath;
-  }
-
-  Widget buildTalentGridImage() {
-    return SubClassImageWidget(item, definition, instanceInfo);
-  }
-
-  String extractTalentGridName(DestinyTalentGridDefinition talentGridDefinition) {
-    DestinyTalentNodeCategory cat = extractTalentGridNodeCategory(talentGridDefinition);
-    return cat?.displayProperties?.name ?? "";
-  }
-
   @override
   Widget categoryName(BuildContext context) {
     return null;
   }
 
-  startBgColor(BuildContext context) {
+  Color startBgColor(BuildContext context) {
     var damageTypeColor = definition.talentGrid.hudDamageType?.getColorLayer(context)?.layer0;
     return TinyColor(damageTypeColor).lighten(15).saturate(50).color;
   }
 
-  endBgColor(BuildContext context) {
+  Color endBgColor(BuildContext context) {
     final damageTypeColor = definition.talentGrid.hudDamageType?.getColorLayer(context)?.layer0;
     return TinyColor(damageTypeColor).darken(25).desaturate(30).color;
   }
 
   @override
   background(BuildContext context) {
-    var damageTypeColor = definition.talentGrid.hudDamageType?.getColorLayer(context)?.layer0;
     BoxDecoration decoration = BoxDecoration(
         gradient: RadialGradient(
-            radius: 3,
-            center: Alignment(definition?.talentGrid?.hudDamageType == DamageType.Stasis ? -1 : .7, 0),
-            colors: <Color>[
-          startBgColor(context),
-          damageTypeColor,
-          endBgColor(context),
-        ]));
+      radius: 2,
+      center: Alignment(1, 0),
+      colors: <Color>[
+        startBgColor(context).withOpacity(.1),
+        Colors.transparent,
+        endBgColor(context),
+      ],
+      stops: [0, .3, .9],
+    ));
     return Positioned.fill(
-        child: Container(alignment: Alignment.centerRight, decoration: decoration, child: buildTalentGridImage()));
+        child: Container(
+            decoration: decoration,
+            foregroundDecoration: decoration,
+            child: ManifestImageWidget<DestinyInventoryItemDefinition>(
+              item.itemHash,
+              alignment: Alignment.centerRight,
+              urlExtractor: (def) => def.screenshot,
+              placeholder: Shimmer.fromColors(
+                child: Container(color: Colors.white),
+                baseColor: endBgColor(context),
+                highlightColor: startBgColor(context),
+              ),
+            )));
   }
 }
