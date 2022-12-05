@@ -18,6 +18,27 @@ extension IdealItemWidth on InventoryItemWidgetDensity {
     }
   }
 
+  double? get itemHeight {
+    switch (this) {
+      case InventoryItemWidgetDensity.Low:
+        return null;
+      case InventoryItemWidgetDensity.Medium:
+        return 72;
+      case InventoryItemWidgetDensity.High:
+        return 96;
+    }
+  }
+
+  double? get itemAspectRatio {
+    switch (this) {
+      case InventoryItemWidgetDensity.Low:
+        return 1;
+      case InventoryItemWidgetDensity.Medium:
+      case InventoryItemWidgetDensity.High:
+        return null;
+    }
+  }
+
   int getIdealCount(double containerWidth) {
     return (containerWidth / idealWidth).floor().clamp(1, 100);
   }

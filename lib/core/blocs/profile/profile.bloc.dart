@@ -29,12 +29,7 @@ class _CachedItemsContainer {
   Map<String, DestinyItemInfo> itemsByInstanceId = Map<String, DestinyItemInfo>();
   Map<int, List<DestinyItemInfo>> itemsByHash = Map<int, List<DestinyItemInfo>>();
   List<DestinyItemInfo> allItems = <DestinyItemInfo>[];
-
-  clear() {
-    itemsByInstanceId = {};
-    itemsByHash = {};
-    allItems = [];
-  }
+  Map<DestinyClass, Map<int, DestinyItemInfo>> highestPowerItems = {};
 
   void add(DestinyItemInfo itemInfo) {
     final itemInstanceId = itemInfo.item.itemInstanceId;
@@ -230,7 +225,7 @@ class ProfileBloc extends ChangeNotifier
   Future<void> _updateItems() async {
     final profile = this._profile;
     if (profile == null) return;
-    _itemCache.clear();
+    _itemCache = _CachedItemsContainer();
     final characterEquipment = profile.characterEquipment?.data?.entries;
     if (characterEquipment != null) {
       for (final c in characterEquipment) {
@@ -531,6 +526,10 @@ class ProfileBloc extends ChangeNotifier
 
   List<DestinyItemInfo> get allItems {
     return _itemCache.allItems;
+  }
+
+  List<DestinyItemInfo> get allInstancedItems {
+    return _itemCache.itemsByInstanceId.values.toList();
   }
 
   Future<int?> pullFromPostMaster(int itemHash, int stackSize, String itemInstanceId, String characterId) async {

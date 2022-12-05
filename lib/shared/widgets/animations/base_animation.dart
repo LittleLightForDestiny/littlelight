@@ -17,27 +17,34 @@ abstract class BaseAnimationBuilder extends StatefulWidget {
 
 abstract class BaseAnimationBuilderState<T extends BaseAnimationBuilder> extends State<T>
     with TickerProviderStateMixin {
-  late AnimationController _controller;
+  late AnimationController controller;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(vsync: this, duration: widget.duration);
+    controller = AnimationController(vsync: this, duration: widget.duration);
+  }
+
+  @override
+  void dispose() {
+    controller.stop();
+    controller.dispose();
+    super.dispose();
   }
 
   @override
   void didUpdateWidget(covariant T oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (_controller.duration != widget.duration) {
-      _controller.duration = widget.duration;
+    if (controller.duration != widget.duration) {
+      controller.duration = widget.duration;
     }
-    updateAnimation(_controller);
+    updateAnimation(controller);
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    return widget.builder(_controller);
+    return widget.builder(controller);
   }
 
   void updateAnimation(AnimationController controller);

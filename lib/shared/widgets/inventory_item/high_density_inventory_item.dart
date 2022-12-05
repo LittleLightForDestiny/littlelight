@@ -291,7 +291,6 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
     final itemName = (customName?.isNotEmpty ?? false) ? customName : definitionName;
     return Container(
       margin: EdgeInsets.all(4).copyWith(
-        right: 96,
         left: 0,
       ),
       alignment: Alignment.centerLeft,
@@ -300,7 +299,7 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
         borderRadius: BorderRadius.circular(8),
         gradient: LinearGradient(
           colors: [bgColor, bgColor.withOpacity(0)],
-          stops: [.6, .9],
+          stops: [.6, .7],
         ),
       ),
       child: Text(

@@ -8,6 +8,7 @@ class QueuedNetworkImage extends StatelessWidget {
   final Widget? placeholder;
   final Duration? fadeInDuration;
   final BoxFit fit;
+  final Color? color;
 
   QueuedNetworkImage(
       {required this.imageUrl,
@@ -15,6 +16,7 @@ class QueuedNetworkImage extends StatelessWidget {
       this.fit = BoxFit.contain,
       this.alignment = Alignment.center,
       this.fadeInDuration,
+      this.color,
       Key? key})
       : super(key: key);
 
@@ -25,27 +27,33 @@ class QueuedNetworkImage extends StatelessWidget {
     Alignment alignment = Alignment.center,
     Duration? fadeInDuration,
     Key? key,
+    Color? color,
   }) =>
       QueuedNetworkImage(
-          imageUrl: BungieApiService.url(relativeURL)!,
-          placeholder: placeholder,
-          fit: fit,
-          alignment: alignment,
-          fadeInDuration: fadeInDuration,
-          key: key);
+        imageUrl: BungieApiService.url(relativeURL)!,
+        placeholder: placeholder,
+        fit: fit,
+        alignment: alignment,
+        fadeInDuration: fadeInDuration,
+        key: key,
+        color: color,
+      );
 
   @override
   Widget build(BuildContext context) {
     if (imageUrl == null) {
       return placeholder ?? Container();
     }
-    return CachedNetworkImage(
-      imageUrl: imageUrl!,
-      fit: fit,
-      alignment: alignment,
-      placeholderFadeInDuration: fadeInDuration ?? Duration(seconds: 2),
-      progressIndicatorBuilder: (context, url, downloadProgress) => placeholder ?? Container(),
-      errorWidget: (context, url, error) => Icon(Icons.error),
-    );
+    return LayoutBuilder(builder: (context, constraints) {
+      return CachedNetworkImage(
+        imageUrl: imageUrl!,
+        fit: fit,
+        alignment: alignment,
+        placeholderFadeInDuration: fadeInDuration ?? Duration(seconds: 2),
+        progressIndicatorBuilder: (context, url, downloadProgress) => placeholder ?? Container(),
+        errorWidget: (context, url, error) => Icon(Icons.error),
+        color: color,
+      );
+    });
   }
 }

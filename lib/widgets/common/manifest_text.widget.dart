@@ -6,7 +6,7 @@ import 'package:little_light/services/manifest/manifest.consumer.dart';
 typedef ExtractTextFromData<T> = FutureOr<String>? Function(T definition);
 
 class ManifestText<T> extends StatelessWidget with ManifestConsumer {
-  final int hash;
+  final int? hash;
   final bool uppercase;
   final ExtractTextFromData<T>? textExtractor;
   final int? maxLines;

@@ -51,6 +51,10 @@ class CustomTabController extends ChangeNotifier {
     super.dispose();
   }
 
+  void _startDrag() {
+    _isDragging = true;
+  }
+
   void _dragBy(double amount) {
     _isDragging = true;
     _currentValue += amount * dragMultiplier;
@@ -58,7 +62,7 @@ class CustomTabController extends ChangeNotifier {
     _animationController.animateTo(_currentValue, duration: Duration(milliseconds: 0));
   }
 
-  void _dragStop() {
+  void _dragStop() async {
     _isDragging = false;
     _currentValue = _currentValue.roundToDouble();
     _animationController.animateTo(_currentValue, curve: Curves.easeIn);
@@ -67,4 +71,9 @@ class CustomTabController extends ChangeNotifier {
   bool get isMoving => _isDragging || _animationController.isAnimating;
 
   int get index => _animationController.value.floor();
+
+  void goToPage(int index) {
+    _currentValue = index.toDouble();
+    _animationController.animateTo(_currentValue, curve: Curves.easeIn);
+  }
 }

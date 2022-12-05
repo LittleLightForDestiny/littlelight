@@ -1,12 +1,17 @@
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
-import 'package:little_light/modules/equipment/widgets/character_tab_content.widget.dart';
+import 'package:little_light/modules/equipment/widgets/equipment_character_tab_content.widget.dart';
+import 'package:little_light/modules/equipment/widgets/equipment_type_tab_menu.widget.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
+import 'package:little_light/shared/widgets/menus/character_context_menu/character_context_menu.dart';
 import 'package:little_light/shared/widgets/notifications/notifications.widget.dart';
+import 'package:little_light/shared/widgets/overlay/show_overlay.dart';
 import 'package:little_light/shared/widgets/tabs/custom_tab/custom_tab.dart';
 import 'package:little_light/shared/widgets/tabs/header/character_tab_header.widget.dart';
 import 'package:little_light/shared/widgets/tabs/header/loading_tab_header.widget.dart';
+import 'package:little_light/shared/widgets/tabs/menus/character_header_tab_menu.widget.dart';
+import 'package:little_light/shared/widgets/tabs/menus/current_character_tab_indicator.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 
 import 'equipment.bloc.dart';
@@ -58,42 +63,83 @@ class EquipmentView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final characterCount = _state.characters?.length ?? 0;
+    final characters = _state.characters;
+    if (characters == null) return Container();
+    final characterCount = characters.length;
     final viewPaddingTop = MediaQuery.of(context).padding.top;
     return CustomTabControllerBuilder(
-      characterCount,
-      builder: (context, characterTabController) => Scaffold(
-        body: Stack(
-          children: [
-            Positioned.fill(
-              child: Column(children: [
-                SizedBox(
-                  height: viewPaddingTop + kToolbarHeight + 2,
-                ),
-                Expanded(
-                  child: Stack(children: [
-                    Positioned.fill(child: buildTabContent(context, characterTabController)),
-                    Positioned.fill(
-                        child: Column(children: [
-                      Expanded(child: Container()),
-                      Expanded(
+      InventoryTab.values.length,
+      builder: (context, typeTabController) => CustomTabControllerBuilder(
+        characterCount,
+        builder: (context, characterTabController) => Scaffold(
+          body: Stack(
+            children: [
+              Positioned.fill(
+                child: Column(children: [
+                  SizedBox(
+                    height: viewPaddingTop + kToolbarHeight + 2,
+                  ),
+                  Expanded(
+                    child: Stack(children: [
+                      Positioned.fill(child: buildTabContent(context, characterTabController, typeTabController)),
+                      Positioned.fill(
+                          child: Column(children: [
+                        Expanded(
+                            child: CustomTabGestureDetector(
+                          controller: characterTabController,
+                        )),
+                        Container(
+                          height: 200,
                           child: CustomTabGestureDetector(
-                        controller: characterTabController,
+                            controller: typeTabController,
+                          ),
+                        ),
+                      ])),
+                      Positioned(bottom: 8, right: 8, child: NotificationsWidget()),
+                    ]),
+                  ),
+                  Container(
+                      height: kToolbarHeight,
+                      child: Row(
+                        children: [
+                          EquipmentTypeTabMenuWidget(typeTabController),
+                          Expanded(
+                            child: buildCharacterContextMenuButton(context, characterTabController),
+                          ),
+                        ],
                       )),
-                    ])),
-                    Positioned(bottom: 8, right: 8, child: NotificationsWidget()),
-                  ]),
-                )
-              ]),
-            ),
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              height: viewPaddingTop + kToolbarHeight * 1.4 + 2,
-              child: buildTabHeader(context, characterTabController),
-            ),
-          ],
+                ]),
+              ),
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                height: viewPaddingTop + kToolbarHeight * 1.4 + 2,
+                child: buildTabHeader(context, characterTabController),
+              ),
+              Positioned(
+                  top: 0,
+                  right: 16,
+                  child: CharacterHeaderTabMenuWidget(
+                    characters,
+                    characterTabController,
+                  )),
+              Positioned(
+                top: 0,
+                left: 0,
+                child: Container(
+                  width: kToolbarHeight,
+                  height: kToolbarHeight,
+                  child: IconButton(
+                    icon: Icon(Icons.menu),
+                    onPressed: () {
+                      Scaffold.of(context).openDrawer();
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -126,14 +172,20 @@ class EquipmentView extends StatelessWidget {
         });
   }
 
-  Widget buildTabContent(BuildContext context, CustomTabController characterTabController) {
+  Widget buildTabContent(
+      BuildContext context, CustomTabController characterTabController, CustomTabController typeTabController) {
     final characters = _state.characters;
     if (characters == null) return Container();
     return CustomTabPassiveView(
       controller: characterTabController,
       pageBuilder: (context, index) {
         final character = characters[index];
-        return buildCharacterTabContent(context, InventoryTab.Inventory, character);
+        return CustomTabPassiveView(
+            controller: typeTabController,
+            pageBuilder: (context, index) {
+              final tab = InventoryTab.values[index];
+              return buildCharacterTabContent(context, tab, character);
+            });
       },
     );
   }
@@ -141,19 +193,19 @@ class EquipmentView extends StatelessWidget {
   Widget buildCharacterTabContent(BuildContext context, InventoryTab tab, DestinyCharacterInfo character) {
     final bucketHashes = tab.bucketHashes;
     final buckets = bucketHashes
-        .map((h) => CharacterBucketContent(
+        .map((h) => EquipmentCharacterBucketContent(
               h,
               equipped: _state.getEquippedItem(character, h),
               unequipped: _state.getUnequippedItem(character, h) ?? [],
             ))
         .toList();
-    return CharacterTabContentWidget(
+    return EquipmentCharacterTabContentWidget(
       character,
       buckets: buckets,
     );
   }
 
-  Widget buildGestureDetector(BuildContext context, CustomTabController tabController) {
+  Widget buildTabPanGestureDetector(BuildContext context, CustomTabController tabController) {
     return Stack(
       children: [
         IgnorePointer(child: Container(color: Colors.red.withOpacity(.3))),
@@ -161,6 +213,41 @@ class EquipmentView extends StatelessWidget {
           controller: tabController,
         ),
       ],
+    );
+  }
+
+  Widget buildCharacterContextMenuButton(BuildContext context, CustomTabController characterTabController) {
+    final characters = _state.characters;
+    if (characters == null) return Container();
+    return Builder(
+      builder: (context) => Stack(
+        alignment: Alignment.centerRight,
+        fit: StackFit.expand,
+        children: [
+          CurrentCharacterTabIndicator(
+            characters,
+            characterTabController,
+          ),
+          Positioned(
+              right: 0,
+              top: 0,
+              bottom: 0,
+              width: 184.0,
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(onTap: () {
+                  showOverlay(
+                      context,
+                      ((_, rect, onClose) => CharacterContextMenu(
+                            characters,
+                            characterTabController,
+                            sourceRenderBox: rect,
+                            onClose: onClose,
+                          )));
+                }),
+              ))
+        ],
+      ),
     );
   }
 }

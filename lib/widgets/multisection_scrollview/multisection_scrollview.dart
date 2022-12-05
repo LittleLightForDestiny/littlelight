@@ -27,6 +27,7 @@ class MultiSectionScrollView extends StatelessWidget {
       _slivers.add(SliverToBoxAdapter(child: Container(height: padding!.top)));
     }
     _slivers.addAll(_sections
+        .where((s) => s.itemCount != 0)
         .map((e) => e.build(context, mainAxisSpacing: mainAxisSpacing, crossAxisSpacing: crossAxisSpacing))
         .fold<Iterable<Widget>>(<Widget>[], (previousValue, element) => previousValue.followedBy([element, spacer]))
         .expand((element) => [element])

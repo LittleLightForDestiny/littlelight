@@ -23,14 +23,18 @@ class ManifestImageWidget<T> extends StatelessWidget with ManifestConsumer {
   final BoxFit fit;
   final Alignment alignment;
 
-  ManifestImageWidget(this.hash,
-      {Key? key,
-      this.fit = BoxFit.contain,
-      this.alignment = Alignment.center,
-      this.urlExtractor,
-      this.placeholder,
-      this.noIconPlaceholder})
-      : super(key: key);
+  final Color? color;
+
+  ManifestImageWidget(
+    this.hash, {
+    Key? key,
+    this.fit = BoxFit.contain,
+    this.alignment = Alignment.center,
+    this.urlExtractor,
+    this.placeholder,
+    this.noIconPlaceholder,
+    this.color,
+  }) : super(key: key);
 
   Future<_ManifestImageState<T>> get future async {
     final def = await manifest.getDefinition<T>(hash);
@@ -66,6 +70,7 @@ class ManifestImageWidget<T> extends StatelessWidget with ManifestConsumer {
           alignment: alignment,
           placeholder: buildPlaceholder(context),
           fadeInDuration: Duration(milliseconds: 300),
+          color: color,
         );
       },
     );

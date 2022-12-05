@@ -50,7 +50,7 @@ class CustomTabPassiveView extends StatelessWidget {
     final currentMax = controller.position.ceil();
     final shouldRender = index == currentMin || index == currentMax || _cachedViews[index] != null;
     if (!shouldRender) return Container();
-    final widget = isMoving ? _cachedViews[index] ??= pageBuilder(context, index) : pageBuilder(context, index);
+    final widget = _cachedViews[index] ??= pageBuilder(context, index);
     return IgnorePointer(
       ignoring: isMoving,
       child: RepaintBoundary(

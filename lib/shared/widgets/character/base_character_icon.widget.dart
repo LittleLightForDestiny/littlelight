@@ -11,10 +11,12 @@ abstract class BaseCharacterIconWidget extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Colors.black,
-        border: Border.all(
-          width: borderWidth,
-          color: context.theme?.onSurfaceLayers.layer0 ?? Colors.transparent,
-        ),
+        border: borderWidth > 0
+            ? Border.all(
+                width: borderWidth,
+                color: context.theme?.onSurfaceLayers.layer0 ?? Colors.transparent,
+              )
+            : null,
       ),
       child: buildIcon(context),
     );

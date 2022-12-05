@@ -12,8 +12,9 @@ class SelectableItemWrapper extends StatelessWidget {
   final InventoryItemWidgetDensity? density;
   final DestinyItemInfo item;
   final Widget child;
+  final double borderWidth;
 
-  SelectableItemWrapper(this.child, {required this.item, this.density});
+  SelectableItemWrapper(this.child, {required this.item, this.density, this.borderWidth = 2});
   @override
   Widget build(BuildContext context) {
     if (density != null) return buildWithDensity(context, density!);
@@ -39,7 +40,12 @@ class SelectableItemWrapper extends StatelessWidget {
         hash,
         (def) => Stack(
               children: [
-                Positioned.fill(child: child),
+                Positioned.fill(
+                  child: Padding(
+                    padding: EdgeInsets.all(borderWidth),
+                    child: child,
+                  ),
+                ),
                 Positioned.fill(
                   child: buildButton(context, density, def),
                 )
