@@ -10,7 +10,7 @@ import firebase_analytics
 import firebase_core
 import firebase_crashlytics
 import package_info_plus_macos
-import path_provider_macos
+import path_provider_foundation
 import shared_preferences_macos
 import sqflite
 import uni_links_macos

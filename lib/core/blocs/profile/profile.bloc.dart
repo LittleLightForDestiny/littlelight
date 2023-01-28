@@ -109,7 +109,7 @@ class ProfileBloc extends ChangeNotifier
     print("state changed: $state");
   }
 
-  List<DestinyComponentType> updateComponents = ProfileComponentGroups.everything;
+  List<DestinyComponentType> updateComponents = ProfileComponentGroups.basicProfile;
 
   Future<DestinyProfileResponse?> fetchProfileData({
     List<DestinyComponentType>? components,
