@@ -55,7 +55,7 @@ class PaginatedPlugGridView extends PlugGridView {
 }
 
 Widget pagingButton(BuildContext context, [int direction = 1]) {
-  final controller = DefaultTabController.of(context)!;
+  final controller = DefaultTabController.of(context);
   final length = controller.length;
 
   return AnimatedBuilder(

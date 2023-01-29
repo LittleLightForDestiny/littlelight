@@ -72,9 +72,8 @@ abstract class CustomTabMenu extends StatelessWidget {
   }
 
   Alignment getIndicatorAlignment(BuildContext context) {
-    return direction == Axis.vertical
-        ? Alignment(0, controller.animation.value - 1)
-        : Alignment(controller.animation.value - 1, 0);
+    final value = (controller.animation.value / (controller.length - 1)) * 2 - 1;
+    return direction == Axis.vertical ? Alignment(0, value) : Alignment(value, 0);
   }
 
   Widget buildSelectedIndicatorAnimation(BuildContext context, double buttonSize) {

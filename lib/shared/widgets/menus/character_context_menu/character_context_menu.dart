@@ -9,7 +9,7 @@ import 'package:little_light/shared/widgets/tabs/menus/current_character_tab_ind
 import 'package:provider/provider.dart';
 
 class CharacterContextMenu extends BaseOverlayWidget {
-  final List<DestinyCharacterInfo> characters;
+  final List<DestinyCharacterInfo?> characters;
   final CustomTabController charactersTabController;
 
   CharacterContextMenu(this.characters, this.charactersTabController,
@@ -59,20 +59,23 @@ class CharacterContextMenu extends BaseOverlayWidget {
     );
   }
 
-  Widget buildCurrentAverage(BuildContext context) {
+  Widget? buildCurrentAverage(BuildContext context) {
     final character = characters[charactersTabController.index];
+    if (character == null) return null;
     final average = context.watch<ProfileHelpersBloc>().getCurrentAverage(character.character.classType);
     return Text("Current Average ${average?.toStringAsFixed(2)}");
   }
 
-  Widget buildAchievableAverage(BuildContext context) {
+  Widget? buildAchievableAverage(BuildContext context) {
     final character = characters[charactersTabController.index];
+    if (character == null) return null;
     final average = context.watch<ProfileHelpersBloc>().getAchievableAverage(character.character.classType);
     return Text("Achievable Average ${average?.toStringAsFixed(2)}");
   }
 
   Widget? buildMaxPowerLoadoutItems(BuildContext context) {
     final currentCharacter = characters[charactersTabController.index];
+    if (currentCharacter == null) return null;
     final helper = context.watch<ProfileHelpersBloc>();
     final loadout = helper.maxPower?[currentCharacter.character.classType];
     if (loadout == null) return null;
@@ -91,6 +94,7 @@ class CharacterContextMenu extends BaseOverlayWidget {
 
   Widget? buildMaxPowerNonExoticLoadoutItems(BuildContext context) {
     final currentCharacter = characters[charactersTabController.index];
+    if (currentCharacter == null) return null;
     final helper = context.watch<ProfileHelpersBloc>();
     final loadout = helper.maxPowerNonExotic?[currentCharacter.character.classType];
     if (loadout == null) return null;

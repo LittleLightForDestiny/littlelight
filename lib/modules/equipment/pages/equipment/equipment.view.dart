@@ -1,4 +1,3 @@
-import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/modules/equipment/widgets/equipment_character_tab_content.widget.dart';
@@ -11,9 +10,9 @@ import 'package:little_light/shared/widgets/selection/selected_items.widget.dart
 import 'package:little_light/shared/widgets/tabs/custom_tab/custom_tab.dart';
 import 'package:little_light/shared/widgets/tabs/header/character_tab_header.widget.dart';
 import 'package:little_light/shared/widgets/tabs/header/loading_tab_header.widget.dart';
+import 'package:little_light/shared/widgets/tabs/header/vault_tab_header.widget.dart';
 import 'package:little_light/shared/widgets/tabs/menus/character_header_tab_menu.widget.dart';
 import 'package:little_light/shared/widgets/tabs/menus/current_character_tab_indicator.dart';
-import 'package:little_light/widgets/common/manifest_image.widget.dart';
 
 import 'equipment.bloc.dart';
 
@@ -151,27 +150,16 @@ class EquipmentView extends StatelessWidget {
     final characters = _state.characters;
     if (characters == null) return buildLoadingAppBar(context);
     return CustomTabPassiveView(
-      controller: characterTabController,
-      pageBuilder: (context, index) => CharacterTabHeaderWidget(characters[index]),
-    );
+        controller: characterTabController,
+        pageBuilder: (context, index) {
+          final character = characters[index];
+          if (character != null) return CharacterTabHeaderWidget(character);
+          return VaultTabHeaderWidget();
+        });
   }
 
   Widget buildLoadingAppBar(BuildContext context) {
     return LoadingTabHeaderWidget();
-  }
-
-  Widget buildTabFooter(BuildContext context, CustomTabController controller) {
-    final characters = _state.characters;
-    if (characters == null) return Container();
-    return CustomTabPassiveView(
-        controller: controller,
-        pageBuilder: (context, index) {
-          final hash = characters[index].character.emblemHash;
-          return Container(
-            height: 40,
-            child: ManifestImageWidget<DestinyInventoryItemDefinition>(hash),
-          );
-        });
   }
 
   Widget buildTabContent(
@@ -186,7 +174,10 @@ class EquipmentView extends StatelessWidget {
             controller: typeTabController,
             pageBuilder: (context, index) {
               final tab = InventoryTab.values[index];
-              return buildCharacterTabContent(context, tab, character);
+              if (character != null) {
+                return buildCharacterTabContent(context, tab, character);
+              }
+              return buildVaultTabContent(context, tab);
             });
       },
     );
@@ -205,6 +196,10 @@ class EquipmentView extends StatelessWidget {
       character,
       buckets: buckets,
     );
+  }
+
+  Widget buildVaultTabContent(BuildContext context, InventoryTab tab) {
+    return Container();
   }
 
   Widget buildTabPanGestureDetector(BuildContext context, CustomTabController tabController) {

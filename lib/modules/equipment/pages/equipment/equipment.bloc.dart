@@ -34,8 +34,6 @@ class _EquipmentState {
       bucketItems.add(item);
       return;
     }
-    // final isOnVault = item.item.location == ItemLocation.Vault;
-    // if (isOnVault) return;
 
     final items = itemsOnProfile ??= {};
     final bucketItems = items[currentBucket] ??= [];
@@ -98,7 +96,11 @@ class EquipmentBloc extends ChangeNotifier with UserSettingsConsumer, ManifestCo
     notifyListeners();
   }
 
-  List<DestinyCharacterInfo>? get characters => _profileBloc.characters;
+  List<DestinyCharacterInfo?>? get characters {
+    List<DestinyCharacterInfo?>? characters = _profileBloc.characters;
+    if (characters == null) return null;
+    return characters + [null];
+  }
 
   DestinyItemInfo? getEquippedItem(DestinyCharacterInfo character, int bucketHash) => //
       _equipmentState.equippedItemsInCharacters?[character.characterId]?[bucketHash];
