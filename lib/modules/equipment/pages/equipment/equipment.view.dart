@@ -7,6 +7,7 @@ import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enu
 import 'package:little_light/shared/widgets/menus/character_context_menu/character_context_menu.dart';
 import 'package:little_light/shared/widgets/notifications/notifications.widget.dart';
 import 'package:little_light/shared/widgets/overlay/show_overlay.dart';
+import 'package:little_light/shared/widgets/selection/selected_items.widget.dart';
 import 'package:little_light/shared/widgets/tabs/custom_tab/custom_tab.dart';
 import 'package:little_light/shared/widgets/tabs/header/character_tab_header.widget.dart';
 import 'package:little_light/shared/widgets/tabs/header/loading_tab_header.widget.dart';
@@ -98,6 +99,7 @@ class EquipmentView extends StatelessWidget {
                       Positioned(bottom: 8, right: 8, child: NotificationsWidget()),
                     ]),
                   ),
+                  SelectedItemsWidget(),
                   Container(
                       height: kToolbarHeight,
                       child: Row(

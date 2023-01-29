@@ -495,6 +495,8 @@ class ProfileBloc extends ChangeNotifier
 
   DestinyItemInfo? getItemByInstanceId(String instanceId) => _itemCache.itemsByInstanceId[instanceId];
 
+  List<DestinyItemInfo> getItemsByHash(int hash) => _itemCache.itemsByHash[hash] ?? [];
+
   List<DestinyItemComponent> getItemsByInstanceId(List<String?> ids) {
     final _ids = ids.whereType<String>().toSet();
     return _ids.map((e) => getItemByInstanceId(e)?.item).whereType<DestinyItemComponent>().toList();

@@ -15,7 +15,7 @@ import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
-import 'package:little_light/widgets/transfer_destinations/transfer_destinations.widget.dart';
+import 'package:little_light/shared/widgets/transfer_destinations/transfer_destinations.widget.dart';
 import 'package:provider/provider.dart';
 
 class EquipLoadoutView extends StatelessWidget with ProfileConsumer {

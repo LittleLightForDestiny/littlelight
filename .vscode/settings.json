@@ -1,5 +1,4 @@
 {
     "dart.lineLength": 120,
     "editor.formatOnSave": true,
-    "dart.flutterSdkPath": "/Users/joaomarquesini/sdks/flutter_stable"
 }

@@ -22,7 +22,7 @@ class CoreBlocsContainer extends MultiProvider {
             ChangeNotifierProvider<InventoryBloc>(create: (context) => InventoryBloc(context)),
             ChangeNotifierProvider<BucketOptionsBloc>(create: (context) => BucketOptionsBloc(context)),
             ChangeNotifierProvider<LoadoutsBloc>(create: (context) => LoadoutsBloc()),
-            ChangeNotifierProvider<SelectionBloc>(create: (context) => SelectionBloc()),
+            ChangeNotifierProvider<SelectionBloc>(create: (context) => SelectionBloc(context)),
           ],
         );
 }

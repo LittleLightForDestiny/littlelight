@@ -1,4 +1,6 @@
 import 'package:bungie_api/destiny2.dart';
+import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
+import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 
 extension DestinyInventoryItemDefinitionHelper on DestinyInventoryItemDefinition {
@@ -35,4 +37,32 @@ extension DestinyInventoryItemDefinitionHelper on DestinyInventoryItemDefinition
   bool get isEngram =>
       itemType == DestinyItemType.Engram || //
       inventory?.bucketTypeHash == InventoryBucket.engrams;
+}
+
+extension DestinytemInfoHelpers on DestinyItemInfo {
+  bool canEquip(DestinyCharacterInfo? character, DestinyInventoryItemDefinition definition) {
+    if (character == null) return false;
+    final equippable = definition.equippable ?? false;
+    if (!equippable) return false;
+
+    final isGenericEquippable = definition.classType == DestinyClass.Unknown;
+    final isSameClass = definition.classType == character.character.classType;
+    if (!isGenericEquippable && !isSameClass) return false;
+
+    bool isOnCharacter = character.characterId == this.characterId;
+    bool isEquipped = instanceInfo?.isEquipped ?? false;
+    if (isOnCharacter && isEquipped) return false;
+
+    final transferrable = canTransfer(character, definition);
+    if (!transferrable && !isOnCharacter) return false;
+    return true;
+  }
+
+  bool canTransfer(DestinyCharacterInfo? character, DestinyInventoryItemDefinition definition) {
+    if (definition.nonTransferrable ?? false) return false;
+    bool isSameCharacter = character?.characterId == this.characterId && character?.characterId != null;
+    bool isOnPostmaster = this.item.bucketHash == InventoryBucket.lostItems;
+    if (isSameCharacter && !isOnPostmaster) return false;
+    return true;
+  }
 }
