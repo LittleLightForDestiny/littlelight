@@ -8,14 +8,14 @@ import 'base_tab_header.widget.dart';
 class LoadingTabHeaderWidget extends BaseTabHeaderWidget {
   Widget buildBackground(BuildContext context) {
     return Container(
-      color: context.theme?.surfaceLayers.layer0,
+      color: context.theme.surfaceLayers.layer0,
       child: DefaultLoadingShimmer(),
     );
   }
 
   Widget buildProgressBar(BuildContext context) {
     return Container(
-      color: context.theme?.upgradeLayers.layer0,
+      color: context.theme.upgradeLayers.layer0,
       child: DefaultLoadingShimmer(),
     );
   }

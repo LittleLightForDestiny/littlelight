@@ -84,7 +84,7 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
 
   Widget buildSubclassBackground(BuildContext context, DestinyInventoryItemDefinition definition) {
     final subclassColor = definition.talentGrid?.hudDamageType?.getColorLayer(context).layer0 ?? Colors.transparent;
-    final bgColor = TinyColor(subclassColor).darken(25).desaturate(30).color;
+    final bgColor = TinyColor.fromColor(subclassColor).darken(25).desaturate(30).color;
     return Container(
       color: bgColor,
       alignment: Alignment.centerRight,
@@ -229,7 +229,7 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
                 return Stack(children: [
                   Positioned.fill(
                     child: CustomPaint(
-                      painter: DiamondShapePainter.color(context.theme?.onSurfaceLayers.layer1 ?? Colors.transparent),
+                      painter: DiamondShapePainter.color(context.theme.onSurfaceLayers.layer1 ?? Colors.transparent),
                     ),
                   ),
                   Positioned.fill(
@@ -284,7 +284,7 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
 
   Widget buildSubclassTitleBar(BuildContext context, DestinyInventoryItemDefinition definition) {
     final subclassColor = definition.talentGrid?.hudDamageType?.getColorLayer(context).layer0 ?? Colors.transparent;
-    final bgColor = TinyColor(subclassColor).darken(30).desaturate(5).color;
+    final bgColor = TinyColor.fromColor(subclassColor).darken(30).desaturate(5).color;
     final customName =
         itemNotes.getNotesForItem(item.item.itemHash, item.item.itemInstanceId)?.customName?.toUpperCase();
     final definitionName = definition.displayProperties?.name?.toUpperCase();
@@ -304,7 +304,7 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
       ),
       child: Text(
         itemName ?? "",
-        style: context.textTheme?.itemNameHighDensity,
+        style: context.textTheme.itemNameHighDensity,
         overflow: TextOverflow.fade,
         softWrap: false,
       ),
@@ -320,7 +320,7 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
       padding: EdgeInsets.only(right: 8),
       child: Text(
         itemName ?? "",
-        style: context.textTheme?.itemNameHighDensity.copyWith(
+        style: context.textTheme.itemNameHighDensity.copyWith(
           color: definition.inventory?.tierType?.getTextColor(context),
         ),
         overflow: TextOverflow.fade,
@@ -332,7 +332,7 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
   Widget? buildLockedIcon(BuildContext context, DestinyInventoryItemDefinition definition) {
     final isLocked = item.item.state?.contains(ItemState.Locked) ?? false;
     if (!isLocked) return null;
-    final style = context.textTheme?.itemNameHighDensity;
+    final style = context.textTheme.itemNameHighDensity;
     return Container(
       margin: EdgeInsets.only(right: 4),
       child: Icon(
@@ -561,7 +561,7 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
   Widget buildPrimaryStat(BuildContext context, DestinyInventoryItemDefinition definition) {
     final primaryStatValue = item.instanceInfo?.primaryStat?.value;
     if (primaryStatValue == null) return Container();
-    final textStyle = context.textTheme?.itemPrimaryStatHighDensity;
+    final textStyle = context.textTheme.itemPrimaryStatHighDensity;
     return Text(
       "$primaryStatValue",
       style: textStyle,
@@ -574,11 +574,11 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
     final quantity = item.item.quantity;
     final maxCount = definition.inventory?.maxStackSize;
     if (quantity == null) return Container();
-    TextStyle? textStyle = context.textTheme?.itemPrimaryStatHighDensity;
+    TextStyle? textStyle = context.textTheme.itemPrimaryStatHighDensity;
     final text = maxCount != null ? "$quantity/$maxCount" : "x$quantity";
     final isMaxValue = maxCount != null && quantity == maxCount;
     if (isMaxValue) {
-      textStyle = textStyle?.copyWith(color: context.theme?.highlightedObjectiveLayers.layer3);
+      textStyle = textStyle?.copyWith(color: context.theme.highlightedObjectiveLayers.layer3);
     }
     return Text(
       text,
@@ -595,7 +595,7 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
     int vaultCount = 0;
     int inventoryStackCount = 0;
     int vaultStackCount = 0;
-    final style = context.textTheme?.itemTypeHighDensity;
+    final style = context.textTheme.itemTypeHighDensity;
     for (final stack in stacks) {
       if (stack.item.bucketHash == InventoryBucket.general) {
         vaultCount += stack.item.quantity ?? 0;
@@ -625,7 +625,7 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
               Container(width: 4),
               if (inventoryStackCount > 1)
                 Text("($inventoryStackCount)",
-                    style: style?.copyWith(color: context.theme?.highlightedObjectiveLayers.layer0)),
+                    style: style?.copyWith(color: context.theme.highlightedObjectiveLayers.layer0)),
             ],
           ),
         Container(height: 2),
@@ -643,7 +643,7 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
             Container(width: 4),
             if (vaultStackCount > 1)
               Text("($vaultStackCount)",
-                  style: style?.copyWith(color: context.theme?.highlightedObjectiveLayers.layer0)),
+                  style: style?.copyWith(color: context.theme.highlightedObjectiveLayers.layer0)),
           ],
         ),
       ],
@@ -677,7 +677,7 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
     if (itemTypeName == null) return Container();
     return Text(
       itemTypeName,
-      style: context.textTheme?.itemTypeHighDensity,
+      style: context.textTheme.itemTypeHighDensity,
       overflow: TextOverflow.fade,
       softWrap: false,
     );
@@ -687,7 +687,7 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
     final damageType = item.instanceInfo?.damageType;
     final damageColor = damageType?.getColorLayer(context).layer2;
     final powerLevel = item.instanceInfo?.primaryStat?.value;
-    final textStyle = context.textTheme?.itemPrimaryStatHighDensity;
+    final textStyle = context.textTheme.itemPrimaryStatHighDensity;
     final ammoType = definition.equippingBlock?.ammoType;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -715,7 +715,7 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
 
   Widget buildArmorMainInfo(BuildContext context, DestinyInventoryItemDefinition definition) {
     final powerLevel = item.instanceInfo?.primaryStat?.value;
-    final textStyle = context.textTheme?.itemPrimaryStatHighDensity;
+    final textStyle = context.textTheme.itemPrimaryStatHighDensity;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -739,7 +739,7 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
     final quality = item.instanceInfo?.quality ?? 0;
     if (itemLevel == null) return null;
     final level = itemLevel * 10 + quality;
-    final textStyle = context.textTheme?.itemPrimaryStatHighDensity;
+    final textStyle = context.textTheme.itemPrimaryStatHighDensity;
     return Text(
       "$level",
       style: textStyle,
@@ -754,12 +754,12 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
       margin: EdgeInsets.only(right: 4),
       padding: EdgeInsets.symmetric(vertical: 2, horizontal: 8),
       decoration: BoxDecoration(
-        color: context.theme?.surfaceLayers.layer0,
+        color: context.theme.surfaceLayers.layer0,
         borderRadius: BorderRadius.circular(4),
       ),
       child: Text(
         "T{statsTotal}".translate(context, replace: {"statsTotal": "$total"}),
-        style: context.textTheme?.subtitle.copyWith(
+        style: context.textTheme.subtitle.copyWith(
           color: color,
           fontSize: 13,
         ),
@@ -776,7 +776,7 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
           final energyType = capacity.energyType;
           final energyColor = energyType?.getColorLayer(context).layer2;
           final energyLevel = capacity.capacityValue ?? 0;
-          final textStyle = context.textTheme?.itemPrimaryStatHighDensity;
+          final textStyle = context.textTheme.itemPrimaryStatHighDensity;
           return Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [

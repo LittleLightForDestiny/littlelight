@@ -208,7 +208,7 @@ class EquipLoadoutView extends StatelessWidget with ProfileConsumer {
           child: TransferDestinationsWidget(
               equipCharacters: equip,
               transferCharacters: transfer,
-              onTransferAction: (action, character) {
+              onAction: (action, character) {
                 switch (action) {
                   case TransferActionType.Transfer:
                     _bloc(context).transferLoadout(character);

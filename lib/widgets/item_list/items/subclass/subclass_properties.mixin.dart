@@ -25,7 +25,7 @@ mixin SubclassPropertiesMixin on InventoryItemMixin {
     Color damageTypeColor = definition.talentGrid.hudDamageType?.getColorLayer(context)?.layer0;
     BoxDecoration decoration = BoxDecoration(
         gradient: LinearGradient(
-            colors: <Color>[TinyColor(damageTypeColor).saturate(30).darken(30).color, Colors.transparent]));
+            colors: <Color>[TinyColor.fromColor(damageTypeColor).saturate(30).darken(30).color, Colors.transparent]));
     return Positioned(
       left: iconSize / 2 + padding,
       right: 0,
@@ -55,12 +55,12 @@ mixin SubclassPropertiesMixin on InventoryItemMixin {
 
   Color startBgColor(BuildContext context) {
     var damageTypeColor = definition.talentGrid.hudDamageType?.getColorLayer(context)?.layer0;
-    return TinyColor(damageTypeColor).lighten(15).saturate(50).color;
+    return TinyColor.fromColor(damageTypeColor).lighten(15).saturate(50).color;
   }
 
   Color endBgColor(BuildContext context) {
     final damageTypeColor = definition.talentGrid.hudDamageType?.getColorLayer(context)?.layer0;
-    return TinyColor(damageTypeColor).darken(25).desaturate(30).color;
+    return TinyColor.fromColor(damageTypeColor).darken(25).desaturate(30).color;
   }
 
   @override

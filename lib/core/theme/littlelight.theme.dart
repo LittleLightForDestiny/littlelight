@@ -4,8 +4,8 @@ import 'package:provider/provider.dart';
 enum SwatchLayer { Layer0, Layer1, Layer2, Layer3 }
 
 extension ContextLittleLightTheme on BuildContext {
-  LittleLightThemeData? get theme => LittleLightTheme.of(this);
-  LittleLightTextTheme? get textTheme => theme?.textTheme;
+  LittleLightThemeData get theme => LittleLightTheme.of(this);
+  LittleLightTextTheme get textTheme => theme.textTheme;
 }
 
 class LayeredSwatch extends Color {

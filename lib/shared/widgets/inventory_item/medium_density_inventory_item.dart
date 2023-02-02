@@ -84,7 +84,7 @@ class MediumDensityInventoryItem extends StatelessWidget with ItemNotesConsumer,
 
   Widget buildSubclassBackground(BuildContext context, DestinyInventoryItemDefinition definition) {
     final subclassColor = definition.talentGrid?.hudDamageType?.getColorLayer(context).layer0 ?? Colors.transparent;
-    final bgColor = TinyColor(subclassColor).darken(25).desaturate(30).color;
+    final bgColor = TinyColor.fromColor(subclassColor).darken(25).desaturate(30).color;
     return Container(
         color: bgColor,
         alignment: Alignment.centerRight,
@@ -222,7 +222,7 @@ class MediumDensityInventoryItem extends StatelessWidget with ItemNotesConsumer,
             return Stack(children: [
               Positioned.fill(
                 child: CustomPaint(
-                  painter: DiamondShapePainter.color(context.theme?.onSurfaceLayers.layer1 ?? Colors.transparent),
+                  painter: DiamondShapePainter.color(context.theme.onSurfaceLayers.layer1 ?? Colors.transparent),
                 ),
               ),
               Positioned.fill(
@@ -272,7 +272,7 @@ class MediumDensityInventoryItem extends StatelessWidget with ItemNotesConsumer,
 
   Widget buildSubclassTitleBar(BuildContext context, DestinyInventoryItemDefinition definition) {
     final subclassColor = definition.talentGrid?.hudDamageType?.getColorLayer(context).layer0 ?? Colors.transparent;
-    final bgColor = TinyColor(subclassColor).darken(30).desaturate(5).color;
+    final bgColor = TinyColor.fromColor(subclassColor).darken(30).desaturate(5).color;
     final customName =
         itemNotes.getNotesForItem(item.item.itemHash, item.item.itemInstanceId)?.customName?.toUpperCase();
     final definitionName = definition.displayProperties?.name?.toUpperCase();
@@ -293,7 +293,7 @@ class MediumDensityInventoryItem extends StatelessWidget with ItemNotesConsumer,
       ),
       child: Text(
         itemName ?? "",
-        style: context.textTheme?.itemNameHighDensity,
+        style: context.textTheme.itemNameHighDensity,
         overflow: TextOverflow.fade,
         softWrap: false,
       ),
@@ -309,7 +309,7 @@ class MediumDensityInventoryItem extends StatelessWidget with ItemNotesConsumer,
       padding: EdgeInsets.only(left: 2, right: 4),
       child: Text(
         itemName ?? "",
-        style: context.textTheme?.itemNameMediumDensity.copyWith(
+        style: context.textTheme.itemNameMediumDensity.copyWith(
           color: definition.inventory?.tierType?.getTextColor(context),
         ),
         overflow: TextOverflow.fade,
@@ -321,7 +321,7 @@ class MediumDensityInventoryItem extends StatelessWidget with ItemNotesConsumer,
   Widget? buildLockedIcon(BuildContext context, DestinyInventoryItemDefinition definition) {
     final isLocked = item.item.state?.contains(ItemState.Locked) ?? false;
     if (!isLocked) return null;
-    final style = context.textTheme?.itemNameMediumDensity;
+    final style = context.textTheme.itemNameMediumDensity;
     return Container(
       margin: EdgeInsets.only(right: 2),
       child: Icon(
@@ -370,7 +370,7 @@ class MediumDensityInventoryItem extends StatelessWidget with ItemNotesConsumer,
                 borderRadius: BorderRadius.circular(4),
                 border: Border.all(width: 1, color: borderColor),
               ),
-              child: Icon(icon, size: context.textTheme?.itemNameMediumDensity.fontSize),
+              child: Icon(icon, size: context.textTheme.itemNameMediumDensity.fontSize),
             );
           })
           .whereType<Widget>()
@@ -400,7 +400,7 @@ class MediumDensityInventoryItem extends StatelessWidget with ItemNotesConsumer,
                 borderRadius: BorderRadius.circular(24),
                 border: Border.all(width: 1.0, color: borderColor ?? color ?? Colors.transparent),
               ),
-              child: Icon(icon, size: context.textTheme?.itemNameMediumDensity.fontSize, color: foregroundColor),
+              child: Icon(icon, size: context.textTheme.itemNameMediumDensity.fontSize, color: foregroundColor),
             );
           })
           .whereType<Widget>()
@@ -500,7 +500,7 @@ class MediumDensityInventoryItem extends StatelessWidget with ItemNotesConsumer,
     final damageType = item.instanceInfo?.damageType;
     final damageColor = damageType?.getColorLayer(context).layer2;
     final powerLevel = item.instanceInfo?.primaryStat?.value;
-    final textStyle = context.textTheme?.itemPrimaryStatMediumDensity;
+    final textStyle = context.textTheme.itemPrimaryStatMediumDensity;
     final ammoType = definition.equippingBlock?.ammoType;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -528,7 +528,7 @@ class MediumDensityInventoryItem extends StatelessWidget with ItemNotesConsumer,
 
   Widget buildArmorMainInfo(BuildContext context, DestinyInventoryItemDefinition definition) {
     final powerLevel = item.instanceInfo?.primaryStat?.value;
-    final textStyle = context.textTheme?.itemPrimaryStatMediumDensity;
+    final textStyle = context.textTheme.itemPrimaryStatMediumDensity;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -569,7 +569,7 @@ class MediumDensityInventoryItem extends StatelessWidget with ItemNotesConsumer,
   Widget buildPrimaryStat(BuildContext context, DestinyInventoryItemDefinition definition) {
     final primaryStatValue = item.instanceInfo?.primaryStat?.value;
     if (primaryStatValue == null) return Container();
-    final textStyle = context.textTheme?.itemPrimaryStatMediumDensity;
+    final textStyle = context.textTheme.itemPrimaryStatMediumDensity;
     return Text(
       "$primaryStatValue",
       style: textStyle,
@@ -590,10 +590,10 @@ class MediumDensityInventoryItem extends StatelessWidget with ItemNotesConsumer,
     final quantity = item.item.quantity;
     final maxCount = definition.inventory?.maxStackSize;
     if (quantity == null) return Container();
-    TextStyle? textStyle = context.textTheme?.itemPrimaryStatMediumDensity;
+    TextStyle? textStyle = context.textTheme.itemPrimaryStatMediumDensity;
     final isMaxValue = maxCount != null && quantity == maxCount;
     if (isMaxValue) {
-      textStyle = textStyle?.copyWith(color: context.theme?.highlightedObjectiveLayers.layer3);
+      textStyle = textStyle?.copyWith(color: context.theme.highlightedObjectiveLayers.layer3);
     }
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -601,7 +601,7 @@ class MediumDensityInventoryItem extends StatelessWidget with ItemNotesConsumer,
       children: [
         Text("$quantity", style: textStyle, softWrap: false, textAlign: TextAlign.right),
         Text("/$maxCount",
-            style: context.textTheme?.itemTypeHighDensity.copyWith(color: context.theme?.achievementLayers.layer2),
+            style: context.textTheme.itemTypeHighDensity.copyWith(color: context.theme.achievementLayers.layer2),
             softWrap: false,
             textAlign: TextAlign.right)
       ],
@@ -613,7 +613,7 @@ class MediumDensityInventoryItem extends StatelessWidget with ItemNotesConsumer,
     final quality = item.instanceInfo?.quality ?? 0;
     if (itemLevel == null) return null;
     final level = itemLevel * 10 + quality;
-    final textStyle = context.textTheme?.itemPrimaryStatHighDensity;
+    final textStyle = context.textTheme.itemPrimaryStatHighDensity;
     return Text(
       "$level",
       style: textStyle,
@@ -628,12 +628,12 @@ class MediumDensityInventoryItem extends StatelessWidget with ItemNotesConsumer,
       margin: EdgeInsets.only(right: 2),
       padding: EdgeInsets.symmetric(vertical: 2, horizontal: 4),
       decoration: BoxDecoration(
-        color: context.theme?.surfaceLayers.layer0,
+        color: context.theme.surfaceLayers.layer0,
         borderRadius: BorderRadius.circular(4),
       ),
       child: Text(
         "T{statsTotal}".translate(context, replace: {"statsTotal": "$total"}),
-        style: context.textTheme?.subtitle.copyWith(
+        style: context.textTheme.subtitle.copyWith(
           color: color,
           fontSize: 10,
         ),
@@ -650,7 +650,7 @@ class MediumDensityInventoryItem extends StatelessWidget with ItemNotesConsumer,
           final energyType = capacity.energyType;
           final energyColor = energyType?.getColorLayer(context).layer2;
           final energyLevel = capacity.capacityValue ?? 0;
-          final textStyle = context.textTheme?.itemPrimaryStatMediumDensity;
+          final textStyle = context.textTheme.itemPrimaryStatMediumDensity;
           return Container(
             child: Text(
               "$energyLevel",

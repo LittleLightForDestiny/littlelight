@@ -19,8 +19,8 @@ class EquipmentTypeTabMenuWidget extends CustomTabMenu {
 
   Color getItemForegroundColor(BuildContext context, int index) {
     final opacity = (index - controller.animation.value).abs().clamp(0, 1).toDouble();
-    final selectedColor = context.theme?.onSurfaceLayers.layer0 ?? Colors.transparent;
-    final unselectedColor = context.theme?.onSurfaceLayers.layer3.withOpacity(.7) ?? Colors.transparent;
+    final selectedColor = context.theme.onSurfaceLayers.layer0 ?? Colors.transparent;
+    final unselectedColor = context.theme.onSurfaceLayers.layer3.withOpacity(.7) ?? Colors.transparent;
     return Color.lerp(selectedColor, unselectedColor, opacity) ?? Colors.transparent;
   }
 
@@ -53,7 +53,7 @@ class EquipmentTypeTabMenuWidget extends CustomTabMenu {
   @override
   Widget buildSelectedBackground(BuildContext context) {
     return Container(
-      color: context.theme?.surfaceLayers.layer3,
+      color: context.theme.surfaceLayers.layer3,
     );
   }
 

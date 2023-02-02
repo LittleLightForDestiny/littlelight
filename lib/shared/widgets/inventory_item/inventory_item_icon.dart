@@ -204,8 +204,8 @@ class InventoryItemIcon extends StatelessWidget with ManifestConsumer {
                 padding: EdgeInsets.all(borderSize),
                 child: Shimmer.fromColors(
                     child: Image.asset("assets/imgs/engram-placeholder.png"),
-                    baseColor: context.theme?.onSurfaceLayers.layer0.withOpacity(0) ?? Colors.transparent,
-                    highlightColor: context.theme?.onSurfaceLayers.layer0.withOpacity(1) ?? Colors.transparent),
+                    baseColor: context.theme.onSurfaceLayers.layer0.withOpacity(0) ?? Colors.transparent,
+                    highlightColor: context.theme.onSurfaceLayers.layer0.withOpacity(1) ?? Colors.transparent),
               ),
             ),
           ],

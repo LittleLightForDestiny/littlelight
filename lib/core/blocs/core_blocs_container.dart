@@ -1,3 +1,4 @@
+import 'package:little_light/core/blocs/app_lifecycle/app_lifecycle.bloc.dart';
 import 'package:little_light/core/blocs/bucket_options/bucket_options.bloc.dart';
 import 'package:little_light/core/blocs/inventory/inventory.bloc.dart';
 import 'package:little_light/core/blocs/language/language.bloc.dart';
@@ -15,6 +16,7 @@ class CoreBlocsContainer extends MultiProvider {
   CoreBlocsContainer()
       : super(
           providers: [
+            ChangeNotifierProvider(create: (context) => AppLifecycleBloc()),
             ChangeNotifierProvider<LanguageBloc>(create: (context) => getInjectedLanguageService()),
             ChangeNotifierProvider<ProfileBloc>(create: (context) => getInjectedProfileService()),
             ChangeNotifierProvider<ProfileHelpersBloc>(create: (context) => ProfileHelpersBloc(context)),

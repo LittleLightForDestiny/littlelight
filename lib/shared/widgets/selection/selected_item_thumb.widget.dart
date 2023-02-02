@@ -12,7 +12,7 @@ class SelectedItemThumb extends LowDensityInventoryItem {
   Widget buildQuantity(BuildContext context, DestinyInventoryItemDefinition definition) {
     int? quantity = item.item.quantity;
     if (quantity == null) return Container();
-    TextStyle? textStyle = context.textTheme?.itemPrimaryStatLowDensity;
+    TextStyle? textStyle = context.textTheme.itemPrimaryStatLowDensity;
     quantity = item.duplicates?.fold<int>(0, (v, item) => v + (item.item.quantity ?? 0)) ?? quantity;
     return buildInfoContainer(context, [
       Text(

@@ -3,7 +3,6 @@ import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/shared/widgets/inventory_item/inventory_item.dart';
 import 'package:little_light/shared/widgets/shapes/diamond_shape.dart';
-import 'package:little_light/widgets/common/item_icon/engram_icon.widget.dart';
 
 class EmptyItem extends StatelessWidget {
   final double borderWidth;
@@ -35,7 +34,7 @@ class EmptyItem extends StatelessWidget {
         Positioned.fill(
           child: CustomPaint(
             painter: DiamondShapePainter.color(
-              context.theme?.onSurfaceLayers.layer3 ?? Colors.transparent,
+              context.theme.onSurfaceLayers.layer3 ?? Colors.transparent,
             ),
           ),
         ),
@@ -44,7 +43,7 @@ class EmptyItem extends StatelessWidget {
             padding: EdgeInsets.all(borderWidth),
             child: CustomPaint(
               painter: DiamondShapePainter.color(
-                context.theme?.surfaceLayers.layer1 ?? Colors.transparent,
+                context.theme.surfaceLayers.layer1 ?? Colors.transparent,
               ),
             ),
           ),
@@ -64,10 +63,10 @@ class EmptyItem extends StatelessWidget {
     return Container(
       margin: EdgeInsets.all(borderWidth),
       decoration: BoxDecoration(
-        color: context.theme?.surfaceLayers.layer1,
+        color: context.theme.surfaceLayers.layer1,
         border: Border.all(
           width: borderWidth,
-          color: context.theme?.onSurfaceLayers.layer3 ?? Colors.transparent,
+          color: context.theme.onSurfaceLayers.layer3 ?? Colors.transparent,
         ),
       ),
     );

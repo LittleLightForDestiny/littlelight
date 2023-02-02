@@ -41,7 +41,7 @@ class CharacterHeaderTabMenuWidget extends CustomTabMenu {
   @override
   Widget buildSelectedBackground(BuildContext context) {
     return Container(
-      color: context.theme?.onSurfaceLayers.layer0.withOpacity(.2),
+      color: context.theme.onSurfaceLayers.layer0.withOpacity(.2),
     );
   }
 

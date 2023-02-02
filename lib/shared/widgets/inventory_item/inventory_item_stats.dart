@@ -52,7 +52,7 @@ class InventoryItemStats extends StatelessWidget with WishlistsConsumer {
             width: 18,
             child: Text(
               statValue(stat),
-              style: context.textTheme?.subtitle.copyWith(fontSize: 12),
+              style: context.textTheme.subtitle.copyWith(fontSize: 12),
               textAlign: TextAlign.end,
             ),
           ),

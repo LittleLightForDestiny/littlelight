@@ -57,6 +57,7 @@ class InventoryItemWrapperWidget extends StatefulWidget {
   }
 }
 
+//TODO: deprecate this in favor of new item widgets
 class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> extends State<T>
     with
         UserSettingsConsumer,
@@ -225,7 +226,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> exte
       ),
     );
     if (item != null) {
-      await inventoryBloc(context).transfer(item.item, widget.characterId);
+      // await inventoryBloc(context).transfer(item.item, widget.characterId);
     }
   }
 

@@ -75,7 +75,7 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
             return Stack(children: [
               Positioned.fill(
                 child: CustomPaint(
-                  painter: DiamondShapePainter.color(context.theme?.onSurfaceLayers.layer1 ?? Colors.transparent),
+                  painter: DiamondShapePainter.color(context.theme.onSurfaceLayers.layer1 ?? Colors.transparent),
                 ),
               ),
               Positioned.fill(
@@ -144,7 +144,7 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
     final damageType = item.instanceInfo?.damageType;
     final damageColor = damageType?.getColorLayer(context).layer2;
     final powerLevel = item.instanceInfo?.primaryStat?.value;
-    final textStyle = context.textTheme?.itemPrimaryStatLowDensity;
+    final textStyle = context.textTheme.itemPrimaryStatLowDensity;
     final ammoType = definition.equippingBlock?.ammoType;
     return buildInfoContainer(context, [
       Padding(
@@ -169,7 +169,7 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
 
   Widget buildArmorPrimaryStat(BuildContext context, DestinyInventoryItemDefinition definition) {
     final powerLevel = item.instanceInfo?.primaryStat?.value;
-    final textStyle = context.textTheme?.itemPrimaryStatLowDensity;
+    final textStyle = context.textTheme.itemPrimaryStatLowDensity;
     return buildInfoContainer(context, [
       Padding(
         child: FutureBuilder<DestinyEnergyCapacityEntry?>(
@@ -180,7 +180,7 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
               final energyType = capacity.energyType;
               final energyColor = energyType?.getColorLayer(context).layer2;
               final energyLevel = capacity.capacityValue ?? 0;
-              final textStyle = context.textTheme?.itemPrimaryStatLowDensity;
+              final textStyle = context.textTheme.itemPrimaryStatLowDensity;
               return Text(
                 "$energyLevel",
                 style: textStyle?.copyWith(color: energyColor),
@@ -208,7 +208,7 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
             final energyType = capacity.energyType;
             final energyColor = energyType?.getColorLayer(context).layer2;
             final energyLevel = capacity.capacityValue ?? 0;
-            final textStyle = context.textTheme?.itemPrimaryStatLowDensity;
+            final textStyle = context.textTheme.itemPrimaryStatLowDensity;
             return Text(
               "$energyLevel",
               style: textStyle?.copyWith(color: energyColor),
@@ -221,7 +221,7 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
     if (rowChildren.isEmpty) return Container();
     return Container(
       decoration: BoxDecoration(
-        color: context.theme?.surfaceLayers.layer0,
+        color: context.theme.surfaceLayers.layer0,
         borderRadius: BorderRadius.circular(4),
       ),
       padding: EdgeInsets.symmetric(horizontal: 2, vertical: 1),
@@ -320,7 +320,7 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
     final damageType = item.instanceInfo?.damageType;
     final damageColor = damageType?.getColorLayer(context).layer2;
     final powerLevel = item.instanceInfo?.primaryStat?.value;
-    final textStyle = context.textTheme?.itemPrimaryStatMediumDensity;
+    final textStyle = context.textTheme.itemPrimaryStatMediumDensity;
     final ammoType = definition.equippingBlock?.ammoType;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -348,7 +348,7 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
   Widget buildDefaultPrimaryStat(BuildContext context, DestinyInventoryItemDefinition definition) {
     final primaryStatValue = item.instanceInfo?.primaryStat?.value;
     if (primaryStatValue == null) return Container();
-    final textStyle = context.textTheme?.itemPrimaryStatLowDensity;
+    final textStyle = context.textTheme.itemPrimaryStatLowDensity;
     return buildInfoContainer(context, [
       Text(
         "$primaryStatValue",
@@ -363,10 +363,10 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
     final quantity = item.item.quantity;
     final maxCount = definition.inventory?.maxStackSize;
     if (quantity == null) return Container();
-    TextStyle? textStyle = context.textTheme?.itemPrimaryStatLowDensity;
+    TextStyle? textStyle = context.textTheme.itemPrimaryStatLowDensity;
     final isMaxValue = maxCount != null && quantity == maxCount;
     if (isMaxValue) {
-      textStyle = textStyle?.copyWith(color: context.theme?.highlightedObjectiveLayers.layer3);
+      textStyle = textStyle?.copyWith(color: context.theme.highlightedObjectiveLayers.layer3);
     }
     return buildInfoContainer(context, [
       Text(
@@ -383,12 +383,12 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
     final quality = item.instanceInfo?.quality ?? 0;
     if (itemLevel == null) return Container();
     final level = itemLevel * 10 + quality;
-    final textStyle = context.textTheme?.itemPrimaryStatLowDensity;
+    final textStyle = context.textTheme.itemPrimaryStatLowDensity;
     return Container(
         padding: EdgeInsets.symmetric(horizontal: 2, vertical: 1),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(4),
-          color: context.theme?.surfaceLayers.layer0,
+          color: context.theme.surfaceLayers.layer0,
         ),
         child: Text(
           "$level",
@@ -404,12 +404,12 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
       margin: EdgeInsets.only(bottom: 1),
       padding: EdgeInsets.symmetric(vertical: 1, horizontal: 2),
       decoration: BoxDecoration(
-        color: context.theme?.surfaceLayers.layer0,
+        color: context.theme.surfaceLayers.layer0,
         borderRadius: BorderRadius.circular(4),
       ),
       child: Text(
         "T{statsTotal}".translate(context, replace: {"statsTotal": "$total"}),
-        style: context.textTheme?.subtitle.copyWith(
+        style: context.textTheme.subtitle.copyWith(
           color: color,
           fontSize: 10,
         ),

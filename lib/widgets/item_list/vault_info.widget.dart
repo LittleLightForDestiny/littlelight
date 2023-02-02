@@ -20,6 +20,7 @@ import 'package:little_light/widgets/item_list/character_info.widget.dart';
 import 'package:little_light/widgets/option_sheets/loadout_select_sheet.widget.dart';
 import 'package:provider/provider.dart';
 
+//TODO: deprecate this in favor of new equipment info widget
 class VaultInfoWidget extends CharacterInfoWidget {
   VaultInfoWidget({Key key}) : super(key: key);
 
@@ -182,9 +183,9 @@ class VaultOptionsSheetState extends State<VaultOptionsSheet> with ProfileConsum
   transferEverythingFromPostmaster() async {
     var characters = profile.characters;
     for (var char in characters) {
-      var all = profile.getCharacterInventory(char.characterId);
-      var inPostmaster = all.where((i) => i.bucketHash == InventoryBucket.lostItems).toList();
-      await inventoryBloc(context).transferMultiple(inPostmaster, char.characterId);
+      // var all = profile.getCharacterInventory(char.characterId);
+      // var inPostmaster = all.where((i) => i.bucketHash == InventoryBucket.lostItems).toList();
+      // await inventoryBloc(context).transferMultiple(inPostmaster, char.characterId);
     }
   }
 

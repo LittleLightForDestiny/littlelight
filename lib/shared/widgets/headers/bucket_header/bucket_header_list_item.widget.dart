@@ -42,7 +42,11 @@ class BucketHeaderListItemWidget extends StatelessWidget {
 
   Widget buildTrailing(BuildContext context, DestinyInventoryBucketDefinition definition) {
     return Row(children: [
-      BucketDisplayOptionsSelector(hash),
+      BucketDisplayOptionsSelector(
+        hash,
+        canEquip: canEquip,
+        isVault: isVault,
+      ),
       Container(width: 8),
       buildCount(context, definition),
     ]);

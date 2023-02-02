@@ -16,6 +16,16 @@ class UpdateAction extends NotificationAction {
   String get id => "update-action";
 }
 
+class ErrorAction extends NotificationAction {
+  ErrorAction();
+  String get id => "error-action";
+}
+
+class UpdateErrorAction extends ErrorAction {
+  UpdateErrorAction();
+  String get id => "update-error-action";
+}
+
 class SingleTransferAction extends NotificationAction {
   final String? itemInstanceId;
   final int? itemHash;

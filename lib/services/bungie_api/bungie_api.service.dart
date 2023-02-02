@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io' as io;
+import 'dart:io';
 
 import 'package:bungie_api/common.dart';
 import 'package:bungie_api/core.dart';
@@ -228,6 +229,7 @@ class BungieApiService with AuthConsumer, AppConfigConsumer {
 }
 
 class Client with AuthConsumer, AppConfigConsumer implements HttpClient {
+  static List<Cookie>? _persistentCookies;
   BungieNetToken? token;
   bool autoRefreshToken;
   int retries = 0;
@@ -276,17 +278,21 @@ class Client with AuthConsumer, AppConfigConsumer implements HttpClient {
 
     if (config.method == 'GET') {
       var req = await client.getUrl(Uri.parse("${BungieApiService.apiUrl}${config.url}$paramsString"));
-      headers.forEach((name, value) {
-        req.headers.add(name, value);
-      });
+      headers.forEach((name, value) => req.headers.add(name, value));
+      final cookies = _persistentCookies;
+      if (cookies != null) {
+        req.cookies.addAll(cookies);
+      }
       response = await req.close().timeout(Duration(seconds: 12));
     } else {
       String body = config.bodyContentType == 'application/json' ? jsonEncode(config.body) : config.body;
       var req = await client.postUrl(Uri.parse("${BungieApiService.apiUrl}${config.url}$paramsString"));
-      headers.forEach((name, value) {
-        req.headers.add(name, value);
-      });
+      headers.forEach((name, value) => req.headers.add(name, value));
       req.write(body);
+      final cookies = _persistentCookies;
+      if (cookies != null) {
+        req.cookies.addAll(cookies);
+      }
       response = await req.close().timeout(Duration(seconds: 12));
     }
 
@@ -318,6 +324,8 @@ class Client with AuthConsumer, AppConfigConsumer implements HttpClient {
     if (json["ErrorCode"] != null && json["ErrorCode"] > 2) {
       throw BungieApiException.fromJson(json, response.statusCode);
     }
+
+    _persistentCookies = (_persistentCookies ?? []) + response.cookies;
     return HttpResponse(json, response.statusCode);
   }
 }

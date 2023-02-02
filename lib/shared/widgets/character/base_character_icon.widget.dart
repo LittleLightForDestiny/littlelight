@@ -14,7 +14,7 @@ abstract class BaseCharacterIconWidget extends StatelessWidget {
         border: borderWidth > 0
             ? Border.all(
                 width: borderWidth,
-                color: context.theme?.onSurfaceLayers.layer0 ?? Colors.transparent,
+                color: context.theme.onSurfaceLayers.layer0 ?? Colors.transparent,
               )
             : null,
       ),

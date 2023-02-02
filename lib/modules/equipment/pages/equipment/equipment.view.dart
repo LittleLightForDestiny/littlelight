@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/modules/equipment/widgets/equipment_character_tab_content.widget.dart';
 import 'package:little_light/modules/equipment/widgets/equipment_type_tab_menu.widget.dart';
+import 'package:little_light/modules/equipment/widgets/equipment_vault_tab_content.widget.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/shared/widgets/menus/character_context_menu/character_context_menu.dart';
 import 'package:little_light/shared/widgets/notifications/notifications.widget.dart';
@@ -199,7 +200,21 @@ class EquipmentView extends StatelessWidget {
   }
 
   Widget buildVaultTabContent(BuildContext context, InventoryTab tab) {
-    return Container();
+    final bucketHashes = tab.bucketHashes;
+    final buckets = bucketHashes
+        .map((h) {
+          final items = _state.getVaultItems(h) ?? [];
+          if (items.isEmpty) return null;
+          return EquipmentVaultBucketContent(
+            h,
+            items: items,
+          );
+        })
+        .whereType<EquipmentVaultBucketContent>()
+        .toList();
+    return EquipmentVaultTabContentWidget(
+      buckets: buckets,
+    );
   }
 
   Widget buildTabPanGestureDetector(BuildContext context, CustomTabController tabController) {

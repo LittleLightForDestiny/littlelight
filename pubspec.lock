@@ -133,10 +133,10 @@ packages:
     dependency: "direct main"
     description:
       name: bungie_api
-      sha256: "7eaeb2a9198d5db5b63c59db3ccfad067e2b3a7abaad8f3be3c34f336a961e6d"
+      sha256: "4bd51fec1c5a55d548438b1ab1b6feff28c141fc1cac763b2a266d8516603ab2"
       url: "https://pub.dev"
     source: hosted
-    version: "13.16.1"
+    version: "13.17.0"
   cached_network_image:
     dependency: "direct main"
     description:

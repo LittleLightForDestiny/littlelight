@@ -1,54 +1,106 @@
+import 'dart:async';
+
 import 'package:bungie_api/destiny2.dart';
 import 'package:bungie_api/enums/platform_error_codes.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
+import 'package:little_light/core/blocs/app_lifecycle/app_lifecycle.bloc.dart';
 import 'package:little_light/core/blocs/notifications/notification.dart';
 import 'package:little_light/core/blocs/notifications/notifications.bloc.dart';
+import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
+import 'package:little_light/core/blocs/profile/profile_component_groups.dart';
 import 'package:little_light/models/bungie_api.exception.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
+import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:provider/provider.dart';
+
+const _refreshDelay = Duration(seconds: 30);
 
 class InventoryBloc extends ChangeNotifier with ManifestConsumer {
   final NotificationsBloc _notificationsBloc;
   final ProfileBloc _profileBloc;
+  final AppLifecycleBloc _lifecycleBloc;
+
+  DateTime? _lastUpdated;
+  Timer? _updateTimer;
 
   bool _isBusy = false;
   bool get isBusy => _isBusy;
   bool shouldUseAutoTransfer = true;
 
-  Map<String, DestinyItemInfo> itemsById = {};
-
   InventoryBloc(BuildContext context)
       : _notificationsBloc = context.read<NotificationsBloc>(),
-        _profileBloc = context.read<ProfileBloc>();
+        _profileBloc = context.read<ProfileBloc>(),
+        _lifecycleBloc = context.read<AppLifecycleBloc>();
 
-  _resetCaches() {
-    itemsById = {};
+  init() async {
+    await _firstLoad();
+    updateInventory();
+    // _startAutoUpdater();
+  }
+
+  @override
+  void dispose() {
+    _updateTimer?.cancel();
+    super.dispose();
+  }
+
+  _startAutoUpdater() {
+    if (_updateTimer?.isActive ?? false) return;
+    _updateTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+      if (!_lifecycleBloc.isActive) return;
+      if (isBusy) return;
+      final lastUpdated = _lastUpdated;
+      if (lastUpdated == null) return;
+      final elapsedTime = DateTime.now().difference(lastUpdated);
+      if (elapsedTime > _refreshDelay) {
+        print("last refresh was on $lastUpdated, auto-refreshing");
+        updateInventory();
+      }
+    });
+  }
+
+  Future<void> _firstLoad() async {
+    if (_lastUpdated != null || isBusy) return;
+    _isBusy = true;
+    notifyListeners();
+    await _profileBloc.loadFromStorage();
+    _isBusy = false;
+    notifyListeners();
   }
 
   Future<void> updateInventory() async {
-    _isBusy = true;
-    notifyListeners();
+    if (isBusy) return;
     final notification = _notificationsBloc.createNotification(UpdateAction());
-    await _profileBloc.fetchProfileData();
-    _resetCaches();
-    await Future.delayed(Duration(seconds: 1));
-    _isBusy = false;
-    notifyListeners();
-    notification.finish();
+    try {
+      _isBusy = true;
+      notifyListeners();
+      await _profileBloc.refresh(ProfileComponentGroups.basicProfile);
+      _lastUpdated = DateTime.now();
+      await Future.delayed(Duration(seconds: 1));
+      _isBusy = false;
+      notifyListeners();
+      notification.finish();
+    } catch (e) {
+      notification.finish();
+      _isBusy = false;
+      notifyListeners();
+      final errorNotification = _notificationsBloc.createNotification(UpdateErrorAction());
+      await Future.delayed(Duration(seconds: 2));
+      errorNotification.finish();
+    }
   }
 
   Future<void> transfer(
-    DestinyItemComponent item,
+    DestinyItemInfo item,
     String? characterId,
   ) async {
     _isBusy = true;
     notifyListeners();
-    final notification = _notificationsBloc
-        .createNotification(SingleTransferAction(itemHash: item.itemHash, itemInstanceId: item.itemInstanceId));
+    final notification = _notificationsBloc.createNotification(
+        SingleTransferAction(itemHash: item.item.itemHash, itemInstanceId: item.item.itemInstanceId));
     await _transfer(item, characterId);
     await Future.delayed(Duration(seconds: 1));
     _isBusy = false;
@@ -56,36 +108,37 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     notification.finish();
   }
 
-  Future<void> transferMultiple(List<DestinyItemComponent> items, String? characterId) async {
+  Future<void> transferMultiple(List<DestinyItemInfo> items, String? characterId) async {
     for (final item in items) {
       await _transfer(item, characterId);
     }
   }
 
   Future<void> _transfer(
-    DestinyItemComponent item,
+    DestinyItemInfo item,
     String? characterId, {
     int? stackSize,
     List<String> idsToAvoid = const [],
     List<int> hashesToAvoid = const [],
   }) async {
-    final bool isInstanced = item.itemInstanceId != null;
+    final bool isInstanced = item.item.itemInstanceId != null;
     if (isInstanced) {
       _transferInstanced(item, characterId);
     }
   }
 
   Future<void> _transferInstanced(
-    DestinyItemComponent item,
+    DestinyItemInfo itemInfo,
     String? characterId, {
     List<int> idsToAvoid = const <int>[],
   }) async {
+    final item = itemInfo.item;
     final itemHash = item.itemHash;
     final itemInstanceId = item.itemInstanceId;
-    final isOnPostmaster = item.location == ItemLocation.Postmaster;
+    final isOnPostmaster = item.location == ItemLocation.Postmaster || item.bucketHash == InventoryBucket.lostItems;
     if (itemHash == null) throw ("Missing item Hash");
     if (itemInstanceId == null) throw ("Missing item instance ID");
-    final sourceCharacterId = _profileBloc.getItemOwner(itemInstanceId);
+    final sourceCharacterId = itemInfo.characterId;
     final destinationCharacterId = characterId;
     final isOnVault = item.location == ItemLocation.Vault;
     final shouldMoveToVault = sourceCharacterId != destinationCharacterId && !isOnVault;
@@ -95,11 +148,11 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
       print('moving from postmaster');
 
       try {
-        await _profileBloc.pullFromPostMaster(itemHash, 1, itemInstanceId, sourceCharacterId);
+        await _profileBloc.pullFromPostMaster(itemInfo, 1);
       } on BungieApiException catch (e) {
         if (e.errorCode == PlatformErrorCodes.DestinyNoRoomInDestination) {
           await _makeRoomOnCharacter(sourceCharacterId, itemHash);
-          await _transferInstanced(item, characterId, idsToAvoid: idsToAvoid);
+          await _transferInstanced(itemInfo, characterId, idsToAvoid: idsToAvoid);
           return;
         }
         throw (e);
@@ -109,18 +162,18 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
 
     if (shouldMoveToVault) {
       if (sourceCharacterId == null) throw ("Missing item owner when moving to vault");
-      await _profileBloc.transferItem(itemHash, 1, true, itemInstanceId, sourceCharacterId);
+      await _profileBloc.transferItem(itemInfo, 1, true, sourceCharacterId);
       notifyListeners();
     }
     if (shouldMoveToOtherCharacter) {
       if (destinationCharacterId == null) throw ("Missing item owner when moving to character");
       print('moving to character');
       try {
-        await _profileBloc.transferItem(itemHash, 1, false, itemInstanceId, destinationCharacterId);
+        await _profileBloc.transferItem(itemInfo, 1, false, destinationCharacterId);
       } on BungieApiException catch (e) {
         if (e.errorCode == PlatformErrorCodes.DestinyNoRoomInDestination) {
           await _makeRoomOnCharacter(destinationCharacterId, itemHash);
-          await _transferInstanced(item, characterId, idsToAvoid: idsToAvoid);
+          await _transferInstanced(itemInfo, characterId, idsToAvoid: idsToAvoid);
           return;
         }
         throw (e);
@@ -130,8 +183,8 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     print('done');
   }
 
-  Future<DestinyItemComponent?> _makeRoomOnCharacter(
-    String characterID,
+  Future<DestinyItemInfo?> _makeRoomOnCharacter(
+    String characterId,
     int itemHash, {
     List<String>? idsToAvoid,
     List<int>? hashesToAvoid,
@@ -143,12 +196,12 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     final bucketDef = await manifest.getDefinition<DestinyInventoryBucketDefinition>(def?.inventory?.bucketTypeHash);
     final availableSlots = (bucketDef?.itemCount ?? 0) - (bucketDef?.category == BucketCategory.Equippable ? 1 : 0);
     final itemsOnBucket =
-        _profileBloc.getCharacterInventory(characterID).where((element) => element.bucketHash == bucketHash);
+        _profileBloc.allItems.where((item) => item.item.bucketHash == bucketHash && item.characterId == characterId);
     if (itemsOnBucket.length < availableSlots) return null;
     final itemToTransfer = itemsOnBucket.lastWhereOrNull((i) {
-      final avoidId = idsToAvoid?.contains(i.itemInstanceId) ?? false;
+      final avoidId = idsToAvoid?.contains(i.item.itemInstanceId) ?? false;
       if (avoidId) return false;
-      final avoidHash = hashesToAvoid?.contains(i.itemHash) ?? false;
+      final avoidHash = hashesToAvoid?.contains(i.item.itemHash) ?? false;
       if (avoidHash) return false;
       return true;
     });

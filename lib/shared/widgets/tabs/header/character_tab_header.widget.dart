@@ -36,8 +36,8 @@ class CharacterTabHeaderWidget extends BaseTabHeaderWidget with DestinySettingsC
     final levelProg = character.progression?.progressions?["$progressionHash"];
     final overLevelProg =
         character.progression?.progressions?["${destinySettings.seasonalPrestigeRankProgressionHash}"];
-    final fg = context.theme?.upgradeLayers.layer0;
-    final bg = Color.lerp(context.theme?.upgradeLayers.layer1, Colors.black, .6);
+    final fg = context.theme.upgradeLayers.layer0;
+    final bg = Color.lerp(context.theme.upgradeLayers.layer1, Colors.black, .6);
     final currentProg = (levelProg?.level ?? 0) < (levelProg?.levelCap ?? 0) ? levelProg : overLevelProg;
     double completed = (currentProg?.progressToNextLevel ?? 0) / (currentProg?.nextLevelAt ?? 1);
     return Container(

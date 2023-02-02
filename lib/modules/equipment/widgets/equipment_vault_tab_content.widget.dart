@@ -1,40 +1,34 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/bucket_options/bucket_options.bloc.dart';
-import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/utils/extensions/bucket_display_type_data.dart';
 import 'package:little_light/shared/widgets/headers/bucket_header/bucket_header_list_item.widget.dart';
 import 'package:little_light/shared/widgets/inventory_item/empty_item.dart';
 import 'package:little_light/shared/widgets/inventory_item/inventory_item.dart';
-import 'package:little_light/shared/widgets/inventory_item/quick_transfer_item.dart';
 import 'package:little_light/shared/widgets/inventory_item/selectable_item_wrapper.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/multisection_scrollview/multisection_scrollview.dart';
 import 'package:little_light/widgets/multisection_scrollview/sliver_section.dart';
 import 'package:provider/provider.dart';
 
-class EquipmentCharacterBucketContent {
+class EquipmentVaultBucketContent {
   final int bucketHash;
-  final DestinyItemInfo? equipped;
-  final List<DestinyItemInfo> unequipped;
+  final List<DestinyItemInfo> items;
 
-  EquipmentCharacterBucketContent(
+  EquipmentVaultBucketContent(
     this.bucketHash, {
-    required this.equipped,
-    required this.unequipped,
+    required this.items,
   });
 }
 
-class EquipmentCharacterTabContentWidget extends StatelessWidget with ManifestConsumer {
-  final DestinyCharacterInfo character;
-  final List<EquipmentCharacterBucketContent> buckets;
+class EquipmentVaultTabContentWidget extends StatelessWidget with ManifestConsumer {
+  final List<EquipmentVaultBucketContent> buckets;
 
   BucketOptionsBloc bucketOptionsState(BuildContext context) => context.watch<BucketOptionsBloc>();
 
-  const EquipmentCharacterTabContentWidget(
-    this.character, {
+  const EquipmentVaultTabContentWidget({
     Key? key,
     required this.buckets,
   }) : super(key: key);
@@ -55,7 +49,7 @@ class EquipmentCharacterTabContentWidget extends StatelessWidget with ManifestCo
           return Center(child: LoadingAnimWidget());
         }
         return LayoutBuilder(
-          key: Key("character_tab_${character.characterId}"),
+          key: Key("vault_tab"),
           builder: (context, constraints) => MultiSectionScrollView(
             buckets //
                 .map<List<SliverSection>>((e) => buildBucketSections(context, e, constraints, defs[e.bucketHash])) //
@@ -71,64 +65,46 @@ class EquipmentCharacterTabContentWidget extends StatelessWidget with ManifestCo
 
   List<SliverSection> buildBucketSections(
     BuildContext context,
-    EquipmentCharacterBucketContent bucketContent,
+    EquipmentVaultBucketContent bucketContent,
     BoxConstraints constraints,
     DestinyInventoryBucketDefinition? bucketDef,
   ) {
-    final equipped = bucketContent.equipped;
-    final unequipped = bucketContent.unequipped;
+    final items = bucketContent.items;
     final bucketHash = bucketContent.bucketHash;
-    final displayType = bucketOptionsState(context).getDisplayTypeForCharacterBucket(bucketHash);
-    final equippedDensity = displayType.equippedDensity;
-    final unequippedDensity = displayType.unequippedDensity;
-    final useBucketCount = bucketDef?.hasTransferDestination == true && bucketDef?.scope == BucketScope.Character;
-    final bucketDefCount = (bucketDef?.itemCount ?? 10) - (equipped != null ? 1 : 0);
-    final idealCount = unequippedDensity?.getIdealCount(constraints.maxWidth) ?? 5;
-    final unequippedCount = ((useBucketCount ? bucketDefCount : unequipped.length) / idealCount).ceil() * idealCount;
+    final displayType = bucketOptionsState(context).getDisplayTypeForVaultBucket(bucketHash);
+    final itemDensity = displayType.unequippedDensity;
+    final idealCount = itemDensity?.getIdealCount(constraints.maxWidth) ?? 5;
+    final itemCount = (items.length / idealCount).ceil() * idealCount;
     return [
       SliverSection.fixedHeight(
         itemCount: 1,
         itemHeight: 48,
         itemBuilder: (_, __) => BucketHeaderListItemWidget(
           bucketHash,
-          canEquip: equipped != null,
-          itemCount: bucketContent.unequipped.length + (bucketContent.equipped != null ? 1 : 0),
+          itemCount: bucketContent.items.length,
+          isVault: true,
+          canEquip: false,
         ),
       ),
-      if (equipped != null)
+      if (itemDensity != null)
         buildItemSection(
           context,
           bucketContent,
-          [equipped],
-          equippedDensity,
-          1,
-          1,
-          1,
-          false,
-        ),
-      if (unequippedDensity != null)
-        buildItemSection(
-          context,
-          bucketContent,
-          unequipped,
-          unequippedDensity,
+          items,
+          itemDensity,
           idealCount,
-          unequippedCount,
-          bucketDefCount,
-          bucketDef?.hasTransferDestination == true,
+          itemCount,
         ),
     ].whereType<SliverSection>().toList();
   }
 
   SliverSection? buildItemSection(
     BuildContext context,
-    EquipmentCharacterBucketContent bucketContent,
+    EquipmentVaultBucketContent bucketContent,
     List<DestinyItemInfo> items,
     InventoryItemWidgetDensity? density,
     int itemsPerRow,
     int itemCount,
-    int bucketCount,
-    bool canTransfer,
   ) {
     if (density == null) return null;
     final itemHeight = density.itemHeight;
@@ -140,9 +116,6 @@ class EquipmentCharacterTabContentWidget extends StatelessWidget with ManifestCo
         itemBuilder: (_, index) {
           if (index < items.length) {
             return buildItem(items[index], density);
-          }
-          if (canTransfer && index < bucketCount) {
-            return QuickTransferItem();
           }
           return EmptyItem(
             bucketHash: bucketContent.bucketHash,
@@ -159,9 +132,6 @@ class EquipmentCharacterTabContentWidget extends StatelessWidget with ManifestCo
         itemBuilder: (_, index) {
           if (index < items.length) {
             return buildItem(items[index], density);
-          }
-          if (canTransfer && index < bucketCount) {
-            return QuickTransferItem();
           }
           return EmptyItem(
             bucketHash: bucketContent.bucketHash,

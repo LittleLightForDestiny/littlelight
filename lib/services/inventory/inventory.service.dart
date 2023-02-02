@@ -600,7 +600,7 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
     if (freeSlots > count) {
       return;
     }
-    await profile.fetchProfileData(components: ProfileComponentGroups.inventories, skipUpdate: true);
+    await profile.fetchProfileData(components: ProfileComponentGroups.inventories);
     items = _getItemsOnBucket(bucketDefinition, characterId);
     itemCount = items.length;
     freeSlots = bucketSize - itemCount;

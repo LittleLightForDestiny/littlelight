@@ -44,10 +44,10 @@ class InventoryItemMods extends StatelessWidget with WishlistsConsumer {
     return Container(
       margin: plugMargin,
       decoration: BoxDecoration(
-        color: context.theme?.surfaceLayers,
+        color: context.theme.surfaceLayers,
         border: Border.all(
           width: .5,
-          color: context.theme?.onSurfaceLayers.layer0 ?? Colors.transparent,
+          color: context.theme.onSurfaceLayers.layer0 ?? Colors.transparent,
         ),
       ),
       width: plugSize,

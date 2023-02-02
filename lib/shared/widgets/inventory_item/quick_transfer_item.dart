@@ -18,16 +18,16 @@ class QuickTransferItem extends StatelessWidget {
     return Container(
       margin: EdgeInsets.all(borderWidth),
       decoration: BoxDecoration(
-        color: context.theme?.surfaceLayers.layer1,
+        color: context.theme.surfaceLayers.layer1,
         border: Border.all(
           width: borderWidth,
-          color: context.theme?.onSurfaceLayers.layer3 ?? Colors.transparent,
+          color: context.theme.onSurfaceLayers.layer3 ?? Colors.transparent,
         ),
       ),
       child: Center(
         child: Icon(
           Icons.add_circle_outline,
-          color: context.theme?.onSurfaceLayers.layer3,
+          color: context.theme.onSurfaceLayers.layer3,
         ),
       ),
     );

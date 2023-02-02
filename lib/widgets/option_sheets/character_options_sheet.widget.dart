@@ -31,6 +31,7 @@ import 'package:little_light/widgets/option_sheets/loadout_select_sheet.widget.d
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
+//TODO: deprecate this in favor of new context menu
 class CharacterOptionsSheet extends StatefulWidget {
   final DestinyCharacterComponent character;
 
@@ -436,10 +437,10 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
       ),
       onTap: () {
         Navigator.of(context).pop();
-        inventoryBloc(context).transferMultiple(
-          itemsInPostmaster,
-          widget.character.characterId,
-        );
+        // inventoryBloc(context).transferMultiple(
+        //   itemsInPostmaster,
+        //   widget.character.characterId,
+        // );
       },
     );
   }

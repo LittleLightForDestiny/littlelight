@@ -53,13 +53,13 @@ class TransferDestinationsWidget extends StatelessWidget {
   final List<DestinyCharacterInfo?>? transferCharacters;
   final List<DestinyCharacterInfo?>? equipCharacters;
   final List<DestinyCharacterInfo?>? unequipCharacters;
-  final OnTransferAction? onTransferAction;
+  final OnTransferAction? onAction;
 
   TransferDestinationsWidget({
     this.transferCharacters,
     this.equipCharacters,
     this.unequipCharacters,
-    this.onTransferAction,
+    this.onAction,
     Key? key,
   }) : super(key: key);
 
@@ -238,7 +238,7 @@ class TransferDestinationsWidget extends StatelessWidget {
             child: Material(
               color: Colors.transparent,
               child: InkWell(
-                onTap: () => onTransferAction?.call(
+                onTap: () => onAction?.call(
                   type,
                   character?.character,
                 ),

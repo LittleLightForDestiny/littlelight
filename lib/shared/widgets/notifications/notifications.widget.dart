@@ -25,7 +25,7 @@ class NotificationsWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        buildSubject(context),
+        // buildSubject(context),
         buildMainContainer(context),
       ].whereType<Widget>().toList(),
     );
@@ -36,7 +36,9 @@ class NotificationsWidget extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         duration: Duration(milliseconds: 500),
         decoration: BoxDecoration(
-          color: LittleLightTheme.of(context).surfaceLayers.layer2,
+          color: _state(context).actionIs<ErrorAction>()
+              ? context.theme.errorLayers.layer0
+              : context.theme.surfaceLayers.layer2,
           borderRadius: BorderRadius.circular(16),
         ),
         child: Row(
@@ -61,6 +63,7 @@ class NotificationsWidget extends StatelessWidget {
 
   Widget? buildMainMessage(BuildContext context) {
     return DefaultLoadingShimmer(
+      enabled: !_state(context).actionIs<ErrorAction>(),
       child: DefaultTextStyle(
         style: LittleLightTheme.of(context).textTheme.notification,
         child: Stack(
@@ -78,6 +81,13 @@ class NotificationsWidget extends StatelessWidget {
                 "Transferring".translate(context).toUpperCase(),
               ),
               _state(context).actionIs<SingleTransferAction>(),
+            ),
+            buildMainMessageAnimation(
+              context,
+              Text(
+                "Update failed".translate(context).toUpperCase(),
+              ),
+              _state(context).actionIs<UpdateErrorAction>(),
             ),
           ],
         ),

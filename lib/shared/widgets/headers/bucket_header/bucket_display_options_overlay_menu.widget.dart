@@ -11,12 +11,14 @@ const _options = BucketDisplayType.values;
 class BucketDisplayOptionsOverlayMenu extends BaseOverlayWidget {
   final OnSelectDisplayOption? onSelect;
   final BucketDisplayType currentValue;
+  final bool canEquip;
 
   BucketDisplayOptionsOverlayMenu({
     Key? key,
     required this.currentValue,
     required RenderBox sourceRenderBox,
     this.onSelect,
+    this.canEquip = false,
     required void Function() onClose,
   }) : super(
           canDismissOnBackground: true,
@@ -53,6 +55,7 @@ class BucketDisplayOptionsOverlayMenu extends BaseOverlayWidget {
           child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: _options
+                  .where((option) => canEquip || option.availableOnNonEquippableBucket)
                   .map(
                     (option) => Container(
                       height: itemSize,
@@ -90,7 +93,7 @@ class BucketDisplayMenuOptionWidget extends StatelessWidget {
       margin: EdgeInsets.all(4),
       child: Material(
         borderRadius: BorderRadius.circular(8),
-        color: isSelected ? context.theme?.primaryLayers.layer0 : context.theme?.surfaceLayers.layer1,
+        color: isSelected ? context.theme.primaryLayers.layer0 : context.theme.surfaceLayers.layer1,
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(8),

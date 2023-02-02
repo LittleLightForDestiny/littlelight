@@ -64,7 +64,7 @@ class CharacterVerticalTabMenuWidget extends CustomTabMenu {
             ),
             ManifestText<DestinyClassDefinition>(
               character.character.classHash,
-              style: context.textTheme?.button,
+              style: context.textTheme.button,
             ),
           ],
         ),
@@ -92,7 +92,7 @@ class CharacterVerticalTabMenuWidget extends CustomTabMenu {
             ),
             Text(
               "Vault".translate(context),
-              style: context.textTheme?.button,
+              style: context.textTheme.button,
             ),
           ],
         ),
@@ -113,7 +113,7 @@ class CharacterVerticalTabMenuWidget extends CustomTabMenu {
           margin: EdgeInsets.only(left: 2),
           width: 2,
           height: _buttonHeight - 16,
-          color: context.theme?.onSurfaceLayers.layer0,
+          color: context.theme.onSurfaceLayers.layer0,
         ));
   }
 

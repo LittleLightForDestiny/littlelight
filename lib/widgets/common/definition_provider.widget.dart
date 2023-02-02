@@ -12,6 +12,7 @@ class DefinitionProviderWidget<T> extends StatelessWidget with ManifestConsumer 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<T?>(
+      key: Key("definition_provider_widget_${T.toString()}_${hash}"),
       future: manifest.getDefinition<T>(hash),
       builder: ((context, snapshot) {
         final data = snapshot.data;

@@ -7,6 +7,15 @@ import 'package:little_light/shared/widgets/inventory_item/inventory_item.dart';
 import 'package:little_light/widgets/icon_fonts/littlelight_icons.dart';
 
 extension BucketDisplayTypeData on BucketDisplayType {
+  bool get availableOnNonEquippableBucket {
+    switch (this) {
+      case BucketDisplayType.OnlyEquipped:
+        return false;
+      default:
+        return true;
+    }
+  }
+
   IconData get equippableIcon {
     switch (this) {
       case BucketDisplayType.Hidden:

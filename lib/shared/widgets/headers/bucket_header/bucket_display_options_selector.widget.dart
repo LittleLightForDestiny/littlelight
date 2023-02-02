@@ -8,8 +8,15 @@ import 'package:provider/provider.dart';
 
 class BucketDisplayOptionsSelector extends StatelessWidget {
   final int bucketHash;
+  final bool isVault;
+  final bool canEquip;
 
-  const BucketDisplayOptionsSelector(this.bucketHash, {Key? key}) : super(key: key);
+  const BucketDisplayOptionsSelector(
+    this.bucketHash, {
+    this.isVault = false,
+    this.canEquip = false,
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -26,11 +33,13 @@ class BucketDisplayOptionsSelector extends StatelessWidget {
     );
   }
 
-  BucketDisplayType getCurrentType(BuildContext context) =>
-      context.watch<BucketOptionsBloc>().getDisplayTypeForCharacterBucket(bucketHash);
+  BucketDisplayType getCurrentType(BuildContext context) => isVault
+      ? context.watch<BucketOptionsBloc>().getDisplayTypeForVaultBucket(bucketHash)
+      : context.watch<BucketOptionsBloc>().getDisplayTypeForCharacterBucket(bucketHash);
 
-  void setCurrentType(BuildContext context, BucketDisplayType type) =>
-      context.read<BucketOptionsBloc>().setDisplayTypeForCharacterBucket(bucketHash, type);
+  void setCurrentType(BuildContext context, BucketDisplayType type) => isVault
+      ? context.read<BucketOptionsBloc>().setDisplayTypeForVaultBucket(bucketHash, type)
+      : context.read<BucketOptionsBloc>().setDisplayTypeForCharacterBucket(bucketHash, type);
 
   void openMenu(BuildContext context) {
     showOverlay(
@@ -38,6 +47,7 @@ class BucketDisplayOptionsSelector extends StatelessWidget {
       (context, rect, onClose) => BucketDisplayOptionsOverlayMenu(
         currentValue: getCurrentType(context),
         sourceRenderBox: rect,
+        canEquip: canEquip,
         onSelect: (type) {
           if (type != null) setCurrentType(context, type);
         },

@@ -110,7 +110,7 @@ class MultiselectManagementBlockWidget extends StatelessWidget
         }
       case InventoryAction.Transfer:
         {
-          inventoryBloc(context).transferMultiple(items.map((e) => e.item).toList(), destination.characterId);
+          // inventoryBloc(context).transferMultiple(items.map((e) => e.item).toList(), destination.characterId);
           selection.clear();
           break;
         }

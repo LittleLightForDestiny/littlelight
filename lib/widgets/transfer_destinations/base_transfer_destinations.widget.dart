@@ -17,6 +17,7 @@ import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:provider/provider.dart';
 
+//TODO: deprecate this in favor of new transfer widget
 class BaseTransferDestinationsWidget extends BaseDestinyStatefulItemWidget {
   BaseTransferDestinationsWidget(
       {DestinyItemComponent item,
@@ -127,13 +128,13 @@ class BaseTransferDestinationState<T extends BaseTransferDestinationsWidget> ext
         }
       case InventoryAction.Transfer:
         {
-          inventoryBloc(context).transfer(item, destination.characterId);
+          // inventoryBloc(context).transfer(item, destination.characterId);
           Navigator.pop(context);
           break;
         }
       case InventoryAction.Pull:
         {
-          inventoryBloc(context).transfer(item, destination.characterId);
+          // inventoryBloc(context).transfer(item, destination.characterId);
           Navigator.pop(context);
           break;
         }

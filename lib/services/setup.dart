@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:little_light/core/blocs/inventory/inventory.bloc.dart';
 import 'package:little_light/core/blocs/language/language.bloc.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
@@ -25,6 +26,7 @@ import 'package:little_light/services/storage/export.dart';
 import 'package:little_light/services/unilinks_handler/unilinks_handler.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/core/repositories/user_settings/user_settings.repository.dart';
+import 'package:provider/provider.dart';
 
 import 'https_override/https_overrides.dart';
 import 'littlelight/littlelight_api.service.dart';
@@ -79,8 +81,8 @@ initPostLoadingServices(BuildContext context) async {
   await settings.init();
   final destinySettings = getInjectedDestinySettingsService();
   await destinySettings.init();
-  final profile = getInjectedProfileService();
-  await profile.init();
+  final inventory = context.read<InventoryBloc>();
+  await inventory.init();
   final analytics = getInjectedAnalyticsService();
   analytics.updateCurrentUser();
 }

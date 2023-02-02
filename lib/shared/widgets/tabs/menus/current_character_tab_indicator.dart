@@ -68,7 +68,7 @@ class CurrentCharacterTabIndicator extends StatelessWidget {
                 child: Container(
                   child: ManifestText<DestinyClassDefinition>(
                     character.character.classHash,
-                    style: context.textTheme?.button,
+                    style: context.textTheme.button,
                     textAlign: TextAlign.right,
                     softWrap: false,
                   ),
@@ -106,7 +106,7 @@ class CurrentCharacterTabIndicator extends StatelessWidget {
                 child: Container(
                   child: Text(
                     "Vault".translate(context),
-                    style: context.textTheme?.button,
+                    style: context.textTheme.button,
                     textAlign: TextAlign.right,
                     softWrap: false,
                   ),
