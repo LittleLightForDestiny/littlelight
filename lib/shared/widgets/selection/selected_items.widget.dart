@@ -181,6 +181,7 @@ class SelectedItemsWidget extends StatelessWidget {
         onAction: (type, character) {
           final items = selectionBloc(context).selectedItems;
           if (type == TransferActionType.Transfer && items.length > 1) {
+            inventoryBloc(context).transferMultiple(items, character?.characterId);
             return;
           }
           if (type == TransferActionType.Transfer) {

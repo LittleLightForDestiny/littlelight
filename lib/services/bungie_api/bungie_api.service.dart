@@ -283,7 +283,7 @@ class Client with AuthConsumer, AppConfigConsumer implements HttpClient {
       if (cookies != null) {
         req.cookies.addAll(cookies);
       }
-      response = await req.close().timeout(Duration(seconds: 12));
+      response = await req.close().timeout(Duration(seconds: 15));
     } else {
       String body = config.bodyContentType == 'application/json' ? jsonEncode(config.body) : config.body;
       var req = await client.postUrl(Uri.parse("${BungieApiService.apiUrl}${config.url}$paramsString"));
@@ -293,7 +293,7 @@ class Client with AuthConsumer, AppConfigConsumer implements HttpClient {
       if (cookies != null) {
         req.cookies.addAll(cookies);
       }
-      response = await req.close().timeout(Duration(seconds: 12));
+      response = await req.close().timeout(Duration(seconds: 15));
     }
 
     if (response.statusCode == 401 && autoRefreshToken) {

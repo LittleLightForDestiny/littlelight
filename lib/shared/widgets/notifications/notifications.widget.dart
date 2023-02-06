@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/inventory/inventory.bloc.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
-import 'package:little_light/core/blocs/notifications/notification.dart';
+import 'package:little_light/core/blocs/notifications/base_notification_action.dart';
 import 'package:little_light/core/blocs/notifications/notifications.bloc.dart';
-import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/shared/widgets/animations/loop_animation.dart';
 import 'package:little_light/shared/widgets/animations/ping_pong_animation.dart';
-import 'package:little_light/shared/widgets/inventory_item/inventory_item.dart';
 import 'package:little_light/shared/widgets/loading/default_loading_shimmer.dart';
-
+import 'package:little_light/shared/widgets/notifications/transfer_notification_group.dart';
 import 'package:provider/provider.dart';
+
+import '../../../core/blocs/notifications/notification_actions.dart';
 
 class NotificationsWidget extends StatelessWidget {
   NotificationsBloc _state(BuildContext context) => context.watch<NotificationsBloc>();
   InventoryBloc _inventoryBloc(BuildContext context) => context.read<InventoryBloc>();
   InventoryBloc _inventoryState(BuildContext context) => context.watch<InventoryBloc>();
-  ProfileBloc _profileState(BuildContext context) => context.watch<ProfileBloc>();
 
   NotificationsWidget() : super();
 
@@ -25,7 +24,7 @@ class NotificationsWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        // buildSubject(context),
+        buildSubjects(context),
         buildMainContainer(context),
       ].whereType<Widget>().toList(),
     );
@@ -36,7 +35,7 @@ class NotificationsWidget extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         duration: Duration(milliseconds: 500),
         decoration: BoxDecoration(
-          color: _state(context).actionIs<ErrorAction>()
+          color: _state(context).actionIs<BaseErrorAction>()
               ? context.theme.errorLayers.layer0
               : context.theme.surfaceLayers.layer2,
           borderRadius: BorderRadius.circular(16),
@@ -49,21 +48,14 @@ class NotificationsWidget extends StatelessWidget {
         ));
   }
 
-  Widget? buildSubject(BuildContext context) {
-    final currentAction = _state(context).currentAction;
-    if (currentAction is SingleTransferAction) {
-      final itemInstanceId = currentAction.itemInstanceId;
-      if (itemInstanceId == null) return null;
-      final item = _profileState(context).getItemByInstanceId(itemInstanceId);
-      if (item == null) return null;
-      return InventoryItemWidget(item);
-    }
-    return null;
+  Widget? buildSubjects(BuildContext context) {
+    final transferActions = _state(context).actionsByType<SingleTransferAction>();
+    return TransferNotificationGroup(transferActions);
   }
 
   Widget? buildMainMessage(BuildContext context) {
     return DefaultLoadingShimmer(
-      enabled: !_state(context).actionIs<ErrorAction>(),
+      enabled: !_state(context).actionIs<BaseErrorAction>(),
       child: DefaultTextStyle(
         style: LittleLightTheme.of(context).textTheme.notification,
         child: Stack(

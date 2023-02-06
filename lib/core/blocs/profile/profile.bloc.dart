@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:bungie_api/destiny2.dart';
 import 'package:collection/collection.dart';
@@ -328,6 +329,9 @@ class ProfileBloc extends ChangeNotifier
     return characters?.firstWhereOrNull((c) => c.character.characterId == characterId)?.character;
   }
 
+  DestinyCharacterInfo? getCharacterById(String? id) =>
+      _characters?.firstWhereOrNull((element) => element.characterId == id);
+
   DestinyCharacterActivitiesComponent? getCharacterActivities(String characterId) {
     return _cachedProfileResponse?.characterActivities?.data?[characterId];
   }
@@ -460,9 +464,9 @@ class ProfileBloc extends ChangeNotifier
     final characterId = itemInfo.characterId;
     if (itemHash == null) throw 'TODO: specific exception';
     if (characterId == null) throw 'TODO: specific exception';
+    await Future.delayed(Duration(milliseconds: 500 + Random().nextInt(2000)));
     // final result = await bungieAPI.pullFromPostMaster(itemHash, stackSize, itemInstanceId, characterId);
     if (itemInstanceId != null) {
-      print(itemInstanceId);
       await _updateInstancedItemLocation(itemInfo, false, characterId);
     }
   }
@@ -471,8 +475,8 @@ class ProfileBloc extends ChangeNotifier
     final itemHash = itemInfo.item.itemHash;
     final itemInstanceId = itemInfo.item.itemInstanceId;
     if (itemHash == null) throw 'TODO: specific exception';
+    await Future.delayed(Duration(milliseconds: 500 + Random().nextInt(2000)));
     // await bungieAPI.transferItem(itemHash, stackSize, transferToVault, itemInstanceId, characterId);
-
     if (itemInstanceId != null) {
       await _updateInstancedItemLocation(itemInfo, transferToVault, characterId);
     }

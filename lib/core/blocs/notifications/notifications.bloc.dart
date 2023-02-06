@@ -1,18 +1,18 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/core/blocs/notifications/notification.dart';
+import 'package:little_light/core/blocs/notifications/base_notification_action.dart';
 
 class NotificationsBloc extends ChangeNotifier {
-  List<NotificationAction> _actions = [];
-  NotificationAction? get currentAction => _actions.firstOrNull;
+  List<BaseNotificationAction> _actions = [];
+  BaseNotificationAction? get currentAction => _actions.firstOrNull;
   bool get busy => _actions.length > 0;
   NotificationsBloc();
 
-  NotificationAction createNotification(NotificationAction action) {
-    final existing = _actions.firstWhereOrNull((element) => action.id == element.id);
+  T createNotification<T extends BaseNotificationAction>(T action) {
+    final existing = _actions.whereType<T>().firstWhereOrNull((element) => action.id == element.id);
     if (existing != null) return existing;
     action.addListener(() {
-      if (action.isFinished) _actions.remove(action);
+      if (action.shouldDismiss) _actions.remove(action);
       notifyListeners();
     });
     _actions.add(action);
@@ -20,5 +20,9 @@ class NotificationsBloc extends ChangeNotifier {
     return action;
   }
 
-  bool actionIs<T extends NotificationAction>() => currentAction is T;
+  bool actionIs<T extends BaseNotificationAction>() => currentAction is T;
+
+  List<T> actionsByType<T extends BaseNotificationAction>() {
+    return _actions.whereType<T>().toList();
+  }
 }
