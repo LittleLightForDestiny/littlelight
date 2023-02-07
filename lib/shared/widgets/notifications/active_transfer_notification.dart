@@ -13,7 +13,7 @@ import 'package:little_light/shared/widgets/loading/default_loading_shimmer.dart
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 
 const _pendingOpacity = .4;
-const _animationDuration = Duration(milliseconds: 200);
+const _animationDuration = Duration(milliseconds: 300);
 
 const _stepsOrder = [
   TransferSteps.PullFromPostmaster,
@@ -35,7 +35,10 @@ extension on TransferSteps {
 
 class ActiveTransferNotificationWidget extends StatelessWidget {
   final SingleTransferAction notification;
-  ActiveTransferNotificationWidget(this.notification);
+  ActiveTransferNotificationWidget(
+    this.notification, {
+    Key? key,
+  }) : super(key: key);
 
   Widget build(BuildContext context) {
     return buildAnimationContainers(
@@ -51,7 +54,7 @@ class ActiveTransferNotificationWidget extends StatelessWidget {
               color: context.theme.surfaceLayers.layer2,
               borderRadius: BorderRadius.circular(8),
             ),
-            child: notification.isFinished ? buildFinishedContent(context) : buildInProgressContent(context),
+            child: buildSmallContent(context),
           ),
         ],
       ),
@@ -97,12 +100,11 @@ class ActiveTransferNotificationWidget extends StatelessWidget {
           ),
         ]),
       );
-  Widget buildFinishedContent(BuildContext context) {
+
+  Widget buildSmallContent(BuildContext context) {
     final hash = notification.item.item.itemHash;
     if (hash == null) return Container();
     return Row(children: [
-      buildStatusMessage(context),
-      Container(width: 8),
       buildTransferPath(context),
       Container(width: 8),
       Container(
@@ -117,6 +119,18 @@ class ActiveTransferNotificationWidget extends StatelessWidget {
           ),
         ),
       ),
+      AnimatedSize(
+        duration: _animationDuration,
+        child: notification.isFinished
+            ? Container(
+                padding: EdgeInsets.only(left: 4),
+                child: Icon(
+                  FontAwesomeIcons.circleCheck,
+                  color: context.theme.successLayers,
+                ),
+              )
+            : Container(),
+      )
     ]);
   }
 

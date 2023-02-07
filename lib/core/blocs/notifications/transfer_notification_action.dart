@@ -69,7 +69,7 @@ class SingleTransferAction extends BaseNotificationAction {
   void success() async {
     this._isFinished = true;
     notifyListeners();
-    await Future.delayed(Duration(seconds: 3));
+    await Future.delayed(Duration(seconds: 1));
     _shouldPlayDismissAnimation = true;
     notifyListeners();
     await Future.delayed(Duration(milliseconds: 300));

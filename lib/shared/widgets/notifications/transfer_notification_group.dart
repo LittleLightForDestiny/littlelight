@@ -38,9 +38,8 @@ class TransferNotificationGroup extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: active.reversed
-          .map((notification) => ActiveTransferNotificationWidget(
-                notification,
-              ))
+          .map((notification) => ActiveTransferNotificationWidget(notification,
+              key: Key("active_transfer_notification_${notification.id}")))
           .toList(),
     );
   }

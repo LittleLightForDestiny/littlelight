@@ -18,7 +18,7 @@ import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:provider/provider.dart';
 
 const _refreshDelay = Duration(seconds: 30);
-const _maxConcurrentTransfers = 4;
+const _maxConcurrentTransfers = 5;
 
 class _QueuedTransfer {
   bool started = false;
