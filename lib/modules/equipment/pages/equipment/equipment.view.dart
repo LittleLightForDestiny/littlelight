@@ -96,7 +96,12 @@ class EquipmentView extends StatelessWidget {
                           ),
                         ),
                       ])),
-                      Positioned(bottom: 8, right: 8, child: NotificationsWidget()),
+                      Positioned(
+                        left: 8,
+                        bottom: 8,
+                        right: 8,
+                        child: NotificationsWidget(),
+                      ),
                     ]),
                   ),
                   SelectedItemsWidget(),

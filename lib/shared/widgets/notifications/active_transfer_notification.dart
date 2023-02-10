@@ -1,16 +1,15 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/blocs/notifications/notification_actions.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/shared/widgets/character/character_icon.widget.dart';
 import 'package:little_light/shared/widgets/character/postmaster_icon.widget.dart';
 import 'package:little_light/shared/widgets/character/vault_icon.widget.dart';
 import 'package:little_light/shared/widgets/inventory_item/inventory_item_icon.dart';
-import 'package:little_light/shared/widgets/inventory_item/low_density_inventory_item.dart';
 import 'package:little_light/shared/widgets/loading/default_loading_shimmer.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
+import 'package:little_light/widgets/common/manifest_image.widget.dart';
 
 const _pendingOpacity = .4;
 const _animationDuration = Duration(milliseconds: 300);
@@ -22,6 +21,8 @@ const _stepsOrder = [
   TransferSteps.MoveToCharacter,
   TransferSteps.EquipOnCharacter,
 ];
+
+const _armorIconPresentationNodeHash = 615947643;
 
 extension on TransferSteps {
   int? diff(TransferSteps? other) {
@@ -51,10 +52,10 @@ class ActiveTransferNotificationWidget extends StatelessWidget {
             padding: EdgeInsets.all(8),
             margin: EdgeInsets.all(.5),
             decoration: BoxDecoration(
-              color: context.theme.surfaceLayers.layer2,
+              color: notification.hasError ? context.theme.errorLayers.layer2 : context.theme.surfaceLayers.layer2,
               borderRadius: BorderRadius.circular(8),
             ),
-            child: buildSmallContent(context),
+            child: buildNotificationContent(context),
           ),
         ],
       ),
@@ -80,66 +81,71 @@ class ActiveTransferNotificationWidget extends StatelessWidget {
     );
   }
 
-  Widget buildInProgressContent(BuildContext context) => IntrinsicHeight(
-        child: Row(children: [
-          IntrinsicWidth(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                buildStatusMessage(context),
-                buildTransferPath(context),
-              ],
-            ),
-          ),
-          Container(width: 8),
-          Container(
-            width: 64,
-            height: 64,
-            child: LowDensityInventoryItem(notification.item),
-          ),
-        ]),
-      );
-
-  Widget buildSmallContent(BuildContext context) {
+  Widget buildNotificationContent(BuildContext context) {
     final hash = notification.item.item.itemHash;
     if (hash == null) return Container();
-    return Row(children: [
-      buildTransferPath(context),
-      Container(width: 8),
-      Container(
-        width: 32,
-        height: 32,
-        child: DefinitionProviderWidget<DestinyInventoryItemDefinition>(
-          hash,
-          (def) => InventoryItemIcon(
-            notification.item,
-            definition: def,
-            borderSize: .5,
-          ),
-        ),
-      ),
-      AnimatedSize(
-        duration: _animationDuration,
-        child: notification.isFinished
-            ? Container(
-                padding: EdgeInsets.only(left: 4),
-                child: Icon(
-                  FontAwesomeIcons.circleCheck,
-                  color: context.theme.successLayers,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            buildTransferPath(context),
+            Container(width: 8),
+            Container(
+              width: 32,
+              height: 32,
+              child: DefinitionProviderWidget<DestinyInventoryItemDefinition>(
+                hash,
+                (def) => InventoryItemIcon(
+                  notification.item,
+                  definition: def,
+                  borderSize: .5,
                 ),
-              )
-            : Container(),
-      )
-    ]);
+              ),
+            ),
+            AnimatedSize(
+              duration: _animationDuration,
+              child: notification.finishedWithSuccess
+                  ? Container(
+                      padding: EdgeInsets.only(left: 8),
+                      child: Icon(
+                        FontAwesomeIcons.squareCheck,
+                        size: 24,
+                        color: context.theme.successLayers,
+                      ),
+                    )
+                  : Container(),
+            )
+          ],
+        ),
+        if (notification.hasError)
+          Container(
+            margin: EdgeInsets.only(top: 8),
+            child: Text(
+              notification.errorMessage ?? "",
+              style: context.textTheme.body,
+              textAlign: TextAlign.end,
+            ),
+          ),
+      ],
+    );
   }
 
   Widget buildBackground(BuildContext context) {
-    if (notification.isFinished) {
+    if (notification.finishedWithSuccess) {
       return AnimatedContainer(
           duration: _animationDuration,
           decoration: BoxDecoration(
             color: context.theme.successLayers.layer1,
+            borderRadius: BorderRadius.circular(8),
+          ));
+    }
+    if (notification.hasError) {
+      return AnimatedContainer(
+          duration: _animationDuration,
+          decoration: BoxDecoration(
+            color: context.theme.errorLayers.layer1,
             borderRadius: BorderRadius.circular(8),
           ));
     }
@@ -151,50 +157,6 @@ class ActiveTransferNotificationWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
       ),
     ));
-  }
-
-  Widget buildStatusMessage(BuildContext context) {
-    if (notification.isFinished) {
-      return DefaultTextStyle(style: context.textTheme.notification, child: buildStatusMessageText(context));
-    }
-    return DefaultLoadingShimmer(
-      child: DefaultTextStyle(
-        style: context.textTheme.notification,
-        child: buildStatusMessageText(context),
-      ),
-    );
-  }
-
-  Widget buildStatusMessageText(BuildContext context) {
-    if (notification.isFinished) {
-      return Text("Finished".translate(context));
-    }
-    switch (notification.currentStep) {
-      case TransferSteps.PullFromPostmaster:
-        return Text("Pulling from postmaster".translate(context).toUpperCase());
-      case TransferSteps.Unequip:
-        return Text("Unequipping".translate(context).toUpperCase());
-      case TransferSteps.AllocateSpaceToPullFromPostmaster:
-      case TransferSteps.AllocateSpaceToMoveToCharacter:
-        return Text("Allocating space".translate(context).toUpperCase());
-      case TransferSteps.MoveToVault:
-        return Text("Moving to vault".translate(context).toUpperCase());
-      case TransferSteps.MoveToCharacter:
-        final character = notification.destinationCharacter?.character;
-        final classHash = character?.classHash;
-        final genderHash = character?.genderHash;
-        if (classHash == null) return Text("Transferring".translate(context).toUpperCase());
-        return DefinitionProviderWidget<DestinyClassDefinition>(
-            classHash,
-            (def) => Text("Moving to {character}".translate(context, replace: {
-                  "character": def.genderedClassNamesByGenderHash?[genderHash] ?? def.displayProperties?.name ?? ""
-                }).toUpperCase()));
-      case TransferSteps.EquipOnCharacter:
-        return Text("Equipping".translate(context).toUpperCase());
-
-      default:
-        return Container();
-    }
   }
 
   Widget buildTransferPath(BuildContext context) {
@@ -210,6 +172,9 @@ class ActiveTransferNotificationWidget extends StatelessWidget {
             requiredSteps: {TransferSteps.PullFromPostmaster},
             progressStep: TransferSteps.PullFromPostmaster),
         buildTransferArrow(context, step: TransferSteps.PullFromPostmaster),
+        buildTransferStepEntity(context, buildEquipIcon(context),
+            requiredSteps: {TransferSteps.Unequip}, progressStep: TransferSteps.Unequip),
+        buildTransferArrow(context, step: TransferSteps.Unequip),
         if (sourceCharacter != null)
           buildTransferStepEntity(
               context,
@@ -238,6 +203,9 @@ class ActiveTransferNotificationWidget extends StatelessWidget {
                 borderWidth: .5,
               ),
               requiredSteps: {TransferSteps.MoveToCharacter, TransferSteps.EquipOnCharacter}),
+        buildTransferArrow(context, step: TransferSteps.EquipOnCharacter),
+        buildTransferStepEntity(context, buildEquipIcon(context),
+            requiredSteps: {TransferSteps.EquipOnCharacter}, progressStep: TransferSteps.EquipOnCharacter),
       ].whereType<Widget>().toList(),
     );
   }
@@ -250,7 +218,7 @@ class ActiveTransferNotificationWidget extends StatelessWidget {
   }) {
     if (!this.notification.hasSteps(requiredSteps)) return null;
     final progressStepDiff = notification.currentStep?.diff(progressStep) ?? -1;
-    final isFinishedOrInProgress = notification.isFinished || progressStepDiff >= 0;
+    final isFinishedOrInProgress = notification.finishedWithSuccess || progressStepDiff >= 0;
     return AnimatedOpacity(
       key: Key("step_animated_opacity_$progressStep"),
       duration: _animationDuration,
@@ -270,7 +238,7 @@ class ActiveTransferNotificationWidget extends StatelessWidget {
   }) {
     if (!this.notification.hasSteps({step})) return null;
     final progressStepDiff = notification.currentStep?.diff(step) ?? -1;
-    final isFinished = notification.isFinished || progressStepDiff > 0;
+    final isFinished = notification.finishedWithSuccess || progressStepDiff > 0;
     final isInProgress = progressStepDiff == 0;
     final arrow = Container(
       margin: EdgeInsets.only(right: 4),
@@ -281,9 +249,25 @@ class ActiveTransferNotificationWidget extends StatelessWidget {
     if (isFinished) {
       return arrow;
     }
+    if (isInProgress && notification.hasError) {
+      return Container(
+        margin: EdgeInsets.only(right: 4),
+        width: 32,
+        height: 32,
+        child: Icon(
+          FontAwesomeIcons.circleXmark,
+          size: 24,
+        ),
+      );
+    }
     if (isInProgress) {
       return DefaultLoadingShimmer(child: arrow);
     }
     return Opacity(opacity: _pendingOpacity, child: arrow);
   }
+
+  Widget buildEquipIcon(BuildContext context) => ManifestImageWidget<DestinyPresentationNodeDefinition>(
+        _armorIconPresentationNodeHash,
+        color: context.theme.onSurfaceLayers.layer1,
+      );
 }

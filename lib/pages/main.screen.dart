@@ -1,15 +1,14 @@
 // @dart=2.9
 
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/modules/collections/pages/home/collections_root.page.dart';
 import 'package:little_light/modules/equipment/pages/equipment/equipment.page.dart';
 import 'package:little_light/modules/loadouts/pages/home/loadouts_home.page.dart';
-import 'package:little_light/pages/equipment/equipment.screen.dart';
 import 'package:little_light/pages/progress/progress.screen.dart';
 import 'package:little_light/pages/triumphs/triumphs_root.page.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/littlelight/item_notes.consumer.dart';
-import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/platform_capabilities.dart';
@@ -41,12 +40,8 @@ class MainScreenState extends State<MainScreen>
 
   getInitScreen() async {
     switch (userSettings.startingPage) {
-      case LittleLightPersistentPage.NewEquipment:
-        currentScreen = EquipmentPage();
-        break;
-
       case LittleLightPersistentPage.Equipment:
-        currentScreen = EquipmentScreen();
+        currentScreen = EquipmentPage();
         break;
 
       case LittleLightPersistentPage.Progress:
@@ -66,7 +61,7 @@ class MainScreenState extends State<MainScreen>
         break;
 
       default:
-        currentScreen = EquipmentScreen();
+        currentScreen = EquipmentPage();
         break;
     }
 

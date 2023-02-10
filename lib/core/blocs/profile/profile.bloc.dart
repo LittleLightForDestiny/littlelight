@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile_component_groups.dart';
+import 'package:little_light/models/bungie_api.exception.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
@@ -465,6 +466,10 @@ class ProfileBloc extends ChangeNotifier
     if (itemHash == null) throw 'TODO: specific exception';
     if (characterId == null) throw 'TODO: specific exception';
     await Future.delayed(Duration(milliseconds: 500 + Random().nextInt(2000)));
+    final shouldThrow = Random().nextInt(10) > 5;
+    if (shouldThrow) {
+      throw BungieApiException.fromJson({"message": "random error"}, 500);
+    }
     // final result = await bungieAPI.pullFromPostMaster(itemHash, stackSize, itemInstanceId, characterId);
     if (itemInstanceId != null) {
       await _updateInstancedItemLocation(itemInfo, false, characterId);
@@ -475,12 +480,35 @@ class ProfileBloc extends ChangeNotifier
     final itemHash = itemInfo.item.itemHash;
     final itemInstanceId = itemInfo.item.itemInstanceId;
     if (itemHash == null) throw 'TODO: specific exception';
-    await Future.delayed(Duration(milliseconds: 500 + Random().nextInt(2000)));
-    // await bungieAPI.transferItem(itemHash, stackSize, transferToVault, itemInstanceId, characterId);
+    await bungieAPI.transferItem(itemHash, stackSize, transferToVault, itemInstanceId, characterId);
     if (itemInstanceId != null) {
       await _updateInstancedItemLocation(itemInfo, transferToVault, characterId);
     }
     //TODO: handle non instanced / multi stacked items
+  }
+
+  Future<void> equipItem(DestinyItemInfo itemInfo) async {
+    final itemInstanceId = itemInfo.item.itemInstanceId;
+    final characterId = itemInfo.characterId;
+    final bucketHash = itemInfo.item.bucketHash;
+    if (itemInstanceId == null) throw 'TODO: specific exception';
+    if (characterId == null) throw 'TODO: specific exception';
+    if (bucketHash == null) throw 'TODO: specific exception';
+    await bungieAPI.equipItem(itemInstanceId, characterId);
+    final currentlyEquipped = allItems.firstWhereOrNull((i) =>
+        i.item.bucketHash == bucketHash && //
+        i.characterId == characterId &&
+        (i.instanceInfo?.isEquipped ?? false));
+    currentlyEquipped?.instanceInfo?.isEquipped = false;
+    itemInfo.instanceInfo?.isEquipped = true;
+    final currentlyEquippedIndex = allItems.indexOf(currentlyEquipped ?? itemInfo);
+    final newlyEquippedIndex = allItems.indexOf(itemInfo);
+    allItems.insert(currentlyEquippedIndex + 1, itemInfo);
+    allItems.removeAt(currentlyEquippedIndex);
+    allItems.insert(newlyEquippedIndex + 1, currentlyEquipped ?? itemInfo);
+    allItems.removeAt(newlyEquippedIndex);
+    notifyListeners();
+    _lastLocalChange = DateTime.now().toUtc();
   }
 
   Future<void> _updateInstancedItemLocation(DestinyItemInfo itemInfo, bool toVault, String characterId) async {

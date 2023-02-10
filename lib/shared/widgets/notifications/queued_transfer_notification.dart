@@ -18,13 +18,10 @@ class QueuedTransferNotificationWidget extends StatelessWidget {
       margin: EdgeInsets.only(left: 4),
       child: DefinitionProviderWidget<DestinyInventoryItemDefinition>(
         hash,
-        (def) => InkWell(
-          child: InventoryItemIcon(
-            notification.item,
-            definition: def,
-            borderSize: .5,
-          ),
-          onTap: () => notification.createSteps(isOnPostmaster: true, moveToVault: true),
+        (def) => InventoryItemIcon(
+          notification.item,
+          definition: def,
+          borderSize: .5,
         ),
       ),
     );

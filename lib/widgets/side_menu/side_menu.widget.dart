@@ -14,7 +14,6 @@ import 'package:little_light/modules/loadouts/pages/home/loadouts_home.page.dart
 import 'package:little_light/modules/settings/pages/about/about.screen.dart';
 import 'package:little_light/pages/dev_tools.screen.dart';
 import 'package:little_light/pages/duplicated_items.screen.dart';
-import 'package:little_light/pages/equipment/equipment.screen.dart';
 import 'package:little_light/pages/languages/languages.page_route.dart';
 import 'package:little_light/pages/objectives/objectives.screen.dart';
 import 'package:little_light/pages/progress/progress.screen.dart';
@@ -69,9 +68,6 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer {
             children: <Widget>[
               profileInfo(context),
               menuItem(context, Text("Equipment".translate(context)), onTap: () {
-                open(context, EquipmentScreen());
-              }),
-              menuItem(context, Text("NewEquipment".translate(context)), onTap: () {
                 open(context, EquipmentPage());
               }),
               menuItem(context, Text("Progress".translate(context)), onTap: () {

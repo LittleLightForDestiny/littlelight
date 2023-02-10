@@ -23,8 +23,10 @@ class SingleTransferAction extends BaseNotificationAction {
   bool _shouldPlayDismissAnimation = false;
   bool _dismissAnimationFinished = false;
   String? _transferErrorMessage;
+  DateTime _createdAt;
 
-  SingleTransferAction({required this.item, required this.sourceCharacter, required this.destinationCharacter});
+  SingleTransferAction({required this.item, required this.sourceCharacter, required this.destinationCharacter})
+      : _createdAt = DateTime.now();
 
   set currentStep(TransferSteps? step) {
     this._currentStep = step;
@@ -54,16 +56,25 @@ class SingleTransferAction extends BaseNotificationAction {
 
   bool get active => this._steps != null;
 
-  String get id => "transfer-action-${item.item.itemHash}-${item.item.itemInstanceId}";
+  String get id =>
+      "transfer-action-${item.item.itemHash}-${item.item.itemInstanceId}-${_createdAt.millisecondsSinceEpoch}";
 
-  bool get isFinished => _isFinished;
+  bool get finishedWithSuccess => _isFinished;
   bool get shouldPlayDismissAnimation => _shouldPlayDismissAnimation;
   bool get dismissAnimationFinished => _dismissAnimationFinished;
   bool get hasError => _transferErrorMessage != null;
   String? get errorMessage => _transferErrorMessage;
-  void error(String message) {
+  void error(String message) async {
     this._transferErrorMessage = message;
     notifyListeners();
+    await Future.delayed(Duration(seconds: 4));
+    _shouldPlayDismissAnimation = true;
+    notifyListeners();
+    await Future.delayed(Duration(milliseconds: 300));
+    _dismissAnimationFinished = true;
+    notifyListeners();
+    await Future.delayed(Duration(milliseconds: 200));
+    this.dismiss();
   }
 
   void success() async {

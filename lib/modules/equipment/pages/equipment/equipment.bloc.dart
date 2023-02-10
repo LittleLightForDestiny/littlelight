@@ -57,7 +57,7 @@ class EquipmentBloc extends ChangeNotifier with UserSettingsConsumer, ManifestCo
   }
   _init() {
     _profileBloc.addListener(_update);
-    userSettings.startingPage = LittleLightPersistentPage.NewEquipment;
+    userSettings.startingPage = LittleLightPersistentPage.Equipment;
     _update();
   }
 

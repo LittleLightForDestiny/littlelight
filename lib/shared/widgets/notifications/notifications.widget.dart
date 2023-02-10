@@ -41,6 +41,7 @@ class NotificationsWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
         ),
         child: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
             buildMainMessage(context),
             buildRefreshButtonContainer(context),

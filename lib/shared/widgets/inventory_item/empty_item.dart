@@ -34,7 +34,7 @@ class EmptyItem extends StatelessWidget {
         Positioned.fill(
           child: CustomPaint(
             painter: DiamondShapePainter.color(
-              context.theme.onSurfaceLayers.layer3 ?? Colors.transparent,
+              context.theme.onSurfaceLayers.layer3,
             ),
           ),
         ),
@@ -43,7 +43,7 @@ class EmptyItem extends StatelessWidget {
             padding: EdgeInsets.all(borderWidth),
             child: CustomPaint(
               painter: DiamondShapePainter.color(
-                context.theme.surfaceLayers.layer1 ?? Colors.transparent,
+                context.theme.surfaceLayers.layer1,
               ),
             ),
           ),
@@ -66,7 +66,7 @@ class EmptyItem extends StatelessWidget {
         color: context.theme.surfaceLayers.layer1,
         border: Border.all(
           width: borderWidth,
-          color: context.theme.onSurfaceLayers.layer3 ?? Colors.transparent,
+          color: context.theme.onSurfaceLayers.layer3,
         ),
       ),
     );

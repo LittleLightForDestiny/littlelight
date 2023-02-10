@@ -186,6 +186,14 @@ class SelectedItemsWidget extends StatelessWidget {
           }
           if (type == TransferActionType.Transfer) {
             inventoryBloc(context).transfer(items.first, character?.characterId);
+            return;
+          }
+          if (type == TransferActionType.Equip && items.length > 1) {
+            return;
+          }
+          if (type == TransferActionType.Equip) {
+            inventoryBloc(context).equip(items.first, character?.characterId);
+            return;
           }
         },
       ),

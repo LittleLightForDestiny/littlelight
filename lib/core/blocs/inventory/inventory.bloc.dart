@@ -5,6 +5,8 @@ import 'package:bungie_api/enums/platform_error_codes.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/app_lifecycle/app_lifecycle.bloc.dart';
+import 'package:little_light/core/blocs/inventory/exceptions/inventory_exceptions.dart';
+import 'package:little_light/core/blocs/inventory/transfer_error_messages.dart';
 import 'package:little_light/core/blocs/notifications/notification_actions.dart';
 import 'package:little_light/core/blocs/notifications/notifications.bloc.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
@@ -25,11 +27,13 @@ class _QueuedTransfer {
   final DestinyItemInfo item;
   final DestinyCharacterInfo? destinationCharacter;
   final SingleTransferAction? notification;
+  final bool equip;
 
   _QueuedTransfer({
     required this.item,
     required this.destinationCharacter,
     required this.notification,
+    this.equip = false,
   });
 }
 
@@ -43,6 +47,7 @@ class _BusySlot {
 }
 
 class InventoryBloc extends ChangeNotifier with ManifestConsumer {
+  final BuildContext _context;
   final NotificationsBloc _notificationsBloc;
   final ProfileBloc _profileBloc;
   final AppLifecycleBloc _lifecycleBloc;
@@ -52,12 +57,14 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
 
   bool _isBusy = false;
   bool get isBusy => _isBusy;
-  bool shouldUseAutoTransfer = true;
+  bool shouldUseAutoTransfer = false;
 
+  List<String> instanceIdsToAvoid = [];
   List<_QueuedTransfer> _transferQueue = [];
 
   InventoryBloc(BuildContext context)
-      : _notificationsBloc = context.read<NotificationsBloc>(),
+      : _context = context,
+        _notificationsBloc = context.read<NotificationsBloc>(),
         _profileBloc = context.read<ProfileBloc>(),
         _lifecycleBloc = context.read<AppLifecycleBloc>();
 
@@ -123,13 +130,34 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     DestinyItemInfo item,
     String? characterId,
   ) async {
-    _addTransferToQueue(item, characterId);
+    await _addTransferToQueue(item, characterId);
     await _startTransferQueue();
   }
 
-  void _addTransferToQueue(DestinyItemInfo item, String? characterId) {
+  Future<void> equip(
+    DestinyItemInfo item,
+    String? characterId,
+  ) async {
+    await _addTransferToQueue(item, characterId, equip: true);
+    await _startTransferQueue();
+  }
+
+  Future<void> _addTransferToQueue(DestinyItemInfo item, String? characterId, {bool equip = false}) async {
     final sourceCharacter = _profileBloc.getCharacterById(item.characterId);
     final destinationCharacter = _profileBloc.getCharacterById(characterId);
+    if (sourceCharacter?.characterId == destinationCharacter?.characterId &&
+        sourceCharacter?.characterId != null &&
+        item.item.bucketHash != InventoryBucket.lostItems &&
+        equip == (item.instanceInfo?.isEquipped ?? false)) {
+      print("item is already on destination. Skipping.");
+      return;
+    }
+    final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.item.itemHash);
+    if (def?.nonTransferrable == true && sourceCharacter?.characterId != destinationCharacter?.characterId) {
+      print("can't transfer nonTransferrable item to a different character");
+      return;
+    }
+
     final notification = _notificationsBloc.createNotification(SingleTransferAction(
       item: item,
       sourceCharacter: sourceCharacter,
@@ -139,7 +167,12 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
       item: item,
       destinationCharacter: destinationCharacter,
       notification: notification,
+      equip: equip,
     );
+    final instanceId = item.item.itemInstanceId;
+    if (instanceId != null) {
+      instanceIdsToAvoid.add(instanceId);
+    }
     _transferQueue.add(transfer);
   }
 
@@ -147,6 +180,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     final transfersWaiting = _transferQueue.where((t) => !t.started);
     if (transfersWaiting.length == 0) {
       _isBusy = false;
+      instanceIdsToAvoid.clear();
       return;
     }
     _isBusy = true;
@@ -159,6 +193,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
       next.destinationCharacter?.characterId,
       notification: next.notification,
       transfer: next,
+      equip: next.equip,
     );
     await Future.delayed(Duration(milliseconds: 100));
     _startTransferQueue();
@@ -192,7 +227,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
 
   Future<void> transferMultiple(List<DestinyItemInfo> items, String? characterId) async {
     for (final item in items) {
-      _addTransferToQueue(item, characterId);
+      await _addTransferToQueue(item, characterId);
     }
     await _startTransferQueue();
   }
@@ -201,15 +236,14 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     DestinyItemInfo item,
     String? characterId, {
     int? stackSize,
-    List<String> idsToAvoid = const [],
-    List<int> hashesToAvoid = const [],
     SingleTransferAction? notification,
     _QueuedTransfer? transfer,
+    bool equip = false,
   }) async {
     final bool isInstanced = item.item.itemInstanceId != null;
     transfer?.started = true;
     if (isInstanced) {
-      await _transferInstanced(item, characterId, idsToAvoid: idsToAvoid, notification: notification);
+      await _transferInstanced(item, characterId, notification: notification, shouldEquip: equip);
     }
     _transferQueue.remove(transfer);
     _startTransferQueue();
@@ -218,8 +252,8 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
   Future<void> _transferInstanced(
     DestinyItemInfo itemInfo,
     String? characterId, {
-    List<String> idsToAvoid = const <String>[],
     SingleTransferAction? notification,
+    bool shouldEquip = false,
   }) async {
     final item = itemInfo.item;
     final itemHash = item.itemHash;
@@ -232,63 +266,145 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     final isOnVault = item.location == ItemLocation.Vault;
     final shouldMoveToVault = sourceCharacterId != destinationCharacterId && !isOnVault;
     final shouldMoveToOtherCharacter = sourceCharacterId != destinationCharacterId && destinationCharacterId != null;
-    //TODO: handle the need to unequip
+    final isEquipped = itemInfo.instanceInfo?.isEquipped ?? false;
     notification?.createSteps(
+      isEquipped: isEquipped,
       isOnPostmaster: isOnPostmaster,
       moveToVault: shouldMoveToVault,
       moveToCharacter: shouldMoveToOtherCharacter,
+      equipOnCharacter: shouldEquip,
     );
     if (isOnPostmaster) {
       if (sourceCharacterId == null) throw ("Missing item owner when pulling from postmaster");
-      print('moving from postmaster');
-
-      try {
-        notification?.currentStep = TransferSteps.PullFromPostmaster;
-        await _profileBloc.pullFromPostMaster(itemInfo, 1);
-      } on BungieApiException catch (e) {
-        if (e.errorCode == PlatformErrorCodes.DestinyNoRoomInDestination) {
-          await _makeRoomOnCharacter(sourceCharacterId, itemHash);
-          await _transferInstanced(itemInfo, characterId, idsToAvoid: idsToAvoid);
+      for (int tries = 0; true; tries++) {
+        try {
+          notification?.currentStep = TransferSteps.PullFromPostmaster;
+          await _profileBloc.pullFromPostMaster(itemInfo, 1);
+          break;
+        } on BungieApiException catch (e) {
+          if (e.errorCode == PlatformErrorCodes.DestinyNoRoomInDestination && shouldUseAutoTransfer && tries < 3) {
+            await _makeRoomOnCharacter(sourceCharacterId, itemHash);
+            continue;
+          }
+          notification?.error(_context.getTransferErrorMessage(e));
+          return;
+        } catch (e) {
+          notification?.error(_context.getTransferErrorMessage(null));
           return;
         }
-        throw (e);
       }
       notifyListeners();
+    }
+    if (isEquipped) {
+      try {
+        notification?.currentStep = TransferSteps.Unequip;
+        final substitute = await _findSubstitute(itemInfo);
+        if (substitute == null) throw SubstituteNotFoundException();
+        await _profileBloc.equipItem(substitute);
+      } on BaseInventoryException catch (e) {
+        notification?.error(e.getMessage(_context));
+        return;
+      } on BungieApiException catch (e) {
+        notification?.error(_context.getTransferErrorMessage(e));
+        return;
+      } catch (e) {
+        notification?.error(_context.getTransferErrorMessage(null));
+        return;
+      }
     }
 
     if (shouldMoveToVault) {
       if (sourceCharacterId == null) throw ("Missing item owner when moving to vault");
       notification?.currentStep = TransferSteps.MoveToVault;
-      await _profileBloc.transferItem(itemInfo, 1, true, sourceCharacterId);
+      try {
+        await _profileBloc.transferItem(itemInfo, 1, true, sourceCharacterId);
+      } on BungieApiException catch (e) {
+        notification?.error(_context.getTransferErrorMessage(e));
+        return;
+      } catch (e) {
+        notification?.error(_context.getTransferErrorMessage(null));
+        return;
+      }
       notifyListeners();
     }
     if (shouldMoveToOtherCharacter) {
       if (destinationCharacterId == null) throw ("Missing item owner when moving to character");
       print('moving to character');
-      try {
-        notification?.currentStep = TransferSteps.MoveToCharacter;
-        await _profileBloc.transferItem(itemInfo, 1, false, destinationCharacterId);
-      } on BungieApiException catch (e) {
-        if (e.errorCode == PlatformErrorCodes.DestinyNoRoomInDestination) {
-          await _makeRoomOnCharacter(destinationCharacterId, itemHash);
-          await _transferInstanced(itemInfo, characterId, idsToAvoid: idsToAvoid);
+      for (int tries = 0; true; tries++) {
+        try {
+          notification?.currentStep = TransferSteps.MoveToCharacter;
+          await _profileBloc.transferItem(itemInfo, 1, false, destinationCharacterId);
+          break;
+        } on BungieApiException catch (e) {
+          if (e.errorCode == PlatformErrorCodes.DestinyNoRoomInDestination && shouldUseAutoTransfer && tries < 3) {
+            print("$tries try to make roon on character");
+            await _makeRoomOnCharacter(destinationCharacterId, itemHash);
+            continue;
+          }
+          print("giving up after $tries");
+          notification?.error(_context.getTransferErrorMessage(e));
+          return;
+        } catch (e) {
+          notification?.error(_context.getTransferErrorMessage(null));
           return;
         }
-        throw (e);
       }
+      notifyListeners();
+    }
+    if (shouldEquip) {
+      if (destinationCharacterId == null) throw ("Missing destination character when equipping");
+      print('equipping');
+      try {
+        notification?.currentStep = TransferSteps.EquipOnCharacter;
+        await _profileBloc.equipItem(itemInfo);
+      } on BungieApiException catch (e) {
+        notification?.error(_context.getTransferErrorMessage(e));
+        return;
+      } catch (e) {
+        notification?.error(_context.getTransferErrorMessage(null));
+        return;
+      }
+
       notifyListeners();
     }
     notification?.success();
     print('done');
   }
 
+  Future<void> _transferUninstanced(
+    DestinyItemInfo itemInfo,
+  ) async {}
+
+  Future<DestinyItemInfo?> _findSubstitute(DestinyItemInfo itemInfo) async {
+    final characterId = itemInfo.characterId;
+    if (characterId == null) return null;
+    final candidates = _profileBloc.allItems.where((item) =>
+        item.item.bucketHash == itemInfo.item.bucketHash && //
+        !instanceIdsToAvoid.contains(item.item.itemInstanceId) &&
+        item.characterId == characterId &&
+        !(item.instanceInfo?.isEquipped ?? false));
+    final character = _profileBloc.getCharacter(characterId);
+    final itemDef = await manifest.getDefinition<DestinyInventoryItemDefinition>(itemInfo.item.itemHash);
+    final itemTierType = itemDef?.inventory?.tierType;
+
+    for (final c in candidates) {
+      final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(c.item.itemHash);
+      final tierType = def?.inventory?.tierType;
+      final classType = def?.classType;
+      final acceptableClasses = [character?.classType, DestinyClass.Unknown];
+      if (!acceptableClasses.contains(classType)) continue;
+      if (tierType != TierType.Exotic || tierType == itemTierType) return c;
+    }
+
+    return null;
+  }
+
   Future<DestinyItemInfo?> _makeRoomOnCharacter(
     String characterId,
     int itemHash, {
-    List<String>? idsToAvoid,
     List<int>? hashesToAvoid,
   }) async {
-    if (!shouldUseAutoTransfer) return null;
+    //TODO: implement notification logic for side effects
     final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(itemHash);
     final bucketHash = def?.inventory?.bucketTypeHash;
     if (bucketHash == null) return null;
@@ -298,13 +414,17 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
         _profileBloc.allItems.where((item) => item.item.bucketHash == bucketHash && item.characterId == characterId);
     if (itemsOnBucket.length < availableSlots) return null;
     final itemToTransfer = itemsOnBucket.lastWhereOrNull((i) {
-      final avoidId = idsToAvoid?.contains(i.item.itemInstanceId) ?? false;
+      final avoidId = instanceIdsToAvoid.contains(i.item.itemInstanceId);
       if (avoidId) return false;
       final avoidHash = hashesToAvoid?.contains(i.item.itemHash) ?? false;
       if (avoidHash) return false;
       return true;
     });
     if (itemToTransfer == null) return null;
+    final itemInstanceId = itemToTransfer.item.itemInstanceId;
+    if (itemInstanceId != null) {
+      instanceIdsToAvoid.add(itemInstanceId);
+    }
     await _transfer(itemToTransfer, null);
     return itemToTransfer;
   }
