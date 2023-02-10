@@ -55,7 +55,7 @@ class MigrationV1x9x0 extends StorageMigration {
   removeLegacyCurrentVersion(SharedPreferences prefs, Iterable<String> prefKeys) {
     try {
       final manifestVersionKeys = prefKeys.where((k) {
-        final regexp = RegExp("languages\/.*?\/manifestVersion");
+        final regexp = RegExp("languages/.*?/manifestVersion");
         return regexp.hasMatch(k);
       });
       for (final key in manifestVersionKeys) {
@@ -69,7 +69,7 @@ class MigrationV1x9x0 extends StorageMigration {
   void removeLittleLightAPICredentials(SharedPreferences prefs, Iterable<String> prefKeys) {
     try {
       final membershipSecretKeys = prefKeys.where((k) {
-        final regexp = RegExp("memberships\/.*?\/membership_secret");
+        final regexp = RegExp("memberships/.*?/membership_secret");
         return regexp.hasMatch(k);
       });
       for (final key in membershipSecretKeys) {
@@ -82,7 +82,7 @@ class MigrationV1x9x0 extends StorageMigration {
     /// remove membership files `membership_uuid`
     try {
       final membershipUUIDKeys = prefKeys.where((k) {
-        final regexp = RegExp("memberships\/.*?\/membership_u_u_i_d");
+        final regexp = RegExp("memberships/.*?/membership_u_u_i_d");
         return regexp.hasMatch(k);
       });
       for (final key in membershipUUIDKeys) {

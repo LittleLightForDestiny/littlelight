@@ -9,7 +9,7 @@ import 'package:little_light/widgets/item_details/section_header.widget.dart';
 class ItemLoreWidget extends StatefulWidget {
   final int hash;
 
-  ItemLoreWidget(this.hash, {Key key}) : super(key: key);
+  const ItemLoreWidget(this.hash, {Key key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -29,7 +29,7 @@ class ItemLoreWidgetState extends State<ItemLoreWidget> with VisibleSectionMixin
       return Container();
     }
     return Container(
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
@@ -38,17 +38,17 @@ class ItemLoreWidgetState extends State<ItemLoreWidget> with VisibleSectionMixin
               "Lore",
               uppercase: true,
               textAlign: TextAlign.left,
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
           visible
               ? Container(
-                  padding: EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(8),
                   child: DefinitionProviderWidget<DestinyLoreDefinition>(
                       widget.hash,
                       (def) => SelectableText(
                             def?.displayProperties?.description,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontWeight: FontWeight.w300,
                             ),
                           )))

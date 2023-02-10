@@ -122,7 +122,7 @@ class MembershipStorage extends StorageBase<MembershipStorageKeys> {
   Future<Map<String, DestinyVendorsResponse>?> getCachedVendors() async {
     try {
       final Map<String, dynamic> json =
-          await getExpireableJson(MembershipStorageKeys.priorityTags, Duration(hours: 12));
+          await getExpireableJson(MembershipStorageKeys.priorityTags, const Duration(hours: 12));
 
       return json
           .map((key, value) => MapEntry<String, DestinyVendorsResponse>(key, DestinyVendorsResponse.fromJson(value)));

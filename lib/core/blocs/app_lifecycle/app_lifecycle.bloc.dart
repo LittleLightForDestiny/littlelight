@@ -15,7 +15,7 @@ class AppLifecycleBloc extends ChangeNotifier with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     print("App lifecycle state has changed to $state");
-    this._state = state;
+    _state = state;
     notifyListeners();
   }
 

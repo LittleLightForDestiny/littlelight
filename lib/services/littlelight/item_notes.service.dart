@@ -48,7 +48,7 @@ class ItemNotesService with StorageConsumer {
     await _loadNotesFromCache();
     if (forceFetch || _notes == null) await _fetchNotes();
 
-    _notes = _notes ?? Map<String, ItemNotes>();
+    _notes = _notes ?? <String, ItemNotes>{};
     return _notes!;
   }
 
@@ -96,7 +96,7 @@ class ItemNotesService with StorageConsumer {
   }
 
   Future<bool> saveNotes(ItemNotes notes) async {
-    final allNotes = this._notes ?? await this.getNotes();
+    final allNotes = _notes ?? await getNotes();
     allNotes[notes.uniqueId] = notes;
     await _saveNotesToStorage();
     final api = LittleLightApiService();
@@ -112,9 +112,7 @@ class ItemNotesService with StorageConsumer {
   }
 
   Future<int> saveTag(ItemNotesTag tag) async {
-    if (_tags == null) {
-      _tags = Map();
-    }
+    _tags ??= {};
     _tags![tag.tagId] = tag;
     await _saveTagsToStorage();
     var api = LittleLightApiService();
@@ -122,10 +120,10 @@ class ItemNotesService with StorageConsumer {
   }
 
   Future<void> _saveTagsToStorage() async {
-    await currentMembershipStorage.saveCachedTags(_tags as Map<String, ItemNotesTag>? ?? Map());
+    await currentMembershipStorage.saveCachedTags(_tags as Map<String, ItemNotesTag>? ?? {});
   }
 
   Future<void> _saveNotesToStorage() async {
-    await currentMembershipStorage.saveCachedNotes(_notes ?? Map());
+    await currentMembershipStorage.saveCachedNotes(_notes ?? {});
   }
 }

@@ -9,13 +9,13 @@ import 'package:little_light/widgets/item_stats/base_item_stat.widget.dart';
 import 'direction_stat_bar.widget.dart';
 
 class DetailsItemStatWidget extends BaseItemStatWidget {
-  DetailsItemStatWidget({Key key, StatValues modValues, int statHash, DestinyStatDisplayDefinition scaled})
+  const DetailsItemStatWidget({Key key, StatValues modValues, int statHash, DestinyStatDisplayDefinition scaled})
       : super(key: key, statHash: statHash, modValues: modValues, scaled: scaled);
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
-      builder: (ctx, constraints) => Container(
+      builder: (ctx, constraints) => SizedBox(
           height: 18,
           child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -44,7 +44,7 @@ class DetailsItemStatWidget extends BaseItemStatWidget {
   }
 
   Widget buildValue(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: 50,
       child: Text(
         "$currentValue",
@@ -67,15 +67,15 @@ class DetailsItemStatWidget extends BaseItemStatWidget {
       return Container(
           width: width,
           alignment: Alignment.centerLeft,
-          padding: EdgeInsets.symmetric(vertical: 2),
-          child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 2),
+          child: SizedBox(
+              width: 40,
               child: DirectionStatBarWidget(
                   currentValue: currentValue,
                   equippedValue: equipped + masterwork,
                   currentColor: getValueColor(context),
                   equippedColor: Colors.grey.shade500,
-                  backgroundColor: Colors.grey.shade700.withOpacity(.7)),
-              width: 40));
+                  backgroundColor: Colors.grey.shade700.withOpacity(.7))));
     }
 
     return Container(

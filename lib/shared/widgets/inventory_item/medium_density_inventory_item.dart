@@ -44,7 +44,7 @@ class MediumDensityInventoryItem extends StatelessWidget with ItemNotesConsumer,
 
   @override
   Widget build(BuildContext context) {
-    final itemHash = this.item.item.itemHash;
+    final itemHash = item.item.itemHash;
     if (itemHash == null) return emptyItem(context);
     return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
       itemHash,
@@ -91,11 +91,11 @@ class MediumDensityInventoryItem extends StatelessWidget with ItemNotesConsumer,
         child: Transform.translate(
           offset: Offset(20, 0),
           child: Container(
-            constraints: BoxConstraints(minHeight: double.infinity),
+            constraints: const BoxConstraints(minHeight: double.infinity),
             foregroundDecoration: BoxDecoration(
               gradient: RadialGradient(
                 colors: [bgColor.withOpacity(0), bgColor],
-                stops: [.5, 1],
+                stops: const [.5, 1],
                 radius: 1.8,
                 center: Alignment.bottomRight,
               ),
@@ -120,7 +120,7 @@ class MediumDensityInventoryItem extends StatelessWidget with ItemNotesConsumer,
     final isExotic = definition.inventory?.tierType == TierType.Exotic;
     final theme = context.theme;
     final assetPath = isExotic ? "assets/imgs/masterwork-top-exotic.png" : "assets/imgs/masterwork-top.png";
-    final borderColor = isExotic ? theme?.achievementLayers.layer2 : theme?.achievementLayers.layer1;
+    final borderColor = isExotic ? theme.achievementLayers.layer2 : theme.achievementLayers.layer1;
     return Stack(children: [
       Container(
         color: definition.inventory?.tierType?.getColor(context),
@@ -129,7 +129,7 @@ class MediumDensityInventoryItem extends StatelessWidget with ItemNotesConsumer,
           border: Border(
             bottom: BorderSide(
               width: 2,
-              color: borderColor ?? Colors.transparent,
+              color: borderColor,
             ),
           ),
           image: DecorationImage(
@@ -165,7 +165,7 @@ class MediumDensityInventoryItem extends StatelessWidget with ItemNotesConsumer,
     return Row(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        SizedBox(width: _iconWidth),
+        const SizedBox(width: _iconWidth),
         Expanded(
           child: Image.asset(
             path,
@@ -222,18 +222,18 @@ class MediumDensityInventoryItem extends StatelessWidget with ItemNotesConsumer,
             return Stack(children: [
               Positioned.fill(
                 child: CustomPaint(
-                  painter: DiamondShapePainter.color(context.theme.onSurfaceLayers.layer1 ?? Colors.transparent),
+                  painter: DiamondShapePainter.color(context.theme.onSurfaceLayers.layer1),
                 ),
               ),
               Positioned.fill(
                 child: Container(
-                    padding: EdgeInsets.all(2),
+                    padding: const EdgeInsets.all(2),
                     child: CustomPaint(
                       painter: DiamondShapePainter.color(subclassColor),
                     )),
               ),
               Container(
-                padding: EdgeInsets.all(2),
+                padding: const EdgeInsets.all(2),
                 child: QueuedNetworkImage.fromBungie(imgUrl),
               ),
             ]);
@@ -245,7 +245,7 @@ class MediumDensityInventoryItem extends StatelessWidget with ItemNotesConsumer,
 
   Widget buildItemIcon(BuildContext context, DestinyInventoryItemDefinition definition) {
     return Container(
-      padding: EdgeInsets.all(2),
+      padding: const EdgeInsets.all(2),
       width: _iconWidth,
       child: InventoryItemIcon(item, definition: definition, borderSize: 1.5),
     );
@@ -255,7 +255,7 @@ class MediumDensityInventoryItem extends StatelessWidget with ItemNotesConsumer,
     if (definition.isSubclass) return buildSubclassTitleBar(context, definition);
     return Container(
       height: _titleBarHeight,
-      padding: EdgeInsets.symmetric(horizontal: 2),
+      padding: const EdgeInsets.symmetric(horizontal: 2),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -278,17 +278,17 @@ class MediumDensityInventoryItem extends StatelessWidget with ItemNotesConsumer,
     final definitionName = definition.displayProperties?.name?.toUpperCase();
     final itemName = (customName?.isNotEmpty ?? false) ? customName : definitionName;
     return Container(
-      margin: EdgeInsets.all(4).copyWith(
+      margin: const EdgeInsets.all(4).copyWith(
         right: 96,
         left: 0,
       ),
       alignment: Alignment.centerLeft,
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
         gradient: LinearGradient(
           colors: [bgColor, bgColor.withOpacity(0)],
-          stops: [.6, .9],
+          stops: const [.6, .9],
         ),
       ),
       child: Text(
@@ -306,7 +306,7 @@ class MediumDensityInventoryItem extends StatelessWidget with ItemNotesConsumer,
     final definitionName = definition.displayProperties?.name?.toUpperCase();
     final itemName = (customName?.isNotEmpty ?? false) ? customName : definitionName;
     return Container(
-      padding: EdgeInsets.only(left: 2, right: 4),
+      padding: const EdgeInsets.only(left: 2, right: 4),
       child: Text(
         itemName ?? "",
         style: context.textTheme.itemNameMediumDensity.copyWith(
@@ -323,10 +323,10 @@ class MediumDensityInventoryItem extends StatelessWidget with ItemNotesConsumer,
     if (!isLocked) return null;
     final style = context.textTheme.itemNameMediumDensity;
     return Container(
-      margin: EdgeInsets.only(right: 2),
+      margin: const EdgeInsets.only(right: 2),
       child: Icon(
         FontAwesomeIcons.lock,
-        size: style?.fontSize,
+        size: style.fontSize,
         color: definition.inventory?.tierType?.getTextColor(context),
       ),
     );
@@ -340,7 +340,7 @@ class MediumDensityInventoryItem extends StatelessWidget with ItemNotesConsumer,
       final emblemHash = character?.emblemHash;
       if (emblemHash == null) return null;
       return Container(
-        margin: EdgeInsets.only(right: 2),
+        margin: const EdgeInsets.only(right: 2),
         width: _titleBarIconSize,
         height: _titleBarIconSize,
         child: ManifestImageWidget<DestinyInventoryItemDefinition>(emblemHash),
@@ -362,7 +362,7 @@ class MediumDensityInventoryItem extends StatelessWidget with ItemNotesConsumer,
             final borderColor = tag.getBorderColor(context);
             final icon = tag.getIcon(context);
             return Container(
-              margin: EdgeInsets.only(right: 2),
+              margin: const EdgeInsets.only(right: 2),
               width: _titleBarIconSize,
               height: _titleBarIconSize,
               decoration: BoxDecoration(
@@ -392,7 +392,7 @@ class MediumDensityInventoryItem extends StatelessWidget with ItemNotesConsumer,
             final borderColor = tag.foregroundColor;
             final icon = tag.iconData;
             return Container(
-              margin: EdgeInsets.only(right: 2),
+              margin: const EdgeInsets.only(right: 2),
               width: _titleBarIconSize,
               height: _titleBarIconSize,
               decoration: BoxDecoration(
@@ -434,7 +434,7 @@ class MediumDensityInventoryItem extends StatelessWidget with ItemNotesConsumer,
 
   Widget buildWeaponMainContent(BuildContext context, DestinyInventoryItemDefinition definition) {
     return Container(
-      padding: EdgeInsets.only(top: 2, right: 2, bottom: 2),
+      padding: const EdgeInsets.only(top: 2, right: 2, bottom: 2),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -448,7 +448,7 @@ class MediumDensityInventoryItem extends StatelessWidget with ItemNotesConsumer,
 
   Widget buildArmorMainContent(BuildContext context, DestinyInventoryItemDefinition definition) {
     return Container(
-      padding: EdgeInsets.only(top: 2, right: 2, bottom: 2),
+      padding: const EdgeInsets.only(top: 2, right: 2, bottom: 2),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -462,7 +462,7 @@ class MediumDensityInventoryItem extends StatelessWidget with ItemNotesConsumer,
 
   Widget buildGhostMainContent(BuildContext context, DestinyInventoryItemDefinition definition) {
     return Container(
-      padding: EdgeInsets.only(top: 2, right: 2, bottom: 2),
+      padding: const EdgeInsets.only(top: 2, right: 2, bottom: 2),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -476,7 +476,7 @@ class MediumDensityInventoryItem extends StatelessWidget with ItemNotesConsumer,
 
   Widget buildDefaultMainContent(BuildContext context, DestinyInventoryItemDefinition definition) {
     return Container(
-      padding: EdgeInsets.only(top: 2, right: 2, bottom: 2),
+      padding: const EdgeInsets.only(top: 2, right: 2, bottom: 2),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -490,7 +490,7 @@ class MediumDensityInventoryItem extends StatelessWidget with ItemNotesConsumer,
 
   Widget buildEngramMainContent(BuildContext context, DestinyInventoryItemDefinition definition) {
     return Container(
-      padding: EdgeInsets.only(top: 2, right: 2, bottom: 2),
+      padding: const EdgeInsets.only(top: 2, right: 2, bottom: 2),
       alignment: Alignment.topRight,
       child: buildEngramMainInfo(context, definition),
     );
@@ -508,17 +508,17 @@ class MediumDensityInventoryItem extends StatelessWidget with ItemNotesConsumer,
       children: [
         Container(width: _iconWidth),
         Padding(
+          padding: const EdgeInsets.only(right: 6),
           child: Icon(
             ammoType?.icon,
             color: ammoType?.color,
-            size: textStyle?.fontSize,
+            size: textStyle.fontSize,
           ),
-          padding: EdgeInsets.only(right: 6),
         ),
         Flexible(
             child: Text(
           "$powerLevel",
-          style: textStyle?.copyWith(color: damageColor),
+          style: textStyle.copyWith(color: damageColor),
           overflow: TextOverflow.fade,
           softWrap: false,
         )),
@@ -580,7 +580,7 @@ class MediumDensityInventoryItem extends StatelessWidget with ItemNotesConsumer,
 
   Widget buildStackableMainContent(BuildContext context, DestinyInventoryItemDefinition definition) {
     return Container(
-      padding: EdgeInsets.only(top: 4, right: 4, bottom: 4),
+      padding: const EdgeInsets.only(top: 4, right: 4, bottom: 4),
       alignment: Alignment.bottomRight,
       child: buildQuantity(context, definition),
     );
@@ -593,7 +593,7 @@ class MediumDensityInventoryItem extends StatelessWidget with ItemNotesConsumer,
     TextStyle? textStyle = context.textTheme.itemPrimaryStatMediumDensity;
     final isMaxValue = maxCount != null && quantity == maxCount;
     if (isMaxValue) {
-      textStyle = textStyle?.copyWith(color: context.theme.highlightedObjectiveLayers.layer3);
+      textStyle = textStyle.copyWith(color: context.theme.highlightedObjectiveLayers.layer3);
     }
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -625,8 +625,8 @@ class MediumDensityInventoryItem extends StatelessWidget with ItemNotesConsumer,
     if (total == null) return null;
     final color = getStatsTotalColor(total, context);
     return Container(
-      margin: EdgeInsets.only(right: 2),
-      padding: EdgeInsets.symmetric(vertical: 2, horizontal: 4),
+      margin: const EdgeInsets.only(right: 2),
+      padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
       decoration: BoxDecoration(
         color: context.theme.surfaceLayers.layer0,
         borderRadius: BorderRadius.circular(4),
@@ -654,7 +654,7 @@ class MediumDensityInventoryItem extends StatelessWidget with ItemNotesConsumer,
           return Container(
             child: Text(
               "$energyLevel",
-              style: textStyle?.copyWith(color: energyColor),
+              style: textStyle.copyWith(color: energyColor),
             ),
           );
         });
@@ -671,7 +671,7 @@ class MediumDensityInventoryItem extends StatelessWidget with ItemNotesConsumer,
               child: InventoryItemMods(
                 item,
                 plugSize: 20,
-                plugMargin: EdgeInsets.only(left: 1),
+                plugMargin: const EdgeInsets.only(left: 1),
                 definition: definition,
                 categoryHash: categoryHash,
               ));

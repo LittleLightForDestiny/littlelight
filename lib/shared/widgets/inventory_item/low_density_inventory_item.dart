@@ -35,7 +35,7 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
 
   @override
   Widget build(BuildContext context) {
-    final itemHash = this.item.item.itemHash;
+    final itemHash = item.item.itemHash;
     if (itemHash == null) return emptyItem(context);
     return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
       itemHash,
@@ -75,18 +75,18 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
             return Stack(children: [
               Positioned.fill(
                 child: CustomPaint(
-                  painter: DiamondShapePainter.color(context.theme.onSurfaceLayers.layer1 ?? Colors.transparent),
+                  painter: DiamondShapePainter.color(context.theme.onSurfaceLayers.layer1),
                 ),
               ),
               Positioned.fill(
                 child: Container(
-                    padding: EdgeInsets.all(2),
+                    padding: const EdgeInsets.all(2),
                     child: CustomPaint(
                       painter: DiamondShapePainter.color(subclassColor),
                     )),
               ),
               Container(
-                padding: EdgeInsets.all(2),
+                padding: const EdgeInsets.all(2),
                 child: QueuedNetworkImage.fromBungie(imgUrl),
               ),
             ]);
@@ -114,7 +114,7 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
 
   Widget buildEngramInfo(BuildContext context, DestinyInventoryItemDefinition definition) {
     return Container(
-      padding: EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.only(bottom: 8),
       alignment: Alignment.bottomCenter,
       child: buildEngramPrimaryStat(context, definition),
     );
@@ -148,19 +148,19 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
     final ammoType = definition.equippingBlock?.ammoType;
     return buildInfoContainer(context, [
       Padding(
+        padding: const EdgeInsets.only(right: 6),
         child: Transform.translate(
             offset: Offset(0, 1),
             child: Icon(
               ammoType?.icon,
               color: ammoType?.color,
-              size: textStyle?.fontSize,
+              size: textStyle.fontSize,
             )),
-        padding: EdgeInsets.only(right: 6),
       ),
       Flexible(
           child: Text(
         "$powerLevel",
-        style: textStyle?.copyWith(color: damageColor),
+        style: textStyle.copyWith(color: damageColor),
         overflow: TextOverflow.fade,
         softWrap: false,
       )),
@@ -172,6 +172,7 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
     final textStyle = context.textTheme.itemPrimaryStatLowDensity;
     return buildInfoContainer(context, [
       Padding(
+        padding: const EdgeInsets.only(right: 2),
         child: FutureBuilder<DestinyEnergyCapacityEntry?>(
             future: getEnergyCapacity(manifest, item, definition),
             builder: (context, snapshot) {
@@ -183,10 +184,9 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
               final textStyle = context.textTheme.itemPrimaryStatLowDensity;
               return Text(
                 "$energyLevel",
-                style: textStyle?.copyWith(color: energyColor),
+                style: textStyle.copyWith(color: energyColor),
               );
             }),
-        padding: EdgeInsets.only(right: 2),
       ),
       Flexible(
           child: Text(
@@ -211,7 +211,7 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
             final textStyle = context.textTheme.itemPrimaryStatLowDensity;
             return Text(
               "$energyLevel",
-              style: textStyle?.copyWith(color: energyColor),
+              style: textStyle.copyWith(color: energyColor),
             );
           }),
     ]);
@@ -224,7 +224,7 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
         color: context.theme.surfaceLayers.layer0,
         borderRadius: BorderRadius.circular(4),
       ),
-      padding: EdgeInsets.symmetric(horizontal: 2, vertical: 1),
+      padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 1),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -247,7 +247,7 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
   Widget? buildLockedIcon(BuildContext context, DestinyInventoryItemDefinition definition) {
     final isLocked = item.item.state?.contains(ItemState.Locked) ?? false;
     if (!isLocked) return null;
-    return Container(
+    return SizedBox(
       height: _tagIconSize,
       width: _tagIconSize,
       child: Icon(
@@ -271,7 +271,7 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
             final borderColor = tag.getBorderColor(context);
             final icon = tag.getIcon(context);
             return Container(
-              margin: EdgeInsets.only(right: 2, bottom: 2),
+              margin: const EdgeInsets.only(right: 2, bottom: 2),
               width: _tagIconSize,
               height: _tagIconSize,
               decoration: BoxDecoration(
@@ -327,17 +327,17 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         Padding(
+          padding: const EdgeInsets.only(right: 8),
           child: Icon(
             ammoType?.icon,
             color: ammoType?.color,
             size: _primaryStatIconsSize,
           ),
-          padding: EdgeInsets.only(right: 8),
         ),
         Flexible(
             child: Text(
           "$powerLevel",
-          style: textStyle?.copyWith(color: damageColor),
+          style: textStyle.copyWith(color: damageColor),
           overflow: TextOverflow.fade,
           softWrap: false,
         )),
@@ -366,7 +366,7 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
     TextStyle? textStyle = context.textTheme.itemPrimaryStatLowDensity;
     final isMaxValue = maxCount != null && quantity == maxCount;
     if (isMaxValue) {
-      textStyle = textStyle?.copyWith(color: context.theme.highlightedObjectiveLayers.layer3);
+      textStyle = textStyle.copyWith(color: context.theme.highlightedObjectiveLayers.layer3);
     }
     return buildInfoContainer(context, [
       Text(
@@ -385,7 +385,7 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
     final level = itemLevel * 10 + quality;
     final textStyle = context.textTheme.itemPrimaryStatLowDensity;
     return Container(
-        padding: EdgeInsets.symmetric(horizontal: 2, vertical: 1),
+        padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 1),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(4),
           color: context.theme.surfaceLayers.layer0,
@@ -401,8 +401,8 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
     if (total == null) return null;
     final color = getStatsTotalColor(total, context);
     return Container(
-      margin: EdgeInsets.only(bottom: 1),
-      padding: EdgeInsets.symmetric(vertical: 1, horizontal: 2),
+      margin: const EdgeInsets.only(bottom: 1),
+      padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 2),
       decoration: BoxDecoration(
         color: context.theme.surfaceLayers.layer0,
         borderRadius: BorderRadius.circular(4),

@@ -21,7 +21,7 @@ enum TestEnum { A, B, C, D }
 class ChaliceRecipeWidget extends StatelessWidget {
   final DestinyInventoryItemDefinition definition;
 
-  ChaliceRecipeWidget(this.definition, {Key key}) : super(key: key);
+  const ChaliceRecipeWidget(this.definition, {Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +31,7 @@ class ChaliceRecipeWidget extends StatelessWidget {
     }
 
     return Container(
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       child: Column(children: [
         HeaderWidget(
             child: Container(
@@ -40,7 +40,7 @@ class ChaliceRecipeWidget extends StatelessWidget {
             "Chalice Recipes",
             uppercase: true,
             textAlign: TextAlign.left,
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
         )),
         buildSlots(context, recipe),
@@ -51,20 +51,20 @@ class ChaliceRecipeWidget extends StatelessWidget {
 
   buildBraytechNote(BuildContext context) {
     return Container(
-        padding: EdgeInsets.all(4),
+        padding: const EdgeInsets.all(4),
         child: Row(
           children: <Widget>[
             Text("More recipes on".translate(context)),
             MaterialButton(
-              padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
               child: Row(children: [
                 Container(
-                  margin: EdgeInsets.only(right: 8),
+                  margin: const EdgeInsets.only(right: 8),
                   width: 16,
                   height: 16,
                   child: Image.asset("assets/imgs/braytech_icon.png"),
                 ),
-                Text('braytech.org')
+                const Text('braytech.org')
               ]),
               onPressed: () {
                 launch("https://braytech.org/chalice-tool");
@@ -104,7 +104,7 @@ class ChaliceRecipeWidget extends StatelessWidget {
     return Container(
       color: Colors.black,
       alignment: Alignment.center,
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       child: title,
     );
   }
@@ -116,7 +116,7 @@ class ChaliceRecipeWidget extends StatelessWidget {
           TranslatedTextWidget(
             "Top",
             uppercase: true,
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: const TextStyle(fontWeight: FontWeight.bold),
           )),
       buildRuneItem(context, recipe.top)
     ]);
@@ -130,7 +130,7 @@ class ChaliceRecipeWidget extends StatelessWidget {
           TranslatedTextWidget(
             "Left",
             uppercase: true,
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: const TextStyle(fontWeight: FontWeight.bold),
           )),
     ].followedBy(recipe.left.map((r) => buildRuneItem(context, r, RunePosition.Left))).toList());
   }
@@ -143,7 +143,7 @@ class ChaliceRecipeWidget extends StatelessWidget {
           TranslatedTextWidget(
             "Right",
             uppercase: true,
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: const TextStyle(fontWeight: FontWeight.bold),
           )),
     ].followedBy(recipe.right.map((r) => buildRuneItem(context, r, RunePosition.Right))).toList());
   }
@@ -151,16 +151,16 @@ class ChaliceRecipeWidget extends StatelessWidget {
   Color getBackgroundColor(RuneColor color) {
     switch (color) {
       case RuneColor.Purple:
-        return Color.fromRGBO(53, 44, 86, 1);
+        return const Color.fromRGBO(53, 44, 86, 1);
         break;
       case RuneColor.Red:
-        return Color.fromRGBO(72, 27, 36, 1);
+        return const Color.fromRGBO(72, 27, 36, 1);
         break;
       case RuneColor.Green:
-        return Color.fromRGBO(64, 121, 93, 1);
+        return const Color.fromRGBO(64, 121, 93, 1);
         break;
       case RuneColor.Blue:
-        return Color.fromRGBO(19, 51, 59, 1);
+        return const Color.fromRGBO(19, 51, 59, 1);
         break;
     }
     return null;
@@ -168,14 +168,14 @@ class ChaliceRecipeWidget extends StatelessWidget {
 
   Widget buildRuneItem(BuildContext context, RuneInfo rune, [RunePosition position = RunePosition.Top]) {
     return Container(
-      margin: EdgeInsets.only(bottom: 4),
+      margin: const EdgeInsets.only(bottom: 4),
       decoration: BoxDecoration(
         border: Border.all(color: Colors.amber.shade100.withOpacity(.5), width: 1),
         color: getBackgroundColor(rune.color),
       ),
       child: Row(
         children: <Widget>[
-          Container(
+          SizedBox(
               width: 64,
               height: 64,
               child: ManifestImageWidget<DestinyInventoryItemDefinition>(rune.itemHash ?? 1772646107)),
@@ -282,14 +282,14 @@ class ChaliceRecipeWidget extends StatelessWidget {
   Widget buildModifierIcon(BuildContext context, RuneInfo rune, RunePosition position) {
     if (position == RunePosition.Left && definition.itemType == DestinyItemType.Armor) {
       return Container(
-        margin: EdgeInsets.only(left: 4),
+        margin: const EdgeInsets.only(left: 4),
         width: 56,
         height: 48,
         child: ManifestImageWidget<DestinyInventoryItemDefinition>(getArmorModifierIconHash(rune.armorPerk)),
       );
     }
     if (position == RunePosition.Right && definition.itemType == DestinyItemType.Armor) {
-      return Container(
+      return SizedBox(
         width: 56,
         height: 56,
         child: ManifestImageWidget<DestinyInventoryItemDefinition>(
@@ -297,7 +297,7 @@ class ChaliceRecipeWidget extends StatelessWidget {
       );
     }
     if (position == RunePosition.Right && definition.itemType == DestinyItemType.Weapon) {
-      return Container(
+      return SizedBox(
         width: 56,
         height: 56,
         child: ManifestImageWidget<DestinyInventoryItemDefinition>(getWeaponMasterworkIconHash(rune.weaponMasterwork)),
@@ -309,18 +309,18 @@ class ChaliceRecipeWidget extends StatelessWidget {
   Widget buildModifierText(BuildContext context, RuneInfo rune, RunePosition position) {
     if (position == RunePosition.Left && definition.itemType == DestinyItemType.Armor) {
       return Container(
-          margin: EdgeInsets.only(top: 4),
+          margin: const EdgeInsets.only(top: 4),
           child: ManifestText<DestinyInventoryItemDefinition>(getArmorModifierTextHash(rune.armorPerk)));
     }
     if (position == RunePosition.Right && definition.itemType == DestinyItemType.Armor) {
       return Container(
-          margin: EdgeInsets.only(top: 4),
+          margin: const EdgeInsets.only(top: 4),
           child:
               ManifestText<DestinySandboxPerkDefinition>(getArmorMasterworkTextHash(rune.armorMasterworkDamageType)));
     }
     if (position == RunePosition.Right && definition.itemType == DestinyItemType.Weapon) {
       return Container(
-          margin: EdgeInsets.only(top: 4),
+          margin: const EdgeInsets.only(top: 4),
           child: ManifestText<DestinyStatDefinition>(getWeaponMasterworkTextHash(rune.weaponMasterwork)));
     }
     return Container();
@@ -328,23 +328,23 @@ class ChaliceRecipeWidget extends StatelessWidget {
 
   Widget buildRuneTitle(BuildContext context, RuneInfo rune) {
     if (rune.itemHash != null) {
-      return ManifestText<DestinyInventoryItemDefinition>(rune.itemHash, style: TextStyle(fontWeight: FontWeight.bold));
+      return ManifestText<DestinyInventoryItemDefinition>(rune.itemHash, style: const TextStyle(fontWeight: FontWeight.bold));
     }
     switch (rune.color) {
       case RuneColor.Purple:
         return TranslatedTextWidget(
           "Any Purple rune",
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: const TextStyle(fontWeight: FontWeight.bold),
         );
         break;
       case RuneColor.Red:
-        return Text("Any Red rune".translate(context), style: TextStyle(fontWeight: FontWeight.bold));
+        return Text("Any Red rune".translate(context), style: const TextStyle(fontWeight: FontWeight.bold));
         break;
       case RuneColor.Green:
-        return Text("Any Green rune".translate(context), style: TextStyle(fontWeight: FontWeight.bold));
+        return Text("Any Green rune".translate(context), style: const TextStyle(fontWeight: FontWeight.bold));
         break;
       case RuneColor.Blue:
-        return Text("Any Blue rune".translate(context), style: TextStyle(fontWeight: FontWeight.bold));
+        return Text("Any Blue rune".translate(context), style: const TextStyle(fontWeight: FontWeight.bold));
         break;
     }
     return Container();

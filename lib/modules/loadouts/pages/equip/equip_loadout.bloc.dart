@@ -86,7 +86,7 @@ class EquipLoadoutBloc extends ChangeNotifier with ManifestConsumer, ProfileCons
   }
 
   Map<DestinyClass, List<LoadoutIndexItem?>>? _getEquippableItems(LoadoutItemIndex loadout) {
-    Map<DestinyClass, List<LoadoutIndexItem?>> result = Map();
+    Map<DestinyClass, List<LoadoutIndexItem?>> result = {};
     result[DestinyClass.Unknown] = _genericEquippable //
         .map((b) => loadout.slots[b]?.genericEquipped)
         .whereType<LoadoutIndexItem?>()

@@ -9,7 +9,7 @@ import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:provider/provider.dart';
 
 class SelectLanguageSubPage extends StatefulWidget {
-  SelectLanguageSubPage();
+  const SelectLanguageSubPage();
 
   @override
   SelectLanguageSubPageState createState() => SelectLanguageSubPageState();
@@ -32,7 +32,7 @@ class SelectLanguageSubPageState extends SubpageBaseState<SelectLanguageSubPage>
     return languages.map<Widget>((language) {
       return LanguageButton(
           onPressed: () {
-            this.setState(() {
+            setState(() {
               selectedLanguage = language.code;
             });
           },
@@ -50,7 +50,7 @@ class SelectLanguageSubPageState extends SubpageBaseState<SelectLanguageSubPage>
 
   @override
   Widget buildContent(BuildContext context) => Container(
-      constraints: BoxConstraints(maxWidth: 400),
+      constraints: const BoxConstraints(maxWidth: 400),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -60,11 +60,11 @@ class SelectLanguageSubPageState extends SubpageBaseState<SelectLanguageSubPage>
               child: SingleChildScrollView(
                   child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: this.getLanguageButtons(context),
+                children: getLanguageButtons(context),
               ))),
           ElevatedButton(
             onPressed: () {
-              this.okClick();
+              okClick();
             },
             child: TranslatedTextWidget(
               "OK",

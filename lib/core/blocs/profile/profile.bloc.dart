@@ -28,8 +28,8 @@ setupProfileService() {
 }
 
 class _CachedItemsContainer {
-  Map<String, DestinyItemInfo> itemsByInstanceId = Map<String, DestinyItemInfo>();
-  Map<int, List<DestinyItemInfo>> itemsByHash = Map<int, List<DestinyItemInfo>>();
+  Map<String, DestinyItemInfo> itemsByInstanceId = <String, DestinyItemInfo>{};
+  Map<int, List<DestinyItemInfo>> itemsByHash = <int, List<DestinyItemInfo>>{};
   List<DestinyItemInfo> allItems = <DestinyItemInfo>[];
   Map<DestinyClass, Map<int, DestinyItemInfo>> highestPowerItems = {};
 
@@ -83,7 +83,7 @@ class ProfileBloc extends ChangeNotifier
     final profile = await bungieAPI.getCurrentProfile(components);
     final after = DateTime.now();
     final requestTimeInMs = after.difference(before).inMilliseconds;
-    print("Took ${requestTimeInMs} ms to update profile from Bungie");
+    print("Took $requestTimeInMs ms to update profile from Bungie");
     if (profile == null) return;
     final newData = await _updateProfileCache(profile);
     await currentMembershipStorage.saveCachedProfile(newData);
@@ -101,11 +101,6 @@ class ProfileBloc extends ChangeNotifier
   }
 
   Future<void> refresh([List<DestinyComponentType>? components]) async {
-    await fetchProfileData(components: components);
-  }
-
-  //TODO: deprecate this in favor of refresh
-  Future<void> fetchProfileData({List<DestinyComponentType>? components}) async {
     components ??= ProfileComponentGroups.basicProfile;
     await _updateProfileFromServer(components);
   }
@@ -114,7 +109,7 @@ class ProfileBloc extends ChangeNotifier
     final responseTimestamp = DateTime.tryParse(newData.responseMintedTimestamp ?? "");
     final localChange = _lastLocalChange;
     if (localChange != null && (responseTimestamp?.isBefore(localChange) ?? false)) {
-      print("last local change ($localChange) is newer than inventory state ${responseTimestamp}, skipping update");
+      print("last local change ($localChange) is newer than inventory state $responseTimestamp, skipping update");
       return _cachedProfileResponse ?? newData;
     }
 
@@ -171,11 +166,11 @@ class ProfileBloc extends ChangeNotifier
     if (profileCharacters == null) return;
     final sortType = userSettings.characterOrdering?.type;
     if (sortType == null) {
-      this._characters = profileCharacters;
+      _characters = profileCharacters;
       return;
     }
     final characters = sortCharacters(sortType, profileCharacters);
-    this._characters = characters;
+    _characters = characters;
   }
 
   void _updateItems(DestinyProfileResponse? profile) {
@@ -376,7 +371,7 @@ class ProfileBloc extends ChangeNotifier
     }
     if (scope == DestinyScope.Profile) {
       DestinyCollectibleComponent? collectible =
-          _cachedProfileResponse?.profileCollectibles?.data?.collectibles?[hashStr] ?? null;
+          _cachedProfileResponse?.profileCollectibles?.data?.collectibles?[hashStr];
       if (collectible != null) {
         final notAcquired = collectible.state?.contains(DestinyCollectibleState.NotAcquired) ?? true;
         return !notAcquired;

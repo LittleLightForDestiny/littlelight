@@ -22,7 +22,7 @@ import 'package:little_light/widgets/common/small_objective.widget.dart';
 
 class RecordItemWidget extends StatefulWidget {
   final int hash;
-  RecordItemWidget({Key key, this.hash}) : super(key: key);
+  const RecordItemWidget({Key key, this.hash}) : super(key: key);
 
   @override
   RecordItemWidgetState createState() {
@@ -61,7 +61,7 @@ class RecordItemWidgetState extends State<RecordItemWidget>
   }
 
   loadDefinitions() async {
-    if (this.definition == null) {
+    if (definition == null) {
       _definition = await manifest.getDefinition<DestinyRecordDefinition>(widget.hash);
       if (!mounted) return;
       setState(() {});
@@ -111,7 +111,7 @@ class RecordItemWidgetState extends State<RecordItemWidget>
                 Expanded(
                     flex: constraints.hasBoundedHeight ? 1 : 0,
                     child: Container(
-                        padding: EdgeInsets.all(8).copyWith(left: _recordIconSize + 16),
+                        padding: const EdgeInsets.all(8).copyWith(left: _recordIconSize + 16),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
@@ -119,7 +119,7 @@ class RecordItemWidgetState extends State<RecordItemWidget>
                             Container(
                               height: 1,
                               color: foregroundColor,
-                              margin: EdgeInsets.all(4),
+                              margin: const EdgeInsets.all(4),
                             ),
                             Expanded(
                               flex: constraints.hasBoundedHeight ? 1 : 0,
@@ -167,7 +167,7 @@ class RecordItemWidgetState extends State<RecordItemWidget>
     bars.removeLast();
 
     return Container(
-        margin: EdgeInsets.all(4),
+        margin: const EdgeInsets.all(4),
         child: Row(
           mainAxisSize: MainAxisSize.max,
           children: bars.toList(),
@@ -192,11 +192,11 @@ class RecordItemWidgetState extends State<RecordItemWidget>
     return Expanded(
         child: Column(children: [
       Container(
-          padding: EdgeInsets.only(bottom: 2),
+          padding: const EdgeInsets.only(bottom: 2),
           alignment: Alignment.centerRight,
           child: Text(completionText, style: TextStyle(fontSize: 12, color: fillColor))),
       Container(
-          constraints: BoxConstraints.expand(height: 10),
+          constraints: const BoxConstraints.expand(height: 10),
           alignment: Alignment.centerLeft,
           decoration:
               BoxDecoration(color: Colors.grey.shade300.withOpacity(.3), border: Border.all(color: foregroundColor)),
@@ -216,7 +216,7 @@ class RecordItemWidgetState extends State<RecordItemWidget>
         width: 56,
         height: 56,
         alignment: Alignment.center,
-        margin: EdgeInsets.all(8),
+        margin: const EdgeInsets.all(8),
         child: definition == null
             ? Container()
             : QueuedNetworkImage(imageUrl: BungieApiService.url(definition?.displayProperties?.icon)));
@@ -227,7 +227,7 @@ class RecordItemWidgetState extends State<RecordItemWidget>
     return Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
       Expanded(
           child: Container(
-              padding: EdgeInsets.all(4),
+              padding: const EdgeInsets.all(4),
               child: Text(
                 definition.displayProperties.name,
                 softWrap: true,
@@ -235,7 +235,7 @@ class RecordItemWidgetState extends State<RecordItemWidget>
               ))),
       buildTrackingIcon(context),
       Container(
-          padding: EdgeInsets.only(left: 4, right: 4),
+          padding: const EdgeInsets.only(left: 4, right: 4),
           child: Text(
             "${definition?.completionInfo?.scoreValue ?? ""}",
             style: TextStyle(fontWeight: FontWeight.w300, color: foregroundColor, fontSize: 14),
@@ -246,7 +246,7 @@ class RecordItemWidgetState extends State<RecordItemWidget>
   Widget buildTrackingIcon(BuildContext context) {
     if (!isTracking) return Container();
     return Container(
-        padding: EdgeInsets.all(2),
+        padding: const EdgeInsets.all(2),
         decoration: BoxDecoration(color: Colors.green.shade800, borderRadius: BorderRadius.circular(20)),
         child: Icon(
           FontAwesomeIcons.crosshairs,
@@ -260,7 +260,7 @@ class RecordItemWidgetState extends State<RecordItemWidget>
     if ((definition?.displayProperties?.description?.length ?? 0) == 0) return Container();
 
     return Container(
-        padding: EdgeInsets.all(4),
+        padding: const EdgeInsets.all(4),
         child: Text(
           definition.displayProperties.description,
           overflow: TextOverflow.fade,
@@ -271,7 +271,7 @@ class RecordItemWidgetState extends State<RecordItemWidget>
   buildLore(BuildContext context) {
     if (loreDefinition == null) return Container();
     return Container(
-        padding: EdgeInsets.all(4),
+        padding: const EdgeInsets.all(4),
         child: Text(
           loreDefinition.displayProperties.description,
           softWrap: true,
@@ -288,11 +288,11 @@ class RecordItemWidgetState extends State<RecordItemWidget>
   Widget buildObjectives(BuildContext context) {
     if ((record.objectives?.length ?? 0) == 0) return Container();
     return Container(
-      padding: EdgeInsets.all(4).copyWith(top: 0),
+      padding: const EdgeInsets.all(4).copyWith(top: 0),
       child: Row(
         children: record.objectives
             .map((objective) =>
-                Expanded(child: Container(margin: EdgeInsets.all(2), child: buildObjective(context, objective))))
+                Expanded(child: Container(margin: const EdgeInsets.all(2), child: buildObjective(context, objective))))
             .toList(),
       ),
     );
@@ -304,7 +304,7 @@ class RecordItemWidgetState extends State<RecordItemWidget>
     return SmallObjectiveWidget(
       definition: definition,
       objective: objective,
-      forceComplete: this.completed,
+      forceComplete: completed,
       placeholder: this.definition.displayProperties.name,
       color: completed ? foregroundColor : null,
       parentCompleted: completed,

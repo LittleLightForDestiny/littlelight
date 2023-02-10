@@ -6,7 +6,7 @@ import 'package:little_light/widgets/common/manifest_image.widget.dart';
 
 class CharacterIconWidget extends BaseCharacterIconWidget {
   final DestinyCharacterInfo character;
-  CharacterIconWidget(this.character, {double borderWidth = 1.5}) : super(borderWidth: borderWidth);
+  const CharacterIconWidget(this.character, {double borderWidth = 1.5}) : super(borderWidth: borderWidth);
   @override
   Widget buildIcon(BuildContext context) =>
       ManifestImageWidget<DestinyInventoryItemDefinition>(character.character.emblemHash);

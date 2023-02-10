@@ -9,13 +9,13 @@ import 'package:little_light/widgets/item_stats/base_item_stat.widget.dart';
 class ScreenshotSocketItemStatWidget extends BaseItemStatWidget {
   final double pixelSize;
 
-  ScreenshotSocketItemStatWidget(
+  const ScreenshotSocketItemStatWidget(
       {Key key, this.pixelSize = 1, StatValues modValues, int statHash, DestinyStatDisplayDefinition scaled})
       : super(key: key, statHash: statHash, modValues: modValues, scaled: scaled);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
         height: pixelSize * 28,
         child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -38,7 +38,7 @@ class ScreenshotSocketItemStatWidget extends BaseItemStatWidget {
   }
 
   Widget buildValue(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: pixelSize * 50,
       child: Text(
         "$currentValue",
@@ -69,6 +69,7 @@ class ScreenshotSocketItemStatWidget extends BaseItemStatWidget {
     );
   }
 
+  @override
   int get currentValue {
     if (scaled != null) {
       return interpolate(selected, scaled.displayInterpolation) - interpolate(equipped, scaled.displayInterpolation);

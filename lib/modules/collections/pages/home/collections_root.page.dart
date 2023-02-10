@@ -33,7 +33,7 @@ class CollectionsRootPageState extends PresentationNodesTabsScaffoldState<Collec
     super.initState();
 
     profile.updateComponents = ProfileComponentGroups.collections;
-    profile.fetchProfileData();
+    profile.refresh();
     userSettings.startingPage = _page;
     analytics.registerPageOpen(_page);
 
@@ -62,7 +62,7 @@ class CollectionsRootPageState extends PresentationNodesTabsScaffoldState<Collec
   @override
   Widget? buildAppBarLeading(BuildContext context) => IconButton(
         enableFeedback: false,
-        icon: Icon(Icons.menu),
+        icon: const Icon(Icons.menu),
         onPressed: () {
           Scaffold.of(context).openDrawer();
         },
@@ -72,7 +72,7 @@ class CollectionsRootPageState extends PresentationNodesTabsScaffoldState<Collec
   List<Widget>? buildAppBarActions(BuildContext context) => [
         IconButton(
           enableFeedback: false,
-          icon: Icon(Icons.search),
+          icon: const Icon(Icons.search),
           onPressed: () {
             Navigator.of(context).push(CollectionsSearchPageRoute());
           },
@@ -86,7 +86,7 @@ class CollectionsRootPageState extends PresentationNodesTabsScaffoldState<Collec
 
   @override
   Widget buildTabButton(BuildContext context, DestinyPresentationNodeDefinition node) {
-    return Container(padding: EdgeInsets.all(8), child: Text(node.displayProperties?.name ?? ""));
+    return Container(padding: const EdgeInsets.all(8), child: Text(node.displayProperties?.name ?? ""));
   }
 
   @override

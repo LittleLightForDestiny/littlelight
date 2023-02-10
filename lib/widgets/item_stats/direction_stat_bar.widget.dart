@@ -9,7 +9,7 @@ class DirectionStatBarWidget extends StatelessWidget {
   final int equippedValue;
   final Color backgroundColor;
   final Color equippedColor;
-  DirectionStatBarWidget(
+  const DirectionStatBarWidget(
       {this.currentValue = 0, this.currentColor, this.equippedValue, this.backgroundColor, this.equippedColor});
 
   @override

@@ -26,13 +26,13 @@ extension on Map<int, ParsedWishlistItem> {
 
 extension on ParsedWishlistItem {
   ParsedWishlistItem? addBuild(ParsedWishlistBuild build) {
-    this.builds.add(build);
-    build.plugs.forEach((socket) {
-      socket.forEach((plugHash) {
-        final itemPlugs = perks[plugHash] ??= Set<WishlistTag>();
+    builds.add(build);
+    for (var socket in build.plugs) {
+      for (var plugHash in socket) {
+        final itemPlugs = perks[plugHash] ??= <WishlistTag>{};
         itemPlugs.addAll(build.tags);
-      });
-    });
+      }
+    }
     return this;
   }
 }
@@ -65,7 +65,7 @@ class WishlistsService with StorageConsumer {
     if (!needsToReprocess) {
       return;
     }
-    final items = Map<int, ParsedWishlistItem>();
+    final items = <int, ParsedWishlistItem>{};
     for (final wishlist in wishlists) {
       final contents = await globalStorage.getWishlistContent(wishlist);
       if (contents == null) continue;
@@ -118,10 +118,10 @@ class WishlistsService with StorageConsumer {
 
   Set<String> getWishlistBuildNotes({required int itemHash, Map<String, List<DestinyItemPlugBase>>? reusablePlugs}) {
     final builds = getWishlistBuilds(itemHash: itemHash, reusablePlugs: reusablePlugs);
-    final descriptions = Set<String>();
+    final descriptions = <String>{};
     for (final build in builds) {
       final description = build.description?.trim() ?? "";
-      if (description.length == 0) break;
+      if (description.isEmpty) break;
       descriptions.removeWhere((d) => description.contains(d));
       final alreadyExists = descriptions.any((d) => d.contains(description));
       if (!alreadyExists) descriptions.add(description);
@@ -135,7 +135,7 @@ class WishlistsService with StorageConsumer {
   }) {
     final builds = getWishlistBuilds(itemHash: itemHash, reusablePlugs: reusablePlugs);
     final tags = builds.map((e) => e.tags.toList());
-    if (tags.length == 0) return Set();
+    if (tags.isEmpty) return <WishlistTag>{};
     final tagsSet = tags.reduce((value, element) => value + element).toSet();
     if (tagsSet.contains(WishlistTag.GodPVE)) tagsSet.remove(WishlistTag.PVE);
     if (tagsSet.contains(WishlistTag.GodPVP)) tagsSet.remove(WishlistTag.PVP);
@@ -148,7 +148,7 @@ class WishlistsService with StorageConsumer {
 
   Set<WishlistTag> getPlugTags(int itemHash, int plugItemHash) {
     if (_parsedWishlists == null) throw _notInitializedException;
-    return _parsedWishlists?.items[itemHash]?.perks[plugItemHash] ?? Set();
+    return _parsedWishlists?.items[itemHash]?.perks[plugItemHash] ?? <WishlistTag>{};
   }
 
   Future<List<WishlistFile>> addWishlist(WishlistFile wishlist) async {
@@ -180,9 +180,9 @@ class WishlistsService with StorageConsumer {
         .map((p) => p.plugItemHash)
         .whereType<int>()
         .toSet();
-    if (availablePlugs.length == 0) return [];
+    if (availablePlugs.isEmpty) return [];
     final builds = wishlistItem?.builds.where((build) {
-      return build.plugs.every((element) => element.any((e) => availablePlugs.contains(e)) || element.length == 0);
+      return build.plugs.every((element) => element.any((e) => availablePlugs.contains(e)) || element.isEmpty);
     });
 
     return builds?.toList() ?? [];

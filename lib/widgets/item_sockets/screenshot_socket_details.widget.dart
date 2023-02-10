@@ -28,7 +28,7 @@ import 'plug_grid_view.dart';
 
 class ScreenshotSocketDetailsWidget extends BaseSocketDetailsWidget {
   final double pixelSize;
-  ScreenshotSocketDetailsWidget(
+  const ScreenshotSocketDetailsWidget(
       {DestinyItemComponent item,
       DestinyInventoryItemDefinition parentDefinition,
       ItemSocketController controller,
@@ -83,6 +83,7 @@ class _ScreenshotPerkDetailsWidgetState extends BaseSocketDetailsWidgetState<Scr
     ]);
   }
 
+  @override
   Widget buildResourceCost(BuildContext context) {
     var requirementHash = definition?.plug?.insertionMaterialRequirementHash;
     if (requirementHash != null) {
@@ -98,7 +99,7 @@ class _ScreenshotPerkDetailsWidgetState extends BaseSocketDetailsWidgetState<Scr
                 children: def.materials.where((m) => (m.count ?? 0) > 0).map((m) {
                   return Row(
                     children: <Widget>[
-                      Container(
+                      SizedBox(
                           width: 24 * widget.pixelSize,
                           height: 24 * widget.pixelSize,
                           child: ManifestImageWidget<DestinyInventoryItemDefinition>(m.itemHash)),
@@ -121,6 +122,7 @@ class _ScreenshotPerkDetailsWidgetState extends BaseSocketDetailsWidgetState<Scr
     return Container();
   }
 
+  @override
   Widget buildOptions(BuildContext context) {
     var index = controller.selectedSocketIndex;
     var cat = itemDefinition?.sockets?.socketCategories
@@ -142,6 +144,7 @@ class _ScreenshotPerkDetailsWidgetState extends BaseSocketDetailsWidgetState<Scr
     return buildReusableMods(context);
   }
 
+  @override
   Widget buildReusableMods(BuildContext context) {
     var plugs = controller.socketPlugHashes(controller.selectedSocketIndex);
     if ((plugs?.length ?? 0) <= 1) return Container();
@@ -150,11 +153,11 @@ class _ScreenshotPerkDetailsWidgetState extends BaseSocketDetailsWidgetState<Scr
     final rowHeight = 96 * widget.pixelSize;
     return DefaultTabController(
         length: tabCount,
-        child: Container(
+        child: SizedBox(
             height: rowHeight * rowCount + (rowCount > 1 ? 8 * widget.pixelSize : 0),
             child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
               Builder(builder: (context) => pagingButton(context, -1)),
-              Container(
+              SizedBox(
                   width: 520 * widget.pixelSize,
                   child: PlugGridView.withItemsPerRow(
                     plugs,
@@ -179,7 +182,7 @@ class _ScreenshotPerkDetailsWidgetState extends BaseSocketDetailsWidgetState<Scr
           return Container(
             constraints: BoxConstraints.expand(width: 32 * widget.pixelSize),
             decoration: BoxDecoration(border: Border.all(color: Colors.grey.shade300)),
-            padding: EdgeInsets.all(0),
+            padding: const EdgeInsets.all(0),
             alignment: Alignment.center,
             child: !enabled
                 ? Container(color: Colors.grey.shade300.withOpacity(.2))
@@ -190,13 +193,14 @@ class _ScreenshotPerkDetailsWidgetState extends BaseSocketDetailsWidgetState<Scr
                           controller.animateTo(currentIndex + direction);
                         },
                         child: Container(
-                            constraints: BoxConstraints.expand(),
+                            constraints: const BoxConstraints.expand(),
                             child: Icon(direction > 0 ? FontAwesomeIcons.caretRight : FontAwesomeIcons.caretLeft,
                                 size: 30 * widget.pixelSize)))),
           );
         });
   }
 
+  @override
   Widget buildRandomPerks(BuildContext context) {
     var plugs = controller.possiblePlugHashes(controller.selectedSocketIndex);
     if (plugs?.isEmpty ?? false) {
@@ -209,6 +213,7 @@ class _ScreenshotPerkDetailsWidgetState extends BaseSocketDetailsWidgetState<Scr
     );
   }
 
+  @override
   Widget buildMod(BuildContext context, int socketIndex, int plugItemHash) {
     bool isSelected = plugItemHash == controller.selectedPlugHash;
     Color borderColor = isSelected ? Theme.of(context).colorScheme.onSurface : Colors.grey.shade300.withOpacity(.5);
@@ -221,12 +226,12 @@ class _ScreenshotPerkDetailsWidgetState extends BaseSocketDetailsWidgetState<Scr
     return Container(
         width: 96 * widget.pixelSize,
         key: Key("plug_${socketIndex}_$plugItemHash"),
-        padding: EdgeInsets.all(0),
+        padding: const EdgeInsets.all(0),
         child: AspectRatio(
             aspectRatio: 1,
             child: MaterialButton(
               shape: ContinuousRectangleBorder(side: borderSide),
-              padding: EdgeInsets.all(0),
+              padding: const EdgeInsets.all(0),
               child: Stack(children: [
                 ManifestImageWidget<DestinyInventoryItemDefinition>(plugItemHash),
                 energyType == DestinyEnergyType.Any
@@ -257,6 +262,7 @@ class _ScreenshotPerkDetailsWidgetState extends BaseSocketDetailsWidgetState<Scr
             )));
   }
 
+  @override
   Widget buildPerk(BuildContext context, int socketIndex, int plugItemHash) {
     var plugDef = controller.plugDefinitions[plugItemHash];
     int equippedHash = controller.socketEquippedPlugHash(socketIndex);
@@ -267,7 +273,7 @@ class _ScreenshotPerkDetailsWidgetState extends BaseSocketDetailsWidgetState<Scr
 
     final canRoll = widget.item == null && controller.canRollPerk(socketIndex, plugItemHash);
 
-    return Container(
+    return SizedBox(
         width: 80 * widget.pixelSize,
         child: SelectablePerkWidget(
           selected: isSelected,
@@ -416,6 +422,7 @@ class _ScreenshotPerkDetailsWidgetState extends BaseSocketDetailsWidgetState<Scr
     ]);
   }
 
+  @override
   Widget buildSandBoxPerks(BuildContext context) {
     if (sandboxPerkDefinitions == null) return Container();
     var perks = definition?.perks?.where((p) {
@@ -434,7 +441,7 @@ class _ScreenshotPerkDetailsWidgetState extends BaseSocketDetailsWidgetState<Scr
               child: Row(
                 key: Key("mod_perk_${p.perkHash}"),
                 children: <Widget>[
-                  Container(
+                  SizedBox(
                     height: 64 * widget.pixelSize,
                     width: 64 * widget.pixelSize,
                     child: ManifestImageWidget<DestinySandboxPerkDefinition>(p.perkHash),

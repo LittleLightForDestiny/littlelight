@@ -52,10 +52,11 @@ class SliverSection {
 
   SliverChildBuilderDelegate _builderDelegate() {
     final itemCount = this.itemCount;
-    if (itemCount == null)
+    if (itemCount == null) {
       return SliverChildBuilderDelegate(
         itemBuilder,
       );
+    }
     return SliverChildBuilderDelegate(
       (context, index) => index < itemCount ? itemBuilder(context, index) : null,
       childCount: itemCount,

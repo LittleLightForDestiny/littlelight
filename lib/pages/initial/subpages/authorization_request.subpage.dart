@@ -3,11 +3,10 @@ import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/pages/initial/notifiers/initial_page_state.notifier.dart';
 import 'package:little_light/pages/initial/subpages/subpage_base.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:provider/provider.dart';
 
 class AuthorizationRequestSubPage extends StatefulWidget {
-  AuthorizationRequestSubPage();
+  const AuthorizationRequestSubPage();
 
   @override
   AuthorizationRequestSubPageState createState() => AuthorizationRequestSubPageState();
@@ -30,7 +29,7 @@ class AuthorizationRequestSubPageState extends SubpageBaseState<AuthorizationReq
   Widget buildContent(BuildContext context) => Container(
           child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         Padding(
-            padding: EdgeInsets.all(8).copyWith(bottom: 24),
+            padding: const EdgeInsets.all(8).copyWith(bottom: 24),
             child: forceReauth
                 ? Text("Authorize with Bungie.net to use inventory management features".translate(context))
                 : Text(

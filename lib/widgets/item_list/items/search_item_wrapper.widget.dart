@@ -19,7 +19,7 @@ import 'package:little_light/widgets/item_list/items/weapon/weapon_inventory_ite
 import 'package:little_light/widgets/progress_tabs/pursuit_item/large_pursuit_item.widget.dart';
 
 class SearchItemWrapperWidget extends InventoryItemWrapperWidget {
-  SearchItemWrapperWidget(ItemWithOwner item, int bucketHash, {String characterId, Key key})
+  const SearchItemWrapperWidget(ItemWithOwner item, int bucketHash, {String characterId, Key key})
       : super(item, bucketHash, characterId: characterId, key: key);
 
   @override

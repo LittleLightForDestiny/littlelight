@@ -31,7 +31,7 @@ class ExceptionHandler with AuthConsumer {
   initCustomErrorMessage() {
     ErrorWidget.builder = (FlutterErrorDetails details) {
       return Container(
-          padding: EdgeInsets.all(8),
+          padding: const EdgeInsets.all(8),
           alignment: Alignment.center,
           child: Builder(
               builder: (context) => Column(mainAxisSize: MainAxisSize.min, children: [

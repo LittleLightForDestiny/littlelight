@@ -10,7 +10,7 @@ class CharacterTabWidget extends StatefulWidget {
   final DestinyCharacterComponent character;
   final int currentGroup;
   final EdgeInsets padding;
-  CharacterTabWidget(
+  const CharacterTabWidget(
     this.character,
     this.currentGroup, {
     Key key,

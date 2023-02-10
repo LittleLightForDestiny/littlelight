@@ -52,7 +52,7 @@ class _LanguagesPageState extends State<LanguagesPage> {
     var bottomPadding = MediaQuery.of(context).padding.bottom;
     return Container(
       color: Theme.of(context).colorScheme.secondary,
-      padding: EdgeInsets.all(8).copyWith(bottom: bottomPadding + 8),
+      padding: const EdgeInsets.all(8).copyWith(bottom: bottomPadding + 8),
       child: ElevatedButton(
           onPressed: () {
             languageService.selectedLanguage = selectedLanguage;
@@ -70,7 +70,7 @@ class _LanguagesPageState extends State<LanguagesPage> {
     final languages = this.languages;
     if (languages == null) return LoadingAnimWidget();
     return SingleChildScrollView(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         child: Column(children: languages.map((l) => buildLanguageItem(context, l)).toList()));
   }
 
@@ -83,7 +83,7 @@ class _LanguagesPageState extends State<LanguagesPage> {
       color = Colors.lightBlue.shade500;
     }
     return Container(
-        padding: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
         child: Material(
           color: color,
           borderRadius: BorderRadius.circular(30),
@@ -94,7 +94,7 @@ class _LanguagesPageState extends State<LanguagesPage> {
                 setState(() {});
               },
               child: Container(
-                  padding: EdgeInsets.all(4),
+                  padding: const EdgeInsets.all(4),
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [buildLanguageInfo(context, language), buildFileInfo(context, language)]))),
@@ -103,11 +103,11 @@ class _LanguagesPageState extends State<LanguagesPage> {
 
   Widget buildLanguageInfo(BuildContext context, LanguageInfo language) {
     return Row(children: [
-      Container(width: 8, height: 40),
+      const SizedBox(width: 8, height: 40),
       Container(width: 4),
       Text(
         language.name,
-        style: TextStyle(fontWeight: FontWeight.bold),
+        style: const TextStyle(fontWeight: FontWeight.bold),
       )
     ]);
   }
@@ -121,7 +121,7 @@ class _LanguagesPageState extends State<LanguagesPage> {
       if (size != null)
         Text(
           "${size.toStringAsFixed(2)} MB",
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
       Container(width: size != null ? 8 : 0),
       !canDelete
@@ -136,10 +136,10 @@ class _LanguagesPageState extends State<LanguagesPage> {
                     loadLanguages();
                   },
                   child: Container(
-                      padding: EdgeInsets.all(8),
+                      padding: const EdgeInsets.all(8),
                       child: TranslatedTextWidget(
                         "Delete",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       )))),
       Container(
         width: !canDelete ? 0 : 4,

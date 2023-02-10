@@ -14,7 +14,7 @@ extension WishlistTagData on WishlistTag {
     switch (this) {
       case WishlistTag.GodPVE:
       case WishlistTag.GodPVP:
-        return Color(0xFFFFC107);
+        return const Color(0xFFFFC107);
       case WishlistTag.PVE:
       case WishlistTag.PVP:
       case WishlistTag.Bungie:
@@ -51,17 +51,17 @@ extension WishlistTagData on WishlistTag {
     switch (this) {
       case WishlistTag.GodPVE:
       case WishlistTag.PVE:
-        return Color(0xFF457FD6);
+        return const Color(0xFF457FD6);
       case WishlistTag.GodPVP:
       case WishlistTag.PVP:
-        return Color(0xFFDF5555);
+        return const Color(0xFFDF5555);
       case WishlistTag.Bungie:
-        return Color(0xFF343030);
+        return const Color(0xFF343030);
       case WishlistTag.Trash:
-        return Color(0xFF980B0B);
+        return const Color(0xFF980B0B);
       case WishlistTag.Mouse:
       case WishlistTag.Controller:
-        return Color(0xFF4B555B);
+        return const Color(0xFF4B555B);
       case WishlistTag.UnknownEnumValue:
         return Colors.transparent;
     }

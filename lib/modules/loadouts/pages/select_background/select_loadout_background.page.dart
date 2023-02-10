@@ -10,7 +10,7 @@ class SelectLoadoutBackgroundPage extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) => SelectLoadoutBackgroundBloc(context)),
       ],
-      child: SelectLoadoutBackgroundView(),
+      child: const SelectLoadoutBackgroundView(),
     );
   }
 }

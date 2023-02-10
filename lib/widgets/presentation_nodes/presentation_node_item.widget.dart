@@ -16,7 +16,7 @@ class PresentationNodeItemWidget extends StatefulWidget {
   final int? hash;
   final OnPressed? onPressed;
 
-  PresentationNodeItemWidget({Key? key, this.hash, this.onPressed}) : super(key: key);
+  const PresentationNodeItemWidget({Key? key, this.hash, this.onPressed}) : super(key: key);
   @override
   State<StatefulWidget> createState() {
     return PresentationNodeWidgetState();
@@ -32,8 +32,8 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget>
   @override
   void initState() {
     super.initState();
-    this.loadDefinition();
-    this.loadCompletionData();
+    loadDefinition();
+    loadCompletionData();
   }
 
   loadDefinition() async {
@@ -47,15 +47,15 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget>
     var profileNodes = profile.getProfilePresentationNodes();
 
     if (profileNodes?.containsKey("${widget.hash}") ?? false) {
-      this.progress = profileNodes?["${widget.hash}"];
+      progress = profileNodes?["${widget.hash}"];
     }
-    if (this.progress != null) return;
+    if (progress != null) return;
 
     var characters = profile.characters;
-    if (characters == null || characters.length == 0) return;
+    if (characters == null || characters.isEmpty) return;
 
     DestinyPresentationNodeComponent? highest;
-    final multiProgress = Map<String, DestinyPresentationNodeComponent>();
+    final multiProgress = <String, DestinyPresentationNodeComponent>{};
     bool allEqual = true;
 
     for (var c in characters) {
@@ -78,7 +78,7 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget>
       this.multiProgress = multiProgress;
     }
 
-    this.progress = highest;
+    progress = highest;
   }
 
   int get progressValue => progress?.progressValue ?? 0;
@@ -91,7 +91,7 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget>
     return Container(
         decoration: BoxDecoration(
             border: Border.all(color: color.withOpacity(.6), width: 1),
-            gradient: LinearGradient(begin: Alignment(0, 0), end: Alignment(1, 2), colors: [
+            gradient: LinearGradient(begin: const Alignment(0, 0), end: const Alignment(1, 2), colors: [
               color.withOpacity(.05),
               color.withOpacity(.1),
               color.withOpacity(.03),
@@ -99,7 +99,7 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget>
             ])),
         child: Stack(children: [
           Opacity(opacity: completed ? 1 : .7, child: Row(children: buildContent(context, definition))),
-          Positioned(child: buildProgressBar(context), bottom: 0, left: 0, right: 0),
+          Positioned(bottom: 0, left: 0, right: 0, child: buildProgressBar(context)),
           MaterialButton(
               child: Container(),
               onPressed: () {
@@ -129,7 +129,7 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget>
               child: definition?.displayProperties?.icon == null
                   ? Container()
                   : Padding(
-                      padding: EdgeInsets.all(8),
+                      padding: const EdgeInsets.all(8),
                       child: QueuedNetworkImage(
                         imageUrl: BungieApiService.url(definition?.displayProperties?.icon)!,
                       )))
@@ -168,7 +168,7 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget>
     final color = completed ? Colors.amber.shade100 : Colors.grey.shade300;
     final classType = character?.classType;
     return Container(
-        padding: EdgeInsets.only(top: 2, bottom: 2, right: 8),
+        padding: const EdgeInsets.only(top: 2, bottom: 2, right: 8),
         child: Row(children: [
           classType != null ? Icon(classType.icon, size: 16, color: color) : Container(),
           Container(width: 4),
@@ -185,7 +185,7 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget>
     var color = completed ? Colors.amber.shade100 : Colors.grey.shade300;
     return Expanded(
         child: Container(
-            padding: EdgeInsets.all(8),
+            padding: const EdgeInsets.all(8),
             child: Text(
               definition?.displayProperties?.name ?? "",
               softWrap: true,

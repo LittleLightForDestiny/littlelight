@@ -7,7 +7,7 @@ class MultiSectionScrollView extends StatelessWidget {
   final double crossAxisSpacing;
   final double mainAxisSpacing;
   final bool shrinkWrap;
-  MultiSectionScrollView(
+  const MultiSectionScrollView(
     this._sections, {
     this.padding,
     this.crossAxisSpacing = 0,
@@ -41,7 +41,7 @@ class MultiSectionScrollView extends StatelessWidget {
         child: CustomScrollView(
           cacheExtent: 200,
           shrinkWrap: shrinkWrap,
-          physics: shrinkWrap ? NeverScrollableScrollPhysics() : null,
+          physics: shrinkWrap ? const NeverScrollableScrollPhysics() : null,
           slivers: _slivers,
         ));
   }

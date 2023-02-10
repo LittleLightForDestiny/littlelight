@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:bungie_api/src/models/destiny_inventory_item_definition.dart';
 import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/shared/widgets/inventory_item/low_density_inventory_item.dart';
 
 class SelectedItemThumb extends LowDensityInventoryItem {
-  SelectedItemThumb(DestinyItemInfo item) : super(item);
+  const SelectedItemThumb(DestinyItemInfo item) : super(item);
 
   @override
   Widget buildQuantity(BuildContext context, DestinyInventoryItemDefinition definition) {

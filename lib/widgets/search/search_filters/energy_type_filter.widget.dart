@@ -13,7 +13,7 @@ import 'package:little_light/widgets/search/search.controller.dart';
 import 'package:little_light/widgets/search/search_filters/base_search_filter.widget.dart';
 
 class EnergyTypeFilterWidget extends BaseSearchFilterWidget<EnergyTypeFilter> {
-  EnergyTypeFilterWidget(SearchController controller) : super(controller);
+  const EnergyTypeFilterWidget(SearchController controller) : super(controller);
 
   @override
   _EnergyTypeFilterWidgetState createState() => _EnergyTypeFilterWidgetState();
@@ -53,7 +53,7 @@ class _EnergyTypeFilterWidgetState
   Widget buildButtonLabel(BuildContext context, DestinyEnergyTypeDefinition value) {
     if (value?.displayProperties?.hasIcon == true) {
       return Container(
-          margin: EdgeInsets.all(8),
+          margin: const EdgeInsets.all(8),
           width: 32,
           height: 32,
           child: QueuedNetworkImage(imageUrl: BungieApiService.url(value?.displayProperties?.icon)));

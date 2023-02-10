@@ -6,7 +6,7 @@ import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/item_list/items/search_item_wrapper.widget.dart';
 
 class QuickTransferSearchItemWrapper extends SearchItemWrapperWidget {
-  QuickTransferSearchItemWrapper(ItemWithOwner item, int bucketHash, {String characterId, Key key})
+  const QuickTransferSearchItemWrapper(ItemWithOwner item, int bucketHash, {String characterId, Key key})
       : super(item, bucketHash, characterId: characterId, key: key);
 
   @override

@@ -39,7 +39,7 @@ class QuickTransferScreen extends SearchScreen with UserSettingsConsumer, Profil
   QuickTransferScreen(BuildContext context, {this.bucketDefinition, this.classType, this.characterId})
       : super(
             controller: SearchController.withDefaultFilters(context, firstRunFilters: [
-          ItemBucketFilter(selected: [bucketDefinition.hash].toSet(), enabled: true),
+          ItemBucketFilter(selected: {bucketDefinition.hash}, enabled: true),
           ClassTypeFilter(
               selected: [InventoryBucket.armorBucketHashes.contains(bucketDefinition.hash) ? classType : null]
                   .where((i) => i != null)

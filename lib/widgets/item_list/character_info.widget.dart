@@ -30,7 +30,7 @@ import 'package:shimmer/shimmer.dart';
 class CharacterInfoWidget extends StatefulWidget {
   final String characterId;
 
-  CharacterInfoWidget({this.characterId, Key key}) : super(key: key);
+  const CharacterInfoWidget({this.characterId, Key key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -133,27 +133,27 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T>
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         Container(
-          margin: EdgeInsets.only(left: 16, right: 4),
+          margin: const EdgeInsets.only(left: 16, right: 4),
           width: 16,
           height: 16,
           child: ManifestImageWidget<DestinyInventoryItemDefinition>(currency.itemHash),
         ),
         Text(
           "${currency.quantity}",
-          style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
         )
       ],
     );
   }
 
   Widget ghostIcon(BuildContext context) {
-    var ghost = Container(
+    var ghost = SizedBox(
         width: 50,
         height: 50,
         child: Shimmer.fromColors(
             baseColor: Colors.grey.shade400,
             highlightColor: Colors.grey.shade100,
-            period: Duration(seconds: 5),
+            period: const Duration(seconds: 5),
             child: Icon(LittleLightIcons.ghost, size: 50, color: Colors.grey.shade300)));
     if (userSettings.hasTappedGhost) {
       return ghost;
@@ -164,7 +164,7 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T>
       ),
       Center(
           child: Container(
-              margin: EdgeInsets.only(top: 60),
+              margin: const EdgeInsets.only(top: 60),
               child: Bubble(
                 color: LittleLightTheme.of(context).primaryLayers,
                 child: Text("Hey, tap me!".translate(context)),
@@ -195,7 +195,7 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Padding(
-                    padding: EdgeInsets.only(top: 8),
+                    padding: const EdgeInsets.only(top: 8),
                     child: Icon(
                       LittleLightIcons.power,
                       color: LittleLightTheme.of(context).achievementLayers,
@@ -216,7 +216,7 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T>
               children: <Widget>[
                 Text(
                   "$armorLevel",
-                  style: TextStyle(fontWeight: FontWeight.w500),
+                  style: const TextStyle(fontWeight: FontWeight.w500),
                 ),
                 artifactLevel == 0
                     ? Container()
@@ -243,11 +243,11 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(classDef.genderedClassNamesByGenderHash["${character.genderHash}"].toUpperCase(),
-                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 20)),
+                style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 20)),
             Container(height: 2),
             Text(
               raceDef.genderedRaceNamesByGenderHash["${character.genderHash}"],
-              style: TextStyle(fontWeight: FontWeight.w300, fontSize: 12),
+              style: const TextStyle(fontWeight: FontWeight.w300, fontSize: 12),
             ),
             Container(height: 2),
             characterStats(context, character)
@@ -260,10 +260,10 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T>
     character.stats.forEach((hash, stat) {
       if (hash == "${ProgressionHash.Power}") return;
       stats.add(Container(
-          margin: EdgeInsets.only(right: 4, bottom: 2),
+          margin: const EdgeInsets.only(right: 4, bottom: 2),
           child: Row(children: [
             Container(
-                margin: EdgeInsets.only(right: 2),
+                margin: const EdgeInsets.only(right: 2),
                 width: 16,
                 height: 16,
                 child: ManifestImageWidget<DestinyStatDefinition>(
@@ -272,7 +272,7 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T>
                 )),
             Text(
               "$stat",
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
             )
           ])));
     });
@@ -306,7 +306,7 @@ class CharacterInfoWidgetState<T extends CharacterInfoWidget> extends State<T>
           Container(
             width: 4,
           ),
-          Container(
+          SizedBox(
             width: 16,
             height: 16,
             child: isWellRested ? ManifestImageWidget<DestinySandboxPerkDefinition>(2352765282) : Container(),

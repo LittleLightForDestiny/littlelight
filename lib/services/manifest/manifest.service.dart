@@ -25,7 +25,7 @@ setupManifest() {
 class ManifestService with StorageConsumer, BungieApiConsumer, AnalyticsConsumer {
   sqflite.Database? _db;
   DestinyManifest? _manifestInfo;
-  final Map<String, dynamic> _cached = Map();
+  final Map<String, dynamic> _cached = {};
 
   ManifestService._internal();
 
@@ -99,7 +99,7 @@ class ManifestService with StorageConsumer, BungieApiConsumer, AnalyticsConsumer
       }
       Uri uri = Uri.parse(url);
       if (skipCache) {
-        final uuid = Uuid().v4();
+        final uuid = const Uuid().v4();
         uri = Uri.parse("$uri?cache_killer=$uuid");
       }
       HttpClientRequest req = await httpClient.getUrl(uri);
@@ -211,13 +211,11 @@ class ManifestService with StorageConsumer, BungieApiConsumer, AnalyticsConsumer
   Future<Map<int, T>> searchDefinitions<T>(List<String>? parameters,
       {int limit = 50, DefinitionTableIdentityFunction? identity}) async {
     final tableName = DefinitionTableNames.fromClass[T];
-    if (identity == null) {
-      identity = DefinitionTableNames.identities[T];
-    }
-    Map<int, T> defs = Map();
+    identity ??= DefinitionTableNames.identities[T];
+    Map<int, T> defs = {};
     sqflite.Database? db = await _openDb();
     String? where;
-    if (parameters != null && parameters.length > 0) {
+    if (parameters != null && parameters.isNotEmpty) {
       where = parameters.map((p) {
         return "UPPER(json) LIKE \"%${p.toUpperCase()}%\"";
       }).join(" AND ");
@@ -245,12 +243,10 @@ class ManifestService with StorageConsumer, BungieApiConsumer, AnalyticsConsumer
 
   Future<Map<int, T>> getDefinitions<T>(Iterable<int?> hashes, [DefinitionTableIdentityFunction? identity]) async {
     Set<int> hashesSet = hashes.whereType<int>().toSet();
-    if (hashesSet.length == 0) return Map<int, T>();
+    if (hashesSet.isEmpty) return <int, T>{};
     var tableName = DefinitionTableNames.fromClass[T];
-    if (identity == null) {
-      identity = DefinitionTableNames.identities[T];
-    }
-    Map<int, T> defs = Map();
+    identity ??= DefinitionTableNames.identities[T];
+    Map<int, T> defs = {};
     hashesSet.removeWhere((hash) {
       if (_cached.keys.contains("${tableName}_$hash")) {
         defs[hash] = _cached["${tableName}_$hash"];
@@ -259,11 +255,11 @@ class ManifestService with StorageConsumer, BungieApiConsumer, AnalyticsConsumer
       return false;
     });
 
-    if (hashesSet.length == 0) {
+    if (hashesSet.isEmpty) {
       return defs;
     }
     List<int> searchHashes = hashesSet.map((hash) => hash > 2147483648 ? hash - 4294967296 : hash).toList();
-    String idList = "(" + List.filled(hashesSet.length, '?').join(',') + ")";
+    String idList = "(${List.filled(hashesSet.length, '?').join(',')})";
 
     sqflite.Database? db = await _openDb();
     if (tableName == null) {
@@ -275,7 +271,7 @@ class ManifestService with StorageConsumer, BungieApiConsumer, AnalyticsConsumer
     try {
       List<Map<String, dynamic>>? results =
           await db?.query(tableName, columns: ['id', 'json'], where: "id in $idList", whereArgs: searchHashes);
-      if (results == null) return Map<int, T>();
+      if (results == null) return <int, T>{};
       for (var res in results) {
         int id = res['id'];
         int hash = id < 0 ? id + 4294967296 : id;
@@ -309,9 +305,7 @@ class ManifestService with StorageConsumer, BungieApiConsumer, AnalyticsConsumer
       }
     } catch (e) {}
 
-    if (identity == null) {
-      identity = DefinitionTableNames.identities[T];
-    }
+    identity ??= DefinitionTableNames.identities[T];
     if (tableName == null) {
       throw ("no db table found for class $T");
     }
@@ -323,7 +317,7 @@ class ManifestService with StorageConsumer, BungieApiConsumer, AnalyticsConsumer
     try {
       List<Map<String, dynamic>>? results =
           await db?.query(tableName, columns: ['json'], where: "id=?", whereArgs: [searchHash]);
-      if (results == null || results.length < 1) {
+      if (results == null || results.isEmpty) {
         return null;
       }
       String resultString = results.first['json'];

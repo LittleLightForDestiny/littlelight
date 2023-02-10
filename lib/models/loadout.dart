@@ -23,7 +23,7 @@ class Loadout {
       this.updatedAt});
 
   factory Loadout.fromScratch() {
-    return Loadout(assignedId: Uuid().v4(), name: "", equipped: [], unequipped: [], updatedAt: DateTime.now());
+    return Loadout(assignedId: const Uuid().v4(), name: "", equipped: [], unequipped: [], updatedAt: DateTime.now());
   }
 
   factory Loadout.copy(Loadout original) {

@@ -14,7 +14,7 @@ import 'package:little_light/widgets/item_sockets/item_socket.controller.dart';
 
 class ScreenShotItemIntrinsicPerkWidget extends BaseItemSocketsWidget {
   final double pixelSize;
-  ScreenShotItemIntrinsicPerkWidget({
+  const ScreenShotItemIntrinsicPerkWidget({
     Key key,
     DestinyItemComponent item,
     DestinyInventoryItemDefinition definition,
@@ -44,7 +44,7 @@ class ScreenShotItemIntrinsicPerkWidgetState<T extends ScreenShotItemIntrinsicPe
     if (category == null) return Container();
     Iterable<int> plugs =
         category.socketIndexes.map((socketIndex) => socketPlugHashes(socketIndex).length).where((l) => l > 0);
-    if (plugs.length == 0) return Container();
+    if (plugs.isEmpty) return Container();
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,6 +55,7 @@ class ScreenShotItemIntrinsicPerkWidgetState<T extends ScreenShotItemIntrinsicPe
     );
   }
 
+  @override
   Widget buildHeader(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -91,7 +92,7 @@ class ScreenShotItemIntrinsicPerkWidgetState<T extends ScreenShotItemIntrinsicPe
     var plugHash = socketSelectedPlugHash(socketIndex);
     if ((plugs?.length ?? 0) == 0) return null;
     return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Container(width: 80 * widget.pixelSize, child: buildPlug(context, socketIndex, plugHash)),
+      SizedBox(width: 80 * widget.pixelSize, child: buildPlug(context, socketIndex, plugHash)),
       Container(width: 20 * widget.pixelSize),
       Expanded(
           child: Column(
@@ -142,7 +143,7 @@ class ScreenShotItemIntrinsicPerkWidgetState<T extends ScreenShotItemIntrinsicPe
 
     return Container(
         key: Key("plug_${socketIndex}_$plugItemHash"),
-        padding: EdgeInsets.all(0),
+        padding: const EdgeInsets.all(0),
         margin: EdgeInsets.only(bottom: 16 * widget.pixelSize),
         child: AspectRatio(
             aspectRatio: 1,

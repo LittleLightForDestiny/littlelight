@@ -30,7 +30,7 @@ class AuthService with StorageConsumer, AppConfigConsumer, BungieApiConsumer {
   AuthService._internal();
 
   Future<void> setup() async {
-    _accountIDs = await globalStorage.accountIDs ?? Set<String>();
+    _accountIDs = await globalStorage.accountIDs ?? <String>{};
   }
 
   void openBungieLogin(bool forceReauth) async {
@@ -43,9 +43,9 @@ class AuthService with StorageConsumer, AppConfigConsumer, BungieApiConsumer {
     final membershipData = await bungieAPI.getMembershipsForToken(token);
 
     final accountID = token.membershipId;
-    this._currentAccountID = accountID;
+    _currentAccountID = accountID;
     final storage = accountStorage(accountID);
-    await this._saveToken(token);
+    await _saveToken(token);
     final memberships = membershipData.destinyMemberships;
     if (memberships == null || memberships.isEmpty) {
       throw InvalidMembershipException("Account doesn't have any memberships");
@@ -122,7 +122,7 @@ class AuthService with StorageConsumer, AppConfigConsumer, BungieApiConsumer {
   }
 
   Future<Map<String, UserMembershipData>> fetchMembershipDataForAllAccounts() async {
-    final result = Map<String, UserMembershipData>();
+    final result = <String, UserMembershipData>{};
     if (_accountIDs == null) {
       return result;
     }
@@ -154,15 +154,13 @@ class AuthService with StorageConsumer, AppConfigConsumer, BungieApiConsumer {
       return;
     }
     await accountStorage(currentAccountID!).saveLatestToken(token);
-    await Future.delayed(Duration(milliseconds: 1));
+    await Future.delayed(const Duration(milliseconds: 1));
     _currentToken = token;
   }
 
   Future<BungieNetToken?> getCurrentToken() async {
     BungieNetToken? token = _currentToken;
-    if (token == null) {
-      token = await _getStoredToken();
-    }
+    token ??= await _getStoredToken();
     if (token == null) {
       return null;
     }

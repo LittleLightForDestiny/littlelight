@@ -14,7 +14,7 @@ import 'package:little_light/widgets/item_stats/screenshot_total_stat.widget.dar
 class ScreenShotItemStatsWidget extends BaseItemStatsWidget {
   final double pixelSize;
 
-  ScreenShotItemStatsWidget(
+  const ScreenShotItemStatsWidget(
       {Key key,
       DestinyItemComponent item,
       DestinyInventoryItemDefinition definition,
@@ -39,18 +39,19 @@ class ScreenShotItemStatsState extends BaseItemStatsState<ScreenShotItemStatsWid
     );
   }
 
+  @override
   List<Widget> buildStats(context) {
     if (stats == null) return [Container()];
     Map<int, StatValues> statValues = getStatValues();
     StatValues totalStat;
     if (definition.itemType == DestinyItemType.Armor) {
       totalStat = StatValues();
-      stats.forEach((stat) {
+      for (var stat in stats) {
         var entry = statValues[stat.statTypeHash];
         totalStat.equipped += entry?.equipped ?? 0;
         totalStat.selected += entry?.selected ?? 0;
         totalStat.masterwork += entry?.masterwork ?? 0;
-      });
+      }
     }
     return stats
         .map<Widget>((stat) {

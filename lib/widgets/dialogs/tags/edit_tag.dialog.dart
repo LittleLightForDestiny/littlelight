@@ -35,12 +35,12 @@ class EditTagDialog extends LittleLightBaseDialog {
 
   @override
   Widget? buildBody(BuildContext context) {
-    return CreateTagFormWidget(context.tagArgument ?? this.newTag);
+    return CreateTagFormWidget(context.tagArgument ?? newTag);
   }
 
   @override
   Widget? buildActions(BuildContext context) {
-    final tag = context.tagArgument ?? this.newTag;
+    final tag = context.tagArgument ?? newTag;
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [

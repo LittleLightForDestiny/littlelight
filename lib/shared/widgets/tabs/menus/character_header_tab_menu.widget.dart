@@ -10,30 +10,32 @@ const iconWidth = 64.0;
 
 class CharacterHeaderTabMenuWidget extends CustomTabMenu {
   final List<DestinyCharacterInfo?> characters;
-  CharacterHeaderTabMenuWidget(this.characters, CustomTabController controller) : super(controller);
+  const CharacterHeaderTabMenuWidget(this.characters, CustomTabController controller) : super(controller);
 
   @override
   double getButtonSize(BuildContext context) => iconWidth;
 
+  @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: kToolbarHeight,
       child: super.build(context),
     );
   }
 
+  @override
   Widget buildButton(BuildContext context, int index) {
     final character = characters[index];
     return Container(
       alignment: Alignment.center,
-      child: Container(
+      child: SizedBox(
         width: 42.0,
         height: 42.0,
         child: character != null
             ? CharacterIconWidget(
                 character,
               )
-            : VaultIconWidget(),
+            : const VaultIconWidget(),
       ),
     );
   }

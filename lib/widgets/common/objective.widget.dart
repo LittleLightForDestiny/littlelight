@@ -68,7 +68,7 @@ class ObjectiveWidgetState extends State<ObjectiveWidget> with ManifestConsumer 
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.all(4),
+        padding: const EdgeInsets.all(4),
         child: Row(children: [
           if (!widget.omitCheckBox) buildCheck(context),
           Expanded(
@@ -82,7 +82,7 @@ class ObjectiveWidgetState extends State<ObjectiveWidget> with ManifestConsumer 
         decoration: BoxDecoration(border: Border.all(width: 1, color: widget.color ?? Colors.grey.shade300)),
         width: 22,
         height: 22,
-        padding: EdgeInsets.all(2),
+        padding: const EdgeInsets.all(2),
         child: buildCheckFill(context));
   }
 
@@ -99,14 +99,14 @@ class ObjectiveWidgetState extends State<ObjectiveWidget> with ManifestConsumer 
     if (definition == null) return Container();
     if ((definition?.completionValue ?? 0) <= 1) {
       return Container(
-          padding: EdgeInsets.only(left: 8, right: 4),
+          padding: const EdgeInsets.only(left: 8, right: 4),
           child: Row(children: [Expanded(child: buildTitle(context)), buildProgressValue(context)]));
     }
     return Container(
-        margin: EdgeInsets.only(left: 4),
+        margin: const EdgeInsets.only(left: 4),
         height: 22,
         decoration:
-            isComplete ? null : BoxDecoration(border: Border.all(width: 1, color: this.color ?? Colors.grey.shade300)),
+            isComplete ? null : BoxDecoration(border: Border.all(width: 1, color: color ?? Colors.grey.shade300)),
         child: Stack(
           children: <Widget>[
             Positioned.fill(
@@ -125,7 +125,7 @@ class ObjectiveWidgetState extends State<ObjectiveWidget> with ManifestConsumer 
 
   buildTitle(BuildContext context) {
     String title = definition?.progressDescription ?? "";
-    if (title.length == 0) {
+    if (title.isEmpty) {
       title = placeholder ?? "";
     }
 
@@ -134,7 +134,7 @@ class ObjectiveWidgetState extends State<ObjectiveWidget> with ManifestConsumer 
             maxLines: 1,
             softWrap: false,
             overflow: TextOverflow.fade,
-            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 13, color: this.color ?? Colors.grey.shade300)));
+            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 13, color: color ?? Colors.grey.shade300)));
   }
 
   Widget buildProgressValue(BuildContext context) {
@@ -159,15 +159,15 @@ class ObjectiveWidgetState extends State<ObjectiveWidget> with ManifestConsumer 
     String formattedProgress = formatter.format(progress);
     String formattedTotal = formatter.format(total);
 
-    return Text(total <= 1 ? "$formattedProgress" : "$formattedProgress/$formattedTotal",
-        style: TextStyle(fontWeight: FontWeight.w500, fontSize: 13, color: this.color ?? Colors.grey.shade300));
+    return Text(total <= 1 ? formattedProgress : "$formattedProgress/$formattedTotal",
+        style: TextStyle(fontWeight: FontWeight.w500, fontSize: 13, color: color ?? Colors.grey.shade300));
   }
 
   Widget buildDate(BuildContext context) {
     final formatter = DateFormat.yMd(context.currentLanguage);
     final progress = formatter.format(DateTime.fromMillisecondsSinceEpoch(objective.progress * 1000));
-    return Text("$progress",
-        style: TextStyle(fontWeight: FontWeight.w500, fontSize: 13, color: this.color ?? Colors.grey.shade300));
+    return Text(progress,
+        style: TextStyle(fontWeight: FontWeight.w500, fontSize: 13, color: color ?? Colors.grey.shade300));
   }
 
   buildProgressBar(BuildContext context) {
@@ -176,7 +176,7 @@ class ObjectiveWidgetState extends State<ObjectiveWidget> with ManifestConsumer 
     Color color = Color.lerp(barColor, Colors.black, .1);
     if (isComplete) return Container();
     return Container(
-        margin: EdgeInsets.all(2),
+        margin: const EdgeInsets.all(2),
         color: Theme.of(context).colorScheme.secondaryContainer,
         alignment: Alignment.centerLeft,
         child: FractionallySizedBox(

@@ -29,7 +29,7 @@ import 'package:little_light/widgets/item_sockets/selectable_perk.widget.dart';
 import 'package:little_light/widgets/item_stats/item_details_socket_item_stats.widget.dart';
 
 class ItemDetailsSocketDetailsWidget extends BaseSocketDetailsWidget {
-  ItemDetailsSocketDetailsWidget(
+  const ItemDetailsSocketDetailsWidget(
       {DestinyItemComponent item,
       DestinyItemSocketCategoryDefinition category,
       DestinyInventoryItemDefinition parentDefinition,
@@ -53,7 +53,7 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
         child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: <Widget>[
           buildOptions(context),
           buildHeader(context),
-          Container(padding: EdgeInsets.all(8), color: Colors.black, child: buildContent(context)),
+          Container(padding: const EdgeInsets.all(8), color: Colors.black, child: buildContent(context)),
           buildResourceCost(context),
         ]));
   }
@@ -63,9 +63,9 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
     return Material(
         color: bgColor,
         child: Container(
-          padding: EdgeInsets.all(8),
+          padding: const EdgeInsets.all(8),
           child: Row(children: [
-            Container(
+            SizedBox(
                 width: 48,
                 height: 48,
                 child: QueuedNetworkImage(imageUrl: BungieApiService.url(definition?.displayProperties?.icon))),
@@ -76,9 +76,9 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
               children: [
                 Text(
                   definition?.displayProperties?.name?.toUpperCase(),
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
-                Text(definition?.itemTypeDisplayName ?? "", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300))
+                Text(definition?.itemTypeDisplayName ?? "", style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w300))
               ],
             )),
             if (controller.isSocketFavoritable(controller.selectedSocketIndex)) buildFavoriteButton(context)
@@ -112,6 +112,7 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: items.toList());
   }
 
+  @override
   buildStats(BuildContext context) {
     if (!shouldShowStats) return Container();
     return Column(children: [
@@ -148,14 +149,15 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
   buildDescription(BuildContext context) {
     if ((definition?.displayProperties?.description?.length ?? 0) == 0) return Container();
     return Text(definition?.displayProperties?.description,
-        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300));
+        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w300));
   }
 
+  @override
   Widget buildReusableMods(BuildContext context) {
     final plugs = controller.socketPlugHashes(controller.selectedSocketIndex);
 
     return Container(
-        padding: EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.only(bottom: 8),
         child: LayoutBuilder(builder: (context, constraints) {
           final width = constraints.maxWidth - 32;
           final itemsPerRow = (width / 48).floor();
@@ -166,7 +168,7 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
 
           return DefaultTabController(
               length: tabCount,
-              child: Container(
+              child: SizedBox(
                 height: gridHeight,
                 child: Row(children: [
                   Builder(builder: (context) => pagingButton(context, -1)),
@@ -194,9 +196,9 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
           final currentIndex = controller.index;
           final enabled = direction < 0 ? currentIndex > 0 : currentIndex < length - 1;
           return Container(
-            constraints: BoxConstraints.expand(width: 16),
+            constraints: const BoxConstraints.expand(width: 16),
             decoration: BoxDecoration(border: Border.all(color: Colors.grey.shade300)),
-            padding: EdgeInsets.all(0),
+            padding: const EdgeInsets.all(0),
             alignment: Alignment.center,
             child: !enabled
                 ? Container(color: Colors.grey.shade300.withOpacity(.2))
@@ -207,13 +209,14 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
                           controller.animateTo(currentIndex + direction);
                         },
                         child: Container(
-                            constraints: BoxConstraints.expand(),
+                            constraints: const BoxConstraints.expand(),
                             child: Icon(direction > 0 ? FontAwesomeIcons.caretRight : FontAwesomeIcons.caretLeft,
                                 size: 16)))),
           );
         });
   }
 
+  @override
   Widget buildMod(BuildContext context, int socketIndex, int plugItemHash) {
     bool isFavorite = itemNotes.getNotesForItem(plugItemHash, null)?.tags?.contains("favorite") ?? false;
     bool isSelected = plugItemHash == controller.selectedPlugHash;
@@ -230,12 +233,12 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
     return Container(
         width: min(64, screenWidth / 8),
         key: Key("plug_${socketIndex}_$plugItemHash"),
-        padding: EdgeInsets.all(0),
+        padding: const EdgeInsets.all(0),
         child: AspectRatio(
             aspectRatio: 1,
             child: MaterialButton(
               shape: ContinuousRectangleBorder(side: borderSide),
-              padding: EdgeInsets.all(0),
+              padding: const EdgeInsets.all(0),
               child: Stack(children: [
                 ManifestImageWidget<DestinyInventoryItemDefinition>(plugItemHash),
                 energyType == DestinyEnergyType.Any
@@ -250,7 +253,7 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
                         right: 4,
                         child: Text(
                           "$energyCost",
-                          style: TextStyle(fontSize: 12),
+                          style: const TextStyle(fontSize: 12),
                         )),
                 canEquip
                     ? Container()
@@ -259,7 +262,7 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
                           color: Colors.black.withOpacity(.5),
                         ),
                       ),
-                if (isFavorite) Positioned(right: 2, top: 2, child: Icon(FontAwesomeIcons.solidHeart, size: 10))
+                if (isFavorite) const Positioned(right: 2, top: 2, child: Icon(FontAwesomeIcons.solidHeart, size: 10))
               ]),
               onPressed: () {
                 controller.selectSocket(socketIndex, plugItemHash);
@@ -267,6 +270,7 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
             )));
   }
 
+  @override
   Widget buildRandomPerks(BuildContext context) {
     final plugs = controller.possiblePlugHashes(controller.selectedSocketIndex);
     if (plugs?.isEmpty ?? false) {
@@ -275,7 +279,7 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
     var screenWidth = MediaQuery.of(context).size.width - 16;
     var dividerMargin = min(screenWidth / 50, 8.0);
     return Container(
-        padding: EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.only(bottom: 8),
         child: Wrap(
           runSpacing: dividerMargin,
           spacing: dividerMargin,
@@ -296,18 +300,19 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
               size: 20,
             );
       var value = Container(
-          padding: EdgeInsets.all(4),
+          padding: const EdgeInsets.all(4),
           child: Text("${cost.energyCost}", style: TextStyle(fontWeight: FontWeight.w700, fontSize: 24, color: color)));
       var description = TranslatedTextWidget(
         "Energy Cost",
         uppercase: true,
-        style: TextStyle(fontWeight: FontWeight.w300, fontSize: 16),
+        style: const TextStyle(fontWeight: FontWeight.w300, fontSize: 16),
       );
       return Row(children: <Widget>[icon, value, description]);
     }
     return Container();
   }
 
+  @override
   Widget buildResourceCost(BuildContext context) {
     var requirementHash = definition?.plug?.insertionMaterialRequirementHash;
     if (requirementHash != null) {
@@ -321,23 +326,23 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
               color: Colors.black,
               border: Border(top: BorderSide(color: Colors.grey.shade500, width: 1)),
             ),
-            padding: EdgeInsets.all(8),
+            padding: const EdgeInsets.all(8),
             child: Column(
               children: materials.map((m) {
                 return Row(
                   children: <Widget>[
-                    Container(
+                    SizedBox(
                         width: 20, height: 20, child: ManifestImageWidget<DestinyInventoryItemDefinition>(m.itemHash)),
                     Expanded(
                       child: Container(
-                        padding: EdgeInsets.only(left: 8),
+                        padding: const EdgeInsets.only(left: 8),
                         child: ManifestText<DestinyInventoryItemDefinition>(
                           m.itemHash,
-                          style: TextStyle(fontWeight: FontWeight.w300),
+                          style: const TextStyle(fontWeight: FontWeight.w300),
                         ),
                       ),
                     ),
-                    Text("${m.count}", style: TextStyle(fontWeight: FontWeight.w300))
+                    Text("${m.count}", style: const TextStyle(fontWeight: FontWeight.w300))
                   ],
                 );
               }).toList(),
@@ -347,6 +352,7 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
     return Container();
   }
 
+  @override
   Widget buildPerk(BuildContext context, int socketIndex, int plugItemHash) {
     var plugDef = controller.plugDefinitions[plugItemHash];
     int equippedHash = controller.socketEquippedPlugHash(socketIndex);
@@ -355,7 +361,7 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
     bool isSelected = plugItemHash == controller.selectedPlugHash;
     bool canRoll = controller.item != null || controller.canRollPerk(socketIndex, plugItemHash);
     var screenWidth = MediaQuery.of(context).size.width;
-    return Container(
+    return SizedBox(
         width: min(64, screenWidth / 8),
         child: SelectablePerkWidget(
           selected: isSelected,
@@ -382,7 +388,7 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
     }
     final isEnabled = !controller.isSocketBusy(controller.selectedSocketIndex);
     final applyButton = Container(
-        padding: EdgeInsets.only(top: 8),
+        padding: const EdgeInsets.only(top: 8),
         child: ElevatedButton(
             key: Key("apply_button_${definition.hash}_$isEnabled"),
             onPressed: isEnabled

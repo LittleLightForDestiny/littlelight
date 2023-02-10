@@ -22,7 +22,7 @@ import 'package:provider/provider.dart';
 
 //TODO: deprecate this in favor of new equipment info widget
 class VaultInfoWidget extends CharacterInfoWidget {
-  VaultInfoWidget({Key key}) : super(key: key);
+  const VaultInfoWidget({Key key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -57,6 +57,7 @@ class VaultInfoWidgetState extends CharacterInfoWidgetState<VaultInfoWidget> {
     ]);
   }
 
+  @override
   Widget mainCharacterInfo(BuildContext context, DestinyCharacterComponent character) {
     return Positioned(
         top: 0,
@@ -65,10 +66,11 @@ class VaultInfoWidgetState extends CharacterInfoWidgetState<VaultInfoWidget> {
         child: Container(
           alignment: Alignment.centerLeft,
           child: ManifestText<DestinyVendorDefinition>(1037843411,
-              uppercase: true, style: TextStyle(fontWeight: FontWeight.w700, fontSize: 20)),
+              uppercase: true, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 20)),
         ));
   }
 
+  @override
   Widget characterStatsInfo(BuildContext context, DestinyCharacterComponent character) {
     int itemCount = profile.getAllItems().where((i) => i.item.bucketHash == InventoryBucket.general).length;
     return Positioned(
@@ -80,21 +82,22 @@ class VaultInfoWidgetState extends CharacterInfoWidgetState<VaultInfoWidget> {
           child: ManifestText<DestinyInventoryBucketDefinition>(InventoryBucket.general,
               textExtractor: (def) => "$itemCount/${def.itemCount}",
               key: Key("$itemCount"),
-              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 20))),
+              style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 20))),
     );
   }
 
+  @override
   showOptionsSheet(BuildContext context) {
     showModalBottomSheet(
         context: context,
         builder: (context) {
-          return VaultOptionsSheet();
+          return const VaultOptionsSheet();
         });
   }
 }
 
 class VaultOptionsSheet extends StatefulWidget {
-  VaultOptionsSheet({Key key}) : super(key: key);
+  const VaultOptionsSheet({Key key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -104,7 +107,7 @@ class VaultOptionsSheet extends StatefulWidget {
 
 class VaultOptionsSheetState extends State<VaultOptionsSheet> with ProfileConsumer, InventoryConsumer {
   InventoryBloc inventoryBloc(BuildContext context) => context.read<InventoryBloc>();
-  final TextStyle buttonStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 12);
+  final TextStyle buttonStyle = const TextStyle(fontWeight: FontWeight.bold, fontSize: 12);
 
   List<ItemWithOwner> itemsInPostmaster;
 
@@ -117,7 +120,7 @@ class VaultOptionsSheetState extends State<VaultOptionsSheet> with ProfileConsum
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisSize: MainAxisSize.min,
@@ -169,7 +172,7 @@ class VaultOptionsSheetState extends State<VaultOptionsSheet> with ProfileConsum
             child: Material(
           color: Theme.of(context).colorScheme.secondary,
         )),
-        Container(padding: EdgeInsets.all(8), child: content),
+        Container(padding: const EdgeInsets.all(8), child: content),
         Positioned.fill(
             child: Material(
                 color: Colors.transparent,
@@ -194,7 +197,7 @@ class VaultOptionsSheetState extends State<VaultOptionsSheet> with ProfileConsum
     if (loadouts == null) return Container();
     return SingleChildScrollView(
         child: Container(
-            padding: EdgeInsets.symmetric(vertical: 4),
+            padding: const EdgeInsets.symmetric(vertical: 4),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisSize: MainAxisSize.min,
@@ -202,7 +205,7 @@ class VaultOptionsSheetState extends State<VaultOptionsSheet> with ProfileConsum
                   .map(
                     (loadout) => Container(
                         color: LittleLightTheme.of(context).primaryLayers,
-                        margin: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         child: Stack(children: [
                           Positioned.fill(
                               child: loadout.emblemHash != null
@@ -215,13 +218,13 @@ class VaultOptionsSheetState extends State<VaultOptionsSheet> with ProfileConsum
                                     )
                                   : Container()),
                           Container(
-                              padding: EdgeInsets.all(16),
+                              padding: const EdgeInsets.all(16),
                               child: Text(
                                 loadout.name.toUpperCase(),
                                 maxLines: 1,
                                 overflow: TextOverflow.fade,
                                 softWrap: false,
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                                style: const TextStyle(fontWeight: FontWeight.bold),
                               )),
                           Positioned.fill(
                               child: Material(

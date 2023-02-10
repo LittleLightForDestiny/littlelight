@@ -32,7 +32,7 @@ class BungieApiService with AuthConsumer, AppConfigConsumer {
 
   static String? url(String? url) {
     if (url == null) return null;
-    if (url.length == 0) return null;
+    if (url.isEmpty) return null;
     if (url.contains('://')) return url;
     return "$baseUrl$url";
   }
@@ -247,7 +247,7 @@ class Client with AuthConsumer, AppConfigConsumer implements HttpClient {
     if (bodyContentType != null) {
       headers['Content-Type'] = bodyContentType;
     }
-    final accessToken = this.token?.accessToken;
+    final accessToken = token?.accessToken;
     if (accessToken != null) {
       headers['Authorization'] = "Bearer $accessToken";
     }
@@ -265,7 +265,7 @@ class Client with AuthConsumer, AppConfigConsumer implements HttpClient {
         valueStr = value.join(',');
       }
       if (valueStr == null) return;
-      if (paramsString.length == 0) {
+      if (paramsString.isEmpty) {
         paramsString += "?";
       } else {
         paramsString += "&";
@@ -283,7 +283,7 @@ class Client with AuthConsumer, AppConfigConsumer implements HttpClient {
       if (cookies != null) {
         req.cookies.addAll(cookies);
       }
-      response = await req.close().timeout(Duration(seconds: 15));
+      response = await req.close().timeout(const Duration(seconds: 15));
     } else {
       String body = config.bodyContentType == 'application/json' ? jsonEncode(config.body) : config.body;
       var req = await client.postUrl(Uri.parse("${BungieApiService.apiUrl}${config.url}$paramsString"));
@@ -293,7 +293,7 @@ class Client with AuthConsumer, AppConfigConsumer implements HttpClient {
       if (cookies != null) {
         req.cookies.addAll(cookies);
       }
-      response = await req.close().timeout(Duration(seconds: 15));
+      response = await req.close().timeout(const Duration(seconds: 15));
     }
 
     if (response.statusCode == 401 && autoRefreshToken) {
@@ -306,7 +306,7 @@ class Client with AuthConsumer, AppConfigConsumer implements HttpClient {
     }
     dynamic json;
     try {
-      var stream = response.transform(Utf8Decoder());
+      var stream = response.transform(const Utf8Decoder());
       var text = "";
       await for (var t in stream) {
         text += t;

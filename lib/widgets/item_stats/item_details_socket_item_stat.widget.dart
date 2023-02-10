@@ -7,12 +7,12 @@ import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/item_stats/base_item_stat.widget.dart';
 
 class ItemDetailSocketItemStatWidget extends BaseItemStatWidget {
-  ItemDetailSocketItemStatWidget({Key key, StatValues modValues, int statHash, DestinyStatDisplayDefinition scaled})
+  const ItemDetailSocketItemStatWidget({Key key, StatValues modValues, int statHash, DestinyStatDisplayDefinition scaled})
       : super(key: key, statHash: statHash, modValues: modValues, scaled: scaled);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
         height: 18,
         child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -35,7 +35,7 @@ class ItemDetailSocketItemStatWidget extends BaseItemStatWidget {
   }
 
   Widget buildValue(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: 50,
       child: Text(
         "$currentValue",
@@ -67,6 +67,7 @@ class ItemDetailSocketItemStatWidget extends BaseItemStatWidget {
     );
   }
 
+  @override
   int get currentValue {
     if (scaled != null) {
       return interpolate(selected, scaled.displayInterpolation) - interpolate(equipped, scaled.displayInterpolation);

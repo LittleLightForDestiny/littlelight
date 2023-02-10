@@ -20,7 +20,7 @@ import 'package:little_light/widgets/inventory_tabs/multiselect_management_block
 import 'package:little_light/widgets/item_list/items/quick_select_item_wrapper.widget.dart';
 
 class SelectedItemsWidget extends StatefulWidget {
-  SelectedItemsWidget({Key key}) : super(key: key);
+  const SelectedItemsWidget({Key key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -37,10 +37,10 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget>
   void initState() {
     super.initState();
 
-    this.items = selection.items;
+    items = selection.items;
 
     subscription = selection.broadcaster.listen((selected) {
-      this.items = selected;
+      items = selected;
       setState(() {});
     });
   }
@@ -53,7 +53,7 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget>
 
   @override
   Widget build(BuildContext context) {
-    if (selection.items.length == 0) {
+    if (selection.items.isEmpty) {
       return Container();
     }
     return Container(
@@ -73,9 +73,9 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget>
         items.where((i) => i?.item?.lockable == true && i?.item?.state?.contains(ItemState.Locked) != true);
     var unlockableItems =
         items.where((i) => i?.item?.lockable == true && i?.item?.state?.contains(ItemState.Locked) != false);
-    if (lockableItems.length > 0) {
+    if (lockableItems.isNotEmpty) {
       buttons.add(ElevatedButton(
-        key: Key("lock_button"),
+        key: const Key("lock_button"),
         child: TranslatedTextWidget(
           "Lock",
           uppercase: true,
@@ -86,9 +86,9 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget>
         },
       ));
     }
-    if (unlockableItems.length > 0) {
+    if (unlockableItems.isNotEmpty) {
       buttons.add(ElevatedButton(
-        key: Key("unlock_button"),
+        key: const Key("unlock_button"),
         child: TranslatedTextWidget(
           "Unlock",
           uppercase: true,
@@ -119,7 +119,7 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget>
         children: buttons
             .map((b) => Expanded(
                   child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     child: b,
                   ),
                 ))
@@ -129,24 +129,24 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget>
   Widget buildHeader(BuildContext context) {
     if (items == null) return Container();
     return HeaderWidget(
-      padding: EdgeInsets.all(0),
+      padding: const EdgeInsets.all(0),
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         Container(
-            padding: EdgeInsets.all(8),
+            padding: const EdgeInsets.all(8),
             child: TranslatedTextWidget(
               "{itemCount} items selected",
               key: Key("item_count ${items.length}"),
               uppercase: true,
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold),
               replace: {"itemCount": "${items.length}"},
             )),
         Material(
             color: Theme.of(context).errorColor,
             child: InkWell(
                 child: Container(
-                  padding: EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(8),
                   child: Row(children: [
-                    Icon(
+                    const Icon(
                       Icons.remove_circle,
                       size: 16,
                     ),
@@ -156,7 +156,7 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget>
                     TranslatedTextWidget(
                       "Clear",
                       uppercase: true,
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     )
                   ]),
                 ),
@@ -182,7 +182,7 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget>
     var itemsPerRow = MediaQueryHelper(context).tabletOrBigger ? 20 : 10;
     return Container(
         alignment: Alignment.topLeft,
-        padding: EdgeInsets.all(4),
+        padding: const EdgeInsets.all(4),
         child: Wrap(
             alignment: WrapAlignment.start,
             crossAxisAlignment: WrapCrossAlignment.start,

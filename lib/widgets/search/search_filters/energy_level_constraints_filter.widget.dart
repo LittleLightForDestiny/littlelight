@@ -9,7 +9,7 @@ import 'package:little_light/widgets/search/search.controller.dart';
 import 'package:little_light/widgets/search/search_filters/base_search_filter.widget.dart';
 
 class EnergyLevelConstraintsWidget extends BaseSearchFilterWidget<EnergyLevelConstraintsFilter> {
-  EnergyLevelConstraintsWidget(SearchController controller) : super(controller);
+  const EnergyLevelConstraintsWidget(SearchController controller) : super(controller);
 
   @override
   EnergyLevelConstraintsWidgetState createState() => EnergyLevelConstraintsWidgetState();
@@ -28,7 +28,7 @@ class EnergyLevelConstraintsWidgetState extends BaseSearchFilterWidgetState<Ener
       !powerlessAvaialable
           ? Container()
           : Container(
-              padding: EdgeInsets.all(8),
+              padding: const EdgeInsets.all(8),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
@@ -37,22 +37,22 @@ class EnergyLevelConstraintsWidgetState extends BaseSearchFilterWidgetState<Ener
                     value: filter.value.includeEnergylessItems,
                     onChanged: (value) {
                       filter.value.includeEnergylessItems = value;
-                      controller.prioritize(this.filter);
+                      controller.prioritize(filter);
                       controller.update();
                     },
                   )
                 ],
               )),
       Container(
-          padding: EdgeInsets.symmetric(horizontal: 8).copyWith(top: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 8).copyWith(top: 8),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[Text("$aMin"), Text("$aMax")],
           )),
       SliderTheme(
           data: SliderTheme.of(context).copyWith(
-              rangeValueIndicatorShape: SmallRectRangeSliderValueIndicatorShape(),
-              rangeTrackShape: RoundedRectRangeSliderTrackShape()),
+              rangeValueIndicatorShape: const SmallRectRangeSliderValueIndicatorShape(),
+              rangeTrackShape: const RoundedRectRangeSliderTrackShape()),
           child: RangeSlider(
             values: RangeValues(min?.toDouble(), max?.toDouble()),
             min: aMin?.toDouble(),
@@ -65,7 +65,7 @@ class EnergyLevelConstraintsWidgetState extends BaseSearchFilterWidgetState<Ener
               setState(() {});
             },
             onChangeEnd: (values) {
-              controller.prioritize(this.filter);
+              controller.prioritize(filter);
               controller.update();
             },
           ))

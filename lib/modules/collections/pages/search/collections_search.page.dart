@@ -7,7 +7,7 @@ import 'package:little_light/widgets/inventory_tabs/inventory_notification.widge
 import 'package:little_light/widgets/presentation_nodes/collectible_item.widget.dart';
 
 class CollectionsSearchPage extends StatefulWidget {
-  CollectionsSearchPage({Key? key}) : super(key: key);
+  const CollectionsSearchPage({Key? key}) : super(key: key);
 
   @override
   CollectionsSearchPageState createState() => CollectionsSearchPageState();
@@ -15,21 +15,21 @@ class CollectionsSearchPage extends StatefulWidget {
 
 class CollectionsSearchPageState<T extends CollectionsSearchPage> extends State<T>
     with ManifestConsumer, UserSettingsConsumer {
-  TextEditingController _searchFieldController = new TextEditingController();
+  final TextEditingController _searchFieldController = TextEditingController();
   List<DestinyCollectibleDefinition>? items;
 
   @override
   initState() {
     super.initState();
     _searchFieldController.addListener(() {
-      this.loadItems();
+      loadItems();
     });
 
-    this.loadItems();
+    loadItems();
   }
 
   loadItems() async {
-    this.items =
+    items =
         (await manifest.searchDefinitions<DestinyCollectibleDefinition>([_searchFieldController.text])).values.toList();
     setState(() {});
   }
@@ -47,7 +47,7 @@ class CollectionsSearchPageState<T extends CollectionsSearchPage> extends State<
               itemCount: items?.length ?? 0,
             )),
           ]),
-          InventoryNotificationWidget(
+          const InventoryNotificationWidget(
             key: Key('inventory_notification_widget'),
             barHeight: 0,
           ),
@@ -58,7 +58,7 @@ class CollectionsSearchPageState<T extends CollectionsSearchPage> extends State<
     var item = items?[index];
     if (item == null) return Container();
     return Stack(children: [
-      Container(height: 96, child: CollectibleItemWidget(key: Key("${item.hash}"), hash: item.hash)),
+      SizedBox(height: 96, child: CollectibleItemWidget(key: Key("${item.hash}"), hash: item.hash)),
     ]);
   }
 

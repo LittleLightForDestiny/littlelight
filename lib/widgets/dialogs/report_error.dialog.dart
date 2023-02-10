@@ -60,10 +60,10 @@ class ReportErrorDialog extends LittleLightBaseDialog with AuthConsumer, Analyti
             return Container(
               decoration: BoxDecoration(
                   color: LittleLightTheme.of(context).surfaceLayers.layer2, borderRadius: BorderRadius.circular(8)),
-              padding: EdgeInsets.all(8),
+              padding: const EdgeInsets.all(8),
               child: Text(
                 text,
-                style: TextStyle(fontSize: 11),
+                style: const TextStyle(fontSize: 11),
               ),
             );
           })

@@ -32,7 +32,7 @@ class ItemLevelWidget extends StatelessWidget with ProfileConsumer, DeepSightHel
   Widget build(BuildContext context) {
     final instanceID = item.itemInstanceId;
     if (instanceID == null) return Container();
-    if (!this.isShapedWeaponOrDeepsight(instanceID)) return Container();
+    if (!isShapedWeaponOrDeepsight(instanceID)) return Container();
     return Container(child: buildPlugObjectives(context, instanceID));
   }
 
@@ -71,7 +71,7 @@ class ItemLevelWidget extends StatelessWidget with ProfileConsumer, DeepSightHel
 
   Widget buildProgressBar(BuildContext context, DestinyObjectiveProgress objective) {
     return Container(
-        padding: EdgeInsets.only(top: 8),
+        padding: const EdgeInsets.only(top: 8),
         child: DefinitionProviderWidget<DestinyObjectiveDefinition>(
             objective.objectiveHash!,
             (def) => ObjectiveWidget(

@@ -60,7 +60,7 @@ class VendorsScreenState extends State<VendorsScreen>
             height: kToolbarHeight,
             child: IconButton(
               enableFeedback: false,
-              icon: Icon(Icons.menu),
+              icon: const Icon(Icons.menu),
               onPressed: () {
                 Scaffold.of(context).openDrawer();
               },
@@ -70,7 +70,7 @@ class VendorsScreenState extends State<VendorsScreen>
               top: MediaQuery.of(context).padding.top + kToolbarHeight - 52,
               right: 8,
               child: buildCharacterMenu(context)),
-          InventoryNotificationWidget(barHeight: 0, key: Key('inventory_notification_widget')),
+          const InventoryNotificationWidget(barHeight: 0, key: Key('inventory_notification_widget')),
         ],
       ),
     );
@@ -82,7 +82,7 @@ class VendorsScreenState extends State<VendorsScreen>
 
   Widget buildCharacterHeaderTabView(BuildContext context) {
     return PassiveTabBarView(
-        physics: NeverScrollableScrollPhysics(),
+        physics: const NeverScrollableScrollPhysics(),
         controller: charTabController,
         children: characters
             .map((character) => TabHeaderWidget(

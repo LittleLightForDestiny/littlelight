@@ -58,7 +58,7 @@ class SelectablePerkWidget extends StatelessWidget with PlugWishlistTagIconsMixi
 
     return Container(
         key: Key("item_perk_$plugItemHash"),
-        padding: EdgeInsets.all(0),
+        padding: const EdgeInsets.all(0),
         child: Opacity(
             opacity: canRoll ? 1 : .3,
             child: Stack(children: [
@@ -67,6 +67,7 @@ class SelectablePerkWidget extends StatelessWidget with PlugWishlistTagIconsMixi
                   child: InkWell(
                     borderRadius:
                         intrinsic && !isExotic ? BorderRadius.circular(4 * scale) : BorderRadius.circular(48 * scale),
+                    onTap: onTap,
                     child: Material(
                         shape: intrinsic && !isExotic
                             ? RoundedRectangleBorder(borderRadius: BorderRadius.circular(4 * scale), side: borderSide)
@@ -75,7 +76,6 @@ class SelectablePerkWidget extends StatelessWidget with PlugWishlistTagIconsMixi
                         child: Padding(
                             padding: EdgeInsets.all(intrinsic ? 0 : 8 * scale),
                             child: ManifestImageWidget<DestinyInventoryItemDefinition>(plugItemHash))),
-                    onTap: onTap,
                   )),
               if (isEnhanced) Positioned.fill(child: buildEnhancedPerkOverlay(context)),
               Positioned(

@@ -14,7 +14,7 @@ import 'package:little_light/widgets/item_details/section_header.widget.dart';
 
 class ItemDetailsNotesWidget extends BaseDestinyStatefulItemWidget {
   final Function onUpdate;
-  ItemDetailsNotesWidget(
+  const ItemDetailsNotesWidget(
       {DestinyItemComponent item,
       DestinyInventoryItemDefinition definition,
       DestinyItemInstanceComponent instanceInfo,
@@ -68,9 +68,9 @@ class ItemDetailsNotesWidgetState extends BaseDestinyItemState<ItemDetailsNotesW
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         child: Column(children: <Widget>[
-          getHeader(Text("Item Notes".translate(context).toUpperCase(), style: TextStyle(fontWeight: FontWeight.bold))),
+          getHeader(Text("Item Notes".translate(context).toUpperCase(), style: const TextStyle(fontWeight: FontWeight.bold))),
           visible ? Container(height: 8) : Container(),
           visible ? buildCustomName(context) : Container(),
           visible ? Container(height: 8) : Container(),
@@ -84,7 +84,7 @@ class ItemDetailsNotesWidgetState extends BaseDestinyItemState<ItemDetailsNotesW
       Container(width: 8),
       Expanded(
         child: Container(
-            padding: EdgeInsets.all(8),
+            padding: const EdgeInsets.all(8),
             color: Colors.black54,
             child: customName != null ? Text(customName) : Text("Not set".translate(context))),
       ),
@@ -115,7 +115,7 @@ class ItemDetailsNotesWidgetState extends BaseDestinyItemState<ItemDetailsNotesW
       Expanded(
           child: Container(
               key: Key(notesText),
-              padding: EdgeInsets.all(8),
+              padding: const EdgeInsets.all(8),
               color: Colors.black54,
               child: notesText != null ? Text(notesText) : Text("No notes added yet".translate(context)))),
       Container(
@@ -144,14 +144,12 @@ class ItemDetailsNotesWidgetState extends BaseDestinyItemState<ItemDetailsNotesW
   }
 
   iconButton(IconData icon, {Color color, Function onPressed}) {
-    if (color == null) {
-      color = LittleLightTheme.of(context).primaryLayers;
-    }
+    color ??= LittleLightTheme.of(context).primaryLayers;
     return Material(
         color: color,
         child: InkWell(
-          child: Container(padding: EdgeInsets.all(4), child: CenterIconWorkaround(icon, size: 22)),
           onTap: onPressed,
+          child: Container(padding: const EdgeInsets.all(4), child: CenterIconWorkaround(icon, size: 22)),
         ));
   }
 

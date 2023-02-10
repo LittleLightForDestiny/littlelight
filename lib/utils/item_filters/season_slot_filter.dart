@@ -7,7 +7,7 @@ import 'package:little_light/utils/item_with_owner.dart';
 import 'base_item_filter.dart';
 
 class SeasonSlotFilter extends BaseItemFilter<Set<int>> with LittleLightDataConsumer {
-  SeasonSlotFilter() : super(Set(), Set());
+  SeasonSlotFilter() : super(<int>{}, <int>{});
   List<int> seasonalSlots;
 
   clear() {
@@ -21,7 +21,7 @@ class SeasonSlotFilter extends BaseItemFilter<Set<int>> with LittleLightDataCons
 
     var gameData = await littleLightData.getGameData();
     seasonalSlots = gameData.seasonalModSlots;
-    Set<int> hashes = Set();
+    Set<int> hashes = {};
     for (var item in items) {
       var def = definitions[item.item.itemHash];
       var entries = def.sockets?.socketEntries;
@@ -34,14 +34,15 @@ class SeasonSlotFilter extends BaseItemFilter<Set<int>> with LittleLightDataCons
     }
     availableValues.addAll(hashes);
 
-    this.available = availableValues.length > 1;
+    available = availableValues.length > 1;
     if (available) availableValues.add(-1);
     value.retainAll(availableValues);
     return super.filter(items, definitions: definitions);
   }
 
+  @override
   bool filterItem(ItemWithOwner item, {Map<int, DestinyInventoryItemDefinition> definitions}) {
-    if (value?.length == 0) {
+    if (value.isEmpty) {
       return true;
     }
     var def = definitions[item.item.itemHash];

@@ -4,17 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:little_light/widgets/inventory_tabs/character_tab_header.widget.dart';
 
 class VaultTabHeaderWidget extends TabHeaderWidget {
-  VaultTabHeaderWidget() : super(null);
+  const VaultTabHeaderWidget() : super(null);
 
   @override
   VaultTabHeaderWidgetState createState() => VaultTabHeaderWidgetState();
 }
 
 class VaultTabHeaderWidgetState extends TabHeaderWidgetState {
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   getDefinitions() {}
@@ -32,6 +28,7 @@ class VaultTabHeaderWidgetState extends TabHeaderWidgetState {
     );
   }
 
+  @override
   Widget emblemIcon(BuildContext context) {
     double top = getTopPadding(context) + 10;
     return Positioned(
@@ -44,6 +41,7 @@ class VaultTabHeaderWidgetState extends TabHeaderWidgetState {
         ));
   }
 
+  @override
   Widget emblemBackground(BuildContext context) {
     double height = getTopPadding(context) + kToolbarHeight;
     return Container(
@@ -56,10 +54,12 @@ class VaultTabHeaderWidgetState extends TabHeaderWidgetState {
         ));
   }
 
+  @override
   Widget powerBar(BuildContext context) {
     return Container(height: 2, color: Theme.of(context).colorScheme.secondary);
   }
 
+  @override
   double getTopPadding(BuildContext context) {
     return MediaQuery.of(context).padding.top;
   }

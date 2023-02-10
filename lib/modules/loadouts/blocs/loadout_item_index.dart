@@ -29,12 +29,12 @@ class LoadoutIndexItem {
   LoadoutIndexItem({
     this.item,
     Map<int, int>? itemPlugs,
-  }) : this.itemPlugs = itemPlugs ?? {};
+  }) : itemPlugs = itemPlugs ?? {};
 
   LoadoutIndexItem clone() {
     final result = LoadoutIndexItem();
-    result.item = this.item;
-    result.itemPlugs = Map<int, int>.from(this.itemPlugs);
+    result.item = item;
+    result.itemPlugs = Map<int, int>.from(itemPlugs);
     return result;
   }
 }
@@ -48,9 +48,9 @@ class LoadoutIndexSlot {
 
   LoadoutIndexSlot clone() {
     final result = LoadoutIndexSlot();
-    result.genericEquipped = this.genericEquipped.clone();
-    result.classSpecificEquipped = this.classSpecificEquipped.map((key, value) => MapEntry(key, value.clone()));
-    result.unequipped = this.unequipped.map((e) => e.clone()).toList();
+    result.genericEquipped = genericEquipped.clone();
+    result.classSpecificEquipped = classSpecificEquipped.map((key, value) => MapEntry(key, value.clone()));
+    result.unequipped = unequipped.map((e) => e.clone()).toList();
     return result;
   }
 }
@@ -61,11 +61,7 @@ class LoadoutItemIndex with ProfileConsumer, ManifestConsumer {
   int? emblemHash;
   DateTime? updatedAt;
 
-  Map<int, LoadoutIndexSlot> slots = Map.fromIterable(
-    _genericBucketHashes + _classBucketHashes,
-    key: (e) => e,
-    value: (_) => LoadoutIndexSlot(),
-  );
+  Map<int, LoadoutIndexSlot> slots = { for (var e in _genericBucketHashes + _classBucketHashes) e : LoadoutIndexSlot() };
 
   LoadoutItemIndex._({
     required this.assignedId,
@@ -75,18 +71,18 @@ class LoadoutItemIndex with ProfileConsumer, ManifestConsumer {
   });
 
   factory LoadoutItemIndex.fromScratch() {
-    final assignedId = Uuid().v4();
+    final assignedId = const Uuid().v4();
     return LoadoutItemIndex._(assignedId: assignedId, name: "", emblemHash: null);
   }
 
   factory LoadoutItemIndex.duplicate(LoadoutItemIndex original) {
     final clone = original.clone();
-    clone.assignedId = Uuid().v4();
+    clone.assignedId = const Uuid().v4();
     return clone;
   }
 
   static Future<LoadoutItemIndex> buildfromLoadout(Loadout loadout) async {
-    final id = loadout.assignedId ?? Uuid().v4();
+    final id = loadout.assignedId ?? const Uuid().v4();
     final loadoutIndex = LoadoutItemIndex._(
       assignedId: id,
       name: loadout.name,
@@ -250,8 +246,8 @@ class LoadoutItemIndex with ProfileConsumer, ManifestConsumer {
             LoadoutItem(itemHash: i.item?.itemHash, itemInstanceId: i.item?.itemInstanceId, socketPlugs: i.itemPlugs))
         .toList();
     return Loadout(
-      assignedId: this.assignedId,
-      emblemHash: this.emblemHash,
+      assignedId: assignedId,
+      emblemHash: emblemHash,
       name: name,
       equipped: equipped,
       unequipped: unequipped,
@@ -261,11 +257,11 @@ class LoadoutItemIndex with ProfileConsumer, ManifestConsumer {
 
   LoadoutItemIndex clone() {
     final result = LoadoutItemIndex._(
-      assignedId: this.assignedId,
-      emblemHash: this.emblemHash,
-      name: this.name,
+      assignedId: assignedId,
+      emblemHash: emblemHash,
+      name: name,
     );
-    result.slots = this.slots.map((key, value) => MapEntry(key, value.clone()));
+    result.slots = slots.map((key, value) => MapEntry(key, value.clone()));
     return result;
   }
 }

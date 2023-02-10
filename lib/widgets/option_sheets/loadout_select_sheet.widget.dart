@@ -16,7 +16,7 @@ class LoadoutSelectSheet extends StatelessWidget {
   final OnLoadoutSelect onSelect;
   final Widget header;
 
-  LoadoutSelectSheet({Key key, this.character, this.loadouts, this.header, this.onSelect}) : super(key: key);
+  const LoadoutSelectSheet({Key key, this.character, this.loadouts, this.header, this.onSelect}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +27,7 @@ class LoadoutSelectSheet extends StatelessWidget {
           Expanded(
               child: SingleChildScrollView(
                   child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 4),
+                      padding: const EdgeInsets.symmetric(vertical: 4),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         mainAxisSize: MainAxisSize.min,
@@ -35,7 +35,7 @@ class LoadoutSelectSheet extends StatelessWidget {
                             .map(
                               (loadout) => Container(
                                   color: LittleLightTheme.of(context).primaryLayers,
-                                  margin: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                  margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                   child: Stack(children: [
                                     Positioned.fill(
                                         child: loadout.emblemHash != null
@@ -48,13 +48,13 @@ class LoadoutSelectSheet extends StatelessWidget {
                                               )
                                             : Container()),
                                     Container(
-                                        padding: EdgeInsets.all(16),
+                                        padding: const EdgeInsets.all(16),
                                         child: Text(
                                           loadout?.name?.toUpperCase() ?? "",
                                           maxLines: 1,
                                           overflow: TextOverflow.fade,
                                           softWrap: false,
-                                          style: TextStyle(fontWeight: FontWeight.bold),
+                                          style: const TextStyle(fontWeight: FontWeight.bold),
                                         )),
                                     Positioned.fill(
                                         child: Material(

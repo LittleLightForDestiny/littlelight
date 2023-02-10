@@ -13,7 +13,7 @@ import 'package:little_light/widgets/common/objective.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
 class QuestInfoWidget extends BaseDestinyStatefulItemWidget {
-  QuestInfoWidget(
+  const QuestInfoWidget(
       {DestinyItemComponent item,
       DestinyInventoryItemDefinition definition,
       DestinyItemInstanceComponent instanceInfo,
@@ -64,10 +64,10 @@ class QuestInfoWidgetState extends BaseDestinyItemState<QuestInfoWidget> with Pr
     if ((questSteps?.length ?? 0) > 0) {
       items.add(
         Container(
-          padding: EdgeInsets.all(8),
+          padding: const EdgeInsets.all(8),
           child: HeaderWidget(
             alignment: Alignment.centerLeft,
-            child: Text("Quest steps".translate(context).toUpperCase(), style: TextStyle(fontWeight: FontWeight.bold)),
+            child: Text("Quest steps".translate(context).toUpperCase(), style: const TextStyle(fontWeight: FontWeight.bold)),
           ),
         ),
       );
@@ -75,7 +75,7 @@ class QuestInfoWidgetState extends BaseDestinyItemState<QuestInfoWidget> with Pr
     items.addAll(buildQuestSteps(context));
     if (currentIndex < questlineDefinition.setData.itemList.length && !showSpoilers) {
       items.add(Container(
-          padding: EdgeInsets.symmetric(horizontal: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 8),
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
               primary: definition?.inventory?.tierType?.getColor(context),
@@ -88,7 +88,7 @@ class QuestInfoWidgetState extends BaseDestinyItemState<QuestInfoWidget> with Pr
             },
           )));
     }
-    if (items.length > 0) {
+    if (items.isNotEmpty) {
       return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: items);
     }
 
@@ -110,26 +110,26 @@ class QuestInfoWidgetState extends BaseDestinyItemState<QuestInfoWidget> with Pr
     var def = questSteps[item.itemHash];
     return Container(
         color: Theme.of(context).colorScheme.secondary,
-        margin: EdgeInsets.all(8).copyWith(top: 0),
+        margin: const EdgeInsets.all(8).copyWith(top: 0),
         child: Column(
             children: <Widget>[
           Stack(children: <Widget>[
             Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
               Container(
                 alignment: Alignment.centerLeft,
-                padding: EdgeInsets.all(8).copyWith(left: 88),
+                padding: const EdgeInsets.all(8).copyWith(left: 88),
                 color: def.inventory.tierType?.getColor(context),
                 child: Text(
                   def.displayProperties.name.toUpperCase(),
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
               Container(
-                constraints: BoxConstraints(minHeight: 60),
-                padding: EdgeInsets.all(8).copyWith(left: 88),
+                constraints: const BoxConstraints(minHeight: 60),
+                padding: const EdgeInsets.all(8).copyWith(left: 88),
                 child: Text(
                   def.displayProperties.description,
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
+                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
                 ),
               )
             ]),
@@ -176,14 +176,14 @@ class QuestInfoWidgetState extends BaseDestinyItemState<QuestInfoWidget> with Pr
 
   Widget buildQuestline(BuildContext context) {
     return Container(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         child: Column(
           children: <Widget>[
             HeaderWidget(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   "From the questline".translate(context).toUpperCase(),
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 )),
             Container(
               height: 8,
@@ -193,7 +193,7 @@ class QuestInfoWidgetState extends BaseDestinyItemState<QuestInfoWidget> with Pr
                 child: Row(
                   children: <Widget>[
                     Container(
-                        margin: EdgeInsets.all(4),
+                        margin: const EdgeInsets.all(4),
                         foregroundDecoration: BoxDecoration(border: Border.all(width: 2, color: Colors.grey.shade300)),
                         child: SizedBox(
                             width: 72,

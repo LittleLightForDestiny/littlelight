@@ -13,7 +13,7 @@ import 'package:little_light/widgets/item_sockets/base_item_sockets.widget.dart'
 import 'package:little_light/widgets/item_sockets/item_socket.controller.dart';
 
 class DetailsArmorTierWidget extends BaseItemSocketsWidget {
-  DetailsArmorTierWidget({
+  const DetailsArmorTierWidget({
     Key key,
     DestinyItemComponent item,
     DestinyInventoryItemDefinition definition,
@@ -40,13 +40,14 @@ class DetailsArmorTierWidgetState<T extends DetailsArmorTierWidget> extends Base
     return super.build(context);
   }
 
+  @override
   Widget buildHeader(BuildContext context) {
     return getHeader(
       ManifestText<DestinySocketCategoryDefinition>(
         category.socketCategoryHash,
         uppercase: true,
         textAlign: TextAlign.left,
-        style: TextStyle(fontWeight: FontWeight.bold),
+        style: const TextStyle(fontWeight: FontWeight.bold),
       ),
     );
   }
@@ -57,7 +58,7 @@ class DetailsArmorTierWidgetState<T extends DetailsArmorTierWidget> extends Base
         category.socketIndexes.map((socketIndex) => buildSocketPlugs(context, socketIndex)).where((w) => w != null);
     return Container(
         alignment: Alignment.center,
-        child: Container(constraints: BoxConstraints.tightFor(width: 600), child: Column(children: children.toList())));
+        child: Container(constraints: const BoxConstraints.tightFor(width: 600), child: Column(children: children.toList())));
   }
 
   @override
@@ -75,7 +76,7 @@ class DetailsArmorTierWidgetState<T extends DetailsArmorTierWidget> extends Base
     return Column(children: [
       Container(
           height: 40,
-          padding: EdgeInsets.symmetric(horizontal: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 8),
           color: color.withOpacity(.6),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -87,7 +88,7 @@ class DetailsArmorTierWidgetState<T extends DetailsArmorTierWidget> extends Base
               ),
               Text(
                 "$total",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
               ),
               Container(
                 width: 4,
@@ -95,7 +96,7 @@ class DetailsArmorTierWidgetState<T extends DetailsArmorTierWidget> extends Base
               TranslatedTextWidget(
                 "Energy",
                 uppercase: true,
-                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
+                style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
               )
             ],
           )),
@@ -114,7 +115,7 @@ class DetailsArmorTierWidgetState<T extends DetailsArmorTierWidget> extends Base
       pieces.add(Expanded(child: buildEnergyPiece(context, i, total, used, requiredEnergy)));
     }
     return Container(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         color: Theme.of(context).colorScheme.secondary,
         child: Row(
           children: pieces,
@@ -130,7 +131,7 @@ class DetailsArmorTierWidgetState<T extends DetailsArmorTierWidget> extends Base
       }
       return Container(
         height: 16,
-        padding: EdgeInsets.all(2),
+        padding: const EdgeInsets.all(2),
         child: Container(
           decoration:
               BoxDecoration(border: Border.all(width: 2, color: Theme.of(context).colorScheme.onSurface), color: color),
@@ -140,7 +141,7 @@ class DetailsArmorTierWidgetState<T extends DetailsArmorTierWidget> extends Base
 
     return Container(
       height: 16,
-      padding: EdgeInsets.symmetric(horizontal: 2, vertical: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 5),
       child: Container(
         color: index < requiredEnergy ? theme.errorLayers.withOpacity(.8) : Colors.black.withOpacity(.5),
       ),

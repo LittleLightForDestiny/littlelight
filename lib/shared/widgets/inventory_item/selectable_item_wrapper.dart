@@ -18,12 +18,12 @@ class SelectableItemWrapper extends StatelessWidget {
   final double itemMargin;
   final double selectedBorder;
 
-  SelectableItemWrapper(this.child, {required this.item, this.density, this.itemMargin = 2, this.selectedBorder = 1});
+  const SelectableItemWrapper(this.child, {required this.item, this.density, this.itemMargin = 2, this.selectedBorder = 1});
   @override
   Widget build(BuildContext context) {
     if (density != null) return buildWithDensity(context, density!);
-    final hash = this.item.item.itemHash;
-    final itemInstanceId = this.item.item.itemInstanceId;
+    final hash = item.item.itemHash;
+    final itemInstanceId = item.item.itemInstanceId;
     return LayoutBuilder(
         key: Key("selectable $hash $itemInstanceId"),
         builder: (context, constraints) {
@@ -102,7 +102,7 @@ class SelectableItemWrapper extends StatelessWidget {
 
   void onTap(BuildContext context) {
     final selection = context.read<SelectionBloc>();
-    if (selection.hasSelection) return this.toggleSelected(context);
+    if (selection.hasSelection) return toggleSelected(context);
   }
 
   void toggleSelected(BuildContext context) {

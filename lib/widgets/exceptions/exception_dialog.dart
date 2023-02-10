@@ -11,7 +11,7 @@ class ExceptionDialog extends AlertDialog {
   final dynamic exception;
   final BuildContext context;
   final OnDismiss onDismiss;
-  ExceptionDialog(this.context, this.exception, {this.onDismiss});
+  const ExceptionDialog(this.context, this.exception, {this.onDismiss});
 
   @override
   Widget get title {

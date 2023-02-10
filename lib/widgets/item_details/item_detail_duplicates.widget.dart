@@ -41,7 +41,7 @@ class ItemDetailDuplicatesWidgetState extends BaseDestinyItemState<ItemDetailDup
       return Container();
     }
     return Container(
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       child: Column(
         children: <Widget>[
           getHeader(
@@ -49,7 +49,7 @@ class ItemDetailDuplicatesWidgetState extends BaseDestinyItemState<ItemDetailDup
               "Duplicates",
               uppercase: true,
               textAlign: TextAlign.left,
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
           visible ? Container(height: 8) : Container(),
@@ -94,7 +94,7 @@ class ItemDetailDuplicatesWidgetState extends BaseDestinyItemState<ItemDetailDup
     final route = ItemDetailsPageRoute(
       item: item,
     );
-    if (this.instanceInfo != null) {
+    if (instanceInfo != null) {
       Navigator.pushReplacement(context, route);
     } else {
       Navigator.push(context, route);

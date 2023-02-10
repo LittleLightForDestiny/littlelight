@@ -27,7 +27,7 @@ class PrimaryStatWidget extends StatelessWidget {
   final DestinyItemComponent item;
   final DestinyInventoryItemDefinition definition;
 
-  PrimaryStatWidget(
+  const PrimaryStatWidget(
       {Key key,
       this.item,
       this.definition,
@@ -55,6 +55,7 @@ class PrimaryStatWidget extends StatelessWidget {
     return definition?.defaultDamageType;
   }
 
+  @override
   Widget build(BuildContext context) {
     return Container(
         child: Row(
@@ -95,7 +96,7 @@ class PrimaryStatWidget extends StatelessWidget {
         return Container(
             height: fontSize * .8,
             alignment: Alignment.bottomLeft,
-            padding: EdgeInsets.only(left: 2),
+            padding: const EdgeInsets.only(left: 2),
             child: powerCapField(context, def.powerCap));
       },
     );
@@ -161,7 +162,7 @@ class PrimaryStatWidget extends StatelessWidget {
 
   Widget ammoTypeIcon(BuildContext context) {
     return Row(children: [
-      Container(
+      SizedBox(
           width: fontSize * 1.5,
           child: Icon(
             DestinyData.getAmmoTypeIcon(definition.equippingBlock.ammoType),

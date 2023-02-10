@@ -62,7 +62,7 @@ class BaseItemInstanceWidget extends BaseInventoryItemWidget
       ),
       Positioned.fill(
           child: Container(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           mainAxisAlignment: MainAxisAlignment.start,
@@ -100,11 +100,11 @@ class BaseItemInstanceWidget extends BaseInventoryItemWidget
           )));
     }
     if (locked) {
-      upper.add(Container(
+      upper.add(SizedBox(
           height: tagIconSize, width: tagIconSize, child: Icon(FontAwesomeIcons.lock, size: titleFontSize * .9)));
     }
     List<Widget> rows = [];
-    if (upper.length > 0) {
+    if (upper.isNotEmpty) {
       upper = upper
           .expand((i) => [
                 i,
@@ -120,7 +120,7 @@ class BaseItemInstanceWidget extends BaseInventoryItemWidget
       rows.add(WishlistBadgesWidget(tags: wishlistTags, size: tagIconSize));
     }
 
-    if (rows.length == 0) return Container();
+    if (rows.isEmpty) return Container();
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: rows);
     // return WishlistBadgeWidget(tags: wishlistTags, size: tagIconSize);
   }

@@ -7,7 +7,7 @@ import 'package:little_light/utils/item_with_owner.dart';
 import 'base_item_filter.dart';
 
 class AmmoTypeFilter extends BaseItemFilter<Set<DestinyAmmunitionType>> {
-  AmmoTypeFilter() : super(Set(), Set());
+  AmmoTypeFilter() : super(<DestinyAmmunitionType>{}, <DestinyAmmunitionType>{});
 
   @override
   Future<List<ItemWithOwner>> filter(List<ItemWithOwner> items,
@@ -21,10 +21,10 @@ class AmmoTypeFilter extends BaseItemFilter<Set<DestinyAmmunitionType>> {
         .toSet()
         .toList();
     tags.sort((a, b) => a?.index?.compareTo(b?.index ?? -1) ?? 0);
-    this.availableValues = tags.toSet();
-    this.available = availableValues.length > 1;
+    availableValues = tags.toSet();
+    available = availableValues.length > 1;
     value.retainAll(availableValues);
-    if (value.length == 0) return items;
+    if (value.isEmpty) return items;
     return super.filter(items, definitions: definitions);
   }
 

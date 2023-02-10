@@ -16,7 +16,7 @@ class CategoryBreadcrumbWidget extends StatefulWidget implements PreferredSizeWi
   _CategoryBreadcrumbWidgetState createState() => _CategoryBreadcrumbWidgetState();
 
   @override
-  Size get preferredSize => Size.fromHeight(32);
+  Size get preferredSize => const Size.fromHeight(32);
 }
 
 class _CategoryBreadcrumbWidgetState extends State<CategoryBreadcrumbWidget> with ManifestConsumer {
@@ -39,7 +39,7 @@ class _CategoryBreadcrumbWidgetState extends State<CategoryBreadcrumbWidget> wit
   void loadDefinitions() async {
     final defs = await manifest.getDefinitions<DestinyPresentationNodeDefinition>(widget.parentCategoryHashes);
     setState(() {
-      this.nodeDefinitions =
+      nodeDefinitions =
           widget.parentCategoryHashes.map((hash) => defs[hash]).whereType<DestinyPresentationNodeDefinition>().toList();
     });
   }
@@ -65,9 +65,9 @@ class _CategoryBreadcrumbWidgetState extends State<CategoryBreadcrumbWidget> wit
     if (nodeDefinitions == null) return Container();
     final nodes = nodeDefinitions.last.children?.presentationNodes;
     if (nodes == null) return Container();
-    final last = nodes.length > 0 ? nodes[tabController?.index ?? 0].presentationNodeHash : null;
+    final last = nodes.isNotEmpty ? nodes[tabController?.index ?? 0].presentationNodeHash : null;
     return Container(
-        constraints: BoxConstraints.expand(height: 32),
+        constraints: const BoxConstraints.expand(height: 32),
         child: Material(
             key: Key("breadcrumb_$last"),
             color: LittleLightTheme.of(context).surfaceLayers.layer1,
@@ -75,11 +75,10 @@ class _CategoryBreadcrumbWidgetState extends State<CategoryBreadcrumbWidget> wit
             child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Container(
-                    padding: EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(8),
                     child: Row(
                         children: nodeDefinitions
-                            .map<Widget>((def) => Text("${def.displayProperties?.name} " +
-                                (def != nodeDefinitions.last || last != null ? '// ' : '')))
+                            .map<Widget>((def) => Text("${def.displayProperties?.name} ${def != nodeDefinitions.last || last != null ? '// ' : ''}"))
                             .followedBy([
                       if (last != null) ManifestText<DestinyPresentationNodeDefinition>(last)
                     ]).toList())))));

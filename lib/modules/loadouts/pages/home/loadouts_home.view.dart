@@ -17,13 +17,13 @@ import 'package:provider/provider.dart';
 import 'loadouts_home.bloc.dart';
 
 class LoadoutsHomeView extends StatefulWidget {
-  LoadoutsHomeView({Key? key}) : super(key: key);
+  const LoadoutsHomeView({Key? key}) : super(key: key);
   @override
   LoadoutsHomeViewState createState() => LoadoutsHomeViewState();
 }
 
 class LoadoutsHomeViewState extends State<LoadoutsHomeView> with ProfileConsumer {
-  TextEditingController _searchFieldController = TextEditingController();
+  final TextEditingController _searchFieldController = TextEditingController();
   LoadoutsHomeBloc get _bloc => context.read<LoadoutsHomeBloc>();
   LoadoutsHomeBloc get _state => context.watch<LoadoutsHomeBloc>();
 
@@ -53,14 +53,14 @@ class LoadoutsHomeViewState extends State<LoadoutsHomeView> with ProfileConsumer
         body: _state.reordering ? buildReorderingBody(context) : buildBody(context),
         bottomNavigationBar: buildFooter(context),
       ),
-      InventoryNotificationWidget(key: Key("notification_widget"))
+      const InventoryNotificationWidget(key: Key("notification_widget"))
     ]);
   }
 
   AppBar buildAppBar(BuildContext context) {
     return AppBar(
         leading: IconButton(
-          icon: Icon(Icons.menu),
+          icon: const Icon(Icons.menu),
           onPressed: () {
             Scaffold.of(context).openDrawer();
           },
@@ -69,7 +69,7 @@ class LoadoutsHomeViewState extends State<LoadoutsHomeView> with ProfileConsumer
           buildReorderButton(context),
           buildSearchButton(context),
           IconButton(
-            icon: Icon(Icons.refresh),
+            icon: const Icon(Icons.refresh),
             onPressed: () => _bloc.reloadLoadouts(),
           )
         ],
@@ -79,7 +79,7 @@ class LoadoutsHomeViewState extends State<LoadoutsHomeView> with ProfileConsumer
   Widget buildTitle(BuildContext context) {
     if (_state.searchOpen) {
       return TextField(
-        decoration: InputDecoration(isDense: true),
+        decoration: const InputDecoration(isDense: true),
         autofocus: true,
         controller: _searchFieldController,
       );
@@ -97,7 +97,7 @@ class LoadoutsHomeViewState extends State<LoadoutsHomeView> with ProfileConsumer
     if (_state.reordering) return Container();
     return IconButton(
         enableFeedback: false,
-        icon: _state.searchOpen ? Icon(FontAwesomeIcons.times) : Icon(FontAwesomeIcons.search),
+        icon: _state.searchOpen ? const Icon(FontAwesomeIcons.times) : const Icon(FontAwesomeIcons.search),
         onPressed: () => _bloc.toggleSearch());
   }
 
@@ -106,8 +106,8 @@ class LoadoutsHomeViewState extends State<LoadoutsHomeView> with ProfileConsumer
     return IconButton(
         enableFeedback: false,
         icon: _state.reordering
-            ? Icon(FontAwesomeIcons.check)
-            : Transform.rotate(angle: pi / 2, child: Icon(FontAwesomeIcons.exchangeAlt)),
+            ? const Icon(FontAwesomeIcons.check)
+            : Transform.rotate(angle: pi / 2, child: const Icon(FontAwesomeIcons.exchangeAlt)),
         onPressed: () => _bloc.toggleReordering());
   }
 
@@ -127,12 +127,12 @@ class LoadoutsHomeViewState extends State<LoadoutsHomeView> with ProfileConsumer
         color: Theme.of(context).bottomAppBarColor,
         elevation: 1,
         child: Container(
-          constraints: BoxConstraints(minWidth: double.infinity),
+          constraints: const BoxConstraints(minWidth: double.infinity),
           height: kToolbarHeight + paddingBottom,
-          padding: EdgeInsets.symmetric(horizontal: 16).copyWith(top: 8, bottom: 8 + paddingBottom),
+          padding: const EdgeInsets.symmetric(horizontal: 16).copyWith(top: 8, bottom: 8 + paddingBottom),
           child: ElevatedButton(
-            child: Text("Create Loadout".translate(context)),
             onPressed: createNew,
+            child: Text("Create Loadout".translate(context)),
           ),
         ));
   }
@@ -146,21 +146,21 @@ class LoadoutsHomeViewState extends State<LoadoutsHomeView> with ProfileConsumer
           return buildSortItem(context, index);
         },
         itemExtent: 56,
-        padding: EdgeInsets.all(8).copyWith(left: max(screenPadding.left, 8), right: max(screenPadding.right, 8)),
+        padding: const EdgeInsets.all(8).copyWith(left: max(screenPadding.left, 8), right: max(screenPadding.right, 8)),
         onReorder: (oldIndex, newIndex) => _bloc.reorderLoadouts(oldIndex, newIndex));
   }
 
   Widget buildHandle(BuildContext context, int index) {
     return ReorderableDragStartListener(
-        child: AspectRatio(aspectRatio: 1, child: Container(color: Colors.transparent, child: Icon(Icons.menu))),
-        index: index);
+        index: index,
+        child: AspectRatio(aspectRatio: 1, child: Container(color: Colors.transparent, child: const Icon(Icons.menu))));
   }
 
   Widget buildSortItem(BuildContext context, int index) {
     final loadout = _state.loadouts![index];
     return Container(
         key: Key("loadout-${loadout.assignedId}"),
-        padding: EdgeInsets.symmetric(vertical: 4),
+        padding: const EdgeInsets.symmetric(vertical: 4),
         color: Colors.transparent,
         child: Stack(
           children: <Widget>[
@@ -178,7 +178,7 @@ class LoadoutsHomeViewState extends State<LoadoutsHomeView> with ProfileConsumer
                 Expanded(
                   child: Text(
                     loadout.name,
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 )
               ],
@@ -205,7 +205,7 @@ class LoadoutsHomeViewState extends State<LoadoutsHomeView> with ProfileConsumer
 
   Widget buildNoLoadoutsBody(BuildContext context) {
     return Container(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -216,8 +216,8 @@ class LoadoutsHomeViewState extends State<LoadoutsHomeView> with ProfileConsumer
               ),
               Container(height: 16),
               ElevatedButton(
-                child: Text("Create Loadout".translate(context)),
                 onPressed: createNew,
+                child: Text("Create Loadout".translate(context)),
               )
             ]));
   }

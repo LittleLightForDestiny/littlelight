@@ -40,15 +40,15 @@ class SmallRectRangeSliderValueIndicatorShape extends RangeSliderValueIndicatorS
   void paint(
     PaintingContext context,
     Offset center, {
-    Animation<double> activationAnimation,
-    Animation<double> enableAnimation,
+    @required Animation<double> activationAnimation,
+    @required Animation<double> enableAnimation,
     bool isDiscrete,
     bool isOnTop,
-    TextPainter labelPainter,
+    @required TextPainter labelPainter,
     double textScaleFactor,
     Size sizeWithOverflow,
-    RenderBox parentBox,
-    SliderThemeData sliderTheme,
+    @required RenderBox parentBox,
+    @required SliderThemeData sliderTheme,
     TextDirection textDirection,
     double value,
     Thumb thumb,
@@ -215,7 +215,7 @@ class _SmallRectSliderTrackShapePathPainter {
       rightCenter.dx + _topLobeRadius,
       rightCenter.dy + _topLobeRadius,
     );
-    final RRect rRect = RRect.fromRectAndRadius(valueRect, Radius.circular(8));
+    final RRect rRect = RRect.fromRectAndRadius(valueRect, const Radius.circular(8));
 
     if (strokePaintColor != null) {
       final Paint strokePaint = Paint()

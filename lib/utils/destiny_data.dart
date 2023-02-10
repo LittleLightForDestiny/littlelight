@@ -120,9 +120,9 @@ class DestinyData {
   static Color getAmmoTypeColor(DestinyAmmunitionType type) {
     switch (type) {
       case DestinyAmmunitionType.Special:
-        return Color.fromARGB(255, 116, 247, 146);
+        return const Color.fromARGB(255, 116, 247, 146);
       case DestinyAmmunitionType.Heavy:
-        return Color.fromARGB(255, 179, 127, 251);
+        return const Color.fromARGB(255, 179, 127, 251);
 
       default:
         return LittleLightThemeData().onSurfaceLayers;

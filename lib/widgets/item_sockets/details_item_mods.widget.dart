@@ -20,7 +20,7 @@ import 'package:little_light/widgets/item_sockets/base_item_sockets.widget.dart'
 import 'package:little_light/widgets/item_sockets/item_socket.controller.dart';
 
 class DetailsItemModsWidget extends BaseItemSocketsWidget {
-  DetailsItemModsWidget({
+  const DetailsItemModsWidget({
     Key key,
     DestinyItemComponent item,
     DestinyInventoryItemDefinition definition,
@@ -39,14 +39,16 @@ const _sectionId = "item_mods";
 class DetailsItemPerksWidgetState<T extends DetailsItemModsWidget> extends BaseItemSocketsWidgetState<T> {
   bool showDetails = false;
 
+  @override
   String get sectionId => "${_sectionId}_${category.socketCategoryHash}";
 
+  @override
   Widget buildHeader(BuildContext context) {
     return getHeader(ManifestText<DestinySocketCategoryDefinition>(
       category.socketCategoryHash,
       uppercase: true,
       textAlign: TextAlign.left,
-      style: TextStyle(fontWeight: FontWeight.bold),
+      style: const TextStyle(fontWeight: FontWeight.bold),
     ));
   }
 
@@ -62,7 +64,7 @@ class DetailsItemPerksWidgetState<T extends DetailsItemModsWidget> extends BaseI
     var largeScreen = mq.isDesktop || (mq.tabletOrBigger && mq.isLandscape);
     var screenWidth = MediaQuery.of(context).size.width - 16;
     var dividerMargin = min(screenWidth / 50, 8.0);
-    if (children.length > 0) {
+    if (children.isNotEmpty) {
       children = children.expand((w) => [
             w,
             largeScreen
@@ -92,7 +94,7 @@ class DetailsItemPerksWidgetState<T extends DetailsItemModsWidget> extends BaseI
     final plugs = socketPlugHashes(socketIndex);
     final socketBusy = controller.isSocketBusy(socketIndex);
     final equippedPlugHash = socketBusy ? null : controller.socketEquippedPlugHash(socketIndex);
-    if (plugs.length == 0) return null;
+    if (plugs.isEmpty) return null;
     var mq = MediaQueryHelper(context);
     if (mq.isDesktop || (mq.tabletOrBigger && mq.isLandscape)) {
       return Expanded(
@@ -114,7 +116,7 @@ class DetailsItemPerksWidgetState<T extends DetailsItemModsWidget> extends BaseI
     }
     var screenWidth = MediaQuery.of(context).size.width - 16;
 
-    return Container(
+    return SizedBox(
       width: min(64, screenWidth / 8),
       child: buildPlug(context, socketIndex, equippedPlugHash),
     );
@@ -131,14 +133,14 @@ class DetailsItemPerksWidgetState<T extends DetailsItemModsWidget> extends BaseI
           uppercase: true,
           overflow: TextOverflow.fade,
           softWrap: false,
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: const TextStyle(fontWeight: FontWeight.bold),
         );
       } else {
         return Text(
           def?.itemTypeDisplayName?.toUpperCase() ?? "",
           overflow: TextOverflow.fade,
           softWrap: false,
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: const TextStyle(fontWeight: FontWeight.bold),
         );
       }
     });
@@ -146,8 +148,8 @@ class DetailsItemPerksWidgetState<T extends DetailsItemModsWidget> extends BaseI
     return Container(
         color: Colors.black,
         alignment: Alignment.center,
-        padding: EdgeInsets.all(8),
-        margin: EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.all(8),
+        margin: const EdgeInsets.only(bottom: 8),
         child: contents);
   }
 
@@ -178,14 +180,14 @@ class DetailsItemPerksWidgetState<T extends DetailsItemModsWidget> extends BaseI
 
     return Container(
         key: Key("item_mod_$plugItemHash"),
-        padding: EdgeInsets.all(0),
-        margin: EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.all(0),
+        margin: const EdgeInsets.only(bottom: 8),
         child: MaterialButton(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4), side: borderSide),
-          padding: EdgeInsets.all(8),
+          padding: const EdgeInsets.all(8),
           color: bgColor,
           child: Row(children: [
-            Container(width: 36, height: 36, child: ManifestImageWidget<DestinyInventoryItemDefinition>(plugItemHash)),
+            SizedBox(width: 36, height: 36, child: ManifestImageWidget<DestinyInventoryItemDefinition>(plugItemHash)),
             Container(width: 8),
             Expanded(
               child: ManifestText<DestinyInventoryItemDefinition>(plugItemHash),
@@ -207,13 +209,13 @@ class DetailsItemPerksWidgetState<T extends DetailsItemModsWidget> extends BaseI
     bool selected = selectedSocketIndex == socketIndex;
     int selectedPlugForSocket = controller.socketSelectedPlugHash(socketIndex);
     bool isSelectedForSocket = plugItemHash == selectedPlugForSocket;
-    final emptyModHash = 1835369552;
+    const emptyModHash = 1835369552;
     return Container(
         key: Key("item_mod_$plugItemHash"),
         child: AspectRatio(
             aspectRatio: 1,
             child: MaterialButton(
-              padding: EdgeInsets.all(0),
+              padding: const EdgeInsets.all(0),
               shape: ContinuousRectangleBorder(
                   side: BorderSide(
                       color: selected ? Theme.of(context).colorScheme.onSurface : Colors.grey.shade300.withOpacity(.5),
@@ -235,7 +237,7 @@ class DetailsItemPerksWidgetState<T extends DetailsItemModsWidget> extends BaseI
                         right: 4,
                         child: Text(
                           "$energyCost",
-                          style: TextStyle(fontSize: 12),
+                          style: const TextStyle(fontSize: 12),
                         )),
                 canEquip
                     ? Container()
@@ -247,14 +249,14 @@ class DetailsItemPerksWidgetState<T extends DetailsItemModsWidget> extends BaseI
                 if (!isSelectedForSocket)
                   Positioned(
                       key: Key('selected_$selectedPlugForSocket'),
-                      child: Container(
-                          color: LittleLightTheme.of(context).onSurfaceLayers.layer3,
-                          padding: EdgeInsets.all(1),
-                          child: ManifestImageWidget<DestinyInventoryItemDefinition>(selectedPlugForSocket)),
                       bottom: 2,
                       right: 2,
                       width: 24,
-                      height: 24)
+                      height: 24,
+                      child: Container(
+                          color: LittleLightTheme.of(context).onSurfaceLayers.layer3,
+                          padding: const EdgeInsets.all(1),
+                          child: ManifestImageWidget<DestinyInventoryItemDefinition>(selectedPlugForSocket)))
               ]),
               onPressed: () {
                 controller.selectSocket(socketIndex, selectedPlugForSocket);

@@ -29,7 +29,7 @@ class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget with Prof
   Widget build(BuildContext context) {
     if (definition == null) return Container();
     return Container(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: <Widget>[
           buildSandBoxPerks(context),
           buildStats(context),
@@ -48,18 +48,18 @@ class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget with Prof
     if ((stats?.length ?? 0) <= 0) return Container();
     return Column(children: [
       Container(
-          padding: EdgeInsets.symmetric(vertical: 16),
+          padding: const EdgeInsets.symmetric(vertical: 16),
           child: HeaderWidget(
             alignment: Alignment.centerLeft,
             child: TranslatedTextWidget(
               "Stats",
               uppercase: true,
               textAlign: TextAlign.left,
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           )),
       Container(
-        constraints: BoxConstraints(maxWidth: 600),
+        constraints: const BoxConstraints(maxWidth: 600),
         child: Column(
           children: stats,
         ),
@@ -74,20 +74,20 @@ class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget with Prof
     }
     return Column(children: [
       Container(
-          padding: EdgeInsets.symmetric(vertical: 16),
+          padding: const EdgeInsets.symmetric(vertical: 16),
           child: HeaderWidget(
             alignment: Alignment.centerLeft,
             child: TranslatedTextWidget(
               "Energy Cost",
               uppercase: true,
               textAlign: TextAlign.left,
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           )),
       Container(
-          constraints: BoxConstraints(maxWidth: 600),
+          constraints: const BoxConstraints(maxWidth: 600),
           height: 40,
-          padding: EdgeInsets.symmetric(horizontal: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 8),
           color: cost.energyType.getColorLayer(context).withOpacity(.6),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -99,7 +99,7 @@ class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget with Prof
               ),
               Text(
                 "${cost.energyCost}",
-                style: TextStyle(
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 24,
                 ),
@@ -110,11 +110,11 @@ class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget with Prof
               TranslatedTextWidget(
                 "Energy",
                 uppercase: true,
-                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
+                style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
               )
             ],
           )),
-      Container(constraints: BoxConstraints(maxWidth: 600), child: buildBars(context))
+      Container(constraints: const BoxConstraints(maxWidth: 600), child: buildBars(context))
     ]);
   }
 
@@ -127,7 +127,7 @@ class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget with Prof
       pieces.add(Expanded(child: buildEnergyPiece(context, i, total, used)));
     }
     return Container(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         color: Theme.of(context).colorScheme.secondary,
         child: Row(
           children: pieces,
@@ -142,7 +142,7 @@ class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget with Prof
       }
       return Container(
         height: 16,
-        padding: EdgeInsets.all(2),
+        padding: const EdgeInsets.all(2),
         child: Container(
           decoration:
               BoxDecoration(border: Border.all(width: 2, color: Theme.of(context).colorScheme.onSurface), color: color),
@@ -152,7 +152,7 @@ class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget with Prof
 
     return Container(
       height: 16,
-      padding: EdgeInsets.symmetric(horizontal: 2, vertical: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 5),
       child: Container(
         color: Colors.black.withOpacity(.5),
       ),
@@ -169,20 +169,20 @@ class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget with Prof
     final theme = LittleLightTheme.of(context);
     return Column(children: [
       Container(
-          padding: EdgeInsets.symmetric(vertical: 16),
+          padding: const EdgeInsets.symmetric(vertical: 16),
           child: HeaderWidget(
             alignment: Alignment.centerLeft,
             child: TranslatedTextWidget(
               "Material Required",
               uppercase: true,
               textAlign: TextAlign.left,
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           )),
       DefinitionProviderWidget<DestinyMaterialRequirementSetDefinition>(
           requirementHash,
           (def) => Container(
-              padding: EdgeInsets.symmetric(horizontal: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Column(
                 children: def.materials.where((m) => (m.count ?? 0) > 0).map((m) {
                   var items = inventory.where((i) => i.itemHash == m.itemHash);
@@ -192,16 +192,16 @@ class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget with Prof
                   bool isEnough = total >= m.count;
                   return Row(
                     children: <Widget>[
-                      Container(
+                      SizedBox(
                           width: 20,
                           height: 20,
                           child: ManifestImageWidget<DestinyInventoryItemDefinition>(m.itemHash)),
                       Expanded(
                         child: Container(
-                          padding: EdgeInsets.only(left: 8),
+                          padding: const EdgeInsets.only(left: 8),
                           child: ManifestText<DestinyInventoryItemDefinition>(
                             m.itemHash,
-                            style: TextStyle(fontWeight: FontWeight.w300),
+                            style: const TextStyle(fontWeight: FontWeight.w300),
                           ),
                         ),
                       ),
@@ -227,12 +227,12 @@ class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget with Prof
                 p.perkHash,
                 (def) => def?.displayProperties?.description != null
                     ? Container(
-                        padding: EdgeInsets.symmetric(
+                        padding: const EdgeInsets.symmetric(
                           vertical: 8,
                         ),
                         child: Text(
                           def?.displayProperties?.description,
-                          style: TextStyle(fontSize: 14),
+                          style: const TextStyle(fontSize: 14),
                         ))
                     : Container()),
           )

@@ -27,6 +27,7 @@ class VendorsListWidget extends StatefulWidget {
 
   VendorsListWidget({Key key, this.characterId}) : super(key: key);
 
+  @override
   _VendorsListWidgetState createState() => _VendorsListWidgetState();
 }
 
@@ -75,14 +76,14 @@ class _VendorsListWidgetState extends State<VendorsListWidget> with AutomaticKee
     }
 
     return MasonryGridView.builder(
-        gridDelegate: SliverSimpleGridDelegateWithFixedCrossAxisCount(
+        gridDelegate: const SliverSimpleGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 1,
         ),
         crossAxisSpacing: 2,
         mainAxisSpacing: 2,
         padding: MediaQuery.of(context).viewPadding +
-            EdgeInsets.only(top: kToolbarHeight) +
-            EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+            const EdgeInsets.only(top: kToolbarHeight) +
+            const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
         itemCount: _vendors.length,
         itemBuilder: (context, index) {
           final vendor = _vendors[index];

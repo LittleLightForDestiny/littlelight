@@ -29,9 +29,9 @@ class Version {
   }
 
   operator >(Version version) {
-    if (this.major > version.major) return true;
-    if (this.minor > version.minor) return true;
-    if (this.patch > version.patch) return true;
+    if (major > version.major) return true;
+    if (minor > version.minor) return true;
+    if (patch > version.patch) return true;
     return false;
   }
 
@@ -48,12 +48,13 @@ class Version {
     return this == version || this < version;
   }
 
+  @override
   bool operator ==(dynamic version) {
     if (version is String) {
       version = Version.fromString(version);
     }
     if (version is Version) {
-      return this.major == version.major && this.minor == version.minor && this.patch == version.patch;
+      return major == version.major && minor == version.minor && patch == version.patch;
     }
     return false;
   }

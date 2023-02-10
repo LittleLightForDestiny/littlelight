@@ -57,6 +57,6 @@ class CollectionsPageRoute extends MaterialPageRoute {
 class CollectionsSearchPageRoute extends MaterialPageRoute {
   CollectionsSearchPageRoute()
       : super(builder: (context) {
-          return CollectionsSearchPage();
+          return const CollectionsSearchPage();
         });
 }

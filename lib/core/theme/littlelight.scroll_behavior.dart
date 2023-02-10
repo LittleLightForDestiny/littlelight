@@ -10,9 +10,9 @@ class LittleLightScrollBehaviour extends ScrollBehavior {
       return child;
     }
     return GlowingOverscrollIndicator(
-      child: child,
       axisDirection: axisDirection,
       color: Theme.of(context).primaryColor,
+      child: child,
     );
   }
 

@@ -7,7 +7,7 @@ import 'package:little_light/utils/item_with_owner.dart';
 import 'base_item_filter.dart';
 
 class DamageTypeFilter extends BaseItemFilter<Set<int>> {
-  DamageTypeFilter() : super(Set(), Set());
+  DamageTypeFilter() : super(<int>{}, <int>{});
 
   clear() {
     availableValues.clear();
@@ -23,13 +23,14 @@ class DamageTypeFilter extends BaseItemFilter<Set<int>> {
       return instanceInfo?.damageTypeHash;
     }).toSet();
     availableValues.addAll(damageTypeHashes);
-    this.available = availableValues.length > 1;
+    available = availableValues.length > 1;
     value.retainAll(availableValues);
     return super.filter(items, definitions: definitions);
   }
 
+  @override
   bool filterItem(ItemWithOwner item, {Map<int, DestinyInventoryItemDefinition> definitions}) {
-    if (value?.length == 0) {
+    if (value.isEmpty) {
       return true;
     }
     var instanceInfo = profile.getInstanceInfo(item?.item?.itemInstanceId);

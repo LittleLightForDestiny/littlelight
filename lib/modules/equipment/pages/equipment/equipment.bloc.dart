@@ -47,13 +47,13 @@ class _EquipmentState {
 }
 
 class EquipmentBloc extends ChangeNotifier with UserSettingsConsumer, ManifestConsumer {
-  ProfileBloc _profileBloc;
+  final ProfileBloc _profileBloc;
   List<DestinyItemInfo>? items;
 
   _EquipmentState _equipmentState = _EquipmentState();
 
   EquipmentBloc(BuildContext context) : _profileBloc = context.read<ProfileBloc>() {
-    this._init();
+    _init();
   }
   _init() {
     _profileBloc.addListener(_update);

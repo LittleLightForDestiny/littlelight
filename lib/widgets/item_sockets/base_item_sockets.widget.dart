@@ -16,7 +16,7 @@ abstract class BaseItemSocketsWidget extends StatefulWidget {
 
   final double iconSize;
 
-  BaseItemSocketsWidget({Key key, this.category, this.iconSize = 72, this.controller}) : super(key: key);
+  const BaseItemSocketsWidget({Key key, this.category, this.iconSize = 72, this.controller}) : super(key: key);
 }
 
 abstract class BaseItemSocketsWidgetState<T extends BaseItemSocketsWidget> extends State<T>
@@ -84,7 +84,7 @@ abstract class BaseItemSocketsWidgetState<T extends BaseItemSocketsWidget> exten
   Widget buildErrorMessage(BuildContext context) {
     if (controller.socketsOffline) {
       return Container(
-          margin: EdgeInsets.only(bottom: 16),
+          margin: const EdgeInsets.only(bottom: 16),
           child: TranslatedTextWidget(
             "Bungie.net API isn't returning sockets correctly on items right now, so you are seeing the default definition instead of the perks and mods you have on your items.",
             style: TextStyle(color: Colors.red.shade300),
@@ -102,7 +102,7 @@ abstract class BaseItemSocketsWidgetState<T extends BaseItemSocketsWidget> exten
 
   Widget buildSocketPlugs(BuildContext context, int socketIndex) {
     var plugs = socketPlugHashes(socketIndex);
-    return Container(
+    return SizedBox(
         width: widget.iconSize,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

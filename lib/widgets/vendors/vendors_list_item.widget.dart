@@ -25,8 +25,9 @@ class VendorsListItemWidget extends StatefulWidget {
 
   final DestinyVendorComponent vendor;
 
-  VendorsListItemWidget({Key key, this.characterId, this.vendor}) : super(key: key);
+  const VendorsListItemWidget({Key key, this.characterId, this.vendor}) : super(key: key);
 
+  @override
   VendorsListItemWidgetState createState() => VendorsListItemWidgetState();
 }
 
@@ -152,7 +153,7 @@ class VendorsListItemWidgetState<T extends VendorsListItemWidget> extends State<
           child: Container(
               decoration: BoxDecoration(
                   gradient: LinearGradient(
-                      colors: <Color>[Colors.black, Colors.black38],
+                      colors: const <Color>[Colors.black, Colors.black38],
                       begin: Alignment.centerLeft,
                       end: Alignment.center))))
     ]);
@@ -160,7 +161,7 @@ class VendorsListItemWidgetState<T extends VendorsListItemWidget> extends State<
 
   Widget buildHeaderInfo(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
@@ -179,11 +180,11 @@ class VendorsListItemWidgetState<T extends VendorsListItemWidget> extends State<
             children: <Widget>[
               Text(
                 definition?.displayProperties?.name?.toUpperCase(),
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
               Container(height: 2),
               ManifestText<DestinyFactionDefinition>(definition?.factionHash,
-                  style: TextStyle(fontWeight: FontWeight.w300)),
+                  style: const TextStyle(fontWeight: FontWeight.w300)),
             ],
           )
         ],
@@ -193,9 +194,9 @@ class VendorsListItemWidgetState<T extends VendorsListItemWidget> extends State<
 
   Widget buildContent(BuildContext context) {
     var categories = _categories.where((c) => shouldCategoryBeVisible(c));
-    if (categories.length == 0) return Container();
+    if (categories.isEmpty) return Container();
     return Container(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         child: Wrap(spacing: 16, runSpacing: 16, children: categories.map((c) => buildCategory(context, c)).toList()));
   }
 
@@ -204,12 +205,12 @@ class VendorsListItemWidgetState<T extends VendorsListItemWidget> extends State<
 
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Container(
-          padding: EdgeInsets.only(bottom: 4),
+          padding: const EdgeInsets.only(bottom: 4),
           child: Text(
             catDefinition.displayProperties.name.toUpperCase(),
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
           )),
-      Container(height: 8, width: 1),
+      const SizedBox(height: 8, width: 1),
       buildCategoryItems(context, category)
     ]);
   }

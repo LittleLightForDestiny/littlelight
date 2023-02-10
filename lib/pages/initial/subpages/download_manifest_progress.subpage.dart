@@ -6,7 +6,7 @@ import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:provider/provider.dart';
 
 class DownloadManifestProgressSubPage extends StatefulWidget {
-  DownloadManifestProgressSubPage();
+  const DownloadManifestProgressSubPage();
 
   @override
   DownloadManifestProgressSubPageState createState() => DownloadManifestProgressSubPageState();
@@ -31,7 +31,7 @@ class DownloadManifestProgressSubPageState extends SubpageBaseState<DownloadMani
 
   @override
   Widget buildContent(BuildContext context) => Container(
-      constraints: BoxConstraints(maxWidth: 400),
+      constraints: const BoxConstraints(maxWidth: 400),
       child: Column(children: [
         LinearProgressIndicator(
           backgroundColor: Theme.of(context).secondaryHeaderColor,
@@ -43,9 +43,9 @@ class DownloadManifestProgressSubPageState extends SubpageBaseState<DownloadMani
             downloading
                 ? TranslatedTextWidget(
                     "Downloading",
-                    key: Key("downloading"),
+                    key: const Key("downloading"),
                   )
-                : Text("Uncompressing".translate(context), key: Key("unzipping")),
+                : Text("Uncompressing".translate(context), key: const Key("unzipping")),
             Text("$downloadedSize/${totalDownloadSize}KB")
           ],
         )

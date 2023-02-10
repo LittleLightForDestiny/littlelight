@@ -47,7 +47,7 @@ class TriumphsRootPageState extends PresentationNodesTabsScaffoldState<TriumphsR
     super.initState();
 
     profile.updateComponents = ProfileComponentGroups.triumphs;
-    profile.fetchProfileData();
+    profile.refresh();
     userSettings.startingPage = _page;
     analytics.registerPageOpen(_page);
 
@@ -65,7 +65,7 @@ class TriumphsRootPageState extends PresentationNodesTabsScaffoldState<TriumphsR
   List<Widget>? buildAppBarActions(BuildContext context) => [
         IconButton(
           enableFeedback: false,
-          icon: Icon(Icons.search),
+          icon: const Icon(Icons.search),
           onPressed: () {
             Navigator.of(context).push(TriumphsSearchPageRoute());
           },
@@ -111,7 +111,7 @@ class TriumphsRootPageState extends PresentationNodesTabsScaffoldState<TriumphsR
   Widget? buildAppBarLeading(BuildContext context) => Scaffold.of(context).hasDrawer
       ? IconButton(
           enableFeedback: false,
-          icon: Icon(Icons.menu),
+          icon: const Icon(Icons.menu),
           onPressed: () {
             Scaffold.of(context).openDrawer();
           },
@@ -125,7 +125,7 @@ class TriumphsRootPageState extends PresentationNodesTabsScaffoldState<TriumphsR
 
   @override
   Widget buildTabButton(BuildContext context, DestinyPresentationNodeDefinition node) {
-    return Container(padding: EdgeInsets.all(8), child: Text(node.displayProperties?.name ?? ""));
+    return Container(padding: const EdgeInsets.all(8), child: Text(node.displayProperties?.name ?? ""));
   }
 
   @override
@@ -182,7 +182,7 @@ class TriumphsRootPageState extends PresentationNodesTabsScaffoldState<TriumphsR
                     pathHashes: [legacy, node.presentationNodeHash],
                   )),
       ],
-      padding: EdgeInsets.all(4) + MediaQuery.of(context).viewPadding.copyWith(top: 0),
+      padding: const EdgeInsets.all(4) + MediaQuery.of(context).viewPadding.copyWith(top: 0),
       crossAxisSpacing: 2,
       mainAxisSpacing: 2,
     );
@@ -229,7 +229,7 @@ class TriumphsRootPageState extends PresentationNodesTabsScaffoldState<TriumphsR
                     pathHashes: [legacySealsHash, node.presentationNodeHash],
                   ))
       ],
-      padding: EdgeInsets.all(4) + MediaQuery.of(context).viewPadding.copyWith(top: 0),
+      padding: const EdgeInsets.all(4) + MediaQuery.of(context).viewPadding.copyWith(top: 0),
       crossAxisSpacing: 2,
       mainAxisSpacing: 2,
     );

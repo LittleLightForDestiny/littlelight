@@ -26,6 +26,6 @@ class TabPageSelectorWidget extends StatelessWidget {
     double value = index.toDouble() - controller.animation.value;
     value = value.abs().clamp(0.0, 1.0);
     return Container(
-        margin: EdgeInsets.symmetric(horizontal: 8), width: 36, height: 4, color: _forwardTween.lerp(value));
+        margin: const EdgeInsets.symmetric(horizontal: 8), width: 36, height: 4, color: _forwardTween.lerp(value));
   }
 }

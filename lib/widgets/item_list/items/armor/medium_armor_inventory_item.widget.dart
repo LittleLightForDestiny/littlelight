@@ -39,7 +39,7 @@ class MediumArmorInventoryItemWidget extends MediumBaseInventoryItemWidget with 
                   : Container(),
               tierCategoryHash != null
                   ? Container(
-                      margin: EdgeInsets.symmetric(horizontal: 2),
+                      margin: const EdgeInsets.symmetric(horizontal: 2),
                       height: 16,
                       width: 1,
                       color: Theme.of(context).colorScheme.onSurface)

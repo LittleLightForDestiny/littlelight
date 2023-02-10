@@ -14,7 +14,7 @@ class BucketHeaderWidget extends StatefulWidget {
   final bool isVault;
   final bool isEquippable;
   final Function onChanged;
-  BucketHeaderWidget(
+  const BucketHeaderWidget(
       {this.hash, this.itemCount = 0, this.isVault = false, this.isEquippable = false, this.onChanged, Key key})
       : super(key: key);
   @override
@@ -52,7 +52,7 @@ class BucketHeaderWidgetState<T extends BucketHeaderWidget> extends State<T> wit
     return Text(
       bucketDef?.displayProperties?.name?.toUpperCase() ?? "",
       softWrap: false,
-      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
     );
   }
 
@@ -76,12 +76,12 @@ class BucketHeaderWidgetState<T extends BucketHeaderWidget> extends State<T> wit
         textExtractor: (def) {
           return "${widget.itemCount}/${def.itemCount}";
         },
-        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
       );
     }
     return Text(
       "${widget.itemCount}/$bucketSize",
-      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
     );
   }
 }

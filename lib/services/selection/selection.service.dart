@@ -11,10 +11,10 @@ setupSelectionService() {
 class SelectionService {
   SelectionService._internal();
 
-  List<ItemWithOwner> _selectedItems = [];
+  final List<ItemWithOwner> _selectedItems = [];
 
   Stream<List<ItemWithOwner>>? _eventsStream;
-  StreamController<List<ItemWithOwner>> _streamController = StreamController.broadcast();
+  final StreamController<List<ItemWithOwner>> _streamController = StreamController.broadcast();
 
   List<ItemWithOwner> get items => _selectedItems;
 
@@ -72,7 +72,7 @@ class SelectionService {
     } else {
       _selectedItems.removeWhere((i) => i.item.itemHash == item.item.itemHash && i.ownerId == item.ownerId);
     }
-    if (_selectedItems.length == 0) {
+    if (_selectedItems.isEmpty) {
       _multiSelectActivated = false;
     }
     _onUpdate();

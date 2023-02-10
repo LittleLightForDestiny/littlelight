@@ -25,7 +25,7 @@ class TriumphListWidget extends StatelessWidget {
           itemBuilder: (context, index) => buildItem(context, index),
         )
       ],
-      padding: EdgeInsets.all(4) + MediaQuery.of(context).viewPadding,
+      padding: const EdgeInsets.all(4) + MediaQuery.of(context).viewPadding,
       crossAxisSpacing: 2,
       mainAxisSpacing: 2,
     );

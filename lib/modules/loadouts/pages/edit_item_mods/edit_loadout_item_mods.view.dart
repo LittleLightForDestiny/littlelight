@@ -55,7 +55,7 @@ class EditLoadoutItemModsView extends StatelessWidget {
     if (categoryHash == null) return Container();
     return Column(children: <Widget>[
       Container(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         child: HeaderWidget(
           child: ManifestText<DestinySocketCategoryDefinition>(categoryHash),
         ),
@@ -100,7 +100,7 @@ class EditLoadoutItemModsView extends StatelessWidget {
         buildCategorySockets(context, category),
         AnimatedSize(
           alignment: Alignment.topLeft,
-          duration: Duration(milliseconds: 300),
+          duration: const Duration(milliseconds: 300),
           child: isCategorySelected ? buildSocketPlugs(context, category) : Container(),
         ),
       ],
@@ -111,7 +111,7 @@ class EditLoadoutItemModsView extends StatelessWidget {
     final indexes = _state(context).availableIndexesForCategory(category);
     if (indexes == null) return Container();
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
@@ -136,7 +136,7 @@ class EditLoadoutItemModsView extends StatelessWidget {
           }
         },
         child: Container(
-          padding: EdgeInsets.all(8),
+          padding: const EdgeInsets.all(8),
           child: buildSocketIcon(context, socketIndex),
         ),
       ),
@@ -146,7 +146,7 @@ class EditLoadoutItemModsView extends StatelessWidget {
   Widget buildSocketIcon(BuildContext context, socketIndex) {
     final plugHash = _state(context).selectedSelectedPlugHash(socketIndex);
     if (plugHash == null) return buildEmptySlot(context, socketIndex);
-    return Container(
+    return SizedBox(
       width: 64,
       height: 64,
       child: ModGridItem(plugHash),
@@ -155,7 +155,7 @@ class EditLoadoutItemModsView extends StatelessWidget {
 
   Widget buildEmptySlot(BuildContext context, int socketIndex) {
     final equippedPlugHash = _state(context).socketEquippedPlugHash(socketIndex);
-    return Container(
+    return SizedBox(
       width: 64,
       height: 64,
       child: Stack(children: [
@@ -179,15 +179,15 @@ class EditLoadoutItemModsView extends StatelessWidget {
     final socketIndex = _state(context).selectedSocket;
 
     if (plugs == null) return Container();
-    if (plugs.length == 0) return Container();
+    if (plugs.isEmpty) return Container();
     if (socketIndex == null) return Container();
 
     final selectedSocketDefaultPlug = _state(context).selectedSocketDefaultPlugHash;
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       child: Container(
         color: LittleLightTheme.of(context).surfaceLayers.layer1,
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
         child: Column(children: [
           if (selectedSocketDefaultPlug != null)
             HeaderWidget(
@@ -249,8 +249,8 @@ class EditLoadoutItemModsView extends StatelessWidget {
           children: <Widget>[
             Positioned.fill(child: buildAppBarBackground(context)),
             Container(
-              constraints: BoxConstraints(minWidth: double.infinity),
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8).copyWith(bottom: 8 + paddingBottom),
+              constraints: const BoxConstraints(minWidth: double.infinity),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8).copyWith(bottom: 8 + paddingBottom),
               child: ElevatedButton(
                   child: Text("Update Mods".translate(context)),
                   onPressed: () {
@@ -265,11 +265,11 @@ class EditLoadoutItemModsView extends StatelessWidget {
     final emblemHash = _state(context).emblemHash;
     if (emblemHash == null) return Container();
     return Container(
-      constraints: BoxConstraints.expand(),
+      constraints: const BoxConstraints.expand(),
       child: ManifestImageWidget<DestinyInventoryItemDefinition>(
         emblemHash,
         fit: BoxFit.cover,
-        alignment: Alignment(-.8, 0),
+        alignment: const Alignment(-.8, 0),
         urlExtractor: (def) => def.secondarySpecial,
       ),
     );

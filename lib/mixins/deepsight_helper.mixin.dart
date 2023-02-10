@@ -12,7 +12,7 @@ mixin DeepSightHelper {
     final plugObjectives = profile.getPlugObjectives(itemInstanceID);
     if (plugObjectives == null) return null;
     final availableHashes = plugObjectives.keys;
-    final itemHashes = _deepsightResonanceHashes;
+    const itemHashes = _deepsightResonanceHashes;
     return itemHashes.firstWhereOrNull((element) => availableHashes.contains(element.toString()));
   }
 
@@ -21,7 +21,7 @@ mixin DeepSightHelper {
     final plugObjectives = profile.getPlugObjectives(itemInstanceID);
     if (plugObjectives == null) return null;
     final availableHashes = plugObjectives.keys;
-    final itemHashes = _shapedWeaponHashes;
+    const itemHashes = _shapedWeaponHashes;
     return itemHashes.firstWhereOrNull((element) => availableHashes.contains(element.toString()));
   }
 

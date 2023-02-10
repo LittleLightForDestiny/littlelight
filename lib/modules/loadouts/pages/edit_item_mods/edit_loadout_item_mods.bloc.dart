@@ -10,8 +10,11 @@ class EditLoadoutItemModsBloc extends BaseSocketController with ManifestConsumer
   final BuildContext context;
 
   DestinyItemComponent? item;
+  @override
   DestinyInventoryItemDefinition? definition;
+  @override
   List<DestinyItemSocketState>? socketStates;
+  @override
   Map<String, List<DestinyItemPlugBase>>? reusablePlugs;
 
   Map<int, List<int>> _availablePlugHashesForSocketIndexes = {};
@@ -37,14 +40,14 @@ class EditLoadoutItemModsBloc extends BaseSocketController with ManifestConsumer
     final emblemHash = args.emblemHash;
     final plugHashes = args.plugHashes;
 
-    this._emblemHash = emblemHash;
+    _emblemHash = emblemHash;
 
-    this.item = profile.getItemsByInstanceId([itemInstanceID]).first;
-    this.socketStates = profile.getItemSockets(itemInstanceID);
-    this.reusablePlugs = profile.getItemReusablePlugs(itemInstanceID);
+    item = profile.getItemsByInstanceId([itemInstanceID]).first;
+    socketStates = profile.getItemSockets(itemInstanceID);
+    reusablePlugs = profile.getItemReusablePlugs(itemInstanceID);
 
     if (plugHashes != null) {
-      this._selectedPlugs = Map.from(plugHashes);
+      _selectedPlugs = Map.from(plugHashes);
     }
 
     final itemHash = item?.itemHash;
@@ -58,7 +61,7 @@ class EditLoadoutItemModsBloc extends BaseSocketController with ManifestConsumer
   Future<void> computeAvailableCategories() async {
     final categories = definition?.sockets?.socketCategories;
     final socketCount = definition?.sockets?.socketEntries?.length ?? 0;
-    final itemSockets = this.socketStates;
+    final itemSockets = socketStates;
     if (categories == null || itemSockets == null) return;
 
     Map<int, List<int>> availablePlughashesForIndexes = {};
@@ -80,9 +83,9 @@ class EditLoadoutItemModsBloc extends BaseSocketController with ManifestConsumer
         availableCategoryHashes.add(categoryHash);
       }
     }
-    this._availableCategoryHashes = availableCategoryHashes;
-    this._availablePlugHashesForSocketIndexes = availablePlughashesForIndexes;
-    this._availableSocketIndexes = availableSocketIndexes;
+    _availableCategoryHashes = availableCategoryHashes;
+    _availablePlugHashesForSocketIndexes = availablePlughashesForIndexes;
+    _availableSocketIndexes = availableSocketIndexes;
     notifyListeners();
   }
 
@@ -154,6 +157,6 @@ class EditLoadoutItemModsBloc extends BaseSocketController with ManifestConsumer
       category.socketIndexes?.contains(_selectedSocket) ?? false;
 
   void updateMods() {
-    Navigator.of(context).pop(this._selectedPlugs);
+    Navigator.of(context).pop(_selectedPlugs);
   }
 }

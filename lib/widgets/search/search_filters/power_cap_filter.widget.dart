@@ -8,7 +8,7 @@ import 'package:little_light/widgets/search/search.controller.dart';
 import 'package:little_light/widgets/search/search_filters/base_search_filter.widget.dart';
 
 class PowerCapFilterWidget extends BaseSearchFilterWidget<PowerCapFilter> {
-  PowerCapFilterWidget(SearchController controller) : super(controller);
+  const PowerCapFilterWidget(SearchController controller) : super(controller);
 
   @override
   _PowerCapFilterWidgetState createState() => _PowerCapFilterWidgetState();

@@ -23,6 +23,7 @@ class AddCommunityWishlistFormState extends State<AddCommunityWishlistForm> with
     context.read<AddWishlistsBloc>().getWishlists();
   }
 
+  @override
   Widget build(BuildContext context) {
     super.build(context);
     final root = context.watch<AddWishlistsBloc>().isRootFolder;
@@ -35,7 +36,7 @@ class AddCommunityWishlistFormState extends State<AddCommunityWishlistForm> with
   Widget buildWishlistsRootContent(BuildContext context) {
     return SingleChildScrollView(
         child: Container(
-            padding: EdgeInsets.all(8) + MediaQuery.of(context).viewPadding.copyWith(top: 0),
+            padding: const EdgeInsets.all(8) + MediaQuery.of(context).viewPadding.copyWith(top: 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -65,6 +66,7 @@ class AddCommunityWishlistFormState extends State<AddCommunityWishlistForm> with
   Widget buildFolderHeader(BuildContext context) {
     final folder = context.watch<AddWishlistsBloc>().currentFolder;
     return Container(
+        margin: const EdgeInsets.only(top: 8, bottom: 16),
         child: Row(
           children: [
             BackButton(
@@ -91,8 +93,7 @@ class AddCommunityWishlistFormState extends State<AddCommunityWishlistForm> with
               ],
             ))
           ],
-        ),
-        margin: EdgeInsets.only(top: 8, bottom: 16));
+        ));
   }
 
   Widget buildWishlists(BuildContext context) {
@@ -127,14 +128,14 @@ class AddCommunityWishlistFormState extends State<AddCommunityWishlistForm> with
                     awaitFuture: isAdded ? provider.removeWishlist(file) : provider.addWishlist(file),
                   ));
             },
-            child: isAdded ? Text("Remove") : Text("Add"))
+            child: isAdded ? const Text("Remove") : const Text("Add"))
       ],
     );
   }
 
   Widget buildWishlistFolder(BuildContext context, WishlistFolder folder) {
     return Container(
-      margin: EdgeInsets.only(bottom: 8),
+      margin: const EdgeInsets.only(bottom: 8),
       child: Material(
           borderRadius: BorderRadius.circular(8),
           color: Theme.of(context).colorScheme.secondary,
@@ -143,11 +144,11 @@ class AddCommunityWishlistFormState extends State<AddCommunityWishlistForm> with
                 context.read<AddWishlistsBloc>().goToFolder(folder);
               },
               child: Container(
-                padding: EdgeInsets.all(8),
+                padding: const EdgeInsets.all(8),
                 child: Row(
                   children: [
                     Container(
-                        padding: EdgeInsets.all(8).copyWith(right: 16), child: Icon(FontAwesomeIcons.solidFolder)),
+                        padding: const EdgeInsets.all(8).copyWith(right: 16), child: const Icon(FontAwesomeIcons.solidFolder)),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,

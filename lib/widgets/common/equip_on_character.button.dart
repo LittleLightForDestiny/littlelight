@@ -74,7 +74,7 @@ class EquipOnCharacterButton extends StatelessWidget with ProfileConsumer {
           left: 1,
           right: 1,
           child: Container(
-              padding: EdgeInsets.all(2),
+              padding: const EdgeInsets.all(2),
               color: Colors.black.withOpacity(.7),
               child: ManifestText<DestinyClassDefinition>(character.classHash, textExtractor: (def) {
                 return def.genderedClassNamesByGenderHash["${character.genderHash}"] ?? "";
@@ -94,7 +94,7 @@ class EquipOnCharacterButton extends StatelessWidget with ProfileConsumer {
           left: 1,
           right: 1,
           child: Container(
-              padding: EdgeInsets.all(2),
+              padding: const EdgeInsets.all(2),
               color: Colors.black.withOpacity(.7),
               child: Text("Inventory".translate(context).toUpperCase(),
                   overflow: TextOverflow.fade,
@@ -110,7 +110,7 @@ class EquipOnCharacterButton extends StatelessWidget with ProfileConsumer {
           left: 1,
           right: 1,
           child: Container(
-              padding: EdgeInsets.all(2),
+              padding: const EdgeInsets.all(2),
               color: Colors.black.withOpacity(.7),
               child: Text("Vault".translate(context).toUpperCase(),
                   overflow: TextOverflow.fade,

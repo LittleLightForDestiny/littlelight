@@ -53,7 +53,7 @@ extension WishlistBuildSortingPriority on ParsedWishlistBuild {
 class WishlistBuildsWidget extends StatefulWidget {
   final int itemHash;
   final Map<String, List<DestinyItemPlugBase>> reusablePlugs;
-  WishlistBuildsWidget(
+  const WishlistBuildsWidget(
     this.itemHash, {
     Key key,
     this.reusablePlugs,
@@ -77,14 +77,14 @@ class WishlistBuildsWidgetState extends State<WishlistBuildsWidget> with Visible
     final builds = wishlistsService.getWishlistBuilds(itemHash: widget.itemHash, reusablePlugs: widget.reusablePlugs);
     if ((builds?.length ?? 0) == 0) return Container();
     return Container(
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       child: Column(children: [
         getHeader(
           TranslatedTextWidget(
             "Wishlist Builds",
             uppercase: true,
             textAlign: TextAlign.left,
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
         visible ? buildWishlists(context, builds) : Container()
@@ -106,12 +106,12 @@ class WishlistBuildsWidgetState extends State<WishlistBuildsWidget> with Visible
   }
 
   Widget buildWishlistTitle(BuildContext context, String title) {
-    if ((title ?? "").length == 0) return Container();
+    if ((title ?? "").isEmpty) return Container();
     return Container(
       color: Theme.of(context).colorScheme.surface,
+      padding: const EdgeInsets.all(8),
+      margin: const EdgeInsets.symmetric(vertical: 8),
       child: Text(title),
-      padding: EdgeInsets.all(8),
-      margin: EdgeInsets.symmetric(vertical: 8),
     );
   }
 

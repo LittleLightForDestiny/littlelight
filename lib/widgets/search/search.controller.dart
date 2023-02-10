@@ -143,33 +143,33 @@ class SearchController extends ChangeNotifier with ProfileConsumer, ManifestCons
   }
 
   sort() async {
-    this._prefilteredList = await InventoryUtils.sortDestinyItems(this._prefilteredList,
-        sortingParams: this.customSorting + this.defaultSorting, sortTags: sortTags);
+    _prefilteredList = await InventoryUtils.sortDestinyItems(_prefilteredList,
+        sortingParams: customSorting + defaultSorting, sortTags: sortTags);
     await update();
   }
 
   _reload() async {
-    this._unfilteredList = _getItems();
-    this._itemDefinitions = await _loadItemDefinitions();
-    this._prefilteredList = await filterItems(this._unfilteredList, this.firstRunFilters);
+    _unfilteredList = _getItems();
+    _itemDefinitions = await _loadItemDefinitions();
+    _prefilteredList = await filterItems(_unfilteredList, firstRunFilters);
     await sort();
-    var _plugDefinitions = await this._loadPlugDefinitions();
-    this._itemDefinitions.addAll(_plugDefinitions);
+    var _plugDefinitions = await _loadPlugDefinitions();
+    _itemDefinitions.addAll(_plugDefinitions);
     update();
   }
 
   prioritize(BaseItemFilter filter) {
-    if (this.preFilters.contains(filter)) {
-      this.preFilters.remove(filter);
-      this.preFilters.insert(0, filter);
+    if (preFilters.contains(filter)) {
+      preFilters.remove(filter);
+      preFilters.insert(0, filter);
     }
-    if (this.filters.contains(filter)) {
-      this.filters.remove(filter);
-      this.filters.insert(0, filter);
+    if (filters.contains(filter)) {
+      filters.remove(filter);
+      filters.insert(0, filter);
     }
-    if (this.postFilters.contains(filter)) {
-      this.postFilters.remove(filter);
-      this.postFilters.insert(0, filter);
+    if (postFilters.contains(filter)) {
+      postFilters.remove(filter);
+      postFilters.insert(0, filter);
     }
   }
 
@@ -183,7 +183,7 @@ class SearchController extends ChangeNotifier with ProfileConsumer, ManifestCons
 
   update() async {
     var _filters = [preFilters, filters, postFilters].expand((element) => element).toList();
-    this._filteredList = await this.filterItems(_prefilteredList, _filters);
+    _filteredList = await filterItems(_prefilteredList, _filters);
     notifyListeners();
   }
 
@@ -191,10 +191,10 @@ class SearchController extends ChangeNotifier with ProfileConsumer, ManifestCons
     List<ItemWithOwner> allItems = [];
 
     Iterable<String> charIds = profile.characters.map((char) => char.characterId);
-    charIds.forEach((charId) {
+    for (var charId in charIds) {
       allItems.addAll(profile.getCharacterEquipment(charId).map((item) => ItemWithOwner(item, charId)));
       allItems.addAll(profile.getCharacterInventory(charId).map((item) => ItemWithOwner(item, charId)));
-    });
+    }
     allItems.addAll(profile.getProfileInventory().map((item) => ItemWithOwner(item, null)));
     return allItems;
   }
@@ -207,15 +207,15 @@ class SearchController extends ChangeNotifier with ProfileConsumer, ManifestCons
   }
 
   _loadPlugDefinitions() async {
-    Set<int> hashes = Set();
-    _prefilteredList.forEach((item) {
+    Set<int> hashes = {};
+    for (var item in _prefilteredList) {
       var sockets = profile.getItemSockets(item?.item?.itemInstanceId);
       var reusablePlugs = profile.getItemReusablePlugs(item?.item?.itemInstanceId);
       hashes.addAll(sockets?.map((s) => s.plugHash) ?? []);
-      reusablePlugs?.values?.forEach((plug) {
+      for (var plug in reusablePlugs?.values) {
         hashes.addAll(plug?.map((p) => p.plugItemHash) ?? []);
-      });
-    });
+      }
+    }
     var _defs =
         await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes?.where((element) => element != null));
     return _defs;

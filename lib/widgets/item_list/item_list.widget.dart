@@ -51,7 +51,7 @@ class ItemListWidget extends StatefulWidget {
 
   final int columnCount;
 
-  ItemListWidget({
+  const ItemListWidget({
     Key key,
     this.padding,
     this.bucketHashes,
@@ -102,8 +102,8 @@ class ItemListWidgetState extends State<ItemListWidget>
     List<DestinyItemComponent> equipment = profile.getCharacterEquipment(widget.characterId);
     List<DestinyItemComponent> characterInventory = profile.getCharacterInventory(widget.characterId);
     List<DestinyItemComponent> profileInventory = profile.getProfileInventory();
-    this.bucketDefs = await manifest.getDefinitions<DestinyInventoryBucketDefinition>(widget.bucketHashes);
-    this.buckets = [];
+    bucketDefs = await manifest.getDefinitions<DestinyInventoryBucketDefinition>(widget.bucketHashes);
+    buckets = [];
     for (int bucketHash in widget.bucketHashes) {
       DestinyInventoryBucketDefinition bucketDef = bucketDefs[bucketHash];
       List<DestinyItemComponent> inventory =
@@ -114,7 +114,7 @@ class ItemListWidgetState extends State<ItemListWidget>
           .map((i) => i.item)
           .toList();
 
-      this.buckets.add(ListBucket(bucketHash: bucketHash, equipped: equipped, unequipped: unequipped));
+      buckets.add(ListBucket(bucketHash: bucketHash, equipped: equipped, unequipped: unequipped));
     }
 
     if (!mounted) {
@@ -146,7 +146,7 @@ class ItemListWidgetState extends State<ItemListWidget>
     List<SliverSection> list = [
       if (widget.includeInfoHeader) buildCharInfoSliver(),
     ];
-    buckets.forEach((bucket) {
+    for (var bucket in buckets) {
       final bucketDef = bucketDefs[bucket.bucketHash];
       final options = getBucketOptions(bucket.bucketHash);
       final bool showEquipped = bucket.equipped != null && options.type != BucketDisplayType.Hidden;
@@ -159,7 +159,7 @@ class ItemListWidgetState extends State<ItemListWidget>
         if (showUnequipped) buildUnequippedItems(bucket.unequipped, bucket),
         if (addSpacer) spacer
       ];
-    });
+    }
 
     if (isSelectionOpen) {
       list += [SliverSection(itemCount: 1, itemHeight: 160, itemBuilder: (context, index) => Container())];

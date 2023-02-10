@@ -23,7 +23,7 @@ class VendorDetailsScreen extends StatefulWidget {
   final String characterId;
   final DestinyVendorComponent vendor;
 
-  VendorDetailsScreen({Key key, this.vendor, this.characterId}) : super(key: key);
+  const VendorDetailsScreen({Key key, this.vendor, this.characterId}) : super(key: key);
 
   @override
   VendorDetailsScreenState createState() => VendorDetailsScreenState();
@@ -100,7 +100,7 @@ class VendorDetailsScreenState extends State<VendorDetailsScreen> with ManifestC
       children: <Widget>[
         Container(
             height: 48,
-            padding: EdgeInsets.all(8),
+            padding: const EdgeInsets.all(8),
             child: AspectRatio(
               aspectRatio: 1,
               child: QueuedNetworkImage(
@@ -116,11 +116,11 @@ class VendorDetailsScreenState extends State<VendorDetailsScreen> with ManifestC
           children: <Widget>[
             Text(
               definition?.displayProperties?.name?.toUpperCase(),
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
             Container(height: 2),
             ManifestText<DestinyFactionDefinition>(definition?.factionHash,
-                style: TextStyle(fontWeight: FontWeight.w300, fontSize: 14)),
+                style: const TextStyle(fontWeight: FontWeight.w300, fontSize: 14)),
           ],
         ),
       ],
@@ -131,7 +131,7 @@ class VendorDetailsScreenState extends State<VendorDetailsScreen> with ManifestC
     if (definition == null || _categories == null) return Container();
     var screenPadding = MediaQuery.of(context).padding;
     return ListView(
-        padding: EdgeInsets.all(8).copyWith(
+        padding: const EdgeInsets.all(8).copyWith(
             left: max(screenPadding.left, 8), right: max(screenPadding.right, 8), bottom: screenPadding.bottom + 8),
         children: _categories.map((c) => buildCategory(context, c)).toList());
   }

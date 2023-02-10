@@ -22,7 +22,7 @@ abstract class LittleLightBaseDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final padding = getDialogInsetPaddings(context) ?? EdgeInsets.all(0);
+    final padding = getDialogInsetPaddings(context) ?? const EdgeInsets.all(0);
     final size = MediaQuery.of(context).size;
     double maxWidth = this.maxWidth.clamp(0, size.width - padding.left - padding.right);
     double maxHeight = this.maxHeight.clamp(0, size.height - padding.top - padding.bottom);
@@ -43,7 +43,7 @@ abstract class LittleLightBaseDialog extends StatelessWidget {
     if (title == null) return Container();
     return Container(
       color: LittleLightTheme.of(context).surfaceLayers.layer3,
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       child: DefaultTextStyle(
         style: LittleLightTheme.of(context).textTheme.title,
         child: title,
@@ -54,13 +54,13 @@ abstract class LittleLightBaseDialog extends StatelessWidget {
   Widget buildBodyContainer(BuildContext context) {
     final body = buildBody(context);
     if (body == null) return Container();
-    return Flexible(child: Container(padding: EdgeInsets.all(16), child: body));
+    return Flexible(child: Container(padding: const EdgeInsets.all(16), child: body));
   }
 
   Widget buildActionsContainer(BuildContext context) {
     final actions = buildActions(context);
     if (actions == null) return Container();
-    return Container(padding: EdgeInsets.all(8).copyWith(top: 0), child: actions);
+    return Container(padding: const EdgeInsets.all(8).copyWith(top: 0), child: actions);
   }
 
   Widget? buildTitle(BuildContext context) => titleBuilder?.call(context);

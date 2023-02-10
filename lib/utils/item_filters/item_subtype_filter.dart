@@ -32,7 +32,7 @@ class FilterSubType {
 }
 
 class ItemSubtypeFilter extends BaseItemFilter<Set<FilterSubType>> {
-  ItemSubtypeFilter() : super(Set(), Set());
+  ItemSubtypeFilter() : super(<FilterSubType>{}, <FilterSubType>{});
 
   clear() {
     availableValues.clear();
@@ -59,9 +59,9 @@ class ItemSubtypeFilter extends BaseItemFilter<Set<FilterSubType>> {
     });
     availableValues.addAll(subTypes);
 
-    this.available = availableValues.length > 1;
+    available = availableValues.length > 1;
     value.retainAll(availableValues);
-    if (value?.length == 0) return items;
+    if (value.isEmpty) return items;
     return super.filter(items, definitions: definitions);
   }
 

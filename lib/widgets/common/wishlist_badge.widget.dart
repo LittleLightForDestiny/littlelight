@@ -10,9 +10,10 @@ class WishlistBadgeWidget extends StatelessWidget {
 
   const WishlistBadgeWidget({this.tag, this.size = 24});
 
+  @override
   Widget build(BuildContext context) {
     return Container(
-        margin: EdgeInsets.symmetric(vertical: 2),
+        margin: const EdgeInsets.symmetric(vertical: 2),
         height: size,
         child: AspectRatio(
             aspectRatio: 1,

@@ -13,7 +13,7 @@ import 'package:little_light/widgets/search/search.controller.dart';
 import 'package:little_light/widgets/search/search_filters/base_search_filter.widget.dart';
 
 class DamageTypeFilterWidget extends BaseSearchFilterWidget<DamageTypeFilter> {
-  DamageTypeFilterWidget(SearchController controller) : super(controller);
+  const DamageTypeFilterWidget(SearchController controller) : super(controller);
 
   @override
   _DamageTypeFilterWidgetState createState() => _DamageTypeFilterWidgetState();
@@ -53,7 +53,7 @@ class _DamageTypeFilterWidgetState
   Widget buildButtonLabel(BuildContext context, DestinyDamageTypeDefinition value) {
     if (value?.displayProperties?.hasIcon == true) {
       return Container(
-          margin: EdgeInsets.all(8),
+          margin: const EdgeInsets.all(8),
           width: 32,
           height: 32,
           child: QueuedNetworkImage(imageUrl: BungieApiService.url(value?.displayProperties?.icon)));

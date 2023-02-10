@@ -17,8 +17,9 @@ class RankItemWidget extends StatefulWidget {
 
   final DestinyProgression progression;
 
-  RankItemWidget({Key key, this.characterId, this.progression}) : super(key: key);
+  const RankItemWidget({Key key, this.characterId, this.progression}) : super(key: key);
 
+  @override
   RankItemWidgetState createState() => RankItemWidgetState();
 }
 
@@ -123,11 +124,11 @@ class RankItemWidgetState<T extends RankItemWidget> extends State<T>
     return Column(children: [
       Text(
         definition?.displayProperties?.name?.toUpperCase() ?? "",
-        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
+        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
       ),
       Text(
         currentStep?.stepName?.toUpperCase() ?? "",
-        style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14),
+        style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14),
       )
     ]);
   }
@@ -136,11 +137,11 @@ class RankItemWidgetState<T extends RankItemWidget> extends State<T>
     return Column(children: [
       Text(
         "${progression?.progressToNextLevel}/${progression?.nextLevelAt}",
-        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
       ),
       Text(
         "${progression.currentProgress}/$progressTotal",
-        style: TextStyle(fontSize: 10),
+        style: const TextStyle(fontSize: 10),
       )
     ]);
   }

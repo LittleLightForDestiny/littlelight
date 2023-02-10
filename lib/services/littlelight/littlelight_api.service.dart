@@ -115,7 +115,7 @@ class LittleLightApiService with AuthConsumer, StorageConsumer, AppConfigConsume
     if (uuid != null) return uuid;
     uuid = currentMembershipStorage.littleLightMembershipUUID;
     if (uuid != null) return uuid;
-    uuid = Uuid().v4();
+    uuid = const Uuid().v4();
     currentMembershipStorage.littleLightMembershipUUID = uuid;
     _uuid = uuid;
     return uuid;

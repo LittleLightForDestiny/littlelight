@@ -10,7 +10,7 @@ import 'package:sqflite/sqflite.dart';
 enum StoredFileExtensions { JSON }
 
 extension on StoredFileExtensions {
-  String get extension => this.toString().split(".").last.toLowerCase();
+  String get extension => toString().split(".").last.toLowerCase();
 }
 
 abstract class StorageBase<T> with AnalyticsConsumer {
@@ -133,7 +133,7 @@ extension StorageOperations<T> on StorageBase<T> {
   }
 
   Future<void> saveFileContents(String filePath, String contents) async {
-    File file = File("$filePath");
+    File file = File(filePath);
     try {
       if (!await file.exists()) {
         file = await file.create(recursive: true);
@@ -170,7 +170,7 @@ extension StorageOperations<T> on StorageBase<T> {
   }
 
   Future<void> deleteFile(String filePath) async {
-    File file = File("$filePath");
+    File file = File(filePath);
     bool exists = await file.exists();
     if (exists) {
       await file.delete(recursive: true);
@@ -178,7 +178,7 @@ extension StorageOperations<T> on StorageBase<T> {
   }
 
   Future<void> clearKey(T key) async {
-    await this._prefs.remove(getPath(key));
+    await _prefs.remove(getPath(key));
   }
 
   Future<dynamic> getExpireableJson(T key, Duration expiration) async {

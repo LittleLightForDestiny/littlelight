@@ -146,12 +146,12 @@ class ItemSocketController extends ChangeNotifier
   Future<void> _loadDefinitions() async {
     final itemDefinition = await manifest.getDefinition<DestinyInventoryItemDefinition>(_itemHash);
     if (itemDefinition == null) return;
-    this.definition = itemDefinition;
+    definition = itemDefinition;
     final plugHashes = <int>{};
     if (reusablePlugs != null) {
       plugHashes.addAll(socketStates
               ?.expand((socket) {
-                Set<int?> hashes = Set();
+                Set<int?> hashes = {};
                 hashes.add(socket.plugHash);
                 return hashes.whereType<int>();
               })
@@ -197,27 +197,27 @@ class ItemSocketController extends ChangeNotifier
   }
 
   void selectSocket(int socketIndex, int plugHash) {
-    if (plugHash == this._selectedSocket && socketIndex == _selectedSocketIndex) {
-      this._selectedSocket = null;
-      this._selectedSocketIndex = null;
+    if (plugHash == _selectedSocket && socketIndex == _selectedSocketIndex) {
+      _selectedSocket = null;
+      _selectedSocketIndex = null;
     } else {
-      this._selectedSocketIndex = socketIndex;
-      this._selectedSocket = plugHash;
+      _selectedSocketIndex = socketIndex;
+      _selectedSocket = plugHash;
       var can = canEquip(socketIndex, plugHash);
       if (can) {
-        this._selectedSockets?[socketIndex] = plugHash;
+        _selectedSockets?[socketIndex] = plugHash;
         final plugHashes = socketPlugHashes(socketIndex);
         final containsPlug = plugHashes?.contains(plugHash) ?? false;
         if (!containsPlug) {
-          this._randomizedSelectedSockets?[socketIndex] = plugHash;
+          _randomizedSelectedSockets?[socketIndex] = plugHash;
         }
       }
     }
-    this.notifyListeners();
+    notifyListeners();
   }
 
   void applySocket(int socketIndex, int plugHash) async {
-    final instanceID = this.item?.item.itemInstanceId;
+    final instanceID = item?.item.itemInstanceId;
     if (instanceID == null) throw ("No item instance available");
 
     final characterID = profile.getItemOwner(instanceID) ?? profile.characters?.last.characterId;
@@ -225,7 +225,7 @@ class ItemSocketController extends ChangeNotifier
 
     notifications.push(NotificationEvent(NotificationType.requestApplyPlug, item: item?.item, plugHash: plugHash));
     _socketBusy?[socketIndex] = true;
-    this.notifyListeners();
+    notifyListeners();
     try {
       await bungieAPI.applySocket(instanceID, plugHash, socketIndex, characterID);
       socketStates?[socketIndex].plugHash = plugHash;
@@ -235,11 +235,11 @@ class ItemSocketController extends ChangeNotifier
         PlatformErrorCodes.DestinyCannotPerformActionAtThisLocation,
       ].contains(e.errorCode)) {
         notifications
-            .push(ErrorNotificationEvent(ErrorNotificationType.onCombatZoneApplyModError, item: this.item?.item));
-        await Future.delayed(Duration(seconds: 3));
+            .push(ErrorNotificationEvent(ErrorNotificationType.onCombatZoneApplyModError, item: item?.item));
+        await Future.delayed(const Duration(seconds: 3));
       } else {
         analytics.registerNonFatal(e, stackTrace, additionalInfo: {
-          "itemHash": "${this.item?.item.itemHash}",
+          "itemHash": "${item?.item.itemHash}",
           "errorCode": "${e.errorCode}",
           "plugHash": "$plugHash",
           "socketIndex": "$socketIndex"
@@ -247,14 +247,14 @@ class ItemSocketController extends ChangeNotifier
         rethrow;
       }
     } catch (e, stackTrace) {
-      notifications.push(ErrorNotificationEvent(ErrorNotificationType.genericApplyModError, item: this.item?.item));
-      await Future.delayed(Duration(seconds: 3));
+      notifications.push(ErrorNotificationEvent(ErrorNotificationType.genericApplyModError, item: item?.item));
+      await Future.delayed(const Duration(seconds: 3));
       analytics.registerNonFatal(e, stackTrace);
     }
     _socketBusy?[socketIndex] = false;
 
-    this.notifyListeners();
-    notifications.push(NotificationEvent(NotificationType.itemStateUpdate, item: this.item?.item));
+    notifyListeners();
+    notifications.push(NotificationEvent(NotificationType.itemStateUpdate, item: item?.item));
   }
 
   bool isSocketBusy(int socketIndex) {

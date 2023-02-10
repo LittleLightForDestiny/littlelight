@@ -11,7 +11,7 @@ void main() async {
   await setupServices();
 
   runZoned<Future<void>>(() async {
-    runApp(LittleLightDevModeApp());
+    runApp(const LittleLightDevModeApp());
   });
 }
 
@@ -34,7 +34,7 @@ class _LittleLightDevModeAppState extends State<LittleLightDevModeApp> {
   }
 
   void initDevMode() async {
-    await Future.delayed(Duration(milliseconds: 1));
+    await Future.delayed(const Duration(milliseconds: 1));
     await initServices(context);
     setState(() {
       ready = true;

@@ -31,13 +31,13 @@ class MediumSubclassInventoryItemWidget extends MediumBaseInventoryItemWidget
     BoxDecoration decoration = BoxDecoration(
         gradient: RadialGradient(
       radius: 2,
-      center: Alignment(1, 0),
+      center: const Alignment(1, 0),
       colors: <Color>[
         startBgColor(context),
         Colors.transparent,
         endBgColor(context),
       ],
-      stops: [0, .3, .8],
+      stops: const [0, .3, .8],
     ));
     return Positioned.fill(
       child: Container(
@@ -52,9 +52,9 @@ class MediumSubclassInventoryItemWidget extends MediumBaseInventoryItemWidget
                     alignment: Alignment.centerRight,
                     fit: BoxFit.fitHeight,
                     placeholder: Shimmer.fromColors(
-                      child: Container(color: Colors.white),
                       baseColor: endBgColor(context),
                       highlightColor: startBgColor(context),
+                      child: Container(color: Colors.white),
                     ),
                   )))),
     );

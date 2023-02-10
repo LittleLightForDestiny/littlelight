@@ -33,7 +33,7 @@ class RewardsInfoWidget extends BaseDestinyStatelessItemWidget {
         child: TranslatedTextWidget(
           "Rewards",
           uppercase: true,
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ));
   }
 
@@ -45,9 +45,9 @@ class RewardsInfoWidget extends BaseDestinyStatelessItemWidget {
     return DefinitionProviderWidget<DestinyInventoryItemDefinition>(rewardItem.itemHash, (def) {
       if (def.equippable ?? false) {
         return Container(
-            margin: EdgeInsets.all(4),
+            margin: const EdgeInsets.all(4),
             child: Stack(children: [
-              Container(
+              SizedBox(
                   height: 96,
                   child: WeaponInventoryItemWidget(
                     null,
@@ -74,14 +74,14 @@ class RewardsInfoWidget extends BaseDestinyStatelessItemWidget {
       }
       final quantity = rewardItem?.quantity ?? 0;
       return Container(
-          padding: EdgeInsets.all(4),
+          padding: const EdgeInsets.all(4),
           child: Row(children: [
-            Container(
+            SizedBox(
+                width: 24,
+                height: 24,
                 child: QueuedNetworkImage(
                   imageUrl: BungieApiService.url(def.displayProperties.icon),
-                ),
-                width: 24,
-                height: 24),
+                )),
             Container(
               width: 8,
             ),

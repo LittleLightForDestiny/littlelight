@@ -11,7 +11,7 @@ import 'package:little_light/widgets/search/search.controller.dart';
 import 'package:little_light/widgets/search/search_filters/base_search_filter.widget.dart';
 
 class TotalStatsConstraintsWidget extends BaseSearchFilterWidget<TotalStatsConstraintsFilter> {
-  TotalStatsConstraintsWidget(SearchController controller) : super(controller);
+  const TotalStatsConstraintsWidget(SearchController controller) : super(controller);
 
   @override
   TotalStatsConstraintsWidgetState createState() => TotalStatsConstraintsWidgetState();
@@ -32,7 +32,7 @@ class TotalStatsConstraintsWidgetState extends BaseSearchFilterWidgetState<Total
       !nonArmorAvailable
           ? Container()
           : Container(
-              padding: EdgeInsets.all(8),
+              padding: const EdgeInsets.all(8),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
@@ -41,22 +41,22 @@ class TotalStatsConstraintsWidgetState extends BaseSearchFilterWidgetState<Total
                     value: filter.value.includeNonArmorItems,
                     onChanged: (value) {
                       filter.value.includeNonArmorItems = value;
-                      controller.prioritize(this.filter);
+                      controller.prioritize(filter);
                       controller.update();
                     },
                   )
                 ],
               )),
       Container(
-          padding: EdgeInsets.symmetric(horizontal: 8).copyWith(top: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 8).copyWith(top: 8),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[Text("$aMin"), Text("$aMax")],
           )),
       SliderTheme(
           data: SliderTheme.of(context).copyWith(
-              rangeValueIndicatorShape: SmallRectRangeSliderValueIndicatorShape(),
-              rangeTrackShape: RoundedRectRangeSliderTrackShape()),
+              rangeValueIndicatorShape: const SmallRectRangeSliderValueIndicatorShape(),
+              rangeTrackShape: const RoundedRectRangeSliderTrackShape()),
           child: RangeSlider(
             values: RangeValues(min?.toDouble(), max?.toDouble()),
             min: aMin?.toDouble(),
@@ -69,7 +69,7 @@ class TotalStatsConstraintsWidgetState extends BaseSearchFilterWidgetState<Total
               setState(() {});
             },
             onChangeEnd: (values) {
-              controller.prioritize(this.filter);
+              controller.prioritize(filter);
               controller.update();
             },
           ))

@@ -12,7 +12,7 @@ class ItemTagWidget extends StatelessWidget {
   final Widget? trailing;
   final Function? onClick;
   final double padding;
-  ItemTagWidget(this.tag,
+  const ItemTagWidget(this.tag,
       {this.includeLabel = false,
       this.fullWidth = false,
       this.fontSize = 16,
@@ -28,7 +28,7 @@ class ItemTagWidget extends StatelessWidget {
 
   Widget buildContents(BuildContext context) {
     final trailing = this.trailing;
-    if (this.includeLabel) {
+    if (includeLabel) {
       return Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
@@ -44,7 +44,7 @@ class ItemTagWidget extends StatelessWidget {
 
   Widget buildLabel(BuildContext context) {
     final style = TextStyle(color: tag.foregroundColor, fontSize: fontSize, fontWeight: FontWeight.w500);
-    var tagName = tag.name.length > 0 ? tag.name : null;
+    var tagName = tag.name.isNotEmpty ? tag.name : null;
     if (tag.custom && tagName != null) {
       return Container(
           padding: EdgeInsets.symmetric(horizontal: padding * 2),
@@ -69,7 +69,7 @@ class ItemTagWidget extends StatelessWidget {
   }
 
   String getTagName(BuildContext context, ItemNotesTag tag) {
-    final useCustomName = tag.custom && tag.name.length > 0;
+    final useCustomName = tag.custom && tag.name.isNotEmpty;
     if (useCustomName) return tag.name;
     if (tag.custom) return 'Untitled'.translate(context);
     final defaultLabel = tag.defaultTagType?.getLabel(context);

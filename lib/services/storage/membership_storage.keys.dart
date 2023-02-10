@@ -16,7 +16,7 @@ enum MembershipStorageKeys {
 
 extension StorageKeyPathsExtension on MembershipStorageKeys {
   String get path {
-    String name = this.toString().split(".")[1];
+    String name = toString().split(".")[1];
     return name;
   }
 }

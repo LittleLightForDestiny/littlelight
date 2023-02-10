@@ -7,7 +7,7 @@ import 'package:little_light/widgets/item_tags/item_tag.widget.dart';
 
 class CreateTagFormWidget extends StatefulWidget {
   final ItemNotesTag tag;
-  CreateTagFormWidget(this.tag) : super();
+  const CreateTagFormWidget(this.tag) : super();
   @override
   _CreateTagFormWidgetState createState() => _CreateTagFormWidgetState();
 }
@@ -47,7 +47,7 @@ class _CreateTagFormWidgetState extends State<CreateTagFormWidget> with ItemNote
 
   initData() async {
     colors = [];
-    _availableColors.forEach((element) {
+    for (var element in _availableColors) {
       colors?.addAll([
         element.shade900,
         element.shade700,
@@ -56,7 +56,7 @@ class _CreateTagFormWidgetState extends State<CreateTagFormWidget> with ItemNote
         element.shade300,
         element.shade100,
       ].map(hexFromColor));
-    });
+    }
 
     tagNameController?.addListener(() {
       widget.tag.name = tagNameController?.text ?? "";
@@ -101,7 +101,7 @@ class _CreateTagFormWidgetState extends State<CreateTagFormWidget> with ItemNote
 
   Widget buildPreview(BuildContext context) {
     return Container(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         child: Row(mainAxisSize: MainAxisSize.min, children: [
           ItemTagWidget(widget.tag),
           Container(
@@ -122,7 +122,7 @@ class _CreateTagFormWidgetState extends State<CreateTagFormWidget> with ItemNote
 
   Widget buildColors(BuildContext context, String currentColorHex, Function(String color) onChange,
       [List<String> additionalColors = const []]) {
-    return Container(
+    return SizedBox(
         height: 150,
         child: GridView.count(
             shrinkWrap: false,
@@ -138,7 +138,7 @@ class _CreateTagFormWidgetState extends State<CreateTagFormWidget> with ItemNote
                               width: 2,
                               color:
                                   currentColorHex == c ? Theme.of(context).colorScheme.onSurface : Colors.transparent)),
-                      padding: EdgeInsets.all(3),
+                      padding: const EdgeInsets.all(3),
                       child: Material(
                         borderRadius: BorderRadius.circular(8),
                         color: colorFromHex(c),
@@ -152,7 +152,7 @@ class _CreateTagFormWidgetState extends State<CreateTagFormWidget> with ItemNote
   }
 
   Widget buildIcons(BuildContext context, ItemTagIcon currentIcon, Function(ItemTagIcon icon) onChange) {
-    return Container(
+    return SizedBox(
         height: 150,
         child: GridView.count(
             shrinkWrap: false,
@@ -167,7 +167,7 @@ class _CreateTagFormWidgetState extends State<CreateTagFormWidget> with ItemNote
                           border: Border.all(
                               width: 2,
                               color: currentIcon == i ? Theme.of(context).colorScheme.onSurface : Colors.transparent)),
-                      padding: EdgeInsets.all(3),
+                      padding: const EdgeInsets.all(3),
                       child: Material(
                           borderRadius: BorderRadius.circular(8),
                           color: widget.tag.backgroundColor,

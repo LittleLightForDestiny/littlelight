@@ -7,8 +7,9 @@ import 'package:little_light/widgets/inventory_tabs/character_tab.widget.dart';
 import 'package:little_light/widgets/item_list/vault_item_list.widget.dart';
 
 class VaultTabWidget extends CharacterTabWidget {
+  @override
   final int currentGroup;
-  VaultTabWidget(this.currentGroup, {EdgeInsets padding})
+  const VaultTabWidget(this.currentGroup, {EdgeInsets padding})
       : super(
           null,
           currentGroup,
@@ -20,10 +21,6 @@ class VaultTabWidget extends CharacterTabWidget {
 }
 
 class VaultTabWidgetState extends CharacterTabWidgetState {
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +31,7 @@ class VaultTabWidgetState extends CharacterTabWidgetState {
     );
   }
 
+  @override
   List<int> get bucketHashes {
     switch (widget.currentGroup) {
       case DestinyItemCategory.Armor:

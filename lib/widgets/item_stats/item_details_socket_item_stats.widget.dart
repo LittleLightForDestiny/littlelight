@@ -14,7 +14,7 @@ import 'package:little_light/widgets/item_stats/item_details_socket_item_stat.wi
 class ItemDetailSocketItemStatsWidget extends BaseItemStatsWidget {
   final DestinyInventoryItemDefinition plugDefinition;
 
-  ItemDetailSocketItemStatsWidget(
+  const ItemDetailSocketItemStatsWidget(
       {Key key,
       DestinyItemComponent item,
       DestinyInventoryItemDefinition definition,
@@ -39,6 +39,7 @@ class ItemDetailSocketItemStatsState extends BaseItemStatsState<ItemDetailSocket
     );
   }
 
+  @override
   List<Widget> buildStats(context) {
     if (stats == null) return [Container()];
     Map<int, StatValues> statValues = getStatValues();
@@ -55,6 +56,7 @@ class ItemDetailSocketItemStatsState extends BaseItemStatsState<ItemDetailSocket
     }).toList();
   }
 
+  @override
   Iterable<DestinyItemInvestmentStatDefinition> get stats {
     var statWhitelist = statGroupDefinition?.scaledStats?.map((s) => s.statHash)?.toList() ?? [];
     List<int> statHashes = widget.plugDefinition.investmentStats
@@ -69,12 +71,10 @@ class ItemDetailSocketItemStatsState extends BaseItemStatsState<ItemDetailSocket
     for (var statHash in statHashes) {
       var itemStat =
           widget.definition?.investmentStats?.firstWhere((s) => s.statTypeHash == statHash, orElse: () => null);
-      if (itemStat == null) {
-        itemStat = DestinyItemInvestmentStatDefinition()
-          ..statTypeHash = statHash
-          ..value = 0
-          ..isConditionallyActive = false;
-      }
+      itemStat ??= DestinyItemInvestmentStatDefinition()
+        ..statTypeHash = statHash
+        ..value = 0
+        ..isConditionallyActive = false;
       result.add(itemStat);
     }
 
@@ -94,28 +94,29 @@ class ItemDetailSocketItemStatsState extends BaseItemStatsState<ItemDetailSocket
     return result;
   }
 
+  @override
   Map<int, StatValues> getStatValues() {
-    Map<int, StatValues> map = Map();
+    Map<int, StatValues> map = {};
     if (plugDefinitions == null) {
       return map;
     }
-    stats.forEach((s) {
+    for (var s in stats) {
       map[s.statTypeHash] = StatValues(equipped: s.value, selected: s.value);
-    });
+    }
     var statHashes = map.keys;
     var entries = definition?.sockets?.socketEntries;
     for (var index = 0; index < entries?.length ?? 0; index++) {
       var selectedPlugHash = socketController.socketSelectedPlugHash(index);
       var def = plugDefinitions[selectedPlugHash];
-      def?.investmentStats?.forEach((s) {
-        if (!statHashes.contains(s.statTypeHash)) return;
+      for (var s in def?.investmentStats) {
+        if (!statHashes.contains(s.statTypeHash)) return null;
         if (index == socketController.selectedSocketIndex) {
           map[s.statTypeHash].selected += s.value;
         } else {
           map[s.statTypeHash].selected += s.value;
           map[s.statTypeHash].equipped += s.value;
         }
-      });
+      }
     }
     return map;
   }

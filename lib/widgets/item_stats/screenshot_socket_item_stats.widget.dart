@@ -15,7 +15,7 @@ class ScreenShotSocketItemStatsWidget extends BaseItemStatsWidget {
   final double pixelSize;
   final DestinyInventoryItemDefinition plugDefinition;
 
-  ScreenShotSocketItemStatsWidget(
+  const ScreenShotSocketItemStatsWidget(
       {Key key,
       DestinyItemComponent item,
       DestinyInventoryItemDefinition definition,
@@ -35,7 +35,7 @@ class ScreenShotSocketItemStatsState extends BaseItemStatsState<ScreenShotSocket
   Widget build(BuildContext context) {
     super.build(context);
     var statWidgets = buildStats(context);
-    if (statWidgets.length == 0) return Container();
+    if (statWidgets.isEmpty) return Container();
     return Container(
         padding: EdgeInsets.symmetric(vertical: 8 * widget.pixelSize),
         child: Column(
@@ -45,6 +45,7 @@ class ScreenShotSocketItemStatsState extends BaseItemStatsState<ScreenShotSocket
         ));
   }
 
+  @override
   List<Widget> buildStats(context) {
     if ((stats?.length ?? 0) == 0) return [];
     Map<int, StatValues> statValues = getStatValues();
@@ -61,6 +62,7 @@ class ScreenShotSocketItemStatsState extends BaseItemStatsState<ScreenShotSocket
     }).toList();
   }
 
+  @override
   Iterable<DestinyItemInvestmentStatDefinition> get stats {
     var statWhitelist = statGroupDefinition?.scaledStats?.map((s) => s.statHash)?.toList() ?? [];
     List<int> statHashes = widget.plugDefinition.investmentStats
@@ -75,12 +77,10 @@ class ScreenShotSocketItemStatsState extends BaseItemStatsState<ScreenShotSocket
     for (var statHash in statHashes) {
       var itemStat =
           widget.definition?.investmentStats?.firstWhere((s) => s.statTypeHash == statHash, orElse: () => null);
-      if (itemStat == null) {
-        itemStat = DestinyItemInvestmentStatDefinition()
-          ..statTypeHash = statHash
-          ..value = 0
-          ..isConditionallyActive = false;
-      }
+      itemStat ??= DestinyItemInvestmentStatDefinition()
+        ..statTypeHash = statHash
+        ..value = 0
+        ..isConditionallyActive = false;
       result.add(itemStat);
     }
 
@@ -100,28 +100,29 @@ class ScreenShotSocketItemStatsState extends BaseItemStatsState<ScreenShotSocket
     return result;
   }
 
+  @override
   Map<int, StatValues> getStatValues() {
-    Map<int, StatValues> map = Map();
+    Map<int, StatValues> map = {};
     if (plugDefinitions == null) {
       return map;
     }
-    stats.forEach((s) {
+    for (var s in stats) {
       map[s.statTypeHash] = StatValues(equipped: s.value, selected: s.value);
-    });
+    }
     var statHashes = map.keys;
     var entries = definition?.sockets?.socketEntries;
     for (var index = 0; index < entries?.length ?? 0; index++) {
       var selectedPlugHash = socketController.socketSelectedPlugHash(index);
       var def = plugDefinitions[selectedPlugHash];
-      def?.investmentStats?.forEach((s) {
-        if (!statHashes.contains(s.statTypeHash)) return;
+      for (var s in def?.investmentStats) {
+        if (!statHashes.contains(s.statTypeHash)) return null;
         if (index == socketController.selectedSocketIndex) {
           map[s.statTypeHash].selected += s.value;
         } else {
           map[s.statTypeHash].selected += s.value;
           map[s.statTypeHash].equipped += s.value;
         }
-      });
+      }
     }
     return map;
   }

@@ -51,31 +51,31 @@ abstract class PresentationNodesTabsScaffoldState<T extends PresentationNodesTab
       return breadcrumb;
     }
     return PreferredSize(
+        preferredSize: Size.fromHeight(tabBar.preferredSize.height + breadcrumb.preferredSize.height),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             tabBar,
             breadcrumb,
           ],
-        ),
-        preferredSize: Size.fromHeight(tabBar.preferredSize.height + breadcrumb.preferredSize.height));
+        ));
   }
 
   PreferredSizeWidget? buildTabBar(BuildContext context) {
     final nodes = this.nodes;
     if (nodes == null) return null;
     final tabBar = TabBar(
-        labelPadding: EdgeInsets.all(0),
+        labelPadding: const EdgeInsets.all(0),
         indicatorColor: Theme.of(context).colorScheme.onSurface,
         isScrollable: false,
         tabs: nodes.map((n) => buildTabButton(context, n)).toList());
     return PreferredSize(
+        preferredSize: tabBar.preferredSize,
         child: Material(
-          child: tabBar,
           color: LittleLightTheme.of(context).surfaceLayers.layer1,
           elevation: 2,
-        ),
-        preferredSize: tabBar.preferredSize);
+          child: tabBar,
+        ));
   }
 
   PreferredSizeWidget? buildBreadcrumb(BuildContext context) => null;

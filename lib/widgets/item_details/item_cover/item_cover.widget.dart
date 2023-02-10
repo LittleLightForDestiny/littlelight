@@ -76,7 +76,7 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
-    double expandRatio = max(0, 1 - shrinkOffset / (this.maxHeight - this.minHeight));
+    double expandRatio = max(0, 1 - shrinkOffset / (maxHeight - minHeight));
     if (maxHeight == minHeight) {
       expandRatio = 0;
     }
@@ -259,10 +259,10 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  double get maxExtent => this.maxHeight;
+  double get maxExtent => maxHeight;
 
   @override
-  double get minExtent => this.minHeight;
+  double get minExtent => minHeight;
 
   @override
   bool shouldRebuild(ItemCoverDelegate oldDelegate) {

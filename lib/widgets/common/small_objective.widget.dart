@@ -39,18 +39,21 @@ class SmallObjectiveWidgetState extends ObjectiveWidgetState {
         children: [buildProgressValue(context), buildProgressBar(context), Container(height: 2), buildTitle(context)]);
   }
 
+  @override
   bool get isComplete {
     return (objective?.complete == true || forceComplete) ?? false;
   }
 
+  @override
   buildProgressValue(BuildContext context) {
     int progress = objective?.progress ?? 0;
     int total = definition.completionValue ?? 0;
-    if (total <= 1)
+    if (total <= 1) {
       return Text(
         "",
-        style: TextStyle(fontWeight: FontWeight.w500, fontSize: 10, color: this.color ?? Colors.grey.shade300),
+        style: TextStyle(fontWeight: FontWeight.w500, fontSize: 10, color: color ?? Colors.grey.shade300),
       );
+    }
     if (!definition.allowOvercompletion) {
       progress = min(total, progress);
     }
@@ -62,9 +65,10 @@ class SmallObjectiveWidgetState extends ObjectiveWidgetState {
     return Text("$percent%",
         softWrap: false,
         overflow: TextOverflow.clip,
-        style: TextStyle(fontWeight: FontWeight.w500, fontSize: 10, color: this.color ?? Colors.grey.shade300));
+        style: TextStyle(fontWeight: FontWeight.w500, fontSize: 10, color: color ?? Colors.grey.shade300));
   }
 
+  @override
   buildProgressBar(BuildContext context) {
     int progress = objective?.progress ?? 0;
     int total = definition.completionValue ?? 0;
@@ -80,9 +84,10 @@ class SmallObjectiveWidgetState extends ObjectiveWidgetState {
               ));
   }
 
+  @override
   buildTitle(BuildContext context) {
     String title = definition?.progressDescription ?? "";
-    if (title.length == 0) {
+    if (title.isEmpty) {
       title = placeholder ?? "";
     }
 
@@ -91,9 +96,10 @@ class SmallObjectiveWidgetState extends ObjectiveWidgetState {
             maxLines: 1,
             softWrap: false,
             overflow: TextOverflow.fade,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 9, color: this.color ?? Colors.grey.shade300)));
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 9, color: color ?? Colors.grey.shade300)));
   }
 
+  @override
   Color get barColor {
     if (parentCompleted == true) {
       return color;

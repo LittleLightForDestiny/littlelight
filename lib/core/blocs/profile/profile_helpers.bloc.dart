@@ -54,8 +54,8 @@ class ProfileHelpersBloc extends ChangeNotifier with ManifestConsumer {
   void update() async {
     _maxPowerEquipments = null;
     _maxEquippable = null;
-    final maxPower = Map<DestinyClass, Map<int, DestinyItemInfo>>();
-    final maxPowerNonExotic = Map<DestinyClass, Map<int, DestinyItemInfo>>();
+    final maxPower = <DestinyClass, Map<int, DestinyItemInfo>>{};
+    final maxPowerNonExotic = <DestinyClass, Map<int, DestinyItemInfo>>{};
     final instancedItems = _profileBloc.allInstancedItems;
     final hashes = instancedItems.map((i) => i.item.itemHash).whereType<int>().toList();
     final defs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
@@ -77,11 +77,11 @@ class ProfileHelpersBloc extends ChangeNotifier with ManifestConsumer {
     final currentAverage = maxPower.map((k, v) => MapEntry(k, _getEquipmentAverage(v)));
     final achievableAverage = maxPower.map((k, v) => MapEntry(k, _getAchievableAverage(currentAverage[k]!, v)));
     final equippableAverage = maxEquippable.map((k, v) => MapEntry(k, _getAchievableAverage(currentAverage[k]!, v)));
-    this._maxPowerEquipments = maxPower;
-    this._maxEquippable = maxEquippable;
-    this._currentAverage = currentAverage;
-    this._achievableAverage = achievableAverage;
-    this._equippableAverage = equippableAverage;
+    _maxPowerEquipments = maxPower;
+    _maxEquippable = maxEquippable;
+    _currentAverage = currentAverage;
+    _achievableAverage = achievableAverage;
+    _equippableAverage = equippableAverage;
     notifyListeners();
   }
 

@@ -27,7 +27,7 @@ mixin PlugWishlistTagIconsMixin {
   }
 
   buildWishlistIcon(BuildContext context, WishlistTag tag, [double scale = 1]) {
-    return WishlistBadgesWidget(tags: [tag].toSet(), size: 16 * scale);
+    return WishlistBadgesWidget(tags: {tag}, size: 16 * scale);
   }
 
   Widget buildWishlistTagIcons(BuildContext context, int itemHash, int plugItemHash, [double scale = 1]) {

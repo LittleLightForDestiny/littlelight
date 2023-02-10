@@ -17,7 +17,7 @@ import 'package:little_light/widgets/side_menu/side_menu.widget.dart';
 import 'package:wakelock/wakelock.dart';
 
 class MainScreen extends StatefulWidget {
-  MainScreen({Key key}) : super(key: key);
+  const MainScreen({Key key}) : super(key: key);
   @override
   MainScreenState createState() => MainScreenState();
 }
@@ -41,7 +41,7 @@ class MainScreenState extends State<MainScreen>
   getInitScreen() async {
     switch (userSettings.startingPage) {
       case LittleLightPersistentPage.Equipment:
-        currentScreen = EquipmentPage();
+        currentScreen = const EquipmentPage();
         break;
 
       case LittleLightPersistentPage.Progress:
@@ -61,7 +61,7 @@ class MainScreenState extends State<MainScreen>
         break;
 
       default:
-        currentScreen = EquipmentPage();
+        currentScreen = const EquipmentPage();
         break;
     }
 
@@ -82,7 +82,7 @@ class MainScreenState extends State<MainScreen>
           drawer: Container(
             child: SideMenuWidget(
               onPageChange: (page) {
-                this.currentScreen = page;
+                currentScreen = page;
                 setState(() {});
               },
             ),

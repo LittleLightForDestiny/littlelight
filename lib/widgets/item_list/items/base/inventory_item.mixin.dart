@@ -87,7 +87,7 @@ mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget, ProfileConsu
         top: padding * 2.5 + titleFontSize,
         child: Text(
           definition?.itemTypeDisplayName ?? "",
-          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
+          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
         ));
   }
 
@@ -114,7 +114,7 @@ mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget, ProfileConsu
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: padding / 2, vertical: padding / 4).copyWith(right: padding / 4),
           decoration:
-              BoxDecoration(color: Colors.black54, borderRadius: BorderRadius.only(bottomLeft: Radius.circular(8))),
+              const BoxDecoration(color: Colors.black54, borderRadius: BorderRadius.only(bottomLeft: Radius.circular(8))),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[

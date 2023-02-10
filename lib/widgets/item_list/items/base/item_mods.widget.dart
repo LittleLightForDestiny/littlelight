@@ -14,7 +14,7 @@ class ItemModsWidget extends StatefulWidget {
 
   final List<DestinyItemSocketState> itemSockets;
   final DestinyInventoryItemDefinition definition;
-  ItemModsWidget({Key key, this.definition, this.itemSockets, this.iconSize = 16}) : super(key: key);
+  const ItemModsWidget({Key key, this.definition, this.itemSockets, this.iconSize = 16}) : super(key: key);
 
   @override
   ItemModsWidgetState createState() {
@@ -62,14 +62,14 @@ class ItemModsWidgetState extends State<ItemModsWidget> with ManifestConsumer {
     if (socketCategory == null || itemSockets == null) return Container();
 
     List<Widget> columns = [];
-    socketCategory.socketIndexes.forEach((index) {
+    for (var index in socketCategory.socketIndexes) {
       if (isSocketVisible(index) && index > -1 && index < (itemSockets?.length ?? 0)) {
         columns.add(buildModIcon(context, itemSockets[index].plugHash));
         columns.add(Container(
           width: 1,
         ));
       }
-    });
+    }
     if ((columns?.length ?? 0) < 1) {
       return Container();
     }

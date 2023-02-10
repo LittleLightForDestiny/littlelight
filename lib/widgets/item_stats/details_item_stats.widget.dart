@@ -14,7 +14,7 @@ import 'package:little_light/widgets/item_stats/details_item_stat.widget.dart';
 import 'package:little_light/widgets/item_stats/details_total_stat.widget.dart';
 
 class DetailsItemStatsWidget extends BaseItemStatsWidget {
-  DetailsItemStatsWidget(
+  const DetailsItemStatsWidget(
       {Key key,
       DestinyItemComponent item,
       DestinyInventoryItemDefinition definition,
@@ -38,14 +38,14 @@ class ScreenShotItemStatsState extends BaseItemStatsState<DetailsItemStatsWidget
     if (stats == null) return Container();
     super.build(context);
     return Container(
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       child: Column(
         children: <Widget>[
           buildHeader(context),
           visible
               ? Container(
-                  constraints: BoxConstraints.tightFor(width: 600),
-                  padding: EdgeInsets.symmetric(vertical: 8),
+                  constraints: const BoxConstraints.tightFor(width: 600),
+                  padding: const EdgeInsets.symmetric(vertical: 8),
                   child: Column(children: buildStats(context)))
               : Container(),
         ],
@@ -60,7 +60,7 @@ class ScreenShotItemStatsState extends BaseItemStatsState<DetailsItemStatsWidget
         "Stats",
         uppercase: true,
         textAlign: TextAlign.left,
-        style: TextStyle(fontWeight: FontWeight.bold),
+        style: const TextStyle(fontWeight: FontWeight.bold),
       ),
     );
   }
@@ -72,12 +72,12 @@ class ScreenShotItemStatsState extends BaseItemStatsState<DetailsItemStatsWidget
     StatValues totalStat;
     if (definition.itemType == DestinyItemType.Armor) {
       totalStat = StatValues();
-      stats.forEach((stat) {
+      for (var stat in stats) {
         var entry = statValues[stat.statTypeHash];
         totalStat.equipped += entry?.equipped ?? 0;
         totalStat.selected += entry?.selected ?? 0;
         totalStat.masterwork += entry?.masterwork ?? 0;
-      });
+      }
     }
     return stats
         .map((stat) {

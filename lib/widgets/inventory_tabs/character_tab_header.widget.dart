@@ -17,7 +17,7 @@ class TabHeaderWidget extends StatefulWidget {
   final DestinyCharacterInfo character;
 
   @override
-  TabHeaderWidget(this.character, {Key key}) : super(key: key);
+  const TabHeaderWidget(this.character, {Key key}) : super(key: key);
 
   @override
   TabHeaderWidgetState createState() => TabHeaderWidgetState();
@@ -121,7 +121,7 @@ class TabHeaderWidgetState extends State<TabHeaderWidget>
         widthFactor: completed,
         child: Shimmer.fromColors(
             baseColor: fg,
-            period: Duration(seconds: 2),
+            period: const Duration(seconds: 2),
             highlightColor: shine,
             child: Container(
               color: Theme.of(context).colorScheme.onSurface,

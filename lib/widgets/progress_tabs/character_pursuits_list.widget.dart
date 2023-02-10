@@ -95,8 +95,9 @@ extension PursuitLayoutOptions on BucketDisplayOptions {
 class CharacterPursuitsListWidget extends StatefulWidget {
   final String characterId;
 
-  CharacterPursuitsListWidget({Key key, this.characterId}) : super(key: key);
+  const CharacterPursuitsListWidget({Key key, this.characterId}) : super(key: key);
 
+  @override
   _CharacterPursuitsListWidgetState createState() => _CharacterPursuitsListWidgetState();
 }
 
@@ -132,7 +133,7 @@ class _CharacterPursuitsListWidgetState extends State<CharacterPursuitsListWidge
     List<DestinyItemComponent> bounties = [];
     Map<String, List<DestinyItemComponent>> other = {};
 
-    pursuits?.forEach((p) {
+    for (var p in pursuits) {
       var def = defs[p.itemHash];
       if (def?.itemCategoryHashes?.contains(16) ?? false) {
         questSteps.add(p);
@@ -147,15 +148,15 @@ class _CharacterPursuitsListWidgetState extends State<CharacterPursuitsListWidge
         other[def.itemTypeDisplayName] = [];
       }
       other[def.itemTypeDisplayName].add(p);
-    });
+    }
 
     categories = <_PursuitCategory>[];
 
-    if (bounties.length > 0) {
+    if (bounties.isNotEmpty) {
       categories.add(_PursuitCategory(nameHash: 1784235469, items: bounties, categoryID: "pursuits_1784235469_null"));
     }
 
-    if (questSteps.length > 0) {
+    if (questSteps.isNotEmpty) {
       categories.add(_PursuitCategory(nameHash: 53, items: questSteps, categoryID: "pursuits_53_null"));
     }
 
@@ -175,7 +176,7 @@ class _CharacterPursuitsListWidgetState extends State<CharacterPursuitsListWidge
     return Container(
         child: MultiSectionScrollView(
       _sections,
-      padding: EdgeInsets.all(4),
+      padding: const EdgeInsets.all(4),
       mainAxisSpacing: 2,
       crossAxisSpacing: 2,
     ));
@@ -186,14 +187,14 @@ class _CharacterPursuitsListWidgetState extends State<CharacterPursuitsListWidge
       buildCharInfoSliver(),
     ];
     if (categories == null) return list;
-    categories.forEach((category) {
+    for (var category in categories) {
       final options = userSettings.getDisplayOptionsForBucket(category.categoryID);
       final categoryVisible = ![BucketDisplayType.Hidden, BucketDisplayType.OnlyEquipped].contains(options.type);
       list += [
         buildCategoryHeaderSliver(category),
         if (categoryVisible) buildPursuitItemsSliver(category, options),
       ];
-    });
+    }
 
     return list;
   }

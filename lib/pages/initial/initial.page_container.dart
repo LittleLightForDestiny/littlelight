@@ -29,7 +29,7 @@ class InitialPageContianer extends StatelessWidget {
               create: (context) => InitialPageStateNotifier(context),
             ),
           ],
-          child: InitialPage(),
+          child: const InitialPage(),
         ));
   }
 }

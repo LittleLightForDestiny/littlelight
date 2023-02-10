@@ -35,7 +35,7 @@ import 'package:shimmer/shimmer.dart';
 class CharacterOptionsSheet extends StatefulWidget {
   final DestinyCharacterComponent character;
 
-  CharacterOptionsSheet({Key key, this.character}) : super(key: key);
+  const CharacterOptionsSheet({Key key, this.character}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -55,9 +55,9 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
   double achievableLight;
   List<DestinyItemComponent> itemsInPostmaster;
 
-  final TextStyle headerStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 12);
+  final TextStyle headerStyle = const TextStyle(fontWeight: FontWeight.bold, fontSize: 12);
 
-  final TextStyle buttonStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 12);
+  final TextStyle buttonStyle = const TextStyle(fontWeight: FontWeight.bold, fontSize: 12);
 
   bool loadoutWeapons = true;
   bool loadoutArmor = true;
@@ -85,7 +85,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
         child: Container(
             padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
             child: SingleChildScrollView(
-                padding: EdgeInsets.all(4).copyWith(top: 0),
+                padding: const EdgeInsets.all(4).copyWith(top: 0),
                 child:
                     Column(crossAxisAlignment: CrossAxisAlignment.stretch, mainAxisSize: MainAxisSize.min, children: [
                   buildEquipBlock(),
@@ -133,7 +133,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
             children: <Widget>[
               Expanded(
                   child: Container(
-                      padding: EdgeInsets.all(4),
+                      padding: const EdgeInsets.all(4),
                       color: Theme.of(context).colorScheme.secondary,
                       child: Column(
                         children: <Widget>[
@@ -142,7 +142,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
                             maxLines: 1,
                             uppercase: true,
                           ),
-                          Text("${maxLight?.toStringAsFixed(1)}")
+                          Text(maxLight?.toStringAsFixed(1))
                         ],
                       ))),
               Container(
@@ -150,7 +150,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
               ),
               Expanded(
                   child: Container(
-                      padding: EdgeInsets.all(4),
+                      padding: const EdgeInsets.all(4),
                       color: Theme.of(context).colorScheme.secondary,
                       child: Column(
                         children: <Widget>[
@@ -159,7 +159,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
                             maxLines: 1,
                             uppercase: true,
                           ),
-                          Text("${achievableLight?.toStringAsFixed(1)}")
+                          Text(achievableLight?.toStringAsFixed(1))
                         ],
                       )))
             ],
@@ -180,7 +180,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
                             k,
                             Expanded(
                                 child: Container(
-                                    padding: EdgeInsets.all(4),
+                                    padding: const EdgeInsets.all(4),
                                     color: Theme.of(context).colorScheme.secondary,
                                     child: Column(
                                       children: <Widget>[
@@ -224,12 +224,12 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
               Container(height: 2),
               maxLight == null
                   ? Shimmer.fromColors(
-                      period: Duration(milliseconds: 600),
+                      period: const Duration(milliseconds: 600),
                       baseColor: Colors.transparent,
                       highlightColor: Theme.of(context).colorScheme.onSurface,
                       child: Container(width: 50, height: 14, color: Theme.of(context).colorScheme.onSurface))
                   : Text(
-                      "${calculatedMaxLight?.toStringAsFixed(1) ?? ""}",
+                      calculatedMaxLight?.toStringAsFixed(1) ?? "",
                       style: buttonStyle.copyWith(color: Colors.amber.shade300),
                     )
             ],
@@ -241,7 +241,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
             for (var bucket in maxLightLoadout.keys) {
               var item = maxLightLoadout[bucket];
               var power = profile.getInstanceInfo(item.itemInstanceId)?.primaryStat?.value ?? 0;
-              var equipped = equipment.firstWhere((i) => i.bucketHash == bucket, orElse: null);
+              var equipped = equipment.firstWhere((i) => i.bucketHash == bucket, orElse: () => null);
               var equippedPower = profile.getInstanceInfo(equipped?.itemInstanceId)?.primaryStat?.value ?? 0;
               if (power > equippedPower) {
                 loadout.addEquippedItem(item);
@@ -447,12 +447,12 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
 
   Widget buildBlockHeader(Widget content) {
     return Container(
+        padding: const EdgeInsets.symmetric(vertical: 4),
         child: HeaderWidget(
           alignment: Alignment.centerLeft,
-          padding: EdgeInsets.all(4),
+          padding: const EdgeInsets.all(4),
           child: content,
-        ),
-        padding: EdgeInsets.symmetric(vertical: 4));
+        ));
   }
 
   Widget buildActionButton(Widget content, {Function onTap}) {
@@ -464,7 +464,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
             child: Material(
           color: Theme.of(context).colorScheme.secondary,
         )),
-        Container(padding: EdgeInsets.all(8), child: content),
+        Container(padding: const EdgeInsets.all(8), child: content),
         Positioned.fill(
             child: Material(
                 color: Colors.transparent,
@@ -571,8 +571,8 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
     var validSlots = weaponSlots + armorSlots;
     var equipment = profile.getCharacterEquipment(widget.character.characterId);
     var availableSlots = equipment.where((i) => validSlots.contains(i.bucketHash)).map((i) => i.bucketHash);
-    Map<int, DestinyItemComponent> maxLightLoadout = Map();
-    Map<int, DestinyItemComponent> maxLightExotics = Map();
+    Map<int, DestinyItemComponent> maxLightLoadout = {};
+    Map<int, DestinyItemComponent> maxLightExotics = {};
     for (var item in instancedItems) {
       var def = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.item.itemHash);
       if (maxLightLoadout.containsKey(def?.inventory?.bucketTypeHash) ||
@@ -591,15 +591,15 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
         break;
       }
     }
-    Map<int, DestinyItemComponent> weapons = Map();
-    Map<int, DestinyItemComponent> armor = Map();
+    Map<int, DestinyItemComponent> weapons = {};
+    Map<int, DestinyItemComponent> armor = {};
 
-    weaponSlots.forEach((s) {
+    for (var s in weaponSlots) {
       if (maxLightLoadout.containsKey(s)) weapons[s] = maxLightLoadout[s];
-    });
-    armorSlots.forEach((s) {
+    }
+    for (var s in armorSlots) {
       if (maxLightLoadout.containsKey(s)) armor[s] = maxLightLoadout[s];
-    });
+    }
 
     List<Map<int, DestinyItemComponent>> weaponAlternatives = [weapons];
     List<Map<int, DestinyItemComponent>> armorAlternatives = [armor];
@@ -639,7 +639,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
     maxLight = _getAvgLight(maxLightLoadout.values);
     this.maxLightLoadout = maxLightLoadout;
     var idealLightTotal = 0;
-    underAverageSlots = Map();
+    underAverageSlots = {};
     beyondSoftCap = true;
     beyondPowerfulCap = true;
     for (var item in maxLightLoadout.values) {

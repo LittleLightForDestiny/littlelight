@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class TrackingIconWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
         width: 20, height: 20, child: Stack(children: [buildBackground(context), buildAnimation(context)]));
   }
 

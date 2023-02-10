@@ -52,7 +52,7 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
 
   @override
   Widget build(BuildContext context) {
-    final itemHash = this.item.item.itemHash;
+    final itemHash = item.item.itemHash;
     if (itemHash == null) return emptyItem(context);
     return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
       itemHash,
@@ -89,11 +89,11 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
       color: bgColor,
       alignment: Alignment.centerRight,
       child: Container(
-        constraints: BoxConstraints(minHeight: double.infinity),
+        constraints: const BoxConstraints(minHeight: double.infinity),
         foregroundDecoration: BoxDecoration(
           gradient: RadialGradient(
             colors: [bgColor.withOpacity(0), bgColor],
-            stops: [.5, 1],
+            stops: const [.5, 1],
             radius: 1.8,
             center: Alignment.bottomRight,
           ),
@@ -118,7 +118,7 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
     final isExotic = definition.inventory?.tierType == TierType.Exotic;
     final theme = context.theme;
     final assetPath = isExotic ? "assets/imgs/masterwork-top-exotic.png" : "assets/imgs/masterwork-top.png";
-    final borderColor = isExotic ? theme?.achievementLayers.layer2 : theme?.achievementLayers.layer1;
+    final borderColor = isExotic ? theme.achievementLayers.layer2 : theme.achievementLayers.layer1;
     return Stack(children: [
       Container(
         color: definition.inventory?.tierType?.getColor(context),
@@ -127,7 +127,7 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
           border: Border(
             bottom: BorderSide(
               width: 2,
-              color: borderColor ?? Colors.transparent,
+              color: borderColor,
             ),
           ),
           image: DecorationImage(
@@ -162,7 +162,7 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
     if (path == null) return null;
     return Row(
       children: [
-        SizedBox(width: _iconWidth),
+        const SizedBox(width: _iconWidth),
         Expanded(
           child: Image.asset(
             path,
@@ -229,18 +229,18 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
                 return Stack(children: [
                   Positioned.fill(
                     child: CustomPaint(
-                      painter: DiamondShapePainter.color(context.theme.onSurfaceLayers.layer1 ?? Colors.transparent),
+                      painter: DiamondShapePainter.color(context.theme.onSurfaceLayers.layer1),
                     ),
                   ),
                   Positioned.fill(
                     child: Container(
-                        padding: EdgeInsets.all(2),
+                        padding: const EdgeInsets.all(2),
                         child: CustomPaint(
                           painter: DiamondShapePainter.color(subclassColor),
                         )),
                   ),
                   Container(
-                    padding: EdgeInsets.all(2),
+                    padding: const EdgeInsets.all(2),
                     child: QueuedNetworkImage.fromBungie(imgUrl),
                   ),
                 ]);
@@ -259,7 +259,7 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
 
   Widget buildItemIcon(BuildContext context, DestinyInventoryItemDefinition definition) {
     return Container(
-      padding: EdgeInsets.all(4),
+      padding: const EdgeInsets.all(4),
       width: _iconWidth,
       child: InventoryItemIcon(item, definition: definition),
     );
@@ -267,7 +267,7 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
 
   Widget buildTitleBarContents(BuildContext context, DestinyInventoryItemDefinition definition) {
     if (definition.isSubclass) return buildSubclassTitleBar(context, definition);
-    return Container(
+    return SizedBox(
       height: _titleBarHeight,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -290,16 +290,16 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
     final definitionName = definition.displayProperties?.name?.toUpperCase();
     final itemName = (customName?.isNotEmpty ?? false) ? customName : definitionName;
     return Container(
-      margin: EdgeInsets.all(4).copyWith(
+      margin: const EdgeInsets.all(4).copyWith(
         left: 0,
       ),
       alignment: Alignment.centerLeft,
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
         gradient: LinearGradient(
           colors: [bgColor, bgColor.withOpacity(0)],
-          stops: [.6, .7],
+          stops: const [.6, .7],
         ),
       ),
       child: Text(
@@ -317,7 +317,7 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
     final definitionName = definition.displayProperties?.name?.toUpperCase();
     final itemName = (customName?.isNotEmpty ?? false) ? customName : definitionName;
     return Container(
-      padding: EdgeInsets.only(right: 8),
+      padding: const EdgeInsets.only(right: 8),
       child: Text(
         itemName ?? "",
         style: context.textTheme.itemNameHighDensity.copyWith(
@@ -334,10 +334,10 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
     if (!isLocked) return null;
     final style = context.textTheme.itemNameHighDensity;
     return Container(
-      margin: EdgeInsets.only(right: 4),
+      margin: const EdgeInsets.only(right: 4),
       child: Icon(
         FontAwesomeIcons.lock,
-        size: style?.fontSize,
+        size: style.fontSize,
         color: definition.inventory?.tierType?.getTextColor(context),
       ),
     );
@@ -351,7 +351,7 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
       final emblemHash = character?.emblemHash;
       if (emblemHash == null) return null;
       return Container(
-        margin: EdgeInsets.only(right: 4),
+        margin: const EdgeInsets.only(right: 4),
         width: _titleBarIconSize,
         height: _titleBarIconSize,
         child: ManifestImageWidget<DestinyInventoryItemDefinition>(emblemHash),
@@ -373,7 +373,7 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
             final borderColor = tag.getBorderColor(context);
             final icon = tag.getIcon(context);
             return Container(
-              margin: EdgeInsets.only(right: 4),
+              margin: const EdgeInsets.only(right: 4),
               width: _titleBarIconSize,
               height: _titleBarIconSize,
               decoration: BoxDecoration(
@@ -403,7 +403,7 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
             final borderColor = tag.foregroundColor;
             final icon = tag.iconData;
             return Container(
-              margin: EdgeInsets.only(right: 4),
+              margin: const EdgeInsets.only(right: 4),
               width: _titleBarIconSize,
               height: _titleBarIconSize,
               decoration: BoxDecoration(
@@ -444,7 +444,7 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
 
   Widget buildWeaponMainContent(BuildContext context, DestinyInventoryItemDefinition definition) {
     return Container(
-      padding: EdgeInsets.only(top: 4, right: 4, bottom: 4),
+      padding: const EdgeInsets.only(top: 4, right: 4, bottom: 4),
       child: Column(children: [
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -468,7 +468,7 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
 
   Widget buildArmorMainContent(BuildContext context, DestinyInventoryItemDefinition definition) {
     return Container(
-      padding: EdgeInsets.only(top: 4, right: 4, bottom: 4),
+      padding: const EdgeInsets.only(top: 4, right: 4, bottom: 4),
       child: Column(children: [
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -492,7 +492,7 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
 
   Widget buildGhostMainContent(BuildContext context, DestinyInventoryItemDefinition definition) {
     return Container(
-      padding: EdgeInsets.only(top: 4, right: 4, bottom: 4),
+      padding: const EdgeInsets.only(top: 4, right: 4, bottom: 4),
       child: Column(children: [
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -515,7 +515,7 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
 
   Widget buildDefaultMainContent(BuildContext context, DestinyInventoryItemDefinition definition) {
     return Container(
-      padding: EdgeInsets.only(top: 4, right: 4, bottom: 4),
+      padding: const EdgeInsets.only(top: 4, right: 4, bottom: 4),
       child: Column(children: [
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -539,7 +539,7 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
 
   Widget buildStackableMainContent(BuildContext context, DestinyInventoryItemDefinition definition) {
     return Container(
-      padding: EdgeInsets.only(top: 4, right: 4, bottom: 4),
+      padding: const EdgeInsets.only(top: 4, right: 4, bottom: 4),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -578,7 +578,7 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
     final text = maxCount != null ? "$quantity/$maxCount" : "x$quantity";
     final isMaxValue = maxCount != null && quantity == maxCount;
     if (isMaxValue) {
-      textStyle = textStyle?.copyWith(color: context.theme.highlightedObjectiveLayers.layer3);
+      textStyle = textStyle.copyWith(color: context.theme.highlightedObjectiveLayers.layer3);
     }
     return Text(
       text,
@@ -590,7 +590,7 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
 
   Widget? buildStacks(BuildContext context, DestinyInventoryItemDefinition definition) {
     final stacks = item.duplicates;
-    if (stacks == null || stacks.length == 0) return null;
+    if (stacks == null || stacks.isEmpty) return null;
     int inventoryCount = 0;
     int vaultCount = 0;
     int inventoryStackCount = 0;
@@ -614,7 +614,7 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Container(
+              const SizedBox(
                   width: 18,
                   height: 18,
                   child: ProfileIconWidget(
@@ -625,14 +625,14 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
               Container(width: 4),
               if (inventoryStackCount > 1)
                 Text("($inventoryStackCount)",
-                    style: style?.copyWith(color: context.theme.highlightedObjectiveLayers.layer0)),
+                    style: style.copyWith(color: context.theme.highlightedObjectiveLayers.layer0)),
             ],
           ),
         Container(height: 2),
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Container(
+            const SizedBox(
                 width: 18,
                 height: 18,
                 child: VaultIconWidget(
@@ -642,8 +642,7 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
             Text("$vaultCount", style: style),
             Container(width: 4),
             if (vaultStackCount > 1)
-              Text("($vaultStackCount)",
-                  style: style?.copyWith(color: context.theme.highlightedObjectiveLayers.layer0)),
+              Text("($vaultStackCount)", style: style.copyWith(color: context.theme.highlightedObjectiveLayers.layer0)),
           ],
         ),
       ],
@@ -652,7 +651,7 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
 
   Widget buildSubclassMainContent(BuildContext context, DestinyInventoryItemDefinition definition) {
     return Container(
-      padding: EdgeInsets.all(4),
+      padding: const EdgeInsets.all(4),
       alignment: Alignment.bottomLeft,
       child: buildSubclassMods(context, definition),
     );
@@ -660,7 +659,7 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
 
   Widget buildEngramMainContent(BuildContext context, DestinyInventoryItemDefinition definition) {
     return Container(
-      padding: EdgeInsets.only(top: 4, right: 4, bottom: 4),
+      padding: const EdgeInsets.only(top: 4, right: 4, bottom: 4),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -693,12 +692,12 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Padding(
+          padding: const EdgeInsets.only(right: 12),
           child: Icon(
             ammoType?.icon,
             color: ammoType?.color,
             size: _primaryStatIconsSize,
           ),
-          padding: EdgeInsets.only(right: 12),
         ),
         Icon(
           damageType?.icon,
@@ -707,7 +706,7 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
         ),
         Text(
           "$powerLevel",
-          style: textStyle?.copyWith(color: damageColor),
+          style: textStyle.copyWith(color: damageColor),
         ),
       ],
     );
@@ -721,7 +720,7 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
       children: [
         buildTotalStats(context, definition),
         buildEnergyCapacity(context, definition),
-        SizedBox(width: 4),
+        const SizedBox(width: 4),
         Text(
           "$powerLevel",
           style: textStyle,
@@ -751,8 +750,8 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
     if (total == null) return null;
     final color = getStatsTotalColor(total, context);
     return Container(
-      margin: EdgeInsets.only(right: 4),
-      padding: EdgeInsets.symmetric(vertical: 2, horizontal: 8),
+      margin: const EdgeInsets.only(right: 4),
+      padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
       decoration: BoxDecoration(
         color: context.theme.surfaceLayers.layer0,
         borderRadius: BorderRadius.circular(4),
@@ -787,7 +786,7 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
               ),
               Text(
                 "$energyLevel",
-                style: textStyle?.copyWith(color: energyColor),
+                style: textStyle.copyWith(color: energyColor),
               ),
             ],
           );
@@ -802,7 +801,7 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
           if (categoryHash == null) return Container();
           return SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              physics: NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               child: InventoryItemPerks(
                 item,
                 definition: definition,
@@ -821,7 +820,7 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
             item,
             definition: definition,
             categoryHash: categoryHash,
-            plugMargin: EdgeInsets.only(left: 1),
+            plugMargin: const EdgeInsets.only(left: 1),
           );
         });
   }
@@ -834,7 +833,7 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
           if (categories == null) return Container();
           return SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            physics: NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -845,17 +844,17 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
                       final categoryName = c.displayProperties?.name?.toUpperCase();
                       return Container(
                         color: Colors.black.withOpacity(.5),
-                        margin: EdgeInsets.only(right: 4),
+                        margin: const EdgeInsets.only(right: 4),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.end,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             if (categoryName != null)
                               Container(
-                                padding: EdgeInsets.only(bottom: 2),
+                                padding: const EdgeInsets.only(bottom: 2),
                                 child: Text(
                                   categoryName,
-                                  style: TextStyle(fontSize: 9),
+                                  style: const TextStyle(fontSize: 9),
                                 ),
                               ),
                             InventoryItemMods(
@@ -877,7 +876,7 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
   Widget buildStats(BuildContext context, DestinyInventoryItemDefinition definition) {
     return SingleChildScrollView(
         scrollDirection: Axis.horizontal,
-        physics: NeverScrollableScrollPhysics(),
+        physics: const NeverScrollableScrollPhysics(),
         child: InventoryItemStats(
           item,
           definition: definition,

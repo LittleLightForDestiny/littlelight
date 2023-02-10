@@ -63,8 +63,8 @@ class InventoryItemIcon extends StatelessWidget with ManifestConsumer {
       return Shimmer.fromColors(
         baseColor: isExotic ? theme.achievementLayers.layer1 : theme.achievementLayers.layer2,
         highlightColor: masterworkLayers.layer3,
+        period: const Duration(seconds: 5),
         child: Container(color: Colors.white),
-        period: Duration(seconds: 5),
       );
     }
     return Container(color: theme.onSurfaceLayers.layer1);
@@ -106,11 +106,11 @@ class InventoryItemIcon extends StatelessWidget with ManifestConsumer {
         Shimmer.fromColors(
           baseColor: masterworkLayers.withOpacity(.2),
           highlightColor: masterworkLayers.layer3,
+          period: const Duration(seconds: 5),
           child: Image.asset(
             imgPath,
             fit: BoxFit.cover,
           ),
-          period: Duration(seconds: 5),
         ),
       ],
     );
@@ -203,9 +203,9 @@ class InventoryItemIcon extends StatelessWidget with ManifestConsumer {
               child: Padding(
                 padding: EdgeInsets.all(borderSize),
                 child: Shimmer.fromColors(
-                    child: Image.asset("assets/imgs/engram-placeholder.png"),
-                    baseColor: context.theme.onSurfaceLayers.layer0.withOpacity(0) ?? Colors.transparent,
-                    highlightColor: context.theme.onSurfaceLayers.layer0.withOpacity(1) ?? Colors.transparent),
+                    baseColor: context.theme.onSurfaceLayers.layer0.withOpacity(0),
+                    highlightColor: context.theme.onSurfaceLayers.layer0.withOpacity(1),
+                    child: Image.asset("assets/imgs/engram-placeholder.png")),
               ),
             ),
           ],

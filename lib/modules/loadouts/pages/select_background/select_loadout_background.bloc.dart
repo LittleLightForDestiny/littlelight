@@ -9,8 +9,8 @@ class SelectLoadoutBackgroundBloc extends ChangeNotifier with ManifestConsumer {
   final BuildContext context;
   List<DestinyPresentationNodeDefinition>? _nodesDefinitions;
   List<DestinyPresentationNodeDefinition>? get nodesDefinitions => _nodesDefinitions;
-  Set<int> _openedCategories = Set<int>();
-  Map<int, List<DestinyInventoryItemDefinition>> _categoryItems = Map<int, List<DestinyInventoryItemDefinition>>();
+  final Set<int> _openedCategories = <int>{};
+  final Map<int, List<DestinyInventoryItemDefinition>> _categoryItems = <int, List<DestinyInventoryItemDefinition>>{};
 
   SelectLoadoutBackgroundBloc(this.context) {
     _asyncInit();
@@ -32,7 +32,7 @@ class SelectLoadoutBackgroundBloc extends ChangeNotifier with ManifestConsumer {
     if (nodeHashes == null) return;
     final nodesDefinitions = await manifest.getDefinitions<DestinyPresentationNodeDefinition>(nodeHashes);
 
-    this._nodesDefinitions = nodesDefinitions.values.toList();
+    _nodesDefinitions = nodesDefinitions.values.toList();
     notifyListeners();
   }
 
@@ -65,13 +65,13 @@ class SelectLoadoutBackgroundBloc extends ChangeNotifier with ManifestConsumer {
         return !alreadyAdded;
       }).toList();
 
-      this._categoryItems[hash] = categoryItems;
+      _categoryItems[hash] = categoryItems;
       notifyListeners();
     }
   }
 
   bool isCategoryOpen(int hash) {
-    return this._openedCategories.contains(hash);
+    return _openedCategories.contains(hash);
   }
 
   List<DestinyInventoryItemDefinition>? getCategoryItems(int hash) {

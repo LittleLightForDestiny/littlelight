@@ -18,7 +18,7 @@ import 'package:little_light/widgets/common/header.wiget.dart';
 import 'package:little_light/widgets/common/objective.widget.dart';
 
 class ItemObjectivesWidget extends BaseDestinyStatefulItemWidget {
-  ItemObjectivesWidget(
+  const ItemObjectivesWidget(
       {DestinyItemComponent item,
       DestinyInventoryItemDefinition definition,
       DestinyItemInstanceComponent instanceInfo,
@@ -42,7 +42,7 @@ class ItemObjectivesWidgetState extends BaseDestinyItemState<ItemObjectivesWidge
   void initState() {
     super.initState();
     loadDefinitions();
-    this.updateTrackStatus();
+    updateTrackStatus();
     profile.addListener(updateProgress);
   }
 
@@ -90,20 +90,20 @@ class ItemObjectivesWidgetState extends BaseDestinyItemState<ItemObjectivesWidge
     List<Widget> items = [];
     if ((objectiveDefinitions?.length ?? 0) == 0) return Container();
     if (itemObjectives != null) {
-      if (itemObjectives.where((o) => o.visible != false).length == 0 && !isTracking) {
+      if (itemObjectives.where((o) => o.visible != false).isEmpty && !isTracking) {
         return Container();
       }
     }
     items.add(Container(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         child: HeaderWidget(
-            padding: EdgeInsets.all(0),
+            padding: const EdgeInsets.all(0),
             child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
               Container(
-                  padding: EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(8),
                   child: Text(
                     "Objectives".translate(context).toUpperCase(),
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   )),
               buildRefreshButton(context)
             ]))));
@@ -129,14 +129,14 @@ class ItemObjectivesWidgetState extends BaseDestinyItemState<ItemObjectivesWidge
 
   Widget buildTrackButton(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           primary: isTracking ? DestinyData.trackingOnColor : DestinyData.trackingOffColor,
         ),
         child: isTracking
-            ? Text("Stop Tracking".translate(context), key: Key("stop_tracking"))
-            : Text("Track Objectives".translate(context), key: Key("track_objectives")),
+            ? Text("Stop Tracking".translate(context), key: const Key("stop_tracking"))
+            : Text("Track Objectives".translate(context), key: const Key("track_objectives")),
         onPressed: () {
           var service = ObjectivesService();
           if (isTracking) {
@@ -158,9 +158,9 @@ class ItemObjectivesWidgetState extends BaseDestinyItemState<ItemObjectivesWidge
         child: Stack(
           children: <Widget>[
             InkWell(
-                child: Container(padding: EdgeInsets.all(8), child: Icon(Icons.refresh)),
+                child: Container(padding: const EdgeInsets.all(8), child: const Icon(Icons.refresh)),
                 onTap: () {
-                  profile.fetchProfileData(components: ProfileComponentGroups.basicProfile);
+                  profile.refresh(ProfileComponentGroups.basicProfile);
                 })
           ],
         ));
@@ -178,7 +178,7 @@ class ItemObjectivesWidgetState extends BaseDestinyItemState<ItemObjectivesWidge
   Widget buildCurrentObjective(BuildContext context, int hash, [DestinyObjectiveProgress objective]) {
     var def = objectiveDefinitions[hash];
     return Container(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         child: ObjectiveWidget(
           key: Key("objective_${objective?.objectiveHash}_${objective?.progress}"),
           definition: def,

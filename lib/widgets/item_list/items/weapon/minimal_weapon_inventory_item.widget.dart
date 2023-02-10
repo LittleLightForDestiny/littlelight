@@ -30,7 +30,7 @@ class MinimalWeaponInventoryItemWidget extends MinimalBaseInventoryItemWidget wi
 
   Widget buildAmmoType(BuildContext context) {
     return Container(
-        padding: EdgeInsets.only(right: 8),
+        padding: const EdgeInsets.only(right: 8),
         child: primaryStatIcon(context, DestinyData.getAmmoTypeIcon(ammoType), DestinyData.getAmmoTypeColor(ammoType),
             size: 15));
   }
@@ -48,6 +48,7 @@ class MinimalWeaponInventoryItemWidget extends MinimalBaseInventoryItemWidget wi
     );
   }
 
+  @override
   Widget buildMiddleInfoRow(BuildContext context) {
     var locked = item?.state?.contains(ItemState.Locked) ?? false;
     return Positioned(

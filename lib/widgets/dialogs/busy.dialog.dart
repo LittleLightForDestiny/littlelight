@@ -21,7 +21,7 @@ class BusyDialog extends LittleLightBaseDialog {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               LoadingAnimWidget(),
-              if (label != null) Container(child: label, padding: EdgeInsets.only(top: 8)),
+              if (label != null) Container(padding: const EdgeInsets.only(top: 8), child: label),
             ],
           ),
         );
@@ -30,5 +30,6 @@ class BusyDialog extends LittleLightBaseDialog {
     return BusyDialog(label: label);
   }
 
+  @override
   CrossAxisAlignment get crossAxisAlignment => CrossAxisAlignment.center;
 }

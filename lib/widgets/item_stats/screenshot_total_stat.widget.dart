@@ -7,11 +7,13 @@ import 'package:little_light/widgets/item_stats/base_item_stat.widget.dart';
 import 'package:little_light/widgets/item_stats/screenshot_item_stat.widget.dart';
 
 class ScreenshotTotalStatWidget extends ScreenshotItemStatWidget {
+  @override
   final double pixelSize;
 
-  ScreenshotTotalStatWidget({Key key, this.pixelSize = 1, StatValues modValues, DestinyStatDisplayDefinition scaled})
+  const ScreenshotTotalStatWidget({Key key, this.pixelSize = 1, StatValues modValues, DestinyStatDisplayDefinition scaled})
       : super(key: key, modValues: modValues, scaled: scaled);
 
+  @override
   Widget buildLabel(BuildContext context) {
     return Container(
       child: TranslatedTextWidget(

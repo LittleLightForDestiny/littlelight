@@ -13,6 +13,7 @@ class CustomTabPassiveView extends StatelessWidget {
     required this.pageBuilder,
   }) : super(key: key);
 
+  @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) => AnimatedBuilder(
@@ -28,7 +29,7 @@ class CustomTabPassiveView extends StatelessWidget {
                 child: Row(
                   children: List.generate(
                     controller.length,
-                    (index) => Container(
+                    (index) => SizedBox(
                       height: constraints.maxHeight,
                       width: constraints.maxWidth,
                       child: buildPage(context, index),

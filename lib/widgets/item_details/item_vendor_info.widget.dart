@@ -19,7 +19,7 @@ class ItemVendorInfoWidget extends StatefulWidget {
   final DestinyVendorSaleItemComponent sale;
   final int vendorHash;
 
-  ItemVendorInfoWidget({Key key, this.sale, this.vendorHash, this.definition}) : super(key: key);
+  const ItemVendorInfoWidget({Key key, this.sale, this.vendorHash, this.definition}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -54,7 +54,7 @@ class ItemVendorInfoState extends State<ItemVendorInfoWidget> with ProfileConsum
     var currencies = profile.getProfileCurrencies();
     return Container(
         color: Colors.grey.shade900,
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -63,7 +63,7 @@ class ItemVendorInfoState extends State<ItemVendorInfoWidget> with ProfileConsum
                 child: TranslatedTextWidget(
               "Cost:",
               uppercase: true,
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
             ))
           ].followedBy(costs.map((c) {
             var items = inventory.where((i) => i.itemHash == c.itemHash);
@@ -72,7 +72,7 @@ class ItemVendorInfoState extends State<ItemVendorInfoWidget> with ProfileConsum
             var total = currency.fold<int>(itemsTotal, (t, curr) => t + curr.quantity);
             bool isEnough = total >= c.quantity;
             return Container(
-                padding: EdgeInsets.only(left: 8),
+                padding: const EdgeInsets.only(left: 8),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
@@ -85,7 +85,7 @@ class ItemVendorInfoState extends State<ItemVendorInfoWidget> with ProfileConsum
                     Container(
                       width: 4,
                     ),
-                    Container(
+                    SizedBox(
                         width: 18, height: 18, child: ManifestImageWidget<DestinyInventoryItemDefinition>(c.itemHash)),
                   ],
                 ));
@@ -96,25 +96,25 @@ class ItemVendorInfoState extends State<ItemVendorInfoWidget> with ProfileConsum
   Widget buildFailures(BuildContext context) {
     if (widget.sale.saleStatus == VendorItemStatus.Success) return Container();
     List<Widget> messages = [];
-    widget.sale?.failureIndexes?.forEach((i) {
+    for (var i in widget.sale?.failureIndexes) {
       String string = vendorDefinition.failureStrings[i];
-      if (string.length > 0) messages.add(Text(string));
-    });
-
-    if (messages.length == 0) {
-      widget.sale?.requiredUnlocks?.forEach((hash) {
-        messages.add(ManifestText<DestinyUnlockDefinition>(hash));
-      });
+      if (string.isNotEmpty) messages.add(Text(string));
     }
 
-    if (messages.length == 0) {
+    if (messages.isEmpty) {
+      for (var hash in widget.sale?.requiredUnlocks) {
+        messages.add(ManifestText<DestinyUnlockDefinition>(hash));
+      }
+    }
+
+    if (messages.isEmpty) {
       messages.addAll(buildCustomFailureMessage(context));
     }
 
     return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: messages.map((message) {
-          return Container(color: LittleLightTheme.of(context).errorLayers, padding: EdgeInsets.all(8), child: message);
+          return Container(color: LittleLightTheme.of(context).errorLayers, padding: const EdgeInsets.all(8), child: message);
         }).toList());
   }
 

@@ -71,20 +71,20 @@ class _LittleLightAppState extends State<LittleLightApp> with AnalyticsConsumer,
         return _router.getPage(route);
       },
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
-      supportedLocales: [
-        const Locale('en'), // English
-        const Locale('fr'), // French
-        const Locale('es'), // Spanish
-        const Locale('de'), // German
-        const Locale('it'), // Italian
-        const Locale('ja'), // Japan
-        const Locale('pt', 'BR'), // Brazillian Portuguese
-        const Locale('es', 'MX'), // Mexican Spanish
-        const Locale('ru'), // Russian
-        const Locale('pl'), // Polish
-        const Locale('ko'), // Korean
-        const Locale('zh', 'CHT'), // Chinese
-        const Locale('zh', 'CHS'), // Chinese
+      supportedLocales: const [
+        Locale('en'), // English
+        Locale('fr'), // French
+        Locale('es'), // Spanish
+        Locale('de'), // German
+        Locale('it'), // Italian
+        Locale('ja'), // Japan
+        Locale('pt', 'BR'), // Brazillian Portuguese
+        Locale('es', 'MX'), // Mexican Spanish
+        Locale('ru'), // Russian
+        Locale('pl'), // Polish
+        Locale('ko'), // Korean
+        Locale('zh', 'CHT'), // Chinese
+        Locale('zh', 'CHS'), // Chinese
       ],
     ));
   }

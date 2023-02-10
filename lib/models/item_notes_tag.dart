@@ -185,7 +185,7 @@ class ItemNotesTag {
   }
 
   factory ItemNotesTag.newCustom() {
-    return ItemNotesTag(tagId: Uuid().v4(), custom: true);
+    return ItemNotesTag(tagId: const Uuid().v4(), custom: true);
   }
 
   dynamic toJson() {

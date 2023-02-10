@@ -31,23 +31,23 @@ class _StackTransferWidgetState extends State<StackTransferWidget> {
   @override
   void initState() {
     super.initState();
-    this.profileCount = widget.initialProfileCounts;
-    this.vaultCount = widget.initialVaultCounts;
-    this.total = widget.initialProfileCounts + widget.initialVaultCounts;
-    this.sliderValue = vaultCount / total;
+    profileCount = widget.initialProfileCounts;
+    vaultCount = widget.initialVaultCounts;
+    total = widget.initialProfileCounts + widget.initialVaultCounts;
+    sliderValue = vaultCount / total;
   }
 
   void updateValues(double value) {
-    this.sliderValue = value;
-    this.vaultCount = (value * total).ceil();
-    this.profileCount = total - vaultCount;
+    sliderValue = value;
+    vaultCount = (value * total).ceil();
+    profileCount = total - vaultCount;
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -61,7 +61,7 @@ class _StackTransferWidgetState extends State<StackTransferWidget> {
 
   Widget buildSlider(BuildContext context) => Row(
         children: [
-          Container(
+          const SizedBox(
             width: _iconSize,
             height: _iconSize,
             child: ProfileIconWidget(borderWidth: .5),
@@ -74,7 +74,7 @@ class _StackTransferWidgetState extends State<StackTransferWidget> {
               divisions: total,
             ),
           )),
-          Container(
+          const SizedBox(
             width: _iconSize,
             height: _iconSize,
             child: VaultIconWidget(borderWidth: 0.5),
@@ -85,16 +85,16 @@ class _StackTransferWidgetState extends State<StackTransferWidget> {
   Widget buildCounts(BuildContext context) => Row(
         children: [
           Container(
-            child: Text("${profileCount}"),
+            child: Text("$profileCount"),
           ),
           Expanded(child: Container()),
           Container(
-            child: Text("${vaultCount}"),
+            child: Text("$vaultCount"),
           ),
         ],
       );
   Widget buildTransferButton(BuildContext context) => Container(
-        padding: EdgeInsets.only(top: 16),
+        padding: const EdgeInsets.only(top: 16),
         child: ElevatedButton(
           child: Text("Transfer".translate(context)),
           onPressed: () {

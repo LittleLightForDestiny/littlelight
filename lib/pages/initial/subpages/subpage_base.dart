@@ -12,7 +12,7 @@ abstract class SubpageBaseState<T extends StatefulWidget> extends State<T> {
   }
 
   delayedOpen() async {
-    await Future.delayed(Duration(milliseconds: 1));
+    await Future.delayed(const Duration(milliseconds: 1));
     setState(() {
       open = true;
     });
@@ -40,14 +40,14 @@ abstract class SubpageBaseState<T extends StatefulWidget> extends State<T> {
                     left: showHorizontalBorders ? borderSide : BorderSide.none,
                     right: showHorizontalBorders ? borderSide : BorderSide.none,
                     bottom: borderSide)),
-            duration: Duration(milliseconds: 300),
+            duration: const Duration(milliseconds: 300),
             constraints: BoxConstraints(maxHeight: open ? mq.size.height : 1),
             child: SingleChildScrollView(
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
                   Container(
                     color: LittleLightTheme.of(context).surfaceLayers.layer3,
-                    padding: EdgeInsets.all(8).add(EdgeInsets.only(
+                    padding: const EdgeInsets.all(8).add(EdgeInsets.only(
                       left: mq.viewPadding.left,
                       right: mq.viewPadding.right,
                     )),

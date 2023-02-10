@@ -13,7 +13,7 @@ class LoadoutFilter extends BaseItemFilter<Set<String>> {
   final BuildContext context;
   List<LoadoutItemIndex> allLoadouts;
 
-  LoadoutFilter(this.context) : super(Set(), Set());
+  LoadoutFilter(this.context) : super(<String>{}, <String>{});
 
   clear() {
     availableValues.clear();
@@ -26,13 +26,14 @@ class LoadoutFilter extends BaseItemFilter<Set<String>> {
 
     allLoadouts = context.read<LoadoutsBloc>().loadouts;
     availableValues.addAll(allLoadouts?.map((l) => l.assignedId) ?? []);
-    this.available = availableValues.length > 1;
+    available = availableValues.length > 1;
     value.retainAll(availableValues);
     return super.filter(items, definitions: definitions);
   }
 
+  @override
   bool filterItem(ItemWithOwner item, {Map<int, DestinyInventoryItemDefinition> definitions}) {
-    if (value?.length == 0) {
+    if (value.isEmpty) {
       return true;
     }
 

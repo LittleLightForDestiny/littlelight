@@ -20,7 +20,7 @@ import 'package:little_light/widgets/presentation_nodes/record_detail_objectives
 class RecordDetailScreen extends StatefulWidget {
   final DestinyRecordDefinition definition;
 
-  RecordDetailScreen(this.definition, {Key key}) : super(key: key);
+  const RecordDetailScreen(this.definition, {Key key}) : super(key: key);
 
   @override
   State<RecordDetailScreen> createState() {
@@ -91,7 +91,7 @@ class RecordDetailScreenState extends State<RecordDetailScreen> with AuthConsume
               ]),
             ),
           ]),
-          InventoryNotificationWidget(
+          const InventoryNotificationWidget(
             barHeight: 0,
           )
         ]));
@@ -104,7 +104,7 @@ class RecordDetailScreenState extends State<RecordDetailScreen> with AuthConsume
         buildIcon(context),
         Expanded(
             child: Container(
-                padding: EdgeInsets.all(8).copyWith(left: 0),
+                padding: const EdgeInsets.all(8).copyWith(left: 0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -112,7 +112,7 @@ class RecordDetailScreenState extends State<RecordDetailScreen> with AuthConsume
                     Container(
                       height: 1,
                       color: foregroundColor,
-                      margin: EdgeInsets.all(4),
+                      margin: const EdgeInsets.all(4),
                     ),
                     buildDescription(context),
                   ],
@@ -125,7 +125,7 @@ class RecordDetailScreenState extends State<RecordDetailScreen> with AuthConsume
     return Container(
         width: 84,
         height: 84,
-        margin: EdgeInsets.all(8),
+        margin: const EdgeInsets.all(8),
         child: definition == null
             ? Container()
             : QueuedNetworkImage(
@@ -138,7 +138,7 @@ class RecordDetailScreenState extends State<RecordDetailScreen> with AuthConsume
     return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Expanded(
           child: Container(
-              padding: EdgeInsets.all(4),
+              padding: const EdgeInsets.all(4),
               child: Text(
                 definition.displayProperties.name,
                 softWrap: true,
@@ -146,7 +146,7 @@ class RecordDetailScreenState extends State<RecordDetailScreen> with AuthConsume
               ))),
       buildTrackingIcon(context),
       Container(
-          padding: EdgeInsets.all(4),
+          padding: const EdgeInsets.all(4),
           child: Text(
             "${definition?.completionInfo?.scoreValue ?? ""}",
             style: TextStyle(fontWeight: FontWeight.w300, color: foregroundColor, fontSize: 13),
@@ -157,8 +157,8 @@ class RecordDetailScreenState extends State<RecordDetailScreen> with AuthConsume
   Widget buildTrackingIcon(BuildContext context) {
     if (!isTracking) return Container();
     return Container(
-        margin: EdgeInsets.only(top: 4),
-        padding: EdgeInsets.all(2),
+        margin: const EdgeInsets.only(top: 4),
+        padding: const EdgeInsets.all(2),
         decoration: BoxDecoration(color: Colors.green.shade800, borderRadius: BorderRadius.circular(20)),
         child: Icon(
           FontAwesomeIcons.crosshairs,
@@ -172,7 +172,7 @@ class RecordDetailScreenState extends State<RecordDetailScreen> with AuthConsume
     if ((definition?.displayProperties?.description?.length ?? 0) == 0) return Container();
 
     return Container(
-        padding: EdgeInsets.all(4),
+        padding: const EdgeInsets.all(4),
         child: Text(
           definition.displayProperties.description,
           softWrap: true,
@@ -182,14 +182,14 @@ class RecordDetailScreenState extends State<RecordDetailScreen> with AuthConsume
 
   Widget buildTrackButton(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           primary: isTracking ? DestinyData.trackingOnColor : DestinyData.trackingOffColor,
         ),
         child: isTracking
-            ? Text("Stop Tracking".translate(context), key: Key("stop_tracking"))
-            : Text("Track Objectives".translate(context), key: Key("track_objectives")),
+            ? Text("Stop Tracking".translate(context), key: const Key("stop_tracking"))
+            : Text("Track Objectives".translate(context), key: const Key("track_objectives")),
         onPressed: () {
           var service = ObjectivesService();
           if (isTracking) {

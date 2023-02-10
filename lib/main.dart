@@ -16,7 +16,7 @@ void main() async {
   final exceptionHandler = ExceptionHandler();
   await setupCoreServices();
   runZonedGuarded<Future<void>>(() async {
-    runApp(Phoenix(child: LittleLightApp()));
+    runApp(Phoenix(child: const LittleLightApp()));
   }, (error, stackTrace) {
     exceptionHandler.handleException(error, stackTrace);
   });

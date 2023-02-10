@@ -5,7 +5,6 @@ import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/wishlist_index.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/dialogs/busy.dialog.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -19,8 +18,8 @@ enum ImportType { Link, File }
 class _AddCustomWishlistFormState extends State<AddCustomWishlistForm> with WishlistsConsumer {
   bool loadingError = false;
   WishlistFile? wishlistFile;
-  final Map<String, TextEditingController> fieldControllers = Map();
-  TextEditingController? get urlController => this.fieldControllers["URL"];
+  final Map<String, TextEditingController> fieldControllers = {};
+  TextEditingController? get urlController => fieldControllers["URL"];
 
   @override
   void initState() {
@@ -38,7 +37,7 @@ class _AddCustomWishlistFormState extends State<AddCustomWishlistForm> with Wish
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-        padding: EdgeInsets.all(16) + MediaQuery.of(context).viewPadding.copyWith(top: 0),
+        padding: const EdgeInsets.all(16) + MediaQuery.of(context).viewPadding.copyWith(top: 0),
         child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: <Widget>[
           buildInfo(context),
           Container(
@@ -66,11 +65,11 @@ class _AddCustomWishlistFormState extends State<AddCustomWishlistForm> with Wish
         color: LittleLightTheme.of(context).errorLayers,
         borderRadius: BorderRadius.circular(8),
       ),
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       child: Row(children: [
         Container(
-          padding: EdgeInsets.only(right: 16),
-          child: Icon(FontAwesomeIcons.exclamationCircle),
+          padding: const EdgeInsets.only(right: 16),
+          child: const Icon(FontAwesomeIcons.exclamationCircle),
         ),
         Expanded(
             child: Text(
@@ -98,28 +97,28 @@ class _AddCustomWishlistFormState extends State<AddCustomWishlistForm> with Wish
     );
   }
 
-  bool get isURLValid => urlController?.text.startsWith(RegExp('http?s:\/\/')) ?? false;
+  bool get isURLValid => urlController?.text.startsWith(RegExp('http?s://')) ?? false;
 
   void loadWishlist() async {
     final url = urlController?.text;
     if (url == null) return;
     final validWishlist =
         await Navigator.push(context, BusyDialogRoute(context, awaitFuture: wishlistsService.loadWishlistFromUrl(url)));
-    this.wishlistFile = validWishlist;
-    loadingError = this.wishlistFile == null;
+    wishlistFile = validWishlist;
+    loadingError = wishlistFile == null;
     fieldControllers["Name"]?.text = wishlistFile?.name ?? "";
     fieldControllers["Description"]?.text = wishlistFile?.description ?? "";
     setState(() {});
   }
 
   void addWishlist() async {
-    final wishlist = this.wishlistFile?.copyWith(
-          name: this.fieldControllers["Name"]?.value.text,
-          description: this.fieldControllers["Description"]?.value.text,
+    final wishlist = wishlistFile?.copyWith(
+          name: fieldControllers["Name"]?.value.text,
+          description: fieldControllers["Description"]?.value.text,
         );
     if (wishlist == null) return;
     await Navigator.push(context, BusyDialogRoute(context, awaitFuture: wishlistsService.addWishlist(wishlist)));
-    await Future.delayed(Duration(milliseconds: 10));
+    await Future.delayed(const Duration(milliseconds: 10));
     Navigator.pop(context);
   }
 
@@ -152,16 +151,17 @@ class _AddCustomWishlistFormState extends State<AddCustomWishlistForm> with Wish
   }
 
   Widget buildTextField(BuildContext context, String label,
-      {String? initialValue, int? maxLength = 50, bool multiline = false, void onInput()?}) {
+      {String? initialValue, int? maxLength = 50, bool multiline = false, void Function()? onInput}) {
     var controller = fieldControllers[label];
     if (controller == null) {
       controller = fieldControllers[label] = TextEditingController(
         text: initialValue,
       );
-      if (onInput != null)
+      if (onInput != null) {
         controller.addListener(() {
           onInput();
         });
+      }
     }
     return TextField(
       maxLines: multiline ? null : 1,

@@ -5,7 +5,7 @@ abstract class BaseNotificationAction extends ChangeNotifier {
   bool _shouldDismiss = false;
   bool get shouldDismiss => _shouldDismiss;
   void dismiss() {
-    this._shouldDismiss = true;
+    _shouldDismiss = true;
     notifyListeners();
     dispose();
   }
@@ -13,5 +13,6 @@ abstract class BaseNotificationAction extends ChangeNotifier {
 
 class BaseErrorAction extends BaseNotificationAction {
   BaseErrorAction();
+  @override
   String get id => "error-action";
 }

@@ -30,7 +30,7 @@ typedef OnPageChange = void Function(Widget screen);
 class SideMenuWidget extends StatefulWidget {
   final OnPageChange onPageChange;
 
-  SideMenuWidget({Key key, this.onPageChange}) : super(key: key);
+  const SideMenuWidget({Key key, this.onPageChange}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -64,11 +64,11 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer {
         child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, mainAxisSize: MainAxisSize.max, children: [
           Expanded(
               child: ListView(
-            padding: EdgeInsets.all(0),
+            padding: const EdgeInsets.all(0),
             children: <Widget>[
               profileInfo(context),
               menuItem(context, Text("Equipment".translate(context)), onTap: () {
-                open(context, EquipmentPage());
+                open(context, const EquipmentPage());
               }),
               menuItem(context, Text("Progress".translate(context)), onTap: () {
                 open(context, ProgressScreen());
@@ -107,14 +107,14 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer {
   }
 
   Widget profileInfo(BuildContext context) {
-    return ProfileInfoWidget(menuContent: SideMenuSettingsWidget());
+    return const ProfileInfoWidget(menuContent: SideMenuSettingsWidget());
   }
 
   Widget membershipButton(BuildContext context, GeneralUser bungieNetUser, GroupUserInfoCard membership) {
     var plat = PlatformData.getPlatform(membership.membershipType);
     return Container(
         color: Theme.of(context).colorScheme.secondary,
-        padding: EdgeInsets.all(8).copyWith(bottom: 0),
+        padding: const EdgeInsets.all(8).copyWith(bottom: 0),
         child: Material(
             color: plat.color,
             borderRadius: BorderRadius.circular(4),
@@ -124,13 +124,13 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer {
                   Phoenix.rebirth(context);
                 },
                 child: Container(
-                  padding: EdgeInsets.all(8),
-                  margin: EdgeInsets.symmetric(horizontal: 8),
+                  padding: const EdgeInsets.all(8),
+                  margin: const EdgeInsets.symmetric(horizontal: 8),
                   alignment: Alignment.centerRight,
                   child: Row(mainAxisSize: MainAxisSize.min, children: [
                     Text(
                       membership.displayName,
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     Container(width: 4),
                     Icon(plat.icon)
@@ -138,14 +138,14 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer {
                 ))));
   }
 
-  Widget menuItem(BuildContext context, Widget label, {void onTap()}) {
+  Widget menuItem(BuildContext context, Widget label, {void Function() onTap}) {
     return Material(
         color: Colors.transparent,
         child: InkWell(
             onTap: onTap,
             child: Container(
                 alignment: Alignment.centerRight,
-                padding: EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
                 decoration: BoxDecoration(
                     border: Border(bottom: BorderSide(color: LittleLightTheme.of(context).surfaceLayers.layer2))),
                 child: label)));

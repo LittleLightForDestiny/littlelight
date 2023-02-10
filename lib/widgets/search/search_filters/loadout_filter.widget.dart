@@ -10,7 +10,7 @@ import 'package:little_light/widgets/search/search_filters/base_search_filter.wi
 import 'package:provider/provider.dart';
 
 class LoadoutFilterWidget extends BaseSearchFilterWidget<LoadoutFilter> {
-  LoadoutFilterWidget(SearchController controller) : super(controller);
+  const LoadoutFilterWidget(SearchController controller) : super(controller);
 
   @override
   _LoadoutFilterWidgetState createState() => _LoadoutFilterWidgetState();

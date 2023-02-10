@@ -11,7 +11,7 @@ import 'package:little_light/widgets/common/manifest_image.widget.dart';
 class ItemArmorStatsWidget extends StatefulWidget {
   final double iconSize;
   final DestinyItemComponent item;
-  ItemArmorStatsWidget({Key key, this.iconSize = 16, this.item}) : super(key: key);
+  const ItemArmorStatsWidget({Key key, this.iconSize = 16, this.item}) : super(key: key);
 
   @override
   ItemArmorStatsWidgetState createState() {
@@ -29,6 +29,7 @@ class ItemArmorStatsWidgetState extends State<ItemArmorStatsWidget> with Profile
     setState(() {});
   }
 
+  @override
   Widget build(BuildContext context) {
     if (stats == null) return Container();
     var firstRow = [stats.values.elementAt(0), stats.values.elementAt(1), stats.values.elementAt(2)];
@@ -49,12 +50,12 @@ class ItemArmorStatsWidgetState extends State<ItemArmorStatsWidget> with Profile
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Container(
+        SizedBox(
             width: widget.iconSize,
             height: widget.iconSize,
             child: ManifestImageWidget<DestinyStatDefinition>(stat.statHash)),
         Container(width: 2),
-        Container(
+        SizedBox(
             width: widget.iconSize * 1.3,
             child: Text(
               "${stat.value}".padLeft(2, "0"),

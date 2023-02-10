@@ -51,9 +51,9 @@ class ItemNameBarWidget extends BaseDestinyStatelessItemWidget with ItemNotesCon
 
   ExactAssetImage getMasterWorkTopOverlay() {
     if (definition?.inventory?.tierType == TierType.Exotic) {
-      return ExactAssetImage("assets/imgs/masterwork-top-exotic.png");
+      return const ExactAssetImage("assets/imgs/masterwork-top-exotic.png");
     }
-    return ExactAssetImage("assets/imgs/masterwork-top.png");
+    return const ExactAssetImage("assets/imgs/masterwork-top.png");
   }
 
   Widget nameBarContent(BuildContext context) {

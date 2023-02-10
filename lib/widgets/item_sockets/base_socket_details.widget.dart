@@ -34,7 +34,7 @@ class BaseSocketDetailsWidget extends BaseDestinyStatefulItemWidget {
   final ItemSocketController controller;
   final DestinyItemSocketCategoryDefinition category;
 
-  BaseSocketDetailsWidget({
+  const BaseSocketDetailsWidget({
     Key key,
     DestinyInventoryItemDefinition definition,
     DestinyItemComponent item,
@@ -56,6 +56,7 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget> extends Ba
   Map<int, DestinySandboxPerkDefinition> get sandboxPerkDefinitions => _sandboxPerkDefinitions;
   Map<int, DestinyObjectiveDefinition> objectiveDefinitions;
   DestinyInventoryItemDefinition _definition;
+  @override
   DestinyInventoryItemDefinition get definition => _definition;
   DestinyInventoryItemDefinition get itemDefinition => widget.definition;
   DestinyItemSocketCategoryDefinition get category => widget.category;
@@ -70,13 +71,14 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget> extends Ba
     loadDefinitions();
   }
 
+  @override
   void dispose() {
     if (controller != null) controller.removeListener(socketChanged);
     super.dispose();
   }
 
   socketChanged() async {
-    await this.loadDefinitions();
+    await loadDefinitions();
   }
 
   Future<void> loadDefinitions() async {
@@ -108,8 +110,8 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget> extends Ba
   @override
   Widget build(BuildContext context) {
     return Container(
-        margin: EdgeInsets.symmetric(vertical: 4),
-        padding: EdgeInsets.all(4),
+        margin: const EdgeInsets.symmetric(vertical: 4),
+        padding: const EdgeInsets.all(4),
         decoration:
             BoxDecoration(color: Theme.of(context).colorScheme.secondary, borderRadius: BorderRadius.circular(8)),
         child: Column(children: [
@@ -120,7 +122,7 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget> extends Ba
                   child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Container(
+                  SizedBox(
                     width: 32,
                     height: 32,
                     child: QueuedNetworkImage(
@@ -135,7 +137,7 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget> extends Ba
                     definition?.displayProperties?.name ?? "",
                     softWrap: true,
                     overflow: TextOverflow.fade,
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   )),
                 ],
               )),
@@ -144,13 +146,13 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget> extends Ba
           AnimatedCrossFade(
               crossFadeState: open ? CrossFadeState.showSecond : CrossFadeState.showFirst,
               alignment: Alignment.topCenter,
-              duration: Duration(milliseconds: 300),
+              duration: const Duration(milliseconds: 300),
               firstChild: Container(),
               secondChild: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Container(
-                      padding: EdgeInsets.all(4),
+                      padding: const EdgeInsets.all(4),
                       child: Text(
                         definition?.displayProperties?.description ?? "",
                       )),
@@ -216,12 +218,12 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget> extends Ba
     return Container(
         width: 96,
         key: Key("plug_${socketIndex}_$plugItemHash"),
-        padding: EdgeInsets.all(0),
+        padding: const EdgeInsets.all(0),
         child: AspectRatio(
             aspectRatio: 1,
             child: MaterialButton(
               shape: ContinuousRectangleBorder(side: borderSide),
-              padding: EdgeInsets.all(0),
+              padding: const EdgeInsets.all(0),
               child: Stack(children: [
                 ManifestImageWidget<DestinyInventoryItemDefinition>(plugItemHash),
                 energyType == DestinyEnergyType.Any
@@ -236,7 +238,7 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget> extends Ba
                         right: 8,
                         child: Text(
                           "$energyCost",
-                          style: TextStyle(fontSize: 20),
+                          style: const TextStyle(fontSize: 20),
                         )),
                 canEquip
                     ? Container()
@@ -279,7 +281,7 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget> extends Ba
     return Container(
         width: 80,
         key: Key("plug_${socketIndex}_$plugItemHash"),
-        padding: EdgeInsets.all(0),
+        padding: const EdgeInsets.all(0),
         child: AspectRatio(
             aspectRatio: 1,
             child: MaterialButton(
@@ -312,7 +314,7 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget> extends Ba
                 children: def.materials.map((m) {
                   return Row(
                     children: <Widget>[
-                      Container(
+                      SizedBox(
                           width: 20,
                           height: 20,
                           child: ManifestImageWidget<DestinyInventoryItemDefinition>(m.itemHash)),
@@ -345,7 +347,7 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget> extends Ba
             ?.toList() ??
         [];
 
-    return statHashes.length > 0;
+    return statHashes.isNotEmpty;
   }
 
   Widget buildSandBoxPerks(BuildContext context) {
@@ -360,13 +362,13 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget> extends Ba
     return Column(
       children: perks
           ?.map((p) => Container(
-              padding: EdgeInsets.symmetric(
+              padding: const EdgeInsets.symmetric(
                 vertical: 8,
               ),
               child: Row(
                 key: Key("mod_perk_${p.perkHash}"),
                 children: <Widget>[
-                  Container(
+                  SizedBox(
                     height: 36,
                     width: 36,
                     child: ManifestImageWidget<DestinySandboxPerkDefinition>(p.perkHash),
@@ -377,7 +379,7 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget> extends Ba
                   Expanded(
                       child: ManifestText<DestinySandboxPerkDefinition>(
                     p.perkHash,
-                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w300),
+                    style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w300),
                     textExtractor: (def) => def.displayProperties?.description,
                   )),
                 ],
@@ -399,7 +401,7 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget> extends Ba
       return Container(
           padding: EdgeInsets.symmetric(vertical: iconSize / 2),
           child: Row(children: [
-            WishlistBadgesWidget(tags: [WishlistTag.GodPVE, WishlistTag.GodPVP].toSet(), size: iconSize),
+            WishlistBadgesWidget(tags: const {WishlistTag.GodPVE, WishlistTag.GodPVP}, size: iconSize),
             Container(
               width: 4,
             ),
@@ -411,7 +413,7 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget> extends Ba
     if (tags.contains(WishlistTag.GodPVE)) {
       rows.add(Container(
           child: Row(children: [
-        WishlistBadgesWidget(tags: [WishlistTag.GodPVE].toSet(), size: iconSize),
+        WishlistBadgesWidget(tags: const {WishlistTag.GodPVE}, size: iconSize),
         Container(
           width: 4,
         ),
@@ -423,7 +425,7 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget> extends Ba
     if (tags.contains(WishlistTag.GodPVP)) {
       rows.add(Container(
           child: Row(children: [
-        WishlistBadgesWidget(tags: [WishlistTag.GodPVP].toSet(), size: iconSize),
+        WishlistBadgesWidget(tags: const {WishlistTag.GodPVP}, size: iconSize),
         Container(
           width: 4,
         ),
@@ -432,11 +434,11 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget> extends Ba
                 style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w300)))
       ])));
     }
-    if (tags.contains(WishlistTag.PVE) && tags.contains(WishlistTag.PVP) && rows.length == 0) {
+    if (tags.contains(WishlistTag.PVE) && tags.contains(WishlistTag.PVP) && rows.isEmpty) {
       return Container(
           padding: EdgeInsets.symmetric(vertical: iconSize / 2),
           child: Row(children: [
-            WishlistBadgesWidget(tags: [WishlistTag.PVE, WishlistTag.PVP].toSet(), size: iconSize),
+            WishlistBadgesWidget(tags: const {WishlistTag.PVE, WishlistTag.PVP}, size: iconSize),
             Container(
               width: 4,
             ),
@@ -448,7 +450,7 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget> extends Ba
     if (tags.contains(WishlistTag.PVE) && !tags.contains(WishlistTag.GodPVE)) {
       rows.add(Container(
           child: Row(children: [
-        WishlistBadgesWidget(tags: [WishlistTag.PVE].toSet(), size: iconSize),
+        WishlistBadgesWidget(tags: const {WishlistTag.PVE}, size: iconSize),
         Container(
           width: 4,
         ),
@@ -460,7 +462,7 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget> extends Ba
     if (tags.contains(WishlistTag.PVP) && !tags.contains(WishlistTag.GodPVP)) {
       rows.add(Container(
           child: Row(children: [
-        WishlistBadgesWidget(tags: [WishlistTag.PVP].toSet(), size: iconSize),
+        WishlistBadgesWidget(tags: const {WishlistTag.PVP}, size: iconSize),
         Container(
           width: 4,
         ),
@@ -469,7 +471,7 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget> extends Ba
                 style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w300)))
       ])));
     }
-    if (rows.length > 0) {
+    if (rows.isNotEmpty) {
       return Container(
           padding: EdgeInsets.symmetric(vertical: iconSize / 2),
           child: Column(

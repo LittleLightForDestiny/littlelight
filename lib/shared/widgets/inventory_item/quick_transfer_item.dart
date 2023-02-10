@@ -21,7 +21,7 @@ class QuickTransferItem extends StatelessWidget {
         color: context.theme.surfaceLayers.layer1,
         border: Border.all(
           width: borderWidth,
-          color: context.theme.onSurfaceLayers.layer3 ?? Colors.transparent,
+          color: context.theme.onSurfaceLayers.layer3,
         ),
       ),
       child: Center(

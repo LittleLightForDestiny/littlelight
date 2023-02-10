@@ -10,7 +10,7 @@ class BucketDisplayOptionsSelectorWidget extends StatefulWidget {
   final bool isEquippable;
   final Function? onChanged;
   final bool isVault;
-  BucketDisplayOptionsSelectorWidget({this.hash, this.isEquippable = false, this.onChanged, this.isVault = false});
+  const BucketDisplayOptionsSelectorWidget({this.hash, this.isEquippable = false, this.onChanged, this.isVault = false});
   @override
   BucketDisplayOptionsSelectorWidgetState createState() => BucketDisplayOptionsSelectorWidgetState();
 }
@@ -50,7 +50,7 @@ class BucketDisplayOptionsSelectorWidgetState<T extends BucketDisplayOptionsSele
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
         width: 20,
         child: Stack(clipBehavior: Clip.none, alignment: Alignment.centerRight, children: [
           Positioned(
@@ -67,7 +67,7 @@ class BucketDisplayOptionsSelectorWidgetState<T extends BucketDisplayOptionsSele
                           opacity: 0, child: Row(children: [getLabel(t), Container(width: 16), Icon(getIcon(t))])))
                       .toList(),
                   onChanged: (selected) {
-                    this.currentType = selected;
+                    currentType = selected;
                     if (selected == null) return;
                     userSettings.setDisplayOptionsForBucket(bucketKey, BucketDisplayOptions(type: selected));
                     setState(() {});
@@ -81,7 +81,7 @@ class BucketDisplayOptionsSelectorWidgetState<T extends BucketDisplayOptionsSele
     return DropdownMenuItem<BucketDisplayType>(
         value: type,
         child:
-            Container(width: 200, child: Row(children: [Icon(icon, size: 16), Container(width: 8), getLabel(type)])));
+            SizedBox(width: 200, child: Row(children: [Icon(icon, size: 16), Container(width: 8), getLabel(type)])));
   }
 
   Widget getLabel(BucketDisplayType type) {

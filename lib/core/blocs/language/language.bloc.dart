@@ -36,8 +36,8 @@ class LanguageBloc extends ChangeNotifier with StorageConsumer, ManifestConsumer
   }
 
   String get currentLanguage => selectedLanguage ?? _systemLanguage ?? _fallbackLanguage;
-  Map<String, Map<String, String>> _translationMaps = Map();
-  Map<String, bool> _loading = {};
+  final Map<String, Map<String, String>> _translationMaps = {};
+  final Map<String, bool> _loading = {};
 
   LanguageBloc._internal();
 

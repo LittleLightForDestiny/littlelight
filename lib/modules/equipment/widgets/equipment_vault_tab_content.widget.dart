@@ -34,7 +34,7 @@ class EquipmentVaultTabContentWidget extends StatelessWidget with ManifestConsum
   }) : super(key: key);
 
   Future<Map<int, DestinyInventoryBucketDefinition>> get bucketDefs async {
-    final hashes = this.buckets.map((e) => e.bucketHash).whereType<int>().toList();
+    final hashes = buckets.map((e) => e.bucketHash).whereType<int>().toList();
     final defs = await manifest.getDefinitions<DestinyInventoryBucketDefinition>(hashes);
     return defs;
   }
@@ -49,14 +49,14 @@ class EquipmentVaultTabContentWidget extends StatelessWidget with ManifestConsum
           return Center(child: LoadingAnimWidget());
         }
         return LayoutBuilder(
-          key: Key("vault_tab"),
+          key: const Key("vault_tab"),
           builder: (context, constraints) => MultiSectionScrollView(
             buckets //
                 .map<List<SliverSection>>((e) => buildBucketSections(context, e, constraints, defs[e.bucketHash])) //
                 .fold<List<SliverSection>>([], (list, element) => list + element).toList(),
             crossAxisSpacing: 0,
             mainAxisSpacing: 0,
-            padding: EdgeInsets.all(8).copyWith(top: 0),
+            padding: const EdgeInsets.all(8).copyWith(top: 0),
           ),
         );
       },
@@ -108,7 +108,7 @@ class EquipmentVaultTabContentWidget extends StatelessWidget with ManifestConsum
   ) {
     if (density == null) return null;
     final itemHeight = density.itemHeight;
-    if (itemHeight != null)
+    if (itemHeight != null) {
       return SliverSection.fixedHeight(
         itemHeight: itemHeight + 4,
         itemCount: itemCount,
@@ -123,8 +123,9 @@ class EquipmentVaultTabContentWidget extends StatelessWidget with ManifestConsum
           );
         },
       );
+    }
     final itemAspectRatio = density.itemAspectRatio;
-    if (itemAspectRatio != null)
+    if (itemAspectRatio != null) {
       return SliverSection.aspectRatio(
         itemAspectRatio: itemAspectRatio,
         itemsPerRow: itemsPerRow,
@@ -139,6 +140,7 @@ class EquipmentVaultTabContentWidget extends StatelessWidget with ManifestConsum
           );
         },
       );
+    }
     return null;
   }
 

@@ -15,7 +15,7 @@ class SealItemWidget extends StatefulWidget {
   final int? hash;
   final OnPressed? onPressed;
 
-  SealItemWidget({Key? key, this.hash, this.onPressed}) : super(key: key);
+  const SealItemWidget({Key? key, this.hash, this.onPressed}) : super(key: key);
   @override
   State<StatefulWidget> createState() {
     return PresentationNodeWidgetState();
@@ -60,7 +60,7 @@ class PresentationNodeWidgetState extends State<SealItemWidget>
   @override
   void initState() {
     super.initState();
-    this.loadDefinitions();
+    loadDefinitions();
   }
 
   loadDefinitions() async {
@@ -94,10 +94,10 @@ class PresentationNodeWidgetState extends State<SealItemWidget>
     final theme = LittleLightTheme.of(context);
     final color = theme.onSurfaceLayers.layer2;
     return Container(
-        padding: EdgeInsets.all(2),
+        padding: const EdgeInsets.all(2),
         decoration: BoxDecoration(
             border: Border.all(color: color.withOpacity(.6), width: 1),
-            gradient: LinearGradient(begin: Alignment(0, 0), end: Alignment(1, 2), colors: [
+            gradient: LinearGradient(begin: const Alignment(0, 0), end: const Alignment(1, 2), colors: [
               color.withOpacity(.05),
               color.withOpacity(.1),
               color.withOpacity(.03),
@@ -110,7 +110,7 @@ class PresentationNodeWidgetState extends State<SealItemWidget>
           ]),
           Material(
             color: Colors.transparent,
-            child: InkWell(child: Container(), onTap: widget.onPressed),
+            child: InkWell(onTap: widget.onPressed, child: Container()),
           )
         ]));
   }
@@ -121,7 +121,7 @@ class PresentationNodeWidgetState extends State<SealItemWidget>
       return Container();
     }
     return AspectRatio(
-        aspectRatio: 1, child: Padding(padding: EdgeInsets.all(8), child: QueuedNetworkImage.fromBungie(iconUrl)));
+        aspectRatio: 1, child: Padding(padding: const EdgeInsets.all(8), child: QueuedNetworkImage.fromBungie(iconUrl)));
   }
 
   Widget buildSealInfo() {
@@ -131,7 +131,7 @@ class PresentationNodeWidgetState extends State<SealItemWidget>
     return DefaultTextStyle(
         style: TextStyle(color: theme.onSurfaceLayers.layer2),
         child: Container(
-            padding: EdgeInsets.all(8),
+            padding: const EdgeInsets.all(8),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -167,7 +167,7 @@ class PresentationNodeWidgetState extends State<SealItemWidget>
             : theme.surfaceLayers.layer2;
 
     return Container(
-        padding: EdgeInsets.all(4),
+        padding: const EdgeInsets.all(4),
         decoration: BoxDecoration(
           border: Border.all(color: color, width: 2),
           color: color.withOpacity(.5),

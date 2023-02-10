@@ -7,7 +7,7 @@ class LanguageButton extends StatelessWidget {
   final bool selected;
   final Function onPressed;
 
-  LanguageButton({required this.language, this.selected = false, required this.onPressed}) : super();
+  const LanguageButton({required this.language, this.selected = false, required this.onPressed}) : super();
 
   @override
   Widget build(BuildContext context) {
@@ -15,10 +15,10 @@ class LanguageButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
           primary: selected ? LittleLightTheme.of(context).primaryLayers : Colors.transparent,
           elevation: 0,
-          padding: EdgeInsets.all(8)),
+          padding: const EdgeInsets.all(8)),
       child: _child,
       onPressed: () {
-        this.onPressed();
+        onPressed();
       },
     );
   }

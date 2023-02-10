@@ -14,7 +14,7 @@ import 'package:little_light/widgets/item_sockets/item_socket.controller.dart';
 
 class ScreenShotArmorTierWidget extends BaseItemSocketsWidget {
   final double pixelSize;
-  ScreenShotArmorTierWidget({
+  const ScreenShotArmorTierWidget({
     Key key,
     DestinyItemComponent item,
     DestinyInventoryItemDefinition definition,
@@ -51,6 +51,7 @@ class ScreenShotItemPerksWidgetState<T extends ScreenShotArmorTierWidget> extend
     );
   }
 
+  @override
   Widget buildHeader(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -81,7 +82,7 @@ class ScreenShotItemPerksWidgetState<T extends ScreenShotArmorTierWidget> extend
   @override
   Widget buildSocketPlugs(BuildContext context, int socketIndex) {
     int equippedHash = socketEquippedPlugHash(socketIndex);
-    return Container(width: widget.pixelSize * 520, child: buildPlug(context, socketIndex, equippedHash));
+    return SizedBox(width: widget.pixelSize * 520, child: buildPlug(context, socketIndex, equippedHash));
   }
 
   @override

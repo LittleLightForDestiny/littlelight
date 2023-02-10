@@ -16,7 +16,7 @@ import 'package:little_light/widgets/multisection_scrollview/sliver_section.dart
 import 'bucket_header.widget.dart';
 
 class VaultItemListWidget extends ItemListWidget {
-  VaultItemListWidget({EdgeInsets padding, List<int> bucketHashes, Key key})
+  const VaultItemListWidget({EdgeInsets padding, List<int> bucketHashes, Key key})
       : super(key: key, padding: padding, bucketHashes: bucketHashes);
   @override
   VaultItemListWidgetState createState() => VaultItemListWidgetState();
@@ -35,10 +35,10 @@ class VaultItemListWidgetState extends ItemListWidgetState
     if (!mounted) return;
     List<DestinyItemComponent> itemsOnVault =
         profile.getProfileInventory().where((i) => i.bucketHash == InventoryBucket.general).toList();
-    this.bucketDefs = await manifest.getDefinitions<DestinyInventoryBucketDefinition>(widget.bucketHashes);
+    bucketDefs = await manifest.getDefinitions<DestinyInventoryBucketDefinition>(widget.bucketHashes);
     Map<int, DestinyInventoryItemDefinition> itemDefs =
         await manifest.getDefinitions<DestinyInventoryItemDefinition>(itemsOnVault.map((i) => i.itemHash));
-    this.buckets = [];
+    buckets = [];
     for (int bucketHash in widget.bucketHashes) {
       List<DestinyItemComponent> unequipped = itemsOnVault.where((item) {
         var def = itemDefs[item.itemHash];
@@ -48,7 +48,7 @@ class VaultItemListWidgetState extends ItemListWidgetState
           .map((i) => i.item)
           .toList();
 
-      this.buckets.add(ListBucket(bucketHash: bucketHash, unequipped: unequipped));
+      buckets.add(ListBucket(bucketHash: bucketHash, unequipped: unequipped));
     }
 
     if (!mounted) {
@@ -57,11 +57,12 @@ class VaultItemListWidgetState extends ItemListWidgetState
     setState(() {});
   }
 
+  @override
   SliverSection buildCharInfoSliver() {
     return SliverSection(
       itemHeight: 112,
       itemCount: 1,
-      itemBuilder: (context, _) => VaultInfoWidget(),
+      itemBuilder: (context, _) => const VaultInfoWidget(),
     );
   }
 

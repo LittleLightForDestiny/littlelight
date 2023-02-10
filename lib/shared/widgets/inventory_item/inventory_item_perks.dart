@@ -40,7 +40,7 @@ class InventoryItemPerks extends StatelessWidget with WishlistsConsumer {
         fit: StackFit.loose,
         children: [
           Positioned.fill(child: buildWishlistBackground(context, plugHash) ?? Container()),
-          Container(
+          SizedBox(
             width: plugSize,
             height: plugSize,
             child: ManifestImageWidget<DestinyInventoryItemDefinition>(plugHash),
@@ -54,7 +54,7 @@ class InventoryItemPerks extends StatelessWidget with WishlistsConsumer {
     final tags = wishlistsService.getPlugTags(itemHash, plugHash);
     if (tags.isEmpty) return null;
     final borderRadius = BorderRadius.circular(4);
-    final borderWidth = 1.0;
+    const borderWidth = 1.0;
     if (tags.isAllAround) {
       final isGodPvE = tags.contains(WishlistTag.GodPVE);
       final isGodPvP = tags.contains(WishlistTag.GodPVP);
@@ -69,19 +69,19 @@ class InventoryItemPerks extends StatelessWidget with WishlistsConsumer {
               borderRadius: borderRadius,
               gradient: LinearGradient(
                 colors: [pveBorderColor, pvpBorderColor],
-                stops: [.49, .51],
+                stops: const [.49, .51],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
             ),
           ),
           Container(
-            margin: EdgeInsets.all(borderWidth),
+            margin: const EdgeInsets.all(borderWidth),
             decoration: BoxDecoration(
               borderRadius: borderRadius,
               gradient: LinearGradient(
                 colors: [WishlistTag.PVE.getBorderColor(context), WishlistTag.PVP.getBorderColor(context)],
-                stops: [.49, .51],
+                stops: const [.49, .51],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),

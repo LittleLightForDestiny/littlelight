@@ -22,7 +22,7 @@ import 'package:little_light/widgets/search/search_filters/wishlist_tag_filter.w
 class SearchFilterMenu extends StatefulWidget {
   final SearchController controller;
 
-  SearchFilterMenu({this.controller, Key key}) : super(key: key);
+  const SearchFilterMenu({this.controller, Key key}) : super(key: key);
 
   @override
   _SearchFilterMenuState createState() => _SearchFilterMenuState();
@@ -40,7 +40,7 @@ class _SearchFilterMenuState extends State<SearchFilterMenu> {
           actions: <Widget>[Container()],
           leading: IconButton(
             enableFeedback: false,
-            icon: Icon(Icons.close),
+            icon: const Icon(Icons.close),
             onPressed: () {
               Navigator.of(context).pop();
             },

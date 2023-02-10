@@ -8,16 +8,16 @@ import 'edit_loadout.view.dart';
 class EditLoadoutPage extends StatelessWidget {
   final EditLoadoutPageRouteArguments args;
 
-  EditLoadoutPage(this.args);
+  const EditLoadoutPage(this.args);
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        Provider.value(value: this.args),
+        Provider.value(value: args),
         ChangeNotifierProvider(create: (context) => EditLoadoutBloc(context)),
       ],
-      child: EditLoadoutView(),
+      child: const EditLoadoutView(),
     );
   }
 }

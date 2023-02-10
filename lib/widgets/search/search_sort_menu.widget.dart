@@ -11,7 +11,7 @@ import 'package:little_light/widgets/search/search_sorters/stat_sorter.widget.da
 class SearchSortMenu extends StatefulWidget {
   final SearchController controller;
 
-  SearchSortMenu({this.controller, Key key}) : super(key: key);
+  const SearchSortMenu({this.controller, Key key}) : super(key: key);
 
   @override
   _SearchSortMenuState createState() => _SearchSortMenuState();
@@ -46,7 +46,7 @@ class _SearchSortMenuState extends State<SearchSortMenu> {
           actions: <Widget>[Container()],
           leading: IconButton(
             enableFeedback: false,
-            icon: Icon(Icons.close),
+            icon: const Icon(Icons.close),
             onPressed: () {
               Navigator.of(context).pop();
             },
@@ -68,7 +68,7 @@ class _SearchSortMenuState extends State<SearchSortMenu> {
           "Active Sorters".translate(context).toUpperCase(),
         ),
       ));
-      widgets.add(Container(height: widget.controller.customSorting.length * 56.0, child: buildDragList(context)));
+      widgets.add(SizedBox(height: widget.controller.customSorting.length * 56.0, child: buildDragList(context)));
     }
     if ((widget.controller.availableSorters?.length ?? 0) > 0) {
       widgets.add(HeaderWidget(
@@ -84,11 +84,11 @@ class _SearchSortMenuState extends State<SearchSortMenu> {
 
   Widget buildDragList(BuildContext context) {
     return ReorderableList(
-      padding: EdgeInsets.all(0),
+      padding: const EdgeInsets.all(0),
       itemCount: widget.controller.customSorting.length,
       itemExtent: 48,
       shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
         final item = widget.controller.customSorting[index];
         return buildSortItem(context, item, index);
@@ -117,6 +117,6 @@ class _SearchSortMenuState extends State<SearchSortMenu> {
   Widget buildHandle(BuildContext context, int index) {
     return ReorderableDragStartListener(
         index: index,
-        child: AspectRatio(aspectRatio: 1, child: Container(color: Colors.transparent, child: Icon(Icons.menu))));
+        child: AspectRatio(aspectRatio: 1, child: Container(color: Colors.transparent, child: const Icon(Icons.menu))));
   }
 }

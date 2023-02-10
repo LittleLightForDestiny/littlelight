@@ -31,12 +31,12 @@ class LoadoutSlotWidget extends StatelessWidget with ProfileConsumer, ManifestCo
   Widget build(BuildContext context) {
     final bucketDef = bucketDefinition;
     if (bucketDef == null) {
-      return AspectRatio(aspectRatio: .3);
+      return const AspectRatio(aspectRatio: .3);
     }
     return Column(children: [
       HeaderWidget(
           child: Text(bucketDef.displayProperties?.name?.toUpperCase() ?? "",
-              style: TextStyle(fontWeight: FontWeight.bold))),
+              style: const TextStyle(fontWeight: FontWeight.bold))),
       buildSlotBlock(context, headerText: "Equip".translate(context)),
       buildSlotBlock(
         context,
@@ -51,7 +51,7 @@ class LoadoutSlotWidget extends StatelessWidget with ProfileConsumer, ManifestCo
     var hasTransferDestination = bucketDefinition?.hasTransferDestination ?? false;
     if (!isEquipment && !hasTransferDestination) return Container();
     return Container(
-        padding: EdgeInsets.all(4),
+        padding: const EdgeInsets.all(4),
         color: Theme.of(context).colorScheme.secondaryContainer,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -61,11 +61,11 @@ class LoadoutSlotWidget extends StatelessWidget with ProfileConsumer, ManifestCo
 
   Widget buildBlockTitle(BuildContext context, String text) {
     return Container(
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       color: Colors.grey.shade900,
       child: Text(
         text.toUpperCase(),
-        style: TextStyle(fontWeight: FontWeight.bold),
+        style: const TextStyle(fontWeight: FontWeight.bold),
       ),
     );
   }
@@ -91,7 +91,7 @@ class LoadoutSlotWidget extends StatelessWidget with ProfileConsumer, ManifestCo
       items.addAll(slot.unequipped.map((item) => buildItemIcon(context, item: item, equipped: false)));
     }
 
-    return Container(padding: EdgeInsets.symmetric(vertical: 4), child: Wrap(children: items));
+    return Container(padding: const EdgeInsets.symmetric(vertical: 4), child: Wrap(children: items));
   }
 
   Widget buildItemIcon(BuildContext context, {LoadoutIndexItem? item, DestinyClass? classType, bool equipped = true}) {
@@ -113,7 +113,7 @@ class LoadoutSlotWidget extends StatelessWidget with ProfileConsumer, ManifestCo
           bottom: 2,
           child: Container(
               alignment: Alignment.center,
-              padding: EdgeInsets.all(2),
+              padding: const EdgeInsets.all(2),
               decoration: BoxDecoration(color: Theme.of(context).errorColor, borderRadius: BorderRadius.circular(8)),
               child: Icon(iconData ?? Icons.remove_circle_outline,
                   size: 12, color: Theme.of(context).colorScheme.onSurface)));
@@ -143,10 +143,10 @@ class LoadoutSlotWidget extends StatelessWidget with ProfileConsumer, ManifestCo
               })),
         ]));
     if (isTablet) {
-      return Container(margin: EdgeInsets.only(right: 4), width: 64, height: 64, child: itemIcon);
+      return Container(margin: const EdgeInsets.only(right: 4), width: 64, height: 64, child: itemIcon);
     }
     return FractionallySizedBox(
         widthFactor: 1 / 6,
-        child: Container(margin: EdgeInsets.only(right: 4), child: AspectRatio(aspectRatio: 1, child: itemIcon)));
+        child: Container(margin: const EdgeInsets.only(right: 4), child: AspectRatio(aspectRatio: 1, child: itemIcon)));
   }
 }

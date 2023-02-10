@@ -10,7 +10,7 @@ import 'package:little_light/widgets/search/search.controller.dart';
 import 'package:little_light/widgets/search/search_filters/base_search_filter.widget.dart';
 
 class AmmoTypeFilterWidget extends BaseSearchFilterWidget<AmmoTypeFilter> {
-  AmmoTypeFilterWidget(SearchController controller) : super(controller);
+  const AmmoTypeFilterWidget(SearchController controller) : super(controller);
 
   @override
   _AmmoTypeFilterWidgetState createState() => _AmmoTypeFilterWidgetState();
@@ -35,7 +35,7 @@ class _AmmoTypeFilterWidgetState
   Widget buildButtonLabel(BuildContext context, DestinyAmmunitionType value) {
     if ((value ?? DestinyAmmunitionType.None) != DestinyAmmunitionType.None) {
       return Container(
-          margin: EdgeInsets.all(8),
+          margin: const EdgeInsets.all(8),
           width: 32,
           height: 32,
           child: Icon(DestinyData.getAmmoTypeIcon(value), size: 32, color: DestinyData.getAmmoTypeColor(value)));

@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/notifications/base_notification_action.dart';
 
 class NotificationsBloc extends ChangeNotifier {
-  List<BaseNotificationAction> _actions = [];
+  final List<BaseNotificationAction> _actions = [];
   BaseNotificationAction? get currentAction => _actions.firstOrNull;
-  bool get busy => _actions.length > 0;
+  bool get busy => _actions.isNotEmpty;
   NotificationsBloc();
 
   T createNotification<T extends BaseNotificationAction>(T action) {

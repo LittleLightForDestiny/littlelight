@@ -56,7 +56,7 @@ class EquipmentView extends StatelessWidget {
   final EquipmentBloc _bloc;
   final EquipmentBloc _state;
 
-  EquipmentView(
+  const EquipmentView(
     this._bloc,
     this._state, {
     Key? key,
@@ -89,7 +89,7 @@ class EquipmentView extends StatelessWidget {
                             child: CustomTabGestureDetector(
                           controller: characterTabController,
                         )),
-                        Container(
+                        SizedBox(
                           height: 200,
                           child: CustomTabGestureDetector(
                             controller: typeTabController,
@@ -100,12 +100,12 @@ class EquipmentView extends StatelessWidget {
                         left: 8,
                         bottom: 8,
                         right: 8,
-                        child: NotificationsWidget(),
+                        child: const NotificationsWidget(),
                       ),
                     ]),
                   ),
                   SelectedItemsWidget(),
-                  Container(
+                  SizedBox(
                       height: kToolbarHeight,
                       child: Row(
                         children: [
@@ -134,11 +134,11 @@ class EquipmentView extends StatelessWidget {
               Positioned(
                 top: 0,
                 left: 0,
-                child: Container(
+                child: SizedBox(
                   width: kToolbarHeight,
                   height: kToolbarHeight,
                   child: IconButton(
-                    icon: Icon(Icons.menu),
+                    icon: const Icon(Icons.menu),
                     onPressed: () {
                       Scaffold.of(context).openDrawer();
                     },

@@ -12,7 +12,7 @@ const _inventoryIconPresentationNodeHash = 3517356538;
 const iconWidth = 92.0;
 
 class EquipmentTypeTabMenuWidget extends CustomTabMenu {
-  EquipmentTypeTabMenuWidget(CustomTabController controller) : super(controller);
+  const EquipmentTypeTabMenuWidget(CustomTabController controller) : super(controller);
 
   @override
   double getButtonSize(BuildContext context) => iconWidth;
@@ -26,7 +26,7 @@ class EquipmentTypeTabMenuWidget extends CustomTabMenu {
 
   @override
   Widget buildButton(BuildContext context, int index) {
-    return Container(padding: EdgeInsets.all(4), child: buildIcon(context, index));
+    return Container(padding: const EdgeInsets.all(4), child: buildIcon(context, index));
   }
 
   Widget buildIcon(BuildContext context, int index) {

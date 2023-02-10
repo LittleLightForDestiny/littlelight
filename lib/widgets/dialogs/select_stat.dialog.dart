@@ -27,7 +27,7 @@ class SelectStatDialog extends LittleLightBaseDialog {
   }
 
   Widget buildStatItem(BuildContext context, int hash) => Container(
-      padding: EdgeInsets.all(4).copyWith(top: 0),
+      padding: const EdgeInsets.all(4).copyWith(top: 0),
       child: Material(
           color: Colors.blueGrey,
           child: InkWell(
@@ -35,7 +35,7 @@ class SelectStatDialog extends LittleLightBaseDialog {
                 Navigator.of(context).pop(hash);
               },
               child: Container(
-                  padding: EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(8),
                   alignment: Alignment.centerLeft,
                   child: ManifestText<DestinyStatDefinition>(hash)))));
 

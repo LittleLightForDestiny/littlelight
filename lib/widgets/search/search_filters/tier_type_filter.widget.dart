@@ -8,7 +8,7 @@ import 'package:little_light/widgets/search/search.controller.dart';
 import 'package:little_light/widgets/search/search_filters/base_search_filter.widget.dart';
 
 class TierTypeFilterWidget extends BaseSearchFilterWidget<TierTypeFilter> {
-  TierTypeFilterWidget(SearchController controller) : super(controller);
+  const TierTypeFilterWidget(SearchController controller) : super(controller);
 
   @override
   _TierTypeFilterWidgetState createState() => _TierTypeFilterWidgetState();
@@ -56,7 +56,7 @@ class _TierTypeFilterWidgetState
       var value = options.single;
       return Container(
         decoration: BoxDecoration(color: buttonBgColor(value), borderRadius: BorderRadius.circular(8)),
-        padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
         child: Text(
           value.tierName.toUpperCase(),
           style: TextStyle(color: buttonTextColor(value)),

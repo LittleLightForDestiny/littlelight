@@ -4,7 +4,7 @@ import 'package:little_light/models/bucket_display_options.dart';
 import 'package:provider/provider.dart';
 
 class BucketOptionsBloc extends ChangeNotifier {
-  UserSettingsRepository _userSettings;
+  final UserSettingsRepository _userSettings;
   BucketOptionsBloc(BuildContext context) : _userSettings = context.read<UserSettingsRepository>();
 
   BucketDisplayType getDisplayTypeForCharacterBucket(int bucketHash) {

@@ -74,7 +74,7 @@ class EditLoadoutBloc extends ChangeNotifier with ManifestConsumer {
 
   set loadoutName(String loadoutName) {
     _loadout?.name = loadoutName;
-    this._changed = this.changed || _loadout?.name != _originalLoadout?.name;
+    _changed = changed || _loadout?.name != _originalLoadout?.name;
     notifyListeners();
   }
 
@@ -135,7 +135,7 @@ class EditLoadoutBloc extends ChangeNotifier with ManifestConsumer {
       case LoadoutSlotOptionsResponse.EditMods:
         final plugs = await Navigator.of(context).push(EditLoadoutItemModsPageRoute(
           inventoryItem.itemInstanceId!,
-          emblemHash: this._loadout?.emblemHash,
+          emblemHash: _loadout?.emblemHash,
           plugHashes: item.itemPlugs,
         ));
         if (plugs != null) {
@@ -148,7 +148,7 @@ class EditLoadoutBloc extends ChangeNotifier with ManifestConsumer {
   }
 
   void save() async {
-    final loadout = this._loadout;
+    final loadout = _loadout;
     if (loadout != null) {
       context.read<LoadoutsBloc>().saveLoadout(loadout);
     }

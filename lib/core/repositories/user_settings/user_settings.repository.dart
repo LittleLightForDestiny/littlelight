@@ -38,11 +38,11 @@ class UserSettingsRepository with StorageConsumer, AuthConsumer {
     var defaults = ItemSortParameter.defaultItemList;
     var defaultParams = defaults.map((p) => p.type);
     savedParams.removeWhere((p) => !defaultParams.contains(p.type));
-    defaults.forEach((p) {
+    for (var p in defaults) {
       if (!presentParams.contains(p.type)) {
         savedParams.add(p);
       }
-    });
+    }
     _itemOrdering = savedParams;
   }
 
@@ -52,40 +52,32 @@ class UserSettingsRepository with StorageConsumer, AuthConsumer {
     var defaults = ItemSortParameter.defaultPursuitList;
     var defaultParams = defaults.map((p) => p.type);
     savedParams.removeWhere((p) => !defaultParams.contains(p.type));
-    defaults.forEach((p) {
+    for (var p in defaults) {
       if (!presentParams.contains(p.type)) {
         savedParams.add(p);
       }
-    });
+    }
     _pursuitOrdering = savedParams;
   }
 
   Future<void> initCharacterOrdering() async {
     _characterOrdering = await currentMembershipStorage.getCharacterOrdering();
-    if (_characterOrdering == null) {
-      _characterOrdering = CharacterSortParameter();
-    }
+    _characterOrdering ??= CharacterSortParameter();
   }
 
   Future<void> initPriorityTags() async {
     _priorityTags = await currentMembershipStorage.getPriorityTags();
-    if (_priorityTags == null) {
-      _priorityTags = Set.from([ItemNotesTag.favorite().tagId]);
-    }
+    _priorityTags ??= {ItemNotesTag.favorite().tagId};
   }
 
   Future<void> initBucketDisplayOptions() async {
     _bucketDisplayOptions = await currentMembershipStorage.getBucketDisplayOptions();
-    if (_bucketDisplayOptions == null) {
-      _bucketDisplayOptions = Map<String, BucketDisplayOptions>();
-    }
+    _bucketDisplayOptions ??= <String, BucketDisplayOptions>{};
   }
 
   Future<void> initDetailsSectionDisplayOptions() async {
     _detailsSectionDisplayVisibility = await currentMembershipStorage.getDetailsSectionDisplayVisibility();
-    if (_detailsSectionDisplayVisibility == null) {
-      _detailsSectionDisplayVisibility = Map<String, bool>();
-    }
+    _detailsSectionDisplayVisibility ??= <String, bool>{};
   }
 
   BucketDisplayOptions? getDisplayOptionsForBucket(String? id) {
@@ -97,9 +89,9 @@ class UserSettingsRepository with StorageConsumer, AuthConsumer {
       return defaultBucketDisplayOptions[id];
     }
     if (id.startsWith("vault")) {
-      return BucketDisplayOptions(type: BucketDisplayType.Small);
+      return const BucketDisplayOptions(type: BucketDisplayType.Small);
     }
-    return BucketDisplayOptions(type: BucketDisplayType.Medium);
+    return const BucketDisplayOptions(type: BucketDisplayType.Medium);
   }
 
   void setDisplayOptionsForBucket(String key, BucketDisplayOptions options) {

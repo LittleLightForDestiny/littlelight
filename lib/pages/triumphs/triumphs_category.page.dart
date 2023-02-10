@@ -56,8 +56,9 @@ class TriumphsCategoryPageState extends PresentationNodesTabsScaffoldState<Trium
     });
   }
 
+  @override
   PreferredSizeWidget? buildTabBar(BuildContext context) {
-    if ((this.nodesDefinitions?.length ?? 0) == 0) return null;
+    if ((nodesDefinitions?.length ?? 0) == 0) return null;
     return super.buildTabBar(context);
   }
 
@@ -70,7 +71,7 @@ class TriumphsCategoryPageState extends PresentationNodesTabsScaffoldState<Trium
   Widget buildTabButton(BuildContext context, DestinyPresentationNodeDefinition node) {
     final iconName = node.displayProperties?.icon;
     if (iconName == null) return Container();
-    return Container(padding: EdgeInsets.all(8), width: 48, height: 48, child: QueuedNetworkImage.fromBungie(iconName));
+    return Container(padding: const EdgeInsets.all(8), width: 48, height: 48, child: QueuedNetworkImage.fromBungie(iconName));
   }
 
   @override
@@ -82,7 +83,7 @@ class TriumphsCategoryPageState extends PresentationNodesTabsScaffoldState<Trium
 
   @override
   Widget buildBody(BuildContext context) {
-    if ((this.nodesDefinitions?.length ?? 0) == 0) {
+    if ((nodesDefinitions?.length ?? 0) == 0) {
       return buildTablessBody(context);
     }
     return super.buildBody(context);

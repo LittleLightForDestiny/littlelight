@@ -52,7 +52,7 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
   //   }
   //   profile.pauseAutomaticUpdater = false;
   //   await Future.delayed(Duration(milliseconds: 100));
-  //   await profile.fetchProfileData();
+  //   await profile.refresh();
   // }
 
   equip(DestinyItemComponent item, String sourceCharacterId, String destinationCharacterId) async {
@@ -71,7 +71,7 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
       if (e.platformError == PlatformErrorCodes.DestinyCannotPerformActionAtThisLocation) {
         notifications.push(ErrorNotificationEvent(ErrorNotificationType.onCombatZoneEquipError,
             item: item, characterId: destinationCharacterId));
-        await Future.delayed(Duration(seconds: 3));
+        await Future.delayed(const Duration(seconds: 3));
       } else {
         rethrow;
       }
@@ -79,12 +79,12 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
       notifications.push(ErrorNotificationEvent(ErrorNotificationType.genericEquipError,
           item: item, characterId: destinationCharacterId));
 
-      await Future.delayed(Duration(seconds: 2));
+      await Future.delayed(const Duration(seconds: 2));
     }
 
     profile.pauseAutomaticUpdater = false;
-    await Future.delayed(Duration(milliseconds: 100));
-    await profile.fetchProfileData();
+    await Future.delayed(const Duration(milliseconds: 100));
+    await profile.refresh();
   }
 
   Future<void> unequip(DestinyItemComponent item, String characterId) async {
@@ -116,12 +116,12 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
             destinationCharacterId: destinationCharacterId, idsToAvoid: idsToAvoid, hashesToAvoid: hashesToAvoid);
       } catch (e) {
         notifications.push(ErrorNotificationEvent(ErrorNotificationType.genericTransferError));
-        await Future.delayed(Duration(seconds: 3));
+        await Future.delayed(const Duration(seconds: 3));
       }
     }
     if (!skipUpdate) {
-      await Future.delayed(Duration(seconds: 1));
-      await profile.fetchProfileData();
+      await Future.delayed(const Duration(seconds: 1));
+      await profile.refresh();
       profile.pauseAutomaticUpdater = false;
     }
   }
@@ -140,8 +140,8 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
       if (![character?.classType, DestinyClass.Unknown].contains(def?.classType)) return false;
       return true;
     }).toList();
-    Set<int> ocuppiedBuckets = Set();
-    Set<DestinyItemType> ocuppiedExoticTypes = Set();
+    Set<int> ocuppiedBuckets = {};
+    Set<DestinyItemType> ocuppiedExoticTypes = {};
     List<ItemWithOwner> itemsToEquip = itemsToTransfer.where((i) {
       var def = manifest.getDefinitionFromCache<DestinyInventoryItemDefinition>(i?.item?.itemHash);
       if (ocuppiedBuckets.contains(def?.inventory?.bucketTypeHash)) return false;
@@ -161,8 +161,8 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
       await _equipMultiple(itemsToEquip.map((i) => i.item).toList(), destinationCharacterId);
     } catch (e) {}
 
-    await Future.delayed(Duration(seconds: 1));
-    await profile.fetchProfileData();
+    await Future.delayed(const Duration(seconds: 1));
+    await profile.refresh();
     profile.pauseAutomaticUpdater = false;
   }
 
@@ -265,7 +265,7 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
     //   }
     //   await Future.delayed(Duration(milliseconds: 500));
     //   profile.pauseAutomaticUpdater = false;
-    //   await profile.fetchProfileData();
+    //   await profile.refresh();
     // }
 
     // _debugInventory(String title) {
@@ -361,9 +361,7 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
     var instanceInfo = profile.getInstanceInfo(item.itemInstanceId);
     var def = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
     var sourceBucketDef = await manifest.getDefinition<DestinyInventoryBucketDefinition>(item.bucketHash);
-    if (stackSize == null) {
-      stackSize = item.quantity;
-    }
+    stackSize ??= item.quantity;
     if (sourceCharacterId == ItemWithOwner.OWNER_PROFILE) {
       sourceCharacterId = profile.characters?.first?.characterId;
     }
@@ -542,14 +540,14 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
 
     Map<int, DestinyItemComponent> previouslyEquipped = {};
     List<DestinyItemComponent> charEquipment = profile.getCharacterEquipment(characterId);
-    bucketHashes.forEach((bucketHash) {
+    for (var bucketHash in bucketHashes) {
       previouslyEquipped[bucketHash] = charEquipment.firstWhere((item) => item.bucketHash == bucketHash);
-    });
+    }
     List<String> itemIds = items.map((item) => item.itemInstanceId).toList();
     List<DestinyEquipItemResult> result = await bungieAPI.equipItems(itemIds, characterId);
     charEquipment = profile.getCharacterEquipment(characterId);
     List<DestinyItemComponent> charInventory = profile.getCharacterInventory(characterId);
-    result.forEach((result) {
+    for (var result in result) {
       DestinyItemComponent newlyEquipped = profile.getItemsByInstanceId([result.itemInstanceId]).first;
       DestinyItemInstanceComponent newlyEquippedInstance = profile.getInstanceInfo(result.itemInstanceId);
       DestinyInventoryItemDefinition newlyEquippedDef = defs[newlyEquipped.itemHash];
@@ -567,7 +565,7 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
       newlyEquippedInstance.isEquipped = true;
       charInventory.removeWhere((item) => item.itemInstanceId == result.itemInstanceId);
       charEquipment.add(newlyEquipped);
-    });
+    }
   }
 
   _unequip(DestinyItemComponent item, String characterId, [List<String> idsToAvoid = const []]) async {
@@ -600,7 +598,7 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
     if (freeSlots > count) {
       return;
     }
-    await profile.fetchProfileData(components: ProfileComponentGroups.inventories);
+    await profile.refresh(ProfileComponentGroups.inventories);
     items = _getItemsOnBucket(bucketDefinition, characterId);
     itemCount = items.length;
     freeSlots = bucketSize - itemCount;
@@ -654,7 +652,7 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
         .where((pItem) => item.bucketHash == pItem.bucketHash && !idsToAvoid.contains(pItem.itemInstanceId))
         .toList();
 
-    if (possibles.length > 0) {
+    if (possibles.isNotEmpty) {
       Map<int, DestinyInventoryItemDefinition> definitions = await manifest
           .getDefinitions<DestinyInventoryItemDefinition>(possibles.map((pItem) => pItem.itemHash).toList());
       possibles.removeWhere((pItem) {
@@ -669,7 +667,7 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
       });
     }
 
-    if (possibles.length == 0) {
+    if (possibles.isEmpty) {
       var itemsOnVault = profile
           .getProfileInventory()
           .where((i) => i.bucketHash == InventoryBucket.general && i.itemInstanceId != null);
@@ -681,7 +679,7 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
       }
     }
 
-    if (possibles.length == 0) {
+    if (possibles.isEmpty) {
       throw TransferError(TransferErrorType.cantFindSubstitute);
     }
     possibles.sort((itemA, itemB) {
@@ -696,9 +694,9 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
   }
 
   changeMultipleLockState(List<ItemWithOwner> items, bool locked) {
-    items.forEach((item) {
+    for (var item in items) {
       changeLockState(item, locked);
-    });
+    }
   }
 
   changeLockState(ItemWithOwner item, bool locked) async {

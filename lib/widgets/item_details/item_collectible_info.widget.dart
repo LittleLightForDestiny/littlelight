@@ -9,7 +9,7 @@ import 'package:little_light/widgets/item_details/section_header.widget.dart';
 class ItemCollectibleInfoWidget extends StatefulWidget {
   final int hash;
 
-  ItemCollectibleInfoWidget(this.hash, {Key key}) : super(key: key);
+  const ItemCollectibleInfoWidget(this.hash, {Key key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -29,7 +29,7 @@ class ItemCollectibleInfoWidgetState extends State<ItemCollectibleInfoWidget> wi
       return Container();
     }
     return Container(
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
@@ -38,15 +38,15 @@ class ItemCollectibleInfoWidgetState extends State<ItemCollectibleInfoWidget> wi
               "How to get",
               uppercase: true,
               textAlign: TextAlign.left,
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
           visible
               ? Container(
-                  padding: EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(8),
                   child: ManifestText<DestinyCollectibleDefinition>(
                     widget.hash,
-                    style: TextStyle(fontWeight: FontWeight.w300),
+                    style: const TextStyle(fontWeight: FontWeight.w300),
                     textExtractor: (collectible) {
                       if (collectible == null) return "";
                       return collectible.sourceString;

@@ -11,13 +11,13 @@ class BucketHeaderListItemWidget extends StatelessWidget {
   final int itemCount;
   final bool isVault;
   final bool canEquip;
-  BucketHeaderListItemWidget(this.hash, {this.itemCount = 0, this.isVault = false, this.canEquip = false, Key? key})
+  const BucketHeaderListItemWidget(this.hash, {this.itemCount = 0, this.isVault = false, this.canEquip = false, Key? key})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return HeaderWidget(
-      padding: EdgeInsets.symmetric(horizontal: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       child: DefinitionProviderWidget<DestinyInventoryBucketDefinition>(
         hash,
         (definition) => Row(
@@ -36,7 +36,7 @@ class BucketHeaderListItemWidget extends StatelessWidget {
     return Text(
       definition.displayProperties?.name?.toUpperCase() ?? "",
       softWrap: false,
-      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
     );
   }
 
@@ -60,12 +60,12 @@ class BucketHeaderListItemWidget extends StatelessWidget {
         textExtractor: (def) {
           return "$itemCount/${def.itemCount}";
         },
-        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
       );
     }
     return Text(
       "$itemCount/$bucketSize",
-      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
     );
   }
 }

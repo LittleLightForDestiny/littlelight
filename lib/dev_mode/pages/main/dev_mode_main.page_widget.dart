@@ -22,7 +22,7 @@ class _DevModeMainPageWidgetState extends State<DevModeMainPageWidget> with Auth
   }
 
   void fetchAccounts() async {
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 1));
     final accounts = auth.accountIDs;
     List<UserMembershipData> memberships = <UserMembershipData>[];
     if (accounts == null) return;
@@ -40,10 +40,10 @@ class _DevModeMainPageWidgetState extends State<DevModeMainPageWidget> with Auth
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Main"),
+        title: const Text("Main"),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -86,30 +86,30 @@ class _DevModeMainPageWidgetState extends State<DevModeMainPageWidget> with Auth
     if (membership.bungieNetUser?.profilePicturePath != null) {
       image = Image.network(BungieApiService.url(membership.bungieNetUser!.profilePicturePath)!);
     } else {
-      image = Container(color: Theme.of(context).colorScheme.onSurface, child: Icon(FontAwesomeIcons.user));
+      image = Container(color: Theme.of(context).colorScheme.onSurface, child: const Icon(FontAwesomeIcons.user));
     }
     return Container(
         width: 64,
         height: 64,
-        margin: EdgeInsets.all(8),
-        padding: EdgeInsets.all(2),
+        margin: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(2),
         color: Theme.of(context).colorScheme.secondary,
         child: image);
   }
 
   Widget buildLoginCard(BuildContext context) => Card(
         child: Container(
-            padding: EdgeInsets.all(8),
+            padding: const EdgeInsets.all(8),
             child: Column(
               children: [
-                ListTile(
+                const ListTile(
                   leading: Icon(FontAwesomeIcons.user),
                   title: Text("Auth"),
                 ),
                 ButtonBar(
                   children: [
                     TextButton(
-                      child: Text("Login"),
+                      child: const Text("Login"),
                       onPressed: () {
                         auth.openBungieLogin(true);
                       },
@@ -134,14 +134,14 @@ class _DevModeMainPageWidgetState extends State<DevModeMainPageWidget> with Auth
       platform = primary?.first.iconPath;
     }
     return Container(
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       child: Row(
         children: [
-          Text("Cross save enabled"),
+          const Text("Cross save enabled"),
           Container(
             width: 4,
           ),
-          Container(width: 16, height: 16, child: Image.network(BungieApiService.url(platform)!))
+          SizedBox(width: 16, height: 16, child: Image.network(BungieApiService.url(platform)!))
         ],
       ),
     );

@@ -13,7 +13,7 @@ class BucketDisplayOptionsOverlayMenu extends BaseOverlayWidget {
   final BucketDisplayType currentValue;
   final bool canEquip;
 
-  BucketDisplayOptionsOverlayMenu({
+  const BucketDisplayOptionsOverlayMenu({
     Key? key,
     required this.currentValue,
     required RenderBox sourceRenderBox,
@@ -36,7 +36,7 @@ class BucketDisplayOptionsOverlayMenu extends BaseOverlayWidget {
     required double sourceRight,
     required BoxConstraints constraints,
   }) {
-    final itemSize = 52.0;
+    const itemSize = 52.0;
     final selectedIndex = _options.indexOf(currentValue).clamp(0, _options.length - 1);
     double top = sourceTop - 2 - itemSize * selectedIndex;
     final height = itemSize * _options.length;
@@ -57,7 +57,7 @@ class BucketDisplayOptionsOverlayMenu extends BaseOverlayWidget {
               children: _options
                   .where((option) => canEquip || option.availableOnNonEquippableBucket)
                   .map(
-                    (option) => Container(
+                    (option) => SizedBox(
                       height: itemSize,
                       child: BucketDisplayMenuOptionWidget(
                         option,
@@ -80,17 +80,17 @@ class BucketDisplayMenuOptionWidget extends StatelessWidget {
   final bool isSelected;
 
   const BucketDisplayMenuOptionWidget(
-    BucketDisplayType this.option, {
+    this.option, {
     Key? key,
     this.isSelected = false,
-    void Function()? this.onTap,
+    this.onTap,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
-      margin: EdgeInsets.all(4),
+      margin: const EdgeInsets.all(4),
       child: Material(
         borderRadius: BorderRadius.circular(8),
         color: isSelected ? context.theme.primaryLayers.layer0 : context.theme.surfaceLayers.layer1,
@@ -98,11 +98,11 @@ class BucketDisplayMenuOptionWidget extends StatelessWidget {
           onTap: onTap,
           borderRadius: BorderRadius.circular(8),
           child: Container(
-            padding: EdgeInsets.only(left: 16),
+            padding: const EdgeInsets.only(left: 16),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(this.option.name),
+                Text(option.name),
                 Container(
                   width: 8,
                 ),
@@ -110,7 +110,7 @@ class BucketDisplayMenuOptionWidget extends StatelessWidget {
                   width: 48,
                   alignment: Alignment.center,
                   child: Icon(
-                    this.option.equippableIcon,
+                    option.equippableIcon,
                     size: 24,
                   ),
                 ),

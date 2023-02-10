@@ -41,7 +41,7 @@ class LandscapeItemCoverWidget extends StatelessWidget {
   final DestinyInventoryItemDefinition definition;
   final DestinyItemInstanceComponent instanceInfo;
 
-  LandscapeItemCoverWidget(
+  const LandscapeItemCoverWidget(
     this.item,
     this.definition,
     this.instanceInfo, {
@@ -96,7 +96,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
 
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
-    double expandRatio = min(1, max(0, 1 - (shrinkOffset) / (this.maxHeight - this.minHeight)));
+    double expandRatio = min(1, max(0, 1 - (shrinkOffset) / (maxHeight - minHeight)));
     if (maxHeight == minHeight) {
       expandRatio = 0;
     }
@@ -136,8 +136,8 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
         bottom: bottomPadding(context, expandRatio),
         right: rightPadding(context, expandRatio),
         child: SingleChildScrollView(
-            physics: NeverScrollableScrollPhysics(),
-            child: Container(
+            physics: const NeverScrollableScrollPhysics(),
+            child: SizedBox(
                 height: height - topPadding(context, expandRatio) - bottomPadding(context, expandRatio),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -204,7 +204,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Container(
+            SizedBox(
                 width: convertSize(1030, context),
                 child: Text(
                   customName ?? definition?.displayProperties?.name?.toUpperCase() ?? "",
@@ -233,7 +233,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
     return Opacity(
         opacity: expandRatio,
         child: SingleChildScrollView(
-            child: Container(
+            child: SizedBox(
                 width: convertSize(600, context),
                 child: ScreenshotSocketDetailsWidget(
                     item: item?.item,
@@ -333,7 +333,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
                       item: item?.item,
                       pixelSize: pixelSize(context),
                     )),
-                Container(
+                SizedBox(
                     width: leftColumnWidth,
                     child: ScreenShotItemModsWidget(
                       controller: socketController,
@@ -395,7 +395,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
       children: <Widget>[
         Flexible(
             flex: 2,
-            child: Container(
+            child: SizedBox(
                 height: convertSize(60, context),
                 child: Row(children: [
                   if (damageType.icon != null)
@@ -578,7 +578,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
                       tierColor.withOpacity(.6),
                       tierColor.withOpacity(.3),
                       Colors.transparent,
-                    ], stops: [
+                    ], stops: const [
                       0,
                       .7,
                       1
@@ -590,7 +590,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
                       tierColor,
                       tierColor.withOpacity(.3),
                       Colors.transparent,
-                    ], stops: [
+                    ], stops: const [
                       0,
                       .7,
                       1
@@ -600,10 +600,10 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate with Ite
   }
 
   @override
-  double get maxExtent => this.maxHeight;
+  double get maxExtent => maxHeight;
 
   @override
-  double get minExtent => this.minHeight;
+  double get minExtent => minHeight;
 
   @override
   bool shouldRebuild(LandscapeItemCoverDelegate oldDelegate) {

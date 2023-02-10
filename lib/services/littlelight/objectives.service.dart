@@ -63,7 +63,7 @@ class ObjectivesService with StorageConsumer, ProfileConsumer, ManifestConsumer 
 
     if (item != null) return item;
     var items = profile.getItemsByInstanceId([objective.instanceId]);
-    if (items.length > 0) return items.first;
+    if (items.isNotEmpty) return items.first;
     var def = await manifest.getDefinition<DestinyInventoryItemDefinition>(objective.hash);
     if (def?.objectives?.questlineItemHash != null) {
       var questline = await manifest.getDefinition<DestinyInventoryItemDefinition>(def!.objectives!.questlineItemHash);
@@ -88,8 +88,8 @@ class ObjectivesService with StorageConsumer, ProfileConsumer, ManifestConsumer 
   }
 
   Future<List<TrackedObjective>?> _loadTrackedObjectivesFromCache() async {
-    this._trackedObjectives = (await currentMembershipStorage.getTrackedObjectives()) ?? [];
-    return this._trackedObjectives;
+    _trackedObjectives = (await currentMembershipStorage.getTrackedObjectives()) ?? [];
+    return _trackedObjectives;
   }
 
   Future<void> addTrackedObjective(TrackedObjectiveType type, int? hash,

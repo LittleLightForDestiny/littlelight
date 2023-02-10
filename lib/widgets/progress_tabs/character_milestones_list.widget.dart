@@ -12,8 +12,9 @@ import 'package:little_light/widgets/progress_tabs/milestone_raid_item.widget.da
 class CharacterMilestonesListWidget extends StatefulWidget {
   final String characterId;
 
-  CharacterMilestonesListWidget({Key key, this.characterId}) : super(key: key);
+  const CharacterMilestonesListWidget({Key key, this.characterId}) : super(key: key);
 
+  @override
   _CharacterMilestonesListWidgetState createState() => _CharacterMilestonesListWidgetState();
 }
 
@@ -53,7 +54,7 @@ class _CharacterMilestonesListWidgetState extends State<CharacterMilestonesListW
   List<Widget> buildMilestones(BuildContext context) {
     List<Widget> widgets = [];
     if (milestoneDefinitions == null) return widgets;
-    widgets.add(Container(height: 112, child: CharacterInfoWidget(characterId: widget.characterId)));
+    widgets.add(SizedBox(height: 112, child: CharacterInfoWidget(characterId: widget.characterId)));
     widgets.add(Container(
       height: 8,
     ));
@@ -62,13 +63,13 @@ class _CharacterMilestonesListWidgetState extends State<CharacterMilestonesListW
       return !raidHashes.contains(m.milestoneHash) &&
           ((m.availableQuests?.length ?? 0) > 0 || (m.activities?.length ?? 0) > 0);
     });
-    raidMilestones.forEach((milestone) {
+    for (var milestone in raidMilestones) {
       widgets.add(buildRaidMilestone(context, milestone));
-    });
+    }
 
-    otherMilestones.forEach((milestone) {
+    for (var milestone in otherMilestones) {
       widgets.add(buildMilestone(context, milestone));
-    });
+    }
     return widgets;
   }
 

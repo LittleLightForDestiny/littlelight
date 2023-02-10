@@ -9,19 +9,19 @@ import 'package:little_light/utils/item_with_owner.dart';
 import 'base_item_filter.dart';
 
 class PowerCapFilter extends BaseItemFilter<Set<int>> {
-  PowerCapFilter() : super(Set(), Set());
+  PowerCapFilter() : super(<int>{}, <int>{});
 
   clear() {
     availableValues.clear();
   }
 
-  Map<int, int> powercapValues = Map();
+  Map<int, int> powercapValues = {};
 
   @override
   Future<List<ItemWithOwner>> filter(List<ItemWithOwner> items,
       {Map<int, DestinyInventoryItemDefinition> definitions}) async {
     clear();
-    Set<int> powerCaps = Set();
+    Set<int> powerCaps = {};
     for (var item in items) {
       var def = definitions[item.item.itemHash];
       if (def?.quality?.versions != null && def?.quality?.currentVersion != null) {
@@ -34,14 +34,15 @@ class PowerCapFilter extends BaseItemFilter<Set<int>> {
     }
     availableValues.addAll(powerCaps);
 
-    this.available = availableValues.length > 1;
+    available = availableValues.length > 1;
     // if(available) availableValues.add(-1);
     value.retainAll(availableValues);
     return super.filter(items, definitions: definitions);
   }
 
+  @override
   bool filterItem(ItemWithOwner item, {Map<int, DestinyInventoryItemDefinition> definitions}) {
-    if (value?.length == 0) {
+    if (value.isEmpty) {
       return true;
     }
     var def = definitions[item.item.itemHash];

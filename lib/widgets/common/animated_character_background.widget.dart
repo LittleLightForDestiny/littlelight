@@ -11,7 +11,7 @@ import 'package:little_light/services/manifest/manifest.consumer.dart';
 
 class AnimatedCharacterBackgroundWidget extends StatefulWidget {
   final TabController tabController;
-  AnimatedCharacterBackgroundWidget({
+  const AnimatedCharacterBackgroundWidget({
     this.tabController,
     Key key,
   }) : super(key: key);

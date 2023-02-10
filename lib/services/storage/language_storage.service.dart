@@ -60,6 +60,6 @@ class LanguageStorage extends StorageBase<LanguageStorageKeys> {
   }
 
   Future<void> purge() async {
-    await purgePath(this.basePath);
+    await purgePath(basePath);
   }
 }

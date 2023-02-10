@@ -55,7 +55,7 @@ class TransferDestinationsWidget extends StatelessWidget {
   final List<DestinyCharacterInfo?>? unequipCharacters;
   final OnTransferAction? onAction;
 
-  TransferDestinationsWidget({
+  const TransferDestinationsWidget({
     this.transferCharacters,
     this.equipCharacters,
     this.unequipCharacters,
@@ -65,15 +65,15 @@ class TransferDestinationsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final equip = this.equipCharacters;
-    final unequip = this.unequipCharacters;
-    final transfer = this.transferCharacters;
+    final equip = equipCharacters;
+    final unequip = unequipCharacters;
+    final transfer = transferCharacters;
     final blocks = [
       if (equip?.isNotEmpty ?? false) TransferActionType.Equip,
       if (unequip?.isNotEmpty ?? false) TransferActionType.Unequip,
       if (transfer?.isNotEmpty ?? false) TransferActionType.Transfer,
     ];
-    if (blocks.length == 0) return Container();
+    if (blocks.isEmpty) return Container();
     return LayoutBuilder(
       builder: (context, constraints) => SingleChildScrollView(
         scrollDirection: Axis.horizontal,
@@ -133,7 +133,7 @@ class TransferDestinationsWidget extends StatelessWidget {
   }) {
     final characters = this.characters(type) ?? [];
     return Container(
-      padding: EdgeInsets.all(4),
+      padding: const EdgeInsets.all(4),
       child: expanded
           ? buildCharactersColumn(context, side: side, characters: characters, action: type)
           : IntrinsicWidth(
@@ -221,7 +221,7 @@ class TransferDestinationsWidget extends StatelessWidget {
     DestinyCharacterInfo? character,
   ) {
     return Container(
-      padding: EdgeInsets.all(4),
+      padding: const EdgeInsets.all(4),
       child: Stack(
         children: [
           Container(

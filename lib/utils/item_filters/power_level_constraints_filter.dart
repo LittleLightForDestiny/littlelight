@@ -25,27 +25,28 @@ class PowerLevelConstraintsFilter extends BaseItemFilter<PowerLevelConstraints> 
     availableValues.includePowerlessItems = false;
     availableValues.min = 9999;
     availableValues.max = -9999;
-    items.forEach((element) {
+    for (var element in items) {
       var instanceInfo = profile.getInstanceInfo(element?.item?.itemInstanceId);
       var power = instanceInfo?.primaryStat?.value;
       if (power != null) {
-        this.availableValues.min = min(this.availableValues?.min ?? power, power);
-        this.availableValues.max = max(this.availableValues?.max ?? power, power);
+        availableValues.min = min(availableValues?.min ?? power, power);
+        availableValues.max = max(availableValues?.max ?? power, power);
       } else {
         availableValues.includePowerlessItems = true;
       }
-    });
+    }
 
-    this.available = (this.availableValues?.min ?? 9999) < (this.availableValues?.max ?? -9999);
+    available = (availableValues?.min ?? 9999) < (availableValues?.max ?? -9999);
 
-    if (this.available) {
-      this.value.max = min(this.availableValues.max, this.value.max ?? 9999);
-      this.value.min = min(this.value.max, max(this.availableValues.min, this.value.min ?? -9999));
+    if (available) {
+      value.max = min(availableValues.max, value.max ?? 9999);
+      value.min = min(value.max, max(availableValues.min, value.min ?? -9999));
     }
 
     return super.filter(items, definitions: definitions);
   }
 
+  @override
   bool filterItem(ItemWithOwner item, {Map<int, DestinyInventoryItemDefinition> definitions}) {
     var instanceInfo = profile.getInstanceInfo(item?.item?.itemInstanceId);
     var power = instanceInfo?.primaryStat?.value;

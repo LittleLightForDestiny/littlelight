@@ -20,7 +20,7 @@ class WishlistNotesWidget extends StatelessWidget with WishlistsConsumer {
     }
 
     return Container(
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       child: Column(children: [
         HeaderWidget(
             child: Container(
@@ -29,7 +29,7 @@ class WishlistNotesWidget extends StatelessWidget with WishlistsConsumer {
             "Wishlist Notes",
             uppercase: true,
             textAlign: TextAlign.left,
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
         )),
         buildNotes(context, notes)
@@ -42,7 +42,7 @@ class WishlistNotesWidget extends StatelessWidget with WishlistsConsumer {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: notes
               ?.where((n) => (n?.length ?? 0) > 0)
-              ?.map((n) => Container(padding: EdgeInsets.all(4), child: Text("$n")))
+              ?.map((n) => Container(padding: const EdgeInsets.all(4), child: Text(n)))
               ?.toList() ??
           [],
     );

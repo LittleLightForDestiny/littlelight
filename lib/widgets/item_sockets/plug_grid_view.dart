@@ -89,8 +89,8 @@ class PlugGridView extends StatelessWidget {
     required double expectedItemSize,
     this.gridSpacing = 8,
   })  : _sizeStrategy = PlugGridViewSizeStrategy.ItemSize,
-        this.expectedItemSize = expectedItemSize,
-        this.itemsPerRow = null;
+        expectedItemSize = expectedItemSize,
+        itemsPerRow = null;
 
   const PlugGridView.withItemsPerRow(
     this.plugHashes, {
@@ -100,8 +100,8 @@ class PlugGridView extends StatelessWidget {
     required int itemsPerRow,
     this.gridSpacing = 8,
   })  : _sizeStrategy = PlugGridViewSizeStrategy.PerRow,
-        this.itemsPerRow = itemsPerRow,
-        this.expectedItemSize = null;
+        itemsPerRow = itemsPerRow,
+        expectedItemSize = null;
 
   PlugGridViewSpecifications getSpecs(double gridWidth) {
     if (_sizeStrategy == PlugGridViewSizeStrategy.PerRow) {
@@ -110,7 +110,7 @@ class PlugGridView extends StatelessWidget {
         gridSpacing: gridSpacing,
         gridWidth: gridWidth,
         maxRows: maxRows,
-        itemCount: this.plugHashes.length,
+        itemCount: plugHashes.length,
       );
     }
     if (_sizeStrategy == PlugGridViewSizeStrategy.ItemSize) {
@@ -119,12 +119,13 @@ class PlugGridView extends StatelessWidget {
         gridSpacing: gridSpacing,
         gridWidth: gridWidth,
         maxRows: maxRows,
-        itemCount: this.plugHashes.length,
+        itemCount: plugHashes.length,
       );
     }
     throw "invalid PlugGridViewSizeStrategy";
   }
 
+  @override
   Widget build(BuildContext context) => LayoutBuilder(
         builder: (context, constraints) {
           final specs = getSpecs(constraints.maxWidth);
@@ -133,19 +134,17 @@ class PlugGridView extends StatelessWidget {
       );
 
   Widget buildScrollableGrid(BuildContext context, PlugGridViewSpecifications specs) {
-    if (this.plugHashes.length <= specs.itemsPerPage) {
-      return buildGridView(context, this.plugHashes, specs.itemsPerRow);
+    if (plugHashes.length <= specs.itemsPerPage) {
+      return buildGridView(context, plugHashes, specs.itemsPerRow);
     }
     final controller = DefaultTabController.of(context);
-    if (controller != null) {
-      return Container(
-          height: specs.tabHeight,
-          child: TabBarView(
-            controller: controller,
-            children: buildTabs(context, specs),
-          ));
-    }
-    return Container(
+    return SizedBox(
+        height: specs.tabHeight,
+        child: TabBarView(
+          controller: controller,
+          children: buildTabs(context, specs),
+        ));
+    return SizedBox(
         height: specs.tabHeight,
         child: DefaultTabController(
             length: specs.pageCount,
@@ -160,7 +159,7 @@ class PlugGridView extends StatelessWidget {
       List.generate(specs.pageCount, (index) {
         final plugHashes = this.plugHashes.skip(index * specs.itemsPerPage).take(specs.itemsPerPage);
         return Container(
-          padding: EdgeInsets.symmetric(horizontal: this.gridSpacing / 2),
+          padding: EdgeInsets.symmetric(horizontal: gridSpacing / 2),
           child: buildGridView(context, plugHashes, specs.itemsPerRow),
         );
       });
@@ -170,12 +169,12 @@ class PlugGridView extends StatelessWidget {
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: itemsPerRow,
         childAspectRatio: 1,
-        mainAxisSpacing: this.gridSpacing,
-        crossAxisSpacing: this.gridSpacing,
+        mainAxisSpacing: gridSpacing,
+        crossAxisSpacing: gridSpacing,
       ),
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
-      children: plugHashes.map((h) => this.itemBuilder(h)).toList(),
+      children: plugHashes.map((h) => itemBuilder(h)).toList(),
     );
   }
 }

@@ -7,7 +7,7 @@ import 'package:little_light/widgets/item_list/vault_item_list.widget.dart';
 
 class LargeScreenVaultListWidget extends StatefulWidget {
   final DestinyCharacterComponent character;
-  LargeScreenVaultListWidget({Key key, this.character}) : super(key: key);
+  const LargeScreenVaultListWidget({Key key, this.character}) : super(key: key);
   @override
   LargeScreenVaultListWidgetState createState() => LargeScreenVaultListWidgetState();
 }
@@ -33,7 +33,7 @@ class LargeScreenVaultListWidgetState extends State<LargeScreenVaultListWidget> 
   Widget build(BuildContext context) {
     var screenPadding = MediaQuery.of(context).padding;
     return VaultItemListWidget(
-      key: Key("vault_inventory"),
+      key: const Key("vault_inventory"),
       padding:
           EdgeInsets.only(top: getListTopOffset(context), left: 2 + screenPadding.left, right: 2 + screenPadding.right),
       bucketHashes: bucketHashes,

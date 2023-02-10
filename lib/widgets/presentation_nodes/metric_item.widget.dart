@@ -20,7 +20,7 @@ import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
 class MetricItemWidget extends StatefulWidget {
   final int hash;
-  MetricItemWidget({Key key, this.hash}) : super(key: key);
+  const MetricItemWidget({Key key, this.hash}) : super(key: key);
 
   @override
   MetricItemWidgetState createState() {
@@ -59,7 +59,7 @@ class MetricItemWidgetState extends State<MetricItemWidget> with AuthConsumer, P
   }
 
   loadDefinitions() async {
-    if (this.definition == null) {
+    if (definition == null) {
       _definition = await manifest.getDefinition<DestinyMetricDefinition>(widget.hash);
       if (!mounted) return;
       setState(() {});
@@ -102,7 +102,7 @@ class MetricItemWidgetState extends State<MetricItemWidget> with AuthConsumer, P
     icons.add(QueuedNetworkImage(imageUrl: BungieApiService.url(definition?.displayProperties?.icon)));
     return Container(
         width: 28,
-        margin: EdgeInsets.only(right: 8),
+        margin: const EdgeInsets.only(right: 8),
         alignment: Alignment.center,
         child: Stack(children: [
           Positioned(
@@ -115,7 +115,7 @@ class MetricItemWidgetState extends State<MetricItemWidget> with AuthConsumer, P
 
   buildContent(BuildContext context) {
     return Container(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [buildTitle(context), buildObjective(context), Expanded(child: buildDescription(context))]));
@@ -151,6 +151,6 @@ class MetricItemWidgetState extends State<MetricItemWidget> with AuthConsumer, P
 
     var formatter = NumberFormat.decimalPattern(context.currentLanguage);
     var formattedProgress = formatter.format(metric.objectiveProgress.progress);
-    return Text(formattedProgress, style: TextStyle(fontSize: 18));
+    return Text(formattedProgress, style: const TextStyle(fontSize: 18));
   }
 }

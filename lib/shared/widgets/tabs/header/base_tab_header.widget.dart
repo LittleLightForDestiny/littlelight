@@ -22,11 +22,11 @@ abstract class BaseTabHeaderWidget extends StatelessWidget {
   Widget _buildBackgroundContainer(BuildContext context) {
     final paddingTop = MediaQuery.of(context).viewPadding.top;
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      Container(
+      SizedBox(
         height: paddingTop + kToolbarHeight,
         child: buildBackground(context),
       ),
-      Container(
+      SizedBox(
         height: 2,
         child: buildProgressBar(context),
       )

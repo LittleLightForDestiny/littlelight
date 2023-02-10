@@ -17,7 +17,7 @@ class NotificationsWidget extends StatelessWidget {
   InventoryBloc _inventoryBloc(BuildContext context) => context.read<InventoryBloc>();
   InventoryBloc _inventoryState(BuildContext context) => context.watch<InventoryBloc>();
 
-  NotificationsWidget() : super();
+  const NotificationsWidget() : super();
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +33,7 @@ class NotificationsWidget extends StatelessWidget {
   Widget buildMainContainer(BuildContext context) {
     return AnimatedContainer(
         clipBehavior: Clip.antiAlias,
-        duration: Duration(milliseconds: 500),
+        duration: const Duration(milliseconds: 500),
         decoration: BoxDecoration(
           color: _state(context).actionIs<BaseErrorAction>()
               ? context.theme.errorLayers.layer0
@@ -93,7 +93,7 @@ class NotificationsWidget extends StatelessWidget {
           sizeFactor: controller,
           axis: Axis.horizontal,
           child: Container(
-            padding: EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
               vertical: 8,
               horizontal: 16,
             ),
@@ -118,11 +118,11 @@ class NotificationsWidget extends StatelessWidget {
     return Stack(
       children: [
         Container(
-          padding: EdgeInsets.all(6),
+          padding: const EdgeInsets.all(6),
           child: LoopAnimationBuilder(
             (controller) => RotationTransition(
               turns: Tween(begin: 0.0, end: 1.0).animate(controller),
-              child: Icon(Icons.refresh),
+              child: const Icon(Icons.refresh),
             ),
             playing: _state(context).busy,
           ),

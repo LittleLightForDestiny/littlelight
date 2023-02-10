@@ -7,7 +7,7 @@ import 'package:little_light/widgets/search/search.controller.dart';
 import 'package:little_light/widgets/search/search_filters/base_search_filter.widget.dart';
 
 class ItemSubTypeFilterWidget extends BaseSearchFilterWidget<ItemSubtypeFilter> {
-  ItemSubTypeFilterWidget(SearchController controller) : super(controller);
+  const ItemSubTypeFilterWidget(SearchController controller) : super(controller);
 
   @override
   _ItemSubTypeFilterWidgetState createState() => _ItemSubTypeFilterWidgetState();

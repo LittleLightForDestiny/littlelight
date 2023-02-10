@@ -32,7 +32,7 @@ class FreeSlotsSliderWidgetState extends State<FreeSlotsSliderWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
         child: Row(
           children: <Widget>[
             widget.suppressLabel ? Container() : Text("Free Slots".translate(context)),
@@ -51,7 +51,7 @@ class FreeSlotsSliderWidgetState extends State<FreeSlotsSliderWidget> {
             )),
             Text(
               "$freeSlots",
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             )
           ],
         ));

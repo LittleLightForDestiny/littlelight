@@ -23,13 +23,13 @@ class SingleTransferAction extends BaseNotificationAction {
   bool _shouldPlayDismissAnimation = false;
   bool _dismissAnimationFinished = false;
   String? _transferErrorMessage;
-  DateTime _createdAt;
+  final DateTime _createdAt;
 
   SingleTransferAction({required this.item, required this.sourceCharacter, required this.destinationCharacter})
       : _createdAt = DateTime.now();
 
   set currentStep(TransferSteps? step) {
-    this._currentStep = step;
+    _currentStep = step;
     notifyListeners();
   }
 
@@ -42,7 +42,7 @@ class SingleTransferAction extends BaseNotificationAction {
     bool moveToCharacter = false,
     bool equipOnCharacter = false,
   }) {
-    this._steps = {
+    _steps = {
       if (isOnPostmaster) TransferSteps.PullFromPostmaster,
       if (isEquipped) TransferSteps.Unequip,
       if (moveToVault) TransferSteps.MoveToVault,
@@ -54,8 +54,9 @@ class SingleTransferAction extends BaseNotificationAction {
 
   bool hasSteps(Set<TransferSteps> steps) => steps.any((step) => _steps?.contains(step) ?? false);
 
-  bool get active => this._steps != null;
+  bool get active => _steps != null;
 
+  @override
   String get id =>
       "transfer-action-${item.item.itemHash}-${item.item.itemInstanceId}-${_createdAt.millisecondsSinceEpoch}";
 
@@ -65,28 +66,28 @@ class SingleTransferAction extends BaseNotificationAction {
   bool get hasError => _transferErrorMessage != null;
   String? get errorMessage => _transferErrorMessage;
   void error(String message) async {
-    this._transferErrorMessage = message;
+    _transferErrorMessage = message;
     notifyListeners();
-    await Future.delayed(Duration(seconds: 4));
+    await Future.delayed(const Duration(seconds: 4));
     _shouldPlayDismissAnimation = true;
     notifyListeners();
-    await Future.delayed(Duration(milliseconds: 300));
+    await Future.delayed(const Duration(milliseconds: 300));
     _dismissAnimationFinished = true;
     notifyListeners();
-    await Future.delayed(Duration(milliseconds: 200));
-    this.dismiss();
+    await Future.delayed(const Duration(milliseconds: 200));
+    dismiss();
   }
 
   void success() async {
-    this._isFinished = true;
+    _isFinished = true;
     notifyListeners();
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 1));
     _shouldPlayDismissAnimation = true;
     notifyListeners();
-    await Future.delayed(Duration(milliseconds: 300));
+    await Future.delayed(const Duration(milliseconds: 300));
     _dismissAnimationFinished = true;
     notifyListeners();
-    await Future.delayed(Duration(milliseconds: 200));
-    this.dismiss();
+    await Future.delayed(const Duration(milliseconds: 200));
+    dismiss();
   }
 }

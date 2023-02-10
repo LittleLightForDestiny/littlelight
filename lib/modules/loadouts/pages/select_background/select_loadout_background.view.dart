@@ -12,7 +12,7 @@ import 'package:little_light/widgets/multisection_scrollview/sliver_section.dart
 import 'package:provider/provider.dart';
 
 class SelectLoadoutBackgroundView extends StatelessWidget {
-  SelectLoadoutBackgroundView() : super();
+  const SelectLoadoutBackgroundView() : super();
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +41,7 @@ class SelectLoadoutBackgroundView extends StatelessWidget {
           .toList(),
       crossAxisSpacing: 4,
       mainAxisSpacing: 4,
-      padding: MediaQuery.of(context).viewPadding.copyWith(top: 0) + EdgeInsets.all(4),
+      padding: MediaQuery.of(context).viewPadding.copyWith(top: 0) + const EdgeInsets.all(4),
     );
   }
 
@@ -74,12 +74,12 @@ class SelectLoadoutBackgroundView extends StatelessWidget {
           alignment: Alignment.centerLeft,
           decoration: BoxDecoration(
             gradient: LinearGradient(
-                begin: Alignment(0, 0),
-                end: Alignment(1, 2),
+                begin: const Alignment(0, 0),
+                end: const Alignment(1, 2),
                 colors: [color.withOpacity(.05), color.withOpacity(.1), color.withOpacity(.03), color.withOpacity(.1)]),
             border: Border.all(color: color, width: 1),
           ),
-          padding: EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           child: Row(children: [
             Expanded(
                 child: Text(

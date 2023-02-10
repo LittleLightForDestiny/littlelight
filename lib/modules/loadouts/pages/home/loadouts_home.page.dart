@@ -15,7 +15,7 @@ class LoadoutsHomePage extends StatelessWidget {
           ),
         ),
       ],
-      child: LoadoutsHomeView(),
+      child: const LoadoutsHomeView(),
     );
   }
 }

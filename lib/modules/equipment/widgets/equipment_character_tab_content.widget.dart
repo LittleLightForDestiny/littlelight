@@ -40,7 +40,7 @@ class EquipmentCharacterTabContentWidget extends StatelessWidget with ManifestCo
   }) : super(key: key);
 
   Future<Map<int, DestinyInventoryBucketDefinition>> get bucketDefs async {
-    final hashes = this.buckets.map((e) => e.bucketHash).whereType<int>().toList();
+    final hashes = buckets.map((e) => e.bucketHash).whereType<int>().toList();
     final defs = await manifest.getDefinitions<DestinyInventoryBucketDefinition>(hashes);
     return defs;
   }
@@ -62,7 +62,7 @@ class EquipmentCharacterTabContentWidget extends StatelessWidget with ManifestCo
                 .fold<List<SliverSection>>([], (list, element) => list + element).toList(),
             crossAxisSpacing: 0,
             mainAxisSpacing: 0,
-            padding: EdgeInsets.all(8).copyWith(top: 0),
+            padding: const EdgeInsets.all(8).copyWith(top: 0),
           ),
         );
       },
@@ -132,7 +132,7 @@ class EquipmentCharacterTabContentWidget extends StatelessWidget with ManifestCo
   ) {
     if (density == null) return null;
     final itemHeight = density.itemHeight;
-    if (itemHeight != null)
+    if (itemHeight != null) {
       return SliverSection.fixedHeight(
         itemHeight: itemHeight + 4,
         itemCount: itemCount,
@@ -142,7 +142,7 @@ class EquipmentCharacterTabContentWidget extends StatelessWidget with ManifestCo
             return buildItem(items[index], density);
           }
           if (canTransfer && index < bucketCount) {
-            return QuickTransferItem();
+            return const QuickTransferItem();
           }
           return EmptyItem(
             bucketHash: bucketContent.bucketHash,
@@ -150,8 +150,9 @@ class EquipmentCharacterTabContentWidget extends StatelessWidget with ManifestCo
           );
         },
       );
+    }
     final itemAspectRatio = density.itemAspectRatio;
-    if (itemAspectRatio != null)
+    if (itemAspectRatio != null) {
       return SliverSection.aspectRatio(
         itemAspectRatio: itemAspectRatio,
         itemsPerRow: itemsPerRow,
@@ -161,7 +162,7 @@ class EquipmentCharacterTabContentWidget extends StatelessWidget with ManifestCo
             return buildItem(items[index], density);
           }
           if (canTransfer && index < bucketCount) {
-            return QuickTransferItem();
+            return const QuickTransferItem();
           }
           return EmptyItem(
             bucketHash: bucketContent.bucketHash,
@@ -169,6 +170,7 @@ class EquipmentCharacterTabContentWidget extends StatelessWidget with ManifestCo
           );
         },
       );
+    }
     return null;
   }
 

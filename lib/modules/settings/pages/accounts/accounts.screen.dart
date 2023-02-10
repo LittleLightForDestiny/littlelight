@@ -32,7 +32,7 @@ class _AccountsScreenState extends State<AccountsScreen> with AuthConsumer {
   void loadAccounts() async {
     currentAccount = auth.currentAccountID;
     accounts = auth.accountIDs;
-    this.memberships = await auth.fetchMembershipDataForAllAccounts();
+    memberships = await auth.fetchMembershipDataForAllAccounts();
     setState(() {});
   }
 
@@ -42,7 +42,7 @@ class _AccountsScreenState extends State<AccountsScreen> with AuthConsumer {
       appBar: AppBar(
         leading: IconButton(
           enableFeedback: false,
-          icon: Icon(Icons.menu),
+          icon: const Icon(Icons.menu),
           onPressed: () {
             Scaffold.of(context).openDrawer();
           },
@@ -60,7 +60,7 @@ class _AccountsScreenState extends State<AccountsScreen> with AuthConsumer {
     var bottomPadding = MediaQuery.of(context).padding.bottom;
     return Container(
       color: Theme.of(context).colorScheme.secondaryContainer,
-      padding: EdgeInsets.all(8).copyWith(bottom: bottomPadding + 8),
+      padding: const EdgeInsets.all(8).copyWith(bottom: bottomPadding + 8),
       child: ElevatedButton(
           onPressed: () {
             addAccount(context);
@@ -73,7 +73,7 @@ class _AccountsScreenState extends State<AccountsScreen> with AuthConsumer {
 
   Widget buildBody(BuildContext context) {
     return SingleChildScrollView(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         child: Column(children: accounts.map((l) => buildAccountItem(context, l)).toList()));
   }
 
@@ -81,7 +81,7 @@ class _AccountsScreenState extends State<AccountsScreen> with AuthConsumer {
     final membership = memberships[accountId];
     final isCurrent = accountId == currentAccount;
     return Container(
-        margin: EdgeInsets.symmetric(vertical: 4),
+        margin: const EdgeInsets.symmetric(vertical: 4),
         height: 140,
         decoration:
             BoxDecoration(border: Border.all(width: 1, color: Theme.of(context).colorScheme.secondaryContainer)),
@@ -101,9 +101,9 @@ class _AccountsScreenState extends State<AccountsScreen> with AuthConsumer {
               child: Container(
                 alignment: Alignment.centerLeft,
                 color: Theme.of(context).backgroundColor,
-                padding: EdgeInsets.all(8).copyWith(left: 70),
+                padding: const EdgeInsets.all(8).copyWith(left: 70),
                 child:
-                    Text(membership?.bungieNetUser?.displayName ?? "", style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text(membership?.bungieNetUser?.displayName ?? "", style: const TextStyle(fontWeight: FontWeight.bold)),
               ),
             ),
             Positioned(
@@ -135,10 +135,10 @@ class _AccountsScreenState extends State<AccountsScreen> with AuthConsumer {
                                 deleteAccount(membership);
                               },
                               child: Container(
-                                  padding: EdgeInsets.all(8),
+                                  padding: const EdgeInsets.all(8),
                                   child: Text(
                                     "Remove".translate(context).toUpperCase(),
-                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                    style: const TextStyle(fontWeight: FontWeight.bold),
                                   )),
                             ))))
                 : Container()
@@ -171,7 +171,7 @@ class _AccountsScreenState extends State<AccountsScreen> with AuthConsumer {
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => InitialPage(),
+                builder: (context) => const InitialPage(),
               ));
         },
         child: Column(
@@ -181,7 +181,7 @@ class _AccountsScreenState extends State<AccountsScreen> with AuthConsumer {
             Container(height: 4),
             Text(
               membership.displayName,
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             )
           ],
         ),
@@ -195,7 +195,7 @@ class _AccountsScreenState extends State<AccountsScreen> with AuthConsumer {
     } catch (e) {}
     WidgetsBinding.instance.renderView.automaticSystemUiAdjustment = false;
     SystemChrome.setSystemUIOverlayStyle(
-        SystemUiOverlayStyle(statusBarColor: Colors.transparent, statusBarBrightness: Brightness.dark));
+        const SystemUiOverlayStyle(statusBarColor: Colors.transparent, statusBarBrightness: Brightness.dark));
   }
 
   void deleteAccount(UserMembershipData membership) async {

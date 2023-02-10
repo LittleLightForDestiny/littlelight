@@ -61,7 +61,7 @@ class _TabBarViewState extends State<PassiveTabBarView> {
   PageController _pageController;
   List<Widget> _children;
   int _currentIndex;
-  int _warpUnderwayCount = 0;
+  final int _warpUnderwayCount = 0;
 
   void _updateTabController() {
     final TabController newController = widget.controller ?? DefaultTabController.of(context);

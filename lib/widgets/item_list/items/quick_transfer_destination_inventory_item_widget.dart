@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 
 class QuickTransferDestinationItemWidget extends StatelessWidget {
-  QuickTransferDestinationItemWidget();
+  const QuickTransferDestinationItemWidget();
 
   @override
   Widget build(BuildContext context) {
     return Container(
-        margin: EdgeInsets.all(1),
+        margin: const EdgeInsets.all(1),
         decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.onSurface.withOpacity(.1),
             border: Border.all(

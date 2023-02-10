@@ -11,7 +11,7 @@ import 'package:little_light/widgets/search/search.controller.dart';
 class SearchListWidget extends StatefulWidget {
   final SearchController controller;
 
-  SearchListWidget({Key key, this.controller}) : super(key: key);
+  const SearchListWidget({Key key, this.controller}) : super(key: key);
 
   @override
   SearchListWidgetState createState() => SearchListWidgetState();
@@ -59,7 +59,7 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T> {
       ],
       crossAxisSpacing: 4,
       mainAxisSpacing: 4,
-      padding: EdgeInsets.all(4),
+      padding: const EdgeInsets.all(4),
     );
   }
 

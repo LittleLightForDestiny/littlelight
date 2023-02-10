@@ -21,34 +21,34 @@ class LoadoutsBloc extends ChangeNotifier with StorageConsumer, ProfileConsumer,
   }
 
   void refresh() async {
-    if (this._busy) return;
-    this._busy = true;
+    if (_busy) return;
+    _busy = true;
     notifyListeners();
 
     final remoteLoadouts = await littleLightApi.fetchLoadouts() ?? [];
-    this._loadouts = await _indexesFromLoadouts(remoteLoadouts);
+    _loadouts = await _indexesFromLoadouts(remoteLoadouts);
     _sortLoadouts();
-    this._busy = false;
+    _busy = false;
     notifyListeners();
   }
 
   void _loadLoadouts() async {
-    if (this._busy) return;
-    await Future.delayed(Duration(milliseconds: 1));
-    this._busy = true;
+    if (_busy) return;
+    await Future.delayed(const Duration(milliseconds: 1));
+    _busy = true;
     notifyListeners();
     final localLoadouts = await currentMembershipStorage.getCachedLoadouts() ?? [];
     final loadoutsOrder = await currentMembershipStorage.getLoadoutsOrder() ?? [];
-    this._loadouts = await _indexesFromLoadouts(localLoadouts);
-    this._loadoutsOrder = loadoutsOrder;
+    _loadouts = await _indexesFromLoadouts(localLoadouts);
+    _loadoutsOrder = loadoutsOrder;
     _sortLoadouts();
     notifyListeners();
 
     final remoteLoadouts = await littleLightApi.fetchLoadouts() ?? [];
     final mergedLoadouts = _mergeLoadouts(localLoadouts, remoteLoadouts);
-    this._loadouts = await _indexesFromLoadouts(mergedLoadouts);
+    _loadouts = await _indexesFromLoadouts(mergedLoadouts);
     _sortLoadouts();
-    this._busy = false;
+    _busy = false;
     notifyListeners();
   }
 
@@ -83,7 +83,7 @@ class LoadoutsBloc extends ChangeNotifier with StorageConsumer, ProfileConsumer,
 
   Future<void> _sortLoadouts() async {
     final order = _loadoutsOrder ?? [];
-    if (order.length == 0) return;
+    if (order.isEmpty) return;
     _loadouts?.sort((la, lb) {
       var indexA = order.indexOf(la.assignedId);
       var indexB = order.indexOf(lb.assignedId);
@@ -116,7 +116,7 @@ class LoadoutsBloc extends ChangeNotifier with StorageConsumer, ProfileConsumer,
     }
     _sortLoadouts();
     notifyListeners();
-    await this.littleLightApi.saveLoadout(loadout);
+    await littleLightApi.saveLoadout(loadout);
     await _saveLocalLoadouts();
   }
 
@@ -127,7 +127,7 @@ class LoadoutsBloc extends ChangeNotifier with StorageConsumer, ProfileConsumer,
       loadouts.removeWhere((l) => l.assignedId == loadoutIndex.assignedId);
       notifyListeners();
     }
-    await this.littleLightApi.deleteLoadout(loadout);
+    await littleLightApi.deleteLoadout(loadout);
     await _saveLocalLoadouts();
   }
 
@@ -135,13 +135,13 @@ class LoadoutsBloc extends ChangeNotifier with StorageConsumer, ProfileConsumer,
     final indexes = _loadouts;
     if (indexes == null) return;
     final loadouts = indexes.map((e) => e.toLoadout()).toList();
-    await this.currentMembershipStorage.saveLoadouts(loadouts);
+    await currentMembershipStorage.saveLoadouts(loadouts);
   }
 
   Future<void> reorderLoadouts(List<String> order) async {
-    this._loadoutsOrder = order;
+    _loadoutsOrder = order;
     _sortLoadouts();
     notifyListeners();
-    await this.currentMembershipStorage.saveLoadoutsOrder(order);
+    await currentMembershipStorage.saveLoadoutsOrder(order);
   }
 }

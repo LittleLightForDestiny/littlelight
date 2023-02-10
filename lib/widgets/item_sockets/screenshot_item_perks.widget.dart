@@ -13,7 +13,7 @@ import 'package:little_light/widgets/item_sockets/selectable_perk.widget.dart';
 
 class ScreenShotItemPerksWidget extends BaseItemSocketsWidget {
   final double pixelSize;
-  ScreenShotItemPerksWidget({
+  const ScreenShotItemPerksWidget({
     Key key,
     DestinyItemComponent item,
     DestinyInventoryItemDefinition definition,
@@ -51,6 +51,7 @@ class ScreenShotItemPerksWidgetState<T extends ScreenShotItemPerksWidget> extend
     );
   }
 
+  @override
   Widget buildHeader(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,8 +103,8 @@ class ScreenShotItemPerksWidgetState<T extends ScreenShotItemPerksWidget> extend
   @override
   Widget buildSocketPlugs(BuildContext context, int socketIndex) {
     var plugs = socketPlugHashes(socketIndex);
-    if (plugs.length == 0) return null;
-    return Container(
+    if (plugs.isEmpty) return null;
+    return SizedBox(
         width: 80 * widget.pixelSize,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -115,7 +116,7 @@ class ScreenShotItemPerksWidgetState<T extends ScreenShotItemPerksWidget> extend
   @override
   List<int> socketPlugHashes(int socketIndex) {
     if (controller.reusablePlugs == null) {
-      var isRandom = controller.randomizedPlugHashes(socketIndex).length > 0;
+      var isRandom = controller.randomizedPlugHashes(socketIndex).isNotEmpty;
       if (isRandom) {
         return controller
             .bungieRollPlugHashes(socketIndex)

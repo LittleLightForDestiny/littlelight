@@ -42,7 +42,7 @@ class MinimalBaseInventoryItemWidget extends BaseInventoryItemWidget
             alignment: Alignment.topRight,
             widthFactor: .3,
             child:
-                Container(margin: EdgeInsets.all(2), foregroundDecoration: WishlistCornerBadgeDecoration(tags: tags))));
+                Container(margin: const EdgeInsets.all(2), foregroundDecoration: WishlistCornerBadgeDecoration(tags: tags))));
   }
 
   @override
@@ -60,7 +60,7 @@ class MinimalBaseInventoryItemWidget extends BaseInventoryItemWidget
           context,
           Text(
             "x${item.quantity}",
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w700,
             ),
@@ -72,7 +72,7 @@ class MinimalBaseInventoryItemWidget extends BaseInventoryItemWidget
           context,
           Text(
             "${instanceInfo?.primaryStat?.value}",
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w700,
             ),
@@ -115,10 +115,12 @@ class MinimalBaseInventoryItemWidget extends BaseInventoryItemWidget
     return 1;
   }
 
+  @override
   double get padding {
     return 4;
   }
 
+  @override
   double get titleFontSize {
     return 12;
   }

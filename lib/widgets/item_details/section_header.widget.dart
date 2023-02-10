@@ -24,7 +24,7 @@ class SectionHeaderWidget extends StatefulWidget {
   final Function? onChanged;
   final Widget label;
   final String sectionId;
-  SectionHeaderWidget({
+  const SectionHeaderWidget({
     required this.label,
     this.onChanged,
     required this.sectionId,
@@ -65,8 +65,8 @@ class SectionHeaderWidgetState<T extends SectionHeaderWidget> extends State<T> w
 
   Widget buildTrailingIcon(BuildContext context) {
     if (visible == false) {
-      return Icon(FontAwesomeIcons.eyeSlash);
+      return const Icon(FontAwesomeIcons.eyeSlash);
     }
-    return Icon(FontAwesomeIcons.eye);
+    return const Icon(FontAwesomeIcons.eye);
   }
 }

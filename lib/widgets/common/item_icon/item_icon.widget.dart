@@ -78,8 +78,8 @@ class ItemIconWidget extends BaseDestinyStatelessItemWidget with DeepSightHelper
           child: Shimmer.fromColors(
         baseColor: masterworkLayers.withOpacity(.2),
         highlightColor: masterworkLayers.layer3,
+        period: const Duration(seconds: 5),
         child: img,
-        period: Duration(seconds: 5),
       ))
     ]);
   }
@@ -111,6 +111,10 @@ class ItemIconWidget extends BaseDestinyStatelessItemWidget with DeepSightHelper
     final isComplete = isDeepSightObjectiveCompleted(instanceID);
     return LayoutBuilder(
         builder: (context, constraints) => Container(
+            decoration: BoxDecoration(
+              border:
+                  Border.all(color: LittleLightTheme.of(context).highlightedObjectiveLayers, width: iconBorderWidth),
+            ),
             child: Stack(children: [
               Container(
                   decoration: CornerBadgeDecoration(
@@ -127,11 +131,7 @@ class ItemIconWidget extends BaseDestinyStatelessItemWidget with DeepSightHelper
                       style:
                           LittleLightTheme.of(context).textTheme.button.copyWith(fontSize: constraints.maxWidth * .2),
                     ))
-            ]),
-            decoration: BoxDecoration(
-              border:
-                  Border.all(color: LittleLightTheme.of(context).highlightedObjectiveLayers, width: iconBorderWidth),
-            )));
+            ])));
   }
 
   Widget craftedWeaponOverlay(BuildContext context) {

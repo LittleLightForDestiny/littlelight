@@ -5,7 +5,7 @@ import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/progress_tabs/pursuit_item/pursuit_item.widget.dart';
 
 class SmallPursuitItemWidget extends PursuitItemWidget {
-  SmallPursuitItemWidget({
+  const SmallPursuitItemWidget({
     Key key,
     ItemWithOwner item,
     onTap,
@@ -17,6 +17,7 @@ class SmallPursuitItemWidget extends PursuitItemWidget {
           selectable: selectable,
         );
 
+  @override
   SmallPursuitItemWidgetState createState() => SmallPursuitItemWidgetState();
 }
 

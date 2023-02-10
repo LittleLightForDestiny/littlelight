@@ -7,7 +7,7 @@ typedef DialogOptionSelected = Function(BuildContext context, bool value);
 abstract class LittleLightYesNoDialog extends LittleLightBaseDialog {
   final DialogOptionSelected? onSelectCallback;
 
-  LittleLightYesNoDialog(
+  const LittleLightYesNoDialog(
       {Key? key, DialogWidgetBuilder? titleBuilder, DialogWidgetBuilder? bodyBuilder, this.onSelectCallback})
       : super(
           key: key,

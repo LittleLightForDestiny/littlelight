@@ -10,6 +10,7 @@ class WishlistCornerBadgeDecoration extends CornerBadgeDecoration {
   const WishlistCornerBadgeDecoration({this.tags, double badgeSize, CornerPosition position = CornerPosition.TopRight})
       : super(badgeSize: badgeSize, colors: null, position: position);
 
+  @override
   List<Color> get badgeColors {
     List<Color> colors = [];
     if (tags.contains(WishlistTag.PVE) || tags.contains(WishlistTag.GodPVE)) {
@@ -55,7 +56,7 @@ class WishlistCornerBadgeDecoration extends CornerBadgeDecoration {
   }
 
   @override
-  BoxPainter createBoxPainter([onChanged]) => WishlistBadgePainter(badgeColors, borderColors, badgeSize, this.position);
+  BoxPainter createBoxPainter([onChanged]) => WishlistBadgePainter(badgeColors, borderColors, badgeSize, position);
 }
 
 class WishlistBadgePainter extends CornerBadgePainter {

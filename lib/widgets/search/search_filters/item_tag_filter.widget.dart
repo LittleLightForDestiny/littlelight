@@ -9,7 +9,7 @@ import 'package:little_light/widgets/search/search.controller.dart';
 import 'package:little_light/widgets/search/search_filters/base_search_filter.widget.dart';
 
 class ItemTagFilterWidget extends BaseSearchFilterWidget<ItemTagFilter> {
-  ItemTagFilterWidget(SearchController controller) : super(controller);
+  const ItemTagFilterWidget(SearchController controller) : super(controller);
 
   @override
   _WishlistTagsFilterWidgetState createState() => _WishlistTagsFilterWidgetState();
@@ -44,7 +44,7 @@ class _WishlistTagsFilterWidgetState
     var length = options.length;
     if (options.contains(null)) length = length - 1;
 
-    return Container(height: 40, child: super.buildButton(context, value));
+    return SizedBox(height: 40, child: super.buildButton(context, value));
   }
 
   @override

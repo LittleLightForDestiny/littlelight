@@ -9,13 +9,14 @@ import 'package:little_light/widgets/item_list/bucket_display_options_selector.w
 
 class PursuitsDisplayOptionsSelectorWidget extends BucketDisplayOptionsSelectorWidget {
   final String typeIdentifier;
-  PursuitsDisplayOptionsSelectorWidget({this.typeIdentifier, Function onChanged}) : super(onChanged: onChanged);
+  const PursuitsDisplayOptionsSelectorWidget({this.typeIdentifier, Function onChanged}) : super(onChanged: onChanged);
   @override
   PursuitsDisplayOptionsSelectorWidgetState createState() => PursuitsDisplayOptionsSelectorWidgetState();
 }
 
 class PursuitsDisplayOptionsSelectorWidgetState
     extends BucketDisplayOptionsSelectorWidgetState<PursuitsDisplayOptionsSelectorWidget> {
+  @override
   BucketDisplayType currentType;
 
   @override
@@ -24,10 +25,12 @@ class PursuitsDisplayOptionsSelectorWidgetState
     currentType = userSettings.getDisplayOptionsForBucket(bucketKey)?.type;
   }
 
+  @override
   String get bucketKey {
     return "pursuits_${widget.typeIdentifier}";
   }
 
+  @override
   List<BucketDisplayType> get types {
     return [
       BucketDisplayType.Hidden,
@@ -37,14 +40,16 @@ class PursuitsDisplayOptionsSelectorWidgetState
     ];
   }
 
+  @override
   DropdownMenuItem<BucketDisplayType> buildItem(BucketDisplayType type) {
     var icon = getIcon(type);
     return DropdownMenuItem<BucketDisplayType>(
         value: type,
         child:
-            Container(width: 200, child: Row(children: [Icon(icon, size: 16), Container(width: 8), getLabel(type)])));
+            SizedBox(width: 200, child: Row(children: [Icon(icon, size: 16), Container(width: 8), getLabel(type)])));
   }
 
+  @override
   Widget getLabel(BucketDisplayType type) {
     switch (type) {
       case BucketDisplayType.Hidden:
@@ -65,6 +70,7 @@ class PursuitsDisplayOptionsSelectorWidgetState
     return Container();
   }
 
+  @override
   IconData getIcon(BucketDisplayType type) {
     switch (type) {
       case BucketDisplayType.Hidden:

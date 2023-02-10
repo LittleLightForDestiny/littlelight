@@ -16,7 +16,7 @@ import 'package:shimmer/shimmer.dart';
 
 extension on ErrorNotificationEvent {
   Widget? getAdditionalMessage(BuildContext context) {
-    switch (this.errorType) {
+    switch (errorType) {
       case ErrorNotificationType.onCombatZoneEquipError:
       case ErrorNotificationType.onCombatZoneApplyModError:
         return Text("Try to do this while on orbit, a social space or offline".translate(context));
@@ -30,7 +30,7 @@ class InventoryNotificationWidget extends StatefulWidget {
   final double barHeight;
   final EdgeInsets? notificationMargin;
 
-  InventoryNotificationWidget({Key? key, this.barHeight = kBottomNavigationBarHeight, this.notificationMargin})
+  const InventoryNotificationWidget({Key? key, this.barHeight = kBottomNavigationBarHeight, this.notificationMargin})
       : super(key: key);
 
   @override
@@ -90,9 +90,9 @@ class InventoryNotificationWidgetState extends State<InventoryNotificationWidget
         shimmerBar(context),
         if (widget.barHeight > 0) Container(height: widget.barHeight),
         if (bottomPadding > 1)
-          Container(
-            child: bottomPaddingShimmer(context),
+          SizedBox(
             height: bottomPadding,
+            child: bottomPaddingShimmer(context),
           )
       ],
     );
@@ -185,7 +185,7 @@ class InventoryNotificationWidgetState extends State<InventoryNotificationWidget
         if (itemInstanceId == null || itemHash == null) return Container();
         var instanceInfo = profile.getInstanceInfo(itemInstanceId);
         return Container(
-          margin: EdgeInsets.only(left: 8),
+          margin: const EdgeInsets.only(left: 8),
           width: 24,
           height: 24,
           key: Key("item_$itemHash"),
@@ -201,11 +201,11 @@ class InventoryNotificationWidgetState extends State<InventoryNotificationWidget
 
       case NotificationType.requestApplyPlug:
         return Container(
-          margin: EdgeInsets.only(left: 8),
+          margin: const EdgeInsets.only(left: 8),
           key: Key("item_$itemHash"),
           child: Row(mainAxisSize: MainAxisSize.min, children: [
             if (plugHash != null)
-              Container(
+              SizedBox(
                   width: 24,
                   height: 24,
                   child: ManifestImageWidget<DestinyInventoryItemDefinition>(
@@ -216,12 +216,12 @@ class InventoryNotificationWidgetState extends State<InventoryNotificationWidget
                 width: 8,
               ),
             if (itemHash != null)
-              Container(
+              SizedBox(
+                width: 24,
+                height: 24,
                 child: ManifestImageWidget<DestinyInventoryItemDefinition>(
                   itemHash,
                 ),
-                width: 24,
-                height: 24,
               )
           ]),
         );
@@ -236,7 +236,7 @@ class InventoryNotificationWidgetState extends State<InventoryNotificationWidget
     final additionalMessage = getAdditionalMessage(context);
     final _latestEvent = this._latestEvent;
     return Container(
-      padding: MediaQuery.of(context).viewPadding.copyWith(top: 0, bottom: 0) + EdgeInsets.symmetric(horizontal: 8),
+      padding: MediaQuery.of(context).viewPadding.copyWith(top: 0, bottom: 0) + const EdgeInsets.symmetric(horizontal: 8),
       child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.end, children: [
         Container(
           margin: widget.notificationMargin,
@@ -244,13 +244,13 @@ class InventoryNotificationWidgetState extends State<InventoryNotificationWidget
               color: _latestEvent is ErrorNotificationEvent
                   ? LittleLightTheme.of(context).errorLayers.layer0
                   : LittleLightTheme.of(context).surfaceLayers.layer2,
-              borderRadius: BorderRadius.all(Radius.circular(8))),
-          padding: EdgeInsets.symmetric(horizontal: 8),
+              borderRadius: const BorderRadius.all(Radius.circular(8))),
+          padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Row(mainAxisSize: MainAxisSize.min, children: [
             DefaultTextStyle(
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: const TextStyle(fontWeight: FontWeight.bold),
                 child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 8),
+                    padding: const EdgeInsets.symmetric(vertical: 8),
                     child: _latestEvent is ErrorNotificationEvent
                         ? buildErrorMessage(context, _latestEvent)
                         : DefaultLoadingShimmer(child: buildMessage(context)))),
@@ -286,8 +286,8 @@ class InventoryNotificationWidgetState extends State<InventoryNotificationWidget
     final event = _latestEvent;
     if (event is ErrorNotificationEvent && event.getAdditionalMessage(context) != null) {
       return Container(
-          margin: EdgeInsets.only(top: 8),
-          padding: EdgeInsets.all(8),
+          margin: const EdgeInsets.only(top: 8),
+          padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
             color: LittleLightTheme.of(context).errorLayers,
             borderRadius: BorderRadius.circular(8),

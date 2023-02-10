@@ -30,8 +30,9 @@ class MilestoneItemWidget extends StatefulWidget {
 
   final DestinyMilestone milestone;
 
-  MilestoneItemWidget({Key key, this.characterId, this.milestone}) : super(key: key);
+  const MilestoneItemWidget({Key key, this.characterId, this.milestone}) : super(key: key);
 
+  @override
   MilestoneItemWidgetState createState() => MilestoneItemWidgetState();
 }
 
@@ -41,7 +42,7 @@ class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
   DestinyMilestone milestone;
   int get hash => widget.milestone.milestoneHash;
   bool fullyLoaded = false;
-  Map<int, bool> activitiesOpened = Map();
+  Map<int, bool> activitiesOpened = {};
 
   @override
   void initState() {
@@ -83,7 +84,7 @@ class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
       decoration: BoxDecoration(
           color: LittleLightTheme.of(context).surfaceLayers.layer1,
           border: Border.all(width: 1, color: LittleLightTheme.of(context).surfaceLayers.layer3)),
-      margin: EdgeInsets.all(8).copyWith(
+      margin: const EdgeInsets.all(8).copyWith(
         top: 0,
       ),
       child: Stack(children: [
@@ -122,7 +123,7 @@ class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
         children: <Widget>[
           definition.displayProperties.hasIcon
               ? Container(
-                  padding: EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(8),
                   width: 64,
                   height: 64,
                   child: QueuedNetworkImage(
@@ -132,17 +133,17 @@ class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
               child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
             Container(
               alignment: Alignment.centerLeft,
-              padding: EdgeInsets.all(8),
+              padding: const EdgeInsets.all(8),
               child: Text(
                 definition.displayProperties.name.toUpperCase(),
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
             Container(
-              padding: EdgeInsets.all(8),
+              padding: const EdgeInsets.all(8),
               child: Text(
                 definition.displayProperties.description,
-                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
+                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
               ),
             )
           ])),
@@ -163,11 +164,11 @@ class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
     }
     List<DestinyMilestoneChallengeActivity> activitiesWithChallenges =
         activities?.where((a) => (a.challenges?.length ?? 0) > 0)?.toList();
-    if (activitiesWithChallenges.length > 0) {
+    if (activitiesWithChallenges.isNotEmpty) {
       activities = activitiesWithChallenges;
     }
     return Container(
-        padding: EdgeInsets.all(4).copyWith(bottom: 8),
+        padding: const EdgeInsets.all(4).copyWith(bottom: 8),
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: activities.map((a) => buildActivity(context, a)).toList()));
@@ -179,12 +180,12 @@ class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
         (def) => Column(children: [
               Stack(children: [
                 Container(
-                    margin: EdgeInsets.all(4),
-                    padding: EdgeInsets.all(8),
+                    margin: const EdgeInsets.all(4),
+                    padding: const EdgeInsets.all(8),
                     color: Theme.of(context).colorScheme.secondary,
                     child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
                       Row(children: [
-                        Container(
+                        SizedBox(
                             width: 32,
                             height: 32,
                             child: QueuedNetworkImage(
@@ -196,7 +197,7 @@ class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
                             def?.originalDisplayProperties?.name ??
                                 def?.selectionScreenDisplayProperties?.name ??
                                 def.displayProperties.name,
-                            style: TextStyle(fontWeight: FontWeight.bold)),
+                            style: const TextStyle(fontWeight: FontWeight.bold)),
                         Expanded(child: Container()),
                         (def?.activityLightLevel ?? 0) > 0
                             ? Row(children: [
@@ -214,7 +215,7 @@ class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
                           def?.originalDisplayProperties?.description ??
                               def?.selectionScreenDisplayProperties?.description ??
                               def.displayProperties.description,
-                          style: TextStyle(fontWeight: FontWeight.w500)),
+                          style: const TextStyle(fontWeight: FontWeight.w500)),
                     ])),
                 Positioned.fill(
                     child: Material(
@@ -236,18 +237,18 @@ class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
 
   Widget buildActivitiesObjectives(BuildContext context) {
     Map<int, DestinyObjectiveProgress> objectives = {};
-    milestone.activities?.forEach((a) {
-      a.challenges?.forEach((c) {
+    for (var a in milestone.activities) {
+      for (var c in a.challenges) {
         objectives[c.objective?.objectiveHash] = c.objective;
-      });
-    });
-    if (objectives.values.length == 0) return Container();
+      }
+    }
+    if (objectives.values.isEmpty) return Container();
     return Container(
-        padding: EdgeInsets.only(bottom: 4),
+        padding: const EdgeInsets.only(bottom: 4),
         child: Column(
           children: objectives.values
               .map((o) => Container(
-                  margin: EdgeInsets.all(4),
+                  margin: const EdgeInsets.all(4),
                   child: GenericProgressBarWidget(
                     completed: o.complete,
                     progress: o.progress,
@@ -259,15 +260,15 @@ class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
   }
 
   Widget buildActivitiesModifiers(BuildContext context, [int activityHash]) {
-    Set<int> modifierHashes = Set();
-    milestone?.activities?.forEach((a) {
+    Set<int> modifierHashes = {};
+    for (var a in milestone?.activities) {
       if (activityHash == null || a.activityHash == activityHash) {
         modifierHashes.addAll(a.modifierHashes ?? []);
       }
-    });
-    if (modifierHashes.length == 0) return Container();
+    }
+    if (modifierHashes.isEmpty) return Container();
     return Container(
-        padding: EdgeInsets.all(8).copyWith(top: 0),
+        padding: const EdgeInsets.all(8).copyWith(top: 0),
         child: Column(
           children: <Widget>[
             HeaderWidget(
@@ -275,13 +276,13 @@ class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
               child: TranslatedTextWidget(
                 "Modifiers",
                 uppercase: true,
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
             Container(height: 8)
           ]
               .followedBy(modifierHashes.map((m) => Container(
-                  margin: EdgeInsets.all(4),
+                  margin: const EdgeInsets.all(4),
                   child: DefinitionProviderWidget<DestinyActivityModifierDefinition>(
                       m,
                       (def) => Row(
@@ -289,7 +290,7 @@ class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
                               Container(
                                 width: 4,
                               ),
-                              Container(
+                              SizedBox(
                                   width: 24,
                                   height: 24,
                                   child:
@@ -315,7 +316,7 @@ class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
 
   Widget buildAvailableQuest(BuildContext context, DestinyMilestoneQuest quest) {
     return Container(
-        padding: EdgeInsets.all(4).copyWith(bottom: 8),
+        padding: const EdgeInsets.all(4).copyWith(bottom: 8),
         child: Column(
             children: quest.status.stepObjectives
                 .map((o) => GenericProgressBarWidget(
@@ -330,19 +331,19 @@ class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
   Widget buildRewards(BuildContext context) {
     List<DestinyMilestoneRewardCategoryDefinition> rewards = definition?.rewards?.values?.toList();
     Map<int, int> itemQuantities = {};
-    rewards?.forEach((r) {
-      r.rewardEntries.values.forEach((e) {
-        e.items.forEach((i) {
+    for (var r in rewards) {
+      for (var e in r.rewardEntries.values) {
+        for (var i in e.items) {
           itemQuantities[i.itemHash] = i.quantity;
-        });
-      });
-    });
-    if (itemQuantities.length == 0) {
+        }
+      }
+    }
+    if (itemQuantities.isEmpty) {
       return Container();
     }
 
     return Container(
-        padding: EdgeInsets.all(8).copyWith(top: 0),
+        padding: const EdgeInsets.all(8).copyWith(top: 0),
         child: Column(
             children: <Widget>[
           HeaderWidget(
@@ -350,7 +351,7 @@ class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
             child: TranslatedTextWidget(
               "Rewards",
               uppercase: true,
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
           Container(height: 8)
@@ -361,7 +362,7 @@ class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
                           Container(
                             width: 4,
                           ),
-                          Container(
+                          SizedBox(
                               width: 24,
                               height: 24,
                               child: QueuedNetworkImage(
@@ -372,7 +373,7 @@ class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
                           ),
                           Text(
                             def?.displayProperties?.name ?? "",
-                            style: TextStyle(fontWeight: FontWeight.w500),
+                            style: const TextStyle(fontWeight: FontWeight.w500),
                           )
                         ]))))
                 .toList()));

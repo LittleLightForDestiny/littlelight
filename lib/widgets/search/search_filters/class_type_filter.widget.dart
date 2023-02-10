@@ -10,7 +10,7 @@ import 'package:little_light/widgets/search/search.controller.dart';
 import 'package:little_light/widgets/search/search_filters/base_search_filter.widget.dart';
 
 class ClassTypeFilterWidget extends BaseSearchFilterWidget<ClassTypeFilter> {
-  ClassTypeFilterWidget(SearchController controller) : super(controller);
+  const ClassTypeFilterWidget(SearchController controller) : super(controller);
 
   @override
   _ClassTypeFilterWidgetState createState() => _ClassTypeFilterWidgetState();
@@ -34,7 +34,7 @@ class _ClassTypeFilterWidgetState
   @override
   Widget buildButtonLabel(BuildContext context, DestinyClass value) {
     if ((value ?? DestinyClass.Unknown) != DestinyClass.Unknown) {
-      return Container(margin: EdgeInsets.all(8), width: 32, height: 32, child: Icon(value.icon));
+      return Container(margin: const EdgeInsets.all(8), width: 32, height: 32, child: Icon(value.icon));
     }
 
     return Text(

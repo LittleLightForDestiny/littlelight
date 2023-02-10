@@ -17,7 +17,7 @@ import 'package:little_light/widgets/item_details/section_header.widget.dart';
 class ItemDetailLoadoutsWidget extends BaseDestinyStatefulItemWidget {
   final List<LoadoutItemIndex> loadouts;
 
-  ItemDetailLoadoutsWidget(
+  const ItemDetailLoadoutsWidget(
       DestinyItemComponent item, DestinyInventoryItemDefinition definition, DestinyItemInstanceComponent instanceInfo,
       {Key key, this.loadouts})
       : super(item: item, definition: definition, instanceInfo: instanceInfo, key: key);
@@ -40,7 +40,7 @@ class ItemDetailLoadoutsWidgetState extends BaseDestinyItemState<ItemDetailLoado
       return Container();
     }
     return Container(
-      padding: EdgeInsets.all(8).copyWith(bottom: 4),
+      padding: const EdgeInsets.all(8).copyWith(bottom: 4),
       child: Column(
         children: <Widget>[
           getHeader(
@@ -48,7 +48,7 @@ class ItemDetailLoadoutsWidgetState extends BaseDestinyItemState<ItemDetailLoado
               "Loadouts",
               uppercase: true,
               textAlign: TextAlign.left,
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
           visible ? Container(height: 8) : Container(),
@@ -71,7 +71,7 @@ class ItemDetailLoadoutsWidgetState extends BaseDestinyItemState<ItemDetailLoado
   Widget buildLoadoutItem(LoadoutItemIndex loadout, BuildContext context) {
     return Container(
         color: LittleLightTheme.of(context).upgradeLayers,
-        margin: EdgeInsets.only(bottom: 4),
+        margin: const EdgeInsets.only(bottom: 4),
         child: Stack(children: [
           Positioned.fill(
               child: loadout.emblemHash != null
@@ -84,13 +84,13 @@ class ItemDetailLoadoutsWidgetState extends BaseDestinyItemState<ItemDetailLoado
                     )
                   : Container()),
           Container(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               child: Text(
                 loadout?.name?.toUpperCase() ?? "",
                 maxLines: 1,
                 overflow: TextOverflow.fade,
                 softWrap: false,
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: const TextStyle(fontWeight: FontWeight.bold),
               )),
           Positioned.fill(
               child: Material(

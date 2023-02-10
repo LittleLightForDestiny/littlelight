@@ -35,7 +35,7 @@ class PursuitItemWidget extends StatefulWidget {
   final double titleFontSize;
   final double paddingSize;
 
-  PursuitItemWidget(
+  const PursuitItemWidget(
       {Key key,
       this.item,
       this.trailing,
@@ -48,6 +48,7 @@ class PursuitItemWidget extends StatefulWidget {
       this.onLongPress})
       : super(key: key);
 
+  @override
   PursuitItemWidgetState createState() => PursuitItemWidgetState();
 }
 
@@ -258,11 +259,11 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
   Widget buildObjectives(BuildContext context, DestinyInventoryItemDefinition questStepDef) {
     if (itemObjectives == null) return Container();
     return Container(
-      padding: EdgeInsets.all(4).copyWith(top: 0),
+      padding: const EdgeInsets.all(4).copyWith(top: 0),
       child: Row(
         children: itemObjectives
             .map((objective) =>
-                Expanded(child: Container(margin: EdgeInsets.all(2), child: buildObjective(context, objective))))
+                Expanded(child: Container(margin: const EdgeInsets.all(2), child: buildObjective(context, objective))))
             .toList(),
       ),
     );
@@ -299,7 +300,7 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
               badgeSize: 28,
               position: CornerPosition.BottomRight),
         )),
-        Positioned(right: 2, bottom: 4, child: Icon(FontAwesomeIcons.exclamation, size: 12))
+        const Positioned(right: 2, bottom: 4, child: Icon(FontAwesomeIcons.exclamation, size: 12))
       ]);
     }
     return ItemIconWidget(item, definition, instanceInfo);
@@ -309,7 +310,7 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
     return Text(
       definition.displayProperties.description,
       overflow: TextOverflow.fade,
-      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
+      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
     );
   }
 }

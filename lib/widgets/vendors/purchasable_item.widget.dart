@@ -38,7 +38,7 @@ class PurchasableItemWidget extends StatefulWidget {
   final String characterId;
   final int vendorHash;
 
-  PurchasableItemWidget({this.item, this.sale, this.characterId, this.vendorHash});
+  const PurchasableItemWidget({this.item, this.sale, this.characterId, this.vendorHash});
   @override
   State<StatefulWidget> createState() {
     return PurchasableItemWidgetState();
@@ -88,7 +88,7 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget>
         )),
         child: Stack(children: [
           Column(children: [
-            Container(
+            SizedBox(
                 height: iconSize + padding * 2 + 8,
                 child: Stack(
                     children: <Widget>[
@@ -148,12 +148,12 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget>
               right: iconBorderWidth,
               bottom: iconBorderWidth,
               child: Container(
-                  padding: EdgeInsets.all(4),
+                  padding: const EdgeInsets.all(4),
                   alignment: Alignment.centerRight,
                   color: Colors.black.withOpacity(.6),
                   child: Text(
                     "x${widget.item.quantity}",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                   )))
           : Container()
     ]);
@@ -184,7 +184,7 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget>
           definition.displayProperties.description,
           softWrap: true,
           overflow: TextOverflow.fade,
-          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
+          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
         )),
         Container(width: 4),
         buildCount(context)
@@ -247,7 +247,7 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget>
           definition.displayProperties.description,
           softWrap: true,
           overflow: TextOverflow.fade,
-          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
+          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
         )),
       ],
     );
@@ -265,7 +265,7 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget>
                       return ManifestText<DestinySandboxPerkDefinition>(
                         p.perkHash,
                         textExtractor: (def) => def?.displayProperties?.description,
-                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
+                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
                       );
                     })?.toList() ??
                     [])),
@@ -298,7 +298,7 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget>
     }
 
     return Container(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         color: Colors.grey.shade900,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -307,7 +307,7 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget>
             TranslatedTextWidget(
               "Inventory",
               uppercase: true,
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
             ),
             Container(height: 4),
             Text('$count')
@@ -321,7 +321,7 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget>
     var currencies = profile.getProfileCurrencies();
     return Container(
         color: Colors.grey.shade900,
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -330,7 +330,7 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget>
                 child: TranslatedTextWidget(
               "Cost:",
               uppercase: true,
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
             ))
           ].followedBy(costs.map((c) {
             var items = inventory.where((i) => i.itemHash == c.itemHash);
@@ -339,7 +339,7 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget>
             var total = currency.fold<int>(itemsTotal, (t, curr) => t + curr.quantity);
             bool isEnough = total >= c.quantity;
             return Container(
-                padding: EdgeInsets.only(left: 8),
+                padding: const EdgeInsets.only(left: 8),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
@@ -352,7 +352,7 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget>
                     Container(
                       width: 4,
                     ),
-                    Container(
+                    SizedBox(
                         width: 18, height: 18, child: ManifestImageWidget<DestinyInventoryItemDefinition>(c.itemHash)),
                   ],
                 ));
@@ -386,7 +386,7 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget>
       wishlistTags(context),
       collectedBadge(context),
     ].where((element) => element != null).toList();
-    if (list.length == 0) return null;
+    if (list.isEmpty) return null;
     var spacedList = list.fold<List<Widget>>(
         <Widget>[], (previousValue, element) => previousValue + [element, Container(width: 4)]).toList();
     spacedList.removeLast();
@@ -402,7 +402,7 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget>
 
   Widget collectedBadge(BuildContext context) {
     if (isUnlocked) {
-      return Icon(FontAwesomeIcons.solidCheckCircle,
+      return Icon(FontAwesomeIcons.solidCircleCheck,
           color: definition?.inventory?.tierType?.getTextColor(context), size: 18);
     }
     return null;

@@ -11,7 +11,7 @@ import 'package:little_light/widgets/search/search.controller.dart';
 import 'package:little_light/widgets/search/search_filters/base_search_filter.widget.dart';
 
 class SeasonalSlotFilterWidget extends BaseSearchFilterWidget<SeasonSlotFilter> {
-  SeasonalSlotFilterWidget(SearchController controller) : super(controller);
+  const SeasonalSlotFilterWidget(SearchController controller) : super(controller);
 
   @override
   _SeasonalSlotFilterWidgetState createState() => _SeasonalSlotFilterWidgetState();

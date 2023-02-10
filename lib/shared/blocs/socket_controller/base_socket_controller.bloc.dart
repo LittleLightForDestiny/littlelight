@@ -18,13 +18,13 @@ abstract class BaseSocketController extends ChangeNotifier with ManifestConsumer
   int? _armorTierIndex;
 
   Future<void> loadDefinitions() async {
-    final itemDefinition = this.definition;
+    final itemDefinition = definition;
     if (itemDefinition == null) return;
     final plugHashes = <int>{};
     if (reusablePlugs != null) {
       plugHashes.addAll(socketStates
               ?.expand((socket) {
-                Set<int?> hashes = Set();
+                Set<int?> hashes = {};
                 hashes.add(socket.plugHash);
                 return hashes.whereType<int>();
               })

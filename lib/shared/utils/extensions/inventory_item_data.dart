@@ -49,7 +49,7 @@ extension DestinytemInfoHelpers on DestinyItemInfo {
     final isSameClass = definition.classType == character.character.classType;
     if (!isGenericEquippable && !isSameClass) return false;
 
-    bool isOnCharacter = character.characterId == this.characterId;
+    bool isOnCharacter = character.characterId == characterId;
     bool isEquipped = instanceInfo?.isEquipped ?? false;
     if (isOnCharacter && isEquipped) return false;
 
@@ -60,8 +60,8 @@ extension DestinytemInfoHelpers on DestinyItemInfo {
 
   bool canTransfer(DestinyCharacterInfo? character, DestinyInventoryItemDefinition definition) {
     if (definition.nonTransferrable ?? false) return false;
-    bool isSameCharacter = character?.characterId == this.characterId && character?.characterId != null;
-    bool isOnPostmaster = this.item.bucketHash == InventoryBucket.lostItems;
+    bool isSameCharacter = character?.characterId == characterId && character?.characterId != null;
+    bool isOnPostmaster = item.bucketHash == InventoryBucket.lostItems;
     if (isSameCharacter && !isOnPostmaster) return false;
     return true;
   }

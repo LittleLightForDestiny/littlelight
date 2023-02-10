@@ -11,7 +11,7 @@ import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:provider/provider.dart';
 
 class SelectWishlistsSubPage extends StatefulWidget {
-  SelectWishlistsSubPage();
+  const SelectWishlistsSubPage();
 
   @override
   SelectWishlistsSubPageState createState() => SelectWishlistsSubPageState();
@@ -27,12 +27,12 @@ class SelectWishlistsSubPageState extends SubpageBaseState<SelectWishlistsSubPag
   @override
   Widget buildTitle(BuildContext context) => TranslatedTextWidget(
         "Select Wishlists",
-        key: Key("title"),
+        key: const Key("title"),
       );
 
   @override
   Widget buildContent(BuildContext context) => Container(
-      constraints: BoxConstraints(maxWidth: 400),
+      constraints: const BoxConstraints(maxWidth: 400),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -51,7 +51,7 @@ class SelectWishlistsSubPageState extends SubpageBaseState<SelectWishlistsSubPag
     final count = context.watch<SelectWishlistNotifier>().selectedCount;
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       Container(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         child: Text(
             "{count} wishlists selected".translate(
               context,
@@ -111,6 +111,7 @@ class SelectWishlistsSubPageState extends SubpageBaseState<SelectWishlistsSubPag
   Widget buildFolderHeader(BuildContext context) {
     final folder = context.watch<SelectWishlistNotifier>().currentFolder;
     return Container(
+        margin: const EdgeInsets.only(top: 8, bottom: 16),
         child: Row(
           children: [
             BackButton(
@@ -137,13 +138,12 @@ class SelectWishlistsSubPageState extends SubpageBaseState<SelectWishlistsSubPag
               ],
             ))
           ],
-        ),
-        margin: EdgeInsets.only(top: 8, bottom: 16));
+        ));
   }
 
   Widget buildDescription(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8).copyWith(bottom: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 8).copyWith(bottom: 16),
       child: Column(
         children: [
           TranslatedTextWidget(
@@ -180,7 +180,7 @@ class SelectWishlistsSubPageState extends SubpageBaseState<SelectWishlistsSubPag
   Widget buildWishlistFile(BuildContext context, WishlistFile file) {
     bool checked = context.watch<SelectWishlistNotifier>().isChecked(file);
     return Container(
-      margin: EdgeInsets.only(bottom: 8),
+      margin: const EdgeInsets.only(bottom: 8),
       child: Material(
           borderRadius: BorderRadius.circular(8),
           color: Theme.of(context).colorScheme.secondary,
@@ -189,11 +189,11 @@ class SelectWishlistsSubPageState extends SubpageBaseState<SelectWishlistsSubPag
                 context.read<SelectWishlistNotifier>().toggleChecked(file);
               },
               child: Container(
-                padding: EdgeInsets.all(8),
+                padding: const EdgeInsets.all(8),
                 child: Row(
                   children: [
                     Container(
-                        padding: EdgeInsets.all(8).copyWith(right: 16),
+                        padding: const EdgeInsets.all(8).copyWith(right: 16),
                         child: Icon(checked ? FontAwesomeIcons.checkSquare : FontAwesomeIcons.square)),
                     Expanded(
                       child: Column(
@@ -218,7 +218,7 @@ class SelectWishlistsSubPageState extends SubpageBaseState<SelectWishlistsSubPag
 
   Widget buildWishlistFolder(BuildContext context, WishlistFolder folder) {
     return Container(
-      margin: EdgeInsets.only(bottom: 8),
+      margin: const EdgeInsets.only(bottom: 8),
       child: Material(
           borderRadius: BorderRadius.circular(8),
           color: Theme.of(context).colorScheme.secondary,
@@ -227,11 +227,11 @@ class SelectWishlistsSubPageState extends SubpageBaseState<SelectWishlistsSubPag
                 context.read<SelectWishlistNotifier>().goToFolder(folder);
               },
               child: Container(
-                padding: EdgeInsets.all(8),
+                padding: const EdgeInsets.all(8),
                 child: Row(
                   children: [
                     Container(
-                        padding: EdgeInsets.all(8).copyWith(right: 16), child: Icon(FontAwesomeIcons.solidFolder)),
+                        padding: const EdgeInsets.all(8).copyWith(right: 16), child: const Icon(FontAwesomeIcons.solidFolder)),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,

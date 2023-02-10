@@ -35,10 +35,10 @@ class MultiselectManagementBlockWidget extends StatelessWidget
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          transferDestinations.length > 0
+          transferDestinations.isNotEmpty
               ? Expanded(child: buildEquippingBlock(context, "Transfer", transferDestinations, Alignment.centerLeft))
               : null,
-          equipDestinations.length > 0
+          equipDestinations.isNotEmpty
               ? buildEquippingBlock(context, "Equip", equipDestinations, Alignment.centerRight)
               : null
         ].where((value) => value != null).toList(),
@@ -62,16 +62,16 @@ class MultiselectManagementBlockWidget extends StatelessWidget
 
   Widget buildLabel(BuildContext context, String title, [Alignment align = Alignment.centerRight]) {
     return Container(
-        constraints: BoxConstraints(minWidth: 100),
-        padding: EdgeInsets.symmetric(horizontal: 4),
+        constraints: const BoxConstraints(minWidth: 100),
+        padding: const EdgeInsets.symmetric(horizontal: 4),
         child: HeaderWidget(
-          padding: EdgeInsets.all(4),
+          padding: const EdgeInsets.all(4),
           child: Container(
               alignment: align,
               child: TranslatedTextWidget(
                 title,
                 uppercase: true,
-                style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+                style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
               )),
         ));
   }
@@ -80,7 +80,7 @@ class MultiselectManagementBlockWidget extends StatelessWidget
       [Alignment align = Alignment.centerRight]) {
     return Container(
         alignment: align,
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         child: Wrap(
             spacing: 4,
             children: destinations
@@ -149,7 +149,7 @@ class MultiselectManagementBlockWidget extends StatelessWidget
     var hasItemsOnVault = false;
     var hasItemsOnPostmaster = false;
     var allCharacterIds = profile.characters.map((c) => c.characterId);
-    Set<String> destinationCharacterIds = Set();
+    Set<String> destinationCharacterIds = {};
 
     for (var i in items) {
       var def = manifest.getDefinitionFromCache<DestinyInventoryItemDefinition>(i.item.itemHash);
@@ -178,7 +178,7 @@ class MultiselectManagementBlockWidget extends StatelessWidget
         .map((id) => TransferDestination(ItemDestination.Character, characterId: id, action: InventoryAction.Transfer))
         .toList();
 
-    if ((hasTransferrables || hasPullables) && destinations.length == 0 && (hasItemsOnVault || hasItemsOnPostmaster)) {
+    if ((hasTransferrables || hasPullables) && destinations.isEmpty && (hasItemsOnVault || hasItemsOnPostmaster)) {
       destinations.add(TransferDestination(ItemDestination.Inventory, action: InventoryAction.Transfer));
     }
     if (hasVaultables) {

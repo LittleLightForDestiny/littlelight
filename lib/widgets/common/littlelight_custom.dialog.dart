@@ -7,17 +7,17 @@ import 'package:little_light/widgets/common/header.wiget.dart';
 class LittleLightCustomDialog extends Dialog {
   LittleLightCustomDialog(Widget content, {Widget title, Widget footer, double maxWidth = 600, double maxHeight = 500})
       : super(
-            insetPadding: EdgeInsets.all(8),
+            insetPadding: const EdgeInsets.all(8),
             child: Container(
               constraints: BoxConstraints(maxWidth: maxWidth, maxHeight: maxHeight),
-              padding: EdgeInsets.all(8).copyWith(bottom: 4),
+              padding: const EdgeInsets.all(8).copyWith(bottom: 4),
               child: Column(mainAxisSize: MainAxisSize.min, children: [
                 title != null ? HeaderWidget(child: title) : Container(),
                 Flexible(child: content),
                 Container(
                   height: 8,
                 ),
-                footer != null ? footer : Container()
+                footer ?? Container()
               ]),
             ));
 
@@ -28,10 +28,11 @@ class LittleLightCustomDialog extends Dialog {
       footerWidgets.add(Expanded(
         child: buttons[i],
       ));
-      if (i < buttons.length - 1)
+      if (i < buttons.length - 1) {
         footerWidgets.add(Container(
           width: 4,
         ));
+      }
     }
     return LittleLightCustomDialog(content,
         title: title,
@@ -48,7 +49,7 @@ class LittleLightCustomDialog extends Dialog {
           style: ElevatedButton.styleFrom(
             visualDensity: VisualDensity.comfortable,
           ),
-          child: Text("Cancel".translate(context).toUpperCase(), style: TextStyle(fontWeight: FontWeight.bold)),
+          child: Text("Cancel".translate(context).toUpperCase(), style: const TextStyle(fontWeight: FontWeight.bold)),
           onPressed: () {
             onCancel();
           }),
@@ -56,7 +57,7 @@ class LittleLightCustomDialog extends Dialog {
           style: ElevatedButton.styleFrom(
             visualDensity: VisualDensity.comfortable,
           ),
-          child: Text("Save".translate(context).toUpperCase(), style: TextStyle(fontWeight: FontWeight.bold)),
+          child: Text("Save".translate(context).toUpperCase(), style: const TextStyle(fontWeight: FontWeight.bold)),
           onPressed: () {
             onSave();
           })
@@ -70,7 +71,7 @@ class LittleLightCustomDialog extends Dialog {
           style: ElevatedButton.styleFrom(
             visualDensity: VisualDensity.comfortable,
           ),
-          child: Text("No".translate(context).toUpperCase(), style: TextStyle(fontWeight: FontWeight.bold)),
+          child: Text("No".translate(context).toUpperCase(), style: const TextStyle(fontWeight: FontWeight.bold)),
           onPressed: () {
             noPressed();
           }),
@@ -78,7 +79,7 @@ class LittleLightCustomDialog extends Dialog {
           style: ElevatedButton.styleFrom(
             visualDensity: VisualDensity.comfortable,
           ),
-          child: Text("Yes".translate(context).toUpperCase(), style: TextStyle(fontWeight: FontWeight.bold)),
+          child: Text("Yes".translate(context).toUpperCase(), style: const TextStyle(fontWeight: FontWeight.bold)),
           onPressed: () {
             yesPressed();
           })

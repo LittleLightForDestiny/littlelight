@@ -49,6 +49,6 @@ class TriumphsPageRoute extends MaterialPageRoute {
 class TriumphsSearchPageRoute extends MaterialPageRoute {
   TriumphsSearchPageRoute()
       : super(builder: (context) {
-          return TriumphsSearchPage();
+          return const TriumphsSearchPage();
         });
 }

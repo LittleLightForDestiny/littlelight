@@ -12,7 +12,7 @@ abstract class DestinyItemStatefulWidget extends StatefulWidget {
   final DestinyItemInstanceComponent instanceInfo;
   final String characterId;
 
-  DestinyItemStatefulWidget(this.item, this.definition, this.instanceInfo, {Key key, this.characterId})
+  const DestinyItemStatefulWidget(this.item, this.definition, this.instanceInfo, {Key key, this.characterId})
       : super(key: key);
 
   @override

@@ -21,7 +21,7 @@ class LoadoutsHomeBloc extends ChangeNotifier with ProfileConsumer, UserSettings
   bool _searchOpen = false;
   bool get searchOpen => _searchOpen;
 
-  bool get isEmpty => _allLoadouts?.length == 0;
+  bool get isEmpty => _allLoadouts?.isEmpty ?? false;
   List<LoadoutItemIndex>? get _allLoadouts => _loadoutsBloc.loadouts;
 
   List<LoadoutItemIndex>? get loadouts {

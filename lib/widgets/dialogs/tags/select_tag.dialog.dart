@@ -32,7 +32,7 @@ class SelectTagDialogRoute extends DialogRoute<ItemNotesTag?> {
 
 class SelectTagDialog extends LittleLightBaseDialog with ItemNotesConsumer {
   SelectTagDialog()
-      : super(titleBuilder: (context) => TranslatedTextWidget('Select Tag'), bodyBuilder: (context) => TagListWidget());
+      : super(titleBuilder: (context) => TranslatedTextWidget('Select Tag'), bodyBuilder: (context) => const TagListWidget());
 
   @override
   Widget? buildActions(BuildContext context) {
@@ -84,7 +84,7 @@ class TagListWidget extends StatelessWidget with ItemNotesConsumer {
   }
 
   Widget buildTag(BuildContext context, ItemNotesTag tag) => Container(
-      padding: EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.only(bottom: 8),
       child: Row(children: [
         Expanded(
             child: ItemTagWidget(
@@ -99,7 +99,7 @@ class TagListWidget extends StatelessWidget with ItemNotesConsumer {
       ]));
 
   Widget buildTagOptions(BuildContext context, ItemNotesTag tag) => Container(
-      padding: EdgeInsets.only(left: 8),
+      padding: const EdgeInsets.only(left: 8),
       child: Row(children: [
         iconButton(
           Icons.edit,
@@ -128,14 +128,14 @@ class TagListWidget extends StatelessWidget with ItemNotesConsumer {
         )
       ]));
 
-  Widget iconButton(IconData icon, Color color, void onClick()?) {
+  Widget iconButton(IconData icon, Color color, void Function()? onClick) {
     return Material(
         color: color,
         borderRadius: BorderRadius.circular(16),
         child: InkWell(
             onTap: onClick,
             child: Container(
-              padding: EdgeInsets.all(4),
+              padding: const EdgeInsets.all(4),
               child: CenterIconWorkaround(icon, size: 16),
             )));
   }

@@ -11,7 +11,7 @@ import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
 class LoadoutBackgroundItemWidget extends StatefulWidget {
   final int hash;
-  LoadoutBackgroundItemWidget({Key key, this.hash}) : super(key: key);
+  const LoadoutBackgroundItemWidget({Key key, this.hash}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -47,19 +47,17 @@ class LoadoutBackgroundItemWidgetState extends State<LoadoutBackgroundItemWidget
   }
 
   buildEmblemBackground(BuildContext context) {
-    if (definition == null) return DefaultLoadingShimmer();
-    ;
+    if (definition == null) return const DefaultLoadingShimmer();
     String url = BungieApiService.url(definition.secondarySpecial);
-    if (url == null) return DefaultLoadingShimmer();
-    ;
+    if (url == null) return const DefaultLoadingShimmer();
     return Stack(children: [
       Positioned.fill(
           child: QueuedNetworkImage(
         alignment: Alignment.centerLeft,
-        fadeInDuration: Duration(milliseconds: 300),
-        imageUrl: "$url",
+        fadeInDuration: const Duration(milliseconds: 300),
+        imageUrl: url,
         fit: BoxFit.cover,
-        placeholder: DefaultLoadingShimmer(),
+        placeholder: const DefaultLoadingShimmer(),
       )),
       Positioned.fill(
           child: Material(

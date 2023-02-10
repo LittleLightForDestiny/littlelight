@@ -22,7 +22,7 @@ import 'package:little_light/widgets/item_sockets/plug_wishlist_tag_icons.mixin.
 import 'package:little_light/widgets/item_sockets/selectable_perk.widget.dart';
 
 class DetailsItemPerksWidget extends BaseItemSocketsWidget {
-  DetailsItemPerksWidget({
+  const DetailsItemPerksWidget({
     Key key,
     DestinyItemComponent item,
     DestinyInventoryItemDefinition definition,
@@ -50,9 +50,10 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget> extends Base
     return super.build(context);
   }
 
+  @override
   Widget buildHeader(BuildContext context) {
     return getHeader(ManifestText<DestinySocketCategoryDefinition>(category.socketCategoryHash,
-        uppercase: true, textAlign: TextAlign.left, style: TextStyle(fontWeight: FontWeight.bold)));
+        uppercase: true, textAlign: TextAlign.left, style: const TextStyle(fontWeight: FontWeight.bold)));
   }
 
   Widget buildDetailsSwitch(BuildContext context) {
@@ -72,7 +73,7 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget> extends Base
               width: 2,
               color: Theme.of(context).colorScheme.onSurface.withOpacity(.4))
         ]);
-    if (children.length > 0) {
+    if (children.isNotEmpty) {
       children = children.take(children.length - 1);
     }
     var mq = MediaQueryHelper(context);
@@ -133,7 +134,7 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget> extends Base
       );
     }
     var screenWidth = MediaQuery.of(context).size.width - 16;
-    return Container(
+    return SizedBox(
         width: min(64, screenWidth / 8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -144,7 +145,7 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget> extends Base
 
   @override
   List<int> socketPlugHashes(int socketIndex) {
-    var isRandom = controller.randomizedPlugHashes(socketIndex).length > 0;
+    var isRandom = controller.randomizedPlugHashes(socketIndex).isNotEmpty;
     if (controller.reusablePlugs == null && isRandom) {
       return controller
           .bungieRollPlugHashes(socketIndex)
@@ -164,14 +165,14 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget> extends Base
           uppercase: true,
           overflow: TextOverflow.fade,
           softWrap: false,
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: const TextStyle(fontWeight: FontWeight.bold),
         );
       } else {
         return Text(
           def?.itemTypeDisplayName?.toUpperCase() ?? "",
           overflow: TextOverflow.fade,
           softWrap: false,
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: const TextStyle(fontWeight: FontWeight.bold),
         );
       }
     });
@@ -179,8 +180,8 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget> extends Base
     return Container(
         color: Colors.black,
         alignment: Alignment.center,
-        padding: EdgeInsets.all(8),
-        margin: EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.all(8),
+        margin: const EdgeInsets.only(bottom: 8),
         child: contents);
   }
 
@@ -214,7 +215,7 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget> extends Base
         .toSet();
 
     return Container(
-        margin: EdgeInsets.only(bottom: 8),
+        margin: const EdgeInsets.only(bottom: 8),
         decoration: BoxDecoration(
             border: Border.all(color: borderColor, width: 2), color: bgColor, borderRadius: BorderRadius.circular(4)),
         child: Material(
@@ -227,9 +228,9 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget> extends Base
               child: Container(
                 foregroundDecoration:
                     (tags?.length ?? 0) > 0 ? WishlistCornerBadgeDecoration(tags: tags, badgeSize: 14) : null,
-                padding: EdgeInsets.all(8),
+                padding: const EdgeInsets.all(8),
                 child: Row(children: [
-                  Container(
+                  SizedBox(
                       width: 36, height: 36, child: ManifestImageWidget<DestinyInventoryItemDefinition>(plugItemHash)),
                   Container(width: 8),
                   Expanded(
@@ -251,6 +252,7 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget> extends Base
     bool isSelected = plugItemHash == controller.selectedPlugHash;
 
     return Container(
+      padding: const EdgeInsets.only(bottom: 8),
       child: SelectablePerkWidget(
         selected: isSelected,
         selectedOnSocket: isSelectedOnSocket,
@@ -263,7 +265,6 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget> extends Base
           controller.selectSocket(socketIndex, plugItemHash);
         },
       ),
-      padding: EdgeInsets.only(bottom: 8),
     );
   }
 }

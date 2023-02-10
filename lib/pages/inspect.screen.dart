@@ -13,7 +13,7 @@ class InspectScreen extends StatefulWidget {
   final String membershipId;
   final int membershipType;
 
-  InspectScreen(this.membershipId, this.membershipType, {Key key}) : super(key: key);
+  const InspectScreen(this.membershipId, this.membershipType, {Key key}) : super(key: key);
 
   @override
   InspectScreenState createState() => InspectScreenState();
@@ -59,15 +59,15 @@ class InspectScreenState extends State<InspectScreen>
             height: kToolbarHeight,
             child: IconButton(
               enableFeedback: false,
-              icon: Icon(Icons.menu),
+              icon: const Icon(Icons.menu),
               onPressed: () {
                 Scaffold.of(context).openDrawer();
               },
             ),
           ),
           TabsCharacterMenuWidget(characters, controller: charTabController),
-          InventoryNotificationWidget(key: Key('inventory_notification_widget')),
-          Positioned(bottom: screenPadding.bottom, left: 0, right: 0, child: SelectedItemsWidget()),
+          const InventoryNotificationWidget(key: Key('inventory_notification_widget')),
+          Positioned(bottom: screenPadding.bottom, left: 0, right: 0, child: const SelectedItemsWidget()),
         ],
       ),
     );
@@ -77,13 +77,13 @@ class InspectScreenState extends State<InspectScreen>
     return Container(
         decoration: BoxDecoration(
             gradient: LinearGradient(
-      colors: [
+      colors: const [
         Color.fromARGB(255, 80, 90, 100),
         Color.fromARGB(255, 100, 100, 115),
         Color.fromARGB(255, 32, 32, 73),
       ],
-      begin: FractionalOffset(0, .5),
-      end: FractionalOffset(.5, 0),
+      begin: const FractionalOffset(0, .5),
+      end: const FractionalOffset(.5, 0),
     )));
   }
 

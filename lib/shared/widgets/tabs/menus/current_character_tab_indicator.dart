@@ -16,11 +16,12 @@ const _maximumWidth = 184.0;
 class CurrentCharacterTabIndicator extends StatelessWidget {
   final List<DestinyCharacterInfo?> characters;
   final CustomTabController controller;
-  CurrentCharacterTabIndicator(this.characters, CustomTabController this.controller);
+  const CurrentCharacterTabIndicator(this.characters, this.controller);
 
+  @override
   Widget build(BuildContext context) => LayoutBuilder(builder: (context, constraints) {
         final size = Size(constraints.maxWidth.clamp(_minimumWidth, _maximumWidth), constraints.maxHeight);
-        return Container(
+        return SizedBox(
           height: size.height,
           width: size.width,
           child: AnimatedBuilder(
@@ -48,7 +49,7 @@ class CurrentCharacterTabIndicator extends StatelessWidget {
   }
 
   Widget buildCharacter(BuildContext context, DestinyCharacterInfo character, Size size) {
-    return Container(
+    return SizedBox(
       width: size.width,
       height: size.height,
       child: Stack(
@@ -66,13 +67,13 @@ class CurrentCharacterTabIndicator extends StatelessWidget {
             children: [
               Expanded(
                 child: Container(
+                  padding: const EdgeInsets.only(left: 16),
                   child: ManifestText<DestinyClassDefinition>(
                     character.character.classHash,
                     style: context.textTheme.button,
                     textAlign: TextAlign.right,
                     softWrap: false,
                   ),
-                  padding: EdgeInsets.only(left: 16),
                 ),
               ),
               Container(width: 8),
@@ -88,7 +89,7 @@ class CurrentCharacterTabIndicator extends StatelessWidget {
   }
 
   Widget buildVault(BuildContext context, Size size) {
-    return Container(
+    return SizedBox(
       width: size.width,
       height: size.height,
       child: Stack(
@@ -104,17 +105,17 @@ class CurrentCharacterTabIndicator extends StatelessWidget {
             children: [
               Expanded(
                 child: Container(
+                  padding: const EdgeInsets.only(left: 16),
                   child: Text(
                     "Vault".translate(context),
                     style: context.textTheme.button,
                     textAlign: TextAlign.right,
                     softWrap: false,
                   ),
-                  padding: EdgeInsets.only(left: 16),
                 ),
               ),
               Container(width: 8),
-              VaultIconWidget(borderWidth: 0),
+              const VaultIconWidget(borderWidth: 0),
             ],
           ),
         ],

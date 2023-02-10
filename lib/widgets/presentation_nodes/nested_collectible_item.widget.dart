@@ -6,7 +6,7 @@ import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/presentation_nodes/collectible_item.widget.dart';
 
 class NestedCollectibleItemWidget extends CollectibleItemWidget {
-  NestedCollectibleItemWidget({Key? key, required int hash}) : super(key: key, hash: hash);
+  const NestedCollectibleItemWidget({Key? key, required int hash}) : super(key: key, hash: hash);
 
   @override
   CollectibleItemWidgetState createState() {
@@ -18,7 +18,7 @@ class NestedCollectibleItemWidgetState extends CollectibleItemWidgetState with P
   @override
   Widget build(BuildContext context) {
     return Opacity(
-        opacity: this.unlocked ? 1 : .4,
+        opacity: unlocked ? 1 : .4,
         child: AspectRatio(
             aspectRatio: 1,
             child: Container(
@@ -33,12 +33,14 @@ class NestedCollectibleItemWidgetState extends CollectibleItemWidgetState with P
                 ]))));
   }
 
+  @override
   Widget buildIcon(BuildContext context) {
     final iconURL = BungieApiService.url(definition?.displayProperties?.icon);
     if (iconURL == null) return Container();
     return QueuedNetworkImage(imageUrl: iconURL);
   }
 
+  @override
   bool get unlocked {
     final scope = definition?.scope;
     if (scope == null) return false;

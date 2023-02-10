@@ -26,7 +26,7 @@ class WishlistBadgesWidget extends StatelessWidget {
     if (tags.contains(WishlistTag.Bungie)) {
       badges.add(WishlistBadgeWidget(size: size, tag: WishlistTag.Bungie));
     }
-    if (badges.length > 0) {
+    if (badges.isNotEmpty) {
       return Row(
         children: badges,
       );

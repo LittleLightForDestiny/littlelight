@@ -7,11 +7,11 @@ abstract class CustomTabMenu extends StatelessWidget {
 
   double getButtonSize(BuildContext context);
 
-  CustomTabMenu(this.controller, {this.direction = Axis.horizontal});
+  const CustomTabMenu(this.controller, {this.direction = Axis.horizontal});
 
   @override
   Widget build(BuildContext context) {
-    if (this.direction == Axis.vertical) {
+    if (direction == Axis.vertical) {
       return buildVertical(context);
     }
     return buildHorizontal(context);
@@ -85,7 +85,7 @@ abstract class CustomTabMenu extends StatelessWidget {
         alignment: getIndicatorAlignment(context),
         child: child,
       ),
-      child: Container(
+      child: SizedBox(
         width: direction == Axis.horizontal ? buttonSize : null,
         height: direction == Axis.vertical ? buttonSize : null,
         child: child,
@@ -104,7 +104,7 @@ abstract class CustomTabMenu extends StatelessWidget {
         alignment: getIndicatorAlignment(context),
         child: child,
       ),
-      child: Container(
+      child: SizedBox(
         width: direction == Axis.horizontal ? buttonSize : null,
         height: direction == Axis.vertical ? buttonSize : null,
         child: child,
@@ -118,7 +118,7 @@ abstract class CustomTabMenu extends StatelessWidget {
     return Stack(children: [
       AnimatedBuilder(
         animation: controller.animation,
-        builder: (context, child) => Container(
+        builder: (context, child) => SizedBox(
           width: direction == Axis.horizontal ? buttonSize : null,
           height: direction == Axis.vertical ? buttonSize : null,
           child: buildButton(context, index),

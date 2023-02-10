@@ -76,7 +76,7 @@ class SelectedItemsWidget extends StatelessWidget {
           children: [
             Expanded(
                 child: Container(
-              padding: EdgeInsets.all(8),
+              padding: const EdgeInsets.all(8),
               child: Text(
                 items.length > 1
                     ? "{itemCount} items selected".translate(
@@ -96,12 +96,12 @@ class SelectedItemsWidget extends StatelessWidget {
   }
 
   Widget buildSelectedItemList(BuildContext context, List<DestinyItemInfo> items) {
-    return Container(
+    return SizedBox(
         height: _selectedItemSize + 16,
         child: ListView.separated(
           itemCount: items.length,
           scrollDirection: Axis.horizontal,
-          padding: EdgeInsets.all(8),
+          padding: const EdgeInsets.all(8),
           itemBuilder: (BuildContext context, int index) => listItemBuilder(
             context,
             items[index],
@@ -111,7 +111,7 @@ class SelectedItemsWidget extends StatelessWidget {
   }
 
   Widget listItemBuilder(BuildContext context, DestinyItemInfo item) {
-    return Container(
+    return SizedBox(
       width: _selectedItemSize,
       height: _selectedItemSize,
       child: Stack(children: [
@@ -132,7 +132,7 @@ class SelectedItemsWidget extends StatelessWidget {
   }
 
   Widget buildInstancedItem(BuildContext context, DestinyItemInfo item) {
-    return Container(
+    return SizedBox(
       height: _instancedItemHeight,
       child: Stack(children: [
         SelectedItemInstance(
@@ -159,10 +159,10 @@ class SelectedItemsWidget extends StatelessWidget {
       child: InkWell(
         onTap: () => selectionBloc(context).clear(),
         child: Container(
-          padding: EdgeInsets.all(8),
+          padding: const EdgeInsets.all(8),
           child: Row(
             children: [
-              Icon(FontAwesomeIcons.circleMinus, size: 16),
+              const Icon(FontAwesomeIcons.circleMinus, size: 16),
               Container(width: 8),
               Text(context.translate("Clear"), style: context.textTheme.button),
             ],

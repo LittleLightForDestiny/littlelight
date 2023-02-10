@@ -13,7 +13,7 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class StartupErrorSubPage extends StatefulWidget {
-  StartupErrorSubPage();
+  const StartupErrorSubPage();
 
   @override
   StartupErrorSubPageState createState() => StartupErrorSubPageState();
@@ -40,7 +40,7 @@ class StartupErrorSubPageState extends SubpageBaseState<StartupErrorSubPage> wit
 
   @override
   Widget buildContent(BuildContext context) => Container(
-      constraints: BoxConstraints(maxWidth: 400),
+      constraints: const BoxConstraints(maxWidth: 400),
       child: Column(children: [buildDescription(context), buildOptions(context)]));
 
   Widget buildDescription(BuildContext context) {
@@ -72,14 +72,14 @@ class StartupErrorSubPageState extends SubpageBaseState<StartupErrorSubPage> wit
   }
 
   Widget buildMultilineDescription(List<Widget> lines) => Container(
-        constraints: BoxConstraints(maxWidth: 400),
+        constraints: const BoxConstraints(maxWidth: 400),
+        padding: const EdgeInsets.all(8),
         child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: lines),
-        padding: EdgeInsets.all(8),
       );
 
   Widget buildMultiButtonOptions(List<Widget> buttons) => Container(
-      constraints: BoxConstraints(maxWidth: 400),
-      padding: EdgeInsets.all(8),
+      constraints: const BoxConstraints(maxWidth: 400),
+      padding: const EdgeInsets.all(8),
       child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: buttons));
 
   /// Title options
@@ -136,8 +136,8 @@ class StartupErrorSubPageState extends SubpageBaseState<StartupErrorSubPage> wit
 
   Widget get clearDataAndRestartOption => ElevatedButton(
         onPressed: controller.clearDataAndRestart,
-        child: Text("Clear data and restart".translate(context)),
         style: ElevatedButton.styleFrom(primary: Theme.of(context).errorColor),
+        child: Text("Clear data and restart".translate(context)),
       );
 
   Widget get openBungieLoginOption => ElevatedButton(
@@ -157,7 +157,7 @@ class StartupErrorSubPageState extends SubpageBaseState<StartupErrorSubPage> wit
       onPressed: () => launch("https://twitter.com/BungieHelp"),
       child: Row(
         mainAxisSize: MainAxisSize.min,
-        children: [Icon(FontAwesomeIcons.twitter), Container(width: 8), Text("Check @BungieHelp".translate(context))],
+        children: [const Icon(FontAwesomeIcons.twitter), Container(width: 8), Text("Check @BungieHelp".translate(context))],
       ));
 
   Widget get checkLittleLightD2TwitterOption => ElevatedButton(
@@ -165,7 +165,7 @@ class StartupErrorSubPageState extends SubpageBaseState<StartupErrorSubPage> wit
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(FontAwesomeIcons.twitter),
+          const Icon(FontAwesomeIcons.twitter),
           Container(width: 8),
           Text("Check @LittleLightD2".translate(context))
         ],

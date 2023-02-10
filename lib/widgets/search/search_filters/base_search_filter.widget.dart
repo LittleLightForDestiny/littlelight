@@ -7,7 +7,7 @@ import 'package:little_light/widgets/search/search.controller.dart';
 
 class BaseSearchFilterWidget<T extends BaseItemFilter> extends StatefulWidget {
   final SearchController controller;
-  BaseSearchFilterWidget(this.controller);
+  const BaseSearchFilterWidget(this.controller);
 
   T get filter {
     return [controller.preFilters, controller.filters, controller.postFilters]
@@ -54,9 +54,9 @@ class BaseSearchFilterWidgetState<T extends BaseSearchFilterWidget, F extends Ba
         style: TextStyle(color: Colors.grey.shade500, fontSize: 14.5),
         child: Container(
             height: 58,
-            margin: EdgeInsets.only(top: 8),
+            margin: const EdgeInsets.only(top: 8),
             color: Theme.of(context).colorScheme.secondaryContainer,
-            padding: EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -74,7 +74,7 @@ class BaseSearchFilterWidgetState<T extends BaseSearchFilterWidget, F extends Ba
 
   Widget buildExpansionTile(BuildContext context) {
     return Container(
-        margin: EdgeInsets.only(top: 8),
+        margin: const EdgeInsets.only(top: 8),
         color: Theme.of(context).colorScheme.secondaryContainer,
         child: Theme(
             data: Theme.of(context).copyWith(
@@ -83,22 +83,22 @@ class BaseSearchFilterWidgetState<T extends BaseSearchFilterWidget, F extends Ba
             child: ExpansionTile(
                 trailing: IgnorePointer(
                     child: Switch(
-                  value: this.filter.enabled,
+                  value: filter.enabled,
                   onChanged: (value) {},
                 )),
                 onExpansionChanged: (value) {
-                  this.filter.enabled = value;
-                  this.controller.update();
+                  filter.enabled = value;
+                  controller.update();
                 },
-                initiallyExpanded: this.filter.enabled,
+                initiallyExpanded: filter.enabled,
                 backgroundColor: Theme.of(context).colorScheme.secondary,
                 title:
-                    DefaultTextStyle(child: buildFilterLabel(context), style: TextStyle(fontWeight: FontWeight.w700)),
+                    DefaultTextStyle(style: const TextStyle(fontWeight: FontWeight.w700), child: buildFilterLabel(context)),
                 children: [
                   Container(
-                      constraints: BoxConstraints(minWidth: double.infinity),
+                      constraints: const BoxConstraints(minWidth: double.infinity),
                       color: Theme.of(context).colorScheme.secondaryContainer,
-                      padding: EdgeInsets.all(4),
+                      padding: const EdgeInsets.all(4),
                       child: buildButtons(context))
                 ])));
   }
@@ -106,7 +106,7 @@ class BaseSearchFilterWidgetState<T extends BaseSearchFilterWidget, F extends Ba
   Iterable<A> get options => filter.availableValues;
 
   Widget buildFilterLabel(BuildContext context) {
-    return Text(this.runtimeType.toString());
+    return Text(runtimeType.toString());
   }
 
   Widget buildButtons(BuildContext context) {
@@ -116,7 +116,7 @@ class BaseSearchFilterWidgetState<T extends BaseSearchFilterWidget, F extends Ba
   Widget buildButton(BuildContext context, A value) {
     bool selected = isSelected(value);
     return Container(
-        margin: EdgeInsets.all(2),
+        margin: const EdgeInsets.all(2),
         decoration: BoxDecoration(
             color: buttonBgColor(value),
             borderRadius: BorderRadius.circular(4),
@@ -130,9 +130,9 @@ class BaseSearchFilterWidgetState<T extends BaseSearchFilterWidget, F extends Ba
                 onTap: () => buttonTap(value),
                 onLongPress: () => buttonLongPress(value),
                 child: Container(
-                    constraints: BoxConstraints(minWidth: double.infinity),
+                    constraints: const BoxConstraints(minWidth: double.infinity),
                     alignment: Alignment.center,
-                    padding: EdgeInsets.all(4),
+                    padding: const EdgeInsets.all(4),
                     child: DefaultTextStyle(
                         style: TextStyle(fontWeight: FontWeight.w700, color: Colors.grey.shade300),
                         child: buildButtonLabel(context, value))))));
@@ -157,7 +157,7 @@ class BaseSearchFilterWidgetState<T extends BaseSearchFilterWidget, F extends Ba
         multiselectEnabled = false;
       }
     }
-    controller.prioritize(this.filter);
+    controller.prioritize(filter);
     controller.update();
   }
 

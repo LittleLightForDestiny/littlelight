@@ -36,7 +36,7 @@ class _CategorySetsListWidgetState extends State<CategorySetsListWidget> with Ma
     final nodeDefs = await manifest.getDefinitions<DestinyPresentationNodeDefinition>(nodeHashes);
     final nodes = nodeHashes.map((e) => nodeDefs[e]).whereType<DestinyPresentationNodeDefinition>().toList();
     setState(() {
-      this.nodeDefinitions = nodes;
+      nodeDefinitions = nodes;
     });
   }
 
@@ -64,7 +64,7 @@ class _CategorySetsListWidgetState extends State<CategorySetsListWidget> with Ma
     }
     return MultiSectionScrollView(
       sections,
-      padding: EdgeInsets.all(4) + MediaQuery.of(context).viewPadding,
+      padding: const EdgeInsets.all(4) + MediaQuery.of(context).viewPadding,
       crossAxisSpacing: 2,
       mainAxisSpacing: 2,
     );

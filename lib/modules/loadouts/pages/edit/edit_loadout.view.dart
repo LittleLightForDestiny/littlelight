@@ -17,14 +17,14 @@ import 'edit_loadout.bloc.dart';
 
 class EditLoadoutView extends StatefulWidget {
   final bool forceCreate;
-  EditLoadoutView({Key? key, this.forceCreate = false}) : super(key: key);
+  const EditLoadoutView({Key? key, this.forceCreate = false}) : super(key: key);
 
   @override
   EditLoadoutViewState createState() => EditLoadoutViewState();
 }
 
 class EditLoadoutViewState extends State<EditLoadoutView> with ManifestConsumer {
-  TextEditingController _nameFieldController = TextEditingController();
+  final TextEditingController _nameFieldController = TextEditingController();
   EditLoadoutBloc get _bloc => context.read<EditLoadoutBloc>();
   EditLoadoutBloc get _state => context.watch<EditLoadoutBloc>();
 
@@ -71,11 +71,11 @@ class EditLoadoutViewState extends State<EditLoadoutView> with ManifestConsumer 
     if (emblemDefinition == null) return Container();
     if (emblemDefinition.secondarySpecial?.isEmpty ?? true) return Container();
     return Container(
-        constraints: BoxConstraints.expand(),
+        constraints: const BoxConstraints.expand(),
         child: QueuedNetworkImage(
             imageUrl: BungieApiService.url(emblemDefinition.secondarySpecial),
             fit: BoxFit.cover,
-            alignment: Alignment(-.8, 0)));
+            alignment: const Alignment(-.8, 0)));
   }
 
   Widget buildBody(BuildContext context) {
@@ -97,13 +97,13 @@ class EditLoadoutViewState extends State<EditLoadoutView> with ManifestConsumer 
             itemCount: _state.bucketHashes.length,
           ),
       ],
-      padding: EdgeInsets.all(8).copyWith(top: 0, left: max(screenPadding.left, 8), right: max(screenPadding.right, 8)),
+      padding: const EdgeInsets.all(8).copyWith(top: 0, left: max(screenPadding.left, 8), right: max(screenPadding.right, 8)),
     );
   }
 
   Widget buildNameTextField(BuildContext context) {
     return Container(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         child: TextField(
           autocorrect: false,
           controller: _nameFieldController,
@@ -113,7 +113,7 @@ class EditLoadoutViewState extends State<EditLoadoutView> with ManifestConsumer 
 
   Widget buildSelectBackgroundButton(BuildContext context) {
     return Container(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         child: ElevatedButton(
           child: Text("Select Loadout Background".translate(context)),
           onPressed: () async {
@@ -154,8 +154,8 @@ class EditLoadoutViewState extends State<EditLoadoutView> with ManifestConsumer 
             Positioned.fill(child: buildAppBarBackground(context)),
             Container(
               height: kToolbarHeight + paddingBottom,
-              constraints: BoxConstraints(minWidth: double.infinity),
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8).copyWith(bottom: 8 + paddingBottom),
+              constraints: const BoxConstraints(minWidth: double.infinity),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8).copyWith(bottom: 8 + paddingBottom),
               child: ElevatedButton(
                   child: Text("Save Loadout".translate(context)),
                   onPressed: () {

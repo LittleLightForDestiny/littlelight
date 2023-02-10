@@ -42,8 +42,8 @@ class VaultTabHeaderWidget extends BaseTabHeaderWidget with DestinySettingsConsu
       child: FractionallySizedBox(
         widthFactor: completed,
         child: Shimmer.fromColors(
-            baseColor: fg ?? Colors.transparent,
-            period: Duration(seconds: 2),
+            baseColor: fg,
+            period: const Duration(seconds: 2),
             highlightColor: Colors.white,
             child: Container(
               color: Colors.white,

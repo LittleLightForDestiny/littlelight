@@ -22,7 +22,7 @@ const Duration _kExpand = Duration(milliseconds: 200);
 
 class ProfileInfoWidget extends StatefulWidget {
   final Widget? menuContent;
-  ProfileInfoWidget({this.menuContent});
+  const ProfileInfoWidget({this.menuContent});
 
   @override
   createState() {
@@ -47,7 +47,7 @@ class ProfileInfoState extends State<ProfileInfoWidget>
     super.initState();
     _controller = AnimationController(duration: _kExpand, vsync: this);
     _heightFactor = _controller?.drive(_easeInTween);
-    _isExpanded = PageStorage.of(context)?.readState(context) ?? false;
+    _isExpanded = PageStorage.of(context).readState(context) ?? false;
     if (_isExpanded) _controller?.value = 1.0;
 
     loadUser();
@@ -70,7 +70,7 @@ class ProfileInfoState extends State<ProfileInfoWidget>
           setState(() {});
         });
       }
-      PageStorage.of(context)?.writeState(context, _isExpanded);
+      PageStorage.of(context).writeState(context, _isExpanded);
     });
   }
 
@@ -118,15 +118,15 @@ class ProfileInfoState extends State<ProfileInfoWidget>
     return Stack(children: [
       Column(
         children: <Widget>[
-          Container(height: 150, child: background(context)),
-          Container(height: kToolbarHeight, child: profileInfo(context)),
+          SizedBox(height: 150, child: background(context)),
+          SizedBox(height: kToolbarHeight, child: profileInfo(context)),
         ],
       ),
-      Positioned(child: profilePicture(context), left: 8, bottom: 8, width: 72, height: 72)
+      Positioned(left: 8, bottom: 8, width: 72, height: 72, child: profilePicture(context))
     ]);
   }
 
-  Widget get shimmer => DefaultLoadingShimmer();
+  Widget get shimmer => const DefaultLoadingShimmer();
 
   Widget background(context) {
     if (account == null) {
@@ -155,8 +155,8 @@ class ProfileInfoState extends State<ProfileInfoWidget>
               gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [Colors.black26, Colors.transparent, Colors.transparent, Colors.black54],
-                  stops: [0, .2, .7, 1])),
+                  colors: const [Colors.black26, Colors.transparent, Colors.transparent, Colors.black54],
+                  stops: const [0, .2, .7, 1])),
         ),
         Positioned(bottom: 4, left: 88, child: buildActivityInfo(context))
       ],
@@ -223,15 +223,15 @@ class ProfileInfoState extends State<ProfileInfoWidget>
     PlatformData? platform = isCrossSaveAccount ? PlatformData.crossPlayData : membership?.membershipType?.data;
     return Container(
         color: platform?.color,
-        padding: EdgeInsets.only(left: 80),
+        padding: const EdgeInsets.only(left: 80),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            Padding(padding: EdgeInsets.symmetric(horizontal: 8), child: Icon(platform?.icon)),
+            Padding(padding: const EdgeInsets.symmetric(horizontal: 8), child: Icon(platform?.icon)),
             Expanded(child: Text(membership?.displayName ?? "")),
             IconButton(
               enableFeedback: false,
-              icon: Transform.rotate(angle: -(_heightFactor?.value ?? 0) * 1.5, child: Icon(Icons.settings)),
+              icon: Transform.rotate(angle: -(_heightFactor?.value ?? 0) * 1.5, child: const Icon(Icons.settings)),
               onPressed: _handleTap,
             )
           ],

@@ -10,7 +10,7 @@ class AddWishlistPageRoute extends MaterialPageRoute {
       : super(
           builder: (context) => ChangeNotifierProvider(
             create: (BuildContext context) => AddWishlistsBloc(context),
-            child: AddWishlistPage(),
+            child: const AddWishlistPage(),
           ),
         );
 }

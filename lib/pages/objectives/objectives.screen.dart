@@ -44,7 +44,7 @@ class ObjectivesScreenState extends State<ObjectivesScreen> with ProfileConsumer
   void loadObjectives() async {
     ObjectivesService service = ObjectivesService();
     objectives = (await service.getTrackedObjectives()).reversed.toList();
-    items = Map();
+    items = {};
     var itemObjectives = objectives.where((o) => o.type == TrackedObjectiveType.Item);
     var plugObjectives = objectives.where((o) => o.type == TrackedObjectiveType.Plug);
     for (var o in itemObjectives) {
@@ -72,7 +72,7 @@ class ObjectivesScreenState extends State<ObjectivesScreen> with ProfileConsumer
         appBar: AppBar(
             leading: IconButton(
               enableFeedback: false,
-              icon: Icon(Icons.menu),
+              icon: const Icon(Icons.menu),
               onPressed: () {
                 Scaffold.of(context).openDrawer();
               },
@@ -88,7 +88,7 @@ class ObjectivesScreenState extends State<ObjectivesScreen> with ProfileConsumer
               color: Theme.of(context).colorScheme.secondaryContainer, borderRadius: BorderRadius.circular(18)),
           width: 36,
           height: 36,
-          child: RefreshButtonWidget(),
+          child: const RefreshButtonWidget(),
         ),
       ),
     ]);
@@ -99,9 +99,9 @@ class ObjectivesScreenState extends State<ObjectivesScreen> with ProfileConsumer
       return Container();
     }
     var screenPadding = MediaQuery.of(context).padding;
-    if (objectives.length == 0) {
+    if (objectives.isEmpty) {
       return Container(
-          padding: EdgeInsets.all(16).copyWith(left: max(screenPadding.left, 16), right: max(screenPadding.right, 16)),
+          padding: const EdgeInsets.all(16).copyWith(left: max(screenPadding.left, 16), right: max(screenPadding.right, 16)),
           child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -124,7 +124,7 @@ class ObjectivesScreenState extends State<ObjectivesScreen> with ProfileConsumer
             top: 4),
         itemCount: objectives.length,
         gridDelegate: SliverSimpleGridDelegateWithFixedCrossAxisCount(crossAxisCount: isTablet ? 2 : 1),
-        itemBuilder: (context, index) => Container(height: 132, child: getItem(context, index)));
+        itemBuilder: (context, index) => SizedBox(height: 132, child: getItem(context, index)));
   }
 
   Widget getItem(BuildContext context, int index) {

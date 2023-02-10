@@ -93,7 +93,7 @@ class ProgressScreenState extends State<ProgressScreen>
             height: kToolbarHeight,
             child: IconButton(
               enableFeedback: false,
-              icon: Icon(Icons.menu),
+              icon: const Icon(Icons.menu),
               onPressed: () {
                 Scaffold.of(context).openDrawer();
               },
@@ -109,8 +109,8 @@ class ProgressScreenState extends State<ProgressScreen>
             right: 0,
             child: buildTypeTabBar(context),
           ),
-          InventoryNotificationWidget(key: Key('inventory_notification_widget')),
-          Positioned(bottom: screenPadding.bottom, left: 0, right: 0, child: SelectedItemsWidget()),
+          const InventoryNotificationWidget(key: Key('inventory_notification_widget')),
+          Positioned(bottom: screenPadding.bottom, left: 0, right: 0, child: const SelectedItemsWidget()),
         ],
       ),
     );
@@ -142,7 +142,7 @@ class ProgressScreenState extends State<ProgressScreen>
 
   Widget buildCharacterTabView(BuildContext context, int index) {
     return PassiveTabBarView(
-        physics: NeverScrollableScrollPhysics(),
+        physics: const NeverScrollableScrollPhysics(),
         controller: charTabController,
         children: buildCharacterTabs(context, index));
   }
@@ -163,19 +163,19 @@ class ProgressScreenState extends State<ProgressScreen>
         child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           Expanded(
               child: TabBar(
-                  labelPadding: EdgeInsets.all(4),
+                  labelPadding: const EdgeInsets.all(4),
                   indicator: BoxDecoration(
                       border: Border(top: BorderSide(width: 2, color: Theme.of(context).colorScheme.onSurface))),
                   controller: typeTabController,
                   tabs: [
                 Text("Milestones".translate(context).toUpperCase(),
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
                 Text("Pursuits".translate(context).toUpperCase(),
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
                 Text("Ranks".translate(context).toUpperCase(),
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13))
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13))
               ])),
-          Container(width: 40, child: RefreshButtonWidget())
+          const SizedBox(width: 40, child: RefreshButtonWidget())
         ]));
   }
 
@@ -204,7 +204,7 @@ class ProgressScreenState extends State<ProgressScreen>
                     controller: SearchController.withDefaultFilters(context,
                         firstRunFilters: [PseudoItemTypeFilter(types, types)],
                         preFilters: [
-                          ItemOwnerFilter([char.characterId].toSet()),
+                          ItemOwnerFilter({char.characterId}),
                           PseudoItemTypeFilter(types, types),
                         ],
                         defaultSorting: userSettings.pursuitOrdering,

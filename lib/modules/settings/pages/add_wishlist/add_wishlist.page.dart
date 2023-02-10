@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import 'add_wishlists.bloc.dart';
 
 class AddWishlistPage extends StatefulWidget {
-  AddWishlistPage();
+  const AddWishlistPage();
 
   @override
   AddWishlistPageState createState() => AddWishlistPageState();
@@ -29,8 +29,8 @@ class AddWishlistPageState extends State<AddWishlistPage> {
             title: buildTitle(context),
             bottom: TabBar(
               tabs: [
-                Container(padding: EdgeInsets.all(8), child: Text("Community".translate(context))),
-                Container(padding: EdgeInsets.all(8), child: Text("Custom".translate(context))),
+                Container(padding: const EdgeInsets.all(8), child: Text("Community".translate(context))),
+                Container(padding: const EdgeInsets.all(8), child: Text("Custom".translate(context))),
               ],
             ),
           ),
@@ -45,6 +45,6 @@ class AddWishlistPageState extends State<AddWishlistPage> {
 
   Widget buildTitle(BuildContext context) => Text(
         "Add Wishlist".translate(context),
-        key: Key("title"),
+        key: const Key("title"),
       );
 }

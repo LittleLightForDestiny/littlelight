@@ -41,7 +41,7 @@ class ManifestImageWidget<T> extends StatelessWidget with ManifestConsumer {
     return _ManifestImageState(def, true);
   }
 
-  Widget buildShimmer(BuildContext context) => DefaultLoadingShimmer();
+  Widget buildShimmer(BuildContext context) => const DefaultLoadingShimmer();
 
   Widget buildPlaceholder(BuildContext context) => placeholder ?? buildShimmer(context);
 
@@ -69,7 +69,7 @@ class ManifestImageWidget<T> extends StatelessWidget with ManifestConsumer {
           fit: fit,
           alignment: alignment,
           placeholder: buildPlaceholder(context),
-          fadeInDuration: Duration(milliseconds: 300),
+          fadeInDuration: const Duration(milliseconds: 300),
           color: color,
         );
       },

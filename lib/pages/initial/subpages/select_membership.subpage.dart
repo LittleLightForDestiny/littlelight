@@ -17,7 +17,7 @@ import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:provider/provider.dart';
 
 class SelectMembershipSubPage extends StatefulWidget {
-  SelectMembershipSubPage();
+  const SelectMembershipSubPage();
 
   @override
   SelectMembershipSubPageState createState() => SelectMembershipSubPageState();
@@ -37,12 +37,12 @@ class SelectMembershipSubPageState extends SubpageBaseState<SelectMembershipSubP
   @override
   Widget buildTitle(BuildContext context) => TranslatedTextWidget(
         "Select Account",
-        key: Key("title"),
+        key: const Key("title"),
       );
 
   @override
   Widget buildContent(BuildContext context) => Container(
-      constraints: BoxConstraints(maxWidth: 400),
+      constraints: const BoxConstraints(maxWidth: 400),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -95,10 +95,10 @@ class SelectMembershipSubPageState extends SubpageBaseState<SelectMembershipSubP
       Container(
         decoration: BoxDecoration(
             color: LittleLightTheme.of(context).surfaceLayers.layer2,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(8))),
-        padding: EdgeInsets.all(8),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(8))),
+        padding: const EdgeInsets.all(8),
         child: Row(children: [
-          Container(
+          SizedBox(
             width: 48,
             height: 48,
             child: profilePicturePath != null ? QueuedNetworkImage(imageUrl: profilePicturePath) : Container(),
@@ -125,10 +125,10 @@ class SelectMembershipSubPageState extends SubpageBaseState<SelectMembershipSubP
       Container(
           decoration: BoxDecoration(
             border: Border.all(color: LittleLightTheme.of(context).surfaceLayers.layer2, width: 2),
-            borderRadius: BorderRadius.vertical(bottom: Radius.circular(8)),
+            borderRadius: const BorderRadius.vertical(bottom: Radius.circular(8)),
           ),
-          margin: EdgeInsets.only(bottom: 16),
-          padding: EdgeInsets.all(8).copyWith(bottom: 0),
+          margin: const EdgeInsets.only(bottom: 16),
+          padding: const EdgeInsets.all(8).copyWith(bottom: 0),
           child: Column(children: [
             if (mainMembership != null) mainMembership,
             if (memberships != null) memberships,
@@ -147,7 +147,7 @@ class SelectMembershipSubPageState extends SubpageBaseState<SelectMembershipSubP
   Widget? buildSecondaryMemberships(BuildContext context, UserMembershipData account) {
     final memberships = account.destinyMemberships?.where((m) => m.membershipId != account.primaryMembershipId);
     if (memberships == null) return null;
-    if (memberships.length == 0) return null;
+    if (memberships.isEmpty) return null;
     final hasMainAccount = account.primaryMembershipId != null;
     return Opacity(
         opacity: hasMainAccount ? .5 : 1,
@@ -160,7 +160,7 @@ class SelectMembershipSubPageState extends SubpageBaseState<SelectMembershipSubP
       {bool crossSaveMembership = false}) {
     final data = crossSaveMembership ? PlatformData.crossPlayData : destinyInfoCard.membershipType!.data;
     return Container(
-        margin: EdgeInsets.only(bottom: 8),
+        margin: const EdgeInsets.only(bottom: 8),
         child: Material(
             borderRadius: BorderRadius.circular(4),
             color: data.color,
@@ -170,7 +170,7 @@ class SelectMembershipSubPageState extends SubpageBaseState<SelectMembershipSubP
                   context.read<InitialPageStateNotifier>().membershipSelected();
                 },
                 child: Container(
-                  padding: EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(8),
                   child: Row(children: [
                     Icon(data.icon, size: 32),
                     Container(
@@ -187,8 +187,8 @@ class SelectMembershipSubPageState extends SubpageBaseState<SelectMembershipSubP
                                 ?.map((m) => Container(
                                       decoration:
                                           BoxDecoration(color: m.color, borderRadius: BorderRadius.circular(16)),
-                                      padding: EdgeInsets.all(4),
-                                      margin: EdgeInsets.only(left: 2),
+                                      padding: const EdgeInsets.all(4),
+                                      margin: const EdgeInsets.only(left: 2),
                                       child: Icon(m.icon, size: 20),
                                     ))
                                 .toList() ??

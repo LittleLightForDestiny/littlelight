@@ -35,7 +35,7 @@ class FilterTierType {
 }
 
 class TierTypeFilter extends BaseItemFilter<Set<FilterTierType>> {
-  TierTypeFilter() : super(Set(), Set());
+  TierTypeFilter() : super(<FilterTierType>{}, <FilterTierType>{});
 
   clear() {
     availableValues.clear();
@@ -53,14 +53,15 @@ class TierTypeFilter extends BaseItemFilter<Set<FilterTierType>> {
         .toSet()
         .toList();
     types.sort((a, b) => b?.tierType?.value?.compareTo(a.tierType.value ?? -1) ?? 0);
-    this.availableValues = types.toSet();
-    this.available = availableValues.length > 1;
+    availableValues = types.toSet();
+    available = availableValues.length > 1;
     value.retainAll(availableValues);
     return super.filter(items, definitions: definitions);
   }
 
+  @override
   bool filterItem(ItemWithOwner item, {Map<int, DestinyInventoryItemDefinition> definitions}) {
-    if (value?.length == 0) {
+    if (value.isEmpty) {
       return true;
     }
     var def = definitions[item?.item?.itemHash];

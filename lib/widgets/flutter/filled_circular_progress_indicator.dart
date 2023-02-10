@@ -77,9 +77,11 @@ class _FilledCircularProgressIndicatorState extends State<FilledCircularProgress
   @override
   void didUpdateWidget(FilledCircularProgressIndicator oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.value == null && !_controller.isAnimating)
+    if (widget.value == null && !_controller.isAnimating) {
       _controller.repeat();
-    else if (widget.value != null && _controller.isAnimating) _controller.stop();
+    } else if (widget.value != null && _controller.isAnimating) {
+      _controller.stop();
+    }
   }
 
   @override
@@ -174,8 +176,9 @@ class _CircularProgressIndicatorPainter extends CustomPainter {
       canvas.drawArc(Offset.zero & size, 0, _sweep, true, backgroundPaint);
     }
 
-    if (value == null) // Indeterminate
+    if (value == null) {
       paint.strokeCap = StrokeCap.square;
+    }
 
     canvas.drawArc(Offset.zero & size, arcStart, arcSweep, true, paint);
   }

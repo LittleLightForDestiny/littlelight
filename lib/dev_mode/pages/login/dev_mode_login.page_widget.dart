@@ -24,12 +24,12 @@ class _DevModeLoginPageWidgetState extends State<DevModeLoginPageWidget> with Au
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(FontAwesomeIcons.home),
+          icon: const Icon(FontAwesomeIcons.home),
           onPressed: () async {
             Navigator.of(context).pushAndRemoveUntil(DevModeMainPageRoute(), (route) => false);
           },
         ),
-        title: Text("Login"),
+        title: const Text("Login"),
       ),
       body: SingleChildScrollView(
           child: Column(children: [
@@ -42,7 +42,7 @@ class _DevModeLoginPageWidgetState extends State<DevModeLoginPageWidget> with Au
     return Card(
         child: Column(children: [
       ListTile(
-        title: Text("Authorization Code"),
+        title: const Text("Authorization Code"),
         subtitle: Text("${arguments?.code}"),
       ),
       ButtonBar(
@@ -54,7 +54,7 @@ class _DevModeLoginPageWidgetState extends State<DevModeLoginPageWidget> with Au
                 await auth.addAccount(args.code!);
                 Navigator.of(context).pushAndRemoveUntil(DevModeMainPageRoute(), (route) => false);
               },
-              child: Text("Add Account"))
+              child: const Text("Add Account"))
         ],
       )
     ]));

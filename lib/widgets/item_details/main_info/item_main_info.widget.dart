@@ -16,7 +16,7 @@ import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/common/wishlist_badges.widget.dart';
 
 class ItemMainInfoWidget extends BaseDestinyStatefulItemWidget {
-  ItemMainInfoWidget(
+  const ItemMainInfoWidget(
       DestinyItemComponent item, DestinyInventoryItemDefinition definition, DestinyItemInstanceComponent instanceInfo,
       {Key key, String characterId})
       : super(item: item, definition: definition, instanceInfo: instanceInfo, key: key, characterId: characterId);
@@ -31,24 +31,24 @@ class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget> w
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(getEnhancedDefinitionName(definition)),
-              Padding(padding: EdgeInsets.only(top: 8), child: primaryStat(context))
+              Padding(padding: const EdgeInsets.only(top: 8), child: primaryStat(context))
             ],
           ),
           Container(
             height: 1,
             color: Colors.grey.shade300,
-            margin: EdgeInsets.symmetric(vertical: 8),
+            margin: const EdgeInsets.symmetric(vertical: 8),
           ),
           (definition?.displayProperties?.description?.length ?? 0) > 0
               ? Padding(
-                  padding: EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(8),
                   child: Text(
                     definition.displayProperties.description,
                   ))
@@ -63,12 +63,12 @@ class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget> w
   String getEnhancedDefinitionName(DestinyInventoryItemDefinition definition) {
     String itemTypeDisplayName = definition?.itemTypeDisplayName ?? "";
 
-    final questCategoryHash = 16;
+    const questCategoryHash = 16;
     if (definition?.itemCategoryHashes?.contains(questCategoryHash) ?? false) {
       List<int> stepHashes = definition.setData.itemList.map((i) => i.itemHash)?.toList() ?? [];
       int currentIndex = stepHashes.indexOf(item.itemHash);
       int allSteps = stepHashes.length;
-      return itemTypeDisplayName + " (${currentIndex + 1}/$allSteps)";
+      return "$itemTypeDisplayName (${currentIndex + 1}/$allSteps)";
     }
 
     return itemTypeDisplayName;
@@ -86,12 +86,12 @@ class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget> w
   Widget buildWishListInfo(BuildContext context) {
     final reusable = profile.getItemReusablePlugs(item?.itemInstanceId);
     final tags = wishlistsService.getWishlistBuildTags(itemHash: item?.itemHash, reusablePlugs: reusable);
-    if (tags == null || tags.length == 0) return Container();
+    if (tags == null || tags.isEmpty) return Container();
     if (tags.contains(WishlistTag.GodPVE) && tags.contains(WishlistTag.GodPVP)) {
       return Container(
-          padding: EdgeInsets.only(bottom: 8, left: 8, right: 8),
+          padding: const EdgeInsets.only(bottom: 8, left: 8, right: 8),
           child: Row(children: [
-            WishlistBadgesWidget(tags: [WishlistTag.GodPVE, WishlistTag.GodPVP].toSet()),
+            const WishlistBadgesWidget(tags: {WishlistTag.GodPVE, WishlistTag.GodPVP}),
             Container(
               width: 8,
             ),
@@ -102,7 +102,7 @@ class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget> w
     if (tags.contains(WishlistTag.GodPVE)) {
       rows.add(Container(
           child: Row(children: [
-        WishlistBadgesWidget(tags: [WishlistTag.GodPVE].toSet()),
+        const WishlistBadgesWidget(tags: {WishlistTag.GodPVE}),
         Container(
           width: 8,
         ),
@@ -112,18 +112,18 @@ class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget> w
     if (tags.contains(WishlistTag.GodPVP)) {
       rows.add(Container(
           child: Row(children: [
-        WishlistBadgesWidget(tags: [WishlistTag.GodPVP].toSet()),
+        const WishlistBadgesWidget(tags: {WishlistTag.GodPVP}),
         Container(
           width: 8,
         ),
         Expanded(child: Text("This item is considered a PvP godroll.".translate(context)))
       ])));
     }
-    if (tags.contains(WishlistTag.PVE) && tags.contains(WishlistTag.PVP) && rows.length == 0) {
+    if (tags.contains(WishlistTag.PVE) && tags.contains(WishlistTag.PVP) && rows.isEmpty) {
       return Container(
-          padding: EdgeInsets.only(bottom: 8, left: 8, right: 8),
+          padding: const EdgeInsets.only(bottom: 8, left: 8, right: 8),
           child: Row(children: [
-            WishlistBadgesWidget(tags: [WishlistTag.PVE, WishlistTag.PVP].toSet()),
+            const WishlistBadgesWidget(tags: {WishlistTag.PVE, WishlistTag.PVP}),
             Container(
               width: 8,
             ),
@@ -133,7 +133,7 @@ class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget> w
     if (tags.contains(WishlistTag.PVE) && !tags.contains(WishlistTag.GodPVE)) {
       rows.add(Container(
           child: Row(children: [
-        WishlistBadgesWidget(tags: [WishlistTag.PVE].toSet()),
+        const WishlistBadgesWidget(tags: {WishlistTag.PVE}),
         Container(
           width: 8,
         ),
@@ -143,7 +143,7 @@ class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget> w
     if (tags.contains(WishlistTag.PVP) && !tags.contains(WishlistTag.GodPVP)) {
       rows.add(Container(
           child: Row(children: [
-        WishlistBadgesWidget(tags: [WishlistTag.PVP].toSet()),
+        const WishlistBadgesWidget(tags: {WishlistTag.PVP}),
         Container(
           width: 8,
         ),
@@ -153,26 +153,26 @@ class ItemMainInfoWidgetState extends BaseDestinyItemState<ItemMainInfoWidget> w
     if (tags.contains(WishlistTag.Bungie)) {
       rows.add(Container(
           child: Row(children: [
-        WishlistBadgesWidget(tags: [WishlistTag.Bungie].toSet()),
+        const WishlistBadgesWidget(tags: {WishlistTag.Bungie}),
         Container(
           width: 8,
         ),
         Expanded(child: Text("This item is a Bungie curated roll.".translate(context)))
       ])));
     }
-    if (rows.length > 0) {
+    if (rows.isNotEmpty) {
       return Container(
-          padding: EdgeInsets.only(bottom: 8, left: 8, right: 8),
+          padding: const EdgeInsets.only(bottom: 8, left: 8, right: 8),
           child: Column(
-            children: rows,
             crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: rows,
           ));
     }
     if (tags.contains(WishlistTag.Trash)) {
       return Container(
-          padding: EdgeInsets.only(bottom: 8, left: 8, right: 8),
+          padding: const EdgeInsets.only(bottom: 8, left: 8, right: 8),
           child: Row(children: [
-            WishlistBadgesWidget(tags: [WishlistTag.Trash].toSet()),
+            const WishlistBadgesWidget(tags: {WishlistTag.Trash}),
             Container(
               width: 8,
             ),

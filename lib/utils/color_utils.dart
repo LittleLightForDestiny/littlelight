@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 Color? colorFromHex(String hex) {
   hex = hex.replaceAll("#", "");
   if (hex.length == 6) {
-    hex = "FF" + hex;
+    hex = "FF$hex";
   }
   if (hex.length == 8) {
     return Color(int.parse("0x$hex"));
@@ -18,5 +18,5 @@ String hexFromColor(Color color) {
 
 extension ToMaterialColor on DestinyColor {
   Color toMaterialColor([double opacity = 1]) =>
-      Color.fromRGBO(this.red ?? 0, this.green ?? 0, this.blue ?? 0, opacity);
+      Color.fromRGBO(red ?? 0, green ?? 0, blue ?? 0, opacity);
 }

@@ -48,13 +48,13 @@ class InventoryItemWidget extends StatelessWidget {
   final InventoryItemWidgetDensity? density;
   final DestinyItemInfo item;
 
-  InventoryItemWidget(this.item, {this.density});
+  const InventoryItemWidget(this.item, {this.density});
 
   @override
   Widget build(BuildContext context) {
     if (density != null) return buildWithDensity(context, density!);
-    final hash = this.item.item.itemHash;
-    final itemInstanceId = this.item.item.itemInstanceId;
+    final hash = item.item.itemHash;
+    final itemInstanceId = item.item.itemInstanceId;
     return LayoutBuilder(
         key: Key("$hash $itemInstanceId"),
         builder: (context, constraints) {

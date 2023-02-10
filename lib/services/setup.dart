@@ -19,7 +19,6 @@ import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/destiny_settings.consumer.dart';
 import 'package:little_light/services/profile/destiny_settings.service.dart';
-import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/services/selection/selection.service.dart';
 import 'package:little_light/services/storage/export.dart';

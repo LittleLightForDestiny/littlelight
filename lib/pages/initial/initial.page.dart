@@ -14,7 +14,7 @@ import 'package:provider/provider.dart';
 import 'notifiers/initial_page_state.notifier.dart';
 
 class InitialPage extends StatefulWidget {
-  InitialPage() : super();
+  const InitialPage() : super();
 
   @override
   InitialPageState createState() => InitialPageState();
@@ -24,7 +24,7 @@ class InitialPageState extends State<InitialPage> with AuthConsumer {
   @override
   Widget build(BuildContext context) => Scaffold(
       body: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             image: DecorationImage(
               image: AssetImage("assets/imgs/background.jpg"),
               fit: BoxFit.cover,
@@ -59,15 +59,15 @@ class InitialPageState extends State<InitialPage> with AuthConsumer {
 
   Widget buildLoadingAnim(BuildContext context) => LoadingAnimWidget();
 
-  Widget languageSelectPage(BuildContext context) => SelectLanguageSubPage();
+  Widget languageSelectPage(BuildContext context) => const SelectLanguageSubPage();
 
-  Widget downloadManifestPage(BuildContext context) => DownloadManifestProgressSubPage();
+  Widget downloadManifestPage(BuildContext context) => const DownloadManifestProgressSubPage();
 
-  Widget authorizationRequestPage(BuildContext context) => AuthorizationRequestSubPage();
+  Widget authorizationRequestPage(BuildContext context) => const AuthorizationRequestSubPage();
 
-  Widget selectMembershipPage(BuildContext context) => SelectMembershipSubPage();
+  Widget selectMembershipPage(BuildContext context) => const SelectMembershipSubPage();
 
-  Widget selectWishlistsPage(BuildContext context) => SelectWishlistsSubPage();
+  Widget selectWishlistsPage(BuildContext context) => const SelectWishlistsSubPage();
 
-  Widget buildError(BuildContext context) => StartupErrorSubPage();
+  Widget buildError(BuildContext context) => const StartupErrorSubPage();
 }

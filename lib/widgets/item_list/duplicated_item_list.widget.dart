@@ -45,7 +45,7 @@ class _DuplicatedItemsBucket {
 
 class DuplicatedItemListWidget extends StatefulWidget {
   final SearchController searchController;
-  DuplicatedItemListWidget({Key key, this.searchController}) : super(key: key);
+  const DuplicatedItemListWidget({Key key, this.searchController}) : super(key: key);
 
   @override
   DuplicatedItemListWidgetState createState() => DuplicatedItemListWidgetState();
@@ -77,18 +77,18 @@ class DuplicatedItemListWidgetState extends State<DuplicatedItemListWidget>
       final itemDef = await manifest.getDefinition<DestinyInventoryItemDefinition>(itemHash);
       final bucketHash = itemDef.inventory.bucketTypeHash;
       _buckets
-          .getOrCreate(bucketHash, Map<int, List<ItemWithOwner>>())
+          .getOrCreate(bucketHash, <int, List<ItemWithOwner>>{})
           .getOrCreate(itemHash, <ItemWithOwner>[]).add(item);
     }
 
     _buckets.forEach((hash, duplicates) {
       duplicates.removeWhere((key, value) => value.length < 2);
     });
-    _buckets.removeWhere((key, value) => value.length == 0);
+    _buckets.removeWhere((key, value) => value.isEmpty);
 
     final orderedBucketHashes = _buckets.keys;
 
-    this.duplicatedItemBuckets = [];
+    duplicatedItemBuckets = [];
     for (final bucketHash in orderedBucketHashes) {
       final mappedItems = _buckets[bucketHash];
       final duplicatedItems = mappedItems
@@ -96,7 +96,7 @@ class DuplicatedItemListWidgetState extends State<DuplicatedItemListWidget>
           .values
           .toList();
       final itemBucket = _DuplicatedItemsBucket(bucketHash, duplicatedItems);
-      this.duplicatedItemBuckets.add(itemBucket);
+      duplicatedItemBuckets.add(itemBucket);
     }
 
     if (mounted) {
@@ -104,15 +104,16 @@ class DuplicatedItemListWidgetState extends State<DuplicatedItemListWidget>
     }
   }
 
+  @override
   Widget build(BuildContext context) {
     super.build(context);
-    if (this.duplicatedItemBuckets == null) {
+    if (duplicatedItemBuckets == null) {
       return LoadingAnimWidget();
     }
 
     return MultiSectionScrollView(
       sections,
-      padding: EdgeInsets.all(4),
+      padding: const EdgeInsets.all(4),
       mainAxisSpacing: 2,
       crossAxisSpacing: 2,
     );
@@ -120,7 +121,7 @@ class DuplicatedItemListWidgetState extends State<DuplicatedItemListWidget>
 
   List<SliverSection> get sections {
     final List<SliverSection> _sections = [];
-    for (final bucket in this.duplicatedItemBuckets) {
+    for (final bucket in duplicatedItemBuckets) {
       _sections.add(buildHeaderSliver(bucket));
       for (final duplicated in bucket.items) {
         _sections.add(buildDuplicateSliver(duplicated));
@@ -140,7 +141,7 @@ class DuplicatedItemListWidgetState extends State<DuplicatedItemListWidget>
               child: ManifestText<DestinyInventoryBucketDefinition>(
                 bucket.bucketHash,
                 uppercase: true,
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
             ));
   }
@@ -182,7 +183,7 @@ class DuplicatedItemListWidgetState extends State<DuplicatedItemListWidget>
 class _DefinitionItemWrapper extends StatefulWidget {
   final int hash;
   final List<ItemWithOwner> items;
-  _DefinitionItemWrapper(this.hash, this.items);
+  const _DefinitionItemWrapper(this.hash, this.items);
   @override
   State<StatefulWidget> createState() {
     return _DefinitionItemWrapperState();
@@ -261,7 +262,7 @@ class _ItemInstanceWrapper extends StatefulWidget {
   final ItemWithOwner item;
   final DestinyInventoryItemDefinition definition;
 
-  _ItemInstanceWrapper({Key key, this.item, this.definition}) : super(key: key);
+  const _ItemInstanceWrapper({Key key, this.item, this.definition}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {

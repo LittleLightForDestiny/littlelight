@@ -12,13 +12,13 @@ import 'package:little_light/widgets/item_stats/direction_stat_bar.widget.dart';
 class ScreenshotItemStatWidget extends BaseItemStatWidget {
   final double pixelSize;
 
-  ScreenshotItemStatWidget(
+  const ScreenshotItemStatWidget(
       {Key key, this.pixelSize = 1, StatValues modValues, int statHash, DestinyStatDisplayDefinition scaled})
       : super(key: key, statHash: statHash, modValues: modValues, scaled: scaled);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
         height: pixelSize * 28,
         child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -42,7 +42,7 @@ class ScreenshotItemStatWidget extends BaseItemStatWidget {
   }
 
   Widget buildValue(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: pixelSize * 50,
       child: Text(
         "$currentValue",
@@ -67,14 +67,14 @@ class ScreenshotItemStatWidget extends BaseItemStatWidget {
           width: pixelSize * 240,
           alignment: Alignment.centerLeft,
           padding: EdgeInsets.only(bottom: 4 * pixelSize),
-          child: Container(
+          child: SizedBox(
+              width: pixelSize * 60,
               child: DirectionStatBarWidget(
                   currentValue: currentValue,
                   equippedValue: equipped + masterwork,
                   currentColor: getValueColor(context),
                   equippedColor: Colors.grey.shade500,
-                  backgroundColor: Colors.grey.shade800.withOpacity(.5)),
-              width: pixelSize * 60));
+                  backgroundColor: Colors.grey.shade800.withOpacity(.5))));
     }
 
     return Container(

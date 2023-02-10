@@ -191,8 +191,8 @@ extension RemoveDiacritics on String {
         }
       }
     }
-    return this.replaceAllMapped(_diacriticsRegExp, (a) {
-      return _diacriticsMap[a.group(0)] != null ? _diacriticsMap[a.group(0)] : a.group(0);
+    return replaceAllMapped(_diacriticsRegExp, (a) {
+      return _diacriticsMap[a.group(0)] ?? a.group(0);
     });
   }
 }

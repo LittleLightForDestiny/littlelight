@@ -16,7 +16,7 @@ import 'package:little_light/widgets/search/search_sort_menu.widget.dart';
 class SearchScreen extends StatefulWidget {
   final SearchController controller;
 
-  SearchScreen({
+  const SearchScreen({
     Key key,
     @required this.controller,
   }) : super(key: key);
@@ -53,9 +53,9 @@ class SearchScreenState<T extends SearchScreen> extends State<T> {
         body: Stack(children: [
           Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
             Expanded(child: buildList(context)),
-            SelectedItemsWidget(),
+            const SelectedItemsWidget(),
           ]),
-          InventoryNotificationWidget(
+          const InventoryNotificationWidget(
             key: Key('inventory_notification_widget'),
             barHeight: 0,
           ),
@@ -78,14 +78,14 @@ class SearchScreenState<T extends SearchScreen> extends State<T> {
 
   buildAppBar(BuildContext context) {
     return AppBar(
-      leading: BackButton(),
+      leading: const BackButton(),
       title: buildAppBarTitle(context),
       elevation: 2,
       actions: <Widget>[
         Builder(
             builder: (context) => IconButton(
                   enableFeedback: false,
-                  icon: Icon(Icons.filter_list),
+                  icon: const Icon(Icons.filter_list),
                   onPressed: () {
                     drawerMode = SearchDrawerMode.Filter;
                     setState(() {});
@@ -95,7 +95,7 @@ class SearchScreenState<T extends SearchScreen> extends State<T> {
         Builder(
             builder: (context) => IconButton(
                   enableFeedback: false,
-                  icon: Transform.rotate(angle: Math.pi / 2, child: Icon(FontAwesomeIcons.exchangeAlt)),
+                  icon: Transform.rotate(angle: Math.pi / 2, child: const Icon(FontAwesomeIcons.exchangeAlt)),
                   onPressed: () {
                     drawerMode = SearchDrawerMode.Sort;
                     setState(() {});

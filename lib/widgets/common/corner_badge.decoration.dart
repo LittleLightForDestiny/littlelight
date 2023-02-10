@@ -22,7 +22,7 @@ class CornerBadgeDecoration extends Decoration {
 
   @override
   BoxPainter createBoxPainter([void Function()? onChanged]) =>
-      CornerBadgePainter(badgeColors, badgeSize, this.position);
+      CornerBadgePainter(badgeColors, badgeSize, position);
 }
 
 class CornerBadgePainter extends BoxPainter {
@@ -49,7 +49,7 @@ class CornerBadgePainter extends BoxPainter {
     var topRight = Offset(size, 0);
     var bottomLeft = Offset(0, size);
     var bottomRight = Offset(size, size);
-    switch (this.position) {
+    switch (position) {
       case CornerPosition.TopLeft:
         return [bottomLeft, bottomRight, topRight];
       case CornerPosition.TopRight:
@@ -64,7 +64,7 @@ class CornerBadgePainter extends BoxPainter {
   Offset getOffset(Offset offset, ImageConfiguration configuration, double size) {
     final width = configuration.size?.width ?? 0;
     final height = configuration.size?.height ?? 0;
-    switch (this.position) {
+    switch (position) {
       case CornerPosition.TopLeft:
         return Offset(offset.dx, offset.dy);
       case CornerPosition.TopRight:
@@ -105,7 +105,7 @@ class CornerBadgePainter extends BoxPainter {
       PathOperation.difference,
       Path()
         ..addRRect(RRect.fromLTRBAndCorners(points[0].dx, points[0].dy, points[2].dx, points[2].dy,
-            topRight: Radius.circular(CORNER_RADIUS))),
+            topRight: const Radius.circular(CORNER_RADIUS))),
       Path()
         ..moveTo(points[0].dx, points[0].dy)
         ..lineTo(points[1].dx, points[1].dy)

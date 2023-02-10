@@ -26,7 +26,7 @@ class ItemStatsWidget extends BaseDestinyStatefulItemWidget {
   final Map<int, DestinyInventoryItemDefinition> plugDefinitions;
   final DestinyStatGroupDefinition statGroupDefinition;
 
-  ItemStatsWidget(
+  const ItemStatsWidget(
       DestinyItemComponent item, DestinyInventoryItemDefinition definition, DestinyItemInstanceComponent instanceInfo,
       {Key key, this.selectedPerks, this.plugDefinitions, this.statGroupDefinition})
       : super(item: item, definition: definition, instanceInfo: instanceInfo, key: key);
@@ -46,7 +46,7 @@ class DestinyStatsWidgetState extends BaseDestinyItemState<ItemStatsWidget>
       return Container();
     }
     return Container(
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       child: Column(
         children: <Widget>[
           HeaderWidget(
@@ -56,10 +56,10 @@ class DestinyStatsWidgetState extends BaseDestinyItemState<ItemStatsWidget>
               "Stats",
               uppercase: true,
               textAlign: TextAlign.left,
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           )),
-          Container(padding: EdgeInsets.symmetric(vertical: 8), child: Column(children: buildStats(context))),
+          Container(padding: const EdgeInsets.symmetric(vertical: 8), child: Column(children: buildStats(context))),
         ],
       ),
     );
@@ -76,7 +76,7 @@ class DestinyStatsWidgetState extends BaseDestinyItemState<ItemStatsWidget>
   }
 
   Map<int, StatValues> getModValues() {
-    Map<int, StatValues> map = Map();
+    Map<int, StatValues> map = {};
     if (widget.plugDefinitions == null) {
       return map;
     }
@@ -87,20 +87,20 @@ class DestinyStatsWidgetState extends BaseDestinyItemState<ItemStatsWidget>
       plugHashes = definition.sockets.socketEntries.map((plug) => plug.singleInitialItemHash).toList();
     }
 
-    plugHashes.forEach((plugHash) {
+    for (var plugHash in plugHashes) {
       int index = plugHashes.indexOf(plugHash);
       DestinyInventoryItemDefinition def = widget.plugDefinitions[plugHash];
-      var state;
+      DestinyItemSocketState state;
       if (socketStates != null) {
         state = socketStates[index];
       }
       if (def == null) {
-        return;
+        return null;
       }
       DestinyInventoryItemDefinition selectedDef = widget.plugDefinitions[widget.selectedPerks[index]];
-      def?.investmentStats?.forEach((stat) {
+      for (var stat in def?.investmentStats) {
         StatValues values = map[stat.statTypeHash] ?? StatValues();
-        if (def.plug?.uiPlugLabel == 'masterwork' && (state?.reusablePlugHashes?.length ?? 0) == 0) {
+        if (def.plug?.uiPlugLabel == 'masterwork' && state == null) {
           values.masterwork += stat.value;
         } else {
           values.equipped += stat.value;
@@ -109,18 +109,18 @@ class DestinyStatsWidgetState extends BaseDestinyItemState<ItemStatsWidget>
           }
         }
         map[stat.statTypeHash] = values;
-      });
+      }
 
       if (selectedDef != null) {
-        selectedDef.investmentStats.forEach((stat) {
+        for (var stat in selectedDef.investmentStats) {
           StatValues values = map[stat.statTypeHash] ?? StatValues();
           if (selectedDef.plug?.uiPlugLabel != 'masterwork') {
             values.selected += stat.value;
           }
           map[stat.statTypeHash] = values;
-        });
+        }
       }
-    });
+    }
 
     return map;
   }
@@ -137,7 +137,7 @@ class DestinyStatsWidgetState extends BaseDestinyItemState<ItemStatsWidget>
         definition.investmentStats.where((stat) => statWhitelist.contains(stat.statTypeHash)).toList();
 
     for (var stat in widget.statGroupDefinition?.scaledStats) {
-      if (statWhitelist.contains(stat.statHash) && stats.where((s) => s.statTypeHash == stat.statHash).length == 0) {
+      if (statWhitelist.contains(stat.statHash) && stats.where((s) => s.statTypeHash == stat.statHash).isEmpty) {
         var newStat = DestinyItemInvestmentStatDefinition()
           ..statTypeHash = stat.statHash
           ..value = 0
@@ -177,13 +177,13 @@ class ItemStatWidget extends StatelessWidget {
   final StatValues modValues;
   final DestinyStatDisplayDefinition scaled;
 
-  ItemStatWidget(this.statHash, this.baseValue, this.modValues, {this.scaled});
+  const ItemStatWidget(this.statHash, this.baseValue, this.modValues, {this.scaled});
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
       return Container(
-          padding: EdgeInsets.symmetric(vertical: 1),
+          padding: const EdgeInsets.symmetric(vertical: 1),
           child: Row(children: [
             SizedBox(
                 width: constraints.maxWidth * .45,

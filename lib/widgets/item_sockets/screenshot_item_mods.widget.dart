@@ -16,7 +16,7 @@ import 'package:little_light/widgets/item_sockets/item_socket.controller.dart';
 
 class ScreenShotItemModsWidget extends BaseItemSocketsWidget {
   final double pixelSize;
-  ScreenShotItemModsWidget({
+  const ScreenShotItemModsWidget({
     Key key,
     DestinyItemComponent item,
     DestinyInventoryItemDefinition definition,
@@ -53,6 +53,7 @@ class ScreenShotItemModsWidgetState<T extends ScreenShotItemModsWidget> extends 
     );
   }
 
+  @override
   Widget buildHeader(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,7 +96,7 @@ class ScreenShotItemModsWidgetState<T extends ScreenShotItemModsWidget> extends 
     var plugHash = socketSelectedPlugHash(socketIndex);
     if (plugHash == null) return null;
 
-    return Container(
+    return SizedBox(
       height: 96 * widget.pixelSize,
       width: 96 * widget.pixelSize,
       child: buildPlug(context, socketIndex, plugHash),
@@ -109,7 +110,7 @@ class ScreenShotItemModsWidgetState<T extends ScreenShotItemModsWidget> extends 
     final energyType = def?.plug?.energyCost?.energyType ?? DestinyEnergyType.Any;
     final energyCost = def?.plug?.energyCost?.energyCost ?? 0;
     final canEquip = controller?.canEquip(socketIndex, plugItemHash);
-    final emptyModHash = 1835369552;
+    const emptyModHash = 1835369552;
     return Material(
         child: InkWell(
             onTap: () {

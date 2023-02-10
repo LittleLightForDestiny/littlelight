@@ -26,7 +26,7 @@ class InventoryItemMods extends StatelessWidget with WishlistsConsumer {
         ?.firstWhereOrNull((c) => c.socketCategoryHash == categoryHash);
     final plugs = socketCategory?.socketIndexes?.map((e) => sockets?[e]).whereType<DestinyItemSocketState>();
     if (plugs == null || plugs.isEmpty) return Container();
-    return Container(
+    return SizedBox(
       height: plugSize,
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -47,7 +47,7 @@ class InventoryItemMods extends StatelessWidget with WishlistsConsumer {
         color: context.theme.surfaceLayers,
         border: Border.all(
           width: .5,
-          color: context.theme.onSurfaceLayers.layer0 ?? Colors.transparent,
+          color: context.theme.onSurfaceLayers.layer0,
         ),
       ),
       width: plugSize,

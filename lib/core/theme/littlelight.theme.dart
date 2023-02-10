@@ -31,7 +31,7 @@ class LayeredSwatch extends Color {
     return LayeredSwatch(_reversedSwatches);
   }
 
-  MaterialColor get asMaterialColor => MaterialColor(this.layer0.value, {
+  MaterialColor get asMaterialColor => MaterialColor(layer0.value, {
         100: layer0,
         200: layer0,
         300: layer0,
@@ -46,48 +46,48 @@ class LayeredSwatch extends Color {
 
 class DamageTypeLayers {
   LayeredSwatch damageTypeArc = LayeredSwatch({
-    SwatchLayer.Layer0: Color.fromARGB(255, 36, 121, 177),
-    SwatchLayer.Layer1: Color(0xFFB8F3FF),
-    SwatchLayer.Layer2: Color(0xFFB8F3FF),
+    SwatchLayer.Layer0: const Color.fromARGB(255, 36, 121, 177),
+    SwatchLayer.Layer1: const Color(0xFFB8F3FF),
+    SwatchLayer.Layer2: const Color(0xFFB8F3FF),
   });
   LayeredSwatch damageTypeThermal = LayeredSwatch({
-    SwatchLayer.Layer0: Color(0xFFB43B0C),
-    SwatchLayer.Layer1: Color(0xFFF36227),
-    SwatchLayer.Layer2: Color(0xFFFF9C4A),
+    SwatchLayer.Layer0: const Color(0xFFB43B0C),
+    SwatchLayer.Layer1: const Color(0xFFF36227),
+    SwatchLayer.Layer2: const Color(0xFFFF9C4A),
   });
   LayeredSwatch damageTypeVoid = LayeredSwatch({
-    SwatchLayer.Layer0: Color.fromARGB(255, 77, 20, 148),
-    SwatchLayer.Layer1: Color(0xFFB178F8),
-    SwatchLayer.Layer2: Color(0xFFB178F8),
+    SwatchLayer.Layer0: const Color.fromARGB(255, 77, 20, 148),
+    SwatchLayer.Layer1: const Color(0xFFB178F8),
+    SwatchLayer.Layer2: const Color(0xFFB178F8),
   });
   LayeredSwatch damageTypeStasis = LayeredSwatch({
-    SwatchLayer.Layer0: Color.fromARGB(255, 40, 95, 204),
-    SwatchLayer.Layer1: Color(0xFF86A4FF),
-    SwatchLayer.Layer2: Color(0xFF86A4FF),
+    SwatchLayer.Layer0: const Color.fromARGB(255, 40, 95, 204),
+    SwatchLayer.Layer1: const Color(0xFF86A4FF),
+    SwatchLayer.Layer2: const Color(0xFF86A4FF),
   });
 
   LayeredSwatch damageTypeKinetic = LayeredSwatch({
-    SwatchLayer.Layer0: Color(0xFFABAFB0),
-    SwatchLayer.Layer1: Color(0xFFCACDCE),
-    SwatchLayer.Layer2: Color(0xFFDEE1E3),
+    SwatchLayer.Layer0: const Color(0xFFABAFB0),
+    SwatchLayer.Layer1: const Color(0xFFCACDCE),
+    SwatchLayer.Layer2: const Color(0xFFDEE1E3),
   });
 }
 
 class ItemTierLayers {
   LayeredSwatch basic = LayeredSwatch({
-    SwatchLayer.Layer0: Color.fromARGB(255, 195, 188, 180),
+    SwatchLayer.Layer0: const Color.fromARGB(255, 195, 188, 180),
   });
   LayeredSwatch common = LayeredSwatch({
-    SwatchLayer.Layer0: Color.fromARGB(255, 48, 107, 61),
+    SwatchLayer.Layer0: const Color.fromARGB(255, 48, 107, 61),
   });
   LayeredSwatch rare = LayeredSwatch({
-    SwatchLayer.Layer0: Color.fromARGB(255, 80, 118, 163),
+    SwatchLayer.Layer0: const Color.fromARGB(255, 80, 118, 163),
   });
   LayeredSwatch superior = LayeredSwatch({
-    SwatchLayer.Layer0: Color.fromARGB(255, 82, 47, 101),
+    SwatchLayer.Layer0: const Color.fromARGB(255, 82, 47, 101),
   });
   LayeredSwatch exotic = LayeredSwatch({
-    SwatchLayer.Layer0: Color.fromARGB(255, 206, 174, 51),
+    SwatchLayer.Layer0: const Color.fromARGB(255, 206, 174, 51),
   });
 }
 
@@ -129,8 +129,8 @@ class LittleLightThemeData {
         body: TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: onSurfaceLayers.layer0),
         button: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: onSurfaceLayers.layer0),
         notification: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: onSurfaceLayers.layer0),
-        itemNameHighDensity: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-        itemNameMediumDensity: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+        itemNameHighDensity: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+        itemNameMediumDensity: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
         itemTypeHighDensity: TextStyle(fontSize: 12, fontWeight: FontWeight.w300, color: onSurfaceLayers.layer0),
         itemPrimaryStatHighDensity: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: onSurfaceLayers.layer0),
         itemPrimaryStatMediumDensity:
@@ -139,21 +139,21 @@ class LittleLightThemeData {
       );
 
   final surfaceLayers = LayeredSwatch({
-    SwatchLayer.Layer0: Color(0xFF181818),
-    SwatchLayer.Layer1: Color(0xFF222126),
-    SwatchLayer.Layer2: Color(0xFF2C2933),
-    SwatchLayer.Layer3: Color(0xFF302A3D),
+    SwatchLayer.Layer0: const Color(0xFF181818),
+    SwatchLayer.Layer1: const Color(0xFF222126),
+    SwatchLayer.Layer2: const Color(0xFF2C2933),
+    SwatchLayer.Layer3: const Color(0xFF302A3D),
   });
 
   final onSurfaceLayers = LayeredSwatch({
-    SwatchLayer.Layer0: Color(0xFFF2F2F2),
-    SwatchLayer.Layer1: Color(0xFFDEE1E3),
-    SwatchLayer.Layer2: Color(0xFFCACDCE),
-    SwatchLayer.Layer3: Color(0xFFABAFB0),
+    SwatchLayer.Layer0: const Color(0xFFF2F2F2),
+    SwatchLayer.Layer1: const Color(0xFFDEE1E3),
+    SwatchLayer.Layer2: const Color(0xFFCACDCE),
+    SwatchLayer.Layer3: const Color(0xFFABAFB0),
   });
 
   final highlightedObjectiveLayers = LayeredSwatch({
-    SwatchLayer.Layer0: Color(0xFFD95738),
+    SwatchLayer.Layer0: const Color(0xFFD95738),
   });
 
   // final secondaryLayers = LayeredSwatch(
@@ -161,30 +161,30 @@ class LittleLightThemeData {
   // );
 
   final primaryLayers = LayeredSwatch({
-    SwatchLayer.Layer0: Color(0xFF097EEC),
-    SwatchLayer.Layer1: Color(0xFF2F97F7),
-    SwatchLayer.Layer2: Color(0xFF7ABAF5),
+    SwatchLayer.Layer0: const Color(0xFF097EEC),
+    SwatchLayer.Layer1: const Color(0xFF2F97F7),
+    SwatchLayer.Layer2: const Color(0xFF7ABAF5),
   }, defaultLayer: SwatchLayer.Layer1);
 
   final achievementLayers = LayeredSwatch({
-    SwatchLayer.Layer0: Color(0xFFFFC107),
-    SwatchLayer.Layer1: Color(0xFFFFD965),
-    SwatchLayer.Layer2: Color(0xFFFFF0C2),
+    SwatchLayer.Layer0: const Color(0xFFFFC107),
+    SwatchLayer.Layer1: const Color(0xFFFFD965),
+    SwatchLayer.Layer2: const Color(0xFFFFF0C2),
   });
 
   final upgradeLayers = LayeredSwatch({
-    SwatchLayer.Layer0: Color(0xFF85E6EE),
-    SwatchLayer.Layer1: Color(0xFFCAF1F7),
+    SwatchLayer.Layer0: const Color(0xFF85E6EE),
+    SwatchLayer.Layer1: const Color(0xFFCAF1F7),
   });
 
   final errorLayers = LayeredSwatch({
-    SwatchLayer.Layer0: Color(0xFFA30335),
-    SwatchLayer.Layer1: Color(0xFFB8023B),
+    SwatchLayer.Layer0: const Color(0xFFA30335),
+    SwatchLayer.Layer1: const Color(0xFFB8023B),
   }, defaultLayer: SwatchLayer.Layer1);
 
   final successLayers = LayeredSwatch({
-    SwatchLayer.Layer0: Color(0xFF45B319),
-    SwatchLayer.Layer1: Color(0xFF46E038),
+    SwatchLayer.Layer0: const Color(0xFF45B319),
+    SwatchLayer.Layer1: const Color(0xFF46E038),
   }, defaultLayer: SwatchLayer.Layer1);
 
   Color get _background => surfaceLayers.layer0;

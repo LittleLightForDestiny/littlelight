@@ -18,7 +18,7 @@ import 'storage.base.dart';
 
 extension on WishlistFile {
   String get filename {
-    final _filename = md5.convert(Utf8Encoder().convert(url!)).toString() + ".json";
+    final _filename = "${md5.convert(const Utf8Encoder().convert(url!))}.json";
     return _filename;
   }
 }
@@ -204,7 +204,7 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
 
   Future<WishlistFolder?> getFeaturedWishlists() async {
     try {
-      dynamic data = await getExpireableJson(GlobalStorageKeys.featuredWishlists, Duration(minutes: 5));
+      dynamic data = await getExpireableJson(GlobalStorageKeys.featuredWishlists, const Duration(minutes: 5));
       if (data == null) return null;
       return WishlistFolder.fromJson(data);
     } catch (e) {
@@ -216,7 +216,7 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
 
   Future<CollaboratorsResponse?> getCollaborators() async {
     try {
-      dynamic data = await getExpireableJson(GlobalStorageKeys.collaboratorsData, Duration(minutes: 1));
+      dynamic data = await getExpireableJson(GlobalStorageKeys.collaboratorsData, const Duration(minutes: 1));
       if (data == null) return null;
       return CollaboratorsResponse.fromJson(data);
     } catch (e) {
@@ -228,7 +228,7 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
 
   Future<GameData?> getGameData() async {
     try {
-      dynamic data = await getExpireableJson(GlobalStorageKeys.gameData, Duration(days: 7));
+      dynamic data = await getExpireableJson(GlobalStorageKeys.gameData, const Duration(days: 7));
       if (data == null) return null;
       return GameData.fromJson(data);
     } catch (e) {

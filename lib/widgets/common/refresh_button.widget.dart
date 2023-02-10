@@ -10,7 +10,7 @@ typedef ExtractTextFromData = String Function(dynamic data);
 
 class RefreshButtonWidget extends StatefulWidget {
   final EdgeInsets padding;
-  RefreshButtonWidget({Key key, this.padding}) : super(key: key);
+  const RefreshButtonWidget({Key key, this.padding}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -26,12 +26,13 @@ class RefreshButtonWidgetState extends State<RefreshButtonWidget>
   @override
   void initState() {
     super.initState();
-    rotationController = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+    rotationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
     subscription = notifications.listen((event) {
       handleNotification(event);
     });
   }
 
+  @override
   void dispose() {
     subscription.cancel();
     rotationController.dispose();
@@ -69,7 +70,7 @@ class RefreshButtonWidgetState extends State<RefreshButtonWidget>
           enableFeedback: !rotationController.isAnimating,
           onTap: () {
             if (!rotationController.isAnimating) {
-              profile.fetchProfileData();
+              profile.refresh();
             }
           },
         ));

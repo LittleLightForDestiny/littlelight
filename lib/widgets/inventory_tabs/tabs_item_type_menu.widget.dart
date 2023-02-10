@@ -10,7 +10,7 @@ class ItemTypeMenuWidget extends StatelessWidget {
   final TabController controller;
   final List<int> groups;
 
-  ItemTypeMenuWidget(this.groups, {Key key, this.controller})
+  const ItemTypeMenuWidget(this.groups, {Key key, this.controller})
       : super(
           key: key,
         );
@@ -28,7 +28,7 @@ class ItemTypeMenuWidget extends StatelessWidget {
             indicator: BoxDecoration(
                 border: Border(top: BorderSide(width: 2, color: Theme.of(context).colorScheme.onSurface))),
             controller: controller,
-            labelPadding: EdgeInsets.all(0),
+            labelPadding: const EdgeInsets.all(0),
             tabs: getButtons(),
           )),
         ],
@@ -46,11 +46,11 @@ class ItemTypeMenuWidget extends StatelessWidget {
 class ItemTypeMenuButton extends StatelessWidget {
   final int categoryHash;
 
-  ItemTypeMenuButton(this.categoryHash);
+  const ItemTypeMenuButton(this.categoryHash);
 
   @override
   Widget build(BuildContext context) {
     return ManifestText<DestinyItemCategoryDefinition>(categoryHash,
-        uppercase: true, style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13));
+        uppercase: true, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13));
   }
 }

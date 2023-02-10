@@ -28,7 +28,7 @@ enum GlobalStorageKeys {
 
 extension StorageKeysExtension on GlobalStorageKeys {
   String get path {
-    String name = this.toString().split(".")[1];
+    String name = toString().split(".")[1];
     return name;
   }
 }

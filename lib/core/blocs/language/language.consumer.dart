@@ -6,7 +6,7 @@ import 'language.bloc.dart';
 LanguageBloc getInjectedLanguageService() => GetIt.I<LanguageBloc>();
 
 extension LanguageContextConsumer on BuildContext {
-  String get currentLanguage => this.watch<LanguageBloc>().currentLanguage;
+  String get currentLanguage => watch<LanguageBloc>().currentLanguage;
 
   String translate(
     String text, {
@@ -15,8 +15,8 @@ extension LanguageContextConsumer on BuildContext {
     bool useReadContext = false,
   }) =>
       useReadContext
-          ? this.read<LanguageBloc>().translate(text, languageCode: languageCode, replace: replace)
-          : this.watch<LanguageBloc>().translate(text, languageCode: languageCode, replace: replace);
+          ? read<LanguageBloc>().translate(text, languageCode: languageCode, replace: replace)
+          : watch<LanguageBloc>().translate(text, languageCode: languageCode, replace: replace);
 }
 
 extension TranslateString on String {

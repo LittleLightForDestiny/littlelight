@@ -21,8 +21,9 @@ class FactionRankItemWidget extends StatefulWidget {
 
   final DestinyFactionProgression progression;
 
-  FactionRankItemWidget({Key key, this.characterId, this.progression}) : super(key: key);
+  const FactionRankItemWidget({Key key, this.characterId, this.progression}) : super(key: key);
 
+  @override
   FactionRankItemWidgetState createState() => FactionRankItemWidgetState();
 }
 
@@ -75,7 +76,7 @@ class FactionRankItemWidgetState<T extends FactionRankItemWidget> extends State<
       return Container(height: 200, color: Theme.of(context).colorScheme.secondaryContainer);
     }
     return Container(
-        padding: EdgeInsets.all(2),
+        padding: const EdgeInsets.all(2),
         child: Stack(children: [
           buildBackground(context),
           buildContent(context),
@@ -88,7 +89,7 @@ class FactionRankItemWidgetState<T extends FactionRankItemWidget> extends State<
       AspectRatio(aspectRatio: .5, child: Container()),
       Expanded(
           child: Container(
-        margin: EdgeInsets.symmetric(vertical: 4),
+        margin: const EdgeInsets.symmetric(vertical: 4),
         alignment: Alignment.centerRight,
         decoration: BoxDecoration(
             color: LittleLightTheme.of(context).surfaceLayers.layer0,
@@ -102,8 +103,8 @@ class FactionRankItemWidgetState<T extends FactionRankItemWidget> extends State<
       AspectRatio(aspectRatio: 1, child: Container()),
       Expanded(
         child: Container(
-            margin: EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-            padding: EdgeInsets.all(4),
+            margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+            padding: const EdgeInsets.all(4),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
@@ -111,13 +112,13 @@ class FactionRankItemWidgetState<T extends FactionRankItemWidget> extends State<
                   child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                     Text(
                       vendorDefinition?.displayProperties?.name ?? "",
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                     ),
                     TranslatedTextWidget(
                       "Level {Level}",
                       replace: {"Level": "${progression.level}"},
                       key: Key("${progression.level}"),
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                     )
                   ]),
                 ),
@@ -126,7 +127,7 @@ class FactionRankItemWidgetState<T extends FactionRankItemWidget> extends State<
                 ),
                 Text(
                   factionDefinition?.displayProperties?.name ?? vendorDefinition?.displayProperties?.name ?? "",
-                  style: TextStyle(fontStyle: FontStyle.italic, fontSize: 13),
+                  style: const TextStyle(fontStyle: FontStyle.italic, fontSize: 13),
                 ),
                 Expanded(
                   child: Container(),
@@ -149,7 +150,7 @@ class FactionRankItemWidgetState<T extends FactionRankItemWidget> extends State<
                   value: progression.progressToNextLevel / progression.nextLevelAt)),
           Positioned.fill(
               child: Container(
-                  padding: EdgeInsets.all(4),
+                  padding: const EdgeInsets.all(4),
                   child: QueuedNetworkImage(
                     imageUrl: BungieApiService.url(factionDefinition?.displayProperties?.icon),
                   )))

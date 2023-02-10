@@ -37,8 +37,8 @@ class TranslatedTextWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     String text = context.watch<LanguageBloc>().translate(
           this.text,
-          languageCode: this.language,
-          replace: this.replace,
+          languageCode: language,
+          replace: replace,
         );
     if (uppercase) {
       text = text.toUpperCase();

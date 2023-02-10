@@ -11,7 +11,7 @@ import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 class BaseMasterworkCounterWidget extends StatefulWidget {
   final DestinyItemComponent? item;
 
-  BaseMasterworkCounterWidget({this.item, Key? key}) : super(key: key);
+  const BaseMasterworkCounterWidget({this.item, Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -24,6 +24,7 @@ class BaseMasterworkCounterWidgetState<T extends BaseMasterworkCounterWidget> ex
   DestinyObjectiveProgress? masterworkObjective;
   DestinyObjectiveDefinition? masterworkObjectiveDefinition;
 
+  @override
   initState() {
     super.initState();
     loadDefinitions();
@@ -52,11 +53,11 @@ class BaseMasterworkCounterWidgetState<T extends BaseMasterworkCounterWidget> ex
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    if (this.masterworkObjective == null || this.masterworkObjectiveDefinition?.displayProperties?.icon == null) {
+    if (masterworkObjective == null || masterworkObjectiveDefinition?.displayProperties?.icon == null) {
       return Container();
     }
     return Container(
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 20),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
@@ -83,7 +84,7 @@ class BaseMasterworkCounterWidgetState<T extends BaseMasterworkCounterWidget> ex
   bool get wantKeepAlive => true;
 
   Widget buildIcon(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: 26,
       height: 26,
       child: QueuedNetworkImage.fromBungie(masterworkObjectiveDefinition?.displayProperties?.icon),
@@ -102,6 +103,6 @@ class BaseMasterworkCounterWidgetState<T extends BaseMasterworkCounterWidget> ex
   Widget buildProgressValue(BuildContext context) {
     var formatter = NumberFormat.decimalPattern(context.currentLanguage);
     var formattedValue = formatter.format(masterworkObjective?.progress ?? 0);
-    return Text("$formattedValue", style: TextStyle(color: Colors.amber.shade200, fontSize: 15));
+    return Text(formattedValue, style: TextStyle(color: Colors.amber.shade200, fontSize: 15));
   }
 }

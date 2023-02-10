@@ -49,7 +49,7 @@ class ModInventoryItemWidget extends BaseInventoryItemWidget {
                 right: 10,
                 child: Text(
                   "$energyCost",
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
                 )),
       ]),
     ));

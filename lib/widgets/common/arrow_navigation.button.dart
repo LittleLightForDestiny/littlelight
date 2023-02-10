@@ -7,7 +7,7 @@ class ArrowNavigationButton extends StatelessWidget {
   final IconData icon;
   final int index;
 
-  ArrowNavigationButton({Key key, this.controller, @required this.icon, this.index}) : super(key: key);
+  const ArrowNavigationButton({Key key, this.controller, @required this.icon, this.index}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -30,10 +30,6 @@ class ArrowNavigationButton extends StatelessWidget {
         child: Material(
             color: Theme.of(context).primaryTextTheme.button.color.withOpacity(.3),
             child: InkWell(
-              child: Icon(
-                icon,
-                color: Theme.of(context).primaryTextTheme.button.color,
-              ),
               onTap: enabled
                   ? () {
                       var direction = controller.index > index ? -1 : 1;
@@ -41,6 +37,10 @@ class ArrowNavigationButton extends StatelessWidget {
                       controller.animateTo(page.clamp(0, controller.length));
                     }
                   : null,
+              child: Icon(
+                icon,
+                color: Theme.of(context).primaryTextTheme.button.color,
+              ),
             )));
   }
 }

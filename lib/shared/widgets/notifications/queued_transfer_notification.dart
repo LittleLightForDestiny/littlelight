@@ -6,7 +6,7 @@ import 'package:little_light/widgets/common/definition_provider.widget.dart';
 
 class QueuedTransferNotificationWidget extends StatelessWidget {
   final SingleTransferAction notification;
-  QueuedTransferNotificationWidget(this.notification);
+  const QueuedTransferNotificationWidget(this.notification);
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +15,7 @@ class QueuedTransferNotificationWidget extends StatelessWidget {
     return Container(
       width: 36,
       height: 36,
-      margin: EdgeInsets.only(left: 4),
+      margin: const EdgeInsets.only(left: 4),
       child: DefinitionProviderWidget<DestinyInventoryItemDefinition>(
         hash,
         (def) => InventoryItemIcon(

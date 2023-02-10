@@ -19,7 +19,7 @@ import 'package:little_light/widgets/item_list/items/weapon/weapon_inventory_ite
 import 'package:little_light/widgets/progress_tabs/pursuit_item/large_pursuit_item.widget.dart';
 
 class QuickSelectItemWrapperWidget extends InventoryItemWrapperWidget {
-  QuickSelectItemWrapperWidget(ItemWithOwner item, int bucketHash, {String characterId, Key key})
+  const QuickSelectItemWrapperWidget(ItemWithOwner item, int bucketHash, {String characterId, Key key})
       : super(item, bucketHash, characterId: characterId, key: key);
 
   @override
@@ -40,7 +40,7 @@ class QuickSelectItemWrapperWidgetState<T extends QuickSelectItemWrapperWidget>
     switch (definition.itemType) {
       case DestinyItemType.Subclass:
         {
-          return Container(
+          return SizedBox(
               height: 96,
               child: SubclassInventoryItemWidget(
                 widget.item?.item,
@@ -70,7 +70,7 @@ class QuickSelectItemWrapperWidgetState<T extends QuickSelectItemWrapperWidget>
             height = 100 + (maxPlugs - 2) * 20.0;
           }
 
-          return Container(
+          return SizedBox(
               height: height,
               child: WeaponInventoryItemWidget(
                 widget.item?.item,
@@ -85,7 +85,7 @@ class QuickSelectItemWrapperWidgetState<T extends QuickSelectItemWrapperWidget>
 
       case DestinyItemType.Armor:
         {
-          return Container(
+          return SizedBox(
               height: 96,
               child: ArmorInventoryItemWidget(
                 widget.item?.item,
@@ -99,7 +99,7 @@ class QuickSelectItemWrapperWidgetState<T extends QuickSelectItemWrapperWidget>
 
       case DestinyItemType.Emblem:
         {
-          return Container(
+          return SizedBox(
               height: 96,
               child: EmblemInventoryItemWidget(
                 widget.item?.item,
@@ -119,7 +119,7 @@ class QuickSelectItemWrapperWidgetState<T extends QuickSelectItemWrapperWidget>
             trailing: buildCharacterIcon(context),
           );
         }
-        return Container(
+        return SizedBox(
             height: 96,
             child: BaseInventoryItemWidget(
               widget.item?.item,

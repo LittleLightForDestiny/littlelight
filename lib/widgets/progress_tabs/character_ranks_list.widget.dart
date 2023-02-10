@@ -18,8 +18,9 @@ import 'faction_rank_item.widget.dart';
 class CharacterRanksListWidget extends StatefulWidget {
   final String characterId;
 
-  CharacterRanksListWidget({Key key, this.characterId}) : super(key: key);
+  const CharacterRanksListWidget({Key key, this.characterId}) : super(key: key);
 
+  @override
   _CharacterRanksListWidgetState createState() => _CharacterRanksListWidgetState();
 }
 
@@ -50,7 +51,7 @@ class _CharacterRanksListWidgetState extends State<CharacterRanksListWidget>
       progressionsRoot.progressions["${gameData.ranks.valor}"],
       progressionsRoot.progressions["${gameData.ranks.infamy}"]
     ];
-    this.progressions = progressionsRoot.factions.values.where((p) => p.factionHash != null).toList();
+    progressions = progressionsRoot.factions.values.where((p) => p.factionHash != null).toList();
     if (mounted) {
       setState(() {});
       fullyLoaded = true;
@@ -98,7 +99,7 @@ class _CharacterRanksListWidgetState extends State<CharacterRanksListWidget>
       ],
       mainAxisSpacing: 4,
       crossAxisSpacing: 4,
-      padding: EdgeInsets.all(4) + screenPadding.copyWith(top: 0, bottom: 0),
+      padding: const EdgeInsets.all(4) + screenPadding.copyWith(top: 0, bottom: 0),
     );
     // return StaggeredGrid.count(
     // padding: EdgeInsets.all(4).copyWith(

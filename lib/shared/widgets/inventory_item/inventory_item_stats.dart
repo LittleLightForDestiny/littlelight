@@ -48,7 +48,7 @@ class InventoryItemStats extends StatelessWidget with WishlistsConsumer {
             height: plugSize,
             child: ManifestImageWidget<DestinyStatDefinition>(statHash),
           ),
-          Container(
+          SizedBox(
             width: 18,
             child: Text(
               statValue(stat),

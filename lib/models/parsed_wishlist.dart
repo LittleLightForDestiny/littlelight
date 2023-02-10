@@ -43,8 +43,8 @@ class ParsedWishlistBuild {
     this.name,
     this.description,
     this.originalWishlist,
-  })  : this.plugs = plugs ?? <Set<int>>[],
-        this.tags = tags ?? Set<WishlistTag>();
+  })  : plugs = plugs ?? <Set<int>>[],
+        tags = tags ?? <WishlistTag>{};
 
   factory ParsedWishlistBuild.fromJson(dynamic json) {
     return _$ParsedWishlistBuildFromJson(json);
@@ -65,8 +65,8 @@ class ParsedWishlistItem {
     required this.itemHash,
     List<ParsedWishlistBuild>? builds,
     Map<int, Set<WishlistTag>>? perks,
-  })  : this.builds = builds ?? [],
-        this.perks = perks ?? {};
+  })  : builds = builds ?? [],
+        perks = perks ?? {};
 
   factory ParsedWishlistItem.fromJson(dynamic json) {
     return _$ParsedWishlistItemFromJson(json);

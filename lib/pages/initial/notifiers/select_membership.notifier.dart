@@ -20,13 +20,13 @@ class SelectMembershipNotifier with ChangeNotifier, AuthConsumer {
       notifyListeners();
     }
     final otherAccountIDs = auth.accountIDs?.where((element) => element != currentAccountID) ?? [];
-    if (otherAccountIDs.length > 0) {
+    if (otherAccountIDs.isNotEmpty) {
       final _accounts = <UserMembershipData>[];
       for (final accountID in otherAccountIDs) {
         final account = await auth.getMembershipDataForAccount(accountID);
         if (account != null) _accounts.add(account);
       }
-      if (_accounts.length > 0) {
+      if (_accounts.isNotEmpty) {
         _otherAccounts = _accounts;
         notifyListeners();
       }

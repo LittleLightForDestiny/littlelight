@@ -21,7 +21,7 @@ class AsEquippedSwitchWidgetState extends State<AsEquippedSwitchWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
         child: Row(
           children: <Widget>[
             Expanded(child: Text("As Equipped".translate(context))),

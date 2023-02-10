@@ -7,6 +7,6 @@ class ItemDetailsPageContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ItemDetailsPage();
+    return const ItemDetailsPage();
   }
 }

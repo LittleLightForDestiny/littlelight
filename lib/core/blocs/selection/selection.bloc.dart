@@ -15,12 +15,12 @@ class SelectionBloc extends ChangeNotifier with ManifestConsumer {
   factory SelectionBloc(BuildContext context) => SelectionBloc._(context.read<ProfileBloc>());
 
   SelectionBloc._(this._profile) {
-    this._profile.addListener(_internalUpdate);
+    _profile.addListener(_internalUpdate);
   }
 
   @override
   dispose() {
-    this._profile.removeListener(_internalUpdate);
+    _profile.removeListener(_internalUpdate);
     super.dispose();
   }
 
@@ -30,7 +30,7 @@ class SelectionBloc extends ChangeNotifier with ManifestConsumer {
   List<DestinyCharacterInfo> _equipDestinations = [];
 
   void selectItem(int hash, String? instanceId) {
-    final instances = _selectionMap[hash] ??= Set();
+    final instances = _selectionMap[hash] ??= <String>{};
     instances.add(instanceId);
     _internalUpdate();
   }
@@ -52,7 +52,7 @@ class SelectionBloc extends ChangeNotifier with ManifestConsumer {
   }
 
   void _updateSelectedItems() {
-    this._selectedItems = _selectionMap.entries.map((entry) {
+    _selectedItems = _selectionMap.entries.map((entry) {
       final hash = entry.key;
       final instanceIds = entry.value;
       return instanceIds
@@ -109,15 +109,15 @@ class SelectionBloc extends ChangeNotifier with ManifestConsumer {
       transferDestinations.add(null);
     }
 
-    this._transferDestinations = transferDestinations;
-    this._equipDestinations = equipDestinations;
+    _transferDestinations = transferDestinations;
+    _equipDestinations = equipDestinations;
   }
 
   bool isSelected(int hash, String? instanceId) {
     return _selectionMap[hash]?.contains(instanceId) ?? false;
   }
 
-  bool get hasSelection => _selectedItems.length > 0;
+  bool get hasSelection => _selectedItems.isNotEmpty;
   List<DestinyItemInfo> get selectedItems => _selectedItems;
   List<DestinyCharacterInfo?> get transferDestinations => _transferDestinations;
   List<DestinyCharacterInfo> get equipDestinations => _equipDestinations;

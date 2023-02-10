@@ -13,12 +13,12 @@ class WishlistFileItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-      margin: EdgeInsets.only(bottom: 8),
+      margin: const EdgeInsets.only(bottom: 8),
       child: Material(
           borderRadius: BorderRadius.circular(8),
           color: Theme.of(context).colorScheme.secondary,
           child: Container(
-            padding: EdgeInsets.all(8),
+            padding: const EdgeInsets.all(8),
             child: Column(
               children: [
                 Row(
@@ -49,7 +49,7 @@ class WishlistFileItem extends StatelessWidget {
     final actions = this.actions;
     if (actions == null) return Container();
     return Container(
-      padding: EdgeInsets.only(top: 4),
+      padding: const EdgeInsets.only(top: 4),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: actions.map((e) => Container(child: e)).toList(),

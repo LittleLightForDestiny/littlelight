@@ -18,7 +18,7 @@ import 'package:little_light/widgets/item_stats/base_item_stat.widget.dart';
 class BaseItemStatsWidget extends BaseDestinyStatefulItemWidget {
   final ItemSocketController socketController;
 
-  BaseItemStatsWidget({
+  const BaseItemStatsWidget({
     DestinyItemComponent item,
     DestinyInventoryItemDefinition definition,
     Key key,
@@ -82,11 +82,11 @@ class BaseItemStatsState<T extends BaseItemStatsWidget> extends BaseDestinyItemS
   Widget build(BuildContext context) {
     super.build(context);
     return Container(
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       child: Column(
         children: <Widget>[
           buildHeader(context),
-          Container(padding: EdgeInsets.symmetric(vertical: 8), child: Column(children: buildStats(context))),
+          Container(padding: const EdgeInsets.symmetric(vertical: 8), child: Column(children: buildStats(context))),
         ],
       ),
     );
@@ -96,7 +96,7 @@ class BaseItemStatsState<T extends BaseItemStatsWidget> extends BaseDestinyItemS
     return HeaderWidget(
         child: Container(
       alignment: Alignment.centerLeft,
-      child: Row(children: [
+      child: Row(children: const [
         Expanded(
             child: Text(
           "Name",
@@ -135,30 +135,30 @@ class BaseItemStatsState<T extends BaseItemStatsWidget> extends BaseDestinyItemS
   }
 
   Map<int, StatValues> getStatValues() {
-    Map<int, StatValues> map = Map();
+    Map<int, StatValues> map = {};
     if (plugDefinitions == null) {
       return map;
     }
-    stats.forEach((s) {
+    for (var s in stats) {
       var pre = precalculatedStats?.containsKey("${s.statTypeHash}") ?? false
           ? precalculatedStats["${s.statTypeHash}"].value
           : 0;
       map[s.statTypeHash] = StatValues(equipped: s.value, selected: s.value, precalculated: pre);
-    });
+    }
 
     List<int> plugHashes =
         List.generate(socketController.socketCount, (i) => socketController.socketEquippedPlugHash(i));
 
-    plugHashes.forEach((plugHash) {
+    for (var plugHash in plugHashes) {
       int index = plugHashes.indexOf(plugHash);
       DestinyInventoryItemDefinition def = plugDefinitions[plugHash];
       if (def == null) {
-        return;
+        return null;
       }
       var selectedPlugHash = socketController.socketSelectedPlugHash(index);
       DestinyInventoryItemDefinition selectedDef = plugDefinitions[selectedPlugHash];
-      def?.investmentStats?.forEach((stat) {
-        if (stat.isConditionallyActive) return;
+      for (var stat in def?.investmentStats) {
+        if (stat.isConditionallyActive) return null;
         StatValues values = map[stat.statTypeHash] ?? StatValues();
         if (def.plug?.uiPlugLabel == 'masterwork') {
           if (selectedDef == null) {
@@ -171,11 +171,11 @@ class BaseItemStatsState<T extends BaseItemStatsWidget> extends BaseDestinyItemS
           }
         }
         map[stat.statTypeHash] = values;
-      });
+      }
 
       if (selectedDef != null) {
-        selectedDef?.investmentStats?.forEach((stat) {
-          if (stat.isConditionallyActive) return;
+        for (var stat in selectedDef?.investmentStats) {
+          if (stat.isConditionallyActive) return null;
           StatValues values = map[stat.statTypeHash] ?? StatValues();
           if (selectedDef.plug?.uiPlugLabel == 'masterwork') {
             values.masterwork += stat.value;
@@ -183,9 +183,9 @@ class BaseItemStatsState<T extends BaseItemStatsWidget> extends BaseDestinyItemS
             values.selected += stat.value;
           }
           map[stat.statTypeHash] = values;
-        });
+        }
       }
-    });
+    }
 
     return map;
   }
@@ -201,7 +201,7 @@ class BaseItemStatsState<T extends BaseItemStatsWidget> extends BaseDestinyItemS
         definition.investmentStats.where((stat) => statWhitelist.contains(stat.statTypeHash)).toList();
 
     for (var stat in statGroupDefinition?.scaledStats) {
-      if (statWhitelist.contains(stat.statHash) && stats.where((s) => s.statTypeHash == stat.statHash).length == 0) {
+      if (statWhitelist.contains(stat.statHash) && stats.where((s) => s.statTypeHash == stat.statHash).isEmpty) {
         var newStat = DestinyItemInvestmentStatDefinition()
           ..statTypeHash = stat.statHash
           ..value = 0

@@ -4,7 +4,7 @@ class CenterIconWorkaround extends StatelessWidget {
   final IconData icon;
   final double? size;
   final Color? color;
-  CenterIconWorkaround(this.icon, {Key? key, this.size, this.color}) : super(key: key);
+  const CenterIconWorkaround(this.icon, {Key? key, this.size, this.color}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

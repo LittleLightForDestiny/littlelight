@@ -14,39 +14,44 @@ import 'package:little_light/widgets/icon_fonts/littlelight_icons.dart';
 import 'package:little_light/widgets/progress_tabs/milestone_item.widget.dart';
 
 class MilestoneRaidItemWidget extends MilestoneItemWidget {
+  @override
   final String characterId;
 
+  @override
   final DestinyMilestone milestone;
 
-  MilestoneRaidItemWidget({Key key, this.characterId, this.milestone}) : super(key: key);
+  const MilestoneRaidItemWidget({Key key, this.characterId, this.milestone}) : super(key: key);
 
+  @override
   _MilestoneRaidItemWidgetState createState() => _MilestoneRaidItemWidgetState();
 }
 
 class _MilestoneRaidItemWidgetState extends MilestoneItemWidgetState<MilestoneRaidItemWidget> {
+  @override
   buildMilestoneActivities(BuildContext context) {
-    var activities = milestone?.activities?.where((a) => a.phases != null && a.phases.length > 0);
+    var activities = milestone?.activities?.where((a) => a.phases != null && a.phases.isNotEmpty);
     if ((activities?.length ?? 0) == 0) {
       return Container();
     }
     if (activities.length == 1) {
       return Container(
-          padding: EdgeInsets.all(2), child: Column(children: activities.map((a) => buildPhases(context, a)).toList()));
+          padding: const EdgeInsets.all(2), child: Column(children: activities.map((a) => buildPhases(context, a)).toList()));
     }
     return Container(
-        padding: EdgeInsets.all(2), child: Column(children: activities.map((a) => buildActivity(context, a)).toList()));
+        padding: const EdgeInsets.all(2), child: Column(children: activities.map((a) => buildActivity(context, a)).toList()));
   }
 
+  @override
   Widget buildActivity(BuildContext context, DestinyMilestoneChallengeActivity activity) {
     return Column(
       children: <Widget>[
         Container(
-            padding: EdgeInsets.all(2),
+            padding: const EdgeInsets.all(2),
             child: HeaderWidget(
                 child: ManifestText<DestinyActivityDefinition>(activity.activityHash,
                     uppercase: true,
                     textExtractor: (def) => def?.selectionScreenDisplayProperties?.name ?? def.displayProperties.name,
-                    style: TextStyle(fontWeight: FontWeight.bold)))),
+                    style: const TextStyle(fontWeight: FontWeight.bold)))),
         buildPhases(context, activity)
       ],
     );
@@ -63,8 +68,8 @@ class _MilestoneRaidItemWidgetState extends MilestoneItemWidgetState<MilestoneRa
         child: Container(
             height: 60,
             alignment: Alignment.center,
-            padding: EdgeInsets.all(4),
-            margin: EdgeInsets.all(2),
+            padding: const EdgeInsets.all(4),
+            margin: const EdgeInsets.all(2),
             color: LittleLightTheme.of(context).surfaceLayers.layer2,
             child: buildPhaseLabel(context, phase)));
   }

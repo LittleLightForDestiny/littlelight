@@ -11,9 +11,10 @@ import 'package:little_light/widgets/item_list/bucket_header.widget.dart';
 import 'package:little_light/widgets/progress_tabs/pursuits_display_options_selector.widget.dart';
 
 class PursuitCategoryHeaderWidget extends BucketHeaderWidget {
+  @override
   final Function onChanged;
   final String label;
-  PursuitCategoryHeaderWidget({this.onChanged, Key key, this.label, int hash, int itemCount})
+  const PursuitCategoryHeaderWidget({this.onChanged, Key key, this.label, int hash, int itemCount})
       : super(key: key, hash: hash, itemCount: itemCount);
   @override
   PursuitCategoryHeaderWidgetState createState() => PursuitCategoryHeaderWidgetState();
@@ -21,6 +22,7 @@ class PursuitCategoryHeaderWidget extends BucketHeaderWidget {
 
 class PursuitCategoryHeaderWidgetState extends BucketHeaderWidgetState<PursuitCategoryHeaderWidget>
     with ManifestConsumer {
+  @override
   fetchDefinition() async {
     bucketDef = await manifest.getDefinition<DestinyInventoryBucketDefinition>(InventoryBucket.pursuits);
     if (mounted) {
@@ -28,8 +30,9 @@ class PursuitCategoryHeaderWidgetState extends BucketHeaderWidgetState<PursuitCa
     }
   }
 
+  @override
   Widget buildLabel(BuildContext context) {
-    TextStyle style = TextStyle(fontWeight: FontWeight.bold);
+    TextStyle style = const TextStyle(fontWeight: FontWeight.bold);
     if (widget.hash != null) {
       return ManifestText<DestinyItemCategoryDefinition>(
         widget.hash,
@@ -50,6 +53,7 @@ class PursuitCategoryHeaderWidgetState extends BucketHeaderWidgetState<PursuitCa
     );
   }
 
+  @override
   buildTrailing(BuildContext context) {
     return Row(children: [
       PursuitsDisplayOptionsSelectorWidget(
@@ -59,6 +63,7 @@ class PursuitCategoryHeaderWidgetState extends BucketHeaderWidgetState<PursuitCa
     ]);
   }
 
+  @override
   buildCount(BuildContext context) {
     int bucketSize = bucketDef?.itemCount ?? 0;
     if (widget.hash == InventoryBucket.subclass) {
@@ -70,12 +75,12 @@ class PursuitCategoryHeaderWidgetState extends BucketHeaderWidgetState<PursuitCa
         textExtractor: (def) {
           return "${widget.itemCount}/${def.itemCount}";
         },
-        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
       );
     }
     return Text(
       "${widget.itemCount}/$bucketSize",
-      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
     );
   }
 }

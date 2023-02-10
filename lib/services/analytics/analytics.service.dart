@@ -17,7 +17,7 @@ setupAnalyticsService() async {
 }
 
 class AnalyticsService with AuthConsumer {
-  FirebaseAnalytics _analytics = FirebaseAnalytics.instance;
+  final FirebaseAnalytics _analytics = FirebaseAnalytics.instance;
 
   AnalyticsService._internal();
 

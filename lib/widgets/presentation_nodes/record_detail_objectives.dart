@@ -17,7 +17,7 @@ import 'package:little_light/widgets/common/translated_text.widget.dart';
 class RecordObjectivesWidget extends StatefulWidget {
   final DestinyRecordDefinition definition;
 
-  RecordObjectivesWidget({Key key, this.definition}) : super(key: key);
+  const RecordObjectivesWidget({Key key, this.definition}) : super(key: key);
 
   @override
   RecordObjectivesWidgetState createState() {
@@ -77,20 +77,21 @@ class RecordObjectivesWidgetState extends State<RecordObjectivesWidget>
     return Colors.grey.shade300;
   }
 
+  @override
   build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         child: Column(children: [
           HeaderWidget(
-              padding: EdgeInsets.all(0),
+              padding: const EdgeInsets.all(0),
               child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                 Container(
-                    padding: EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(8),
                     child: TranslatedTextWidget(
                       "Objectives",
                       uppercase: true,
                       textAlign: TextAlign.left,
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     )),
                 buildRefreshButton(context)
               ])),
@@ -104,9 +105,9 @@ class RecordObjectivesWidgetState extends State<RecordObjectivesWidget>
         child: Stack(
           children: <Widget>[
             InkWell(
-                child: Container(padding: EdgeInsets.all(8), child: Icon(Icons.refresh)),
+                child: Container(padding: const EdgeInsets.all(8), child: const Icon(Icons.refresh)),
                 onTap: () {
-                  profile.fetchProfileData(components: ProfileComponentGroups.triumphs);
+                  profile.refresh(ProfileComponentGroups.triumphs);
                 })
           ],
         ));
@@ -115,7 +116,7 @@ class RecordObjectivesWidgetState extends State<RecordObjectivesWidget>
   buildObjectives(BuildContext context) {
     if (definition?.objectiveHashes == null) return Container();
     return Container(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         child: Column(
             children: definition.objectiveHashes.map((hash) {
           var objective = getRecordObjective(hash);

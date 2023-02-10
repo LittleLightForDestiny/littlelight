@@ -13,12 +13,12 @@ import 'package:little_light/widgets/common/manifest_text.widget.dart';
 
 const _buttonHeight = 48.0;
 
-typedef void OnCharacterSelect(DestinyCharacterInfo? character);
+typedef OnCharacterSelect = void Function(DestinyCharacterInfo? character);
 
 class CharacterVerticalTabMenuWidget extends CustomTabMenu {
   final List<DestinyCharacterInfo?> characters;
   final OnCharacterSelect? onSelect;
-  CharacterVerticalTabMenuWidget(this.characters, CustomTabController controller, {this.onSelect})
+  const CharacterVerticalTabMenuWidget(this.characters, CustomTabController controller, {this.onSelect})
       : super(
           controller,
           direction: Axis.vertical,
@@ -27,15 +27,17 @@ class CharacterVerticalTabMenuWidget extends CustomTabMenu {
   @override
   double getButtonSize(BuildContext context) => _buttonHeight;
 
+  @override
   Widget build(BuildContext context) {
     return ClipRRect(
         borderRadius: BorderRadius.circular(8),
-        child: Container(
+        child: SizedBox(
           width: 256.0,
           child: super.build(context),
         ));
   }
 
+  @override
   Widget buildButton(BuildContext context, int index) {
     final character = characters[index];
     if (character != null) return buildCharacterButton(context, character);
@@ -56,7 +58,7 @@ class CharacterVerticalTabMenuWidget extends CustomTabMenu {
         Row(
           children: [
             Container(
-              padding: EdgeInsets.all(8).copyWith(left: 16),
+              padding: const EdgeInsets.all(8).copyWith(left: 16),
               child: CharacterIconWidget(
                 character,
                 borderWidth: .5,
@@ -85,8 +87,8 @@ class CharacterVerticalTabMenuWidget extends CustomTabMenu {
         Row(
           children: [
             Container(
-              padding: EdgeInsets.all(8).copyWith(left: 16),
-              child: VaultIconWidget(
+              padding: const EdgeInsets.all(8).copyWith(left: 16),
+              child: const VaultIconWidget(
                 borderWidth: .5,
               ),
             ),
@@ -110,7 +112,7 @@ class CharacterVerticalTabMenuWidget extends CustomTabMenu {
     return Container(
         alignment: Alignment.centerLeft,
         child: Container(
-          margin: EdgeInsets.only(left: 2),
+          margin: const EdgeInsets.only(left: 2),
           width: 2,
           height: _buttonHeight - 16,
           color: context.theme.onSurfaceLayers.layer0,
@@ -120,6 +122,6 @@ class CharacterVerticalTabMenuWidget extends CustomTabMenu {
   @override
   void onItemSelect(int index) {
     super.onItemSelect(index);
-    this.onSelect?.call(characters[index]);
+    onSelect?.call(characters[index]);
   }
 }

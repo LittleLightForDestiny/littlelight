@@ -9,7 +9,7 @@ import 'package:little_light/widgets/search/search.controller.dart';
 import 'package:little_light/widgets/search/search_filters/base_search_filter.widget.dart';
 
 class PseudoItemTypeFilterWidget extends BaseSearchFilterWidget<PseudoItemTypeFilter> {
-  PseudoItemTypeFilterWidget(SearchController controller) : super(controller);
+  const PseudoItemTypeFilterWidget(SearchController controller) : super(controller);
 
   @override
   _PseudoItemTypeFilterWidgetState createState() => _PseudoItemTypeFilterWidgetState();
@@ -25,8 +25,8 @@ class _PseudoItemTypeFilterWidgetState
         padding: EdgeInsets.only(bottom: paddingBottom),
         color: Colors.black,
         child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          Expanded(child: Container(height: 40, child: buildButtons(context))),
-          Container(height: 40, width: 40, child: RefreshButtonWidget())
+          Expanded(child: SizedBox(height: 40, child: buildButtons(context))),
+          const SizedBox(height: 40, width: 40, child: RefreshButtonWidget())
         ]));
   }
 
@@ -56,7 +56,7 @@ class _PseudoItemTypeFilterWidgetState
                             color: isSelected ? Theme.of(context).colorScheme.onSurface : Colors.transparent,
                             width: 2))),
                 alignment: Alignment.center,
-                padding: EdgeInsets.all(8),
+                padding: const EdgeInsets.all(8),
                 child: buildButtonLabel(context, value)),
             onTap: () {
               if (isSelected && filter.value.length <= 1) return;

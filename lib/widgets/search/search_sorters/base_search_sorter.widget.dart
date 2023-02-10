@@ -12,7 +12,7 @@ class BaseSearchSorterWidget extends StatefulWidget {
   final SearchController controller;
   final ItemSortParameter sortParameter;
   final Widget handle;
-  BaseSearchSorterWidget(this.controller, this.sortParameter, {this.handle});
+  const BaseSearchSorterWidget(this.controller, this.sortParameter, {this.handle});
 
   @override
   BaseSearchSorterWidgetState createState() => BaseSearchSorterWidgetState();
@@ -49,12 +49,12 @@ class BaseSearchSorterWidgetState<T extends BaseSearchSorterWidget> extends Stat
 
   Widget buildDisabledLabel(BuildContext context) {
     return DefaultTextStyle(
-        style: TextStyle(fontSize: 14.5),
+        style: const TextStyle(fontSize: 14.5),
         child: Container(
             height: 48,
-            margin: EdgeInsets.only(top: 8),
+            margin: const EdgeInsets.only(top: 8),
             color: Theme.of(context).colorScheme.secondary,
-            padding: EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -77,29 +77,29 @@ class BaseSearchSorterWidgetState<T extends BaseSearchSorterWidget> extends Stat
         Container(
           width: 4,
         ),
-        Container(
+        SizedBox(
             width: 30,
             height: 30,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 primary: Theme.of(context).errorColor,
-                padding: EdgeInsets.all(0),
+                padding: const EdgeInsets.all(0),
               ),
-              child: Icon(Icons.remove),
+              child: const Icon(Icons.remove),
               onPressed: () => removeSorter(),
             ))
       ];
     }
     return [
       Expanded(child: buildSortLabel(context)),
-      Container(
+      SizedBox(
           width: 30,
           height: 30,
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
-              padding: EdgeInsets.all(0),
+              padding: const EdgeInsets.all(0),
             ),
-            child: Icon(Icons.add),
+            child: const Icon(Icons.add),
             onPressed: () => addSorter(context),
           ))
     ];
@@ -107,7 +107,7 @@ class BaseSearchSorterWidgetState<T extends BaseSearchSorterWidget> extends Stat
 
   Widget buildDirectionButton(int direction) {
     var selected = sortParameter.direction == direction;
-    return Container(
+    return SizedBox(
       width: 20,
       height: 20,
       child: ElevatedButton(
@@ -115,7 +115,7 @@ class BaseSearchSorterWidgetState<T extends BaseSearchSorterWidget> extends Stat
             primary: selected
                 ? Theme.of(context).toggleButtonsTheme.selectedColor
                 : Theme.of(context).toggleButtonsTheme.color,
-            padding: EdgeInsets.all(0),
+            padding: const EdgeInsets.all(0),
           ),
           child: Icon(direction > 0 ? FontAwesomeIcons.chevronUp : FontAwesomeIcons.chevronDown, size: 14),
           onPressed: () {
@@ -127,12 +127,12 @@ class BaseSearchSorterWidgetState<T extends BaseSearchSorterWidget> extends Stat
   }
 
   addSorter(BuildContext context) {
-    controller.customSorting.insert(0, ItemSortParameter(active: true, type: this.sortParameter.type));
+    controller.customSorting.insert(0, ItemSortParameter(active: true, type: sortParameter.type));
     controller.sort();
   }
 
   removeSorter() {
-    controller.customSorting.remove(this.sortParameter);
+    controller.customSorting.remove(sortParameter);
     controller.sort();
   }
 

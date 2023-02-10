@@ -18,14 +18,16 @@ class TextFilter extends BaseItemFilter<String> with WishlistsConsumer, ProfileC
   List<LoadoutItemIndex> loadouts;
   TextFilter(this.context, {initialText = "", enabled = true}) : super(null, initialText, enabled: enabled);
 
+  @override
   Future<List<ItemWithOwner>> filter(List<ItemWithOwner> items,
       {Map<int, DestinyInventoryItemDefinition> definitions}) async {
     loadouts = context.read<LoadoutsBloc>().loadouts;
     return super.filter(items, definitions: definitions);
   }
 
+  @override
   bool filterItem(ItemWithOwner item, {Map<int, DestinyInventoryItemDefinition> definitions}) {
-    if ((this.value?.length ?? 0) < 1) return true;
+    if ((value?.length ?? 0) < 1) return true;
     var _terms =
         value.split(RegExp("[,.|]")).map((s) => removeDiacritics(s.toLowerCase().trim())).toList(growable: false);
     var _def = definitions[item?.item?.itemHash];
@@ -33,18 +35,17 @@ class TextFilter extends BaseItemFilter<String> with WishlistsConsumer, ProfileC
     var itemType = removeDiacritics(_def?.itemTypeDisplayName?.toLowerCase()?.trim() ?? "");
     var sockets = profile.getItemSockets(item?.item?.itemInstanceId);
     var reusablePlugs = profile.getItemReusablePlugs(item?.item?.itemInstanceId);
-    var plugHashes = Set<int>();
-    plugHashes.addAll(sockets?.map((s) => s.plugHash)?.toSet() ?? Set());
+    var plugHashes = <int>{};
+    plugHashes.addAll(sockets?.map((s) => s.plugHash)?.toSet() ?? <int>{});
     plugHashes.addAll(reusablePlugs?.values
             ?.fold<List<int>>([], (l, r) => l.followedBy(r.map((e) => e.plugItemHash)).toList())?.toSet() ??
-        Set<int>());
+        <int>{});
     final wishlistBuildNotes =
         wishlistsService.getWishlistBuildNotes(itemHash: item.item.itemHash, reusablePlugs: reusablePlugs);
     final wishlistTags =
         wishlistsService.getWishlistBuildTags(itemHash: item.item.itemHash, reusablePlugs: reusablePlugs);
 
-    var loadoutNames = this
-        .loadouts
+    var loadoutNames = loadouts
         .where(
           (l) => l.containsItem(item.item.itemInstanceId),
         )

@@ -48,7 +48,7 @@ class MinimalArmorInventoryItemWidget extends MinimalBaseInventoryItemWidget wit
 
   Widget primaryStatNameField(BuildContext context) {
     return ManifestText<DestinyStatDefinition>(primaryStat.statHash,
-        uppercase: true, style: TextStyle(fontWeight: FontWeight.w300, fontSize: 16));
+        uppercase: true, style: const TextStyle(fontWeight: FontWeight.w300, fontSize: 16));
   }
 
   Widget primaryStatIcon(BuildContext context, IconData icon, {double size = 22}) {

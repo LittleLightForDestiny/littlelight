@@ -3,7 +3,7 @@ import 'base_animation.dart';
 
 class LoopAnimationBuilder extends BaseAnimationBuilder {
   final bool playing;
-  LoopAnimationBuilder(
+  const LoopAnimationBuilder(
     AnimationBuilder builder, {
     this.playing = false,
     Duration duration = const Duration(milliseconds: 300),

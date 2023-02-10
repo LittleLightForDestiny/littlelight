@@ -6,7 +6,7 @@ import 'package:little_light/widgets/search/search.controller.dart';
 import 'package:little_light/widgets/search/search_list.widget.dart';
 
 class QuickTransferListWidget extends SearchListWidget {
-  QuickTransferListWidget({Key key, SearchController controller}) : super(key: key, controller: controller);
+  const QuickTransferListWidget({Key key, SearchController controller}) : super(key: key, controller: controller);
 
   @override
   _QuickTransferListWidgetState createState() => _QuickTransferListWidgetState();

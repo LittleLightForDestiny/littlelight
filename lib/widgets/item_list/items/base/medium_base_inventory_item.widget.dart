@@ -15,10 +15,12 @@ class MediumBaseInventoryItemWidget extends BaseInventoryItemWidget with Profile
       {Key key, @required String uniqueId, @required String characterId})
       : super(item, itemDefinition, instanceInfo, key: key, characterId: characterId, uniqueId: uniqueId);
 
+  @override
   Widget positionedNameBar(BuildContext context) {
     return Positioned(left: 0, right: 0, child: itemHeroNamebar(context));
   }
 
+  @override
   Widget nameBar(BuildContext context) {
     return ItemNameBarWidget(
       item,
@@ -31,10 +33,12 @@ class MediumBaseInventoryItemWidget extends BaseInventoryItemWidget with Profile
     );
   }
 
+  @override
   Widget categoryName(BuildContext context) {
     return null;
   }
 
+  @override
   Widget positionedIcon(BuildContext context) {
     return Positioned(
         top: padding * 3 + titleFontSize,
@@ -49,14 +53,17 @@ class MediumBaseInventoryItemWidget extends BaseInventoryItemWidget with Profile
     return 1.5;
   }
 
+  @override
   double get iconSize {
     return 48;
   }
 
+  @override
   double get padding {
     return 4;
   }
 
+  @override
   double get titleFontSize {
     return 10;
   }
@@ -66,6 +73,7 @@ class MediumBaseInventoryItemWidget extends BaseInventoryItemWidget with Profile
     return 12;
   }
 
+  @override
   Widget perksWidget(BuildContext context) {
     return Container();
   }

@@ -6,7 +6,7 @@ import '../../../core/blocs/notifications/notification_actions.dart';
 
 class TransferNotificationGroup extends StatelessWidget {
   final List<SingleTransferAction> notifications;
-  TransferNotificationGroup(this.notifications);
+  const TransferNotificationGroup(this.notifications);
 
   @override
   Widget build(BuildContext context) {
@@ -19,10 +19,10 @@ class TransferNotificationGroup extends StatelessWidget {
   }
 
   Widget? buildQueuedRow(BuildContext context) {
-    final queued = this.notifications.where((n) => !n.active).toList();
+    final queued = notifications.where((n) => !n.active).toList();
     if (queued.isEmpty) return null;
     return Container(
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       child: Wrap(
           runAlignment: WrapAlignment.end,
           children: queued
@@ -34,7 +34,7 @@ class TransferNotificationGroup extends StatelessWidget {
   }
 
   Widget? buildActiveColumn(BuildContext context) {
-    final active = this.notifications.where((n) => n.active).toList();
+    final active = notifications.where((n) => n.active).toList();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: active.reversed

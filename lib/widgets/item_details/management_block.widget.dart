@@ -39,24 +39,24 @@ class ManagementBlockWidget extends BaseDestinyStatelessItemWidget
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            transferDestinations.length > 0
+            transferDestinations.isNotEmpty
                 ? Expanded(
                     flex: 3,
                     child: buildEquippingBlock(context, "Transfer", transferDestinations, Alignment.centerLeft))
                 : null,
-            pullDestinations.length > 0 ? buildEquippingBlock(context, "Pull", pullDestinations) : null
+            pullDestinations.isNotEmpty ? buildEquippingBlock(context, "Pull", pullDestinations) : null
           ].where((value) => value != null).toList(),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            unequipDestinations.length > 0
+            unequipDestinations.isNotEmpty
                 ? buildEquippingBlock(context, "Unequip", unequipDestinations, Alignment.centerLeft)
                 : null,
-            equipDestinations.length > 0
+            equipDestinations.isNotEmpty
                 ? Expanded(
                     child: buildEquippingBlock(context, "Equip", equipDestinations,
-                        unequipDestinations.length > 0 ? Alignment.centerRight : Alignment.centerLeft))
+                        unequipDestinations.isNotEmpty ? Alignment.centerRight : Alignment.centerLeft))
                 : null
           ].where((value) => value != null).toList(),
         ),
@@ -73,14 +73,14 @@ class ManagementBlockWidget extends BaseDestinyStatelessItemWidget
 
   Widget buildLabel(BuildContext context, String title, [Alignment align = Alignment.centerRight]) {
     return Container(
-        padding: EdgeInsets.symmetric(horizontal: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 8),
         child: HeaderWidget(
           child: Container(
               alignment: align,
               child: TranslatedTextWidget(
                 title,
                 uppercase: true,
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: const TextStyle(fontWeight: FontWeight.bold),
               )),
         ));
   }
@@ -89,7 +89,7 @@ class ManagementBlockWidget extends BaseDestinyStatelessItemWidget
       [Alignment align = Alignment.centerRight]) {
     return Container(
         alignment: align,
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         child: Wrap(
             spacing: 8,
             children: destinations

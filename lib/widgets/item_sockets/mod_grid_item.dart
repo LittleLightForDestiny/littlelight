@@ -80,13 +80,13 @@ class ModGridItem extends StatelessWidget with ItemNotesConsumer {
             scale: constraints.maxWidth / 92,
             child: Container(
               alignment: Alignment.topRight,
-              padding: EdgeInsets.only(
+              padding: const EdgeInsets.only(
                 top: 8,
                 right: 12,
               ),
               child: Text(
                 "$energyCost",
-                style: TextStyle(fontSize: 16),
+                style: const TextStyle(fontSize: 16),
               ),
             ),
           );
@@ -116,7 +116,7 @@ class ModGridItem extends StatelessWidget with ItemNotesConsumer {
             scale: constraints.maxWidth / 92,
             child: Container(
               alignment: Alignment.bottomRight,
-              padding: EdgeInsets.only(
+              padding: const EdgeInsets.only(
                 bottom: 4,
                 right: 4,
               ),
@@ -125,8 +125,8 @@ class ModGridItem extends StatelessWidget with ItemNotesConsumer {
                   color: LittleLightTheme.of(context).errorLayers.layer0,
                   borderRadius: BorderRadius.circular(16),
                 ),
-                padding: EdgeInsets.all(6),
-                child: Icon(
+                padding: const EdgeInsets.all(6),
+                child: const Icon(
                   FontAwesomeIcons.solidHeart,
                   size: 16,
                 ),
@@ -143,7 +143,7 @@ class ModGridItem extends StatelessWidget with ItemNotesConsumer {
     if (badgeURL == null || badgeURL.isEmpty) return null;
     return Positioned.fill(
       child: Container(
-          padding: EdgeInsets.all(2),
+          padding: const EdgeInsets.all(2),
           child: QueuedNetworkImage.fromBungie(
             badgeURL,
             fit: BoxFit.fill,

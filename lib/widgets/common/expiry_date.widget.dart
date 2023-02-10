@@ -10,7 +10,7 @@ typedef ExtractTextFromData = String Function(dynamic data);
 class ExpiryDateWidget extends StatefulWidget {
   final String date;
   final double fontSize;
-  ExpiryDateWidget(this.date, {Key key, this.fontSize = 12}) : super(key: key);
+  const ExpiryDateWidget(this.date, {Key key, this.fontSize = 12}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {

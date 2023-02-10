@@ -15,7 +15,7 @@ class LoadoutsService with StorageConsumer {
   }
 
   Future<void> _saveLoadoutsToStorage() async {
-    Set<String> _ids = Set();
+    Set<String> _ids = {};
     List<Loadout>? distinctLoadouts = _loadouts?.where((l) {
       bool exists = _ids.contains(l.assignedId);
       if (l.assignedId != null) _ids.add(l.assignedId!);

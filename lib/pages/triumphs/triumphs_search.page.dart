@@ -7,7 +7,7 @@ import 'package:little_light/services/user_settings/user_settings.consumer.dart'
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
 
 class TriumphsSearchPage extends StatefulWidget {
-  TriumphsSearchPage({Key? key}) : super(key: key);
+  const TriumphsSearchPage({Key? key}) : super(key: key);
 
   @override
   TriumphsSearchPageState createState() => TriumphsSearchPageState();
@@ -15,21 +15,21 @@ class TriumphsSearchPage extends StatefulWidget {
 
 class TriumphsSearchPageState<T extends TriumphsSearchPage> extends State<T>
     with ManifestConsumer, UserSettingsConsumer {
-  TextEditingController _searchFieldController = new TextEditingController();
+  final TextEditingController _searchFieldController = TextEditingController();
   List<DestinyRecordDefinition>? items;
 
   @override
   initState() {
     super.initState();
     _searchFieldController.addListener(() {
-      this.loadItems();
+      loadItems();
     });
 
-    this.loadItems();
+    loadItems();
   }
 
   loadItems() async {
-    this.items =
+    items =
         (await manifest.searchDefinitions<DestinyRecordDefinition>([_searchFieldController.text])).values.toList();
     setState(() {});
   }
@@ -47,7 +47,7 @@ class TriumphsSearchPageState<T extends TriumphsSearchPage> extends State<T>
               itemCount: items?.length ?? 0,
             )),
           ]),
-          InventoryNotificationWidget(
+          const InventoryNotificationWidget(
             key: Key('inventory_notification_widget'),
             barHeight: 0,
           ),
@@ -58,7 +58,7 @@ class TriumphsSearchPageState<T extends TriumphsSearchPage> extends State<T>
     var item = items?[index];
     if (item == null) return Container();
     return Stack(children: [
-      Container(height: 120, child: RecordItemWidget(key: Key("${item.hash}"), hash: item.hash)),
+      SizedBox(height: 120, child: RecordItemWidget(key: Key("${item.hash}"), hash: item.hash)),
     ]);
   }
 

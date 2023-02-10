@@ -28,7 +28,7 @@ const _suppressEmptySpaces = [
 
 class LargeScreenEquipmentListWidget extends StatefulWidget {
   final DestinyCharacterComponent character;
-  LargeScreenEquipmentListWidget({Key key, this.character}) : super(key: key);
+  const LargeScreenEquipmentListWidget({Key key, this.character}) : super(key: key);
   @override
   LargeScreenEquipmentListWidgetState createState() => LargeScreenEquipmentListWidgetState();
 }
@@ -63,7 +63,7 @@ class LargeScreenEquipmentListWidgetState extends State<LargeScreenEquipmentList
   }
 
   Future<void> loadBucketDefinitions() async {
-    await Future.delayed(Duration(milliseconds: 300));
+    await Future.delayed(const Duration(milliseconds: 300));
     final hashes = bucketHashes.expand((element) => element).toList();
     final defs = await manifest.getDefinitions<DestinyInventoryBucketDefinition>(hashes);
 
@@ -77,7 +77,7 @@ class LargeScreenEquipmentListWidgetState extends State<LargeScreenEquipmentList
     List<DestinyItemComponent> characterInventory = profile.getCharacterInventory(characterID);
     List<DestinyItemComponent> profileInventory = profile.getProfileInventory();
     final bucketHashes = this.bucketHashes.where((l) => l.length == 1).expand((l) => l).toList();
-    final buckets = Map<int, ListBucket>();
+    final buckets = <int, ListBucket>{};
     for (int bucketHash in bucketHashes) {
       DestinyInventoryBucketDefinition bucketDef = bucketDefinitions[bucketHash];
       List<DestinyItemComponent> inventory =
@@ -95,7 +95,7 @@ class LargeScreenEquipmentListWidgetState extends State<LargeScreenEquipmentList
       return;
     }
     setState(() {
-      this.singleColumnBuckets = buckets;
+      singleColumnBuckets = buckets;
     });
   }
 
@@ -116,7 +116,7 @@ class LargeScreenEquipmentListWidgetState extends State<LargeScreenEquipmentList
       sections,
       crossAxisSpacing: 2,
       mainAxisSpacing: 2,
-      padding: EdgeInsets.all(4) + EdgeInsets.symmetric(vertical: kToolbarHeight) + MediaQuery.of(context).viewPadding,
+      padding: const EdgeInsets.all(4) + const EdgeInsets.symmetric(vertical: kToolbarHeight) + MediaQuery.of(context).viewPadding,
     );
   }
 
@@ -155,7 +155,7 @@ class LargeScreenEquipmentListWidgetState extends State<LargeScreenEquipmentList
     BucketDisplayOptions bucketOptions = userSettings.getDisplayOptionsForBucket("$columnHash");
     final definition = bucketDefinitions[columnHash];
     final mq = MediaQuery.of(context);
-    final headerHeight = 40;
+    const headerHeight = 40;
     final equippedHeight = bucketOptions.equippedItemHeight;
     final itemsPerRow = bucketOptions.responsiveUnequippedItemsPerRow(context, columnCount);
     final columnWidth =

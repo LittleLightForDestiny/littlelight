@@ -22,7 +22,7 @@ class ItemPerksWidget extends StatefulWidget {
   final socketCategoryHash;
   final List<DestinyItemSocketState> itemSockets;
   final Map<String, List<DestinyItemPlugBase>> reusablePlugs;
-  ItemPerksWidget(
+  const ItemPerksWidget(
       {Key key,
       this.iconSize = 16,
       this.socketCategoryHash,
@@ -78,9 +78,9 @@ class ItemPerksWidgetState extends State<ItemPerksWidget> with WishlistsConsumer
         definition.sockets.socketCategories.firstWhere((s) => s.socketCategoryHash == def.hash, orElse: () => null);
     List<Widget> columns = [];
     if (socketCategory == null) return Container();
-    socketCategory.socketIndexes.forEach((index) {
+    for (var index in socketCategory.socketIndexes) {
       columns.add(buildPerkColumn(context, index));
-    });
+    }
     return Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -108,7 +108,7 @@ class ItemPerksWidgetState extends State<ItemPerksWidget> with WishlistsConsumer
     }
     var tags = wishlistsService.getPlugTags(widget.definition.hash, plugHash);
     return Container(
-      margin: EdgeInsets.only(top: 1, left: 1),
+      margin: const EdgeInsets.only(top: 1, left: 1),
       width: widget.iconSize,
       height: widget.iconSize,
       child: Stack(children: [
@@ -136,7 +136,7 @@ class ItemPerksWidgetState extends State<ItemPerksWidget> with WishlistsConsumer
       colors.add(
           Color.lerp(WishlistsData.getBgColor(context, WishlistTag.PVP), Theme.of(context).colorScheme.onSurface, .2));
     }
-    if (colors.length > 0) {
+    if (colors.isNotEmpty) {
       return Container(
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(4),
@@ -158,9 +158,9 @@ class ItemPerksWidgetState extends State<ItemPerksWidget> with WishlistsConsumer
     if (tags.contains(WishlistTag.PVP) || tags.contains(WishlistTag.GodPVP)) {
       colors.add(WishlistsData.getBgColor(context, WishlistTag.PVP));
     }
-    if (colors.length > 0) {
+    if (colors.isNotEmpty) {
       return Container(
-          margin: EdgeInsets.all(1),
+          margin: const EdgeInsets.all(1),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(4),
               gradient: LinearGradient(

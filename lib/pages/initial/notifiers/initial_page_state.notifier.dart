@@ -61,7 +61,7 @@ class InitialPageStateNotifier
 
   InitialPageStateNotifier(this._context) {
     SystemChrome.setSystemUIOverlayStyle(
-        SystemUiOverlayStyle(statusBarColor: Colors.transparent, statusBarBrightness: Brightness.dark));
+        const SystemUiOverlayStyle(statusBarColor: Colors.transparent, statusBarBrightness: Brightness.dark));
     _initLoading();
   }
 
@@ -273,7 +273,7 @@ class InitialPageStateNotifier
   }
 
   Future<void> _startApp() async {
-    Navigator.of(_context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => MainScreen()), (r) => false);
+    Navigator.of(_context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const MainScreen()), (r) => false);
   }
 
   void clearDataAndRestart() async {

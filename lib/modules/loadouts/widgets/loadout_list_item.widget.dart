@@ -16,7 +16,7 @@ import 'package:little_light/widgets/flutter/center_icon_workaround.dart';
 
 enum LoadoutListItemAction { Equip, Edit, Delete }
 
-typedef void OnLoadoutListItemAction(LoadoutListItemAction action);
+typedef OnLoadoutListItemAction = void Function(LoadoutListItemAction action);
 
 class LoadoutListItemWidget extends StatelessWidget {
   final LoadoutItemIndex loadout;
@@ -26,12 +26,12 @@ class LoadoutListItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        margin: EdgeInsets.all(8),
+        margin: const EdgeInsets.all(8),
         child: Material(
             elevation: 1,
             color: Theme.of(context).colorScheme.secondaryContainer,
             child: Column(children: [
-              Container(
+              SizedBox(
                 height: kToolbarHeight,
                 child: buildTitleBar(context),
               ),
@@ -42,7 +42,7 @@ class LoadoutListItemWidget extends StatelessWidget {
 
   Widget buildLoadoutsContainer(BuildContext context) {
     return Container(
-        padding: EdgeInsets.all(4),
+        padding: const EdgeInsets.all(4),
         child: Column(
           children: [
             buildGenericItems(context),
@@ -67,7 +67,7 @@ class LoadoutListItemWidget extends StatelessWidget {
                 child: QueuedNetworkImage(
               imageUrl: BungieApiService.url(definition.secondarySpecial),
               fit: BoxFit.cover,
-              alignment: Alignment(-1, 0),
+              alignment: const Alignment(-1, 0),
             )),
             buildTitle(context)
           ],
@@ -80,7 +80,7 @@ class LoadoutListItemWidget extends StatelessWidget {
 
   Widget buildTitle(BuildContext context) {
     return Container(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         alignment: Alignment.centerLeft,
         child: Text(
           loadout.name.toUpperCase(),
@@ -91,40 +91,40 @@ class LoadoutListItemWidget extends StatelessWidget {
   Widget buildButtonBar(BuildContext context) {
     return Container(
       color: Theme.of(context).colorScheme.secondaryContainer,
-      padding: EdgeInsets.all(4).copyWith(top: 0),
+      padding: const EdgeInsets.all(4).copyWith(top: 0),
       child: Row(
         children: [
           Expanded(
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 2),
+              padding: const EdgeInsets.symmetric(horizontal: 2),
               child: ElevatedButton(
-                style: ButtonStyle(visualDensity: VisualDensity.comfortable),
+                style: const ButtonStyle(visualDensity: VisualDensity.comfortable),
                 child: Text("Equip".translate(context).toUpperCase(),
                     maxLines: 1,
                     softWrap: false,
                     overflow: TextOverflow.fade,
-                    style: TextStyle(fontWeight: FontWeight.bold)),
+                    style: const TextStyle(fontWeight: FontWeight.bold)),
                 onPressed: () => onAction(LoadoutListItemAction.Equip),
               ),
             ),
           ),
           Expanded(
             child: Container(
-              padding: EdgeInsets.all(2),
+              padding: const EdgeInsets.all(2),
               child: ElevatedButton(
-                style: ButtonStyle(visualDensity: VisualDensity.comfortable),
+                style: const ButtonStyle(visualDensity: VisualDensity.comfortable),
                 child: Text("Edit".translate(context).toUpperCase(),
                     maxLines: 1,
                     softWrap: false,
                     overflow: TextOverflow.fade,
-                    style: TextStyle(fontWeight: FontWeight.bold)),
+                    style: const TextStyle(fontWeight: FontWeight.bold)),
                 onPressed: () => onAction(LoadoutListItemAction.Edit),
               ),
             ),
           ),
           Expanded(
             child: Container(
-              padding: EdgeInsets.all(2),
+              padding: const EdgeInsets.all(2),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                     visualDensity: VisualDensity.comfortable, primary: Theme.of(context).errorColor),
@@ -132,7 +132,7 @@ class LoadoutListItemWidget extends StatelessWidget {
                     maxLines: 1,
                     softWrap: false,
                     overflow: TextOverflow.fade,
-                    style: TextStyle(fontWeight: FontWeight.bold)),
+                    style: const TextStyle(fontWeight: FontWeight.bold)),
                 onPressed: () => onAction(LoadoutListItemAction.Delete),
               ),
             ),
@@ -173,7 +173,7 @@ class LoadoutListItemWidget extends StatelessWidget {
           .followedBy(genericHashes.map((e) => buildItem(loadout.slots[e]?.genericEquipped.item)))
           .map((e) => Flexible(
                   child: Container(
-                padding: EdgeInsets.all(4),
+                padding: const EdgeInsets.all(4),
                 child: AspectRatio(aspectRatio: 1, child: e),
               )))
           .toList(),
@@ -200,7 +200,7 @@ class LoadoutListItemWidget extends StatelessWidget {
           .followedBy(genericHashes.map((e) => buildItem(loadout.slots[e]?.classSpecificEquipped[destinyClass]?.item)))
           .map((e) => Flexible(
                   child: Container(
-                padding: EdgeInsets.all(4),
+                padding: const EdgeInsets.all(4),
                 child: AspectRatio(aspectRatio: 1, child: e),
               )))
           .toList(),
@@ -211,7 +211,7 @@ class LoadoutListItemWidget extends StatelessWidget {
 
   Widget buildItem(DestinyItemComponent? item) {
     if (item == null) {
-      return ManifestImageWidget<DestinyInventoryItemDefinition>(1835369552, key: Key("item_icon_empty"));
+      return ManifestImageWidget<DestinyInventoryItemDefinition>(1835369552, key: const Key("item_icon_empty"));
     }
     final profile = getInjectedProfileService();
     final instance = profile.getInstanceInfo(item.itemInstanceId);
@@ -232,7 +232,7 @@ class LoadoutListItemWidget extends StatelessWidget {
               widthFactor: 1 / (buckets.length + 1),
               child: Container(
                   color: Theme.of(context).colorScheme.secondaryContainer,
-                  padding: EdgeInsets.all(4),
+                  padding: const EdgeInsets.all(4),
                   child: AspectRatio(
                     aspectRatio: 1,
                     child: child,
@@ -243,7 +243,7 @@ class LoadoutListItemWidget extends StatelessWidget {
 
   Widget itemIcon(DestinyItemComponent? item) {
     if (item == null) {
-      return ManifestImageWidget<DestinyInventoryItemDefinition>(1835369552, key: Key("item_icon_empty"));
+      return ManifestImageWidget<DestinyInventoryItemDefinition>(1835369552, key: const Key("item_icon_empty"));
     }
     final profile = getInjectedProfileService();
     final instance = profile.getInstanceInfo(item.itemInstanceId);

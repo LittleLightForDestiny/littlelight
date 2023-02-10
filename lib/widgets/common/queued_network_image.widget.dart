@@ -10,7 +10,7 @@ class QueuedNetworkImage extends StatelessWidget {
   final BoxFit fit;
   final Color? color;
 
-  QueuedNetworkImage(
+  const QueuedNetworkImage(
       {required this.imageUrl,
       this.placeholder,
       this.fit = BoxFit.contain,
@@ -49,9 +49,9 @@ class QueuedNetworkImage extends StatelessWidget {
         imageUrl: imageUrl!,
         fit: fit,
         alignment: alignment,
-        placeholderFadeInDuration: fadeInDuration ?? Duration(seconds: 2),
+        placeholderFadeInDuration: fadeInDuration ?? const Duration(seconds: 2),
         progressIndicatorBuilder: (context, url, downloadProgress) => placeholder ?? Container(),
-        errorWidget: (context, url, error) => Icon(Icons.error),
+        errorWidget: (context, url, error) => const Icon(Icons.error),
         color: color,
       );
     });

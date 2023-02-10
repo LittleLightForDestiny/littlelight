@@ -54,7 +54,7 @@ class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, 
           title: Text("Settings".translate(context)),
         ),
         body: SingleChildScrollView(
-            padding: EdgeInsets.all(8),
+            padding: const EdgeInsets.all(8),
             child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: <Widget>[
               buildTapToSelect(context),
               Container(height: 16),
@@ -155,13 +155,13 @@ class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, 
 
   buildWishlists(BuildContext context) {
     return Container(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             buildWishlistsList(context),
             Container(
-                padding: EdgeInsets.all(8),
+                padding: const EdgeInsets.all(8),
                 child: Text(
                   "You can add community curated wishlists (or your custom ones) on Little Light to check your rolls."
                       .translate(context),
@@ -189,7 +189,7 @@ class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, 
   buildWishlistsList(BuildContext context) {
     if (wishlists == null) return Container();
     return Container(
-        padding: EdgeInsets.only(top: 8),
+        padding: const EdgeInsets.only(top: 8),
         child: Column(
             children: wishlists
                 .map((e) => WishlistFileItem(file: e, actions: [
@@ -197,14 +197,14 @@ class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, 
                         onPressed: () async {
                           final awaitable = () async {
                             await wishlistsService.removeWishlist(e);
-                            this.wishlists = await wishlistsService.getWishlists();
+                            wishlists = await wishlistsService.getWishlists();
                           };
                           await Navigator.push(context, BusyDialogRoute(context, awaitFuture: awaitable()));
                           setState(() {});
                         },
-                        child: Text("Remove".translate(context)),
                         style: ElevatedButton.styleFrom(
                             primary: LittleLightTheme.of(context).errorLayers, visualDensity: VisualDensity.compact),
+                        child: Text("Remove".translate(context)),
                       )
                     ]))
                 .toList()));
@@ -221,7 +221,7 @@ class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, 
 
   buildCharacterOrdering(BuildContext context) {
     return Container(
-        padding: EdgeInsets.all(4),
+        padding: const EdgeInsets.all(4),
         child: IntrinsicHeight(
             child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -264,9 +264,9 @@ class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, 
         color: selected ? Colors.lightBlue : Colors.blueGrey,
         child: InkWell(
           child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-            child: label,
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
             alignment: Alignment.center,
+            child: label,
           ),
           onTap: () {
             userSettings.characterOrdering.type = type;
@@ -279,7 +279,7 @@ class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, 
   }
 
   buildItemOrderList(BuildContext context) {
-    return Container(
+    return SizedBox(
         height: (itemOrdering.length + 1) * 48.0,
         child: ReorderableList(
           itemCount: itemOrdering.length,
@@ -296,18 +296,18 @@ class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, 
             userSettings.itemOrdering = itemOrdering;
           },
           shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
+          physics: const NeverScrollableScrollPhysics(),
         ));
   }
 
   Widget buildHandle(BuildContext context, int index) {
     return ReorderableDragStartListener(
         index: index,
-        child: AspectRatio(aspectRatio: 1, child: Container(color: Colors.transparent, child: Icon(Icons.menu))));
+        child: AspectRatio(aspectRatio: 1, child: Container(color: Colors.transparent, child: const Icon(Icons.menu))));
   }
 
   buildPursuitOrderList(BuildContext context) {
-    return Container(
+    return SizedBox(
         height: (pursuitOrdering.length + 1) * 48.0,
         child: ReorderableList(
           itemCount: pursuitOrdering.length,
@@ -324,14 +324,14 @@ class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, 
             });
           },
           shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
+          physics: const NeverScrollableScrollPhysics(),
         ));
   }
 
   Widget buildPriorityTags(BuildContext context) {
     var tags = itemNotes.tagsByIds(priorityTags);
     return Container(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         child: Wrap(
           crossAxisAlignment: WrapCrossAlignment.start,
           runSpacing: 4,
@@ -347,7 +347,7 @@ class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, 
                         width: 20,
                         height: 20,
                         alignment: Alignment.center,
-                        child: CenterIconWorkaround(FontAwesomeIcons.solidTimesCircle, size: 16, color: Colors.red)),
+                        child: const CenterIconWorkaround(FontAwesomeIcons.solidTimesCircle, size: 16, color: Colors.red)),
                     onClick: () {
                       userSettings.removePriorityTag(t);
                       setState(() {});
@@ -357,7 +357,7 @@ class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, 
             ItemTagWidget(ItemNotesTag(icon: null, name: "Add Tag", backgroundColorHex: "#03A9f4"),
                 includeLabel: true,
                 padding: 4,
-                trailing: CenterIconWorkaround(FontAwesomeIcons.plusCircle, size: 18),
+                trailing: const CenterIconWorkaround(FontAwesomeIcons.plusCircle, size: 18),
                 onClick: () => openAddTagDialog(context)),
           ]).toList(),
         ));
@@ -387,7 +387,7 @@ class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, 
               buildDirectionButton(parameter, -1, onSave: onSave),
               Container(width: 8),
               Container(
-                  padding: EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(8),
                   child: Switch(
                     onChanged: (value) {
                       parameter.active = value;
@@ -402,7 +402,7 @@ class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, 
   Widget buildDirectionButton(ItemSortParameter parameter, int direction, {@required Function onSave}) {
     var selected = parameter.direction == direction;
     if (!parameter.active) return Container();
-    return Container(
+    return SizedBox(
       width: 20,
       height: 20,
       child: ElevatedButton(
@@ -410,7 +410,7 @@ class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, 
             primary: selected
                 ? Theme.of(context).toggleButtonsTheme.selectedColor
                 : Theme.of(context).toggleButtonsTheme.color,
-            padding: EdgeInsets.all(0),
+            padding: const EdgeInsets.all(0),
           ),
           child: Icon(direction > 0 ? FontAwesomeIcons.chevronUp : FontAwesomeIcons.chevronDown, size: 14),
           onPressed: () {

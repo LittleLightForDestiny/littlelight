@@ -16,6 +16,7 @@ mixin SubclassPropertiesMixin on InventoryItemMixin {
         top: 0, left: 0, width: iconSize + padding * 2, height: iconSize + padding * 2, child: itemIconHero(context));
   }
 
+  @override
   Widget itemIcon(BuildContext context) {
     return SubclassIconWidget(item, definition, instanceInfo);
   }
@@ -68,13 +69,13 @@ mixin SubclassPropertiesMixin on InventoryItemMixin {
     BoxDecoration decoration = BoxDecoration(
         gradient: RadialGradient(
       radius: 2,
-      center: Alignment(1, 0),
+      center: const Alignment(1, 0),
       colors: <Color>[
         startBgColor(context).withOpacity(.1),
         Colors.transparent,
         endBgColor(context),
       ],
-      stops: [0, .3, .9],
+      stops: const [0, .3, .9],
     ));
     return Positioned.fill(
         child: Container(
@@ -85,9 +86,9 @@ mixin SubclassPropertiesMixin on InventoryItemMixin {
               alignment: Alignment.centerRight,
               urlExtractor: (def) => def.screenshot,
               placeholder: Shimmer.fromColors(
-                child: Container(color: Colors.white),
                 baseColor: endBgColor(context),
                 highlightColor: startBgColor(context),
+                child: Container(color: Colors.white),
               ),
             )));
   }

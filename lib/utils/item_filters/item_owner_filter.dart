@@ -6,7 +6,8 @@ import 'package:little_light/utils/item_with_owner.dart';
 import 'base_item_filter.dart';
 
 class ItemOwnerFilter extends BaseItemFilter<Set<String>> {
-  ItemOwnerFilter(Set<String> selected, {bool enabled = true}) : super(Set(), selected ?? Set(), enabled: enabled);
+  ItemOwnerFilter(Set<String> selected, {bool enabled = true})
+      : super(<String>{}, selected ?? <String>{}, enabled: enabled);
 
   clear() {
     availableValues.clear();

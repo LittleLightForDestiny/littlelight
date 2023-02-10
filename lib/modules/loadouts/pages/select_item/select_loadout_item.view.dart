@@ -29,7 +29,7 @@ class SelectLoadoutItemView extends SearchScreen {
       : super(
             controller: SearchController.withDefaultFilters(context, firstRunFilters: [
           ItemBucketFilter(selected: {bucketHash}, enabled: true),
-          ClassTypeFilter(selected: [classType].toSet(), enabled: true),
+          ClassTypeFilter(selected: {classType}, enabled: true),
           AvoidInstanceIdsFilter(selected: idsToAvoid.toSet(), enabled: true)
         ], filters: [
           TextFilter(context, enabled: false),
@@ -43,6 +43,7 @@ class SelectLoadoutItemScreenState extends SearchScreenState<SelectLoadoutItemVi
   DestinyInventoryItemDefinition emblemDefinition;
   DestinyInventoryBucketDefinition bucketDefinition;
 
+  @override
   initState() {
     super.initState();
     loadDefs();
@@ -68,11 +69,11 @@ class SelectLoadoutItemScreenState extends SearchScreenState<SelectLoadoutItemVi
       flexibleSpace: buildAppBarBackground(context),
       title: buildAppBarTitle(context),
       elevation: 2,
-      leading: BackButton(),
+      leading: const BackButton(),
       actions: <Widget>[
         IconButton(
           enableFeedback: false,
-          icon: textFilter.enabled ? Icon(Icons.close) : Icon(Icons.search),
+          icon: textFilter.enabled ? const Icon(Icons.close) : const Icon(Icons.search),
           onPressed: () {
             textFilter.enabled = !textFilter.enabled;
             controller.update();
@@ -82,7 +83,7 @@ class SelectLoadoutItemScreenState extends SearchScreenState<SelectLoadoutItemVi
         Builder(
             builder: (context) => IconButton(
                   enableFeedback: false,
-                  icon: Icon(Icons.filter_list),
+                  icon: const Icon(Icons.filter_list),
                   onPressed: () {
                     Scaffold.of(context).openEndDrawer();
                   },
@@ -91,6 +92,7 @@ class SelectLoadoutItemScreenState extends SearchScreenState<SelectLoadoutItemVi
     );
   }
 
+  @override
   buildAppBarTitle(BuildContext context) {
     if (textFilter.enabled) {
       return TextSearchFilterWidget(controller, forceAutoFocus: true);
@@ -105,11 +107,11 @@ class SelectLoadoutItemScreenState extends SearchScreenState<SelectLoadoutItemVi
   buildAppBarBackground(BuildContext context) {
     if (emblemDefinition == null) return Container();
     return Container(
-        constraints: BoxConstraints.expand(),
+        constraints: const BoxConstraints.expand(),
         child: QueuedNetworkImage(
             imageUrl: BungieApiService.url(emblemDefinition.secondarySpecial),
             fit: BoxFit.cover,
-            alignment: Alignment(-.8, 0)));
+            alignment: const Alignment(-.8, 0)));
   }
 
   @override

@@ -5,27 +5,27 @@ import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/services/storage/storage.consumer.dart';
 
 class DevToolsScreen extends StatelessWidget with StorageConsumer, ProfileConsumer {
-  final Map<String, TextEditingController> fieldControllers = Map();
+  final Map<String, TextEditingController> fieldControllers = {};
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
             enableFeedback: false,
-            icon: Icon(Icons.menu),
+            icon: const Icon(Icons.menu),
             onPressed: () {
               Scaffold.of(context).openDrawer();
             },
           ),
-          title: Text("Dev Tools"),
+          title: const Text("Dev Tools"),
         ),
         body: SingleChildScrollView(
             child: Container(
-                padding: EdgeInsets.all(8),
+                padding: const EdgeInsets.all(8),
                 child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
                   buildTextField(context, "membershipId"),
                   buildButton(context, "Reload", () async {
-                    await profile.fetchProfileData();
+                    await profile.refresh();
                     print(profile.characters);
                   }),
                   buildButton(
@@ -48,11 +48,9 @@ class DevToolsScreen extends StatelessWidget with StorageConsumer, ProfileConsum
 
   Widget buildTextField(BuildContext context, String label, [String initialValue = ""]) {
     var controller = fieldControllers[label];
-    if (controller == null) {
-      controller = fieldControllers[label] = TextEditingController(text: initialValue);
-    }
+    controller ??= fieldControllers[label] = TextEditingController(text: initialValue);
     return Container(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         child: TextField(
           autocorrect: false,
           controller: controller,
@@ -62,13 +60,13 @@ class DevToolsScreen extends StatelessWidget with StorageConsumer, ProfileConsum
 
   Widget buildButton(BuildContext context, String label, Function onPressed) {
     return ElevatedButton(
-      child: Text(label),
       onPressed: onPressed,
+      child: Text(label),
     );
   }
 
   Widget buildDivider(BuildContext context) {
     return Container(
-        color: Theme.of(context).colorScheme.onSurface, height: 1, margin: EdgeInsets.symmetric(vertical: 16));
+        color: Theme.of(context).colorScheme.onSurface, height: 1, margin: const EdgeInsets.symmetric(vertical: 16));
   }
 }

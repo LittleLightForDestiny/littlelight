@@ -11,7 +11,7 @@ class SelectWishlistNotifier with ChangeNotifier, LittleLightDataConsumer, Wishl
   WishlistFolder? _currentFolder;
   WishlistFolder? get currentFolder => _currentFolder ?? _wishlistsIndexRoot;
   bool get isRootFolder => wishlistsIndex == currentFolder;
-  Set<String> _selectedFiles = Set<String>();
+  final Set<String> _selectedFiles = <String>{};
 
   SelectWishlistNotifier(this.context);
 

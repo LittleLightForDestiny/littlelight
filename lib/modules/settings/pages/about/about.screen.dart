@@ -71,7 +71,7 @@ class _AboutScreenState extends State<AboutScreen> with StorageConsumer, LittleL
     setState(() {});
     collaborators = await littleLightData.getCollaborators();
     collaborators?.supporters?.shuffle();
-    this.setState(() {});
+    setState(() {});
   }
 
   @override
@@ -80,7 +80,7 @@ class _AboutScreenState extends State<AboutScreen> with StorageConsumer, LittleL
         appBar: AppBar(
           leading: IconButton(
             enableFeedback: false,
-            icon: Icon(Icons.menu),
+            icon: const Icon(Icons.menu),
             onPressed: () {
               Scaffold.of(context).openDrawer();
             },
@@ -91,7 +91,7 @@ class _AboutScreenState extends State<AboutScreen> with StorageConsumer, LittleL
           _sections,
           crossAxisSpacing: 4,
           mainAxisSpacing: 4,
-          padding: EdgeInsets.all(8) + MediaQuery.of(context).viewPadding.copyWith(top: 0),
+          padding: const EdgeInsets.all(8) + MediaQuery.of(context).viewPadding.copyWith(top: 0),
         ));
   }
 
@@ -167,7 +167,7 @@ class _AboutScreenState extends State<AboutScreen> with StorageConsumer, LittleL
               Container(
                   width: 96,
                   height: 96,
-                  padding: EdgeInsets.only(right: 8),
+                  padding: const EdgeInsets.only(right: 8),
                   child: Image.asset('assets/imgs/app_icon.png')),
               Expanded(
                   child: Column(
@@ -176,7 +176,7 @@ class _AboutScreenState extends State<AboutScreen> with StorageConsumer, LittleL
                 children: <Widget>[
                   Text(
                     "$appName v$packageVersion",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ],
               ))
@@ -193,7 +193,7 @@ class _AboutScreenState extends State<AboutScreen> with StorageConsumer, LittleL
     final actions = [
       AboutScreenAction(
         icon: FontAwesomeIcons.twitter,
-        label: Text("@LittleLightD2"),
+        label: const Text("@LittleLightD2"),
         url: "http://www.twitter.com/littlelightD2",
       ),
       AboutScreenAction(
@@ -224,7 +224,7 @@ class _AboutScreenState extends State<AboutScreen> with StorageConsumer, LittleL
     final actions = [
       if (isMobile)
         AboutScreenAction(
-            color: isIOS ? Color.fromARGB(255, 22, 147, 245) : Color.fromARGB(255, 49, 159, 185),
+            color: isIOS ? const Color.fromARGB(255, 22, 147, 245) : const Color.fromARGB(255, 49, 159, 185),
             icon: isIOS ? FontAwesomeIcons.appStoreIos : FontAwesomeIcons.googlePlay,
             label: Text(
               "Rate it".translate(context).toUpperCase(),
@@ -232,7 +232,7 @@ class _AboutScreenState extends State<AboutScreen> with StorageConsumer, LittleL
             type: AboutScreenActionType.Rate),
       if (showDonationLinks)
         AboutScreenAction(
-          color: Color.fromRGBO(249, 104, 84, 1),
+          color: const Color.fromRGBO(249, 104, 84, 1),
           iconWidget: Image.asset("assets/imgs/patreon-icon.png"),
           label: Text(
             "Become a Patron".translate(context),
@@ -242,7 +242,7 @@ class _AboutScreenState extends State<AboutScreen> with StorageConsumer, LittleL
         ),
       if (showDonationLinks)
         AboutScreenAction(
-          color: Color.fromRGBO(26, 169, 222, 1),
+          color: const Color.fromRGBO(26, 169, 222, 1),
           iconWidget: Image.asset("assets/imgs/ko-fi-icon.png"),
           label: Text(
             "Buy me a Coffee".translate(context),
@@ -293,14 +293,14 @@ class _AboutScreenState extends State<AboutScreen> with StorageConsumer, LittleL
         .join("/"));
     return Container(
         color: Theme.of(context).colorScheme.secondaryContainer,
-        padding: EdgeInsets.all(4),
+        padding: const EdgeInsets.all(4),
         child: Row(
           children: flags + [Container(width: 4), languageNames],
         ));
   }
 
   Widget flagIcon(String code) {
-    return Container(width: 24, height: 24, child: Image.asset("assets/imgs/flags/$code.png"));
+    return SizedBox(width: 24, height: 24, child: Image.asset("assets/imgs/flags/$code.png"));
   }
 
   Widget buildTagAndPlatform(String membershipId, BungieMembershipType membershipType, [String? link, Widget? badge]) {
@@ -310,13 +310,13 @@ class _AboutScreenState extends State<AboutScreen> with StorageConsumer, LittleL
   Widget buildExternalLinkButton(BuildContext context, AboutScreenAction action) {
     return ElevatedButton(
         style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.all(4),
+          padding: const EdgeInsets.all(4),
           primary: action.color ?? LittleLightTheme.of(context).primaryLayers,
           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         ),
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           Expanded(
-            child: action.iconWidget ?? Container(width: 36, height: 36, child: Icon(action.icon, size: 32)),
+            child: action.iconWidget ?? SizedBox(width: 36, height: 36, child: Icon(action.icon, size: 32)),
           ),
           Container(
             height: 4,

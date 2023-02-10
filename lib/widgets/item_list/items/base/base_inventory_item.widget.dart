@@ -14,7 +14,9 @@ import 'package:little_light/widgets/item_list/items/base/item_mods.widget.dart'
 import 'package:little_light/widgets/item_list/items/base/item_perks.widget.dart';
 
 class BaseInventoryItemWidget extends BaseDestinyStatelessItemWidget with InventoryItemMixin, ProfileConsumer {
+  @override
   final String uniqueId;
+  @override
   final Widget trailing;
   final bool showUnusedPerks;
 
@@ -93,7 +95,7 @@ class BaseInventoryItemWidget extends BaseDestinyStatelessItemWidget with Invent
           child: Container(
               child: Text(
             "x${item.quantity}",
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
           )));
     }
     return super.primaryStatWidget(context);

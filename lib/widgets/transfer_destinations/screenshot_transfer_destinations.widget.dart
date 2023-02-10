@@ -14,7 +14,7 @@ import 'package:little_light/widgets/transfer_destinations/base_transfer_destina
 
 class ScreenshotTransferDestinationsWidget extends BaseTransferDestinationsWidget {
   final double pixelSize;
-  ScreenshotTransferDestinationsWidget(
+  const ScreenshotTransferDestinationsWidget(
       {DestinyItemComponent item,
       DestinyInventoryItemDefinition definition,
       DestinyItemInstanceComponent instanceInfo,
@@ -46,7 +46,7 @@ class ScreenshotTransferDestinationsState<T extends ScreenshotTransferDestinatio
   @override
   Widget buildEquippingBlock(BuildContext context, String title, List<TransferDestination> destinations,
       [Alignment align = Alignment.centerRight]) {
-    if (destinations.length == 0) return Container();
+    if (destinations.isEmpty) return Container();
     return Container(
         margin: EdgeInsets.only(right: widget.pixelSize * 10),
         child: IntrinsicWidth(
@@ -55,6 +55,7 @@ class ScreenshotTransferDestinationsState<T extends ScreenshotTransferDestinatio
                 children: <Widget>[buildLabel(context, title, align), buildButtons(context, destinations, align)])));
   }
 
+  @override
   Widget buildLabel(BuildContext context, String title, [Alignment align = Alignment.centerRight]) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

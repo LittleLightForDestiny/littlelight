@@ -60,7 +60,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
   bool shouldUseAutoTransfer = false;
 
   List<String> instanceIdsToAvoid = [];
-  List<_QueuedTransfer> _transferQueue = [];
+  final List<_QueuedTransfer> _transferQueue = [];
 
   InventoryBloc(BuildContext context)
       : _context = context,
@@ -71,6 +71,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
   init() async {
     await _firstLoad();
     updateInventory();
+    //TODO: enable start auto updater
     // _startAutoUpdater();
   }
 
@@ -82,7 +83,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
 
   _startAutoUpdater() {
     if (_updateTimer?.isActive ?? false) return;
-    _updateTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+    _updateTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (!_lifecycleBloc.isActive) return;
       if (isBusy) return;
       final lastUpdated = _lastUpdated;
@@ -112,7 +113,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
       notifyListeners();
       await _profileBloc.refresh(ProfileComponentGroups.basicProfile);
       _lastUpdated = DateTime.now();
-      await Future.delayed(Duration(seconds: 1));
+      await Future.delayed(const Duration(seconds: 1));
       _isBusy = false;
       notifyListeners();
       notification.dismiss();
@@ -121,7 +122,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
       _isBusy = false;
       notifyListeners();
       final errorNotification = _notificationsBloc.createNotification(UpdateErrorAction());
-      await Future.delayed(Duration(seconds: 2));
+      await Future.delayed(const Duration(seconds: 2));
       errorNotification.dismiss();
     }
   }
@@ -178,7 +179,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
 
   Future<void> _startTransferQueue() async {
     final transfersWaiting = _transferQueue.where((t) => !t.started);
-    if (transfersWaiting.length == 0) {
+    if (transfersWaiting.isEmpty) {
       _isBusy = false;
       instanceIdsToAvoid.clear();
       return;
@@ -195,7 +196,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
       transfer: next,
       equip: next.equip,
     );
-    await Future.delayed(Duration(milliseconds: 100));
+    await Future.delayed(const Duration(milliseconds: 100));
     _startTransferQueue();
   }
 

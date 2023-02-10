@@ -17,6 +17,7 @@ class EngramIconWidget extends ItemIconWidget {
     return null;
   }
 
+  @override
   Widget itemIconPlaceholder(BuildContext context) {
     return DefaultLoadingShimmer(child: Image.asset("assets/imgs/engram-placeholder.png"));
   }

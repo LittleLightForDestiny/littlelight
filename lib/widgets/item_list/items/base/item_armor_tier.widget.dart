@@ -13,7 +13,7 @@ class ItemArmorTierWidget extends StatefulWidget {
   final List<DestinyItemSocketState> itemSockets;
   final socketCategoryHash;
   final bool suppressIcon;
-  ItemArmorTierWidget(
+  const ItemArmorTierWidget(
       {Key key,
       this.iconSize = 16,
       this.socketCategoryHash,
@@ -37,14 +37,15 @@ class ItemArmorTierWidgetState extends State<ItemArmorTierWidget> {
     super.initState();
   }
 
+  @override
   Widget build(BuildContext context) {
     var socketCategory = definition.sockets.socketCategories
         .firstWhere((s) => s.socketCategoryHash == widget.socketCategoryHash, orElse: () => null);
     List<Widget> columns = [];
     if (socketCategory == null) return Container();
-    socketCategory.socketIndexes.forEach((index) {
+    for (var index in socketCategory.socketIndexes) {
       columns.add(buildPerkColumn(context, index));
-    });
+    }
     return Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -61,7 +62,7 @@ class ItemArmorTierWidgetState extends State<ItemArmorTierWidget> {
     if (plugHash == null) {
       return Container();
     }
-    return Container(
+    return SizedBox(
         height: widget.iconSize,
         child: DefinitionProviderWidget<DestinyInventoryItemDefinition>(
           plugHash,

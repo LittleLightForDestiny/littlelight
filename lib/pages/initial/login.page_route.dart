@@ -5,6 +5,6 @@ class LoginPageRoute extends MaterialPageRoute {
   LoginPageRoute(RouteSettings settings)
       : super(
           settings: settings,
-          builder: (context) => InitialPageContianer(),
+          builder: (context) => const InitialPageContianer(),
         );
 }

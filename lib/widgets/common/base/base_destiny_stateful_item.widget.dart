@@ -11,7 +11,7 @@ abstract class BaseDestinyStatefulItemWidget extends StatefulWidget {
   final DestinyItemInstanceComponent instanceInfo;
   final String characterId;
 
-  BaseDestinyStatefulItemWidget({Key key, this.item, this.definition, this.instanceInfo, this.characterId})
+  const BaseDestinyStatefulItemWidget({Key key, this.item, this.definition, this.instanceInfo, this.characterId})
       : super(key: key);
 }
 

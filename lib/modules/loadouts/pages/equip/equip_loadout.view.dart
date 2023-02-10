@@ -52,11 +52,11 @@ class EquipLoadoutView extends StatelessWidget with ProfileConsumer {
     if (emblemDefinition == null) return Container();
     if (emblemDefinition.secondarySpecial?.isEmpty ?? true) return Container();
     return Container(
-        constraints: BoxConstraints.expand(),
+        constraints: const BoxConstraints.expand(),
         child: QueuedNetworkImage(
             imageUrl: BungieApiService.url(emblemDefinition.secondarySpecial),
             fit: BoxFit.cover,
-            alignment: Alignment(-.8, 0)));
+            alignment: const Alignment(-.8, 0)));
   }
 
   Widget buildBody(BuildContext context) {
@@ -66,13 +66,13 @@ class EquipLoadoutView extends StatelessWidget with ProfileConsumer {
         child: Container(
           alignment: Alignment.center,
           child: SingleChildScrollView(
-            padding: EdgeInsets.all(8)
+            padding: const EdgeInsets.all(8)
                 .copyWith(top: 0, left: max(screenPadding.left, 8), right: max(screenPadding.right, 8)),
             child: Container(
               alignment: Alignment.center,
-              constraints: BoxConstraints(minWidth: double.maxFinite),
+              constraints: const BoxConstraints(minWidth: double.maxFinite),
               child: Container(
-                constraints: BoxConstraints(maxWidth: 600),
+                constraints: const BoxConstraints(maxWidth: 600),
                 child: Column(children: [
                   buildEquippableItems(context),
                   Container(height: 16),
@@ -116,7 +116,7 @@ class EquipLoadoutView extends StatelessWidget with ProfileConsumer {
 
   Widget buildUnequippable(BuildContext context) {
     final unequippable = _state(context).unequippableItems;
-    if (unequippable == null || unequippable.length == 0) return Container();
+    if (unequippable == null || unequippable.isEmpty) return Container();
     return Column(children: [
       HeaderWidget(
         child: Text(
@@ -128,11 +128,11 @@ class EquipLoadoutView extends StatelessWidget with ProfileConsumer {
       ),
       GridView(
         shrinkWrap: true,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 7, childAspectRatio: 1),
-        physics: NeverScrollableScrollPhysics(),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 7, childAspectRatio: 1),
+        physics: const NeverScrollableScrollPhysics(),
         children: unequippable
             .map((e) => Container(
-                  padding: EdgeInsets.all(2),
+                  padding: const EdgeInsets.all(2),
                   child: buildItemIcon(e.item),
                 ))
             .toList(),
@@ -151,7 +151,7 @@ class EquipLoadoutView extends StatelessWidget with ProfileConsumer {
               .map(
                 (e) => Expanded(
                   child: Container(
-                    padding: EdgeInsets.all(2),
+                    padding: const EdgeInsets.all(2),
                     child: buildItemIcon(e?.item),
                   ),
                 ),
@@ -199,12 +199,12 @@ class EquipLoadoutView extends StatelessWidget with ProfileConsumer {
     if (equip == null && transfer == null) return Container();
     return Container(
       alignment: Alignment.center,
-      constraints: BoxConstraints(minWidth: double.maxFinite),
+      constraints: const BoxConstraints(minWidth: double.maxFinite),
       color: LittleLightTheme.of(context).surfaceLayers.layer1,
       child: SafeArea(
         top: false,
         child: Container(
-          constraints: BoxConstraints(maxWidth: 600),
+          constraints: const BoxConstraints(maxWidth: 600),
           child: TransferDestinationsWidget(
               equipCharacters: equip,
               transferCharacters: transfer,

@@ -7,7 +7,7 @@ import 'package:little_light/utils/item_with_owner.dart';
 import 'base_item_filter.dart';
 
 class EnergyTypeFilter extends BaseItemFilter<Set<int>> {
-  EnergyTypeFilter() : super(Set(), Set());
+  EnergyTypeFilter() : super(<int>{}, <int>{});
 
   clear() {
     availableValues.clear();
@@ -22,13 +22,14 @@ class EnergyTypeFilter extends BaseItemFilter<Set<int>> {
       return instanceInfo?.energy?.energyTypeHash;
     }).toSet();
     availableValues.addAll(energyTypeHashes);
-    this.available = availableValues.length > 1;
+    available = availableValues.length > 1;
     value.retainAll(availableValues);
     return super.filter(items, definitions: definitions);
   }
 
+  @override
   bool filterItem(ItemWithOwner item, {Map<int, DestinyInventoryItemDefinition> definitions}) {
-    if (value?.length == 0) {
+    if (value.isEmpty) {
       return true;
     }
     var instanceInfo = profile.getInstanceInfo(item?.item?.itemInstanceId);

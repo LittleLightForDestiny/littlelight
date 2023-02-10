@@ -9,8 +9,8 @@ import 'package:little_light/widgets/common/grid.widget.dart';
 import 'package:little_light/widgets/common/tab_page_selector.widget.dart';
 
 mixin TabGridMixin<S extends StatefulWidget, T> on TickerProviderStateMixin<S> {
-  double _spacing = 8;
-  double _arrowButtonWidth = 24;
+  final double _spacing = 8;
+  final double _arrowButtonWidth = 24;
 
   TabController _controller;
 
@@ -50,11 +50,11 @@ mixin TabGridMixin<S extends StatefulWidget, T> on TickerProviderStateMixin<S> {
         builder: (BuildContext context, BoxConstraints constraints) => Stack(children: [
               IntrinsicHeight(
                   child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-                Container(
+                SizedBox(
                     width: _arrowButtonWidth,
                     child: ArrowNavigationButton(index: 0, controller: _controller, icon: FontAwesomeIcons.caretLeft)),
                 Expanded(child: tabBarView(context, constraints)),
-                Container(
+                SizedBox(
                     width: _arrowButtonWidth,
                     child: ArrowNavigationButton(
                       index: _controller.length - 1,
@@ -75,7 +75,7 @@ mixin TabGridMixin<S extends StatefulWidget, T> on TickerProviderStateMixin<S> {
     var itemWidth = (width - _spacing * (columnCount + 1)) / columnCount;
     var itemHeight = itemWidth / itemAspectRatio;
     var height = (itemHeight * rowCount) + (_spacing * (rowCount + 2));
-    return Container(width: width, height: height, child: TabBarView(controller: _controller, children: tabs(context)));
+    return SizedBox(width: width, height: height, child: TabBarView(controller: _controller, children: tabs(context)));
   }
 
   List<Widget> tabs(BuildContext context) => List.generate(pageCount, (index) => tab(context, index));

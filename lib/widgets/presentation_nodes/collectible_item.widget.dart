@@ -22,7 +22,7 @@ import 'package:little_light/widgets/item_list/items/weapon/weapon_inventory_ite
 
 class CollectibleItemWidget extends StatefulWidget {
   final int hash;
-  CollectibleItemWidget({Key key, this.hash}) : super(key: key);
+  const CollectibleItemWidget({Key key, this.hash}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -67,7 +67,7 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget>
       }
     }
     _itemDefinition = await manifest.getDefinition<DestinyInventoryItemDefinition>(definition.itemHash);
-    this.items = profile.getAllItems().where((element) => element.item.itemHash == definition.itemHash).toList();
+    items = profile.getAllItems().where((element) => element.item.itemHash == definition.itemHash).toList();
     if (mounted) {
       setState(() {});
     }
@@ -80,7 +80,7 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget>
         child: Container(
             decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey.shade600, width: 1),
-                gradient: LinearGradient(begin: Alignment(0, 0), end: Alignment(1, 2), colors: [
+                gradient: LinearGradient(begin: const Alignment(0, 0), end: const Alignment(1, 2), colors: [
                   Theme.of(context).colorScheme.onSurface.withOpacity(.05),
                   Theme.of(context).colorScheme.onSurface.withOpacity(.1),
                   Theme.of(context).colorScheme.onSurface.withOpacity(.03),
@@ -98,8 +98,9 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget>
 
   Widget buildItem(BuildContext context) {
     if (_itemDefinition == null) {
-      if (definition?.redacted ?? false)
+      if (definition?.redacted ?? false) {
         return Container(alignment: Alignment.center, child: Text(definition.displayProperties.name));
+      }
       return Container();
     }
     if (_itemDefinition.itemType == DestinyItemType.Armor) {
@@ -158,7 +159,7 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget>
   }
 
   buildTitle(BuildContext context, DestinyCollectibleDefinition definition) {
-    return Expanded(child: Container(padding: EdgeInsets.all(8), child: buildTitleText()));
+    return Expanded(child: Container(padding: const EdgeInsets.all(8), child: buildTitleText()));
   }
 
   Widget buildButton(BuildContext context) {
@@ -199,13 +200,13 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget>
     if ((items?.length ?? 0) == 0) return;
     if (!selected) {
       selection.activateMultiSelect();
-      for (var item in this.items) {
+      for (var item in items) {
         if (!selection.isSelected(item)) {
           selection.addItem(ItemWithOwner(item.item, item.ownerId));
         }
       }
     } else {
-      for (var item in this.items) {
+      for (var item in items) {
         selection.removeItem(ItemWithOwner(item.item, item.ownerId));
       }
     }
@@ -247,7 +248,7 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget>
       child: Text(
         "${items.length}",
         textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
       ),
     );
   }

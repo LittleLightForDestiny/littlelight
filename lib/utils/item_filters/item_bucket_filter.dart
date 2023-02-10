@@ -6,7 +6,7 @@ import 'package:little_light/utils/item_with_owner.dart';
 import 'base_item_filter.dart';
 
 class ItemBucketFilter extends BaseItemFilter<Set<int>> {
-  ItemBucketFilter({Set<int> selected, enabled = false}) : super(Set(), selected ?? Set(), enabled: enabled);
+  ItemBucketFilter({Set<int> selected, enabled = false}) : super(<int>{}, selected ?? <int>{}, enabled: enabled);
 
   clear() {
     availableValues.clear();

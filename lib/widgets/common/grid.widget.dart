@@ -10,7 +10,7 @@ class GridWidget extends StatelessWidget {
   final double itemAspectRation;
   final double mainAxisSpacing;
   final double crossAxisSpacing;
-  GridWidget(
+  const GridWidget(
       {@required this.children,
       this.columnCount = 3,
       this.itemAspectRation = 1,
@@ -19,6 +19,7 @@ class GridWidget extends StatelessWidget {
       Key key})
       : super(key: key);
 
+  @override
   Widget build(BuildContext context) {
     var rowCount = (children.length / columnCount).ceil();
     var rows = List.generate(rowCount, (index) => buildRow(context, index))

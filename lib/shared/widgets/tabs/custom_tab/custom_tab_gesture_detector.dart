@@ -2,7 +2,7 @@ part of 'custom_tab.dart';
 
 class CustomTabGestureDetector extends StatelessWidget {
   final CustomTabController controller;
-  CustomTabGestureDetector({required this.controller});
+  const CustomTabGestureDetector({required this.controller});
 
   @override
   Widget build(BuildContext context) {

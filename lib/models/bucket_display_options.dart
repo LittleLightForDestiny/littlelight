@@ -7,7 +7,7 @@ part 'bucket_display_options.g.dart';
 
 extension ListParameters on BucketDisplayOptions {
   double? get unequippedItemHeight {
-    switch (this.type) {
+    switch (type) {
       case BucketDisplayType.Hidden:
       case BucketDisplayType.OnlyEquipped:
         return 0;
@@ -21,7 +21,7 @@ extension ListParameters on BucketDisplayOptions {
   }
 
   double? get equippedItemHeight {
-    switch (this.type) {
+    switch (type) {
       case BucketDisplayType.Hidden:
         return 0;
       default:
@@ -30,7 +30,7 @@ extension ListParameters on BucketDisplayOptions {
   }
 
   int? get unequippedItemsPerRow {
-    switch (this.type) {
+    switch (type) {
       case BucketDisplayType.Hidden:
       case BucketDisplayType.OnlyEquipped:
         return 0;
@@ -44,7 +44,7 @@ extension ListParameters on BucketDisplayOptions {
   }
 
   int responsiveUnequippedItemsPerRow(BuildContext context, [int columnCount = 1]) {
-    switch (this.type) {
+    switch (type) {
       case BucketDisplayType.Hidden:
       case BucketDisplayType.OnlyEquipped:
         return 0;

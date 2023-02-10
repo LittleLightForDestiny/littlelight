@@ -17,7 +17,7 @@ import 'package:little_light/widgets/item_tags/item_tag.widget.dart';
 
 class ItemDetailsTagsWidget extends BaseDestinyStatefulItemWidget {
   final Function onUpdate;
-  ItemDetailsTagsWidget(
+  const ItemDetailsTagsWidget(
       {DestinyItemComponent item,
       DestinyInventoryItemDefinition definition,
       DestinyItemInstanceComponent instanceInfo,
@@ -61,9 +61,9 @@ class ItemDetailsTagsWidgetState extends BaseDestinyItemState<ItemDetailsTagsWid
   Widget build(BuildContext context) {
     if (tags == null) return Container();
     return Container(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: <Widget>[
-          getHeader(Text("Item Tags".translate(context).toUpperCase(), style: TextStyle(fontWeight: FontWeight.bold))),
+          getHeader(Text("Item Tags".translate(context).toUpperCase(), style: const TextStyle(fontWeight: FontWeight.bold))),
           visible ? Container(height: 8) : Container(),
           visible ? buildTags(context) : Container(),
         ]));
@@ -85,7 +85,7 @@ class ItemDetailsTagsWidgetState extends BaseDestinyItemState<ItemDetailsTagsWid
                     width: 20,
                     height: 20,
                     alignment: Alignment.center,
-                    child: CenterIconWorkaround(FontAwesomeIcons.solidTimesCircle, size: 16, color: Colors.red)),
+                    child: const CenterIconWorkaround(FontAwesomeIcons.solidTimesCircle, size: 16, color: Colors.red)),
                 onClick: () {
                   notes.tags.remove(t.tagId);
                   save();
@@ -95,7 +95,7 @@ class ItemDetailsTagsWidgetState extends BaseDestinyItemState<ItemDetailsTagsWid
         ItemTagWidget(ItemNotesTag(icon: null, name: "Add Tag", backgroundColorHex: "#03A9f4"),
             includeLabel: true,
             padding: 4,
-            trailing: CenterIconWorkaround(FontAwesomeIcons.plusCircle, size: 18),
+            trailing: const CenterIconWorkaround(FontAwesomeIcons.plusCircle, size: 18),
             onClick: () => openAddTagDialog(context)),
       ]).toList(),
     );

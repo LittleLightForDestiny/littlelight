@@ -12,7 +12,7 @@ import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 class MasterworkCounterWidget extends StatefulWidget {
   final DestinyItemComponent item;
 
-  MasterworkCounterWidget(this.item, {Key key}) : super(key: key);
+  const MasterworkCounterWidget(this.item, {Key key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -25,6 +25,7 @@ class MasterworkCounterWidgetState extends State<MasterworkCounterWidget>
   DestinyObjectiveProgress masterworkObjective;
   DestinyObjectiveDefinition masterworkObjectiveDefinition;
 
+  @override
   initState() {
     super.initState();
     loadDefinitions();
@@ -50,15 +51,15 @@ class MasterworkCounterWidgetState extends State<MasterworkCounterWidget>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    if (this.masterworkObjective == null || this.masterworkObjectiveDefinition?.displayProperties?.icon == null) {
+    if (masterworkObjective == null || masterworkObjectiveDefinition?.displayProperties?.icon == null) {
       return Container();
     }
     return Container(
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 20),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Container(
+            SizedBox(
               width: 26,
               height: 26,
               child: QueuedNetworkImage(

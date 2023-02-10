@@ -10,7 +10,7 @@ import 'package:little_light/widgets/search/search.controller.dart';
 import 'package:little_light/widgets/search/search_filters/base_search_filter.widget.dart';
 
 class ItemBucketFilterWidget extends BaseSearchFilterWidget<ItemBucketFilter> {
-  ItemBucketFilterWidget(SearchController controller) : super(controller);
+  const ItemBucketFilterWidget(SearchController controller) : super(controller);
 
   @override
   _ItemBucketFilterWidgetState createState() => _ItemBucketFilterWidgetState();

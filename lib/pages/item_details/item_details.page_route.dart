@@ -57,7 +57,7 @@ class ItemDetailsPageRoute extends MaterialPageRoute {
   ItemDetailsPageRoute._({
     Key? key,
     required RouteSettings settings,
-  }) : super(settings: settings, builder: (context) => ItemDetailsPageContainer());
+  }) : super(settings: settings, builder: (context) => const ItemDetailsPageContainer());
 
   factory ItemDetailsPageRoute({
     required ItemWithOwner item,

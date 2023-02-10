@@ -14,7 +14,7 @@ import 'package:little_light/widgets/item_sockets/base_item_sockets.widget.dart'
 import 'package:little_light/widgets/item_sockets/item_socket.controller.dart';
 
 class DetailsItemIntrinsicPerkWidget extends BaseItemSocketsWidget {
-  DetailsItemIntrinsicPerkWidget({
+  const DetailsItemIntrinsicPerkWidget({
     Key key,
     DestinyItemComponent item,
     DestinyInventoryItemDefinition definition,
@@ -42,17 +42,18 @@ class DetailsItemArmorExoticPerkWidgetState<T extends DetailsItemIntrinsicPerkWi
     if (category == null) return Container();
     Iterable<int> plugs =
         category.socketIndexes.map((socketIndex) => socketPlugHashes(socketIndex).length).where((l) => l > 0);
-    if (plugs.length == 0) return Container();
+    if (plugs.isEmpty) return Container();
     return super.build(context);
   }
 
+  @override
   Widget buildHeader(BuildContext context) {
     return getHeader(
       ManifestText<DestinySocketCategoryDefinition>(
         category.socketCategoryHash,
         uppercase: true,
         textAlign: TextAlign.left,
-        style: TextStyle(fontWeight: FontWeight.bold),
+        style: const TextStyle(fontWeight: FontWeight.bold),
       ),
     );
   }
@@ -73,7 +74,7 @@ class DetailsItemArmorExoticPerkWidgetState<T extends DetailsItemIntrinsicPerkWi
     var plugHash = socketSelectedPlugHash(socketIndex);
     if ((plugs?.length ?? 0) == 0) return null;
     return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Container(width: 64, child: buildPlug(context, socketIndex, plugHash)),
+      SizedBox(width: 64, child: buildPlug(context, socketIndex, plugHash)),
       Container(width: 16),
       Expanded(
           child: Column(
@@ -82,14 +83,14 @@ class DetailsItemArmorExoticPerkWidgetState<T extends DetailsItemIntrinsicPerkWi
           ManifestText<DestinyInventoryItemDefinition>(
             plugHash,
             uppercase: true,
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           Container(height: 8),
           ManifestText<DestinyInventoryItemDefinition>(
             plugHash,
             textExtractor: (def) => def.displayProperties.description,
             softWrap: true,
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300),
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w300),
           ),
         ],
       ))
@@ -124,14 +125,14 @@ class DetailsItemArmorExoticPerkWidgetState<T extends DetailsItemIntrinsicPerkWi
 
     return Container(
         key: Key("plug_${socketIndex}_$plugItemHash"),
-        padding: EdgeInsets.all(0),
+        padding: const EdgeInsets.all(0),
         child: AspectRatio(
             aspectRatio: 1,
             child: MaterialButton(
               shape: intrinsic && !isExotic
                   ? RoundedRectangleBorder(borderRadius: BorderRadius.circular(4), side: borderSide)
                   : CircleBorder(side: borderSide),
-              padding: EdgeInsets.all(0),
+              padding: const EdgeInsets.all(0),
               color: bgColor,
               child: ManifestImageWidget<DestinyInventoryItemDefinition>(plugItemHash),
               onPressed: () {

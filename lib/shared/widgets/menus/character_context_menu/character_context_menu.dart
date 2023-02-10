@@ -12,7 +12,7 @@ class CharacterContextMenu extends BaseOverlayWidget {
   final List<DestinyCharacterInfo?> characters;
   final CustomTabController charactersTabController;
 
-  CharacterContextMenu(this.characters, this.charactersTabController,
+  const CharacterContextMenu(this.characters, this.charactersTabController,
       {required RenderBox sourceRenderBox, required void Function() onClose})
       : super(sourceRenderBox: sourceRenderBox, onClose: onClose);
 
@@ -30,7 +30,7 @@ class CharacterContextMenu extends BaseOverlayWidget {
         Positioned(
             bottom: sourceBottom + kToolbarHeight,
             right: sourceRight,
-            child: Container(padding: EdgeInsets.all(8), child: buildMenuItems(context))),
+            child: Container(padding: const EdgeInsets.all(8), child: buildMenuItems(context))),
         Positioned(
             left: sourceLeft,
             height: kToolbarHeight,
@@ -50,9 +50,9 @@ class CharacterContextMenu extends BaseOverlayWidget {
       children: [
         buildAchievableAverage(context),
         buildCurrentAverage(context),
-        Text('non exotic maxPower'),
+        const Text('non exotic maxPower'),
         buildMaxPowerNonExoticLoadoutItems(context),
-        Text('maxPower'),
+        const Text('maxPower'),
         buildMaxPowerLoadoutItems(context),
         buildCharacterSelect(context),
       ].whereType<Widget>().toList(),
@@ -81,7 +81,7 @@ class CharacterContextMenu extends BaseOverlayWidget {
     if (loadout == null) return null;
     return Row(
         children: loadout.values
-            .map((e) => Container(
+            .map((e) => SizedBox(
                   width: 64,
                   height: 64,
                   child: InventoryItemWidget(
@@ -100,7 +100,7 @@ class CharacterContextMenu extends BaseOverlayWidget {
     if (loadout == null) return null;
     return Row(
         children: loadout.values
-            .map((e) => Container(
+            .map((e) => SizedBox(
                   width: 64,
                   height: 64,
                   child: InventoryItemWidget(

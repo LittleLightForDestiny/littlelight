@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
-import 'package:little_light/shared/widgets/animations/ping_pong_animation.dart';
 import 'package:little_light/shared/widgets/animations/single_run_animation.dart';
 
 abstract class BaseOverlayWidget extends StatelessWidget {
@@ -32,7 +31,7 @@ abstract class BaseOverlayWidget extends StatelessWidget {
         (controller) => AnimatedBuilder(
             animation: controller,
             builder: (context, child) =>
-                ClipOval(child: child, clipper: _OvalClipper(Rect.lerp(rect, fullsizeMaskRect, controller.value)!)),
+                ClipOval(clipper: _OvalClipper(Rect.lerp(rect, fullsizeMaskRect, controller.value)!), child: child),
             child: Material(
               color: Colors.transparent,
               child: Stack(
@@ -51,7 +50,7 @@ abstract class BaseOverlayWidget extends StatelessWidget {
                 ],
               ),
             )),
-        duration: Duration(milliseconds: 700),
+        duration: const Duration(milliseconds: 700),
       );
     });
   }
