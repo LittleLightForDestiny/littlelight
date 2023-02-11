@@ -117,7 +117,7 @@ class BungieApiService with AuthConsumer, AppConfigConsumer {
     return response.response;
   }
 
-  Future<int?> pullFromPostMaster(int itemHash, int stackSize, String itemId, String characterId) async {
+  Future<int?> pullFromPostMaster(int itemHash, int stackSize, String? itemId, String characterId) async {
     BungieNetToken? token = await auth.getCurrentToken();
     GroupUserInfoCard? membership = await auth.getMembership();
     final membershipType = membership?.membershipType;

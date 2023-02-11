@@ -23,6 +23,13 @@ import 'package:provider/provider.dart';
 const _refreshDelay = Duration(seconds: 30);
 const _maxConcurrentTransfers = 5;
 
+class _PutBackTransfer {
+  final DestinyItemInfo item;
+  final TransferDestination destination;
+
+  _PutBackTransfer(this.item, this.destination);
+}
+
 class _QueuedTransfer {
   bool _started = false;
   bool get started => _started;
@@ -320,6 +327,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     _QueuedTransfer? transfer,
     bool shouldEquip = false,
   }) async {
+    final itemsToPutBack = <_PutBackTransfer>[];
     final item = itemInfo.item;
     final itemHash = item.itemHash;
     final itemInstanceId = item.itemInstanceId;
@@ -353,7 +361,15 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
           break;
         } on BungieApiException catch (e) {
           if (e.errorCode == PlatformErrorCodes.DestinyNoRoomInDestination && shouldUseAutoTransfer && tries < 3) {
-            await _makeRoomOnCharacter(sourceCharacterId, itemHash);
+            final item = await _makeRoomOnCharacter(sourceCharacterId, itemHash, originalNotification: notification);
+            if (item != null && destination.characterId != sourceCharacterId) {
+              final character = _profileBloc.getCharacterById(sourceCharacterId);
+              final transferDestination = TransferDestination(
+                TransferDestinationType.character,
+                character: character,
+              );
+              itemsToPutBack.add(_PutBackTransfer(item, transferDestination));
+            }
             continue;
           }
           notification?.error(_context.getTransferErrorMessage(e));
@@ -456,6 +472,9 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     }
     notification?.success();
     print('done');
+    for (final item in itemsToPutBack) {
+      await _addTransferToQueue(item.item, item.destination);
+    }
   }
 
   Future<void> _transferUninstanced(

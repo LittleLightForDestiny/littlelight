@@ -476,11 +476,7 @@ class ProfileBloc extends ChangeNotifier
     final characterId = itemInfo.characterId;
     if (itemHash == null) throw 'TODO: specific exception';
     if (characterId == null) throw 'TODO: specific exception';
-    await Future.delayed(Duration(milliseconds: 500 + Random().nextInt(2000)));
-    final shouldThrow = Random().nextInt(10) > 5;
-    if (shouldThrow) {
-      throw BungieApiException.fromJson({"message": "random error"}, 500);
-    }
+    await bungieAPI.pullFromPostMaster(itemHash, stackSize, itemInstanceId, characterId);
     if (itemInstanceId != null) {
       await _updateInstancedItemLocation(itemInfo, false, characterId);
     } else {
