@@ -6,7 +6,6 @@ import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
 import 'package:little_light/core/blocs/selection/selection.bloc.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
-import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/shared/widgets/selection/selected_item_instance.widget.dart';
 import 'package:little_light/shared/widgets/selection/selected_item_thumb.widget.dart';
 import 'package:little_light/shared/widgets/transfer_destinations/stack_transfer.widget.dart';
@@ -182,10 +181,12 @@ class SelectedItemsWidget extends StatelessWidget {
           final items = selectionBloc(context).selectedItems;
           if (type == TransferActionType.Transfer && items.length > 1) {
             inventoryBloc(context).transferMultiple(items, destination);
+            selectionBloc(context).clear();
             return;
           }
           if (type == TransferActionType.Transfer) {
             inventoryBloc(context).transfer(items.first, destination);
+            selectionBloc(context).clear();
             return;
           }
           if (type == TransferActionType.Equip && items.length > 1) {
@@ -193,6 +194,7 @@ class SelectedItemsWidget extends StatelessWidget {
           }
           if (type == TransferActionType.Equip) {
             inventoryBloc(context).equip(items.first, destination);
+            selectionBloc(context).clear();
             return;
           }
         },
@@ -210,6 +212,7 @@ class SelectedItemsWidget extends StatelessWidget {
           onTransferPressed: (stackSize, destination) {
             final items = selectionBloc(context).selectedItems;
             inventoryBloc(context).transfer(items.first, destination, stackSize: stackSize);
+            selectionBloc(context).clear();
           },
           transferDestinations: selectionState(context).transferDestinations,
         ));
