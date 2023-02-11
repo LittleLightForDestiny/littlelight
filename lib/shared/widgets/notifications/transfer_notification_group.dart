@@ -25,6 +25,10 @@ class TransferNotificationGroup extends StatelessWidget {
       padding: const EdgeInsets.all(8),
       child: Wrap(
           runAlignment: WrapAlignment.end,
+          crossAxisAlignment: WrapCrossAlignment.end,
+          alignment: WrapAlignment.end,
+          spacing: 4,
+          runSpacing: 4,
           children: queued
               .map((notification) => QueuedTransferNotificationWidget(
                     notification,

@@ -2,13 +2,13 @@ import 'package:bungie_api/destiny2.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/inventory/inventory.bloc.dart';
-import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
 import 'package:little_light/modules/loadouts/blocs/loadouts.bloc.dart';
 import 'package:little_light/modules/loadouts/pages/equip/equip_loadout.page_route.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/core/blocs/profile/profile.consumer.dart';
+import 'package:little_light/shared/models/transfer_destination.dart';
 import 'package:provider/provider.dart';
 
 const _genericEquippable = [
@@ -39,8 +39,8 @@ class EquipLoadoutBloc extends ChangeNotifier with ManifestConsumer, ProfileCons
   Map<DestinyClass, List<LoadoutIndexItem?>>? _equippableItems;
   List<LoadoutIndexItem>? _unequippableItems;
 
-  List<DestinyCharacterInfo>? _equipCharacters;
-  List<DestinyCharacterInfo?>? _transferCharacters;
+  List<TransferDestination>? _equipCharacters;
+  List<TransferDestination>? _transferCharacters;
 
   String get loadoutName => _loadout?.name ?? "";
 
@@ -65,7 +65,12 @@ class EquipLoadoutBloc extends ChangeNotifier with ManifestConsumer, ProfileCons
     _loadout = loadout;
     _equippableItems = _getEquippableItems(loadout);
     _unequippableItems = _getUnequippableItems(loadout);
-    final characters = profile.characters;
+    final characters = profile.characters
+        ?.map((e) => TransferDestination(
+              TransferDestinationType.character,
+              character: e,
+            ))
+        .toList();
     if (characters == null) return;
     _equipCharacters = _getEquipCharacters(loadout, characters);
     _transferCharacters = _getTransferCharacters(loadout, characters);
@@ -109,32 +114,32 @@ class EquipLoadoutBloc extends ChangeNotifier with ManifestConsumer, ProfileCons
     return loadout.slots.values.map((s) => s.unequipped).fold<List<LoadoutIndexItem>>([], (pv, v) => pv + v);
   }
 
-  List<DestinyCharacterInfo> _getEquipCharacters(LoadoutItemIndex loadout, List<DestinyCharacterInfo> characters) {
+  List<TransferDestination> _getEquipCharacters(LoadoutItemIndex loadout, List<TransferDestination> characters) {
     return characters;
   }
 
-  List<DestinyCharacterInfo?> _getTransferCharacters(LoadoutItemIndex loadout, List<DestinyCharacterInfo> characters) {
-    List<DestinyCharacterInfo?> chars = characters;
-    return chars + [null];
+  List<TransferDestination> _getTransferCharacters(LoadoutItemIndex loadout, List<TransferDestination> characters) {
+    List<TransferDestination> chars = characters;
+    return chars + [TransferDestination(TransferDestinationType.vault)];
   }
 
   Map<DestinyClass, List<LoadoutIndexItem?>>? get equippableItems => _equippableItems;
   List<LoadoutIndexItem>? get unequippableItems => _unequippableItems;
 
-  List<DestinyCharacterInfo>? get equipCharacters => _equipCharacters;
-  List<DestinyCharacterInfo?>? get transferCharacters => _transferCharacters;
+  List<TransferDestination>? get equipCharacters => _equipCharacters;
+  List<TransferDestination>? get transferCharacters => _transferCharacters;
 
-  void equipLoadout(DestinyCharacterComponent? character) {
+  void equipLoadout(TransferDestination character) {
     final loadout = _loadout;
     if (loadout == null) return;
-    _inventoryBloc.equipLoadout(loadout, character?.characterId);
+    _inventoryBloc.equipLoadout(loadout, character.characterId);
     Navigator.of(context).pop();
   }
 
-  void transferLoadout(DestinyCharacterComponent? character) {
+  void transferLoadout(TransferDestination character) {
     final loadout = _loadout;
     if (loadout == null) return;
-    _inventoryBloc.transferLoadout(loadout, character?.characterId);
+    _inventoryBloc.transferLoadout(loadout, character.characterId);
     Navigator.of(context).pop();
   }
 }

@@ -1,16 +1,14 @@
-import 'package:bungie_api/models/destiny_character_component.dart';
-import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
-import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
-import 'package:little_light/core/theme/littlelight.theme.dart';
+import 'package:little_light/shared/models/transfer_destination.dart';
+import 'package:little_light/shared/widgets/character/character_icon.widget.dart';
+import 'package:little_light/shared/widgets/character/profile_icon.widget.dart';
+import 'package:little_light/shared/widgets/character/vault_icon.widget.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
-import 'package:little_light/widgets/common/manifest_image.widget.dart';
 
 enum TransferActionType {
   Transfer,
   Equip,
-  Unequip,
 }
 
 enum _Side {
@@ -47,30 +45,26 @@ extension on _Side {
   }
 }
 
-typedef OnTransferAction = Function(TransferActionType type, DestinyCharacterComponent? character);
+typedef OnTransferAction = Function(TransferActionType type, TransferDestination character);
 
 class TransferDestinationsWidget extends StatelessWidget {
-  final List<DestinyCharacterInfo?>? transferCharacters;
-  final List<DestinyCharacterInfo?>? equipCharacters;
-  final List<DestinyCharacterInfo?>? unequipCharacters;
+  final List<TransferDestination>? transferDestinations;
+  final List<TransferDestination>? equipDestinations;
   final OnTransferAction? onAction;
 
   const TransferDestinationsWidget({
-    this.transferCharacters,
-    this.equipCharacters,
-    this.unequipCharacters,
+    this.transferDestinations,
+    this.equipDestinations,
     this.onAction,
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final equip = equipCharacters;
-    final unequip = unequipCharacters;
-    final transfer = transferCharacters;
+    final equip = equipDestinations;
+    final transfer = transferDestinations;
     final blocks = [
       if (equip?.isNotEmpty ?? false) TransferActionType.Equip,
-      if (unequip?.isNotEmpty ?? false) TransferActionType.Unequip,
       if (transfer?.isNotEmpty ?? false) TransferActionType.Transfer,
     ];
     if (blocks.isEmpty) return Container();
@@ -152,21 +146,15 @@ class TransferDestinationsWidget extends StatelessWidget {
         return Text(
           "Equip".translate(context).toUpperCase(),
         );
-      case TransferActionType.Unequip:
-        return Text(
-          "Unequip".translate(context).toUpperCase(),
-        );
     }
   }
 
-  List<DestinyCharacterInfo?>? characters(TransferActionType type) {
+  List<TransferDestination>? characters(TransferActionType type) {
     switch (type) {
       case TransferActionType.Transfer:
-        return transferCharacters;
+        return transferDestinations;
       case TransferActionType.Equip:
-        return equipCharacters;
-      case TransferActionType.Unequip:
-        return unequipCharacters;
+        return equipDestinations;
     }
   }
 
@@ -174,7 +162,7 @@ class TransferDestinationsWidget extends StatelessWidget {
     BuildContext context, {
     required TransferActionType action,
     required _Side side,
-    required List<DestinyCharacterInfo?> characters,
+    required List<TransferDestination> characters,
   }) {
     return Column(
       crossAxisAlignment: side.crossAxisAlignment,
@@ -188,29 +176,40 @@ class TransferDestinationsWidget extends StatelessWidget {
           mainAxisAlignment: side.mainAxisAlignment,
           children: characters //
               .map((c) => buildCharacterIcon(context, c, action))
+              .whereType<Widget>()
               .toList(),
         ),
       ],
     );
   }
 
-  Widget buildCharacterIcon(BuildContext context, DestinyCharacterInfo? character, TransferActionType action) {
-    if (character == null) {
+  Widget? buildCharacterIcon(BuildContext context, TransferDestination destination, TransferActionType action) {
+    if (destination.type == TransferDestinationType.vault) {
       return buildCharacterContainer(
         context,
-        Image.asset("assets/imgs/vault-icon.jpg"),
+        VaultIconWidget(borderWidth: .5),
         action,
-        character,
+        destination,
       );
     }
 
+    if (destination.type == TransferDestinationType.profile) {
+      return buildCharacterContainer(
+        context,
+        ProfileIconWidget(borderWidth: .5),
+        action,
+        destination,
+      );
+    }
+
+    final character = destination.character;
+    if (character == null) return null;
+
     return buildCharacterContainer(
       context,
-      ManifestImageWidget<DestinyInventoryItemDefinition>(
-        character.character.emblemHash,
-      ),
+      CharacterIconWidget(character),
       action,
-      character,
+      destination,
     );
   }
 
@@ -218,29 +217,20 @@ class TransferDestinationsWidget extends StatelessWidget {
     BuildContext context,
     Widget child,
     TransferActionType type,
-    DestinyCharacterInfo? character,
+    TransferDestination destination,
   ) {
     return Container(
       padding: const EdgeInsets.all(4),
       child: Stack(
         children: [
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: LittleLightTheme.of(context).onSurfaceLayers.layer1.withOpacity(.7),
-              ),
-            ),
-            child: child,
-          ),
+          SizedBox(width: 48, height: 48, child: child),
           Positioned.fill(
             child: Material(
               color: Colors.transparent,
               child: InkWell(
                 onTap: () => onAction?.call(
                   type,
-                  character?.character,
+                  destination,
                 ),
               ),
             ),

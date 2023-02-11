@@ -1,21 +1,22 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
-import 'package:little_light/core/blocs/language/language.consumer.dart';
-import 'package:little_light/shared/widgets/character/profile_icon.widget.dart';
-import 'package:little_light/shared/widgets/character/vault_icon.widget.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
+import 'package:little_light/shared/models/transfer_destination.dart';
 
-const _iconSize = 24.0;
+import 'transfer_destinations.widget.dart';
 
-typedef OnTransferPressed = void Function(int profileCount, int vaultCount);
+typedef OnTransferPressed = void Function(int selectedCount, TransferDestination destination);
 
 class StackTransferWidget extends StatefulWidget {
-  final int initialProfileCounts;
-  final int initialVaultCounts;
+  final int total;
   final OnTransferPressed onTransferPressed;
+  final List<TransferDestination> transferDestinations;
   const StackTransferWidget({
     Key? key,
-    required this.initialProfileCounts,
-    required this.initialVaultCounts,
+    required this.total,
     required this.onTransferPressed,
+    required this.transferDestinations,
   }) : super(key: key);
 
   @override
@@ -24,23 +25,29 @@ class StackTransferWidget extends StatefulWidget {
 
 class _StackTransferWidgetState extends State<StackTransferWidget> {
   double sliderValue = 0;
-  int profileCount = 0;
-  int vaultCount = 0;
+  int selectedCount = 0;
   int total = 0;
 
   @override
   void initState() {
     super.initState();
-    profileCount = widget.initialProfileCounts;
-    vaultCount = widget.initialVaultCounts;
-    total = widget.initialProfileCounts + widget.initialVaultCounts;
-    sliderValue = vaultCount / total;
+    selectedCount = widget.total;
+    total = widget.total;
+    sliderValue = selectedCount / total;
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    selectedCount = min(selectedCount, widget.total);
+    total = widget.total;
+    sliderValue = selectedCount / total;
+    setState(() {});
   }
 
   void updateValues(double value) {
     sliderValue = value;
-    vaultCount = (value * total).ceil();
-    profileCount = total - vaultCount;
+    selectedCount = 1 + (value * (total - 1)).ceil();
     setState(() {});
   }
 
@@ -53,7 +60,7 @@ class _StackTransferWidgetState extends State<StackTransferWidget> {
         children: [
           buildSlider(context),
           buildCounts(context),
-          buildTransferButton(context),
+          buildTransferDestinations(context),
         ],
       ),
     );
@@ -61,11 +68,6 @@ class _StackTransferWidgetState extends State<StackTransferWidget> {
 
   Widget buildSlider(BuildContext context) => Row(
         children: [
-          const SizedBox(
-            width: _iconSize,
-            height: _iconSize,
-            child: ProfileIconWidget(borderWidth: .5),
-          ),
           Expanded(
               child: Container(
             child: Slider(
@@ -74,32 +76,25 @@ class _StackTransferWidgetState extends State<StackTransferWidget> {
               divisions: total,
             ),
           )),
-          const SizedBox(
-            width: _iconSize,
-            height: _iconSize,
-            child: VaultIconWidget(borderWidth: 0.5),
-          ),
         ],
       );
 
-  Widget buildCounts(BuildContext context) => Row(
-        children: [
-          Container(
-            child: Text("$profileCount"),
-          ),
-          Expanded(child: Container()),
-          Container(
-            child: Text("$vaultCount"),
-          ),
-        ],
+  Widget buildCounts(BuildContext context) => AnimatedContainer(
+        padding: EdgeInsets.symmetric(horizontal: 16),
+        duration: Duration(milliseconds: 150),
+        alignment: Alignment((selectedCount / total) * 2 - 1, 0),
+        child: Text("$selectedCount"),
       );
-  Widget buildTransferButton(BuildContext context) => Container(
-        padding: const EdgeInsets.only(top: 16),
-        child: ElevatedButton(
-          child: Text("Transfer".translate(context)),
-          onPressed: () {
-            widget.onTransferPressed(profileCount, vaultCount);
-          },
-        ),
-      );
+
+  Widget buildTransferDestinations(BuildContext context) {
+    return Container(
+      color: context.theme.surfaceLayers.layer2,
+      child: TransferDestinationsWidget(
+        transferDestinations: widget.transferDestinations,
+        onAction: (type, destination) {
+          widget.onTransferPressed(selectedCount, destination);
+        },
+      ),
+    );
+  }
 }

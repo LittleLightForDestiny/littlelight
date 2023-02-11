@@ -123,7 +123,7 @@ class SelectedItemsWidget extends StatelessWidget {
               final hash = item.item.itemHash;
               final id = item.item.itemInstanceId;
               if (hash == null) return;
-              selectionBloc(context).unselectItem(hash, id);
+              selectionBloc(context).unselectItem(hash, instanceId: id, stackIndex: item.stackIndex);
             }),
           ),
         ),
@@ -145,7 +145,7 @@ class SelectedItemsWidget extends StatelessWidget {
               final hash = item.item.itemHash;
               final id = item.item.itemInstanceId;
               if (hash == null) return;
-              selectionBloc(context).unselectItem(hash, id);
+              selectionBloc(context).unselectItem(hash, instanceId: id, stackIndex: item.stackIndex);
             }),
           ),
         ),
@@ -176,23 +176,23 @@ class SelectedItemsWidget extends StatelessWidget {
     return Container(
       color: context.theme.surfaceLayers.layer2,
       child: TransferDestinationsWidget(
-        transferCharacters: selectionState(context).transferDestinations,
-        equipCharacters: selectionState(context).equipDestinations,
-        onAction: (type, character) {
+        transferDestinations: selectionState(context).transferDestinations,
+        equipDestinations: selectionState(context).equipDestinations,
+        onAction: (type, destination) {
           final items = selectionBloc(context).selectedItems;
           if (type == TransferActionType.Transfer && items.length > 1) {
-            inventoryBloc(context).transferMultiple(items, character?.characterId);
+            inventoryBloc(context).transferMultiple(items, destination);
             return;
           }
           if (type == TransferActionType.Transfer) {
-            inventoryBloc(context).transfer(items.first, character?.characterId);
+            inventoryBloc(context).transfer(items.first, destination);
             return;
           }
           if (type == TransferActionType.Equip && items.length > 1) {
             return;
           }
           if (type == TransferActionType.Equip) {
-            inventoryBloc(context).equip(items.first, character?.characterId);
+            inventoryBloc(context).equip(items.first, destination);
             return;
           }
         },
@@ -202,25 +202,16 @@ class SelectedItemsWidget extends StatelessWidget {
 
   Widget buildStackTransfer(BuildContext context, DestinyItemInfo item) {
     if (selectionState(context).transferDestinations.isEmpty) return Container();
-    final duplicates = item.duplicates;
-    if (duplicates == null) return buildTransferDestinations(context);
-    int profileCounts = 0;
-    int vaultCounts = 0;
-    for (final dup in duplicates) {
-      final q = dup.item.quantity ?? 0;
-      final isInVault = dup.item.bucketHash == InventoryBucket.general;
-      if (isInVault) {
-        vaultCounts += q;
-      } else {
-        profileCounts += q;
-      }
-    }
     return Container(
         color: context.theme.surfaceLayers.layer2,
+        key: Key("stack-transfer-${item.item.itemHash}"),
         child: StackTransferWidget(
-          initialProfileCounts: profileCounts,
-          initialVaultCounts: vaultCounts,
-          onTransferPressed: (profileCount, vaultCount) {},
+          total: item.item.quantity ?? 1,
+          onTransferPressed: (stackSize, destination) {
+            final items = selectionBloc(context).selectedItems;
+            inventoryBloc(context).transfer(items.first, destination, stackSize: stackSize);
+          },
+          transferDestinations: selectionState(context).transferDestinations,
         ));
   }
 }

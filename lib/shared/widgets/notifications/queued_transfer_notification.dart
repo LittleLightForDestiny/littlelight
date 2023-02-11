@@ -15,7 +15,6 @@ class QueuedTransferNotificationWidget extends StatelessWidget {
     return Container(
       width: 36,
       height: 36,
-      margin: const EdgeInsets.only(left: 4),
       child: DefinitionProviderWidget<DestinyInventoryItemDefinition>(
         hash,
         (def) => InventoryItemIcon(

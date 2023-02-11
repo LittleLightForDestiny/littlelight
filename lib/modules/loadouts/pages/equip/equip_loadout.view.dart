@@ -206,8 +206,8 @@ class EquipLoadoutView extends StatelessWidget with ProfileConsumer {
         child: Container(
           constraints: const BoxConstraints(maxWidth: 600),
           child: TransferDestinationsWidget(
-              equipCharacters: equip,
-              transferCharacters: transfer,
+              equipDestinations: equip,
+              transferDestinations: transfer,
               onAction: (action, character) {
                 switch (action) {
                   case TransferActionType.Transfer:
@@ -215,8 +215,6 @@ class EquipLoadoutView extends StatelessWidget with ProfileConsumer {
                     return;
                   case TransferActionType.Equip:
                     _bloc(context).equipLoadout(character);
-                    return;
-                  case TransferActionType.Unequip:
                     return;
                 }
               }),

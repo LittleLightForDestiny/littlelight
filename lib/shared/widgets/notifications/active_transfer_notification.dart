@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/notifications/notification_actions.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
+import 'package:little_light/shared/models/transfer_destination.dart';
 import 'package:little_light/shared/widgets/character/character_icon.widget.dart';
 import 'package:little_light/shared/widgets/character/postmaster_icon.widget.dart';
+import 'package:little_light/shared/widgets/character/profile_icon.widget.dart';
 import 'package:little_light/shared/widgets/character/vault_icon.widget.dart';
 import 'package:little_light/shared/widgets/inventory_item/inventory_item_icon.dart';
 import 'package:little_light/shared/widgets/loading/default_loading_shimmer.dart';
@@ -56,7 +58,7 @@ class ActiveTransferNotificationWidget extends StatelessWidget {
               color: notification.hasError ? context.theme.errorLayers.layer2 : context.theme.surfaceLayers.layer2,
               borderRadius: BorderRadius.circular(8),
             ),
-            child: buildNotificationContent(context),
+            child: buildNotificationContent(context, notification),
           ),
         ],
       ),
@@ -65,15 +67,14 @@ class ActiveTransferNotificationWidget extends StatelessWidget {
 
   Widget buildAnimationContainers(BuildContext context, Widget child) {
     final hash = notification.item.item.itemHash;
-    final char = notification.destinationCharacter;
+    final char = notification.destination;
     return AnimatedSize(
       key: Key("animated size $hash $char"),
       duration: _animationDuration,
       child: notification.dismissAnimationFinished
           ? Container()
           : AnimatedSlide(
-              key: Key(
-                  "animated_transfer_slide_${notification.item.item.itemHash}_${notification.destinationCharacter}"),
+              key: Key("animated_transfer_slide_${notification.item.item.itemHash}_${notification.destination}"),
               duration: _animationDuration,
               curve: accelerateEasing,
               offset: Offset(notification.shouldPlayDismissAnimation ? 1.5 : 0, 0),
@@ -82,7 +83,7 @@ class ActiveTransferNotificationWidget extends StatelessWidget {
     );
   }
 
-  Widget buildNotificationContent(BuildContext context) {
+  Widget buildNotificationContent(BuildContext context, SingleTransferAction notification) {
     final hash = notification.item.item.itemHash;
     if (hash == null) return Container();
     return Column(
@@ -91,7 +92,7 @@ class ActiveTransferNotificationWidget extends StatelessWidget {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            buildTransferPath(context),
+            buildTransferPath(context, notification),
             Container(width: 8),
             SizedBox(
               width: 32,
@@ -120,6 +121,7 @@ class ActiveTransferNotificationWidget extends StatelessWidget {
             )
           ],
         ),
+        if (notification.sideEffects.isNotEmpty) buildSideEffects(context, notification),
         if (notification.hasError)
           Container(
             margin: const EdgeInsets.only(top: 8),
@@ -160,9 +162,9 @@ class ActiveTransferNotificationWidget extends StatelessWidget {
     ));
   }
 
-  Widget buildTransferPath(BuildContext context) {
-    final sourceCharacter = notification.sourceCharacter;
-    final destinationCharacter = notification.destinationCharacter;
+  Widget buildTransferPath(BuildContext context, SingleTransferAction notification) {
+    final source = notification.source;
+    final destination = notification.destination;
     return Row(
       children: [
         buildTransferStepEntity(
@@ -170,43 +172,68 @@ class ActiveTransferNotificationWidget extends StatelessWidget {
             const PostmasterIconWidget(
               borderWidth: .5,
             ),
+            notification: notification,
             requiredSteps: {TransferSteps.PullFromPostmaster},
             progressStep: TransferSteps.PullFromPostmaster),
-        buildTransferArrow(context, step: TransferSteps.PullFromPostmaster),
-        buildTransferStepEntity(context, buildEquipIcon(context),
-            requiredSteps: {TransferSteps.Unequip}, progressStep: TransferSteps.Unequip),
-        buildTransferArrow(context, step: TransferSteps.Unequip),
-        if (sourceCharacter != null)
-          buildTransferStepEntity(
-              context,
-              CharacterIconWidget(
-                sourceCharacter,
-                borderWidth: .5,
-              ),
-              requiredSteps: {TransferSteps.PullFromPostmaster, TransferSteps.MoveToVault},
-              progressStep: TransferSteps.MoveToVault),
-        buildTransferArrow(context, step: TransferSteps.MoveToVault),
+        buildTransferArrow(
+          context,
+          step: TransferSteps.PullFromPostmaster,
+          notification: notification,
+        ),
         buildTransferStepEntity(
           context,
-          const VaultIconWidget(),
-          requiredSteps: {
-            TransferSteps.MoveToVault,
-            TransferSteps.MoveToCharacter,
-          },
+          buildEquipIcon(context),
+          notification: notification,
+          requiredSteps: {TransferSteps.Unequip},
+          progressStep: TransferSteps.Unequip,
+        ),
+        buildTransferArrow(
+          context,
+          step: TransferSteps.Unequip,
+          notification: notification,
+        ),
+        buildTransferStepEntity(
+          context,
+          buildTransferStepIcon(source),
+          notification: notification,
+          requiredSteps: {TransferSteps.PullFromPostmaster, TransferSteps.MoveToVault},
+          progressStep: TransferSteps.MoveToVault,
+        ),
+        buildTransferArrow(
+          context,
+          step: TransferSteps.MoveToVault,
+          notification: notification,
+        ),
+        buildTransferStepEntity(
+          context,
+          buildTransferStepIcon(TransferDestination.vault()),
+          notification: notification,
+          requiredSteps: {TransferSteps.MoveToVault, TransferSteps.MoveToCharacter},
           progressStep: TransferSteps.MoveToCharacter,
         ),
-        buildTransferArrow(context, step: TransferSteps.MoveToCharacter),
-        if (destinationCharacter != null)
-          buildTransferStepEntity(
-              context,
-              CharacterIconWidget(
-                destinationCharacter,
-                borderWidth: .5,
-              ),
-              requiredSteps: {TransferSteps.MoveToCharacter, TransferSteps.EquipOnCharacter}),
-        buildTransferArrow(context, step: TransferSteps.EquipOnCharacter),
-        buildTransferStepEntity(context, buildEquipIcon(context),
-            requiredSteps: {TransferSteps.EquipOnCharacter}, progressStep: TransferSteps.EquipOnCharacter),
+        buildTransferArrow(
+          context,
+          step: TransferSteps.MoveToCharacter,
+          notification: notification,
+        ),
+        buildTransferStepEntity(
+          context,
+          buildTransferStepIcon(destination),
+          notification: notification,
+          requiredSteps: {TransferSteps.MoveToCharacter, TransferSteps.EquipOnCharacter},
+        ),
+        buildTransferArrow(
+          context,
+          step: TransferSteps.EquipOnCharacter,
+          notification: notification,
+        ),
+        buildTransferStepEntity(
+          context,
+          buildEquipIcon(context),
+          notification: notification,
+          requiredSteps: {TransferSteps.EquipOnCharacter},
+          progressStep: TransferSteps.EquipOnCharacter,
+        ),
       ].whereType<Widget>().toList(),
     );
   }
@@ -214,6 +241,7 @@ class ActiveTransferNotificationWidget extends StatelessWidget {
   Widget? buildTransferStepEntity(
     BuildContext context,
     Widget widget, {
+    required SingleTransferAction notification,
     Set<TransferSteps> requiredSteps = const {},
     TransferSteps? progressStep,
   }) {
@@ -236,6 +264,7 @@ class ActiveTransferNotificationWidget extends StatelessWidget {
   Widget? buildTransferArrow(
     BuildContext context, {
     TransferSteps step = TransferSteps.PullFromPostmaster,
+    required SingleTransferAction notification,
   }) {
     if (!notification.hasSteps({step})) return null;
     final progressStepDiff = notification.currentStep?.diff(step) ?? -1;
@@ -271,4 +300,30 @@ class ActiveTransferNotificationWidget extends StatelessWidget {
         _armorIconPresentationNodeHash,
         color: context.theme.onSurfaceLayers.layer1,
       );
+
+  Widget buildTransferStepIcon(TransferDestination step) {
+    switch (step.type) {
+      case TransferDestinationType.character:
+        final character = step.character;
+        if (character == null) return Container();
+        return CharacterIconWidget(character, borderWidth: .5);
+
+      case TransferDestinationType.vault:
+        return VaultIconWidget(borderWidth: .5);
+
+      case TransferDestinationType.profile:
+        return ProfileIconWidget(borderWidth: .5);
+    }
+  }
+
+  Widget buildSideEffects(BuildContext context, SingleTransferAction notification) {
+    return Column(
+      children: notification.sideEffects
+          .map((se) => Container(
+                padding: EdgeInsets.only(top: 4),
+                child: buildNotificationContent(context, se),
+              ))
+          .toList(),
+    );
+  }
 }

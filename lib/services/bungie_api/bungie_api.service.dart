@@ -317,7 +317,8 @@ class Client with AuthConsumer, AppConfigConsumer implements HttpClient {
     }
 
     if (response.statusCode != 200) {
-      print(response.statusCode);
+      print("got an error status ${response.statusCode} from API");
+      print("response was: $json");
       throw BungieApiException.fromJson(json, response.statusCode);
     }
 

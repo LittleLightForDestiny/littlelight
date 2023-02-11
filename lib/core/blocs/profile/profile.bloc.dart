@@ -16,8 +16,8 @@ import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/notification/notification.package.dart';
 import 'package:little_light/services/storage/export.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
-import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/shared/utils/sorters/characters/character_sorter.dart';
+import 'package:little_light/utils/item_with_owner.dart';
 
 import 'destiny_character_info.dart';
 
@@ -33,7 +33,7 @@ class _CachedItemsContainer {
   List<DestinyItemInfo> allItems = <DestinyItemInfo>[];
   Map<DestinyClass, Map<int, DestinyItemInfo>> highestPowerItems = {};
 
-  void add(DestinyItemInfo itemInfo) {
+  void add(DestinyItemInfo itemInfo, {bool groupWithSimilarItems = false}) {
     final itemInstanceId = itemInfo.item.itemInstanceId;
     if (itemInstanceId != null) itemsByInstanceId[itemInstanceId] = itemInfo;
 
@@ -42,9 +42,25 @@ class _CachedItemsContainer {
       final items = itemsByHash[itemHash] ??= [];
       items.add(itemInfo);
       itemInfo.duplicates = items;
+      itemInfo.stackIndex = items.indexOf(itemInfo);
     }
 
     allItems.add(itemInfo);
+  }
+
+  void remove(DestinyItemInfo itemInfo) {
+    final itemInstanceId = itemInfo.item.itemInstanceId;
+    if (itemInstanceId != null) itemsByInstanceId.remove(itemInstanceId);
+
+    final byHash = itemsByHash[itemInfo.itemHash];
+    if (byHash != null) {
+      byHash.remove(itemInfo);
+      for (int i = 0; i < byHash.length; i++) {
+        byHash[i].stackIndex = i;
+      }
+    }
+
+    allItems.remove(itemInfo);
   }
 }
 
@@ -465,9 +481,10 @@ class ProfileBloc extends ChangeNotifier
     if (shouldThrow) {
       throw BungieApiException.fromJson({"message": "random error"}, 500);
     }
-    // final result = await bungieAPI.pullFromPostMaster(itemHash, stackSize, itemInstanceId, characterId);
     if (itemInstanceId != null) {
       await _updateInstancedItemLocation(itemInfo, false, characterId);
+    } else {
+      await _updateUninstancedItemLocation(itemInfo, false, stackSize);
     }
   }
 
@@ -478,8 +495,9 @@ class ProfileBloc extends ChangeNotifier
     await bungieAPI.transferItem(itemHash, stackSize, transferToVault, itemInstanceId, characterId);
     if (itemInstanceId != null) {
       await _updateInstancedItemLocation(itemInfo, transferToVault, characterId);
+    } else {
+      await _updateUninstancedItemLocation(itemInfo, transferToVault, stackSize);
     }
-    //TODO: handle non instanced / multi stacked items
   }
 
   Future<void> equipItem(DestinyItemInfo itemInfo) async {
@@ -515,6 +533,83 @@ class ProfileBloc extends ChangeNotifier
     itemInfo.item.location = newLocation;
     itemInfo.item.bucketHash = newBucket;
     itemInfo.characterId = newCharacter;
+    notifyListeners();
+    _lastLocalChange = DateTime.now().toUtc();
+  }
+
+  Future<void> _updateUninstancedItemLocation(
+    DestinyItemInfo itemInfo,
+    bool toVault,
+    int stackSize,
+  ) async {
+    final itemHash = itemInfo.itemHash!;
+    final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(itemHash);
+    final maxStackSize = def?.inventory?.maxStackSize ?? 1;
+    final sourceBucket = itemInfo.bucketHash;
+    final destinationBucket = toVault ? InventoryBucket.general : def?.inventory?.bucketTypeHash;
+    final sourceCharacterId = itemInfo.characterId;
+    final destinationCharacterId = null;
+    final sameHashItems = itemInfo.duplicates ?? [];
+    final sourceStacks = sameHashItems
+        .where(
+          (e) =>
+              e.bucketHash == sourceBucket && //
+              e.characterId == sourceCharacterId,
+        )
+        .toList();
+    final destinationStacks = sameHashItems
+        .where(
+          (e) =>
+              e.bucketHash == destinationBucket && //
+              e.characterId == destinationCharacterId,
+        )
+        .toList();
+    final sourceQuantity = sourceStacks.fold<int>(0, (total, i) => total + i.quantity);
+    final destinationQuantity = destinationStacks.fold<int>(0, (total, i) => total + i.quantity);
+    final resultSourceQuantity = sourceQuantity - stackSize;
+    final resultDestinationQuantity = destinationQuantity + stackSize;
+
+    int remainingSourceQuantity = resultSourceQuantity;
+    for (var i in sourceStacks) {
+      final quantity = min(remainingSourceQuantity, maxStackSize);
+      remainingSourceQuantity -= quantity;
+      if (quantity > 0) {
+        i.quantity = quantity;
+        continue;
+      }
+      _itemCache.remove(i);
+    }
+    while (remainingSourceQuantity > 0) {
+      final quantity = min(remainingSourceQuantity, maxStackSize);
+      remainingSourceQuantity -= quantity;
+      final item = itemInfo.clone();
+      item.quantity = quantity;
+      item.item.bucketHash = sourceBucket;
+      item.characterId = sourceCharacterId;
+      _itemCache.add(item);
+    }
+
+    int remainingDestinationQuantity = resultDestinationQuantity;
+    for (var i in destinationStacks) {
+      final quantity = min(remainingDestinationQuantity, maxStackSize);
+      remainingDestinationQuantity -= quantity;
+      if (quantity > 0) {
+        i.quantity = quantity;
+        continue;
+      }
+      _itemCache.remove(i);
+    }
+
+    while (remainingDestinationQuantity > 0) {
+      final quantity = min(remainingDestinationQuantity, maxStackSize);
+      remainingDestinationQuantity -= quantity;
+      final item = itemInfo.clone();
+      item.quantity = quantity;
+      item.item.bucketHash = destinationBucket;
+      item.characterId = destinationCharacterId;
+      _itemCache.add(item);
+    }
+
     notifyListeners();
     _lastLocalChange = DateTime.now().toUtc();
   }

@@ -18,7 +18,8 @@ class SelectableItemWrapper extends StatelessWidget {
   final double itemMargin;
   final double selectedBorder;
 
-  const SelectableItemWrapper(this.child, {required this.item, this.density, this.itemMargin = 2, this.selectedBorder = 1});
+  const SelectableItemWrapper(this.child,
+      {required this.item, this.density, this.itemMargin = 2, this.selectedBorder = 1});
   @override
   Widget build(BuildContext context) {
     if (density != null) return buildWithDensity(context, density!);
@@ -61,7 +62,9 @@ class SelectableItemWrapper extends StatelessWidget {
   Widget buildSelectedBorder(BuildContext context) {
     final hash = item.item.itemHash;
     if (hash == null) return Container();
-    final isSelected = context.watch<SelectionBloc>().isSelected(hash, item.item.itemInstanceId);
+    final isSelected = context
+        .watch<SelectionBloc>()
+        .isSelected(hash, instanceId: item.item.itemInstanceId, stackIndex: item.stackIndex);
     if (!isSelected) return Container();
     return Container(
       margin: EdgeInsets.all(itemMargin - selectedBorder),
@@ -110,11 +113,11 @@ class SelectableItemWrapper extends StatelessWidget {
     final instanceId = item.item.itemInstanceId;
     if (hash == null) return;
     final selection = context.read<SelectionBloc>();
-    final isSelected = selection.isSelected(hash, instanceId);
+    final isSelected = selection.isSelected(hash, instanceId: instanceId, stackIndex: item.stackIndex);
     if (isSelected) {
-      selection.unselectItem(hash, instanceId);
+      selection.unselectItem(hash, instanceId: instanceId, stackIndex: item.stackIndex);
       return;
     }
-    selection.selectItem(hash, instanceId);
+    selection.selectItem(hash, instanceId: instanceId, stackIndex: item.stackIndex);
   }
 }

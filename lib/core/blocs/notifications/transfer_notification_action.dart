@@ -1,5 +1,5 @@
-import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
+import 'package:little_light/shared/models/transfer_destination.dart';
 
 import 'base_notification_action.dart';
 
@@ -14,8 +14,8 @@ enum TransferSteps {
 }
 
 class SingleTransferAction extends BaseNotificationAction {
-  final DestinyCharacterInfo? sourceCharacter;
-  final DestinyCharacterInfo? destinationCharacter;
+  final TransferDestination source;
+  final TransferDestination destination;
   final DestinyItemInfo item;
   Set<TransferSteps>? _steps;
   TransferSteps? _currentStep;
@@ -24,8 +24,9 @@ class SingleTransferAction extends BaseNotificationAction {
   bool _dismissAnimationFinished = false;
   String? _transferErrorMessage;
   final DateTime _createdAt;
+  final List<SingleTransferAction> _sideEffects = [];
 
-  SingleTransferAction({required this.item, required this.sourceCharacter, required this.destinationCharacter})
+  SingleTransferAction({required this.item, required this.source, required this.destination})
       : _createdAt = DateTime.now();
 
   set currentStep(TransferSteps? step) {
@@ -34,6 +35,8 @@ class SingleTransferAction extends BaseNotificationAction {
   }
 
   TransferSteps? get currentStep => _currentStep;
+
+  List<SingleTransferAction> get sideEffects => _sideEffects;
 
   void createSteps({
     bool isOnPostmaster = false,
@@ -89,5 +92,20 @@ class SingleTransferAction extends BaseNotificationAction {
     notifyListeners();
     await Future.delayed(const Duration(milliseconds: 200));
     dismiss();
+  }
+
+  SingleTransferAction createSideEffect({
+    required DestinyItemInfo item,
+    required TransferDestination source,
+    required TransferDestination destination,
+  }) {
+    final action = SingleTransferAction(item: item, source: source, destination: destination);
+    _sideEffects.add(action);
+    action.addListener(dispatchSideEffects);
+    return action;
+  }
+
+  void dispatchSideEffects() {
+    notifyListeners();
   }
 }

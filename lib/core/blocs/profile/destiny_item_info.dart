@@ -9,6 +9,7 @@ class DestinyItemInfo {
   List<DestinyItemSocketState>? sockets;
   Map<String, DestinyStat>? stats;
   List<DestinyItemInfo>? duplicates;
+  int? stackIndex;
 
   DestinyItemInfo(
     this.item, {
@@ -18,5 +19,23 @@ class DestinyItemInfo {
     this.instanceInfo,
     this.sockets,
     this.stats,
+    this.stackIndex,
   });
+
+  int get quantity => item.quantity ?? 1;
+  void set quantity(int count) => item.quantity = count;
+  int? get itemHash => item.itemHash;
+  int? get bucketHash => item.bucketHash;
+
+  String? get instanceId => item.itemInstanceId;
+
+  DestinyItemInfo clone() {
+    final json = this.item.toJson();
+
+    final item = DestinyItemComponent.fromJson(json);
+    return DestinyItemInfo(
+      item,
+      characterId: characterId,
+    );
+  }
 }
