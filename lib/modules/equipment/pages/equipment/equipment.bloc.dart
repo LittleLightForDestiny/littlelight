@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
+import 'package:little_light/core/blocs/selection/selection.bloc.dart';
 import 'package:little_light/models/game_data.dart';
+import 'package:little_light/modules/search/pages/quick_transfer/quick_transfer.page_route.dart';
+import 'package:little_light/pages/item_details/item_details.page_route.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
@@ -50,12 +53,16 @@ class _EquipmentState {
 }
 
 class EquipmentBloc extends ChangeNotifier with UserSettingsConsumer, ManifestConsumer, LittleLightDataConsumer {
+  final BuildContext _context;
   final ProfileBloc _profileBloc;
+  final SelectionBloc _selectionBloc;
   GameData? _gameData;
 
   _EquipmentState _equipmentState = _EquipmentState();
 
-  EquipmentBloc(BuildContext context) : _profileBloc = context.read<ProfileBloc>() {
+  EquipmentBloc(this._context)
+      : _profileBloc = _context.read<ProfileBloc>(),
+        _selectionBloc = _context.read<SelectionBloc>() {
     _init();
   }
   _init() {
@@ -129,11 +136,45 @@ class EquipmentBloc extends ChangeNotifier with UserSettingsConsumer, ManifestCo
     final allCurrencies = _profileBloc.currencies;
     if (allCurrencies == null) return null;
     final relevant = _gameData?.relevantCurrencies;
-    print(relevant);
     if (relevant == null) return null;
     return relevant
         .map((r) => allCurrencies.firstWhereOrNull((c) => c.itemHash == r))
         .whereType<DestinyItemComponent>()
         .toList();
+  }
+
+  void onItemTap(DestinyItemInfo item) {
+    final hash = item.itemHash;
+    final instanceId = item.instanceId;
+    final stackIndex = item.stackIndex;
+
+    if (hash == null) return;
+
+    if (_selectionBloc.hasSelection || userSettings.tapToSelect) {
+      return _selectionBloc.toggleSelected(
+        hash,
+        instanceId: instanceId,
+        stackIndex: stackIndex,
+      );
+    }
+  }
+
+  void onItemHold(DestinyItemInfo item) {
+    final hash = item.itemHash;
+    final instanceId = item.instanceId;
+    final stackIndex = item.stackIndex;
+    if (hash == null) return;
+    if (userSettings.tapToSelect) {
+      return;
+    }
+    return _selectionBloc.toggleSelected(
+      hash,
+      instanceId: instanceId,
+      stackIndex: stackIndex,
+    );
+  }
+
+  void openSearch(int bucketHash, String characterId) {
+    Navigator.of(_context).push(QuickTransferPageRoute(bucketHash: bucketHash, characterId: characterId));
   }
 }

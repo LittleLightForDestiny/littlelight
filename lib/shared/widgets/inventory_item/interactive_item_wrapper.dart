@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
 import 'package:little_light/core/blocs/selection/selection.bloc.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
+import 'package:little_light/shared/blocs/item_interaction_handler/item_interaction_handler.bloc.dart';
 import 'package:little_light/shared/utils/extensions/inventory_item_data.dart';
 import 'package:little_light/shared/widgets/shapes/diamond_shape.dart';
 import 'package:little_light/shared/widgets/shapes/engram_shape.dart';
@@ -11,14 +12,14 @@ import 'package:provider/provider.dart';
 
 import 'inventory_item.dart';
 
-class SelectableItemWrapper extends StatelessWidget {
+class InteractiveItemWrapper extends StatelessWidget {
   final InventoryItemWidgetDensity? density;
   final DestinyItemInfo item;
   final Widget child;
   final double itemMargin;
   final double selectedBorder;
 
-  const SelectableItemWrapper(this.child,
+  const InteractiveItemWrapper(this.child,
       {required this.item, this.density, this.itemMargin = 2, this.selectedBorder = 1});
   @override
   Widget build(BuildContext context) {
@@ -101,23 +102,13 @@ class SelectableItemWrapper extends StatelessWidget {
     return null;
   }
 
-  void onLongPress(BuildContext context) => toggleSelected(context);
-
-  void onTap(BuildContext context) {
-    final selection = context.read<SelectionBloc>();
-    if (selection.hasSelection) return toggleSelected(context);
+  void onLongPress(BuildContext context) {
+    final interaction = context.read<ItemInteractionHandlerBloc>();
+    interaction.onHold(item);
   }
 
-  void toggleSelected(BuildContext context) {
-    final hash = item.item.itemHash;
-    final instanceId = item.item.itemInstanceId;
-    if (hash == null) return;
-    final selection = context.read<SelectionBloc>();
-    final isSelected = selection.isSelected(hash, instanceId: instanceId, stackIndex: item.stackIndex);
-    if (isSelected) {
-      selection.unselectItem(hash, instanceId: instanceId, stackIndex: item.stackIndex);
-      return;
-    }
-    selection.selectItem(hash, instanceId: instanceId, stackIndex: item.stackIndex);
+  void onTap(BuildContext context) {
+    final interaction = context.read<ItemInteractionHandlerBloc>();
+    interaction.onTap(item);
   }
 }

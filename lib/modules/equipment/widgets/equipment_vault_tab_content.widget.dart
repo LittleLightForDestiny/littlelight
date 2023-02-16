@@ -7,7 +7,7 @@ import 'package:little_light/shared/utils/extensions/bucket_display_type_data.da
 import 'package:little_light/shared/widgets/headers/bucket_header/bucket_header_list_item.widget.dart';
 import 'package:little_light/shared/widgets/inventory_item/empty_item.dart';
 import 'package:little_light/shared/widgets/inventory_item/inventory_item.dart';
-import 'package:little_light/shared/widgets/inventory_item/selectable_item_wrapper.dart';
+import 'package:little_light/shared/widgets/inventory_item/interactive_item_wrapper.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/multisection_scrollview/multisection_scrollview.dart';
 import 'package:little_light/widgets/multisection_scrollview/sliver_section.dart';
@@ -145,7 +145,7 @@ class EquipmentVaultTabContentWidget extends StatelessWidget with ManifestConsum
   }
 
   Widget buildItem(DestinyItemInfo item, InventoryItemWidgetDensity density) {
-    return SelectableItemWrapper(
+    return InteractiveItemWrapper(
       InventoryItemWidget(
         item,
         density: density,

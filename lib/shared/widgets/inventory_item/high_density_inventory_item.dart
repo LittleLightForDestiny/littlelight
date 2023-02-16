@@ -15,6 +15,8 @@ import 'package:little_light/shared/utils/extensions/element_type_data.dart';
 import 'package:little_light/shared/utils/extensions/inventory_item_data.dart';
 import 'package:little_light/shared/utils/extensions/tier_type_data.dart';
 import 'package:little_light/shared/utils/extensions/wishlist_tag_data.dart';
+import 'package:little_light/shared/widgets/character/character_icon.widget.dart';
+import 'package:little_light/shared/widgets/character/postmaster_icon.widget.dart';
 import 'package:little_light/shared/widgets/character/profile_icon.widget.dart';
 import 'package:little_light/shared/widgets/character/vault_icon.widget.dart';
 import 'package:little_light/shared/widgets/shapes/diamond_shape.dart';
@@ -346,18 +348,47 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
   Widget? buildCharacterIcon(BuildContext context, DestinyInventoryItemDefinition definition) {
     if (!showCharacterIcon) return null;
     final characterId = item.characterId;
-    if (characterId != null) {
-      final character = context.watch<ProfileBloc>().getCharacter(characterId);
-      final emblemHash = character?.emblemHash;
-      if (emblemHash == null) return null;
+    final character = context.watch<ProfileBloc>().getCharacterById(characterId);
+    if (character != null) {
+      if (item.bucketHash == InventoryBucket.lostItems) {
+        return Row(
+          children: [
+            Container(
+              margin: const EdgeInsets.only(right: 4),
+              width: _titleBarIconSize,
+              height: _titleBarIconSize,
+              child: PostmasterIconWidget(borderWidth: .5),
+            ),
+            Container(
+              margin: const EdgeInsets.only(right: 4),
+              width: _titleBarIconSize,
+              height: _titleBarIconSize,
+              child: CharacterIconWidget(character, borderWidth: .5),
+            ),
+          ],
+        );
+      }
       return Container(
         margin: const EdgeInsets.only(right: 4),
         width: _titleBarIconSize,
         height: _titleBarIconSize,
-        child: ManifestImageWidget<DestinyInventoryItemDefinition>(emblemHash),
+        child: CharacterIconWidget(character, borderWidth: .5),
       );
     }
-    return null;
+    if (item.bucketHash == InventoryBucket.general) {
+      return Container(
+        margin: const EdgeInsets.only(right: 4),
+        width: _titleBarIconSize,
+        height: _titleBarIconSize,
+        child: VaultIconWidget(borderWidth: .5),
+      );
+    }
+    return Container(
+      margin: const EdgeInsets.only(right: 4),
+      width: _titleBarIconSize,
+      height: _titleBarIconSize,
+      child: ProfileIconWidget(borderWidth: .5),
+    );
   }
 
   Widget? buildHeaderWishlistIcons(BuildContext context, DestinyInventoryItemDefinition definition) {

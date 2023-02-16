@@ -131,7 +131,7 @@ class WishlistsService with StorageConsumer {
 
   Set<WishlistTag> getWishlistBuildTags({
     required int itemHash,
-    required Map<String, List<DestinyItemPlugBase>> reusablePlugs,
+    required Map<String, List<DestinyItemPlugBase>>? reusablePlugs,
   }) {
     final builds = getWishlistBuilds(itemHash: itemHash, reusablePlugs: reusablePlugs);
     final tags = builds.map((e) => e.tags.toList());

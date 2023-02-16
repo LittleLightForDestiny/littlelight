@@ -67,6 +67,15 @@ class SelectionBloc extends ChangeNotifier with ManifestConsumer {
     _internalUpdate();
   }
 
+  void toggleSelected(int hash, {String? instanceId, int? stackIndex}) {
+    final isSelected = this.isSelected(hash, instanceId: instanceId, stackIndex: stackIndex);
+    if (isSelected) {
+      unselectItem(hash, instanceId: instanceId, stackIndex: stackIndex);
+      return;
+    }
+    selectItem(hash, instanceId: instanceId, stackIndex: stackIndex);
+  }
+
   void clear() {
     _selectedIdentifers = [];
     _internalUpdate();

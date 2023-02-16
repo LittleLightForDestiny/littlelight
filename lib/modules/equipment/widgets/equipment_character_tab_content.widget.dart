@@ -10,7 +10,7 @@ import 'package:little_light/shared/widgets/headers/bucket_header/bucket_header_
 import 'package:little_light/shared/widgets/inventory_item/empty_item.dart';
 import 'package:little_light/shared/widgets/inventory_item/inventory_item.dart';
 import 'package:little_light/shared/widgets/inventory_item/quick_transfer_item.dart';
-import 'package:little_light/shared/widgets/inventory_item/selectable_item_wrapper.dart';
+import 'package:little_light/shared/widgets/inventory_item/interactive_item_wrapper.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/multisection_scrollview/multisection_scrollview.dart';
 import 'package:little_light/widgets/multisection_scrollview/sliver_section.dart';
@@ -156,8 +156,13 @@ class EquipmentCharacterTabContentWidget extends StatelessWidget with ManifestCo
           if (index < items.length) {
             return buildItem(items[index], density);
           }
-          if (canTransfer && index < bucketCount) {
-            return const QuickTransferItem();
+          final bucketHash = bucketContent.bucketHash;
+          final characterId = character.characterId;
+          if (canTransfer && index < bucketCount && characterId != null) {
+            return QuickTransferItem(
+              bucketHash: bucketHash,
+              characterId: characterId,
+            );
           }
           return EmptyItem(
             bucketHash: bucketContent.bucketHash,
@@ -176,8 +181,12 @@ class EquipmentCharacterTabContentWidget extends StatelessWidget with ManifestCo
           if (index < items.length) {
             return buildItem(items[index], density);
           }
-          if (canTransfer && index < bucketCount) {
-            return const QuickTransferItem();
+          final characterId = character.characterId;
+          if (canTransfer && index < bucketCount && characterId != null) {
+            return QuickTransferItem(
+              bucketHash: bucketContent.bucketHash,
+              characterId: characterId,
+            );
           }
           return EmptyItem(
             bucketHash: bucketContent.bucketHash,
@@ -190,7 +199,7 @@ class EquipmentCharacterTabContentWidget extends StatelessWidget with ManifestCo
   }
 
   Widget buildItem(DestinyItemInfo item, InventoryItemWidgetDensity density) {
-    return SelectableItemWrapper(
+    return InteractiveItemWrapper(
       InventoryItemWidget(
         item,
         density: density,
