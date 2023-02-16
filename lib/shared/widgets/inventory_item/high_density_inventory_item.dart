@@ -595,7 +595,7 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
     int vaultCount = 0;
     int inventoryStackCount = 0;
     int vaultStackCount = 0;
-    final style = context.textTheme.itemTypeHighDensity;
+    final style = context.textTheme.caption;
     for (final stack in stacks) {
       if (stack.item.bucketHash == InventoryBucket.general) {
         vaultCount += stack.item.quantity ?? 0;
@@ -676,7 +676,7 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
     if (itemTypeName == null) return Container();
     return Text(
       itemTypeName,
-      style: context.textTheme.itemTypeHighDensity,
+      style: context.textTheme.caption,
       overflow: TextOverflow.fade,
       softWrap: false,
     );
@@ -879,7 +879,6 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
         physics: const NeverScrollableScrollPhysics(),
         child: InventoryItemStats(
           item,
-          definition: definition,
         ));
   }
 }

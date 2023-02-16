@@ -1,9 +1,12 @@
-import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
+import 'package:bungie_api/destiny2.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
+import 'package:little_light/models/game_data.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
+import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
@@ -46,9 +49,9 @@ class _EquipmentState {
   }
 }
 
-class EquipmentBloc extends ChangeNotifier with UserSettingsConsumer, ManifestConsumer {
+class EquipmentBloc extends ChangeNotifier with UserSettingsConsumer, ManifestConsumer, LittleLightDataConsumer {
   final ProfileBloc _profileBloc;
-  List<DestinyItemInfo>? items;
+  GameData? _gameData;
 
   _EquipmentState _equipmentState = _EquipmentState();
 
@@ -59,6 +62,12 @@ class EquipmentBloc extends ChangeNotifier with UserSettingsConsumer, ManifestCo
     _profileBloc.addListener(_update);
     userSettings.startingPage = LittleLightPersistentPage.Equipment;
     _update();
+    _loadGameData();
+  }
+
+  void _loadGameData() async {
+    _gameData = await littleLightData.getGameData();
+    notifyListeners();
   }
 
   @override
@@ -104,7 +113,7 @@ class EquipmentBloc extends ChangeNotifier with UserSettingsConsumer, ManifestCo
   DestinyItemInfo? getEquippedItem(DestinyCharacterInfo character, int bucketHash) => //
       _equipmentState.equippedItemsInCharacters?[character.characterId]?[bucketHash];
 
-  List<DestinyItemInfo>? getUnequippedItem(DestinyCharacterInfo character, int bucketHash) {
+  List<DestinyItemInfo>? getUnequippedItems(DestinyCharacterInfo character, int bucketHash) {
     final isProfileBucket = [InventoryBucket.consumables, InventoryBucket.modifications].contains(bucketHash);
     if (isProfileBucket) {
       return _equipmentState.itemsOnProfile?[bucketHash];
@@ -114,5 +123,17 @@ class EquipmentBloc extends ChangeNotifier with UserSettingsConsumer, ManifestCo
 
   List<DestinyItemInfo>? getVaultItems(int bucketHash) {
     return _equipmentState.itemsOnVault?[bucketHash];
+  }
+
+  List<DestinyItemComponent>? get relevantCurrencies {
+    final allCurrencies = _profileBloc.currencies;
+    if (allCurrencies == null) return null;
+    final relevant = _gameData?.relevantCurrencies;
+    print(relevant);
+    if (relevant == null) return null;
+    return relevant
+        .map((r) => allCurrencies.firstWhereOrNull((c) => c.itemHash == r))
+        .whereType<DestinyItemComponent>()
+        .toList();
   }
 }

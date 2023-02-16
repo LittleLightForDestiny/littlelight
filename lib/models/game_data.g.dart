@@ -6,15 +6,13 @@ part of 'game_data.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-ReputationRanks _$ReputationRanksFromJson(Map<String, dynamic> json) =>
-    ReputationRanks(
+ReputationRanks _$ReputationRanksFromJson(Map<String, dynamic> json) => ReputationRanks(
       glory: json['glory'] as int,
       valor: json['valor'] as int,
       infamy: json['infamy'] as int,
     );
 
-Map<String, dynamic> _$ReputationRanksToJson(ReputationRanks instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$ReputationRanksToJson(ReputationRanks instance) => <String, dynamic>{
       'glory': instance.glory,
       'valor': instance.valor,
       'infamy': instance.infamy,
@@ -24,14 +22,10 @@ GameData _$GameDataFromJson(Map<String, dynamic> json) => GameData(
       softCap: json['softCap'] as int,
       powerfulCap: json['powerfulCap'] as int,
       pinnacleCap: json['pinnacleCap'] as int,
-      seasonalModSlots: (json['seasonalModSlots'] as List<dynamic>?)
-          ?.map((e) => e as int)
-          .toList(),
-      tabbedPresentationNodes:
-          (json['tabbedPresentationNodes'] as List<dynamic>?)
-              ?.map((e) => e as int)
-              .toList(),
+      seasonalModSlots: (json['seasonalModSlots'] as List<dynamic>?)?.map((e) => e as int).toList(),
+      tabbedPresentationNodes: (json['tabbedPresentationNodes'] as List<dynamic>?)?.map((e) => e as int).toList(),
       ranks: ReputationRanks.fromJson(json['ranks']),
+      relevantCurrencies: (json['relevantCurrencies'] as List<dynamic>?)?.map((e) => e as int).toList(),
     );
 
 Map<String, dynamic> _$GameDataToJson(GameData instance) => <String, dynamic>{
@@ -41,4 +35,5 @@ Map<String, dynamic> _$GameDataToJson(GameData instance) => <String, dynamic>{
       'seasonalModSlots': instance.seasonalModSlots,
       'tabbedPresentationNodes': instance.tabbedPresentationNodes,
       'ranks': instance.ranks,
+      'relevantCurrencies': instance.relevantCurrencies,
     };

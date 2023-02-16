@@ -601,7 +601,7 @@ class MediumDensityInventoryItem extends StatelessWidget with ItemNotesConsumer,
       children: [
         Text("$quantity", style: textStyle, softWrap: false, textAlign: TextAlign.right),
         Text("/$maxCount",
-            style: context.textTheme.itemTypeHighDensity.copyWith(color: context.theme.achievementLayers.layer2),
+            style: context.textTheme.caption.copyWith(color: context.theme.achievementLayers.layer2),
             softWrap: false,
             textAlign: TextAlign.right)
       ],

@@ -93,6 +93,7 @@ class ItemTierLayers {
 
 class LittleLightTextTheme {
   final TextStyle title;
+  final TextStyle largeTitle;
   final TextStyle subtitle;
   final TextStyle body;
   final TextStyle button;
@@ -101,18 +102,19 @@ class LittleLightTextTheme {
   final TextStyle itemPrimaryStatHighDensity;
   final TextStyle itemPrimaryStatMediumDensity;
   final TextStyle itemPrimaryStatLowDensity;
-  final TextStyle itemTypeHighDensity;
+  final TextStyle caption;
 
   TextStyle itemNameMediumDensity;
 
   LittleLightTextTheme({
     required this.title,
+    required this.largeTitle,
     required this.subtitle,
     required this.body,
     required this.button,
     required this.notification,
     required this.itemNameHighDensity,
-    required this.itemTypeHighDensity,
+    required this.caption,
     required this.itemPrimaryStatHighDensity,
     required this.itemPrimaryStatMediumDensity,
     required this.itemPrimaryStatLowDensity,
@@ -124,6 +126,7 @@ class LittleLightThemeData {
   DamageTypeLayers get damageTypeLayers => DamageTypeLayers();
   final tierLayers = ItemTierLayers();
   LittleLightTextTheme get textTheme => LittleLightTextTheme(
+        largeTitle: TextStyle(fontSize: 28, fontWeight: FontWeight.w700, color: onSurfaceLayers.layer0),
         title: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: onSurfaceLayers.layer0),
         subtitle: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: onSurfaceLayers.layer0),
         body: TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: onSurfaceLayers.layer0),
@@ -131,7 +134,7 @@ class LittleLightThemeData {
         notification: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: onSurfaceLayers.layer0),
         itemNameHighDensity: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
         itemNameMediumDensity: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
-        itemTypeHighDensity: TextStyle(fontSize: 12, fontWeight: FontWeight.w300, color: onSurfaceLayers.layer0),
+        caption: TextStyle(fontSize: 12, fontWeight: FontWeight.w300, color: onSurfaceLayers.layer0),
         itemPrimaryStatHighDensity: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: onSurfaceLayers.layer0),
         itemPrimaryStatMediumDensity:
             TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: onSurfaceLayers.layer0),
@@ -229,7 +232,7 @@ class LittleLightThemeData {
       );
 
   TextTheme get _textTheme =>
-      TextTheme(headline1: textTheme.title, bodyText1: textTheme.body, button: textTheme.button);
+      TextTheme(displayMedium: textTheme.title, bodyMedium: textTheme.body, labelLarge: textTheme.button);
 
   CardTheme get _cardTheme => CardTheme(color: colorScheme.surface);
 

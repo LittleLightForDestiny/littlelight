@@ -30,6 +30,7 @@ class GameData {
   List<int>? seasonalModSlots;
   List<int>? tabbedPresentationNodes;
   ReputationRanks ranks;
+  List<int>? relevantCurrencies;
 
   GameData({
     required this.softCap,
@@ -38,6 +39,7 @@ class GameData {
     this.seasonalModSlots,
     this.tabbedPresentationNodes,
     required this.ranks,
+    required this.relevantCurrencies,
   });
 
   factory GameData.fromJson(dynamic json) {

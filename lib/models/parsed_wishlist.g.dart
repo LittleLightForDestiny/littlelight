@@ -37,7 +37,7 @@ Map<String, dynamic> _$ParsedWishlistBuildToJson(
       'hash': instance.hash,
       'name': instance.name,
       'plugs': instance.plugs.map((e) => e.toList()).toList(),
-      'tags': instance.tags.map((e) => _$WishlistTagEnumMap[e]).toList(),
+      'tags': instance.tags.map((e) => _$WishlistTagEnumMap[e]!).toList(),
       'description': instance.description,
       'originalWishlist': instance.originalWishlist,
     };
@@ -74,5 +74,5 @@ Map<String, dynamic> _$ParsedWishlistItemToJson(ParsedWishlistItem instance) =>
       'itemHash': instance.itemHash,
       'builds': instance.builds,
       'perks': instance.perks.map((k, e) => MapEntry(
-          k.toString(), e.map((e) => _$WishlistTagEnumMap[e]).toList())),
+          k.toString(), e.map((e) => _$WishlistTagEnumMap[e]!).toList())),
     };

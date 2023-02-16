@@ -7,13 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile_component_groups.dart';
-import 'package:little_light/models/bungie_api.exception.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-// ignore: import_of_legacy_library_into_null_safe
-import 'package:little_light/services/notification/notification.package.dart';
 import 'package:little_light/services/storage/export.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/shared/utils/sorters/characters/character_sorter.dart';
@@ -31,7 +28,6 @@ class _CachedItemsContainer {
   Map<String, DestinyItemInfo> itemsByInstanceId = <String, DestinyItemInfo>{};
   Map<int, List<DestinyItemInfo>> itemsByHash = <int, List<DestinyItemInfo>>{};
   List<DestinyItemInfo> allItems = <DestinyItemInfo>[];
-  Map<DestinyClass, Map<int, DestinyItemInfo>> highestPowerItems = {};
 
   void add(DestinyItemInfo itemInfo, {bool groupWithSimilarItems = false}) {
     final itemInstanceId = itemInfo.item.itemInstanceId;
@@ -70,7 +66,6 @@ class ProfileBloc extends ChangeNotifier
         StorageConsumer,
         AuthConsumer,
         BungieApiConsumer,
-        NotificationConsumer,
         ManifestConsumer,
         WidgetsBindingObserver {
   static const List<int> profileBuckets = [InventoryBucket.modifications, InventoryBucket.consumables];
@@ -82,6 +77,9 @@ class ProfileBloc extends ChangeNotifier
 
   List<DestinyCharacterInfo>? _characters;
   List<DestinyCharacterInfo>? get characters => _characters;
+
+  List<DestinyItemComponent>? _currencies;
+  List<DestinyItemComponent>? get currencies => _currencies;
 
   _CachedItemsContainer _itemCache = _CachedItemsContainer();
 
@@ -171,6 +169,8 @@ class ProfileBloc extends ChangeNotifier
 
     _updateCharacters(newData);
     _updateItems(newData);
+    _updateCurrencies(newData);
+    _updateHelpers();
 
     notifyListeners();
     return newData;
@@ -235,6 +235,31 @@ class ProfileBloc extends ChangeNotifier
           profile,
         ));
       }
+  }
+
+  _updateCurrencies(DestinyProfileResponse? profile) {
+    this._currencies = profile?.profileCurrencies?.data?.items;
+  }
+
+  _updateHelpers() {
+    final characters = _characters;
+    if (characters == null) return;
+    for (final c in characters) {
+      final equippedItems = _itemCache.allItems.where((element) {
+        final isEquipped = element.instanceInfo?.isEquipped ?? false;
+        return element.characterId == c.characterId && isEquipped;
+      });
+      final artifact = equippedItems.firstWhereOrNull((element) => element.bucketHash == InventoryBucket.artifact);
+      final powerBuckets = InventoryBucket.weaponBucketHashes + InventoryBucket.armorBucketHashes;
+      final armorItems = equippedItems.where((element) => powerBuckets.contains(element.bucketHash));
+      final armorPowerSum = armorItems.fold<int>(0, (p, e) => p + (e.instanceInfo?.primaryStat?.value ?? 0));
+      final armorPower = (armorPowerSum / armorItems.length).floor();
+      final artifactPower = artifact?.instanceInfo?.primaryStat?.value ?? 0;
+      final totalPower = armorPower + artifactPower;
+      c.armorPower = armorPower;
+      c.artifactPower = artifactPower;
+      c.totalPower = totalPower;
+    }
   }
 
   DestinyItemInfo _createItemInfoFromInventory(
@@ -516,6 +541,7 @@ class ProfileBloc extends ChangeNotifier
     allItems.removeAt(currentlyEquippedIndex);
     allItems.insert(newlyEquippedIndex + 1, currentlyEquipped ?? itemInfo);
     allItems.removeAt(newlyEquippedIndex);
+    _updateHelpers();
     notifyListeners();
     _lastLocalChange = DateTime.now().toUtc();
   }

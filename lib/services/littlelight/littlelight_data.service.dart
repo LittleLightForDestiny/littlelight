@@ -52,7 +52,7 @@ class LittleLightDataService with StorageConsumer {
 
   Future<GameData> getGameData() async {
     GameData? data = await globalStorage.getGameData();
-    if (data != null) return data;
+    // if (data != null) return data;
     dynamic contents = await fetchDataFromCDN(_gameDataURL);
     try {
       data = GameData.fromJson(contents);

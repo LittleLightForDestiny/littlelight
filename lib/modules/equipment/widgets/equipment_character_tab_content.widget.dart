@@ -5,6 +5,7 @@ import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/utils/extensions/bucket_display_type_data.dart';
+import 'package:little_light/shared/widgets/character/character_info.widget.dart';
 import 'package:little_light/shared/widgets/headers/bucket_header/bucket_header_list_item.widget.dart';
 import 'package:little_light/shared/widgets/inventory_item/empty_item.dart';
 import 'package:little_light/shared/widgets/inventory_item/inventory_item.dart';
@@ -27,9 +28,12 @@ class EquipmentCharacterBucketContent {
   });
 }
 
+const _characterInfoHeight = 128.0;
+
 class EquipmentCharacterTabContentWidget extends StatelessWidget with ManifestConsumer {
   final DestinyCharacterInfo character;
   final List<EquipmentCharacterBucketContent> buckets;
+  final List<DestinyItemComponent>? currencies;
 
   BucketOptionsBloc bucketOptionsState(BuildContext context) => context.watch<BucketOptionsBloc>();
 
@@ -37,6 +41,7 @@ class EquipmentCharacterTabContentWidget extends StatelessWidget with ManifestCo
     this.character, {
     Key? key,
     required this.buckets,
+    this.currencies,
   }) : super(key: key);
 
   Future<Map<int, DestinyInventoryBucketDefinition>> get bucketDefs async {
@@ -57,9 +62,19 @@ class EquipmentCharacterTabContentWidget extends StatelessWidget with ManifestCo
         return LayoutBuilder(
           key: Key("character_tab_${character.characterId}"),
           builder: (context, constraints) => MultiSectionScrollView(
-            buckets //
-                .map<List<SliverSection>>((e) => buildBucketSections(context, e, constraints, defs[e.bucketHash])) //
-                .fold<List<SliverSection>>([], (list, element) => list + element).toList(),
+            [
+                  SliverSection.fixedHeight(
+                    itemBuilder: (context, _) => CharacterInfoWidget(
+                      character,
+                      currencies: currencies,
+                    ),
+                    itemHeight: _characterInfoHeight,
+                  )
+                ] +
+                buckets //
+                    .map<List<SliverSection>>(
+                        (e) => buildBucketSections(context, e, constraints, defs[e.bucketHash])) //
+                    .fold<List<SliverSection>>([], (list, element) => list + element).toList(),
             crossAxisSpacing: 0,
             mainAxisSpacing: 0,
             padding: const EdgeInsets.all(8).copyWith(top: 0),

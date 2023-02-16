@@ -62,7 +62,7 @@ Collaborator _$CollaboratorFromJson(Map<String, dynamic> json) => Collaborator(
 Map<String, dynamic> _$CollaboratorToJson(Collaborator instance) =>
     <String, dynamic>{
       'membershipId': instance.membershipId,
-      'membershipType': _$BungieMembershipTypeEnumMap[instance.membershipType],
+      'membershipType': _$BungieMembershipTypeEnumMap[instance.membershipType]!,
       'link': instance.link,
     };
 
@@ -73,6 +73,7 @@ const _$BungieMembershipTypeEnumMap = {
   BungieMembershipType.TigerSteam: 3,
   BungieMembershipType.TigerBlizzard: 4,
   BungieMembershipType.TigerStadia: 5,
+  BungieMembershipType.TigerEgs: 6,
   BungieMembershipType.TigerDemon: 10,
   BungieMembershipType.BungieNext: 254,
   BungieMembershipType.All: -1,

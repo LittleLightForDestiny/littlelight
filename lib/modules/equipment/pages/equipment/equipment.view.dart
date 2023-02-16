@@ -14,6 +14,7 @@ import 'package:little_light/shared/widgets/tabs/header/loading_tab_header.widge
 import 'package:little_light/shared/widgets/tabs/header/vault_tab_header.widget.dart';
 import 'package:little_light/shared/widgets/tabs/menus/character_header_tab_menu.widget.dart';
 import 'package:little_light/shared/widgets/tabs/menus/current_character_tab_indicator.dart';
+import 'package:provider/provider.dart';
 
 import 'equipment.bloc.dart';
 
@@ -191,16 +192,18 @@ class EquipmentView extends StatelessWidget {
 
   Widget buildCharacterTabContent(BuildContext context, InventoryTab tab, DestinyCharacterInfo character) {
     final bucketHashes = tab.bucketHashes;
+    final currencies = _state.relevantCurrencies;
     final buckets = bucketHashes
         .map((h) => EquipmentCharacterBucketContent(
               h,
               equipped: _state.getEquippedItem(character, h),
-              unequipped: _state.getUnequippedItem(character, h) ?? [],
+              unequipped: _state.getUnequippedItems(character, h) ?? [],
             ))
         .toList();
     return EquipmentCharacterTabContentWidget(
       character,
       buckets: buckets,
+      currencies: currencies,
     );
   }
 

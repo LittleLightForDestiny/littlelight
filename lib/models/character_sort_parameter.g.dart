@@ -20,7 +20,7 @@ CharacterSortParameter _$CharacterSortParameterFromJson(
 Map<String, dynamic> _$CharacterSortParameterToJson(
         CharacterSortParameter instance) =>
     <String, dynamic>{
-      'type': _$CharacterSortParameterTypeEnumMap[instance.type],
+      'type': _$CharacterSortParameterTypeEnumMap[instance.type]!,
       'customOrder': instance.customOrder,
     };
 
