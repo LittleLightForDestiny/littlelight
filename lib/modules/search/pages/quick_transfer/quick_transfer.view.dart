@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
 import 'package:little_light/modules/search/pages/quick_transfer/quick_transfer.bloc.dart';
 import 'package:little_light/modules/search/widgets/text_search_filter.widget.dart';
+import 'package:little_light/modules/search/widgets/text_search_filter_field.widget.dart';
 import 'package:little_light/shared/widgets/inventory_item/high_density_inventory_item.dart';
+import 'package:little_light/shared/widgets/inventory_item/interactive_item_wrapper.dart';
 import 'package:little_light/shared/widgets/inventory_item/inventory_item.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/multisection_scrollview/multisection_scrollview.dart';
@@ -38,11 +39,16 @@ class QuickTransferView extends StatelessWidget {
           itemHeight: InventoryItemWidgetDensity.High.itemHeight,
           itemCount: items.length,
           itemsPerRow: (screenWidth / InventoryItemWidgetDensity.High.idealWidth).floor(),
-          itemBuilder: (context, index) => HighDensityInventoryItem(
-            items[index],
-            showCharacterIcon: true,
+          itemBuilder: (context, index) => InteractiveItemWrapper(
+            HighDensityInventoryItem(
+              items[index],
+              showCharacterIcon: true,
+            ),
+            item: items[index],
+            itemMargin: 0,
+            selectedBorder: 0,
           ),
-        )
+        ),
       ],
       padding: EdgeInsets.all(4),
       mainAxisSpacing: 4,

@@ -48,7 +48,7 @@ class QuickTransferItem extends StatelessWidget {
       child: InkWell(
         onTap: () {
           final interaction = context.read<ItemInteractionHandlerBloc>();
-          interaction.onEmptySlotTap(bucketHash, characterId);
+          interaction.onEmptySlotTap?.call(bucketHash, characterId);
         },
       ),
     );

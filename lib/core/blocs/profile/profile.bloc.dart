@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile_component_groups.dart';
+import 'package:little_light/core/blocs/profile/profile_debugger.extension.dart';
+import 'package:little_light/models/bungie_api.exception.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
@@ -501,7 +503,10 @@ class ProfileBloc extends ChangeNotifier
     final characterId = itemInfo.characterId;
     if (itemHash == null) throw 'TODO: specific exception';
     if (characterId == null) throw 'TODO: specific exception';
+
     await bungieAPI.pullFromPostMaster(itemHash, stackSize, itemInstanceId, characterId);
+    // await mockTransfer(itemInfo, stackSize, false, characterId);
+
     if (itemInstanceId != null) {
       await _updateInstancedItemLocation(itemInfo, false, characterId);
     } else {
@@ -513,7 +518,10 @@ class ProfileBloc extends ChangeNotifier
     final itemHash = itemInfo.item.itemHash;
     final itemInstanceId = itemInfo.item.itemInstanceId;
     if (itemHash == null) throw 'TODO: specific exception';
+
     await bungieAPI.transferItem(itemHash, stackSize, transferToVault, itemInstanceId, characterId);
+    // await mockTransfer(itemInfo, stackSize, transferToVault, characterId);
+
     if (itemInstanceId != null) {
       await _updateInstancedItemLocation(itemInfo, transferToVault, characterId);
     } else {

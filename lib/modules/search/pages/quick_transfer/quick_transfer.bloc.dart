@@ -3,23 +3,38 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/inventory/inventory.bloc.dart';
 import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
+import 'package:little_light/modules/search/blocs/filter_types/base_filter_values_wrapper.dart';
+import 'package:little_light/modules/search/blocs/filter_types/text_filter_wrapper.dart';
+import 'package:little_light/modules/search/blocs/filters/base_item_filter.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/shared/models/transfer_destination.dart';
 import 'package:provider/provider.dart';
+
+import '../../blocs/filters/text_filter.dart';
 
 class QuickTransferBloc extends ChangeNotifier with ManifestConsumer {
   final ProfileBloc _profileBloc;
+  final InventoryBloc _inventoryBloc;
 
   final int? bucketHash;
   final String? characterId;
 
   List<DestinyItemInfo>? _unfilteredItems;
   List<DestinyItemInfo>? _items;
+  List<DestinyItemInfo>? get items => _items;
+
+  Map<Type, BaseItemFilter> _filters = {
+    TextFilterWrapper: TextFilter(),
+  };
+
+  final BuildContext _context;
 
   QuickTransferBloc(
-    BuildContext context, {
+    BuildContext this._context, {
     this.bucketHash,
     this.characterId,
-  }) : _profileBloc = context.read<ProfileBloc>() {
+  })  : _profileBloc = _context.read<ProfileBloc>(),
+        _inventoryBloc = _context.read<InventoryBloc>() {
     _init();
   }
   void _init() async {
@@ -43,9 +58,33 @@ class QuickTransferBloc extends ChangeNotifier with ManifestConsumer {
   }
 
   void filter() async {
-    _items = _unfilteredItems?.toList();
+    List<DestinyItemInfo> items = _unfilteredItems?.toList() ?? [];
+    for (final _filter in _filters.values) {
+      _items = await _filter.filter(_context, items);
+    }
     notifyListeners();
   }
 
-  List<DestinyItemInfo>? get items => _items;
+  void onItemTap(DestinyItemInfo item) async {
+    final character = _profileBloc.getCharacterById(this.characterId);
+    _inventoryBloc.transfer(item, TransferDestination(TransferDestinationType.character, character: character));
+    Navigator.of(_context).pop();
+  }
+
+  void onItemHold(DestinyItemInfo item) {}
+
+  Map<Type, BaseFilterValuesWrapper> get filters {
+    return _filters.map(
+      (key, value) => MapEntry(key, value.data),
+    );
+  }
+
+  void updateFilterValue<T extends BaseFilterValuesWrapper>(T value) {
+    final filter = this._filters[T];
+    print(value);
+    if (filter == null) return;
+    filter.updateValue(value);
+    notifyListeners();
+    this.filter();
+  }
 }

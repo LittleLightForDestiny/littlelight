@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
 import 'package:little_light/modules/loadouts/blocs/loadouts.bloc.dart';
+import 'package:little_light/modules/search/blocs/filter_types/text_filter_wrapper.dart';
 import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
@@ -11,20 +12,19 @@ import 'package:provider/provider.dart';
 
 import 'base_item_filter.dart';
 
-class TextFilter extends BaseItemFilter<String?> with ManifestConsumer, WishlistsConsumer, ItemNotesConsumer {
-  final BuildContext context;
+class TextFilter extends BaseItemFilter<TextFilterWrapper> with ManifestConsumer, WishlistsConsumer, ItemNotesConsumer {
   List<LoadoutItemIndex>? loadouts;
-  TextFilter(this.context, {initialText = "", enabled = true}) : super(null, initialText, enabled: enabled);
+  TextFilter({initialText = "", enabled = true}) : super(TextFilterWrapper(""), enabled: enabled);
 
   @override
-  Future<List<DestinyItemInfo>> filter(List<DestinyItemInfo> items) async {
+  Future<List<DestinyItemInfo>> filter(BuildContext context, List<DestinyItemInfo> items) async {
     loadouts = context.read<LoadoutsBloc>().loadouts;
-    return super.filter(items);
+    return super.filter(context, items);
   }
 
   @override
   Future<bool> filterItem(DestinyItemInfo item) async {
-    final searchString = value;
+    final searchString = data.value;
     if (searchString == null) return true;
     if (searchString.length == 0) return true;
     final hash = item.itemHash;
@@ -92,5 +92,10 @@ class TextFilter extends BaseItemFilter<String?> with ManifestConsumer, Wishlist
 
       return false;
     });
+  }
+
+  @override
+  void updateValue(TextFilterWrapper t) {
+    this.data = TextFilterWrapper(t.value);
   }
 }

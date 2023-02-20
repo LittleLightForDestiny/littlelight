@@ -104,11 +104,11 @@ class InteractiveItemWrapper extends StatelessWidget {
 
   void onLongPress(BuildContext context) {
     final interaction = context.read<ItemInteractionHandlerBloc>();
-    interaction.onHold(item);
+    interaction.onHold?.call(item);
   }
 
   void onTap(BuildContext context) {
     final interaction = context.read<ItemInteractionHandlerBloc>();
-    interaction.onTap(item);
+    interaction.onTap?.call(item);
   }
 }

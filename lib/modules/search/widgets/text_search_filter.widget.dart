@@ -1,42 +1,15 @@
-import 'package:flutter/material.dart';
-import 'package:little_light/services/user_settings/user_settings.consumer.dart';
+import 'package:flutter/src/widgets/framework.dart';
+import 'package:little_light/modules/search/blocs/filter_types/text_filter_wrapper.dart';
+import 'package:little_light/modules/search/widgets/base_filter.widget.dart';
+import 'package:little_light/modules/search/widgets/text_search_filter_field.widget.dart';
 
-typedef OnTextUpdate = void Function(String query);
-
-class TextSearchFilterWidget extends StatefulWidget {
-  final bool forceAutoFocus;
-  final OnTextUpdate? onUpdate;
-  const TextSearchFilterWidget({this.forceAutoFocus = false, this.onUpdate}) : super();
+class TextSearchFilterWidget extends BaseFilterWidget<TextFilterWrapper> {
+  TextSearchFilterWidget({Key? key}) : super();
 
   @override
-  _TextSearchFilterWidgetState createState() => _TextSearchFilterWidgetState();
-}
-
-class _TextSearchFilterWidgetState extends State<TextSearchFilterWidget> with UserSettingsConsumer {
-  final TextEditingController _searchFieldController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    _searchFieldController.addListener(updateText);
-  }
-
-  @override
-  void dispose() {
-    _searchFieldController.removeListener(updateText);
-    super.dispose();
-  }
-
-  void updateText() {
-    widget.onUpdate?.call(_searchFieldController.text);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      // decoration: const InputDecoration(isDense: true),
-      autofocus: userSettings.autoOpenKeyboard || widget.forceAutoFocus,
-      controller: _searchFieldController,
+  Widget buildWithData(BuildContext context, TextFilterWrapper? data) {
+    return TextSearchFilterFieldWidget(
+      onUpdate: (text) => this.update(context, TextFilterWrapper(text)),
     );
   }
 }

@@ -4,13 +4,13 @@ typedef OnItemInteraction = void Function(DestinyItemInfo);
 typedef OnEmptySlotInteraction = void Function(int bucketHash, String characterId);
 
 class ItemInteractionHandlerBloc {
-  final OnItemInteraction onTap;
-  final OnItemInteraction onHold;
-  final OnEmptySlotInteraction onEmptySlotTap;
+  final OnItemInteraction? onTap;
+  final OnItemInteraction? onHold;
+  final OnEmptySlotInteraction? onEmptySlotTap;
 
   ItemInteractionHandlerBloc({
-    required this.onTap,
-    required this.onHold,
-    required this.onEmptySlotTap,
+    this.onTap,
+    this.onHold,
+    this.onEmptySlotTap,
   });
 }
