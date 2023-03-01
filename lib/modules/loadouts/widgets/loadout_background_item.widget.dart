@@ -19,7 +19,8 @@ class LoadoutBackgroundItemWidget extends StatefulWidget {
   }
 }
 
-class LoadoutBackgroundItemWidgetState extends State<LoadoutBackgroundItemWidget> with ManifestConsumer {
+class LoadoutBackgroundItemWidgetState
+    extends State<LoadoutBackgroundItemWidget> with ManifestConsumer {
   DestinyInventoryItemDefinition definition;
 
   @override
@@ -29,8 +30,10 @@ class LoadoutBackgroundItemWidgetState extends State<LoadoutBackgroundItemWidget
   }
 
   void loadDefinitions() async {
-    var collectible = await manifest.getDefinition<DestinyCollectibleDefinition>(widget.hash);
-    definition = await manifest.getDefinition<DestinyInventoryItemDefinition>(collectible?.itemHash);
+    var collectible =
+        await manifest.getDefinition<DestinyCollectibleDefinition>(widget.hash);
+    definition = await manifest
+        .getDefinition<DestinyInventoryItemDefinition>(collectible?.itemHash);
     setState(() {});
   }
 

@@ -8,35 +8,42 @@ import 'language_storage.service.dart';
 import 'membership_storage.service.dart';
 
 GlobalStorage getInjectedGlobalStorage() => GetIt.I<GlobalStorage>();
-AccountStorage getInjectedAccountStorage(String accountID) => GetIt.I<AccountStorage>(param1: accountID);
-MembershipStorage getInjectedMembershipStorage(String membershipID) => GetIt.I<MembershipStorage>(param1: membershipID);
-LanguageStorage getInjectedLanguageStorage(String languageCode) => GetIt.I<LanguageStorage>(param1: languageCode);
+AccountStorage getInjectedAccountStorage(String accountID) =>
+    GetIt.I<AccountStorage>(param1: accountID);
+MembershipStorage getInjectedMembershipStorage(String membershipID) =>
+    GetIt.I<MembershipStorage>(param1: membershipID);
+LanguageStorage getInjectedLanguageStorage(String languageCode) =>
+    GetIt.I<LanguageStorage>(param1: languageCode);
 
 extension Storages on StorageConsumer {
   GlobalStorage get globalStorage => getInjectedGlobalStorage();
 
-  AccountStorage accountStorage(String accountID) => getInjectedAccountStorage(accountID);
+  AccountStorage accountStorage(String accountID) =>
+      getInjectedAccountStorage(accountID);
 
   AccountStorage get currentAccountStorage {
     final accountID = globalStorage.currentAccountID;
     if (accountID == null) {
-      throw NotInitializedException(Exception("currentMembershipStorage was called before currentAccountID was set"));
+      throw NotInitializedException(Exception(
+          "currentMembershipStorage was called before currentAccountID was set"));
     }
     return getInjectedAccountStorage(accountID);
   }
 
-  MembershipStorage membershipStorage(String membershipID) => getInjectedMembershipStorage(membershipID);
+  MembershipStorage membershipStorage(String membershipID) =>
+      getInjectedMembershipStorage(membershipID);
 
   MembershipStorage get currentMembershipStorage {
     final membershipID = globalStorage.currentMembershipID;
     if (membershipID == null) {
-      throw NotInitializedException(
-          Exception("currentMembershipStorage was called before currentMembershipID was set"));
+      throw NotInitializedException(Exception(
+          "currentMembershipStorage was called before currentMembershipID was set"));
     }
     return getInjectedMembershipStorage(membershipID);
   }
 
-  LanguageStorage languageStorage(String code) => getInjectedLanguageStorage(code);
+  LanguageStorage languageStorage(String code) =>
+      getInjectedLanguageStorage(code);
 
   LanguageStorage get currentLanguageStorage {
     final language = getInjectedLanguageService().currentLanguage;

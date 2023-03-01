@@ -41,7 +41,8 @@ class ProfileHelpersBloc extends ChangeNotifier with ManifestConsumer {
   Map<DestinyClass, double>? _achievableAverage;
   Map<DestinyClass, double>? _equippableAverage;
 
-  ProfileHelpersBloc(this.context) : _profileBloc = context.read<ProfileBloc>() {
+  ProfileHelpersBloc(this.context)
+      : _profileBloc = context.read<ProfileBloc>() {
     _profileBloc.addListener(update);
   }
 
@@ -57,8 +58,10 @@ class ProfileHelpersBloc extends ChangeNotifier with ManifestConsumer {
     final maxPower = <DestinyClass, Map<int, DestinyItemInfo>>{};
     final maxPowerNonExotic = <DestinyClass, Map<int, DestinyItemInfo>>{};
     final instancedItems = _profileBloc.allInstancedItems;
-    final hashes = instancedItems.map((i) => i.item.itemHash).whereType<int>().toList();
-    final defs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
+    final hashes =
+        instancedItems.map((i) => i.item.itemHash).whereType<int>().toList();
+    final defs =
+        await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
     for (final item in instancedItems) {
       final hash = item.item.itemHash;
       final def = defs[hash];
@@ -73,10 +76,14 @@ class ProfileHelpersBloc extends ChangeNotifier with ManifestConsumer {
       _addItemToMap(maxPowerNonExotic, item, def, characterClass);
     }
 
-    final maxEquippable = maxPower.map((k, v) => MapEntry(k, _getMaxEquippableLoadout(v, maxPowerNonExotic[k]!)));
-    final currentAverage = maxPower.map((k, v) => MapEntry(k, _getEquipmentAverage(v)));
-    final achievableAverage = maxPower.map((k, v) => MapEntry(k, _getAchievableAverage(currentAverage[k]!, v)));
-    final equippableAverage = maxEquippable.map((k, v) => MapEntry(k, _getAchievableAverage(currentAverage[k]!, v)));
+    final maxEquippable = maxPower.map((k, v) =>
+        MapEntry(k, _getMaxEquippableLoadout(v, maxPowerNonExotic[k]!)));
+    final currentAverage =
+        maxPower.map((k, v) => MapEntry(k, _getEquipmentAverage(v)));
+    final achievableAverage = maxPower.map(
+        (k, v) => MapEntry(k, _getAchievableAverage(currentAverage[k]!, v)));
+    final equippableAverage = maxEquippable.map(
+        (k, v) => MapEntry(k, _getAchievableAverage(currentAverage[k]!, v)));
     _maxPowerEquipments = maxPower;
     _maxEquippable = maxEquippable;
     _currentAverage = currentAverage;
@@ -94,11 +101,14 @@ class ProfileHelpersBloc extends ChangeNotifier with ManifestConsumer {
     return totalPower / itemCount;
   }
 
-  double _getAchievableAverage(double currentAverage, Map<int, DestinyItemInfo> maxPowerEquipment) {
+  double _getAchievableAverage(
+      double currentAverage, Map<int, DestinyItemInfo> maxPowerEquipment) {
     final totalPower = maxPowerEquipment //
         .values
-        .map<double>((e) => (e.instanceInfo?.primaryStat?.value ?? 0).toDouble())
-        .fold<double>(0, (t, c) => t + c.clamp(currentAverage, double.maxFinite));
+        .map<double>(
+            (e) => (e.instanceInfo?.primaryStat?.value ?? 0).toDouble())
+        .fold<double>(
+            0, (t, c) => t + c.clamp(currentAverage, double.maxFinite));
     final itemCount = maxPowerEquipment.length;
     return totalPower / itemCount;
   }
@@ -107,7 +117,8 @@ class ProfileHelpersBloc extends ChangeNotifier with ManifestConsumer {
     Map<int, DestinyItemInfo> maxPower,
     Map<int, DestinyItemInfo> maxNonExotic,
   ) {
-    final exoticItems = maxPower.entries.where((element) => element.value != maxNonExotic[element.key]);
+    final exoticItems = maxPower.entries
+        .where((element) => element.value != maxNonExotic[element.key]);
     if (exoticItems.length <= 1) return maxPower;
     final equippable = Map<int, DestinyItemInfo>.from(maxNonExotic);
     MapEntry<int, DestinyItemInfo> replacement = exoticItems.first;
@@ -154,10 +165,15 @@ class ProfileHelpersBloc extends ChangeNotifier with ManifestConsumer {
     }
   }
 
-  Map<DestinyClass, Map<int, DestinyItemInfo>>? get maxPowerNonExotic => _maxEquippable;
-  Map<DestinyClass, Map<int, DestinyItemInfo>>? get maxPower => _maxPowerEquipments;
+  Map<DestinyClass, Map<int, DestinyItemInfo>>? get maxPowerNonExotic =>
+      _maxEquippable;
+  Map<DestinyClass, Map<int, DestinyItemInfo>>? get maxPower =>
+      _maxPowerEquipments;
 
-  double? getCurrentAverage(DestinyClass? classType) => _currentAverage?[classType];
-  double? getAchievableAverage(DestinyClass? classType) => _achievableAverage?[classType];
-  double? getEquippableAverage(DestinyClass? classType) => _equippableAverage?[classType];
+  double? getCurrentAverage(DestinyClass? classType) =>
+      _currentAverage?[classType];
+  double? getAchievableAverage(DestinyClass? classType) =>
+      _achievableAverage?[classType];
+  double? getEquippableAverage(DestinyClass? classType) =>
+      _equippableAverage?[classType];
 }

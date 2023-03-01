@@ -3,7 +3,8 @@ import 'package:little_light/models/wishlist_index.dart';
 import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 
-class SelectWishlistNotifier with ChangeNotifier, LittleLightDataConsumer, WishlistsConsumer {
+class SelectWishlistNotifier
+    with ChangeNotifier, LittleLightDataConsumer, WishlistsConsumer {
   final BuildContext context;
 
   WishlistFolder? _wishlistsIndexRoot;
@@ -58,7 +59,8 @@ class SelectWishlistNotifier with ChangeNotifier, LittleLightDataConsumer, Wishl
       wishlists.addAll(_getSelectedWishlists(f));
     }
     final files = folder?.files ?? [];
-    wishlists.addAll(files.where((element) => _selectedFiles.contains(element.url)));
+    wishlists
+        .addAll(files.where((element) => _selectedFiles.contains(element.url)));
     return wishlists;
   }
 

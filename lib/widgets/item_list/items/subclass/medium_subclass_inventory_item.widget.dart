@@ -19,7 +19,8 @@ class MediumSubclassInventoryItemWidget extends MediumBaseInventoryItemWidget
     @required String characterId,
     Key key,
     @required String uniqueId,
-  }) : super(item, definition, instanceInfo, characterId: characterId, key: key, uniqueId: uniqueId);
+  }) : super(item, definition, instanceInfo,
+            characterId: characterId, key: key, uniqueId: uniqueId);
 
   @override
   double get iconSize {

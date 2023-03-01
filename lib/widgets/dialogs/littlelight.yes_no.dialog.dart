@@ -8,7 +8,10 @@ abstract class LittleLightYesNoDialog extends LittleLightBaseDialog {
   final DialogOptionSelected? onSelectCallback;
 
   const LittleLightYesNoDialog(
-      {Key? key, DialogWidgetBuilder? titleBuilder, DialogWidgetBuilder? bodyBuilder, this.onSelectCallback})
+      {Key? key,
+      DialogWidgetBuilder? titleBuilder,
+      DialogWidgetBuilder? bodyBuilder,
+      this.onSelectCallback})
       : super(
           key: key,
           titleBuilder: titleBuilder,

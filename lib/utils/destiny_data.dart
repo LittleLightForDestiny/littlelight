@@ -188,20 +188,34 @@ enum CurrencyConversionType { InventoryItem, Currency }
 
 class CurrencyConversion {
   static const Map<int, CurrencyConversion> purchaseables = {
-    924468777: CurrencyConversion(CurrencyConversionType.InventoryItem, 1305274547), //Phaseglass
-    3721881826: CurrencyConversion(CurrencyConversionType.InventoryItem, 950899352), //Dusklight
-    1420498062: CurrencyConversion(CurrencyConversionType.InventoryItem, 49145143), //Simulation Seeds
-    1812969468: CurrencyConversion(CurrencyConversionType.InventoryItem, 3853748946), //Enhancement Cores
-    4153440841: CurrencyConversion(CurrencyConversionType.InventoryItem, 2014411539), //Alkane Dust
-    1845310989: CurrencyConversion(CurrencyConversionType.InventoryItem, 3487922223), //Datalattice
-    2536947844: CurrencyConversion(CurrencyConversionType.InventoryItem, 31293053), //Seraphite
-    3245502278: CurrencyConversion(CurrencyConversionType.InventoryItem, 1177810185), //Etheric Spiral
-    778553120: CurrencyConversion(CurrencyConversionType.InventoryItem, 592227263), //Baryon Bough
-    1923884703: CurrencyConversion(CurrencyConversionType.InventoryItem, 3592324052), //Helium Filaments
-    4106973372: CurrencyConversion(CurrencyConversionType.InventoryItem, 293622383), //Spinmetal
-    1760701414: CurrencyConversion(CurrencyConversionType.InventoryItem, 1485756901), //Glacial Starwort
-    2654422615: CurrencyConversion(CurrencyConversionType.Currency, 1022552290), //Legendary Shards
-    3664001560: CurrencyConversion(CurrencyConversionType.Currency, 3159615086), //Glimmer
+    924468777: CurrencyConversion(
+        CurrencyConversionType.InventoryItem, 1305274547), //Phaseglass
+    3721881826: CurrencyConversion(
+        CurrencyConversionType.InventoryItem, 950899352), //Dusklight
+    1420498062: CurrencyConversion(
+        CurrencyConversionType.InventoryItem, 49145143), //Simulation Seeds
+    1812969468: CurrencyConversion(
+        CurrencyConversionType.InventoryItem, 3853748946), //Enhancement Cores
+    4153440841: CurrencyConversion(
+        CurrencyConversionType.InventoryItem, 2014411539), //Alkane Dust
+    1845310989: CurrencyConversion(
+        CurrencyConversionType.InventoryItem, 3487922223), //Datalattice
+    2536947844: CurrencyConversion(
+        CurrencyConversionType.InventoryItem, 31293053), //Seraphite
+    3245502278: CurrencyConversion(
+        CurrencyConversionType.InventoryItem, 1177810185), //Etheric Spiral
+    778553120: CurrencyConversion(
+        CurrencyConversionType.InventoryItem, 592227263), //Baryon Bough
+    1923884703: CurrencyConversion(
+        CurrencyConversionType.InventoryItem, 3592324052), //Helium Filaments
+    4106973372: CurrencyConversion(
+        CurrencyConversionType.InventoryItem, 293622383), //Spinmetal
+    1760701414: CurrencyConversion(
+        CurrencyConversionType.InventoryItem, 1485756901), //Glacial Starwort
+    2654422615: CurrencyConversion(
+        CurrencyConversionType.Currency, 1022552290), //Legendary Shards
+    3664001560: CurrencyConversion(
+        CurrencyConversionType.Currency, 3159615086), //Glimmer
   };
 
   final CurrencyConversionType type;

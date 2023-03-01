@@ -12,13 +12,15 @@ class BaseSearchSorterWidget extends StatefulWidget {
   final SearchController controller;
   final ItemSortParameter sortParameter;
   final Widget handle;
-  const BaseSearchSorterWidget(this.controller, this.sortParameter, {this.handle});
+  const BaseSearchSorterWidget(this.controller, this.sortParameter,
+      {this.handle});
 
   @override
   BaseSearchSorterWidgetState createState() => BaseSearchSorterWidgetState();
 }
 
-class BaseSearchSorterWidgetState<T extends BaseSearchSorterWidget> extends State<T> {
+class BaseSearchSorterWidgetState<T extends BaseSearchSorterWidget>
+    extends State<T> {
   ItemSortParameter get sortParameter => widget.sortParameter;
 
   SearchController get controller => widget.controller;
@@ -117,7 +119,11 @@ class BaseSearchSorterWidgetState<T extends BaseSearchSorterWidget> extends Stat
                 : Theme.of(context).toggleButtonsTheme.color,
             padding: const EdgeInsets.all(0),
           ),
-          child: Icon(direction > 0 ? FontAwesomeIcons.chevronUp : FontAwesomeIcons.chevronDown, size: 14),
+          child: Icon(
+              direction > 0
+                  ? FontAwesomeIcons.chevronUp
+                  : FontAwesomeIcons.chevronDown,
+              size: 14),
           onPressed: () {
             if (selected) return;
             sortParameter.direction = direction;
@@ -127,7 +133,8 @@ class BaseSearchSorterWidgetState<T extends BaseSearchSorterWidget> extends Stat
   }
 
   addSorter(BuildContext context) {
-    controller.customSorting.insert(0, ItemSortParameter(active: true, type: sortParameter.type));
+    controller.customSorting
+        .insert(0, ItemSortParameter(active: true, type: sortParameter.type));
     controller.sort();
   }
 
@@ -139,7 +146,9 @@ class BaseSearchSorterWidgetState<T extends BaseSearchSorterWidget> extends Stat
   Widget buildSortLabel(BuildContext context) {
     var style = TextStyle(
         fontWeight: FontWeight.bold,
-        color: sortParameter.active ? Theme.of(context).colorScheme.onSurface : Colors.grey.shade300);
+        color: sortParameter.active
+            ? Theme.of(context).colorScheme.onSurface
+            : Colors.grey.shade300);
     switch (sortParameter.type) {
       case ItemSortParameterType.PowerLevel:
         return TranslatedTextWidget(
@@ -202,13 +211,16 @@ class BaseSearchSorterWidgetState<T extends BaseSearchSorterWidget> extends Stat
         return Text("Group".translate(context).toUpperCase(), style: style);
 
       case ItemSortParameterType.ItemOwner:
-        return Text("Item Holder".translate(context).toUpperCase(), style: style);
+        return Text("Item Holder".translate(context).toUpperCase(),
+            style: style);
 
       case ItemSortParameterType.StatTotal:
-        return Text("Stats Total".translate(context).toUpperCase(), style: style);
+        return Text("Stats Total".translate(context).toUpperCase(),
+            style: style);
 
       case ItemSortParameterType.MasterworkStatus:
-        return Text("Masterwork Status".translate(context).toUpperCase(), style: style);
+        return Text("Masterwork Status".translate(context).toUpperCase(),
+            style: style);
         break;
 
       case ItemSortParameterType.Stat:
@@ -216,7 +228,8 @@ class BaseSearchSorterWidgetState<T extends BaseSearchSorterWidget> extends Stat
         break;
 
       case ItemSortParameterType.DamageType:
-        return Text("Damage Type".translate(context).toUpperCase(), style: style);
+        return Text("Damage Type".translate(context).toUpperCase(),
+            style: style);
     }
     return Text(
       sortParameter.type.toString(),

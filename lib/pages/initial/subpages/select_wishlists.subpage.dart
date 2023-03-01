@@ -17,7 +17,8 @@ class SelectWishlistsSubPage extends StatefulWidget {
   SelectWishlistsSubPageState createState() => SelectWishlistsSubPageState();
 }
 
-class SelectWishlistsSubPageState extends SubpageBaseState<SelectWishlistsSubPage> {
+class SelectWishlistsSubPageState
+    extends SubpageBaseState<SelectWishlistsSubPage> {
   @override
   void initState() {
     super.initState();
@@ -77,7 +78,8 @@ class SelectWishlistsSubPageState extends SubpageBaseState<SelectWishlistsSubPag
 
   Widget buildWishlistsRootContent(BuildContext context) {
     return Container(
-        constraints: BoxConstraints(maxHeight: max(240, MediaQuery.of(context).size.height - 300)),
+        constraints: BoxConstraints(
+            maxHeight: max(240, MediaQuery.of(context).size.height - 300)),
         child: SingleChildScrollView(
             child: Container(
                 child: Column(
@@ -92,7 +94,8 @@ class SelectWishlistsSubPageState extends SubpageBaseState<SelectWishlistsSubPag
 
   Widget buildWishlistsFolderContent(BuildContext context) {
     return Container(
-        constraints: BoxConstraints(maxHeight: max(240, MediaQuery.of(context).size.height - 300)),
+        constraints: BoxConstraints(
+            maxHeight: max(240, MediaQuery.of(context).size.height - 300)),
         child: Column(children: [
           buildFolderHeader(context),
           Expanded(
@@ -167,14 +170,16 @@ class SelectWishlistsSubPageState extends SubpageBaseState<SelectWishlistsSubPag
     final currentFolder = context.watch<SelectWishlistNotifier>().currentFolder;
     final files = currentFolder?.files;
     if (files == null) return Container();
-    return Column(children: files.map((f) => buildWishlistFile(context, f)).toList());
+    return Column(
+        children: files.map((f) => buildWishlistFile(context, f)).toList());
   }
 
   Widget buildFolders(BuildContext context) {
     final currentFolder = context.watch<SelectWishlistNotifier>().currentFolder;
     final folders = currentFolder?.folders;
     if (folders == null) return Container();
-    return Column(children: folders.map((f) => buildWishlistFolder(context, f)).toList());
+    return Column(
+        children: folders.map((f) => buildWishlistFolder(context, f)).toList());
   }
 
   Widget buildWishlistFile(BuildContext context, WishlistFile file) {
@@ -194,7 +199,9 @@ class SelectWishlistsSubPageState extends SubpageBaseState<SelectWishlistsSubPag
                   children: [
                     Container(
                         padding: const EdgeInsets.all(8).copyWith(right: 16),
-                        child: Icon(checked ? FontAwesomeIcons.checkSquare : FontAwesomeIcons.square)),
+                        child: Icon(checked
+                            ? FontAwesomeIcons.checkSquare
+                            : FontAwesomeIcons.square)),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -231,7 +238,8 @@ class SelectWishlistsSubPageState extends SubpageBaseState<SelectWishlistsSubPag
                 child: Row(
                   children: [
                     Container(
-                        padding: const EdgeInsets.all(8).copyWith(right: 16), child: const Icon(FontAwesomeIcons.solidFolder)),
+                        padding: const EdgeInsets.all(8).copyWith(right: 16),
+                        child: const Icon(FontAwesomeIcons.solidFolder)),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,

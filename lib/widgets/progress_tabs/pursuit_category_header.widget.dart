@@ -14,17 +14,21 @@ class PursuitCategoryHeaderWidget extends BucketHeaderWidget {
   @override
   final Function onChanged;
   final String label;
-  const PursuitCategoryHeaderWidget({this.onChanged, Key key, this.label, int hash, int itemCount})
+  const PursuitCategoryHeaderWidget(
+      {this.onChanged, Key key, this.label, int hash, int itemCount})
       : super(key: key, hash: hash, itemCount: itemCount);
   @override
-  PursuitCategoryHeaderWidgetState createState() => PursuitCategoryHeaderWidgetState();
+  PursuitCategoryHeaderWidgetState createState() =>
+      PursuitCategoryHeaderWidgetState();
 }
 
-class PursuitCategoryHeaderWidgetState extends BucketHeaderWidgetState<PursuitCategoryHeaderWidget>
+class PursuitCategoryHeaderWidgetState
+    extends BucketHeaderWidgetState<PursuitCategoryHeaderWidget>
     with ManifestConsumer {
   @override
   fetchDefinition() async {
-    bucketDef = await manifest.getDefinition<DestinyInventoryBucketDefinition>(InventoryBucket.pursuits);
+    bucketDef = await manifest.getDefinition<DestinyInventoryBucketDefinition>(
+        InventoryBucket.pursuits);
     if (mounted) {
       setState(() {});
     }
@@ -57,7 +61,8 @@ class PursuitCategoryHeaderWidgetState extends BucketHeaderWidgetState<PursuitCa
   buildTrailing(BuildContext context) {
     return Row(children: [
       PursuitsDisplayOptionsSelectorWidget(
-          typeIdentifier: "${widget.hash}_${widget.label}", onChanged: widget.onChanged),
+          typeIdentifier: "${widget.hash}_${widget.label}",
+          onChanged: widget.onChanged),
       Container(width: 8),
       buildCount(context),
     ]);

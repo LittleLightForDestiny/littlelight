@@ -28,13 +28,19 @@ class MultiSectionScrollView extends StatelessWidget {
     }
     _slivers.addAll(_sections
         .where((s) => s.itemCount != 0)
-        .map((e) => e.build(context, mainAxisSpacing: mainAxisSpacing, crossAxisSpacing: crossAxisSpacing))
-        .fold<Iterable<Widget>>(<Widget>[], (previousValue, element) => previousValue.followedBy([element, spacer]))
+        .map((e) => e.build(context,
+            mainAxisSpacing: mainAxisSpacing,
+            crossAxisSpacing: crossAxisSpacing))
+        .fold<Iterable<Widget>>(
+            <Widget>[],
+            (previousValue, element) =>
+                previousValue.followedBy([element, spacer]))
         .expand((element) => [element])
         .toList());
 
     if ((padding?.bottom ?? 0) > 0) {
-      _slivers.add(SliverToBoxAdapter(child: Container(height: padding!.bottom)));
+      _slivers
+          .add(SliverToBoxAdapter(child: Container(height: padding!.bottom)));
     }
     return Container(
         padding: padding?.copyWith(top: 0, bottom: 0),

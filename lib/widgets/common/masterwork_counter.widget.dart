@@ -39,7 +39,8 @@ class MasterworkCounterWidgetState extends State<MasterworkCounterWidget>
         if (objective.visible) {
           masterworkObjective = objective;
           masterworkObjectiveDefinition =
-              await manifest.getDefinition<DestinyObjectiveDefinition>(objective.objectiveHash);
+              await manifest.getDefinition<DestinyObjectiveDefinition>(
+                  objective.objectiveHash);
         }
       }
     }
@@ -51,7 +52,8 @@ class MasterworkCounterWidgetState extends State<MasterworkCounterWidget>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    if (masterworkObjective == null || masterworkObjectiveDefinition?.displayProperties?.icon == null) {
+    if (masterworkObjective == null ||
+        masterworkObjectiveDefinition?.displayProperties?.icon == null) {
       return Container();
     }
     return Container(
@@ -63,7 +65,8 @@ class MasterworkCounterWidgetState extends State<MasterworkCounterWidget>
               width: 26,
               height: 26,
               child: QueuedNetworkImage(
-                  imageUrl: BungieApiService.url(masterworkObjectiveDefinition.displayProperties.icon)),
+                  imageUrl: BungieApiService.url(
+                      masterworkObjectiveDefinition.displayProperties.icon)),
             ),
             Container(
               width: 4,
@@ -75,11 +78,15 @@ class MasterworkCounterWidgetState extends State<MasterworkCounterWidget>
                 Text(masterworkObjectiveDefinition.progressDescription,
                     softWrap: false,
                     overflow: TextOverflow.fade,
-                    style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontSize: 11)),
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurface,
+                        fontSize: 11)),
                 Container(
                   width: 4,
                 ),
-                Text("${masterworkObjective.progress}", style: TextStyle(color: Colors.amber.shade200, fontSize: 15)),
+                Text("${masterworkObjective.progress}",
+                    style:
+                        TextStyle(color: Colors.amber.shade200, fontSize: 15)),
               ],
             ))
           ],

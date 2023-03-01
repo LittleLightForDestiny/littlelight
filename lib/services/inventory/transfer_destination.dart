@@ -5,7 +5,8 @@ class TransferDestination {
   final ItemDestination type;
   final InventoryAction action;
 
-  TransferDestination(this.type, {this.action = InventoryAction.Transfer, this.characterId});
+  TransferDestination(this.type,
+      {this.action = InventoryAction.Transfer, this.characterId});
 }
 
 enum InventoryAction { Transfer, Equip, Unequip, Pull }

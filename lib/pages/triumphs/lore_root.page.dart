@@ -45,9 +45,12 @@ class LoreRootPageState extends PresentationNodesTabsScaffoldState<LoreRootPage>
   Future<int?> getLoreNodeHash() async {
     int? loreNodeHash = destinySettings.loreRootNode;
     if (loreNodeHash == null) return null;
-    final loreNodeDef = await manifest.getDefinition<DestinyPresentationNodeDefinition>(loreNodeHash);
-    final loreFirstChildHash = loreNodeDef?.children?.presentationNodes?.first.presentationNodeHash;
-    final loreFirstChildDef = await manifest.getDefinition<DestinyPresentationNodeDefinition>(loreFirstChildHash);
+    final loreNodeDef = await manifest
+        .getDefinition<DestinyPresentationNodeDefinition>(loreNodeHash);
+    final loreFirstChildHash =
+        loreNodeDef?.children?.presentationNodes?.first.presentationNodeHash;
+    final loreFirstChildDef = await manifest
+        .getDefinition<DestinyPresentationNodeDefinition>(loreFirstChildHash);
     final loreNodeName = loreNodeDef?.displayProperties?.name;
     final loreFirstChildName = loreFirstChildDef?.displayProperties?.name;
     if (loreNodeName == loreFirstChildName) return loreFirstChildHash;
@@ -57,16 +60,23 @@ class LoreRootPageState extends PresentationNodesTabsScaffoldState<LoreRootPage>
   Future<void> loadNodes() async {
     await Future.delayed(Duration.zero);
     final rootNode = await getLoreNodeHash();
-    final rootCategoryDefinition = await manifest.getDefinition<DestinyPresentationNodeDefinition>(rootNode);
-    final nodeHashes = rootCategoryDefinition?.children?.presentationNodes?.map((e) => e.presentationNodeHash).toList();
+    final rootCategoryDefinition = await manifest
+        .getDefinition<DestinyPresentationNodeDefinition>(rootNode);
+    final nodeHashes = rootCategoryDefinition?.children?.presentationNodes
+        ?.map((e) => e.presentationNodeHash)
+        .toList();
     if (nodeHashes == null) return;
-    final categoryHash = LorePageRouteArguments.of(context)?.categoryPresentationNodeHash;
+    final categoryHash =
+        LorePageRouteArguments.of(context)?.categoryPresentationNodeHash;
     initialIndex = nodeHashes.indexOf(categoryHash);
-    final nodesDefinitions = await manifest.getDefinitions<DestinyPresentationNodeDefinition>(nodeHashes);
+    final nodesDefinitions = await manifest
+        .getDefinitions<DestinyPresentationNodeDefinition>(nodeHashes);
     setState(() {
       this.rootNode = rootCategoryDefinition;
-      this.nodesDefinitions =
-          nodeHashes.map((h) => nodesDefinitions[h]).whereType<DestinyPresentationNodeDefinition>().toList();
+      this.nodesDefinitions = nodeHashes
+          .map((h) => nodesDefinitions[h])
+          .whereType<DestinyPresentationNodeDefinition>()
+          .toList();
     });
   }
 
@@ -95,10 +105,15 @@ class LoreRootPageState extends PresentationNodesTabsScaffoldState<LoreRootPage>
   }
 
   @override
-  Widget buildTabButton(BuildContext context, DestinyPresentationNodeDefinition node) {
+  Widget buildTabButton(
+      BuildContext context, DestinyPresentationNodeDefinition node) {
     final iconName = node.displayProperties?.icon;
     if (iconName == null) return Container();
-    return Container(padding: const EdgeInsets.all(8), width: 48, height: 48, child: QueuedNetworkImage.fromBungie(iconName));
+    return Container(
+        padding: const EdgeInsets.all(8),
+        width: 48,
+        height: 48,
+        child: QueuedNetworkImage.fromBungie(iconName));
   }
 
   @override
@@ -123,13 +138,16 @@ class LoreRootPageState extends PresentationNodesTabsScaffoldState<LoreRootPage>
   }
 
   @override
-  Widget buildTab(BuildContext context, DestinyPresentationNodeDefinition node) {
-    final parentNodeHashes = TriumphsPageRouteArguments.of(context)?.parentCategoryHashes ?? [];
+  Widget buildTab(
+      BuildContext context, DestinyPresentationNodeDefinition node) {
+    final parentNodeHashes =
+        TriumphsPageRouteArguments.of(context)?.parentCategoryHashes ?? [];
     return PresentationNodeListWidget(
       node: node,
       onItemTap: (nodeHash) {
         Navigator.of(context).push(TriumphsPageRoute(
-            parentCategoryHashes: parentNodeHashes + [node.hash!, nodeHash], categoryPresentationNodeHash: nodeHash));
+            parentCategoryHashes: parentNodeHashes + [node.hash!, nodeHash],
+            categoryPresentationNodeHash: nodeHash));
       },
     );
   }

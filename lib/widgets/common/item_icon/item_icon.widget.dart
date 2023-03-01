@@ -18,7 +18,8 @@ import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:shimmer/shimmer.dart';
 
-class ItemIconWidget extends BaseDestinyStatelessItemWidget with DeepSightHelper {
+class ItemIconWidget extends BaseDestinyStatelessItemWidget
+    with DeepSightHelper {
   final double iconBorderWidth;
 
   factory ItemIconWidget.builder(
@@ -35,20 +36,31 @@ class ItemIconWidget extends BaseDestinyStatelessItemWidget with DeepSightHelper
         return EngramIconWidget(item, definition, instanceInfo, key: key);
 
       default:
-        return ItemIconWidget(item, definition, instanceInfo, key: key, iconBorderWidth: iconBorderWidth);
+        return ItemIconWidget(item, definition, instanceInfo,
+            key: key, iconBorderWidth: iconBorderWidth);
     }
   }
 
-  ItemIconWidget(DestinyItemComponent? item, DestinyInventoryItemDefinition? definition,
+  ItemIconWidget(
+      DestinyItemComponent? item,
+      DestinyInventoryItemDefinition? definition,
       DestinyItemInstanceComponent? instanceInfo,
-      {Key? key, String? characterId, this.iconBorderWidth = 2})
-      : super(item: item, definition: definition, instanceInfo: instanceInfo, key: key, characterId: characterId);
+      {Key? key,
+      String? characterId,
+      this.iconBorderWidth = 2})
+      : super(
+            item: item,
+            definition: definition,
+            instanceInfo: instanceInfo,
+            key: key,
+            characterId: characterId);
 
   @override
   Widget build(BuildContext context) {
     final tierType = definition?.inventory?.tierType;
     bool useBackgroundColor = true;
-    if ([DestinyItemType.Subclass, DestinyItemType.Engram].contains(definition?.itemType) ||
+    if ([DestinyItemType.Subclass, DestinyItemType.Engram]
+            .contains(definition?.itemType) ||
         definition?.inventory?.bucketTypeHash == InventoryBucket.subclass) {
       useBackgroundColor = false;
     }
@@ -56,7 +68,9 @@ class ItemIconWidget extends BaseDestinyStatelessItemWidget with DeepSightHelper
     return Stack(children: [
       Positioned.fill(
           child: Container(
-              color: useBackgroundColor && tierType != null ? tierType.getColor(context) : null,
+              color: useBackgroundColor && tierType != null
+                  ? tierType.getColor(context)
+                  : null,
               child: itemIconImage(context))),
       itemSeasonIcon(context),
       Positioned.fill(child: itemStateOverlay(context)),
@@ -66,7 +80,9 @@ class ItemIconWidget extends BaseDestinyStatelessItemWidget with DeepSightHelper
   Widget masterworkOverlay(BuildContext context) {
     final tierType = definition?.inventory?.tierType;
     final isExotic = tierType == TierType.Exotic;
-    final imgPath = isExotic ? "assets/imgs/masterwork-outline-exotic.png" : "assets/imgs/masterwork-outline.png";
+    final imgPath = isExotic
+        ? "assets/imgs/masterwork-outline-exotic.png"
+        : "assets/imgs/masterwork-outline.png";
     final img = Image.asset(
       imgPath,
       fit: BoxFit.cover,
@@ -85,7 +101,8 @@ class ItemIconWidget extends BaseDestinyStatelessItemWidget with DeepSightHelper
   }
 
   Widget itemStateOverlay(BuildContext context) {
-    if ([InventoryBucket.engrams, InventoryBucket.subclass].contains(item?.bucketHash)) {
+    if ([InventoryBucket.engrams, InventoryBucket.subclass]
+        .contains(item?.bucketHash)) {
       return Container();
     }
     ItemState state = item?.state ?? ItemState.None;
@@ -100,7 +117,9 @@ class ItemIconWidget extends BaseDestinyStatelessItemWidget with DeepSightHelper
     }
     return Container(
       decoration: BoxDecoration(
-          border: Border.all(color: LittleLightTheme.of(context).onSurfaceLayers, width: iconBorderWidth)),
+          border: Border.all(
+              color: LittleLightTheme.of(context).onSurfaceLayers,
+              width: iconBorderWidth)),
     );
   }
 
@@ -112,8 +131,10 @@ class ItemIconWidget extends BaseDestinyStatelessItemWidget with DeepSightHelper
     return LayoutBuilder(
         builder: (context, constraints) => Container(
             decoration: BoxDecoration(
-              border:
-                  Border.all(color: LittleLightTheme.of(context).highlightedObjectiveLayers, width: iconBorderWidth),
+              border: Border.all(
+                  color:
+                      LittleLightTheme.of(context).highlightedObjectiveLayers,
+                  width: iconBorderWidth),
             ),
             child: Stack(children: [
               Container(
@@ -128,8 +149,10 @@ class ItemIconWidget extends BaseDestinyStatelessItemWidget with DeepSightHelper
                     left: constraints.maxWidth * .07,
                     child: Text(
                       "!",
-                      style:
-                          LittleLightTheme.of(context).textTheme.button.copyWith(fontSize: constraints.maxWidth * .2),
+                      style: LittleLightTheme.of(context)
+                          .textTheme
+                          .button
+                          .copyWith(fontSize: constraints.maxWidth * .2),
                     ))
             ])));
   }
@@ -137,7 +160,9 @@ class ItemIconWidget extends BaseDestinyStatelessItemWidget with DeepSightHelper
   Widget craftedWeaponOverlay(BuildContext context) {
     return Container(
         decoration: BoxDecoration(
-            border: Border.all(color: LittleLightTheme.of(context).onSurfaceLayers, width: iconBorderWidth)),
+            border: Border.all(
+                color: LittleLightTheme.of(context).onSurfaceLayers,
+                width: iconBorderWidth)),
         child: Image.asset(
           "assets/imgs/crafted-icon-overlay.png",
           fit: BoxFit.fill,
@@ -147,7 +172,8 @@ class ItemIconWidget extends BaseDestinyStatelessItemWidget with DeepSightHelper
   String? seasonBadgeUrl() {
     final versionNumber = item?.versionNumber;
     if (versionNumber == null) return null;
-    var version = definition?.quality?.displayVersionWatermarkIcons?[versionNumber];
+    var version =
+        definition?.quality?.displayVersionWatermarkIcons?[versionNumber];
     if (version?.isNotEmpty ?? false) return version;
     return null;
   }

@@ -12,14 +12,17 @@ class PresentationNodeListWidget extends StatelessWidget {
   final DestinyPresentationNodeDefinition node;
   final PresentationNodeTap? onItemTap;
 
-  const PresentationNodeListWidget({Key? key, required this.node, this.onItemTap}) : super(key: key);
+  const PresentationNodeListWidget(
+      {Key? key, required this.node, this.onItemTap})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MultiSectionScrollView(
       [
         SliverSection(
-          itemsPerRow: MediaQueryHelper(context).responsiveValue(1, tablet: 2, desktop: 3),
+          itemsPerRow: MediaQueryHelper(context)
+              .responsiveValue(1, tablet: 2, desktop: 3),
           itemCount: node.children?.presentationNodes?.length ?? 0,
           itemHeight: 80,
           itemBuilder: (context, index) => buildItem(context, index),
@@ -35,6 +38,7 @@ class PresentationNodeListWidget extends StatelessWidget {
     final childNode = node.children?.presentationNodes?[index];
     if (childNode == null) return Container();
     return PresentationNodeItemWidget(
-        onPressed: () => onItemTap?.call(childNode.presentationNodeHash!), hash: childNode.presentationNodeHash);
+        onPressed: () => onItemTap?.call(childNode.presentationNodeHash!),
+        hash: childNode.presentationNodeHash);
   }
 }

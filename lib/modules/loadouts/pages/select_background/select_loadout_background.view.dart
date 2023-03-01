@@ -41,11 +41,14 @@ class SelectLoadoutBackgroundView extends StatelessWidget {
           .toList(),
       crossAxisSpacing: 4,
       mainAxisSpacing: 4,
-      padding: MediaQuery.of(context).viewPadding.copyWith(top: 0) + const EdgeInsets.all(4),
+      padding: MediaQuery.of(context).viewPadding.copyWith(top: 0) +
+          const EdgeInsets.all(4),
     );
   }
 
-  SliverSection buildCategoryHeaderSection(DestinyPresentationNodeDefinition nodeDef) => SliverSection(
+  SliverSection buildCategoryHeaderSection(
+          DestinyPresentationNodeDefinition nodeDef) =>
+      SliverSection(
         itemBuilder: (context, _) => buildCategoryItem(context, nodeDef),
         itemHeight: 60,
         itemCount: 1,
@@ -59,14 +62,19 @@ class SelectLoadoutBackgroundView extends StatelessWidget {
     final items = state.getCategoryItems(hash);
     if (items != null && items.isNotEmpty) {
       return SliverSection(
-          itemBuilder: (context, index) => buildEmblemItem(context, items[index]),
+          itemBuilder: (context, index) =>
+              buildEmblemItem(context, items[index]),
           itemHeight: 56,
           itemCount: items.length);
     }
-    return SliverSection(itemBuilder: (context, index) => LoadingAnimWidget(), itemAspectRatio: 1, itemCount: 1);
+    return SliverSection(
+        itemBuilder: (context, index) => LoadingAnimWidget(),
+        itemAspectRatio: 1,
+        itemCount: 1);
   }
 
-  Widget buildCategoryItem(BuildContext context, DestinyPresentationNodeDefinition def) {
+  Widget buildCategoryItem(
+      BuildContext context, DestinyPresentationNodeDefinition def) {
     final color = LittleLightTheme.of(context).onSurfaceLayers.layer3;
     return Material(
       child: InkWell(
@@ -76,7 +84,12 @@ class SelectLoadoutBackgroundView extends StatelessWidget {
             gradient: LinearGradient(
                 begin: const Alignment(0, 0),
                 end: const Alignment(1, 2),
-                colors: [color.withOpacity(.05), color.withOpacity(.1), color.withOpacity(.03), color.withOpacity(.1)]),
+                colors: [
+                  color.withOpacity(.05),
+                  color.withOpacity(.1),
+                  color.withOpacity(.03),
+                  color.withOpacity(.1)
+                ]),
             border: Border.all(color: color, width: 1),
           ),
           padding: const EdgeInsets.all(16),
@@ -93,12 +106,15 @@ class SelectLoadoutBackgroundView extends StatelessWidget {
             )
           ]),
         ),
-        onTap: () => context.read<SelectLoadoutBackgroundBloc>().toggleCategory(def.hash!),
+        onTap: () => context
+            .read<SelectLoadoutBackgroundBloc>()
+            .toggleCategory(def.hash!),
       ),
     );
   }
 
-  Widget buildEmblemItem(BuildContext context, DestinyInventoryItemDefinition def) {
+  Widget buildEmblemItem(
+      BuildContext context, DestinyInventoryItemDefinition def) {
     final color = LittleLightTheme.of(context).onSurfaceLayers.layer3;
     final url = def.secondarySpecial;
     final hash = def.hash;

@@ -13,7 +13,8 @@ class InspectScreen extends StatefulWidget {
   final String membershipId;
   final int membershipType;
 
-  const InspectScreen(this.membershipId, this.membershipType, {Key key}) : super(key: key);
+  const InspectScreen(this.membershipId, this.membershipType, {Key key})
+      : super(key: key);
 
   @override
   InspectScreenState createState() => InspectScreenState();
@@ -66,8 +67,13 @@ class InspectScreenState extends State<InspectScreen>
             ),
           ),
           TabsCharacterMenuWidget(characters, controller: charTabController),
-          const InventoryNotificationWidget(key: Key('inventory_notification_widget')),
-          Positioned(bottom: screenPadding.bottom, left: 0, right: 0, child: const SelectedItemsWidget()),
+          const InventoryNotificationWidget(
+              key: Key('inventory_notification_widget')),
+          Positioned(
+              bottom: screenPadding.bottom,
+              left: 0,
+              right: 0,
+              child: const SelectedItemsWidget()),
         ],
       ),
     );
@@ -87,7 +93,8 @@ class InspectScreenState extends State<InspectScreen>
     )));
   }
 
-  Widget buildCharacterTabController(BuildContext context, TabController controller) {
+  Widget buildCharacterTabController(
+      BuildContext context, TabController controller) {
     return TabBarView(controller: controller, children: getTabs());
   }
 

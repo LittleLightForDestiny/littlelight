@@ -32,13 +32,15 @@ class LoadoutFilter extends BaseItemFilter<Set<String>> {
   }
 
   @override
-  bool filterItem(ItemWithOwner item, {Map<int, DestinyInventoryItemDefinition> definitions}) {
+  bool filterItem(ItemWithOwner item,
+      {Map<int, DestinyInventoryItemDefinition> definitions}) {
     if (value.isEmpty) {
       return true;
     }
 
     for (var assignedId in value) {
-      var loadout = allLoadouts.firstWhere((element) => element.assignedId == assignedId);
+      var loadout =
+          allLoadouts.firstWhere((element) => element.assignedId == assignedId);
       if (loadout.containsItem(item.item.itemInstanceId)) return true;
     }
     return false;

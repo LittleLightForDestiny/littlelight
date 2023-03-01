@@ -10,26 +10,35 @@ import 'package:little_light/widgets/search/search.controller.dart';
 import 'package:little_light/widgets/search/search_sorters/base_search_sorter.widget.dart';
 
 class StatSorterWidget extends BaseSearchSorterWidget {
-  const StatSorterWidget(SearchController controller, ItemSortParameter sortParameter, {Widget handle})
+  const StatSorterWidget(
+      SearchController controller, ItemSortParameter sortParameter,
+      {Widget handle})
       : super(controller, sortParameter, handle: handle);
 
   @override
   StatSorterWidgetState createState() => StatSorterWidgetState();
 }
 
-class StatSorterWidgetState extends BaseSearchSorterWidgetState<StatSorterWidget> with ProfileConsumer {
+class StatSorterWidgetState
+    extends BaseSearchSorterWidgetState<StatSorterWidget> with ProfileConsumer {
   @override
   addSorter(BuildContext context) async {
     List<int> statHashes = [];
     for (var element in controller.filtered) {
-      var stats = profile.getPrecalculatedStats(element?.item?.itemInstanceId) ?? {};
+      var stats =
+          profile.getPrecalculatedStats(element?.item?.itemInstanceId) ?? {};
       statHashes.addAll(stats.keys.map((k) => int.parse(k)));
     }
     statHashes = statHashes.toSet().toList();
-    final selectedStat = await Navigator.of(context).push(SelectStatDialogRoute(context, statHashes));
+    final selectedStat = await Navigator.of(context)
+        .push(SelectStatDialogRoute(context, statHashes));
     if (selectedStat == null) return;
     controller.customSorting.insert(
-        0, ItemSortParameter(active: true, type: sortParameter.type, customData: {"statHash": selectedStat}));
+        0,
+        ItemSortParameter(
+            active: true,
+            type: sortParameter.type,
+            customData: {"statHash": selectedStat}));
     controller.sort();
   }
 
@@ -39,9 +48,12 @@ class StatSorterWidgetState extends BaseSearchSorterWidgetState<StatSorterWidget
   Widget buildSortLabel(BuildContext context) {
     var style = TextStyle(
         fontWeight: FontWeight.bold,
-        color: sortParameter.active ? Theme.of(context).colorScheme.onSurface : Colors.grey.shade300);
+        color: sortParameter.active
+            ? Theme.of(context).colorScheme.onSurface
+            : Colors.grey.shade300);
     if (statHash != null) {
-      return ManifestText<DestinyStatDefinition>(statHash, uppercase: true, style: style);
+      return ManifestText<DestinyStatDefinition>(statHash,
+          uppercase: true, style: style);
     }
     return super.buildSortLabel(context);
   }

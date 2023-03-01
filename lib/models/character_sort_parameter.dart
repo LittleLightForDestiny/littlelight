@@ -14,7 +14,8 @@ class CharacterSortParameter {
   CharacterSortParameterType type;
   List<String>? customOrder;
 
-  CharacterSortParameter({this.type = CharacterSortParameterType.LastPlayed, this.customOrder});
+  CharacterSortParameter(
+      {this.type = CharacterSortParameterType.LastPlayed, this.customOrder});
 
   static CharacterSortParameter fromJson(dynamic json) {
     return _$CharacterSortParameterFromJson(json);

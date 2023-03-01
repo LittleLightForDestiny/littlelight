@@ -7,7 +7,8 @@ class SetItemNicknameDialogRoute extends DialogRoute<String?> {
   SetItemNicknameDialogRoute(BuildContext context, String currentNickname)
       : super(
           context: context,
-          builder: (context) => SetItemNicknameDialog(context.nicknameArgument ?? ""),
+          builder: (context) =>
+              SetItemNicknameDialog(context.nicknameArgument ?? ""),
           settings: RouteSettings(arguments: currentNickname),
         );
 }

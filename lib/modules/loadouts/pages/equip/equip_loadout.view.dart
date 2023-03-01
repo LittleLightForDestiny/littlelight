@@ -19,8 +19,10 @@ import 'package:little_light/shared/widgets/transfer_destinations/transfer_desti
 import 'package:provider/provider.dart';
 
 class EquipLoadoutView extends StatelessWidget with ProfileConsumer {
-  EquipLoadoutBloc _bloc(BuildContext context) => context.read<EquipLoadoutBloc>();
-  EquipLoadoutBloc _state(BuildContext context) => context.watch<EquipLoadoutBloc>();
+  EquipLoadoutBloc _bloc(BuildContext context) =>
+      context.read<EquipLoadoutBloc>();
+  EquipLoadoutBloc _state(BuildContext context) =>
+      context.watch<EquipLoadoutBloc>();
 
   Color getBackgroundColor(BuildContext context) {
     final emblemDefinition = _state(context).emblemDefinition;
@@ -66,8 +68,10 @@ class EquipLoadoutView extends StatelessWidget with ProfileConsumer {
         child: Container(
           alignment: Alignment.center,
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(8)
-                .copyWith(top: 0, left: max(screenPadding.left, 8), right: max(screenPadding.right, 8)),
+            padding: const EdgeInsets.all(8).copyWith(
+                top: 0,
+                left: max(screenPadding.left, 8),
+                right: max(screenPadding.right, 8)),
             child: Container(
               alignment: Alignment.center,
               constraints: const BoxConstraints(minWidth: double.maxFinite),
@@ -89,7 +93,11 @@ class EquipLoadoutView extends StatelessWidget with ProfileConsumer {
 
   Widget buildEquippableItems(BuildContext context) {
     final items = _state(context).equippableItems;
-    final classes = [DestinyClass.Titan, DestinyClass.Hunter, DestinyClass.Warlock];
+    final classes = [
+      DestinyClass.Titan,
+      DestinyClass.Hunter,
+      DestinyClass.Warlock
+    ];
     if (items == null) return Container();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -102,7 +110,8 @@ class EquipLoadoutView extends StatelessWidget with ProfileConsumer {
             Container(
               height: 8,
             ),
-            buildEquippableRow(context, DestinyClass.Unknown, items[DestinyClass.Unknown]),
+            buildEquippableRow(
+                context, DestinyClass.Unknown, items[DestinyClass.Unknown]),
           ] +
           classes
               .map((c) {
@@ -128,7 +137,8 @@ class EquipLoadoutView extends StatelessWidget with ProfileConsumer {
       ),
       GridView(
         shrinkWrap: true,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 7, childAspectRatio: 1),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 7, childAspectRatio: 1),
         physics: const NeverScrollableScrollPhysics(),
         children: unequippable
             .map((e) => Container(
@@ -140,7 +150,8 @@ class EquipLoadoutView extends StatelessWidget with ProfileConsumer {
     ]);
   }
 
-  Widget buildEquippableRow(BuildContext context, DestinyClass destinyClass, List<LoadoutIndexItem?>? items) {
+  Widget buildEquippableRow(BuildContext context, DestinyClass destinyClass,
+      List<LoadoutIndexItem?>? items) {
     final rowItems = items ?? List<LoadoutIndexItem?>.filled(6, null);
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,

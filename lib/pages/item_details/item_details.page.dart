@@ -65,7 +65,12 @@ class ItemDetailsPage extends StatefulWidget {
 }
 
 class ItemDetailScreenState extends State<ItemDetailsPage>
-    with AuthConsumer, ProfileConsumer, InventoryConsumer, ManifestConsumer, ItemNotesConsumer {
+    with
+        AuthConsumer,
+        ProfileConsumer,
+        InventoryConsumer,
+        ManifestConsumer,
+        ItemNotesConsumer {
   ItemDetailsPageArgumentsBase get routeArgs {
     final args = ModalRoute.of(context).settings.arguments;
     if (args is ItemDetailsPageArgumentsBase) return args;
@@ -116,7 +121,8 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
   DestinyItemComponent get item => itemWithOwner?.item;
   String get characterId => itemWithOwner?.ownerId;
 
-  DestinyItemInstanceComponent get instanceInfo => profile.getInstanceInfo(item?.itemInstanceId);
+  DestinyItemInstanceComponent get instanceInfo =>
+      profile.getInstanceInfo(item?.itemInstanceId);
 
   @override
   initState() {
@@ -140,13 +146,15 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
   }
 
   Future<void> getDefinitionFromCache() async {
-    definition = manifest.getDefinitionFromCache<DestinyInventoryItemDefinition>(itemHash);
+    definition = manifest
+        .getDefinitionFromCache<DestinyInventoryItemDefinition>(itemHash);
     if (definition != null) setState(() {});
   }
 
   Future<void> loadItemDefinition() async {
     if (definition != null) return;
-    definition = await manifest.getDefinition<DestinyInventoryItemDefinition>(itemHash);
+    definition =
+        await manifest.getDefinition<DestinyInventoryItemDefinition>(itemHash);
   }
 
   Future<void> initSocketController() async {
@@ -157,7 +165,9 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
     if (routeArgs is VendorItemDetailsPageArguments) {
       final args = routeArgs as VendorItemDetailsPageArguments;
       socketController = ItemSocketController.fromVendorItem(
-          characterId: args.characterId, vendorHash: args.vendorHash, vendorItem: vendorItem);
+          characterId: args.characterId,
+          vendorHash: args.vendorHash,
+          vendorItem: vendorItem);
       return;
     }
     socketController = ItemSocketController.fromItemHash(itemHash);
@@ -172,12 +182,16 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
   findLoadouts() async {
     final allLoadouts = context.read<LoadoutsBloc>().loadouts;
     if (item?.itemInstanceId == null) return;
-    loadouts = allLoadouts?.where((l) => l.containsItem(item.itemInstanceId))?.toList() ?? [];
+    loadouts = allLoadouts
+            ?.where((l) => l.containsItem(item.itemInstanceId))
+            ?.toList() ??
+        [];
   }
 
   findDuplicates() async {
     List<ItemWithOwner> allItems = [];
-    Iterable<String> charIds = profile.characters.map((char) => char.characterId);
+    Iterable<String> charIds =
+        profile.characters.map((char) => char.characterId);
     for (var charId in charIds) {
       allItems.addAll(profile
           .getCharacterEquipment(charId)
@@ -193,7 +207,8 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
         .where((i) => i.itemHash == definition.hash)
         .map((item) => ItemWithOwner(item, null)));
     duplicates = allItems.where((i) {
-      return i.item.itemInstanceId != null && i.item.itemInstanceId != item?.itemInstanceId;
+      return i.item.itemInstanceId != null &&
+          i.item.itemInstanceId != item?.itemInstanceId;
     }).toList();
 
     duplicates = await InventoryUtils.sortDestinyItems(duplicates);
@@ -201,7 +216,9 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
 
   Future loadStatGroupDefinition() async {
     if (definition?.stats?.statGroupHash != null) {
-      statGroupDefinition = await manifest.getDefinition<DestinyStatGroupDefinition>(definition?.stats?.statGroupHash);
+      statGroupDefinition =
+          await manifest.getDefinition<DestinyStatGroupDefinition>(
+              definition?.stats?.statGroupHash);
     }
   }
 
@@ -214,13 +231,17 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
   }
 
   Widget buildPortrait(BuildContext context) {
-    var customName = itemNotes.getNotesForItem(item?.itemHash, item?.itemInstanceId)?.customName;
+    var customName = itemNotes
+        .getNotesForItem(item?.itemHash, item?.itemInstanceId)
+        ?.customName;
     return Scaffold(
         body: Stack(children: [
       CustomScrollView(
         slivers: [
           ItemCoverWidget(item, definition, instanceInfo,
-              uniqueId: uniqueId, characterId: characterId, key: Key("cover_${customName}_$loaded")),
+              uniqueId: uniqueId,
+              characterId: characterId,
+              key: Key("cover_${customName}_$loaded")),
           SliverList(
               delegate: SliverChildListDelegate([
             buildSaleDetails(context),
@@ -273,7 +294,9 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
   }
 
   Widget buildLandscape(BuildContext context) {
-    var customName = itemNotes.getNotesForItem(item?.itemHash, item?.itemInstanceId)?.customName;
+    var customName = itemNotes
+        .getNotesForItem(item?.itemHash, item?.itemInstanceId)
+        ?.customName;
     return Scaffold(
         body: Stack(children: [
       CustomScrollView(
@@ -337,7 +360,9 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
     if (item == null) return Container();
     final screenPadding = MediaQuery.of(context).padding;
     return Container(
-        padding: const EdgeInsets.all(8) + EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
+        padding: const EdgeInsets.all(8) +
+            EdgeInsets.only(
+                left: screenPadding.left, right: screenPadding.right),
         child: ItemLevelWidget(item: item));
   }
 
@@ -348,7 +373,8 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
     final args = routeArgs as VendorItemDetailsPageArguments;
     var screenPadding = MediaQuery.of(context).padding;
     return Container(
-        padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
+        padding: EdgeInsets.only(
+            left: screenPadding.left, right: screenPadding.right),
         child: ItemVendorInfoWidget(
           sale: vendorItem,
           vendorHash: args.vendorHash,
@@ -361,14 +387,17 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
     if (socketController == null) return Container();
     var screenPadding = MediaQuery.of(context).padding;
     return Container(
-        padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
-        child: WishlistNotesWidget(item, reusablePlugs: socketController.reusablePlugs));
+        padding: EdgeInsets.only(
+            left: screenPadding.left, right: screenPadding.right),
+        child: WishlistNotesWidget(item,
+            reusablePlugs: socketController.reusablePlugs));
   }
 
   Widget buildWishlistBuilds(BuildContext context) {
     var screenPadding = MediaQuery.of(context).padding;
     return Container(
-        padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
+        padding: EdgeInsets.only(
+            left: screenPadding.left, right: screenPadding.right),
         child: WishlistBuildsWidget(
           definition?.hash,
           reusablePlugs: socketController.reusablePlugs,
@@ -379,7 +408,8 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
     if (hideItemManagement) return Container();
     var screenPadding = MediaQuery.of(context).padding;
     return Container(
-        padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
+        padding: EdgeInsets.only(
+            left: screenPadding.left, right: screenPadding.right),
         child: ManagementBlockWidget(
           item,
           definition,
@@ -395,7 +425,8 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
         padding: const EdgeInsets.all(8),
         child: Row(
           children: <Widget>[
-            Icon(locked ? FontAwesomeIcons.lock : FontAwesomeIcons.unlock, size: 14),
+            Icon(locked ? FontAwesomeIcons.lock : FontAwesomeIcons.unlock,
+                size: 14),
             Container(
               width: 4,
             ),
@@ -432,7 +463,8 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
   Widget buildActionButtons(BuildContext context) {
     if (hideItemManagement || item == null) return Container();
     List<Widget> buttons = [];
-    if (InventoryBucket.loadoutBucketHashes.contains(definition?.inventory?.bucketTypeHash)) {
+    if (InventoryBucket.loadoutBucketHashes
+        .contains(definition?.inventory?.bucketTypeHash)) {
       buttons.add(Expanded(
           child: ElevatedButton(
               child: TranslatedTextWidget(
@@ -484,18 +516,23 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
         .toList();
     var screenPadding = MediaQuery.of(context).padding;
     return Container(
-        padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
-        child: Container(padding: const EdgeInsets.symmetric(horizontal: 8), child: Row(children: buttons.toList())));
+        padding: EdgeInsets.only(
+            left: screenPadding.left, right: screenPadding.right),
+        child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: Row(children: buttons.toList())));
   }
 
   Widget buildLoadouts(BuildContext context) {
-    return ItemDetailLoadoutsWidget(item, definition, instanceInfo, loadouts: loadouts);
+    return ItemDetailLoadoutsWidget(item, definition, instanceInfo,
+        loadouts: loadouts);
   }
 
   Widget buildDuplicates(context) {
     var screenPadding = MediaQuery.of(context).padding;
     return Container(
-        padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
+        padding: EdgeInsets.only(
+            left: screenPadding.left, right: screenPadding.right),
         child: ItemDetailDuplicatesWidget(
           itemWithOwner,
           definition,
@@ -508,7 +545,8 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
     var screenPadding = MediaQuery.of(context).padding;
     if (item == null) return Container(height: 1);
     return Container(
-        padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
+        padding: EdgeInsets.only(
+            left: screenPadding.left, right: screenPadding.right),
         child: ItemDetailsNotesWidget(
             item: item,
             definition: definition,
@@ -524,7 +562,8 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
     var screenPadding = MediaQuery.of(context).padding;
     if (item == null) return Container();
     return Container(
-        padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
+        padding: EdgeInsets.only(
+            left: screenPadding.left, right: screenPadding.right),
         child: ItemDetailsTagsWidget(
             item: item,
             definition: definition,
@@ -542,7 +581,8 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
     }
     var screenPadding = MediaQuery.of(context).padding;
     return Container(
-        padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
+        padding: EdgeInsets.only(
+            left: screenPadding.left, right: screenPadding.right),
         child: ItemObjectivesWidget(
             item: item,
             definition: definition,
@@ -554,18 +594,21 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
   Widget buildRewards(BuildContext context) {
     var screenPadding = MediaQuery.of(context).padding;
     return Container(
-        padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
+        padding: EdgeInsets.only(
+            left: screenPadding.left, right: screenPadding.right),
         child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: RewardsInfoWidget(item, definition, instanceInfo,
-                characterId: characterId, key: const Key("item_rewards_widget"))));
+                characterId: characterId,
+                key: const Key("item_rewards_widget"))));
   }
 
   Widget buildModInfo(BuildContext context) {
     var screenPadding = MediaQuery.of(context).padding;
     if (definition.itemType != DestinyItemType.Mod) return Container();
     return Container(
-        padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
+        padding: EdgeInsets.only(
+            left: screenPadding.left, right: screenPadding.right),
         child: ItemDetailsPlugInfoWidget(
           item: item,
           definition: definition,
@@ -575,18 +618,24 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
   Widget buildStats(BuildContext context) {
     var screenPadding = MediaQuery.of(context).padding;
     return Container(
-        padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
+        padding: EdgeInsets.only(
+            left: screenPadding.left, right: screenPadding.right),
         child: DetailsItemStatsWidget(
-            item: item, definition: definition, socketController: socketController, key: const Key("stats_widget")));
+            item: item,
+            definition: definition,
+            socketController: socketController,
+            key: const Key("stats_widget")));
   }
 
   Widget buildPerks(BuildContext context) {
-    var perksCategory = definition.sockets?.socketCategories
-        ?.firstWhere((s) => SocketCategoryHashes.perks.contains(s.socketCategoryHash), orElse: () => null);
+    var perksCategory = definition.sockets?.socketCategories?.firstWhere(
+        (s) => SocketCategoryHashes.perks.contains(s.socketCategoryHash),
+        orElse: () => null);
     if (perksCategory == null || socketController == null) return Container();
     var screenPadding = MediaQuery.of(context).padding;
     return Container(
-        padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
+        padding: EdgeInsets.only(
+            left: screenPadding.left, right: screenPadding.right),
         child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: DetailsItemPerksWidget(
@@ -599,13 +648,17 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
   }
 
   Widget buildIntrinsicPerk(BuildContext context) {
-    var intrinsicperkCategory = definition.sockets?.socketCategories?.firstWhere(
-        (s) => DestinyData.socketCategoryIntrinsicPerkHashes.contains(s.socketCategoryHash),
-        orElse: () => null);
-    if (intrinsicperkCategory == null || socketController == null) return Container();
+    var intrinsicperkCategory = definition.sockets?.socketCategories
+        ?.firstWhere(
+            (s) => DestinyData.socketCategoryIntrinsicPerkHashes
+                .contains(s.socketCategoryHash),
+            orElse: () => null);
+    if (intrinsicperkCategory == null || socketController == null)
+      return Container();
     var screenPadding = MediaQuery.of(context).padding;
     return Container(
-        padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
+        padding: EdgeInsets.only(
+            left: screenPadding.left, right: screenPadding.right),
         child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: DetailsItemIntrinsicPerkWidget(
@@ -618,12 +671,15 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
   }
 
   Widget buildArmorTier(BuildContext context) {
-    var tierCategory = definition.sockets?.socketCategories
-        ?.firstWhere((s) => DestinyData.socketCategoryTierHashes.contains(s.socketCategoryHash), orElse: () => null);
+    var tierCategory = definition.sockets?.socketCategories?.firstWhere(
+        (s) =>
+            DestinyData.socketCategoryTierHashes.contains(s.socketCategoryHash),
+        orElse: () => null);
     if (tierCategory == null || socketController == null) return Container();
     var screenPadding = MediaQuery.of(context).padding;
     return Container(
-        padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
+        padding: EdgeInsets.only(
+            left: screenPadding.left, right: screenPadding.right),
         child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: DetailsArmorTierWidget(
@@ -636,8 +692,9 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
   }
 
   Widget buildPerkDetails(BuildContext context) {
-    var perksCategory = definition.sockets?.socketCategories
-        ?.firstWhere((s) => SocketCategoryHashes.perks.contains(s.socketCategoryHash), orElse: () => null);
+    var perksCategory = definition.sockets?.socketCategories?.firstWhere(
+        (s) => SocketCategoryHashes.perks.contains(s.socketCategoryHash),
+        orElse: () => null);
     if (perksCategory == null || socketController == null) return Container();
     var screenPadding = MediaQuery.of(context).padding;
     return Container(
@@ -658,13 +715,15 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
 
   Widget buildExoticPerkDetails(BuildContext context) {
     var perksCategory = definition.sockets?.socketCategories?.firstWhere(
-        (s) => DestinyData.socketCategoryIntrinsicPerkHashes.contains(s.socketCategoryHash),
+        (s) => DestinyData.socketCategoryIntrinsicPerkHashes
+            .contains(s.socketCategoryHash),
         orElse: () => null);
     if (perksCategory == null || socketController == null) return Container();
     var screenPadding = MediaQuery.of(context).padding;
     return Container(
         margin: const EdgeInsets.only(top: 8),
-        padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
+        padding: EdgeInsets.only(
+            left: screenPadding.left, right: screenPadding.right),
         child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: ItemDetailsSocketDetailsWidget(
@@ -676,13 +735,15 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
   }
 
   Widget buildMods(BuildContext context) {
-    var modsCategory = definition.sockets?.socketCategories
-        ?.firstWhere((s) => SocketCategoryHashes.mods.contains(s.socketCategoryHash), orElse: () => null);
+    var modsCategory = definition.sockets?.socketCategories?.firstWhere(
+        (s) => SocketCategoryHashes.mods.contains(s.socketCategoryHash),
+        orElse: () => null);
     if (modsCategory == null || socketController == null) return Container();
     var screenPadding = MediaQuery.of(context).padding;
     return Container(
         margin: const EdgeInsets.only(top: 8),
-        padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
+        padding: EdgeInsets.only(
+            left: screenPadding.left, right: screenPadding.right),
         child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: DetailsItemModsWidget(
@@ -695,13 +756,15 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
   }
 
   Widget buildModDetails(BuildContext context) {
-    var modsCategory = definition.sockets?.socketCategories
-        ?.firstWhere((s) => SocketCategoryHashes.mods.contains(s.socketCategoryHash), orElse: () => null);
+    var modsCategory = definition.sockets?.socketCategories?.firstWhere(
+        (s) => SocketCategoryHashes.mods.contains(s.socketCategoryHash),
+        orElse: () => null);
     if (modsCategory == null || socketController == null) return Container();
     var screenPadding = MediaQuery.of(context).padding;
     return Container(
         margin: const EdgeInsets.only(top: 8),
-        padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
+        padding: EdgeInsets.only(
+            left: screenPadding.left, right: screenPadding.right),
         child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: ItemDetailsSocketDetailsWidget(
@@ -714,12 +777,14 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
 
   Widget buildCosmetics(BuildContext context) {
     var modsCategory = definition.sockets?.socketCategories?.firstWhere(
-        (s) => DestinyData.socketCategoryCosmeticModHashes.contains(s.socketCategoryHash),
+        (s) => DestinyData.socketCategoryCosmeticModHashes
+            .contains(s.socketCategoryHash),
         orElse: () => null);
     if (modsCategory == null || socketController == null) return Container();
     var screenPadding = MediaQuery.of(context).padding;
     return Container(
-        padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
+        padding: EdgeInsets.only(
+            left: screenPadding.left, right: screenPadding.right),
         child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: DetailsItemModsWidget(
@@ -733,13 +798,15 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
 
   Widget buildCosmeticDetails(BuildContext context) {
     var modsCategory = definition.sockets?.socketCategories?.firstWhere(
-        (s) => DestinyData.socketCategoryCosmeticModHashes.contains(s.socketCategoryHash),
+        (s) => DestinyData.socketCategoryCosmeticModHashes
+            .contains(s.socketCategoryHash),
         orElse: () => null);
     if (modsCategory == null || socketController == null) return Container();
     var screenPadding = MediaQuery.of(context).padding;
     return Container(
         margin: const EdgeInsets.only(top: 8),
-        padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
+        padding: EdgeInsets.only(
+            left: screenPadding.left, right: screenPadding.right),
         child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: ItemDetailsSocketDetailsWidget(
@@ -754,7 +821,8 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
     if (definition?.itemType == DestinyItemType.QuestStep) {
       var screenPadding = MediaQuery.of(context).padding;
       return Container(
-          padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
+          padding: EdgeInsets.only(
+              left: screenPadding.left, right: screenPadding.right),
           child: Container(
               child: QuestInfoWidget(
                   item: item,
@@ -770,7 +838,8 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
     if (definition?.loreHash == null) return Container();
     var screenPadding = MediaQuery.of(context).padding;
     return Container(
-        padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
+        padding: EdgeInsets.only(
+            left: screenPadding.left, right: screenPadding.right),
         child: ItemLoreWidget(definition.loreHash));
   }
 
@@ -778,7 +847,8 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
     if (definition?.collectibleHash == null) return Container();
     var screenPadding = MediaQuery.of(context).padding;
     return Container(
-        padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
+        padding: EdgeInsets.only(
+            left: screenPadding.left, right: screenPadding.right),
         child: ItemCollectibleInfoWidget(definition.collectibleHash));
   }
 }

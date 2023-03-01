@@ -50,7 +50,8 @@ class QueuedNetworkImage extends StatelessWidget {
         fit: fit,
         alignment: alignment,
         placeholderFadeInDuration: fadeInDuration ?? const Duration(seconds: 2),
-        progressIndicatorBuilder: (context, url, downloadProgress) => placeholder ?? Container(),
+        progressIndicatorBuilder: (context, url, downloadProgress) =>
+            placeholder ?? Container(),
         errorWidget: (context, url, error) => const Icon(Icons.error),
         color: color,
       );

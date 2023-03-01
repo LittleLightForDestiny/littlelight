@@ -10,7 +10,11 @@ class FreeSlotsSliderWidget extends StatefulWidget {
   final int initialValue;
   final bool suppressLabel;
 
-  const FreeSlotsSliderWidget({Key key, this.onChanged, this.initialValue = 0, this.suppressLabel = false})
+  const FreeSlotsSliderWidget(
+      {Key key,
+      this.onChanged,
+      this.initialValue = 0,
+      this.suppressLabel = false})
       : super(key: key);
 
   @override
@@ -35,7 +39,9 @@ class FreeSlotsSliderWidgetState extends State<FreeSlotsSliderWidget> {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
         child: Row(
           children: <Widget>[
-            widget.suppressLabel ? Container() : Text("Free Slots".translate(context)),
+            widget.suppressLabel
+                ? Container()
+                : Text("Free Slots".translate(context)),
             Expanded(
                 child: Slider(
               min: 0,

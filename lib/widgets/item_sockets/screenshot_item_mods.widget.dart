@@ -33,7 +33,8 @@ class ScreenShotItemModsWidget extends BaseItemSocketsWidget {
 
 const _sectionId = "screenshot_item_mods";
 
-class ScreenShotItemModsWidgetState<T extends ScreenShotItemModsWidget> extends BaseItemSocketsWidgetState<T> {
+class ScreenShotItemModsWidgetState<T extends ScreenShotItemModsWidget>
+    extends BaseItemSocketsWidgetState<T> {
   @override
   String get sectionId => _sectionId;
 
@@ -67,7 +68,8 @@ class ScreenShotItemModsWidgetState<T extends ScreenShotItemModsWidget> extends 
           ),
         ),
         Container(
-            margin: EdgeInsets.only(top: 2 * widget.pixelSize, bottom: 16 * widget.pixelSize),
+            margin: EdgeInsets.only(
+                top: 2 * widget.pixelSize, bottom: 16 * widget.pixelSize),
             color: Theme.of(context).colorScheme.onSurface.withOpacity(.7),
             height: 3 * widget.pixelSize)
       ],
@@ -107,7 +109,8 @@ class ScreenShotItemModsWidgetState<T extends ScreenShotItemModsWidget> extends 
   Widget buildPlug(BuildContext context, int socketIndex, int plugItemHash) {
     if (plugDefinitions == null) return Container();
     final def = controller.plugDefinitions[plugItemHash];
-    final energyType = def?.plug?.energyCost?.energyType ?? DestinyEnergyType.Any;
+    final energyType =
+        def?.plug?.energyCost?.energyType ?? DestinyEnergyType.Any;
     final energyCost = def?.plug?.energyCost?.energyCost ?? 0;
     final canEquip = controller?.canEquip(socketIndex, plugItemHash);
     const emptyModHash = 1835369552;
@@ -117,12 +120,17 @@ class ScreenShotItemModsWidgetState<T extends ScreenShotItemModsWidget> extends 
               controller.selectSocket(socketIndex, plugItemHash);
             },
             child: Container(
-                decoration: BoxDecoration(border: Border.all(color: Colors.grey.shade400, width: 3 * widget.pixelSize)),
+                decoration: BoxDecoration(
+                    border: Border.all(
+                        color: Colors.grey.shade400,
+                        width: 3 * widget.pixelSize)),
                 child: Stack(children: [
                   ManifestImageWidget<DestinyInventoryItemDefinition>(
                     plugItemHash,
                     key: Key("plug_$plugItemHash"),
-                    noIconPlaceholder: ManifestImageWidget<DestinyInventoryItemDefinition>(emptyModHash),
+                    noIconPlaceholder:
+                        ManifestImageWidget<DestinyInventoryItemDefinition>(
+                            emptyModHash),
                   ),
                   energyType == DestinyEnergyType.Any
                       ? Container()

@@ -11,7 +11,8 @@ import 'package:little_light/services/user_settings/user_settings.consumer.dart'
 import 'package:little_light/utils/remove_diacritics.dart';
 import 'package:provider/provider.dart';
 
-class LoadoutsHomeBloc extends ChangeNotifier with ProfileConsumer, UserSettingsConsumer {
+class LoadoutsHomeBloc extends ChangeNotifier
+    with ProfileConsumer, UserSettingsConsumer {
   final BuildContext context;
   final LoadoutsBloc _loadoutsBloc;
 
@@ -40,7 +41,8 @@ class LoadoutsHomeBloc extends ChangeNotifier with ProfileConsumer, UserSettings
   DateTime? _lastUpdated;
   String get lastUpdated => _lastUpdated?.toIso8601String() ?? "";
 
-  LoadoutsHomeBloc(this.context) : _loadoutsBloc = context.read<LoadoutsBloc>() {
+  LoadoutsHomeBloc(this.context)
+      : _loadoutsBloc = context.read<LoadoutsBloc>() {
     userSettings.startingPage = LittleLightPersistentPage.Loadouts;
     _loadoutsBloc.addListener(notifyListeners);
     _initLoadouts();
@@ -86,7 +88,8 @@ class LoadoutsHomeBloc extends ChangeNotifier with ProfileConsumer, UserSettings
     _loadoutsBloc.reorderLoadouts(order);
   }
 
-  void onItemAction(LoadoutListItemAction action, LoadoutItemIndex loadout) async {
+  void onItemAction(
+      LoadoutListItemAction action, LoadoutItemIndex loadout) async {
     switch (action) {
       case LoadoutListItemAction.Equip:
         final id = loadout.assignedId;

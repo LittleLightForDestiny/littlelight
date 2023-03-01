@@ -30,7 +30,9 @@ class CharacterContextMenu extends BaseOverlayWidget {
         Positioned(
             bottom: sourceBottom + kToolbarHeight,
             right: sourceRight,
-            child: Container(padding: const EdgeInsets.all(8), child: buildMenuItems(context))),
+            child: Container(
+                padding: const EdgeInsets.all(8),
+                child: buildMenuItems(context))),
         Positioned(
             left: sourceLeft,
             height: kToolbarHeight,
@@ -62,14 +64,18 @@ class CharacterContextMenu extends BaseOverlayWidget {
   Widget? buildCurrentAverage(BuildContext context) {
     final character = characters[charactersTabController.index];
     if (character == null) return null;
-    final average = context.watch<ProfileHelpersBloc>().getCurrentAverage(character.character.classType);
+    final average = context
+        .watch<ProfileHelpersBloc>()
+        .getCurrentAverage(character.character.classType);
     return Text("Current Average ${average?.toStringAsFixed(2)}");
   }
 
   Widget? buildAchievableAverage(BuildContext context) {
     final character = characters[charactersTabController.index];
     if (character == null) return null;
-    final average = context.watch<ProfileHelpersBloc>().getAchievableAverage(character.character.classType);
+    final average = context
+        .watch<ProfileHelpersBloc>()
+        .getAchievableAverage(character.character.classType);
     return Text("Achievable Average ${average?.toStringAsFixed(2)}");
   }
 
@@ -96,7 +102,8 @@ class CharacterContextMenu extends BaseOverlayWidget {
     final currentCharacter = characters[charactersTabController.index];
     if (currentCharacter == null) return null;
     final helper = context.watch<ProfileHelpersBloc>();
-    final loadout = helper.maxPowerNonExotic?[currentCharacter.character.classType];
+    final loadout =
+        helper.maxPowerNonExotic?[currentCharacter.character.classType];
     if (loadout == null) return null;
     return Row(
         children: loadout.values
@@ -111,7 +118,8 @@ class CharacterContextMenu extends BaseOverlayWidget {
             .toList());
   }
 
-  Widget buildCharacterSelect(BuildContext context) => CharacterVerticalTabMenuWidget(
+  Widget buildCharacterSelect(BuildContext context) =>
+      CharacterVerticalTabMenuWidget(
         characters,
         charactersTabController,
         onSelect: (_) => onClose(),

@@ -14,7 +14,8 @@ class PlMessages implements LookupMessages {
   @override
   String aboutAMinute(int minutes) => 'około minutę';
   @override
-  String minutes(int minutes) => _is234(minutes) ? '$minutes minuty' : '$minutes minut';
+  String minutes(int minutes) =>
+      _is234(minutes) ? '$minutes minuty' : '$minutes minut';
   @override
   String aboutAnHour(int minutes) => 'około godzinę';
   @override
@@ -26,7 +27,8 @@ class PlMessages implements LookupMessages {
   @override
   String aboutAMonth(int days) => 'około miesiąc';
   @override
-  String months(int months) => _is234(months) ? '$months miesiące' : '$months miesięcy';
+  String months(int months) =>
+      _is234(months) ? '$months miesiące' : '$months miesięcy';
   @override
   String aboutAYear(int year) => 'około rok';
   @override

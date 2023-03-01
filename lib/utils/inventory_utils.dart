@@ -19,11 +19,16 @@ import 'package:little_light/utils/item_with_owner.dart';
 class InventoryUtils {
   static ProfileBloc get _profile => getInjectedProfileService();
   static ManifestService get _manifest => getInjectedManifestService();
-  static int interpolateStat(int investmentValue, List<InterpolationPoint> displayInterpolation) {
+  static int interpolateStat(
+      int investmentValue, List<InterpolationPoint> displayInterpolation) {
     var interpolation = displayInterpolation.toList();
     interpolation.sort((a, b) => a.value.compareTo(b.value));
-    var upperBound = interpolation.firstWhere((point) => point.value >= investmentValue, orElse: () => null);
-    var lowerBound = interpolation.lastWhere((point) => point.value <= investmentValue, orElse: () => null);
+    var upperBound = interpolation.firstWhere(
+        (point) => point.value >= investmentValue,
+        orElse: () => null);
+    var lowerBound = interpolation.lastWhere(
+        (point) => point.value <= investmentValue,
+        orElse: () => null);
 
     if (upperBound == null && lowerBound == null) {
       print('Invalid displayInterpolation');
@@ -34,20 +39,26 @@ class InventoryUtils {
     } else if (upperBound == null) {
       return lowerBound.weight;
     }
-    var factor = (investmentValue - lowerBound.value) / max((upperBound.value - lowerBound.value).abs(), 1);
+    var factor = (investmentValue - lowerBound.value) /
+        max((upperBound.value - lowerBound.value).abs(), 1);
 
-    var displayValue = lowerBound.weight + (upperBound.weight - lowerBound.weight) * factor;
+    var displayValue =
+        lowerBound.weight + (upperBound.weight - lowerBound.weight) * factor;
     return displayValue.round();
   }
 
-  static Future<List<ItemWithOwner>> sortDestinyItems(Iterable<ItemWithOwner> items,
-      {List<ItemSortParameter> sortingParams, bool sortTags = true}) async {
+  static Future<List<ItemWithOwner>> sortDestinyItems(
+      Iterable<ItemWithOwner> items,
+      {List<ItemSortParameter> sortingParams,
+      bool sortTags = true}) async {
     if (sortingParams == null) {
       final userSettings = getInjectedUserSettings();
       sortingParams = userSettings.itemOrdering;
     }
-    await _manifest.getDefinitions<DestinyInventoryItemDefinition>(items.map((i) => i?.item?.itemHash));
-    List<BaseItemSorter> sorters = sortingParams.map((p) => p.sorter).where((s) => s != null).toList();
+    await _manifest.getDefinitions<DestinyInventoryItemDefinition>(
+        items.map((i) => i?.item?.itemHash));
+    List<BaseItemSorter> sorters =
+        sortingParams.map((p) => p.sorter).where((s) => s != null).toList();
     if (sortTags) {
       sorters = <BaseItemSorter>[PriorityTagsSorter()] + sorters;
     }
@@ -70,25 +81,40 @@ class InventoryUtils {
     for (var slot in loadout.slots.values) {
       final generic = slot.genericEquipped;
       if (generic != null) {
-        final def = await _manifest.getDefinition<DestinyInventoryItemDefinition>(generic.item?.itemHash);
-        final bucket = await _manifest.getDefinition<DestinyInventoryBucketDefinition>(def.inventory.bucketTypeHash);
+        final def =
+            await _manifest.getDefinition<DestinyInventoryItemDefinition>(
+                generic.item?.itemHash);
+        final bucket =
+            await _manifest.getDefinition<DestinyInventoryBucketDefinition>(
+                def.inventory.bucketTypeHash);
         final instance = _profile.getInstanceInfo(generic.item.itemInstanceId);
-        print("---------------------------------------------------------------");
+        print(
+            "---------------------------------------------------------------");
         print(bucket.displayProperties.name);
-        print("---------------------------------------------------------------");
+        print(
+            "---------------------------------------------------------------");
         print("${def.displayProperties.name} ${instance?.primaryStat?.value}");
-        print("---------------------------------------------------------------");
+        print(
+            "---------------------------------------------------------------");
       }
       final classSpecific = slot.classSpecificEquipped[classType];
       if (classSpecific != null) {
-        final def = await _manifest.getDefinition<DestinyInventoryItemDefinition>(classSpecific.item.itemHash);
-        final bucket = await _manifest.getDefinition<DestinyInventoryBucketDefinition>(def.inventory.bucketTypeHash);
-        final instance = _profile.getInstanceInfo(classSpecific.item.itemInstanceId);
-        print("---------------------------------------------------------------");
+        final def =
+            await _manifest.getDefinition<DestinyInventoryItemDefinition>(
+                classSpecific.item.itemHash);
+        final bucket =
+            await _manifest.getDefinition<DestinyInventoryBucketDefinition>(
+                def.inventory.bucketTypeHash);
+        final instance =
+            _profile.getInstanceInfo(classSpecific.item.itemInstanceId);
+        print(
+            "---------------------------------------------------------------");
         print(bucket.displayProperties.name);
-        print("---------------------------------------------------------------");
+        print(
+            "---------------------------------------------------------------");
         print("${def.displayProperties.name} ${instance?.primaryStat?.value}");
-        print("---------------------------------------------------------------");
+        print(
+            "---------------------------------------------------------------");
       }
     }
   }

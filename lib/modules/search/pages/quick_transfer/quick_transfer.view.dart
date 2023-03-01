@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:little_light/modules/search/blocs/filter_adapter.bloc.dart';
 import 'package:little_light/modules/search/pages/quick_transfer/quick_transfer.bloc.dart';
+import 'package:little_light/modules/search/widgets/filters_drawer.widget.dart';
 import 'package:little_light/modules/search/widgets/text_search_filter.widget.dart';
 import 'package:little_light/modules/search/widgets/text_search_filter_field.widget.dart';
 import 'package:little_light/shared/widgets/inventory_item/high_density_inventory_item.dart';
@@ -8,6 +10,7 @@ import 'package:little_light/shared/widgets/inventory_item/inventory_item.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/multisection_scrollview/multisection_scrollview.dart';
 import 'package:little_light/widgets/multisection_scrollview/sliver_section.dart';
+import 'package:provider/provider.dart';
 
 class QuickTransferView extends StatelessWidget {
   final QuickTransferBloc _bloc;
@@ -24,7 +27,18 @@ class QuickTransferView extends StatelessWidget {
       appBar: AppBar(
         leading: const BackButton(),
         title: TextSearchFilterWidget(),
+        actions: [
+          Builder(
+              builder: (context) => IconButton(
+                    enableFeedback: false,
+                    icon: const Icon(Icons.filter_list),
+                    onPressed: () {
+                      Scaffold.of(context).openEndDrawer();
+                    },
+                  )),
+        ],
       ),
+      endDrawer: buildEndDrawer(context),
       body: buildBody(context),
     );
   }
@@ -38,7 +52,9 @@ class QuickTransferView extends StatelessWidget {
         SliverSection.fixedHeight(
           itemHeight: InventoryItemWidgetDensity.High.itemHeight,
           itemCount: items.length,
-          itemsPerRow: (screenWidth / InventoryItemWidgetDensity.High.idealWidth).floor(),
+          itemsPerRow:
+              (screenWidth / InventoryItemWidgetDensity.High.idealWidth)
+                  .floor(),
           itemBuilder: (context, index) => InteractiveItemWrapper(
             HighDensityInventoryItem(
               items[index],
@@ -55,4 +71,6 @@ class QuickTransferView extends StatelessWidget {
       crossAxisSpacing: 4,
     );
   }
+
+  Widget buildEndDrawer(BuildContext context) => FiltersDrawerWidget();
 }

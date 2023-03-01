@@ -16,7 +16,8 @@ class PresentationNodeItemWidget extends StatefulWidget {
   final int? hash;
   final OnPressed? onPressed;
 
-  const PresentationNodeItemWidget({Key? key, this.hash, this.onPressed}) : super(key: key);
+  const PresentationNodeItemWidget({Key? key, this.hash, this.onPressed})
+      : super(key: key);
   @override
   State<StatefulWidget> createState() {
     return PresentationNodeWidgetState();
@@ -37,7 +38,8 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget>
   }
 
   loadDefinition() async {
-    definition = await manifest.getDefinition<DestinyPresentationNodeDefinition>(widget.hash);
+    definition = await manifest
+        .getDefinition<DestinyPresentationNodeDefinition>(widget.hash);
     if (mounted) {
       setState(() {});
     }
@@ -63,10 +65,12 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget>
       if (characterID == null) continue;
       var characterNodes = profile.getCharacterPresentationNodes(characterID);
       var node = characterNodes?["${widget.hash}"];
-      if (highest == null || (node?.progressValue ?? 0) > (highest.progressValue ?? 0)) {
+      if (highest == null ||
+          (node?.progressValue ?? 0) > (highest.progressValue ?? 0)) {
         highest = node;
       }
-      if (highest != null && (node?.progressValue ?? 0) != highest.progressValue) {
+      if (highest != null &&
+          (node?.progressValue ?? 0) != highest.progressValue) {
         allEqual = false;
       }
       if (node != null) {
@@ -83,7 +87,8 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget>
 
   int get progressValue => progress?.progressValue ?? 0;
   int? get completionValue => progress?.completionValue;
-  bool get completed => completionValue != null && progressValue >= (completionValue ?? 0);
+  bool get completed =>
+      completionValue != null && progressValue >= (completionValue ?? 0);
 
   @override
   Widget build(BuildContext context) {
@@ -91,15 +96,21 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget>
     return Container(
         decoration: BoxDecoration(
             border: Border.all(color: color.withOpacity(.6), width: 1),
-            gradient: LinearGradient(begin: const Alignment(0, 0), end: const Alignment(1, 2), colors: [
-              color.withOpacity(.05),
-              color.withOpacity(.1),
-              color.withOpacity(.03),
-              color.withOpacity(.1)
-            ])),
+            gradient: LinearGradient(
+                begin: const Alignment(0, 0),
+                end: const Alignment(1, 2),
+                colors: [
+                  color.withOpacity(.05),
+                  color.withOpacity(.1),
+                  color.withOpacity(.03),
+                  color.withOpacity(.1)
+                ])),
         child: Stack(children: [
-          Opacity(opacity: completed ? 1 : .7, child: Row(children: buildContent(context, definition))),
-          Positioned(bottom: 0, left: 0, right: 0, child: buildProgressBar(context)),
+          Opacity(
+              opacity: completed ? 1 : .7,
+              child: Row(children: buildContent(context, definition))),
+          Positioned(
+              bottom: 0, left: 0, right: 0, child: buildProgressBar(context)),
           MaterialButton(
               child: Container(),
               onPressed: () {
@@ -117,11 +128,13 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget>
       color: color.withOpacity(.4),
       alignment: Alignment.centerLeft,
       child: FractionallySizedBox(
-          widthFactor: progressValue / completionValue, child: Container(color: color.withOpacity(.7))),
+          widthFactor: progressValue / completionValue,
+          child: Container(color: color.withOpacity(.7))),
     );
   }
 
-  List<Widget> buildContent(BuildContext context, DestinyPresentationNodeDefinition? definition) {
+  List<Widget> buildContent(
+      BuildContext context, DestinyPresentationNodeDefinition? definition) {
     return [
       definition?.displayProperties?.hasIcon == true
           ? AspectRatio(
@@ -131,7 +144,8 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget>
                   : Padding(
                       padding: const EdgeInsets.all(8),
                       child: QueuedNetworkImage(
-                        imageUrl: BungieApiService.url(definition?.displayProperties?.icon)!,
+                        imageUrl: BungieApiService.url(
+                            definition?.displayProperties?.icon)!,
                       )))
           : Container(width: 20),
       buildTitle(context, definition),
@@ -163,14 +177,17 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget>
     return Container();
   }
 
-  Widget buildSingleCount(BuildContext context, DestinyPresentationNodeComponent? progress,
+  Widget buildSingleCount(
+      BuildContext context, DestinyPresentationNodeComponent? progress,
       [DestinyCharacterComponent? character]) {
     final color = completed ? Colors.amber.shade100 : Colors.grey.shade300;
     final classType = character?.classType;
     return Container(
         padding: const EdgeInsets.only(top: 2, bottom: 2, right: 8),
         child: Row(children: [
-          classType != null ? Icon(classType.icon, size: 16, color: color) : Container(),
+          classType != null
+              ? Icon(classType.icon, size: 16, color: color)
+              : Container(),
           Container(width: 4),
           (completionValue ?? 0) > 0
               ? Text(
@@ -181,7 +198,8 @@ class PresentationNodeWidgetState extends State<PresentationNodeItemWidget>
         ]));
   }
 
-  buildTitle(BuildContext context, DestinyPresentationNodeDefinition? definition) {
+  buildTitle(
+      BuildContext context, DestinyPresentationNodeDefinition? definition) {
     var color = completed ? Colors.amber.shade100 : Colors.grey.shade300;
     return Expanded(
         child: Container(

@@ -23,7 +23,8 @@ extension on List {
   }
 }
 
-class ItemLevelWidget extends StatelessWidget with ProfileConsumer, DeepSightHelper {
+class ItemLevelWidget extends StatelessWidget
+    with ProfileConsumer, DeepSightHelper {
   final DestinyItemComponent item;
 
   ItemLevelWidget({Key? key, required this.item}) : super(key: key);
@@ -38,9 +39,11 @@ class ItemLevelWidget extends StatelessWidget with ProfileConsumer, DeepSightHel
 
   Widget? buildPlugObjectives(BuildContext context, String itemInstanceID) {
     final shapedWeaponHash = getShapedWeaponHash(itemInstanceID);
-    if (shapedWeaponHash != null) return buildShapedWeaponProgress(context, shapedWeaponHash);
+    if (shapedWeaponHash != null)
+      return buildShapedWeaponProgress(context, shapedWeaponHash);
     final deepSightHash = getDeepSightHash(itemInstanceID);
-    if (deepSightHash != null) return buildDeepSightResonance(context, deepSightHash);
+    if (deepSightHash != null)
+      return buildDeepSightResonance(context, deepSightHash);
     return null;
   }
 
@@ -60,7 +63,8 @@ class ItemLevelWidget extends StatelessWidget with ProfileConsumer, DeepSightHel
     final levelProgression = objectives.elementAtOrNull(0);
     final weaponLevel = objectives.elementAtOrNull(1);
     final craftingDate = objectives.elementAtOrNull(2);
-    if (levelProgression == null || weaponLevel == null || craftingDate == null) return null;
+    if (levelProgression == null || weaponLevel == null || craftingDate == null)
+      return null;
     return Column(children: [
       buildObjectiveTitle(context, hash),
       buildProgressBar(context, weaponLevel),
@@ -69,7 +73,8 @@ class ItemLevelWidget extends StatelessWidget with ProfileConsumer, DeepSightHel
     ]);
   }
 
-  Widget buildProgressBar(BuildContext context, DestinyObjectiveProgress objective) {
+  Widget buildProgressBar(
+      BuildContext context, DestinyObjectiveProgress objective) {
     return Container(
         padding: const EdgeInsets.only(top: 8),
         child: DefinitionProviderWidget<DestinyObjectiveDefinition>(
@@ -78,7 +83,8 @@ class ItemLevelWidget extends StatelessWidget with ProfileConsumer, DeepSightHel
                   omitCheckBox: true,
                   definition: def,
                   objective: objective,
-                  barColor: LittleLightTheme.of(context).highlightedObjectiveLayers,
+                  barColor:
+                      LittleLightTheme.of(context).highlightedObjectiveLayers,
                 )));
   }
 

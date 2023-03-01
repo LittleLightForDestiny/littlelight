@@ -19,9 +19,10 @@ class DamageTypeFilterWidget extends BaseSearchFilterWidget<DamageTypeFilter> {
   _DamageTypeFilterWidgetState createState() => _DamageTypeFilterWidgetState();
 }
 
-class _DamageTypeFilterWidgetState
-    extends BaseSearchFilterWidgetState<DamageTypeFilterWidget, DamageTypeFilter, DestinyDamageTypeDefinition>
-    with ManifestConsumer {
+class _DamageTypeFilterWidgetState extends BaseSearchFilterWidgetState<
+    DamageTypeFilterWidget,
+    DamageTypeFilter,
+    DestinyDamageTypeDefinition> with ManifestConsumer {
   Map<int, DestinyDamageTypeDefinition> _definitions;
 
   @override
@@ -34,29 +35,35 @@ class _DamageTypeFilterWidgetState
 
   @override
   onUpdate() async {
-    _definitions = await manifest.getDefinitions<DestinyDamageTypeDefinition>(filter.availableValues);
+    _definitions = await manifest
+        .getDefinitions<DestinyDamageTypeDefinition>(filter.availableValues);
     super.onUpdate();
   }
 
   @override
   Widget buildButtons(BuildContext context) {
-    var textButtons =
-        options.where((e) => e?.displayProperties?.hasIcon != true).map((e) => buildButton(context, e)).toList();
+    var textButtons = options
+        .where((e) => e?.displayProperties?.hasIcon != true)
+        .map((e) => buildButton(context, e))
+        .toList();
     var iconButtons = options
         .where((e) => e?.displayProperties?.hasIcon == true)
         .map((e) => Expanded(child: buildButton(context, e)))
         .toList();
-    return Column(children: [Column(children: textButtons), Row(children: iconButtons)]);
+    return Column(
+        children: [Column(children: textButtons), Row(children: iconButtons)]);
   }
 
   @override
-  Widget buildButtonLabel(BuildContext context, DestinyDamageTypeDefinition value) {
+  Widget buildButtonLabel(
+      BuildContext context, DestinyDamageTypeDefinition value) {
     if (value?.displayProperties?.hasIcon == true) {
       return Container(
           margin: const EdgeInsets.all(8),
           width: 32,
           height: 32,
-          child: QueuedNetworkImage(imageUrl: BungieApiService.url(value?.displayProperties?.icon)));
+          child: QueuedNetworkImage(
+              imageUrl: BungieApiService.url(value?.displayProperties?.icon)));
     }
     var name = value?.displayProperties?.name ?? value?.enumValue?.toString();
     if (name != null) {

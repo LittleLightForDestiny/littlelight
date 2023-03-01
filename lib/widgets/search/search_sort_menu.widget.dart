@@ -54,7 +54,8 @@ class _SearchSortMenuState extends State<SearchSortMenu> {
         ),
         Expanded(
             child: ListView(
-                padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+                padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).padding.bottom),
                 children: buildParameters(context)))
       ],
     ));
@@ -68,7 +69,9 @@ class _SearchSortMenuState extends State<SearchSortMenu> {
           "Active Sorters".translate(context).toUpperCase(),
         ),
       ));
-      widgets.add(SizedBox(height: widget.controller.customSorting.length * 56.0, child: buildDragList(context)));
+      widgets.add(SizedBox(
+          height: widget.controller.customSorting.length * 56.0,
+          child: buildDragList(context)));
     }
     if ((widget.controller.availableSorters?.length ?? 0) > 0) {
       widgets.add(HeaderWidget(
@@ -77,8 +80,8 @@ class _SearchSortMenuState extends State<SearchSortMenu> {
         ),
       ));
     }
-    widgets.addAll(widget.controller.availableSorters
-        .map((s) => buildSortItem(context, ItemSortParameter(active: false, type: s))));
+    widgets.addAll(widget.controller.availableSorters.map((s) =>
+        buildSortItem(context, ItemSortParameter(active: false, type: s))));
     return widgets;
   }
 
@@ -102,21 +105,27 @@ class _SearchSortMenuState extends State<SearchSortMenu> {
     );
   }
 
-  Widget buildSortItem(BuildContext context, ItemSortParameter parameter, [int index]) {
+  Widget buildSortItem(BuildContext context, ItemSortParameter parameter,
+      [int index]) {
     final handle = index != null ? buildHandle(context, index) : null;
     if (parameter.type == ItemSortParameterType.Stat) {
       return Material(
           key: Key("sort-stat-${parameter.type}"),
-          child: StatSorterWidget(widget.controller, parameter, handle: handle));
+          child:
+              StatSorterWidget(widget.controller, parameter, handle: handle));
     }
     return Material(
         key: Key("sort-${parameter.type}"),
-        child: BaseSearchSorterWidget(widget.controller, parameter, handle: handle));
+        child: BaseSearchSorterWidget(widget.controller, parameter,
+            handle: handle));
   }
 
   Widget buildHandle(BuildContext context, int index) {
     return ReorderableDragStartListener(
         index: index,
-        child: AspectRatio(aspectRatio: 1, child: Container(color: Colors.transparent, child: const Icon(Icons.menu))));
+        child: AspectRatio(
+            aspectRatio: 1,
+            child: Container(
+                color: Colors.transparent, child: const Icon(Icons.menu))));
   }
 }

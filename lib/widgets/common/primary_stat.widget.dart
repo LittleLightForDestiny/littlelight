@@ -66,16 +66,20 @@ class PrimaryStatWidget extends StatelessWidget {
 
   List<Widget> mainLineWidgets(BuildContext context) {
     List<Widget> widgets = [];
-    if (definition?.itemType == DestinyItemType.Weapon && !suppressAmmoTypeIcon) {
+    if (definition?.itemType == DestinyItemType.Weapon &&
+        !suppressAmmoTypeIcon) {
       widgets.add(ammoTypeIcon(context));
     }
-    if (definition?.itemType == DestinyItemType.Weapon && !suppressDamageTypeIcon) {
+    if (definition?.itemType == DestinyItemType.Weapon &&
+        !suppressDamageTypeIcon) {
       widgets.add(damageTypeIcon(context));
     }
-    if (definition?.itemType == DestinyItemType.Armor && !suppressClassTypeIcon) {
+    if (definition?.itemType == DestinyItemType.Armor &&
+        !suppressClassTypeIcon) {
       widgets.add(classTypeIcon(context));
     }
-    widgets.add(valueAndCapField(context, damageType?.getColorLayer(context)?.layer2));
+    widgets.add(
+        valueAndCapField(context, damageType?.getColorLayer(context)?.layer2));
     if (inlinePowerCap) {
       widgets.add(inlinePowerCapField(context));
     }
@@ -84,8 +88,11 @@ class PrimaryStatWidget extends StatelessWidget {
   }
 
   Widget inlinePowerCapField(BuildContext context) {
-    var versionNumber = item?.versionNumber ?? definition?.quality?.currentVersion;
-    if (versionNumber == null || definition?.quality?.versions == null || suppressPowerCap) {
+    var versionNumber =
+        item?.versionNumber ?? definition?.quality?.currentVersion;
+    if (versionNumber == null ||
+        definition?.quality?.versions == null ||
+        suppressPowerCap) {
       return Container();
     }
     var version = definition.quality.versions[versionNumber];
@@ -104,7 +111,10 @@ class PrimaryStatWidget extends StatelessWidget {
 
   Widget powerCapField(BuildContext context, int value) {
     return Text("$value",
-        style: TextStyle(fontSize: fontSize * .65, height: .9, color: LittleLightTheme.of(context).achievementLayers));
+        style: TextStyle(
+            fontSize: fontSize * .65,
+            height: .9,
+            color: LittleLightTheme.of(context).achievementLayers));
   }
 
   Widget valueAndCapField(BuildContext context, Color color) {
@@ -116,14 +126,19 @@ class PrimaryStatWidget extends StatelessWidget {
         inlinePowerCap) {
       return valueField(context, color, fontSize);
     }
-    var version = definition.quality.versions[definition.quality.currentVersion];
-    return DefinitionProviderWidget<DestinyPowerCapDefinition>(version.powerCapHash, (def) {
+    var version =
+        definition.quality.versions[definition.quality.currentVersion];
+    return DefinitionProviderWidget<DestinyPowerCapDefinition>(
+        version.powerCapHash, (def) {
       if (def.powerCap > 9000) {
         return valueField(context, color, fontSize);
       }
       return Column(
         crossAxisAlignment: CrossAxisAlignment.end,
-        children: [valueField(context, color, fontSize * .9), powerCapField(context, def.powerCap)],
+        children: [
+          valueField(context, color, fontSize * .9),
+          powerCapField(context, def.powerCap)
+        ],
       );
     });
   }
@@ -132,13 +147,19 @@ class PrimaryStatWidget extends StatelessWidget {
     if (statValue == null) return Container();
     return Text(
       "$statValue",
-      style: TextStyle(color: color, fontWeight: FontWeight.w700, fontSize: fontSize),
+      style: TextStyle(
+          color: color, fontWeight: FontWeight.w700, fontSize: fontSize),
     );
   }
 
   Widget primaryStatNameField(BuildContext context, Color color) {
-    return ManifestText<DestinyStatDefinition>(instanceInfo.primaryStat.statHash,
-        uppercase: true, style: TextStyle(color: color, fontWeight: FontWeight.w300, fontSize: fontSize * .7));
+    return ManifestText<DestinyStatDefinition>(
+        instanceInfo.primaryStat.statHash,
+        uppercase: true,
+        style: TextStyle(
+            color: color,
+            fontWeight: FontWeight.w300,
+            fontSize: fontSize * .7));
   }
 
   Widget classTypeIcon(BuildContext context) {
@@ -166,7 +187,8 @@ class PrimaryStatWidget extends StatelessWidget {
           width: fontSize * 1.5,
           child: Icon(
             DestinyData.getAmmoTypeIcon(definition.equippingBlock.ammoType),
-            color: DestinyData.getAmmoTypeColor(definition.equippingBlock.ammoType),
+            color: DestinyData.getAmmoTypeColor(
+                definition.equippingBlock.ammoType),
             size: fontSize,
           )),
       ammoTypeDivider(context),

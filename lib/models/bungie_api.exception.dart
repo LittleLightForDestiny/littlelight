@@ -5,7 +5,9 @@ part 'bungie_api.exception.g.dart';
 
 @JsonSerializable()
 class BungieApiError {
-  @JsonKey(name: "ErrorCode", unknownEnumValue: PlatformErrorCodes.ProtectedInvalidEnumValue)
+  @JsonKey(
+      name: "ErrorCode",
+      unknownEnumValue: PlatformErrorCodes.ProtectedInvalidEnumValue)
   PlatformErrorCodes? errorCode;
 
   @JsonKey(name: "ErrorStatus")
@@ -20,7 +22,12 @@ class BungieApiError {
   @JsonKey(name: "error_description")
   String? errorDescription;
 
-  BungieApiError({this.errorCode, this.errorStatus, this.error, this.message, this.errorDescription});
+  BungieApiError(
+      {this.errorCode,
+      this.errorStatus,
+      this.error,
+      this.message,
+      this.errorDescription});
 
   factory BungieApiError.fromJson(Map<String, dynamic> json) {
     return _$BungieApiErrorFromJson(json);
@@ -41,7 +48,8 @@ class BungieApiException implements Exception {
   BungieApiException._(this.error, [this.httpStatus]);
   PlatformErrorCodes? get errorCode => error?.errorCode;
   String? get errorStatus => error?.errorStatus ?? error?.error;
-  String get message => error?.message ?? error?.errorDescription ?? error.toString();
+  String get message =>
+      error?.message ?? error?.errorDescription ?? error.toString();
   @override
   String toString() {
     if (error == null) {

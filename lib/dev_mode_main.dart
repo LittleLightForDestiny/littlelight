@@ -44,6 +44,8 @@ class _LittleLightDevModeAppState extends State<LittleLightDevModeApp> {
   @override
   Widget build(BuildContext context) {
     if (!ready) return Container();
-    return MaterialApp(theme: LittleLightThemeData().materialTheme, onGenerateRoute: (route) => router.getPage(route));
+    return MaterialApp(
+        theme: LittleLightThemeData().materialTheme,
+        onGenerateRoute: (route) => router.getPage(route));
   }
 }

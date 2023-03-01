@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-typedef OverlayBuilder = Widget Function(BuildContext context, RenderBox rect, void Function() onClose);
+typedef OverlayBuilder = Widget Function(
+    BuildContext context, RenderBox rect, void Function() onClose);
 
 OverlayEntry? showOverlay(BuildContext context, OverlayBuilder builder) {
   final renderBox = context.findRenderObject() as RenderBox;

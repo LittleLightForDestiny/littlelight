@@ -18,7 +18,8 @@ import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/item_stats/base_item_stat.widget.dart';
 import 'package:little_light/widgets/item_stats/details_item_stat.widget.dart';
 
-class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget with ProfileConsumer {
+class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget
+    with ProfileConsumer {
   ItemDetailsPlugInfoWidget(
       {DestinyItemComponent item,
       DestinyInventoryItemDefinition definition,
@@ -30,18 +31,21 @@ class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget with Prof
     if (definition == null) return Container();
     return Container(
         padding: const EdgeInsets.all(8),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: <Widget>[
-          buildSandBoxPerks(context),
-          buildStats(context),
-          buildEnergyCost(context),
-          buildResourceCost(context)
-        ]));
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              buildSandBoxPerks(context),
+              buildStats(context),
+              buildEnergyCost(context),
+              buildResourceCost(context)
+            ]));
   }
 
   buildStats(BuildContext context) {
     var stats = definition.investmentStats.map((s) {
       return DetailsItemStatWidget(
-        modValues: StatValues(equipped: s.value, selected: s.value, precalculated: s.value),
+        modValues: StatValues(
+            equipped: s.value, selected: s.value, precalculated: s.value),
         statHash: s.statTypeHash,
       );
     }).toList();
@@ -88,12 +92,10 @@ class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget with Prof
           constraints: const BoxConstraints(maxWidth: 600),
           height: 40,
           padding: const EdgeInsets.symmetric(horizontal: 8),
-          color: cost.energyType.getColorLayer(context).withOpacity(.6),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Icon(DestinyData.getEnergyTypeIcon(cost.energyType),
-                  color: cost.energyType.getColorLayer(context).layer1, size: 20),
+              Icon(DestinyData.getEnergyTypeIcon(cost.energyType), size: 20),
               Container(
                 width: 4,
               ),
@@ -110,11 +112,14 @@ class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget with Prof
               TranslatedTextWidget(
                 "Energy",
                 uppercase: true,
-                style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
+                style:
+                    const TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
               )
             ],
           )),
-      Container(constraints: const BoxConstraints(maxWidth: 600), child: buildBars(context))
+      Container(
+          constraints: const BoxConstraints(maxWidth: 600),
+          child: buildBars(context))
     ]);
   }
 
@@ -134,7 +139,8 @@ class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget with Prof
         ));
   }
 
-  Widget buildEnergyPiece(BuildContext context, int index, int total, int used) {
+  Widget buildEnergyPiece(
+      BuildContext context, int index, int total, int used) {
     if (index < total) {
       Color color = Colors.transparent;
       if (index < used) {
@@ -144,8 +150,10 @@ class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget with Prof
         height: 16,
         padding: const EdgeInsets.all(2),
         child: Container(
-          decoration:
-              BoxDecoration(border: Border.all(width: 2, color: Theme.of(context).colorScheme.onSurface), color: color),
+          decoration: BoxDecoration(
+              border: Border.all(
+                  width: 2, color: Theme.of(context).colorScheme.onSurface),
+              color: color),
         ),
       );
     }
@@ -184,18 +192,22 @@ class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget with Prof
           (def) => Container(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Column(
-                children: def.materials.where((m) => (m.count ?? 0) > 0).map((m) {
+                children:
+                    def.materials.where((m) => (m.count ?? 0) > 0).map((m) {
                   var items = inventory.where((i) => i.itemHash == m.itemHash);
                   var itemsTotal = items.fold<int>(0, (t, i) => t + i.quantity);
-                  var currency = currencies.where((curr) => curr.itemHash == m.itemHash);
-                  var total = currency.fold<int>(itemsTotal, (t, curr) => t + curr.quantity);
+                  var currency =
+                      currencies.where((curr) => curr.itemHash == m.itemHash);
+                  var total = currency.fold<int>(
+                      itemsTotal, (t, curr) => t + curr.quantity);
                   bool isEnough = total >= m.count;
                   return Row(
                     children: <Widget>[
                       SizedBox(
                           width: 20,
                           height: 20,
-                          child: ManifestImageWidget<DestinyInventoryItemDefinition>(m.itemHash)),
+                          child: ManifestImageWidget<
+                              DestinyInventoryItemDefinition>(m.itemHash)),
                       Expanded(
                         child: Container(
                           padding: const EdgeInsets.only(left: 8),
@@ -207,7 +219,10 @@ class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget with Prof
                       ),
                       Text("${m.count}/$total",
                           style: TextStyle(
-                              fontWeight: FontWeight.w300, color: isEnough ? theme.onSurfaceLayers : theme.errorLayers))
+                              fontWeight: FontWeight.w300,
+                              color: isEnough
+                                  ? theme.onSurfaceLayers
+                                  : theme.errorLayers))
                     ],
                   );
                 }).toList(),

@@ -5,13 +5,14 @@ import 'dart:io';
 import 'package:archive/archive.dart';
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/exceptions/parse.exception.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/bungie_api/enums/definition_table_names.enum.dart';
-import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/services/manifest/manifest_download_progress.dart';
 import 'package:little_light/services/storage/export.dart';
 import 'package:path_provider/path_provider.dart';
@@ -22,12 +23,18 @@ setupManifest() {
   GetIt.I.registerSingleton<ManifestService>(ManifestService._internal());
 }
 
-class ManifestService with StorageConsumer, BungieApiConsumer, AnalyticsConsumer {
+class ManifestService
+    with StorageConsumer, BungieApiConsumer, AnalyticsConsumer {
+  BuildContext? _context;
   sqflite.Database? _db;
   DestinyManifest? _manifestInfo;
   final Map<String, dynamic> _cached = {};
 
   ManifestService._internal();
+
+  initContext(BuildContext context) {
+    this._context = context;
+  }
 
   Future<void> setup() async {
     _cached.clear();
@@ -66,7 +73,8 @@ class ManifestService with StorageConsumer, BungieApiConsumer, AnalyticsConsumer
 
   Future<List<String>> getAvailableLanguages() async {
     DestinyManifest manifestInfo = await _getManifestInfo();
-    List<String>? availableLanguages = manifestInfo.mobileWorldContentPaths?.keys.toList();
+    List<String>? availableLanguages =
+        manifestInfo.mobileWorldContentPaths?.keys.toList();
     if (availableLanguages == null) {
       throw ("Can't load available languages");
     }
@@ -78,10 +86,12 @@ class ManifestService with StorageConsumer, BungieApiConsumer, AnalyticsConsumer
     String? currentVersion = await getSavedVersion();
     String language = getInjectedLanguageService().currentLanguage;
     var working = await test();
-    return !working || currentVersion != manifestInfo.mobileWorldContentPaths?[language];
+    return !working ||
+        currentVersion != manifestInfo.mobileWorldContentPaths?[language];
   }
 
-  Future<void> _downloadManifest(StreamController<DownloadProgress> _controller, {bool skipCache = false}) async {
+  Future<void> _downloadManifest(StreamController<DownloadProgress> _controller,
+      {bool skipCache = false}) async {
     try {
       _db?.close();
     } catch (e, stackTrace) {
@@ -136,8 +146,11 @@ class ManifestService with StorageConsumer, BungieApiConsumer, AnalyticsConsumer
       }
       currentLanguageStorage.manifestVersion = manifestFileURL;
       _cached.clear();
-      _controller
-          .add(DownloadProgress(downloadedBytes: loaded, totalBytes: totalSize, downloaded: true, unzipped: true));
+      _controller.add(DownloadProgress(
+          downloadedBytes: loaded,
+          totalBytes: totalSize,
+          downloaded: true,
+          unzipped: true));
     } catch (e, stackTrace) {
       analytics.registerNonFatal(e, stackTrace);
       _controller.add(DownloadError());
@@ -190,7 +203,8 @@ class ManifestService with StorageConsumer, BungieApiConsumer, AnalyticsConsumer
     final dbFile = await currentLanguageStorage.getManifestDatabaseFile();
     if (dbFile == null) return null;
     try {
-      sqflite.Database database = await sqflite.openDatabase(dbFile.path, readOnly: true);
+      sqflite.Database database =
+          await sqflite.openDatabase(dbFile.path, readOnly: true);
       _db = database;
     } catch (e) {
       print(e);
@@ -227,8 +241,8 @@ class ManifestService with StorageConsumer, BungieApiConsumer, AnalyticsConsumer
       throw ("no identity found for class $T");
     }
     try {
-      List<Map<String, dynamic>>? results =
-          await db?.query(tableName, columns: ['id', 'json'], where: where, limit: limit);
+      List<Map<String, dynamic>>? results = await db?.query(tableName,
+          columns: ['id', 'json'], where: where, limit: limit);
       results?.forEach((res) {
         int id = res['id'];
         int hash = id < 0 ? id + 4294967296 : id;
@@ -241,7 +255,8 @@ class ManifestService with StorageConsumer, BungieApiConsumer, AnalyticsConsumer
     return defs.cast<int, T>();
   }
 
-  Future<Map<int, T>> getDefinitions<T>(Iterable<int?> hashes, [DefinitionTableIdentityFunction? identity]) async {
+  Future<Map<int, T>> getDefinitions<T>(Iterable<int?> hashes,
+      [DefinitionTableIdentityFunction? identity]) async {
     Set<int> hashesSet = hashes.whereType<int>().toSet();
     if (hashesSet.isEmpty) return <int, T>{};
     var tableName = DefinitionTableNames.fromClass[T];
@@ -258,7 +273,9 @@ class ManifestService with StorageConsumer, BungieApiConsumer, AnalyticsConsumer
     if (hashesSet.isEmpty) {
       return defs;
     }
-    List<int> searchHashes = hashesSet.map((hash) => hash > 2147483648 ? hash - 4294967296 : hash).toList();
+    List<int> searchHashes = hashesSet
+        .map((hash) => hash > 2147483648 ? hash - 4294967296 : hash)
+        .toList();
     String idList = "(${List.filled(hashesSet.length, '?').join(',')})";
 
     sqflite.Database? db = await _openDb();
@@ -269,8 +286,10 @@ class ManifestService with StorageConsumer, BungieApiConsumer, AnalyticsConsumer
       throw ("no identity found for class $T");
     }
     try {
-      List<Map<String, dynamic>>? results =
-          await db?.query(tableName, columns: ['id', 'json'], where: "id in $idList", whereArgs: searchHashes);
+      List<Map<String, dynamic>>? results = await db?.query(tableName,
+          columns: ['id', 'json'],
+          where: "id in $idList",
+          whereArgs: searchHashes);
       if (results == null) return <int, T>{};
       for (var res in results) {
         int id = res['id'];
@@ -294,7 +313,8 @@ class ManifestService with StorageConsumer, BungieApiConsumer, AnalyticsConsumer
     }
   }
 
-  Future<T?> getDefinition<T>(int? hash, [DefinitionTableIdentityFunction? identity]) async {
+  Future<T?> getDefinition<T>(int? hash,
+      [DefinitionTableIdentityFunction? identity]) async {
     if (hash == null) return null;
     String? tableName = DefinitionTableNames.fromClass[T];
 
@@ -315,8 +335,8 @@ class ManifestService with StorageConsumer, BungieApiConsumer, AnalyticsConsumer
     int searchHash = hash > 2147483648 ? hash - 4294967296 : hash;
     sqflite.Database? db = await _openDb();
     try {
-      List<Map<String, dynamic>>? results =
-          await db?.query(tableName, columns: ['json'], where: "id=?", whereArgs: [searchHash]);
+      List<Map<String, dynamic>>? results = await db?.query(tableName,
+          columns: ['json'], where: "id=?", whereArgs: [searchHash]);
       if (results == null || results.isEmpty) {
         return null;
       }

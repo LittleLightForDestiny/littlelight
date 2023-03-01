@@ -11,10 +11,16 @@ abstract class DestinyItemWidget extends StatelessWidget {
   final DestinyItemInstanceComponent instanceInfo;
   final String characterId;
 
-  const DestinyItemWidget(this.item, this.definition, this.instanceInfo, {Key key, this.characterId}) : super(key: key);
+  const DestinyItemWidget(this.item, this.definition, this.instanceInfo,
+      {Key key, this.characterId})
+      : super(key: key);
 
   String get tag {
-    List<dynamic> params = [item?.itemInstanceId, item?.itemHash ?? definition?.hash, characterId];
+    List<dynamic> params = [
+      item?.itemInstanceId,
+      item?.itemHash ?? definition?.hash,
+      characterId
+    ];
     params.removeWhere((p) => p == null);
     return params.map((p) => "$p").join("_");
   }

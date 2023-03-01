@@ -21,18 +21,22 @@ class SmallPursuitItemWidget extends PursuitItemWidget {
   SmallPursuitItemWidgetState createState() => SmallPursuitItemWidgetState();
 }
 
-class SmallPursuitItemWidgetState<T extends SmallPursuitItemWidget> extends PursuitItemWidgetState<T> {
+class SmallPursuitItemWidgetState<T extends SmallPursuitItemWidget>
+    extends PursuitItemWidgetState<T> {
   @override
   Widget build(BuildContext context) {
     if (definition == null) {
-      return Container(height: 200, color: Theme.of(context).colorScheme.secondaryContainer);
+      return Container(
+          height: 200, color: Theme.of(context).colorScheme.secondaryContainer);
     }
     return Stack(children: [
       Positioned.fill(child: buildIcon(context)),
       selected
           ? Positioned.fill(
               child: Container(
-              foregroundDecoration: BoxDecoration(border: Border.all(color: Colors.lightBlue.shade400, width: 2)),
+              foregroundDecoration: BoxDecoration(
+                  border:
+                      Border.all(color: Colors.lightBlue.shade400, width: 2)),
             ))
           : Container(),
       Positioned.fill(child: buildTapTarget(context))

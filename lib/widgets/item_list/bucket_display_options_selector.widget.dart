@@ -10,12 +10,18 @@ class BucketDisplayOptionsSelectorWidget extends StatefulWidget {
   final bool isEquippable;
   final Function? onChanged;
   final bool isVault;
-  const BucketDisplayOptionsSelectorWidget({this.hash, this.isEquippable = false, this.onChanged, this.isVault = false});
+  const BucketDisplayOptionsSelectorWidget(
+      {this.hash,
+      this.isEquippable = false,
+      this.onChanged,
+      this.isVault = false});
   @override
-  BucketDisplayOptionsSelectorWidgetState createState() => BucketDisplayOptionsSelectorWidgetState();
+  BucketDisplayOptionsSelectorWidgetState createState() =>
+      BucketDisplayOptionsSelectorWidgetState();
 }
 
-class BucketDisplayOptionsSelectorWidgetState<T extends BucketDisplayOptionsSelectorWidget> extends State<T>
+class BucketDisplayOptionsSelectorWidgetState<
+        T extends BucketDisplayOptionsSelectorWidget> extends State<T>
     with UserSettingsConsumer {
   BucketDisplayType? currentType;
 
@@ -52,36 +58,50 @@ class BucketDisplayOptionsSelectorWidgetState<T extends BucketDisplayOptionsSele
   Widget build(BuildContext context) {
     return SizedBox(
         width: 20,
-        child: Stack(clipBehavior: Clip.none, alignment: Alignment.centerRight, children: [
-          Positioned(
-              top: -10,
-              right: 0,
-              child: DropdownButton<BucketDisplayType>(
-                  items: types.map((t) => buildItem(t)).toList(),
-                  value: currentType,
-                  underline: Container(),
-                  iconEnabledColor: Theme.of(context).colorScheme.onSurface,
-                  icon: Icon(getIcon(currentType)),
-                  selectedItemBuilder: (context) => types
-                      .map((t) => Opacity(
-                          opacity: 0, child: Row(children: [getLabel(t), Container(width: 16), Icon(getIcon(t))])))
-                      .toList(),
-                  onChanged: (selected) {
-                    currentType = selected;
-                    if (selected == null) return;
-                    userSettings.setDisplayOptionsForBucket(bucketKey, BucketDisplayOptions(type: selected));
-                    setState(() {});
-                    widget.onChanged?.call();
-                  }))
-        ]));
+        child: Stack(
+            clipBehavior: Clip.none,
+            alignment: Alignment.centerRight,
+            children: [
+              Positioned(
+                  top: -10,
+                  right: 0,
+                  child: DropdownButton<BucketDisplayType>(
+                      items: types.map((t) => buildItem(t)).toList(),
+                      value: currentType,
+                      underline: Container(),
+                      iconEnabledColor: Theme.of(context).colorScheme.onSurface,
+                      icon: Icon(getIcon(currentType)),
+                      selectedItemBuilder: (context) => types
+                          .map((t) => Opacity(
+                              opacity: 0,
+                              child: Row(children: [
+                                getLabel(t),
+                                Container(width: 16),
+                                Icon(getIcon(t))
+                              ])))
+                          .toList(),
+                      onChanged: (selected) {
+                        currentType = selected;
+                        if (selected == null) return;
+                        userSettings.setDisplayOptionsForBucket(
+                            bucketKey, BucketDisplayOptions(type: selected));
+                        setState(() {});
+                        widget.onChanged?.call();
+                      }))
+            ]));
   }
 
   DropdownMenuItem<BucketDisplayType> buildItem(BucketDisplayType type) {
     var icon = getIcon(type);
     return DropdownMenuItem<BucketDisplayType>(
         value: type,
-        child:
-            SizedBox(width: 200, child: Row(children: [Icon(icon, size: 16), Container(width: 8), getLabel(type)])));
+        child: SizedBox(
+            width: 200,
+            child: Row(children: [
+              Icon(icon, size: 16),
+              Container(width: 8),
+              getLabel(type)
+            ])));
   }
 
   Widget getLabel(BucketDisplayType type) {

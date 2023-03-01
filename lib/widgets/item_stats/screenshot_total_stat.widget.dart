@@ -10,7 +10,11 @@ class ScreenshotTotalStatWidget extends ScreenshotItemStatWidget {
   @override
   final double pixelSize;
 
-  const ScreenshotTotalStatWidget({Key key, this.pixelSize = 1, StatValues modValues, DestinyStatDisplayDefinition scaled})
+  const ScreenshotTotalStatWidget(
+      {Key key,
+      this.pixelSize = 1,
+      StatValues modValues,
+      DestinyStatDisplayDefinition scaled})
       : super(key: key, modValues: modValues, scaled: scaled);
 
   @override
@@ -19,7 +23,12 @@ class ScreenshotTotalStatWidget extends ScreenshotItemStatWidget {
       child: TranslatedTextWidget(
         "Total",
         style: TextStyle(
-          shadows: [Shadow(color: Colors.black, offset: Offset.fromDirection(.5), blurRadius: 2 * pixelSize)],
+          shadows: [
+            Shadow(
+                color: Colors.black,
+                offset: Offset.fromDirection(.5),
+                blurRadius: 2 * pixelSize)
+          ],
           color: getNameColor(context),
           fontSize: pixelSize * 20,
           fontWeight: FontWeight.w500,

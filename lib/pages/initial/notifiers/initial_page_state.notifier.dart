@@ -60,8 +60,9 @@ class InitialPageStateNotifier
   final BuildContext _context;
 
   InitialPageStateNotifier(this._context) {
-    SystemChrome.setSystemUIOverlayStyle(
-        const SystemUiOverlayStyle(statusBarColor: Colors.transparent, statusBarBrightness: Brightness.dark));
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarBrightness: Brightness.dark));
     _initLoading();
   }
 
@@ -118,7 +119,8 @@ class InitialPageStateNotifier
     _loading = true;
     notifyListeners();
 
-    final hasSelectedLanguage = _context.read<LanguageBloc>().selectedLanguage != null;
+    final hasSelectedLanguage =
+        _context.read<LanguageBloc>().selectedLanguage != null;
 
     if (hasSelectedLanguage) {
       languageSelected();
@@ -273,7 +275,9 @@ class InitialPageStateNotifier
   }
 
   Future<void> _startApp() async {
-    Navigator.of(_context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const MainScreen()), (r) => false);
+    Navigator.of(_context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => const MainScreen()),
+        (r) => false);
   }
 
   void clearDataAndRestart() async {

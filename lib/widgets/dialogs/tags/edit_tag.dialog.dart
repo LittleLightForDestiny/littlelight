@@ -29,8 +29,9 @@ class EditTagDialog extends LittleLightBaseDialog {
   final newTag = ItemNotesTag.newCustom();
   EditTagDialog()
       : super(
-          titleBuilder: (context) =>
-              context.tagArgument != null ? TranslatedTextWidget('Select Tag') : TranslatedTextWidget('Create Tag'),
+          titleBuilder: (context) => context.tagArgument != null
+              ? TranslatedTextWidget('Select Tag')
+              : TranslatedTextWidget('Create Tag'),
         );
 
   @override

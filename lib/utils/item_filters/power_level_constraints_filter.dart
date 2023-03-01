@@ -12,11 +12,14 @@ class PowerLevelConstraints {
   bool includePowerlessItems;
   int max;
   int min;
-  PowerLevelConstraints([this.min, this.max, this.includePowerlessItems = true]);
+  PowerLevelConstraints(
+      [this.min, this.max, this.includePowerlessItems = true]);
 }
 
-class PowerLevelConstraintsFilter extends BaseItemFilter<PowerLevelConstraints> {
-  PowerLevelConstraintsFilter(PowerLevelConstraints available, PowerLevelConstraints selected)
+class PowerLevelConstraintsFilter
+    extends BaseItemFilter<PowerLevelConstraints> {
+  PowerLevelConstraintsFilter(
+      PowerLevelConstraints available, PowerLevelConstraints selected)
       : super(available, selected);
 
   @override
@@ -36,7 +39,8 @@ class PowerLevelConstraintsFilter extends BaseItemFilter<PowerLevelConstraints> 
       }
     }
 
-    available = (availableValues?.min ?? 9999) < (availableValues?.max ?? -9999);
+    available =
+        (availableValues?.min ?? 9999) < (availableValues?.max ?? -9999);
 
     if (available) {
       value.max = min(availableValues.max, value.max ?? 9999);
@@ -47,7 +51,8 @@ class PowerLevelConstraintsFilter extends BaseItemFilter<PowerLevelConstraints> 
   }
 
   @override
-  bool filterItem(ItemWithOwner item, {Map<int, DestinyInventoryItemDefinition> definitions}) {
+  bool filterItem(ItemWithOwner item,
+      {Map<int, DestinyInventoryItemDefinition> definitions}) {
     var instanceInfo = profile.getInstanceInfo(item?.item?.itemInstanceId);
     var power = instanceInfo?.primaryStat?.value;
     if (power == null) return value.includePowerlessItems;

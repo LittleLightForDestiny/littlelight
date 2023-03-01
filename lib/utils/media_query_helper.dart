@@ -10,8 +10,10 @@ class MediaQueryHelper {
   bool get tabletOrBigger => biggerThan(ScreenSize.Small);
   bool get laptopOrBigger => biggerThan(ScreenSize.Medium);
   bool get isDesktop => biggerThan(ScreenSize.Large);
-  bool get isPortrait => MediaQuery.of(context).size.width <= MediaQuery.of(context).size.height;
-  bool get isLandscape => MediaQuery.of(context).size.width >= MediaQuery.of(context).size.height;
+  bool get isPortrait =>
+      MediaQuery.of(context).size.width <= MediaQuery.of(context).size.height;
+  bool get isLandscape =>
+      MediaQuery.of(context).size.width >= MediaQuery.of(context).size.height;
 
   bool biggerThan([ScreenSize size = ScreenSize.ExtraSmall]) {
     switch (size) {

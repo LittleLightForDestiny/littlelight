@@ -49,7 +49,9 @@ class CustomTabPassiveView extends StatelessWidget {
     if (!isMoving) _cachedViews.clear();
     final currentMin = controller.position.floor();
     final currentMax = controller.position.ceil();
-    final shouldRender = index == currentMin || index == currentMax || _cachedViews[index] != null;
+    final shouldRender = index == currentMin ||
+        index == currentMax ||
+        _cachedViews[index] != null;
     if (!shouldRender) return Container();
     final widget = _cachedViews[index] ??= pageBuilder(context, index);
     return IgnorePointer(

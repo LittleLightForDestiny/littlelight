@@ -12,7 +12,8 @@ final Map<String, ItemNotesTag> _defaultTags = {
 };
 
 setupitemNotes() {
-  GetIt.I.registerLazySingleton<ItemNotesService>(() => ItemNotesService._internal());
+  GetIt.I.registerLazySingleton<ItemNotesService>(
+      () => ItemNotesService._internal());
 }
 
 class ItemNotesService with StorageConsumer {
@@ -75,14 +76,15 @@ class ItemNotesService with StorageConsumer {
     return false;
   }
 
-  ItemNotes? getNotesForItem(int? itemHash, String? itemInstanceId, [bool orNew = false]) {
+  ItemNotes? getNotesForItem(int? itemHash, String? itemInstanceId,
+      [bool orNew = false]) {
     if (_notes == null) return null;
     if (_notes!.containsKey("${itemHash}_$itemInstanceId")) {
       return _notes!["${itemHash}_$itemInstanceId"];
     }
     if (orNew) {
-      _notes!["${itemHash}_$itemInstanceId"] =
-          ItemNotes.fromScratch(itemHash: itemHash!, itemInstanceId: itemInstanceId);
+      _notes!["${itemHash}_$itemInstanceId"] = ItemNotes.fromScratch(
+          itemHash: itemHash!, itemInstanceId: itemInstanceId);
       return _notes!["${itemHash}_$itemInstanceId"];
     }
     return null;
@@ -120,7 +122,8 @@ class ItemNotesService with StorageConsumer {
   }
 
   Future<void> _saveTagsToStorage() async {
-    await currentMembershipStorage.saveCachedTags(_tags as Map<String, ItemNotesTag>? ?? {});
+    await currentMembershipStorage
+        .saveCachedTags(_tags as Map<String, ItemNotesTag>? ?? {});
   }
 
   Future<void> _saveNotesToStorage() async {

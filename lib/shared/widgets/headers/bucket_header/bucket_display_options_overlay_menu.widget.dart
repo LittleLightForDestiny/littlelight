@@ -37,11 +37,13 @@ class BucketDisplayOptionsOverlayMenu extends BaseOverlayWidget {
     required BoxConstraints constraints,
   }) {
     const itemSize = 52.0;
-    final selectedIndex = _options.indexOf(currentValue).clamp(0, _options.length - 1);
+    final selectedIndex =
+        _options.indexOf(currentValue).clamp(0, _options.length - 1);
     double top = sourceTop - 2 - itemSize * selectedIndex;
     final height = itemSize * _options.length;
     if (top + height > constraints.maxHeight) {
-      final difference = ((top + height - constraints.maxHeight) / itemSize).ceil();
+      final difference =
+          ((top + height - constraints.maxHeight) / itemSize).ceil();
       top = sourceTop - 2 - itemSize * (selectedIndex + difference);
     }
     if (top < 0) {
@@ -55,7 +57,8 @@ class BucketDisplayOptionsOverlayMenu extends BaseOverlayWidget {
           child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: _options
-                  .where((option) => canEquip || option.availableOnNonEquippableBucket)
+                  .where((option) =>
+                      canEquip || option.availableOnNonEquippableBucket)
                   .map(
                     (option) => SizedBox(
                       height: itemSize,
@@ -93,7 +96,9 @@ class BucketDisplayMenuOptionWidget extends StatelessWidget {
       margin: const EdgeInsets.all(4),
       child: Material(
         borderRadius: BorderRadius.circular(8),
-        color: isSelected ? context.theme.primaryLayers.layer0 : context.theme.surfaceLayers.layer1,
+        color: isSelected
+            ? context.theme.primaryLayers.layer0
+            : context.theme.surfaceLayers.layer1,
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(8),

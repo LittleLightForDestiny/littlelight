@@ -26,7 +26,8 @@ class SingleTransferAction extends BaseNotificationAction {
   final DateTime _createdAt;
   final List<SingleTransferAction> _sideEffects = [];
 
-  SingleTransferAction({required this.item, required this.source, required this.destination})
+  SingleTransferAction(
+      {required this.item, required this.source, required this.destination})
       : _createdAt = DateTime.now();
 
   set currentStep(TransferSteps? step) {
@@ -55,7 +56,8 @@ class SingleTransferAction extends BaseNotificationAction {
     notifyListeners();
   }
 
-  bool hasSteps(Set<TransferSteps> steps) => steps.any((step) => _steps?.contains(step) ?? false);
+  bool hasSteps(Set<TransferSteps> steps) =>
+      steps.any((step) => _steps?.contains(step) ?? false);
 
   bool get active => _steps != null;
 
@@ -99,7 +101,8 @@ class SingleTransferAction extends BaseNotificationAction {
     required TransferDestination source,
     required TransferDestination destination,
   }) {
-    final action = SingleTransferAction(item: item, source: source, destination: destination);
+    final action = SingleTransferAction(
+        item: item, source: source, destination: destination);
     _sideEffects.add(action);
     action.addListener(dispatchSideEffects);
     return action;

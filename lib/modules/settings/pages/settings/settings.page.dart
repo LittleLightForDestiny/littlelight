@@ -27,7 +27,8 @@ class SettingsPage extends StatefulWidget {
   _SettingsPageState createState() => _SettingsPageState();
 }
 
-class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, WishlistsConsumer, ItemNotesConsumer {
+class _SettingsPageState extends State<SettingsPage>
+    with UserSettingsConsumer, WishlistsConsumer, ItemNotesConsumer {
   List<ItemSortParameter> itemOrdering;
   List<ItemSortParameter> pursuitOrdering;
   Set<String> priorityTags;
@@ -55,47 +56,49 @@ class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, 
         ),
         body: SingleChildScrollView(
             padding: const EdgeInsets.all(8),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: <Widget>[
-              buildTapToSelect(context),
-              Container(height: 16),
-              buildKeepAwake(context),
-              Container(height: 16),
-              buildAutoOpenSearch(context),
-              Container(height: 16),
-              HeaderWidget(
-                  child: Text(
-                "Default free slots".translate(context).toUpperCase(),
-              )),
-              buildDefaultFreeSlots(context),
-              HeaderWidget(
-                  child: Text(
-                "Wishlists".translate(context).toUpperCase(),
-              )),
-              buildWishlists(context),
-              Container(height: 16),
-              HeaderWidget(
-                  child: Text(
-                "Order characters by".translate(context).toUpperCase(),
-              )),
-              buildCharacterOrdering(context),
-              Container(height: 32),
-              HeaderWidget(
-                  child: Text(
-                "Order items by".translate(context).toUpperCase(),
-              )),
-              buildItemOrderList(context),
-              HeaderWidget(
-                  child: Text(
-                "Order pursuits by".translate(context).toUpperCase(),
-              )),
-              buildPursuitOrderList(context),
-              HeaderWidget(
-                  child: Text(
-                "Priority Tags".translate(context).toUpperCase(),
-              )),
-              buildPriorityTags(context),
-              Container(height: 32),
-            ])));
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  buildTapToSelect(context),
+                  Container(height: 16),
+                  buildKeepAwake(context),
+                  Container(height: 16),
+                  buildAutoOpenSearch(context),
+                  Container(height: 16),
+                  HeaderWidget(
+                      child: Text(
+                    "Default free slots".translate(context).toUpperCase(),
+                  )),
+                  buildDefaultFreeSlots(context),
+                  HeaderWidget(
+                      child: Text(
+                    "Wishlists".translate(context).toUpperCase(),
+                  )),
+                  buildWishlists(context),
+                  Container(height: 16),
+                  HeaderWidget(
+                      child: Text(
+                    "Order characters by".translate(context).toUpperCase(),
+                  )),
+                  buildCharacterOrdering(context),
+                  Container(height: 32),
+                  HeaderWidget(
+                      child: Text(
+                    "Order items by".translate(context).toUpperCase(),
+                  )),
+                  buildItemOrderList(context),
+                  HeaderWidget(
+                      child: Text(
+                    "Order pursuits by".translate(context).toUpperCase(),
+                  )),
+                  buildPursuitOrderList(context),
+                  HeaderWidget(
+                      child: Text(
+                    "Priority Tags".translate(context).toUpperCase(),
+                  )),
+                  buildPriorityTags(context),
+                  Container(height: 32),
+                ])));
   }
 
   buildKeepAwake(BuildContext context) {
@@ -106,7 +109,8 @@ class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, 
         title: Text(
           "Keep Awake".translate(context).toUpperCase(),
         ),
-        subtitle: Text("Keep device awake while the app is open".translate(context)),
+        subtitle:
+            Text("Keep device awake while the app is open".translate(context)),
         trailing: Switch(
           value: userSettings.keepAwake,
           onChanged: (val) {
@@ -122,7 +126,8 @@ class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, 
         title: Text(
           "Tap to select".translate(context).toUpperCase(),
         ),
-        subtitle: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        subtitle:
+            Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           Text(
             "Tapping on items will select them for quick transfer and equip instead of opening details"
                 .translate(context),
@@ -143,7 +148,8 @@ class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, 
         title: Text(
           "Auto open Keyboard".translate(context),
         ),
-        subtitle: Text("Open keyboard automatically in quick search".translate(context)),
+        subtitle: Text(
+            "Open keyboard automatically in quick search".translate(context)),
         trailing: Switch(
           value: userSettings.autoOpenKeyboard,
           onChanged: (val) {
@@ -169,7 +175,8 @@ class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, 
             Row(children: [
               Expanded(child: Container()),
               ElevatedButton(
-                child: Text("Add Wishlist".translate(context), textAlign: TextAlign.center),
+                child: Text("Add Wishlist".translate(context),
+                    textAlign: TextAlign.center),
                 onPressed: () async {
                   await Navigator.push(context, AddWishlistPageRoute());
                   wishlists = await wishlistsService.getWishlists();
@@ -182,8 +189,9 @@ class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, 
   }
 
   Future<T> showWishlistsProcessing<T>(BuildContext context, Future<T> future) {
-    return Navigator.of(context)
-        .push(BusyDialogRoute(context, label: Text("Processing wishlists".translate(context)), awaitFuture: future));
+    return Navigator.of(context).push(BusyDialogRoute(context,
+        label: Text("Processing wishlists".translate(context)),
+        awaitFuture: future));
   }
 
   buildWishlistsList(BuildContext context) {
@@ -199,11 +207,15 @@ class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, 
                             await wishlistsService.removeWishlist(e);
                             wishlists = await wishlistsService.getWishlists();
                           };
-                          await Navigator.push(context, BusyDialogRoute(context, awaitFuture: awaitable()));
+                          await Navigator.push(
+                              context,
+                              BusyDialogRoute(context,
+                                  awaitFuture: awaitable()));
                           setState(() {});
                         },
                         style: ElevatedButton.styleFrom(
-                            primary: LittleLightTheme.of(context).errorLayers, visualDensity: VisualDensity.compact),
+                            primary: LittleLightTheme.of(context).errorLayers,
+                            visualDensity: VisualDensity.compact),
                         child: Text("Remove".translate(context)),
                       )
                     ]))
@@ -257,7 +269,8 @@ class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, 
         )));
   }
 
-  buildCharacterOrderItem(BuildContext context, Widget label, CharacterSortParameterType type) {
+  buildCharacterOrderItem(
+      BuildContext context, Widget label, CharacterSortParameterType type) {
     var selected = type == userSettings.characterOrdering.type;
     return Expanded(
       child: Material(
@@ -303,7 +316,10 @@ class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, 
   Widget buildHandle(BuildContext context, int index) {
     return ReorderableDragStartListener(
         index: index,
-        child: AspectRatio(aspectRatio: 1, child: Container(color: Colors.transparent, child: const Icon(Icons.menu))));
+        child: AspectRatio(
+            aspectRatio: 1,
+            child: Container(
+                color: Colors.transparent, child: const Icon(Icons.menu))));
   }
 
   buildPursuitOrderList(BuildContext context) {
@@ -343,21 +359,29 @@ class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, 
                     padding: 4,
                     trailing: Container(
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10), color: Theme.of(context).colorScheme.onSurface),
+                            borderRadius: BorderRadius.circular(10),
+                            color: Theme.of(context).colorScheme.onSurface),
                         width: 20,
                         height: 20,
                         alignment: Alignment.center,
-                        child: const CenterIconWorkaround(FontAwesomeIcons.solidTimesCircle, size: 16, color: Colors.red)),
+                        child: const CenterIconWorkaround(
+                            FontAwesomeIcons.solidTimesCircle,
+                            size: 16,
+                            color: Colors.red)),
                     onClick: () {
                       userSettings.removePriorityTag(t);
                       setState(() {});
                     },
                   ))
               .followedBy([
-            ItemTagWidget(ItemNotesTag(icon: null, name: "Add Tag", backgroundColorHex: "#03A9f4"),
+            ItemTagWidget(
+                ItemNotesTag(
+                    icon: null, name: "Add Tag", backgroundColorHex: "#03A9f4"),
                 includeLabel: true,
                 padding: 4,
-                trailing: const CenterIconWorkaround(FontAwesomeIcons.plusCircle, size: 18),
+                trailing: const CenterIconWorkaround(
+                    FontAwesomeIcons.plusCircle,
+                    size: 18),
                 onClick: () => openAddTagDialog(context)),
           ]).toList(),
         ));
@@ -371,14 +395,17 @@ class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, 
     setState(() {});
   }
 
-  Widget buildSortItem(BuildContext context, ItemSortParameter parameter, int index, {@required Function onSave}) {
+  Widget buildSortItem(
+      BuildContext context, ItemSortParameter parameter, int index,
+      {@required Function onSave}) {
     return Material(
         key: Key("param_${parameter.type}"),
         child: Container(
             color: parameter.active
                 ? Theme.of(context).colorScheme.secondary
                 : Theme.of(context).colorScheme.secondaryContainer,
-            child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+            child:
+                Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
               buildHandle(context, index),
               Container(width: 8),
               Expanded(child: buildSortLabel(parameter)),
@@ -399,7 +426,8 @@ class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, 
             ])));
   }
 
-  Widget buildDirectionButton(ItemSortParameter parameter, int direction, {@required Function onSave}) {
+  Widget buildDirectionButton(ItemSortParameter parameter, int direction,
+      {@required Function onSave}) {
     var selected = parameter.direction == direction;
     if (!parameter.active) return Container();
     return SizedBox(
@@ -412,7 +440,11 @@ class _SettingsPageState extends State<SettingsPage> with UserSettingsConsumer, 
                 : Theme.of(context).toggleButtonsTheme.color,
             padding: const EdgeInsets.all(0),
           ),
-          child: Icon(direction > 0 ? FontAwesomeIcons.chevronUp : FontAwesomeIcons.chevronDown, size: 14),
+          child: Icon(
+              direction > 0
+                  ? FontAwesomeIcons.chevronUp
+                  : FontAwesomeIcons.chevronDown,
+              size: 14),
           onPressed: () {
             parameter.direction = direction;
             setState(() {});

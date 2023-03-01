@@ -29,10 +29,12 @@ import 'package:little_light/utils/item_filters/total_stats_constraints_filter.d
 import 'package:little_light/utils/item_filters/wishlist_tag_filter.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 
-List<BaseItemFilter> _replaceDefaultFilters(List<BaseItemFilter> defaultFilters, List<BaseItemFilter> filters) {
+List<BaseItemFilter> _replaceDefaultFilters(
+    List<BaseItemFilter> defaultFilters, List<BaseItemFilter> filters) {
   List<BaseItemFilter> finalList = defaultFilters.toList();
   for (var filter in (filters ?? [])) {
-    var index = finalList.indexWhere((element) => element.runtimeType == filter.runtimeType);
+    var index = finalList
+        .indexWhere((element) => element.runtimeType == filter.runtimeType);
     if (index > -1) {
       finalList.replaceRange(index, index, [filter]);
     } else {
@@ -42,7 +44,8 @@ List<BaseItemFilter> _replaceDefaultFilters(List<BaseItemFilter> defaultFilters,
   return finalList;
 }
 
-class SearchController extends ChangeNotifier with ProfileConsumer, ManifestConsumer {
+class SearchController extends ChangeNotifier
+    with ProfileConsumer, ManifestConsumer {
   List<ItemWithOwner> _unfilteredList;
   List<ItemWithOwner> _prefilteredList;
   List<ItemWithOwner> _filteredList;
@@ -76,17 +79,34 @@ class SearchController extends ChangeNotifier with ProfileConsumer, ManifestCons
   factory SearchController.withDuplicatedItemsFilters(BuildContext context) {
     return SearchController(
         firstRunFilters: [
-          PseudoItemTypeFilter([PseudoItemType.Weapons, PseudoItemType.Armor, PseudoItemType.Cosmetics],
-              [PseudoItemType.Weapons, PseudoItemType.Armor, PseudoItemType.Cosmetics])
+          PseudoItemTypeFilter([
+            PseudoItemType.Weapons,
+            PseudoItemType.Armor,
+            PseudoItemType.Cosmetics
+          ], [
+            PseudoItemType.Weapons,
+            PseudoItemType.Armor,
+            PseudoItemType.Cosmetics
+          ])
         ],
         sortTags: false,
         preFilters: [],
         filters: [
-          PseudoItemTypeFilter(
-              [PseudoItemType.Weapons, PseudoItemType.Armor, PseudoItemType.Cosmetics], [PseudoItemType.Weapons])
+          PseudoItemTypeFilter([
+            PseudoItemType.Weapons,
+            PseudoItemType.Armor,
+            PseudoItemType.Cosmetics
+          ], [
+            PseudoItemType.Weapons
+          ])
         ],
         postFilters: [TextFilter(context)],
-        defaultSorting: [ItemSortParameter(active: true, type: ItemSortParameterType.BucketHash, direction: 1)] +
+        defaultSorting: [
+              ItemSortParameter(
+                  active: true,
+                  type: ItemSortParameterType.BucketHash,
+                  direction: 1)
+            ] +
             getInjectedUserSettings().itemOrdering,
         customSorting: []);
   }
@@ -111,9 +131,12 @@ class SearchController extends ChangeNotifier with ProfileConsumer, ManifestCons
       TierTypeFilter(),
       ItemBucketFilter(),
       ItemSubtypeFilter(),
-      PowerLevelConstraintsFilter(PowerLevelConstraints(), PowerLevelConstraints()),
-      EnergyLevelConstraintsFilter(EnergyLevelConstraints(), EnergyLevelConstraints()),
-      TotalStatsConstraintsFilter(TotalStatsConstraints(), TotalStatsConstraints()),
+      PowerLevelConstraintsFilter(
+          PowerLevelConstraints(), PowerLevelConstraints()),
+      EnergyLevelConstraintsFilter(
+          EnergyLevelConstraints(), EnergyLevelConstraints()),
+      TotalStatsConstraintsFilter(
+          TotalStatsConstraints(), TotalStatsConstraints()),
       LoadoutFilter(context),
       ItemTagFilter(),
       WishlistTagFilter(),
@@ -122,13 +145,16 @@ class SearchController extends ChangeNotifier with ProfileConsumer, ManifestCons
       TextFilter(context),
     ];
     return SearchController(
-        firstRunFilters: _replaceDefaultFilters(_defaultFirstRunFilters, firstRunFilters),
+        firstRunFilters:
+            _replaceDefaultFilters(_defaultFirstRunFilters, firstRunFilters),
         preFilters: _replaceDefaultFilters(_defaultPreFilters, preFilters),
         filters: _replaceDefaultFilters(_defaultFilters, filters),
         postFilters: _replaceDefaultFilters(_defaultPostFilters, postFilters),
-        defaultSorting: defaultSorting ?? getInjectedUserSettings().itemOrdering,
+        defaultSorting:
+            defaultSorting ?? getInjectedUserSettings().itemOrdering,
         customSorting: customSorting ?? [],
-        availableSorters: availableSorters ?? ItemSortParameter.availableEquipmentSorters);
+        availableSorters:
+            availableSorters ?? ItemSortParameter.availableEquipmentSorters);
   }
 
   _init() {
@@ -173,7 +199,8 @@ class SearchController extends ChangeNotifier with ProfileConsumer, ManifestCons
     }
   }
 
-  Future<List<ItemWithOwner>> filterItems(List<ItemWithOwner> data, List<BaseItemFilter> filters) async {
+  Future<List<ItemWithOwner>> filterItems(
+      List<ItemWithOwner> data, List<BaseItemFilter> filters) async {
     var result = data;
     for (var _filter in filters) {
       result = await _filter.filter(result, definitions: _itemDefinitions);
@@ -182,7 +209,9 @@ class SearchController extends ChangeNotifier with ProfileConsumer, ManifestCons
   }
 
   update() async {
-    var _filters = [preFilters, filters, postFilters].expand((element) => element).toList();
+    var _filters = [preFilters, filters, postFilters]
+        .expand((element) => element)
+        .toList();
     _filteredList = await filterItems(_prefilteredList, _filters);
     notifyListeners();
   }
@@ -190,19 +219,28 @@ class SearchController extends ChangeNotifier with ProfileConsumer, ManifestCons
   List<ItemWithOwner> _getItems() {
     List<ItemWithOwner> allItems = [];
 
-    Iterable<String> charIds = profile.characters.map((char) => char.characterId);
+    Iterable<String> charIds =
+        profile.characters.map((char) => char.characterId);
     for (var charId in charIds) {
-      allItems.addAll(profile.getCharacterEquipment(charId).map((item) => ItemWithOwner(item, charId)));
-      allItems.addAll(profile.getCharacterInventory(charId).map((item) => ItemWithOwner(item, charId)));
+      allItems.addAll(profile
+          .getCharacterEquipment(charId)
+          .map((item) => ItemWithOwner(item, charId)));
+      allItems.addAll(profile
+          .getCharacterInventory(charId)
+          .map((item) => ItemWithOwner(item, charId)));
     }
-    allItems.addAll(profile.getProfileInventory().map((item) => ItemWithOwner(item, null)));
+    allItems.addAll(
+        profile.getProfileInventory().map((item) => ItemWithOwner(item, null)));
     return allItems;
   }
 
   _loadItemDefinitions() async {
-    Set<int> hashes = _unfilteredList.map((item) => item?.item?.itemHash).where((i) => i != null).toSet();
-    var _defs =
-        await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes?.where((element) => element != null));
+    Set<int> hashes = _unfilteredList
+        .map((item) => item?.item?.itemHash)
+        .where((i) => i != null)
+        .toSet();
+    var _defs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(
+        hashes?.where((element) => element != null));
     return _defs;
   }
 
@@ -210,14 +248,15 @@ class SearchController extends ChangeNotifier with ProfileConsumer, ManifestCons
     Set<int> hashes = {};
     for (var item in _prefilteredList) {
       var sockets = profile.getItemSockets(item?.item?.itemInstanceId);
-      var reusablePlugs = profile.getItemReusablePlugs(item?.item?.itemInstanceId);
+      var reusablePlugs =
+          profile.getItemReusablePlugs(item?.item?.itemInstanceId);
       hashes.addAll(sockets?.map((s) => s.plugHash) ?? []);
       for (var plug in reusablePlugs?.values) {
         hashes.addAll(plug?.map((p) => p.plugItemHash) ?? []);
       }
     }
-    var _defs =
-        await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes?.where((element) => element != null));
+    var _defs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(
+        hashes?.where((element) => element != null));
     return _defs;
   }
 }

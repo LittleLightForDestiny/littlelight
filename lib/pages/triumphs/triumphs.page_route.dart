@@ -36,7 +36,8 @@ class TriumphsPageRoute extends MaterialPageRoute {
                 arguments: TriumphsPageRouteArguments(
                     parentCategoryHashes: parentCategoryHashes,
                     categoryPresentationNodeHash: categoryPresentationNodeHash,
-                    subcategoryPresentationNodeHash: subcategoryPresentationNodeHash,
+                    subcategoryPresentationNodeHash:
+                        subcategoryPresentationNodeHash,
                     badgeCategoryHash: badgeCategoryHash)),
             builder: (context) {
               if (categoryPresentationNodeHash != null) {

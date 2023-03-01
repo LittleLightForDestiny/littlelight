@@ -19,7 +19,8 @@ class LittleLightApp extends StatefulWidget {
   _LittleLightAppState createState() => _LittleLightAppState();
 }
 
-class _LittleLightAppState extends State<LittleLightApp> with AnalyticsConsumer, UnilinksConsumer {
+class _LittleLightAppState extends State<LittleLightApp>
+    with AnalyticsConsumer, UnilinksConsumer {
   @override
   void initState() {
     super.initState();
@@ -34,12 +35,14 @@ class _LittleLightAppState extends State<LittleLightApp> with AnalyticsConsumer,
   }
 
   void updateUnilinks() {
-    final context = LittleLightNavigatorKeyContainer.navigatorKey?.currentContext;
+    final context =
+        LittleLightNavigatorKeyContainer.navigatorKey?.currentContext;
     if (context == null) return;
     final currentLink = unilinks?.currentLink;
     if (currentLink == null) return;
     final unilinksRoute = RouteSettings(name: currentLink);
-    Navigator.of(context).pushAndRemoveUntil(_router.getPage(unilinksRoute), (r) => false);
+    Navigator.of(context)
+        .pushAndRemoveUntil(_router.getPage(unilinksRoute), (r) => false);
   }
 
   @override

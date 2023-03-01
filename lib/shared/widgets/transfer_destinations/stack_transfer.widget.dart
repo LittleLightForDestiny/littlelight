@@ -6,7 +6,8 @@ import 'package:little_light/shared/models/transfer_destination.dart';
 
 import 'transfer_destinations.widget.dart';
 
-typedef OnTransferPressed = void Function(int selectedCount, TransferDestination destination);
+typedef OnTransferPressed = void Function(
+    int selectedCount, TransferDestination destination);
 
 class StackTransferWidget extends StatefulWidget {
   final int total;

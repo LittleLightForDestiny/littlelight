@@ -29,8 +29,12 @@ class AddWishlistPageState extends State<AddWishlistPage> {
             title: buildTitle(context),
             bottom: TabBar(
               tabs: [
-                Container(padding: const EdgeInsets.all(8), child: Text("Community".translate(context))),
-                Container(padding: const EdgeInsets.all(8), child: Text("Custom".translate(context))),
+                Container(
+                    padding: const EdgeInsets.all(8),
+                    child: Text("Community".translate(context))),
+                Container(
+                    padding: const EdgeInsets.all(8),
+                    child: Text("Custom".translate(context))),
               ],
             ),
           ),

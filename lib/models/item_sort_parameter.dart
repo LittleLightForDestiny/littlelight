@@ -27,7 +27,8 @@ class ItemSortParameter {
   bool active;
   Map<String, dynamic>? customData;
 
-  ItemSortParameter({this.type, this.active = true, this.direction = 1, this.customData});
+  ItemSortParameter(
+      {this.type, this.active = true, this.direction = 1, this.customData});
 
   static ItemSortParameter fromJson(dynamic json) {
     return _$ItemSortParameterFromJson(json);
@@ -42,8 +43,12 @@ class ItemSortParameter {
       ItemSortParameter(type: ItemSortParameterType.PowerLevel, direction: -1),
       ItemSortParameter(type: ItemSortParameterType.TierType, direction: -1),
       ItemSortParameter(type: ItemSortParameterType.Name),
-      ItemSortParameter(type: ItemSortParameterType.StatTotal, direction: -1, active: false),
-      ItemSortParameter(type: ItemSortParameterType.MasterworkStatus, direction: -1, active: false),
+      ItemSortParameter(
+          type: ItemSortParameterType.StatTotal, direction: -1, active: false),
+      ItemSortParameter(
+          type: ItemSortParameterType.MasterworkStatus,
+          direction: -1,
+          active: false),
       ItemSortParameter(type: ItemSortParameterType.ItemOwner, active: false),
       ItemSortParameter(type: ItemSortParameterType.SubType, active: false),
       ItemSortParameter(type: ItemSortParameterType.ClassType, active: false),
@@ -80,7 +85,8 @@ class ItemSortParameter {
   static List<ItemSortParameter> get defaultPursuitList {
     return [
       ItemSortParameter(type: ItemSortParameterType.TierType, direction: -1),
-      ItemSortParameter(type: ItemSortParameterType.ExpirationDate, direction: -1),
+      ItemSortParameter(
+          type: ItemSortParameterType.ExpirationDate, direction: -1),
       ItemSortParameter(type: ItemSortParameterType.QuestGroup, active: false),
       ItemSortParameter(type: ItemSortParameterType.Name, active: false),
     ];

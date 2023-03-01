@@ -33,13 +33,18 @@ class MigrationV1x9x0 extends StorageMigration {
 
     await migrateAccountIDs(_prefs, _storageRoot);
 
-    await moveFileOnSubdir("$_storageRoot/accounts", "memberships.json", "membershipData.json");
+    await moveFileOnSubdir(
+        "$_storageRoot/accounts", "memberships.json", "membershipData.json");
 
-    await moveFileOnSubdir("$_storageRoot/memberships", "tracked_objectives.json", "trackedObjectives.json");
-    await moveFileOnSubdir("$_storageRoot/memberships", "userpref_characterOrdering.json", "characterOrdering.json");
+    await moveFileOnSubdir("$_storageRoot/memberships",
+        "tracked_objectives.json", "trackedObjectives.json");
+    await moveFileOnSubdir("$_storageRoot/memberships",
+        "userpref_characterOrdering.json", "characterOrdering.json");
 
-    await moveFile("$_storageRoot/userpref_itemOrdering.json", "$_storageRoot/itemOrdering.json");
-    await moveFile("$_storageRoot/userpref_pursuitOrdering.json", "$_storageRoot/pursuitOrdering.json");
+    await moveFile("$_storageRoot/userpref_itemOrdering.json",
+        "$_storageRoot/itemOrdering.json");
+    await moveFile("$_storageRoot/userpref_pursuitOrdering.json",
+        "$_storageRoot/pursuitOrdering.json");
 
     await tryDelete("$_storageRoot/bungie_common_settings.json");
     await tryDelete("$_storageRoot/parsedWishlists.json");
@@ -52,7 +57,8 @@ class MigrationV1x9x0 extends StorageMigration {
     await tryDelete("$_dbRoot/languages", true);
   }
 
-  removeLegacyCurrentVersion(SharedPreferences prefs, Iterable<String> prefKeys) {
+  removeLegacyCurrentVersion(
+      SharedPreferences prefs, Iterable<String> prefKeys) {
     try {
       final manifestVersionKeys = prefKeys.where((k) {
         final regexp = RegExp("languages/.*?/manifestVersion");
@@ -66,7 +72,8 @@ class MigrationV1x9x0 extends StorageMigration {
     }
   }
 
-  void removeLittleLightAPICredentials(SharedPreferences prefs, Iterable<String> prefKeys) {
+  void removeLittleLightAPICredentials(
+      SharedPreferences prefs, Iterable<String> prefKeys) {
     try {
       final membershipSecretKeys = prefKeys.where((k) {
         final regexp = RegExp("memberships/.*?/membership_secret");
@@ -93,11 +100,13 @@ class MigrationV1x9x0 extends StorageMigration {
     }
   }
 
-  Future<void> migrateAccountIDs(SharedPreferences prefs, String? storageRoot) async {
+  Future<void> migrateAccountIDs(
+      SharedPreferences prefs, String? storageRoot) async {
     try {
       final accountIDs = prefs.getStringList('account_ids');
       if (accountIDs != null) {
-        await File("$storageRoot/accountIDs.json").writeAsString(jsonEncode(accountIDs));
+        await File("$storageRoot/accountIDs.json")
+            .writeAsString(jsonEncode(accountIDs));
       }
     } catch (e) {
       print(e);

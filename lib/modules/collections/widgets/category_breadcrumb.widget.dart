@@ -4,7 +4,8 @@ import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 
-class CategoryBreadcrumbWidget extends StatefulWidget implements PreferredSizeWidget {
+class CategoryBreadcrumbWidget extends StatefulWidget
+    implements PreferredSizeWidget {
   final List<int> parentCategoryHashes;
 
   const CategoryBreadcrumbWidget({
@@ -13,13 +14,15 @@ class CategoryBreadcrumbWidget extends StatefulWidget implements PreferredSizeWi
   }) : super(key: key);
 
   @override
-  _CategoryBreadcrumbWidgetState createState() => _CategoryBreadcrumbWidgetState();
+  _CategoryBreadcrumbWidgetState createState() =>
+      _CategoryBreadcrumbWidgetState();
 
   @override
   Size get preferredSize => const Size.fromHeight(32);
 }
 
-class _CategoryBreadcrumbWidgetState extends State<CategoryBreadcrumbWidget> with ManifestConsumer {
+class _CategoryBreadcrumbWidgetState extends State<CategoryBreadcrumbWidget>
+    with ManifestConsumer {
   List<DestinyPresentationNodeDefinition>? nodeDefinitions;
 
   TabController? get tabController => DefaultTabController.of(context);
@@ -37,10 +40,14 @@ class _CategoryBreadcrumbWidgetState extends State<CategoryBreadcrumbWidget> wit
   }
 
   void loadDefinitions() async {
-    final defs = await manifest.getDefinitions<DestinyPresentationNodeDefinition>(widget.parentCategoryHashes);
+    final defs =
+        await manifest.getDefinitions<DestinyPresentationNodeDefinition>(
+            widget.parentCategoryHashes);
     setState(() {
-      nodeDefinitions =
-          widget.parentCategoryHashes.map((hash) => defs[hash]).whereType<DestinyPresentationNodeDefinition>().toList();
+      nodeDefinitions = widget.parentCategoryHashes
+          .map((hash) => defs[hash])
+          .whereType<DestinyPresentationNodeDefinition>()
+          .toList();
     });
   }
 
@@ -65,7 +72,9 @@ class _CategoryBreadcrumbWidgetState extends State<CategoryBreadcrumbWidget> wit
     if (nodeDefinitions == null) return Container();
     final nodes = nodeDefinitions.last.children?.presentationNodes;
     if (nodes == null) return Container();
-    final last = nodes.isNotEmpty ? nodes[tabController?.index ?? 0].presentationNodeHash : null;
+    final last = nodes.isNotEmpty
+        ? nodes[tabController?.index ?? 0].presentationNodeHash
+        : null;
     return Container(
         constraints: const BoxConstraints.expand(height: 32),
         child: Material(
@@ -78,9 +87,11 @@ class _CategoryBreadcrumbWidgetState extends State<CategoryBreadcrumbWidget> wit
                     padding: const EdgeInsets.all(8),
                     child: Row(
                         children: nodeDefinitions
-                            .map<Widget>((def) => Text("${def.displayProperties?.name} ${def != nodeDefinitions.last || last != null ? '// ' : ''}"))
+                            .map<Widget>((def) => Text(
+                                "${def.displayProperties?.name} ${def != nodeDefinitions.last || last != null ? '// ' : ''}"))
                             .followedBy([
-                      if (last != null) ManifestText<DestinyPresentationNodeDefinition>(last)
+                      if (last != null)
+                        ManifestText<DestinyPresentationNodeDefinition>(last)
                     ]).toList())))));
   }
 }

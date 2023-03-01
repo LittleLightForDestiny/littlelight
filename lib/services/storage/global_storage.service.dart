@@ -61,13 +61,17 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
     _hasRunSetup = true;
   }
 
-  String? get currentLanguage => getString(GlobalStorageKeys.currentLanguageCode);
-  set currentLanguage(String? languageCode) => setString(GlobalStorageKeys.currentLanguageCode, languageCode);
+  String? get currentLanguage =>
+      getString(GlobalStorageKeys.currentLanguageCode);
+  set currentLanguage(String? languageCode) =>
+      setString(GlobalStorageKeys.currentLanguageCode, languageCode);
 
   String? get currentAccountID => getString(GlobalStorageKeys.currentAccountID);
-  set currentAccountID(String? selectedAccountID) => setString(GlobalStorageKeys.currentAccountID, selectedAccountID);
+  set currentAccountID(String? selectedAccountID) =>
+      setString(GlobalStorageKeys.currentAccountID, selectedAccountID);
 
-  String? get currentMembershipID => getString(GlobalStorageKeys.currentMembershipID);
+  String? get currentMembershipID =>
+      getString(GlobalStorageKeys.currentMembershipID);
   set currentMembershipID(String? selectedMembershipID) {
     if (selectedMembershipID == null) {
       print(selectedMembershipID);
@@ -78,7 +82,8 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
   Future<List<ItemSortParameter>?> getItemOrdering() async {
     List<dynamic>? jsonList = await getJson(GlobalStorageKeys.itemOrdering);
     if (jsonList == null) return null;
-    List<ItemSortParameter> savedParams = jsonList.map((j) => ItemSortParameter.fromJson(j)).toList();
+    List<ItemSortParameter> savedParams =
+        jsonList.map((j) => ItemSortParameter.fromJson(j)).toList();
     return savedParams;
   }
 
@@ -90,7 +95,8 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
   Future<List<ItemSortParameter>?> getPursuitOrdering() async {
     List<dynamic>? jsonList = await getJson(GlobalStorageKeys.pursuitOrdering);
     if (jsonList == null) return null;
-    List<ItemSortParameter> savedParams = jsonList.map((j) => ItemSortParameter.fromJson(j)).toList();
+    List<ItemSortParameter> savedParams =
+        jsonList.map((j) => ItemSortParameter.fromJson(j)).toList();
     return savedParams;
   }
 
@@ -100,7 +106,8 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
   }
 
   bool? get hasTappedGhost => getBool(GlobalStorageKeys.hasTappedGhost);
-  set hasTappedGhost(bool? value) => setBool(GlobalStorageKeys.hasTappedGhost, value);
+  set hasTappedGhost(bool? value) =>
+      setBool(GlobalStorageKeys.hasTappedGhost, value);
 
   bool? get keepAwake => getBool(GlobalStorageKeys.keepAwake);
   set keepAwake(bool? value) => setBool(GlobalStorageKeys.keepAwake, value);
@@ -109,10 +116,12 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
   set tapToSelect(bool? value) => setBool(GlobalStorageKeys.tapToSelect, value);
 
   int? get defaultFreeSlots => getInt(GlobalStorageKeys.defaultFreeSlots);
-  set defaultFreeSlots(int? value) => setInt(GlobalStorageKeys.defaultFreeSlots, value);
+  set defaultFreeSlots(int? value) =>
+      setInt(GlobalStorageKeys.defaultFreeSlots, value);
 
   bool? get autoOpenKeyboard => getBool(GlobalStorageKeys.autoOpenKeyboard);
-  set autoOpenKeyboard(bool? value) => setBool(GlobalStorageKeys.autoOpenKeyboard, value);
+  set autoOpenKeyboard(bool? value) =>
+      setBool(GlobalStorageKeys.autoOpenKeyboard, value);
 
   DateTime? get lastUpdated => getDate(GlobalStorageKeys.versionUpdatedDate);
 
@@ -141,7 +150,8 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
 
   Future<ParsedWishlist?> getParsedWishlists() async {
     try {
-      Map<String, dynamic>? json = await getJson(GlobalStorageKeys.parsedWishlists);
+      Map<String, dynamic>? json =
+          await getJson(GlobalStorageKeys.parsedWishlists);
       var items = ParsedWishlist.fromJson(json);
       return items;
     } catch (e) {
@@ -192,7 +202,8 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
     return contents;
   }
 
-  Future<void> saveWishlistContents(WishlistFile wishlist, String contents) async {
+  Future<void> saveWishlistContents(
+      WishlistFile wishlist, String contents) async {
     final filePath = _getWishlistPath(wishlist);
     await saveFileContents(filePath, contents);
   }
@@ -204,7 +215,8 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
 
   Future<WishlistFolder?> getFeaturedWishlists() async {
     try {
-      dynamic data = await getExpireableJson(GlobalStorageKeys.featuredWishlists, const Duration(minutes: 5));
+      dynamic data = await getExpireableJson(
+          GlobalStorageKeys.featuredWishlists, const Duration(minutes: 5));
       if (data == null) return null;
       return WishlistFolder.fromJson(data);
     } catch (e) {
@@ -216,7 +228,8 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
 
   Future<CollaboratorsResponse?> getCollaborators() async {
     try {
-      dynamic data = await getExpireableJson(GlobalStorageKeys.collaboratorsData, const Duration(minutes: 1));
+      dynamic data = await getExpireableJson(
+          GlobalStorageKeys.collaboratorsData, const Duration(minutes: 1));
       if (data == null) return null;
       return CollaboratorsResponse.fromJson(data);
     } catch (e) {
@@ -228,7 +241,8 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
 
   Future<GameData?> getGameData() async {
     try {
-      dynamic data = await getExpireableJson(GlobalStorageKeys.gameData, const Duration(days: 7));
+      dynamic data = await getExpireableJson(
+          GlobalStorageKeys.gameData, const Duration(days: 7));
       if (data == null) return null;
       return GameData.fromJson(data);
     } catch (e) {

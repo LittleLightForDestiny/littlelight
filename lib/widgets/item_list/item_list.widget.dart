@@ -29,7 +29,11 @@ const _fullWidthBuckets = [
   InventoryBucket.engrams
 ];
 
-const _suppressEmptySpaces = [InventoryBucket.consumables, InventoryBucket.modifications, InventoryBucket.lostItems];
+const _suppressEmptySpaces = [
+  InventoryBucket.consumables,
+  InventoryBucket.modifications,
+  InventoryBucket.lostItems
+];
 
 typedef OnBucketOptionsChanged = void Function();
 
@@ -68,15 +72,22 @@ class ItemListWidget extends StatefulWidget {
 }
 
 class ItemListWidgetState extends State<ItemListWidget>
-    with AutomaticKeepAliveClientMixin, UserSettingsConsumer, ProfileConsumer, ManifestConsumer, SelectionConsumer {
+    with
+        AutomaticKeepAliveClientMixin,
+        UserSettingsConsumer,
+        ProfileConsumer,
+        ManifestConsumer,
+        SelectionConsumer {
   Map<int, DestinyInventoryBucketDefinition> bucketDefs;
   List<ListBucket> buckets;
   StreamSubscription<List<ItemWithOwner>> selectionSubscription;
   bool isSelectionOpen = false;
 
-  bool suppressEmptySpaces(bucketHash) => _suppressEmptySpaces?.contains(bucketHash) ?? false;
+  bool suppressEmptySpaces(bucketHash) =>
+      _suppressEmptySpaces?.contains(bucketHash) ?? false;
 
-  bool isFullWidthBucket(bucketHash) => _fullWidthBuckets?.contains(bucketHash) ?? false;
+  bool isFullWidthBucket(bucketHash) =>
+      _fullWidthBuckets?.contains(bucketHash) ?? false;
 
   @override
   void initState() {
@@ -99,22 +110,32 @@ class ItemListWidgetState extends State<ItemListWidget>
 
   buildIndex() async {
     if (!mounted) return;
-    List<DestinyItemComponent> equipment = profile.getCharacterEquipment(widget.characterId);
-    List<DestinyItemComponent> characterInventory = profile.getCharacterInventory(widget.characterId);
+    List<DestinyItemComponent> equipment =
+        profile.getCharacterEquipment(widget.characterId);
+    List<DestinyItemComponent> characterInventory =
+        profile.getCharacterInventory(widget.characterId);
     List<DestinyItemComponent> profileInventory = profile.getProfileInventory();
-    bucketDefs = await manifest.getDefinitions<DestinyInventoryBucketDefinition>(widget.bucketHashes);
+    bucketDefs = await manifest
+        .getDefinitions<DestinyInventoryBucketDefinition>(widget.bucketHashes);
     buckets = [];
     for (int bucketHash in widget.bucketHashes) {
       DestinyInventoryBucketDefinition bucketDef = bucketDefs[bucketHash];
       List<DestinyItemComponent> inventory =
-          bucketDef?.scope == BucketScope.Character ? characterInventory : profileInventory;
-      DestinyItemComponent equipped = equipment.firstWhere((item) => item.bucketHash == bucketHash, orElse: () => null);
-      List<DestinyItemComponent> unequipped = inventory.where((item) => item.bucketHash == bucketHash).toList();
-      unequipped = (await InventoryUtils.sortDestinyItems(unequipped.map((i) => ItemWithOwner(i, null))))
+          bucketDef?.scope == BucketScope.Character
+              ? characterInventory
+              : profileInventory;
+      DestinyItemComponent equipped = equipment.firstWhere(
+          (item) => item.bucketHash == bucketHash,
+          orElse: () => null);
+      List<DestinyItemComponent> unequipped =
+          inventory.where((item) => item.bucketHash == bucketHash).toList();
+      unequipped = (await InventoryUtils.sortDestinyItems(
+              unequipped.map((i) => ItemWithOwner(i, null))))
           .map((i) => i.item)
           .toList();
 
-      buckets.add(ListBucket(bucketHash: bucketHash, equipped: equipped, unequipped: unequipped));
+      buckets.add(ListBucket(
+          bucketHash: bucketHash, equipped: equipped, unequipped: unequipped));
     }
 
     if (!mounted) {
@@ -126,7 +147,9 @@ class ItemListWidgetState extends State<ItemListWidget>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return (buckets?.length ?? 0) == 0 ? buildLoading(context) : buildList(context);
+    return (buckets?.length ?? 0) == 0
+        ? buildLoading(context)
+        : buildList(context);
   }
 
   Widget buildLoading(BuildContext context) => LoadingAnimWidget();
@@ -149,9 +172,14 @@ class ItemListWidgetState extends State<ItemListWidget>
     for (var bucket in buckets) {
       final bucketDef = bucketDefs[bucket.bucketHash];
       final options = getBucketOptions(bucket.bucketHash);
-      final bool showEquipped = bucket.equipped != null && options.type != BucketDisplayType.Hidden;
-      final bool showUnequipped = ![BucketDisplayType.Hidden, BucketDisplayType.OnlyEquipped].contains(options.type) &&
-          ((bucket.unequipped?.isNotEmpty ?? false) || bucketDef.hasTransferDestination);
+      final bool showEquipped =
+          bucket.equipped != null && options.type != BucketDisplayType.Hidden;
+      final bool showUnequipped = ![
+            BucketDisplayType.Hidden,
+            BucketDisplayType.OnlyEquipped
+          ].contains(options.type) &&
+          ((bucket.unequipped?.isNotEmpty ?? false) ||
+              bucketDef.hasTransferDestination);
       final bool addSpacer = showEquipped || showUnequipped;
       list += [
         buildBucketHeaderSliver(bucket),
@@ -162,7 +190,12 @@ class ItemListWidgetState extends State<ItemListWidget>
     }
 
     if (isSelectionOpen) {
-      list += [SliverSection(itemCount: 1, itemHeight: 160, itemBuilder: (context, index) => Container())];
+      list += [
+        SliverSection(
+            itemCount: 1,
+            itemHeight: 160,
+            itemBuilder: (context, index) => Container())
+      ];
     }
 
     return list;
@@ -180,7 +213,8 @@ class ItemListWidgetState extends State<ItemListWidget>
   }
 
   SliverSection buildBucketHeaderSliver(ListBucket bucket) {
-    final itemCount = (bucket.equipped != null ? 1 : 0) + (bucket.unequipped?.length ?? 0);
+    final itemCount =
+        (bucket.equipped != null ? 1 : 0) + (bucket.unequipped?.length ?? 0);
     return SliverSection(
         itemBuilder: (context, _) => BucketHeaderWidget(
             key: Key("bucketheader_${widget.characterId}_${bucket.bucketHash}"),
@@ -200,7 +234,8 @@ class ItemListWidgetState extends State<ItemListWidget>
   }
 
   SliverSection buildEquippedItem(DestinyItemComponent item) {
-    String itemKey = "equipped_${item?.itemInstanceId ?? item?.itemHash ?? 'empty'}";
+    String itemKey =
+        "equipped_${item?.itemInstanceId ?? item?.itemHash ?? 'empty'}";
     final bucketOptions = getBucketOptions(item.bucketHash);
     return SliverSection(
         itemBuilder: (context, _) => InventoryItemWrapperWidget(
@@ -217,23 +252,29 @@ class ItemListWidgetState extends State<ItemListWidget>
     return userSettings.getDisplayOptionsForBucket("$bucketHash");
   }
 
-  int getItemCountPerRow(BuildContext context, BucketDisplayOptions bucketOptions) {
-    return bucketOptions.responsiveUnequippedItemsPerRow(context, widget.columnCount);
+  int getItemCountPerRow(
+      BuildContext context, BucketDisplayOptions bucketOptions) {
+    return bucketOptions.responsiveUnequippedItemsPerRow(
+        context, widget.columnCount);
   }
 
-  SliverSection buildUnequippedItems(List<DestinyItemComponent> items, ListBucket bucket) {
+  SliverSection buildUnequippedItems(
+      List<DestinyItemComponent> items, ListBucket bucket) {
     final bucketDef = bucketDefs[bucket.bucketHash];
     final bucketOptions = getBucketOptions(bucket.bucketHash);
-    final maxSlots = bucketDef?.itemCount != null ? (bucketDef.itemCount - 1) : items.length;
+    final maxSlots =
+        bucketDef?.itemCount != null ? (bucketDef.itemCount - 1) : items.length;
     final itemsPerRow = getItemCountPerRow(context, bucketOptions);
     int bucketSize = maxSlots;
     if (bucketDef == null) {
       print(bucket.bucketHash);
     }
-    if (!bucketDef.hasTransferDestination || suppressEmptySpaces(bucket.bucketHash)) {
+    if (!bucketDef.hasTransferDestination ||
+        suppressEmptySpaces(bucket.bucketHash)) {
       bucketSize = (items.length / itemsPerRow).ceil() * itemsPerRow;
     }
-    if (bucketDef.hasTransferDestination && bucketOptions.type == BucketDisplayType.Large) {
+    if (bucketDef.hasTransferDestination &&
+        bucketOptions.type == BucketDisplayType.Large) {
       bucketSize = (items.length + 1).clamp(0, bucketSize);
     }
     final contentDensity = {
@@ -252,7 +293,8 @@ class ItemListWidgetState extends State<ItemListWidget>
           );
         }
         final item = items[index];
-        final itemKey = "equipped_${item?.itemInstanceId ?? item?.itemHash ?? 'empty'}";
+        final itemKey =
+            "equipped_${item?.itemInstanceId ?? item?.itemHash ?? 'empty'}";
         return InventoryItemWrapperWidget(
           item != null ? ItemWithOwner(item, widget.characterId) : null,
           item?.bucketHash,

@@ -9,6 +9,8 @@ class DamageTypeSorter extends BaseItemSorter {
   int sort(ItemWithOwner a, ItemWithOwner b) {
     var instanceA = instance(a);
     var instanceB = instance(b);
-    return instanceA?.damageType?.value?.compareTo(instanceB?.damageType?.value ?? 0) ?? 0;
+    return instanceA?.damageType?.value
+            ?.compareTo(instanceB?.damageType?.value ?? 0) ??
+        0;
   }
 }

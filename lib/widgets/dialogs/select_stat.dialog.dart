@@ -8,11 +8,14 @@ import 'package:little_light/widgets/dialogs/littlelight.base.dialog.dart';
 class SelectStatDialogRoute extends DialogRoute<int?> {
   SelectStatDialogRoute(BuildContext context, List<int> statHashes)
       : super(
-            context: context, builder: (context) => SelectStatDialog(), settings: RouteSettings(arguments: statHashes));
+            context: context,
+            builder: (context) => SelectStatDialog(),
+            settings: RouteSettings(arguments: statHashes));
 }
 
 class SelectStatDialog extends LittleLightBaseDialog {
-  SelectStatDialog() : super(titleBuilder: (context) => TranslatedTextWidget('Select Stat'));
+  SelectStatDialog()
+      : super(titleBuilder: (context) => TranslatedTextWidget('Select Stat'));
 
   @override
   Widget? buildBody(BuildContext context) {
@@ -21,7 +24,8 @@ class SelectStatDialog extends LittleLightBaseDialog {
       return ListView.builder(
           itemCount: hashes.length,
           itemExtent: 48,
-          itemBuilder: (context, index) => buildStatItem(context, hashes[index]));
+          itemBuilder: (context, index) =>
+              buildStatItem(context, hashes[index]));
     }
     return Container();
   }

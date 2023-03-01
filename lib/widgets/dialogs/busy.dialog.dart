@@ -21,11 +21,13 @@ class BusyDialog extends LittleLightBaseDialog {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               LoadingAnimWidget(),
-              if (label != null) Container(padding: const EdgeInsets.only(top: 8), child: label),
+              if (label != null)
+                Container(padding: const EdgeInsets.only(top: 8), child: label),
             ],
           ),
         );
-  factory BusyDialog.await(BuildContext context, {Widget? label, required Future future}) {
+  factory BusyDialog.await(BuildContext context,
+      {Widget? label, required Future future}) {
     future.then((value) => Navigator.of(context).pop(value));
     return BusyDialog(label: label);
   }

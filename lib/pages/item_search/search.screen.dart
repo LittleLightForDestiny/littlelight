@@ -95,7 +95,9 @@ class SearchScreenState<T extends SearchScreen> extends State<T> {
         Builder(
             builder: (context) => IconButton(
                   enableFeedback: false,
-                  icon: Transform.rotate(angle: Math.pi / 2, child: const Icon(FontAwesomeIcons.exchangeAlt)),
+                  icon: Transform.rotate(
+                      angle: Math.pi / 2,
+                      child: const Icon(FontAwesomeIcons.exchangeAlt)),
                   onPressed: () {
                     drawerMode = SearchDrawerMode.Sort;
                     setState(() {});

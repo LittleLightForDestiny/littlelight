@@ -30,7 +30,8 @@ abstract class StorageBase<T> with AnalyticsConsumer {
   String getFilePath(T? key, {StoredFileExtensions? extension}) {
     var trailingSlash = (basePath.length) > 0 ? "/" : "";
     String keyPath = getKeyPath(key);
-    final fileExtension = extension?.extension != null ? ".${extension?.extension}" : "";
+    final fileExtension =
+        extension?.extension != null ? ".${extension?.extension}" : "";
     return "$_fileRoot/$basePath$trailingSlash$keyPath$fileExtension";
   }
 
@@ -57,7 +58,8 @@ abstract class StorageBase<T> with AnalyticsConsumer {
       error = e;
       stack = stackTrace;
     }
-    analytics.registerNonFatal(error, stack, additionalInfo: {"reason": "Coudn't find file root"});
+    analytics.registerNonFatal(error, stack,
+        additionalInfo: {"reason": "Coudn't find file root"});
     return null;
   }
 }
@@ -126,7 +128,8 @@ extension StorageOperations<T> on StorageBase<T> {
         String contents = await cached.readAsString();
         return contents;
       } catch (e, stackTrace) {
-        analytics.registerNonFatal(e, stackTrace, additionalInfo: {"reason": "Couldn't read file"});
+        analytics.registerNonFatal(e, stackTrace,
+            additionalInfo: {"reason": "Couldn't read file"});
       }
     }
     return null;
@@ -141,7 +144,8 @@ extension StorageOperations<T> on StorageBase<T> {
 
       await file.writeAsString(contents);
     } catch (e, stackTrace) {
-      analytics.registerNonFatal(e, stackTrace, additionalInfo: {"reason": "Couldn't write file"});
+      analytics.registerNonFatal(e, stackTrace,
+          additionalInfo: {"reason": "Couldn't write file"});
     }
   }
 

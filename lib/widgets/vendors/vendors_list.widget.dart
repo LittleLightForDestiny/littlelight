@@ -31,7 +31,8 @@ class VendorsListWidget extends StatefulWidget {
   _VendorsListWidgetState createState() => _VendorsListWidgetState();
 }
 
-class _VendorsListWidgetState extends State<VendorsListWidget> with AutomaticKeepAliveClientMixin {
+class _VendorsListWidgetState extends State<VendorsListWidget>
+    with AutomaticKeepAliveClientMixin {
   List<DestinyVendorComponent> _vendors;
 
   @override
@@ -44,7 +45,8 @@ class _VendorsListWidgetState extends State<VendorsListWidget> with AutomaticKee
     var vendors = await widget.service.getVendors(widget.characterId);
     Map<int, List<DestinyVendorCategory>> _categories = {};
     for (var vendor in vendors.values) {
-      _categories[vendor.vendorHash] = await widget.service.getVendorCategories(widget.characterId, vendor.vendorHash);
+      _categories[vendor.vendorHash] = await widget.service
+          .getVendorCategories(widget.characterId, vendor.vendorHash);
     }
     _vendors = vendors.values.where((v) {
       if (!v.enabled) return false;

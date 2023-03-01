@@ -17,7 +17,8 @@ class AnimatedCharacterBackgroundWidget extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _AnimatedCharacterBackgroundWidgetState createState() => _AnimatedCharacterBackgroundWidgetState();
+  _AnimatedCharacterBackgroundWidgetState createState() =>
+      _AnimatedCharacterBackgroundWidgetState();
 }
 
 class _CharacterInfo {
@@ -27,7 +28,8 @@ class _CharacterInfo {
   _CharacterInfo({this.emblemColor, this.characterClass, this.damageType});
 }
 
-class _AnimatedCharacterBackgroundWidgetState extends State<AnimatedCharacterBackgroundWidget>
+class _AnimatedCharacterBackgroundWidgetState
+    extends State<AnimatedCharacterBackgroundWidget>
     with SingleTickerProviderStateMixin, ProfileConsumer, ManifestConsumer {
   List<_CharacterInfo> characters;
   AnimationController _controller;
@@ -53,8 +55,10 @@ class _AnimatedCharacterBackgroundWidgetState extends State<AnimatedCharacterBac
     characters = [];
     for (var c in _characters) {
       var equipment = profile.getCharacterEquipment(c.characterId);
-      var subclass = equipment.firstWhere((i) => i.bucketHash == InventoryBucket.subclass);
-      var subclassDef = await manifest.getDefinition<DestinyInventoryItemDefinition>(subclass.itemHash);
+      var subclass =
+          equipment.firstWhere((i) => i.bucketHash == InventoryBucket.subclass);
+      var subclassDef = await manifest
+          .getDefinition<DestinyInventoryItemDefinition>(subclass.itemHash);
 
       characters.add(_CharacterInfo(
         emblemColor: c.character.emblemColor,
@@ -75,15 +79,19 @@ class _AnimatedCharacterBackgroundWidgetState extends State<AnimatedCharacterBac
 
   characterChangedListener() {
     Color emblemColor;
-    var character = widget.tabController.index < characters.length ? characters[widget.tabController.index] : null;
+    var character = widget.tabController.index < characters.length
+        ? characters[widget.tabController.index]
+        : null;
     if (character != null) {
-      emblemColor =
-          Color.fromARGB(255, character.emblemColor.red, character.emblemColor.green, character.emblemColor.blue);
+      emblemColor = Color.fromARGB(255, character.emblemColor.red,
+          character.emblemColor.green, character.emblemColor.blue);
     } else {
       emblemColor = Colors.black;
     }
 
-    tween = ColorTween(begin: tween.lerp(_controller.value), end: Color.lerp(emblemColor, Colors.grey.shade700, .4));
+    tween = ColorTween(
+        begin: tween.lerp(_controller.value),
+        end: Color.lerp(emblemColor, Colors.grey.shade700, .4));
     _controller.reset();
     _controller.forward();
     if (!mounted) return;
@@ -97,7 +105,8 @@ class _AnimatedCharacterBackgroundWidgetState extends State<AnimatedCharacterBac
         builder: (context, child) {
           return Container(
               decoration: BoxDecoration(
-            gradient: RadialGradient(center: Alignment.topCenter, radius: 1, colors: [
+            gradient:
+                RadialGradient(center: Alignment.topCenter, radius: 1, colors: [
               tween.evaluate(_controller),
               Color.lerp(tween.evaluate(_controller), Colors.black, .9),
             ]),

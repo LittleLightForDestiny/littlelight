@@ -15,8 +15,10 @@ extension LanguageContextConsumer on BuildContext {
     bool useReadContext = false,
   }) =>
       useReadContext
-          ? read<LanguageBloc>().translate(text, languageCode: languageCode, replace: replace)
-          : watch<LanguageBloc>().translate(text, languageCode: languageCode, replace: replace);
+          ? read<LanguageBloc>()
+              .translate(text, languageCode: languageCode, replace: replace)
+          : watch<LanguageBloc>()
+              .translate(text, languageCode: languageCode, replace: replace);
 }
 
 extension TranslateString on String {

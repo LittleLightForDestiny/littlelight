@@ -54,7 +54,8 @@ class PassiveTabBarView extends StatefulWidget {
   _TabBarViewState createState() => _TabBarViewState();
 }
 
-final PageScrollPhysics _kTabBarViewPhysics = const PageScrollPhysics().applyTo(const ClampingScrollPhysics());
+final PageScrollPhysics _kTabBarViewPhysics =
+    const PageScrollPhysics().applyTo(const ClampingScrollPhysics());
 
 class _TabBarViewState extends State<PassiveTabBarView> {
   TabController _controller;
@@ -64,7 +65,8 @@ class _TabBarViewState extends State<PassiveTabBarView> {
   final int _warpUnderwayCount = 0;
 
   void _updateTabController() {
-    final TabController newController = widget.controller ?? DefaultTabController.of(context);
+    final TabController newController =
+        widget.controller ?? DefaultTabController.of(context);
     assert(() {
       if (newController == null) {
         throw FlutterError('No TabController for ${widget.runtimeType}.\n'
@@ -78,7 +80,8 @@ class _TabBarViewState extends State<PassiveTabBarView> {
 
     assert(() {
       if (newController.length != widget.children.length) {
-        throw FlutterError('Controller\'s length property (${newController.length}) does not match the \n'
+        throw FlutterError(
+            'Controller\'s length property (${newController.length}) does not match the \n'
             'number of elements (${widget.children.length}) present in TabBarView\'s children property.');
       }
       return true;
@@ -86,9 +89,11 @@ class _TabBarViewState extends State<PassiveTabBarView> {
 
     if (newController == _controller) return;
 
-    if (_controller != null) _controller.animation.removeListener(_handleTabControllerAnimationTick);
+    if (_controller != null)
+      _controller.animation.removeListener(_handleTabControllerAnimationTick);
     _controller = newController;
-    if (_controller != null) _controller.animation.addListener(_handleTabControllerAnimationTick);
+    if (_controller != null)
+      _controller.animation.addListener(_handleTabControllerAnimationTick);
   }
 
   @override
@@ -109,19 +114,22 @@ class _TabBarViewState extends State<PassiveTabBarView> {
   void didUpdateWidget(PassiveTabBarView oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.controller != oldWidget.controller) _updateTabController();
-    if (widget.children != oldWidget.children && _warpUnderwayCount == 0) _children = widget.children;
+    if (widget.children != oldWidget.children && _warpUnderwayCount == 0)
+      _children = widget.children;
   }
 
   @override
   void dispose() {
-    if (_controller != null) _controller.animation.removeListener(_handleTabControllerAnimationTick);
+    if (_controller != null)
+      _controller.animation.removeListener(_handleTabControllerAnimationTick);
     // We don't own the _controller Animation, so it's not disposed here.
     super.dispose();
   }
 
   void _handleTabControllerAnimationTick() {
     var mq = MediaQuery.of(context);
-    _pageController.jumpTo((_controller.index + _controller.offset) * mq.size.width);
+    _pageController
+        .jumpTo((_controller.index + _controller.offset) * mq.size.width);
   }
 
   // Called when the PageView scrolls
@@ -135,12 +143,15 @@ class _TabBarViewState extends State<PassiveTabBarView> {
       onNotification: _handleScrollNotification,
       child: PageView.builder(
         itemBuilder: (context, index) {
-          if (widget.pageBuilder != null) return widget.pageBuilder(context, index);
+          if (widget.pageBuilder != null)
+            return widget.pageBuilder(context, index);
           return widget.children[index];
         },
         dragStartBehavior: widget.dragStartBehavior,
         controller: _pageController,
-        physics: widget.physics == null ? _kTabBarViewPhysics : _kTabBarViewPhysics.applyTo(widget.physics),
+        physics: widget.physics == null
+            ? _kTabBarViewPhysics
+            : _kTabBarViewPhysics.applyTo(widget.physics),
       ),
     );
   }

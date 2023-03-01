@@ -14,7 +14,8 @@ class NotesResponse {
       : notes = notes ?? [],
         tags = tags ?? [];
 
-  factory NotesResponse.fromJson(Map<String, dynamic> json) => _$NotesResponseFromJson(json);
+  factory NotesResponse.fromJson(Map<String, dynamic> json) =>
+      _$NotesResponseFromJson(json);
 
   Map<String, dynamic> toJson() => _$NotesResponseToJson(this);
 }

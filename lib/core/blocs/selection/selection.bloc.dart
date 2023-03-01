@@ -28,7 +28,9 @@ class _SelectedItemIdentifier {
 
   @override
   bool operator ==(Object other) =>
-      other is _SelectedItemIdentifier && other.runtimeType == runtimeType && other.id == id;
+      other is _SelectedItemIdentifier &&
+      other.runtimeType == runtimeType &&
+      other.id == id;
 
   @override
   int get hashCode => id.hashCode;
@@ -37,7 +39,8 @@ class _SelectedItemIdentifier {
 class SelectionBloc extends ChangeNotifier with ManifestConsumer {
   final ProfileBloc _profile;
 
-  factory SelectionBloc(BuildContext context) => SelectionBloc._(context.read<ProfileBloc>());
+  factory SelectionBloc(BuildContext context) =>
+      SelectionBloc._(context.read<ProfileBloc>());
 
   SelectionBloc._(this._profile) {
     _profile.addListener(_internalUpdate);
@@ -55,20 +58,24 @@ class SelectionBloc extends ChangeNotifier with ManifestConsumer {
   List<TransferDestination> _equipDestinations = [];
 
   void selectItem(int hash, {String? instanceId, int? stackIndex}) {
-    if (isSelected(hash, instanceId: instanceId, stackIndex: stackIndex)) return;
-    final id = _SelectedItemIdentifier(hash, instanceId: instanceId, stackIndex: stackIndex);
+    if (isSelected(hash, instanceId: instanceId, stackIndex: stackIndex))
+      return;
+    final id = _SelectedItemIdentifier(hash,
+        instanceId: instanceId, stackIndex: stackIndex);
     _selectedIdentifers.add(id);
     _internalUpdate();
   }
 
   void unselectItem(int hash, {String? instanceId, int? stackIndex}) {
-    final id = _SelectedItemIdentifier(hash, instanceId: instanceId, stackIndex: stackIndex);
+    final id = _SelectedItemIdentifier(hash,
+        instanceId: instanceId, stackIndex: stackIndex);
     _selectedIdentifers.remove(id);
     _internalUpdate();
   }
 
   void toggleSelected(int hash, {String? instanceId, int? stackIndex}) {
-    final isSelected = this.isSelected(hash, instanceId: instanceId, stackIndex: stackIndex);
+    final isSelected =
+        this.isSelected(hash, instanceId: instanceId, stackIndex: stackIndex);
     if (isSelected) {
       unselectItem(hash, instanceId: instanceId, stackIndex: stackIndex);
       return;
@@ -92,7 +99,8 @@ class SelectionBloc extends ChangeNotifier with ManifestConsumer {
         .map((id) {
           final instanceId = id.instanceId;
           final stackIndex = id.stackIndex ?? 0;
-          if (instanceId != null) return _profile.getItemByInstanceId(instanceId);
+          if (instanceId != null)
+            return _profile.getItemByInstanceId(instanceId);
           final items = _profile.getItemsByHash(id.hash);
           if (items.length > stackIndex) {
             return items[stackIndex];
@@ -117,9 +125,12 @@ class SelectionBloc extends ChangeNotifier with ManifestConsumer {
       bool canEquip = false;
       for (final item in items) {
         final hash = item.item.itemHash;
-        final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(hash);
+        final def =
+            await manifest.getDefinition<DestinyInventoryItemDefinition>(hash);
         if (def == null) continue;
-        final bucketDef = await manifest.getDefinition<DestinyInventoryBucketDefinition>(def.inventory?.bucketTypeHash);
+        final bucketDef =
+            await manifest.getDefinition<DestinyInventoryBucketDefinition>(
+                def.inventory?.bucketTypeHash);
         bool isOnVault = item.item.bucketHash == InventoryBucket.general;
         bool isOnPostmaster = item.item.bucketHash == InventoryBucket.lostItems;
 
@@ -143,12 +154,15 @@ class SelectionBloc extends ChangeNotifier with ManifestConsumer {
     final equipDestinations = <TransferDestination>[];
 
     if (areAllItemsProfileScoped) {
-      if (canTransferToProfile) transferDestinations.add(TransferDestination(TransferDestinationType.profile));
+      if (canTransferToProfile)
+        transferDestinations
+            .add(TransferDestination(TransferDestinationType.profile));
     } else {
-      transferDestinations.addAll(transferCharacters.map((c) => TransferDestination(
-            TransferDestinationType.character,
-            character: c,
-          )));
+      transferDestinations
+          .addAll(transferCharacters.map((c) => TransferDestination(
+                TransferDestinationType.character,
+                character: c,
+              )));
       equipDestinations.addAll(equipCharacters.map((c) => TransferDestination(
             TransferDestinationType.character,
             character: c,
@@ -156,7 +170,8 @@ class SelectionBloc extends ChangeNotifier with ManifestConsumer {
     }
 
     if (canTransferToVault) {
-      transferDestinations.add(TransferDestination(TransferDestinationType.vault));
+      transferDestinations
+          .add(TransferDestination(TransferDestinationType.vault));
     }
 
     _transferDestinations = transferDestinations;
@@ -164,7 +179,8 @@ class SelectionBloc extends ChangeNotifier with ManifestConsumer {
   }
 
   bool isSelected(int hash, {String? instanceId, int? stackIndex}) {
-    final id = _SelectedItemIdentifier(hash, instanceId: instanceId, stackIndex: stackIndex);
+    final id = _SelectedItemIdentifier(hash,
+        instanceId: instanceId, stackIndex: stackIndex);
     return _selectedIdentifers.contains(id);
   }
 

@@ -29,7 +29,8 @@ class DetailsArmorTierWidget extends BaseItemSocketsWidget {
 
 const _sectionId = "armor_tier";
 
-class DetailsArmorTierWidgetState<T extends DetailsArmorTierWidget> extends BaseItemSocketsWidgetState<T> {
+class DetailsArmorTierWidgetState<T extends DetailsArmorTierWidget>
+    extends BaseItemSocketsWidgetState<T> {
   bool showDetails = false;
 
   @override
@@ -54,11 +55,14 @@ class DetailsArmorTierWidgetState<T extends DetailsArmorTierWidget> extends Base
 
   @override
   Widget buildSockets(BuildContext context) {
-    Iterable<Widget> children =
-        category.socketIndexes.map((socketIndex) => buildSocketPlugs(context, socketIndex)).where((w) => w != null);
+    Iterable<Widget> children = category.socketIndexes
+        .map((socketIndex) => buildSocketPlugs(context, socketIndex))
+        .where((w) => w != null);
     return Container(
         alignment: Alignment.center,
-        child: Container(constraints: const BoxConstraints.tightFor(width: 600), child: Column(children: children.toList())));
+        child: Container(
+            constraints: const BoxConstraints.tightFor(width: 600),
+            child: Column(children: children.toList())));
   }
 
   @override
@@ -71,24 +75,25 @@ class DetailsArmorTierWidgetState<T extends DetailsArmorTierWidget> extends Base
   Widget buildPlug(BuildContext context, int socketIndex, int plugItemHash) {
     if (plugDefinitions == null) return Container();
     var plugDef = plugDefinitions[plugItemHash];
-    final color = plugDef?.plug?.energyCapacity?.energyType?.getColorLayer(context);
     var total = plugDef?.plug?.energyCapacity?.capacityValue;
     return Column(children: [
       Container(
           height: 40,
           padding: const EdgeInsets.symmetric(horizontal: 8),
-          color: color.withOpacity(.6),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Icon(DestinyData.getEnergyTypeIcon(plugDef?.plug?.energyCapacity?.energyType),
-                  color: plugDef?.plug?.energyCapacity?.energyType?.getColorLayer(context)?.layer2, size: 20),
+              Icon(
+                  DestinyData.getEnergyTypeIcon(
+                      plugDef?.plug?.energyCapacity?.energyType),
+                  size: 20),
               Container(
                 width: 4,
               ),
               Text(
                 "$total",
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
               ),
               Container(
                 width: 4,
@@ -96,7 +101,8 @@ class DetailsArmorTierWidgetState<T extends DetailsArmorTierWidget> extends Base
               TranslatedTextWidget(
                 "Energy",
                 uppercase: true,
-                style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
+                style:
+                    const TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
               )
             ],
           )),
@@ -112,7 +118,8 @@ class DetailsArmorTierWidgetState<T extends DetailsArmorTierWidget> extends Base
     var requiredEnergy = controller.requiredEnergy;
     List<Widget> pieces = [];
     for (var i = 0; i < 10; i++) {
-      pieces.add(Expanded(child: buildEnergyPiece(context, i, total, used, requiredEnergy)));
+      pieces.add(Expanded(
+          child: buildEnergyPiece(context, i, total, used, requiredEnergy)));
     }
     return Container(
         padding: const EdgeInsets.all(8),
@@ -122,10 +129,13 @@ class DetailsArmorTierWidgetState<T extends DetailsArmorTierWidget> extends Base
         ));
   }
 
-  Widget buildEnergyPiece(BuildContext context, int index, int total, int used, int requiredEnergy) {
+  Widget buildEnergyPiece(BuildContext context, int index, int total, int used,
+      int requiredEnergy) {
     final theme = LittleLightTheme.of(context);
     if (index < total) {
-      Color color = index < requiredEnergy ? theme.errorLayers.withOpacity(.8) : Colors.transparent;
+      Color color = index < requiredEnergy
+          ? theme.errorLayers.withOpacity(.8)
+          : Colors.transparent;
       if (index < used) {
         color = theme.onSurfaceLayers;
       }
@@ -133,8 +143,10 @@ class DetailsArmorTierWidgetState<T extends DetailsArmorTierWidget> extends Base
         height: 16,
         padding: const EdgeInsets.all(2),
         child: Container(
-          decoration:
-              BoxDecoration(border: Border.all(width: 2, color: Theme.of(context).colorScheme.onSurface), color: color),
+          decoration: BoxDecoration(
+              border: Border.all(
+                  width: 2, color: Theme.of(context).colorScheme.onSurface),
+              color: color),
         ),
       );
     }
@@ -143,7 +155,9 @@ class DetailsArmorTierWidgetState<T extends DetailsArmorTierWidget> extends Base
       height: 16,
       padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 5),
       child: Container(
-        color: index < requiredEnergy ? theme.errorLayers.withOpacity(.8) : Colors.black.withOpacity(.5),
+        color: index < requiredEnergy
+            ? theme.errorLayers.withOpacity(.8)
+            : Colors.black.withOpacity(.5),
       ),
     );
   }

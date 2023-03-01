@@ -45,7 +45,8 @@ class ItemSubtypeFilter extends BaseItemFilter<Set<FilterSubType>> {
     var subTypes = items
         .map<FilterSubType>((i) {
           var def = definitions[i?.item?.itemHash];
-          return FilterSubType(def?.itemType, def?.itemSubType, def?.itemTypeDisplayName);
+          return FilterSubType(
+              def?.itemType, def?.itemSubType, def?.itemTypeDisplayName);
         })
         .toList()
         .toSet()
@@ -66,9 +67,11 @@ class ItemSubtypeFilter extends BaseItemFilter<Set<FilterSubType>> {
   }
 
   @override
-  bool filterItem(ItemWithOwner item, {Map<int, DestinyInventoryItemDefinition> definitions}) {
+  bool filterItem(ItemWithOwner item,
+      {Map<int, DestinyInventoryItemDefinition> definitions}) {
     var def = definitions[item?.item?.itemHash];
-    if (value.any((v) => v.subTypeName == def?.itemTypeDisplayName)) return true;
+    if (value.any((v) => v.subTypeName == def?.itemTypeDisplayName))
+      return true;
     return false;
   }
 }

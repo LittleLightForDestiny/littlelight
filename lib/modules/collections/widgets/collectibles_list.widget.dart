@@ -12,14 +12,16 @@ class CollectibleListWidget extends StatelessWidget {
   final DestinyPresentationNodeDefinition node;
   final PresentationNodeTap? onItemTap;
 
-  const CollectibleListWidget({Key? key, required this.node, this.onItemTap}) : super(key: key);
+  const CollectibleListWidget({Key? key, required this.node, this.onItemTap})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MultiSectionScrollView(
       [
         SliverSection(
-          itemsPerRow: MediaQueryHelper(context).responsiveValue(1, tablet: 2, desktop: 3),
+          itemsPerRow: MediaQueryHelper(context)
+              .responsiveValue(1, tablet: 2, desktop: 3),
           itemCount: node.children?.collectibles?.length ?? 0,
           itemHeight: 96,
           itemBuilder: (context, index) => buildItem(context, index),

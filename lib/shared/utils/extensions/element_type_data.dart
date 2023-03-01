@@ -39,36 +39,3 @@ extension DamageTypeColorLayers on DamageType {
     }
   }
 }
-
-extension EnergyTypeColorLayers on DestinyEnergyType {
-  LayeredSwatch getColorLayer(BuildContext context) {
-    final theme = LittleLightTheme.of(context);
-    switch (this) {
-      case DestinyEnergyType.Arc:
-        return theme.damageTypeLayers.damageTypeArc;
-      case DestinyEnergyType.Thermal:
-        return theme.damageTypeLayers.damageTypeThermal;
-      case DestinyEnergyType.Void:
-        return theme.damageTypeLayers.damageTypeVoid;
-      case DestinyEnergyType.Stasis:
-        return theme.damageTypeLayers.damageTypeStasis;
-      default:
-        return theme.onSurfaceLayers;
-    }
-  }
-
-  IconData? get icon {
-    switch (this) {
-      case DestinyEnergyType.Arc:
-        return LittleLightIcons.damage_arc;
-      case DestinyEnergyType.Thermal:
-        return LittleLightIcons.damage_solar;
-      case DestinyEnergyType.Void:
-        return LittleLightIcons.damage_void;
-      case DestinyEnergyType.Stasis:
-        return LittleLightIcons.damage_stasis;
-      default:
-        return null;
-    }
-  }
-}

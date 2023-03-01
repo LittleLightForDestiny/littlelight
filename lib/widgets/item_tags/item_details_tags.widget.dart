@@ -24,7 +24,12 @@ class ItemDetailsTagsWidget extends BaseDestinyStatefulItemWidget {
       Key key,
       this.onUpdate,
       String characterId})
-      : super(item: item, definition: definition, instanceInfo: instanceInfo, key: key, characterId: characterId);
+      : super(
+            item: item,
+            definition: definition,
+            instanceInfo: instanceInfo,
+            key: key,
+            characterId: characterId);
 
   @override
   ItemDetailsTagsWidgetState createState() {
@@ -34,7 +39,8 @@ class ItemDetailsTagsWidget extends BaseDestinyStatefulItemWidget {
 
 const _sectionId = "item_tags";
 
-class ItemDetailsTagsWidgetState extends BaseDestinyItemState<ItemDetailsTagsWidget>
+class ItemDetailsTagsWidgetState
+    extends BaseDestinyItemState<ItemDetailsTagsWidget>
     with VisibleSectionMixin, ItemNotesConsumer {
   ItemNotes notes;
   List<ItemNotesTag> tags;
@@ -45,7 +51,8 @@ class ItemDetailsTagsWidgetState extends BaseDestinyItemState<ItemDetailsTagsWid
   @override
   void initState() {
     super.initState();
-    notes = itemNotes.getNotesForItem(item?.itemHash, item?.itemInstanceId, true);
+    notes =
+        itemNotes.getNotesForItem(item?.itemHash, item?.itemInstanceId, true);
     tags = itemNotes.tagsByIds(notes?.tags);
     setState(() {});
   }
@@ -62,11 +69,14 @@ class ItemDetailsTagsWidgetState extends BaseDestinyItemState<ItemDetailsTagsWid
     if (tags == null) return Container();
     return Container(
         padding: const EdgeInsets.all(8),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: <Widget>[
-          getHeader(Text("Item Tags".translate(context).toUpperCase(), style: const TextStyle(fontWeight: FontWeight.bold))),
-          visible ? Container(height: 8) : Container(),
-          visible ? buildTags(context) : Container(),
-        ]));
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              getHeader(Text("Item Tags".translate(context).toUpperCase(),
+                  style: const TextStyle(fontWeight: FontWeight.bold))),
+              visible ? Container(height: 8) : Container(),
+              visible ? buildTags(context) : Container(),
+            ]));
   }
 
   Widget buildTags(BuildContext context) {
@@ -81,21 +91,28 @@ class ItemDetailsTagsWidgetState extends BaseDestinyItemState<ItemDetailsTagsWid
                 padding: 4,
                 trailing: Container(
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10), color: Theme.of(context).colorScheme.onSurface),
+                        borderRadius: BorderRadius.circular(10),
+                        color: Theme.of(context).colorScheme.onSurface),
                     width: 20,
                     height: 20,
                     alignment: Alignment.center,
-                    child: const CenterIconWorkaround(FontAwesomeIcons.solidTimesCircle, size: 16, color: Colors.red)),
+                    child: const CenterIconWorkaround(
+                        FontAwesomeIcons.solidTimesCircle,
+                        size: 16,
+                        color: Colors.red)),
                 onClick: () {
                   notes.tags.remove(t.tagId);
                   save();
                 },
               ))
           .followedBy([
-        ItemTagWidget(ItemNotesTag(icon: null, name: "Add Tag", backgroundColorHex: "#03A9f4"),
+        ItemTagWidget(
+            ItemNotesTag(
+                icon: null, name: "Add Tag", backgroundColorHex: "#03A9f4"),
             includeLabel: true,
             padding: 4,
-            trailing: const CenterIconWorkaround(FontAwesomeIcons.plusCircle, size: 18),
+            trailing: const CenterIconWorkaround(FontAwesomeIcons.plusCircle,
+                size: 18),
             onClick: () => openAddTagDialog(context)),
       ]).toList(),
     );

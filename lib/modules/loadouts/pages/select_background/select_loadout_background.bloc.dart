@@ -8,9 +8,11 @@ const _shaderRootHash = 2381001021;
 class SelectLoadoutBackgroundBloc extends ChangeNotifier with ManifestConsumer {
   final BuildContext context;
   List<DestinyPresentationNodeDefinition>? _nodesDefinitions;
-  List<DestinyPresentationNodeDefinition>? get nodesDefinitions => _nodesDefinitions;
+  List<DestinyPresentationNodeDefinition>? get nodesDefinitions =>
+      _nodesDefinitions;
   final Set<int> _openedCategories = <int>{};
-  final Map<int, List<DestinyInventoryItemDefinition>> _categoryItems = <int, List<DestinyInventoryItemDefinition>>{};
+  final Map<int, List<DestinyInventoryItemDefinition>> _categoryItems =
+      <int, List<DestinyInventoryItemDefinition>>{};
 
   SelectLoadoutBackgroundBloc(this.context) {
     _asyncInit();
@@ -27,10 +29,13 @@ class SelectLoadoutBackgroundBloc extends ChangeNotifier with ManifestConsumer {
     await Future.delayed(Duration.zero);
     final route = ModalRoute.of(context);
     await Future.delayed(route?.transitionDuration ?? Duration.zero);
-    final categoryDefinition = await manifest.getDefinition<DestinyPresentationNodeDefinition>(_shaderRootHash);
-    final nodeHashes = categoryDefinition?.children?.presentationNodes?.map((e) => e.presentationNodeHash);
+    final categoryDefinition = await manifest
+        .getDefinition<DestinyPresentationNodeDefinition>(_shaderRootHash);
+    final nodeHashes = categoryDefinition?.children?.presentationNodes
+        ?.map((e) => e.presentationNodeHash);
     if (nodeHashes == null) return;
-    final nodesDefinitions = await manifest.getDefinitions<DestinyPresentationNodeDefinition>(nodeHashes);
+    final nodesDefinitions = await manifest
+        .getDefinitions<DestinyPresentationNodeDefinition>(nodeHashes);
 
     _nodesDefinitions = nodesDefinitions.values.toList();
     notifyListeners();
@@ -45,12 +50,17 @@ class SelectLoadoutBackgroundBloc extends ChangeNotifier with ManifestConsumer {
     notifyListeners();
 
     if (!_categoryItems.containsKey(hash) && _openedCategories.contains(hash)) {
-      final category = _nodesDefinitions?.firstWhereOrNull((def) => def.hash == hash);
-      final collectibleHashes = category?.children?.collectibles?.map((c) => c.collectibleHash);
+      final category =
+          _nodesDefinitions?.firstWhereOrNull((def) => def.hash == hash);
+      final collectibleHashes =
+          category?.children?.collectibles?.map((c) => c.collectibleHash);
       if (collectibleHashes == null) return;
-      final collectibles = await manifest.getDefinitions<DestinyCollectibleDefinition>(collectibleHashes);
-      final itemHashes = collectibles.values.map((e) => e.itemHash).whereType<int>();
-      final items = await manifest.getDefinitions<DestinyInventoryItemDefinition>(itemHashes);
+      final collectibles = await manifest
+          .getDefinitions<DestinyCollectibleDefinition>(collectibleHashes);
+      final itemHashes =
+          collectibles.values.map((e) => e.itemHash).whereType<int>();
+      final items = await manifest
+          .getDefinitions<DestinyInventoryItemDefinition>(itemHashes);
       final alreadyAddedImages = <String>[];
       final categoryItems = collectibleHashes
           .map((h) => collectibles[h]?.itemHash)

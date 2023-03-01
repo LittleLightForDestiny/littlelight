@@ -18,20 +18,27 @@ abstract class BaseOverlayWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       final rect = Rect.fromPoints(
-        sourceRenderBox.localToGlobal(sourceRenderBox.size.topLeft(Offset.zero)),
-        sourceRenderBox.localToGlobal(sourceRenderBox.size.bottomRight(Offset.zero)),
+        sourceRenderBox
+            .localToGlobal(sourceRenderBox.size.topLeft(Offset.zero)),
+        sourceRenderBox
+            .localToGlobal(sourceRenderBox.size.bottomRight(Offset.zero)),
       );
       final top = rect.top;
       final left = rect.left;
       final bottom = constraints.maxHeight - rect.bottom;
       final right = constraints.maxWidth - rect.right;
       final fullsizeMaskRect = Rect.fromLTRB(
-          -constraints.maxWidth * 2, -constraints.maxHeight, constraints.maxWidth * 2, constraints.maxHeight * 2);
+          -constraints.maxWidth * 2,
+          -constraints.maxHeight,
+          constraints.maxWidth * 2,
+          constraints.maxHeight * 2);
       return SingleRunAnimationBuilder(
         (controller) => AnimatedBuilder(
             animation: controller,
-            builder: (context, child) =>
-                ClipOval(clipper: _OvalClipper(Rect.lerp(rect, fullsizeMaskRect, controller.value)!), child: child),
+            builder: (context, child) => ClipOval(
+                clipper: _OvalClipper(
+                    Rect.lerp(rect, fullsizeMaskRect, controller.value)!),
+                child: child),
             child: Material(
               color: Colors.transparent,
               child: Stack(

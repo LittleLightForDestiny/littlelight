@@ -8,7 +8,8 @@ import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/item_sockets/plug_wishlist_tag_icons.mixin.dart';
 
-class SelectablePerkWidget extends StatelessWidget with PlugWishlistTagIconsMixin {
+class SelectablePerkWidget extends StatelessWidget
+    with PlugWishlistTagIconsMixin {
   final DestinyInventoryItemDefinition itemDefinition;
   final DestinyInventoryItemDefinition plugDefinition;
   final bool equipped;
@@ -36,7 +37,8 @@ class SelectablePerkWidget extends StatelessWidget with PlugWishlistTagIconsMixi
 
   @override
   Widget build(BuildContext context) {
-    bool intrinsic = plugDefinition?.plug?.plugCategoryIdentifier == "intrinsics";
+    bool intrinsic =
+        plugDefinition?.plug?.plugCategoryIdentifier == "intrinsics";
     bool isExotic = itemDefinition.inventory.tierType == TierType.Exotic;
     bool isEnhanced = plugDefinition?.inventory?.tierType == TierType.Common;
     int plugItemHash = plugHash ?? plugDefinition.hash;
@@ -65,25 +67,31 @@ class SelectablePerkWidget extends StatelessWidget with PlugWishlistTagIconsMixi
               AspectRatio(
                   aspectRatio: 1,
                   child: InkWell(
-                    borderRadius:
-                        intrinsic && !isExotic ? BorderRadius.circular(4 * scale) : BorderRadius.circular(48 * scale),
+                    borderRadius: intrinsic && !isExotic
+                        ? BorderRadius.circular(4 * scale)
+                        : BorderRadius.circular(48 * scale),
                     onTap: onTap,
                     child: Material(
                         shape: intrinsic && !isExotic
-                            ? RoundedRectangleBorder(borderRadius: BorderRadius.circular(4 * scale), side: borderSide)
+                            ? RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4 * scale),
+                                side: borderSide)
                             : CircleBorder(side: borderSide),
                         color: bgColor,
                         child: Padding(
                             padding: EdgeInsets.all(intrinsic ? 0 : 8 * scale),
-                            child: ManifestImageWidget<DestinyInventoryItemDefinition>(plugItemHash))),
+                            child: ManifestImageWidget<
+                                DestinyInventoryItemDefinition>(plugItemHash))),
                   )),
-              if (isEnhanced) Positioned.fill(child: buildEnhancedPerkOverlay(context)),
+              if (isEnhanced)
+                Positioned.fill(child: buildEnhancedPerkOverlay(context)),
               Positioned(
                   top: 0,
                   right: 0,
                   left: 0,
-                  child:
-                      Center(child: buildWishlistTagIcons(context, itemDefinition.hash, plugItemHash, wishlistScale)))
+                  child: Center(
+                      child: buildWishlistTagIcons(context, itemDefinition.hash,
+                          plugItemHash, wishlistScale)))
             ])));
   }
 
@@ -97,7 +105,10 @@ class SelectablePerkWidget extends StatelessWidget with PlugWishlistTagIconsMixi
           begin: Alignment.bottomCenter,
           end: Alignment.topCenter,
           colors: [
-            LittleLightTheme.of(context).achievementLayers.layer0.withOpacity(.9),
+            LittleLightTheme.of(context)
+                .achievementLayers
+                .layer0
+                .withOpacity(.9),
             LittleLightTheme.of(context).achievementLayers.layer3.withOpacity(0)
           ],
         ),

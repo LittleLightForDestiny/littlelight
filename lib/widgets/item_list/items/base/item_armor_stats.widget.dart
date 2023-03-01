@@ -11,7 +11,8 @@ import 'package:little_light/widgets/common/manifest_image.widget.dart';
 class ItemArmorStatsWidget extends StatefulWidget {
   final double iconSize;
   final DestinyItemComponent item;
-  const ItemArmorStatsWidget({Key key, this.iconSize = 16, this.item}) : super(key: key);
+  const ItemArmorStatsWidget({Key key, this.iconSize = 16, this.item})
+      : super(key: key);
 
   @override
   ItemArmorStatsWidgetState createState() {
@@ -19,7 +20,8 @@ class ItemArmorStatsWidget extends StatefulWidget {
   }
 }
 
-class ItemArmorStatsWidgetState extends State<ItemArmorStatsWidget> with ProfileConsumer {
+class ItemArmorStatsWidgetState extends State<ItemArmorStatsWidget>
+    with ProfileConsumer {
   Map<String, DestinyStat> stats;
 
   @override
@@ -32,8 +34,16 @@ class ItemArmorStatsWidgetState extends State<ItemArmorStatsWidget> with Profile
   @override
   Widget build(BuildContext context) {
     if (stats == null) return Container();
-    var firstRow = [stats.values.elementAt(0), stats.values.elementAt(1), stats.values.elementAt(2)];
-    var secondRow = [stats.values.elementAt(3), stats.values.elementAt(4), stats.values.elementAt(5)];
+    var firstRow = [
+      stats.values.elementAt(0),
+      stats.values.elementAt(1),
+      stats.values.elementAt(2)
+    ];
+    var secondRow = [
+      stats.values.elementAt(3),
+      stats.values.elementAt(4),
+      stats.values.elementAt(5)
+    ];
     return Column(children: [
       Row(
         mainAxisSize: MainAxisSize.min,
@@ -60,8 +70,10 @@ class ItemArmorStatsWidgetState extends State<ItemArmorStatsWidget> with Profile
             child: Text(
               "${stat.value}".padLeft(2, "0"),
               textAlign: TextAlign.center,
-              style:
-                  TextStyle(color: Colors.grey.shade300, fontSize: widget.iconSize * .8, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                  color: Colors.grey.shade300,
+                  fontSize: widget.iconSize * .8,
+                  fontWeight: FontWeight.w600),
             )),
       ],
     );

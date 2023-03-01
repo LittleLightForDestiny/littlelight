@@ -26,4 +26,5 @@ class LargePursuitItemWidget extends PursuitItemWidget {
   LargePursuitItemWidgetState createState() => LargePursuitItemWidgetState();
 }
 
-class LargePursuitItemWidgetState<T extends LargePursuitItemWidget> extends PursuitItemWidgetState<T> {}
+class LargePursuitItemWidgetState<T extends LargePursuitItemWidget>
+    extends PursuitItemWidgetState<T> {}

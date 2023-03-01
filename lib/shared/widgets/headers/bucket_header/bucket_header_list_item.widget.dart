@@ -11,7 +11,11 @@ class BucketHeaderListItemWidget extends StatelessWidget {
   final int itemCount;
   final bool isVault;
   final bool canEquip;
-  const BucketHeaderListItemWidget(this.hash, {this.itemCount = 0, this.isVault = false, this.canEquip = false, Key? key})
+  const BucketHeaderListItemWidget(this.hash,
+      {this.itemCount = 0,
+      this.isVault = false,
+      this.canEquip = false,
+      Key? key})
       : super(key: key);
 
   @override
@@ -32,7 +36,8 @@ class BucketHeaderListItemWidget extends StatelessWidget {
     );
   }
 
-  Widget buildLabel(BuildContext context, DestinyInventoryBucketDefinition definition) {
+  Widget buildLabel(
+      BuildContext context, DestinyInventoryBucketDefinition definition) {
     return Text(
       definition.displayProperties?.name?.toUpperCase() ?? "",
       softWrap: false,
@@ -40,7 +45,8 @@ class BucketHeaderListItemWidget extends StatelessWidget {
     );
   }
 
-  Widget buildTrailing(BuildContext context, DestinyInventoryBucketDefinition definition) {
+  Widget buildTrailing(
+      BuildContext context, DestinyInventoryBucketDefinition definition) {
     return Row(children: [
       BucketDisplayOptionsSelector(
         hash,
@@ -52,7 +58,8 @@ class BucketHeaderListItemWidget extends StatelessWidget {
     ]);
   }
 
-  Widget buildCount(BuildContext context, DestinyInventoryBucketDefinition definition) {
+  Widget buildCount(
+      BuildContext context, DestinyInventoryBucketDefinition definition) {
     int bucketSize = definition.itemCount ?? 9;
     if (isVault) {
       return ManifestText<DestinyInventoryBucketDefinition>(

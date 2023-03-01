@@ -13,8 +13,10 @@ class StatSorter extends BaseItemSorter with ProfileConsumer {
   int sort(ItemWithOwner a, ItemWithOwner b) {
     final instanceIdA = a.item.itemInstanceId;
     final instanceIdB = b.item.itemInstanceId;
-    Map<String, DestinyStat>? statsA = instanceIdA != null ? profile.getPrecalculatedStats(instanceIdA) : null;
-    Map<String, DestinyStat>? statsB = instanceIdB != null ? profile.getPrecalculatedStats(instanceIdB) : null;
+    Map<String, DestinyStat>? statsA =
+        instanceIdA != null ? profile.getPrecalculatedStats(instanceIdA) : null;
+    Map<String, DestinyStat>? statsB =
+        instanceIdB != null ? profile.getPrecalculatedStats(instanceIdB) : null;
     int totalA = statsA?["$statHash"]?.value ?? 0;
     int totalB = statsB?["$statHash"]?.value ?? 0;
     return direction * totalA.compareTo(totalB);

@@ -20,7 +20,11 @@ class ItemDetailSocketItemStatsWidget extends BaseItemStatsWidget {
       DestinyInventoryItemDefinition definition,
       ItemSocketController socketController,
       this.plugDefinition})
-      : super(socketController: socketController, item: item, definition: definition, key: key);
+      : super(
+            socketController: socketController,
+            item: item,
+            definition: definition,
+            key: key);
 
   @override
   BaseDestinyItemState<BaseDestinyStatefulItemWidget> createState() {
@@ -28,7 +32,8 @@ class ItemDetailSocketItemStatsWidget extends BaseItemStatsWidget {
   }
 }
 
-class ItemDetailSocketItemStatsState extends BaseItemStatsState<ItemDetailSocketItemStatsWidget> {
+class ItemDetailSocketItemStatsState
+    extends BaseItemStatsState<ItemDetailSocketItemStatsWidget> {
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -50,27 +55,35 @@ class ItemDetailSocketItemStatsState extends BaseItemStatsState<ItemDetailSocket
         key: Key("stat_${stat.statTypeHash}"),
         statHash: stat.statTypeHash,
         modValues: entry,
-        scaled:
-            statGroupDefinition?.scaledStats?.firstWhere((s) => s.statHash == stat.statTypeHash, orElse: () => null),
+        scaled: statGroupDefinition?.scaledStats?.firstWhere(
+            (s) => s.statHash == stat.statTypeHash,
+            orElse: () => null),
       );
     }).toList();
   }
 
   @override
   Iterable<DestinyItemInvestmentStatDefinition> get stats {
-    var statWhitelist = statGroupDefinition?.scaledStats?.map((s) => s.statHash)?.toList() ?? [];
+    var statWhitelist =
+        statGroupDefinition?.scaledStats?.map((s) => s.statHash)?.toList() ??
+            [];
     List<int> statHashes = widget.plugDefinition.investmentStats
             ?.map((s) => s.statTypeHash)
-            ?.where((s) => statWhitelist.contains(s) || DestinyData.hiddenStats.contains(s))
+            ?.where((s) =>
+                statWhitelist.contains(s) ||
+                DestinyData.hiddenStats.contains(s))
             ?.toList() ??
         [];
-    var noBarStats =
-        statGroupDefinition?.scaledStats?.where((s) => s.displayAsNumeric)?.map((s) => s.statHash)?.toList() ?? [];
+    var noBarStats = statGroupDefinition?.scaledStats
+            ?.where((s) => s.displayAsNumeric)
+            ?.map((s) => s.statHash)
+            ?.toList() ??
+        [];
 
     List<DestinyItemInvestmentStatDefinition> result = [];
     for (var statHash in statHashes) {
-      var itemStat =
-          widget.definition?.investmentStats?.firstWhere((s) => s.statTypeHash == statHash, orElse: () => null);
+      var itemStat = widget.definition?.investmentStats
+          ?.firstWhere((s) => s.statTypeHash == statHash, orElse: () => null);
       itemStat ??= DestinyItemInvestmentStatDefinition()
         ..statTypeHash = statHash
         ..value = 0

@@ -3,5 +3,4 @@ import 'package:little_light/shared/widgets/inventory_item/high_density_inventor
 
 class SelectedItemInstance extends HighDensityInventoryItem {
   const SelectedItemInstance(DestinyItemInfo item) : super(item);
-
 }

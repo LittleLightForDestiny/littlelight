@@ -1,6 +1,7 @@
 part of 'custom_tab.dart';
 
-typedef _TabControllerWidgetBuilder = Widget Function(BuildContext context, CustomTabController controller);
+typedef _TabControllerWidgetBuilder = Widget Function(
+    BuildContext context, CustomTabController controller);
 
 class CustomTabControllerBuilder extends StatefulWidget {
   final int length;
@@ -16,7 +17,8 @@ class CustomTabControllerBuilder extends StatefulWidget {
   State<StatefulWidget> createState() => CustomTabControllerBuilderState();
 }
 
-class CustomTabControllerBuilderState extends State<CustomTabControllerBuilder> with TickerProviderStateMixin {
+class CustomTabControllerBuilderState extends State<CustomTabControllerBuilder>
+    with TickerProviderStateMixin {
   late CustomTabController _controller;
 
   @override
@@ -36,7 +38,8 @@ class CustomTabControllerBuilderState extends State<CustomTabControllerBuilder> 
     if (widget.length != _controller.length) {
       final initialIndex = _controller.index;
       _controller.dispose();
-      _controller = CustomTabController(length: widget.length, vsync: this, initialIndex: initialIndex);
+      _controller = CustomTabController(
+          length: widget.length, vsync: this, initialIndex: initialIndex);
       setState(() {});
     }
     super.didUpdateWidget(oldWidget);

@@ -28,7 +28,8 @@ class EnergyTypeFilter extends BaseItemFilter<Set<int>> {
   }
 
   @override
-  bool filterItem(ItemWithOwner item, {Map<int, DestinyInventoryItemDefinition> definitions}) {
+  bool filterItem(ItemWithOwner item,
+      {Map<int, DestinyInventoryItemDefinition> definitions}) {
     if (value.isEmpty) {
       return true;
     }

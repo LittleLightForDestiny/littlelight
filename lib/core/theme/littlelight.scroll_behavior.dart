@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 
 class LittleLightScrollBehaviour extends ScrollBehavior {
   @override
-  Widget buildViewportChrome(BuildContext context, Widget child, AxisDirection axisDirection) {
+  Widget buildViewportChrome(
+      BuildContext context, Widget child, AxisDirection axisDirection) {
     if (Platform.isIOS || Platform.isMacOS) {
       return child;
     }

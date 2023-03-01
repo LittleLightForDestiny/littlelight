@@ -9,10 +9,12 @@ class LargeScreenVaultListWidget extends StatefulWidget {
   final DestinyCharacterComponent character;
   const LargeScreenVaultListWidget({Key key, this.character}) : super(key: key);
   @override
-  LargeScreenVaultListWidgetState createState() => LargeScreenVaultListWidgetState();
+  LargeScreenVaultListWidgetState createState() =>
+      LargeScreenVaultListWidgetState();
 }
 
-class LargeScreenVaultListWidgetState extends State<LargeScreenVaultListWidget> {
+class LargeScreenVaultListWidgetState
+    extends State<LargeScreenVaultListWidget> {
   List<int> bucketHashes = [
     InventoryBucket.kineticWeapons,
     InventoryBucket.energyWeapons,
@@ -34,8 +36,10 @@ class LargeScreenVaultListWidgetState extends State<LargeScreenVaultListWidget> 
     var screenPadding = MediaQuery.of(context).padding;
     return VaultItemListWidget(
       key: const Key("vault_inventory"),
-      padding:
-          EdgeInsets.only(top: getListTopOffset(context), left: 2 + screenPadding.left, right: 2 + screenPadding.right),
+      padding: EdgeInsets.only(
+          top: getListTopOffset(context),
+          left: 2 + screenPadding.left,
+          right: 2 + screenPadding.right),
       bucketHashes: bucketHashes,
     );
   }

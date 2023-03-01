@@ -19,7 +19,8 @@ class ItemCollectibleInfoWidget extends StatefulWidget {
 
 const _sectionId = "item_collectible_info";
 
-class ItemCollectibleInfoWidgetState extends State<ItemCollectibleInfoWidget> with VisibleSectionMixin {
+class ItemCollectibleInfoWidgetState extends State<ItemCollectibleInfoWidget>
+    with VisibleSectionMixin {
   @override
   String get sectionId => _sectionId;
 

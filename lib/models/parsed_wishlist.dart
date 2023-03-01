@@ -2,10 +2,22 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'parsed_wishlist.g.dart';
 
-enum WishlistTag { GodPVE, GodPVP, PVE, PVP, Bungie, Trash, Mouse, Controller, UnknownEnumValue }
+enum WishlistTag {
+  GodPVE,
+  GodPVP,
+  PVE,
+  PVP,
+  Bungie,
+  Trash,
+  Mouse,
+  Controller,
+  UnknownEnumValue
+}
 
 List<Set<int>> _jsonPlugsFromJson(List<dynamic> json) {
-  return json.map((e) => (e as List<dynamic>).map((e) => int.parse(e)).toSet()).toList();
+  return json
+      .map((e) => (e as List<dynamic>).map((e) => int.parse(e)).toSet())
+      .toList();
 }
 
 @JsonSerializable()

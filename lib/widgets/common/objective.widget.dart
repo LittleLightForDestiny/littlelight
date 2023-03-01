@@ -42,7 +42,8 @@ class ObjectiveWidget extends StatefulWidget {
   }
 }
 
-class ObjectiveWidgetState extends State<ObjectiveWidget> with ManifestConsumer {
+class ObjectiveWidgetState extends State<ObjectiveWidget>
+    with ManifestConsumer {
   DestinyObjectiveDefinition _definition;
   DestinyObjectiveDefinition get definition => widget.definition ?? _definition;
 
@@ -60,7 +61,8 @@ class ObjectiveWidgetState extends State<ObjectiveWidget> with ManifestConsumer 
 
   void loadDefinitions() async {
     if (widget.definition == null) {
-      _definition = await manifest.getDefinition<DestinyObjectiveDefinition>(widget.objective.objectiveHash);
+      _definition = await manifest.getDefinition<DestinyObjectiveDefinition>(
+          widget.objective.objectiveHash);
       if (mounted) setState(() {});
     }
   }
@@ -79,7 +81,9 @@ class ObjectiveWidgetState extends State<ObjectiveWidget> with ManifestConsumer 
 
   Widget buildCheck(BuildContext context) {
     return Container(
-        decoration: BoxDecoration(border: Border.all(width: 1, color: widget.color ?? Colors.grey.shade300)),
+        decoration: BoxDecoration(
+            border: Border.all(
+                width: 1, color: widget.color ?? Colors.grey.shade300)),
         width: 22,
         height: 22,
         padding: const EdgeInsets.all(2),
@@ -100,13 +104,19 @@ class ObjectiveWidgetState extends State<ObjectiveWidget> with ManifestConsumer 
     if ((definition?.completionValue ?? 0) <= 1) {
       return Container(
           padding: const EdgeInsets.only(left: 8, right: 4),
-          child: Row(children: [Expanded(child: buildTitle(context)), buildProgressValue(context)]));
+          child: Row(children: [
+            Expanded(child: buildTitle(context)),
+            buildProgressValue(context)
+          ]));
     }
     return Container(
         margin: const EdgeInsets.only(left: 4),
         height: 22,
-        decoration:
-            isComplete ? null : BoxDecoration(border: Border.all(width: 1, color: color ?? Colors.grey.shade300)),
+        decoration: isComplete
+            ? null
+            : BoxDecoration(
+                border:
+                    Border.all(width: 1, color: color ?? Colors.grey.shade300)),
         child: Stack(
           children: <Widget>[
             Positioned.fill(
@@ -118,7 +128,10 @@ class ObjectiveWidgetState extends State<ObjectiveWidget> with ManifestConsumer 
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [Expanded(child: buildTitle(context)), buildProgressValue(context)]))
+                    children: [
+                      Expanded(child: buildTitle(context)),
+                      buildProgressValue(context)
+                    ]))
           ],
         ));
   }
@@ -134,7 +147,10 @@ class ObjectiveWidgetState extends State<ObjectiveWidget> with ManifestConsumer 
             maxLines: 1,
             softWrap: false,
             overflow: TextOverflow.fade,
-            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 13, color: color ?? Colors.grey.shade300)));
+            style: TextStyle(
+                fontWeight: FontWeight.w500,
+                fontSize: 13,
+                color: color ?? Colors.grey.shade300)));
   }
 
   Widget buildProgressValue(BuildContext context) {
@@ -159,15 +175,23 @@ class ObjectiveWidgetState extends State<ObjectiveWidget> with ManifestConsumer 
     String formattedProgress = formatter.format(progress);
     String formattedTotal = formatter.format(total);
 
-    return Text(total <= 1 ? formattedProgress : "$formattedProgress/$formattedTotal",
-        style: TextStyle(fontWeight: FontWeight.w500, fontSize: 13, color: color ?? Colors.grey.shade300));
+    return Text(
+        total <= 1 ? formattedProgress : "$formattedProgress/$formattedTotal",
+        style: TextStyle(
+            fontWeight: FontWeight.w500,
+            fontSize: 13,
+            color: color ?? Colors.grey.shade300));
   }
 
   Widget buildDate(BuildContext context) {
     final formatter = DateFormat.yMd(context.currentLanguage);
-    final progress = formatter.format(DateTime.fromMillisecondsSinceEpoch(objective.progress * 1000));
+    final progress = formatter
+        .format(DateTime.fromMillisecondsSinceEpoch(objective.progress * 1000));
     return Text(progress,
-        style: TextStyle(fontWeight: FontWeight.w500, fontSize: 13, color: color ?? Colors.grey.shade300));
+        style: TextStyle(
+            fontWeight: FontWeight.w500,
+            fontSize: 13,
+            color: color ?? Colors.grey.shade300));
   }
 
   buildProgressBar(BuildContext context) {

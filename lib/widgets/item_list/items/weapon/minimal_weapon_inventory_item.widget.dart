@@ -8,10 +8,15 @@ import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/minimal_base_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/minimal_info_label.mixin.dart';
 
-class MinimalWeaponInventoryItemWidget extends MinimalBaseInventoryItemWidget with MinimalInfoLabelMixin {
-  MinimalWeaponInventoryItemWidget(DestinyItemComponent item, DestinyInventoryItemDefinition itemDefinition,
+class MinimalWeaponInventoryItemWidget extends MinimalBaseInventoryItemWidget
+    with MinimalInfoLabelMixin {
+  MinimalWeaponInventoryItemWidget(
+      DestinyItemComponent item,
+      DestinyInventoryItemDefinition itemDefinition,
       DestinyItemInstanceComponent instanceInfo,
-      {@required String characterId, Key key, @required uniqueId})
+      {@required String characterId,
+      Key key,
+      @required uniqueId})
       : super(
           item,
           itemDefinition,
@@ -31,7 +36,8 @@ class MinimalWeaponInventoryItemWidget extends MinimalBaseInventoryItemWidget wi
   Widget buildAmmoType(BuildContext context) {
     return Container(
         padding: const EdgeInsets.only(right: 8),
-        child: primaryStatIcon(context, DestinyData.getAmmoTypeIcon(ammoType), DestinyData.getAmmoTypeColor(ammoType),
+        child: primaryStatIcon(context, DestinyData.getAmmoTypeIcon(ammoType),
+            DestinyData.getAmmoTypeColor(ammoType),
             size: 15));
   }
 
@@ -44,7 +50,8 @@ class MinimalWeaponInventoryItemWidget extends MinimalBaseInventoryItemWidget wi
     int value = primaryStat?.value ?? 0;
     return Text(
       "$value",
-      style: TextStyle(color: color, fontWeight: FontWeight.w700, fontSize: valueFontSize),
+      style: TextStyle(
+          color: color, fontWeight: FontWeight.w700, fontSize: valueFontSize),
     );
   }
 
@@ -59,17 +66,21 @@ class MinimalWeaponInventoryItemWidget extends MinimalBaseInventoryItemWidget wi
           children: [
             buildItemTags(context),
             buildAmmoType(context),
-            if (locked) Container(child: Icon(FontAwesomeIcons.lock, size: titleFontSize))
+            if (locked)
+              Container(child: Icon(FontAwesomeIcons.lock, size: titleFontSize))
           ],
         ));
   }
 
   Widget primaryStatNameField(BuildContext context, Color color) {
     return ManifestText<DestinyStatDefinition>(primaryStat.statHash,
-        uppercase: true, style: TextStyle(color: color, fontWeight: FontWeight.w300, fontSize: 16));
+        uppercase: true,
+        style:
+            TextStyle(color: color, fontWeight: FontWeight.w300, fontSize: 16));
   }
 
-  Widget primaryStatIcon(BuildContext context, IconData icon, Color color, {double size = 22}) {
+  Widget primaryStatIcon(BuildContext context, IconData icon, Color color,
+      {double size = 22}) {
     return Icon(
       icon,
       color: color,

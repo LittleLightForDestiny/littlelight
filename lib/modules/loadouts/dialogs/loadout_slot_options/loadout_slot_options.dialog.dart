@@ -20,10 +20,12 @@ extension on BuildContext {
   }
 }
 
-class LoadoutSlotOptionsDialog extends LittleLightBaseDialog with ProfileConsumer {
+class LoadoutSlotOptionsDialog extends LittleLightBaseDialog
+    with ProfileConsumer {
   LoadoutSlotOptionsDialog()
       : super(
-          titleBuilder: (context) => Text("Loadout item options".translate(context)),
+          titleBuilder: (context) =>
+              Text("Loadout item options".translate(context)),
         );
 
   @override
@@ -53,7 +55,8 @@ class LoadoutSlotOptionsDialog extends LittleLightBaseDialog with ProfileConsume
     final String? ownerID = profile.getItemOwner(instanceID);
     final itemWithOwner = ItemWithOwner(item, ownerID);
     return Container(
-        child: QuickSelectItemWrapperWidget(itemWithOwner, null, characterId: ownerID ?? ItemWithOwner.OWNER_VAULT));
+        child: QuickSelectItemWrapperWidget(itemWithOwner, null,
+            characterId: ownerID ?? ItemWithOwner.OWNER_VAULT));
   }
 
   @override

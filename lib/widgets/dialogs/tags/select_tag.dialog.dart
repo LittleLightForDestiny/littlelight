@@ -32,7 +32,9 @@ class SelectTagDialogRoute extends DialogRoute<ItemNotesTag?> {
 
 class SelectTagDialog extends LittleLightBaseDialog with ItemNotesConsumer {
   SelectTagDialog()
-      : super(titleBuilder: (context) => TranslatedTextWidget('Select Tag'), bodyBuilder: (context) => const TagListWidget());
+      : super(
+            titleBuilder: (context) => TranslatedTextWidget('Select Tag'),
+            bodyBuilder: (context) => const TagListWidget());
 
   @override
   Widget? buildActions(BuildContext context) {
@@ -105,7 +107,8 @@ class TagListWidget extends StatelessWidget with ItemNotesConsumer {
           Icons.edit,
           LittleLightTheme.of(context).primaryLayers,
           () async {
-            final edited = await Navigator.of(context).push(EditTagDialogRoute(context, tag));
+            final edited = await Navigator.of(context)
+                .push(EditTagDialogRoute(context, tag));
             if (edited != null) {
               itemNotes.saveTag(edited);
             }
@@ -119,7 +122,8 @@ class TagListWidget extends StatelessWidget with ItemNotesConsumer {
           Icons.delete,
           LittleLightTheme.of(context).errorLayers,
           () async {
-            final confirmed = await Navigator.of(context).push(ConfirmDeleteTagDialogRoute(context, tag));
+            final confirmed = await Navigator.of(context)
+                .push(ConfirmDeleteTagDialogRoute(context, tag));
             if (confirmed ?? false) {
               itemNotes.deleteTag(tag);
             }

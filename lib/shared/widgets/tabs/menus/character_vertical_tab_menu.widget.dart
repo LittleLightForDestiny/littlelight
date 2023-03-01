@@ -18,7 +18,9 @@ typedef OnCharacterSelect = void Function(DestinyCharacterInfo? character);
 class CharacterVerticalTabMenuWidget extends CustomTabMenu {
   final List<DestinyCharacterInfo?> characters;
   final OnCharacterSelect? onSelect;
-  const CharacterVerticalTabMenuWidget(this.characters, CustomTabController controller, {this.onSelect})
+  const CharacterVerticalTabMenuWidget(
+      this.characters, CustomTabController controller,
+      {this.onSelect})
       : super(
           controller,
           direction: Axis.vertical,
@@ -44,7 +46,8 @@ class CharacterVerticalTabMenuWidget extends CustomTabMenu {
     return buildVaultButton(context);
   }
 
-  Widget buildCharacterButton(BuildContext context, DestinyCharacterInfo character) {
+  Widget buildCharacterButton(
+      BuildContext context, DestinyCharacterInfo character) {
     return Stack(
       children: [
         Positioned.fill(

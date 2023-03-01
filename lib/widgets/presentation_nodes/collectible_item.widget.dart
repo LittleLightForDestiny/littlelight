@@ -36,7 +36,9 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget>
   DestinyInventoryItemDefinition _itemDefinition;
   List<ItemWithOwner> items;
   DestinyCollectibleDefinition get definition {
-    return manifest.getDefinitionFromCache<DestinyCollectibleDefinition>(widget.hash) ?? _definition;
+    return manifest.getDefinitionFromCache<DestinyCollectibleDefinition>(
+            widget.hash) ??
+        _definition;
   }
 
   bool get selected =>
@@ -61,13 +63,18 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget>
 
   loadDefinition() async {
     if (definition == null) {
-      _definition = await manifest.getDefinition<DestinyCollectibleDefinition>(widget.hash);
+      _definition = await manifest
+          .getDefinition<DestinyCollectibleDefinition>(widget.hash);
       if (mounted) {
         setState(() {});
       }
     }
-    _itemDefinition = await manifest.getDefinition<DestinyInventoryItemDefinition>(definition.itemHash);
-    items = profile.getAllItems().where((element) => element.item.itemHash == definition.itemHash).toList();
+    _itemDefinition = await manifest
+        .getDefinition<DestinyInventoryItemDefinition>(definition.itemHash);
+    items = profile
+        .getAllItems()
+        .where((element) => element.item.itemHash == definition.itemHash)
+        .toList();
     if (mounted) {
       setState(() {});
     }
@@ -80,12 +87,15 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget>
         child: Container(
             decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey.shade600, width: 1),
-                gradient: LinearGradient(begin: const Alignment(0, 0), end: const Alignment(1, 2), colors: [
-                  Theme.of(context).colorScheme.onSurface.withOpacity(.05),
-                  Theme.of(context).colorScheme.onSurface.withOpacity(.1),
-                  Theme.of(context).colorScheme.onSurface.withOpacity(.03),
-                  Theme.of(context).colorScheme.onSurface.withOpacity(.1)
-                ])),
+                gradient: LinearGradient(
+                    begin: const Alignment(0, 0),
+                    end: const Alignment(1, 2),
+                    colors: [
+                      Theme.of(context).colorScheme.onSurface.withOpacity(.05),
+                      Theme.of(context).colorScheme.onSurface.withOpacity(.1),
+                      Theme.of(context).colorScheme.onSurface.withOpacity(.03),
+                      Theme.of(context).colorScheme.onSurface.withOpacity(.1)
+                    ])),
             child: Stack(children: [
               buildItem(context),
               Positioned(right: 4, bottom: 4, child: buildItemCount()),
@@ -99,7 +109,9 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget>
   Widget buildItem(BuildContext context) {
     if (_itemDefinition == null) {
       if (definition?.redacted ?? false) {
-        return Container(alignment: Alignment.center, child: Text(definition.displayProperties.name));
+        return Container(
+            alignment: Alignment.center,
+            child: Text(definition.displayProperties.name));
       }
       return Container();
     }
@@ -159,7 +171,9 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget>
   }
 
   buildTitle(BuildContext context, DestinyCollectibleDefinition definition) {
-    return Expanded(child: Container(padding: const EdgeInsets.all(8), child: buildTitleText()));
+    return Expanded(
+        child: Container(
+            padding: const EdgeInsets.all(8), child: buildTitleText()));
   }
 
   Widget buildButton(BuildContext context) {
@@ -183,8 +197,8 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget>
       return;
     }
 
-    DestinyInventoryItemDefinition itemDef =
-        await manifest.getDefinition<DestinyInventoryItemDefinition>(definition.itemHash);
+    DestinyInventoryItemDefinition itemDef = await manifest
+        .getDefinition<DestinyInventoryItemDefinition>(definition.itemHash);
     if (itemDef == null) {
       return;
     }
@@ -217,7 +231,8 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget>
   Widget buildSelectedBorder(BuildContext context) {
     if (selected) {
       return Container(
-        decoration: BoxDecoration(border: Border.all(width: 2, color: Colors.lightBlue.shade400)),
+        decoration: BoxDecoration(
+            border: Border.all(width: 2, color: Colors.lightBlue.shade400)),
       );
     }
     return Container();
@@ -226,7 +241,9 @@ class CollectibleItemWidgetState extends State<CollectibleItemWidget>
   buildTitleText() {
     if (definition == null) return Container();
     return Text(definition.displayProperties.name,
-        softWrap: true, style: TextStyle(color: Colors.grey.shade300, fontWeight: FontWeight.bold));
+        softWrap: true,
+        style: TextStyle(
+            color: Colors.grey.shade300, fontWeight: FontWeight.bold));
   }
 
   Widget buildItemCount() {

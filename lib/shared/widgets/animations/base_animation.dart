@@ -15,8 +15,8 @@ abstract class BaseAnimationBuilder extends StatefulWidget {
   State<BaseAnimationBuilder> createState();
 }
 
-abstract class BaseAnimationBuilderState<T extends BaseAnimationBuilder> extends State<T>
-    with TickerProviderStateMixin {
+abstract class BaseAnimationBuilderState<T extends BaseAnimationBuilder>
+    extends State<T> with TickerProviderStateMixin {
   late AnimationController controller;
 
   @override

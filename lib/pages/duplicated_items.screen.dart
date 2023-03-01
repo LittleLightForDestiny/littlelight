@@ -15,7 +15,8 @@ import 'package:little_light/widgets/search/search_filters/text_search_filter.wi
 class DuplicatedItemsScreen extends StatefulWidget {
   final SearchController searchController;
 
-  const DuplicatedItemsScreen({Key key, this.searchController}) : super(key: key);
+  const DuplicatedItemsScreen({Key key, this.searchController})
+      : super(key: key);
 
   @override
   DuplicatedItemsScreenState createState() => DuplicatedItemsScreenState();
@@ -42,7 +43,9 @@ class DuplicatedItemsScreenState extends State<DuplicatedItemsScreen>
         appBar: buildAppBar(context),
         body: Stack(children: [
           Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-            Expanded(child: DuplicatedItemListWidget(searchController: widget.searchController)),
+            Expanded(
+                child: DuplicatedItemListWidget(
+                    searchController: widget.searchController)),
             const SelectedItemsWidget(),
             PseudoItemTypeFilterWidget(widget.searchController),
           ]),
@@ -68,10 +71,13 @@ class DuplicatedItemsScreenState extends State<DuplicatedItemsScreen>
   Widget buildSearchButton(BuildContext context) {
     return IconButton(
         enableFeedback: false,
-        icon: searchOpen ? const Icon(FontAwesomeIcons.times) : const Icon(FontAwesomeIcons.search),
+        icon: searchOpen
+            ? const Icon(FontAwesomeIcons.times)
+            : const Icon(FontAwesomeIcons.search),
         onPressed: () async {
           searchOpen = !searchOpen;
-          var filter = widget.searchController.postFilters.firstWhere((element) => element is TextFilter);
+          var filter = widget.searchController.postFilters
+              .firstWhere((element) => element is TextFilter);
           filter.value = "";
           filter.enabled = searchOpen;
           widget.searchController.update();

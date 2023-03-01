@@ -10,7 +10,8 @@ class LittleLightWishlist {
 
   Map<String, String>? versionRedirects;
 
-  LittleLightWishlist({this.name, this.description, required this.data, this.versionRedirects});
+  LittleLightWishlist(
+      {this.name, this.description, required this.data, this.versionRedirects});
 
   factory LittleLightWishlist.fromJson(dynamic json) {
     return _$LittleLightWishlistFromJson(json);

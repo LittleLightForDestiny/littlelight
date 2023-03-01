@@ -43,7 +43,8 @@ class ModGridItem extends StatelessWidget with ItemNotesConsumer {
     );
   }
 
-  Widget buildWithDefinition(BuildContext context, DestinyInventoryItemDefinition def) {
+  Widget buildWithDefinition(
+      BuildContext context, DestinyInventoryItemDefinition def) {
     return Stack(
       children: [
         ManifestImageWidget<DestinyInventoryItemDefinition>(plugHash),
@@ -58,9 +59,11 @@ class ModGridItem extends StatelessWidget with ItemNotesConsumer {
     );
   }
 
-  Widget? buildEnergyTypeOverlay(BuildContext context, DestinyInventoryItemDefinition def) {
+  Widget? buildEnergyTypeOverlay(
+      BuildContext context, DestinyInventoryItemDefinition def) {
     var energyType = def.plug?.energyCost?.energyType ?? DestinyEnergyType.Any;
-    if ([DestinyEnergyType.Any, DestinyEnergyType.Subclass].contains(energyType)) return null;
+    if ([DestinyEnergyType.Any, DestinyEnergyType.Subclass]
+        .contains(energyType)) return null;
 
     return Positioned.fill(
       child: ManifestImageWidget<DestinyStatDefinition>(
@@ -69,7 +72,8 @@ class ModGridItem extends StatelessWidget with ItemNotesConsumer {
     );
   }
 
-  Widget? buildEnergyCostOverlay(BuildContext context, DestinyInventoryItemDefinition def) {
+  Widget? buildEnergyCostOverlay(
+      BuildContext context, DestinyInventoryItemDefinition def) {
     var energyCost = def.plug?.energyCost?.energyCost ?? 0;
     if (energyCost == 0) return null;
     return Positioned.fill(
@@ -97,16 +101,20 @@ class ModGridItem extends StatelessWidget with ItemNotesConsumer {
 
   Widget? buildBorder(BuildContext context) {
     final theme = LittleLightTheme.of(context);
-    final borderColor = equipped ? theme.primaryLayers.layer0 : theme.onSurfaceLayers.layer0;
+    final borderColor =
+        equipped ? theme.primaryLayers.layer0 : theme.onSurfaceLayers.layer0;
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(color: borderColor.withOpacity(selected ? 1 : .5), width: 2),
+        border: Border.all(
+            color: borderColor.withOpacity(selected ? 1 : .5), width: 2),
       ),
     );
   }
 
   Widget? buildFavoriteTag(BuildContext context) {
-    final isFavorite = itemNotes.getNotesForItem(plugHash, null)?.tags?.contains("favorite") ?? false;
+    final isFavorite =
+        itemNotes.getNotesForItem(plugHash, null)?.tags?.contains("favorite") ??
+            false;
     if (!isFavorite) return null;
     return Positioned.fill(
       child: LayoutBuilder(
@@ -138,7 +146,8 @@ class ModGridItem extends StatelessWidget with ItemNotesConsumer {
     );
   }
 
-  Widget? buildSeasonBadgeIcon(BuildContext context, DestinyInventoryItemDefinition definition) {
+  Widget? buildSeasonBadgeIcon(
+      BuildContext context, DestinyInventoryItemDefinition definition) {
     var badgeURL = definition.iconWatermark;
     if (badgeURL == null || badgeURL.isEmpty) return null;
     return Positioned.fill(

@@ -20,11 +20,15 @@ class LogoutDialog extends LittleLightYesNoDialog with AuthConsumer {
       : super(
             titleBuilder: (context) => Text("Logout".translate(context)),
             bodyBuilder: (context) {
-              final account = ModalRoute.of(context)?.settings.arguments as UserMembershipData;
+              final account = ModalRoute.of(context)?.settings.arguments
+                  as UserMembershipData;
               return Text(
-                "Are you sure you want to logout from the account {accountName}?".translate(
+                "Are you sure you want to logout from the account {accountName}?"
+                    .translate(
                   context,
-                  replace: {"accountName": account.bungieNetUser?.uniqueName ?? ""},
+                  replace: {
+                    "accountName": account.bungieNetUser?.uniqueName ?? ""
+                  },
                 ),
               );
             });
@@ -32,7 +36,8 @@ class LogoutDialog extends LittleLightYesNoDialog with AuthConsumer {
   @override
   void onSelect(BuildContext context, bool value) async {
     if (value != true) return;
-    final account = ModalRoute.of(context)?.settings.arguments as UserMembershipData;
+    final account =
+        ModalRoute.of(context)?.settings.arguments as UserMembershipData;
     final membershipID = account.bungieNetUser?.membershipId;
     if (membershipID == null) return;
     await auth.removeAccount(membershipID);

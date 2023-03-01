@@ -6,7 +6,8 @@ import 'package:little_light/utils/item_with_owner.dart';
 import 'base_item_filter.dart';
 
 class ItemBucketFilter extends BaseItemFilter<Set<int>> {
-  ItemBucketFilter({Set<int> selected, enabled = false}) : super(<int>{}, selected ?? <int>{}, enabled: enabled);
+  ItemBucketFilter({Set<int> selected, enabled = false})
+      : super(<int>{}, selected ?? <int>{}, enabled: enabled);
 
   clear() {
     availableValues.clear();
@@ -16,7 +17,8 @@ class ItemBucketFilter extends BaseItemFilter<Set<int>> {
   Future<List<ItemWithOwner>> filter(List<ItemWithOwner> items,
       {Map<int, DestinyInventoryItemDefinition> definitions}) {
     clear();
-    var bucketHashes = items?.map((i) => definitions[i?.item?.itemHash]?.inventory?.bucketTypeHash);
+    var bucketHashes = items
+        ?.map((i) => definitions[i?.item?.itemHash]?.inventory?.bucketTypeHash);
     availableValues.addAll(bucketHashes);
     available = availableValues.length > 1;
     value.retainAll(availableValues);
@@ -24,7 +26,8 @@ class ItemBucketFilter extends BaseItemFilter<Set<int>> {
   }
 
   @override
-  bool filterItem(ItemWithOwner item, {Map<int, DestinyInventoryItemDefinition> definitions}) {
+  bool filterItem(ItemWithOwner item,
+      {Map<int, DestinyInventoryItemDefinition> definitions}) {
     var def = definitions[item?.item?.itemHash];
     var bucketHash = def?.inventory?.bucketTypeHash;
     if (value.isEmpty) return true;

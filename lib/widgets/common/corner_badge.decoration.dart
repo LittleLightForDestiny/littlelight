@@ -16,7 +16,10 @@ class CornerBadgeDecoration extends Decoration {
   final double badgeSize;
   final CornerPosition position;
 
-  const CornerBadgeDecoration({required this.colors, required this.badgeSize, this.position = CornerPosition.TopRight});
+  const CornerBadgeDecoration(
+      {required this.colors,
+      required this.badgeSize,
+      this.position = CornerPosition.TopRight});
 
   List<Color> get badgeColors => colors;
 
@@ -61,7 +64,8 @@ class CornerBadgePainter extends BoxPainter {
     }
   }
 
-  Offset getOffset(Offset offset, ImageConfiguration configuration, double size) {
+  Offset getOffset(
+      Offset offset, ImageConfiguration configuration, double size) {
     final width = configuration.size?.width ?? 0;
     final height = configuration.size?.height ?? 0;
     switch (position) {
@@ -87,24 +91,29 @@ class CornerBadgePainter extends BoxPainter {
   ui.Gradient gradient(List<Offset> points, List<Color> colors) {
     double partSize = 1 / (colors.length);
     var stops = colors
-        .expand((element) => [colors.indexOf(element) * partSize, (colors.indexOf(element) + 1) * partSize + .001])
+        .expand((element) => [
+              colors.indexOf(element) * partSize,
+              (colors.indexOf(element) + 1) * partSize + .001
+            ])
         .toList();
     var doubledColors = colors.expand((element) => [element, element]).toList();
-    return ui.Gradient.linear(
-        Offset(points[0].dx, points[0].dy), Offset(points[2].dx, points[2].dy), doubledColors, stops);
+    return ui.Gradient.linear(Offset(points[0].dx, points[0].dy),
+        Offset(points[2].dx, points[2].dy), doubledColors, stops);
   }
 
-  Paint getBadgePaint(List<Offset> points, List<Color> colors) => (colors.length) > 1
-      ? getMultiColorPaint(
-          points,
-          colors,
-        )
-      : getSingleColorPaint(colors);
+  Paint getBadgePaint(List<Offset> points, List<Color> colors) =>
+      (colors.length) > 1
+          ? getMultiColorPaint(
+              points,
+              colors,
+            )
+          : getSingleColorPaint(colors);
 
   Path buildBadgePath(List<Offset> points) => Path.combine(
       PathOperation.difference,
       Path()
-        ..addRRect(RRect.fromLTRBAndCorners(points[0].dx, points[0].dy, points[2].dx, points[2].dy,
+        ..addRRect(RRect.fromLTRBAndCorners(
+            points[0].dx, points[0].dy, points[2].dx, points[2].dy,
             topRight: const Radius.circular(CORNER_RADIUS))),
       Path()
         ..moveTo(points[0].dx, points[0].dy)

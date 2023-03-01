@@ -35,7 +35,9 @@ class EquipOnCharacterButton extends StatelessWidget with ProfileConsumer {
             width: iconSize,
             height: iconSize,
             child: Container(
-                foregroundDecoration: BoxDecoration(border: Border.all(width: borderSize, color: Colors.grey.shade400)),
+                foregroundDecoration: BoxDecoration(
+                    border: Border.all(
+                        width: borderSize, color: Colors.grey.shade400)),
                 child: Stack(fit: StackFit.expand, children: [
                   characterIcon(context),
                   characterClassName(context),
@@ -61,7 +63,8 @@ class EquipOnCharacterButton extends StatelessWidget with ProfileConsumer {
 
       default:
         DestinyCharacterComponent character = profile.getCharacter(characterId);
-        return ManifestImageWidget<DestinyInventoryItemDefinition>(character.emblemHash);
+        return ManifestImageWidget<DestinyInventoryItemDefinition>(
+            character.emblemHash);
     }
   }
 
@@ -76,15 +79,19 @@ class EquipOnCharacterButton extends StatelessWidget with ProfileConsumer {
           child: Container(
               padding: const EdgeInsets.all(2),
               color: Colors.black.withOpacity(.7),
-              child: ManifestText<DestinyClassDefinition>(character.classHash, textExtractor: (def) {
-                return def.genderedClassNamesByGenderHash["${character.genderHash}"] ?? "";
+              child: ManifestText<DestinyClassDefinition>(character.classHash,
+                  textExtractor: (def) {
+                return def.genderedClassNamesByGenderHash[
+                        "${character.genderHash}"] ??
+                    "";
               },
                   overflow: TextOverflow.fade,
                   softWrap: false,
                   maxLines: 1,
                   textAlign: TextAlign.center,
                   uppercase: true,
-                  style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold))),
+                  style: TextStyle(
+                      fontSize: fontSize, fontWeight: FontWeight.bold))),
         );
         break;
 
@@ -101,7 +108,8 @@ class EquipOnCharacterButton extends StatelessWidget with ProfileConsumer {
                   softWrap: false,
                   maxLines: 1,
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold))),
+                  style: TextStyle(
+                      fontSize: fontSize, fontWeight: FontWeight.bold))),
         );
 
       case ItemDestination.Vault:
@@ -117,7 +125,8 @@ class EquipOnCharacterButton extends StatelessWidget with ProfileConsumer {
                   softWrap: false,
                   maxLines: 1,
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold))),
+                  style: TextStyle(
+                      fontSize: fontSize, fontWeight: FontWeight.bold))),
         );
       default:
         return Container();

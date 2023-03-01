@@ -16,13 +16,16 @@ abstract class BaseItemSocketsWidget extends StatefulWidget {
 
   final double iconSize;
 
-  const BaseItemSocketsWidget({Key key, this.category, this.iconSize = 72, this.controller}) : super(key: key);
+  const BaseItemSocketsWidget(
+      {Key key, this.category, this.iconSize = 72, this.controller})
+      : super(key: key);
 }
 
-abstract class BaseItemSocketsWidgetState<T extends BaseItemSocketsWidget> extends State<T>
-    with VisibleSectionMixin, ProfileConsumer {
+abstract class BaseItemSocketsWidgetState<T extends BaseItemSocketsWidget>
+    extends State<T> with VisibleSectionMixin, ProfileConsumer {
   List<DestinyItemSocketState> get socketStates => controller?.socketStates;
-  Map<int, DestinyInventoryItemDefinition> get plugDefinitions => controller?.plugDefinitions;
+  Map<int, DestinyInventoryItemDefinition> get plugDefinitions =>
+      controller?.plugDefinitions;
   DestinyItemSocketCategoryDefinition get category => widget.category;
   ItemSocketController get controller => widget.controller;
 
@@ -97,7 +100,9 @@ abstract class BaseItemSocketsWidgetState<T extends BaseItemSocketsWidget> exten
     return Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
-        children: category.socketIndexes.map((socketIndex) => buildSocketPlugs(context, socketIndex)).toList());
+        children: category.socketIndexes
+            .map((socketIndex) => buildSocketPlugs(context, socketIndex))
+            .toList());
   }
 
   Widget buildSocketPlugs(BuildContext context, int socketIndex) {
@@ -107,7 +112,8 @@ abstract class BaseItemSocketsWidgetState<T extends BaseItemSocketsWidget> exten
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
-          children: plugs.map((p) => buildPlug(context, socketIndex, p)).toList(),
+          children:
+              plugs.map((p) => buildPlug(context, socketIndex, p)).toList(),
         ));
   }
 

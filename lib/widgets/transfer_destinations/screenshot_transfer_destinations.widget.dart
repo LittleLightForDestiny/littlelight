@@ -12,7 +12,8 @@ import 'package:little_light/widgets/common/equip_on_character.button.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/transfer_destinations/base_transfer_destinations.widget.dart';
 
-class ScreenshotTransferDestinationsWidget extends BaseTransferDestinationsWidget {
+class ScreenshotTransferDestinationsWidget
+    extends BaseTransferDestinationsWidget {
   final double pixelSize;
   const ScreenshotTransferDestinationsWidget(
       {DestinyItemComponent item,
@@ -21,7 +22,12 @@ class ScreenshotTransferDestinationsWidget extends BaseTransferDestinationsWidge
       this.pixelSize = 1,
       Key key,
       String characterId})
-      : super(item: item, definition: definition, instanceInfo: instanceInfo, key: key, characterId: characterId);
+      : super(
+            item: item,
+            definition: definition,
+            instanceInfo: instanceInfo,
+            key: key,
+            characterId: characterId);
 
   @override
   State<StatefulWidget> createState() {
@@ -29,7 +35,8 @@ class ScreenshotTransferDestinationsWidget extends BaseTransferDestinationsWidge
   }
 }
 
-class ScreenshotTransferDestinationsState<T extends ScreenshotTransferDestinationsWidget>
+class ScreenshotTransferDestinationsState<
+        T extends ScreenshotTransferDestinationsWidget>
     extends BaseTransferDestinationState<T> {
   @override
   Widget build(BuildContext context) {
@@ -44,7 +51,8 @@ class ScreenshotTransferDestinationsState<T extends ScreenshotTransferDestinatio
   }
 
   @override
-  Widget buildEquippingBlock(BuildContext context, String title, List<TransferDestination> destinations,
+  Widget buildEquippingBlock(BuildContext context, String title,
+      List<TransferDestination> destinations,
       [Alignment align = Alignment.centerRight]) {
     if (destinations.isEmpty) return Container();
     return Container(
@@ -52,11 +60,15 @@ class ScreenshotTransferDestinationsState<T extends ScreenshotTransferDestinatio
         child: IntrinsicWidth(
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[buildLabel(context, title, align), buildButtons(context, destinations, align)])));
+                children: <Widget>[
+              buildLabel(context, title, align),
+              buildButtons(context, destinations, align)
+            ])));
   }
 
   @override
-  Widget buildLabel(BuildContext context, String title, [Alignment align = Alignment.centerRight]) {
+  Widget buildLabel(BuildContext context, String title,
+      [Alignment align = Alignment.centerRight]) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -70,7 +82,8 @@ class ScreenshotTransferDestinationsState<T extends ScreenshotTransferDestinatio
           ),
         ),
         Container(
-            margin: EdgeInsets.only(top: 2 * widget.pixelSize, bottom: 16 * widget.pixelSize),
+            margin: EdgeInsets.only(
+                top: 2 * widget.pixelSize, bottom: 16 * widget.pixelSize),
             color: Theme.of(context).colorScheme.onSurface.withOpacity(.7),
             height: 3 * widget.pixelSize)
       ],
@@ -78,7 +91,8 @@ class ScreenshotTransferDestinationsState<T extends ScreenshotTransferDestinatio
   }
 
   @override
-  Widget buildButtons(BuildContext context, List<TransferDestination> destinations,
+  Widget buildButtons(
+      BuildContext context, List<TransferDestination> destinations,
       [Alignment align = Alignment.centerRight]) {
     return Row(
         children: destinations

@@ -20,7 +20,11 @@ class ScreenShotItemStatsWidget extends BaseItemStatsWidget {
       DestinyInventoryItemDefinition definition,
       ItemSocketController socketController,
       this.pixelSize})
-      : super(socketController: socketController, item: item, definition: definition, key: key);
+      : super(
+            socketController: socketController,
+            item: item,
+            definition: definition,
+            key: key);
 
   @override
   BaseDestinyItemState<BaseDestinyStatefulItemWidget> createState() {
@@ -28,7 +32,8 @@ class ScreenShotItemStatsWidget extends BaseItemStatsWidget {
   }
 }
 
-class ScreenShotItemStatsState extends BaseItemStatsState<ScreenShotItemStatsWidget> {
+class ScreenShotItemStatsState
+    extends BaseItemStatsState<ScreenShotItemStatsWidget> {
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -60,12 +65,17 @@ class ScreenShotItemStatsState extends BaseItemStatsState<ScreenShotItemStatsWid
             statHash: stat.statTypeHash,
             modValues: entry,
             pixelSize: widget.pixelSize,
-            scaled:
-                statGroupDefinition.scaledStats.firstWhere((s) => s.statHash == stat.statTypeHash, orElse: () => null),
+            scaled: statGroupDefinition.scaledStats.firstWhere(
+                (s) => s.statHash == stat.statTypeHash,
+                orElse: () => null),
           );
         })
-        .followedBy(
-            totalStat == null ? [] : [ScreenshotTotalStatWidget(modValues: totalStat, pixelSize: widget.pixelSize)])
+        .followedBy(totalStat == null
+            ? []
+            : [
+                ScreenshotTotalStatWidget(
+                    modValues: totalStat, pixelSize: widget.pixelSize)
+              ])
         .toList();
   }
 }

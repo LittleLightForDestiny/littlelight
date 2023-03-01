@@ -21,7 +21,6 @@ class VaultTabWidget extends CharacterTabWidget {
 }
 
 class VaultTabWidgetState extends CharacterTabWidgetState {
-
   @override
   Widget build(BuildContext context) {
     return VaultItemListWidget(
@@ -43,7 +42,11 @@ class VaultTabWidgetState extends CharacterTabWidgetState {
           InventoryBucket.classArmor,
         ];
       case DestinyItemCategory.Weapon:
-        return [InventoryBucket.kineticWeapons, InventoryBucket.energyWeapons, InventoryBucket.powerWeapons];
+        return [
+          InventoryBucket.kineticWeapons,
+          InventoryBucket.energyWeapons,
+          InventoryBucket.powerWeapons
+        ];
     }
     return [
       InventoryBucket.ghost,

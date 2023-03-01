@@ -56,7 +56,9 @@ class RecordObjectivesWidgetState extends State<RecordObjectivesWidget>
 
   loadDefinitions() async {
     if (definition?.objectiveHashes != null) {
-      objectiveDefinitions = await manifest.getDefinitions<DestinyObjectiveDefinition>(definition.objectiveHashes);
+      objectiveDefinitions =
+          await manifest.getDefinitions<DestinyObjectiveDefinition>(
+              definition.objectiveHashes);
       if (mounted) setState(() {});
     }
   }
@@ -84,17 +86,19 @@ class RecordObjectivesWidgetState extends State<RecordObjectivesWidget>
         child: Column(children: [
           HeaderWidget(
               padding: const EdgeInsets.all(0),
-              child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                Container(
-                    padding: const EdgeInsets.all(8),
-                    child: TranslatedTextWidget(
-                      "Objectives",
-                      uppercase: true,
-                      textAlign: TextAlign.left,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    )),
-                buildRefreshButton(context)
-              ])),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                        padding: const EdgeInsets.all(8),
+                        child: TranslatedTextWidget(
+                          "Objectives",
+                          uppercase: true,
+                          textAlign: TextAlign.left,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        )),
+                    buildRefreshButton(context)
+                  ])),
           buildObjectives(context)
         ]));
   }
@@ -105,7 +109,9 @@ class RecordObjectivesWidgetState extends State<RecordObjectivesWidget>
         child: Stack(
           children: <Widget>[
             InkWell(
-                child: Container(padding: const EdgeInsets.all(8), child: const Icon(Icons.refresh)),
+                child: Container(
+                    padding: const EdgeInsets.all(8),
+                    child: const Icon(Icons.refresh)),
                 onTap: () {
                   profile.refresh(ProfileComponentGroups.triumphs);
                 })
@@ -121,7 +127,9 @@ class RecordObjectivesWidgetState extends State<RecordObjectivesWidget>
             children: definition.objectiveHashes.map((hash) {
           var objective = getRecordObjective(hash);
           return ObjectiveWidget(
-              definition: objectiveDefinitions != null ? objectiveDefinitions[hash] : null,
+              definition: objectiveDefinitions != null
+                  ? objectiveDefinitions[hash]
+                  : null,
               key: Key("objective_${hash}_${objective?.progress}"),
               objective: objective,
               placeholder: definition?.displayProperties?.name ?? "",
@@ -131,6 +139,7 @@ class RecordObjectivesWidgetState extends State<RecordObjectivesWidget>
 
   DestinyObjectiveProgress getRecordObjective(hash) {
     if (record == null) return null;
-    return record.objectives.firstWhere((o) => o.objectiveHash == hash, orElse: () => null);
+    return record.objectives
+        .firstWhere((o) => o.objectiveHash == hash, orElse: () => null);
   }
 }

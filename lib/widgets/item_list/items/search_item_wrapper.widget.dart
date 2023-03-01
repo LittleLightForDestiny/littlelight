@@ -19,7 +19,8 @@ import 'package:little_light/widgets/item_list/items/weapon/weapon_inventory_ite
 import 'package:little_light/widgets/progress_tabs/pursuit_item/large_pursuit_item.widget.dart';
 
 class SearchItemWrapperWidget extends InventoryItemWrapperWidget {
-  const SearchItemWrapperWidget(ItemWithOwner item, int bucketHash, {String characterId, Key key})
+  const SearchItemWrapperWidget(ItemWithOwner item, int bucketHash,
+      {String characterId, Key key})
       : super(item, bucketHash, characterId: characterId, key: key);
 
   @override
@@ -29,7 +30,8 @@ class SearchItemWrapperWidget extends InventoryItemWrapperWidget {
 }
 
 class SearchItemWrapperWidgetState<T extends SearchItemWrapperWidget>
-    extends InventoryItemWrapperWidgetState<SearchItemWrapperWidget> with ProfileConsumer {
+    extends InventoryItemWrapperWidgetState<SearchItemWrapperWidget>
+    with ProfileConsumer {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -37,8 +39,9 @@ class SearchItemWrapperWidgetState<T extends SearchItemWrapperWidget>
       Positioned.fill(child: buildItem(context)),
       selected
           ? Container(
-              foregroundDecoration:
-                  BoxDecoration(border: Border.all(color: Theme.of(context).selectedRowColor, width: 2)),
+              foregroundDecoration: BoxDecoration(
+                  border: Border.all(
+                      color: Theme.of(context).selectedRowColor, width: 2)),
             )
           : Container(),
       buildTapHandler(context)
@@ -95,7 +98,8 @@ class SearchItemWrapperWidgetState<T extends SearchItemWrapperWidget>
         }
 
       default:
-        if (InventoryBucket.pursuitBucketHashes.contains(widget?.item?.item?.bucketHash)) {
+        if (InventoryBucket.pursuitBucketHashes
+            .contains(widget?.item?.item?.bucketHash)) {
           return LargePursuitItemWidget(
             trailing: buildCharacterIcon(context),
             item: widget.item,
@@ -120,12 +124,15 @@ class SearchItemWrapperWidgetState<T extends SearchItemWrapperWidget>
       icon = Image.asset("assets/imgs/inventory-icon.jpg");
     } else {
       var character = profile.getCharacter(widget.characterId);
-      icon = QueuedNetworkImage(imageUrl: BungieApiService.url(character.emblemPath));
+      icon = QueuedNetworkImage(
+          imageUrl: BungieApiService.url(character.emblemPath));
     }
 
     return Container(
         foregroundDecoration: instanceInfo?.isEquipped == true
-            ? BoxDecoration(border: Border.all(width: 2, color: Theme.of(context).colorScheme.onSurface))
+            ? BoxDecoration(
+                border: Border.all(
+                    width: 2, color: Theme.of(context).colorScheme.onSurface))
             : null,
         width: 26,
         height: 26,

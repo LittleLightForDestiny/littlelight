@@ -10,7 +10,8 @@ class AvoidInstanceIdsFilter extends BaseItemFilter<Set<String>> {
       : super(<String>{}, selected ?? <dynamic>{}, enabled: enabled);
 
   @override
-  bool filterItem(ItemWithOwner item, {Map<int, DestinyInventoryItemDefinition> definitions}) {
+  bool filterItem(ItemWithOwner item,
+      {Map<int, DestinyInventoryItemDefinition> definitions}) {
     if (item?.item?.itemInstanceId == null) return true;
     return !value.contains(item?.item?.itemInstanceId);
   }

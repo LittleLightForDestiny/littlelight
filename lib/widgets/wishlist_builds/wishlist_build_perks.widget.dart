@@ -10,13 +10,16 @@ class WishlistBuildPerksWidget extends StatelessWidget {
   final ParsedWishlistBuild wishlistBuild;
   final double perkIconSize;
 
-  const WishlistBuildPerksWidget({Key key, this.wishlistBuild, this.perkIconSize = 32}) : super(key: key);
+  const WishlistBuildPerksWidget(
+      {Key key, this.wishlistBuild, this.perkIconSize = 32})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
         decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface.withOpacity(.5), borderRadius: BorderRadius.circular(8)),
+            color: Theme.of(context).colorScheme.surface.withOpacity(.5),
+            borderRadius: BorderRadius.circular(8)),
         padding: const EdgeInsets.all(8),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -47,7 +50,8 @@ class WishlistBuildPerksWidget extends StatelessWidget {
                           .map((p) => SizedBox(
                               width: perkIconSize,
                               height: perkIconSize,
-                              child: ManifestImageWidget<DestinyInventoryItemDefinition>(p)))
+                              child: ManifestImageWidget<
+                                  DestinyInventoryItemDefinition>(p)))
                           .toList(),
                     ))
                 .toList()));

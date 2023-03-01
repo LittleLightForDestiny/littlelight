@@ -23,7 +23,8 @@ class EditLoadoutView extends StatefulWidget {
   EditLoadoutViewState createState() => EditLoadoutViewState();
 }
 
-class EditLoadoutViewState extends State<EditLoadoutView> with ManifestConsumer {
+class EditLoadoutViewState extends State<EditLoadoutView>
+    with ManifestConsumer {
   final TextEditingController _nameFieldController = TextEditingController();
   EditLoadoutBloc get _bloc => context.read<EditLoadoutBloc>();
   EditLoadoutBloc get _state => context.watch<EditLoadoutBloc>();
@@ -62,7 +63,9 @@ class EditLoadoutViewState extends State<EditLoadoutView> with ManifestConsumer 
   }
 
   AppBar buildAppBar(BuildContext context) => AppBar(
-        title: _state.creating ? Text("Create Loadout".translate(context)) : Text("Edit Loadout".translate(context)),
+        title: _state.creating
+            ? Text("Create Loadout".translate(context))
+            : Text("Edit Loadout".translate(context)),
         flexibleSpace: buildAppBarBackground(context),
       );
 
@@ -90,14 +93,18 @@ class EditLoadoutViewState extends State<EditLoadoutView> with ManifestConsumer 
           itemCount: 1,
           itemBuilder: (context, _) => buildSelectBackgroundButton(context),
         ),
-        if (!_state.loaded) SliverSection(itemBuilder: (c, _) => LoadingAnimWidget()),
+        if (!_state.loaded)
+          SliverSection(itemBuilder: (c, _) => LoadingAnimWidget()),
         if (_state.loaded)
           SliverSection(
             itemBuilder: (context, index) => buildSlot(context, index),
             itemCount: _state.bucketHashes.length,
           ),
       ],
-      padding: const EdgeInsets.all(8).copyWith(top: 0, left: max(screenPadding.left, 8), right: max(screenPadding.right, 8)),
+      padding: const EdgeInsets.all(8).copyWith(
+          top: 0,
+          left: max(screenPadding.left, 8),
+          right: max(screenPadding.right, 8)),
     );
   }
 
@@ -107,7 +114,8 @@ class EditLoadoutViewState extends State<EditLoadoutView> with ManifestConsumer 
         child: TextField(
           autocorrect: false,
           controller: _nameFieldController,
-          decoration: InputDecoration(labelText: context.translate("Loadout Name")),
+          decoration:
+              InputDecoration(labelText: context.translate("Loadout Name")),
         ));
   }
 
@@ -117,7 +125,8 @@ class EditLoadoutViewState extends State<EditLoadoutView> with ManifestConsumer 
         child: ElevatedButton(
           child: Text("Select Loadout Background".translate(context)),
           onPressed: () async {
-            _bloc.emblemHash = await Navigator.of(context).push<int?>(SelectLoadoutBackgroundPageRoute());
+            _bloc.emblemHash = await Navigator.of(context)
+                .push<int?>(SelectLoadoutBackgroundPageRoute());
           },
         ));
   }
@@ -155,7 +164,8 @@ class EditLoadoutViewState extends State<EditLoadoutView> with ManifestConsumer 
             Container(
               height: kToolbarHeight + paddingBottom,
               constraints: const BoxConstraints(minWidth: double.infinity),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8).copyWith(bottom: 8 + paddingBottom),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8)
+                  .copyWith(bottom: 8 + paddingBottom),
               child: ElevatedButton(
                   child: Text("Save Loadout".translate(context)),
                   onPressed: () {

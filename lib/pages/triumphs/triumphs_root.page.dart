@@ -20,7 +20,8 @@ import 'package:little_light/widgets/multisection_scrollview/sliver_section.dart
 import 'package:little_light/widgets/presentation_nodes/presentation_node_item.widget.dart';
 import 'package:little_light/widgets/presentation_nodes/presentation_node_list.widget.dart';
 
-typedef OnPresentationNodeSelect = void Function(DestinyPresentationNodeChildEntry node);
+typedef OnPresentationNodeSelect = void Function(
+    DestinyPresentationNodeChildEntry node);
 
 class TriumphsRootPage extends PresentationNodesTabsScaffoldWidget {
   TriumphsRootPage() : super();
@@ -31,8 +32,14 @@ class TriumphsRootPage extends PresentationNodesTabsScaffoldWidget {
 
 const _page = LittleLightPersistentPage.Triumphs;
 
-class TriumphsRootPageState extends PresentationNodesTabsScaffoldState<TriumphsRootPage>
-    with UserSettingsConsumer, AnalyticsConsumer, ProfileConsumer, DestinySettingsConsumer, ManifestConsumer {
+class TriumphsRootPageState
+    extends PresentationNodesTabsScaffoldState<TriumphsRootPage>
+    with
+        UserSettingsConsumer,
+        AnalyticsConsumer,
+        ProfileConsumer,
+        DestinySettingsConsumer,
+        ManifestConsumer {
   List<DestinyPresentationNodeDefinition>? rootNodesDefinitions;
 
   @override
@@ -75,9 +82,12 @@ class TriumphsRootPageState extends PresentationNodesTabsScaffoldState<TriumphsR
   Future<int?> getLoreNodeHash() async {
     int? loreNodeHash = destinySettings.loreRootNode;
     if (loreNodeHash == null) return null;
-    final loreNodeDef = await manifest.getDefinition<DestinyPresentationNodeDefinition>(loreNodeHash);
-    final loreFirstChildHash = loreNodeDef?.children?.presentationNodes?.first.presentationNodeHash;
-    final loreFirstChildDef = await manifest.getDefinition<DestinyPresentationNodeDefinition>(loreFirstChildHash);
+    final loreNodeDef = await manifest
+        .getDefinition<DestinyPresentationNodeDefinition>(loreNodeHash);
+    final loreFirstChildHash =
+        loreNodeDef?.children?.presentationNodes?.first.presentationNodeHash;
+    final loreFirstChildDef = await manifest
+        .getDefinition<DestinyPresentationNodeDefinition>(loreFirstChildHash);
     final loreNodeName = loreNodeDef?.displayProperties?.name;
     final loreFirstChildName = loreFirstChildDef?.displayProperties?.name;
     if (loreNodeName == loreFirstChildName) return loreFirstChildHash;
@@ -99,24 +109,29 @@ class TriumphsRootPageState extends PresentationNodesTabsScaffoldState<TriumphsR
       destinySettings.loreRootNode,
       destinySettings.catalystsRootNode
     ];
-    final definitions = await manifest.getDefinitions<DestinyPresentationNodeDefinition>(rootNodes + subNodeHashes);
+    final definitions =
+        await manifest.getDefinitions<DestinyPresentationNodeDefinition>(
+            rootNodes + subNodeHashes);
     setState(() {
       nodeDefinitions = definitions;
-      rootNodesDefinitions =
-          rootNodes.map((h) => definitions[h]).whereType<DestinyPresentationNodeDefinition>().toList();
+      rootNodesDefinitions = rootNodes
+          .map((h) => definitions[h])
+          .whereType<DestinyPresentationNodeDefinition>()
+          .toList();
     });
   }
 
   @override
-  Widget? buildAppBarLeading(BuildContext context) => Scaffold.of(context).hasDrawer
-      ? IconButton(
-          enableFeedback: false,
-          icon: const Icon(Icons.menu),
-          onPressed: () {
-            Scaffold.of(context).openDrawer();
-          },
-        )
-      : null;
+  Widget? buildAppBarLeading(BuildContext context) =>
+      Scaffold.of(context).hasDrawer
+          ? IconButton(
+              enableFeedback: false,
+              icon: const Icon(Icons.menu),
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+            )
+          : null;
 
   @override
   Widget buildAppBarTitle(BuildContext context) {
@@ -124,12 +139,16 @@ class TriumphsRootPageState extends PresentationNodesTabsScaffoldState<TriumphsR
   }
 
   @override
-  Widget buildTabButton(BuildContext context, DestinyPresentationNodeDefinition node) {
-    return Container(padding: const EdgeInsets.all(8), child: Text(node.displayProperties?.name ?? ""));
+  Widget buildTabButton(
+      BuildContext context, DestinyPresentationNodeDefinition node) {
+    return Container(
+        padding: const EdgeInsets.all(8),
+        child: Text(node.displayProperties?.name ?? ""));
   }
 
   @override
-  Widget buildTab(BuildContext context, DestinyPresentationNodeDefinition node) {
+  Widget buildTab(
+      BuildContext context, DestinyPresentationNodeDefinition node) {
     final activeHash = destinySettings.triumphsRootNode;
     final sealsHash = destinySettings.sealsRootNode;
     if (node.hash == activeHash) {
@@ -182,13 +201,15 @@ class TriumphsRootPageState extends PresentationNodesTabsScaffoldState<TriumphsR
                     pathHashes: [legacy, node.presentationNodeHash],
                   )),
       ],
-      padding: const EdgeInsets.all(4) + MediaQuery.of(context).viewPadding.copyWith(top: 0),
+      padding: const EdgeInsets.all(4) +
+          MediaQuery.of(context).viewPadding.copyWith(top: 0),
       crossAxisSpacing: 2,
       mainAxisSpacing: 2,
     );
   }
 
-  void onTriumphSelect(DestinyPresentationNodeChildEntry node, {List<int?>? pathHashes}) async {
+  void onTriumphSelect(DestinyPresentationNodeChildEntry node,
+      {List<int?>? pathHashes}) async {
     Navigator.of(context).push(
       TriumphsPageRoute(
           categoryPresentationNodeHash: node.presentationNodeHash,
@@ -229,13 +250,15 @@ class TriumphsRootPageState extends PresentationNodesTabsScaffoldState<TriumphsR
                     pathHashes: [legacySealsHash, node.presentationNodeHash],
                   ))
       ],
-      padding: const EdgeInsets.all(4) + MediaQuery.of(context).viewPadding.copyWith(top: 0),
+      padding: const EdgeInsets.all(4) +
+          MediaQuery.of(context).viewPadding.copyWith(top: 0),
       crossAxisSpacing: 2,
       mainAxisSpacing: 2,
     );
   }
 
-  void onSealSelect(DestinyPresentationNodeChildEntry node, {List<int>? pathHashes}) {
+  void onSealSelect(DestinyPresentationNodeChildEntry node,
+      {List<int>? pathHashes}) {
     Navigator.of(context).push(
       TriumphsPageRoute(
           categoryPresentationNodeHash: node.presentationNodeHash,
@@ -257,17 +280,23 @@ class TriumphsRootPageState extends PresentationNodesTabsScaffoldState<TriumphsR
       itemsPerRow: 1,
       itemCount: 1,
       itemHeight: 40,
-      itemBuilder: (context, index) =>
-          HeaderWidget(child: ManifestText<DestinyPresentationNodeDefinition>(categoryHash)),
+      itemBuilder: (context, index) => HeaderWidget(
+          child: ManifestText<DestinyPresentationNodeDefinition>(categoryHash)),
     );
   }
 
-  SliverSection buildCategoryList(int categoryHash, OnPresentationNodeSelect? onSelect) {
+  SliverSection buildCategoryList(
+      int categoryHash, OnPresentationNodeSelect? onSelect) {
     final node = nodeDefinitions?[categoryHash];
-    final children = node?.children?.presentationNodes?.whereType<DestinyPresentationNodeChildEntry>().toList();
-    if (children == null) return SliverSection(itemCount: 0, itemBuilder: (context, index) => Container());
+    final children = node?.children?.presentationNodes
+        ?.whereType<DestinyPresentationNodeChildEntry>()
+        .toList();
+    if (children == null)
+      return SliverSection(
+          itemCount: 0, itemBuilder: (context, index) => Container());
     return SliverSection(
-      itemsPerRow: MediaQueryHelper(context).responsiveValue(1, tablet: 2, desktop: 3),
+      itemsPerRow:
+          MediaQueryHelper(context).responsiveValue(1, tablet: 2, desktop: 3),
       itemCount: children.length,
       itemHeight: 80,
       itemBuilder: (context, index) {
@@ -277,12 +306,18 @@ class TriumphsRootPageState extends PresentationNodesTabsScaffoldState<TriumphsR
     );
   }
 
-  SliverSection buildSealCategoryList(int categoryHash, OnPresentationNodeSelect? onSelect) {
+  SliverSection buildSealCategoryList(
+      int categoryHash, OnPresentationNodeSelect? onSelect) {
     final node = nodeDefinitions?[categoryHash];
-    final children = node?.children?.presentationNodes?.whereType<DestinyPresentationNodeChildEntry>().toList();
-    if (children == null) return SliverSection(itemCount: 0, itemBuilder: (context, index) => Container());
+    final children = node?.children?.presentationNodes
+        ?.whereType<DestinyPresentationNodeChildEntry>()
+        .toList();
+    if (children == null)
+      return SliverSection(
+          itemCount: 0, itemBuilder: (context, index) => Container());
     return SliverSection(
-      itemsPerRow: MediaQueryHelper(context).responsiveValue(1, tablet: 2, desktop: 3),
+      itemsPerRow:
+          MediaQueryHelper(context).responsiveValue(1, tablet: 2, desktop: 3),
       itemCount: children.length,
       itemHeight: 92,
       itemBuilder: (context, index) {
@@ -292,7 +327,8 @@ class TriumphsRootPageState extends PresentationNodesTabsScaffoldState<TriumphsR
     );
   }
 
-  Widget buildPresentationNode(BuildContext context, DestinyPresentationNodeChildEntry node,
+  Widget buildPresentationNode(
+      BuildContext context, DestinyPresentationNodeChildEntry node,
       {OnPresentationNodeSelect? onSelect}) {
     return PresentationNodeItemWidget(
         hash: node.presentationNodeHash,
@@ -301,7 +337,8 @@ class TriumphsRootPageState extends PresentationNodesTabsScaffoldState<TriumphsR
         });
   }
 
-  Widget buildSealNodeItem(BuildContext context, DestinyPresentationNodeChildEntry node,
+  Widget buildSealNodeItem(
+      BuildContext context, DestinyPresentationNodeChildEntry node,
       {OnPresentationNodeSelect? onSelect}) {
     return SealItemWidget(
         hash: node.presentationNodeHash,

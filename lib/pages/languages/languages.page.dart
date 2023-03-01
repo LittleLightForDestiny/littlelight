@@ -71,7 +71,9 @@ class _LanguagesPageState extends State<LanguagesPage> {
     if (languages == null) return LoadingAnimWidget();
     return SingleChildScrollView(
         padding: const EdgeInsets.all(8),
-        child: Column(children: languages.map((l) => buildLanguageItem(context, l)).toList()));
+        child: Column(
+            children:
+                languages.map((l) => buildLanguageItem(context, l)).toList()));
   }
 
   Widget buildLanguageItem(BuildContext context, LanguageInfo language) {
@@ -97,7 +99,10 @@ class _LanguagesPageState extends State<LanguagesPage> {
                   padding: const EdgeInsets.all(4),
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [buildLanguageInfo(context, language), buildFileInfo(context, language)]))),
+                      children: [
+                        buildLanguageInfo(context, language),
+                        buildFileInfo(context, language)
+                      ]))),
         ));
   }
 

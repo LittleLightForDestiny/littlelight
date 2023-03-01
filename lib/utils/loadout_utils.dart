@@ -9,12 +9,16 @@ import 'package:little_light/services/manifest/manifest.service.dart';
 
 extension LoadoutUtils on Loadout {
   ManifestService get manifest => getInjectedManifestService();
-  Future<int> addItem(int hash, String itemInstanceId, [bool asEquipped = false]) async {
-    var loadoutItem = LoadoutItem(itemHash: hash, itemInstanceId: itemInstanceId);
+  Future<int> addItem(int hash, String itemInstanceId,
+      [bool asEquipped = false]) async {
+    var loadoutItem =
+        LoadoutItem(itemHash: hash, itemInstanceId: itemInstanceId);
     equipped.removeWhere((i) => i.itemInstanceId == loadoutItem.itemInstanceId);
-    unequipped.removeWhere((i) => i.itemInstanceId == loadoutItem.itemInstanceId);
+    unequipped
+        .removeWhere((i) => i.itemInstanceId == loadoutItem.itemInstanceId);
     if (asEquipped) {
-      var def = await manifest.getDefinition<DestinyInventoryItemDefinition>(hash);
+      var def =
+          await manifest.getDefinition<DestinyInventoryItemDefinition>(hash);
       int blockingItemHash;
       if (def?.inventory?.tierType == TierType.Exotic) {
         blockingItemHash = await _removeBlockingExotic(def);
@@ -29,27 +33,36 @@ extension LoadoutUtils on Loadout {
   }
 
   Future<void> _removeEquipped(DestinyInventoryItemDefinition _itemDef) async {
-    var defs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(equipped.map((i) => i.itemHash));
+    var defs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(
+        equipped.map((i) => i.itemHash));
     equipped.removeWhere((i) {
       var def = defs[i.itemHash];
-      return def?.inventory?.bucketTypeHash == _itemDef?.inventory?.bucketTypeHash &&
+      return def?.inventory?.bucketTypeHash ==
+              _itemDef?.inventory?.bucketTypeHash &&
           def?.classType == _itemDef?.classType;
     });
   }
 
-  Future<int> _removeBlockingExotic(DestinyInventoryItemDefinition _itemDef) async {
-    var isArmor = InventoryBucket.exoticArmorBlockBuckets.contains(_itemDef.inventory?.bucketTypeHash);
-    var isWeapon = InventoryBucket.exoticWeaponBlockBuckets.contains(_itemDef.inventory?.bucketTypeHash);
+  Future<int> _removeBlockingExotic(
+      DestinyInventoryItemDefinition _itemDef) async {
+    var isArmor = InventoryBucket.exoticArmorBlockBuckets
+        .contains(_itemDef.inventory?.bucketTypeHash);
+    var isWeapon = InventoryBucket.exoticWeaponBlockBuckets
+        .contains(_itemDef.inventory?.bucketTypeHash);
     if (!isArmor && !isWeapon) return null;
-    var defs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(equipped.map((i) => i.itemHash));
+    var defs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(
+        equipped.map((i) => i.itemHash));
     int hashResult;
     equipped.removeWhere((i) {
       var def = defs[i.itemHash];
       var isExotic = def?.inventory?.tierType == TierType.Exotic;
       var sameType = (isArmor &&
-              InventoryBucket.exoticArmorBlockBuckets.contains(def?.inventory?.bucketTypeHash) &&
+              InventoryBucket.exoticArmorBlockBuckets
+                  .contains(def?.inventory?.bucketTypeHash) &&
               def?.classType == _itemDef?.classType) ||
-          (isWeapon && InventoryBucket.exoticWeaponBlockBuckets.contains(def?.inventory?.bucketTypeHash));
+          (isWeapon &&
+              InventoryBucket.exoticWeaponBlockBuckets
+                  .contains(def?.inventory?.bucketTypeHash));
       var remove = isExotic && sameType;
       if (remove) {
         hashResult = i.itemHash;

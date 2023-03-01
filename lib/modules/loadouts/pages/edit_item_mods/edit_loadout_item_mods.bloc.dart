@@ -6,7 +6,8 @@ import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/shared/blocs/socket_controller/base_socket_controller.bloc.dart';
 import 'package:provider/provider.dart';
 
-class EditLoadoutItemModsBloc extends BaseSocketController with ManifestConsumer, ProfileConsumer {
+class EditLoadoutItemModsBloc extends BaseSocketController
+    with ManifestConsumer, ProfileConsumer {
   final BuildContext context;
 
   DestinyItemComponent? item;
@@ -51,7 +52,8 @@ class EditLoadoutItemModsBloc extends BaseSocketController with ManifestConsumer
     }
 
     final itemHash = item?.itemHash;
-    definition = await manifest.getDefinition<DestinyInventoryItemDefinition>(itemHash);
+    definition =
+        await manifest.getDefinition<DestinyInventoryItemDefinition>(itemHash);
 
     await loadDefinitions();
     await computeAvailableCategories();
@@ -69,15 +71,18 @@ class EditLoadoutItemModsBloc extends BaseSocketController with ManifestConsumer
     Set<int> availableCategoryHashes = {};
 
     for (var index = 0; index < socketCount; index++) {
-      final plugHashes = socketPlugHashes(index)?.where((p) => canApplyForFree(index, p)).toList();
+      final plugHashes = socketPlugHashes(index)
+          ?.where((p) => canApplyForFree(index, p))
+          .toList();
       if (plugHashes != null && plugHashes.length > 1) {
         availablePlughashesForIndexes[index] = plugHashes;
         availableSocketIndexes.add(index);
       }
     }
     for (final cat in categories) {
-      final containsValidSockets =
-          cat.socketIndexes?.any((element) => availableSocketIndexes.contains(element)) ?? false;
+      final containsValidSockets = cat.socketIndexes
+              ?.any((element) => availableSocketIndexes.contains(element)) ??
+          false;
       final categoryHash = cat.socketCategoryHash;
       if (containsValidSockets && categoryHash != null) {
         availableCategoryHashes.add(categoryHash);
@@ -89,14 +94,19 @@ class EditLoadoutItemModsBloc extends BaseSocketController with ManifestConsumer
     notifyListeners();
   }
 
-  List<DestinyItemSocketCategoryDefinition>? get categories => definition?.sockets?.socketCategories
-      ?.where((element) => _availableCategoryHashes.contains(element.socketCategoryHash))
-      .toList();
+  List<DestinyItemSocketCategoryDefinition>? get categories =>
+      definition?.sockets?.socketCategories
+          ?.where((element) =>
+              _availableCategoryHashes.contains(element.socketCategoryHash))
+          .toList();
 
   int? selectedSelectedPlugHash(int index) => _selectedPlugs[index];
 
-  List<int>? availableIndexesForCategory(DestinyItemSocketCategoryDefinition category) {
-    return category.socketIndexes?.where((element) => _availableSocketIndexes.contains(element)).toList();
+  List<int>? availableIndexesForCategory(
+      DestinyItemSocketCategoryDefinition category) {
+    return category.socketIndexes
+        ?.where((element) => _availableSocketIndexes.contains(element))
+        .toList();
   }
 
   void selectSocket(int socketIndex) {
@@ -123,8 +133,10 @@ class EditLoadoutItemModsBloc extends BaseSocketController with ManifestConsumer
 
   bool isSocketSelected(int socketIndex) => _selectedSocket == socketIndex;
 
-  bool isPlugSelectedForSocket(int? plugHash, int socketIndex) => _selectedPlugs[socketIndex] == plugHash;
-  bool isPlugEquippedForSocket(int? plugHash, int socketIndex) => socketEquippedPlugHash(socketIndex) == plugHash;
+  bool isPlugSelectedForSocket(int? plugHash, int socketIndex) =>
+      _selectedPlugs[socketIndex] == plugHash;
+  bool isPlugEquippedForSocket(int? plugHash, int socketIndex) =>
+      socketEquippedPlugHash(socketIndex) == plugHash;
 
   List<int?>? selectedSocketPlugs() {
     final selectedSocket = _selectedSocket;
@@ -146,7 +158,8 @@ class EditLoadoutItemModsBloc extends BaseSocketController with ManifestConsumer
   int? get selectedSocketDefaultPlugHash {
     final socket = _selectedSocket;
     if (socket == null) return null;
-    final defaultPlugHash = definition?.sockets?.socketEntries?[socket].singleInitialItemHash;
+    final defaultPlugHash =
+        definition?.sockets?.socketEntries?[socket].singleInitialItemHash;
     if (defaultPlugHash != null && defaultPlugHash != 0) return defaultPlugHash;
     return selectedSelectedPlugHash(socket);
   }

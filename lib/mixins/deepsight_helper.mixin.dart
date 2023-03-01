@@ -13,7 +13,8 @@ mixin DeepSightHelper {
     if (plugObjectives == null) return null;
     final availableHashes = plugObjectives.keys;
     const itemHashes = _deepsightResonanceHashes;
-    return itemHashes.firstWhereOrNull((element) => availableHashes.contains(element.toString()));
+    return itemHashes.firstWhereOrNull(
+        (element) => availableHashes.contains(element.toString()));
   }
 
   int? getShapedWeaponHash(String itemInstanceID) {
@@ -22,7 +23,8 @@ mixin DeepSightHelper {
     if (plugObjectives == null) return null;
     final availableHashes = plugObjectives.keys;
     const itemHashes = _shapedWeaponHashes;
-    return itemHashes.firstWhereOrNull((element) => availableHashes.contains(element.toString()));
+    return itemHashes.firstWhereOrNull(
+        (element) => availableHashes.contains(element.toString()));
   }
 
   bool isShapedWeaponOrDeepsight(String itemInstanceID) {
@@ -31,25 +33,30 @@ mixin DeepSightHelper {
     if (plugObjectives == null) return false;
     final availableHashes = plugObjectives.keys;
     final itemHashes = _deepsightResonanceHashes + _shapedWeaponHashes;
-    return itemHashes.any((element) => availableHashes.contains(element.toString()));
+    return itemHashes
+        .any((element) => availableHashes.contains(element.toString()));
   }
 
-  List<DestinyObjectiveProgress>? getShapedWeaponObjectives(String itemInstanceID) {
+  List<DestinyObjectiveProgress>? getShapedWeaponObjectives(
+      String itemInstanceID) {
     final profile = getInjectedProfileService();
     final plugObjectives = profile.getPlugObjectives(itemInstanceID);
     if (plugObjectives == null) return null;
     final availableHashes = plugObjectives.keys;
-    final hash = _shapedWeaponHashes.firstWhereOrNull((h) => availableHashes.contains(h.toString()));
+    final hash = _shapedWeaponHashes
+        .firstWhereOrNull((h) => availableHashes.contains(h.toString()));
     if (hash != null) return plugObjectives["$hash"];
     return null;
   }
 
-  List<DestinyObjectiveProgress>? getDeepSightObjectives(String itemInstanceID) {
+  List<DestinyObjectiveProgress>? getDeepSightObjectives(
+      String itemInstanceID) {
     final profile = getInjectedProfileService();
     final plugObjectives = profile.getPlugObjectives(itemInstanceID);
     if (plugObjectives == null) return null;
     final availableHashes = plugObjectives.keys;
-    final hash = _deepsightResonanceHashes.firstWhereOrNull((h) => availableHashes.contains(h.toString()));
+    final hash = _deepsightResonanceHashes
+        .firstWhereOrNull((h) => availableHashes.contains(h.toString()));
     if (hash != null) return plugObjectives["$hash"];
     return null;
   }
@@ -58,6 +65,9 @@ mixin DeepSightHelper {
     final objectives = getDeepSightObjectives(itemInstanceID);
     if (objectives == null) return false;
     final attunementHashes = [3240093512, 1162857131, 3574180408];
-    return objectives.firstWhereOrNull((o) => attunementHashes.contains(o.objectiveHash))?.complete ?? false;
+    return objectives
+            .firstWhereOrNull((o) => attunementHashes.contains(o.objectiveHash))
+            ?.complete ??
+        false;
   }
 }

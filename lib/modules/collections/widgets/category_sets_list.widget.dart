@@ -15,13 +15,15 @@ typedef PresentationNodeTap = void Function(int presentationNodeHash);
 class CategorySetsListWidget extends StatefulWidget {
   final DestinyPresentationNodeDefinition node;
   final PresentationNodeTap? onItemTap;
-  const CategorySetsListWidget({Key? key, required this.node, this.onItemTap}) : super(key: key);
+  const CategorySetsListWidget({Key? key, required this.node, this.onItemTap})
+      : super(key: key);
 
   @override
   _CategorySetsListWidgetState createState() => _CategorySetsListWidgetState();
 }
 
-class _CategorySetsListWidgetState extends State<CategorySetsListWidget> with ManifestConsumer {
+class _CategorySetsListWidgetState extends State<CategorySetsListWidget>
+    with ManifestConsumer {
   List<DestinyPresentationNodeDefinition>? nodeDefinitions;
 
   @override
@@ -31,10 +33,16 @@ class _CategorySetsListWidgetState extends State<CategorySetsListWidget> with Ma
   }
 
   void loadDefinitions() async {
-    final nodeHashes = widget.node.children?.presentationNodes?.map((e) => e.presentationNodeHash).toList();
+    final nodeHashes = widget.node.children?.presentationNodes
+        ?.map((e) => e.presentationNodeHash)
+        .toList();
     if (nodeHashes == null) return;
-    final nodeDefs = await manifest.getDefinitions<DestinyPresentationNodeDefinition>(nodeHashes);
-    final nodes = nodeHashes.map((e) => nodeDefs[e]).whereType<DestinyPresentationNodeDefinition>().toList();
+    final nodeDefs = await manifest
+        .getDefinitions<DestinyPresentationNodeDefinition>(nodeHashes);
+    final nodes = nodeHashes
+        .map((e) => nodeDefs[e])
+        .whereType<DestinyPresentationNodeDefinition>()
+        .toList();
     setState(() {
       nodeDefinitions = nodes;
     });
@@ -57,8 +65,10 @@ class _CategorySetsListWidgetState extends State<CategorySetsListWidget> with Ma
         SliverSection(
           itemCount: collectibles.length,
           itemAspectRatio: 1,
-          itemsPerRow: MediaQueryHelper(context).responsiveValue(5, tablet: 10, laptop: 15, desktop: 20),
-          itemBuilder: (context, index) => buildNestedCollectible(context, node, index),
+          itemsPerRow: MediaQueryHelper(context)
+              .responsiveValue(5, tablet: 10, laptop: 15, desktop: 20),
+          itemBuilder: (context, index) =>
+              buildNestedCollectible(context, node, index),
         )
       ];
     }
@@ -70,14 +80,16 @@ class _CategorySetsListWidgetState extends State<CategorySetsListWidget> with Ma
     );
   }
 
-  Widget buildPresentationNode(BuildContext context, DestinyPresentationNodeDefinition node) {
+  Widget buildPresentationNode(
+      BuildContext context, DestinyPresentationNodeDefinition node) {
     return PresentationNodeItemWidget(
       hash: node.hash,
       onPressed: () {},
     );
   }
 
-  Widget buildNestedCollectible(BuildContext context, DestinyPresentationNodeDefinition node, int index) {
+  Widget buildNestedCollectible(
+      BuildContext context, DestinyPresentationNodeDefinition node, int index) {
     final childNode = node.children?.collectibles?[index];
     final collectibleHash = childNode?.collectibleHash;
     if (collectibleHash == null) return Container();

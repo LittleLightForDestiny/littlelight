@@ -132,7 +132,10 @@ class ChaliceRecipeWidget extends StatelessWidget {
             uppercase: true,
             style: const TextStyle(fontWeight: FontWeight.bold),
           )),
-    ].followedBy(recipe.left.map((r) => buildRuneItem(context, r, RunePosition.Left))).toList());
+    ]
+            .followedBy(recipe.left
+                .map((r) => buildRuneItem(context, r, RunePosition.Left)))
+            .toList());
   }
 
   Widget buildRightSlot(BuildContext context, ChaliceRecipe recipe) {
@@ -145,7 +148,10 @@ class ChaliceRecipeWidget extends StatelessWidget {
             uppercase: true,
             style: const TextStyle(fontWeight: FontWeight.bold),
           )),
-    ].followedBy(recipe.right.map((r) => buildRuneItem(context, r, RunePosition.Right))).toList());
+    ]
+            .followedBy(recipe.right
+                .map((r) => buildRuneItem(context, r, RunePosition.Right)))
+            .toList());
   }
 
   Color getBackgroundColor(RuneColor color) {
@@ -166,11 +172,13 @@ class ChaliceRecipeWidget extends StatelessWidget {
     return null;
   }
 
-  Widget buildRuneItem(BuildContext context, RuneInfo rune, [RunePosition position = RunePosition.Top]) {
+  Widget buildRuneItem(BuildContext context, RuneInfo rune,
+      [RunePosition position = RunePosition.Top]) {
     return Container(
       margin: const EdgeInsets.only(bottom: 4),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.amber.shade100.withOpacity(.5), width: 1),
+        border:
+            Border.all(color: Colors.amber.shade100.withOpacity(.5), width: 1),
         color: getBackgroundColor(rune.color),
       ),
       child: Row(
@@ -178,7 +186,8 @@ class ChaliceRecipeWidget extends StatelessWidget {
           SizedBox(
               width: 64,
               height: 64,
-              child: ManifestImageWidget<DestinyInventoryItemDefinition>(rune.itemHash ?? 1772646107)),
+              child: ManifestImageWidget<DestinyInventoryItemDefinition>(
+                  rune.itemHash ?? 1772646107)),
           buildModifierIcon(context, rune, position),
           Container(
             width: 8,
@@ -279,16 +288,20 @@ class ChaliceRecipeWidget extends StatelessWidget {
     return 0;
   }
 
-  Widget buildModifierIcon(BuildContext context, RuneInfo rune, RunePosition position) {
-    if (position == RunePosition.Left && definition.itemType == DestinyItemType.Armor) {
+  Widget buildModifierIcon(
+      BuildContext context, RuneInfo rune, RunePosition position) {
+    if (position == RunePosition.Left &&
+        definition.itemType == DestinyItemType.Armor) {
       return Container(
         margin: const EdgeInsets.only(left: 4),
         width: 56,
         height: 48,
-        child: ManifestImageWidget<DestinyInventoryItemDefinition>(getArmorModifierIconHash(rune.armorPerk)),
+        child: ManifestImageWidget<DestinyInventoryItemDefinition>(
+            getArmorModifierIconHash(rune.armorPerk)),
       );
     }
-    if (position == RunePosition.Right && definition.itemType == DestinyItemType.Armor) {
+    if (position == RunePosition.Right &&
+        definition.itemType == DestinyItemType.Armor) {
       return SizedBox(
         width: 56,
         height: 56,
@@ -296,39 +309,48 @@ class ChaliceRecipeWidget extends StatelessWidget {
             getArmorMasterworkIconHash(rune.armorMasterworkDamageType)),
       );
     }
-    if (position == RunePosition.Right && definition.itemType == DestinyItemType.Weapon) {
+    if (position == RunePosition.Right &&
+        definition.itemType == DestinyItemType.Weapon) {
       return SizedBox(
         width: 56,
         height: 56,
-        child: ManifestImageWidget<DestinyInventoryItemDefinition>(getWeaponMasterworkIconHash(rune.weaponMasterwork)),
+        child: ManifestImageWidget<DestinyInventoryItemDefinition>(
+            getWeaponMasterworkIconHash(rune.weaponMasterwork)),
       );
     }
     return Container();
   }
 
-  Widget buildModifierText(BuildContext context, RuneInfo rune, RunePosition position) {
-    if (position == RunePosition.Left && definition.itemType == DestinyItemType.Armor) {
+  Widget buildModifierText(
+      BuildContext context, RuneInfo rune, RunePosition position) {
+    if (position == RunePosition.Left &&
+        definition.itemType == DestinyItemType.Armor) {
       return Container(
           margin: const EdgeInsets.only(top: 4),
-          child: ManifestText<DestinyInventoryItemDefinition>(getArmorModifierTextHash(rune.armorPerk)));
+          child: ManifestText<DestinyInventoryItemDefinition>(
+              getArmorModifierTextHash(rune.armorPerk)));
     }
-    if (position == RunePosition.Right && definition.itemType == DestinyItemType.Armor) {
+    if (position == RunePosition.Right &&
+        definition.itemType == DestinyItemType.Armor) {
       return Container(
           margin: const EdgeInsets.only(top: 4),
-          child:
-              ManifestText<DestinySandboxPerkDefinition>(getArmorMasterworkTextHash(rune.armorMasterworkDamageType)));
+          child: ManifestText<DestinySandboxPerkDefinition>(
+              getArmorMasterworkTextHash(rune.armorMasterworkDamageType)));
     }
-    if (position == RunePosition.Right && definition.itemType == DestinyItemType.Weapon) {
+    if (position == RunePosition.Right &&
+        definition.itemType == DestinyItemType.Weapon) {
       return Container(
           margin: const EdgeInsets.only(top: 4),
-          child: ManifestText<DestinyStatDefinition>(getWeaponMasterworkTextHash(rune.weaponMasterwork)));
+          child: ManifestText<DestinyStatDefinition>(
+              getWeaponMasterworkTextHash(rune.weaponMasterwork)));
     }
     return Container();
   }
 
   Widget buildRuneTitle(BuildContext context, RuneInfo rune) {
     if (rune.itemHash != null) {
-      return ManifestText<DestinyInventoryItemDefinition>(rune.itemHash, style: const TextStyle(fontWeight: FontWeight.bold));
+      return ManifestText<DestinyInventoryItemDefinition>(rune.itemHash,
+          style: const TextStyle(fontWeight: FontWeight.bold));
     }
     switch (rune.color) {
       case RuneColor.Purple:
@@ -338,13 +360,16 @@ class ChaliceRecipeWidget extends StatelessWidget {
         );
         break;
       case RuneColor.Red:
-        return Text("Any Red rune".translate(context), style: const TextStyle(fontWeight: FontWeight.bold));
+        return Text("Any Red rune".translate(context),
+            style: const TextStyle(fontWeight: FontWeight.bold));
         break;
       case RuneColor.Green:
-        return Text("Any Green rune".translate(context), style: const TextStyle(fontWeight: FontWeight.bold));
+        return Text("Any Green rune".translate(context),
+            style: const TextStyle(fontWeight: FontWeight.bold));
         break;
       case RuneColor.Blue:
-        return Text("Any Blue rune".translate(context), style: const TextStyle(fontWeight: FontWeight.bold));
+        return Text("Any Blue rune".translate(context),
+            style: const TextStyle(fontWeight: FontWeight.bold));
         break;
     }
     return Container();

@@ -8,7 +8,8 @@ import 'package:shimmer/shimmer.dart';
 
 import 'base_tab_header.widget.dart';
 
-class VaultTabHeaderWidget extends BaseTabHeaderWidget with DestinySettingsConsumer {
+class VaultTabHeaderWidget extends BaseTabHeaderWidget
+    with DestinySettingsConsumer {
   VaultTabHeaderWidget();
 
   @override
@@ -30,12 +31,15 @@ class VaultTabHeaderWidget extends BaseTabHeaderWidget with DestinySettingsConsu
     if (character == null) return Container();
     final progressionHash = destinySettings.seasonalRankProgressionHash;
     final levelProg = character.progression?.progressions?["$progressionHash"];
-    final overLevelProg =
-        character.progression?.progressions?["${destinySettings.seasonalPrestigeRankProgressionHash}"];
+    final overLevelProg = character.progression?.progressions?[
+        "${destinySettings.seasonalPrestigeRankProgressionHash}"];
     final fg = context.theme.upgradeLayers.layer0;
     final bg = Color.lerp(context.theme.upgradeLayers.layer1, Colors.black, .6);
-    final currentProg = (levelProg?.level ?? 0) < (levelProg?.levelCap ?? 0) ? levelProg : overLevelProg;
-    double completed = (currentProg?.progressToNextLevel ?? 0) / (currentProg?.nextLevelAt ?? 1);
+    final currentProg = (levelProg?.level ?? 0) < (levelProg?.levelCap ?? 0)
+        ? levelProg
+        : overLevelProg;
+    double completed = (currentProg?.progressToNextLevel ?? 0) /
+        (currentProg?.nextLevelAt ?? 1);
     return Container(
       color: bg,
       alignment: Alignment.centerLeft,

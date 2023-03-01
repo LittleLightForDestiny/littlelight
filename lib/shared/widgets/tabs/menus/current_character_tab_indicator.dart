@@ -19,8 +19,11 @@ class CurrentCharacterTabIndicator extends StatelessWidget {
   const CurrentCharacterTabIndicator(this.characters, this.controller);
 
   @override
-  Widget build(BuildContext context) => LayoutBuilder(builder: (context, constraints) {
-        final size = Size(constraints.maxWidth.clamp(_minimumWidth, _maximumWidth), constraints.maxHeight);
+  Widget build(BuildContext context) =>
+      LayoutBuilder(builder: (context, constraints) {
+        final size = Size(
+            constraints.maxWidth.clamp(_minimumWidth, _maximumWidth),
+            constraints.maxHeight);
         return SizedBox(
           height: size.height,
           width: size.width,
@@ -48,7 +51,8 @@ class CurrentCharacterTabIndicator extends StatelessWidget {
     }).toList());
   }
 
-  Widget buildCharacter(BuildContext context, DestinyCharacterInfo character, Size size) {
+  Widget buildCharacter(
+      BuildContext context, DestinyCharacterInfo character, Size size) {
     return SizedBox(
       width: size.width,
       height: size.height,

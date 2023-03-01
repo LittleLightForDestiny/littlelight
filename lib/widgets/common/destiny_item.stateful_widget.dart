@@ -12,14 +12,16 @@ abstract class DestinyItemStatefulWidget extends StatefulWidget {
   final DestinyItemInstanceComponent instanceInfo;
   final String characterId;
 
-  const DestinyItemStatefulWidget(this.item, this.definition, this.instanceInfo, {Key key, this.characterId})
+  const DestinyItemStatefulWidget(this.item, this.definition, this.instanceInfo,
+      {Key key, this.characterId})
       : super(key: key);
 
   @override
   DestinyItemState<DestinyItemStatefulWidget> createState();
 }
 
-abstract class DestinyItemState<T extends DestinyItemStatefulWidget> extends State<T> with ManifestConsumer {
+abstract class DestinyItemState<T extends DestinyItemStatefulWidget>
+    extends State<T> with ManifestConsumer {
   DestinyItemComponent get item => widget.item;
   DestinyInventoryItemDefinition get definition => widget.definition;
   DestinyItemInstanceComponent get instanceInfo => widget.instanceInfo;

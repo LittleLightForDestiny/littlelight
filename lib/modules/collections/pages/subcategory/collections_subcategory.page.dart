@@ -17,7 +17,8 @@ class CollectionsSubcategoryPage extends PresentationNodesTabsScaffoldWidget {
   createState() => CollectionsSubcategoryPageState();
 }
 
-class CollectionsSubcategoryPageState extends PresentationNodesTabsScaffoldState<CollectionsSubcategoryPage>
+class CollectionsSubcategoryPageState
+    extends PresentationNodesTabsScaffoldState<CollectionsSubcategoryPage>
     with DestinySettingsConsumer, ManifestConsumer {
   DestinyPresentationNodeDefinition? categoryDefinition;
   List<DestinyPresentationNodeDefinition>? nodesDefinitions;
@@ -46,11 +47,13 @@ class CollectionsSubcategoryPageState extends PresentationNodesTabsScaffoldState
     final args = CollectionsPageRouteArguments.of(context);
     final categoryNodeHash = args?.subcategoryPresentationNodeHash;
     final parentNodesDefs =
-        await manifest.getDefinitions<DestinyPresentationNodeDefinition>(args?.parentCategoryHashes ?? []);
-    isCategorySets =
-        parentNodesDefs.values.any((element) => element.screenStyle == DestinyPresentationScreenStyle.CategorySets);
+        await manifest.getDefinitions<DestinyPresentationNodeDefinition>(
+            args?.parentCategoryHashes ?? []);
+    isCategorySets = parentNodesDefs.values.any((element) =>
+        element.screenStyle == DestinyPresentationScreenStyle.CategorySets);
     if (categoryNodeHash == null) return;
-    final categoryDefinition = await manifest.getDefinition<DestinyPresentationNodeDefinition>(categoryNodeHash);
+    final categoryDefinition = await manifest
+        .getDefinition<DestinyPresentationNodeDefinition>(categoryNodeHash);
     setState(() {
       this.categoryDefinition = categoryDefinition;
     });
@@ -74,21 +77,25 @@ class CollectionsSubcategoryPageState extends PresentationNodesTabsScaffoldState
 
   @override
   PreferredSizeWidget? buildBreadcrumb(BuildContext context) {
-    final nodeHashes = CollectionsPageRouteArguments.of(context)?.parentCategoryHashes;
+    final nodeHashes =
+        CollectionsPageRouteArguments.of(context)?.parentCategoryHashes;
     if (nodeHashes == null) return null;
     return CategoryBreadcrumbWidget(parentCategoryHashes: nodeHashes);
   }
 
   @override
-  PreferredSizeWidget? buildAppBarBottom(BuildContext context) => buildBreadcrumb(context);
+  PreferredSizeWidget? buildAppBarBottom(BuildContext context) =>
+      buildBreadcrumb(context);
 
   @override
-  Widget buildTab(BuildContext context, DestinyPresentationNodeDefinition node) {
+  Widget buildTab(
+      BuildContext context, DestinyPresentationNodeDefinition node) {
     throw UnimplementedError();
   }
 
   @override
-  Widget buildTabButton(BuildContext context, DestinyPresentationNodeDefinition node) {
+  Widget buildTabButton(
+      BuildContext context, DestinyPresentationNodeDefinition node) {
     throw UnimplementedError();
   }
 }

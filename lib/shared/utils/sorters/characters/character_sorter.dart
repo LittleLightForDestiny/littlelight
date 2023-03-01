@@ -5,9 +5,11 @@ import 'character_first_created_sorter.dart';
 import 'character_last_created_sorter.dart';
 import 'character_last_played_sorter.dart';
 
-typedef CharacterSorter = int Function(DestinyCharacterInfo charA, DestinyCharacterInfo charB);
+typedef CharacterSorter = int Function(
+    DestinyCharacterInfo charA, DestinyCharacterInfo charB);
 
-List<DestinyCharacterInfo> sortCharacters(CharacterSortParameterType sortType, List<DestinyCharacterInfo> original) {
+List<DestinyCharacterInfo> sortCharacters(
+    CharacterSortParameterType sortType, List<DestinyCharacterInfo> original) {
   final result = List<DestinyCharacterInfo>.from(original);
   final sortFunction = _getCharacterSortFunction(sortType);
   result.sort(sortFunction);

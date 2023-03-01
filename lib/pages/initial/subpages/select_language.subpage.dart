@@ -15,16 +15,20 @@ class SelectLanguageSubPage extends StatefulWidget {
   SelectLanguageSubPageState createState() => SelectLanguageSubPageState();
 }
 
-class SelectLanguageSubPageState extends SubpageBaseState<SelectLanguageSubPage> {
+class SelectLanguageSubPageState
+    extends SubpageBaseState<SelectLanguageSubPage> {
   LanguageBloc get languageProvider => context.read<LanguageBloc>();
   String? _selectedLanguage;
   String get selectedLanguage =>
-      _selectedLanguage ?? languageProvider.selectedLanguage ?? languageProvider.currentLanguage;
+      _selectedLanguage ??
+      languageProvider.selectedLanguage ??
+      languageProvider.currentLanguage;
   set selectedLanguage(String value) => _selectedLanguage = value;
 
   void okClick() {
     languageProvider.selectedLanguage = selectedLanguage;
-    Provider.of<InitialPageStateNotifier>(context, listen: false).languageSelected();
+    Provider.of<InitialPageStateNotifier>(context, listen: false)
+        .languageSelected();
   }
 
   List<Widget> getLanguageButtons(BuildContext context) {
@@ -56,7 +60,9 @@ class SelectLanguageSubPageState extends SubpageBaseState<SelectLanguageSubPage>
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Container(
-              constraints: BoxConstraints(maxHeight: max(240, MediaQuery.of(context).size.height - 300)),
+              constraints: BoxConstraints(
+                  maxHeight:
+                      max(240, MediaQuery.of(context).size.height - 300)),
               child: SingleChildScrollView(
                   child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,

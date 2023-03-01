@@ -9,8 +9,13 @@ import 'package:little_light/widgets/item_stats/base_item_stat.widget.dart';
 import 'direction_stat_bar.widget.dart';
 
 class DetailsItemStatWidget extends BaseItemStatWidget {
-  const DetailsItemStatWidget({Key key, StatValues modValues, int statHash, DestinyStatDisplayDefinition scaled})
-      : super(key: key, statHash: statHash, modValues: modValues, scaled: scaled);
+  const DetailsItemStatWidget(
+      {Key key,
+      StatValues modValues,
+      int statHash,
+      DestinyStatDisplayDefinition scaled})
+      : super(
+            key: key, statHash: statHash, modValues: modValues, scaled: scaled);
 
   @override
   Widget build(BuildContext context) {
@@ -84,9 +89,15 @@ class DetailsItemStatWidget extends BaseItemStatWidget {
       color: Colors.grey.shade700.withOpacity(.7),
       child: Row(
         children: <Widget>[
-          Container(width: (baseBarSize / maxBarSize) * (width), color: getNameColor(context)),
-          Container(width: (masterworkBarSize / maxBarSize) * (width), color: getMasterworkColor(context)),
-          Container(width: (modBarSize / maxBarSize) * (width), color: getModBarColor(context)),
+          Container(
+              width: (baseBarSize / maxBarSize) * (width),
+              color: getNameColor(context)),
+          Container(
+              width: (masterworkBarSize / maxBarSize) * (width),
+              color: getMasterworkColor(context)),
+          Container(
+              width: (modBarSize / maxBarSize) * (width),
+              color: getModBarColor(context)),
         ],
       ),
     );

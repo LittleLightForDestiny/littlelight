@@ -25,9 +25,11 @@ class SelectLoadoutItemView extends SearchScreen {
 
   final int emblemHash;
 
-  SelectLoadoutItemView(BuildContext context, {this.bucketHash, this.emblemHash, this.classType, this.idsToAvoid})
+  SelectLoadoutItemView(BuildContext context,
+      {this.bucketHash, this.emblemHash, this.classType, this.idsToAvoid})
       : super(
-            controller: SearchController.withDefaultFilters(context, firstRunFilters: [
+            controller:
+                SearchController.withDefaultFilters(context, firstRunFilters: [
           ItemBucketFilter(selected: {bucketHash}, enabled: true),
           ClassTypeFilter(selected: {classType}, enabled: true),
           AvoidInstanceIdsFilter(selected: idsToAvoid.toSet(), enabled: true)
@@ -39,7 +41,8 @@ class SelectLoadoutItemView extends SearchScreen {
   SelectLoadoutItemScreenState createState() => SelectLoadoutItemScreenState();
 }
 
-class SelectLoadoutItemScreenState extends SearchScreenState<SelectLoadoutItemView> with ManifestConsumer {
+class SelectLoadoutItemScreenState
+    extends SearchScreenState<SelectLoadoutItemView> with ManifestConsumer {
   DestinyInventoryItemDefinition emblemDefinition;
   DestinyInventoryBucketDefinition bucketDefinition;
 
@@ -50,9 +53,11 @@ class SelectLoadoutItemScreenState extends SearchScreenState<SelectLoadoutItemVi
   }
 
   loadDefs() async {
-    bucketDefinition = await manifest.getDefinition<DestinyInventoryBucketDefinition>(widget.bucketHash);
+    bucketDefinition = await manifest
+        .getDefinition<DestinyInventoryBucketDefinition>(widget.bucketHash);
     if (widget.emblemHash != null) {
-      emblemDefinition = await manifest.getDefinition<DestinyInventoryItemDefinition>(widget.emblemHash);
+      emblemDefinition = await manifest
+          .getDefinition<DestinyInventoryItemDefinition>(widget.emblemHash);
     }
     setState(() {});
   }
@@ -73,7 +78,9 @@ class SelectLoadoutItemScreenState extends SearchScreenState<SelectLoadoutItemVi
       actions: <Widget>[
         IconButton(
           enableFeedback: false,
-          icon: textFilter.enabled ? const Icon(Icons.close) : const Icon(Icons.search),
+          icon: textFilter.enabled
+              ? const Icon(Icons.close)
+              : const Icon(Icons.search),
           onPressed: () {
             textFilter.enabled = !textFilter.enabled;
             controller.update();
@@ -98,8 +105,9 @@ class SelectLoadoutItemScreenState extends SearchScreenState<SelectLoadoutItemVi
       return TextSearchFilterWidget(controller, forceAutoFocus: true);
     }
     return Text(
-      "Select {bucketName}"
-          .translate(context, replace: {'bucketName': bucketDefinition?.displayProperties?.name ?? ""}),
+      "Select {bucketName}".translate(context, replace: {
+        'bucketName': bucketDefinition?.displayProperties?.name ?? ""
+      }),
       overflow: TextOverflow.fade,
     );
   }

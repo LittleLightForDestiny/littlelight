@@ -30,8 +30,8 @@ class ScreenShotItemPerksWidget extends BaseItemSocketsWidget {
 
 const _sectionId = "screenshot_item_perks";
 
-class ScreenShotItemPerksWidgetState<T extends ScreenShotItemPerksWidget> extends BaseItemSocketsWidgetState<T>
-    with PlugWishlistTagIconsMixin {
+class ScreenShotItemPerksWidgetState<T extends ScreenShotItemPerksWidget>
+    extends BaseItemSocketsWidgetState<T> with PlugWishlistTagIconsMixin {
   @override
   String get sectionId => _sectionId;
 
@@ -65,7 +65,8 @@ class ScreenShotItemPerksWidgetState<T extends ScreenShotItemPerksWidget> extend
           ),
         ),
         Container(
-            margin: EdgeInsets.only(top: 2 * widget.pixelSize, bottom: 16 * widget.pixelSize),
+            margin: EdgeInsets.only(
+                top: 2 * widget.pixelSize, bottom: 16 * widget.pixelSize),
             color: Theme.of(context).colorScheme.onSurface.withOpacity(.7),
             height: 3 * widget.pixelSize)
       ],
@@ -74,8 +75,9 @@ class ScreenShotItemPerksWidgetState<T extends ScreenShotItemPerksWidget> extend
 
   @override
   Widget buildSockets(BuildContext context) {
-    Iterable<Widget> children =
-        category.socketIndexes.map((socketIndex) => buildSocketPlugs(context, socketIndex)).where((w) => w != null);
+    Iterable<Widget> children = category.socketIndexes
+        .map((socketIndex) => buildSocketPlugs(context, socketIndex))
+        .where((w) => w != null);
     children = children.expand((w) => [
           w,
           Container(
@@ -109,7 +111,8 @@ class ScreenShotItemPerksWidgetState<T extends ScreenShotItemPerksWidget> extend
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
-          children: plugs.map((p) => buildPlug(context, socketIndex, p)).toList(),
+          children:
+              plugs.map((p) => buildPlug(context, socketIndex, p)).toList(),
         ));
   }
 
@@ -118,9 +121,9 @@ class ScreenShotItemPerksWidgetState<T extends ScreenShotItemPerksWidget> extend
     if (controller.reusablePlugs == null) {
       var isRandom = controller.randomizedPlugHashes(socketIndex).isNotEmpty;
       if (isRandom) {
-        return controller
-            .bungieRollPlugHashes(socketIndex)
-            .followedBy([controller.socketRandomizedSelectedPlugHash(socketIndex)]).toList();
+        return controller.bungieRollPlugHashes(socketIndex).followedBy([
+          controller.socketRandomizedSelectedPlugHash(socketIndex)
+        ]).toList();
       }
     }
     return super.socketPlugHashes(socketIndex);
@@ -132,7 +135,8 @@ class ScreenShotItemPerksWidgetState<T extends ScreenShotItemPerksWidget> extend
     var plugDef = plugDefinitions[plugItemHash];
     int equippedHash = socketEquippedPlugHash(socketIndex);
     bool isEquipped = equippedHash == plugItemHash;
-    bool isSelectedOnSocket = plugItemHash == controller.socketSelectedPlugHash(socketIndex);
+    bool isSelectedOnSocket =
+        plugItemHash == controller.socketSelectedPlugHash(socketIndex);
     bool isSelected = plugItemHash == controller.selectedPlugHash;
 
     return Container(

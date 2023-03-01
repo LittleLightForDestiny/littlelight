@@ -19,7 +19,8 @@ class LayeredSwatch extends Color {
   Color get layer3 => _swatches[SwatchLayer.Layer3] ?? layer2;
 
   LayeredSwatch get reverse {
-    final indexes = _swatches.keys.map((k) => SwatchLayer.values.indexOf(k)).toList();
+    final indexes =
+        _swatches.keys.map((k) => SwatchLayer.values.indexOf(k)).toList();
     final reversedIndex = indexes.reversed.toList();
     final _reversedSwatches = _swatches.map((key, value) {
       final index = SwatchLayer.values.indexOf(key);
@@ -126,26 +127,64 @@ class LittleLightThemeData {
   DamageTypeLayers get damageTypeLayers => DamageTypeLayers();
   final tierLayers = ItemTierLayers();
   LittleLightTextTheme get textTheme => LittleLightTextTheme(
-        largeTitle: TextStyle(fontSize: 28, fontWeight: FontWeight.w700, color: onSurfaceLayers.layer0),
-        title: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: onSurfaceLayers.layer0),
-        subtitle: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: onSurfaceLayers.layer0),
-        body: TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: onSurfaceLayers.layer0),
-        button: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: onSurfaceLayers.layer0),
-        notification: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: onSurfaceLayers.layer0),
-        itemNameHighDensity: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-        itemNameMediumDensity: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
-        caption: TextStyle(fontSize: 12, fontWeight: FontWeight.w300, color: onSurfaceLayers.layer0),
-        itemPrimaryStatHighDensity: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: onSurfaceLayers.layer0),
-        itemPrimaryStatMediumDensity:
-            TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: onSurfaceLayers.layer0),
-        itemPrimaryStatLowDensity: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: onSurfaceLayers.layer0),
+        largeTitle: TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.w700,
+            color: onSurfaceLayers.layer0),
+        title: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w500,
+            color: onSurfaceLayers.layer0),
+        subtitle: TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
+            color: onSurfaceLayers.layer0),
+        body: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w400,
+            color: onSurfaceLayers.layer0),
+        button: TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
+            color: onSurfaceLayers.layer0),
+        notification: TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
+            color: onSurfaceLayers.layer0),
+        itemNameHighDensity:
+            const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+        itemNameMediumDensity:
+            const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+        caption: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w300,
+            color: onSurfaceLayers.layer0),
+        itemPrimaryStatHighDensity: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w700,
+            color: onSurfaceLayers.layer0),
+        itemPrimaryStatMediumDensity: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+            color: onSurfaceLayers.layer0),
+        itemPrimaryStatLowDensity: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w700,
+            color: onSurfaceLayers.layer0),
       );
 
   final surfaceLayers = LayeredSwatch({
     SwatchLayer.Layer0: const Color(0xFF181818),
-    SwatchLayer.Layer1: const Color(0xFF222126),
-    SwatchLayer.Layer2: const Color(0xFF2C2933),
-    SwatchLayer.Layer3: const Color(0xFF302A3D),
+    SwatchLayer.Layer1: const Color(0xFF2C2933),
+    SwatchLayer.Layer2: const Color(0xFF44414A),
+    SwatchLayer.Layer3: const Color(0xFF55525A),
+  });
+
+  final secondarySurfaceLayers = LayeredSwatch({
+    SwatchLayer.Layer0: const Color(0xFF302537),
+    SwatchLayer.Layer1: const Color(0xFF43344C),
+    SwatchLayer.Layer2: const Color(0xFF4C3C56),
+    SwatchLayer.Layer3: const Color(0xFF554360),
   });
 
   final onSurfaceLayers = LayeredSwatch({
@@ -192,8 +231,8 @@ class LittleLightThemeData {
 
   Color get _background => surfaceLayers.layer0;
   Color get _surface => surfaceLayers.layer1;
-  Color get _secondaryContainer => surfaceLayers.layer2;
-  Color get _secondary => surfaceLayers.layer3;
+  Color get _secondaryContainer => secondarySurfaceLayers.layer0;
+  Color get _secondary => secondarySurfaceLayers.layer1;
 
   Color get _primary => primaryLayers.layer0;
   Color get _primaryContainer => primaryLayers.layer0;
@@ -213,51 +252,65 @@ class LittleLightThemeData {
       onError: onSurfaceLayers.layer0,
       error: errorLayers.layer0);
 
-  MaterialColor _getSwitchColor(Set<MaterialState> states) {
+  Color _getSwitchTrackColor(Set<MaterialState> states) {
     if (states.contains(MaterialState.selected)) {
-      return primaryLayers.reverse.asMaterialColor;
+      return primaryLayers.layer0;
     }
-    return surfaceLayers.reverse.asMaterialColor;
+    return onSurfaceLayers.layer0.withOpacity(.2);
+  }
+
+  Color _getSwitchThumbColor(Set<MaterialState> states) {
+    if (states.contains(MaterialState.selected)) {
+      return primaryLayers.layer1;
+    }
+    return onSurfaceLayers.layer0.withOpacity(.4);
   }
 
   AppBarTheme get _appBarTheme => AppBarTheme(
-        backgroundColor: surfaceLayers.layer1,
+        backgroundColor: secondarySurfaceLayers.layer0,
       );
 
   SwitchThemeData get _switchTheme => SwitchThemeData(
         splashRadius: 14,
-        overlayColor: MaterialStateColor.resolveWith((states) => _getSwitchColor(states).withOpacity(.4)),
-        trackColor: MaterialStateColor.resolveWith((states) => _getSwitchColor(states).shade700),
-        thumbColor: MaterialStateColor.resolveWith((states) => _getSwitchColor(states).shade400),
+        overlayColor: MaterialStateColor.resolveWith(
+            (states) => onSurfaceLayers.layer0.withOpacity(.1)),
+        trackColor: MaterialStateColor.resolveWith(
+            (states) => _getSwitchTrackColor(states)),
+        thumbColor: MaterialStateColor.resolveWith(
+            (states) => _getSwitchThumbColor(states)),
       );
 
-  TextTheme get _textTheme =>
-      TextTheme(displayMedium: textTheme.title, bodyMedium: textTheme.body, labelLarge: textTheme.button);
+  TextTheme get _textTheme => TextTheme(
+      displayMedium: textTheme.title,
+      bodyMedium: textTheme.body,
+      labelLarge: textTheme.button);
 
   CardTheme get _cardTheme => CardTheme(color: colorScheme.surface);
 
-  ThemeData get materialTheme => ThemeData.from(colorScheme: colorScheme).copyWith(
-      primaryColor: primaryLayers,
-      appBarTheme: _appBarTheme,
-      cardColor: _cardTheme.color,
-      cardTheme: _cardTheme,
-      textButtonTheme: TextButtonThemeData(
-          style: ButtonStyle(
-        foregroundColor: MaterialStateColor.resolveWith((states) => primaryLayers.layer3),
-      )),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: primaryLayers,
-          disabledForegroundColor: primaryLayers,
-          disabledBackgroundColor: primaryLayers,
-        ),
-      ),
-      toggleButtonsTheme: ToggleButtonsThemeData(
-        selectedColor: primaryLayers.layer1,
-        color: surfaceLayers.layer2,
-      ),
-      textTheme: _textTheme,
-      switchTheme: _switchTheme);
+  ThemeData get materialTheme =>
+      ThemeData.from(colorScheme: colorScheme).copyWith(
+          primaryColor: primaryLayers,
+          appBarTheme: _appBarTheme,
+          cardColor: _cardTheme.color,
+          cardTheme: _cardTheme,
+          textButtonTheme: TextButtonThemeData(
+              style: ButtonStyle(
+            foregroundColor: MaterialStateColor.resolveWith(
+                (states) => primaryLayers.layer3),
+          )),
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: primaryLayers,
+              disabledForegroundColor: primaryLayers,
+              disabledBackgroundColor: primaryLayers,
+            ),
+          ),
+          toggleButtonsTheme: ToggleButtonsThemeData(
+            selectedColor: primaryLayers.layer1,
+            color: surfaceLayers.layer2,
+          ),
+          textTheme: _textTheme,
+          switchTheme: _switchTheme);
 }
 
 class LittleLightTheme extends StatelessWidget {
@@ -273,9 +326,11 @@ class LittleLightTheme extends StatelessWidget {
   Widget build(BuildContext context) {
     return Provider<LittleLightThemeData>(
         create: (context) => theme,
-        builder: (context, child) => Theme(data: theme.materialTheme, child: child ?? Container()),
+        builder: (context, child) =>
+            Theme(data: theme.materialTheme, child: child ?? Container()),
         child: child);
   }
 
-  static LittleLightThemeData of(BuildContext context) => context.read<LittleLightThemeData>();
+  static LittleLightThemeData of(BuildContext context) =>
+      context.read<LittleLightThemeData>();
 }

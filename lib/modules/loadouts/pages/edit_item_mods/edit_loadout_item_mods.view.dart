@@ -14,8 +14,10 @@ import 'package:provider/provider.dart';
 const emptyLoadoutModHash = 1219897208;
 
 class EditLoadoutItemModsView extends StatelessWidget {
-  EditLoadoutItemModsBloc _bloc(BuildContext context) => context.read<EditLoadoutItemModsBloc>();
-  EditLoadoutItemModsBloc _state(BuildContext context) => context.watch<EditLoadoutItemModsBloc>();
+  EditLoadoutItemModsBloc _bloc(BuildContext context) =>
+      context.read<EditLoadoutItemModsBloc>();
+  EditLoadoutItemModsBloc _state(BuildContext context) =>
+      context.watch<EditLoadoutItemModsBloc>();
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +52,8 @@ class EditLoadoutItemModsView extends StatelessWidget {
     );
   }
 
-  Widget buildCategory(BuildContext context, DestinyItemSocketCategoryDefinition category) {
+  Widget buildCategory(
+      BuildContext context, DestinyItemSocketCategoryDefinition category) {
     final categoryHash = category.socketCategoryHash;
     if (categoryHash == null) return Container();
     return Column(children: <Widget>[
@@ -92,7 +95,8 @@ class EditLoadoutItemModsView extends StatelessWidget {
     }
   }
 
-  Widget buildCategoryContents(BuildContext context, DestinyItemSocketCategoryDefinition category) {
+  Widget buildCategoryContents(
+      BuildContext context, DestinyItemSocketCategoryDefinition category) {
     bool isCategorySelected = _state(context).isCategorySelected(category);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -101,13 +105,16 @@ class EditLoadoutItemModsView extends StatelessWidget {
         AnimatedSize(
           alignment: Alignment.topLeft,
           duration: const Duration(milliseconds: 300),
-          child: isCategorySelected ? buildSocketPlugs(context, category) : Container(),
+          child: isCategorySelected
+              ? buildSocketPlugs(context, category)
+              : Container(),
         ),
       ],
     );
   }
 
-  Widget buildCategorySockets(BuildContext context, DestinyItemSocketCategoryDefinition category) {
+  Widget buildCategorySockets(
+      BuildContext context, DestinyItemSocketCategoryDefinition category) {
     final indexes = _state(context).availableIndexesForCategory(category);
     if (indexes == null) return Container();
     return Container(
@@ -116,7 +123,8 @@ class EditLoadoutItemModsView extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
-          children: indexes.map((index) => buildSocket(context, index)).toList(),
+          children:
+              indexes.map((index) => buildSocket(context, index)).toList(),
         ),
       ),
     );
@@ -154,7 +162,8 @@ class EditLoadoutItemModsView extends StatelessWidget {
   }
 
   Widget buildEmptySlot(BuildContext context, int socketIndex) {
-    final equippedPlugHash = _state(context).socketEquippedPlugHash(socketIndex);
+    final equippedPlugHash =
+        _state(context).socketEquippedPlugHash(socketIndex);
     return SizedBox(
       width: 64,
       height: 64,
@@ -174,7 +183,8 @@ class EditLoadoutItemModsView extends StatelessWidget {
     );
   }
 
-  Widget buildSocketPlugs(BuildContext context, DestinyItemSocketCategoryDefinition category) {
+  Widget buildSocketPlugs(
+      BuildContext context, DestinyItemSocketCategoryDefinition category) {
     final plugs = _state(context).selectedSocketPlugs();
     final socketIndex = _state(context).selectedSocket;
 
@@ -182,7 +192,8 @@ class EditLoadoutItemModsView extends StatelessWidget {
     if (plugs.isEmpty) return Container();
     if (socketIndex == null) return Container();
 
-    final selectedSocketDefaultPlug = _state(context).selectedSocketDefaultPlugHash;
+    final selectedSocketDefaultPlug =
+        _state(context).selectedSocketDefaultPlugHash;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: Container(
@@ -205,11 +216,15 @@ class EditLoadoutItemModsView extends StatelessWidget {
           PaginatedPlugGridView.withExpectedItemSize(
             plugs,
             itemBuilder: (plugHash) {
-              final isSelected = _state(context).isPlugSelectedForSocket(plugHash, socketIndex);
-              final isEquipped = _state(context).isPlugEquippedForSocket(plugHash, socketIndex);
+              final isSelected = _state(context)
+                  .isPlugSelectedForSocket(plugHash, socketIndex);
+              final isEquipped = _state(context)
+                  .isPlugEquippedForSocket(plugHash, socketIndex);
               if (plugHash == null) {
-                return ModGridItem(emptyLoadoutModHash, canEquip: true, selected: isSelected, equipped: isEquipped,
-                    onTap: () {
+                return ModGridItem(emptyLoadoutModHash,
+                    canEquip: true,
+                    selected: isSelected,
+                    equipped: isEquipped, onTap: () {
                   if (isSelected) {
                     _bloc(context).unselectSockets();
                   } else {
@@ -226,7 +241,8 @@ class EditLoadoutItemModsView extends StatelessWidget {
                   if (isSelected) {
                     _bloc(context).unselectSockets();
                   } else {
-                    _bloc(context).selectPlugHashForSocket(plugHash, socketIndex);
+                    _bloc(context)
+                        .selectPlugHashForSocket(plugHash, socketIndex);
                   }
                 },
               );
@@ -250,7 +266,8 @@ class EditLoadoutItemModsView extends StatelessWidget {
             Positioned.fill(child: buildAppBarBackground(context)),
             Container(
               constraints: const BoxConstraints(minWidth: double.infinity),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8).copyWith(bottom: 8 + paddingBottom),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8)
+                  .copyWith(bottom: 8 + paddingBottom),
               child: ElevatedButton(
                   child: Text("Update Mods".translate(context)),
                   onPressed: () {

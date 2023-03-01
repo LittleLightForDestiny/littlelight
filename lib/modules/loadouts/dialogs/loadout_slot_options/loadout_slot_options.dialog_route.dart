@@ -5,8 +5,10 @@ import 'loadout_slot_options.dialog.dart';
 
 enum LoadoutSlotOptionsResponse { Details, Remove, EditMods }
 
-class LoadoutSlotOptionsDialogRoute extends DialogRoute<LoadoutSlotOptionsResponse?> {
-  LoadoutSlotOptionsDialogRoute(BuildContext context, {required LoadoutIndexItem item})
+class LoadoutSlotOptionsDialogRoute
+    extends DialogRoute<LoadoutSlotOptionsResponse?> {
+  LoadoutSlotOptionsDialogRoute(BuildContext context,
+      {required LoadoutIndexItem item})
       : super(
           context: context,
           builder: (context) => LoadoutSlotOptionsDialog(),

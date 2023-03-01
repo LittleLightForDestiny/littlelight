@@ -20,7 +20,8 @@ class LittleLightWishlistParser implements WishlistBaseParser {
         .toList();
   }
 
-  List<Set<int>> parsePlugs(List<List<int>> plugs) => plugs.map((p) => Set<int>.from(p)).toList();
+  List<Set<int>> parsePlugs(List<List<int>> plugs) =>
+      plugs.map((p) => Set<int>.from(p)).toList();
 
   Set<WishlistTag> parseTags(List<String> tags) {
     return tags

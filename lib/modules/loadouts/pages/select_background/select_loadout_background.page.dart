@@ -8,7 +8,8 @@ class SelectLoadoutBackgroundPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => SelectLoadoutBackgroundBloc(context)),
+        ChangeNotifierProvider(
+            create: (context) => SelectLoadoutBackgroundBloc(context)),
       ],
       child: const SelectLoadoutBackgroundView(),
     );

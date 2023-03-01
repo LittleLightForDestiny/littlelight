@@ -10,7 +10,8 @@ typedef ExtractTextFromData = String Function(dynamic data);
 class ExpiryDateWidget extends StatefulWidget {
   final String date;
   final double fontSize;
-  const ExpiryDateWidget(this.date, {Key key, this.fontSize = 12}) : super(key: key);
+  const ExpiryDateWidget(this.date, {Key key, this.fontSize = 12})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -36,13 +37,17 @@ class ExpiryDateWidgetState extends State<ExpiryDateWidget> {
       return;
     }
 
-    expiresIn = timeago.format(expiry, allowFromNow: true, locale: context.currentLanguage);
+    expiresIn = timeago.format(expiry,
+        allowFromNow: true, locale: context.currentLanguage);
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    var style = TextStyle(color: Colors.red.shade300, fontSize: widget.fontSize, fontStyle: FontStyle.italic);
+    var style = TextStyle(
+        color: Colors.red.shade300,
+        fontSize: widget.fontSize,
+        fontStyle: FontStyle.italic);
     if (expired) {
       return TranslatedTextWidget(
         "Expired",

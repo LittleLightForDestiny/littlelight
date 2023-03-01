@@ -34,7 +34,11 @@ class ProgressScreen extends StatefulWidget {
 const _page = LittleLightPersistentPage.Progress;
 
 class ProgressScreenState extends State<ProgressScreen>
-    with TickerProviderStateMixin, UserSettingsConsumer, AnalyticsConsumer, ProfileConsumer {
+    with
+        TickerProviderStateMixin,
+        UserSettingsConsumer,
+        AnalyticsConsumer,
+        ProfileConsumer {
   TabController charTabController;
   TabController typeTabController;
 
@@ -86,7 +90,12 @@ class ProgressScreenState extends State<ProgressScreen>
             bottom: bottomOffset,
             child: buildTypeTabView(context),
           ),
-          Positioned(top: 0, left: 0, right: 0, height: topOffset + 16, child: buildCharacterHeaderTabView(context)),
+          Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              height: topOffset + 16,
+              child: buildCharacterHeaderTabView(context)),
           Positioned(
             top: paddingTop,
             width: kToolbarHeight,
@@ -109,8 +118,13 @@ class ProgressScreenState extends State<ProgressScreen>
             right: 0,
             child: buildTypeTabBar(context),
           ),
-          const InventoryNotificationWidget(key: Key('inventory_notification_widget')),
-          Positioned(bottom: screenPadding.bottom, left: 0, right: 0, child: const SelectedItemsWidget()),
+          const InventoryNotificationWidget(
+              key: Key('inventory_notification_widget')),
+          Positioned(
+              bottom: screenPadding.bottom,
+              left: 0,
+              right: 0,
+              child: const SelectedItemsWidget()),
         ],
       ),
     );
@@ -121,11 +135,14 @@ class ProgressScreenState extends State<ProgressScreen>
   }
 
   Widget buildTypeTabView(BuildContext context) {
-    return TabBarView(controller: typeTabController, children: buildTypeTabs(context));
+    return TabBarView(
+        controller: typeTabController, children: buildTypeTabs(context));
   }
 
   List<Widget> buildTypeTabs(BuildContext context) {
-    return [0, 1, 2].map((index) => buildCharacterTabView(context, index)).toList();
+    return [0, 1, 2]
+        .map((index) => buildCharacterTabView(context, index))
+        .toList();
   }
 
   Widget buildCharacterHeaderTabView(BuildContext context) {
@@ -135,7 +152,8 @@ class ProgressScreenState extends State<ProgressScreen>
         children: characters
             .map((character) => TabHeaderWidget(
                   character,
-                  key: Key("${character.character.emblemHash}_${character.characterId}"),
+                  key: Key(
+                      "${character.character.emblemHash}_${character.characterId}"),
                 ))
             .toList());
   }
@@ -165,21 +183,28 @@ class ProgressScreenState extends State<ProgressScreen>
               child: TabBar(
                   labelPadding: const EdgeInsets.all(4),
                   indicator: BoxDecoration(
-                      border: Border(top: BorderSide(width: 2, color: Theme.of(context).colorScheme.onSurface))),
+                      border: Border(
+                          top: BorderSide(
+                              width: 2,
+                              color: Theme.of(context).colorScheme.onSurface))),
                   controller: typeTabController,
                   tabs: [
                 Text("Milestones".translate(context).toUpperCase(),
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 13)),
                 Text("Pursuits".translate(context).toUpperCase(),
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 13)),
                 Text("Ranks".translate(context).toUpperCase(),
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13))
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 13))
               ])),
           const SizedBox(width: 40, child: RefreshButtonWidget())
         ]));
   }
 
-  Widget buildContentTab(BuildContext context, String characterId, int tabIndex) {
+  Widget buildContentTab(
+      BuildContext context, String characterId, int tabIndex) {
     if (tabIndex == 0) {
       return CharacterMilestonesListWidget(characterId: characterId);
     }
@@ -193,7 +218,8 @@ class ProgressScreenState extends State<ProgressScreen>
     return Row(children: [
       IconButton(
           enableFeedback: false,
-          icon: Icon(FontAwesomeIcons.search, color: Theme.of(context).colorScheme.onSurface),
+          icon: Icon(FontAwesomeIcons.search,
+              color: Theme.of(context).colorScheme.onSurface),
           onPressed: () {
             var char = characters[charTabController.index];
             var types = [PseudoItemType.Pursuits];
@@ -208,7 +234,8 @@ class ProgressScreenState extends State<ProgressScreen>
                           PseudoItemTypeFilter(types, types),
                         ],
                         defaultSorting: userSettings.pursuitOrdering,
-                        availableSorters: ItemSortParameter.availablePursuitSorters),
+                        availableSorters:
+                            ItemSortParameter.availablePursuitSorters),
                   ),
                 ));
           }),

@@ -9,7 +9,9 @@ class NotificationsBloc extends ChangeNotifier {
   NotificationsBloc();
 
   T createNotification<T extends BaseNotificationAction>(T action) {
-    final existing = _actions.whereType<T>().firstWhereOrNull((element) => action.id == element.id);
+    final existing = _actions
+        .whereType<T>()
+        .firstWhereOrNull((element) => action.id == element.id);
     if (existing != null) return existing;
     action.addListener(() {
       if (action.shouldDismiss) _actions.remove(action);

@@ -7,7 +7,8 @@ abstract class ItemDetailsPageArgumentsBase {
   final int itemHash;
   final String? uniqueId;
   final bool hideItemManagement;
-  ItemDetailsPageArgumentsBase(this.itemHash, {this.uniqueId, this.hideItemManagement = false});
+  ItemDetailsPageArgumentsBase(this.itemHash,
+      {this.uniqueId, this.hideItemManagement = false});
 }
 
 class ItemDetailsPageArguments extends ItemDetailsPageArgumentsBase {
@@ -57,7 +58,9 @@ class ItemDetailsPageRoute extends MaterialPageRoute {
   ItemDetailsPageRoute._({
     Key? key,
     required RouteSettings settings,
-  }) : super(settings: settings, builder: (context) => const ItemDetailsPageContainer());
+  }) : super(
+            settings: settings,
+            builder: (context) => const ItemDetailsPageContainer());
 
   factory ItemDetailsPageRoute({
     required ItemWithOwner item,
@@ -77,7 +80,8 @@ class ItemDetailsPageRoute extends MaterialPageRoute {
   }) =>
       ItemDetailsPageRoute._(
         key: key,
-        settings: RouteSettings(arguments: ItemDetailsPageArguments(item: item)),
+        settings:
+            RouteSettings(arguments: ItemDetailsPageArguments(item: item)),
       );
 
   factory ItemDetailsPageRoute.definition({
@@ -87,7 +91,8 @@ class ItemDetailsPageRoute extends MaterialPageRoute {
   }) =>
       ItemDetailsPageRoute._(
         key: key,
-        settings: RouteSettings(arguments: DefinitionDetailsPageArguments(itemHash: hash)),
+        settings: RouteSettings(
+            arguments: DefinitionDetailsPageArguments(itemHash: hash)),
       );
 
   factory ItemDetailsPageRoute.fromVendor({

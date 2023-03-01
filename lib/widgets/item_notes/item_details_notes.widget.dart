@@ -21,7 +21,12 @@ class ItemDetailsNotesWidget extends BaseDestinyStatefulItemWidget {
       Key key,
       this.onUpdate,
       String characterId})
-      : super(item: item, definition: definition, instanceInfo: instanceInfo, key: key, characterId: characterId);
+      : super(
+            item: item,
+            definition: definition,
+            instanceInfo: instanceInfo,
+            key: key,
+            characterId: characterId);
 
   @override
   ItemDetailsNotesWidgetState createState() {
@@ -31,7 +36,8 @@ class ItemDetailsNotesWidget extends BaseDestinyStatefulItemWidget {
 
 const _sectionId = "item_tag_notes";
 
-class ItemDetailsNotesWidgetState extends BaseDestinyItemState<ItemDetailsNotesWidget>
+class ItemDetailsNotesWidgetState
+    extends BaseDestinyItemState<ItemDetailsNotesWidget>
     with VisibleSectionMixin, ItemNotesConsumer {
   ItemNotes notes;
 
@@ -70,7 +76,8 @@ class ItemDetailsNotesWidgetState extends BaseDestinyItemState<ItemDetailsNotesW
     return Container(
         padding: const EdgeInsets.all(8),
         child: Column(children: <Widget>[
-          getHeader(Text("Item Notes".translate(context).toUpperCase(), style: const TextStyle(fontWeight: FontWeight.bold))),
+          getHeader(Text("Item Notes".translate(context).toUpperCase(),
+              style: const TextStyle(fontWeight: FontWeight.bold))),
           visible ? Container(height: 8) : Container(),
           visible ? buildCustomName(context) : Container(),
           visible ? Container(height: 8) : Container(),
@@ -86,7 +93,9 @@ class ItemDetailsNotesWidgetState extends BaseDestinyItemState<ItemDetailsNotesW
         child: Container(
             padding: const EdgeInsets.all(8),
             color: Colors.black54,
-            child: customName != null ? Text(customName) : Text("Not set".translate(context))),
+            child: customName != null
+                ? Text(customName)
+                : Text("Not set".translate(context))),
       ),
       Container(width: 8),
       iconButton(
@@ -117,7 +126,9 @@ class ItemDetailsNotesWidgetState extends BaseDestinyItemState<ItemDetailsNotesW
               key: Key(notesText),
               padding: const EdgeInsets.all(8),
               color: Colors.black54,
-              child: notesText != null ? Text(notesText) : Text("No notes added yet".translate(context)))),
+              child: notesText != null
+                  ? Text(notesText)
+                  : Text("No notes added yet".translate(context)))),
       Container(
         width: 8,
       ),
@@ -149,12 +160,15 @@ class ItemDetailsNotesWidgetState extends BaseDestinyItemState<ItemDetailsNotesW
         color: color,
         child: InkWell(
           onTap: onPressed,
-          child: Container(padding: const EdgeInsets.all(4), child: CenterIconWorkaround(icon, size: 22)),
+          child: Container(
+              padding: const EdgeInsets.all(4),
+              child: CenterIconWorkaround(icon, size: 22)),
         ));
   }
 
   openEditNameDialog(BuildContext context) async {
-    final nickname = await Navigator.of(context).push(SetItemNicknameDialogRoute(context, notes.customName));
+    final nickname = await Navigator.of(context)
+        .push(SetItemNicknameDialogRoute(context, notes.customName));
     if (nickname != null) {
       notes.customName = nickname;
       save();
@@ -162,7 +176,8 @@ class ItemDetailsNotesWidgetState extends BaseDestinyItemState<ItemDetailsNotesW
   }
 
   openEditNotesDialog(BuildContext context) async {
-    final updatedNotes = await Navigator.of(context).push(SetItemNotesDialogRoute(context, notes.notes));
+    final updatedNotes = await Navigator.of(context)
+        .push(SetItemNotesDialogRoute(context, notes.notes));
     if (updatedNotes != null) {
       notes.notes = updatedNotes;
       save();

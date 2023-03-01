@@ -14,6 +14,7 @@ class ConfirmExitDialog extends LittleLightYesNoDialog {
   ConfirmExitDialog()
       : super(
           titleBuilder: (context) => TranslatedTextWidget('Exit'),
-          bodyBuilder: (context) => TranslatedTextWidget('Do you really want to exit Little Light?'),
+          bodyBuilder: (context) =>
+              TranslatedTextWidget('Do you really want to exit Little Light?'),
         );
 }

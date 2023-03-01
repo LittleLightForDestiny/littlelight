@@ -8,7 +8,8 @@ import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/widgets/item_list/items/base/base_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/subclass/subclass_properties.mixin.dart';
 
-class SubclassInventoryItemWidget extends BaseInventoryItemWidget with SubclassPropertiesMixin, ProfileConsumer {
+class SubclassInventoryItemWidget extends BaseInventoryItemWidget
+    with SubclassPropertiesMixin, ProfileConsumer {
   SubclassInventoryItemWidget(
     DestinyItemComponent item,
     DestinyInventoryItemDefinition definition,

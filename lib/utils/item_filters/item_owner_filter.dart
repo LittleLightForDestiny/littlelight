@@ -25,7 +25,8 @@ class ItemOwnerFilter extends BaseItemFilter<Set<String>> {
   }
 
   @override
-  bool filterItem(ItemWithOwner item, {Map<int, DestinyInventoryItemDefinition> definitions}) {
+  bool filterItem(ItemWithOwner item,
+      {Map<int, DestinyInventoryItemDefinition> definitions}) {
     if (value.isEmpty) return true;
     if (value.contains(item?.ownerId)) {
       return true;

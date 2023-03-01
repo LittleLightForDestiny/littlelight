@@ -31,7 +31,8 @@ class TabHeaderWidgetState extends State<TabHeaderWidget>
   @override
   void initState() {
     if (widget.character != null) {
-      progression = profile.getCharacterProgression(widget.character.characterId);
+      progression =
+          profile.getCharacterProgression(widget.character.characterId);
     }
 
     super.initState();
@@ -40,7 +41,8 @@ class TabHeaderWidgetState extends State<TabHeaderWidget>
 
   getDefinitions() async {
     emblemDefinition =
-        await manifest.getDefinition<DestinyInventoryItemDefinition>(widget.character.character.emblemHash);
+        await manifest.getDefinition<DestinyInventoryItemDefinition>(
+            widget.character.character.emblemHash);
     if (mounted) {
       setState(() {});
     }
@@ -88,8 +90,10 @@ class TabHeaderWidgetState extends State<TabHeaderWidget>
 
   Widget emblemBackground(BuildContext context) {
     Shimmer shimmer = Shimmer.fromColors(
-        baseColor: Color.lerp(Theme.of(context).backgroundColor, Theme.of(context).primaryColor, .1),
-        highlightColor: Color.lerp(Theme.of(context).backgroundColor, Theme.of(context).primaryColor, .3),
+        baseColor: Color.lerp(Theme.of(context).backgroundColor,
+            Theme.of(context).primaryColor, .1),
+        highlightColor: Color.lerp(Theme.of(context).backgroundColor,
+            Theme.of(context).primaryColor, .3),
         child: Container(color: Theme.of(context).colorScheme.onSurface));
     double height = getTopPadding(context) + kToolbarHeight;
     return Container(
@@ -105,14 +109,19 @@ class TabHeaderWidgetState extends State<TabHeaderWidget>
   }
 
   Widget powerBar(BuildContext context) {
-    DestinyProgression levelProg = progression.progressions["${destinySettings.seasonalRankProgressionHash}"];
-    DestinyProgression overLevelProg =
-        progression.progressions["${destinySettings.seasonalPrestigeRankProgressionHash}"];
+    DestinyProgression levelProg = progression
+        .progressions["${destinySettings.seasonalRankProgressionHash}"];
+    DestinyProgression overLevelProg = progression
+        .progressions["${destinySettings.seasonalPrestigeRankProgressionHash}"];
     Color fg = Colors.cyan.shade300;
     Color bg = Color.lerp(Colors.black, fg, .6);
     Color shine = Colors.cyan.shade100;
-    DestinyProgression currentProg = (levelProg?.level ?? 0) < (levelProg?.levelCap ?? 0) ? levelProg : overLevelProg;
-    double completed = (currentProg?.progressToNextLevel ?? 0) / (currentProg?.nextLevelAt ?? 1);
+    DestinyProgression currentProg =
+        (levelProg?.level ?? 0) < (levelProg?.levelCap ?? 0)
+            ? levelProg
+            : overLevelProg;
+    double completed = (currentProg?.progressToNextLevel ?? 0) /
+        (currentProg?.nextLevelAt ?? 1);
     return Container(
       height: 2,
       color: bg,

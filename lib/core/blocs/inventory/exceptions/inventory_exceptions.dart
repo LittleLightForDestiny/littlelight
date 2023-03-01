@@ -9,6 +9,8 @@ abstract class BaseInventoryException implements Exception {
 class SubstituteNotFoundException extends BaseInventoryException {
   @override
   String getMessage(BuildContext context) {
-    return context.translate("Couldn't find an appropriate substitute for the current item", useReadContext: true);
+    return context.translate(
+        "Couldn't find an appropriate substitute for the current item",
+        useReadContext: true);
   }
 }

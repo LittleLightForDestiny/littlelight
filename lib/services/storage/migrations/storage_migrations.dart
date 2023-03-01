@@ -25,7 +25,8 @@ class Version {
     if (splitted.length < 3) {
       return Version(0, 0, 0);
     }
-    return Version(splitted.safeElementAt(0) ?? 0, splitted.safeElementAt(1) ?? 0, splitted.safeElementAt(2) ?? 0);
+    return Version(splitted.safeElementAt(0) ?? 0,
+        splitted.safeElementAt(1) ?? 0, splitted.safeElementAt(2) ?? 0);
   }
 
   operator >(Version version) {
@@ -54,7 +55,9 @@ class Version {
       version = Version.fromString(version);
     }
     if (version is Version) {
-      return major == version.major && minor == version.minor && patch == version.patch;
+      return major == version.major &&
+          minor == version.minor &&
+          patch == version.patch;
     }
     return false;
   }
@@ -71,7 +74,8 @@ abstract class StorageMigration {
   static runAllMigrations() async {
     final _prefs = await SharedPreferences.getInstance();
     final versionValue = _prefs.get("currentVersion");
-    final lastVersion = Version.fromString(versionValue is String ? versionValue : "");
+    final lastVersion =
+        Version.fromString(versionValue is String ? versionValue : "");
     final info = await PackageInfo.fromPlatform();
     final currentVersion = Version.fromString(info.version);
     if (lastVersion == currentVersion) {
@@ -143,14 +147,16 @@ abstract class StorageMigration {
     }
   }
 
-  Future<void> moveFileOnSubdir(String folderRoot, String oldFileName, String newFileName) async {
+  Future<void> moveFileOnSubdir(
+      String folderRoot, String oldFileName, String newFileName) async {
     try {
       final folder = Directory(folderRoot).listSync();
       for (final subfolder in folder) {
         final stat = await subfolder.stat();
         if (stat.type != FileSystemEntityType.directory) continue;
         try {
-          await File("${subfolder.path}/$oldFileName").rename("${subfolder.path}/$newFileName");
+          await File("${subfolder.path}/$oldFileName")
+              .rename("${subfolder.path}/$newFileName");
         } catch (e) {
           print(e);
         }

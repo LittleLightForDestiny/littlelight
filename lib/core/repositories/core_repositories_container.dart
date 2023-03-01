@@ -6,7 +6,8 @@ class CoreRepositoriesContainer extends MultiProvider {
   CoreRepositoriesContainer()
       : super(
           providers: [
-            Provider<UserSettingsRepository>(create: (context) => getInjectedUserSettings()),
+            Provider<UserSettingsRepository>(
+                create: (context) => getInjectedUserSettings()),
           ],
         );
 }

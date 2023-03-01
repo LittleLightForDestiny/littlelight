@@ -21,8 +21,13 @@ import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:provider/provider.dart';
 
 class MultiselectManagementBlockWidget extends StatelessWidget
-    with ProfileConsumer, InventoryConsumer, ManifestConsumer, SelectionConsumer {
-  InventoryBloc inventoryBloc(BuildContext context) => context.read<InventoryBloc>();
+    with
+        ProfileConsumer,
+        InventoryConsumer,
+        ManifestConsumer,
+        SelectionConsumer {
+  InventoryBloc inventoryBloc(BuildContext context) =>
+      context.read<InventoryBloc>();
   final List<ItemWithOwner> items;
   MultiselectManagementBlockWidget({Key key, this.items})
       : super(
@@ -36,22 +41,28 @@ class MultiselectManagementBlockWidget extends StatelessWidget
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           transferDestinations.isNotEmpty
-              ? Expanded(child: buildEquippingBlock(context, "Transfer", transferDestinations, Alignment.centerLeft))
+              ? Expanded(
+                  child: buildEquippingBlock(context, "Transfer",
+                      transferDestinations, Alignment.centerLeft))
               : null,
           equipDestinations.isNotEmpty
-              ? buildEquippingBlock(context, "Equip", equipDestinations, Alignment.centerRight)
+              ? buildEquippingBlock(
+                  context, "Equip", equipDestinations, Alignment.centerRight)
               : null
         ].where((value) => value != null).toList(),
       ),
     );
   }
 
-  Widget buildEquippingBlock(BuildContext context, String title, List<TransferDestination> destinations,
+  Widget buildEquippingBlock(BuildContext context, String title,
+      List<TransferDestination> destinations,
       [Alignment align = Alignment.centerRight]) {
     return Stack(children: <Widget>[
       Positioned(right: 0, left: 0, child: buildLabel(context, title, align)),
       Column(
-        crossAxisAlignment: align == Alignment.centerRight ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        crossAxisAlignment: align == Alignment.centerRight
+            ? CrossAxisAlignment.end
+            : CrossAxisAlignment.start,
         children: <Widget>[
           Opacity(opacity: 0, child: buildLabel(context, title)),
           buttons(context, destinations, align)
@@ -60,7 +71,8 @@ class MultiselectManagementBlockWidget extends StatelessWidget
     ]);
   }
 
-  Widget buildLabel(BuildContext context, String title, [Alignment align = Alignment.centerRight]) {
+  Widget buildLabel(BuildContext context, String title,
+      [Alignment align = Alignment.centerRight]) {
     return Container(
         constraints: const BoxConstraints(minWidth: 100),
         padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -71,7 +83,8 @@ class MultiselectManagementBlockWidget extends StatelessWidget
               child: TranslatedTextWidget(
                 title,
                 uppercase: true,
-                style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
               )),
         ));
   }
@@ -126,19 +139,24 @@ class MultiselectManagementBlockWidget extends StatelessWidget
     return characters
         .where((c) {
           return items.any((i) {
-            var def = manifest.getDefinitionFromCache<DestinyInventoryItemDefinition>(i?.item?.itemHash);
+            var def =
+                manifest.getDefinitionFromCache<DestinyInventoryItemDefinition>(
+                    i?.item?.itemHash);
             if (def?.equippable == false) return false;
-            if (def?.nonTransferrable == true && i?.ownerId != c.characterId) return false;
-            if (![c?.character?.classType, DestinyClass.Unknown].contains(def?.classType)) return false;
+            if (def?.nonTransferrable == true && i?.ownerId != c.characterId)
+              return false;
+            if (![c?.character?.classType, DestinyClass.Unknown]
+                .contains(def?.classType)) return false;
 
             var instanceInfo = profile.getInstanceInfo(i?.item?.itemInstanceId);
-            if (instanceInfo?.isEquipped == true && i.ownerId == c.characterId) return false;
+            if (instanceInfo?.isEquipped == true && i.ownerId == c.characterId)
+              return false;
 
             return true;
           });
         })
-        .map((c) =>
-            TransferDestination(ItemDestination.Character, action: InventoryAction.Equip, characterId: c.characterId))
+        .map((c) => TransferDestination(ItemDestination.Character,
+            action: InventoryAction.Equip, characterId: c.characterId))
         .toList();
   }
 
@@ -152,13 +170,17 @@ class MultiselectManagementBlockWidget extends StatelessWidget
     Set<String> destinationCharacterIds = {};
 
     for (var i in items) {
-      var def = manifest.getDefinitionFromCache<DestinyInventoryItemDefinition>(i.item.itemHash);
-      var bucketDef = manifest.getDefinitionFromCache<DestinyInventoryBucketDefinition>(def?.inventory?.bucketTypeHash);
+      var def = manifest.getDefinitionFromCache<DestinyInventoryItemDefinition>(
+          i.item.itemHash);
+      var bucketDef =
+          manifest.getDefinitionFromCache<DestinyInventoryBucketDefinition>(
+              def?.inventory?.bucketTypeHash);
       var isOnPostmaster = i.item.bucketHash == InventoryBucket.lostItems;
       var isOnVault = i.item.bucketHash == InventoryBucket.general;
       var canBePulled = !(def?.doesPostmasterPullHaveSideEffects ?? false);
       var lockedOnPostmaster = (isOnPostmaster && !canBePulled);
-      var canBeTransferred = !lockedOnPostmaster && !(def?.nonTransferrable ?? false);
+      var canBeTransferred =
+          !lockedOnPostmaster && !(def?.nonTransferrable ?? false);
       var isAccountItem = bucketDef?.scope == BucketScope.Account;
       hasTransferrables = hasTransferrables || canBeTransferred;
       hasPullables = hasPullables || (canBePulled && isOnPostmaster);
@@ -170,19 +192,25 @@ class MultiselectManagementBlockWidget extends StatelessWidget
         destinationCharacterIds.add(i.ownerId);
       }
       if (canBeTransferred) {
-        destinationCharacterIds.addAll(allCharacterIds.where((id) => id != i.ownerId));
+        destinationCharacterIds
+            .addAll(allCharacterIds.where((id) => id != i.ownerId));
       }
     }
 
     List<TransferDestination> destinations = destinationCharacterIds
-        .map((id) => TransferDestination(ItemDestination.Character, characterId: id, action: InventoryAction.Transfer))
+        .map((id) => TransferDestination(ItemDestination.Character,
+            characterId: id, action: InventoryAction.Transfer))
         .toList();
 
-    if ((hasTransferrables || hasPullables) && destinations.isEmpty && (hasItemsOnVault || hasItemsOnPostmaster)) {
-      destinations.add(TransferDestination(ItemDestination.Inventory, action: InventoryAction.Transfer));
+    if ((hasTransferrables || hasPullables) &&
+        destinations.isEmpty &&
+        (hasItemsOnVault || hasItemsOnPostmaster)) {
+      destinations.add(TransferDestination(ItemDestination.Inventory,
+          action: InventoryAction.Transfer));
     }
     if (hasVaultables) {
-      destinations.add(TransferDestination(ItemDestination.Vault, action: InventoryAction.Transfer));
+      destinations.add(TransferDestination(ItemDestination.Vault,
+          action: InventoryAction.Transfer));
     }
     return destinations;
   }

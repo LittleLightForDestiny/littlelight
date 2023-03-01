@@ -8,7 +8,8 @@ import 'package:little_light/utils/item_with_owner.dart';
 
 import 'base_item_filter.dart';
 
-class WishlistTagFilter extends BaseItemFilter<Set<WishlistTag>> with WishlistsConsumer, ProfileConsumer {
+class WishlistTagFilter extends BaseItemFilter<Set<WishlistTag>>
+    with WishlistsConsumer, ProfileConsumer {
   WishlistTagFilter() : super(<WishlistTag>{}, <WishlistTag>{});
 
   @override
@@ -17,9 +18,12 @@ class WishlistTagFilter extends BaseItemFilter<Set<WishlistTag>> with WishlistsC
     availableValues.clear();
     List<WishlistTag> tags = items
         .expand((i) {
-          final reusable = profile.getItemReusablePlugs(i?.item?.itemInstanceId);
-          final tags =
-              wishlistsService.getWishlistBuildTags(itemHash: i?.item?.itemHash, reusablePlugs: reusable)?.toList();
+          final reusable =
+              profile.getItemReusablePlugs(i?.item?.itemInstanceId);
+          final tags = wishlistsService
+              .getWishlistBuildTags(
+                  itemHash: i?.item?.itemHash, reusablePlugs: reusable)
+              ?.toList();
           if (tags == null) return <WishlistTag>[];
           if (tags.isEmpty) return <WishlistTag>[null];
           return tags;
@@ -35,11 +39,15 @@ class WishlistTagFilter extends BaseItemFilter<Set<WishlistTag>> with WishlistsC
   }
 
   @override
-  bool filterItem(ItemWithOwner item, {Map<int, DestinyInventoryItemDefinition> definitions}) {
+  bool filterItem(ItemWithOwner item,
+      {Map<int, DestinyInventoryItemDefinition> definitions}) {
     final reusable = profile.getItemReusablePlugs(item?.item?.itemInstanceId);
-    final tags =
-        wishlistsService.getWishlistBuildTags(itemHash: item?.item?.itemHash, reusablePlugs: reusable)?.toList();
-    if (value?.any((element) => tags?.contains(element) ?? false) ?? false) return true;
+    final tags = wishlistsService
+        .getWishlistBuildTags(
+            itemHash: item?.item?.itemHash, reusablePlugs: reusable)
+        ?.toList();
+    if (value?.any((element) => tags?.contains(element) ?? false) ?? false)
+      return true;
     if (value.contains(null) && tags.isEmpty) return true;
     return false;
   }

@@ -39,8 +39,9 @@ class ItemArmorTierWidgetState extends State<ItemArmorTierWidget> {
 
   @override
   Widget build(BuildContext context) {
-    var socketCategory = definition.sockets.socketCategories
-        .firstWhere((s) => s.socketCategoryHash == widget.socketCategoryHash, orElse: () => null);
+    var socketCategory = definition.sockets.socketCategories.firstWhere(
+        (s) => s.socketCategoryHash == widget.socketCategoryHash,
+        orElse: () => null);
     List<Widget> columns = [];
     if (socketCategory == null) return Container();
     for (var index in socketCategory.socketIndexes) {
@@ -54,7 +55,9 @@ class ItemArmorTierWidgetState extends State<ItemArmorTierWidget> {
   }
 
   Widget buildPerkColumn(BuildContext context, int index) {
-    var hash = itemSockets != null ? getEquippedPlugHashBySocketIndex(index) : getDefaultPerkBySocketIndex(index);
+    var hash = itemSockets != null
+        ? getEquippedPlugHashBySocketIndex(index)
+        : getDefaultPerkBySocketIndex(index);
     return buildPerkIcon(context, hash);
   }
 
@@ -73,14 +76,14 @@ class ItemArmorTierWidgetState extends State<ItemArmorTierWidget> {
               children: <Widget>[
                 !widget.suppressIcon
                     ? Icon(DestinyData.getEnergyTypeIcon(capacity?.energyType),
-                        color: capacity?.energyType?.getColorLayer(context)?.layer2, size: widget.iconSize * .7)
+                        size: widget.iconSize * .7)
                     : Container(),
                 Text("${def?.plug?.energyCapacity?.capacityValue ?? 0}",
                     style: TextStyle(
-                        height: 1,
-                        fontWeight: FontWeight.bold,
-                        fontSize: widget.iconSize,
-                        color: capacity?.energyType?.getColorLayer(context)?.layer2)),
+                      height: 1,
+                      fontWeight: FontWeight.bold,
+                      fontSize: widget.iconSize,
+                    )),
               ],
             );
           },

@@ -21,11 +21,15 @@ class CharacterRanksListWidget extends StatefulWidget {
   const CharacterRanksListWidget({Key key, this.characterId}) : super(key: key);
 
   @override
-  _CharacterRanksListWidgetState createState() => _CharacterRanksListWidgetState();
+  _CharacterRanksListWidgetState createState() =>
+      _CharacterRanksListWidgetState();
 }
 
 class _CharacterRanksListWidgetState extends State<CharacterRanksListWidget>
-    with AutomaticKeepAliveClientMixin, LittleLightDataConsumer, ProfileConsumer {
+    with
+        AutomaticKeepAliveClientMixin,
+        LittleLightDataConsumer,
+        ProfileConsumer {
   List<DestinyProgression> ranks;
   List<DestinyFactionProgression> progressions;
   bool fullyLoaded = false;
@@ -51,7 +55,9 @@ class _CharacterRanksListWidgetState extends State<CharacterRanksListWidget>
       progressionsRoot.progressions["${gameData.ranks.valor}"],
       progressionsRoot.progressions["${gameData.ranks.infamy}"]
     ];
-    progressions = progressionsRoot.factions.values.where((p) => p.factionHash != null).toList();
+    progressions = progressionsRoot.factions.values
+        .where((p) => p.factionHash != null)
+        .toList();
     if (mounted) {
       setState(() {});
       fullyLoaded = true;
@@ -99,7 +105,8 @@ class _CharacterRanksListWidgetState extends State<CharacterRanksListWidget>
       ],
       mainAxisSpacing: 4,
       crossAxisSpacing: 4,
-      padding: const EdgeInsets.all(4) + screenPadding.copyWith(top: 0, bottom: 0),
+      padding:
+          const EdgeInsets.all(4) + screenPadding.copyWith(top: 0, bottom: 0),
     );
     // return StaggeredGrid.count(
     // padding: EdgeInsets.all(4).copyWith(

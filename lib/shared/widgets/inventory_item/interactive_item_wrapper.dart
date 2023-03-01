@@ -20,7 +20,10 @@ class InteractiveItemWrapper extends StatelessWidget {
   final double selectedBorder;
 
   const InteractiveItemWrapper(this.child,
-      {required this.item, this.density, this.itemMargin = 2, this.selectedBorder = 1});
+      {required this.item,
+      this.density,
+      this.itemMargin = 2,
+      this.selectedBorder = 1});
   @override
   Widget build(BuildContext context) {
     if (density != null) return buildWithDensity(context, density!);
@@ -29,17 +32,20 @@ class InteractiveItemWrapper extends StatelessWidget {
     return LayoutBuilder(
         key: Key("selectable $hash $itemInstanceId"),
         builder: (context, constraints) {
-          if (constraints.maxWidth > InventoryItemWidgetDensity.High.idealWidth) {
+          if (constraints.maxWidth >
+              InventoryItemWidgetDensity.High.idealWidth) {
             return buildWithDensity(context, InventoryItemWidgetDensity.High);
           }
-          if (constraints.maxWidth > InventoryItemWidgetDensity.Medium.idealWidth) {
+          if (constraints.maxWidth >
+              InventoryItemWidgetDensity.Medium.idealWidth) {
             return buildWithDensity(context, InventoryItemWidgetDensity.Medium);
           }
           return buildWithDensity(context, InventoryItemWidgetDensity.Low);
         });
   }
 
-  Widget buildWithDensity(BuildContext context, InventoryItemWidgetDensity density) {
+  Widget buildWithDensity(
+      BuildContext context, InventoryItemWidgetDensity density) {
     final hash = item.item.itemHash;
     if (hash == null) return Container();
     return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
@@ -63,15 +69,17 @@ class InteractiveItemWrapper extends StatelessWidget {
   Widget buildSelectedBorder(BuildContext context) {
     final hash = item.item.itemHash;
     if (hash == null) return Container();
-    final isSelected = context
-        .watch<SelectionBloc>()
-        .isSelected(hash, instanceId: item.item.itemInstanceId, stackIndex: item.stackIndex);
+    final isSelected = context.watch<SelectionBloc>().isSelected(hash,
+        instanceId: item.item.itemInstanceId, stackIndex: item.stackIndex);
     if (!isSelected) return Container();
     return Container(
       margin: EdgeInsets.all(itemMargin - selectedBorder),
       decoration: BoxDecoration(
-        border: Border.all(width: selectedBorder, color: LittleLightTheme.of(context).primaryLayers.layer1),
-        color: LittleLightTheme.of(context).primaryLayers.layer1.withOpacity(.2),
+        border: Border.all(
+            width: selectedBorder,
+            color: LittleLightTheme.of(context).primaryLayers.layer1),
+        color:
+            LittleLightTheme.of(context).primaryLayers.layer1.withOpacity(.2),
       ),
     );
   }

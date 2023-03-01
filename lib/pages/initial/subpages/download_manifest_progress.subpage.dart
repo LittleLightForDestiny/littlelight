@@ -9,10 +9,12 @@ class DownloadManifestProgressSubPage extends StatefulWidget {
   const DownloadManifestProgressSubPage();
 
   @override
-  DownloadManifestProgressSubPageState createState() => DownloadManifestProgressSubPageState();
+  DownloadManifestProgressSubPageState createState() =>
+      DownloadManifestProgressSubPageState();
 }
 
-class DownloadManifestProgressSubPageState extends SubpageBaseState<DownloadManifestProgressSubPage> {
+class DownloadManifestProgressSubPageState
+    extends SubpageBaseState<DownloadManifestProgressSubPage> {
   @override
   void initState() {
     super.initState();
@@ -23,11 +25,15 @@ class DownloadManifestProgressSubPageState extends SubpageBaseState<DownloadMani
         "Download Database",
       );
 
-  bool get downloading => !context.watch<ManifestDownloaderNotifier>().finishedDownloading;
+  bool get downloading =>
+      !context.watch<ManifestDownloaderNotifier>().finishedDownloading;
 
-  double get progress => context.watch<ManifestDownloaderNotifier>().downloadProgress;
-  int get totalDownloadSize => context.watch<ManifestDownloaderNotifier>().totalDownloadSize;
-  int get downloadedSize => context.watch<ManifestDownloaderNotifier>().downloadedSize;
+  double get progress =>
+      context.watch<ManifestDownloaderNotifier>().downloadProgress;
+  int get totalDownloadSize =>
+      context.watch<ManifestDownloaderNotifier>().totalDownloadSize;
+  int get downloadedSize =>
+      context.watch<ManifestDownloaderNotifier>().downloadedSize;
 
   @override
   Widget buildContent(BuildContext context) => Container(
@@ -45,7 +51,8 @@ class DownloadManifestProgressSubPageState extends SubpageBaseState<DownloadMani
                     "Downloading",
                     key: const Key("downloading"),
                   )
-                : Text("Uncompressing".translate(context), key: const Key("unzipping")),
+                : Text("Uncompressing".translate(context),
+                    key: const Key("unzipping")),
             Text("$downloadedSize/${totalDownloadSize}KB")
           ],
         )

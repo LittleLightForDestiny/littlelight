@@ -24,7 +24,9 @@ class InventoryItemMods extends StatelessWidget with WishlistsConsumer {
     final sockets = itemInfo.sockets;
     final socketCategory = definition.sockets?.socketCategories //
         ?.firstWhereOrNull((c) => c.socketCategoryHash == categoryHash);
-    final plugs = socketCategory?.socketIndexes?.map((e) => sockets?[e]).whereType<DestinyItemSocketState>();
+    final plugs = socketCategory?.socketIndexes
+        ?.map((e) => sockets?[e])
+        .whereType<DestinyItemSocketState>();
     if (plugs == null || plugs.isEmpty) return Container();
     return SizedBox(
       height: plugSize,

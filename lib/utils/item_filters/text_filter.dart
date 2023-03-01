@@ -13,10 +13,12 @@ import 'package:provider/provider.dart';
 
 import 'base_item_filter.dart';
 
-class TextFilter extends BaseItemFilter<String> with WishlistsConsumer, ProfileConsumer, ItemNotesConsumer {
+class TextFilter extends BaseItemFilter<String>
+    with WishlistsConsumer, ProfileConsumer, ItemNotesConsumer {
   final BuildContext context;
   List<LoadoutItemIndex> loadouts;
-  TextFilter(this.context, {initialText = "", enabled = true}) : super(null, initialText, enabled: enabled);
+  TextFilter(this.context, {initialText = "", enabled = true})
+      : super(null, initialText, enabled: enabled);
 
   @override
   Future<List<ItemWithOwner>> filter(List<ItemWithOwner> items,
@@ -26,24 +28,32 @@ class TextFilter extends BaseItemFilter<String> with WishlistsConsumer, ProfileC
   }
 
   @override
-  bool filterItem(ItemWithOwner item, {Map<int, DestinyInventoryItemDefinition> definitions}) {
+  bool filterItem(ItemWithOwner item,
+      {Map<int, DestinyInventoryItemDefinition> definitions}) {
     if ((value?.length ?? 0) < 1) return true;
-    var _terms =
-        value.split(RegExp("[,.|]")).map((s) => removeDiacritics(s.toLowerCase().trim())).toList(growable: false);
+    var _terms = value
+        .split(RegExp("[,.|]"))
+        .map((s) => removeDiacritics(s.toLowerCase().trim()))
+        .toList(growable: false);
     var _def = definitions[item?.item?.itemHash];
-    var name = removeDiacritics(_def?.displayProperties?.name?.toLowerCase()?.trim() ?? "");
-    var itemType = removeDiacritics(_def?.itemTypeDisplayName?.toLowerCase()?.trim() ?? "");
+    var name = removeDiacritics(
+        _def?.displayProperties?.name?.toLowerCase()?.trim() ?? "");
+    var itemType = removeDiacritics(
+        _def?.itemTypeDisplayName?.toLowerCase()?.trim() ?? "");
     var sockets = profile.getItemSockets(item?.item?.itemInstanceId);
-    var reusablePlugs = profile.getItemReusablePlugs(item?.item?.itemInstanceId);
+    var reusablePlugs =
+        profile.getItemReusablePlugs(item?.item?.itemInstanceId);
     var plugHashes = <int>{};
     plugHashes.addAll(sockets?.map((s) => s.plugHash)?.toSet() ?? <int>{});
-    plugHashes.addAll(reusablePlugs?.values
-            ?.fold<List<int>>([], (l, r) => l.followedBy(r.map((e) => e.plugItemHash)).toList())?.toSet() ??
+    plugHashes.addAll(reusablePlugs?.values?.fold<List<int>>(
+            [],
+            (l, r) =>
+                l.followedBy(r.map((e) => e.plugItemHash)).toList())?.toSet() ??
         <int>{});
-    final wishlistBuildNotes =
-        wishlistsService.getWishlistBuildNotes(itemHash: item.item.itemHash, reusablePlugs: reusablePlugs);
-    final wishlistTags =
-        wishlistsService.getWishlistBuildTags(itemHash: item.item.itemHash, reusablePlugs: reusablePlugs);
+    final wishlistBuildNotes = wishlistsService.getWishlistBuildNotes(
+        itemHash: item.item.itemHash, reusablePlugs: reusablePlugs);
+    final wishlistTags = wishlistsService.getWishlistBuildTags(
+        itemHash: item.item.itemHash, reusablePlugs: reusablePlugs);
 
     var loadoutNames = loadouts
         .where(
@@ -51,23 +61,32 @@ class TextFilter extends BaseItemFilter<String> with WishlistsConsumer, ProfileC
         )
         .map((l) => l.name ?? "");
 
-    var customName =
-        itemNotes.getNotesForItem(item?.item?.itemHash, item?.item?.itemInstanceId)?.customName?.toLowerCase() ?? "";
+    var customName = itemNotes
+            .getNotesForItem(item?.item?.itemHash, item?.item?.itemInstanceId)
+            ?.customName
+            ?.toLowerCase() ??
+        "";
 
     return _terms.every((t) {
       var words = t.split(" ");
       if (words.every((w) => name.contains(w))) return true;
       if (words.every((w) => customName.contains(w))) return true;
       if (words.every((w) => itemType.contains(w))) return true;
-      if (words.every((w) => loadoutNames.any((l) => removeDiacritics(l.toLowerCase()).contains(w)))) return true;
+      if (words.every((w) => loadoutNames.any(
+          (l) => removeDiacritics(l.toLowerCase()).contains(w)))) return true;
       if (plugHashes.any((h) {
         var plugDef = definitions[h];
-        var name = removeDiacritics(plugDef?.displayProperties?.name?.toLowerCase()?.trim() ?? "");
+        var name = removeDiacritics(
+            plugDef?.displayProperties?.name?.toLowerCase()?.trim() ?? "");
         if (words.every((w) => name.contains(w))) return true;
         return false;
       })) return true;
-      if (wishlistTags?.any((t) => words.every((w) => t.toString().toLowerCase().contains(w))) ?? false) return true;
-      if (wishlistBuildNotes?.any((n) => words.every((w) => n.toLowerCase().contains(w))) ?? false) return true;
+      if (wishlistTags?.any((t) =>
+              words.every((w) => t.toString().toLowerCase().contains(w))) ??
+          false) return true;
+      if (wishlistBuildNotes
+              ?.any((n) => words.every((w) => n.toLowerCase().contains(w))) ??
+          false) return true;
       return false;
     });
   }

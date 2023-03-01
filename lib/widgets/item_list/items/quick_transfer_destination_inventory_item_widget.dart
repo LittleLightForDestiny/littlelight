@@ -17,7 +17,8 @@ class QuickTransferDestinationItemWidget extends StatelessWidget {
               width: 2,
             )),
         child: Center(
-          child: Icon(Icons.add_circle_outline, color: LittleLightTheme.of(context).surfaceLayers.layer3),
+          child: Icon(Icons.add_circle_outline,
+              color: LittleLightTheme.of(context).surfaceLayers.layer3),
         ));
   }
 }

@@ -40,7 +40,8 @@ class GridWidget extends StatelessWidget {
     var items = children
         .getRange(start, end)
         .followedBy(List.filled(columnCount - (end - start), Container()))
-        .map((w) => Expanded(child: AspectRatio(aspectRatio: itemAspectRation, child: w)))
+        .map((w) => Expanded(
+            child: AspectRatio(aspectRatio: itemAspectRation, child: w)))
         .expand((element) => [
               element,
               SizedBox(

@@ -3,7 +3,8 @@ import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 
-extension DestinyInventoryItemDefinitionHelper on DestinyInventoryItemDefinition {
+extension DestinyInventoryItemDefinitionHelper
+    on DestinyInventoryItemDefinition {
   bool get isSubclass =>
       itemType == DestinyItemType.Subclass || //
       inventory?.bucketTypeHash == InventoryBucket.subclass;
@@ -40,7 +41,8 @@ extension DestinyInventoryItemDefinitionHelper on DestinyInventoryItemDefinition
 }
 
 extension DestinytemInfoHelpers on DestinyItemInfo {
-  bool canEquip(DestinyCharacterInfo? character, DestinyInventoryItemDefinition definition) {
+  bool canEquip(DestinyCharacterInfo? character,
+      DestinyInventoryItemDefinition definition) {
     if (character == null) return false;
     final equippable = definition.equippable ?? false;
     if (!equippable) return false;
@@ -58,9 +60,11 @@ extension DestinytemInfoHelpers on DestinyItemInfo {
     return true;
   }
 
-  bool canTransfer(DestinyCharacterInfo? character, DestinyInventoryItemDefinition definition) {
+  bool canTransfer(DestinyCharacterInfo? character,
+      DestinyInventoryItemDefinition definition) {
     if (definition.nonTransferrable ?? false) return false;
-    bool isSameCharacter = character?.characterId == characterId && character?.characterId != null;
+    bool isSameCharacter =
+        character?.characterId == characterId && character?.characterId != null;
     bool isOnPostmaster = item.bucketHash == InventoryBucket.lostItems;
     if (isSameCharacter && !isOnPostmaster) return false;
     return true;

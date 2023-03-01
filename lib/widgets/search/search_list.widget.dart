@@ -53,7 +53,8 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T> {
       [
         SliverSection(
             itemHeight: 96,
-            itemsPerRow: MediaQueryHelper(context).responsiveValue(1, tablet: 2, laptop: 3),
+            itemsPerRow: MediaQueryHelper(context)
+                .responsiveValue(1, tablet: 2, laptop: 3),
             itemCount: widget.controller.filtered.length,
             itemBuilder: (context, index) => getItem(context, index))
       ],
@@ -66,7 +67,8 @@ class SearchListWidgetState<T extends SearchListWidget> extends State<T> {
   Widget getItem(BuildContext context, int index) {
     var item = widget.controller.filtered[index];
     return SearchItemWrapperWidget(item, null,
-        characterId: item.ownerId, key: Key("item_${item.item.itemInstanceId}_${item.item.itemHash}"));
+        characterId: item.ownerId,
+        key: Key("item_${item.item.itemInstanceId}_${item.item.itemHash}"));
   }
 
   // StaggeredGridTile getTileBuilder(int index) {

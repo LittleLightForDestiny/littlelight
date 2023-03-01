@@ -11,10 +11,20 @@ class StatTotalSorter extends BaseItemSorter with ProfileConsumer {
   int sort(ItemWithOwner a, ItemWithOwner b) {
     final instanceIdA = a.item.itemInstanceId;
     final instanceIdB = b.item.itemInstanceId;
-    Map<String, DestinyStat>? statsA = instanceIdA != null ? profile.getPrecalculatedStats(instanceIdA) : null;
-    Map<String, DestinyStat>? statsB = instanceIdB != null ? profile.getPrecalculatedStats(instanceIdB) : null;
-    int totalA = statsA?.values.map((v) => v.value).whereType<int>().fold<int>(0, (v, s) => v + s) ?? 0;
-    int totalB = statsB?.values.map((v) => v.value).whereType<int>().fold<int>(0, (v, s) => v + s) ?? 0;
+    Map<String, DestinyStat>? statsA =
+        instanceIdA != null ? profile.getPrecalculatedStats(instanceIdA) : null;
+    Map<String, DestinyStat>? statsB =
+        instanceIdB != null ? profile.getPrecalculatedStats(instanceIdB) : null;
+    int totalA = statsA?.values
+            .map((v) => v.value)
+            .whereType<int>()
+            .fold<int>(0, (v, s) => v + s) ??
+        0;
+    int totalB = statsB?.values
+            .map((v) => v.value)
+            .whereType<int>()
+            .fold<int>(0, (v, s) => v + s) ??
+        0;
     return direction * totalA.compareTo(totalB);
   }
 }

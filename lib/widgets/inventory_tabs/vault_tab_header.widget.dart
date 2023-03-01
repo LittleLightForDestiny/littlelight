@@ -11,7 +11,6 @@ class VaultTabHeaderWidget extends TabHeaderWidget {
 }
 
 class VaultTabHeaderWidgetState extends TabHeaderWidgetState {
-
   @override
   getDefinitions() {}
 

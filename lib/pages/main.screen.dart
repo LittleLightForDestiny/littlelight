@@ -1,6 +1,7 @@
 // @dart=2.9
 
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/offline_mode/offline_mode.bloc.dart';
 import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/modules/collections/pages/home/collections_root.page.dart';
 import 'package:little_light/modules/equipment/pages/equipment/equipment.page.dart';
@@ -14,6 +15,7 @@ import 'package:little_light/services/user_settings/user_settings.consumer.dart'
 import 'package:little_light/utils/platform_capabilities.dart';
 import 'package:little_light/widgets/dialogs/confirm_exit.dialog.dart';
 import 'package:little_light/widgets/side_menu/side_menu.widget.dart';
+import 'package:provider/provider.dart';
 import 'package:wakelock/wakelock.dart';
 
 class MainScreen extends StatefulWidget {
@@ -23,7 +25,11 @@ class MainScreen extends StatefulWidget {
 }
 
 class MainScreenState extends State<MainScreen>
-    with AuthConsumer, UserSettingsConsumer, ProfileConsumer, ItemNotesConsumer {
+    with
+        AuthConsumer,
+        UserSettingsConsumer,
+        ProfileConsumer,
+        ItemNotesConsumer {
   Widget currentScreen;
 
   @override
@@ -35,6 +41,8 @@ class MainScreenState extends State<MainScreen>
 
   initUpdaters() async {
     auth.getMembershipData();
+    final isOffline = context.read<OfflineModeBloc>().isOffline;
+    if (isOffline) return;
     await itemNotes.getNotes(forceFetch: true);
   }
 
@@ -94,7 +102,8 @@ class MainScreenState extends State<MainScreen>
   }
 
   Future<bool> _exitApp(BuildContext context) async {
-    final exit = await Navigator.of(context).push(ConfirmExitDialogRoute(context));
+    final exit =
+        await Navigator.of(context).push(ConfirmExitDialogRoute(context));
     return exit ?? false;
   }
 }

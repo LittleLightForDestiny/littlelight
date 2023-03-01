@@ -26,7 +26,8 @@ class RefreshButtonWidgetState extends State<RefreshButtonWidget>
   @override
   void initState() {
     super.initState();
-    rotationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
+    rotationController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 500));
     subscription = notifications.listen((event) {
       handleNotification(event);
     });
@@ -80,7 +81,9 @@ class RefreshButtonWidgetState extends State<RefreshButtonWidget>
     return RotationTransition(
       turns: Tween(begin: 0.0, end: 1.0).animate(rotationController),
       child: Icon(Icons.refresh,
-          color: rotationController.isAnimating ? Colors.grey.shade500 : Theme.of(context).colorScheme.onSurface),
+          color: rotationController.isAnimating
+              ? Colors.grey.shade500
+              : Theme.of(context).colorScheme.onSurface),
     );
   }
 }

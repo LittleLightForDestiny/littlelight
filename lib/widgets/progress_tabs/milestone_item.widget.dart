@@ -30,7 +30,8 @@ class MilestoneItemWidget extends StatefulWidget {
 
   final DestinyMilestone milestone;
 
-  const MilestoneItemWidget({Key key, this.characterId, this.milestone}) : super(key: key);
+  const MilestoneItemWidget({Key key, this.characterId, this.milestone})
+      : super(key: key);
 
   @override
   MilestoneItemWidgetState createState() => MilestoneItemWidgetState();
@@ -55,7 +56,8 @@ class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
 
   update() {
     if (!mounted) return;
-    milestone = profile.getCharacterProgression(widget.characterId).milestones["$hash"];
+    milestone =
+        profile.getCharacterProgression(widget.characterId).milestones["$hash"];
     setState(() {});
   }
 
@@ -66,7 +68,8 @@ class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
   }
 
   Future<void> loadDefinitions() async {
-    definition = await manifest.getDefinition<DestinyMilestoneDefinition>(milestone.milestoneHash);
+    definition = await manifest
+        .getDefinition<DestinyMilestoneDefinition>(milestone.milestoneHash);
     if (mounted) {
       setState(() {});
       fullyLoaded = true;
@@ -77,20 +80,26 @@ class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
   Widget build(BuildContext context) {
     super.build(context);
     if (definition == null || milestone == null) {
-      return Container(height: 200, color: LittleLightTheme.of(context).surfaceLayers.layer1);
+      return Container(
+          height: 200,
+          color: LittleLightTheme.of(context).surfaceLayers.layer1);
     }
 
     return Container(
       decoration: BoxDecoration(
           color: LittleLightTheme.of(context).surfaceLayers.layer1,
-          border: Border.all(width: 1, color: LittleLightTheme.of(context).surfaceLayers.layer3)),
+          border: Border.all(
+              width: 1,
+              color: LittleLightTheme.of(context).surfaceLayers.layer3)),
       margin: const EdgeInsets.all(8).copyWith(
         top: 0,
       ),
       child: Stack(children: [
         definition.image != null
             ? Positioned.fill(
-                child: QueuedNetworkImage(fit: BoxFit.cover, imageUrl: BungieApiService.url(definition.image)),
+                child: QueuedNetworkImage(
+                    fit: BoxFit.cover,
+                    imageUrl: BungieApiService.url(definition.image)),
               )
             : Container(),
         Positioned.fill(
@@ -99,7 +108,10 @@ class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
                   gradient: LinearGradient(
                       begin: Alignment.bottomCenter,
                       end: Alignment.topCenter,
-                      colors: [Colors.black.withOpacity(1), Colors.black.withOpacity(.5)]))),
+                      colors: [
+                Colors.black.withOpacity(1),
+                Colors.black.withOpacity(.5)
+              ]))),
         ),
         buildContent(context)
       ]),
@@ -127,26 +139,32 @@ class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
                   width: 64,
                   height: 64,
                   child: QueuedNetworkImage(
-                      fit: BoxFit.cover, imageUrl: BungieApiService.url(definition.displayProperties.icon)))
+                      fit: BoxFit.cover,
+                      imageUrl: BungieApiService.url(
+                          definition.displayProperties.icon)))
               : Container(),
           Expanded(
-              child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-            Container(
-              alignment: Alignment.centerLeft,
-              padding: const EdgeInsets.all(8),
-              child: Text(
-                definition.displayProperties.name.toUpperCase(),
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.all(8),
-              child: Text(
-                definition.displayProperties.description,
-                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
-              ),
-            )
-          ])),
+              child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                Container(
+                  alignment: Alignment.centerLeft,
+                  padding: const EdgeInsets.all(8),
+                  child: Text(
+                    definition.displayProperties.name.toUpperCase(),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  child: Text(
+                    definition.displayProperties.description,
+                    style: const TextStyle(
+                        fontSize: 12, fontWeight: FontWeight.w300),
+                  ),
+                )
+              ])),
         ],
       )
     ]);
@@ -171,10 +189,12 @@ class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
         padding: const EdgeInsets.all(4).copyWith(bottom: 8),
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: activities.map((a) => buildActivity(context, a)).toList()));
+            children:
+                activities.map((a) => buildActivity(context, a)).toList()));
   }
 
-  Widget buildActivity(BuildContext context, DestinyMilestoneChallengeActivity activity) {
+  Widget buildActivity(
+      BuildContext context, DestinyMilestoneChallengeActivity activity) {
     return DefinitionProviderWidget<DestinyActivityDefinition>(
         activity.activityHash,
         (def) => Column(children: [
@@ -183,47 +203,60 @@ class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
                     margin: const EdgeInsets.all(4),
                     padding: const EdgeInsets.all(8),
                     color: Theme.of(context).colorScheme.secondary,
-                    child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-                      Row(children: [
-                        SizedBox(
-                            width: 32,
-                            height: 32,
-                            child: QueuedNetworkImage(
-                                imageUrl: (def?.displayProperties?.hasIcon ?? false)
-                                    ? BungieApiService.url(def?.displayProperties?.icon)
-                                    : BungieApiService.url(definition?.displayProperties?.icon))),
-                        Container(width: 4),
-                        Text(
-                            def?.originalDisplayProperties?.name ??
-                                def?.selectionScreenDisplayProperties?.name ??
-                                def.displayProperties.name,
-                            style: const TextStyle(fontWeight: FontWeight.bold)),
-                        Expanded(child: Container()),
-                        (def?.activityLightLevel ?? 0) > 0
-                            ? Row(children: [
-                                Icon(
-                                  LittleLightIcons.power,
-                                  size: 12,
-                                  color: Colors.amber.shade500,
-                                ),
-                                Text("${def?.activityLightLevel}",
-                                    style: TextStyle(color: Colors.amber.shade500, fontWeight: FontWeight.bold))
-                              ])
-                            : Container(),
-                      ]),
-                      Text(
-                          def?.originalDisplayProperties?.description ??
-                              def?.selectionScreenDisplayProperties?.description ??
-                              def.displayProperties.description,
-                          style: const TextStyle(fontWeight: FontWeight.w500)),
-                    ])),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Row(children: [
+                            SizedBox(
+                                width: 32,
+                                height: 32,
+                                child: QueuedNetworkImage(
+                                    imageUrl:
+                                        (def?.displayProperties?.hasIcon ??
+                                                false)
+                                            ? BungieApiService.url(
+                                                def?.displayProperties?.icon)
+                                            : BungieApiService.url(definition
+                                                ?.displayProperties?.icon))),
+                            Container(width: 4),
+                            Text(
+                                def?.originalDisplayProperties?.name ??
+                                    def?.selectionScreenDisplayProperties
+                                        ?.name ??
+                                    def.displayProperties.name,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold)),
+                            Expanded(child: Container()),
+                            (def?.activityLightLevel ?? 0) > 0
+                                ? Row(children: [
+                                    Icon(
+                                      LittleLightIcons.power,
+                                      size: 12,
+                                      color: Colors.amber.shade500,
+                                    ),
+                                    Text("${def?.activityLightLevel}",
+                                        style: TextStyle(
+                                            color: Colors.amber.shade500,
+                                            fontWeight: FontWeight.bold))
+                                  ])
+                                : Container(),
+                          ]),
+                          Text(
+                              def?.originalDisplayProperties?.description ??
+                                  def?.selectionScreenDisplayProperties
+                                      ?.description ??
+                                  def.displayProperties.description,
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.w500)),
+                        ])),
                 Positioned.fill(
                     child: Material(
                   color: Colors.transparent,
                   child: InkWell(
                     child: Container(),
                     onTap: () {
-                      activitiesOpened[activity.activityHash] = !(activitiesOpened[activity.activityHash] ?? false);
+                      activitiesOpened[activity.activityHash] =
+                          !(activitiesOpened[activity.activityHash] ?? false);
                       setState(() {});
                     },
                   ),
@@ -253,7 +286,8 @@ class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
                     completed: o.complete,
                     progress: o.progress,
                     total: o.completionValue,
-                    description: ManifestText<DestinyObjectiveDefinition>(o.objectiveHash),
+                    description: ManifestText<DestinyObjectiveDefinition>(
+                        o.objectiveHash),
                   )))
               .toList(),
         ));
@@ -283,7 +317,8 @@ class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
           ]
               .followedBy(modifierHashes.map((m) => Container(
                   margin: const EdgeInsets.all(4),
-                  child: DefinitionProviderWidget<DestinyActivityModifierDefinition>(
+                  child: DefinitionProviderWidget<
+                          DestinyActivityModifierDefinition>(
                       m,
                       (def) => Row(
                             children: <Widget>[
@@ -293,8 +328,9 @@ class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
                               SizedBox(
                                   width: 24,
                                   height: 24,
-                                  child:
-                                      QueuedNetworkImage(imageUrl: BungieApiService.url(def?.displayProperties?.icon))),
+                                  child: QueuedNetworkImage(
+                                      imageUrl: BungieApiService.url(
+                                          def?.displayProperties?.icon))),
                               Container(
                                 width: 8,
                               ),
@@ -311,16 +347,20 @@ class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
     }
     return Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: milestone.availableQuests.map((q) => buildAvailableQuest(context, q)).toList());
+        children: milestone.availableQuests
+            .map((q) => buildAvailableQuest(context, q))
+            .toList());
   }
 
-  Widget buildAvailableQuest(BuildContext context, DestinyMilestoneQuest quest) {
+  Widget buildAvailableQuest(
+      BuildContext context, DestinyMilestoneQuest quest) {
     return Container(
         padding: const EdgeInsets.all(4).copyWith(bottom: 8),
         child: Column(
             children: quest.status.stepObjectives
                 .map((o) => GenericProgressBarWidget(
-                      description: ManifestText<DestinyInventoryItemDefinition>(quest.questItemHash),
+                      description: ManifestText<DestinyInventoryItemDefinition>(
+                          quest.questItemHash),
                       progress: o.progress,
                       total: o.completionValue,
                       completed: o.complete,
@@ -329,7 +369,8 @@ class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
   }
 
   Widget buildRewards(BuildContext context) {
-    List<DestinyMilestoneRewardCategoryDefinition> rewards = definition?.rewards?.values?.toList();
+    List<DestinyMilestoneRewardCategoryDefinition> rewards =
+        definition?.rewards?.values?.toList();
     Map<int, int> itemQuantities = {};
     for (var r in rewards) {
       for (var e in r.rewardEntries.values) {
@@ -356,26 +397,29 @@ class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
           ),
           Container(height: 8)
         ]
-                .followedBy(itemQuantities.entries.map((e) => DefinitionProviderWidget<DestinyInventoryItemDefinition>(
-                    e.key,
-                    (def) => Row(children: <Widget>[
-                          Container(
-                            width: 4,
-                          ),
-                          SizedBox(
-                              width: 24,
-                              height: 24,
-                              child: QueuedNetworkImage(
-                                imageUrl: BungieApiService.url(def.displayProperties?.icon),
-                              )),
-                          Container(
-                            width: 4,
-                          ),
-                          Text(
-                            def?.displayProperties?.name ?? "",
-                            style: const TextStyle(fontWeight: FontWeight.w500),
-                          )
-                        ]))))
+                .followedBy(itemQuantities.entries.map((e) =>
+                    DefinitionProviderWidget<DestinyInventoryItemDefinition>(
+                        e.key,
+                        (def) => Row(children: <Widget>[
+                              Container(
+                                width: 4,
+                              ),
+                              SizedBox(
+                                  width: 24,
+                                  height: 24,
+                                  child: QueuedNetworkImage(
+                                    imageUrl: BungieApiService.url(
+                                        def.displayProperties?.icon),
+                                  )),
+                              Container(
+                                width: 4,
+                              ),
+                              Text(
+                                def?.displayProperties?.name ?? "",
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w500),
+                              )
+                            ]))))
                 .toList()));
   }
 

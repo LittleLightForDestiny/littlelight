@@ -13,7 +13,8 @@ import 'package:little_light/widgets/item_list/items/base/item_armor_stats.widge
 import 'package:little_light/widgets/item_list/items/base/item_mods.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/item_perks.widget.dart';
 
-class BaseInventoryItemWidget extends BaseDestinyStatelessItemWidget with InventoryItemMixin, ProfileConsumer {
+class BaseInventoryItemWidget extends BaseDestinyStatelessItemWidget
+    with InventoryItemMixin, ProfileConsumer {
   @override
   final String uniqueId;
   @override
@@ -21,8 +22,14 @@ class BaseInventoryItemWidget extends BaseDestinyStatelessItemWidget with Invent
   final bool showUnusedPerks;
 
   BaseInventoryItemWidget(
-      DestinyItemComponent item, DestinyInventoryItemDefinition definition, DestinyItemInstanceComponent instanceInfo,
-      {Key key, @required String characterId, this.showUnusedPerks = false, this.trailing, @required this.uniqueId})
+      DestinyItemComponent item,
+      DestinyInventoryItemDefinition definition,
+      DestinyItemInstanceComponent instanceInfo,
+      {Key key,
+      @required String characterId,
+      this.showUnusedPerks = false,
+      this.trailing,
+      @required this.uniqueId})
       : super(
           item: item,
           definition: definition,
@@ -33,9 +40,11 @@ class BaseInventoryItemWidget extends BaseDestinyStatelessItemWidget with Invent
 
   @override
   Widget perksWidget(BuildContext context) {
-    var socketCategoryHashes = definition?.sockets?.socketCategories?.map((s) => s.socketCategoryHash);
-    var perksCategoryHash =
-        socketCategoryHashes?.firstWhere((s) => SocketCategoryHashes.perks.contains(s), orElse: () => null);
+    var socketCategoryHashes =
+        definition?.sockets?.socketCategories?.map((s) => s.socketCategoryHash);
+    var perksCategoryHash = socketCategoryHashes?.firstWhere(
+        (s) => SocketCategoryHashes.perks.contains(s),
+        orElse: () => null);
     if (perksCategoryHash != null) {
       return Positioned(
           bottom: 6,
@@ -85,7 +94,8 @@ class BaseInventoryItemWidget extends BaseDestinyStatelessItemWidget with Invent
 
   @override
   Widget primaryStatWidget(BuildContext context) {
-    if ([DestinyItemType.Engram, DestinyItemType.Subclass].contains(definition.itemType)) {
+    if ([DestinyItemType.Engram, DestinyItemType.Subclass]
+        .contains(definition.itemType)) {
       return Container();
     }
     if ((item?.quantity ?? 0) > 1) {

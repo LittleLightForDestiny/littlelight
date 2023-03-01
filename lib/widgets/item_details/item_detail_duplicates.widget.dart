@@ -17,10 +17,17 @@ class ItemDetailDuplicatesWidget extends BaseDestinyStatefulItemWidget {
   final List<ItemWithOwner> duplicates;
 
   ItemDetailDuplicatesWidget(
-      ItemWithOwner item, DestinyInventoryItemDefinition definition, DestinyItemInstanceComponent instanceInfo,
-      {Key key, this.duplicates})
+      ItemWithOwner item,
+      DestinyInventoryItemDefinition definition,
+      DestinyItemInstanceComponent instanceInfo,
+      {Key key,
+      this.duplicates})
       : super(
-            item: item?.item, characterId: item?.ownerId, definition: definition, instanceInfo: instanceInfo, key: key);
+            item: item?.item,
+            characterId: item?.ownerId,
+            definition: definition,
+            instanceInfo: instanceInfo,
+            key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -30,7 +37,8 @@ class ItemDetailDuplicatesWidget extends BaseDestinyStatefulItemWidget {
 
 const _sectionId = "duplicated_items";
 
-class ItemDetailDuplicatesWidgetState extends BaseDestinyItemState<ItemDetailDuplicatesWidget>
+class ItemDetailDuplicatesWidgetState
+    extends BaseDestinyItemState<ItemDetailDuplicatesWidget>
     with VisibleSectionMixin, ProfileConsumer {
   @override
   String get sectionId => _sectionId;
@@ -76,15 +84,18 @@ class ItemDetailDuplicatesWidgetState extends BaseDestinyItemState<ItemDetailDup
 
   Widget buildItemInstance(ItemWithOwner item, BuildContext context) {
     var instance = profile.getInstanceInfo(item.item.itemInstanceId);
-    return Stack(key: Key("duplicate_${item.item.itemInstanceId}_${item.ownerId}"), children: <Widget>[
-      BaseItemInstanceWidget(item.item, definition, instance, characterId: item.ownerId, uniqueId: null),
-      Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () => instanceTap(context, item),
-        ),
-      )
-    ]);
+    return Stack(
+        key: Key("duplicate_${item.item.itemInstanceId}_${item.ownerId}"),
+        children: <Widget>[
+          BaseItemInstanceWidget(item.item, definition, instance,
+              characterId: item.ownerId, uniqueId: null),
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () => instanceTap(context, item),
+            ),
+          )
+        ]);
   }
 
   void instanceTap(

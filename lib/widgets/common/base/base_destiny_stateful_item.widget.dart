@@ -11,11 +11,17 @@ abstract class BaseDestinyStatefulItemWidget extends StatefulWidget {
   final DestinyItemInstanceComponent instanceInfo;
   final String characterId;
 
-  const BaseDestinyStatefulItemWidget({Key key, this.item, this.definition, this.instanceInfo, this.characterId})
+  const BaseDestinyStatefulItemWidget(
+      {Key key,
+      this.item,
+      this.definition,
+      this.instanceInfo,
+      this.characterId})
       : super(key: key);
 }
 
-abstract class BaseDestinyItemState<T extends BaseDestinyStatefulItemWidget> extends State<T> {
+abstract class BaseDestinyItemState<T extends BaseDestinyStatefulItemWidget>
+    extends State<T> {
   DestinyItemComponent get item => widget.item;
   DestinyInventoryItemDefinition get definition => widget.definition;
   DestinyItemInstanceComponent get instanceInfo => widget.instanceInfo;

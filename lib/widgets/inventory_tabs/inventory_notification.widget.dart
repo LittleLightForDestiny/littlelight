@@ -19,7 +19,8 @@ extension on ErrorNotificationEvent {
     switch (errorType) {
       case ErrorNotificationType.onCombatZoneEquipError:
       case ErrorNotificationType.onCombatZoneApplyModError:
-        return Text("Try to do this while on orbit, a social space or offline".translate(context));
+        return Text("Try to do this while on orbit, a social space or offline"
+            .translate(context));
       default:
         return null;
     }
@@ -30,7 +31,10 @@ class InventoryNotificationWidget extends StatefulWidget {
   final double barHeight;
   final EdgeInsets? notificationMargin;
 
-  const InventoryNotificationWidget({Key? key, this.barHeight = kBottomNavigationBarHeight, this.notificationMargin})
+  const InventoryNotificationWidget(
+      {Key? key,
+      this.barHeight = kBottomNavigationBarHeight,
+      this.notificationMargin})
       : super(key: key);
 
   @override
@@ -39,12 +43,14 @@ class InventoryNotificationWidget extends StatefulWidget {
   }
 }
 
-class InventoryNotificationWidgetState extends State<InventoryNotificationWidget>
+class InventoryNotificationWidgetState
+    extends State<InventoryNotificationWidget>
     with ProfileConsumer, NotificationConsumer {
   NotificationEvent? _latestEvent;
   bool get _busy =>
       _latestEvent != null &&
-      ![NotificationType.receivedUpdate, NotificationType.itemStateUpdate].contains(_latestEvent?.type);
+      ![NotificationType.receivedUpdate, NotificationType.itemStateUpdate]
+          .contains(_latestEvent?.type);
   StreamSubscription<NotificationEvent>? subscription;
 
   @override
@@ -75,7 +81,11 @@ class InventoryNotificationWidgetState extends State<InventoryNotificationWidget
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(bottom: 0, left: 0, right: 0, child: _busy ? busyWidget(context) : Container());
+    return Positioned(
+        bottom: 0,
+        left: 0,
+        right: 0,
+        child: _busy ? busyWidget(context) : Container());
   }
 
   Widget busyWidget(BuildContext context) {
@@ -236,29 +246,34 @@ class InventoryNotificationWidgetState extends State<InventoryNotificationWidget
     final additionalMessage = getAdditionalMessage(context);
     final _latestEvent = this._latestEvent;
     return Container(
-      padding: MediaQuery.of(context).viewPadding.copyWith(top: 0, bottom: 0) + const EdgeInsets.symmetric(horizontal: 8),
-      child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.end, children: [
-        Container(
-          margin: widget.notificationMargin,
-          decoration: BoxDecoration(
-              color: _latestEvent is ErrorNotificationEvent
-                  ? LittleLightTheme.of(context).errorLayers.layer0
-                  : LittleLightTheme.of(context).surfaceLayers.layer2,
-              borderRadius: const BorderRadius.all(Radius.circular(8))),
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: Row(mainAxisSize: MainAxisSize.min, children: [
-            DefaultTextStyle(
-                style: const TextStyle(fontWeight: FontWeight.bold),
-                child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: _latestEvent is ErrorNotificationEvent
-                        ? buildErrorMessage(context, _latestEvent)
-                        : DefaultLoadingShimmer(child: buildMessage(context)))),
-            if (icons != null) icons
+      padding: MediaQuery.of(context).viewPadding.copyWith(top: 0, bottom: 0) +
+          const EdgeInsets.symmetric(horizontal: 8),
+      child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Container(
+              margin: widget.notificationMargin,
+              decoration: BoxDecoration(
+                  color: _latestEvent is ErrorNotificationEvent
+                      ? LittleLightTheme.of(context).errorLayers.layer0
+                      : LittleLightTheme.of(context).surfaceLayers.layer2,
+                  borderRadius: const BorderRadius.all(Radius.circular(8))),
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Row(mainAxisSize: MainAxisSize.min, children: [
+                DefaultTextStyle(
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                    child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: _latestEvent is ErrorNotificationEvent
+                            ? buildErrorMessage(context, _latestEvent)
+                            : DefaultLoadingShimmer(
+                                child: buildMessage(context)))),
+                if (icons != null) icons
+              ]),
+            ),
+            if (additionalMessage != null) additionalMessage
           ]),
-        ),
-        if (additionalMessage != null) additionalMessage
-      ]),
     );
   }
 
@@ -266,7 +281,8 @@ class InventoryNotificationWidgetState extends State<InventoryNotificationWidget
     return Shimmer.fromColors(
         baseColor: Theme.of(context).colorScheme.secondary,
         highlightColor: Colors.grey.shade100,
-        child: Container(height: 2, color: Theme.of(context).colorScheme.onSurface));
+        child: Container(
+            height: 2, color: Theme.of(context).colorScheme.onSurface));
   }
 
   Widget bottomPaddingShimmer(BuildContext context) {
@@ -275,16 +291,17 @@ class InventoryNotificationWidgetState extends State<InventoryNotificationWidget
         highlightColor: Colors.grey.shade300,
         child: Container(
           decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  colors: [Colors.transparent, Theme.of(context).colorScheme.onSurface],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter)),
+              gradient: LinearGradient(colors: [
+            Colors.transparent,
+            Theme.of(context).colorScheme.onSurface
+          ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
         ));
   }
 
   Widget? getAdditionalMessage(BuildContext context) {
     final event = _latestEvent;
-    if (event is ErrorNotificationEvent && event.getAdditionalMessage(context) != null) {
+    if (event is ErrorNotificationEvent &&
+        event.getAdditionalMessage(context) != null) {
       return Container(
           margin: const EdgeInsets.only(top: 8),
           padding: const EdgeInsets.all(8),

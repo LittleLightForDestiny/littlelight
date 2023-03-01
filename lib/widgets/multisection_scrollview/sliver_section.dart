@@ -31,8 +31,10 @@ class SliverSection {
     this.itemHeight,
   });
 
-  Widget build(BuildContext context, {double crossAxisSpacing = 0, double mainAxisSpacing = 0}) {
-    final useGrid = itemsPerRow > 1 || itemHeight != null || itemAspectRatio != null;
+  Widget build(BuildContext context,
+      {double crossAxisSpacing = 0, double mainAxisSpacing = 0}) {
+    final useGrid =
+        itemsPerRow > 1 || itemHeight != null || itemAspectRatio != null;
     if (useGrid) {
       return SliverGrid(
           delegate: _builderDelegate(),
@@ -58,7 +60,8 @@ class SliverSection {
       );
     }
     return SliverChildBuilderDelegate(
-      (context, index) => index < itemCount ? itemBuilder(context, index) : null,
+      (context, index) =>
+          index < itemCount ? itemBuilder(context, index) : null,
       childCount: itemCount,
       addRepaintBoundaries: true,
     );

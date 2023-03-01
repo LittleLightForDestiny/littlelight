@@ -11,5 +11,6 @@ class TransferError {
   final String? characterId;
   final PlatformErrorCodes? platformError;
 
-  TransferError(this.code, {this.item, this.destination, this.characterId, this.platformError});
+  TransferError(this.code,
+      {this.item, this.destination, this.characterId, this.platformError});
 }

@@ -15,7 +15,8 @@ class TabsCharacterMenuWidget extends StatelessWidget {
   final TabController controller;
   final bool includeVault;
 
-  const TabsCharacterMenuWidget(this.characters, {this.controller, this.includeVault = true});
+  const TabsCharacterMenuWidget(this.characters,
+      {this.controller, this.includeVault = true});
 
   @override
   Widget build(BuildContext context) {
@@ -36,9 +37,11 @@ class TabsCharacterMenuWidget extends StatelessWidget {
     }
     String lastPlayedCharId = characters.first.characterId;
     DateTime lastPlayedDate =
-        DateTime.tryParse(characters.first.character.dateLastPlayed) ?? DateTime.fromMicrosecondsSinceEpoch(0);
+        DateTime.tryParse(characters.first.character.dateLastPlayed) ??
+            DateTime.fromMicrosecondsSinceEpoch(0);
     for (var char in characters) {
-      var date = DateTime.tryParse(char.character.dateLastPlayed) ?? DateTime.fromMicrosecondsSinceEpoch(0);
+      var date = DateTime.tryParse(char.character.dateLastPlayed) ??
+          DateTime.fromMicrosecondsSinceEpoch(0);
       if (date.isAfter(lastPlayedDate)) {
         lastPlayedDate = date;
         lastPlayedCharId = char.characterId;
@@ -49,7 +52,8 @@ class TabsCharacterMenuWidget extends StatelessWidget {
         .map((index, character) => MapEntry<int, TabMenuButton>(
             index,
             TabMenuButton(
-                key: Key("tabmenu_${character.characterId}_${character.character.emblemHash}"),
+                key: Key(
+                    "tabmenu_${character.characterId}_${character.character.emblemHash}"),
                 lastPlayed: character.characterId == lastPlayedCharId,
                 character: character.character)))
         .values
@@ -70,7 +74,8 @@ class TabMenuButton extends StatefulWidget {
 
   final bool lastPlayed;
 
-  const TabMenuButton({this.character, Key key, this.lastPlayed = true}) : super(key: key);
+  const TabMenuButton({this.character, Key key, this.lastPlayed = true})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() => TabMenuButtonState();
@@ -86,16 +91,23 @@ class TabMenuButtonState extends State<TabMenuButton> with ManifestConsumer {
   }
 
   getDefinitions() async {
-    emblemDefinition = await manifest.getDefinition<DestinyInventoryItemDefinition>(widget.character.emblemHash);
+    emblemDefinition =
+        await manifest.getDefinition<DestinyInventoryItemDefinition>(
+            widget.character.emblemHash);
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-        decoration: BoxDecoration(border: Border.all(color: Theme.of(context).colorScheme.onSurface, width: 1)),
+        decoration: BoxDecoration(
+            border: Border.all(
+                color: Theme.of(context).colorScheme.onSurface, width: 1)),
         foregroundDecoration: widget.lastPlayed
-            ? const CornerBadgeDecoration(badgeSize: 15, position: CornerPosition.TopLeft, colors: [Colors.yellow])
+            ? const CornerBadgeDecoration(
+                badgeSize: 15,
+                position: CornerPosition.TopLeft,
+                colors: [Colors.yellow])
             : null,
         width: 40,
         height: 40,
@@ -121,14 +133,15 @@ class VaultTabMenuButton extends TabMenuButton {
 }
 
 class VaultTabMenuButtonState extends TabMenuButtonState {
-
   @override
   getDefinitions() {}
 
   @override
   Widget build(BuildContext context) {
     return Container(
-        decoration: BoxDecoration(border: Border.all(color: Theme.of(context).colorScheme.onSurface, width: 1)),
+        decoration: BoxDecoration(
+            border: Border.all(
+                color: Theme.of(context).colorScheme.onSurface, width: 1)),
         width: 40,
         height: 40,
         margin: const EdgeInsets.only(left: 4, right: 4, bottom: 10),

@@ -9,16 +9,19 @@ class AuthorizationRequestSubPage extends StatefulWidget {
   const AuthorizationRequestSubPage();
 
   @override
-  AuthorizationRequestSubPageState createState() => AuthorizationRequestSubPageState();
+  AuthorizationRequestSubPageState createState() =>
+      AuthorizationRequestSubPageState();
 }
 
-class AuthorizationRequestSubPageState extends SubpageBaseState<AuthorizationRequestSubPage> with AuthConsumer {
+class AuthorizationRequestSubPageState
+    extends SubpageBaseState<AuthorizationRequestSubPage> with AuthConsumer {
   @override
   void initState() {
     super.initState();
   }
 
-  bool get forceReauth => Provider.of<InitialPageStateNotifier>(context, listen: false).forceReauth;
+  bool get forceReauth =>
+      Provider.of<InitialPageStateNotifier>(context, listen: false).forceReauth;
 
   @override
   Widget buildTitle(BuildContext context) => Text(
@@ -27,13 +30,17 @@ class AuthorizationRequestSubPageState extends SubpageBaseState<AuthorizationReq
 
   @override
   Widget buildContent(BuildContext context) => Container(
-          child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         Padding(
             padding: const EdgeInsets.all(8).copyWith(bottom: 24),
             child: forceReauth
-                ? Text("Authorize with Bungie.net to use inventory management features".translate(context))
+                ? Text(
+                    "Authorize with Bungie.net to use inventory management features"
+                        .translate(context))
                 : Text(
-                    "Please re-authorize Little Light to keep using inventory management features".translate(context))),
+                    "Please re-authorize Little Light to keep using inventory management features"
+                        .translate(context))),
         ElevatedButton(
           onPressed: () {
             auth.openBungieLogin(forceReauth);

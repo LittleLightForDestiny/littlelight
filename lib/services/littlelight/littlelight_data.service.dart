@@ -10,7 +10,8 @@ import 'package:little_light/models/wishlist_index.dart';
 import 'package:little_light/services/storage/export.dart';
 
 setupLittleLightDataService() {
-  GetIt.I.registerSingleton<LittleLightDataService>(LittleLightDataService._internal());
+  GetIt.I.registerSingleton<LittleLightDataService>(
+      LittleLightDataService._internal());
 }
 
 class LittleLightDataService with StorageConsumer {
@@ -18,14 +19,16 @@ class LittleLightDataService with StorageConsumer {
       "https://cdn.jsdelivr.net/gh/LittleLightForDestiny/littlelight_wishlists@HEAD/deliverables/index.json";
   final _collaboratorsDataURL =
       "https://cdn.jsdelivr.net/gh/LittleLightForDestiny/littleLightData@HEAD/collaborators.json";
-  final _gameDataURL = "https://cdn.jsdelivr.net/gh/LittleLightForDestiny/littleLightData@HEAD/game_data.json";
+  final _gameDataURL =
+      "https://cdn.jsdelivr.net/gh/LittleLightForDestiny/littleLightData@HEAD/game_data.json";
 
   LittleLightDataService._internal();
 
   Future<WishlistFolder> getFeaturedWishlists() async {
     WishlistFolder? data = await globalStorage.getFeaturedWishlists();
     if (data != null) return data;
-    Map<String, dynamic> contents = await fetchDataFromCDN(_featuredWishlistsURL);
+    Map<String, dynamic> contents =
+        await fetchDataFromCDN(_featuredWishlistsURL);
     try {
       data = WishlistFolder.fromJson(contents);
       globalStorage.saveFeaturedWishlists(data);

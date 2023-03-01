@@ -58,7 +58,8 @@ class InventoryItemWrapperWidget extends StatefulWidget {
 }
 
 //TODO: deprecate this in favor of new item widgets
-class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> extends State<T>
+class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
+    extends State<T>
     with
         UserSettingsConsumer,
         ProfileConsumer,
@@ -66,7 +67,8 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> exte
         ManifestConsumer,
         NotificationConsumer,
         SelectionConsumer {
-  InventoryBloc inventoryBloc(BuildContext context) => context.read<InventoryBloc>();
+  InventoryBloc inventoryBloc(BuildContext context) =>
+      context.read<InventoryBloc>();
 
   DestinyInventoryItemDefinition definition;
   String uniqueId;
@@ -87,7 +89,8 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> exte
   @override
   void initState() {
     uniqueId = const Uuid().v4();
-    definition = manifest.getDefinitionFromCache<DestinyInventoryItemDefinition>(item?.itemHash);
+    definition = manifest
+        .getDefinitionFromCache<DestinyInventoryItemDefinition>(item?.itemHash);
 
     super.initState();
     if (item != null && definition == null) {
@@ -147,7 +150,8 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> exte
         return;
       }
     }
-    definition = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
+    definition = await manifest
+        .getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
     if (mounted) {
       setState(() {});
     }
@@ -162,7 +166,9 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> exte
         Positioned.fill(child: buildCrossfade(context)),
         selected
             ? Container(
-                foregroundDecoration: BoxDecoration(border: Border.all(color: Colors.lightBlue.shade400, width: 2)),
+                foregroundDecoration: BoxDecoration(
+                    border:
+                        Border.all(color: Colors.lightBlue.shade400, width: 2)),
               )
             : Container(),
         buildTapHandler(context)
@@ -175,7 +181,9 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> exte
       duration: const Duration(milliseconds: 500),
       firstChild: buildEmpty(context),
       secondChild: buildItem(context),
-      crossFadeState: definition == null ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+      crossFadeState: definition == null
+          ? CrossFadeState.showFirst
+          : CrossFadeState.showSecond,
     );
   }
 
@@ -212,7 +220,8 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> exte
   }
 
   void onEmptyTap(BuildContext context) async {
-    var bucketDef = await manifest.getDefinition<DestinyInventoryBucketDefinition>(widget.bucketHash);
+    var bucketDef = await manifest
+        .getDefinition<DestinyInventoryBucketDefinition>(widget.bucketHash);
     var character = profile.getCharacter(widget.characterId);
     ItemWithOwner item = await Navigator.push(
       context,
@@ -322,7 +331,8 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> exte
 
   Widget buildMinimal(BuildContext context) {
     var type = definition?.itemType;
-    if (type == DestinyItemType.None && definition?.inventory?.bucketTypeHash == InventoryBucket.subclass) {
+    if (type == DestinyItemType.None &&
+        definition?.inventory?.bucketTypeHash == InventoryBucket.subclass) {
       type = DestinyItemType.Subclass;
     }
     switch (type) {
@@ -371,7 +381,8 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> exte
 
   Widget buildMedium(BuildContext context) {
     var type = definition?.itemType;
-    if (type == DestinyItemType.None && definition?.inventory?.bucketTypeHash == InventoryBucket.subclass) {
+    if (type == DestinyItemType.None &&
+        definition?.inventory?.bucketTypeHash == InventoryBucket.subclass) {
       type = DestinyItemType.Subclass;
     }
     switch (type) {
@@ -422,7 +433,8 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> exte
 
   Widget buildFull(BuildContext context) {
     var type = definition?.itemType;
-    if (type == DestinyItemType.None && definition?.inventory?.bucketTypeHash == InventoryBucket.subclass) {
+    if (type == DestinyItemType.None &&
+        definition?.inventory?.bucketTypeHash == InventoryBucket.subclass) {
       type = DestinyItemType.Subclass;
     }
     switch (type) {

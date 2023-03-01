@@ -34,12 +34,20 @@ class BucketDisplayOptionsSelector extends StatelessWidget {
   }
 
   BucketDisplayType getCurrentType(BuildContext context) => isVault
-      ? context.watch<BucketOptionsBloc>().getDisplayTypeForVaultBucket(bucketHash)
-      : context.watch<BucketOptionsBloc>().getDisplayTypeForCharacterBucket(bucketHash);
+      ? context
+          .watch<BucketOptionsBloc>()
+          .getDisplayTypeForVaultBucket(bucketHash)
+      : context
+          .watch<BucketOptionsBloc>()
+          .getDisplayTypeForCharacterBucket(bucketHash);
 
   void setCurrentType(BuildContext context, BucketDisplayType type) => isVault
-      ? context.read<BucketOptionsBloc>().setDisplayTypeForVaultBucket(bucketHash, type)
-      : context.read<BucketOptionsBloc>().setDisplayTypeForCharacterBucket(bucketHash, type);
+      ? context
+          .read<BucketOptionsBloc>()
+          .setDisplayTypeForVaultBucket(bucketHash, type)
+      : context
+          .read<BucketOptionsBloc>()
+          .setDisplayTypeForCharacterBucket(bucketHash, type);
 
   void openMenu(BuildContext context) {
     showOverlay(

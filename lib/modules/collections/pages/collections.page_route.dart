@@ -38,7 +38,8 @@ class CollectionsPageRoute extends MaterialPageRoute {
                 arguments: CollectionsPageRouteArguments(
                     parentCategoryHashes: parentCategoryHashes,
                     categoryPresentationNodeHash: categoryPresentationNodeHash,
-                    subcategoryPresentationNodeHash: subcategoryPresentationNodeHash,
+                    subcategoryPresentationNodeHash:
+                        subcategoryPresentationNodeHash,
                     badgeCategoryHash: badgeCategoryHash)),
             builder: (context) {
               if (subcategoryPresentationNodeHash != null) {

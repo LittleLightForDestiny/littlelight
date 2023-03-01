@@ -29,7 +29,8 @@ const _specificEquippable = [
   InventoryBucket.classArmor,
 ];
 
-class EquipLoadoutBloc extends ChangeNotifier with ManifestConsumer, ProfileConsumer {
+class EquipLoadoutBloc extends ChangeNotifier
+    with ManifestConsumer, ProfileConsumer {
   final BuildContext context;
   final LoadoutsBloc _loadoutsBloc;
   final InventoryBloc _inventoryBloc;
@@ -81,23 +82,30 @@ class EquipLoadoutBloc extends ChangeNotifier with ManifestConsumer, ProfileCons
     final args = context.read<EquipLoadoutPageRouteArguments>();
     final loadoutID = args.loadoutID;
     if (loadoutID == null) return null;
-    final loadout = _loadoutsBloc.loadouts?.firstWhereOrNull((l) => l.assignedId == loadoutID);
+    final loadout = _loadoutsBloc.loadouts
+        ?.firstWhereOrNull((l) => l.assignedId == loadoutID);
     return loadout;
   }
 
   void _loadEmblemDefinition() async {
-    _emblemDefinition = await manifest.getDefinition<DestinyInventoryItemDefinition>(_loadout?.emblemHash);
+    _emblemDefinition = await manifest
+        .getDefinition<DestinyInventoryItemDefinition>(_loadout?.emblemHash);
     notifyListeners();
   }
 
-  Map<DestinyClass, List<LoadoutIndexItem?>>? _getEquippableItems(LoadoutItemIndex loadout) {
+  Map<DestinyClass, List<LoadoutIndexItem?>>? _getEquippableItems(
+      LoadoutItemIndex loadout) {
     Map<DestinyClass, List<LoadoutIndexItem?>> result = {};
     result[DestinyClass.Unknown] = _genericEquippable //
         .map((b) => loadout.slots[b]?.genericEquipped)
         .whereType<LoadoutIndexItem?>()
         .toList();
 
-    final classes = [DestinyClass.Titan, DestinyClass.Hunter, DestinyClass.Warlock];
+    final classes = [
+      DestinyClass.Titan,
+      DestinyClass.Hunter,
+      DestinyClass.Warlock
+    ];
     for (final c in classes) {
       result[c] = _specificEquippable //
           .map((b) => loadout.slots[b]?.classSpecificEquipped[c])
@@ -111,19 +119,24 @@ class EquipLoadoutBloc extends ChangeNotifier with ManifestConsumer, ProfileCons
   }
 
   List<LoadoutIndexItem>? _getUnequippableItems(LoadoutItemIndex loadout) {
-    return loadout.slots.values.map((s) => s.unequipped).fold<List<LoadoutIndexItem>>([], (pv, v) => pv + v);
+    return loadout.slots.values
+        .map((s) => s.unequipped)
+        .fold<List<LoadoutIndexItem>>([], (pv, v) => pv + v);
   }
 
-  List<TransferDestination> _getEquipCharacters(LoadoutItemIndex loadout, List<TransferDestination> characters) {
+  List<TransferDestination> _getEquipCharacters(
+      LoadoutItemIndex loadout, List<TransferDestination> characters) {
     return characters;
   }
 
-  List<TransferDestination> _getTransferCharacters(LoadoutItemIndex loadout, List<TransferDestination> characters) {
+  List<TransferDestination> _getTransferCharacters(
+      LoadoutItemIndex loadout, List<TransferDestination> characters) {
     List<TransferDestination> chars = characters;
     return chars + [TransferDestination(TransferDestinationType.vault)];
   }
 
-  Map<DestinyClass, List<LoadoutIndexItem?>>? get equippableItems => _equippableItems;
+  Map<DestinyClass, List<LoadoutIndexItem?>>? get equippableItems =>
+      _equippableItems;
   List<LoadoutIndexItem>? get unequippableItems => _unequippableItems;
 
   List<TransferDestination>? get equipCharacters => _equipCharacters;

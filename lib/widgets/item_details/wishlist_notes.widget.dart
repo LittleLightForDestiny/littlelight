@@ -10,7 +10,8 @@ class WishlistNotesWidget extends StatelessWidget with WishlistsConsumer {
   final DestinyItemComponent item;
   final Map<String, List<DestinyItemPlugBase>> reusablePlugs;
 
-  WishlistNotesWidget(this.item, {Key key, this.reusablePlugs}) : super(key: key);
+  WishlistNotesWidget(this.item, {Key key, this.reusablePlugs})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +43,8 @@ class WishlistNotesWidget extends StatelessWidget with WishlistsConsumer {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: notes
               ?.where((n) => (n?.length ?? 0) > 0)
-              ?.map((n) => Container(padding: const EdgeInsets.all(4), child: Text(n)))
+              ?.map((n) =>
+                  Container(padding: const EdgeInsets.all(4), child: Text(n)))
               ?.toList() ??
           [],
     );

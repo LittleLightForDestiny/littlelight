@@ -42,12 +42,20 @@ class PresentationNodeWidgetState extends State<SealItemWidget>
   }
 
   bool get isComplete =>
-      (completionRecord?.state?.contains(DestinyRecordState.ObjectiveNotCompleted) ?? true) == false ||
-      (completionRecord?.state?.contains(DestinyRecordState.RecordRedeemed) ?? false);
+      (completionRecord?.state
+                  ?.contains(DestinyRecordState.ObjectiveNotCompleted) ??
+              true) ==
+          false ||
+      (completionRecord?.state?.contains(DestinyRecordState.RecordRedeemed) ??
+          false);
 
   bool get isGilded =>
-      (gildingRecord?.state?.contains(DestinyRecordState.ObjectiveNotCompleted) ?? true) == false ||
-      (gildingRecord?.state?.contains(DestinyRecordState.RecordRedeemed) ?? false);
+      (gildingRecord?.state
+                  ?.contains(DestinyRecordState.ObjectiveNotCompleted) ??
+              true) ==
+          false ||
+      (gildingRecord?.state?.contains(DestinyRecordState.RecordRedeemed) ??
+          false);
 
   DestinyRecordComponent? get gildingRecord {
     final recordHash = gildingRecordDefinition?.hash;
@@ -64,22 +72,30 @@ class PresentationNodeWidgetState extends State<SealItemWidget>
   }
 
   loadDefinitions() async {
-    definition = await manifest.getDefinition<DestinyPresentationNodeDefinition>(widget.hash);
+    definition = await manifest
+        .getDefinition<DestinyPresentationNodeDefinition>(widget.hash);
     final completionRecordHash = definition?.completionRecordHash;
     if (completionRecordHash != null) {
-      completionRecordDefinition = await manifest.getDefinition<DestinyRecordDefinition>(completionRecordHash);
+      completionRecordDefinition = await manifest
+          .getDefinition<DestinyRecordDefinition>(completionRecordHash);
     }
-    final objectiveHash = completionRecordDefinition?.objectiveHashes?.firstOrNull;
+    final objectiveHash =
+        completionRecordDefinition?.objectiveHashes?.firstOrNull;
     if (objectiveHash != null) {
-      objectiveDefinition = await manifest.getDefinition<DestinyObjectiveDefinition>(objectiveHash);
+      objectiveDefinition = await manifest
+          .getDefinition<DestinyObjectiveDefinition>(objectiveHash);
     }
-    final gildingRecordHash = completionRecordDefinition?.titleInfo?.gildingTrackingRecordHash;
+    final gildingRecordHash =
+        completionRecordDefinition?.titleInfo?.gildingTrackingRecordHash;
     if (gildingRecordHash != null) {
-      gildingRecordDefinition = await manifest.getDefinition<DestinyRecordDefinition>(gildingRecordHash);
+      gildingRecordDefinition = await manifest
+          .getDefinition<DestinyRecordDefinition>(gildingRecordHash);
     }
-    final gildingObjectiveHash = gildingRecordDefinition?.objectiveHashes?.firstOrNull;
+    final gildingObjectiveHash =
+        gildingRecordDefinition?.objectiveHashes?.firstOrNull;
     if (gildingObjectiveHash != null) {
-      gildingObjectiveDefinition = await manifest.getDefinition<DestinyObjectiveDefinition>(gildingObjectiveHash);
+      gildingObjectiveDefinition = await manifest
+          .getDefinition<DestinyObjectiveDefinition>(gildingObjectiveHash);
     }
 
     lastCharacter = profile.characters?.firstOrNull;
@@ -97,12 +113,15 @@ class PresentationNodeWidgetState extends State<SealItemWidget>
         padding: const EdgeInsets.all(2),
         decoration: BoxDecoration(
             border: Border.all(color: color.withOpacity(.6), width: 1),
-            gradient: LinearGradient(begin: const Alignment(0, 0), end: const Alignment(1, 2), colors: [
-              color.withOpacity(.05),
-              color.withOpacity(.1),
-              color.withOpacity(.03),
-              color.withOpacity(.1)
-            ])),
+            gradient: LinearGradient(
+                begin: const Alignment(0, 0),
+                end: const Alignment(1, 2),
+                colors: [
+                  color.withOpacity(.05),
+                  color.withOpacity(.1),
+                  color.withOpacity(.03),
+                  color.withOpacity(.1)
+                ])),
         child: Stack(children: [
           Row(children: [
             buildIcon(),
@@ -121,13 +140,17 @@ class PresentationNodeWidgetState extends State<SealItemWidget>
       return Container();
     }
     return AspectRatio(
-        aspectRatio: 1, child: Padding(padding: const EdgeInsets.all(8), child: QueuedNetworkImage.fromBungie(iconUrl)));
+        aspectRatio: 1,
+        child: Padding(
+            padding: const EdgeInsets.all(8),
+            child: QueuedNetworkImage.fromBungie(iconUrl)));
   }
 
   Widget buildSealInfo() {
     final theme = LittleLightTheme.of(context);
     final useGildingObjective = isComplete && gildingRecord != null;
-    final objectiveDef = useGildingObjective ? gildingObjectiveDefinition : objectiveDefinition;
+    final objectiveDef =
+        useGildingObjective ? gildingObjectiveDefinition : objectiveDefinition;
     return DefaultTextStyle(
         style: TextStyle(color: theme.onSurfaceLayers.layer2),
         child: Container(
@@ -149,15 +172,19 @@ class PresentationNodeWidgetState extends State<SealItemWidget>
     return Container(
       child: Text(
         definition?.displayProperties?.name ?? "",
-        style: theme.textTheme.subtitle.copyWith(color: theme.onSurfaceLayers.layer2),
+        style: theme.textTheme.subtitle
+            .copyWith(color: theme.onSurfaceLayers.layer2),
       ),
     );
   }
 
   Widget buildSealTitle(DestinyObjectiveDefinition? objectiveDef) {
     final genderHash = lastCharacter?.character.genderHash;
-    final titlesByGenderHash = completionRecordDefinition?.titleInfo?.titlesByGenderHash;
-    final title = genderHash != null ? (titlesByGenderHash?["$genderHash"]) : titlesByGenderHash?.values.firstOrNull;
+    final titlesByGenderHash =
+        completionRecordDefinition?.titleInfo?.titlesByGenderHash;
+    final title = genderHash != null
+        ? (titlesByGenderHash?["$genderHash"])
+        : titlesByGenderHash?.values.firstOrNull;
     final theme = LittleLightTheme.of(context);
     final isComplete = this.isComplete;
     final color = isGilded
@@ -172,7 +199,10 @@ class PresentationNodeWidgetState extends State<SealItemWidget>
           border: Border.all(color: color, width: 2),
           color: color.withOpacity(.5),
         ),
-        child: Row(children: [Expanded(child: Text(title ?? "")), buildSealProgress(objectiveDef)]));
+        child: Row(children: [
+          Expanded(child: Text(title ?? "")),
+          buildSealProgress(objectiveDef)
+        ]));
   }
 
   Widget buildSealProgress(DestinyObjectiveDefinition? objectiveDef) {
@@ -181,7 +211,8 @@ class PresentationNodeWidgetState extends State<SealItemWidget>
     if (objective == null || objectiveDef == null) return Container();
     return Text(
       "${objective.progress}/${objectiveDef.completionValue}",
-      style: theme.textTheme.subtitle.copyWith(color: theme.onSurfaceLayers.layer2),
+      style: theme.textTheme.subtitle
+          .copyWith(color: theme.onSurfaceLayers.layer2),
     );
   }
 
@@ -193,13 +224,17 @@ class PresentationNodeWidgetState extends State<SealItemWidget>
         : isComplete
             ? theme.tierLayers.superior
             : theme.surfaceLayers.layer2;
-    final color = useGildingObjective ? theme.achievementLayers.layer1 : theme.tierLayers.superior;
+    final color = useGildingObjective
+        ? theme.achievementLayers.layer1
+        : theme.tierLayers.superior;
     final objective = completionRecord?.objectives?.firstOrNull;
-    final progress = (objective?.progress ?? 0) / (objectiveDef?.completionValue ?? 1);
+    final progress =
+        (objective?.progress ?? 0) / (objectiveDef?.completionValue ?? 1);
     return Container(
         alignment: Alignment.centerLeft,
         height: 8,
         color: bgColor.withOpacity(.5),
-        child: FractionallySizedBox(widthFactor: progress.clamp(0, 1), child: Container(color: color)));
+        child: FractionallySizedBox(
+            widthFactor: progress.clamp(0, 1), child: Container(color: color)));
   }
 }

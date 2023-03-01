@@ -6,7 +6,8 @@ import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/presentation_nodes/collectible_item.widget.dart';
 
 class NestedCollectibleItemWidget extends CollectibleItemWidget {
-  const NestedCollectibleItemWidget({Key? key, required int hash}) : super(key: key, hash: hash);
+  const NestedCollectibleItemWidget({Key? key, required int hash})
+      : super(key: key, hash: hash);
 
   @override
   CollectibleItemWidgetState createState() {
@@ -14,7 +15,8 @@ class NestedCollectibleItemWidget extends CollectibleItemWidget {
   }
 }
 
-class NestedCollectibleItemWidgetState extends CollectibleItemWidgetState with ProfileConsumer {
+class NestedCollectibleItemWidgetState extends CollectibleItemWidgetState
+    with ProfileConsumer {
   @override
   Widget build(BuildContext context) {
     return Opacity(
@@ -22,7 +24,8 @@ class NestedCollectibleItemWidgetState extends CollectibleItemWidgetState with P
         child: AspectRatio(
             aspectRatio: 1,
             child: Container(
-                decoration: BoxDecoration(border: Border.all(color: Colors.grey.shade300, width: 1)),
+                decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey.shade300, width: 1)),
                 child: Stack(children: [
                   Positioned.fill(child: buildIcon(context)),
                   Positioned(right: 4, bottom: 4, child: buildItemCount()),

@@ -18,7 +18,10 @@ class WeaponInventoryItemWidget extends BaseInventoryItemWidget {
     bool showUnusedPerks = false,
     Widget trailing,
   }) : super(item, definition, instanceInfo,
-            characterId: characterId, uniqueId: uniqueId, trailing: trailing, showUnusedPerks: showUnusedPerks);
+            characterId: characterId,
+            uniqueId: uniqueId,
+            trailing: trailing,
+            showUnusedPerks: showUnusedPerks);
 
   @override
   Widget primaryStatWidget(BuildContext context) {

@@ -19,8 +19,12 @@ abstract class BaseItemFilter<T> with ProfileConsumer, ManifestConsumer {
   Future<List<ItemWithOwner>> filter(List<ItemWithOwner> items,
       {Map<int, DestinyInventoryItemDefinition> definitions}) async {
     if (!available || !enabled) return items.toList();
-    return items?.where((item) => filterItem(item, definitions: definitions))?.toList() ?? items.toList();
+    return items
+            ?.where((item) => filterItem(item, definitions: definitions))
+            ?.toList() ??
+        items.toList();
   }
 
-  bool filterItem(ItemWithOwner item, {Map<int, DestinyInventoryItemDefinition> definitions});
+  bool filterItem(ItemWithOwner item,
+      {Map<int, DestinyInventoryItemDefinition> definitions});
 }

@@ -7,7 +7,8 @@ import 'package:little_light/utils/item_with_owner.dart';
 import 'base_item_filter.dart';
 
 class AmmoTypeFilter extends BaseItemFilter<Set<DestinyAmmunitionType>> {
-  AmmoTypeFilter() : super(<DestinyAmmunitionType>{}, <DestinyAmmunitionType>{});
+  AmmoTypeFilter()
+      : super(<DestinyAmmunitionType>{}, <DestinyAmmunitionType>{});
 
   @override
   Future<List<ItemWithOwner>> filter(List<ItemWithOwner> items,
@@ -29,7 +30,8 @@ class AmmoTypeFilter extends BaseItemFilter<Set<DestinyAmmunitionType>> {
   }
 
   @override
-  bool filterItem(ItemWithOwner item, {Map<int, DestinyInventoryItemDefinition> definitions}) {
+  bool filterItem(ItemWithOwner item,
+      {Map<int, DestinyInventoryItemDefinition> definitions}) {
     var def = definitions[item?.item?.itemHash];
     return value.contains(def?.equippingBlock?.ammoType);
   }

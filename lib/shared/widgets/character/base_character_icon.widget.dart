@@ -4,7 +4,8 @@ import 'package:little_light/core/theme/littlelight.theme.dart';
 abstract class BaseCharacterIconWidget extends StatelessWidget {
   final double borderWidth;
 
-  const BaseCharacterIconWidget({Key? key, this.borderWidth = 1.5}) : super(key: key);
+  const BaseCharacterIconWidget({Key? key, this.borderWidth = 1.5})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {

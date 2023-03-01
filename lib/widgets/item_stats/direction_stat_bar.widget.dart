@@ -10,7 +10,11 @@ class DirectionStatBarWidget extends StatelessWidget {
   final Color backgroundColor;
   final Color equippedColor;
   const DirectionStatBarWidget(
-      {this.currentValue = 0, this.currentColor, this.equippedValue, this.backgroundColor, this.equippedColor});
+      {this.currentValue = 0,
+      this.currentColor,
+      this.equippedValue,
+      this.backgroundColor,
+      this.equippedColor});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +22,9 @@ class DirectionStatBarWidget extends StatelessWidget {
     var equippedDirection = calculateDirection(equippedValue);
     return Container(
         child: Stack(children: [
-      Positioned.fill(child: CustomPaint(painter: _SemiCirclePainter(color: backgroundColor))),
+      Positioned.fill(
+          child:
+              CustomPaint(painter: _SemiCirclePainter(color: backgroundColor))),
       Positioned.fill(
           child: CustomPaint(
               painter: _SemiCirclePainter(
@@ -38,11 +44,13 @@ class DirectionStatBarWidget extends StatelessWidget {
 
   _DirectionRange calculateDirection(int value) {
     value = math.max(0, math.min(100, value));
-    double direction = math.sin((value + 5) * ((2 * math.pi) / 20)) * (100 - value) / 100;
+    double direction =
+        math.sin((value + 5) * ((2 * math.pi) / 20)) * (100 - value) / 100;
     double centralDirection = (direction + 1) * math.pi / 2;
     double spread = math.max(.1, (math.pi / 3) * (100 - value) / 100);
     centralDirection = centralDirection.clamp(spread, math.pi - spread);
-    return _DirectionRange(centralDirection - spread, centralDirection + spread);
+    return _DirectionRange(
+        centralDirection - spread, centralDirection + spread);
   }
 }
 
@@ -57,7 +65,8 @@ class _SemiCirclePainter extends CustomPainter {
   final Color color;
   final double arcStart;
   final double arcEnd;
-  _SemiCirclePainter({this.color = Colors.grey, this.arcStart = 0, this.arcEnd = math.pi});
+  _SemiCirclePainter(
+      {this.color = Colors.grey, this.arcStart = 0, this.arcEnd = math.pi});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -71,8 +80,8 @@ class _SemiCirclePainter extends CustomPainter {
       ..color = color
       ..style = PaintingStyle.fill;
 
-    canvas.drawArc(
-        Rect.fromLTRB(0, 0, size.width, size.height * 2), arcStart + math.pi, arcEnd - arcStart, true, paint);
+    canvas.drawArc(Rect.fromLTRB(0, 0, size.width, size.height * 2),
+        arcStart + math.pi, arcEnd - arcStart, true, paint);
   }
 
   @override

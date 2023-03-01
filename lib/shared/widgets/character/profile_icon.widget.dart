@@ -5,8 +5,10 @@ import 'package:little_light/shared/widgets/character/base_character_icon.widget
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 
 class ProfileIconWidget extends BaseCharacterIconWidget {
-  const ProfileIconWidget({double borderWidth = 1.5}) : super(borderWidth: borderWidth);
+  const ProfileIconWidget({double borderWidth = 1.5})
+      : super(borderWidth: borderWidth);
   @override
   Widget buildIcon(BuildContext context) =>
-      ManifestImageWidget<DestinyInventoryItemDefinition>(profileCharacterEmblemHash);
+      ManifestImageWidget<DestinyInventoryItemDefinition>(
+          profileCharacterEmblemHash);
 }

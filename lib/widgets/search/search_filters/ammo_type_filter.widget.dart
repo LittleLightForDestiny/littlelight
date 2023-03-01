@@ -16,19 +16,22 @@ class AmmoTypeFilterWidget extends BaseSearchFilterWidget<AmmoTypeFilter> {
   _AmmoTypeFilterWidgetState createState() => _AmmoTypeFilterWidgetState();
 }
 
-class _AmmoTypeFilterWidgetState
-    extends BaseSearchFilterWidgetState<AmmoTypeFilterWidget, AmmoTypeFilter, DestinyAmmunitionType> {
+class _AmmoTypeFilterWidgetState extends BaseSearchFilterWidgetState<
+    AmmoTypeFilterWidget, AmmoTypeFilter, DestinyAmmunitionType> {
   @override
   Widget buildButtons(BuildContext context) {
     var textButtons = options
-        .where((e) => (e ?? DestinyAmmunitionType.None) == DestinyAmmunitionType.None)
+        .where((e) =>
+            (e ?? DestinyAmmunitionType.None) == DestinyAmmunitionType.None)
         .map((e) => buildButton(context, e))
         .toList();
     var iconButtons = options
-        .where((e) => (e ?? DestinyAmmunitionType.None) != DestinyAmmunitionType.None)
+        .where((e) =>
+            (e ?? DestinyAmmunitionType.None) != DestinyAmmunitionType.None)
         .map((e) => Expanded(child: buildButton(context, e)))
         .toList();
-    return Column(children: [Column(children: textButtons), Row(children: iconButtons)]);
+    return Column(
+        children: [Column(children: textButtons), Row(children: iconButtons)]);
   }
 
   @override
@@ -38,7 +41,8 @@ class _AmmoTypeFilterWidgetState
           margin: const EdgeInsets.all(8),
           width: 32,
           height: 32,
-          child: Icon(DestinyData.getAmmoTypeIcon(value), size: 32, color: DestinyData.getAmmoTypeColor(value)));
+          child: Icon(DestinyData.getAmmoTypeIcon(value),
+              size: 32, color: DestinyData.getAmmoTypeColor(value)));
     }
 
     return Text(

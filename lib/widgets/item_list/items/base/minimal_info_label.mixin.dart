@@ -11,6 +11,9 @@ mixin MinimalInfoLabelMixin on InventoryItemMixin {
         left: iconBorderWidth,
         child: Container(
             alignment: Alignment.bottomRight,
-            child: Container(color: Colors.black.withOpacity(.5), padding: EdgeInsets.all(padding), child: child)));
+            child: Container(
+                color: Colors.black.withOpacity(.5),
+                padding: EdgeInsets.all(padding),
+                child: child)));
   }
 }

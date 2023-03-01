@@ -5,11 +5,16 @@ import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/widgets/common/header.wiget.dart';
 
 class LittleLightCustomDialog extends Dialog {
-  LittleLightCustomDialog(Widget content, {Widget title, Widget footer, double maxWidth = 600, double maxHeight = 500})
+  LittleLightCustomDialog(Widget content,
+      {Widget title,
+      Widget footer,
+      double maxWidth = 600,
+      double maxHeight = 500})
       : super(
             insetPadding: const EdgeInsets.all(8),
             child: Container(
-              constraints: BoxConstraints(maxWidth: maxWidth, maxHeight: maxHeight),
+              constraints:
+                  BoxConstraints(maxWidth: maxWidth, maxHeight: maxHeight),
               padding: const EdgeInsets.all(8).copyWith(bottom: 4),
               child: Column(mainAxisSize: MainAxisSize.min, children: [
                 title != null ? HeaderWidget(child: title) : Container(),
@@ -42,47 +47,65 @@ class LittleLightCustomDialog extends Dialog {
         ));
   }
 
-  factory LittleLightCustomDialog.withSaveCancelButtons(BuildContext context, Widget content,
-      {Widget title, @required Function onSave, @required Function onCancel, double maxWidth = 600}) {
-    return LittleLightCustomDialog.withHorizontalButtons(content, maxWidth: maxWidth, title: title, buttons: [
-      ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            visualDensity: VisualDensity.comfortable,
-          ),
-          child: Text("Cancel".translate(context).toUpperCase(), style: const TextStyle(fontWeight: FontWeight.bold)),
-          onPressed: () {
-            onCancel();
-          }),
-      ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            visualDensity: VisualDensity.comfortable,
-          ),
-          child: Text("Save".translate(context).toUpperCase(), style: const TextStyle(fontWeight: FontWeight.bold)),
-          onPressed: () {
-            onSave();
-          })
-    ]);
+  factory LittleLightCustomDialog.withSaveCancelButtons(
+      BuildContext context, Widget content,
+      {Widget title,
+      @required Function onSave,
+      @required Function onCancel,
+      double maxWidth = 600}) {
+    return LittleLightCustomDialog.withHorizontalButtons(content,
+        maxWidth: maxWidth,
+        title: title,
+        buttons: [
+          ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                visualDensity: VisualDensity.comfortable,
+              ),
+              child: Text("Cancel".translate(context).toUpperCase(),
+                  style: const TextStyle(fontWeight: FontWeight.bold)),
+              onPressed: () {
+                onCancel();
+              }),
+          ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                visualDensity: VisualDensity.comfortable,
+              ),
+              child: Text("Save".translate(context).toUpperCase(),
+                  style: const TextStyle(fontWeight: FontWeight.bold)),
+              onPressed: () {
+                onSave();
+              })
+        ]);
   }
 
-  factory LittleLightCustomDialog.withYesNoButtons(BuildContext context, Widget content,
-      {Widget title, double maxWidth = 600, @required Function yesPressed, @required Function noPressed}) {
-    return LittleLightCustomDialog.withHorizontalButtons(content, title: title, maxWidth: maxWidth, buttons: [
-      ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            visualDensity: VisualDensity.comfortable,
-          ),
-          child: Text("No".translate(context).toUpperCase(), style: const TextStyle(fontWeight: FontWeight.bold)),
-          onPressed: () {
-            noPressed();
-          }),
-      ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            visualDensity: VisualDensity.comfortable,
-          ),
-          child: Text("Yes".translate(context).toUpperCase(), style: const TextStyle(fontWeight: FontWeight.bold)),
-          onPressed: () {
-            yesPressed();
-          })
-    ]);
+  factory LittleLightCustomDialog.withYesNoButtons(
+      BuildContext context, Widget content,
+      {Widget title,
+      double maxWidth = 600,
+      @required Function yesPressed,
+      @required Function noPressed}) {
+    return LittleLightCustomDialog.withHorizontalButtons(content,
+        title: title,
+        maxWidth: maxWidth,
+        buttons: [
+          ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                visualDensity: VisualDensity.comfortable,
+              ),
+              child: Text("No".translate(context).toUpperCase(),
+                  style: const TextStyle(fontWeight: FontWeight.bold)),
+              onPressed: () {
+                noPressed();
+              }),
+          ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                visualDensity: VisualDensity.comfortable,
+              ),
+              child: Text("Yes".translate(context).toUpperCase(),
+                  style: const TextStyle(fontWeight: FontWeight.bold)),
+              onPressed: () {
+                yesPressed();
+              })
+        ]);
   }
 }

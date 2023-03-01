@@ -10,33 +10,24 @@ class TextSearchFilterFieldWidget extends StatefulWidget {
   final OnTextUpdate? onUpdate;
   final Duration debounce;
   const TextSearchFilterFieldWidget(
-      {this.forceAutoFocus = false, this.onUpdate, this.debounce = const Duration(milliseconds: 500)})
+      {this.forceAutoFocus = false,
+      this.onUpdate,
+      this.debounce = const Duration(milliseconds: 500)})
       : super();
 
   @override
-  _TextSearchFilterFieldWidgetState createState() => _TextSearchFilterFieldWidgetState();
+  _TextSearchFilterFieldWidgetState createState() =>
+      _TextSearchFilterFieldWidgetState();
 }
 
-class _TextSearchFilterFieldWidgetState extends State<TextSearchFilterFieldWidget> with UserSettingsConsumer {
-  final TextEditingController _searchFieldController = TextEditingController();
+class _TextSearchFilterFieldWidgetState
+    extends State<TextSearchFilterFieldWidget> with UserSettingsConsumer {
   Timer? _debouncer;
 
-  @override
-  void initState() {
-    super.initState();
-    _searchFieldController.addListener(updateText);
-  }
-
-  @override
-  void dispose() {
-    _searchFieldController.removeListener(updateText);
-    super.dispose();
-  }
-
-  void updateText() {
+  void updateText(String text) {
     if (_debouncer?.isActive ?? false) _debouncer?.cancel();
     _debouncer = Timer(widget.debounce, () {
-      widget.onUpdate?.call(_searchFieldController.text);
+      widget.onUpdate?.call(text);
     });
   }
 
@@ -44,7 +35,7 @@ class _TextSearchFilterFieldWidgetState extends State<TextSearchFilterFieldWidge
   Widget build(BuildContext context) {
     return TextField(
       autofocus: userSettings.autoOpenKeyboard || widget.forceAutoFocus,
-      controller: _searchFieldController,
+      onChanged: (text) => updateText(text),
     );
   }
 }

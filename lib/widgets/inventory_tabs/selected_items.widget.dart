@@ -29,7 +29,11 @@ class SelectedItemsWidget extends StatefulWidget {
 }
 
 class SelectedItemsWidgetState extends State<SelectedItemsWidget>
-    with ProfileConsumer, InventoryConsumer, ManifestConsumer, SelectionConsumer {
+    with
+        ProfileConsumer,
+        InventoryConsumer,
+        ManifestConsumer,
+        SelectionConsumer {
   StreamSubscription<List<ItemWithOwner>> subscription;
   List<ItemWithOwner> items;
 
@@ -69,10 +73,12 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget>
 
   Widget buildOptions(BuildContext context) {
     var buttons = <ElevatedButton>[];
-    var lockableItems =
-        items.where((i) => i?.item?.lockable == true && i?.item?.state?.contains(ItemState.Locked) != true);
-    var unlockableItems =
-        items.where((i) => i?.item?.lockable == true && i?.item?.state?.contains(ItemState.Locked) != false);
+    var lockableItems = items.where((i) =>
+        i?.item?.lockable == true &&
+        i?.item?.state?.contains(ItemState.Locked) != true);
+    var unlockableItems = items.where((i) =>
+        i?.item?.lockable == true &&
+        i?.item?.state?.contains(ItemState.Locked) != false);
     if (lockableItems.isNotEmpty) {
       buttons.add(ElevatedButton(
         key: const Key("lock_button"),
@@ -119,7 +125,8 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget>
         children: buttons
             .map((b) => Expanded(
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     child: b,
                   ),
                 ))
@@ -195,11 +202,13 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget>
                     child: AspectRatio(
                         aspectRatio: 1,
                         child: Container(
-                            foregroundDecoration:
-                                BoxDecoration(border: Border.all(color: Colors.grey.shade300, width: .5)),
+                            foregroundDecoration: BoxDecoration(
+                                border: Border.all(
+                                    color: Colors.grey.shade300, width: .5)),
                             child: Stack(children: [
                               Positioned.fill(
-                                  child: ManifestImageWidget<DestinyInventoryItemDefinition>(
+                                  child: ManifestImageWidget<
+                                      DestinyInventoryItemDefinition>(
                                 i.item.itemHash,
                               )),
                               Material(

@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
-import 'package:little_light/modules/search/blocs/filter_types/base_filter_values_wrapper.dart';
+import 'package:little_light/modules/search/blocs/filter_options/base_filter_values_options.dart';
 
-abstract class BaseItemFilter<T extends BaseFilterValuesWrapper> {
+abstract class BaseItemFilter<T extends BaseFilterOptions> {
   T data;
-  bool available = true;
-  bool enabled;
 
-  BaseItemFilter(this.data, {this.enabled = false});
+  BaseItemFilter(this.data);
 
   @mustCallSuper
-  Future<List<DestinyItemInfo>> filter(BuildContext context, List<DestinyItemInfo> items) async {
-    if (!available || !enabled) return items.toList();
+  Future<List<DestinyItemInfo>> filter(
+      BuildContext context, List<DestinyItemInfo> items) async {
+    if (!data.available || !data.enabled) return items.toList();
     final result = <DestinyItemInfo>[];
     for (final item in items) {
       final keep = await filterItem(item);
@@ -22,5 +21,13 @@ abstract class BaseItemFilter<T extends BaseFilterValuesWrapper> {
 
   Future<bool> filterItem(DestinyItemInfo item);
 
-  void updateValue(T t);
+  Future<void> addValue(DestinyItemInfo item) async {}
+
+  void updateValue(T t) {
+    data.value = t.value;
+  }
+
+  void updateEnabled(bool enabled) {
+    data.enabled = enabled;
+  }
 }

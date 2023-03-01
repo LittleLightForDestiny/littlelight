@@ -59,7 +59,8 @@ class CustomTabController extends ChangeNotifier {
     _isDragging = true;
     _currentValue += amount * dragMultiplier;
     _currentValue = _currentValue.clamp(0, length - 1);
-    _animationController.animateTo(_currentValue, duration: const Duration(milliseconds: 0));
+    _animationController.animateTo(_currentValue,
+        duration: const Duration(milliseconds: 0));
   }
 
   void _dragStop() async {

@@ -23,7 +23,12 @@ class QuickTransferPage extends StatelessWidget {
         ),
         ChangeNotifierProvider<FilterAdapterBloc>(create: (context) {
           final bloc = context.read<QuickTransferBloc>();
-          return FilterAdapterBloc(bloc.filters, onUpdateFilterValue: bloc.updateFilterValue);
+          return FilterAdapterBloc(
+            bloc.filters,
+            onChangeSetValue: bloc.updateFilterSetValue,
+            onUpdateFilterValue: bloc.updateFilterValue,
+            onUpdateFilterEnabledStatus: bloc.updateFilterEnabledStatus,
+          );
         }),
         Provider<ItemInteractionHandlerBloc>(create: (context) {
           final bloc = context.read<QuickTransferBloc>();

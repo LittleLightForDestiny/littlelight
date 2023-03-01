@@ -19,7 +19,8 @@ class ItemLoreWidget extends StatefulWidget {
 
 const _sectionId = "item_lore";
 
-class ItemLoreWidgetState extends State<ItemLoreWidget> with VisibleSectionMixin {
+class ItemLoreWidgetState extends State<ItemLoreWidget>
+    with VisibleSectionMixin {
   @override
   String get sectionId => _sectionId;
 

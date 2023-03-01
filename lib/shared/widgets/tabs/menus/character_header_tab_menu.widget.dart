@@ -10,7 +10,9 @@ const iconWidth = 64.0;
 
 class CharacterHeaderTabMenuWidget extends CustomTabMenu {
   final List<DestinyCharacterInfo?> characters;
-  const CharacterHeaderTabMenuWidget(this.characters, CustomTabController controller) : super(controller);
+  const CharacterHeaderTabMenuWidget(
+      this.characters, CustomTabController controller)
+      : super(controller);
 
   @override
   double getButtonSize(BuildContext context) => iconWidth;

@@ -9,7 +9,8 @@ bool get _enabled => Platform.isAndroid;
 setupUnilinksHandler() async {
   if (_enabled) return;
   if (!getItCoreInstance.isRegistered<UnilinksHandler>()) {
-    getItCoreInstance.registerSingleton<UnilinksHandler>(UnilinksHandler._internal());
+    getItCoreInstance
+        .registerSingleton<UnilinksHandler>(UnilinksHandler._internal());
   }
 }
 

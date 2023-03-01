@@ -7,7 +7,9 @@ import 'package:little_light/widgets/dialogs/littlelight.yes_no.dialog.dart';
 class ConfirmDeleteTagDialogRoute extends DialogRoute<bool> {
   ConfirmDeleteTagDialogRoute(BuildContext context, ItemNotesTag tag)
       : super(
-            context: context, builder: (context) => ConfirmDeleteTagDialog(), settings: RouteSettings(arguments: tag));
+            context: context,
+            builder: (context) => ConfirmDeleteTagDialog(),
+            settings: RouteSettings(arguments: tag));
 }
 
 class ConfirmDeleteTagDialog extends LittleLightYesNoDialog {
@@ -15,7 +17,8 @@ class ConfirmDeleteTagDialog extends LittleLightYesNoDialog {
       : super(
             titleBuilder: (context) => TranslatedTextWidget('Select Tag'),
             bodyBuilder: (context) {
-              final tag = ModalRoute.of(context)?.settings.arguments as ItemNotesTag;
+              final tag =
+                  ModalRoute.of(context)?.settings.arguments as ItemNotesTag;
               return Text(
                 "Do you really want to delete the tag {tagName} ?".translate(
                   context,

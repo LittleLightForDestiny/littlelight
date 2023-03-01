@@ -13,8 +13,8 @@ class CollectionsSearchPage extends StatefulWidget {
   CollectionsSearchPageState createState() => CollectionsSearchPageState();
 }
 
-class CollectionsSearchPageState<T extends CollectionsSearchPage> extends State<T>
-    with ManifestConsumer, UserSettingsConsumer {
+class CollectionsSearchPageState<T extends CollectionsSearchPage>
+    extends State<T> with ManifestConsumer, UserSettingsConsumer {
   final TextEditingController _searchFieldController = TextEditingController();
   List<DestinyCollectibleDefinition>? items;
 
@@ -29,8 +29,10 @@ class CollectionsSearchPageState<T extends CollectionsSearchPage> extends State<
   }
 
   loadItems() async {
-    items =
-        (await manifest.searchDefinitions<DestinyCollectibleDefinition>([_searchFieldController.text])).values.toList();
+    items = (await manifest.searchDefinitions<DestinyCollectibleDefinition>(
+            [_searchFieldController.text]))
+        .values
+        .toList();
     setState(() {});
   }
 
@@ -58,7 +60,10 @@ class CollectionsSearchPageState<T extends CollectionsSearchPage> extends State<
     var item = items?[index];
     if (item == null) return Container();
     return Stack(children: [
-      SizedBox(height: 96, child: CollectibleItemWidget(key: Key("${item.hash}"), hash: item.hash)),
+      SizedBox(
+          height: 96,
+          child:
+              CollectibleItemWidget(key: Key("${item.hash}"), hash: item.hash)),
     ]);
   }
 

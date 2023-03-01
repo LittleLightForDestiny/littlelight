@@ -14,7 +14,11 @@ class FilterTierType {
   FilterTierType(this.tierType, this.tierName, this.tierHash);
 
   @override
-  int get hashCode => 42 + (tierType?.hashCode ?? 0) + (tierName?.hashCode ?? 0) + (tierHash?.hashCode ?? 0);
+  int get hashCode =>
+      42 +
+      (tierType?.hashCode ?? 0) +
+      (tierName?.hashCode ?? 0) +
+      (tierHash?.hashCode ?? 0);
 
   @override
   operator ==(dynamic other) {
@@ -48,11 +52,13 @@ class TierTypeFilter extends BaseItemFilter<Set<FilterTierType>> {
     var types = items
         .map((i) {
           var inv = definitions[i?.item?.itemHash]?.inventory;
-          return FilterTierType(inv?.tierType, inv?.tierTypeName, inv?.tierTypeHash);
+          return FilterTierType(
+              inv?.tierType, inv?.tierTypeName, inv?.tierTypeHash);
         })
         .toSet()
         .toList();
-    types.sort((a, b) => b?.tierType?.value?.compareTo(a.tierType.value ?? -1) ?? 0);
+    types.sort(
+        (a, b) => b?.tierType?.value?.compareTo(a.tierType.value ?? -1) ?? 0);
     availableValues = types.toSet();
     available = availableValues.length > 1;
     value.retainAll(availableValues);
@@ -60,7 +66,8 @@ class TierTypeFilter extends BaseItemFilter<Set<FilterTierType>> {
   }
 
   @override
-  bool filterItem(ItemWithOwner item, {Map<int, DestinyInventoryItemDefinition> definitions}) {
+  bool filterItem(ItemWithOwner item,
+      {Map<int, DestinyInventoryItemDefinition> definitions}) {
     if (value.isEmpty) {
       return true;
     }

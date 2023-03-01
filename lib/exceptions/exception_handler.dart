@@ -19,7 +19,9 @@ class ExceptionHandler with AuthConsumer {
       final stack = details.stack;
       if (kDebugMode) {
         FlutterError.dumpErrorToConsole(details.copyWith(
-            stackFilter: (input) => input.where((s) => s.contains('package:little_light') || !s.contains('package:'))));
+            stackFilter: (input) => input.where((s) =>
+                s.contains('package:little_light') ||
+                !s.contains('package:'))));
       } else if (stack != null) {
         Zone.current.handleUncaughtError(details.exception, stack);
       }
@@ -34,11 +36,13 @@ class ExceptionHandler with AuthConsumer {
           padding: const EdgeInsets.all(8),
           alignment: Alignment.center,
           child: Builder(
-              builder: (context) => Column(mainAxisSize: MainAxisSize.min, children: [
+              builder: (context) =>
+                  Column(mainAxisSize: MainAxisSize.min, children: [
                     Text("Render Error".translate(context)),
                     ElevatedButton(
                         onPressed: () {
-                          Navigator.of(context).push(ReportErrorDialogRoute(context, error: details));
+                          Navigator.of(context).push(
+                              ReportErrorDialogRoute(context, error: details));
                         },
                         child: Text("Report".translate(context)))
                   ])));
@@ -46,16 +50,21 @@ class ExceptionHandler with AuthConsumer {
   }
 
   Future<void> handleException(dynamic error, StackTrace? stackTrace) async {
-    final relevantStackTrace = stackTrace?.toString().split('\n').where((s) => s.contains('package:little_light'));
+    final relevantStackTrace = stackTrace
+        ?.toString()
+        .split('\n')
+        .where((s) => s.contains('package:little_light'));
     print(error);
     if (relevantStackTrace != null) {
       print(relevantStackTrace.join('\n'));
     }
 
     if (error is BungieApiException) {
-      final context = LittleLightNavigatorKeyContainer.navigatorKey?.currentContext;
+      final context =
+          LittleLightNavigatorKeyContainer.navigatorKey?.currentContext;
       if (context != null) {
-        Navigator.of(context).push(BungieApiExceptionDialogRoute(context, error: error));
+        Navigator.of(context)
+            .push(BungieApiExceptionDialogRoute(context, error: error));
       }
     }
     if (error is FlutterErrorDetails) {
@@ -63,12 +72,15 @@ class ExceptionHandler with AuthConsumer {
       return;
     }
 
-    FirebaseCrashlytics.instance.recordError(error, stackTrace, printDetails: false);
+    FirebaseCrashlytics.instance
+        .recordError(error, stackTrace, printDetails: false);
   }
 
-  static setReportingUserInfo(String membershipId, String displayName, BungieMembershipType platformId) {
+  static setReportingUserInfo(String membershipId, String displayName,
+      BungieMembershipType platformId) {
     FirebaseCrashlytics.instance.setUserIdentifier(membershipId);
     FirebaseCrashlytics.instance.setCustomKey('User Name', displayName);
-    FirebaseCrashlytics.instance.setCustomKey("platform", platformId.value ?? "not informed");
+    FirebaseCrashlytics.instance
+        .setCustomKey("platform", platformId.value ?? "not informed");
   }
 }

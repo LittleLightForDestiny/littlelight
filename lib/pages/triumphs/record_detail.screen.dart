@@ -28,7 +28,8 @@ class RecordDetailScreen extends StatefulWidget {
   }
 }
 
-class RecordDetailScreenState extends State<RecordDetailScreen> with AuthConsumer, ProfileConsumer {
+class RecordDetailScreenState extends State<RecordDetailScreen>
+    with AuthConsumer, ProfileConsumer {
   bool isTracking = false;
 
   DestinyRecordDefinition get definition => widget.definition;
@@ -64,7 +65,9 @@ class RecordDetailScreenState extends State<RecordDetailScreen> with AuthConsume
   updateTrackStatus() async {
     var objectives = await ObjectivesService().getTrackedObjectives();
     var tracked = objectives.firstWhere(
-        (o) => o.hash == widget.definition.hash && o.type == TrackedObjectiveType.Triumph,
+        (o) =>
+            o.hash == widget.definition.hash &&
+            o.type == TrackedObjectiveType.Triumph,
         orElse: () => null);
     isTracking = tracked != null;
     if (!mounted) return;
@@ -129,7 +132,8 @@ class RecordDetailScreenState extends State<RecordDetailScreen> with AuthConsume
         child: definition == null
             ? Container()
             : QueuedNetworkImage(
-                imageUrl: BungieApiService.url(definition.displayProperties.icon),
+                imageUrl:
+                    BungieApiService.url(definition.displayProperties.icon),
               ));
   }
 
@@ -142,14 +146,18 @@ class RecordDetailScreenState extends State<RecordDetailScreen> with AuthConsume
               child: Text(
                 definition.displayProperties.name,
                 softWrap: true,
-                style: TextStyle(color: foregroundColor, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    color: foregroundColor, fontWeight: FontWeight.bold),
               ))),
       buildTrackingIcon(context),
       Container(
           padding: const EdgeInsets.all(4),
           child: Text(
             "${definition?.completionInfo?.scoreValue ?? ""}",
-            style: TextStyle(fontWeight: FontWeight.w300, color: foregroundColor, fontSize: 13),
+            style: TextStyle(
+                fontWeight: FontWeight.w300,
+                color: foregroundColor,
+                fontSize: 13),
           )),
     ]);
   }
@@ -159,7 +167,9 @@ class RecordDetailScreenState extends State<RecordDetailScreen> with AuthConsume
     return Container(
         margin: const EdgeInsets.only(top: 4),
         padding: const EdgeInsets.all(2),
-        decoration: BoxDecoration(color: Colors.green.shade800, borderRadius: BorderRadius.circular(20)),
+        decoration: BoxDecoration(
+            color: Colors.green.shade800,
+            borderRadius: BorderRadius.circular(20)),
         child: Icon(
           FontAwesomeIcons.crosshairs,
           size: 12,
@@ -169,14 +179,18 @@ class RecordDetailScreenState extends State<RecordDetailScreen> with AuthConsume
 
   buildDescription(BuildContext context) {
     if (definition == null) return Container();
-    if ((definition?.displayProperties?.description?.length ?? 0) == 0) return Container();
+    if ((definition?.displayProperties?.description?.length ?? 0) == 0)
+      return Container();
 
     return Container(
         padding: const EdgeInsets.all(4),
         child: Text(
           definition.displayProperties.description,
           softWrap: true,
-          style: TextStyle(color: foregroundColor, fontWeight: FontWeight.w300, fontSize: 13),
+          style: TextStyle(
+              color: foregroundColor,
+              fontWeight: FontWeight.w300,
+              fontSize: 13),
         ));
   }
 
@@ -185,17 +199,23 @@ class RecordDetailScreenState extends State<RecordDetailScreen> with AuthConsume
       padding: const EdgeInsets.all(8),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          primary: isTracking ? DestinyData.trackingOnColor : DestinyData.trackingOffColor,
+          primary: isTracking
+              ? DestinyData.trackingOnColor
+              : DestinyData.trackingOffColor,
         ),
         child: isTracking
-            ? Text("Stop Tracking".translate(context), key: const Key("stop_tracking"))
-            : Text("Track Objectives".translate(context), key: const Key("track_objectives")),
+            ? Text("Stop Tracking".translate(context),
+                key: const Key("stop_tracking"))
+            : Text("Track Objectives".translate(context),
+                key: const Key("track_objectives")),
         onPressed: () {
           var service = ObjectivesService();
           if (isTracking) {
-            service.removeTrackedObjective(TrackedObjectiveType.Triumph, definition.hash);
+            service.removeTrackedObjective(
+                TrackedObjectiveType.Triumph, definition.hash);
           } else {
-            service.addTrackedObjective(TrackedObjectiveType.Triumph, definition.hash);
+            service.addTrackedObjective(
+                TrackedObjectiveType.Triumph, definition.hash);
           }
           updateTrackStatus();
         },

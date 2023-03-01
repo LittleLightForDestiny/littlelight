@@ -7,15 +7,20 @@ import 'package:little_light/models/bucket_display_options.dart';
 import 'package:little_light/widgets/icon_fonts/littlelight_icons.dart';
 import 'package:little_light/widgets/item_list/bucket_display_options_selector.widget.dart';
 
-class PursuitsDisplayOptionsSelectorWidget extends BucketDisplayOptionsSelectorWidget {
+class PursuitsDisplayOptionsSelectorWidget
+    extends BucketDisplayOptionsSelectorWidget {
   final String typeIdentifier;
-  const PursuitsDisplayOptionsSelectorWidget({this.typeIdentifier, Function onChanged}) : super(onChanged: onChanged);
+  const PursuitsDisplayOptionsSelectorWidget(
+      {this.typeIdentifier, Function onChanged})
+      : super(onChanged: onChanged);
   @override
-  PursuitsDisplayOptionsSelectorWidgetState createState() => PursuitsDisplayOptionsSelectorWidgetState();
+  PursuitsDisplayOptionsSelectorWidgetState createState() =>
+      PursuitsDisplayOptionsSelectorWidgetState();
 }
 
 class PursuitsDisplayOptionsSelectorWidgetState
-    extends BucketDisplayOptionsSelectorWidgetState<PursuitsDisplayOptionsSelectorWidget> {
+    extends BucketDisplayOptionsSelectorWidgetState<
+        PursuitsDisplayOptionsSelectorWidget> {
   @override
   BucketDisplayType currentType;
 
@@ -45,8 +50,13 @@ class PursuitsDisplayOptionsSelectorWidgetState
     var icon = getIcon(type);
     return DropdownMenuItem<BucketDisplayType>(
         value: type,
-        child:
-            SizedBox(width: 200, child: Row(children: [Icon(icon, size: 16), Container(width: 8), getLabel(type)])));
+        child: SizedBox(
+            width: 200,
+            child: Row(children: [
+              Icon(icon, size: 16),
+              Container(width: 8),
+              getLabel(type)
+            ])));
   }
 
   @override

@@ -34,28 +34,40 @@ class ItemDetailsSocketDetailsWidget extends BaseSocketDetailsWidget {
       DestinyItemSocketCategoryDefinition category,
       DestinyInventoryItemDefinition parentDefinition,
       ItemSocketController controller})
-      : super(item: item, definition: parentDefinition, category: category, controller: controller);
+      : super(
+            item: item,
+            definition: parentDefinition,
+            category: category,
+            controller: controller);
 
   @override
-  ItemDetailsSocketDetailsWidgetState createState() => ItemDetailsSocketDetailsWidgetState();
+  ItemDetailsSocketDetailsWidgetState createState() =>
+      ItemDetailsSocketDetailsWidgetState();
 }
 
-class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<ItemDetailsSocketDetailsWidget>
+class ItemDetailsSocketDetailsWidgetState
+    extends BaseSocketDetailsWidgetState<ItemDetailsSocketDetailsWidget>
     with PlugWishlistTagIconsMixin, ProfileConsumer, ItemNotesConsumer {
   @override
   Widget build(BuildContext context) {
     if (definition == null) return Container();
-    if (!(category?.socketIndexes?.contains(controller.selectedSocketIndex) ?? false)) {
+    if (!(category?.socketIndexes?.contains(controller.selectedSocketIndex) ??
+        false)) {
       return Container();
     }
     return Container(
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: <Widget>[
-          buildOptions(context),
-          buildHeader(context),
-          Container(padding: const EdgeInsets.all(8), color: Colors.black, child: buildContent(context)),
-          buildResourceCost(context),
-        ]));
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              buildOptions(context),
+              buildHeader(context),
+              Container(
+                  padding: const EdgeInsets.all(8),
+                  color: Colors.black,
+                  child: buildContent(context)),
+              buildResourceCost(context),
+            ]));
   }
 
   buildHeader(BuildContext context) {
@@ -68,7 +80,9 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
             SizedBox(
                 width: 48,
                 height: 48,
-                child: QueuedNetworkImage(imageUrl: BungieApiService.url(definition?.displayProperties?.icon))),
+                child: QueuedNetworkImage(
+                    imageUrl: BungieApiService.url(
+                        definition?.displayProperties?.icon))),
             Container(width: 8),
             Expanded(
                 child: Column(
@@ -76,27 +90,38 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
               children: [
                 Text(
                   definition?.displayProperties?.name?.toUpperCase(),
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 16),
                 ),
-                Text(definition?.itemTypeDisplayName ?? "", style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w300))
+                Text(definition?.itemTypeDisplayName ?? "",
+                    style: const TextStyle(
+                        fontSize: 14, fontWeight: FontWeight.w300))
               ],
             )),
-            if (controller.isSocketFavoritable(controller.selectedSocketIndex)) buildFavoriteButton(context)
+            if (controller.isSocketFavoritable(controller.selectedSocketIndex))
+              buildFavoriteButton(context)
           ]),
         ));
   }
 
   Widget buildFavoriteButton(BuildContext context) {
-    final isFavorite = itemNotes?.getNotesForItem(definition.hash, null)?.tags?.contains("favorite") ?? false;
+    final isFavorite = itemNotes
+            ?.getNotesForItem(definition.hash, null)
+            ?.tags
+            ?.contains("favorite") ??
+        false;
     return IconButton(
         onPressed: () {
           final notes = itemNotes?.getNotesForItem(definition.hash, null, true);
           final isFavorite = notes?.tags?.contains("favorite") ?? false;
-          isFavorite ? notes.tags.remove("favorite") : notes.tags.add("favorite");
+          isFavorite
+              ? notes.tags.remove("favorite")
+              : notes.tags.add("favorite");
           itemNotes.saveNotes(notes);
           setState(() {});
         },
-        icon: Icon(isFavorite ? FontAwesomeIcons.solidHeart : FontAwesomeIcons.heart));
+        icon: Icon(
+            isFavorite ? FontAwesomeIcons.solidHeart : FontAwesomeIcons.heart));
   }
 
   buildContent(BuildContext context) {
@@ -109,7 +134,9 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
       buildWishlistInfo(context),
       buildApplyButton(context)
     ];
-    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: items.toList());
+    return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: items.toList());
   }
 
   @override
@@ -131,7 +158,8 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
 
   buildObjectives(BuildContext context) {
     var itemObjectives = profile.getPlugObjectives(item?.itemInstanceId);
-    if (!(itemObjectives?.containsKey("${definition.hash}") ?? false)) return Container();
+    if (!(itemObjectives?.containsKey("${definition.hash}") ?? false))
+      return Container();
     var objectives = itemObjectives["${definition.hash}"];
     return Column(
         children: <Widget>[
@@ -147,7 +175,8 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
   }
 
   buildDescription(BuildContext context) {
-    if ((definition?.displayProperties?.description?.length ?? 0) == 0) return Container();
+    if ((definition?.displayProperties?.description?.length ?? 0) == 0)
+      return Container();
     return Text(definition?.displayProperties?.description,
         style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w300));
   }
@@ -175,7 +204,8 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
                   Expanded(
                       child: PlugGridView.withItemsPerRow(
                     plugs,
-                    itemBuilder: (h) => buildMod(context, controller.selectedSocketIndex, h),
+                    itemBuilder: (h) =>
+                        buildMod(context, controller.selectedSocketIndex, h),
                     itemsPerRow: itemsPerRow,
                     maxRows: rowCount,
                     gridSpacing: 8,
@@ -194,10 +224,12 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
         animation: controller.animation,
         builder: (context, child) {
           final currentIndex = controller.index;
-          final enabled = direction < 0 ? currentIndex > 0 : currentIndex < length - 1;
+          final enabled =
+              direction < 0 ? currentIndex > 0 : currentIndex < length - 1;
           return Container(
             constraints: const BoxConstraints.expand(width: 16),
-            decoration: BoxDecoration(border: Border.all(color: Colors.grey.shade300)),
+            decoration:
+                BoxDecoration(border: Border.all(color: Colors.grey.shade300)),
             padding: const EdgeInsets.all(0),
             alignment: Alignment.center,
             child: !enabled
@@ -210,7 +242,10 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
                         },
                         child: Container(
                             constraints: const BoxConstraints.expand(),
-                            child: Icon(direction > 0 ? FontAwesomeIcons.caretRight : FontAwesomeIcons.caretLeft,
+                            child: Icon(
+                                direction > 0
+                                    ? FontAwesomeIcons.caretRight
+                                    : FontAwesomeIcons.caretLeft,
                                 size: 16)))),
           );
         });
@@ -218,12 +253,18 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
 
   @override
   Widget buildMod(BuildContext context, int socketIndex, int plugItemHash) {
-    bool isFavorite = itemNotes.getNotesForItem(plugItemHash, null)?.tags?.contains("favorite") ?? false;
+    bool isFavorite = itemNotes
+            .getNotesForItem(plugItemHash, null)
+            ?.tags
+            ?.contains("favorite") ??
+        false;
     bool isSelected = plugItemHash == controller.selectedPlugHash;
-    Color borderColor =
-        isSelected ? Theme.of(context).colorScheme.onSurface : Theme.of(context).colorScheme.onSurface.withOpacity(.5);
+    Color borderColor = isSelected
+        ? Theme.of(context).colorScheme.onSurface
+        : Theme.of(context).colorScheme.onSurface.withOpacity(.5);
 
-    BorderSide borderSide = BorderSide(color: borderColor, width: isSelected ? 3 : 1);
+    BorderSide borderSide =
+        BorderSide(color: borderColor, width: isSelected ? 3 : 1);
     var def = controller.plugDefinitions[plugItemHash];
     var energyType = def?.plug?.energyCost?.energyType ?? DestinyEnergyType.Any;
     var energyCost = def?.plug?.energyCost?.energyCost ?? 0;
@@ -240,12 +281,13 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
               shape: ContinuousRectangleBorder(side: borderSide),
               padding: const EdgeInsets.all(0),
               child: Stack(children: [
-                ManifestImageWidget<DestinyInventoryItemDefinition>(plugItemHash),
+                ManifestImageWidget<DestinyInventoryItemDefinition>(
+                    plugItemHash),
                 energyType == DestinyEnergyType.Any
                     ? Container()
                     : Positioned.fill(
-                        child:
-                            ManifestImageWidget<DestinyStatDefinition>(DestinyData.getEnergyTypeCostHash(energyType))),
+                        child: ManifestImageWidget<DestinyStatDefinition>(
+                            DestinyData.getEnergyTypeCostHash(energyType))),
                 energyCost == 0
                     ? Container()
                     : Positioned(
@@ -262,7 +304,11 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
                           color: Colors.black.withOpacity(.5),
                         ),
                       ),
-                if (isFavorite) const Positioned(right: 2, top: 2, child: Icon(FontAwesomeIcons.solidHeart, size: 10))
+                if (isFavorite)
+                  const Positioned(
+                      right: 2,
+                      top: 2,
+                      child: Icon(FontAwesomeIcons.solidHeart, size: 10))
               ]),
               onPressed: () {
                 controller.selectSocket(socketIndex, plugItemHash);
@@ -283,7 +329,9 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
         child: Wrap(
           runSpacing: dividerMargin,
           spacing: dividerMargin,
-          children: plugs.map((p) => buildPerk(context, controller.selectedSocketIndex, p)).toList(),
+          children: plugs
+              .map((p) => buildPerk(context, controller.selectedSocketIndex, p))
+              .toList(),
         ));
   }
 
@@ -291,17 +339,16 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
   Widget buildEnergyCost(BuildContext context) {
     var cost = definition?.plug?.energyCost;
     if (cost != null) {
-      final color = cost.energyType.getColorLayer(context).layer1;
       var icon = cost.energyType == DestinyEnergyType.Any
           ? Container()
           : Icon(
               DestinyData.getEnergyTypeIcon(cost.energyType),
-              color: color,
               size: 20,
             );
       var value = Container(
           padding: const EdgeInsets.all(4),
-          child: Text("${cost.energyCost}", style: TextStyle(fontWeight: FontWeight.w700, fontSize: 24, color: color)));
+          child: Text("${cost.energyCost}",
+              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 24)));
       var description = TranslatedTextWidget(
         "Energy Cost",
         uppercase: true,
@@ -316,15 +363,18 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
   Widget buildResourceCost(BuildContext context) {
     var requirementHash = definition?.plug?.insertionMaterialRequirementHash;
     if (requirementHash != null) {
-      return DefinitionProviderWidget<DestinyMaterialRequirementSetDefinition>(requirementHash, (def) {
-        final materials = def?.materials?.where((element) => (element.count ?? 0) > 0);
+      return DefinitionProviderWidget<DestinyMaterialRequirementSetDefinition>(
+          requirementHash, (def) {
+        final materials =
+            def?.materials?.where((element) => (element.count ?? 0) > 0);
         if (materials?.isEmpty ?? true) {
           return Container();
         }
         return Container(
             decoration: BoxDecoration(
               color: Colors.black,
-              border: Border(top: BorderSide(color: Colors.grey.shade500, width: 1)),
+              border: Border(
+                  top: BorderSide(color: Colors.grey.shade500, width: 1)),
             ),
             padding: const EdgeInsets.all(8),
             child: Column(
@@ -332,7 +382,11 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
                 return Row(
                   children: <Widget>[
                     SizedBox(
-                        width: 20, height: 20, child: ManifestImageWidget<DestinyInventoryItemDefinition>(m.itemHash)),
+                        width: 20,
+                        height: 20,
+                        child:
+                            ManifestImageWidget<DestinyInventoryItemDefinition>(
+                                m.itemHash)),
                     Expanded(
                       child: Container(
                         padding: const EdgeInsets.only(left: 8),
@@ -342,7 +396,8 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
                         ),
                       ),
                     ),
-                    Text("${m.count}", style: const TextStyle(fontWeight: FontWeight.w300))
+                    Text("${m.count}",
+                        style: const TextStyle(fontWeight: FontWeight.w300))
                   ],
                 );
               }).toList(),
@@ -357,9 +412,11 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
     var plugDef = controller.plugDefinitions[plugItemHash];
     int equippedHash = controller.socketEquippedPlugHash(socketIndex);
     bool isEquipped = equippedHash == plugItemHash;
-    bool isSelectedOnSocket = plugItemHash == controller.socketSelectedPlugHash(socketIndex);
+    bool isSelectedOnSocket =
+        plugItemHash == controller.socketSelectedPlugHash(socketIndex);
     bool isSelected = plugItemHash == controller.selectedPlugHash;
-    bool canRoll = controller.item != null || controller.canRollPerk(socketIndex, plugItemHash);
+    bool canRoll = controller.item != null ||
+        controller.canRollPerk(socketIndex, plugItemHash);
     var screenWidth = MediaQuery.of(context).size.width;
     return SizedBox(
         width: min(64, screenWidth / 8),
@@ -380,8 +437,10 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
 
   Widget buildApplyButton(BuildContext context) {
     var requirementHash = definition?.plug?.insertionMaterialRequirementHash;
-    final isApplied = controller.selectedPlugHash == controller.socketEquippedPlugHash(controller.selectedSocketIndex);
-    final canApply = controller.canApplySocket(controller.selectedSocketIndex, controller.selectedPlugHash);
+    final isApplied = controller.selectedPlugHash ==
+        controller.socketEquippedPlugHash(controller.selectedSocketIndex);
+    final canApply = controller.canApplySocket(
+        controller.selectedSocketIndex, controller.selectedPlugHash);
 
     if (isApplied || !canApply || item?.itemInstanceId == null) {
       return Container();
@@ -393,7 +452,8 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
             key: Key("apply_button_${definition.hash}_$isEnabled"),
             onPressed: isEnabled
                 ? () {
-                    controller.applySocket(controller.selectedSocketIndex, controller.selectedPlugHash);
+                    controller.applySocket(controller.selectedSocketIndex,
+                        controller.selectedPlugHash);
                   }
                 : null,
             child: DefinitionProviderWidget<DestinyInventoryItemDefinition>(
@@ -401,17 +461,23 @@ class ItemDetailsSocketDetailsWidgetState extends BaseSocketDetailsWidgetState<I
               (def) => isEnabled
                   ? TranslatedTextWidget(
                       "Apply {modType}",
-                      replace: {"modType": def.itemTypeDisplayName.toLowerCase()},
+                      replace: {
+                        "modType": def.itemTypeDisplayName.toLowerCase()
+                      },
                     )
                   : DefaultLoadingShimmer(
                       child: TranslatedTextWidget(
                       "Applying {modType}",
-                      replace: {"modType": def.itemTypeDisplayName.toLowerCase()},
+                      replace: {
+                        "modType": def.itemTypeDisplayName.toLowerCase()
+                      },
                     )),
             )));
     if (requirementHash != null && requirementHash != 0) {
-      return DefinitionProviderWidget<DestinyMaterialRequirementSetDefinition>(requirementHash, (def) {
-        final materials = def?.materials?.where((element) => (element.count ?? 0) > 0);
+      return DefinitionProviderWidget<DestinyMaterialRequirementSetDefinition>(
+          requirementHash, (def) {
+        final materials =
+            def?.materials?.where((element) => (element.count ?? 0) > 0);
         if (materials?.isNotEmpty ?? true) {
           return Container();
         }

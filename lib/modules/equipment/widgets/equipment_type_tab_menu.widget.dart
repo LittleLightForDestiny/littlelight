@@ -12,21 +12,26 @@ const _inventoryIconPresentationNodeHash = 3517356538;
 const iconWidth = 92.0;
 
 class EquipmentTypeTabMenuWidget extends CustomTabMenu {
-  const EquipmentTypeTabMenuWidget(CustomTabController controller) : super(controller);
+  const EquipmentTypeTabMenuWidget(CustomTabController controller)
+      : super(controller);
 
   @override
   double getButtonSize(BuildContext context) => iconWidth;
 
   Color getItemForegroundColor(BuildContext context, int index) {
-    final opacity = (index - controller.animation.value).abs().clamp(0, 1).toDouble();
+    final opacity =
+        (index - controller.animation.value).abs().clamp(0, 1).toDouble();
     final selectedColor = context.theme.onSurfaceLayers.layer0;
-    final unselectedColor = context.theme.onSurfaceLayers.layer3.withOpacity(.7);
-    return Color.lerp(selectedColor, unselectedColor, opacity) ?? Colors.transparent;
+    final unselectedColor =
+        context.theme.onSurfaceLayers.layer3.withOpacity(.7);
+    return Color.lerp(selectedColor, unselectedColor, opacity) ??
+        Colors.transparent;
   }
 
   @override
   Widget buildButton(BuildContext context, int index) {
-    return Container(padding: const EdgeInsets.all(4), child: buildIcon(context, index));
+    return Container(
+        padding: const EdgeInsets.all(4), child: buildIcon(context, index));
   }
 
   Widget buildIcon(BuildContext context, int index) {
@@ -53,7 +58,7 @@ class EquipmentTypeTabMenuWidget extends CustomTabMenu {
   @override
   Widget buildSelectedBackground(BuildContext context) {
     return Container(
-      color: context.theme.surfaceLayers.layer3,
+      color: context.theme.surfaceLayers.layer2,
     );
   }
 

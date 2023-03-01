@@ -18,9 +18,16 @@ class ItemDetailLoadoutsWidget extends BaseDestinyStatefulItemWidget {
   final List<LoadoutItemIndex> loadouts;
 
   const ItemDetailLoadoutsWidget(
-      DestinyItemComponent item, DestinyInventoryItemDefinition definition, DestinyItemInstanceComponent instanceInfo,
-      {Key key, this.loadouts})
-      : super(item: item, definition: definition, instanceInfo: instanceInfo, key: key);
+      DestinyItemComponent item,
+      DestinyInventoryItemDefinition definition,
+      DestinyItemInstanceComponent instanceInfo,
+      {Key key,
+      this.loadouts})
+      : super(
+            item: item,
+            definition: definition,
+            instanceInfo: instanceInfo,
+            key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -30,7 +37,9 @@ class ItemDetailLoadoutsWidget extends BaseDestinyStatefulItemWidget {
 
 const _sectionId = "item_loadouts";
 
-class ItemDetailLoadoutsWidgetState extends BaseDestinyItemState<ItemDetailLoadoutsWidget> with VisibleSectionMixin {
+class ItemDetailLoadoutsWidgetState
+    extends BaseDestinyItemState<ItemDetailLoadoutsWidget>
+    with VisibleSectionMixin {
   @override
   String get sectionId => _sectionId;
 
@@ -64,7 +73,8 @@ class ItemDetailLoadoutsWidgetState extends BaseDestinyItemState<ItemDetailLoado
       axisDirection: AxisDirection.down,
       crossAxisSpacing: 2,
       mainAxisSpacing: 2,
-      children: widget.loadouts.map((e) => buildLoadoutItem(e, context)).toList(),
+      children:
+          widget.loadouts.map((e) => buildLoadoutItem(e, context)).toList(),
     );
   }
 
@@ -97,7 +107,8 @@ class ItemDetailLoadoutsWidgetState extends BaseDestinyItemState<ItemDetailLoado
             color: Colors.transparent,
             child: InkWell(
               onTap: () {
-                Navigator.of(context).push(EquipLoadoutPageRoute(loadout.assignedId));
+                Navigator.of(context)
+                    .push(EquipLoadoutPageRoute(loadout.assignedId));
               },
             ),
           ))

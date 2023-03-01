@@ -8,14 +8,21 @@ import 'package:little_light/utils/item_with_owner.dart';
 import 'large_pursuit_item.widget.dart';
 
 class TrackedPursuitItemWidget extends LargePursuitItemWidget {
-  const TrackedPursuitItemWidget({Key key, String characterId, ItemWithOwner item, Function onTap, Function onLongPress})
+  const TrackedPursuitItemWidget(
+      {Key key,
+      String characterId,
+      ItemWithOwner item,
+      Function onTap,
+      Function onLongPress})
       : super(key: key, item: item, onTap: onTap, selectable: true);
 
   @override
-  TrackedPursuitItemWidgetState createState() => TrackedPursuitItemWidgetState();
+  TrackedPursuitItemWidgetState createState() =>
+      TrackedPursuitItemWidgetState();
 }
 
-class TrackedPursuitItemWidgetState<T extends TrackedPursuitItemWidget> extends LargePursuitItemWidgetState<T> {
+class TrackedPursuitItemWidgetState<T extends TrackedPursuitItemWidget>
+    extends LargePursuitItemWidgetState<T> {
   DestinyItemComponent _item;
 
   @override
@@ -39,7 +46,8 @@ class TrackedPursuitItemWidgetState<T extends TrackedPursuitItemWidget> extends 
   }
 
   @override
-  Widget buildObjective(BuildContext context, DestinyObjectiveProgress objective) {
+  Widget buildObjective(
+      BuildContext context, DestinyObjectiveProgress objective) {
     if (objectiveDefinitions == null) return Container();
     return super.buildObjective(context, objective);
   }

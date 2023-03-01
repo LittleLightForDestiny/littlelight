@@ -23,10 +23,12 @@ class EquipmentVaultBucketContent {
   });
 }
 
-class EquipmentVaultTabContentWidget extends StatelessWidget with ManifestConsumer {
+class EquipmentVaultTabContentWidget extends StatelessWidget
+    with ManifestConsumer {
   final List<EquipmentVaultBucketContent> buckets;
 
-  BucketOptionsBloc bucketOptionsState(BuildContext context) => context.watch<BucketOptionsBloc>();
+  BucketOptionsBloc bucketOptionsState(BuildContext context) =>
+      context.watch<BucketOptionsBloc>();
 
   const EquipmentVaultTabContentWidget({
     Key? key,
@@ -35,7 +37,8 @@ class EquipmentVaultTabContentWidget extends StatelessWidget with ManifestConsum
 
   Future<Map<int, DestinyInventoryBucketDefinition>> get bucketDefs async {
     final hashes = buckets.map((e) => e.bucketHash).whereType<int>().toList();
-    final defs = await manifest.getDefinitions<DestinyInventoryBucketDefinition>(hashes);
+    final defs =
+        await manifest.getDefinitions<DestinyInventoryBucketDefinition>(hashes);
     return defs;
   }
 
@@ -52,8 +55,10 @@ class EquipmentVaultTabContentWidget extends StatelessWidget with ManifestConsum
           key: const Key("vault_tab"),
           builder: (context, constraints) => MultiSectionScrollView(
             buckets //
-                .map<List<SliverSection>>((e) => buildBucketSections(context, e, constraints, defs[e.bucketHash])) //
-                .fold<List<SliverSection>>([], (list, element) => list + element).toList(),
+                .map<List<SliverSection>>((e) => buildBucketSections(
+                    context, e, constraints, defs[e.bucketHash])) //
+                .fold<List<SliverSection>>(
+                    [], (list, element) => list + element).toList(),
             crossAxisSpacing: 0,
             mainAxisSpacing: 0,
             padding: const EdgeInsets.all(8).copyWith(top: 0),
@@ -71,7 +76,8 @@ class EquipmentVaultTabContentWidget extends StatelessWidget with ManifestConsum
   ) {
     final items = bucketContent.items;
     final bucketHash = bucketContent.bucketHash;
-    final displayType = bucketOptionsState(context).getDisplayTypeForVaultBucket(bucketHash);
+    final displayType =
+        bucketOptionsState(context).getDisplayTypeForVaultBucket(bucketHash);
     final itemDensity = displayType.unequippedDensity;
     final idealCount = itemDensity?.getIdealCount(constraints.maxWidth) ?? 5;
     final itemCount = (items.length / idealCount).ceil() * idealCount;

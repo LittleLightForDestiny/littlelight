@@ -7,8 +7,13 @@ import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/item_stats/base_item_stat.widget.dart';
 
 class ItemDetailSocketItemStatWidget extends BaseItemStatWidget {
-  const ItemDetailSocketItemStatWidget({Key key, StatValues modValues, int statHash, DestinyStatDisplayDefinition scaled})
-      : super(key: key, statHash: statHash, modValues: modValues, scaled: scaled);
+  const ItemDetailSocketItemStatWidget(
+      {Key key,
+      StatValues modValues,
+      int statHash,
+      DestinyStatDisplayDefinition scaled})
+      : super(
+            key: key, statHash: statHash, modValues: modValues, scaled: scaled);
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +22,11 @@ class ItemDetailSocketItemStatWidget extends BaseItemStatWidget {
         child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.end,
-            children: [buildLabel(context), buildValue(context), buildBar(context)]));
+            children: [
+              buildLabel(context),
+              buildValue(context),
+              buildBar(context)
+            ]));
   }
 
   Widget buildLabel(BuildContext context) {
@@ -59,9 +68,12 @@ class ItemDetailSocketItemStatWidget extends BaseItemStatWidget {
       height: 14,
       color: Colors.grey.shade700.withOpacity(.7),
       child: Row(
-        mainAxisAlignment: currentValue > 0 ? MainAxisAlignment.start : MainAxisAlignment.end,
+        mainAxisAlignment:
+            currentValue > 0 ? MainAxisAlignment.start : MainAxisAlignment.end,
         children: <Widget>[
-          Container(width: (modBarSize / maxBarSize) * width, color: getModBarColor(context)),
+          Container(
+              width: (modBarSize / maxBarSize) * width,
+              color: getModBarColor(context)),
         ],
       ),
     );
@@ -70,7 +82,8 @@ class ItemDetailSocketItemStatWidget extends BaseItemStatWidget {
   @override
   int get currentValue {
     if (scaled != null) {
-      return interpolate(selected, scaled.displayInterpolation) - interpolate(equipped, scaled.displayInterpolation);
+      return interpolate(selected, scaled.displayInterpolation) -
+          interpolate(equipped, scaled.displayInterpolation);
     }
     return selected - equipped;
   }

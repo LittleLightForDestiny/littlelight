@@ -45,7 +45,8 @@ extension on _Side {
   }
 }
 
-typedef OnTransferAction = Function(TransferActionType type, TransferDestination character);
+typedef OnTransferAction = Function(
+    TransferActionType type, TransferDestination character);
 
 class TransferDestinationsWidget extends StatelessWidget {
   final List<TransferDestination>? transferDestinations;
@@ -129,9 +130,11 @@ class TransferDestinationsWidget extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(4),
       child: expanded
-          ? buildCharactersColumn(context, side: side, characters: characters, action: type)
+          ? buildCharactersColumn(context,
+              side: side, characters: characters, action: type)
           : IntrinsicWidth(
-              child: buildCharactersColumn(context, side: side, characters: characters, action: type),
+              child: buildCharactersColumn(context,
+                  side: side, characters: characters, action: type),
             ),
     );
   }
@@ -183,7 +186,8 @@ class TransferDestinationsWidget extends StatelessWidget {
     );
   }
 
-  Widget? buildCharacterIcon(BuildContext context, TransferDestination destination, TransferActionType action) {
+  Widget? buildCharacterIcon(BuildContext context,
+      TransferDestination destination, TransferActionType action) {
     if (destination.type == TransferDestinationType.vault) {
       return buildCharacterContainer(
         context,

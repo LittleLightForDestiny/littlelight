@@ -26,7 +26,10 @@ class ItemTypeMenuWidget extends StatelessWidget {
           Expanded(
               child: TabBar(
             indicator: BoxDecoration(
-                border: Border(top: BorderSide(width: 2, color: Theme.of(context).colorScheme.onSurface))),
+                border: Border(
+                    top: BorderSide(
+                        width: 2,
+                        color: Theme.of(context).colorScheme.onSurface))),
             controller: controller,
             labelPadding: const EdgeInsets.all(0),
             tabs: getButtons(),
@@ -51,6 +54,7 @@ class ItemTypeMenuButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ManifestText<DestinyItemCategoryDefinition>(categoryHash,
-        uppercase: true, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13));
+        uppercase: true,
+        style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13));
   }
 }

@@ -8,7 +8,8 @@ abstract class PresentationNodesTabsScaffoldWidget extends StatefulWidget {
   PresentationNodesTabsScaffoldState createState();
 }
 
-abstract class PresentationNodesTabsScaffoldState<T extends PresentationNodesTabsScaffoldWidget> extends State<T> {
+abstract class PresentationNodesTabsScaffoldState<
+    T extends PresentationNodesTabsScaffoldWidget> extends State<T> {
   List<DestinyPresentationNodeDefinition>? get nodes;
 
   @override
@@ -51,7 +52,8 @@ abstract class PresentationNodesTabsScaffoldState<T extends PresentationNodesTab
       return breadcrumb;
     }
     return PreferredSize(
-        preferredSize: Size.fromHeight(tabBar.preferredSize.height + breadcrumb.preferredSize.height),
+        preferredSize: Size.fromHeight(
+            tabBar.preferredSize.height + breadcrumb.preferredSize.height),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -79,7 +81,8 @@ abstract class PresentationNodesTabsScaffoldState<T extends PresentationNodesTab
   }
 
   PreferredSizeWidget? buildBreadcrumb(BuildContext context) => null;
-  Widget buildTabButton(BuildContext context, DestinyPresentationNodeDefinition node);
+  Widget buildTabButton(
+      BuildContext context, DestinyPresentationNodeDefinition node);
 
   Widget buildBody(BuildContext context) {
     final nodes = this.nodes;

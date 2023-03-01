@@ -72,11 +72,15 @@ abstract class CustomTabMenu extends StatelessWidget {
   }
 
   Alignment getIndicatorAlignment(BuildContext context) {
-    final value = (controller.animation.value / (controller.length - 1)) * 2 - 1;
-    return direction == Axis.vertical ? Alignment(0, value) : Alignment(value, 0);
+    final value =
+        (controller.animation.value / (controller.length - 1)) * 2 - 1;
+    return direction == Axis.vertical
+        ? Alignment(0, value)
+        : Alignment(value, 0);
   }
 
-  Widget buildSelectedIndicatorAnimation(BuildContext context, double buttonSize) {
+  Widget buildSelectedIndicatorAnimation(
+      BuildContext context, double buttonSize) {
     final child = buildSelectedIndicator(context);
     if (child == null) return Container();
     return AnimatedBuilder(
@@ -95,7 +99,8 @@ abstract class CustomTabMenu extends StatelessWidget {
 
   Widget? buildSelectedIndicator(BuildContext context);
 
-  Widget buildSelectedBackgroundAnimation(BuildContext context, double buttonSize) {
+  Widget buildSelectedBackgroundAnimation(
+      BuildContext context, double buttonSize) {
     final child = buildSelectedBackground(context);
     if (child == null) return Container();
     return AnimatedBuilder(
@@ -114,7 +119,8 @@ abstract class CustomTabMenu extends StatelessWidget {
 
   Widget? buildSelectedBackground(BuildContext context);
 
-  Widget buildAnimatedButton(BuildContext context, int index, double buttonSize) {
+  Widget buildAnimatedButton(
+      BuildContext context, int index, double buttonSize) {
     return Stack(children: [
       AnimatedBuilder(
         animation: controller.animation,

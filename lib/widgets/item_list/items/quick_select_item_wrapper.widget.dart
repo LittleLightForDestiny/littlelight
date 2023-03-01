@@ -19,7 +19,8 @@ import 'package:little_light/widgets/item_list/items/weapon/weapon_inventory_ite
 import 'package:little_light/widgets/progress_tabs/pursuit_item/large_pursuit_item.widget.dart';
 
 class QuickSelectItemWrapperWidget extends InventoryItemWrapperWidget {
-  const QuickSelectItemWrapperWidget(ItemWithOwner item, int bucketHash, {String characterId, Key key})
+  const QuickSelectItemWrapperWidget(ItemWithOwner item, int bucketHash,
+      {String characterId, Key key})
       : super(item, bucketHash, characterId: characterId, key: key);
 
   @override
@@ -52,10 +53,14 @@ class QuickSelectItemWrapperWidgetState<T extends QuickSelectItemWrapperWidget>
         }
       case DestinyItemType.Weapon:
         {
-          var reusablePlugs = profile.getItemReusablePlugs(widget?.item?.item?.itemInstanceId);
+          var reusablePlugs =
+              profile.getItemReusablePlugs(widget?.item?.item?.itemInstanceId);
           int maxPlugs = 1;
           final perksCategory = definition.sockets?.socketCategories
-              ?.firstWhere((s) => SocketCategoryHashes.perks.contains(s.socketCategoryHash), orElse: () => null);
+              ?.firstWhere(
+                  (s) =>
+                      SocketCategoryHashes.perks.contains(s.socketCategoryHash),
+                  orElse: () => null);
           final indexes = perksCategory?.socketIndexes;
           reusablePlugs?.forEach((key, value) {
             if (indexes?.contains(value) ?? false) {
@@ -140,12 +145,15 @@ class QuickSelectItemWrapperWidgetState<T extends QuickSelectItemWrapperWidget>
       icon = Image.asset("assets/imgs/inventory-icon.jpg");
     } else {
       var character = profile.getCharacter(widget.characterId);
-      icon = QueuedNetworkImage(imageUrl: BungieApiService.url(character?.emblemPath));
+      icon = QueuedNetworkImage(
+          imageUrl: BungieApiService.url(character?.emblemPath));
     }
 
     return Container(
         foregroundDecoration: instanceInfo?.isEquipped == true
-            ? BoxDecoration(border: Border.all(width: 2, color: Theme.of(context).colorScheme.onSurface))
+            ? BoxDecoration(
+                border: Border.all(
+                    width: 2, color: Theme.of(context).colorScheme.onSurface))
             : null,
         width: 26,
         height: 26,

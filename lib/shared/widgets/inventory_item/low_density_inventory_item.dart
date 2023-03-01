@@ -24,7 +24,8 @@ import 'utils/get_subclass_super_plug_item.dart';
 const _tagIconSize = 12.0;
 const _primaryStatIconsSize = 10.0;
 
-class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, WishlistsConsumer, ManifestConsumer {
+class LowDensityInventoryItem extends StatelessWidget
+    with ItemNotesConsumer, WishlistsConsumer, ManifestConsumer {
   final DestinyItemInfo item;
   final bool showCharacterIcon;
   const LowDensityInventoryItem(
@@ -45,24 +46,34 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
 
   Widget emptyItem(BuildContext context) => Container();
 
-  Widget buildWithDefinition(BuildContext context, DestinyInventoryItemDefinition definition) {
+  Widget buildWithDefinition(
+      BuildContext context, DestinyInventoryItemDefinition definition) {
     return ClipRRect(
         child: Stack(
       fit: StackFit.expand,
       children: [
         Positioned.fill(child: buildItemIcon(context, definition)),
-        Positioned(left: 2, bottom: 2, right: 2, top: 2, child: buildItemInfo(context, definition)),
+        Positioned(
+            left: 2,
+            bottom: 2,
+            right: 2,
+            top: 2,
+            child: buildItemInfo(context, definition)),
       ],
     ));
   }
 
-  Widget buildItemIcon(BuildContext context, DestinyInventoryItemDefinition definition) {
+  Widget buildItemIcon(
+      BuildContext context, DestinyInventoryItemDefinition definition) {
     if (definition.isSubclass) return buildSubclassIcon(context, definition);
     return InventoryItemIcon(item, definition: definition, borderSize: 1.5);
   }
 
-  Widget buildSubclassIcon(BuildContext context, DestinyInventoryItemDefinition definition) {
-    final subclassColor = definition.talentGrid?.hudDamageType?.getColorLayer(context).layer0 ?? Colors.transparent;
+  Widget buildSubclassIcon(
+      BuildContext context, DestinyInventoryItemDefinition definition) {
+    final subclassColor =
+        definition.talentGrid?.hudDamageType?.getColorLayer(context).layer0 ??
+            Colors.transparent;
     return Container(
       alignment: Alignment.centerLeft,
       child: AspectRatio(
@@ -75,7 +86,8 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
             return Stack(children: [
               Positioned.fill(
                 child: CustomPaint(
-                  painter: DiamondShapePainter.color(context.theme.onSurfaceLayers.layer1),
+                  painter: DiamondShapePainter.color(
+                      context.theme.onSurfaceLayers.layer1),
                 ),
               ),
               Positioned.fill(
@@ -96,7 +108,8 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
     );
   }
 
-  Widget buildItemInfo(BuildContext context, DestinyInventoryItemDefinition definition) {
+  Widget buildItemInfo(
+      BuildContext context, DestinyInventoryItemDefinition definition) {
     if (definition.isEngram) return buildEngramInfo(context, definition);
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
@@ -112,7 +125,8 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
     );
   }
 
-  Widget buildEngramInfo(BuildContext context, DestinyInventoryItemDefinition definition) {
+  Widget buildEngramInfo(
+      BuildContext context, DestinyInventoryItemDefinition definition) {
     return Container(
       padding: const EdgeInsets.only(bottom: 8),
       alignment: Alignment.bottomCenter,
@@ -120,7 +134,8 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
     );
   }
 
-  Widget buildItemPrimaryinfo(BuildContext context, DestinyInventoryItemDefinition definition) {
+  Widget buildItemPrimaryinfo(
+      BuildContext context, DestinyInventoryItemDefinition definition) {
     if (definition.isSubclass) {
       return Container();
     }
@@ -140,7 +155,8 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
     return buildDefaultPrimaryStat(context, definition);
   }
 
-  Widget buildWeaponPrimaryStat(BuildContext context, DestinyInventoryItemDefinition definition) {
+  Widget buildWeaponPrimaryStat(
+      BuildContext context, DestinyInventoryItemDefinition definition) {
     final damageType = item.instanceInfo?.damageType;
     final damageColor = damageType?.getColorLayer(context).layer2;
     final powerLevel = item.instanceInfo?.primaryStat?.value;
@@ -167,7 +183,8 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
     ]);
   }
 
-  Widget buildArmorPrimaryStat(BuildContext context, DestinyInventoryItemDefinition definition) {
+  Widget buildArmorPrimaryStat(
+      BuildContext context, DestinyInventoryItemDefinition definition) {
     final powerLevel = item.instanceInfo?.primaryStat?.value;
     final textStyle = context.textTheme.itemPrimaryStatLowDensity;
     return buildInfoContainer(context, [
@@ -178,13 +195,11 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
             builder: (context, snapshot) {
               final capacity = snapshot.data;
               if (capacity == null) return Container();
-              final energyType = capacity.energyType;
-              final energyColor = energyType?.getColorLayer(context).layer2;
               final energyLevel = capacity.capacityValue ?? 0;
               final textStyle = context.textTheme.itemPrimaryStatLowDensity;
               return Text(
                 "$energyLevel",
-                style: textStyle.copyWith(color: energyColor),
+                style: textStyle,
               );
             }),
       ),
@@ -198,20 +213,19 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
     ]);
   }
 
-  Widget buildGhostPrimaryStat(BuildContext context, DestinyInventoryItemDefinition definition) {
+  Widget buildGhostPrimaryStat(
+      BuildContext context, DestinyInventoryItemDefinition definition) {
     return buildInfoContainer(context, [
       FutureBuilder<DestinyEnergyCapacityEntry?>(
           future: getEnergyCapacity(manifest, item, definition),
           builder: (context, snapshot) {
             final capacity = snapshot.data;
             if (capacity == null) return Container();
-            final energyType = capacity.energyType;
-            final energyColor = energyType?.getColorLayer(context).layer2;
             final energyLevel = capacity.capacityValue ?? 0;
             final textStyle = context.textTheme.itemPrimaryStatLowDensity;
             return Text(
               "$energyLevel",
-              style: textStyle.copyWith(color: energyColor),
+              style: textStyle,
             );
           }),
     ]);
@@ -234,7 +248,8 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
     );
   }
 
-  Widget buildHeaderInfo(BuildContext context, DestinyInventoryItemDefinition definition) {
+  Widget buildHeaderInfo(
+      BuildContext context, DestinyInventoryItemDefinition definition) {
     return buildInfoContainer(
       context,
       [
@@ -244,7 +259,8 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
     );
   }
 
-  Widget? buildLockedIcon(BuildContext context, DestinyInventoryItemDefinition definition) {
+  Widget? buildLockedIcon(
+      BuildContext context, DestinyInventoryItemDefinition definition) {
     final isLocked = item.item.state?.contains(ItemState.Locked) ?? false;
     if (!isLocked) return null;
     return SizedBox(
@@ -258,11 +274,13 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
     );
   }
 
-  Widget? buildWishlistIcons(BuildContext context, DestinyInventoryItemDefinition definition) {
+  Widget? buildWishlistIcons(
+      BuildContext context, DestinyInventoryItemDefinition definition) {
     final itemHash = item.item.itemHash;
     final reusablePlugs = item.reusablePlugs;
     if (itemHash == null || reusablePlugs == null) return null;
-    final tags = wishlistsService.getWishlistBuildTags(itemHash: itemHash, reusablePlugs: reusablePlugs);
+    final tags = wishlistsService.getWishlistBuildTags(
+        itemHash: itemHash, reusablePlugs: reusablePlugs);
     if (tags.isEmpty) return null;
     return Row(
       children: tags
@@ -287,7 +305,8 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
     );
   }
 
-  Widget? buildHeaderTagIcons(BuildContext context, DestinyInventoryItemDefinition definition) {
+  Widget? buildHeaderTagIcons(
+      BuildContext context, DestinyInventoryItemDefinition definition) {
     final itemHash = item.item.itemHash;
     final itemInstanceId = item.item.itemInstanceId;
     if (itemHash == null) return null;
@@ -306,7 +325,9 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
               decoration: BoxDecoration(
                 color: color,
                 borderRadius: BorderRadius.circular(24),
-                border: Border.all(width: 1.0, color: borderColor ?? color ?? Colors.transparent),
+                border: Border.all(
+                    width: 1.0,
+                    color: borderColor ?? color ?? Colors.transparent),
               ),
               child: Icon(icon, size: _tagIconSize - 2, color: foregroundColor),
             );
@@ -316,7 +337,8 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
     );
   }
 
-  Widget buildWeaponMainInfo(BuildContext context, DestinyInventoryItemDefinition definition) {
+  Widget buildWeaponMainInfo(
+      BuildContext context, DestinyInventoryItemDefinition definition) {
     final damageType = item.instanceInfo?.damageType;
     final damageColor = damageType?.getColorLayer(context).layer2;
     final powerLevel = item.instanceInfo?.primaryStat?.value;
@@ -345,7 +367,8 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
     );
   }
 
-  Widget buildDefaultPrimaryStat(BuildContext context, DestinyInventoryItemDefinition definition) {
+  Widget buildDefaultPrimaryStat(
+      BuildContext context, DestinyInventoryItemDefinition definition) {
     final primaryStatValue = item.instanceInfo?.primaryStat?.value;
     if (primaryStatValue == null) return Container();
     final textStyle = context.textTheme.itemPrimaryStatLowDensity;
@@ -359,14 +382,16 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
     ]);
   }
 
-  Widget buildQuantity(BuildContext context, DestinyInventoryItemDefinition definition) {
+  Widget buildQuantity(
+      BuildContext context, DestinyInventoryItemDefinition definition) {
     final quantity = item.item.quantity;
     final maxCount = definition.inventory?.maxStackSize;
     if (quantity == null) return Container();
     TextStyle? textStyle = context.textTheme.itemPrimaryStatLowDensity;
     final isMaxValue = maxCount != null && quantity == maxCount;
     if (isMaxValue) {
-      textStyle = textStyle.copyWith(color: context.theme.highlightedObjectiveLayers.layer3);
+      textStyle = textStyle.copyWith(
+          color: context.theme.highlightedObjectiveLayers.layer3);
     }
     return buildInfoContainer(context, [
       Text(
@@ -378,10 +403,12 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
     ]);
   }
 
-  Widget buildEngramPrimaryStat(BuildContext context, DestinyInventoryItemDefinition definition) {
+  Widget buildEngramPrimaryStat(
+      BuildContext context, DestinyInventoryItemDefinition definition) {
     final itemLevel = item.instanceInfo?.itemLevel;
     final quality = item.instanceInfo?.quality ?? 0;
     if (itemLevel == null) return Container();
+    if (itemLevel == 0) return Container();
     final level = itemLevel * 10 + quality;
     final textStyle = context.textTheme.itemPrimaryStatLowDensity;
     return Container(
@@ -396,8 +423,10 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
         ));
   }
 
-  Widget? buildTotalStats(BuildContext context, DestinyInventoryItemDefinition definition) {
-    final total = item.stats?.values.fold<int>(0, (t, stat) => t + (stat.value ?? 0));
+  Widget? buildTotalStats(
+      BuildContext context, DestinyInventoryItemDefinition definition) {
+    final total =
+        item.stats?.values.fold<int>(0, (t, stat) => t + (stat.value ?? 0));
     if (total == null) return null;
     final color = getStatsTotalColor(total, context);
     return Container(

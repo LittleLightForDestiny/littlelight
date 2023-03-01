@@ -43,7 +43,8 @@ extension ListParameters on BucketDisplayOptions {
     }
   }
 
-  int responsiveUnequippedItemsPerRow(BuildContext context, [int columnCount = 1]) {
+  int responsiveUnequippedItemsPerRow(BuildContext context,
+      [int columnCount = 1]) {
     switch (type) {
       case BucketDisplayType.Hidden:
       case BucketDisplayType.OnlyEquipped:
@@ -54,15 +55,19 @@ extension ListParameters on BucketDisplayOptions {
         if (columnCount >= 2) {
           return MediaQueryHelper(context).responsiveValue(3, desktop: 5);
         }
-        return MediaQueryHelper(context).responsiveValue(3, tablet: 5, laptop: 8, desktop: 10);
+        return MediaQueryHelper(context)
+            .responsiveValue(3, tablet: 5, laptop: 8, desktop: 10);
       case BucketDisplayType.Small:
         if (columnCount >= 3) {
-          return MediaQueryHelper(context).responsiveValue(5, laptop: 6, desktop: 9);
+          return MediaQueryHelper(context)
+              .responsiveValue(5, laptop: 6, desktop: 9);
         }
         if (columnCount >= 2) {
-          return MediaQueryHelper(context).responsiveValue(5, tablet: 6, laptop: 9);
+          return MediaQueryHelper(context)
+              .responsiveValue(5, tablet: 6, laptop: 9);
         }
-        return MediaQueryHelper(context).responsiveValue(5, tablet: 10, laptop: 15, desktop: 25);
+        return MediaQueryHelper(context)
+            .responsiveValue(5, tablet: 10, laptop: 15, desktop: 25);
     }
   }
 }
@@ -91,9 +96,13 @@ class BucketDisplayOptions {
 }
 
 const defaultBucketDisplayOptions = {
-  "${InventoryBucket.engrams}": BucketDisplayOptions(type: BucketDisplayType.Small),
-  "${InventoryBucket.lostItems}": BucketDisplayOptions(type: BucketDisplayType.Small),
-  "${InventoryBucket.consumables}": BucketDisplayOptions(type: BucketDisplayType.Small),
-  "${InventoryBucket.modifications}": BucketDisplayOptions(type: BucketDisplayType.Small),
+  "${InventoryBucket.engrams}":
+      BucketDisplayOptions(type: BucketDisplayType.Small),
+  "${InventoryBucket.lostItems}":
+      BucketDisplayOptions(type: BucketDisplayType.Small),
+  "${InventoryBucket.consumables}":
+      BucketDisplayOptions(type: BucketDisplayType.Small),
+  "${InventoryBucket.modifications}":
+      BucketDisplayOptions(type: BucketDisplayType.Small),
   "pursuits_53_null": BucketDisplayOptions(type: BucketDisplayType.Large),
 };

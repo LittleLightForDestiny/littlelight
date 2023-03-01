@@ -67,7 +67,10 @@ class EditLoadoutBloc extends ChangeNotifier with ManifestConsumer {
     final loadoutID = args.loadoutID;
     if (loadoutID == null) return null;
 
-    final originalLoadout = context.read<LoadoutsBloc>().loadouts?.firstWhereOrNull((l) => l.assignedId == loadoutID);
+    final originalLoadout = context
+        .read<LoadoutsBloc>()
+        .loadouts
+        ?.firstWhereOrNull((l) => l.assignedId == loadoutID);
 
     return originalLoadout;
   }
@@ -79,12 +82,14 @@ class EditLoadoutBloc extends ChangeNotifier with ManifestConsumer {
   }
 
   void _loadEmblemDefinition() async {
-    _emblemDefinition = await manifest.getDefinition<DestinyInventoryItemDefinition>(_loadout?.emblemHash);
+    _emblemDefinition = await manifest
+        .getDefinition<DestinyInventoryItemDefinition>(_loadout?.emblemHash);
     notifyListeners();
   }
 
   void _loadBucketDefinitions() async {
-    _bucketDefinitions = await manifest.getDefinitions<DestinyInventoryBucketDefinition>(bucketHashes);
+    _bucketDefinitions = await manifest
+        .getDefinitions<DestinyInventoryBucketDefinition>(bucketHashes);
     notifyListeners();
   }
 
@@ -96,12 +101,16 @@ class EditLoadoutBloc extends ChangeNotifier with ManifestConsumer {
     return _bucketDefinitions?[hash];
   }
 
-  void selectItemToAdd(DestinyClass? classType, int bucketHash, bool asEquipped) async {
+  void selectItemToAdd(
+      DestinyClass? classType, int bucketHash, bool asEquipped) async {
     final loadout = _loadout;
     if (loadout == null) return;
     final idsToAvoid = loadout.equippedItemIds + loadout.unequippedItemIds;
     final item = await Navigator.of(context).push(SelectLoadoutItemPageRoute(
-        classType: classType, idsToAvoid: idsToAvoid, bucketHash: bucketHash, emblemHash: loadout.emblemHash));
+        classType: classType,
+        idsToAvoid: idsToAvoid,
+        bucketHash: bucketHash,
+        emblemHash: loadout.emblemHash));
     if (item == null) return;
     await loadout.addItem(item.item, asEquipped);
     _changed = true;
@@ -109,7 +118,8 @@ class EditLoadoutBloc extends ChangeNotifier with ManifestConsumer {
   }
 
   Future<void> openItemOptions(LoadoutIndexItem item, bool equipped) async {
-    final option = await Navigator.of(context).push(LoadoutSlotOptionsDialogRoute(context, item: item));
+    final option = await Navigator.of(context)
+        .push(LoadoutSlotOptionsDialogRoute(context, item: item));
     if (option == null) return;
     final inventoryItem = item.item;
     if (inventoryItem == null) return;
@@ -133,7 +143,8 @@ class EditLoadoutBloc extends ChangeNotifier with ManifestConsumer {
         break;
 
       case LoadoutSlotOptionsResponse.EditMods:
-        final plugs = await Navigator.of(context).push(EditLoadoutItemModsPageRoute(
+        final plugs =
+            await Navigator.of(context).push(EditLoadoutItemModsPageRoute(
           inventoryItem.itemInstanceId!,
           emblemHash: _loadout?.emblemHash,
           plugHashes: item.itemPlugs,

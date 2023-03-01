@@ -26,7 +26,8 @@ class _PursuitCategory {
   final List<DestinyItemComponent> items;
   final String categoryID;
 
-  _PursuitCategory({this.nameHash, this.customLabel, this.items, this.categoryID});
+  _PursuitCategory(
+      {this.nameHash, this.customLabel, this.items, this.categoryID});
 }
 
 extension PursuitLayoutOptions on BucketDisplayOptions {
@@ -95,14 +96,21 @@ extension PursuitLayoutOptions on BucketDisplayOptions {
 class CharacterPursuitsListWidget extends StatefulWidget {
   final String characterId;
 
-  const CharacterPursuitsListWidget({Key key, this.characterId}) : super(key: key);
+  const CharacterPursuitsListWidget({Key key, this.characterId})
+      : super(key: key);
 
   @override
-  _CharacterPursuitsListWidgetState createState() => _CharacterPursuitsListWidgetState();
+  _CharacterPursuitsListWidgetState createState() =>
+      _CharacterPursuitsListWidgetState();
 }
 
-class _CharacterPursuitsListWidgetState extends State<CharacterPursuitsListWidget>
-    with AutomaticKeepAliveClientMixin, UserSettingsConsumer, ProfileConsumer, ManifestConsumer {
+class _CharacterPursuitsListWidgetState
+    extends State<CharacterPursuitsListWidget>
+    with
+        AutomaticKeepAliveClientMixin,
+        UserSettingsConsumer,
+        ProfileConsumer,
+        ManifestConsumer {
   List<_PursuitCategory> categories;
   bool fullyLoaded = false;
 
@@ -121,10 +129,14 @@ class _CharacterPursuitsListWidgetState extends State<CharacterPursuitsListWidge
 
   Future<void> getPursuits() async {
     var allItems = profile.getCharacterInventory(widget.characterId);
-    var pursuits = allItems.where((i) => i.bucketHash == InventoryBucket.pursuits).toList();
+    var pursuits = allItems
+        .where((i) => i.bucketHash == InventoryBucket.pursuits)
+        .toList();
     var pursuitHashes = pursuits.map((i) => i.itemHash);
-    var defs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(pursuitHashes);
-    pursuits = (await InventoryUtils.sortDestinyItems(pursuits.map((p) => ItemWithOwner(p, null)),
+    var defs = await manifest
+        .getDefinitions<DestinyInventoryItemDefinition>(pursuitHashes);
+    pursuits = (await InventoryUtils.sortDestinyItems(
+            pursuits.map((p) => ItemWithOwner(p, null)),
             sortingParams: userSettings.pursuitOrdering))
         .map((i) => i.item)
         .toList();
@@ -153,15 +165,22 @@ class _CharacterPursuitsListWidgetState extends State<CharacterPursuitsListWidge
     categories = <_PursuitCategory>[];
 
     if (bounties.isNotEmpty) {
-      categories.add(_PursuitCategory(nameHash: 1784235469, items: bounties, categoryID: "pursuits_1784235469_null"));
+      categories.add(_PursuitCategory(
+          nameHash: 1784235469,
+          items: bounties,
+          categoryID: "pursuits_1784235469_null"));
     }
 
     if (questSteps.isNotEmpty) {
-      categories.add(_PursuitCategory(nameHash: 53, items: questSteps, categoryID: "pursuits_53_null"));
+      categories.add(_PursuitCategory(
+          nameHash: 53, items: questSteps, categoryID: "pursuits_53_null"));
     }
 
     other?.forEach((category, items) {
-      categories.add(_PursuitCategory(customLabel: category, items: items, categoryID: "pursuits_null_$category"));
+      categories.add(_PursuitCategory(
+          customLabel: category,
+          items: items,
+          categoryID: "pursuits_null_$category"));
     });
 
     if (mounted) {
@@ -188,8 +207,12 @@ class _CharacterPursuitsListWidgetState extends State<CharacterPursuitsListWidge
     ];
     if (categories == null) return list;
     for (var category in categories) {
-      final options = userSettings.getDisplayOptionsForBucket(category.categoryID);
-      final categoryVisible = ![BucketDisplayType.Hidden, BucketDisplayType.OnlyEquipped].contains(options.type);
+      final options =
+          userSettings.getDisplayOptionsForBucket(category.categoryID);
+      final categoryVisible = ![
+        BucketDisplayType.Hidden,
+        BucketDisplayType.OnlyEquipped
+      ].contains(options.type);
       list += [
         buildCategoryHeaderSliver(category),
         if (categoryVisible) buildPursuitItemsSliver(category, options),
@@ -224,7 +247,8 @@ class _CharacterPursuitsListWidgetState extends State<CharacterPursuitsListWidge
         itemHeight: 40);
   }
 
-  SliverSection buildPursuitItemsSliver(_PursuitCategory category, BucketDisplayOptions options) {
+  SliverSection buildPursuitItemsSliver(
+      _PursuitCategory category, BucketDisplayOptions options) {
     final itemsPerRow = MediaQueryHelper(context).responsiveValue<int>(
       options.itemsPerRow,
       tablet: options.itemsPerRowTablet,
@@ -240,7 +264,8 @@ class _CharacterPursuitsListWidgetState extends State<CharacterPursuitsListWidge
         itemHeight: options.itemHeight);
   }
 
-  Widget buildPursuitItem(DestinyItemComponent item, BucketDisplayOptions options) {
+  Widget buildPursuitItem(
+      DestinyItemComponent item, BucketDisplayOptions options) {
     switch (options.type) {
       case BucketDisplayType.Hidden:
       case BucketDisplayType.OnlyEquipped:
@@ -249,22 +274,26 @@ class _CharacterPursuitsListWidgetState extends State<CharacterPursuitsListWidge
         return LargePursuitItemWidget(
             item: ItemWithOwner(item, widget.characterId),
             selectable: true,
-            key: Key("pursuits_${item?.itemHash}_${item?.itemInstanceId}_${widget.characterId}"));
+            key: Key(
+                "pursuits_${item?.itemHash}_${item?.itemInstanceId}_${widget.characterId}"));
       case BucketDisplayType.Medium:
         return PursuitItemWidget(
             item: ItemWithOwner(item, widget.characterId),
             selectable: true,
-            key: Key("pursuits_${item?.itemHash}_${item?.itemInstanceId}_${widget.characterId}"));
+            key: Key(
+                "pursuits_${item?.itemHash}_${item?.itemInstanceId}_${widget.characterId}"));
       case BucketDisplayType.Small:
         return SmallPursuitItemWidget(
             item: ItemWithOwner(item, widget.characterId),
             selectable: true,
-            key: Key("pursuits_${item?.itemHash}_${item?.itemInstanceId}_${widget.characterId}"));
+            key: Key(
+                "pursuits_${item?.itemHash}_${item?.itemInstanceId}_${widget.characterId}"));
     }
     return PursuitItemWidget(
         item: ItemWithOwner(item, widget.characterId),
         selectable: true,
-        key: Key("pursuits_${item?.itemHash}_${item?.itemInstanceId}_${widget.characterId}"));
+        key: Key(
+            "pursuits_${item?.itemHash}_${item?.itemInstanceId}_${widget.characterId}"));
   }
 
   @override

@@ -16,7 +16,8 @@ class CollectionsBadgePage extends PresentationNodesTabsScaffoldWidget {
   createState() => CollectionsBadgePageState();
 }
 
-class CollectionsBadgePageState extends PresentationNodesTabsScaffoldState<CollectionsBadgePage>
+class CollectionsBadgePageState
+    extends PresentationNodesTabsScaffoldState<CollectionsBadgePage>
     with DestinySettingsConsumer, ManifestConsumer {
   DestinyPresentationNodeDefinition? categoryDefinition;
   List<DestinyPresentationNodeDefinition>? nodesDefinitions;
@@ -42,10 +43,13 @@ class CollectionsBadgePageState extends PresentationNodesTabsScaffoldState<Colle
     final args = CollectionsPageRouteArguments.of(context);
     final categoryNodeHash = args?.badgeCategoryHash;
     if (categoryNodeHash == null) return;
-    final categoryDefinition = await manifest.getDefinition<DestinyPresentationNodeDefinition>(categoryNodeHash);
-    final nodeHashes = categoryDefinition?.children?.presentationNodes?.map((e) => e.presentationNodeHash);
+    final categoryDefinition = await manifest
+        .getDefinition<DestinyPresentationNodeDefinition>(categoryNodeHash);
+    final nodeHashes = categoryDefinition?.children?.presentationNodes
+        ?.map((e) => e.presentationNodeHash);
     if (nodeHashes == null) return;
-    final nodesDefinitions = await manifest.getDefinitions<DestinyPresentationNodeDefinition>(nodeHashes);
+    final nodesDefinitions = await manifest
+        .getDefinitions<DestinyPresentationNodeDefinition>(nodeHashes);
     setState(() {
       this.categoryDefinition = categoryDefinition;
       this.nodesDefinitions = nodesDefinitions.values.toList();
@@ -58,21 +62,28 @@ class CollectionsBadgePageState extends PresentationNodesTabsScaffoldState<Colle
   }
 
   @override
-  Widget buildTabButton(BuildContext context, DestinyPresentationNodeDefinition node) {
+  Widget buildTabButton(
+      BuildContext context, DestinyPresentationNodeDefinition node) {
     final iconName = node.displayProperties?.icon;
     if (iconName == null) return Container();
-    return Container(padding: const EdgeInsets.all(8), width: 48, height: 48, child: QueuedNetworkImage.fromBungie(iconName));
+    return Container(
+        padding: const EdgeInsets.all(8),
+        width: 48,
+        height: 48,
+        child: QueuedNetworkImage.fromBungie(iconName));
   }
 
   @override
   PreferredSizeWidget? buildBreadcrumb(BuildContext context) {
-    final nodeHashes = CollectionsPageRouteArguments.of(context)?.parentCategoryHashes;
+    final nodeHashes =
+        CollectionsPageRouteArguments.of(context)?.parentCategoryHashes;
     if (nodeHashes == null) return null;
     return CategoryBreadcrumbWidget(parentCategoryHashes: nodeHashes);
   }
 
   @override
-  Widget buildTab(BuildContext context, DestinyPresentationNodeDefinition node) {
+  Widget buildTab(
+      BuildContext context, DestinyPresentationNodeDefinition node) {
     return CollectibleListWidget(
       node: node,
       onItemTap: (collectibleHash) {},

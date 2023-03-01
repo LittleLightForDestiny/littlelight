@@ -30,12 +30,14 @@ class EquipmentCharacterBucketContent {
 
 const _characterInfoHeight = 128.0;
 
-class EquipmentCharacterTabContentWidget extends StatelessWidget with ManifestConsumer {
+class EquipmentCharacterTabContentWidget extends StatelessWidget
+    with ManifestConsumer {
   final DestinyCharacterInfo character;
   final List<EquipmentCharacterBucketContent> buckets;
   final List<DestinyItemComponent>? currencies;
 
-  BucketOptionsBloc bucketOptionsState(BuildContext context) => context.watch<BucketOptionsBloc>();
+  BucketOptionsBloc bucketOptionsState(BuildContext context) =>
+      context.watch<BucketOptionsBloc>();
 
   const EquipmentCharacterTabContentWidget(
     this.character, {
@@ -46,7 +48,8 @@ class EquipmentCharacterTabContentWidget extends StatelessWidget with ManifestCo
 
   Future<Map<int, DestinyInventoryBucketDefinition>> get bucketDefs async {
     final hashes = buckets.map((e) => e.bucketHash).whereType<int>().toList();
-    final defs = await manifest.getDefinitions<DestinyInventoryBucketDefinition>(hashes);
+    final defs =
+        await manifest.getDefinitions<DestinyInventoryBucketDefinition>(hashes);
     return defs;
   }
 
@@ -72,9 +75,10 @@ class EquipmentCharacterTabContentWidget extends StatelessWidget with ManifestCo
                   )
                 ] +
                 buckets //
-                    .map<List<SliverSection>>(
-                        (e) => buildBucketSections(context, e, constraints, defs[e.bucketHash])) //
-                    .fold<List<SliverSection>>([], (list, element) => list + element).toList(),
+                    .map<List<SliverSection>>((e) => buildBucketSections(
+                        context, e, constraints, defs[e.bucketHash])) //
+                    .fold<List<SliverSection>>(
+                        [], (list, element) => list + element).toList(),
             crossAxisSpacing: 0,
             mainAxisSpacing: 0,
             padding: const EdgeInsets.all(8).copyWith(top: 0),
@@ -93,13 +97,20 @@ class EquipmentCharacterTabContentWidget extends StatelessWidget with ManifestCo
     final equipped = bucketContent.equipped;
     final unequipped = bucketContent.unequipped;
     final bucketHash = bucketContent.bucketHash;
-    final displayType = bucketOptionsState(context).getDisplayTypeForCharacterBucket(bucketHash);
+    final displayType = bucketOptionsState(context)
+        .getDisplayTypeForCharacterBucket(bucketHash);
     final equippedDensity = displayType.equippedDensity;
     final unequippedDensity = displayType.unequippedDensity;
-    final useBucketCount = bucketDef?.hasTransferDestination == true && bucketDef?.scope == BucketScope.Character;
-    final bucketDefCount = (bucketDef?.itemCount ?? 10) - (equipped != null ? 1 : 0);
-    final idealCount = unequippedDensity?.getIdealCount(constraints.maxWidth) ?? 5;
-    final unequippedCount = ((useBucketCount ? bucketDefCount : unequipped.length) / idealCount).ceil() * idealCount;
+    final useBucketCount = bucketDef?.hasTransferDestination == true &&
+        bucketDef?.scope == BucketScope.Character;
+    final bucketDefCount =
+        (bucketDef?.itemCount ?? 10) - (equipped != null ? 1 : 0);
+    final idealCount =
+        unequippedDensity?.getIdealCount(constraints.maxWidth) ?? 5;
+    final unequippedCount =
+        ((useBucketCount ? bucketDefCount : unequipped.length) / idealCount)
+                .ceil() *
+            idealCount;
     return [
       SliverSection.fixedHeight(
         itemCount: 1,
@@ -107,7 +118,8 @@ class EquipmentCharacterTabContentWidget extends StatelessWidget with ManifestCo
         itemBuilder: (_, __) => BucketHeaderListItemWidget(
           bucketHash,
           canEquip: equipped != null,
-          itemCount: bucketContent.unequipped.length + (bucketContent.equipped != null ? 1 : 0),
+          itemCount: bucketContent.unequipped.length +
+              (bucketContent.equipped != null ? 1 : 0),
         ),
       ),
       if (equipped != null)

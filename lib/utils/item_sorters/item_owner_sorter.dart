@@ -9,7 +9,10 @@ class ItemOwnerSorter extends BaseItemSorter {
 
   get characterOrder {
     if (_characterOrder != null) return _characterOrder;
-    _characterOrder = profile.characters?.map((c) => c.characterId).whereType<String>().toList();
+    _characterOrder = profile.characters
+        ?.map((c) => c.characterId)
+        .whereType<String>()
+        .toList();
     return _characterOrder;
   }
 

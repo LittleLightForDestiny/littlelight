@@ -1,17 +1,37 @@
 import 'package:flutter/material.dart';
-import 'package:little_light/modules/search/blocs/filter_types/base_filter_values_wrapper.dart';
+import 'package:little_light/modules/search/blocs/filter_options/base_filter_values_options.dart';
 
-typedef UpdateFilterValue = void Function<T extends BaseFilterValuesWrapper>(T value);
+typedef UpdateFilterValue = void Function<T extends BaseFilterOptions>(T value);
+typedef UpdateFilterEnabledStatus = void Function<T extends BaseFilterOptions>(
+    bool value);
+typedef ChangeSetValue = void Function<Y, T extends BaseFilterOptions<Set<Y>>>(
+    T type, Y value, bool forceAdd);
 
 class FilterAdapterBloc extends ChangeNotifier {
-  final Map<Type, BaseFilterValuesWrapper> _filters;
+  final Map<Type, BaseFilterOptions> _filters;
   final UpdateFilterValue? _updateFilterValue;
-  FilterAdapterBloc(this._filters, {UpdateFilterValue? onUpdateFilterValue})
-      : this._updateFilterValue = onUpdateFilterValue;
-  BaseFilterValuesWrapper? getFilter<T extends BaseFilterValuesWrapper>() => _filters[T];
+  final UpdateFilterEnabledStatus? _updateFilterEnabledStatus;
+  final ChangeSetValue? _changeSetValue;
+  FilterAdapterBloc(
+    this._filters, {
+    UpdateFilterValue? onUpdateFilterValue,
+    UpdateFilterEnabledStatus? onUpdateFilterEnabledStatus,
+    ChangeSetValue? onChangeSetValue,
+  })  : this._updateFilterValue = onUpdateFilterValue,
+        this._updateFilterEnabledStatus = onUpdateFilterEnabledStatus,
+        this._changeSetValue = onChangeSetValue;
+  BaseFilterOptions? getFilter<T extends BaseFilterOptions>() => _filters[T];
 
-  void updateValue<T extends BaseFilterValuesWrapper>(T value) {
-    if (_updateFilterValue == null) return;
+  void updateValue<T extends BaseFilterOptions>(T value) {
     _updateFilterValue?.call<T>(value);
+  }
+
+  void updateEnabledStatus<T extends BaseFilterOptions>(bool enable) {
+    _updateFilterEnabledStatus?.call<T>(enable);
+  }
+
+  void changeSetValue<Y, T extends BaseFilterOptions<Set<Y>>>(T type, Y value,
+      [bool forceAdd = false]) {
+    _changeSetValue?.call<Y, T>(type, value, forceAdd);
   }
 }

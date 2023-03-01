@@ -15,7 +15,8 @@ class EditLoadoutItemModsPage extends StatelessWidget {
     return MultiProvider(
       providers: [
         Provider.value(value: args),
-        ChangeNotifierProvider(create: (context) => EditLoadoutItemModsBloc(context))
+        ChangeNotifierProvider(
+            create: (context) => EditLoadoutItemModsBloc(context))
       ],
       child: EditLoadoutItemModsView(),
     );

@@ -9,7 +9,8 @@ import 'package:little_light/services/user_settings/little_light_persistent_page
 import 'package:little_light/utils/remove_diacritics.dart';
 
 setupUserSettingsService() async {
-  GetIt.I.registerSingleton<UserSettingsRepository>(UserSettingsRepository._internal());
+  GetIt.I.registerSingleton<UserSettingsRepository>(
+      UserSettingsRepository._internal());
 }
 
 class UserSettingsRepository with StorageConsumer, AuthConsumer {
@@ -33,8 +34,10 @@ class UserSettingsRepository with StorageConsumer, AuthConsumer {
   }
 
   Future<void> initItemOrdering() async {
-    List<ItemSortParameter> savedParams = await globalStorage.getItemOrdering() ?? [];
-    List<ItemSortParameterType?> presentParams = (savedParams).map((p) => p.type).toList();
+    List<ItemSortParameter> savedParams =
+        await globalStorage.getItemOrdering() ?? [];
+    List<ItemSortParameterType?> presentParams =
+        (savedParams).map((p) => p.type).toList();
     var defaults = ItemSortParameter.defaultItemList;
     var defaultParams = defaults.map((p) => p.type);
     savedParams.removeWhere((p) => !defaultParams.contains(p.type));
@@ -47,8 +50,10 @@ class UserSettingsRepository with StorageConsumer, AuthConsumer {
   }
 
   Future<void> initPursuitOrdering() async {
-    List<ItemSortParameter> savedParams = await globalStorage.getPursuitOrdering() ?? [];
-    Iterable<ItemSortParameterType?> presentParams = savedParams.map((p) => p.type);
+    List<ItemSortParameter> savedParams =
+        await globalStorage.getPursuitOrdering() ?? [];
+    Iterable<ItemSortParameterType?> presentParams =
+        savedParams.map((p) => p.type);
     var defaults = ItemSortParameter.defaultPursuitList;
     var defaultParams = defaults.map((p) => p.type);
     savedParams.removeWhere((p) => !defaultParams.contains(p.type));
@@ -71,12 +76,14 @@ class UserSettingsRepository with StorageConsumer, AuthConsumer {
   }
 
   Future<void> initBucketDisplayOptions() async {
-    _bucketDisplayOptions = await currentMembershipStorage.getBucketDisplayOptions();
+    _bucketDisplayOptions =
+        await currentMembershipStorage.getBucketDisplayOptions();
     _bucketDisplayOptions ??= <String, BucketDisplayOptions>{};
   }
 
   Future<void> initDetailsSectionDisplayOptions() async {
-    _detailsSectionDisplayVisibility = await currentMembershipStorage.getDetailsSectionDisplayVisibility();
+    _detailsSectionDisplayVisibility =
+        await currentMembershipStorage.getDetailsSectionDisplayVisibility();
     _detailsSectionDisplayVisibility ??= <String, bool>{};
   }
 
@@ -115,7 +122,8 @@ class UserSettingsRepository with StorageConsumer, AuthConsumer {
     } catch (e) {
       return;
     }
-    currentMembershipStorage.saveDetailsSectionDisplayVisibility(_detailsSectionDisplayVisibility!);
+    currentMembershipStorage
+        .saveDetailsSectionDisplayVisibility(_detailsSectionDisplayVisibility!);
   }
 
   bool get hasTappedGhost => globalStorage.hasTappedGhost ?? false;

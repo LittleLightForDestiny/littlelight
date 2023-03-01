@@ -75,7 +75,8 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
   }) : super();
 
   @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
     double expandRatio = max(0, 1 - shrinkOffset / (maxHeight - minHeight));
     if (maxHeight == minHeight) {
       expandRatio = 0;
@@ -98,7 +99,8 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
   }
 
   Widget nameBar(BuildContext context, double expandRatio) {
-    double leftOffset = lerpDouble(kToolbarHeight * 2 - 16, 104, expandRatio) ?? 0;
+    double leftOffset =
+        lerpDouble(kToolbarHeight * 2 - 16, 104, expandRatio) ?? 0;
     return Positioned(
         left: 0,
         bottom: 0,
@@ -112,7 +114,10 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
               instanceInfo,
               multiline: true,
               padding: EdgeInsets.only(
-                  left: leftOffset + 8, right: 8, top: (kToolbarHeight - 16) / 2, bottom: (kToolbarHeight - 16) / 2),
+                  left: leftOffset + 8,
+                  right: 8,
+                  top: (kToolbarHeight - 16) / 2,
+                  bottom: (kToolbarHeight - 16) / 2),
               fontSize: 16,
             )));
   }
@@ -144,12 +149,15 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
         width: kToolbarHeight,
         height: kToolbarHeight,
         child: BackButton(
-            color: Color.lerp(definition?.inventory?.tierType?.getTextColor(context), Colors.grey.shade300,
+            color: Color.lerp(
+                definition?.inventory?.tierType?.getTextColor(context),
+                Colors.grey.shade300,
                 expandRatio.clamp(0, 1))));
   }
 
   Widget masterworkCounter(BuildContext context, double expandRatio) {
-    double leftOffset = lerpDouble(kToolbarHeight * 2 - 16, 104, expandRatio) ?? 104;
+    double leftOffset =
+        lerpDouble(kToolbarHeight * 2 - 16, 104, expandRatio) ?? 104;
     if (item == null) return Container();
     return Positioned(
         left: leftOffset,
@@ -229,7 +237,8 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
     }
     var overrideStyleItemHash = item?.overrideStyleItemHash;
     if (overrideStyleItemHash != null) {
-      return DefinitionProviderWidget<DestinyInventoryItemDefinition>(overrideStyleItemHash, (def) {
+      return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
+          overrideStyleItemHash, (def) {
         if (def.plug?.isDummyPlug ?? false) {
           return QueuedNetworkImage(
               imageUrl: BungieApiService.url(imgUrl),
@@ -237,7 +246,8 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
               placeholder: Shimmer.fromColors(
                   baseColor: Theme.of(context).colorScheme.secondary,
                   highlightColor: Colors.grey.shade300,
-                  child: Container(color: Theme.of(context).colorScheme.onSurface)));
+                  child: Container(
+                      color: Theme.of(context).colorScheme.onSurface)));
         }
 
         return QueuedNetworkImage(
@@ -246,7 +256,8 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
             placeholder: Shimmer.fromColors(
                 baseColor: Theme.of(context).colorScheme.secondary,
                 highlightColor: Colors.grey.shade300,
-                child: Container(color: Theme.of(context).colorScheme.onSurface)));
+                child:
+                    Container(color: Theme.of(context).colorScheme.onSurface)));
       });
     }
     return QueuedNetworkImage(
@@ -266,6 +277,7 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   bool shouldRebuild(ItemCoverDelegate oldDelegate) {
-    return maxHeight != oldDelegate.maxHeight || minHeight != oldDelegate.minHeight;
+    return maxHeight != oldDelegate.maxHeight ||
+        minHeight != oldDelegate.minHeight;
   }
 }

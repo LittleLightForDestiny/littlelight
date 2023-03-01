@@ -19,7 +19,8 @@ class TriumphsCategoryPage extends PresentationNodesTabsScaffoldWidget {
   createState() => TriumphsCategoryPageState();
 }
 
-class TriumphsCategoryPageState extends PresentationNodesTabsScaffoldState<TriumphsCategoryPage>
+class TriumphsCategoryPageState
+    extends PresentationNodesTabsScaffoldState<TriumphsCategoryPage>
     with DestinySettingsConsumer, ManifestConsumer {
   DestinyPresentationNodeDefinition? categoryDefinition;
   List<DestinyPresentationNodeDefinition>? nodesDefinitions;
@@ -45,14 +46,19 @@ class TriumphsCategoryPageState extends PresentationNodesTabsScaffoldState<Trium
     final args = TriumphsPageRouteArguments.of(context);
     final categoryNodeHash = args?.categoryPresentationNodeHash;
     if (categoryNodeHash == null) return;
-    final categoryDefinition = await manifest.getDefinition<DestinyPresentationNodeDefinition>(categoryNodeHash);
-    final nodeHashes = categoryDefinition?.children?.presentationNodes?.map((e) => e.presentationNodeHash);
+    final categoryDefinition = await manifest
+        .getDefinition<DestinyPresentationNodeDefinition>(categoryNodeHash);
+    final nodeHashes = categoryDefinition?.children?.presentationNodes
+        ?.map((e) => e.presentationNodeHash);
     if (nodeHashes == null) return;
-    final nodesDefinitions = await manifest.getDefinitions<DestinyPresentationNodeDefinition>(nodeHashes);
+    final nodesDefinitions = await manifest
+        .getDefinitions<DestinyPresentationNodeDefinition>(nodeHashes);
     setState(() {
       this.categoryDefinition = categoryDefinition;
-      this.nodesDefinitions =
-          nodeHashes.map((h) => nodesDefinitions[h]).whereType<DestinyPresentationNodeDefinition>().toList();
+      this.nodesDefinitions = nodeHashes
+          .map((h) => nodesDefinitions[h])
+          .whereType<DestinyPresentationNodeDefinition>()
+          .toList();
     });
   }
 
@@ -68,15 +74,21 @@ class TriumphsCategoryPageState extends PresentationNodesTabsScaffoldState<Trium
   }
 
   @override
-  Widget buildTabButton(BuildContext context, DestinyPresentationNodeDefinition node) {
+  Widget buildTabButton(
+      BuildContext context, DestinyPresentationNodeDefinition node) {
     final iconName = node.displayProperties?.icon;
     if (iconName == null) return Container();
-    return Container(padding: const EdgeInsets.all(8), width: 48, height: 48, child: QueuedNetworkImage.fromBungie(iconName));
+    return Container(
+        padding: const EdgeInsets.all(8),
+        width: 48,
+        height: 48,
+        child: QueuedNetworkImage.fromBungie(iconName));
   }
 
   @override
   PreferredSizeWidget? buildBreadcrumb(BuildContext context) {
-    final nodeHashes = TriumphsPageRouteArguments.of(context)?.parentCategoryHashes;
+    final nodeHashes =
+        TriumphsPageRouteArguments.of(context)?.parentCategoryHashes;
     if (nodeHashes == null) return null;
     return CategoryBreadcrumbWidget(parentCategoryHashes: nodeHashes);
   }
@@ -96,13 +108,16 @@ class TriumphsCategoryPageState extends PresentationNodesTabsScaffoldState<Trium
   }
 
   @override
-  Widget buildTab(BuildContext context, DestinyPresentationNodeDefinition node) {
-    final parentNodeHashes = TriumphsPageRouteArguments.of(context)?.parentCategoryHashes ?? [];
+  Widget buildTab(
+      BuildContext context, DestinyPresentationNodeDefinition node) {
+    final parentNodeHashes =
+        TriumphsPageRouteArguments.of(context)?.parentCategoryHashes ?? [];
     return PresentationNodeListWidget(
       node: node,
       onItemTap: (nodeHash) {
         Navigator.of(context).push(TriumphsPageRoute(
-            parentCategoryHashes: parentNodeHashes + [node.hash!, nodeHash], categoryPresentationNodeHash: nodeHash));
+            parentCategoryHashes: parentNodeHashes + [node.hash!, nodeHash],
+            categoryPresentationNodeHash: nodeHash));
       },
     );
   }

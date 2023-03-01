@@ -11,8 +11,10 @@ class DevModeLoginPageWidget extends StatefulWidget {
   _DevModeLoginPageWidgetState createState() => _DevModeLoginPageWidgetState();
 }
 
-class _DevModeLoginPageWidgetState extends State<DevModeLoginPageWidget> with AuthConsumer {
-  LittleLightLoginArguments? get arguments => ModalRoute.of(context)?.settings.arguments as LittleLightLoginArguments?;
+class _DevModeLoginPageWidgetState extends State<DevModeLoginPageWidget>
+    with AuthConsumer {
+  LittleLightLoginArguments? get arguments =>
+      ModalRoute.of(context)?.settings.arguments as LittleLightLoginArguments?;
 
   @override
   void initState() {
@@ -26,7 +28,8 @@ class _DevModeLoginPageWidgetState extends State<DevModeLoginPageWidget> with Au
         leading: IconButton(
           icon: const Icon(FontAwesomeIcons.home),
           onPressed: () async {
-            Navigator.of(context).pushAndRemoveUntil(DevModeMainPageRoute(), (route) => false);
+            Navigator.of(context)
+                .pushAndRemoveUntil(DevModeMainPageRoute(), (route) => false);
           },
         ),
         title: const Text("Login"),
@@ -52,7 +55,8 @@ class _DevModeLoginPageWidgetState extends State<DevModeLoginPageWidget> with Au
                 final args = arguments;
                 if (args == null || args.code == null) return;
                 await auth.addAccount(args.code!);
-                Navigator.of(context).pushAndRemoveUntil(DevModeMainPageRoute(), (route) => false);
+                Navigator.of(context).pushAndRemoveUntil(
+                    DevModeMainPageRoute(), (route) => false);
               },
               child: const Text("Add Account"))
         ],

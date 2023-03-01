@@ -59,15 +59,20 @@ class InitialPageState extends State<InitialPage> with AuthConsumer {
 
   Widget buildLoadingAnim(BuildContext context) => LoadingAnimWidget();
 
-  Widget languageSelectPage(BuildContext context) => const SelectLanguageSubPage();
+  Widget languageSelectPage(BuildContext context) =>
+      const SelectLanguageSubPage();
 
-  Widget downloadManifestPage(BuildContext context) => const DownloadManifestProgressSubPage();
+  Widget downloadManifestPage(BuildContext context) =>
+      const DownloadManifestProgressSubPage();
 
-  Widget authorizationRequestPage(BuildContext context) => const AuthorizationRequestSubPage();
+  Widget authorizationRequestPage(BuildContext context) =>
+      const AuthorizationRequestSubPage();
 
-  Widget selectMembershipPage(BuildContext context) => const SelectMembershipSubPage();
+  Widget selectMembershipPage(BuildContext context) =>
+      const SelectMembershipSubPage();
 
-  Widget selectWishlistsPage(BuildContext context) => const SelectWishlistsSubPage();
+  Widget selectWishlistsPage(BuildContext context) =>
+      const SelectWishlistsSubPage();
 
   Widget buildError(BuildContext context) => const StartupErrorSubPage();
 }

@@ -15,7 +15,8 @@ class CollectionsCategoryPage extends PresentationNodesTabsScaffoldWidget {
   createState() => CollectionsCategoryPageState();
 }
 
-class CollectionsCategoryPageState extends PresentationNodesTabsScaffoldState<CollectionsCategoryPage>
+class CollectionsCategoryPageState
+    extends PresentationNodesTabsScaffoldState<CollectionsCategoryPage>
     with DestinySettingsConsumer, ManifestConsumer {
   DestinyPresentationNodeDefinition? categoryDefinition;
   List<DestinyPresentationNodeDefinition>? nodesDefinitions;
@@ -43,14 +44,19 @@ class CollectionsCategoryPageState extends PresentationNodesTabsScaffoldState<Co
     final args = CollectionsPageRouteArguments.of(context);
     final categoryNodeHash = args?.categoryPresentationNodeHash;
     if (categoryNodeHash == null) return;
-    final categoryDefinition = await manifest.getDefinition<DestinyPresentationNodeDefinition>(categoryNodeHash);
-    final nodeHashes = categoryDefinition?.children?.presentationNodes?.map((e) => e.presentationNodeHash);
+    final categoryDefinition = await manifest
+        .getDefinition<DestinyPresentationNodeDefinition>(categoryNodeHash);
+    final nodeHashes = categoryDefinition?.children?.presentationNodes
+        ?.map((e) => e.presentationNodeHash);
     if (nodeHashes == null) return;
-    final nodesDefinitions = await manifest.getDefinitions<DestinyPresentationNodeDefinition>(nodeHashes);
+    final nodesDefinitions = await manifest
+        .getDefinitions<DestinyPresentationNodeDefinition>(nodeHashes);
     setState(() {
       this.categoryDefinition = categoryDefinition;
-      this.nodesDefinitions =
-          nodeHashes.map((h) => nodesDefinitions[h]).whereType<DestinyPresentationNodeDefinition>().toList();
+      this.nodesDefinitions = nodeHashes
+          .map((h) => nodesDefinitions[h])
+          .whereType<DestinyPresentationNodeDefinition>()
+          .toList();
     });
   }
 
@@ -60,27 +66,36 @@ class CollectionsCategoryPageState extends PresentationNodesTabsScaffoldState<Co
   }
 
   @override
-  Widget buildTabButton(BuildContext context, DestinyPresentationNodeDefinition node) {
+  Widget buildTabButton(
+      BuildContext context, DestinyPresentationNodeDefinition node) {
     final iconName = node.displayProperties?.icon;
     if (iconName == null) return Container();
-    return Container(padding: const EdgeInsets.all(8), width: 48, height: 48, child: QueuedNetworkImage.fromBungie(iconName));
+    return Container(
+        padding: const EdgeInsets.all(8),
+        width: 48,
+        height: 48,
+        child: QueuedNetworkImage.fromBungie(iconName));
   }
 
   @override
   PreferredSizeWidget? buildBreadcrumb(BuildContext context) {
-    final nodeHashes = CollectionsPageRouteArguments.of(context)?.parentCategoryHashes;
+    final nodeHashes =
+        CollectionsPageRouteArguments.of(context)?.parentCategoryHashes;
     if (nodeHashes == null) return null;
     return CategoryBreadcrumbWidget(parentCategoryHashes: nodeHashes);
   }
 
   @override
-  Widget buildTab(BuildContext context, DestinyPresentationNodeDefinition node) {
-    final parentNodeHashes = CollectionsPageRouteArguments.of(context)?.parentCategoryHashes ?? [];
+  Widget buildTab(
+      BuildContext context, DestinyPresentationNodeDefinition node) {
+    final parentNodeHashes =
+        CollectionsPageRouteArguments.of(context)?.parentCategoryHashes ?? [];
     return PresentationNodeListWidget(
       node: node,
       onItemTap: (nodeHash) {
         Navigator.of(context).push(CollectionsPageRoute(
-            parentCategoryHashes: parentNodeHashes + [nodeHash], subcategoryPresentationNodeHash: nodeHash));
+            parentCategoryHashes: parentNodeHashes + [nodeHash],
+            subcategoryPresentationNodeHash: nodeHash));
       },
     );
   }

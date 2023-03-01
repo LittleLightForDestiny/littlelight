@@ -5,7 +5,8 @@ import 'package:provider/provider.dart';
 
 class BucketOptionsBloc extends ChangeNotifier {
   final UserSettingsRepository _userSettings;
-  BucketOptionsBloc(BuildContext context) : _userSettings = context.read<UserSettingsRepository>();
+  BucketOptionsBloc(BuildContext context)
+      : _userSettings = context.read<UserSettingsRepository>();
 
   BucketDisplayType getDisplayTypeForCharacterBucket(int bucketHash) {
     final id = "$bucketHash";
@@ -18,9 +19,11 @@ class BucketOptionsBloc extends ChangeNotifier {
     return BucketDisplayType.Medium;
   }
 
-  void setDisplayTypeForCharacterBucket(int bucketHash, BucketDisplayType type) {
+  void setDisplayTypeForCharacterBucket(
+      int bucketHash, BucketDisplayType type) {
     final id = "$bucketHash";
-    _userSettings.setDisplayOptionsForBucket(id, BucketDisplayOptions(type: type));
+    _userSettings.setDisplayOptionsForBucket(
+        id, BucketDisplayOptions(type: type));
     notifyListeners();
   }
 
@@ -37,7 +40,8 @@ class BucketOptionsBloc extends ChangeNotifier {
 
   void setDisplayTypeForVaultBucket(int bucketHash, BucketDisplayType type) {
     final id = "vault_$bucketHash";
-    _userSettings.setDisplayOptionsForBucket(id, BucketDisplayOptions(type: type));
+    _userSettings.setDisplayOptionsForBucket(
+        id, BucketDisplayOptions(type: type));
     notifyListeners();
   }
 }

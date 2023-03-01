@@ -9,11 +9,17 @@ import 'package:little_light/widgets/common/item_name_bar/item_name_bar.widget.d
 import 'package:little_light/widgets/item_list/items/base/base_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/item_mods.widget.dart';
 
-class MediumBaseInventoryItemWidget extends BaseInventoryItemWidget with ProfileConsumer {
-  MediumBaseInventoryItemWidget(DestinyItemComponent item, DestinyInventoryItemDefinition itemDefinition,
+class MediumBaseInventoryItemWidget extends BaseInventoryItemWidget
+    with ProfileConsumer {
+  MediumBaseInventoryItemWidget(
+      DestinyItemComponent item,
+      DestinyInventoryItemDefinition itemDefinition,
       DestinyItemInstanceComponent instanceInfo,
-      {Key key, @required String uniqueId, @required String characterId})
-      : super(item, itemDefinition, instanceInfo, key: key, characterId: characterId, uniqueId: uniqueId);
+      {Key key,
+      @required String uniqueId,
+      @required String characterId})
+      : super(item, itemDefinition, instanceInfo,
+            key: key, characterId: characterId, uniqueId: uniqueId);
 
   @override
   Widget positionedNameBar(BuildContext context) {
@@ -85,6 +91,8 @@ class MediumBaseInventoryItemWidget extends BaseInventoryItemWidget with Profile
         bottom: 4,
         right: 4,
         child: ItemModsWidget(
-            definition: definition, itemSockets: profile.getItemSockets(item?.itemInstanceId), iconSize: 22));
+            definition: definition,
+            itemSockets: profile.getItemSockets(item?.itemInstanceId),
+            iconSize: 22));
   }
 }

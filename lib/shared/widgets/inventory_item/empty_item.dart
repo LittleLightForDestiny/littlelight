@@ -8,7 +8,9 @@ class EmptyItem extends StatelessWidget {
   final double borderWidth;
   final int? bucketHash;
   final InventoryItemWidgetDensity density;
-  const EmptyItem({Key? key, this.borderWidth = 2, this.bucketHash, required this.density}) : super(key: key);
+  const EmptyItem(
+      {Key? key, this.borderWidth = 2, this.bucketHash, required this.density})
+      : super(key: key);
   @override
   Widget build(BuildContext context) {
     if (density == InventoryItemWidgetDensity.Low) {
@@ -63,7 +65,7 @@ class EmptyItem extends StatelessWidget {
     return Container(
       margin: EdgeInsets.all(borderWidth),
       decoration: BoxDecoration(
-        color: context.theme.surfaceLayers.layer1,
+        color: Colors.transparent,
         border: Border.all(
           width: borderWidth,
           color: context.theme.onSurfaceLayers.layer3,

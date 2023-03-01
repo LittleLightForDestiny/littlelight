@@ -7,7 +7,8 @@ import 'package:little_light/widgets/item_stats/base_item_stat.widget.dart';
 import 'package:little_light/widgets/item_stats/details_item_stat.widget.dart';
 
 class DetailsTotalStatWidget extends DetailsItemStatWidget {
-  const DetailsTotalStatWidget({Key key, StatValues modValues, DestinyStatDisplayDefinition scaled})
+  const DetailsTotalStatWidget(
+      {Key key, StatValues modValues, DestinyStatDisplayDefinition scaled})
       : super(key: key, modValues: modValues, scaled: scaled);
 
   @override
