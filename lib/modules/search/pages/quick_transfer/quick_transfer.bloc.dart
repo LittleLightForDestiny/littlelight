@@ -4,22 +4,34 @@ import 'package:little_light/core/blocs/inventory/inventory.bloc.dart';
 import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/modules/search/blocs/filter_options/ammo_type_filter_options.dart';
+import 'package:little_light/modules/search/blocs/filter_options/armor_stats_filter_options.dart';
 import 'package:little_light/modules/search/blocs/filter_options/base_filter_values_options.dart';
 import 'package:little_light/modules/search/blocs/filter_options/class_type_filter_options.dart';
 import 'package:little_light/modules/search/blocs/filter_options/damage_type_filter_options.dart';
 import 'package:little_light/modules/search/blocs/filter_options/energy_level_filter_options.dart';
-import 'package:little_light/modules/search/blocs/filter_options/energy_type_filter_options.dart';
 import 'package:little_light/modules/search/blocs/filter_options/item_bucket_filter_options.dart';
 import 'package:little_light/modules/search/blocs/filter_options/item_owner_filter_options.dart';
+import 'package:little_light/modules/search/blocs/filter_options/item_subtype_filter_options.dart';
+import 'package:little_light/modules/search/blocs/filter_options/item_tag_filter_options.dart';
+import 'package:little_light/modules/search/blocs/filter_options/loadout_filter_options.dart';
+import 'package:little_light/modules/search/blocs/filter_options/power_level_filter_options.dart';
 import 'package:little_light/modules/search/blocs/filter_options/text_filter_options.dart';
+import 'package:little_light/modules/search/blocs/filter_options/tier_type_filter_options.dart';
+import 'package:little_light/modules/search/blocs/filter_options/wishlist_tag_filter_options.dart';
 import 'package:little_light/modules/search/blocs/filters/ammo_type_filter.dart';
+import 'package:little_light/modules/search/blocs/filters/armor_stats_filter.dart';
 import 'package:little_light/modules/search/blocs/filters/base_item_filter.dart';
 import 'package:little_light/modules/search/blocs/filters/class_type_filter.dart';
 import 'package:little_light/modules/search/blocs/filters/damage_type_filter.dart';
 import 'package:little_light/modules/search/blocs/filters/energy_level_filter.dart';
-import 'package:little_light/modules/search/blocs/filters/energy_type_filter.dart';
 import 'package:little_light/modules/search/blocs/filters/item_bucket_filter.dart';
 import 'package:little_light/modules/search/blocs/filters/item_owner_filter.dart';
+import 'package:little_light/modules/search/blocs/filters/item_subtype_filter.dart';
+import 'package:little_light/modules/search/blocs/filters/item_tag_filter.dart';
+import 'package:little_light/modules/search/blocs/filters/loadout_filter.dart';
+import 'package:little_light/modules/search/blocs/filters/power_level_filter.dart';
+import 'package:little_light/modules/search/blocs/filters/tier_type_filter.dart';
+import 'package:little_light/modules/search/blocs/filters/wishlist_tag_filter.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/models/transfer_destination.dart';
 import 'package:provider/provider.dart';
@@ -37,41 +49,67 @@ class QuickTransferBloc extends ChangeNotifier with ManifestConsumer {
   List<DestinyItemInfo>? _items;
   List<DestinyItemInfo>? get items => _items;
 
-  Map<Type, BaseItemFilter> _filters = {
-    TextFilterOptions: TextFilter(),
-    AmmoTypeFilterOptions: AmmoTypeFilter(),
-    DamageTypeFilterOptions: DamageTypeFilter(),
-    ClassTypeFilterOptions: ClassTypeFilter(),
-    EnergyLevelFilterOptions: EnergyLevelFilter(),
-    EnergyTypeFilterOptions: EnergyTypeFilter(),
-    ItemBucketFilterOptions: ItemBucketFilter(),
-    ItemOwnerFilterOptions: ItemOwnerFilter(),
-  };
-
+  final Map<Type, BaseItemFilter> _filters;
   final BuildContext _context;
 
-  QuickTransferBloc(
-    BuildContext this._context, {
-    this.bucketHash,
-    this.characterId,
-  })  : _profileBloc = _context.read<ProfileBloc>(),
-        _inventoryBloc = _context.read<InventoryBloc>() {
+  QuickTransferBloc._(
+    this._context,
+    this._profileBloc,
+    this._inventoryBloc,
+    this._filters, {
+    required this.bucketHash,
+    required this.characterId,
+  }) {
     _init();
   }
+
+  factory QuickTransferBloc(
+    BuildContext context, {
+    int? bucketHash,
+    String? characterId,
+  }) =>
+      QuickTransferBloc._(
+        context,
+        context.read<ProfileBloc>(),
+        context.read<InventoryBloc>(),
+        {
+          /// generic filters (all item types)
+          TextFilterOptions: TextFilter(),
+          PowerLevelFilterOptions: PowerLevelFilter(),
+          ItemBucketFilterOptions: ItemBucketFilter(),
+          ItemSubtypeFilterOptions: ItemSubtypeFilter(),
+          TierTypeFilterOptions: TierTypeFilter(),
+          ItemOwnerFilterOptions: ItemOwnerFilter(),
+
+          /// weapon filter types
+          AmmoTypeFilterOptions: AmmoTypeFilter(),
+          DamageTypeFilterOptions: DamageTypeFilter(),
+
+          /// armor filter types
+          EnergyLevelFilterOptions: EnergyLevelFilter(),
+          ClassTypeFilterOptions: ClassTypeFilter(),
+          ArmorStatsFilterOptions: ArmorStatsFilter(),
+
+          /// LL specific stuff
+          ItemTagFilterOptions: ItemTagFilter(),
+          LoadoutFilterOptions: LoadoutFilter(context),
+          WishlistTagFilterOptions: WishlistTagFilter()
+        },
+        bucketHash: bucketHash,
+        characterId: characterId,
+      );
+
   void _init() async {
     final allItems = _profileBloc.allInstancedItems;
     final hashes = allItems.map((e) => e.itemHash).whereType<int>().toSet();
-    final defs =
-        await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
+    final defs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
     final character = _profileBloc.getCharacterById(characterId);
     final characterClass = character?.character.classType;
-    final acceptedClasses =
-        [characterClass, DestinyClass.Unknown].whereType<DestinyClass>();
+    final acceptedClasses = [characterClass, DestinyClass.Unknown].whereType<DestinyClass>();
     final unfiltered = allItems.where((item) {
       final def = defs[item.itemHash];
       if (def == null) return false;
-      if (item.bucketHash == bucketHash && item.characterId == characterId)
-        return false;
+      if (item.bucketHash == bucketHash && item.characterId == characterId) return false;
       if (def.inventory?.bucketTypeHash != bucketHash) return false;
       if (!acceptedClasses.contains(def.classType)) return false;
       _addValueToFilters(item);
@@ -99,10 +137,7 @@ class QuickTransferBloc extends ChangeNotifier with ManifestConsumer {
 
   void onItemTap(DestinyItemInfo item) async {
     final character = _profileBloc.getCharacterById(this.characterId);
-    _inventoryBloc.transfer(
-        item,
-        TransferDestination(TransferDestinationType.character,
-            character: character));
+    _inventoryBloc.transfer(item, TransferDestination(TransferDestinationType.character, character: character));
     Navigator.of(_context).pop();
   }
 
@@ -130,8 +165,7 @@ class QuickTransferBloc extends ChangeNotifier with ManifestConsumer {
     this.filter();
   }
 
-  void updateFilterSetValue<Y, T extends BaseFilterOptions<Set<Y>>>(
-      T type, Y value, bool forceAdd) {
+  void updateFilterSetValue<Y, T extends BaseFilterOptions<Set<Y>>>(T type, Y value, bool forceAdd) {
     final filter = this._filters[T];
     if (filter == null) return;
     final elements = type.value.toSet();

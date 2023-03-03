@@ -15,6 +15,8 @@ extension DamageTypeColorLayers on DamageType {
         return theme.damageTypeLayers.damageTypeVoid;
       case DamageType.Stasis:
         return theme.damageTypeLayers.damageTypeStasis;
+      case DamageType.Strand:
+        return theme.damageTypeLayers.damageTypeStrand;
       case DamageType.Kinetic:
         return theme.damageTypeLayers.damageTypeKinetic;
       default:

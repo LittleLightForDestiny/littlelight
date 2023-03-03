@@ -14,25 +14,18 @@ class WishlistsData {
       case WishlistTag.GodPVE:
       case WishlistTag.GodPVP:
         return BoxDecoration(
-            border: Border.all(
-                color: LittleLightTheme.of(context).achievementLayers,
-                width: 1),
-            gradient: RadialGradient(radius: 1, colors: [
-              getBgColor(context, tag),
-              LittleLightTheme.of(context).achievementLayers
-            ]));
+            border: Border.all(color: LittleLightTheme.of(context).achievementLayers, width: 1),
+            gradient: RadialGradient(
+                radius: 1, colors: [getBgColor(context, tag), LittleLightTheme.of(context).achievementLayers]));
 
       case WishlistTag.Controller:
         return BoxDecoration(
-            border: Border.all(
-                color: Theme.of(context).colorScheme.secondaryContainer,
-                width: 1),
+            border: Border.all(color: Theme.of(context).colorScheme.secondaryContainer, width: 1),
             color: Theme.of(context).colorScheme.primary);
 
       case WishlistTag.Mouse:
         return BoxDecoration(
-            border: Border.all(
-                color: Theme.of(context).colorScheme.primary, width: 1),
+            border: Border.all(color: Theme.of(context).colorScheme.primary, width: 1),
             color: Theme.of(context).colorScheme.secondaryContainer);
       default:
         return BoxDecoration(color: getBgColor(context, tag));
@@ -93,30 +86,22 @@ class WishlistsData {
         return Container(
             alignment: Alignment.center,
             child: CenterIconWorkaround(LittleLightIcons.vanguard,
-                size: size * .8,
-                color: LittleLightThemeData().onSurfaceLayers));
+                size: size * .8, color: LittleLightThemeData().onSurfaceLayers));
       case WishlistTag.PVE:
         return Container(
-            alignment: Alignment.center,
-            child: CenterIconWorkaround(LittleLightIcons.vanguard,
-                size: size * .8));
+            alignment: Alignment.center, child: CenterIconWorkaround(LittleLightIcons.vanguard, size: size * .8));
       case WishlistTag.GodPVP:
         return Container(
             alignment: Alignment.center,
             child: CenterIconWorkaround(LittleLightIcons.crucible,
-                size: size * .9,
-                color: LittleLightThemeData().onSurfaceLayers));
+                size: size * .9, color: LittleLightThemeData().onSurfaceLayers));
       case WishlistTag.PVP:
         return Container(
-            alignment: Alignment.center,
-            child: CenterIconWorkaround(LittleLightIcons.crucible,
-                size: size * .9));
+            alignment: Alignment.center, child: CenterIconWorkaround(LittleLightIcons.crucible, size: size * .9));
         break;
       case WishlistTag.Bungie:
         return Container(
-            alignment: Alignment.center,
-            child:
-                CenterIconWorkaround(LittleLightIcons.bungie, size: size * .9));
+            alignment: Alignment.center, child: CenterIconWorkaround(LittleLightIcons.bungie, size: size * .9));
 
       case WishlistTag.Trash:
         return Container(
@@ -139,7 +124,7 @@ class WishlistsData {
         return Container(
             alignment: Alignment.center,
             child: CenterIconWorkaround(
-              FontAwesomeIcons.mouse,
+              FontAwesomeIcons.computerMouse,
               size: size * .7,
               color: Theme.of(context).colorScheme.primary,
             ));

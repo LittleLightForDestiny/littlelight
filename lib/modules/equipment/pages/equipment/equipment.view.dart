@@ -14,7 +14,6 @@ import 'package:little_light/shared/widgets/tabs/header/loading_tab_header.widge
 import 'package:little_light/shared/widgets/tabs/header/vault_tab_header.widget.dart';
 import 'package:little_light/shared/widgets/tabs/menus/character_header_tab_menu.widget.dart';
 import 'package:little_light/shared/widgets/tabs/menus/current_character_tab_indicator.dart';
-import 'package:provider/provider.dart';
 
 import 'equipment.bloc.dart';
 
@@ -83,9 +82,7 @@ class EquipmentView extends StatelessWidget {
                   ),
                   Expanded(
                     child: Stack(children: [
-                      Positioned.fill(
-                          child: buildTabContent(context,
-                              characterTabController, typeTabController)),
+                      Positioned.fill(child: buildTabContent(context, characterTabController, typeTabController)),
                       Positioned.fill(
                           child: Column(children: [
                         Expanded(
@@ -114,8 +111,7 @@ class EquipmentView extends StatelessWidget {
                         children: [
                           EquipmentTypeTabMenuWidget(typeTabController),
                           Expanded(
-                            child: buildCharacterContextMenuButton(
-                                context, characterTabController),
+                            child: buildCharacterContextMenuButton(context, characterTabController),
                           ),
                         ],
                       )),
@@ -156,8 +152,7 @@ class EquipmentView extends StatelessWidget {
     );
   }
 
-  Widget buildTabHeader(
-      BuildContext context, CustomTabController characterTabController) {
+  Widget buildTabHeader(BuildContext context, CustomTabController characterTabController) {
     final characters = _state.characters;
     if (characters == null) return buildLoadingAppBar(context);
     return CustomTabPassiveView(
@@ -174,9 +169,7 @@ class EquipmentView extends StatelessWidget {
   }
 
   Widget buildTabContent(
-      BuildContext context,
-      CustomTabController characterTabController,
-      CustomTabController typeTabController) {
+      BuildContext context, CustomTabController characterTabController, CustomTabController typeTabController) {
     final characters = _state.characters;
     if (characters == null) return Container();
     return CustomTabPassiveView(
@@ -196,8 +189,7 @@ class EquipmentView extends StatelessWidget {
     );
   }
 
-  Widget buildCharacterTabContent(
-      BuildContext context, InventoryTab tab, DestinyCharacterInfo character) {
+  Widget buildCharacterTabContent(BuildContext context, InventoryTab tab, DestinyCharacterInfo character) {
     final bucketHashes = tab.bucketHashes;
     final currencies = _state.relevantCurrencies;
     final buckets = bucketHashes
@@ -232,8 +224,7 @@ class EquipmentView extends StatelessWidget {
     );
   }
 
-  Widget buildTabPanGestureDetector(
-      BuildContext context, CustomTabController tabController) {
+  Widget buildTabPanGestureDetector(BuildContext context, CustomTabController tabController) {
     return Stack(
       children: [
         IgnorePointer(child: Container(color: Colors.red.withOpacity(.3))),
@@ -244,8 +235,7 @@ class EquipmentView extends StatelessWidget {
     );
   }
 
-  Widget buildCharacterContextMenuButton(
-      BuildContext context, CustomTabController characterTabController) {
+  Widget buildCharacterContextMenuButton(BuildContext context, CustomTabController characterTabController) {
     final characters = _state.characters;
     if (characters == null) return Container();
     return Builder(

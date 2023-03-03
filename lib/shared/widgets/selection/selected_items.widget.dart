@@ -16,12 +16,9 @@ const _selectedItemSize = 72.0;
 const _instancedItemHeight = 96.0;
 
 class SelectedItemsWidget extends StatelessWidget {
-  SelectionBloc selectionBloc(BuildContext context) =>
-      context.read<SelectionBloc>();
-  SelectionBloc selectionState(BuildContext context) =>
-      context.watch<SelectionBloc>();
-  InventoryBloc inventoryBloc(BuildContext context) =>
-      context.read<InventoryBloc>();
+  SelectionBloc selectionBloc(BuildContext context) => context.read<SelectionBloc>();
+  SelectionBloc selectionState(BuildContext context) => context.watch<SelectionBloc>();
+  InventoryBloc inventoryBloc(BuildContext context) => context.read<InventoryBloc>();
   @override
   Widget build(BuildContext context) {
     if (!selectionState(context).hasSelection) return Container();
@@ -37,8 +34,7 @@ class SelectedItemsWidget extends StatelessWidget {
     return buildInstancedItemSelection(context, item);
   }
 
-  Widget buildMultiItemSelection(
-      BuildContext context, List<DestinyItemInfo> items) {
+  Widget buildMultiItemSelection(BuildContext context, List<DestinyItemInfo> items) {
     return Container(
       color: context.theme.surfaceLayers.layer1,
       child: Column(children: [
@@ -49,8 +45,7 @@ class SelectedItemsWidget extends StatelessWidget {
     );
   }
 
-  Widget buildInstancedItemSelection(
-      BuildContext context, DestinyItemInfo item) {
+  Widget buildInstancedItemSelection(BuildContext context, DestinyItemInfo item) {
     return Container(
       color: context.theme.surfaceLayers.layer1,
       child: Column(children: [
@@ -72,10 +67,9 @@ class SelectedItemsWidget extends StatelessWidget {
     );
   }
 
-  Widget buildMultiItemSelectionHeader(
-      BuildContext context, List<DestinyItemInfo> items) {
+  Widget buildMultiItemSelectionHeader(BuildContext context, List<DestinyItemInfo> items) {
     return Container(
-        color: context.theme.surfaceLayers.layer3,
+        color: context.theme.secondarySurfaceLayers.layer0,
         child: Row(
           mainAxisSize: MainAxisSize.max,
           children: [
@@ -83,14 +77,13 @@ class SelectedItemsWidget extends StatelessWidget {
                 child: Container(
               padding: const EdgeInsets.all(8),
               child: Text(
-                items.length > 1
+                items.length == 1
                     ? "{itemCount} items selected".translate(
                         context,
                         replace: {"itemCount": "${items.length}"},
                       )
-                    : "{itemCount} item selected".translate(
+                    : "1 item selected".translate(
                         context,
-                        replace: {"itemCount": "${items.length}"},
                       ),
                 style: context.textTheme.subtitle,
               ),
@@ -100,8 +93,7 @@ class SelectedItemsWidget extends StatelessWidget {
         ));
   }
 
-  Widget buildSelectedItemList(
-      BuildContext context, List<DestinyItemInfo> items) {
+  Widget buildSelectedItemList(BuildContext context, List<DestinyItemInfo> items) {
     return SizedBox(
         height: _selectedItemSize + 16,
         child: ListView.separated(
@@ -112,8 +104,7 @@ class SelectedItemsWidget extends StatelessWidget {
             context,
             items[index],
           ),
-          separatorBuilder: (BuildContext context, int index) =>
-              Container(width: 2),
+          separatorBuilder: (BuildContext context, int index) => Container(width: 2),
         ));
   }
 
@@ -130,8 +121,7 @@ class SelectedItemsWidget extends StatelessWidget {
               final hash = item.item.itemHash;
               final id = item.item.itemInstanceId;
               if (hash == null) return;
-              selectionBloc(context).unselectItem(hash,
-                  instanceId: id, stackIndex: item.stackIndex);
+              selectionBloc(context).unselectItem(hash, instanceId: id, stackIndex: item.stackIndex);
             }),
           ),
         ),
@@ -153,8 +143,7 @@ class SelectedItemsWidget extends StatelessWidget {
               final hash = item.item.itemHash;
               final id = item.item.itemInstanceId;
               if (hash == null) return;
-              selectionBloc(context).unselectItem(hash,
-                  instanceId: id, stackIndex: item.stackIndex);
+              selectionBloc(context).unselectItem(hash, instanceId: id, stackIndex: item.stackIndex);
             }),
           ),
         ),
@@ -183,7 +172,6 @@ class SelectedItemsWidget extends StatelessWidget {
 
   Widget buildTransferDestinations(BuildContext context) {
     return Container(
-      color: context.theme.surfaceLayers.layer2,
       child: TransferDestinationsWidget(
         transferDestinations: selectionState(context).transferDestinations,
         equipDestinations: selectionState(context).equipDestinations,
@@ -213,17 +201,14 @@ class SelectedItemsWidget extends StatelessWidget {
   }
 
   Widget buildStackTransfer(BuildContext context, DestinyItemInfo item) {
-    if (selectionState(context).transferDestinations.isEmpty)
-      return Container();
+    if (selectionState(context).transferDestinations.isEmpty) return Container();
     return Container(
-        color: context.theme.surfaceLayers.layer2,
         key: Key("stack-transfer-${item.item.itemHash}"),
         child: StackTransferWidget(
           total: item.item.quantity ?? 1,
           onTransferPressed: (stackSize, destination) {
             final items = selectionBloc(context).selectedItems;
-            inventoryBloc(context)
-                .transfer(items.first, destination, stackSize: stackSize);
+            inventoryBloc(context).transfer(items.first, destination, stackSize: stackSize);
             selectionBloc(context).clear();
           },
           transferDestinations: selectionState(context).transferDestinations,

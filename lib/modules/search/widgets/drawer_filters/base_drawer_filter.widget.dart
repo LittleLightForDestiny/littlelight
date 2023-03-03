@@ -8,8 +8,7 @@ import 'base_filter.widget.dart';
 
 const _animationDuration = Duration(milliseconds: 300);
 
-abstract class BaseDrawerFilterWidget<T extends BaseFilterOptions>
-    extends BaseFilterWidget<T> {
+abstract class BaseDrawerFilterWidget<T extends BaseFilterOptions> extends BaseFilterWidget<T> {
   @override
   Widget buildWithData(BuildContext context, T data) {
     return Container(
@@ -32,19 +31,14 @@ abstract class BaseDrawerFilterWidget<T extends BaseFilterOptions>
       duration: _animationDuration,
       padding: EdgeInsets.all(4).copyWith(left: 12),
       decoration: BoxDecoration(
-        color: data.enabled
-            ? context.theme.secondarySurfaceLayers.layer1
-            : context.theme.surfaceLayers.layer2,
+        color: data.enabled ? context.theme.secondarySurfaceLayers.layer1 : context.theme.surfaceLayers.layer2,
         borderRadius: BorderRadius.circular(4),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          DefaultTextStyle(
-              child: buildTitle(context), style: context.textTheme.button),
-          Switch(
-              value: data.enabled,
-              onChanged: (value) => updateEnabled(context, value))
+          DefaultTextStyle(child: buildTitle(context), style: context.textTheme.button),
+          Switch(value: data.enabled, onChanged: (value) => updateEnabled(context, value))
         ],
       ),
     );
@@ -68,8 +62,7 @@ abstract class BaseDrawerFilterWidget<T extends BaseFilterOptions>
   Widget buildOptions(BuildContext context, T data);
 }
 
-extension BaseSetFilterWidget<Y, T extends BaseFilterOptions<Set<Y>>>
-    on BaseFilterWidget<T> {
+extension BaseSetFilterWidget<Y, T extends BaseFilterOptions<Set<Y>>> on BaseFilterWidget<T> {
   void updateOption(BuildContext context, T data, Y option, bool forceAdd) {
     context.read<FilterAdapterBloc>().changeSetValue(data, option, forceAdd);
   }

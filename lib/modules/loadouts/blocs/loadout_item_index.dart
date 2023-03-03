@@ -49,8 +49,7 @@ class LoadoutIndexSlot {
   LoadoutIndexSlot clone() {
     final result = LoadoutIndexSlot();
     result.genericEquipped = genericEquipped.clone();
-    result.classSpecificEquipped =
-        classSpecificEquipped.map((key, value) => MapEntry(key, value.clone()));
+    result.classSpecificEquipped = classSpecificEquipped.map((key, value) => MapEntry(key, value.clone()));
     result.unequipped = unequipped.map((e) => e.clone()).toList();
     return result;
   }
@@ -62,10 +61,7 @@ class LoadoutItemIndex with ProfileConsumer, ManifestConsumer {
   int? emblemHash;
   DateTime? updatedAt;
 
-  Map<int, LoadoutIndexSlot> slots = {
-    for (var e in _genericBucketHashes + _classBucketHashes)
-      e: LoadoutIndexSlot()
-  };
+  Map<int, LoadoutIndexSlot> slots = {for (var e in _genericBucketHashes + _classBucketHashes) e: LoadoutIndexSlot()};
 
   LoadoutItemIndex._({
     required this.assignedId,
@@ -76,8 +72,7 @@ class LoadoutItemIndex with ProfileConsumer, ManifestConsumer {
 
   factory LoadoutItemIndex.fromScratch() {
     final assignedId = const Uuid().v4();
-    return LoadoutItemIndex._(
-        assignedId: assignedId, name: "", emblemHash: null);
+    return LoadoutItemIndex._(assignedId: assignedId, name: "", emblemHash: null);
   }
 
   factory LoadoutItemIndex.duplicate(LoadoutItemIndex original) {
@@ -100,8 +95,7 @@ class LoadoutItemIndex with ProfileConsumer, ManifestConsumer {
 
   Future<void> _buildIndex(Loadout loadout) async {
     final items = loadout.equipped + loadout.unequipped;
-    final itemIds =
-        items.map((e) => e.itemInstanceId).whereType<String>().toList();
+    final itemIds = items.map((e) => e.itemInstanceId).whereType<String>().toList();
     final itemHashes = items.map((e) => e.itemHash).whereType<int>().toSet();
     Map<String, DestinyItemComponent> inventoryItems = Map.fromEntries(
       profile.getItemsByInstanceId(itemIds).map(
@@ -112,24 +106,20 @@ class LoadoutItemIndex with ProfileConsumer, ManifestConsumer {
     for (final item in loadout.equipped) {
       final inventoryItem = inventoryItems[item.itemInstanceId];
       if (inventoryItem != null) {
-        await _addItemToLoadoutIndex(inventoryItem, true,
-            plugHashes: item.socketPlugs);
+        await _addItemToLoadoutIndex(inventoryItem, true, plugHashes: item.socketPlugs);
       }
     }
     for (final item in loadout.unequipped) {
       final inventoryItem = inventoryItems[item.itemInstanceId];
       if (inventoryItem != null) {
-        await _addItemToLoadoutIndex(inventoryItem, false,
-            plugHashes: item.socketPlugs);
+        await _addItemToLoadoutIndex(inventoryItem, false, plugHashes: item.socketPlugs);
       }
     }
   }
 
   List<LoadoutIndexItem> get equippedItems => slots.values
-      .map((value) =>
-          [value.genericEquipped] + value.classSpecificEquipped.values.toList())
-      .fold<List<LoadoutIndexItem>>(<LoadoutIndexItem>[],
-          (previousValue, element) => previousValue + element)
+      .map((value) => [value.genericEquipped] + value.classSpecificEquipped.values.toList())
+      .fold<List<LoadoutIndexItem>>(<LoadoutIndexItem>[], (previousValue, element) => previousValue + element)
       .whereType<LoadoutIndexItem>()
       .toList();
 
@@ -140,8 +130,7 @@ class LoadoutItemIndex with ProfileConsumer, ManifestConsumer {
 
   List<LoadoutIndexItem> get unequippedItems => slots.values
       .map((value) => value.unequipped)
-      .fold<List<LoadoutIndexItem>>(<LoadoutIndexItem>[],
-          (previousValue, element) => previousValue + element)
+      .fold<List<LoadoutIndexItem>>(<LoadoutIndexItem>[], (previousValue, element) => previousValue + element)
       .whereType<LoadoutIndexItem>()
       .toList();
 
@@ -150,8 +139,7 @@ class LoadoutItemIndex with ProfileConsumer, ManifestConsumer {
       .whereType<String>()
       .toList();
 
-  int get unequippedItemCount =>
-      slots.values.fold<int>(0, (t, e) => t + e.unequipped.length);
+  int get unequippedItemCount => slots.values.fold<int>(0, (t, e) => t + e.unequipped.length);
 
   static List<int> get genericBucketHashes => _genericBucketHashes;
   static List<int> get classSpecificBucketHashes => _classBucketHashes;
@@ -180,14 +168,9 @@ class LoadoutItemIndex with ProfileConsumer, ManifestConsumer {
     bool equipped, {
     Map<int, int>? plugHashes,
   }) async {
-    final def = await manifest
-        .getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
+    final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
     if (def == null) return null;
-    final isClassSpecificItem = [
-      DestinyClass.Titan,
-      DestinyClass.Hunter,
-      DestinyClass.Warlock
-    ].contains(def.classType);
+    final isClassSpecificItem = [DestinyClass.Titan, DestinyClass.Hunter, DestinyClass.Warlock].contains(def.classType);
     final bucketTypeHash = def.inventory?.bucketTypeHash;
     if (bucketTypeHash == null) return null;
     final slot = slots[bucketTypeHash];
@@ -207,22 +190,18 @@ class LoadoutItemIndex with ProfileConsumer, ManifestConsumer {
     return loadoutItem;
   }
 
-  Future<void> _removeItemFromLoadoutIndex(
-      DestinyItemComponent item, bool equipped) async {
-    final def = await manifest
-        .getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
+  Future<void> _removeItemFromLoadoutIndex(DestinyItemComponent item, bool equipped) async {
+    final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
     if (def == null) return;
     final bucketTypeHash = def.inventory?.bucketTypeHash;
     if (bucketTypeHash == null) return;
     final slot = slots[bucketTypeHash];
     if (slot == null) return;
     if (!equipped) {
-      slot.unequipped
-          .removeWhere((e) => item.itemInstanceId == e.item?.itemInstanceId);
+      slot.unequipped.removeWhere((e) => item.itemInstanceId == e.item?.itemInstanceId);
       return;
     }
-    slot.classSpecificEquipped.removeWhere(
-        (key, value) => item.itemInstanceId == value.item?.itemInstanceId);
+    slot.classSpecificEquipped.removeWhere((key, value) => item.itemInstanceId == value.item?.itemInstanceId);
     if (slot.genericEquipped.item?.itemInstanceId == item.itemInstanceId) {
       slot.genericEquipped.item = null;
       slot.genericEquipped.itemPlugs = {};
@@ -253,23 +232,18 @@ class LoadoutItemIndex with ProfileConsumer, ManifestConsumer {
     return slots.values.any((slot) {
       var equipped = slot.genericEquipped.item?.itemHash == def.hash;
       if (equipped) return true;
-      return slot.classSpecificEquipped.values
-          .any((item) => item.item?.itemHash == def.hash);
+      return slot.classSpecificEquipped.values.any((item) => item.item?.itemHash == def.hash);
     });
   }
 
   Loadout toLoadout() {
     final equipped = equippedItems
-        .map((i) => LoadoutItem(
-            itemHash: i.item?.itemHash,
-            itemInstanceId: i.item?.itemInstanceId,
-            socketPlugs: i.itemPlugs))
+        .map((i) =>
+            LoadoutItem(itemHash: i.item?.itemHash, itemInstanceId: i.item?.itemInstanceId, socketPlugs: i.itemPlugs))
         .toList();
     final unequipped = unequippedItems
-        .map((i) => LoadoutItem(
-            itemHash: i.item?.itemHash,
-            itemInstanceId: i.item?.itemInstanceId,
-            socketPlugs: i.itemPlugs))
+        .map((i) =>
+            LoadoutItem(itemHash: i.item?.itemHash, itemInstanceId: i.item?.itemInstanceId, socketPlugs: i.itemPlugs))
         .toList();
     return Loadout(
       assignedId: assignedId,

@@ -1,29 +1,25 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
-import 'package:little_light/shared/utils/extensions/ammo_type_data.dart';
+import 'package:little_light/modules/search/blocs/filter_options/class_type_filter_options.dart';
+import 'package:little_light/utils/destiny_data.dart';
 
-import '../blocs/filter_options/ammo_type_filter_options.dart';
 import 'base_drawer_filter.widget.dart';
 import 'filter_button.widget.dart';
 
-class AmmoTypeFilterWidget
-    extends BaseDrawerFilterWidget<AmmoTypeFilterOptions> {
+class ClassTypeFilterWidget extends BaseDrawerFilterWidget<ClassTypeFilterOptions> {
   @override
   Widget buildTitle(BuildContext context) {
-    return Text("Ammo Type".translate(context).toUpperCase());
+    return Text("Class Type".translate(context).toUpperCase());
   }
 
   @override
-  Widget buildOptions(BuildContext context, AmmoTypeFilterOptions data) {
+  Widget buildOptions(BuildContext context, ClassTypeFilterOptions data) {
     final availableValues = data.availableValues;
     if (availableValues.length <= 1) return Container();
-    final validValues = [
-      DestinyAmmunitionType.Primary,
-      DestinyAmmunitionType.Special,
-      DestinyAmmunitionType.Heavy
-    ].where((e) => availableValues.contains(e));
-    final hasNone = availableValues.contains(DestinyAmmunitionType.None);
+    final validValues =
+        [DestinyClass.Titan, DestinyClass.Hunter, DestinyClass.Warlock].where((e) => availableValues.contains(e));
+    final hasNone = availableValues.contains(DestinyClass.Unknown);
     final values = data.value;
     return Column(
       children: [
@@ -44,22 +40,19 @@ class AmmoTypeFilterWidget
         if (hasNone)
           FilterButtonWidget(
             Text("None".translate(context).toUpperCase()),
-            selected: values.contains(DestinyAmmunitionType.None),
-            onTap: () =>
-                updateOption(context, data, DestinyAmmunitionType.None, false),
-            onLongPress: () =>
-                updateOption(context, data, DestinyAmmunitionType.None, true),
+            selected: values.contains(DestinyClass.Unknown),
+            onTap: () => updateOption(context, data, DestinyClass.Unknown, false),
+            onLongPress: () => updateOption(context, data, DestinyClass.Unknown, true),
           )
       ],
     );
   }
 
-  Widget buildIcon(BuildContext context, DestinyAmmunitionType type) {
+  Widget buildIcon(BuildContext context, DestinyClass type) {
     return Container(
         padding: EdgeInsets.all(4),
         child: Icon(
           type.icon,
-          color: type.color,
         ));
   }
 }

@@ -5,14 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/blocs/offline_mode/offline_mode.bloc.dart';
-import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/bungie_api.exception.dart';
-import 'package:little_light/pages/initial/main.page_route.dart';
 import 'package:little_light/pages/main.screen.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
-import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/services/setup.dart';
 import 'package:little_light/services/storage/storage.consumer.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -20,8 +17,7 @@ import 'package:little_light/widgets/dialogs/littlelight.base.dialog.dart';
 import 'package:provider/provider.dart';
 
 class BungieApiExceptionDialogRoute extends DialogRoute<void> {
-  BungieApiExceptionDialogRoute(BuildContext context,
-      {required BungieApiException error})
+  BungieApiExceptionDialogRoute(BuildContext context, {required BungieApiException error})
       : super(
             context: context,
             builder: (context) => BungieApiExceptionDialog(),
@@ -30,12 +26,10 @@ class BungieApiExceptionDialogRoute extends DialogRoute<void> {
 }
 
 extension on BuildContext {
-  BungieApiException? get errorArgument =>
-      ModalRoute.of(this)?.settings.arguments as BungieApiException;
+  BungieApiException? get errorArgument => ModalRoute.of(this)?.settings.arguments as BungieApiException;
 }
 
-class BungieApiExceptionDialog extends LittleLightBaseDialog
-    with AuthConsumer, StorageConsumer {
+class BungieApiExceptionDialog extends LittleLightBaseDialog with AuthConsumer, StorageConsumer {
   BungieApiExceptionDialog() : super();
 
   @override
@@ -65,8 +59,7 @@ class BungieApiExceptionDialog extends LittleLightBaseDialog
         ),
         if (kDebugMode)
           TextButton(
-            child: Text(
-                "Navigate in offline mode".translate(context).toUpperCase()),
+            child: Text("Navigate in offline mode".translate(context).toUpperCase()),
             onPressed: () async {
               context.read<OfflineModeBloc>().acceptOfflineMode();
               await initPostLoadingServices(context);
@@ -78,8 +71,7 @@ class BungieApiExceptionDialog extends LittleLightBaseDialog
             },
           ),
         TextButton(
-          child: Text(
-              "Reauthenticate with Bungie".translate(context).toUpperCase()),
+          child: Text("Reauthenticate with Bungie".translate(context).toUpperCase()),
           onPressed: () async {
             auth.openBungieLogin(true);
           },

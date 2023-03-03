@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/parsed_wishlist.dart';
 import 'package:little_light/widgets/icon_fonts/littlelight_icons.dart';
 
@@ -10,11 +11,11 @@ extension HelperMethods on Set<WishlistTag> {
 }
 
 extension WishlistTagData on WishlistTag {
-  Color getBorderColor(context) {
+  Color getBorderColor(BuildContext context) {
     switch (this) {
       case WishlistTag.GodPVE:
       case WishlistTag.GodPVP:
-        return const Color(0xFFFFC107);
+        return context.theme.achievementLayers.layer1;
       case WishlistTag.PVE:
       case WishlistTag.PVP:
       case WishlistTag.Bungie:
@@ -23,6 +24,22 @@ extension WishlistTagData on WishlistTag {
       case WishlistTag.Controller:
       case WishlistTag.UnknownEnumValue:
         return getColor(context);
+    }
+  }
+
+  Color getForegroundColor(BuildContext context) {
+    switch (this) {
+      case WishlistTag.GodPVE:
+      case WishlistTag.GodPVP:
+        return context.theme.achievementLayers.layer1;
+      case WishlistTag.PVE:
+      case WishlistTag.PVP:
+      case WishlistTag.Bungie:
+      case WishlistTag.Trash:
+      case WishlistTag.Mouse:
+      case WishlistTag.Controller:
+      case WishlistTag.UnknownEnumValue:
+        return context.theme.onSurfaceLayers;
     }
   }
 
@@ -39,7 +56,7 @@ extension WishlistTagData on WishlistTag {
       case WishlistTag.Trash:
         return FontAwesomeIcons.trash;
       case WishlistTag.Mouse:
-        return FontAwesomeIcons.mouse;
+        return FontAwesomeIcons.computerMouse;
       case WishlistTag.Controller:
         return FontAwesomeIcons.gamepad;
       case WishlistTag.UnknownEnumValue:

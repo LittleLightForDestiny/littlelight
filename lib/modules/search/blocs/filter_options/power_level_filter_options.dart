@@ -5,14 +5,16 @@ class PowerLevelConstraints {
   int max;
   int min;
   PowerLevelConstraints({
-    this.min = 0,
-    this.max = 10,
+    this.min = 9999,
+    this.max = -9999,
     this.includePowerlessItems = true,
   });
 }
 
 class PowerLevelFilterOptions extends BaseFilterOptions<PowerLevelConstraints> {
-  PowerLevelFilterOptions(
-      PowerLevelConstraints value, PowerLevelConstraints availableValues)
-      : super(value, availableValues: availableValues);
+  PowerLevelFilterOptions([PowerLevelConstraints? value])
+      : super(value ?? PowerLevelConstraints(), availableValues: PowerLevelConstraints());
+
+  @override
+  bool get available => availableValues.max > availableValues.min;
 }

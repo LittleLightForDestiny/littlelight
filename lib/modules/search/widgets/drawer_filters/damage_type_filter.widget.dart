@@ -9,8 +9,7 @@ import 'package:little_light/utils/destiny_data.dart';
 import 'base_drawer_filter.widget.dart';
 import 'filter_button.widget.dart';
 
-class DamageTypeFilterWidget
-    extends BaseDrawerFilterWidget<DamageTypeFilterOptions> {
+class DamageTypeFilterWidget extends BaseDrawerFilterWidget<DamageTypeFilterOptions> {
   @override
   Widget buildTitle(BuildContext context) {
     return Text("Damage Type".translate(context).toUpperCase());
@@ -20,8 +19,7 @@ class DamageTypeFilterWidget
   Widget buildOptions(BuildContext context, DamageTypeFilterOptions data) {
     final availableValues = data.availableValues;
     final values = data.value;
-    final validValues = DamageType.values
-        .where((e) => availableValues.contains(e) && e != DamageType.None);
+    final validValues = DamageType.values.where((e) => availableValues.contains(e) && e != DamageType.None);
     final hasNone = availableValues.contains(DamageType.None);
     return Column(
       children: [
@@ -46,8 +44,7 @@ class DamageTypeFilterWidget
             Text("None".translate(context).toUpperCase()),
             selected: values.contains(DamageType.None),
             onTap: () => updateOption(context, data, DamageType.None, false),
-            onLongPress: () =>
-                updateOption(context, data, DamageType.None, true),
+            onLongPress: () => updateOption(context, data, DamageType.None, true),
           )
       ],
     );

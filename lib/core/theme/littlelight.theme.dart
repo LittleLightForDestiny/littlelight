@@ -19,8 +19,7 @@ class LayeredSwatch extends Color {
   Color get layer3 => _swatches[SwatchLayer.Layer3] ?? layer2;
 
   LayeredSwatch get reverse {
-    final indexes =
-        _swatches.keys.map((k) => SwatchLayer.values.indexOf(k)).toList();
+    final indexes = _swatches.keys.map((k) => SwatchLayer.values.indexOf(k)).toList();
     final reversedIndex = indexes.reversed.toList();
     final _reversedSwatches = _swatches.map((key, value) {
       final index = SwatchLayer.values.indexOf(key);
@@ -65,6 +64,12 @@ class DamageTypeLayers {
     SwatchLayer.Layer0: const Color.fromARGB(255, 40, 95, 204),
     SwatchLayer.Layer1: const Color(0xFF86A4FF),
     SwatchLayer.Layer2: const Color(0xFF86A4FF),
+  });
+
+  LayeredSwatch damageTypeStrand = LayeredSwatch({
+    SwatchLayer.Layer0: const Color(0xFF09C322),
+    SwatchLayer.Layer1: const Color(0xFF84E191),
+    SwatchLayer.Layer2: const Color(0xFF8FE49B),
   });
 
   LayeredSwatch damageTypeKinetic = LayeredSwatch({
@@ -127,50 +132,19 @@ class LittleLightThemeData {
   DamageTypeLayers get damageTypeLayers => DamageTypeLayers();
   final tierLayers = ItemTierLayers();
   LittleLightTextTheme get textTheme => LittleLightTextTheme(
-        largeTitle: TextStyle(
-            fontSize: 28,
-            fontWeight: FontWeight.w700,
-            color: onSurfaceLayers.layer0),
-        title: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w500,
-            color: onSurfaceLayers.layer0),
-        subtitle: TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w600,
-            color: onSurfaceLayers.layer0),
-        body: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w400,
-            color: onSurfaceLayers.layer0),
-        button: TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w600,
-            color: onSurfaceLayers.layer0),
-        notification: TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w600,
-            color: onSurfaceLayers.layer0),
-        itemNameHighDensity:
-            const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-        itemNameMediumDensity:
-            const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
-        caption: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w300,
-            color: onSurfaceLayers.layer0),
-        itemPrimaryStatHighDensity: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w700,
-            color: onSurfaceLayers.layer0),
-        itemPrimaryStatMediumDensity: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w700,
-            color: onSurfaceLayers.layer0),
-        itemPrimaryStatLowDensity: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w700,
-            color: onSurfaceLayers.layer0),
+        largeTitle: TextStyle(fontSize: 28, fontWeight: FontWeight.w700, color: onSurfaceLayers.layer0),
+        title: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: onSurfaceLayers.layer0),
+        subtitle: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: onSurfaceLayers.layer0),
+        body: TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: onSurfaceLayers.layer0),
+        button: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: onSurfaceLayers.layer0),
+        notification: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: onSurfaceLayers.layer0),
+        itemNameHighDensity: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+        itemNameMediumDensity: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+        caption: TextStyle(fontSize: 12, fontWeight: FontWeight.w300, color: onSurfaceLayers.layer0),
+        itemPrimaryStatHighDensity: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: onSurfaceLayers.layer0),
+        itemPrimaryStatMediumDensity:
+            TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: onSurfaceLayers.layer0),
+        itemPrimaryStatLowDensity: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: onSurfaceLayers.layer0),
       );
 
   final surfaceLayers = LayeredSwatch({
@@ -272,45 +246,38 @@ class LittleLightThemeData {
 
   SwitchThemeData get _switchTheme => SwitchThemeData(
         splashRadius: 14,
-        overlayColor: MaterialStateColor.resolveWith(
-            (states) => onSurfaceLayers.layer0.withOpacity(.1)),
-        trackColor: MaterialStateColor.resolveWith(
-            (states) => _getSwitchTrackColor(states)),
-        thumbColor: MaterialStateColor.resolveWith(
-            (states) => _getSwitchThumbColor(states)),
+        overlayColor: MaterialStateColor.resolveWith((states) => onSurfaceLayers.layer0.withOpacity(.1)),
+        trackColor: MaterialStateColor.resolveWith((states) => _getSwitchTrackColor(states)),
+        thumbColor: MaterialStateColor.resolveWith((states) => _getSwitchThumbColor(states)),
       );
 
-  TextTheme get _textTheme => TextTheme(
-      displayMedium: textTheme.title,
-      bodyMedium: textTheme.body,
-      labelLarge: textTheme.button);
+  TextTheme get _textTheme =>
+      TextTheme(displayMedium: textTheme.title, bodyMedium: textTheme.body, labelLarge: textTheme.button);
 
   CardTheme get _cardTheme => CardTheme(color: colorScheme.surface);
 
-  ThemeData get materialTheme =>
-      ThemeData.from(colorScheme: colorScheme).copyWith(
-          primaryColor: primaryLayers,
-          appBarTheme: _appBarTheme,
-          cardColor: _cardTheme.color,
-          cardTheme: _cardTheme,
-          textButtonTheme: TextButtonThemeData(
-              style: ButtonStyle(
-            foregroundColor: MaterialStateColor.resolveWith(
-                (states) => primaryLayers.layer3),
-          )),
-          elevatedButtonTheme: ElevatedButtonThemeData(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: primaryLayers,
-              disabledForegroundColor: primaryLayers,
-              disabledBackgroundColor: primaryLayers,
-            ),
-          ),
-          toggleButtonsTheme: ToggleButtonsThemeData(
-            selectedColor: primaryLayers.layer1,
-            color: surfaceLayers.layer2,
-          ),
-          textTheme: _textTheme,
-          switchTheme: _switchTheme);
+  ThemeData get materialTheme => ThemeData.from(colorScheme: colorScheme).copyWith(
+      primaryColor: primaryLayers,
+      appBarTheme: _appBarTheme,
+      cardColor: _cardTheme.color,
+      cardTheme: _cardTheme,
+      textButtonTheme: TextButtonThemeData(
+          style: ButtonStyle(
+        foregroundColor: MaterialStateColor.resolveWith((states) => primaryLayers.layer3),
+      )),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: primaryLayers,
+          disabledForegroundColor: primaryLayers,
+          disabledBackgroundColor: primaryLayers,
+        ),
+      ),
+      toggleButtonsTheme: ToggleButtonsThemeData(
+        selectedColor: primaryLayers.layer1,
+        color: surfaceLayers.layer2,
+      ),
+      textTheme: _textTheme,
+      switchTheme: _switchTheme);
 }
 
 class LittleLightTheme extends StatelessWidget {
@@ -326,11 +293,9 @@ class LittleLightTheme extends StatelessWidget {
   Widget build(BuildContext context) {
     return Provider<LittleLightThemeData>(
         create: (context) => theme,
-        builder: (context, child) =>
-            Theme(data: theme.materialTheme, child: child ?? Container()),
+        builder: (context, child) => Theme(data: theme.materialTheme, child: child ?? Container()),
         child: child);
   }
 
-  static LittleLightThemeData of(BuildContext context) =>
-      context.read<LittleLightThemeData>();
+  static LittleLightThemeData of(BuildContext context) => context.read<LittleLightThemeData>();
 }

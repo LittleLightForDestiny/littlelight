@@ -7,25 +7,46 @@ import 'package:provider/provider.dart';
 import 'base_item_filter.dart';
 
 class LoadoutFilter extends BaseItemFilter<LoadoutFilterOptions> {
+  final Map<String, Set<String>> _loadoutsByItem = {};
   final LoadoutsBloc _loadoutsBloc;
-  LoadoutFilter(BuildContext context, Set<String> values)
+  LoadoutFilter(BuildContext context)
       : _loadoutsBloc = context.read<LoadoutsBloc>(),
-        super(LoadoutFilterOptions(values));
+        super(LoadoutFilterOptions({}));
+
+  @override
+  Future<List<DestinyItemInfo>> filter(BuildContext context, List<DestinyItemInfo> items) async {
+    if (data.value.isEmpty) {
+      return items;
+    }
+    return super.filter(context, items);
+  }
 
   @override
   Future<bool> filterItem(DestinyItemInfo item) async {
-    final hash = item.itemHash;
     final instanceId = item.instanceId;
     if (instanceId == null) return false;
-
-    final loadouts =
-        _loadoutsBloc.loadouts?.where((l) => data.value.contains(l.assignedId));
-    if (loadouts == null) return true;
-    for (final l in loadouts) {
-      if (l.containsItem(instanceId)) {
+    final itemLoadouts = _loadoutsByItem[instanceId];
+    if (itemLoadouts == null || itemLoadouts.isEmpty) {
+      if (data.value.contains(null)) {
         return true;
       }
+      return false;
     }
-    return false;
+    return itemLoadouts.any((id) => data.value.contains(id));
+  }
+
+  @override
+  Future<void> addValue(DestinyItemInfo item) async {
+    final instanceId = item.instanceId;
+    if (instanceId == null) return;
+    final loadouts = _loadoutsBloc.loadouts?.where((l) {
+      return l.containsItem(instanceId);
+    });
+    if (loadouts == null) return;
+    if (loadouts.isEmpty) data.availableValues.add(null);
+    final ids = loadouts.map((e) => e.assignedId);
+    data.availableValues.addAll(ids);
+    final itemLoadouts = _loadoutsByItem[instanceId] ??= {};
+    itemLoadouts.addAll(ids);
   }
 }

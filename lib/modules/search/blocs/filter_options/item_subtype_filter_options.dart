@@ -1,12 +1,12 @@
-import 'package:bungie_api/destiny2.dart';
-
 import 'base_filter_values_options.dart';
 
-class ItemSubtypeFilterOptions
-    extends BaseFilterOptions<Set<DestinyItemSubType>> {
-  ItemSubtypeFilterOptions(Set<DestinyItemSubType> availableValues)
+class ItemSubtypeFilterOptions extends BaseFilterOptions<Set<int>> {
+  ItemSubtypeFilterOptions(Set<int> availableValues)
       : super(
-          availableValues,
+          availableValues.toSet(),
           availableValues: availableValues,
         );
+
+  @override
+  bool get available => availableValues.length > 1;
 }
