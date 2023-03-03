@@ -1,3 +1,7 @@
+## [1.9.8] - 2023-03-03
+
+- quick fix for Lightfall
+
 ## [1.9.7] - 2022-08-26
 
 - Epic Games accounts quickfix
