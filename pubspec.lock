@@ -112,7 +112,7 @@ packages:
       name: bungie_api
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "13.16.0"
+    version: "13.18.0"
   cached_network_image:
     dependency: "direct main"
     description:
@@ -183,6 +183,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.15.0"
+  compute:
+    dependency: transitive
+    description:
+      name: compute
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.2"
   convert:
     dependency: transitive
     description:

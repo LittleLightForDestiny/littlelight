@@ -19,6 +19,8 @@ extension DamageTypeColorLayers on DamageType {
         return theme.damageTypeLayers.damageTypeVoid;
       case DamageType.Stasis:
         return theme.damageTypeLayers.damageTypeStasis;
+      case DamageType.Strand:
+        return theme.damageTypeLayers.damageTypeStrand;
       default:
         return theme.onSurfaceLayers;
     }
@@ -34,6 +36,8 @@ extension DamageTypeColorLayers on DamageType {
         return LittleLightIcons.damage_void;
       case DamageType.Stasis:
         return LittleLightIcons.damage_stasis;
+      case DamageType.Strand:
+        return LittleLightIcons.damage_strand;
       default:
         return null;
     }
@@ -44,14 +48,6 @@ extension EnergyTypeColorLayers on DestinyEnergyType {
   LayeredSwatch getColorLayer(BuildContext context) {
     final theme = LittleLightTheme.of(context);
     switch (this) {
-      case DestinyEnergyType.Arc:
-        return theme.damageTypeLayers.damageTypeArc;
-      case DestinyEnergyType.Thermal:
-        return theme.damageTypeLayers.damageTypeThermal;
-      case DestinyEnergyType.Void:
-        return theme.damageTypeLayers.damageTypeVoid;
-      case DestinyEnergyType.Stasis:
-        return theme.damageTypeLayers.damageTypeStasis;
       default:
         return theme.onSurfaceLayers;
     }
