@@ -141,6 +141,8 @@ class DestinyData {
         return LittleLightIcons.damage_void;
       case DamageType.Stasis:
         return LittleLightIcons.damage_stasis;
+      case DamageType.Strand:
+        return LittleLightIcons.damage_strand;
 
       default:
         return LittleLightIcons.destiny;
@@ -149,15 +151,6 @@ class DestinyData {
 
   static IconData? getEnergyTypeIcon(DestinyEnergyType type) {
     switch (type) {
-      case DestinyEnergyType.Arc:
-        return LittleLightIcons.damage_arc;
-      case DestinyEnergyType.Thermal:
-        return LittleLightIcons.damage_solar;
-      case DestinyEnergyType.Void:
-        return LittleLightIcons.damage_void;
-      case DestinyEnergyType.Stasis:
-        return LittleLightIcons.damage_stasis;
-
       default:
         return null;
     }

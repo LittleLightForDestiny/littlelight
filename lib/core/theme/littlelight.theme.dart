@@ -77,6 +77,11 @@ class DamageTypeLayers {
     SwatchLayer.Layer1: const Color(0xFFCACDCE),
     SwatchLayer.Layer2: const Color(0xFFDEE1E3),
   });
+  LayeredSwatch damageTypeStrand = LayeredSwatch({
+    SwatchLayer.Layer0: Color(0xFF34E365),
+    SwatchLayer.Layer1: Color(0xFF67EA8C),
+    SwatchLayer.Layer2: Color(0xFF9AF1B2),
+  });
 }
 
 class ItemTierLayers {
