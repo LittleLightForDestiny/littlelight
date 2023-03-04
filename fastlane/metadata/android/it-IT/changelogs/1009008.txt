@@ -1,8 +1,1 @@
-## What's Changed
-* updating firebase analytics version by @joaopmarquesini in https://github.com/LittleLightForDestiny/littlelight/pull/205
-* Bump xmldom and svg2ttf in /iconfontgen by @dependabot in https://github.com/LittleLightForDestiny/littlelight/pull/206
-* Bump @xmldom/xmldom from 0.7.5 to 0.7.6 in /iconfontgen by @dependabot in https://github.com/LittleLightForDestiny/littlelight/pull/207
-* lightfall quick fixes by @joaopmarquesini in https://github.com/LittleLightForDestiny/littlelight/pull/213
-
-
-**Full Changelog**: https://github.com/LittleLightForDestiny/littlelight/compare/v1.9.7...v1.9.8
+- quick fixes for lightfall
