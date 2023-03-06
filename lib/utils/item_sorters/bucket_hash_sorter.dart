@@ -1,3 +1,4 @@
+import 'package:little_light/models/item_sort_parameter.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 
@@ -22,7 +23,7 @@ List<int> _bucketOrder = [
 ];
 
 class BucketHashSorter extends BaseItemSorter {
-  BucketHashSorter(int direction) : super(direction);
+  BucketHashSorter(SorterDirection direction) : super(direction);
 
   @override
   int sort(ItemWithOwner itemA, ItemWithOwner itemB) {
@@ -30,6 +31,6 @@ class BucketHashSorter extends BaseItemSorter {
     int bucketB = def(itemB)?.inventory?.bucketTypeHash ?? 0;
     int orderA = _bucketOrder.indexOf(bucketA);
     int orderB = _bucketOrder.indexOf(bucketB);
-    return direction * orderA.compareTo(orderB);
+    return direction.asInt * orderA.compareTo(orderB);
   }
 }

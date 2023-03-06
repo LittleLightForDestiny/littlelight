@@ -14,7 +14,7 @@ import 'package:little_light/services/littlelight/objectives.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
-import 'package:little_light/widgets/common/header.wiget.dart';
+import 'package:little_light/shared/widgets/headers/header.wiget.dart';
 import 'package:little_light/widgets/common/objective.widget.dart';
 
 class ItemObjectivesWidget extends BaseDestinyStatefulItemWidget {
@@ -24,12 +24,7 @@ class ItemObjectivesWidget extends BaseDestinyStatefulItemWidget {
       DestinyItemInstanceComponent instanceInfo,
       Key key,
       String characterId})
-      : super(
-            item: item,
-            definition: definition,
-            instanceInfo: instanceInfo,
-            key: key,
-            characterId: characterId);
+      : super(item: item, definition: definition, instanceInfo: instanceInfo, key: key, characterId: characterId);
 
   @override
   ItemObjectivesWidgetState createState() {
@@ -37,8 +32,7 @@ class ItemObjectivesWidget extends BaseDestinyStatefulItemWidget {
   }
 }
 
-class ItemObjectivesWidgetState
-    extends BaseDestinyItemState<ItemObjectivesWidget>
+class ItemObjectivesWidgetState extends BaseDestinyItemState<ItemObjectivesWidget>
     with ProfileConsumer, ManifestConsumer {
   Map<int, DestinyObjectiveDefinition> objectiveDefinitions;
   List<DestinyObjectiveProgress> itemObjectives;
@@ -56,14 +50,11 @@ class ItemObjectivesWidgetState
     var itemInstanceId = widget.item?.itemInstanceId;
     if (itemInstanceId == null) {
       var allItems = profile.getAllItems();
-      var item = allItems.firstWhere(
-          (i) => i.item.itemHash == widget.definition?.hash,
-          orElse: () => null);
+      var item = allItems.firstWhere((i) => i.item.itemHash == widget.definition?.hash, orElse: () => null);
       itemInstanceId = item?.item?.itemInstanceId;
     }
 
-    itemObjectives =
-        profile.getItemObjectives(itemInstanceId, characterId, item?.itemHash);
+    itemObjectives = profile.getItemObjectives(itemInstanceId, characterId, item?.itemHash);
 
     if (itemObjectives != null) {
       setState(() {});
@@ -88,8 +79,7 @@ class ItemObjectivesWidgetState
   loadDefinitions() async {
     updateProgress();
     objectiveDefinitions =
-        await manifest.getDefinitions<DestinyObjectiveDefinition>(
-            definition?.objectives?.objectiveHashes);
+        await manifest.getDefinitions<DestinyObjectiveDefinition>(definition?.objectives?.objectiveHashes);
     if (mounted) {
       setState(() {});
     }
@@ -100,8 +90,7 @@ class ItemObjectivesWidgetState
     List<Widget> items = [];
     if ((objectiveDefinitions?.length ?? 0) == 0) return Container();
     if (itemObjectives != null) {
-      if (itemObjectives.where((o) => o.visible != false).isEmpty &&
-          !isTracking) {
+      if (itemObjectives.where((o) => o.visible != false).isEmpty && !isTracking) {
         return Container();
       }
     }
@@ -109,23 +98,20 @@ class ItemObjectivesWidgetState
         padding: const EdgeInsets.all(8),
         child: HeaderWidget(
             padding: const EdgeInsets.all(0),
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                      padding: const EdgeInsets.all(8),
-                      child: Text(
-                        "Objectives".translate(context).toUpperCase(),
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      )),
-                  buildRefreshButton(context)
-                ]))));
+            child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              Container(
+                  padding: const EdgeInsets.all(8),
+                  child: Text(
+                    "Objectives".translate(context).toUpperCase(),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  )),
+              buildRefreshButton(context)
+            ]))));
     items.addAll(buildObjectives(context));
     if (item != null) {
       items.add(buildTrackButton(context));
     }
-    return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch, children: items);
+    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: items);
   }
 
   updateTrackStatus() async {
@@ -146,27 +132,19 @@ class ItemObjectivesWidgetState
       padding: const EdgeInsets.all(8),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          primary: isTracking
-              ? DestinyData.trackingOnColor
-              : DestinyData.trackingOffColor,
+          primary: isTracking ? DestinyData.trackingOnColor : DestinyData.trackingOffColor,
         ),
         child: isTracking
-            ? Text("Stop Tracking".translate(context),
-                key: const Key("stop_tracking"))
-            : Text("Track Objectives".translate(context),
-                key: const Key("track_objectives")),
+            ? Text("Stop Tracking".translate(context), key: const Key("stop_tracking"))
+            : Text("Track Objectives".translate(context), key: const Key("track_objectives")),
         onPressed: () {
           var service = ObjectivesService();
           if (isTracking) {
-            service.removeTrackedObjective(
-                TrackedObjectiveType.Item, definition.hash,
-                instanceId: widget.item?.itemInstanceId,
-                characterId: widget.characterId);
+            service.removeTrackedObjective(TrackedObjectiveType.Item, definition.hash,
+                instanceId: widget.item?.itemInstanceId, characterId: widget.characterId);
           } else {
-            service.addTrackedObjective(
-                TrackedObjectiveType.Item, definition.hash,
-                instanceId: widget.item?.itemInstanceId,
-                characterId: widget.characterId);
+            service.addTrackedObjective(TrackedObjectiveType.Item, definition.hash,
+                instanceId: widget.item?.itemInstanceId, characterId: widget.characterId);
           }
           updateTrackStatus();
         },
@@ -180,9 +158,7 @@ class ItemObjectivesWidgetState
         child: Stack(
           children: <Widget>[
             InkWell(
-                child: Container(
-                    padding: const EdgeInsets.all(8),
-                    child: const Icon(Icons.refresh)),
+                child: Container(padding: const EdgeInsets.all(8), child: const Icon(Icons.refresh)),
                 onTap: () {
                   profile.refresh(ProfileComponentGroups.basicProfile);
                 })
@@ -193,23 +169,18 @@ class ItemObjectivesWidgetState
   List<Widget> buildObjectives(BuildContext context) {
     if (itemObjectives != null) {
       return itemObjectives
-          .map((objective) => buildCurrentObjective(
-              context, objective.objectiveHash, objective))
+          .map((objective) => buildCurrentObjective(context, objective.objectiveHash, objective))
           .toList();
     }
-    return definition.objectives.objectiveHashes
-        .map((hash) => buildCurrentObjective(context, hash))
-        .toList();
+    return definition.objectives.objectiveHashes.map((hash) => buildCurrentObjective(context, hash)).toList();
   }
 
-  Widget buildCurrentObjective(BuildContext context, int hash,
-      [DestinyObjectiveProgress objective]) {
+  Widget buildCurrentObjective(BuildContext context, int hash, [DestinyObjectiveProgress objective]) {
     var def = objectiveDefinitions[hash];
     return Container(
         padding: const EdgeInsets.all(8),
         child: ObjectiveWidget(
-          key: Key(
-              "objective_${objective?.objectiveHash}_${objective?.progress}"),
+          key: Key("objective_${objective?.objectiveHash}_${objective?.progress}"),
           definition: def,
           objective: objective,
         ));

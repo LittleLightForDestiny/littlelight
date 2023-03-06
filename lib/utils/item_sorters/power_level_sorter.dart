@@ -1,8 +1,9 @@
+import 'package:little_light/models/item_sort_parameter.dart';
 import 'package:little_light/utils/item_sorters/base_item_sorter.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 
 class PowerLevelSorter extends BaseItemSorter {
-  PowerLevelSorter(int direction) : super(direction);
+  PowerLevelSorter(SorterDirection direction) : super(direction);
 
   @override
   int sort(ItemWithOwner itemA, ItemWithOwner itemB) {
@@ -10,6 +11,6 @@ class PowerLevelSorter extends BaseItemSorter {
     var instanceB = instance(itemB);
     int powerA = instanceA?.primaryStat?.value ?? 0;
     int powerB = instanceB?.primaryStat?.value ?? 0;
-    return direction * powerA.compareTo(powerB);
+    return direction.asInt * powerA.compareTo(powerB);
   }
 }

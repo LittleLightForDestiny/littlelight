@@ -1,5 +1,9 @@
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:little_light/modules/search/blocs/filter_adapter.bloc.dart';
+import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
+import 'package:little_light/models/item_sort_parameter.dart';
+import 'package:little_light/modules/search/blocs/search_filter.bloc.dart';
+import 'package:little_light/modules/search/blocs/search_sorter.bloc.dart';
+
 import 'package:little_light/modules/search/pages/quick_transfer/quick_transfer.bloc.dart';
 import 'package:little_light/modules/search/pages/quick_transfer/quick_transfer.page_route.dart';
 import 'package:little_light/modules/search/pages/quick_transfer/quick_transfer.view.dart';
@@ -14,6 +18,12 @@ class QuickTransferPage extends StatelessWidget {
     final args = QuickTransferPageRouteArguments.of(context);
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (context) => SearchFilterBloc(context)),
+        ChangeNotifierProvider<SearchSorterBloc>(create: (context) {
+          final activeSorters =
+              context.read<UserSettingsBloc>().itemOrdering?.where((s) => s.active).toList() ?? <ItemSortParameter>[];
+          return SearchSorterBloc(context, activeSorters: activeSorters);
+        }),
         ChangeNotifierProvider(
           create: (context) => QuickTransferBloc(
             context,
@@ -21,15 +31,6 @@ class QuickTransferPage extends StatelessWidget {
             characterId: args?.characterId,
           ),
         ),
-        ChangeNotifierProvider<FilterAdapterBloc>(create: (context) {
-          final bloc = context.read<QuickTransferBloc>();
-          return FilterAdapterBloc(
-            bloc.filters,
-            onChangeSetValue: bloc.updateFilterSetValue,
-            onUpdateFilterValue: bloc.updateFilterValue,
-            onUpdateFilterEnabledStatus: bloc.updateFilterEnabledStatus,
-          );
-        }),
         Provider<ItemInteractionHandlerBloc>(create: (context) {
           final bloc = context.read<QuickTransferBloc>();
           return ItemInteractionHandlerBloc(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
-import 'package:little_light/modules/search/blocs/filter_adapter.bloc.dart';
 import 'package:little_light/modules/search/blocs/filter_options/base_filter_values_options.dart';
+import 'package:little_light/modules/search/blocs/search_filter.bloc.dart';
 import 'package:provider/provider.dart';
 
 import 'base_filter.widget.dart';
@@ -64,6 +64,6 @@ abstract class BaseDrawerFilterWidget<T extends BaseFilterOptions> extends BaseF
 
 extension BaseSetFilterWidget<Y, T extends BaseFilterOptions<Set<Y>>> on BaseFilterWidget<T> {
   void updateOption(BuildContext context, T data, Y option, bool forceAdd) {
-    context.read<FilterAdapterBloc>().changeSetValue(data, option, forceAdd);
+    context.read<SearchFilterBloc>().changeSetValue(data, option, forceAdd);
   }
 }

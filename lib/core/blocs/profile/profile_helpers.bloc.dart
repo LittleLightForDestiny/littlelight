@@ -2,7 +2,9 @@ import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
+import 'package:little_light/models/game_data.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
+import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:provider/provider.dart';
 
@@ -31,7 +33,7 @@ const _exoticBlockGroups = [
   },
 ];
 
-class ProfileHelpersBloc extends ChangeNotifier with ManifestConsumer {
+class ProfileHelpersBloc extends ChangeNotifier with ManifestConsumer, LittleLightDataConsumer {
   final BuildContext context;
   final ProfileBloc _profileBloc;
 
@@ -40,10 +42,23 @@ class ProfileHelpersBloc extends ChangeNotifier with ManifestConsumer {
   Map<DestinyClass, double>? _currentAverage;
   Map<DestinyClass, double>? _achievableAverage;
   Map<DestinyClass, double>? _equippableAverage;
+  Map<String, List<DestinyItemInfo>>? _itemsOnPostmaster;
 
-  ProfileHelpersBloc(this.context)
-      : _profileBloc = context.read<ProfileBloc>() {
+  GameData? _gameData;
+
+  ProfileHelpersBloc(this.context) : _profileBloc = context.read<ProfileBloc>() {
+    _init();
+  }
+
+  _init() {
     _profileBloc.addListener(update);
+    update();
+    fetchGameData();
+  }
+
+  void fetchGameData() async {
+    _gameData = await littleLightData.getGameData();
+    notifyListeners();
   }
 
   @override
@@ -53,15 +68,18 @@ class ProfileHelpersBloc extends ChangeNotifier with ManifestConsumer {
   }
 
   void update() async {
+    updateLoadouts();
+    updatePostmaster();
+  }
+
+  void updateLoadouts() async {
     _maxPowerEquipments = null;
     _maxEquippable = null;
     final maxPower = <DestinyClass, Map<int, DestinyItemInfo>>{};
     final maxPowerNonExotic = <DestinyClass, Map<int, DestinyItemInfo>>{};
     final instancedItems = _profileBloc.allInstancedItems;
-    final hashes =
-        instancedItems.map((i) => i.item.itemHash).whereType<int>().toList();
-    final defs =
-        await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
+    final hashes = instancedItems.map((i) => i.item.itemHash).whereType<int>().toList();
+    final defs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
     for (final item in instancedItems) {
       final hash = item.item.itemHash;
       final def = defs[hash];
@@ -76,19 +94,28 @@ class ProfileHelpersBloc extends ChangeNotifier with ManifestConsumer {
       _addItemToMap(maxPowerNonExotic, item, def, characterClass);
     }
 
-    final maxEquippable = maxPower.map((k, v) =>
-        MapEntry(k, _getMaxEquippableLoadout(v, maxPowerNonExotic[k]!)));
-    final currentAverage =
-        maxPower.map((k, v) => MapEntry(k, _getEquipmentAverage(v)));
-    final achievableAverage = maxPower.map(
-        (k, v) => MapEntry(k, _getAchievableAverage(currentAverage[k]!, v)));
-    final equippableAverage = maxEquippable.map(
-        (k, v) => MapEntry(k, _getAchievableAverage(currentAverage[k]!, v)));
+    final maxEquippable = maxPower.map((k, v) => MapEntry(k, _getMaxEquippableLoadout(v, maxPowerNonExotic[k]!)));
+    final currentAverage = maxPower.map((k, v) => MapEntry(k, _getEquipmentAverage(v)));
+    final achievableAverage = maxPower.map((k, v) => MapEntry(k, _getAchievableAverage(currentAverage[k]!, v)));
+    final equippableAverage = maxEquippable.map((k, v) => MapEntry(k, _getAchievableAverage(currentAverage[k]!, v)));
     _maxPowerEquipments = maxPower;
     _maxEquippable = maxEquippable;
     _currentAverage = currentAverage;
     _achievableAverage = achievableAverage;
     _equippableAverage = equippableAverage;
+    notifyListeners();
+  }
+
+  void updatePostmaster() {
+    final allItemsInPostmaster = _profileBloc.allItems.where((i) => i.item.bucketHash == InventoryBucket.lostItems);
+    final itemsInPostmaster = <String, List<DestinyItemInfo>>{};
+    for (final item in allItemsInPostmaster) {
+      final characterId = item.characterId;
+      if (characterId == null) continue;
+      final characterItems = itemsInPostmaster[characterId] ??= [];
+      characterItems.add(item);
+    }
+    _itemsOnPostmaster = itemsInPostmaster;
     notifyListeners();
   }
 
@@ -101,24 +128,27 @@ class ProfileHelpersBloc extends ChangeNotifier with ManifestConsumer {
     return totalPower / itemCount;
   }
 
-  double _getAchievableAverage(
-      double currentAverage, Map<int, DestinyItemInfo> maxPowerEquipment) {
-    final totalPower = maxPowerEquipment //
+  double _getAchievableAverage(double currentAverage, Map<int, DestinyItemInfo> maxPowerEquipment) {
+    double? achievable;
+    int iterations = 0;
+    final equipmentPower = maxPowerEquipment //
         .values
-        .map<double>(
-            (e) => (e.instanceInfo?.primaryStat?.value ?? 0).toDouble())
-        .fold<double>(
-            0, (t, c) => t + c.clamp(currentAverage, double.maxFinite));
-    final itemCount = maxPowerEquipment.length;
-    return totalPower / itemCount;
+        .map<double>((e) => (e.instanceInfo?.primaryStat?.value ?? 0).toDouble());
+    while (achievable == null || achievable > currentAverage || iterations > 300) {
+      if (achievable != null) currentAverage = achievable;
+      final totalPower = equipmentPower.fold<double>(0, (t, c) => t + c.clamp(currentAverage, double.maxFinite));
+      final itemCount = maxPowerEquipment.length;
+      achievable = totalPower / itemCount;
+      iterations++;
+    }
+    return achievable;
   }
 
   Map<int, DestinyItemInfo> _getMaxEquippableLoadout(
     Map<int, DestinyItemInfo> maxPower,
     Map<int, DestinyItemInfo> maxNonExotic,
   ) {
-    final exoticItems = maxPower.entries
-        .where((element) => element.value != maxNonExotic[element.key]);
+    final exoticItems = maxPower.entries.where((element) => element.value != maxNonExotic[element.key]);
     if (exoticItems.length <= 1) return maxPower;
     final equippable = Map<int, DestinyItemInfo>.from(maxNonExotic);
     MapEntry<int, DestinyItemInfo> replacement = exoticItems.first;
@@ -165,15 +195,27 @@ class ProfileHelpersBloc extends ChangeNotifier with ManifestConsumer {
     }
   }
 
-  Map<DestinyClass, Map<int, DestinyItemInfo>>? get maxPowerNonExotic =>
-      _maxEquippable;
-  Map<DestinyClass, Map<int, DestinyItemInfo>>? get maxPower =>
-      _maxPowerEquipments;
+  Map<DestinyClass, Map<int, DestinyItemInfo>>? get maxPowerNonExotic => _maxEquippable;
+  Map<DestinyClass, Map<int, DestinyItemInfo>>? get maxPower => _maxPowerEquipments;
 
-  double? getCurrentAverage(DestinyClass? classType) =>
-      _currentAverage?[classType];
-  double? getAchievableAverage(DestinyClass? classType) =>
-      _achievableAverage?[classType];
-  double? getEquippableAverage(DestinyClass? classType) =>
-      _equippableAverage?[classType];
+  double? getCurrentAverage(DestinyClass classType) => _currentAverage?[classType];
+  double? getAchievableAverage(DestinyClass classType) => _achievableAverage?[classType];
+  double? getEquippableAverage(DestinyClass classType) => _equippableAverage?[classType];
+
+  Map<int, DestinyItemInfo>? getMaxPowerItems(DestinyClass classType) => _maxPowerEquipments?[classType];
+
+  bool achievedPowerfulTier(DestinyClass classType) =>
+      (_achievableAverage?[classType] ?? 0) > (_gameData?.softCap ?? double.maxFinite);
+  bool achievedPinnacleTier(DestinyClass classType) =>
+      (_achievableAverage?[classType] ?? 0) > (_gameData?.powerfulCap ?? double.maxFinite);
+  bool goForReward(DestinyClass classType) {
+    if (!achievedPowerfulTier(classType)) return false;
+    final current = (getCurrentAverage(classType) ?? 0).floor();
+    final average = (getAchievableAverage(classType) ?? double.maxFinite).floor();
+    return current >= average;
+  }
+
+  List<DestinyItemInfo> getPostmasterItems(String? characterId) {
+    return _itemsOnPostmaster?[characterId] ?? [];
+  }
 }

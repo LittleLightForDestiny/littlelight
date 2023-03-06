@@ -11,15 +11,14 @@ import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateless_item.widget.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
-import 'package:little_light/widgets/common/header.wiget.dart';
+import 'package:little_light/shared/widgets/headers/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/item_stats/base_item_stat.widget.dart';
 import 'package:little_light/widgets/item_stats/details_item_stat.widget.dart';
 
-class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget
-    with ProfileConsumer {
+class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget with ProfileConsumer {
   ItemDetailsPlugInfoWidget(
       {DestinyItemComponent item,
       DestinyInventoryItemDefinition definition,
@@ -31,21 +30,18 @@ class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget
     if (definition == null) return Container();
     return Container(
         padding: const EdgeInsets.all(8),
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              buildSandBoxPerks(context),
-              buildStats(context),
-              buildEnergyCost(context),
-              buildResourceCost(context)
-            ]));
+        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: <Widget>[
+          buildSandBoxPerks(context),
+          buildStats(context),
+          buildEnergyCost(context),
+          buildResourceCost(context)
+        ]));
   }
 
   buildStats(BuildContext context) {
     var stats = definition.investmentStats.map((s) {
       return DetailsItemStatWidget(
-        modValues: StatValues(
-            equipped: s.value, selected: s.value, precalculated: s.value),
+        modValues: StatValues(equipped: s.value, selected: s.value, precalculated: s.value),
         statHash: s.statTypeHash,
       );
     }).toList();
@@ -112,14 +108,11 @@ class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget
               TranslatedTextWidget(
                 "Energy",
                 uppercase: true,
-                style:
-                    const TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
+                style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
               )
             ],
           )),
-      Container(
-          constraints: const BoxConstraints(maxWidth: 600),
-          child: buildBars(context))
+      Container(constraints: const BoxConstraints(maxWidth: 600), child: buildBars(context))
     ]);
   }
 
@@ -139,8 +132,7 @@ class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget
         ));
   }
 
-  Widget buildEnergyPiece(
-      BuildContext context, int index, int total, int used) {
+  Widget buildEnergyPiece(BuildContext context, int index, int total, int used) {
     if (index < total) {
       Color color = Colors.transparent;
       if (index < used) {
@@ -150,10 +142,8 @@ class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget
         height: 16,
         padding: const EdgeInsets.all(2),
         child: Container(
-          decoration: BoxDecoration(
-              border: Border.all(
-                  width: 2, color: Theme.of(context).colorScheme.onSurface),
-              color: color),
+          decoration:
+              BoxDecoration(border: Border.all(width: 2, color: Theme.of(context).colorScheme.onSurface), color: color),
         ),
       );
     }
@@ -192,22 +182,18 @@ class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget
           (def) => Container(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Column(
-                children:
-                    def.materials.where((m) => (m.count ?? 0) > 0).map((m) {
+                children: def.materials.where((m) => (m.count ?? 0) > 0).map((m) {
                   var items = inventory.where((i) => i.itemHash == m.itemHash);
                   var itemsTotal = items.fold<int>(0, (t, i) => t + i.quantity);
-                  var currency =
-                      currencies.where((curr) => curr.itemHash == m.itemHash);
-                  var total = currency.fold<int>(
-                      itemsTotal, (t, curr) => t + curr.quantity);
+                  var currency = currencies.where((curr) => curr.itemHash == m.itemHash);
+                  var total = currency.fold<int>(itemsTotal, (t, curr) => t + curr.quantity);
                   bool isEnough = total >= m.count;
                   return Row(
                     children: <Widget>[
                       SizedBox(
                           width: 20,
                           height: 20,
-                          child: ManifestImageWidget<
-                              DestinyInventoryItemDefinition>(m.itemHash)),
+                          child: ManifestImageWidget<DestinyInventoryItemDefinition>(m.itemHash)),
                       Expanded(
                         child: Container(
                           padding: const EdgeInsets.only(left: 8),
@@ -219,10 +205,7 @@ class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget
                       ),
                       Text("${m.count}/$total",
                           style: TextStyle(
-                              fontWeight: FontWeight.w300,
-                              color: isEnough
-                                  ? theme.onSurfaceLayers
-                                  : theme.errorLayers))
+                              fontWeight: FontWeight.w300, color: isEnough ? theme.onSurfaceLayers : theme.errorLayers))
                     ],
                   );
                 }).toList(),

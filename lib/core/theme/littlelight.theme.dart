@@ -65,22 +65,15 @@ class DamageTypeLayers {
     SwatchLayer.Layer1: const Color(0xFF86A4FF),
     SwatchLayer.Layer2: const Color(0xFF86A4FF),
   });
-
-  LayeredSwatch damageTypeStrand = LayeredSwatch({
-    SwatchLayer.Layer0: const Color(0xFF09C322),
-    SwatchLayer.Layer1: const Color(0xFF84E191),
-    SwatchLayer.Layer2: const Color(0xFF8FE49B),
-  });
-
-  LayeredSwatch damageTypeKinetic = LayeredSwatch({
-    SwatchLayer.Layer0: const Color(0xFFABAFB0),
-    SwatchLayer.Layer1: const Color(0xFFCACDCE),
-    SwatchLayer.Layer2: const Color(0xFFDEE1E3),
-  });
   LayeredSwatch damageTypeStrand = LayeredSwatch({
     SwatchLayer.Layer0: Color(0xFF34E365),
     SwatchLayer.Layer1: Color(0xFF67EA8C),
     SwatchLayer.Layer2: Color(0xFF9AF1B2),
+  });
+  LayeredSwatch damageTypeKinetic = LayeredSwatch({
+    SwatchLayer.Layer0: const Color(0xFFABAFB0),
+    SwatchLayer.Layer1: const Color(0xFFCACDCE),
+    SwatchLayer.Layer2: const Color(0xFFDEE1E3),
   });
 }
 
@@ -201,6 +194,7 @@ class LittleLightThemeData {
   final errorLayers = LayeredSwatch({
     SwatchLayer.Layer0: const Color(0xFFA30335),
     SwatchLayer.Layer1: const Color(0xFFB8023B),
+    SwatchLayer.Layer2: const Color(0xFFC13C4E),
   }, defaultLayer: SwatchLayer.Layer1);
 
   final successLayers = LayeredSwatch({

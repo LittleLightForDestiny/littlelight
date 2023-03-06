@@ -1,13 +1,13 @@
 import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
+import 'package:little_light/shared/utils/sorters/items/item_sorter.dart';
 import 'package:little_light/utils/item_sorters/base_item_sorter.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 
-class PriorityTagsSorter extends BaseItemSorter
-    with UserSettingsConsumer, ItemNotesConsumer {
+class PriorityTagsSorter extends BaseItemSorter with UserSettingsConsumer, ItemNotesConsumer {
   List<String>? _priorityTags;
 
-  PriorityTagsSorter() : super(0);
+  PriorityTagsSorter() : super(SorterDirection.None);
 
   List<String>? get priorityTags {
     final tags = _priorityTags;
@@ -19,14 +19,8 @@ class PriorityTagsSorter extends BaseItemSorter
 
   @override
   int sort(ItemWithOwner a, ItemWithOwner b) {
-    Set<String> tagsA = itemNotes
-            .getNotesForItem(a.item.itemHash, a.item.itemInstanceId)
-            ?.tags ??
-        <String>{};
-    Set<String> tagsB = itemNotes
-            .getNotesForItem(b.item.itemHash, b.item.itemInstanceId)
-            ?.tags ??
-        <String>{};
+    Set<String> tagsA = itemNotes.getNotesForItem(a.item.itemHash, a.item.itemInstanceId)?.tags ?? <String>{};
+    Set<String> tagsB = itemNotes.getNotesForItem(b.item.itemHash, b.item.itemInstanceId)?.tags ?? <String>{};
     var indexA = 9999;
     var indexB = 9999;
     final tags = priorityTags;

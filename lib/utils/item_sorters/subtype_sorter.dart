@@ -1,4 +1,5 @@
 import 'package:bungie_api/enums/destiny_item_sub_type.dart';
+import 'package:little_light/models/item_sort_parameter.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 
 import 'package:little_light/utils/item_sorters/base_item_sorter.dart';
@@ -32,7 +33,7 @@ List<DestinyItemSubType> _subtypeOrder = [
 ];
 
 class SubTypeSorter extends BaseItemSorter {
-  SubTypeSorter(int direction) : super(direction);
+  SubTypeSorter(SorterDirection direction) : super(direction);
 
   @override
   int sort(ItemWithOwner itemA, ItemWithOwner itemB) {
@@ -40,6 +41,6 @@ class SubTypeSorter extends BaseItemSorter {
     DestinyItemSubType? subTypeB = def(itemB)?.itemSubType;
     int orderA = subTypeA != null ? _subtypeOrder.indexOf(subTypeA) : -1;
     int orderB = subTypeB != null ? _subtypeOrder.indexOf(subTypeB) : -1;
-    return direction * orderA.compareTo(orderB);
+    return direction.asInt * orderA.compareTo(orderB);
   }
 }

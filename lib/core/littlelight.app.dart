@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:little_light/core/navigator_key.dart';
 import 'package:little_light/core/blocs/core_blocs_container.dart';
-import 'package:little_light/core/repositories/core_repositories_container.dart';
 import 'package:little_light/core/router/littlelight_router.dart';
 import 'package:little_light/core/theme/littlelight.scroll_behavior.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
@@ -19,8 +18,7 @@ class LittleLightApp extends StatefulWidget {
   _LittleLightAppState createState() => _LittleLightAppState();
 }
 
-class _LittleLightAppState extends State<LittleLightApp>
-    with AnalyticsConsumer, UnilinksConsumer {
+class _LittleLightAppState extends State<LittleLightApp> with AnalyticsConsumer, UnilinksConsumer {
   @override
   void initState() {
     super.initState();
@@ -35,14 +33,12 @@ class _LittleLightAppState extends State<LittleLightApp>
   }
 
   void updateUnilinks() {
-    final context =
-        LittleLightNavigatorKeyContainer.navigatorKey?.currentContext;
+    final context = LittleLightNavigatorKeyContainer.navigatorKey?.currentContext;
     if (context == null) return;
     final currentLink = unilinks?.currentLink;
     if (currentLink == null) return;
     final unilinksRoute = RouteSettings(name: currentLink);
-    Navigator.of(context)
-        .pushAndRemoveUntil(_router.getPage(unilinksRoute), (r) => false);
+    Navigator.of(context).pushAndRemoveUntil(_router.getPage(unilinksRoute), (r) => false);
   }
 
   @override
@@ -58,7 +54,6 @@ class _LittleLightAppState extends State<LittleLightApp>
         child: LittleLightTheme(
           MultiProvider(
             providers: [
-              CoreRepositoriesContainer(),
               CoreBlocsContainer(),
             ],
             child: child ?? Container(),

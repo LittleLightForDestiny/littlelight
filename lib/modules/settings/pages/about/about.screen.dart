@@ -13,7 +13,7 @@ import 'package:little_light/models/language_info.dart';
 import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
 import 'package:little_light/services/storage/export.dart';
 import 'package:little_light/widgets/about/supporter_character.widget.dart';
-import 'package:little_light/widgets/common/header.wiget.dart';
+import 'package:little_light/shared/widgets/headers/header.wiget.dart';
 import 'package:little_light/widgets/multisection_scrollview/multisection_scrollview.dart';
 import 'package:little_light/widgets/multisection_scrollview/sliver_section.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -45,8 +45,7 @@ class AboutScreen extends StatefulWidget {
   _AboutScreenState createState() => _AboutScreenState();
 }
 
-class _AboutScreenState extends State<AboutScreen>
-    with StorageConsumer, LittleLightDataConsumer {
+class _AboutScreenState extends State<AboutScreen> with StorageConsumer, LittleLightDataConsumer {
   String? packageVersion;
   String? appName;
   CollaboratorsResponse? collaborators;
@@ -92,8 +91,7 @@ class _AboutScreenState extends State<AboutScreen>
           _sections,
           crossAxisSpacing: 4,
           mainAxisSpacing: 4,
-          padding: const EdgeInsets.all(8) +
-              MediaQuery.of(context).viewPadding.copyWith(top: 0),
+          padding: const EdgeInsets.all(8) + MediaQuery.of(context).viewPadding.copyWith(top: 0),
         ));
   }
 
@@ -178,8 +176,7 @@ class _AboutScreenState extends State<AboutScreen>
                 children: <Widget>[
                   Text(
                     "$appName v$packageVersion",
-                    style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ],
               ))
@@ -227,12 +224,8 @@ class _AboutScreenState extends State<AboutScreen>
     final actions = [
       if (isMobile)
         AboutScreenAction(
-            color: isIOS
-                ? const Color.fromARGB(255, 22, 147, 245)
-                : const Color.fromARGB(255, 49, 159, 185),
-            icon: isIOS
-                ? FontAwesomeIcons.appStoreIos
-                : FontAwesomeIcons.googlePlay,
+            color: isIOS ? const Color.fromARGB(255, 22, 147, 245) : const Color.fromARGB(255, 49, 159, 185),
+            icon: isIOS ? FontAwesomeIcons.appStoreIos : FontAwesomeIcons.googlePlay,
             label: Text(
               "Rate it".translate(context).toUpperCase(),
             ),
@@ -274,8 +267,7 @@ class _AboutScreenState extends State<AboutScreen>
         itemCount: collaborators.length,
         itemBuilder: (context, index) {
           final collaborator = collaborators[index];
-          return buildTagAndPlatform(
-              collaborator.membershipId, collaborator.membershipType);
+          return buildTagAndPlatform(collaborator.membershipId, collaborator.membershipType);
         });
   }
 
@@ -288,20 +280,14 @@ class _AboutScreenState extends State<AboutScreen>
         });
   }
 
-  SliverSection get spacerSliver => SliverSection(
-      itemHeight: 48,
-      itemCount: 1,
-      itemBuilder: (context, index) => Container());
+  SliverSection get spacerSliver =>
+      SliverSection(itemHeight: 48, itemCount: 1, itemBuilder: (context, index) => Container());
 
-  Widget buildTranslationHeader(
-      BuildContext context, TranslationLanguage language) {
+  Widget buildTranslationHeader(BuildContext context, TranslationLanguage language) {
     final languages = language.languages;
     List<Widget> flags = languages.map((l) => flagIcon(l)).toList();
     Text languageNames = Text(languages
-        .map((l) => context
-            .watch<LanguageBloc>()
-            .languages
-            .firstWhereOrNull((element) => element.code == l))
+        .map((l) => context.watch<LanguageBloc>().languages.firstWhereOrNull((element) => element.code == l))
         .whereType<LanguageInfo>()
         .map((l) => l.name)
         .join("/"));
@@ -314,20 +300,14 @@ class _AboutScreenState extends State<AboutScreen>
   }
 
   Widget flagIcon(String code) {
-    return SizedBox(
-        width: 24,
-        height: 24,
-        child: Image.asset("assets/imgs/flags/$code.png"));
+    return SizedBox(width: 24, height: 24, child: Image.asset("assets/imgs/flags/$code.png"));
   }
 
-  Widget buildTagAndPlatform(
-      String membershipId, BungieMembershipType membershipType,
-      [String? link, Widget? badge]) {
+  Widget buildTagAndPlatform(String membershipId, BungieMembershipType membershipType, [String? link, Widget? badge]) {
     return SupporterCharacterWidget(membershipId, membershipType, link, badge);
   }
 
-  Widget buildExternalLinkButton(
-      BuildContext context, AboutScreenAction action) {
+  Widget buildExternalLinkButton(BuildContext context, AboutScreenAction action) {
     return ElevatedButton(
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.all(4),
@@ -336,9 +316,7 @@ class _AboutScreenState extends State<AboutScreen>
         ),
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           Expanded(
-            child: action.iconWidget ??
-                SizedBox(
-                    width: 36, height: 36, child: Icon(action.icon, size: 32)),
+            child: action.iconWidget ?? SizedBox(width: 36, height: 36, child: Icon(action.icon, size: 32)),
           ),
           Container(
             height: 4,
@@ -354,8 +332,7 @@ class _AboutScreenState extends State<AboutScreen>
         if (action.url != null) launch(action.url!);
         break;
       case AboutScreenActionType.Rate:
-        LaunchReview.launch(
-            androidAppId: 'me.markezine.luzinha', iOSAppId: '1373037254');
+        LaunchReview.launch(androidAppId: 'me.markezine.luzinha', iOSAppId: '1373037254');
         return;
     }
   }

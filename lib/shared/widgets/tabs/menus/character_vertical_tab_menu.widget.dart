@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
-import 'package:little_light/shared/widgets/character/character_icon.widget.dart';
-import 'package:little_light/shared/widgets/character/vault_icon.widget.dart';
 import 'package:little_light/shared/widgets/tabs/custom_tab/custom_tab.dart';
 import 'package:little_light/shared/widgets/tabs/custom_tab/custom_tab_menu.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
@@ -18,9 +16,7 @@ typedef OnCharacterSelect = void Function(DestinyCharacterInfo? character);
 class CharacterVerticalTabMenuWidget extends CustomTabMenu {
   final List<DestinyCharacterInfo?> characters;
   final OnCharacterSelect? onSelect;
-  const CharacterVerticalTabMenuWidget(
-      this.characters, CustomTabController controller,
-      {this.onSelect})
+  const CharacterVerticalTabMenuWidget(this.characters, CustomTabController controller, {this.onSelect})
       : super(
           controller,
           direction: Axis.vertical,
@@ -31,12 +27,19 @@ class CharacterVerticalTabMenuWidget extends CustomTabMenu {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-        borderRadius: BorderRadius.circular(8),
-        child: SizedBox(
-          width: 256.0,
-          child: super.build(context),
-        ));
+    return Container(
+        decoration: BoxDecoration(boxShadow: [
+          BoxShadow(
+            color: context.theme.secondarySurfaceLayers.layer3,
+            blurRadius: 3,
+          )
+        ]),
+        child: ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: SizedBox(
+              width: 256.0,
+              child: super.build(context),
+            )));
   }
 
   @override
@@ -46,8 +49,7 @@ class CharacterVerticalTabMenuWidget extends CustomTabMenu {
     return buildVaultButton(context);
   }
 
-  Widget buildCharacterButton(
-      BuildContext context, DestinyCharacterInfo character) {
+  Widget buildCharacterButton(BuildContext context, DestinyCharacterInfo character) {
     return Stack(
       children: [
         Positioned.fill(
@@ -62,9 +64,11 @@ class CharacterVerticalTabMenuWidget extends CustomTabMenu {
           children: [
             Container(
               padding: const EdgeInsets.all(8).copyWith(left: 16),
-              child: CharacterIconWidget(
-                character,
-                borderWidth: .5,
+              child: ManifestImageWidget<DestinyInventoryItemDefinition>(
+                character.character.emblemHash,
+                urlExtractor: (def) => def.secondaryOverlay,
+                fit: BoxFit.cover,
+                alignment: Alignment.centerLeft,
               ),
             ),
             ManifestText<DestinyClassDefinition>(
@@ -91,8 +95,10 @@ class CharacterVerticalTabMenuWidget extends CustomTabMenu {
           children: [
             Container(
               padding: const EdgeInsets.all(8).copyWith(left: 16),
-              child: const VaultIconWidget(
-                borderWidth: .5,
+              child: Image.asset(
+                "assets/imgs/vault-secondary-overlay.png",
+                fit: BoxFit.cover,
+                alignment: Alignment.centerLeft,
               ),
             ),
             Text(

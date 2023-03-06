@@ -22,16 +22,14 @@ import 'subtype_sorter.dart';
 import 'tier_type_sorter.dart';
 
 abstract class BaseItemSorter with ProfileConsumer, ManifestConsumer {
-  int direction;
+  SorterDirection direction;
   BaseItemSorter(this.direction);
 
-  DestinyItemInstanceComponent? instance(ItemWithOwner item) =>
-      profile.getInstanceInfo(item.item.itemInstanceId);
+  DestinyItemInstanceComponent? instance(ItemWithOwner item) => profile.getInstanceInfo(item.item.itemInstanceId);
   DestinyInventoryItemDefinition? def(ItemWithOwner item) {
     final hash = item.item.itemHash;
     if (hash == null) return null;
-    return manifest
-        .getDefinitionFromCache<DestinyInventoryItemDefinition>(hash);
+    return manifest.getDefinitionFromCache<DestinyInventoryItemDefinition>(hash);
   }
 
   int sort(ItemWithOwner a, ItemWithOwner b);

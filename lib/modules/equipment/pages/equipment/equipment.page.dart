@@ -12,17 +12,14 @@ class EquipmentPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<EquipmentBloc>(
-            create: (context) => EquipmentBloc(context)),
-        ChangeNotifierProvider<ProfileHelpersBloc>(
-            create: (context) => ProfileHelpersBloc(context)),
+        ChangeNotifierProvider<ProfileHelpersBloc>(create: (context) => ProfileHelpersBloc(context)),
+        ChangeNotifierProvider<EquipmentBloc>(create: (context) => EquipmentBloc(context)),
         Provider<ItemInteractionHandlerBloc>(create: (context) {
           final bloc = context.read<EquipmentBloc>();
           return ItemInteractionHandlerBloc(
             onTap: (item) => bloc.onItemTap(item),
             onHold: (item) => bloc.onItemHold(item),
-            onEmptySlotTap: (bucketHash, characterId) =>
-                bloc.openSearch(bucketHash, characterId),
+            onEmptySlotTap: (bucketHash, characterId) => bloc.openSearch(bucketHash, characterId),
           );
         }),
       ],

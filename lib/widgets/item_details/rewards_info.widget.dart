@@ -9,32 +9,22 @@ import 'package:little_light/pages/item_details/item_details.page_route.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateless_item.widget.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
-import 'package:little_light/widgets/common/header.wiget.dart';
+import 'package:little_light/shared/widgets/headers/header.wiget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/item_list/items/weapon/weapon_inventory_item.widget.dart';
 
 class RewardsInfoWidget extends BaseDestinyStatelessItemWidget {
   RewardsInfoWidget(
-      DestinyItemComponent item,
-      DestinyInventoryItemDefinition definition,
-      DestinyItemInstanceComponent instanceInfo,
-      {Key key,
-      String characterId})
-      : super(
-            item: item,
-            definition: definition,
-            instanceInfo: instanceInfo,
-            key: key,
-            characterId: characterId);
+      DestinyItemComponent item, DestinyInventoryItemDefinition definition, DestinyItemInstanceComponent instanceInfo,
+      {Key key, String characterId})
+      : super(item: item, definition: definition, instanceInfo: instanceInfo, key: key, characterId: characterId);
 
   @override
   Widget build(BuildContext context) {
-    var items =
-        definition.value?.itemValue?.where((i) => i.itemHash != null)?.toList();
+    var items = definition.value?.itemValue?.where((i) => i.itemHash != null)?.toList();
     if ((items?.length ?? 0) == 0) return Container();
-    return Column(
-        children: [buildHeader(context), buildRewardItems(context, items)]);
+    return Column(children: [buildHeader(context), buildRewardItems(context, items)]);
   }
 
   Widget buildHeader(BuildContext context) {
@@ -47,15 +37,12 @@ class RewardsInfoWidget extends BaseDestinyStatelessItemWidget {
         ));
   }
 
-  Widget buildRewardItems(
-      BuildContext context, List<DestinyItemQuantity> items) {
-    return Column(
-        children: items.map((item) => buildRewardItem(context, item)).toList());
+  Widget buildRewardItems(BuildContext context, List<DestinyItemQuantity> items) {
+    return Column(children: items.map((item) => buildRewardItem(context, item)).toList());
   }
 
   Widget buildRewardItem(BuildContext context, DestinyItemQuantity rewardItem) {
-    return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
-        rewardItem.itemHash, (def) {
+    return DefinitionProviderWidget<DestinyInventoryItemDefinition>(rewardItem.itemHash, (def) {
       if (def.equippable ?? false) {
         return Container(
             margin: const EdgeInsets.all(4),

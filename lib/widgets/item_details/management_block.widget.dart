@@ -13,28 +13,19 @@ import 'package:little_light/services/inventory/inventory.package.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateless_item.widget.dart';
 import 'package:little_light/widgets/common/equip_on_character.button.dart';
-import 'package:little_light/widgets/common/header.wiget.dart';
+import 'package:little_light/shared/widgets/headers/header.wiget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:provider/provider.dart';
 
 //TODO: deprecate this in favor of new management bloc
 class ManagementBlockWidget extends BaseDestinyStatelessItemWidget
     with UserSettingsConsumer, ProfileConsumer, InventoryConsumer {
-  InventoryBloc inventoryBloc(BuildContext context) =>
-      context.read<InventoryBloc>();
+  InventoryBloc inventoryBloc(BuildContext context) => context.read<InventoryBloc>();
 
   ManagementBlockWidget(
-      DestinyItemComponent item,
-      DestinyInventoryItemDefinition definition,
-      DestinyItemInstanceComponent instanceInfo,
-      {Key key,
-      String characterId})
-      : super(
-            item: item,
-            definition: definition,
-            instanceInfo: instanceInfo,
-            key: key,
-            characterId: characterId);
+      DestinyItemComponent item, DestinyInventoryItemDefinition definition, DestinyItemInstanceComponent instanceInfo,
+      {Key key, String characterId})
+      : super(item: item, definition: definition, instanceInfo: instanceInfo, key: key, characterId: characterId);
 
   @override
   Widget build(BuildContext context) {
@@ -51,30 +42,21 @@ class ManagementBlockWidget extends BaseDestinyStatelessItemWidget
             transferDestinations.isNotEmpty
                 ? Expanded(
                     flex: 3,
-                    child: buildEquippingBlock(context, "Transfer",
-                        transferDestinations, Alignment.centerLeft))
+                    child: buildEquippingBlock(context, "Transfer", transferDestinations, Alignment.centerLeft))
                 : null,
-            pullDestinations.isNotEmpty
-                ? buildEquippingBlock(context, "Pull", pullDestinations)
-                : null
+            pullDestinations.isNotEmpty ? buildEquippingBlock(context, "Pull", pullDestinations) : null
           ].where((value) => value != null).toList(),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             unequipDestinations.isNotEmpty
-                ? buildEquippingBlock(context, "Unequip", unequipDestinations,
-                    Alignment.centerLeft)
+                ? buildEquippingBlock(context, "Unequip", unequipDestinations, Alignment.centerLeft)
                 : null,
             equipDestinations.isNotEmpty
                 ? Expanded(
-                    child: buildEquippingBlock(
-                        context,
-                        "Equip",
-                        equipDestinations,
-                        unequipDestinations.isNotEmpty
-                            ? Alignment.centerRight
-                            : Alignment.centerLeft))
+                    child: buildEquippingBlock(context, "Equip", equipDestinations,
+                        unequipDestinations.isNotEmpty ? Alignment.centerRight : Alignment.centerLeft))
                 : null
           ].where((value) => value != null).toList(),
         ),
@@ -82,21 +64,14 @@ class ManagementBlockWidget extends BaseDestinyStatelessItemWidget
     ));
   }
 
-  Widget buildEquippingBlock(BuildContext context, String title,
-      List<TransferDestination> destinations,
+  Widget buildEquippingBlock(BuildContext context, String title, List<TransferDestination> destinations,
       [Alignment align = Alignment.centerRight]) {
     return Column(
-        crossAxisAlignment: align == Alignment.centerRight
-            ? CrossAxisAlignment.end
-            : CrossAxisAlignment.start,
-        children: <Widget>[
-          buildLabel(context, title, align),
-          buttons(context, destinations, align)
-        ]);
+        crossAxisAlignment: align == Alignment.centerRight ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        children: <Widget>[buildLabel(context, title, align), buttons(context, destinations, align)]);
   }
 
-  Widget buildLabel(BuildContext context, String title,
-      [Alignment align = Alignment.centerRight]) {
+  Widget buildLabel(BuildContext context, String title, [Alignment align = Alignment.centerRight]) {
     return Container(
         padding: const EdgeInsets.symmetric(horizontal: 8),
         child: HeaderWidget(
@@ -162,11 +137,9 @@ class ManagementBlockWidget extends BaseDestinyStatelessItemWidget
     }
     return profile.characters
         .where((char) =>
-            !((instanceInfo?.isEquipped ?? false) &&
-                char.characterId == characterId) &&
+            !((instanceInfo?.isEquipped ?? false) && char.characterId == characterId) &&
             !(definition.nonTransferrable && char.characterId != characterId) &&
-            [DestinyClass.Unknown, char.character.classType]
-                .contains(definition.classType))
+            [DestinyClass.Unknown, char.character.classType].contains(definition.classType))
         .map((char) => TransferDestination(ItemDestination.Character,
             characterId: char.characterId, action: InventoryAction.Equip))
         .toList();
@@ -177,8 +150,7 @@ class ManagementBlockWidget extends BaseDestinyStatelessItemWidget
       return [];
     }
 
-    if (ProfileBloc.profileBuckets
-        .contains(definition.inventory.bucketTypeHash)) {
+    if (ProfileBloc.profileBuckets.contains(definition.inventory.bucketTypeHash)) {
       if (item.bucketHash == InventoryBucket.general) {
         return [TransferDestination(ItemDestination.Inventory)];
       }
@@ -187,8 +159,7 @@ class ManagementBlockWidget extends BaseDestinyStatelessItemWidget
 
     List<TransferDestination> list = profile.characters
         .where((char) => !(char.characterId == characterId))
-        .map((char) => TransferDestination(ItemDestination.Character,
-            characterId: char.characterId))
+        .map((char) => TransferDestination(ItemDestination.Character, characterId: char.characterId))
         .toList();
 
     if (item.bucketHash != InventoryBucket.general) {
@@ -198,19 +169,14 @@ class ManagementBlockWidget extends BaseDestinyStatelessItemWidget
   }
 
   List<TransferDestination> get pullDestinations {
-    if (item.bucketHash == InventoryBucket.lostItems &&
-        !definition.doesPostmasterPullHaveSideEffects) {
+    if (item.bucketHash == InventoryBucket.lostItems && !definition.doesPostmasterPullHaveSideEffects) {
       ItemDestination type;
-      if (ProfileBloc.profileBuckets
-          .contains(definition.inventory.bucketTypeHash)) {
+      if (ProfileBloc.profileBuckets.contains(definition.inventory.bucketTypeHash)) {
         type = ItemDestination.Inventory;
       } else {
         type = ItemDestination.Character;
       }
-      return [
-        TransferDestination(type,
-            characterId: characterId, action: InventoryAction.Pull)
-      ];
+      return [TransferDestination(type, characterId: characterId, action: InventoryAction.Pull)];
     }
     return [];
   }
@@ -222,8 +188,7 @@ class ManagementBlockWidget extends BaseDestinyStatelessItemWidget
     bool isEquipped = instanceInfo?.isEquipped ?? false;
     if (isEquipped) {
       return [
-        TransferDestination(ItemDestination.Character,
-            characterId: characterId, action: InventoryAction.Unequip)
+        TransferDestination(ItemDestination.Character, characterId: characterId, action: InventoryAction.Unequip)
       ];
     }
     return [];

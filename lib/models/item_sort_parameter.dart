@@ -2,6 +2,28 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'item_sort_parameter.g.dart';
 
+enum SorterDirection {
+  @JsonValue(1)
+  Ascending,
+  @JsonValue(-1)
+  Descending,
+  @JsonValue(0)
+  None
+}
+
+extension SorterDirectionAsInt on SorterDirection {
+  int get asInt {
+    switch (this) {
+      case SorterDirection.Ascending:
+        return 1;
+      case SorterDirection.Descending:
+        return -1;
+      case SorterDirection.None:
+        return 1;
+    }
+  }
+}
+
 enum ItemSortParameterType {
   PowerLevel,
   TierType,
@@ -23,12 +45,13 @@ enum ItemSortParameterType {
 @JsonSerializable()
 class ItemSortParameter {
   ItemSortParameterType? type;
-  int direction;
+
+  @JsonKey(unknownEnumValue: SorterDirection.None)
+  SorterDirection direction;
   bool active;
   Map<String, dynamic>? customData;
 
-  ItemSortParameter(
-      {this.type, this.active = true, this.direction = 1, this.customData});
+  ItemSortParameter({this.type, this.active = true, this.direction = SorterDirection.Ascending, this.customData});
 
   static ItemSortParameter fromJson(dynamic json) {
     return _$ItemSortParameterFromJson(json);
@@ -38,17 +61,24 @@ class ItemSortParameter {
     return _$ItemSortParameterToJson(this);
   }
 
+  ItemSortParameter clone() {
+    final data = customData;
+    return ItemSortParameter(
+      type: type,
+      active: active,
+      direction: direction,
+      customData: data != null ? Map<String, dynamic>.from(data) : null,
+    );
+  }
+
   static List<ItemSortParameter> get defaultItemList {
     return [
-      ItemSortParameter(type: ItemSortParameterType.PowerLevel, direction: -1),
-      ItemSortParameter(type: ItemSortParameterType.TierType, direction: -1),
+      ItemSortParameter(type: ItemSortParameterType.PowerLevel, direction: SorterDirection.Descending),
+      ItemSortParameter(type: ItemSortParameterType.TierType, direction: SorterDirection.Descending),
       ItemSortParameter(type: ItemSortParameterType.Name),
+      ItemSortParameter(type: ItemSortParameterType.StatTotal, direction: SorterDirection.Descending, active: false),
       ItemSortParameter(
-          type: ItemSortParameterType.StatTotal, direction: -1, active: false),
-      ItemSortParameter(
-          type: ItemSortParameterType.MasterworkStatus,
-          direction: -1,
-          active: false),
+          type: ItemSortParameterType.MasterworkStatus, direction: SorterDirection.Descending, active: false),
       ItemSortParameter(type: ItemSortParameterType.ItemOwner, active: false),
       ItemSortParameter(type: ItemSortParameterType.SubType, active: false),
       ItemSortParameter(type: ItemSortParameterType.ClassType, active: false),
@@ -84,9 +114,8 @@ class ItemSortParameter {
 
   static List<ItemSortParameter> get defaultPursuitList {
     return [
-      ItemSortParameter(type: ItemSortParameterType.TierType, direction: -1),
-      ItemSortParameter(
-          type: ItemSortParameterType.ExpirationDate, direction: -1),
+      ItemSortParameter(type: ItemSortParameterType.TierType, direction: SorterDirection.Descending),
+      ItemSortParameter(type: ItemSortParameterType.ExpirationDate, direction: SorterDirection.Descending),
       ItemSortParameter(type: ItemSortParameterType.QuestGroup, active: false),
       ItemSortParameter(type: ItemSortParameterType.Name, active: false),
     ];

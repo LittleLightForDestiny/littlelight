@@ -4,14 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
+import 'package:little_light/core/blocs/profile/sorters.dart';
 import 'package:little_light/core/blocs/selection/selection.bloc.dart';
+import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
 import 'package:little_light/models/game_data.dart';
 import 'package:little_light/modules/search/pages/quick_transfer/quick_transfer.page_route.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
-import 'package:little_light/services/user_settings/user_settings.consumer.dart';
+import 'package:little_light/shared/utils/sorters/items/multi_sorter.dart';
 import 'package:provider/provider.dart';
 
 class _EquipmentState {
@@ -51,23 +53,25 @@ class _EquipmentState {
   }
 }
 
-class EquipmentBloc extends ChangeNotifier
-    with UserSettingsConsumer, ManifestConsumer, LittleLightDataConsumer {
+class EquipmentBloc extends ChangeNotifier with ManifestConsumer, LittleLightDataConsumer {
   final BuildContext _context;
   final ProfileBloc _profileBloc;
   final SelectionBloc _selectionBloc;
+  final UserSettingsBloc _userSettingsBloc;
   GameData? _gameData;
 
   _EquipmentState _equipmentState = _EquipmentState();
 
   EquipmentBloc(this._context)
       : _profileBloc = _context.read<ProfileBloc>(),
-        _selectionBloc = _context.read<SelectionBloc>() {
+        _selectionBloc = _context.read<SelectionBloc>(),
+        _userSettingsBloc = _context.read<UserSettingsBloc>() {
     _init();
   }
   _init() {
+    _userSettingsBloc.startingPage = LittleLightPersistentPage.Equipment;
     _profileBloc.addListener(_update);
-    userSettings.startingPage = LittleLightPersistentPage.Equipment;
+    _userSettingsBloc.addListener(_update);
     _update();
     _loadGameData();
   }
@@ -85,9 +89,19 @@ class EquipmentBloc extends ChangeNotifier
 
   void _update() async {
     final equipmentState = _EquipmentState();
-    final allItems = _profileBloc.allItems;
+    final parameters = _userSettingsBloc.itemOrdering;
+    List<DestinyItemInfo> items = _profileBloc.allItems;
+    final characters = _profileBloc.characters;
+
+    if (parameters != null && characters != null) {
+      final hashes = items.map((e) => e.itemHash).whereType<int>();
+      final definitions = await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
+      final sorters = getSortersFromStorage(parameters, _context, definitions, characters);
+      items = await MultiSorter(sorters).sort(_profileBloc.allItems);
+    }
+
     final vaultItems = <DestinyItemInfo>[];
-    for (final item in allItems) {
+    for (final item in items) {
       final isOnVault = item.item.bucketHash == InventoryBucket.general;
       if (isOnVault) {
         vaultItems.add(item);
@@ -99,8 +113,7 @@ class EquipmentBloc extends ChangeNotifier
     _equipmentState = equipmentState;
     notifyListeners();
 
-    final defs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(
-        vaultItems.map((e) => e.item.itemHash));
+    final defs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(vaultItems.map((e) => e.item.itemHash));
     for (final item in vaultItems) {
       final hash = item.item.itemHash;
       final bucketHash = defs[hash]?.inventory?.bucketTypeHash;
@@ -118,22 +131,15 @@ class EquipmentBloc extends ChangeNotifier
     return characters + [null];
   }
 
-  DestinyItemInfo? getEquippedItem(
-          DestinyCharacterInfo character, int bucketHash) => //
-      _equipmentState.equippedItemsInCharacters?[character.characterId]
-          ?[bucketHash];
+  DestinyItemInfo? getEquippedItem(DestinyCharacterInfo character, int bucketHash) => //
+      _equipmentState.equippedItemsInCharacters?[character.characterId]?[bucketHash];
 
-  List<DestinyItemInfo>? getUnequippedItems(
-      DestinyCharacterInfo character, int bucketHash) {
-    final isProfileBucket = [
-      InventoryBucket.consumables,
-      InventoryBucket.modifications
-    ].contains(bucketHash);
+  List<DestinyItemInfo>? getUnequippedItems(DestinyCharacterInfo character, int bucketHash) {
+    final isProfileBucket = [InventoryBucket.consumables, InventoryBucket.modifications].contains(bucketHash);
     if (isProfileBucket) {
       return _equipmentState.itemsOnProfile?[bucketHash];
     }
-    return _equipmentState.unequippedItemsInCharacters?[character.characterId]
-        ?[bucketHash];
+    return _equipmentState.unequippedItemsInCharacters?[character.characterId]?[bucketHash];
   }
 
   List<DestinyItemInfo>? getVaultItems(int bucketHash) {
@@ -158,7 +164,7 @@ class EquipmentBloc extends ChangeNotifier
 
     if (hash == null) return;
 
-    if (_selectionBloc.hasSelection || userSettings.tapToSelect) {
+    if (_selectionBloc.hasSelection || _userSettingsBloc.tapToSelect) {
       return _selectionBloc.toggleSelected(
         hash,
         instanceId: instanceId,
@@ -172,7 +178,7 @@ class EquipmentBloc extends ChangeNotifier
     final instanceId = item.instanceId;
     final stackIndex = item.stackIndex;
     if (hash == null) return;
-    if (userSettings.tapToSelect) {
+    if (_userSettingsBloc.tapToSelect) {
       return;
     }
     return _selectionBloc.toggleSelected(
@@ -183,7 +189,6 @@ class EquipmentBloc extends ChangeNotifier
   }
 
   void openSearch(int bucketHash, String characterId) {
-    Navigator.of(_context).push(QuickTransferPageRoute(
-        bucketHash: bucketHash, characterId: characterId));
+    Navigator.of(_context).push(QuickTransferPageRoute(bucketHash: bucketHash, characterId: characterId));
   }
 }

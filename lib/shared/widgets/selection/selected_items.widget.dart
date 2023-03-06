@@ -77,7 +77,7 @@ class SelectedItemsWidget extends StatelessWidget {
                 child: Container(
               padding: const EdgeInsets.all(8),
               child: Text(
-                items.length == 1
+                items.length > 1
                     ? "{itemCount} items selected".translate(
                         context,
                         replace: {"itemCount": "${items.length}"},

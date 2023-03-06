@@ -12,26 +12,24 @@ const _inventoryIconPresentationNodeHash = 3517356538;
 const iconWidth = 92.0;
 
 class EquipmentTypeTabMenuWidget extends CustomTabMenu {
-  const EquipmentTypeTabMenuWidget(CustomTabController controller)
-      : super(controller);
+  const EquipmentTypeTabMenuWidget(CustomTabController controller) : super(controller);
 
   @override
   double getButtonSize(BuildContext context) => iconWidth;
 
   Color getItemForegroundColor(BuildContext context, int index) {
-    final opacity =
-        (index - controller.animation.value).abs().clamp(0, 1).toDouble();
+    final opacity = (index - controller.animation.value).abs().clamp(0, 1).toDouble();
     final selectedColor = context.theme.onSurfaceLayers.layer0;
-    final unselectedColor =
-        context.theme.onSurfaceLayers.layer3.withOpacity(.7);
-    return Color.lerp(selectedColor, unselectedColor, opacity) ??
-        Colors.transparent;
+    final unselectedColor = context.theme.onSurfaceLayers.layer3.withOpacity(.7);
+    return Color.lerp(selectedColor, unselectedColor, opacity) ?? Colors.transparent;
   }
 
   @override
   Widget buildButton(BuildContext context, int index) {
+    final mq = MediaQuery.of(context);
     return Container(
-        padding: const EdgeInsets.all(4), child: buildIcon(context, index));
+        padding: const EdgeInsets.all(4) + EdgeInsets.only(bottom: mq.viewPadding.bottom),
+        child: buildIcon(context, index));
   }
 
   Widget buildIcon(BuildContext context, int index) {
@@ -58,7 +56,14 @@ class EquipmentTypeTabMenuWidget extends CustomTabMenu {
   @override
   Widget buildSelectedBackground(BuildContext context) {
     return Container(
-      color: context.theme.surfaceLayers.layer2,
+      decoration: BoxDecoration(
+          gradient: LinearGradient(
+        colors: [
+          context.theme.surfaceLayers.layer2,
+          context.theme.surfaceLayers.layer2.withOpacity(0),
+        ],
+        end: Alignment.bottomCenter,
+      )),
     );
   }
 
@@ -66,7 +71,6 @@ class EquipmentTypeTabMenuWidget extends CustomTabMenu {
   Widget buildSelectedIndicator(BuildContext context) {
     return Container(
       alignment: Alignment.topCenter,
-      height: kToolbarHeight,
       child: Container(
         height: 2,
         color: Colors.white,

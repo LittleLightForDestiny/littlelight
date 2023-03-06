@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/shared/widgets/headers/bucket_header/bucket_display_options_selector.widget.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
-import 'package:little_light/widgets/common/header.wiget.dart';
+import 'package:little_light/shared/widgets/headers/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 
 class BucketHeaderListItemWidget extends StatelessWidget {
@@ -12,10 +12,7 @@ class BucketHeaderListItemWidget extends StatelessWidget {
   final bool isVault;
   final bool canEquip;
   const BucketHeaderListItemWidget(this.hash,
-      {this.itemCount = 0,
-      this.isVault = false,
-      this.canEquip = false,
-      Key? key})
+      {this.itemCount = 0, this.isVault = false, this.canEquip = false, Key? key})
       : super(key: key);
 
   @override
@@ -36,8 +33,7 @@ class BucketHeaderListItemWidget extends StatelessWidget {
     );
   }
 
-  Widget buildLabel(
-      BuildContext context, DestinyInventoryBucketDefinition definition) {
+  Widget buildLabel(BuildContext context, DestinyInventoryBucketDefinition definition) {
     return Text(
       definition.displayProperties?.name?.toUpperCase() ?? "",
       softWrap: false,
@@ -45,8 +41,7 @@ class BucketHeaderListItemWidget extends StatelessWidget {
     );
   }
 
-  Widget buildTrailing(
-      BuildContext context, DestinyInventoryBucketDefinition definition) {
+  Widget buildTrailing(BuildContext context, DestinyInventoryBucketDefinition definition) {
     return Row(children: [
       BucketDisplayOptionsSelector(
         hash,
@@ -58,8 +53,7 @@ class BucketHeaderListItemWidget extends StatelessWidget {
     ]);
   }
 
-  Widget buildCount(
-      BuildContext context, DestinyInventoryBucketDefinition definition) {
+  Widget buildCount(BuildContext context, DestinyInventoryBucketDefinition definition) {
     int bucketSize = definition.itemCount ?? 9;
     if (isVault) {
       return ManifestText<DestinyInventoryBucketDefinition>(

@@ -8,11 +8,10 @@ import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/core/blocs/profile/profile_component_groups.dart';
 import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
-import 'package:little_light/utils/remove_diacritics.dart';
+import 'package:little_light/shared/utils/extensions/string/remove_diacritics.dart';
 import 'package:provider/provider.dart';
 
-class LoadoutsHomeBloc extends ChangeNotifier
-    with ProfileConsumer, UserSettingsConsumer {
+class LoadoutsHomeBloc extends ChangeNotifier with ProfileConsumer, UserSettingsConsumer {
   final BuildContext context;
   final LoadoutsBloc _loadoutsBloc;
 
@@ -26,13 +25,13 @@ class LoadoutsHomeBloc extends ChangeNotifier
   List<LoadoutItemIndex>? get _allLoadouts => _loadoutsBloc.loadouts;
 
   List<LoadoutItemIndex>? get loadouts {
-    final text = _searchString.toLowerCase().removeDiacritics();
+    final text = _searchString.toLowerCase().replaceDiacritics();
     return _allLoadouts?.where((l) {
       final loadoutName = l.name;
       if (text.length <= 3) {
-        return loadoutName.toLowerCase().removeDiacritics().startsWith(text);
+        return loadoutName.toLowerCase().replaceDiacritics().startsWith(text);
       }
-      return loadoutName.toLowerCase().removeDiacritics().contains(text);
+      return loadoutName.toLowerCase().replaceDiacritics().contains(text);
     }).toList();
   }
 
@@ -41,8 +40,7 @@ class LoadoutsHomeBloc extends ChangeNotifier
   DateTime? _lastUpdated;
   String get lastUpdated => _lastUpdated?.toIso8601String() ?? "";
 
-  LoadoutsHomeBloc(this.context)
-      : _loadoutsBloc = context.read<LoadoutsBloc>() {
+  LoadoutsHomeBloc(this.context) : _loadoutsBloc = context.read<LoadoutsBloc>() {
     userSettings.startingPage = LittleLightPersistentPage.Loadouts;
     _loadoutsBloc.addListener(notifyListeners);
     _initLoadouts();
@@ -88,8 +86,7 @@ class LoadoutsHomeBloc extends ChangeNotifier
     _loadoutsBloc.reorderLoadouts(order);
   }
 
-  void onItemAction(
-      LoadoutListItemAction action, LoadoutItemIndex loadout) async {
+  void onItemAction(LoadoutListItemAction action, LoadoutItemIndex loadout) async {
     switch (action) {
       case LoadoutListItemAction.Equip:
         final id = loadout.assignedId;

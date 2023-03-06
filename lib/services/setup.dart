@@ -24,7 +24,7 @@ import 'package:little_light/services/selection/selection.service.dart';
 import 'package:little_light/services/storage/export.dart';
 import 'package:little_light/services/unilinks_handler/unilinks_handler.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
-import 'package:little_light/core/repositories/user_settings/user_settings.repository.dart';
+import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
 import 'package:provider/provider.dart';
 
 import 'https_override/https_overrides.dart';

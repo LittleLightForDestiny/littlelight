@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
-import 'package:little_light/shared/widgets/character/character_icon.widget.dart';
-import 'package:little_light/shared/widgets/character/vault_icon.widget.dart';
 import 'package:little_light/shared/widgets/tabs/custom_tab/custom_tab.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
@@ -13,32 +11,34 @@ import 'package:little_light/widgets/common/manifest_text.widget.dart';
 const _minimumWidth = 64.0;
 const _maximumWidth = 184.0;
 
+const _containerPadding = 4.0;
+
 class CurrentCharacterTabIndicator extends StatelessWidget {
   final List<DestinyCharacterInfo?> characters;
   final CustomTabController controller;
   const CurrentCharacterTabIndicator(this.characters, this.controller);
 
   @override
-  Widget build(BuildContext context) =>
-      LayoutBuilder(builder: (context, constraints) {
-        final size = Size(
-            constraints.maxWidth.clamp(_minimumWidth, _maximumWidth),
-            constraints.maxHeight);
-        return SizedBox(
-          height: size.height,
-          width: size.width,
-          child: AnimatedBuilder(
-            animation: controller.animation,
-            builder: (context, child) => Stack(children: [
-              Positioned(
-                right: 0,
-                top: -controller.animation.value * size.height,
-                child: child ?? Container(),
-              ),
-            ]),
-            child: buildCharacters(context, size),
-          ),
-        );
+  Widget build(BuildContext context) => LayoutBuilder(builder: (context, constraints) {
+        final size = Size(constraints.maxWidth.clamp(_minimumWidth, _maximumWidth), constraints.maxHeight);
+        return Container(
+            padding: EdgeInsets.all(_containerPadding),
+            child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: SizedBox(
+                  child: AnimatedBuilder(
+                    animation: controller.animation,
+                    builder: (context, child) => Stack(children: [
+                      Positioned(
+                        right: 0,
+                        top: -controller.animation.value * (size.height - _containerPadding * 2),
+                        child: child ?? Container(),
+                      ),
+                    ]),
+                    child: buildCharacters(
+                        context, Size(size.width - _containerPadding * 2, size.height - _containerPadding * 2)),
+                  ),
+                )));
       });
 
   Widget buildCharacters(BuildContext context, Size size) {
@@ -51,8 +51,7 @@ class CurrentCharacterTabIndicator extends StatelessWidget {
     }).toList());
   }
 
-  Widget buildCharacter(
-      BuildContext context, DestinyCharacterInfo character, Size size) {
+  Widget buildCharacter(BuildContext context, DestinyCharacterInfo character, Size size) {
     return SizedBox(
       width: size.width,
       height: size.height,
@@ -66,26 +65,34 @@ class CurrentCharacterTabIndicator extends StatelessWidget {
               alignment: Alignment.centerLeft,
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Expanded(
-                child: Container(
-                  padding: const EdgeInsets.only(left: 16),
-                  child: ManifestText<DestinyClassDefinition>(
-                    character.character.classHash,
-                    style: context.textTheme.button,
-                    textAlign: TextAlign.right,
-                    softWrap: false,
+          Container(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.only(left: 16),
+                    child: ManifestText<DestinyClassDefinition>(
+                      character.character.classHash,
+                      style: context.textTheme.button,
+                      textAlign: TextAlign.right,
+                      softWrap: false,
+                    ),
                   ),
                 ),
-              ),
-              Container(width: 8),
-              CharacterIconWidget(
-                character,
-                borderWidth: 0,
-              ),
-            ],
+                Container(width: 8),
+                Container(
+                  height: kToolbarHeight,
+                  padding: EdgeInsets.all(4),
+                  child: ManifestImageWidget<DestinyInventoryItemDefinition>(
+                    character.character.emblemHash,
+                    urlExtractor: (def) => def.secondaryOverlay,
+                    fit: BoxFit.cover,
+                    alignment: Alignment.centerLeft,
+                  ),
+                )
+              ],
+            ),
           ),
         ],
       ),
@@ -104,23 +111,32 @@ class CurrentCharacterTabIndicator extends StatelessWidget {
             fit: BoxFit.cover,
             alignment: Alignment.centerLeft,
           )),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Expanded(
-                child: Container(
-                  padding: const EdgeInsets.only(left: 16),
-                  child: Text(
-                    "Vault".translate(context),
-                    style: context.textTheme.button,
-                    textAlign: TextAlign.right,
-                    softWrap: false,
+          Container(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.only(left: 16),
+                    child: Text(
+                      "Vault".translate(context),
+                      style: context.textTheme.button,
+                      textAlign: TextAlign.right,
+                      softWrap: false,
+                    ),
                   ),
                 ),
-              ),
-              Container(width: 8),
-              const VaultIconWidget(borderWidth: 0),
-            ],
+                Container(width: 8),
+                Container(
+                    height: kToolbarHeight,
+                    padding: EdgeInsets.all(4),
+                    child: Image.asset(
+                      "assets/imgs/vault-secondary-overlay.png",
+                      fit: BoxFit.cover,
+                      alignment: Alignment.centerLeft,
+                    )),
+              ],
+            ),
           ),
         ],
       ),

@@ -12,27 +12,19 @@ import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enu
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
-import 'package:little_light/widgets/common/header.wiget.dart';
+import 'package:little_light/shared/widgets/headers/header.wiget.dart';
 import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 
-typedef OnRemoveItemFromLoadout = void Function(
-    LoadoutIndexItem item, bool equipped);
-typedef OnAddItemToLoadout = void Function(
-    DestinyClass? classType, bool equipped);
+typedef OnRemoveItemFromLoadout = void Function(LoadoutIndexItem item, bool equipped);
+typedef OnAddItemToLoadout = void Function(DestinyClass? classType, bool equipped);
 
-class LoadoutSlotWidget extends StatelessWidget
-    with ProfileConsumer, ManifestConsumer {
+class LoadoutSlotWidget extends StatelessWidget with ProfileConsumer, ManifestConsumer {
   final DestinyInventoryBucketDefinition? bucketDefinition;
   final OnRemoveItemFromLoadout? onOptions;
   final OnAddItemToLoadout? onAdd;
   final LoadoutIndexSlot slot;
-  LoadoutSlotWidget(
-      {Key? key,
-      this.bucketDefinition,
-      required this.slot,
-      this.onOptions,
-      this.onAdd})
+  LoadoutSlotWidget({Key? key, this.bucketDefinition, required this.slot, this.onOptions, this.onAdd})
       : super(key: key);
 
   @override
@@ -55,20 +47,15 @@ class LoadoutSlotWidget extends StatelessWidget
     ]);
   }
 
-  Widget buildSlotBlock(BuildContext context,
-      {required String headerText, bool isEquipment = true}) {
-    var hasTransferDestination =
-        bucketDefinition?.hasTransferDestination ?? false;
+  Widget buildSlotBlock(BuildContext context, {required String headerText, bool isEquipment = true}) {
+    var hasTransferDestination = bucketDefinition?.hasTransferDestination ?? false;
     if (!isEquipment && !hasTransferDestination) return Container();
     return Container(
         padding: const EdgeInsets.all(4),
         color: Theme.of(context).colorScheme.secondaryContainer,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            buildBlockTitle(context, headerText),
-            buildItemIcons(context, isEquipment: isEquipment)
-          ],
+          children: <Widget>[buildBlockTitle(context, headerText), buildItemIcons(context, isEquipment: isEquipment)],
         ));
   }
 
@@ -89,17 +76,11 @@ class LoadoutSlotWidget extends StatelessWidget
     if (hash == null) return Container();
     if (isEquipment) {
       if (LoadoutItemIndex.isClassSpecificSlot(hash)) {
-        items.addAll([
-          DestinyClass.Titan,
-          DestinyClass.Hunter,
-          DestinyClass.Warlock
-        ].map((classType) => buildItemIcon(context,
-            item: slot.classSpecificEquipped[classType],
-            classType: classType)));
+        items.addAll([DestinyClass.Titan, DestinyClass.Hunter, DestinyClass.Warlock].map(
+            (classType) => buildItemIcon(context, item: slot.classSpecificEquipped[classType], classType: classType)));
       } else {
         items.addAll(slot.classSpecificEquipped
-            .map((classType, item) => MapEntry(classType,
-                buildItemIcon(context, item: item, classType: classType)))
+            .map((classType, item) => MapEntry(classType, buildItemIcon(context, item: item, classType: classType)))
             .values);
         items.add(buildItemIcon(context, item: slot.genericEquipped));
       }
@@ -107,22 +88,16 @@ class LoadoutSlotWidget extends StatelessWidget
       if (slot.unequipped.length < 9) {
         items.add(buildItemIcon(context, equipped: false));
       }
-      items.addAll(slot.unequipped
-          .map((item) => buildItemIcon(context, item: item, equipped: false)));
+      items.addAll(slot.unequipped.map((item) => buildItemIcon(context, item: item, equipped: false)));
     }
 
-    return Container(
-        padding: const EdgeInsets.symmetric(vertical: 4),
-        child: Wrap(children: items));
+    return Container(padding: const EdgeInsets.symmetric(vertical: 4), child: Wrap(children: items));
   }
 
-  Widget buildItemIcon(BuildContext context,
-      {LoadoutIndexItem? item, DestinyClass? classType, bool equipped = true}) {
-    BoxDecoration? decoration =
-        item?.item != null && bucketDefinition?.hash == InventoryBucket.subclass
-            ? null
-            : BoxDecoration(
-                border: Border.all(width: 1, color: Colors.grey.shade300));
+  Widget buildItemIcon(BuildContext context, {LoadoutIndexItem? item, DestinyClass? classType, bool equipped = true}) {
+    BoxDecoration? decoration = item?.item != null && bucketDefinition?.hash == InventoryBucket.subclass
+        ? null
+        : BoxDecoration(border: Border.all(width: 1, color: Colors.grey.shade300));
 
     IconData? iconData;
     Widget icon;
@@ -131,8 +106,7 @@ class LoadoutSlotWidget extends StatelessWidget
           child: Container(
               alignment: Alignment.center,
               child: Icon(iconData ?? Icons.add_circle_outline,
-                  size: 26,
-                  color: LittleLightTheme.of(context).surfaceLayers.layer3)));
+                  size: 26, color: LittleLightTheme.of(context).surfaceLayers.layer3)));
     } else {
       icon = Positioned(
           right: 2,
@@ -140,9 +114,7 @@ class LoadoutSlotWidget extends StatelessWidget
           child: Container(
               alignment: Alignment.center,
               padding: const EdgeInsets.all(2),
-              decoration: BoxDecoration(
-                  color: Theme.of(context).errorColor,
-                  borderRadius: BorderRadius.circular(8)),
+              decoration: BoxDecoration(color: Theme.of(context).errorColor, borderRadius: BorderRadius.circular(8)),
               child: Icon(iconData ?? Icons.remove_circle_outline,
                   size: 12, color: Theme.of(context).colorScheme.onSurface)));
     }
@@ -158,8 +130,7 @@ class LoadoutSlotWidget extends StatelessWidget
                       (def) => ItemIconWidget(item?.item, def, null),
                       key: Key('slot_item_${item?.item?.itemInstanceId}'),
                     )
-                  : ManifestImageWidget<DestinyInventoryItemDefinition>(
-                      1835369552)),
+                  : ManifestImageWidget<DestinyInventoryItemDefinition>(1835369552)),
           icon,
           Material(
               color: Colors.transparent,
@@ -172,16 +143,10 @@ class LoadoutSlotWidget extends StatelessWidget
               })),
         ]));
     if (isTablet) {
-      return Container(
-          margin: const EdgeInsets.only(right: 4),
-          width: 64,
-          height: 64,
-          child: itemIcon);
+      return Container(margin: const EdgeInsets.only(right: 4), width: 64, height: 64, child: itemIcon);
     }
     return FractionallySizedBox(
         widthFactor: 1 / 6,
-        child: Container(
-            margin: const EdgeInsets.only(right: 4),
-            child: AspectRatio(aspectRatio: 1, child: itemIcon)));
+        child: Container(margin: const EdgeInsets.only(right: 4), child: AspectRatio(aspectRatio: 1, child: itemIcon)));
   }
 }

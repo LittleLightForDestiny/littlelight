@@ -42,17 +42,15 @@ class BungieApiService with AuthConsumer, AppConfigConsumer {
   }
 
   Future<BungieNetToken> requestToken(String code) {
-    return OAuth.getToken(
-        Client(), appConfig.clientId, appConfig.clientSecret, code);
+    return OAuth.getToken(Client(), appConfig.clientId, appConfig.clientSecret, code);
   }
 
   Future<BungieNetToken> refreshToken(String refreshToken) {
-    return OAuth.refreshToken(Client(autoRefreshToken: false),
-        appConfig.clientId, appConfig.clientSecret, refreshToken);
+    return OAuth.refreshToken(
+        Client(autoRefreshToken: false), appConfig.clientId, appConfig.clientSecret, refreshToken);
   }
 
-  Future<DestinyProfileResponse?> getCurrentProfile(
-      List<DestinyComponentType> components) async {
+  Future<DestinyProfileResponse?> getCurrentProfile(List<DestinyComponentType> components) async {
     BungieNetToken? token = await auth.getCurrentToken();
     GroupUserInfoCard? membership = await auth.getMembership();
     final membershipId = membership?.membershipId;
@@ -60,23 +58,19 @@ class BungieApiService with AuthConsumer, AppConfigConsumer {
     if (token == null || membershipId == null || membershipType == null) {
       throw NotAuthorizedException(_credentialsMissingException);
     }
-    final profile =
-        await getProfile(components, membershipId, membershipType, token);
+    final profile = await getProfile(components, membershipId, membershipType, token);
     return profile;
   }
 
   Future<DestinyProfileResponse?> getProfile(
-      List<DestinyComponentType> components,
-      String membershipId,
-      BungieMembershipType membershipType,
+      List<DestinyComponentType> components, String membershipId, BungieMembershipType membershipType,
       [BungieNetToken? token]) async {
-    DestinyProfileResponseResponse response = await Destiny2.getProfile(
-        Client(token: token), components, membershipId, membershipType);
+    DestinyProfileResponseResponse response =
+        await Destiny2.getProfile(Client(token: token), components, membershipId, membershipType);
     return response.response;
   }
 
-  Future<DestinyVendorsResponse?> getVendors(
-      List<DestinyComponentType> components, String characterId) async {
+  Future<DestinyVendorsResponse?> getVendors(List<DestinyComponentType> components, String characterId) async {
     BungieNetToken? token = await auth.getCurrentToken();
     GroupUserInfoCard? membership = await auth.getMembership();
     final membershipID = membership?.membershipId;
@@ -85,12 +79,7 @@ class BungieApiService with AuthConsumer, AppConfigConsumer {
       throw NotAuthorizedException(_credentialsMissingException);
     }
     DestinyVendorsResponseResponse response = await Destiny2.getVendors(
-        Client(token: token),
-        characterId,
-        components,
-        membershipID,
-        DestinyVendorFilter.None,
-        membershipType);
+        Client(token: token), characterId, components, membershipID, DestinyVendorFilter.None, membershipType);
     return response.response;
   }
 
@@ -99,18 +88,16 @@ class BungieApiService with AuthConsumer, AppConfigConsumer {
     return getMembershipsForToken(token);
   }
 
-  Future<UserMembershipData> getMembershipsForToken(
-      BungieNetToken? token) async {
+  Future<UserMembershipData> getMembershipsForToken(BungieNetToken? token) async {
     if (token == null) {
       throw NotAuthorizedException(_credentialsMissingException);
     }
-    UserMembershipDataResponse response =
-        await User.getMembershipDataForCurrentUser(Client(token: token));
+    UserMembershipDataResponse response = await User.getMembershipDataForCurrentUser(Client(token: token));
     return response.response!;
   }
 
-  Future<int?> transferItem(int itemHash, int stackSize, bool transferToVault,
-      String? itemId, String characterId) async {
+  Future<int?> transferItem(
+      int itemHash, int stackSize, bool transferToVault, String? itemId, String characterId) async {
     BungieNetToken? token = await auth.getCurrentToken();
     GroupUserInfoCard? membership = await auth.getMembership();
     final membershipID = membership?.membershipId;
@@ -130,8 +117,7 @@ class BungieApiService with AuthConsumer, AppConfigConsumer {
     return response.response;
   }
 
-  Future<int?> pullFromPostMaster(
-      int itemHash, int stackSize, String? itemId, String characterId) async {
+  Future<int?> pullFromPostMaster(int itemHash, int stackSize, String? itemId, String characterId) async {
     BungieNetToken? token = await auth.getCurrentToken();
     GroupUserInfoCard? membership = await auth.getMembership();
     final membershipType = membership?.membershipType;
@@ -165,8 +151,7 @@ class BungieApiService with AuthConsumer, AppConfigConsumer {
     return response.response;
   }
 
-  Future<int?> changeLockState(
-      String itemId, String characterId, bool locked) async {
+  Future<int?> changeLockState(String itemId, String characterId, bool locked) async {
     BungieNetToken? token = await auth.getCurrentToken();
     GroupUserInfoCard? membership = await auth.getMembership();
     final membershipType = membership?.membershipType;
@@ -183,8 +168,7 @@ class BungieApiService with AuthConsumer, AppConfigConsumer {
     return response.response;
   }
 
-  Future<int?> changeTrackState(
-      String itemId, String characterId, bool tracked) async {
+  Future<int?> changeTrackState(String itemId, String characterId, bool tracked) async {
     BungieNetToken? token = await auth.getCurrentToken();
     GroupUserInfoCard? membership = await auth.getMembership();
     final membershipType = membership?.membershipType;
@@ -201,8 +185,7 @@ class BungieApiService with AuthConsumer, AppConfigConsumer {
     return response.response;
   }
 
-  Future<List<DestinyEquipItemResult>?> equipItems(
-      List<String> itemIds, String characterId) async {
+  Future<List<DestinyEquipItemResult>?> equipItems(List<String> itemIds, String characterId) async {
     BungieNetToken? token = await auth.getCurrentToken();
     GroupUserInfoCard? membership = await auth.getMembership();
     final membershipType = membership?.membershipType;
@@ -223,8 +206,8 @@ class BungieApiService with AuthConsumer, AppConfigConsumer {
     return response.response;
   }
 
-  Future<DestinyItemChangeResponse?> applySocket(String itemInstanceID,
-      int plugHash, int socketIndex, String characterID) async {
+  Future<DestinyItemChangeResponse?> applySocket(
+      String itemInstanceID, int plugHash, int socketIndex, String characterID) async {
     BungieNetToken? token = await auth.getCurrentToken();
     GroupUserInfoCard? membership = await auth.getMembership();
     final membershipType = membership?.membershipType;
@@ -240,8 +223,7 @@ class BungieApiService with AuthConsumer, AppConfigConsumer {
       ..membershipType = membershipType
       ..itemId = itemInstanceID
       ..plug = plug;
-    final res =
-        await Destiny2.insertSocketPlugFree(Client(token: token), reqBody);
+    final res = await Destiny2.insertSocketPlugFree(Client(token: token), reqBody);
     return res.response;
   }
 }
@@ -260,10 +242,7 @@ class Client with AuthConsumer, AppConfigConsumer implements HttpClient {
   }
 
   Future<HttpResponse> _request(HttpClientConfig config) async {
-    Map<String, String> headers = {
-      'X-API-Key': appConfig.apiKey,
-      'Accept': 'application/json'
-    };
+    Map<String, String> headers = {'X-API-Key': appConfig.apiKey, 'Accept': 'application/json'};
     final bodyContentType = config.bodyContentType;
     if (bodyContentType != null) {
       headers['Content-Type'] = bodyContentType;
@@ -298,8 +277,7 @@ class Client with AuthConsumer, AppConfigConsumer implements HttpClient {
     io.HttpClient client = io.HttpClient();
 
     if (config.method == 'GET') {
-      var req = await client.getUrl(
-          Uri.parse("${BungieApiService.apiUrl}${config.url}$paramsString"));
+      var req = await client.getUrl(Uri.parse("${BungieApiService.apiUrl}${config.url}$paramsString"));
       headers.forEach((name, value) => req.headers.add(name, value));
       final cookies = _persistentCookies;
       if (cookies != null) {
@@ -307,11 +285,8 @@ class Client with AuthConsumer, AppConfigConsumer implements HttpClient {
       }
       response = await req.close().timeout(const Duration(seconds: 15));
     } else {
-      String body = config.bodyContentType == 'application/json'
-          ? jsonEncode(config.body)
-          : config.body;
-      var req = await client.postUrl(
-          Uri.parse("${BungieApiService.apiUrl}${config.url}$paramsString"));
+      String body = config.bodyContentType == 'application/json' ? jsonEncode(config.body) : config.body;
+      var req = await client.postUrl(Uri.parse("${BungieApiService.apiUrl}${config.url}$paramsString"));
       headers.forEach((name, value) => req.headers.add(name, value));
       req.write(body);
       final cookies = _persistentCookies;
@@ -330,28 +305,35 @@ class Client with AuthConsumer, AppConfigConsumer implements HttpClient {
       return _request(config);
     }
     dynamic json;
+    String? textResponse;
     try {
-      var stream = response.transform(const Utf8Decoder());
-      var text = "";
+      final stream = response.transform(const Utf8Decoder());
+      String text = "";
       await for (var t in stream) {
         text += t;
       }
+      textResponse = text;
       json = jsonDecode(text);
-    } catch (e) {
-      json = {};
+    } catch (e) {}
+
+    if (response.statusCode == 400) {
+      _persistentCookies = [];
     }
 
     if (response.statusCode != 200) {
       print("got an error status ${response.statusCode} from API");
-      print("response was: $json");
-      throw BungieApiException.fromJson(json, response.statusCode);
+      print("response was: ${json ?? textResponse}");
+      throw BungieApiException.fromJson(json ?? {}, response.statusCode);
     }
+
+    json ??= {};
 
     if (json["ErrorCode"] != null && json["ErrorCode"] > 2) {
       throw BungieApiException.fromJson(json, response.statusCode);
     }
-
-    _persistentCookies = (_persistentCookies ?? []) + response.cookies;
+    if (response.cookies.isNotEmpty) {
+      _persistentCookies = response.cookies;
+    }
     return HttpResponse(json, response.statusCode);
   }
 }

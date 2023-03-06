@@ -5,6 +5,8 @@ import 'package:little_light/modules/equipment/widgets/equipment_type_tab_menu.w
 import 'package:little_light/modules/equipment/widgets/equipment_vault_tab_content.widget.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/shared/widgets/menus/character_context_menu/character_context_menu.dart';
+import 'package:little_light/shared/widgets/notifications/busy_indicator_bottom_gradient.widget.dart';
+import 'package:little_light/shared/widgets/notifications/busy_indicator_line.widget.dart';
 import 'package:little_light/shared/widgets/notifications/notifications.widget.dart';
 import 'package:little_light/shared/widgets/overlay/show_overlay.dart';
 import 'package:little_light/shared/widgets/selection/selected_items.widget.dart';
@@ -67,7 +69,7 @@ class EquipmentView extends StatelessWidget {
     final characters = _state.characters;
     if (characters == null) return Container();
     final characterCount = characters.length;
-    final viewPaddingTop = MediaQuery.of(context).padding.top;
+    final viewPadding = MediaQuery.of(context).viewPadding;
     return CustomTabControllerBuilder(
       InventoryTab.values.length,
       builder: (context, typeTabController) => CustomTabControllerBuilder(
@@ -78,7 +80,7 @@ class EquipmentView extends StatelessWidget {
               Positioned.fill(
                 child: Column(children: [
                   SizedBox(
-                    height: viewPaddingTop + kToolbarHeight + 2,
+                    height: viewPadding.top + kToolbarHeight + 2,
                   ),
                   Expanded(
                     child: Stack(children: [
@@ -102,37 +104,47 @@ class EquipmentView extends StatelessWidget {
                         right: 8,
                         child: const NotificationsWidget(),
                       ),
+                      Positioned(
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        child: const BusyIndicatorLineWidget(),
+                      ),
                     ]),
                   ),
                   SelectedItemsWidget(),
                   SizedBox(
-                      height: kToolbarHeight,
-                      child: Row(
+                    height: kToolbarHeight + viewPadding.bottom,
+                    child: Stack(children: [
+                      Row(
                         children: [
                           EquipmentTypeTabMenuWidget(typeTabController),
                           Expanded(
                             child: buildCharacterContextMenuButton(context, characterTabController),
                           ),
                         ],
-                      )),
+                      ),
+                      Positioned(bottom: 0, left: 0, right: 0, child: BusyIndicatorBottomGradientWidget()),
+                    ]),
+                  ),
                 ]),
               ),
               Positioned(
                 top: 0,
                 left: 0,
                 right: 0,
-                height: viewPaddingTop + kToolbarHeight * 1.4 + 2,
+                height: viewPadding.top + kToolbarHeight * 1.4 + 2,
                 child: buildTabHeader(context, characterTabController),
               ),
               Positioned(
-                  top: 0,
+                  top: 0 + viewPadding.top,
                   right: 16,
                   child: CharacterHeaderTabMenuWidget(
                     characters,
                     characterTabController,
                   )),
               Positioned(
-                top: 0,
+                top: 0 + viewPadding.top,
                 left: 0,
                 child: SizedBox(
                   width: kToolbarHeight,
@@ -237,16 +249,19 @@ class EquipmentView extends StatelessWidget {
 
   Widget buildCharacterContextMenuButton(BuildContext context, CustomTabController characterTabController) {
     final characters = _state.characters;
+    final viewPadding = MediaQuery.of(context).viewPadding;
     if (characters == null) return Container();
     return Builder(
       builder: (context) => Stack(
         alignment: Alignment.centerRight,
         fit: StackFit.expand,
         children: [
-          CurrentCharacterTabIndicator(
-            characters,
-            characterTabController,
-          ),
+          Container(
+              padding: EdgeInsets.only(bottom: viewPadding.bottom),
+              child: CurrentCharacterTabIndicator(
+                characters,
+                characterTabController,
+              )),
           Positioned(
               right: 0,
               top: 0,

@@ -12,7 +12,7 @@ import 'package:little_light/services/user_settings/user_settings.consumer.dart'
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/media_query_helper.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
-import 'package:little_light/widgets/common/header.wiget.dart';
+import 'package:little_light/shared/widgets/headers/header.wiget.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/base_inventory_item.widget.dart';
@@ -45,12 +45,10 @@ class _DuplicatedItemsBucket {
 
 class DuplicatedItemListWidget extends StatefulWidget {
   final SearchController searchController;
-  const DuplicatedItemListWidget({Key key, this.searchController})
-      : super(key: key);
+  const DuplicatedItemListWidget({Key key, this.searchController}) : super(key: key);
 
   @override
-  DuplicatedItemListWidgetState createState() =>
-      DuplicatedItemListWidgetState();
+  DuplicatedItemListWidgetState createState() => DuplicatedItemListWidgetState();
 }
 
 class DuplicatedItemListWidgetState extends State<DuplicatedItemListWidget>
@@ -76,12 +74,9 @@ class DuplicatedItemListWidgetState extends State<DuplicatedItemListWidget>
 
     for (final item in items) {
       final itemHash = item.item.itemHash;
-      final itemDef = await manifest
-          .getDefinition<DestinyInventoryItemDefinition>(itemHash);
+      final itemDef = await manifest.getDefinition<DestinyInventoryItemDefinition>(itemHash);
       final bucketHash = itemDef.inventory.bucketTypeHash;
-      _buckets
-          .getOrCreate(bucketHash, <int, List<ItemWithOwner>>{}).getOrCreate(
-              itemHash, <ItemWithOwner>[]).add(item);
+      _buckets.getOrCreate(bucketHash, <int, List<ItemWithOwner>>{}).getOrCreate(itemHash, <ItemWithOwner>[]).add(item);
     }
 
     _buckets.forEach((hash, duplicates) {
@@ -95,8 +90,7 @@ class DuplicatedItemListWidgetState extends State<DuplicatedItemListWidget>
     for (final bucketHash in orderedBucketHashes) {
       final mappedItems = _buckets[bucketHash];
       final duplicatedItems = mappedItems
-          .map((hash, items) => MapEntry<int, _DuplicatedListItem>(
-              hash, _DuplicatedListItem(hash, items)))
+          .map((hash, items) => MapEntry<int, _DuplicatedListItem>(hash, _DuplicatedListItem(hash, items)))
           .values
           .toList();
       final itemBucket = _DuplicatedItemsBucket(bucketHash, duplicatedItems);
@@ -154,14 +148,12 @@ class DuplicatedItemListWidgetState extends State<DuplicatedItemListWidget>
     return SliverSection(
       itemHeight: 96,
       itemCount: 1,
-      itemBuilder: (context, _) =>
-          _DefinitionItemWrapper(duplicate.itemHash, duplicate.instances),
+      itemBuilder: (context, _) => _DefinitionItemWrapper(duplicate.itemHash, duplicate.instances),
     );
   }
 
   SliverSection buildDuplicateInstancesSliver(_DuplicatedListItem duplicate) {
-    final itemsPerRow =
-        MediaQueryHelper(context).responsiveValue(2, tablet: 3, laptop: 6);
+    final itemsPerRow = MediaQueryHelper(context).responsiveValue(2, tablet: 3, laptop: 6);
     return SliverSection(
         itemHeight: 132,
         itemCount: duplicate.instances.length,
@@ -174,16 +166,12 @@ class DuplicatedItemListWidgetState extends State<DuplicatedItemListWidget>
                     item: item,
                     definition: def,
                   ),
-              key: Key(
-                  "item_${item.item.itemHash}_${item.item.itemInstanceId}_${item.ownerId}"));
+              key: Key("item_${item.item.itemHash}_${item.item.itemInstanceId}_${item.ownerId}"));
         });
   }
 
   SliverSection buildSpacer() {
-    return SliverSection(
-        itemHeight: 40,
-        itemCount: 1,
-        itemBuilder: (context, index) => Container());
+    return SliverSection(itemHeight: 40, itemCount: 1, itemBuilder: (context, index) => Container());
   }
 
   @override
@@ -200,8 +188,7 @@ class _DefinitionItemWrapper extends StatefulWidget {
   }
 }
 
-class _DefinitionItemWrapperState extends State<_DefinitionItemWrapper>
-    with SelectionConsumer {
+class _DefinitionItemWrapperState extends State<_DefinitionItemWrapper> with SelectionConsumer {
   bool get selected => widget.items.every((i) {
         return selection.isSelected(i);
       });
@@ -235,9 +222,7 @@ class _DefinitionItemWrapperState extends State<_DefinitionItemWrapper>
       selected
           ? Positioned.fill(
               child: Container(
-                foregroundDecoration: BoxDecoration(
-                    border:
-                        Border.all(color: Colors.lightBlue.shade400, width: 2)),
+                foregroundDecoration: BoxDecoration(border: Border.all(color: Colors.lightBlue.shade400, width: 2)),
               ),
             )
           : Container(),
@@ -275,8 +260,7 @@ class _ItemInstanceWrapper extends StatefulWidget {
   final ItemWithOwner item;
   final DestinyInventoryItemDefinition definition;
 
-  const _ItemInstanceWrapper({Key key, this.item, this.definition})
-      : super(key: key);
+  const _ItemInstanceWrapper({Key key, this.item, this.definition}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -309,15 +293,12 @@ class _ItemInstanceWrapperState extends State<_ItemInstanceWrapper>
   Widget build(BuildContext context) {
     return Stack(children: [
       Positioned.fill(
-          child: BaseItemInstanceWidget(
-              widget.item.item, widget.definition, instance,
+          child: BaseItemInstanceWidget(widget.item.item, widget.definition, instance,
               characterId: widget.item.ownerId, uniqueId: null)),
       selected
           ? Positioned.fill(
               child: Container(
-                foregroundDecoration: BoxDecoration(
-                    border:
-                        Border.all(color: Colors.lightBlue.shade400, width: 2)),
+                foregroundDecoration: BoxDecoration(border: Border.all(color: Colors.lightBlue.shade400, width: 2)),
               ),
             )
           : Container(),

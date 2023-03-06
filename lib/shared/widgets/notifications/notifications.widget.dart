@@ -10,15 +10,12 @@ import 'package:little_light/shared/widgets/loading/default_loading_shimmer.dart
 import 'package:little_light/shared/widgets/notifications/transfer_notification_group.dart';
 import 'package:provider/provider.dart';
 
-import '../../../core/blocs/notifications/notification_actions.dart';
+import 'package:little_light/core/blocs/notifications/notification_actions.dart';
 
 class NotificationsWidget extends StatelessWidget {
-  NotificationsBloc _state(BuildContext context) =>
-      context.watch<NotificationsBloc>();
-  InventoryBloc _inventoryBloc(BuildContext context) =>
-      context.read<InventoryBloc>();
-  InventoryBloc _inventoryState(BuildContext context) =>
-      context.watch<InventoryBloc>();
+  NotificationsBloc _state(BuildContext context) => context.watch<NotificationsBloc>();
+  InventoryBloc _inventoryBloc(BuildContext context) => context.read<InventoryBloc>();
+  InventoryBloc _inventoryState(BuildContext context) => context.watch<InventoryBloc>();
 
   const NotificationsWidget() : super();
 
@@ -53,8 +50,7 @@ class NotificationsWidget extends StatelessWidget {
   }
 
   Widget? buildSubjects(BuildContext context) {
-    final transferActions =
-        _state(context).actionsByType<SingleTransferAction>();
+    final transferActions = _state(context).actionsByType<SingleTransferAction>();
     return TransferNotificationGroup(transferActions);
   }
 
@@ -92,9 +88,7 @@ class NotificationsWidget extends StatelessWidget {
     );
   }
 
-  Widget buildMainMessageAnimation(
-          BuildContext context, Widget widget, bool visible) =>
-      PingPongAnimationBuilder(
+  Widget buildMainMessageAnimation(BuildContext context, Widget widget, bool visible) => PingPongAnimationBuilder(
         (controller) => SizeTransition(
           sizeFactor: controller,
           axis: Axis.horizontal,

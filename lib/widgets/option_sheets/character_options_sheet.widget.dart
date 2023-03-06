@@ -14,6 +14,7 @@ import 'package:little_light/core/blocs/inventory/inventory.bloc.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/models/game_data.dart';
+import 'package:little_light/models/item_sort_parameter.dart';
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
 import 'package:little_light/modules/loadouts/blocs/loadouts.bloc.dart';
@@ -23,7 +24,7 @@ import 'package:little_light/services/littlelight/littlelight_data.consumer.dart
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/item_sorters/power_level_sorter.dart';
-import 'package:little_light/widgets/common/header.wiget.dart';
+import 'package:little_light/shared/widgets/headers/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/option_sheets/free_slots_slider.widget.dart';
@@ -44,14 +45,8 @@ class CharacterOptionsSheet extends StatefulWidget {
 }
 
 class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
-    with
-        UserSettingsConsumer,
-        LittleLightDataConsumer,
-        ProfileConsumer,
-        InventoryConsumer,
-        ManifestConsumer {
-  InventoryBloc inventoryBloc(BuildContext context) =>
-      context.read<InventoryBloc>();
+    with UserSettingsConsumer, LittleLightDataConsumer, ProfileConsumer, InventoryConsumer, ManifestConsumer {
+  InventoryBloc inventoryBloc(BuildContext context) => context.read<InventoryBloc>();
   Map<int, DestinyItemComponent> maxLightLoadout;
   Map<int, DestinyItemComponent> underAverageSlots;
   double maxLight;
@@ -61,11 +56,9 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
   double achievableLight;
   List<DestinyItemComponent> itemsInPostmaster;
 
-  final TextStyle headerStyle =
-      const TextStyle(fontWeight: FontWeight.bold, fontSize: 12);
+  final TextStyle headerStyle = const TextStyle(fontWeight: FontWeight.bold, fontSize: 12);
 
-  final TextStyle buttonStyle =
-      const TextStyle(fontWeight: FontWeight.bold, fontSize: 12);
+  final TextStyle buttonStyle = const TextStyle(fontWeight: FontWeight.bold, fontSize: 12);
 
   bool loadoutWeapons = true;
   bool loadoutArmor = true;
@@ -81,8 +74,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
 
   void getItemsInPostmaster() {
     var all = profile.getCharacterInventory(widget.character.characterId);
-    var inPostmaster =
-        all.where((i) => i.bucketHash == InventoryBucket.lostItems).toList();
+    var inPostmaster = all.where((i) => i.bucketHash == InventoryBucket.lostItems).toList();
     itemsInPostmaster = inPostmaster;
   }
 
@@ -92,23 +84,20 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
         behavior: HitTestBehavior.opaque,
         onTap: () {},
         child: Container(
-            padding:
-                EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+            padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
             child: SingleChildScrollView(
                 padding: const EdgeInsets.all(4).copyWith(top: 0),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      buildEquipBlock(),
-                      buildLoadoutBlock(),
-                      buildCreateLoadoutBlock(),
-                      Container(
-                        height: 8,
-                      ),
-                      buildPullFromPostmaster(),
-                      buildPowerfulInfoBlock(),
-                    ]))));
+                child:
+                    Column(crossAxisAlignment: CrossAxisAlignment.stretch, mainAxisSize: MainAxisSize.min, children: [
+                  buildEquipBlock(),
+                  buildLoadoutBlock(),
+                  buildCreateLoadoutBlock(),
+                  Container(
+                    height: 8,
+                  ),
+                  buildPullFromPostmaster(),
+                  buildPowerfulInfoBlock(),
+                ]))));
   }
 
   Widget buildPowerfulInfoBlock() {
@@ -120,16 +109,13 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
     var achievable = achievableLight?.floor() ?? 0;
     var goForPinnacle = current >= achievable && beyondSoftCap;
 
-    var title = Text("Go for powerful reward?".translate(context).toUpperCase(),
-        style: headerStyle);
+    var title = Text("Go for powerful reward?".translate(context).toUpperCase(), style: headerStyle);
     if (beyondPowerfulCap) {
-      title = Text("Go for pinnacle reward?".translate(context).toUpperCase(),
-          style: headerStyle);
+      title = Text("Go for pinnacle reward?".translate(context).toUpperCase(), style: headerStyle);
     }
 
     return Column(children: [
-      buildBlockHeader(
-          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      buildBlockHeader(Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         Expanded(child: title),
         goForPinnacle
             ? TranslatedTextWidget(
@@ -181,9 +167,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
           )),
       (underAverageSlots?.length ?? 0) <= 0
           ? Container()
-          : buildBlockHeader(Text(
-              "Under average slots".translate(context).toUpperCase(),
-              style: headerStyle)),
+          : buildBlockHeader(Text("Under average slots".translate(context).toUpperCase(), style: headerStyle)),
       (underAverageSlots?.length ?? 0) <= 0
           ? Container()
           : DefaultTextStyle(
@@ -192,19 +176,16 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
               child: Row(
                   children: underAverageSlots
                       .map((k, v) {
-                        var instance =
-                            profile.getInstanceInfo(v.itemInstanceId);
+                        var instance = profile.getInstanceInfo(v.itemInstanceId);
                         return MapEntry(
                             k,
                             Expanded(
                                 child: Container(
                                     padding: const EdgeInsets.all(4),
-                                    color:
-                                        Theme.of(context).colorScheme.secondary,
+                                    color: Theme.of(context).colorScheme.secondary,
                                     child: Column(
                                       children: <Widget>[
-                                        ManifestText<
-                                            DestinyInventoryBucketDefinition>(
+                                        ManifestText<DestinyInventoryBucketDefinition>(
                                           k,
                                           uppercase: true,
                                         ),
@@ -227,8 +208,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
 
   Widget buildEquipBlock() {
     return Column(children: [
-      buildBlockHeader(
-          Text("Equip".translate(context).toUpperCase(), style: headerStyle)),
+      buildBlockHeader(Text("Equip".translate(context).toUpperCase(), style: headerStyle)),
       IntrinsicHeight(
           child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         Expanded(
@@ -248,10 +228,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
                       period: const Duration(milliseconds: 600),
                       baseColor: Colors.transparent,
                       highlightColor: Theme.of(context).colorScheme.onSurface,
-                      child: Container(
-                          width: 50,
-                          height: 14,
-                          color: Theme.of(context).colorScheme.onSurface))
+                      child: Container(width: 50, height: 14, color: Theme.of(context).colorScheme.onSurface))
                   : Text(
                       calculatedMaxLight?.toStringAsFixed(1) ?? "",
                       style: buttonStyle.copyWith(color: Colors.amber.shade300),
@@ -260,30 +237,18 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
           ),
           onTap: () async {
             Navigator.of(context).pop();
-            LoadoutItemIndex loadout =
-                await LoadoutItemIndex.buildfromLoadout(Loadout());
-            var equipment =
-                profile.getCharacterEquipment(widget.character.characterId);
+            LoadoutItemIndex loadout = await LoadoutItemIndex.buildfromLoadout(Loadout());
+            var equipment = profile.getCharacterEquipment(widget.character.characterId);
             for (var bucket in maxLightLoadout.keys) {
               var item = maxLightLoadout[bucket];
-              var power = profile
-                      .getInstanceInfo(item.itemInstanceId)
-                      ?.primaryStat
-                      ?.value ??
-                  0;
-              var equipped = equipment.firstWhere((i) => i.bucketHash == bucket,
-                  orElse: () => null);
-              var equippedPower = profile
-                      .getInstanceInfo(equipped?.itemInstanceId)
-                      ?.primaryStat
-                      ?.value ??
-                  0;
+              var power = profile.getInstanceInfo(item.itemInstanceId)?.primaryStat?.value ?? 0;
+              var equipped = equipment.firstWhere((i) => i.bucketHash == bucket, orElse: () => null);
+              var equippedPower = profile.getInstanceInfo(equipped?.itemInstanceId)?.primaryStat?.value ?? 0;
               if (power > equippedPower) {
                 loadout.addEquippedItem(item);
               }
             }
-            inventory.transferLoadout(
-                loadout, widget.character.characterId, true);
+            inventory.transferLoadout(loadout, widget.character.characterId, true);
           },
         )),
         Container(width: 4),
@@ -332,68 +297,60 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
         ),
       ),
       IntrinsicHeight(
-          child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-            Expanded(
-                child: buildActionButton(
-              TranslatedTextWidget(
-                "Transfer",
-                style: buttonStyle,
-                uppercase: true,
-                textAlign: TextAlign.center,
-              ),
-              onTap: () async {
-                Navigator.of(context).pop();
-                int freeSlots = userSettings.defaultFreeSlots;
-                showModalBottomSheet(
-                    context: context,
-                    builder: (context) => LoadoutSelectSheet(
-                        header: FreeSlotsSliderWidget(
-                          initialValue: freeSlots,
-                          onChanged: (free) {
-                            freeSlots = free;
-                          },
-                        ),
-                        character: widget.character,
-                        loadouts: loadouts,
-                        onSelect: (loadout) => inventory.transferLoadout(
-                            loadout,
-                            widget.character.characterId,
-                            false,
-                            freeSlots)));
-              },
-            )),
-            Container(width: 4),
-            Expanded(
-                child: buildActionButton(
-              TranslatedTextWidget(
-                "Equip",
-                style: buttonStyle,
-                uppercase: true,
-                textAlign: TextAlign.center,
-              ),
-              onTap: () async {
-                Navigator.of(context).pop();
-                int freeSlots = 0;
-                showModalBottomSheet(
-                    context: context,
-                    builder: (context) => LoadoutSelectSheet(
-                        header: FreeSlotsSliderWidget(
-                          onChanged: (free) {
-                            freeSlots = free;
-                          },
-                        ),
-                        character: widget.character,
-                        loadouts: loadouts,
-                        onSelect: (loadout) => inventory.transferLoadout(
-                            loadout,
-                            widget.character.characterId,
-                            true,
-                            freeSlots)));
-              },
-            )),
-          ]))
+          child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: <Widget>[
+        Expanded(
+            child: buildActionButton(
+          TranslatedTextWidget(
+            "Transfer",
+            style: buttonStyle,
+            uppercase: true,
+            textAlign: TextAlign.center,
+          ),
+          onTap: () async {
+            Navigator.of(context).pop();
+            int freeSlots = userSettings.defaultFreeSlots;
+            showModalBottomSheet(
+                context: context,
+                builder: (context) => LoadoutSelectSheet(
+                    header: FreeSlotsSliderWidget(
+                      initialValue: freeSlots,
+                      onChanged: (free) {
+                        freeSlots = free;
+                      },
+                    ),
+                    character: widget.character,
+                    loadouts: loadouts,
+                    onSelect: (loadout) =>
+                        inventory.transferLoadout(loadout, widget.character.characterId, false, freeSlots)));
+          },
+        )),
+        Container(width: 4),
+        Expanded(
+            child: buildActionButton(
+          TranslatedTextWidget(
+            "Equip",
+            style: buttonStyle,
+            uppercase: true,
+            textAlign: TextAlign.center,
+          ),
+          onTap: () async {
+            Navigator.of(context).pop();
+            int freeSlots = 0;
+            showModalBottomSheet(
+                context: context,
+                builder: (context) => LoadoutSelectSheet(
+                    header: FreeSlotsSliderWidget(
+                      onChanged: (free) {
+                        freeSlots = free;
+                      },
+                    ),
+                    character: widget.character,
+                    loadouts: loadouts,
+                    onSelect: (loadout) =>
+                        inventory.transferLoadout(loadout, widget.character.characterId, true, freeSlots)));
+          },
+        )),
+      ]))
     ]);
   }
 
@@ -401,11 +358,9 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       buildBlockHeader(
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Text("Create Loadout".translate(context).toUpperCase(),
-              style: headerStyle),
+          Text("Create Loadout".translate(context).toUpperCase(), style: headerStyle),
           Row(children: [
-            Text("Weapons".translate(context).toUpperCase(),
-                style: headerStyle),
+            Text("Weapons".translate(context).toUpperCase(), style: headerStyle),
             Container(width: 2),
             Switch(
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -430,47 +385,45 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
         ]),
       ),
       IntrinsicHeight(
-          child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-            Expanded(
-                child: buildActionButton(
-              TranslatedTextWidget(
-                "All",
-                style: buttonStyle,
-                uppercase: true,
-                textAlign: TextAlign.center,
-              ),
-              onTap: () async {
-                // TODO: update to use pageroute
-                // var itemIndex = await createLoadout(true);
-                // Navigator.of(context).pushReplacement(MaterialPageRoute(
-                //     builder: (context) => EditLoadoutPage(
-                //           loadout: itemIndex.loadout,
-                //           forceCreate: true,
-                //         )));
-              },
-            )),
-            Container(width: 4),
-            Expanded(
-                child: buildActionButton(
-              TranslatedTextWidget(
-                "Equipped",
-                style: buttonStyle,
-                uppercase: true,
-                textAlign: TextAlign.center,
-              ),
-              onTap: () async {
-                var itemIndex = await createLoadout();
-                // TODO: update to use pageroute
-                // Navigator.of(context).pushReplacement(MaterialPageRoute(
-                //     builder: (context) => EditLoadoutPage(
-                //           loadout: itemIndex.loadout,
-                //           forceCreate: true,
-                //         )));
-              },
-            )),
-          ]))
+          child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: <Widget>[
+        Expanded(
+            child: buildActionButton(
+          TranslatedTextWidget(
+            "All",
+            style: buttonStyle,
+            uppercase: true,
+            textAlign: TextAlign.center,
+          ),
+          onTap: () async {
+            // TODO: update to use pageroute
+            // var itemIndex = await createLoadout(true);
+            // Navigator.of(context).pushReplacement(MaterialPageRoute(
+            //     builder: (context) => EditLoadoutPage(
+            //           loadout: itemIndex.loadout,
+            //           forceCreate: true,
+            //         )));
+          },
+        )),
+        Container(width: 4),
+        Expanded(
+            child: buildActionButton(
+          TranslatedTextWidget(
+            "Equipped",
+            style: buttonStyle,
+            uppercase: true,
+            textAlign: TextAlign.center,
+          ),
+          onTap: () async {
+            var itemIndex = await createLoadout();
+            // TODO: update to use pageroute
+            // Navigator.of(context).pushReplacement(MaterialPageRoute(
+            //     builder: (context) => EditLoadoutPage(
+            //           loadout: itemIndex.loadout,
+            //           forceCreate: true,
+            //         )));
+          },
+        )),
+      ]))
     ]);
   }
 
@@ -555,11 +508,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
   }
 
   randomizeWeapons() async {
-    randomizeLoadout([
-      InventoryBucket.kineticWeapons,
-      InventoryBucket.energyWeapons,
-      InventoryBucket.powerWeapons
-    ]);
+    randomizeLoadout([InventoryBucket.kineticWeapons, InventoryBucket.energyWeapons, InventoryBucket.powerWeapons]);
   }
 
   randomizeArmor() async {
@@ -573,26 +522,20 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
   }
 
   randomizeLoadout(List<int> requiredSlots) async {
-    LoadoutItemIndex randomLoadout =
-        await LoadoutItemIndex.buildfromLoadout(Loadout());
-    var allItems = profile
-        .getAllItems()
-        .where((i) => i.item.itemInstanceId != null)
-        .toList();
+    LoadoutItemIndex randomLoadout = await LoadoutItemIndex.buildfromLoadout(Loadout());
+    var allItems = profile.getAllItems().where((i) => i.item.itemInstanceId != null).toList();
     Map<int, String> slots = {};
     int exoticSlot;
     for (int i = 0; i < 1000; i++) {
       var random = math.Random();
       var index = random.nextInt(allItems.length);
       var item = allItems[index];
-      var itemDef = await manifest
-          .getDefinition<DestinyInventoryItemDefinition>(item.item.itemHash);
+      var itemDef = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.item.itemHash);
       var itemBucket = itemDef.inventory.bucketTypeHash;
       var tierType = itemDef.inventory.tierType;
       var classType = itemDef.classType;
       if (requiredSlots.contains(itemBucket) &&
-          [DestinyClass.Unknown, widget.character.classType]
-              .contains(classType)) {
+          [DestinyClass.Unknown, widget.character.classType].contains(classType)) {
         if (tierType == TierType.Exotic && exoticSlot == null) {
           slots[itemBucket] = item.item.itemInstanceId;
           exoticSlot = itemBucket;
@@ -605,27 +548,20 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
 
     for (var j in slots.values) {
       var item = allItems.firstWhere((i) => i.item.itemInstanceId == j);
-      var itemDef = await manifest
-          .getDefinition<DestinyInventoryItemDefinition>(item.item.itemHash);
+      var itemDef = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.item.itemHash);
       randomLoadout.addEquippedItem(item.item);
     }
 
-    inventory.transferLoadout(
-        randomLoadout, widget.character.characterId, true);
+    inventory.transferLoadout(randomLoadout, widget.character.characterId, true);
   }
 
   getMaxLightLoadout() async {
     gameData = await littleLightData.getGameData();
     var allItems = profile.getAllItems();
-    var instancedItems =
-        allItems.where((i) => i.item.itemInstanceId != null).toList();
-    var sorter = PowerLevelSorter(-1);
+    var instancedItems = allItems.where((i) => i.item.itemInstanceId != null).toList();
+    var sorter = PowerLevelSorter(SorterDirection.Descending);
     instancedItems.sort((itemA, itemB) => sorter.sort(itemA, itemB));
-    var weaponSlots = [
-      InventoryBucket.kineticWeapons,
-      InventoryBucket.energyWeapons,
-      InventoryBucket.powerWeapons
-    ];
+    var weaponSlots = [InventoryBucket.kineticWeapons, InventoryBucket.energyWeapons, InventoryBucket.powerWeapons];
     var armorSlots = [
       InventoryBucket.helmet,
       InventoryBucket.gauntlets,
@@ -635,22 +571,17 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
     ];
     var validSlots = weaponSlots + armorSlots;
     var equipment = profile.getCharacterEquipment(widget.character.characterId);
-    var availableSlots = equipment
-        .where((i) => validSlots.contains(i.bucketHash))
-        .map((i) => i.bucketHash);
+    var availableSlots = equipment.where((i) => validSlots.contains(i.bucketHash)).map((i) => i.bucketHash);
     Map<int, DestinyItemComponent> maxLightLoadout = {};
     Map<int, DestinyItemComponent> maxLightExotics = {};
     for (var item in instancedItems) {
-      var def = await manifest
-          .getDefinition<DestinyInventoryItemDefinition>(item.item.itemHash);
+      var def = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.item.itemHash);
       if (maxLightLoadout.containsKey(def?.inventory?.bucketTypeHash) ||
           !availableSlots.contains(def?.inventory?.bucketTypeHash) ||
-          ![widget.character.classType, DestinyClass.Unknown]
-              .contains(def?.classType)) {
+          ![widget.character.classType, DestinyClass.Unknown].contains(def?.classType)) {
         continue;
       }
-      if (def?.inventory?.tierType == TierType.Exotic &&
-          !maxLightExotics.containsKey(def?.inventory?.bucketTypeHash)) {
+      if (def?.inventory?.tierType == TierType.Exotic && !maxLightExotics.containsKey(def?.inventory?.bucketTypeHash)) {
         maxLightExotics[def?.inventory?.bucketTypeHash] = item.item;
         continue;
       }
@@ -715,8 +646,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
     for (var item in maxLightLoadout.values) {
       var instanceInfo = profile.getInstanceInfo(item.itemInstanceId);
       var power = instanceInfo?.primaryStat?.value ?? 0;
-      var def = await manifest
-          .getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
+      var def = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
       if (power < maxLight?.floor()) {
         underAverageSlots[def.inventory.bucketTypeHash] = item;
       }
@@ -726,8 +656,7 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
       if (power < gameData.powerfulCap) {
         beyondPowerfulCap = false;
       }
-      idealLightTotal +=
-          math.max(instanceInfo?.primaryStat?.value ?? 0, maxLight?.floor());
+      idealLightTotal += math.max(instanceInfo?.primaryStat?.value ?? 0, maxLight?.floor());
     }
     achievableLight = (idealLightTotal / maxLightLoadout.length);
     setState(() {});
@@ -741,23 +670,15 @@ class CharacterOptionsSheetState extends State<CharacterOptionsSheet>
   int get artifactLevel {
     var item = profile
         .getCharacterEquipment(widget.character.characterId)
-        .firstWhere((item) => item.bucketHash == InventoryBucket.artifact,
-            orElse: () => null);
+        .firstWhere((item) => item.bucketHash == InventoryBucket.artifact, orElse: () => null);
     if (item == null) return 0;
     var instanceInfo = profile.getInstanceInfo(item?.itemInstanceId);
     return instanceInfo?.primaryStat?.value ?? 0;
   }
 
   double _getAvgLight(Iterable<DestinyItemComponent> items) {
-    var total = items.fold(
-        0,
-        (light, item) =>
-            light +
-                profile
-                    .getInstanceInfo(item.itemInstanceId)
-                    ?.primaryStat
-                    ?.value ??
-            0);
+    var total =
+        items.fold(0, (light, item) => light + profile.getInstanceInfo(item.itemInstanceId)?.primaryStat?.value ?? 0);
     return total / items.length;
   }
 }

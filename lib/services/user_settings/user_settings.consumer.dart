@@ -1,9 +1,8 @@
 import 'package:get_it/get_it.dart';
-import 'package:little_light/core/repositories/user_settings/user_settings.repository.dart';
+import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
 
-UserSettingsRepository getInjectedUserSettings() =>
-    GetIt.I<UserSettingsRepository>();
+UserSettingsBloc getInjectedUserSettings() => GetIt.I<UserSettingsBloc>();
 
 mixin UserSettingsConsumer {
-  UserSettingsRepository get userSettings => getInjectedUserSettings();
+  UserSettingsBloc get userSettings => getInjectedUserSettings();
 }

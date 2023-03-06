@@ -68,10 +68,7 @@ class ProfileBloc extends ChangeNotifier
         BungieApiConsumer,
         ManifestConsumer,
         WidgetsBindingObserver {
-  static const List<int> profileBuckets = [
-    InventoryBucket.modifications,
-    InventoryBucket.consumables
-  ];
+  static const List<int> profileBuckets = [InventoryBucket.modifications, InventoryBucket.consumables];
 
   DestinyProfileResponse? _cachedProfileResponse;
   bool pauseAutomaticUpdater = false;
@@ -93,11 +90,9 @@ class ProfileBloc extends ChangeNotifier
     _itemCache = _CachedItemsContainer();
   }
 
-  List<DestinyComponentType> updateComponents =
-      ProfileComponentGroups.basicProfile;
+  List<DestinyComponentType> updateComponents = ProfileComponentGroups.basicProfile;
 
-  Future<void> _updateProfileFromServer(
-      List<DestinyComponentType> components) async {
+  Future<void> _updateProfileFromServer(List<DestinyComponentType> components) async {
     final before = DateTime.now();
     final profile = await bungieAPI.getCurrentProfile(components);
     final after = DateTime.now();
@@ -124,15 +119,11 @@ class ProfileBloc extends ChangeNotifier
     await _updateProfileFromServer(components);
   }
 
-  Future<DestinyProfileResponse> _updateProfileCache(
-      DestinyProfileResponse newData) async {
-    final responseTimestamp =
-        DateTime.tryParse(newData.responseMintedTimestamp ?? "");
+  Future<DestinyProfileResponse> _updateProfileCache(DestinyProfileResponse newData) async {
+    final responseTimestamp = DateTime.tryParse(newData.responseMintedTimestamp ?? "");
     final localChange = _lastLocalChange;
-    if (localChange != null &&
-        (responseTimestamp?.isBefore(localChange) ?? false)) {
-      print(
-          "last local change ($localChange) is newer than inventory state $responseTimestamp, skipping update");
+    if (localChange != null && (responseTimestamp?.isBefore(localChange) ?? false)) {
+      print("last local change ($localChange) is newer than inventory state $responseTimestamp, skipping update");
       return _cachedProfileResponse ?? newData;
     }
 
@@ -147,49 +138,32 @@ class ProfileBloc extends ChangeNotifier
     newData.profilePlugSets ??= _cachedProfileResponse?.profilePlugSets;
     newData.characterPlugSets ??= _cachedProfileResponse?.characterPlugSets;
     newData.profileProgression ??= _cachedProfileResponse?.profileProgression;
-    newData.profilePresentationNodes ??=
-        _cachedProfileResponse?.profilePresentationNodes;
-    newData.characterPresentationNodes ??=
-        _cachedProfileResponse?.characterPresentationNodes;
+    newData.profilePresentationNodes ??= _cachedProfileResponse?.profilePresentationNodes;
+    newData.characterPresentationNodes ??= _cachedProfileResponse?.characterPresentationNodes;
     newData.profileRecords ??= _cachedProfileResponse?.profileRecords;
     newData.characterRecords ??= _cachedProfileResponse?.characterRecords;
     newData.metrics ??= _cachedProfileResponse?.metrics;
     newData.profileCollectibles ??= _cachedProfileResponse?.profileCollectibles;
-    newData.characterCollectibles ??=
-        _cachedProfileResponse?.characterCollectibles;
+    newData.characterCollectibles ??= _cachedProfileResponse?.characterCollectibles;
     newData.characters ??= _cachedProfileResponse?.characters;
     newData.characterActivities ??= _cachedProfileResponse?.characterActivities;
-    newData.characterInventories ??=
-        _cachedProfileResponse?.characterInventories;
-    newData.characterProgressions ??=
-        _cachedProfileResponse?.characterProgressions;
+    newData.characterInventories ??= _cachedProfileResponse?.characterInventories;
+    newData.characterProgressions ??= _cachedProfileResponse?.characterProgressions;
     newData.characterRenderData ??= _cachedProfileResponse?.characterRenderData;
     newData.characterEquipment ??= _cachedProfileResponse?.characterEquipment;
-    newData.characterUninstancedItemComponents ??=
-        _cachedProfileResponse?.characterUninstancedItemComponents;
+    newData.characterUninstancedItemComponents ??= _cachedProfileResponse?.characterUninstancedItemComponents;
     newData.itemComponents ??= _cachedProfileResponse?.itemComponents;
-    newData.itemComponents?.instances ??=
-        _cachedProfileResponse?.itemComponents?.instances;
-    newData.itemComponents?.objectives ??=
-        _cachedProfileResponse?.itemComponents?.objectives;
-    newData.itemComponents?.perks ??=
-        _cachedProfileResponse?.itemComponents?.perks;
-    newData.itemComponents?.plugObjectives ??=
-        _cachedProfileResponse?.itemComponents?.plugObjectives;
-    newData.itemComponents?.plugStates ??=
-        _cachedProfileResponse?.itemComponents?.plugStates;
-    newData.itemComponents?.renderData ??=
-        _cachedProfileResponse?.itemComponents?.renderData;
-    newData.itemComponents?.reusablePlugs ??=
-        _cachedProfileResponse?.itemComponents?.reusablePlugs;
-    newData.itemComponents?.sockets ??=
-        _cachedProfileResponse?.itemComponents?.sockets;
-    newData.itemComponents?.stats ??=
-        _cachedProfileResponse?.itemComponents?.stats;
-    newData.itemComponents?.talentGrids ??=
-        _cachedProfileResponse?.itemComponents?.talentGrids;
-    newData.characterCurrencyLookups ??=
-        _cachedProfileResponse?.characterCurrencyLookups;
+    newData.itemComponents?.instances ??= _cachedProfileResponse?.itemComponents?.instances;
+    newData.itemComponents?.objectives ??= _cachedProfileResponse?.itemComponents?.objectives;
+    newData.itemComponents?.perks ??= _cachedProfileResponse?.itemComponents?.perks;
+    newData.itemComponents?.plugObjectives ??= _cachedProfileResponse?.itemComponents?.plugObjectives;
+    newData.itemComponents?.plugStates ??= _cachedProfileResponse?.itemComponents?.plugStates;
+    newData.itemComponents?.renderData ??= _cachedProfileResponse?.itemComponents?.renderData;
+    newData.itemComponents?.reusablePlugs ??= _cachedProfileResponse?.itemComponents?.reusablePlugs;
+    newData.itemComponents?.sockets ??= _cachedProfileResponse?.itemComponents?.sockets;
+    newData.itemComponents?.stats ??= _cachedProfileResponse?.itemComponents?.stats;
+    newData.itemComponents?.talentGrids ??= _cachedProfileResponse?.itemComponents?.talentGrids;
+    newData.characterCurrencyLookups ??= _cachedProfileResponse?.characterCurrencyLookups;
 
     _cachedProfileResponse = newData;
 
@@ -204,9 +178,7 @@ class ProfileBloc extends ChangeNotifier
 
   void _updateCharacters(DestinyProfileResponse? profile) {
     if (profile == null) return;
-    final profileCharacters = profile.characters?.data?.values
-        .map((e) => _createCharacterInfo(e, profile))
-        .toList();
+    final profileCharacters = profile.characters?.data?.values.map((e) => _createCharacterInfo(e, profile)).toList();
     if (profileCharacters == null) return;
     final sortType = userSettings.characterOrdering?.type;
     if (sortType == null) {
@@ -217,7 +189,7 @@ class ProfileBloc extends ChangeNotifier
     _characters = characters;
   }
 
-  void _updateItems(DestinyProfileResponse? profile) {
+  Future<void> _updateItems(DestinyProfileResponse? profile) async {
     if (profile == null) return;
     _itemCache = _CachedItemsContainer();
     final characterEquipment = profile.characterEquipment?.data?.entries;
@@ -265,11 +237,11 @@ class ProfileBloc extends ChangeNotifier
       }
   }
 
-  _updateCurrencies(DestinyProfileResponse? profile) {
+  void _updateCurrencies(DestinyProfileResponse? profile) {
     this._currencies = profile?.profileCurrencies?.data?.items;
   }
 
-  _updateHelpers() {
+  void _updateHelpers() {
     final characters = _characters;
     if (characters == null) return;
     for (final c in characters) {
@@ -277,14 +249,10 @@ class ProfileBloc extends ChangeNotifier
         final isEquipped = element.instanceInfo?.isEquipped ?? false;
         return element.characterId == c.characterId && isEquipped;
       });
-      final artifact = equippedItems.firstWhereOrNull(
-          (element) => element.bucketHash == InventoryBucket.artifact);
-      final powerBuckets = InventoryBucket.weaponBucketHashes +
-          InventoryBucket.armorBucketHashes;
-      final armorItems = equippedItems
-          .where((element) => powerBuckets.contains(element.bucketHash));
-      final armorPowerSum = armorItems.fold<int>(
-          0, (p, e) => p + (e.instanceInfo?.primaryStat?.value ?? 0));
+      final artifact = equippedItems.firstWhereOrNull((element) => element.bucketHash == InventoryBucket.artifact);
+      final powerBuckets = InventoryBucket.weaponBucketHashes + InventoryBucket.armorBucketHashes;
+      final armorItems = equippedItems.where((element) => powerBuckets.contains(element.bucketHash));
+      final armorPowerSum = armorItems.fold<int>(0, (p, e) => p + (e.instanceInfo?.primaryStat?.value ?? 0));
       final armorPower = (armorPowerSum / armorItems.length).floor();
       final artifactPower = artifact?.instanceInfo?.primaryStat?.value ?? 0;
       final totalPower = armorPower + artifactPower;
@@ -303,12 +271,9 @@ class ProfileBloc extends ChangeNotifier
       DestinyItemInfo(
         item,
         characterId: characterId,
-        sockets:
-            profile.itemComponents?.sockets?.data?[itemInstanceId]?.sockets,
-        plugObjectives: profile.itemComponents?.plugObjectives
-            ?.data?[itemInstanceId]?.objectivesPerPlug,
-        reusablePlugs:
-            profile.itemComponents?.reusablePlugs?.data?[itemInstanceId]?.plugs,
+        sockets: profile.itemComponents?.sockets?.data?[itemInstanceId]?.sockets,
+        plugObjectives: profile.itemComponents?.plugObjectives?.data?[itemInstanceId]?.objectivesPerPlug,
+        reusablePlugs: profile.itemComponents?.reusablePlugs?.data?[itemInstanceId]?.plugs,
         instanceInfo: profile.itemComponents?.instances?.data?[itemInstanceId],
         stats: profile.itemComponents?.stats?.data?[itemInstanceId]?.stats,
       );
@@ -317,9 +282,7 @@ class ProfileBloc extends ChangeNotifier
     DestinyCharacterComponent character,
     DestinyProfileResponse profile,
   ) =>
-      DestinyCharacterInfo(character,
-          progression:
-              profile.characterProgressions?.data?[character.characterId]);
+      DestinyCharacterInfo(character, progression: profile.characterProgressions?.data?[character.characterId]);
 
   bool isPlaying() {
     final characters = this.characters;
@@ -330,10 +293,8 @@ class ProfileBloc extends ChangeNotifier
       if (lastPlayedStr == null) continue;
       final lastPlayed = DateTime.tryParse(lastPlayedStr);
       if (lastPlayed == null) continue;
-      final currentSessionMinutes =
-          int.tryParse(character.minutesPlayedThisSession ?? "0") ?? 0;
-      final currentSession =
-          lastPlayed.add(Duration(minutes: currentSessionMinutes)).toUtc();
+      final currentSessionMinutes = int.tryParse(character.minutesPlayedThisSession ?? "0") ?? 0;
+      final currentSession = lastPlayed.add(Duration(minutes: currentSessionMinutes)).toUtc();
       final isPlaying = currentSession.isBefore(DateTime.now().toUtc());
       if (isPlaying) return true;
     }
@@ -348,13 +309,11 @@ class ProfileBloc extends ChangeNotifier
     return _itemCache.itemsByInstanceId[instanceId]?.sockets;
   }
 
-  Map<String, List<DestinyItemPlugBase>>? getItemReusablePlugs(
-      String instanceId) {
+  Map<String, List<DestinyItemPlugBase>>? getItemReusablePlugs(String instanceId) {
     return _itemCache.itemsByInstanceId[instanceId]?.reusablePlugs;
   }
 
-  Map<String, List<DestinyObjectiveProgress>>? getPlugObjectives(
-      String? itemInstanceId) {
+  Map<String, List<DestinyObjectiveProgress>>? getPlugObjectives(String? itemInstanceId) {
     return _itemCache.itemsByInstanceId[itemInstanceId]?.plugObjectives;
   }
 
@@ -362,16 +321,14 @@ class ProfileBloc extends ChangeNotifier
     return _itemCache.itemsByInstanceId[itemInstanceId]?.stats;
   }
 
-  List<DestinyObjectiveProgress>? getItemObjectives(
-      String? itemInstanceId, String? characterId, int? hash) {
+  List<DestinyObjectiveProgress>? getItemObjectives(String? itemInstanceId, String? characterId, int? hash) {
     try {
-      var objectives = _cachedProfileResponse
-          ?.itemComponents?.objectives?.data?[itemInstanceId]?.objectives;
+      var objectives = _cachedProfileResponse?.itemComponents?.objectives?.data?[itemInstanceId]?.objectives;
       if (objectives != null) return objectives;
     } catch (e) {}
     try {
-      var objectives = _cachedProfileResponse?.characterProgressions
-          ?.data?[characterId]?.uninstancedItemObjectives?["$hash"];
+      var objectives =
+          _cachedProfileResponse?.characterProgressions?.data?[characterId]?.uninstancedItemObjectives?["$hash"];
       return objectives;
     } catch (e) {}
     return null;
@@ -381,64 +338,49 @@ class ProfileBloc extends ChangeNotifier
     return _cachedProfileResponse?.profilePresentationNodes?.data?.nodes;
   }
 
-  List<DestinyItemPlug>? getCharacterPlugSets(
-      String characterId, int plugSetHash) {
-    var plugs =
-        _cachedProfileResponse?.characterPlugSets?.data?[characterId]?.plugs;
-    if (plugs?.containsKey("$plugSetHash") ?? false)
-      return plugs?["$plugSetHash"];
+  List<DestinyItemPlug>? getCharacterPlugSets(String characterId, int plugSetHash) {
+    var plugs = _cachedProfileResponse?.characterPlugSets?.data?[characterId]?.plugs;
+    if (plugs?.containsKey("$plugSetHash") ?? false) return plugs?["$plugSetHash"];
     return null;
   }
 
   List<DestinyItemPlug>? getProfilePlugSets(int plugSetHash) {
     var plugs = _cachedProfileResponse?.profilePlugSets?.data?.plugs;
-    if (plugs?.containsKey("$plugSetHash") ?? false)
-      return plugs?["$plugSetHash"];
+    if (plugs?.containsKey("$plugSetHash") ?? false) return plugs?["$plugSetHash"];
     return null;
   }
 
   List<DestinyItemPlug> getPlugSets(int plugSetHash) {
     List<DestinyItemPlug> plugs = [];
     plugs.addAll(getProfilePlugSets(plugSetHash) ?? []);
-    characters?.forEach((c) => plugs.addAll(
-        getCharacterPlugSets(c.character.characterId!, plugSetHash) ?? []));
+    characters?.forEach((c) => plugs.addAll(getCharacterPlugSets(c.character.characterId!, plugSetHash) ?? []));
     return plugs;
   }
 
-  Map<String, DestinyPresentationNodeComponent>? getCharacterPresentationNodes(
-      String characterId) {
-    if (_cachedProfileResponse?.characterPresentationNodes?.data == null)
-      return null;
-    return _cachedProfileResponse
-        ?.characterPresentationNodes?.data?[characterId]?.nodes;
+  Map<String, DestinyPresentationNodeComponent>? getCharacterPresentationNodes(String characterId) {
+    if (_cachedProfileResponse?.characterPresentationNodes?.data == null) return null;
+    return _cachedProfileResponse?.characterPresentationNodes?.data?[characterId]?.nodes;
   }
 
   DestinyCharacterComponent? getCharacter(String characterId) {
-    return characters
-        ?.firstWhereOrNull((c) => c.character.characterId == characterId)
-        ?.character;
+    return characters?.firstWhereOrNull((c) => c.character.characterId == characterId)?.character;
   }
 
   DestinyCharacterInfo? getCharacterById(String? id) =>
       _characters?.firstWhereOrNull((element) => element.characterId == id);
 
-  DestinyCharacterActivitiesComponent? getCharacterActivities(
-      String characterId) {
+  DestinyCharacterActivitiesComponent? getCharacterActivities(String characterId) {
     return _cachedProfileResponse?.characterActivities?.data?[characterId];
   }
 
   List<DestinyItemComponent> getCharacterEquipment(String characterId) {
     if (_cachedProfileResponse?.characterEquipment?.data == null) return [];
-    return _cachedProfileResponse
-            ?.characterEquipment?.data?[characterId]?.items ??
-        [];
+    return _cachedProfileResponse?.characterEquipment?.data?[characterId]?.items ?? [];
   }
 
   List<DestinyItemComponent> getCharacterInventory(String characterId) {
     if (_cachedProfileResponse?.characterInventories?.data == null) return [];
-    return _cachedProfileResponse
-            ?.characterInventories?.data?[characterId]?.items ??
-        [];
+    return _cachedProfileResponse?.characterInventories?.data?[characterId]?.items ?? [];
   }
 
   List<DestinyItemComponent> getProfileInventory() {
@@ -449,8 +391,7 @@ class ProfileBloc extends ChangeNotifier
     return _cachedProfileResponse?.profileCurrencies?.data?.items;
   }
 
-  DestinyCharacterProgressionComponent? getCharacterProgression(
-      String characterId) {
+  DestinyCharacterProgressionComponent? getCharacterProgression(String characterId) {
     return _cachedProfileResponse?.characterProgressions?.data?[characterId];
   }
 
@@ -458,10 +399,8 @@ class ProfileBloc extends ChangeNotifier
     return _cachedProfileResponse?.profileCollectibles?.data?.collectibles;
   }
 
-  Map<String, DestinyCollectibleComponent>? getCharacterCollectibles(
-      String characterId) {
-    return _cachedProfileResponse
-        ?.characterCollectibles?.data?[characterId]?.collectibles;
+  Map<String, DestinyCollectibleComponent>? getCharacterCollectibles(String characterId) {
+    return _cachedProfileResponse?.characterCollectibles?.data?[characterId]?.collectibles;
   }
 
   bool isCollectibleUnlocked(int hash, DestinyScope scope) {
@@ -472,20 +411,16 @@ class ProfileBloc extends ChangeNotifier
       return true;
     }
     if (scope == DestinyScope.Profile) {
-      DestinyCollectibleComponent? collectible = _cachedProfileResponse
-          ?.profileCollectibles?.data?.collectibles?[hashStr];
+      DestinyCollectibleComponent? collectible =
+          _cachedProfileResponse?.profileCollectibles?.data?.collectibles?[hashStr];
       if (collectible != null) {
-        final notAcquired =
-            collectible.state?.contains(DestinyCollectibleState.NotAcquired) ??
-                true;
+        final notAcquired = collectible.state?.contains(DestinyCollectibleState.NotAcquired) ?? true;
         return !notAcquired;
       }
     }
 
-    return _cachedProfileResponse?.characterCollectibles?.data?.values
-            .any((data) {
-          DestinyCollectibleState state = data.collectibles?[hashStr]?.state ??
-              DestinyCollectibleState.NotAcquired;
+    return _cachedProfileResponse?.characterCollectibles?.data?.values.any((data) {
+          DestinyCollectibleState state = data.collectibles?[hashStr]?.state ?? DestinyCollectibleState.NotAcquired;
           return !state.contains(DestinyCollectibleState.NotAcquired);
         }) ??
         false;
@@ -513,44 +448,32 @@ class ProfileBloc extends ChangeNotifier
 
   DestinyMetricComponent? getMetric(int hash) {
     String hashStr = "$hash";
-    if (_cachedProfileResponse?.metrics?.data?.metrics?.containsKey(hashStr) !=
-        true) {
+    if (_cachedProfileResponse?.metrics?.data?.metrics?.containsKey(hashStr) != true) {
       return null;
     }
     return _cachedProfileResponse?.metrics?.data?.metrics?[hashStr];
   }
 
-  DestinyItemInfo? getItemByInstanceId(String instanceId) =>
-      _itemCache.itemsByInstanceId[instanceId];
+  DestinyItemInfo? getItemByInstanceId(String instanceId) => _itemCache.itemsByInstanceId[instanceId];
 
-  List<DestinyItemInfo> getItemsByHash(int hash) =>
-      _itemCache.itemsByHash[hash] ?? [];
+  List<DestinyItemInfo> getItemsByHash(int hash) => _itemCache.itemsByHash[hash] ?? [];
 
   List<DestinyItemComponent> getItemsByInstanceId(List<String?> ids) {
     final _ids = ids.whereType<String>().toSet();
-    return _ids
-        .map((e) => getItemByInstanceId(e)?.item)
-        .whereType<DestinyItemComponent>()
-        .toList();
+    return _ids.map((e) => getItemByInstanceId(e)?.item).whereType<DestinyItemComponent>().toList();
   }
 
   String? getItemOwner(String itemInstanceId) {
     String? owner;
-    _cachedProfileResponse?.characterEquipment?.data
-        ?.forEach((charId, inventory) {
-      bool has = inventory.items
-              ?.any((item) => item.itemInstanceId == itemInstanceId) ??
-          false;
+    _cachedProfileResponse?.characterEquipment?.data?.forEach((charId, inventory) {
+      bool has = inventory.items?.any((item) => item.itemInstanceId == itemInstanceId) ?? false;
       if (has) {
         owner = charId;
       }
     });
     if (owner != null) return owner;
-    _cachedProfileResponse?.characterInventories?.data
-        ?.forEach((charId, inventory) {
-      bool has = inventory.items
-              ?.any((item) => item.itemInstanceId == itemInstanceId) ??
-          false;
+    _cachedProfileResponse?.characterInventories?.data?.forEach((charId, inventory) {
+      bool has = inventory.items?.any((item) => item.itemInstanceId == itemInstanceId) ?? false;
       if (has) {
         owner = charId;
       }
@@ -562,8 +485,7 @@ class ProfileBloc extends ChangeNotifier
     return _cachedProfileResponse?.profileProgression?.data?.seasonalArtifact;
   }
 
-  List<ItemWithOwner> getAllItems() =>
-      allItems.map((i) => ItemWithOwner(i.item, i.characterId)).toList();
+  List<ItemWithOwner> getAllItems() => allItems.map((i) => ItemWithOwner(i.item, i.characterId)).toList();
 
   List<DestinyItemInfo> get allItems {
     return _itemCache.allItems;
@@ -573,16 +495,14 @@ class ProfileBloc extends ChangeNotifier
     return _itemCache.itemsByInstanceId.values.toList();
   }
 
-  Future<void> pullFromPostMaster(
-      DestinyItemInfo itemInfo, int stackSize) async {
+  Future<void> pullFromPostMaster(DestinyItemInfo itemInfo, int stackSize) async {
     final itemHash = itemInfo.item.itemHash;
     final itemInstanceId = itemInfo.item.itemInstanceId;
     final characterId = itemInfo.characterId;
     if (itemHash == null) throw 'TODO: specific exception';
     if (characterId == null) throw 'TODO: specific exception';
 
-    await bungieAPI.pullFromPostMaster(
-        itemHash, stackSize, itemInstanceId, characterId);
+    await bungieAPI.pullFromPostMaster(itemHash, stackSize, itemInstanceId, characterId);
     // await mockTransfer(itemInfo, stackSize, false, characterId);
 
     if (itemInstanceId != null) {
@@ -592,22 +512,18 @@ class ProfileBloc extends ChangeNotifier
     }
   }
 
-  Future<void> transferItem(DestinyItemInfo itemInfo, int stackSize,
-      bool transferToVault, String characterId) async {
+  Future<void> transferItem(DestinyItemInfo itemInfo, int stackSize, bool transferToVault, String characterId) async {
     final itemHash = itemInfo.item.itemHash;
     final itemInstanceId = itemInfo.item.itemInstanceId;
     if (itemHash == null) throw 'TODO: specific exception';
 
-    await bungieAPI.transferItem(
-        itemHash, stackSize, transferToVault, itemInstanceId, characterId);
+    await bungieAPI.transferItem(itemHash, stackSize, transferToVault, itemInstanceId, characterId);
     // await mockTransfer(itemInfo, stackSize, transferToVault, characterId);
 
     if (itemInstanceId != null) {
-      await _updateInstancedItemLocation(
-          itemInfo, transferToVault, characterId);
+      await _updateInstancedItemLocation(itemInfo, transferToVault, characterId);
     } else {
-      await _updateUninstancedItemLocation(
-          itemInfo, transferToVault, stackSize);
+      await _updateUninstancedItemLocation(itemInfo, transferToVault, stackSize);
     }
   }
 
@@ -625,8 +541,7 @@ class ProfileBloc extends ChangeNotifier
         (i.instanceInfo?.isEquipped ?? false));
     currentlyEquipped?.instanceInfo?.isEquipped = false;
     itemInfo.instanceInfo?.isEquipped = true;
-    final currentlyEquippedIndex =
-        allItems.indexOf(currentlyEquipped ?? itemInfo);
+    final currentlyEquippedIndex = allItems.indexOf(currentlyEquipped ?? itemInfo);
     final newlyEquippedIndex = allItems.indexOf(itemInfo);
     allItems.insert(currentlyEquippedIndex + 1, itemInfo);
     allItems.removeAt(currentlyEquippedIndex);
@@ -637,14 +552,11 @@ class ProfileBloc extends ChangeNotifier
     _lastLocalChange = DateTime.now().toUtc();
   }
 
-  Future<void> _updateInstancedItemLocation(
-      DestinyItemInfo itemInfo, bool toVault, String characterId) async {
+  Future<void> _updateInstancedItemLocation(DestinyItemInfo itemInfo, bool toVault, String characterId) async {
     final itemHash = itemInfo.item.itemHash!;
-    final def =
-        await manifest.getDefinition<DestinyInventoryItemDefinition>(itemHash);
+    final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(itemHash);
     final newLocation = toVault ? ItemLocation.Vault : ItemLocation.Inventory;
-    final newBucket =
-        toVault ? InventoryBucket.general : def?.inventory?.bucketTypeHash;
+    final newBucket = toVault ? InventoryBucket.general : def?.inventory?.bucketTypeHash;
     final newCharacter = toVault ? null : characterId;
     itemInfo.item.location = newLocation;
     itemInfo.item.bucketHash = newBucket;
@@ -659,12 +571,10 @@ class ProfileBloc extends ChangeNotifier
     int stackSize,
   ) async {
     final itemHash = itemInfo.itemHash!;
-    final def =
-        await manifest.getDefinition<DestinyInventoryItemDefinition>(itemHash);
+    final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(itemHash);
     final maxStackSize = def?.inventory?.maxStackSize ?? 1;
     final sourceBucket = itemInfo.bucketHash;
-    final destinationBucket =
-        toVault ? InventoryBucket.general : def?.inventory?.bucketTypeHash;
+    final destinationBucket = toVault ? InventoryBucket.general : def?.inventory?.bucketTypeHash;
     final sourceCharacterId = itemInfo.characterId;
     final destinationCharacterId = null;
     final sameHashItems = itemInfo.duplicates ?? [];
@@ -682,10 +592,8 @@ class ProfileBloc extends ChangeNotifier
               e.characterId == destinationCharacterId,
         )
         .toList();
-    final sourceQuantity =
-        sourceStacks.fold<int>(0, (total, i) => total + i.quantity);
-    final destinationQuantity =
-        destinationStacks.fold<int>(0, (total, i) => total + i.quantity);
+    final sourceQuantity = sourceStacks.fold<int>(0, (total, i) => total + i.quantity);
+    final destinationQuantity = destinationStacks.fold<int>(0, (total, i) => total + i.quantity);
     final resultSourceQuantity = sourceQuantity - stackSize;
     final resultDestinationQuantity = destinationQuantity + stackSize;
 

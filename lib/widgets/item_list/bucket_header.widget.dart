@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/widgets/common/header.wiget.dart';
+import 'package:little_light/shared/widgets/headers/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/item_list/bucket_display_options_selector.widget.dart';
 
@@ -15,19 +15,13 @@ class BucketHeaderWidget extends StatefulWidget {
   final bool isEquippable;
   final Function onChanged;
   const BucketHeaderWidget(
-      {this.hash,
-      this.itemCount = 0,
-      this.isVault = false,
-      this.isEquippable = false,
-      this.onChanged,
-      Key key})
+      {this.hash, this.itemCount = 0, this.isVault = false, this.isEquippable = false, this.onChanged, Key key})
       : super(key: key);
   @override
   BucketHeaderWidgetState createState() => BucketHeaderWidgetState();
 }
 
-class BucketHeaderWidgetState<T extends BucketHeaderWidget> extends State<T>
-    with ManifestConsumer {
+class BucketHeaderWidgetState<T extends BucketHeaderWidget> extends State<T> with ManifestConsumer {
   DestinyInventoryBucketDefinition bucketDef;
 
   @override
@@ -39,8 +33,7 @@ class BucketHeaderWidgetState<T extends BucketHeaderWidget> extends State<T>
   }
 
   fetchDefinition() async {
-    bucketDef = await manifest
-        .getDefinition<DestinyInventoryBucketDefinition>(widget.hash);
+    bucketDef = await manifest.getDefinition<DestinyInventoryBucketDefinition>(widget.hash);
     if (mounted) {
       setState(() {});
     }
@@ -52,10 +45,7 @@ class BucketHeaderWidgetState<T extends BucketHeaderWidget> extends State<T>
         child: Row(
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-          Expanded(child: buildLabel(context)),
-          buildTrailing(context)
-        ]));
+            children: [Expanded(child: buildLabel(context)), buildTrailing(context)]));
   }
 
   buildLabel(BuildContext context) {
@@ -69,10 +59,7 @@ class BucketHeaderWidgetState<T extends BucketHeaderWidget> extends State<T>
   buildTrailing(BuildContext context) {
     return Row(children: [
       BucketDisplayOptionsSelectorWidget(
-          hash: widget.hash,
-          isVault: widget.isVault,
-          isEquippable: widget.isEquippable,
-          onChanged: widget.onChanged),
+          hash: widget.hash, isVault: widget.isVault, isEquippable: widget.isEquippable, onChanged: widget.onChanged),
       Container(width: 8),
       buildCount(context),
     ]);

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:little_light/models/bucket_display_options.dart';
 import 'package:little_light/models/character_sort_parameter.dart';
@@ -6,14 +7,13 @@ import 'package:little_light/models/item_sort_parameter.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/storage/export.dart';
 import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
-import 'package:little_light/utils/remove_diacritics.dart';
+import 'package:little_light/shared/utils/extensions/string/remove_diacritics.dart';
 
 setupUserSettingsService() async {
-  GetIt.I.registerSingleton<UserSettingsRepository>(
-      UserSettingsRepository._internal());
+  GetIt.I.registerSingleton<UserSettingsBloc>(UserSettingsBloc._internal());
 }
 
-class UserSettingsRepository with StorageConsumer, AuthConsumer {
+class UserSettingsBloc extends ChangeNotifier with StorageConsumer, AuthConsumer {
   List<ItemSortParameter>? _itemOrdering;
   List<ItemSortParameter>? _pursuitOrdering;
   CharacterSortParameter? _characterOrdering;
@@ -21,7 +21,7 @@ class UserSettingsRepository with StorageConsumer, AuthConsumer {
   Map<String, BucketDisplayOptions>? _bucketDisplayOptions;
   Map<String, bool>? _detailsSectionDisplayVisibility;
 
-  UserSettingsRepository._internal();
+  UserSettingsBloc._internal();
   init() async {
     await Future.wait([
       initItemOrdering(),
@@ -31,13 +31,12 @@ class UserSettingsRepository with StorageConsumer, AuthConsumer {
       initBucketDisplayOptions(),
       initDetailsSectionDisplayOptions(),
     ]);
+    notifyListeners();
   }
 
   Future<void> initItemOrdering() async {
-    List<ItemSortParameter> savedParams =
-        await globalStorage.getItemOrdering() ?? [];
-    List<ItemSortParameterType?> presentParams =
-        (savedParams).map((p) => p.type).toList();
+    List<ItemSortParameter> savedParams = await globalStorage.getItemOrdering() ?? [];
+    List<ItemSortParameterType?> presentParams = (savedParams).map((p) => p.type).toList();
     var defaults = ItemSortParameter.defaultItemList;
     var defaultParams = defaults.map((p) => p.type);
     savedParams.removeWhere((p) => !defaultParams.contains(p.type));
@@ -50,10 +49,8 @@ class UserSettingsRepository with StorageConsumer, AuthConsumer {
   }
 
   Future<void> initPursuitOrdering() async {
-    List<ItemSortParameter> savedParams =
-        await globalStorage.getPursuitOrdering() ?? [];
-    Iterable<ItemSortParameterType?> presentParams =
-        savedParams.map((p) => p.type);
+    List<ItemSortParameter> savedParams = await globalStorage.getPursuitOrdering() ?? [];
+    Iterable<ItemSortParameterType?> presentParams = savedParams.map((p) => p.type);
     var defaults = ItemSortParameter.defaultPursuitList;
     var defaultParams = defaults.map((p) => p.type);
     savedParams.removeWhere((p) => !defaultParams.contains(p.type));
@@ -76,14 +73,12 @@ class UserSettingsRepository with StorageConsumer, AuthConsumer {
   }
 
   Future<void> initBucketDisplayOptions() async {
-    _bucketDisplayOptions =
-        await currentMembershipStorage.getBucketDisplayOptions();
+    _bucketDisplayOptions = await currentMembershipStorage.getBucketDisplayOptions();
     _bucketDisplayOptions ??= <String, BucketDisplayOptions>{};
   }
 
   Future<void> initDetailsSectionDisplayOptions() async {
-    _detailsSectionDisplayVisibility =
-        await currentMembershipStorage.getDetailsSectionDisplayVisibility();
+    _detailsSectionDisplayVisibility = await currentMembershipStorage.getDetailsSectionDisplayVisibility();
     _detailsSectionDisplayVisibility ??= <String, bool>{};
   }
 
@@ -105,6 +100,7 @@ class UserSettingsRepository with StorageConsumer, AuthConsumer {
     key = removeDiacritics(key).toLowerCase();
     _bucketDisplayOptions![key] = options;
     currentMembershipStorage.saveBucketDisplayOptions(_bucketDisplayOptions!);
+    notifyListeners();
   }
 
   bool getVisibilityForDetailsSection(String id) {
@@ -122,34 +118,39 @@ class UserSettingsRepository with StorageConsumer, AuthConsumer {
     } catch (e) {
       return;
     }
-    currentMembershipStorage
-        .saveDetailsSectionDisplayVisibility(_detailsSectionDisplayVisibility!);
+    currentMembershipStorage.saveDetailsSectionDisplayVisibility(_detailsSectionDisplayVisibility!);
+    notifyListeners();
   }
 
   bool get hasTappedGhost => globalStorage.hasTappedGhost ?? false;
   set hasTappedGhost(bool value) {
     globalStorage.hasTappedGhost = value;
+    notifyListeners();
   }
 
   bool get keepAwake => globalStorage.keepAwake ?? false;
   set keepAwake(bool value) {
     globalStorage.keepAwake = value;
+    notifyListeners();
   }
 
   bool get tapToSelect => globalStorage.tapToSelect ?? false;
 
   set tapToSelect(bool value) {
     globalStorage.tapToSelect = value;
+    notifyListeners();
   }
 
   int get defaultFreeSlots => globalStorage.defaultFreeSlots ?? 0;
   set defaultFreeSlots(int value) {
     globalStorage.defaultFreeSlots = value;
+    notifyListeners();
   }
 
   bool get autoOpenKeyboard => globalStorage.autoOpenKeyboard ?? false;
   set autoOpenKeyboard(bool value) {
     globalStorage.autoOpenKeyboard = value;
+    notifyListeners();
   }
 
   List<ItemSortParameter>? get itemOrdering => _itemOrdering;
@@ -157,6 +158,7 @@ class UserSettingsRepository with StorageConsumer, AuthConsumer {
   set itemOrdering(List<ItemSortParameter>? ordering) {
     _itemOrdering = ordering;
     globalStorage.setItemOrdering(_itemOrdering!);
+    notifyListeners();
   }
 
   Set<String?>? get priorityTags => _priorityTags;
@@ -164,6 +166,7 @@ class UserSettingsRepository with StorageConsumer, AuthConsumer {
   void _setPriorityTags(Set<String?> tags) {
     _priorityTags = tags;
     currentMembershipStorage.savePriorityTags(_priorityTags as Set<String>);
+    notifyListeners();
   }
 
   void addPriorityTag(ItemNotesTag tag) {
@@ -183,6 +186,7 @@ class UserSettingsRepository with StorageConsumer, AuthConsumer {
   set pursuitOrdering(List<ItemSortParameter>? ordering) {
     _pursuitOrdering = ordering;
     globalStorage.setPursuitOrdering(_pursuitOrdering!);
+    notifyListeners();
   }
 
   CharacterSortParameter? get characterOrdering => _characterOrdering;
@@ -190,6 +194,7 @@ class UserSettingsRepository with StorageConsumer, AuthConsumer {
   set characterOrdering(CharacterSortParameter? ordering) {
     _characterOrdering = ordering;
     currentMembershipStorage.saveCharacterOrdering(_characterOrdering!);
+    notifyListeners();
   }
 
   LittleLightPersistentPage get startingPage {

@@ -4,7 +4,7 @@ import 'package:little_light/shared/models/transfer_destination.dart';
 import 'package:little_light/shared/widgets/character/character_icon.widget.dart';
 import 'package:little_light/shared/widgets/character/profile_icon.widget.dart';
 import 'package:little_light/shared/widgets/character/vault_icon.widget.dart';
-import 'package:little_light/widgets/common/header.wiget.dart';
+import 'package:little_light/shared/widgets/headers/header.wiget.dart';
 
 enum TransferActionType {
   Transfer,
@@ -45,8 +45,7 @@ extension on _Side {
   }
 }
 
-typedef OnTransferAction = Function(
-    TransferActionType type, TransferDestination character);
+typedef OnTransferAction = Function(TransferActionType type, TransferDestination character);
 
 class TransferDestinationsWidget extends StatelessWidget {
   final List<TransferDestination>? transferDestinations;
@@ -130,11 +129,9 @@ class TransferDestinationsWidget extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(4),
       child: expanded
-          ? buildCharactersColumn(context,
-              side: side, characters: characters, action: type)
+          ? buildCharactersColumn(context, side: side, characters: characters, action: type)
           : IntrinsicWidth(
-              child: buildCharactersColumn(context,
-                  side: side, characters: characters, action: type),
+              child: buildCharactersColumn(context, side: side, characters: characters, action: type),
             ),
     );
   }
@@ -186,8 +183,7 @@ class TransferDestinationsWidget extends StatelessWidget {
     );
   }
 
-  Widget? buildCharacterIcon(BuildContext context,
-      TransferDestination destination, TransferActionType action) {
+  Widget? buildCharacterIcon(BuildContext context, TransferDestination destination, TransferActionType action) {
     if (destination.type == TransferDestinationType.vault) {
       return buildCharacterContainer(
         context,

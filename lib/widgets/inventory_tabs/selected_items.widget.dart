@@ -13,7 +13,7 @@ import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/services/selection/selection.consumer.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/media_query_helper.dart';
-import 'package:little_light/widgets/common/header.wiget.dart';
+import 'package:little_light/shared/widgets/headers/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/multiselect_management_block.widget.dart';
@@ -29,11 +29,7 @@ class SelectedItemsWidget extends StatefulWidget {
 }
 
 class SelectedItemsWidgetState extends State<SelectedItemsWidget>
-    with
-        ProfileConsumer,
-        InventoryConsumer,
-        ManifestConsumer,
-        SelectionConsumer {
+    with ProfileConsumer, InventoryConsumer, ManifestConsumer, SelectionConsumer {
   StreamSubscription<List<ItemWithOwner>> subscription;
   List<ItemWithOwner> items;
 
@@ -73,12 +69,10 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget>
 
   Widget buildOptions(BuildContext context) {
     var buttons = <ElevatedButton>[];
-    var lockableItems = items.where((i) =>
-        i?.item?.lockable == true &&
-        i?.item?.state?.contains(ItemState.Locked) != true);
-    var unlockableItems = items.where((i) =>
-        i?.item?.lockable == true &&
-        i?.item?.state?.contains(ItemState.Locked) != false);
+    var lockableItems =
+        items.where((i) => i?.item?.lockable == true && i?.item?.state?.contains(ItemState.Locked) != true);
+    var unlockableItems =
+        items.where((i) => i?.item?.lockable == true && i?.item?.state?.contains(ItemState.Locked) != false);
     if (lockableItems.isNotEmpty) {
       buttons.add(ElevatedButton(
         key: const Key("lock_button"),
@@ -125,8 +119,7 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget>
         children: buttons
             .map((b) => Expanded(
                   child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     child: b,
                   ),
                 ))
@@ -202,13 +195,11 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget>
                     child: AspectRatio(
                         aspectRatio: 1,
                         child: Container(
-                            foregroundDecoration: BoxDecoration(
-                                border: Border.all(
-                                    color: Colors.grey.shade300, width: .5)),
+                            foregroundDecoration:
+                                BoxDecoration(border: Border.all(color: Colors.grey.shade300, width: .5)),
                             child: Stack(children: [
                               Positioned.fill(
-                                  child: ManifestImageWidget<
-                                      DestinyInventoryItemDefinition>(
+                                  child: ManifestImageWidget<DestinyInventoryItemDefinition>(
                                 i.item.itemHash,
                               )),
                               Material(
