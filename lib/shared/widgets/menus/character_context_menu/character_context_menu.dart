@@ -3,6 +3,7 @@ import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/blocs/profile/profile_helpers.bloc.dart';
 import 'package:little_light/shared/widgets/inventory_item/inventory_item.dart';
 import 'package:little_light/shared/widgets/menus/character_context_menu/grind_optimizer.widget.dart';
+import 'package:little_light/shared/widgets/menus/character_context_menu/max_power_options.widget.dart';
 import 'package:little_light/shared/widgets/menus/character_context_menu/postmaster_options.widget.dart';
 import 'package:little_light/shared/widgets/overlay/base_overlay_widget.dart';
 import 'package:little_light/shared/widgets/tabs/custom_tab/custom_tab.dart';
@@ -35,6 +36,7 @@ class CharacterContextMenu extends BaseOverlayWidget {
         Positioned(
             bottom: sourceBottom + kToolbarHeight + viewPadding.bottom,
             left: 0,
+            top: 0,
             right: sourceRight,
             child: Container(padding: const EdgeInsets.all(8), child: buildMenuItems(context))),
         Positioned(
@@ -54,19 +56,37 @@ class CharacterContextMenu extends BaseOverlayWidget {
   }
 
   Widget buildMenuItems(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        // buildAchievableAverage(context),
-        // buildCurrentAverage(context),
-        // const Text('non exotic maxPower'),
-        // buildMaxPowerNonExoticLoadoutItems(context),
-        // const Text('maxPower'),
-        // buildMaxPowerLoadoutItems(context),
-        buildPostmasterOptions(context),
-        buildGrindOptimizer(context),
-        buildCharacterSelect(context),
-      ].whereType<Widget>().toList(),
+    return Container(
+      alignment: Alignment.bottomRight,
+      child: SingleChildScrollView(
+        reverse: true,
+        child: Stack(
+          children: [
+            Positioned.fill(
+                child: GestureDetector(
+              onTap: () => onClose(),
+            )),
+            Container(
+              constraints: BoxConstraints(maxWidth: 544),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  // buildAchievableAverage(context),
+                  // buildCurrentAverage(context),
+                  // const Text('non exotic maxPower'),
+                  // buildMaxPowerNonExoticLoadoutItems(context),
+                  // const Text('maxPower'),
+                  // buildMaxPowerLoadoutItems(context),
+                  buildPostmasterOptions(context),
+                  buildMaxPower(context),
+                  buildGrindOptimizer(context),
+                  buildCharacterSelect(context),
+                ].whereType<Widget>().toList(),
+              ),
+            )
+          ],
+        ),
+      ),
     );
   }
 
@@ -83,6 +103,14 @@ class CharacterContextMenu extends BaseOverlayWidget {
     final character = this.character;
     if (character == null) return null;
     return CharacterGrindOptimizerWidget(
+      character: character,
+    );
+  }
+
+  Widget? buildMaxPower(BuildContext context) {
+    final character = this.character;
+    if (character == null) return null;
+    return MaxPowerOptionsWidget(
       character: character,
     );
   }
@@ -127,7 +155,7 @@ class CharacterContextMenu extends BaseOverlayWidget {
     final currentCharacter = characters[charactersTabController.index];
     if (currentCharacter == null) return null;
     final helper = context.watch<ProfileHelpersBloc>();
-    final loadout = helper.maxPowerNonExotic?[currentCharacter.character.classType];
+    final loadout = helper.equippableMaxPower?[currentCharacter.character.classType];
     if (loadout == null) return null;
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,

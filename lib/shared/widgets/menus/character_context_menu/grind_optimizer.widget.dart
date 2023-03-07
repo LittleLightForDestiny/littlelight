@@ -76,7 +76,8 @@ class CharacterGrindOptimizerWidget extends StatelessWidget {
                 .map((hash) {
                   final item = items[hash];
                   if (item == null) return null;
-                  final diff = item.instanceInfo?.primaryStat?.value?.compareTo(currentAverage ?? 0) ?? 0;
+                  final average = currentAverage?.floor() ?? 0;
+                  final diff = item.instanceInfo?.primaryStat?.value?.compareTo(average) ?? 0;
                   String text = "Average".translate(context);
                   IconData icon = FontAwesomeIcons.equals;
                   Color bg = context.theme.onSurfaceLayers.layer3;

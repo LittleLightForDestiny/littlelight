@@ -1,14 +1,11 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/core/blocs/inventory/inventory.bloc.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/blocs/profile/profile_helpers.bloc.dart';
 import 'package:little_light/core/blocs/selection/selection.bloc.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/shared/models/transfer_destination.dart';
-import 'package:little_light/shared/widgets/character/character_icon.widget.dart';
 import 'package:little_light/shared/widgets/inventory_item/low_density_inventory_item.dart';
 import 'package:little_light/shared/widgets/menus/context_menu_box.dart';
 import 'package:little_light/shared/widgets/menus/context_menu_title.dart';
@@ -52,6 +49,7 @@ class CharacterPostmasterOptionsWidget extends StatelessWidget {
               .toList(),
         ),
       ),
+      Container(height: 4),
       ElevatedButton(
         style: ButtonStyle(visualDensity: VisualDensity.comfortable),
         child: Text("Select all".translate(context).toUpperCase()),

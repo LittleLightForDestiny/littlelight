@@ -1,4 +1,5 @@
 import 'package:bungie_api/destiny2.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
@@ -18,20 +19,6 @@ const _equipmentBuckets = {
   InventoryBucket.legArmor,
   InventoryBucket.classArmor,
 };
-const _exoticBlockGroups = [
-  {
-    InventoryBucket.kineticWeapons,
-    InventoryBucket.energyWeapons,
-    InventoryBucket.powerWeapons,
-  },
-  {
-    InventoryBucket.helmet,
-    InventoryBucket.gauntlets,
-    InventoryBucket.chestArmor,
-    InventoryBucket.legArmor,
-    InventoryBucket.classArmor,
-  },
-];
 
 class ProfileHelpersBloc extends ChangeNotifier with ManifestConsumer, LittleLightDataConsumer {
   final BuildContext context;
@@ -97,7 +84,7 @@ class ProfileHelpersBloc extends ChangeNotifier with ManifestConsumer, LittleLig
     final maxEquippable = maxPower.map((k, v) => MapEntry(k, _getMaxEquippableLoadout(v, maxPowerNonExotic[k]!)));
     final currentAverage = maxPower.map((k, v) => MapEntry(k, _getEquipmentAverage(v)));
     final achievableAverage = maxPower.map((k, v) => MapEntry(k, _getAchievableAverage(currentAverage[k]!, v)));
-    final equippableAverage = maxEquippable.map((k, v) => MapEntry(k, _getAchievableAverage(currentAverage[k]!, v)));
+    final equippableAverage = maxEquippable.map((k, v) => MapEntry(k, _getEquipmentAverage(v)));
     _maxPowerEquipments = maxPower;
     _maxEquippable = maxEquippable;
     _currentAverage = currentAverage;
@@ -148,23 +135,49 @@ class ProfileHelpersBloc extends ChangeNotifier with ManifestConsumer, LittleLig
     Map<int, DestinyItemInfo> maxPower,
     Map<int, DestinyItemInfo> maxNonExotic,
   ) {
-    final exoticItems = maxPower.entries.where((element) => element.value != maxNonExotic[element.key]);
-    if (exoticItems.length <= 1) return maxPower;
-    final equippable = Map<int, DestinyItemInfo>.from(maxNonExotic);
-    MapEntry<int, DestinyItemInfo> replacement = exoticItems.first;
-    int currentDiff = 0;
-    for (final exotic in exoticItems) {
-      final current = equippable[exotic.key];
+    const weaponHashes = InventoryBucket.weaponBucketHashes;
+    const armorHashes = InventoryBucket.armorBucketHashes;
+    final exoticWeapons = maxPower.entries.where((element) =>
+        element.value != maxNonExotic[element.key] && //
+        weaponHashes.contains(element.key));
+    final exoticArmors = maxPower.entries.where((element) =>
+        element.value != maxNonExotic[element.key] && //
+        armorHashes.contains(element.key));
+    if (exoticWeapons.length <= 1 && exoticArmors.length <= 1) return maxPower;
+    final equippableItems = Map<int, DestinyItemInfo>.from(maxNonExotic);
+    MapEntry<int, DestinyItemInfo>? exoticWeapon = exoticWeapons.firstOrNull;
+    int weaponDiff = 0;
+    for (final exotic in exoticWeapons) {
+      final current = equippableItems[exotic.key];
       final currentPower = current?.instanceInfo?.primaryStat?.value ?? 0;
       final exoticPower = exotic.value.instanceInfo?.primaryStat?.value ?? 0;
       final powerDiff = exoticPower - currentPower;
-      if (powerDiff > currentDiff) {
-        currentDiff = powerDiff;
-        replacement = exotic;
+      if (powerDiff > weaponDiff) {
+        weaponDiff = powerDiff;
+        exoticWeapon = exotic;
       }
     }
-    equippable[replacement.key] = replacement.value;
-    return equippable;
+    if (exoticWeapon != null) {
+      equippableItems[exoticWeapon.key] = exoticWeapon.value;
+    }
+
+    MapEntry<int, DestinyItemInfo>? exoticArmor = exoticArmors.firstOrNull;
+    int armorDiff = 0;
+    for (final exotic in exoticArmors) {
+      final current = equippableItems[exotic.key];
+      final currentPower = current?.instanceInfo?.primaryStat?.value ?? 0;
+      final exoticPower = exotic.value.instanceInfo?.primaryStat?.value ?? 0;
+      final powerDiff = exoticPower - currentPower;
+      if (powerDiff > armorDiff) {
+        armorDiff = powerDiff;
+        exoticArmor = exotic;
+      }
+    }
+    if (exoticArmor != null) {
+      equippableItems[exoticArmor.key] = exoticArmor.value;
+    }
+
+    return equippableItems;
   }
 
   void _addItemToMap(
@@ -195,7 +208,7 @@ class ProfileHelpersBloc extends ChangeNotifier with ManifestConsumer, LittleLig
     }
   }
 
-  Map<DestinyClass, Map<int, DestinyItemInfo>>? get maxPowerNonExotic => _maxEquippable;
+  Map<DestinyClass, Map<int, DestinyItemInfo>>? get equippableMaxPower => _maxEquippable;
   Map<DestinyClass, Map<int, DestinyItemInfo>>? get maxPower => _maxPowerEquipments;
 
   double? getCurrentAverage(DestinyClass classType) => _currentAverage?[classType];
@@ -203,6 +216,7 @@ class ProfileHelpersBloc extends ChangeNotifier with ManifestConsumer, LittleLig
   double? getEquippableAverage(DestinyClass classType) => _equippableAverage?[classType];
 
   Map<int, DestinyItemInfo>? getMaxPowerItems(DestinyClass classType) => _maxPowerEquipments?[classType];
+  Map<int, DestinyItemInfo>? getEquippableMaxPowerItems(DestinyClass classType) => _maxEquippable?[classType];
 
   bool achievedPowerfulTier(DestinyClass classType) =>
       (_achievableAverage?[classType] ?? 0) > (_gameData?.softCap ?? double.maxFinite);
