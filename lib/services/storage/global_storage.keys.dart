@@ -23,7 +23,8 @@ enum GlobalStorageKeys {
   detailsSectionDisplayVisibility,
   parsedWishlists,
   wishlists,
-  rawWishlists
+  rawWishlists,
+  enableAutoTransfers,
 }
 
 extension StorageKeysExtension on GlobalStorageKeys {

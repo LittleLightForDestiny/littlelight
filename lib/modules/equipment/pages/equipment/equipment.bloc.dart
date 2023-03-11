@@ -9,6 +9,7 @@ import 'package:little_light/core/blocs/selection/selection.bloc.dart';
 import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
 import 'package:little_light/models/game_data.dart';
 import 'package:little_light/modules/search/pages/quick_transfer/quick_transfer.page_route.dart';
+import 'package:little_light/pages/item_details/item_details.page_route.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
@@ -58,6 +59,8 @@ class EquipmentBloc extends ChangeNotifier with ManifestConsumer, LittleLightDat
   final ProfileBloc _profileBloc;
   final SelectionBloc _selectionBloc;
   final UserSettingsBloc _userSettingsBloc;
+  final PageStorageBucket _pageStorageBucket = PageStorageBucket();
+  PageStorageBucket get pageStorageBucket => _pageStorageBucket;
   GameData? _gameData;
 
   _EquipmentState _equipmentState = _EquipmentState();
@@ -171,6 +174,8 @@ class EquipmentBloc extends ChangeNotifier with ManifestConsumer, LittleLightDat
         stackIndex: stackIndex,
       );
     }
+
+    Navigator.of(_context).push(ItemDetailsPageRoute.itemInfo(item: item));
   }
 
   void onItemHold(DestinyItemInfo item) {
@@ -179,6 +184,7 @@ class EquipmentBloc extends ChangeNotifier with ManifestConsumer, LittleLightDat
     final stackIndex = item.stackIndex;
     if (hash == null) return;
     if (_userSettingsBloc.tapToSelect) {
+      Navigator.of(_context).push(ItemDetailsPageRoute.itemInfo(item: item));
       return;
     }
     return _selectionBloc.toggleSelected(

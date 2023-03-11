@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
-import 'package:little_light/core/blocs/profile/profile_helpers.bloc.dart';
+import 'package:little_light/shared/blocs/context_menu_options/context_menu_options.bloc.dart';
 import 'package:little_light/shared/widgets/inventory_item/inventory_item.dart';
+import 'package:little_light/shared/widgets/menus/character_context_menu/create_loadout.widget.dart';
 import 'package:little_light/shared/widgets/menus/character_context_menu/grind_optimizer.widget.dart';
 import 'package:little_light/shared/widgets/menus/character_context_menu/max_power_options.widget.dart';
 import 'package:little_light/shared/widgets/menus/character_context_menu/postmaster_options.widget.dart';
@@ -77,15 +80,47 @@ class CharacterContextMenu extends BaseOverlayWidget {
                   // buildMaxPowerNonExoticLoadoutItems(context),
                   // const Text('maxPower'),
                   // buildMaxPowerLoadoutItems(context),
-                  buildPostmasterOptions(context),
+                  buildCreateLoadout(context),
                   buildMaxPower(context),
                   buildGrindOptimizer(context),
-                  buildCharacterSelect(context),
+                  buildPostmasterOptions(context),
+                  IntrinsicHeight(
+                    child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                      Expanded(child: buildUtilitiesMenu(context)),
+                      SizedBox(
+                        width: 4,
+                      ),
+                      Expanded(child: buildCharacterSelect(context)),
+                    ]),
+                  ),
                 ].whereType<Widget>().toList(),
               ),
             )
           ],
         ),
+      ),
+    );
+  }
+
+  Widget buildUtilitiesMenu(BuildContext context) {
+    return Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          ElevatedButton(
+            style: ButtonStyle(visualDensity: VisualDensity.standard),
+            child: Row(children: [
+              Icon(FontAwesomeIcons.magnifyingGlass, size: 16),
+              SizedBox(
+                width: 4,
+              ),
+              Text("Search".translate(context).toUpperCase()),
+            ]),
+            onPressed: () {},
+          )
+        ],
       ),
     );
   }
@@ -112,6 +147,16 @@ class CharacterContextMenu extends BaseOverlayWidget {
     if (character == null) return null;
     return MaxPowerOptionsWidget(
       character: character,
+      onClose: onClose,
+    );
+  }
+
+  Widget? buildCreateLoadout(BuildContext context) {
+    final character = this.character;
+    if (character == null) return null;
+    return CreateLoadoutWidget(
+      character: character,
+      onClose: onClose,
     );
   }
 
@@ -119,21 +164,21 @@ class CharacterContextMenu extends BaseOverlayWidget {
     final classType = this.character?.character.classType;
     if (classType == null) return null;
 
-    final average = context.watch<ProfileHelpersBloc>().getCurrentAverage(classType);
+    final average = context.watch<ContextMenuOptionsBloc>().getCurrentAverage(classType);
     return Text("Current Average ${average?.toStringAsFixed(2)}");
   }
 
   Widget? buildAchievableAverage(BuildContext context) {
     final classType = this.character?.character.classType;
     if (classType == null) return null;
-    final average = context.watch<ProfileHelpersBloc>().getAchievableAverage(classType);
+    final average = context.watch<ContextMenuOptionsBloc>().getAchievableAverage(classType);
     return Text("Achievable Average ${average?.toStringAsFixed(2)}");
   }
 
   Widget? buildMaxPowerLoadoutItems(BuildContext context) {
     final character = this.character;
     if (character == null) return null;
-    final helper = context.watch<ProfileHelpersBloc>();
+    final helper = context.watch<ContextMenuOptionsBloc>();
     final loadout = helper.maxPower?[character.character.classType];
     if (loadout == null) return null;
     return SingleChildScrollView(
@@ -154,7 +199,7 @@ class CharacterContextMenu extends BaseOverlayWidget {
   Widget? buildMaxPowerNonExoticLoadoutItems(BuildContext context) {
     final currentCharacter = characters[charactersTabController.index];
     if (currentCharacter == null) return null;
-    final helper = context.watch<ProfileHelpersBloc>();
+    final helper = context.watch<ContextMenuOptionsBloc>();
     final loadout = helper.equippableMaxPower?[currentCharacter.character.classType];
     if (loadout == null) return null;
     return SingleChildScrollView(

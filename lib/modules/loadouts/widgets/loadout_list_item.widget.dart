@@ -21,8 +21,7 @@ typedef OnLoadoutListItemAction = void Function(LoadoutListItemAction action);
 class LoadoutListItemWidget extends StatelessWidget {
   final LoadoutItemIndex loadout;
   final OnLoadoutListItemAction onAction;
-  const LoadoutListItemWidget(this.loadout, {Key? key, required this.onAction})
-      : super(key: key);
+  const LoadoutListItemWidget(this.loadout, {Key? key, required this.onAction}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +65,7 @@ class LoadoutListItemWidget extends StatelessWidget {
           children: <Widget>[
             Positioned.fill(
                 child: QueuedNetworkImage(
-              imageUrl: BungieApiService.url(definition.secondarySpecial),
+              imageUrl: BungieApiService.url(definition?.secondarySpecial),
               fit: BoxFit.cover,
               alignment: const Alignment(-1, 0),
             )),
@@ -85,8 +84,7 @@ class LoadoutListItemWidget extends StatelessWidget {
         alignment: Alignment.centerLeft,
         child: Text(
           loadout.name.toUpperCase(),
-          style: TextStyle(
-              color: Colors.grey.shade200, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.grey.shade200, fontWeight: FontWeight.bold),
         ));
   }
 
@@ -100,8 +98,7 @@ class LoadoutListItemWidget extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 2),
               child: ElevatedButton(
-                style:
-                    const ButtonStyle(visualDensity: VisualDensity.comfortable),
+                style: const ButtonStyle(visualDensity: VisualDensity.comfortable),
                 child: Text("Equip".translate(context).toUpperCase(),
                     maxLines: 1,
                     softWrap: false,
@@ -115,8 +112,7 @@ class LoadoutListItemWidget extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.all(2),
               child: ElevatedButton(
-                style:
-                    const ButtonStyle(visualDensity: VisualDensity.comfortable),
+                style: const ButtonStyle(visualDensity: VisualDensity.comfortable),
                 child: Text("Edit".translate(context).toUpperCase(),
                     maxLines: 1,
                     softWrap: false,
@@ -131,8 +127,7 @@ class LoadoutListItemWidget extends StatelessWidget {
               padding: const EdgeInsets.all(2),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    visualDensity: VisualDensity.comfortable,
-                    primary: Theme.of(context).errorColor),
+                    visualDensity: VisualDensity.comfortable, primary: Theme.of(context).errorColor),
                 child: Text("Delete".translate(context).toUpperCase(),
                     maxLines: 1,
                     softWrap: false,
@@ -168,16 +163,14 @@ class LoadoutListItemWidget extends StatelessWidget {
       InventoryBucket.ships,
     ];
 
-    final hasItem =
-        genericHashes.any((e) => loadout.slots[e]?.genericEquipped != null);
+    final hasItem = genericHashes.any((e) => loadout.slots[e]?.genericEquipped != null);
     if (!hasItem) return Container();
 
     return Row(
       children: <Widget>[
         buildClassIcon(DestinyClass.Unknown),
       ]
-          .followedBy(genericHashes
-              .map((e) => buildItem(loadout.slots[e]?.genericEquipped.item)))
+          .followedBy(genericHashes.map((e) => buildItem(loadout.slots[e]?.genericEquipped.item)))
           .map((e) => Flexible(
                   child: Container(
                 padding: const EdgeInsets.all(4),
@@ -187,8 +180,7 @@ class LoadoutListItemWidget extends StatelessWidget {
     );
   }
 
-  Widget buildClassSpecificItems(
-      BuildContext context, DestinyClass destinyClass) {
+  Widget buildClassSpecificItems(BuildContext context, DestinyClass destinyClass) {
     final genericHashes = [
       InventoryBucket.subclass,
       InventoryBucket.helmet,
@@ -198,16 +190,14 @@ class LoadoutListItemWidget extends StatelessWidget {
       InventoryBucket.classArmor,
     ];
 
-    final hasItem = genericHashes.any(
-        (e) => loadout.slots[e]?.classSpecificEquipped[destinyClass] != null);
+    final hasItem = genericHashes.any((e) => loadout.slots[e]?.classSpecificEquipped[destinyClass] != null);
     if (!hasItem) return Container();
 
     return Row(
       children: <Widget>[
         buildClassIcon(destinyClass),
       ]
-          .followedBy(genericHashes.map((e) => buildItem(
-              loadout.slots[e]?.classSpecificEquipped[destinyClass]?.item)))
+          .followedBy(genericHashes.map((e) => buildItem(loadout.slots[e]?.classSpecificEquipped[destinyClass]?.item)))
           .map((e) => Flexible(
                   child: Container(
                 padding: const EdgeInsets.all(4),
@@ -217,30 +207,26 @@ class LoadoutListItemWidget extends StatelessWidget {
     );
   }
 
-  Widget buildClassIcon(DestinyClass destinyClass) =>
-      CenterIconWorkaround(destinyClass.icon, size: 16);
+  Widget buildClassIcon(DestinyClass destinyClass) => CenterIconWorkaround(destinyClass.icon, size: 16);
 
   Widget buildItem(DestinyItemComponent? item) {
     if (item == null) {
-      return ManifestImageWidget<DestinyInventoryItemDefinition>(1835369552,
-          key: const Key("item_icon_empty"));
+      return ManifestImageWidget<DestinyInventoryItemDefinition>(1835369552, key: const Key("item_icon_empty"));
     }
     final profile = getInjectedProfileService();
     final instance = profile.getInstanceInfo(item.itemInstanceId);
     return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
       item.itemHash!,
-      (def) => ItemIconWidget.builder(
-          item: item, definition: def, instanceInfo: instance),
+      (def) => ItemIconWidget.builder(item: item, definition: def, instanceInfo: instance),
       key: Key("item_icon_${item.itemInstanceId}"),
     );
   }
 
-  List<Widget> buildItemRow(BuildContext context, IconData icon,
-      List<int> buckets, Map<int, DestinyItemComponent?> items) {
+  List<Widget> buildItemRow(
+      BuildContext context, IconData icon, List<int> buckets, Map<int, DestinyItemComponent?> items) {
     List<Widget> itemWidgets = [];
     itemWidgets.add(Icon(icon));
-    itemWidgets
-        .addAll(buckets.map((bucketHash) => itemIcon(items[bucketHash])));
+    itemWidgets.addAll(buckets.map((bucketHash) => itemIcon(items[bucketHash])));
     return itemWidgets
         .map((child) => FractionallySizedBox(
               widthFactor: 1 / (buckets.length + 1),
@@ -257,17 +243,13 @@ class LoadoutListItemWidget extends StatelessWidget {
 
   Widget itemIcon(DestinyItemComponent? item) {
     if (item == null) {
-      return ManifestImageWidget<DestinyInventoryItemDefinition>(1835369552,
-          key: const Key("item_icon_empty"));
+      return ManifestImageWidget<DestinyInventoryItemDefinition>(1835369552, key: const Key("item_icon_empty"));
     }
     final profile = getInjectedProfileService();
     final instance = profile.getInstanceInfo(item.itemInstanceId);
     return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
         item.itemHash!,
         (def) => ItemIconWidget.builder(
-            item: item,
-            definition: def,
-            instanceInfo: instance,
-            key: Key("item_icon_${item.itemInstanceId}")));
+            item: item, definition: def, instanceInfo: instance, key: Key("item_icon_${item.itemInstanceId}")));
   }
 }

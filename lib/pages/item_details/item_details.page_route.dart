@@ -1,5 +1,7 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
+import 'package:little_light/pages/item_details/item_details.page.dart';
 import 'package:little_light/pages/item_details/item_details.page_container.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 
@@ -7,13 +9,25 @@ abstract class ItemDetailsPageArgumentsBase {
   final int itemHash;
   final String? uniqueId;
   final bool hideItemManagement;
-  ItemDetailsPageArgumentsBase(this.itemHash,
-      {this.uniqueId, this.hideItemManagement = false});
+  ItemDetailsPageArgumentsBase(this.itemHash, {this.uniqueId, this.hideItemManagement = false});
 }
 
 class ItemDetailsPageArguments extends ItemDetailsPageArgumentsBase {
   final ItemWithOwner item;
   ItemDetailsPageArguments({
+    required this.item,
+    String? uniqueId,
+    bool hideItemManagement = false,
+  }) : super(
+          item.item.itemHash!,
+          uniqueId: uniqueId,
+          hideItemManagement: hideItemManagement,
+        );
+}
+
+class ItemInfoPageArguments extends ItemDetailsPageArgumentsBase {
+  final DestinyItemInfo item;
+  ItemInfoPageArguments({
     required this.item,
     String? uniqueId,
     bool hideItemManagement = false,
@@ -58,9 +72,7 @@ class ItemDetailsPageRoute extends MaterialPageRoute {
   ItemDetailsPageRoute._({
     Key? key,
     required RouteSettings settings,
-  }) : super(
-            settings: settings,
-            builder: (context) => const ItemDetailsPageContainer());
+  }) : super(settings: settings, builder: (context) => const ItemDetailsPageContainer());
 
   factory ItemDetailsPageRoute({
     required ItemWithOwner item,
@@ -73,6 +85,14 @@ class ItemDetailsPageRoute extends MaterialPageRoute {
             arguments: ItemDetailsPageArguments(item: item, uniqueId: heroKey),
           ));
 
+  factory ItemDetailsPageRoute.itemInfo({required DestinyItemInfo item, Key? key, String? heroString}) =>
+      ItemDetailsPageRoute._(
+        key: key,
+        settings: RouteSettings(
+          arguments: ItemInfoPageArguments(item: item),
+        ),
+      );
+
   factory ItemDetailsPageRoute.viewOnly({
     required ItemWithOwner item,
     Key? key,
@@ -80,8 +100,7 @@ class ItemDetailsPageRoute extends MaterialPageRoute {
   }) =>
       ItemDetailsPageRoute._(
         key: key,
-        settings:
-            RouteSettings(arguments: ItemDetailsPageArguments(item: item)),
+        settings: RouteSettings(arguments: ItemDetailsPageArguments(item: item)),
       );
 
   factory ItemDetailsPageRoute.definition({
@@ -91,8 +110,7 @@ class ItemDetailsPageRoute extends MaterialPageRoute {
   }) =>
       ItemDetailsPageRoute._(
         key: key,
-        settings: RouteSettings(
-            arguments: DefinitionDetailsPageArguments(itemHash: hash)),
+        settings: RouteSettings(arguments: DefinitionDetailsPageArguments(itemHash: hash)),
       );
 
   factory ItemDetailsPageRoute.fromVendor({

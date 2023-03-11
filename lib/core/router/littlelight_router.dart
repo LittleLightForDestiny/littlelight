@@ -19,7 +19,7 @@ class LittleLightRouter {
 
   void _closeWebView() async {
     try {
-      await closeWebView();
+      await closeInAppWebView();
     } catch (e) {
       print("can't close webview");
     }

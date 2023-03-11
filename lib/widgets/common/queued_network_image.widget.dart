@@ -30,7 +30,7 @@ class QueuedNetworkImage extends StatelessWidget {
     Color? color,
   }) =>
       QueuedNetworkImage(
-        imageUrl: BungieApiService.url(relativeURL)!,
+        imageUrl: BungieApiService.url(relativeURL),
         placeholder: placeholder,
         fit: fit,
         alignment: alignment,
@@ -50,8 +50,7 @@ class QueuedNetworkImage extends StatelessWidget {
         fit: fit,
         alignment: alignment,
         placeholderFadeInDuration: fadeInDuration ?? const Duration(seconds: 2),
-        progressIndicatorBuilder: (context, url, downloadProgress) =>
-            placeholder ?? Container(),
+        progressIndicatorBuilder: (context, url, downloadProgress) => placeholder ?? Container(),
         errorWidget: (context, url, error) => const Icon(Icons.error),
         color: color,
       );

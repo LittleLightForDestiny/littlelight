@@ -6,18 +6,23 @@ import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/services/storage/storage.consumer.dart';
 
-class LoadoutsBloc extends ChangeNotifier
-    with StorageConsumer, ProfileConsumer, ManifestConsumer {
+class LoadoutsBloc extends ChangeNotifier with StorageConsumer, ProfileConsumer, ManifestConsumer {
   LittleLightApiService get littleLightApi => LittleLightApiService();
-  LoadoutsBloc();
+
+  LoadoutsBloc() {
+    _init();
+  }
 
   bool _busy = false;
 
   List<LoadoutItemIndex>? _loadouts;
   List<String>? _loadoutsOrder;
 
+  _init() {
+    _loadLoadouts();
+  }
+
   List<LoadoutItemIndex>? get loadouts {
-    if (_loadouts == null) _loadLoadouts();
     return _loadouts;
   }
 
@@ -38,10 +43,8 @@ class LoadoutsBloc extends ChangeNotifier
     await Future.delayed(const Duration(milliseconds: 1));
     _busy = true;
     notifyListeners();
-    final localLoadouts =
-        await currentMembershipStorage.getCachedLoadouts() ?? [];
-    final loadoutsOrder =
-        await currentMembershipStorage.getLoadoutsOrder() ?? [];
+    final localLoadouts = await currentMembershipStorage.getCachedLoadouts() ?? [];
+    final loadoutsOrder = await currentMembershipStorage.getLoadoutsOrder() ?? [];
     _loadouts = await _indexesFromLoadouts(localLoadouts);
     _loadoutsOrder = loadoutsOrder;
     _sortLoadouts();
@@ -55,8 +58,7 @@ class LoadoutsBloc extends ChangeNotifier
     notifyListeners();
   }
 
-  List<Loadout> _mergeLoadouts(
-      List<Loadout>? localLoadouts, List<Loadout>? remoteLoadouts) {
+  List<Loadout> _mergeLoadouts(List<Loadout>? localLoadouts, List<Loadout>? remoteLoadouts) {
     localLoadouts ??= [];
     remoteLoadouts ??= [];
     final localLoadoutIDs = localLoadouts.map((l) => l.assignedId).toSet();
@@ -65,8 +67,7 @@ class LoadoutsBloc extends ChangeNotifier
         localLoadouts.add(remote);
         break;
       }
-      final local =
-          localLoadouts.firstWhere((l) => l.assignedId == remote.assignedId);
+      final local = localLoadouts.firstWhere((l) => l.assignedId == remote.assignedId);
       final newer = _getNewerLoadout(local, remote);
       if (newer != local) {
         final index = localLoadouts.indexOf(local);
@@ -113,8 +114,7 @@ class LoadoutsBloc extends ChangeNotifier
     final loadouts = _loadouts;
     if (loadouts == null) return;
 
-    final index = loadouts
-        .indexWhere((loadout) => loadout.assignedId == loadoutIndex.assignedId);
+    final index = loadouts.indexWhere((loadout) => loadout.assignedId == loadoutIndex.assignedId);
     if (index == -1) {
       loadouts.add(loadoutIndex);
     } else {

@@ -19,11 +19,7 @@ class DetailsItemStatsWidget extends BaseItemStatsWidget {
       DestinyItemComponent item,
       DestinyInventoryItemDefinition definition,
       ItemSocketController socketController})
-      : super(
-            socketController: socketController,
-            item: item,
-            definition: definition,
-            key: key);
+      : super(socketController: socketController, item: item, definition: definition, key: key);
 
   @override
   BaseDestinyItemState<BaseDestinyStatefulItemWidget> createState() {
@@ -33,9 +29,7 @@ class DetailsItemStatsWidget extends BaseItemStatsWidget {
 
 const _sectionId = "item_stats";
 
-class ScreenShotItemStatsState
-    extends BaseItemStatsState<DetailsItemStatsWidget>
-    with VisibleSectionMixin {
+class ScreenShotItemStatsState extends BaseItemStatsState<DetailsItemStatsWidget> with VisibleSectionMixin {
   @override
   String get sectionId => _sectionId;
 
@@ -87,18 +81,16 @@ class ScreenShotItemStatsState
     }
     return stats
         .map((stat) {
+          if (statValues == null) return Container();
           var entry = statValues[stat.statTypeHash];
           return DetailsItemStatWidget(
             statHash: stat.statTypeHash,
             modValues: entry,
-            scaled: statGroupDefinition.scaledStats.firstWhere(
-                (s) => s.statHash == stat.statTypeHash,
-                orElse: () => null),
+            scaled:
+                statGroupDefinition.scaledStats.firstWhere((s) => s.statHash == stat.statTypeHash, orElse: () => null),
           );
         })
-        .followedBy(totalStat == null
-            ? []
-            : [DetailsTotalStatWidget(modValues: totalStat)])
+        .followedBy(totalStat == null ? [] : [DetailsTotalStatWidget(modValues: totalStat)])
         .toList();
   }
 }

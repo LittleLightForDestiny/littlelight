@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 
-class ContextMenuInfoBox extends StatelessWidget {
-  final Widget child;
+class MenuInfoBox extends StatelessWidget {
+  final Widget? child;
 
-  const ContextMenuInfoBox({Key? key, required this.child}) : super(key: key);
+  const MenuInfoBox({Key? key, this.child}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,10 +15,12 @@ class ContextMenuInfoBox extends StatelessWidget {
       ),
       padding: EdgeInsets.all(8),
       margin: EdgeInsets.only(bottom: 4),
-      child: DefaultTextStyle(
-        child: child,
-        style: context.textTheme.button,
-      ),
+      child: buildContent(context),
     );
   }
+
+  Widget buildContent(BuildContext context) => DefaultTextStyle(
+        child: child ?? Container(),
+        style: context.textTheme.button,
+      );
 }

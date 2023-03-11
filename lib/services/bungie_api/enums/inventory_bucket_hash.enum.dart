@@ -47,13 +47,7 @@ abstract class InventoryBucket {
     ships,
   ];
 
-  static const armorBucketHashes = [
-    helmet,
-    gauntlets,
-    chestArmor,
-    legArmor,
-    classArmor
-  ];
+  static const armorBucketHashes = [helmet, gauntlets, chestArmor, legArmor, classArmor];
 
   static const weaponBucketHashes = [
     kineticWeapons,

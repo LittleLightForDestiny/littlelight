@@ -17,11 +17,13 @@ class QueuedTransferNotificationWidget extends StatelessWidget {
       height: 36,
       child: DefinitionProviderWidget<DestinyInventoryItemDefinition>(
         hash,
-        (def) => InventoryItemIcon(
-          notification.item,
-          definition: def,
-          borderSize: .5,
-        ),
+        (def) => def != null
+            ? InventoryItemIcon(
+                notification.item,
+                definition: def,
+                borderSize: .5,
+              )
+            : Container(),
       ),
     );
   }

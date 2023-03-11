@@ -35,6 +35,9 @@ GameData _$GameDataFromJson(Map<String, dynamic> json) => GameData(
       relevantCurrencies: (json['relevantCurrencies'] as List<dynamic>?)
           ?.map((e) => e as int)
           .toList(),
+      raidPhases: (json['raidPhases'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(k, e as String),
+      ),
     );
 
 Map<String, dynamic> _$GameDataToJson(GameData instance) => <String, dynamic>{
@@ -45,4 +48,5 @@ Map<String, dynamic> _$GameDataToJson(GameData instance) => <String, dynamic>{
       'tabbedPresentationNodes': instance.tabbedPresentationNodes,
       'ranks': instance.ranks,
       'relevantCurrencies': instance.relevantCurrencies,
+      'raidPhases': instance.raidPhases,
     };

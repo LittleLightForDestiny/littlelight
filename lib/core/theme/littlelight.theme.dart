@@ -256,27 +256,37 @@ class LittleLightThemeData {
   CardTheme get _cardTheme => CardTheme(color: colorScheme.surface);
 
   ThemeData get materialTheme => ThemeData.from(colorScheme: colorScheme).copyWith(
-      primaryColor: primaryLayers,
-      appBarTheme: _appBarTheme,
-      cardColor: _cardTheme.color,
-      cardTheme: _cardTheme,
-      textButtonTheme: TextButtonThemeData(
-          style: ButtonStyle(
-        foregroundColor: MaterialStateColor.resolveWith((states) => primaryLayers.layer3),
-      )),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: primaryLayers,
-          disabledForegroundColor: primaryLayers,
-          disabledBackgroundColor: primaryLayers,
+        primaryColor: primaryLayers,
+        appBarTheme: _appBarTheme,
+        cardColor: _cardTheme.color,
+        cardTheme: _cardTheme,
+        textButtonTheme: TextButtonThemeData(
+            style: ButtonStyle(
+          foregroundColor: MaterialStateColor.resolveWith((states) => primaryLayers.layer3),
+        )),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: primaryLayers,
+            disabledForegroundColor: primaryLayers,
+            disabledBackgroundColor: primaryLayers,
+          ),
         ),
-      ),
-      toggleButtonsTheme: ToggleButtonsThemeData(
-        selectedColor: primaryLayers.layer1,
-        color: surfaceLayers.layer2,
-      ),
-      textTheme: _textTheme,
-      switchTheme: _switchTheme);
+        toggleButtonsTheme: ToggleButtonsThemeData(
+          selectedColor: primaryLayers.layer1,
+          color: surfaceLayers.layer2,
+        ),
+        sliderTheme: SliderThemeData(
+          trackHeight: 12,
+          trackShape: RoundedRectSliderTrackShape(),
+          thumbShape: RoundSliderThumbShape(enabledThumbRadius: 8),
+          activeTrackColor: primaryLayers.layer0,
+          inactiveTrackColor: onSurfaceLayers.layer3,
+          thumbColor: onSurfaceLayers.layer0,
+          overlayShape: RoundSliderOverlayShape(overlayRadius: 16),
+        ),
+        textTheme: _textTheme,
+        switchTheme: _switchTheme,
+      );
 }
 
 class LittleLightTheme extends StatelessWidget {

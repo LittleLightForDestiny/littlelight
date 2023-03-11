@@ -74,9 +74,9 @@ class EditLoadoutItemModsView extends StatelessWidget {
   Widget buildCategoryOptions(
     BuildContext context,
     DestinyItemSocketCategoryDefinition category,
-    DestinySocketCategoryDefinition def,
+    DestinySocketCategoryDefinition? def,
   ) {
-    switch (def.categoryStyle) {
+    switch (def?.categoryStyle) {
       case DestinySocketCategoryStyle.Unknown:
       case DestinySocketCategoryStyle.Reusable:
       case DestinySocketCategoryStyle.Consumable:

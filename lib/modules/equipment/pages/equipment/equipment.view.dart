@@ -70,94 +70,97 @@ class EquipmentView extends StatelessWidget {
     if (characters == null) return Container();
     final characterCount = characters.length;
     final viewPadding = MediaQuery.of(context).viewPadding;
-    return CustomTabControllerBuilder(
-      InventoryTab.values.length,
-      builder: (context, typeTabController) => CustomTabControllerBuilder(
-        characterCount,
-        builder: (context, characterTabController) => Scaffold(
-          body: Stack(
-            children: [
-              Positioned.fill(
-                child: Column(children: [
-                  SizedBox(
-                    height: viewPadding.top + kToolbarHeight + 2,
-                  ),
-                  Expanded(
-                    child: Stack(children: [
-                      Positioned.fill(child: buildTabContent(context, characterTabController, typeTabController)),
-                      Positioned.fill(
-                          child: Column(children: [
-                        Expanded(
-                            child: CustomTabGestureDetector(
-                          controller: characterTabController,
-                        )),
-                        SizedBox(
-                          height: 200,
-                          child: CustomTabGestureDetector(
-                            controller: typeTabController,
-                          ),
-                        ),
-                      ])),
-                      Positioned(
-                        left: 8,
-                        bottom: 8,
-                        right: 8,
-                        child: const NotificationsWidget(),
-                      ),
-                      Positioned(
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        child: const BusyIndicatorLineWidget(),
-                      ),
-                    ]),
-                  ),
-                  SelectedItemsWidget(),
-                  SizedBox(
-                    height: kToolbarHeight + viewPadding.bottom,
-                    child: Stack(children: [
-                      Row(
-                        children: [
-                          EquipmentTypeTabMenuWidget(typeTabController),
+    return PageStorage(
+      bucket: _state.pageStorageBucket,
+      child: CustomTabControllerBuilder(
+        InventoryTab.values.length,
+        builder: (context, typeTabController) => CustomTabControllerBuilder(
+          characterCount,
+          builder: (context, characterTabController) => Scaffold(
+            body: Stack(
+              children: [
+                Positioned.fill(
+                  child: Column(children: [
+                    SizedBox(
+                      height: viewPadding.top + kToolbarHeight + 2,
+                    ),
+                    Expanded(
+                      child: Stack(children: [
+                        Positioned.fill(child: buildTabContent(context, characterTabController, typeTabController)),
+                        Positioned.fill(
+                            child: Column(children: [
                           Expanded(
-                            child: buildCharacterContextMenuButton(context, characterTabController),
+                              child: CustomTabGestureDetector(
+                            controller: characterTabController,
+                          )),
+                          SizedBox(
+                            height: 200,
+                            child: CustomTabGestureDetector(
+                              controller: typeTabController,
+                            ),
                           ),
-                        ],
-                      ),
-                      Positioned(bottom: 0, left: 0, right: 0, child: BusyIndicatorBottomGradientWidget()),
-                    ]),
-                  ),
-                ]),
-              ),
-              Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                height: viewPadding.top + kToolbarHeight * 1.4 + 2,
-                child: buildTabHeader(context, characterTabController),
-              ),
-              Positioned(
+                        ])),
+                        Positioned(
+                          left: 8,
+                          bottom: 8,
+                          right: 8,
+                          child: const NotificationsWidget(),
+                        ),
+                        Positioned(
+                          bottom: 0,
+                          left: 0,
+                          right: 0,
+                          child: const BusyIndicatorLineWidget(),
+                        ),
+                      ]),
+                    ),
+                    SelectedItemsWidget(),
+                    SizedBox(
+                      height: kToolbarHeight + viewPadding.bottom,
+                      child: Stack(children: [
+                        Row(
+                          children: [
+                            EquipmentTypeTabMenuWidget(typeTabController),
+                            Expanded(
+                              child: buildCharacterContextMenuButton(context, characterTabController),
+                            ),
+                          ],
+                        ),
+                        Positioned(bottom: 0, left: 0, right: 0, child: BusyIndicatorBottomGradientWidget()),
+                      ]),
+                    ),
+                  ]),
+                ),
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: viewPadding.top + kToolbarHeight * 1.4 + 2,
+                  child: buildTabHeader(context, characterTabController),
+                ),
+                Positioned(
+                    top: 0 + viewPadding.top,
+                    right: 16,
+                    child: CharacterHeaderTabMenuWidget(
+                      characters,
+                      characterTabController,
+                    )),
+                Positioned(
                   top: 0 + viewPadding.top,
-                  right: 16,
-                  child: CharacterHeaderTabMenuWidget(
-                    characters,
-                    characterTabController,
-                  )),
-              Positioned(
-                top: 0 + viewPadding.top,
-                left: 0,
-                child: SizedBox(
-                  width: kToolbarHeight,
-                  height: kToolbarHeight,
-                  child: IconButton(
-                    icon: const Icon(Icons.menu),
-                    onPressed: () {
-                      Scaffold.of(context).openDrawer();
-                    },
+                  left: 0,
+                  child: SizedBox(
+                    width: kToolbarHeight,
+                    height: kToolbarHeight,
+                    child: IconButton(
+                      icon: const Icon(Icons.menu),
+                      onPressed: () {
+                        Scaffold.of(context).openDrawer();
+                      },
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -213,6 +216,7 @@ class EquipmentView extends StatelessWidget {
         .toList();
     return EquipmentCharacterTabContentWidget(
       character,
+      scrollViewKey: PageStorageKey("character_tab_${tab.name}_${character.characterId}"),
       buckets: buckets,
       currencies: currencies,
     );

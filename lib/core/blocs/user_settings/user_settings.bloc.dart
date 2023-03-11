@@ -141,8 +141,15 @@ class UserSettingsBloc extends ChangeNotifier with StorageConsumer, AuthConsumer
     notifyListeners();
   }
 
-  int get defaultFreeSlots => globalStorage.defaultFreeSlots ?? 0;
+  int? _defaultFreeSlots;
+  int get defaultFreeSlots => _defaultFreeSlots ?? globalStorage.defaultFreeSlots ?? 0;
+
   set defaultFreeSlots(int value) {
+    _defaultFreeSlots = value;
+    notifyListeners();
+  }
+
+  void saveDefaultFreeSlots(int value) {
     globalStorage.defaultFreeSlots = value;
     notifyListeners();
   }
@@ -150,6 +157,12 @@ class UserSettingsBloc extends ChangeNotifier with StorageConsumer, AuthConsumer
   bool get autoOpenKeyboard => globalStorage.autoOpenKeyboard ?? false;
   set autoOpenKeyboard(bool value) {
     globalStorage.autoOpenKeyboard = value;
+    notifyListeners();
+  }
+
+  bool get enableAutoTransfers => globalStorage.enableAutoTransfers ?? true;
+  set enableAutoTransfers(bool value) {
+    globalStorage.enableAutoTransfers = value;
     notifyListeners();
   }
 

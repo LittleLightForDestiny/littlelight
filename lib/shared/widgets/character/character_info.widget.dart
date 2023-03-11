@@ -57,8 +57,7 @@ class CharacterInfoWidget extends StatelessWidget with DestinySettingsConsumer {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
-                    child: ManifestImageWidget<DestinyInventoryItemDefinition>(
-                        e.itemHash),
+                    child: ManifestImageWidget<DestinyInventoryItemDefinition>(e.itemHash),
                     width: 16,
                     height: 16,
                   ),
@@ -87,8 +86,7 @@ class CharacterInfoWidget extends StatelessWidget with DestinySettingsConsumer {
   Widget buildClassName(BuildContext context) {
     return ManifestText<DestinyClassDefinition>(
       character.character.classHash,
-      textExtractor: (def) => def
-          .genderedClassNamesByGenderHash?["${character.character.genderHash}"],
+      textExtractor: (def) => def.genderedClassNamesByGenderHash?["${character.character.genderHash}"],
       style: context.textTheme.largeTitle,
     );
   }
@@ -96,8 +94,7 @@ class CharacterInfoWidget extends StatelessWidget with DestinySettingsConsumer {
   Widget buildRaceName(BuildContext context) {
     return ManifestText<DestinyRaceDefinition>(
       character.character.raceHash,
-      textExtractor: (def) => def
-          .genderedRaceNamesByGenderHash?["${character.character.genderHash}"],
+      textExtractor: (def) => def.genderedRaceNamesByGenderHash?["${character.character.genderHash}"],
       style: context.textTheme.body,
     );
   }
@@ -131,8 +128,8 @@ class CharacterInfoWidget extends StatelessWidget with DestinySettingsConsumer {
   Widget buildSeasonalRank(BuildContext context) {
     final progressionHash = destinySettings.seasonalRankProgressionHash;
     final levelProg = character.progression?.progressions?["$progressionHash"];
-    final overLevelProg = character.progression?.progressions?[
-        "${destinySettings.seasonalPrestigeRankProgressionHash}"];
+    final overLevelProg =
+        character.progression?.progressions?["${destinySettings.seasonalPrestigeRankProgressionHash}"];
     int level = levelProg?.level ?? 0;
     int overlevel = overLevelProg?.level ?? 0;
     int progress = level + overlevel;
@@ -145,16 +142,14 @@ class CharacterInfoWidget extends StatelessWidget with DestinySettingsConsumer {
   Widget? buildWellRested(BuildContext context) {
     final progressionHash = destinySettings.seasonalRankProgressionHash;
     final levelProg = character.progression?.progressions?["$progressionHash"];
-    final overLevelProg = character.progression?.progressions?[
-        "${destinySettings.seasonalPrestigeRankProgressionHash}"];
-    final currentProg = (levelProg?.level ?? 0) < (levelProg?.levelCap ?? 0)
-        ? levelProg
-        : overLevelProg;
+    final overLevelProg =
+        character.progression?.progressions?["${destinySettings.seasonalPrestigeRankProgressionHash}"];
+    final currentProg = (levelProg?.level ?? 0) < (levelProg?.levelCap ?? 0) ? levelProg : overLevelProg;
     final hash = currentProg?.progressionHash;
     if (hash == null) return null;
     final wellRestedLevels = 5;
-    return DefinitionProviderWidget<DestinyProgressionDefinition>(hash,
-        (definition) {
+    return DefinitionProviderWidget<DestinyProgressionDefinition>(hash, (definition) {
+      if (definition == null) return Container();
       final progLevel = currentProg?.level ?? 0;
       final minLevel = 0;
       final maxLevel = (definition.steps?.length ?? 100) - 1;
@@ -168,8 +163,7 @@ class CharacterInfoWidget extends StatelessWidget with DestinySettingsConsumer {
         if (requiredXP == 0) break;
         progressAtStartOfTheWeek -= requiredXP;
         if (progressAtStartOfTheWeek > 0) {
-          levelAtStartOfTheWeek =
-              (levelAtStartOfTheWeek - 1).clamp(minLevel, maxLevel);
+          levelAtStartOfTheWeek = (levelAtStartOfTheWeek - 1).clamp(minLevel, maxLevel);
         }
       }
       int levelsGainedWhileWellRested = currentLevel - levelAtStartOfTheWeek;
@@ -181,14 +175,12 @@ class CharacterInfoWidget extends StatelessWidget with DestinySettingsConsumer {
           children: [
             Text(
               "$remainingLevels",
-              style: context.textTheme.caption
-                  .copyWith(color: context.theme.upgradeLayers.layer2),
+              style: context.textTheme.caption.copyWith(color: context.theme.upgradeLayers.layer2),
             ),
             SizedBox(
                 width: 16,
                 height: 16,
-                child: ManifestImageWidget<DestinySandboxPerkDefinition>(
-                    _wellRestedProgression)),
+                child: ManifestImageWidget<DestinySandboxPerkDefinition>(_wellRestedProgression)),
           ],
         );
       }
@@ -199,11 +191,9 @@ class CharacterInfoWidget extends StatelessWidget with DestinySettingsConsumer {
   Widget buildSeasonalRankProgress(BuildContext context) {
     final progressionHash = destinySettings.seasonalRankProgressionHash;
     final levelProg = character.progression?.progressions?["$progressionHash"];
-    final overLevelProg = character.progression?.progressions?[
-        "${destinySettings.seasonalPrestigeRankProgressionHash}"];
-    final currentProg = (levelProg?.level ?? 0) < (levelProg?.levelCap ?? 0)
-        ? levelProg
-        : overLevelProg;
+    final overLevelProg =
+        character.progression?.progressions?["${destinySettings.seasonalPrestigeRankProgressionHash}"];
+    final currentProg = (levelProg?.level ?? 0) < (levelProg?.levelCap ?? 0) ? levelProg : overLevelProg;
     int progress = currentProg?.progressToNextLevel ?? 0;
     int total = currentProg?.nextLevelAt ?? 1;
     return Text(
@@ -248,8 +238,7 @@ class CharacterInfoWidget extends StatelessWidget with DestinySettingsConsumer {
               artifactPower == 0
                   ? Container()
                   : Text(" +$artifactPower",
-                      style: context.textTheme.subtitle.copyWith(
-                          color: LittleLightTheme.of(context).upgradeLayers))
+                      style: context.textTheme.subtitle.copyWith(color: LittleLightTheme.of(context).upgradeLayers))
             ],
           )
         ]);

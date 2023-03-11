@@ -22,8 +22,7 @@ class LoadoutsHomeView extends StatefulWidget {
   LoadoutsHomeViewState createState() => LoadoutsHomeViewState();
 }
 
-class LoadoutsHomeViewState extends State<LoadoutsHomeView>
-    with ProfileConsumer {
+class LoadoutsHomeViewState extends State<LoadoutsHomeView> with ProfileConsumer {
   final TextEditingController _searchFieldController = TextEditingController();
   LoadoutsHomeBloc get _bloc => context.read<LoadoutsHomeBloc>();
   LoadoutsHomeBloc get _state => context.watch<LoadoutsHomeBloc>();
@@ -51,9 +50,7 @@ class LoadoutsHomeViewState extends State<LoadoutsHomeView>
     return Stack(children: [
       Scaffold(
         appBar: buildAppBar(context),
-        body: _state.reordering
-            ? buildReorderingBody(context)
-            : buildBody(context),
+        body: _state.reordering ? buildReorderingBody(context) : buildBody(context),
         bottomNavigationBar: buildFooter(context),
       ),
       const InventoryNotificationWidget(key: Key("notification_widget"))
@@ -100,9 +97,7 @@ class LoadoutsHomeViewState extends State<LoadoutsHomeView>
     if (_state.reordering) return Container();
     return IconButton(
         enableFeedback: false,
-        icon: _state.searchOpen
-            ? const Icon(FontAwesomeIcons.times)
-            : const Icon(FontAwesomeIcons.search),
+        icon: _state.searchOpen ? const Icon(FontAwesomeIcons.xmark) : const Icon(FontAwesomeIcons.magnifyingGlass),
         onPressed: () => _bloc.toggleSearch());
   }
 
@@ -112,14 +107,12 @@ class LoadoutsHomeViewState extends State<LoadoutsHomeView>
         enableFeedback: false,
         icon: _state.reordering
             ? const Icon(FontAwesomeIcons.check)
-            : Transform.rotate(
-                angle: pi / 2, child: const Icon(FontAwesomeIcons.exchangeAlt)),
+            : Transform.rotate(angle: pi / 2, child: const Icon(FontAwesomeIcons.rightLeft)),
         onPressed: () => _bloc.toggleReordering());
   }
 
   void createNew() async {
-    var newLoadout =
-        await Navigator.push(context, EditLoadoutPageRoute.create());
+    var newLoadout = await Navigator.push(context, EditLoadoutPageRoute.create());
     if (newLoadout != null) {
       _bloc.reloadLoadouts();
     }
@@ -136,8 +129,7 @@ class LoadoutsHomeViewState extends State<LoadoutsHomeView>
         child: Container(
           constraints: const BoxConstraints(minWidth: double.infinity),
           height: kToolbarHeight + paddingBottom,
-          padding: const EdgeInsets.symmetric(horizontal: 16)
-              .copyWith(top: 8, bottom: 8 + paddingBottom),
+          padding: const EdgeInsets.symmetric(horizontal: 16).copyWith(top: 8, bottom: 8 + paddingBottom),
           child: ElevatedButton(
             onPressed: createNew,
             child: Text("Create Loadout".translate(context)),
@@ -154,20 +146,14 @@ class LoadoutsHomeViewState extends State<LoadoutsHomeView>
           return buildSortItem(context, index);
         },
         itemExtent: 56,
-        padding: const EdgeInsets.all(8).copyWith(
-            left: max(screenPadding.left, 8),
-            right: max(screenPadding.right, 8)),
-        onReorder: (oldIndex, newIndex) =>
-            _bloc.reorderLoadouts(oldIndex, newIndex));
+        padding: const EdgeInsets.all(8).copyWith(left: max(screenPadding.left, 8), right: max(screenPadding.right, 8)),
+        onReorder: (oldIndex, newIndex) => _bloc.reorderLoadouts(oldIndex, newIndex));
   }
 
   Widget buildHandle(BuildContext context, int index) {
     return ReorderableDragStartListener(
         index: index,
-        child: AspectRatio(
-            aspectRatio: 1,
-            child: Container(
-                color: Colors.transparent, child: const Icon(Icons.menu))));
+        child: AspectRatio(aspectRatio: 1, child: Container(color: Colors.transparent, child: const Icon(Icons.menu))));
   }
 
   Widget buildSortItem(BuildContext context, int index) {
@@ -212,8 +198,7 @@ class LoadoutsHomeViewState extends State<LoadoutsHomeView>
     return MasonryGridView.count(
       key: Key("loadouts_grid_${_state.lastUpdated}"),
       itemCount: loadouts.length,
-      crossAxisCount: MediaQueryHelper(context)
-          .responsiveValue<int>(1, tablet: 2, laptop: 3),
+      crossAxisCount: MediaQueryHelper(context).responsiveValue<int>(1, tablet: 2, laptop: 3),
       itemBuilder: (context, index) => getItem(context, index),
     );
   }
@@ -226,9 +211,7 @@ class LoadoutsHomeViewState extends State<LoadoutsHomeView>
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                "You have no loadouts yet. Create your first one."
-                    .translate(context)
-                    .toUpperCase(),
+                "You have no loadouts yet. Create your first one.".translate(context).toUpperCase(),
                 textAlign: TextAlign.center,
               ),
               Container(height: 16),

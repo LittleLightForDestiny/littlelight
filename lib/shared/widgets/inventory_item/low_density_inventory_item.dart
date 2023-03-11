@@ -16,7 +16,6 @@ import 'package:little_light/shared/widgets/shapes/diamond_shape.dart';
 import 'package:little_light/utils/stats_total.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
-import 'package:little_light/widgets/icon_fonts/littlelight_icons.dart';
 
 import 'inventory_item_icon.dart';
 import 'utils/get_energy_capacity.dart';
@@ -46,7 +45,7 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
 
   Widget emptyItem(BuildContext context) => Container();
 
-  Widget buildWithDefinition(BuildContext context, DestinyInventoryItemDefinition definition) {
+  Widget buildWithDefinition(BuildContext context, DestinyInventoryItemDefinition? definition) {
     return ClipRRect(
         child: Stack(
       fit: StackFit.expand,
@@ -57,7 +56,8 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
     ));
   }
 
-  Widget buildItemIcon(BuildContext context, DestinyInventoryItemDefinition definition) {
+  Widget buildItemIcon(BuildContext context, DestinyInventoryItemDefinition? definition) {
+    if (definition == null) return SizedBox();
     if (definition.isSubclass) return buildSubclassIcon(context, definition);
     return InventoryItemIcon(item, definition: definition, borderSize: 1.5);
   }
@@ -97,8 +97,8 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
     );
   }
 
-  Widget buildItemInfo(BuildContext context, DestinyInventoryItemDefinition definition) {
-    if (definition.isEngram) return buildEngramInfo(context, definition);
+  Widget buildItemInfo(BuildContext context, DestinyInventoryItemDefinition? definition) {
+    if (definition?.isEngram ?? false) return buildEngramInfo(context, definition);
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       crossAxisAlignment: CrossAxisAlignment.end,
@@ -107,13 +107,13 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
         buildHeaderInfo(context, definition),
         Expanded(child: Container()),
         buildWishlistIcons(context, definition),
-        if (definition.isArmor) buildTotalStats(context, definition),
+        if (definition?.isArmor ?? false) buildTotalStats(context, definition),
         buildItemPrimaryinfo(context, definition),
       ].whereType<Widget>().toList(),
     );
   }
 
-  Widget buildEngramInfo(BuildContext context, DestinyInventoryItemDefinition definition) {
+  Widget buildEngramInfo(BuildContext context, DestinyInventoryItemDefinition? definition) {
     return Container(
       padding: const EdgeInsets.only(bottom: 8),
       alignment: Alignment.bottomCenter,
@@ -121,7 +121,8 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
     );
   }
 
-  Widget buildItemPrimaryinfo(BuildContext context, DestinyInventoryItemDefinition definition) {
+  Widget buildItemPrimaryinfo(BuildContext context, DestinyInventoryItemDefinition? definition) {
+    if (definition == null) return Container();
     if (definition.isSubclass) {
       return Container();
     }
@@ -243,7 +244,7 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
     );
   }
 
-  Widget buildHeaderInfo(BuildContext context, DestinyInventoryItemDefinition definition) {
+  Widget buildHeaderInfo(BuildContext context, DestinyInventoryItemDefinition? definition) {
     return buildInfoContainer(
       context,
       [
@@ -253,7 +254,7 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
     );
   }
 
-  Widget? buildLockedIcon(BuildContext context, DestinyInventoryItemDefinition definition) {
+  Widget? buildLockedIcon(BuildContext context, DestinyInventoryItemDefinition? definition) {
     final isLocked = item.item.state?.contains(ItemState.Locked) ?? false;
     if (!isLocked) return null;
     return SizedBox(
@@ -262,12 +263,12 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
       child: Icon(
         FontAwesomeIcons.lock,
         size: _tagIconSize - 2,
-        color: definition.inventory?.tierType?.getTextColor(context),
+        color: definition?.inventory?.tierType?.getTextColor(context),
       ),
     );
   }
 
-  Widget? buildWishlistIcons(BuildContext context, DestinyInventoryItemDefinition definition) {
+  Widget? buildWishlistIcons(BuildContext context, DestinyInventoryItemDefinition? definition) {
     final itemHash = item.item.itemHash;
     final reusablePlugs = item.reusablePlugs;
     if (itemHash == null || reusablePlugs == null) return null;
@@ -296,7 +297,7 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
     );
   }
 
-  Widget? buildHeaderTagIcons(BuildContext context, DestinyInventoryItemDefinition definition) {
+  Widget? buildHeaderTagIcons(BuildContext context, DestinyInventoryItemDefinition? definition) {
     final itemHash = item.item.itemHash;
     final itemInstanceId = item.item.itemInstanceId;
     if (itemHash == null) return null;
@@ -387,7 +388,7 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
     ]);
   }
 
-  Widget buildEngramPrimaryStat(BuildContext context, DestinyInventoryItemDefinition definition) {
+  Widget buildEngramPrimaryStat(BuildContext context, DestinyInventoryItemDefinition? definition) {
     final itemLevel = item.instanceInfo?.itemLevel;
     final quality = item.instanceInfo?.quality ?? 0;
     if (itemLevel == null) return Container();
@@ -406,7 +407,7 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
         ));
   }
 
-  Widget? buildTotalStats(BuildContext context, DestinyInventoryItemDefinition definition) {
+  Widget? buildTotalStats(BuildContext context, DestinyInventoryItemDefinition? definition) {
     final total = item.stats?.values.fold<int>(0, (t, stat) => t + (stat.value ?? 0));
     if (total == null) return null;
     final color = getStatsTotalColor(total, context);

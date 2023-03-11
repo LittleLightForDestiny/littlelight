@@ -33,15 +33,15 @@ class BucketHeaderListItemWidget extends StatelessWidget {
     );
   }
 
-  Widget buildLabel(BuildContext context, DestinyInventoryBucketDefinition definition) {
+  Widget buildLabel(BuildContext context, DestinyInventoryBucketDefinition? definition) {
     return Text(
-      definition.displayProperties?.name?.toUpperCase() ?? "",
+      definition?.displayProperties?.name?.toUpperCase() ?? "",
       softWrap: false,
       style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
     );
   }
 
-  Widget buildTrailing(BuildContext context, DestinyInventoryBucketDefinition definition) {
+  Widget buildTrailing(BuildContext context, DestinyInventoryBucketDefinition? definition) {
     return Row(children: [
       BucketDisplayOptionsSelector(
         hash,
@@ -53,8 +53,8 @@ class BucketHeaderListItemWidget extends StatelessWidget {
     ]);
   }
 
-  Widget buildCount(BuildContext context, DestinyInventoryBucketDefinition definition) {
-    int bucketSize = definition.itemCount ?? 9;
+  Widget buildCount(BuildContext context, DestinyInventoryBucketDefinition? definition) {
+    int bucketSize = definition?.itemCount ?? 9;
     if (isVault) {
       return ManifestText<DestinyInventoryBucketDefinition>(
         InventoryBucket.general,

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/modules/equipment/pages/equipment/equipment.bloc.dart';
 import 'package:little_light/modules/equipment/pages/equipment/equipment.view.dart';
-import 'package:little_light/core/blocs/profile/profile_helpers.bloc.dart';
+import 'package:little_light/shared/blocs/bucket_options/bucket_options.bloc.dart';
 import 'package:little_light/shared/blocs/item_interaction_handler/item_interaction_handler.bloc.dart';
-
 import 'package:provider/provider.dart';
 
 class EquipmentPage extends StatelessWidget {
@@ -12,7 +11,7 @@ class EquipmentPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<ProfileHelpersBloc>(create: (context) => ProfileHelpersBloc(context)),
+        ChangeNotifierProvider<BucketOptionsBloc>(create: (context) => BucketOptionsBloc(context)),
         ChangeNotifierProvider<EquipmentBloc>(create: (context) => EquipmentBloc(context)),
         Provider<ItemInteractionHandlerBloc>(create: (context) {
           final bloc = context.read<EquipmentBloc>();

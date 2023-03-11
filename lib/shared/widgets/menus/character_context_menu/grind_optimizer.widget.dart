@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
-import 'package:little_light/core/blocs/profile/profile_helpers.bloc.dart';
+import 'package:little_light/shared/blocs/context_menu_options/context_menu_options.bloc.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/shared/widgets/inventory_item/low_density_inventory_item.dart';
-import 'package:little_light/shared/widgets/menus/context_menu_box.dart';
-import 'package:little_light/shared/widgets/menus/context_menu_info_box.dart';
-import 'package:little_light/shared/widgets/menus/context_menu_title.dart';
+import 'package:little_light/shared/widgets/containers/menu_box.dart';
+import 'package:little_light/shared/widgets/containers/menu_info_box.dart';
+import 'package:little_light/shared/widgets/containers/menu_box_title.dart';
 import 'package:provider/provider.dart';
 import 'package:tinycolor2/tinycolor2.dart';
 
@@ -35,7 +35,7 @@ class CharacterGrindOptimizerWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final classType = character.character.classType;
     if (classType == null) return Container();
-    final state = context.watch<ProfileHelpersBloc>();
+    final state = context.watch<ContextMenuOptionsBloc>();
     final currentAverage = state.getCurrentAverage(classType);
     final achievableAverage = state.getAchievableAverage(classType);
     final isInPinnacle = state.achievedPinnacleTier(classType);
@@ -43,9 +43,9 @@ class CharacterGrindOptimizerWidget extends StatelessWidget {
     final message =
         isInPinnacle ? "Go for pinnacle reward?".translate(context) : "Go for powerful reward?".translate(context);
     final items = state.getMaxPowerItems(classType);
-    return ContextMenuBox(
+    return MenuBox(
         child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      ContextMenuTitle(
+      MenuBoxTitle(
         message,
         trailing: Text(goForReward ? "Yes".translate(context).toUpperCase() : "No".translate(context).toUpperCase()),
       ),
@@ -54,14 +54,14 @@ class CharacterGrindOptimizerWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Expanded(
-              child: ContextMenuInfoBox(
+              child: MenuInfoBox(
                   child: Column(children: [
             Text("Current average".translate(context)),
             Text("${currentAverage?.toStringAsFixed(2)}"),
           ]))),
           SizedBox(width: 4),
           Expanded(
-              child: ContextMenuInfoBox(
+              child: MenuInfoBox(
                   child: Column(children: [
             Text("Achievable average".translate(context)),
             Text("${achievableAverage?.toStringAsFixed(2)}"),

@@ -382,6 +382,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_advanced_switch:
+    dependency: "direct main"
+    description:
+      name: flutter_advanced_switch
+      sha256: b16c92c648a35c95cf9cfd0d6cf3391765f1c9cc5786418999d0058ed51f3d6b
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.1"
   flutter_blurhash:
     dependency: transitive
     description:

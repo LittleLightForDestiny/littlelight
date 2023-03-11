@@ -20,10 +20,7 @@ class TransferDestination {
   String get id => "$type-$characterId";
 
   @override
-  bool operator ==(Object other) =>
-      other is TransferDestination &&
-      other.runtimeType == runtimeType &&
-      other.id == id;
+  bool operator ==(Object other) => other is TransferDestination && other.runtimeType == runtimeType && other.id == id;
 
   @override
   int get hashCode => id.hashCode;

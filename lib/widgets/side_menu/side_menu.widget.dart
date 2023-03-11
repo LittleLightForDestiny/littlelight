@@ -11,12 +11,12 @@ import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/modules/collections/pages/home/collections_root.page.dart';
 import 'package:little_light/modules/equipment/pages/equipment/equipment.page.dart';
 import 'package:little_light/modules/loadouts/pages/home/loadouts_home.page.dart';
+import 'package:little_light/modules/progress/pages/progress/progress.page.dart';
 import 'package:little_light/modules/settings/pages/about/about.screen.dart';
 import 'package:little_light/pages/dev_tools.screen.dart';
 import 'package:little_light/pages/duplicated_items.screen.dart';
 import 'package:little_light/pages/languages/languages.page_route.dart';
 import 'package:little_light/pages/objectives/objectives.screen.dart';
-import 'package:little_light/pages/progress/progress.screen.dart';
 import 'package:little_light/pages/triumphs/triumphs_root.page.dart';
 import 'package:little_light/pages/vendors/vendors.screen.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
@@ -49,8 +49,7 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer {
 
   fetchMemberships() async {
     final accountIDs = auth.accountIDs;
-    final _accounts = await Future.wait(
-        accountIDs.map((a) => auth.getMembershipDataForAccount(a)));
+    final _accounts = await Future.wait(accountIDs.map((a) => auth.getMembershipDataForAccount(a)));
     if (!mounted) return;
     setState(() {
       memberships = _accounts;
@@ -62,74 +61,56 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer {
     return Container(
         color: Theme.of(context).cardColor,
         width: 280,
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Expanded(
-                  child: ListView(
-                padding: const EdgeInsets.all(0),
-                children: <Widget>[
-                  profileInfo(context),
-                  menuItem(context, Text("Equipment".translate(context)),
-                      onTap: () {
-                    open(context, const EquipmentPage());
-                  }),
-                  menuItem(context, Text("Progress".translate(context)),
-                      onTap: () {
-                    open(context, ProgressScreen());
-                  }),
-                  menuItem(context, Text("Objectives".translate(context)),
-                      onTap: () {
-                    open(context, ObjectivesScreen());
-                  }),
-                  menuItem(context, Text("Loadouts".translate(context)),
-                      onTap: () {
-                    open(context, LoadoutsHomePage());
-                  }),
-                  menuItem(context, Text("Vendors".translate(context)),
-                      onTap: () {
-                    open(context, VendorsScreen());
-                  }),
-                  menuItem(context, Text("Collections".translate(context)),
-                      onTap: () {
-                    open(context, CollectionsRootPage());
-                  }),
-                  menuItem(context, Text("Triumphs".translate(context)),
-                      onTap: () {
-                    open(context, TriumphsRootPage());
-                  }),
-                  menuItem(context, Text("Duplicated Items".translate(context)),
-                      onTap: () {
-                    open(
-                        context,
-                        DuplicatedItemsScreen(
-                            searchController:
-                                SearchController.withDuplicatedItemsFilters(
-                                    context)));
-                  }),
-                  menuItem(context, Text("About".translate(context)),
-                      onTap: () {
-                    open(context, AboutScreen());
-                  }),
-                  kDebugMode
-                      ? menuItem(context, Text("Dev Tools".translate(context)),
-                          onTap: () {
-                          open(context, DevToolsScreen());
-                        })
-                      : Container(),
-                  Container(height: MediaQuery.of(context).viewPadding.bottom)
-                ],
-              )),
-            ]));
+        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, mainAxisSize: MainAxisSize.max, children: [
+          Expanded(
+              child: ListView(
+            padding: const EdgeInsets.all(0),
+            children: <Widget>[
+              profileInfo(context),
+              menuItem(context, Text("Equipment".translate(context)), onTap: () {
+                open(context, const EquipmentPage());
+              }),
+              menuItem(context, Text("Progress".translate(context)), onTap: () {
+                open(context, ProgressPage());
+              }),
+              menuItem(context, Text("Objectives".translate(context)), onTap: () {
+                open(context, ObjectivesScreen());
+              }),
+              menuItem(context, Text("Loadouts".translate(context)), onTap: () {
+                open(context, LoadoutsHomePage());
+              }),
+              menuItem(context, Text("Vendors".translate(context)), onTap: () {
+                open(context, VendorsScreen());
+              }),
+              menuItem(context, Text("Collections".translate(context)), onTap: () {
+                open(context, CollectionsRootPage());
+              }),
+              menuItem(context, Text("Triumphs".translate(context)), onTap: () {
+                open(context, TriumphsRootPage());
+              }),
+              menuItem(context, Text("Duplicated Items".translate(context)), onTap: () {
+                open(context,
+                    DuplicatedItemsScreen(searchController: SearchController.withDuplicatedItemsFilters(context)));
+              }),
+              menuItem(context, Text("About".translate(context)), onTap: () {
+                open(context, AboutScreen());
+              }),
+              kDebugMode
+                  ? menuItem(context, Text("Dev Tools".translate(context)), onTap: () {
+                      open(context, DevToolsScreen());
+                    })
+                  : Container(),
+              Container(height: MediaQuery.of(context).viewPadding.bottom)
+            ],
+          )),
+        ]));
   }
 
   Widget profileInfo(BuildContext context) {
     return const ProfileInfoWidget(menuContent: SideMenuSettingsWidget());
   }
 
-  Widget membershipButton(BuildContext context, GeneralUser bungieNetUser,
-      GroupUserInfoCard membership) {
+  Widget membershipButton(BuildContext context, GeneralUser bungieNetUser, GroupUserInfoCard membership) {
     var plat = PlatformData.getPlatform(membership.membershipType);
     return Container(
         color: Theme.of(context).colorScheme.secondary,
@@ -139,8 +120,7 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer {
             borderRadius: BorderRadius.circular(4),
             child: InkWell(
                 onTap: () {
-                  auth.setCurrentMembershipID(
-                      membership.membershipId, bungieNetUser.membershipId);
+                  auth.setCurrentMembershipID(membership.membershipId, bungieNetUser.membershipId);
                   Phoenix.rebirth(context);
                 },
                 child: Container(
@@ -165,14 +145,9 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer {
             onTap: onTap,
             child: Container(
                 alignment: Alignment.centerRight,
-                padding:
-                    const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
                 decoration: BoxDecoration(
-                    border: Border(
-                        bottom: BorderSide(
-                            color: LittleLightTheme.of(context)
-                                .surfaceLayers
-                                .layer2))),
+                    border: Border(bottom: BorderSide(color: LittleLightTheme.of(context).surfaceLayers.layer2))),
                 child: label)));
   }
 

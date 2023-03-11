@@ -16,8 +16,7 @@ class AddCommunityWishlistForm extends StatefulWidget {
   }
 }
 
-class AddCommunityWishlistFormState extends State<AddCommunityWishlistForm>
-    with AutomaticKeepAliveClientMixin {
+class AddCommunityWishlistFormState extends State<AddCommunityWishlistForm> with AutomaticKeepAliveClientMixin {
   @override
   void initState() {
     super.initState();
@@ -37,8 +36,7 @@ class AddCommunityWishlistFormState extends State<AddCommunityWishlistForm>
   Widget buildWishlistsRootContent(BuildContext context) {
     return SingleChildScrollView(
         child: Container(
-            padding: const EdgeInsets.all(8) +
-                MediaQuery.of(context).viewPadding.copyWith(top: 0),
+            padding: const EdgeInsets.all(8) + MediaQuery.of(context).viewPadding.copyWith(top: 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -102,41 +100,23 @@ class AddCommunityWishlistFormState extends State<AddCommunityWishlistForm>
     final currentFolder = context.watch<AddWishlistsBloc>().currentFolder;
     final files = currentFolder?.files;
     if (files == null) return Container();
-    return Column(
-        children: files.map((f) => buildWishlistFile(context, f)).toList());
+    return Column(children: files.map((f) => buildWishlistFile(context, f)).toList());
   }
 
   Widget buildFolders(BuildContext context) {
     final currentFolder = context.watch<AddWishlistsBloc>().currentFolder;
     final folders = currentFolder?.folders;
     if (folders == null) return Container();
-    return Column(
-        children: folders.map((f) => buildWishlistFolder(context, f)).toList());
+    return Column(children: folders.map((f) => buildWishlistFolder(context, f)).toList());
   }
 
   Widget buildWishlistFile(BuildContext context, WishlistFile file) {
     final isAdded = context.watch<AddWishlistsBloc>().isAdded(file);
-    final theme = LittleLightTheme.of(context);
     return WishlistFileItem(
       file: file,
-      actions: [
-        ElevatedButton(
-            style: ElevatedButton.styleFrom(
-                primary: isAdded ? theme.errorLayers : theme.primaryLayers,
-                visualDensity: VisualDensity.compact),
-            onPressed: () async {
-              final provider = context.read<AddWishlistsBloc>();
-              await Navigator.push(
-                  context,
-                  BusyDialogRoute(
-                    context,
-                    awaitFuture: isAdded
-                        ? provider.removeWishlist(file)
-                        : provider.addWishlist(file),
-                  ));
-            },
-            child: isAdded ? const Text("Remove") : const Text("Add"))
-      ],
+      isAdded: isAdded,
+      onAdd: () => context.read<AddWishlistsBloc>().addWishlist(file),
+      onRemove: () => context.read<AddWishlistsBloc>().removeWishlist(file),
     );
   }
 

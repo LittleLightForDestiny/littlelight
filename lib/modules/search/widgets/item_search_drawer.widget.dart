@@ -24,11 +24,11 @@ class ItemSearchDrawerWidget extends StatelessWidget {
                 tabs: [
                   Container(
                     margin: EdgeInsets.only(top: mq.viewPadding.top),
-                    child: Text("Filters".translate(context)),
+                    child: Text("Filters".translate(context).toUpperCase()),
                   ),
                   Container(
                     margin: EdgeInsets.only(top: mq.viewPadding.top),
-                    child: Text("Sort".translate(context)),
+                    child: Text("Sort".translate(context).toUpperCase()),
                   ),
                 ],
               ),

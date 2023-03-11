@@ -188,6 +188,8 @@ class SelectedItemsWidget extends StatelessWidget {
             return;
           }
           if (type == TransferActionType.Equip && items.length > 1) {
+            inventoryBloc(context).equipMultiple(items, destination);
+            selectionBloc(context).clear();
             return;
           }
           if (type == TransferActionType.Equip) {

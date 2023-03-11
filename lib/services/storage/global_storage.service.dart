@@ -114,6 +114,9 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
   bool? get autoOpenKeyboard => getBool(GlobalStorageKeys.autoOpenKeyboard);
   set autoOpenKeyboard(bool? value) => setBool(GlobalStorageKeys.autoOpenKeyboard, value);
 
+  bool? get enableAutoTransfers => getBool(GlobalStorageKeys.enableAutoTransfers);
+  set enableAutoTransfers(bool? value) => setBool(GlobalStorageKeys.enableAutoTransfers, value);
+
   DateTime? get lastUpdated => getDate(GlobalStorageKeys.versionUpdatedDate);
 
   setBungieCommonSettings(CoreSettingsConfiguration? settings) =>

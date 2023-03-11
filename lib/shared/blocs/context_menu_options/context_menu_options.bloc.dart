@@ -1,9 +1,12 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/models/game_data.dart';
+import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
+import 'package:little_light/modules/loadouts/pages/edit/edit_loadout.page_route.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
@@ -20,9 +23,23 @@ const _equipmentBuckets = {
   InventoryBucket.classArmor,
 };
 
-class ProfileHelpersBloc extends ChangeNotifier with ManifestConsumer, LittleLightDataConsumer {
+class ContextMenuOptionsBloc extends ChangeNotifier with ManifestConsumer, LittleLightDataConsumer {
   final BuildContext context;
   final ProfileBloc _profileBloc;
+
+  bool _enableWeaponsInLoadouts = true;
+  bool get enableWeaponsInLoadouts => _enableWeaponsInLoadouts;
+  set enableWeaponsInLoadouts(bool value) {
+    _enableWeaponsInLoadouts = value;
+    notifyListeners();
+  }
+
+  bool _enableArmorsInLoadouts = true;
+  bool get enableArmorsInLoadouts => _enableArmorsInLoadouts;
+  set enableArmorsInLoadouts(bool value) {
+    _enableArmorsInLoadouts = value;
+    notifyListeners();
+  }
 
   Map<DestinyClass, Map<int, DestinyItemInfo>>? _maxPowerEquipments;
   Map<DestinyClass, Map<int, DestinyItemInfo>>? _maxEquippable;
@@ -33,7 +50,7 @@ class ProfileHelpersBloc extends ChangeNotifier with ManifestConsumer, LittleLig
 
   GameData? _gameData;
 
-  ProfileHelpersBloc(this.context) : _profileBloc = context.read<ProfileBloc>() {
+  ContextMenuOptionsBloc(this.context) : _profileBloc = context.read<ProfileBloc>() {
     _init();
   }
 
@@ -231,5 +248,33 @@ class ProfileHelpersBloc extends ChangeNotifier with ManifestConsumer, LittleLig
 
   List<DestinyItemInfo> getPostmasterItems(String? characterId) {
     return _itemsOnPostmaster?[characterId] ?? [];
+  }
+
+  void openLoadoutCreation(BuildContext navigatorContext, DestinyCharacterInfo character, bool onlyEquipped) async {
+    final loadoutWeaponHashes = InventoryBucket.weaponBucketHashes + [InventoryBucket.subclass];
+    final allItems = context.read<ProfileBloc>().allItems;
+    final items = allItems //
+        .where((element) {
+      final isOnCharacter = element.characterId == character.characterId;
+      if (!isOnCharacter) return false;
+      final isEquipped = element.instanceInfo?.isEquipped ?? false;
+      if (onlyEquipped && !isEquipped) return false;
+      final isWeapon = loadoutWeaponHashes.contains(element.bucketHash);
+      final isArmor = InventoryBucket.armorBucketHashes.contains(element.bucketHash);
+      if (!isWeapon && !isArmor) return false;
+      final includeWeapons = enableWeaponsInLoadouts;
+      if (isWeapon) return includeWeapons;
+      final includeArmor = enableArmorsInLoadouts;
+      if (isArmor) return includeArmor;
+      return false;
+    });
+    final loadout = LoadoutItemIndex.fromScratch();
+    for (final item in items) {
+      final isEquipped = item.instanceInfo?.isEquipped ?? false;
+      if (item.bucketHash == InventoryBucket.subclass && !isEquipped) continue;
+      await loadout.addItem(item.item, isEquipped);
+    }
+    loadout.emblemHash = character.character.emblemHash;
+    Navigator.of(navigatorContext).push(EditLoadoutPageRoute.createFromPreset(loadout));
   }
 }

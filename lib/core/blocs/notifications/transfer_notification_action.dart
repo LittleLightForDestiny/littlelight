@@ -26,9 +26,17 @@ class SingleTransferAction extends BaseNotificationAction {
   final DateTime _createdAt;
   final List<SingleTransferAction> _sideEffects = [];
 
-  SingleTransferAction(
-      {required this.item, required this.source, required this.destination})
+  SingleTransferAction({required this.item, required this.source, required this.destination})
       : _createdAt = DateTime.now();
+
+  double get progress {
+    final steps = _steps;
+    final currentStep = _currentStep;
+    if (steps == null || currentStep == null) return 0;
+    final stepsOrder = TransferSteps.values.where((element) => _steps?.contains(element) ?? false).toList();
+    final progress = stepsOrder.indexOf(currentStep);
+    return progress / (stepsOrder.length - 1);
+  }
 
   set currentStep(TransferSteps? step) {
     _currentStep = step;
@@ -56,8 +64,7 @@ class SingleTransferAction extends BaseNotificationAction {
     notifyListeners();
   }
 
-  bool hasSteps(Set<TransferSteps> steps) =>
-      steps.any((step) => _steps?.contains(step) ?? false);
+  bool hasSteps(Set<TransferSteps> steps) => steps.any((step) => _steps?.contains(step) ?? false);
 
   bool get active => _steps != null;
 
@@ -100,9 +107,12 @@ class SingleTransferAction extends BaseNotificationAction {
     required DestinyItemInfo item,
     required TransferDestination source,
     required TransferDestination destination,
+    bool unequip = false,
   }) {
-    final action = SingleTransferAction(
-        item: item, source: source, destination: destination);
+    final action = SingleTransferAction(item: item, source: source, destination: destination);
+    if (unequip) {
+      action.createSteps(isEquipped: true);
+    }
     _sideEffects.add(action);
     action.addListener(dispatchSideEffects);
     return action;

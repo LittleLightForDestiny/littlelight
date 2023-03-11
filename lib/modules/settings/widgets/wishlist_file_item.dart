@@ -1,59 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/wishlist_index.dart';
+import 'package:little_light/modules/settings/widgets/settings_option.widget.dart';
 
-class WishlistFileItem extends StatelessWidget {
+class WishlistFileItem extends SettingsOptionWidget {
   final WishlistFile file;
-  final List<Widget>? actions;
+  final bool isAdded;
+  final VoidCallback? onRemove;
+  final VoidCallback? onAdd;
 
-  const WishlistFileItem({
+  WishlistFileItem({
     Key? key,
     required this.file,
-    this.actions,
-  }) : super(key: key);
+    bool this.isAdded = false,
+    VoidCallback? this.onAdd,
+    VoidCallback? this.onRemove,
+  }) : super(
+          file.name ?? "",
+          Text(file.description ?? ""),
+        );
 
   @override
-  Widget build(BuildContext context) => Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      child: Material(
-          borderRadius: BorderRadius.circular(8),
-          color: Theme.of(context).colorScheme.secondary,
-          child: Container(
-            padding: const EdgeInsets.all(8),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Text(
-                            file.name ?? "",
-                            style: Theme.of(context).textTheme.button,
-                          ),
-                          Text(
-                            file.description ?? "",
-                            style: Theme.of(context).textTheme.caption,
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-                if ((actions?.length ?? 0) > 0) buildActions(context),
-              ],
-            ),
-          )));
-
-  Widget buildActions(BuildContext context) {
-    final actions = this.actions;
-    if (actions == null) return Container();
-    return Container(
-      padding: const EdgeInsets.only(top: 4),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: actions.map((e) => Container(child: e)).toList(),
-      ),
-    );
+  Widget? buildTrailing(BuildContext context) {
+    if (isAdded && onAdd != null) {
+      return ElevatedButton(
+        onPressed: onAdd,
+        child: Text("Add".translate(context)),
+        style: ButtonStyle(visualDensity: VisualDensity.compact),
+      );
+    }
+    if (!isAdded && onRemove != null) {
+      return ElevatedButton(
+        onPressed: onRemove,
+        child: Text("Remove".translate(context)),
+        style: ButtonStyle(
+          visualDensity: VisualDensity.compact,
+          backgroundColor: MaterialStatePropertyAll<Color>(context.theme.errorLayers),
+        ),
+      );
+    }
+    return null;
   }
+
+  @override
+  getBackgroundColor() {}
 }

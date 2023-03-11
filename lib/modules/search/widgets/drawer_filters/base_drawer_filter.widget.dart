@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/modules/search/blocs/filter_options/base_filter_values_options.dart';
 import 'package:little_light/modules/search/blocs/search_filter.bloc.dart';
+import 'package:little_light/shared/widgets/ui/switch.dart';
 import 'package:provider/provider.dart';
 
 import 'base_filter.widget.dart';
@@ -29,7 +30,7 @@ abstract class BaseDrawerFilterWidget<T extends BaseFilterOptions> extends BaseF
   Widget buildHeader(BuildContext context, T data) {
     return AnimatedContainer(
       duration: _animationDuration,
-      padding: EdgeInsets.all(4).copyWith(left: 12),
+      padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: data.enabled ? context.theme.secondarySurfaceLayers.layer1 : context.theme.surfaceLayers.layer2,
         borderRadius: BorderRadius.circular(4),
@@ -38,7 +39,7 @@ abstract class BaseDrawerFilterWidget<T extends BaseFilterOptions> extends BaseF
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           DefaultTextStyle(child: buildTitle(context), style: context.textTheme.button),
-          Switch(value: data.enabled, onChanged: (value) => updateEnabled(context, value))
+          LLSwitch.callback(data.enabled, (value) => updateEnabled(context, value), size: LLSwitchSize.large)
         ],
       ),
     );

@@ -6,7 +6,8 @@ import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/modules/collections/pages/home/collections_root.page.dart';
 import 'package:little_light/modules/equipment/pages/equipment/equipment.page.dart';
 import 'package:little_light/modules/loadouts/pages/home/loadouts_home.page.dart';
-import 'package:little_light/pages/progress/progress.screen.dart';
+import 'package:little_light/modules/progress/pages/progress/progress.page.dart';
+import 'package:little_light/modules/progress/pages/progress/progress.screen.dart';
 import 'package:little_light/pages/triumphs/triumphs_root.page.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/littlelight/item_notes.consumer.dart';
@@ -25,11 +26,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class MainScreenState extends State<MainScreen>
-    with
-        AuthConsumer,
-        UserSettingsConsumer,
-        ProfileConsumer,
-        ItemNotesConsumer {
+    with AuthConsumer, UserSettingsConsumer, ProfileConsumer, ItemNotesConsumer {
   Widget currentScreen;
 
   @override
@@ -53,7 +50,7 @@ class MainScreenState extends State<MainScreen>
         break;
 
       case LittleLightPersistentPage.Progress:
-        currentScreen = ProgressScreen();
+        currentScreen = const ProgressPage();
         break;
 
       case LittleLightPersistentPage.Collections:
@@ -102,8 +99,7 @@ class MainScreenState extends State<MainScreen>
   }
 
   Future<bool> _exitApp(BuildContext context) async {
-    final exit =
-        await Navigator.of(context).push(ConfirmExitDialogRoute(context));
+    final exit = await Navigator.of(context).push(ConfirmExitDialogRoute(context));
     return exit ?? false;
   }
 }

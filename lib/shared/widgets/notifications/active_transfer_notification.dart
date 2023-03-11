@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/notifications/notification_actions.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/shared/models/transfer_destination.dart';
+import 'package:little_light/shared/widgets/animations/value_animator.widget.dart';
 import 'package:little_light/shared/widgets/character/character_icon.widget.dart';
 import 'package:little_light/shared/widgets/character/postmaster_icon.widget.dart';
 import 'package:little_light/shared/widgets/character/profile_icon.widget.dart';
@@ -15,6 +16,7 @@ import 'package:little_light/widgets/common/manifest_image.widget.dart';
 
 const _pendingOpacity = .4;
 const _animationDuration = Duration(milliseconds: 300);
+const _iconSize = 32.0;
 
 const _stepsOrder = [
   TransferSteps.PullFromPostmaster,
@@ -55,9 +57,7 @@ class ActiveTransferNotificationWidget extends StatelessWidget {
             padding: const EdgeInsets.all(8),
             margin: const EdgeInsets.all(.5),
             decoration: BoxDecoration(
-              color: notification.hasError
-                  ? context.theme.errorLayers.layer2
-                  : context.theme.surfaceLayers.layer2,
+              color: notification.hasError ? context.theme.errorLayers.layer2 : context.theme.surfaceLayers.layer2,
               borderRadius: BorderRadius.circular(8),
             ),
             child: buildNotificationContent(context, notification),
@@ -76,20 +76,16 @@ class ActiveTransferNotificationWidget extends StatelessWidget {
       child: notification.dismissAnimationFinished
           ? Container()
           : AnimatedSlide(
-              key: Key(
-                  "animated_transfer_slide_${notification.item.item.itemHash}_${notification.destination}"),
+              key: Key("animated_transfer_slide_${notification.item.item.itemHash}_${notification.destination}"),
               duration: _animationDuration,
               curve: accelerateEasing,
-              offset:
-                  Offset(notification.shouldPlayDismissAnimation ? 1.5 : 0, 0),
-              child: Container(
-                  padding: const EdgeInsets.only(bottom: 4), child: child),
+              offset: Offset(notification.shouldPlayDismissAnimation ? 1.5 : 0, 0),
+              child: Container(padding: const EdgeInsets.only(bottom: 4), child: child),
             ),
     );
   }
 
-  Widget buildNotificationContent(
-      BuildContext context, SingleTransferAction notification) {
+  Widget buildNotificationContent(BuildContext context, SingleTransferAction notification) {
     final hash = notification.item.item.itemHash;
     if (hash == null) return Container();
     return Column(
@@ -98,18 +94,22 @@ class ActiveTransferNotificationWidget extends StatelessWidget {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            buildTransferPath(context, notification),
+            Flexible(
+              child: buildClippedTransferPath(context, notification),
+            ),
             Container(width: 8),
             SizedBox(
-              width: 32,
-              height: 32,
+              width: _iconSize,
+              height: _iconSize,
               child: DefinitionProviderWidget<DestinyInventoryItemDefinition>(
                 hash,
-                (def) => InventoryItemIcon(
-                  notification.item,
-                  definition: def,
-                  borderSize: .5,
-                ),
+                (def) => def != null
+                    ? InventoryItemIcon(
+                        notification.item,
+                        definition: def,
+                        borderSize: .5,
+                      )
+                    : Container(),
               ),
             ),
             AnimatedSize(
@@ -127,8 +127,7 @@ class ActiveTransferNotificationWidget extends StatelessWidget {
             )
           ],
         ),
-        if (notification.sideEffects.isNotEmpty)
-          buildSideEffects(context, notification),
+        if (notification.sideEffects.isNotEmpty) buildSideEffects(context, notification),
         if (notification.hasError)
           Container(
             margin: const EdgeInsets.only(top: 8),
@@ -169,11 +168,29 @@ class ActiveTransferNotificationWidget extends StatelessWidget {
     ));
   }
 
-  Widget buildTransferPath(
-      BuildContext context, SingleTransferAction notification) {
+  Widget buildClippedTransferPath(BuildContext context, SingleTransferAction notification) {
+    final progress = (notification.progress * 2) - 1;
+    return ValueAnimatorWidget(
+      value: progress,
+      builder: (context, progress, child) {
+        return Container(
+          height: _iconSize,
+          child: ClipRect(
+            child: IntrinsicWidth(
+              child: OverflowBox(maxWidth: double.infinity, alignment: Alignment(progress, 0), child: child),
+            ),
+          ),
+        );
+      },
+      child: buildTransferPath(context, notification),
+    );
+  }
+
+  Widget buildTransferPath(BuildContext context, SingleTransferAction notification) {
     final source = notification.source;
     final destination = notification.destination;
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
         buildTransferStepEntity(
             context,
@@ -204,10 +221,7 @@ class ActiveTransferNotificationWidget extends StatelessWidget {
           context,
           buildTransferStepIcon(source),
           notification: notification,
-          requiredSteps: {
-            TransferSteps.PullFromPostmaster,
-            TransferSteps.MoveToVault
-          },
+          requiredSteps: {TransferSteps.Unequip, TransferSteps.PullFromPostmaster, TransferSteps.MoveToVault},
           progressStep: TransferSteps.MoveToVault,
         ),
         buildTransferArrow(
@@ -219,10 +233,7 @@ class ActiveTransferNotificationWidget extends StatelessWidget {
           context,
           buildTransferStepIcon(TransferDestination.vault()),
           notification: notification,
-          requiredSteps: {
-            TransferSteps.MoveToVault,
-            TransferSteps.MoveToCharacter
-          },
+          requiredSteps: {TransferSteps.MoveToVault, TransferSteps.MoveToCharacter},
           progressStep: TransferSteps.MoveToCharacter,
         ),
         buildTransferArrow(
@@ -234,10 +245,8 @@ class ActiveTransferNotificationWidget extends StatelessWidget {
           context,
           buildTransferStepIcon(destination),
           notification: notification,
-          requiredSteps: {
-            TransferSteps.MoveToCharacter,
-            TransferSteps.EquipOnCharacter
-          },
+          requiredSteps: {TransferSteps.MoveToCharacter, TransferSteps.EquipOnCharacter},
+          progressStep: TransferSteps.EquipOnCharacter,
         ),
         buildTransferArrow(
           context,
@@ -249,7 +258,6 @@ class ActiveTransferNotificationWidget extends StatelessWidget {
           buildEquipIcon(context),
           notification: notification,
           requiredSteps: {TransferSteps.EquipOnCharacter},
-          progressStep: TransferSteps.EquipOnCharacter,
         ),
       ].whereType<Widget>().toList(),
     );
@@ -264,16 +272,15 @@ class ActiveTransferNotificationWidget extends StatelessWidget {
   }) {
     if (!notification.hasSteps(requiredSteps)) return null;
     final progressStepDiff = notification.currentStep?.diff(progressStep) ?? -1;
-    final isFinishedOrInProgress =
-        notification.finishedWithSuccess || progressStepDiff >= 0;
+    final isFinishedOrInProgress = notification.finishedWithSuccess || progressStepDiff >= 0;
     return AnimatedOpacity(
       key: Key("step_animated_opacity_$progressStep"),
       duration: _animationDuration,
       opacity: isFinishedOrInProgress ? 1 : _pendingOpacity,
       child: Container(
         margin: const EdgeInsets.only(right: 4),
-        width: 32,
-        height: 32,
+        width: _iconSize,
+        height: _iconSize,
         child: widget,
       ),
     );
@@ -290,9 +297,9 @@ class ActiveTransferNotificationWidget extends StatelessWidget {
     final isInProgress = progressStepDiff == 0;
     final arrow = Container(
       margin: const EdgeInsets.only(right: 4),
-      width: 32,
-      height: 32,
-      child: const Icon(FontAwesomeIcons.arrowRight),
+      width: _iconSize,
+      height: _iconSize,
+      child: const Icon(FontAwesomeIcons.chevronRight),
     );
     if (isFinished) {
       return arrow;
@@ -300,8 +307,8 @@ class ActiveTransferNotificationWidget extends StatelessWidget {
     if (isInProgress && notification.hasError) {
       return Container(
         margin: const EdgeInsets.only(right: 4),
-        width: 32,
-        height: 32,
+        width: _iconSize,
+        height: _iconSize,
         child: const Icon(
           FontAwesomeIcons.circleXmark,
           size: 24,
@@ -314,8 +321,7 @@ class ActiveTransferNotificationWidget extends StatelessWidget {
     return Opacity(opacity: _pendingOpacity, child: arrow);
   }
 
-  Widget buildEquipIcon(BuildContext context) =>
-      ManifestImageWidget<DestinyPresentationNodeDefinition>(
+  Widget buildEquipIcon(BuildContext context) => ManifestImageWidget<DestinyPresentationNodeDefinition>(
         _armorIconPresentationNodeHash,
         color: context.theme.onSurfaceLayers.layer1,
       );
@@ -335,8 +341,7 @@ class ActiveTransferNotificationWidget extends StatelessWidget {
     }
   }
 
-  Widget buildSideEffects(
-      BuildContext context, SingleTransferAction notification) {
+  Widget buildSideEffects(BuildContext context, SingleTransferAction notification) {
     return Column(
       children: notification.sideEffects
           .map((se) => Container(

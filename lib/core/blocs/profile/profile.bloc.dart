@@ -499,11 +499,10 @@ class ProfileBloc extends ChangeNotifier
     final itemHash = itemInfo.item.itemHash;
     final itemInstanceId = itemInfo.item.itemInstanceId;
     final characterId = itemInfo.characterId;
-    if (itemHash == null) throw 'TODO: specific exception';
-    if (characterId == null) throw 'TODO: specific exception';
+    if (itemHash == null) throw Exception('Missing itemHash');
+    if (characterId == null) throw Exception('Missing characterId');
 
     await bungieAPI.pullFromPostMaster(itemHash, stackSize, itemInstanceId, characterId);
-    // await mockTransfer(itemInfo, stackSize, false, characterId);
 
     if (itemInstanceId != null) {
       await _updateInstancedItemLocation(itemInfo, false, characterId);
@@ -518,7 +517,6 @@ class ProfileBloc extends ChangeNotifier
     if (itemHash == null) throw 'TODO: specific exception';
 
     await bungieAPI.transferItem(itemHash, stackSize, transferToVault, itemInstanceId, characterId);
-    // await mockTransfer(itemInfo, stackSize, transferToVault, characterId);
 
     if (itemInstanceId != null) {
       await _updateInstancedItemLocation(itemInfo, transferToVault, characterId);

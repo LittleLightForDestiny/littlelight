@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:little_light/shared/widgets/menus/context_menu_info_box.dart';
+import 'package:little_light/shared/widgets/containers/menu_info_box.dart';
 
-class ContextMenuTitle extends ContextMenuInfoBox {
-  ContextMenuTitle(String title, {Key? key, Widget? trailing})
+class MenuBoxTitle extends MenuInfoBox {
+  MenuBoxTitle(String title, {Key? key, Widget? trailing})
       : super(
           key: key,
           child: Row(children: [

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:little_light/core/blocs/bucket_options/bucket_options.bloc.dart';
+import 'package:little_light/shared/blocs/bucket_options/bucket_options.bloc.dart';
 import 'package:little_light/models/bucket_display_options.dart';
 import 'package:little_light/shared/utils/extensions/bucket_display_type_data.dart';
 import 'package:little_light/shared/widgets/headers/bucket_header/bucket_display_options_overlay_menu.widget.dart';
@@ -34,20 +34,12 @@ class BucketDisplayOptionsSelector extends StatelessWidget {
   }
 
   BucketDisplayType getCurrentType(BuildContext context) => isVault
-      ? context
-          .watch<BucketOptionsBloc>()
-          .getDisplayTypeForVaultBucket(bucketHash)
-      : context
-          .watch<BucketOptionsBloc>()
-          .getDisplayTypeForCharacterBucket(bucketHash);
+      ? context.watch<BucketOptionsBloc>().getDisplayTypeForVaultBucket(bucketHash)
+      : context.watch<BucketOptionsBloc>().getDisplayTypeForCharacterBucket(bucketHash);
 
   void setCurrentType(BuildContext context, BucketDisplayType type) => isVault
-      ? context
-          .read<BucketOptionsBloc>()
-          .setDisplayTypeForVaultBucket(bucketHash, type)
-      : context
-          .read<BucketOptionsBloc>()
-          .setDisplayTypeForCharacterBucket(bucketHash, type);
+      ? context.read<BucketOptionsBloc>().setDisplayTypeForVaultBucket(bucketHash, type)
+      : context.read<BucketOptionsBloc>().setDisplayTypeForCharacterBucket(bucketHash, type);
 
   void openMenu(BuildContext context) {
     showOverlay(
