@@ -1,4 +1,3 @@
-import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/modules/progress/pages/progress/milestones.bloc.dart';
@@ -183,17 +182,14 @@ class ProgressView extends StatelessWidget {
   }
 
   Widget buildMilestonesTabContent(BuildContext context, ProgressTab tab, DestinyCharacterInfo character) {
-    final bucketHashes = [InventoryBucket.pursuits];
     final currencies = _state.relevantCurrencies;
     final milestones = _milestonesState.getMilestones(character);
-    final raidMilestones = _milestonesState.getRaidMilestones(character);
-    if (raidMilestones == null && milestones == null) return LoadingAnimWidget();
+    if (milestones == null) return LoadingAnimWidget();
     return CharacterMilestonesTabContentWidget(
       character,
       scrollViewKey: PageStorageKey("character_tab_${tab.name}_${character.characterId}"),
       currencies: currencies,
-      raidMilestones: raidMilestones ?? <DestinyMilestone>[],
-      milestones: milestones ?? [],
+      milestones: milestones,
     );
   }
 

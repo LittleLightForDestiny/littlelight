@@ -56,7 +56,6 @@ class LoadoutsHomeBloc extends ChangeNotifier with ProfileConsumer, UserSettings
     await Future.delayed(Duration.zero);
     final route = ModalRoute.of(context);
     await Future.delayed(route?.transitionDuration ?? Duration.zero);
-    profile.updateComponents = ProfileComponentGroups.basicProfile;
   }
 
   set searchString(String value) {

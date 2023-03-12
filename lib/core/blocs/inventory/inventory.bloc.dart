@@ -141,7 +141,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     try {
       _isBusy = true;
       notifyListeners();
-      await _profileBloc.refresh(ProfileComponentGroups.basicProfile);
+      await _profileBloc.refresh();
       _lastUpdated = DateTime.now();
       await Future.delayed(const Duration(seconds: 1));
       _isBusy = false;

@@ -21,7 +21,6 @@ import 'package:little_light/widgets/inventory_tabs/character_tab_header.widget.
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/selected_items.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/tabs_character_menu.widget.dart';
-import 'package:little_light/widgets/progress_tabs/character_milestones_list.widget.dart';
 import 'package:little_light/widgets/progress_tabs/character_pursuits_list.widget.dart';
 import 'package:little_light/widgets/progress_tabs/character_ranks_list.widget.dart';
 import 'package:little_light/widgets/search/search.controller.dart';
@@ -43,8 +42,6 @@ class ProgressScreenState extends State<ProgressScreen>
   @override
   void initState() {
     super.initState();
-
-    profile.updateComponents = ProfileComponentGroups.basicProfile;
 
     userSettings.startingPage = _page;
     analytics.registerPageOpen(_page);
@@ -180,9 +177,6 @@ class ProgressScreenState extends State<ProgressScreen>
   }
 
   Widget buildContentTab(BuildContext context, String characterId, int tabIndex) {
-    if (tabIndex == 0) {
-      return CharacterMilestonesListWidget(characterId: characterId);
-    }
     if (tabIndex == 1) {
       return CharacterPursuitsListWidget(characterId: characterId);
     }

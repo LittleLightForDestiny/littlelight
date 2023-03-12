@@ -107,7 +107,7 @@ class RecordObjectivesWidgetState extends State<RecordObjectivesWidget>
             InkWell(
                 child: Container(padding: const EdgeInsets.all(8), child: const Icon(Icons.refresh)),
                 onTap: () {
-                  profile.refresh(ProfileComponentGroups.triumphs);
+                  profile.refresh();
                 })
           ],
         ));

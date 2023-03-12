@@ -7,16 +7,11 @@ import 'package:provider/provider.dart';
 
 const _raidActivityTypeHash = 2043403989;
 
-class _CharacterMilestonesState {
-  List<DestinyMilestone> raidMilestones = [];
-  List<DestinyMilestone> milestones = [];
-}
-
 class MilestonesBloc extends ChangeNotifier with ManifestConsumer {
   final ProfileBloc _profileBloc;
   final BuildContext context;
 
-  Map<String, _CharacterMilestonesState>? _milestones;
+  Map<String, List<DestinyMilestone>>? _milestones;
 
   MilestonesBloc(this.context) : _profileBloc = context.read<ProfileBloc>() {
     _init();
@@ -34,59 +29,39 @@ class MilestonesBloc extends ChangeNotifier with ManifestConsumer {
   }
 
   void _update() async {
-    Map<String, _CharacterMilestonesState> milestones = {};
+    Map<String, List<DestinyMilestone>> milestones = {};
     final characters = _profileBloc.characters;
     if (characters == null) return;
     for (final character in characters) {
       final characterId = character.characterId;
       if (characterId == null) continue;
-      final characterMilestoneState = milestones[characterId] ??= _CharacterMilestonesState();
       final allMilestones = character.progression?.milestones?.values;
       if (allMilestones == null) continue;
-      await _addMilestonesToCharacterState(characterMilestoneState, allMilestones);
+      milestones[characterId] ??= await _sortMilestones(allMilestones);
     }
     this._milestones = milestones;
     notifyListeners();
   }
 
-  Future<void> _addMilestonesToCharacterState(
-    _CharacterMilestonesState characterState,
-    Iterable<DestinyMilestone> allMilestones,
-  ) async {
-    for (final milestone in allMilestones) {
-      final isRaid = await _isRaidMilestone(milestone);
-      if (isRaid) {
-        characterState.raidMilestones.add(milestone);
-        continue;
-      }
-      characterState.milestones.add(milestone);
+  Future<List<DestinyMilestone>> _sortMilestones(Iterable<DestinyMilestone> milestones) async {
+    Map<DestinyMilestone, int> indexes = {};
+    final maxInt = double.maxFinite.toInt();
+    for (final milestone in milestones) {
+      final def = await manifest.getDefinition<DestinyMilestoneDefinition>(milestone.milestoneHash);
+      indexes[milestone] = def?.defaultOrder ?? maxInt;
     }
-    print(characterState.raidMilestones.length);
-  }
-
-  Future<bool> _isRaidMilestone(DestinyMilestone milestone) async {
-    final def = await manifest.getDefinition<DestinyMilestoneDefinition>(milestone.milestoneHash);
-    final activities = def?.activities;
-
-    if (activities == null) return false;
-    for (final activity in activities) {
-      final activityDef = await manifest.getDefinition<DestinyActivityDefinition>(activity.activityHash);
-      final isRaid = activityDef?.activityModeTypes?.contains(DestinyActivityModeType.Raid) ??
-          activityDef?.activityTypeHash == _raidActivityTypeHash;
-      if (isRaid) return true;
-    }
-    return false;
-  }
-
-  List<DestinyMilestone>? getRaidMilestones(DestinyCharacterInfo character) {
-    final characterId = character.characterId;
-    if (characterId == null) return null;
-    return _milestones?[characterId]?.raidMilestones;
+    final sorted = milestones.toList();
+    sorted.sort((a, b) {
+      final indexA = indexes[a] ?? maxInt;
+      final indexB = indexes[b] ?? maxInt;
+      return indexB.compareTo(indexA);
+    });
+    return sorted;
   }
 
   List<DestinyMilestone>? getMilestones(DestinyCharacterInfo character) {
     final characterId = character.characterId;
     if (characterId == null) return null;
-    return _milestones?[characterId]?.milestones;
+    return _milestones?[characterId];
   }
 }

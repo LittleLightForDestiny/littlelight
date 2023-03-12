@@ -90,11 +90,15 @@ class ProfileBloc extends ChangeNotifier
     _itemCache = _CachedItemsContainer();
   }
 
-  List<DestinyComponentType> updateComponents = ProfileComponentGroups.basicProfile;
+  void includeComponentsInNextRefresh(List<DestinyComponentType> components) {
+    _includeComponentsInNextRefresh ??= _includeComponentsInNextRefresh;
+  }
 
-  Future<void> _updateProfileFromServer(List<DestinyComponentType> components) async {
+  List<DestinyComponentType>? _includeComponentsInNextRefresh;
+
+  Future<void> _updateProfileFromServer(Set<DestinyComponentType> components) async {
     final before = DateTime.now();
-    final profile = await bungieAPI.getCurrentProfile(components);
+    final profile = await bungieAPI.getCurrentProfile(components.toList());
     final after = DateTime.now();
     final requestTimeInMs = after.difference(before).inMilliseconds;
     print("Took $requestTimeInMs ms to update profile from Bungie");
@@ -114,9 +118,10 @@ class ProfileBloc extends ChangeNotifier
     await _loadInventoryFromStorage();
   }
 
-  Future<void> refresh([List<DestinyComponentType>? components]) async {
-    components ??= ProfileComponentGroups.basicProfile;
-    await _updateProfileFromServer(components);
+  Future<void> refresh() async {
+    final components = ProfileComponentGroups.basicProfile + (_includeComponentsInNextRefresh ?? []);
+    _includeComponentsInNextRefresh = null;
+    await _updateProfileFromServer(components.toSet());
   }
 
   Future<DestinyProfileResponse> _updateProfileCache(DestinyProfileResponse newData) async {
@@ -133,6 +138,7 @@ class ProfileBloc extends ChangeNotifier
     newData.profileInventory ??= _cachedProfileResponse?.profileInventory;
     newData.profileCurrencies ??= _cachedProfileResponse?.profileCurrencies;
     newData.profile ??= _cachedProfileResponse?.profile;
+    newData.profileStringVariables ??= _cachedProfileResponse?.profileStringVariables;
     newData.profileKiosks ??= _cachedProfileResponse?.profileKiosks;
     newData.characterKiosks ??= _cachedProfileResponse?.characterKiosks;
     newData.profilePlugSets ??= _cachedProfileResponse?.profilePlugSets;
@@ -146,6 +152,7 @@ class ProfileBloc extends ChangeNotifier
     newData.profileCollectibles ??= _cachedProfileResponse?.profileCollectibles;
     newData.characterCollectibles ??= _cachedProfileResponse?.characterCollectibles;
     newData.characters ??= _cachedProfileResponse?.characters;
+    newData.characterStringVariables ??= newData.characterStringVariables;
     newData.characterActivities ??= _cachedProfileResponse?.characterActivities;
     newData.characterInventories ??= _cachedProfileResponse?.characterInventories;
     newData.characterProgressions ??= _cachedProfileResponse?.characterProgressions;
@@ -307,6 +314,15 @@ class ProfileBloc extends ChangeNotifier
 
   List<DestinyItemSocketState>? getItemSockets(String instanceId) {
     return _itemCache.itemsByInstanceId[instanceId]?.sockets;
+  }
+
+  int? stringVariable(String? hash, {String? characterId}) {
+    if (characterId != null) {
+      final value = _cachedProfileResponse?.characterStringVariables?.data?[characterId]?.integerValuesByHash?[hash];
+      if (value != null) return value;
+    }
+    final value = _cachedProfileResponse?.profileStringVariables?.data?.integerValuesByHash?[hash];
+    return value;
   }
 
   Map<String, List<DestinyItemPlugBase>>? getItemReusablePlugs(String instanceId) {

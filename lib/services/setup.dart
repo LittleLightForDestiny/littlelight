@@ -13,7 +13,7 @@ import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/services/inventory/inventory.service.dart';
 import 'package:little_light/services/littlelight/item_notes.service.dart';
-import 'package:little_light/services/littlelight/littlelight_data.service.dart';
+import 'package:little_light/core/blocs/littlelight_data/littlelight_data.bloc.dart';
 import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/notification/notification.service.dart';

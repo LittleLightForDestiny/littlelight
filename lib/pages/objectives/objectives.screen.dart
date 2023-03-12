@@ -23,8 +23,7 @@ class ObjectivesScreen extends StatefulWidget {
   ObjectivesScreenState createState() => ObjectivesScreenState();
 }
 
-class ObjectivesScreenState extends State<ObjectivesScreen>
-    with ProfileConsumer {
+class ObjectivesScreenState extends State<ObjectivesScreen> with ProfileConsumer {
   List<TrackedObjective> objectives;
   Map<TrackedObjective, ItemWithOwner> items;
 
@@ -38,18 +37,17 @@ class ObjectivesScreenState extends State<ObjectivesScreen>
   void initState() {
     super.initState();
     loadObjectives();
-    profile.updateComponents = ProfileComponentGroups.everything;
+    profile.includeComponentsInNextRefresh(ProfileComponentGroups.collections + ProfileComponentGroups.triumphs);
     profile.addListener(loadObjectives);
   }
 
   void loadObjectives() async {
+    profile.includeComponentsInNextRefresh(ProfileComponentGroups.collections + ProfileComponentGroups.triumphs);
     ObjectivesService service = ObjectivesService();
     objectives = (await service.getTrackedObjectives()).reversed.toList();
     items = {};
-    var itemObjectives =
-        objectives.where((o) => o.type == TrackedObjectiveType.Item);
-    var plugObjectives =
-        objectives.where((o) => o.type == TrackedObjectiveType.Plug);
+    var itemObjectives = objectives.where((o) => o.type == TrackedObjectiveType.Item);
+    var plugObjectives = objectives.where((o) => o.type == TrackedObjectiveType.Plug);
     for (var o in itemObjectives) {
       DestinyItemComponent item = await service.findObjectiveItem(o);
       if (item != null) {
@@ -88,8 +86,7 @@ class ObjectivesScreenState extends State<ObjectivesScreen>
         bottom: 8 + bottomPadding,
         child: Container(
           decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.secondaryContainer,
-              borderRadius: BorderRadius.circular(18)),
+              color: Theme.of(context).colorScheme.secondaryContainer, borderRadius: BorderRadius.circular(18)),
           width: 36,
           height: 36,
           child: const RefreshButtonWidget(),
@@ -105,9 +102,8 @@ class ObjectivesScreenState extends State<ObjectivesScreen>
     var screenPadding = MediaQuery.of(context).padding;
     if (objectives.isEmpty) {
       return Container(
-          padding: const EdgeInsets.all(16).copyWith(
-              left: max(screenPadding.left, 16),
-              right: max(screenPadding.right, 16)),
+          padding:
+              const EdgeInsets.all(16).copyWith(left: max(screenPadding.left, 16), right: max(screenPadding.right, 16)),
           child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -129,24 +125,20 @@ class ObjectivesScreenState extends State<ObjectivesScreen>
             bottom: max(screenPadding.bottom, 4),
             top: 4),
         itemCount: objectives.length,
-        gridDelegate: SliverSimpleGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: isTablet ? 2 : 1),
-        itemBuilder: (context, index) =>
-            SizedBox(height: 132, child: getItem(context, index)));
+        gridDelegate: SliverSimpleGridDelegateWithFixedCrossAxisCount(crossAxisCount: isTablet ? 2 : 1),
+        itemBuilder: (context, index) => SizedBox(height: 132, child: getItem(context, index)));
   }
 
   Widget getItem(BuildContext context, int index) {
     TrackedObjective objective = objectives[index];
     switch (objective.type) {
       case TrackedObjectiveType.Triumph:
-        return RecordItemWidget(
-            key: Key("objective_${objective.hash}"), hash: objective.hash);
+        return RecordItemWidget(key: Key("objective_${objective.hash}"), hash: objective.hash);
 
       case TrackedObjectiveType.Item:
         if (items[objective] != null) {
           return TrackedPursuitItemWidget(
-              key: Key(
-                  "objective_${objective.hash}_objective_${objective.instanceId}_${objective.characterId}"),
+              key: Key("objective_${objective.hash}_objective_${objective.instanceId}_${objective.characterId}"),
               characterId: objective.characterId,
               item: items[objective],
               onTap: () async {

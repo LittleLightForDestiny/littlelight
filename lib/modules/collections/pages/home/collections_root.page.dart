@@ -21,14 +21,8 @@ class CollectionsRootPage extends PresentationNodesTabsScaffoldWidget {
 
 const _page = LittleLightPersistentPage.Collections;
 
-class CollectionsRootPageState
-    extends PresentationNodesTabsScaffoldState<CollectionsRootPage>
-    with
-        UserSettingsConsumer,
-        AnalyticsConsumer,
-        ProfileConsumer,
-        DestinySettingsConsumer,
-        ManifestConsumer {
+class CollectionsRootPageState extends PresentationNodesTabsScaffoldState<CollectionsRootPage>
+    with UserSettingsConsumer, AnalyticsConsumer, ProfileConsumer, DestinySettingsConsumer, ManifestConsumer {
   List<DestinyPresentationNodeDefinition>? rootNodesDefinitions;
 
   @override
@@ -38,7 +32,7 @@ class CollectionsRootPageState
   void initState() {
     super.initState();
 
-    profile.updateComponents = ProfileComponentGroups.collections;
+    profile.includeComponentsInNextRefresh(ProfileComponentGroups.collections);
     profile.refresh();
     userSettings.startingPage = _page;
     analytics.registerPageOpen(_page);
@@ -58,13 +52,10 @@ class CollectionsRootPageState
       destinySettings.collectionsRootNode,
       destinySettings.badgesRootNode,
     ];
-    final definitions = await manifest
-        .getDefinitions<DestinyPresentationNodeDefinition>(rootNodes);
+    final definitions = await manifest.getDefinitions<DestinyPresentationNodeDefinition>(rootNodes);
     setState(() {
-      rootNodesDefinitions = rootNodes
-          .map((h) => definitions[h])
-          .whereType<DestinyPresentationNodeDefinition>()
-          .toList();
+      rootNodesDefinitions =
+          rootNodes.map((h) => definitions[h]).whereType<DestinyPresentationNodeDefinition>().toList();
     });
   }
 
@@ -94,31 +85,23 @@ class CollectionsRootPageState
   }
 
   @override
-  Widget buildTabButton(
-      BuildContext context, DestinyPresentationNodeDefinition node) {
-    return Container(
-        padding: const EdgeInsets.all(8),
-        child: Text(node.displayProperties?.name ?? ""));
+  Widget buildTabButton(BuildContext context, DestinyPresentationNodeDefinition node) {
+    return Container(padding: const EdgeInsets.all(8), child: Text(node.displayProperties?.name ?? ""));
   }
 
   @override
-  Widget buildTab(
-      BuildContext context, DestinyPresentationNodeDefinition node) {
+  Widget buildTab(BuildContext context, DestinyPresentationNodeDefinition node) {
     return PresentationNodeListWidget(
       node: node,
       onItemTap: (nodeHash) async {
-        final categoryDef = await manifest
-            .getDefinition<DestinyPresentationNodeDefinition>(nodeHash);
-        if (categoryDef?.displayStyle ==
-            DestinyPresentationDisplayStyle.Badge) {
-          Navigator.of(context).push(CollectionsPageRoute(
-              parentCategoryHashes: [node.hash!, nodeHash],
-              badgeCategoryHash: nodeHash));
+        final categoryDef = await manifest.getDefinition<DestinyPresentationNodeDefinition>(nodeHash);
+        if (categoryDef?.displayStyle == DestinyPresentationDisplayStyle.Badge) {
+          Navigator.of(context)
+              .push(CollectionsPageRoute(parentCategoryHashes: [node.hash!, nodeHash], badgeCategoryHash: nodeHash));
           return;
         }
-        Navigator.of(context).push(CollectionsPageRoute(
-            parentCategoryHashes: [node.hash!, nodeHash],
-            categoryPresentationNodeHash: nodeHash));
+        Navigator.of(context).push(
+            CollectionsPageRoute(parentCategoryHashes: [node.hash!, nodeHash], categoryPresentationNodeHash: nodeHash));
       },
     );
   }

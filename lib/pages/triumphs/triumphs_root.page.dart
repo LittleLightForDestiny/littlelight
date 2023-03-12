@@ -46,7 +46,7 @@ class TriumphsRootPageState extends PresentationNodesTabsScaffoldState<TriumphsR
   void initState() {
     super.initState();
 
-    profile.updateComponents = ProfileComponentGroups.triumphs;
+    profile.includeComponentsInNextRefresh(ProfileComponentGroups.triumphs);
     profile.refresh();
     userSettings.startingPage = _page;
     analytics.registerPageOpen(_page);

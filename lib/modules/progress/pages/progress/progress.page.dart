@@ -4,6 +4,7 @@ import 'package:little_light/modules/progress/pages/progress/milestones.bloc.dar
 import 'package:little_light/modules/progress/pages/progress/progress.bloc.dart';
 import 'package:little_light/shared/blocs/bucket_options/bucket_options.bloc.dart';
 import 'package:little_light/shared/blocs/item_interaction_handler/item_interaction_handler.bloc.dart';
+import 'package:little_light/shared/blocs/scoped_value_repository/scoped_value_repository.bloc.dart';
 import 'package:provider/provider.dart';
 
 import 'progress.view.dart';
@@ -16,6 +17,7 @@ class ProgressPage extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<BucketOptionsBloc>(create: (context) => BucketOptionsBloc(context)),
+        ChangeNotifierProvider<ScopedValueRepositoryBloc>(create: (context) => ScopedValueRepositoryBloc()),
         ChangeNotifierProvider(create: (context) => MilestonesBloc(context)),
         ChangeNotifierProvider(create: (context) => ProgressBloc(context)),
         Provider<ItemInteractionHandlerBloc>(create: (context) {

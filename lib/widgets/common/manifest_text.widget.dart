@@ -1,7 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/shared/utils/extensions/number/to_decimal.dart';
+import 'package:provider/provider.dart';
 
 typedef ExtractTextFromData<T> = FutureOr<String>? Function(T definition);
 
@@ -50,6 +53,7 @@ class ManifestText<T> extends StatelessWidget with ManifestConsumer {
 
   Future<String> desiredText(BuildContext context) async {
     String? resultText;
+    final profile = context.read<ProfileBloc>();
     try {
       final def = await manifest.getDefinition<T>(hash);
       if (def == null) return "";
@@ -58,6 +62,16 @@ class ManifestText<T> extends StatelessWidget with ManifestConsumer {
         resultText = await extractor(def);
       } else {
         resultText = (def as dynamic).displayProperties.name;
+      }
+      final varFinder = RegExp(r"\{var:(\d*)\}");
+      final hasVars = varFinder.hasMatch(resultText ?? "");
+      if (hasVars) {
+        resultText = resultText?.replaceAllMapped(varFinder, (match) {
+          final hash = match.group(1);
+          final replacement = profile.stringVariable(hash);
+          final replacementStr = replacement?.toDecimal(context);
+          return replacementStr ?? match.group(0) ?? "";
+        });
       }
     } catch (e) {
       print(e);

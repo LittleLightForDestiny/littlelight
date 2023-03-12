@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/widgets/multisection_scrollview/sliver_section.dart';
 
-class MultiSectionScrollView extends StatelessWidget {
+class MultiSectionScrollView extends StatefulWidget {
   final EdgeInsets? padding;
   final List<SliverSection> _sections;
   final double crossAxisSpacing;
@@ -16,6 +16,32 @@ class MultiSectionScrollView extends StatelessWidget {
       this.scrollViewKey,
       Key? key})
       : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => MultiSectionScrollViewState();
+}
+
+class MultiSectionScrollViewState extends State<MultiSectionScrollView> {
+  ScrollController? controller;
+
+  EdgeInsets? get padding => widget.padding;
+  List<SliverSection> get _sections => widget._sections;
+  double get crossAxisSpacing => widget.crossAxisSpacing;
+  double get mainAxisSpacing => widget.mainAxisSpacing;
+  bool get shrinkWrap => widget.shrinkWrap;
+  Key? get scrollViewKey => widget.scrollViewKey;
+
+  @override
+  void initState() {
+    super.initState();
+    this.controller = scrollViewKey != null ? TrackingScrollController(keepScrollOffset: true) : null;
+  }
+
+  @override
+  void dispose() {
+    this.controller?.dispose();
+    super.dispose();
+  }
 
   Widget get spacer => SliverToBoxAdapter(
           child: Container(
@@ -43,7 +69,7 @@ class MultiSectionScrollView extends StatelessWidget {
         padding: padding?.copyWith(top: 0, bottom: 0),
         child: CustomScrollView(
           restorationId: scrollViewKey?.toString(),
-          controller: scrollViewKey != null ? ScrollController(keepScrollOffset: true) : null,
+          controller: controller,
           cacheExtent: 200,
           shrinkWrap: shrinkWrap,
           physics: shrinkWrap ? const NeverScrollableScrollPhysics() : null,

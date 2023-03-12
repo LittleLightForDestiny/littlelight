@@ -14,6 +14,7 @@ class ProfileComponentGroups {
     DestinyComponentType.ItemSockets,
     DestinyComponentType.ItemPlugObjectives,
     DestinyComponentType.ItemReusablePlugs,
+    DestinyComponentType.StringVariables,
     // DestinyComponentType.CharacterActivities,
     // DestinyComponentType.ProfileProgression,
     // DestinyComponentType.ItemPlugStates,
