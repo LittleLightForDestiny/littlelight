@@ -11,6 +11,7 @@ import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enu
 import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:provider/provider.dart';
+import 'dart:math';
 
 const _equipmentBuckets = {
   InventoryBucket.kineticWeapons,
@@ -100,7 +101,7 @@ class ContextMenuOptionsBloc extends ChangeNotifier with ManifestConsumer, Littl
 
     final maxEquippable = maxPower.map((k, v) => MapEntry(k, _getMaxEquippableLoadout(v, maxPowerNonExotic[k]!)));
     final currentAverage = maxPower.map((k, v) => MapEntry(k, _getEquipmentAverage(v)));
-    final achievableAverage = maxPower.map((k, v) => MapEntry(k, _getAchievableAverage(currentAverage[k]!, v)));
+    final achievableAverage = maxPower.map((k, v) => MapEntry(k, _getAchievableAverage(v)));
     final equippableAverage = maxEquippable.map((k, v) => MapEntry(k, _getEquipmentAverage(v)));
     _maxPowerEquipments = maxPower;
     _maxEquippable = maxEquippable;
@@ -132,20 +133,26 @@ class ContextMenuOptionsBloc extends ChangeNotifier with ManifestConsumer, Littl
     return totalPower / itemCount;
   }
 
-  double _getAchievableAverage(double currentAverage, Map<int, DestinyItemInfo> maxPowerEquipment) {
-    double? achievable;
-    int iterations = 0;
+  // Find the highest achievable power level without the use of pinnacle rewards. This is
+  // to help players decide whether to go for powerful or pinnacle rewards when leveling up.
+  // As of season 20:
+  //   - When below the powerful cap, powerful rewards will drop above power level.
+  //   - When at or above the powerful cap, powerfuls drop at power level.
+  double _getAchievableAverage(Map<int, DestinyItemInfo> maxPowerEquipment) {
     final equipmentPower = maxPowerEquipment //
         .values
-        .map<double>((e) => (e.instanceInfo?.primaryStat?.value ?? 0).toDouble());
-    while (achievable == null || achievable > currentAverage || iterations > 300) {
-      if (achievable != null) currentAverage = achievable;
-      final totalPower = equipmentPower.fold<double>(0, (t, c) => t + c.clamp(currentAverage, double.maxFinite));
-      final itemCount = maxPowerEquipment.length;
-      achievable = totalPower / itemCount;
-      iterations++;
-    }
-    return achievable;
+        .map((e) => (e.instanceInfo?.primaryStat?.value ?? 0));
+    int powerfulCap = _gameData?.powerfulCap ?? 1800;
+    // Bring each slot up to the powerfulCap since powerfuls can get us there
+    int totalPower = equipmentPower.fold(0, (t, c) => t + max(c, powerfulCap));
+    final itemCount = maxPowerEquipment.length;
+    int currentBase;
+    int iterations = 300; // This shouldn't be necessary
+    do {
+      currentBase = totalPower ~/ itemCount;
+      totalPower = equipmentPower.fold(0, (t, c) => t + max(c, currentBase));
+    } while (totalPower ~/ itemCount > currentBase && iterations-- > 0);
+    return totalPower / itemCount;
   }
 
   Map<int, DestinyItemInfo> _getMaxEquippableLoadout(
