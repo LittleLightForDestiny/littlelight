@@ -42,10 +42,12 @@ class CharacterGrindOptimizerWidget extends StatelessWidget {
     final achievableAverage = state.getAchievableAverage(classType) ?? 0;
     final achievableDiff = achievableAverage.floor() - currentAverage.floor();
     final isInPinnacle = state.achievedPinnacleTier(classType);
-    // TODO: check if it works for powerfuls
     final goForReward = state.goForReward(classType);
-    final message =
+    final gofor_message =
         isInPinnacle ? "Go for pinnacle reward?".translate(context) : "Go for powerful reward?".translate(context);
+    final achievable_message = isInPinnacle
+        ? "Achievable without pinnacles:".translate(context)
+        : "Achievable without powerfuls:".translate(context);
     final items = state.getMaxPowerItems(classType);
     final itemCount = items?.length ?? 8;
     return MenuBox(
@@ -75,13 +77,13 @@ class CharacterGrindOptimizerWidget extends StatelessWidget {
       ),
       MenuInfoBox(
         child: Row(children: [
-          Expanded(child: Text("Achievable without pinnacles".translate(context) + ":")),
+          Expanded(child: Text(achievable_message)),
           Text("+$achievableDiff  ", style: TextStyle(color: achievableDiff > 0 ? Colors.greenAccent : Colors.white)),
           Text("${achievableAverage.toStringAsFixed(2)}"),
         ]),
       ),
       MenuBoxTitle(
-        message,
+        gofor_message,
         trailing: Text(goForReward ? "Yes".translate(context).toUpperCase() : "No".translate(context).toUpperCase()),
       ),
       if (items != null)
