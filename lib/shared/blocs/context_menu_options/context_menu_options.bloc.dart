@@ -133,18 +133,17 @@ class ContextMenuOptionsBloc extends ChangeNotifier with ManifestConsumer, Littl
     return totalPower / itemCount;
   }
 
-  // Find the highest achievable power level without the use of pinnacle rewards. This is
-  // to help players decide whether to go for powerful or pinnacle rewards when leveling up.
+  // Find the highest achievable power level without getting above power rewards. This is
+  // to help players decide whether to go for on power or above power rewards when leveling up.
   // As of season 20:
   //   - When below the powerful cap, powerful rewards will drop above power level.
-  //   - When at or above the powerful cap, powerfuls drop at power level.
+  //   - When at or above the powerful cap, powerfuls drop at power level and only pinnacle
+  //     rewards will drop above level.
   double _getAchievableAverage(Map<int, DestinyItemInfo> maxPowerEquipment) {
     final equipmentPower = maxPowerEquipment //
         .values
         .map((e) => (e.instanceInfo?.primaryStat?.value ?? 0));
-    int powerfulCap = _gameData?.powerfulCap ?? 1800;
-    // Bring each slot up to the powerfulCap since powerfuls can get us there
-    int totalPower = equipmentPower.fold(0, (t, c) => t + max(c, powerfulCap));
+    int totalPower = equipmentPower.fold(0, (t, c) => t + c);
     final itemCount = maxPowerEquipment.length;
     int currentBase;
     int iterations = 300; // This shouldn't be necessary
@@ -243,9 +242,9 @@ class ContextMenuOptionsBloc extends ChangeNotifier with ManifestConsumer, Littl
   Map<int, DestinyItemInfo>? getEquippableMaxPowerItems(DestinyClass classType) => _maxEquippable?[classType];
 
   bool achievedPowerfulTier(DestinyClass classType) =>
-      (_achievableAverage?[classType] ?? 0) > (_gameData?.softCap ?? double.maxFinite);
+      (_achievableAverage?[classType] ?? 0) >= (_gameData?.softCap ?? double.maxFinite);
   bool achievedPinnacleTier(DestinyClass classType) =>
-      (_achievableAverage?[classType] ?? 0) > (_gameData?.powerfulCap ?? double.maxFinite);
+      (_achievableAverage?[classType] ?? 0) >= (_gameData?.powerfulCap ?? double.maxFinite);
   bool goForReward(DestinyClass classType) {
     if (!achievedPowerfulTier(classType)) return false;
     final current = (getCurrentAverage(classType) ?? 0).floor();
