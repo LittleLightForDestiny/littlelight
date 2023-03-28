@@ -128,7 +128,7 @@ class ContextMenuOptionsBloc extends ChangeNotifier with ManifestConsumer, Littl
     final totalPower = maxPowerEquipment //
         .values
         .map<int>((e) => e.instanceInfo?.primaryStat?.value ?? 0)
-        .fold<int>(0, (t, c) => t + c);
+        .fold<int>(0, (total, current) => total + current);
     final itemCount = maxPowerEquipment.length;
     return totalPower / itemCount;
   }
@@ -143,14 +143,13 @@ class ContextMenuOptionsBloc extends ChangeNotifier with ManifestConsumer, Littl
     final equipmentPower = maxPowerEquipment //
         .values
         .map((e) => (e.instanceInfo?.primaryStat?.value ?? 0));
-    int totalPower = equipmentPower.fold(0, (t, c) => t + c);
+    int totalPower = equipmentPower.fold(0, (total, current) => total + current);
     final itemCount = maxPowerEquipment.length;
     int currentBase;
-    int iterations = 300; // This shouldn't be necessary
     do {
       currentBase = totalPower ~/ itemCount;
-      totalPower = equipmentPower.fold(0, (t, c) => t + max(c, currentBase));
-    } while (totalPower ~/ itemCount > currentBase && iterations-- > 0);
+      totalPower = equipmentPower.fold(0, (total, current) => total + max(current, currentBase));
+    } while (totalPower ~/ itemCount > currentBase);
     return totalPower / itemCount;
   }
 

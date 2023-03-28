@@ -11,7 +11,6 @@ import 'package:little_light/shared/widgets/containers/menu_info_box.dart';
 import 'package:little_light/shared/widgets/containers/menu_box_title.dart';
 import 'package:provider/provider.dart';
 import 'package:tinycolor2/tinycolor2.dart';
-import 'package:step_progress_indicator/step_progress_indicator.dart';
 
 const List<int> _bucketsOrder = [
   InventoryBucket.kineticWeapons,
@@ -32,6 +31,31 @@ class CharacterGrindOptimizerWidget extends StatelessWidget {
     required this.character,
   }) : super(key: key);
 
+  // Build step progress bar widget to show exactly how many slot points (power levels on
+  // individual items) are needed to reach the next higher power level.
+  Widget _buildPartialLevelProgressBar(BuildContext context, int itemCount, double currentAverage) {
+    final currentStep = ((currentAverage - currentAverage.floor()) * itemCount);
+    var bars = <Widget>[];
+    Color color = context.theme.primaryLayers.layer1;
+    for (int i = 0; i < itemCount; i++) {
+      if (i == currentStep) {
+        color = context.theme.onSurfaceLayers.layer3;
+      }
+      if (i > 0) {
+        bars.add(SizedBox(width: 4));
+      }
+      bars.add(Expanded(child: Container(height: 4, width: 4, color: color)));
+    }
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text("${currentAverage.toInt()}", textScaleFactor: .8),
+        Expanded(child: Container(padding: EdgeInsets.symmetric(horizontal: 6), child: Row(children: bars))),
+        Text("${currentAverage.toInt() + 1}", textScaleFactor: .8),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final classType = character.character.classType;
@@ -43,9 +67,9 @@ class CharacterGrindOptimizerWidget extends StatelessWidget {
     final achievableDiff = achievableAverage.floor() - currentAverage.floor();
     final isInPinnacle = state.achievedPinnacleTier(classType);
     final goForReward = state.goForReward(classType);
-    final gofor_message =
+    final goForMessage =
         isInPinnacle ? "Go for pinnacle reward?".translate(context) : "Go for powerful reward?".translate(context);
-    final achievable_message = isInPinnacle
+    final achievableMessage = isInPinnacle
         ? "Achievable without pinnacles:".translate(context)
         : "Achievable without powerfuls:".translate(context);
     final items = state.getMaxPowerItems(classType);
@@ -59,31 +83,23 @@ class CharacterGrindOptimizerWidget extends StatelessWidget {
               Expanded(child: Text("Current base power".translate(context) + ":")),
               Text("${currentAverage.toStringAsFixed(2)}"),
             ]),
-            Container(height: 5),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("${currentAverage.toInt()} ", textScaleFactor: .8),
-                Expanded(
-                  child: StepProgressIndicator(
-                      totalSteps: itemCount,
-                      currentStep: ((currentAverage - currentAverage.floor()) * itemCount).round()),
-                ),
-                Text(" ${currentAverage.toInt() + 1}", textScaleFactor: .8),
-              ],
-            ),
+            SizedBox(height: 5),
+            _buildPartialLevelProgressBar(context, itemCount, currentAverage)
           ],
         ),
       ),
       MenuInfoBox(
         child: Row(children: [
-          Expanded(child: Text(achievable_message)),
-          Text("+$achievableDiff  ", style: TextStyle(color: achievableDiff > 0 ? Colors.greenAccent : Colors.white)),
+          Expanded(child: Text(achievableMessage)),
+          Text("+$achievableDiff  ",
+              style: TextStyle(
+                  color:
+                      achievableDiff > 0 ? context.theme.successLayers.layer3 : context.theme.onSurfaceLayers.layer0)),
           Text("${achievableAverage.toStringAsFixed(2)}"),
         ]),
       ),
       MenuBoxTitle(
-        gofor_message,
+        goForMessage,
         trailing: Text(goForReward ? "Yes".translate(context).toUpperCase() : "No".translate(context).toUpperCase()),
       ),
       if (items != null)
@@ -97,13 +113,13 @@ class CharacterGrindOptimizerWidget extends StatelessWidget {
                   final average = currentAverage.toInt();
                   final diff = (item.instanceInfo?.primaryStat?.value ?? average) - average;
                   String text = "+" + diff.toString();
-                  Color color = Colors.white;
+                  Color color = context.theme.onSurfaceLayers.layer0;
                   if (diff > 0) {
-                    color = Colors.greenAccent;
+                    color = context.theme.successLayers.layer3;
                   }
                   if (diff < 0) {
                     text = diff.toString();
-                    color = Colors.red;
+                    color = Color.fromARGB(255, 251, 121, 78);
                   }
                   return Container(
                     width: 64,
@@ -117,12 +133,10 @@ class CharacterGrindOptimizerWidget extends StatelessWidget {
                           child: LowDensityInventoryItem(item),
                         ),
                         Container(
-                          color: Colors.black,
+                          color: context.theme.surfaceLayers.layer0,
                           padding: EdgeInsets.symmetric(horizontal: 2),
                           child: Text(text,
-                              textScaleFactor: 1.1,
-                              style: TextStyle(color: color, fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.center),
+                              style: TextStyle(color: color, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
                         )
                       ],
                     ),
