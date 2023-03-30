@@ -41,16 +41,17 @@ class CharacterGrindOptimizerWidget extends StatelessWidget {
       if (i == currentStep) {
         color = context.theme.onSurfaceLayers.layer3;
       }
-      if (i > 0) {
-        bars.add(SizedBox(width: 4));
-      }
-      bars.add(Expanded(child: Container(height: 4, width: 4, color: color)));
+      bars.add(
+        Expanded(
+          child: Container(height: 4, width: 4, color: color, margin: EdgeInsets.symmetric(horizontal: 2)),
+        ),
+      );
     }
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text("${currentAverage.toInt()}", textScaleFactor: .8),
-        Expanded(child: Container(padding: EdgeInsets.symmetric(horizontal: 6), child: Row(children: bars))),
+        Expanded(child: Container(padding: EdgeInsets.symmetric(horizontal: 4), child: Row(children: bars))),
         Text("${currentAverage.toInt() + 1}", textScaleFactor: .8),
       ],
     );
@@ -73,18 +74,17 @@ class CharacterGrindOptimizerWidget extends StatelessWidget {
         ? "Achievable without pinnacles:".translate(context)
         : "Achievable without powerfuls:".translate(context);
     final items = state.getMaxPowerItems(classType);
-    final itemCount = items?.length ?? 8;
     return MenuBox(
         child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       MenuInfoBox(
         child: Column(
           children: [
             Row(children: [
-              Expanded(child: Text("Current base power".translate(context) + ":")),
+              Expanded(child: Text("Current base power:".translate(context))),
               Text("${currentAverage.toStringAsFixed(2)}"),
             ]),
             SizedBox(height: 5),
-            _buildPartialLevelProgressBar(context, itemCount, currentAverage)
+            _buildPartialLevelProgressBar(context, items?.length ?? 8, currentAverage)
           ],
         ),
       ),
