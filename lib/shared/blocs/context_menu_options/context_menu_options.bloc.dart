@@ -11,6 +11,7 @@ import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enu
 import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:provider/provider.dart';
+import 'dart:math';
 
 const _equipmentBuckets = {
   InventoryBucket.kineticWeapons,
@@ -100,7 +101,7 @@ class ContextMenuOptionsBloc extends ChangeNotifier with ManifestConsumer, Littl
 
     final maxEquippable = maxPower.map((k, v) => MapEntry(k, _getMaxEquippableLoadout(v, maxPowerNonExotic[k]!)));
     final currentAverage = maxPower.map((k, v) => MapEntry(k, _getEquipmentAverage(v)));
-    final achievableAverage = maxPower.map((k, v) => MapEntry(k, _getAchievableAverage(currentAverage[k]!, v)));
+    final achievableAverage = maxPower.map((k, v) => MapEntry(k, _getAchievableAverage(v)));
     final equippableAverage = maxEquippable.map((k, v) => MapEntry(k, _getEquipmentAverage(v)));
     _maxPowerEquipments = maxPower;
     _maxEquippable = maxEquippable;
@@ -127,25 +128,29 @@ class ContextMenuOptionsBloc extends ChangeNotifier with ManifestConsumer, Littl
     final totalPower = maxPowerEquipment //
         .values
         .map<int>((e) => e.instanceInfo?.primaryStat?.value ?? 0)
-        .fold<int>(0, (t, c) => t + c);
+        .fold<int>(0, (total, current) => total + current);
     final itemCount = maxPowerEquipment.length;
     return totalPower / itemCount;
   }
 
-  double _getAchievableAverage(double currentAverage, Map<int, DestinyItemInfo> maxPowerEquipment) {
-    double? achievable;
-    int iterations = 0;
+  // Find the highest achievable power level without getting above power rewards. This is
+  // to help players decide whether to go for on power or above power rewards when leveling up.
+  // As of season 20:
+  //   - When below the powerful cap, powerful rewards will drop above power level.
+  //   - When at or above the powerful cap, powerfuls drop at power level and only pinnacle
+  //     rewards will drop above level.
+  double _getAchievableAverage(Map<int, DestinyItemInfo> maxPowerEquipment) {
     final equipmentPower = maxPowerEquipment //
         .values
-        .map<double>((e) => (e.instanceInfo?.primaryStat?.value ?? 0).toDouble());
-    while (achievable == null || achievable > currentAverage || iterations > 300) {
-      if (achievable != null) currentAverage = achievable;
-      final totalPower = equipmentPower.fold<double>(0, (t, c) => t + c.clamp(currentAverage, double.maxFinite));
-      final itemCount = maxPowerEquipment.length;
-      achievable = totalPower / itemCount;
-      iterations++;
-    }
-    return achievable;
+        .map((e) => (e.instanceInfo?.primaryStat?.value ?? 0));
+    int totalPower = equipmentPower.fold(0, (total, current) => total + current);
+    final itemCount = maxPowerEquipment.length;
+    int currentBase;
+    do {
+      currentBase = totalPower ~/ itemCount;
+      totalPower = equipmentPower.fold(0, (total, current) => total + max(current, currentBase));
+    } while (totalPower ~/ itemCount > currentBase);
+    return totalPower / itemCount;
   }
 
   Map<int, DestinyItemInfo> _getMaxEquippableLoadout(
@@ -236,9 +241,9 @@ class ContextMenuOptionsBloc extends ChangeNotifier with ManifestConsumer, Littl
   Map<int, DestinyItemInfo>? getEquippableMaxPowerItems(DestinyClass classType) => _maxEquippable?[classType];
 
   bool achievedPowerfulTier(DestinyClass classType) =>
-      (_achievableAverage?[classType] ?? 0) > (_gameData?.softCap ?? double.maxFinite);
+      (_achievableAverage?[classType] ?? 0) >= (_gameData?.softCap ?? double.maxFinite);
   bool achievedPinnacleTier(DestinyClass classType) =>
-      (_achievableAverage?[classType] ?? 0) > (_gameData?.powerfulCap ?? double.maxFinite);
+      (_achievableAverage?[classType] ?? 0) >= (_gameData?.powerfulCap ?? double.maxFinite);
   bool goForReward(DestinyClass classType) {
     if (!achievedPowerfulTier(classType)) return false;
     final current = (getCurrentAverage(classType) ?? 0).floor();
