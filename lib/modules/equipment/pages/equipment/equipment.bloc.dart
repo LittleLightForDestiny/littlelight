@@ -8,6 +8,7 @@ import 'package:little_light/core/blocs/profile/sorters.dart';
 import 'package:little_light/core/blocs/selection/selection.bloc.dart';
 import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
 import 'package:little_light/models/game_data.dart';
+import 'package:little_light/modules/item_details/pages/inventory_item_details/inventory_item_details.page_route.dart';
 import 'package:little_light/modules/search/pages/quick_transfer/quick_transfer.page_route.dart';
 import 'package:little_light/pages/item_details/item_details.page_route.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
@@ -175,7 +176,7 @@ class EquipmentBloc extends ChangeNotifier with ManifestConsumer, LittleLightDat
       );
     }
 
-    Navigator.of(_context).push(ItemDetailsPageRoute.itemInfo(item: item));
+    Navigator.of(_context).push(InventoryItemDetailsPageRoute(item));
   }
 
   void onItemHold(DestinyItemInfo item) {

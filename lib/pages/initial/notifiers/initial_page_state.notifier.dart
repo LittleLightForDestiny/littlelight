@@ -3,8 +3,10 @@ import 'package:flutter/services.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:little_light/core/blocs/language/language.bloc.dart';
+import 'package:little_light/core/blocs/offline_mode/offline_mode.bloc.dart';
 import 'package:little_light/core/routes/login_route.dart';
 import 'package:little_light/exceptions/invalid_membership.exception.dart';
+import 'package:little_light/exceptions/network_error.exception.dart';
 import 'package:little_light/exceptions/not_authorized.exception.dart';
 import 'package:little_light/pages/initial/errors/authorization_failed.error.dart';
 import 'package:little_light/pages/initial/errors/init_services.error.dart';
@@ -46,6 +48,8 @@ class InitialPageStateNotifier
         AnalyticsConsumer,
         StorageConsumer,
         BungieApiConsumer {
+  final OfflineModeBloc _offlineModeBloc;
+
   InitialPagePhase _phase = InitialPagePhase.Loading;
   InitialPagePhase get phase => _phase;
 
@@ -59,10 +63,9 @@ class InitialPageStateNotifier
 
   final BuildContext _context;
 
-  InitialPageStateNotifier(this._context) {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarBrightness: Brightness.dark));
+  InitialPageStateNotifier(this._context) : _offlineModeBloc = _context.read<OfflineModeBloc>() {
+    SystemChrome.setSystemUIOverlayStyle(
+        const SystemUiOverlayStyle(statusBarColor: Colors.transparent, statusBarBrightness: Brightness.dark));
     _initLoading();
   }
 
@@ -119,8 +122,7 @@ class InitialPageStateNotifier
     _loading = true;
     notifyListeners();
 
-    final hasSelectedLanguage =
-        _context.read<LanguageBloc>().selectedLanguage != null;
+    final hasSelectedLanguage = _context.read<LanguageBloc>().selectedLanguage != null;
 
     if (hasSelectedLanguage) {
       languageSelected();
@@ -146,14 +148,23 @@ class InitialPageStateNotifier
     downloader.downloadManifest(true);
   }
 
+  void continueInOfflineMode() async {
+    _offlineModeBloc.acceptOfflineMode();
+    _ensureCache();
+  }
+
   Future<void> _checkManifest() async {
     _loading = true;
     notifyListeners();
 
-    final needsUpdate = await manifest.needsUpdate();
-    if (!needsUpdate) {
-      manifestDownloaded();
-      return;
+    try {
+      final needsUpdate = await manifest.needsUpdate();
+      if (!needsUpdate) {
+        manifestDownloaded();
+        return;
+      }
+    } on NetworkErrorException {
+      _error = ManifestDownloadError();
     }
 
     _phase = InitialPagePhase.ManifestDownload;
@@ -275,9 +286,8 @@ class InitialPageStateNotifier
   }
 
   Future<void> _startApp() async {
-    Navigator.of(_context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => const MainScreen()),
-        (r) => false);
+    Navigator.of(_context)
+        .pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const MainScreen()), (r) => false);
   }
 
   void clearDataAndRestart() async {

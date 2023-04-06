@@ -1,12 +1,10 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/utils/extensions/number/to_decimal.dart';
 import 'package:provider/provider.dart';
 
-typedef ExtractTextFromData<T> = FutureOr<String>? Function(T definition);
+typedef ExtractTextFromData<T> = String? Function(T definition);
 
 class ManifestText<T> extends StatelessWidget with ManifestConsumer {
   final int? hash;
@@ -36,30 +34,29 @@ class ManifestText<T> extends StatelessWidget with ManifestConsumer {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<String>(
-        future: desiredText(context),
-        builder: (context, text) => Text(
-              text.data ?? "",
-              maxLines: maxLines,
-              overflow: overflow,
-              semanticsLabel: semanticsLabel,
-              softWrap: softWrap,
-              style: style,
-              textAlign: textAlign,
-              textDirection: textDirection,
-              textScaleFactor: textScaleFactor,
-            ));
+    final text = desiredText(context);
+    return Text(
+      text,
+      maxLines: maxLines,
+      overflow: overflow,
+      semanticsLabel: semanticsLabel,
+      softWrap: softWrap,
+      style: style,
+      textAlign: textAlign,
+      textDirection: textDirection,
+      textScaleFactor: textScaleFactor,
+    );
   }
 
-  Future<String> desiredText(BuildContext context) async {
+  String desiredText(BuildContext context) {
     String? resultText;
-    final profile = context.read<ProfileBloc>();
+    final def = context.definition<T>(hash);
+    final profile = context.watch<ProfileBloc>();
     try {
-      final def = await manifest.getDefinition<T>(hash);
       if (def == null) return "";
       final extractor = textExtractor;
       if (extractor != null) {
-        resultText = await extractor(def);
+        resultText = extractor(def);
       } else {
         resultText = (def as dynamic).displayProperties.name;
       }

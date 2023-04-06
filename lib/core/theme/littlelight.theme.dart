@@ -100,6 +100,7 @@ class LittleLightTextTheme {
   final TextStyle largeTitle;
   final TextStyle subtitle;
   final TextStyle body;
+  final TextStyle highlight;
   final TextStyle button;
   final TextStyle notification;
   final TextStyle itemNameHighDensity;
@@ -115,6 +116,7 @@ class LittleLightTextTheme {
     required this.largeTitle,
     required this.subtitle,
     required this.body,
+    required this.highlight,
     required this.button,
     required this.notification,
     required this.itemNameHighDensity,
@@ -134,6 +136,7 @@ class LittleLightThemeData {
         title: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: onSurfaceLayers.layer0),
         subtitle: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: onSurfaceLayers.layer0),
         body: TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: onSurfaceLayers.layer0),
+        highlight: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: onSurfaceLayers.layer0),
         button: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: onSurfaceLayers.layer0),
         notification: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: onSurfaceLayers.layer0),
         itemNameHighDensity: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),

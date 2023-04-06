@@ -13,6 +13,7 @@ import 'package:bungie_api/helpers/oauth.dart';
 import 'package:bungie_api/settings.dart';
 import 'package:bungie_api/user.dart';
 import 'package:get_it/get_it.dart';
+import 'package:little_light/exceptions/network_error.exception.dart';
 import 'package:little_light/exceptions/not_authorized.exception.dart';
 import 'package:little_light/services/app_config/app_config.consumer.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
@@ -237,8 +238,14 @@ class Client with AuthConsumer, AppConfigConsumer implements HttpClient {
 
   @override
   Future<HttpResponse> request(HttpClientConfig config) async {
-    var req = await _request(config);
-    return req;
+    try {
+      final req = await _request(config);
+      return req;
+    } on SocketException catch (e) {
+      throw NetworkErrorException(e, url: config.url);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<HttpResponse> _request(HttpClientConfig config) async {

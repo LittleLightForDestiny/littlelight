@@ -231,8 +231,7 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
         body: Stack(children: [
       CustomScrollView(
         slivers: [
-          ItemCoverWidget(item, definition, instanceInfo,
-              uniqueId: uniqueId, characterId: characterId, key: Key("cover_${customName}_$loaded")),
+          ItemCoverWidget(item, definition, instanceInfo),
           SliverList(
               delegate: SliverChildListDelegate([
             buildSaleDetails(context),

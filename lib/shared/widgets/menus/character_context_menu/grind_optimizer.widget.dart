@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
-import 'package:little_light/shared/blocs/context_menu_options/context_menu_options.bloc.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/shared/widgets/inventory_item/low_density_inventory_item.dart';
+import 'package:little_light/shared/blocs/context_menu_options/context_menu_options.bloc.dart';
 import 'package:little_light/shared/widgets/containers/menu_box.dart';
-import 'package:little_light/shared/widgets/containers/menu_info_box.dart';
 import 'package:little_light/shared/widgets/containers/menu_box_title.dart';
+import 'package:little_light/shared/widgets/containers/menu_info_box.dart';
+import 'package:little_light/shared/widgets/inventory_item/low_density_inventory_item.dart';
 import 'package:provider/provider.dart';
 import 'package:tinycolor2/tinycolor2.dart';
 
@@ -50,9 +49,9 @@ class CharacterGrindOptimizerWidget extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text("${currentAverage.toInt()}", textScaleFactor: .8),
+        Text("${currentAverage.toInt()}", style: context.textTheme.highlight),
         Expanded(child: Container(padding: EdgeInsets.symmetric(horizontal: 4), child: Row(children: bars))),
-        Text("${currentAverage.toInt() + 1}", textScaleFactor: .8),
+        Text("${currentAverage.toInt() + 1}", style: context.textTheme.highlight),
       ],
     );
   }
@@ -113,13 +112,13 @@ class CharacterGrindOptimizerWidget extends StatelessWidget {
                   final average = currentAverage.toInt();
                   final diff = (item.instanceInfo?.primaryStat?.value ?? average) - average;
                   String text = "+" + diff.toString();
-                  Color color = context.theme.onSurfaceLayers.layer0;
+                  Color color = context.theme.surfaceLayers.layer1;
                   if (diff > 0) {
-                    color = context.theme.successLayers.layer3;
+                    color = context.theme.successLayers.layer0;
                   }
                   if (diff < 0) {
                     text = diff.toString();
-                    color = Color.fromARGB(255, 251, 121, 78);
+                    color = context.theme.errorLayers.layer0;
                   }
                   return Container(
                     width: 64,
@@ -129,15 +128,23 @@ class CharacterGrindOptimizerWidget extends StatelessWidget {
                       children: [
                         Container(
                           height: 64,
-                          margin: EdgeInsets.only(bottom: 2),
+                          margin: EdgeInsets.only(bottom: 4),
                           child: LowDensityInventoryItem(item),
                         ),
                         Container(
-                          color: context.theme.surfaceLayers.layer0,
-                          padding: EdgeInsets.symmetric(horizontal: 2),
-                          child: Text(text,
-                              style: TextStyle(color: color, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
-                        )
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(4),
+                            color: context.theme.surfaceLayers.layer0.mix(color, 50),
+                          ),
+                          padding: EdgeInsets.all(2),
+                          child: Text(
+                            text,
+                            style: context.textTheme.highlight.copyWith(
+                              color: context.theme.onSurfaceLayers.mix(color, 30),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   );

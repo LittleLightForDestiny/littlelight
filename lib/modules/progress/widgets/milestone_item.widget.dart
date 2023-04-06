@@ -7,14 +7,16 @@ import 'package:little_light/core/blocs/littlelight_data/littlelight_data.bloc.d
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/modules/progress/widgets/milestone_activity_select.bottomsheet.dart';
+import 'package:little_light/modules/progress/widgets/milestone_modifiers.bottomsheet.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/blocs/scoped_value_repository/page_storage_helper.dart';
 import 'package:little_light/shared/widgets/containers/height_keeper.widget.dart';
-import 'package:little_light/shared/widgets/containers/menu_box_title.dart';
-import 'package:little_light/shared/widgets/containers/menu_info_box.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
+import 'package:little_light/widgets/common/generic_progress_bar.widget.dart';
+import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
+import 'package:little_light/widgets/icon_fonts/littlelight_icons.dart';
 import 'package:provider/provider.dart';
 
 class SelectedActivityKey extends StorableValue<int> {
@@ -63,9 +65,10 @@ class MilestoneItemWidget extends StatelessWidget with ManifestConsumer {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             buildMilestoneHeader(context, def),
-            buildActivities(context, def),
+            buildModifiers(context, def),
             buildPhases(context, def),
             buildChallenges(context, def),
+            buildActivities(context, def),
           ],
         ));
   }
@@ -128,7 +131,7 @@ class MilestoneItemWidget extends StatelessWidget with ManifestConsumer {
     return DefinitionProviderWidget<DestinyActivityDefinition>(currentActivity, (definition) {
       final name = definition?.selectionScreenDisplayProperties?.name ?? definition?.displayProperties?.name;
       return Container(
-        margin: EdgeInsets.only(top: 8),
+        margin: EdgeInsets.only(top: 4),
         child: Material(
           color: context.theme.surfaceLayers.layer2,
           borderRadius: BorderRadius.circular(4),
@@ -147,6 +150,19 @@ class MilestoneItemWidget extends StatelessWidget with ManifestConsumer {
               padding: EdgeInsets.all(8),
               child: Row(children: [
                 Expanded(child: Text(name?.toUpperCase() ?? "", style: context.textTheme.itemNameHighDensity)),
+                Container(
+                    child: Icon(
+                  LittleLightIcons.power,
+                  size: 8,
+                  color: context.theme.achievementLayers,
+                )),
+                Text(
+                  "${definition?.activityLightLevel}",
+                  style: context.textTheme.button.copyWith(
+                    color: context.theme.achievementLayers,
+                  ),
+                ),
+                SizedBox(width: 8),
                 Icon(FontAwesomeIcons.caretDown, size: 12),
               ]),
             ),
@@ -234,11 +250,79 @@ class MilestoneItemWidget extends StatelessWidget with ManifestConsumer {
     final activityHash = getSelectedActivity(context, def);
     final activity = milestone.activities?.firstWhereOrNull((element) => element.activityHash == activityHash);
     final challenges = activity?.challenges;
-    if (challenges == null) return Container();
-    return Column(
-        children: challenges
-            .map((e) => MenuInfoBox(child: ManifestText<DestinyObjectiveDefinition>(e.objective?.objectiveHash)))
-            .toList());
+    if (challenges == null || challenges.isEmpty) return Container();
+    return Container(
+        margin: EdgeInsets.only(top: 2),
+        decoration: BoxDecoration(
+          color: context.theme.surfaceLayers.layer0.withOpacity(.8),
+          borderRadius: BorderRadius.circular(4),
+        ),
+        padding: EdgeInsets.all(4),
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: challenges
+                .map((e) => GenericProgressBarWidget(
+                      completed: e.objective?.complete,
+                      progress: e.objective?.progress,
+                      total: e.objective?.completionValue,
+                      description: ManifestText<DestinyObjectiveDefinition>(
+                        e.objective?.objectiveHash,
+                        textExtractor: (def) {
+                          return def.progressDescription ?? def.displayProperties?.name ?? "";
+                        },
+                      ),
+                    ))
+                .toList()));
+  }
+
+  Widget buildModifiers(BuildContext context, DestinyMilestoneDefinition? def) {
+    final activityHash = getSelectedActivity(context, def);
+    final activity = milestone.activities?.firstWhereOrNull((element) => element.activityHash == activityHash);
+    final modifierHashes = activity?.modifierHashes?.toSet();
+    if (activityHash == null || modifierHashes == null || modifierHashes.isEmpty) return Container();
+    return Container(
+      margin: EdgeInsets.only(top: 2),
+      child: Material(
+        child: InkWell(
+          onTap: () => MilestoneModifiersBottomSheet(activityHash, modifierHashes.toList()).show(context),
+          child: Container(
+            decoration: BoxDecoration(
+              color: context.theme.surfaceLayers.layer0.withOpacity(.8),
+              borderRadius: BorderRadius.circular(4),
+            ),
+            padding: EdgeInsets.all(4),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+              Container(
+                margin: EdgeInsets.only(bottom: 4),
+                padding: EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(4),
+                  color: context.theme.surfaceLayers.layer2,
+                ),
+                child: Text(
+                  "Modifiers".translate(context).toUpperCase(),
+                  style: context.textTheme.button,
+                ),
+              ),
+              Wrap(
+                runAlignment: WrapAlignment.start,
+                runSpacing: 4,
+                spacing: 4,
+                children: modifierHashes
+                    .map(
+                      (e) => SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: ManifestImageWidget<DestinyActivityModifierDefinition>(e),
+                      ),
+                    )
+                    .toList(),
+              )
+            ]),
+          ),
+        ),
+      ),
+    );
   }
 
   String getPhaseName(BuildContext context, int? phaseHash, int index) {

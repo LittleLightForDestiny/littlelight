@@ -19,10 +19,8 @@ class StartupErrorSubPage extends StatefulWidget {
   StartupErrorSubPageState createState() => StartupErrorSubPageState();
 }
 
-class StartupErrorSubPageState extends SubpageBaseState<StartupErrorSubPage>
-    with AuthConsumer {
-  InitialPageStateNotifier get controller =>
-      context.read<InitialPageStateNotifier>();
+class StartupErrorSubPageState extends SubpageBaseState<StartupErrorSubPage> with AuthConsumer {
+  InitialPageStateNotifier get controller => context.read<InitialPageStateNotifier>();
 
   @override
   void initState() {
@@ -43,24 +41,19 @@ class StartupErrorSubPageState extends SubpageBaseState<StartupErrorSubPage>
   @override
   Widget buildContent(BuildContext context) => Container(
       constraints: const BoxConstraints(maxWidth: 400),
-      child:
-          Column(children: [buildDescription(context), buildOptions(context)]));
+      child: Column(children: [buildDescription(context), buildOptions(context)]));
 
   Widget buildDescription(BuildContext context) {
     if (controller.error is ManifestDownloadError) {
-      return buildMultilineDescription(
-          [manifestDownloadErrorMessage, manifestDownloadErrorInstruction]);
+      return buildMultilineDescription([manifestDownloadErrorMessage, manifestDownloadErrorInstruction]);
     }
     if (controller.error is AuthorizationFailedError) {
-      return buildMultilineDescription(
-          [authorizationErrorMessage, authorizationErrorInstructions]);
+      return buildMultilineDescription([authorizationErrorMessage, authorizationErrorInstructions]);
     }
     if (controller.error is InvalidMembershipError) {
-      return buildMultilineDescription(
-          [invalidMembershipErrorMessage, invalidMembershipErrorInstruction]);
+      return buildMultilineDescription([invalidMembershipErrorMessage, invalidMembershipErrorInstruction]);
     }
-    return buildMultilineDescription(
-        [unexpectedErrorMessage, clearAndRestartInstructions]);
+    return buildMultilineDescription([unexpectedErrorMessage, clearAndRestartInstructions]);
   }
 
   Widget buildOptions(BuildContext context) {
@@ -68,15 +61,13 @@ class StartupErrorSubPageState extends SubpageBaseState<StartupErrorSubPage>
       return buildMultiButtonOptions([
         retryManifestDownloadOption,
         checkBungieNetTwitterOption,
-        clearDataAndRestartOption
+        clearDataAndRestartOption,
+        continueInOfflineModeOption
       ]);
     }
     if (controller.error is AuthorizationFailedError) {
-      return buildMultiButtonOptions([
-        openBungieLoginOption,
-        checkBungieNetTwitterOption,
-        checkLittleLightD2TwitterOption
-      ]);
+      return buildMultiButtonOptions(
+          [openBungieLoginOption, checkBungieNetTwitterOption, checkLittleLightD2TwitterOption]);
     }
     if (controller.error is InvalidMembershipError) {
       return buildMultiButtonOptions([logoutOption]);
@@ -87,22 +78,18 @@ class StartupErrorSubPageState extends SubpageBaseState<StartupErrorSubPage>
   Widget buildMultilineDescription(List<Widget> lines) => Container(
         constraints: const BoxConstraints(maxWidth: 400),
         padding: const EdgeInsets.all(8),
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch, children: lines),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: lines),
       );
 
   Widget buildMultiButtonOptions(List<Widget> buttons) => Container(
       constraints: const BoxConstraints(maxWidth: 400),
       padding: const EdgeInsets.all(8),
-      child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch, children: buttons));
+      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: buttons));
 
   /// Title options
   Widget get genericErrorTitle => Text("Unexpected error".translate(context));
-  Widget get authorizationErrorTitle =>
-      Text("Authorization error".translate(context));
-  Widget get manifestDownloadErrorTitle =>
-      Text("Error downloading Database".translate(context));
+  Widget get authorizationErrorTitle => Text("Authorization error".translate(context));
+  Widget get manifestDownloadErrorTitle => Text("Error downloading Database".translate(context));
 
   /// Description parts
   Widget get unexpectedErrorMessage => TranslatedTextWidget(
@@ -195,5 +182,10 @@ class StartupErrorSubPageState extends SubpageBaseState<StartupErrorSubPage>
   Widget get retryManifestDownloadOption => ElevatedButton(
         onPressed: controller.retryManifestDownload,
         child: Text("Retry download".translate(context)),
+      );
+
+  Widget get continueInOfflineModeOption => ElevatedButton(
+        onPressed: controller.continueInOfflineMode,
+        child: Text("Navigate in offline mode".translate(context)),
       );
 }

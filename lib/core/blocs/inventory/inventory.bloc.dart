@@ -12,7 +12,6 @@ import 'package:little_light/core/blocs/notifications/notification_actions.dart'
 import 'package:little_light/core/blocs/notifications/notifications.bloc.dart';
 import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
-import 'package:little_light/core/blocs/profile/profile_component_groups.dart';
 import 'package:little_light/models/bungie_api.exception.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';

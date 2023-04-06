@@ -25,8 +25,7 @@ setupLanguageService() {
   GetIt.I.registerSingleton<LanguageBloc>(LanguageBloc._internal());
 }
 
-class LanguageBloc extends ChangeNotifier
-    with StorageConsumer, ManifestConsumer {
+class LanguageBloc extends ChangeNotifier with StorageConsumer, ManifestConsumer {
   final _fallbackLanguage = "en";
   String? _systemLanguage;
   String? get selectedLanguage => globalStorage.currentLanguage;
@@ -36,8 +35,7 @@ class LanguageBloc extends ChangeNotifier
     _loadTranslations();
   }
 
-  String get currentLanguage =>
-      selectedLanguage ?? _systemLanguage ?? _fallbackLanguage;
+  String get currentLanguage => selectedLanguage ?? _systemLanguage ?? _fallbackLanguage;
   final Map<String, Map<String, String>> _translationMaps = {};
   final Map<String, bool> _loading = {};
 
@@ -65,15 +63,11 @@ class LanguageBloc extends ChangeNotifier
     if (countryCode != null) {
       _systemLanguage = languages
           .firstWhereOrNull((language) =>
-              language.code.startsWith(languageCode.toLowerCase()) &&
-              language.code.endsWith(countryCode.toLowerCase()))
+              language.code.startsWith(languageCode.toLowerCase()) && language.code.endsWith(countryCode.toLowerCase()))
           ?.code;
     }
 
-    _systemLanguage ??= languages
-        .firstWhereOrNull(
-            (language) => language.code.startsWith(locale.languageCode))
-        ?.code;
+    _systemLanguage ??= languages.firstWhereOrNull((language) => language.code.startsWith(locale.languageCode))?.code;
 
     _loadTranslations();
   }
@@ -111,8 +105,7 @@ class LanguageBloc extends ChangeNotifier
     LanguageInfo(code: 'zh-chs', name: "简体中文")
   ];
 
-  Future<String> getTranslation(String text,
-      {String? languageCode, Map<String, String> replace = const {}}) async {
+  Future<String> getTranslation(String text, {String? languageCode, Map<String, String> replace = const {}}) async {
     String code = languageCode ?? currentLanguage;
     Map<String, String>? translationMap = await _getTranslationMap(code);
     String? translatedText = translationMap?[text];
@@ -124,8 +117,7 @@ class LanguageBloc extends ChangeNotifier
     return _replace(translatedText, replace);
   }
 
-  String translate(String text,
-      {String? languageCode, Map<String, String> replace = const {}}) {
+  String translate(String text, {String? languageCode, Map<String, String> replace = const {}}) {
     String code = languageCode ?? currentLanguage;
     Map<String, String>? translationMap = _translationMaps[code];
     if (translationMap == null) {
@@ -160,20 +152,25 @@ class LanguageBloc extends ChangeNotifier
     return translations;
   }
 
-  Future<Map<String, String>?> _updateTranslationsFromWeb(
-      String languageCode) async {
-    var url =
-        "https://cdn.jsdelivr.net/gh/LittleLightForDestiny/LittleLightTranslations/languages/$languageCode.json";
-    var req = await http.get(Uri.parse(url));
-    var raw = req.body;
-    Map<String, String> translation = Map<String, String>.from(jsonDecode(raw));
+  Future<Map<String, String>?> _updateTranslationsFromWeb(String languageCode) async {
+    Map<String, String> translation;
+    try {
+      var url =
+          "https://cdn.jsdelivr.net/gh/LittleLightForDestiny/LittleLightTranslations/languages/$languageCode.json";
+      var req = await http.get(Uri.parse(url));
+      var raw = req.body;
+      translation = Map<String, String>.from(jsonDecode(raw));
+    } catch (e) {
+      print("couldn't fetch translations from repository");
+      return null;
+    }
+
     await languageStorage(languageCode).saveTranslations(translation);
     _translationMaps[languageCode] = translation;
     return _translationMaps[languageCode];
   }
 
-  Future<Map<String, String>?> _loadTranslationMapFromSavedData(
-      String languageCode) async {
+  Future<Map<String, String>?> _loadTranslationMapFromSavedData(String languageCode) async {
     final translations = await languageStorage(languageCode).getTranslations();
     if (translations != null) {
       _translationMaps[languageCode] = translations;
@@ -184,8 +181,7 @@ class LanguageBloc extends ChangeNotifier
   Future<List<LanguageInfo>> getManifestSizes() async {
     final languages = this.languages;
     for (final language in languages) {
-      final file =
-          await languageStorage(language.code).getManifestDatabaseFile();
+      final file = await languageStorage(language.code).getManifestDatabaseFile();
       final stat = await file?.stat();
       final exists = await file?.exists() ?? false;
       final size = stat?.size;

@@ -12,8 +12,7 @@ class DevModeMainPageWidget extends StatefulWidget {
   _DevModeMainPageWidgetState createState() => _DevModeMainPageWidgetState();
 }
 
-class _DevModeMainPageWidgetState extends State<DevModeMainPageWidget>
-    with AuthConsumer {
+class _DevModeMainPageWidgetState extends State<DevModeMainPageWidget> with AuthConsumer {
   List<UserMembershipData>? memberships;
 
   @override
@@ -65,15 +64,12 @@ class _DevModeMainPageWidgetState extends State<DevModeMainPageWidget>
           )
         ]
             .followedBy(
-              memberships?.map((m) => buildAccountCard(context, m)).toList() ??
-                  [],
+              memberships?.map((m) => buildAccountCard(context, m)).toList() ?? [],
             )
             .toList(),
       );
 
-  Widget buildAccountCard(
-          BuildContext context, UserMembershipData membership) =>
-      Card(
+  Widget buildAccountCard(BuildContext context, UserMembershipData membership) => Card(
         child: Column(children: [
           Row(
             children: [
@@ -81,21 +77,16 @@ class _DevModeMainPageWidgetState extends State<DevModeMainPageWidget>
               buildAccountInfo(context, membership),
             ],
           ),
-          if (membership.primaryMembershipId != null)
-            buildCrossSaveInfo(context, membership)
+          if (membership.primaryMembershipId != null) buildCrossSaveInfo(context, membership)
         ]),
       );
 
-  Widget buildAccountAvatar(
-      BuildContext context, UserMembershipData membership) {
+  Widget buildAccountAvatar(BuildContext context, UserMembershipData membership) {
     Widget image;
     if (membership.bungieNetUser?.profilePicturePath != null) {
-      image = Image.network(
-          BungieApiService.url(membership.bungieNetUser!.profilePicturePath)!);
+      image = Image.network(BungieApiService.url(membership.bungieNetUser!.profilePicturePath)!);
     } else {
-      image = Container(
-          color: Theme.of(context).colorScheme.onSurface,
-          child: const Icon(FontAwesomeIcons.user));
+      image = Container(color: Theme.of(context).colorScheme.onSurface, child: const Icon(FontAwesomeIcons.user));
     }
     return Container(
         width: 64,
@@ -137,8 +128,7 @@ class _DevModeMainPageWidgetState extends State<DevModeMainPageWidget>
   }
 
   buildCrossSaveInfo(BuildContext context, UserMembershipData membership) {
-    final primary = membership.destinyMemberships
-        ?.where((m) => m.membershipId == membership.primaryMembershipId);
+    final primary = membership.destinyMemberships?.where((m) => m.membershipId == membership.primaryMembershipId);
     String? platform;
     if (primary?.isNotEmpty ?? false) {
       platform = primary?.first.iconPath;
@@ -151,10 +141,7 @@ class _DevModeMainPageWidgetState extends State<DevModeMainPageWidget>
           Container(
             width: 4,
           ),
-          SizedBox(
-              width: 16,
-              height: 16,
-              child: Image.network(BungieApiService.url(platform)!))
+          SizedBox(width: 16, height: 16, child: Image.network(BungieApiService.url(platform)!))
         ],
       ),
     );

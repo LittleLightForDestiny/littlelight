@@ -23,17 +23,18 @@ setupManifest() {
   GetIt.I.registerSingleton<ManifestService>(ManifestService._internal());
 }
 
-class ManifestService
-    with StorageConsumer, BungieApiConsumer, AnalyticsConsumer {
+class ManifestService extends ChangeNotifier with StorageConsumer, BungieApiConsumer, AnalyticsConsumer {
   BuildContext? _context;
   sqflite.Database? _db;
   DestinyManifest? _manifestInfo;
   final Map<String, dynamic> _cached = {};
+  final Map<Type, Map<int, bool>> _loading = {};
 
   ManifestService._internal();
 
-  initContext(BuildContext context) {
+  ManifestService initContext(BuildContext context) {
     this._context = context;
+    return this;
   }
 
   Future<void> setup() async {
@@ -52,6 +53,23 @@ class ManifestService
   bool isLoaded<T>(int hash) {
     var type = DefinitionTableNames.fromClass[T];
     return _cached.keys.contains("${type}_$hash");
+  }
+
+  T? definition<T>(int? hash) {
+    if (hash == null) return null;
+    final fromCache = getDefinitionFromCache<T>(hash);
+    if (fromCache != null) return fromCache;
+    _loadDefinition<T>(hash);
+    return null;
+  }
+
+  void _loadDefinition<T>(int hash) async {
+    if (_loading[T]?[hash] ?? false) return;
+    _loading[T] ??= {};
+    _loading[T]?[hash] = true;
+    await getDefinition<T>(hash);
+    await Future.delayed(Duration(milliseconds: 10));
+    notifyListeners();
   }
 
   T? getDefinitionFromCache<T>(int hash) {
@@ -73,8 +91,7 @@ class ManifestService
 
   Future<List<String>> getAvailableLanguages() async {
     DestinyManifest manifestInfo = await _getManifestInfo();
-    List<String>? availableLanguages =
-        manifestInfo.mobileWorldContentPaths?.keys.toList();
+    List<String>? availableLanguages = manifestInfo.mobileWorldContentPaths?.keys.toList();
     if (availableLanguages == null) {
       throw ("Can't load available languages");
     }
@@ -86,12 +103,10 @@ class ManifestService
     String? currentVersion = await getSavedVersion();
     String language = getInjectedLanguageService().currentLanguage;
     var working = await test();
-    return !working ||
-        currentVersion != manifestInfo.mobileWorldContentPaths?[language];
+    return !working || currentVersion != manifestInfo.mobileWorldContentPaths?[language];
   }
 
-  Future<void> _downloadManifest(StreamController<DownloadProgress> _controller,
-      {bool skipCache = false}) async {
+  Future<void> _downloadManifest(StreamController<DownloadProgress> _controller, {bool skipCache = false}) async {
     try {
       _db?.close();
     } catch (e, stackTrace) {
@@ -146,11 +161,8 @@ class ManifestService
       }
       currentLanguageStorage.manifestVersion = manifestFileURL;
       _cached.clear();
-      _controller.add(DownloadProgress(
-          downloadedBytes: loaded,
-          totalBytes: totalSize,
-          downloaded: true,
-          unzipped: true));
+      _controller
+          .add(DownloadProgress(downloadedBytes: loaded, totalBytes: totalSize, downloaded: true, unzipped: true));
     } catch (e, stackTrace) {
       analytics.registerNonFatal(e, stackTrace);
       _controller.add(DownloadError());
@@ -203,8 +215,7 @@ class ManifestService
     final dbFile = await currentLanguageStorage.getManifestDatabaseFile();
     if (dbFile == null) return null;
     try {
-      sqflite.Database database =
-          await sqflite.openDatabase(dbFile.path, readOnly: true);
+      sqflite.Database database = await sqflite.openDatabase(dbFile.path, readOnly: true);
       _db = database;
     } catch (e) {
       print(e);
@@ -241,8 +252,8 @@ class ManifestService
       throw ("no identity found for class $T");
     }
     try {
-      List<Map<String, dynamic>>? results = await db?.query(tableName,
-          columns: ['id', 'json'], where: where, limit: limit);
+      List<Map<String, dynamic>>? results =
+          await db?.query(tableName, columns: ['id', 'json'], where: where, limit: limit);
       results?.forEach((res) {
         int id = res['id'];
         int hash = id < 0 ? id + 4294967296 : id;
@@ -255,8 +266,7 @@ class ManifestService
     return defs.cast<int, T>();
   }
 
-  Future<Map<int, T>> getDefinitions<T>(Iterable<int?> hashes,
-      [DefinitionTableIdentityFunction? identity]) async {
+  Future<Map<int, T>> getDefinitions<T>(Iterable<int?> hashes, [DefinitionTableIdentityFunction? identity]) async {
     Set<int> hashesSet = hashes.whereType<int>().toSet();
     if (hashesSet.isEmpty) return <int, T>{};
     var tableName = DefinitionTableNames.fromClass[T];
@@ -273,9 +283,7 @@ class ManifestService
     if (hashesSet.isEmpty) {
       return defs;
     }
-    List<int> searchHashes = hashesSet
-        .map((hash) => hash > 2147483648 ? hash - 4294967296 : hash)
-        .toList();
+    List<int> searchHashes = hashesSet.map((hash) => hash > 2147483648 ? hash - 4294967296 : hash).toList();
     String idList = "(${List.filled(hashesSet.length, '?').join(',')})";
 
     sqflite.Database? db = await _openDb();
@@ -286,10 +294,8 @@ class ManifestService
       throw ("no identity found for class $T");
     }
     try {
-      List<Map<String, dynamic>>? results = await db?.query(tableName,
-          columns: ['id', 'json'],
-          where: "id in $idList",
-          whereArgs: searchHashes);
+      List<Map<String, dynamic>>? results =
+          await db?.query(tableName, columns: ['id', 'json'], where: "id in $idList", whereArgs: searchHashes);
       if (results == null) return <int, T>{};
       for (var res in results) {
         int id = res['id'];
@@ -313,8 +319,7 @@ class ManifestService
     }
   }
 
-  Future<T?> getDefinition<T>(int? hash,
-      [DefinitionTableIdentityFunction? identity]) async {
+  Future<T?> getDefinition<T>(int? hash, [DefinitionTableIdentityFunction? identity]) async {
     if (hash == null) return null;
     String? tableName = DefinitionTableNames.fromClass[T];
 
@@ -335,8 +340,8 @@ class ManifestService
     int searchHash = hash > 2147483648 ? hash - 4294967296 : hash;
     sqflite.Database? db = await _openDb();
     try {
-      List<Map<String, dynamic>>? results = await db?.query(tableName,
-          columns: ['json'], where: "id=?", whereArgs: [searchHash]);
+      List<Map<String, dynamic>>? results =
+          await db?.query(tableName, columns: ['json'], where: "id=?", whereArgs: [searchHash]);
       if (results == null || results.isEmpty) {
         return null;
       }
