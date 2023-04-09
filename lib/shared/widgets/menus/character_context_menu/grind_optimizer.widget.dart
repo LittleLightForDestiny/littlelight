@@ -32,14 +32,16 @@ class CharacterGrindOptimizerWidget extends StatelessWidget {
 
   // Build step progress bar widget to show exactly how many slot points (power levels on
   // individual items) are needed to reach the next higher power level.
-  Widget _buildPartialLevelProgressBar(BuildContext context, int itemCount, double currentAverage) {
-    final currentStep = ((currentAverage - currentAverage.floor()) * itemCount);
+  Widget _buildPartialLevelProgressBar(BuildContext context, int itemCount, double currentAverage, bool isMaxPower) {
+    int currentStep = ((currentAverage - currentAverage.floor()) * itemCount).toInt();
+    if (isMaxPower) {
+      currentStep = itemCount;
+      currentAverage--;
+    }
     var bars = <Widget>[];
     Color color = context.theme.primaryLayers.layer1;
     for (int i = 0; i < itemCount; i++) {
-      if (i == currentStep) {
-        color = context.theme.onSurfaceLayers.layer3;
-      }
+      if (i == currentStep) color = context.theme.onSurfaceLayers.layer3;
       bars.add(
         Expanded(
           child: Container(height: 4, width: 4, color: color, margin: EdgeInsets.symmetric(horizontal: 2)),
@@ -66,6 +68,7 @@ class CharacterGrindOptimizerWidget extends StatelessWidget {
     final achievableAverage = state.getAchievableAverage(classType) ?? 0;
     final achievableDiff = achievableAverage.floor() - currentAverage.floor();
     final isInPinnacle = state.achievedPinnacleTier(classType);
+    final isMaxPower = state.achievedMaxPower(classType);
     final goForReward = state.goForReward(classType);
     final goForMessage =
         isInPinnacle ? "Go for pinnacle reward?".translate(context) : "Go for powerful reward?".translate(context);
@@ -83,7 +86,7 @@ class CharacterGrindOptimizerWidget extends StatelessWidget {
               Text("${currentAverage.toStringAsFixed(2)}"),
             ]),
             SizedBox(height: 5),
-            _buildPartialLevelProgressBar(context, items?.length ?? 8, currentAverage)
+            _buildPartialLevelProgressBar(context, items?.length ?? 8, currentAverage, isMaxPower)
           ],
         ),
       ),
@@ -99,7 +102,11 @@ class CharacterGrindOptimizerWidget extends StatelessWidget {
       ),
       MenuBoxTitle(
         goForMessage,
-        trailing: Text(goForReward ? "Yes".translate(context).toUpperCase() : "No".translate(context).toUpperCase()),
+        trailing: Text(isMaxPower
+            ? "Max".translate(context).toUpperCase()
+            : goForReward
+                ? "Yes".translate(context).toUpperCase()
+                : "No".translate(context).toUpperCase()),
       ),
       if (items != null)
         SingleChildScrollView(
