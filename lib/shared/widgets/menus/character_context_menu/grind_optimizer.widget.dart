@@ -39,12 +39,24 @@ class CharacterGrindOptimizerWidget extends StatelessWidget {
       currentAverage--;
     }
     var bars = <Widget>[];
-    Color color = context.theme.primaryLayers.layer1;
+    Color color = context.theme.primaryLayers.layer0;
     for (int i = 0; i < itemCount; i++) {
-      if (i == currentStep) color = context.theme.onSurfaceLayers.layer3;
+      if (i == currentStep) color = context.theme.surfaceLayers.layer3;
       bars.add(
         Expanded(
-          child: Container(height: 4, width: 4, color: color, margin: EdgeInsets.symmetric(horizontal: 2)),
+          child: Container(
+            height: 4,
+            width: 4,
+            margin: EdgeInsets.symmetric(horizontal: 2),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(2),
+              gradient: LinearGradient(
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
+                colors: [context.theme.onSurfaceLayers.mix(color, 90), context.theme.onSurfaceLayers.mix(color, 40)],
+              ),
+            ),
+          ),
         ),
       );
     }
@@ -142,13 +154,20 @@ class CharacterGrindOptimizerWidget extends StatelessWidget {
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(4),
-                            color: context.theme.surfaceLayers.layer0.mix(color, 50),
+                            gradient: LinearGradient(
+                              begin: Alignment.bottomCenter,
+                              end: Alignment.topCenter,
+                              colors: [
+                                context.theme.surfaceLayers.layer0.mix(color, 50),
+                                context.theme.onSurfaceLayers.layer0.mix(color, 70),
+                              ],
+                            ),
                           ),
                           padding: EdgeInsets.all(2),
                           child: Text(
                             text,
                             style: context.textTheme.highlight.copyWith(
-                              color: context.theme.onSurfaceLayers.mix(color, 30),
+                              color: context.theme.onSurfaceLayers.mix(color, 20),
                             ),
                           ),
                         ),
