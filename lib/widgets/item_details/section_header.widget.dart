@@ -6,7 +6,7 @@ import 'package:little_light/shared/widgets/headers/header.wiget.dart';
 mixin VisibleSectionMixin<T extends StatefulWidget> on State<T> {
   String get sectionId;
 
-  bool get visible => getInjectedUserSettings().getVisibilityForDetailsSection(sectionId);
+  bool get visible => getInjectedUserSettings().getSectionVisibleState(sectionId);
 
   Widget getHeader(Widget label) {
     return SectionHeaderWidget(
@@ -40,7 +40,7 @@ class SectionHeaderWidgetState<T extends SectionHeaderWidget> extends State<T> w
   @override
   void initState() {
     super.initState();
-    visible = userSettings.getVisibilityForDetailsSection(widget.sectionId);
+    visible = userSettings.getSectionVisibleState(widget.sectionId);
   }
 
   @override
@@ -56,7 +56,7 @@ class SectionHeaderWidgetState<T extends SectionHeaderWidget> extends State<T> w
     return InkWell(
         onTap: () {
           visible = !visible;
-          userSettings.setVisibilityForDetailsSection(widget.sectionId, visible);
+          userSettings.setSectionVisibleState(widget.sectionId, visible);
           setState(() {});
           widget.onChanged?.call();
         },

@@ -10,6 +10,7 @@ import 'package:bungie_api/models/destiny_vendor_sale_item_component.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
 import 'package:little_light/modules/loadouts/blocs/loadouts.bloc.dart';
 import 'package:little_light/pages/item_details/item_details.page_route.dart';
@@ -18,7 +19,6 @@ import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enu
 import 'package:little_light/services/inventory/inventory.consumer.dart';
 import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_with_owner.dart';
@@ -48,9 +48,7 @@ import 'package:little_light/widgets/item_sockets/details_item_intrinsic_perk.wi
 import 'package:little_light/widgets/item_sockets/details_item_mods.widget.dart';
 import 'package:little_light/widgets/item_sockets/details_item_perks.widget.dart';
 import 'package:little_light/widgets/item_sockets/item_details_plug_info.widget.dart';
-import 'package:little_light/widgets/item_sockets/item_details_socket_details.widget.dart';
 import 'package:little_light/widgets/item_sockets/item_socket.controller.dart';
-import 'package:little_light/widgets/item_stats/details_item_stats.widget.dart';
 import 'package:little_light/widgets/item_tags/item_details_tags.widget.dart';
 import 'package:little_light/widgets/option_sheets/as_equipped_switch.widget.dart';
 import 'package:little_light/widgets/option_sheets/loadout_select_sheet.widget.dart';
@@ -252,17 +250,13 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
                           buildDuplicates(context),
                           buildItemLevel(context),
                           buildIntrinsicPerk(context),
-                          buildExoticPerkDetails(context),
                           buildModInfo(context),
-                          buildStats(context),
+                          // buildStats(context),
                           buildPerks(context),
-                          buildPerkDetails(context),
                           buildArmorTier(context),
                           buildMods(context),
-                          buildModDetails(context),
                           buildWishlistBuilds(context),
                           buildCosmetics(context),
-                          buildCosmeticDetails(context),
                           buildNotes(context),
                           buildTags(context),
                           buildObjectives(context),
@@ -313,17 +307,13 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
                           buildDuplicates(context),
                           buildItemLevel(context),
                           buildIntrinsicPerk(context),
-                          buildExoticPerkDetails(context),
                           buildModInfo(context),
-                          buildStats(context),
+                          // buildStats(context),
                           buildPerks(context),
-                          buildPerkDetails(context),
                           buildArmorTier(context),
                           buildMods(context),
-                          buildModDetails(context),
                           buildWishlistBuilds(context),
                           buildCosmetics(context),
-                          buildCosmeticDetails(context),
                           buildNotes(context),
                           buildTags(context),
                           buildObjectives(context),
@@ -583,14 +573,6 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
         ));
   }
 
-  Widget buildStats(BuildContext context) {
-    var screenPadding = MediaQuery.of(context).padding;
-    return Container(
-        padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
-        child: DetailsItemStatsWidget(
-            item: item, definition: definition, socketController: socketController, key: const Key("stats_widget")));
-  }
-
   Widget buildPerks(BuildContext context) {
     var perksCategory = definition.sockets?.socketCategories
         ?.firstWhere((s) => SocketCategoryHashes.perks.contains(s.socketCategoryHash), orElse: () => null);
@@ -646,46 +628,6 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
             )));
   }
 
-  Widget buildPerkDetails(BuildContext context) {
-    var perksCategory = definition.sockets?.socketCategories
-        ?.firstWhere((s) => SocketCategoryHashes.perks.contains(s.socketCategoryHash), orElse: () => null);
-    if (perksCategory == null || socketController == null) return Container();
-    var screenPadding = MediaQuery.of(context).padding;
-    return Container(
-        margin: const EdgeInsets.only(top: 8),
-        padding: EdgeInsets.only(
-          left: screenPadding.left,
-          right: screenPadding.right,
-        ),
-        child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: ItemDetailsSocketDetailsWidget(
-              controller: socketController,
-              parentDefinition: definition,
-              item: item,
-              category: perksCategory,
-            )));
-  }
-
-  Widget buildExoticPerkDetails(BuildContext context) {
-    var perksCategory = definition.sockets?.socketCategories?.firstWhere(
-        (s) => DestinyData.socketCategoryIntrinsicPerkHashes.contains(s.socketCategoryHash),
-        orElse: () => null);
-    if (perksCategory == null || socketController == null) return Container();
-    var screenPadding = MediaQuery.of(context).padding;
-    return Container(
-        margin: const EdgeInsets.only(top: 8),
-        padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
-        child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: ItemDetailsSocketDetailsWidget(
-              controller: socketController,
-              parentDefinition: definition,
-              item: item,
-              category: perksCategory,
-            )));
-  }
-
   Widget buildMods(BuildContext context) {
     var modsCategory = definition.sockets?.socketCategories
         ?.firstWhere((s) => SocketCategoryHashes.mods.contains(s.socketCategoryHash), orElse: () => null);
@@ -705,24 +647,6 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
             )));
   }
 
-  Widget buildModDetails(BuildContext context) {
-    var modsCategory = definition.sockets?.socketCategories
-        ?.firstWhere((s) => SocketCategoryHashes.mods.contains(s.socketCategoryHash), orElse: () => null);
-    if (modsCategory == null || socketController == null) return Container();
-    var screenPadding = MediaQuery.of(context).padding;
-    return Container(
-        margin: const EdgeInsets.only(top: 8),
-        padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
-        child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: ItemDetailsSocketDetailsWidget(
-              controller: socketController,
-              parentDefinition: definition,
-              item: item,
-              category: modsCategory,
-            )));
-  }
-
   Widget buildCosmetics(BuildContext context) {
     var modsCategory = definition.sockets?.socketCategories?.firstWhere(
         (s) => DestinyData.socketCategoryCosmeticModHashes.contains(s.socketCategoryHash),
@@ -739,25 +663,6 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
               item: item,
               category: modsCategory,
               key: const Key('perks_widget'),
-            )));
-  }
-
-  Widget buildCosmeticDetails(BuildContext context) {
-    var modsCategory = definition.sockets?.socketCategories?.firstWhere(
-        (s) => DestinyData.socketCategoryCosmeticModHashes.contains(s.socketCategoryHash),
-        orElse: () => null);
-    if (modsCategory == null || socketController == null) return Container();
-    var screenPadding = MediaQuery.of(context).padding;
-    return Container(
-        margin: const EdgeInsets.only(top: 8),
-        padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
-        child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: ItemDetailsSocketDetailsWidget(
-              controller: socketController,
-              parentDefinition: definition,
-              item: item,
-              category: modsCategory,
             )));
   }
 
