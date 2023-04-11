@@ -655,4 +655,21 @@ class ProfileBloc extends ChangeNotifier
     notifyListeners();
     _lastLocalChange = DateTime.now().toUtc();
   }
+
+  Future<void> changeItemLockState(DestinyItemInfo item, bool locked) async {
+    final instanceId = item.item.itemInstanceId;
+    final characterId = item.characterId ?? characters?.firstOrNull?.characterId;
+    if (instanceId == null) throw "Can't change lock state of an item that doesn't have a instance id";
+    if (characterId == null) throw "Can't change lock state of an item without a characterId";
+    await this.bungieAPI.changeLockState(instanceId, characterId, locked);
+    final currentValue = item.item.state?.value ?? 0;
+    if (locked) {
+      final newValue = currentValue + ItemState.Locked.value;
+      item.item.state = ItemState(newValue);
+    } else {
+      final newValue = currentValue - ItemState.Locked.value;
+      item.item.state = ItemState(newValue);
+    }
+    notifyListeners();
+  }
 }

@@ -3,6 +3,7 @@ import 'package:little_light/services/littlelight/littlelight_data.consumer.dart
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
+import 'package:little_light/shared/blocs/bucket_options/bucket_options.bloc.dart';
 import 'package:provider/provider.dart';
 
 import '../../shared/blocs/context_menu_options/context_menu_options.bloc.dart';
@@ -34,6 +35,7 @@ class CoreBlocsContainer extends MultiProvider {
             ChangeNotifierProvider<LoadoutsBloc>(create: (context) => LoadoutsBloc()),
             ChangeNotifierProvider<SelectionBloc>(create: (context) => SelectionBloc(context)),
             ChangeNotifierProvider<ContextMenuOptionsBloc>(create: (context) => ContextMenuOptionsBloc(context)),
+            ChangeNotifierProvider<BucketOptionsBloc>(create: (context) => BucketOptionsBloc(context)),
           ],
         );
 }

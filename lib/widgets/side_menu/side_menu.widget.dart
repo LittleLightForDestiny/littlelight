@@ -9,11 +9,11 @@ import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/modules/collections/pages/home/collections_root.page.dart';
+import 'package:little_light/modules/dev_tools/pages/main/dev_tools_main.page.dart';
 import 'package:little_light/modules/equipment/pages/equipment/equipment.page.dart';
 import 'package:little_light/modules/loadouts/pages/home/loadouts_home.page.dart';
 import 'package:little_light/modules/progress/pages/progress/progress.page.dart';
 import 'package:little_light/modules/settings/pages/about/about.screen.dart';
-import 'package:little_light/pages/dev_tools.screen.dart';
 import 'package:little_light/pages/duplicated_items.screen.dart';
 import 'package:little_light/pages/languages/languages.page_route.dart';
 import 'package:little_light/pages/objectives/objectives.screen.dart';
@@ -95,11 +95,10 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer {
               menuItem(context, Text("About".translate(context)), onTap: () {
                 open(context, AboutScreen());
               }),
-              kDebugMode
-                  ? menuItem(context, Text("Dev Tools".translate(context)), onTap: () {
-                      open(context, DevToolsScreen());
-                    })
-                  : Container(),
+              if (kDebugMode)
+                menuItem(context, Text("Dev Tools".translate(context)), onTap: () {
+                  open(context, DevToolsPage());
+                }),
               Container(height: MediaQuery.of(context).viewPadding.bottom)
             ],
           )),

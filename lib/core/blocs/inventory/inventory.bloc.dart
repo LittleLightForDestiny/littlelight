@@ -173,6 +173,10 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     await _startTransferQueue();
   }
 
+  Future<void> changeItemLockState(DestinyItemInfo item, bool locked) async {
+    await _profileBloc.changeItemLockState(item, locked);
+  }
+
   Future<void> _addTransferToQueue(
     DestinyItemInfo item,
     TransferDestination destination, {

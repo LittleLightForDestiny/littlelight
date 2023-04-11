@@ -60,7 +60,7 @@ class _DevModeMainPageWidgetState extends State<DevModeMainPageWidget> with Auth
         children: <Widget>[
           Text(
             "Accounts",
-            style: Theme.of(context).textTheme.headline5,
+            style: Theme.of(context).textTheme.headlineSmall,
           )
         ]
             .followedBy(

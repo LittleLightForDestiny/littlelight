@@ -1,12 +1,9 @@
-import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
-import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/models/transfer_destination.dart';
-import 'package:little_light/shared/utils/extensions/inventory_item_data.dart';
+import 'package:little_light/shared/utils/helpers/get_transfer_destinations.dart';
 import 'package:provider/provider.dart';
 
 class _SelectedItemIdentifier {
@@ -36,10 +33,11 @@ class _SelectedItemIdentifier {
 
 class SelectionBloc extends ChangeNotifier with ManifestConsumer {
   final ProfileBloc _profile;
+  final BuildContext _context;
 
-  factory SelectionBloc(BuildContext context) => SelectionBloc._(context.read<ProfileBloc>());
+  factory SelectionBloc(BuildContext context) => SelectionBloc._(context, context.read<ProfileBloc>());
 
-  SelectionBloc._(this._profile) {
+  SelectionBloc._(this._context, this._profile) {
     _profile.addListener(_internalUpdate);
   }
 
@@ -116,62 +114,10 @@ class SelectionBloc extends ChangeNotifier with ManifestConsumer {
 
   Future<void> _updateTransferDestinations() async {
     final characters = _profile.characters;
-    bool canTransferToVault = false;
-    bool areAllItemsProfileScoped = true;
-    bool canTransferToProfile = false;
-    final transferCharacters = <DestinyCharacterInfo>[];
-    final equipCharacters = <DestinyCharacterInfo>[];
     final items = _selectedItems;
-    if (characters == null) return;
-    for (final char in characters) {
-      bool canTransfer = false;
-      bool canEquip = false;
-      for (final item in items) {
-        final hash = item.item.itemHash;
-        final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(hash);
-        if (def == null) continue;
-        final bucketDef = await manifest.getDefinition<DestinyInventoryBucketDefinition>(def.inventory?.bucketTypeHash);
-        bool isOnVault = item.item.bucketHash == InventoryBucket.general;
-        bool isOnPostmaster = item.item.bucketHash == InventoryBucket.lostItems;
-
-        canTransferToProfile |= isOnVault || isOnPostmaster;
-        canTransferToVault |= item.canTransfer(null, def) && !isOnVault;
-
-        if (bucketDef?.scope == BucketScope.Account) {
-          canTransfer |= isOnVault && item.canTransfer(char, def);
-          continue;
-        }
-        areAllItemsProfileScoped = false;
-        canTransfer |= item.canTransfer(char, def);
-        canEquip |= item.canEquip(char, def);
-        if (canTransfer && canEquip) break;
-      }
-      if (canTransfer) transferCharacters.add(char);
-      if (canEquip) equipCharacters.add(char);
-    }
-
-    final transferDestinations = <TransferDestination>[];
-    final equipDestinations = <TransferDestination>[];
-
-    if (areAllItemsProfileScoped) {
-      if (canTransferToProfile) transferDestinations.add(TransferDestination(TransferDestinationType.profile));
-    } else {
-      transferDestinations.addAll(transferCharacters.map((c) => TransferDestination(
-            TransferDestinationType.character,
-            character: c,
-          )));
-      equipDestinations.addAll(equipCharacters.map((c) => TransferDestination(
-            TransferDestinationType.character,
-            character: c,
-          )));
-    }
-
-    if (canTransferToVault) {
-      transferDestinations.add(TransferDestination(TransferDestinationType.vault));
-    }
-
-    _transferDestinations = transferDestinations;
-    _equipDestinations = equipDestinations;
+    final destinations = await getTransferDestinations(_context, characters, items);
+    _transferDestinations = destinations?.transfer ?? [];
+    _equipDestinations = destinations?.equip ?? [];
   }
 
   bool isSelected(int hash, {String? instanceId, int? stackIndex}) {

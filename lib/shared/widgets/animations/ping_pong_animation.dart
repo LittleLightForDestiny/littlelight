@@ -12,12 +12,16 @@ class PingPongAnimationBuilder extends BaseAnimationBuilder {
   }) : super(builder, key: key, duration: duration);
 
   @override
-  PingPongAnimationBuilderState createState() =>
-      PingPongAnimationBuilderState();
+  PingPongAnimationBuilderState createState() => PingPongAnimationBuilderState();
 }
 
-class PingPongAnimationBuilderState
-    extends BaseAnimationBuilderState<PingPongAnimationBuilder> {
+class PingPongAnimationBuilderState extends BaseAnimationBuilderState<PingPongAnimationBuilder> {
+  @override
+  void initState() {
+    super.initState();
+    controller.animateTo(widget.position, duration: Duration.zero);
+  }
+
   @override
   void updateAnimation(AnimationController controller) {
     controller.animateTo(widget.position);

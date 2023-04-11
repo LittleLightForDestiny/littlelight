@@ -32,8 +32,7 @@ class ItemSocketController extends ChangeNotifier
   Map<int, DestinyInventoryItemDefinition>? _plugDefinitions;
   Map<int, DestinyPlugSetDefinition>? _plugSetDefinitions;
 
-  Map<int, DestinyInventoryItemDefinition>? get plugDefinitions =>
-      _plugDefinitions;
+  Map<int, DestinyInventoryItemDefinition>? get plugDefinitions => _plugDefinitions;
   int? _selectedSocket;
   int? _selectedSocketIndex;
   int? get selectedSocketIndex => _selectedSocketIndex;
@@ -94,8 +93,7 @@ class ItemSocketController extends ChangeNotifier
   List<int?>? get selectedSockets => _selectedSockets;
   List<int?>? get randomizedSelectedSockets => _randomizedSelectedSockets;
 
-  ItemSocketController._(this._itemHash,
-      {this.item, this.socketStates, this.reusablePlugs}) {
+  ItemSocketController._(this._itemHash, {this.item, this.socketStates, this.reusablePlugs}) {
     _init();
   }
 
@@ -108,8 +106,7 @@ class ItemSocketController extends ChangeNotifier
     }
     final socketStates = profile.getItemSockets(itemInstanceID);
     final reusablePlugs = profile.getItemReusablePlugs(itemInstanceID);
-    return ItemSocketController._(itemHash,
-        item: item, socketStates: socketStates, reusablePlugs: reusablePlugs);
+    return ItemSocketController._(itemHash, item: item, socketStates: socketStates, reusablePlugs: reusablePlugs);
   }
 
   factory ItemSocketController.fromVendorItem({
@@ -122,13 +119,11 @@ class ItemSocketController extends ChangeNotifier
       throw ("Can't initialize without itemHash");
     }
     final vendorsService = VendorsService();
-    final reusablePlugs = vendorsService.getSaleItemReusablePerksSync(
-        characterId, vendorHash, vendorItem.vendorItemIndex);
-    final socketStates = vendorsService.getSaleItemSocketsSync(
-        characterId, vendorHash, vendorItem.vendorItemIndex);
+    final reusablePlugs =
+        vendorsService.getSaleItemReusablePerksSync(characterId, vendorHash, vendorItem.vendorItemIndex);
+    final socketStates = vendorsService.getSaleItemSocketsSync(characterId, vendorHash, vendorItem.vendorItemIndex);
 
-    return ItemSocketController._(itemHash,
-        socketStates: socketStates, reusablePlugs: reusablePlugs);
+    return ItemSocketController._(itemHash, socketStates: socketStates, reusablePlugs: reusablePlugs);
   }
 
   factory ItemSocketController.fromItemHash(int hash) {
@@ -145,13 +140,11 @@ class ItemSocketController extends ChangeNotifier
 
     _selectedSockets = List<int?>.filled(entries?.length ?? 0, null);
     _randomizedSelectedSockets = List<int?>.filled(entries?.length ?? 0, null);
-    _socketBusy =
-        List<bool>.generate(socketStates?.length ?? 0, (index) => false);
+    _socketBusy = List<bool>.generate(socketStates?.length ?? 0, (index) => false);
   }
 
   Future<void> _loadDefinitions() async {
-    final itemDefinition =
-        await manifest.getDefinition<DestinyInventoryItemDefinition>(_itemHash);
+    final itemDefinition = await manifest.getDefinition<DestinyInventoryItemDefinition>(_itemHash);
     if (itemDefinition == null) return;
     definition = itemDefinition;
     final plugHashes = <int>{};
@@ -175,8 +168,7 @@ class ItemSocketController extends ChangeNotifier
         .where((h) => h != 0)
         .toSet();
     if (plugSetHashes == null) return;
-    _plugSetDefinitions =
-        await manifest.getDefinitions<DestinyPlugSetDefinition>(plugSetHashes);
+    _plugSetDefinitions = await manifest.getDefinitions<DestinyPlugSetDefinition>(plugSetHashes);
 
     List<int?> socketTypeHashes = [];
     final definitionPlugHashes = itemDefinition.sockets?.socketEntries
@@ -184,18 +176,11 @@ class ItemSocketController extends ChangeNotifier
           socketTypeHashes.add(socket.socketTypeHash);
           List<int?> hashes = [];
           hashes.add(socket.singleInitialItemHash);
-          hashes.addAll(
-              socket.reusablePlugItems?.map((p) => p.plugItemHash) ?? []);
-          DestinyPlugSetDefinition? reusablePlugSet =
-              _plugSetDefinitions?[socket.reusablePlugSetHash];
-          DestinyPlugSetDefinition? randomizedPlugSet =
-              _plugSetDefinitions?[socket.randomizedPlugSetHash];
-          hashes.addAll(
-              reusablePlugSet?.reusablePlugItems?.map((i) => i.plugItemHash) ??
-                  []);
-          hashes.addAll(randomizedPlugSet?.reusablePlugItems
-                  ?.map((i) => i.plugItemHash) ??
-              []);
+          hashes.addAll(socket.reusablePlugItems?.map((p) => p.plugItemHash) ?? []);
+          DestinyPlugSetDefinition? reusablePlugSet = _plugSetDefinitions?[socket.reusablePlugSetHash];
+          DestinyPlugSetDefinition? randomizedPlugSet = _plugSetDefinitions?[socket.randomizedPlugSetHash];
+          hashes.addAll(reusablePlugSet?.reusablePlugItems?.map((i) => i.plugItemHash) ?? []);
+          hashes.addAll(randomizedPlugSet?.reusablePlugItems?.map((i) => i.plugItemHash) ?? []);
           return hashes;
         })
         .whereType<int>()
@@ -203,13 +188,10 @@ class ItemSocketController extends ChangeNotifier
         .toSet();
 
     plugHashes.addAll(definitionPlugHashes ?? <int>{});
-    _plugDefinitions = await manifest
-        .getDefinitions<DestinyInventoryItemDefinition>(plugHashes);
+    _plugDefinitions = await manifest.getDefinitions<DestinyInventoryItemDefinition>(plugHashes);
 
-    DestinyItemSocketCategoryDefinition? armorTierCategory = itemDefinition
-        .sockets?.socketCategories
-        ?.firstWhereOrNull((s) => DestinyData.socketCategoryTierHashes
-            .contains(s.socketCategoryHash));
+    DestinyItemSocketCategoryDefinition? armorTierCategory = itemDefinition.sockets?.socketCategories
+        ?.firstWhereOrNull((s) => DestinyData.socketCategoryTierHashes.contains(s.socketCategoryHash));
     _armorTierIndex = armorTierCategory?.socketIndexes?.first;
     notifyListeners();
   }
@@ -238,26 +220,21 @@ class ItemSocketController extends ChangeNotifier
     final instanceID = item?.item.itemInstanceId;
     if (instanceID == null) throw ("No item instance available");
 
-    final characterID = profile.getItemOwner(instanceID) ??
-        profile.characters?.last.characterId;
+    final characterID = profile.getItemOwner(instanceID) ?? profile.characters?.last.characterId;
     if (characterID == null) throw ("No character available");
 
-    notifications.push(NotificationEvent(NotificationType.requestApplyPlug,
-        item: item?.item, plugHash: plugHash));
+    notifications.push(NotificationEvent(NotificationType.requestApplyPlug, item: item?.item, plugHash: plugHash));
     _socketBusy?[socketIndex] = true;
     notifyListeners();
     try {
-      await bungieAPI.applySocket(
-          instanceID, plugHash, socketIndex, characterID);
+      await bungieAPI.applySocket(instanceID, plugHash, socketIndex, characterID);
       socketStates?[socketIndex].plugHash = plugHash;
     } on BungieApiException catch (e, stackTrace) {
       if ([
         PlatformErrorCodes.DestinyCharacterNotInTower,
         PlatformErrorCodes.DestinyCannotPerformActionAtThisLocation,
       ].contains(e.errorCode)) {
-        notifications.push(ErrorNotificationEvent(
-            ErrorNotificationType.onCombatZoneApplyModError,
-            item: item?.item));
+        notifications.push(ErrorNotificationEvent(ErrorNotificationType.onCombatZoneApplyModError, item: item?.item));
         await Future.delayed(const Duration(seconds: 3));
       } else {
         analytics.registerNonFatal(e, stackTrace, additionalInfo: {
@@ -269,17 +246,14 @@ class ItemSocketController extends ChangeNotifier
         rethrow;
       }
     } catch (e, stackTrace) {
-      notifications.push(ErrorNotificationEvent(
-          ErrorNotificationType.genericApplyModError,
-          item: item?.item));
+      notifications.push(ErrorNotificationEvent(ErrorNotificationType.genericApplyModError, item: item?.item));
       await Future.delayed(const Duration(seconds: 3));
       analytics.registerNonFatal(e, stackTrace);
     }
     _socketBusy?[socketIndex] = false;
 
     notifyListeners();
-    notifications.push(
-        NotificationEvent(NotificationType.itemStateUpdate, item: item?.item));
+    notifications.push(NotificationEvent(NotificationType.itemStateUpdate, item: item?.item));
   }
 
   bool isSocketBusy(int socketIndex) {
@@ -299,22 +273,16 @@ class ItemSocketController extends ChangeNotifier
     final hashes = <int>[];
     final plugSources = entry?.plugSources;
 
-    final isPlugSet =
-        (plugSources?.contains(SocketPlugSources.CharacterPlugSet) ?? false) ||
-            (plugSources?.contains(SocketPlugSources.ProfilePlugSet) ?? false);
+    final isPlugSet = (plugSources?.contains(SocketPlugSources.CharacterPlugSet) ?? false) ||
+        (plugSources?.contains(SocketPlugSources.ProfilePlugSet) ?? false);
     final plugSetHash = entry?.reusablePlugSetHash;
     if (isPlugSet && plugSetHash != null) {
       var plugSet = profile.getPlugSets(plugSetHash);
-      hashes.addAll(plugSet
-          .where((p) => p.canInsert ?? false)
-          .map((p) => p.plugItemHash)
-          .where((p) {
+      hashes.addAll(plugSet.where((p) => p.canInsert ?? false).map((p) => p.plugItemHash).where((p) {
         if (_armorTierIndex == null) return true;
         var def = _plugDefinitions?[p];
-        var energyType =
-            def?.plug?.energyCost?.energyType ?? DestinyEnergyType.Any;
-        return (energyType == armorEnergyType ||
-            energyType == DestinyEnergyType.Any);
+        var energyType = def?.plug?.energyCost?.energyType ?? DestinyEnergyType.Any;
+        return (energyType == armorEnergyType || energyType == DestinyEnergyType.Any);
       }).whereType<int>());
     }
 
@@ -338,10 +306,8 @@ class ItemSocketController extends ChangeNotifier
         .where((p) {
           if (_armorTierIndex == null) return true;
           var def = _plugDefinitions?[p];
-          var energyType =
-              def?.plug?.energyCost?.energyType ?? DestinyEnergyType.Any;
-          return (energyType == armorEnergyType ||
-              energyType == DestinyEnergyType.Any);
+          var energyType = def?.plug?.energyCost?.energyType ?? DestinyEnergyType.Any;
+          return (energyType == armorEnergyType || energyType == DestinyEnergyType.Any);
         })
         .whereType<int>()
         .toList();
@@ -363,11 +329,7 @@ class ItemSocketController extends ChangeNotifier
     }
 
     if ((entry?.reusablePlugItems?.length ?? 0) > 0) {
-      return entry?.reusablePlugItems
-          ?.map((p) => p.plugItemHash)
-          .whereType<int>()
-          .where((h) => h != 0)
-          .toList();
+      return entry?.reusablePlugItems?.map((p) => p.plugItemHash).whereType<int>().where((h) => h != 0).toList();
     }
 
     if ((entry?.singleInitialItemHash ?? 0) != 0) {
@@ -379,8 +341,7 @@ class ItemSocketController extends ChangeNotifier
 
   bool isSocketFavoritable(int socketIndex) {
     final categories = definition?.sockets?.socketCategories
-        ?.where(
-            (element) => element.socketIndexes?.contains(socketIndex) ?? false)
+        ?.where((element) => element.socketIndexes?.contains(socketIndex) ?? false)
         .map((s) => s.socketCategoryHash)
         .toSet();
 
@@ -399,12 +360,8 @@ class ItemSocketController extends ChangeNotifier
     if (!favoritable) return plugHashes;
     final plugs = plugHashes?.toList();
     plugs?.sort((a, b) {
-      final favoriteA =
-          itemNotes.getNotesForItem(a, null)?.tags?.contains("favorite") ??
-              false;
-      final favoriteB =
-          itemNotes.getNotesForItem(b, null)?.tags?.contains("favorite") ??
-              false;
+      final favoriteA = itemNotes.getNotesForItem(a, null)?.tags?.contains("favorite") ?? false;
+      final favoriteB = itemNotes.getNotesForItem(b, null)?.tags?.contains("favorite") ?? false;
       final valueA = favoriteA ? 1 : 0;
       final valueB = favoriteB ? 1 : 0;
       final favoriteOrder = valueB.compareTo(valueA);
@@ -422,8 +379,7 @@ class ItemSocketController extends ChangeNotifier
       return [];
     }
     final hashes = socketPlugHashes(socketIndex);
-    hashes?.addAll(
-        randomHashes.where((p) => !hashes.contains(p)).whereType<int>());
+    hashes?.addAll(randomHashes.where((p) => !hashes.contains(p)).whereType<int>());
     hashes?.sort((a, b) {
       final canRollA = canRollPerk(socketIndex, a) ? 1 : 0;
       final canRollB = canRollPerk(socketIndex, b) ? 1 : 0;
@@ -434,12 +390,9 @@ class ItemSocketController extends ChangeNotifier
 
   bool canRollPerk(int socketIndex, int plugHash) {
     final entry = definition?.sockets?.socketEntries?.elementAt(socketIndex);
-    if (_plugSetDefinitions?.containsKey(entry?.randomizedPlugSetHash) ??
-        false) {
-      final randomPlugs =
-          _plugSetDefinitions?[entry?.randomizedPlugSetHash]?.reusablePlugItems;
-      final plug =
-          randomPlugs?.lastWhereOrNull((p) => p.plugItemHash == plugHash);
+    if (_plugSetDefinitions?.containsKey(entry?.randomizedPlugSetHash) ?? false) {
+      final randomPlugs = _plugSetDefinitions?[entry?.randomizedPlugSetHash]?.reusablePlugItems;
+      final plug = randomPlugs?.lastWhereOrNull((p) => p.plugItemHash == plugHash);
       if (plug != null) return plug.currentlyCanRoll ?? false;
     }
     return true;
@@ -448,8 +401,7 @@ class ItemSocketController extends ChangeNotifier
   List<int>? randomizedPlugHashes(int socketIndex) {
     var entry = definition?.sockets?.socketEntries?.elementAt(socketIndex);
     if ((entry?.randomizedPlugSetHash ?? 0) == 0) return <int>[];
-    if (!(_plugSetDefinitions?.containsKey(entry?.randomizedPlugSetHash) ??
-        false)) return <int>[];
+    if (!(_plugSetDefinitions?.containsKey(entry?.randomizedPlugSetHash) ?? false)) return <int>[];
     final hashes = _plugSetDefinitions?[entry?.randomizedPlugSetHash]
         ?.reusablePlugItems
         ?.map((p) => p.plugItemHash)
@@ -461,8 +413,7 @@ class ItemSocketController extends ChangeNotifier
   List<int>? otherPlugHashes(int socketIndex) {
     var entry = definition?.sockets?.socketEntries?.elementAt(socketIndex);
     if ((entry?.randomizedPlugSetHash ?? 0) == 0) return <int>[];
-    if (!(_plugSetDefinitions?.containsKey(entry?.randomizedPlugSetHash) ??
-        false)) return <int>[];
+    if (!(_plugSetDefinitions?.containsKey(entry?.randomizedPlugSetHash) ?? false)) return <int>[];
     final hashes = _plugSetDefinitions?[entry?.randomizedPlugSetHash]
         ?.reusablePlugItems
         ?.map((p) => p.plugItemHash)
@@ -475,10 +426,7 @@ class ItemSocketController extends ChangeNotifier
     var entry = definition?.sockets?.socketEntries?.elementAt(socketIndex);
 
     if ((entry?.reusablePlugItems?.length ?? 0) > 0) {
-      return entry?.reusablePlugItems
-          ?.map((p) => p.plugItemHash)
-          .whereType<int>()
-          .toList();
+      return entry?.reusablePlugItems?.map((p) => p.plugItemHash).whereType<int>().toList();
     }
     if ((entry?.singleInitialItemHash ?? 0) != 0) {
       return [entry?.singleInitialItemHash].whereType<int>().toList();

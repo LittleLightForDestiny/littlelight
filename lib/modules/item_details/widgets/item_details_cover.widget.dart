@@ -12,7 +12,6 @@ import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/item_name_bar/item_name_bar.widget.dart';
 import 'package:little_light/widgets/common/masterwork_counter/base_masterwork_counter.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
-import 'package:little_light/widgets/item_details/item_cover/item_cover.widget.dart';
 import 'package:shimmer/shimmer.dart';
 
 class ItemDetailsCoverWidget extends StatelessWidget {
@@ -26,7 +25,6 @@ class ItemDetailsCoverWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final hash = this.item?.itemHash;
-    if (hash == null) return Container();
     final definition = context.definition<DestinyInventoryItemDefinition>(hash);
     final width = MediaQuery.of(context).size.width;
     final paddingTop = MediaQuery.of(context).padding.top;
@@ -72,10 +70,8 @@ class ItemDetailsCoverDelegate extends SliverPersistentHeaderDelegate {
     return Container(
         color: definition?.inventory?.tierType?.getColor(context),
         child: Stack(
-          // overflow: Overflow.visible,
           fit: StackFit.expand,
           children: <Widget>[
-            Container(),
             background(context, expandRatio),
             overlay(context, expandRatio),
             masterworkCounter(context, expandRatio),
@@ -93,17 +89,15 @@ class ItemDetailsCoverDelegate extends SliverPersistentHeaderDelegate {
         bottom: 0,
         right: 0,
         height: kToolbarHeight,
-        child: Hero(
-            tag: "item_namebar_${tag}_$uniqueId",
-            child: ItemNameBarWidget(
-              item,
-              definition,
-              instanceInfo,
-              multiline: true,
-              padding: EdgeInsets.only(
-                  left: leftOffset + 8, right: 8, top: (kToolbarHeight - 16) / 2, bottom: (kToolbarHeight - 16) / 2),
-              fontSize: 16,
-            )));
+        child: ItemNameBarWidget(
+          item,
+          definition,
+          instanceInfo,
+          multiline: true,
+          padding: EdgeInsets.only(
+              left: leftOffset + 8, right: 8, top: (kToolbarHeight - 16) / 2, bottom: (kToolbarHeight - 16) / 2),
+          fontSize: 16,
+        ));
   }
 
   Widget icon(BuildContext context, double expandRatio) {
@@ -115,14 +109,12 @@ class ItemDetailsCoverDelegate extends SliverPersistentHeaderDelegate {
         bottom: bottom,
         width: size,
         height: size,
-        child: Hero(
-            tag: "item_icon_${tag}_$uniqueId",
-            child: ItemIconWidget.builder(
-              item: item,
-              definition: definition,
-              instanceInfo: instanceInfo,
-              iconBorderWidth: lerpDouble(1, 2, expandRatio) ?? 2,
-            )));
+        child: ItemIconWidget.builder(
+          item: item,
+          definition: definition,
+          instanceInfo: instanceInfo,
+          iconBorderWidth: lerpDouble(1, 2, expandRatio) ?? 2,
+        ));
   }
 
   Widget backButton(BuildContext context, double expandRatio) {
@@ -254,7 +246,7 @@ class ItemDetailsCoverDelegate extends SliverPersistentHeaderDelegate {
   double get minExtent => minHeight;
 
   @override
-  bool shouldRebuild(ItemCoverDelegate oldDelegate) {
+  bool shouldRebuild(ItemDetailsCoverDelegate oldDelegate) {
     return maxHeight != oldDelegate.maxHeight || minHeight != oldDelegate.minHeight;
   }
 }
