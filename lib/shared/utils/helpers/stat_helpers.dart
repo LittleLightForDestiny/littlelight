@@ -157,9 +157,6 @@ Future<Map<int, StatValues>?> calculateStats(
       values.rawEquippedMasterwork += equippedMasterWorkValue ?? 0;
       values.rawSelected += selectedValue ?? equippedValue ?? 0;
       values.rawSelectedMasterwork += selectedMasterWorkValue ?? equippedMasterWorkValue ?? 0;
-      if (itemHash == 3089417789 && equippedIsConditionallyActive) {
-        print(equippedValue);
-      }
     }
   }
   return map;
