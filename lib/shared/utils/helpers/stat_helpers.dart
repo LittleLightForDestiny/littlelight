@@ -48,16 +48,16 @@ class StatValues {
   }
 
   num get equippedMasterwork {
+    if (this.rawEquippedMasterwork == 0) return 0;
     final maximum = scale?.maximumValue ?? double.maxFinite.floor();
     final equippedWithMasterwork = _interpolate((this.rawEquipped + this.rawEquippedMasterwork).clamp(0, maximum));
-    final equipped = _interpolate(this.rawEquipped.clamp(0, maximum));
     return equippedWithMasterwork - equipped;
   }
 
   num get selectedMasterwork {
+    if (this.rawSelectedMasterwork == 0) return 0;
     final maximum = scale?.maximumValue ?? double.maxFinite.floor();
     final selectedWithMasterwork = _interpolate((this.rawSelected + this.rawSelectedMasterwork).clamp(0, maximum));
-    final selected = _interpolate(this.rawSelected.clamp(0, maximum));
     return selectedWithMasterwork - selected;
   }
 
@@ -90,6 +90,11 @@ class StatValues {
     final upperWeight = upperBound.weight ?? 0;
     if (factor == 0) return lowerWeight;
     final displayValue = lowerWeight + (upperWeight - lowerWeight) * factor;
+    // Banker's round the result
+    final displayValueFloor = displayValue.floor();
+    if (displayValue - displayValueFloor == .5 && (displayValueFloor % 2) == 0) {
+      return displayValueFloor;
+    }
     return displayValue.round();
   }
 }

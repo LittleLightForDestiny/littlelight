@@ -13,6 +13,8 @@ class StatsItem {
 
   bool get hasIssues {
     for (final hash in precalculated.keys) {
+      // Ignore stats: Ghost Energy Capacity, Mod Cost, Speed
+      if ([237763788, 514071887, 1501155019].contains(hash)) continue;
       final equipped = (stats[hash]?.equipped ?? 0) + (stats[hash]?.equippedMasterwork ?? 0);
       if (precalculated[hash] != equipped) {
         return true;
@@ -73,6 +75,7 @@ class DevToolsStatsBloc extends ChangeNotifier {
     }
     this.allItems = allItems;
     this._itemsWithIssues = allItems.where((element) => element.hasIssues).toList();
+    print("${this._itemsWithIssues?.length} of ${this.allItems?.length} items with issues");
     notifyListeners();
   }
 }
